@@ -1882,11 +1882,14 @@ WandExport double *DrawGetStrokeDashArray(const DrawingWand *wand,
     {
       dasharray=(double *) AcquireQuantumMemory((size_t) n+1UL,
         sizeof(*dasharray));
-      p=CurrentContext->dash_pattern;
-      q=dasharray;
-      for (i=0; i < (ssize_t) n; i++)
-        *q++=(*p++);
-      *q=0.0;
+      if (dasharray != (double *) NULL)
+        {
+          p=CurrentContext->dash_pattern;
+          q=dasharray;
+          for (i=0; i < (ssize_t) n; i++)
+            *q++=(*p++);
+          *q=0.0;
+        }
     }
   return(dasharray);
 }
