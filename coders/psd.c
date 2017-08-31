@@ -1688,6 +1688,12 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
                 {
                   size_t blend_source=ReadBlobLong(image);
                   size_t blend_dest=ReadBlobLong(image);
+                  if (EOFBlob(image) != MagickFalse)
+                    {
+                      layer_info=DestroyLayerInfo(layer_info,number_layers);
+                      ThrowBinaryException(CorruptImageError,
+                        "InsufficientImageDataInFile",image->filename);
+                    }
                   if (image->debug != MagickFalse)
                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                       "        source(%x), dest(%x)",(unsigned int)
