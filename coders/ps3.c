@@ -73,6 +73,7 @@
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/module.h"
+#include "MagickCore/config.h"
 
 /*
   Define declarations.

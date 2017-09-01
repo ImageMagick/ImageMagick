@@ -80,6 +80,7 @@
 #include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/module.h"
+#include "MagickCore/config.h"
 
 /*
   Define declarations.

@@ -69,7 +69,7 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
 #include "MagickCore/utility.h"
-
+#include "MagickCore/config.h"
 /*
   Define declarations.
 */
