@@ -3142,14 +3142,14 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
           channel;
 
         PixelTrait
-          sample_traits,
+          image_traits,
           traits;
 
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        sample_traits=GetPixelChannelTraits(sample_image,channel);
+        channel=GetPixelChannelChannel(sample_image,i);
+        traits=GetPixelChannelTraits(sample_image,channel);
+        image_traits=GetPixelChannelTraits(image,channel);
         if ((traits == UndefinedPixelTrait) ||
-            (sample_traits == UndefinedPixelTrait))
+            (image_traits == UndefinedPixelTrait))
           continue;
         SetPixelChannel(sample_image,channel,p[x_offset[x]*GetPixelChannels(
           image)+i],q);
