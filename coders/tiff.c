@@ -1068,6 +1068,8 @@ static void TIFFReadPhotoshopLayers(Image* image,const ImageInfo *image_info,
           info.channels=(image->matte != MagickFalse ? 5UL : 4UL);
       }
   (void) ReadPSDLayers(layers,image_info,&info,MagickFalse,exception);
+  /* we need to set the datum in case a realloc happend */
+  ((StringInfo *) layer_info)->datum=GetBlobStreamData(layers);
   InheritException(exception,&layers->exception);
   DeleteImageFromList(&layers);
   if (layers != (Image *) NULL)
