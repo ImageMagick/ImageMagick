@@ -236,6 +236,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   width=0;
   height=0;
+  *name='\0';
   while (ReadBlobString(image,buffer) != (char *) NULL)
     if (sscanf(buffer,"#define %32s %u",name,&width) == 2)
       if ((strlen(name) >= 6) &&
@@ -306,6 +307,8 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize hex values.
   */
+  for (i=0; i < sizeof(hex_digits)/sizeof(*hex_digits); i++)
+    hex_digits[i]=(-1);
   hex_digits[(int) '0']=0;
   hex_digits[(int) '1']=1;
   hex_digits[(int) '2']=2;
