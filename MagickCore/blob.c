@@ -269,8 +269,7 @@ MagickExport void AttachBlob(BlobInfo *blob_info,const void *blob,
   blob_info->data=(unsigned char *) blob;
   blob_info->mapped=MagickFalse;
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4663,9 +4662,9 @@ MagickExport MagickBooleanType SetBlobExtent(Image *image,
 %
 %  A description of each parameter follows:
 %
-%    o custom_stream: your custom stream.
+%    o custom_stream: the custom stream info.
 %
-%    o void: your data.
+%    o data: an object containing information about the custom stream.
 %
 */
 MagickExport void SetCustomStreamData(CustomStreamInfo *custom_stream,
@@ -4696,9 +4695,9 @@ MagickExport void SetCustomStreamData(CustomStreamInfo *custom_stream,
 %
 %  A description of each parameter follows:
 %
-%    o custom_stream: your custom stream.
+%    o custom_stream: the custom stream info.
 %
-%    o reader: your custom stream reader.
+%    o reader: a function to read from the stream.
 %
 */
 MagickExport void SetCustomStreamReader(CustomStreamInfo *custom_stream,
@@ -4729,9 +4728,9 @@ MagickExport void SetCustomStreamReader(CustomStreamInfo *custom_stream,
 %
 %  A description of each parameter follows:
 %
-%    o custom_stream: your custom stream.
+%    o custom_stream: the custom stream info.
 %
-%    o seeker: your custom stream seeker.
+%    o seeker: a function to seek in the custom stream.
 %
 */
 MagickExport void SetCustomStreamSeeker(CustomStreamInfo *custom_stream,
@@ -4762,9 +4761,9 @@ MagickExport void SetCustomStreamSeeker(CustomStreamInfo *custom_stream,
 %
 %  A description of each parameter follows:
 %
-%    o custom_stream: your custom stream.
+%    o custom_stream: the custom stream info.
 %
-%    o teller: your custom stream teller.
+%    o teller: a function to set the position in the stream.
 %
 */
 MagickExport void SetCustomStreamTeller(CustomStreamInfo *custom_stream,
@@ -4795,9 +4794,9 @@ MagickExport void SetCustomStreamTeller(CustomStreamInfo *custom_stream,
 %
 %  A description of each parameter follows:
 %
-%    o custom_stream: your custom stream.
+%    o custom_stream: the custom stream info.
 %
-%    o writer: your custom stream writer.
+%    o writer: a function to write to the custom stream.
 %
 */
 MagickExport void SetCustomStreamWriter(CustomStreamInfo *custom_stream,
