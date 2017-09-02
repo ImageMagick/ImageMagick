@@ -38,10 +38,6 @@
 /*
   Include declarations.
 */
-
-/*
-  Include declarations.
-*/
 #include "magick/studio.h"
 #include "magick/blob.h"
 #include "magick/blob-private.h"
@@ -190,6 +186,8 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     if (jnx_info.version == 3)
       jnx_info.order=30;
+  if (EOFBlob(image) != MagickFalse)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   /*
     Read JNX levels.
   */
@@ -201,6 +199,7 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     jnx_level_info[i].offset=ReadBlobLSBSignedLong(image);
     jnx_level_info[i].scale=ReadBlobLSBLong(image);
+    *jnx_level_info[i].copyright='\0';
     if (jnx_info.version > 3)
       {
         register ssize_t
@@ -214,8 +213,10 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         while ((c=ReadBlobLSBShort(image)) != 0)
           if (j < (MaxTextExtent-1))
             jnx_level_info[i].copyright[j++]=c;
-        jnx_level_info[i].copyright[j]=0;
+        jnx_level_info[i].copyright[j]='\0';
       }
+    if (EOFBlob(image) != MagickFalse)
+      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
   }
   /*
     Read JNX tiles.
@@ -265,6 +266,8 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       southwest.y=180.0*ReadBlobLSBSignedLong(image)/0x7fffffff;
       (void) ReadBlobLSBShort(image); /* width */
       (void) ReadBlobLSBShort(image); /* height */
+      if (EOFBlob(image) != MagickFalse)
+        ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
       tile_length=ReadBlobLSBLong(image);
       tile_offset=ReadBlobLSBSignedLong(image);
       if (tile_offset == -1)
