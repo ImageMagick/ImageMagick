@@ -35,7 +35,7 @@ typedef enum
 typedef ssize_t
   (*CustomStreamHandler)(unsigned char *,const size_t,void *);
 
-typedef size_t
+typedef MagickOffsetType
   (*CustomStreamSeeker)(const MagickOffsetType,const int,void *);
 
 typedef MagickOffsetType
