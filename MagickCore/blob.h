@@ -33,13 +33,13 @@ typedef enum
 } MapMode;
 
 typedef ssize_t
-  (*CustomStreamHandler)(const unsigned char *,const size_t,const void *);
+  (*CustomStreamHandler)(unsigned char *,const size_t,void *);
 
 typedef size_t
-  (*CustomStreamSeeker)(const MagickOffsetType,const int,const void *);
+  (*CustomStreamSeeker)(const MagickOffsetType,const int,void *);
 
 typedef MagickOffsetType
-  (*CustomStreamTeller)(const void *);
+  (*CustomStreamTeller)(void *);
 
 typedef struct _CustomStreamInfo
   CustomStreamInfo;

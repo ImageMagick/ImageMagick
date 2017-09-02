@@ -269,7 +269,8 @@ MagickExport void AttachBlob(BlobInfo *blob_info,const void *blob,
   blob_info->data=(unsigned char *) blob;
   blob_info->mapped=MagickFalse;
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -5331,7 +5332,7 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
     case CustomStream:
     {
       if (image->blob->custom_stream->writer != (CustomStreamHandler) NULL)
-        count=image->blob->custom_stream->writer((const unsigned char *) data,
+        count=image->blob->custom_stream->writer((unsigned char *) data,
           length,image->blob->custom_stream->data);
       break;
     }
