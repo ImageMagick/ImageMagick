@@ -1066,6 +1066,8 @@ static void TIFFReadPhotoshopLayers(Image* image,const ImageInfo *image_info,
   /* Setting the mode to a value that won't change the colorspace */
   info.mode=10;
   ReadPSDLayers(layers,image_info,&info,MagickFalse,exception);
+  /* we need to set the datum in case a realloc happened */
+  ((StringInfo *) layer_info)->datum=GetBlobStreamData(layers);
   DeleteImageFromList(&layers);
   if (layers != (Image *) NULL)
     {
