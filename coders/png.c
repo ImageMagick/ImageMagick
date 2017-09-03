@@ -5697,6 +5697,10 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                   mng_info->global_plte=(png_colorp) AcquireQuantumMemory(256,
                     sizeof(*mng_info->global_plte));
 
+                if (mng_info->global_plte == (png_colorp) NULL)
+                  ThrowReaderException(ResourceLimitError,
+                    "MemoryAllocationFailed");
+
                 for (i=0; i < (ssize_t) (length/3); i++)
                 {
                   mng_info->global_plte[i].red=p[3*i];
