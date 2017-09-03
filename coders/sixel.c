@@ -533,6 +533,8 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
     *pheight = imsy;
     *ncolors = max_color_index + 1;
     *palette = (unsigned char *) AcquireQuantumMemory(*ncolors,4);
+    if (*palette == (unsigned char *) NULL)
+      return(MagickFalse);
     for (n = 0; n < (ssize_t) *ncolors; ++n) {
         (*palette)[n * 4 + 0] = sixel_palet[n] >> 16 & 0xff;
         (*palette)[n * 4 + 1] = sixel_palet[n] >> 8 & 0xff;
