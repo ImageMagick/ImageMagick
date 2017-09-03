@@ -549,6 +549,8 @@ sixel_output_t *sixel_output_create(Image *image)
     sixel_output_t *output;
 
     output = (sixel_output_t *) AcquireQuantumMemory(sizeof(sixel_output_t) + SIXEL_OUTPUT_PACKET_SIZE * 2, 1);
+    if (output == (sixel_output_t *) NULL)
+      return((sixel_output_t *) NULL);
     output->has_8bit_control = 0;
     output->save_pixel = 0;
     output->save_count = 0;
@@ -1283,18 +1285,25 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,
     Define SIXEL pixels.
   */
   output = sixel_output_create(image);
+  if (output == (sixel_output_t *) NULL)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   sixel_pixels=(unsigned char *) AcquireQuantumMemory(image->columns,
     image->rows*sizeof(*sixel_pixels));
+  if (sixel_pixels == (unsigned char *) NULL)
+    {
+      output = (sixel_output_t *) RelinquishMagickMemory(output);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
-      {
-        sixel_pixels[y*image->columns+x]= ((ssize_t) GetPixelIndex(image,q));
-        q+=GetPixelChannels(image);
-      }
+    {
+      sixel_pixels[y*image->columns+x]= ((ssize_t) GetPixelIndex(image,q));
+      q+=GetPixelChannels(image);
+    }
   }
   status = sixel_encode_impl(sixel_pixels,image->columns,image->rows,
     sixel_palette,image->colors,-1,output);
