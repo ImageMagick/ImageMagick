@@ -134,6 +134,8 @@ static int MagickDLLCall PostscriptDelegateMessage(void *handle,
       *messages=(char *) ResizeQuantumMemory(*messages,offset+length+1,
         sizeof(char *));
     }
+  if (*messages == (char *) NULL)
+    return(0);
   (void) memcpy(*messages+offset,message,length);
   (*messages)[length+offset] ='\0';
   return(length);
