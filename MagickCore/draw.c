@@ -4639,11 +4639,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       affine.tx=(double) geometry.x;
       affine.ty=(double) geometry.y;
       composite_image->interpolate=image->interpolate;
-      if (draw_info->compose == OverCompositeOp)
-        (void) DrawAffineImage(image,composite_image,&affine,exception);
-      else
-        (void) CompositeImage(image,composite_image,draw_info->compose,
-          MagickTrue,geometry.x,geometry.y,exception);
+      status&=DrawAffineImage(image,composite_image,&affine,exception);
       composite_image=DestroyImage(composite_image);
       break;
     }
