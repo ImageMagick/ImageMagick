@@ -163,6 +163,9 @@ MagickExport Image *CompareImageChannels(Image *image,
   const char
     *artifact;
 
+  double
+    fuzz;
+
   Image
     *clone_image,
     *difference_image,
@@ -243,6 +246,7 @@ MagickExport Image *CompareImageChannels(Image *image,
     Generate difference image.
   */
   status=MagickTrue;
+  fuzz=GetFuzzyColorDistance(image,reconstruct_image);
   GetMagickPixelPacket(image,&zero);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
@@ -309,25 +313,45 @@ MagickExport Image *CompareImageChannels(Image *image,
         }
       else
         {
-          if (((channel & RedChannel) != 0) &&
-              (GetPixelRed(p) != GetPixelRed(q)))
-            difference=MagickTrue;
-          if (((channel & GreenChannel) != 0) &&
-              (GetPixelGreen(p) != GetPixelGreen(q)))
-            difference=MagickTrue;
-          if (((channel & BlueChannel) != 0) &&
-              (GetPixelBlue(p) != GetPixelBlue(q)))
-            difference=MagickTrue;
+          double
+            Da,
+            distance,
+            Sa;
+
+          Sa=QuantumScale*GetPixelAlpha(p);
+          Da=QuantumScale*GetPixelAlpha(q);
+          if ((channel & RedChannel) != 0)
+            {
+              distance=Sa*GetPixelRed(p)-Da*GetPixelRed(q);
+              if ((distance*distance) > fuzz)
+                difference=MagickTrue;
+            }
+          if ((channel & GreenChannel) != 0)
+            {
+              distance=Sa*GetPixelGreen(p)-Da*GetPixelGreen(q);
+              if ((distance*distance) > fuzz)
+                difference=MagickTrue;
+            }
+          if ((channel & BlueChannel) != 0)
+            {
+              distance=Sa*GetPixelBlue(p)-Da*GetPixelBlue(q);
+              if ((distance*distance) > fuzz)
+                difference=MagickTrue;
+            }
           if (((channel & OpacityChannel) != 0) &&
-              (image->matte != MagickFalse) &&
-              (GetPixelOpacity(p) != GetPixelOpacity(q)))
-            difference=MagickTrue;
-          if ((((channel & IndexChannel) != 0) &&
-               (image->colorspace == CMYKColorspace) &&
-               (reconstruct_image->colorspace == CMYKColorspace)) &&
-              (GetPixelIndex(indexes+x) !=
-               GetPixelIndex(reconstruct_indexes+x)))
-            difference=MagickTrue;
+              (image->matte != MagickFalse))
+            {
+              distance=(double) GetPixelOpacity(p)-GetPixelOpacity(q);
+              if ((distance*distance) > fuzz)
+                difference=MagickTrue;
+            }
+          if (((channel & IndexChannel) != 0) &&
+              (image->colorspace == CMYKColorspace))
+            {
+              distance=Sa*indexes[x]-Da*reconstruct_indexes[x];
+              if ((distance*distance) > fuzz)
+                difference=MagickTrue;
+            }
         }
       if (difference != MagickFalse)
         SetPixelPacket(highlight_image,&highlight,r,highlight_indexes+x);
@@ -529,7 +553,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
       q++;
     }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (MagickCore_GetAbsoluteError)
+    #pragma omp critical (MagickCore_GetAbsoluteDistortion)
 #endif
     for (i=0; i <= (ssize_t) CompositeChannels; i++)
       distortion[i]+=channel_distortion[i];
