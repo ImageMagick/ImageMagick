@@ -6,7 +6,7 @@
 
 ### Description
 <!-- A description of the changes proposed in the pull-request
-     If you want to change something in the 'www' folder please
+     If you want to change something in the 'www' or 'ImageMagick' folder please
      open an issue here instead: https://github.com/ImageMagick/Website -->
 
 <!-- Thanks for contributing to ImageMagick! -->
