@@ -183,6 +183,7 @@ static MagickBooleanType ImportUsage(void)
       "-virtual-pixel method",
       "                     Constant, Edge, Mirror, or Tile",
       "-window id           select window with this id or name",
+      "                     root selects whole screen",
       (char *) NULL
     };
 
