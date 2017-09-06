@@ -1,3 +1,8 @@
+2017-08-07  6.9.9-12 Cristy  <quetzlzacatenango@image...>
+  * Fixed numerous memory leaks (reference
+    https://github.com/ImageMagick/ImageMagick/issues).
+  * The 'compare' difference image now respects the -fuzz option.
+
 2017-09-03  6.9.9-11 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.9-11, GIT revision 11969:a12fbb873:20170903.
 
