@@ -891,6 +891,7 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
    */
   quantum_info=(QuantumInfo *) NULL;
   image = AcquireImage(image_info);
+  image2 = (Image *) NULL;
 
   status = OpenBlob(image_info, image, ReadBinaryBlobMode, exception);
   if (status == MagickFalse)
@@ -963,6 +964,8 @@ MATLAB_KO:
     filepos += MATLAB_HDR.ObjectSize + 4 + 4;
 
     clone_info=CloneImageInfo(image_info);
+    if ((image != image2) && (image2 != (Image *) NULL))
+      image2=DestroyImage(image2);
     image2 = image;
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
     if(MATLAB_HDR.DataType == miCOMPRESSED)
