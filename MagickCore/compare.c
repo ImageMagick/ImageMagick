@@ -293,7 +293,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          distance=p[i]-GetPixelChannel(reconstruct_image,channel,q);
+          distance=(double) p[i]-GetPixelChannel(reconstruct_image,channel,q);
         else
           distance=Sa*p[i]-Da*GetPixelChannel(reconstruct_image,channel,q);
         if ((distance*distance) > fuzz)
@@ -451,7 +451,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          distance=p[i]-GetPixelChannel(reconstruct_image,channel,q);
+          distance=(double) p[i]-GetPixelChannel(reconstruct_image,channel,q);
         else
           distance=Sa*p[i]-Da*GetPixelChannel(reconstruct_image,channel,q);
         if ((distance*distance) > fuzz)
@@ -678,11 +678,11 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          distance=QuantumScale*fabs(p[i]-GetPixelChannel(reconstruct_image,
-            channel,q));
+          distance=QuantumScale*fabs((double) p[i]-
+            GetPixelChannel(reconstruct_image,channel,q));
         else
-          distance=QuantumScale*fabs(Sa*p[i]-Da*GetPixelChannel(
-            reconstruct_image,channel,q));
+          distance=QuantumScale*fabs(Sa*p[i]-Da*
+            GetPixelChannel(reconstruct_image,channel,q));
         channel_distortion[i]+=distance;
         channel_distortion[CompositePixelChannel]+=distance;
       }
@@ -783,10 +783,11 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          distance=fabs(p[i]-GetPixelChannel(reconstruct_image,channel,q));
+          distance=fabs((double) p[i]-
+            GetPixelChannel(reconstruct_image,channel,q));
         else
-          distance=fabs(Sa*p[i]-Da*GetPixelChannel(reconstruct_image,channel,
-            q));
+          distance=fabs(Sa*p[i]-Da*
+            GetPixelChannel(reconstruct_image,channel,q));
         distortion[i]+=distance;
         distortion[CompositePixelChannel]+=distance;
         mean_error+=distance*distance;
@@ -1194,11 +1195,11 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          distance=QuantumScale*fabs(p[i]-GetPixelChannel(reconstruct_image,
-            channel,q));
+          distance=QuantumScale*fabs((double) p[i]-
+            GetPixelChannel(reconstruct_image,channel,q));
         else
-          distance=QuantumScale*fabs(Sa*p[i]-Da*GetPixelChannel(
-            reconstruct_image,channel,q));
+          distance=QuantumScale*fabs(Sa*p[i]-Da*
+            GetPixelChannel(reconstruct_image,channel,q));
         if (distance > channel_distortion[i])
           channel_distortion[i]=distance;
         if (distance > channel_distortion[CompositePixelChannel])
