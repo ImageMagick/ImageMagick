@@ -1527,9 +1527,9 @@ MagickExport MagickSizeType GetBlobSize(const Image *image)
 
           offset=image->blob->custom_stream->teller(
             image->blob->custom_stream->data);
-          extent=image->blob->custom_stream->seeker(0,SEEK_END,
+          extent=(MagickSizeType) image->blob->custom_stream->seeker(0,SEEK_END,
             image->blob->custom_stream->data);
-          image->blob->custom_stream->seeker(offset,SEEK_SET,
+          (void) image->blob->custom_stream->seeker(offset,SEEK_SET,
             image->blob->custom_stream->data);
         }
       break;
@@ -1860,7 +1860,7 @@ MagickExport void ImageToCustomStream(const ImageInfo *image_info,Image *image,
               {
                 count=(ssize_t) fread(blob,sizeof(*blob),MagickMaxBufferExtent,
                   blob_info->file);
-                image_info->custom_stream->writer(blob,count,
+                (void) image_info->custom_stream->writer(blob,(size_t) count,
                   image_info->custom_stream->data);
               }
             }
@@ -2259,7 +2259,7 @@ MagickExport void ImagesToCustomStream(const ImageInfo *image_info,
               {
                 count=(ssize_t) fread(blob,sizeof(*blob),MagickMaxBufferExtent,
                   blob_info->file);
-                image_info->custom_stream->writer(blob,count,
+                (void) image_info->custom_stream->writer(blob,(size_t) count,
                   image_info->custom_stream->data);
               }
             }
@@ -3372,7 +3372,8 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,void *data)
           break;
         }
       p=image->blob->data+image->blob->offset;
-      count=(ssize_t) MagickMin(length,image->blob->length-image->blob->offset);
+      count=(ssize_t) MagickMin((MagickOffsetType) length,image->blob->length-
+        image->blob->offset);
       image->blob->offset+=count;
       if (count != (ssize_t) length)
         image->blob->eof=MagickTrue;
@@ -3558,13 +3559,13 @@ MagickExport unsigned int ReadBlobLong(Image *image)
       value|=(unsigned int) (*p++) << 8;
       value|=(unsigned int) (*p++) << 16;
       value|=(unsigned int) (*p++) << 24;
-      return(value & 0xffffffff);
+      return(value);
     }
   value=(unsigned int) (*p++) << 24;
   value|=(unsigned int) (*p++) << 16;
   value|=(unsigned int) (*p++) << 8;
   value|=(unsigned int) (*p++);
-  return(value & 0xffffffff);
+  return(value);
 }
 
 /*
@@ -3620,7 +3621,7 @@ MagickExport MagickSizeType ReadBlobLongLong(Image *image)
       value|=(MagickSizeType) (*p++) << 40;
       value|=(MagickSizeType) (*p++) << 48;
       value|=(MagickSizeType) (*p++) << 56;
-      return(value & MagickULLConstant(0xffffffffffffffff));
+      return(value);
     }
   value=(MagickSizeType) (*p++) << 56;
   value|=(MagickSizeType) (*p++) << 48;
@@ -3630,7 +3631,7 @@ MagickExport MagickSizeType ReadBlobLongLong(Image *image)
   value|=(MagickSizeType) (*p++) << 16;
   value|=(MagickSizeType) (*p++) << 8;
   value|=(MagickSizeType) (*p++);
-  return(value & MagickULLConstant(0xffffffffffffffff));
+  return(value);
 }
 
 /*
@@ -3682,7 +3683,7 @@ MagickExport unsigned short ReadBlobShort(Image *image)
       value|=(unsigned short) (*p++) << 8;
       return(value);
     }
-  value=(unsigned short) (*p++) << 8;
+  value=(unsigned short) ((unsigned short) (*p++) << 8);
   value|=(unsigned short) (*p++);
   return(value);
 }
@@ -3734,7 +3735,7 @@ MagickExport unsigned int ReadBlobLSBLong(Image *image)
   value|=(unsigned int) (*p++) << 8;
   value|=(unsigned int) (*p++) << 16;
   value|=(unsigned int) (*p++) << 24;
-  return(value & 0xffffffff);
+  return(value);
 }
 
 /*
@@ -3818,9 +3819,9 @@ MagickExport unsigned short ReadBlobLSBShort(Image *image)
   p=(const unsigned char *) ReadBlobStream(image,2,buffer,&count);
   if (count != 2)
     return((unsigned short) 0U);
-  value=(unsigned int) (*p++);
-  value|=(unsigned int) (*p++) << 8;
-  return(value & 0xffff);
+  value=(unsigned short) (*p++);
+  value|=(unsigned short) (*p++) << 8;
+  return(value);
 }
 
 /*
@@ -3962,7 +3963,7 @@ MagickExport MagickSizeType ReadBlobMSBLongLong(Image *image)
   value|=(MagickSizeType) (*p++) << 16;
   value|=(MagickSizeType) (*p++) << 8;
   value|=(MagickSizeType) (*p++);
-  return(value & MagickULLConstant(0xffffffffffffffff));
+  return(value);
 }
 
 /*
@@ -4008,9 +4009,9 @@ MagickExport unsigned short ReadBlobMSBShort(Image *image)
   p=(const unsigned char *) ReadBlobStream(image,2,buffer,&count);
   if (count != 2)
     return((unsigned short) 0U);
-  value=(unsigned short) (*p++) << 8;
+  value=(unsigned short) ((*p++) << 8);
   value|=(unsigned short) (*p++);
-  return(value & 0xffff);
+  return((unsigned short) (value & 0xffff));
 }
 
 /*
@@ -4221,7 +4222,8 @@ MagickExport const void *ReadBlobStream(Image *image,const size_t length,
       return(data);
     }
   data=image->blob->data+image->blob->offset;
-  *count=(ssize_t) MagickMin(length,image->blob->length-image->blob->offset);
+  *count=(ssize_t) MagickMin((MagickOffsetType) length,image->blob->length-
+    image->blob->offset);
   image->blob->offset+=(*count);
   if (*count != (ssize_t) length)
     image->blob->eof=MagickTrue;
@@ -5108,7 +5110,7 @@ MagickExport Image *CustomStreamToImage(const ImageInfo *image_info,
           {
             count=image_info->custom_stream->reader(blob,MagickMaxBufferExtent,
               image_info->custom_stream->data);
-            count=(ssize_t) write(file,(const char *) blob,count);
+            count=(ssize_t) write(file,(const char *) blob,(size_t) count);
           }
           (void) fclose(blob_info->file);
           (void) FormatLocaleString(clone_info->filename,MagickPathExtent,
