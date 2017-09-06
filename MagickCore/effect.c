@@ -2047,6 +2047,15 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
       kernel=(MagickRealType *) RelinquishAlignedMemory(kernel);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+  blur_image=AccelerateMotionBlurImage(image,kernel,width,offset,exception);
+  if (blur_image != (Image *) NULL)
+    {
+      kernel=(MagickRealType *) RelinquishAlignedMemory(kernel);
+      offset=(OffsetInfo *) RelinquishMagickMemory(offset);
+      return(blur_image);
+    }
+#endif
   blur_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (blur_image == (Image *) NULL)
     {
