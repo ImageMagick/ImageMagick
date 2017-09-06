@@ -901,6 +901,8 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
+  if ((image->columns > 65535UL) || (image->rows > 65535UL))
+    ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
   (void) TransformImageColorspace(image,sRGBColorspace,exception);
   page_table=(MagickOffsetType *) NULL;
   if ((LocaleCompare(image_info->magick,"DCX") == 0) ||
@@ -964,8 +966,10 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
         if (image->alpha_trait != UndefinedPixelTrait)
           pcx_info.planes++;
       }
-    pcx_info.bytes_per_line=(unsigned short) (((size_t) image->columns*
-      pcx_info.bits_per_pixel+7)/8);
+    length=(((size_t) image->columns*pcx_info.bits_per_pixel+7)/8);
+    if (length > 65535UL)
+      ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
+    pcx_info.bytes_per_line=(unsigned short) length;
     pcx_info.palette_info=1;
     pcx_info.colormap_signature=0x0c;
     /*
