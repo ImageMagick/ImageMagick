@@ -275,6 +275,43 @@ MagickExport void AttachBlob(BlobInfo *blob_info,const void *blob,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   A t t a c h C u s t o m S t r e a m                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AttachCustomStream() attaches a CustomStreamInfo to the BlobInfo structure.
+%
+%  The format of the AttachCustomStream method is:
+%
+%      void AttachCustomStream(BlobInfo *blob_info,
+%        CustomStreamInfo *custom_stream)
+%
+%  A description of each parameter follows:
+%
+%    o blob_info: specifies a pointer to a BlobInfo structure.
+%
+%    o custom_stream: the custom stream info.
+%
+*/
+MagickExport void AttachCustomStream(BlobInfo *blob_info,
+  CustomStreamInfo *custom_stream)
+{
+  assert(blob_info != (BlobInfo *) NULL);
+  assert(custom_stream != (CustomStreamInfo *) NULL);
+  assert(custom_stream->signature == MagickCoreSignature);
+  if (blob_info->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+  blob_info->type=CustomStream;
+  blob_info->custom_stream=custom_stream;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   B l o b T o F i l e                                                       %
 %                                                                             %
 %                                                                             %
@@ -5466,6 +5503,61 @@ MagickExport ssize_t WriteBlobLong(Image *image,const unsigned int value)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++  W r i t e B l o b L o n g L o n g                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteBlobMSBLongLong() writes a long long value as a 64-bit quantity in the
+%  byte-order specified by the endian member of the image structure.
+%
+%  The format of the WriteBlobLongLong method is:
+%
+%      ssize_t WriteBlobLongLong(Image *image,const MagickSizeType value)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Specifies the value to write.
+%
+%    o image: the image.
+%
+*/
+MagickExport ssize_t WriteBlobLongLong(Image *image,const MagickSizeType value)
+{
+  unsigned char
+    buffer[8];
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->endian == LSBEndian)
+    {
+      buffer[0]=(unsigned char) value;
+      buffer[1]=(unsigned char) (value >> 8);
+      buffer[2]=(unsigned char) (value >> 16);
+      buffer[3]=(unsigned char) (value >> 24);
+      buffer[4]=(unsigned char) (value >> 32);
+      buffer[5]=(unsigned char) (value >> 40);
+      buffer[6]=(unsigned char) (value >> 48);
+      buffer[7]=(unsigned char) (value >> 56);
+      return(WriteBlobStream(image,8,buffer));
+    }
+  buffer[0]=(unsigned char) (value >> 56);
+  buffer[1]=(unsigned char) (value >> 48);
+  buffer[2]=(unsigned char) (value >> 40);
+  buffer[3]=(unsigned char) (value >> 32);
+  buffer[4]=(unsigned char) (value >> 24);
+  buffer[5]=(unsigned char) (value >> 16);
+  buffer[6]=(unsigned char) (value >> 8);
+  buffer[7]=(unsigned char) value;
+  return(WriteBlobStream(image,8,buffer));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   W r i t e B l o b S h o r t                                               %
 %                                                                             %
 %                                                                             %
@@ -5502,6 +5594,63 @@ MagickExport ssize_t WriteBlobShort(Image *image,const unsigned short value)
   buffer[0]=(unsigned char) (value >> 8);
   buffer[1]=(unsigned char) value;
   return(WriteBlobStream(image,2,buffer));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  W r i t e B l o b S i g n e d L o n g                                      %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteBlobSignedLong() writes a signed value as a 32-bit quantity in the
+%  byte-order specified by the endian member of the image structure.
+%
+%  The format of the WriteBlobSignedLong method is:
+%
+%      ssize_t WriteBlobSignedLong(Image *image,const signed int value)
+%
+%  A description of each parameter follows.
+%
+%    o image: the image.
+%
+%    o value: Specifies the value to write.
+%
+*/
+MagickExport ssize_t WriteBlobSignedLong(Image *image,const signed int value)
+{
+  union
+  {
+    unsigned int
+      unsigned_value;
+
+    signed int
+      signed_value;
+  } quantum;
+
+  unsigned char
+    buffer[4];
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  quantum.signed_value=value;
+  if (image->endian == LSBEndian)
+    {
+      buffer[0]=(unsigned char) quantum.unsigned_value;
+      buffer[1]=(unsigned char) (quantum.unsigned_value >> 8);
+      buffer[2]=(unsigned char) (quantum.unsigned_value >> 16);
+      buffer[3]=(unsigned char) (quantum.unsigned_value >> 24);
+      return(WriteBlobStream(image,4,buffer));
+    }
+  buffer[0]=(unsigned char) (quantum.unsigned_value >> 24);
+  buffer[1]=(unsigned char) (quantum.unsigned_value >> 16);
+  buffer[2]=(unsigned char) (quantum.unsigned_value >> 8);
+  buffer[3]=(unsigned char) quantum.unsigned_value;
+  return(WriteBlobStream(image,4,buffer));
 }
 
 /*
@@ -5713,99 +5862,6 @@ MagickExport ssize_t WriteBlobMSBLong(Image *image,const unsigned int value)
   buffer[1]=(unsigned char) (value >> 16);
   buffer[2]=(unsigned char) (value >> 8);
   buffer[3]=(unsigned char) value;
-  return(WriteBlobStream(image,4,buffer));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  W r i t e B l o b M S B L o n g L o n g                                    %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  WriteBlobMSBLongLong() writes a long long value as a 64-bit quantity in
-%  most-significant byte first order.
-%
-%  The format of the WriteBlobMSBLongLong method is:
-%
-%      ssize_t WriteBlobMSBLongLong(Image *image,const MagickSizeType value)
-%
-%  A description of each parameter follows.
-%
-%    o value:  Specifies the value to write.
-%
-%    o image: the image.
-%
-*/
-MagickExport ssize_t WriteBlobMSBLongLong(Image *image,
-  const MagickSizeType value)
-{
-  unsigned char
-    buffer[8];
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickCoreSignature);
-  buffer[0]=(unsigned char) (value >> 56);
-  buffer[1]=(unsigned char) (value >> 48);
-  buffer[2]=(unsigned char) (value >> 40);
-  buffer[3]=(unsigned char) (value >> 32);
-  buffer[4]=(unsigned char) (value >> 24);
-  buffer[5]=(unsigned char) (value >> 16);
-  buffer[6]=(unsigned char) (value >> 8);
-  buffer[7]=(unsigned char) value;
-  return(WriteBlobStream(image,8,buffer));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  W r i t e B l o b M S B S i g n e d L o n g                                %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  WriteBlobMSBSignedLong() writes a signed value as a 32-bit quantity in
-%  most-significant byte first order.
-%
-%  The format of the WriteBlobMSBSignedLong method is:
-%
-%      ssize_t WriteBlobMSBSignedLong(Image *image,const signed int value)
-%
-%  A description of each parameter follows.
-%
-%    o image: the image.
-%
-%    o value: Specifies the value to write.
-%
-*/
-MagickExport ssize_t WriteBlobMSBSignedLong(Image *image,const signed int value)
-{
-  union
-  {
-    unsigned int
-      unsigned_value;
-
-    signed int
-      signed_value;
-  } quantum;
-
-  unsigned char
-    buffer[4];
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickCoreSignature);
-  quantum.signed_value=value;
-  buffer[0]=(unsigned char) (quantum.unsigned_value >> 24);
-  buffer[1]=(unsigned char) (quantum.unsigned_value >> 16);
-  buffer[2]=(unsigned char) (quantum.unsigned_value >> 8);
-  buffer[3]=(unsigned char) quantum.unsigned_value;
   return(WriteBlobStream(image,4,buffer));
 }
 

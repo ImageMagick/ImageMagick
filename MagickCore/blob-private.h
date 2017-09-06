@@ -110,15 +110,15 @@ extern MagickExport ssize_t
   WriteBlobByte(Image *,const unsigned char),
   WriteBlobFloat(Image *,const float),
   WriteBlobLong(Image *,const unsigned int),
+  WriteBlobLongLong(Image *,const MagickSizeType),
   WriteBlobShort(Image *,const unsigned short),
+  WriteBlobSignedLong(Image *,const signed int),
   WriteBlobLSBLong(Image *,const unsigned int),
   WriteBlobLSBShort(Image *,const unsigned short),
   WriteBlobLSBSignedLong(Image *,const signed int),
   WriteBlobLSBSignedShort(Image *,const signed short),
   WriteBlobMSBLong(Image *,const unsigned int),
-  WriteBlobMSBLongLong(Image *,const MagickSizeType),
   WriteBlobMSBShort(Image *,const unsigned short),
-  WriteBlobMSBSignedLong(Image *,const signed int),
   WriteBlobMSBSignedShort(Image *,const signed short),
   WriteBlobString(Image *,const char *);
 
@@ -134,6 +134,7 @@ extern MagickExport unsigned short
 
 extern MagickExport void
   AttachBlob(BlobInfo *,const void *,const size_t),
+  AttachCustomStream(BlobInfo *,CustomStreamInfo *),
   *DetachBlob(BlobInfo *),
   DisassociateBlob(Image *),
   GetBlobInfo(BlobInfo *),

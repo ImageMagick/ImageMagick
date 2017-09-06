@@ -1,4 +1,8 @@
-2017-09-27  7.0.7-0 Cristy  <quetzlzacatenango@image...>
+2017-09-05 7.0.7-1 Dirk Lemstra <dirk@lem.....org>
+  * Added -define tiff:write-layers=true to add support for writing layered
+    tiff files.
+
+2017-09-03  7.0.7-0 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.7-0, GIT revision 20996:2f8ac2203:20170903.
 
 2017-08-28  7.0.7-0 Cristy  <quetzlzacatenango@image...>
