@@ -3331,10 +3331,6 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
   const StringInfo
     *icc_profile;
 
-  Image
-    *base_image,
-    *next_image;
-
   MagickBooleanType
     status;
 
