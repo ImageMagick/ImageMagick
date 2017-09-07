@@ -1092,6 +1092,16 @@ static void TIFFReadPhotoshopLayers(Image* image,const ImageInfo *image_info,
 static Image *ReadTIFFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+#define ThrowTIFFException(severity,message) \
+{ \
+  if (tiff_pixels != (unsigned char *) NULL) \
+    tiff_pixels=(unsigned char *) RelinquishMagickMemory(tiff_pixels); \
+  if (quantum_info != (QuantumInfo *) NULL) \
+    quantum_info=DestroyQuantumInfo(quantum_info); \
+  TIFFClose(tiff); \
+  ThrowReaderException(severity,message); \
+}
+
   const char
     *option;
 
@@ -1110,9 +1120,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
   MagickBooleanType
     status;
-
-  MagickSizeType
-    number_pixels;
 
   QuantumInfo
     *quantum_info;
@@ -1440,6 +1447,7 @@ RestoreMSCWarning
       case COMPRESSION_ADOBE_DEFLATE: image->compression=ZipCompression; break;
       default: image->compression=RLECompression; break;
     }
+    tiff_pixels=(unsigned char *) NULL;
     quantum_info=(QuantumInfo *) NULL;
     if ((photometric == PHOTOMETRIC_PALETTE) &&
         (pow(2.0,1.0*bits_per_sample) <= MaxColormapSize))
@@ -1518,10 +1526,7 @@ RestoreMSCWarning
     */
     quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
-      {
-        TIFFClose(tiff);
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      }
+      ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
     if (sample_format == SAMPLEFORMAT_UINT)
       status=SetQuantumFormat(image,quantum_info,UnsignedQuantumFormat);
     if (sample_format == SAMPLEFORMAT_INT)
@@ -1529,11 +1534,7 @@ RestoreMSCWarning
     if (sample_format == SAMPLEFORMAT_IEEEFP)
       status=SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
     if (status == MagickFalse)
-      {
-        TIFFClose(tiff);
-        quantum_info=DestroyQuantumInfo(quantum_info);
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      }
+      ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
     status=MagickTrue;
     switch (photometric)
     {
@@ -1616,10 +1617,7 @@ RestoreMSCWarning
       TIFFScanlineSize(tiff),(image->columns*samples_per_pixel*
       pow(2.0,ceil(log(bits_per_sample)/log(2.0))))));
     if (tiff_pixels == (unsigned char *) NULL)
-      {
-        TIFFClose(tiff);
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      }
+      ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
     switch (method)
     {
       case ReadSingleSampleMethod:
@@ -1652,10 +1650,7 @@ RestoreMSCWarning
         status=SetQuantumPad(image,quantum_info,pad*pow(2,ceil(log(
           bits_per_sample)/log(2))));
         if (status == MagickFalse)
-          {
-            TIFFClose(tiff);
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-          }
+          ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           int
@@ -1708,10 +1703,7 @@ RestoreMSCWarning
           }
         status=SetQuantumPad(image,quantum_info,pad*((bits_per_sample+7) >> 3));
         if (status == MagickFalse)
-          {
-            TIFFClose(tiff);
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-          }
+          ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           int
@@ -1919,24 +1911,17 @@ RestoreMSCWarning
         */
         if ((TIFFGetField(tiff,TIFFTAG_TILEWIDTH,&columns) != 1) ||
             (TIFFGetField(tiff,TIFFTAG_TILELENGTH,&rows) != 1))
-          {
-            TIFFClose(tiff);
-            ThrowReaderException(CoderError,"ImageIsNotTiled");
-          }
+          ThrowTIFFException(CoderError,"ImageIsNotTiled");
+        if ((AcquireMagickResource(WidthResource,columns) == MagickFalse) ||
+            (AcquireMagickResource(HeightResource,rows) == MagickFalse))
+          ThrowTIFFException(ImageError,"WidthOrHeightExceedsLimit");
         (void) SetImageStorageClass(image,DirectClass);
-        number_pixels=(MagickSizeType) columns*rows;
         if (HeapOverflowSanityCheck(rows,sizeof(*tile_pixels)) != MagickFalse)
-          {
-            TIFFClose(tiff);
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-          }
+          ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         tile_pixels=(uint32 *) AcquireQuantumMemory(columns,rows*
            sizeof(*tile_pixels));
         if (tile_pixels == (uint32 *) NULL)
-          {
-            TIFFClose(tiff);
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-          }
+          ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         for (y=0; y < (ssize_t) image->rows; y+=rows)
         {
           PixelPacket
@@ -2023,6 +2008,9 @@ RestoreMSCWarning
         MemoryInfo
           *pixel_info;
 
+        MagickSizeType
+          number_pixels;
+
         register uint32
           *p;
 
@@ -2034,17 +2022,11 @@ RestoreMSCWarning
         */
         number_pixels=(MagickSizeType) image->columns*image->rows;
         if (HeapOverflowSanityCheck(image->rows,sizeof(*pixels)) != MagickFalse)
-          {
-            TIFFClose(tiff);
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-          }
+          ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         pixel_info=AcquireVirtualMemory(image->columns,image->rows*
           sizeof(*pixels));
         if (pixel_info == (MemoryInfo *) NULL)
-          {
-            TIFFClose(tiff);
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-          }
+          ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         pixels=(uint32 *) GetVirtualMemoryBlob(pixel_info);
         (void) TIFFReadRGBAImage(tiff,(uint32) image->columns,(uint32)
           image->rows,(uint32 *) pixels,0);
