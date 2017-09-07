@@ -1645,7 +1645,10 @@ RestoreMSCWarning
       }
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
-      return(DestroyImageList(image));
+      {
+        TIFFClose(tiff);
+        return(DestroyImageList(image));
+      }
     /*
       Allocate memory for the image and pixel buffer.
     */
