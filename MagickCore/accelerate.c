@@ -3851,9 +3851,6 @@ MagickPrivate Image *AccelerateMotionBlurImage(const Image *image,
   assert(offset != (OffsetInfo *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  /* This kernel is broken and needs to be fixed. */
-  return((Image *) NULL);
-
   if (checkAccelerateConditionRGBA(image) == MagickFalse)
     return((Image *) NULL);
 
