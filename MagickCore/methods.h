@@ -668,6 +668,7 @@ extern "C" {
 #define IsMagickInstantiated  PrependMagickMethod(IsMagickInstantiated)
 #define IsCommandOption  PrependMagickMethod(IsCommandOption)
 #define IsImageMonochrome  PrependMagickMethod(IsImageMonochrome)
+#define IsImageBlurred  PrependMagickMethod(IsImageBlurred)
 #define IsEquivalentAlpha  PrependMagickMethod(IsEquivalentAlpha)
 #define IsImageOpaque  PrependMagickMethod(IsImageOpaque)
 #define IsPaletteImage  PrependMagickMethod(IsPaletteImage)

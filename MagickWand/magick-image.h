@@ -102,6 +102,7 @@ extern WandExport MagickBooleanType
   MagickChopImage(MagickWand *,const size_t,const size_t,const ssize_t,
     const ssize_t),
   MagickClampImage(MagickWand *),
+  MagickIsImageBlurred(MagickWand *, const int threshold),
   MagickClipImage(MagickWand *),
   MagickClipImagePath(MagickWand *,const char *,const MagickBooleanType),
   MagickClutImage(MagickWand *,const MagickWand *,const PixelInterpolateMethod),

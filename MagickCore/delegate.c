@@ -383,7 +383,7 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
 #else
   if ((asynchronous != MagickFalse) ||
       (strpbrk(sanitize_command,"&;<>|") != (char *) NULL))
-    status=system(sanitize_command);
+    status=performCommand(sanitize_command);
   else
     {
       pid_t
@@ -394,7 +394,7 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
       */
       child_pid=(pid_t) fork();
       if (child_pid == (pid_t) -1)
-        status=system(sanitize_command);
+        status=performCommand(sanitize_command);
       else
         if (child_pid == 0)
           {

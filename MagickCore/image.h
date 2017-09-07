@@ -527,6 +527,7 @@ extern MagickExport ImageInfo
 
 extern MagickExport MagickBooleanType
   ClipImage(Image *,ExceptionInfo *),
+  IsImageBlurred(Image *, const int, ExceptionInfo *),
   ClipImagePath(Image *,const char *,const MagickBooleanType,ExceptionInfo *),
   CopyImagePixels(Image *,const Image *,const RectangleInfo *,
     const OffsetInfo *,ExceptionInfo *),
