@@ -1518,6 +1518,7 @@ RestoreMSCWarning
     status=SetImageExtent(image,image->columns,image->rows);
     if (status == MagickFalse)
       {
+        TIFFClose(tiff);
         InheritException(exception,&image->exception);
         return(DestroyImageList(image));
       }
