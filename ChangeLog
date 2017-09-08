@@ -98,7 +98,8 @@
   * YUV coder no longer renders streaks (reference
     https://github.com/ImageMagick/ImageMagick/issues/612).
   * Fixed numerous memory leaks (reference
-    https://github.com/ImageMagick/ImageMagick/issues).
+    https://github.com/ImageMagick/ImageMagick/issues) including
+    https://github.com/ImageMagick/ImageMagick/issues/618 (CVE-2017-12676).
   * coders/png.c: Initialized quantum_scanline and quantum_info
     to prevent a bad free (reference
     https://github.com/ImageMagick/ImageMagick/issues/621).
