@@ -414,7 +414,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   image->compression=JPEG2000Compression;
   if (jp2_image->numcomps == 1)
-    SetImageColorspace(image,GRAYColorspace,exception);
+    SetImageColorspace(image,GRAYColorspace);
   else
     if (jp2_image->color_space == 2)
       {
