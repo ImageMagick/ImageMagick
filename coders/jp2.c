@@ -408,15 +408,18 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status == MagickFalse)
     return(DestroyImageList(image));
   image->compression=JPEG2000Compression;
-  if (jp2_image->color_space == 2)
-    {
-      SetImageColorspace(image,GRAYColorspace,exception);
-      if (jp2_image->numcomps > 1)
-        image->alpha_trait=BlendPixelTrait;
-    }
+  if (jp2_image->numcomps == 1)
+    SetImageColorspace(image,GRAYColorspace,exception);
   else
-    if (jp2_image->color_space == 3)
-      SetImageColorspace(image,Rec601YCbCrColorspace,exception);
+    if (jp2_image->color_space == 2)
+      {
+        SetImageColorspace(image,GRAYColorspace,exception);
+        if (jp2_image->numcomps > 1)
+          image->alpha_trait=BlendPixelTrait;
+      }
+    else
+      if (jp2_image->color_space == 3)
+        SetImageColorspace(image,Rec601YCbCrColorspace,exception);
   if (jp2_image->numcomps > 3)
     image->alpha_trait=BlendPixelTrait;
   if (jp2_image->icc_profile_buf != (unsigned char *) NULL)
