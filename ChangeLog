@@ -101,8 +101,8 @@
 
 2017-07-23  6.9.9-3 Glenn Randers-Pehrson <glennrp@image...>
   * Fix memory leaks when reading a malformed JNG image:
-    https://github.com/ImageMagick/ImageMagick/issues/600).
-    https://github.com/ImageMagick/ImageMagick/issues/602).
+    https://github.com/ImageMagick/ImageMagick/issues/600 (CVE-2017-13141),
+    https://github.com/ImageMagick/ImageMagick/issues/602 (CVE-2017-12565).
 
 2017-07-22  6.9.9-2 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.9-2, GIT revision 11786:21b23bf09:20170722.
