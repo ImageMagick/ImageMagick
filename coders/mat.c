@@ -999,14 +999,35 @@ MATLAB_KO:
       case  8: z2=z=1; break;      /* 2D matrix*/
       case 12: z2=z = ReadBlobXXXLong(image2);  /* 3D matrix RGB*/
            (void) ReadBlobXXXLong(image2);
-         if(z!=3) ThrowReaderException(CoderError, "MultidimensionalMatricesAreNotSupported");
+         if(z!=3)
+           {
+             if (clone_info != (ImageInfo *) NULL)
+               clone_info=DestroyImageInfo(clone_info);
+             if ((image != image2) && (image2 != (Image *) NULL))
+               image2=DestroyImage(image2);
+             ThrowReaderException(CoderError,
+               "MultidimensionalMatricesAreNotSupported");
+           }
          break;
       case 16: z2=z = ReadBlobXXXLong(image2);  /* 4D matrix animation */
          if(z!=3 && z!=1)
-            ThrowReaderException(CoderError, "MultidimensionalMatricesAreNotSupported");
+           {
+             if (clone_info != (ImageInfo *) NULL)
+               clone_info=DestroyImageInfo(clone_info);
+             if ((image != image2) && (image2 != (Image *) NULL))
+               image2=DestroyImage(image2);
+             ThrowReaderException(CoderError,
+               "MultidimensionalMatricesAreNotSupported");
+           }
          Frames = ReadBlobXXXLong(image2);
          if (Frames == 0)
-           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+           {
+             if (clone_info != (ImageInfo *) NULL)
+               clone_info=DestroyImageInfo(clone_info);
+             if ((image != image2) && (image2 != (Image *) NULL))
+               image2=DestroyImage(image2);
+             ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+           }
          break;
       default:
         if (clone_info != (ImageInfo *) NULL)
