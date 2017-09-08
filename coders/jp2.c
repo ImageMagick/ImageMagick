@@ -413,15 +413,18 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       return(DestroyImageList(image));
     }
   image->compression=JPEG2000Compression;
-  if (jp2_image->color_space == 2)
-    {
-      SetImageColorspace(image,GRAYColorspace);
-      if (jp2_image->numcomps > 1)
-        image->matte=MagickTrue;
-    }
+  if (jp2_image->numcomps == 1)
+    SetImageColorspace(image,GRAYColorspace,exception);
   else
-    if (jp2_image->color_space == 3)
-      SetImageColorspace(image,Rec601YCbCrColorspace);
+    if (jp2_image->color_space == 2)
+      {
+        SetImageColorspace(image,GRAYColorspace);
+        if (jp2_image->numcomps > 1)
+          image->matte=MagickTrue;
+      }
+    else
+      if (jp2_image->color_space == 3)
+        SetImageColorspace(image,Rec601YCbCrColorspace);
   if (jp2_image->numcomps > 3)
     image->matte=MagickTrue;
   if (jp2_image->icc_profile_buf != (unsigned char *) NULL)
