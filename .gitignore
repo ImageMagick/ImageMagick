@@ -93,3 +93,16 @@
 .libs
 Makefile
 Makefile.PL
+
+.DS_Store
+.gitattributes
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xcuserstate
+*.xcscmblueprint
+project.xcworkspace/
+xcuserdata/
+
+

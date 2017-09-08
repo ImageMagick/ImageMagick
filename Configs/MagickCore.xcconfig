@@ -1,0 +1,11 @@
+//
+//  MagickCore.xcconfig
+//  ImageMagick
+//
+//  Created by Vitaly Afanasyev on 8/29/17.
+//  Copyright © 2017 KROMTECH ALLIANCE CORP. All rights reserved.
+//
+
+HEADER_SEARCH_PATHS = $(inherited) "${SRCROOT}" "${SRCROOT}/include"
+
+OTHER_CFLAGS = -g -O0 -Wall -fexceptions -D_FORTIFY_SOURCE=0 -D_THREAD_SAFE -pthread -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16

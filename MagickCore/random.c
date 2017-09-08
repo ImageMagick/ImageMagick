@@ -114,7 +114,7 @@ struct _RandomInfo
   External declarations.
 */
 #if defined(__APPLE__) && !defined(TARGET_OS_IPHONE)
-#include <crt_externs.h>
+//#include <crt_externs.h>
 #define environ (*_NSGetEnviron())
 #endif
 
