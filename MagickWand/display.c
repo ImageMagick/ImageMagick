@@ -404,6 +404,8 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
       Check command line for server name.
     */
     option=argv[i];
+    if (IsCommandOption(option) == MagickFalse)
+      continue;
     if (LocaleCompare("display",option+1) == 0)
       {
         /*
