@@ -4802,7 +4802,13 @@ static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
   assert(cache_info->signature == MagickCoreSignature);
   if (cache_info->type == UndefinedCache)
     return((Quantum *) NULL);
+  if ((region->width == 0) || (region->height == 0))
+    return((Quantum *) NULL);
   nexus_info->region=(*region);
+  number_pixels=(MagickSizeType) nexus_info->region.width*
+    nexus_info->region.height;
+  if (number_pixels == 0)
+    return((Quantum *) NULL);
   if ((cache_info->type == MemoryCache) || (cache_info->type == MapCache))
     {
       ssize_t
@@ -4840,8 +4846,6 @@ static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
   /*
     Pixels are stored in a staging region until they are synced to the cache.
   */
-  number_pixels=(MagickSizeType) nexus_info->region.width*
-    nexus_info->region.height;
   length=number_pixels*cache_info->number_channels*sizeof(Quantum);
   if (cache_info->metacontent_extent != 0)
     length+=number_pixels*cache_info->metacontent_extent;
