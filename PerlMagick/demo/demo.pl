@@ -79,6 +79,12 @@ $example->Label('Auto Level');
 $example->AutoLevel();
 push(@$images,$example);
 
+print "Auto-threshold...\n";
+$example=$model->Clone();
+$example->Label('Auto Threshold');
+$example->AutoThreshold();
+push(@$images,$example);
+
 print "Blur...\n";
 $example=$model->Clone();
 $example->Label('Blur');
@@ -100,7 +106,7 @@ push(@$images,$example);
 print "Charcoal...\n";
 $example=$model->Clone();
 $example->Label('Charcoal');
-$example->Charcoal('0x1');
+$example->Charcoal('2x1');
 push(@$images,$example);
 
 print "ColorMatrix...\n";
@@ -169,7 +175,7 @@ push(@$images,$example);
 print "Detect Edges...\n";
 $example=$model->Clone();
 $example->Label('Detect Edges');
-$example->Edge();
+$example->Edge('2x0.5');
 $example->Clamp();
 push(@$images,$example);
 
@@ -274,13 +280,13 @@ push(@$images,$example);
 print "Median Filter...\n";
 $example=$model->Clone();
 $example->Label('Median Filter');
-$example->MedianFilter();
+$example->MedianFilter('4x4');
 push(@$images,$example);
 
 print "Mode...\n";
 $example=$model->Clone();
 $example->Label('Mode');
-$example->Mode();
+$example->Mode('4x4');
 push(@$images,$example);
 
 print "Modulate...\n";
@@ -323,7 +329,7 @@ push(@$images,$example);
 print "Oil Paint...\n";
 $example=$model->Clone();
 $example->Label('Oil Paint');
-$example->OilPaint();
+$example->OilPaint('2x0.5');
 push(@$images,$example);
 
 print "Plasma...\n";
@@ -367,7 +373,7 @@ push(@$images,$example);
 print "Reduce Noise...\n";
 $example=$model->Clone();
 $example->Label('Reduce Noise');
-$example->ReduceNoise();
+$example->ReduceNoise('2x2');
 push(@$images,$example);
 
 print "Resize...\n";
