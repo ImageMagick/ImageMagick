@@ -1,5 +1,5 @@
-2017-09-09  7.0.7-0 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.7-0, GIT revision 21065:ab2194121:20170909.
+2017-09-09  7.0.7-1 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.7-1, GIT revision 21065:ab2194121:20170909.
 
 2017-09-09  7.0.7-1 Cristy  <quetzlzacatenango@image...>
   * Fixed numerous memory leaks (reference
