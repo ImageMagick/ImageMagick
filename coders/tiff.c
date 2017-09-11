@@ -1101,6 +1101,7 @@ static ssize_t TIFFReadCustomStream(unsigned char *data,const size_t count,
     return(-1);
   total=MagickMin(count, (size_t) remaining);
   (void) memcpy(data,profile->data->datum+profile->offset,total);
+  profile->offset+=total;
   return(total);
 }
 
