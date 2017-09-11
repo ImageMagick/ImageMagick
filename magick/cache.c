@@ -4232,8 +4232,6 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
         MaxTextExtent);
       cache_info->type=DiskCache;
       cache_info->offset=(*offset);
-      cache_info->nexus_info=DestroyPixelCacheNexus(cache_info->nexus_info,
-        cache_info->number_threads);
       if (OpenPixelCache(image,ReadMode,exception) == MagickFalse)
         return(MagickFalse);
       *offset+=cache_info->length+page_size-(cache_info->length % page_size);
