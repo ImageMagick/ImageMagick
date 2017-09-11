@@ -1864,8 +1864,6 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
                   exception);
               if (status != MagickFalse)
                 {
-                  if (cache_info->reference_count == 1)
-                    cache_info->nexus_info=(NexusInfo **) NULL;
                   destroy=MagickTrue;
                   image->cache=clone_image.cache;
                 }
