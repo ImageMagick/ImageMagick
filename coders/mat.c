@@ -632,7 +632,7 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
 
   quantum_info=(QuantumInfo *) NULL;
   (void) SeekBlob(image,0,SEEK_SET);
-  while (EOFBlob(image) != MagickFalse)
+  while (EOFBlob(image) == MagickFalse)
   {
     /*
      Object parser loop.
