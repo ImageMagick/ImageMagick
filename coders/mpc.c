@@ -1494,7 +1494,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
       Initialize persistent pixel cache.
     */
     status=PersistPixelCache(image,cache_filename,MagickFalse,&offset,
-      exception); 
+      exception);
     if (status == MagickFalse)
       ThrowWriterException(CacheError,"UnableToPersistPixelCache");
     if (GetNextImageInList(image) == (Image *) NULL)
