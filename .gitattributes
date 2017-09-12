@@ -1,0 +1,6 @@
+# Let Git determine what is a text file and handle line ending normalization
+* text=auto
+
+# Files on Windows that should retain LF line endings
+*.sh        eol=lf
+Makefile*   eol=lf
