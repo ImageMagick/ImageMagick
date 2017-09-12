@@ -8128,11 +8128,8 @@ static inline MagickBooleanType Magick_png_color_equal(const Image *image,
 
 #if defined(PNG_tIME_SUPPORTED)
 static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
-  const char *date,ExceptionInfo *exception)
+  const char *timestamp,ExceptionInfo *exception)
 {
-  const char
-    *timestamp;
-
   int
     ret;
 
@@ -8151,11 +8148,7 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
   png_time
     ptime;
 
-  if (date == (const char *) NULL)
-    timestamp=GetImageProperty(image,"date:modify",exception);
-  else
-    timestamp=date;
-
+  assert(timestamp != (const char *) NULL);
   LogMagickEvent(CoderEvent,GetMagickModule(),
       "  Writing tIME chunk: timestamp property is %30s\n",timestamp);
   ret=sscanf(timestamp,"%d-%d-%dT%d:%d:%d",&year,&month,&day,&hour,
