@@ -408,6 +408,44 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
   return(result);
 }
 
+static Image *AcquireImageCanvas(const Image *images,ExceptionInfo *exception)
+{
+  const Image
+    *p,
+    *q;
+
+  size_t
+    columns,
+    number_channels,
+    rows;
+
+  q=images;
+  columns=images->columns;
+  rows=images->rows;
+  number_channels=0;
+  for (p=images; p != (Image *) NULL; p=p->next)
+  {
+    size_t
+      channels;
+
+    channels=3;
+    if (p->matte != MagickFalse)
+      channels+=1;
+    if (p->colorspace == CMYKColorspace)
+      channels+=1;
+    if (channels > number_channels)
+      {
+        number_channels=channels;
+        q=p;
+      }
+    if (p->columns > columns)
+      columns=p->columns;
+    if (p->rows > rows)
+      rows=p->rows;
+  }
+  return(CloneImage(q,columns,rows,MagickTrue,exception));
+}
+
 MagickExport MagickBooleanType EvaluateImage(Image *image,
   const MagickEvaluateOperator op,const double value,ExceptionInfo *exception)
 {
@@ -459,7 +497,7 @@ MagickExport Image *EvaluateImages(const Image *images,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  image=CloneImage(images,images->columns,images->rows,MagickTrue,exception);
+  image=AcquireImageCanvas(images,exception);
   if (image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
@@ -1430,7 +1468,7 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
           double
             index;
 
-          index=GetPixelIndex(indexes+x);
+          index=(double) GetPixelIndex(indexes+x);
           mean+=index;
           sum_squares+=index*index;
           sum_cubes+=index*index*index;
@@ -2617,9 +2655,9 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
   channel_statistics[i].mean=channel_statistics[i].sum;
   standard_deviation=sqrt(channel_statistics[i].variance-
     (channel_statistics[i].mean*channel_statistics[i].mean));
-  standard_deviation=sqrt(PerceptibleReciprocal(channels*image->columns*
-    image->rows-1.0)*channels*image->columns*image->rows*standard_deviation*
-    standard_deviation);
+  standard_deviation=sqrt(PerceptibleReciprocal((double) channels*
+    image->columns*image->rows-1.0)*channels*image->columns*image->rows*
+    standard_deviation*standard_deviation);
   channel_statistics[i].standard_deviation=standard_deviation;
   for (i=0; i <= (ssize_t) CompositeChannels; i++)
   {
@@ -2731,7 +2769,7 @@ MagickExport Image *PolynomialImageChannel(const Image *images,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  image=CloneImage(images,images->columns,images->rows,MagickTrue,exception);
+  image=AcquireImageCanvas(images,exception);
   if (image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
