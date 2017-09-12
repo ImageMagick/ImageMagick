@@ -1,3 +1,7 @@
+2017-09-11  6.9.9-13 Glenn Randers-Pehrson <glennrp@image...>
+  * Use signed integer arithmetic to caluculate timezone corrections (reference
+    https://github.com/ImageMagick/ImageMagick/issues/685).
+
 2017-09-09  6.9.9-12 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.9-12, GIT revision 11996:fca0f6e33:20170909.
 
