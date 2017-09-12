@@ -7958,6 +7958,7 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
   if (addhours < 0)
   {
     addhours+=24;
+    addminutes=-addminutes;
     day--;
   }
   hour+=addhours;
@@ -7986,7 +7987,7 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
      hour++;
      minute-=60;
   }
-  if (hour > 24)
+  if (hour > 23)
   {
      day ++;
      hour -=24;
