@@ -8181,29 +8181,29 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
   if (addhours < 0)
   {
     addhours+=24;
-    hour+=addhours;
     day--;
-    if (day == 0)
-    {
-      month--;
-      if(month == 2)
-        day=28;
-      else
-      {
-        if(month == 4 || month == 6 || month == 9 || month == 11)
-          day=30;
-        else
-          day=31;
-      }
-    }
-    if (month == 0)
-    {
-      month++;
-      year--;
-    }
   }
   hour+=addhours;
   minute+=addminutes;
+  if (day == 0)
+  {
+    month--;
+    day=31;
+    if(month == 2)
+      day=28;
+    else
+    {
+      if(month == 4 || month == 6 || month == 9 || month == 11)
+        day=30;
+      else
+        day=31;
+    }
+  }
+  if (month == 0)
+  {
+    month++;
+    year--;
+  }
   if (minute > 60)
   {
      hour++;
