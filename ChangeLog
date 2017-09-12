@@ -1,3 +1,6 @@
+2017-09-12  7.0.7-3 Glenn Randers-Pehrson <glennrp@image...>
+  * Maximum valid hour is 23, not 24, in the PNG tIME chunk.
+
 2017-09-12  7.0.7-2 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.7-1, GIT revision 21089:4e46ad9dd:20170912.
 
