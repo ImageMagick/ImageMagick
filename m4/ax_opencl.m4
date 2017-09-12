@@ -40,40 +40,21 @@ AC_REQUIRE([AC_PROG_SED])dnl
 AC_REQUIRE([ACX_PTHREAD])dnl
 
 AC_ARG_ENABLE([opencl],
-    [AC_HELP_STRING([--enable-opencl],
-                    [enable OpenCL support])],
-    [enable_opencl=$enableval],
-    [enable_opencl='no'])
+    [AC_HELP_STRING([--disable-opencl],
+                    [do not use OpenCL])],
+    [disable_opencl=$enableval],
+    [disable_opencl='yes'])
 
-if test "$enable_opencl" = 'yes'; then
+if test "$disable_opencl" = 'yes'; then
   AC_LANG_PUSH([$1])
   AX_LANG_COMPILER_MS
   AS_IF([test X$ax_compiler_ms = Xno],
         [CL_CFLAGS="${PTHREAD_CFLAGS}"; CL_LIBS="${PTHREAD_LIBS} -lm"])
   
   ax_save_CPPFLAGS=$CPPFLAGS
-  ax_save_CL_CFLAGS=$CL_CFLAGS
-
-  found_opencl_header='no'
   CPPFLAGS="$CL_CFLAGS $CPPFLAGS"
-  AC_CHECK_HEADERS([CL/cl.h OpenCL/cl.h],
-                   [found_opencl_header='yes'
-                    break;],
-                   [found_opencl_header='no'])
-
-  AS_IF([test X$found_opencl_header = Xno],
-        [AS_UNSET([ac_cv_header_CL_cl_h])
-         AS_UNSET([ac_cv_header_OpenCL_cl_h])
-         CL_CFLAGS="-I$AMDAPPSDKROOT/include"
-         CPPFLAGS="$ax_save_CPPFLAGS $CL_CFLAGS"
-         AC_CHECK_HEADERS([CL/cl.h OpenCL/cl.h],
-                          [found_opencl_header='yes'
-                           break;],
-                          [found_opencl_header='no'])
-        ],
-        [])
-
-  CPPFLAGS="$ax_save_CPPFLAGS"
+  AC_CHECK_HEADERS([CL/cl.h OpenCL/cl.h])
+  CPPFLAGS=$ax_save_CPPFLAGS
   
   AC_CHECK_HEADERS([windows.h])
   
@@ -94,12 +75,8 @@ if test "$enable_opencl" = 'yes'; then
   AC_CACHE_CHECK([for OpenCL library], [ax_cv_check_cl_libcl],
   [ax_cv_check_cl_libcl=no
   case $host_cpu in
-    x86_64) ax_check_cl_libdir=lib64
-            ax_check_cl_amd_libdir=x86_64 
-	    ;;
-    *)      ax_check_cl_libdir=lib
-            ax_check_cl_amd_libdir=x86 
-            ;;
+    x86_64) ax_check_cl_libdir=lib64 ;;
+    *)      ax_check_cl_libdir=lib ;;
   esac
   ax_save_CPPFLAGS=$CPPFLAGS
   CPPFLAGS="$CL_CFLAGS $CPPFLAGS"
@@ -116,19 +93,13 @@ if test "$enable_opencl" = 'yes'; then
                  [ax_check_cl_nvidia_flags="-L/usr/$ax_check_cl_libdir/nvidia" LIBS="$ax_try_lib $ax_check_cl_nvidia_flags $CL_LIBS $ax_save_LIBS"
                  AC_LINK_IFELSE([AX_OPENCL_PROGRAM],
                                 [ax_cv_check_cl_libcl="$ax_try_lib $ax_check_cl_nvidia_flags"; break],
-                                [ax_check_cl_dylib_flag='-Wl,-framework,OpenCL -L/System/Library/Frameworks/OpenCL.framework/Versions/A/Libraries' LIBS="$ax_try_lib $ax_check_cl_dylib_flag $CL_LIBS $ax_save_LIBS"
+                                [ax_check_cl_dylib_flag='-framework OpenCL -L/System/Library/Frameworks/OpenCL.framework/Versions/A/Libraries' LIBS="$ax_try_lib $ax_check_cl_dylib_flag $CL_LIBS $ax_save_LIBS"
                                 AC_LINK_IFELSE([AX_OPENCL_PROGRAM],
-                                               [ax_cv_check_cl_libcl="$ax_try_lib $ax_check_cl_dylib_flag"; break],
-						                                   [ax_check_cl_amd_flags="-L$AMDAPPSDKROOT/lib/$ax_check_cl_amd_libdir" LIBS="$ax_try_lib $ax_check_cl_amd_flags $CL_LIBS $ax_save_LIBS"
-						                                   AC_LINK_IFELSE([AX_OPENCL_PROGRAM],
-							                                 [ax_cv_check_cl_libcl="$ax_try_lib $ax_check_cl_amd_flags"; break]
-						                                                  )
-						                                   ]
-						                                   )])])
+                                               [ax_cv_check_cl_libcl="$ax_try_lib $ax_check_cl_dylib_flag"; break])])])
   done
   
-  AS_IF([test "X$ax_cv_check_cl_libcl" = Xno],
-        [LIBS='-Wl,-framework,OpenCL'
+  AS_IF([test "X$ax_cv_check_cl_libcl" = Xno -a X$no_x = Xyes],
+        [LIBS='-framework OpenCL'
         AC_LINK_IFELSE([AX_OPENCL_PROGRAM],
                        [ax_cv_check_cl_libcl=$LIBS])])
   
@@ -143,8 +114,6 @@ if test "$enable_opencl" = 'yes'; then
 fi
   
 AC_SUBST([CL_CFLAGS])
-
-#remove static link on Linux
-CL_LIBS=`echo $CL_LIBS | $SED -e 's/-lOpenCL //'`
 AC_SUBST([CL_LIBS])
 ])dnl
+
