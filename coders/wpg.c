@@ -325,6 +325,9 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetAuthenticIndexQueue(image);
+        if ((image->storage_class != PseudoClass) ||
+            (indexes == (IndexPacket *) NULL))
+          break;
         for (x=0; x < ((ssize_t) image->columns-3); x+=4)
         {
             index=ConstrainColormapIndex(image,(*p >> 6) & 0x3);
