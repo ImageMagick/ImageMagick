@@ -8136,7 +8136,7 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
   int
     ret;
 
-  unsigned int
+  int
     day,
     hour,
     minute,
@@ -8178,65 +8178,66 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
       image->filename,ret);
     return;
   }
-  ptime.year=(png_uint_16) year;
-  ptime.month=(png_byte) month;
-  ptime.day=(png_byte) day;
   if (addhours < 0)
   {
     addhours+=24;
-    ptime.hour=(png_byte) hour+addhours;
-    ptime.day--;
-    if (ptime.day == 0)
+    hour+=addhours;
+    day--;
+    if (day == 0)
     {
-      ptime.month--;
-      if(ptime.month == 2)
-        ptime.day=28;
+      month--;
+      if(month == 2)
+        day=28;
       else
       {
-        if(ptime.month == 4 || ptime.month == 6 || ptime.month == 9 ||
-           ptime.month == 11)
-          ptime.day=30;
+        if(month == 4 || month == 6 || month == 9 || month == 11)
+          day=30;
         else
-          ptime.day=31;
+          day=31;
       }
     }
-    if (ptime.month == 0)
+    if (month == 0)
     {
-      ptime.month++;
-      ptime.year--;
+      month++;
+      year--;
     }
   }
-  ptime.hour=(png_byte) hour+addhours;
-  ptime.minute=(png_byte) minute+addminutes;
-  ptime.second=(png_byte) second;
-  if (ptime.minute > 60)
+  hour+=addhours;
+  minute+=addminutes;
+  if (minute > 60)
   {
-     ptime.hour++;
-     ptime.minute-=60;
+     hour++;
+     minute-=60;
   }
-  if (ptime.hour > 24)
+  if (hour > 24)
   {
-     ptime.day ++;
-     ptime.hour -=24;
+     day ++;
+     hour -=24;
   }
-  if (ptime.hour < 0)
+  if (hour < 0)
   {
-     ptime.day --;
-     ptime.hour +=24;
+     day --;
+     hour +=24;
   }
   /* To do: fix this for leap years */
-  if (ptime.day > 31 || (ptime.month == 2 && ptime.day > 28) ||
-      ((ptime.month == 4 || ptime.month == 6 || ptime.month == 9 ||
-      ptime.month == 11) && ptime.day > 30))
+  if (day > 31 || (month == 2 && day > 28) || ((month == 4 || month == 6 ||
+      month == 9 || month == 11) && day > 30))
   {
-     ptime.month++;
-     ptime.day = 1;
+     month++;
+     day = 1;
   }
-  if (ptime.month > 12)
+  if (month > 12)
   {
-     ptime.year++;
-     ptime.month=1;
+     year++;
+     month=1;
   }
+
+  ptime.year = year;
+  ptime.month = month;
+  ptime.day = day;
+  ptime.hour = hour;
+  ptime.minute = minute;
+  ptime.second = second;
 
   LogMagickEvent(CoderEvent,GetMagickModule(),
       "      png_set_tIME: y=%d, m=%d, d=%d, h=%d, m=%d, s=%d, ah=%d, am=%d",
