@@ -36,8 +36,6 @@
 /Magick++/tests/testmagick_anim_out*
 
 /MagickCore/MagickCore-config
-/MagickCore/magick-baseconfig.h
-/MagickCore/version.h
 
 /MagickWand/MagickWand-config
 
