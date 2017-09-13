@@ -210,7 +210,10 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
         break;
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
+    {
+      quantum_info=DestroyQuantumInfo(quantum_info);
       return(DestroyImageList(image));
+    }
     SetImageColorspace(image,YCbCrColorspace,exception);
     switch (image_info->interlace)
     {
