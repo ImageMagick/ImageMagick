@@ -147,7 +147,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
-  quantum=image->depth <= 8 ? 1 : 2;
+  quantum=(ssize_t) (image->depth <= 8 ? 1 : 2);
   interlace=image_info->interlace;
   horizontal_factor=2;
   vertical_factor=2;
@@ -186,7 +186,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image=DestroyImageList(image);
           return((Image *) NULL);
         }
-      if (DiscardBlobBytes(image,image->offset) == MagickFalse)
+      if (DiscardBlobBytes(image,(MagickSizeType) image->offset) == MagickFalse)
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
           image->filename);
     }
@@ -194,11 +194,11 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Allocate memory for a scanline.
   */
   if (interlace == NoInterlace)
-    scanline=(unsigned char *) AcquireQuantumMemory((size_t) 2UL*
-      image->columns+2UL,quantum*sizeof(*scanline));
+    scanline=(unsigned char *) AcquireQuantumMemory((size_t) (2UL*
+      image->columns+2UL),(size_t) quantum*sizeof(*scanline));
   else
     scanline=(unsigned char *) AcquireQuantumMemory(image->columns,
-      quantum*sizeof(*scanline));
+      (size_t) quantum*sizeof(*scanline));
   if (scanline == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   do
@@ -216,7 +216,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
-      return(DestroyImageList(image));
+      break;
     if (interlace == PartitionInterlace)
       {
         AppendImageFormat("Y",image->filename);
@@ -422,7 +422,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     }
     resize_image=DestroyImage(resize_image);
-    SetImageColorspace(image,YCbCrColorspace,exception);
+    if (SetImageColorspace(image,YCbCrColorspace,exception) == MagickFalse)
+      break;
     if (interlace == PartitionInterlace)
       (void) CopyMagickString(image->filename,image_info->filename,
         MagickPathExtent);
