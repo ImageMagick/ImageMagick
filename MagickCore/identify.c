@@ -440,10 +440,10 @@ static ssize_t PrintChannelStatistics(FILE *file,const PixelChannel channel,
   const char *name,const double scale,
   const ChannelStatistics *channel_statistics)
 {
-#define StatisticsFormat "    %s:\n      min: %*g  (%*g)\n      " \
-  "max: %*g (%*g)\n      mean: %*g (%*g)\n      " \
-  "standard deviation: %*g (%*g)\n      kurtosis: %*g\n      " \
-  "skewness: %*g\n      entropy: %*g\n"
+#define StatisticsFormat "    %s:\n      min: %.*g  (%.*g)\n      " \
+  "max: %.*g (%.*g)\n      mean: %.*g (%.*g)\n      " \
+  "standard deviation: %.*g (%.*g)\n      kurtosis: %.*g\n      " \
+  "skewness: %.*g\n      entropy: %.*g\n"
 
   ssize_t
     n;
@@ -1016,7 +1016,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   if (ping == MagickFalse)
     {
       if (image->colorspace == CMYKColorspace)
-        (void) FormatLocaleFile(file,"  Total ink density: %*g%%\n",
+        (void) FormatLocaleFile(file,"  Total ink density: %.*g%%\n",
           GetMagickPrecision(),100.0*GetImageTotalInkDensity(image,exception)/
           (double) QuantumRange);
       x=0;
