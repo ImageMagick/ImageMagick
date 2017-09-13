@@ -7982,7 +7982,7 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
     month++;
     year--;
   }
-  if (minute > 60)
+  if (minute > 59)
   {
      hour++;
      minute-=60;
