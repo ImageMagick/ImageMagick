@@ -75,7 +75,7 @@ WandExport size_t AcquireWandId(void)
 {
   static size_t
     id = 0;
-  size_t nID = 0;
+  size_t wand_id = 0;
   if (wand_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&wand_semaphore);
   LockSemaphoreInfo(wand_semaphore);
@@ -85,9 +85,9 @@ WandExport size_t AcquireWandId(void)
   id++;
   (void) AddValueToSplayTree(wand_ids,(const void *) id,(const void *) id);
   instantiate_wand=MagickTrue;
-  nID = id;
+  wand_id = id;
   UnlockSemaphoreInfo(wand_semaphore);
-  return(nID);
+  return(wand_id);
 }
 
 /*
