@@ -142,7 +142,13 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
   image=AcquireImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
-  SetImageColorspace(image,CMYKColorspace);
+  status=SetImageExtent(image,image->columns,image->rows);
+  if (status == MagickFalse)
+    {
+      InheritException(exception,&image->exception);
+      return(DestroyImageList(image));
+    }
+  (void) SetImageColorspace(image,CMYKColorspace);
   if (image_info->interlace != PartitionInterlace)
     {
       status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
@@ -151,7 +157,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           image=DestroyImageList(image);
           return((Image *) NULL);
         }
-      if (DiscardBlobBytes(image,image->offset) == MagickFalse)
+      if (DiscardBlobBytes(image,(MagickSizeType) image->offset) == MagickFalse)
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
           image->filename);
     }
@@ -200,11 +206,9 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         break;
     status=SetImageExtent(image,image->columns,image->rows);
     if (status == MagickFalse)
-      {
-        InheritException(exception,&image->exception);
-        return(DestroyImageList(image));
-      }
-    SetImageColorspace(image,CMYKColorspace);
+      break;
+    if (SetImageColorspace(image,CMYKColorspace) == MagickFalse)
+      break;
     switch (image_info->interlace)
     {
       case NoInterlace:
@@ -334,7 +338,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 "UnexpectedEndOfFile",image->filename);
               break;
             }
-          for (i=0; i < (image->matte != MagickFalse ? 5 : 4); i++)
+          for (i=0; i < (ssize_t) (image->matte != MagickFalse ? 5 : 4); i++)
           {
             quantum_type=quantum_types[i];
             q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
@@ -719,7 +723,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             image=DestroyImageList(image);
             return((Image *) NULL);
           }
-        if (DiscardBlobBytes(image,image->offset) == MagickFalse)
+        if (DiscardBlobBytes(image,(MagickSizeType) image->offset) == MagickFalse)
           ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
             image->filename);
         length=GetQuantumExtent(canvas_image,quantum_info,CyanQuantum);
@@ -1146,7 +1150,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
     scene++;
   } while (count == (ssize_t) length);
   quantum_info=DestroyQuantumInfo(quantum_info);
-  InheritException(&image->exception,&canvas_image->exception);
+  InheritException(exception,&canvas_image->exception);
+  InheritException(exception,&image->exception);
   canvas_image=DestroyImage(canvas_image);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));

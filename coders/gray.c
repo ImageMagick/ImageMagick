@@ -140,6 +140,12 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   image=AcquireImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
+  status=SetImageExtent(image,image->columns,image->rows);
+  if (status == MagickFalse)
+    {
+      InheritException(exception,&image->exception);
+      return(DestroyImageList(image));
+    }
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     {
@@ -152,7 +158,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   /*
     Create virtual canvas to support cropping (i.e. image.gray[100x100+10+20]).
   */
-  SetImageColorspace(image,GRAYColorspace);
+  (void) SetImageColorspace(image,GRAYColorspace);
   canvas_image=CloneImage(image,image->extract_info.width,1,MagickFalse,
     exception);
   (void) SetImageVirtualPixelMethod(canvas_image,BlackVirtualPixelMethod);
@@ -190,11 +196,9 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         break;
     status=SetImageExtent(image,image->columns,image->rows);
     if (status == MagickFalse)
-      {
-        InheritException(exception,&image->exception);
-        return(DestroyImageList(image));
-      }
-    SetImageColorspace(image,GRAYColorspace);
+      break;
+    if (SetImageColorspace(image,GRAYColorspace) == MagickFalse)
+      break;
     if (scene == 0)
       {
         length=GetQuantumExtent(canvas_image,quantum_info,quantum_type);
@@ -282,7 +286,8 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     scene++;
   } while (count == (ssize_t) length);
   quantum_info=DestroyQuantumInfo(quantum_info);
-  InheritException(&image->exception,&canvas_image->exception);
+  InheritException(exception,&canvas_image->exception);
+  InheritException(exception,&image->exception);
   canvas_image=DestroyImage(canvas_image);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));

@@ -221,10 +221,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     status=SetImageExtent(image,image->columns,image->rows);
     if (status == MagickFalse)
-      {
-        InheritException(exception,&image->exception);
-        return(DestroyImageList(image));
-      }
+      break;
     if (interlace == PartitionInterlace)
       {
         AppendImageFormat("Y",image->filename);
@@ -428,7 +425,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     }
     resize_image=DestroyImage(resize_image);
-    SetImageColorspace(image,YCbCrColorspace);
+    if (SetImageColorspace(image,YCbCrColorspace) == MagickFalse)
+      break;
     if (interlace == PartitionInterlace)
       (void) CopyMagickString(image->filename,image_info->filename,
         MaxTextExtent);
@@ -467,6 +465,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
   } while (count != 0);
   scanline=(unsigned char *) RelinquishMagickMemory(scanline);
+  InheritException(exception,&image->exception);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
