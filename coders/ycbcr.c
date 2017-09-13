@@ -151,7 +151,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
-  SetImageColorspace(image,YCbCrColorspace,exception);
+  (void) SetImageColorspace(image,YCbCrColorspace,exception);
   if (image_info->interlace != PartitionInterlace)
     {
       status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
@@ -160,7 +160,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
           image=DestroyImageList(image);
           return((Image *) NULL);
         }
-      if (DiscardBlobBytes(image,image->offset) == MagickFalse)
+      if (DiscardBlobBytes(image,(MagickSizeType) image->offset) == MagickFalse)
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
           image->filename);
     }
@@ -210,12 +210,9 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
         break;
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
-    {
-      quantum_info=DestroyQuantumInfo(quantum_info);
-      canvas_image=DestroyImage(canvas_image);
-      return(DestroyImageList(image));
-    }
-    SetImageColorspace(image,YCbCrColorspace,exception);
+      break;
+    if (SetImageColorspace(image,YCbCrColorspace,exception) == MagickFalse)
+      break;
     switch (image_info->interlace)
     {
       case NoInterlace:
@@ -303,7 +300,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
           }
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
-          for (i=0; i < (image->alpha_trait != UndefinedPixelTrait ? 4 : 3); i++)
+          for (i=0; i < (ssize_t) (image->alpha_trait != UndefinedPixelTrait ? 4 : 3); i++)
           {
             if (count != (ssize_t) length)
               {
@@ -588,7 +585,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
             image=DestroyImageList(image);
             return((Image *) NULL);
           }
-        if (DiscardBlobBytes(image,image->offset) == MagickFalse)
+        if (DiscardBlobBytes(image,(MagickSizeType) image->offset) == MagickFalse)
           ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
             image->filename);
         length=GetQuantumExtent(canvas_image,quantum_info,RedQuantum);
