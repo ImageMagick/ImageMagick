@@ -128,6 +128,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     y;
 
   size_t
+    length,
     quantum;
 
   unsigned char
@@ -206,6 +207,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       quantum*sizeof(*scanline));
   if (scanline == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  status=MagickTrue;
   do
   {
     chroma_image=CloneImage(image,(image->columns+horizontal_factor-1)/
@@ -240,7 +242,17 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (interlace == NoInterlace)
         {
           if ((y > 0) || (GetPreviousImageInList(image) == (Image *) NULL))
-            (void) ReadBlob(image,(size_t) (2*quantum*image->columns),scanline);
+            {
+              length=2*quantum*image->columns;
+              count=ReadBlob(image,length,scanline);
+              if (count != (ssize_t) length)
+                {
+                  status=MagickFalse;
+                  ThrowFileException(exception,CorruptImageError,
+                    "UnexpectedEndOfFile",image->filename);
+                  break;
+                }
+            }
           p=scanline;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
@@ -294,7 +306,17 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       else
         {
           if ((y > 0) || (GetPreviousImageInList(image) == (Image *) NULL))
-            (void) ReadBlob(image,(size_t) quantum*image->columns,scanline);
+            {
+              length=quantum*image->columns;
+              count=ReadBlob(image,length,scanline);
+              if (count != (ssize_t) length)
+                {
+                  status=MagickFalse;
+                  ThrowFileException(exception,CorruptImageError,
+                    "UnexpectedEndOfFile",image->filename);
+                  break;
+                }
+            }
           p=scanline;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
@@ -341,8 +363,15 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         for (y=0; y < (ssize_t) chroma_image->rows; y++)
         {
-          (void) ReadBlob(image,(size_t) quantum*chroma_image->columns,
-            scanline);
+          length=quantum*chroma_image->columns;
+          count=ReadBlob(image,length,scanline);
+          if (count != (ssize_t) length)
+            {
+              status=MagickFalse;
+              ThrowFileException(exception,CorruptImageError,
+                "UnexpectedEndOfFile",image->filename);
+              break;
+            }
           p=scanline;
           q=QueueAuthenticPixels(chroma_image,0,y,chroma_image->columns,1,
             exception);
@@ -377,7 +406,15 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       for (y=0; y < (ssize_t) chroma_image->rows; y++)
       {
-        (void) ReadBlob(image,(size_t) quantum*chroma_image->columns,scanline);
+        length=quantum*chroma_image->columns;
+        count=ReadBlob(image,length,scanline);
+        if (count != (ssize_t) length)
+          {
+            status=MagickFalse;
+            ThrowFileException(exception,CorruptImageError,
+              "UnexpectedEndOfFile",image->filename);
+            break;
+          }
         p=scanline;
         q=GetAuthenticPixels(chroma_image,0,y,chroma_image->columns,1,
           exception);
@@ -467,6 +504,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   scanline=(unsigned char *) RelinquishMagickMemory(scanline);
   InheritException(exception,&image->exception);
   (void) CloseBlob(image);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 
