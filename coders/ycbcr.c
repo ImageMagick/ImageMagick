@@ -203,6 +203,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
   count=0;
   length=0;
   scene=0;
+  status=MagickTrue;
   do
   {
     /*
@@ -234,6 +235,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
         {
           if (count != (ssize_t) length)
             {
+              status=MagickFalse;
               ThrowFileException(exception,CorruptImageError,
                 "UnexpectedEndOfFile",image->filename);
               break;
@@ -307,6 +309,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
           {
             if (count != (ssize_t) length)
               {
+                status=MagickFalse;
                 ThrowFileException(exception,CorruptImageError,
                   "UnexpectedEndOfFile",image->filename);
                 break;
@@ -391,6 +394,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
         {
           if (count != (ssize_t) length)
             {
+              status=MagickFalse;
               ThrowFileException(exception,CorruptImageError,
                 "UnexpectedEndOfFile",image->filename);
               break;
@@ -435,6 +439,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
         {
           if (count != (ssize_t) length)
             {
+              status=MagickFalse;
               ThrowFileException(exception,CorruptImageError,
                 "UnexpectedEndOfFile",image->filename);
               break;
@@ -479,6 +484,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
         {
           if (count != (ssize_t) length)
             {
+              status=MagickFalse;
               ThrowFileException(exception,CorruptImageError,
                 "UnexpectedEndOfFile",image->filename);
               break;
@@ -525,6 +531,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
             {
               if (count != (ssize_t) length)
                 {
+                  status=MagickFalse;
                   ThrowFileException(exception,CorruptImageError,
                     "UnexpectedEndOfFile",image->filename);
                   break;
@@ -599,6 +606,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
               &count);
             if (count != (ssize_t) length)
               {
+                status=MagickFalse;
                 ThrowFileException(exception,CorruptImageError,
                   "UnexpectedEndOfFile",image->filename);
                 break;
@@ -610,6 +618,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
         {
           if (count != (ssize_t) length)
             {
+              status=MagickFalse;
               ThrowFileException(exception,CorruptImageError,
                 "UnexpectedEndOfFile",image->filename);
               break;
@@ -667,6 +676,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
               &count);
             if (count != (ssize_t) length)
               {
+                status=MagickFalse;
                 ThrowFileException(exception,CorruptImageError,
                   "UnexpectedEndOfFile",image->filename);
                 break;
@@ -678,6 +688,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
         {
           if (count != (ssize_t) length)
             {
+              status=MagickFalse;
               ThrowFileException(exception,CorruptImageError,
                 "UnexpectedEndOfFile",image->filename);
               break;
@@ -735,6 +746,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
               &count);
             if (count != (ssize_t) length)
               {
+                status=MagickFalse;
                 ThrowFileException(exception,CorruptImageError,
                   "UnexpectedEndOfFile",image->filename);
                 break;
@@ -746,6 +758,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
         {
           if (count != (ssize_t) length)
             {
+              status=MagickFalse;
               ThrowFileException(exception,CorruptImageError,
                 "UnexpectedEndOfFile",image->filename);
               break;
@@ -805,6 +818,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                   GetQuantumPixels(quantum_info),&count);
                 if (count != (ssize_t) length)
                   {
+                    status=MagickFalse;
                     ThrowFileException(exception,CorruptImageError,
                       "UnexpectedEndOfFile",image->filename);
                     break;
@@ -816,6 +830,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
             {
               if (count != (ssize_t) length)
                 {
+                  status=MagickFalse;
                   ThrowFileException(exception,CorruptImageError,
                     "UnexpectedEndOfFile",image->filename);
                   break;
@@ -897,6 +912,8 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
   InheritException(exception,&image->exception);
   canvas_image=DestroyImage(canvas_image);
   (void) CloseBlob(image);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 
