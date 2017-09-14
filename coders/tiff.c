@@ -1,4 +1,4 @@
-/*
+)/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -1025,7 +1025,7 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
 #else
   uint32
 #endif
-    **value;
+    *value;
 
   unsigned char
     buffer[BUFFER_SIZE+32];
@@ -1033,12 +1033,17 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
   unsigned short
     length;
 
-  /* only support 8 bit for now */
+  /*
+    Only support 8 bit for now.
+  */
   if ((photometric != PHOTOMETRIC_SEPARATED) || (bits_per_sample != 8) ||
       (samples_per_pixel != 4))
     return(ReadGenericMethod);
-  /* Search for Adobe APP14 JPEG Marker */
-  if (!TIFFGetField(tiff,TIFFTAG_STRIPOFFSETS,&value))
+  /*
+    Search for Adobe APP14 JPEG marker.
+  */
+  value=NULL;
+  if (!TIFFGetField(tiff,TIFFTAG_STRIPOFFSETS,&value) || (value == NULL))
     return(ReadRGBAMethod);
   position=TellBlob(image);
   offset=(MagickOffsetType) (value[0]);
