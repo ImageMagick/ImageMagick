@@ -1034,7 +1034,11 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
   image->storage_class=PseudoClass;
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
-    return(DestroyImageList(image));
+    {
+      sixel_pixels=(unsigned char *) RelinquishMagickMemory(sixel_pixels);
+      sixel_palette=(unsigned char *) RelinquishMagickMemory(sixel_palette);
+      return(DestroyImageList(image));
+    }
 
   if (AcquireImageColormap(image,image->colors, exception) == MagickFalse)
     {
