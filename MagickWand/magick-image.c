@@ -7016,7 +7016,7 @@ WandExport MagickBooleanType MagickMorphologyImage(MagickWand *wand,
 
 
 WandExport MagickBooleanType MagickIsImageBlurred(MagickWand *wand,
- const int threshold)
+ const unsigned char threshold)
 {
 	MagickBooleanType result = MagickFalse;
 	

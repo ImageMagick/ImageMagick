@@ -771,112 +771,34 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
  %                                                                             %
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  %
+ %  IsImageBlurred() returns bool value indicating whether image is blurred with given threshold.
+ %
+ %  The format of the IsImageBlurred method is:
+ %
+ %      MagickBooleanType IsImageBlurred(Image *image, const unsigned char threshold,
+ %						ExceptionInfo *exception)
+ %
+ %  A description of each parameter follows:
+ %
+ %    o image: the image.
+ %
+ %    o threshold: sets the sensitivity for the blur check, as smaller value, as less sensitive blur detection;
+ %
+ %    o exception: return any errors or warnings in this structure.
+ %
  */
 
-
-MagickExport MagickBooleanType IsImageBlurred(Image *image, const int threshold, ExceptionInfo *exception)
+MagickExport MagickBooleanType IsImageBlurred(Image *image, const unsigned char threshold, ExceptionInfo *exception)
 {
 	MagickBooleanType result = MagickTrue;
 	
 	assert(image != (Image *) NULL);
 	assert(image->signature == MagickCoreSignature);
-	image->colorspace = GRAYColorspace;
 	
-	KernelInfo *kernel = AcquireKernelInfo("3x3: 0, 1, 0 1, -4, 1 0, 1, 0", NULL);
-	
-	double bias = 0;
-	const char *artifact = NULL;
-	CompositeOperator compose = UndefinedCompositeOp;
-	
-	artifact = GetImageArtifact(image,"convolve:bias");
-	
-	if ( artifact != (const char *) NULL)
-	{
-		if (IsGeometry(artifact) == MagickFalse)
-		{
-			(void) ThrowMagickException(exception,GetMagickModule(), OptionWarning, "InvalidSetting", "'%s' '%s'", "convolve:bias", artifact);
-		}
-		else
-		{
-			bias=StringToDoubleInterval(artifact,(double) QuantumRange + 1.0);
-		}
-	}
-	
-	/* Scale kernel according to user wishes */
-	artifact = GetImageArtifact(image,"convolve:scale");
-	if (artifact != (const char *) NULL)
-	{
-		if (IsGeometry(artifact) == MagickFalse)
-		{
-			(void) ThrowMagickException(exception,GetMagickModule(), OptionWarning,"InvalidSetting","'%s' '%s'", "convolve:scale",artifact);
-		}
-		else
-		{
-			ScaleGeometryKernelInfo(kernel, artifact);
-		}
-	}
-	
-	/* display the (normalized) kernel via stderr */
-	artifact=GetImageArtifact(image,"morphology:showkernel");
-	
-	ssize_t parse = 0;
-	
-	artifact = GetImageArtifact(image,"morphology:compose");
-	
-	if (artifact != (const char *) NULL)
-	{
-		parse=ParseCommandOption(MagickComposeOptions, MagickFalse, artifact);
-		if (parse < 0)
-		{
-			(void)ThrowMagickException(exception, GetMagickModule(), OptionWarning, "UnrecognizedComposeOperator", "'%s' '%s'", "morphology:compose",artifact);
-		}
-		else
-		{
-			compose = (CompositeOperator)parse;
-		}
-	}
-#define MorphologyTag  "Morphology/Image"
-	
-
-	assert(kernel->signature == MagickCoreSignature);
 	assert(exception != (ExceptionInfo *) NULL);
 	assert(exception->signature == MagickCoreSignature);
 	
-	
-	CompositeOperator curr_compose = image ->compose;
-	(void)curr_compose;
-	
-	CompositeOperator rslt_compose = UndefinedCompositeOp;   /* multi-kernel compose method for results to use */
-	
-	/* Handle user (caller) specified multi-kernel composition method */
-	if ( compose != UndefinedCompositeOp )
-	{
-		rslt_compose = compose;  /* override default composition for method */
-	}
-	
-	if ( rslt_compose == UndefinedCompositeOp )
-	{
-		rslt_compose = NoCompositeOp; /* still not defined! Then re-iterate */
-	}
-	
-	Image *work_image = CloneImage(image, 0, 0, MagickTrue, exception);		/* secondary image for primitive iteration */
-	
-	if (work_image == (Image *)NULL)
-	{
-		//			goto error_cleanup;
-	}
-	
-	if (SetImageStorageClass(work_image, DirectClass, exception) == MagickFalse)
-	{
-		//			goto error_cleanup;
-	}
-	
-	/* Yes goto's are bad, but it makes cleanup lot more efficient */
-error_cleaup: ;
-	
-	MagickBooleanType status = MagickTrue;
-	MagickOffsetType progress = 0;
-	
+	KernelInfo *kernel = AcquireKernelInfo("3x3: 0, 1, 0 1, -4, 1 0, 1, 0", NULL);
 	CacheView *image_view = AcquireVirtualCacheView(image,exception);
 	
 	size_t width = image->columns + kernel->width - 1;
@@ -889,27 +811,31 @@ error_cleaup: ;
 	
 	for (y = 0; y < (ssize_t)image->rows; y++)
 	{
+		if (result == MagickFalse)
+		{
+			break;
+		}
 		register const Quantum *magick_restrict p = NULL;
 		register ssize_t x = 0;
 		ssize_t center = 0;
-		
-		if (status == MagickFalse)
-		{
-			continue;
-		}
 		
 		p = GetCacheViewVirtualPixels(image_view, -offset.x, y-offset.y, width, kernel->height, exception);
 		
 		if (p == (const Quantum *)NULL)
 		{
-			status = MagickFalse;
-			continue;
+			result = MagickFalse;
+			break;
 		}
 		
 		center = (ssize_t)(GetPixelChannels(image) * width * offset.y + GetPixelChannels(image) * offset.x);
 		
 		for (x = 0; x < (ssize_t) image->columns; x++)
 		{
+			if (result == MagickFalse)
+			{
+				break;
+			}
+			
 			register ssize_t i = 0;
 			
 			for (i = 0; i < (ssize_t)GetPixelChannels(image); i++)
@@ -918,20 +844,19 @@ error_cleaup: ;
 				PixelTrait traits = GetPixelChannelTraits(image,channel);
 				PixelTrait morphology_traits = GetPixelChannelTraits(image, channel);
 				
-				if (traits == UndefinedPixelTrait)
+				if ((traits == UndefinedPixelTrait) || (morphology_traits == UndefinedPixelTrait))
 				{
 					continue;
 				}
 				
 				if (((traits & CopyPixelTrait) != 0) || (GetPixelWriteMask(image, p + center) <= (QuantumRange / 2)))
 				{
-//					SetPixelChannel(work_image, channel, p[center + i], q);
 					continue;
 				}
 				
 				register const Quantum *magick_restrict pixels = p;
 				size_t count = kernel->width * kernel->height;
-				double pixel = bias;
+				double pixel = 0;
 				double gamma = 1.0;
 				register const MagickRealType *magick_restrict k = (&kernel->values[kernel->width * kernel->height - 1]);
 				count = 0;
@@ -939,7 +864,7 @@ error_cleaup: ;
 				size_t v = 0;
 				register ssize_t u = 0;
 				
-				// applying Convolve Morphology
+				// calculating Convolve Morphology
 				if ((morphology_traits & BlendPixelTrait) == 0)
 				{
 					/*
@@ -989,50 +914,20 @@ error_cleaup: ;
 					gamma *= (double)kernel->height * kernel->width / count;
 				}
 				Quantum quantum = ClampToQuantum(gamma * pixel);
-//				printf("\nquantum - %f", quantum);
+				unsigned char quantumSharpness = ScaleQuantumToChar(quantum);
 				
-				unsigned char charV = ScaleQuantumToChar(GetPixelRed(image,&quantum));
-				
-				if (charV > threshold)
+				if (quantumSharpness > threshold)
 				{
-					image_view=DestroyCacheView(image_view);
-					return MagickFalse;
-				}
-				
-				charV = ScaleQuantumToChar(GetPixelGreen(image,&quantum));
-				
-				if (charV > threshold)
-				{
-					image_view=DestroyCacheView(image_view);
-					return MagickFalse;
-				}
-				
-				charV = ScaleQuantumToChar(GetPixelBlue(image,&quantum));
-				
-				if (charV > threshold)
-				{
-					image_view=DestroyCacheView(image_view);
-					return MagickFalse;
+					result = MagickFalse;
+					break;
 				}
 			}
 			
 			p += GetPixelChannels(image);
 		}
-		
-		if (image->progress_monitor != (MagickProgressMonitor) NULL)
-		{
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-#pragma omp critical (MagickCore_MorphologyPrimitive)
-#endif
-			MagickBooleanType proceed = SetImageProgress(image, MorphologyTag, progress++, image->rows);
-			if (proceed == MagickFalse)
-			{
-				status=MagickFalse;
-			}
-		}
 	}
-	
-	image_view=DestroyCacheView(image_view);
+	kernel = DestroyKernelInfo(kernel);
+	image_view = DestroyCacheView(image_view);
 	
 	return result;
 }
