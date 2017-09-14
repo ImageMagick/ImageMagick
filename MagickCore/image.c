@@ -878,7 +878,6 @@ error_cleaup: ;
 	MagickOffsetType progress = 0;
 	
 	CacheView *image_view = AcquireVirtualCacheView(image,exception);
-	CacheView *morphology_view = AcquireAuthenticCacheView(work_image,exception);
 	
 	size_t width = image->columns + kernel->width - 1;
 	
@@ -891,7 +890,6 @@ error_cleaup: ;
 	for (y = 0; y < (ssize_t)image->rows; y++)
 	{
 		register const Quantum *magick_restrict p = NULL;
-		register Quantum *magick_restrict q = NULL;
 		register ssize_t x = 0;
 		ssize_t center = 0;
 		
@@ -901,9 +899,8 @@ error_cleaup: ;
 		}
 		
 		p = GetCacheViewVirtualPixels(image_view, -offset.x, y-offset.y, width, kernel->height, exception);
-		q = GetCacheViewAuthenticPixels(morphology_view, 0, y, work_image->columns, 1, exception);
 		
-		if ((p == (const Quantum *)NULL) || (q == (Quantum *)NULL))
+		if (p == (const Quantum *)NULL)
 		{
 			status = MagickFalse;
 			continue;
@@ -919,16 +916,16 @@ error_cleaup: ;
 			{
 				PixelChannel channel = GetPixelChannelChannel(image,i);
 				PixelTrait traits = GetPixelChannelTraits(image,channel);
-				PixelTrait morphology_traits = GetPixelChannelTraits(work_image, channel);
+				PixelTrait morphology_traits = GetPixelChannelTraits(image, channel);
 				
-				if ((traits == UndefinedPixelTrait) || (morphology_traits == UndefinedPixelTrait))
+				if (traits == UndefinedPixelTrait)
 				{
 					continue;
 				}
 				
 				if (((traits & CopyPixelTrait) != 0) || (GetPixelWriteMask(image, p + center) <= (QuantumRange / 2)))
 				{
-					SetPixelChannel(work_image, channel, p[center + i], q);
+//					SetPixelChannel(work_image, channel, p[center + i], q);
 					continue;
 				}
 				
@@ -994,45 +991,34 @@ error_cleaup: ;
 				Quantum quantum = ClampToQuantum(gamma * pixel);
 //				printf("\nquantum - %f", quantum);
 				
-				SetPixelChannel(work_image, channel, quantum, q);
-				
-				unsigned char charV = ScaleQuantumToChar(GetPixelRed(work_image,&quantum));
+				unsigned char charV = ScaleQuantumToChar(GetPixelRed(image,&quantum));
 				
 				if (charV > threshold)
 				{
-					work_image = DestroyImage(work_image);
-					morphology_view=DestroyCacheView(morphology_view);
 					image_view=DestroyCacheView(image_view);
 					return MagickFalse;
 				}
 				
-				charV = ScaleQuantumToChar(GetPixelGreen(work_image,&quantum));
+				charV = ScaleQuantumToChar(GetPixelGreen(image,&quantum));
 				
 				if (charV > threshold)
 				{
-					work_image = DestroyImage(work_image);
-					morphology_view=DestroyCacheView(morphology_view);
 					image_view=DestroyCacheView(image_view);
 					return MagickFalse;
 				}
 				
-				charV = ScaleQuantumToChar(GetPixelBlue(work_image,&quantum));
+				charV = ScaleQuantumToChar(GetPixelBlue(image,&quantum));
 				
 				if (charV > threshold)
 				{
-					work_image = DestroyImage(work_image);
-					morphology_view=DestroyCacheView(morphology_view);
 					image_view=DestroyCacheView(image_view);
 					return MagickFalse;
 				}
 			}
 			
 			p += GetPixelChannels(image);
-			q += GetPixelChannels(work_image);
 		}
 		
-		if (SyncCacheViewAuthenticPixels(morphology_view,exception) == MagickFalse)
-			status=MagickFalse;
 		if (image->progress_monitor != (MagickProgressMonitor) NULL)
 		{
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1046,7 +1032,6 @@ error_cleaup: ;
 		}
 	}
 	
-	morphology_view=DestroyCacheView(morphology_view);
 	image_view=DestroyCacheView(image_view);
 	
 	return result;

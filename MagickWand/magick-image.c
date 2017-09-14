@@ -7034,9 +7034,14 @@ WandExport MagickBooleanType MagickIsImageBlurred(MagickWand *wand,
 	}
 	
 	ExceptionInfo *exception = wand->exception;
+	
+	ColorspaceType originalColorspace = MagickGetColorspace(wand);
+	
 	MagickSetColorspace(wand, GRAYColorspace);
 	
 	result = IsImageBlurred(image, threshold, exception);
+	
+	MagickSetColorspace(wand, originalColorspace);
 	
 	return result;
 }
