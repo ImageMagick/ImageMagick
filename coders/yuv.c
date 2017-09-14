@@ -207,7 +207,10 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       horizontal_factor,(image->rows+vertical_factor-1)/vertical_factor,
       MagickTrue,exception);
     if (chroma_image == (Image *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      {
+	    scanline=(unsigned char *) RelinquishMagickMemory(scanline);
+	    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+	  }
     /*
       Convert raster image to pixel packets.
     */
@@ -216,13 +219,17 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
-      return(DestroyImageList(image));
+      {
+	    scanline=(unsigned char *) RelinquishMagickMemory(scanline);
+	    return(DestroyImageList(image));
+	  }
     if (interlace == PartitionInterlace)
       {
         AppendImageFormat("Y",image->filename);
         status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
         if (status == MagickFalse)
           {
+		    scanline=(unsigned char *) RelinquishMagickMemory(scanline);
             image=DestroyImageList(image);
             return((Image *) NULL);
           }
@@ -329,6 +336,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
         if (status == MagickFalse)
           {
+            scanline=(unsigned char *) RelinquishMagickMemory(scanline);
             image=DestroyImageList(image);
             return((Image *) NULL);
           }
@@ -367,6 +375,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
           status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
           if (status == MagickFalse)
             {
+              scanline=(unsigned char *) RelinquishMagickMemory(scanline);
               image=DestroyImageList(image);
               return((Image *) NULL);
             }
@@ -402,7 +411,10 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       TriangleFilter,exception);
     chroma_image=DestroyImage(chroma_image);
     if (resize_image == (Image *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      {
+        scanline=(unsigned char *) RelinquishMagickMemory(scanline);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      }
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -450,6 +462,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         AcquireNextImage(image_info,image,exception);
         if (GetNextImageInList(image) == (Image *) NULL)
           {
+            scanline=(unsigned char *) RelinquishMagickMemory(scanline);
             image=DestroyImageList(image);
             return((Image *) NULL);
           }
