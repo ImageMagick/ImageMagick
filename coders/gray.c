@@ -183,6 +183,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   scene=0;
   count=0;
   length=0;
+  status=MagickTrue;
   do
   {
     /*
@@ -215,6 +216,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
 
       if (count != (ssize_t) length)
         {
+          status=MagickFalse;
           ThrowFileException(exception,CorruptImageError,
             "UnexpectedEndOfFile",image->filename);
           break;
@@ -283,6 +285,8 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   quantum_info=DestroyQuantumInfo(quantum_info);
   canvas_image=DestroyImage(canvas_image);
   (void) CloseBlob(image);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 
