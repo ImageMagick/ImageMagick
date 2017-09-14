@@ -233,8 +233,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
             image->columns,1,exception);
           q=QueueAuthenticPixels(image,0,y-image->extract_info.y,image->columns,
             1,exception);
-          if ((p == (const Quantum *) NULL) ||
-              (q == (Quantum *) NULL))
+          if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
