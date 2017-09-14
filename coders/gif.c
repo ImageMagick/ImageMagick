@@ -1255,7 +1255,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->colors=BitSet((int) flag,0x80) == 0 ? global_colors : one <<
       ((size_t) (flag & 0x07)+1);
     if (opacity >= (ssize_t) image->colors)
-      opacity=(-1);
+      image->colors=opacity+1;
     image->page.width=page.width;
     image->page.height=page.height;
     image->page.y=page.y;
