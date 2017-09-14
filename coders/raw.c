@@ -135,13 +135,16 @@ static Image *ReadRAWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AcquireImage(image_info,exception);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     {
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  if (DiscardBlobBytes(image,image->offset) == MagickFalse)
+  if (DiscardBlobBytes(image,(MagickSizeType) image->offset) == MagickFalse)
     ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
   /*
@@ -175,6 +178,7 @@ static Image *ReadRAWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   scene=0;
   count=0;
   length=0;
+  status=MagickTrue;
   do
   {
     /*
@@ -185,7 +189,7 @@ static Image *ReadRAWImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
-      return(DestroyImageList(image));
+      break;
     if (scene == 0)
       {
         length=GetQuantumExtent(canvas_image,quantum_info,quantum_type);
@@ -205,6 +209,7 @@ static Image *ReadRAWImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       if (count != (ssize_t) length)
         {
+          status=MagickFalse;
           ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
             image->filename);
           break;
@@ -275,6 +280,8 @@ static Image *ReadRAWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   quantum_info=DestroyQuantumInfo(quantum_info);
   canvas_image=DestroyImage(canvas_image);
   (void) CloseBlob(image);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 
