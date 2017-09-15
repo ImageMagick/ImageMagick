@@ -164,7 +164,10 @@ static Image *ReadFLIFImage(const ImageInfo *image_info,
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   count=ReadBlob(image,length,stream);
   if (count != length)
-    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+    {
+      stream=(unsigned char *) RelinquishMagickMemory(stream);
+      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+    }
   flifdec=flif_create_decoder();
   if (image_info->quality != UndefinedCompressionQuality)
     flif_decoder_set_quality(flifdec,(int32_t) image_info->quality);
