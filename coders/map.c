@@ -169,13 +169,21 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     sizeof(*colormap));
   if ((pixels == (unsigned char *) NULL) ||
       (colormap == (unsigned char *) NULL))
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    {
+      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+      colormap=(unsigned char *) RelinquishMagickMemory(colormap);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   /*
     Read image colormap.
   */
   count=ReadBlob(image,packet_size*image->colors,colormap);
   if (count != (ssize_t) (packet_size*image->colors))
-    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+    {
+      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+      colormap=(unsigned char *) RelinquishMagickMemory(colormap);
+      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+    }
   p=colormap;
   if (image->depth <= 8)
     for (i=0; i < (ssize_t) image->colors; i++)
@@ -201,11 +209,15 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->ping != MagickFalse)
     {
       (void) CloseBlob(image);
+      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
       return(GetFirstImageInList(image));
     }
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
-    return(DestroyImageList(image));
+    {
+      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+      return(DestroyImageList(image));
+    }
   /*
     Read image pixels.
   */
