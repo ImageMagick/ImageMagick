@@ -4367,7 +4367,12 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             jng_width=(png_uint_32)mng_get_long(p);
             jng_height=(png_uint_32)mng_get_long(&p[4]);
             if ((jng_width == 0) || (jng_height == 0))
+            {
+              DestroyJNG(chunk,&color_image,&color_image_info,
+                &alpha_image,&alpha_image_info);
+
               ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
+            }
             jng_color_type=p[8];
             jng_image_sample_depth=p[9];
             jng_image_compression_method=p[10];
@@ -4443,13 +4448,20 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
         color_image_info=(ImageInfo *)AcquireMagickMemory(sizeof(ImageInfo));
 
         if (color_image_info == (ImageInfo *) NULL)
+        {
+          DestroyJNG(chunk,&color_image,&color_image_info,
+              &alpha_image,&alpha_image_info);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        }
 
         GetImageInfo(color_image_info);
         color_image=AcquireImage(color_image_info);
-
         if (color_image == (Image *) NULL)
+        {
+          DestroyJNG(chunk,&color_image,&color_image_info,
+              &alpha_image,&alpha_image_info);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        }
 
         (void) AcquireUniqueFilename(color_image->filename);
         unique_filenames++;
@@ -4458,7 +4470,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
         if (status == MagickFalse)
           {
-            color_image=DestroyImage(color_image);
+            DestroyJNG(chunk,&color_image,&color_image_info,
+              &alpha_image,&alpha_image_info);
             return(DestroyImageList(image));
           }
 
@@ -4469,7 +4482,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
             if (alpha_image_info == (ImageInfo *) NULL)
               {
-                color_image=DestroyImage(color_image);
+                DestroyJNG(chunk,&color_image,&color_image_info,
+                  &alpha_image,&alpha_image_info);
                 ThrowReaderException(ResourceLimitError,
                   "MemoryAllocationFailed");
               }
@@ -4479,8 +4493,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
             if (alpha_image == (Image *) NULL)
               {
-                alpha_image_info=DestroyImageInfo(alpha_image_info);
-                color_image=DestroyImage(color_image);
+                  DestroyJNG(chunk,&color_image,&color_image_info,
+                    &alpha_image,&alpha_image_info);
                 ThrowReaderException(ResourceLimitError,
                   "MemoryAllocationFailed");
               }
@@ -4781,7 +4795,12 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   color_image_info=DestroyImageInfo(color_image_info);
 
   if (jng_image == (Image *) NULL)
+  {
+     DestroyJNG(NULL,&color_image,&color_image_info,
+         &alpha_image,&alpha_image_info);
     return(DestroyImageList(image));
+  }
+
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
