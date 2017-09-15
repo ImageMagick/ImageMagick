@@ -1226,11 +1226,21 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       profile=BlobToStringInfo(GetBlobStreamData(buff),(size_t)
         GetBlobSize(buff));
       if (profile == (StringInfo *) NULL)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        {
+          blob=DetachBlob(buff->blob);
+          blob=RelinquishMagickMemory(blob);
+          buff=DestroyImage(buff);
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        }
       status=SetImageProfile(image,"8bim",profile,exception);
       profile=DestroyStringInfo(profile);
       if (status == MagickFalse)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        {
+          blob=DetachBlob(buff->blob);
+          blob=RelinquishMagickMemory(blob);
+          buff=DestroyImage(buff);
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        }
       blob=DetachBlob(buff->blob);
       blob=(unsigned char *) RelinquishMagickMemory(blob);
       buff=DestroyImage(buff);
@@ -1294,11 +1304,21 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       profile=BlobToStringInfo(GetBlobStreamData(buff),(size_t)
         GetBlobSize(buff));
       if (profile == (StringInfo *) NULL)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        {
+          blob=DetachBlob(buff->blob);
+          blob=RelinquishMagickMemory(blob);
+          buff=DestroyImage(buff);
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        }
       status=SetImageProfile(image,name,profile,exception);
       profile=DestroyStringInfo(profile);
       if (status == MagickFalse)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        {
+          blob=DetachBlob(buff->blob);
+          blob=RelinquishMagickMemory(blob);
+          buff=DestroyImage(buff);          
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        }
       blob=DetachBlob(buff->blob);
       blob=RelinquishMagickMemory(blob);
       buff=DestroyImage(buff);
@@ -1320,7 +1340,12 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       profile=BlobToStringInfo(GetBlobStreamData(buff),(size_t)
         GetBlobSize(buff));
       if (profile == (StringInfo *) NULL)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        {
+          blob=DetachBlob(buff->blob);
+          blob=(unsigned char *) RelinquishMagickMemory(blob);
+          buff=DestroyImage(buff);
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        }
       (void) SetImageProfile(image,"icc",profile,exception);
       profile=DestroyStringInfo(profile);
       blob=DetachBlob(buff->blob);
@@ -1343,7 +1368,12 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       profile=BlobToStringInfo(GetBlobStreamData(buff),(size_t)
         GetBlobSize(buff));
       if (profile == (StringInfo *) NULL)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        {
+          blob=DetachBlob(buff->blob);
+          blob=(unsigned char *) RelinquishMagickMemory(blob);
+          buff=DestroyImage(buff);          
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        }
       (void) SetImageProfile(image,"8bim",profile,exception);
       profile=DestroyStringInfo(profile);
       blob=DetachBlob(buff->blob);
@@ -1366,7 +1396,12 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       profile=BlobToStringInfo(GetBlobStreamData(buff),(size_t)
         GetBlobSize(buff));
       if (profile == (StringInfo *) NULL)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        {
+          blob=DetachBlob(buff->blob);
+          blob=(unsigned char *) RelinquishMagickMemory(blob);
+          buff=DestroyImage(buff);          
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        }
       (void) SetImageProfile(image,"xmp",profile,exception);
       profile=DestroyStringInfo(profile);
       blob=DetachBlob(buff->blob);
