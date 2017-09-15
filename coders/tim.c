@@ -240,7 +240,10 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     count=ReadBlob(image,image_size,tim_data);
     if (count != (ssize_t) (image_size))
-      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+      {
+        tim_data=(unsigned char *) RelinquishMagickMemory(tim_data);
+        ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+      }
     tim_pixels=tim_data;
     /*
       Initialize image structure.
