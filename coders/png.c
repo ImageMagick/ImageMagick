@@ -4638,6 +4638,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
           {
             DestroyJNG(chunk,&color_image,&color_image_info,
               &alpha_image,&alpha_image_info);
+            DestroyJNG(chunk,&color_image,&color_image_info, &alpha_image,&alpha_image_info);
             return(DestroyImageList(image));
           }
 
@@ -4650,6 +4651,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
               {
                 DestroyJNG(chunk,&color_image,&color_image_info,
                   &alpha_image,&alpha_image_info);
+                DestroyJNG(chunk,&color_image,&color_image_info, &alpha_image,&alpha_image_info);
                 ThrowReaderException(ResourceLimitError,
                   "MemoryAllocationFailed");
               }
@@ -4661,6 +4663,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
               {
                   DestroyJNG(chunk,&color_image,&color_image_info,
                     &alpha_image,&alpha_image_info);
+                DestroyJNG(chunk,&color_image,&color_image_info, &alpha_image,&alpha_image_info);
                 ThrowReaderException(ResourceLimitError,
                   "MemoryAllocationFailed");
               }
@@ -4678,6 +4681,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
                 alpha_image=DestroyImage(alpha_image);
                 alpha_image_info=DestroyImageInfo(alpha_image_info);
                 color_image=DestroyImage(color_image);
+                DestroyJNG(chunk,&color_image,&color_image_info, &alpha_image,&alpha_image_info);
                 return(DestroyImageList(image));
               }
 
@@ -4975,7 +4979,11 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
-    return(DestroyImageList(image));
+    {
+      jng_image=DestroyImage(jng_image);
+      DestroyJNG(NULL,&color_image,&color_image_info, &alpha_image,&alpha_image_info);
+      return(DestroyImageList(image));
+    }
 
   for (y=0; y < (ssize_t) image->rows; y++)
   {
