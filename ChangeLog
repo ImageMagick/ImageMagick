@@ -1,6 +1,6 @@
 
 2017-09-15  7.0.7-3 Glenn Randers-Pehrson <glennrp@image...>
-  * Stop poential leaks in the JNG decoder (reference:
+  * Stop potential leaks in the JNG decoder (reference:
     https://github.com/ImageMagick/ImageMagick/issues/760).
   * Maximum valid hour is 23, not 24, in the PNG tIME chunk, and maximum
     valid minute is 59, not 60.  
