@@ -1156,6 +1156,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (info == (unsigned char *) NULL)
                   {
                     meta_image=DestroyImage(meta_image);
+                    global_colormap=(unsigned char *) RelinquishMagickMemory(global_colormap);
                     ThrowReaderException(ResourceLimitError,
                       "MemoryAllocationFailed");
                   }
@@ -1174,6 +1175,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       if (info == (unsigned char *) NULL)
                         {
                           meta_image=DestroyImage(meta_image);
+                          global_colormap=(unsigned char *) RelinquishMagickMemory(global_colormap);
                           ThrowReaderException(ResourceLimitError,
                             "MemoryAllocationFailed");
                         }
@@ -1183,6 +1185,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (profile == (StringInfo *) NULL)
                   {
                     meta_image=DestroyImage(meta_image);
+                    global_colormap=(unsigned char *) RelinquishMagickMemory(global_colormap);
                     ThrowReaderException(ResourceLimitError,
                       "MemoryAllocationFailed");
                   }
@@ -1355,7 +1358,11 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
-      return(DestroyImageList(image));
+      {
+        global_colormap=(unsigned char *) RelinquishMagickMemory(global_colormap);
+        meta_image=DestroyImage(meta_image);
+        return(DestroyImageList(image));
+      }
     /*
       Decode image.
     */
