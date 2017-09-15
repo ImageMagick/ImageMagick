@@ -404,51 +404,42 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
   ExceptionInfo *exception)
 {
   register const MagickInfo
-    *p;
+    *magick_info;
 
+  /*
+    Find named module attributes.
+  */
   assert(exception != (ExceptionInfo *) NULL);
   if (IsMagickTreeInstantiated(exception) == MagickFalse)
     return((const MagickInfo *) NULL);
+  magick_info=(const MagickInfo *) NULL;
 #if defined(MAGICKCORE_MODULES_SUPPORT)
-  if ((name != (const char *) NULL) && (LocaleCompare(name,"*") == 0))
-    (void) OpenModules(exception);
+  if ((name != (const char *) NULL) && (*name != '\0'))
+    {
+      LockSemaphoreInfo(magick_semaphore);
+      if (LocaleCompare(name,"*") == 0)
+        (void) OpenModules(exception);
+      else
+        {
+          magick_info=(const MagickInfo *) GetValueFromSplayTree(magick_list,
+            name);
+          if (magick_info == (const MagickInfo *) NULL)
+            (void) OpenModule(name,exception);
+        }
+      UnlockSemaphoreInfo(magick_semaphore);
+    }
 #endif
-  /*
-    Find name in list.
-  */
-  LockSemaphoreInfo(magick_semaphore);
-  ResetSplayTreeIterator(magick_list);
-  p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     {
+      LockSemaphoreInfo(magick_semaphore);
       ResetSplayTreeIterator(magick_list);
-      p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
+      magick_info=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
       UnlockSemaphoreInfo(magick_semaphore);
-      return(p);
+      return(magick_info);
     }
-  while (p != (const MagickInfo *) NULL)
-  {
-    if (LocaleCompare(p->name,name) == 0)
-      break;
-    p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
-  }
-#if defined(MAGICKCORE_MODULES_SUPPORT)
-  if (p == (const MagickInfo *) NULL)
-    {
-      if (*name != '\0')
-        (void) OpenModule(name,exception);
-      ResetSplayTreeIterator(magick_list);
-      p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
-      while (p != (const MagickInfo *) NULL)
-      {
-        if (LocaleCompare(p->name,name) == 0)
-          break;
-        p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
-      }
-    }
-#endif
-  UnlockSemaphoreInfo(magick_semaphore);
-  return(p);
+  if (magick_info == (const MagickInfo *) NULL)
+    magick_info=(const MagickInfo *) GetValueFromSplayTree(magick_list,name);
+  return(magick_info);
 }
 
 /*
