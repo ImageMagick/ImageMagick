@@ -1186,6 +1186,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   {
                     meta_image=DestroyImage(meta_image);
                     global_colormap=(unsigned char *) RelinquishMagickMemory(global_colormap);
+                    info=(unsigned char *) RelinquishMagickMemory(info);
                     ThrowReaderException(ResourceLimitError,
                       "MemoryAllocationFailed");
                   }
