@@ -136,8 +136,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     y;
 
   unsigned char
-    *tim_data,
-    *tim_pixels;
+    *tim_data;
 
   unsigned short
     word;
@@ -247,7 +246,6 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     count=ReadBlob(image,image_size,tim_data);
     if (count != (ssize_t) (image_size))
       ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-    tim_pixels=tim_data;
     /*
       Initialize image structure.
     */
@@ -269,7 +267,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetAuthenticIndexQueue(image);
-          p=tim_pixels+y*bytes_per_line;
+          p=tim_data+y*bytes_per_line;
           for (x=0; x < ((ssize_t) image->columns-1); x+=2)
           {
             SetPixelIndex(indexes+x,(*p) & 0x0f);
@@ -304,7 +302,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetAuthenticIndexQueue(image);
-          p=tim_pixels+y*bytes_per_line;
+          p=tim_data+y*bytes_per_line;
           for (x=0; x < (ssize_t) image->columns; x++)
             SetPixelIndex(indexes+x,*p++);
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -326,7 +324,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         for (y=(ssize_t) image->rows-1; y >= 0; y--)
         {
-          p=tim_pixels+y*bytes_per_line;
+          p=tim_data+y*bytes_per_line;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
             break;
@@ -361,7 +359,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         for (y=(ssize_t) image->rows-1; y >= 0; y--)
         {
-          p=tim_pixels+y*bytes_per_line;
+          p=tim_data+y*bytes_per_line;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
             break;
@@ -389,7 +387,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     if (image->storage_class == PseudoClass)
       (void) SyncImage(image);
-    tim_pixels=(unsigned char *) RelinquishMagickMemory(tim_pixels);
+    tim_data=(unsigned char *) RelinquishMagickMemory(tim_data);
     if (EOFBlob(image) != MagickFalse)
       {
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
