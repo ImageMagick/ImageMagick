@@ -277,23 +277,12 @@ static SplayTreeInfo *AcquireTypeCache(const char *filename,
 MagickExport const TypeInfo *GetTypeInfo(const char *name,
   ExceptionInfo *exception)
 {
-  const TypeInfo
-    *type_info;
-
   assert(exception != (ExceptionInfo *) NULL);
   if (IsTypeTreeInstantiated(exception) == MagickFalse)
     return((const TypeInfo *) NULL);
-  LockSemaphoreInfo(type_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
-    {
-      ResetSplayTreeIterator(type_cache);
-      type_info=(const TypeInfo *) GetNextValueInSplayTree(type_cache);
-      UnlockSemaphoreInfo(type_semaphore);
-      return(type_info);
-    }
-  type_info=(const TypeInfo *) GetValueFromSplayTree(type_cache,name);
-  UnlockSemaphoreInfo(type_semaphore);
-  return(type_info);
+    return((const TypeInfo *) GetRootValueFromSplayTree(type_cache));
+  return((const TypeInfo *) GetValueFromSplayTree(type_cache,name));
 }
 
 /*
