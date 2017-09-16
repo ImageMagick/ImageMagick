@@ -4638,7 +4638,6 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
           {
             DestroyJNG(chunk,&color_image,&color_image_info,
               &alpha_image,&alpha_image_info);
-            DestroyJNG(chunk,&color_image,&color_image_info, &alpha_image,&alpha_image_info);
             return(DestroyImageList(image));
           }
 
@@ -4651,7 +4650,6 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
               {
                 DestroyJNG(chunk,&color_image,&color_image_info,
                   &alpha_image,&alpha_image_info);
-                DestroyJNG(chunk,&color_image,&color_image_info, &alpha_image,&alpha_image_info);
                 ThrowReaderException(ResourceLimitError,
                   "MemoryAllocationFailed");
               }
@@ -4661,9 +4659,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
             if (alpha_image == (Image *) NULL)
               {
-                  DestroyJNG(chunk,&color_image,&color_image_info,
-                    &alpha_image,&alpha_image_info);
-                DestroyJNG(chunk,&color_image,&color_image_info, &alpha_image,&alpha_image_info);
+                DestroyJNG(chunk,&color_image,&color_image_info,
+                  &alpha_image,&alpha_image_info);
                 ThrowReaderException(ResourceLimitError,
                   "MemoryAllocationFailed");
               }
@@ -4678,10 +4675,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
             if (status == MagickFalse)
               {
-                alpha_image=DestroyImage(alpha_image);
-                alpha_image_info=DestroyImageInfo(alpha_image_info);
-                color_image=DestroyImage(color_image);
-                DestroyJNG(chunk,&color_image,&color_image_info, &alpha_image,&alpha_image_info);
+                DestroyJNG(chunk,&color_image,&color_image_info,
+                  &alpha_image,&alpha_image_info);
                 return(DestroyImageList(image));
               }
 
@@ -4981,7 +4976,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   if (status == MagickFalse)
     {
       jng_image=DestroyImage(jng_image);
-      DestroyJNG(NULL,&color_image,&color_image_info, &alpha_image,&alpha_image_info);
+      DestroyJNG(NULL,&color_image,&color_image_info,
+        &alpha_image,&alpha_image_info);
       return(DestroyImageList(image));
     }
 
