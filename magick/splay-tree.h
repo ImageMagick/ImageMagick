@@ -33,6 +33,7 @@ extern MagickExport MagickBooleanType
 extern MagickExport const void
   *GetNextKeyInSplayTree(SplayTreeInfo *),
   *GetNextValueInSplayTree(SplayTreeInfo *),
+  *GetRootValueFromSplayTree(SplayTreeInfo *),
   *GetValueFromSplayTree(SplayTreeInfo *,const void *);
 
 extern MagickExport int

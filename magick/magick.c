@@ -431,13 +431,7 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
     }
 #endif
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
-    {
-      LockSemaphoreInfo(magick_semaphore);
-      ResetSplayTreeIterator(magick_list);
-      magick_info=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
-      UnlockSemaphoreInfo(magick_semaphore);
-      return(magick_info);
-    }
+    magick_info=(const MagickInfo *) GetRootValueFromSplayTree(magick_list);
   if (magick_info == (const MagickInfo *) NULL)
     magick_info=(const MagickInfo *) GetValueFromSplayTree(magick_list,name);
   return(magick_info);
