@@ -897,13 +897,17 @@ static MagickBooleanType IsTypeTreeInstantiated(ExceptionInfo *exception)
       LockSemaphoreInfo(type_semaphore);
       if (type_cache == (SplayTreeInfo *) NULL)
         {
-          type_cache=AcquireTypeCache(MagickTypeFilename,exception);
+          SplayTreeInfo
+            *splay_tree;
+
+          splay_tree=AcquireTypeCache(MagickTypeFilename,exception);
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-          (void) NTAcquireTypeCache(type_cache,exception);
+          (void) NTAcquireTypeCache(splay_tree,exception);
 #endif
 #if defined(MAGICKCORE_FONTCONFIG_DELEGATE)
-          (void) LoadFontConfigFonts(type_cache,exception);
+          (void) LoadFontConfigFonts(splay_tree,exception);
 #endif
+          type_cache=splay_tree;
         }
       UnlockSemaphoreInfo(type_semaphore);
     }
