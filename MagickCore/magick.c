@@ -125,7 +125,8 @@ static SplayTreeInfo
 
 static volatile MagickBooleanType
   instantiate_magickcore = MagickFalse,
-  magickcore_signal_in_progress = MagickFalse;
+  magickcore_signal_in_progress = MagickFalse,
+  magick_list_initialized = MagickFalse;
 
 /*
   Forward declarations.
@@ -1019,12 +1020,12 @@ static void *DestroyMagickNode(void *magick_info)
 
 static MagickBooleanType IsMagickTreeInstantiated(ExceptionInfo *exception)
 {
-  if (magick_list == (SplayTreeInfo *) NULL)
+  if (magick_list_initialized == MagickFalse)
     {
       if (magick_semaphore == (SemaphoreInfo *) NULL)
         ActivateSemaphoreInfo(&magick_semaphore);
       LockSemaphoreInfo(magick_semaphore);
-      if (magick_list == (SplayTreeInfo *) NULL)
+      if (magick_list_initialized == MagickFalse)
         {
           magick_list=NewSplayTree(CompareSplayTreeString,(void *(*)(void *))
             NULL,DestroyMagickNode);
@@ -1037,6 +1038,7 @@ static MagickBooleanType IsMagickTreeInstantiated(ExceptionInfo *exception)
 #if !defined(MAGICKCORE_BUILD_MODULES)
           RegisterStaticModules();
 #endif
+          magick_list_initialized=MagickTrue;
         }
       UnlockSemaphoreInfo(magick_semaphore);
     }
