@@ -1316,7 +1316,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
         {
           blob=DetachBlob(buff->blob);
           blob=RelinquishMagickMemory(blob);
-          buff=DestroyImage(buff);          
+          buff=DestroyImage(buff);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
       blob=DetachBlob(buff->blob);
@@ -1371,7 +1371,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
         {
           blob=DetachBlob(buff->blob);
           blob=(unsigned char *) RelinquishMagickMemory(blob);
-          buff=DestroyImage(buff);          
+          buff=DestroyImage(buff);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
       (void) SetImageProfile(image,"8bim",profile,exception);
@@ -1399,7 +1399,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
         {
           blob=DetachBlob(buff->blob);
           blob=(unsigned char *) RelinquishMagickMemory(blob);
-          buff=DestroyImage(buff);          
+          buff=DestroyImage(buff);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
       (void) SetImageProfile(image,"xmp",profile,exception);
