@@ -281,15 +281,11 @@ MagickExport const char *GetImageArtifact(const Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   p=(const char *) NULL;
-  if (artifact == (const char *) NULL)
-    {
-      ResetSplayTreeIterator((SplayTreeInfo *) image->artifacts);
-      p=(const char *) GetNextValueInSplayTree((SplayTreeInfo *)
-        image->artifacts);
-      return(p);
-    }
   if (image->artifacts != (void *) NULL)
     {
+      if (artifact == (const char *) NULL)
+        return((const char *) GetRootValueFromSplayTree((SplayTreeInfo *)
+          image->artifacts));
       p=(const char *) GetValueFromSplayTree((SplayTreeInfo *) image->artifacts,
         artifact);
       if (p != (const char *) NULL)
