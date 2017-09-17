@@ -157,7 +157,10 @@ static Image *ReadHRZImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     count=ReadBlob(image,length,pixels);
     if ((size_t) count != length)
-      ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+      {
+        pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+        ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+      }
     p=pixels;
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)

@@ -1355,7 +1355,10 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               break;
             count=ReadBlob(image,length,info);
             if (count != (ssize_t) length)
-              ThrowReaderException(ResourceLimitError,"UnableToReadImageData");
+              {
+                info=(unsigned char *) RelinquishMagickMemory(info);
+                ThrowReaderException(ResourceLimitError,"UnableToReadImageData");
+              }
             switch (type)
             {
               case 0xe0:

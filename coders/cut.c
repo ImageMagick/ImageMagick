@@ -509,7 +509,14 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   offset=SeekBlob(image,6 /*sizeof(Header)*/,SEEK_SET);
   if (offset < 0)
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    {
+      if (palette != NULL)
+        palette=DestroyImage(palette);
+      if (clone_info != NULL)
+        clone_info=DestroyImageInfo(clone_info);
+      BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
   for (i=0; i < (int) Header.Height; i++)
   {
       EncodedByte=ReadBlobLSBShort(image);

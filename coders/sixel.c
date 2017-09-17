@@ -1035,6 +1035,8 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
   status=SetImageExtent(image,image->columns,image->rows);
   if (status == MagickFalse)
     {
+      sixel_pixels=(unsigned char *) RelinquishMagickMemory(sixel_pixels);
+      sixel_palette=(unsigned char *) RelinquishMagickMemory(sixel_palette);
       InheritException(exception,&image->exception);
       return(DestroyImageList(image));
     }

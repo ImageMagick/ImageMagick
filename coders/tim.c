@@ -245,7 +245,10 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     count=ReadBlob(image,image_size,tim_data);
     if (count != (ssize_t) (image_size))
-      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+      {
+        tim_data=(unsigned char *) RelinquishMagickMemory(tim_data);
+        ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+      }
     /*
       Initialize image structure.
     */
@@ -383,7 +386,10 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       }
       default:
+      {
+        tim_data=(unsigned char *) RelinquishMagickMemory(tim_data);
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      }
     }
     if (image->storage_class == PseudoClass)
       (void) SyncImage(image);

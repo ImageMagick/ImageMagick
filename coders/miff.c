@@ -1191,6 +1191,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             switch (image->depth)
             {
               default:
+                colormap=(unsigned char *) RelinquishMagickMemory(colormap);
                 ThrowReaderException(CorruptImageError,
                   "ImageDepthNotSupported");
               case 8:
@@ -1264,7 +1265,10 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       {
         status=SetQuantumFormat(image,quantum_info,quantum_format);
         if (status == MagickFalse)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+          {
+            quantum_info=DestroyQuantumInfo(quantum_info);
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+          }
       }
     packet_size=(size_t) (quantum_info->depth/8);
     if (image->storage_class == DirectClass)
@@ -1283,7 +1287,10 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     compress_pixels=(unsigned char *) AcquireQuantumMemory(compress_extent,
       sizeof(*compress_pixels));
     if (compress_pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      {
+        quantum_info=DestroyQuantumInfo(quantum_info);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      }
     /*
       Read image pixels.
     */
@@ -1424,6 +1431,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 if (length > compress_extent)
                   {
                     (void) BZ2_bzDecompressEnd(&bzip_info);
+                    quantum_info=DestroyQuantumInfo(quantum_info);
+                    compress_pixels=(unsigned char *) RelinquishMagickMemory(
+                      compress_pixels);
                     ThrowReaderException(CorruptImageError,
                       "UnableToReadImageData");
                   }
@@ -1461,6 +1471,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 if (length > compress_extent)
                   {
                     lzma_end(&lzma_info);
+                    quantum_info=DestroyQuantumInfo(quantum_info);
+                    compress_pixels=(unsigned char *) RelinquishMagickMemory(
+                      compress_pixels);
                     ThrowReaderException(CorruptImageError,
                       "UnableToReadImageData");
                   }
@@ -1501,6 +1514,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 if (length > compress_extent)
                   {
                     (void) inflateEnd(&zip_info);
+                    quantum_info=DestroyQuantumInfo(quantum_info);
+                    compress_pixels=(unsigned char *) RelinquishMagickMemory(
+                      compress_pixels);
                     ThrowReaderException(CorruptImageError,
                       "UnableToReadImageData");
                   }
@@ -1570,7 +1586,12 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             offset=SeekBlob(image,-((MagickOffsetType) bzip_info.avail_in),
               SEEK_CUR);
             if (offset < 0)
-              ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+              {
+                quantum_info=DestroyQuantumInfo(quantum_info);
+                compress_pixels=(unsigned char *) RelinquishMagickMemory(
+                  compress_pixels);
+                ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+              }
           }
         code=BZ2_bzDecompressEnd(&bzip_info);
         if (code != BZ_OK)
