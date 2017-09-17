@@ -1,3 +1,6 @@
+2017-09-17  6.9.9-14 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.9-14, GIT revision 12050:b9c9b5fe7:20170917.
+
 2017-09-17  6.9.9-14 ADLab of Venustech
   * Fixed numerous memory leaks (reference
     https://github.com/ImageMagick/ImageMagick/pull/763).
