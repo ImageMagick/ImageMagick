@@ -879,7 +879,7 @@ MagickExport const void *GetRootValueFromSplayTree(SplayTreeInfo *splay_tree)
     *value;
 
   assert(splay_tree != (SplayTreeInfo *) NULL);
-  assert(splay_tree->signature == MagickCoreSignature);
+  assert(splay_tree->signature == MagickSignature);
   if (splay_tree->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   LockSemaphoreInfo(splay_tree->semaphore);
