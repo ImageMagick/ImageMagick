@@ -4959,8 +4959,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
   if (jng_image == (Image *) NULL)
   {
-     DestroyJNG(NULL,&color_image,&color_image_info,
-         &alpha_image,&alpha_image_info);
+    DestroyJNG(NULL,NULL,NULL,&alpha_image,&alpha_image_info);
     return(DestroyImageList(image));
   }
 
@@ -4976,8 +4975,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   if (status == MagickFalse)
     {
       jng_image=DestroyImage(jng_image);
-      DestroyJNG(NULL,&color_image,&color_image_info,
-        &alpha_image,&alpha_image_info);
+      DestroyJNG(NULL,NULL,NULL,&alpha_image,&alpha_image_info);
       return(DestroyImageList(image));
     }
 
@@ -5000,66 +4998,63 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
   jng_image=DestroyImage(jng_image);
 
-  if (image_info->ping == MagickFalse)
+  if ((image_info->ping == MagickFalse) && (jng_color_type >= 12))
     {
-     if (jng_color_type >= 12)
-       {
-         if (jng_alpha_compression_method == 0)
-           {
-             png_byte
-               data[5];
-             (void) WriteBlobMSBULong(alpha_image,0x00000000L);
-             PNGType(data,mng_IEND);
-             LogPNGChunk(logging,mng_IEND,0L);
-             (void) WriteBlob(alpha_image,4,data);
-             (void) WriteBlobMSBULong(alpha_image,crc32(0,data,4));
-           }
+      if (jng_alpha_compression_method == 0)
+        {
+          png_byte
+            data[5];
+          (void) WriteBlobMSBULong(alpha_image,0x00000000L);
+          PNGType(data,mng_IEND);
+          LogPNGChunk(logging,mng_IEND,0L);
+          (void) WriteBlob(alpha_image,4,data);
+          (void) WriteBlobMSBULong(alpha_image,crc32(0,data,4));
+        }
 
-         (void) CloseBlob(alpha_image);
+      (void) CloseBlob(alpha_image);
 
-         if (logging != MagickFalse)
-           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-             "    Reading alpha from alpha_blob.");
+      if (logging != MagickFalse)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    Reading alpha from alpha_blob.");
 
-         (void) FormatLocaleString(alpha_image_info->filename,MagickPathExtent,
-           "%s",alpha_image->filename);
+      (void) FormatLocaleString(alpha_image_info->filename,MagickPathExtent,
+        "%s",alpha_image->filename);
 
-         jng_image=ReadImage(alpha_image_info,exception);
+      jng_image=ReadImage(alpha_image_info,exception);
 
-         if (jng_image != (Image *) NULL)
-           for (y=0; y < (ssize_t) image->rows; y++)
-           {
-             s=GetVirtualPixels(jng_image,0,y,image->columns,1,
-               exception);
-             q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+      if (jng_image != (Image *) NULL)
+        for (y=0; y < (ssize_t) image->rows; y++)
+        {
+          s=GetVirtualPixels(jng_image,0,y,image->columns,1,
+            exception);
+          q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
 
-             if (image->alpha_trait != UndefinedPixelTrait)
-               for (x=(ssize_t) image->columns; x != 0; x--)
-               {
-                  SetPixelAlpha(image,GetPixelRed(jng_image,s),q);
-                  q+=GetPixelChannels(image);
-                  s+=GetPixelChannels(jng_image);
-               }
+          if (image->alpha_trait != UndefinedPixelTrait)
+            for (x=(ssize_t) image->columns; x != 0; x--)
+            {
+              SetPixelAlpha(image,GetPixelRed(jng_image,s),q);
+              q+=GetPixelChannels(image);
+              s+=GetPixelChannels(jng_image);
+            }
 
-             else
-               for (x=(ssize_t) image->columns; x != 0; x--)
-               {
-                  SetPixelAlpha(image,GetPixelRed(jng_image,s),q);
-                  if (GetPixelAlpha(image,q) != OpaqueAlpha)
-                    image->alpha_trait=BlendPixelTrait;
-                  q+=GetPixelChannels(image);
-                  s+=GetPixelChannels(jng_image);
-               }
+          else
+            for (x=(ssize_t) image->columns; x != 0; x--)
+            {
+              SetPixelAlpha(image,GetPixelRed(jng_image,s),q);
+              if (GetPixelAlpha(image,q) != OpaqueAlpha)
+                image->alpha_trait=BlendPixelTrait;
+              q+=GetPixelChannels(image);
+              s+=GetPixelChannels(jng_image);
+            }
 
-             if (SyncAuthenticPixels(image,exception) == MagickFalse)
-               break;
-           }
-         (void) RelinquishUniqueFileResource(alpha_image->filename);
-         alpha_image=DestroyImage(alpha_image);
-         alpha_image_info=DestroyImageInfo(alpha_image_info);
-         if (jng_image != (Image *) NULL)
-           jng_image=DestroyImage(jng_image);
-       }
+          if (SyncAuthenticPixels(image,exception) == MagickFalse)
+            break;
+        }
+      (void) RelinquishUniqueFileResource(alpha_image->filename);
+      alpha_image=DestroyImage(alpha_image);
+      alpha_image_info=DestroyImageInfo(alpha_image_info);
+      if (jng_image != (Image *) NULL)
+        jng_image=DestroyImage(jng_image);
     }
 
   /* Read the JNG image.  */
