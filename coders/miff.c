@@ -1412,7 +1412,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   {
                     (void) BZ2_bzDecompressEnd(&bzip_info);
                     quantum_info=DestroyQuantumInfo(quantum_info);
-                    compress_pixels=(unsigned char *) RelinquishMagickMemory(compress_pixels);
+                    compress_pixels=(unsigned char *) RelinquishMagickMemory(
+                      compress_pixels);
                     ThrowReaderException(CorruptImageError,
                       "UnableToReadImageData");
                   }
@@ -1451,7 +1452,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   {
                     lzma_end(&lzma_info);
                     quantum_info=DestroyQuantumInfo(quantum_info);
-                    compress_pixels=(unsigned char *) RelinquishMagickMemory(compress_pixels);
+                    compress_pixels=(unsigned char *) RelinquishMagickMemory(
+                      compress_pixels);
                     ThrowReaderException(CorruptImageError,
                       "UnableToReadImageData");
                   }
@@ -1493,7 +1495,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   {
                     (void) inflateEnd(&zip_info);
                     quantum_info=DestroyQuantumInfo(quantum_info);
-                    compress_pixels=(unsigned char *) RelinquishMagickMemory(compress_pixels);
+                    compress_pixels=(unsigned char *) RelinquishMagickMemory(
+                      compress_pixels);
                     ThrowReaderException(CorruptImageError,
                       "UnableToReadImageData");
                   }
@@ -1570,7 +1573,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             if (offset < 0)
               {
                 quantum_info=DestroyQuantumInfo(quantum_info);
-                compress_pixels=(unsigned char *) RelinquishMagickMemory(compress_pixels);
+                compress_pixels=(unsigned char *) RelinquishMagickMemory(
+                  compress_pixels);
                 ThrowReaderException(CorruptImageError,"ImproperImageHeader");
               }
           }
@@ -1610,7 +1614,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             if (offset < 0)
               {
                 quantum_info=DestroyQuantumInfo(quantum_info);
-                compress_pixels=(unsigned char *) RelinquishMagickMemory(compress_pixels);
+                compress_pixels=(unsigned char *) RelinquishMagickMemory(
+                  compress_pixels);
                 ThrowReaderException(CorruptImageError,"ImproperImageHeader");
               }
           }
