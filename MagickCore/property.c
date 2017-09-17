@@ -2199,7 +2199,7 @@ MagickExport const char *GetImageProperty(const Image *image,
         return((const char *) GetRootValueFromSplayTree((SplayTreeInfo *)
           image->properties));
       p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
-          image->properties,property);
+        image->properties,property);
       if (p != (const char *) NULL)
         return(p);
     }
