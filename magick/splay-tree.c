@@ -882,8 +882,8 @@ MagickExport const void *GetRootValueFromSplayTree(SplayTreeInfo *splay_tree)
   assert(splay_tree->signature == MagickSignature);
   if (splay_tree->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+  value=(const void *) NULL;
   LockSemaphoreInfo(splay_tree->semaphore);
-  value=NULL;
   if (splay_tree->root != (NodeInfo *) NULL)
     value=splay_tree->root->value;
   UnlockSemaphoreInfo(splay_tree->semaphore);
