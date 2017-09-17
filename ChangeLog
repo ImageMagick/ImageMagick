@@ -1,3 +1,6 @@
+2017-09-17  7.0.7-3 ADLab of Venustech
+  * Fixed numerous memory leaks (reference
+    https://github.com/ImageMagick/ImageMagick/pull/763).
 
 2017-09-15  7.0.7-3 Glenn Randers-Pehrson <glennrp@image...>
   * Stop potential leaks in the JNG decoder (reference:
