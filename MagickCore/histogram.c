@@ -78,8 +78,10 @@ typedef struct _NodeInfo
   PixelInfo
     *list;
 
+  size_t
+    extent;
+
   MagickSizeType
-    extent,
     number_unique;
 
   size_t
@@ -268,7 +270,7 @@ static CubeInfo *ClassifyImageColors(const Image *image,
                 node_info->extent,sizeof(*node_info->list));
             }
           else
-            if (i >= node_info->extent)
+            if (i >= (ssize_t) node_info->extent)
               {
                 node_info->extent<<=1;
                 node_info->list=(PixelInfo *) ResizeQuantumMemory(
