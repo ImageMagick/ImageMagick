@@ -7015,10 +7015,10 @@ WandExport MagickBooleanType MagickMorphologyImage(MagickWand *wand,
 */
 
 
-WandExport MagickBooleanType MagickIsImageBlurred(MagickWand *wand,
- const unsigned char threshold)
+WandExport MagickBlurCalcutationResult MagickIsImageBlurred(MagickWand *wand,
+ const unsigned char threshold, const MagickBooleanType *cancelCalculation)
 {
-	MagickBooleanType result = MagickFalse;
+	MagickBlurCalcutationResult result = MagickIsNotBlurred;
 	
 	assert(wand != (MagickWand *) NULL);
 	assert(wand->signature == MagickWandSignature);
@@ -7039,7 +7039,7 @@ WandExport MagickBooleanType MagickIsImageBlurred(MagickWand *wand,
 	
 	MagickSetColorspace(wand, GRAYColorspace);
 	
-	result = IsImageBlurred(image, threshold, exception);
+	result = IsImageBlurred(image, threshold, exception, cancelCalculation);
 	
 	MagickSetColorspace(wand, originalColorspace);
 	

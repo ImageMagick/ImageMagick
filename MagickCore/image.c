@@ -786,11 +786,13 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
  %
  %    o exception: return any errors or warnings in this structure.
  %
+ %    o shouldCancelCalculation: pointer to boolean value, indicating whether blur calculation should be stopped.
+ %
  */
 
-MagickExport MagickBooleanType IsImageBlurred(Image *image, const unsigned char threshold, ExceptionInfo *exception)
+MagickExport MagickBlurCalcutationResult IsImageBlurred(Image *image, const unsigned char threshold, ExceptionInfo *exception, const MagickBooleanType *shouldCancelCalculation)
 {
-	MagickBooleanType result = MagickTrue;
+	MagickBlurCalcutationResult result = MagickIsBlurred;
 	
 	assert(image != (Image *) NULL);
 	assert(image->signature == MagickCoreSignature);
@@ -811,7 +813,13 @@ MagickExport MagickBooleanType IsImageBlurred(Image *image, const unsigned char 
 	
 	for (y = 0; y < (ssize_t)image->rows; y++)
 	{
-		if (result == MagickFalse)
+		if (*shouldCancelCalculation == MagickTrue)
+		{
+			result = MagickIsBlurCalculationCanceled;
+			break;
+		}
+		
+		if (result == MagickIsNotBlurred)
 		{
 			break;
 		}
@@ -823,7 +831,7 @@ MagickExport MagickBooleanType IsImageBlurred(Image *image, const unsigned char 
 		
 		if (p == (const Quantum *)NULL)
 		{
-			result = MagickFalse;
+			result = MagickIsNotBlurred;
 			break;
 		}
 		
@@ -918,7 +926,7 @@ MagickExport MagickBooleanType IsImageBlurred(Image *image, const unsigned char 
 				
 				if (quantumSharpness > threshold)
 				{
-					result = MagickFalse;
+					result = MagickIsNotBlurred;
 					break;
 				}
 			}

@@ -102,7 +102,6 @@ extern WandExport MagickBooleanType
   MagickChopImage(MagickWand *,const size_t,const size_t,const ssize_t,
     const ssize_t),
   MagickClampImage(MagickWand *),
-  MagickIsImageBlurred(MagickWand *, const unsigned char threshold),
   MagickClipImage(MagickWand *),
   MagickClipImagePath(MagickWand *,const char *,const MagickBooleanType),
   MagickClutImage(MagickWand *,const MagickWand *,const PixelInterpolateMethod),
@@ -360,6 +359,8 @@ extern WandExport MagickWand
   *MagickStereoImage(MagickWand *,const MagickWand *),
   *MagickTextureImage(MagickWand *,const MagickWand *);
 
+extern WandExport MagickBlurCalcutationResult
+	MagickIsImageBlurred(MagickWand *, const unsigned char threshold, const MagickBooleanType *canceledCalculation);
 extern WandExport OrientationType
   MagickGetImageOrientation(MagickWand *);
 
