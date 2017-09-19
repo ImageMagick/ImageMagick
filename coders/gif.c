@@ -978,10 +978,10 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned char
     background,
+    buffer[257],
     c,
     flag,
-    *global_colormap,
-    buffer[257];
+    *global_colormap;
 
   /*
     Open image file.
