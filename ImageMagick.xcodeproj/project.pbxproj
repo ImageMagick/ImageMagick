@@ -413,6 +413,9 @@
 		D85550A91F62FDFD00687A6E /* pixel-wand.c in Sources */ = {isa = PBXBuildFile; fileRef = D85550731F62FDFC00687A6E /* pixel-wand.c */; };
 		D85550B61F62FDFD00687A6E /* montage.c in Sources */ = {isa = PBXBuildFile; fileRef = D85550901F62FDFC00687A6E /* montage.c */; };
 		D85550B71F62FDFD00687A6E /* magick-wand.c in Sources */ = {isa = PBXBuildFile; fileRef = D85550921F62FDFC00687A6E /* magick-wand.c */; };
+		D8DF00BF1F71325E0013DB97 /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D8DF00BD1F71325E0013DB97 /* libjpeg.a */; };
+		D8DF00C01F71325E0013DB97 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D8DF00BE1F71325E0013DB97 /* libpng.a */; };
+		D8E3A1241F713B6D009B22CD /* libMagickCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D813C5921F55BFCA0036DB51 /* libMagickCore.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -431,7 +434,6 @@
 		214A5BD71EAA1D6100505143 /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		214A5BD81EAA1D6100505143 /* Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		214A5BF61EAA279800505143 /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
-		D813C2D61F5587DD0036DB51 /* ImageMagick.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ImageMagick.xcconfig; sourceTree = "<group>"; };
 		D813C5921F55BFCA0036DB51 /* libMagickCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMagickCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D813C6FE1F55C1700036DB51 /* MagickCore.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = MagickCore.xcconfig; sourceTree = "<group>"; };
 		D813C7131F55C39E0036DB51 /* libMagickWand.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMagickWand.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -924,6 +926,8 @@
 		D85550CD1F62FF5700687A6E /* wandcli.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wandcli.h; sourceTree = "<group>"; };
 		D85550CE1F62FF5700687A6E /* display.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = display.h; sourceTree = "<group>"; };
 		D85550CF1F63004000687A6E /* wand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wand.h; sourceTree = "<group>"; };
+		D8DF00BD1F71325E0013DB97 /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = lib/debug/libjpeg.a; sourceTree = "<group>"; };
+		D8DF00BE1F71325E0013DB97 /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng.a; path = lib/debug/libpng.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -931,6 +935,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8DF00BF1F71325E0013DB97 /* libjpeg.a in Frameworks */,
+				D8DF00C01F71325E0013DB97 /* libpng.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -938,6 +944,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8E3A1241F713B6D009B22CD /* libMagickCore.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -950,7 +957,6 @@
 				214A5BD71EAA1D6100505143 /* Debug.xcconfig */,
 				214A5BD81EAA1D6100505143 /* Release.xcconfig */,
 				214A5BF61EAA279800505143 /* Common.xcconfig */,
-				D813C2D61F5587DD0036DB51 /* ImageMagick.xcconfig */,
 				D813C6FE1F55C1700036DB51 /* MagickCore.xcconfig */,
 				D813C78C1F55C4BB0036DB51 /* MagickWand.xcconfig */,
 			);
@@ -982,6 +988,8 @@
 		D813C6FF1F55C35F0036DB51 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D8DF00BD1F71325E0013DB97 /* libjpeg.a */,
+				D8DF00BE1F71325E0013DB97 /* libpng.a */,
 				D83733421F570FE3001588D5 /* libiconv.tbd */,
 				D83733401F570FC4001588D5 /* libxml2.tbd */,
 				D813C8D61F55CFFF0036DB51 /* liblzma.tbd */,

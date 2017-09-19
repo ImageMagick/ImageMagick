@@ -8,9 +8,10 @@
 
 #include "Common.xcconfig"
 
-GCC_OPTIMIZATION_LEVEL = 0
+// following line may be uncommented for debugging purposes, but it is recommended to not turn off optimization because it increases performance tremendously.
+//GCC_OPTIMIZATION_LEVEL = 0
 ENABLE_TESTABILITY = YES
 MTL_ENABLE_DEBUG_INFO = YES
-LIBRARY_SEARCH_PATHS = $(inherited) "${SRCROOT}/Dependencies/lib/debug/"
+LIBRARY_SEARCH_PATHS = $(inherited) "${SRCROOT}/lib/debug/"
 
 IM_CONFIG_GCC_PREPROCESSOR_DEFINITIONS = DEBUG

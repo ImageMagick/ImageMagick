@@ -13,4 +13,4 @@ MTL_ENABLE_DEBUG_INFO = NO
 ENABLE_NS_ASSERTIONS = NO
 DEPLOYMENT_POSTPROCESSING = YES
 STRIP_STYLE = non-global
-LIBRARY_SEARCH_PATHS = $(inherited) "${SRCROOT}/Dependencies/lib/release/"
+LIBRARY_SEARCH_PATHS = $(inherited) "${SRCROOT}/lib/release/"
