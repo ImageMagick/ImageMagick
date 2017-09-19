@@ -48,6 +48,7 @@
 #include "MagickCore/utility-private.h"
 #include "MagickCore/version.h"
 #include "MagickCore/version-private.h"
+#include "MagickCore/config.h"
 
 /*
   Define declarations.

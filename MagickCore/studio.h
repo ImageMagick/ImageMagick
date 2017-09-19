@@ -129,7 +129,7 @@ extern "C" {
 # include <sys/syslimits.h>
 #endif
 #if defined(MAGICKCORE_HAVE_ARM_LIMITS_H)
-# include <arm/limits.h>
+//# include <arm/limits.h>
 #endif
 
 #if defined(MAGICKCORE__OPENCL)

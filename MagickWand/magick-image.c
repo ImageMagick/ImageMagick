@@ -52,7 +52,7 @@
 #include "MagickWand/wand.h"
 #include "MagickWand/pixel-wand-private.h"
 #include "MagickCore/image-private.h"
-
+
 /*
   Define declarations.
 */
@@ -7000,7 +7000,52 @@ WandExport MagickBooleanType MagickMorphologyImage(MagickWand *wand,
   ReplaceImageInList(&wand->images,morphology_image);
   return(MagickTrue);
 }
-
+
+/*
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %                                                                             %
+ %                                                                             %
+ %                                                                             %
+ %   M a g i c k I s I m a g e B l u r r e d                                   %
+ %                                                                             %
+ %                                                                             %
+ %                                                                             %
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %
+*/
+
+
+WandExport MagickBlurCalcutationResult MagickIsImageBlurred(MagickWand *wand,
+ const unsigned char threshold, const MagickBooleanType *cancelCalculation)
+{
+	MagickBlurCalcutationResult result = MagickIsNotBlurred;
+	
+	assert(wand != (MagickWand *) NULL);
+	assert(wand->signature == MagickWandSignature);
+	if (wand->debug != MagickFalse)
+		
+		(void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+	
+	Image *image = wand->images;
+	
+	if (image == (Image *) NULL)
+	{
+		ThrowWandException(WandError,"ContainsNoImages",wand->name);
+	}
+	
+	ExceptionInfo *exception = wand->exception;
+	
+	ColorspaceType originalColorspace = MagickGetColorspace(wand);
+	
+	MagickSetColorspace(wand, GRAYColorspace);
+	
+	result = IsImageBlurred(image, threshold, exception, cancelCalculation);
+	
+	MagickSetColorspace(wand, originalColorspace);
+	
+	return result;
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

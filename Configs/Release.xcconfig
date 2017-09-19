@@ -1,0 +1,16 @@
+//
+//  Release.xcconfig
+//  ImageMagick
+//
+//  Created by Aleksandr Pesotskiy on 4/17/17.
+//  Copyright © 2017 KROMTECH. All rights reserved.
+//
+
+#include "Common.xcconfig"
+
+VALIDATE_PRODUCT = YES
+MTL_ENABLE_DEBUG_INFO = NO
+ENABLE_NS_ASSERTIONS = NO
+DEPLOYMENT_POSTPROCESSING = YES
+STRIP_STYLE = non-global
+LIBRARY_SEARCH_PATHS = $(inherited) "${SRCROOT}/lib/release/"

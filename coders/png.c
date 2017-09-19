@@ -86,6 +86,7 @@
 #include "MagickCore/string-private.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/config.h"
 #if defined(MAGICKCORE_PNG_DELEGATE)
 
 /* Suppress libpng pedantic warnings that were added in

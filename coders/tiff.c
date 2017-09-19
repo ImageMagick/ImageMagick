@@ -218,9 +218,9 @@ static MagickThreadKey
 static SemaphoreInfo
   *tiff_semaphore = (SemaphoreInfo *) NULL;
 
-static TIFFErrorHandler
-  error_handler,
-  warning_handler;
+//static TIFFErrorHandler
+//  error_handler,
+//  warning_handler;
 
 static volatile MagickBooleanType
   instantiate_key = MagickFalse;
@@ -2395,8 +2395,8 @@ ModuleExport size_t RegisterTIFFImage(void)
     {
       if (CreateMagickThreadKey(&tiff_exception,NULL) == MagickFalse)
         ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-      error_handler=TIFFSetErrorHandler(TIFFErrors);
-      warning_handler=TIFFSetWarningHandler(TIFFWarnings);
+//      error_handler=TIFFSetErrorHandler(TIFFErrors);
+//      warning_handler=TIFFSetWarningHandler(TIFFWarnings);
 #if defined(MAGICKCORE_HAVE_TIFFMERGEFIELDINFO) && defined(MAGICKCORE_HAVE_TIFFSETTAGEXTENDER)
       if (tag_extender == (TIFFExtendProc) NULL)
         tag_extender=TIFFSetTagExtender(TIFFTagExtender);
@@ -2529,8 +2529,8 @@ ModuleExport void UnregisterTIFFImage(void)
 #endif
       if (DeleteMagickThreadKey(tiff_exception) == MagickFalse)
         ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-      (void) TIFFSetWarningHandler(warning_handler);
-      (void) TIFFSetErrorHandler(error_handler);
+//      (void) TIFFSetWarningHandler(warning_handler);
+//      (void) TIFFSetErrorHandler(error_handler);
       instantiate_key=MagickFalse;
     }
   UnlockSemaphoreInfo(tiff_semaphore);

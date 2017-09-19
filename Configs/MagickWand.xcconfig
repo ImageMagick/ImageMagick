@@ -1,0 +1,9 @@
+//
+//  MagickWand.xcconfig
+//  ImageMagick
+//
+//  Created by Vitaly Afanasyev on 8/29/17.
+//  Copyright © 2017 KROMTECH ALLIANCE CORP. All rights reserved.
+//
+
+HEADER_SEARCH_PATHS = $(inherited) "${SRCROOT}"

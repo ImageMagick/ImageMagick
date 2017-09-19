@@ -18,6 +18,7 @@
 #ifndef MAGICKCORE_UTILITY_PRIVATE_H
 #define MAGICKCORE_UTILITY_PRIVATE_H
 
+#include <spawn.h>
 #include "MagickCore/memory_.h"
 #include "MagickCore/nt-base.h"
 #include "MagickCore/nt-base-private.h"
@@ -40,6 +41,19 @@ extern MagickPrivate ssize_t
 extern MagickPrivate void
   ChopPathComponents(char *,const size_t),
   ExpandFilename(char *);
+	
+static inline int performCommand(char *command)
+{
+	pid_t pid = 0;
+	char *argv[] = {"sh", "-c", command, NULL};
+	int result = posix_spawn(&pid, "/bin/sh", NULL, NULL, argv, NULL);
+	if (result == 0)
+	{
+		waitpid(pid, &result, 0);
+	}
+	
+	return result;
+}
 
 static inline int MagickReadDirectory(DIR *directory,struct dirent *entry,
   struct dirent **result)

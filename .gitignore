@@ -36,8 +36,6 @@
 /Magick++/tests/testmagick_anim_out*
 
 /MagickCore/MagickCore-config
-/MagickCore/magick-baseconfig.h
-/MagickCore/version.h
 
 /MagickWand/MagickWand-config
 
@@ -93,3 +91,16 @@
 .libs
 Makefile
 Makefile.PL
+
+.DS_Store
+.gitattributes
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xcuserstate
+*.xcscmblueprint
+project.xcworkspace/
+xcuserdata/
+
+

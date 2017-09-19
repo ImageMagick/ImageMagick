@@ -359,6 +359,8 @@ extern WandExport MagickWand
   *MagickStereoImage(MagickWand *,const MagickWand *),
   *MagickTextureImage(MagickWand *,const MagickWand *);
 
+extern WandExport MagickBlurCalcutationResult
+	MagickIsImageBlurred(MagickWand *, const unsigned char threshold, const MagickBooleanType *canceledCalculation);
 extern WandExport OrientationType
   MagickGetImageOrientation(MagickWand *);
 

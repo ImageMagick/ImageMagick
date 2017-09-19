@@ -159,6 +159,13 @@ typedef enum
   MagickTrue = 1
 } MagickBooleanType;
 
+typedef enum
+{
+	MagickIsBlurCalculationCanceled = -1,
+	MagickIsNotBlurred = 0,
+	MagickIsBlurred = 1,
+} MagickBlurCalcutationResult;
+	
 /*
   The IsNaN test is for special floating point numbers of value Nan (not a
   number). NaN's are defined as part of the IEEE standard for floating point

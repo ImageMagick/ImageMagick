@@ -759,7 +759,187 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
   clip_mask=DestroyImage(clip_mask);
   return(MagickTrue);
 }
-
+
+/*
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %                                                                             %
+ %                                                                             %
+ %                                                                             %
+ %   M a g i c k I s I m a g e B l u r r e d                                   %
+ %                                                                             %
+ %                                                                             %
+ %                                                                             %
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %
+ %  IsImageBlurred() returns bool value indicating whether image is blurred with given threshold.
+ %
+ %  The format of the IsImageBlurred method is:
+ %
+ %      MagickBooleanType IsImageBlurred(Image *image, const unsigned char threshold,
+ %						ExceptionInfo *exception)
+ %
+ %  A description of each parameter follows:
+ %
+ %    o image: the image.
+ %
+ %    o threshold: sets the sensitivity for the blur check, as smaller value, as less sensitive blur detection;
+ %
+ %    o exception: return any errors or warnings in this structure.
+ %
+ %    o shouldCancelCalculation: pointer to boolean value, indicating whether blur calculation should be stopped.
+ %
+ */
+
+MagickExport MagickBlurCalcutationResult IsImageBlurred(Image *image, const unsigned char threshold, ExceptionInfo *exception, const MagickBooleanType *shouldCancelCalculation)
+{
+	MagickBlurCalcutationResult result = MagickIsBlurred;
+	
+	assert(image != (Image *) NULL);
+	assert(image->signature == MagickCoreSignature);
+	
+	assert(exception != (ExceptionInfo *) NULL);
+	assert(exception->signature == MagickCoreSignature);
+	
+	KernelInfo *kernel = AcquireKernelInfo("3x3: 0, 1, 0 1, -4, 1 0, 1, 0", NULL);
+	CacheView *image_view = AcquireVirtualCacheView(image,exception);
+	
+	size_t width = image->columns + kernel->width - 1;
+	
+	OffsetInfo offset = {0, 0};
+	offset.x = (ssize_t) kernel->width - kernel->x - 1;
+	offset.y = (ssize_t) kernel->height - kernel->y - 1;
+	
+	register ssize_t y = 0;
+	
+	for (y = 0; y < (ssize_t)image->rows; y++)
+	{
+		if (*shouldCancelCalculation == MagickTrue)
+		{
+			result = MagickIsBlurCalculationCanceled;
+			break;
+		}
+		
+		if (result == MagickIsNotBlurred)
+		{
+			break;
+		}
+		register const Quantum *magick_restrict p = NULL;
+		register ssize_t x = 0;
+		ssize_t center = 0;
+		
+		p = GetCacheViewVirtualPixels(image_view, -offset.x, y-offset.y, width, kernel->height, exception);
+		
+		if (p == (const Quantum *)NULL)
+		{
+			result = MagickIsNotBlurred;
+			break;
+		}
+		
+		center = (ssize_t)(GetPixelChannels(image) * width * offset.y + GetPixelChannels(image) * offset.x);
+		
+		for (x = 0; x < (ssize_t) image->columns; x++)
+		{
+			if (result == MagickFalse)
+			{
+				break;
+			}
+			
+			register ssize_t i = 0;
+			
+			for (i = 0; i < (ssize_t)GetPixelChannels(image); i++)
+			{
+				PixelChannel channel = GetPixelChannelChannel(image,i);
+				PixelTrait traits = GetPixelChannelTraits(image,channel);
+				PixelTrait morphology_traits = GetPixelChannelTraits(image, channel);
+				
+				if ((traits == UndefinedPixelTrait) || (morphology_traits == UndefinedPixelTrait))
+				{
+					continue;
+				}
+				
+				if (((traits & CopyPixelTrait) != 0) || (GetPixelWriteMask(image, p + center) <= (QuantumRange / 2)))
+				{
+					continue;
+				}
+				
+				register const Quantum *magick_restrict pixels = p;
+				size_t count = kernel->width * kernel->height;
+				double pixel = 0;
+				double gamma = 1.0;
+				register const MagickRealType *magick_restrict k = (&kernel->values[kernel->width * kernel->height - 1]);
+				count = 0;
+				
+				size_t v = 0;
+				register ssize_t u = 0;
+				
+				// calculating Convolve Morphology
+				if ((morphology_traits & BlendPixelTrait) == 0)
+				{
+					/*
+					 No alpha blending.
+					 */
+					for (v = 0; v < (ssize_t) kernel->height; v++)
+					{
+						for (u = 0; u < (ssize_t) kernel->width; u++)
+						{
+							if (!IsNaN(*k))
+							{
+								pixel += (*k)*pixels[i];
+								count++;
+							}
+							k--;
+							pixels += GetPixelChannels(image);
+						}
+						pixels += (image->columns - 1) * GetPixelChannels(image);
+					}
+				}
+				else
+				{
+					gamma = 0.0;
+					double alpha = 0.0;
+					
+					for (v = 0; v < (ssize_t)kernel->height; v++)
+					{
+						for (u = 0; u < (ssize_t)kernel->width; u++)
+						{
+							if (!IsNaN(*k))
+							{
+								alpha = (double)(QuantumScale * GetPixelAlpha(image,pixels));
+								pixel += alpha * (*k) * pixels[i];
+								gamma += alpha * (*k);
+								count++;
+							}
+							k--;
+							pixels += GetPixelChannels(image);
+						}
+						pixels += (image->columns - 1) * GetPixelChannels(image);
+					}
+				}
+				
+				gamma = PerceptibleReciprocal(gamma);
+				if (count != 0)
+				{
+					gamma *= (double)kernel->height * kernel->width / count;
+				}
+				Quantum quantum = ClampToQuantum(gamma * pixel);
+				unsigned char quantumSharpness = ScaleQuantumToChar(quantum);
+				
+				if (quantumSharpness > threshold)
+				{
+					result = MagickIsNotBlurred;
+					break;
+				}
+			}
+			
+			p += GetPixelChannels(image);
+		}
+	}
+	kernel = DestroyKernelInfo(kernel);
+	image_view = DestroyCacheView(image_view);
+	
+	return result;
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
