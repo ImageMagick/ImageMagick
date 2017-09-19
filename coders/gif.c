@@ -1007,6 +1007,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((count != 6) || ((LocaleNCompare((char *) buffer,"GIF87",5) != 0) &&
       (LocaleNCompare((char *) buffer,"GIF89",5) != 0)))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  (void) ResetMagickMemory(buffer,0,sizeof(buffer));
   page.width=ReadBlobLSBShort(image);
   page.height=ReadBlobLSBShort(image);
   flag=(unsigned char) ReadBlobByte(image);
