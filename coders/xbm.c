@@ -131,7 +131,7 @@ static MagickBooleanType IsXBM(const unsigned char *magick,const size_t length)
 %
 */
 
-static unsigned int XBMInteger(Image *image,short int *hex_digits)
+static int XBMInteger(Image *image,short int *hex_digits)
 { 
   int
     c;
@@ -146,7 +146,7 @@ static unsigned int XBMInteger(Image *image,short int *hex_digits)
   { 
     c=ReadBlobByte(image);
     if (c == EOF)
-      return(0);
+      return(-1);
   } while ((c == ' ') || (c == '\t') || (c == '\n') || (c == '\r'));
   /*
     Evaluate number.
@@ -163,9 +163,9 @@ static unsigned int XBMInteger(Image *image,short int *hex_digits)
     value+=hex_digits[c];
     c=ReadBlobByte(image);
     if (c == EOF)
-      return(0);
+      return(-1);
   } while (hex_digits[c] >= 0);
-  return(value);
+  return((int) value);
 }
 
 static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
@@ -176,6 +176,9 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   Image
     *image;
+
+  int
+    c;
 
   MagickBooleanType
     status;
@@ -206,7 +209,6 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     height,
     length,
     padding,
-    value,
     version,
     width;
 
@@ -232,6 +234,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   width=0;
   height=0;
+  *name='\0';
   while (ReadBlobString(image,buffer) != (char *) NULL)
     if (sscanf(buffer,"#define %32s %u",name,&width) == 2)
       if ((strlen(name) >= 6) &&
@@ -282,12 +285,12 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize colormap.
   */
-  image->colormap[0].red=QuantumRange;
-  image->colormap[0].green=QuantumRange;
-  image->colormap[0].blue=QuantumRange;
-  image->colormap[1].red=(Quantum) 0;
-  image->colormap[1].green=(Quantum) 0;
-  image->colormap[1].blue=(Quantum) 0;
+  image->colormap[0].red=(MagickRealType) QuantumRange;
+  image->colormap[0].green=(MagickRealType) QuantumRange;
+  image->colormap[0].blue=(MagickRealType) QuantumRange;
+  image->colormap[1].red=0.0;
+  image->colormap[1].green=0.0;
+  image->colormap[1].blue=0.0;
   if (image_info->ping != MagickFalse)
     {
       (void) CloseBlob(image);
@@ -299,6 +302,8 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize hex values.
   */
+  for (i=0; i < sizeof(hex_digits)/sizeof(*hex_digits); i++)
+    hex_digits[i]=(-1);
   hex_digits[(int) '0']=0;
   hex_digits[(int) '1']=1;
   hex_digits[(int) '2']=2;
@@ -344,16 +349,25 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (version == 10)
     for (i=0; i < (ssize_t) (bytes_per_line*image->rows); (i+=2))
     {
-      value=XBMInteger(image,hex_digits);
-      *p++=(unsigned char) value;
+      c=XBMInteger(image,hex_digits);
+      if (c < 0)
+        break;
+      *p++=(unsigned char) c;
       if ((padding == 0) || (((i+2) % bytes_per_line) != 0))
-        *p++=(unsigned char) (value >> 8);
+        *p++=(unsigned char) (c >> 8);
     }
   else
     for (i=0; i < (ssize_t) (bytes_per_line*image->rows); i++)
     {
-      value=XBMInteger(image,hex_digits);
-      *p++=(unsigned char) value;
+      c=XBMInteger(image,hex_digits);
+      if (c < 0)
+        break;
+      *p++=(unsigned char) c;
+    }
+  if (EOFBlob(image) != MagickFalse)
+    {
+      data=(unsigned char *) RelinquishMagickMemory(data);
+      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
     }
   /*
     Convert X bitmap image to pixel packets.
@@ -369,7 +383,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (bit == 0)
-        byte=(size_t) (*p++);
+        byte=(unsigned int) (*p++);
       SetPixelIndex(image,(Quantum) ((byte & 0x01) != 0 ? 0x01 : 0x00),q);
       bit++;
       byte>>=1;

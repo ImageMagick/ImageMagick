@@ -2196,16 +2196,12 @@ MagickExport const char *GetImageProperty(const Image *image,
   if (image->properties != (void *) NULL)
     {
       if (property == (const char *) NULL)
-        {
-          ResetSplayTreeIterator((SplayTreeInfo *) image->properties);
-          p=(const char *) GetNextValueInSplayTree((SplayTreeInfo *)
-            image->properties);
-          return(p);
-        }
-        p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
-          image->properties,property);
-        if (p != (const char *) NULL)
-          return(p);
+        return((const char *) GetRootValueFromSplayTree((SplayTreeInfo *)
+          image->properties));
+      p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
+        image->properties,property);
+      if (p != (const char *) NULL)
+        return(p);
     }
   if ((property == (const char *) NULL) ||
       (strchr(property,':') == (char *) NULL))

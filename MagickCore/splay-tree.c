@@ -854,6 +854,47 @@ MagickExport const void *GetNextValueInSplayTree(SplayTreeInfo *splay_tree)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t R o o t V a l u e F r o m S p l a y T r e e                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetRootValueFromSplayTree() gets the root value from the splay-tree.
+%
+%  The format of the GetRootValueFromSplayTree method is:
+%
+%      const void *GetRootValueFromSplayTree(SplayTreeInfo *splay_tree)
+%
+%  A description of each parameter follows:
+%
+%    o splay_tree: the splay tree.
+%
+%    o key: the key.
+%
+*/
+MagickExport const void *GetRootValueFromSplayTree(SplayTreeInfo *splay_tree)
+{
+  const void
+    *value;
+
+  assert(splay_tree != (SplayTreeInfo *) NULL);
+  assert(splay_tree->signature == MagickCoreSignature);
+  if (splay_tree->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+  value=(const void *) NULL;
+  LockSemaphoreInfo(splay_tree->semaphore);
+  if (splay_tree->root != (NodeInfo *) NULL)
+    value=splay_tree->root->value;
+  UnlockSemaphoreInfo(splay_tree->semaphore);
+  return(value);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t V a l u e F r o m S p l a y T r e e                                 %
 %                                                                             %
 %                                                                             %

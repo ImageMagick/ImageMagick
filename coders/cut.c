@@ -508,7 +508,14 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   offset=SeekBlob(image,6 /*sizeof(Header)*/,SEEK_SET);
   if (offset < 0)
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    {
+      if (palette != NULL)
+        palette=DestroyImage(palette);
+      if (clone_info != NULL)
+        clone_info=DestroyImageInfo(clone_info);
+      BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
   for (i=0; i < (int) Header.Height; i++)
   {
       EncodedByte=ReadBlobLSBShort(image);
@@ -576,6 +583,8 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
               for (i=0; i < (ssize_t)image->rows; i++)
                 {
                   q=QueueAuthenticPixels(image,0,i,image->columns,1,exception);
+                  if (q == (Quantum *) NULL)
+                    break;
                   for (j=0; j < (ssize_t)image->columns; j++)
                     {
                       if (GetPixelRed(image,q) == ScaleCharToQuantum(1))

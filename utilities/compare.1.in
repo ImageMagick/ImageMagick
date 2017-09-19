@@ -28,6 +28,7 @@ Image Settings:
   \-extract geometry    extract area from image
   \-format "string"     output formatted image characteristics
   \-fuzz distance       colors within this distance are considered equal
+  \-gravity type        horizontal and vertical text placement
   \-identify            identify the format and characteristics of the image
   \-interlace type      type of image interlacing scheme
   \-highlight-color color

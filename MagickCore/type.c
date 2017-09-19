@@ -277,23 +277,12 @@ static SplayTreeInfo *AcquireTypeCache(const char *filename,
 MagickExport const TypeInfo *GetTypeInfo(const char *name,
   ExceptionInfo *exception)
 {
-  const TypeInfo
-    *type_info;
-
   assert(exception != (ExceptionInfo *) NULL);
   if (IsTypeTreeInstantiated(exception) == MagickFalse)
     return((const TypeInfo *) NULL);
-  LockSemaphoreInfo(type_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
-    {
-      ResetSplayTreeIterator(type_cache);
-      type_info=(const TypeInfo *) GetNextValueInSplayTree(type_cache);
-      UnlockSemaphoreInfo(type_semaphore);
-      return(type_info);
-    }
-  type_info=(const TypeInfo *) GetValueFromSplayTree(type_cache,name);
-  UnlockSemaphoreInfo(type_semaphore);
-  return(type_info);
+    return((const TypeInfo *) GetRootValueFromSplayTree(type_cache));
+  return((const TypeInfo *) GetValueFromSplayTree(type_cache,name));
 }
 
 /*
@@ -897,13 +886,17 @@ static MagickBooleanType IsTypeTreeInstantiated(ExceptionInfo *exception)
       LockSemaphoreInfo(type_semaphore);
       if (type_cache == (SplayTreeInfo *) NULL)
         {
-          type_cache=AcquireTypeCache(MagickTypeFilename,exception);
+          SplayTreeInfo
+            *splay_tree;
+
+          splay_tree=AcquireTypeCache(MagickTypeFilename,exception);
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-          (void) NTAcquireTypeCache(type_cache,exception);
+          (void) NTAcquireTypeCache(splay_tree,exception);
 #endif
 #if defined(MAGICKCORE_FONTCONFIG_DELEGATE)
-          (void) LoadFontConfigFonts(type_cache,exception);
+          (void) LoadFontConfigFonts(splay_tree,exception);
 #endif
+          type_cache=splay_tree;
         }
       UnlockSemaphoreInfo(type_semaphore);
     }

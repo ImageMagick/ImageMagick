@@ -416,6 +416,31 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
   return(result);
 }
 
+static Image *AcquireImageCanvas(const Image *images,ExceptionInfo *exception)
+{
+  const Image
+    *p,
+    *q;
+
+  size_t
+    columns,
+    rows;
+
+  q=images;
+  columns=images->columns;
+  rows=images->rows;
+  for (p=images; p != (Image *) NULL; p=p->next)
+  {
+    if (p->number_channels > q->number_channels)
+      q=p;
+    if (p->columns > columns)
+      columns=p->columns;
+    if (p->rows > rows)
+      rows=p->rows;
+  }
+  return(CloneImage(q,columns,rows,MagickTrue,exception));
+}
+
 MagickExport Image *EvaluateImages(const Image *images,
   const MagickEvaluateOperator op,ExceptionInfo *exception)
 {
@@ -456,8 +481,7 @@ MagickExport Image *EvaluateImages(const Image *images,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  image=CloneImage(images,images->columns,images->rows,MagickTrue,
-    exception);
+  image=AcquireImageCanvas(images,exception);
   if (image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
@@ -2187,8 +2211,7 @@ MagickExport Image *PolynomialImage(const Image *images,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  image=CloneImage(images,images->columns,images->rows,MagickTrue,
-    exception);
+  image=AcquireImageCanvas(images,exception);
   if (image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)

@@ -569,8 +569,11 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   {
                     image->number_meta_channels=StringToUnsignedLong(options);
                     if (image->number_meta_channels > MaxPixelChannels)
-                      ThrowReaderException(CorruptImageError,
-                        "ImproperImageHeader");
+                      {
+                        options=DestroyString(options);
+                        ThrowReaderException(CorruptImageError,
+                          "ImproperImageHeader");
+                      }
                     break;
                   }
                 break;
@@ -954,12 +957,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             colormap=(unsigned char *) RelinquishMagickMemory(colormap);
           }
       }
-    if (EOFBlob(image) != MagickFalse)
-      {
-        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-          image->filename);
-        break;
-      }
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
@@ -972,6 +969,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status=PersistPixelCache(image,cache_filename,MagickTrue,&offset,exception);
     if (status == MagickFalse)
       ThrowReaderException(CacheError,"UnableToPersistPixelCache");
+    if (EOFBlob(image) != MagickFalse)
+      {
+        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          image->filename);
+        break;
+      }
     /*
       Proceed to next image.
     */
@@ -1491,7 +1494,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
       Initialize persistent pixel cache.
     */
     status=PersistPixelCache(image,cache_filename,MagickFalse,&offset,
-      exception); 
+      exception);
     if (status == MagickFalse)
       ThrowWriterException(CacheError,"UnableToPersistPixelCache");
     if (GetNextImageInList(image) == (Image *) NULL)

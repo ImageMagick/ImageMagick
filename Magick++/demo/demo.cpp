@@ -31,9 +31,6 @@ int main( int /*argc*/, char ** argv)
     if(getenv("SRCDIR") != 0)
       srcdir = getenv("SRCDIR");
     
-    // Common font to use.
-    string font = "Helvetica";
-
     list<Image> montage;
 
     {
@@ -85,7 +82,6 @@ int main( int /*argc*/, char ** argv)
       example.label( "Annotate" );
       example.density( "72x72" );
       example.fontPointsize( 18 );
-      example.font( font );
       example.strokeColor( Color() );
       example.fillColor( "gold" );
       example.annotate( "Magick++", "+0+20", NorthGravity );
@@ -466,7 +462,6 @@ int main( int /*argc*/, char ** argv)
       //
       cout <<  "Montage images..." << endl;
 
-      for_each( images.begin(), images.end(), fontImage( font ) );
       for_each( images.begin(), images.end(), strokeColorImage( Color("#600") ) );
 
       MontageFramed montageOpts;
@@ -476,7 +471,6 @@ int main( int /*argc*/, char ** argv)
       montageOpts.borderWidth( 1 );
       montageOpts.tile( "7x4" );
       montageOpts.backgroundColor( "#ffffff" );
-      montageOpts.font( font );
       montageOpts.pointSize( 18 );
       montageOpts.fillColor( "#600" );
       montageOpts.strokeColor( Color() );

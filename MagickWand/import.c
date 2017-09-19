@@ -183,6 +183,7 @@ static MagickBooleanType ImportUsage(void)
       "-virtual-pixel method",
       "                     Constant, Edge, Mirror, or Tile",
       "-window id           select window with this id or name",
+      "                     root selects whole screen",
       (char *) NULL
     };
 
@@ -333,6 +334,8 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
       Check command line for server name.
     */
     option=argv[i];
+    if (IsCommandOption(option) == MagickFalse)
+      continue;
     if (LocaleCompare("display",option+1) == 0)
       {
         /*

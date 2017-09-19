@@ -533,6 +533,8 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
     *pheight = imsy;
     *ncolors = max_color_index + 1;
     *palette = (unsigned char *) AcquireQuantumMemory(*ncolors,4);
+    if (*palette == (unsigned char *) NULL)
+      return(MagickFalse);
     for (n = 0; n < (ssize_t) *ncolors; ++n) {
         (*palette)[n * 4 + 0] = sixel_palet[n] >> 16 & 0xff;
         (*palette)[n * 4 + 1] = sixel_palet[n] >> 8 & 0xff;
@@ -547,6 +549,8 @@ sixel_output_t *sixel_output_create(Image *image)
     sixel_output_t *output;
 
     output = (sixel_output_t *) AcquireQuantumMemory(sizeof(sixel_output_t) + SIXEL_OUTPUT_PACKET_SIZE * 2, 1);
+    if (output == (sixel_output_t *) NULL)
+      return((sixel_output_t *) NULL);
     output->has_8bit_control = 0;
     output->save_pixel = 0;
     output->save_count = 0;
@@ -1030,7 +1034,11 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
   image->storage_class=PseudoClass;
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
-    return(DestroyImageList(image));
+    {
+      sixel_pixels=(unsigned char *) RelinquishMagickMemory(sixel_pixels);
+      sixel_palette=(unsigned char *) RelinquishMagickMemory(sixel_palette);
+      return(DestroyImageList(image));
+    }
 
   if (AcquireImageColormap(image,image->colors, exception) == MagickFalse)
     {
@@ -1281,18 +1289,25 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,
     Define SIXEL pixels.
   */
   output = sixel_output_create(image);
+  if (output == (sixel_output_t *) NULL)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   sixel_pixels=(unsigned char *) AcquireQuantumMemory(image->columns,
     image->rows*sizeof(*sixel_pixels));
+  if (sixel_pixels == (unsigned char *) NULL)
+    {
+      output = (sixel_output_t *) RelinquishMagickMemory(output);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
-      {
-        sixel_pixels[y*image->columns+x]= ((ssize_t) GetPixelIndex(image,q));
-        q+=GetPixelChannels(image);
-      }
+    {
+      sixel_pixels[y*image->columns+x]= ((ssize_t) GetPixelIndex(image,q));
+      q+=GetPixelChannels(image);
+    }
   }
   status = sixel_encode_impl(sixel_pixels,image->columns,image->rows,
     sixel_palette,image->colors,-1,output);

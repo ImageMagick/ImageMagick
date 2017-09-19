@@ -77,7 +77,7 @@ struct _SignatureInfo
     high_order;
 
   size_t
-    offset;
+    extent;
 
   MagickBooleanType
     lsb_first;
@@ -136,7 +136,7 @@ MagickPrivate SignatureInfo *AcquireSignatureInfo(void)
   lsb_first=1;
   signature_info->lsb_first=(int) (*(char *) &lsb_first) == 1 ? MagickTrue :
     MagickFalse;
-  signature_info->timestamp=(ssize_t) time(0);
+  signature_info->timestamp=(ssize_t) time((time_t *) NULL);
   signature_info->signature=MagickCoreSignature;
   InitializeSignature(signature_info);
   return(signature_info);
@@ -215,11 +215,13 @@ MagickPrivate void FinalizeSignature(SignatureInfo *signature_info)
   register unsigned int
     *p;
 
+  size_t
+    extent;
+
   unsigned char
     *datum;
 
   unsigned int
-    count,
     high_order,
     low_order;
 
@@ -231,16 +233,16 @@ MagickPrivate void FinalizeSignature(SignatureInfo *signature_info)
   assert(signature_info->signature == MagickCoreSignature);
   low_order=signature_info->low_order;
   high_order=signature_info->high_order;
-  count=((low_order >> 3) & 0x3f);
+  extent=((low_order >> 3) & 0x3f);
   datum=GetStringInfoDatum(signature_info->message);
-  datum[count++]=(unsigned char) 0x80;
-  if (count <= (unsigned int) (GetStringInfoLength(signature_info->message)-8))
-    (void) ResetMagickMemory(datum+count,0,GetStringInfoLength(
-      signature_info->message)-8-count);
+  datum[extent++]=(unsigned char) 0x80;
+  if (extent <= (unsigned int) (GetStringInfoLength(signature_info->message)-8))
+    (void) ResetMagickMemory(datum+extent,0,GetStringInfoLength(
+      signature_info->message)-8-extent);
   else
     {
-      (void) ResetMagickMemory(datum+count,0,GetStringInfoLength(
-        signature_info->message)-count);
+      (void) ResetMagickMemory(datum+extent,0,GetStringInfoLength(
+        signature_info->message)-extent);
       TransformSignature(signature_info);
       (void) ResetMagickMemory(datum,0,GetStringInfoLength(
         signature_info->message)-8);
@@ -396,7 +398,7 @@ MagickPrivate void InitializeSignature(SignatureInfo *signature_info)
   signature_info->accumulator[7]=0x5be0cd19U;
   signature_info->low_order=0;
   signature_info->high_order=0;
-  signature_info->offset=0;
+  signature_info->extent=0;
 }
 
 /*
@@ -535,8 +537,12 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
         if (traits == UndefinedPixelTrait)
           continue;
         pixel=QuantumScale*p[i];
-        for (j=0; j < (ssize_t) sizeof(pixel); j++)
-          *q++=(unsigned char) ((unsigned char *) &pixel)[j];
+        if (signature_info->lsb_first == MagickFalse)
+          for (j=(ssize_t) sizeof(pixel)-1; j >= 0; j--)
+            *q++=(unsigned char) ((unsigned char *) &pixel)[j];
+        else
+          for (j=0; j < (ssize_t) sizeof(pixel); j++)
+            *q++=(unsigned char) ((unsigned char *) &pixel)[j];
       }
       p+=GetPixelChannels(image);
     }
@@ -796,20 +802,19 @@ MagickPrivate void UpdateSignature(SignatureInfo *signature_info,
   if (length < signature_info->low_order)
     signature_info->high_order++;
   signature_info->low_order=length;
-  signature_info->high_order+=(unsigned int) (n >> 29);
+  signature_info->high_order+=(unsigned int) n >> 29;
   p=GetStringInfoDatum(message);
-  if (signature_info->offset != 0)
+  if (signature_info->extent != 0)
     {
-      i=GetStringInfoLength(signature_info->message)-signature_info->offset;
+      i=GetStringInfoLength(signature_info->message)-signature_info->extent;
       if (i > n)
         i=n;
       (void) CopyMagickMemory(GetStringInfoDatum(signature_info->message)+
-        signature_info->offset,p,i);
+        signature_info->extent,p,i);
       n-=i;
       p+=i;
-      signature_info->offset+=i;
-      if (signature_info->offset !=
-          GetStringInfoLength(signature_info->message))
+      signature_info->extent+=i;
+      if (signature_info->extent != GetStringInfoLength(signature_info->message))
         return;
       TransformSignature(signature_info);
     }
@@ -821,5 +826,5 @@ MagickPrivate void UpdateSignature(SignatureInfo *signature_info,
     TransformSignature(signature_info);
   }
   (void) CopyMagickMemory(GetStringInfoDatum(signature_info->message),p,n);
-  signature_info->offset=n;
+  signature_info->extent=n;
 }

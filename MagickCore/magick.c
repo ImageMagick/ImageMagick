@@ -125,7 +125,8 @@ static SplayTreeInfo
 
 static volatile MagickBooleanType
   instantiate_magickcore = MagickFalse,
-  magickcore_signal_in_progress = MagickFalse;
+  magickcore_signal_in_progress = MagickFalse,
+  magick_list_initialized = MagickFalse;
 
 /*
   Forward declarations.
@@ -598,51 +599,36 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
   ExceptionInfo *exception)
 {
   register const MagickInfo
-    *p;
+    *magick_info;
 
+  /*
+    Find named module attributes.
+  */
   assert(exception != (ExceptionInfo *) NULL);
   if (IsMagickTreeInstantiated(exception) == MagickFalse)
     return((const MagickInfo *) NULL);
+  magick_info=(const MagickInfo *) NULL;
 #if defined(MAGICKCORE_MODULES_SUPPORT)
-  if ((name != (const char *) NULL) && (LocaleCompare(name,"*") == 0))
-    (void) OpenModules(exception);
-#endif
-  /*
-    Find name in list.
-  */
-  LockSemaphoreInfo(magick_semaphore);
-  ResetSplayTreeIterator(magick_list);
-  p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
-  if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
+  if ((name != (const char *) NULL) && (*name != '\0'))
     {
-      ResetSplayTreeIterator(magick_list);
-      p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
+      LockSemaphoreInfo(magick_semaphore);
+      if (LocaleCompare(name,"*") == 0)
+        (void) OpenModules(exception);
+      else
+        {
+          magick_info=(const MagickInfo *) GetValueFromSplayTree(magick_list,
+            name);
+          if (magick_info == (const MagickInfo *) NULL)
+            (void) OpenModule(name,exception);
+        }
       UnlockSemaphoreInfo(magick_semaphore);
-      return(p);
-    }
-  while (p != (const MagickInfo *) NULL)
-  {
-    if (LocaleCompare(p->name,name) == 0)
-      break;
-    p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
-  }
-#if defined(MAGICKCORE_MODULES_SUPPORT)
-  if (p == (const MagickInfo *) NULL)
-    {
-      if (*name != '\0')
-        (void) OpenModule(name,exception);
-      ResetSplayTreeIterator(magick_list);
-      p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
-      while (p != (const MagickInfo *) NULL)
-      {
-        if (LocaleCompare(p->name,name) == 0)
-          break;
-        p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
-      }
     }
 #endif
-  UnlockSemaphoreInfo(magick_semaphore);
-  return(p);
+  if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
+    magick_info=(const MagickInfo *) GetRootValueFromSplayTree(magick_list);
+  if (magick_info == (const MagickInfo *) NULL)
+    magick_info=(const MagickInfo *) GetValueFromSplayTree(magick_list,name);
+  return(magick_info);
 }
 
 /*
@@ -1028,13 +1014,12 @@ static void *DestroyMagickNode(void *magick_info)
 
 static MagickBooleanType IsMagickTreeInstantiated(ExceptionInfo *exception)
 {
-  (void) exception;
-  if (magick_list == (SplayTreeInfo *) NULL)
+  if (magick_list_initialized == MagickFalse)
     {
       if (magick_semaphore == (SemaphoreInfo *) NULL)
         ActivateSemaphoreInfo(&magick_semaphore);
       LockSemaphoreInfo(magick_semaphore);
-      if (magick_list == (SplayTreeInfo *) NULL)
+      if (magick_list_initialized == MagickFalse)
         {
           magick_list=NewSplayTree(CompareSplayTreeString,(void *(*)(void *))
             NULL,DestroyMagickNode);
@@ -1047,6 +1032,7 @@ static MagickBooleanType IsMagickTreeInstantiated(ExceptionInfo *exception)
 #if !defined(MAGICKCORE_BUILD_MODULES)
           RegisterStaticModules();
 #endif
+          magick_list_initialized=MagickTrue;
         }
       UnlockSemaphoreInfo(magick_semaphore);
     }

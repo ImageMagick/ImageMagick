@@ -150,9 +150,6 @@ static void
 /*
   Global declarations.
 */
-static volatile MagickBooleanType
-  instantiate_cache = MagickFalse;
-
 static SemaphoreInfo
   *cache_semaphore = (SemaphoreInfo *) NULL;
 
@@ -373,9 +370,7 @@ MagickPrivate void CacheComponentTerminus(void)
 {
   if (cache_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&cache_semaphore);
-  LockSemaphoreInfo(cache_semaphore);
-  instantiate_cache=MagickFalse;
-  UnlockSemaphoreInfo(cache_semaphore);
+  /* no op-- nothing to destroy */
   RelinquishSemaphoreInfo(&cache_semaphore);
 }
 
@@ -1645,8 +1640,6 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
                   exception);
               if (status != MagickFalse)
                 {
-                  if (cache_info->reference_count == 1)
-                    cache_info->nexus_info=(NexusInfo **) NULL;
                   destroy=MagickTrue;
                   image->cache=clone_image.cache;
                 }
@@ -4800,7 +4793,13 @@ static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
   assert(cache_info->signature == MagickCoreSignature);
   if (cache_info->type == UndefinedCache)
     return((Quantum *) NULL);
+  if ((region->width == 0) || (region->height == 0))
+    return((Quantum *) NULL);
   nexus_info->region=(*region);
+  number_pixels=(MagickSizeType) nexus_info->region.width*
+    nexus_info->region.height;
+  if (number_pixels == 0)
+    return((Quantum *) NULL);
   if ((cache_info->type == MemoryCache) || (cache_info->type == MapCache))
     {
       ssize_t
@@ -4838,8 +4837,6 @@ static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
   /*
     Pixels are stored in a staging region until they are synced to the cache.
   */
-  number_pixels=(MagickSizeType) nexus_info->region.width*
-    nexus_info->region.height;
   length=number_pixels*cache_info->number_channels*sizeof(Quantum);
   if (cache_info->metacontent_extent != 0)
     length+=number_pixels*cache_info->metacontent_extent;

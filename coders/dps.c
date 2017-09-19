@@ -315,11 +315,21 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->ping != MagickFalse)
     {
       (void) CloseBlob(image);
+      colors=(XColor *) RelinquishMagickMemory(colors);
+      XDestroyImage(dps_image);
+      XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
+        (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
       return(GetFirstImageInList(image));
     }
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
-    return(DestroyImageList(image));
+    {
+      colors=(XColor *) RelinquishMagickMemory(colors);
+      XDestroyImage(dps_image);
+      XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
+        (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
+      return(DestroyImageList(image));
+    }
   switch (image->storage_class)
   {
     case DirectClass:

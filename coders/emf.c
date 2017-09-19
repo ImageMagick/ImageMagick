@@ -408,6 +408,8 @@ static HENHMETAFILE ReadEnhMetaFile(const char *path,ssize_t *width,
     return(NULL);
   dwSize=GetFileSize(hFile,NULL);
   pBits=(LPBYTE) AcquireQuantumMemory(dwSize,sizeof(*pBits));
+  if (pBits == (LPBYTE) NULL)
+    return(NULL);
   ReadFile(hFile,pBits,dwSize,&dwSize,NULL);
   CloseHandle(hFile);
   if (((PAPMHEADER) pBits)->dwKey != 0x9ac6cdd7l)

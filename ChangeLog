@@ -1,3 +1,42 @@
+2017-09-17  7.0.7-3 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.7-3, GIT revision 21202:6e6907ac7:20170917.
+
+2017-09-17  7.0.7-3 ADLab of Venustech
+  * Fixed numerous memory leaks (reference
+    https://github.com/ImageMagick/ImageMagick/pull/763).
+
+2017-09-15  7.0.7-3 Glenn Randers-Pehrson <glennrp@image...>
+  * Stop potential leaks in the JNG decoder (reference:
+    https://github.com/ImageMagick/ImageMagick/issues/760).
+  * Maximum valid hour is 23, not 24, in the PNG tIME chunk, and maximum
+    valid minute is 59, not 60.  
+
+2017-09-12  7.0.7-2 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.7-2, GIT revision 21089:4e46ad9dd:20170912.
+
+2017-09-11  7.0.7-2 Glenn Randers-Pehrson <glennrp@image...>
+  * Use signed integer arithmetic to calculate timezone corrections (reference
+    https://github.com/ImageMagick/ImageMagick/issues/685).
+
+2017-09-09  7.0.7-1 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.7-1, GIT revision 21065:ab2194121:20170909.
+
+2017-09-09  7.0.7-1 Cristy  <quetzlzacatenango@image...>
+  * Fixed numerous memory leaks (reference
+    https://github.com/ImageMagick/ImageMagick/issues).
+
+2017-09-05 7.0.7-1 Dirk Lemstra <dirk@lem.....org>
+  * Added -define tiff:write-layers=true to add support for writing layered
+    tiff files.
+
+2017-09-03  7.0.7-0 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.7-0, GIT revision 20996:2f8ac2203:20170903.
+
+2017-08-28  7.0.7-0 Cristy  <quetzlzacatenango@image...>
+  * Fixed numerous memory leaks (reference
+    https://github.com/ImageMagick/ImageMagick/issues).
+  * Don't overwrite symbolic links when the shred policy is enabled.
+
 2017-08-27  7.0.6-10 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.6-10, GIT revision 20920:9940c367a:20170827.
 
@@ -86,7 +125,8 @@
   * YUV coder no longer renders streaks (reference
     https://github.com/ImageMagick/ImageMagick/issues/612).
   * Fixed numerous memory leaks (reference
-    https://github.com/ImageMagick/ImageMagick/issues).
+    https://github.com/ImageMagick/ImageMagick/issues) including
+    https://github.com/ImageMagick/ImageMagick/issues/618 (CVE-2017-12676).
   * coders/png.c: Initialized quantum_scanline and quantum_info
     to prevent a bad free (reference
     https://github.com/ImageMagick/ImageMagick/issues/621).
@@ -108,8 +148,8 @@
 
 2017-07-23  7.0.6-3 Glenn Randers-Pehrson <glennrp@image...>
   * Fix memory leaks when reading a malformed JNG image:
-    https://github.com/ImageMagick/ImageMagick/issues/600 ( CVE-2017-13141),
-    https://github.com/ImageMagick/ImageMagick/issues/602).
+    https://github.com/ImageMagick/ImageMagick/issues/600 (CVE-2017-13141),
+    https://github.com/ImageMagick/ImageMagick/issues/602 (CVE-2017-12565).
 
 2017-07-21  7.0.6-2 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.6-2, GIT revision 20549:62fcf3d96:20170721.

@@ -2,10 +2,6 @@
 
 use Image::Magick;
 
-#$font = '-adobe-helvetica-medium-r-normal--25-180-100-100-p-130-iso8729-1';
-#$font = 'Times';
-$font = 'Generic.ttf';
-
 $image = Image::Magick->new();
 $smile = Image::Magick->new();
 $smile->Read('smile.gif');
@@ -17,8 +13,7 @@ for ($angle=0; $angle < 360; $angle+=30)
   my ($thumbnail);
 
   print "angle $angle\n";
-  $thumbnail=Image::Magick->new(size=>"600x600",pointsize=>24,font=>$font,
-    fill=>'black');
+  $thumbnail=Image::Magick->new(size=>"600x600",pointsize=>24,fill=>'black');
   $thumbnail->Read("xc:white");
   $thumbnail->Draw(primitive=>'line',points=>"300,100 300,500",stroke=>'#600');
   $thumbnail->Draw(primitive=>'line',points=>"100,300 500,300",stroke=>'#600');

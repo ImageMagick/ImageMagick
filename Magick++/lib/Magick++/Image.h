@@ -691,6 +691,8 @@ namespace Magick
     // pixels, not counting the center pixel.  The sigma_ parameter
     // specifies the standard deviation of the Laplacian, in pixels.
     void charcoal(const double radius_=0.0,const double sigma_=1.0);
+    void charcoalChannel(const ChannelType channel_,const double radius_=0.0,
+      const double sigma_=1.0);
 
     // Chop image (remove vertical or horizontal subregion of image)
     // FIXME: describe how geometry argument is used to select either

@@ -1742,8 +1742,8 @@ MagickExport Image *ShearRotateImage(const Image *image,const double degrees,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  angle=degrees;
-  while (angle < -45.0)
+  angle=degrees-360.0*(ssize_t) (degrees/360.0);
+  if (angle < -45.0)
     angle+=360.0;
   for (rotations=0; angle > 45.0; rotations++)
     angle-=90.0;

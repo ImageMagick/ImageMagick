@@ -1156,6 +1156,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (info == (unsigned char *) NULL)
                   {
                     meta_image=DestroyImage(meta_image);
+                    global_colormap=(unsigned char *) RelinquishMagickMemory(
+                      global_colormap);
                     ThrowReaderException(ResourceLimitError,
                       "MemoryAllocationFailed");
                   }
@@ -1174,6 +1176,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       if (info == (unsigned char *) NULL)
                         {
                           meta_image=DestroyImage(meta_image);
+                          global_colormap=(unsigned char *)
+                            RelinquishMagickMemory(global_colormap);
                           ThrowReaderException(ResourceLimitError,
                             "MemoryAllocationFailed");
                         }
@@ -1183,6 +1187,9 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (profile == (StringInfo *) NULL)
                   {
                     meta_image=DestroyImage(meta_image);
+                    global_colormap=(unsigned char *) RelinquishMagickMemory(
+                      global_colormap);
+                    info=(unsigned char *) RelinquishMagickMemory(info);
                     ThrowReaderException(ResourceLimitError,
                       "MemoryAllocationFailed");
                   }
@@ -1255,7 +1262,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->colors=BitSet((int) flag,0x80) == 0 ? global_colors : one <<
       ((size_t) (flag & 0x07)+1);
     if (opacity >= (ssize_t) image->colors)
-      opacity=(-1);
+      image->colors=opacity+1;
     image->page.width=page.width;
     image->page.height=page.height;
     image->page.y=page.y;
@@ -1355,7 +1362,12 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
-      return(DestroyImageList(image));
+      {
+        global_colormap=(unsigned char *) RelinquishMagickMemory(
+          global_colormap);
+        meta_image=DestroyImage(meta_image);
+        return(DestroyImageList(image));
+      }
     /*
       Decode image.
     */

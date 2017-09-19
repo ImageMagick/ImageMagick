@@ -54,7 +54,7 @@ namespace Magick
     // destroyed.
     const void* data(void) const;
 
-    // Obtain data length
+    // Obtain data length.
     size_t length(void) const;
 
     // Update object contents, making a copy of the supplied data.

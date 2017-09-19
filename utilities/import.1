@@ -1,6 +1,6 @@
 .TH import 1 "Date: 2009/01/10 01:00:00" "ImageMagick"
 .SH NAME
-import \- saves any visible window on an X server and outputs it as an image file. You can capture a single window, the entire screen, or any rectangular portion of the screen.
+import \- saves any visible window on an X server and outputs it as an image file. You can capture a single window, the entire screen, or any rectangular portion of the screen. The window to capture is selected by clicking the desired window or a program option.
 .SH SYNOPSIS
 .TP
 \fBimport\fP [\fIoptions\fP] \fIoutput-file\fP
@@ -63,6 +63,7 @@ Image Settings:
   \-virtual-pixel method
                        Constant, Edge, Mirror, or Tile
   \-window id           select window with this id or name
+                        root selects the whole screen
 
 Image Operators:
   \-annotate geometry text

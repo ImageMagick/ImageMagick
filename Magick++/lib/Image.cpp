@@ -302,7 +302,7 @@ bool Magick::Image::adjoin(void) const
   return(constOptions()->adjoin());
 }
 
-void Magick::Image::alpha(const bool matteFlag_)
+void Magick::Image::alpha(const bool alphaFlag_)
 {
   modifyImage();
 
@@ -311,12 +311,12 @@ void Magick::Image::alpha(const bool matteFlag_)
   // the image already has a matte channel but a matte channel is not
   // desired, then set the matte channel to opaque.
   GetPPException;
-  if ((matteFlag_ && !constImage()->alpha_trait) ||
-      (constImage()->alpha_trait && !matteFlag_))
+  if ((alphaFlag_ && !constImage()->alpha_trait) ||
+      (constImage()->alpha_trait && !alphaFlag_))
     SetImageAlpha(image(),OpaqueAlpha,exceptionInfo);
   ThrowImageException;
 
-  image()->alpha_trait=matteFlag_ ? BlendPixelTrait : UndefinedPixelTrait;
+  image()->alpha_trait=alphaFlag_ ? BlendPixelTrait : UndefinedPixelTrait;
 }
 
 bool Magick::Image::alpha(void) const
@@ -2192,6 +2192,20 @@ void Magick::Image::charcoal(const double radius_,const double sigma_)
 
   GetPPException;
   newImage=CharcoalImage(image(),radius_,sigma_,exceptionInfo);
+  replaceImage(newImage);
+  ThrowImageException;
+}
+
+void Magick::Image::charcoalChannel(const ChannelType channel_,
+  const double radius_,const double sigma_)
+{
+  MagickCore::Image
+    *newImage;
+
+  GetPPException;
+  GetAndSetPPChannelMask(channel_);
+  newImage=CharcoalImage(image(),radius_,sigma_,exceptionInfo);
+  RestorePPChannelMask;
   replaceImage(newImage);
   ThrowImageException;
 }

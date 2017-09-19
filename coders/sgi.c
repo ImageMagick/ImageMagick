@@ -647,7 +647,10 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Create grayscale map.
         */
         if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+          {
+            pixel_info=RelinquishVirtualMemory(pixel_info);
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+          }
         /*
           Convert SGI image to PseudoClass pixel packets.
         */

@@ -2047,6 +2047,25 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
       kernel=(MagickRealType *) RelinquishAlignedMemory(kernel);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
+  point.x=(double) width*sin(DegreesToRadians(angle));
+  point.y=(double) width*cos(DegreesToRadians(angle));
+  for (i=0; i < (ssize_t) width; i++)
+  {
+    offset[i].x=(ssize_t) ceil((double) (i*point.y)/hypot(point.x,point.y)-0.5);
+    offset[i].y=(ssize_t) ceil((double) (i*point.x)/hypot(point.x,point.y)-0.5);
+  }
+  /*
+    Motion blur image.
+  */
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+  blur_image=AccelerateMotionBlurImage(image,kernel,width,offset,exception);
+  if (blur_image != (Image *) NULL)
+    {
+      kernel=(MagickRealType *) RelinquishAlignedMemory(kernel);
+      offset=(OffsetInfo *) RelinquishMagickMemory(offset);
+      return(blur_image);
+    }
+#endif
   blur_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (blur_image == (Image *) NULL)
     {
@@ -2061,16 +2080,6 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
       blur_image=DestroyImage(blur_image);
       return((Image *) NULL);
     }
-  point.x=(double) width*sin(DegreesToRadians(angle));
-  point.y=(double) width*cos(DegreesToRadians(angle));
-  for (i=0; i < (ssize_t) width; i++)
-  {
-    offset[i].x=(ssize_t) ceil((double) (i*point.y)/hypot(point.x,point.y)-0.5);
-    offset[i].y=(ssize_t) ceil((double) (i*point.x)/hypot(point.x,point.y)-0.5);
-  }
-  /*
-    Motion blur image.
-  */
   status=MagickTrue;
   progress=0;
   image_view=AcquireVirtualCacheView(image,exception);

@@ -305,7 +305,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
         }
       if (((flags & SeparatorValue) != 0) && ((flags & WidthValue) == 0) &&
           (height != (size_t *) NULL) && (width != (size_t *) NULL))
-            *width=(*height);
+        *width=(*height);
     }
 #if 0
   /* Debugging Geometry */
@@ -450,7 +450,7 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
 
   assert(page_geometry != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",page_geometry);
-  CopyMagickString(page,page_geometry,MaxTextExtent);
+  (void) CopyMagickString(page,page_geometry,MaxTextExtent);
   for (i=0; i < (ssize_t) (sizeof(PageSizes)/sizeof(PageSizes[0])); i++)
   {
     int
@@ -1222,8 +1222,10 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
       scale.y=geometry_info.sigma;
       if ((status & SigmaValue) == 0)
         scale.y=scale.x;
-      region_info->width=(size_t) floor((scale.x*image->columns/100.0)+0.5);
-      region_info->height=(size_t) floor((scale.y*image->rows/100.0)+0.5);
+      region_info->width=(size_t) MagickMax(floor((scale.x*image->columns/
+        100.0)+0.5),1.0);
+      region_info->height=(size_t) MagickMax(floor((scale.y*image->rows/
+        100.0)+0.5),1.0);
     }
   /*
     Adjust offset according to gravity setting.
@@ -1331,8 +1333,8 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
       scale.y=geometry_info.sigma;
       if ((percent_flags & SigmaValue) == 0)
         scale.y=scale.x;
-      *width=(size_t) floor(scale.x*former_width/100.0+0.5);
-      *height=(size_t) floor(scale.y*former_height/100.0+0.5);
+      *width=(size_t) MagickMax(floor(scale.x*former_width/100.0+0.5),1.0);
+      *height=(size_t) MagickMax(floor(scale.y*former_height/100.0+0.5),1.0);
       former_width=(*width);
       former_height=(*height);
     }

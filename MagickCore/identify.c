@@ -440,23 +440,28 @@ static ssize_t PrintChannelStatistics(FILE *file,const PixelChannel channel,
   const char *name,const double scale,
   const ChannelStatistics *channel_statistics)
 {
-#define StatisticsFormat "    %s:\n      min: " QuantumFormat  \
-  " (%g)\n      max: " QuantumFormat " (%g)\n"  \
-  "      mean: %g (%g)\n      standard deviation: %g (%g)\n"  \
-  "      kurtosis: %g\n      skewness: %g\n      entropy: %g\n"
+#define StatisticsFormat "    %s:\n      min: %.*g  (%.*g)\n      " \
+  "max: %.*g (%.*g)\n      mean: %.*g (%.*g)\n      " \
+  "standard deviation: %.*g (%.*g)\n      kurtosis: %.*g\n      " \
+  "skewness: %.*g\n      entropy: %.*g\n"
 
   ssize_t
     n;
 
-  n=FormatLocaleFile(file,StatisticsFormat,name,ClampToQuantum((MagickRealType)
-    (scale*channel_statistics[channel].minima)),
-    channel_statistics[channel].minima/(double) QuantumRange,ClampToQuantum(
-    (MagickRealType) (scale*channel_statistics[channel].maxima)),
-    channel_statistics[channel].maxima/(double) QuantumRange,scale*
-    channel_statistics[channel].mean,channel_statistics[channel].mean/(double)
-    QuantumRange,scale*channel_statistics[channel].standard_deviation,
-    channel_statistics[channel].standard_deviation/(double) QuantumRange,
-    channel_statistics[channel].kurtosis,channel_statistics[channel].skewness,
+  n=FormatLocaleFile(file,StatisticsFormat,name,GetMagickPrecision(),
+    (double) ClampToQuantum((MagickRealType) (scale*
+    channel_statistics[channel].minima)),GetMagickPrecision(),
+    channel_statistics[channel].minima/(double) QuantumRange,
+    GetMagickPrecision(),(double) ClampToQuantum((MagickRealType) (scale*
+    channel_statistics[channel].maxima)),GetMagickPrecision(),
+    channel_statistics[channel].maxima/(double) QuantumRange,
+    GetMagickPrecision(),scale*channel_statistics[channel].mean,
+    GetMagickPrecision(),channel_statistics[channel].mean/(double) QuantumRange,
+    GetMagickPrecision(),scale*channel_statistics[channel].standard_deviation,
+    GetMagickPrecision(),channel_statistics[channel].standard_deviation/
+    (double) QuantumRange,GetMagickPrecision(),
+    channel_statistics[channel].kurtosis,GetMagickPrecision(),
+    channel_statistics[channel].skewness,GetMagickPrecision(),
     channel_statistics[channel].entropy);
   return(n);
 }
@@ -1011,7 +1016,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   if (ping == MagickFalse)
     {
       if (image->colorspace == CMYKColorspace)
-        (void) FormatLocaleFile(file,"  Total ink density: %*g%%\n",
+        (void) FormatLocaleFile(file,"  Total ink density: %.*g%%\n",
           GetMagickPrecision(),100.0*GetImageTotalInkDensity(image,exception)/
           (double) QuantumRange);
       x=0;

@@ -141,6 +141,7 @@ static MagickBooleanType CompareUsage(void)
       "-extract geometry    extract area from image",
       "-format \"string\"     output formatted image characteristics",
       "-fuzz distance       colors within this distance are considered equal",
+      "-gravity type        horizontal and vertical text placement",
       "-highlight-color color",
       "                     empasize pixel differences with this color",
       "-identify            identify the format and characteristics of the image",
@@ -697,6 +698,27 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
               ThrowCompareException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowCompareInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        ThrowCompareException(OptionError,"UnrecognizedOption",option)
+      }
+      case 'g':
+      {
+        if (LocaleCompare("gravity",option+1) == 0)
+          {
+            ssize_t
+              gravity;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowCompareException(OptionError,"MissingArgument",option);
+            gravity=ParseCommandOption(MagickGravityOptions,MagickFalse,
+              argv[i]); 
+            if (gravity < 0)
+              ThrowCompareException(OptionError,"UnrecognizedGravityType",
+                argv[i]);
             break;
           }
         ThrowCompareException(OptionError,"UnrecognizedOption",option)

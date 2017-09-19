@@ -632,7 +632,7 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
 
   quantum_info=(QuantumInfo *) NULL;
   (void) SeekBlob(image,0,SEEK_SET);
-  while (EOFBlob(image) != MagickFalse)
+  while (EOFBlob(image) == MagickFalse)
   {
     /*
      Object parser loop.
@@ -885,6 +885,7 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
      Open image file.
    */
   image = AcquireImage(image_info,exception);
+  image2 = (Image *) NULL;
 
   status = OpenBlob(image_info, image, ReadBinaryBlobMode, exception);
   if (status == MagickFalse)
@@ -959,6 +960,8 @@ MATLAB_KO:
     filepos += MATLAB_HDR.ObjectSize + 4 + 4;
 
     clone_info=CloneImageInfo(image_info);
+    if ((image != image2) && (image2 != (Image *) NULL))
+      image2=DestroyImage(image2);
     image2 = image;
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
     if(MATLAB_HDR.DataType == miCOMPRESSED)
@@ -996,14 +999,35 @@ MATLAB_KO:
       case  8: z2=z=1; break;      /* 2D matrix*/
       case 12: z2=z = ReadBlobXXXLong(image2);  /* 3D matrix RGB*/
            (void) ReadBlobXXXLong(image2);
-         if(z!=3) ThrowReaderException(CoderError, "MultidimensionalMatricesAreNotSupported");
+         if(z!=3)
+           {
+             if (clone_info != (ImageInfo *) NULL)
+               clone_info=DestroyImageInfo(clone_info);
+             if ((image != image2) && (image2 != (Image *) NULL))
+               image2=DestroyImage(image2);
+             ThrowReaderException(CoderError,
+               "MultidimensionalMatricesAreNotSupported");
+           }
          break;
       case 16: z2=z = ReadBlobXXXLong(image2);  /* 4D matrix animation */
          if(z!=3 && z!=1)
-            ThrowReaderException(CoderError, "MultidimensionalMatricesAreNotSupported");
+           {
+             if (clone_info != (ImageInfo *) NULL)
+               clone_info=DestroyImageInfo(clone_info);
+             if ((image != image2) && (image2 != (Image *) NULL))
+               image2=DestroyImage(image2);
+             ThrowReaderException(CoderError,
+               "MultidimensionalMatricesAreNotSupported");
+           }
          Frames = ReadBlobXXXLong(image2);
          if (Frames == 0)
-           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+           {
+             if (clone_info != (ImageInfo *) NULL)
+               clone_info=DestroyImageInfo(clone_info);
+             if ((image != image2) && (image2 != (Image *) NULL))
+               image2=DestroyImage(image2);
+             ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+           }
          break;
       default:
         if (clone_info != (ImageInfo *) NULL)
