@@ -991,10 +991,10 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned char
     background,
+    buffer[257],
     c,
     flag,
     *global_colormap,
-    header[MaxTextExtent],
     magick[12];
 
   /*
@@ -1021,6 +1021,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((count != 6) || ((LocaleNCompare((char *) magick,"GIF87",5) != 0) &&
       (LocaleNCompare((char *) magick,"GIF89",5) != 0)))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  (void) ResetMagickMemory(buffer,0,sizeof(buffer));
   page.width=ReadBlobLSBShort(image);
   page.height=ReadBlobLSBShort(image);
   flag=(unsigned char) ReadBlobByte(image);
@@ -1080,11 +1081,11 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Read graphics control extension.
             */
-            while (ReadBlobBlock(image,header) != 0) ;
-            dispose=(size_t) header[0] >> 2;
-            delay=((size_t) header[2] << 8) | header[1];
-            if ((ssize_t) (header[0] & 0x01) == 0x01)
-              opacity=(ssize_t) header[3];
+            while (ReadBlobBlock(image,buffer) != 0) ;
+            dispose=(size_t) buffer[0] >> 2;
+            delay=((size_t) buffer[2] << 8) | buffer[1];
+            if ((ssize_t) (buffer[0] & 0x01) == 0x01)
+              opacity=(ssize_t) buffer[3];
             break;
           }
           case 0xfe:
@@ -1101,11 +1102,11 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             comments=AcquireString((char *) NULL);
             for (length=0; ; length+=count)
             {
-              count=ReadBlobBlock(image,header);
+              count=ReadBlobBlock(image,buffer);
               if (count == 0)
                 break;
-              header[count]='\0';
-              (void) ConcatenateString(&comments,(const char *) header);
+              buffer[count]='\0';
+              (void) ConcatenateString(&comments,(const char *) buffer);
             }
             (void) SetImageProperty(meta_image,"comment",comments);
             comments=DestroyString(comments);
@@ -1120,13 +1121,13 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Read Netscape Loop extension.
             */
             loop=MagickFalse;
-            if (ReadBlobBlock(image,header) != 0)
-              loop=LocaleNCompare((char *) header,"NETSCAPE2.0",11) == 0 ?
+            if (ReadBlobBlock(image,buffer) != 0)
+              loop=LocaleNCompare((char *) buffer,"NETSCAPE2.0",11) == 0 ?
                 MagickTrue : MagickFalse;
             if (loop != MagickFalse)
-              while (ReadBlobBlock(image,header) != 0)
+              while (ReadBlobBlock(image,buffer) != 0)
               {
-                iterations=((size_t) header[2] << 8) | header[1];
+                iterations=((size_t) buffer[2] << 8) | buffer[1];
                 if (iterations != 0)
                   iterations++;
               }
@@ -1155,13 +1156,13 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 /*
                   Store GIF application extension as a generic profile.
                 */
-                icc=LocaleNCompare((char *) header,"ICCRGBG1012",11) == 0 ?
+                icc=LocaleNCompare((char *) buffer,"ICCRGBG1012",11) == 0 ?
                   MagickTrue : MagickFalse;
-                magick=LocaleNCompare((char *) header,"ImageMagick",11) == 0 ?
+                magick=LocaleNCompare((char *) buffer,"ImageMagick",11) == 0 ?
                   MagickTrue : MagickFalse;
-                i8bim=LocaleNCompare((char *) header,"MGK8BIM0000",11) == 0 ?
+                i8bim=LocaleNCompare((char *) buffer,"MGK8BIM0000",11) == 0 ?
                   MagickTrue : MagickFalse;
-                iptc=LocaleNCompare((char *) header,"MGKIPTC0000",11) == 0 ?
+                iptc=LocaleNCompare((char *) buffer,"MGKIPTC0000",11) == 0 ?
                   MagickTrue : MagickFalse;
                 number_extensionss++;
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -1222,7 +1223,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 else
                   (void) FormatLocaleString(name,sizeof(name),"gif:%.11s",
-                    header);
+                    buffer);
                 info=(unsigned char *) RelinquishMagickMemory(info);
                 if (magick == MagickFalse)
                   (void) SetImageProfile(meta_image,name,profile);
@@ -1234,7 +1235,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           default:
           {
-            while (ReadBlobBlock(image,header) != 0) ;
+            while (ReadBlobBlock(image,buffer) != 0) ;
             break;
           }
         }
