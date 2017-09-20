@@ -246,7 +246,6 @@ extern "C" {
 #define DestroyImageProfiles  PrependMagickMethod(DestroyImageProfiles)
 #define DestroyImageProperties  PrependMagickMethod(DestroyImageProperties)
 #define DestroyImageView  PrependMagickMethod(DestroyImageView)
-#define DestroyJNG  PrependMagickMethod(DestroyJNG)
 #define DestroyKernelInfo  PrependMagickMethod(DestroyKernelInfo)
 #define DestroyLinkedList  PrependMagickMethod(DestroyLinkedList)
 #define DestroyLocaleOptions  PrependMagickMethod(DestroyLocaleOptions)
