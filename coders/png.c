@@ -4333,10 +4333,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-void
+static void
 DestroyJNG(unsigned char *chunk,Image **color_image,
-   ImageInfo **color_image_info,
-   Image **alpha_image,ImageInfo **alpha_image_info)
+  ImageInfo **color_image_info,Image **alpha_image,
+  ImageInfo **alpha_image_info)
 {
   (void) RelinquishMagickMemory(chunk);
   if (*color_image_info)
