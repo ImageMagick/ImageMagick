@@ -312,7 +312,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read SGI raster header.
   */
-  (void) ResetMagickMemory(iris_info,0,sizeof(iris_info));
+  (void) ResetMagickMemory(&iris_info,0,sizeof(iris_info));
   iris_info.magic=ReadBlobMSBShort(image);
   do
   {
