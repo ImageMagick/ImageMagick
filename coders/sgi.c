@@ -312,6 +312,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read SGI raster header.
   */
+  (void) ResetMagickMemory(iris_info,0,sizeof(iris_info));
   iris_info.magic=ReadBlobMSBShort(image);
   do
   {
@@ -332,7 +333,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((iris_info.bytes_per_pixel == 0) || (iris_info.bytes_per_pixel > 2))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     iris_info.dimension=ReadBlobMSBShort(image);
-    if ((iris_info.dimension == 0) || (iris_info.dimension > 3)) 
+    if ((iris_info.dimension == 0) || (iris_info.dimension > 3))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     iris_info.columns=ReadBlobMSBShort(image);
     iris_info.rows=ReadBlobMSBShort(image);
