@@ -209,10 +209,13 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         high,
         low;
 
+      ssize_t
+        n;
+
       /*
         Auto fit text into bounding box.
       */
-      for ( ; ; draw_info->pointsize*=2.0)
+      for (n=0; n < 32; n++, draw_info->pointsize*=2.0)
       {
         text=AcquireString(caption);
         i=FormatMagickCaption(image,draw_info,split,&metrics,&text,
