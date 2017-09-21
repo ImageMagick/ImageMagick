@@ -66,6 +66,12 @@ static inline MagickBooleanType IsMagickColorEqual(const MagickPixelPacket *p,
     alpha,
     beta;
 
+  alpha=p->matte == MagickFalse ? OpaqueOpacity : p->opacity;
+  beta=q->matte == MagickFalse ? OpaqueOpacity : q->opacity;
+  if (AbsolutePixelValue(alpha-beta) >= MagickEpsilon)
+    return(MagickFalse);
+  if ((alpha == TransparentOpacity) || (beta == TransparentOpacity))
+    return(MagickTrue);  /* no color component if pixel is transparent */
   if (AbsolutePixelValue(p->red-q->red) >= MagickEpsilon)
     return(MagickFalse);
   if (AbsolutePixelValue(p->green-q->green) >= MagickEpsilon)
@@ -77,10 +83,6 @@ static inline MagickBooleanType IsMagickColorEqual(const MagickPixelPacket *p,
       if (AbsolutePixelValue(p->index-q->index) >= MagickEpsilon)
         return(MagickFalse);
     }
-  alpha=p->matte == MagickFalse ? OpaqueOpacity : p->opacity;
-  beta=q->matte == MagickFalse ? OpaqueOpacity : q->opacity;
-  if (AbsolutePixelValue(alpha-beta) >= MagickEpsilon)
-    return(MagickFalse);
   return(MagickTrue);
 }
 
