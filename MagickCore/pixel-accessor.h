@@ -461,28 +461,10 @@ static inline MagickBooleanType IsPixelEquivalent(
   const PixelInfo *magick_restrict q)
 {
   MagickRealType
+    alpha,
+    beta,
     value;
 
-  value=(MagickRealType) p[image->channel_map[AlphaPixelChannel].offset];
-  if (image->alpha_trait != UndefinedPixelTrait)
-    {
-      if (q->alpha_trait == UndefinedPixelTrait)
-        {
-          if (AbsolutePixelValue(value-OpaqueAlpha) >= MagickEpsilon)
-            return(MagickFalse);
-        }
-      else
-        {
-          if (AbsolutePixelValue(value-q->alpha) >= MagickEpsilon)
-            return(MagickFalse);
-          if (AbsolutePixelValue(value-TransparentAlpha) < MagickEpsilon)
-            return(MagickTrue);
-        }
-    }
-  else
-    if ((q->alpha_trait != UndefinedPixelTrait) &&
-        (AbsolutePixelValue(OpaqueAlpha-q->alpha)) >= MagickEpsilon)
-      return(MagickFalse);
   value=(MagickRealType) p[image->channel_map[RedPixelChannel].offset];
   if (AbsolutePixelValue(value-q->red) >= MagickEpsilon)
     return(MagickFalse);
@@ -498,6 +480,11 @@ static inline MagickBooleanType IsPixelEquivalent(
       if (AbsolutePixelValue(value-q->black) >= MagickEpsilon)
         return(MagickFalse);
     }
+  value=(MagickRealType) p[image->channel_map[AlphaPixelChannel].offset];
+  alpha=image->alpha_trait == UndefinedPixelTrait ? OpaqueAlpha : value;
+  beta=q->alpha_trait == UndefinedPixelTrait ? OpaqueAlpha : q->alpha;
+  if (AbsolutePixelValue(alpha-beta) >= MagickEpsilon)
+    return(MagickFalse);
   return(MagickTrue);
 }
 
@@ -522,33 +509,24 @@ static inline MagickBooleanType IsPixelGray(const Image *magick_restrict image,
 static inline MagickBooleanType IsPixelInfoEquivalent(
   const PixelInfo *magick_restrict p,const PixelInfo *magick_restrict q)
 {
-  if (p->alpha_trait != UndefinedPixelTrait)
-    {
-      if (q->alpha_trait == UndefinedPixelTrait)
-        {
-          if (AbsolutePixelValue(p->alpha-OpaqueAlpha) >= MagickEpsilon)
-            return(MagickFalse);
-        }
-      else
-        {
-          if (AbsolutePixelValue(p->alpha-q->alpha) >= MagickEpsilon)
-            return(MagickFalse);
-          if (AbsolutePixelValue(p->alpha-TransparentAlpha) < MagickEpsilon)
-            return(MagickTrue);
-        }
-    }
-  else
-    if ((q->alpha_trait != UndefinedPixelTrait) &&
-        (AbsolutePixelValue(OpaqueAlpha-q->alpha)) >= MagickEpsilon)
-      return(MagickFalse);
+  MagickRealType
+    alpha,
+    beta;
+
   if (AbsolutePixelValue(p->red-q->red) >= MagickEpsilon)
     return(MagickFalse);
   if (AbsolutePixelValue(p->green-q->green) >= MagickEpsilon)
     return(MagickFalse);
   if (AbsolutePixelValue(p->blue-q->blue) >= MagickEpsilon)
     return(MagickFalse);
-  if ((p->colorspace == CMYKColorspace) &&
-      (AbsolutePixelValue(p->black-q->black) >= MagickEpsilon))
+  if (p->colorspace == CMYKColorspace)
+    {
+      if (AbsolutePixelValue(p->black-q->black) >= MagickEpsilon)
+        return(MagickFalse);
+    }
+  alpha=p->alpha_trait == UndefinedPixelTrait ? OpaqueAlpha : p->alpha;
+  beta=q->alpha_trait == UndefinedPixelTrait ? OpaqueAlpha : q->alpha;
+  if (AbsolutePixelValue(alpha-beta) >= MagickEpsilon)
     return(MagickFalse);
   return(MagickTrue);
 }
