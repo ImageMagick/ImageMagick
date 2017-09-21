@@ -511,7 +511,10 @@ static Image *ReadVIPSImage(const ImageInfo *image_info,
       (void) ConcatenateString(&metadata,buffer);
   }
   if (metadata != (char *) NULL)
-    SetImageProperty(image,"vips:metadata",metadata,exception);
+    { 
+      SetImageProperty(image,"vips:metadata",metadata,exception);
+      metadata=(char *) RelinquishMagickMemory(metadata);
+    }
   (void) CloseBlob(image);
   if (status == MagickFalse)
     return((Image *) NULL);
