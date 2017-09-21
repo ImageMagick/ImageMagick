@@ -465,6 +465,11 @@ static inline MagickBooleanType IsPixelEquivalent(
     beta,
     value;
 
+  value=(MagickRealType) p[image->channel_map[AlphaPixelChannel].offset];
+  alpha=image->alpha_trait == UndefinedPixelTrait ? OpaqueAlpha : value;
+  beta=q->alpha_trait == UndefinedPixelTrait ? OpaqueAlpha : q->alpha;
+  if ((alpha == TransparentOpacity) || (beta == TransparentOpacity))
+    return(MagickTrue);  /* no color component if pixel is transparent */
   value=(MagickRealType) p[image->channel_map[RedPixelChannel].offset];
   if (AbsolutePixelValue(value-q->red) >= MagickEpsilon)
     return(MagickFalse);
@@ -480,9 +485,6 @@ static inline MagickBooleanType IsPixelEquivalent(
       if (AbsolutePixelValue(value-q->black) >= MagickEpsilon)
         return(MagickFalse);
     }
-  value=(MagickRealType) p[image->channel_map[AlphaPixelChannel].offset];
-  alpha=image->alpha_trait == UndefinedPixelTrait ? OpaqueAlpha : value;
-  beta=q->alpha_trait == UndefinedPixelTrait ? OpaqueAlpha : q->alpha;
   if (AbsolutePixelValue(alpha-beta) >= MagickEpsilon)
     return(MagickFalse);
   return(MagickTrue);
@@ -513,6 +515,10 @@ static inline MagickBooleanType IsPixelInfoEquivalent(
     alpha,
     beta;
 
+  alpha=p->alpha_trait == UndefinedPixelTrait ? OpaqueAlpha : p->alpha;
+  beta=q->alpha_trait == UndefinedPixelTrait ? OpaqueAlpha : q->alpha;
+  if ((alpha == TransparentOpacity) || (beta == TransparentOpacity))
+    return(MagickTrue);  /* no color component if pixel is transparent */
   if (AbsolutePixelValue(p->red-q->red) >= MagickEpsilon)
     return(MagickFalse);
   if (AbsolutePixelValue(p->green-q->green) >= MagickEpsilon)
@@ -524,8 +530,6 @@ static inline MagickBooleanType IsPixelInfoEquivalent(
       if (AbsolutePixelValue(p->black-q->black) >= MagickEpsilon)
         return(MagickFalse);
     }
-  alpha=p->alpha_trait == UndefinedPixelTrait ? OpaqueAlpha : p->alpha;
-  beta=q->alpha_trait == UndefinedPixelTrait ? OpaqueAlpha : q->alpha;
   if (AbsolutePixelValue(alpha-beta) >= MagickEpsilon)
     return(MagickFalse);
   return(MagickTrue);
