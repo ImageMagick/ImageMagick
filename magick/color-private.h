@@ -62,33 +62,24 @@ static inline MagickBooleanType IsColorEqual(const PixelPacket *p,
 static inline MagickBooleanType IsMagickColorEqual(const MagickPixelPacket *p,
   const MagickPixelPacket *q)
 {
-  if (p->matte != MagickFalse)
-    {
-      if (q->matte == MagickFalse)
-        {
-          if (AbsolutePixelValue(p->opacity-OpaqueOpacity) >= MagickEpsilon)
-            return(MagickFalse);
-        }
-      else
-        {
-          if (AbsolutePixelValue(p->opacity-q->opacity) >= MagickEpsilon)
-            return(MagickFalse);
-          if (AbsolutePixelValue(p->opacity-TransparentOpacity) < MagickEpsilon)
-            return(MagickTrue);
-        }
-    }
-  else
-    if ((q->matte != MagickFalse) &&
-        (AbsolutePixelValue(OpaqueOpacity-q->opacity)) >= MagickEpsilon)
-      return(MagickFalse);
+  MagickRealType
+    alpha,
+    beta;
+
   if (AbsolutePixelValue(p->red-q->red) >= MagickEpsilon)
     return(MagickFalse);
   if (AbsolutePixelValue(p->green-q->green) >= MagickEpsilon)
     return(MagickFalse);
   if (AbsolutePixelValue(p->blue-q->blue) >= MagickEpsilon)
     return(MagickFalse);
-  if ((p->colorspace == CMYKColorspace) &&
-      (AbsolutePixelValue(p->index-q->index) >= MagickEpsilon))
+  if (p->colorspace == CMYKColorspace)
+    {
+      if (AbsolutePixelValue(p->index-q->index) >= MagickEpsilon)
+        return(MagickFalse);
+    }
+  alpha=p->matte == MagickFalse ? OpaqueOpacity : p->opacity;
+  beta=q->matte == MagickFalse ? OpaqueOpacity : q->opacity;
+  if (AbsolutePixelValue(alpha-beta) >= MagickEpsilon)
     return(MagickFalse);
   return(MagickTrue);
 }
