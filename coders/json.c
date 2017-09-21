@@ -1657,13 +1657,19 @@ static MagickBooleanType WriteJSONImage(const ImageInfo *image_info,
   scene=0;
   do
   {
+    if (scene == 0)
+      WriteBlobString(image,"[");
     (void) CopyMagickString(image->filename,image->magick_filename,
       MaxTextExtent);
     image->magick_columns=image->columns;
     image->magick_rows=image->rows;
     (void) EncodeImageAttributes(image,GetBlobFileHandle(image));
     if (GetNextImageInList(image) == (Image *) NULL)
-      break;
+      {
+        WriteBlobString(image,"]");
+        break;
+      }
+    WriteBlobString(image,",\n");
     image=SyncNextImageInList(image);
     status=SetImageProgress(image,SaveImagesTag,scene++,
       GetImageListLength(image));
