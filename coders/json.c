@@ -1238,8 +1238,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
     (void) FormatLocaleFile(file,"    \"iterations\": %.20g,\n",(double)
       image->iterations);
   if ((image->next != (Image *) NULL) || (image->previous != (Image *) NULL))
-    (void) FormatLocaleFile(file,"    \"scene\": %.20g\n    \"scenes\": "
-      "%.20g\n",(double) image->scene,(double) GetImageListLength(image));
+    (void) FormatLocaleFile(file,"    \"scene\": %.20g,\n    \"scenes\": "
+      "%.20g,\n",(double) image->scene,(double) GetImageListLength(image));
   else
     if (image->scene != 0)
       (void) FormatLocaleFile(file,"    \"scene\": %.20g,\n",(double)
