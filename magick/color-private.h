@@ -52,9 +52,9 @@ static inline MagickBooleanType IsColorEqual(const PixelPacket *p,
   red=(MagickRealType) p->red;
   green=(MagickRealType) p->green;
   blue=(MagickRealType) p->blue;
-  if ((fabs((double) (red-q->red)) < MagickEpsilon) &&
-      (fabs((double) (green-q->green)) < MagickEpsilon) &&
-      (fabs((double) (blue-q->blue)) < MagickEpsilon))
+  if ((AbsolutePixelValue(red-q->red) < MagickEpsilon) &&
+      (AbsolutePixelValue(green-q->green) < MagickEpsilon) &&
+      (AbsolutePixelValue(blue-q->blue) < MagickEpsilon))
     return(MagickTrue);
   return(MagickFalse);
 }
@@ -62,27 +62,33 @@ static inline MagickBooleanType IsColorEqual(const PixelPacket *p,
 static inline MagickBooleanType IsMagickColorEqual(const MagickPixelPacket *p,
   const MagickPixelPacket *q)
 {
-  if ((p->matte != MagickFalse) && (q->matte == MagickFalse) &&
-      (fabs((double) (p->opacity-OpaqueOpacity)) >= MagickEpsilon))
-    return(MagickFalse);
-  if ((q->matte != MagickFalse) && (p->matte == MagickFalse) &&
-      (fabs((double) (q->opacity-OpaqueOpacity))) >= MagickEpsilon)
-    return(MagickFalse);
-  if ((p->matte != MagickFalse) && (q->matte != MagickFalse))
+  if (p->matte != MagickFalse)
     {
-      if (fabs((double) (p->opacity-q->opacity)) >= MagickEpsilon)
-        return(MagickFalse);
-      if (fabs((double) (p->opacity-TransparentOpacity)) < MagickEpsilon)
-        return(MagickTrue);
+      if (q->matte == MagickFalse)
+        {
+          if (AbsolutePixelValue(p->opacity-OpaqueOpacity) >= MagickEpsilon)
+            return(MagickFalse);
+        }
+      else
+        {
+          if (AbsolutePixelValue(p->opacity-q->opacity) >= MagickEpsilon)
+            return(MagickFalse);
+          if (AbsolutePixelValue(p->opacity-TransparentOpacity) < MagickEpsilon)
+            return(MagickTrue);
+        }
     }
-  if (fabs((double) (p->red-q->red)) >= MagickEpsilon)
+  else
+    if ((q->matte != MagickFalse) &&
+        (AbsolutePixelValue(OpaqueOpacity-q->opacity)) >= MagickEpsilon)
+      return(MagickFalse);
+  if (AbsolutePixelValue(p->red-q->red) >= MagickEpsilon)
     return(MagickFalse);
-  if (fabs((double) (p->green-q->green)) >= MagickEpsilon)
+  if (AbsolutePixelValue(p->green-q->green) >= MagickEpsilon)
     return(MagickFalse);
-  if (fabs((double) (p->blue-q->blue)) >= MagickEpsilon)
+  if (AbsolutePixelValue(p->blue-q->blue) >= MagickEpsilon)
     return(MagickFalse);
   if ((p->colorspace == CMYKColorspace) &&
-      (fabs((double) (p->index-q->index)) >= MagickEpsilon))
+      (AbsolutePixelValue(p->index-q->index) >= MagickEpsilon))
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -92,8 +98,8 @@ static inline MagickBooleanType IsMagickGray(const MagickPixelPacket *pixel)
   if ((pixel->colorspace != GRAYColorspace) &&
       (pixel->colorspace != RGBColorspace))
     return(MagickFalse);
-  if ((fabs((double) (pixel->red-pixel->green)) < MagickEpsilon) &&
-      (fabs((double) (pixel->green-pixel->blue)) < MagickEpsilon))
+  if ((AbsolutePixelValue(pixel->red-pixel->green) < MagickEpsilon) &&
+      (AbsolutePixelValue(pixel->green-pixel->blue) < MagickEpsilon))
     return(MagickTrue);
   return(MagickFalse);
 }
