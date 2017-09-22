@@ -64,14 +64,10 @@ static inline RandomInfo **AcquireRandomInfoThreadSet(void)
   random_info=(RandomInfo **) AcquireQuantumMemory(number_threads,
     sizeof(*random_info));
   if (random_info == (RandomInfo **) NULL)
-    return((RandomInfo **) NULL);
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(random_info,0,number_threads*sizeof(*random_info));
   for (i=0; i < (ssize_t) number_threads; i++)
-  {
     random_info[i]=AcquireRandomInfo();
-    if (random_info[i] == (RandomInfo *) NULL)
-      return(DestroyRandomInfoThreadSet(random_info));
-  }
   return(random_info);
 }
 
