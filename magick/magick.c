@@ -1181,6 +1181,10 @@ static void MagickSignalHandler(int signal_number)
   if (signal_number == SIGINT)
     _exit(signal_number);
 #endif
+#if defined(SIGBUS)
+  if (signal_number == SIGBUS)
+    _exit(signal_number);
+#endif
 #if defined(SIGTERM)
   if (signal_number == SIGTERM)
     _exit(signal_number);
@@ -1284,6 +1288,10 @@ MagickExport void MagickCoreGenesis(const char *path,
 #if defined(SIGQUIT)
       if (signal_handlers[SIGQUIT] == (SignalHandler *) NULL)
         signal_handlers[SIGQUIT]=RegisterMagickSignalHandler(SIGQUIT);
+#endif
+#if defined(SIGBUS)
+      if (signal_handlers[SIGBUS] == (SignalHandler *) NULL)
+        signal_handlers[SIGBUS]=RegisterMagickSignalHandler(SIGBUS);
 #endif
 #if defined(SIGTERM)
       if (signal_handlers[SIGTERM] == (SignalHandler *) NULL)
