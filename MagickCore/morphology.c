@@ -2414,21 +2414,24 @@ static MagickBooleanType SameKernelInfo(const KernelInfo *kernel1,
 static void ExpandRotateKernelInfo(KernelInfo *kernel, const double angle)
 {
   KernelInfo
-    *clone,
+    *clone_info,
     *last;
 
-  last = kernel;
+  last=kernel;
 DisableMSCWarning(4127)
-  while(1) {
+  while (1) {
 RestoreMSCWarning
-    clone = CloneKernelInfo(last);
-    RotateKernelInfo(clone, angle);
-    if ( SameKernelInfo(kernel, clone) != MagickFalse )
+    clone_info=CloneKernelInfo(last);
+    if (clone_info == (KernelInfo *) NULL)
       break;
-    LastKernelInfo(last)->next = clone;
-    last = clone;
+    RotateKernelInfo(clone_info,angle);
+    if (SameKernelInfo(kernel,clone_info) != MagickFalse)
+      break;
+    LastKernelInfo(last)->next=clone_info;
+    last=clone_info;
   }
-  clone = DestroyKernelInfo(clone); /* kernel has repeated - junk the clone */
+  if (clone_info != (KernelInfo *) NULL)
+    clone_info=DestroyKernelInfo(clone_info);  /* kernel repeated - junk */
   return;
 }
 
