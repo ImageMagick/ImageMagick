@@ -470,7 +470,8 @@ static inline MagickBooleanType IsPixelEquivalent(
   beta=q->alpha_trait == UndefinedPixelTrait ? OpaqueAlpha : q->alpha;
   if (AbsolutePixelValue(alpha-beta) >= MagickEpsilon)
     return(MagickFalse);
-  if ((alpha == TransparentAlpha) || (beta == TransparentAlpha))
+  if ((AbsolutePixelValue(alpha-TransparentAlpha) < MagickEpsilon) ||
+      (AbsolutePixelValue(beta-TransparentAlpha) < MagickEpsilon))
     return(MagickTrue);  /* no color component if pixel is transparent */
   value=(MagickRealType) p[image->channel_map[RedPixelChannel].offset];
   if (AbsolutePixelValue(value-q->red) >= MagickEpsilon)
@@ -519,7 +520,8 @@ static inline MagickBooleanType IsPixelInfoEquivalent(
   beta=q->alpha_trait == UndefinedPixelTrait ? OpaqueAlpha : q->alpha;
   if (AbsolutePixelValue(alpha-beta) >= MagickEpsilon)
     return(MagickFalse);
-  if ((alpha == TransparentAlpha) || (beta == TransparentAlpha))
+  if ((AbsolutePixelValue(alpha-TransparentAlpha) < MagickEpsilon) ||
+      (AbsolutePixelValue(beta-TransparentAlpha) < MagickEpsilon))
     return(MagickTrue);  /* no color component if pixel is transparent */
   if (AbsolutePixelValue(p->red-q->red) >= MagickEpsilon)
     return(MagickFalse);
