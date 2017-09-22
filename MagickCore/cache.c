@@ -3291,21 +3291,6 @@ MagickPrivate const Quantum *GetVirtualPixelsNexus(const Cache cache,
 %
 */
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-#if defined(SIGBUS)
-static void CacheSignalHandler(int status)
-{
-  ThrowFatalException(CacheFatalError,"UnableToExtendPixelCache");
-}
-#endif
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
-
 static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
   const MapMode mode)
 {
@@ -3428,9 +3413,6 @@ static MagickBooleanType SetPixelCacheExtent(Image *image,MagickSizeType length)
 #if defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
       if (cache_info->synchronize != MagickFalse)
         (void) posix_fallocate(cache_info->file,offset+1,extent-offset);
-#endif
-#if defined(SIGBUS)
-      (void) signal(SIGBUS,CacheSignalHandler);
 #endif
     }
   offset=(MagickOffsetType) lseek(cache_info->file,0,SEEK_SET);
