@@ -1337,6 +1337,10 @@ static void MagickSignalHandler(int signal_number)
   if (signal_number == SIGABRT)
     abort();
 #endif
+#if defined(SIGBUS)
+  if (signal_number == SIGBUS)
+    abort();
+#endif
 #if defined(SIGFPE)
   if (signal_number == SIGFPE)
     abort();
@@ -1364,8 +1368,8 @@ static void MagickSignalHandler(int signal_number)
   if (signal_number == SIGINT)
     _exit(signal_number);
 #endif
-#if defined(SIGTERM)
-  if (signal_number == SIGTERM)
+#if defined(SIGBUS)
+  if (signal_number == SIGBUS)
     _exit(signal_number);
 #endif
 #if defined(MAGICKCORE_HAVE_RAISE)
@@ -1447,6 +1451,10 @@ MagickExport void MagickCoreGenesis(const char *path,
 #if defined(SIGABRT)
       if (signal_handlers[SIGABRT] == (SignalHandler *) NULL)
         signal_handlers[SIGABRT]=RegisterMagickSignalHandler(SIGABRT);
+#endif
+#if defined(SIGBUS)
+      if (signal_handlers[SIGBUS] == (SignalHandler *) NULL)
+        signal_handlers[SIGBUS]=RegisterMagickSignalHandler(SIGBUS);
 #endif
 #if defined(SIGSEGV)
       if (signal_handlers[SIGSEGV] == (SignalHandler *) NULL)
