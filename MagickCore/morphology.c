@@ -2334,16 +2334,22 @@ static void ExpandMirrorKernelInfo(KernelInfo *kernel)
   last = kernel;
 
   clone = CloneKernelInfo(last);
+  if (clone == (KernelInfo *) NULL)
+    return;
   RotateKernelInfo(clone, 180);   /* flip */
   LastKernelInfo(last)->next = clone;
   last = clone;
 
   clone = CloneKernelInfo(last);
+  if (clone == (KernelInfo *) NULL)
+    return;
   RotateKernelInfo(clone, 90);   /* transpose */
   LastKernelInfo(last)->next = clone;
   last = clone;
 
   clone = CloneKernelInfo(last);
+  if (clone == (KernelInfo *) NULL)
+    return;
   RotateKernelInfo(clone, 180);  /* flop */
   LastKernelInfo(last)->next = clone;
 
