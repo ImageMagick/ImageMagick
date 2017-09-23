@@ -3092,6 +3092,7 @@ static MagickBooleanType TIFFWritePhotoshopLayers(Image* image,
     *custom_stream;
 
   Image
+    *base_image,
     *next;
 
   ImageInfo
@@ -3109,8 +3110,8 @@ static MagickBooleanType TIFFWritePhotoshopLayers(Image* image,
   StringInfo
     *layers;
 
-  next=image->next;
-  if (next == (Image *) NULL)
+  base_image=CloneImage(image,0,0,MagickFalse,exception);
+  if (base_image == (Image *) NULL)
     return(MagickTrue);
   clone_info=CloneImageInfo(image_info);
   if (clone_info == (ImageInfo *) NULL)
@@ -3144,24 +3145,25 @@ static MagickBooleanType TIFFWritePhotoshopLayers(Image* image,
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
-  DestroyBlob(next);
-  next->blob=blob;
+  DestroyBlob(base_image);
+  base_image->blob=blob;
+  next=base_image;
   while (next != (Image *) NULL)
     next=SyncNextImageInList(next);
-  next=image->next;
-  AttachCustomStream(next->blob,custom_stream);
+  AttachCustomStream(base_image->blob,custom_stream);
   InitPSDInfo(image,&info);
-  if (next->endian == UndefinedEndian)
-    next->endian=(HOST_FILLORDER == FILLORDER_LSB2MSB) ? LSBEndian : MSBEndian;
+  if (base_image->endian == UndefinedEndian)
+    base_image->endian=(HOST_FILLORDER == FILLORDER_LSB2MSB) ? LSBEndian : MSBEndian;
   WriteBlobString(next,"Adobe Photoshop Document Data Block");
-  WriteBlobByte(next,0);
-  WriteBlobString(next,next->endian == LSBEndian ? "MIB8ryaL" : "8BIMLayr");
-  status=WritePSDLayers(next,clone_info,&info,exception);
+  WriteBlobByte(base_image,0);
+  WriteBlobString(base_image,base_image->endian == LSBEndian ? "MIB8ryaL" : "8BIMLayr");
+  status=WritePSDLayers(base_image,clone_info,&info,exception);
   if (status != MagickFalse)
     {
       SetStringInfoLength(layers,(size_t) profile.offset);
       status=SetImageProfile(image,"tiff:37724",layers,exception);
     }
+  next=base_image;
   while (next != (Image *) NULL)
   {
     CloseBlob(next);

@@ -3116,6 +3116,7 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
     *info;
 
   Image
+    *base_image,
     *next_image;
 
   MagickBooleanType
@@ -3137,11 +3138,14 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
     size;
 
   status=MagickTrue;
+  base_image=GetNextImageInList(image);
+  if (base_image == (Image *) NULL)
+    base_image=image;
   size=0;
   size_offset=TellBlob(image);
   SetPSDSize(psd_info,image,0);
   layer_count=0;
-  for (next_image=image; next_image != NULL; )
+  for (next_image=base_image; next_image != NULL; )
   {
     layer_count++;
     next_image=GetNextImageInList(next_image);
@@ -3155,7 +3159,7 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
   if (layer_size_offsets == (MagickOffsetType *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   layer_index=0;
-  for (next_image=image; next_image != NULL; )
+  for (next_image=base_image; next_image != NULL; )
   {
     Image
       *mask;
@@ -3263,7 +3267,7 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
   /*
     Now the image data!
   */
-  next_image=image;
+  next_image=base_image;
   layer_index=0;
   while (next_image != NULL)
   {
@@ -3292,7 +3296,7 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
   /*
     Remove the opacity mask from the registry
   */
-  next_image=image;
+  next_image=base_image;
   while (next_image != (Image *) NULL)
   {
     property=GetImageArtifact(next_image,"psd:opacity-mask");
@@ -3486,9 +3490,6 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
     }
   if (status != MagickFalse)
     {
-      Image
-        *base_image;
-
       MagickOffsetType
         size_offset;
 
@@ -3497,10 +3498,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
 
       size_offset=TellBlob(image);
       SetPSDSize(&psd_info,image,0);
-      base_image=GetNextImageInList(image);
-      if (base_image == (Image *) NULL)
-        base_image=image;
-      status=WritePSDLayersInternal(base_image,image_info,&psd_info,&size,
+      status=WritePSDLayersInternal(image,image_info,&psd_info,&size,
         exception);
       size_offset+=WritePSDSize(&psd_info,image,size+
         (psd_info.version == 1 ? 8 : 16),size_offset);
