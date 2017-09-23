@@ -3083,7 +3083,7 @@ static CustomStreamInfo *TIFFAcquireCustomStreamForWriting(
 }
 
 static MagickBooleanType TIFFWritePhotoshopLayers(Image* image,
-  const ImageInfo *image_info,ExceptionInfo *exception)
+  const ImageInfo *image_info,EndianType endian,ExceptionInfo *exception)
 {
   BlobInfo
     *blob;
@@ -3152,9 +3152,8 @@ static MagickBooleanType TIFFWritePhotoshopLayers(Image* image,
     next=SyncNextImageInList(next);
   AttachCustomStream(base_image->blob,custom_stream);
   InitPSDInfo(image,&info);
-  if (base_image->endian == UndefinedEndian)
-    base_image->endian=(HOST_FILLORDER == FILLORDER_LSB2MSB) ? LSBEndian : MSBEndian;
-  WriteBlobString(next,"Adobe Photoshop Document Data Block");
+  base_image->endian=endian;
+  WriteBlobString(base_image,"Adobe Photoshop Document Data Block");
   WriteBlobByte(base_image,0);
   WriteBlobString(base_image,base_image->endian == LSBEndian ? "MIB8ryaL" : "8BIMLayr");
   status=WritePSDLayers(base_image,clone_info,&info,exception);
@@ -3441,29 +3440,19 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   if (status == MagickFalse)
     return(status);
   (void) SetMagickThreadValue(tiff_exception,exception);
-  endian_type=UndefinedEndian;
+  endian_type=(HOST_FILLORDER == FILLORDER_LSB2MSB) ? LSBEndian : MSBEndian;
   option=GetImageOption(image_info,"tiff:endian");
   if (option != (const char *) NULL)
     {
       if (LocaleNCompare(option,"msb",3) == 0)
         endian_type=MSBEndian;
       if (LocaleNCompare(option,"lsb",3) == 0)
-        endian_type=LSBEndian;;
+        endian_type=LSBEndian;
     }
-  switch (endian_type)
-  {
-    case LSBEndian: mode="wl"; break;
-    case MSBEndian: mode="wb"; break;
-    default: mode="w"; break;
-  }
+  mode=endian_type == LSBEndian ? "wl" : "wb";
 #if defined(TIFF_VERSION_BIG)
   if (LocaleCompare(image_info->magick,"TIFF64") == 0)
-    switch (endian_type)
-    {
-      case LSBEndian: mode="wl8"; break;
-      case MSBEndian: mode="wb8"; break;
-      default: mode="w8"; break;
-    }
+    mode=endian_type == LSBEndian ? "wl8" : "wb8";
 #endif
   tiff=TIFFClientOpen(image->filename,mode,(thandle_t) image,TIFFReadBlob,
     TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,TIFFGetBlobSize,TIFFMapBlob,
@@ -3931,7 +3920,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     option=GetImageOption(image_info,"tiff:write-layers");
     if (IsStringTrue(option) != MagickFalse)
       {
-        (void) TIFFWritePhotoshopLayers(image,image_info,exception);
+        (void) TIFFWritePhotoshopLayers(image,image_info,endian_type,exception);
         adjoin=MagickFalse;
       }
     if ((LocaleCompare(image_info->magick,"PTIF") != 0) &&
