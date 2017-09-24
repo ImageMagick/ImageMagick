@@ -32,16 +32,16 @@ extern "C" {
 
 #undef index
 
-static inline Quantum ClampPixel(const MagickRealType value)
+static inline Quantum ClampPixel(const MagickRealType pixel)
 {
-  if (value < 0.0f)
+  if (pixel < 0.0f)
     return((Quantum) 0);
-  if (value >= (MagickRealType) QuantumRange)
+  if (pixel >= (MagickRealType) QuantumRange)
     return((Quantum) QuantumRange);
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((Quantum) (value+0.5f));
+  return((Quantum) (pixel+0.5f));
 #else
-  return((Quantum) value);
+  return((Quantum) pixel);
 #endif
 }
 
@@ -463,29 +463,29 @@ static inline MagickBooleanType IsPixelEquivalent(
   MagickRealType
     alpha,
     beta,
-    value;
+    color;
 
-  value=(MagickRealType) p[image->channel_map[AlphaPixelChannel].offset];
-  alpha=image->alpha_trait == UndefinedPixelTrait ? OpaqueAlpha : value;
+  color=(MagickRealType) p[image->channel_map[AlphaPixelChannel].offset];
+  alpha=image->alpha_trait == UndefinedPixelTrait ? OpaqueAlpha : color;
   beta=q->alpha_trait == UndefinedPixelTrait ? OpaqueAlpha : q->alpha;
   if (AbsolutePixelValue(alpha-beta) >= MagickEpsilon)
     return(MagickFalse);
   if ((AbsolutePixelValue(alpha-TransparentAlpha) < MagickEpsilon) ||
       (AbsolutePixelValue(beta-TransparentAlpha) < MagickEpsilon))
     return(MagickTrue);  /* no color component if pixel is transparent */
-  value=(MagickRealType) p[image->channel_map[RedPixelChannel].offset];
-  if (AbsolutePixelValue(value-q->red) >= MagickEpsilon)
+  color=(MagickRealType) p[image->channel_map[RedPixelChannel].offset];
+  if (AbsolutePixelValue(color-q->red) >= MagickEpsilon)
     return(MagickFalse);
-  value=(MagickRealType) p[image->channel_map[GreenPixelChannel].offset];
-  if (AbsolutePixelValue(value-q->green) >= MagickEpsilon)
+  color=(MagickRealType) p[image->channel_map[GreenPixelChannel].offset];
+  if (AbsolutePixelValue(color-q->green) >= MagickEpsilon)
     return(MagickFalse);
-  value=(MagickRealType) p[image->channel_map[BluePixelChannel].offset];
-  if (AbsolutePixelValue(value-q->blue) >= MagickEpsilon)
+  color=(MagickRealType) p[image->channel_map[BluePixelChannel].offset];
+  if (AbsolutePixelValue(color-q->blue) >= MagickEpsilon)
     return(MagickFalse);
   if (image->colorspace == CMYKColorspace)
     {
-      value=(MagickRealType) p[image->channel_map[BlackPixelChannel].offset];
-      if (AbsolutePixelValue(value-q->black) >= MagickEpsilon)
+      color=(MagickRealType) p[image->channel_map[BlackPixelChannel].offset];
+      if (AbsolutePixelValue(color-q->black) >= MagickEpsilon)
         return(MagickFalse);
     }
   return(MagickTrue);
