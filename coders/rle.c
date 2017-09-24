@@ -240,9 +240,11 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowRLEException(CorruptImageError,"UnexpectedEndOfFile");
     one=1;
     map_length=one << map_length;
-    if ((number_planes == 0) || (number_planes == 2) ||
-        ((flags & 0x04) && (number_colormaps > 254)) || (bits_per_pixel != 8) ||
-        (image->columns == 0))
+    if ((number_planes == 0) || (number_planes == 2) || ((flags & 0x04) &&
+        ((number_planes <= 2) || number_planes > 254)) || (bits_per_pixel != 8))
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    if ((image->columns == 0) || (image->columns >= 32768) ||
+        (image->rows == 0) || (image->rows >= 32768))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if (flags & 0x02)
       {
