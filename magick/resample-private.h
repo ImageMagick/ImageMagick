@@ -55,13 +55,16 @@ static inline ResampleFilter **AcquireResampleFilterThreadSet(
   filter=(ResampleFilter **) AcquireAlignedMemory(number_threads,
     sizeof(*filter));
   if (filter == (ResampleFilter **) NULL)
-    return((ResampleFilter **) NULL);
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(filter,0,number_threads*sizeof(*filter));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
     filter[i]=AcquireResampleFilter(image,exception);
     if (filter[i] == (ResampleFilter *) NULL)
-      return(DestroyResampleFilterThreadSet(filter));
+      {
+        filter=DestroyResampleFilterThreadSet(filter);
+        ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+      }
     if (method != UndefinedVirtualPixelMethod)
       (void) SetResampleFilterVirtualPixelMethod(filter[i],method);
     if (interpolate != MagickFalse)
