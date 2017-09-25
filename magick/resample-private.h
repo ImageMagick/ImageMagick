@@ -60,11 +60,6 @@ static inline ResampleFilter **AcquireResampleFilterThreadSet(
   for (i=0; i < (ssize_t) number_threads; i++)
   {
     filter[i]=AcquireResampleFilter(image,exception);
-    if (filter[i] == (ResampleFilter *) NULL)
-      {
-        filter=DestroyResampleFilterThreadSet(filter);
-        ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-      }
     if (method != UndefinedVirtualPixelMethod)
       (void) SetResampleFilterVirtualPixelMethod(filter[i],method);
     if (interpolate != MagickFalse)
