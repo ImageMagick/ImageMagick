@@ -1763,8 +1763,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
               if (bitmap->left > metrics->width)
                 metrics->width=bitmap->left;
             }
+          FT_Done_Glyph(glyph.image);
         }
-      FT_Done_Glyph(glyph.image);
     }
   metrics->bounds.x1/=64.0;
   metrics->bounds.y1/=64.0;
