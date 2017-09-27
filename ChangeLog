@@ -1,3 +1,6 @@
+2017-09-28  7.0.7-5 Cristy  <quetzlzacatenango@image...>
+  * Support URW-base35 fonts.
+
 2017-09-26  7.0.7-5 Glenn Randers-Pehrson <glennrp@image...>
   * Removed "ping_preserve_iCCP=MagickTrue;" statement that was inadvertently
     added to coders/png.c (reference
