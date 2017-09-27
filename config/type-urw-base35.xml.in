@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE typemap [
+  <!ELEMENT typemap (type)+>
+  <!ATTLIST typemap xmlns CDATA #FIXED ''>
+  <!ELEMENT type EMPTY>
+  <!ATTLIST type xmlns CDATA #FIXED '' encoding NMTOKEN #IMPLIED
+    family CDATA #REQUIRED format NMTOKEN #REQUIRED foundry NMTOKEN #REQUIRED
+    fullname CDATA #REQUIRED glyphs CDATA #REQUIRED metrics CDATA #REQUIRED
+    name NMTOKEN #REQUIRED stretch NMTOKEN #REQUIRED style NMTOKEN #REQUIRED
+    version CDATA #IMPLIED weight CDATA #REQUIRED>
+]>
+<!--
+  ImageMagick URW-base35 font configuration.
+-->
+<typemap>
+  <type name="AvantGarde-Book" fullname="AvantGarde Book" family="AvantGarde" foundry="URW" weight="400" style="normal" stretch="normal" format="type1" metrics="@urw_base35_font_dir@URWGothic-Book.afm" glyphs="@urw_base35_font_dir@URWGothic-Book.t1"/>
+  <type name="AvantGarde-BookOblique" fullname="AvantGarde Book Oblique" family="AvantGarde" foundry="URW" weight="400" style="oblique" stretch="normal" format="type1" metrics="@urw_base35_font_dir@URWGothic-BookOblique.afm" glyphs="@urw_base35_font_dir@URWGothic-BookOblique.t1"/>
+  <type name="AvantGarde-Demi" fullname="AvantGarde DemiBold" family="AvantGarde" foundry="URW" weight="600" style="normal" stretch="normal" format="type1" metrics="@urw_base35_font_dir@URWGothic-Demi.afm" glyphs="@urw_base35_font_dir@URWGothic-Demi.t1"/>
+  <type name="AvantGarde-DemiOblique" fullname="AvantGarde DemiOblique" family="AvantGarde" foundry="URW" weight="600" style="oblique" stretch="normal" format="type1" metrics="@urw_base35_font_dir@URWGothic-DemiOblique.afm" glyphs="@urw_base35_font_dir@URWGothic-DemiOblique.t1"/>
+  <type name="Bookman-Demi" fullname="Bookman DemiBold" family="Bookman" foundry="URW" weight="600" style="normal" stretch="normal" format="type1" metrics="@urw_base35_font_dir@URWBookman-Demi.afm" glyphs="@urw_base35_font_dir@URWBookman-Demi.t1"/>
+  <type name="Bookman-DemiItalic" fullname="Bookman DemiBold Italic" family="Bookman" foundry="URW" weight="600" style="italic" stretch="normal" format="type1" metrics="@urw_base35_font_dir@URWBookman-DemiItalic.afm" glyphs="@urw_base35_font_dir@URWBookman-DemiItalic.t1"/>
+  <type name="Bookman-Light" fullname="Bookman Light" family="Bookman" foundry="URW" weight="300" style="normal" stretch="normal" format="type1" metrics="@urw_base35_font_dir@URWBookman-Light.afm" glyphs="@urw_base35_font_dir@URWBookman-Light.t1"/>
+  <type name="Bookman-LightItalic" fullname="Bookman Light Italic" family="Bookman" foundry="URW" weight="300" style="italic" stretch="normal" format="type1" metrics="@urw_base35_font_dir@URWBookman-LightItalic.afm" glyphs="@urw_base35_font_dir@URWBookman-LightItalic.t1"/>
+  <type name="Courier" fullname="Courier Regular" family="Courier" foundry="URW" weight="400" style="normal" stretch="normal" format="type1" metrics="@urw_base35_font_dir@NimbusMonoPS-Refular.afm" glyphs="@urw_base35_font_dir@NimbusMonoPS-Regular.t1"/>
+  <type name="Courier-Bold" fullname="Courier Bold" family="Courier" foundry="URW" weight="700" style="normal" stretch="normal" format="type1" metrics="@urw_base35_font_dir@NimbusMonoPS-Bold.afm" glyphs="@urw_base35_font_dir@NimbusMonoPS-Bold.t1"/>
+  <type name="Courier-Oblique" fullname="Courier Regular Oblique" family="Courier" foundry="URW" weight="400" style="oblique" stretch="normal" format="type1" metrics="@urw_base35_font_dir@NimbusMonoPS-Italic.afm" glyphs="@urw_base35_font_dir@NimbusMonoPS-Italic.t1"/>
+  <type name="Courier-BoldOblique" fullname="Courier Bold Oblique" family="Courier" foundry="URW" weight="700" style="oblique" stretch="normal" format="type1" metrics="@urw_base35_font_dir@NimbusMonoPS-BoldItalic.afm" glyphs="@urw_base35_font_dir@NimbusMonoPS-BoldItalic.t1"/>
+  <type name="fixed" fullname="Helvetica Regular" family="Helvetica" foundry="URW" weight="400" style="normal" stretch="normal" format="type1" metrics="@urw_base35_font_dir@NimbusSans-Regular.afm" glyphs="@urw_base35_font_dir@NimbusSans-Regular.t1"/>
+  <type name="Helvetica" fullname="Helvetica Regular" family="Helvetica" foundry="URW" weight="400" style="normal" stretch="normal" format="type1" metrics="@urw_base35_font_dir@NimbusSans-Regular.afm" glyphs="@urw_base35_font_dir@NimbusSans-Regular.t1"/>
+  <type name="Helvetica-Bold" fullname="Helvetica Bold" family="Helvetica" foundry="URW" weight="700" style="normal" stretch="normal" format="type1" metrics="@urw_base35_font_dir@NimbusSans-Bold.afm" glyphs="@urw_base35_font_dir@NimbusSans-Bold.t1"/>
+  <type name="Helvetica-Oblique" fullname="Helvetica Regular Italic" family="Helvetica" foundry="URW" weight="400" style="italic" stretch="normal" format="type1" metrics="@urw_base35_font_dir@NimbusSans-Italic.afm" glyphs="@urw_base35_font_dir@NimbusSans-Italic.t1"/>
+  <type name="Helvetica-BoldOblique" fullname="Helvetica Bold Italic" family="Helvetica" foundry="URW" weight="700" style="italic" stretch="normal" format="type1" metrics="@urw_base35_font_dir@NimbusSans-BoldItalic.afm" glyphs="@urw_base35_font_dir@NimbusSans-BoldItalic.t1"/>
+  <type name="Helvetica-Narrow" fullname="Helvetica Narrow" family="Helvetica Narrow" foundry="URW" weight="400" style="normal" stretch="condensed" format="type1" metrics="@urw_base35_font_dir@NimbusSansNarrow-Regular.afm" glyphs="@urw_base35_font_dir@NimbusSansNarrow-Regular.t1"/>
+  <type name="Helvetica-Narrow-Oblique" fullname="Helvetica Narrow Oblique" family="Helvetica Narrow" foundry="URW" weight="400" style="oblique" stretch="condensed" format="type1" metrics="@urw_base35_font_dir@NimbusSansNarrow-Oblique.afm" glyphs="@urw_base35_font_dir@NimbusSansNarrow-Oblique.t1"/>
+  <type name="Helvetica-Narrow-Bold" fullname="Helvetica Narrow Bold" family="Helvetica Narrow" foundry="URW" weight="700" style="normal" stretch="condensed" format="type1" metrics="@urw_base35_font_dir@NimbusSansNarrow-Bold.afm" glyphs="@urw_base35_font_dir@NimbusSansNarrow-Bold.t1"/>
+  <type name="Helvetica-Narrow-BoldOblique" fullname="Helvetica Narrow Bold Oblique" family="Helvetica Narrow" foundry="URW" weight="700" style="oblique" stretch="condensed" format="type1" metrics="@urw_base35_font_dir@nNimbusSansNarrow-BdOblique.afm" glyphs="@urw_base35_font_dir@NimbusSansNarrow-BdOblique.t1"/>
+  <type name="NewCenturySchlbk-Roman" fullname="New Century Schoolbook" family="NewCenturySchlbk" foundry="URW" weight="400" style="normal" stretch="normal" format="type1" metrics="@urw_base35_font_dir@C059-Roman.afm" glyphs="@urw_base35_font_dir@C059-Roman.t1"/>
+  <type name="NewCenturySchlbk-Italic" fullname="New Century Schoolbook Italic" family="NewCenturySchlbk" foundry="URW" weight="400" style="italic" stretch="normal" format="type1" metrics="@urw_base35_font_dir@C059-Italic.afm" glyphs="@urw_base35_font_dir@C059-Italic.t1"/>
+  <type name="NewCenturySchlbk-Bold" fullname="New Century Schoolbook Bold" family="NewCenturySchlbk" foundry="URW" weight="700" style="normal" stretch="normal" format="type1" metrics="@urw_base35_font_dir@C059-Bold.afm" glyphs="@urw_base35_font_dir@C059-Bold.t1"/>
+  <type name="NewCenturySchlbk-BoldItalic" fullname="New Century Schoolbook Bold Italic" family="NewCenturySchlbk" foundry="URW" weight="700" style="italic" stretch="normal" format="type1" metrics="@urw_base35_font_dir@C059-BdIta.afm" glyphs="@urw_base35_font_dir@C059-BdIta.t1"/>
+  <type name="Palatino-Roman" fullname="Palatino Regular" family="Palatino" foundry="URW" weight="400" style="normal" stretch="normal" format="type1" metrics="@urw_base35_font_dir@P052-Roman.afm" glyphs="@urw_base35_font_dir@P052-Roman.t1"/>
+  <type name="Palatino-Italic" fullname="Palatino Italic" family="Palatino" foundry="URW" weight="400" style="italic" stretch="normal" format="type1" metrics="@urw_base35_font_dir@P052-Italic.afm" glyphs="@urw_base35_font_dir@P052-Italic.t1"/>
+  <type name="Palatino-Bold" fullname="Palatino Bold" family="Palatino" foundry="URW" weight="700" style="normal" stretch="normal" format="type1" metrics="@urw_base35_font_dir@P052-Bold.afm" glyphs="@urw_base35_font_dir@P052-Bold.t1"/>
+  <type name="Palatino-BoldItalic" fullname="Palatino Bold Italic" family="Palatino" foundry="URW" weight="700" style="italic" stretch="normal" format="type1" metrics="@urw_base35_font_dir@P052-BoldItalic.afm" glyphs="@urw_base35_font_dir@P052-BoldItalic.t1"/>
+  <type name="Times-Roman" fullname="Times Regular" family="Times" foundry="URW" weight="400" style="normal" stretch="normal" format="type1" metrics="@urw_base35_font_dir@NimbusRoman-Regular.afm" glyphs="@urw_base35_font_dir@NimbusRoman-Regular.t1"/>
+  <type name="Times-Bold" fullname="Times Medium" family="Times" foundry="URW" weight="700" style="normal" stretch="normal" format="type1" metrics="@urw_base35_font_dir@NimbusRoman-Bold.afm" glyphs="@urw_base35_font_dir@NimbusRoman-Bold.t1"/>
+  <type name="Times-Italic" fullname="Times Regular Italic" family="Times" foundry="URW" weight="400" style="italic" stretch="normal" format="type1" metrics="@urw_base35_font_dir@NimbusRoman-Italic.afm" glyphs="@urw_base35_font_dir@NimbusRoman-Italic.t1"/>
+  <type name="Times-BoldItalic" fullname="Times Medium Italic" family="Times" foundry="URW" weight="700" style="italic" stretch="normal" format="type1" metrics="@urw_base35_font_dir@NimbusRoman-BoldItalic.afm" glyphs="@urw_base35_font_dir@NimbusRoman-BoldItalic.t1"/>
+  <type name="Symbol" fullname="Symbol" family="Symbol" foundry="URW" weight="400" style="normal" stretch="normal" format="type1" metrics="@urw_base35_font_dir@StandardSymbolsPS.afm" glyphs="@urw_base35_font_dir@StandardSymbolsPS.t1" version="2.0" encoding="AdobeCustom"/>
+</typemap>

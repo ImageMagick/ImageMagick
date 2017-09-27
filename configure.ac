@@ -2728,6 +2728,22 @@ AC_SUBST(TIFF_LIBS)
 dnl ===========================================================================
 
 #
+# Set URW Base35 font directory.
+#
+AC_ARG_WITH([urw-base35-font-dir],
+    [AC_HELP_STRING([--with-urw-base35-font-dir=DIR],
+                    [URW-base35 font directory])],
+    [with_urw_base35_font_dir=$withval],
+    [with_urw_base35_font_dir='default'])
+
+if test "$with_urw_base35_font_dir" != 'default'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-urw-base35-font-dir=$with_urw_base35_font_dir "
+fi
+
+
+dnl ===========================================================================
+
+#
 # Check for WEBP delegate library.
 #
 AC_ARG_WITH(webp,
@@ -3273,6 +3289,27 @@ case "${build_os}" in
     PSDelegate=`$WinPathScript "$PSDelegate" 1`
     ;;
 esac
+
+# URW-base35 fonts.
+AC_MSG_CHECKING(for URW-base35 fonts directory)
+urw_base35_font_dir=''
+if test "${with_urw_base35_font_dir}" != 'default'; then
+  urw_base35_font_dir="${with_urw_base35_font_dir}/"
+else
+  for font_dir in "${prefix}/share/urw-base35/fonts/" '/usr/share/fonts/urw-base35/'; do
+    if test -f "${font_dir}StandardSymbolsPS.t1"; then
+      urw_base35_font_dir="${font_dir}"
+      break 1
+    fi
+  done
+fi
+if test "${urw_base35_font_dir}x" != 'x'; then
+  type_include_files="${type_include_files} "'<include file="type-urw-base35.xml" />'
+  AC_MSG_RESULT([$urw_base35_font_dir])
+else
+  AC_MSG_RESULT([not found!]);
+fi
+AC_SUBST(urw_base35_font_dir)
 
 # Windows fonts.
 AC_MSG_CHECKING(for Windows fonts directory)
@@ -3856,6 +3893,11 @@ if test "${ghostscript_font_dir}x" != 'x'; then
     result_ghostscript_font_dir=$ghostscript_font_dir
 fi
 
+result_urw_base35_font_dir='none'
+if test "${urw_base35_font_dir}x" != 'x'; then
+    result_urw_base35_font_dir=$urw_base35_font_dir
+fi
+
 result_windows_font_dir='none'
 if test "${windows_font_dir}x" != 'x'; then
     result_windows_font_dir=${windows_font_dir}
@@ -3875,6 +3917,7 @@ AC_CONFIG_FILES([\
     config/type-apple.xml \
     config/type-dejavu.xml \
     config/type-ghostscript.xml \
+    config/type-urw-base35.xml \
     config/type-windows.xml \
     config/type.xml \
     ImageMagick.spec \
@@ -3979,6 +4022,7 @@ matches your expectations.
   Apple fonts       --with-apple-font-dir=$with_apple_font_dir	$result_apple_font_dir
   Dejavu fonts      --with-dejavu-font-dir=$with_dejavu_font_dir	$result_dejavu_font_dir
   Ghostscript fonts --with-gs-font-dir=$with_gs_font_dir	$result_ghostscript_font_dir
+  URW-base35 fonts  --with-urw-base35-font-dir=$with_urw_base35_font_dir  $result_urw_base35_font_dir
   Windows fonts     --with-windows-font-dir=$with_windows_font_dir	$result_windows_font_dir
 
   X11 Configuration:

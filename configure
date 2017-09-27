@@ -685,6 +685,7 @@ TAR
 ShowImageDelegate
 type_include_files
 windows_font_dir
+urw_base35_font_dir
 ghostscript_font_dir
 dejavu_font_dir
 apple_font_dir
@@ -1224,6 +1225,7 @@ with_png
 with_raw
 with_rsvg
 with_tiff
+with_urw_base35_font_dir
 with_webp
 with_windows_font_dir
 with_wmf
@@ -2029,6 +2031,8 @@ Optional Packages:
   --without-raw           disable Raw support
   --with-rsvg             enable RSVG support
   --without-tiff          disable TIFF support
+  --with-urw-base35-font-dir=DIR
+                          URW-base35 font directory
   --without-webp          disable WEBP support
   --with-windows-font-dir=DIR
                           Windows font directory
@@ -4530,7 +4534,7 @@ MAGICK_PATCHLEVEL_VERSION=16
 
 MAGICK_VERSION=6.9.9-16
 
-MAGICK_GIT_REVISION=12080:21c5b0046:20170923
+MAGICK_GIT_REVISION=12087:f4421b903:20170927
 
 
 # Substitute library versioning
@@ -34678,6 +34682,24 @@ fi
 
 
 #
+# Set URW Base35 font directory.
+#
+
+# Check whether --with-urw-base35-font-dir was given.
+if test "${with_urw_base35_font_dir+set}" = set; then :
+  withval=$with_urw_base35_font_dir; with_urw_base35_font_dir=$withval
+else
+  with_urw_base35_font_dir='default'
+fi
+
+
+if test "$with_urw_base35_font_dir" != 'default'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-urw-base35-font-dir=$with_urw_base35_font_dir "
+fi
+
+
+
+#
 # Check for WEBP delegate library.
 #
 
@@ -37057,6 +37079,30 @@ case "${build_os}" in
     ;;
 esac
 
+# URW-base35 fonts.
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for URW-base35 fonts directory" >&5
+$as_echo_n "checking for URW-base35 fonts directory... " >&6; }
+urw_base35_font_dir=''
+if test "${with_urw_base35_font_dir}" != 'default'; then
+  urw_base35_font_dir="${with_urw_base35_font_dir}/"
+else
+  for font_dir in "${prefix}/share/urw-base35/fonts/" '/usr/share/fonts/urw-base35/'; do
+    if test -f "${font_dir}StandardSymbolsPS.t1"; then
+      urw_base35_font_dir="${font_dir}"
+      break 1
+    fi
+  done
+fi
+if test "${urw_base35_font_dir}x" != 'x'; then
+  type_include_files="${type_include_files} "'<include file="type-urw-base35.xml" />'
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $urw_base35_font_dir" >&5
+$as_echo "$urw_base35_font_dir" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: not found!" >&5
+$as_echo "not found!" >&6; };
+fi
+
+
 # Windows fonts.
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Windows fonts directory" >&5
 $as_echo_n "checking for Windows fonts directory... " >&6; }
@@ -38158,6 +38204,11 @@ if test "${ghostscript_font_dir}x" != 'x'; then
     result_ghostscript_font_dir=$ghostscript_font_dir
 fi
 
+result_urw_base35_font_dir='none'
+if test "${urw_base35_font_dir}x" != 'x'; then
+    result_urw_base35_font_dir=$urw_base35_font_dir
+fi
+
 result_windows_font_dir='none'
 if test "${windows_font_dir}x" != 'x'; then
     result_windows_font_dir=${windows_font_dir}
@@ -38166,7 +38217,7 @@ fi
 # ==============================================================================
 # Generate build environment
 # ==============================================================================
-ac_config_files="$ac_config_files common.shi config/configure.xml config/delegates.xml config/ImageMagick.rdf config/MagickCore.dox config/MagickWand.dox config/Magick++.dox config/type-apple.xml config/type-dejavu.xml config/type-ghostscript.xml config/type-windows.xml config/type.xml ImageMagick.spec Magick++/bin/Magick++-config magick/ImageMagick.pc Magick++/lib/ImageMagick++.pc Magick++/lib/Magick++.pc magick/Magick-config magick/MagickCore-config magick/MagickCore.pc magick/version.h Makefile magick.sh PerlMagick/check.sh PerlMagick/default/Magick.pm PerlMagick/Makefile.PL PerlMagick/default/Makefile.PL PerlMagick/quantum/Makefile.PL PerlMagick/quantum/quantum.pm PerlMagick/quantum/quantum.xs PerlMagick/quantum/typemap utilities/animate.1 utilities/compare.1 utilities/composite.1 utilities/conjure.1 utilities/convert.1 utilities/display.1 utilities/identify.1 utilities/ImageMagick.1 utilities/import.1 utilities/mogrify.1 utilities/montage.1 utilities/stream.1 wand/MagickWand-config wand/MagickWand.pc wand/Wand-config wand/Wand.pc"
+ac_config_files="$ac_config_files common.shi config/configure.xml config/delegates.xml config/ImageMagick.rdf config/MagickCore.dox config/MagickWand.dox config/Magick++.dox config/type-apple.xml config/type-dejavu.xml config/type-ghostscript.xml config/type-urw-base35.xml config/type-windows.xml config/type.xml ImageMagick.spec Magick++/bin/Magick++-config magick/ImageMagick.pc Magick++/lib/ImageMagick++.pc Magick++/lib/Magick++.pc magick/Magick-config magick/MagickCore-config magick/MagickCore.pc magick/version.h Makefile magick.sh PerlMagick/check.sh PerlMagick/default/Magick.pm PerlMagick/Makefile.PL PerlMagick/default/Makefile.PL PerlMagick/quantum/Makefile.PL PerlMagick/quantum/quantum.pm PerlMagick/quantum/quantum.xs PerlMagick/quantum/typemap utilities/animate.1 utilities/compare.1 utilities/composite.1 utilities/conjure.1 utilities/convert.1 utilities/display.1 utilities/identify.1 utilities/ImageMagick.1 utilities/import.1 utilities/mogrify.1 utilities/montage.1 utilities/stream.1 wand/MagickWand-config wand/MagickWand.pc wand/Wand-config wand/Wand.pc"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -39525,6 +39576,7 @@ do
     "config/type-apple.xml") CONFIG_FILES="$CONFIG_FILES config/type-apple.xml" ;;
     "config/type-dejavu.xml") CONFIG_FILES="$CONFIG_FILES config/type-dejavu.xml" ;;
     "config/type-ghostscript.xml") CONFIG_FILES="$CONFIG_FILES config/type-ghostscript.xml" ;;
+    "config/type-urw-base35.xml") CONFIG_FILES="$CONFIG_FILES config/type-urw-base35.xml" ;;
     "config/type-windows.xml") CONFIG_FILES="$CONFIG_FILES config/type-windows.xml" ;;
     "config/type.xml") CONFIG_FILES="$CONFIG_FILES config/type.xml" ;;
     "ImageMagick.spec") CONFIG_FILES="$CONFIG_FILES ImageMagick.spec" ;;
@@ -41163,6 +41215,7 @@ matches your expectations.
   Apple fonts       --with-apple-font-dir=$with_apple_font_dir	$result_apple_font_dir
   Dejavu fonts      --with-dejavu-font-dir=$with_dejavu_font_dir	$result_dejavu_font_dir
   Ghostscript fonts --with-gs-font-dir=$with_gs_font_dir	$result_ghostscript_font_dir
+  URW-base35 fonts  --with-urw-base35-font-dir=$with_urw_base35_font_dir  $result_urw_base35_font_dir
   Windows fonts     --with-windows-font-dir=$with_windows_font_dir	$result_windows_font_dir
 
   X11 Configuration:
@@ -41250,6 +41303,7 @@ matches your expectations.
   Apple fonts       --with-apple-font-dir=$with_apple_font_dir	$result_apple_font_dir
   Dejavu fonts      --with-dejavu-font-dir=$with_dejavu_font_dir	$result_dejavu_font_dir
   Ghostscript fonts --with-gs-font-dir=$with_gs_font_dir	$result_ghostscript_font_dir
+  URW-base35 fonts  --with-urw-base35-font-dir=$with_urw_base35_font_dir  $result_urw_base35_font_dir
   Windows fonts     --with-windows-font-dir=$with_windows_font_dir	$result_windows_font_dir
 
   X11 Configuration:
