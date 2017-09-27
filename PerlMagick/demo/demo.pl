@@ -503,7 +503,7 @@ push(@$images,$example);
 # Create image montage.
 #
 print "Montage...\n";
-$montage=$images->Montage(geometry=>'128x160+8+4>',gravity=>'Center',
+$montage=$images->Montage(geometry=>'140x160+8+4>',gravity=>'Center',
   tile=>'5x+10+200',compose=>'over',background=>'#ffffff',pointsize=>18,
   fill=>'#600',stroke=>'none',shadow=>'true');
 
