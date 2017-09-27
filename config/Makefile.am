@@ -45,7 +45,7 @@ configlib_DATA = \
 	config/type-apple.xml \
 	config/type-dejavu.xml \
 	config/type-ghostscript.xml \
-	config/type-urw-base35.xml.in \
+	config/type-urw-base35.xml \
 	config/type-windows.xml
 
 CONFIG_EXTRA_DIST = \

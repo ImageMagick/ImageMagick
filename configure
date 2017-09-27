@@ -4534,7 +4534,7 @@ MAGICK_PATCHLEVEL_VERSION=5
 
 MAGICK_VERSION=7.0.7-5
 
-MAGICK_GIT_REVISION=21287:13604697e:20170927
+MAGICK_GIT_REVISION=21288:fbca0d093:20170927
 
 
 # Substitute library versioning
@@ -38206,7 +38206,7 @@ fi
 # ==============================================================================
 # Generate build environment
 # ==============================================================================
-ac_config_files="$ac_config_files common.shi config/configure.xml config/delegates.xml config/ImageMagick.rdf config/MagickCore.dox config/MagickWand.dox config/Magick++.dox config/type-apple.xml config/type-dejavu.xml config/type-ghostscript.xml config/type-windows.xml config/type.xml ImageMagick.spec Magick++/bin/Magick++-config MagickCore/ImageMagick.pc Magick++/lib/Magick++.pc MagickCore/MagickCore-config MagickCore/MagickCore.pc MagickCore/version.h Makefile magick.sh PerlMagick/check.sh PerlMagick/default/Magick.pm PerlMagick/Makefile.PL PerlMagick/default/Makefile.PL PerlMagick/quantum/Makefile.PL PerlMagick/quantum/quantum.pm PerlMagick/quantum/quantum.xs PerlMagick/quantum/typemap utilities/animate.1 utilities/compare.1 utilities/composite.1 utilities/conjure.1 utilities/convert.1 utilities/display.1 utilities/identify.1 utilities/ImageMagick.1 utilities/import.1 utilities/magick.1 utilities/magick-script.1 utilities/mogrify.1 utilities/montage.1 utilities/stream.1 MagickWand/MagickWand-config MagickWand/MagickWand.pc"
+ac_config_files="$ac_config_files common.shi config/configure.xml config/delegates.xml config/ImageMagick.rdf config/MagickCore.dox config/MagickWand.dox config/Magick++.dox config/type-apple.xml config/type-dejavu.xml config/type-ghostscript.xml config/type-urw-base35.xml config/type-windows.xml config/type.xml ImageMagick.spec Magick++/bin/Magick++-config MagickCore/ImageMagick.pc Magick++/lib/Magick++.pc MagickCore/MagickCore-config MagickCore/MagickCore.pc MagickCore/version.h Makefile magick.sh PerlMagick/check.sh PerlMagick/default/Magick.pm PerlMagick/Makefile.PL PerlMagick/default/Makefile.PL PerlMagick/quantum/Makefile.PL PerlMagick/quantum/quantum.pm PerlMagick/quantum/quantum.xs PerlMagick/quantum/typemap utilities/animate.1 utilities/compare.1 utilities/composite.1 utilities/conjure.1 utilities/convert.1 utilities/display.1 utilities/identify.1 utilities/ImageMagick.1 utilities/import.1 utilities/magick.1 utilities/magick-script.1 utilities/mogrify.1 utilities/montage.1 utilities/stream.1 MagickWand/MagickWand-config MagickWand/MagickWand.pc"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -39563,6 +39563,7 @@ do
     "config/type-apple.xml") CONFIG_FILES="$CONFIG_FILES config/type-apple.xml" ;;
     "config/type-dejavu.xml") CONFIG_FILES="$CONFIG_FILES config/type-dejavu.xml" ;;
     "config/type-ghostscript.xml") CONFIG_FILES="$CONFIG_FILES config/type-ghostscript.xml" ;;
+    "config/type-urw-base35.xml") CONFIG_FILES="$CONFIG_FILES config/type-urw-base35.xml" ;;
     "config/type-windows.xml") CONFIG_FILES="$CONFIG_FILES config/type-windows.xml" ;;
     "config/type.xml") CONFIG_FILES="$CONFIG_FILES config/type.xml" ;;
     "ImageMagick.spec") CONFIG_FILES="$CONFIG_FILES ImageMagick.spec" ;;

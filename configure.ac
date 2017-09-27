@@ -3907,6 +3907,7 @@ AC_CONFIG_FILES([\
     config/type-apple.xml \
     config/type-dejavu.xml \
     config/type-ghostscript.xml \
+    config/type-urw-base35.xml \
     config/type-windows.xml \
     config/type.xml \
     ImageMagick.spec \
