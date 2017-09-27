@@ -14618,6 +14618,9 @@ Write(ref,...)
           PackageName);
         goto PerlException;
       }
+    scene=0;
+    for (next=image; next; next=next->next)
+      next->scene=scene++;
     package_info=ClonePackageInfo(info,exception);
     if (items == 2)
       SetAttribute(aTHX_ package_info,NULL,"filename",ST(1),exception);
@@ -14628,12 +14631,8 @@ Write(ref,...)
             exception);
     (void) CopyMagickString(filename,package_info->image_info->filename,
       MagickPathExtent);
-    scene=0;
     for (next=image; next; next=next->next)
-    {
       (void) CopyMagickString(next->filename,filename,MagickPathExtent);
-      next->scene=scene++;
-    }
     *package_info->image_info->magick='\0';
     SetImageInfo(package_info->image_info,(unsigned int)
       GetImageListLength(image),exception);
