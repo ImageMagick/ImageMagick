@@ -1354,15 +1354,16 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       args.pathname=ConstantString(draw_info->font+1);
   face=(FT_Face) NULL;
   ft_status=FT_Open_Face(library,&args,(long) draw_info->face,&face);
-  args.pathname=DestroyString(args.pathname);
   exception=(&image->exception);
   if (ft_status != 0)
     {
       (void) FT_Done_FreeType(library);
       (void) ThrowMagickException(exception,GetMagickModule(),TypeError,
-        "UnableToReadFont","`%s'",draw_info->font);
+        "UnableToReadFont","`%s'",args.pathname);
+      args.pathname=DestroyString(args.pathname);
       return(MagickFalse);
     }
+  args.pathname=DestroyString(args.pathname);
   if ((draw_info->metrics != (char *) NULL) &&
       (IsPathAccessible(draw_info->metrics) != MagickFalse))
     (void) FT_Attach_File(face,draw_info->metrics);
