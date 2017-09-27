@@ -2439,8 +2439,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #endif
      }
 
-    ping_preserve_iCCP=MagickTrue;
-
     value=GetImageOption(image_info,"profile:skip");
 
     if (IsOptionMember("ICC",value) == MagickFalse)

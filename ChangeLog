@@ -1,3 +1,8 @@
+2017-09-26  7.0.7-5 Glenn Randers-Pehrson <glennrp@image...>
+  * Removed "ping_preserve_iCCP=MagickTrue;" statement that was inadvertently
+    added to coders/png.c (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=32771).
+
 2017-09-23  7.0.7-4 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.7-4, GIT revision 21265:bdbc14590:20170923.
 
