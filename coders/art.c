@@ -325,7 +325,7 @@ static MagickBooleanType WriteARTImage(const ImageInfo *image_info,Image *image,
   (void) WriteBlobLSBShort(image,0);
   (void) WriteBlobLSBShort(image,(unsigned short) image->rows);
   quantum_info=AcquireQuantumInfo(image_info,image);
-  if(quantum_info == (QuantumInfo *)NULL)
+  if(quantum_info == (QuantumInfo *) NULL)
     ThrowWriterException(ImageError,"MemoryAllocationFailed");
   pixels=(unsigned char *) GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) image->rows; y++)
