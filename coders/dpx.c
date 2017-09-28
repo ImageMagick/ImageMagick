@@ -1969,6 +1969,8 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
     Convert pixel packets to DPX raster image.
   */
   quantum_info=AcquireQuantumInfo(image_info,image);
+  if(quantum_info==NULL)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   SetQuantumQuantum(quantum_info,32);
   SetQuantumPack(quantum_info,dpx.image.image_element[0].packing == 0 ?
     MagickTrue : MagickFalse);
