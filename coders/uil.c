@@ -255,8 +255,6 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
             }
           }
         }
-      if (i != 0)
-        i--;
       (void) SetImageType(image,PaletteType,exception);
       colors=image->colors;
       if (transparent != MagickFalse)
@@ -264,6 +262,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
           register Quantum
             *q;
 
+          i=0;
           colors++;
           for (y=0; y < (ssize_t) image->rows; y++)
           {
@@ -274,6 +273,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
             {
               if (matte_image[i] != 0)
                 SetPixelIndex(image,(Quantum) image->colors,q);
+              i++;
               q+=GetPixelChannels(image);
             }
           }
