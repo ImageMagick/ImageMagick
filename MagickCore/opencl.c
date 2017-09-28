@@ -516,6 +516,7 @@ MagickPrivate MagickCLCacheInfo AcquireMagickCLCacheInfo(MagickCLDevice device,
   info->device=device;
   info->length=length;
   info->pixels=pixels;
+  info->events_semaphore=AcquireSemaphoreInfo();
   info->buffer=openCL_library->clCreateBuffer(device->context,
     CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,(size_t) length,(void *) pixels,
     &status);
@@ -1376,6 +1377,45 @@ static MagickBooleanType CompileOpenCLKernel(MagickCLDevice device,
   return(MagickTrue);
 }
 
+static cl_event* CopyOpenCLEvents(MagickCLCacheInfo first,
+  MagickCLCacheInfo second,cl_uint *event_count)
+{
+  cl_event
+    *events;
+
+  register size_t
+    i;
+
+  size_t
+    j;
+
+  assert(first != (MagickCLCacheInfo) NULL);
+  assert(event_count != (cl_uint *) NULL);
+  events=(cl_event *) NULL;
+  LockSemaphoreInfo(first->events_semaphore);
+  if (second != (MagickCLCacheInfo) NULL)
+    LockSemaphoreInfo(second->events_semaphore);
+  *event_count=first->event_count;
+  if (second != (MagickCLCacheInfo) NULL)
+    *event_count+=second->event_count;
+  if (*event_count > 0)
+    {
+      events=AcquireQuantumMemory(*event_count,sizeof(*events));
+      j=0;
+      for (i=0; i < first->event_count; i++, j++)
+        events[j]=first->events[i];
+      if (second != (MagickCLCacheInfo) NULL)
+        {
+          for (i=0; i < second->event_count; i++, j++)
+            events[j]=second->events[i];
+        }
+    }
+  UnlockSemaphoreInfo(first->events_semaphore);
+  if (second != (MagickCLCacheInfo) NULL)
+    UnlockSemaphoreInfo(second->events_semaphore);
+  return(events);
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1403,19 +1443,27 @@ MagickPrivate MagickCLCacheInfo CopyMagickCLCacheInfo(MagickCLCacheInfo info)
   cl_command_queue
     queue;
 
+  cl_event
+    *events;
+
+  cl_uint
+    event_count;
+
   Quantum
     *pixels;
 
   if (info == (MagickCLCacheInfo) NULL)
     return((MagickCLCacheInfo) NULL);
-  if (info->event_count > 0)
+  events=CopyOpenCLEvents(info,(MagickCLCacheInfo) NULL,&event_count);
+  if (events != (cl_event *) NULL)
     {
       queue=AcquireOpenCLCommandQueue(info->device);
       pixels=openCL_library->clEnqueueMapBuffer(queue,info->buffer,CL_TRUE,
-        CL_MAP_READ | CL_MAP_WRITE,0,info->length,info->event_count,
-        info->events,(cl_event *) NULL,(cl_int *) NULL);
+        CL_MAP_READ | CL_MAP_WRITE,0,info->length,event_count,events,
+        (cl_event *) NULL,(cl_int *) NULL);
       assert(pixels == info->pixels);
       ReleaseOpenCLCommandQueue(info->device,queue);
+      events=(cl_event *) RelinquishMagickMemory(events);
     }
   return(RelinquishMagickCLCacheInfo(info,MagickFalse));
 }
@@ -1564,6 +1612,7 @@ static void RegisterCacheEvent(MagickCLCacheInfo info,cl_event event)
 {
   assert(info != (MagickCLCacheInfo) NULL);
   assert(event != (cl_event) NULL);
+  LockSemaphoreInfo(info->events_semaphore);
   if (info->events == (cl_event *) NULL)
     {
       info->events=AcquireMagickMemory(sizeof(*info->events));
@@ -1575,6 +1624,7 @@ static void RegisterCacheEvent(MagickCLCacheInfo info,cl_event event)
   if (info->events == (cl_event *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   info->events[info->event_count-1]=event;
+  UnlockSemaphoreInfo(info->events_semaphore);
   openCL_library->clRetainEvent(event);
 }
 
@@ -1601,32 +1651,17 @@ MagickPrivate MagickBooleanType EnqueueOpenCLKernel(cl_command_queue queue,
   input_info=(CacheInfo *) input_image->cache;
   assert(input_info != (CacheInfo *) NULL);
   assert(input_info->opencl != (MagickCLCacheInfo) NULL);
-  event_count=input_info->opencl->event_count;
-  events=input_info->opencl->events;
   output_info=(CacheInfo *) NULL;
-  if (output_image != (const Image *) NULL)
+  if (output_image == (const Image *) NULL)
+    events=CopyOpenCLEvents(input_info->opencl,(MagickCLCacheInfo) NULL,
+      &event_count);
+  else
     {
       output_info=(CacheInfo *) output_image->cache;
       assert(output_info != (CacheInfo *) NULL);
       assert(output_info->opencl != (MagickCLCacheInfo) NULL);
-      if (output_info->opencl->event_count > 0)
-        {
-          ssize_t
-            i;
-
-          event_count+=output_info->opencl->event_count;
-          events=AcquireQuantumMemory(event_count,sizeof(*events));
-          if (events == (cl_event *) NULL)
-            return(MagickFalse);
-          for (i=0; i < (ssize_t) event_count; i++)
-          {
-            if (i < (ssize_t) input_info->opencl->event_count)
-              events[i]=input_info->opencl->events[i];
-            else
-              events[i]=output_info->opencl->events[i-
-                input_info->opencl->event_count];
-          }
-        }
+      events=CopyOpenCLEvents(input_info->opencl,output_info->opencl,
+        &event_count);
     }
   status=openCL_library->clEnqueueNDRangeKernel(queue,kernel,work_dim,offset,
     gsize,lsize,event_count,events,&event);
@@ -1637,9 +1672,7 @@ MagickPrivate MagickBooleanType EnqueueOpenCLKernel(cl_command_queue queue,
       status=openCL_library->clEnqueueNDRangeKernel(queue,kernel,work_dim,
         offset,gsize,lsize,event_count,events,&event);
     }
-  if ((output_info != (CacheInfo *) NULL) &&
-      (output_info->opencl->event_count > 0))
-    events=(cl_event *) RelinquishMagickMemory(events);
+  events=(cl_event *) RelinquishMagickMemory(events);
   if (status != CL_SUCCESS)
     {
       (void) OpenCLThrowMagickException(input_info->opencl->device,exception,
@@ -2796,6 +2829,7 @@ static void DestroyMagickCLCacheInfo(MagickCLCacheInfo info)
   info->events=(cl_event *) RelinquishMagickMemory(info->events);
   if (info->buffer != (cl_mem) NULL)
     openCL_library->clReleaseMemObject(info->buffer);
+  RelinquishSemaphoreInfo(&info->events_semaphore);
   ReleaseOpenCLDevice(info->device);
   RelinquishMagickMemory(info);
 }

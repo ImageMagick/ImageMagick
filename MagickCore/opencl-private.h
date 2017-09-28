@@ -51,6 +51,9 @@ typedef struct _MagickCLCacheInfo
 
   Quantum
     *pixels;
+
+  SemaphoreInfo
+    *events_semaphore;
 }* MagickCLCacheInfo;
 
 /*
