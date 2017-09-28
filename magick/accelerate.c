@@ -265,7 +265,7 @@ static Image *ComputeAddNoiseImage(const Image *image,
   const char
     *option;
 
-  const cl_event
+  cl_event
     *events;
 
   float
@@ -414,6 +414,7 @@ static Image *ComputeAddNoiseImage(const Image *image,
 
   events=GetOpenCLEvents(image,&event_count);
   clStatus=clEnv->library->clEnqueueNDRangeKernel(queue,addNoiseKernel,1,NULL,global_work_size,NULL,event_count,events,&event);
+  events=(cl_event *) RelinquishMagickMemory(events);
   if (clStatus != CL_SUCCESS)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
@@ -500,7 +501,7 @@ static Image *ComputeBlurImage(const Image* image,const ChannelType channel,
   cl_uint
     event_count;
 
-  const cl_event
+  cl_event
     *events;
 
   float
@@ -660,6 +661,7 @@ static Image *ComputeBlurImage(const Image* image,const ChannelType channel,
 
         events=GetOpenCLEvents(image,&event_count);
         clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, blurRowKernel, 2, NULL, gsize, wsize, event_count, events, &event);
+        events=(cl_event *) RelinquishMagickMemory(events);
         if (clStatus != CL_SUCCESS)
         {
           (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
@@ -712,6 +714,7 @@ static Image *ComputeBlurImage(const Image* image,const ChannelType channel,
 
         events=GetOpenCLEvents(image,&event_count);
         clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, blurColumnKernel, 2, NULL, gsize, wsize, event_count, events, &event);
+        events=(cl_event *) RelinquishMagickMemory(events);
         if (clStatus != CL_SUCCESS)
         {
           (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
@@ -795,7 +798,7 @@ static MagickBooleanType LaunchCompositeKernel(const Image *image,
   cl_uint
     event_count;
 
-  const cl_event
+  cl_event
     *events;
 
   int
@@ -838,6 +841,7 @@ static MagickBooleanType LaunchCompositeKernel(const Image *image,
   events=GetOpenCLEvents(image,&event_count);
   clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, compositeKernel, 2, NULL,
     global_work_size, local_work_size, event_count, events, &event);
+  events=(cl_event *) RelinquishMagickMemory(events);
   if (clStatus == CL_SUCCESS)
     AddOpenCLEvent(image,event);
   clEnv->library->clReleaseEvent(event);
@@ -996,7 +1000,7 @@ static MagickBooleanType ComputeContrastImage(Image *image,
   cl_uint
     event_count;
 
-  const cl_event
+  cl_event
     *events;
 
   MagickBooleanType
@@ -1055,6 +1059,7 @@ static MagickBooleanType ComputeContrastImage(Image *image,
   queue = AcquireOpenCLCommandQueue(clEnv);
   events=GetOpenCLEvents(image,&event_count);
   clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, filterKernel, 2, NULL, global_work_size, NULL, event_count, events, &event);
+  events=(cl_event *) RelinquishMagickMemory(events);
   if (clStatus != CL_SUCCESS)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
@@ -1123,7 +1128,7 @@ static MagickBooleanType LaunchHistogramKernel(MagickCLEnv clEnv,
   cl_uint
     event_count;
 
-  const cl_event
+  cl_event
     *events;
 
   register ssize_t
@@ -1165,6 +1170,7 @@ static MagickBooleanType LaunchHistogramKernel(MagickCLEnv clEnv,
 
   events=GetOpenCLEvents(image,&event_count);
   clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, histogramKernel, 2, NULL, global_work_size, NULL, event_count, events, &event);
+  events=(cl_event *) RelinquishMagickMemory(events);
 
   if (clStatus != CL_SUCCESS)
   {
@@ -1219,7 +1225,7 @@ MagickPrivate MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
   cl_uint4
     *histogram;
 
-  const cl_event
+  cl_event
     *events;
 
   double
@@ -1316,6 +1322,7 @@ MagickPrivate MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
   /* this blocks, should be fixed it in the future */
   events=GetOpenCLEvents(image,&event_count);
   clEnv->library->clEnqueueMapBuffer(queue, histogramBuffer, CL_TRUE, CL_MAP_READ|CL_MAP_WRITE, 0, length * sizeof(cl_uint4), event_count, events, NULL, &clStatus);
+  events=(cl_event *) RelinquishMagickMemory(events);
   if (clStatus != CL_SUCCESS)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
@@ -1597,6 +1604,7 @@ MagickPrivate MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
 
   events=GetOpenCLEvents(image,&event_count);
   clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, stretchKernel, 2, NULL, global_work_size, NULL, event_count, events, &event);
+  events=(cl_event *) RelinquishMagickMemory(events);
 
   if (clStatus != CL_SUCCESS)
   {
@@ -1696,7 +1704,7 @@ static Image *ComputeConvolveImage(const Image* image,
   cl_ulong
     deviceLocalMemorySize;
 
-  const cl_event
+  cl_event
     *events;
 
   float
@@ -1850,6 +1858,7 @@ static Image *ComputeConvolveImage(const Image* image,
     /* launch the kernel */
     events = GetOpenCLEvents(image, &event_count);
     clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, clkernel, 2, NULL, global_work_size, localGroupSize, event_count, events, &event);
+    events=(cl_event *) RelinquishMagickMemory(events);
     if (clStatus != CL_SUCCESS)
     {
       (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
@@ -1900,6 +1909,7 @@ static Image *ComputeConvolveImage(const Image* image,
     global_work_size[1] = (image->rows    + (localGroupSize[1]-1))/localGroupSize[1] * localGroupSize[1];
     events=GetOpenCLEvents(image,&event_count);
     clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, clkernel, 2, NULL, global_work_size, localGroupSize, event_count, events, &event);
+    events=(cl_event *) RelinquishMagickMemory(events);
     
     if (clStatus != CL_SUCCESS)
     {
@@ -1995,7 +2005,7 @@ static Image *ComputeDespeckleImage(const Image *image,
   cl_uint
     event_count;
 
-  const cl_event
+  cl_event
     *events;
 
   Image
@@ -2238,6 +2248,7 @@ static Image *ComputeDespeckleImage(const Image *image,
 cleanup:
   OpenCLLogException(__FUNCTION__,__LINE__,exception);
 
+  events=(cl_event *) RelinquishMagickMemory(events);
   if (queue != NULL)                          RelinquishOpenCLCommandQueue(clEnv, queue);
   for (k = 0; k < 2; k++)
   {
@@ -2311,7 +2322,7 @@ MagickPrivate MagickBooleanType ComputeEqualizeImage(Image *image,
   cl_uint4
     *histogram;
 
-  const cl_event
+  cl_event
     *events;
 
   cl_float4
@@ -2397,6 +2408,7 @@ MagickPrivate MagickBooleanType ComputeEqualizeImage(Image *image,
   /* this blocks, should be fixed it in the future */
   events=GetOpenCLEvents(image,&event_count);
   clEnv->library->clEnqueueMapBuffer(queue, histogramBuffer, CL_TRUE, CL_MAP_READ|CL_MAP_WRITE, 0, length * sizeof(cl_uint4), event_count, events, NULL, &clStatus);
+  events=(cl_event *) RelinquishMagickMemory(events);
   if (clStatus != CL_SUCCESS)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
@@ -2645,7 +2657,7 @@ static MagickBooleanType ComputeFunctionImage(Image *image,
     imageBuffer,
     parametersBuffer;
 
-  const cl_event
+  cl_event
     *events;
 
   float
@@ -2721,6 +2733,7 @@ static MagickBooleanType ComputeFunctionImage(Image *image,
   /* launch the kernel */
   events=GetOpenCLEvents(image,&event_count);
   clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, clkernel, 2, NULL, globalWorkSize, NULL, event_count, events, &event);
+  events=(cl_event *) RelinquishMagickMemory(events);
   if (clStatus != CL_SUCCESS)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
@@ -2800,7 +2813,7 @@ MagickBooleanType ComputeGrayscaleImage(Image *image,
   cl_uint
     event_count;
 
-  const cl_event
+  cl_event
     *events;
 
   MagickBooleanType
@@ -2865,6 +2878,7 @@ MagickBooleanType ComputeGrayscaleImage(Image *image,
     /* launch the kernel */
     events=GetOpenCLEvents(image,&event_count);
     clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, grayscaleKernel, 2, NULL, global_work_size, NULL, event_count, events, &event);
+    events=(cl_event *) RelinquishMagickMemory(events);
     if (clStatus != CL_SUCCESS)
     {
       (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
@@ -2948,7 +2962,7 @@ static Image *ComputeLocalContrastImage(const Image *image,
     imageBuffer,
     tempImageBuffer;
 
-  const cl_event
+  cl_event
     *events;
 
   Image
@@ -3082,6 +3096,7 @@ static Image *ComputeLocalContrastImage(const Image *image,
 
         events=GetOpenCLEvents(image,&event_count);
         clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, blurRowKernel, 2, goffset, gsize, wsize, event_count, events, &event);
+        events=(cl_event *) RelinquishMagickMemory(events);
         if (clStatus != CL_SUCCESS)
         {
           (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
@@ -3132,6 +3147,7 @@ static Image *ComputeLocalContrastImage(const Image *image,
 
         events=GetOpenCLEvents(image,&event_count);
         clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, blurColumnKernel, 2, goffset, gsize, wsize, event_count, events, &event);
+        events=(cl_event *) RelinquishMagickMemory(events);
         if (clStatus != CL_SUCCESS)
         {
           (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
@@ -3220,7 +3236,7 @@ MagickBooleanType ComputeModulateImage(Image *image,
   cl_mem
     imageBuffer;
 
-  const cl_event
+  cl_event
     *events;
 
   MagickBooleanType
@@ -3293,6 +3309,7 @@ MagickBooleanType ComputeModulateImage(Image *image,
     /* launch the kernel */
     events=GetOpenCLEvents(image,&event_count);
     clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, modulateKernel, 2, NULL, global_work_size, NULL, event_count, events, &event);
+    events=(cl_event *) RelinquishMagickMemory(events);
     if (clStatus != CL_SUCCESS)
     {
       (void)OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
@@ -3380,7 +3397,7 @@ static Image* ComputeMotionBlurImage(const Image *image,
   cl_uint
     event_count;
 
-  const cl_event
+  cl_event
     *events;
 
   float
@@ -3463,6 +3480,7 @@ static Image* ComputeMotionBlurImage(const Image *image,
   /* this blocks, should be fixed it in the future */
   kernelBufferPtr = (float*)clEnv->library->clEnqueueMapBuffer(queue, imageKernelBuffer, 
     CL_TRUE, CL_MAP_WRITE, 0, width * sizeof(float), event_count, events, NULL, &clStatus);
+  events=(cl_event *) RelinquishMagickMemory(events);
   if (clStatus != CL_SUCCESS)
   {
     (void) ThrowMagickException(exception, GetMagickModule(), 
@@ -3663,7 +3681,7 @@ static Image *ComputeRadialBlurImage(const Image *image,
   cl_uint
     event_count;
 
-  const cl_event
+  cl_event
     *events;
 
   float
@@ -3753,6 +3771,7 @@ static Image *ComputeRadialBlurImage(const Image *image,
   events=GetOpenCLEvents(image,&event_count);
   /* this blocks, should be fixed it in the future */
   sinThetaPtr = (float*) clEnv->library->clEnqueueMapBuffer(queue, sinThetaBuffer, CL_TRUE, CL_MAP_WRITE, 0, cossin_theta_size*sizeof(float), event_count, events, NULL, &clStatus);
+  events=(cl_event *) RelinquishMagickMemory(events);
   if (clStatus != CL_SUCCESS)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnqueuemapBuffer failed.",".");
@@ -3898,7 +3917,7 @@ static MagickBooleanType resizeHorizontalFilter(const Image *image,
   cl_uint
     event_count;
 
-  const cl_event
+  cl_event
     *events;
 
   const unsigned int
@@ -4072,6 +4091,7 @@ RestoreMSCWarning
   local_work_size[1] = 1;
   events=GetOpenCLEvents(image,&event_count);
   clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, horizontalKernel, 2, NULL, global_work_size, local_work_size, event_count, events, &event);
+  events=(cl_event *) RelinquishMagickMemory(events);
   if (clStatus != CL_SUCCESS)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
@@ -4114,7 +4134,7 @@ static MagickBooleanType resizeVerticalFilter(const Image *image,
   cl_uint
     event_count;
 
-  const cl_event
+  cl_event
     *events;
 
   const unsigned int
@@ -4288,6 +4308,7 @@ RestoreMSCWarning
   local_work_size[1] = workgroupSize;
   events=GetOpenCLEvents(image,&event_count);
   clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, horizontalKernel, 2, NULL, global_work_size, local_work_size, event_count, events, &event);
+  events=(cl_event *) RelinquishMagickMemory(events);
   if (clStatus != CL_SUCCESS)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
@@ -4548,7 +4569,7 @@ static Image *ComputeUnsharpMaskImage(const Image *image,
   cl_uint
     event_count;
 
-  const cl_event
+  cl_event
     *events;
 
   float
@@ -4711,6 +4732,7 @@ static Image *ComputeUnsharpMaskImage(const Image *image,
 
       events=GetOpenCLEvents(image,&event_count);
       clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, blurRowKernel, 2, NULL, gsize, wsize, event_count, events, NULL);
+      events=(cl_event *) RelinquishMagickMemory(events);
       if (clStatus != CL_SUCCESS)
       {
         (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
@@ -4818,7 +4840,7 @@ static Image *ComputeUnsharpMaskImageSingle(const Image *image,
     imageBuffer,
     imageKernelBuffer;
 
-  const cl_event
+  cl_event
     *events;
 
   float
@@ -4963,6 +4985,7 @@ static Image *ComputeUnsharpMaskImageSingle(const Image *image,
 
       events=GetOpenCLEvents(image,&event_count);
       clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, unsharpMaskKernel, 2, NULL, gsize, wsize, event_count, events, &event);
+      events=(cl_event *) RelinquishMagickMemory(events);
       if (clStatus != CL_SUCCESS)
       {
         (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
@@ -5035,7 +5058,7 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,
     filteredImageBuffer,
     imageBuffer;
 
-  const cl_event
+  cl_event
     *events;
 
   Image
@@ -5143,6 +5166,7 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,
 
       events=GetOpenCLEvents(image,&event_count);
       clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, denoiseKernel, 2, goffset, gsize, wsize, event_count, events, &event);
+      events=(cl_event *) RelinquishMagickMemory(events);
       if (clStatus != CL_SUCCESS)
       {
         (void)OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");

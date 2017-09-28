@@ -212,6 +212,9 @@ MagickPrivate MagickBooleanType RecordProfileData(MagickCLEnv clEnv, ProfiledKer
   }
   return(MagickTrue);
 #else
+  magick_unused(clEnv);
+  magick_unused(kernel);
+  magick_unused(event);
   return(MagickFalse);
 #endif
 }
@@ -2441,7 +2444,7 @@ static ds_status AcceleratePerfEvaluator(ds_device *device,
       cl_uint
         event_count;
 
-      const cl_event
+      cl_event
         *events;
 
       Image
@@ -2471,6 +2474,7 @@ static ds_status AcceleratePerfEvaluator(ds_device *device,
           events=GetOpenCLEvents(resizedImage,&event_count);
           if (event_count > 0)
             clEnv->library->clWaitForEvents(event_count,events);
+          events=(cl_event *) RelinquishMagickMemory(events);
         }
 
 #ifdef MAGICKCORE_CLPERFMARKER

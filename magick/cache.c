@@ -171,8 +171,8 @@ static inline OpenCLCacheInfo *RelinquishOpenCLCacheInfo(MagickCLEnv clEnv,
 
   for (i=0; i < (ssize_t) info->event_count; i++)
     clEnv->library->clReleaseEvent(info->events[i]);
-  info->events=RelinquishMagickMemory(info->events);
-  info->event_count=0;
+  info->events=(cl_event *) RelinquishMagickMemory(info->events);
+  DestroySemaphoreInfo(&info->events_semaphore);
   if (info->buffer != (cl_mem) NULL)
   {
     clEnv->library->clReleaseMemObject(info->buffer);
@@ -247,6 +247,29 @@ static MagickBooleanType RelinquishOpenCLBuffer(
     &RelinquishPixelCachePixelsDelayed,cache_info->opencl);
   return(MagickTrue);
 }
+
+static cl_event *CopyOpenCLEvents(OpenCLCacheInfo *opencl_info,
+  cl_uint *event_count)
+{
+  cl_event
+    *events;
+
+  register size_t
+    i;
+
+  assert(opencl_info != (OpenCLCacheInfo *) NULL);
+  events=(cl_event *) NULL;
+  LockSemaphoreInfo(opencl_info->events_semaphore);
+  *event_count=opencl_info->event_count;
+  if (*event_count > 0)
+    {
+      events=AcquireQuantumMemory(*event_count,sizeof(*events));
+      for (i=0; i < opencl_info->event_count; i++)
+        events[i]=opencl_info->events[i];
+    }
+  UnlockSemaphoreInfo(opencl_info->events_semaphore);
+  return(events);
+}
 #endif
 
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
@@ -288,6 +311,7 @@ extern MagickPrivate void AddOpenCLEvent(const Image *image,cl_event event)
   cache_info=(CacheInfo *)image->cache;
   assert(cache_info->opencl != (OpenCLCacheInfo *) NULL);
   clEnv=GetDefaultOpenCLEnv();
+  LockSemaphoreInfo(cache_info->opencl->events_semaphore);
   if (cache_info->opencl->events == (cl_event *) NULL)
     {
       cache_info->opencl->events=AcquireMagickMemory(sizeof(
@@ -300,6 +324,7 @@ extern MagickPrivate void AddOpenCLEvent(const Image *image,cl_event event)
   if (cache_info->opencl->events == (cl_event *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   cache_info->opencl->events[cache_info->opencl->event_count-1]=event;
+  UnlockSemaphoreInfo(cache_info->opencl->events_semaphore);
   clEnv->library->clRetainEvent(event);
 }
 #endif
@@ -1370,6 +1395,7 @@ MagickPrivate cl_mem GetAuthenticOpenCLBuffer(const Image *image,
         ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
       (void) ResetMagickMemory(cache_info->opencl,0,
         sizeof(*cache_info->opencl));
+      cache_info->opencl->events_semaphore=AllocateSemaphoreInfo();
       cache_info->opencl->length=cache_info->length;
       cache_info->opencl->pixels=cache_info->pixels;
       cache_info->opencl->buffer=clEnv->library->clCreateBuffer(context,
@@ -1720,22 +1746,24 @@ MagickExport MagickSizeType GetImageExtent(const Image *image)
 %    o event_count: will be set to the number of events.
 %
 */
-extern MagickPrivate const cl_event *GetOpenCLEvents(const Image *image,
+
+extern MagickPrivate cl_event *GetOpenCLEvents(const Image *image,
   cl_uint *event_count)
 {
   CacheInfo
     *magick_restrict cache_info;
 
+  cl_event
+    *events;
+
   assert(image != (const Image *) NULL);
   assert(event_count != (cl_uint *) NULL);
   cache_info=(CacheInfo *) image->cache;
-  if (cache_info->opencl == (OpenCLCacheInfo *) NULL)
-    {
-      *event_count=0;
-      return((const cl_event *) NULL);
-    }
-  *event_count=cache_info->opencl->event_count;
-  return(cache_info->opencl->events);
+  *event_count=0;
+  events=(cl_event *) NULL;
+  if (cache_info->opencl != (OpenCLCacheInfo *) NULL)
+    events=CopyOpenCLEvents(cache_info->opencl,event_count);
+  return(events);
 }
 #endif
 
@@ -5358,8 +5386,15 @@ static void CopyOpenCLBuffer(CacheInfo *magick_restrict cache_info)
   LockSemaphoreInfo(cache_info->semaphore);
   if (cache_info->opencl != (OpenCLCacheInfo *)NULL)
   {
-    clEnv = GetDefaultOpenCLEnv();
-    if (cache_info->opencl->event_count > 0)
+    cl_event
+      *events;
+
+    cl_uint
+      event_count;
+
+    clEnv=GetDefaultOpenCLEnv();
+    events=CopyOpenCLEvents(cache_info->opencl,&event_count);
+    if (events != (cl_event *) NULL)
     {
       cl_command_queue
         queue;
@@ -5377,9 +5412,9 @@ static void CopyOpenCLBuffer(CacheInfo *magick_restrict cache_info)
       queue=AcquireOpenCLCommandQueue(clEnv);
       pixels=(PixelPacket *) clEnv->library->clEnqueueMapBuffer(queue,
         cache_info->opencl->buffer,CL_TRUE, CL_MAP_READ | CL_MAP_WRITE,0,
-        cache_info->length,cache_info->opencl->event_count,
-        cache_info->opencl->events,NULL,&status);
+        cache_info->length,event_count,events,NULL,&status);
       assert(pixels == cache_info->pixels);
+      events=(cl_event *) RelinquishMagickMemory(events);
       RelinquishOpenCLCommandQueue(clEnv,queue);
     }
     cache_info->opencl=RelinquishOpenCLCacheInfo(clEnv,cache_info->opencl);

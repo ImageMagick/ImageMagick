@@ -142,6 +142,9 @@ typedef struct _OpenCLCacheInfo
 
   PixelPacket
     *pixels;
+
+  SemaphoreInfo
+    *events_semaphore;
 } OpenCLCacheInfo;
 
 typedef struct _CacheInfo
@@ -298,7 +301,7 @@ extern MagickPrivate MagickBooleanType
   SyncImagePixelCache(Image *,ExceptionInfo *);
 
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
-extern MagickPrivate const cl_event
+extern MagickPrivate cl_event
   *GetOpenCLEvents(const Image *,cl_uint *);
 
 extern MagickPrivate cl_mem
