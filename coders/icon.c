@@ -990,7 +990,8 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
             return(MagickFalse);
           }
         write_info=CloneImageInfo(image_info);
-        (void) CopyMagickString(write_info->filename,"PNG:",MaxTextExtent);
+        (void) CopyMagickString(write_info->magick,"PNG",MagickPathExtent);
+        length=0;
 
         /* Don't write any ancillary chunks except for gAMA */
         (void) SetImageArtifact(write_image,"png:include-chunk","none,gama");
