@@ -1290,8 +1290,6 @@ MagickExport Image *StreamImage(const ImageInfo *image_info,
   assert(stream_info->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
   read_info=CloneImageInfo(image_info);
-  if (read_info == (ImageInfo *) NULL)
-    return (Image *) NULL;
   stream_info->image_info=image_info;
   stream_info->quantum_info=AcquireQuantumInfo(image_info,(Image *) NULL);
   if (stream_info->quantum_info == (QuantumInfo *) NULL)
