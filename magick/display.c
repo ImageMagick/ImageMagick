@@ -10552,6 +10552,8 @@ static MagickBooleanType XPasteImage(Display *display,
     return(MagickFalse);
   paste_image=CloneImage(resource_info->copy_image,0,0,MagickTrue,
     &image->exception);
+  if (paste_image == (Image *) NULL)
+    return(MagickFalse);
   /*
     Map Command widget.
   */

@@ -578,19 +578,26 @@ static Image *ComputeBlurImage(const Image* image,const ChannelType channel,
       goto cleanup;
     }
 
-	{
-		kernelBufferPtr = (float *)AcquireMagickMemory(kernel->width * sizeof(float));
-		for (i = 0; i < kernel->width; i++)
-			kernelBufferPtr[i] = (float)kernel->values[i];
+    {
+      kernelBufferPtr = (float *)AcquireMagickMemory(kernel->width * sizeof(float));
+      if (kernelBufferPtr == (float *) NULL)
+        {
+          (void)OpenCLThrowMagickException(exception,GetMagickModule(),
+            ResourceLimitWarning,"AcquireMagickMemory failed.", "'%s'", ".");
+            return((cl_mem) NULL);
+          goto cleanup;
+        }
+      for (i = 0; i < kernel->width; i++)
+        kernelBufferPtr[i] = (float)kernel->values[i];
 
-		imageKernelBuffer = clEnv->library->clCreateBuffer(context, CL_MEM_COPY_HOST_PTR, kernel->width * sizeof(float), kernelBufferPtr, &clStatus);
-		RelinquishMagickMemory(kernelBufferPtr);
-		if (clStatus != CL_SUCCESS)
-		{
-			(void)OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.", ".");
-			goto cleanup;
-		}
-	}
+      imageKernelBuffer = clEnv->library->clCreateBuffer(context, CL_MEM_COPY_HOST_PTR, kernel->width * sizeof(float), kernelBufferPtr, &clStatus);
+      RelinquishMagickMemory(kernelBufferPtr);
+      if (clStatus != CL_SUCCESS)
+      {
+        (void)OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.", ".");
+        goto cleanup;
+      }
+    }
   }
 
   {

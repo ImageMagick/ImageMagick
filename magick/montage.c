@@ -708,6 +708,8 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
         Copy this tile to the composite.
       */
       image=CloneImage(image_list[tile],0,0,MagickTrue,exception);
+      if (image == (Image *) NULL)
+        ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
       progress_monitor=SetImageProgressMonitor(image,
         (MagickProgressMonitor) NULL,image->client_data);
       width=concatenate != MagickFalse ? image->columns : extract_info.width;
