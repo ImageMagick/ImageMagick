@@ -1295,7 +1295,7 @@ MagickExport Image *StreamImage(const ImageInfo *image_info,
   if (stream_info->quantum_info == (QuantumInfo *) NULL)
     {
       read_info=DestroyImageInfo(read_info);
-      return (Image *) NULL;
+      return((Image *) NULL);
     }
   stream_info->exception=exception;
   read_info->client_data=(void *) stream_info;
