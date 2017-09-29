@@ -411,8 +411,6 @@ MagickPrivate Cache ClonePixelCache(const Cache cache)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       cache_info->filename);
   clone_info=(CacheInfo *) AcquirePixelCache(cache_info->number_threads);
-  if (clone_info == (Cache) NULL)
-    return((Cache) NULL);
   clone_info->virtual_pixel_method=cache_info->virtual_pixel_method;
   return((Cache ) clone_info);
 }
