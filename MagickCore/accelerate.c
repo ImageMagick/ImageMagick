@@ -285,6 +285,13 @@ static cl_mem createKernelInfo(MagickCLDevice device,const double radius,
   }
   kernelBufferPtr=(float *)AcquireMagickMemory(kernel->width*
     sizeof(*kernelBufferPtr));
+  if (kernelBufferPtr == (float *) NULL)
+    {
+      kernel=DestroyKernelInfo(kernel);
+      (void) OpenCLThrowMagickException(device,exception,GetMagickModule(),
+        ResourceLimitWarning,"MemoryAllocationFailed.",".");
+      return((cl_mem) NULL);
+    }
   for (i = 0; i < (ssize_t) kernel->width; i++)
     kernelBufferPtr[i] = (float)kernel->values[i];
   imageKernelBuffer=CreateOpenCLBuffer(device,CL_MEM_COPY_HOST_PTR |
