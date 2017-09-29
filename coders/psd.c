@@ -452,6 +452,11 @@ static MagickBooleanType ApplyPSDOpacityMask(Image *image,const Image *mask,
       "  applying opacity mask");
   complete_mask=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
+  if (complete_mask == (Image *) NULL)
+    {
+      status=MagickFalse;
+      return(status);
+    }
   complete_mask->alpha_trait=BlendPixelTrait;
   GetPixelInfo(complete_mask,&color);
   color.red=background;

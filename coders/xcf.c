@@ -666,6 +666,9 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
         tile_image_height=TILE_HEIGHT;
       tile_image=CloneImage(inLayerInfo->image,tile_image_width,
         tile_image_height,MagickTrue,exception);
+      if (tile_image == (Image *) NULL)
+        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+          image->filename);
 
       /* read in the tile */
       switch (inDocInfo->compression)
