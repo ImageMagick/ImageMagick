@@ -4661,6 +4661,11 @@ static Image *ComputeUnsharpMaskImage(const Image *image,
     }
 
     kernelBufferPtr=AcquireQuantumMemory(kernel->width,sizeof(float));
+    if (kernelBufferPtr == (float *) NULL)
+    {
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Memory allocation failed.",".");
+      goto cleanup;
+    }
     for (i = 0; i < kernel->width; i++)
       kernelBufferPtr[i]=(float) kernel->values[i];
 

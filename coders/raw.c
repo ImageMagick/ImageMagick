@@ -160,7 +160,10 @@ static Image *ReadRAWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   quantum_type=GrayQuantum;
   quantum_info=AcquireQuantumInfo(image_info,canvas_image);
   if (quantum_info == (QuantumInfo *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    {
+      canvas_image=DestroyImage(canvas_image);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   pixels=(const unsigned char *) NULL;
   if (image_info->number_scenes != 0)
     while (image->scene < image_info->scene)
