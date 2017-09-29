@@ -152,6 +152,8 @@ static Image *ReadRAWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   canvas_image=CloneImage(image,image->extract_info.width,1,MagickFalse,
     exception);
+  if (canvas_image == (Image *) NULL)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   (void) SetImageVirtualPixelMethod(canvas_image,BlackVirtualPixelMethod,
     exception);
   quantum_type=GrayQuantum;
