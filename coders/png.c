@@ -6730,9 +6730,13 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                 if ((prev == (PixelPacket *) NULL) ||
                     (next == (PixelPacket *) NULL))
                   {
-                     image=DestroyImageList(image);
-                     ThrowReaderException(ResourceLimitError,
-                       "MemoryAllocationFailed");
+                    if (prev != (PixelPacket *) NULL) 
+                      prev=(PixelPacket *) RelinquishMagickMemory(prev);
+                    if (next != (PixelPacket *) NULL)
+                      next=(PixelPacket *) RelinquishMagickMemory(next);
+                    image=DestroyImageList(image);
+                    ThrowReaderException(ResourceLimitError,
+                      "MemoryAllocationFailed");
                   }
 
                 n=GetAuthenticPixels(image,0,0,image->columns,1,exception);
