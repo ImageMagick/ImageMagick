@@ -1849,7 +1849,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
 
   MagickPixelPacket
     pixel;
- 
+
   MemoryInfo
     *pixel_info;
 
@@ -3323,6 +3323,16 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
       (x_vector == (MagickPixelPacket *) NULL) ||
       (y_vector == (MagickPixelPacket *) NULL))
     {
+      if ((image->rows != scale_image->rows) &&
+          (scanline != (MagickPixelPacket *) NULL))
+        scanline=(MagickPixelPacket *) RelinquishMagickMemory(scanline);
+      if (scale_scanline != (MagickPixelPacket *) NULL)
+        scale_scanline=(MagickPixelPacket *) RelinquishMagickMemory(
+          scale_scanline);
+      if (x_vector != (MagickPixelPacket *) NULL)
+        x_vector=(MagickPixelPacket *) RelinquishMagickMemory(x_vector);
+      if (y_vector != (MagickPixelPacket *) NULL)
+        y_vector=(MagickPixelPacket *) RelinquishMagickMemory(y_vector);
       scale_image=DestroyImage(scale_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
