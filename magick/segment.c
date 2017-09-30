@@ -93,6 +93,7 @@
 #include "magick/image.h"
 #include "magick/image-private.h"
 #include "magick/memory_.h"
+#include "magick/memory-private.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/quantize.h"

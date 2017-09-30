@@ -22,6 +22,8 @@
 extern "C" {
 #endif
 
+#include "magick/exception-private.h"
+
 #if defined(__powerpc__)
 #  define CACHE_LINE_SIZE 128
 #else
