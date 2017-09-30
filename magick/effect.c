@@ -3368,6 +3368,15 @@ MagickExport Image *RotationalBlurImageChannel(const Image *image,
   if (blur_image != (Image *) NULL)
     return(blur_image);
 #endif
+  blur_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (blur_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageStorageClass(blur_image,DirectClass) == MagickFalse)
+    {
+      InheritException(exception,&blur_image->exception);
+      blur_image=DestroyImage(blur_image);
+      return((Image *) NULL);
+    }
   blur_center.x=(double) (image->columns-1)/2.0;
   blur_center.y=(double) (image->rows-1)/2.0;
   blur_radius=hypot(blur_center.x,blur_center.y);
@@ -3380,6 +3389,11 @@ MagickExport Image *RotationalBlurImageChannel(const Image *image,
   if ((cos_theta == (MagickRealType *) NULL) ||
       (sin_theta == (MagickRealType *) NULL))
     {
+      if (cos_theta != (double *) NULL)
+        cos_theta=(double *) RelinquishMagickMemory(cos_theta);
+      if (sin_theta != (double *) NULL)
+        sin_theta=(double *) RelinquishMagickMemory(sin_theta);
+      blur_image=DestroyImage(blur_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   offset=theta*(MagickRealType) (n-1)/2.0;
@@ -3387,21 +3401,6 @@ MagickExport Image *RotationalBlurImageChannel(const Image *image,
   {
     cos_theta[i]=cos((double) (theta*i-offset));
     sin_theta[i]=sin((double) (theta*i-offset));
-  }
-  blur_image=CloneImage(image,0,0,MagickTrue,exception);
-  if (blur_image == (Image *) NULL)
-    {
-      cos_theta=(MagickRealType *) RelinquishMagickMemory(cos_theta);
-      sin_theta=(MagickRealType *) RelinquishMagickMemory(sin_theta);
-      return((Image *) NULL);
-    }
-  if (SetImageStorageClass(blur_image,DirectClass) == MagickFalse)
-  {
-    cos_theta=(MagickRealType *) RelinquishMagickMemory(cos_theta);
-    sin_theta=(MagickRealType *) RelinquishMagickMemory(sin_theta);
-    InheritException(exception,&blur_image->exception);
-    blur_image=DestroyImage(blur_image);
-    return((Image *) NULL);
   }
   /*
     Radial blur image.
