@@ -3287,6 +3287,14 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
   if ((scanline == (double *) NULL) || (scale_scanline == (double *) NULL) ||
       (x_vector == (double *) NULL) || (y_vector == (double *) NULL))
     {
+      if ((image->rows != scale_image->rows) && (scanline != (double *) NULL))
+        scanline=(double *) RelinquishMagickMemory(scanline);
+      if (scale_scanline != (double *) NULL)
+        scale_scanline=(double *) RelinquishMagickMemory(scale_scanline);
+      if (x_vector != (double *) NULL)
+        x_vector=(double *) RelinquishMagickMemory(x_vector);
+      if (y_vector != (double *) NULL)
+        y_vector=(double *) RelinquishMagickMemory(y_vector);
       scale_image=DestroyImage(scale_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
