@@ -1598,9 +1598,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
       /*
         Display clipping path.
       */
-      (void) FormatLocaleFile(file,"    \"clipping path\":\n");
-      JsonFormatLocaleFile(file,"%s",value);
-      (void) FormatLocaleFile(file,",\n");
+      JsonFormatLocaleFile(file,"    \"clipping path\": %s,\n",value);
     }
   ResetImageProfileIterator(image);
   name=GetNextImageProfile(image);
