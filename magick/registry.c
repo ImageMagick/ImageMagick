@@ -46,6 +46,7 @@
 #include "magick/image.h"
 #include "magick/list.h"
 #include "magick/memory_.h"
+#include "magick/memory-private.h"
 #include "magick/registry.h"
 #include "magick/splay-tree.h"
 #include "magick/string_.h"
@@ -513,9 +514,7 @@ MagickExport MagickBooleanType SetImageRegistry(const RegistryType type,
   }
   if (clone_value == (void *) NULL)
     return(MagickFalse);
-  registry_info=(RegistryInfo *) AcquireMagickMemory(sizeof(*registry_info));
-  if (registry_info == (RegistryInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  registry_info=(RegistryInfo *) AcquireCriticalMemory(sizeof(*registry_info));
   (void) ResetMagickMemory(registry_info,0,sizeof(*registry_info));
   registry_info->type=type;
   registry_info->value=clone_value;

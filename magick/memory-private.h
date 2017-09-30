@@ -44,6 +44,20 @@ extern "C" {
 MagickExport MagickBooleanType
   HeapOverflowSanityCheck(const size_t,const size_t) magick_alloc_sizes(1,2);
 
+static inline void *AcquireCriticalMemory(const size_t size)
+{
+  register void
+    *memory;
+
+  /*
+    Fail if memory request cannot be fulfilled.
+  */
+  memory=AcquireMagickMemory(size);
+  if (memory == (void *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  return(memory);
+}
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

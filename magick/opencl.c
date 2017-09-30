@@ -60,6 +60,7 @@
 #include "magick/layer.h"
 #include "magick/mime-private.h"
 #include "magick/memory_.h"
+#include "magick/memory-private.h"
 #include "magick/monitor.h"
 #include "magick/montage.h"
 #include "magick/morphology.h"
@@ -2900,7 +2901,7 @@ const char* GetOpenCLCachedFilesDirectory() {
 
         if (mkdirStatus==0)
         {
-          temp = (char*)AcquireMagickMemory(strlen(path)+1);
+          temp = (char*)AcquireCriticalMemory(strlen(path)+1);
           CopyMagickString(temp,path,strlen(path)+1);
         }
         home=DestroyString(home);
