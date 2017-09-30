@@ -3409,8 +3409,8 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,void *data)
           break;
         }
       p=image->blob->data+image->blob->offset;
-      count=(ssize_t) MagickMin((MagickOffsetType) length,image->blob->length-
-        image->blob->offset);
+      count=(ssize_t) MagickMin((MagickOffsetType) length,(MagickOffsetType)
+        image->blob->length-image->blob->offset);
       image->blob->offset+=count;
       if (count != (ssize_t) length)
         image->blob->eof=MagickTrue;
@@ -4259,8 +4259,8 @@ MagickExport const void *ReadBlobStream(Image *image,const size_t length,
       return(data);
     }
   data=image->blob->data+image->blob->offset;
-  *count=(ssize_t) MagickMin((MagickOffsetType) length,image->blob->length-
-    image->blob->offset);
+  *count=(ssize_t) MagickMin((MagickOffsetType) length,(MagickOffsetType)
+    image->blob->length-image->blob->offset);
   image->blob->offset+=(*count);
   if (*count != (ssize_t) length)
     image->blob->eof=MagickTrue;

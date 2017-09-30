@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
 
 #if defined(__powerpc__)
 #  define CACHE_LINE_SIZE  128

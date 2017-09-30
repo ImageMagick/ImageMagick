@@ -741,7 +741,7 @@ static void EncodeIptcProfile(FILE *file,const StringInfo *profile)
     dataset=GetStringInfoDatum(profile)[i++];
     record=GetStringInfoDatum(profile)[i++];
     value=(IptcValue *) NULL;
-    for (j=0; j < count; j++)
+    for (j=0; j < (ssize_t) count; j++)
     {
       if ((values[j]->record == record) && (values[j]->dataset == dataset))
         value=values[j];
@@ -752,7 +752,7 @@ static void EncodeIptcProfile(FILE *file,const StringInfo *profile)
           sizeof(*values));
         if (values == (IptcValue **) NULL)
           break;
-        value=AcquireMagickMemory(sizeof(*value));
+        value=(IptcValue *) AcquireMagickMemory(sizeof(*value));
         if (value == (IptcValue *) NULL)
           break;
         /* Check the tag length in IptcValue when a new tag is added */
@@ -845,7 +845,7 @@ static void EncodeIptcProfile(FILE *file,const StringInfo *profile)
   }
   if (values != (IptcValue **) NULL)
     {
-      for (i=0; i < count; i++)
+      for (i=0; i < (ssize_t) count; i++)
       {
         value=values[i];
         (void) FormatLocaleFile(file,"        \"%s[%.20g,%.20g]\": ",
@@ -855,7 +855,7 @@ static void EncodeIptcProfile(FILE *file,const StringInfo *profile)
         else
           {
             (void) FormatLocaleFile(file,"[");
-            for (j=0; j < value->values_length; j++)
+            for (j=0; j < (ssize_t) value->values_length; j++)
             {
               for (k=0; value->values[j][k] != (char *) NULL; k++)
               {
