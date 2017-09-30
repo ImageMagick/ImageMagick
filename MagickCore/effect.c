@@ -2851,6 +2851,10 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
   if ((cos_theta == (double *) NULL) ||
       (sin_theta == (double *) NULL))
     {
+      if (cos_theta != (double *) NULL)
+        cos_theta=(double *) RelinquishMagickMemory(cos_theta);
+      if (sin_theta != (double *) NULL)
+        sin_theta=(double *) RelinquishMagickMemory(sin_theta);
       blur_image=DestroyImage(blur_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
