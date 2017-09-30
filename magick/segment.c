@@ -1411,7 +1411,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
         }
       if (left != head->left)
         {
-          node->sibling=(IntervalTree *) AcquireMagickMemory(
+          node->sibling=(IntervalTree *) AcquireCriticalMemory(
             sizeof(*node->sibling));
           node=node->sibling;
           node->tau=zero_crossing[i+1].tau;
