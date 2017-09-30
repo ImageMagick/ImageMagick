@@ -1576,7 +1576,14 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
   colormap=(unsigned char *) AcquireQuantumMemory(768UL,sizeof(*colormap));
   if ((global_colormap == (unsigned char *) NULL) ||
       (colormap == (unsigned char *) NULL))
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    {
+      if (global_colormap != (unsigned char *) NULL)
+        global_colormap=(unsigned char *) RelinquishMagickMemory(
+          global_colormap);
+      if (colormap != (unsigned char *) NULL)
+        colormap=(unsigned char *) RelinquishMagickMemory(colormap);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   for (i=0; i < 768; i++)
     colormap[i]=(unsigned char) 0;
   /*
