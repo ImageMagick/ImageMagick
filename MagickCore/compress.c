@@ -456,8 +456,16 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
   if ((mb_hash == (HuffmanTable **) NULL) ||
       (mw_hash == (HuffmanTable **) NULL) ||
       (scanline == (unsigned char *) NULL))
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
+    {
+      if (mb_hash != (HuffmanTable **) NULL)
+        mw_hash=(HuffmanTable **) RelinquishMagickMemory(mw_hash);
+      if (mw_hash != (HuffmanTable **) NULL)
+        mb_hash=(HuffmanTable **) RelinquishMagickMemory(mb_hash);
+      if (scanline != (unsigned char *) NULL)
+        scanline=(unsigned char *) RelinquishMagickMemory(scanline);
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        image->filename);
+    }
   /*
     Initialize Huffman tables.
   */
