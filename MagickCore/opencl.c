@@ -354,7 +354,7 @@ static const char *GetOpenCLCacheDirectory()
 
                   if (status != MagickFalse)
                     {
-                      temp=(char*) AcquireMagickMemory(strlen(path)+1);
+                      temp=(char*) AcquireCriticalMemory(strlen(path)+1);
                       CopyMagickString(temp,path,strlen(path)+1);
                     }
                   home=DestroyString(home);
