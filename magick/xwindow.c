@@ -62,6 +62,7 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/memory-private.h"
 #include "magick/monitor.h"
 #include "magick/nt-base-private.h"
 #include "magick/option.h"
@@ -4556,7 +4557,7 @@ MagickExport void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
           *segment_info;
 
         if (window->segment_info == (void *) NULL)
-          window->segment_info=AcquireQuantumMemory(2,sizeof(*segment_info));
+          window->segment_info=AcquireCriticalMemory(2*sizeof(*segment_info));
         segment_info=(XShmSegmentInfo *) window->segment_info;
         segment_info[0].shmid=(-1);
         segment_info[0].shmaddr=(char *) NULL;
