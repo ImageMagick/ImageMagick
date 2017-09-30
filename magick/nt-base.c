@@ -46,6 +46,7 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/memory-private.h"
 #include "magick/nt-base.h"
 #include "magick/nt-base-private.h"
 #include "magick/resource_.h"
