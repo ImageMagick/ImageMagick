@@ -6001,7 +6001,16 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
     number_vertices+2UL,sizeof(*polygon_primitive));
   if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL) ||
       (polygon_primitive == (PrimitiveInfo *) NULL))
-    return((PrimitiveInfo *) NULL);
+    {
+      if (path_p != (PointInfo *) NULL)
+        path_p=(PointInfo *) RelinquishMagickMemory(path_p);
+      if (path_q != (PointInfo *) NULL)
+        path_q=(PointInfo *) RelinquishMagickMemory(path_q);
+      if (polygon_primitive != (PrimitiveInfo *) NULL)
+        polygon_primitive=(PrimitiveInfo *) RelinquishMagickMemory(
+          polygon_primitive);
+      return((PrimitiveInfo *) NULL);
+    }
   (void) CopyMagickMemory(polygon_primitive,primitive_info,(size_t)
     number_vertices*sizeof(*polygon_primitive));
   closed_path=
