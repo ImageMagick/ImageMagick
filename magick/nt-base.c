@@ -1746,7 +1746,7 @@ MagickPrivate DIR *NTOpenDirectory(const char *path)
   if (wcsncat(file_specification,directory_separator,
         MaxTextExtent-wcslen(file_specification)-1) == (wchar_t *) NULL)
     return((DIR *) NULL);
-  entry=(DIR *) AcquireMagickMemory(sizeof(DIR));
+  entry=(DIR *) AcquireCriticalMemory(sizeof(DIR));
   if (entry != (DIR *) NULL)
     {
       entry->firsttime=TRUE;
