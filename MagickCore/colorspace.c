@@ -760,8 +760,16 @@ static MagickBooleanType sRGBTransformImage(Image *image,
   if ((x_map == (TransformPacket *) NULL) ||
       (y_map == (TransformPacket *) NULL) ||
       (z_map == (TransformPacket *) NULL))
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
+    {
+      if (x_map != (TransformPacket *) NULL)
+        x_map=(TransformPacket *) RelinquishMagickMemory(x_map);
+      if (y_map != (TransformPacket *) NULL)
+        y_map=(TransformPacket *) RelinquishMagickMemory(y_map);
+      if (z_map != (TransformPacket *) NULL)
+        z_map=(TransformPacket *) RelinquishMagickMemory(z_map);
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        image->filename);
+    }
   (void) ResetMagickMemory(&primary_info,0,sizeof(primary_info));
   switch (colorspace)
   {
