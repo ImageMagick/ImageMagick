@@ -6908,9 +6908,13 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                 if ((prev == (Quantum *) NULL) ||
                     (next == (Quantum *) NULL))
                   {
-                     image=DestroyImageList(image);
-                     ThrowReaderException(ResourceLimitError,
-                       "MemoryAllocationFailed");
+                    if (prev != (Quantum *) NULL)
+                      prev=(Quantum *) RelinquishMagickMemory(prev);
+                    if (next != (Quantum *) NULL)
+                      next=(Quantum *) RelinquishMagickMemory(next);
+                    image=DestroyImageList(image);
+                    ThrowReaderException(ResourceLimitError,
+                      "MemoryAllocationFailed");
                   }
 
                 n=GetAuthenticPixels(image,0,0,image->columns,1,exception);
