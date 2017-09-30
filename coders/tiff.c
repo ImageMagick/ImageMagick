@@ -3862,7 +3862,15 @@ RestoreMSCWarning
         blue=(uint16 *) AcquireQuantumMemory(65536,sizeof(*blue));
         if ((red == (uint16 *) NULL) || (green == (uint16 *) NULL) ||
             (blue == (uint16 *) NULL))
-          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+          {
+            if (red != (uint16 *) NULL)
+              red=(uint16 *) RelinquishMagickMemory(red);
+            if (green != (uint16 *) NULL)
+              green=(uint16 *) RelinquishMagickMemory(green);
+            if (blue != (uint16 *) NULL)
+              blue=(uint16 *) RelinquishMagickMemory(blue);
+            ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+          }
         /*
           Initialize TIFF colormap.
         */
