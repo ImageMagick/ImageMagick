@@ -836,18 +836,24 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
     pdb_image.width=(short) (16*(image->columns/16+1));
   pdb_image.height=(short) image->rows;
   packets=((bits_per_pixel*image->columns+7)/8);
+  packet_size=(size_t) (image->depth > 8 ? 2 : 1);
   runlength=(unsigned char *) AcquireQuantumMemory(9UL*packets,
     image->rows*sizeof(*runlength));
-  if (runlength == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   buffer=(unsigned char *) AcquireQuantumMemory(512,sizeof(*buffer));
-  if (buffer == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  packet_size=(size_t) (image->depth > 8 ? 2 : 1);
   scanline=(unsigned char *) AcquireQuantumMemory(image->columns,packet_size*
     sizeof(*scanline));
-  if (scanline == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+  if ((runlength == (unsigned char *) NULL) ||
+      (buffer == (unsigned char *) NULL) ||
+      (scanline == (unsigned char *) NULL))
+    {
+      if (runlength != (unsigned char *) NULL)
+        runlength=(unsigned char *) RelinquishMagickMemory(runlength);
+      if (buffer != (unsigned char *) NULL)
+        buffer=(unsigned char *) RelinquishMagickMemory(buffer);
+      if (scanline != (unsigned char *) NULL)
+        scanline=(unsigned char *) RelinquishMagickMemory(scanline);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
   /*
