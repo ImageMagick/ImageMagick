@@ -61,6 +61,7 @@
 #include "MagickCore/layer.h"
 #include "MagickCore/mime-private.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/montage.h"
 #include "MagickCore/morphology.h"
@@ -323,7 +324,7 @@ static const char *GetOpenCLCacheDirectory()
 
               if (status != MagickFalse)
                 {
-                  temp=(char*) AcquireMagickMemory(strlen(path)+1);
+                  temp=(char*) AcquireCriticalMemory(strlen(path)+1);
                   CopyMagickString(temp,path,strlen(path)+1);
                 }
               home=DestroyString(home);
