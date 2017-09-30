@@ -2320,7 +2320,7 @@ static void LoadOpenCLDevices(MagickCLEnv clEnv)
 
       openCL_library->clGetPlatformInfo(platforms[i],CL_PLATFORM_VENDOR,0,NULL,
         &length);
-      device->vendor_name=AcquireQuantumMemory(length,
+      device->vendor_name=AcquireCriticalMemory(length*
         sizeof(*device->vendor_name));
       openCL_library->clGetPlatformInfo(platforms[i],CL_PLATFORM_VENDOR,length,
         device->vendor_name,NULL);
