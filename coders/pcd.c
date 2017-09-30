@@ -605,7 +605,15 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     10*sizeof(*luma));
   if ((chroma1 == (unsigned char *) NULL) ||
       (chroma2 == (unsigned char *) NULL) || (luma == (unsigned char *) NULL))
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    {
+      if (chroma1 != (unsigned char *) NULL)
+        chroma1=(unsigned char *) RelinquishMagickMemory(chroma1);
+      if (chroma2 != (unsigned char *) NULL)
+        chroma2=(unsigned char *) RelinquishMagickMemory(chroma2);
+      if (luma != (unsigned char *) NULL)
+        luma=(unsigned char *) RelinquishMagickMemory(luma);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   /*
     Advance to image data.
   */
