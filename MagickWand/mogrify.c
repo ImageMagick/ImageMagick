@@ -8791,6 +8791,9 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             if (p == q)
               break;
             swap=CloneImage(p,0,0,MagickTrue,exception);
+            if (swap == (Image *) NULL)
+              ThrowWandFatalException(ResourceLimitFatalError,
+                "MemoryAllocationFailed",(*images)->filename);
             ReplaceImageInList(&p,CloneImage(q,0,0,MagickTrue,exception));
             ReplaceImageInList(&q,swap);
             *images=GetFirstImageInList(q);
