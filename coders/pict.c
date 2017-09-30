@@ -454,7 +454,10 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
   scanline=(unsigned char *) AcquireQuantumMemory(row_bytes,2*
     sizeof(*scanline));
   if (scanline == (unsigned char *) NULL)
-    return((unsigned char *) NULL);
+    {
+      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+      return((unsigned char *) NULL);
+    }
   if (bytes_per_line < 8)
     {
       /*
