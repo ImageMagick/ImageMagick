@@ -1163,7 +1163,7 @@ static void BenchmarkOpenCLDevices(MagickCLEnv clEnv)
 
   testEnv=AcquireMagickCLEnv();
   testEnv->library=openCL_library;
-  testEnv->devices=(MagickCLDevice *) AcquireMagickMemory(
+  testEnv->devices=(MagickCLDevice *) AcquireCriticalMemory(
     sizeof(MagickCLDevice));
   testEnv->number_devices=1;
   testEnv->benchmark_thread_id=GetMagickThreadId();
