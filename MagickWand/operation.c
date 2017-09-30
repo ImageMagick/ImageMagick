@@ -4578,6 +4578,9 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
         if (p == q)
           CLIWandExceptArgBreak(OptionError,"InvalidImageIndex",option,arg1);
         swap=CloneImage(p,0,0,MagickTrue,_exception);
+        if (swap == (Image *) NULL)
+          CLIWandExceptArgBreak(ResourceLimitError,"MemoryAllocationFailed",
+            option,GetExceptionMessage(errno));
         ReplaceImageInList(&p,CloneImage(q,0,0,MagickTrue,_exception));
         ReplaceImageInList(&q,swap);
         _images=GetFirstImageInList(q);
