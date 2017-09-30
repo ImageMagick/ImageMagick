@@ -2160,20 +2160,12 @@ static void XDitherImage(Image *image,XImage *ximage,ExceptionInfo *exception)
   for (i=0; i < 2; i++)
     for (j=0; j < 16; j++)
     {
-      red_map[i][j]=(unsigned char *) AcquireQuantumMemory(256UL,
+      red_map[i][j]=(unsigned char *) AcquireCriticalMemory(256UL*
         sizeof(*red_map));
-      green_map[i][j]=(unsigned char *) AcquireQuantumMemory(256UL,
+      green_map[i][j]=(unsigned char *) AcquireCriticalMemory(256UL*
         sizeof(*green_map));
-      blue_map[i][j]=(unsigned char *) AcquireQuantumMemory(256UL,
+      blue_map[i][j]=(unsigned char *) AcquireCriticalMemory(256UL*
         sizeof(*blue_map));
-      if ((red_map[i][j] == (unsigned char *) NULL) ||
-          (green_map[i][j] == (unsigned char *) NULL) ||
-          (blue_map[i][j] == (unsigned char *) NULL))
-        {
-          ThrowXWindowException(ResourceLimitError,"MemoryAllocationFailed",
-            image->filename);
-          return;
-        }
     }
   /*
     Initialize dither tables.
