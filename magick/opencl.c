@@ -2946,7 +2946,7 @@ const char* GetOpenCLCachedFilesDirectory() {
 
           if (mkdirStatus==0)
           {
-            temp = (char*)AcquireMagickMemory(strlen(path)+1);
+            temp = (char*)AcquireCriticalMemory(strlen(path)+1);
             CopyMagickString(temp,path,strlen(path)+1);
           }
           home=DestroyString(home);
