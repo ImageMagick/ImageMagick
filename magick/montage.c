@@ -636,7 +636,14 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       sizeof(*montage->directory));
     if ((montage->montage == (char *) NULL) ||
         (montage->directory == (char *) NULL))
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+      {
+        if (montage->montage != (char *) NULL)
+          montage->montage=(char *) RelinquishMagickMemory(montage->montage);
+        if (montage->directory != (char *) NULL)
+          montage->directory=(char *) RelinquishMagickMemory(
+            montage->directory);
+        ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+      }
     x_offset=0;
     y_offset=0;
     if (montage_info->tile != (char *) NULL)
