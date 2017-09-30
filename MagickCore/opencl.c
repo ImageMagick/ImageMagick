@@ -1305,7 +1305,7 @@ static void LogOpenCLBuildFailure(MagickCLDevice device,const char *kernel,
 
   openCL_library->clGetProgramBuildInfo(device->program,device->deviceID,
     CL_PROGRAM_BUILD_LOG,0,NULL,&log_size);
-  log=(char*)AcquireMagickMemory(log_size);
+  log=(char*)AcquireCriticalMemory(log_size);
   openCL_library->clGetProgramBuildInfo(device->program,device->deviceID,
     CL_PROGRAM_BUILD_LOG,log_size,log,&log_size);
 
