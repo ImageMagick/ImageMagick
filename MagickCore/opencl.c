@@ -1401,13 +1401,18 @@ static cl_event* CopyOpenCLEvents(MagickCLCacheInfo first,
   if (*event_count > 0)
     {
       events=AcquireQuantumMemory(*event_count,sizeof(*events));
-      j=0;
-      for (i=0; i < first->event_count; i++, j++)
-        events[j]=first->events[i];
-      if (second != (MagickCLCacheInfo) NULL)
+      if (events == (MagickCLCacheInfo) NULL)
+        *event_count=0;
+      else
         {
-          for (i=0; i < second->event_count; i++, j++)
-            events[j]=second->events[i];
+          j=0;
+          for (i=0; i < first->event_count; i++, j++)
+            events[j]=first->events[i];
+          if (second != (MagickCLCacheInfo) NULL)
+            {
+              for (i=0; i < second->event_count; i++, j++)
+                events[j]=second->events[i];
+            }
         }
     }
   UnlockSemaphoreInfo(first->events_semaphore);
