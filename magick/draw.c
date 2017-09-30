@@ -4810,6 +4810,11 @@ static MagickBooleanType DrawStrokePolygon(Image *image,
   for (p=primitive_info; p->primitive != UndefinedPrimitive; p+=p->coordinates)
   {
     stroke_polygon=TraceStrokePolygon(draw_info,p);
+    if (stroke_polygon == (PrimitiveInfo *) NULL)
+      {
+        status=0;
+        break;
+      }
     status&=DrawPolygonPrimitive(image,clone_info,stroke_polygon);
     if (status == 0)
       break;
