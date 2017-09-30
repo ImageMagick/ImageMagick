@@ -2333,7 +2333,7 @@ static void LoadOpenCLDevices(MagickCLEnv clEnv)
 
       openCL_library->clGetDeviceInfo(devices[j],CL_DRIVER_VERSION,0,NULL,
         &length);
-      device->version=AcquireQuantumMemory(length,sizeof(*device->version));
+      device->version=AcquireCriticalMemory(length*sizeof(*device->version));
       openCL_library->clGetDeviceInfo(devices[j],CL_DRIVER_VERSION,length,
         device->version,NULL);
 

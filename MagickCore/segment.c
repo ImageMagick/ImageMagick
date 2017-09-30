@@ -1364,7 +1364,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
   /*
     The root is the entire histogram.
   */
-  root=(IntervalTree *) AcquireMagickMemory(sizeof(*root));
+  root=(IntervalTree *) AcquireCriticalMemory(sizeof(*root));
   root->child=(IntervalTree *) NULL;
   root->sibling=(IntervalTree *) NULL;
   root->tau=0.0;
