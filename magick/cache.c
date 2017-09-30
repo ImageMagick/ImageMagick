@@ -264,8 +264,13 @@ static cl_event *CopyOpenCLEvents(OpenCLCacheInfo *opencl_info,
   if (*event_count > 0)
     {
       events=AcquireQuantumMemory(*event_count,sizeof(*events));
-      for (i=0; i < opencl_info->event_count; i++)
-        events[i]=opencl_info->events[i];
+      if (events == (OpenCLCacheInfo *) NULL)
+        *event_count=0;
+      else
+        {
+          for (i=0; i < opencl_info->event_count; i++)
+            events[i]=opencl_info->events[i];
+        }
     }
   UnlockSemaphoreInfo(opencl_info->events_semaphore);
   return(events);
