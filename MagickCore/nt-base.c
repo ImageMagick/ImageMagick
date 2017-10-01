@@ -2028,8 +2028,9 @@ MagickPrivate unsigned char *NTRegistryKeyLookup(const char *subkey)
   /*
     Look-up base key.
   */
-  (void) FormatLocaleString(package_key,MagickPathExtent,"SOFTWARE\\%s\\%s\\Q:%d",
-    MagickPackageName,MagickLibVersionText,MAGICKCORE_QUANTUM_DEPTH);
+  (void) FormatLocaleString(package_key,MagickPathExtent,
+    "SOFTWARE\\%s\\%s\\Q:%d",MagickPackageName,MagickLibVersionText,
+    MAGICKCORE_QUANTUM_DEPTH);
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),"%s",package_key);
   registry_key=(HKEY) INVALID_HANDLE_VALUE;
   status=RegOpenKeyExA(HKEY_LOCAL_MACHINE,package_key,0,KEY_READ,&registry_key);
