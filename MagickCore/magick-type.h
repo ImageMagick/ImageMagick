@@ -28,7 +28,7 @@ extern "C" {
 #define MAGICKCORE_QUANTUM_DEPTH  16
 #endif
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__MINGW32__) && !defined(__MINGW64__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__MINGW32__)
 #  define MagickLLConstant(c)  (MagickOffsetType) (c ## i64)
 #  define MagickULLConstant(c)  (MagickSizeType) (c ## ui64)
 #else

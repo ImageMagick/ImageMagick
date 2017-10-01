@@ -142,7 +142,7 @@ extern "C" {
 #  define MAGICKCORE_PATH_SEPARATOR		":"
 #endif /* !DIR_SEPARATOR_CHAR */
 
-# if defined(MAGICKCORE_POSIX_SUPPORT) || defined(__MINGW32__) || defined(__MINGW64__)
+# if defined(MAGICKCORE_POSIX_SUPPORT) || defined(__MINGW32__)
  
 /* module dir */
 #ifndef MAGICKCORE_MODULES_DIRNAME

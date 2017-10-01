@@ -83,7 +83,7 @@
 #include "MagickCore/xwindow.h"
 #include "MagickCore/xwindow-private.h"
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
-#if defined(__MINGW32__) || defined(__MINGW64__)
+#if defined(__MINGW32__)
 #  undef interface
 #endif
 #include <ft2build.h>

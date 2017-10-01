@@ -351,7 +351,7 @@ MagickPrivate int Exit(int status)
   exit(status);
 }
 
-#if !defined(__MINGW32__) && !defined(__MINGW64__)
+#if !defined(__MINGW32__)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2794,7 +2794,7 @@ MagickPrivate void NTWindowsGenesis(void)
       (void) SetErrorMode(StringToInteger(mode));
       mode=DestroyString(mode);
     }
-#if defined(_DEBUG) && !defined(__BORLANDC__) && !defined(__MINGW32__) && !defined(__MINGW64__)
+#if defined(_DEBUG) && !defined(__BORLANDC__) && !defined(__MINGW32__)
   if (IsEventLogging() != MagickFalse)
     {
       int
