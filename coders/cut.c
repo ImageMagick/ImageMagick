@@ -287,13 +287,13 @@ static int GetCutColors(Image *image)
 */
 static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-#define ThrowCUTReaderException(severity,reason) \
+#define ThrowCUTReaderException(severity,tag) \
 { \
   if (palette != NULL) \
     palette=DestroyImage(palette); \
   if (clone_info != NULL) \
     clone_info=DestroyImageInfo(clone_info); \
-  ThrowReaderException(severity,reason); \
+  ThrowReaderException(severity,tag); \
 }
 
   Image *image,*palette;
