@@ -1,4 +1,9 @@
+2017-10-01  6.9.9-16 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.9-16, GIT revision 12125:723b0aa6a:20171001.
+
 2017-09-28  6.9.9-16 Cristy  <quetzlzacatenango@image...>
+  * Fixed numerous memory leaks (reference
+    https://github.com/ImageMagick/ImageMagick/pull/763).
   * Support URW-base35 fonts.
 
 2017-09-23  6.9.9-15 Cristy  <quetzlzacatenango@image...>
