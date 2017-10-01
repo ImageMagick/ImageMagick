@@ -879,6 +879,8 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
       sizeof(*one_row));
     if (one_row == (unsigned char *) NULL)
       {
+        if (last_row != (unsigned char *) NULL) 
+          last_row=(unsigned char *) RelinquishMagickMemory(last_row);
         quantize_info=DestroyQuantizeInfo(quantize_info);
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
       }
