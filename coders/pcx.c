@@ -390,7 +390,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
-      return(DestroyImageList(image));
+      ThrowPCXException(exception->severity,exception->reason);
     /*
       Read image data.
     */
