@@ -481,7 +481,11 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         status=DecodeImage(sun_data,sun_info.length,sun_pixels,pixels_length);
         if (status == MagickFalse)
-          ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+          {
+            sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
+            sun_pixels=(unsigned char *) RelinquishMagickMemory(sun_pixels);
+            ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+          }
       }
     else
       {
