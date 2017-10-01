@@ -58,7 +58,7 @@
 #include "MagickCore/MagickCore.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/string_.h"
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__MINGW32__)
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 #include <windows.h>
@@ -98,7 +98,7 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__MINGW32__)
 static Image *ReadXTRNImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -200,7 +200,7 @@ ModuleExport size_t RegisterXTRNImage(void)
 
   entry=AcquireMagickInfo("XTRN","XTRNARRAY",
     "External transfer via a smart array interface");
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__MINGW32__)
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
 #endif
@@ -264,7 +264,7 @@ ModuleExport void UnregisterXTRNImage(void)
 %
 */
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__MINGW32__)
 static size_t SafeArrayFifo(const Image *image,const void *data,
   const size_t length)
 {
