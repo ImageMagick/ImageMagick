@@ -1,3 +1,10 @@
+2017-10-01  6.9.9-17 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.9-17, GIT revision 12132:c19d58e90:20171001.
+
+2017-10-01  6.9.9-17 Cristy  <quetzlzacatenango@image...>
+  * Fix broken build (reference
+    https://github.com/ImageMagick/ImageMagick/issues/823).
+
 2017-10-01  6.9.9-16 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.9-16, GIT revision 12125:723b0aa6a:20171001.
 
