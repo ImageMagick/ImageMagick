@@ -213,9 +213,9 @@ MagickPrivate MagickBooleanType RecordProfileData(MagickCLEnv clEnv, ProfiledKer
   }
   return(MagickTrue);
 #else
-  magick_unused(clEnv);
-  magick_unused(kernel);
-  magick_unused(event);
+  magick_unreferenced(clEnv);
+  magick_unreferenced(kernel);
+  magick_unreferenced(event);
   return(MagickFalse);
 #endif
 }
