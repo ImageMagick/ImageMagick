@@ -146,7 +146,7 @@ static MagickBooleanType
 static MagickBooleanType DecodeImage(Image *image,
   const MagickBooleanType compression,unsigned char *pixels)
 {
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__MINGW32__) || defined(__MINGW64__)
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__MINGW32__)
 #define BI_RGB  0
 #define BI_RLE8  1
 #define BI_RLE4  2

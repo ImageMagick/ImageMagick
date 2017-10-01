@@ -99,7 +99,7 @@ static int ConjureMain(int argc,char **argv)
   return(status != MagickFalse ? 0 : 1);
 }
 
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__MINGW64__)
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
 int main(int argc,char **argv)
 {
   return(ConjureMain(argc,argv));
