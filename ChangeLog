@@ -1,4 +1,9 @@
+2017-10-01  7.0.7-54 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.7-5, GIT revision 21382:3846f9d97:20171001.
+
 2017-09-28  7.0.7-5 Cristy  <quetzlzacatenango@image...>
+  * Fixed numerous memory leaks (reference
+    https://github.com/ImageMagick/ImageMagick/issues).
   * Support URW-base35 fonts.
 
 2017-09-26  7.0.7-5 Glenn Randers-Pehrson <glennrp@image...>
