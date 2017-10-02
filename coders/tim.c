@@ -201,7 +201,11 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         count=ReadBlob(image,2*image->colors,tim_colormap);
         if (count != (ssize_t) (2*image->colors))
-          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+          {
+            tim_colormap=(unsigned char *) RelinquishMagickMemory(tim_colormap);
+            ThrowReaderException(CorruptImageError,
+              "InsufficientImageDataInFile");
+          }
         p=tim_colormap;
         for (i=0; i < (ssize_t) image->colors; i++)
         {
