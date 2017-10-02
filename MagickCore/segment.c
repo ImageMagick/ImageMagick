@@ -1371,6 +1371,9 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
   root->tau=0.0;
   root->left=0;
   root->right=255;
+  root->mean_stability=0.0;
+  root->stability=0.0;
+  (void) memset(list,0,TreeLength*sizeof(*list));
   for (i=(-1); i < (ssize_t) number_crossings; i++)
   {
     /*
@@ -1547,10 +1550,8 @@ static double OptimalTau(const ssize_t *histogram,const double max_tau,
   derivative=(double *) AcquireQuantumMemory(256,sizeof(*derivative));
   second_derivative=(double *) AcquireQuantumMemory(256,
     sizeof(*second_derivative));
-  if ((derivative == (double *) NULL) ||
-      (second_derivative == (double *) NULL))
-    ThrowFatalException(ResourceLimitFatalError,
-      "UnableToAllocateDerivatives");
+  if ((derivative == (double *) NULL) || (second_derivative == (double *) NULL))
+    ThrowFatalException(ResourceLimitFatalError,"UnableToAllocateDerivatives");
   i=0;
   for (tau=max_tau; tau >= min_tau; tau-=delta_tau)
   {
@@ -1574,8 +1575,7 @@ static double OptimalTau(const ssize_t *histogram,const double max_tau,
     zero_crossing[i].crossings);
   number_crossings=(size_t) i;
   derivative=(double *) RelinquishMagickMemory(derivative);
-  second_derivative=(double *)
-    RelinquishMagickMemory(second_derivative);
+  second_derivative=(double *) RelinquishMagickMemory(second_derivative);
   /*
     Ensure the scale-space fingerprints form lines in scale-space, not loops.
   */
