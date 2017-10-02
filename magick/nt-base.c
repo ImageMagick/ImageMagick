@@ -1996,10 +1996,7 @@ MagickPrivate unsigned char *NTRegistryKeyLookup(const char *subkey)
     status=RegOpenKeyExA(HKEY_CURRENT_USER,package_key,0,KEY_READ,
       &registry_key);
   if (status != ERROR_SUCCESS)
-    {
-      registry_key=(HKEY) INVALID_HANDLE_VALUE;
-      return((unsigned char *) NULL);
-    }
+    return((unsigned char *) NULL);
   /*
     Look-up sub key.
   */
