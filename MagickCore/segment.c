@@ -198,6 +198,7 @@ static ssize_t
   DefineRegion(const short *,ExtentPacket *);
 
 static void
+  FreeNodes(IntervalTree *),
   InitializeHistogram(const Image *,ssize_t **,ExceptionInfo *),
   ScaleSpace(const ssize_t *,const double,double *),
   ZeroCrossHistogram(double *,const double,short *);
@@ -1395,15 +1396,21 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
           {
             if (node == head)
               {
-                node->child=(IntervalTree *) AcquireCriticalMemory(
+                node->child=(IntervalTree *) AcquireMagickMemory(
                   sizeof(*node->child));
                 node=node->child;
               }
             else
               {
-                node->sibling=(IntervalTree *) AcquireCriticalMemory(
+                node->sibling=(IntervalTree *) AcquireMagickMemory(
                   sizeof(*node->sibling));
                 node=node->sibling;
+              }
+            if (node == (IntervalTree *) NULL)
+              {
+                list=(IntervalTree **) RelinquishMagickMemory(list);
+                FreeNodes(root);
+                return((IntervalTree *) NULL);
               }
             node->tau=zero_crossing[i+1].tau;
             node->child=(IntervalTree *) NULL;
@@ -1415,9 +1422,15 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
         }
       if (left != head->left)
         {
-          node->sibling=(IntervalTree *) AcquireCriticalMemory(
+          node->sibling=(IntervalTree *) AcquireMagickMemory(
             sizeof(*node->sibling));
           node=node->sibling;
+          if (node == (IntervalTree *) NULL)
+            {
+              list=(IntervalTree **) RelinquishMagickMemory(list);
+              FreeNodes(root);
+              return((IntervalTree *) NULL);
+            }
           node->tau=zero_crossing[i+1].tau;
           node->child=(IntervalTree *) NULL;
           node->sibling=(IntervalTree *) NULL;
@@ -1547,11 +1560,9 @@ static double OptimalTau(const ssize_t *histogram,const double max_tau,
   /*
     Initialize zero crossing list.
   */
-  derivative=(double *) AcquireQuantumMemory(256,sizeof(*derivative));
-  second_derivative=(double *) AcquireQuantumMemory(256,
+  derivative=(double *) AcquireCriticalMemory(256*sizeof(*derivative));
+  second_derivative=(double *) AcquireCriticalMemory(256*
     sizeof(*second_derivative));
-  if ((derivative == (double *) NULL) || (second_derivative == (double *) NULL))
-    ThrowFatalException(ResourceLimitFatalError,"UnableToAllocateDerivatives");
   i=0;
   for (tau=max_tau; tau >= min_tau; tau-=delta_tau)
   {
@@ -1599,7 +1610,11 @@ static double OptimalTau(const ssize_t *histogram,const double max_tau,
   */
   root=InitializeIntervalTree(zero_crossing,number_crossings);
   if (root == (IntervalTree *) NULL)
-    return(0.0);
+    {
+      zero_crossing=(ZeroCrossing *) RelinquishMagickMemory(zero_crossing);
+      list=(IntervalTree **) RelinquishMagickMemory(list);
+      return(0.0);
+    }
   /*
     Find active nodes:  stability is greater (or equal) to the mean stability of
     its children.
