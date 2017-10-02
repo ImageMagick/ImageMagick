@@ -1554,7 +1554,10 @@ static MagickRealType OptimalTau(const ssize_t *histogram,const double max_tau,
   zero_crossing=(ZeroCrossing *) AcquireQuantumMemory((size_t) count,
     sizeof(*zero_crossing));
   if (zero_crossing == (ZeroCrossing *) NULL)
-    return(0.0);
+    {
+      list=(IntervalTree **) RelinquishMagickMemory(list);
+      return(0.0);
+    }
   for (i=0; i < (ssize_t) count; i++)
     zero_crossing[i].tau=(-1.0);
   /*
