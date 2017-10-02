@@ -4952,6 +4952,8 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
                 exception=AcquireExceptionInfo();
                 formats=GetMagickList("*",&number_formats,exception);
                 exception=DestroyExceptionInfo(exception);
+                if (formats == (char **) NULL)
+                  break;
                 (void) XCheckDefineCursor(display,windows->widget.id,
                   windows->widget.busy_cursor);
                 windows->popup.x=windows->widget.x+60;
