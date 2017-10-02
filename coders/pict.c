@@ -1350,7 +1350,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             if (length == 0)
               break;
             (void) ReadBlobMSBLong(image);
-            length-=4;
+            length-=MagickMin(length,4);
             if (length == 0)
               break;
             info=(unsigned char *) AcquireQuantumMemory(length,sizeof(*info));
