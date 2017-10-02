@@ -37049,8 +37049,8 @@ else
     fi
   else
     # Linux / Mac OS X / Unix Build
-    for font_dir in "${prefix}/share/ghostscript/fonts/" '/usr/share/fonts/default/Type1/' '/usr/share/ghostscript/fonts/' '/usr/share/fonts/ghostscript/' '/usr/share/fonts/type1/gsfonts/' '/opt/local/share/ghostscript/fonts/' '/sw/share/ghostscript/fonts/' '/System/Library/Frameworks/Ghostscript.framework/Resources/fonts/'; do
-      if test -f "${font_dir}a010013l.pfb"; then
+    for font_dir in "${prefix}/share/ghostscript/fonts/" '/usr/share/fonts/urw-base35/' '/usr/share/ghostscript/fonts/' '/usr/share/fonts/ghostscript/' '/usr/share/fonts/type1/gsfonts/' '/opt/local/share/ghostscript/fonts/' '/sw/share/ghostscript/fonts/' '/System/Library/Frameworks/Ghostscript.framework/Resources/fonts/'; do
+      if test -f "${font_dir}StandardSymbolsPS.t1"; then
         ghostscript_font_dir="${font_dir}"
         break 1
       fi
