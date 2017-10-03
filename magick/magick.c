@@ -1075,7 +1075,10 @@ MagickExport void MagickComponentTerminus(void)
     ActivateSemaphoreInfo(&magick_semaphore);
   LockSemaphoreInfo(magick_semaphore);
   if (magick_list != (SplayTreeInfo *) NULL)
-    magick_list=DestroySplayTree(magick_list);
+    {
+      magick_list=DestroySplayTree(magick_list);
+      magick_list_initialized=MagickFalse;
+    }
   UnlockSemaphoreInfo(magick_semaphore);
   DestroySemaphoreInfo(&magick_semaphore);
 }
