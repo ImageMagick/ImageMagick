@@ -1,3 +1,7 @@
+2017-10-02  6.9.9-18 Cristy  <quetzlzacatenango@image...>
+  * resetting the magick_list_initialized boolean when needed (reference
+    https://github.com/ImageMagick/ImageMagick/pull/826).
+
 2017-10-01  6.9.9-17 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.9-17, GIT revision 12132:c19d58e90:20171001.
 
