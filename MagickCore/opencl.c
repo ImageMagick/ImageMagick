@@ -1249,8 +1249,13 @@ static void CacheOpenCLKernel(MagickCLDevice device,char *filename,
     CL_PROGRAM_BINARY_SIZES,sizeof(size_t),&binaryProgramSize,NULL);
   if (status != CL_SUCCESS)
     return;
-
   binaryProgram=(unsigned char*) AcquireMagickMemory(binaryProgramSize);
+  if (binaryProgram == (unsigned char *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",filename);
+      return;
+    }
   status=openCL_library->clGetProgramInfo(device->program,
     CL_PROGRAM_BINARIES,sizeof(unsigned char*),&binaryProgram,NULL);
   if (status == CL_SUCCESS)
