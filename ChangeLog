@@ -1,3 +1,9 @@
+2017-10-04  7.0.7-6 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.7-6, GIT revision 21426:0a1cb507b:20171004.
+
+2017-10-03  7.0.7-6 Cristy  <quetzlzacatenango@image...>
+  * Reset the magick_list_initialized boolean when needed (reference
+    https://github.com/ImageMagick/ImageMagick/pull/826).
 2017-10-02  7.0.7-6 Cristy  <quetzlzacatenango@image...>
   * Reset the magick_list_initialized boolean when needed (reference
     https://github.com/ImageMagick/ImageMagick/pull/826).
