@@ -1407,7 +1407,7 @@ static cl_event* CopyOpenCLEvents(MagickCLCacheInfo first,
   if (*event_count > 0)
     {
       events=AcquireQuantumMemory(*event_count,sizeof(*events));
-      if (events == (MagickCLCacheInfo) NULL)
+      if (events == (cl_event *) NULL)
         *event_count=0;
       else
         {
