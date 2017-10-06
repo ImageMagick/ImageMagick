@@ -983,6 +983,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     global_colors,
     image_count,
     iterations,
+    local_colors,
     one;
 
   ssize_t
@@ -1275,8 +1276,9 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->depth=8;
     flag=(unsigned char) ReadBlobByte(image);
     image->interlace=BitSet((int) flag,0x40) != 0 ? GIFInterlace : NoInterlace;
-    image->colors=BitSet((int) flag,0x80) == 0 ? global_colors : one <<
+    local_colors=BitSet((int) flag,0x80) == 0 ? global_colors : one <<
       ((size_t) (flag & 0x07)+1);
+    image->colors=local_colors;
     if (opacity >= (ssize_t) image->colors)
       image->colors=opacity+1;
     image->page.width=page.width;
@@ -1335,8 +1337,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read local colormap.
         */
-        colormap=(unsigned char *) AcquireQuantumMemory(image->colors,3*
-          sizeof(*colormap));
+        colormap=(unsigned char *) AcquireQuantumMemory((size_t)
+          MagickMax(local_colors,256),3UL*sizeof(*colormap));
         if (colormap == (unsigned char *) NULL)
           {
             global_colormap=(unsigned char *) RelinquishMagickMemory(
@@ -1344,8 +1346,10 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             meta_image=DestroyImage(meta_image);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           }
-        count=ReadBlob(image,(3*image->colors)*sizeof(*colormap),colormap);
-        if (count != (ssize_t) (3*image->colors))
+        (void) ResetMagickMemory(colormap,0,3*MagickMax(local_colors,256)*
+          sizeof(*colormap));
+        count=ReadBlob(image,(3*local_colors)*sizeof(*colormap),colormap);
+        if (count != (ssize_t) (3*local_colors))
           {
             global_colormap=(unsigned char *) RelinquishMagickMemory(
               global_colormap);
