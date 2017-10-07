@@ -1053,8 +1053,7 @@ MagickExport MagickBooleanType GetExecutionPath(char *path,const size_t extent)
 #if defined(__GNU__)
   {
     char
-      *program_name,
-      *execution_path;
+      *program_name;
 
     ssize_t
       count;
@@ -1077,13 +1076,14 @@ MagickExport MagickBooleanType GetExecutionPath(char *path,const size_t extent)
       }
     if (count != -1)
       {
-        execution_path=realpath(program_name,NULL);
-        if (execution_path != (char *) NULL)
+        char
+          execution_path[PATH_MAX+1];
+
+        if (realpath(program_name,execution_path) != (char *) NULL)
           (void) CopyMagickString(path,execution_path,extent);
       }
     if (program_name != program_invocation_name)
       program_name=(char *) RelinquishMagickMemory(program_name);
-    execution_path=(char *) RelinquishMagickMemory(execution_path);
   }
 #endif
 #if defined(__OpenBSD__)
