@@ -11,6 +11,7 @@
 2017-10-03  7.0.7-6 Cristy  <quetzlzacatenango@image...>
   * Reset the magick_list_initialized boolean when needed (reference
     https://github.com/ImageMagick/ImageMagick/pull/826).
+
 2017-10-02  7.0.7-6 Cristy  <quetzlzacatenango@image...>
   * Reset the magick_list_initialized boolean when needed (reference
     https://github.com/ImageMagick/ImageMagick/pull/826).
