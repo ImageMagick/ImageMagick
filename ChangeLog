@@ -1,3 +1,6 @@
+2017-10-07  7.0.7-7 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.7-7, GIT revision 21432:29003eeed:20171007.
+
 2017-10-06  7.0.7-7 Cristy  <quetzlzacatenango@image...>
   * Correct handling of GIF transparency (reference
     https://github.com/ImageMagick/ImageMagick/issues/831).
