@@ -580,6 +580,15 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
         if ((q >= path) && (*q != *DirectorySeparator))
           (void) ConcatenateMagickString(path,DirectorySeparator,MaxTextExtent);
         (void) ConcatenateMagickString(path,filename,MaxTextExtent);
+#if defined(MAGICKCORE_HAVE_REALPATH)
+        {
+          char
+            resolved_path[PATH_MAX+1];
+
+          if (realpath(path,resolved_path) != (char *) NULL)
+            (void) CopyMagickString(path,resolved_path,MaxTextExtent);
+        }
+#endif
         if (IsPathAccessible(path) != MagickFalse)
           {
             module_path=DestroyString(module_path);
