@@ -28,7 +28,6 @@ h6, .h6 {
   color: #333;
 }
 
-
 /*
  * Override Bootstrap's default container.
  */
@@ -36,7 +35,6 @@ h6, .h6 {
 .container {
   max-width: 60rem;
 }
-
 
 /*
  * Masthead for nav
@@ -80,7 +78,6 @@ h6, .h6 {
   border-left: .3rem solid transparent;
 }
 
-
 /*
   Name and description.
 */
@@ -106,9 +103,8 @@ h6, .h6 {
   }
 }
 
-
 /*
- Main column and sidebar layout
+  Main column and sidebar layout
 */
 
 /* Sidebar modules for boxing content */
@@ -126,7 +122,6 @@ h6, .h6 {
 .sidebar-module-inset ol:last-child {
   margin-bottom: 0;
 }
-
 
 /* Pagination */
 .magick-pagination {
@@ -153,7 +148,6 @@ h6, .h6 {
   color: #999;
 }
 
-
 /*
  * Footer
  */
@@ -164,7 +158,8 @@ h6, .h6 {
   text-align: center;
   background-color: #f9f9f9;
   border-top: .05rem solid #e5e5e5;
-}
+}A
+
 .magick-footer p:last-child {
   margin-bottom: 0;
 }
@@ -177,10 +172,12 @@ h6, .h6 {
   padding-right: 40px;
   list-style: none;
 }
+
 .magick-icon {
   float: left;
   margin: 5px;
 }
+
 fieldset {
   padding: .5em;
   background: white;
@@ -198,4 +195,10 @@ fieldset legend {
   border-right: 1px solid gray;
   border-bottom: 1px solid gray;
   font-weight: bold;
+}
+
+.highlight {
+  padding:1rem;
+  margin:1rem 0px;
+  background-color:#f7f7f9
 }
