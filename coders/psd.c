@@ -319,7 +319,7 @@ static MagickBooleanType CorrectPSDAlphaBlend(const ImageInfo *image_info,
   status=MagickTrue;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 #pragma omp parallel for schedule(static,4) shared(status) \
-  magick_threads(image,image,image->rows,1)
+  magick_chunk_threads(image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -397,7 +397,7 @@ static MagickBooleanType ApplyPSDLayerOpacity(Image *image,Quantum opacity,
   status=MagickTrue;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 #pragma omp parallel for schedule(static,4) shared(status) \
-  magick_threads(image,image,image->rows,1)
+  magick_chunk_threads(image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -468,7 +468,7 @@ static MagickBooleanType ApplyPSDOpacityMask(Image *image,const Image *mask,
   image->alpha_trait=BlendPixelTrait;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 #pragma omp parallel for schedule(static,4) shared(status) \
-  magick_threads(image,image,image->rows,1)
+  magick_chunk_threads(image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {

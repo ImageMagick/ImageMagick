@@ -226,7 +226,7 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    magick_threads(images,complex_images,images->rows,1L)
+    magick_chunk_threads(images,complex_images,images->rows,1L)
 #endif
   for (y=0; y < (ssize_t) images->rows; y++)
   {
