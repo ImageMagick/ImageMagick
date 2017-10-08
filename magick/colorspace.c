@@ -275,7 +275,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
+        magick_chunk_threads(image,image,image->rows,1)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -341,7 +341,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
+        magick_chunk_threads(image,image,image->rows,1)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -413,7 +413,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
+        magick_chunk_threads(image,image,image->rows,1)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -625,7 +625,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         film_gamma);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) \
-        magick_threads(image,image,1,1)
+        magick_number_threads(image,image,2)
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
         logmap[i]=ScaleMapToQuantum((MagickRealType) (MaxMap*(reference_white+
@@ -634,7 +634,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
+        magick_chunk_threads(image,image,image->rows,1)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -700,7 +700,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
+        magick_chunk_threads(image,image,image->rows,1)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -793,7 +793,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       primary_info.z=(double) (MaxMap+1.0)/2.0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) \
-        magick_threads(image,image,1,1)
+        magick_number_threads(image,image,2)
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
@@ -849,7 +849,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       primary_info.z=(double) (MaxMap+1.0)/2.0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) \
-        magick_threads(image,image,1,1)
+        magick_number_threads(image,image,2)
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
@@ -905,7 +905,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       primary_info.z=(double) (MaxMap+1.0)/2.0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) \
-        magick_threads(image,image,1,1)
+        magick_number_threads(image,image,2)
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
@@ -967,7 +967,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) \
-        magick_threads(image,image,1,1)
+        magick_number_threads(image,image,2)
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
@@ -998,7 +998,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
+        magick_chunk_threads(image,image,image->rows,1)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -1884,7 +1884,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
+        magick_chunk_threads(image,image,image->rows,1)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -1949,7 +1949,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
+        magick_chunk_threads(image,image,image->rows,1)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -2029,7 +2029,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
+        magick_chunk_threads(image,image,image->rows,1)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -2252,7 +2252,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
+        magick_chunk_threads(image,image,image->rows,1)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -2318,7 +2318,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
+        magick_chunk_threads(image,image,image->rows,1)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -2407,7 +2407,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) \
-        magick_threads(image,image,1,1)
+        magick_number_threads(image,image,2)
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
@@ -2437,7 +2437,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) \
-        magick_threads(image,image,1,1)
+        magick_number_threads(image,image,2)
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
@@ -2467,7 +2467,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) \
-        magick_threads(image,image,1,1)
+        magick_number_threads(image,image,2)
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
@@ -2496,7 +2496,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) \
-        magick_threads(image,image,1,1)
+        magick_number_threads(image,image,2)
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
@@ -2523,7 +2523,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) \
-        magick_threads(image,image,1,1)
+        magick_number_threads(image,image,2)
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
@@ -2554,7 +2554,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,image->rows,1)
+        magick_chunk_threads(image,image,image->rows,1)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -2639,7 +2639,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(image,image,1,1)
+        magick_number_threads(image,image,2)
 #endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {

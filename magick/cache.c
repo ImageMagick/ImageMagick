@@ -825,12 +825,13 @@ static MagickBooleanType ClonePixelCacheRepository(
   ExceptionInfo *exception)
 {
 #define MaxCacheThreads  2
-#define cache_threads(source,destination) \
-  num_threads(((source)->type == DiskCache) || \
-    ((destination)->type == DiskCache) || (((source)->rows) < \
-    (16*GetMagickResourceLimit(ThreadResource))) ? 1 : \
-    GetMagickResourceLimit(ThreadResource) < MaxCacheThreads ? \
-    GetMagickResourceLimit(ThreadResource) : MaxCacheThreads)
+#define cache_number_threads(source,destination,number_threads) \
+  num_threads(( \
+    (((source)->type == MemoryCache) || \
+     ((source)->type == MapCache)) && \
+    (((destination)->type == MemoryCache) || \
+     ((destination)->type == MapCache))) ? \
+    MagickMax(MagickMin(GetMagickResourceLimit(ThreadResource),number_threads),1) : 1)
 
   MagickBooleanType
     status;
@@ -887,7 +888,7 @@ static MagickBooleanType ClonePixelCacheRepository(
   status=MagickTrue;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    cache_threads(cache_info,clone_info)
+    cache_magick_threads(cache_info,clone_info,2)
 #endif
   for (y=0; y < (ssize_t) cache_info->rows; y++)
   {
@@ -935,7 +936,7 @@ static MagickBooleanType ClonePixelCacheRepository(
         sizeof(*cache_info->indexes);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        cache_threads(cache_info,clone_info)
+        cache_magick_threads(cache_info,clone_info,2)
 #endif
       for (y=0; y < (ssize_t) cache_info->rows; y++)
       {
@@ -5279,7 +5280,7 @@ static MagickBooleanType SetCacheAlphaChannel(Image *image,
   image_view=AcquireVirtualCacheView(image,&image->exception);  /* must be virtual */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_threads(image,image,1,1)
+    magick_number_threads(image,image,2)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
