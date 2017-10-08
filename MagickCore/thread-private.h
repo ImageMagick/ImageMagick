@@ -36,7 +36,7 @@ extern "C" {
      (GetImagePixelCacheType(source) == MapCache)) && \
     ((GetImagePixelCacheType(destination) == MemoryCache) || \
      (GetImagePixelCacheType(destination) == MapCache))) ? \
-    MagickMax(1,MagickMin(GetMagickResourceLimit(ThreadResource),(chunk)/16)) : 1)
+    MagickMax(1,MagickMin(GetMagickResourceLimit(ThreadResource),(chunk)/256)) : 1)
 #define magick_number_threads(source,destination,number_threads) \
   num_threads(( \
     ((GetImagePixelCacheType(source) == MemoryCache) || \
