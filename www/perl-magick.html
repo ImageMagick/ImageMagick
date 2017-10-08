@@ -68,38 +68,33 @@
 
 <p>Is PerlMagick available from your system RPM repository?  For example, on our CentOS system, we install PerlMagick thusly:</p>
 
-<pre><code>
-yum install ImageMagick-perl
+<pre class="highlight"><code>yum install ImageMagick-perl
 </code></pre>
 
 <p>If not, you must install PerlMagick from the ImageMagick source distribution.  Download the latest <a href="https://www.imagemagick.org/download/ImageMagick.tar.gz">source</a> release.</p>
 
 <p>Unpack the distribution with this command:</p>
 
-<pre><code>
-tar xvzf ImageMagick.tar.gz
+<pre class="highlight"><code>tar xvzf ImageMagick.tar.gz
 </code></pre>
 
 <p>Next configure and compile ImageMagick:</p>
 
-<pre><span class="crtprompt"> </span><span class='crtin'>cd ImageMagick-7.0.7</span><span class='crtout'></span><span class="crtprompt"> </span><span class='crtin'>./configure -with-perl</span><span class='crtout'></span><span class="crtprompt"> </span><span class='crtin'>make</span></pre>
+<pre><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.4</span><span class='crtout'></span><span class="crtprompt">$ </span><span class='crtin'>./configure -with-perl</span><span class='crtout'></span><span class="crtprompt">$ </span><span class='crtin'>make</span></pre>
 <p>If ImageMagick / PerlMagick configured and compiled without complaint, you are ready to install it on your system.  Administrator privileges are required to install.  To install, type</p>
 
-<pre><code>
-sudo make install
+<pre class="highlight"><code>sudo make install
 </code></pre>
 
 <p>You may need to configure the dynamic linker run-time bindings:</p>
 
-<pre><code>
-sudo ldconfig /usr/local/lib
+<pre class="highlight"><code>sudo ldconfig /usr/local/lib
 </code></pre>
 
 
 <p>Finally, verify the PerlMagick install worked properly, type</p>
 
-<pre><code>
-perl -MImage::Magick -le 'print Image::Magick->QuantumDepth'
+<pre class="highlight"><code>perl -MImage::Magick -le 'print Image::Magick->QuantumDepth'
 </code></pre>
 
 <p>Congratulations, you have a working ImageMagick distribution and you are ready to use PerlMagick to <a href="https://www.imagemagick.org/Usage/">convert, compose, or edit</a> your images.</p>
@@ -110,8 +105,7 @@ perl -MImage::Magick -le 'print Image::Magick->QuantumDepth'
 
 <p>Next, type</p>
 
-<pre><code>
-cd PerlMagick
+<pre class="highlight"><code>cd PerlMagick
 perl Makefile.nt
 nmake
 nmake install
@@ -123,14 +117,12 @@ nmake install
 
 <p>To verify a correct installation, type</p>
 
-<pre><code>
-make test
+<pre class="highlight"><code>make test
 </code></pre>
 
 <p>Use <code>nmake test</code> under Windows. There are a few demonstration scripts available to exercise many of the functions PerlMagick can perform. Type</p>
 
-<pre><code>
-cd demo
+<pre class="highlight"><code>cd demo
 make
 </code></pre>
 
@@ -140,60 +132,52 @@ make
 
 <p>Any script that wants to use PerlMagick methods must first define the methods within its namespace and instantiate an image object. Do this with:</p>
 
-<pre><code>
-use Image::Magick;
+<pre class="highlight"><code>use Image::Magick;
 
 $image = Image::Magick-&gt;new;
 </code></pre>
 
 <p>PerlMagick is <var>quantum</var> aware.  You can request a specific quantum depth when you instantiate an image object:</p>
 
-<pre><code>
-use Image::Magick::Q16;
+<pre class="highlight"><code>use Image::Magick::Q16;
 
 $image = Image::Magick::Q16-&gt;new;
 </code></pre>
 
 <p>The new() method takes the same parameters as <a href="perl-magick.html#set-attribute">SetAttribute</a> . For example,</p>
 
-<pre><code>
-$image = Image::Magick-&gt;new(size=&gt;'384x256');
+<pre class="highlight"><code>$image = Image::Magick-&gt;new(size=&gt;'384x256');
 </code></pre>
 
 <p>Next you will want to read an image or image sequence, manipulate it, and then display or write it. The input and output methods for PerlMagick are defined in <a href="perl-magick.html#read">Read or Write an Image</a>. See <a href="perl-magick.html#set-attribute">Set an Image Attribute</a> for methods that affect the way an image is read or written. Refer to <a href="perl-magick.html#manipulate">Manipulate an Image</a> for a list of methods to transform an image. <a href="perl-magick.html#get-attribute">Get an Image Attribute</a> describes how to retrieve an attribute for an image. Refer to <a href="perl-magick.html#montage">Create an Image Montage</a> for details about tiling your images as thumbnails on a background. Finally, some methods do not neatly fit into any of the categories just mentioned. Review <a href="perl-magick.html#misc">Miscellaneous Methods</a> for a list of these methods.</p>
 
 <p>Once you are finished with a PerlMagick object you should consider destroying it. Each image in an image sequence is stored in virtual memory. This can potentially add up to mebibytes of memory. Upon destroying a PerlMagick object, the memory is returned for use by other Perl methods. The recommended way to destroy an object is with <code>undef</code>:</p>
 
-<pre><code>
-undef $image;
+<pre class="highlight"><code>undef $image;
 </code></pre>
 
 <p>To delete all the images but retain the <code>Image::Magick</code> object use</p>
 
-<pre><code>
-@$image = ();
+<pre class="highlight"><code>@$image = ();
 </code></pre>
 
 <p>and finally, to delete a single image from a multi-image sequence, use</p>
 
-<pre><code>
-undef $image-&gt;[$x];
+<pre class="highlight"><code>undef $image-&gt;[$x];
 </code></pre>
 
 <p>The next section illustrates how to use various PerlMagick methods to manipulate an image sequence.</p>
 
 <p>Some of the PerlMagick methods require external programs such as <a href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a>. This may require an explicit path in your PATH environment variable to work properly. For example (in Unix),</p>
 
-<pre><code>
-$ENV{PATH}' . "='/../bin:/usr/bin:/usr/local/bin';
+<pre class="highlight"><code>$ENV{PATH}' . "='/../bin:/usr/bin:/usr/local/bin';
 </code></pre>
 
 <h2 class="magick-post-title"><a id="example"></a>Example Script</h2>
 
 <p>Here is an example script to get you started:</p>
 
-<pre><code>
-#!/usr/local/bin/perl
+<pre class="highlight"><code>#!/usr/local/bin/perl
 use Image::Magick;<br />
 my($image, $x);<br />
 $image = Image::Magick-&gt;new;
@@ -229,8 +213,7 @@ $q-&gt;Write('x.miff');
 
 <p>Suppose you want to start out with a 100 by 100 pixel white canvas with a red pixel in the center. Try</p>
 
-<pre><code>
-$image = Image::Magick-&gt;new;
+<pre class="highlight"><code>$image = Image::Magick-&gt;new;
 $image-&gt;Set(size=&gt;'100x100');
 $image-&gt;ReadImage('canvas:white');
 $image-&gt;Set('pixel[49,49]'=&gt;'red');
@@ -238,37 +221,32 @@ $image-&gt;Set('pixel[49,49]'=&gt;'red');
 
 <p>Here we reduce the intensity of the red component at (1,1) by half:</p>
 
-<pre><code>
-@pixels = $image-&gt;GetPixel(x=&gt;1,y=&gt;1);
+<pre class="highlight"><code>@pixels = $image-&gt;GetPixel(x=&gt;1,y=&gt;1);
 $pixels[0]*=0.5;
 $image-&gt;SetPixel(x=&gt;1,y=&gt;1,color=&gt;\@pixels);
 </code></pre>
 
 <p>Or suppose you want to convert your color image to grayscale:</p>
 
-<pre><code>
-$image-&gt;Quantize(colorspace=&gt;'gray');
+<pre class="highlight"><code>$image-&gt;Quantize(colorspace=&gt;'gray');
 </code></pre>
 
 <p>Let's annotate an image with a Taipai TrueType font:</p>
 
-<pre><code>
-$text = 'Works like magick!';
+<pre class="highlight"><code>$text = 'Works like magick!';
 $image-&gt;Annotate(font=&gt;'kai.ttf', pointsize=&gt;40, fill=&gt;'green', text=&gt;$text);
 </code></pre>
 
 <p>Perhaps you want to extract all the pixel intensities from an image and write them to STDOUT:</p>
 
-<pre><code>
-@pixels = $image-&gt;GetPixels(map=&gt;'I', height=&gt;$height, width=&gt;$width, normalize=&gt;true);
+<pre class="highlight"><code>@pixels = $image-&gt;GetPixels(map=&gt;'I', height=&gt;$height, width=&gt;$width, normalize=&gt;true);
 binmode STDOUT;
 print pack('B*',join('',@pixels));
 </code></pre>
 
 <p>Other clever things you can do with a PerlMagick objects include</p>
 
-<pre><code>
-$i = $#$p"+1";   # return the number of images associated with object p
+<pre class="highlight"><code>$i = $#$p"+1";   # return the number of images associated with object p
 push(@$q, @$p);  # push the images from object p onto object q
 @$p = ();        # delete the images but not the object p
 $p-&gt;Convolve([1, 2, 1, 2, 4, 2, 1, 2, 1]);   # 3x3 Gaussian kernel
@@ -327,21 +305,18 @@ $p-&gt;Convolve([1, 2, 1, 2, 4, 2, 1, 2, 1]);   # 3x3 Gaussian kernel
 
 <p>For convenience, methods Write(), Display(), and Animate() can take any parameter that <a href="perl-magick.html#set-attribute">SetAttribute</a> knows about. For example,</p>
 
-<pre><code>
-$image-&gt;Write(filename=&gt;'image.png', compression=&gt;'None');
+<pre class="highlight"><code>$image-&gt;Write(filename=&gt;'image.png', compression=&gt;'None');
 </code></pre>
 
 <p>Use <code>-</code> as the filename to method Read() to read from standard in or to method Write() to write to standard out:</p>
 
-<pre><code>
-binmode STDOUT;
+<pre class="highlight"><code>binmode STDOUT;
 $image-&gt;Write('png:-');
 </code></pre>
 
 <p>To read an image in the GIF format from a PERL filehandle, use:</p>
 
-<pre><code>
-$image = Image::Magick-&gt;new;
+<pre class="highlight"><code>$image = Image::Magick-&gt;new;
 open(IMAGE, 'image.gif');
 $image-&gt;Read(file=&gt;\*IMAGE);
 close(IMAGE);
@@ -349,8 +324,7 @@ close(IMAGE);
 
 <p>To write an image in the PNG format to a PERL filehandle, use:</p>
 
-<pre><code>
-$filename = "image.png";
+<pre class="highlight"><code>$filename = "image.png";
 open(IMAGE, ">$filename");
 $image-&gt;Write(file=&gt;\*IMAGE, filename=&gt;$filename);
 close(IMAGE);
@@ -360,8 +334,7 @@ close(IMAGE);
 
 <p>If <code>%0Nd, %0No, or %0Nx</code> appears in the filename, it is interpreted as a printf format specification and the specification is replaced with the specified decimal, octal, or hexadecimal encoding of the scene number. For example,</p>
 
-<pre><code>
-image%03d.miff
+<pre class="highlight"><code>image%03d.miff
 </code></pre>
 
 <p>converts files image000.miff, image001.miff, etc.</p>
@@ -372,8 +345,7 @@ image%03d.miff
 
 <p>Once you create an image with, for example, method ReadImage() you may want to operate on it. Below is a list of all the image manipulations methods available to you with PerlMagick.  There are <a href="examples.html">examples</a> of select PerlMagick methods. Here is an example call to an image manipulation method:</p>
 
-<pre><code>
-$image-&gt;Crop(geometry=&gt;'100x100+10+20');
+<pre class="highlight"><code>$image-&gt;Crop(geometry=&gt;'100x100+10+20');
 $image-&gt;[$x]-&gt;Frame("100x200");
 </code></pre>
 
@@ -1239,21 +1211,18 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
 
 <p>You can specify <code>@filename</code> in both Annotate() and Draw(). This reads the text or graphic primitive instructions from a file on disk. For example,</p>
 
-<pre><code>
-image-&gt;Draw(fill=&gt;'red', primitive=&gt;'rectangle',
+<pre class="highlight"><code>image-&gt;Draw(fill=&gt;'red', primitive=&gt;'rectangle',
  points=&gt;'20,20 100,100  40,40 200,200  60,60 300,300');
 </code></pre>
 
 <p>Is equivalent to</p>
 
-<pre><code>
-$image-&gt;Draw(fill=&gt;'red', primitive=&gt;'@draw.txt');
+<pre class="highlight"><code>$image-&gt;Draw(fill=&gt;'red', primitive=&gt;'@draw.txt');
 </code></pre>
 
 <p>Where <code>draw.txt</code> is a file on disk that contains this:</p>
 
-<pre><code>
-rectangle 20, 20 100, 100
+<pre class="highlight"><code>rectangle 20, 20 100, 100
 rectangle 40, 40 200, 200
 rectangle 60, 60 300, 300
 </code></pre>
@@ -1300,8 +1269,7 @@ rectangle 60, 60 300, 300
 
 <p>For example,</p>
 
-<pre><code>
-text=&gt;"%m:%f %wx%h"
+<pre class="highlight"><code>text=&gt;"%m:%f %wx%h"
 </code></pre>
 
 <p>produces an annotation of <b>MIFF:bird.miff 512x480</b> for an image titled <b>bird.miff</b> and whose width is 512 and height is 480.</p>
@@ -1314,8 +1282,7 @@ text=&gt;"%m:%f %wx%h"
 
 <p>Use method Set() to set an image attribute. For example,</p>
 
-<pre><code>
-$image-&gt;Set(dither=&gt;'True');
+<pre class="highlight"><code>$image-&gt;Set(dither=&gt;'True');
 $image-&gt;[$x]-&gt;Set(delay=&gt;3);
 </code></pre>
 
@@ -1728,8 +1695,7 @@ can use the integers 1 and 0.</p>
 
 <p>Use method Get() to get an image attribute. For example,</p>
 
-<pre><code>
-($a, $b, $c) = $image-&gt;Get('colorspace', 'magick', 'adjoin');
+<pre class="highlight"><code>($a, $b, $c) = $image-&gt;Get('colorspace', 'magick', 'adjoin');
 $width = $image-&gt;[3]-&gt;Get('columns');
 </code></pre>
 
@@ -2038,8 +2004,7 @@ $width = $image-&gt;[3]-&gt;Get('columns');
 
 <p>In this example, we compare the ImageMagick logo to a sharpened reconstruction:</p>
 
-<pre><code>
-use Image::Magick;
+<pre class="highlight"><code>use Image::Magick;
 
 $logo=Image::Magick->New();
 $logo->Read('logo:');
@@ -2057,8 +2022,7 @@ $difference->Display();
 
 <p>Use method Montage() to create a composite image by combining several separate images. The images are tiled on the composite image with the name of the image optionally appearing just below the individual tile. For example,</p>
 
-<pre><code>
-$image-&gt;Montage(geometry=&gt;'160x160', tile=&gt;'2x2', texture=&gt;'granite:');
+<pre class="highlight"><code>$image-&gt;Montage(geometry=&gt;'160x160', tile=&gt;'2x2', texture=&gt;'granite:');
 </code></pre>
 
 <p>And here is a list of Montage() parameters you can set:</p>
@@ -2218,8 +2182,7 @@ blobs in any of these image <a href="formats.html">formats</a> and provides meth
 
 <p>ImageToBlob() returns the image data in their respective formats. You can then print it, save it to an ODBC database, write it to a file, or pipe it to a display program:</p>
 
-<pre><code>
-@blobs = $image-&gt;ImageToBlob();
+<pre class="highlight"><code>@blobs = $image-&gt;ImageToBlob();
 open(DISPLAY,"| display -") || die;
 binmode DISPLAY;
 print DISPLAY $blobs[0];
@@ -2228,8 +2191,7 @@ close DISPLAY;
 
 <p>Method BlobToImage() returns an image or image sequence converted from the supplied blob:</p>
 
-<pre><code>
-@blob=$db-&gt;GetImage();
+<pre class="highlight"><code>@blob=$db-&gt;GetImage();
 $image=Image::Magick-&gt;new(magick=&gt;'jpg');
 $image-&gt;BlobToImage(@blob);
 </code></pre>
@@ -2284,51 +2246,44 @@ $image-&gt;BlobToImage(@blob);
 
 <p>The Append() method append a set of images. For example,</p>
 
-<pre><code>
-$p = $image-&gt;Append(stack=&gt;{true,false});
+<pre class="highlight"><code>$p = $image-&gt;Append(stack=&gt;{true,false});
 </code></pre>
 
 <p>appends all the images associated with object <code>$image</code>. By default, images are stacked left-to-right. Set <code>stack</code> to True to stack them top-to-bottom.</p>
 
 <p>The Clone() method copies a set of images. For example,</p>
 
-<pre><code>
-$q = $p-&gt;Clone();
+<pre class="highlight"><code>$q = $p-&gt;Clone();
 </code></pre>
 
 <p>copies all the images from object <code>$p</code> to <code>$q</code>. You can use this method for single or multi-image sequences.</p>
 
 <p>The ComplexImages() method performs complex mathematics on an image sequence. For example,</p>
 
-<pre><code>
-$p = $image-&gt;ComplexImages('conjugate');
+<pre class="highlight"><code>$p = $image-&gt;ComplexImages('conjugate');
 </code></pre>
 
 <p>The EvaluateImages() method applies an arithmetic, logical or relational expression to a set of images. For example,</p>
 
 
-<pre><code>
-$p = $image-&gt;EvaluateImages('mean');
+<pre class="highlight"><code>$p = $image-&gt;EvaluateImages('mean');
 </code></pre>
 
 <p>averages all the images associated with object <code>$image</code>.</p>
 
 <p>The Features() method returns features for each channel in the image in each of four directions (horizontal, vertical, left and right diagonals) for the specified distance.  The features include the angular second momentum, contrast, correlation, sum of squares: variance, inverse difference moment, sum average, sum varience, sum entropy, entropy, difference variance, difference entropy, information measures of correlation 1, information measures of correlation 2, and maximum correlation coefficient.  Values in RGB, CMYK, RGBA, or CMYKA order (depending on the image type).</p>
 
-<pre><code>
-@features = $image-&gt;Features(1);
+<pre class="highlight"><code>@features = $image-&gt;Features(1);
 </code></pre>
 
 <p>Finally, the Transform() method accepts a fully-qualified geometry specification for cropping or resizing one or more images.  For example,</p>
 
-<pre><code>
-$p = $images-&gt;Transform(crop=>'100x100+10+60');
+<pre class="highlight"><code>$p = $images-&gt;Transform(crop=>'100x100+10+60');
 </code></pre>
 
 <p>The Flatten() method flattens a set of images and returns it. For example,</p>
 
-<pre><code>
-$p = $images-&gt;Flatten(background=&gt;'none');
+<pre class="highlight"><code>$p = $images-&gt;Flatten(background=&gt;'none');
 $p-&gt;Write('flatten.png');
 </code></pre>
 
@@ -2336,8 +2291,7 @@ $p-&gt;Write('flatten.png');
 
 <p>The Fx() method applies a mathematical expression to a set of images and returns the results. For example,</p>
 
-<pre><code>
-$p = $image-&gt;Fx(expression=&gt;'(g+b)/2.0',channel=&gt;'red');
+<pre class="highlight"><code>$p = $image-&gt;Fx(expression=&gt;'(g+b)/2.0',channel=&gt;'red');
 $p-&gt;Write('fx.miff');
 </code></pre>
 
@@ -2349,8 +2303,7 @@ $p-&gt;Write('fx.miff');
 
 <p>The Morph() method morphs a set of images. Both the image pixels and size are linearly interpolated to give the appearance of a meta-morphosis from one image to the next:</p>
 
-<pre><code>
-$p = $image-&gt;Morph(frames=&gt;<i>integer</i>);
+<pre class="highlight"><code>$p = $image-&gt;Morph(frames=&gt;<i>integer</i>);
 </code></pre>
 
 <p>where <i>frames</i> is the number of in-between images to generate.  The default is 1.</p>
@@ -2359,21 +2312,18 @@ $p = $image-&gt;Morph(frames=&gt;<i>integer</i>);
 
 <p>Method Mogrify() is a single entry point for the image manipulation methods (<a href="perl-magick.html#manipulate">Manipulate an Image</a>). The parameters are the name of a method followed by any parameters the method may require. For example, these calls are equivalent:</p>
 
-<pre><code>
-$image-&gt;Crop('340x256+0+0');
+<pre class="highlight"><code>$image-&gt;Crop('340x256+0+0');
 $image-&gt;Mogrify('crop', '340x256+0+0');
 </code></pre>
 
 <p>Method MogrifyRegion() applies a transform to a region of the image. It is similar to Mogrify() but begins with the region geometry. For example, suppose you want to brighten a 100x100 region of your image at location (40, 50):</p>
 
-<pre><code>
-$image-&gt;MogrifyRegion('100x100+40+50', 'modulate', brightness=&gt;50);
+<pre class="highlight"><code>$image-&gt;MogrifyRegion('100x100+40+50', 'modulate', brightness=&gt;50);
 </code></pre>
 
 <p>Ping() is a convenience method that returns information about an image without having to read the image into memory. It returns the width, height, file size in bytes, and the file format of the image. You can specify more than one filename but only one filehandle:</p>
 
-<pre><code>
-($width, $height, $size, $format) = $image-&gt;Ping('logo.png');
+<pre class="highlight"><code>($width, $height, $size, $format) = $image-&gt;Ping('logo.png');
 ($width, $height, $size, $format) = $image-&gt;Ping(file=&gt;\*IMAGE);
 ($width, $height, $size, $format) = $image-&gt;Ping(blob=&gt;$blob);
 </code></pre>
@@ -2382,21 +2332,18 @@ $image-&gt;MogrifyRegion('100x100+40+50', 'modulate', brightness=&gt;50);
 
 <p>Poly() builds a polynomial from the image sequence and the corresponding terms (coefficients and degree pairs):</p>
 
-<pre><code>
-$p = $image-&gt;Poly([0.5,1.0,0.25,2.0,1.0,1.0]);
+<pre class="highlight"><code>$p = $image-&gt;Poly([0.5,1.0,0.25,2.0,1.0,1.0]);
 </code></pre>
 
 <p>PreviewImage() tiles 9 thumbnails of the specified image with an image processing operation applied at varying strengths. This may be helpful pin-pointing an appropriate parameter for a particular image processing operation. Choose from these operations: <code>Rotate, Shear, Roll, Hue, Saturation, Brightness, Gamma, Spiff, Dull, Grayscale, Quantize, Despeckle, ReduceNoise, AddNoise, Sharpen, Blur, Threshold, EdgeDetect, Spread, Solarize, Shade, Raise, Segment, Swirl, Implode, Wave, OilPaint, CharcoalDrawing, JPEG</code>. Here is an example:</p>
 
-<pre><code>
-$preview = $image-&gt;Preview('Gamma');
+<pre class="highlight"><code>$preview = $image-&gt;Preview('Gamma');
 $preview-&gt;Display();
 </code></pre>
 
 <p>To have full control over text positioning you need font metric information. Use</p>
 
-<pre><code>
-($x_ppem, $y_ppem, $ascender, $descender, $width, $height, $max_advance) =
+<pre class="highlight"><code>($x_ppem, $y_ppem, $ascender, $descender, $width, $height, $max_advance) =
   $image-&gt;QueryFontMetrics(<i>parameters</i>);
 </code></pre>
 
@@ -2422,63 +2369,54 @@ $preview-&gt;Display();
 
 <p>Call QueryColor() with no parameters to return a list of known colors names or specify one or more color names to get these attributes: red, green, blue, and opacity value.</p>
 
-<pre><code>
-@colors = $image-&gt;QueryColor();
+<pre class="highlight"><code>@colors = $image-&gt;QueryColor();
 ($red, $green, $blue, $opacity) = $image-&gt;QueryColor('cyan');
 ($red, $green, $blue, $opacity) = $image-&gt;QueryColor('#716bae');
 </code></pre>
 
 <p>QueryColorname() accepts a color value and returns its respective name or hex value;</p>
 
-<pre><code>
-$name = $image-&gt;QueryColorname('rgba(80,60,0,0)');
+<pre class="highlight"><code>$name = $image-&gt;QueryColorname('rgba(80,60,0,0)');
 </code></pre>
 
 <p>Call QueryFont() with no parameters to return a list of known fonts or specify one or more font names to get these attributes: font name, description, family, style, stretch, weight, encoding, foundry, format, metrics, and glyphs values.</p>
 
-<pre><code>
-@fonts = $image-&gt;QueryFont();
+<pre class="highlight"><code>@fonts = $image-&gt;QueryFont();
 $weight = ($image-&gt;QueryFont('Helvetica'))[5];
 </code></pre>
 
 <p>Call QueryFormat() with no parameters to return a list of known image formats or specify one or more format names to get these attributes: adjoin, blob support, raw, decoder, encoder, description, and module.</p>
 
-<pre><code>
-@formats = $image-&gt;QueryFormat();
+<pre class="highlight"><code>@formats = $image-&gt;QueryFormat();
 ($adjoin, $blob_support, $raw, $decoder, $encoder, $description, $module) =
   $image-&gt;QueryFormat('gif');
 </code></pre>
 
 <p>Call MagickToMime() with the image format name to get its MIME type such as <code>images/tiff</code> from <code>tif</code>.</p>
 
-<pre><code>
-$mime = $image-&gt;MagickToMime('tif');
+<pre class="highlight"><code>$mime = $image-&gt;MagickToMime('tif');
 </code></pre>
 
 <p>Use RemoteCommand() to send a command to an already running <a href="display.html">display</a> or <a href="animate.html">animate</a> application. The only parameter is the name of the image file to display or animate.</p>
 
-<pre><code>
-$image-&gt;RemoteCommand('image.jpg');
+<pre class="highlight"><code>$image-&gt;RemoteCommand('image.jpg');
 </code></pre>
 
 <p>The Smush() method smushes a set of images together. For example,</p>
 
-<pre><code>
-$p = $image-&gt;Smush(stack=&gt;{true,false},offset=&gt;<var>integer</var>);
+<pre class="highlight"><code>$p = $image-&gt;Smush(stack=&gt;{true,false},offset=&gt;<var>integer</var>);
 </code></pre>
 
 <p>smushes together all the images associated with object <code>$image</code>. By default, images are smushed left-to-right. Set <code>stack</code> to True to smushed them top-to-bottom.</p>
 
 <p>Statistics() returns the image statistics for each channel in the image. The returned values are an array of depth, minima, maxima, mean, standard deviation, kurtosis, skewness, and entropy values in RGB, CMYK, RGBA, or CMYKA order (depending on the image type).</p>
 
-<pre><code>
-@statistics = $image-&gt;Statistics();
+<pre class="highlight"><code>@statistics = $image-&gt;Statistics();
 </code></pre>
 
 <p>Finally, the Transform() method accepts a fully-qualified geometry specification for cropping or resizing one or more images.  For example,</p>
 
-<pre><code>
-$p = $image-&gt;Transform(crop=&gt;'100x100+0+0');
+<pre class="highlight"><code>$p = $image-&gt;Transform(crop=&gt;'100x100+0+0');
 </code></pre>
 
 <p>You can optionally add <i>Image</i> to any method name above. For example, PingImage() is an alias for method Ping().</p>
@@ -2489,8 +2427,7 @@ $p = $image-&gt;Transform(crop=&gt;'100x100+0+0');
 
 <p>Methods which return a number (e.g. Read(), Write()):</p>
 
-<pre><code>
-$x = $image-&gt;Read(...);
+<pre class="highlight"><code>$x = $image-&gt;Read(...);
 warn "$x" if "$x";      # print the error message
 $x =~ /(\d+)/;
 print $1;               # print the error number
@@ -2499,8 +2436,7 @@ print 0+$x;             # print the number of images read
 
 <p>Methods which operate on an image (e.g. Resize(), Crop()):</p>
 
-<pre><code>
-$x = $image-&gt;Crop(...);
+<pre class="highlight"><code>$x = $image-&gt;Crop(...);
 warn "$x" if "$x";      # print the error message
 $x =~ /(\d+)/;
 print $1;               # print the error number
@@ -2508,8 +2444,7 @@ print $1;               # print the error number
 
 <p>Methods which return images (EvaluateSequence(), Montage(), Clone()) should be checked for errors this way:</p>
 
-<pre><code>
-$x = $image-&gt;Montage(...);
+<pre class="highlight"><code>$x = $image-&gt;Montage(...);
 warn "$x" if !ref($x);  # print the error message
 $x =~ /(\d+)/;
 print $1;               # print the error number
@@ -2517,16 +2452,14 @@ print $1;               # print the error number
 
 <p>Here is an example error message:</p>
 
-<pre><code>
-Error 400: Memory allocation failed
+<pre class="highlight"><code>Error 400: Memory allocation failed
 </code></pre>
 
 <p>Review the complete list of <a href="exception.html">error and warning codes</a>.</p>
 
 <p>The following illustrates how you can use a numeric status code:</p>
 
-<pre><code>
-$x = $image-&gt;Read('rose.png');
+<pre class="highlight"><code>$x = $image-&gt;Read('rose.png');
 $x =~ /(\d+)/;
 die "unable to continue" if ($1 == ResourceLimitError);
 </code></pre>
@@ -2581,8 +2514,7 @@ XServerWarning
 
 <p>You can access them like this:</p>
 
-<pre><code>
-Image::Magick-&gt;QuantumDepth
+<pre class="highlight"><code>Image::Magick-&gt;QuantumDepth
 </code></pre>
 
 </div>
@@ -2600,8 +2532,9 @@ Image::Magick-&gt;QuantumDepth
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://localhost/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
   <script src="../js/magick.html"></script>
 </body>
 </html>
-<!-- Magick Cache 9th September 2017 08:02 -->
+<!-- Magick Cache 8th October 2017 11:16 -->

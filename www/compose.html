@@ -46,7 +46,7 @@
       <a class="nav-link " href="https://www.imagemagick.org/script/command-line-processing.html">Command-line</a>
       <a class="nav-link " href="https://www.imagemagick.org/script/resources.html">Resources</a>
       <a class="nav-link " href="https://www.imagemagick.org/script/develop.html">Develop</a>
-      <a class="nav-link " href="https://www.imagemagick.org/script/https://www.imagemagick.org/script/https://www.imagemagick.org/script/search.php">Search</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/https://www.imagemagick.org/script/search.php">Search</a>
       <a class="nav-link float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
@@ -452,8 +452,7 @@ but not always, the same name as the composite 'method' they use, and replaces
 the normal use of the <a href="https://www.imagemagick.org/script/command-line-options.html#compose" >-compose</a>
 setting in the "<code>composite</code>" command.  For example... </p>
 
-<pre><code>
-composite ... -blend 50x50 ...
+<pre class="highlight"><code>composite ... -blend 50x50 ...
 </code></pre>
 
 <p>As of IM v6.5.3-4 the "<code>convert</code>" command can now also supply
@@ -464,8 +463,7 @@ make use of these special augmented <a href="https://www.imagemagick.org/script/
 >-compose</a> methods, those the argument and the method both need to be set
 separately.  For example... </p>
 
-<pre><code>
-convert ... -compose blend  -define compose:args=50,50 -composite ...
+<pre class="highlight"><code>convert ... -compose blend  -define compose:args=50,50 -composite ...
 </code></pre>
 
 <p>The following is a table of these special 'argumented' compose methods,
@@ -630,12 +628,13 @@ href="https://www.imagemagick.org/script/command-line-options.html#list">-list c
 </p>
     <p><a href="compose.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="https://www.imagemagick.org/script/https://www.imagemagick.org/script/https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="https://www.imagemagick.org/script/https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>© 1999-2017 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://localhost/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
   <script src="https://www.imagemagick.org/js/magick.html"></script>
 </body>
 </html>

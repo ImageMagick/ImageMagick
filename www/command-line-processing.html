@@ -57,11 +57,11 @@
 
 <p class="lead magick-description">The ImageMagick command-line <a href="command-line-tools.html">tools</a> can be as simple as this:</p>
 
-<pre><code>magick image.jpg image.png </code></pre>
+<pre class="highlight"><code>magick image.jpg image.png </code></pre>
 
 <p>Or it can be complex with a plethora of <a href="command-line-processing.html#option">options</a>, as in the following:</p>
 
-<pre><code>magick label.gif +matte \
+<pre class="highlight"><code>magick label.gif +matte \
   \( +clone  -shade 110x90 -normalize -negate +clone  -compose Plus -composite \) \
   \( -clone 0 -shade 110x50 -normalize -channel BG -fx 0 +channel -matte \) \
   -delete 0 +swap  -compose Multiply -composite  button.gif");</code></pre>
@@ -86,7 +86,7 @@
 
 <p>Given the complexity of the rendering, you might be surprised it is accomplished by a single command-line:</p>
 
-<pre><code>magick -size 320x90 canvas:none -stroke snow4 -size 1x90 -tile gradient:white-snow4 \
+<pre class="highlight"><code>magick -size 320x90 canvas:none -stroke snow4 -size 1x90 -tile gradient:white-snow4 \
   -draw 'roundrectangle 16, 5, 304, 85 20,40' +tile -fill snow \
   -draw 'roundrectangle 264, 5, 304, 85  20,40' -tile gradient:chartreuse-green \
   -draw 'roundrectangle 16,  5, 180, 85  20,40' -tile gradient:chartreuse1-chartreuse3 \
@@ -145,7 +145,7 @@
 <p>In Unix shells, certain characters such as the asterisk (<code>*</code>) and question mark (<code>?</code>) automagically cause lists of filenames to be generated based on pattern matches. This feature is known as globbing.  ImageMagick supports filename globbing for systems, such as Windows, that does not natively support it.  For example, suppose you want to convert <code>1.jpg</code>, <code>2.jpg</code>, <code>3.jpg</code>, <code>4.jpg</code>, and <code>5.jpg</code> in your current directory to a GIF animation.  You can conveniently  refer to all of the JPEG files with this command:
 </p>
 
-<pre><code>magick *.jpg images.gif</code></pre>
+<pre class="highlight"><code>magick *.jpg images.gif</code></pre>
 
 <h4>Explicit Image Format</h4>
 <p>Images are stored in a myriad of image formats including
@@ -164,42 +164,42 @@ values.  ImageMagick has no way to automagically determine the image format
 so we explicitly set one:
 </p>
 
-<pre><code>magick -size 640x480 -depth 8 rgb:image image.png</code></pre>
+<pre class="highlight"><code>magick -size 640x480 -depth 8 rgb:image image.png</code></pre>
 
 <h4>Built-in Images and Patterns</h4>
 
 <p>ImageMagick has a number of built-in <a href="formats.html#builtin-images">images</a> and <a href="formats.html#builtin-patterns">patterns</a>.  To utilize the checkerboard pattern, for example, use:
 </p>
 
-<pre><code>magick -size 640x480 pattern:checkerboard checkerboard.png</code></pre>
+<pre class="highlight"><code>magick -size 640x480 pattern:checkerboard checkerboard.png</code></pre>
 
 <h4>STDIN, STDOUT, and file descriptors</h4>
 <p>Unix and Windows permit the output of one command to be piped to the input of another. ImageMagick permits image data to be read and written from the <a href="http://en.wikipedia.org/wiki/Standard_streams">standard streams</a> STDIN (<var>standard in</var>) and STDOUT (<var>standard out</var>), respectively, using a pseudo-filename of <code>-</code>.  In this example we pipe the output of
   <a href="convert.html">convert</a> to the <a href="display.html">display</a> program:
 </p>
 
-<pre><code>magick logo: gif:- | display gif:-</code></pre>
+<pre class="highlight"><code>magick logo: gif:- | display gif:-</code></pre>
 
 <p>The second explicit format "<code>gif:</code>" is optional in the preceding example.  The GIF image format has a unique signature within the image so ImageMagick's <a href="display.html">display</a> command can readily recognize the format as GIF.  The <a href="convert.html">convert</a> program also accepts STDIN as input in this way:
 </p>
 
-<pre><code>magick rose: gif:- | magick - -resize "200%" bigrose.jpg'</code></pre>
+<pre class="highlight"><code>magick rose: gif:- | magick - -resize "200%" bigrose.jpg'</code></pre>
 
 <p>Other pipes can be accessed via their <var>file descriptors</var> (as of version 6.4.9-3). The file descriptors 0, 1, and 2 are reserved for the standard streams STDIN, STDOUT, and STDERR, respectively, but a pipe associated with a file descriptor number <var>N</var>&gt;2 can be accessed using the pseudonym <code>fd:</code><var>N</var>. (The pseudonyms <code>fd:0</code> and <code>fd:1</code> can be used for STDIN and STDOUT.) The next example shows how to append image data piped from files with  descriptors 3 and 4 and direct the result to the file with descriptor number 5.
 </p>
 
-<pre><code>magick fd:3 fd:4 -append fd:5</code></pre>
+<pre class="highlight"><code>magick fd:3 fd:4 -append fd:5</code></pre>
 
 <p>When needed, explicit image formats can be given as mentioned earlier, as in the following.
 </p>
 
-<pre><code>magick gif:fd:3 jpg:fd:4 -append tif:fd:5</code></pre>
+<pre class="highlight"><code>magick gif:fd:3 jpg:fd:4 -append tif:fd:5</code></pre>
 
 <h4>Selecting Frames</h4>
 <p>Some images formats contain more than one image frame.  Perhaps you only want the first image, or the last, or some number of images in-between.  You can specify which image frames to read by appending the image filename with the frame range enclosed in brackets.  Here our image (an animated GIF) contains more than one frame but we only want the first:
 </p>
 
-<pre><code>magick 'images.gif[0]' image.png</code></pre>
+<pre class="highlight"><code>magick 'images.gif[0]' image.png</code></pre>
 
 <p class="bg-info">Unix shells generally interpret brackets so we enclosed the filename in quotes above.
 In a Windows command shell the brackets are not interpreted but using quotes doesn't hurt. However, in most cases the roles of single-quotes and double-quotes are reversed with respect to Unix and Windows, so Windows users should usually try double-quotes where we display single-quotes, and vice versa.
@@ -208,12 +208,12 @@ In a Windows command shell the brackets are not interpreted but using quotes doe
 <p>You can read more than one image from a sequence with a frame range.  For example, you can extract the first four frames of an image sequence:
 </p>
 
-<pre><code>magick 'images.gif[0-3]' images.mng</code></pre>
+<pre class="highlight"><code>magick 'images.gif[0-3]' images.mng</code></pre>
 
 <p>Finally, you can read more than one image from a sequence, out-of-order. The next command gets the third image in the sequence, followed by the second, and then the fourth:
 </p>
 
-<pre><code>magick 'images.gif[3,2,4]' images.mng</code></pre>
+<pre class="highlight"><code>magick 'images.gif[3,2,4]' images.mng</code></pre>
 
 <p>Notice that in the last two commands, a single image is written. The output in this case, where the image type is MNG, is a multi-frame file because the MNG format supports multiple frames. Had the output format been JPG, which only supports single frames, the output would have consisted of separate frames. More about that below, in the section about the <a href="command-line-processing.html#output">Output Filename</a>.
 </p>
@@ -222,37 +222,37 @@ In a Windows command shell the brackets are not interpreted but using quotes doe
 <p>Raw images are a sequence of color intensities without additional meta information such as width, height, or image signature.  With raw image formats, you must specify the image width and height but you can also specify a region of the image to read.  In our example, the image is in the raw 8-bit RGB format and is 6000 pixels wide and 4000 pixels high.  However, we only want a region of 600 by 400 near the center of the image:
 </p>
 
-<pre><code>magick -size 6000x4000 -depth 8 'rgb:image[600x400+1900+2900]' image.jpg</code></pre>
+<pre class="highlight"><code>magick -size 6000x4000 -depth 8 'rgb:image[600x400+1900+2900]' image.jpg</code></pre>
 
 <p>
   You can get the same results with the <a href="command-line-options.html#extract">&#x2011;extract</a> option:
 </p>
 
-<pre><code>magick -size 6000x4000 -depth 8 -extract 600x400+1900+2900 rgb:image image.jpg</code></pre>
+<pre class="highlight"><code>magick -size 6000x4000 -depth 8 -extract 600x400+1900+2900 rgb:image image.jpg</code></pre>
 
 <h4>Inline Image Resize</h4>
 <p>It is sometimes convenient to resize an image as they are read.  Suppose you have hundreds of large JPEG images you want to convert to a sequence of PNG thumbails:
 </p>
 
-<pre><code>magick '*.jpg' -resize 120x120 thumbnail%03d.png</code></pre>
+<pre class="highlight"><code>magick '*.jpg' -resize 120x120 thumbnail%03d.png</code></pre>
 
 <p>Here <var>all</var> the images are read and subsequently
 resized.  It is faster and less resource intensive to resize each image it
 is read:
 </p>
 
-<pre><code>magick '*.jpg[120x120]' thumbnail%03d.png</code></pre>
+<pre class="highlight"><code>magick '*.jpg[120x120]' thumbnail%03d.png</code></pre>
 
 <h4>Inline Image Crop</h4>
 <p>It is sometimes convenient to crop an image as they are read.  Suppose you have hundreds of large JPEG images you want to convert to a sequence of PNG thumbails:
 </p>
 
-<pre><code>magick '*.jpg' -crop 120x120+10+5 thumbnail%03d.png</code></pre>
+<pre class="highlight"><code>magick '*.jpg' -crop 120x120+10+5 thumbnail%03d.png</code></pre>
 
 <p>Here <var>all</var> the images are read and subsequently cropped.  It is faster and less resource-intensive to crop each image as it is read:
 </p>
 
-<pre><code>magick '*.jpg[120x120+10+5]' thumbnail%03d.png</code></pre>
+<pre class="highlight"><code>magick '*.jpg[120x120+10+5]' thumbnail%03d.png</code></pre>
 
 
 <h4>Filename References</h4>
@@ -261,17 +261,17 @@ is read:
 The first is with '<code>@</code>' which reads image filenames separated by white space from the specified file.  Assume the file <code>myimages.txt</code> consists of a list of filenames, like so:
 </p>
 
-<pre>frame001.jpg
+<pre class="highlight">frame001.jpg
 frame002.jpg
 frame003.jpg</pre>
 
 <p>We then expect this command:</p>
 
-<pre><code>magick @myimages.txt mymovie.gif</code></pre>
+<pre class="highlight"><code>magick @myimages.txt mymovie.gif</code></pre>
 
 <p>to read the images <code>frame001.jpg</code>, <code>frame002.jpg</code>, and <code>frame003.jpg</code> and convert them to a GIF image sequence.  </p>
 <p>If the image path includes one or more spaces, enclose the path in quotes:</p>
-<pre>'my title.jpg'</pre>
+<pre class="highlight">'my title.jpg'</pre>
 
 
     <p>Some ImageMagick command-line <a href="command-line-options.html">options</a> may exceed the capabilities of
@@ -285,12 +285,12 @@ the <code>@</code> (e.g. <code>@mypoly.txt</code>).</p>
 embedding a formatting character in the filename with a scene range.  Consider
 the filename <code>image-%d.jpg[1-5]</code>. The command</p>
 
-<pre><code>magick image-%d.jpg[1-5]</code></pre>
+<pre class="highlight"><code>magick image-%d.jpg[1-5]</code></pre>
 
 <p>causes ImageMagick to attempt to read images with these filenames:
 </p>
 
-<pre>image-1.jpg
+<pre class="highlight">image-1.jpg
 image-2.jpg
 image-3.jpg
 image-4.jpg
@@ -299,7 +299,7 @@ image-5.jpg</pre>
 <h4>Stream Buffering</h4>
 <p>By default, the input stream is buffered.  To ensure information on the source file or terminal is read as soon as its available, set the buffer size to 0:</p>
 
-<pre><code>magick logo: gif:- | display -define stream:buffer-size=0 gif:-</code></pre>
+<pre class="highlight"><code>magick logo: gif:- | display -define stream:buffer-size=0 gif:-</code></pre>
 
 <h2 class="magick-post-title"><a id="option"></a>Command-line Options</h2>
 
@@ -327,7 +327,7 @@ is reset or the command-line terminates.  The image settings include:</p>
 <p>In this example, <var>-channel</var> applies to each of the images, since, as we mentioned, settings persist:
 </p>
 
-<pre><code>magick -channel RGB wand.png wizard.png images.png</code></pre>
+<pre class="highlight"><code>magick -channel RGB wand.png wizard.png images.png</code></pre>
 
 <h4 class="magick-header"><a id="operator"></a>Image Operator</h4>
 
@@ -345,7 +345,7 @@ include:</p>
 
 <p>In this example, <var>-negate</var> negates the wand image but not the wizard:</p>
 
-<pre><code>magick wand.png -negate wizard.png images.png</code></pre>
+<pre class="highlight"><code>magick wand.png -negate wizard.png images.png</code></pre>
 
 <h4 class="magick-header"><a id="channel"></a>Image Channel Operator</h4>
 <p>Operate directly on image channels:</p>
@@ -362,7 +362,7 @@ these image sequence operators:</p>
 <a href="command-line-options.html#append">&#x2011;append</a>  • <a href="command-line-options.html#affinity">&#x2011;affinity</a>  • <a href="command-line-options.html#average">&#x2011;average</a>  • <a href="command-line-options.html#clut">&#x2011;clut</a>  • <a href="command-line-options.html#coalesce">&#x2011;coalesce</a>  • <a href="command-line-options.html#combine">&#x2011;combine</a>  • <a href="command-line-options.html#compare">&#x2011;compare</a>  • <a href="command-line-options.html#complex">&#x2011;complex</a>  • <a href="command-line-options.html#composite">&#x2011;composite</a>  • <a href="command-line-options.html#copy">&#x2011;copy</a>  • <a href="command-line-options.html#crop">&#x2011;crop</a>  • <a href="command-line-options.html#debug">&#x2011;debug</a>  • <a href="command-line-options.html#deconstruct">&#x2011;deconstruct</a>  • <a href="command-line-options.html#delete">&#x2011;delete</a>  • <a href="command-line-options.html#evaluate-sequence">&#x2011;evaluate&#x2011;sequence</a>  • <a href="command-line-options.html#fft">&#x2011;fft</a>  • <a href="command-line-options.html#flatten">&#x2011;flatten</a>  • <a href="command-line-options.html#fx">&#x2011;fx</a>  • <a href="command-line-options.html#hald-clut">&#x2011;hald&#x2011;clut</a>  • <a href="command-line-options.html#ift">&#x2011;ift</a>  • <a href="command-line-options.html#identify">&#x2011;identify</a>  • <a href="command-line-options.html#insert">&#x2011;insert</a>  • <a href="command-line-options.html#layers">&#x2011;layers</a>  • <a href="command-line-options.html#limit">&#x2011;limit</a>  • <a href="command-line-options.html#map">&#x2011;map</a>  • <a href="command-line-options.html#maximum">&#x2011;maximum</a>  • <a href="command-line-options.html#minimum">&#x2011;minimum</a>  • <a href="command-line-options.html#morph">&#x2011;morph</a>  • <a href="command-line-options.html#mosaic">&#x2011;mosaic</a>  • <a href="command-line-options.html#optimize">&#x2011;optimize</a>  • <a href="command-line-options.html#print">&#x2011;print</a>  • <a href="command-line-options.html#process">&#x2011;process</a>  • <a href="command-line-options.html#quiet">&#x2011;quiet</a>  • <a href="command-line-options.html#swap">&#x2011;swap</a>  • <a href="command-line-options.html#write">&#x2011;write</a> </ul>
 <p>In this example, <var>-append</var> appends three images into one:</p>
 
-<pre><code>magick mikayla.png picnic.png beach.png -append vacation.png</code></pre>
+<pre class="highlight"><code>magick mikayla.png picnic.png beach.png -append vacation.png</code></pre>
 
 <h4 class="magick-header"><a id="geometry"></a>Image Geometry</h4>
 
@@ -453,7 +453,7 @@ setting for more specifics.</p>
 This fine image</a> is 640 pixels wide and 480 pixels high. We say its <var>dimensions</var> are 640x480. When we give dimensions of an image, the width (the horizontal dimension) always precedes the height (the vertical dimension). This will be true when we speak of coordinates or <var>offsets</var> into an image, which will always be <var>x</var>–value followed by <var>y</var>. Just think of your high school algebra classes and the <var>xy</var>–plane. (Well, almost: our <var>y</var>–axis will always go downward!)
 </p>
 
-<pre><code>magick logo: -resize '200%' bigWiz.png
+<pre class="highlight"><code>magick logo: -resize '200%' bigWiz.png
 magick logo: -resize '200x50%' longShortWiz.png
 magick logo: -resize '100x200' notThinWiz.png
 magick logo: -resize '100x200^' biggerNotThinWiz.png
@@ -473,7 +473,7 @@ magick logo: -resize '100x200!' dochThinWiz.png</code></pre>
 Here are a few more examples:
 </p>
 
-<pre><code>magick logo: -resize '100' wiz1.png
+<pre class="highlight"><code>magick logo: -resize '100' wiz1.png
 magick logo: -resize 'x200' wiz2.png
 magick logo: -resize '100x200&gt;' wiz3.png
 magick logo: -resize '100x200&lt;' wiz4.png</code></pre>
@@ -485,7 +485,7 @@ magick logo: -resize '100x200&lt;' wiz4.png</code></pre>
 
 <p>Finally, use <code>@</code> to specify the maximum area in pixels of an image, again while attempting to preserve aspect ratio. (Pixels take only integer values, so some approximation is always at work.) In the following example, an area of 10000 pixels is requested. The resulting file has dimensions 115x86, which has 9890 pixels. </p>
 
-<pre><code>magick logo: -resize '10000@' wiz10000.png</code></pre>
+<pre class="highlight"><code>magick logo: -resize '10000@' wiz10000.png</code></pre>
 
 <p class="bg-info">In all the examples above and below, we have enclosed the <var>geometry</var> arguments  within quotation marks. Doing so is optional in many cases, but not always. We <var>must</var> enclose the geometry specifications in quotation marks when using <code>&lt;</code> or <code>&gt;</code> to prevent these characters from being interpreted by the shell as <var>file redirection</var>. On Windows systems, the carat <code>^</code>  needs to be within quotes, else it is ignored. To be safe, one should probably maintain a habit of enclosing all <var>geometry</var> arguments in quotes, as we have here.
 </p>
@@ -496,7 +496,7 @@ Here are some examples to illustrate the use of <var>offsets</var> in <var>geome
 <a href="command-line-options.html#region">&#x2011;region</a> option. This option allows many other options to modify the pixels within a specified rectangular subregion of an image. As such, it needs to be given the width and height of that region, and also an <var>offset</var> into the image, which is a pair of coordinates that indicate the location of the region within the larger image. Below, in the first example, we specify a region of size <code>100x200</code> to be located at the <var>xy</var>–coordinates <var>x</var>=10, <var>y</var>=20. Let's use the usual algebraic notation (<var>x</var>,<var>y</var>)=(10,20), for convenience.
 </p>
 
-<pre><code>magick logo: -region '100x200+10+20' -negate wizNeg1.png
+<pre class="highlight"><code>magick logo: -region '100x200+10+20' -negate wizNeg1.png
 magick logo: -region '100x200-10+20' -negate wizNeg2.png
 magick logo: -gravity center -region '100x200-10+20' -negate wizNeg3.png</code></pre>
 
@@ -512,7 +512,7 @@ magick logo: -gravity center -region '100x200-10+20' -negate wizNeg3.png</code><
 
 <p>In school, your teacher probably permitted you to work on problems on a scrap of paper and then copy the results to your test paper.  An image stack is similar.  It permits you to work on an image or image sequence in isolation and subsequently introduce the results back into the command-line.  The image stack is delineated with parenthesis.  Image operators only affect images in the current stack.  For example, we can limit the image rotation to just the wizard image like this:</p>
 
-<pre><code>magick wand.gif \( wizard.gif -rotate 30 \) +append images.gif</code></pre>
+<pre class="highlight"><code>magick wand.gif \( wizard.gif -rotate 30 \) +append images.gif</code></pre>
 
 
 <p class="bg-info">Notice again that the  parentheses are <var>escaped</var> by preceding them with
@@ -546,14 +546,14 @@ above.</p>
   <p>Images can be stored in a mryiad of image formats including the better known JPEG, PNG, TIFF and others.  ImageMagick must know the desired format of the image before it is written.  ImageMagick leverages the filename extension to determine the format.  For example, <code>image.jpg</code> tells ImageMagick to write the image in the JPEG format.  In some cases the filename does not identify the image format.  In these cases, the image is written in the format it was originally read unless an explicit image format is specified.  For example, suppose we want to write our image to a filename of <code>image</code> in the raw red, green, and blue intensity format:
   </p>
 
-<pre><code>magick image.jpg rgb:image</code></pre>
+<pre class="highlight"><code>magick image.jpg rgb:image</code></pre>
 
 
 <h4>Standard Out</h4>
   <p>Unix permits the output of one command to be piped to another.  ImageMagick permits piping one command to another with a filename of <code>-</code>.  In this example we pipe the output of <a href="convert.html">convert</a> to the <a href="display.html">display</a> program:
   </p>
 
-<pre><code>magick logo: gif:- | display gif:-</code></pre>
+<pre class="highlight"><code>magick logo: gif:- | display gif:-</code></pre>
 
 <p>Here the explicit format is optional.  The GIF image format has a signature that uniquely identifies it so ImageMagick can readily recognize the format as GIF.</p>
 
@@ -561,29 +561,29 @@ above.</p>
 <p>Optionally, use an embedded formatting character to write a sequential image list.  Suppose our output filename is <code>image-%d.jpg</code> and our image list includes 3 images.  You can expect these images files to be written:
 </p>
 
-<pre>image-0.jpg
+<pre class="highlight">image-0.jpg
 image-1.jpg
 image-2.jpg</pre>
 
 <p>Or retrieve image properties to modify the image filename.  For example, the command
 </p>
 
-<pre><code>magick rose: -set filename:area '%wx%h' 'rose-%[filename:area].png'</code></pre>
+<pre class="highlight"><code>magick rose: -set filename:area '%wx%h' 'rose-%[filename:area].png'</code></pre>
 
 <p>writes an image with this filename:
 </p>
 
-<pre>rose-70x46.png</pre>
+<pre class="highlight">rose-70x46.png</pre>
 
 <p>Finally to convert multiple JPEG images to individual PDF pages, use:</p>
 
-<pre><code>magick *.jpg +adjoin page-%d.pdf</code></pre>
+<pre class="highlight"><code>magick *.jpg +adjoin page-%d.pdf</code></pre>
 
 <h4>Stream Buffering</h4>
 
 <p>By default, the output stream is buffered.  To ensure information appears on the destination file or terminal as soon as written, set the buffer size to 0:</p>
 
-<pre><code>magick -define stream:buffer-size=0 logo: gif:- | display gif:-</code></pre>
+<pre class="highlight"><code>magick -define stream:buffer-size=0 logo: gif:- | display gif:-</code></pre>
 </div>
   <footer class="magick-footer">
     <p><a href="support.html">Donate</a> •
@@ -599,8 +599,9 @@ image-2.jpg</pre>
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://localhost/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
   <script src="../js/magick.html"></script>
 </body>
 </html>
-<!-- Magick Cache 9th September 2017 08:01 -->
+<!-- Magick Cache 8th October 2017 11:14 -->

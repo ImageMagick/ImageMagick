@@ -54,50 +54,50 @@
 <div class="container">
 <div class="magick-header">
 
-<p class="lead magick-description">Color management has changed significantly between ImageMagick version 6.7.5-5 and 6.8.0-3 in order to better conform to color and grayscale standards.</p>
-
-<p>The first major change was to swap -colorspace RGB and -colorspace sRGB. In earlier versions, RGB really meant non-linear sRGB. With the completion of the changes, RGB now means linear color and sRGB means non-linear color in terms of their respective colorspaces.</p>
+<p class="lead magick-description">Due to the standardization of sRGB on the Internet, most image formats use SRGB as the default working color space.  If the color space of an image is unknown and it is an 8- to 16-bit image format, assuming it is in the sRGB color space is a safe choice.  This extends to grayscale as well.  We assume non-linear grayscale. These assumptions are overridden if a particular image format includes color space and / or gamma metadata.  ImageMagick assumes linear color if the color space is RGB instead of sRGB.  You can also override the default color space assumptions with color profiles or the <a href="command-line-processing.html#set">-set</a> option.</p>
 
 <p>ImageMagick supports color profiles, however, for images without a profile or a declaration of colorspace, ImageMagick assumes non-linear sRGB.  Most image processing algorithms assume a linear colorspace, therefore it might be prudent to convert to linear color or remove the gamma function before certain image processing algorithms are applied. For example,</p>
 
-<pre><code>magick myimage.jpg -colorspace RGB -resize 200% -colorspace sRGB mybigimage.jpg</code></pre>
+<pre class="highlight"><code>magick myimage.jpg -colorspace RGB -resize 200% -colorspace sRGB mybigimage.jpg</code></pre>
 
 <p>To declare that an image is linear RGB rather than sRGB, you can use the set option:</p>
 
-<pre><code>magick myimage.png -set colorspace RGB myRGBimage.png</code></pre>
+<pre class="highlight"><code>magick myimage.png -set colorspace RGB myRGBimage.png</code></pre>
 
 <p>Afterwards, the verbose information for the output file lists the colorspace as RGB. This only works on image types containing meta data that distinguishes between linear RGB and non-linear sRGB, such as PNG and GIF. Therefore, if the above command is run with a JPG or TIF output format, the verbose information for the colorspace still shows sRGB. In order to properly have the JPG output know that it is linear RGB, include an appropriate color profile.</p>
 
 
-<p>The second major change treats any grayscale image as linear rather than non-linear, as it was previously.  This change is appropriate, since many types of processing requires a linear colorspace. This means that the conversion of a color image to grayscale via <code>-colorspace gray</code> looks darker relative to previous versions of ImageMagick (note that desaturating to convert to grayscale does not convert the image to linear grayscale). If you prefer to keep the conversion to non-linear grayscale, set the colorspace of the input to linear RGB so that <code>-colorspace gray</code> does not apply the gamma correction during the conversion process. For example, the following produces a non-linear grayscale result.</p>
+<p>By default, converting color images to grayscale returns non-linear gray.  To instead convert to linear gray, use the <a href="command-line-processing.html#set">-set</a> or <a href="command-line-processing.html#intensity">-intensity</a> options:</p>
 
-<pre><code>magick myimage.png -set colorspace RGB -colorspace gray myRGBimage.png</code></pre>
+<pre class="highlight"><code>magick myimage.png -set colorspace RGB -colorspace gray myRGBimage.png
+magick myimage.png -intensity Rec709luminance -colorspace gray myRGBimage.png
+</code></pre>
 
 <p>The same concept is needed when separating channels. Normally, the conversion to separate each channel of an sRGB color image produces separate linear grayscale images. However the same concept can be applied, if it is desired to keep the separate channels as non-linear grayscale. For example, the following produces non-linear grayscale channels.</p>
 
-<pre><code>magick myimage.png -set colorspace RGB -separate myimage_channels_%d.png</code></pre>
+<pre class="highlight"><code>magick myimage.png -set colorspace RGB -separate myimage_channels_%d.png</code></pre>
 
 <p>When separating and recombining channels, with potential intermediate processing, it is important to identify the colorspace used, especially during the recombination. For example,</p>
 
-<pre><code>magick myimage.png -separate myimage_channels_%d.png
+<pre class="highlight"><code>magick myimage.png -separate myimage_channels_%d.png
 magick myimage_channels_*.png -combine myimage2.png</code></pre>
 
 <p>In the above example, the result is darker than the original, because the channels were separate as linear gray and subsequently combined as linear color. In order to return the channels back to sRGB, one must change the colorspace from RGB back to sRGB after the <code>-combine</code> step.</p>
 
-<pre><code>magick myimage.png -separate myimage_channels_%d.png
+<pre class="highlight"><code>magick myimage.png -separate myimage_channels_%d.png
 magick myimage_channels_*.png -combine -colorspace sRGB myimage2.png</code></pre>
 
 <p>If one desires to separate to non-linear grayscale channels, recombine them later, perhaps after some processing, then use the same concept as above for maintaining non-linear grayscale:</p>
 
-<pre><code>magick myimage.png -set colorspace RGB -separate myimage_channels_%d.png
+<pre class="highlight"><code>magick myimage.png -set colorspace RGB -separate myimage_channels_%d.png
 magick myimage_channels_*.png -combine -colorspace RGB -set colorspace sRGB myimage2.png</code></pre>
 
 <p>When converting to another colorspace and back, such as between sRGB and HSL, the following two commands handle the first case of linear channels and the second case of non-linear channels:</p>
 
-<pre><code>magick myimage.png -colorspace HSL -separate myimage_channels_%d.png
+<pre class="highlight"><code>magick myimage.png -colorspace HSL -separate myimage_channels_%d.png
 magick myimage_channels_*.png -set colorspace HSL -combine -colorspace sRGB myimage2.png</code></pre>
 
-<pre><code>magick myimage.png -set colorspace RGB -colorspace HSL -separate myimage_channels_%d.png
+<pre class="highlight"><code>magick myimage.png -set colorspace RGB -colorspace HSL -separate myimage_channels_%d.png
 magick myimage_channels_*.png -set colorspace HSL -combine -colorspace RGB -set colorspace sRGB myimage2.png</code></pre>
 
 <p>A majority of the image formats assume an sRGB colorspace (e.g. JPEG, PNG, etc.). A few support only linear RGB (e.g. EXR, DPX, CIN, HDR) or only linear GRAY (e.g. PGM). A few formats support CMYK. For example JPG does, but PNG does not. Then there is the occasional format that also supports LAB (that is CieLAB) (e.g. TIFF, PSD, JPG, JP2). For additional information, see the <a href="https://www.imagemagick.org/script/formats.html#colorspace" >Colorspace</a> and <a href="https://www.imagemagick.org/script/formats.html#supported" >Supported Formats</a> pages.</p>
@@ -123,8 +123,9 @@ magick myimage_channels_*.png -set colorspace HSL -combine -colorspace RGB -set 
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://localhost/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
   <script src="../js/magick.html"></script>
 </body>
 </html>
-<!-- Magick Cache 9th September 2017 08:01 -->
+<!-- Magick Cache 8th October 2017 11:14 -->

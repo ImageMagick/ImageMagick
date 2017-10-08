@@ -123,17 +123,17 @@ file or data stream.
   <dd class="col-md-8">Configure ImageMagick policies.
   By default any coder, delegate, filter, or file path is permitted.  Use a policy to deny access to, for example, the MPEG video delegate, or permit reading images from a file system but deny writing to that same file system.  Or use the resource policy to set resource limits.  Policies are useful for multi-user servers that want to limit the overall impact ImageMagick has on the system.  For example, to limit the maximum image size in memory to 100MP:
 
-<pre><code>&lt;policy domain="resource" name="area" value="100MP"/></code></pre>
+<pre class="highlight"><code>&lt;policy domain="resource" name="area" value="100MP"/></code></pre>
 
 Any image larger than this area limit is cached to disk rather than memory.
 
 Use <code>width</code> to limit the maximum width of an image in pixels.  Exceed this limit and an exception is thrown and processing stops.
 
-<pre><code>&lt;policy domain="resource" name="width" value="8KP"/></code></pre>
+<pre class="highlight"><code>&lt;policy domain="resource" name="width" value="8KP"/></code></pre>
 
 To limit the elapsed time of any ImageMagick command to 5 minutes, use this policy:
 
-<pre><code>&lt;policy domain="resource" name="time" value="300"/></code></pre>
+<pre class="highlight"><code>&lt;policy domain="resource" name="time" value="300"/></code></pre>
 Define arguments for the memory, map, and disk resources with SI prefixes (.e.g 100MB).  In addition, resource policies are maximums for each instance of ImageMagick (e.g. policy memory limit 1GB, the <code>-limit 2GB</code> option exceeds policy maximum so memory limit is 1GB). </dd>
 
 <dt class="col-md-4"><a href="https://www.imagemagick.org/source/quantization-table.xml">quantization-table.xml</a></dt>
@@ -158,7 +158,7 @@ Define arguments for the memory, map, and disk resources with SI prefixes (.e.g 
 
 <p>Under Unix and Linux, ImageMagick searches for each of the configuration files listed above by looking in the locations given below, in order, and loads them if found:</p>
 
-<pre><code>$MAGICK_CONFIGURE_PATH
+<pre class="highlight"><code>$MAGICK_CONFIGURE_PATH
 $PREFIX/etc/ImageMagick-7 
 $PREFIX/share/ImageMagick-7 
 $XDG_CACHE_HOME/ImageMagick
@@ -169,7 +169,7 @@ $HOME/.config/ImageMagick
 
 <p>For the Unix or Linux pre-compiled uninstalled binary distributions, the configuration load order is:</p>
 
-<pre><code>$MAGICK_CONFIGURE_PATH
+<pre class="highlight"><code>$MAGICK_CONFIGURE_PATH
 $MAGICK_HOME/etc/ImageMagick-7 
 $MAGICK_HOME/share/ImageMagick-7 
 $PREFIX/share/ImageMagick-7 
@@ -180,17 +180,17 @@ $HOME/.config/ImageMagick/
 
 <p>Under Windows, ImageMagick searches for these configuration files in the following order, and loads them if found:</p>
 
-<pre><code>$MAGICK_CONFIGURE_PATH
+<pre class="highlight"><code>$MAGICK_CONFIGURE_PATH
 &lt;<var>windows registry</var>&gt;
 $PREFIX/config
 $USERPROFILE/.config/ImageMagick
 &lt;<var>client path</var>&gt;</code></pre>
 
-<p>Above, $PREFIX is the default install path, typically <code>c:\\Program Files\\ImageMagick-7.0.7</code>.</p>
+<p>Above, $PREFIX is the default install path, typically <code>c:\\Program Files\\ImageMagick-7.0.4</code>.</p>
 
 <p>For an uninstalled Windows installation, the configuration load order is:</p>
 
-<pre><code>$MAGICK_CONFIGURE_PATH
+<pre class="highlight"><code>$MAGICK_CONFIGURE_PATH
 $MAGICK_HOME
 $USERPROFILE/.config/ImageMagick
 <var>client path</var>
@@ -203,31 +203,31 @@ $USERPROFILE/.config/ImageMagick
 <h4>Coders</h4>
 <p>An image coder (i.e. encoder / decoder) is responsible for registering, optionally classifying, optionally reading, optionally writing, and unregistering one image format (e.g. PNG, GIF, JPEG, etc.).  ImageMagick searches for coders in the following order and it uses the first match found:</p>
 
-<pre><code>$MAGICK_HOME/lib/ImageMagick-7.0.7/modules-Q16/coders
-&lt;<var>client path</var>&gt;/../lib/ImageMagick-7.0.7/modules-Q16/coders
-$MAGICK_HOME/lib/ImageMagick-7.0.7/modules-Q16/coders
-$MAGICK_HOME/share/ImageMagick-7.0.7/modules-Q16/coders
+<pre class="highlight"><code>$MAGICK_HOME/lib/ImageMagick-7.0.4/modules-Q16/coders
+&lt;<var>client path</var>&gt;/../lib/ImageMagick-7.0.4/modules-Q16/coders
+$MAGICK_HOME/lib/ImageMagick-7.0.4/modules-Q16/coders
+$MAGICK_HOME/share/ImageMagick-7.0.4/modules-Q16/coders
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
-&lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.7/modules-Q16/coders</code></pre>
+&lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.4/modules-Q16/coders</code></pre>
 
 <h4>Filters</h4>
 <p>ImageMagick provides a convenient mechanism for adding your own custom image processing algorithms.  ImageMagick searches for filters in the following order and it uses the first match found:</p>
-<pre><code>$MAGICK_HOME/lib/ImageMagick-7.0.7/modules-Q16/filters
-&lt;<var>client path</var>&gt;/../lib/ImageMagick-7.0.7/modules-Q16/filters
-$MAGICK_HOME/lib/ImageMagick-7.0.7/modules-Q16/filters
-$MAGICK_HOME/share/ImageMagick-7.0.7/modules-Q16/filters
+<pre class="highlight"><code>$MAGICK_HOME/lib/ImageMagick-7.0.4/modules-Q16/filters
+&lt;<var>client path</var>&gt;/../lib/ImageMagick-7.0.4/modules-Q16/filters
+$MAGICK_HOME/lib/ImageMagick-7.0.4/modules-Q16/filters
+$MAGICK_HOME/share/ImageMagick-7.0.4/modules-Q16/filters
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
-&lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.7/modules-Q16/filters</code></pre>
+&lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.4/modules-Q16/filters</code></pre>
 
 <h2 class="magick-post-title"><a id="fonts"></a>Fonts</h2>
 
 <p>ImageMagick is able to load raw TrueType and Postscript font files.  It searches for the font configuration file, <a href="resources.html#type.xml">type.xml</a>, in the following order, and loads them if found:</p>
 
-<pre><code>$MAGICK_CONFIGURE_PATH
-$MAGICK_HOME/etc/ImageMagick/-7.0.7
-$MAGICK_HOME/share/ImageMagick-7.0.7
+<pre class="highlight"><code>$MAGICK_CONFIGURE_PATH
+$MAGICK_HOME/etc/ImageMagick/-7.0.4
+$MAGICK_HOME/share/ImageMagick-7.0.4
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
 &lt;<var>client path</var>&gt;/etc/ImageMagick
@@ -354,8 +354,9 @@ $MAGICK_FONT_PATH</code></pre>
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://localhost/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
   <script src="../js/magick.html"></script>
 </body>
 </html>
-<!-- Magick Cache 9th September 2017 08:01 -->
+<!-- Magick Cache 8th October 2017 11:16 -->

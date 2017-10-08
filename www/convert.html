@@ -57,14 +57,12 @@
 
 <p>We list a few examples of the <code>convert</code> command here to illustrate its usefulness and ease of use.  To get started, lets convert an image in the JPEG format to PNG:</p>
 
-<pre><code>
-magick convert rose.jpg rose.png
+<pre class="highlight"><code>magick convert rose.jpg rose.png
 </code></pre>
 
 <p>Next, we reduce the image size before it is written to the PNG format:</p>
 
-<pre><code>
-magick convert rose.jpg -resize 50% rose.png
+<pre class="highlight"><code>magick convert rose.jpg -resize 50% rose.png
 </code></pre>
 
 <ul>
@@ -79,8 +77,7 @@ magick convert rose.jpg -resize 50% rose.png
 
 <p>You can combine multiple image-processing operations to produce complex results:</p>
 
-<pre><code>
-magick convert -size 320x85 canvas:none -font Bookman-DemiItalic -pointsize 72 \
+<pre class="highlight"><code>magick convert -size 320x85 canvas:none -font Bookman-DemiItalic -pointsize 72 \
   -draw "text 25,60 \'Magick\'" -channel RGBA -blur 0x6 -fill darkred -stroke magenta \
   -draw "text 20,55 \'Magick\'" fuzzy-magick.png
 </code></pre>
@@ -91,8 +88,7 @@ magick convert -size 320x85 canvas:none -font Bookman-DemiItalic -pointsize 72 \
 
 <p>or here we resize an image with improved quality:</p>
 
-<pre><code>
-magick convert input.png -colorspace RGB +sigmoidal-contrast 11.6933 \
+<pre class="highlight"><code>magick convert input.png -colorspace RGB +sigmoidal-contrast 11.6933 \
   -define filter:filter=Sinc -define filter:window=Jinc -define filter:lobes=3 \
   -resize 400% -sigmoidal-contrast 11.6933 -colorspace sRGB output.png');
 </code></pre>
@@ -1318,8 +1314,9 @@ transparent, extract, background, or shape the alpha channel</td>
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://localhost/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
   <script src="../js/magick.html"></script>
 </body>
 </html>
-<!-- Magick Cache 9th September 2017 07:57 -->
+<!-- Magick Cache 8th October 2017 11:13 -->

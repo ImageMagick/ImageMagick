@@ -61,21 +61,18 @@
 
 <p>We list a few examples of the <code>stream</code> command here to illustrate its usefulness and ease of use. To get started, lets stream the red, green, blue components of a 640x480 JPEG image to disk as unsigned characters:</p>
 
-<pre><code>
-magick stream -map rgb -storage-type char image.jpg pixels.dat
+<pre class="highlight"><code>magick stream -map rgb -storage-type char image.jpg pixels.dat
 magick display -depth 8 -size 640x480 rgb:pixels.dat
 </code></pre>
 
 <p>Here we extract a 100x100 region from a TIFF image in the grayscale format as doubles:</p>
 
-<pre><code>
-magick stream -map i -storage-type double -extract 100x100+30+40 image.tif gray.raw
+<pre class="highlight"><code>magick stream -map i -storage-type double -extract 100x100+30+40 image.tif gray.raw
 </code></pre>
 
 <p>You can also associate the region to extract with the image filename:</p>
 
-<pre><code>
-magick stream -map i -storage-type double 'image.tif[100x100+30+40]' gray.raw
+<pre class="highlight"><code>magick stream -map i -storage-type double 'image.tif[100x100+30+40]' gray.raw
 </code></pre>
 
 
@@ -263,8 +260,9 @@ magick stream -map i -storage-type double 'image.tif[100x100+30+40]' gray.raw
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://localhost/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
   <script src="../js/magick.html"></script>
 </body>
 </html>
-<!-- Magick Cache 9th September 2017 08:02 -->
+<!-- Magick Cache 8th October 2017 11:16 -->

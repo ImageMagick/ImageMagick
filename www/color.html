@@ -63,7 +63,7 @@
 
 <p>Each of the following commands produces the same <var>lime</var> border around the image. (Use "double quotes" for Windows.)</p>
 
-<pre><code>magick -bordercolor lime -border 10 image.jpg image.png
+<pre class="highlight"><code>magick -bordercolor lime -border 10 image.jpg image.png
 magick -bordercolor '#0f0' -border 10 image.jpg image.png
 magick -bordercolor '#00ff00' -border 10 image.jpg image.png
 magick -bordercolor 'rgb(0,255,0)' -border 10 image.jpg image.png
@@ -75,7 +75,7 @@ magick -bordercolor 'rgb(0,100%,0)' -border 10 image.jpg image.png</code></pre>
 
 <p>The sRGB, CMYK, HSL and HSB color models are used in numerical color specifications. These examples all specify the same red sRGB color:</p>
 
-<pre><code>#f00                      #rgb
+<pre class="highlight"><code>#f00                      #rgb
 #ff0000                   #rrggbb
 #ff0000ff                 #rrggbbaa
 #ffff00000000             #rrrrggggbbbb
@@ -91,7 +91,7 @@ rgb(100.0%, 0.0%, 0.0%)   a float in the range 0—100% for each component</code
 
 <p>The sRGB color model is extended in this specification to include <var>alpha</var> to allow specification of the transparency of a color. These examples all specify the same color:</p>
 
-<pre><code>rgb(255, 0, 0)                 range 0 - 255
+<pre class="highlight"><code>rgb(255, 0, 0)                 range 0 - 255
 rgba(255, 0, 0, 1.0)           the same, with an explicit alpha value
 rgb(100%, 0%, 0%)              range 0.0% - 100.0%
 rgba(100%, 0%, 0%, 1.0)        the same, with an explicit alpha value</code></pre>
@@ -102,7 +102,7 @@ rgba(100%, 0%, 0%, 1.0)        the same, with an explicit alpha value</code></pr
 
 <p>Gray values are conveniently defined with a single intensity value or an intensity value and an alpha value:</p>
 
-<pre><code>gray(50%)        mid gray
+<pre class="highlight"><code>gray(50%)        mid gray
 graya(50%, 0.5)  semi-transparent mid gray</code></pre>
 
 <p>The ImageMagick color model also supports hue-saturation-lightness (HSL) and hue-saturation-brightness (HSB) colors as a complement to numerical sRGB colors. HSL colors are encoding as a triple (hue, saturation, lightness). Likewise HSB colors are encoding as a triple (hue, saturation, brightness). HSL or HSB triples are either direct values (hue 0—360, saturation 0—255, lightness or brightness 0—255) or with S,L,B as percentage values relative to these ranges.</p>
@@ -121,7 +121,7 @@ graya(50%, 0.5)  semi-transparent mid gray</code></pre>
 
 <p>The HSB color system is a little easier to understand than the HSL color system. In the HSB color system, black is at the bottom apex and white is at the top center of the cone on the central axis. The most colorful or saturated colors will then be at the outer edge of the top of the cone at the widest part. Thus at Saturation=100% and Brightness=100%</p>
 
-<pre><code>hsb(0,   100%,  100%)    or    hsb(0,   255,   255)          full red
+<pre class="highlight"><code>hsb(0,   100%,  100%)    or    hsb(0,   255,   255)          full red
 hsb(120, 100%,  100%)    or    hsb(120, 255,   255)       full green
 hsb(120, 100%,  75%)     or    hsb(120, 255,   191.25)    medium green
 hsb(120, 100%,  50%)     or    hsb(120, 255,   127.5)     dark green
@@ -130,7 +130,7 @@ hsb(120, 50%,   50%)     or    hsb(120, 127.5, 127.5)     pastel green</code></p
 
 <p>In the HSL color system, black is at the bottom apex and white is at the top apex. However, saturation is largest at the middle of the double cone on its outer perimeter and thus at a lightness value of 50%. The most colorful or saturated colors will then be at the outer edge of the double cone at its widest part. Thus at Saturation=100% and Brightness=50%</p>
 
-<pre><code>hsl(0,   100%,  50%)     or    hsl(0,   255,   127.5)        full red
+<pre class="highlight"><code>hsl(0,   100%,  50%)     or    hsl(0,   255,   127.5)        full red
 hsl(120, 100%,  100%)    or    hsl(120, 255,   255)       white
 hsl(120, 100%,  75%)     or    hsl(120, 255,   191.25)    pastel green
 hsl(120, 100%,  50%)     or    hsl(120, 255,   127.5)     full green
@@ -141,7 +141,7 @@ hsl(120, 50%,   50%)     or    hsl(120, 127.5, 127.5)     medium green</code></p
 
 <p>Just as the 'rgb()' functional notation has the 'rgba()' alpha counterpart, the 'hsl()' and 'hsb()' functional notations have their 'hsla()' 'hsba()' alpha counterparts. These examples specify the same color:</p>
 
-<pre><code>hsb(120, 100%,  100%)              full green in hsb
+<pre class="highlight"><code>hsb(120, 100%,  100%)              full green in hsb
 hsba(120, 100%,  100%,  1.0)       the same, with an alpha value of 1.0
 hsb(120, 255,  255)                full green in hsb
 hsba(120, 255,  255,  1.0)         the same, with an alpha value of 1.0
@@ -154,20 +154,20 @@ hsla(120, 255,  127.5,  1.0)       the same, with an alpha value of 1.0</code></
 <p>For ImageMagick between 6.5.6-6 and 6.9.2-0, HSL (HSB) could only be specified with Hue as percent in range 0—100%, when Saturation and Lightness (Brightness) were also specified as percent in range 0—100%.</p>
 
 <p>Specify the Lab colors like this:</p>
-<pre><code>cielab(62.253188, 23.950124, 48.410653)</code></pre>
+<pre class="highlight"><code>cielab(62.253188, 23.950124, 48.410653)</code></pre>
 <p>Note, the <code>a</code> and <code>b</code> components of any Lab color you specify are biased internally by 50% to ensure it fits in the quantum range (typically 0 to 65535).  The bias is retained when writing to the TIFF and MIFF image formats.  However, the TXT format supports negative pixel values so the bias is removed when writing to this format:</p>
-<pre><code>-> magick xc:cyan -colorspace LAB txt:
+<pre class="highlight"><code>-> magick xc:cyan -colorspace LAB txt:
 # ImageMagick pixel enumeration: 1,1,65535,cielab
 0,0: (91.1131%,-18.8571%,-5.5436%)  #E93F00000000  cielab(91.1131%,-18.8571%,-5.5436%)
 
 -> magick -size 100x100 xc:"cielab(91.1131%,-18.8571%,-5.5436%)" -colorspace sRGB cyan.png</code></pre>
 
 <p>Or specify colors generically with the <code>icc-color</code> keyword, for example:</p>
-<pre><code>icc-color(cmyk, 0.11, 0.48, 0.83, 0.00)
+<pre class="highlight"><code>icc-color(cmyk, 0.11, 0.48, 0.83, 0.00)
 icc-color(rgb, white)</code></pre>
 
 <p>Or specify uncalibrated device colors with the <code>device-</code> keyword, for example:</p>
-<pre><code>device-gray(0.5)
+<pre class="highlight"><code>device-gray(0.5)
 device-rgb(0.5, 1.0, 0.0)
 device-cmyk(0.11, 0.48, 0.83, 0.00)</code></pre>
 
@@ -4920,8 +4920,9 @@ device-cmyk(0.11, 0.48, 0.83, 0.00)</code></pre>
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://localhost/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
   <script src="../js/magick.html"></script>
 </body>
 </html>
-<!-- Magick Cache 9th September 2017 08:02 -->
+<!-- Magick Cache 8th October 2017 11:16 -->

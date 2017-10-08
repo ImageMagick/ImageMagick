@@ -61,16 +61,14 @@
 
 <p>ImageMagick provides a statically-built ImageMagick object as part of its <a href="download.html#windows">Windows installation package</a>.  When this package is installed, ImageMagickObject and its sample programs are installed to this path:</p>
 
-<pre><code>
-  c:\Program Files\ImageMagick-7.0.7-Q16\ImageMagickObject
+<pre class="highlight"><code>  c:\Program Files\ImageMagick-7.0.4-Q16\ImageMagickObject
 </code></pre>
 
 <p>The ImageMagickObject is registered if the checkbox, <code>Register ImageMagickObject</code>, is checked at install time.</p>
 
 <p>To execute the sample program from the Windows Command Shell, type:</p>
 
-<pre><code>
-cscript SimpleTest.vbs
+<pre class="highlight"><code>cscript SimpleTest.vbs
 </code></pre>
 
 <p>Since the ImageMagick utility command line parsers are incorporated within ImageMagickObject, please refer to the <a href="command-line-tools.html">command-line tools</a> discussion to learn how to use it. The sample VBS scripts show how the object should be called and used and have lots of comments.</p>
@@ -85,8 +83,7 @@ cscript SimpleTest.vbs
 
 <p>Once the VisualStaticMT project has been built, build the ImageMagickObject with this procedure:</p>
 
-<pre><code>
-cd ImageMagick/contrib/win32/ATL7/ImageMagickObject
+<pre class="highlight"><code>cd ImageMagick/contrib/win32/ATL7/ImageMagickObject
 BuildImageMagickObject release
 </code></pre>
 
@@ -94,14 +91,12 @@ BuildImageMagickObject release
 
 <p>To register the DLL as a COM+ server, type</p>
 
-<pre><code>
-regsvr32 /c /s ImageMagickObject.dll
+<pre class="highlight"><code>regsvr32 /c /s ImageMagickObject.dll
 </code></pre>
 
 <p>To unregister the DLL, type</p>
 
-<pre><code>
-regsvr32 /u /s ImageMagickObject.dll
+<pre class="highlight"><code>regsvr32 /u /s ImageMagickObject.dll
 </code></pre>
 
 <p>Use MagickCMD to exercise ImageMagickObject to verify that it is working properly.</p>
@@ -121,8 +116,9 @@ regsvr32 /u /s ImageMagickObject.dll
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://localhost/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
   <script src="../js/magick.html"></script>
 </body>
 </html>
-<!-- Magick Cache 9th September 2017 08:02 -->
+<!-- Magick Cache 8th October 2017 11:16 -->
