@@ -888,7 +888,7 @@ static MagickBooleanType ClonePixelCacheRepository(
   status=MagickTrue;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    cache_magick_threads(cache_info,clone_info,2)
+    cache_number_threads(cache_info,clone_info,2)
 #endif
   for (y=0; y < (ssize_t) cache_info->rows; y++)
   {
@@ -936,7 +936,7 @@ static MagickBooleanType ClonePixelCacheRepository(
         sizeof(*cache_info->indexes);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        cache_magick_threads(cache_info,clone_info,2)
+        cache_number_threads(cache_info,clone_info,2)
 #endif
       for (y=0; y < (ssize_t) cache_info->rows; y++)
       {
