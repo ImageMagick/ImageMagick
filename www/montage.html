@@ -61,8 +61,7 @@
 
 <p>We list a few examples of the <code>montage</code> command here to illustrate its usefulness and ease of use.  To get started, let's montage two images into a single composite:</p>
 
-<pre><code>
-montage -background '#336699' -geometry +4+4 rose.jpg red-ball.png montage.jpg
+<pre class="highlight"><code>montage -background '#336699' -geometry +4+4 rose.jpg red-ball.png montage.jpg
 </code></pre>
 
 <ul>
@@ -80,8 +79,7 @@ montage -background '#336699' -geometry +4+4 rose.jpg red-ball.png montage.jpg
 
 <p>Ok, let's add some decorations:</p>
 
-<pre><code>
-montage -label %f -frame 5 -background '#336699' -geometry +4+4 rose.jpg red-ball.png frame.jpg
+<pre class="highlight"><code>montage -label %f -frame 5 -background '#336699' -geometry +4+4 rose.jpg red-ball.png frame.jpg
 </code></pre>
 
 <ul>
@@ -103,7 +101,7 @@ montage -label %f -frame 5 -background '#336699' -geometry +4+4 rose.jpg red-bal
 
 <p>The <code>montage</code> command recognizes these options.  Click on an option to get more details about how that option works.</p>
 
-<table class="table table-condensed table-striped">
+<table class="table table-sm table-striped">
   <tbody>
   <tr>
     <th align="left">Option</th>
@@ -629,7 +627,8 @@ transparent, extract, background, or shape the alpha channel</td>
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://localhost/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
   <script src="../js/magick.html"></script>
 </body>
 </html>
