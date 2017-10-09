@@ -1222,10 +1222,8 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
       scale.y=geometry_info.sigma;
       if ((status & SigmaValue) == 0)
         scale.y=scale.x;
-      region_info->width=(size_t) MagickMax(floor((scale.x*image->columns/
-        100.0)+0.5),1.0);
-      region_info->height=(size_t) MagickMax(floor((scale.y*image->rows/
-        100.0)+0.5),1.0);
+      region_info->width=(size_t) floor((scale.x*image->columns/100.0)+0.5);
+      region_info->height=(size_t) floor((scale.y*image->rows/100.0)+0.5);
     }
   /*
     Adjust offset according to gravity setting.
