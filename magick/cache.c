@@ -824,14 +824,14 @@ static MagickBooleanType ClonePixelCacheRepository(
   CacheInfo *magick_restrict clone_info,CacheInfo *magick_restrict cache_info,
   ExceptionInfo *exception)
 {
-#define MaxCacheThreads  2
-#define cache_number_threads(source,destination,number_threads) \
-  num_threads(( \
+#define MaxCacheThreads  GetMagickResourceLimit(ThreadResource)
+#define cache_number_threads(source,destination,chunk,expression) \
+  num_threads((((expression) != 0) && \
     (((source)->type == MemoryCache) || \
      ((source)->type == MapCache)) && \
     (((destination)->type == MemoryCache) || \
      ((destination)->type == MapCache))) ? \
-    MagickMax(MagickMin(GetMagickResourceLimit(ThreadResource),number_threads),1) : 1)
+    MagickMax(1,MagickMin(GetMagickResourceLimit(ThreadResource),(chunk)/256)) : 1)
 
   MagickBooleanType
     status;
@@ -888,7 +888,7 @@ static MagickBooleanType ClonePixelCacheRepository(
   status=MagickTrue;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    cache_number_threads(cache_info,clone_info,2)
+    cache_number_threads(cache_info,clone_info,cache_info->rows,1)
 #endif
   for (y=0; y < (ssize_t) cache_info->rows; y++)
   {
@@ -936,7 +936,7 @@ static MagickBooleanType ClonePixelCacheRepository(
         sizeof(*cache_info->indexes);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        cache_number_threads(cache_info,clone_info,2)
+        cache_number_threads(cache_info,clone_info,cache_info->rows,1)
 #endif
       for (y=0; y < (ssize_t) cache_info->rows; y++)
       {
@@ -5280,7 +5280,7 @@ static MagickBooleanType SetCacheAlphaChannel(Image *image,
   image_view=AcquireVirtualCacheView(image,&image->exception);  /* must be virtual */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_number_threads(image,image,2)
+    magick_number_threads(image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
