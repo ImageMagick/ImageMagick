@@ -1992,6 +1992,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (double) psd_info.columns,(double) psd_info.rows,(double)
       psd_info.channels,(double) psd_info.depth,ModeToString((PSDImageType)
       psd_info.mode));
+  if (EOFBlob(image) != MagickFalse)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   /*
     Initialize image.
   */
@@ -2151,6 +2153,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     If we are only "pinging" the image, then we're done - so return.
   */
+  if (EOFBlob(image) != MagickFalse)
+    ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
   if (image_info->ping != MagickFalse)
     {
       (void) CloseBlob(image);
