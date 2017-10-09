@@ -30,20 +30,13 @@ extern "C" {
 /*
   Single threaded unless workload justifies the threading overhead.
 */
-#define magick_chunk_threads(source,destination,chunk,expression) \
+#define magick_number_threads(source,destination,chunk,expression) \
   num_threads((((expression) != 0) && \
     ((GetImagePixelCacheType(source) == MemoryCache) || \
      (GetImagePixelCacheType(source) == MapCache)) && \
     ((GetImagePixelCacheType(destination) == MemoryCache) || \
      (GetImagePixelCacheType(destination) == MapCache))) ? \
-    MagickMax(1,MagickMin(GetMagickResourceLimit(ThreadResource),(chunk)/256)) : 1)
-#define magick_number_threads(source,destination,number_threads) \
-  num_threads(( \
-    ((GetImagePixelCacheType(source) == MemoryCache) || \
-     (GetImagePixelCacheType(source) == MapCache)) && \
-    ((GetImagePixelCacheType(destination) == MemoryCache) || \
-     (GetImagePixelCacheType(destination) == MapCache))) ? \
-    MagickMax(MagickMin(GetMagickResourceLimit(ThreadResource),number_threads),1) : 1)
+    MagickMax(1,MagickMin(GetMagickResourceLimit(ThreadResource),(chunk)/64)) : 1)
 
 #if defined(__clang__) || (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ > 10))
 #define MagickCachePrefetch(address,mode,locality) \

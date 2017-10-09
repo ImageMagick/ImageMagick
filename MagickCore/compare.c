@@ -227,7 +227,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   highlight_view=AcquireAuthenticCacheView(highlight_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_chunk_threads(image,highlight_image,rows,1)
+    magick_number_threads(image,highlight_image,rows,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
@@ -391,7 +391,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_chunk_threads(image,image,rows,1)
+    magick_number_threads(image,image,rows,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
@@ -507,7 +507,7 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_chunk_threads(image,image,rows,1) reduction(+:area)
+    magick_number_threads(image,image,rows,1) reduction(+:area)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
@@ -622,7 +622,7 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_chunk_threads(image,image,rows,1) reduction(+:area)
+    magick_number_threads(image,image,rows,1) reduction(+:area)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
@@ -838,7 +838,7 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_chunk_threads(image,image,rows,1) reduction(+:area)
+    magick_number_threads(image,image,rows,1) reduction(+:area)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
@@ -1138,7 +1138,7 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_chunk_threads(image,image,rows,1)
+    magick_number_threads(image,image,rows,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
@@ -1416,7 +1416,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_chunk_threads(image,reconstruct_image,rows,1)
+    magick_number_threads(image,reconstruct_image,rows,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
@@ -2222,7 +2222,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) \
     shared(progress,status,similarity_metric) \
-    magick_chunk_threads(image,image,image->rows,1)
+    magick_number_threads(image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) (image->rows-reference->rows+1); y++)
   {
