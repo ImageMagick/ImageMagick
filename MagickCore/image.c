@@ -3106,7 +3106,7 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_number_threads(mask,image,1,1)
+    magick_number_threads(mask,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {

@@ -2373,7 +2373,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
   if (image->storage_class == PseudoClass)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp parallel for schedule(static,4) shared(progress,status) \
-      magick_number_threads(image,image,image->rows,1)
+      magick_number_threads(image,image,image->colors,1)
 #endif
     for (i=0; i < (ssize_t) image->colors; i++)
     {

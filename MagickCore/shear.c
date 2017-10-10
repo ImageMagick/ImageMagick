@@ -291,7 +291,7 @@ static void RadonProjection(const Image *image,MatrixInfo *source_matrixs,
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) \
-    magick_number_threads(image,image,image->rows,1)
+    magick_number_threads(image,image,GetMatrixColumns(p),1)
 #endif
   for (x=0; x < (ssize_t) GetMatrixColumns(p); x++)
   {
@@ -765,7 +765,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       tile_width=image->columns;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_number_threads(image,image,image->rows,1)
+        magick_number_threads(image,image,image->rows/tile_height,1)
 #endif
       for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
@@ -979,7 +979,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       tile_width=image->columns;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_number_threads(image,image,image->rows,1)
+        magick_number_threads(image,image,image->rows/tile_height,1)
 #endif
       for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
