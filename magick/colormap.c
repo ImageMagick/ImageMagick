@@ -318,10 +318,6 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image)
   /*
     Assign index values to colormap entries.
   */
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_number_threads(image,image,image->rows,1)
-#endif
   for (i=0; i < (ssize_t) image->colors; i++)
     image->colormap[i].opacity=(IndexPacket) i;
   /*
@@ -332,9 +328,6 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image)
   /*
     Update image colormap indexes to sorted colormap order.
   */
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status)
-#endif
   for (i=0; i < (ssize_t) image->colors; i++)
     pixels[(ssize_t) image->colormap[i].opacity]=(unsigned short) i;
   status=MagickTrue;
