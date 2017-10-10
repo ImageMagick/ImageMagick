@@ -316,6 +316,11 @@ extern MagickPrivate void AddOpenCLEvent(const Image *image,cl_event event)
   cache_info=(CacheInfo *)image->cache;
   assert(cache_info->opencl != (OpenCLCacheInfo *) NULL);
   clEnv=GetDefaultOpenCLEnv();
+  if (clEnv->library->clRetainEvent(event) != CL_SUCCESS)
+    {
+      clEnv->library->clWaitForEvents(1,&event);
+      return;
+    }
   LockSemaphoreInfo(cache_info->opencl->events_semaphore);
   if (cache_info->opencl->events == (cl_event *) NULL)
     {
@@ -330,7 +335,6 @@ extern MagickPrivate void AddOpenCLEvent(const Image *image,cl_event event)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   cache_info->opencl->events[cache_info->opencl->event_count-1]=event;
   UnlockSemaphoreInfo(cache_info->opencl->events_semaphore);
-  clEnv->library->clRetainEvent(event);
 }
 #endif
 
