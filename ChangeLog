@@ -1,3 +1,7 @@
+2017-10-08  6.9.9-20 Cristy  <quetzlzacatenango@image...>
+  * Return expected results for a percent 0 -chop option argument (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=32806).
+
 2017-10-07  6.9.9-19 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.9-19, GIT revision 12151:be787b70d:20171007.
 
