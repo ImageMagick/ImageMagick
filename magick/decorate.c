@@ -703,7 +703,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_number_threads(image,image,image->rows,1)
+    magick_number_threads(image,image,raise_info->height,1)
 #endif
   for (y=0; y < (ssize_t) raise_info->height; y++)
   {
@@ -777,7 +777,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_number_threads(image,image,image->rows,1)
+    magick_number_threads(image,image,image->rows-2*raise_info->height,1)
 #endif
   for (y=(ssize_t) raise_info->height; y < (ssize_t) (image->rows-raise_info->height); y++)
   {
@@ -840,7 +840,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_number_threads(image,image,image->rows,1)
+    magick_number_threads(image,image,image->rows-raise_info->height,1)
 #endif
   for (y=(ssize_t) (image->rows-raise_info->height); y < (ssize_t) image->rows; y++)
   {
