@@ -1619,10 +1619,16 @@ MagickPrivate void DumpOpenCLProfileData()
 %
 */
 
-static void RegisterCacheEvent(MagickCLCacheInfo info,cl_event event)
+static MagickBooleanType RegisterCacheEvent(MagickCLCacheInfo info,
+  cl_event event)
 {
   assert(info != (MagickCLCacheInfo) NULL);
   assert(event != (cl_event) NULL);
+  if (openCL_library->clRetainEvent(event) != CL_SUCCESS)
+    {
+      openCL_library->clWaitForEvents(1,&event);
+      return(MagickFalse);
+    }
   LockSemaphoreInfo(info->events_semaphore);
   if (info->events == (cl_event *) NULL)
     {
@@ -1636,7 +1642,7 @@ static void RegisterCacheEvent(MagickCLCacheInfo info,cl_event event)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   info->events[info->event_count-1]=event;
   UnlockSemaphoreInfo(info->events_semaphore);
-  openCL_library->clRetainEvent(event);
+  return(MagickTrue);
 }
 
 MagickPrivate MagickBooleanType EnqueueOpenCLKernel(cl_command_queue queue,
@@ -1695,9 +1701,11 @@ MagickPrivate MagickBooleanType EnqueueOpenCLKernel(cl_command_queue queue,
     openCL_library->clFlush(queue);
   if (RecordProfileData(input_info->opencl->device,kernel,event) == MagickFalse)
     {
-      RegisterCacheEvent(input_info->opencl,event);
-      if (output_info != (CacheInfo *) NULL)
-        RegisterCacheEvent(output_info->opencl,event);
+      if (RegisterCacheEvent(input_info->opencl,event) != MagickFalse)
+        {
+          if (output_info != (CacheInfo *) NULL)
+            (void) RegisterCacheEvent(output_info->opencl,event);
+        }
     }
   openCL_library->clReleaseEvent(event);
   return(MagickTrue);
