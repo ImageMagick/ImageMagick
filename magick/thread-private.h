@@ -36,7 +36,8 @@ extern "C" {
      (GetImagePixelCacheType(source) == MapCache)) && \
     ((GetImagePixelCacheType(destination) == MemoryCache) || \
      (GetImagePixelCacheType(destination) == MapCache))) ? \
-    MagickMax(1,MagickMin(GetMagickResourceLimit(ThreadResource),(chunk)/64)) : 1)
+    MagickMax(MagickMin(GetMagickResourceLimit(ThreadResource),(chunk)/64),1) :\
+    MagickMax(MagickMin(GetMagickResourceLimit(ThreadResource),2),1))
 
 #if defined(__clang__) || (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ > 10))
 #define MagickCachePrefetch(address,mode,locality) \
