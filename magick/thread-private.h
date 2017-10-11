@@ -28,7 +28,8 @@ extern "C" {
 #endif
 
 /*
-  Single threaded unless workload justifies the threading overhead.
+  Number of threads bounded by the amount of work and any thread resource limit.
+  The limit is 2 if the pixel cache type is not memory or memory-mapped.
 */
 #define magick_number_threads(source,destination,chunk,expression) \
   num_threads((((expression) != 0) && \
