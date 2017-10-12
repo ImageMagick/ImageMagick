@@ -1425,7 +1425,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   JsonFormatLocaleFile(file,"    \"dispose\": %s,\n",
     CommandOptionToMnemonic(MagickDisposeOptions,(ssize_t) image->dispose));
   if (image->delay != 0)
-    (void) FormatLocaleFile(file,"    \"delay\": \"%.20gx%.20g\"\n",
+    (void) FormatLocaleFile(file,"    \"delay\": \"%.20gx%.20g\",\n",
       (double) image->delay,(double) image->ticks_per_second);
   if (image->iterations != 1)
     (void) FormatLocaleFile(file,"    \"iterations\": %.20g,\n",(double)
