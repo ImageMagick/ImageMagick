@@ -1475,12 +1475,12 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
       (double) image->page.width,(double) image->page.height,
       (double) image->page.x,(double) image->page.y);
   if ((image->page.x != 0) || (image->page.y != 0))
-    (void) FormatLocaleFile(file,"    \"originGeometry\": %+.20g%+.20g\n",
+    (void) FormatLocaleFile(file,"    \"originGeometry\": %+.20g%+.20g,\n",
       (double) image->page.x,(double) image->page.y);
   JsonFormatLocaleFile(file,"    \"dispose\": %s,\n",
     CommandOptionToMnemonic(MagickDisposeOptions,(ssize_t) image->dispose));
   if (image->delay != 0)
-    (void) FormatLocaleFile(file,"    \"delay\": \"%.20gx%.20g\"\n",
+    (void) FormatLocaleFile(file,"    \"delay\": \"%.20gx%.20g\",\n",
       (double) image->delay,(double) image->ticks_per_second);
   if (image->iterations != 1)
     (void) FormatLocaleFile(file,"    \"iterations\": %.20g,\n",(double)
