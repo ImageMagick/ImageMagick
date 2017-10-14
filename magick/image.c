@@ -946,6 +946,8 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
     *clone_info;
 
   clone_info=AcquireImageInfo();
+  if (image_info == (ImageInfo *) NULL)
+    return(clone_info);
   clone_info->compression=image_info->compression;
   clone_info->temporary=image_info->temporary;
   clone_info->adjoin=image_info->adjoin;
