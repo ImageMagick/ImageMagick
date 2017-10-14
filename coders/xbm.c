@@ -302,7 +302,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize hex values.
   */
-  for (i=0; i < sizeof(hex_digits)/sizeof(*hex_digits); i++)
+  for (i=0; i < (ssize_t) (sizeof(hex_digits)/sizeof(*hex_digits)); i++)
     hex_digits[i]=(-1);
   hex_digits[(int) '0']=0;
   hex_digits[(int) '1']=1;
