@@ -51,6 +51,7 @@
   read or write a small subset of proven web-safe image types:
 
     <policy domain="delegate" rights="none" pattern="*" />
+    <policy domain="filter" rights="none" pattern="*" />
     <policy domain="coder" rights="none" pattern="*" />
     <policy domain="coder" rights="read|write" pattern="{GIF,JPEG,PNG,WEBP}" />
 -->
