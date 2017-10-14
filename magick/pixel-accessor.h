@@ -141,6 +141,7 @@ static inline MagickRealType GetPixelLuma(const Image *magick_restrict image,
   MagickRealType
     intensity;
 
+  (void) image;
   intensity=(MagickRealType) (0.212656f*pixel->red+0.715158f*pixel->green+
     0.072186f*pixel->blue);
   return(intensity);
