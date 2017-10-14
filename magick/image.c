@@ -953,19 +953,29 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   clone_info->scene=image_info->scene;
   clone_info->number_scenes=image_info->number_scenes;
   clone_info->depth=image_info->depth;
-  (void) CloneString(&clone_info->size,image_info->size);
-  (void) CloneString(&clone_info->extract,image_info->extract);
-  (void) CloneString(&clone_info->scenes,image_info->scenes);
-  (void) CloneString(&clone_info->page,image_info->page);
+  if (image_info->size != (char *) NULL)
+    (void) CloneString(&clone_info->size,image_info->size);
+  if (image_info->extract != (char *) NULL)
+    (void) CloneString(&clone_info->extract,image_info->extract);
+  if (image_info->scenes != (char *) NULL)
+    (void) CloneString(&clone_info->scenes,image_info->scenes);
+  if (image_info->page != (char *) NULL)
+    (void) CloneString(&clone_info->page,image_info->page);
   clone_info->interlace=image_info->interlace;
   clone_info->endian=image_info->endian;
   clone_info->units=image_info->units;
   clone_info->quality=image_info->quality;
-  (void) CloneString(&clone_info->sampling_factor,image_info->sampling_factor);
-  (void) CloneString(&clone_info->server_name,image_info->server_name);
-  (void) CloneString(&clone_info->font,image_info->font);
-  (void) CloneString(&clone_info->texture,image_info->texture);
-  (void) CloneString(&clone_info->density,image_info->density);
+  if (image_info->sampling_factor != (char *) NULL)
+    (void) CloneString(&clone_info->sampling_factor,
+      image_info->sampling_factor);
+  if (image_info->server_name != (char *) NULL)
+    (void) CloneString(&clone_info->server_name,image_info->server_name);
+  if (image_info->font != (char *) NULL)
+    (void) CloneString(&clone_info->font,image_info->font);
+  if (image_info->texture != (char *) NULL)
+    (void) CloneString(&clone_info->texture,image_info->texture);
+  if (image_info->density != (char *) NULL)
+    (void) CloneString(&clone_info->density,image_info->density);
   clone_info->pointsize=image_info->pointsize;
   clone_info->fuzz=image_info->fuzz;
   clone_info->pen=image_info->pen;
@@ -983,8 +993,10 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   clone_info->group=image_info->group;
   clone_info->ping=image_info->ping;
   clone_info->verbose=image_info->verbose;
-  (void) CloneString(&clone_info->view,image_info->view);
-  (void) CloneString(&clone_info->authenticate,image_info->authenticate);
+  if (image_info->view != (char *) NULL)
+    (void) CloneString(&clone_info->view,image_info->view);
+  if (image_info->authenticate != (char *) NULL)
+    (void) CloneString(&clone_info->authenticate,image_info->authenticate);
   (void) CloneImageOptions(clone_info,image_info);
   clone_info->progress_monitor=image_info->progress_monitor;
   clone_info->client_data=image_info->client_data;
