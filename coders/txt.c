@@ -810,8 +810,6 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
             if (GetPixelOpacity(p) == (Quantum) OpaqueOpacity)
               {
                 GetColorTuple(&pixel,MagickFalse,tuple);
-                (void) QueryMagickColorname(image,&pixel,SVGCompliance,tuple,
-                  &image->exception);
                 (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g,",
                   (double) x,(double) y);
                 (void) WriteBlobString(image,buffer);
