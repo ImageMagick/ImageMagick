@@ -31,8 +31,8 @@ extern "C" {
   Number of threads bounded by the amount of work and any thread resource limit.
   The limit is 2 if the pixel cache type is not memory or memory-mapped.
 */
-#define magick_number_threads(source,destination,chunk,expression) \
-  num_threads((expression) == 0 ? 1 : \
+#define magick_number_threads(source,destination,chunk,multithreaded) \
+  num_threads((multithreaded) == 0 ? 1 : \
     ((GetImagePixelCacheType(source) != MemoryCache) && \
      (GetImagePixelCacheType(source) != MapCache)) || \
     ((GetImagePixelCacheType(destination) != MemoryCache) && \
