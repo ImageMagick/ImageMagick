@@ -45,6 +45,7 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/token.h"
@@ -96,9 +97,7 @@ MagickExport TokenInfo *AcquireTokenInfo(void)
   TokenInfo
     *token_info;
 
-  token_info=(TokenInfo *) AcquireMagickMemory(sizeof(*token_info));
-  if (token_info == (TokenInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  token_info=(TokenInfo *) AcquireCriticalMemory(sizeof(*token_info));
   token_info->signature=MagickCoreSignature;
   return(token_info);
 }

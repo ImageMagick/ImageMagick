@@ -48,6 +48,7 @@
 #include "MagickCore/studio.h"
 #include "MagickCore/MagickCore.h"
 #include "MagickCore/exception-private.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/thread-private.h"
 
@@ -107,9 +108,7 @@ MagickExport ImageView *CloneImageView(const ImageView *image_view)
 
   assert(image_view != (ImageView *) NULL);
   assert(image_view->signature == MagickCoreSignature);
-  clone_view=(ImageView *) AcquireMagickMemory(sizeof(*clone_view));
-  if (clone_view == (ImageView *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  clone_view=(ImageView *) AcquireCriticalMemory(sizeof(*clone_view));
   (void) ResetMagickMemory(clone_view,0,sizeof(*clone_view));
   clone_view->description=ConstantString(image_view->description);
   clone_view->extent=image_view->extent;
@@ -720,9 +719,7 @@ MagickExport ImageView *NewImageView(Image *image,ExceptionInfo *exception)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  image_view=(ImageView *) AcquireMagickMemory(sizeof(*image_view));
-  if (image_view == (ImageView *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  image_view=(ImageView *) AcquireCriticalMemory(sizeof(*image_view));
   (void) ResetMagickMemory(image_view,0,sizeof(*image_view));
   image_view->description=ConstantString("ImageView");
   image_view->image=image;
@@ -776,9 +773,7 @@ MagickExport ImageView *NewImageViewRegion(Image *image,const ssize_t x,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  image_view=(ImageView *) AcquireMagickMemory(sizeof(*image_view));
-  if (image_view == (ImageView *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  image_view=(ImageView *) AcquireCriticalMemory(sizeof(*image_view));
   (void) ResetMagickMemory(image_view,0,sizeof(*image_view));
   image_view->description=ConstantString("ImageView");
   image_view->view=AcquireVirtualCacheView(image_view->image,exception);

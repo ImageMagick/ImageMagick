@@ -48,6 +48,7 @@
 #include "MagickCore/linked-list.h"
 #include "MagickCore/list.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/property.h"
@@ -190,9 +191,7 @@ static AESInfo *AcquireAESInfo(void)
   AESInfo
     *aes_info;
 
-  aes_info=(AESInfo *) AcquireMagickMemory(sizeof(*aes_info));
-  if (aes_info == (AESInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  aes_info=(AESInfo *) AcquireCriticalMemory(sizeof(*aes_info));
   (void) ResetMagickMemory(aes_info,0,sizeof(*aes_info));
   aes_info->blocksize=AESBlocksize;
   aes_info->key=AcquireStringInfo(32);

@@ -68,6 +68,7 @@
 #include "MagickCore/image-private.h"
 #include "MagickCore/list.h"
 #include "MagickCore/log.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
@@ -206,9 +207,7 @@ MagickExport DrawInfo *AcquireDrawInfo(void)
   DrawInfo
     *draw_info;
 
-  draw_info=(DrawInfo *) AcquireMagickMemory(sizeof(*draw_info));
-  if (draw_info == (DrawInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  draw_info=(DrawInfo *) AcquireCriticalMemory(sizeof(*draw_info));
   GetDrawInfo((ImageInfo *) NULL,draw_info);
   return(draw_info);
 }
@@ -249,9 +248,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   ExceptionInfo
     *exception;
 
-  clone_info=(DrawInfo *) AcquireMagickMemory(sizeof(*clone_info));
-  if (clone_info == (DrawInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  clone_info=(DrawInfo *) AcquireCriticalMemory(sizeof(*clone_info));
   GetDrawInfo(image_info,clone_info);
   if (draw_info == (DrawInfo *) NULL)
     return(clone_info);

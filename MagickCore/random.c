@@ -52,6 +52,7 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/random_.h"
 #include "MagickCore/random-private.h"
@@ -173,9 +174,7 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
     *key,
     *nonce;
 
-  random_info=(RandomInfo *) AcquireMagickMemory(sizeof(*random_info));
-  if (random_info == (RandomInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  random_info=(RandomInfo *) AcquireCriticalMemory(sizeof(*random_info));
   (void) ResetMagickMemory(random_info,0,sizeof(*random_info));
   random_info->signature_info=AcquireSignatureInfo();
   random_info->nonce=AcquireStringInfo(2*GetSignatureDigestsize(

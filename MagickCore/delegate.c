@@ -61,6 +61,7 @@
 #include "MagickCore/linked-list.h"
 #include "MagickCore/list.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/nt-base-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/policy.h"
@@ -2095,10 +2096,8 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *cache,
         /*
           Delegate element.
         */
-        delegate_info=(DelegateInfo *) AcquireMagickMemory(
+        delegate_info=(DelegateInfo *) AcquireCriticalMemory(
           sizeof(*delegate_info));
-        if (delegate_info == (DelegateInfo *) NULL)
-          ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
         (void) ResetMagickMemory(delegate_info,0,sizeof(*delegate_info));
         delegate_info->path=ConstantString(filename);
         delegate_info->thread_support=MagickTrue;

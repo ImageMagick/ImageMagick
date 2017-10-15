@@ -49,6 +49,7 @@
 #include "MagickCore/locale_.h"
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/nt-base-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/resource_.h"
@@ -171,9 +172,7 @@ MagickExport StringInfo *AcquireStringInfo(const size_t length)
   StringInfo
     *string_info;
 
-  string_info=(StringInfo *) AcquireMagickMemory(sizeof(*string_info));
-  if (string_info == (StringInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  string_info=(StringInfo *) AcquireCriticalMemory(sizeof(*string_info));
   (void) ResetMagickMemory(string_info,0,sizeof(*string_info));
   string_info->signature=MagickCoreSignature;
   string_info->length=length;

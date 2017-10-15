@@ -46,6 +46,7 @@
 #include "MagickCore/property.h"
 #include "MagickCore/image.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
@@ -121,9 +122,7 @@ MagickPrivate SignatureInfo *AcquireSignatureInfo(void)
   unsigned long
     lsb_first;
 
-  signature_info=(SignatureInfo *) AcquireMagickMemory(sizeof(*signature_info));
-  if (signature_info == (SignatureInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  signature_info=(SignatureInfo *) AcquireCriticalMemory(sizeof(*signature_info));
   (void) ResetMagickMemory(signature_info,0,sizeof(*signature_info));
   signature_info->digestsize=SignatureDigestsize;
   signature_info->blocksize=SignatureBlocksize;

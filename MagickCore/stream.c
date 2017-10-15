@@ -162,9 +162,7 @@ MagickExport StreamInfo *AcquireStreamInfo(const ImageInfo *image_info,
   StreamInfo
     *stream_info;
 
-  stream_info=(StreamInfo *) AcquireMagickMemory(sizeof(*stream_info));
-  if (stream_info == (StreamInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  stream_info=(StreamInfo *) AcquireCriticalMemory(sizeof(*stream_info));
   (void) ResetMagickMemory(stream_info,0,sizeof(*stream_info));
   stream_info->pixels=(unsigned char *) MagickAssumeAligned(
     AcquireAlignedMemory(1,sizeof(*stream_info->pixels)));

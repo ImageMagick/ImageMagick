@@ -189,6 +189,7 @@
 #include "MagickCore/image-private.h"
 #include "MagickCore/list.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
@@ -374,9 +375,7 @@ MagickExport QuantizeInfo *AcquireQuantizeInfo(const ImageInfo *image_info)
   QuantizeInfo
     *quantize_info;
 
-  quantize_info=(QuantizeInfo *) AcquireMagickMemory(sizeof(*quantize_info));
-  if (quantize_info == (QuantizeInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  quantize_info=(QuantizeInfo *) AcquireCriticalMemory(sizeof(*quantize_info));
   GetQuantizeInfo(quantize_info);
   if (image_info != (ImageInfo *) NULL)
     {
@@ -1044,9 +1043,7 @@ MagickExport QuantizeInfo *CloneQuantizeInfo(const QuantizeInfo *quantize_info)
   QuantizeInfo
     *clone_info;
 
-  clone_info=(QuantizeInfo *) AcquireMagickMemory(sizeof(*clone_info));
-  if (clone_info == (QuantizeInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  clone_info=(QuantizeInfo *) AcquireCriticalMemory(sizeof(*clone_info));
   GetQuantizeInfo(clone_info);
   if (quantize_info == (QuantizeInfo *) NULL)
     return(clone_info);

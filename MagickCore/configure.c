@@ -49,6 +49,7 @@
 #include "MagickCore/linked-list.h"
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
@@ -1246,10 +1247,8 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *cache,
         /*
           Configure element.
         */
-        configure_info=(ConfigureInfo *) AcquireMagickMemory(
+        configure_info=(ConfigureInfo *) AcquireCriticalMemory(
           sizeof(*configure_info));
-        if (configure_info == (ConfigureInfo *) NULL)
-          ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
         (void) ResetMagickMemory(configure_info,0,sizeof(*configure_info));
         configure_info->path=ConstantString(filename);
         configure_info->exempt=MagickFalse;

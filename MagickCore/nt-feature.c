@@ -53,6 +53,7 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/nt-base.h"
@@ -375,9 +376,7 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
           continue;
         *pos='\0'; /* Remove (TrueType) from string */
 
-        type_info=(TypeInfo *) AcquireMagickMemory(sizeof(*type_info));
-        if (type_info == (TypeInfo *) NULL)
-          ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+        type_info=(TypeInfo *) AcquireCriticalMemory(sizeof(*type_info));
         (void) ResetMagickMemory(type_info,0,sizeof(TypeInfo));
 
         type_info->path=ConstantString("Windows Fonts");

@@ -46,6 +46,7 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/linked-list.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/mime.h"
 #include "MagickCore/mime-private.h"
 #include "MagickCore/option.h"
@@ -859,9 +860,7 @@ static MagickBooleanType LoadMimeCache(LinkedListInfo *cache,const char *xml,
     /*
       Process mime element.
     */
-    mime_info=(MimeInfo *) AcquireMagickMemory(sizeof(*mime_info));
-    if (mime_info == (MimeInfo *) NULL)
-      ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+    mime_info=(MimeInfo *) AcquireCriticalMemory(sizeof(*mime_info));
     (void) ResetMagickMemory(mime_info,0,sizeof(*mime_info));
     mime_info->path=ConstantString(filename);
     mime_info->signature=MagickCoreSignature;

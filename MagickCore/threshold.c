@@ -64,6 +64,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/montage.h"
@@ -1379,9 +1380,7 @@ static ThresholdMap *GetThresholdMapFile(const char *xml,const char *filename,
       thresholds=DestroyXMLTree(thresholds);
       return(map);
     }
-  map=(ThresholdMap *) AcquireMagickMemory(sizeof(ThresholdMap));
-  if (map == (ThresholdMap *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireThresholdMap");
+  map=(ThresholdMap *) AcquireCriticalMemory(sizeof(*map));
   map->map_id=(char *) NULL;
   map->description=(char *) NULL;
   map->levels=(ssize_t *) NULL;

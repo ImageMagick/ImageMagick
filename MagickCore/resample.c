@@ -52,6 +52,7 @@
 #include "MagickCore/log.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/quantum.h"
@@ -216,10 +217,8 @@ MagickExport ResampleFilter *AcquireResampleFilter(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  resample_filter=(ResampleFilter *) AcquireMagickMemory(sizeof(
+  resample_filter=(ResampleFilter *) AcquireCriticalMemory(sizeof(
     *resample_filter));
-  if (resample_filter == (ResampleFilter *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(resample_filter,0,sizeof(*resample_filter));
   resample_filter->exception=exception;
   resample_filter->image=ReferenceImage((Image *) image);

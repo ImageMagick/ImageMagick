@@ -61,6 +61,7 @@
 #include "MagickCore/magick.h"
 #include "MagickCore/magick-private.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/mime-private.h"
 #include "MagickCore/module.h"
 #include "MagickCore/module-private.h"
@@ -174,9 +175,7 @@ MagickExport MagickInfo *AcquireMagickInfo(const char *module,
   assert(name != (const char *) NULL);
   assert(description != (const char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",name);
-  magick_info=(MagickInfo *) AcquireMagickMemory(sizeof(*magick_info));
-  if (magick_info == (MagickInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  magick_info=(MagickInfo *) AcquireCriticalMemory(sizeof(*magick_info));
   (void) ResetMagickMemory(magick_info,0,sizeof(*magick_info));
   magick_info->module=ConstantString(module);
   magick_info->name=ConstantString(name);

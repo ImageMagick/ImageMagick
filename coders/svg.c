@@ -62,6 +62,7 @@
 #include "MagickCore/log.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
@@ -267,9 +268,7 @@ static SVGInfo *AcquireSVGInfo(void)
     return((SVGInfo *) NULL);
   (void) ResetMagickMemory(svg_info,0,sizeof(*svg_info));
   svg_info->text=AcquireString("");
-  svg_info->scale=(double *) AcquireMagickMemory(sizeof(*svg_info->scale));
-  if (svg_info->scale == (double *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  svg_info->scale=(double *) AcquireCriticalMemory(sizeof(*svg_info->scale));
   GetAffineMatrix(&svg_info->affine);
   svg_info->scale[0]=ExpandAffine(&svg_info->affine);
   return(svg_info);

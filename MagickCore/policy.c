@@ -47,6 +47,7 @@
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
@@ -864,9 +865,7 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,const char *xml,
         /*
           Policy element.
         */
-        policy_info=(PolicyInfo *) AcquireMagickMemory(sizeof(*policy_info));
-        if (policy_info == (PolicyInfo *) NULL)
-          ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+        policy_info=(PolicyInfo *) AcquireCriticalMemory(sizeof(*policy_info));
         (void) ResetMagickMemory(policy_info,0,sizeof(*policy_info));
         policy_info->path=ConstantString(filename);
         policy_info->exempt=MagickFalse;

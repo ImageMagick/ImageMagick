@@ -50,6 +50,7 @@
 #include "MagickCore/linked-list.h"
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/nt-feature.h"
 #include "MagickCore/nt-base-private.h"
 #include "MagickCore/option.h"
@@ -1179,9 +1180,7 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *cache,const char *xml,
         /*
           Type element.
         */
-        type_info=(TypeInfo *) AcquireMagickMemory(sizeof(*type_info));
-        if (type_info == (TypeInfo *) NULL)
-          ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+        type_info=(TypeInfo *) AcquireCriticalMemory(sizeof(*type_info));
         (void) ResetMagickMemory(type_info,0,sizeof(*type_info));
         type_info->path=ConstantString(filename);
         type_info->signature=MagickCoreSignature;

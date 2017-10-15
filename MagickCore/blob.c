@@ -59,6 +59,7 @@
 #include "MagickCore/log.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/nt-base-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/policy.h"
@@ -218,10 +219,8 @@ MagickExport CustomStreamInfo *AcquireCustomStreamInfo(
     *custom_stream;
 
   magick_unreferenced(exception);
-  custom_stream=(CustomStreamInfo *) AcquireMagickMemory(
+  custom_stream=(CustomStreamInfo *) AcquireCriticalMemory(
     sizeof(*custom_stream));
-  if (custom_stream == (CustomStreamInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(custom_stream,0,sizeof(*custom_stream));
   custom_stream->signature=MagickCoreSignature;
   return(custom_stream);
@@ -538,9 +537,7 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
   BlobInfo
     *clone_info;
 
-  clone_info=(BlobInfo *) AcquireMagickMemory(sizeof(*clone_info));
-  if (clone_info == (BlobInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  clone_info=(BlobInfo *) AcquireCriticalMemory(sizeof(*clone_info));
   GetBlobInfo(clone_info);
   if (blob_info == (BlobInfo *) NULL)
     return(clone_info);

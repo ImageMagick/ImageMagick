@@ -75,6 +75,7 @@
 #include "MagickCore/magick.h"
 #include "MagickCore/magick-private.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
@@ -166,9 +167,7 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
     Allocate image structure.
   */
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  image=(Image *) AcquireMagickMemory(sizeof(*image));
-  if (image == (Image *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  image=(Image *) AcquireCriticalMemory(sizeof(*image));
   (void) ResetMagickMemory(image,0,sizeof(*image));
   /*
     Initialize Image structure.
@@ -344,9 +343,7 @@ MagickExport ImageInfo *AcquireImageInfo(void)
   ImageInfo
     *image_info;
 
-  image_info=(ImageInfo *) AcquireMagickMemory(sizeof(*image_info));
-  if (image_info == (ImageInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  image_info=(ImageInfo *) AcquireCriticalMemory(sizeof(*image_info));
   GetImageInfo(image_info);
   return(image_info);
 }

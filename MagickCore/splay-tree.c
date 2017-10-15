@@ -54,6 +54,7 @@
 #include "MagickCore/locale_.h"
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/splay-tree.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/string_.h"
@@ -1144,9 +1145,7 @@ MagickExport SplayTreeInfo *NewSplayTree(
   SplayTreeInfo
     *splay_tree;
 
-  splay_tree=(SplayTreeInfo *) AcquireMagickMemory(sizeof(*splay_tree));
-  if (splay_tree == (SplayTreeInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  splay_tree=(SplayTreeInfo *) AcquireCriticalMemory(sizeof(*splay_tree));
   (void) ResetMagickMemory(splay_tree,0,sizeof(*splay_tree));
   splay_tree->root=(NodeInfo *) NULL;
   splay_tree->compare=compare;

@@ -932,9 +932,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   assert(UndefinedFilter < filter && filter < SentinelFilter);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  resize_filter=(ResizeFilter *) AcquireMagickMemory(sizeof(*resize_filter));
-  if (resize_filter == (ResizeFilter *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  resize_filter=(ResizeFilter *) AcquireCriticalMemory(sizeof(*resize_filter));
   (void) ResetMagickMemory(resize_filter,0,sizeof(*resize_filter));
   /*
     Defaults for the requested filter.

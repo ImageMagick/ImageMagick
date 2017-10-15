@@ -50,6 +50,7 @@
 #include "MagickCore/log.h"
 #include "MagickCore/log-private.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/nt-base-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/semaphore.h"
@@ -1528,9 +1529,7 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *cache,const char *xml,
         /*
           Allocate memory for the log list.
         */
-        log_info=(LogInfo *) AcquireMagickMemory(sizeof(*log_info));
-        if (log_info == (LogInfo *) NULL)
-          ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+        log_info=(LogInfo *) AcquireCriticalMemory(sizeof(*log_info));
         (void) ResetMagickMemory(log_info,0,sizeof(*log_info));
         log_info->path=ConstantString(filename);
         GetTimerInfo((TimerInfo *) &log_info->timer);

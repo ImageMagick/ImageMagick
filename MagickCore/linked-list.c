@@ -48,6 +48,7 @@
 #include "MagickCore/linked-list.h"
 #include "MagickCore/locale_.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/signature-private.h"
 #include "MagickCore/string_.h"
@@ -714,9 +715,7 @@ MagickExport LinkedListInfo *NewLinkedList(const size_t capacity)
   LinkedListInfo
     *list_info;
 
-  list_info=(LinkedListInfo *) AcquireMagickMemory(sizeof(*list_info));
-  if (list_info == (LinkedListInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  list_info=(LinkedListInfo *) AcquireCriticalMemory(sizeof(*list_info));
   (void) ResetMagickMemory(list_info,0,sizeof(*list_info));
   list_info->capacity=capacity == 0 ? (size_t) (~0) : capacity;
   list_info->elements=0;

@@ -64,6 +64,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/locale_.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/nt-base-private.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/policy.h"
@@ -338,9 +339,8 @@ MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(
   /*
     Connect to the distributed pixel cache server.
   */
-  server_info=(DistributeCacheInfo *) AcquireMagickMemory(sizeof(*server_info));
-  if (server_info == (DistributeCacheInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  server_info=(DistributeCacheInfo *) AcquireCriticalMemory(
+    sizeof(*server_info));
   (void) ResetMagickMemory(server_info,0,sizeof(*server_info));
   server_info->signature=MagickCoreSignature;
   server_info->port=0;

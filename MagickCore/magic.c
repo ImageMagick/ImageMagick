@@ -50,6 +50,7 @@
 #include "MagickCore/magic.h"
 #include "MagickCore/magic-private.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
@@ -929,9 +930,7 @@ static MagickBooleanType LoadMagicCache(LinkedListInfo *cache,const char *xml,
         /*
           Magic element.
         */
-        magic_info=(MagicInfo *) AcquireMagickMemory(sizeof(*magic_info));
-        if (magic_info == (MagicInfo *) NULL)
-          ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+        magic_info=(MagicInfo *) AcquireCriticalMemory(sizeof(*magic_info));
         (void) ResetMagickMemory(magic_info,0,sizeof(*magic_info));
         magic_info->path=ConstantString(filename);
         magic_info->exempt=MagickFalse;

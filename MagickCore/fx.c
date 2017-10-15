@@ -71,6 +71,7 @@
 #include "MagickCore/image-private.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
@@ -174,9 +175,7 @@ MagickPrivate FxInfo *AcquireFxInfo(const Image *images,const char *expression,
   register ssize_t
     i;
 
-  fx_info=(FxInfo *) AcquireMagickMemory(sizeof(*fx_info));
-  if (fx_info == (FxInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  fx_info=(FxInfo *) AcquireCriticalMemory(sizeof(*fx_info));
   (void) ResetMagickMemory(fx_info,0,sizeof(*fx_info));
   fx_info->exception=AcquireExceptionInfo();
   fx_info->images=images;

@@ -45,6 +45,7 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/nt-base-private.h"
 #include "MagickCore/timer.h"
 
@@ -88,9 +89,7 @@ MagickExport TimerInfo *AcquireTimerInfo(void)
   TimerInfo
     *timer_info;
 
-  timer_info=(TimerInfo *) AcquireMagickMemory(sizeof(*timer_info));
-  if (timer_info == (TimerInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
+  timer_info=(TimerInfo *) AcquireCriticalMemory(sizeof(*timer_info));
   (void) ResetMagickMemory(timer_info,0,sizeof(*timer_info));
   timer_info->signature=MagickCoreSignature;
   GetTimerInfo(timer_info);

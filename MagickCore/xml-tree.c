@@ -55,6 +55,7 @@
 #include "MagickCore/image-private.h"
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
@@ -1634,10 +1635,8 @@ static void ParseProcessingInstructions(XMLTreeRoot *root,char *xml,
     }
   if (root->processing_instructions[0] == (char **) NULL)
     {
-      root->processing_instructions=(char ***) AcquireMagickMemory(sizeof(
+      root->processing_instructions=(char ***) AcquireCriticalMemory(sizeof(
         *root->processing_instructions));
-      if (root->processing_instructions ==(char ***) NULL)
-        ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
       *root->processing_instructions=(char **) NULL;
     }
   i=0;

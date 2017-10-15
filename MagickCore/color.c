@@ -56,6 +56,7 @@
 #include "MagickCore/geometry.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
@@ -2100,9 +2101,7 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *cache,const char *xml,
         /*
           Color element.
         */
-        color_info=(ColorInfo *) AcquireMagickMemory(sizeof(*color_info));
-        if (color_info == (ColorInfo *) NULL)
-          ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+        color_info=(ColorInfo *) AcquireCriticalMemory(sizeof(*color_info));
         (void) ResetMagickMemory(color_info,0,sizeof(*color_info));
         color_info->path=ConstantString(filename);
         color_info->exempt=MagickFalse;

@@ -51,6 +51,7 @@
 #include "MagickCore/linked-list.h"
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/string_.h"
@@ -898,9 +899,7 @@ static MagickBooleanType LoadCoderCache(SplayTreeInfo *cache,const char *xml,
         /*
           Coder element.
         */
-        coder_info=(CoderInfo *) AcquireMagickMemory(sizeof(*coder_info));
-        if (coder_info == (CoderInfo *) NULL)
-          ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+        coder_info=(CoderInfo *) AcquireCriticalMemory(sizeof(*coder_info));
         (void) ResetMagickMemory(coder_info,0,sizeof(*coder_info));
         coder_info->path=ConstantString(filename);
         coder_info->exempt=MagickFalse;

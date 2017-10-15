@@ -51,6 +51,7 @@
 #include "MagickCore/locale-private.h"
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/nt-base-private.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/splay-tree.h"
@@ -1326,9 +1327,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *cache,const char *xml,
           q--;
         (void) CopyMagickString(message,p,MagickMin((size_t) (q-p+2),
           MagickLocaleExtent));
-        locale_info=(LocaleInfo *) AcquireMagickMemory(sizeof(*locale_info));
-        if (locale_info == (LocaleInfo *) NULL)
-          ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+        locale_info=(LocaleInfo *) AcquireCriticalMemory(sizeof(*locale_info));
         (void) ResetMagickMemory(locale_info,0,sizeof(*locale_info));
         locale_info->path=ConstantString(filename);
         locale_info->tag=ConstantString(tag);

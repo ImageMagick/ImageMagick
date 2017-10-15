@@ -66,6 +66,7 @@
 #include "MagickCore/log.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
@@ -1769,10 +1770,7 @@ static QuantizationTable *GetQuantizationTable(const char *filename,
       xml=DestroyString(xml);
       return(table);
     }
-  table=(QuantizationTable *) AcquireMagickMemory(sizeof(*table));
-  if (table == (QuantizationTable *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,
-      "UnableToAcquireQuantizationTable");
+  table=(QuantizationTable *) AcquireCriticalMemory(sizeof(*table));
   table->slot=(char *) NULL;
   table->description=(char *) NULL;
   table->levels=(unsigned int *) NULL;

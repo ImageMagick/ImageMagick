@@ -55,6 +55,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel.h"
@@ -115,9 +116,7 @@ MagickExport QuantumInfo *AcquireQuantumInfo(const ImageInfo *image_info,
   QuantumInfo
     *quantum_info;
 
-  quantum_info=(QuantumInfo *) AcquireMagickMemory(sizeof(*quantum_info));
-  if (quantum_info == (QuantumInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  quantum_info=(QuantumInfo *) AcquireCriticalMemory(sizeof(*quantum_info));
   quantum_info->signature=MagickCoreSignature;
   GetQuantumInfo(image_info,quantum_info);
   if (image == (const Image *) NULL)
