@@ -1022,9 +1022,6 @@ static MagickBooleanType IsMagickTreeInstantiated(ExceptionInfo *exception)
         {
           magick_list=NewSplayTree(CompareSplayTreeString,(void *(*)(void *))
             NULL,DestroyMagickNode);
-          if (magick_list == (SplayTreeInfo *) NULL)
-            ThrowFatalException(ResourceLimitFatalError,
-              "MemoryAllocationFailed");
 #if defined(MAGICKCORE_MODULES_SUPPORT)
           (void) GetModuleInfo((char *) NULL,exception);
 #endif

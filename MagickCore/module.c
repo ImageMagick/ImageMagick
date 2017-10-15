@@ -883,9 +883,6 @@ static MagickBooleanType IsModuleTreeInstantiated()
 
           splay_tree=NewSplayTree(CompareSplayTreeString,
             (void *(*)(void *)) NULL,DestroyModuleNode);
-          if (splay_tree == (SplayTreeInfo *) NULL)
-            ThrowFatalException(ResourceLimitFatalError,
-              "MemoryAllocationFailed");
           module_info=AcquireModuleInfo((const char *) NULL,"[boot-strap]");
           module_info->stealth=MagickTrue;
           status=AddValueToSplayTree(splay_tree,module_info->tag,module_info);

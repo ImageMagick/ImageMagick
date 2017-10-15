@@ -335,8 +335,6 @@ static SplayTreeInfo *AcquireCoderCache(const char *filename,
   */
   cache=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
     DestroyCoderNode);
-  if (cache == (SplayTreeInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   status=MagickTrue;
 #if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   {
