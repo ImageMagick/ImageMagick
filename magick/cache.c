@@ -194,34 +194,14 @@ static void CL_API_CALL RelinquishPixelCachePixelsDelayed(
   PixelPacket
     *pixels;
 
-  magick_unreferenced(event);
-  magick_unreferenced(event_command_exec_status);
-  info=(OpenCLCacheInfo *) user_data;
-  pixels=info->pixels;
-  RelinquishMagickResource(MemoryResource,info->length);
-  clEnv=GetDefaultOpenCLEnv();
-  (void) RelinquishOpenCLCacheInfo(clEnv,info);
-  (void) RelinquishAlignedMemory(pixels);
-}
-
-static MagickBooleanType RelinquishOpenCLBuffer(
-  CacheInfo *magick_restrict cache_info)
-{
-  MagickBooleanType
-    events_completed;
-
-  MagickCLEnv
-    clEnv;
-
   ssize_t
     i;
 
-  assert(cache_info != (CacheInfo *) NULL);
-  if (cache_info->opencl == (OpenCLCacheInfo *) NULL)
-    return(MagickFalse);
+  magick_unreferenced(event);
+  magick_unreferenced(event_command_exec_status);
+  info=(OpenCLCacheInfo *) user_data;
   clEnv=GetDefaultOpenCLEnv();
-  events_completed=MagickTrue;
-  for (i=0; i < (ssize_t)cache_info->opencl->event_count; i++)
+  for (i=(ssize_t)info->event_count-1; i >= 0; i--)
   {
     cl_int
       event_status;
@@ -229,22 +209,31 @@ static MagickBooleanType RelinquishOpenCLBuffer(
     cl_uint
       status;
 
-    status=clEnv->library->clGetEventInfo(cache_info->opencl->events[i],
+    status=clEnv->library->clGetEventInfo(info->events[i],
       CL_EVENT_COMMAND_EXECUTION_STATUS,sizeof(cl_int),&event_status,NULL);
     if ((status == CL_SUCCESS) && (event_status != CL_COMPLETE))
       {
-        events_completed=MagickFalse;
-        break;
+        clEnv->library->clSetEventCallback(info->events[i],CL_COMPLETE,
+          &RelinquishPixelCachePixelsDelayed,info);
+        return;
       }
   }
-  if (events_completed != MagickFalse)
-    {
-      cache_info->opencl=RelinquishOpenCLCacheInfo(clEnv,cache_info->opencl);
-      return(MagickFalse);
-    }
-  clEnv->library->clSetEventCallback(cache_info->opencl->events[
-    cache_info->opencl->event_count-1],CL_COMPLETE,
-    &RelinquishPixelCachePixelsDelayed,cache_info->opencl);
+  pixels=info->pixels;
+  RelinquishMagickResource(MemoryResource,info->length);
+  (void) RelinquishOpenCLCacheInfo(clEnv,info);
+  (void) RelinquishAlignedMemory(pixels);
+}
+
+static MagickBooleanType RelinquishOpenCLBuffer(
+  CacheInfo *magick_restrict cache_info)
+{
+  MagickCLEnv
+    clEnv;
+
+  assert(cache_info != (CacheInfo *) NULL);
+  if (cache_info->opencl == (OpenCLCacheInfo *) NULL)
+    return(MagickFalse);
+  RelinquishPixelCachePixelsDelayed((cl_event) NULL,0,cache_info->opencl);
   return(MagickTrue);
 }
 
@@ -264,7 +253,7 @@ static cl_event *CopyOpenCLEvents(OpenCLCacheInfo *opencl_info,
   if (*event_count > 0)
     {
       events=AcquireQuantumMemory(*event_count,sizeof(*events));
-      if (events == (OpenCLCacheInfo *) NULL)
+      if (events == (cl_event *) NULL)
         *event_count=0;
       else
         {
