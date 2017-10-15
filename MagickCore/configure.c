@@ -164,8 +164,6 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
     Load external configure map.
   */
   cache=NewLinkedList(0);
-  if (cache == (LinkedListInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   status=MagickTrue;
 #if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   {

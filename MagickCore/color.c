@@ -842,8 +842,6 @@ static LinkedListInfo *AcquireColorCache(const char *filename,
     Load external color map.
   */
   cache=NewLinkedList(0);
-  if (cache == (LinkedListInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   status=MagickTrue;
 #if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   {

@@ -186,8 +186,6 @@ static LinkedListInfo *AcquireDelegateCache(const char *filename,
     status;
 
   cache=NewLinkedList(0);
-  if (cache == (LinkedListInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   status=MagickTrue;
 #if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   {
