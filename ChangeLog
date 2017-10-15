@@ -1,5 +1,5 @@
 2017-10-14  7.0.7-8 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.7-8, GIT revision 21491:35b636420:20171014.
+  * Release ImageMagick version 7.0.7-8, GIT revision 21505:7453d28e6:20171015.
 
 2017-10-08  7.0.7-8 Cristy  <quetzlzacatenango@image...>
   * Return expected results for a percent 0 -chop option argument (reference
