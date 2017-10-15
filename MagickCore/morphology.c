@@ -2880,7 +2880,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         pixels=p;
         maximum=0.0;
         minimum=(double) QuantumRange;
-        count=kernel->width*kernel->height;
         switch (method)
         {
           case ConvolveMorphology: pixel=bias; break;
@@ -2896,6 +2895,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             break;
           }
         }
+        count=0;
         gamma=1.0;
         switch (method)
         {
@@ -2921,7 +2921,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                  http://www.cs.umd.edu/~djacobs/CMSC426/Convolution.pdf
             */
             k=(&kernel->values[kernel->width*kernel->height-1]);
-            count=0;
             if ((morphology_traits & BlendPixelTrait) == 0)
               {
                 /*
@@ -3005,7 +3004,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                added to the real value, this is currently not done, due to the
                nature of the boolean kernels being used.
             */
-            count=0;
             k=(&kernel->values[kernel->width*kernel->height-1]);
             for (v=0; v < (ssize_t) kernel->height; v++)
             {
@@ -3039,7 +3037,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                cause Thinning/Thicken to not work correctly when used against a
                greyscale image.
             */
-            count=0;
             k=kernel->values;
             for (v=0; v < (ssize_t) kernel->height; v++)
             {
@@ -3082,7 +3079,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
 
               The kernel is not reflected for this operation.
             */
-            count=0;
             k=kernel->values;
             for (v=0; v < (ssize_t) kernel->height; v++)
             {
@@ -3112,7 +3108,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
 
               The kernel is not reflected for this operation.
             */
-            count=0;
             k=(&kernel->values[kernel->width*kernel->height-1]);
             for (v=0; v < (ssize_t) kernel->height; v++)
             {
@@ -3160,7 +3155,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                GrayErode, but with negative kernel values, and kernel rotation
                applied.
             */
-            count=0;
             k=(&kernel->values[kernel->width*kernel->height-1]);
             for (v=0; v < (ssize_t) kernel->height; v++)
             {
@@ -3913,6 +3907,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
               work_image=CloneImage(image,0,0,MagickTrue,exception);
               if (work_image == (Image *) NULL)
                 goto error_cleanup;
+              (void) SetPixelChannelMask(work_image,DefaultChannels);
               if (SetImageStorageClass(work_image,DirectClass,exception) == MagickFalse)
                 goto error_cleanup;
             }
