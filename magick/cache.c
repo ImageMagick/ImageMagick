@@ -818,8 +818,8 @@ static MagickBooleanType ClonePixelCacheRepository(
   ExceptionInfo *exception)
 {
 #define MaxCacheThreads  GetMagickResourceLimit(ThreadResource)
-#define cache_number_threads(source,destination,chunk,expression) \
-  num_threads((expression) == 0 ? 1 : \
+#define cache_number_threads(source,destination,chunk,multithreaded) \
+  num_threads((multithreaded) == 0 ? 1 : \
     (((source)->type != MemoryCache) && \
      ((source)->type != MapCache)) || \
     (((destination)->type != MemoryCache) && \
