@@ -538,12 +538,13 @@ static MagickBooleanType ClonePixelCacheRepository(
 {
 #define MaxCacheThreads  GetMagickResourceLimit(ThreadResource)
 #define cache_number_threads(source,destination,chunk,expression) \
-  num_threads((((expression) != 0) && \
-    (((source)->type == MemoryCache) || \
-     ((source)->type == MapCache)) && \
-    (((destination)->type == MemoryCache) || \
-     ((destination)->type == MapCache))) ? \
-    MagickMax(1,MagickMin(GetMagickResourceLimit(ThreadResource),(chunk)/256)) : 1)
+  num_threads((expression) == 0 ? 1 : \
+    (((source)->type != MemoryCache) && \
+     ((source)->type != MapCache)) || \
+    (((destination)->type != MemoryCache) && \
+     ((destination)->type != MapCache)) ? \
+    MagickMax(MagickMin(GetMagickResourceLimit(ThreadResource),2),1) : \
+    MagickMax(MagickMin((ssize_t) GetMagickResourceLimit(ThreadResource),(ssize_t) (chunk)/256),1))
 
   MagickBooleanType
     optimize,
