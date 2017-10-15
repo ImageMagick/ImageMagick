@@ -1394,15 +1394,14 @@ MagickPrivate cl_mem GetAuthenticOpenCLBuffer(const Image *image,
     SyncImagePixelCache((Image *) image,exception);
   if ((cache_info->type != MemoryCache) || (cache_info->mapped != MagickFalse))
     return((cl_mem) NULL);
+  LockSemaphoreInfo(cache_info->semaphore);
   if (cache_info->opencl == (OpenCLCacheInfo *) NULL)
     {
       assert(cache_info->pixels != NULL);
       clEnv=GetDefaultOpenCLEnv();
       context=GetOpenCLContext(clEnv);
-      cache_info->opencl=(OpenCLCacheInfo *) AcquireMagickMemory(
+      cache_info->opencl=(OpenCLCacheInfo *) AcquireCriticalMemory(
         sizeof(*cache_info->opencl));
-      if (cache_info->opencl == (OpenCLCacheInfo *) NULL)
-        ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
       (void) ResetMagickMemory(cache_info->opencl,0,
         sizeof(*cache_info->opencl));
       cache_info->opencl->events_semaphore=AllocateSemaphoreInfo();
@@ -1410,7 +1409,12 @@ MagickPrivate cl_mem GetAuthenticOpenCLBuffer(const Image *image,
       cache_info->opencl->pixels=cache_info->pixels;
       cache_info->opencl->buffer=clEnv->library->clCreateBuffer(context,
         CL_MEM_USE_HOST_PTR,cache_info->length,cache_info->pixels,&status);
+      if (status != CL_SUCCESS)
+        cache_info->opencl=RelinquishOpenCLCacheInfo(clEnv,cache_info->opencl);
     }
+  UnlockSemaphoreInfo(cache_info->semaphore);
+  if (cache_info->opencl == (OpenCLCacheInfo *) NULL)
+    return((cl_mem) NULL);
   return(cache_info->opencl->buffer);
 }
 #endif
