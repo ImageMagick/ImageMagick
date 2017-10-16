@@ -1064,7 +1064,6 @@ MagickPrivate MagickBooleanType GetExecutionPath(char *path,const size_t extent)
       count;
 
     count=0;
-    execution_path=(char *) NULL;
     program_name=program_invocation_name;
     if (*program_invocation_name != '/')
       {
