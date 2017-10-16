@@ -158,6 +158,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=width;
     image->rows=height;
     image->depth=8;
+    image->alpha_trait=BlendPixelTrait;
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
@@ -187,8 +188,6 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         SetPixelRed(image,ScaleCharToQuantum(*p++),q);
         SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
         SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
-        if (GetPixelAlpha(image,q) != OpaqueAlpha)
-          image->alpha_trait=BlendPixelTrait;
         q+=GetPixelChannels(image);
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
