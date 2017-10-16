@@ -1107,7 +1107,11 @@ static MagickBooleanType WritePCDImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,pcd_image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
-    return(status);
+    {
+      if (pcd_image != image)
+        pcd_image=DestroyImage(pcd_image);
+      return(status);
+    }
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(pcd_image,sRGBColorspace);
   /*
