@@ -3907,7 +3907,6 @@ MagickPrivate Image *MorphologyApply(const Image *image,
               work_image=CloneImage(image,0,0,MagickTrue,exception);
               if (work_image == (Image *) NULL)
                 goto error_cleanup;
-              (void) SetPixelChannelMask(work_image,DefaultChannels);
               if (SetImageStorageClass(work_image,DirectClass,exception) == MagickFalse)
                 goto error_cleanup;
             }
