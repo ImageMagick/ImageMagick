@@ -13282,6 +13282,7 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     {
+      blob=RelinquishMagickMemory(blob);
       (void) DestroyImageInfo(write_info);
       return(status);
     }
