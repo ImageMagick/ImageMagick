@@ -1750,8 +1750,6 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
             (void) CloneString(&annotate_info->primitive,"path '");
           }
       }
-    if ((bitmap->left+bitmap->bitmap.width) > metrics->width)
-      metrics->width=bitmap->left+bitmap->bitmap.width;
     if ((fabs(draw_info->interword_spacing) >= MagickEpsilon) &&
         (IsUTFSpace(GetUTFCode(p+grapheme[i].cluster)) != MagickFalse) &&
         (IsUTFSpace(code) == MagickFalse))
@@ -1760,6 +1758,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       origin.x+=(FT_Pos) grapheme[i].x_advance;
     metrics->origin.x=(double) origin.x;
     metrics->origin.y=(double) origin.y;
+    if (metrics->origin.x > metrics->width)
+      metrics->width=metrics->origin.x;
     if (last_glyph.id != 0)
       FT_Done_Glyph(last_glyph.image);
     last_glyph=glyph;
@@ -1774,35 +1774,13 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   /*
     Determine font metrics.
   */
-  glyph.id=FT_Get_Char_Index(face,'_');
-  glyph.origin=origin;
-  ft_status=FT_Load_Glyph(face,glyph.id,flags);
-  if (ft_status == 0)
-    {
-      ft_status=FT_Get_Glyph(face->glyph,&glyph.image);
-      if (ft_status == 0)
-        {
-          ft_status=FT_Outline_Get_BBox(&((FT_OutlineGlyph) glyph.image)->
-            outline,&bounds);
-          if (ft_status == 0)
-            {
-              FT_Vector_Transform(&glyph.origin,&affine);
-              (void) FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
-              ft_status=FT_Glyph_To_Bitmap(&glyph.image,ft_render_mode_normal,
-                (FT_Vector *) NULL,MagickTrue);
-              bitmap=(FT_BitmapGlyph) glyph.image;
-              if (bitmap->left > metrics->width)
-                metrics->width=bitmap->left;
-            }
-          FT_Done_Glyph(glyph.image);
-        }
-    }
   metrics->bounds.x1/=64.0;
   metrics->bounds.y1/=64.0;
   metrics->bounds.x2/=64.0;
   metrics->bounds.y2/=64.0;
   metrics->origin.x/=64.0;
   metrics->origin.y/=64.0;
+  metrics->width/=64.0;
   /*
     Relinquish resources.
   */
