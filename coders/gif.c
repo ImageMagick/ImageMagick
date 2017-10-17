@@ -1083,7 +1083,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Read graphics control extension.
             */
             while (ReadBlobBlock(image,buffer) != 0) ;
-            dispose=(size_t) buffer[0] >> 2;
+            dispose=(size_t) ((buffer[0] >> 2) & 0x07);
             delay=((size_t) buffer[2] << 8) | buffer[1];
             if ((ssize_t) (buffer[0] & 0x01) == 0x01)
               opacity=(ssize_t) buffer[3];
