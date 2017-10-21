@@ -1151,7 +1151,7 @@ static MagickBooleanType ReadPSDChannelRLE(Image *image,const PSDInfo *psd_info,
     if ((MagickOffsetType) length < sizes[y])
       length=(size_t) sizes[y];
 
-  if (length > row_size + 256) // arbitrary number
+  if (length > (row_size+386)) // arbitrary number
     {
       pixels=(unsigned char *) RelinquishMagickMemory(pixels);
       ThrowBinaryException(ResourceLimitError,"InvalidLength",image->filename);
