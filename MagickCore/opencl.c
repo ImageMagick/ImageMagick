@@ -478,6 +478,11 @@ MagickPrivate void ReleaseOpenCLMemObject(cl_mem memobj)
   (void) openCL_library->clReleaseMemObject(memobj);
 }
 
+MagickPrivate void RetainOpenCLMemObject(cl_mem memobj)
+{
+  (void) openCL_library->clRetainMemObject(memobj);
+}
+
 MagickPrivate cl_int SetOpenCLKernelArg(cl_kernel kernel,size_t arg_index,
   size_t arg_size,const void *arg_value)
 {
@@ -2460,6 +2465,7 @@ static MagickBooleanType BindOpenCLFunctions()
 
   BIND(clCreateBuffer);
   BIND(clReleaseMemObject);
+  BIND(clRetainMemObject);
 
   BIND(clCreateContext);
   BIND(clReleaseContext);

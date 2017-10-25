@@ -1173,6 +1173,8 @@ MagickPrivate cl_mem GetAuthenticOpenCLBuffer(const Image *image,
       cache_info->opencl=AcquireMagickCLCacheInfo(device,cache_info->pixels,
         cache_info->length);
     }
+  if (cache_info->opencl != (MagickCLCacheInfo) NULL)
+    RetainOpenCLMemObject(cache_info->opencl->buffer);
   UnlockSemaphoreInfo(cache_info->semaphore);
   if (cache_info->opencl == (MagickCLCacheInfo) NULL)
     return((cl_mem) NULL);

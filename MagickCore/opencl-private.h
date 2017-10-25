@@ -124,6 +124,10 @@ typedef CL_API_ENTRY cl_mem
     CL_API_SUFFIX__VERSION_1_0;
 
 typedef CL_API_ENTRY cl_int
+  (CL_API_CALL *MAGICKpfn_clRetainMemObject)(cl_mem memobj)
+    CL_API_SUFFIX__VERSION_1_0;
+
+typedef CL_API_ENTRY cl_int
   (CL_API_CALL *MAGICKpfn_clReleaseMemObject)(cl_mem memobj)
     CL_API_SUFFIX__VERSION_1_0;
 
@@ -259,6 +263,7 @@ struct MagickLibraryRec
   MAGICKpfn_clFinish                  clFinish;
 
   MAGICKpfn_clCreateBuffer            clCreateBuffer;
+  MAGICKpfn_clRetainMemObject         clRetainMemObject;
   MAGICKpfn_clReleaseMemObject        clReleaseMemObject;
 
   MAGICKpfn_clCreateProgramWithSource clCreateProgramWithSource;
@@ -453,7 +458,8 @@ extern MagickPrivate void
   ReleaseOpenCLDevice(MagickCLDevice),
   ReleaseOpenCLKernel(cl_kernel),
   ReleaseOpenCLMemObject(cl_mem),
-  RetainOpenCLEvent(cl_event);
+  RetainOpenCLEvent(cl_event),
+  RetainOpenCLMemObject(cl_mem);
 
 #endif
 
