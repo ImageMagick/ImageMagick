@@ -431,6 +431,10 @@ static Image *ComputeAddNoiseImage(const Image *image,
 cleanup:
   OpenCLLogException(__FUNCTION__,__LINE__,exception);
 
+  if (imageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (filteredImageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(filteredImageBuffer);
   if (queue!=NULL)                  RelinquishOpenCLCommandQueue(clEnv, queue);
   if (addNoiseKernel!=NULL)         RelinquishOpenCLKernel(clEnv, addNoiseKernel);
   if ((outputReady == MagickFalse) && (filteredImage != NULL))
@@ -743,6 +747,10 @@ static Image *ComputeBlurImage(const Image* image,const ChannelType channel,
 cleanup:
   OpenCLLogException(__FUNCTION__,__LINE__,exception);
 
+  if (imageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (filteredImageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(filteredImageBuffer);
   if (tempImageBuffer!=NULL)      clEnv->library->clReleaseMemObject(tempImageBuffer);
   if (imageKernelBuffer!=NULL)    clEnv->library->clReleaseMemObject(imageKernelBuffer);
   if (blurRowKernel!=NULL)        RelinquishOpenCLKernel(clEnv, blurRowKernel);
@@ -926,6 +934,10 @@ static MagickBooleanType ComputeCompositeImage(Image *image,
 
 cleanup:
 
+  if (imageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (compositeImageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(compositeImageBuffer);
   if (queue != NULL)
     RelinquishOpenCLCommandQueue(clEnv, queue);
 
@@ -1080,6 +1092,9 @@ static MagickBooleanType ComputeContrastImage(Image *image,
 cleanup:
   OpenCLLogException(__FUNCTION__,__LINE__,exception);
 
+
+  if (imageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
   if (filterKernel!=NULL)                     RelinquishOpenCLKernel(clEnv, filterKernel);
   if (queue != NULL)                          RelinquishOpenCLCommandQueue(clEnv, queue);
   return(outputReady);
@@ -1628,6 +1643,9 @@ MagickPrivate MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
 cleanup:
   OpenCLLogException(__FUNCTION__,__LINE__,exception);
 
+  if (imageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+
   if (stretchMapBuffer!=NULL)
     clEnv->library->clReleaseMemObject(stretchMapBuffer);
   if (stretch_map!=NULL)
@@ -1935,6 +1953,12 @@ static Image *ComputeConvolveImage(const Image* image,
 
 cleanup:
   OpenCLLogException(__FUNCTION__,__LINE__,exception);
+
+  if (imageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+
+  if (filteredImageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(filteredImageBuffer);
 
   if (convolutionKernel != NULL)
     clEnv->library->clReleaseMemObject(convolutionKernel);
@@ -2255,6 +2279,10 @@ static Image *ComputeDespeckleImage(const Image *image,
 cleanup:
   OpenCLLogException(__FUNCTION__,__LINE__,exception);
 
+  if (imageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (filteredImageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(filteredImageBuffer);
   events=(cl_event *) RelinquishMagickMemory(events);
   if (queue != NULL)                          RelinquishOpenCLCommandQueue(clEnv, queue);
   for (k = 0; k < 2; k++)
@@ -2586,6 +2614,9 @@ MagickPrivate MagickBooleanType ComputeEqualizeImage(Image *image,
 cleanup:
   OpenCLLogException(__FUNCTION__,__LINE__,exception);
 
+  if (imageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+
   if (map!=NULL)
     map=(cl_float4 *) RelinquishMagickMemory(map);
 
@@ -2754,6 +2785,8 @@ static MagickBooleanType ComputeFunctionImage(Image *image,
 cleanup:
   OpenCLLogException(__FUNCTION__,__LINE__,exception);
 
+  if (imageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
   if (clkernel != NULL) RelinquishOpenCLKernel(clEnv, clkernel);
   if (queue != NULL) RelinquishOpenCLCommandQueue(clEnv, queue);
   if (parametersBuffer != NULL) clEnv->library->clReleaseMemObject(parametersBuffer);
@@ -2901,9 +2934,11 @@ MagickBooleanType ComputeGrayscaleImage(Image *image,
 cleanup:
   OpenCLLogException(__FUNCTION__,__LINE__,exception);
 
-  if (grayscaleKernel!=NULL)                     
+  if (imageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (grayscaleKernel!=NULL)
     RelinquishOpenCLKernel(clEnv, grayscaleKernel);
-  if (queue != NULL)                          
+  if (queue != NULL)
     RelinquishOpenCLCommandQueue(clEnv, queue);
 
   return(outputReady);
@@ -3177,6 +3212,10 @@ static Image *ComputeLocalContrastImage(const Image *image,
 cleanup:
   OpenCLLogException(__FUNCTION__,__LINE__,exception);
 
+  if (imageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (filteredImageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(filteredImageBuffer);
   if (tempImageBuffer!=NULL)                  clEnv->library->clReleaseMemObject(tempImageBuffer);
   if (blurRowKernel!=NULL)                    RelinquishOpenCLKernel(clEnv, blurRowKernel);
   if (blurColumnKernel!=NULL)                 RelinquishOpenCLKernel(clEnv, blurColumnKernel);
@@ -3332,6 +3371,8 @@ MagickBooleanType ComputeModulateImage(Image *image,
 cleanup:
   OpenCLLogException(__FUNCTION__, __LINE__, exception);
 
+  if (imageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
   if (modulateKernel != NULL)
     RelinquishOpenCLKernel(clEnv, modulateKernel);
   if (queue != NULL)
@@ -3613,6 +3654,10 @@ static Image* ComputeMotionBlurImage(const Image *image,
 
 cleanup:
 
+  if (imageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (filteredImageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(filteredImageBuffer);
   if (imageKernelBuffer!=NULL)    clEnv->library->clReleaseMemObject(imageKernelBuffer);
   if (motionBlurKernel!=NULL)  RelinquishOpenCLKernel(clEnv, motionBlurKernel);
   if (queue != NULL)           RelinquishOpenCLCommandQueue(clEnv, queue);
@@ -3866,6 +3911,10 @@ static Image *ComputeRadialBlurImage(const Image *image,
 cleanup:
   OpenCLLogException(__FUNCTION__,__LINE__,exception);
 
+  if (imageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (filteredImageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(filteredImageBuffer);
   if (sinThetaBuffer!=NULL)       clEnv->library->clReleaseMemObject(sinThetaBuffer);
   if (cosThetaBuffer!=NULL)       clEnv->library->clReleaseMemObject(cosThetaBuffer);
   if (radialBlurKernel!=NULL)     RelinquishOpenCLKernel(clEnv, radialBlurKernel);
@@ -4486,6 +4535,10 @@ static Image *ComputeResizeImage(const Image* image,
 cleanup:
   OpenCLLogException(__FUNCTION__,__LINE__,exception);
 
+  if (imageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (filteredImageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(filteredImageBuffer);
   if (tempImageBuffer!=NULL)		  clEnv->library->clReleaseMemObject(tempImageBuffer);
   if (cubicCoefficientsBuffer!=NULL)      clEnv->library->clReleaseMemObject(cubicCoefficientsBuffer);
   if (queue != NULL)  	                  RelinquishOpenCLCommandQueue(clEnv, queue);
@@ -4813,7 +4866,11 @@ static Image *ComputeUnsharpMaskImage(const Image *image,
 cleanup:
   OpenCLLogException(__FUNCTION__,__LINE__,exception);
 
-  if (kernel != NULL)			      kernel=DestroyKernelInfo(kernel);
+  if (imageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (filteredImageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(filteredImageBuffer);
+  if (kernel != NULL)                         kernel=DestroyKernelInfo(kernel);
   if (tempImageBuffer!=NULL)                  clEnv->library->clReleaseMemObject(tempImageBuffer);
   if (imageKernelBuffer!=NULL)                clEnv->library->clReleaseMemObject(imageKernelBuffer);
   if (blurRowKernel!=NULL)                    RelinquishOpenCLKernel(clEnv, blurRowKernel);
@@ -5017,7 +5074,11 @@ static Image *ComputeUnsharpMaskImageSingle(const Image *image,
 cleanup:
   OpenCLLogException(__FUNCTION__,__LINE__,exception);
 
-  if (kernel != NULL)			      kernel=DestroyKernelInfo(kernel);
+  if (imageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (filteredImageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(filteredImageBuffer);
+  if (kernel != NULL)                         kernel=DestroyKernelInfo(kernel);
   if (imageKernelBuffer!=NULL)                clEnv->library->clReleaseMemObject(imageKernelBuffer);
   if (unsharpMaskKernel!=NULL)                RelinquishOpenCLKernel(clEnv, unsharpMaskKernel);
   if (queue != NULL)                          RelinquishOpenCLCommandQueue(clEnv, queue);
@@ -5199,8 +5260,14 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,
 cleanup:
   OpenCLLogException(__FUNCTION__, __LINE__, exception);
 
-  if (denoiseKernel != NULL)		RelinquishOpenCLKernel(clEnv, denoiseKernel);
-  if (queue != NULL)				RelinquishOpenCLCommandQueue(clEnv, queue);
+  if (imageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (filteredImageBuffer != (cl_mem) NULL)
+    clEnv->library->clReleaseMemObject(filteredImageBuffer);
+  if (denoiseKernel != NULL)
+    RelinquishOpenCLKernel(clEnv, denoiseKernel);
+  if (queue != NULL)
+    RelinquishOpenCLCommandQueue(clEnv, queue);
   if ((outputReady == MagickFalse) && (filteredImage != NULL))
     filteredImage=(Image *) DestroyImage(filteredImage);
   return(filteredImage);

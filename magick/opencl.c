@@ -409,6 +409,7 @@ static MagickBooleanType bindOpenCLFunctions(void* library)
   BIND(clReleaseContext);
 
   BIND(clCreateBuffer);
+  BIND(clRetainMemObject);
   BIND(clReleaseMemObject);
 
   BIND(clCreateProgramWithSource);

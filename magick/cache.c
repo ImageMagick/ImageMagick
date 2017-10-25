@@ -1402,6 +1402,8 @@ MagickPrivate cl_mem GetAuthenticOpenCLBuffer(const Image *image,
       if (status != CL_SUCCESS)
         cache_info->opencl=RelinquishOpenCLCacheInfo(clEnv,cache_info->opencl);
     }
+  if (cache_info->opencl != (OpenCLCacheInfo *) NULL)
+    clEnv->library->clRetainMemObject(cache_info->opencl->buffer);
   UnlockSemaphoreInfo(cache_info->semaphore);
   if (cache_info->opencl == (OpenCLCacheInfo *) NULL)
     return((cl_mem) NULL);
