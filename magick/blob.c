@@ -1122,6 +1122,9 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
 static inline ssize_t WriteBlobStream(Image *image,const size_t length,
   const unsigned char *data)
 {
+  BlobInfo
+    *restrict blob_info;
+
   MagickSizeType
     extent;
 
@@ -1129,23 +1132,24 @@ static inline ssize_t WriteBlobStream(Image *image,const size_t length,
     *q;
 
   assert(image->blob != (BlobInfo *) NULL);
-  if (image->blob->type != BlobStream)
-    return(WriteBlob(image,length,data));
   assert(image->blob->type != UndefinedStream);
   assert(data != (void *) NULL);
-  extent=(MagickSizeType) (image->blob->offset+(MagickOffsetType) length);
-  if (extent >= image->blob->extent)
+  blob_info=image->blob;
+  if (blob_info->type != BlobStream)
+    return(WriteBlob(image,length,data));
+  extent=(MagickSizeType) (blob_info->offset+(MagickOffsetType) length);
+  if (extent >= blob_info->extent)
     {
-      extent=image->blob->extent+image->blob->quantum+length;
-      image->blob->quantum<<=1;
+      extent=blob_info->extent+blob_info->quantum+length;
+      blob_info->quantum<<=1;
       if (SetBlobExtent(image,extent) == MagickFalse)
         return(0);
     }
-  q=image->blob->data+image->blob->offset;
+  q=blob_info->data+blob_info->offset;
   (void) memcpy(q,data,length);
-  image->blob->offset+=length;
-  if (image->blob->offset >= (MagickOffsetType) image->blob->length)
-    image->blob->length=(size_t) image->blob->offset;
+  blob_info->offset+=length;
+  if (blob_info->offset >= (MagickOffsetType) blob_info->length)
+    blob_info->length=(size_t) blob_info->offset;
   return((ssize_t) length);
 }
 
@@ -3791,29 +3795,33 @@ MagickExport signed short ReadBlobSignedShort(Image *image)
 MagickExport const void *ReadBlobStream(Image *image,const size_t length,
   void *data,ssize_t *count)
 {
+  BlobInfo
+    *restrict blob_info;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->blob != (BlobInfo *) NULL);
   assert(image->blob->type != UndefinedStream);
   assert(count != (ssize_t *) NULL);
-  if (image->blob->type != BlobStream)
+  blob_info=image->blob;
+  if (blob_info->type != BlobStream)
     {
       assert(data != NULL);
       *count=ReadBlob(image,length,(unsigned char *) data);
       return(data);
     }
-  if (image->blob->offset >= (MagickOffsetType) image->blob->length)
+  if (blob_info->offset >= (MagickOffsetType) blob_info->length)
     {
       *count=0;
-      image->blob->eof=MagickTrue;
+      blob_info->eof=MagickTrue;
       return(data);
     }
-  data=image->blob->data+image->blob->offset;
+  data=blob_info->data+blob_info->offset;
   *count=(ssize_t) MagickMin((MagickOffsetType) length,(MagickOffsetType)
-    image->blob->length-image->blob->offset);
-  image->blob->offset+=(*count);
+    blob_info->length-blob_info->offset);
+  blob_info->offset+=(*count);
   if (*count != (ssize_t) length)
-    image->blob->eof=MagickTrue;
+    blob_info->eof=MagickTrue;
   return(data);
 }
 
