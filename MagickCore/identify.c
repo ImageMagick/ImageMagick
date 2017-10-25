@@ -1235,7 +1235,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       for (d=image->directory; *d != '\0'; d++)
       {
         q=d;
-        while ((*q != '\n') && (*q != '\0'))
+        while ((*q != '\n') && (*q != '\0') &&
+               ((size_t) (q-d) < sizeof(image_info->filename)))
           q++;
         (void) CopyMagickString(image_info->filename,d,(size_t) (q-d+1));
         d=q;
@@ -1338,7 +1339,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
               profile_length;
 
             profile_length=GetStringInfoLength(profile);
-            for (i=0; i < (ssize_t) profile_length; i+=(ssize_t) length)
+            for (i=0; i < (ssize_t) profile_length-5; i+=(ssize_t) length)
             {
               length=1;
               sentinel=GetStringInfoDatum(profile)[i++];
@@ -1407,6 +1408,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
                 (double) dataset,(double) record);
               length=(size_t) (GetStringInfoDatum(profile)[i++] << 8);
               length|=GetStringInfoDatum(profile)[i++];
+              length=MagickMin(length,profile_length-i);
               attribute=(char *) NULL;
               if (~length >= (MagickPathExtent-1))
                 attribute=(char *) AcquireQuantumMemory(length+MagickPathExtent,
