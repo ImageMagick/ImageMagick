@@ -466,8 +466,10 @@ static inline MagickBooleanType IsPixelEquivalent(
     color;
 
   color=(MagickRealType) p[image->channel_map[AlphaPixelChannel].offset];
-  alpha=image->alpha_trait == UndefinedPixelTrait ? OpaqueAlpha : color;
-  beta=q->alpha_trait == UndefinedPixelTrait ? OpaqueAlpha : q->alpha;
+  alpha=image->alpha_trait == UndefinedPixelTrait ? (MagickRealType)
+    OpaqueAlpha : color;
+  beta=q->alpha_trait == UndefinedPixelTrait ? (MagickRealType) OpaqueAlpha :
+    q->alpha;
   if (AbsolutePixelValue(alpha-beta) >= MagickEpsilon)
     return(MagickFalse);
   if ((AbsolutePixelValue(alpha-TransparentAlpha) < MagickEpsilon) ||
@@ -516,8 +518,10 @@ static inline MagickBooleanType IsPixelInfoEquivalent(
     alpha,
     beta;
 
-  alpha=p->alpha_trait == UndefinedPixelTrait ? OpaqueAlpha : p->alpha;
-  beta=q->alpha_trait == UndefinedPixelTrait ? OpaqueAlpha : q->alpha;
+  alpha=p->alpha_trait == UndefinedPixelTrait ? (MagickRealType) OpaqueAlpha :
+    p->alpha;
+  beta=q->alpha_trait == UndefinedPixelTrait ? (MagickRealType) OpaqueAlpha :
+    q->alpha;
   if (AbsolutePixelValue(alpha-beta) >= MagickEpsilon)
     return(MagickFalse);
   if ((AbsolutePixelValue(alpha-TransparentAlpha) < MagickEpsilon) ||

@@ -954,9 +954,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  RectangleInfo
-    page;
-
   register ssize_t
     i;
 
@@ -964,12 +961,9 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *p;
 
   size_t
-    delay,
-    dispose,
     duration,
     global_colors,
     image_count,
-    iterations,
     local_colors,
     one;
 
@@ -1009,8 +1003,9 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (LocaleNCompare((char *) buffer,"GIF89",5) != 0)))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   (void) ResetMagickMemory(buffer,0,sizeof(buffer));
-  page.width=ReadBlobLSBShort(image);
-  page.height=ReadBlobLSBShort(image);
+  meta_image=AcquireImage(image_info,exception);  /* metadata container */
+  meta_image->page.width=ReadBlobLSBShort(image);
+  meta_image->page.height=ReadBlobLSBShort(image);
   flag=(unsigned char) ReadBlobByte(image);
   background=(unsigned char) ReadBlobByte(image);
   c=(unsigned char) ReadBlobByte(image);  /* reserved */
@@ -1019,7 +1014,10 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   global_colormap=(unsigned char *) AcquireQuantumMemory((size_t)
     MagickMax(global_colors,256),3UL*sizeof(*global_colormap));
   if (global_colormap == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    {
+      meta_image=DestroyImage(meta_image);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   (void) ResetMagickMemory(global_colormap,0,3*MagickMax(global_colors,256)*
     sizeof(*global_colormap));
   if (BitSet((int) flag,0x80) != 0)
@@ -1029,16 +1027,13 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           global_colormap=(unsigned char *) RelinquishMagickMemory(
             global_colormap);
+          meta_image=DestroyImage(meta_image);
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         }
     }
-  delay=0;
-  dispose=0;
   duration=0;
-  iterations=1;
   opacity=(-1);
   image_count=0;
-  meta_image=AcquireImage(image_info,exception);  /* metadata container */
   for ( ; ; )
   {
     count=ReadBlob(image,1,&c);
@@ -1068,8 +1063,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Read graphics control extension.
             */
             while (ReadBlobBlock(image,buffer) != 0) ;
-            dispose=(size_t) ((buffer[0] >> 2) & 0x07);
-            delay=((size_t) buffer[2] << 8) | buffer[1];
+            meta_image->dispose=(DisposeType) ((buffer[0] >> 2) & 0x07);
+            meta_image->delay=((size_t) buffer[2] << 8) | buffer[1];
             if ((ssize_t) (buffer[0] & 0x01) == 0x01)
               opacity=(ssize_t) buffer[3];
             break;
@@ -1113,9 +1108,9 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (loop != MagickFalse)
               while (ReadBlobBlock(image,buffer) != 0)
               {
-                iterations=((size_t) buffer[2] << 8) | buffer[1];
-                if (iterations != 0)
-                  iterations++;
+                meta_image->iterations=((size_t) buffer[2] << 8) | buffer[1];
+                if (meta_image->iterations != 0)
+                  meta_image->iterations++;
               }
             else
               {
@@ -1247,6 +1242,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read image attributes.
     */
+    meta_image->page.x=(ssize_t) ReadBlobLSBShort(image);
+    meta_image->page.y=(ssize_t) ReadBlobLSBShort(image);
     meta_image->scene=image->scene;
     (void) CloneImageProperties(image,meta_image);
     DestroyImageProperties(meta_image);
@@ -1254,8 +1251,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     DestroyImageProfiles(meta_image);
     image->storage_class=PseudoClass;
     image->compression=LZWCompression;
-    page.x=(ssize_t) ReadBlobLSBShort(image);
-    page.y=(ssize_t) ReadBlobLSBShort(image);
     image->columns=ReadBlobLSBShort(image);
     image->rows=ReadBlobLSBShort(image);
     image->depth=8;
@@ -1265,18 +1260,9 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ((size_t) (flag & 0x07)+1);
     image->colors=local_colors;
     if (opacity >= (ssize_t) image->colors)
-      image->colors=opacity+1;
-    image->page.width=page.width;
-    image->page.height=page.height;
-    image->page.y=page.y;
-    image->page.x=page.x;
-    image->delay=delay;
+      image->colors=(size_t) (opacity+1);
     image->ticks_per_second=100;
-    image->dispose=(DisposeType) dispose;
-    image->iterations=iterations;
     image->alpha_trait=opacity >= 0 ? BlendPixelTrait : UndefinedPixelTrait;
-    delay=0;
-    dispose=0;
     if ((image->columns == 0) || (image->rows == 0))
       {
         global_colormap=(unsigned char *) RelinquishMagickMemory(
