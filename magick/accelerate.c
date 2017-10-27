@@ -588,7 +588,6 @@ static Image *ComputeBlurImage(const Image* image,const ChannelType channel,
         {
           (void)OpenCLThrowMagickException(exception,GetMagickModule(),
             ResourceLimitWarning,"AcquireMagickMemory failed.", "'%s'", ".");
-            return((cl_mem) NULL);
           goto cleanup;
         }
       for (i = 0; i < kernel->width; i++)
