@@ -1414,7 +1414,7 @@ static inline ssize_t WriteBlobStream(Image *image,const size_t length,
   const void *data)
 {
   BlobInfo
-    *restrict blob_info;
+    *magick_restrict blob_info;
 
   MagickSizeType
     extent;
@@ -4397,7 +4397,7 @@ MagickExport const void *ReadBlobStream(Image *image,const size_t length,
   void *data,ssize_t *count)
 {
   BlobInfo
-    *restrict blob_info;
+    *magick_restrict blob_info;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
