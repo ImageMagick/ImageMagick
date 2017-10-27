@@ -1,3 +1,7 @@
+2017-10-27 7.0.7-9 Dirk Lemstra <dirk@lem.....org>
+  * Added support for reading mipmaps in dds images (reference
+    https://github.com/ImageMagick/ImageMagick/issues/845).
+
 2017-10-15  7.0.7-8 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.7-8, GIT revision 21507:63ffc9878:20171015.
 
