@@ -1534,7 +1534,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           continue;
         if ((source_traits == UndefinedPixelTrait) &&
             (channel != AlphaPixelChannel))
-            continue;
+          continue;
         if (channel == AlphaPixelChannel)
           {
             /*
