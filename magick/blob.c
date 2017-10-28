@@ -492,7 +492,7 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
 MagickExport MagickBooleanType CloseBlob(Image *image)
 {
   BlobInfo
-    *restrict blob_info;
+    *magick_restrict blob_info;
 
   int
     status;
@@ -628,7 +628,7 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
 MagickExport void DestroyBlob(Image *image)
 {
   BlobInfo
-    *restrict blob_info;
+    *magick_restrict blob_info;
 
   MagickBooleanType
     destroy;
@@ -737,7 +737,7 @@ MagickExport unsigned char *DetachBlob(BlobInfo *blob_info)
 MagickPrivate void DisassociateBlob(Image *image)
 {
   BlobInfo
-    *restrict blob_info,
+    *magick_restrict blob_info,
     *clone_info;
 
   MagickBooleanType
@@ -884,7 +884,7 @@ MagickExport void DuplicateBlob(Image *image,const Image *duplicate)
 MagickExport int EOFBlob(const Image *image)
 {
   BlobInfo
-    *restrict blob_info;
+    *magick_restrict blob_info;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1389,7 +1389,7 @@ MagickExport const struct stat *GetBlobProperties(const Image *image)
 MagickExport MagickSizeType GetBlobSize(const Image *image)
 {
   BlobInfo
-    *restrict blob_info;
+    *magick_restrict blob_info;
 
   MagickSizeType
     extent;
@@ -2118,7 +2118,7 @@ MagickExport MagickBooleanType IsBlobExempt(const Image *image)
 MagickExport MagickBooleanType IsBlobSeekable(const Image *image)
 {
   BlobInfo
-    *restrict blob_info;
+    *magick_restrict blob_info;
 
   MagickBooleanType
     seekable;
@@ -2421,7 +2421,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
   Image *image,const BlobMode mode,ExceptionInfo *exception)
 {
   BlobInfo
-    *restrict blob_info;
+    *magick_restrict blob_info;
 
   char
     extension[MaxTextExtent],
@@ -2858,7 +2858,7 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,
   unsigned char *data)
 {
   BlobInfo
-    *restrict blob_info;
+    *magick_restrict blob_info;
 
   int
     c;
@@ -3988,7 +3988,7 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
   const MagickOffsetType offset,const int whence)
 {
   BlobInfo
-    *restrict blob_info;
+    *magick_restrict blob_info;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -4146,7 +4146,7 @@ MagickExport MagickBooleanType SetBlobExtent(Image *image,
   const MagickSizeType extent)
 {
   BlobInfo
-    *restrict blob_info;
+    *magick_restrict blob_info;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -4293,7 +4293,7 @@ MagickExport MagickBooleanType SetBlobExtent(Image *image,
 static int SyncBlob(Image *image)
 {
   BlobInfo
-    *restrict blob_info;
+    *magick_restrict blob_info;
 
   int
     status;
@@ -4364,7 +4364,7 @@ static int SyncBlob(Image *image)
 MagickExport MagickOffsetType TellBlob(const Image *image)
 {
   BlobInfo
-    *restrict blob_info;
+    *magick_restrict blob_info;
 
   MagickOffsetType
     offset;
@@ -4482,7 +4482,7 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
   const unsigned char *data)
 {
   BlobInfo
-    *restrict blob_info;
+    *magick_restrict blob_info;
 
   int
     c;
