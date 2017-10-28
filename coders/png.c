@@ -4981,6 +4981,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   {
     s=GetVirtualPixels(jng_image,0,y,image->columns,1,exception);
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+    if ((s == (const Quantum *)  NULL) || (q == (Quantum *) NULL))
+      break;
     for (x=(ssize_t) image->columns; x != 0; x--)
     {
       SetPixelRed(image,GetPixelRed(jng_image,s),q);
@@ -5023,9 +5025,10 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       if (jng_image != (Image *) NULL)
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          s=GetVirtualPixels(jng_image,0,y,image->columns,1,
-            exception);
+          s=GetVirtualPixels(jng_image,0,y,image->columns,1,exception);
           q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+          if ((s == (const Quantum *)  NULL) || (q == (Quantum *) NULL))
+            break;
 
           if (image->alpha_trait != UndefinedPixelTrait)
             for (x=(ssize_t) image->columns; x != 0; x--)
