@@ -4820,6 +4820,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   {
     s=GetVirtualPixels(jng_image,0,y,image->columns,1,&image->exception);
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+    if ((s == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
     (void) CopyMagickMemory(q,s,length);
 
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -4855,9 +4857,10 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       if (jng_image != (Image *) NULL)
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          s=GetVirtualPixels(jng_image,0,y,image->columns,1,
-            &image->exception);
+          s=GetVirtualPixels(jng_image,0,y,image->columns,1,&image->exception);
           q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+          if ((s == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+            break;
 
           if (image->matte != MagickFalse)
             for (x=(ssize_t) image->columns; x != 0; x--,q++,s++)
