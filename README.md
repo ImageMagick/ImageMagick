@@ -59,7 +59,7 @@ Here are just a few examples of what ImageMagick can do:
 * [Threads of execution support](https://www.imagemagick.org/script/architecture.php#threads): ImageMagick is thread safe and most internal algorithms are OpenMP-enabled to take advantage of speed-ups offered by multicore processor chips.
 * [Distributed pixel cache](https://www.imagemagick.org/script/distribute-pixel-cache.php): offload intermediate pixel storage to one or more remote servers.
 * [Heterogeneous distributed processing](https://www.imagemagick.org/script/architecture.php#distributed): certain algorithms are OpenCL-enabled to take advantage of speed-ups offered by executing in concert across heterogeneous platforms consisting of CPUs, GPUs, and other processors.
-* [ImageMagick on the iPhone](https://www.imagemagick.org/script/binary-releases.php#iOS): convert, edit, or compose images on your iPhone.
+* [ImageMagick on the iPhone](https://www.imagemagick.org/script/download.php#iOS): convert, edit, or compose images on your iPhone.
 
 [Examples of ImageMagick Usage](https://www.imagemagick.org/Usage/), shows how to use ImageMagick from the command-line to accomplish any of these tasks and much more. Also, see [Fred's ImageMagick Scripts](http://www.fmwconcepts.com/imagemagick/): a plethora of command-line scripts that perform geometric transforms, blurs, sharpens, edging, noise removal, and color manipulations. With [Magick.NET](https://magick.codeplex.com/), use ImageMagick without having to install ImageMagick on your server or desktop.
 
