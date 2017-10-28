@@ -4864,8 +4864,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
           if (image->matte != MagickFalse)
             for (x=(ssize_t) image->columns; x != 0; x--,q++,s++)
-              SetPixelOpacity(q,QuantumRange-
-                  GetPixelRed(s));
+              SetPixelOpacity(q,QuantumRange-GetPixelRed(s));
 
           else
             for (x=(ssize_t) image->columns; x != 0; x--,q++,s++)
@@ -6676,7 +6675,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                      {
                        q=GetAuthenticPixels(image,0,y,image->columns,1,
                           exception);
-
+                       if (q == (PixelPacket *) NULL)
+                         break;
                        for (x=(ssize_t) image->columns-1; x >= 0; x--)
                        {
                           SetPixelRed(q,ScaleQuantumToShort(
@@ -6783,6 +6783,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                     n=next;
                     q=GetAuthenticPixels(large_image,0,yy,large_image->columns,
                       1,exception);
+                    if (q == (PixelPacket *) NULL)
+                      break;
                     q+=(large_image->columns-image->columns);
 
                     for (x=(ssize_t) image->columns-1; x >= 0; x--)
@@ -6910,6 +6912,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                     *pixels;
 
                   q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+                  if (q == (PixelPacket *) NULL)
+                    break;
                   pixels=q+(image->columns-length);
                   n=pixels+1;
 
@@ -7037,6 +7041,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                    for (y=0; y < (ssize_t) image->rows; y++)
                    {
                      q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+                     if (q == (PixelPacket *) NULL)
+                       break;
 
                      for (x=(ssize_t) image->columns-1; x >= 0; x--)
                      {
