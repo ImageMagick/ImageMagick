@@ -6853,7 +6853,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                      {
                        q=GetAuthenticPixels(image,0,y,image->columns,1,
                           exception);
-
+                       if (q == (Quantum *) NULL)
+                         break;
                        for (x=(ssize_t) image->columns-1; x >= 0; x--)
                        {
                           SetPixelRed(image,ScaleQuantumToShort(
@@ -6961,6 +6962,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                     n=next;
                     q=GetAuthenticPixels(large_image,0,yy,large_image->columns,
                       1,exception);
+                    if (q == (Quantum *) NULL)
+                      break;
                     q+=(large_image->columns-image->columns)*
                       GetPixelChannels(large_image);
 
@@ -7111,6 +7114,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                     *pixels;
 
                   q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+                  if (q == (Quantum *) NULL)
+                    break;
                   pixels=q+(image->columns-length)*GetPixelChannels(image);
                   n=pixels+GetPixelChannels(image);
 
@@ -7250,6 +7255,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                    {
                      q=GetAuthenticPixels(image,0,y,image->columns,1,
                        exception);
+                     if (q == (Quantum *) NULL)
+                       break;
 
                      for (x=(ssize_t) image->columns-1; x >= 0; x--)
                      {
