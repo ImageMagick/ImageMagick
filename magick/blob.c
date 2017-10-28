@@ -1057,7 +1057,7 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
       blob[*length]='\0';
       return(blob);
     }
-  *length=(size_t) MagickMin(offset,(MagickOffsetType) 
+  *length=(size_t) MagickMin(offset,(MagickOffsetType)
     MagickMin(extent,SSIZE_MAX));
   blob=(unsigned char *) NULL;
   if (~(*length) >= (MaxTextExtent-1))
@@ -2120,9 +2120,6 @@ MagickExport MagickBooleanType IsBlobSeekable(const Image *image)
   BlobInfo
     *magick_restrict blob_info;
 
-  MagickBooleanType
-    seekable;
-
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
@@ -2133,17 +2130,11 @@ MagickExport MagickBooleanType IsBlobSeekable(const Image *image)
     case FileStream:
     case BlobStream:
     case ZipStream:
-    {
-      seekable=MagickTrue;
-      break;
-    }
+      return(MagickTrue);
     default:
-    {
-      seekable=MagickFalse;
       break;
-    }
   }
-  return(seekable);
+  return(MagickFalse);
 }
 
 /*
@@ -3036,20 +3027,47 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,
 */
 MagickExport int ReadBlobByte(Image *image)
 {
+  BlobInfo
+    *magick_restrict blob_info;
+
   register const unsigned char
     *p;
-
-  ssize_t
-    count;
 
   unsigned char
     buffer[1];
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  p=(const unsigned char *) ReadBlobStream(image,1,buffer,&count);
-  if (count != 1)
-    return(EOF);
+  assert(image->blob != (BlobInfo *) NULL);
+  assert(image->blob->type != UndefinedStream);
+  blob_info=image->blob;
+  switch (blob_info->type)
+  {
+    case StandardStream:
+    case FileStream:
+    case PipeStream:
+    {
+      int
+        c;
+
+      p=(const unsigned char *) buffer;
+      c=getc(blob_info->file_info.file);
+      if (c == EOF)
+        return(EOF);
+      *buffer=(unsigned char) c;
+      break;
+    }
+    default:
+    {
+      ssize_t
+        count;
+
+      p=(const unsigned char *) ReadBlobStream(image,1,buffer,&count);
+      if (count != 1)
+        return(EOF);
+      break;
+    }
+  }
   return((int) (*p));
 }
 
@@ -4669,9 +4687,40 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
 */
 MagickExport ssize_t WriteBlobByte(Image *image,const unsigned char value)
 {
+  BlobInfo
+    *magick_restrict blob_info;
+
+  ssize_t
+    count;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  return(WriteBlobStream(image,1,&value));
+  assert(image->blob != (BlobInfo *) NULL);
+  assert(image->blob->type != UndefinedStream);
+  blob_info=image->blob;
+  count=0;
+  switch (blob_info->type)
+  {
+    case StandardStream:
+    case FileStream:
+    case PipeStream:
+    {
+      int
+        c;
+
+      c=putc((int) value,blob_info->file_info.file);
+      if (c == EOF)
+        break;
+      count++;
+      break;
+    }
+    default:
+    {
+      count=WriteBlobStream(image,1,&value);
+      break;
+    }
+  }
+  return(count);
 }
 
 /*
