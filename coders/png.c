@@ -4475,7 +4475,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
     type[0]='\0';
     (void) ConcatenateMagickString(type,"errr",MagickPathExtent);
-    length=ReadBlobMSBLong(image);
+    length=(size_t) ReadBlobMSBLong(image);
     count=(unsigned int) ReadBlob(image,4,(unsigned char *) type);
 
     if (logging != MagickFalse)
@@ -5380,7 +5380,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
         */
         type[0]='\0';
         (void) ConcatenateMagickString(type,"errr",MagickPathExtent);
-        length=ReadBlobMSBLong(image);
+        length=(size_t) ReadBlobMSBLong(image);
         count=(size_t) ReadBlob(image,4,(unsigned char *) type);
 
         if (logging != MagickFalse)
