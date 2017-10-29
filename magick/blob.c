@@ -540,10 +540,10 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
       break;
     case BlobStream:
     {
-      if ((blob_info->file_info.file != (FILE *) NULL) &&
-          (blob_info->synchronize != MagickFalse))
+      if (blob_info->file_info.file != (FILE *) NULL)
         {
-          status=fsync(fileno(blob_info->file_info.file));
+          if (blob_info->synchronize != MagickFalse)
+            status=fsync(fileno(blob_info->file_info.file));
           status=ferror(blob_info->file_info.file);
         }
       break;
