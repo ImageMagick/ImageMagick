@@ -414,102 +414,102 @@ static ssize_t PrintChannelFeatures(FILE *file,const PixelChannel channel,
 
 #define FeaturesFormat "      \"%s\": {\n" \
   "        \"angularSecondMoment\": {\n" \
-  "          \"horizontal\": \"%.*g\",\n" \
-  "          \"vertical\": \"%.*g\",\n" \
-  "          \"leftDiagonal\": \"%.*g\",\n" \
-  "          \"rightDiagonal\": \"%.*g\",\n" \
-  "          \"average\": \"%.*g\"\n" \
+  "          \"horizontal\": %.*g,\n" \
+  "          \"vertical\": %.*g,\n" \
+  "          \"leftDiagonal\": %.*g,\n" \
+  "          \"rightDiagonal\": %.*g,\n" \
+  "          \"average\": %.*g\n" \
   "        },\n" \
   "        \"contrast\": {\n" \
-  "          \"horizontal\": \"%.*g\",\n" \
-  "          \"vertical\": \"%.*g\",\n" \
-  "          \"leftDiagonal\": \"%.*g\",\n" \
-  "          \"rightDiagonal\": \"%.*g\",\n" \
-  "          \"average\": \"%.*g\"\n" \
+  "          \"horizontal\": %.*g,\n" \
+  "          \"vertical\": %.*g,\n" \
+  "          \"leftDiagonal\": %.*g,\n" \
+  "          \"rightDiagonal\": %.*g,\n" \
+  "          \"average\": %.*g\n" \
   "        },\n" \
   "        \"correlation\": {\n" \
-  "          \"horizontal\": \"%.*g\",\n" \
-  "          \"vertical\": \"%.*g\",\n" \
-  "          \"leftDiagonal\": \"%.*g\",\n" \
-  "          \"rightDiagonal\": \"%.*g\",\n" \
-  "          \"average\": \"%.*g\"\n" \
+  "          \"horizontal\": %.*g,\n" \
+  "          \"vertical\": %.*g,\n" \
+  "          \"leftDiagonal\": %.*g,\n" \
+  "          \"rightDiagonal\": %.*g,\n" \
+  "          \"average\": %.*g\n" \
   "        },\n" \
   "        \"sumOfSquaresVariance\": {\n" \
-  "          \"horizontal\": \"%.*g\",\n" \
-  "          \"vertical\": \"%.*g\",\n" \
-  "          \"leftDiagonal\": \"%.*g\",\n" \
-  "          \"rightDiagonal\": \"%.*g\",\n" \
-  "          \"average\": \"%.*g\"\n" \
+  "          \"horizontal\": %.*g,\n" \
+  "          \"vertical\": %.*g,\n" \
+  "          \"leftDiagonal\": %.*g,\n" \
+  "          \"rightDiagonal\": %.*g,\n" \
+  "          \"average\": %.*g\n" \
   "        },\n" \
   "        \"inverseDifferenceMoment\": {\n" \
-  "          \"horizontal\": \"%.*g\",\n" \
-  "          \"vertical\": \"%.*g\",\n" \
-  "          \"leftDiagonal\": \"%.*g\",\n" \
-  "          \"rightDiagonal\": \"%.*g\",\n" \
-  "          \"average\": \"%.*g\"\n" \
+  "          \"horizontal\": %.*g,\n" \
+  "          \"vertical\": %.*g,\n" \
+  "          \"leftDiagonal\": %.*g,\n" \
+  "          \"rightDiagonal\": %.*g,\n" \
+  "          \"average\": %.*g\n" \
   "        },\n" \
   "        \"sumAverage\": {\n" \
-  "          \"horizontal\": \"%.*g\",\n" \
-  "          \"vertical\": \"%.*g\",\n" \
-  "          \"leftDiagonal\": \"%.*g\",\n" \
-  "          \"rightDiagonal\": \"%.*g\",\n" \
-  "          \"average\": \"%.*g\"\n" \
+  "          \"horizontal\": %.*g,\n" \
+  "          \"vertical\": %.*g,\n" \
+  "          \"leftDiagonal\": %.*g,\n" \
+  "          \"rightDiagonal\": %.*g,\n" \
+  "          \"average\": %.*g\n" \
   "        },\n" \
   "        \"sumVariance\": {\n" \
-  "          \"horizontal\": \"%.*g\",\n" \
-  "          \"vertical\": \"%.*g\",\n" \
-  "          \"leftDiagonal\": \"%.*g\",\n" \
-  "          \"rightDiagonal\": \"%.*g\",\n" \
-  "          \"average\": \"%.*g\"\n" \
+  "          \"horizontal\": %.*g,\n" \
+  "          \"vertical\": %.*g,\n" \
+  "          \"leftDiagonal\": %.*g,\n" \
+  "          \"rightDiagonal\": %.*g,\n" \
+  "          \"average\": %.*g\n" \
   "        },\n" \
   "        \"sumEntropy\": {\n" \
-  "          \"horizontal\": \"%.*g\",\n" \
-  "          \"vertical\": \"%.*g\",\n" \
-  "          \"leftDiagonal\": \"%.*g\",\n" \
-  "          \"rightDiagonal\": \"%.*g\",\n" \
-  "          \"average\": \"%.*g\"\n" \
+  "          \"horizontal\": %.*g,\n" \
+  "          \"vertical\": %.*g,\n" \
+  "          \"leftDiagonal\": %.*g,\n" \
+  "          \"rightDiagonal\": %.*g,\n" \
+  "          \"average\": %.*g\n" \
   "        },\n" \
   "        \"entropy\": {\n" \
-  "          \"horizontal\": \"%.*g\",\n" \
-  "          \"vertical\": \"%.*g\",\n" \
-  "          \"leftDiagonal\": \"%.*g\",\n" \
-  "          \"rightDiagonal\": \"%.*g\",\n" \
-  "          \"average\": \"%.*g\"\n" \
+  "          \"horizontal\": %.*g,\n" \
+  "          \"vertical\": %.*g,\n" \
+  "          \"leftDiagonal\": %.*g,\n" \
+  "          \"rightDiagonal\": %.*g,\n" \
+  "          \"average\": %.*g\n" \
   "        },\n" \
   "        \"differenceVariance\": {\n" \
-  "          \"horizontal\": \"%.*g\",\n" \
-  "          \"vertical\": \"%.*g\",\n" \
-  "          \"leftDiagonal\": \"%.*g\",\n" \
-  "          \"rightDiagonal\": \"%.*g\",\n" \
-  "          \"average\": \"%.*g\"\n" \
+  "          \"horizontal\": %.*g,\n" \
+  "          \"vertical\": %.*g,\n" \
+  "          \"leftDiagonal\": %.*g,\n" \
+  "          \"rightDiagonal\": %.*g,\n" \
+  "          \"average\": %.*g\n" \
   "        },\n" \
   "        \"differenceEntropy\": {\n" \
-  "          \"horizontal\": \"%.*g\",\n" \
-  "          \"vertical\": \"%.*g\",\n" \
-  "          \"leftDiagonal\": \"%.*g\",\n" \
-  "          \"rightDiagonal\": \"%.*g\",\n" \
-  "          \"average\": \"%.*g\"\n" \
+  "          \"horizontal\": %.*g,\n" \
+  "          \"vertical\": %.*g,\n" \
+  "          \"leftDiagonal\": %.*g,\n" \
+  "          \"rightDiagonal\": %.*g,\n" \
+  "          \"average\": %.*g\n" \
   "        },\n" \
   "        \"informationMeasureOfCorrelation1\": {\n" \
-  "          \"horizontal\": \"%.*g\",\n" \
-  "          \"vertical\": \"%.*g\",\n" \
-  "          \"leftDiagonal\": \"%.*g\",\n" \
-  "          \"rightDiagonal\": \"%.*g\",\n" \
-  "          \"average\": \"%.*g\"\n" \
+  "          \"horizontal\": %.*g,\n" \
+  "          \"vertical\": %.*g,\n" \
+  "          \"leftDiagonal\": %.*g,\n" \
+  "          \"rightDiagonal\": %.*g,\n" \
+  "          \"average\": %.*g\n" \
   "        },\n" \
   "        \"informationMeasureOfCorrelation2\": {\n" \
-  "          \"horizontal\": \"%.*g\",\n" \
-  "          \"vertical\": \"%.*g\",\n" \
-  "          \"leftDiagonal\": \"%.*g\",\n" \
-  "          \"rightDiagonal\": \"%.*g\",\n" \
-  "          \"average\": \"%.*g\"\n" \
+  "          \"horizontal\": %.*g,\n" \
+  "          \"vertical\": %.*g,\n" \
+  "          \"leftDiagonal\": %.*g,\n" \
+  "          \"rightDiagonal\": %.*g,\n" \
+  "          \"average\": %.*g\n" \
   "        },\n" \
   "        \"maximumCorrelationCoefficient\": {\n" \
-  "          \"horizontal\": \"%.*g\",\n" \
-  "          \"vertical\": \"%.*g\",\n" \
-  "          \"leftDiagonal\": \"%.*g\",\n" \
-  "          \"rightDiagonal\": \"%.*g\",\n" \
-  "          \"average\": \"%.*g\"\n" \
+  "          \"horizontal\": %.*g,\n" \
+  "          \"vertical\": %.*g,\n" \
+  "          \"leftDiagonal\": %.*g,\n" \
+  "          \"rightDiagonal\": %.*g,\n" \
+  "          \"average\": %.*g\n" \
   "        }\n"
 
   ssize_t
@@ -567,7 +567,7 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
     }
   }
   (void) FormatLocaleFile(file,"      \"%s\": {\n        \"intensity\": "
-    "\"%.*g\",\n",name,GetMagickPrecision(),QuantumScale*target);
+    "%.*g,\n",name,GetMagickPrecision(),QuantumScale*target);
   exception=AcquireExceptionInfo();
   n=0;
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -627,25 +627,25 @@ static ssize_t PrintChannelMoments(FILE *file,const PixelChannel channel,
 
   n=FormatLocaleFile(file,"      \"%s\": {\n",name);
   n+=FormatLocaleFile(file,"        \"centroid\": {\n "
-    "          \"x\": \"%.*g\",\n"
-    "           \"y\": \"%.*g\"\n        },\n",
+    "          \"x\": %.*g,\n"
+    "           \"y\": %.*g\n        },\n",
     GetMagickPrecision(),channel_moments[channel].centroid.x,
     GetMagickPrecision(),channel_moments[channel].centroid.y);
   n+=FormatLocaleFile(file,"        \"ellipseSemiMajorMinorAxis\": {\n"
-    "          \"x\": \"%.*g\",\n"
-    "          \"y\": \"%.*g\"\n        },\n",
+    "          \"x\": %.*g,\n"
+    "          \"y\": %.*g\n        },\n",
     GetMagickPrecision(),channel_moments[channel].ellipse_axis.x,
     GetMagickPrecision(),channel_moments[channel].ellipse_axis.y);
-  n+=FormatLocaleFile(file,"        \"ellipseAngle\": \"%.*g\",\n",
+  n+=FormatLocaleFile(file,"        \"ellipseAngle\": %.*g,\n",
     GetMagickPrecision(),channel_moments[channel].ellipse_angle);
-  n+=FormatLocaleFile(file,"        \"ellipseEccentricity\": \"%.*g\",\n",
+  n+=FormatLocaleFile(file,"        \"ellipseEccentricity\": %.*g,\n",
     GetMagickPrecision(),channel_moments[channel].ellipse_eccentricity);
-  n+=FormatLocaleFile(file,"        \"ellipseIntensity\": \"%.*g\",\n",
+  n+=FormatLocaleFile(file,"        \"ellipseIntensity\": %.*g,\n",
     GetMagickPrecision(),channel_moments[channel].ellipse_intensity);
   for (i=0; i < 7; i++)
-    n+=FormatLocaleFile(file,"        \"I%.20g\": \"%.*g\",\n",i+1.0,
+    n+=FormatLocaleFile(file,"        \"I%.20g\": %.*g,\n",i+1.0,
       GetMagickPrecision(),channel_moments[channel].invariant[i]);
-  n+=FormatLocaleFile(file,"        \"I%.20g\": \"%.*g\"\n",i+1.0,
+  n+=FormatLocaleFile(file,"        \"I%.20g\": %.*g\n",i+1.0,
     GetMagickPrecision(),channel_moments[channel].invariant[i]);
   (void) FormatLocaleFile(file,"      }");
   if (separator != MagickFalse)
@@ -690,7 +690,7 @@ static ssize_t PrintChannelPerceptualHash(Image *image,FILE *file,
       n+=FormatLocaleFile(file,"        \"PH%.20g\": [",(double) j+1);
       for (k=0; k < (ssize_t) channel_phash[0].number_colorspaces; k++)
       {
-        n+=FormatLocaleFile(file,"\"%.*g\"",GetMagickPrecision(),
+        n+=FormatLocaleFile(file,"%.*g",GetMagickPrecision(),
           channel_phash[channel].phash[k][j]);
         if (k < (ssize_t) (channel_phash[0].number_colorspaces-1))
           n+=FormatLocaleFile(file,", ");
@@ -710,20 +710,23 @@ static ssize_t PrintChannelStatistics(FILE *file,const PixelChannel channel,
   const char *name,const double scale,const MagickBooleanType separator,
   const ChannelStatistics *channel_statistics)
 {
-#define StatisticsFormat "      \"%s\": {\n        \"min\": \"" QuantumFormat  \
-  "\",\n        \"max\": \"" QuantumFormat "\",\n"  \
-  "        \"mean\": \"%g\",\n        \"standardDeviation\": "  \
-  "\"%g\",\n        \"kurtosis\": \"%g\",\n        \"skewness\": " \
-  "\"%g\"\n      }"
+#define StatisticsFormat "      \"%s\": {\n        \"min\": %.*g,\n"  \
+  "        \"max\": %.*g,\n        \"mean\": %.*g,\n        "  \
+  "\"standardDeviation\": %.*g,\n        \"kurtosis\": %.*g,\n        "\
+  "\"skewness\": %.*g,\n        \"entropy\": %.*g\n      }"
 
   ssize_t
     n;
 
-  n=FormatLocaleFile(file,StatisticsFormat,name,ClampToQuantum(scale*
-    channel_statistics[channel].minima),ClampToQuantum(scale*
-    channel_statistics[channel].maxima),scale*channel_statistics[channel].mean,
-    scale*channel_statistics[channel].standard_deviation,
-    channel_statistics[channel].kurtosis,channel_statistics[channel].skewness);
+  n=FormatLocaleFile(file,StatisticsFormat,name,GetMagickPrecision(),
+    (double) ClampToQuantum(scale*channel_statistics[channel].minima),
+    GetMagickPrecision(),(double) ClampToQuantum(scale*
+    channel_statistics[channel].maxima),GetMagickPrecision(),scale*
+    channel_statistics[channel].mean,GetMagickPrecision(),scale*
+    channel_statistics[channel].standard_deviation,GetMagickPrecision(),
+    channel_statistics[channel].kurtosis,GetMagickPrecision(),
+    channel_statistics[channel].skewness,GetMagickPrecision(),
+    channel_statistics[channel].entropy);
   if (separator != MagickFalse)
     (void) FormatLocaleFile(file,",");
   (void) FormatLocaleFile(file,"\n");
@@ -1005,25 +1008,25 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   JSONFormatLocaleFile(file,"    \"class\": %s,\n",CommandOptionToMnemonic(
     MagickClassOptions,(ssize_t) image->storage_class));
   (void) FormatLocaleFile(file,"    \"geometry\": {\n"
-    "      \"width\": %.20g,\n      \"height\": %.20g,\n"
-    "      \"x\": %.20g,\n      \"y\": %.20g\n    },\n",
+    "      \"width\": %g,\n      \"height\": %g,\n"
+    "      \"x\": %g,\n      \"y\": %g\n    },\n",
     (double) image->columns,(double) image->rows,(double) image->tile_offset.x,
     (double) image->tile_offset.y);
   if ((image->magick_columns != 0) || (image->magick_rows != 0))
     if ((image->magick_columns != image->columns) ||
         (image->magick_rows != image->rows))
       (void) FormatLocaleFile(file,"    \"baseGeometry\": {\n"
-        "      \"width\": %.20g,\n      \"height\": %.20g\n    },\n",
-        (double) image->magick_columns,(double) image->magick_rows);
+        "      \"width\": %g,\n      \"height\": %g\n    },\n",(double)
+        image->magick_columns,(double) image->magick_rows);
   if ((image->resolution.x != 0.0) && (image->resolution.y != 0.0))
     {
       (void) FormatLocaleFile(file,"    \"resolution\": {\n"
-        "      \"x\": %.20g,\n      \"y\": %.20g\n    },\n",
-        image->resolution.x,image->resolution.y);
-      (void) FormatLocaleFile(file,"    \"printSize\": {\n"
-        "      \"x\": %.20g,\n      \"y\": %.20g\n    },\n",
-        image->columns/image->resolution.x,(double) image->rows/
+        "      \"x\": %g,\n      \"y\": %g\n    },\n",image->resolution.x,
         image->resolution.y);
+      (void) FormatLocaleFile(file,"    \"printSize\": {\n"
+        "      \"x\": %.*g,\n      \"y\": %.*g\n    },\n",GetMagickPrecision(),
+        image->columns/image->resolution.x,GetMagickPrecision(),(double)
+        image->rows/image->resolution.y);
     }
   JSONFormatLocaleFile(file,"    \"units\": %s,\n",CommandOptionToMnemonic(
     MagickResolutionOptions,(ssize_t) image->units));
@@ -1139,8 +1142,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       channel_features=GetImageFeatures(image,distance,exception);
     }
   depth=GetImageDepth(image,exception);
-  (void) FormatLocaleFile(file,"    \"depth\": %.20g,\n",(double) depth);
-  (void) FormatLocaleFile(file,"    \"baseDepth\": %.20g,\n",(double)
+  (void) FormatLocaleFile(file,"    \"depth\": %g,\n",(double) depth);
+  (void) FormatLocaleFile(file,"    \"baseDepth\": %g,\n",(double)
     image->depth);
   (void) FormatLocaleFile(file,"    \"channelDepth\": {\n");
   if (image->alpha_trait != UndefinedPixelTrait)
@@ -1384,13 +1387,13 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       (void) FormatLocaleFile(file,"\n    ],\n");
     }
   if (image->error.mean_error_per_pixel != 0.0)
-    (void) FormatLocaleFile(file,"    \"meanErrorPerPixel\": \"%g\",\n",
+    (void) FormatLocaleFile(file,"    \"meanErrorPerPixel\": %g,\n",
       image->error.mean_error_per_pixel);
   if (image->error.normalized_mean_error != 0.0)
-    (void) FormatLocaleFile(file,"    \"normalizedMeanError\": \"%g\",\n",
+    (void) FormatLocaleFile(file,"    \"normalizedMeanError\": %g,\n",
       image->error.normalized_mean_error);
   if (image->error.normalized_maximum_error != 0.0)
-    (void) FormatLocaleFile(file,"    \"normalizedMaximumError\": \"%g\",\n",
+    (void) FormatLocaleFile(file,"    \"normalizedMaximumError\": %g,\n",
       image->error.normalized_maximum_error);
   JSONFormatLocaleFile(file,"    \"renderingIntent\": %s,\n",
     CommandOptionToMnemonic(MagickIntentOptions,(ssize_t)
@@ -1599,7 +1602,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
         JSONFormatLocaleFile(file,"      %s: {\n",name);
         if (LocaleCompare(name,"iptc") == 0)
           EncodeIptcProfile(file,profile);
-        (void) FormatLocaleFile(file,"        \"length\": \"%.20g\"",(double)
+        (void) FormatLocaleFile(file,"        \"length\": %.20g",(double)
           GetStringInfoLength(profile));
         (void) FormatLocaleFile(file,"\n      }");
         name=GetNextImageProfile(image);
