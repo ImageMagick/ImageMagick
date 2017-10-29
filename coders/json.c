@@ -78,7 +78,7 @@
 /*
   Typedef declarations.
 */
-typedef struct _IptcValue
+typedef struct _IPTCInfo
 {
   long
     dataset,
@@ -90,7 +90,7 @@ typedef struct _IptcValue
   char
     tag[32],
     ***values;
-} IptcValue;
+} IPTCInfo;
 
 /*
   Forward declarations.
@@ -186,7 +186,8 @@ ModuleExport void UnregisterJSONImage(void)
 %
 */
 
-static void JsonFormatLocaleFile(FILE *file,const char *format,const char *value)
+static void JSONFormatLocaleFile(FILE *file,const char *format,
+  const char *value)
 {
   char
     *escaped_json;
@@ -202,80 +203,108 @@ static void JsonFormatLocaleFile(FILE *file,const char *format,const char *value
 
   assert(format != (const char *) NULL);
   if (value == (char *) NULL || *value == '\0')
-  {
-    (void) FormatLocaleFile(file,format,"null");
-    return;
-  }
+    {
+      (void) FormatLocaleFile(file,format,"null");
+      return;
+    }
   length=strlen(value)+2;
   /*
-    Find all the chars that need escaping and increase the dest length counter
+    Find all the chars that need escaping and increase the dest length counter.
   */
   for (p=value; *p != '\0'; p++)
+  {
+    switch (*p)
     {
-      switch (*p)
-        {
-          case '"':
-          case '\b':
-          case '\f':
-          case '\n':
-          case '\r':
-          case '\t':
-          case '\\':
-            if (~length < 1)
-              return;
-            length++;
-            break;
-          default:
-            break;
-        }
+      case '"':
+      case '\b':
+      case '\f':
+      case '\n':
+      case '\r':
+      case '\t':
+      case '\\':
+      {
+        if (~length < 1)
+          return;
+        length++;
+        break;
+      }
+      default:
+      {
+        if (((int) *p >= 0x00) && ((int) *p <= 0x1f))
+          length+=6;
+        break;
+      }
     }
+  }
   escaped_json=(char *) NULL;
   if (~length >= (MaxTextExtent-1))
     escaped_json=(char *) AcquireQuantumMemory(length+MaxTextExtent,
       sizeof(*escaped_json));
   if (escaped_json == (char *) NULL)
-  {
-    (void) FormatLocaleFile(file,format,"null");
-    return;
-  }
+    {
+      (void) FormatLocaleFile(file,format,"null");
+      return;
+    }
   q=escaped_json;
   *q++='"';
   for (p=value; *p != '\0'; p++)
+  {
+    switch (*p)
     {
-      switch (*p)
-        {
-          case '"':
-            *q++='\\';
-            *q++=(*p);
+      case '"':
+      {
+        *q++='\\';
+        *q++=(*p);
+        break;
+      }
+      case '\b':
+      {
+        *q++='\\';
+        *q++='b';
+        break;
+      }
+      case '\f':
+      {
+        *q++='\\';
+        *q++='f';
+        break;
+      }
+      case '\n':
+      {
+        *q++='\\';
+        *q++='n';
+        break;
+      }
+      case '\r':
+      {
+        *q++='\\';
+        *q++='r';
+        break;
+      }
+      case '\t':
+      {
+        *q++='\\';
+        *q++='t';
+        break;
+      }
+      case '\\':
+      {
+        *q++='\\';
+        *q++='\\';
+        break;
+      }
+      default:
+      {
+        if (((int) *p >= 0x00) && ((int) *p <= 0x1f))
+          {
+            (void) FormatLocaleString(q,7,"\\u%04X",(int) *p);
+            q+=6;
             break;
-          case '\b':
-            *q++='\\';
-            *q++='b';
-            break;
-          case '\f':
-            *q++='\\';
-            *q++='f';
-            break;
-          case '\n':
-            *q++='\\';
-            *q++='n';
-            break;
-          case '\r':
-            *q++='\\';
-            *q++='r';
-            break;
-          case '\t':
-            *q++='\\';
-            *q++='t';
-            break;
-          case '\\':
-            *q++='\\';
-            *q++='\\';
-            break;
-          default:
-            *q++=(*p);
-            break;
-        }
+          }
+        *q++=(*p);
+        break;
+      }
+    }
   }
   *q++='"';
   *q='\0';
@@ -759,7 +788,7 @@ static void EncodeIptcProfile(FILE *file,const StringInfo *profile)
   const char
     *tag;
 
-  IptcValue
+  IPTCInfo
     *value,
     **values;
 
@@ -778,7 +807,7 @@ static void EncodeIptcProfile(FILE *file,const StringInfo *profile)
     length,
     profile_length;
 
-  values=(IptcValue **) NULL;
+  values=(IPTCInfo **) NULL;
   count=0;
   profile_length=GetStringInfoLength(profile);
   for (i=0; i < (ssize_t) profile_length; i+=(ssize_t) length)
@@ -789,22 +818,22 @@ static void EncodeIptcProfile(FILE *file,const StringInfo *profile)
       continue;
     dataset=GetStringInfoDatum(profile)[i++];
     record=GetStringInfoDatum(profile)[i++];
-    value=(IptcValue *) NULL;
+    value=(IPTCInfo *) NULL;
     for (j=0; j < (ssize_t) count; j++)
     {
       if ((values[j]->record == record) && (values[j]->dataset == dataset))
         value=values[j];
     }
-    if (value == (IptcValue *) NULL)
+    if (value == (IPTCInfo *) NULL)
       {
-        values=(IptcValue **) ResizeQuantumMemory(values,count+1,
+        values=(IPTCInfo **) ResizeQuantumMemory(values,count+1,
           sizeof(*values));
-        if (values == (IptcValue **) NULL)
+        if (values == (IPTCInfo **) NULL)
           break;
-        value=(IptcValue *) AcquireMagickMemory(sizeof(*value));
-        if (value == (IptcValue *) NULL)
+        value=(IPTCInfo *) AcquireMagickMemory(sizeof(*value));
+        if (value == (IPTCInfo *) NULL)
           break;
-        /* Check the tag length in IptcValue when a new tag is added */
+        /* Check the tag length in IPTCInfo when a new tag is added */
         switch (record)
         {
           case 5: tag="Image Name"; break;
@@ -892,7 +921,7 @@ static void EncodeIptcProfile(FILE *file,const StringInfo *profile)
         attribute=DestroyString(attribute);
       }
   }
-  if (values != (IptcValue **) NULL)
+  if (values != (IPTCInfo **) NULL)
     {
       for (i=0; i < (ssize_t) count; i++)
       {
@@ -910,7 +939,7 @@ static void EncodeIptcProfile(FILE *file,const StringInfo *profile)
               {
                 if (j > 0 || k > 0)
                   (void) FormatLocaleFile(file,",");
-                JsonFormatLocaleFile(file,"%s",value->values[j][k]);
+                JSONFormatLocaleFile(file,"%s",value->values[j][k]);
                 value->values[j][k]=(char *) RelinquishMagickMemory(
                   value->values[j][k]);
               }
@@ -920,9 +949,9 @@ static void EncodeIptcProfile(FILE *file,const StringInfo *profile)
             value->values=(char ***) RelinquishMagickMemory(value->values);
             (void) FormatLocaleFile(file,"],\n");
           }
-        values[i]=(IptcValue *) RelinquishMagickMemory(values[i]);
+        values[i]=(IPTCInfo *) RelinquishMagickMemory(values[i]);
       }
-      values=(IptcValue **) RelinquishMagickMemory(values);
+      values=(IPTCInfo **) RelinquishMagickMemory(values);
     }
 }
 
@@ -996,7 +1025,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
   exception=(&image->exception);
   type=GetImageType(image,exception);
   (void) SignatureImage(image);
-  JsonFormatLocaleFile(file,"{\n  \"image\": {\n    \"name\": %s,\n",
+  JSONFormatLocaleFile(file,"{\n  \"image\": {\n    \"name\": %s,\n",
     image->filename);
   if (*image->magick_filename != '\0')
     if (LocaleCompare(image->magick_filename,image->filename) != 0)
@@ -1005,19 +1034,19 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
           filename[MaxTextExtent];
 
         GetPathComponent(image->magick_filename,TailPath,filename);
-        JsonFormatLocaleFile(file,"    \"baseName\": %s,\n",filename);
+        JSONFormatLocaleFile(file,"    \"baseName\": %s,\n",filename);
       }
   magick_info=GetMagickInfo(image->magick,exception);
-  JsonFormatLocaleFile(file,"    \"format\": %s,\n",image->magick);
+  JSONFormatLocaleFile(file,"    \"format\": %s,\n",image->magick);
   if ((magick_info != (const MagickInfo *) NULL) &&
       (GetMagickDescription(magick_info) != (const char *) NULL))
-    JsonFormatLocaleFile(file,"    \"formatDescription\": %s,\n",
+    JSONFormatLocaleFile(file,"    \"formatDescription\": %s,\n",
       GetMagickDescription(magick_info));
   if ((magick_info != (const MagickInfo *) NULL) &&
       (GetMagickMimeType(magick_info) != (const char *) NULL))
-    JsonFormatLocaleFile(file,"    \"mimeType\": %s,\n",
+    JSONFormatLocaleFile(file,"    \"mimeType\": %s,\n",
       GetMagickMimeType(magick_info));
-  JsonFormatLocaleFile(file,"    \"class\": %s,\n",CommandOptionToMnemonic(
+  JSONFormatLocaleFile(file,"    \"class\": %s,\n",CommandOptionToMnemonic(
     MagickClassOptions,(ssize_t) image->storage_class));
   (void) FormatLocaleFile(file,"    \"geometry\": {\n"
     "      \"width\": %.20g,\n      \"height\": %.20g,\n"
@@ -1040,14 +1069,14 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
         image->columns/image->x_resolution,(double) image->rows/
         image->y_resolution);
     }
-  JsonFormatLocaleFile(file,"    \"units\": %s,\n",CommandOptionToMnemonic(
+  JSONFormatLocaleFile(file,"    \"units\": %s,\n",CommandOptionToMnemonic(
     MagickResolutionOptions,(ssize_t) image->units));
-  JsonFormatLocaleFile(file,"    \"type\": %s,\n",CommandOptionToMnemonic(
+  JSONFormatLocaleFile(file,"    \"type\": %s,\n",CommandOptionToMnemonic(
     MagickTypeOptions,(ssize_t) type));
   if (image->type != UndefinedType)
-    JsonFormatLocaleFile(file,"    \"baseType\": %s,\n",
+    JSONFormatLocaleFile(file,"    \"baseType\": %s,\n",
       CommandOptionToMnemonic(MagickTypeOptions,(ssize_t) image->type));
-  JsonFormatLocaleFile(file,"    \"endianess\": %s,\n",
+  JSONFormatLocaleFile(file,"    \"endianess\": %s,\n",
     CommandOptionToMnemonic(MagickEndianOptions,(ssize_t) image->endian));
   locate=GetImageArtifact(image,"identify:locate");
   if (locate == (const char *) NULL)
@@ -1128,7 +1157,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
   /*
     Detail channel depth and extrema.
   */
-  JsonFormatLocaleFile(file,"    \"colorspace\": %s,\n",
+  JSONFormatLocaleFile(file,"    \"colorspace\": %s,\n",
     CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
     image->colorspace));
   channel_statistics=(ChannelStatistics *) NULL;
@@ -1417,7 +1446,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
   if (image->error.normalized_maximum_error != 0.0)
     (void) FormatLocaleFile(file,"    \"normalizedMaximumError\": \"%g\",\n",
       image->error.normalized_maximum_error);
-  JsonFormatLocaleFile(file,"    \"renderingIntent\": %s,\n",
+  JSONFormatLocaleFile(file,"    \"renderingIntent\": %s,\n",
     CommandOptionToMnemonic(MagickIntentOptions,(ssize_t)
     image->rendering_intent));
   if (image->gamma != 0.0)
@@ -1460,12 +1489,12 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
     &image->matte_color,(IndexPacket *) NULL);
   ColorFormatLocaleFile(file,"    \"transparentColor\": \"%s\",\n",image,
     &image->transparent_color,(IndexPacket *) NULL);
-  JsonFormatLocaleFile(file,"    \"interlace\": %s,\n",CommandOptionToMnemonic(
+  JSONFormatLocaleFile(file,"    \"interlace\": %s,\n",CommandOptionToMnemonic(
     MagickInterlaceOptions,(ssize_t) image->interlace));
-  JsonFormatLocaleFile(file,"    \"intensity\": %s,\n",CommandOptionToMnemonic(
+  JSONFormatLocaleFile(file,"    \"intensity\": %s,\n",CommandOptionToMnemonic(
    MagickPixelIntensityOptions,(ssize_t)
     image->intensity));
-  JsonFormatLocaleFile(file,"    \"compose\": %s,\n",
+  JSONFormatLocaleFile(file,"    \"compose\": %s,\n",
     CommandOptionToMnemonic(MagickComposeOptions,(ssize_t) image->compose));
   if ((image->page.width != 0) || (image->page.height != 0) ||
       (image->page.x != 0) || (image->page.y != 0))
@@ -1477,7 +1506,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
   if ((image->page.x != 0) || (image->page.y != 0))
     (void) FormatLocaleFile(file,"    \"originGeometry\": %+.20g%+.20g,\n",
       (double) image->page.x,(double) image->page.y);
-  JsonFormatLocaleFile(file,"    \"dispose\": %s,\n",
+  JSONFormatLocaleFile(file,"    \"dispose\": %s,\n",
     CommandOptionToMnemonic(MagickDisposeOptions,(ssize_t) image->dispose));
   if (image->delay != 0)
     (void) FormatLocaleFile(file,"    \"delay\": \"%.20gx%.20g\",\n",
@@ -1492,17 +1521,17 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
     if (image->scene != 0)
       (void) FormatLocaleFile(file,"    \"scene\": %.20g,\n",(double)
         image->scene);
-  JsonFormatLocaleFile(file,"    \"compression\": %s,\n",
+  JSONFormatLocaleFile(file,"    \"compression\": %s,\n",
     CommandOptionToMnemonic(MagickCompressOptions,(ssize_t)
     image->compression));
   if (image->quality != UndefinedCompressionQuality)
     (void) FormatLocaleFile(file,"    \"quality\": %.20g,\n",(double)
       image->quality);
-  JsonFormatLocaleFile(file,"    \"orientation\": %s,\n",
+  JSONFormatLocaleFile(file,"    \"orientation\": %s,\n",
     CommandOptionToMnemonic(MagickOrientationOptions,(ssize_t)
     image->orientation));
   if (image->montage != (char *) NULL)
-    JsonFormatLocaleFile(file,"    \"montage\": \"%s\",\n",image->montage);
+    JSONFormatLocaleFile(file,"    \"montage\": \"%s\",\n",image->montage);
   if (image->directory != (char *) NULL)
     {
       Image
@@ -1532,7 +1561,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
           q++;
         (void) CopyMagickString(image_info->filename,p,(size_t) (q-p+1));
         p=q+1;
-        JsonFormatLocaleFile(file,"{\n       \"name\": %s",
+        JSONFormatLocaleFile(file,"{\n       \"name\": %s",
           image_info->filename);
         handler=SetWarningHandler((WarningHandler) NULL);
         tile=ReadImage(image_info,exception);
@@ -1550,9 +1579,9 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
         property=GetNextImageProperty(tile);
         while (property != (const char *) NULL)
         {
-          JsonFormatLocaleFile(file,",\n       %s: ",property);
+          JSONFormatLocaleFile(file,",\n       %s: ",property);
           value=GetImageProperty(tile,property);
-          JsonFormatLocaleFile(file,"%s",value);
+          JSONFormatLocaleFile(file,"%s",value);
           property=GetNextImageProperty(tile);
         }
         tile=DestroyImage(tile);
@@ -1584,9 +1613,9 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
       {
         if (n++ != 0)
           (void) FormatLocaleFile(file,",\n");
-        JsonFormatLocaleFile(file,"      %s: ",property);
+        JSONFormatLocaleFile(file,"      %s: ",property);
         value=GetImageProperty(image,property);
-        JsonFormatLocaleFile(file,"%s",value);
+        JSONFormatLocaleFile(file,"%s",value);
         property=GetNextImageProperty(image);
       }
       (void) FormatLocaleFile(file,"\n    },\n");
@@ -1598,7 +1627,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
       /*
         Display clipping path.
       */
-      JsonFormatLocaleFile(file,"    \"clipping path\": %s,\n",value);
+      JSONFormatLocaleFile(file,"    \"clipping path\": %s,\n",value);
     }
   ResetImageProfileIterator(image);
   name=GetNextImageProfile(image);
@@ -1622,7 +1651,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
           continue;
         if (n++ != 0)
           (void) FormatLocaleFile(file,",\n");
-        JsonFormatLocaleFile(file,"      %s: {\n",name);
+        JSONFormatLocaleFile(file,"      %s: {\n",name);
         if (LocaleCompare(name,"iptc") == 0)
           EncodeIptcProfile(file,profile);
         (void) FormatLocaleFile(file,"        \"length\": \"%.20g\"",(double)
@@ -1648,9 +1677,9 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
       {
         if (n++ != 0)
           (void) FormatLocaleFile(file,",\n");
-        JsonFormatLocaleFile(file,"      %s: ",artifact);
+        JSONFormatLocaleFile(file,"      %s: ",artifact);
         value=GetImageArtifact(image,artifact);
-        JsonFormatLocaleFile(file,"%s",value);
+        JSONFormatLocaleFile(file,"%s",value);
         artifact=GetNextImageArtifact(image);
       }
       (void) FormatLocaleFile(file,"\n    },\n");
@@ -1671,10 +1700,10 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
       {
         if (n++ != 0)
           (void) FormatLocaleFile(file,",\n");
-        JsonFormatLocaleFile(file,"      %s: ",registry);
+        JSONFormatLocaleFile(file,"      %s: ",registry);
         value=(const char *) GetImageRegistry(StringRegistryType,registry,
           exception);
-        JsonFormatLocaleFile(file,"%s",value);
+        JSONFormatLocaleFile(file,"%s",value);
         registry=GetNextImageRegistry();
       }
       (void) FormatLocaleFile(file,"    },\n");
@@ -1682,21 +1711,21 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
   (void) FormatLocaleFile(file,"    \"tainted\": %s,\n",
     image->taint != MagickFalse ? "true" : "false");
   (void) FormatMagickSize(GetBlobSize(image),MagickFalse,format);
-  JsonFormatLocaleFile(file,"    \"filesize\": %s,\n",format);
+  JSONFormatLocaleFile(file,"    \"filesize\": %s,\n",format);
   (void) FormatMagickSize((MagickSizeType) image->columns*image->rows,
      MagickFalse,format);
   if (strlen(format) > 1)
     format[strlen(format)-1]='\0';
-  JsonFormatLocaleFile(file,"    \"numberPixels\": %s,\n",format);
+  JSONFormatLocaleFile(file,"    \"numberPixels\": %s,\n",format);
   (void) FormatMagickSize((MagickSizeType) ((double) image->columns*image->rows/
     elapsed_time+0.5),MagickFalse,format);
-  JsonFormatLocaleFile(file,"    \"pixelsPerSecond\": %s,\n",format);
+  JSONFormatLocaleFile(file,"    \"pixelsPerSecond\": %s,\n",format);
   (void) FormatLocaleFile(file,"    \"userTime\": \"%0.3fu\",\n",user_time);
   (void) FormatLocaleFile(file,"    \"elapsedTime\": \"%lu:%02lu.%03lu\",\n",
     (unsigned long) (elapsed_time/60.0),(unsigned long) ceil(fmod(
     elapsed_time,60.0)),(unsigned long) (1000.0*(elapsed_time-floor(
     elapsed_time))));
-  JsonFormatLocaleFile(file,"    \"version\": %s\n",
+  JSONFormatLocaleFile(file,"    \"version\": %s\n",
     GetMagickVersion((size_t *) NULL));
   (void) FormatLocaleFile(file,"  }\n}\n");
   (void) fflush(file);
