@@ -1,4 +1,8 @@
-2017-10-27 7.0.7-9 Dirk Lemstra <dirk@lem.....org>
+2017-10-20  7.0.7-9 Cristy  <quetzlzacatenango@image...>
+  * Encode JSON control characters (reference
+    https://github.com/ImageMagick/ImageMagick/issues/848).
+
+2017-10-27  7.0.7-9 Dirk Lemstra <dirk@lem.....org>
   * Added support for reading mipmaps in dds images (reference
     https://github.com/ImageMagick/ImageMagick/issues/845).
 
