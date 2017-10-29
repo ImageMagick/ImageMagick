@@ -2341,6 +2341,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
                     continue;
                   break;
                 }
+                if (p > (q-5))
+                  {
+                    status=MagickFalse;
+                    break;
+                  }
                 (void) CopyMagickString(token,p,(size_t) (q-p-4+1));
                 (void) SetImageArtifact(image,name,token);
                 GetNextToken(q,&q,extent,token);
@@ -2398,6 +2403,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
                     continue;
                   break;
                 }
+                if (p > (q-5))
+                  {
+                    status=MagickFalse;
+                    break;
+                  }
                 (void) CopyMagickString(token,p,(size_t) (q-p-4+1));
                 bounds.x1=graphic_context[n]->affine.sx*segment.x1+
                   graphic_context[n]->affine.ry*segment.y1+
@@ -2466,6 +2476,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
                     continue;
                   break;
                 }
+                if (p > (q-5))
+                  {
+                    status=MagickFalse;
+                    break;
+                  }
                 (void) CopyMagickString(token,p,(size_t) (q-p-4+1));
                 (void) FormatLocaleString(key,MaxTextExtent,"%s",name);
                 (void) SetImageArtifact(image,key,token);
