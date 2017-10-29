@@ -543,7 +543,7 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
       if ((blob_info->file_info.file != (FILE *) NULL) &&
           (blob_info->synchronize != MagickFalse))
         {
-          (void) fsync(fileno(blob_info->file_info.file));
+          status=fsync(fileno(blob_info->file_info.file));
           status=ferror(blob_info->file_info.file);
         }
       break;
