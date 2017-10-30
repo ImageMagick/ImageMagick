@@ -3140,7 +3140,7 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
       MagickRealType
         intensity;
 
-      intensity=0;
+      intensity=0.0;
       if ((x < (ssize_t) mask->columns) && (y < (ssize_t) mask->rows))
         intensity=GetPixelIntensity(mask,p);
       switch (type)
@@ -3259,7 +3259,7 @@ MagickExport MagickBooleanType SetImageRegionMask(Image *image,
       Quantum
         pixel;
 
-      pixel=0;
+      pixel=(Quantum) 0;
       if (((x >= region->x) && (x < (region->x+(ssize_t) region->width))) &&
           ((y >= region->y) && (y < (region->y+(ssize_t) region->height))))
         pixel=QuantumRange;
