@@ -171,8 +171,7 @@ static inline MagickOffsetType WriteMatrixElements(
 }
 
 static MagickBooleanType SetMatrixExtent(
-  MatrixInfo *magick_restrict matrix_info,
-  MagickSizeType length)
+  MatrixInfo *magick_restrict matrix_info,MagickSizeType length)
 {
   MagickOffsetType
     count,
