@@ -281,6 +281,9 @@ WandExport MagickBooleanType CLILogEvent(MagickCLI *cli_wand,
   va_list
     operands;
 
+  if (IsEventLogging() == MagickFalse)
+    return(MagickFalse);
+
   /* HACK - prepend the CLI location to format string.
      The better way would be add more arguments to to the 'va' oparands
      list, but that does not appear to be possible! So we do some

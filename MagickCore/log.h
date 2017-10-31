@@ -81,8 +81,7 @@ extern MagickExport MagickBooleanType
   IsEventLogging(void),
   ListLogInfo(FILE *,ExceptionInfo *),
   LogMagickEvent(const LogEventType,const char *,const char *,const size_t,
-    const char *,...) 
-    magick_attribute((__format__ (__printf__,5,6))),
+    const char *,...) magick_attribute((__format__ (__printf__,5,6))),
   LogMagickEventList(const LogEventType,const char *,const char *,const size_t,
     const char *,va_list) magick_attribute((__format__ (__printf__,5,0)));
 

@@ -212,6 +212,9 @@ static LinkedListInfo
 static SemaphoreInfo
   *event_semaphore = (SemaphoreInfo *) NULL,
   *log_semaphore = (SemaphoreInfo *) NULL;
+
+static MagickBooleanType
+  log_enabled = MagickFalse;
 
 /*
   Forward declarations.
@@ -226,6 +229,22 @@ static MagickBooleanType
   IsLogCacheInstantiated(ExceptionInfo *),
   LoadLogCache(LinkedListInfo *,const char *,const char *,const size_t,
     ExceptionInfo *);
+
+static void CheckLogEnabled()
+{
+  /* We don't need locks because we only call this inside log_semaphore */
+  if (IsLinkedListEmpty(log_cache) != MagickFalse)
+    log_enabled=MagickFalse;
+  else
+    {
+      LogInfo
+        *p;
+
+      ResetLinkedListIterator(log_cache);
+      p=(LogInfo *) GetNextValueInLinkedList(log_cache);
+      log_enabled=p->event_mask != NoEvents ? MagickTrue: MagickFalse;
+    }
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -663,7 +682,10 @@ static MagickBooleanType IsLogCacheInstantiated(ExceptionInfo *exception)
         ActivateSemaphoreInfo(&log_semaphore);
       LockSemaphoreInfo(log_semaphore);
       if (log_cache == (LinkedListInfo *) NULL)
-        log_cache=AcquireLogCache(LogFilename,exception);
+        {
+          log_cache=AcquireLogCache(LogFilename,exception);
+          CheckLogEnabled();
+        }
       UnlockSemaphoreInfo(log_semaphore);
     }
   return(log_cache != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
@@ -690,19 +712,7 @@ static MagickBooleanType IsLogCacheInstantiated(ExceptionInfo *exception)
 */
 MagickExport MagickBooleanType IsEventLogging(void)
 {
-  const LogInfo
-    *log_info;
-
-  ExceptionInfo
-    *exception;
-
-  if ((log_cache == (LinkedListInfo *) NULL) ||
-      (IsLinkedListEmpty(log_cache) != MagickFalse))
-    return(MagickFalse);
-  exception=AcquireExceptionInfo();
-  log_info=GetLogInfo("*",exception);
-  exception=DestroyExceptionInfo(exception);
-  return(log_info->event_mask != NoEvents ? MagickTrue : MagickFalse);
+  return(log_enabled);
 }
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -891,6 +901,7 @@ MagickPrivate void LogComponentTerminus(void)
   LockSemaphoreInfo(log_semaphore);
   if (log_cache != (LinkedListInfo *) NULL)
     log_cache=DestroyLinkedList(log_cache,DestroyLogElement);
+  log_enabled=MagickFalse;
   UnlockSemaphoreInfo(log_semaphore);
   RelinquishSemaphoreInfo(&log_semaphore);
 }
@@ -1251,8 +1262,9 @@ static char *TranslateFilename(const LogInfo *log_info)
   return(filename);
 }
 
-MagickBooleanType LogMagickEventList(const LogEventType type,const char *module,
-  const char *function,const size_t line,const char *format,va_list operands)
+MagickExport MagickBooleanType LogMagickEventList(const LogEventType type,
+  const char *module,const char *function,const size_t line,const char *format,
+  va_list operands)
 {
   char
     event[MagickPathExtent],
@@ -1270,8 +1282,6 @@ MagickBooleanType LogMagickEventList(const LogEventType type,const char *module,
   LogInfo
     *log_info;
 
-  if (IsEventLogging() == MagickFalse)
-    return(MagickFalse);
   exception=AcquireExceptionInfo();
   log_info=(LogInfo *) GetLogInfo("*",exception);
   exception=DestroyExceptionInfo(exception);
@@ -1380,8 +1390,9 @@ MagickBooleanType LogMagickEventList(const LogEventType type,const char *module,
   return(MagickTrue);
 }
 
-MagickBooleanType LogMagickEvent(const LogEventType type,const char *module,
-  const char *function,const size_t line,const char *format,...)
+MagickExport MagickBooleanType LogMagickEvent(const LogEventType type,
+  const char *module,const char *function,const size_t line,
+  const char *format,...)
 {
   va_list
     operands;
@@ -1389,6 +1400,8 @@ MagickBooleanType LogMagickEvent(const LogEventType type,const char *module,
   MagickBooleanType
     status;
 
+  if (IsEventLogging() == MagickFalse)
+    return(MagickFalse);
   va_start(operands,format);
   status=LogMagickEventList(type,module,function,line,format,operands);
   va_end(operands);
@@ -1737,6 +1750,7 @@ MagickExport LogEventType SetLogEventMask(const char *events)
   log_info->event_mask=(LogEventType) option;
   if (option == -1)
     log_info->event_mask=UndefinedEvents;
+  CheckLogEnabled();
   UnlockSemaphoreInfo(log_semaphore);
   return(log_info->event_mask);
 }
