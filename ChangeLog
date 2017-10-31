@@ -1,3 +1,6 @@
+2017-10-31  6.9.9-21 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.9-21, GIT revision 12218:43b16fff0:20171031.
+
 2017-10-29  6.9.9-21 Cristy  <quetzlzacatenango@image...>
   * Encode JSON control characters (reference
     https://github.com/ImageMagick/ImageMagick/issues/848).
