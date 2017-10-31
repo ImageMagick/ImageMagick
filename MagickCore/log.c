@@ -209,12 +209,12 @@ static char
 static LinkedListInfo
   *log_cache = (LinkedListInfo *) NULL;
 
+static MagickBooleanType
+  event_logging = MagickFalse;
+
 static SemaphoreInfo
   *event_semaphore = (SemaphoreInfo *) NULL,
   *log_semaphore = (SemaphoreInfo *) NULL;
-
-static MagickBooleanType
-  log_enabled = MagickFalse;
 
 /*
   Forward declarations.
@@ -229,22 +229,6 @@ static MagickBooleanType
   IsLogCacheInstantiated(ExceptionInfo *),
   LoadLogCache(LinkedListInfo *,const char *,const char *,const size_t,
     ExceptionInfo *);
-
-static void CheckLogEnabled()
-{
-  /* We don't need locks because we only call this inside log_semaphore */
-  if (IsLinkedListEmpty(log_cache) != MagickFalse)
-    log_enabled=MagickFalse;
-  else
-    {
-      LogInfo
-        *p;
-
-      ResetLinkedListIterator(log_cache);
-      p=(LogInfo *) GetNextValueInLinkedList(log_cache);
-      log_enabled=p->event_mask != NoEvents ? MagickTrue: MagickFalse;
-    }
-}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -674,6 +658,25 @@ MagickExport const char *GetLogName(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static inline void CheckEventLogging()
+{
+  /*
+    Are we logging events?
+  */
+  if (IsLinkedListEmpty(log_cache) != MagickFalse)
+    event_logging=MagickFalse;
+  else
+    {
+      LogInfo
+        *p;
+
+      ResetLinkedListIterator(log_cache);
+      p=(LogInfo *) GetNextValueInLinkedList(log_cache);
+      event_logging=p->event_mask != NoEvents ? MagickTrue: MagickFalse;
+    }
+}
+
 static MagickBooleanType IsLogCacheInstantiated(ExceptionInfo *exception)
 {
   if (log_cache == (LinkedListInfo *) NULL)
@@ -684,7 +687,7 @@ static MagickBooleanType IsLogCacheInstantiated(ExceptionInfo *exception)
       if (log_cache == (LinkedListInfo *) NULL)
         {
           log_cache=AcquireLogCache(LogFilename,exception);
-          CheckLogEnabled();
+          CheckEventLogging();
         }
       UnlockSemaphoreInfo(log_semaphore);
     }
@@ -712,8 +715,9 @@ static MagickBooleanType IsLogCacheInstantiated(ExceptionInfo *exception)
 */
 MagickExport MagickBooleanType IsEventLogging(void)
 {
-  return(log_enabled);
+  return(event_logging);
 }
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -901,7 +905,7 @@ MagickPrivate void LogComponentTerminus(void)
   LockSemaphoreInfo(log_semaphore);
   if (log_cache != (LinkedListInfo *) NULL)
     log_cache=DestroyLinkedList(log_cache,DestroyLogElement);
-  log_enabled=MagickFalse;
+  event_logging=MagickFalse;
   UnlockSemaphoreInfo(log_semaphore);
   RelinquishSemaphoreInfo(&log_semaphore);
 }
@@ -1750,7 +1754,7 @@ MagickExport LogEventType SetLogEventMask(const char *events)
   log_info->event_mask=(LogEventType) option;
   if (option == -1)
     log_info->event_mask=UndefinedEvents;
-  CheckLogEnabled();
+  CheckEventLogging();
   UnlockSemaphoreInfo(log_semaphore);
   return(log_info->event_mask);
 }
@@ -1794,7 +1798,7 @@ MagickExport void SetLogFormat(const char *format)
   log_info->format=ConstantString(format);
   UnlockSemaphoreInfo(log_semaphore);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
