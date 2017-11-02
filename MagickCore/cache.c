@@ -581,7 +581,7 @@ static MagickBooleanType ClonePixelCacheRepository(
            (clone_info->type == MapCache)))
         {
           (void) memcpy(clone_info->pixels,cache_info->pixels,
-            cache_info->columns*cache_info->number_channels*cache_info->rows*
+            cache_info->number_channels*cache_info->columns*cache_info->rows*
             sizeof(*cache_info->pixels));
           if ((cache_info->metacontent_extent != 0) &&
               (clone_info->metacontent_extent != 0))
@@ -605,8 +605,8 @@ static MagickBooleanType ClonePixelCacheRepository(
   optimize=(cache_info->number_channels == clone_info->number_channels) &&
     (memcmp(cache_info->channel_map,clone_info->channel_map,length) == 0) ?
     MagickTrue : MagickFalse;
-  length=(size_t) MagickMin(cache_info->columns*cache_info->number_channels,
-    clone_info->columns*clone_info->number_channels);
+  length=(size_t) MagickMin(cache_info->number_channels*cache_info->columns,
+    clone_info->number_channels*clone_info->columns);
   status=MagickTrue;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
@@ -5495,7 +5495,7 @@ static MagickBooleanType WritePixelCachePixels(
       {
         (void) memcpy(q,p,(size_t) length);
         p+=cache_info->number_channels*nexus_info->region.width;
-        q+=cache_info->columns*cache_info->number_channels;
+        q+=cache_info->number_channels*cache_info->columns;
       }
       break;
     }
