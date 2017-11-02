@@ -143,7 +143,7 @@ static PixelPacket
 
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 static void
-  CopyOpenCLBuffer(CacheInfo *magick_restrict cache_info);
+  CopyOpenCLBuffer(CacheInfo *magick_restrict);
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -357,9 +357,7 @@ MagickExport Cache AcquirePixelCache(const size_t number_threads)
   char
     *value;
 
-  cache_info=(CacheInfo *) AcquireQuantumMemory(1,sizeof(*cache_info));
-  if (cache_info == (CacheInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  cache_info=(CacheInfo *) AcquireCriticalMemory(sizeof(*cache_info));
   (void) ResetMagickMemory(cache_info,0,sizeof(*cache_info));
   cache_info->type=UndefinedCache;
   cache_info->mode=IOMode;
@@ -688,8 +686,6 @@ MagickExport Cache ClonePixelCache(const Cache cache)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       cache_info->filename);
   clone_info=(CacheInfo *) AcquirePixelCache(cache_info->number_threads);
-  if (clone_info == (Cache) NULL)
-    return((Cache) NULL);
   clone_info->virtual_pixel_method=cache_info->virtual_pixel_method;
   return((Cache ) clone_info);
 }
@@ -1893,6 +1889,8 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
                   exception);
               if (status != MagickFalse)
                 {
+                  if (cache_info->reference_count == 1)
+                    cache_info->nexus_info=(NexusInfo **) NULL;
                   destroy=MagickTrue;
                   image->cache=clone_image.cache;
                 }
@@ -4650,7 +4648,7 @@ static MagickBooleanType ReadPixelCacheIndexes(
       {
         count=ReadPixelCacheRegion(cache_info,cache_info->offset+extent*
           sizeof(PixelPacket)+offset*sizeof(*q),length,(unsigned char *) q);
-        if ((MagickSizeType) count < length)
+        if (count < (MagickOffsetType) length)
           break;
         offset+=cache_info->columns;
         q+=nexus_info->region.width;
@@ -4821,7 +4819,7 @@ static MagickBooleanType ReadPixelCachePixels(
       {
         count=ReadPixelCacheRegion(cache_info,cache_info->offset+offset*
           sizeof(*q),length,(unsigned char *) q);
-        if ((MagickSizeType) count < length)
+        if (count < (MagickOffsetType) length)
           break;
         offset+=cache_info->columns;
         q+=nexus_info->region.width;
@@ -5763,7 +5761,7 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
         count=WritePixelCacheRegion(cache_info,cache_info->offset+extent*
           sizeof(PixelPacket)+offset*sizeof(*p),length,(const unsigned char *)
           p);
-        if ((MagickSizeType) count < length)
+        if (count < (MagickOffsetType) length)
           break;
         p+=nexus_info->region.width;
         offset+=cache_info->columns;
@@ -5927,7 +5925,7 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
       {
         count=WritePixelCacheRegion(cache_info,cache_info->offset+offset*
           sizeof(*p),length,(const unsigned char *) p);
-        if ((MagickSizeType) count < length)
+        if (count < (MagickOffsetType) length)
           break;
         p+=nexus_info->region.width;
         offset+=cache_info->columns;
