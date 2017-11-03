@@ -5147,11 +5147,9 @@ static PixelPacket *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
   assert(cache_info->signature == MagickSignature);
   if (cache_info->type == UndefinedCache)
     return((PixelPacket *) NULL);
+  if ((region->width == 0) || (region->height == 0))
+    return((Quantum *) NULL);
   nexus_info->region=(*region);
-  number_pixels=(MagickSizeType) nexus_info->region.width*
-    nexus_info->region.height;
-  if (number_pixels == 0)
-    return((PixelPacket *) NULL);
   if (((cache_info->type == MemoryCache) || (cache_info->type == MapCache)) &&
       (buffered == MagickFalse))
     {
@@ -5188,6 +5186,8 @@ static PixelPacket *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
   /*
     Pixels are stored in a staging region until they are synced to the cache.
   */
+  number_pixels=(MagickSizeType) nexus_info->region.width*
+    nexus_info->region.height;
   length=number_pixels*sizeof(PixelPacket);
   if (cache_info->active_index_channel != MagickFalse)
     length+=number_pixels*sizeof(IndexPacket);

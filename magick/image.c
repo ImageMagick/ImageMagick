@@ -810,9 +810,7 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
         "NegativeOrZeroImageSize","`%s'",image->filename);
       return((Image *) NULL);
     }
-  clone_image=(Image *) AcquireMagickMemory(sizeof(*clone_image));
-  if (clone_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+  clone_image=(Image *) AcquireCriticalMemory(sizeof(*clone_image));
   (void) ResetMagickMemory(clone_image,0,sizeof(*clone_image));
   clone_image->signature=MagickSignature;
   clone_image->storage_class=image->storage_class;
