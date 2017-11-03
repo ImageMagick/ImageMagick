@@ -192,8 +192,8 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     {
       resource_info.area=(MagickOffsetType) size;
       limit=resource_info.area_limit;
-      status=(resource_info.area_limit == MagickResourceInfinity) ||
-        (size < limit) ? MagickTrue : MagickFalse;
+      if ((limit == MagickResourceInfinity) || (size < limit))
+        status=MagickTrue;
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickFalse,(const char *) NULL,
@@ -209,9 +209,11 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     {
       resource_info.memory+=(MagickOffsetType) size;
       limit=resource_info.memory_limit;
-      status=(resource_info.memory_limit == MagickResourceInfinity) ||
-        ((MagickSizeType) resource_info.memory < limit) ? MagickTrue :
-        MagickFalse;
+      if ((limit == MagickResourceInfinity) ||
+          ((MagickSizeType) resource_info.memory < limit))
+        status=MagickTrue;
+      else
+        resource_info.memory-=(MagickOffsetType) size;
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickTrue,"B",MagickFormatExtent,
@@ -227,8 +229,11 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     {
       resource_info.map+=(MagickOffsetType) size;
       limit=resource_info.map_limit;
-      status=(resource_info.map_limit == MagickResourceInfinity) ||
-        ((MagickSizeType) resource_info.map < limit) ? MagickTrue : MagickFalse;
+      if ((limit == MagickResourceInfinity) ||
+          ((MagickSizeType) resource_info.map < limit))
+        status=MagickTrue;
+      else
+        resource_info.map-=(MagickOffsetType) size;
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickTrue,"B",MagickFormatExtent,
@@ -244,9 +249,11 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     {
       resource_info.disk+=(MagickOffsetType) size;
       limit=resource_info.disk_limit;
-      status=(resource_info.disk_limit == MagickResourceInfinity) ||
-        ((MagickSizeType) resource_info.disk < limit) ? MagickTrue :
-        MagickFalse;
+      if ((limit == MagickResourceInfinity) ||
+          ((MagickSizeType) resource_info.disk < limit))
+        status=MagickTrue;
+      else
+        resource_info.disk-=(MagickOffsetType) size;
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickTrue,"B",MagickFormatExtent,
@@ -262,9 +269,11 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     {
       resource_info.file+=(MagickOffsetType) size;
       limit=resource_info.file_limit;
-      status=(resource_info.file_limit == MagickResourceInfinity) ||
-        ((MagickSizeType) resource_info.file < limit) ?
-        MagickTrue : MagickFalse;
+      if ((limit == MagickResourceInfinity) ||
+          ((MagickSizeType) resource_info.file < limit))
+        status=MagickTrue;
+      else
+        resource_info.file-=(MagickOffsetType) size;
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickFalse,(const char *) NULL,
@@ -281,8 +290,8 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     {
       resource_info.height=(MagickOffsetType) size;
       limit=resource_info.height_limit;
-      status=(resource_info.height_limit == MagickResourceInfinity) ||
-        (size < limit) ? MagickTrue : MagickFalse;
+      if ((limit == MagickResourceInfinity) || (size < limit))
+        status=MagickTrue;
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickFalse,"P",MagickFormatExtent,
@@ -297,9 +306,9 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     case ThreadResource:
     {
       limit=resource_info.thread_limit;
-      status=(resource_info.thread_limit == MagickResourceInfinity) ||
-        ((MagickSizeType) resource_info.thread < limit) ?
-        MagickTrue : MagickFalse;
+      if ((limit == MagickResourceInfinity) ||
+          ((MagickSizeType) resource_info.thread < limit))
+        status=MagickTrue;
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickFalse,(const char *) NULL,
@@ -315,9 +324,9 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     case ThrottleResource:
     {
       limit=resource_info.throttle_limit;
-      status=(resource_info.throttle_limit == MagickResourceInfinity) ||
-        ((MagickSizeType) resource_info.throttle < limit) ?
-        MagickTrue : MagickFalse;
+      if ((limit == MagickResourceInfinity) ||
+          ((MagickSizeType) resource_info.throttle < limit))
+        status=MagickTrue;
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickFalse,(const char *) NULL,
@@ -334,9 +343,11 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     {
       resource_info.time+=(MagickOffsetType) size;
       limit=resource_info.time_limit;
-      status=(resource_info.time_limit == MagickResourceInfinity) ||
-        ((MagickSizeType) resource_info.time < limit) ?
-        MagickTrue : MagickFalse;
+      if ((limit == MagickResourceInfinity) ||
+          ((MagickSizeType) resource_info.time < limit))
+        status=MagickTrue;
+      else
+        resource_info.time-=(MagickOffsetType) size;
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickFalse,(const char *) NULL,
@@ -353,8 +364,8 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     {
       resource_info.width=(MagickOffsetType) size;
       limit=resource_info.width_limit;
-      status=(resource_info.width_limit == MagickResourceInfinity) ||
-        (size < limit) ? MagickTrue : MagickFalse;
+      if ((limit == MagickResourceInfinity) || (size < limit))
+        status=MagickTrue;
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickFalse,"P",MagickFormatExtent,
