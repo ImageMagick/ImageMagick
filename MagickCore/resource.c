@@ -381,9 +381,12 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
       break;
   }
   UnlockSemaphoreInfo(resource_semaphore);
-  (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"%s: %s/%s/%s",
-    CommandOptionToMnemonic(MagickResourceOptions,(ssize_t) type),
-    resource_request,resource_current,resource_limit);
+  if (logging != MagickFalse)
+    {
+      (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"%s: %s/%s/%s",
+        CommandOptionToMnemonic(MagickResourceOptions,(ssize_t) type),
+        resource_request,resource_current,resource_limit);
+    }
   return(status);
 }
 
