@@ -263,7 +263,6 @@ MagickExport MatrixInfo *AcquireMatrixInfo(const size_t columns,
           return(DestroyMatrixInfo(matrix_info));
         }
       matrix_info->type=DiskCache;
-      (void) AcquireMagickResource(MemoryResource,matrix_info->length);
       matrix_info->file=AcquireUniqueFileResource(matrix_info->path);
       if (matrix_info->file == -1)
         return(DestroyMatrixInfo(matrix_info));
@@ -272,14 +271,15 @@ MagickExport MatrixInfo *AcquireMatrixInfo(const size_t columns,
         {
           status=SetMatrixExtent(matrix_info,matrix_info->length);
           if (status != MagickFalse)
+            matrix_info->elements=(void *) MapBlob(matrix_info->file,IOMode,0,
+              (size_t) matrix_info->length);
+          if (matrix_info->elements != NULL)
             {
-              matrix_info->elements=(void *) MapBlob(matrix_info->file,IOMode,0,
-                (size_t) matrix_info->length);
-              if (matrix_info->elements != NULL)
-                matrix_info->type=MapCache;
-              else
-                RelinquishMagickResource(MapResource,matrix_info->length);
+              RelinquishMagickResource(DiskResource,matrix_info->length);
+              matrix_info->type=MapCache;
             }
+          else
+            RelinquishMagickResource(MapResource,matrix_info->length);
         }
     }
   return(matrix_info);
