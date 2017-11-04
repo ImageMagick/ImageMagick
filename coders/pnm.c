@@ -156,7 +156,7 @@ static int PNMComment(Image *image,ExceptionInfo *exception)
   comment=AcquireString(GetImageProperty(image,"comment",exception));
   p=comment+strlen(comment);
   extent=strlen(comment)+MagickPathExtent;
-  for (c='#'; (c != EOF) && (c != (int) '\n'); p++)
+  for (c='#'; (c != EOF) && (c != (int) '\n') && (c != (int) '\r'); p++)
   {
     if ((size_t) (p-comment+1) >= extent)
       {
@@ -207,17 +207,20 @@ static unsigned int PNMInteger(Image *image,const unsigned int base,
     Evaluate number.
   */
   value=0;
-  while (isdigit(c) != 0) {
-    if (value > (unsigned int) (INT_MAX/10))
-      break;
-    value*=10;
-    if (value > (unsigned int) (INT_MAX-(c-(int) '0')))
-      break;
-    value+=c-(int) '0';
+  while (isdigit(c) != 0)
+  {
+    if (value <= (unsigned int) (INT_MAX/10))
+      {
+        value*=10;
+        if (value <= (unsigned int) (INT_MAX-(c-(int) '0')))
+          value+=c-(int) '0';
+      }
     c=ReadBlobByte(image);
     if (c == EOF)
       return(0);
   }
+  if (c == (int) '#')
+    c=PNMComment(image,exception);
   return(value);
 }
 
