@@ -5148,7 +5148,7 @@ static PixelPacket *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
   if (cache_info->type == UndefinedCache)
     return((PixelPacket *) NULL);
   if ((region->width == 0) || (region->height == 0))
-    return((Quantum *) NULL);
+    return((PixelPacket *) NULL);
   nexus_info->region=(*region);
   if (((cache_info->type == MemoryCache) || (cache_info->type == MapCache)) &&
       (buffered == MagickFalse))
