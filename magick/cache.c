@@ -4253,8 +4253,8 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   clone_info->file=(-1);
   clone_info->storage_class=cache_info->storage_class;
   clone_info->colorspace=cache_info->colorspace;
-  clone_info->rows=cache_info->rows;
   clone_info->columns=cache_info->columns;
+  clone_info->rows=cache_info->rows;
   clone_info->active_index_channel=cache_info->active_index_channel;
   clone_info->mode=PersistMode;
   clone_info->length=cache_info->length;
