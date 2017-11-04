@@ -220,7 +220,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
       return(0);
   }
   if (c == (int) '#')
-    c=PNMComment(image,exception);
+    c=PNMComment(image);
   return(value);
 }
 
