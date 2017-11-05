@@ -511,7 +511,11 @@ static int UnpackWPGRaster(Image *image,int bpp)
                   BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
                   return(-4);
                 }
-              InsertRow(BImgBuff,y-1,image,bpp);
+              if (InsertRow(BImgBuff,y-1,image,bpp) == MagickFalse)
+                {
+                  BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
+                  return(-5);
+                }
             }
         }
       }
@@ -1121,7 +1125,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               status=SetImageExtent(image,image->columns,image->rows);
               if (status == MagickFalse)
                 break;
-              if ((image->colors == 0) && (bpp <= 16))
+              if ((image->storage_class != PseudoClass) && (bpp != 24))
                 {
                   image->colors=one << bpp;
                   if (!AcquireImageColormap(image,image->colors))
@@ -1346,11 +1350,16 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                     if (BImgBuff == (unsigned char *) NULL)
                       goto NoMemory;
 
-                    for(i=0; i< (ssize_t) image->rows; i++)
-                      {
-                        (void) ReadBlob(image,ldblk,BImgBuff);
-                        InsertRow(BImgBuff,i,image,bpp);
-                      }
+                    for (i=0; i< (ssize_t) image->rows; i++)
+                    {
+                      (void) ReadBlob(image,ldblk,BImgBuff);
+                      if (InsertRow(BImgBuff,i,image,bpp) == MagickFalse)
+                        {
+                          if(BImgBuff)
+                            BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
+                          goto DecompressionFailed;
+                        }
+                    }
 
                     if(BImgBuff)
                       BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
