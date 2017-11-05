@@ -252,6 +252,8 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   if (GetBlobSize(image) != (size_t) GetBlobSize(image))
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  if (GetBlobSize(image) < 141)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   buffer=(unsigned char *) AcquireQuantumMemory((size_t) GetBlobSize(image)+
     MagickPathExtent,sizeof(*buffer));
   if (buffer == (unsigned char *) NULL)
@@ -269,7 +271,8 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   header=SFWScan(buffer,buffer+count-1,(const unsigned char *)
     "\377\310\377\320",4);
-  if (header == (unsigned char *) NULL)
+  if ((header == (unsigned char *) NULL) ||
+      ((header+140) > (buffer+GetBlobSize(image))))
     {
       buffer=(unsigned char *) RelinquishMagickMemory(buffer);
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");

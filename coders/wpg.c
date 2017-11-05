@@ -501,7 +501,11 @@ static int UnpackWPGRaster(Image *image,int bpp,ExceptionInfo *exception)
                   BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
                   return(-4);
                 }
-              InsertRow(image,BImgBuff,y-1,bpp,exception);
+              if (InsertRow(image,BImgBuff,y-1,bpp,exception) == MagickFalse)
+                {
+                  BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
+                  return(-5);
+                }
             }
         }
       }
@@ -1110,7 +1114,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               status=SetImageExtent(image,image->columns,image->rows,exception);
               if (status == MagickFalse)
                 break;
-              if ((image->colors == 0) && (bpp <= 16))
+              if ((image->storage_class != PseudoClass) && (bpp != 24))
                 {
                   image->colors=one << bpp;
                   if (!AcquireImageColormap(image,image->colors,exception))
@@ -1331,11 +1335,16 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                     if (BImgBuff == (unsigned char *) NULL)
                       goto NoMemory;
 
-                    for(i=0; i< (ssize_t) image->rows; i++)
-                      {
-                        (void) ReadBlob(image,ldblk,BImgBuff);
-                        InsertRow(image,BImgBuff,i,bpp,exception);
-                      }
+                    for (i=0; i< (ssize_t) image->rows; i++)
+                    {
+                      (void) ReadBlob(image,ldblk,BImgBuff);
+                      if (InsertRow(image,BImgBuff,i,bpp,exception) == MagickFalse)
+                        {
+                          if(BImgBuff)
+                            BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
+                          goto DecompressionFailed;
+                        }
+                    }
 
                     if(BImgBuff)
                       BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
