@@ -274,10 +274,7 @@ MagickExport MatrixInfo *AcquireMatrixInfo(const size_t columns,
             matrix_info->elements=(void *) MapBlob(matrix_info->file,IOMode,0,
               (size_t) matrix_info->length);
           if (matrix_info->elements != NULL)
-            {
-              RelinquishMagickResource(DiskResource,matrix_info->length);
-              matrix_info->type=MapCache;
-            }
+            matrix_info->type=MapCache;
           else
             RelinquishMagickResource(MapResource,matrix_info->length);
         }
