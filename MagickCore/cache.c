@@ -3829,7 +3829,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
       if (OpenPixelCache(image,ReadMode,exception) == MagickFalse)
         return(MagickFalse);
       *offset+=cache_info->length+page_size-(cache_info->length % page_size);
-      return(MagickTrue);
+      return(SyncImagePixelCache(image,exception));
     }
   /*
     Clone persistent pixel cache.

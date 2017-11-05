@@ -29,7 +29,7 @@ print("AVS X image file ...\n");
 testReadWrite( 'AVS:input.avs',
   'AVS:output.avs',
   q//,
-  'f7b3db46d6f696ea8392f0ad0be945dd502a806e2c1e9c082efef517191758f7');
+  '646ac633d5b5553721e032d2c9f8f54ffc19d315832bbf808c2b7321b1067293');
 
 print("Microsoft Windows bitmap image file ...\n");
 ++$test;
