@@ -1,3 +1,6 @@
+2017-11-05  6.9.9-22 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.9-22, GIT revision 12235:27954ec10:20171105.
+
 2017-11-03  6.9.9-22 Dirk Lemstra <dirk@lem.....org>
   * Fixed a problem with resource bookkeeping in AcquireMatrixInfo().
 
