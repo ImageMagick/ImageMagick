@@ -633,8 +633,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
             /* duplicate the previous row RunCount x */
             for(i=0;i<=RunCount;i++)
               {
-                if (InsertRow(BImgBuff,(ssize_t) (image->rows >= y ? y : image->rows-1),
-                          image,bpp) != MagickFalse)
+                if (InsertRow(BImgBuff,(ssize_t) (image->rows > y ? y : image->rows-1),image,bpp) != MagickFalse)
                   y++;
               }
           }
