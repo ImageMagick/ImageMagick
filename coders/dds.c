@@ -1942,9 +1942,6 @@ static MagickBooleanType ReadMipmaps(const ImageInfo *image_info,Image *image,
       && (dds_info->ddscaps1 & DDSCAPS_TEXTURE
           || dds_info->ddscaps2 & DDSCAPS2_CUBEMAP))
     {
-      MagickOffsetType
-        offset;
-
       register ssize_t
         i;
 
