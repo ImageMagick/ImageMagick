@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=ImageMagick
+Type=Application
+Exec=magick
+Icon=imagemagick
+Comment=Create, edit, compose, or convert bitmap images
+Categories=Graphics;
+Terminal=true
