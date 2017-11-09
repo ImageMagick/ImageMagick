@@ -3,7 +3,6 @@ dist: trusty   # needed for HarfBuzz
 
 language: c
 
-
 compiler:
   - clang
   - gcc
@@ -17,10 +16,33 @@ before_script:
   - sudo apt-get install -y libraqm-dev libfreetype6-dev libharfbuzz-dev libfribidi-dev
 
 script:
-    - export OMP_NUM_THREADS=1
-    - export CFLAGS="-Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable"
-    - ./configure --disable-openmp --with-quantum-depth=16 --enable-hdri=no --with-perl
-    - make
+  - export OMP_NUM_THREADS=1
+  - export CFLAGS="-Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable"
+  - ./configure --disable-openmp --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
+  - make -j$(nproc)
+  - # Generate AppImage
+  - make install DESTDIR=$(readlink -f appdir) ; find appdir/
+  - mkdir -p appdir/usr/share/applications/ ; cp imagemagick.desktop appdir/usr/share/applications/
+  - mkdir -p appdir/usr/share/icons/hicolor/128x128/apps/ ; touch appdir/usr/share/icons/hicolor/128x128/apps/imagemagick.png # FIXME
+  - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
+  - chmod a+x linuxdeployqt*.AppImage
+  - unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
+  - export VERSION=$(git rev-parse --short HEAD)-$CC
+  - ./linuxdeployqt*.AppImage ./appdir/usr/share/applications/imagemagick.desktop -bundle-non-qt-libs
+  - ./linuxdeployqt*.AppImage --appimage-extract
+  - rm ./appdir/AppRun ; cp AppRun appdir/ ; chmod a+x ./appdir/AppRun # Replace symlink with custom script
+  - PATH=./squashfs-root/usr/bin:$PATH ./squashfs-root/usr/bin/appimagetool -g ./appdir/
+
+after_success:
+  - find ./appdir -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
+  - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
+  - bash upload.sh ImageMagick*AppImage*
+  
+branches:
+  except:
+    - # Do not build tags that we create when we upload to GitHub Releases
+    - /^(?i:continuous)$/
+
 #    - cd PerlMagick
 #    - perl Makefile.PL
 #    - make

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# The purpose of this custom AppRun script is
+# to allow symlinking the AppImage and invoking
+# the corresponding binary depending on which
+# symlink was used to invoke the AppImage
+
+HERE="$(dirname "$(readlink -f "${0}")")"
+
+export MAGICK_HOME="$HERE/usr" # http://www.imagemagick.org/QuickStart.txt
+export MAGICK_CONFIGURE_PATH="$HERE/usr/lib/ImageMagick-7.0.7/config-Q16/" # Undocumented?
+export MANPATH="$HERE/usr/share/man:$MANPATH"
+export INFOPATH="$HERE/usr/share/info:$MANPATH"
+
+if [ "$1" == "man" ] ; then
+  shift ; exec "$@" ; exit $?
+elif [ "$1" == "info" ] ; then
+  shift ; exec "$@" ; exit $?
+fi
+
+if [ ! -z $APPIMAGE ] ; then
+  BINARY_NAME=$(basename "$ARGV0")
+  if [ -e "$HERE/usr/bin/$BINARY_NAME" ] ; then
+    exec "$HERE/usr/bin/$BINARY_NAME" "$@"
+  else
+    exec "$HERE/usr/bin/magick" "$@"
+  fi
+else
+  exec "$HERE/usr/bin/magick" "$@"
+fi
