@@ -998,7 +998,7 @@ void Magick::Image::highlightColor(const Color color_)
     value;
 
   value=color_;
-  artifact("highlight-color",value);
+  artifact("compare:highlight-color",value);
 }
 
 void Magick::Image::iccColorProfile(const Magick::Blob &colorProfile_)
@@ -1133,7 +1133,7 @@ void Magick::Image::lowlightColor(const Color color_)
     value;
 
   value=color_;
-  artifact("lowlight-color",value);
+  artifact("compare:lowlight-color",value);
 }
 
 void Magick::Image::magick(const std::string &magick_)
@@ -1160,6 +1160,15 @@ std::string Magick::Image::magick(void) const
     return(std::string(constImage()->magick));
 
   return(constOptions()->magick());
+}
+
+void Magick::Image::masklightColor(const Color color_)
+{
+  std::string
+    value;
+
+  value=color_;
+  artifact("compare:masklight-color",value);
 }
 
 double Magick::Image::meanErrorPerPixel(void) const

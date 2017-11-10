@@ -327,6 +327,9 @@ namespace Magick
     void magick(const std::string &magick_);
     std::string magick(void) const;
 
+    // When comparing images, mask pixel differences with this color.
+    void masklightColor(const Color color_);
+
     // The mean error per pixel computed when an image is color reduced
     double meanErrorPerPixel(void) const;
 
