@@ -118,7 +118,7 @@ static MagickBooleanType IsTXT(const unsigned char *magick,const size_t length)
     return(MagickFalse);
   if (LocaleNCompare((const char *) magick,MagickID,strlen(MagickID)) != 0)
     return(MagickFalse);
-  count=(ssize_t) sscanf((const char *) magick+32,"%lu,%lu,%lu,%s",&columns,
+  count=(ssize_t) sscanf((const char *) magick+32,"%lu,%lu,%lu,%32s",&columns,
     &rows,&depth,colorspace);
   if (count != 4)
     return(MagickFalse);
