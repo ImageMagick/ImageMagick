@@ -1381,10 +1381,10 @@ MagickPrivate cl_mem GetAuthenticOpenCLBuffer(const Image *image,
   if ((cache_info->type != MemoryCache) || (cache_info->mapped != MagickFalse))
     return((cl_mem) NULL);
   LockSemaphoreInfo(cache_info->semaphore);
+  clEnv=GetDefaultOpenCLEnv();
   if (cache_info->opencl == (OpenCLCacheInfo *) NULL)
     {
       assert(cache_info->pixels != NULL);
-      clEnv=GetDefaultOpenCLEnv();
       context=GetOpenCLContext(clEnv);
       cache_info->opencl=(OpenCLCacheInfo *) AcquireCriticalMemory(
         sizeof(*cache_info->opencl));
