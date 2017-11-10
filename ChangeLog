@@ -1,4 +1,7 @@
-2017-11-10  6.9.9-24 Dirk Lemstra <dirk@lem.....org>
+2017-11-10  6.9.9-23 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.9-23, GIT revision 12243:1880f8942:20171110.
+
+2017-11-10  6.9.9-23 Dirk Lemstra <dirk@lem.....org>
   * Fixed initialization of OpenCL (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=33044).
 
