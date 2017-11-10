@@ -119,7 +119,7 @@ static MagickBooleanType IsTXT(const unsigned char *magick,const size_t length)
     return(MagickFalse);
   if (LocaleNCompare((const char *) magick,MagickID,strlen(MagickID)) != 0)
     return(MagickFalse);
-  count=(ssize_t) sscanf((const char *) magick+32,"%lu,%lu,%lu,%s",&columns,
+  count=(ssize_t) sscanf((const char *) magick+32,"%lu,%lu,%lu,%32s",&columns,
     &rows,&depth,colorspace);
   if (count != 4)
     return(MagickFalse);
@@ -447,7 +447,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     height=0;
     max_value=0;
     *colorspace='\0';
-    count=(ssize_t) sscanf(text+32,"%lu,%lu,%lu,%s",&width,&height,&max_value,
+    count=(ssize_t) sscanf(text+32,"%lu,%lu,%lu,%32s",&width,&height,&max_value,
       colorspace);
     if ((count != 4) || (width == 0) || (height == 0) || (max_value == 0))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
