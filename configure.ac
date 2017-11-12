@@ -1686,7 +1686,7 @@ dnl ===========================================================================
 with_ltdl='yes'
 have_ltdl='no'
 LTDL_LIBS=''
-if test "$build_modules" != 'yes' || test "$enable_opencl" != 'no' ; then
+if test "$build_modules" != 'no' || test "$enable_opencl" != 'no' ; then
   AC_MSG_RESULT([-------------------------------------------------------------])
   AC_MSG_CHECKING([for libltdl])
   AC_MSG_RESULT([])
