@@ -259,9 +259,6 @@ static cl_mem createKernelInfo(MagickCLDevice device,const double radius,
   char
     geometry[MagickPathExtent];
 
-  cl_int
-    status;
-
   cl_mem
     imageKernelBuffer;
 
@@ -821,9 +818,6 @@ static MagickBooleanType ComputeContrastImage(Image *image,MagickCLEnv clEnv,
 
   cl_kernel
     contrastKernel;
-
-  cl_event
-    event;
 
   cl_mem
     imageBuffer;

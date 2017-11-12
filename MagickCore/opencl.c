@@ -88,6 +88,9 @@
 #include "MagickCore/utility-private.h"
 
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
+#if defined(MAGICKCORE_LTDL_DELEGATE)
+#include "ltdl.h"
+#endif
 
 #ifndef MAGICKCORE_WINDOWS_SUPPORT
 #include <dlfcn.h>
@@ -1369,7 +1372,7 @@ static MagickBooleanType CompileOpenCLKernel(MagickCLDevice device,
   }
   (void) FormatLocaleString(filename,MagickPathExtent,
     "%s%s%s_%s_%08x_%.20g.bin",GetOpenCLCacheDirectory(),
-    DirectorySeparator,"magick_opencl",deviceName,signature,
+    DirectorySeparator,"magick_opencl",deviceName,(unsigned int) signature,
     (double) sizeof(char*)*8);
   loaded=LoadCachedOpenCLKernel(device,filename);
   if (loaded == MagickFalse)
