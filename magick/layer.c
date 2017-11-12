@@ -630,8 +630,7 @@ static RectangleInfo CompareImageBounds(const Image *image1,const Image *image2,
   {
     p=GetVirtualPixels(image1,x,0,1,image1->rows,exception);
     q=GetVirtualPixels(image2,x,0,1,image2->rows,exception);
-    if ((p == (const PixelPacket *) NULL) ||
-        (q == (const PixelPacket *) NULL))
+    if ((p == (const PixelPacket *) NULL) || (q == (const PixelPacket *) NULL))
       break;
     indexes1=GetVirtualIndexQueue(image1);
     indexes2=GetVirtualIndexQueue(image2);
@@ -663,8 +662,7 @@ static RectangleInfo CompareImageBounds(const Image *image1,const Image *image2,
   {
     p=GetVirtualPixels(image1,x,0,1,image1->rows,exception);
     q=GetVirtualPixels(image2,x,0,1,image2->rows,exception);
-    if ((p == (const PixelPacket *) NULL) ||
-        (q == (const PixelPacket *) NULL))
+    if ((p == (const PixelPacket *) NULL) || (q == (const PixelPacket *) NULL))
       break;
     indexes1=GetVirtualIndexQueue(image1);
     indexes2=GetVirtualIndexQueue(image2);
@@ -685,8 +683,7 @@ static RectangleInfo CompareImageBounds(const Image *image1,const Image *image2,
   {
     p=GetVirtualPixels(image1,0,y,image1->columns,1,exception);
     q=GetVirtualPixels(image2,0,y,image2->columns,1,exception);
-    if ((p == (const PixelPacket *) NULL) ||
-        (q == (const PixelPacket *) NULL))
+    if ((p == (const PixelPacket *) NULL) || (q == (const PixelPacket *) NULL))
       break;
     indexes1=GetVirtualIndexQueue(image1);
     indexes2=GetVirtualIndexQueue(image2);
@@ -707,8 +704,7 @@ static RectangleInfo CompareImageBounds(const Image *image1,const Image *image2,
   {
     p=GetVirtualPixels(image1,0,y,image1->columns,1,exception);
     q=GetVirtualPixels(image2,0,y,image2->columns,1,exception);
-    if ((p == (const PixelPacket *) NULL) ||
-        (q == (const PixelPacket *) NULL))
+    if ((p == (const PixelPacket *) NULL) || (q == (const PixelPacket *) NULL))
       break;
     indexes1=GetVirtualIndexQueue(image1);
     indexes2=GetVirtualIndexQueue(image2);

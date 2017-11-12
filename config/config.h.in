@@ -759,7 +759,8 @@
 /* Define if you have LQR library */
 #undef LQR_DELEGATE
 
-/* Define if using libltdl to support dynamically loadable modules */
+/* Define if using libltdl to support dynamically loadable modules and OpenCL
+   */
 #undef LTDL_DELEGATE
 
 /* Define to the sub-directory where libtool stores uninstalled libraries. */

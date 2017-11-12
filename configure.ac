@@ -27,7 +27,7 @@ AC_PREREQ(2.69)
 m4_define([magick_major_version], [6])
 m4_define([magick_minor_version], [9])
 m4_define([magick_micro_version], [9])
-m4_define([magick_patchlevel_version], [23])
+m4_define([magick_patchlevel_version], [24])
 m4_define([magick_version],
           [magick_major_version.magick_minor_version.magick_micro_version-magick_patchlevel_version])
 m4_define([magick_git_revision], esyscmd([sh -c "(gitversion.sh .) | awk '{ print \$1 }' | tr -d '\n'"]))
@@ -1686,7 +1686,7 @@ dnl ===========================================================================
 with_ltdl='yes'
 have_ltdl='no'
 LTDL_LIBS=''
-if test "$build_modules" != 'no' ; then
+if test "$build_modules" != 'yes' || test "$enable_opencl" != 'no' ; then
   AC_MSG_RESULT([-------------------------------------------------------------])
   AC_MSG_CHECKING([for libltdl])
   AC_MSG_RESULT([])
@@ -1702,7 +1702,7 @@ if test "$build_modules" != 'no' ; then
     else
       LTDL_LIBS='-lltdl'
       LIBS="$LTDL_LIBS $LIBS"
-      AC_DEFINE(LTDL_DELEGATE,1,[Define if using libltdl to support dynamically loadable modules])
+      AC_DEFINE(LTDL_DELEGATE,1,[Define if using libltdl to support dynamically loadable modules and OpenCL])
       AC_MSG_RESULT([yes])
       have_ltdl='yes'
     fi
@@ -1710,7 +1710,7 @@ if test "$build_modules" != 'no' ; then
     AC_MSG_RESULT([no])
   fi
   if test "$have_ltdl" != 'yes' ; then
-    AC_MSG_FAILURE([libltdl is required for modules build],[1])
+    AC_MSG_FAILURE([libltdl is required for modules and OpenCL builds],[1])
   fi
 fi
 AM_CONDITIONAL(WITH_LTDL, test "$have_ltdl" != 'no')
