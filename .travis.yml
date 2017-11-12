@@ -35,8 +35,8 @@ script:
 
 after_success:
   - find ./appdir -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
-  - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
-  - bash upload.sh ImageMagick*AppImage*
+  - if [ "$TRAVIS_BRANCH" == "TRAVIS_TAG" ] ; then wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh ; bash upload.sh ImageMagick*AppImage* ; fi
+  - if [ "$TRAVIS_BRANCH" != "TRAVIS_TAG" ] ; then curl --upload-file ./ImageMagick*.AppImage https://transfer.sh/ImageMagick-git.$(git rev-parse --short HEAD)-x86_64.AppImage ; fi
   
 branches:
   except:
