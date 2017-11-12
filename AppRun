@@ -8,7 +8,7 @@
 HERE="$(dirname "$(readlink -f "${0}")")"
 
 export MAGICK_HOME="$HERE/usr" # http://www.imagemagick.org/QuickStart.txt
-export MAGICK_CONFIGURE_PATH="$HERE/usr/lib/ImageMagick-7.0.7/config-Q16/" # Undocumented?
+export MAGICK_CONFIGURE_PATH=$(readlink -f "$HERE/usr/lib/ImageMagick-*/config-*/") # Undocumented?
  
 if [ "$1" == "man" ] ; then
   export MANPATH="$HERE/usr/share/man:$MANPATH" ; exec "$@" ; exit $?
