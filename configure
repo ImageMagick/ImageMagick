@@ -4534,7 +4534,7 @@ MAGICK_PATCHLEVEL_VERSION=24
 
 MAGICK_VERSION=6.9.9-24
 
-MAGICK_GIT_REVISION=12247:996c04379:20171112
+MAGICK_GIT_REVISION=12248:fbddd98ad:20171113
 
 
 # Substitute library versioning
@@ -31191,7 +31191,7 @@ fi
 with_ltdl='yes'
 have_ltdl='no'
 LTDL_LIBS=''
-if test "$build_modules" != 'no' || test "$enable_opencl" != 'no' ; then
+if test "$build_modules" != 'no' || test "X$ax_cv_check_cl_libcl" != Xno; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for libltdl" >&5
