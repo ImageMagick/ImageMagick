@@ -5423,25 +5423,14 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
       double
         weight;
 
-      register ssize_t
-        i;
-
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        PixelChannel channel = GetPixelChannelChannel(image,i);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        PixelTrait tint_traits=GetPixelChannelTraits(tint_image,channel);
-        if ((traits == UndefinedPixelTrait) ||
-            (tint_traits == UndefinedPixelTrait))
-          continue;
-        if (((tint_traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,p) <= (QuantumRange/2)))
-          {
-            SetPixelChannel(tint_image,channel,p[i],q);
-            continue;
-          }
-      }
       GetPixelInfo(image,&pixel);
+      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
+        {
+          SetPixelViaPixelInfo(tint_image,&pixel,q);
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(tint_image);
+          continue;
+        }
       weight=QuantumScale*GetPixelRed(image,p)-0.5;
       pixel.red=(double) GetPixelRed(image,p)+color_vector.red*(1.0-(4.0*
         (weight*weight)));
@@ -5454,6 +5443,7 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
       weight=QuantumScale*GetPixelBlack(image,p)-0.5;
       pixel.black=(double) GetPixelBlack(image,p)+color_vector.black*(1.0-(4.0*
         (weight*weight)));
+      pixel.alpha=GetPixelAlpha(image,p);
       SetPixelViaPixelInfo(tint_image,&pixel,q);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(tint_image);
