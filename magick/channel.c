@@ -533,14 +533,9 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
   image_view=DestroyCacheView(image_view);
   if (channel != GrayChannels)
     {
-      PixelIntensityMethod
-        intensity;
-
       image->matte=MagickFalse;
-      intensity=image->intensity;
       image->intensity=Rec709LuminancePixelIntensityMethod;
       (void) SetImageColorspace(image,GRAYColorspace);
-      image->intensity=intensity;
     }
   return(status);
 }
