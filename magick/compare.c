@@ -319,9 +319,9 @@ MagickExport Image *CompareImageChannels(Image *image,
             Sa;
 
           Sa=QuantumScale*(image->matte != MagickFalse ? GetPixelAlpha(p) :
-            1.0);
+            (QuantumRange-OpaqueOpacity));
           Da=QuantumScale*(image->matte != MagickFalse ? GetPixelAlpha(q) :
-            1.0);
+            (QuantumRange-OpaqueOpacity));
           if ((channel & RedChannel) != 0)
             {
               distance=Sa*GetPixelRed(p)-Da*GetPixelRed(q);
@@ -499,8 +499,10 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
         difference;
 
       difference=MagickFalse;
-      Sa=QuantumScale*(image->matte != MagickFalse ? GetPixelAlpha(p) : 1.0);
-      Da=QuantumScale*(image->matte != MagickFalse ? GetPixelAlpha(q) : 1.0);
+      Sa=QuantumScale*(image->matte != MagickFalse ? GetPixelAlpha(p) :
+        (QuantumRange-OpaqueOpacity));
+      Da=QuantumScale*(image->matte != MagickFalse ? GetPixelAlpha(q) :
+        (QuantumRange-OpaqueOpacity));
       if ((channel & RedChannel) != 0)
         {
           distance=Sa*GetPixelRed(p)-Da*GetPixelRed(q);
