@@ -2402,6 +2402,8 @@ static MagickBooleanType SkipDXTMipmaps(Image *image,DDSInfo *dds_info,
           break;
         w = DIV2(w);
         h = DIV2(h);
+        if ((w == 1) && (h == 1))
+          break;
       }
     }
   return(MagickTrue);
@@ -2449,6 +2451,8 @@ static MagickBooleanType SkipRGBMipmaps(Image *image,DDSInfo *dds_info,
           break;
         w = DIV2(w);
         h = DIV2(h);
+        if ((w == 1) && (h == 1))
+          break;
       }
     }
   return(MagickTrue);
