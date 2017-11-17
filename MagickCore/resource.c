@@ -563,8 +563,8 @@ MagickExport int AcquireUniqueFileResource(char *path)
     *p;
 
   register ssize_t
-    j,
-    i;
+    i,
+    j;
 
   static const char
     portable_filename[65] =
