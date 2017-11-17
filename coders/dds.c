@@ -1865,6 +1865,8 @@ static MagickBooleanType ReadDDSInfo(Image *image, DDSInfo *dds_info)
   dds_info->pitchOrLinearSize = ReadBlobLSBLong(image);
   dds_info->depth = ReadBlobLSBLong(image);
   dds_info->mipmapcount = ReadBlobLSBLong(image);
+  if (dds_info->mipmapcount > GetBlobSize(image))
+    return MagickFalse;
   
   (void) SeekBlob(image, 44, SEEK_CUR);   /* reserved region of 11 DWORDs */
   
