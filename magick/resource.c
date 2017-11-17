@@ -535,8 +535,7 @@ MagickExport int AcquireUniqueFileResource(char *path)
     *p;
 
   register ssize_t
-    i,
-    j;
+    i;
 
   static const char
     portable_filename[65] =
@@ -558,8 +557,10 @@ MagickExport int AcquireUniqueFileResource(char *path)
       UnlockSemaphoreInfo(resource_semaphore);
     }
   file=(-1);
-  for (j=0; j < (ssize_t) TMP_MAX; j++)
+  for (i=0; i < (ssize_t) TMP_MAX; i++)
   {
+    register ssize_t
+      j;
     /*
       Get temporary pathname.
     */
@@ -567,9 +568,9 @@ MagickExport int AcquireUniqueFileResource(char *path)
     key=GetRandomKey(random_info,6);
     p=path+strlen(path)-strlen(MagickPathTemplate);
     datum=GetStringInfoDatum(key);
-    for (i=0; i < (ssize_t) GetStringInfoLength(key); i++)
+    for (j=0; j < (ssize_t) GetStringInfoLength(key); j++)
     {
-      c=(int) (datum[i] & 0x3f);
+      c=(int) (datum[j] & 0x3f);
       *p++=portable_filename[c];
     }
     key=DestroyStringInfo(key);
@@ -589,9 +590,9 @@ MagickExport int AcquireUniqueFileResource(char *path)
     key=GetRandomKey(random_info,strlen(MagickPathTemplate));
     p=path+strlen(path)-strlen(MagickPathTemplate);
     datum=GetStringInfoDatum(key);
-    for (i=0; i < (ssize_t) GetStringInfoLength(key); i++)
+    for (j=0; j < (ssize_t) GetStringInfoLength(key); j++)
     {
-      c=(int) (datum[i] & 0x3f);
+      c=(int) (datum[j] & 0x3f);
       *p++=portable_filename[c];
     }
     key=DestroyStringInfo(key);
