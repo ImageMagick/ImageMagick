@@ -563,6 +563,7 @@ MagickExport int AcquireUniqueFileResource(char *path)
     *p;
 
   register ssize_t
+    j,
     i;
 
   static const char
@@ -585,7 +586,7 @@ MagickExport int AcquireUniqueFileResource(char *path)
       UnlockSemaphoreInfo(resource_semaphore);
     }
   file=(-1);
-  for (i=0; i < (ssize_t) TMP_MAX; i++)
+  for (j=0; j < (ssize_t) TMP_MAX; j++)
   {
     /*
       Get temporary pathname.
