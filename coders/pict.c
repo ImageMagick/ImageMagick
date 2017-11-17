@@ -1045,7 +1045,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                     break;
               }
             else
-              for (j=0; j < (int) height; j++)
+              for (i=0; i < (int) height; i++)
                 if (length > 200)
                   {
                     for (j=0; j < (ssize_t) ReadBlobMSBShort(image); j++)
