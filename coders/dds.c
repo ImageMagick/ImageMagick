@@ -1865,8 +1865,6 @@ static MagickBooleanType ReadDDSInfo(Image *image, DDSInfo *dds_info)
   dds_info->pitchOrLinearSize = ReadBlobLSBLong(image);
   dds_info->depth = ReadBlobLSBLong(image);
   dds_info->mipmapcount = ReadBlobLSBLong(image);
-  if (dds_info->mipmapcount > GetBlobSize(image))
-    return MagickFalse;
   
   (void) SeekBlob(image, 44, SEEK_CUR);   /* reserved region of 11 DWORDs */
   
@@ -1972,6 +1970,8 @@ static MagickBooleanType ReadMipmaps(const ImageInfo *image_info,Image *image,
 
         w=DIV2(w);
         h=DIV2(h);
+        if ((w == 1) && (h == 1))
+          break;
       }
     }
   return(status);
@@ -2555,6 +2555,8 @@ static MagickBooleanType SkipDXTMipmaps(Image *image,DDSInfo *dds_info,
           break;
         w=DIV2(w);
         h=DIV2(h);
+        if ((w == 1) && (h == 1))
+          break;
       }
     }
   return(MagickTrue);
@@ -2602,6 +2604,8 @@ static MagickBooleanType SkipRGBMipmaps(Image *image,DDSInfo *dds_info,
           break;
         w=DIV2(w);
         h=DIV2(h);
+        if ((w == 1) && (h == 1))
+          break;
       }
     }
   return(MagickTrue);
