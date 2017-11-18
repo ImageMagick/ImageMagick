@@ -133,7 +133,7 @@ MagickExport const char *GetMagickDelegates(void)
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
   "freetype "
 #endif
-#if defined(MAGICKCORE_GS_DELEGATE)
+#if defined(MAGICKCORE_GS_DELEGATE) || defined(MAGICKCORE_WINDOWS_SUPPORT)
   "gslib "
 #endif
 #if defined(MAGICKCORE_GVC_DELEGATE)
@@ -172,7 +172,8 @@ MagickExport const char *GetMagickDelegates(void)
 #if defined(MAGICKCORE_PNG_DELEGATE)
   "png "
 #endif
-#if defined(MAGICKCORE_DPS_DELEGATE) || defined(MAGICKCORE_GS_DELEGATE) || defined(WIN32)
+#if defined(MAGICKCORE_DPS_DELEGATE) || defined(MAGICKCORE_GS_DELEGATE) || \
+    defined(MAGICKCORE_WINDOWS_SUPPORT)
   "ps "
 #endif
 #if defined(MAGICKCORE_RAW_R_DELEGATE)
