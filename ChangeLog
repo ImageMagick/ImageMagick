@@ -1,3 +1,6 @@
+2017-11-17  6.9.9-24 Cristy  <quetzlzacatenango@image...>
+  * Support HDRI color profile management.
+
 2017-11-11  6.9.9-23 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.9-23, GIT revision 12245:6dea84616:20171111.
 
