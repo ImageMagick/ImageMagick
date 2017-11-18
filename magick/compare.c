@@ -247,6 +247,7 @@ MagickExport Image *CompareImageChannels(Image *image,
   */
   status=MagickTrue;
   fuzz=GetFuzzyColorDistance(image,reconstruct_image);
+  fuzz*=fuzz;
   GetMagickPixelPacket(image,&zero);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
