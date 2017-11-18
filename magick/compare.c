@@ -247,7 +247,6 @@ MagickExport Image *CompareImageChannels(Image *image,
   */
   status=MagickTrue;
   fuzz=GetFuzzyColorDistance(image,reconstruct_image);
-  fuzz*=fuzz;
   GetMagickPixelPacket(image,&zero);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
@@ -451,7 +450,9 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
     Compute the absolute difference in pixels between two images.
   */
   status=MagickTrue;
-  fuzz=GetFuzzyColorDistance(image,reconstruct_image);
+  fuzz=MagickMin(GetNumberChannels(image,channel),
+    GetNumberChannels(reconstruct_image,channel))*
+    GetFuzzyColorDistance(image,reconstruct_image);
   rows=MagickMax(image->rows,reconstruct_image->rows);
   columns=MagickMax(image->columns,reconstruct_image->columns);
   image_view=AcquireVirtualCacheView(image,exception);
@@ -494,6 +495,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
       double
         Da,
         distance,
+        pixel,
         Sa;
 
       MagickBooleanType
@@ -504,10 +506,11 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
         (QuantumRange-OpaqueOpacity));
       Da=QuantumScale*(image->matte != MagickFalse ? GetPixelAlpha(q) :
         (QuantumRange-OpaqueOpacity));
+      distance=0.0;
       if ((channel & RedChannel) != 0)
         {
-          distance=Sa*GetPixelRed(p)-Da*GetPixelRed(q);
-          if ((distance*distance) > fuzz)
+          pixel=Sa*GetPixelRed(p)-Da*GetPixelRed(q);
+          if (distance > fuzz)
             {
               channel_distortion[RedChannel]++;
               difference=MagickTrue;
@@ -515,8 +518,9 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
         }
       if ((channel & GreenChannel) != 0)
         {
-          distance=Sa*GetPixelGreen(p)-Da*GetPixelGreen(q);
-          if ((distance*distance) > fuzz)
+          pixel=Sa*GetPixelGreen(p)-Da*GetPixelGreen(q);
+          distance+=pixel*pixel;
+          if (distance > fuzz)
             {
               channel_distortion[GreenChannel]++;
               difference=MagickTrue;
@@ -524,8 +528,9 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
         }
       if ((channel & BlueChannel) != 0)
         {
-          distance=Sa*GetPixelBlue(p)-Da*GetPixelBlue(q);
-          if ((distance*distance) > fuzz)
+          pixel=Sa*GetPixelBlue(p)-Da*GetPixelBlue(q);
+          distance+=pixel*pixel;
+          if (distance > fuzz)
             {
               channel_distortion[BlueChannel]++;
               difference=MagickTrue;
@@ -534,8 +539,9 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
       if (((channel & OpacityChannel) != 0) &&
           (image->matte != MagickFalse))
         {
-          distance=(double) GetPixelOpacity(p)-GetPixelOpacity(q);
-          if ((distance*distance) > fuzz)
+          pixel=(double) GetPixelOpacity(p)-GetPixelOpacity(q);
+          distance+=pixel*pixel;
+          if (distance > fuzz)
             {
               channel_distortion[OpacityChannel]++;
               difference=MagickTrue;
@@ -544,8 +550,9 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
-          distance=Sa*indexes[x]-Da*reconstruct_indexes[x];
-          if ((distance*distance) > fuzz)
+          pixel=Sa*indexes[x]-Da*reconstruct_indexes[x];
+          distance+=pixel*pixel;
+          if (distance > fuzz)
             {
               channel_distortion[BlackChannel]++;
               difference=MagickTrue;
