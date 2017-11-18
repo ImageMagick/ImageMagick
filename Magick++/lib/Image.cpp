@@ -5140,9 +5140,14 @@ void Magick::Image::read(MagickCore::Image *image,
       image == (MagickCore::Image *) NULL)
     {
       (void) MagickCore::DestroyExceptionInfo(exceptionInfo);
-      throwExceptionExplicit(ImageWarning,"No image was loaded.");
+      if (!quiet())
+        throwExceptionExplicit(MagickCore::ImageWarning,
+          "No image was loaded.");
     }
-  ThrowImageException;
+  else
+    {
+      ThrowImageException;
+    }
   if (image != (MagickCore::Image *) NULL)
     throwException(&image->exception,quiet());
 }
