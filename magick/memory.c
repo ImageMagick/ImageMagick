@@ -637,7 +637,7 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
       if (memory_info->blob != NULL)
         memory_info->type=AlignedVirtualMemory;
     }
-  else
+  if (memory_info->blob == NULL)
     {
       /*
         Acquire anonymous memory map.
