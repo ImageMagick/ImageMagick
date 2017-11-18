@@ -384,6 +384,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
   */
   status=MagickTrue;
   fuzz=GetFuzzyColorDistance(image,reconstruct_image);
+  fuzz*=fuzz;
   rows=MagickMax(image->rows,reconstruct_image->rows);
   columns=MagickMax(image->columns,reconstruct_image->columns);
   image_view=AcquireVirtualCacheView(image,exception);
