@@ -945,7 +945,7 @@ MagickExport unsigned int ChannelThresholdImage(Image *image,const char *level)
     status;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->debug != MagickFalse)
@@ -1223,11 +1223,11 @@ MagickExport MagickBooleanType ColorFloodfillImage(Image *image,
     Check boundary conditions.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(draw_info != (DrawInfo *) NULL);
-  assert(draw_info->signature == MagickSignature);
+  assert(draw_info->signature == MagickCoreSignature);
   if ((x_offset < 0) || (x_offset >= (ssize_t) image->columns))
     return(MagickFalse);
   if ((y_offset < 0) || (y_offset >= (ssize_t) image->rows))
@@ -1694,7 +1694,7 @@ MagickExport MagickBooleanType DescribeImage(Image *image,FILE *file,
 MagickExport void DestroyImageAttributes(Image *image)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->attributes != (void *) NULL)
@@ -2676,7 +2676,7 @@ MagickExport void GetExceptionInfo(ExceptionInfo *exception)
   exception->severity=UndefinedException;
   exception->exceptions=(void *) NewLinkedList(0);
   exception->semaphore=AllocateSemaphoreInfo();
-  exception->signature=MagickSignature;
+  exception->signature=MagickCoreSignature;
 }
 
 /*
@@ -3678,7 +3678,7 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
     i;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   assert(image_view != (CacheView *) NULL);
   GetMagickPixelPacket(image,&pixel);
   switch (method)
@@ -4479,11 +4479,11 @@ MagickExport MagickBooleanType MapImage(Image *image,const Image *map_image,
     Initialize color cube.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(map_image != (Image *) NULL);
-  assert(map_image->signature == MagickSignature);
+  assert(map_image->signature == MagickCoreSignature);
   GetQuantizeInfo(&quantize_info);
   quantize_info.dither=dither;
   return(RemapImage(&quantize_info,image,map_image));
@@ -4533,7 +4533,7 @@ MagickExport MagickBooleanType MapImages(Image *images,const Image *map_image,
     quantize_info;
 
   assert(images != (Image *) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   GetQuantizeInfo(&quantize_info);
@@ -4612,7 +4612,7 @@ MagickExport MagickBooleanType MatteFloodfillImage(Image *image,
     Check boundary conditions.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if ((x_offset < 0) || (x_offset >= (ssize_t) image->columns))
@@ -5037,7 +5037,7 @@ MagickExport MagickBooleanType OpaqueImage(Image *image,
     Make image color opaque.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v6.1.0");
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
@@ -5947,11 +5947,11 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,
     Threshold image.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.7");
   if (thresholds == (const char *) NULL)
@@ -6432,7 +6432,7 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   background_color=image->background_color;
   if (opacity != OpaqueOpacity)
     background_color.opacity=opacity;
@@ -7176,7 +7176,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
     Threshold image.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->debug != MagickFalse)
@@ -7262,7 +7262,7 @@ MagickExport unsigned int ThresholdImageChannel(Image *image,
     Threshold image.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (threshold == (const char *) NULL)
@@ -7381,7 +7381,7 @@ MagickExport unsigned int TransformColorspace(Image *image,
   const ColorspaceType colorspace)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.6");
   return(TransformImageColorspace(image,colorspace));
@@ -7492,7 +7492,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
   const char *embed_text)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v6.2.6");
   return(InterpretImageProperties(image_info,image,embed_text));
@@ -7547,7 +7547,7 @@ MagickExport MagickBooleanType TransparentImage(Image *image,
     Make image color transparent.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v6.1.0");
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
@@ -7706,11 +7706,11 @@ MagickExport Image *ZoomImage(const Image *image,const size_t columns,
     *zoom_image;
 
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   zoom_image=ResizeImage(image,columns,rows,image->filter,image->blur,
     exception);
   return(zoom_image);

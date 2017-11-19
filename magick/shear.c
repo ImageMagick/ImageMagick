@@ -1158,7 +1158,7 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   GetMagickPixelPacket(image,&background);
@@ -1379,7 +1379,7 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
     x;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   GetMagickPixelPacket(image,&background);
@@ -1593,11 +1593,11 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
     bounds;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   if ((x_shear != 0.0) && (fmod(x_shear,90.0) == 0.0))
     ThrowImageException(ImageError,"AngleIsDiscontinuous");
   if ((y_shear != 0.0) && (fmod(y_shear,90.0) == 0.0))
@@ -1738,11 +1738,11 @@ MagickExport Image *ShearRotateImage(const Image *image,const double degrees,
     Adjust rotation angle.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   angle=degrees-360.0*(ssize_t) (degrees/360.0);
   if (angle < -45.0)
     angle+=360.0;

@@ -195,12 +195,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Open image file.
   */
   assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   image=AcquireImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
@@ -227,7 +227,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     profiles=(LinkedListInfo *) NULL;
     length=MaxTextExtent;
     options=AcquireString((char *) NULL);
-    signature=GetMagickSignature((const StringInfo *) NULL);
+    signature=GetMagickCoreSignature((const StringInfo *) NULL);
     image->depth=8;
     image->compression=NoCompression;
     while ((isgraph(c) != MagickFalse) && (c != (int) ':'))
@@ -780,7 +780,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           profiles=DestroyLinkedList(profiles,RelinquishMagickMemory);
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       }
-    if (signature != GetMagickSignature((const StringInfo *) NULL))
+    if (signature != GetMagickCoreSignature((const StringInfo *) NULL))
       {
         if (profiles != (LinkedListInfo *) NULL)
           profiles=DestroyLinkedList(profiles,RelinquishMagickMemory);
@@ -1111,9 +1111,9 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
     Open persistent cache.
   */
   assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
@@ -1135,7 +1135,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
       image->storage_class=DirectClass;
     (void) WriteBlobString(image,"id=MagickCache\n");
     (void) FormatLocaleString(buffer,MaxTextExtent,"magick-signature=%u\n",
-      GetMagickSignature((const StringInfo *) NULL));
+      GetMagickCoreSignature((const StringInfo *) NULL));
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MaxTextExtent,
       "class=%s  colors=%.20g  matte=%s\n",CommandOptionToMnemonic(

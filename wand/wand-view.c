@@ -1073,7 +1073,7 @@ MagickExport void SetWandViewThreads(WandView *image_view,
   const size_t number_threads)
 {
   assert(image_view != (WandView *) NULL);
-  assert(image_view->signature == MagickSignature);
+  assert(image_view->signature == MagickCoreSignature);
   image_view->number_threads=number_threads;
   if (number_threads > (size_t) GetMagickResourceLimit(ThreadResource))
     image_view->number_threads=GetOpenMPMaximumThreads();

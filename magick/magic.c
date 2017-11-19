@@ -124,6 +124,7 @@ static const MagicMapInfo
     { "HDF", 1, MagicPattern("HDF") },
     { "HDR", 0, MagicPattern("#?RADIANCE") },
     { "HDR", 0, MagicPattern("#?RGBE") },
+    { "HEIC", 8, MagicPattern("heic") },
     { "HPGL", 0, MagicPattern("IN;") },
     { "HTML", 1, MagicPattern("HTML") },
     { "HTML", 1, MagicPattern("html") },
@@ -324,7 +325,7 @@ static LinkedListInfo *AcquireMagicCache(const char *filename,
     magic_info->magic=(unsigned char *) p->magic;
     magic_info->length=p->length;
     magic_info->exempt=MagickTrue;
-    magic_info->signature=MagickSignature;
+    magic_info->signature=MagickCoreSignature;
     status&=InsertValueInSortedLinkedList(cache,CompareMagickInfoSize,
       NULL,magic_info);
     if (status == MagickFalse)
@@ -612,7 +613,7 @@ MagickExport const char *GetMagicName(const MagicInfo *magic_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(magic_info != (MagicInfo *) NULL);
-  assert(magic_info->signature == MagickSignature);
+  assert(magic_info->signature == MagickCoreSignature);
   return(magic_info->name);
 }
 
@@ -881,7 +882,7 @@ static MagickBooleanType LoadMagicCache(LinkedListInfo *cache,const char *xml,
         (void) ResetMagickMemory(magic_info,0,sizeof(*magic_info));
         magic_info->path=ConstantString(filename);
         magic_info->exempt=MagickFalse;
-        magic_info->signature=MagickSignature;
+        magic_info->signature=MagickCoreSignature;
         continue;
       }
     if (magic_info == (MagicInfo *) NULL)

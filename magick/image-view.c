@@ -109,7 +109,7 @@ MagickExport ImageView *CloneImageView(const ImageView *image_view)
     *clone_view;
 
   assert(image_view != (ImageView *) NULL);
-  assert(image_view->signature == MagickSignature);
+  assert(image_view->signature == MagickCoreSignature);
   clone_view=(ImageView *) AcquireMagickMemory(sizeof(*clone_view));
   if (clone_view == (ImageView *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
@@ -121,7 +121,7 @@ MagickExport ImageView *CloneImageView(const ImageView *image_view)
   clone_view->exception=AcquireExceptionInfo();
   InheritException(clone_view->exception,image_view->exception);
   clone_view->debug=image_view->debug;
-  clone_view->signature=MagickSignature;
+  clone_view->signature=MagickCoreSignature;
   return(clone_view);
 }
 
@@ -150,12 +150,12 @@ MagickExport ImageView *CloneImageView(const ImageView *image_view)
 MagickExport ImageView *DestroyImageView(ImageView *image_view)
 {
   assert(image_view != (ImageView *) NULL);
-  assert(image_view->signature == MagickSignature);
+  assert(image_view->signature == MagickCoreSignature);
   if (image_view->description != (char *) NULL)
     image_view->description=DestroyString(image_view->description);
   image_view->view=DestroyCacheView(image_view->view);
   image_view->exception=DestroyExceptionInfo(image_view->exception);
-  image_view->signature=(~MagickSignature);
+  image_view->signature=(~MagickCoreSignature);
   image_view=(ImageView *) RelinquishMagickMemory(image_view);
   return(image_view);
 }
@@ -237,7 +237,7 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
     y;
 
   assert(source != (ImageView *) NULL);
-  assert(source->signature == MagickSignature);
+  assert(source->signature == MagickCoreSignature);
   if (transfer == (DuplexTransferImageViewMethod) NULL)
     return(MagickFalse);
   source_image=source->image;
@@ -342,7 +342,7 @@ MagickExport IndexPacket *GetImageViewAuthenticIndexes(
   const ImageView *image_view)
 {
   assert(image_view != (ImageView *) NULL);
-  assert(image_view->signature == MagickSignature);
+  assert(image_view->signature == MagickCoreSignature);
   return(GetCacheViewAuthenticIndexQueue(image_view->view));
 }
 
@@ -372,7 +372,7 @@ MagickExport PixelPacket *GetImageViewAuthenticPixels(
   const ImageView *image_view)
 {
   assert(image_view != (ImageView *) NULL);
-  assert(image_view->signature == MagickSignature);
+  assert(image_view->signature == MagickCoreSignature);
   return(GetCacheViewAuthenticPixelQueue(image_view->view));
 }
 
@@ -409,7 +409,7 @@ MagickExport char *GetImageViewException(const ImageView *image_view,
     *description;
 
   assert(image_view != (const ImageView *) NULL);
-  assert(image_view->signature == MagickSignature);
+  assert(image_view->signature == MagickCoreSignature);
   assert(severity != (ExceptionType *) NULL);
   *severity=image_view->exception->severity;
   description=(char *) AcquireQuantumMemory(2UL*MaxTextExtent,
@@ -457,7 +457,7 @@ MagickExport char *GetImageViewException(const ImageView *image_view,
 MagickExport RectangleInfo GetImageViewExtent(const ImageView *image_view)
 {
   assert(image_view != (ImageView *) NULL);
-  assert(image_view->signature == MagickSignature);
+  assert(image_view->signature == MagickCoreSignature);
   return(image_view->extent);
 }
 
@@ -486,7 +486,7 @@ MagickExport RectangleInfo GetImageViewExtent(const ImageView *image_view)
 MagickExport Image *GetImageViewImage(const ImageView *image_view)
 {
   assert(image_view != (ImageView *) NULL);
-  assert(image_view->signature == MagickSignature);
+  assert(image_view->signature == MagickCoreSignature);
   return(image_view->image);
 }
 
@@ -554,7 +554,7 @@ MagickExport MagickBooleanType GetImageViewIterator(ImageView *source,
     y;
 
   assert(source != (ImageView *) NULL);
-  assert(source->signature == MagickSignature);
+  assert(source->signature == MagickCoreSignature);
   if (get == (GetImageViewMethod) NULL)
     return(MagickFalse);
   source_image=source->image;
@@ -628,7 +628,7 @@ MagickExport const IndexPacket *GetImageViewVirtualIndexes(
   const ImageView *image_view)
 {
   assert(image_view != (ImageView *) NULL);
-  assert(image_view->signature == MagickSignature);
+  assert(image_view->signature == MagickCoreSignature);
   return(GetCacheViewVirtualIndexQueue(image_view->view));
 }
 
@@ -658,7 +658,7 @@ MagickExport const PixelPacket *GetImageViewVirtualPixels(
   const ImageView *image_view)
 {
   assert(image_view != (ImageView *) NULL);
-  assert(image_view->signature == MagickSignature);
+  assert(image_view->signature == MagickCoreSignature);
   return(GetCacheViewVirtualPixelQueue(image_view->view));
 }
 
@@ -689,7 +689,7 @@ MagickExport MagickBooleanType IsImageView(const ImageView *image_view)
 {
   if (image_view == (const ImageView *) NULL)
     return(MagickFalse);
-  if (image_view->signature != MagickSignature)
+  if (image_view->signature != MagickCoreSignature)
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -723,7 +723,7 @@ MagickExport ImageView *NewImageView(Image *image)
     *image_view;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   image_view=(ImageView *) AcquireMagickMemory(sizeof(*image_view));
   if (image_view == (ImageView *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
@@ -739,7 +739,7 @@ MagickExport ImageView *NewImageView(Image *image)
   image_view->extent.y=0;
   image_view->number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   image_view->debug=IsEventLogging();
-  image_view->signature=MagickSignature;
+  image_view->signature=MagickCoreSignature;
   return(image_view);
 }
 
@@ -777,7 +777,7 @@ MagickExport ImageView *NewImageViewRegion(Image *image,const ssize_t x,
     *image_view;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   image_view=(ImageView *) AcquireMagickMemory(sizeof(*image_view));
   if (image_view == (ImageView *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
@@ -793,7 +793,7 @@ MagickExport ImageView *NewImageViewRegion(Image *image,const ssize_t x,
   image_view->extent.y=y;
   image_view->number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   image_view->debug=IsEventLogging();
-  image_view->signature=MagickSignature;
+  image_view->signature=MagickCoreSignature;
   return(image_view);
 }
 
@@ -826,7 +826,7 @@ MagickExport void SetImageViewDescription(ImageView *image_view,
   const char *description)
 {
   assert(image_view != (ImageView *) NULL);
-  assert(image_view->signature == MagickSignature);
+  assert(image_view->signature == MagickCoreSignature);
   image_view->description=ConstantString(description);
 }
 
@@ -898,7 +898,7 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
     y;
 
   assert(destination != (ImageView *) NULL);
-  assert(destination->signature == MagickSignature);
+  assert(destination->signature == MagickCoreSignature);
   if (set == (SetImageViewMethod) NULL)
     return(MagickFalse);
   destination_image=destination->image;
@@ -991,7 +991,7 @@ MagickExport void SetImageViewThreads(ImageView *image_view,
   const size_t number_threads)
 {
   assert(image_view != (ImageView *) NULL);
-  assert(image_view->signature == MagickSignature);
+  assert(image_view->signature == MagickCoreSignature);
   image_view->number_threads=number_threads;
   if (number_threads > (size_t) GetMagickResourceLimit(ThreadResource))
     image_view->number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
@@ -1070,7 +1070,7 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
     y;
 
   assert(source != (ImageView *) NULL);
-  assert(source->signature == MagickSignature);
+  assert(source->signature == MagickCoreSignature);
   if (transfer == (TransferImageViewMethod) NULL)
     return(MagickFalse);
   source_image=source->image;
@@ -1208,7 +1208,7 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
     y;
 
   assert(source != (ImageView *) NULL);
-  assert(source->signature == MagickSignature);
+  assert(source->signature == MagickCoreSignature);
   if (update == (UpdateImageViewMethod) NULL)
     return(MagickFalse);
   source_image=source->image;

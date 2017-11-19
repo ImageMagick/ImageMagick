@@ -101,7 +101,8 @@ extern "C" {
 # define ModuleExport  MagickExport
 #endif
 
-#define MagickSignature  0xabacadabUL
+#define MagickCoreSignature  0xabacadabUL
+#define MagickSignature  MagickCoreSignature
 #if !defined(MaxTextExtent)
 # define MaxTextExtent  4096  /* always >= 4096 */
 #endif

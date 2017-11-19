@@ -157,7 +157,7 @@ static void *DestroyExceptionElement(void *exception)
 MagickExport void ClearMagickException(ExceptionInfo *exception)
 {
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   if (exception->exceptions == (void *) NULL)
     return;
   LockSemaphoreInfo(exception->semaphore);
@@ -202,7 +202,7 @@ MagickExport void CatchException(ExceptionInfo *exception)
     i;
 
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   if (exception->exceptions  == (void *) NULL)
     return;
   LockSemaphoreInfo(exception->semaphore);
@@ -421,7 +421,7 @@ MagickPrivate MagickBooleanType ClearExceptionInfo(ExceptionInfo *exception,
   MagickBooleanType relinquish)
 {
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   if (exception->semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&exception->semaphore);
   LockSemaphoreInfo(exception->semaphore);
@@ -430,7 +430,7 @@ MagickPrivate MagickBooleanType ClearExceptionInfo(ExceptionInfo *exception,
   exception->severity=UndefinedException;
   if (relinquish != MagickFalse)
     {
-      exception->signature=(~MagickSignature);
+      exception->signature=(~MagickCoreSignature);
       if (exception->exceptions != (void *) NULL)
         exception->exceptions=(void *) DestroyLinkedList((LinkedListInfo *)
           exception->exceptions,DestroyExceptionElement);
@@ -643,9 +643,9 @@ MagickExport void InheritException(ExceptionInfo *exception,
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   assert(relative != (ExceptionInfo *) NULL);
-  assert(relative->signature == MagickSignature);
+  assert(relative->signature == MagickCoreSignature);
   assert(exception != relative);
   if (relative->exceptions == (void *) NULL)
     return;
@@ -691,7 +691,7 @@ MagickPrivate void InitializeExceptionInfo(ExceptionInfo *exception)
   exception->severity=UndefinedException;
   exception->exceptions=(void *) NewLinkedList(0);
   exception->semaphore=AllocateSemaphoreInfo();
-  exception->signature=MagickSignature;
+  exception->signature=MagickCoreSignature;
 }
 
 /*
@@ -936,7 +936,7 @@ MagickExport MagickBooleanType ThrowException(ExceptionInfo *exception,
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   LockSemaphoreInfo(exception->semaphore);
   p=(ExceptionInfo *) GetLastValueInLinkedList((LinkedListInfo *)
     exception->exceptions);
@@ -959,7 +959,7 @@ MagickExport MagickBooleanType ThrowException(ExceptionInfo *exception,
     p->reason=ConstantString(reason);
   if (description != (const char *) NULL)
     p->description=ConstantString(description);
-  p->signature=MagickSignature;
+  p->signature=MagickCoreSignature;
   (void) AppendValueToLinkedList((LinkedListInfo *) exception->exceptions,p);
   if (p->severity >= exception->severity)
     {
@@ -1033,7 +1033,7 @@ MagickExport MagickBooleanType ThrowMagickExceptionList(
     length;
 
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   locale=GetLocaleExceptionMessage(severity,tag);
   (void) CopyMagickString(reason,locale,MaxTextExtent);
   (void) ConcatenateMagickString(reason," ",MaxTextExtent);

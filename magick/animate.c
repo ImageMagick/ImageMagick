@@ -290,9 +290,9 @@ MagickExport MagickBooleanType AnimateImages(const ImageInfo *image_info,
     resource_info;
 
   assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   assert(images != (Image *) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   display=XOpenDisplay(image_info->server_name);
@@ -790,7 +790,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     Determine target window.
   */
   assert(images != (Image *) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   resources=(*resource_info);
@@ -1401,7 +1401,7 @@ MagickExport Image *XAnimateImages(Display *display,
     *manager_hints;
 
   assert(images != (Image *) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   warning_handler=(WarningHandler) NULL;
@@ -3023,10 +3023,10 @@ MagickExport MagickBooleanType AnimateImages(const ImageInfo *image_info,
   Image *image)
 {
   assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   (void) image_info;
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   (void) ThrowMagickException(&image->exception,GetMagickModule(),

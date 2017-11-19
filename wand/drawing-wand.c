@@ -1236,7 +1236,7 @@ WandExport ClipPathUnits DrawGetClipUnits(const DrawingWand *wand)
 WandExport char *DrawGetDensity(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == MagickSignature);
+  assert(wand->signature == MagickCoreSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (CurrentContext->density != (char *) NULL)
@@ -4681,7 +4681,7 @@ WandExport MagickBooleanType DrawSetDensity(DrawingWand *wand,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",density);
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == MagickSignature);
+  assert(wand->signature == MagickCoreSignature);
   assert(density != (const char *) NULL);
   if ((CurrentContext->density == (const char *) NULL) ||
       (wand->filter_off != MagickFalse) ||

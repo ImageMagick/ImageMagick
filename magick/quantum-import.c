@@ -4028,11 +4028,11 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
     extent;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(quantum_info != (QuantumInfo *) NULL);
-  assert(quantum_info->signature == MagickSignature);
+  assert(quantum_info->signature == MagickCoreSignature);
   if (pixels == (const unsigned char *) NULL)
     pixels=GetQuantumPixels(quantum_info);
   x=0;

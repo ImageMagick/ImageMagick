@@ -145,7 +145,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   bounds.width=0;
@@ -312,7 +312,7 @@ MagickExport size_t GetImageChannelDepth(const Image *image,
   */
   assert(image != (Image *) NULL);
 
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
@@ -632,7 +632,7 @@ MagickExport size_t GetImageQuantumDepth(const Image *image,
 MagickExport ImageType GetImageType(const Image *image,ExceptionInfo *exception)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->colorspace == CMYKColorspace)
@@ -703,7 +703,7 @@ MagickExport ImageType IdentifyImageGray(const Image *image,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if ((image->type == BilevelType) || (image->type == GrayscaleType) ||
@@ -784,7 +784,7 @@ MagickExport MagickBooleanType IdentifyImageMonochrome(const Image *image,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->type == BilevelType)
@@ -852,7 +852,7 @@ MagickExport ImageType IdentifyImageType(const Image *image,
   ExceptionInfo *exception)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->colorspace == CMYKColorspace)
@@ -910,7 +910,7 @@ MagickExport MagickBooleanType IsGrayImage(const Image *image,
   ExceptionInfo *exception)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if ((image->type == BilevelType) || (image->type == GrayscaleType) ||
       (image->type == GrayscaleMatteType))
     return(MagickTrue);
@@ -946,7 +946,7 @@ MagickExport MagickBooleanType IsMonochromeImage(const Image *image,
   ExceptionInfo *exception)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->type == BilevelType)
     return(MagickTrue);
   return(MagickFalse);
@@ -997,7 +997,7 @@ MagickExport MagickBooleanType IsOpaqueImage(const Image *image,
     Determine if image is opaque.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->matte == MagickFalse)
@@ -1077,7 +1077,7 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (depth >= MAGICKCORE_QUANTUM_DEPTH)
     {
       image->depth=depth;
@@ -1276,7 +1276,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   status=MagickTrue;
   image_info=AcquireImageInfo();
   image_info->dither=image->dither;

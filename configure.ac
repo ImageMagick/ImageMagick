@@ -2242,6 +2242,41 @@ AC_SUBST(GVC_LIBS)
 dnl ===========================================================================
 
 #
+# Check for the HEIC delegate library.
+#
+AC_ARG_WITH([heic],
+    [AC_HELP_STRING([--without-heic],
+                    [disable HEIC support])],
+    [with_heic=$withval],
+    [with_heic='yes'])
+
+if test "$with_heic" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-heic=$with_heic "
+fi
+
+have_heic='no'
+HEIC_CFLAGS=""
+HEIC_LIBS=""
+HEIC_PKG=""
+if test "x$with_heic" = "xyes"; then
+  AC_MSG_RESULT([-------------------------------------------------------------])
+  PKG_CHECK_MODULES(HEIC,[libde265], have_heic=yes, have_heic=no)
+  AC_MSG_RESULT([])
+fi
+
+if test "$have_heic" = 'yes'; then
+  AC_DEFINE(HEIC_DELEGATE,1,Define if you have HEIC library)
+  CFLAGS="$HEIC_CFLAGS $CFLAGS"
+fi
+
+AM_CONDITIONAL(HEIC_DELEGATE, test "$have_heic" = 'yes')
+AC_SUBST(HEIC_CFLAGS)
+AC_SUBST(HEIC_LIBS)
+
+
+dnl ===========================================================================
+
+#
 # Check for JBIG delegate library.
 #
 
@@ -3717,6 +3752,9 @@ fi
 if test "$have_gslib"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES gslib"
 fi
+if test "$have_heic"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES heic"
+fi
 if test "$have_jbig"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES jbig"
 fi
@@ -3992,6 +4030,7 @@ matches your expectations.
   FreeType          --with-freetype=$with_freetype		$have_freetype
   Ghostscript lib   --with-gslib=$with_gslib		$have_gslib
   Graphviz          --with-gvc=$with_gvc		$have_gvc
+  HEIC              --with-heic=$with_heic    $have_heic
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
   LCMS              --with-lcms=$with_lcms		$have_lcms

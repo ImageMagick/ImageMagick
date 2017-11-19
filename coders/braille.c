@@ -220,9 +220,9 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
     Open output image file.
   */
   assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (LocaleCompare(image_info->magick,"UBRL") == 0)
     unicode=1;
   else if (LocaleCompare(image_info->magick,"UBRL6") == 0)

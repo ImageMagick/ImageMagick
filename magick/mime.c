@@ -611,7 +611,7 @@ MagickExport const char *GetMimeDescription(const MimeInfo *mime_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(mime_info != (MimeInfo *) NULL);
-  assert(mime_info->signature == MagickSignature);
+  assert(mime_info->signature == MagickCoreSignature);
   return(mime_info->description);
 }
 
@@ -641,7 +641,7 @@ MagickExport const char *GetMimeType(const MimeInfo *mime_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(mime_info != (MimeInfo *) NULL);
-  assert(mime_info->signature == MagickSignature);
+  assert(mime_info->signature == MagickCoreSignature);
   return(mime_info->type);
 }
 
@@ -874,7 +874,7 @@ static MagickBooleanType LoadMimeCache(LinkedListInfo *cache,const char *xml,
       ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
     (void) ResetMagickMemory(mime_info,0,sizeof(*mime_info));
     mime_info->path=ConstantString(filename);
-    mime_info->signature=MagickSignature;
+    mime_info->signature=MagickCoreSignature;
     attribute=GetXMLTreeAttribute(mime,"data-type");
     if (attribute != (const char *) NULL)
       mime_info->data_type=(DataType) ParseCommandOption(MagickDataTypeOptions,

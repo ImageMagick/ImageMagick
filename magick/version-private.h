@@ -25,7 +25,7 @@ extern "C" {
 #endif
 
 extern MagickExport unsigned int
-  GetMagickSignature(const StringInfo *);
+  GetMagickCoreSignature(const StringInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

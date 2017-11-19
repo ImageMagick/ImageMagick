@@ -448,13 +448,13 @@ MagickExport const char *GetMagickReleaseDate(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMagickSignature() returns a signature that uniquely encodes the
+%  GetMagickCoreSignature() returns a signature that uniquely encodes the
 %  MagickCore libary version, quantum depth, HDRI status, OS word size, and
 %  endianness.
 %
-%  The format of the GetMagickSignature method is:
+%  The format of the GetMagickCoreSignature method is:
 %
-%      unsigned int GetMagickSignature(const StringInfo *nonce)
+%      unsigned int GetMagickCoreSignature(const StringInfo *nonce)
 %
 %  A description of each parameter follows:
 %
@@ -505,7 +505,7 @@ static unsigned int CRC32(const unsigned char *message,const size_t length)
   return(crc ^ 0xFFFFFFFF);
 }
 
-MagickExport unsigned int GetMagickSignature(const StringInfo *nonce)
+MagickExport unsigned int GetMagickCoreSignature(const StringInfo *nonce)
 {
   register unsigned char
     *p;

@@ -2562,7 +2562,7 @@ WandExport PixelView *NewPixelView(MagickWand *wand)
     *pixel_view;
 
   assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == MagickSignature);
+  assert(wand->signature == MagickCoreSignature);
   pixel_view=(PixelView *) AcquireMagickMemory(sizeof(*pixel_view));
   if (pixel_view == (PixelView *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
@@ -2622,7 +2622,7 @@ WandExport PixelView *NewPixelViewRegion(MagickWand *wand,const ssize_t x,
     *pixel_view;
 
   assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == MagickSignature);
+  assert(wand->signature == MagickCoreSignature);
   pixel_view=(PixelView *) AcquireMagickMemory(sizeof(*pixel_view));
   if (pixel_view == (PixelView *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",

@@ -1767,12 +1767,12 @@ MagickExport MagickBooleanType CloneImageOptions(ImageInfo *image_info,
   const ImageInfo *clone_info)
 {
   assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(clone_info != (const ImageInfo *) NULL);
-  assert(clone_info->signature == MagickSignature);
+  assert(clone_info->signature == MagickCoreSignature);
   if (clone_info->options != (void *) NULL)
     {
       if (image_info->options != (void *) NULL)
@@ -1860,7 +1860,7 @@ MagickExport MagickBooleanType DeleteImageOption(ImageInfo *image_info,
   const char *option)
 {
   assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
@@ -1894,7 +1894,7 @@ MagickExport MagickBooleanType DeleteImageOption(ImageInfo *image_info,
 MagickExport void DestroyImageOptions(ImageInfo *image_info)
 {
   assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
@@ -1934,7 +1934,7 @@ MagickExport const char *GetImageOption(const ImageInfo *image_info,
     *option;
 
   assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
@@ -2196,7 +2196,7 @@ MagickExport char **GetCommandOptions(const CommandOption option)
 MagickExport char *GetNextImageOption(const ImageInfo *image_info)
 {
   assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
@@ -2673,7 +2673,7 @@ MagickExport char *RemoveImageOption(ImageInfo *image_info,const char *option)
     *value;
 
   assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
@@ -2710,7 +2710,7 @@ MagickExport char *RemoveImageOption(ImageInfo *image_info,const char *option)
 MagickExport void ResetImageOptions(const ImageInfo *image_info)
 {
   assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
@@ -2746,7 +2746,7 @@ MagickExport void ResetImageOptions(const ImageInfo *image_info)
 MagickExport void ResetImageOptionIterator(const ImageInfo *image_info)
 {
   assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
@@ -2786,7 +2786,7 @@ MagickExport MagickBooleanType SetImageOption(ImageInfo *image_info,
   const char *option,const char *value)
 {
   assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);

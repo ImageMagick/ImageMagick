@@ -463,11 +463,11 @@ static Image *SparseColorOption(const Image *image,const ChannelType channel,
     represent a color varies depending on the current channel setting.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   /*
     Limit channels according to image - and add up number of color channel.
   */
@@ -700,9 +700,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
     Initialize method variables.
   */
   assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image **) NULL);
-  assert((*image)->signature == MagickSignature);
+  assert((*image)->signature == MagickCoreSignature);
   if ((*image)->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",(*image)->filename);
   if (argc < 0)
@@ -3847,7 +3847,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
     Set defaults.
   */
   assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(exception != (ExceptionInfo *) NULL);
@@ -6573,7 +6573,7 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
     Initialize method variables.
   */
   assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
@@ -7763,10 +7763,10 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
     Apply options to the image list.
   */
   assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   assert(images != (Image **) NULL);
   assert((*images)->previous == (Image *) NULL);
-  assert((*images)->signature == MagickSignature);
+  assert((*images)->signature == MagickCoreSignature);
   if ((*images)->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       (*images)->filename);
@@ -8885,11 +8885,11 @@ WandExport MagickBooleanType MogrifyImages(ImageInfo *image_info,
     i;
 
   assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   if (images == (Image **) NULL)
     return(MogrifyImage(image_info,argc,argv,images,exception));
   assert((*images)->previous == (Image *) NULL);
-  assert((*images)->signature == MagickSignature);
+  assert((*images)->signature == MagickCoreSignature);
   if ((*images)->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       (*images)->filename);

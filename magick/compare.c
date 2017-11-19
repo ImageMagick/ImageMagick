@@ -187,11 +187,11 @@ MagickExport Image *CompareImageChannels(Image *image,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(reconstruct_image != (const Image *) NULL);
-  assert(reconstruct_image->signature == MagickSignature);
+  assert(reconstruct_image->signature == MagickCoreSignature);
   assert(distortion != (double *) NULL);
   *distortion=0.0;
   if (image->debug != MagickFalse)
@@ -1607,11 +1607,11 @@ MagickExport MagickBooleanType GetImageChannelDistortion(Image *image,
     length;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(reconstruct_image != (const Image *) NULL);
-  assert(reconstruct_image->signature == MagickSignature);
+  assert(reconstruct_image->signature == MagickCoreSignature);
   assert(distortion != (double *) NULL);
   *distortion=0.0;
   if (image->debug != MagickFalse)
@@ -1746,11 +1746,11 @@ MagickExport double *GetImageChannelDistortions(Image *image,
     length;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(reconstruct_image != (const Image *) NULL);
-  assert(reconstruct_image->signature == MagickSignature);
+  assert(reconstruct_image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (metric != PerceptualHashErrorMetric)
@@ -1918,9 +1918,9 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   assert(reconstruct_image != (const Image *) NULL);
-  assert(reconstruct_image->signature == MagickSignature);
+  assert(reconstruct_image->signature == MagickCoreSignature);
   if (ValidateImageMorphology(image,reconstruct_image) == MagickFalse)
     ThrowBinaryException(ImageError,"ImageMorphologyDiffers",image->filename);
   area=0.0;
@@ -2112,11 +2112,11 @@ MagickExport Image *SimilarityMetricImage(Image *image,const Image *reference,
     y;
 
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   assert(offset != (RectangleInfo *) NULL);
   SetGeometry(reference,offset);
   *similarity_metric=MagickMaximumValue;

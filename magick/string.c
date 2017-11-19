@@ -172,7 +172,7 @@ MagickExport StringInfo *AcquireStringInfo(const size_t length)
   if (string_info == (StringInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(string_info,0,sizeof(*string_info));
-  string_info->signature=MagickSignature;
+  string_info->signature=MagickCoreSignature;
   string_info->length=length;
   string_info->datum=(unsigned char *) NULL;
   if (~string_info->length >= (MaxTextExtent-1))
@@ -323,7 +323,7 @@ MagickExport StringInfo *CloneStringInfo(const StringInfo *string_info)
     *clone_info;
 
   assert(string_info != (StringInfo *) NULL);
-  assert(string_info->signature == MagickSignature);
+  assert(string_info->signature == MagickCoreSignature);
   clone_info=AcquireStringInfo(string_info->length);
   if (string_info->length != 0)
     (void) memcpy(clone_info->datum,string_info->datum,string_info->length+1);
@@ -364,9 +364,9 @@ MagickExport int CompareStringInfo(const StringInfo *target,
     status;
 
   assert(target != (StringInfo *) NULL);
-  assert(target->signature == MagickSignature);
+  assert(target->signature == MagickCoreSignature);
   assert(source != (StringInfo *) NULL);
-  assert(source->signature == MagickSignature);
+  assert(source->signature == MagickCoreSignature);
   status=memcmp(target->datum,source->datum,MagickMin(target->length,
     source->length));
   if (status != 0)
@@ -538,7 +538,7 @@ MagickExport void ConcatenateStringInfo(StringInfo *string_info,
     length;
 
   assert(string_info != (StringInfo *) NULL);
-  assert(string_info->signature == MagickSignature);
+  assert(string_info->signature == MagickCoreSignature);
   assert(source != (const StringInfo *) NULL);
   length=string_info->length;
   if (~length < source->length)
@@ -834,11 +834,11 @@ MagickExport char *DestroyString(char *string)
 MagickExport StringInfo *DestroyStringInfo(StringInfo *string_info)
 {
   assert(string_info != (StringInfo *) NULL);
-  assert(string_info->signature == MagickSignature);
+  assert(string_info->signature == MagickCoreSignature);
   if (string_info->datum != (unsigned char *) NULL)
     string_info->datum=(unsigned char *) RelinquishMagickMemory(
       string_info->datum);
-  string_info->signature=(~MagickSignature);
+  string_info->signature=(~MagickCoreSignature);
   string_info=(StringInfo *) RelinquishMagickMemory(string_info);
   return(string_info);
 }
@@ -1262,7 +1262,7 @@ MagickExport char *GetEnvironmentValue(const char *name)
 MagickExport unsigned char *GetStringInfoDatum(const StringInfo *string_info)
 {
   assert(string_info != (StringInfo *) NULL);
-  assert(string_info->signature == MagickSignature);
+  assert(string_info->signature == MagickCoreSignature);
   return(string_info->datum);
 }
 
@@ -1291,7 +1291,7 @@ MagickExport unsigned char *GetStringInfoDatum(const StringInfo *string_info)
 MagickExport size_t GetStringInfoLength(const StringInfo *string_info)
 {
   assert(string_info != (StringInfo *) NULL);
-  assert(string_info->signature == MagickSignature);
+  assert(string_info->signature == MagickCoreSignature);
   return(string_info->length);
 }
 
@@ -1320,7 +1320,7 @@ MagickExport size_t GetStringInfoLength(const StringInfo *string_info)
 MagickExport const char *GetStringInfoPath(const StringInfo *string_info)
 {
   assert(string_info != (StringInfo *) NULL);
-  assert(string_info->signature == MagickSignature);
+  assert(string_info->signature == MagickCoreSignature);
   return(string_info->path);
 }
 
@@ -1536,7 +1536,7 @@ MagickExport void PrintStringInfo(FILE *file,const char *id,
 
   assert(id != (const char *) NULL);
   assert(string_info != (StringInfo *) NULL);
-  assert(string_info->signature == MagickSignature);
+  assert(string_info->signature == MagickCoreSignature);
   p=(char *) string_info->datum;
   for (i=0; i < string_info->length; i++)
   {
@@ -1611,7 +1611,7 @@ MagickExport void PrintStringInfo(FILE *file,const char *id,
 MagickExport void ResetStringInfo(StringInfo *string_info)
 {
   assert(string_info != (StringInfo *) NULL);
-  assert(string_info->signature == MagickSignature);
+  assert(string_info->signature == MagickCoreSignature);
   (void) ResetMagickMemory(string_info->datum,0,string_info->length);
 }
 
@@ -1692,9 +1692,9 @@ MagickExport void SetStringInfo(StringInfo *string_info,
   const StringInfo *source)
 {
   assert(string_info != (StringInfo *) NULL);
-  assert(string_info->signature == MagickSignature);
+  assert(string_info->signature == MagickCoreSignature);
   assert(source != (StringInfo *) NULL);
-  assert(source->signature == MagickSignature);
+  assert(source->signature == MagickCoreSignature);
   if (string_info->length == 0)
     return;
   (void) ResetMagickMemory(string_info->datum,0,string_info->length);
@@ -1732,7 +1732,7 @@ MagickExport void SetStringInfoDatum(StringInfo *string_info,
   const unsigned char *source)
 {
   assert(string_info != (StringInfo *) NULL);
-  assert(string_info->signature == MagickSignature);
+  assert(string_info->signature == MagickCoreSignature);
   if (string_info->length != 0)
     (void) memcpy(string_info->datum,source,string_info->length);
 }
@@ -1765,7 +1765,7 @@ MagickExport void SetStringInfoLength(StringInfo *string_info,
   const size_t length)
 {
   assert(string_info != (StringInfo *) NULL);
-  assert(string_info->signature == MagickSignature);
+  assert(string_info->signature == MagickCoreSignature);
   if (string_info->length == length)
     return;
   if (~length < MaxTextExtent)
@@ -1808,7 +1808,7 @@ MagickExport void SetStringInfoLength(StringInfo *string_info,
 MagickExport void SetStringInfoPath(StringInfo *string_info,const char *path)
 {
   assert(string_info != (StringInfo *) NULL);
-  assert(string_info->signature == MagickSignature);
+  assert(string_info->signature == MagickCoreSignature);
   assert(path != (const char *) NULL);
   (void) CopyMagickString(string_info->path,path,MaxTextExtent);
 }
@@ -1842,7 +1842,7 @@ MagickExport StringInfo *SplitStringInfo(StringInfo *string_info,
     *split_info;
 
   assert(string_info != (StringInfo *) NULL);
-  assert(string_info->signature == MagickSignature);
+  assert(string_info->signature == MagickCoreSignature);
   if (offset > string_info->length)
     return((StringInfo *) NULL);
   split_info=AcquireStringInfo(offset);
@@ -2138,7 +2138,7 @@ MagickExport double *StringToArrayOfDoubles(const char *string,ssize_t *count,
     Determine count of values, and check syntax.
   */
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   *count=0;
   i=0;
   p=string;

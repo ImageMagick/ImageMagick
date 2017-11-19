@@ -308,11 +308,11 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
     Initialize noise image attributes.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
   noise_image=AccelerateAddNoiseImage(image,channel,noise_type,exception);
   if (noise_image != (Image *) NULL)
@@ -487,11 +487,11 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
     Allocate blue shift image.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   shift_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
   if (shift_image == (Image *) NULL)
@@ -631,11 +631,11 @@ MagickExport Image *CharcoalImage(const Image *image,const double radius,
     *edge_image;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   clone_image=CloneImage(image,0,0,MagickTrue,exception);
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
@@ -720,11 +720,11 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
     Allocate colorized image.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   colorize_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
   if (colorize_image == (Image *) NULL)
@@ -905,11 +905,11 @@ MagickExport Image *ColorMatrixImage(const Image *image,
     Create color matrix.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   i=0;
   for (v=0; v < (ssize_t) color_matrix->height; v++)
     for (u=0; u < (ssize_t) color_matrix->width; u++)
@@ -3127,7 +3127,7 @@ MagickExport Image *FxImageChannel(const Image *image,const ChannelType channel,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   fx_info=AcquireFxThreadSet(image,expression,exception);
@@ -3315,11 +3315,11 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
     Initialize implode image attributes.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   implode_image=CloneImage(image,0,0,MagickTrue,exception);
   if (implode_image == (Image *) NULL)
     return((Image *) NULL);
@@ -3502,11 +3502,11 @@ MagickExport Image *MorphImages(const Image *image,
     Clone first frame in sequence.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   morph_images=CloneImage(image,0,0,MagickTrue,exception);
   if (morph_images == (Image *) NULL)
     return((Image *) NULL);
@@ -3934,7 +3934,7 @@ MagickExport MagickBooleanType PlasmaImage(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
@@ -4006,11 +4006,11 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
     Simulate a Polaroid picture.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   quantum=(ssize_t) MagickMax(MagickMax((double) image->columns,(double)
     image->rows)/25.0,10.0);
   height=image->rows+2*quantum;
@@ -4190,11 +4190,11 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
     Initialize sepia-toned image attributes.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   sepia_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (sepia_image == (Image *) NULL)
     return((Image *) NULL);
@@ -4346,11 +4346,11 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   clone_image=CloneImage(image,0,0,MagickTrue,exception);
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
@@ -4669,7 +4669,7 @@ MagickExport MagickBooleanType SolarizeImageChannel(Image *image,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
@@ -4827,13 +4827,13 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
     Initialize steganographic image attributes.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(watermark != (const Image *) NULL);
-  assert(watermark->signature == MagickSignature);
+  assert(watermark->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   one=1UL;
   stegano_image=CloneImage(image,0,0,MagickTrue,exception);
   if (stegano_image == (Image *) NULL)
@@ -4987,14 +4987,14 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
     y;
 
   assert(left_image != (const Image *) NULL);
-  assert(left_image->signature == MagickSignature);
+  assert(left_image->signature == MagickCoreSignature);
   if (left_image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       left_image->filename);
   assert(right_image != (const Image *) NULL);
-  assert(right_image->signature == MagickSignature);
+  assert(right_image->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   assert(right_image != (const Image *) NULL);
   image=left_image;
   if ((left_image->columns != right_image->columns) ||
@@ -5129,11 +5129,11 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
     Initialize swirl image attributes.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   swirl_image=CloneImage(image,0,0,MagickTrue,exception);
   if (swirl_image == (Image *) NULL)
     return((Image *) NULL);
@@ -5319,11 +5319,11 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
     Allocate tint image.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   tint_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (tint_image == (Image *) NULL)
     return((Image *) NULL);
@@ -5484,11 +5484,11 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
     *vignette_image;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   canvas_image=CloneImage(image,0,0,MagickTrue,exception);
   if (canvas_image == (Image *) NULL)
     return((Image *) NULL);
@@ -5598,11 +5598,11 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     Initialize wave image attributes.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   wave_image=CloneImage(image,image->columns,(size_t) (image->rows+2.0*
     fabs(amplitude)),MagickTrue,exception);
   if (wave_image == (Image *) NULL)
@@ -5807,11 +5807,11 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
     Initialize noise image attributes.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   noise_image=(Image *) NULL;
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
   noise_image=AccelerateWaveletDenoiseImage(image,threshold,exception);

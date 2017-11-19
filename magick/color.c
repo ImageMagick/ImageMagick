@@ -893,7 +893,7 @@ static LinkedListInfo *AcquireColorCache(const char *filename,
       p->alpha);
     color_info->compliance=(ComplianceType) p->compliance;
     color_info->exempt=MagickTrue;
-    color_info->signature=MagickSignature;
+    color_info->signature=MagickCoreSignature;
     status&=AppendValueToLinkedList(cache,color_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -1816,11 +1816,11 @@ MagickExport MagickBooleanType IsImageSimilar(const Image *image,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(target_image != (Image *) NULL);
-  assert(target_image->signature == MagickSignature);
+  assert(target_image->signature == MagickCoreSignature);
   assert(x_offset != (ssize_t *) NULL);
   assert(y_offset != (ssize_t *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
@@ -2335,7 +2335,7 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *cache,const char *xml,
         (void) ResetMagickMemory(color_info,0,sizeof(*color_info));
         color_info->path=ConstantString(filename);
         color_info->exempt=MagickFalse;
-        color_info->signature=MagickSignature;
+        color_info->signature=MagickCoreSignature;
         continue;
       }
     if (color_info == (ColorInfo *) NULL)

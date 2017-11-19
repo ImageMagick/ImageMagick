@@ -1672,11 +1672,11 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     Prepare composite image.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(composite != (Image *) NULL);
-  assert(composite->signature == MagickSignature);
+  assert(composite->signature == MagickCoreSignature);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
   exception=(&image->exception);
@@ -2943,7 +2943,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (texture == (const Image *) NULL)
     return(MagickFalse);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)

@@ -1288,7 +1288,7 @@ MagickPrivate MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
 
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
@@ -2397,7 +2397,7 @@ MagickPrivate MagickBooleanType ComputeEqualizeImage(Image *image,
   outputReady = MagickFalse;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
@@ -2868,7 +2868,7 @@ MagickBooleanType ComputeGrayscaleImage(Image *image,
   grayscaleKernel = NULL; 
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
@@ -3301,7 +3301,7 @@ MagickBooleanType ComputeModulateImage(Image *image,
   event_count = 0;
 
   assert(image != (Image *)NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent, GetMagickModule(), "%s", image->filename);
 

@@ -279,11 +279,11 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     y;
 
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   /*
     Filter out noise.
   */
@@ -679,7 +679,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     number_grays;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if ((image->columns < (distance+1)) || (image->rows < (distance+1)))
@@ -1895,11 +1895,11 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
     Create the accumulator.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   accumulator_width=180;
   hough_height=((sqrt(2.0)*(double) (image->rows > image->columns ?
     image->rows : image->columns))/2.0);
@@ -2190,11 +2190,11 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
     y;
 
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   mean_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (mean_image == (Image *) NULL)
     return((Image *) NULL);

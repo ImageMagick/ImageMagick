@@ -140,7 +140,7 @@ MagickExport void ConformMagickPixelPacket(Image *image,
   ExceptionInfo *exception)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   assert(destination != (const MagickPixelPacket *) NULL);
 
   (void) exception;
@@ -1908,7 +1908,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
     length;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   length=strlen(map);
@@ -4134,7 +4134,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,const ssize_t x,
     Allocate image structure.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   length=strlen(map);
@@ -4452,7 +4452,7 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
     interpolate;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   assert(image_view != (CacheView *) NULL);
   status=MagickTrue;
   x_offset=(ssize_t) floor(x);

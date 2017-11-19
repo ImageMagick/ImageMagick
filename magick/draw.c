@@ -829,7 +829,7 @@ MagickExport DrawInfo *DestroyDrawInfo(DrawInfo *draw_info)
   if (draw_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(draw_info != (DrawInfo *) NULL);
-  assert(draw_info->signature == MagickSignature);
+  assert(draw_info->signature == MagickCoreSignature);
   if (draw_info->primitive != (char *) NULL)
     draw_info->primitive=DestroyString(draw_info->primitive);
   if (draw_info->text != (char *) NULL)
@@ -863,7 +863,7 @@ MagickExport DrawInfo *DestroyDrawInfo(DrawInfo *draw_info)
       draw_info->gradient.stops);
   if (draw_info->clip_mask != (char *) NULL)
     draw_info->clip_mask=DestroyString(draw_info->clip_mask);
-  draw_info->signature=(~MagickSignature);
+  draw_info->signature=(~MagickCoreSignature);
   draw_info=(DrawInfo *) RelinquishMagickMemory(draw_info);
   return(draw_info);
 }
@@ -1115,11 +1115,11 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
     Determine bounding box.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(source != (const Image *) NULL);
-  assert(source->signature == MagickSignature);
+  assert(source->signature == MagickCoreSignature);
   assert(affine != (AffineMatrix *) NULL);
   extent[0].x=0.0;
   extent[0].y=0.0;
@@ -1409,7 +1409,7 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
     status;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(draw_info != (const DrawInfo *) NULL);
@@ -1739,11 +1739,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
     n;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(draw_info != (DrawInfo *) NULL);
-  assert(draw_info->signature == MagickSignature);
+  assert(draw_info->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if ((draw_info->primitive == (char *) NULL) ||
@@ -3396,7 +3396,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
     Draw linear or radial gradient on image.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(draw_info != (const DrawInfo *) NULL);
@@ -3648,7 +3648,7 @@ MagickExport MagickBooleanType DrawPatternPath(Image *image,
     status;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(draw_info != (const DrawInfo *) NULL);
@@ -3973,11 +3973,11 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
     Compute bounding box.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(draw_info != (DrawInfo *) NULL);
-  assert(draw_info->signature == MagickSignature);
+  assert(draw_info->signature == MagickCoreSignature);
   assert(primitive_info != (PrimitiveInfo *) NULL);
   if (primitive_info->coordinates == 0)
     return(MagickTrue);
@@ -5004,7 +5004,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
       draw_info->weight=(size_t) weight;
     }
   exception=DestroyExceptionInfo(exception);
-  draw_info->signature=MagickSignature;
+  draw_info->signature=MagickCoreSignature;
   clone_info=DestroyImageInfo(clone_info);
 }
 

@@ -227,7 +227,7 @@ static LinkedListInfo *AcquirePolicyCache(const char *filename,
     policy_info->pattern=(char *) p->pattern;
     policy_info->value=(char *) p->value;
     policy_info->exempt=MagickTrue;
-    policy_info->signature=MagickSignature;
+    policy_info->signature=MagickCoreSignature;
     status&=AppendValueToLinkedList(cache,policy_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -868,7 +868,7 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,const char *xml,
         (void) ResetMagickMemory(policy_info,0,sizeof(*policy_info));
         policy_info->path=ConstantString(filename);
         policy_info->exempt=MagickFalse;
-        policy_info->signature=MagickSignature;
+        policy_info->signature=MagickCoreSignature;
         continue;
       }
     if (policy_info == (PolicyInfo *) NULL)

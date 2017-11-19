@@ -970,7 +970,7 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
     Allocate histogram and extrema.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   GetMagickPixelPacket(image,pixel);
@@ -1813,7 +1813,7 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
     Allocate histogram and extrema.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   for (i=0; i < MaxDimension; i++)

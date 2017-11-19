@@ -102,9 +102,9 @@ MagickExport Image *AutoOrientImage(const Image *image,
     *orient_image;
 
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   orient_image=(Image *) NULL;
   switch(orientation)
   {
@@ -212,11 +212,11 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
     Check chop geometry.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   assert(chop_info != (RectangleInfo *) NULL);
   if (((chop_info->x+(ssize_t) chop_info->width) < 0) ||
       ((chop_info->y+(ssize_t) chop_info->height) < 0) ||
@@ -427,11 +427,11 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
     Consolidate separate C, M, Y, and K planes into a single image.
   */
   assert(images != (Image *) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   cmyk_images=NewImageList();
   for (i=0; i < (ssize_t) GetImageListLength(images); i+=4)
   {
@@ -638,12 +638,12 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
     Check crop geometry.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(geometry != (const RectangleInfo *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   bounding_box=image->page;
   if ((bounding_box.width == 0) || (bounding_box.height == 0))
     {
@@ -851,7 +851,7 @@ MagickExport Image *CropImageToTiles(const Image *image,
     geometry;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   crop_image=NewImageList();
@@ -1061,12 +1061,12 @@ MagickExport Image *ExcerptImage(const Image *image,
     Allocate excerpt image.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(geometry != (const RectangleInfo *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   excerpt_image=CloneImage(image,geometry->width,geometry->height,MagickTrue,
     exception);
   if (excerpt_image == (Image *) NULL)
@@ -1177,12 +1177,12 @@ MagickExport Image *ExtentImage(const Image *image,
     Allocate extent image.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(geometry != (const RectangleInfo *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   if ((image->columns == geometry->width) && 
       (image->rows == geometry->height) &&
       (geometry->x == 0) && (geometry->y == 0))
@@ -1246,11 +1246,11 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
     y;
 
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   flip_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (flip_image == (Image *) NULL)
     return((Image *) NULL);
@@ -1374,11 +1374,11 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
     y;
 
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   flop_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (flop_image == (Image *) NULL)
     return((Image *) NULL);
@@ -1575,11 +1575,11 @@ MagickExport Image *RollImage(const Image *image,const ssize_t x_offset,
     Initialize roll image attributes.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   roll_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (roll_image == (Image *) NULL)
     return((Image *) NULL);
@@ -1660,7 +1660,7 @@ MagickExport Image *ShaveImage(const Image *image,
     geometry;
 
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (((2*shave_info->width) >= image->columns) ||
@@ -1739,12 +1739,12 @@ MagickExport Image *SpliceImage(const Image *image,
     Allocate splice image.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(geometry != (const RectangleInfo *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   splice_geometry=(*geometry);
   splice_image=CloneImage(image,image->columns+splice_geometry.width,
     image->rows+splice_geometry.height,MagickTrue,exception);
@@ -2047,7 +2047,7 @@ MagickExport MagickBooleanType TransformImage(Image **image,
     geometry;
 
   assert(image != (Image **) NULL);
-  assert((*image)->signature == MagickSignature);
+  assert((*image)->signature == MagickCoreSignature);
   if ((*image)->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",(*image)->filename);
   transform_image=(*image);
@@ -2135,7 +2135,7 @@ MagickExport MagickBooleanType TransformImages(Image **images,
     i;
 
   assert(images != (Image **) NULL);
-  assert((*images)->signature == MagickSignature);
+  assert((*images)->signature == MagickCoreSignature);
   if ((*images)->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       (*images)->filename);
@@ -2204,11 +2204,11 @@ MagickExport Image *TransposeImage(const Image *image,ExceptionInfo *exception)
     y;
 
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   transpose_image=CloneImage(image,image->rows,image->columns,MagickTrue,
     exception);
   if (transpose_image == (Image *) NULL)
@@ -2333,11 +2333,11 @@ MagickExport Image *TransverseImage(const Image *image,ExceptionInfo *exception)
     y;
 
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   transverse_image=CloneImage(image,image->rows,image->columns,MagickTrue,
     exception);
   if (transverse_image == (Image *) NULL)
@@ -2458,7 +2458,7 @@ MagickExport Image *TrimImage(const Image *image,ExceptionInfo *exception)
     geometry;
 
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   geometry=GetImageBoundingBox(image,exception);

@@ -89,7 +89,7 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
     rights;
 
   assert(image != (Image **) NULL);
-  assert((*image)->signature == MagickSignature);
+  assert((*image)->signature == MagickCoreSignature);
   if ((*image)->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",(*image)->filename);
   rights=ReadPolicyRights;
@@ -222,6 +222,9 @@ MagickExport void RegisterStaticModules(void)
   (void) RegisterGRADIENTImage();
   (void) RegisterHALDImage();
   (void) RegisterHDRImage();
+#if defined(MAGICKCORE_HEIC_DELEGATE)
+  (void) RegisterHEICImage();
+#endif
   (void) RegisterHISTOGRAMImage();
   (void) RegisterHRZImage();
   (void) RegisterHTMLImage();
@@ -414,6 +417,9 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterGRADIENTImage();
   UnregisterHALDImage();
   UnregisterHDRImage();
+#if defined(MAGICKCORE_HEIC_DELEGATE)
+  UnregisterHEICImage();
+#endif
   UnregisterHISTOGRAMImage();
   UnregisterHRZImage();
   UnregisterHTMLImage();

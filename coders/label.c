@@ -117,12 +117,12 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     Initialize Image structure.
   */
   assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   image=AcquireImage(image_info);
   (void) ResetImagePage(image,"0x0+0+0");
   property=InterpretImageProperties(image_info,image,image_info->filename);

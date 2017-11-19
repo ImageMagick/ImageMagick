@@ -285,7 +285,7 @@ MagickExport void Ascii85Flush(Image *image)
     *tuple;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(image->ascii85 != (Ascii85Info *) NULL);
@@ -315,7 +315,7 @@ MagickExport void Ascii85Encode(Image *image,const unsigned char code)
     n;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   assert(image->ascii85 != (Ascii85Info *) NULL);
   image->ascii85->buffer[image->ascii85->offset]=code;
   image->ascii85->offset++;
@@ -453,7 +453,7 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image)
     Allocate buffers.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   mb_hash=(HuffmanTable **) AcquireQuantumMemory(HashSize,sizeof(*mb_hash));
@@ -751,13 +751,13 @@ RestoreMSCWarning \
     Allocate scanline buffer.
   */
   assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(inject_image != (Image *) NULL);
-  assert(inject_image->signature == MagickSignature);
+  assert(inject_image->signature == MagickCoreSignature);
   one=1;
   width=inject_image->columns;
   if (LocaleCompare(image_info->magick,"FAX") == 0)
@@ -967,7 +967,7 @@ MagickExport MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
     Allocate string table.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(pixels != (unsigned char *) NULL);
@@ -1102,7 +1102,7 @@ MagickExport MagickBooleanType PackbitsEncodeImage(Image *image,
     Compress pixels with Packbits encoding.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(pixels != (unsigned char *) NULL);
@@ -1255,7 +1255,7 @@ MagickExport MagickBooleanType ZLIBEncodeImage(Image *image,const size_t length,
     stream;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   compress_packets=(size_t) (1.001*length+12);
@@ -1294,7 +1294,7 @@ MagickExport MagickBooleanType ZLIBEncodeImage(Image *image,
   const size_t magick_unused(length),unsigned char *magick_unused(pixels))
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   (void) ThrowMagickException(&image->exception,GetMagickModule(),

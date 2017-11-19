@@ -517,7 +517,7 @@ static char *GetMagickPropertyLetter(const ImageInfo *image_info,Image *image,
     *string;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   *value='\0';
@@ -983,7 +983,7 @@ RestoreMSCWarning
     number;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (embed_text == (const char *) NULL)
@@ -1126,9 +1126,9 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
     i;
 
   assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   delegate_info=GetDelegateInfo(decode,encode,exception);
@@ -1185,7 +1185,7 @@ MagickExport const char *GetDelegateCommands(const DelegateInfo *delegate_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(delegate_info != (DelegateInfo *) NULL);
-  assert(delegate_info->signature == MagickSignature);
+  assert(delegate_info->signature == MagickCoreSignature);
   return(delegate_info->commands);
 }
 
@@ -1502,7 +1502,7 @@ MagickExport ssize_t GetDelegateMode(const DelegateInfo *delegate_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(delegate_info != (DelegateInfo *) NULL);
-  assert(delegate_info->signature == MagickSignature);
+  assert(delegate_info->signature == MagickCoreSignature);
   return(delegate_info->mode);
 }
 
@@ -1535,7 +1535,7 @@ MagickExport MagickBooleanType GetDelegateThreadSupport(
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(delegate_info != (DelegateInfo *) NULL);
-  assert(delegate_info->signature == MagickSignature);
+  assert(delegate_info->signature == MagickCoreSignature);
   return(delegate_info->thread_support);
 }
 
@@ -1705,9 +1705,9 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
     Get delegate.
   */
   assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   rights=ExecutePolicyRights;
@@ -2174,7 +2174,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *cache,
         (void) ResetMagickMemory(delegate_info,0,sizeof(*delegate_info));
         delegate_info->path=ConstantString(filename);
         delegate_info->thread_support=MagickTrue;
-        delegate_info->signature=MagickSignature;
+        delegate_info->signature=MagickCoreSignature;
         continue;
       }
     if (delegate_info == (DelegateInfo *) NULL)

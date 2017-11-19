@@ -242,7 +242,7 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
   kernel->negative_range = kernel->positive_range = 0.0;
   kernel->type = UserDefinedKernel;
   kernel->next = (KernelInfo *) NULL;
-  kernel->signature = MagickSignature;
+  kernel->signature = MagickCoreSignature;
   if (kernel_string == (const char *) NULL)
     return(kernel);
 
@@ -1021,7 +1021,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       kernel->negative_range = kernel->positive_range = 0.0;
       kernel->type = type;
       kernel->next = (KernelInfo *) NULL;
-      kernel->signature = MagickSignature;
+      kernel->signature = MagickCoreSignature;
       break;
   }
 
@@ -2585,13 +2585,13 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
     progress;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   assert(result_image != (Image *) NULL);
-  assert(result_image->signature == MagickSignature);
+  assert(result_image->signature == MagickCoreSignature);
   assert(kernel != (KernelInfo *) NULL);
-  assert(kernel->signature == MagickSignature);
+  assert(kernel->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
 
   status=MagickTrue;
   progress=0;
@@ -3407,11 +3407,11 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
   progress=0;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   assert(kernel != (KernelInfo *) NULL);
-  assert(kernel->signature == MagickSignature);
+  assert(kernel->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
 
   /* Some methods (including convolve) needs use a reflected kernel.
    * Adjust 'origin' offsets to loop though kernel as a reflection.
@@ -3881,11 +3881,11 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
     v_info[MaxTextExtent];
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   assert(kernel != (KernelInfo *) NULL);
-  assert(kernel->signature == MagickSignature);
+  assert(kernel->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
 
   count = 0;      /* number of low-level morphology primitives performed */
   if ( iterations == 0 )

@@ -264,7 +264,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
 #endif
   semaphore_info->id=GetMagickThreadId();
   semaphore_info->reference_count=0;
-  semaphore_info->signature=MagickSignature;
+  semaphore_info->signature=MagickCoreSignature;
   return(semaphore_info);
 }
 
@@ -294,7 +294,7 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo **) NULL);
   assert((*semaphore_info) != (SemaphoreInfo *) NULL);
-  assert((*semaphore_info)->signature == MagickSignature);
+  assert((*semaphore_info)->signature == MagickCoreSignature);
   InitializeMagickMutex();
   LockMagickMutex();
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -315,7 +315,7 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
   DeleteCriticalSection(&(*semaphore_info)->mutex);
 #endif
-  (*semaphore_info)->signature=(~MagickSignature);
+  (*semaphore_info)->signature=(~MagickCoreSignature);
   *semaphore_info=(SemaphoreInfo *) RelinquishSemaphoreMemory(*semaphore_info);
   UnlockMagickMutex();
 }
@@ -345,7 +345,7 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
 MagickExport void LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo *) NULL);
-  assert(semaphore_info->signature == MagickSignature);
+  assert(semaphore_info->signature == MagickCoreSignature);
 #if defined(MAGICKCORE_DEBUG)
   if ((semaphore_info->reference_count > 0) &&
       (IsMagickThreadEqual(semaphore_info->id) != MagickFalse))
@@ -450,7 +450,7 @@ MagickExport void SemaphoreComponentTerminus(void)
 MagickExport void UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo *) NULL);
-  assert(semaphore_info->signature == MagickSignature);
+  assert(semaphore_info->signature == MagickCoreSignature);
 #if defined(MAGICKCORE_DEBUG)
   assert(IsMagickThreadEqual(semaphore_info->id) != MagickFalse);
   if (semaphore_info->reference_count == 0)

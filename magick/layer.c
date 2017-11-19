@@ -245,11 +245,11 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     Coalesce the image sequence.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
 
   /* initialise first image */
   next=GetFirstImageInList(image);
@@ -394,11 +394,11 @@ MagickExport Image *DisposeImages(const Image *images,ExceptionInfo *exception)
     Run the image through the animation sequence
   */
   assert(images != (Image *) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   image=GetFirstImageInList(images);
   dispose_image=CloneImage(image,image->page.width,image->page.height,
     MagickTrue,exception);
@@ -780,11 +780,11 @@ MagickExport Image *CompareImageLayers(const Image *image,
     i;
 
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   assert((method == CompareAnyLayer) ||
          (method == CompareClearLayer) ||
          (method == CompareOverlayLayer));
@@ -999,11 +999,11 @@ static Image *OptimizeLayerFrames(const Image *image,
     i;
 
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   assert(method == OptimizeLayer ||
          method == OptimizeImageLayer ||
          method == OptimizePlusLayer);
@@ -1528,11 +1528,11 @@ MagickExport void OptimizeImageTransparency(const Image *image,
     Run the image through the animation sequence
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   next=GetFirstImageInList(image);
   dispose_image=CloneImage(next,next->page.width,next->page.height,
     MagickTrue,exception);
@@ -1652,11 +1652,11 @@ MagickExport void RemoveDuplicateLayers(Image **images,
     bounds;
 
   assert((*images) != (const Image *) NULL);
-  assert((*images)->signature == MagickSignature);
+  assert((*images)->signature == MagickCoreSignature);
   if ((*images)->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",(*images)->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
 
   curr=GetFirstImageInList(*images);
   for (; (next=GetNextImageInList(curr)) != (Image *) NULL; curr=next)
@@ -1729,11 +1729,11 @@ MagickExport void RemoveZeroDelayLayers(Image **images,
     *i;
 
   assert((*images) != (const Image *) NULL);
-  assert((*images)->signature == MagickSignature);
+  assert((*images)->signature == MagickCoreSignature);
   if ((*images)->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",(*images)->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
 
   i=GetFirstImageInList(*images);
   for ( ; i != (Image *) NULL; i=GetNextImageInList(i))
@@ -1826,11 +1826,11 @@ MagickExport void CompositeLayers(Image *destination,
   const ssize_t y_offset,ExceptionInfo *exception)
 {
   assert(destination != (Image *) NULL);
-  assert(destination->signature == MagickSignature);
+  assert(destination->signature == MagickCoreSignature);
   assert(source != (Image *) NULL);
-  assert(source->signature == MagickSignature);
+  assert(source->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   if (source->debug != MagickFalse || destination->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s - %s",
          source->filename, destination->filename);
@@ -1971,11 +1971,11 @@ MagickExport Image *MergeImageLayers(Image *image,
     scene;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   /*
     Determine canvas image size, and its virtual canvas size and offset.
   */

@@ -148,7 +148,7 @@ MagickExport ModuleInfo *AcquireModuleInfo(const char *path,const char *tag)
   if (tag != (const char *) NULL)
     module_info->tag=ConstantString(tag);
   module_info->timestamp=time(0);
-  module_info->signature=MagickSignature;
+  module_info->signature=MagickCoreSignature;
   return(module_info);
 }
 
@@ -978,7 +978,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
     Find the module.
   */
   assert(images != (Image **) NULL);
-  assert((*images)->signature == MagickSignature);
+  assert((*images)->signature == MagickCoreSignature);
   if ((*images)->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       (*images)->filename);
@@ -1441,7 +1441,7 @@ static const ModuleInfo *RegisterModule(const ModuleInfo *module_info,
     status;
 
   assert(module_info != (ModuleInfo *) NULL);
-  assert(module_info->signature == MagickSignature);
+  assert(module_info->signature == MagickCoreSignature);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",module_info->tag);
   if (module_list == (SplayTreeInfo *) NULL)
     return((const ModuleInfo *) NULL);
@@ -1659,7 +1659,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
     rights;
 
   assert(image != (Image **) NULL);
-  assert((*image)->signature == MagickSignature);
+  assert((*image)->signature == MagickCoreSignature);
   if ((*image)->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",(*image)->filename);
   rights=ReadPolicyRights;

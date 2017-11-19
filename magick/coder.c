@@ -379,7 +379,7 @@ static SplayTreeInfo *AcquireCoderCache(const char *filename,
     coder_info->magick=(char *) p->magick;
     coder_info->name=(char *) p->name;
     coder_info->exempt=MagickTrue;
-    coder_info->signature=MagickSignature;
+    coder_info->signature=MagickCoreSignature;
     status&=AddValueToSplayTree(cache,ConstantString(coder_info->magick),
       coder_info);
     if (status == MagickFalse)
@@ -903,7 +903,7 @@ static MagickBooleanType LoadCoderCache(SplayTreeInfo *cache,const char *xml,
         (void) ResetMagickMemory(coder_info,0,sizeof(*coder_info));
         coder_info->path=ConstantString(filename);
         coder_info->exempt=MagickFalse;
-        coder_info->signature=MagickSignature;
+        coder_info->signature=MagickCoreSignature;
         continue;
       }
     if (coder_info == (CoderInfo *) NULL)

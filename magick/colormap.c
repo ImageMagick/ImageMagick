@@ -109,7 +109,7 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
     Allocate image colormap.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   image->colors=MagickMax(colors,1);
@@ -182,7 +182,7 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == DirectClass)
@@ -304,7 +304,7 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image)
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->storage_class != PseudoClass)
     return(MagickTrue);
   /*
