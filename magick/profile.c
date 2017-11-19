@@ -899,17 +899,18 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                 source_scale=100.0;
                 break;
               }
+              case cmsSigLabData:
+              {
+                source_colorspace=LabColorspace;
+                source_type=(cmsUInt32Number) TYPE_Lab_DBL;
+                source_scale=100.0;
+                break;
+              }
               case cmsSigGrayData:
               {
                 source_colorspace=GRAYColorspace;
                 source_type=(cmsUInt32Number) TYPE_GRAY_DBL;
                 source_channels=1;
-                break;
-              }
-              case cmsSigLabData:
-              {
-                source_colorspace=LabColorspace;
-                source_type=(cmsUInt32Number) TYPE_Lab_DBL;
                 break;
               }
               case cmsSigRgbData:
@@ -950,6 +951,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               {
                 target_colorspace=LabColorspace;
                 target_type=(cmsUInt32Number) TYPE_Lab_DBL;
+                target_scale=0.01;
                 break;
               }
               case cmsSigGrayData:
