@@ -130,7 +130,8 @@ static MagickBooleanType
 %  The format of the DecodeImage method is:
 %
 %      MagickBooleanType DecodeImage(Image *image,
-%        const MagickBooleanType compression,unsigned char *pixels)
+%        const MagickBooleanType compression,unsigned char *pixels,
+%        const size_t number_pixels)
 %
 %  A description of each parameter follows:
 %
@@ -142,9 +143,12 @@ static MagickBooleanType
 %    o pixels:  The address of a byte (8 bits) array of pixel data created by
 %      the decoding process.
 %
+%    o number_pixels:  The number of pixels.
+%
 */
 static MagickBooleanType DecodeImage(Image *image,
-  const MagickBooleanType compression,unsigned char *pixels)
+  const MagickBooleanType compression,unsigned char *pixels,
+  const size_t number_pixels)
 {
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__MINGW32__)
 #define BI_RGB  0
@@ -158,6 +162,7 @@ static MagickBooleanType DecodeImage(Image *image,
 #endif
 
   int
+    byte,
     count;
 
   ssize_t
@@ -171,20 +176,16 @@ static MagickBooleanType DecodeImage(Image *image,
     *p,
     *q;
 
-  unsigned char
-    byte;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(pixels != (unsigned char *) NULL);
-  (void) ResetMagickMemory(pixels,0,(size_t) image->columns*image->rows*
-    sizeof(*pixels));
+  (void) ResetMagickMemory(pixels,0,number_pixels*sizeof(*pixels));
   byte=0;
   x=0;
   p=pixels;
-  q=pixels+(size_t) image->columns*image->rows;
+  q=pixels+number_pixels;
   for (y=0; y < (ssize_t) image->rows; )
   {
     if ((p < pixels) || (p >= q))
@@ -198,7 +199,9 @@ static MagickBooleanType DecodeImage(Image *image,
         /*
           Encoded mode.
         */
-        byte=(unsigned char) ReadBlobByte(image);
+        byte=ReadBlobByte(image);
+        if (byte == EOF)
+          break;
         if (compression == BI_RLE8)
           {
             for (i=0; i < count; i++)
@@ -250,12 +253,21 @@ static MagickBooleanType DecodeImage(Image *image,
             count=(int) MagickMin((size_t) count,(size_t) (q-p));
             if (compression == BI_RLE8)
               for (i=0; i < count; i++)
-                *p++=(unsigned char) ReadBlobByte(image);
+              {
+                byte=ReadBlobByte(image);
+                if (byte == EOF)
+                  break;
+                *p++=(unsigned char) byte;
+              }
             else
               for (i=0; i < count; i++)
               {
                 if ((i & 0x01) == 0)
-                  byte=(unsigned char) ReadBlobByte(image);
+                  {
+                    byte=ReadBlobByte(image);
+                    if (byte == EOF)
+                      break;
+                  }
                 *p++=(unsigned char)
                   ((i & 0x01) != 0 ? (byte & 0x0f) : ((byte >> 4) & 0x0f));
               }
@@ -266,11 +278,13 @@ static MagickBooleanType DecodeImage(Image *image,
             if (compression == BI_RLE8)
               {
                 if ((count & 0x01) != 0)
-                  (void) ReadBlobByte(image);
+                  if (ReadBlobByte(image) == EOF)
+                    break;
               }
             else
               if (((count & 0x03) == 1) || ((count & 0x03) == 2))
-                (void) ReadBlobByte(image);
+                if (ReadBlobByte(image) == EOF)
+                  break;
             break;
           }
         }
@@ -666,7 +680,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Convert run-length encoded raster pixels.
       */
       status=DecodeImage(image,dib_info.compression ? MagickTrue : MagickFalse,
-        pixels);
+        pixels,image->columns*image->rows);
       if (status == MagickFalse)
         {
           pixel_info=RelinquishVirtualMemory(pixel_info);
