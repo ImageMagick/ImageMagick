@@ -458,9 +458,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
         Native blob support for this image format.
       */
       (void) FormatLocaleString(blob_info->filename,MagickPathExtent,"%s:%s",
-        image_info->magick,image_info->filename);
-      (void) CopyMagickString(blob_info->magick,image_info->magick,
-        MagickPathExtent);
+        blob_info->magick,image_info->filename);
       image=ReadImage(blob_info,exception);
       if (image != (Image *) NULL)
         (void) DetachBlob(image->blob);
