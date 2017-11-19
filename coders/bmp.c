@@ -238,7 +238,7 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
     count=ReadBlobByte(image);
     if (count == EOF)
       break;
-    if (count != 0)
+    if (count > 0)
       {
         /*
           Encoded mode.

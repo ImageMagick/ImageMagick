@@ -193,7 +193,7 @@ static MagickBooleanType DecodeImage(Image *image,
     count=ReadBlobByte(image);
     if (count == EOF)
       break;
-    if (count != 0)
+    if (count > 0)
       {
         count=(int) MagickMin((size_t) count,(size_t) (q-p));
         /*
