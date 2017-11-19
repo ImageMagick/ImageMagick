@@ -1,5 +1,5 @@
 2017-11-18  7.0.7-12 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.7-12, GIT revision 21680:60634fd98:20171118.
+  * Release ImageMagick version 7.0.7-12, GIT revision 21691:720b46bce:20171118.
 
 2017-11-12  7.0.7-12 Cristy  <quetzlzacatenango@image...>
   * The -tint option no longer munges the alpha channel (reference
