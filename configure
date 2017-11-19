@@ -760,9 +760,14 @@ WMF_LIBS
 WMF_CFLAGS
 WMF_DELEGATE_FALSE
 WMF_DELEGATE_TRUE
-WEBP_LIBS
+WEBPMUX_DELEGATE_FALSE
+WEBPMUX_DELEGATE_TRUE
 WEBP_DELEGATE_FALSE
 WEBP_DELEGATE_TRUE
+WEBPMUX_LIBS
+WEBPMUX_CFLAGS
+WEBP_LIBS
+WEBP_CFLAGS
 TIFF_LIBS
 TIFF_DELEGATE_FALSE
 TIFF_DELEGATE_TRUE
@@ -1293,6 +1298,10 @@ RSVG_CFLAGS
 RSVG_LIBS
 CAIRO_SVG_CFLAGS
 CAIRO_SVG_LIBS
+WEBP_CFLAGS
+WEBP_LIBS
+WEBPMUX_CFLAGS
+WEBPMUX_LIBS
 XML_CFLAGS
 XML_LIBS'
 
@@ -2123,6 +2132,12 @@ Some influential environment variables:
               C compiler flags for CAIRO_SVG, overriding pkg-config
   CAIRO_SVG_LIBS
               linker flags for CAIRO_SVG, overriding pkg-config
+  WEBP_CFLAGS C compiler flags for WEBP, overriding pkg-config
+  WEBP_LIBS   linker flags for WEBP, overriding pkg-config
+  WEBPMUX_CFLAGS
+              C compiler flags for WEBPMUX, overriding pkg-config
+  WEBPMUX_LIBS
+              linker flags for WEBPMUX, overriding pkg-config
   XML_CFLAGS  C compiler flags for XML, overriding pkg-config
   XML_LIBS    linker flags for XML, overriding pkg-config
 
@@ -4544,7 +4559,7 @@ MAGICK_PATCHLEVEL_VERSION=24
 
 MAGICK_VERSION=6.9.9-24
 
-MAGICK_GIT_REVISION=12269:15073a984:20171119
+MAGICK_GIT_REVISION=12270:5871992c5:20171119
 
 
 # Substitute library versioning
@@ -34826,9 +34841,8 @@ if test "$with_urw_base35_font_dir" != 'default'; then
 fi
 
 
-
 #
-# Check for WEBP delegate library.
+# Check for the WEBP delegate library.
 #
 
 # Check whether --with-webp was given.
@@ -34844,88 +34858,176 @@ if test "$with_webp" != 'yes'; then
 fi
 
 have_webp='no'
-WEBP_LIBS=''
-if test "$with_webp" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
+have_webpmux='no'
+WEBP_CFLAGS=""
+WEBP_LIBS=""
+WEBP_PKG=""
+WEBPMUX_CFLAGS=""
+WEBPMUX_LIBS=""
+WEBPMUX_PKG=""
+if test "x$with_webp" = "xyes"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for WEBP" >&5
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for WEBP" >&5
 $as_echo_n "checking for WEBP... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
-    failed=0
-    passed=0
-    ac_fn_c_check_header_mongrel "$LINENO" "webp/decode.h" "ac_cv_header_webp_decode_h" "$ac_includes_default"
-if test "x$ac_cv_header_webp_decode_h" = xyes; then :
-  passed=`expr $passed + 1`
+
+if test -n "$WEBP_CFLAGS"; then
+    pkg_cv_WEBP_CFLAGS="$WEBP_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libwebp\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libwebp") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_WEBP_CFLAGS=`$PKG_CONFIG --cflags "libwebp" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
 else
-  failed=`expr $failed + 1`
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$WEBP_LIBS"; then
+    pkg_cv_WEBP_LIBS="$WEBP_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libwebp\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libwebp") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_WEBP_LIBS=`$PKG_CONFIG --libs "libwebp" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
 fi
 
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for WebPPictureInitInternal in -lwebp" >&5
-$as_echo_n "checking for WebPPictureInitInternal in -lwebp... " >&6; }
-if ${ac_cv_lib_webp_WebPPictureInitInternal+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lwebp  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
 
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char WebPPictureInitInternal ();
-int
-main ()
-{
-return WebPPictureInitInternal ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_webp_WebPPictureInitInternal=yes
-else
-  ac_cv_lib_webp_WebPPictureInitInternal=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_webp_WebPPictureInitInternal" >&5
-$as_echo "$ac_cv_lib_webp_WebPPictureInitInternal" >&6; }
-if test "x$ac_cv_lib_webp_WebPPictureInitInternal" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
+if test $pkg_failed = yes; then
+   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if WEBP package is complete" >&5
-$as_echo_n "checking if WEBP package is complete... " >&6; }
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
-            have_webp='no (failed tests)'
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        WEBP_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libwebp" 2>&1`
         else
-            WEBP_LIBS='-lwebp'
-            LIBS="$WEBP_LIBS $LIBS"
+	        WEBP_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libwebp" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$WEBP_PKG_ERRORS" >&5
+
+	have_webp=no
+elif test $pkg_failed = untried; then
+     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	have_webp=no
+else
+	WEBP_CFLAGS=$pkg_cv_WEBP_CFLAGS
+	WEBP_LIBS=$pkg_cv_WEBP_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	have_webp=yes
+fi
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for WEBPMUX" >&5
+$as_echo_n "checking for WEBPMUX... " >&6; }
+
+if test -n "$WEBPMUX_CFLAGS"; then
+    pkg_cv_WEBPMUX_CFLAGS="$WEBPMUX_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libwebpmux\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libwebpmux") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_WEBPMUX_CFLAGS=`$PKG_CONFIG --cflags "libwebpmux" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$WEBPMUX_LIBS"; then
+    pkg_cv_WEBPMUX_LIBS="$WEBPMUX_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libwebpmux\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libwebpmux") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_WEBPMUX_LIBS=`$PKG_CONFIG --libs "libwebpmux" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        WEBPMUX_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libwebpmux" 2>&1`
+        else
+	        WEBPMUX_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libwebpmux" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$WEBPMUX_PKG_ERRORS" >&5
+
+	have_webpmux=no
+elif test $pkg_failed = untried; then
+     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	have_webpmux=no
+else
+	WEBPMUX_CFLAGS=$pkg_cv_WEBPMUX_CFLAGS
+	WEBPMUX_LIBS=$pkg_cv_WEBPMUX_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	have_webpmux=yes
+fi
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+$as_echo "" >&6; }
+fi
+
+if test "$have_webp" = 'yes'; then
 
 $as_echo "#define WEBP_DELEGATE 1" >>confdefs.h
 
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-            have_webp='yes'
-        fi
-    else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-    fi
+  CFLAGS="$WEBP_CFLAGS $CFLAGS"
 fi
+
+if test "$have_webpmux" = 'yes'; then
+
+$as_echo "#define WEBPMUX_DELEGATE 1" >>confdefs.h
+
+  CFLAGS="$WEBPMUX_CFLAGS $CFLAGS"
+fi
+
  if test "$have_webp" = 'yes'; then
   WEBP_DELEGATE_TRUE=
   WEBP_DELEGATE_FALSE='#'
@@ -34933,6 +35035,17 @@ else
   WEBP_DELEGATE_TRUE='#'
   WEBP_DELEGATE_FALSE=
 fi
+
+ if test "$have_webpmux" = 'yes'; then
+  WEBPMUX_DELEGATE_TRUE=
+  WEBPMUX_DELEGATE_FALSE='#'
+else
+  WEBPMUX_DELEGATE_TRUE='#'
+  WEBPMUX_DELEGATE_FALSE=
+fi
+
+
+
 
 
 
@@ -38272,7 +38385,7 @@ fi
 if test "$build_modules" != 'no'; then
     MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 fi
 
 
@@ -38674,6 +38787,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${WEBP_DELEGATE_TRUE}" && test -z "${WEBP_DELEGATE_FALSE}"; then
   as_fn_error $? "conditional \"WEBP_DELEGATE\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${WEBPMUX_DELEGATE_TRUE}" && test -z "${WEBPMUX_DELEGATE_FALSE}"; then
+  as_fn_error $? "conditional \"WEBPMUX_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${WMF_DELEGATE_TRUE}" && test -z "${WMF_DELEGATE_FALSE}"; then

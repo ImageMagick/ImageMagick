@@ -973,6 +973,9 @@
 /* Version number of package */
 #undef VERSION
 
+/* Define if you have WEBPMUX library */
+#undef WEBPMUX_DELEGATE
+
 /* Define if you have WEBP library */
 #undef WEBP_DELEGATE
 

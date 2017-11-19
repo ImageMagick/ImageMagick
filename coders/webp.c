@@ -57,6 +57,7 @@
 #include "magick/memory_.h"
 #include "magick/option.h"
 #include "magick/pixel-accessor.h"
+#include "magick/profile.h"
 #include "magick/quantum-private.h"
 #include "magick/static.h"
 #include "magick/string_.h"
@@ -68,6 +69,9 @@
 #if defined(MAGICKCORE_WEBP_DELEGATE)
 #include <webp/decode.h>
 #include <webp/encode.h>
+#if defined(MAGICKCORE_WEBPMUX_DELEGATE)
+#include <webp/mux.h>
+#endif
 #endif
 
 /*
@@ -378,6 +382,59 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       break;
   }
   WebPFreeDecBuffer(webp_image);
+#if defined(MAGICKCORE_WEBPMUX_DELEGATE)
+  {
+    StringInfo
+      *profile;
+
+    uint32_t
+      webp_flags = 0;
+
+    WebPData
+     content = { stream, length },
+     chunk ={ 0 };
+
+    WebPMux
+      *mux;
+
+    /*
+      Extract any profiles.
+    */
+    mux=WebPMuxCreate(&content,0);
+    WebPMuxGetFeatures(mux,&webp_flags);
+    if (webp_flags & ICCP_FLAG)
+      {
+        WebPMuxGetChunk(mux,"ICCP",&chunk);
+        profile=BlobToStringInfo(chunk.bytes,chunk.size);
+        if (profile != (StringInfo *) NULL)
+          {
+            SetImageProfile(image,"ICC",profile);
+            profile=DestroyStringInfo(profile);
+          }
+      }
+    if (webp_flags & EXIF_FLAG)
+      {
+        WebPMuxGetChunk(mux,"EXIF",&chunk);
+        profile=BlobToStringInfo(chunk.bytes,chunk.size);
+        if (profile != (StringInfo *) NULL)
+          {
+            SetImageProfile(image,"EXIF",profile);
+            profile=DestroyStringInfo(profile);
+          }
+      }
+    if (webp_flags & XMP_FLAG)
+      {
+        WebPMuxGetChunk(mux,"XMP",&chunk);
+        profile=BlobToStringInfo(chunk.bytes,chunk.size);
+        if (profile != (StringInfo *) NULL)
+          {
+            SetImageProfile(image,"XMP",profile);
+            profile=DestroyStringInfo(profile);
+          }
+      }
+    WebPMuxDelete(mux);
+  }
+#endif
   stream=(unsigned char*) RelinquishMagickMemory(stream);
   (void) CloseBlob(image);
   return(image);

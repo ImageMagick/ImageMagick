@@ -2775,13 +2775,12 @@ if test "$with_urw_base35_font_dir" != 'default'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-urw-base35-font-dir=$with_urw_base35_font_dir "
 fi
 
-
 dnl ===========================================================================
 
 #
-# Check for WEBP delegate library.
+# Check for the WEBP delegate library.
 #
-AC_ARG_WITH(webp,
+AC_ARG_WITH([webp],
     [AC_HELP_STRING([--without-webp],
                     [disable WEBP support])],
     [with_webp=$withval],
@@ -2792,32 +2791,35 @@ if test "$with_webp" != 'yes'; then
 fi
 
 have_webp='no'
-WEBP_LIBS=''
-if test "$with_webp" != 'no'; then
-    AC_MSG_RESULT([-------------------------------------------------------------])
-    AC_MSG_CHECKING([for WEBP])
-    AC_MSG_RESULT([])
-    failed=0
-    passed=0
-    AC_CHECK_HEADER(webp/decode.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(webp,WebPPictureInitInternal,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_MSG_CHECKING([if WEBP package is complete])
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            AC_MSG_RESULT([no -- some components failed test])
-            have_webp='no (failed tests)'
-        else
-            WEBP_LIBS='-lwebp'
-            LIBS="$WEBP_LIBS $LIBS"
-            AC_DEFINE(WEBP_DELEGATE,1,Define if you have WEBP library)
-            AC_MSG_RESULT([yes])
-            have_webp='yes'
-        fi
-    else
-        AC_MSG_RESULT([no])
-    fi
+have_webpmux='no'
+WEBP_CFLAGS=""
+WEBP_LIBS=""
+WEBP_PKG=""
+WEBPMUX_CFLAGS=""
+WEBPMUX_LIBS=""
+WEBPMUX_PKG=""
+if test "x$with_webp" = "xyes"; then
+  AC_MSG_RESULT([-------------------------------------------------------------])
+  PKG_CHECK_MODULES(WEBP,[libwebp], have_webp=yes, have_webp=no)
+  PKG_CHECK_MODULES(WEBPMUX,[libwebpmux], have_webpmux=yes, have_webpmux=no)
+  AC_MSG_RESULT([])
 fi
-AM_CONDITIONAL(WEBP_DELEGATE,test "$have_webp" = 'yes')
+
+if test "$have_webp" = 'yes'; then
+  AC_DEFINE(WEBP_DELEGATE,1,Define if you have WEBP library)
+  CFLAGS="$WEBP_CFLAGS $CFLAGS"
+fi
+
+if test "$have_webpmux" = 'yes'; then
+  AC_DEFINE(WEBPMUX_DELEGATE,1,Define if you have WEBPMUX library)
+  CFLAGS="$WEBPMUX_CFLAGS $CFLAGS"
+fi
+
+AM_CONDITIONAL(WEBP_DELEGATE, test "$have_webp" = 'yes')
+AM_CONDITIONAL(WEBPMUX_DELEGATE, test "$have_webpmux" = 'yes')
+AC_SUBST(WEBPMUX_CFLAGS)
+AC_SUBST(WEBPMUX_LIBS)
+AC_SUBST(WEBP_CFLAGS)
 AC_SUBST(WEBP_LIBS)
 
 dnl ===========================================================================
@@ -3878,7 +3880,7 @@ fi
 if test "$build_modules" != 'no'; then
     MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 

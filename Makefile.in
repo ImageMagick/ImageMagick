@@ -1306,7 +1306,7 @@ coders_wbmp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$@
 @WITH_MODULES_TRUE@am_coders_wbmp_la_rpath = -rpath $(codersdir)
 coders_webp_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_coders_webp_la_OBJECTS = coders/coders_webp_la-webp.lo
 coders_webp_la_OBJECTS = $(am_coders_webp_la_OBJECTS)
 coders_webp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -2877,6 +2877,9 @@ WARN_CFLAGS = @WARN_CFLAGS@
 WARN_CXXFLAGS = @WARN_CXXFLAGS@
 WARN_LDFLAGS = @WARN_LDFLAGS@
 WARN_SCANNERFLAGS = @WARN_SCANNERFLAGS@
+WEBPMUX_CFLAGS = @WEBPMUX_CFLAGS@
+WEBPMUX_LIBS = @WEBPMUX_LIBS@
+WEBP_CFLAGS = @WEBP_CFLAGS@
 WEBP_LIBS = @WEBP_LIBS@
 WMF_CFLAGS = @WMF_CFLAGS@
 WMF_LIBS = @WMF_LIBS@
@@ -4148,7 +4151,7 @@ coders_wbmp_la_LIBADD = $(MAGICKCORE_LIBS)
 coders_webp_la_SOURCES = coders/webp.c
 coders_webp_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_webp_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_webp_la_LIBADD = $(MAGICKCORE_LIBS) $(WEBP_LIBS) $(MATH_LIBS)
+coders_webp_la_LIBADD = $(MAGICKCORE_LIBS) $(WEBPMUX_LIBS) $(WEBP_LIBS) $(MATH_LIBS)
 
 # WMF coder module
 coders_wmf_la_SOURCES = coders/wmf.c
