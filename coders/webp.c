@@ -560,6 +560,7 @@ static int WebPEncodeProgress(int percent,const WebPPicture* picture)
 }
 #endif
 
+#if !defined(MAGICKCORE_WEBPMUX_DELEGATE)
 static int WebPEncodeWriter(const unsigned char *stream,size_t length,
   const WebPPicture *const picture)
 {
@@ -569,6 +570,7 @@ static int WebPEncodeWriter(const unsigned char *stream,size_t length,
   image=(Image *) picture->custom_ptr;
   return(length != 0 ? (WriteBlob(image,length,stream) == length) : 1);
 }
+#endif
 
 static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
@@ -591,14 +593,19 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   ssize_t
     y;
 
+  WebPAuxStats
+    statistics;
+
   WebPConfig
     configure;
 
+#if defined(MAGICKCORE_WEBPMUX_DELEGATE)
+  WebPMemoryWriter
+    writer_info;
+#endif
+
   WebPPicture
     picture;
-
-  WebPAuxStats
-    statistics;
 
   /*
     Open output image file.
@@ -616,8 +623,14 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
     return(status);
   if ((WebPPictureInit(&picture) == 0) || (WebPConfigInit(&configure) == 0))
     ThrowWriterException(ResourceLimitError,"UnableToEncodeImageFile");
+#if !defined(MAGICKCORE_WEBP_DELEGATE)
   picture.writer=WebPEncodeWriter;
   picture.custom_ptr=(void *) image;
+#else
+  WebPMemoryWriterInit(&writer_info);
+  picture.writer=WebPMemoryWrite;
+  picture.custom_ptr=(&writer_info);
+#endif
 #if WEBP_DECODER_ABI_VERSION >= 0x0100
   picture.progress_hook=WebPEncodeProgress;
 #endif
@@ -822,8 +835,74 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
       (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
         (char *) message,"`%s'",image->filename);
     }
+#if defined(MAGICKCORE_WEBPMUX_DELEGATE)
+  {
+    const StringInfo
+      *profile;
+
+    WebPData
+      chunk,
+      image_chunk = { writer_info.mem, writer_info.size };
+
+    WebPMux
+      *mux;
+
+    WebPMuxError
+      mux_error;
+
+    /*
+      Set image profiles (if any).
+    */
+    mux_error=WEBP_MUX_OK;
+    chunk.size=0;
+    mux=WebPMuxNew();
+    profile=GetImageProfile(image,"ICC");    
+    if ((profile != (StringInfo *) NULL) && (mux_error == WEBP_MUX_OK))
+      {
+        chunk.bytes=GetStringInfoDatum(profile);
+        chunk.size=GetStringInfoLength(profile);
+        mux_error=WebPMuxSetChunk(mux,"ICCP",&chunk,0);
+      }
+    profile=GetImageProfile(image,"EXIF");    
+    if ((profile != (StringInfo *) NULL) && (mux_error == WEBP_MUX_OK))
+      {
+        chunk.bytes=GetStringInfoDatum(profile);
+        chunk.size=GetStringInfoLength(profile);
+        mux_error=WebPMuxSetChunk(mux,"EXIF",&chunk,0);
+      }
+    profile=GetImageProfile(image,"XMP");    
+    if ((profile != (StringInfo *) NULL) && (mux_error == WEBP_MUX_OK))
+      {
+        chunk.bytes=GetStringInfoDatum(profile);
+        chunk.size=GetStringInfoLength(profile);
+        mux_error=WebPMuxSetChunk(mux,"XMP",&chunk,0);
+      }
+    if (mux_error != WEBP_MUX_OK)
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"UnableToEncodeImageFile","`%s'",image->filename);
+    if (chunk.size != 0)
+      {
+        WebPData
+          picture_profiles = { writer_info.mem, writer_info.size };
+
+        /*
+          Replace original container with image profile (if any).
+        */
+        WebPMuxSetImage(mux,&image_chunk,1);
+        mux_error=WebPMuxAssemble(mux,&picture_profiles);
+        WebPMemoryWriterClear(&writer_info);
+        writer_info.size=picture_profiles.size;
+        writer_info.mem=(unsigned char *) picture_profiles.bytes;
+      }
+    WebPMuxDelete(mux);
+  }
+  (void) WriteBlob(image,writer_info.size,writer_info.mem);
+#endif
   picture.argb=(uint32_t *) NULL;
   WebPPictureFree(&picture);
+#if defined(MAGICKCORE_WEBPMUX_DELEGATE)
+  WebPMemoryWriterClear(&writer_info);
+#endif
   pixel_info=RelinquishVirtualMemory(pixel_info);
   (void) CloseBlob(image);
   return(webp_status == 0 ? MagickFalse : MagickTrue);
