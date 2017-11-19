@@ -219,6 +219,9 @@ MagickExport void RegisterStaticModules(void)
   (void) RegisterGRADIENTImage();
   (void) RegisterHALDImage();
   (void) RegisterHDRImage();
+#if defined(MAGICKCORE_HEIC_DELEGATE)
+  (void) RegisterHEICImage();
+#endif
   (void) RegisterHISTOGRAMImage();
   (void) RegisterHRZImage();
   (void) RegisterHTMLImage();
@@ -407,6 +410,9 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterGRADIENTImage();
   UnregisterHALDImage();
   UnregisterHDRImage();
+#if defined(MAGICKCORE_HEIC_DELEGATE)
+  UnregisterHEICImage();
+#endif
   UnregisterHISTOGRAMImage();
   UnregisterHRZImage();
   UnregisterHTMLImage();

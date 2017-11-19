@@ -42,6 +42,11 @@ MAGICKCORE_FPX_MODULES = coders/fpx.la
 MAGICKCORE_FPX_SRCS = coders/fpx.c
 endif
 
+if HEIC_DELEGATE
+MAGICKCORE_HEIC_MODULES = coders/heic.la
+MAGICKCORE_HEIC_SRCS = coders/heic.c
+endif
+
 if JBIG_DELEGATE
 MAGICKCORE_JBIG_MODULES = coders/jbig.la
 MAGICKCORE_JBIG_SRCS = coders/jbig.c
@@ -210,6 +215,7 @@ MAGICKCORE_CODER_SRCS = \
 	$(MAGICKCORE_FLIF_SRCS) \
 	$(MAGICKCORE_FPX_SRCS) \
 	$(MAGICKCORE_GDI32_SRCS) \
+	$(MAGICKCORE_HEIC_SRCS) \
 	$(MAGICKCORE_JBIG_SRCS) \
 	$(MAGICKCORE_JPEG_SRCS) \
 	$(MAGICKCORE_JP2_SRCS) \
@@ -337,6 +343,7 @@ coders_LTLIBRARIES = \
 	$(MAGICKCORE_FLIF_MODULES) \
 	$(MAGICKCORE_FPX_MODULES) \
 	$(MAGICKCORE_GDI32_MODULES)  \
+	$(MAGICKCORE_HEIC_MODULES)  \
 	$(MAGICKCORE_JBIG_MODULES) \
 	$(MAGICKCORE_JPEG_MODULES) \
 	$(MAGICKCORE_JP2_MODULES) \
@@ -570,6 +577,12 @@ coders_hdr_la_SOURCES      = coders/hdr.c
 coders_hdr_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_hdr_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_hdr_la_LIBADD       = $(MAGICKCORE_LIBS) $(GOMP_LIBS) $(MATH_LIBS)
+
+# HEIC coder module
+coders_heic_la_SOURCES     = coders/heic.c
+coders_heic_la_CPPFLAGS    = $(MODULE_CODER_CPPFLAGS)
+coders_heic_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+coders_heic_la_LIBADD      = $(MAGICKCORE_LIBS) $(HEIC_LIBS)
 
 # HRZ coder module
 coders_hrz_la_SOURCES      = coders/hrz.c

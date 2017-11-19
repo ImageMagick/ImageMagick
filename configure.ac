@@ -2242,6 +2242,40 @@ AC_SUBST(GVC_LIBS)
 dnl ===========================================================================
 
 #
+# Check for the HEIC delegate library.
+#
+AC_ARG_WITH([heic],
+    [AC_HELP_STRING([--without-heic],
+                    [disable HEIC support])],
+    [with_heic=$withval],
+    [with_heic='yes'])
+
+if test "$with_heic" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-heic=$with_heic "
+fi
+
+have_heic='no'
+HEIC_CFLAGS=""
+HEIC_LIBS=""
+HEIC_PKG=""
+if test "x$with_heic" = "xyes"; then
+  AC_MSG_RESULT([-------------------------------------------------------------])
+  PKG_CHECK_MODULES(HEIC,[libde265], have_heic=yes, have_heic=no)
+  AC_MSG_RESULT([])
+fi
+
+if test "$have_heic" = 'yes'; then
+  AC_DEFINE(HEIC_DELEGATE,1,Define if you have HEIC library)
+  CFLAGS="$HEIC_CFLAGS $CFLAGS"
+fi
+
+AM_CONDITIONAL(HEIC_DELEGATE, test "$have_heic" = 'yes')
+AC_SUBST(HEIC_CFLAGS)
+AC_SUBST(HEIC_LIBS)
+
+dnl ===========================================================================
+
+#
 # Check for JBIG delegate library.
 #
 AC_ARG_WITH([jbig],
@@ -3714,6 +3748,9 @@ fi
 if test "$have_gslib"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES gslib"
 fi
+if test "$have_heic"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES heic"
+fi
 if test "$have_jbig"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES jbig"
 fi
@@ -3837,7 +3874,7 @@ fi
 if test "$build_modules" != 'no'; then
     MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIC_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $HEIC_$ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
@@ -3980,6 +4017,7 @@ matches your expectations.
   FreeType          --with-freetype=$with_freetype		$have_freetype
   Ghostscript lib   --with-gslib=$with_gslib		$have_gslib
   Graphviz          --with-gvc=$with_gvc		$have_gvc
+  HEIC              --with-heic=$with_heic		$have_heic
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
   LCMS              --with-lcms=$with_lcms		$have_lcms

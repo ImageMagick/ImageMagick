@@ -128,6 +128,7 @@ static const MagicMapInfo
     { "HDF", 1, MagicPattern("HDF") },
     { "HDR", 0, MagicPattern("#?RADIANCE") },
     { "HDR", 0, MagicPattern("#?RGBE") },
+    { "HEIC", 8, MagicPattern("heic") },
     { "HPGL", 0, MagicPattern("IN;") },
     { "HTML", 1, MagicPattern("HTML") },
     { "HTML", 1, MagicPattern("html") },
