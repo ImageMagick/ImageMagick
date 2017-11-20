@@ -2400,10 +2400,10 @@ static MagickBooleanType SkipDXTMipmaps(Image *image,DDSInfo *dds_info,
         offset = (MagickOffsetType) ((w + 3) / 4) * ((h + 3) / 4) * texel_size;
         if (SeekBlob(image,offset,SEEK_CUR) < 0)
           break;
-        w = DIV2(w);
-        h = DIV2(h);
         if ((w == 1) && (h == 1))
           break;
+        w = DIV2(w);
+        h = DIV2(h);
       }
     }
   return(MagickTrue);
