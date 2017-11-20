@@ -184,6 +184,8 @@ ModuleExport size_t RegisterHEICImage(void)
   entry->description=ConstantString("Apple High efficiency Image Format");
   entry->module=ConstantString("HEIC");
   entry->magick=(IsImageFormatHandler *) IsHEIC;
+  entry->mime_type=ConstantString("image/x-heic");
+  entry->adjoin=MagickFalse;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
