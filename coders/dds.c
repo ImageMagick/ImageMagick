@@ -1967,11 +1967,11 @@ static MagickBooleanType ReadMipmaps(const ImageInfo *image_info,Image *image,
         status=decoder(image,dds_info,exception);
         if (status == MagickFalse)
           break;
+        if ((w == 1) && (h == 1))
+          break;
 
         w=DIV2(w);
         h=DIV2(h);
-        if ((w == 1) && (h == 1))
-          break;
       }
     }
   return(status);
