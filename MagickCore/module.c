@@ -1002,7 +1002,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
   (void) FormatLocaleString(name,MagickPathExtent,"%sImage",tag);
 #else
   (void) FormatLocaleString(name,MagickPathExtent,"%s%sImage",
-    MAGICKCORE_NAMESPACE_PREFIX,tag);
+    MAGICKCORE_NAMESPACE_PREFIX_TAG,tag);
 #endif
   /*
     Execute the module.
@@ -1559,7 +1559,7 @@ static void TagToModuleName(const char *tag,const char *format,char *module)
       prefix_format[MagickPathExtent];
 
     (void) FormatLocaleString(prefix_format,MagickPathExtent,"%s%s",
-      MAGICKCORE_NAMESPACE_PREFIX,format);
+      MAGICKCORE_NAMESPACE_PREFIX_TAG,format);
     (void) FormatLocaleString(module,MagickPathExtent,prefix_format,name);
   }
 #endif

@@ -793,6 +793,9 @@
 /* Magick API method prefix */
 #undef NAMESPACE_PREFIX
 
+/* Magick API method prefix tag */
+#undef NAMESPACE_PREFIX_TAG
+
 /* Define to 1 if assertions should be disabled. */
 #undef NDEBUG
 

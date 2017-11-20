@@ -771,6 +771,7 @@ AC_ARG_WITH([method-prefix],
 
 if test "$with_method_prefix" != 'no'; then
     AC_DEFINE_UNQUOTED(NAMESPACE_PREFIX,$with_method_prefix,[Magick API method prefix])
+    AC_DEFINE_UNQUOTED(NAMESPACE_PREFIX_TAG,["$with_method_prefix"],[Magick API method prefix tag])
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-method-prefix "
 fi
 
