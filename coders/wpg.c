@@ -749,6 +749,9 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   FILE
     *ps_file;
 
+  int
+    c;
+
   ImageInfo
     *clone_info;
 
@@ -775,10 +778,13 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   (void) ReadBlob(image, 2*MaxTextExtent, magick);
 
   (void) SeekBlob(image,PS_Offset,SEEK_SET);
-  while(PS_Size-- > 0)
-    {
-      (void) fputc(ReadBlobByte(image),ps_file);
-    }
+  while (PS_Size-- > 0)
+  {
+    c=ReadBlobByte(image);
+    if (c == EOF)
+      break;
+    (void) fputc(c,ps_file);
+  }
   (void) fclose(ps_file);
 
     /* Detect file format - Check magic.mgk configuration file. */
