@@ -182,6 +182,7 @@ ModuleExport size_t RegisterHEICImage(void)
 #endif
   entry->magick=(IsImageFormatHandler *) IsHEIC;
   entry->mime_type=ConstantString("image/x-heic");
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
