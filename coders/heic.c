@@ -96,6 +96,7 @@ static MagickBooleanType IsHEIC(const unsigned char *magick,const size_t length)
   return(MagickFalse);
 }
 
+#if defined(MAGICKCORE_HEIC_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -152,6 +153,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   ThrowReaderException(CorruptImageError,"HEIC support is pending");
   return(GetFirstImageInList(image));
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
