@@ -58,6 +58,9 @@
 #include "magick/string_.h"
 #include "magick/string-private.h"
 #include "magick/utility.h"
+#if defined(MAGICKCORE_HEIC_DELEGATE)
+#include <libde265/de265.h>
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
