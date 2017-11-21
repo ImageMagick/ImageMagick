@@ -454,11 +454,15 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
     }
   if (GetMagickBlobSupport(magick_info) != MagickFalse)
     {
+      char
+        filename[MagickPathExtent];
+
       /*
         Native blob support for this image format.
       */
+      (void) CopyMagickString(filename,blob_info->filename,MagickPathExtent);
       (void) FormatLocaleString(blob_info->filename,MagickPathExtent,"%s:%s",
-        blob_info->magick,image_info->filename);
+        blob_info->magick,filename);
       image=ReadImage(blob_info,exception);
       if (image != (Image *) NULL)
         (void) DetachBlob(image->blob);
@@ -764,12 +768,16 @@ MagickExport Image *CustomStreamToImage(const ImageInfo *image_info,
   if ((GetMagickBlobSupport(magick_info) != MagickFalse) ||
       (blob_info->custom_stream == (CustomStreamInfo *) NULL))
     {
+      char
+        filename[MagickPathExtent];
+
       /*
         Native blob support for this image format or SetImageInfo changed the
         blob to a file.
       */
+      (void) CopyMagickString(filename,blob_info->filename,MagickPathExtent);
       (void) FormatLocaleString(blob_info->filename,MagickPathExtent,"%s:%s",
-        blob_info->magick,image_info->filename);
+        blob_info->magick,filename);
       image=ReadImage(blob_info,exception);
       if (image != (Image *) NULL)
         (void) CloseBlob(image);
