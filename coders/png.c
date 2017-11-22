@@ -1707,6 +1707,7 @@ Magick_png_read_raw_profile(png_struct *ping,Image *image,
     sp;
 
   png_uint_32
+    extent,
     length,
     nibbles;
 
@@ -1722,21 +1723,34 @@ Magick_png_read_raw_profile(png_struct *ping,Image *image,
                  13,14,15};
 
   sp=text[ii].text+1;
+  extent=text[ii].text_length;
   /* look for newline */
-  while (*sp != '\n')
-     sp++;
+  while ((*sp != '\n') && extent--)
+    sp++;
 
   /* look for length */
-  while (*sp == '\0' || *sp == ' ' || *sp == '\n')
+  while (((*sp == '\0' || *sp == ' ' || *sp == '\n')) && extent--)
      sp++;
+
+  if (extent == 0)
+    {
+      png_warning(ping,"invalid profile length");
+      return(MagickFalse);
+    }
 
   length=(png_uint_32) StringToLong(sp);
 
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
        "      length: %lu",(unsigned long) length);
 
-  while (*sp != ' ' && *sp != '\n')
+  while ((*sp != ' ' && *sp != '\n') && extent--)
      sp++;
+
+  if (extent == 0)
+    {
+      png_warning(ping,"invalid profile length");
+      return(MagickFalse);
+    }
 
   /* allocate space */
   if (length == 0)
@@ -5471,7 +5485,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                 /*
                   Extract object clipping info.
                 */
-            
+
                 if (length > 27)
                   mng_info->object_clip[object_id]=
                     mng_read_box(mng_info->frame,0, &p[12]);
@@ -6733,7 +6747,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                 if ((prev == (PixelPacket *) NULL) ||
                     (next == (PixelPacket *) NULL))
                   {
-                    if (prev != (PixelPacket *) NULL) 
+                    if (prev != (PixelPacket *) NULL)
                       prev=(PixelPacket *) RelinquishMagickMemory(prev);
                     if (next != (PixelPacket *) NULL)
                       next=(PixelPacket *) RelinquishMagickMemory(next);
@@ -7966,8 +7980,8 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
       "  Writing tIME chunk: timestamp property is %30s\n",timestamp);
   ret=sscanf(timestamp,"%d-%d-%dT%d:%d:%d",&year,&month,&day,&hour,
       &minute, &second);
-  addhours=0;     
-  addminutes=0;     
+  addhours=0;
+  addminutes=0;
   ret=sscanf(timestamp,"%d-%d-%dT%d:%d:%d%d:%d",&year,&month,&day,&hour,
       &minute, &second, &addhours, &addminutes);
     LogMagickEvent(CoderEvent,GetMagickModule(),
