@@ -430,7 +430,11 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       status=SetImageExtent(image,image->columns,image->rows,exception);
       if (status == MagickFalse)
-        return(DestroyImageList(image));
+        {
+          xpm_colors=DestroySplayTree(xpm_colors);
+          xpm_buffer=DestroyString(xpm_buffer);
+          return(DestroyImageList(image));
+        }
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         p=NextXPMLine(p);
