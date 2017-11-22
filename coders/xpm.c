@@ -440,6 +440,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (status == MagickFalse)
         {
           InheritException(exception,&image->exception);
+          xpm_colors=DestroySplayTree(xpm_colors);
+          xpm_buffer=DestroyString(xpm_buffer);
           return(DestroyImageList(image));
         }
       for (y=0; y < (ssize_t) image->rows; y++)
