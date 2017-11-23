@@ -3081,8 +3081,11 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             cairo_surface=cairo_image_surface_create_for_data(pixels,
               CAIRO_FORMAT_ARGB32,(int) image->columns,(int) image->rows,(int)
               stride);
-            if (cairo_surface_status() != CAIRO_STATUS_SUCCESS)
+            if ((cairo_surface == (cairo_surface_t *) NULL) ||
+                (cairo_surface_status(cairo_surface) != CAIRO_STATUS_SUCCESS))
               {
+                if (cairo_surface != (cairo_surface_t *) NULL)
+                  cairo_surface_destroy(cairo_surface);
                 pixel_info=RelinquishVirtualMemory(pixel_info);
                 g_object_unref(svg_handle);
                 ThrowReaderException(ResourceLimitError,
