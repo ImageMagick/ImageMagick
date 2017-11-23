@@ -1826,7 +1826,7 @@ Magick_png_read_raw_profile(png_struct *ping,Image *image,
 
   if (extent == 0)
     {
-      png_warning(ping,"invalid profile length");
+      png_warning(ping,"missing profile length");
       return(MagickFalse);
     }
 
