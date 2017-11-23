@@ -1096,8 +1096,6 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               if ((BitmapHeader2.Width == 0) || (BitmapHeader2.Height == 0))
                 ThrowReaderException(CorruptImageError,"ImproperImageHeader");
               BitmapHeader2.Depth=ReadBlobLSBShort(image);
-              if (BitmapHeader2.Depth > 32)
-                ThrowReaderException(CorruptImageError,"ImproperImageHeader");
               BitmapHeader2.HorzRes=ReadBlobLSBShort(image);
               BitmapHeader2.VertRes=ReadBlobLSBShort(image);
 
@@ -1118,6 +1116,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               bpp=BitmapHeader2.Depth;
 
             UnpackRaster:
+              if (bpp > 32)
+                ThrowReaderException(CorruptImageError,"ImproperImageHeader");
               status=SetImageExtent(image,image->columns,image->rows,exception);
               if (status == MagickFalse)
                 break;
