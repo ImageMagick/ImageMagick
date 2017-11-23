@@ -1116,12 +1116,10 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               bpp=BitmapHeader2.Depth;
 
             UnpackRaster:
-              if (bpp > 32)
-                ThrowReaderException(CorruptImageError,"ImproperImageHeader");
               status=SetImageExtent(image,image->columns,image->rows,exception);
               if (status == MagickFalse)
                 break;
-              if ((image->storage_class != PseudoClass) && (bpp != 24))
+              if ((image->storage_class != PseudoClass) && (bpp < 24))
                 {
                   image->colors=one << bpp;
                   if (!AcquireImageColormap(image,image->colors,exception))
