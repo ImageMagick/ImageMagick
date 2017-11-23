@@ -357,11 +357,11 @@ static MagickBooleanType InsertRow(Image *image,unsigned char *p,ssize_t y,
           }
         break;
       }
- 
+
     case 4:  /* Convert PseudoColor scanline. */
       {
         for (x=0; x < ((ssize_t) image->columns-1); x+=2)
-          { 
+          {
             index=ConstrainColormapIndex(image,(*p >> 4) & 0x0f,exception);
             SetPixelIndex(image,index,q);
             SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
@@ -394,7 +394,7 @@ static MagickBooleanType InsertRow(Image *image,unsigned char *p,ssize_t y,
           }
       }
       break;
-     
+
     case 24:     /*  Convert DirectColor scanline.  */
       for (x=0; x < (ssize_t) image->columns; x++)
         {
@@ -604,7 +604,7 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
             break;
           for(i=0; i<= RunCount;i++)
             for(bbuf=0; bbuf < SampleSize; bbuf++)
-              InsertByte6(SampleBuffer[bbuf]);          
+              InsertByte6(SampleBuffer[bbuf]);
           break;
         case 0xFE:
           RunCount=ReadBlobByte(image);  /* RST */
@@ -640,7 +640,7 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
           RunCount=bbuf & 0x7F;
 
           if(bbuf & 0x80)     /* REP */
-            {  
+            {
               for(i=0; i < SampleSize; i++)
                 SampleBuffer[i]=ReadBlobByte(image);
               for(i=0;i<=RunCount;i++)
@@ -733,7 +733,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
     postscript_file[MagickPathExtent];
 
   const MagicInfo
-    *magic_info;    
+    *magic_info;
 
   FILE
     *ps_file;
@@ -743,13 +743,13 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
 
   ImageInfo
     *clone_info;
-    
+
   Image
     *image2;
-    
+
   unsigned char
-    magick[2*MagickPathExtent];    
-    
+    magick[2*MagickPathExtent];
+
 
   if ((clone_info=CloneImageInfo(image_info)) == NULL)
     return(image);
@@ -765,7 +765,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   /* Copy postscript to temporary file */
   (void) SeekBlob(image,PS_Offset,SEEK_SET);
   (void) ReadBlob(image, 2*MagickPathExtent, magick);
-  
+
   (void) SeekBlob(image,PS_Offset,SEEK_SET);
   while (PS_Size-- > 0)
   {
@@ -775,16 +775,16 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
     (void) fputc(c,ps_file);
   }
   (void) fclose(ps_file);
-  
+
     /* Detect file format - Check magic.mgk configuration file. */
   magic_info=GetMagicInfo(magick,2*MagickPathExtent,exception);
   if(magic_info == (const MagicInfo *) NULL) goto FINISH_UNL;
   /*     printf("Detected:%s  \n",magic_info->name); */
-  if(exception->severity != UndefinedException) goto FINISH_UNL;     
+  if(exception->severity != UndefinedException) goto FINISH_UNL;
   if(magic_info->name == (char *) NULL) goto FINISH_UNL;
-    
+
   (void) strncpy(clone_info->magick,magic_info->name,MagickPathExtent-1);
-  
+
     /* Read nested image */
   /*FormatString(clone_info->filename,"%s:%s",magic_info->name,postscript_file);*/
   FormatLocaleString(clone_info->filename,MagickPathExtent,"%s",postscript_file);
@@ -809,7 +809,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
 
   AppendImageToList(&image,image2);
 
- FINISH_UNL:    
+ FINISH_UNL:
   (void) RelinquishUniqueFileResource(postscript_file);
  FINISH:
   DestroyImageInfo(clone_info);
@@ -924,7 +924,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
     size_t PS_unknown1;
     unsigned int PS_unknown2;
     unsigned int PS_unknown3;
-  } WPGPSl1Record;  
+  } WPGPSl1Record;
   */
 
   Image
@@ -1077,13 +1077,13 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                     ReadBlobByte(image));
                 }
               break;
-     
+
             case 0x11:  /* Start PS l1 */
               if(Rec.RecordLength > 8)
                 image=ExtractPostscript(image,image_info,
                   TellBlob(image)+8,   /* skip PS header in the wpg */
                   (ssize_t) Rec.RecordLength-8,exception);
-              break;     
+              break;
 
             case 0x14:  /* bitmap type 2 */
               BitmapHeader2.RotAngle=ReadBlobLSBShort(image);
@@ -1096,6 +1096,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               if ((BitmapHeader2.Width == 0) || (BitmapHeader2.Height == 0))
                 ThrowReaderException(CorruptImageError,"ImproperImageHeader");
               BitmapHeader2.Depth=ReadBlobLSBShort(image);
+              if (BitmapHeader2.Depth > 32)
+                ThrowReaderException(CorruptImageError,"ImproperImageHeader");
               BitmapHeader2.HorzRes=ReadBlobLSBShort(image);
               BitmapHeader2.VertRes=ReadBlobLSBShort(image);
 
@@ -1115,7 +1117,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               image->rows=BitmapHeader2.Height;
               bpp=BitmapHeader2.Depth;
 
-            UnpackRaster:      
+            UnpackRaster:
               status=SetImageExtent(image,image->columns,image->rows,exception);
               if (status == MagickFalse)
                 break;
@@ -1130,7 +1132,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                     }
                   /* printf("Load default colormap \n"); */
                   for (i=0; (i < (int) image->colors) && (i < 256); i++)
-                    {               
+                    {
                       image->colormap[i].red=ScaleCharToQuantum(WPG1_Palette[i].Red);
                       image->colormap[i].green=ScaleCharToQuantum(WPG1_Palette[i].Green);
                       image->colormap[i].blue=ScaleCharToQuantum(WPG1_Palette[i].Blue);
@@ -1144,7 +1146,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                         image->colormap,(size_t) (one << bpp),
                         sizeof(*image->colormap));
                 }
-          
+
               if (bpp == 1)
                 {
                   if(image->colormap[0].red==0 &&
@@ -1158,7 +1160,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                         image->colormap[1].green =
                         image->colormap[1].blue = QuantumRange;
                     }
-                }      
+                }
 
               if(UnpackWPGRaster(image,bpp,exception) < 0)
                 /* The raster cannot be unpacked */
@@ -1168,7 +1170,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                     }
 
               if(Rec.RecType==0x14 && BitmapHeader2.RotAngle!=0 && !image_info->ping)
-                {  
+                {
                   /* flop command */
                   if(BitmapHeader2.RotAngle & 0x8000)
                     {
@@ -1360,7 +1362,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                     if( UnpackWPG2Raster(image,bpp,exception) < 0)
                       goto DecompressionFailed;
                     break;
-                  }   
+                  }
                 }
 
               if(CTM[0][0]<0 && !image_info->ping)
