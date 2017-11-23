@@ -1130,7 +1130,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               status=SetImageExtent(image,image->columns,image->rows);
               if (status == MagickFalse)
                 break;
-              if ((image->storage_class != PseudoClass) && (bpp != 24))
+              if ((image->storage_class != PseudoClass) && (bpp < 24))
                 {
                   image->colors=one << bpp;
                   if (!AcquireImageColormap(image,image->colors))
