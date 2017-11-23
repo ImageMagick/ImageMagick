@@ -2034,7 +2034,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-    if ((image->storage_class != PseudoClass) && (image->depth >= 32) &&
+    if ((image->storage_class != PseudoClass) && (image->depth >= 16) &&
         (quantum_info->format == UndefinedQuantumFormat) &&
         (IsHighDynamicRangeImage(image,exception) != MagickFalse))
       {
@@ -2042,6 +2042,9 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         if (status == MagickFalse)
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
       }
+    else
+      if (image->depth < 16)    
+        DeleteImageProperty(image,"quantum:format");
     compression=UndefinedCompression;
     if (image_info->compression != UndefinedCompression)
       compression=image_info->compression;
