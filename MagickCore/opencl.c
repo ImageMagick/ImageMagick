@@ -2894,7 +2894,6 @@ static void CL_API_CALL DestroyMagickCLCacheInfoAndPixels(
       }
   }
   pixels=info->pixels;
-  RelinquishMagickResource(MemoryResource,info->length);
   DestroyMagickCLCacheInfo(info);
   (void) RelinquishAlignedMemory(pixels);
 }
