@@ -210,6 +210,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
         status=MagickTrue;
       else
         resource_info.memory-=(MagickOffsetType) size;
+      assert(resource_info.memory >= 0);
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickTrue,resource_request);
@@ -228,6 +229,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
         status=MagickTrue;
       else
         resource_info.map-=(MagickOffsetType) size;
+      assert(resource_info.map >= 0);
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickTrue,resource_request);
@@ -246,6 +248,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
         status=MagickTrue;
       else
         resource_info.disk-=(MagickOffsetType) size;
+      assert(resource_info.disk >= 0);
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickTrue,resource_request);
@@ -264,6 +267,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
         status=MagickTrue;
       else
         resource_info.file-=(MagickOffsetType) size;
+      assert(resource_info.file >= 0);
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickFalse,resource_request);
@@ -326,6 +330,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
         status=MagickTrue;
       else
         resource_info.time-=(MagickOffsetType) size;
+      assert(resource_info.time >= 0);
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickFalse,resource_request);
