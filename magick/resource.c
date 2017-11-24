@@ -955,7 +955,12 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
     resource_limit[MaxTextExtent],
     resource_request[MaxTextExtent];
 
-  (void) FormatMagickSize(size,MagickFalse,resource_request);
+  MagickBooleanType
+    logging;
+
+  logging=IsEventLogging();
+  if (logging != MagickFalse)
+    (void) FormatMagickSize(size,MagickFalse,resource_request);
   if (resource_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&resource_semaphore);
   LockSemaphoreInfo(resource_semaphore);
@@ -964,98 +969,131 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
     case AreaResource:
     {
       resource_info.area=(MagickOffsetType) size;
-      (void) FormatMagickSize((MagickSizeType) resource_info.area,MagickFalse,
-        resource_current);
-      (void) FormatMagickSize(resource_info.area_limit,MagickFalse,
-        resource_limit);
+      if (logging != MagickFalse)
+        {
+          (void) FormatMagickSize((MagickSizeType) resource_info.area,
+            MagickFalse,resource_current);
+          (void) FormatMagickSize(resource_info.area_limit,MagickFalse,
+            resource_limit);
+        }
       break;
     }
     case MemoryResource:
     {
       resource_info.memory-=size;
-      (void) FormatMagickSize((MagickSizeType) resource_info.memory,
-        MagickTrue,resource_current);
-      (void) FormatMagickSize(resource_info.memory_limit,MagickTrue,
-        resource_limit);
+      if (logging != MagickFalse)
+        {
+          (void) FormatMagickSize((MagickSizeType) resource_info.memory,
+            MagickTrue,resource_current);
+          (void) FormatMagickSize(resource_info.memory_limit,MagickTrue,
+            resource_limit);
+        }
       break;
     }
     case MapResource:
     {
       resource_info.map-=size;
-      (void) FormatMagickSize((MagickSizeType) resource_info.map,MagickTrue,
-        resource_current);
-      (void) FormatMagickSize(resource_info.map_limit,MagickTrue,
-        resource_limit);
+      if (logging != MagickFalse)
+        {
+          (void) FormatMagickSize((MagickSizeType) resource_info.map,
+            MagickTrue,resource_current);
+          (void) FormatMagickSize(resource_info.map_limit,MagickTrue,
+            resource_limit);
+        }
       break;
     }
     case DiskResource:
     {
       resource_info.disk-=size;
-      (void) FormatMagickSize((MagickSizeType) resource_info.disk,MagickTrue,
-        resource_current);
-      (void) FormatMagickSize(resource_info.disk_limit,MagickTrue,
-        resource_limit);
+      if (logging != MagickFalse)
+        {
+          (void) FormatMagickSize((MagickSizeType) resource_info.disk,
+            MagickTrue,resource_current);
+          (void) FormatMagickSize(resource_info.disk_limit,MagickTrue,
+            resource_limit);
+        }
       break;
     }
     case FileResource:
     {
       resource_info.file-=size;
-      (void) FormatMagickSize((MagickSizeType) resource_info.file,MagickFalse,
-        resource_current);
-      (void) FormatMagickSize((MagickSizeType) resource_info.file_limit,
-        MagickFalse,resource_limit);
+      if (logging != MagickFalse)
+        {
+          (void) FormatMagickSize((MagickSizeType) resource_info.file,
+            MagickFalse,resource_current);
+          (void) FormatMagickSize((MagickSizeType) resource_info.file_limit,
+            MagickFalse,resource_limit);
+        }
       break;
     }
     case HeightResource:
     {
       resource_info.height=(MagickOffsetType) size;
-      (void) FormatMagickSize((MagickSizeType) resource_info.height,MagickFalse,
-        resource_current);
-      (void) FormatMagickSize(resource_info.height_limit,MagickFalse,
-        resource_limit);
+      if (logging != MagickFalse)
+        {
+          (void) FormatMagickSize((MagickSizeType) resource_info.height,
+            MagickFalse,resource_current);
+          (void) FormatMagickSize(resource_info.height_limit,MagickFalse,
+            resource_limit);
+        }
       break;
     }
     case ThreadResource:
     {
-      (void) FormatMagickSize((MagickSizeType) resource_info.thread,MagickFalse,
-        resource_current);
-      (void) FormatMagickSize((MagickSizeType) resource_info.thread_limit,
-        MagickFalse,resource_limit);
+      if (logging != MagickFalse)
+        {
+          (void) FormatMagickSize((MagickSizeType) resource_info.thread,
+            MagickFalse,resource_current);
+          (void) FormatMagickSize((MagickSizeType) resource_info.thread_limit,
+            MagickFalse,resource_limit);
+        }
       break;
     }
     case ThrottleResource:
     {
-      (void) FormatMagickSize((MagickSizeType) resource_info.throttle,
-        MagickFalse,resource_current);
-      (void) FormatMagickSize((MagickSizeType) resource_info.throttle_limit,
-        MagickFalse,resource_limit);
+      if (logging != MagickFalse)
+        {
+          (void) FormatMagickSize((MagickSizeType) resource_info.throttle,
+            MagickFalse,resource_current);
+          (void) FormatMagickSize((MagickSizeType) resource_info.throttle_limit,
+            MagickFalse,resource_limit);
+        }
       break;
     }
     case TimeResource:
     {
       resource_info.time-=size;
-      (void) FormatMagickSize((MagickSizeType) resource_info.time,MagickFalse,
-        resource_current);
-      (void) FormatMagickSize((MagickSizeType) resource_info.time_limit,
-        MagickFalse,resource_limit);
+      if (logging != MagickFalse)
+        {
+          (void) FormatMagickSize((MagickSizeType) resource_info.time,
+            MagickFalse,resource_current);
+          (void) FormatMagickSize((MagickSizeType) resource_info.time_limit,
+            MagickFalse,resource_limit);
+        }
       break;
     }
     case WidthResource:
     {
       resource_info.width=(MagickOffsetType) size;
-      (void) FormatMagickSize((MagickSizeType) resource_info.width,MagickFalse,
-        resource_current);
-      (void) FormatMagickSize(resource_info.width_limit,MagickFalse,
-        resource_limit);
+      if (logging != MagickFalse)
+        {
+          (void) FormatMagickSize((MagickSizeType) resource_info.width,
+            MagickFalse,resource_current);
+          (void) FormatMagickSize(resource_info.width_limit,MagickFalse,
+            resource_limit);
+        }
       break;
     }
     default:
       break;
   }
   UnlockSemaphoreInfo(resource_semaphore);
-  (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"%s: %s/%s/%s",
-    CommandOptionToMnemonic(MagickResourceOptions,(ssize_t) type),
-      resource_request,resource_current,resource_limit);
+  if (logging != MagickFalse)
+    {
+      (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"%s: %s/%s/%s",
+        CommandOptionToMnemonic(MagickResourceOptions,(ssize_t) type),
+          resource_request,resource_current,resource_limit);
+    }
 }
 
 /*
