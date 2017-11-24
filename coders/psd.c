@@ -1228,9 +1228,7 @@ static MagickBooleanType ReadPSDChannelZip(Image *image,const size_t channels,
       while (stream.avail_out > 0)
       {
         ret=inflate(&stream,Z_SYNC_FLUSH);
-        if ((ret != Z_OK) && (ret != Z_STREAM_END))
-          break;
-        if (ret == Z_STREAM_END)
+        if (ret < 0)
           {
             (void) inflateEnd(&stream);
             compact_pixels=(unsigned char *) RelinquishMagickMemory(
@@ -1238,6 +1236,8 @@ static MagickBooleanType ReadPSDChannelZip(Image *image,const size_t channels,
             pixels=(unsigned char *) RelinquishMagickMemory(pixels);
             return(MagickFalse);
           }
+        if (code == Z_STREAM_END)
+          break;
       }
       (void) inflateEnd(&stream);
     }
