@@ -1125,7 +1125,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             tile_image=CloneImage(image,1UL*(frame.right-frame.left),
               1UL*(frame.bottom-frame.top),MagickTrue,exception);
             if (tile_image == (Image *) NULL)
-              return((Image *) NULL);
+              ThrowReaderException(CorruptImageError,"ImproperImageHeader");
             if ((code == 0x9a) || (code == 0x9b) ||
                 ((bytes_per_line & 0x8000) != 0))
               {
