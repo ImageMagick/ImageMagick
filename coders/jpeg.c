@@ -1263,8 +1263,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     }
   option=GetImageOption(image_info,"jpeg:colors");
   if (option != (const char *) NULL)
-    if (AcquireImageColormap(image,StringToUnsignedLong(option),exception)
-         == MagickFalse)
+    if (AcquireImageColormap(image,StringToUnsignedLong(option),exception) == MagickFalse)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if ((jpeg_info.output_components == 1) && (jpeg_info.quantize_colors == 0))
     {
@@ -2311,7 +2310,6 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             Perform optimization only if available memory resources permit it.
           */
           status=AcquireMagickResource(MemoryResource,length);
-          RelinquishMagickResource(MemoryResource,length);
           jpeg_info.optimize_coding=status == MagickFalse ? FALSE : TRUE;
         }
     }

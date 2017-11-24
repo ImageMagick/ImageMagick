@@ -958,8 +958,9 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
         {
           (void) FormatMagickSize(size,MagickFalse,(const char *) NULL,
             MagickFormatExtent,resource_request);
-          (void) FormatMagickSize((MagickSizeType) resource_info.area,MagickFalse,
-            (const char *) NULL,MagickFormatExtent,resource_current);
+          (void) FormatMagickSize((MagickSizeType) resource_info.area,
+            MagickFalse,(const char *) NULL,MagickFormatExtent,
+            resource_current);
           (void) FormatMagickSize(resource_info.area_limit,MagickFalse,
             (const char *) NULL,MagickFormatExtent,resource_limit);
         }
@@ -1086,8 +1087,8 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
         {
           (void) FormatMagickSize(size,MagickFalse,"P",MagickFormatExtent,
             resource_request);
-          (void) FormatMagickSize((MagickSizeType) resource_info.width,MagickFalse,
-            "P",MagickFormatExtent,resource_current);
+          (void) FormatMagickSize((MagickSizeType) resource_info.width,
+            MagickFalse,"P",MagickFormatExtent,resource_current);
           (void) FormatMagickSize(resource_info.width_limit,MagickFalse,"P",
             MagickFormatExtent,resource_limit);
         }
