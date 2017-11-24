@@ -328,12 +328,12 @@ MagickExport double **AcquireMagickMatrix(const size_t number_rows,
   {
     matrix[i]=(double *) AcquireQuantumMemory(size,sizeof(*matrix[i]));
     if (matrix[i] == (double *) NULL)
-    {
-      for (j=0; j < i; j++)
-        matrix[j]=(double *) RelinquishMagickMemory(matrix[j]);
-      matrix=(double **) RelinquishMagickMemory(matrix);
-      return((double **) NULL);
-    }
+      {
+        for (j=0; j < i; j++)
+          matrix[j]=(double *) RelinquishMagickMemory(matrix[j]);
+        matrix=(double **) RelinquishMagickMemory(matrix);
+        return((double **) NULL);
+      }
     for (j=0; j < (ssize_t) size; j++)
       matrix[i][j]=0.0;
   }
@@ -1070,7 +1070,7 @@ MagickExport double **RelinquishMagickMatrix(double **matrix,
   if (matrix == (double **) NULL )
     return(matrix);
   for (i=0; i < (ssize_t) number_rows; i++)
-     matrix[i]=(double *) RelinquishMagickMemory(matrix[i]);
+    matrix[i]=(double *) RelinquishMagickMemory(matrix[i]);
   matrix=(double **) RelinquishMagickMemory(matrix);
   return(matrix);
 }
