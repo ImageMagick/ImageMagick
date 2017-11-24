@@ -3991,7 +3991,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               return(status == 0 ? MagickFalse : MagickTrue);
             }
         }
-      RelinquishMagickResource(MemoryResource,cache_info->length);
     }
   /*
     Create pixel cache on disk.
@@ -4054,7 +4053,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               return(status == 0 ? MagickFalse : MagickTrue);
             }
         }
-      RelinquishMagickResource(DiskResource,cache_info->length);
       cache_info->type=UndefinedCache;
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "CacheResourcesExhausted","`%s'",image->filename);
@@ -4140,7 +4138,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               return(status == 0 ? MagickFalse : MagickTrue);
             }
         }
-      RelinquishMagickResource(MapResource,cache_info->length);
     }
   if ((source_info.storage_class != UndefinedClass) && (mode != ReadMode))
     {
