@@ -1096,7 +1096,7 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
     {
       (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"%s: %s/%s/%s",
         CommandOptionToMnemonic(MagickResourceOptions,(ssize_t) type),
-        resource_request,resource_current,resource_limit);
+          resource_request,resource_current,resource_limit);
     }
 }
 
