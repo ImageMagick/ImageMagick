@@ -2309,7 +2309,9 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           /*
             Perform optimization only if available memory resources permit it.
           */
-          status=AcquireMagickResource(AreaResource,length);
+          status=AcquireMagickResource(MemoryResource,length);
+          if (status != MagickFalse)
+            RelinquishMagickResource(MemoryResource,length);
           jpeg_info.optimize_coding=status == MagickFalse ? FALSE : TRUE;
         }
     }
