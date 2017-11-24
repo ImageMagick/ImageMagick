@@ -370,6 +370,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void *(*)(void *)) NULL);
   if (AcquireImageColormap(image,image->colors) == MagickFalse)
     {
+      xpm_colors=DestroySplayTree(xpm_colors);
       xpm_buffer=DestroyString(xpm_buffer);
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
