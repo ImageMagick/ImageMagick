@@ -70,7 +70,7 @@ sub AutodetectWin32gcc {
       push @i, catfile($dirpath,'..','..','include','ImageMagick');
       push @i, catfile($dirpath,'..','..','..','include');
       push @i, catfile($dirpath,'..','..','..','include','ImageMagick');
-      foreach (@i) { push @incdir, $_ if (-e "$_/magick/MagickCore.h") };
+      foreach (@i) { push @incdir, $_ if (-e "$_/MagickCore/MagickCore.h") };
     }
   };
 
