@@ -944,24 +944,6 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
   LockSemaphoreInfo(resource_semaphore);
   switch (type)
   {
-    case WidthResource:
-    {
-      resource_info.width=(MagickOffsetType) size;
-      (void) FormatMagickSize((MagickSizeType) resource_info.width,MagickFalse,
-        "P",MagickFormatExtent,resource_current);
-      (void) FormatMagickSize(resource_info.width_limit,MagickFalse,"P",
-        MagickFormatExtent,resource_limit);
-      break;
-    }
-    case HeightResource:
-    {
-      resource_info.height=(MagickOffsetType) size;
-      (void) FormatMagickSize((MagickSizeType) resource_info.height,MagickFalse,
-        "P",MagickFormatExtent,resource_current);
-      (void) FormatMagickSize(resource_info.height_limit,MagickFalse,"P",
-        MagickFormatExtent,resource_limit);
-      break;
-    }
     case AreaResource:
     {
       resource_info.area=(MagickOffsetType) size;
@@ -1007,6 +989,15 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
         MagickFalse,"B",MagickFormatExtent,resource_limit);
       break;
     }
+    case HeightResource:
+    {
+      resource_info.height=(MagickOffsetType) size;
+      (void) FormatMagickSize((MagickSizeType) resource_info.height,MagickFalse,
+        "P",MagickFormatExtent,resource_current);
+      (void) FormatMagickSize(resource_info.height_limit,MagickFalse,"P",
+        MagickFormatExtent,resource_limit);
+      break;
+    }
     case ThreadResource:
     {
       (void) FormatMagickSize((MagickSizeType) resource_info.thread,MagickFalse,
@@ -1030,6 +1021,15 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
         "B",MagickFormatExtent,resource_current);
       (void) FormatMagickSize((MagickSizeType) resource_info.time_limit,
         MagickFalse,"B",MagickFormatExtent,resource_limit);
+      break;
+    }
+    case WidthResource:
+    {
+      resource_info.width=(MagickOffsetType) size;
+      (void) FormatMagickSize((MagickSizeType) resource_info.width,MagickFalse,
+        "P",MagickFormatExtent,resource_current);
+      (void) FormatMagickSize(resource_info.width_limit,MagickFalse,"P",
+        MagickFormatExtent,resource_limit);
       break;
     }
     default:
