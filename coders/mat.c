@@ -1053,7 +1053,16 @@ MATLAB_KO:
         MATLAB_HDR.StructureClass != mxUINT32_CLASS &&    /* uint32 + uint32 3D */
         MATLAB_HDR.StructureClass != mxINT64_CLASS &&
         MATLAB_HDR.StructureClass != mxUINT64_CLASS)    /* uint64 + uint64 3D */
-      ThrowReaderException(CoderError,"UnsupportedCellTypeInTheMatrix");
+      {
+        if ((image2 != (Image*) NULL) && (image2 != (Image *) image))
+          {
+            CloseBlob(image2);
+            DeleteImageFromList(&image2);
+          }
+        if (clone_info != (ImageInfo *) NULL)
+          DestroyImageInfo(clone_info);
+        ThrowReaderException(CoderError,"UnsupportedCellTypeInTheMatrix");
+      }
 
     switch (MATLAB_HDR.NameFlag)
     {
