@@ -11727,34 +11727,34 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                   chunk[4],
                   *data;
 
-               StringInfo
-                 *ping_profile;
+                StringInfo
+                  *ping_profile;
 
-               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "  Have eXIf profile");
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                    "  Have eXIf profile");
 
-               ping_profile=CloneStringInfo(profile);
-               data=GetStringInfoDatum(ping_profile),
-               length=(png_uint_32) GetStringInfoLength(ping_profile);
+                ping_profile=CloneStringInfo(profile);
+                data=GetStringInfoDatum(ping_profile),
+                length=(png_uint_32) GetStringInfoLength(ping_profile);
 
-               PNGType(chunk,mng_eXIf);
-               if (length < 7)
-                 {
-                   ping_profile=DestroyStringInfo(ping_profile);
-                   break;  /* otherwise crashes */
-                 }
+                PNGType(chunk,mng_eXIf);
+                if (length < 7)
+                  {
+                    ping_profile=DestroyStringInfo(ping_profile);
+                    break;  /* otherwise crashes */
+                  }
 
-               /* skip the "Exif\0\0" JFIF Exif Header ID */
-               length -= 6;
+                /* skip the "Exif\0\0" JFIF Exif Header ID */
+                length -= 6;
 
-               LogPNGChunk(logging,chunk,length);
-               (void) WriteBlobMSBULong(image,length);
-               (void) WriteBlob(image,4,chunk);
-               (void) WriteBlob(image,length,data+6);
-               (void) WriteBlobMSBULong(image,crc32(crc32(0,chunk,4),
-                 data+6, (uInt) length));
-               ping_profile=DestroyStringInfo(ping_profile);
-               break;
+                LogPNGChunk(logging,chunk,length);
+                (void) WriteBlobMSBULong(image,length);
+                (void) WriteBlob(image,4,chunk);
+                (void) WriteBlob(image,length,data+6);
+                (void) WriteBlobMSBULong(image,crc32(crc32(0,chunk,4),
+                  data+6, (uInt) length));
+                ping_profile=DestroyStringInfo(ping_profile);
+                break;
              }
          }
        name=GetNextImageProfile(image);
