@@ -57,6 +57,7 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/opencl.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/static.h"
@@ -154,6 +155,65 @@ static void InitializeDcrawOpenCL(ExceptionInfo *magick_unused(exception))
 #endif
 }
 #endif
+#endif
+
+#if defined(MAGICKCORE_RAW_R_DELEGATE)
+static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
+  ExceptionInfo *exception)
+{
+  char
+    property[MagickPathExtent],
+    timestamp[MagickPathExtent];
+
+  (void) FormatMagickTime(raw_info->other.timestamp,MagickPathExtent,timestamp);
+  (void) SetImageProperty(image,"dng:timestamp",timestamp,exception);
+  (void) SetImageProperty(image,"dng:camera.make",raw_info->idata.make,
+    exception);
+  (void) SetImageProperty(image,"dng:camera.model",raw_info->idata.model,
+    exception);
+  if (*raw_info->shootinginfo.BodySerial != '\0')
+    (void) SetImageProperty(image,"dng:camera.body.serial",
+      raw_info->shootinginfo.BodySerial,exception);
+  if (raw_info->idata.dng_version != 0)
+    {
+      (void) FormatLocaleString(property,MagickPathExtent,"%d.%d.%d.%d",
+        (raw_info->idata.dng_version >> 24) & 0xff,
+        (raw_info->idata.dng_version >> 16) & 0xff,
+        (raw_info->idata.dng_version >> 8) & 0xff,
+        (raw_info->idata.dng_version >> 0) & 0xff);
+      (void) SetImageProperty(image,"dng:version",property,exception);
+    }
+  if (*raw_info->other.artist != '\0')
+    (void) SetImageProperty(image,"dng:artist",raw_info->other.artist,
+      exception);
+  (void) FormatLocaleString(property,MagickPathExtent,"%.*gmm",
+    GetMagickPrecision(),raw_info->lens.MinFocal);
+  (void) SetImageProperty(image,"exif:min.focal",property,exception);
+  (void) FormatLocaleString(property,MagickPathExtent,"%.*gmm",
+    GetMagickPrecision(),raw_info->lens.MaxFocal);
+  (void) SetImageProperty(image,"exif:max.focal",property,exception);
+  (void) FormatLocaleString(property,MagickPathExtent,"f/%.*g",
+    GetMagickPrecision(),raw_info->lens.MaxAp4MinFocal);
+  (void) SetImageProperty(image,"exif:max.aperture.min.focal",property,
+    exception);
+  (void) FormatLocaleString(property,MagickPathExtent,"f/%.*g",
+    GetMagickPrecision(),raw_info->lens.MaxAp4MaxFocal);
+  (void) SetImageProperty(image,"exif:max.aperture.max.focal",property,
+    exception);
+  (void) FormatLocaleString(property,MagickPathExtent,"f/%.*g",
+    GetMagickPrecision(),raw_info->lens.EXIF_MaxAp);
+  (void) SetImageProperty(image,"exif:max.aperture",property,exception);
+  (void) FormatLocaleString(property,MagickPathExtent,"%dmm",
+    raw_info->lens.FocalLengthIn35mmFormat);
+  (void) SetImageProperty(image,"exif:focal.length.in.35mmFormat",property,
+    exception);
+  if (*raw_info->lens.LensMake != '\0')
+    (void) SetImageProperty(image,"exif:lens.make",raw_info->lens.LensMake,
+      exception);
+  if (*raw_info->lens.Lens != '\0')
+    (void) SetImageProperty(image,"exif:lens",raw_info->lens.Lens,
+      exception);
+}
 #endif
 
 static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
@@ -303,6 +363,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
     libraw_dcraw_clear_mem(raw_image);
+    SetDNGProperties(image,raw_info,exception);
     libraw_close(raw_info);
     return(image);
   }
