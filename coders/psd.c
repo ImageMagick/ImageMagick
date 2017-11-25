@@ -1278,26 +1278,26 @@ static MagickBooleanType ReadPSDChannelZip(Image *image,const size_t channels,
     }
 
   if (compression == ZipWithPrediction)
-  {
-     p=pixels;
-     while (count > 0)
-     {
-       length=image->columns;
-       while (--length)
-       {
-         if (packet_size == 2)
-           {
-             p[2]+=p[0]+((p[1]+p[3]) >> 8);
-             p[3]+=p[1];
-           }
-         else
-          *(p+1)+=*p;
-         p+=packet_size;
-       }
-       p+=packet_size;
-       count-=row_size;
-     }
-  }
+    {
+      p=pixels;
+      while (count > 0)
+      {
+        length=image->columns;
+        while (--length)
+        {
+          if (packet_size == 2)
+            {
+              p[2]+=p[0]+((p[1]+p[3]) >> 8);
+              p[3]+=p[1];
+            }
+          else
+            *(p+1)+=*p;
+          p+=packet_size;
+        }
+        p+=packet_size;
+        count-=row_size;
+      }
+    }
 
   status=MagickTrue;
   p=pixels;
