@@ -171,9 +171,11 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
     exception);
   (void) SetImageProperty(image,"dng:camera.model",raw_info->idata.model,
     exception);
+#if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,18)
   if (*raw_info->shootinginfo.BodySerial != '\0')
     (void) SetImageProperty(image,"dng:camera.body.serial",
       raw_info->shootinginfo.BodySerial,exception);
+#endif
   if (raw_info->idata.dng_version != 0)
     {
       (void) FormatLocaleString(property,MagickPathExtent,"%d.%d.%d.%d",
