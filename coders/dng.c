@@ -165,56 +165,19 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
     property[MagickPathExtent],
     timestamp[MagickPathExtent];
 
+  (void) SetImageProperty(image,"dng:make",raw_info->idata.make,exception);
+  (void) SetImageProperty(image,"dng:camera.model.name",raw_info->idata.model,
+     exception);
+  (void) SetImageProperty(image,"dng:software",raw_info->idata.software,
+    exception);
   (void) FormatMagickTime(raw_info->other.timestamp,MagickPathExtent,timestamp);
-  (void) SetImageProperty(image,"dng:timestamp",timestamp,exception);
-  (void) SetImageProperty(image,"dng:camera.make",raw_info->idata.make,
-    exception);
-  (void) SetImageProperty(image,"dng:camera.model",raw_info->idata.model,
-    exception);
+  (void) SetImageProperty(image,"dng:modify.date",timestamp,exception);
 #if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,18)
   if (*raw_info->shootinginfo.BodySerial != '\0')
     (void) SetImageProperty(image,"dng:camera.body.serial",
       raw_info->shootinginfo.BodySerial,exception);
 #endif
-  if (raw_info->idata.dng_version != 0)
-    {
-      (void) FormatLocaleString(property,MagickPathExtent,"%d.%d.%d.%d",
-        (raw_info->idata.dng_version >> 24) & 0xff,
-        (raw_info->idata.dng_version >> 16) & 0xff,
-        (raw_info->idata.dng_version >> 8) & 0xff,
-        (raw_info->idata.dng_version >> 0) & 0xff);
-      (void) SetImageProperty(image,"dng:version",property,exception);
-    }
-  if (*raw_info->other.artist != '\0')
-    (void) SetImageProperty(image,"dng:artist",raw_info->other.artist,
-      exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%.*gmm",
-    GetMagickPrecision(),raw_info->lens.MinFocal);
-  (void) SetImageProperty(image,"exif:min.focal",property,exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%.*gmm",
-    GetMagickPrecision(),raw_info->lens.MaxFocal);
-  (void) SetImageProperty(image,"exif:max.focal",property,exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"f/%.*g",
-    GetMagickPrecision(),raw_info->lens.MaxAp4MinFocal);
-  (void) SetImageProperty(image,"exif:max.aperture.min.focal",property,
-    exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"f/%.*g",
-    GetMagickPrecision(),raw_info->lens.MaxAp4MaxFocal);
-  (void) SetImageProperty(image,"exif:max.aperture.max.focal",property,
-    exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"f/%.*g",
-    GetMagickPrecision(),raw_info->lens.EXIF_MaxAp);
-  (void) SetImageProperty(image,"exif:max.aperture",property,exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%dmm",
-    raw_info->lens.FocalLengthIn35mmFormat);
-  (void) SetImageProperty(image,"exif:focal.length.in.35mmFormat",property,
-    exception);
-  if (*raw_info->lens.LensMake != '\0')
-    (void) SetImageProperty(image,"exif:lens.make",raw_info->lens.LensMake,
-      exception);
-  if (*raw_info->lens.Lens != '\0')
-    (void) SetImageProperty(image,"exif:lens",raw_info->lens.Lens,
-      exception);
+  *property='\0';
 }
 #endif
 
