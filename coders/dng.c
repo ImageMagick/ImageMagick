@@ -168,6 +168,9 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info)
   if (*raw_info->shootinginfo.BodySerial != '\0')
     (void) SetImageProperty(image,"dng:serial.number",
       raw_info->shootinginfo.BodySerial);
+  (void) FormatLocaleString(property,MagickPathExtent,"%0.2f",
+    raw_info->other.FlashEC);
+  (void) SetImageProperty(image,"dng:flash.exposure.compensation",property);
 #endif
   (void) FormatLocaleString(property,MagickPathExtent,"1/%0.1f",
     1.0/raw_info->other.shutter);
@@ -178,9 +181,6 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info)
   (void) FormatLocaleString(property,MagickPathExtent,"%0.1f",
     raw_info->other.iso_speed);
   (void) SetImageProperty(image,"dng:iso.setting",property);
-  (void) FormatLocaleString(property,MagickPathExtent,"%0.2f",
-    raw_info->other.FlashEC);
-  (void) SetImageProperty(image,"dng:flash.exposure.compensation",property);
   (void) FormatLocaleString(property,MagickPathExtent,"%0.1f",
     raw_info->lens.EXIF_MaxAp);
   (void) SetImageProperty(image,"dng:max.aperture.value",property);
