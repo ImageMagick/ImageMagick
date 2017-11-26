@@ -536,7 +536,7 @@ static MagickBooleanType ClonePixelCacheRepository(
   CacheInfo *magick_restrict clone_info,CacheInfo *magick_restrict cache_info,
   ExceptionInfo *exception)
 {
-#define MaxCacheThreads  GetMagickResourceLimit(ThreadResource)
+#define MaxCacheThreads  ((size_t) GetMagickResourceLimit(ThreadResource))
 #define cache_number_threads(source,destination,chunk,multithreaded) \
   num_threads((multithreaded) == 0 ? 1 : \
     (((source)->type != MemoryCache) && \
@@ -3525,8 +3525,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   if ((status != MagickFalse) && (length == (MagickSizeType) ((size_t) length)))
     {
       status=AcquireMagickResource(MemoryResource,cache_info->length);
-      if (((cache_info->type == UndefinedCache) && (status != MagickFalse)) ||
-          (cache_info->type == MemoryCache))
+      if ((cache_info->type == UndefinedCache) && (status != MagickFalse))
         {
           status=MagickTrue;
           if (cache_anonymous_memory <= 0)
@@ -3579,17 +3578,14 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
             }
         }
     }
-  /*
-    Create pixel cache on disk.
-  */
-  status=AcquireMagickResource(DiskResource,cache_info->length);
-  if ((status == MagickFalse) || (cache_info->type == DistributedCache))
+  if (cache_info->type == DistributedCache)
     {
       DistributeCacheInfo
         *server_info;
 
-      if (cache_info->type == DistributedCache)
-        RelinquishMagickResource(DiskResource,cache_info->length);
+      /*
+        Distribute the pixel cache to a remote server.
+      */
       server_info=AcquireDistributeCacheInfo(exception);
       if (server_info != (DistributeCacheInfo *) NULL)
         {
@@ -3639,6 +3635,17 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               return(status == 0 ? MagickFalse : MagickTrue);
             }
         }
+      cache_info->type=UndefinedCache;
+      (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
+        "CacheResourcesExhausted","`%s'",image->filename);
+      return(MagickFalse);
+    }
+  /*
+    Create pixel cache on disk.
+  */
+  status=AcquireMagickResource(DiskResource,cache_info->length);
+  if (status == MagickFalse)
+    {
       cache_info->type=UndefinedCache;
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "CacheResourcesExhausted","`%s'",image->filename);
@@ -3832,6 +3839,13 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   /*
     Clone persistent pixel cache.
   */
+  status=AcquireMagickResource(DiskResource,cache_info->length);
+  if (status == MagickFalse)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
+        "CacheResourcesExhausted","`%s'",image->filename);
+      return(MagickFalse);
+    }
   clone_info=(CacheInfo *) ClonePixelCache(cache_info);
   clone_info->type=DiskCache;
   (void) CopyMagickString(clone_info->cache_filename,filename,MagickPathExtent);

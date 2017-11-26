@@ -214,7 +214,6 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
         status=MagickTrue;
       else
         resource_info.memory-=(MagickOffsetType) size;
-      assert(resource_info.memory >= 0);
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickTrue,"B",MagickFormatExtent,
@@ -235,7 +234,6 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
         status=MagickTrue;
       else
         resource_info.map-=(MagickOffsetType) size;
-      assert(resource_info.map >= 0);
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickTrue,"B",MagickFormatExtent,
@@ -256,7 +254,6 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
         status=MagickTrue;
       else
         resource_info.disk-=(MagickOffsetType) size;
-      assert(resource_info.disk >= 0);
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickTrue,"B",MagickFormatExtent,
@@ -277,7 +274,6 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
         status=MagickTrue;
       else
         resource_info.file-=(MagickOffsetType) size;
-      assert(resource_info.file >= 0);
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickFalse,(const char *) NULL,
@@ -352,7 +348,6 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
         status=MagickTrue;
       else
         resource_info.time-=(MagickOffsetType) size;
-      assert(resource_info.time >= 0);
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickFalse,(const char *) NULL,
@@ -969,6 +964,7 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
     case MemoryResource:
     {
       resource_info.memory-=size;
+      assert(resource_info.memory >= 0);
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickFalse,"B",MagickFormatExtent,
@@ -983,6 +979,7 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
     case MapResource:
     {
       resource_info.map-=size;
+      assert(resource_info.map >= 0);
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickFalse,"B",MagickFormatExtent,
@@ -997,6 +994,7 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
     case DiskResource:
     {
       resource_info.disk-=size;
+      assert(resource_info.disk >= 0);
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickFalse,"B",MagickFormatExtent,
@@ -1011,6 +1009,7 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
     case FileResource:
     {
       resource_info.file-=size;
+      assert(resource_info.file >= 0);
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickFalse,(const char *) NULL,
@@ -1068,6 +1067,7 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
     case TimeResource:
     {
       resource_info.time-=size;
+      assert(resource_info.time >= 0);
       if (logging != MagickFalse)
         {
           (void) FormatMagickSize(size,MagickFalse,(const char *) NULL,
