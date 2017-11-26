@@ -168,7 +168,7 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
 
   (void) SetImageProperty(image,"dng:make",raw_info->idata.make,exception);
   (void) SetImageProperty(image,"dng:camera.model.name",raw_info->idata.model,
-     exception);
+    exception);
   (void) SetImageProperty(image,"dng:software",raw_info->idata.software,
     exception);
   (void) FormatMagickTime(raw_info->other.timestamp,MagickPathExtent,timestamp);
@@ -203,18 +203,19 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
   (void) SetImageProperty(image,"dng:wb.rb.levels",property,exception);
   (void) SetImageProperty(image,"dng:lens.type",
     raw_info->lens.makernotes.LensFeatures_suf,exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%f-%fmm f/%0.1f-%0.1f",
-    raw_info->lens.makernotes.MinFocal,raw_info->lens.makernotes.MaxFocal,
+  (void) FormatLocaleString(property,MagickPathExtent,
+    "%0.1f-%0.1fmm f/%0.1f-%0.1f",raw_info->lens.makernotes.MinFocal,
+    raw_info->lens.makernotes.MaxFocal,
     raw_info->lens.makernotes.MaxAp4MinFocal,
     raw_info->lens.makernotes.MaxAp4MaxFocal);
   (void) SetImageProperty(image,"dng:lens",property,exception);
   (void) FormatLocaleString(property,MagickPathExtent,"%0.2f",
     raw_info->lens.makernotes.LensFStops);
   (void) SetImageProperty(image,"dng:lens.f.stops",property,exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%f mm",
+  (void) FormatLocaleString(property,MagickPathExtent,"%0.1f mm",
     raw_info->lens.makernotes.MinFocal);
   (void) SetImageProperty(image,"dng:min.focal.length",property,exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%f mm",
+  (void) FormatLocaleString(property,MagickPathExtent,"%0.1f mm",
     raw_info->lens.makernotes.MaxFocal);
   (void) SetImageProperty(image,"dng:max.focal.length",property,exception);
   (void) FormatLocaleString(property,MagickPathExtent,"%0.1f",
@@ -337,6 +338,10 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=raw_image->width;
     image->rows=raw_image->height;
     image->depth=raw_image->bits;
+    image->page.width=raw_info->sizes.width;
+    image->page.height=raw_info->sizes.height;
+    image->page.x=raw_info->sizes.left_margin;
+    image->page.y=raw_info->sizes.top_margin;
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
       {
