@@ -3853,6 +3853,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     message[MaxTextExtent];
 
   const char
+    *hosts,
     *type;
 
   MagickSizeType
@@ -3991,7 +3992,9 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
             }
         }
     }
-  if (cache_info->type == DistributedCache)
+  status=AcquireMagickResource(DiskResource,cache_info->length);
+  hosts=GetImageRegistry(StringRegistryType,"cache:hosts",exception);
+  if ((status == MagickFalse) && (hosts != (const char *) NULL))
     {
       DistributeCacheInfo
         *server_info;
@@ -4057,7 +4060,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   /*
     Create pixel cache on disk.
   */
-  status=AcquireMagickResource(DiskResource,cache_info->length);
   if (status == MagickFalse)
     {
       cache_info->type=UndefinedCache;
