@@ -191,18 +191,18 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info)
     raw_info->color.cam_mul[0],raw_info->color.cam_mul[2],
     raw_info->color.cam_mul[1],raw_info->color.cam_mul[3]);
   (void) SetImageProperty(image,"dng:wb.rb.levels",property);
-  (void) FormatLocaleString(property,MagickPathExtent,"%f-%fmm f/%0.1f-%0.1f",
-    raw_info->lens.makernotes.MinFocal,raw_info->lens.makernotes.MaxFocal,
-    raw_info->lens.makernotes.MaxAp4MinFocal,
+  (void) FormatLocaleString(property,MagickPathExtent,
+    "%0.1f-%0.1fmm f/%0.1f-%0.1f",raw_info->lens.makernotes.MinFocal,
+    raw_info->lens.makernotes.MaxFocal,raw_info->lens.makernotes.MaxAp4MinFocal,
     raw_info->lens.makernotes.MaxAp4MaxFocal);
   (void) SetImageProperty(image,"dng:lens",property);
   (void) FormatLocaleString(property,MagickPathExtent,"%0.2f",
     raw_info->lens.makernotes.LensFStops);
   (void) SetImageProperty(image,"dng:lens.f.stops",property);
-  (void) FormatLocaleString(property,MagickPathExtent,"%f mm",
+  (void) FormatLocaleString(property,MagickPathExtent,"%0.1f mm",
     raw_info->lens.makernotes.MinFocal);
   (void) SetImageProperty(image,"dng:min.focal.length",property);
-  (void) FormatLocaleString(property,MagickPathExtent,"%f mm",
+  (void) FormatLocaleString(property,MagickPathExtent,"%0.1f mm",
     raw_info->lens.makernotes.MaxFocal);
   (void) SetImageProperty(image,"dng:max.focal.length",property);
   (void) SetImageProperty(image,"dng:max.aperture.at.min.focal",property);
@@ -320,6 +320,10 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=raw_image->width;
     image->rows=raw_image->height;
     image->depth=raw_image->bits;
+    image->page.width=raw_info->sizes.width;
+    image->page.height=raw_info->sizes.height;
+    image->page.x=raw_info->sizes.left_margin;
+    image->page.y=raw_info->sizes.top_margin;
     status=SetImageExtent(image,image->columns,image->rows);
     if (status == MagickFalse)
       {
