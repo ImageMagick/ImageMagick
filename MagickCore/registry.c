@@ -199,11 +199,7 @@ MagickExport void *GetImageRegistry(const RegistryType type,const char *key,
     return((void *) NULL);
   registry_info=(RegistryInfo *) GetValueFromSplayTree(registry,key);
   if (registry_info == (void *) NULL)
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),RegistryError,
-        "UnableToGetRegistryID","`%s'",key);
-      return((void *) NULL);
-    }
+    return((void *) NULL);
   value=(void *) NULL;
   switch (type)
   {
