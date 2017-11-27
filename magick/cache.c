@@ -3936,7 +3936,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   if (cache_info->mode == PersistMode)
     status=MagickFalse;
   length=number_pixels*(sizeof(PixelPacket)+sizeof(IndexPacket));
-  if ((status != MagickFalse) && 
+  if ((status != MagickFalse) &&
       (length == (MagickSizeType) ((size_t) length)) &&
       ((cache_info->type == UndefinedCache) || (cache_info->type == MemoryCache)))
     {
