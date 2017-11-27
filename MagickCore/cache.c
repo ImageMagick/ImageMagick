@@ -3523,7 +3523,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     status=MagickFalse;
   length=number_pixels*(cache_info->number_channels*sizeof(Quantum)+
     cache_info->metacontent_extent);
-  if ((status != MagickFalse) && 
+  if ((status != MagickFalse) &&
       (length == (MagickSizeType) ((size_t) length)) &&
       ((cache_info->type == UndefinedCache) || (cache_info->type == MemoryCache)))
     {
