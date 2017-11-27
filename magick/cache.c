@@ -3936,10 +3936,12 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   if (cache_info->mode == PersistMode)
     status=MagickFalse;
   length=number_pixels*(sizeof(PixelPacket)+sizeof(IndexPacket));
-  if ((status != MagickFalse) && (length == (MagickSizeType) ((size_t) length)))
+  if ((status != MagickFalse) && 
+      (length == (MagickSizeType) ((size_t) length)) &&
+      ((cache_info->type == UndefinedCache) || (cache_info->type == MemoryCache)))
     {
       status=AcquireMagickResource(MemoryResource,cache_info->length);
-      if ((cache_info->type == UndefinedCache) && (status != MagickFalse))
+      if (status != MagickFalse)
         {
           status=MagickTrue;
           if (cache_anonymous_memory <= 0)
