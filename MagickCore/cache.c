@@ -3528,7 +3528,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       ((cache_info->type == UndefinedCache) || (cache_info->type == MemoryCache)))
     {
       status=AcquireMagickResource(MemoryResource,cache_info->length);
-      if ((cache_info->type == UndefinedCache) && (status != MagickFalse))
+      if (status != MagickFalse)
         {
           status=MagickTrue;
           if (cache_anonymous_memory <= 0)
