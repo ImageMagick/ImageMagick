@@ -1,8 +1,10 @@
-2017-11-18  6.9.9-24 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 6.9.9-24, GIT revision 12268:00628db71:20171118.
+2017-11-29  6.9.9-24 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.9-29, GIT revision 12324:5ef2c5a67:20171129.
 
 2017-11-17  6.9.9-24 Cristy  <quetzlzacatenango@image...>
   * Support HDRI color profile management.
+  * Don't delete in-memory blob when reading an image (reference
+    https://github.com/ImageMagick/ImageMagick/issues/).
 
 2017-11-11  6.9.9-23 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.9-23, GIT revision 12245:6dea84616:20171111.
