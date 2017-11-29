@@ -4074,29 +4074,6 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
           break;
         }
       }
-      if (blob_info->offset < (MagickOffsetType)
-          ((off_t) blob_info->length))
-        {
-          blob_info->eof=MagickFalse;
-          break;
-        }
-      if (blob_info->offset < (MagickOffsetType) ((off_t) blob_info->extent))
-        break;
-      if (blob_info->mapped != MagickFalse)
-        {
-          blob_info->eof=MagickTrue;
-          return(-1);
-        }
-      blob_info->extent=(size_t) (blob_info->offset+blob_info->quantum);
-      blob_info->quantum<<=1;
-      blob_info->data=(unsigned char *) ResizeQuantumMemory(blob_info->data,
-        blob_info->extent+1,sizeof(*blob_info->data));
-      (void) SyncBlob(image);
-      if (blob_info->data == (unsigned char *) NULL)
-        {
-          (void) DetachBlob(blob_info);
-          return(-1);
-        }
       break;
     }
   }
