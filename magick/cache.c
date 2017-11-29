@@ -3995,7 +3995,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
         }
     }
   status=AcquireMagickResource(DiskResource,cache_info->length);
-  hosts=GetImageRegistry(StringRegistryType,"cache:hosts",exception);
+  hosts=(const char *) GetImageRegistry(StringRegistryType,"cache:hosts",
+    exception);
   if ((status == MagickFalse) && (hosts != (const char *) NULL))
     {
       DistributeCacheInfo
