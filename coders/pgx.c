@@ -217,10 +217,8 @@ static Image *ReadPGXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       GetQuantumPixels(quantum_info),&count);
     if (count != (ssize_t) length)
       break;
-    status=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+    (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
       GrayQuantum,pixels,exception);
-    if (status == MagickFalse)
-      break;
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
     if (SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,image->rows) == MagickFalse)
