@@ -169,11 +169,11 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
   (void) SetImageProperty(image,"dng:make",raw_info->idata.make,exception);
   (void) SetImageProperty(image,"dng:camera.model.name",raw_info->idata.model,
     exception);
-  (void) SetImageProperty(image,"dng:software",raw_info->idata.software,
-    exception);
   (void) FormatMagickTime(raw_info->other.timestamp,MagickPathExtent,timestamp);
   (void) SetImageProperty(image,"dng:create.date",timestamp,exception);
 #if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,18)
+  (void) SetImageProperty(image,"dng:software",raw_info->idata.software,
+    exception);
   if (*raw_info->shootinginfo.BodySerial != '\0')
     (void) SetImageProperty(image,"dng:serial.number",
       raw_info->shootinginfo.BodySerial,exception);
@@ -181,7 +181,6 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
     raw_info->other.FlashEC);
   (void) SetImageProperty(image,"dng:flash.exposure.compensation",property,
     exception);
-#endif
   (void) FormatLocaleString(property,MagickPathExtent,"1/%0.1f",
     1.0/raw_info->other.shutter);
   (void) SetImageProperty(image,"dng:exposure.time",property,exception);
@@ -230,6 +229,7 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
     raw_info->lens.FocalLengthIn35mmFormat);
   (void) SetImageProperty(image,"dng:focal.length.in.35mm.format",property,
     exception);
+#endif
 }
 #endif
 
