@@ -1,9 +1,12 @@
 2017-11-30  6.9.9-25 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.9-25, GIT revision 12329:9a5a16a1d:20171130.
+
+2017-11-30  6.9.9-25 Cristy  <quetzlzacatenango@image...>
   * Fix build failure with libraw 0.14.8 (reference
     https://github.com/ImageMagick/ImageMagick/issues/888).
 
 2017-11-29  6.9.9-24 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 6.9.9-29, GIT revision 12324:5ef2c5a67:20171129.
+  * Release ImageMagick version 6.9.9-24, GIT revision 12324:5ef2c5a67:20171129.
 
 2017-11-17  6.9.9-24 Cristy  <quetzlzacatenango@image...>
   * Support HDRI color profile management.
