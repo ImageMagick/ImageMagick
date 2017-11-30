@@ -5,7 +5,7 @@
   * The -tint option no longer munges the alpha channel (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=33070).
   * Don't delete in-memory blob when reading an image (reference
-    https://github.com/ImageMagick/ImageMagick/issues/).
+    https://github.com/ImageMagick/ImageMagick/issues/886).
   * Support HDRI color profile management.
 
 2017-11-11  7.0.7-11 Cristy  <quetzlzacatenango@image...>
