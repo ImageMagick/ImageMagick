@@ -161,25 +161,24 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info)
 
   (void) SetImageProperty(image,"dng:make",raw_info->idata.make);
   (void) SetImageProperty(image,"dng:camera.model.name",raw_info->idata.model);
-  (void) SetImageProperty(image,"dng:software",raw_info->idata.software);
   (void) FormatMagickTime(raw_info->other.timestamp,MagickPathExtent,timestamp);
   (void) SetImageProperty(image,"dng:create.date",timestamp);
+  (void) SetImageProperty(image,"dng:f.number",property);
+  (void) FormatLocaleString(property,MagickPathExtent,"%0.1f",
+    raw_info->other.iso_speed);
 #if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,18)
+  (void) SetImageProperty(image,"dng:software",raw_info->idata.software);
   if (*raw_info->shootinginfo.BodySerial != '\0')
     (void) SetImageProperty(image,"dng:serial.number",
       raw_info->shootinginfo.BodySerial);
   (void) FormatLocaleString(property,MagickPathExtent,"%0.2f",
     raw_info->other.FlashEC);
   (void) SetImageProperty(image,"dng:flash.exposure.compensation",property);
-#endif
   (void) FormatLocaleString(property,MagickPathExtent,"1/%0.1f",
     1.0/raw_info->other.shutter);
   (void) SetImageProperty(image,"dng:exposure.time",property);
   (void) FormatLocaleString(property,MagickPathExtent,"%0.1f",
     raw_info->other.aperture);
-  (void) SetImageProperty(image,"dng:f.number",property);
-  (void) FormatLocaleString(property,MagickPathExtent,"%0.1f",
-    raw_info->other.iso_speed);
   (void) SetImageProperty(image,"dng:iso.setting",property);
   (void) FormatLocaleString(property,MagickPathExtent,"%0.1f",
     raw_info->lens.EXIF_MaxAp);
@@ -212,6 +211,7 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info)
   (void) FormatLocaleString(property,MagickPathExtent,"%d mm",
     raw_info->lens.FocalLengthIn35mmFormat);
   (void) SetImageProperty(image,"dng:focal.length.in.35mm.format",property);
+#endif
 }
 #endif
 
@@ -382,6 +382,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             profile=DestroyStringInfo(profile);
           }
       }
+#if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,18)
     if (raw_info->idata.xmpdata)
       {
         profile=BlobToStringInfo(raw_info->idata.xmpdata,
@@ -392,6 +393,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             profile=DestroyStringInfo(profile);
           }
       }
+#endif
     SetDNGProperties(image,raw_info);
     libraw_close(raw_info);
     return(image);
