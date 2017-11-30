@@ -171,6 +171,9 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
     exception);
   (void) FormatMagickTime(raw_info->other.timestamp,MagickPathExtent,timestamp);
   (void) SetImageProperty(image,"dng:create.date",timestamp,exception);
+  (void) FormatLocaleString(property,MagickPathExtent,"%0.1f",
+    raw_info->other.iso_speed);
+  (void) SetImageProperty(image,"dng:iso.setting",property,exception);
 #if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,18)
   (void) SetImageProperty(image,"dng:software",raw_info->idata.software,
     exception);
@@ -187,9 +190,6 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
   (void) FormatLocaleString(property,MagickPathExtent,"%0.1f",
     raw_info->other.aperture);
   (void) SetImageProperty(image,"dng:f.number",property,exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%0.1f",
-    raw_info->other.iso_speed);
-  (void) SetImageProperty(image,"dng:iso.setting",property,exception);
   (void) FormatLocaleString(property,MagickPathExtent,"%0.1f",
     raw_info->lens.EXIF_MaxAp);
   (void) SetImageProperty(image,"dng:max.aperture.value",property,exception);
@@ -400,6 +400,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             profile=DestroyStringInfo(profile);
           }
       }
+#if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,18)
     if (raw_info->idata.xmpdata)
       {
         profile=BlobToStringInfo(raw_info->idata.xmpdata,
@@ -410,6 +411,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             profile=DestroyStringInfo(profile);
           }
       }
+#endif
     SetDNGProperties(image,raw_info,exception);
     libraw_close(raw_info);
     return(image);
