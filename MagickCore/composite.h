@@ -94,7 +94,8 @@ typedef enum
   SrcOverCompositeOp,
   ThresholdCompositeOp,
   VividLightCompositeOp,
-  XorCompositeOp
+  XorCompositeOp,
+  StereoCompositeOp
 } CompositeOperator;
 
 extern MagickExport MagickBooleanType

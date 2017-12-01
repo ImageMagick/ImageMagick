@@ -2264,6 +2264,12 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               (Dca/Da))+Sca*(1.0-Da)+Dca*(1.0-Sa));
             break;
           }
+          case StereoCompositeOp:
+          {
+            if (channel == RedPixelChannel)
+              pixel=(MagickRealType) GetPixelRed(source_image,p);
+            break;
+          }
           case ThresholdCompositeOp:
           {
             MagickRealType
