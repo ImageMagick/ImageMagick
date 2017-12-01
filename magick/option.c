@@ -922,6 +922,7 @@ static const OptionInfo
     { "SrcIn", SrcInCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "SrcOut", SrcOutCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "SrcOver", SrcOverCompositeOp, UndefinedOptionFlag, MagickFalse },
+    { "Stereo", StereoCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "VividLight", VividLightCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "Xor", XorCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "Add", AddCompositeOp, DeprecateOptionFlag, MagickTrue },

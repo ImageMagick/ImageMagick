@@ -2705,6 +2705,11 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
             canvas_dissolve,&composite);
           break;
         }
+        case StereoCompositeOp:
+        {
+          canvas.red=(MagickRealType) GetPixelRed(p);
+          break;
+        }
         case ThresholdCompositeOp:
         {
           CompositeThreshold(&source,&canvas,threshold,amount,&composite);

@@ -96,7 +96,8 @@ typedef enum
   MinusSrcCompositeOp,
   DarkenIntensityCompositeOp,
   LightenIntensityCompositeOp,
-  HardMixCompositeOp
+  HardMixCompositeOp,
+  StereoCompositeOp
 } CompositeOperator;
 
 /* Deprecated (renamed) Method Names for backward compatibility
