@@ -888,6 +888,15 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (image->colors == 0)
           image->colors=one << bmp_info.bits_per_pixel;
       }
+    image->resolution.x=(double) bmp_info.x_pixels/100.0;
+    image->resolution.y=(double) bmp_info.y_pixels/100.0;
+    image->units=PixelsPerCentimeterResolution;
+    if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
+      if (image->scene >= (image_info->scene+image_info->number_scenes-1))
+        break;
+    status=SetImageExtent(image,image->columns,image->rows,exception);
+    if (status == MagickFalse)
+      return(DestroyImageList(image));
     if (image->storage_class == PseudoClass)
       {
         unsigned char
@@ -936,15 +945,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         bmp_colormap=(unsigned char *) RelinquishMagickMemory(bmp_colormap);
       }
-    image->resolution.x=(double) bmp_info.x_pixels/100.0;
-    image->resolution.y=(double) bmp_info.y_pixels/100.0;
-    image->units=PixelsPerCentimeterResolution;
-    if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
-      if (image->scene >= (image_info->scene+image_info->number_scenes-1))
-        break;
-    status=SetImageExtent(image,image->columns,image->rows,exception);
-    if (status == MagickFalse)
-      return(DestroyImageList(image));
     /*
       Read image data.
     */
