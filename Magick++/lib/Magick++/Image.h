@@ -114,9 +114,6 @@ namespace Magick
     void animationDelay(const size_t delay_);
     size_t animationDelay(void) const;
 
-    // Lessen (or intensify) when adding noise to an image.
-    void attenuate(const double attenuate_);
-
     // Number of iterations to loop an animation (e.g. Netscape loop
     // extension) for.
     void animationIterations(const size_t iterations_);
@@ -568,9 +565,9 @@ namespace Magick
       const double bias_=0.0);
 
     // Add noise to image with specified noise type
-    void addNoise(const NoiseType noiseType_);
+    void addNoise(const NoiseType noiseType_,const double attenuate_=1.0);
     void addNoiseChannel(const ChannelType channel_,
-      const NoiseType noiseType_);
+      const NoiseType noiseType_,const double attenuate_=1.0);
 
     // Transform image by specified affine (or free transform) matrix.
     void affineTransform(const DrawableAffine &affine);

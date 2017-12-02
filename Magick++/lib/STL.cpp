@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2002
-// Copyright Dirk Lemstra 2013-2016
+// Copyright Dirk Lemstra 2013-2017
 //
 // Implementation of STL classes and functions
 //
@@ -40,13 +40,16 @@ void Magick::adaptiveThresholdImage::operator()( Magick::Image &image_ ) const
 }
 
 // Add noise to image with specified noise type
-Magick::addNoiseImage::addNoiseImage( Magick::NoiseType noiseType_ )
-  : _noiseType( noiseType_ )
+Magick::addNoiseImage::addNoiseImage(const Magick::NoiseType noiseType_,
+  const double attenuate_)
+  : _noiseType(noiseType_),
+    _attenuate(attenuate_)
 {
 }
-void Magick::addNoiseImage::operator()( Magick::Image &image_ ) const
+
+void Magick::addNoiseImage::operator()(Magick::Image &image_) const
 {
-  image_.addNoise( _noiseType );
+  image_.addNoise(_noiseType,_attenuate);
 }
 
 // Transform image by specified affine (or free transform) matrix.

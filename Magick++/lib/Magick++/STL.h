@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
-// Copyright Dirk Lemstra 2013-2016
+// Copyright Dirk Lemstra 2013-2017
 //
 // Definition and implementation of template functions for using
 // Magick::Image with STL containers.
@@ -79,12 +79,13 @@ namespace Magick
   class MagickPPExport addNoiseImage
   {
   public:
-    addNoiseImage ( NoiseType noiseType_ );
+    addNoiseImage(const NoiseType noiseType_,const double attenuate_);
 
-    void operator()( Image &image_ ) const;
+    void operator()(Image &image_) const;
 
   private:
     NoiseType _noiseType;
+    double _attenuate;
   };
 
   // Transform image by specified affine (or free transform) matrix.

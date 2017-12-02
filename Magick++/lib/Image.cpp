@@ -372,16 +372,6 @@ size_t Magick::Image::animationIterations(void) const
   return(constImage()->iterations);
 }
 
-void Magick::Image::attenuate(const double attenuate_)
-{
-  char
-    value[MagickPathExtent];
-
-  modifyImage();
-  FormatLocaleString(value,MagickPathExtent,"%.20g",attenuate_);
-  (void) SetImageArtifact(image(),"attenuate",value);
-}
-
 void Magick::Image::backgroundColor(const Color &backgroundColor_)
 {
   modifyImage();
@@ -1790,26 +1780,26 @@ void Magick::Image::adaptiveThreshold(const size_t width_,const size_t height_,
   ThrowImageException;
 }
 
-void Magick::Image::addNoise(const NoiseType noiseType_)
+void Magick::Image::addNoise(const NoiseType noiseType_,const double attenuate_)
 {
   MagickCore::Image
     *newImage;
 
   GetPPException;
-  newImage=AddNoiseImage(constImage(),noiseType_,1.0,exceptionInfo);
+  newImage=AddNoiseImage(constImage(),noiseType_,attenuate_,exceptionInfo);
   replaceImage(newImage);
   ThrowImageException;
 }
 
 void Magick::Image::addNoiseChannel(const ChannelType channel_,
-  const NoiseType noiseType_)
+  const NoiseType noiseType_,const double attenuate_)
 {
   MagickCore::Image
     *newImage;
 
   GetPPException;
   GetAndSetPPChannelMask(channel_);
-  newImage=AddNoiseImage(constImage(),noiseType_,1.0,exceptionInfo);
+  newImage=AddNoiseImage(constImage(),noiseType_,attenuate_,exceptionInfo);
   RestorePPChannelMask;
   replaceImage(newImage);
   ThrowImageException;
