@@ -392,13 +392,13 @@ cleanup:
 */
 
 static Image *ComputeAddNoiseImage(const Image *image,MagickCLEnv clEnv,
-  const NoiseType noise_type,ExceptionInfo *exception)
+  const NoiseType noise_type,const double attenuate,ExceptionInfo *exception)
 {
   cl_command_queue
     queue;
 
   cl_float
-    attenuate;
+    cl_attenuate;
 
   cl_int
     status;
@@ -419,9 +419,6 @@ static Image *ComputeAddNoiseImage(const Image *image,MagickCLEnv clEnv,
     seed0,
     seed1,
     workItemCount;
-
-  const char
-    *option;
 
   const unsigned long
     *s;
@@ -518,10 +515,7 @@ static Image *ComputeAddNoiseImage(const Image *image,MagickCLEnv clEnv,
 
   number_channels=(cl_uint) image->number_channels;
   bufferLength=(cl_uint) (image->columns*image->rows*image->number_channels);
-  attenuate=1.0f;
-  option=GetImageArtifact(image,"attenuate");
-  if (option != (char *) NULL)
-    attenuate=(float)StringToDouble(option,(char **) NULL);
+  cl_attenuate=(cl_float) attenuate;
 
   i=0;
   status =SetOpenCLKernelArg(addNoiseKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
@@ -530,7 +524,7 @@ static Image *ComputeAddNoiseImage(const Image *image,MagickCLEnv clEnv,
   status|=SetOpenCLKernelArg(addNoiseKernel,i++,sizeof(cl_uint),(void *)&bufferLength);
   status|=SetOpenCLKernelArg(addNoiseKernel,i++,sizeof(cl_uint),(void *)&pixelsPerWorkitem);
   status|=SetOpenCLKernelArg(addNoiseKernel,i++,sizeof(NoiseType),(void *)&noise_type);
-  status|=SetOpenCLKernelArg(addNoiseKernel,i++,sizeof(cl_float),(void *)&attenuate);
+  status|=SetOpenCLKernelArg(addNoiseKernel,i++,sizeof(cl_float),(void *)&cl_attenuate);
   status|=SetOpenCLKernelArg(addNoiseKernel,i++,sizeof(cl_uint),(void *)&seed0);
   status|=SetOpenCLKernelArg(addNoiseKernel,i++,sizeof(cl_uint),(void *)&seed1);
   status|=SetOpenCLKernelArg(addNoiseKernel,i++,sizeof(cl_uint),(void *)&numRandomNumberPerPixel);
@@ -564,7 +558,7 @@ cleanup:
 }
 
 MagickPrivate Image *AccelerateAddNoiseImage(const Image *image,
-  const NoiseType noise_type,ExceptionInfo *exception)
+  const NoiseType noise_type,const double attenuate,ExceptionInfo *exception)
 {
   Image
     *filteredImage;
@@ -582,7 +576,8 @@ MagickPrivate Image *AccelerateAddNoiseImage(const Image *image,
   if (clEnv == (MagickCLEnv) NULL)
     return((Image *) NULL);
 
-  filteredImage=ComputeAddNoiseImage(image,clEnv,noise_type,exception);
+  filteredImage=ComputeAddNoiseImage(image,clEnv,noise_type,attenuate,
+    exception);
   return(filteredImage);
 }
 

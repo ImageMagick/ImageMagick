@@ -301,7 +301,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
-  noise_image=AccelerateAddNoiseImage(image,noise_type,exception);
+  noise_image=AccelerateAddNoiseImage(image,noise_type,attenuate,exception);
   if (noise_image != (Image *) NULL)
     return(noise_image);
 #endif
