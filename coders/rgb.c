@@ -222,6 +222,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             length=GetQuantumExtent(canvas_image,quantum_info,quantum_type);
             pixels=(const unsigned char *) ReadBlobStream(image,length,
               GetQuantumPixels(quantum_info),&count);
+            if (count != (ssize_t) length)
+              break;
           }
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
@@ -280,6 +282,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           pixels=(const unsigned char *) ReadBlobStream(image,length,
             GetQuantumPixels(quantum_info),&count);
+          if (count != (ssize_t) length)
+            break;
         }
         break;
       }
@@ -304,6 +308,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             length=GetQuantumExtent(canvas_image,quantum_info,RedQuantum);
             pixels=(const unsigned char *) ReadBlobStream(image,length,
               GetQuantumPixels(quantum_info),&count);
+            if (count != (ssize_t) length)
+              break;
           }
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
@@ -382,6 +388,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             pixels=(const unsigned char *) ReadBlobStream(image,length,
               GetQuantumPixels(quantum_info),&count);
+            if (count != (ssize_t) length)
+              break;
           }
           if (image->previous == (Image *) NULL)
             {
@@ -403,6 +411,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             length=GetQuantumExtent(canvas_image,quantum_info,RedQuantum);
             pixels=(const unsigned char *) ReadBlobStream(image,length,
               GetQuantumPixels(quantum_info),&count);
+            if (count != (ssize_t) length)
+              break;
           }
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
@@ -449,6 +459,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           pixels=(const unsigned char *) ReadBlobStream(image,length,
             GetQuantumPixels(quantum_info),&count);
+          if (count != (ssize_t) length)
+            break;
         }
         if (image->previous == (Image *) NULL)
           {
@@ -501,6 +513,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
            }
           pixels=(const unsigned char *) ReadBlobStream(image,length,
             GetQuantumPixels(quantum_info),&count);
+          if (count != (ssize_t) length)
+            break;
         }
         if (image->previous == (Image *) NULL)
           {
@@ -553,6 +567,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           pixels=(const unsigned char *) ReadBlobStream(image,length,
             GetQuantumPixels(quantum_info),&count);
+          if (count != (ssize_t) length)
+            break;
         }
         if (image->previous == (Image *) NULL)
           {
@@ -614,6 +630,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
               pixels=(const unsigned char *) ReadBlobStream(image,length,
                 GetQuantumPixels(quantum_info),&count);
+              if (count != (ssize_t) length)
+                break;
             }
             if (image->previous == (Image *) NULL)
               {
@@ -661,6 +679,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         pixels=(const unsigned char *) ReadBlobStream(image,length,
           GetQuantumPixels(quantum_info),&count);
+        if (count != (ssize_t) length)
+          break;
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const Quantum
@@ -706,6 +726,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           pixels=(const unsigned char *) ReadBlobStream(image,length,
             GetQuantumPixels(quantum_info),&count);
+          if (count != (ssize_t) length)
+            break;
         }
         if (image->previous == (Image *) NULL)
           {
@@ -737,6 +759,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         pixels=(const unsigned char *) ReadBlobStream(image,length,
           GetQuantumPixels(quantum_info),&count);
+        if (count != (ssize_t) length)
+          break;
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const Quantum
@@ -782,6 +806,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
            }
           pixels=(const unsigned char *) ReadBlobStream(image,length,
             GetQuantumPixels(quantum_info),&count);
+          if (count != (ssize_t) length)
+            break;
         }
         if (image->previous == (Image *) NULL)
           {
@@ -813,6 +839,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }     
         pixels=(const unsigned char *) ReadBlobStream(image,length,
           GetQuantumPixels(quantum_info),&count);
+        if (count != (ssize_t) length)
+          break;
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const Quantum
@@ -858,6 +886,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
            }
           pixels=(const unsigned char *) ReadBlobStream(image,length,
             GetQuantumPixels(quantum_info),&count);
+          if (count != (ssize_t) length)
+            break;
         }
         if (image->previous == (Image *) NULL)
           {
@@ -891,6 +921,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             pixels=(const unsigned char *) ReadBlobStream(image,length,
               GetQuantumPixels(quantum_info),&count);
+            if (count != (ssize_t) length)
+              break;
             for (y=0; y < (ssize_t) image->extract_info.height; y++)
             {
               register const Quantum
@@ -936,6 +968,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                }
               pixels=(const unsigned char *) ReadBlobStream(image,length,
                 GetQuantumPixels(quantum_info),&count);
+              if (count != (ssize_t) length)
+                break;
             }
             if (image->previous == (Image *) NULL)
               {

@@ -1282,7 +1282,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
           pixels=(unsigned char *) ReadBlobStream(image,extent,
             GetQuantumPixels(quantum_info),&count);
-          if ((size_t) count != extent)
+          if (count != (ssize_t) extent)
             break;
           if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
               (image->previous == (Image *) NULL))
