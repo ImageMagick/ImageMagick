@@ -691,18 +691,17 @@ static inline LayerInfo *DestroyLayerInfo(LayerInfo *layer_info,
   return (LayerInfo *) RelinquishMagickMemory(layer_info);
 }
 
-static inline size_t GetPSDPacketSize(Image *image)
+static inline size_t GetPSDPacketSize(const Image *image)
 {
   if (image->storage_class == PseudoClass)
     {
       if (image->colors > 256)
         return(2);
-      else if (image->depth > 8)
-        return(2);
     }
-  else
-    if (image->depth > 8)
-      return(2);
+  if (image->depth > 16)
+    return(4);
+  if (image->depth > 8)
+    return(2);
 
   return(1);
 }
@@ -1005,9 +1004,6 @@ static MagickBooleanType ReadPSDChannelPixels(Image *image,
   size_t
     packet_size;
 
-  unsigned short
-    nibble;
-
   p=pixels;
   q=GetAuthenticPixels(image,0,row,image->columns,1,exception);
   if (q == (Quantum *) NULL)
@@ -1017,10 +1013,25 @@ static MagickBooleanType ReadPSDChannelPixels(Image *image,
   {
     if (packet_size == 1)
       pixel=ScaleCharToQuantum(*p++);
-    else
+    else if (packet_size == 2)
       {
+        unsigned short
+          nibble;
+
         p=PushShortPixel(MSBEndian,p,&nibble);
         pixel=ScaleShortToQuantum(nibble);
+      }
+    else
+      {
+        MagickFloatType
+          value;
+
+        unsigned int
+          nibble;
+
+        p=PushLongPixel(MSBEndian,p,&nibble);
+        value=*((MagickFloatType *) &nibble);
+        pixel=ClampToQuantum((MagickRealType)QuantumRange*value);
       }
     if (image->depth > 1)
       {
@@ -1290,6 +1301,10 @@ static MagickBooleanType ReadPSDChannelZip(Image *image,const size_t channels,
               p[2]+=p[0]+((p[1]+p[3]) >> 8);
               p[3]+=p[1];
             }
+          // else if (packet_size == 4)
+          //   {
+          //     TODO: Figure out what to do there.
+          //   }
           else
             *(p+1)+=*p;
           p+=packet_size;
@@ -1436,11 +1451,6 @@ static MagickBooleanType ReadPSDLayer(Image *image,const ImageInfo *image_info,
     layer_info->blendkey);
   if (layer_info->visible == MagickFalse)
     layer_info->image->compose=NoCompositeOp;
-  if (psd_info->mode == CMYKMode)
-    SetImageColorspace(layer_info->image,CMYKColorspace,exception);
-  else if ((psd_info->mode == BitmapMode) || (psd_info->mode == DuotoneMode) ||
-           (psd_info->mode == GrayscaleMode))
-    SetImageColorspace(layer_info->image,GRAYColorspace,exception);
   /*
     Set up some hidden attributes for folks that need them.
   */
@@ -1464,6 +1474,15 @@ static MagickBooleanType ReadPSDLayer(Image *image,const ImageInfo *image_info,
         "    reading data for channel %.20g",(double) j);
 
     compression=(PSDCompressionType) ReadBlobShort(layer_info->image);
+
+    /* TODO: Remove this when we figure out how to support this */
+    if ((compression == ZipWithPrediction) && (image->depth == 32))
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          TypeError,"CompressionNotSupported","ZipWithPrediction(32 bit)");
+        return(MagickFalse);
+      }
+
     layer_info->image->compression=ConvertPSDCompression(compression);
     if (layer_info->channel_info[j].type == -1)
       layer_info->image->alpha_trait=BlendPixelTrait;
@@ -1546,7 +1565,8 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
         {
           count=ReadBlob(image,4,(unsigned char *) type);
           ReversePSDString(image,type,4);
-          if ((count != 0) && (LocaleNCompare(type,"Lr16",4) == 0))
+          if ((count != 0) && ((LocaleNCompare(type,"Lr16",4) == 0) ||
+              (LocaleNCompare(type,"Lr32",4) == 0)))
             size=GetPSDSize(psd_info,image);
           else
             return(MagickTrue);
@@ -2024,7 +2044,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (psd_info.columns > 30000)))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   psd_info.depth=ReadBlobMSBShort(image);
-  if ((psd_info.depth != 1) && (psd_info.depth != 8) && (psd_info.depth != 16))
+  if ((psd_info.depth != 1) && (psd_info.depth != 8) &&
+      (psd_info.depth != 16) && (psd_info.depth != 32))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   psd_info.mode=ReadBlobMSBShort(image);
   if (image->debug != MagickFalse)
@@ -2060,13 +2081,16 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   else if ((psd_info.mode == BitmapMode) || (psd_info.mode == GrayscaleMode) ||
            (psd_info.mode == DuotoneMode))
     {
-      status=AcquireImageColormap(image,psd_info.depth != 16 ? 256 : 65536,
-        exception);
-      if (status == MagickFalse)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      if (image->debug != MagickFalse)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "  Image colormap allocated");
+      if (psd_info.depth != 32)
+        {
+          status=AcquireImageColormap(image,psd_info.depth < 16 ? 256 : 65536,
+            exception);
+          if (status == MagickFalse)
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+          if (image->debug != MagickFalse)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "  Image colormap allocated");
+        }
       SetImageColorspace(image,GRAYColorspace,exception);
       if (psd_info.channels > 1)
         SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
@@ -2083,17 +2107,13 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  reading colormap");
-      if (psd_info.mode == DuotoneMode)
+      if ((psd_info.mode == DuotoneMode) || (psd_info.depth == 32))
         {
           /*
             Duotone image data;  the format of this data is undocumented.
+            32 bits per pixel;  the colormap is ignored.
           */
-          data=(unsigned char *) AcquireQuantumMemory((size_t) length,
-            sizeof(*data));
-          if (data == (unsigned char *) NULL)
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-          (void) ReadBlob(image,(size_t) length,data);
-          data=(unsigned char *) RelinquishMagickMemory(data);
+          (void) SeekBlob(image,(const MagickOffsetType) length,SEEK_CUR);
         }
       else
         {
