@@ -181,6 +181,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unique_file=AcquireUniqueFileResource(read_info->filename);
   for ( ; ; )
   {
+    (void) memset(magick,0,sizeof(magick));
     for (c=ReadBlobByte(pwp_image); c != EOF; c=ReadBlobByte(pwp_image))
     {
       for (i=0; i < 17; i++)
@@ -190,7 +191,10 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     }
     if (c == EOF)
-      break;
+      {
+        (void) RelinquishUniqueFileResource(read_info->filename);
+        ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+      }
     if (LocaleNCompare((char *) (magick+12),"SFW94A",6) != 0)
       {
         (void) RelinquishUniqueFileResource(read_info->filename);
@@ -221,6 +225,11 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) fputc(c,file);
     }
     (void) fclose(file);
+    if (c == EOF)
+      {
+        (void) RelinquishUniqueFileResource(read_info->filename);
+        ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+      }
     next_image=ReadImage(read_info,exception);
     if (next_image == (Image *) NULL)
       break;
@@ -250,17 +259,21 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) close(unique_file);
   (void) RelinquishUniqueFileResource(read_info->filename);
   read_info=DestroyImageInfo(read_info);
-  if (EOFBlob(image) != MagickFalse)
+  if (image != (Image *) NULL)
     {
-      char
-        *message;
+      if (EOFBlob(image) != MagickFalse)
+        {
+          char
+            *message;
 
-      message=GetExceptionMessage(errno);
-      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-        "UnexpectedEndOfFile","`%s': %s",image->filename,message);
-      message=DestroyString(message);
+          message=GetExceptionMessage(errno);
+          (void) ThrowMagickException(exception,GetMagickModule(),
+            CorruptImageError,"UnexpectedEndOfFile","`%s': %s",image->filename,
+            message);
+          message=DestroyString(message);
+        }
+      (void) CloseBlob(image);
     }
-  (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
 
