@@ -12735,7 +12735,8 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
 
   jng_quality=image_info->quality == 0UL ? 75UL : image_info->quality%1000;
 
-  jng_alpha_compression_method=image->compression==JPEGCompression? 8 : 0;
+  jng_alpha_compression_method=(image->compression==JPEGCompression ||
+    image_info->compression==JPEGCompression) ? 8 : 0;
 
   jng_alpha_quality=image_info->quality == 0UL ? 75UL :
       image_info->quality;
