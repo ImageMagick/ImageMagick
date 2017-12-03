@@ -1,5 +1,10 @@
+2017-12-03  6.9.9-26 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.9-26, GIT revision 12339:17b2210cb:20171203.
+
 2017-11-30  6.9.9-26 Cristy  <quetzlzacatenango@image...>
   * Support Stereo composite operator.
+  * Fix build failure with --without-modules (reference
+    https://github.com/ImageMagick/ImageMagick/issues/890).
 
 2017-11-30  6.9.9-25 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.9-25, GIT revision 12329:9a5a16a1d:20171130.
