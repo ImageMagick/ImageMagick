@@ -2503,7 +2503,8 @@ static size_t PSDPackbitsEncodeImage(Image *image,const size_t length,
 }
 
 static size_t WriteCompressionStart(const PSDInfo *psd_info,Image *image,
-  const Image *next_image,const ssize_t channels)
+  const Image *next_image,const CompressionType compression,
+  const ssize_t channels)
 {
   size_t
     length;
@@ -2512,7 +2513,7 @@ static size_t WriteCompressionStart(const PSDInfo *psd_info,Image *image,
     i,
     y;
 
-  if (next_image->compression == RLECompression)
+  if (compression == RLECompression)
     {
       length=WriteBlobShort(image,RLE);
       for (i=0; i < channels; i++)
@@ -2520,7 +2521,7 @@ static size_t WriteCompressionStart(const PSDInfo *psd_info,Image *image,
           length+=SetPSDOffset(psd_info,image,0);
     }
 #ifdef MAGICKCORE_ZLIB_DELEGATE
-  else if (next_image->compression == ZipCompression)
+  else if (compression == ZipCompression)
     length=WriteBlobShort(image,ZipWithoutPrediction);
 #endif
   else
@@ -2532,7 +2533,7 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
   const ImageInfo *image_info,Image *image,Image *next_image,
   const QuantumType quantum_type, unsigned char *compact_pixels,
   MagickOffsetType size_offset,const MagickBooleanType separate,
-  ExceptionInfo *exception)
+  const CompressionType compression,ExceptionInfo *exception)
 {
   int
     y;
@@ -2577,7 +2578,7 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
   if (separate != MagickFalse)
     {
       size_offset=TellBlob(image)+2;
-      count+=WriteCompressionStart(psd_info,image,next_image,1);
+      count+=WriteCompressionStart(psd_info,image,next_image,compression,1);
     }
   if (next_image->depth > 8)
     next_image->depth=16;
@@ -2588,7 +2589,7 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
     return(0);
   pixels=(unsigned char *) GetQuantumPixels(quantum_info);
 #ifdef MAGICKCORE_ZLIB_DELEGATE
-  if (next_image->compression == ZipCompression)
+  if (compression == ZipCompression)
     {
       compressed_pixels=(unsigned char *) AcquireQuantumMemory(CHUNK,
         sizeof(*compressed_pixels));
@@ -2619,7 +2620,7 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
     if (monochrome != MagickFalse)
       for (i=0; i < (ssize_t) length; i++)
         pixels[i]=(~pixels[i]);
-    if (next_image->compression == RLECompression)
+    if (compression == RLECompression)
       {
         length=PSDPackbitsEncodeImage(image,length,pixels,compact_pixels,
           exception);
@@ -2627,7 +2628,7 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
         size_offset+=WritePSDOffset(psd_info,image,length,size_offset);
       }
 #ifdef MAGICKCORE_ZLIB_DELEGATE
-    else if (next_image->compression == ZipCompression)
+    else if (compression == ZipCompression)
       {
         stream.avail_in=(uInt) length;
         stream.next_in=(Bytef *) pixels;
@@ -2648,7 +2649,7 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
       count+=WriteBlob(image,length,pixels);
   }
 #ifdef MAGICKCORE_ZLIB_DELEGATE
-  if (next_image->compression == ZipCompression)
+  if (compression == ZipCompression)
     {
       (void) deflateEnd(&stream);
       compressed_pixels=(unsigned char *) RelinquishMagickMemory(
@@ -2684,6 +2685,9 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
   MagickOffsetType size_offset,const MagickBooleanType separate,
   ExceptionInfo *exception)
 {
+  CompressionType
+    compression;
+
   Image
     *mask;
 
@@ -2703,7 +2707,10 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
   offset_length=0;
   rows_offset=0;
   compact_pixels=(unsigned char *) NULL;
-  if (next_image->compression == RLECompression)
+  compression=next_image->compression;
+  if (image_info->compression != UndefinedCompression)
+    compression=image_info->compression;
+  if (compression == RLECompression)
     {
       compact_pixels=AcquireCompactPixels(next_image,exception);
       if (compact_pixels == (unsigned char *) NULL)
@@ -2720,14 +2727,16 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
             channels++;
         }
       rows_offset=TellBlob(image)+2;
-      count+=WriteCompressionStart(psd_info,image,next_image,channels);
+      count+=WriteCompressionStart(psd_info,image,next_image,compression,
+        channels);
       offset_length=(next_image->rows*(psd_info->version == 1 ? 2 : 4));
     }
   size_offset+=2;
   if (next_image->storage_class == PseudoClass)
     {
       length=WritePSDChannel(psd_info,image_info,image,next_image,
-        IndexQuantum,compact_pixels,rows_offset,separate,exception);
+        IndexQuantum,compact_pixels,rows_offset,separate,compression,
+        exception);
       if (separate != MagickFalse)
         size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
       else
@@ -2739,7 +2748,8 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
       if (IsImageGray(next_image) != MagickFalse)
         {
           length=WritePSDChannel(psd_info,image_info,image,next_image,
-            GrayQuantum,compact_pixels,rows_offset,separate,exception);
+            GrayQuantum,compact_pixels,rows_offset,separate,compression,
+            exception);
           if (separate != MagickFalse)
             size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
           else
@@ -2752,7 +2762,8 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
             (void) NegateCMYK(next_image,exception);
 
           length=WritePSDChannel(psd_info,image_info,image,next_image,
-            RedQuantum,compact_pixels,rows_offset,separate,exception);
+            RedQuantum,compact_pixels,rows_offset,separate,compression,
+            exception);
           if (separate != MagickFalse)
             size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
           else
@@ -2760,7 +2771,8 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
           count+=length;
 
           length=WritePSDChannel(psd_info,image_info,image,next_image,
-            GreenQuantum,compact_pixels,rows_offset,separate,exception);
+            GreenQuantum,compact_pixels,rows_offset,separate,compression,
+            exception);
           if (separate != MagickFalse)
             size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
           else
@@ -2768,7 +2780,8 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
           count+=length;
 
           length=WritePSDChannel(psd_info,image_info,image,next_image,
-            BlueQuantum,compact_pixels,rows_offset,separate,exception);
+            BlueQuantum,compact_pixels,rows_offset,separate,compression,
+            exception);
           if (separate != MagickFalse)
             size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
           else
@@ -2778,7 +2791,8 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
           if (next_image->colorspace == CMYKColorspace)
             {
               length=WritePSDChannel(psd_info,image_info,image,next_image,
-                BlackQuantum,compact_pixels,rows_offset,separate,exception);
+                BlackQuantum,compact_pixels,rows_offset,separate,compression,
+                exception);
               if (separate != MagickFalse)
                 size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
               else
@@ -2789,7 +2803,8 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
       if (next_image->alpha_trait != UndefinedPixelTrait)
         {
           length=WritePSDChannel(psd_info,image_info,image,next_image,
-            AlphaQuantum,compact_pixels,rows_offset,separate,exception);
+            AlphaQuantum,compact_pixels,rows_offset,separate,compression,
+            exception);
           if (separate != MagickFalse)
             size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
           else
@@ -2812,14 +2827,15 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
             exception);
           if (mask != (Image *) NULL)
             {
-              if (mask->compression == RLECompression)
+              if (compression == RLECompression)
                 {
                   compact_pixels=AcquireCompactPixels(mask,exception);
                   if (compact_pixels == (unsigned char *) NULL)
                     return(0);
                 }
               length=WritePSDChannel(psd_info,image_info,image,mask,
-                RedQuantum,compact_pixels,rows_offset,MagickTrue,exception);
+                RedQuantum,compact_pixels,rows_offset,MagickTrue,compression,
+                exception);
               (void) WritePSDSize(psd_info,image,length,size_offset);
               count+=length;
               compact_pixels=(unsigned char *) RelinquishMagickMemory(
@@ -3524,6 +3540,8 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
       compression=image->compression;
       if (image->compression == ZipCompression)
         image->compression=RLECompression;
+      if (image_info->compression != UndefinedCompression)
+        image->compression=image_info->compression;
       if (WritePSDChannels(&psd_info,image_info,image,image,0,MagickFalse,
           exception) == 0)
         status=MagickFalse;
