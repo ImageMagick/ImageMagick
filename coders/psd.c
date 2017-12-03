@@ -2004,9 +2004,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ssize_t
     count;
 
-  unsigned char
-    *data;
-
   /*
     Open image file.
   */
