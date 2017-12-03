@@ -225,6 +225,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             length=GetQuantumExtent(canvas_image,quantum_info,quantum_type);
             pixels=(const unsigned char *) ReadBlobStream(image,length,
               GetQuantumPixels(quantum_info),&count);
+            if (count != (ssize_t) length)
+              break;
           }
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
@@ -295,6 +297,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             }
           pixels=(const unsigned char *) ReadBlobStream(image,length,
             GetQuantumPixels(quantum_info),&count);
+          if (count != (ssize_t) length)
+            break;
         }
         break;
       }
@@ -318,6 +322,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             length=GetQuantumExtent(canvas_image,quantum_info,CyanQuantum);
             pixels=(const unsigned char *) ReadBlobStream(image,length,
               GetQuantumPixels(quantum_info),&count);
+            if (count != (ssize_t) length)
+              break;
           }
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
@@ -407,6 +413,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               }
             pixels=(const unsigned char *) ReadBlobStream(image,length,
               GetQuantumPixels(quantum_info),&count);
+            if (count != (ssize_t) length)
+              break;
           }
           if (image->previous == (Image *) NULL)
             {
@@ -428,6 +436,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             length=GetQuantumExtent(canvas_image,quantum_info,CyanQuantum);
             pixels=(const unsigned char *) ReadBlobStream(image,length,
               GetQuantumPixels(quantum_info),&count);
+            if (count != (ssize_t) length)
+              break;
           }
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
@@ -476,6 +486,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             }
           pixels=(const unsigned char *) ReadBlobStream(image,length,
             GetQuantumPixels(quantum_info),&count);
+          if (count != (ssize_t) length)
+            break;
         }
         if (image->previous == (Image *) NULL)
           {
@@ -530,6 +542,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
            }
           pixels=(const unsigned char *) ReadBlobStream(image,length,
             GetQuantumPixels(quantum_info),&count);
+          if (count != (ssize_t) length)
+            break;
         }
         if (image->previous == (Image *) NULL)
           {
@@ -583,6 +597,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             }
           pixels=(const unsigned char *) ReadBlobStream(image,length,
             GetQuantumPixels(quantum_info),&count);
+          if (count != (ssize_t) length)
+            break;
         }
         if (image->previous == (Image *) NULL)
           {
@@ -646,6 +662,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             }
           pixels=(const unsigned char *) ReadBlobStream(image,length,
             GetQuantumPixels(quantum_info),&count);
+          if (count != (ssize_t) length)
+            break;
         }
         if (image->previous == (Image *) NULL)
           {
@@ -703,6 +721,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 }
               pixels=(const unsigned char *) ReadBlobStream(image,length,
                 GetQuantumPixels(quantum_info),&count);
+              if (count != (ssize_t) length)
+                break;
             }
             if (image->previous == (Image *) NULL)
               {
@@ -751,6 +771,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           }
         pixels=(const unsigned char *) ReadBlobStream(image,length,
           GetQuantumPixels(quantum_info),&count);
+        if (count != (ssize_t) length)
+          break;
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const PixelPacket
@@ -798,6 +820,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             }
           pixels=(const unsigned char *) ReadBlobStream(image,length,
             GetQuantumPixels(quantum_info),&count);
+          if (count != (ssize_t) length)
+            break;
         }
         if (image->previous == (Image *) NULL)
           {
@@ -830,6 +854,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           }
         pixels=(const unsigned char *) ReadBlobStream(image,length,
           GetQuantumPixels(quantum_info),&count);
+        if (count != (ssize_t) length)
+          break;
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const PixelPacket
@@ -877,6 +903,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
            }
           pixels=(const unsigned char *) ReadBlobStream(image,length,
             GetQuantumPixels(quantum_info),&count);
+          if (count != (ssize_t) length)
+            break;
         }
         if (image->previous == (Image *) NULL)
           {
@@ -909,6 +937,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           }
         pixels=(const unsigned char *) ReadBlobStream(image,length,
           GetQuantumPixels(quantum_info),&count);
+        if (count != (ssize_t) length)
+          break;
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const PixelPacket
@@ -956,6 +986,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
            }
           pixels=(const unsigned char *) ReadBlobStream(image,length,
             GetQuantumPixels(quantum_info),&count);
+          if (count != (ssize_t) length)
+            break;
         }
         if (image->previous == (Image *) NULL)
           {
@@ -988,6 +1020,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           }
         pixels=(const unsigned char *) ReadBlobStream(image,length,
           GetQuantumPixels(quantum_info),&count);
+        if (count != (ssize_t) length)
+          break;
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const IndexPacket
@@ -1044,6 +1078,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
            }
           pixels=(const unsigned char *) ReadBlobStream(image,length,
             GetQuantumPixels(quantum_info),&count);
+          if (count != (ssize_t) length)
+            break;
         }
         if (image->previous == (Image *) NULL)
           {
@@ -1066,8 +1102,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             for (i=0; i < (ssize_t) scene; i++)
               for (y=0; y < (ssize_t) image->extract_info.height; y++)
               {
-                (void) ReadBlobStream(image,length,
-                  GetQuantumPixels(quantum_info),&count);
+                (void) ReadBlobStream(image,length,GetQuantumPixels(
+                  quantum_info),&count);
                 if (count != (ssize_t) length)
                   {
                     status=MagickFalse;
@@ -1078,6 +1114,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               }
             pixels=(const unsigned char *) ReadBlobStream(image,length,
               GetQuantumPixels(quantum_info),&count);
+            if (count != (ssize_t) length)
+              break;
             for (y=0; y < (ssize_t) image->extract_info.height; y++)
             {
               register const PixelPacket
@@ -1125,6 +1163,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                }
               pixels=(const unsigned char *) ReadBlobStream(image,length,
                 GetQuantumPixels(quantum_info),&count);
+              if (count != (ssize_t) length)
+                break;
             }
             if (image->previous == (Image *) NULL)
               {

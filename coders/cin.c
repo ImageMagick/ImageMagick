@@ -763,7 +763,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     pixels=(const unsigned char *) ReadBlobStream(image,length,
       GetQuantumPixels(quantum_info),&count);
-    if ((size_t) count != length)
+    if (count != (ssize_t) length)
       break;
     (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
       quantum_type,pixels,exception);

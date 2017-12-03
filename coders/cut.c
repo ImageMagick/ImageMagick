@@ -202,7 +202,8 @@ static void InsertRow(ssize_t depth,unsigned char *p,ssize_t y,Image *image)
     case 8: /* Convert PseudoColor scanline. */
       {
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (PixelPacket *) NULL) break;
+        if (q == (PixelPacket *) NULL)
+          break;
         indexes=GetAuthenticIndexQueue(image);
         for (x=0; x < (ssize_t) image->columns; x++)
         {

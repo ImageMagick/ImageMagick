@@ -205,6 +205,8 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         length=GetQuantumExtent(canvas_image,quantum_info,quantum_type);
         pixels=(const unsigned char *) ReadBlobStream(image,length,
           GetQuantumPixels(quantum_info),&count);
+        if (count != (ssize_t) length)
+          break;
       }
     for (y=0; y < (ssize_t) image->extract_info.height; y++)
     {
@@ -260,6 +262,8 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         }
       pixels=(const unsigned char *) ReadBlobStream(image,length,
         GetQuantumPixels(quantum_info),&count);
+      if (count != (ssize_t) length)
+        break;
     }
     SetQuantumImageType(image,quantum_type);
     /*
