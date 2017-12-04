@@ -1024,14 +1024,10 @@ static MagickBooleanType ReadPSDChannelPixels(Image *image,
     else
       {
         MagickFloatType
-          value;
-
-        unsigned int
           nibble;
 
-        p=PushLongPixel(MSBEndian,p,&nibble);
-        value=*((MagickFloatType *) &nibble);
-        pixel=ClampToQuantum((MagickRealType)QuantumRange*value);
+        p=PushFloatPixel(MSBEndian,p,&nibble);
+        pixel=ClampToQuantum((MagickRealType)QuantumRange*nibble);
       }
     if (image->depth > 1)
       {

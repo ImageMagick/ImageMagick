@@ -160,7 +160,7 @@ static inline const unsigned char *PushDoublePixel(QuantumInfo *quantum_info,
   return(pixels);
 }
 
-static inline const unsigned char *PushFloatPixel(QuantumInfo *quantum_info,
+static inline const unsigned char *PushQuantumFloatPixel(QuantumInfo *quantum_info,
   const unsigned char *magick_restrict pixels,float *pixel)
 {
   float
@@ -320,7 +320,7 @@ static void ImportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
 
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelAlpha(image,ClampToQuantum(pixel),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -616,11 +616,11 @@ static void ImportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
 
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelRed(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelGreen(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelBlue(image,ClampToQuantum(pixel),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -842,13 +842,13 @@ static void ImportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
 
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelRed(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelGreen(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelBlue(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelAlpha(image,ClampToQuantum(pixel),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -1076,13 +1076,13 @@ static void ImportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
 
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelRed(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelGreen(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelBlue(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelOpacity(image,ClampToQuantum(pixel),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -1220,7 +1220,7 @@ static void ImportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
 
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelBlack(image,ClampToQuantum(pixel),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -1337,7 +1337,7 @@ static void ImportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
 
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelBlue(image,ClampToQuantum(pixel),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -1573,13 +1573,13 @@ static void ImportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
 
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelRed(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelGreen(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelBlue(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelBlack(image,ClampToQuantum(pixel),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -1745,15 +1745,15 @@ static void ImportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
 
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelRed(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelGreen(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelBlue(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelBlack(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelAlpha(image,ClampToQuantum(pixel),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -1926,15 +1926,15 @@ static void ImportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
 
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelRed(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelGreen(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelBlue(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelBlack(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelOpacity(image,ClampToQuantum(pixel),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -2273,7 +2273,7 @@ static void ImportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
 
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelGray(image,ClampToQuantum(pixel),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -2476,9 +2476,9 @@ static void ImportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
 
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelGray(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelAlpha(image,ClampToQuantum(pixel),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -2601,7 +2601,7 @@ static void ImportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
 
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelGreen(image,ClampToQuantum(pixel),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -2798,7 +2798,7 @@ static void ImportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
 
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelIndex(image,PushColormapIndex(image,ClampToQuantum(pixel),
               &range_exception),q);
             SetPixelViaPixelInfo(image,image->colormap+(ssize_t)
@@ -3007,12 +3007,12 @@ static void ImportIndexAlphaQuantum(const Image *image,
 
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelIndex(image,PushColormapIndex(image,
               ClampToQuantum(pixel),&range_exception),q);
             SetPixelViaPixelInfo(image,image->colormap+(ssize_t)
               GetPixelIndex(image,q),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelAlpha(image,ClampToQuantum(pixel),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -3145,7 +3145,7 @@ static void ImportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
 
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelOpacity(image,ClampToQuantum(pixel),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -3262,7 +3262,7 @@ static void ImportRedQuantum(const Image *image,QuantumInfo *quantum_info,
 
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelRed(image,ClampToQuantum(pixel),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -3558,11 +3558,11 @@ static void ImportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
 
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelRed(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelGreen(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelBlue(image,ClampToQuantum(pixel),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -3784,13 +3784,13 @@ static void ImportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
 
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelRed(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelGreen(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelBlue(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelAlpha(image,ClampToQuantum(pixel),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -4018,13 +4018,13 @@ static void ImportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
 
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelRed(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelGreen(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelBlue(image,ClampToQuantum(pixel),q);
-            p=PushFloatPixel(quantum_info,p,&pixel);
+            p=PushQuantumFloatPixel(quantum_info,p,&pixel);
             SetPixelOpacity(image,ClampToQuantum(pixel),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
