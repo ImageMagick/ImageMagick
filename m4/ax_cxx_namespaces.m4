@@ -1,5 +1,5 @@
 # ===========================================================================
-#     http://www.gnu.org/software/autoconf-archive/ax_cxx_namespaces.html
+#    https://www.gnu.org/software/autoconf-archive/ax_cxx_namespaces.html
 # ===========================================================================
 #
 # SYNOPSIS
@@ -22,7 +22,7 @@
 #   and this notice are preserved. This file is offered as-is, without any
 #   warranty.
 
-#serial 8
+#serial 9
 
 AU_ALIAS([AC_CXX_NAMESPACES], [AX_CXX_NAMESPACES])
 AC_DEFUN([AX_CXX_NAMESPACES],

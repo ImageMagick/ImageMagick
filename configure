@@ -4559,7 +4559,7 @@ MAGICK_PATCHLEVEL_VERSION=26
 
 MAGICK_VERSION=6.9.9-26
 
-MAGICK_GIT_REVISION=12338:e4f0d41e5:20171203
+MAGICK_GIT_REVISION=12342:496d080dc:20171205
 
 
 # Substitute library versioning
@@ -8926,8 +8926,10 @@ main ()
 
      int op = 0, level = 0, eax, ebx, ecx, edx;
      FILE *f;
-      __asm__ __volatile__ ("cpuid"
-        : "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx)
+      __asm__ __volatile__ ("xchg %%ebx, %1\n"
+        "cpuid\n"
+        "xchg %%ebx, %1\n"
+        : "=a" (eax), "=r" (ebx), "=c" (ecx), "=d" (edx)
         : "a" (op), "2" (level));
 
      f = fopen("conftest_cpuid", "w"); if (!f) return 1;
@@ -8983,8 +8985,10 @@ main ()
 
      int op = 1, level = 0, eax, ebx, ecx, edx;
      FILE *f;
-      __asm__ __volatile__ ("cpuid"
-        : "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx)
+      __asm__ __volatile__ ("xchg %%ebx, %1\n"
+        "cpuid\n"
+        "xchg %%ebx, %1\n"
+        : "=a" (eax), "=r" (ebx), "=c" (ecx), "=d" (edx)
         : "a" (op), "2" (level));
 
      f = fopen("conftest_cpuid", "w"); if (!f) return 1;
@@ -9168,6 +9172,28 @@ fi
      esac
      ax_gcc_arch="$ax_gcc_arch powerpc"
      ;;
+  aarch64)
+     cpuimpl=`grep 'CPU implementer' /proc/cpuinfo 2> /dev/null | cut -d: -f2 | tr -d " " | head -n 1`
+     cpuarch=`grep 'CPU architecture' /proc/cpuinfo 2> /dev/null | cut -d: -f2 | tr -d " " | head -n 1`
+     cpuvar=`grep 'CPU variant' /proc/cpuinfo 2> /dev/null | cut -d: -f2 | tr -d " " | head -n 1`
+     case $cpuimpl in
+       0x42) case $cpuarch in
+               8) case $cpuvar in
+                    0x0) ax_gcc_arch="thunderx2t99 vulcan armv8.1-a armv8-a+lse armv8-a native" ;;
+                  esac
+                  ;;
+             esac
+             ;;
+       0x43) case $cpuarch in
+               8) case $cpuvar in
+                    0x0) ax_gcc_arch="thunderx armv8-a native" ;;
+                    0x1) ax_gcc_arch="thunderx+lse armv8.1-a armv8-a+lse armv8-a native" ;;
+                  esac
+                  ;;
+             esac
+             ;;
+      esac
+      ;;
 esac
 fi # not cross-compiling
 fi # guess arch

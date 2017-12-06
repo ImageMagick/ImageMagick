@@ -1,5 +1,5 @@
 # ===========================================================================
-#      http://www.gnu.org/software/autoconf-archive/ax_gcc_archflag.html
+#     https://www.gnu.org/software/autoconf-archive/ax_gcc_archflag.html
 # ===========================================================================
 #
 # SYNOPSIS
@@ -37,6 +37,7 @@
 #   Copyright (c) 2008 Steven G. Johnson <stevenj@alum.mit.edu>
 #   Copyright (c) 2008 Matteo Frigo
 #   Copyright (c) 2014 Tsukasa Oi
+#   Copyright (c) 2017 Alexey Kopytov
 #
 #   This program is free software: you can redistribute it and/or modify it
 #   under the terms of the GNU General Public License as published by the
@@ -49,7 +50,7 @@
 #   Public License for more details.
 #
 #   You should have received a copy of the GNU General Public License along
-#   with this program. If not, see <http://www.gnu.org/licenses/>.
+#   with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 #   As a special exception, the respective Autoconf Macro's copyright owner
 #   gives unlimited permission to copy, distribute and modify the configure
@@ -64,7 +65,7 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 17
+#serial 20
 
 AC_DEFUN([AX_GCC_ARCHFLAG],
 [AC_REQUIRE([AC_PROG_CC])
@@ -201,6 +202,28 @@ case $host_cpu in
      esac
      ax_gcc_arch="$ax_gcc_arch powerpc"
      ;;
+  aarch64)
+     cpuimpl=`grep 'CPU implementer' /proc/cpuinfo 2> /dev/null | cut -d: -f2 | tr -d " " | head -n 1`
+     cpuarch=`grep 'CPU architecture' /proc/cpuinfo 2> /dev/null | cut -d: -f2 | tr -d " " | head -n 1`
+     cpuvar=`grep 'CPU variant' /proc/cpuinfo 2> /dev/null | cut -d: -f2 | tr -d " " | head -n 1`
+     case $cpuimpl in
+       0x42) case $cpuarch in
+               8) case $cpuvar in
+                    0x0) ax_gcc_arch="thunderx2t99 vulcan armv8.1-a armv8-a+lse armv8-a native" ;;
+                  esac
+                  ;;
+             esac
+             ;;
+       0x43) case $cpuarch in
+               8) case $cpuvar in
+                    0x0) ax_gcc_arch="thunderx armv8-a native" ;;
+                    0x1) ax_gcc_arch="thunderx+lse armv8.1-a armv8-a+lse armv8-a native" ;;
+                  esac
+                  ;;
+             esac
+             ;;
+      esac
+      ;;
 esac
 fi # not cross-compiling
 fi # guess arch

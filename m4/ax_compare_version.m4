@@ -1,5 +1,5 @@
 # ===========================================================================
-#    http://www.gnu.org/software/autoconf-archive/ax_compare_version.html
+#    https://www.gnu.org/software/autoconf-archive/ax_compare_version.html
 # ===========================================================================
 #
 # SYNOPSIS
@@ -79,7 +79,7 @@
 #   and this notice are preserved. This file is offered as-is, without any
 #   warranty.
 
-#serial 11
+#serial 13
 
 dnl #########################################################################
 AC_DEFUN([AX_COMPARE_VERSION], [
@@ -146,7 +146,7 @@ x$B" | sed 's/^ *//' | sort -r | sed "s/x${A}/true/;s/x${B}/false/;1q"`
     ],
     [.+],[
       AC_WARNING(
-        [illegal OP numeric parameter: $2])
+        [invalid OP numeric parameter: $2])
     ],[])
 
     # Pad zeros at end of numbers to make same length.
@@ -162,7 +162,7 @@ x$B" | sed 's/^ *//' | sort -r | sed "s/x${A}/true/;s/x${B}/false/;1q"`
     [ne],[
       test "x$A" != "x$B" && ax_compare_version=true
     ],[
-      AC_WARNING([illegal OP parameter: $2])
+      AC_WARNING([invalid OP parameter: $2])
     ])
   ])
 
