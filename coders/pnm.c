@@ -1661,7 +1661,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           {
             packet_size=1;
             (void) CopyMagickString(type,"GRAYSCALE",MagickPathExtent);
-            if (IsImageMonochrome(image) != MagickFalse)
+            if (IdentifyImageMonochrome(image,exception) != MagickFalse)
               (void) CopyMagickString(type,"BLACKANDWHITE",MagickPathExtent);
             break;
           }
