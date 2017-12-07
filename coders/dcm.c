@@ -3289,7 +3289,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 sequence=MagickTrue;
                 continue;
               }
-
     if ((unsigned int) ((group << 16) | element) == 0xFFFEE0DD)
       {
         if (data != (unsigned char *) NULL)
@@ -3297,14 +3296,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         sequence=MagickFalse;
         continue;
       }
-
     if (sequence != MagickFalse)
       {
         if (data != (unsigned char *) NULL)
           data=(unsigned char *) RelinquishMagickMemory(data);
         continue;
       }
-
     switch (group)
     {
       case 0x0002:
