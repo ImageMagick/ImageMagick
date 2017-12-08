@@ -2139,6 +2139,19 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       channel_statistics[i].mean)*(standard_deviation*standard_deviation*
       standard_deviation*standard_deviation)-3.0;
   }
+  channel_statistics[CompositePixelChannel].mean=0.0;
+  channel_statistics[CompositePixelChannel].standard_deviation=0.0;
+  for (i=0; i < (ssize_t) MaxPixelChannels; i++)
+  {
+    channel_statistics[CompositePixelChannel].mean+=
+      channel_statistics[i].mean;
+    channel_statistics[CompositePixelChannel].standard_deviation+=
+      channel_statistics[i].standard_deviation;
+  }
+  channel_statistics[CompositePixelChannel].mean/=(double)
+    GetImageChannels(image);
+  channel_statistics[CompositePixelChannel].standard_deviation/=(double)
+    GetImageChannels(image);
   if (y < (ssize_t) image->rows)
     channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
       channel_statistics);
