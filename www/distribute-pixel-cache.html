@@ -19,7 +19,7 @@
   <meta name="author" content="ImageMagick Studio LLC" />
   <meta name="revisit-after" content="2 DAYS" />
   <meta name="resource-type" content="document" />
-  <meta name="copyright" content="Copyright (c) 1999-2018 ImageMagick Studio LLC" />
+  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
@@ -54,7 +54,12 @@
 <div class="container">
 <div class="magick-header">
 <p class="lead magick-description">A distributed pixel cache is an extension of the traditional pixel cache available on a single host.  The distributed pixel cache may span multiple servers so that it can grow in size and transactional capacity to support very large images or large image sequences.  Start up the pixel cache server on one or more hosts.  When you read or operate on an image and the local pixel cache resources are exhausted, ImageMagick contacts one or more of these remote pixel servers to store or retrieve pixels.</p>
-<p>For really large images or large image sequences, or if there is limited resources on your host, you can utilize a distributed pixel cache on one or more remote hosts.  Here we create two distributed pixel caches and utilize them from our desktop:</p>
+<p>For really large images or large image sequences, or if there is limited resources on your host, you can utilize a distributed pixel cache on one or more remote hosts. To get started, first set your shared secret in the <code>policy.xml</code> security policy:</p>
+<pre class="highlight">
+&lt;policy domain="cache" name="shared-secret" value="<em>passhrase</em>" stealth="true"/>
+</pre>
+
+<p>Here we create two distributed pixel caches and utilize them from our desktop:</p>
 <pre class="highlight"><code>convert -distribute-cache 6668 &amp;  # start on 192.168.100.50
 convert -distribute-cache 6668 &amp;  # start on 192.168.100.51
 convert -limit memory 1GiB -limit map 2GiB -limit disk 4GiB \

@@ -19,7 +19,7 @@
   <meta name="author" content="ImageMagick Studio LLC" />
   <meta name="revisit-after" content="2 DAYS" />
   <meta name="resource-type" content="document" />
-  <meta name="copyright" content="Copyright (c) 1999-2018 ImageMagick Studio LLC" />
+  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
@@ -4438,7 +4438,7 @@ within a tile. The default gravity is <code>Center</code> for this purpose.</p>
 <p class="magick-description">convert image to grayscale.</p>
 
 <p>This will use one of the <a href="command-line-options.html#intensity" >-intensity</a> methods to
-convert the given image into a linear-grayscale image. </p>
+convert the given image into a grayscale image. </p>
 
 <p>For example, to convert an image to (linear) Rec709Luminance grayscale,  type:</p>
 
@@ -4457,7 +4457,7 @@ convert the given image into a linear-grayscale image. </p>
 
 <p>which is equivalent to:</p>
 
-<pre class="highlight"><code>convert in.png -set colorspace RGB -colorspace gray out.png
+<pre class="highlight"><code>convert in.png -colorspace gray out.png
 </code></pre>
 
 <p>Note that a 'colorspace' intensity method will produce the same result
@@ -4653,8 +4653,8 @@ Consequently this has no effect on the image sequence order.</p>
 
 <p>ImageMagick provides a number of methods used in situations where an
 operator needs to determine a single grayscale value for some purpose, from
-an image with red, green, and blue pixel components. Typically the linear
-<code>Rec709Luminance</code> formula is used, which is the same formula used when 
+an image with red, green, and blue pixel components. Typically the
+<code>Rec709Luma</code> formula is used, which is the same formula used when 
 converting images to <code>-colorspace gray</code>. </p>
 
 <p>The following formulas are currently provided, and will first convert
@@ -4678,9 +4678,9 @@ current value in the images respective R,G,B channel regardless of
 what that is, or what colorspace the image is currently using.</p>
 
 <dl class="row">
-<dt class="col-md-4">Average</dt><dd class="col-md-8">(R + G + B) / 3.0</dd>
-<dt class="col-md-4">MS</dt><dd class="col-md-8">(R^2 + G^2 + B^2) / 3.0</dd>
-<dt class="col-md-4">RMS</dt><dd class="col-md-8">sqrt( (R^2 + G^2 + B^2) / 3.0 )</dd>
+<dt class="col-md-4">Average</dt><dd class="col-md-8">(R' + G' + B') / 3.0</dd>
+<dt class="col-md-4">MS</dt><dd class="col-md-8">(R'^2 + G'^2 + B'^2) / 3.0</dd>
+<dt class="col-md-4">RMS</dt><dd class="col-md-8">sqrt( (R'^2 + G'^2 + B'^2) / 3.0 )</dd>
 </dl>
 
 <p>These methods are often used for other purposes, such as generating a
