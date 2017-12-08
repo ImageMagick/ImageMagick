@@ -19,39 +19,58 @@
   <meta name="author" content="ImageMagick Studio LLC" />
   <meta name="revisit-after" content="2 DAYS" />
   <meta name="resource-type" content="document" />
-  <meta name="copyright" content="Copyright (c) 1999-2018 ImageMagick Studio LLC" />
+  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link href="compose.html" rel="canonical" />
   <link href="https://www.imagemagick.org/images/wand.png" rel="icon" />
   <link href="https://www.imagemagick.org/images/wand.ico" rel="shortcut icon" />
-  <link href="https://www.imagemagick.org/css/magick.html" rel="stylesheet" />
+  <link href="https://www.imagemagick.org/assets/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://www.imagemagick.org/assets/magick-template.css" rel="stylesheet" />
 </head>
 <body>
-<div class="magick-masthead">
-  <div class="container">
-    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-3129977114552745"
-         data-ad-slot="6345125851"
-         data-ad-format="auto"></ins>
-    <script>
-      (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-    <nav class="nav magick-nav">
-      <a class="nav-link " href="https://www.imagemagick.org/index.html">Home</a>
-      <a class="nav-link " href="https://www.imagemagick.org/script/download.html">Download</a>
-      <a class="nav-link " href="https://www.imagemagick.org/script/command-line-tools.html">Tools</a>
-      <a class="nav-link " href="https://www.imagemagick.org/script/command-line-processing.html">Command-line</a>
-      <a class="nav-link " href="https://www.imagemagick.org/script/resources.html">Resources</a>
-      <a class="nav-link " href="https://www.imagemagick.org/script/develop.html">Develop</a>
-      <a class="nav-link " href="https://www.imagemagick.org/script/https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="nav-link float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
-    </nav>
-  </div>
-</div>
-<div class="container">
+  <header>
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="https://www.imagemagick.org/#">ImageMagick</a>
+    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item ">
+        <a class="nav-link" href="https://www.imagemagick.org/index.html">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://www.imagemagick.org/script/download.html">Download</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://www.imagemagick.org/script/command-line-tools.html">Tools</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://www.imagemagick.org/script/command-line-processing.html">Command-line</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://www.imagemagick.org/script/resources.html">Resources</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://www.imagemagick.org/script/develop.html">Develop</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="https://www.imagemagick.org/discourse-server/">Community</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0" action="https://www.imagemagick.org/script/https://www.imagemagick.org/script/search.php">
+      <!-- <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search"> -->
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+    </div>
+  </nav>
+  </header>
+  <main role="main" class="container">
+    <div class="magick-template">
 <div class="magick-header">
 
 <p class="lead magick-description">This page descibed the Image composition methods that is used to define how
@@ -287,19 +306,8 @@ any values are weighted by the alpha channel of the input and output images.
 This 'Over' alpha blending is also applied to the lighting composition methods
 below. </p>
 
-<p>As of IM v6.6.1-6, if the special '<code>Sync</code>' flag is not specified
-(enabled by default) with the <a href="https://www.imagemagick.org/script/command-line-options.html#channel"
->-channel</a> setting, then the above mathematical compositions will nolonger
-synchronise its actions with the alpha channel.  Instead the math composition
-will be applied on an individual channel basis as defined by the <a
-href="https://www.imagemagick.org/script/command-line-options.html#channel"
->-channel</a>.  This includes the alpha channel. This special usage
-allows you to perform true mathematics of the image channels, without alpha
+<p> The math composition is applied on an individual channel basis as defined by the <a href="https://www.imagemagick.org/script/command-line-options.html#channel" >-channel</a>.  This includes the alpha channel. This special usage allows you to perform true mathematics of the image channels, without alpha
 composition effects, becoming involved. </p>
-
-<p>This special flag is not applied to the lighting composition methods (see
-below) even though they are closely related to mathematical composition
-methods.</p>
 
 <p>The following lighting composition methods are also available. </p>
 
@@ -315,15 +323,13 @@ methods.</p>
     <td>This is equivalent to 'Plus' in that the color channels
         are simply added, however it does not 'Plus' the alpha channel, but
         uses the normal 'Over' alpha blending, which transparencies are
-        involved.  Produces a sort of additive multiply-like result. Added
-        ImageMagick version 6.5.4-3. </td>
+        involved.  Produces a sort of additive multiply-like result.  </td>
   </tr>
 
   <tr>
     <td>linear-burn</td>
     <td>As 'Linear-Dodge', but also subtract one from the result.
-        Sort of a additive 'Screen' of the images.  Added ImageMagick version
-        6.5.4-3. </td>
+        Sort of a additive 'Screen' of the images. </td>
   </tr>
 
   <tr>
@@ -335,8 +341,7 @@ methods.</p>
   <tr>
     <td>color-burn</td>
     <td>Darkens the destination color to reflect the source
-        color.  Painting with white produces no change. Fixed in ImageMagick
-        version 6.5.4-3. </td>
+        color.  Painting with white produces no change.  </td>
   </tr>
 
   <tr>
@@ -377,29 +382,26 @@ methods.</p>
         lightening is proportional to the difference between the source color
         and 0.5. If it is equal to 0.5, the destination is unchanged. Painting
         with pure black or white produces a distinctly darker or lighter area,
-        but does not result in pure black or white. Fixed in ImageMagick
-        version 6.5.4-3. </td>
+        but does not result in pure black or white. </td>
   </tr>
 
   <tr>
     <td>pegtop-light</td>
     <td>Almost equivalent to 'Soft-Light', but using a
         continuous mathematical formula rather than two conditionally
-        selected formulae. Added ImageMagick version 6.5.4-3. </td>
+        selected formulae. </td>
   </tr>
 
   <tr>
     <td>vivid-light</td>
     <td>A modified 'Linear-Light' designed to preserve very stong
-        primary and secondary colors in the image. Added ImageMagick version
-        6.5.4-3. </td>
+        primary and secondary colors in the image.  </td>
   </tr>
 
   <tr>
     <td>pin-light</td>
     <td>Similar to 'Hard-Light', but using sharp linear shadings,
-        to simulate the effects of a strong 'pinhole' light source. Added
-        ImageMagick version 6.5.4-3. </td>
+        to simulate the effects of a strong 'pinhole' light source. </td>
   </tr>
 
   </tbody>
@@ -439,6 +441,11 @@ methods.</p>
     href="https://www.imagemagick.org/script/command-line-options.html#fuzz">-fuzz</a> factor), with transparency.
     </td>
   </tr>
+
+  <tr>
+    <td>stereo</td>
+    <td>create a stereo anaglyph</td>
+  </tr>
   </tbody>
 </table>
 
@@ -455,8 +462,7 @@ setting in the "<code>composite</code>" command.  For example... </p>
 <pre class="highlight"><code>composite ... -blend 50x50 ...
 </code></pre>
 
-<p>As of IM v6.5.3-4 the "<code>convert</code>" command can now also supply
-these extra arguments to its <a href="https://www.imagemagick.org/script/command-line-options.html#composite"
+<p>The "<code>magick</code>" command can accept these extra arguments to its <a href="https://www.imagemagick.org/script/command-line-options.html#composite"
 >-composite</a> operator, using the special <a href="https://www.imagemagick.org/script/command-line-options.html#define">-define</a>
 attribute of '<code class="arg">compose:args</code>'.  This means you can now
 make use of these special augmented <a href="https://www.imagemagick.org/script/command-line-options.html#compose"
@@ -515,12 +521,7 @@ with a brief summary of what they do. For more details see the equivalent
     <br/>     <code>A*Sc*Dc + B*Sc + C*Dc + D</code>
     <br/>Can be used to generate a custom composition method that would
         otherwise need to be implemented using the slow <a
-        href="https://www.imagemagick.org/script/command-line-options.html#fx">-fx</a> DIY image operator.   Added
-        to ImageMagick version 6.5.4-3.
-    <br/>As of IM v6.6.1-6 this method will do per-channel math compositions
-        if the 'Sync' flag is removed from <a
-        href="https://www.imagemagick.org/script/command-line-options.html#channel" >-channel</a>, just like all
-        the other mathematical composition methods above.
+        href="https://www.imagemagick.org/script/command-line-options.html#fx">-fx</a> DIY image operator.
     </td>
   </tr>
 
@@ -563,7 +564,6 @@ with a brief summary of what they do. For more details see the equivalent
         overlay image (100% = half width/height of image). Using '!' switches
         percentage arguments to refer to the destination image size instead.
     <br/><br/>
-        Special flags were added Added to ImageMagick version 6.5.3-5.
     </td>
   </tr>
 
@@ -583,7 +583,6 @@ with a brief summary of what they do. For more details see the equivalent
         This means the overlay can lookup a completely different region of the
         destination image.
     <br/><br/>
-        Added to ImageMagick version 6.5.3-5.
     </td>
   </tr>
 
@@ -609,7 +608,6 @@ with a brief summary of what they do. For more details see the equivalent
         radial blurs, or a rough approximation for rotational blur. Or any mix
         of the two.
     <br/><br/>
-        Added to ImageMagick version 6.5.4-0.
     </td>
   </tr>
 
@@ -619,6 +617,8 @@ with a brief summary of what they do. For more details see the equivalent
 <p>To print a complete list of all the available compose operators, use <a
 href="https://www.imagemagick.org/script/command-line-options.html#list">-list compose</a>.</p>
 </div>
+    </div>
+  </main><!-- /.container -->
   <footer class="magick-footer">
     <p><a href="https://www.imagemagick.org/script/support.html">Donate</a> •
      <a href="https://www.imagemagick.org/script/sitemap.html">Sitemap</a> •
@@ -631,10 +631,12 @@ href="https://www.imagemagick.org/script/command-line-options.html#list">-list c
     <a href="https://www.imagemagick.org/script/https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
-</div><!-- /.container -->
 
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
-  <script src="https://www.imagemagick.org/js/magick.html"></script>
+  <!-- Javascript assets -->
+  <script src="https://www.imagemagick.org/assets/jquery-3.2.1.slim.min.js" crossorigin="anonymous"></script>
+  <script src="https://www.imagemagick.org/assets/popper.min.js" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="https://www.imagemagick.org/assets/jquery.min.js"><\/script>')</script>
+  <script src="https://www.imagemagick.org/assets/bootstrap.min.js"></script>
+
 </body>
 </html>

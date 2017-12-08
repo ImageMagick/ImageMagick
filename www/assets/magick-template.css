@@ -1,0 +1,97 @@
+/*
+   ImageMagick template.
+*/
+
+@media (min-width: 48em) {
+  html {
+    font-size: 18px;
+  }
+}
+
+body {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  color: #555;
+  padding-top: 3.5rem;
+}
+
+.container {
+  max-width: 60rem;
+}
+
+.magick-template {
+  padding: 1.5rem 1.5rem;
+}
+
+.magick-header {
+  padding-bottom: 1.25rem;
+  margin-bottom: 2rem;
+  border-bottom: .05rem solid #eee;
+}
+.magick-title {
+  margin-bottom: 0;
+  font-size: 2rem;
+  font-weight: normal;
+}
+.magick-description {
+  font-size: 1.1rem;
+  color: #999;
+}
+
+.magick-footer {
+  padding: 2.5rem 0;
+  color: #999;
+  text-align: center;
+  background-color: #f9f9f9;
+  border-top: .05rem solid #e5e5e5;
+}
+
+.magick-footer p:last-child {
+  margin-bottom: 0;
+}
+
+.magick-list-unstyled {
+  padding-left: 40px;
+  padding-right: 40px;
+  list-style: none;
+}
+
+.magick-icon {
+  float: left;
+  margin: 5px;
+}
+
+fieldset {
+  padding: .5em;
+  background: white;
+  border: 1px dotted #aaaa77;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-top: .5em;
+}
+
+fieldset legend {
+  color: #fff;
+  background-color: #aaaa77;
+  font-size: smaller;
+  padding: .1ex .5ex;
+  border-right: 1px solid gray;
+  border-bottom: 1px solid gray;
+  font-weight: bold;
+}
+
+.highlight {
+  padding:1rem;
+  margin:1rem 0px;
+  background-color:#f7f7f9
+}
+
+h1, .h1,
+h2, .h2,
+h3, .h3,
+h4, .h4,
+h5, .h5,
+h6, .h6 {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  color: #333;
+}
