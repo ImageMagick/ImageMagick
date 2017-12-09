@@ -596,6 +596,8 @@ static void MagickUsage(MagickBooleanType verbose)
   else {
     /* magick usage */
     (void) FormatLocaleFile(stdout,
+       "Usage: %s tool [ {option} | {image} ... ] {output_image}\n",name);
+    (void) FormatLocaleFile(stdout,
        "Usage: %s [ {option} | {image} ... ] {output_image}\n",name);
     (void) FormatLocaleFile(stdout,
        "       %s [ {option} | {image} ... ] -script {filename} [ {script_args} ...]\n",
