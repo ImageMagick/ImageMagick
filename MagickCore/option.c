@@ -1394,6 +1394,7 @@ static const OptionInfo
     { "Statistic", MagickStatisticOptions, UndefinedOptionFlag, MagickFalse },
     { "Storage", MagickStorageOptions, UndefinedOptionFlag, MagickFalse },
     { "Stretch", MagickStretchOptions, UndefinedOptionFlag, MagickFalse },
+    { "Subcommand", MagickSubcommandOptions, UndefinedOptionFlag, MagickFalse },
     { "Style", MagickStyleOptions, UndefinedOptionFlag, MagickFalse },
     { "Threshold", MagickThresholdOptions, UndefinedOptionFlag, MagickFalse },
     { "Type", MagickTypeOptions, UndefinedOptionFlag, MagickFalse },
@@ -1760,6 +1761,22 @@ static const OptionInfo
     { "Normal", NormalStyle, UndefinedOptionFlag, MagickFalse },
     { "Oblique", ObliqueStyle, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedStyle, UndefinedOptionFlag, MagickFalse }
+  },
+  SubcommandOptions[] =
+  {
+    { "animate", 0, UndefinedOptionFlag, MagickFalse },
+    { "compare", 1, UndefinedOptionFlag, MagickFalse },
+    { "composite", 2, UndefinedOptionFlag, MagickFalse },
+    { "conjure", 3, UndefinedOptionFlag, MagickFalse },
+    { "convert", 4, UndefinedOptionFlag, MagickFalse },
+    { "display", 5, UndefinedOptionFlag, MagickFalse },
+    { "identify", 6, UndefinedOptionFlag, MagickFalse },
+    { "import", 7, UndefinedOptionFlag, MagickFalse },
+    { "magick-script", 8, UndefinedOptionFlag, MagickFalse },
+    { "mogrify", 9, UndefinedOptionFlag, MagickFalse },
+    { "montage", 10, UndefinedOptionFlag, MagickFalse },
+    { "stream", 11, UndefinedOptionFlag, MagickFalse },
+    { (char *) NULL, 0, UndefinedOptionFlag, MagickFalse }
   },
   TypeOptions[] =
   {
@@ -2145,6 +2162,7 @@ static const OptionInfo *GetOptionInfo(const CommandOption option)
     case MagickStatisticOptions: return(StatisticOptions);
     case MagickStorageOptions: return(StorageOptions);
     case MagickStretchOptions: return(StretchOptions);
+    case MagickSubcommandOptions: return(SubcommandOptions);
     case MagickStyleOptions: return(StyleOptions);
     case MagickTypeOptions: return(TypeOptions);
     case MagickValidateOptions: return(ValidateOptions);
