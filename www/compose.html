@@ -5,35 +5,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" >
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" >
+  <meta charset="utf-8"  />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"  />
   <title>Alpha Compositing @ ImageMagick</title>
-  <meta name="application-name" content="ImageMagick">
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
-  <meta name="application-url" content="https://www.imagemagick.org">
-  <meta name="generator" content="PHP">
-  <meta name="keywords" content="alpha, compositing, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
-  <meta name="rating" content="GENERAL">
-  <meta name="robots" content="INDEX, FOLLOW">
-  <meta name="generator" content="ImageMagick Studio LLC">
-  <meta name="author" content="ImageMagick Studio LLC">
-  <meta name="revisit-after" content="2 DAYS">
-  <meta name="resource-type" content="document">
-  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC">
-  <meta name="distribution" content="Global">
-  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
-  <link href="compose.html" rel="canonical">
-  <link href="https://www.imagemagick.org/images/wand.png" rel="icon">
-  <link href="https://www.imagemagick.org/images/wand.ico" rel="shortcut icon">
-  <link href="https://www.imagemagick.org/assets/bootstrap.min.css" rel="stylesheet">
-  <link href="https://www.imagemagick.org/assets/magick-template.css" rel="stylesheet">
+  <meta name="application-name" content="ImageMagick" />
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves." />
+  <meta name="application-url" content="https://www.imagemagick.org" />
+  <meta name="generator" content="PHP" />
+  <meta name="keywords" content="alpha, compositing, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
+  <meta name="rating" content="GENERAL" />
+  <meta name="robots" content="INDEX, FOLLOW" />
+  <meta name="generator" content="ImageMagick Studio LLC" />
+  <meta name="author" content="ImageMagick Studio LLC" />
+  <meta name="revisit-after" content="2 DAYS" />
+  <meta name="resource-type" content="document" />
+  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC" />
+  <meta name="distribution" content="Global" />
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
+  <link href="compose.html" rel="canonical" />
+  <link href="../images/wand.png" rel="icon" />
+  <link href="../images/wand.ico" rel="shortcut icon" />
+  <link href="assets/magick.css" rel="stylesheet" />
 </head>
 <body>
   <header>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="https://www.imagemagick.org/#">ImageMagick</a>
+    <a class="navbar-brand" href="../index.html">ImageMagick</a>
     <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
     </button>
@@ -41,42 +40,52 @@
     <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
-        <a class="nav-link" href="https://www.imagemagick.org/index.html">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="https://www.imagemagick.org/script/download.html">Download</a>
+        <a class="nav-link" href="../www/download.html">Download</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="https://www.imagemagick.org/script/command-line-tools.html">Tools</a>
+        <a class="nav-link" href="../www/command-line-tools.html">Tools</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="https://www.imagemagick.org/script/command-line-processing.html">Command-line</a>
+        <a class="nav-link" href="../www/command-line-processing.html">Command-line</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="https://www.imagemagick.org/script/resources.html">Resources</a>
+        <a class="nav-link" href="../www/resources.html">Resources</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="https://www.imagemagick.org/script/develop.html">Develop</a>
+        <a class="nav-link" href="../www/develop.html">Develop</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="https://www.imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="https://www.imagemagick.org/script/https://www.imagemagick.org/script/search.php">
+    <form class="form-inline my-2 my-lg-0" action="https://www.imagemagick.org/script/search.php">
       <!-- <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search"> -->
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form>
     </div>
   </nav>
+  <div class="container">
+   <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
   </header>
-  <main role="main" class="container">
+    <main role="main" class="container">
     <div class="magick-template">
 <div class="magick-header">
 
 <p class="lead magick-description">This page descibed the Image composition methods that is used to define how
 two images should be merged together in various image operations.  For the
 Command Line API it is typically set using the <a
-href="https://www.imagemagick.org/script/command-line-options.html#compose" >-compose</a> setting option. </p>
+href="command-line-options.html#compose" >-compose</a> setting option. </p>
 
 
 <p>The description of composition uses abstract terminology in order to allow
@@ -200,13 +209,13 @@ For example the default compose method can be specified as just 'Over'.</p>
 <p>Many of these compose methods will clear the destination image which was
 not overlaid by the source image.  This is to be expected as part of that
 specific composition methods defintion. You can disable this by setting the
-special <a href="https://www.imagemagick.org/script/command-line-options.html#define"
+special <a href="command-line-options.html#define"
 >-define</a> 'compose:outside-overlay' to a value of 'false' will turn off
 this behavior. </p>
 
 <p>On top of the above 12 Duff-Porter Alpha Composition methods, one special
 related method '<code>Copy</code>' has been provided. This is equivalent to
-using the '<code>Src</code>'  with the special <a href="https://www.imagemagick.org/script/command-line-options.html#define"
+using the '<code>Src</code>'  with the special <a href="command-line-options.html#define"
 >-define</a> option '<code>compose:outside-overlay</code>' set to
 '<code>false</code>', so as to only modify the overlaid area, without clearing
 the rest of the image outside the overlaid area.  </p>
@@ -306,7 +315,7 @@ any values are weighted by the alpha channel of the input and output images.
 This 'Over' alpha blending is also applied to the lighting composition methods
 below. </p>
 
-<p> The math composition is applied on an individual channel basis as defined by the <a href="https://www.imagemagick.org/script/command-line-options.html#channel" >-channel</a>.  This includes the alpha channel. This special usage allows you to perform true mathematics of the image channels, without alpha
+<p> The math composition is applied on an individual channel basis as defined by the <a href="command-line-options.html#channel" >-channel</a>.  This includes the alpha channel. This special usage allows you to perform true mathematics of the image channels, without alpha
 composition effects, becoming involved. </p>
 
 <p>The following lighting composition methods are also available. </p>
@@ -438,7 +447,7 @@ composition effects, becoming involved. </p>
     <td>change-mask</td>
     <td>Replace any destination pixel that is the similar to the
     source images pixel (as defined by the current <a
-    href="https://www.imagemagick.org/script/command-line-options.html#fuzz">-fuzz</a> factor), with transparency.
+    href="command-line-options.html#fuzz">-fuzz</a> factor), with transparency.
     </td>
   </tr>
 
@@ -456,16 +465,16 @@ arguments, which are tabled below. </p>
 <p>In the "<code>composite</code>" command these composition methods are
 selected using special options with the arguments needed. They are usually,
 but not always, the same name as the composite 'method' they use, and replaces
-the normal use of the <a href="https://www.imagemagick.org/script/command-line-options.html#compose" >-compose</a>
+the normal use of the <a href="command-line-options.html#compose" >-compose</a>
 setting in the "<code>composite</code>" command.  For example... </p>
 
 <pre class="highlight"><code>composite ... -blend 50x50 ...
 </code></pre>
 
-<p>The "<code>magick</code>" command can accept these extra arguments to its <a href="https://www.imagemagick.org/script/command-line-options.html#composite"
->-composite</a> operator, using the special <a href="https://www.imagemagick.org/script/command-line-options.html#define">-define</a>
+<p>The "<code>magick</code>" command can accept these extra arguments to its <a href="command-line-options.html#composite"
+>-composite</a> operator, using the special <a href="command-line-options.html#define">-define</a>
 attribute of '<code class="arg">compose:args</code>'.  This means you can now
-make use of these special augmented <a href="https://www.imagemagick.org/script/command-line-options.html#compose"
+make use of these special augmented <a href="command-line-options.html#compose"
 >-compose</a> methods, those the argument and the method both need to be set
 separately.  For example... </p>
 
@@ -487,7 +496,7 @@ with a brief summary of what they do. For more details see the equivalent
     <td>dissolve</td>
     <td>Arguments:
         <var>src_percent</var>[x<var>dst_percent</var>]
-    <br/>Equivalent to "<code>composite</code>" <a href="https://www.imagemagick.org/script/command-line-options.html#dissolve">-dissolve</a>
+    <br/>Equivalent to "<code>composite</code>" <a href="command-line-options.html#dissolve">-dissolve</a>
     <br/>Dissolve the 'source' image by the percentage given before overlaying
         'over' the 'destination' image. If <var>src_percent</var> is
         greater than 100, it starts dissolving the main image so it will
@@ -502,7 +511,7 @@ with a brief summary of what they do. For more details see the equivalent
     <td>Arguments:
         <var>src_percent</var>[x<var>dst_percent</var>]
     <br/>Equivalent to "<code>composite</code>" <a
-        href="https://www.imagemagick.org/script/command-line-options.html#blend">-blend</a>
+        href="command-line-options.html#blend">-blend</a>
     <br/>Average the images together ('plus') according to the percentages
         given and each pixels transparency.  If only a single percentage value
         is given it sets the weight of the composite or 'source' image, while
@@ -521,7 +530,7 @@ with a brief summary of what they do. For more details see the equivalent
     <br/>     <code>A*Sc*Dc + B*Sc + C*Dc + D</code>
     <br/>Can be used to generate a custom composition method that would
         otherwise need to be implemented using the slow <a
-        href="https://www.imagemagick.org/script/command-line-options.html#fx">-fx</a> DIY image operator.
+        href="command-line-options.html#fx">-fx</a> DIY image operator.
     </td>
   </tr>
 
@@ -529,7 +538,7 @@ with a brief summary of what they do. For more details see the equivalent
     <td>modulate</td>
     <td>Arguments:
         <var>brightness</var>[x<var>saturation</var>]
-    <br/>Equivalent to "<code>composite</code>" <a href="https://www.imagemagick.org/script/command-line-options.html#watermark">-watermark</a>
+    <br/>Equivalent to "<code>composite</code>" <a href="command-line-options.html#watermark">-watermark</a>
     <br/>Take a grayscale image (with alpha mask) and modify the destination
         image's brightness according to watermark image's grayscale value and
         the <var>brightness</var> percentage.  The destinations
@@ -543,7 +552,7 @@ with a brief summary of what they do. For more details see the equivalent
     <td>displace</td>
     <td>Arguments:
         <var>X-scale</var>[x<var>Y-scale</var>][!][%]
-    <br/>Equivalent to "<code>composite</code>" <a href="https://www.imagemagick.org/script/command-line-options.html#displace">-displace</a>
+    <br/>Equivalent to "<code>composite</code>" <a href="command-line-options.html#displace">-displace</a>
     <br/>With this option, the 'overlay' image, and optionally the 'mask'
         image, is used as a relative displacement map, which is used to
         displace the lookup of what part of the destination image is seen at
@@ -590,7 +599,7 @@ with a brief summary of what they do. For more details see the equivalent
     <td>blur</td>
     <td>Arguments:
         <var>Width</var>[x<var>Height</var>[+<var>Angle</var>][+<var>Angle2</var>]]
-    <br/>Equivalent to "<code>composite</code>" <a href="https://www.imagemagick.org/script/command-line-options.html#blur-composite">-blur</a>
+    <br/>Equivalent to "<code>composite</code>" <a href="command-line-options.html#blur-composite">-blur</a>
     <br/>A Variable Blur Mapping Composition method, where each pixel in the
         overlaid region is replaced with an Elliptical Weighted Average (EWA),
         with an ellipse (typically a circle) of the given sigma size, scaled
@@ -615,29 +624,25 @@ with a brief summary of what they do. For more details see the equivalent
 </table>
 
 <p>To print a complete list of all the available compose operators, use <a
-href="https://www.imagemagick.org/script/command-line-options.html#list">-list compose</a>.</p>
+href="command-line-options.html#list">-list compose</a>.</p>
 </div>
     </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
-    <p><a href="https://www.imagemagick.org/script/support.html">Donate</a> •
-     <a href="https://www.imagemagick.org/script/sitemap.html">Sitemap</a> •
-    <a href="https://www.imagemagick.org/script/links.html">Related</a> •
-    <a href="https://www.imagemagick.org/script/security-policy.html">Security</a> •
-    <a href="https://www.imagemagick.org/script/architecture.html">Architecture</a>
+    <p><a href="../www/security-policy.html">Security</a> •
+    <a href="../www/architecture.html">Architecture</a> •
+    <a href="../www/links.html">Related</a> •
+     <a href="../www/sitemap.html">Sitemap</a> •
+    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a>
 </p>
-    <p><a href="compose.html#">Back to top</a> •
-    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="https://www.imagemagick.org/script/https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <p><a href="../www/support.html">Donate</a> •
+    <a href="compose.html#">Back to top</a> •
+    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
-  <script src="https://www.imagemagick.org/assets/jquery-3.2.1.slim.min.js" crossorigin="anonymous"></script>
-  <script src="https://www.imagemagick.org/assets/popper.min.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="https://www.imagemagick.org/assets/jquery.min.js"><\/script>')</script>
-  <script src="https://www.imagemagick.org/assets/bootstrap.min.js"></script>
-
+  <script src="assets/magick.js" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 8th December 2017 14:40 -->
