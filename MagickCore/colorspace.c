@@ -1094,14 +1094,14 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
   assert(exception->signature == MagickCoreSignature);
   if (image->colorspace == colorspace)
     return(MagickTrue);
+  image->colorspace=colorspace;
   image->rendering_intent=UndefinedIntent;
   image->gamma=1.000/2.200;
   (void) ResetMagickMemory(&image->chromaticity,0,sizeof(image->chromaticity));
   type=image->type;
   if (IsGrayColorspace(colorspace) != MagickFalse)
     {
-      if ((IsRGBColorspace(image->colorspace) != MagickFalse) ||
-          (image->intensity == Rec601LuminancePixelIntensityMethod) ||
+      if ((image->intensity == Rec601LuminancePixelIntensityMethod) ||
           (image->intensity == Rec709LuminancePixelIntensityMethod))
         image->gamma=1.000;
       type=GrayscaleType;
@@ -1126,7 +1126,6 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
         image->chromaticity.white_point.y=0.3290;
         image->chromaticity.white_point.z=0.3583;
       }
-  image->colorspace=colorspace;
   status=SyncImagePixelCache(image,exception);
   image->type=type;
   return(status);
@@ -1287,9 +1286,6 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
     return(SetImageColorspace(image,colorspace,exception));
   if ((image->colorspace == RGBColorspace) && (image->gamma != 1.0) &&
       (colorspace == RGBColorspace))
-    return(SetImageColorspace(image,colorspace,exception));
-  if ((image->colorspace == RGBColorspace) && (image->gamma == 1.0) &&
-      (colorspace == GRAYColorspace))
     return(SetImageColorspace(image,colorspace,exception));
   if (colorspace == UndefinedColorspace)
     return(SetImageColorspace(image,colorspace,exception));
