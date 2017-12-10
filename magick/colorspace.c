@@ -1145,7 +1145,6 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->colorspace == colorspace)
     return(MagickTrue);
-  image->colorspace=colorspace;
   image->rendering_intent=UndefinedIntent;
   image->gamma=1.000/2.200;
   (void) ResetMagickMemory(&image->chromaticity,0,sizeof(image->chromaticity));
@@ -1177,6 +1176,7 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
         image->chromaticity.white_point.y=0.3290;
         image->chromaticity.white_point.z=0.3583;
       }
+  image->colorspace=colorspace;
   status=SyncImagePixelCache(image,&image->exception);
   image->type=type;
   return(status);
@@ -1407,6 +1407,9 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
     return(SetImageColorspace(image,colorspace));
   if ((image->colorspace == GRAYColorspace) && (image->gamma != 1.0) &&
       (colorspace == sRGBColorspace))
+    return(SetImageColorspace(image,colorspace));
+  if ((image->colorspace == RGBColorspace) && (image->gamma == 1.0) &&
+      (colorspace == GRAYColorspace))
     return(SetImageColorspace(image,colorspace));
   if (colorspace == UndefinedColorspace)
     return(SetImageColorspace(image,colorspace));
