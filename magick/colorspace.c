@@ -1408,9 +1408,6 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
   if ((image->colorspace == GRAYColorspace) && (image->gamma != 1.0) &&
       (colorspace == sRGBColorspace))
     return(SetImageColorspace(image,colorspace));
-  if ((image->colorspace == RGBColorspace) && (image->gamma == 1.0) &&
-      (colorspace == GRAYColorspace))
-    return(SetImageColorspace(image,colorspace));
   if (colorspace == UndefinedColorspace)
     return(SetImageColorspace(image,colorspace));
   /*
