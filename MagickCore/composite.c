@@ -1532,9 +1532,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         PixelTrait source_traits=GetPixelChannelTraits(source_image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        if ((source_traits == UndefinedPixelTrait) &&
-            (channel != AlphaPixelChannel))
-          continue;
         if (channel == AlphaPixelChannel)
           {
             /*
@@ -1642,6 +1639,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=QuantumRange*Da;
                 break;
               }
+              case MultiplyCompositeOp:
+              {
+                pixel=QuantumRange*Sa*Da;
+                break;
+              }
               default:
               {
                 pixel=QuantumRange*alpha;
@@ -1652,6 +1654,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               ClampToQuantum(pixel);
             continue;
           }
+        if (source_traits == UndefinedPixelTrait)
+          continue;
         /*
           Sc: source color.
           Dc: canvas color.
@@ -1663,7 +1667,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             /*
               Copy channel.
             */
-            q[i]=Sc;
+            q[i]=Dc;
             continue;
           }
         /*
