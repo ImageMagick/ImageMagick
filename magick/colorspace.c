@@ -50,6 +50,7 @@
 #include "magick/colorspace-private.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
+#include "magick/enhance.h"
 #include "magick/image.h"
 #include "magick/image-private.h"
 #include "magick/gem.h"
@@ -1402,12 +1403,8 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->colorspace == colorspace)
     return(MagickTrue);
-  if ((image->colorspace == Rec709LumaColorspace) &&
-      (colorspace == sRGBColorspace))
-    return(SetImageColorspace(image,colorspace));
-  if ((image->colorspace == GRAYColorspace) && (image->gamma != 1.0) &&
-      (colorspace == sRGBColorspace))
-    return(SetImageColorspace(image,colorspace));
+  if ((image->colorspace == RGBColorspace) && (colorspace == GRAYColorspace))
+    return(GrayscaleImage(image,Rec709LuminancePixelIntensityMethod));
   if (colorspace == UndefinedColorspace)
     return(SetImageColorspace(image,colorspace));
   /*
