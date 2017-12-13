@@ -173,7 +173,6 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   image->alpha_trait=stops[0].color.alpha_trait;
   if (stops[1].color.alpha_trait != UndefinedPixelTrait)
     image->alpha_trait=stops[1].color.alpha_trait;
-  image->gamma=MagickMax(stops[0].color.gamma,stops[1].color.gamma);
   status=GradientImage(image,LocaleCompare(image_info->magick,"GRADIENT") == 0 ?
     LinearGradient : RadialGradient,PadSpread,stops,2,exception);
   stops=(StopInfo *) RelinquishMagickMemory(stops);

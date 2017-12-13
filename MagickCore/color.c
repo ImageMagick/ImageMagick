@@ -2456,7 +2456,6 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
           if (LocaleCompare(colorspace,"gray") == 0)
             {
               color->colorspace=GRAYColorspace;
-              color->gamma=1.0;
               color->green=color->red;
               color->blue=color->red;
               if (((flags & SigmaValue) != 0) &&
