@@ -287,6 +287,17 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           libraw_strerror(errcode),"`%s'",image->filename);
         return(DestroyImageList(image));
       }
+    image->columns=raw_info->sizes.width;
+    image->rows=raw_info->sizes.height;
+    image->page.width=raw_info->sizes.raw_width;
+    image->page.height=raw_info->sizes.raw_height;
+    image->page.x=raw_info->sizes.left_margin;
+    image->page.y=raw_info->sizes.top_margin;
+    if (image_info->ping != MagickFalse)
+      {
+        libraw_close(raw_info);
+        return(image);
+      }
     errcode=libraw_unpack(raw_info);
     if (errcode != LIBRAW_SUCCESS)
       {
@@ -330,12 +341,6 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         libraw_dcraw_clear_mem(raw_image);
         libraw_close(raw_info);
         return(DestroyImageList(image));
-      }
-    if (image_info->ping != MagickFalse)
-      {
-        libraw_dcraw_clear_mem(raw_image);
-        libraw_close(raw_info);
-        return(image);
       }
     p=(unsigned short *) raw_image->data;
     for (y=0; y < (ssize_t) image->rows; y++)
