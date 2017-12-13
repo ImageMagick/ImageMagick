@@ -2231,7 +2231,6 @@ MagickExport void GetMagickPixelPacket(const Image *image,
   pixel->matte=MagickFalse;
   pixel->fuzz=0.0;
   pixel->depth=MAGICKCORE_QUANTUM_DEPTH;
-  pixel->gamma=1.000/2.200;
   pixel->red=0.0;
   pixel->green=0.0;
   pixel->blue=0.0;
@@ -2243,7 +2242,6 @@ MagickExport void GetMagickPixelPacket(const Image *image,
   pixel->colorspace=image->colorspace;
   pixel->matte=image->matte;
   pixel->depth=image->depth;
-  pixel->gamma=image->gamma;
   pixel->fuzz=image->fuzz;
 }
 

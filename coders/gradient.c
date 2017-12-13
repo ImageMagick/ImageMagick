@@ -167,7 +167,6 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   image->matte=start_pixel.matte;
   if (stop_pixel.matte != MagickFalse)
     image->matte=MagickTrue;
-  image->gamma=MagickMax(start_pixel.gamma,stop_pixel.gamma);
   status=GradientImage(image,LocaleCompare(image_info->magick,"GRADIENT") == 0 ?
     LinearGradient : RadialGradient,PadSpread,&start_color,&stop_color);
   if (status == MagickFalse)

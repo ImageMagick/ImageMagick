@@ -124,9 +124,6 @@ typedef struct _MagickPixelPacket
     blue,
     opacity,
     index;
-
-  double
-    gamma;
 } MagickPixelPacket;
 
 typedef Quantum IndexPacket;
