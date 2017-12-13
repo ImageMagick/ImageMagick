@@ -2165,6 +2165,7 @@ MagickExport void GetPixelInfo(const Image *image,PixelInfo *pixel)
   pixel->alpha_trait=UndefinedPixelTrait;
   pixel->fuzz=0.0;
   pixel->depth=MAGICKCORE_QUANTUM_DEPTH;
+  pixel->gamma=1.000/2.200;
   pixel->red=0.0;
   pixel->green=0.0;
   pixel->blue=0.0;
@@ -2172,7 +2173,6 @@ MagickExport void GetPixelInfo(const Image *image,PixelInfo *pixel)
   pixel->alpha=(double) OpaqueAlpha;
   pixel->index=0.0;
   pixel->count=0;
-  pixel->fuzz=0.0;
   if (image == (const Image *) NULL)
     return;
   pixel->storage_class=image->storage_class;
@@ -2180,6 +2180,7 @@ MagickExport void GetPixelInfo(const Image *image,PixelInfo *pixel)
   pixel->alpha_trait=image->alpha_trait;
   pixel->depth=image->depth;
   pixel->fuzz=image->fuzz;
+  pixel->gamma=image->gamma;
 }
 
 /*

@@ -191,6 +191,9 @@ typedef struct _PixelInfo
     black,
     alpha,
     index;
+
+  double
+    gamma;
 } PixelInfo;
 
 typedef struct _PixelPacket
