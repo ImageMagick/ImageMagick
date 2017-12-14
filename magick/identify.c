@@ -455,27 +455,6 @@ static ssize_t PrintChannelStatistics(FILE *file,const ChannelType channel,
   ssize_t
     n;
 
-  if (channel == AlphaChannel)
-    {
-      n=FormatLocaleFile(file,StatisticsFormat,name,GetMagickPrecision(),
-        (double) ClampToQuantum((MagickRealType) (scale*
-        (QuantumRange-channel_statistics[channel].minima))),
-        GetMagickPrecision(),(QuantumRange-channel_statistics[channel].minima)/
-        (double) QuantumRange,GetMagickPrecision(),(double) ClampToQuantum(
-        (MagickRealType) (scale*(QuantumRange-
-        channel_statistics[channel].maxima))),GetMagickPrecision(),
-        (QuantumRange-channel_statistics[channel].maxima)/(double) QuantumRange,
-        GetMagickPrecision(),scale*(QuantumRange-
-        channel_statistics[channel].mean),GetMagickPrecision(),(QuantumRange-
-        channel_statistics[channel].mean)/(double) QuantumRange,
-        GetMagickPrecision(),scale*
-        channel_statistics[channel].standard_deviation,GetMagickPrecision(),
-        channel_statistics[channel].standard_deviation/(double) QuantumRange,
-        GetMagickPrecision(),channel_statistics[channel].kurtosis,
-        GetMagickPrecision(),channel_statistics[channel].skewness,
-        GetMagickPrecision(),channel_statistics[channel].entropy);
-      return(n);
-    }
   n=FormatLocaleFile(file,StatisticsFormat,name,GetMagickPrecision(),
     (double) ClampToQuantum((MagickRealType) (scale*
     channel_statistics[channel].minima)),GetMagickPrecision(),

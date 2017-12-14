@@ -1454,12 +1454,12 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
         }
       if ((channel & OpacityChannel) != 0)
         {
-          mean+=GetPixelOpacity(p);
-          sum_squares+=(double) GetPixelOpacity(p)*GetPixelOpacity(p);
-          sum_cubes+=(double) GetPixelOpacity(p)*GetPixelOpacity(p)*
-            GetPixelOpacity(p);
-          sum_fourth_power+=(double) GetPixelOpacity(p)*GetPixelOpacity(p)*
-            GetPixelOpacity(p)*GetPixelOpacity(p);
+          mean+=GetPixelAlpha(p);
+          sum_squares+=(double) GetPixelOpacity(p)*GetPixelAlpha(p);
+          sum_cubes+=(double) GetPixelOpacity(p)*GetPixelAlpha(p)*
+            GetPixelAlpha(p);
+          sum_fourth_power+=(double) GetPixelAlpha(p)*GetPixelAlpha(p)*
+            GetPixelAlpha(p)*GetPixelAlpha(p);
           area++;
         }
       if (((channel & IndexChannel) != 0) &&
@@ -2433,7 +2433,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
             {
               depth=channel_statistics[OpacityChannel].depth;
               range=GetQuantumRange(depth);
-              if (IsPixelAtDepth(GetPixelOpacity(p),range) == MagickFalse)
+              if (IsPixelAtDepth(GetPixelAlpha(p),range) == MagickFalse)
                 {
                   channel_statistics[OpacityChannel].depth++;
                   continue;
@@ -2491,21 +2491,18 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
       histogram[ScaleQuantumToMap(GetPixelBlue(p))].blue++;
       if (image->matte != MagickFalse)
         {
-          if ((double) GetPixelOpacity(p) < channel_statistics[OpacityChannel].minima)
-            channel_statistics[OpacityChannel].minima=(double)
-              GetPixelOpacity(p);
-          if ((double) GetPixelOpacity(p) > channel_statistics[OpacityChannel].maxima)
-            channel_statistics[OpacityChannel].maxima=(double)
-              GetPixelOpacity(p);
-          channel_statistics[OpacityChannel].sum+=GetPixelOpacity(p);
+          if ((double) GetPixelAlpha(p) < channel_statistics[OpacityChannel].minima)
+            channel_statistics[OpacityChannel].minima=(double) GetPixelAlpha(p);
+          if ((double) GetPixelAlpha(p) > channel_statistics[OpacityChannel].maxima)
+            channel_statistics[OpacityChannel].maxima=(double) GetPixelAlpha(p);
+          channel_statistics[OpacityChannel].sum+=GetPixelAlpha(p);
           channel_statistics[OpacityChannel].sum_squared+=(double)
-            GetPixelOpacity(p)*GetPixelOpacity(p);
+            GetPixelAlpha(p)*GetPixelAlpha(p);
           channel_statistics[OpacityChannel].sum_cubed+=(double)
-            GetPixelOpacity(p)*GetPixelOpacity(p)*GetPixelOpacity(p);
+            GetPixelAlpha(p)*GetPixelAlpha(p)*GetPixelAlpha(p);
           channel_statistics[OpacityChannel].sum_fourth_power+=(double)
-            GetPixelOpacity(p)*GetPixelOpacity(p)*GetPixelOpacity(p)*
-            GetPixelOpacity(p);
-          histogram[ScaleQuantumToMap(GetPixelOpacity(p))].opacity++;
+            GetPixelAlpha(p)*GetPixelAlpha(p)*GetPixelAlpha(p)*GetPixelAlpha(p);
+          histogram[ScaleQuantumToMap(GetPixelAlpha(p))].opacity++;
         }
       if (image->colorspace == CMYKColorspace)
         {
