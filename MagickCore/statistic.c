@@ -1348,6 +1348,8 @@ static size_t GetImageChannels(const Image *image)
     PixelTrait traits = GetPixelChannelTraits(image,channel);
     if (traits == UndefinedPixelTrait)
       continue;
+    if ((traits & UpdatePixelTrait) == 0)
+      continue;
     channels++;
   }
   return((size_t) (channels == 0 ? 1 : channels));
@@ -2141,16 +2143,21 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   }
   channel_statistics[CompositePixelChannel].mean=0.0;
   channel_statistics[CompositePixelChannel].standard_deviation=0.0;
+  channel_statistics[CompositePixelChannel].entropy=0.0;
   for (i=0; i < (ssize_t) MaxPixelChannels; i++)
   {
     channel_statistics[CompositePixelChannel].mean+=
       channel_statistics[i].mean;
     channel_statistics[CompositePixelChannel].standard_deviation+=
       channel_statistics[i].standard_deviation;
+    channel_statistics[CompositePixelChannel].entropy+=
+      channel_statistics[i].entropy;
   }
   channel_statistics[CompositePixelChannel].mean/=(double)
     GetImageChannels(image);
   channel_statistics[CompositePixelChannel].standard_deviation/=(double)
+    GetImageChannels(image);
+  channel_statistics[CompositePixelChannel].entropy/=(double)
     GetImageChannels(image);
   if (y < (ssize_t) image->rows)
     channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
