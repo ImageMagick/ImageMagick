@@ -1712,16 +1712,16 @@ static MagickBooleanType WriteJSONImage(const ImageInfo *image_info,
   do
   {
     if (scene == 0)
-      WriteBlobString(image,"[");
+      (void) WriteBlobString(image,"[");
     image->magick_columns=image->columns;
     image->magick_rows=image->rows;
-    EncodeImageAttributes(image,file,exception);
+    (void) EncodeImageAttributes(image,file,exception);
     if (GetNextImageInList(image) == (Image *) NULL)
       {
-        WriteBlobString(image,"]");
+        (void) WriteBlobString(image,"]");
         break;
       }
-    WriteBlobString(image,",\n");
+    (void) WriteBlobString(image,",\n");
     image=SyncNextImageInList(image);
     status=SetImageProgress(image,SaveImagesTag,scene++,
       GetImageListLength(image));
