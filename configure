@@ -4559,7 +4559,7 @@ MAGICK_PATCHLEVEL_VERSION=15
 
 MAGICK_VERSION=7.0.7-15
 
-MAGICK_GIT_REVISION=21903:a70504060:20171216
+MAGICK_GIT_REVISION=21914:94a165e5b:20171216
 
 
 # Substitute library versioning
@@ -31314,6 +31314,11 @@ $as_echo "no -- some components failed test" >&6; }
       LIBS="$LTDL_LIBS $LIBS"
 
 $as_echo "#define LTDL_DELEGATE 1" >>confdefs.h
+
+
+cat >>confdefs.h <<_ACEOF
+#define LTDL_MODULE_EXT "${shrext_cmds}"
+_ACEOF
 
       { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
