@@ -1,3 +1,6 @@
+2017-12-16  7.0.7-15 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.7-15, GIT revision 21924:30cb31746:20171216.
+
 2017-12-08  7.0.7-15 Cristy  <quetzlzacatenango@image...>
   * Overall standard deviation is the average of each pixel channel (reference
     https://www.imagemagick.org/discourse-server/viewforum.php?f=3).
