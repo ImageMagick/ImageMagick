@@ -3516,7 +3516,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               break;
           }
       }
-      quantum_info=DestroyQuantumInfo(quantum_info);
     }
 
   else /* image->storage_class != DirectClass */
@@ -3599,7 +3598,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             for (x=(ssize_t) image->columns-1; x >= 0; x--)
             {
 #if (MAGICKCORE_QUANTUM_DEPTH >= 16)
-              unsigned long
+              unsigned short
                 quantum;
 
               if (image->colors > 256)
