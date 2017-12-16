@@ -722,7 +722,7 @@ typedef struct _MngInfo
   RenderingIntent
     global_srgb_intent;
 
-  unsigned int
+  unsigned long
     delay,
     global_plte_length,
     global_trns_length,
@@ -762,7 +762,7 @@ typedef struct _MngInfo
     write_png64;
 
 #ifdef MNG_BASI_SUPPORTED
-  size_t
+  unsigned long
     basi_width,
     basi_height;
 
@@ -3015,6 +3015,71 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   image->columns=ping_width;
   image->rows=ping_height;
 
+  if (((int) ping_color_type == PNG_COLOR_TYPE_GRAY) ||
+      ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
+    {
+      double
+        image_gamma = image->gamma;
+
+      (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+         "    image->gamma=%f",(float) image_gamma);
+
+      if (image_gamma > 0.75)
+        {
+          /* Set image->rendering_intent to Undefined,
+           * image->colorspace to GRAY, and reset image->chromaticity.
+           */
+          image->intensity = Rec709LuminancePixelIntensityMethod;
+          SetImageColorspace(image,GRAYColorspace);
+        }
+      else
+        {
+          RenderingIntent
+            save_rendering_intent = image->rendering_intent;
+          ChromaticityInfo
+            save_chromaticity = image->chromaticity;
+
+          SetImageColorspace(image,GRAYColorspace);
+          image->rendering_intent = save_rendering_intent;
+          image->chromaticity = save_chromaticity;
+        }
+
+      image->gamma = image_gamma;
+    }
+  else
+    {
+      double
+        image_gamma = image->gamma;
+
+      (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+         "    image->gamma=%f",(float) image_gamma);
+
+      if (image_gamma > 0.75)
+        {
+          /* Set image->rendering_intent to Undefined,
+           * image->colorspace to GRAY, and reset image->chromaticity.
+           */
+          image->intensity = Rec709LuminancePixelIntensityMethod;
+          SetImageColorspace(image,RGBColorspace);
+        }
+      else
+        {
+          RenderingIntent
+            save_rendering_intent = image->rendering_intent;
+          ChromaticityInfo
+            save_chromaticity = image->chromaticity;
+
+          SetImageColorspace(image,sRGBColorspace);
+          image->rendering_intent = save_rendering_intent;
+          image->chromaticity = save_chromaticity;
+        }
+
+      image->gamma = image_gamma;
+    }
+
+  (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+      "    image->colorspace=%d",(int) image->colorspace);
+
   if (((int) ping_color_type == PNG_COLOR_TYPE_PALETTE) ||
       ((int) ping_bit_depth < 16 &&
       (int) ping_color_type == PNG_COLOR_TYPE_GRAY))
@@ -3408,7 +3473,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             for (x=(ssize_t) image->columns-1; x >= 0; x--)
             {
 #if (MAGICKCORE_QUANTUM_DEPTH >= 16)
-              size_t
+              unsigned long
                 quantum;
 
               if (image->colors > 256)
@@ -3625,71 +3690,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
       image->storage_class=DirectClass;
     }
-
-  if ((ping_color_type == PNG_COLOR_TYPE_GRAY) ||
-      (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
-    {
-      double
-        image_gamma = image->gamma;
-
-      (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-         "    image->gamma=%f",(float) image_gamma);
-
-      if (image_gamma > 0.75)
-        {
-          /* Set image->rendering_intent to Undefined,
-           * image->colorspace to GRAY, and reset image->chromaticity.
-           */
-          image->intensity = Rec709LuminancePixelIntensityMethod;
-          SetImageColorspace(image,GRAYColorspace);
-        }
-      else
-        {
-          RenderingIntent
-            save_rendering_intent = image->rendering_intent;
-          ChromaticityInfo
-            save_chromaticity = image->chromaticity;
-
-          SetImageColorspace(image,GRAYColorspace);
-          image->rendering_intent = save_rendering_intent;
-          image->chromaticity = save_chromaticity;
-        }
-
-      image->gamma = image_gamma;
-    }
-  else
-    {
-      double
-        image_gamma = image->gamma;
-
-      (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-         "    image->gamma=%f",(float) image_gamma);
-
-      if (image_gamma > 0.75)
-        {
-          /* Set image->rendering_intent to Undefined,
-           * image->colorspace to GRAY, and reset image->chromaticity.
-           */
-          image->intensity = Rec709LuminancePixelIntensityMethod;
-          SetImageColorspace(image,RGBColorspace);
-        }
-      else
-        {
-          RenderingIntent
-            save_rendering_intent = image->rendering_intent;
-          ChromaticityInfo
-            save_chromaticity = image->chromaticity;
-
-          SetImageColorspace(image,sRGBColorspace);
-          image->rendering_intent = save_rendering_intent;
-          image->chromaticity = save_chromaticity;
-        }
-
-      image->gamma = image_gamma;
-    }
-
-  (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-      "    image->colorspace=%d",(int) image->colorspace);
 
   for (j = 0; j < 2; j++)
   {
@@ -5428,68 +5428,71 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                 CoderError,"DEFI chunk found in MNG-VLC datastream","`%s'",
                 image->filename);
 
-            if (length > 1)
+            if (length < 2)
               {
-                object_id=(p[0] << 8) | p[1];
+                chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+                ThrowReaderException(CorruptImageError,"CorruptImage");
+              }
 
-                if (mng_type == 2 && object_id != 0)
+            object_id=(p[0] << 8) | p[1];
+
+            if (mng_type == 2 && object_id != 0)
+              (void) ThrowMagickException(&image->exception,
+                 GetMagickModule(),
+                 CoderError,"Nonzero object_id in MNG-LC datastream",
+                 "`%s'", image->filename);
+
+            if (object_id > MNG_MAX_OBJECTS)
+              {
+                /*
+                  Instead of using a warning we should allocate a larger
+                  MngInfo structure and continue.
+                */
+                (void) ThrowMagickException(&image->exception,
+                    GetMagickModule(), CoderError,
+                    "object id too large","`%s'",image->filename);
+                    object_id=MNG_MAX_OBJECTS;
+              }
+
+            if (mng_info->exists[object_id])
+              if (mng_info->frozen[object_id])
+                {
+                  chunk=(unsigned char *) RelinquishMagickMemory(chunk);
                   (void) ThrowMagickException(&image->exception,
-                     GetMagickModule(),
-                     CoderError,"Nonzero object_id in MNG-LC datastream",
-                     "`%s'", image->filename);
+                    GetMagickModule(),CoderError,
+                    "DEFI cannot redefine a frozen MNG object","`%s'",
+                    image->filename);
+                  continue;
+                }
 
-                if (object_id > MNG_MAX_OBJECTS)
+            mng_info->exists[object_id]=MagickTrue;
+
+            if (length > 2)
+              mng_info->invisible[object_id]=p[2];
+
+            /*
+              Extract object offset info.
+            */
+            if (length > 11)
+              {
+                mng_info->x_off[object_id]=(ssize_t) mng_get_long(&p[4]);
+                mng_info->y_off[object_id]=(ssize_t) mng_get_long(&p[8]);
+                if (logging != MagickFalse)
                   {
-                    /*
-                      Instead of using a warning we should allocate a larger
-                      MngInfo structure and continue.
-                    */
-                    (void) ThrowMagickException(&image->exception,
-                        GetMagickModule(), CoderError,
-                        "object id too large","`%s'",image->filename);
-                        object_id=MNG_MAX_OBJECTS;
+                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                      "  x_off[%d]: %.20g,  y_off[%d]: %.20g",
+                      object_id,(double) mng_info->x_off[object_id],
+                      object_id,(double) mng_info->y_off[object_id]);
                   }
+              }
 
-                if (mng_info->exists[object_id])
-                  if (mng_info->frozen[object_id])
-                    {
-                      chunk=(unsigned char *) RelinquishMagickMemory(chunk);
-                      (void) ThrowMagickException(&image->exception,
-                        GetMagickModule(),CoderError,
-                        "DEFI cannot redefine a frozen MNG object","`%s'",
-                        image->filename);
-                      continue;
-                    }
+            /*
+              Extract object clipping info.
+            */
 
-                mng_info->exists[object_id]=MagickTrue;
-
-                if (length > 2)
-                  mng_info->invisible[object_id]=p[2];
-
-                /*
-                  Extract object offset info.
-                */
-                if (length > 11)
-                  {
-                    mng_info->x_off[object_id]=(ssize_t) mng_get_long(&p[4]);
-                    mng_info->y_off[object_id]=(ssize_t) mng_get_long(&p[8]);
-                    if (logging != MagickFalse)
-                      {
-                        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "  x_off[%d]: %.20g,  y_off[%d]: %.20g",
-                          object_id,(double) mng_info->x_off[object_id],
-                          object_id,(double) mng_info->y_off[object_id]);
-                      }
-                  }
-
-                /*
-                  Extract object clipping info.
-                */
-
-                if (length > 27)
-                  mng_info->object_clip[object_id]=
-                    mng_read_box(mng_info->frame,0, &p[12]);
-            }
+            if (length > 27)
+              mng_info->object_clip[object_id]=
+                mng_read_box(mng_info->frame,0, &p[12]);
 
             chunk=(unsigned char *) RelinquishMagickMemory(chunk);
             continue;
@@ -5726,7 +5729,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                     change_clipping=(*p++);
                     p++; /* change_sync */
 
-                    if (change_delay && (p-chunk) < (ssize_t) (length-4))
+                    if (change_delay && ((p-chunk) < (ssize_t) (length-4)))
                       {
                           frame_delay=1UL*image->ticks_per_second*
                             mng_get_long(p);
@@ -5747,7 +5750,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                             "    Framing_delay=%.20g",(double) frame_delay);
                       }
 
-                    if (change_timeout && (p-chunk) < (ssize_t) (length-4))
+                    if (change_timeout && ((p-chunk) < (ssize_t) (length-4)))
                       {
                         frame_timeout=1UL*image->ticks_per_second*
                           mng_get_long(p);
@@ -5768,7 +5771,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                             "    Framing_timeout=%.20g",(double) frame_timeout);
                       }
 
-                    if (change_clipping && (p-chunk) < (ssize_t) (length-16))
+                    if (change_clipping && ((p-chunk) < (ssize_t) (length-16)))
                       {
                         fb=mng_read_box(previous_fb,(char) p[0],&p[1]);
                         p+=16;
@@ -12585,6 +12588,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
 
       jpeg_image_info->type=GrayscaleType;
       jpeg_image->quality=jng_alpha_quality;
+      jpeg_image_info->type=GrayscaleType;
       (void) SetImageType(jpeg_image,GrayscaleType);
       (void) AcquireUniqueFilename(jpeg_image->filename);
       unique_filenames++;
