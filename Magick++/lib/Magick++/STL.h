@@ -79,7 +79,7 @@ namespace Magick
   class MagickPPExport addNoiseImage
   {
   public:
-    addNoiseImage(const NoiseType noiseType_,const double attenuate_);
+    addNoiseImage(const NoiseType noiseType_,const double attenuate_ = 1.0);
 
     void operator()(Image &image_) const;
 
