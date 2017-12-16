@@ -1072,6 +1072,11 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
     }
   JSONFormatLocaleFile(file,"    \"units\": %s,\n",CommandOptionToMnemonic(
     MagickResolutionOptions,(ssize_t) image->units));
+  colorspace=image->colorspace;
+  type=IdentifyImageType(image,exception);
+  if ((type == BilevelType) || (type == GrayscaleType) ||
+      (type == GrayscaleMatteType))
+    colorspace=GRAYColorspace;
   JSONFormatLocaleFile(file,"    \"type\": %s,\n",CommandOptionToMnemonic(
     MagickTypeOptions,(ssize_t) type));
   if (image->type != UndefinedType)
@@ -1110,9 +1115,6 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
       channel_statistics=GetLocationStatistics(image,type,exception);
       if (channel_statistics == (ChannelStatistics *) NULL)
         return(MagickFalse);
-      colorspace=image->colorspace;
-      if (SetImageGray(image,exception) != MagickFalse)
-        colorspace=GRAYColorspace;
       (void) CopyMagickString(target,locate,MaxTextExtent);
       *target=(char) toupper((int) ((unsigned char) *target));
       (void) FormatLocaleFile(file,"    \"channel%s\": {\n",target);
@@ -1159,8 +1161,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
     Detail channel depth and extrema.
   */
   JSONFormatLocaleFile(file,"    \"colorspace\": %s,\n",
-    CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
-    image->colorspace));
+    CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t) colorspace));
   channel_statistics=(ChannelStatistics *) NULL;
   channel_moments=(ChannelMoments *) NULL;
   channel_phash=(ChannelPerceptualHash *) NULL;
@@ -1758,7 +1759,7 @@ static MagickBooleanType WriteJSONImage(const ImageInfo *image_info,
   do
   {
     if (scene == 0)
-      WriteBlobString(image,"[\n");
+      (void) WriteBlobString(image,"[\n");
     (void) CopyMagickString(image->filename,image->magick_filename,
       MaxTextExtent);
     image->magick_columns=image->columns;
@@ -1766,10 +1767,10 @@ static MagickBooleanType WriteJSONImage(const ImageInfo *image_info,
     (void) EncodeImageAttributes(image,GetBlobFileHandle(image));
     if (GetNextImageInList(image) == (Image *) NULL)
       {
-        WriteBlobString(image,"]");
+        (void) WriteBlobString(image,"]");
         break;
       }
-    WriteBlobString(image,",\n");
+    (void) WriteBlobString(image,",\n");
     image=SyncNextImageInList(image);
     status=SetImageProgress(image,SaveImagesTag,scene++,
       GetImageListLength(image));
