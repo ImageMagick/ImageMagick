@@ -766,6 +766,9 @@
    */
 #undef LTDL_DELEGATE
 
+/* Native module suffix */
+#undef LTDL_MODULE_EXT
+
 /* Define to the sub-directory where libtool stores uninstalled libraries. */
 #undef LT_OBJDIR
 

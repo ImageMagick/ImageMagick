@@ -75,7 +75,7 @@ typedef void *ModuleHandle;
   Define declarations.
 */
 #if defined(MAGICKCORE_LTDL_DELEGATE)
-#  define ModuleGlobExpression "*.la"
+#  define ModuleGlobExpression "*" MAGICKCORE_LTDL_MODULE_EXT
 #else
 #  if defined(_DEBUG)
 #    define ModuleGlobExpression "IM_MOD_DB_*.dll"
@@ -1483,7 +1483,8 @@ static void TagToCoderModuleName(const char *tag,char *name)
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",tag);
   assert(name != (char *) NULL);
 #if defined(MAGICKCORE_LTDL_DELEGATE)
-  (void) FormatLocaleString(name,MaxTextExtent,"%s.la",tag);
+  (void) FormatLocaleString(name,MagickPathExtent,"%s"
+    MAGICKCORE_LTDL_MODULE_EXT,tag);
   (void) LocaleLower(name);
 #else
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
@@ -1534,7 +1535,8 @@ static void TagToFilterModuleName(const char *tag,char *name)
 #if !defined(MAGICKCORE_LTDL_DELEGATE)
   (void) FormatLocaleString(name,MaxTextExtent,"%s.dll",tag);
 #else
-  (void) FormatLocaleString(name,MaxTextExtent,"%s.la",tag);
+  (void) FormatLocaleString(name,MagickPathExtent,"%s"
+    MAGICKCORE_LTDL_MODULE_EXT,tag);
 #endif
 }
 
