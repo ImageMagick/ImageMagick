@@ -4,13 +4,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Magick++ API: Working with Pixels </title>
-<link rel="stylesheet" href="https://www.imagemagick.org/Magick++/magick.css" type="text/css" />
+<link rel="stylesheet" href="magick.css" type="text/css" />
 </head>
 <body>
 <div class="doc-section">
 <h1 align="center">Magick::Pixels</h1>
 <p>The <i>Pixels</i> class provides efficient access to raw image
-pixels. Image pixels (of type <a href="https://www.imagemagick.org/Magick++/Quantum.html"><i>Quantum</i></a>)
+pixels. Image pixels (of type <a href="Quantum.html"><i>Quantum</i></a>)
 may be accessed directly via the <i>Image Pixel Cache</i>. The image
 pixel cache is a rectangular window (a view) into the actual image
 pixels (which may be in memory, memory-mapped from a disk file, or
@@ -28,13 +28,13 @@ the format specified by <i>QuantumTypes</i>. </p>
 <p>Setting a view using the Pixels class does not cause the number of
 references to the underlying image to be reduced to one. Therefore, in
 order to ensure that only the current generation of the image is
-modified, the Image's <a href="https://www.imagemagick.org/Magick++/Image++.html#modifyImage">modifyImage()</a>
+modified, the Image's <a href="http://www.imagemagick.org/Magick++/Image++.html#modifyImage">modifyImage()</a>
 method should be invoked to reduce the reference count on the underlying
 image to one. If this is not done, then it is possible for a previous
 generation of the image to be modified due to the use of reference
 counting when copying or constructing an Image. </p>
 <p>The <i>Quantum</i>* returned by the <i>set</i> and <i>get</i>
-methods, and the <i>IndexPacket</i>* returned by the <i>indexes</i>
+methods, and the <i>void</i>* returned by the <i>indexes</i>
 method point to pixel data managed by the <i>Pixels</i> class. The <i>Pixels</i>
 class is responsible for releasing resources associated with the pixel
 view. This means that the pointer should never be passed to delete() or
@@ -45,44 +45,67 @@ following example, which produces an image similar to the one on the
 right (minus lines and text): </p>
 <p class="image"><img class="icon" src="Cache.png" name="Graphic1" align="bottom" width="254" border="0" /></p>
 <div class="viewport">
- // Create base image 
- Image image(Geometry(254,218), "white");
+#include &lt;Magick++.h> 
+#include &lt;iostream> 
+
+using namespace std; 
+using namespace Magick; 
+int main(int argc,char **argv) 
+{ 
+  InitializeMagick(*argv);
+
+  // Create base image 
+  Image image(Geometry(254,218), "white");
 
 
-   // Set the image type to TrueColor DirectClass representation.
- image.type(TrueColorType);
- // Ensure that there is only one reference to underlying image 
- // If this is not done, then image pixels will not be modified.
- image.modifyImage();
+  // Set the image type to TrueColor DirectClass representation.
+  image.type(TrueColorType);
+  // Ensure that there is only one reference to underlying image 
+  // If this is not done, then image pixels will not be modified.
+  image.modifyImage();
 
- // Allocate pixel view 
- Pixels view(image);
+  // Allocate pixel view 
+  Pixels view(image);
 
- // Set all pixels in region anchored at 38x36, with size 160x230 to green. 
- size_t columns = 196; size_t rows = 162; 
- Color green("green"); 
- Quantum *pixels = view.get(38,36,columns,rows); 
- for ( ssize_t row = 0; row &lt; rows ; ++row ) 
-   for ( ssize_t column = 0; column &lt; columns ; ++column ) 
-     *pixels++=green; 
-
- // Save changes to image.
- view.sync();
-
- // Set all pixels in region anchored at 86x72, with size 108x67 to yellow. 
- columns = 108; rows = 67; 
- Color yellow("yellow"); 
- pixels = view.get(86,72,columns,rows); 
- for ( ssize_t row = 0; row &lt; rows ; ++row ) 
+  // Set all pixels in region anchored at 38x36, with size 160x230 to green. 
+  size_t columns = 196; size_t rows = 162; 
+  Color green("green"); 
+  Quantum *pixels = view.get(38,36,columns,rows); 
+  for ( ssize_t row = 0; row &lt; rows ; ++row ) 
     for ( ssize_t column = 0; column &lt; columns ; ++column ) 
-       *pixels++=yellow; 
+    {
+      *pixels++=QuantumRange*green.quantumRed();
+      *pixels++=QuantumRange*green.quantumGreen();
+      *pixels++=QuantumRange*green.quantumBlue();
+    }
+
+  // Save changes to image.
   view.sync();
 
- // Set pixel at position 108,94 to red 
- *(view.get(108,94,1,1)) = Color("red"); 
+  // Set all pixels in region anchored at 86x72, with size 108x67 to yellow. 
+  columns = 108; rows = 67; 
+  Color yellow("yellow"); 
+  pixels = view.get(86,72,columns,rows); 
+  for ( ssize_t row = 0; row &lt; rows ; ++row ) 
+    for ( ssize_t column = 0; column &lt; columns ; ++column ) 
+    {
+      *pixels++=QuantumRange*yellow.quantumRed();
+      *pixels++=QuantumRange*yellow.quantumGreen();
+      *pixels++=QuantumRange*yellow.quantumBlue();
+    }
+   view.sync();
 
- // Save changes to image.
- view.sync();
+  // Set pixel at position 108,94 to red 
+  Color red("red");
+  pixels = view.get(108,94,1,1);
+  *pixels++=QuantumRange*red.quantumRed();
+  *pixels++=QuantumRange*red.quantumGreen();
+  *pixels++=QuantumRange*red.quantumBlue();
+
+  // Save changes to image.
+  view.sync();
+  image.write( "logo.png" );
+}
 </div>
 <p style="margin-bottom: 0cm;"><i>Pixels</i> supports the following
 methods: </p>
@@ -108,7 +131,7 @@ methods: </p>
       <p align="center"><a name="get"></a><font size="2">get</font></p>
 		</td>
 		<td> 			
-      <p><font size="2"><a href="https://www.imagemagick.org/Magick++/Quantum.html">Quantum</a>*</font></p>
+      <p><font size="2"><a href="Quantum.html">Quantum</a>*</font></p>
 		</td>
 		<td> 			
       <p><font size="2">const ssize_t x_, const ssize_t y_, const size_t
@@ -127,7 +150,7 @@ the 			pixel cache as defined by the specified rectangular region.
       <p align="center"><a name="getConst"></a><font size="2">getConst</font></p>
 		</td>
 		<td> 			
-      <p><font size="2">const <a href="https://www.imagemagick.org/Magick++/Quantum.html">Quantum</a>*</font></p>
+      <p><font size="2">const <a href="Quantum.html">Quantum</a>*</font></p>
 		</td>
 		<td> 			
       <p><font size="2">const ssize_t x_, const ssize_t y_, const size_t
@@ -143,7 +166,7 @@ the 			pixel cache as defined by the specified rectangular region.</font></p>
       <p align="center"><a name="set"></a><font size="2">set</font></p>
 		</td>
 		<td> 			
-      <p><font size="2"><a href="https://www.imagemagick.org/Magick++/Quantum.html">Quantum</a>*</font></p>
+      <p><font size="2"><a href="Quantum.html">Quantum</a>*</font></p>
 		</td>
 		<td> 			
       <p><font size="2">const ssize_t x_, const ssize_t y_, const size_t
@@ -176,7 +199,7 @@ never be deallocated.</font></p>
       <p align="center"><a name="indexes"></a><font size="2">indexes</font></p>
 		</td>
 		<td> 			
-      <p><font size="2">IndexPacket*</font></p>
+      <p><font size="2">void*</font></p>
 		</td>
 		<td> 			
       <p><font size="2">void</font></p>
@@ -186,11 +209,11 @@ never be deallocated.</font></p>
 			corresponding to the pixel region defined by the last <a href="Pixels.html#get">get</a>
 			, <a href="Pixels.html#getConst">getConst</a>, or <a href="Pixels.html#set">set</a>
 			call. Only valid for PseudoColor and CMYKA images. The pixel
-			indexes (an array of type <i>IndexPacket</i>, which is typedef 			<i>Quantum</i>,
+			indexes (an array of type <i>void</i>, which is typedef 			<i>Quantum</i>,
 which is itself typedef <i>unsigned char</i>, or 			<i>unsigned short</i>,
 depending on the value of the <i>QuantumDepth 			</i>define) provide
 the <span lang="en-US">colormap</span> index 			(see <a
- href="https://www.imagemagick.org/Magick++/Image++.html#colorMap">colorMap</a>) for each pixel in 			the
+ href="http://www.imagemagick.org/Magick++/Image++.html#colorMap">colorMap</a>) for each pixel in 			the
 image. For CMYKA images, the indexes represent the black 			
 channel. The value returned is intended for pixel access 			only. It
 should never be deallocated.</font></p>
