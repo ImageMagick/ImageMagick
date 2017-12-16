@@ -1115,8 +1115,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
     Detail channel depth and extrema.
   */
   JSONFormatLocaleFile(file,"    \"colorspace\": %s,\n",
-    CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
-    image->colorspace));
+    CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t) colorspace));
   channel_statistics=(ChannelStatistics *) NULL;
   channel_moments=(ChannelMoments *) NULL;
   channel_phash=(ChannelPerceptualHash *) NULL;
