@@ -72,9 +72,9 @@ radial-gradient:color1-color2
 
 <p>The default for a linear gradient has color1 at the top of the image and color2 at the bottom of the image. Similarly, the default for a radial gradient has color1 at the center of the image and color2 at the boundary of the image.</p>
 
-<p>Gradient colors may be any valid color defined per <a href="https://www.imagemagick.org/script/color.html" target="_blank">https://www.imagemagick.org/script/color.html</a>. The named colors of black/white/grayXX are non-linear gray gradients; whereas gray(XX[%]) is a linear gray gradient. For Unix systems, enclose rgb(a) and hex colors in quotes. Use double quotes, if using variables for the values.</p>
+<p>Gradient colors may be any valid color defined per <a href="https://www.imagemagick.org/script/color.html" target="_blank">https://www.imagemagick.org/script/color.html</a>. The named colors of black/white/grayXX and gray(XX[%]) are non-linear gray. For Unix systems, enclose rgb(a) and hex colors in quotes. Use double quotes, if using variables for the values.</p>
 
-<p>Here is an example linear gradient:</p>
+<p>Here is an example linear (as opposed to radial) gradient:</p>
 
 <pre class="highlight"><code>convert -size 256x256 gradient: linear_gradient.png
 convert -size 256x256 gradient:white-black linear_gradient.png
@@ -87,6 +87,18 @@ convert -size 256x256 gradient:white-black linear_gradient.png
 convert -size 256x256 radial-gradient:white-black radial_gradient.png
 </code></pre>
 <p><img src="../images/gradients/radial_gradient.png" width="256" height="256" /></p>
+
+<p>If you want non-linear grayscale gradients, then add -colorspace RGB -colorspace gray 
+before saving the output. For example:<p>
+
+<pre class="highlight"><code>convert -size 256x256 gradient: linear_gradient.png
+convert -size 256x256 gradient:white-black -colorspace RGB -colorspace gray linear_linear_gradient.png
+</code></pre>
+
+<pre class="highlight"><code>convert -size 256x256 radial-gradient: radial_gradient.png
+convert -size 256x256 radial-gradient:white-black -colorspace RGB -colorspace gray linea_radial_gradient.png
+</code></pre>
+
 
 <p>As of IM 6.9.2.5, gradients have been enhanced through the use of several -defines.</p>
 
@@ -207,14 +219,13 @@ convert -size 256x128 -define gradient:radii=128,64 radial-gradient:black-white 
 </div>
 
   <footer class="magick-footer">
-    <p><a href="support.html">Donate</a> •
-     <a href="sitemap.html">Sitemap</a> •
+    <p><a href="security-policy.html">Security</a> •
+    <a href="architecture.html">Architecture</a> •
     <a href="links.html">Related</a> •
-    <a href="security-policy.html">Security</a> •
-    <a href="architecture.html">Architecture</a>
-</p>
-    <p><a href="gradient.html#">Back to top</a> •
-    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+     <a href="sitemap.html">Sitemap</a> •
+    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a></p>
+    <p><a href="support.html">Donate</a> •
+    <a href="gradient.html#">Back to top</a> •
     <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>

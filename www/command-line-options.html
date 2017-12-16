@@ -638,27 +638,27 @@ ignored. </p>
 <dl class="row">
 <dt class="col-md-4"><var>value</var></dt>
 <dd class="col-md-8">value is added to both left/right and top/bottom</dd>
-<dt class="col-md-4"><var>value-x</var><kbd>x</kbd></dt>
+<dt class="col-md-4"><var>value-x</var><code>x</code></dt>
 <dd class="col-md-8">value-x is added only to left/right and top/bottom are unchanged</dd>
-<dt class="col-md-4"><kbd>x</kbd><var>value-y</var></dt>
+<dt class="col-md-4"><code>x</code><var>value-y</var></dt>
 <dd class="col-md-8">value-y is added only to top/bottom and left/right are unchanged</dd>
-<dt class="col-md-4"><var>value-x</var><kbd>x</kbd><var>value-y</var></dt>
+<dt class="col-md-4"><var>value-x</var><code>x</code><var>value-y</var></dt>
 <dd class="col-md-8">value-x is added to left/right and value-y added to top/bottom</dd>
-<dt class="col-md-4"><var>value-x</var><kbd>x</kbd>0</dt>
+<dt class="col-md-4"><var>value-x</var><code>x</code>0</dt>
 <dd class="col-md-8">value-x is added only to left/right and top/bottom are unchanged</dd>
-<dt class="col-md-4">0<kbd>x</kbd><var>value-y</var></dt>
+<dt class="col-md-4">0<code>x</code><var>value-y</var></dt>
 <dd class="col-md-8">value-y is added only to top/bottom and left/right are unchanged</dd>
 <dt class="col-md-4"><var>value</var>%</dt>
 <dd class="col-md-8">value % of width is added to left/right and value % of height is added to top/bottom</dd>
-<dt class="col-md-4"><var>value-x</var><kbd>x</kbd>%</dt>
+<dt class="col-md-4"><var>value-x</var><code>x</code>%</dt>
 <dd class="col-md-8">value-x % of width is added to left/right and to top/bottom</dd>
 <dt class="col-md-4">x<var>value-y</var>%</dt>
 <dd class="col-md-8">value-y % of height is added to top/bottom and to left/right</dd>
-<dt class="col-md-4"><var>value-x</var>%<kbd>x</kbd><var>value-y</var>%</dt>
+<dt class="col-md-4"><var>value-x</var>%<code>x</code><var>value-y</var>%</dt>
 <dd class="col-md-8">value-x % of width is added to left/right and value-y % of height is added to top/bottom</dd>
-<dt class="col-md-4"><var>value-x</var>%<kbd>x</kbd>0%</dt>
+<dt class="col-md-4"><var>value-x</var>%<code>x</code>0%</dt>
 <dd class="col-md-8">value-x % of width is added to left/right and top/bottom are unchanged</dd>
-<dt class="col-md-4">0%<kbd>x</kbd><var>value-y</var>%</dt>
+<dt class="col-md-4">0%<code>x</code><var>value-y</var>%</dt>
 <dd class="col-md-8">value-y % of height is added to top/bottom and left/right are unchanged</dd>
 </dl>
 
@@ -814,15 +814,23 @@ that the image <code>bird.miff</code> has a width of 512 and a height of
 <p>The channels above can also be specified as a comma-separated list or can be
 abbreviated as a concatenation of the letters '<code>R</code>', '<code>G</code>',
 '<code>B</code>', '<code>A</code>', '<code>O</code>', '<code>C</code>',
-'<code>M</code>', '<code>Y</code>', '<code>K</code>'.
+'<code>M</code>', '<code>Y</code>', '<code>K</code>'.</p>
 
-For example, to only select the <code>Red</code> and <code>Blue</code> channels
-you can either use </p>
-<pre class="highlight"><code>-channel Red,Blue
-</code></pre>
-<p>or you can use the short hand form</p>
-<pre class="highlight"><code>-channel RB
-</code></pre>
+<p>The numerals 0 to 5 may also be used to specify channels, where <br />
+'<code>0</code>' equals <code>Red</code> or <code>Cyan</code> <br />
+'<code>1</code>' equals <code>Green</code> or <code>Magenta</code> <br />
+'<code>2</code>' equals <code>Blue</code> or <code>Yellow</code> <br />
+'<code>3</code>' equals <code>Black</code> <br />
+'<code>4</code>' equals <code>Alpha</code> or <code>Opacity</code> <br />
+'<code>5</code>' equals <code>Index</code></p>
+
+<p>For example, to only select the <code>Red</code> and <code>Blue</code> channels
+you can use any of the following:</p>
+<pre class="highlight"><code>-channel Red,Blue</code></pre>
+<pre class="highlight"><code>-channel R,B</code></pre>
+<pre class="highlight"><code>-channel RB</code></pre>
+<pre class="highlight"><code>-channel 0,2</code></pre>
+
 
 <p>All the channels that are present in an image can be specified using the
 special channel type <code>All</code>. Not all operators are 'channel capable',
@@ -4447,7 +4455,7 @@ convert the given image into a grayscale image. </p>
 
 <p>which is equivalent to:</p>
 
-<pre class="highlight"><code>convert in.png -colorspace gray out.png
+<pre class="highlight"><code>convert in.png -colorspace RGB -colorspace gray out.png
 </code></pre>
 
 <p>Similarly, to convert an image to (non-linear) Rec709Luma grayscale,  type:</p>
@@ -7898,14 +7906,13 @@ href="command-line-options.html#colors">-colors</a> to reduce the number of colo
 </div>
 </div>
   <footer class="magick-footer">
-    <p><a href="support.html">Donate</a> •
-     <a href="sitemap.html">Sitemap</a> •
+    <p><a href="security-policy.html">Security</a> •
+    <a href="architecture.html">Architecture</a> •
     <a href="links.html">Related</a> •
-    <a href="security-policy.html">Security</a> •
-    <a href="architecture.html">Architecture</a>
-</p>
-    <p><a href="command-line-options.html#">Back to top</a> •
-    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+     <a href="sitemap.html">Sitemap</a> •
+    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a></p>
+    <p><a href="support.html">Donate</a> •
+    <a href="command-line-options.html#">Back to top</a> •
     <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>

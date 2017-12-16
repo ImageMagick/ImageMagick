@@ -69,10 +69,13 @@
 <p>Afterwards, the verbose information for the output file lists the colorspace as RGB. This only works on image types containing meta data that distinguishes between linear RGB and non-linear sRGB, such as PNG and GIF. Therefore, if the above command is run with a JPG or TIF output format, the verbose information for the colorspace still shows sRGB. In order to properly have the JPG output know that it is linear RGB, include an appropriate color profile.</p>
 
 
-<p>By default, converting color images to grayscale returns non-linear gray.  To instead convert to linear gray, use the <a href="command-line-processing.html#set">-set</a> or <a href="command-line-processing.html#intensity">-intensity</a> options:</p>
+<p>By default, converting color images to grayscale returns non-linear gray.  To instead convert to linear gray, use the <a href="command-line-processing.html#set">-set</a> or <a href="command-line-processing.html#intensity">-intensity</a
+> or <a href="command-line-processing.html#grayscale">-grayscale</a
+>options:</p>
 
 <pre class="highlight"><code>convert myimage.png -set colorspace RGB -colorspace gray myRGBimage.png
 convert myimage.png -intensity Rec709luminance -colorspace gray myRGBimage.png
+convert myimage.png -grayscale Rec709luminance myRGBimage.png
 </code></pre>
 
 <p>The same concept is needed when separating channels.  Normally, the conversion to separate each channel of an sRGB color image produces separate non-linear grayscale images. However the same concept can be applied, if it is desired to keep the separate channels as linear grayscale. For example, the following produces linear grayscale channels.</p>
@@ -89,9 +92,9 @@ convert myimage_channels_*.png -combine myimage2.png</code></pre>
 If one desires to separate to linear grayscale channels, recombine them later back to non-linear color, perhaps after some processing, then use the same concept as above for maintaining linear grayscale:</p>
 
 <pre class="highlight"><code>convert myimage.png -set colorspace RGB -separate myimage_channels_%d.png
-convert myimage_channels_*.png -combine -colorspace RGB -set colorspace sRGB myimage2.png</code></pre>
+convert myimage_channels_*.png -set colorspace RGB -combine -colorspace sRGB myimage2.png</code></pre>
 
-<p>When converting to another colorspace and back, such as between sRGB and HSL, the following two commands handle the first case of linear channels and the second case of non-linear channels:</p>
+<p>When converting to another colorspace and back, such as between sRGB and HSL, the following two commands handle the first case of non-linear channels and the second case of linear channels:</p>
 
 <pre class="highlight"><code>convert myimage.png -colorspace HSL -separate myimage_channels_%d.png
 convert myimage_channels_*.png -set colorspace HSL -combine -colorspace sRGB myimage2.png</code></pre>
@@ -103,20 +106,15 @@ convert myimage_channels_*.png -set colorspace HSL -combine -colorspace RGB -set
 
 <p>When specifying individual colors as <code>rgb(...)</code> or hex, these colors will still be interpreted as non-linear, that is, as sRGB colors. However if one wants to create linear colors, use <code>icc-color(rgb,r,g,b)"</code>, where <code>r</code>, <code>g</code>, and <code>b</code> are in the range 0 to 1. See the <a href="https://www.imagemagick.org/script/color.html" >Color</a> page.</p>
 
-<p>There are now also distinctions between linear and non-linear shades of gray. Any named shade of gray, such as black, white or numbered grays like <code>gray50</code> are non-linear gray. However, <code>gray(...)</code> is now linear gray. Hex grayscale values are non-linear.</p>
-
-<p>This means that you need to be careful when you create grayscale gradients. For example, <code>gradient:</code>, <code>gradient:"white-black"</code>, <code>gradient:"gray100-gray0"</code> generates non-linear gradients, however <code>gradient:"gray(255)-gray(0)"</code> or <code>gradient:"gray(100%)-gray(0%)"</code> generates linear gradients.</p>
-
 </div>
   <footer class="magick-footer">
-    <p><a href="support.html">Donate</a> •
-     <a href="sitemap.html">Sitemap</a> •
+    <p><a href="security-policy.html">Security</a> •
+    <a href="architecture.html">Architecture</a> •
     <a href="links.html">Related</a> •
-    <a href="security-policy.html">Security</a> •
-    <a href="architecture.html">Architecture</a>
-</p>
-    <p><a href="color-management.html#">Back to top</a> •
-    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+     <a href="sitemap.html">Sitemap</a> •
+    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a></p>
+    <p><a href="support.html">Donate</a> •
+    <a href="color-management.html#">Back to top</a> •
     <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
