@@ -240,7 +240,7 @@ dist-hook:
 # Install HTML files
 pkgdocdir = $(DOCUMENTATION_PATH)
 DOCDIRSDOXYGEN = www/api/MagickCore www/api/MagickWand
-DOCDIRSMANUAL = images images/patterns www www/css www/js www/api www/source www/Magick++
+DOCDIRSMANUAL = images images/patterns www www/assets www/api www/source www/Magick++
 DOCDIRS= $(DOCDIRSMANUAL) $(DOCDIRSDOXYGEN)
 
 if INSTALL_DOC
