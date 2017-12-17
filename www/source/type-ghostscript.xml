@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE typemap [
-<!ELEMENT typemap (type)+>
-<!ELEMENT type (#PCDATA)>
-<!ELEMENT include (#PCDATA)>
-<!ATTLIST type name CDATA #REQUIRED>
-<!ATTLIST type fullname CDATA #IMPLIED>
-<!ATTLIST type family CDATA #IMPLIED>
-<!ATTLIST type foundry CDATA #IMPLIED>
-<!ATTLIST type weight CDATA #IMPLIED>
-<!ATTLIST type style CDATA #IMPLIED>
-<!ATTLIST type stretch CDATA #IMPLIED>
-<!ATTLIST type format CDATA #IMPLIED>
-<!ATTLIST type metrics CDATA #IMPLIED>
-<!ATTLIST type glyphs CDATA #REQUIRED>
-<!ATTLIST type version CDATA #IMPLIED>
-<!ATTLIST include file CDATA #REQUIRED>
+  <!ELEMENT typemap (type)+>
+  <!ATTLIST typemap xmlns CDATA #FIXED ''>
+  <!ELEMENT type EMPTY>
+  <!ATTLIST type xmlns CDATA #FIXED '' encoding NMTOKEN #IMPLIED
+    family CDATA #REQUIRED format NMTOKEN #REQUIRED foundry NMTOKEN #REQUIRED
+    fullname CDATA #REQUIRED glyphs CDATA #REQUIRED metrics CDATA #REQUIRED
+    name NMTOKEN #REQUIRED stretch NMTOKEN #REQUIRED style NMTOKEN #REQUIRED
+    version CDATA #IMPLIED weight CDATA #REQUIRED>
 ]>
+<!--
+  ImageMagick Ghostscript font configuration.
+-->
 <typemap>
   <type name="AvantGarde-Book" fullname="AvantGarde Book" family="AvantGarde" foundry="URW" weight="400" style="normal" stretch="normal" format="type1" metrics="/usr/share/fonts/default/Type1/a010013l.afm" glyphs="/usr/share/fonts/default/Type1/a010013l.pfb"/>
   <type name="AvantGarde-BookOblique" fullname="AvantGarde Book Oblique" family="AvantGarde" foundry="URW" weight="400" style="oblique" stretch="normal" format="type1" metrics="/usr/share/fonts/default/Type1/a010033l.afm" glyphs="/usr/share/fonts/default/Type1/a010033l.pfb"/>

@@ -10,6 +10,45 @@
 <!ATTLIST log format CDATA #IMPLIED>
 ]>
 <!--
+  Configure ImageMagick logger.
+
+  Choose from one or more these events separated by a comma:
+    all
+    accelerate
+    annotate
+    blob
+    cache
+    coder
+    command
+    configure
+    deprecate
+    draw
+    exception
+    locale
+    module
+    none
+    pixel
+    policy
+    resource
+    trace
+    transform
+    user
+    wand
+    x11
+
+  Choose one output handler:
+    console
+    debug
+    event
+    file
+    none
+    stderr
+    stdout
+
+  When output is to a file, specify the filename.  Embed %g in the filename to
+  support log generations.  Generations is the number of log files to retain.
+  Limit is the number of logging events before generating a new log generation.
+
   The format of the log is defined by embedding special format characters:
 
     %c   client
@@ -29,6 +68,7 @@
     %%   percent sign
     \n   newline
     \r   carriage return
+    xml
 -->
 <logmap>
   <log events="None"/>

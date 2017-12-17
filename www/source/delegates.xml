@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE delegatemap [
-<!ELEMENT delegatemap (delegate)+>
-<!ELEMENT delegate (#PCDATA)>
-<!ATTLIST delegate decode CDATA #IMPLIED>
-<!ATTLIST delegate encode CDATA #IMPLIED>
-<!ATTLIST delegate mode CDATA #IMPLIED>
-<!ATTLIST delegate spawn CDATA #IMPLIED>
-<!ATTLIST delegate stealth CDATA #IMPLIED>
-<!ATTLIST delegate thread-support CDATA #IMPLIED>
-<!ATTLIST delegate command CDATA #REQUIRED>
+  <!ELEMENT delegatemap (delegate)+>
+  <!ATTLIST delegatemap xmlns CDATA #FIXED ''>
+  <!ELEMENT delegate EMPTY>
+  <!ATTLIST delegate xmlns CDATA #FIXED '' command CDATA #REQUIRED
+    decode NMTOKEN #IMPLIED encode NMTOKEN #IMPLIED mode NMTOKEN #IMPLIED
+    spawn NMTOKEN #IMPLIED stealth NMTOKEN #IMPLIED>
 ]>
 <!--
   Delegate command file.
@@ -17,16 +14,15 @@
 
     decode="in_format" encode="out_format"
 
-  specify the rules for converting from in_format to out_format These
-  rules may be used to translate directly between formats.
+  specify the rules for converting from in_format to out_format.  Use these
+  rules to translate directly between formats.
 
   Commands which specify only
 
     decode="in_format"
 
   specify the rules for converting from in_format to some format that
-  ImageMagick will automatically recognize. These rules are used to
-  decode formats.
+  ImageMagick automatically recognizes. Use these rules to decode formats.
 
   Commands which specify only
 
@@ -34,79 +30,93 @@
 
   specify the rules for an "encoder" which may accept any input format.
 
-  For delegates other than ps:*, pcl:*, and mpeg:* the substitution rules are
-  as follows:
+  The substitution rules are as follows:
 
-    %i  input image filename
-    %o  output image filename
-    %u  unique temporary filename
-    %Z  unique temporary filename
-    %#  input image signature
-    %b  image file size
-    %c  input image comment
+    %a  authentication passphrase
+    %b  image file size in bytes
     %g  image geometry
     %h  image rows (height)
-    %k  input image number colors
-    %l  image label
+    %i  input image filename
+    %#  input image signature
     %m  input image format
+    %o  output image filename
     %p  page number
     %q  input image depth
     %s  scene number
+    %u  unique temporary filename
     %w  image columns (width)
     %x  input image x resolution
     %y  input image y resolution
 
   Set option delegate:bimodal=true to process bimodal delegates otherwise they
   are ignored.
+
+  If stealth="True" the delegate is not listed in user requested
+  "-list delegate" listings. These are typically special internal delegates.
+
+  If spawn="True", ImageMagick does not wait for the delegate to finish, nor
+  will it read any output image.
 -->
 <delegatemap>
-  <delegate decode="autotrace" stealth="True" command="&quot;convert&quot; &quot;%i&quot; &quot;pnm:%u&quot;\n&quot;autotrace&quot; -input-format pnm -output-format svg -output-file &quot;%o&quot; &quot;%u&quot;"/>
-  <delegate decode="blender" command="&quot;blender&quot; -b &quot;%i&quot; -F PNG -o &quot;%o&quot;&quot;\n&quot;convert&quot; -concatenate &quot;%o*.png&quot; &quot;%o&quot;"/>
-  <delegate decode="browse" stealth="True" spawn="True" command="&quot;xdg-open&quot; http://www.imagemagick.org/"/>
-  <delegate decode="cdr" command="&quot;uniconvertor&quot; &quot;%i&quot; &quot;%o.svg&quot;; mv &quot;%o.svg&quot; &quot;%o&quot;"/>
-  <delegate decode="cgm" thread-support="False" command="&quot;ralcgm&quot; -d ps -oC &lt; &quot;%i&quot; &gt; &quot;%o&quot; 2&gt; &quot;%Z&quot;"/>
-  <delegate decode="dvi" command="&quot;dvips&quot; -q -o &quot;%o&quot; &quot;%i&quot;"/>
+  <delegate decode="bpg" command="&quot;bpgdec&quot; -b 16 -o &quot;%o.png&quot; &quot;%i&quot;; /usr/bin/mv &quot;%o.png&quot; &quot;%o&quot;"/>
+  <delegate decode="png" encode="bpg" command="&quot;bpgenc&quot; -b 12 -o &quot;%o&quot; &quot;%i&quot;"/>
+  <delegate decode="blender" command="&quot;blender&quot; -b &quot;%i&quot; -F PNG -o &quot;%o&quot;&quot;\n&quot;magick&quot; convert -concatenate &quot;%o*.png&quot; &quot;%o&quot;"/>
+  <delegate decode="browse" stealth="True" spawn="True" command="&quot;xdg-open&quot; http://www.imagemagick.org/; /usr/bin/rm &quot;%i&quot;"/>
+  <delegate decode="cdr" command="&quot;uniconvertor&quot; &quot;%i&quot; &quot;%o.svg&quot;; /usr/bin/mv &quot;%o.svg&quot; &quot;%o&quot;"/>
+  <delegate decode="cgm" command="&quot;uniconvertor&quot; &quot;%i&quot; &quot;%o.svg&quot;; /usr/bin/mv &quot;%o.svg&quot; &quot;%o&quot;"/>
+  <delegate decode="https" command="&quot;curl&quot; -s -k -L -o &quot;%o&quot; &quot;https:%M&quot;"/>
+  <delegate decode="doc" command="&quot;soffice&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; /usr/bin/mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
+  <delegate decode="docx" command="&quot;soffice&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; /usr/bin/mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
   <delegate decode="dng:decode" command="&quot;ufraw-batch&quot; --silent --create-id=also --out-type=png --out-depth=16 &quot;--output=%u.png&quot; &quot;%i&quot;"/>
+  <delegate decode="dot" command='&quot;dot&quot; -Tsvg &quot;%i&quot; -o &quot;%o&quot;' />
+  <delegate decode="dvi" command="&quot;dvips&quot; -sstdout=%%stderr -o &quot;%o&quot; &quot;%i&quot;"/>
+  <delegate decode="dxf" command="&quot;uniconvertor&quot; &quot;%i&quot; &quot;%o.svg&quot;; /usr/bin/mv &quot;%o.svg&quot; &quot;%o&quot;"/>
   <delegate decode="edit" stealth="True" command="&quot;xterm&quot; -title &quot;Edit Image Comment&quot; -e vi &quot;%o&quot;"/>
-  <delegate decode="eps" encode="pdf" mode="bi" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 &quot;-sDEVICE=pdfwrite&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
-  <delegate decode="eps" encode="ps" mode="bi" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pswrite&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
-  <delegate decode="fig" command="&quot;fig2dev&quot; -L ps &quot;%i&quot; &quot;%o&quot;"/>
-  <delegate decode="plt" command="&quot;echo&quot; &quot;set size 1.25,0.62; set terminal postscript portrait color solid; set output \'%o\'; load \'%i\'&quot; &gt; &quot;%u&quot;;&quot;gnuplot&quot; &quot;%u&quot;"/>
-  <delegate decode="hpg" command="&quot;hp2xx&quot; -q -m eps -f `basename &quot;%o&quot;` &quot;%i&quot;;     mv -f `basename &quot;%o&quot;` &quot;%o&quot;"/>
-  <delegate decode="hpgl" command="if [ -e hp2xx -o -e /usr/bin/hp2xx ]; then     hp2xx -q -m eps -f `basename &quot;%o&quot;` &quot;%i&quot;;     mv -f `basename &quot;%o&quot;` &quot;%o&quot;;   else     echo &quot;You need to install hp2xx to use HPGL files with ImageMagick.&quot;;     exit 1;   fi"/>
+  <delegate decode="eps" encode="pdf" mode="bi" command="&quot;gs&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 &quot;-sDEVICE=pdfwrite&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
+  <delegate decode="eps" encode="ps" mode="bi" command="&quot;gs&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=ps2write&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
+  <delegate decode="fig" command="&quot;uniconvertor&quot; &quot;%i&quot; &quot;%o.svg&quot;; /usr/bin/mv &quot;%o.svg&quot; &quot;%o&quot;"/>
+  <delegate decode="hpg" command="&quot;hp2xx&quot; -sstdout=%%stderr -m eps -f `basename &quot;%o&quot;` &quot;%i&quot;;     /usr/bin/mv -f `basename &quot;%o&quot;` &quot;%o&quot;"/>
+  <delegate decode="hpgl" command="&quot;hp2xx&quot; -sstdout=%%stderr -m eps -f `basename &quot;%o&quot;` &quot;%i&quot;;     /usr/bin/mv -f `basename &quot;%o&quot;` &quot;%o&quot;"/>
   <delegate decode="htm" command="&quot;html2ps&quot; -U -o &quot;%o&quot; &quot;%i&quot;"/>
   <delegate decode="html" command="&quot;html2ps&quot; -U -o &quot;%o&quot; &quot;%i&quot;"/>
-  <delegate decode="https" command="&quot;curl&quot; -s -k -o &quot;%o&quot; &quot;https:%M&quot;"/>
   <delegate decode="ilbm" command="&quot;ilbmtoppm&quot; &quot;%i&quot; &gt; &quot;%o&quot;"/>
-  <delegate decode="man" command="&quot;groff&quot; -man -Tps &quot;%i&quot; &gt; &quot;%o&quot;"/>
-  <delegate decode="mpeg:decode" command="&quot;ffmpeg&quot; -v -1 -vframes %S -i &quot;%i&quot; -vcodec pam -an -f rawvideo -y &quot;%u.pam&quot; 2&gt; &quot;%Z&quot;"/>
-  <delegate encode="mpeg:encode" stealth="True" command="&quot;ffmpeg&quot; -v -1 -mbd rd -trellis 2 -cmp 2 -subcmp 2 -g 300 -i &quot;%M%%d.jpg&quot; &quot;%u.%m&quot; 2&gt; &quot;%Z&quot;"/>
-  <delegate decode="sid" command="&quot;mrsidgeodecode&quot; -if sid -i &quot;%i&quot; -of tif -o &quot;%o&quot; &gt; &quot;%u&quot;"/>
-  <delegate decode="pcl:color" stealth="True" command="&quot;pcl6&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=ppmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
+  <delegate decode="jpg" encode="lep" mode="encode" command="&quot;lepton&quot; &quot;%i&quot; &quot;%o&quot;"/>
+  <delegate decode="jxr" command="/usr/bin/mv &quot;%i&quot; &quot;%i.jxr&quot;; &quot;JxrDecApp&quot; -i &quot;%i.jxr&quot; -o &quot;%o.pnm&quot;; /usr/bin/mv &quot;%i.jxr&quot; &quot;%i&quot;; /usr/bin/mv &quot;%o.pnm&quot; &quot;%o&quot;"/>
+  <delegate decode="lep" mode="decode" command="&quot;lepton&quot; &quot;%i&quot; &quot;%o&quot;"/>
+  <delegate decode="miff" encode="show" spawn="True" command="&quot;magick&quot; display -immutable -delay 0 -title &quot;%M&quot; &quot;%i&quot;"/>
+  <delegate decode="miff" encode="win" stealth="True" spawn="True" command="&quot;magick&quot; display -immutable -delay 0 -title &quot;%M&quot; &quot;%i&quot;"/>
+  <delegate decode="mpeg:decode" command="&quot;ffmpeg&quot; -nostdin -v -1 -i &quot;%i&quot; -vframes %S -vcodec pam -an -f rawvideo -y &quot;%u.pam&quot; 2&gt; &quot;%u&quot;"/>
+  <delegate decode="odt" command="&quot;soffice&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; /usr/bin/mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
   <delegate decode="pcl:cmyk" stealth="True" command="&quot;pcl6&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pamcmyk32&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
+  <delegate decode="pcl:color" stealth="True" command="&quot;pcl6&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=ppmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
   <delegate decode="pcl:mono" stealth="True" command="&quot;pcl6&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pbmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
-  <delegate decode="pdf" encode="eps" mode="bi" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=epswrite&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
-  <delegate decode="pdf" encode="ps" mode="bi" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pswrite&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
-  <delegate decode="tiff" encode="launch" mode="encode" command="&quot;gimp&quot; &quot;%i&quot;"/>
+  <delegate decode="pdf" encode="eps" mode="bi" command="&quot;gs&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 -sPDFPassword=&quot;%a&quot; &quot;-sDEVICE=eps2write&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
+  <delegate decode="pdf" encode="ps" mode="bi" command="&quot;gs&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=ps2write&quot; -sPDFPassword=&quot;%a&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
+  <delegate decode="png" encode="webp" command="&quot;cwebp&quot; -quiet %Q &quot;%i&quot; -o &quot;%o&quot;"/>
   <delegate decode="pnm" encode="ilbm" mode="encode" command="&quot;ppmtoilbm&quot; -24if &quot;%i&quot; &gt; &quot;%o&quot;"/>
-  <delegate decode="pov" command="&quot;povray&quot; &quot;+i%i&quot; -D0 +o&quot;%o&quot; +fn%q +w%w +h%h +a -q9 -kfi&quot;%s&quot; -kff&quot;%n&quot;\n&quot;convert&quot; -concatenate &quot;%o*.png&quot; &quot;%o&quot;"/>
-  <delegate decode="ps" encode="eps" mode="bi" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=epswrite&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
-  <delegate decode="ps" encode="pdf" mode="bi" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pdfwrite&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
+  <delegate decode="bmp" encode="jxr" command="/usr/bin/mv &quot;%i&quot; &quot;%i.bmp&quot;; &quot;JxrEncApp&quot; -i &quot;%i.bmp&quot; -o &quot;%o.jxr&quot;; /usr/bin/mv &quot;%i.bmp&quot; &quot;%i&quot;; /usr/bin/mv &quot;%o.jxr&quot; &quot;%o&quot;"/>
+  <delegate decode="bmp" encode="wdp" command="/usr/bin/mv &quot;%i&quot; &quot;%i.bmp&quot;; &quot;JxrEncApp&quot; -i &quot;%i.bmp&quot; -o &quot;%o.jxr&quot;; /usr/bin/mv &quot;%i.bmp&quot; &quot;%i&quot;; /usr/bin/mv &quot;%o.jxr&quot; &quot;%o&quot;"/>
+  <delegate decode="ppt" command="&quot;soffice&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; /usr/bin/mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
+  <delegate decode="pptx" command="&quot;soffice&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; /usr/bin/mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
+  <delegate decode="ps" encode="prt" command='&quot;/usr/bin/lpr&quot; &quot;%i&quot;'/>
+  <delegate decode="ps:alpha" stealth="True" command="&quot;gs&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pngalpha&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
+  <delegate decode="ps:cmyk" stealth="True" command="&quot;gs&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pamcmyk32&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
+  <delegate decode="ps:color" stealth="True" command="&quot;gs&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pnmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
+  <delegate decode="ps" encode="eps" mode="bi" command="&quot;gs&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=eps2write&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
+  <delegate decode="ps" encode="pdf" mode="bi" command="&quot;gs&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pdfwrite&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
   <delegate decode="ps" encode="print" mode="encode" command="lpr &quot;%i&quot;"/>
-  <delegate decode="ps:alpha" stealth="True" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pngalpha&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
-  <delegate decode="ps:cmyk" stealth="True" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pam&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
-  <delegate decode="ps:color" stealth="True" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pnmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
-  <delegate decode="ps:mono" stealth="True" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pbmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
-  <delegate decode="rgba" encode="rle" mode="encode" command="&quot;rawtorle&quot; -o &quot;%o&quot; -v &quot;%i&quot;"/>
-  <delegate decode="scan" command="&quot;scanimage&quot; -d &quot;%i&quot; &gt; &quot;%o&quot;"/>
-  <delegate decode="scanx" command="&quot;scanimage&quot; &gt; &quot;%o&quot;"/>
-  <delegate decode="miff" encode="show" spawn="True" command="&quot;/usr/local/bin/display&quot; -delay 0 -window-group %[group] -title &quot;%l &quot; &quot;ephemeral:%i&quot;"/>
+  <delegate decode="ps:mono" stealth="True" command="&quot;gs&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pbmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
   <delegate decode="shtml" command="&quot;html2ps&quot; -U -o &quot;%o&quot; &quot;%i&quot;"/>
-  <delegate decode="svg" command="&quot;rsvg&quot; &quot;%i&quot; &quot;%o&quot;"/>
-  <delegate decode="txt" encode="ps" mode="bi" command="&quot;enscript&quot; -o &quot;%o&quot; &quot;%i&quot;"/>
-  <delegate decode="miff" encode="win" stealth="True" spawn="True" command="&quot;/usr/local/bin/display&quot; -immutable -delay 0 -window-group %[group] -title &quot;%l &quot; &quot;ephemeral:%i&quot;"/>
-  <delegate decode="wmf" command="&quot;wmf2eps&quot; -o &quot;%o&quot; &quot;%i&quot;"/>
-  <delegate decode="xps:color" stealth="True" command="&quot;gxps&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=ppmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
+  <delegate decode="sid" command="&quot;mrsidgeodecode&quot; -if sid -i &quot;%i&quot; -of tif -o &quot;%o&quot; &gt; &quot;%u&quot;"/>
+  <delegate decode="svg" command="&quot;rsvg-convert&quot; -o &quot;%o&quot; &quot;%i&quot;"/>
+  <delegate decode="svg:decode" stealth="True" command="&quot;inkscape&quot; &quot;%s&quot; --export-png=&quot;%s&quot; --export-dpi=&quot;%s&quot; --export-background=&quot;%s&quot; --export-background-opacity=&quot;%s&quot; &gt; &quot;%s&quot; 2&gt;&amp;1"/>
+  <delegate decode="tiff" encode="launch" mode="encode" command="&quot;gimp&quot; &quot;%i&quot;"/>
+  <delegate decode="wdp" command="/usr/bin/mv &quot;%i&quot; &quot;%i.jxr&quot;; &quot;JxrDecApp&quot; -i &quot;%i.jxr&quot; -o &quot;%o.bmp&quot;; /usr/bin/mv &quot;%i.jxr&quot; &quot;%i&quot;; /usr/bin/mv &quot;%o.bmp&quot; &quot;%o&quot;"/>
+  <delegate decode="webp" command="&quot;dwebp&quot; -pam &quot;%i&quot; -o &quot;%o&quot;"/>
+  <delegate decode="xls" command="&quot;soffice&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; /usr/bin/mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
+  <delegate decode="xlsx" command="&quot;soffice&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; /usr/bin/mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
   <delegate decode="xps:cmyk" stealth="True" command="&quot;gxps&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=bmpsep8&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
+  <delegate decode="xps:color" stealth="True" command="&quot;gxps&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=ppmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
   <delegate decode="xps:mono" stealth="True" command="&quot;gxps&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pbmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
+  <delegate encode="mpeg:encode" stealth="True" command="&quot;ffmpeg&quot; -nostdin -v -1 -i &quot;%M%%d.jpg&quot; &quot;%u.%m&quot; 2&gt; &quot;%u&quot;"/>
 </delegatemap>

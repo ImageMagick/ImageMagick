@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE typemap [
-<!ELEMENT typemap (type)+>
-<!ELEMENT type (#PCDATA)>
-<!ELEMENT include (#PCDATA)>
-<!ATTLIST type name CDATA #REQUIRED>
-<!ATTLIST type fullname CDATA #IMPLIED>
-<!ATTLIST type family CDATA #IMPLIED>
-<!ATTLIST type foundry CDATA #IMPLIED>
-<!ATTLIST type weight CDATA #IMPLIED>
-<!ATTLIST type style CDATA #IMPLIED>
-<!ATTLIST type stretch CDATA #IMPLIED>
-<!ATTLIST type format CDATA #IMPLIED>
-<!ATTLIST type metrics CDATA #IMPLIED>
-<!ATTLIST type glyphs CDATA #REQUIRED>
-<!ATTLIST type version CDATA #IMPLIED>
-<!ATTLIST include file CDATA #REQUIRED>
+  <!ELEMENT typemap (type)+>
+  <!ATTLIST typemap xmlns CDATA #FIXED ''>
+  <!ELEMENT type EMPTY>
+  <!ATTLIST type xmlns CDATA #FIXED '' encoding NMTOKEN #IMPLIED
+    family CDATA #REQUIRED format NMTOKEN #REQUIRED foundry NMTOKEN #REQUIRED
+    fullname CDATA #REQUIRED glyphs CDATA #REQUIRED metrics CDATA #REQUIRED
+    name NMTOKEN #REQUIRED stretch NMTOKEN #REQUIRED style NMTOKEN #REQUIRED
+    version CDATA #IMPLIED weight CDATA #REQUIRED>
 ]>
+<!--
+  ImageMagick font configuration.
+-->
 <typemap>
-   <include file="type-dejavu.xml" /> <include file="type-ghostscript.xml" />
+   <include file="type-dejavu.xml" /> <include file="type-ghostscript.xml" /> <include file="type-windows.xml" />
 </typemap>
