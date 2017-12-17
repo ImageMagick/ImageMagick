@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE typemap [
+  <!ELEMENT typemap (type)+>
+  <!ATTLIST typemap xmlns CDATA #FIXED ''>
+  <!ELEMENT type EMPTY>
+  <!ATTLIST type xmlns CDATA #FIXED '' encoding NMTOKEN #IMPLIED
+    family CDATA #REQUIRED format NMTOKEN #REQUIRED foundry NMTOKEN #REQUIRED
+    fullname CDATA #REQUIRED glyphs CDATA #REQUIRED metrics CDATA #REQUIRED
+    name NMTOKEN #REQUIRED stretch NMTOKEN #REQUIRED style NMTOKEN #REQUIRED
+    version CDATA #IMPLIED weight CDATA #REQUIRED>
+]>
+<!--
+  ImageMagick DejaVU font configuration.
+-->
+<typemap>
+  <type name="DejaVu-LGC-Sans-Bold" fullname="DejaVu LGC Sans Bold" family="DejaVuGC Sans" style="Normal" stretch="Normal" weight="700" glyphs="/usr/share/fonts/dejavu/DejaVuLGCSans-Bold.ttf"/>
+  <type name="DejaVu-LGC-Sans-Bold-Oblique" fullname="DejaVu LGC Sans Bold Oblique" family="DejaVuGC Sans" style="Oblique" stretch="Normal" weight="700" glyphs="/usr/share/fonts/dejavu/DejaVuLGCSans-BoldOblique.ttf"/>
+  <type name="DejaVu-LGC-Sans-Book" fullname="DejaVu LGC Sans Book" family="DejaVuGC Sans" style="Normal" stretch="Normal" weight="400" glyphs="/usr/share/fonts/dejavu/DejaVuLGCSans.ttf"/>
+  <type name="DejaVu-LGC-Sans-Condensed" fullname="DejaVu LGC Sans Condensed" family="DejaVuGC Sans" style="Normal" stretch="SemiCondensed" weight="400" glyphs="/usr/share/fonts/dejavu/DejaVuLGCSansCondensed.ttf"/>
+  <type name="DejaVu-LGC-Sans-Condensed-Bold" fullname="DejaVu LGC Sans Condensed Bold" family="DejaVuGC Sans" style="Normal" stretch="SemiCondensed" weight="700" glyphs="/usr/share/fonts/dejavu/DejaVuLGCSansCondensed-Bold.ttf"/>
+  <type name="DejaVu-LGC-Sans-Condensed-Bold-Oblique" fullname="DejaVu LGC Sans Condensed Bold Oblique" family="DejaVuGC Sans" style="Oblique" stretch="SemiCondensed" weight="700" glyphs="/usr/share/fonts/dejavu/DejaVuLGCSansCondensed-BoldOblique.ttf"/>
+  <type name="DejaVu-LGC-Sans-Condensed-Oblique" fullname="DejaVu LGC Sans Condensed Oblique" family="DejaVuGC Sans" style="Oblique" stretch="SemiCondensed" weight="400" glyphs="/usr/share/fonts/dejavu/DejaVuLGCSansCondensed-Oblique.ttf"/>
+  <type name="DejaVu-LGC-Sans-ExtraLight" fullname="DejaVu LGC Sans ExtraLight" family="DejaVuGC Sans" style="Normal" stretch="Normal" weight="200" glyphs="/usr/share/fonts/dejavu/DejaVuLGCSans-ExtraLight.ttf"/>
+  <type name="DejaVu-LGC-Sans-Mono-Bold" fullname="DejaVu LGC Sans Mono Bold" family="DejaVuGC Sans Mono" style="Normal" stretch="Normal" weight="700" glyphs="/usr/share/fonts/dejavu/DejaVuLGCSansMono-Bold.ttf"/>
+  <type name="DejaVu-LGC-Sans-Mono-Bold-Oblique" fullname="DejaVu LGC Sans Mono Bold Oblique" family="DejaVuGC Sans Mono" style="Oblique" stretch="Normal" weight="700" glyphs="/usr/share/fonts/dejavu/DejaVuLGCSansMono-BoldOblique.ttf"/>
+  <type name="DejaVu-LGC-Sans-Mono-Book" fullname="DejaVu LGC Sans Mono Book" family="DejaVuGC Sans Mono" style="Normal" stretch="Normal" weight="400" glyphs="/usr/share/fonts/dejavu/DejaVuLGCSansMono.ttf"/>
+  <type name="DejaVu-LGC-Sans-Mono-Oblique" fullname="DejaVu LGC Sans Mono Oblique" family="DejaVuGC Sans Mono" style="Oblique" stretch="Normal" weight="400" glyphs="/usr/share/fonts/dejavu/DejaVuLGCSansMono-Oblique.ttf"/>
+  <type name="DejaVu-LGC-Sans-Oblique" fullname="DejaVu LGC Sans Oblique" family="DejaVuGC Sans" style="Oblique" stretch="Normal" weight="400" glyphs="/usr/share/fonts/dejavu/DejaVuLGCSans-Oblique.ttf"/>
+  <type name="DejaVu-LGC-Serif-Bold" fullname="DejaVu LGC Serif Bold" family="DejaVuGC Serif" style="Normal" stretch="Normal" weight="700" glyphs="/usr/share/fonts/dejavu/DejaVuLGCSerif-Bold.ttf"/>
+  <type name="DejaVu-LGC-Serif-Bold-Italic" fullname="DejaVu LGC Serif Bold Italic" family="DejaVuGC Serif" style="Italic" stretch="Normal" weight="700" glyphs="/usr/share/fonts/dejavu/DejaVuLGCSerif-BoldItalic.ttf"/>
+  <type name="DejaVu-LGC-Serif-Book" fullname="DejaVu LGC Serif Book" family="DejaVuGC Serif" style="Normal" stretch="Normal" weight="400" glyphs="/usr/share/fonts/dejavu/DejaVuLGCSerif.ttf"/>
+  <type name="DejaVu-LGC-Serif-Condensed" fullname="DejaVu LGC Serif Condensed" family="DejaVuGC Serif" style="Normal" stretch="SemiCondensed" weight="400" glyphs="/usr/share/fonts/dejavu/DejaVuLGCSerifCondensed.ttf"/>
+  <type name="DejaVu-LGC-Serif-Condensed-Bold" fullname="DejaVu LGC Serif Condensed Bold" family="DejaVuGC Serif" style="Normal" stretch="SemiCondensed" weight="700" glyphs="/usr/share/fonts/dejavu/DejaVuLGCSerifCondensed-Bold.ttf"/>
+  <type name="DejaVu-LGC-Serif-Condensed-Bold-Italic" fullname="DejaVu LGC Serif Condensed Bold Italic" family="DejaVuGC Serif" style="Italic" stretch="SemiCondensed" weight="700" glyphs="/usr/share/fonts/dejavu/DejaVuLGCSerifCondensed-BoldItalic.ttf"/>
+  <type name="DejaVu-LGC-Serif-Condensed-Italic" fullname="DejaVu LGC Serif -Condensed Italic" family="DejaVuGC Serif" style="Italic" stretch="SemiCondensed" weight="400" glyphs="/usr/share/fonts/dejavu/DejaVuLGCSerifCondensed-Italic.ttf"/>
+  <type name="DejaVu-LGC-Serif-Italic" fullname="DejaVu LGC Serif Italic" family="DejaVuGC Serif" style="Italic" stretch="Normal" weight="400" glyphs="/usr/share/fonts/dejavu/DejaVuLGCSerif-Italic.ttf"/>
+  <type name="DejaVu-Sans-Bold" fullname="DejaVu Sans Bold" family="DejaVu Sans" style="Normal" stretch="Normal" weight="700" glyphs="/usr/share/fonts/dejavu/DejaVuSans-Bold.ttf"/>
+  <type name="DejaVu-Sans-Bold-Oblique" fullname="DejaVu Sans Bold Oblique" family="DejaVu Sans" style="Oblique" stretch="Normal" weight="700" glyphs="/usr/share/fonts/dejavu/DejaVuSans-BoldOblique.ttf"/>
+  <type name="DejaVu-Sans-Book" fullname="DejaVu Sans Book" family="DejaVu Sans" style="Normal" stretch="Normal" weight="400" glyphs="/usr/share/fonts/dejavu/DejaVuSans.ttf"/>
+  <type name="DejaVu-Sans-Condensed" fullname="DejaVu Sans Condensed" family="DejaVu Sans" style="Normal" stretch="SemiCondensed" weight="400" glyphs="/usr/share/fonts/dejavu/DejaVuSansCondensed.ttf"/>
+  <type name="DejaVu-Sans-Condensed-Bold" fullname="DejaVu Sans Condensed Bold" family="DejaVu Sans" style="Normal" stretch="SemiCondensed" weight="700" glyphs="/usr/share/fonts/dejavu/DejaVuSansCondensed-Bold.ttf"/>
+  <type name="DejaVu-Sans-Condensed-Bold-Oblique" fullname="DejaVu Sans Condensed Bold Oblique" family="DejaVu Sans" style="Oblique" stretch="SemiCondensed" weight="700" glyphs="/usr/share/fonts/dejavu/DejaVuSansCondensed-BoldOblique.ttf"/>
+  <type name="DejaVu-Sans-Condensed-Oblique" fullname="DejaVu Sans Condensed Oblique" family="DejaVu Sans" style="Oblique" stretch="SemiCondensed" weight="400" glyphs="/usr/share/fonts/dejavu/DejaVuSansCondensed-Oblique.ttf"/>
+  <type name="DejaVu-Sans-ExtraLight" fullname="DejaVu Sans ExtraLight" family="DejaVu Sans" style="Normal" stretch="Normal" weight="200" glyphs="/usr/share/fonts/dejavu/DejaVuSans-ExtraLight.ttf"/>
+  <type name="DejaVu-Sans-Mono-Bold" fullname="DejaVu Sans Mono Bold" family="DejaVu Sans Mono" style="Normal" stretch="Normal" weight="700" glyphs="/usr/share/fonts/dejavu/DejaVuSansMono-Bold.ttf"/>
+  <type name="DejaVu-Sans-Mono-Bold-Oblique" fullname="DejaVu Sans Mono Bold Oblique" family="DejaVu Sans Mono" style="Oblique" stretch="Normal" weight="700" glyphs="/usr/share/fonts/dejavu/DejaVuSansMono-BoldOblique.ttf"/>
+  <type name="DejaVu-Sans-Mono-Book" fullname="DejaVu Sans Mono Book" family="DejaVu Sans Mono" style="Normal" stretch="Normal" weight="400" glyphs="/usr/share/fonts/dejavu/DejaVuSansMono.ttf"/>
+  <type name="DejaVu-Sans-Mono-Oblique" fullname="DejaVu Sans Mono Oblique" family="DejaVu Sans Mono" style="Oblique" stretch="Normal" weight="400" glyphs="/usr/share/fonts/dejavu/DejaVuSansMono-Oblique.ttf"/>
+  <type name="DejaVu-Sans-Oblique" fullname="DejaVu Sans Oblique" family="DejaVu Sans" style="Oblique" stretch="Normal" weight="400" glyphs="/usr/share/fonts/dejavu/DejaVuSans-Oblique.ttf"/>
+  <type name="DejaVu-Serif-Bold" fullname="DejaVu Serif Bold" family="DejaVu Serif" style="Normal" stretch="Normal" weight="700" glyphs="/usr/share/fonts/dejavu/DejaVuSerif-Bold.ttf"/>
+  <type name="DejaVu-Serif-Bold-Italic" fullname="DejaVu Serif Bold Italic" family="DejaVu Serif" style="Italic" stretch="Normal" weight="700" glyphs="/usr/share/fonts/dejavu/DejaVuSerif-BoldItalic.ttf"/>
+  <type name="DejaVu-Serif-Book" fullname="DejaVu Serif Book" family="DejaVu Serif" style="Normal" stretch="Normal" weight="400" glyphs="/usr/share/fonts/dejavu/DejaVuSerif.ttf"/>
+  <type name="DejaVu-Serif-Condensed" fullname="DejaVu Serif Condensed" family="DejaVu Serif" style="Normal" stretch="SemiCondensed" weight="400" glyphs="/usr/share/fonts/dejavu/DejaVuSerifCondensed.ttf"/>
+  <type name="DejaVu-Serif-Condensed-Bold" fullname="DejaVu Serif Condensed Bold" family="DejaVu Serif" style="Normal" stretch="SemiCondensed" weight="700" glyphs="/usr/share/fonts/dejavu/DejaVuSerifCondensed-Bold.ttf"/>
+  <type name="DejaVu-Serif-Condensed-Bold-Italic" fullname="DejaVu Serif Condensed Bold Italic" family="DejaVu Serif" style="Italic" stretch="SemiCondensed" weight="700" glyphs="/usr/share/fonts/dejavu/DejaVuSerifCondensed-BoldItalic.ttf"/>
+  <type name="DejaVu-Serif-Condensed-Italic" fullname="DejaVu Serif Condensed Italic" family="DejaVu Serif" style="Italic" stretch="SemiCondensed" weight="400" glyphs="/usr/share/fonts/dejavu/DejaVuSerifCondensed-Italic.ttf"/>
+  <type name="DejaVu-Serif-Italic" fullname="DejaVu Serif Italic" family="DejaVu Serif" style="Italic" stretch="Normal" weight="400" glyphs="/usr/share/fonts/dejavu/DejaVuSerif-Italic.ttf"/>
+</typemap>

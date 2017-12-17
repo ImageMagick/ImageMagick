@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE thresholds [
-<!ELEMENT thresholds (threshold)+>
-<!ELEMENT threshold (description , levels)>
-<!ELEMENT description (CDATA)>
-<!ELEMENT levels (CDATA)>
-<!ATTLIST threshold map ID #REQUIRED>
-<!ATTLIST levels width CDATA #REQUIRED>
-<!ATTLIST levels height CDATA #REQUIRED>
-<!ATTLIST levels divisor CDATA #REQUIRED>
+  <!ELEMENT thresholds (threshold)+>
+  <!ATTLIST thresholds xmlns CDATA #FIXED ''>
+  <!ELEMENT threshold (description,levels)>
+  <!ATTLIST threshold xmlns CDATA #FIXED '' alias NMTOKEN #IMPLIED
+    map NMTOKEN #REQUIRED>
+  <!ELEMENT description (#PCDATA)>
+  <!ATTLIST description xmlns CDATA #FIXED ''>
+  <!ELEMENT levels (#PCDATA)>
+  <!ATTLIST levels xmlns CDATA #FIXED '' divisor CDATA #REQUIRED
+    height CDATA #REQUIRED width CDATA #REQUIRED>
 ]>
 <!--
   Threshold Maps for Ordered Posterized Dither

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE localemap [
-<!ELEMENT localemap (include)+>
-<!ELEMENT include (#PCDATA)>
-<!ATTLIST include locale CDATA #REQUIRED>
-<!ATTLIST include file CDATA #REQUIRED>
+  <!ELEMENT localemap (include)+>
+  <!ATTLIST localemap xmlns CDATA #FIXED ''>
+  <!ELEMENT include EMPTY>
+  <!ATTLIST include xmlns CDATA #FIXED '' file NMTOKEN #REQUIRED
+    locale NMTOKEN #REQUIRED>
 ]>
 <localemap>
   <include locale="no_NO.ISO-8859-1" file="bokmal.xml"/>

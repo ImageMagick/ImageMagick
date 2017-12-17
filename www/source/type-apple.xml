@@ -1,0 +1,1367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE typemap [
+  <!ELEMENT typemap (type)+>
+  <!ATTLIST typemap xmlns CDATA #FIXED ''>
+  <!ELEMENT type EMPTY>
+  <!ATTLIST type xmlns CDATA #FIXED '' encoding NMTOKEN #IMPLIED
+    family CDATA #REQUIRED format NMTOKEN #REQUIRED foundry NMTOKEN #REQUIRED
+    fullname CDATA #REQUIRED glyphs CDATA #REQUIRED metrics CDATA #REQUIRED
+    name NMTOKEN #REQUIRED stretch NMTOKEN #REQUIRED style NMTOKEN #REQUIRED
+    version CDATA #IMPLIED weight CDATA #REQUIRED>
+]>
+<!--
+  ImageMagick Apple font configuration.
+-->
+<typemap>
+  <type
+     format="ttf"
+     name="AlBayan"
+     fullname="Al Bayan Plain"
+     family="Al Bayan"
+     glyphs="/AlBayan.ttf"
+     />
+  <type
+     format="ttf"
+     name="AlBayanB"
+     fullname="Al Bayan Bold"
+     family="Al Bayan"
+     glyphs="/AlBayanBold.ttf"
+     />
+  <type
+     format="ttf"
+     name="AndaleMono"
+     fullname="Andale Mono"
+     family="Andale Mono"
+     glyphs="/Andale Mono.ttf"
+     />
+  <type
+     format="ttf"
+     name="AppleChancery"
+     fullname="Apple Chancery"
+     family="Apple Chancery"
+     glyphs="/Apple Chancery.ttf"
+     />
+  <type
+     format="ttf"
+     name="AppleLiGothicM"
+     fullname="Apple LiGothic Medium"
+     family="Apple LiGothic"
+     glyphs="/Apple LiGothic Medium.ttf"
+     />
+  <type
+     format="ttf"
+     name="AppleLiSungL"
+     fullname="Apple LiSung Light"
+     family="Apple LiSung"
+     glyphs="/Apple LiSung Light.ttf"
+     />
+  <type
+     format="ttf"
+     name="AppleMyungjo"
+     fullname="AppleMyungjo Regular"
+     family="AppleMyungjo"
+     glyphs="/AppleMyungjo.ttf"
+     />
+  <type
+     format="ttf"
+     name="ArialBk"
+     fullname="Arial Black"
+     family="Arial Black"
+     glyphs="/Arial Black.ttf"
+     />
+  <type
+     format="ttf"
+     name="ArialBI"
+     fullname="Arial Bold Italic"
+     family="Arial"
+     glyphs="/Arial Bold Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="ArialB"
+     fullname="Arial Bold"
+     family="Arial"
+     glyphs="/Arial Bold.ttf"
+     />
+  <type
+     format="ttf"
+     name="ArialI"
+     fullname="Arial Italic"
+     family="Arial"
+     glyphs="/Arial Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="ArialNarrowBI"
+     fullname="Arial Narrow Bold Italic"
+     family="Arial Narrow"
+     glyphs="/Arial Narrow Bold Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="ArialNarrowB"
+     fullname="Arial Narrow Bold"
+     family="Arial Narrow"
+     glyphs="/Arial Narrow Bold.ttf"
+     />
+  <type
+     format="ttf"
+     name="ArialNarrowI"
+     fullname="Arial Narrow Italic"
+     family="Arial Narrow"
+     glyphs="/Arial Narrow Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="ArialNarrow"
+     fullname="Arial Narrow"
+     family="Arial Narrow"
+     glyphs="/Arial Narrow.ttf"
+     />
+  <type
+     format="ttf"
+     name="ArialRoundedB"
+     fullname="Arial Rounded MT Bold"
+     family="Arial Rounded Bold"
+     glyphs="/Arial Rounded Bold.ttf"
+     />
+  <type
+     format="ttf"
+     name="ArialUnicode"
+     fullname="Arial Unicode MS"
+     family="Arial Unicode"
+     glyphs="/Arial Unicode.ttf"
+     />
+  <type
+     format="ttf"
+     name="Arial"
+     fullname="Arial"
+     family="Arial"
+     glyphs="/Arial.ttf"
+     />
+  <type
+     format="ttf"
+     name="ArialHebrew"
+     fullname="Arial Hebrew"
+     family="Arial Hebrew"
+     glyphs="/ArialHB.ttf"
+     />
+  <type
+     format="ttf"
+     name="ArialHebrewB"
+     fullname="Arial Hebrew Bold"
+     family="Arial Hebrew"
+     glyphs="/ArialHBBold.ttf"
+     />
+  <type
+     format="ttf"
+     name="AsapB"
+     fullname="Asap Bold"
+     family="Asap"
+     glyphs="/Asap-Bold.ttf"
+     />
+  <type
+     format="ttf"
+     name="AsapBI"
+     fullname="Asap Bold Italic"
+     family="Asap"
+     glyphs="/Asap-BoldItalic.ttf"
+     />
+  <type
+     format="ttf"
+     name="AsapI"
+     fullname="Asap Italic"
+     family="Asap"
+     glyphs="/Asap-Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="Asap"
+     fullname="Asap"
+     family="Asap"
+     glyphs="/Asap-Regular.ttf"
+     />
+  <type
+     format="ttf"
+     name="AvantGardeDemi"
+     fullname="Avant Garde Demi BT"
+     family="AvantGarde Bk BT"
+     glyphs="/Avant Garde Demi.ttf"
+     />
+  <type
+     format="ttf"
+     name="Ayuthaya"
+     fullname="Ayuthaya"
+     family="Ayuthaya"
+     glyphs="/Ayuthaya.ttf"
+     />
+  <type
+     format="ttf"
+     name="Baghdad"
+     fullname="Baghdad"
+     family="Baghdad"
+     glyphs="/Baghdad.ttf"
+     />
+  <type
+     format="ttf"
+     name="BiauKai"
+     fullname="BiauKai"
+     family="BiauKai"
+     glyphs="/BiauKai.ttf"
+     />
+  <type
+     format="ttf"
+     name="BigCaslonM"
+     fullname="Big Caslon Medium"
+     family="Big Caslon"
+     glyphs="/BigCaslon.ttf"
+     />
+  <type
+     format="ttf"
+     name="BrushScriptI"
+     fullname="Brush Script MT Italic"
+     family="Brush Script "
+     glyphs="/Brush Script.ttf"
+     />
+  <type
+     format="ttf"
+     name="Candice"
+     fullname="Candice"
+     family="Candice"
+     glyphs="/Candice.ttf"
+     />
+  <type
+     format="ttf"
+     name="Chalkduster"
+     fullname="Chalkduster"
+     family="Chalkduster"
+     glyphs="/Chalkduster.ttf"
+     />
+  <type
+     format="ttf"
+     name="ComicSansMSB"
+     fullname="Comic Sans MS Bold"
+     family="Comic Sans"
+     glyphs="/Comic Sans MS Bold.ttf"
+     />
+  <type
+     format="ttf"
+     name="ComicSans"
+     fullname="Comic Sans MS"
+     family="Comic Sans"
+     glyphs="/Comic Sans MS.ttf"
+     />
+  <type
+     format="ttf"
+     name="ComicSans"
+     fullname="Comic Sans MS"
+     family="Comic Sans"
+     glyphs="/comic.ttf"
+     />
+  <type
+     format="ttf"
+     name="ComicSansMSB"
+     fullname="Comic Sans MS Bold"
+     family="Comic Sans"
+     glyphs="/comicbd.ttf"
+     />
+  <type
+     format="ttf"
+     name="CorsivaHebrew"
+     fullname="Corsiva Hebrew"
+     family="Corsiva Hebrew"
+     glyphs="/Corsiva.ttf"
+     />
+  <type
+     format="ttf"
+     name="CorsivaHebrewB"
+     fullname="Corsiva Hebrew Bold"
+     family="Corsiva Hebrew"
+     glyphs="/CorsivaBold.ttf"
+     />
+  <type
+     format="ttf"
+     name="CourierNewBI"
+     fullname="Courier New Bold Italic"
+     family="Courier New"
+     glyphs="/Courier New Bold Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="CourierNewB"
+     fullname="Courier New Bold"
+     family="Courier New"
+     glyphs="/Courier New Bold.ttf"
+     />
+  <type
+     format="ttf"
+     name="CourierNewI"
+     fullname="Courier New Italic"
+     family="Courier New"
+     glyphs="/Courier New Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="CourierNew"
+     fullname="Courier New"
+     family="Courier New"
+     glyphs="/Courier New.ttf"
+     />
+  <type
+     format="ttf"
+     name="DecoTypeNaskh"
+     fullname="DecoType Naskh"
+     family="DecoType Naskh"
+     glyphs="/DecoTypeNaskh.ttf"
+     />
+  <type
+     format="ttf"
+     name="Devanagari"
+     fullname="Devanagari MT"
+     family="Devanagari "
+     glyphs="/DevanagariMT.ttf"
+     />
+  <type
+     format="ttf"
+     name="DevanagariB"
+     fullname="Devanagari MT Bold"
+     family="Devanagari "
+     glyphs="/DevanagariMTBold.ttf"
+     />
+  <type
+     format="ttf"
+     name="EuphemiaUCASB"
+     fullname="Euphemia UCAS Bold"
+     family="Euphemia UCAS"
+     glyphs="/EuphemiaCASBold.ttf"
+     />
+  <type
+     format="ttf"
+     name="EuphemiaUCASI"
+     fullname="Euphemia UCAS Italic"
+     family="Euphemia UCAS"
+     glyphs="/EuphemiaCASItalic.ttf"
+     />
+  <type
+     format="ttf"
+     name="EuphemiaUCAS"
+     fullname="Euphemia UCAS"
+     family="Euphemia UCAS"
+     glyphs="/EuphemiaCASRegular.ttf"
+     />
+  <type
+     format="ttf"
+     name="GeorgiaBI"
+     fullname="Georgia Bold Italic"
+     family="Georgia"
+     glyphs="/Georgia Bold Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="GeorgiaB"
+     fullname="Georgia Bold"
+     family="Georgia"
+     glyphs="/Georgia Bold.ttf"
+     />
+  <type
+     format="ttf"
+     name="GeorgiaI"
+     fullname="Georgia Italic"
+     family="Georgia"
+     glyphs="/Georgia Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="Georgia"
+     fullname="Georgia"
+     family="Georgia"
+     glyphs="/Georgia.ttf"
+     />
+  <type
+     format="ttf"
+     name="GreekMathSymbols"
+     fullname="GreekMathSymbols Normal"
+     family="GreekMathSymbols"
+     glyphs="/GreekMathSymbols Normal.ttf"
+     />
+  <type
+     format="ttf"
+     name="Gujarati"
+     fullname="Gujarati MT"
+     family="Gujarati "
+     glyphs="/GujaratiMT.ttf"
+     />
+  <type
+     format="ttf"
+     name="GujaratiB"
+     fullname="Gujarati MT Bold"
+     family="Gujarati "
+     glyphs="/GujaratiMTBold.ttf"
+     />
+  <type
+     format="ttf"
+     name="Gulim"
+     fullname="Gulim"
+     family="Gulim"
+     glyphs="/Gulim.ttf"
+     />
+  <type
+     format="ttf"
+     name="GungSeo"
+     fullname="GungSeo Regular"
+     family="GungSeo"
+     glyphs="/Gungseouche.ttf"
+     />
+  <type
+     format="ttf"
+     name="Gurmukhi"
+     fullname="Gurmukhi MT"
+     family="Gurmukhi "
+     glyphs="/Gurmukhi.ttf"
+     />
+  <type
+     format="ttf"
+     name="HeadLineA"
+     fullname="HeadLineA Regular"
+     family="HeadLineA"
+     glyphs="/HeadlineA.ttf"
+     />
+  <type
+     format="ttf"
+     name="Hei"
+     fullname="Hei Regular"
+     family="Hei"
+     glyphs="/Hei.ttf"
+     />
+  <type
+     format="ttf"
+     name="Herculanum"
+     fullname="Herculanum"
+     family="Herculanum"
+     glyphs="/Herculanum.ttf"
+     />
+  <type
+     format="ttf"
+     name="HoeflerTextOrnaments"
+     fullname="Hoefler Text Ornaments"
+     family="Hoefler Text"
+     glyphs="/Hoefler Text Ornaments.ttf"
+     />
+  <type
+     format="ttf"
+     name="Impact"
+     fullname="Impact"
+     family="Impact"
+     glyphs="/Impact.ttf"
+     />
+  <type
+     format="ttf"
+     name="InaiMathi"
+     fullname="InaiMathi"
+     family="InaiMathi"
+     glyphs="/InaiMathi.ttf"
+     />
+  <type
+     format="ttf"
+     name="Kai"
+     fullname="Kai Regular"
+     family="Kai"
+     glyphs="/Kai.ttf"
+     />
+  <type
+     format="ttf"
+     name="Kailasa"
+     fullname="Kailasa Regular"
+     family="Kailasa"
+     glyphs="/Kailasa.ttf"
+     />
+  <type
+     format="ttf"
+     name="Kokonor"
+     fullname="Kokonor Regular"
+     family="Kokonor"
+     glyphs="/Kokonor.ttf"
+     />
+  <type
+     format="ttf"
+     name="Krungthep"
+     fullname="Krungthep"
+     family="Krungthep"
+     glyphs="/Krungthep.ttf"
+     />
+  <type
+     format="ttf"
+     name="KufiStandardGK"
+     fullname="KufiStandardGK"
+     family="KufiStandardGK"
+     glyphs="/KufiStandardGK.ttf"
+     />
+  <type
+     format="ttf"
+     name="Symbol"
+     fullname="Symbol"
+     family="Symbol"
+     glyphs="/MathSymbol.ttf"
+     />
+  <type
+     format="ttf"
+     name="Batang"
+     fullname="Batang"
+     family="Batang"
+     glyphs="/Microsoft/Batang.ttf"
+     />
+  <type
+     format="ttf"
+     name="BookshelfSymbol7"
+     fullname="Bookshelf Symbol 7"
+     family="Bookshelf Symbol 7"
+     glyphs="/Microsoft/Bookshelf Symbol 7.ttf"
+     />
+  <type
+     format="ttf"
+     name="BrushScriptI"
+     fullname="Brush Script MT Italic"
+     family="Brush Script "
+     glyphs="/Microsoft/Brush Script.ttf"
+     />
+  <type
+     format="ttf"
+     name="CalibriBI"
+     fullname="Calibri Bold Italic"
+     family="Calibri"
+     glyphs="/Microsoft/Calibri Bold Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="CalibriB"
+     fullname="Calibri Bold"
+     family="Calibri"
+     glyphs="/Microsoft/Calibri Bold.ttf"
+     />
+  <type
+     format="ttf"
+     name="CalibriI"
+     fullname="Calibri Italic"
+     family="Calibri"
+     glyphs="/Microsoft/Calibri Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="Calibri"
+     fullname="Calibri"
+     family="Calibri"
+     glyphs="/Microsoft/Calibri.ttf"
+     />
+  <type
+     format="ttf"
+     name="CambriaBI"
+     fullname="Cambria Bold Italic"
+     family="Cambria"
+     glyphs="/Microsoft/Cambria Bold Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="CambriaB"
+     fullname="Cambria Bold"
+     family="Cambria"
+     glyphs="/Microsoft/Cambria Bold.ttf"
+     />
+  <type
+     format="ttf"
+     name="CambriaI"
+     fullname="Cambria Italic"
+     family="Cambria"
+     glyphs="/Microsoft/Cambria Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="Cambria"
+     fullname="Cambria"
+     family="Cambria"
+     glyphs="/Microsoft/Cambria.ttf"
+     />
+  <type
+     format="ttf"
+     name="CandaraBI"
+     fullname="Candara Bold Italic"
+     family="Candara"
+     glyphs="/Microsoft/Candara Bold Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="CandaraB"
+     fullname="Candara Bold"
+     family="Candara"
+     glyphs="/Microsoft/Candara Bold.ttf"
+     />
+  <type
+     format="ttf"
+     name="CandaraI"
+     fullname="Candara Italic"
+     family="Candara"
+     glyphs="/Microsoft/Candara Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="Candara"
+     fullname="Candara"
+     family="Candara"
+     glyphs="/Microsoft/Candara.ttf"
+     />
+  <type
+     format="ttf"
+     name="ConsolasBI"
+     fullname="Consolas Bold Italic"
+     family="Consolas"
+     glyphs="/Microsoft/Consolas Bold Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="ConsolasB"
+     fullname="Consolas Bold"
+     family="Consolas"
+     glyphs="/Microsoft/Consolas Bold.ttf"
+     />
+  <type
+     format="ttf"
+     name="ConsolasI"
+     fullname="Consolas Italic"
+     family="Consolas"
+     glyphs="/Microsoft/Consolas Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="Consolas"
+     fullname="Consolas"
+     family="Consolas"
+     glyphs="/Microsoft/Consolas.ttf"
+     />
+  <type
+     format="ttf"
+     name="ConstantiaTestI"
+     fullname="Constantia Test Italic"
+     family="Constantia"
+     glyphs="/Microsoft/Constantia Bold Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="ConstantiaB"
+     fullname="Constantia Bold"
+     family="Constantia"
+     glyphs="/Microsoft/Constantia Bold.ttf"
+     />
+  <type
+     format="ttf"
+     name="ConstantiaI"
+     fullname="Constantia Italic"
+     family="Constantia"
+     glyphs="/Microsoft/Constantia Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="Constantia"
+     fullname="Constantia"
+     family="Constantia"
+     glyphs="/Microsoft/Constantia.ttf"
+     />
+  <type
+     format="ttf"
+     name="CorbelTestBI"
+     fullname="Corbel Test Bold Italic"
+     family="Corbel"
+     glyphs="/Microsoft/Corbel Bold Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="CorbelTestB"
+     fullname="Corbel Test Bold"
+     family="Corbel"
+     glyphs="/Microsoft/Corbel Bold.ttf"
+     />
+  <type
+     format="ttf"
+     name="CorbelI"
+     fullname="Corbel Italic"
+     family="Corbel"
+     glyphs="/Microsoft/Corbel Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="Corbel"
+     fullname="Corbel"
+     family="Corbel"
+     glyphs="/Microsoft/Corbel.ttf"
+     />
+  <type
+     format="ttf"
+     name="FranklinGothicBookI"
+     fullname="Franklin Gothic Book Italic"
+     family="Franklin Gothic Book"
+     glyphs="/Microsoft/Franklin Gothic Book Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="FranklinGothicBook"
+     fullname="Franklin Gothic Book"
+     family="Franklin Gothic Book"
+     glyphs="/Microsoft/Franklin Gothic Book.ttf"
+     />
+  <type
+     format="ttf"
+     name="FranklinGothicMI"
+     fullname="Franklin Gothic Medium Italic"
+     family="Franklin Gothic Medium"
+     glyphs="/Microsoft/Franklin Gothic Medium Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="FranklinGothicM"
+     fullname="Franklin Gothic Medium"
+     family="Franklin Gothic Medium"
+     glyphs="/Microsoft/Franklin Gothic Medium.ttf"
+     />
+  <type
+     format="ttf"
+     name="GillSansBI"
+     fullname="Gill Sans MT Bold Italic"
+     family="Gill Sans "
+     glyphs="/Microsoft/Gill Sans MT Bold Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="GillSansB"
+     fullname="Gill Sans MT Bold"
+     family="Gill Sans "
+     glyphs="/Microsoft/Gill Sans MT Bold.ttf"
+     />
+  <type
+     format="ttf"
+     name="GillSansI"
+     fullname="Gill Sans MT Italic"
+     family="Gill Sans "
+     glyphs="/Microsoft/Gill Sans MT Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="GillSans"
+     fullname="Gill Sans MT"
+     family="Gill Sans "
+     glyphs="/Microsoft/Gill Sans MT.ttf"
+     />
+  <type
+     format="ttf"
+     name="Gulim"
+     fullname="Gulim"
+     family="Gulim"
+     glyphs="/Microsoft/Gulim.ttf"
+     />
+  <type
+     format="ttf"
+     name="LucidaConsole"
+     fullname="Lucida Console"
+     family="Lucida Console"
+     glyphs="/Microsoft/Lucida Console.ttf"
+     />
+  <type
+     format="ttf"
+     name="LucidaSansUnicode"
+     fullname="Lucida Sans Unicode"
+     family="Lucida Sans Unicode"
+     glyphs="/Microsoft/Lucida Sans Unicode.ttf"
+     />
+  <type
+     format="ttf"
+     name="Marlett"
+     fullname="Marlett"
+     family="Marlett"
+     glyphs="/Microsoft/Marlett.ttf"
+     />
+  <type
+     format="ttf"
+     name="MeiryoBI"
+     fullname="Meiryo Bold Italic"
+     family="Meiryo"
+     glyphs="/Microsoft/Meiryo Bold Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="MeiryoB"
+     fullname="Meiryo Bold"
+     family="Meiryo"
+     glyphs="/Microsoft/Meiryo Bold.ttf"
+     />
+  <type
+     format="ttf"
+     name="MeiryoI"
+     fullname="Meiryo Italic"
+     family="Meiryo"
+     glyphs="/Microsoft/Meiryo Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="Meiryo"
+     fullname="Meiryo"
+     family="Meiryo"
+     glyphs="/Microsoft/Meiryo.ttf"
+     />
+  <type
+     format="ttf"
+     name="Gothic"
+     fullname="MS Gothic"
+     family="Gothic"
+     glyphs="/Microsoft/MS Gothic.ttf"
+     />
+  <type
+     format="ttf"
+     name="Mincho"
+     fullname="MS Mincho"
+     family="Mincho"
+     glyphs="/Microsoft/MS Mincho.ttf"
+     />
+  <type
+     format="ttf"
+     name="PGothic"
+     fullname="MS PGothic"
+     family="PGothic"
+     glyphs="/Microsoft/MS PGothic.ttf"
+     />
+  <type
+     format="ttf"
+     name="PMincho"
+     fullname="MS PMincho"
+     family="PMincho"
+     glyphs="/Microsoft/MS PMincho.ttf"
+     />
+  <type
+     format="ttf"
+     name="ReferenceSansSerif"
+     fullname="MS Reference Sans Serif"
+     family="Reference Sans Serif"
+     glyphs="/Microsoft/MS Reference Sans Serif.ttf"
+     />
+  <type
+     format="ttf"
+     name="ReferenceSpecialty"
+     fullname="MS Reference Specialty"
+     family="Reference Specialty"
+     glyphs="/Microsoft/MS Reference Specialty.ttf"
+     />
+  <type
+     format="ttf"
+     name="PerpetuaBI"
+     fullname="Perpetua Bold Italic"
+     family="Perpetua"
+     glyphs="/Microsoft/Perpetua Bold Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="PerpetuaB"
+     fullname="Perpetua Bold"
+     family="Perpetua"
+     glyphs="/Microsoft/Perpetua Bold.ttf"
+     />
+  <type
+     format="ttf"
+     name="PerpetuaI"
+     fullname="Perpetua Italic"
+     family="Perpetua"
+     glyphs="/Microsoft/Perpetua Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="Perpetua"
+     fullname="Perpetua"
+     family="Perpetua"
+     glyphs="/Microsoft/Perpetua.ttf"
+     />
+  <type
+     format="ttf"
+     name="PMingLiU"
+     fullname="PMingLiU"
+     family="PMingLiU"
+     glyphs="/Microsoft/PMingLiU.ttf"
+     />
+  <type
+     format="ttf"
+     name="SimSun"
+     fullname="SimSun"
+     family="SimSun"
+     glyphs="/Microsoft/SimSun.ttf"
+     />
+  <type
+     format="ttf"
+     name="TwCenBI"
+     fullname="Tw Cen MT Bold Italic"
+     family="Tw Cen "
+     glyphs="/Microsoft/Tw Cen MT Bold Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="TwCenB"
+     fullname="Tw Cen MT Bold"
+     family="Tw Cen "
+     glyphs="/Microsoft/Tw Cen MT Bold.ttf"
+     />
+  <type
+     format="ttf"
+     name="TwCenI"
+     fullname="Tw Cen MT Italic"
+     family="Tw Cen "
+     glyphs="/Microsoft/Tw Cen MT Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="TwCen"
+     fullname="Tw Cen MT"
+     family="Tw Cen "
+     glyphs="/Microsoft/Tw Cen MT.ttf"
+     />
+  <type
+     format="ttf"
+     name="MicrosoftSansSerif"
+     fullname="Microsoft Sans Serif"
+     family="Microsoft Sans Serif"
+     glyphs="/Microsoft Sans Serif.ttf"
+     />
+  <type
+     format="ttf"
+     name="Gothic"
+     fullname="MS Gothic"
+     family="Gothic"
+     glyphs="/MS Gothic.ttf"
+     />
+  <type
+     format="ttf"
+     name="Mincho"
+     fullname="MS Mincho"
+     family="Mincho"
+     glyphs="/MS Mincho.ttf"
+     />
+  <type
+     format="ttf"
+     name="PGothic"
+     fullname="MS PGothic"
+     family="PGothic"
+     glyphs="/MS PGothic.ttf"
+     />
+  <type
+     format="ttf"
+     name="PMincho"
+     fullname="MS PMincho"
+     family="PMincho"
+     glyphs="/MS PMincho.ttf"
+     />
+  <type
+     format="ttf"
+     name="MshtakanB"
+     fullname="Mshtakan Bold"
+     family="Mshtakan"
+     glyphs="/MshtakanBold.ttf"
+     />
+  <type
+     format="ttf"
+     name="MshtakanBoldOblique"
+     fullname="Mshtakan BoldOblique"
+     family="Mshtakan"
+     glyphs="/MshtakanBoldOblique.ttf"
+     />
+  <type
+     format="ttf"
+     name="MshtakanOb"
+     fullname="Mshtakan Oblique"
+     family="Mshtakan"
+     glyphs="/MshtakanOblique.ttf"
+     />
+  <type
+     format="ttf"
+     name="Mshtakan"
+     fullname="Mshtakan"
+     family="Mshtakan"
+     glyphs="/MshtakanRegular.ttf"
+     />
+  <type
+     format="ttf"
+     name="Nadeem"
+     fullname="Nadeem"
+     family="Nadeem"
+     glyphs="/Nadeem.ttf"
+     />
+  <type
+     format="ttf"
+     name="NewPeninim"
+     fullname="New Peninim MT"
+     family="New Peninim "
+     glyphs="/NewPeninimMT.ttf"
+     />
+  <type
+     format="ttf"
+     name="NewPeninimB"
+     fullname="New Peninim MT Bold"
+     family="New Peninim "
+     glyphs="/NewPeninimMTBold.ttf"
+     />
+  <type
+     format="ttf"
+     name="NewPeninimBInclined"
+     fullname="New Peninim MT Bold Inclined"
+     family="New Peninim "
+     glyphs="/NewPeninimMTBoldInclined.ttf"
+     />
+  <type
+     format="ttf"
+     name="NewPeninimInclined"
+     fullname="New Peninim MT Inclined"
+     family="New Peninim "
+     glyphs="/NewPeninimMTInclined.ttf"
+     />
+  <type
+     format="ttf"
+     name="GB18030Bitmap"
+     fullname="GB18030 Bitmap"
+     family="GB18030 Bitmap"
+     glyphs="/NISC18030.ttf"
+     />
+  <type
+     format="ttf"
+     name="OpenSansB"
+     fullname="Open Sans Bold"
+     family="Open Sans"
+     glyphs="/OpenSans-Bold.ttf"
+     />
+  <type
+     format="ttf"
+     name="OpenSansBI"
+     fullname="Open Sans Bold Italic"
+     family="Open Sans"
+     glyphs="/OpenSans-BoldItalic.ttf"
+     />
+  <type
+     format="ttf"
+     name="OpenSansXb"
+     fullname="Open Sans Extrabold"
+     family="Open Sans Extrabold"
+     glyphs="/OpenSans-ExtraBold.ttf"
+     />
+  <type
+     format="ttf"
+     name="OpenSansXbI"
+     fullname="Open Sans Extrabold Italic"
+     family="Open Sans Extrabold"
+     glyphs="/OpenSans-ExtraBoldItalic.ttf"
+     />
+  <type
+     format="ttf"
+     name="OpenSansI"
+     fullname="Open Sans Italic"
+     family="Open Sans"
+     glyphs="/OpenSans-Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="OpenSansL"
+     fullname="Open Sans Light"
+     family="Open Sans Light"
+     glyphs="/OpenSans-Light.ttf"
+     />
+  <type
+     format="ttf"
+     name="OpenSansLI"
+     fullname="Open Sans Light Italic"
+     family="Open Sans Light"
+     glyphs="/OpenSans-LightItalic.ttf"
+     />
+  <type
+     format="ttf"
+     name="OpenSans"
+     fullname="Open Sans"
+     family="Open Sans"
+     glyphs="/OpenSans-Regular.ttf"
+     />
+  <type
+     format="ttf"
+     name="OpenSansSemibold"
+     fullname="Open Sans Semibold"
+     family="Open Sans Semibold"
+     glyphs="/OpenSans-Semibold.ttf"
+     />
+  <type
+     format="ttf"
+     name="OpenSansSemiboldI"
+     fullname="Open Sans Semibold Italic"
+     family="Open Sans Semibold"
+     glyphs="/OpenSans-SemiboldItalic.ttf"
+     />
+  <type
+     format="ttf"
+     name="Osaka"
+     fullname="Osaka"
+     family="Osaka"
+     glyphs="/Osaka.ttf"
+     />
+  <type
+     format="ttf"
+     name="OsakaMono"
+     fullname="Osaka-Mono"
+     family="Osaka"
+     glyphs="/OsakaMono.ttf"
+     />
+  <type
+     format="ttf"
+     name="PCMyungjo"
+     fullname="PCMyungjo Regular"
+     family="PCMyungjo"
+     glyphs="/PCmyoungjo.ttf"
+     />
+  <type
+     format="ttf"
+     name="Pharmacy"
+     fullname="Pharmacy"
+     family="Pharmacy"
+     glyphs="/Pharmacy.ttf"
+     />
+  <type
+     format="ttf"
+     name="PilGi"
+     fullname="PilGi Regular"
+     family="PilGi"
+     glyphs="/Pilgiche.ttf"
+     />
+  <type
+     format="ttf"
+     name="PlantagenetCherokee"
+     fullname="Plantagenet Cherokee"
+     family="Plantagenet Cherokee"
+     glyphs="/PlantagenetCherokee.ttf"
+     />
+  <type
+     format="ttf"
+     name="Raanana"
+     fullname="Raanana"
+     family="Raanana"
+     glyphs="/Raanana.ttf"
+     />
+  <type
+     format="ttf"
+     name="RaananaB"
+     fullname="Raanana Bold"
+     family="Raanana"
+     glyphs="/RaananaBold.ttf"
+     />
+  <type
+     format="ttf"
+     name="Sathu"
+     fullname="Sathu"
+     family="Sathu"
+     glyphs="/Sathu.ttf"
+     />
+  <type
+     format="ttf"
+     name="Silom"
+     fullname="Silom"
+     family="Silom"
+     glyphs="/Silom.ttf"
+     />
+  <type
+     format="ttf"
+     name="SimSun"
+     fullname="SimSun"
+     family="SimSun"
+     glyphs="/SimSun.ttf"
+     />
+  <type
+     format="ttf"
+     name="Skia"
+     fullname="Skia Regular"
+     family="Skia"
+     glyphs="/Skia.ttf"
+     />
+  <type
+     format="ttf"
+     name="Starburst"
+     fullname="Starburst Regular"
+     family="Starburst"
+     glyphs="/starburst.ttf"
+     />
+  <type
+     format="ttf"
+     name="Symbol"
+     fullname="Symbol"
+     family="Symbol"
+     glyphs="/Symbol.ttf"
+     />
+  <type
+     format="ttf"
+     name="TahomaB"
+     fullname="Tahoma Bold"
+     family="Tahoma"
+     glyphs="/Tahoma Bold.ttf"
+     />
+  <type
+     format="ttf"
+     name="Tahoma"
+     fullname="Tahoma"
+     family="Tahoma"
+     glyphs="/Tahoma.ttf"
+     />
+  <type
+     format="ttf"
+     name="TimesNewRomanBI"
+     fullname="Times New Roman Bold Italic"
+     family="Times New Roman"
+     glyphs="/Times New Roman Bold Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="TimesNewRomanB"
+     fullname="Times New Roman Bold"
+     family="Times New Roman"
+     glyphs="/Times New Roman Bold.ttf"
+     />
+  <type
+     format="ttf"
+     name="TimesNewRomanI"
+     fullname="Times New Roman Italic"
+     family="Times New Roman"
+     glyphs="/Times New Roman Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="TimesNewRoman"
+     fullname="Times New Roman"
+     family="Times New Roman"
+     glyphs="/Times New Roman.ttf"
+     />
+  <type
+     format="ttf"
+     name="TrebuchetMSBI"
+     fullname="Trebuchet MS Bold Italic"
+     family="Trebuchet"
+     glyphs="/Trebuchet MS Bold Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="TrebuchetMSB"
+     fullname="Trebuchet MS Bold"
+     family="Trebuchet"
+     glyphs="/Trebuchet MS Bold.ttf"
+     />
+  <type
+     format="ttf"
+     name="TrebuchetMSI"
+     fullname="Trebuchet MS Italic"
+     family="Trebuchet"
+     glyphs="/Trebuchet MS Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="Trebuchet"
+     fullname="Trebuchet MS"
+     family="Trebuchet"
+     glyphs="/Trebuchet MS.ttf"
+     />
+  <type
+     format="ttf"
+     name="Vademecum"
+     fullname="Vademecum"
+     family="Vademecum"
+     glyphs="/vademecu.ttf"
+     />
+  <type
+     format="ttf"
+     name="VerdanaBI"
+     fullname="Verdana Bold Italic"
+     family="Verdana"
+     glyphs="/Verdana Bold Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="VerdanaB"
+     fullname="Verdana Bold"
+     family="Verdana"
+     glyphs="/Verdana Bold.ttf"
+     />
+  <type
+     format="ttf"
+     name="VerdanaI"
+     fullname="Verdana Italic"
+     family="Verdana"
+     glyphs="/Verdana Italic.ttf"
+     />
+  <type
+     format="ttf"
+     name="Verdana"
+     fullname="Verdana"
+     family="Verdana"
+     glyphs="/Verdana.ttf"
+     />
+  <type
+     format="ttf"
+     name="Webdings"
+     fullname="Webdings"
+     family="Webdings"
+     glyphs="/Webdings.ttf"
+     />
+  <type
+     format="ttf"
+     name="Wingdings2"
+     fullname="Wingdings 2"
+     family="Wingdings 2"
+     glyphs="/Wingdings 2.ttf"
+     />
+  <type
+     format="ttf"
+     name="Wingdings3"
+     fullname="Wingdings 3"
+     family="Wingdings 3"
+     glyphs="/Wingdings 3.ttf"
+     />
+  <type
+     format="ttf"
+     name="Wingdings"
+     fullname="Wingdings"
+     family="Wingdings"
+     glyphs="/Wingdings.ttf"
+     />
+  <type
+     format="ttf"
+     name="Zapfino"
+     fullname="Zapfino"
+     family="Zapfino"
+     glyphs="/Zapfino.ttf"
+     />
+  <type
+     format="ttf"
+     name="Zymbols"
+     fullname="Zymbols"
+     family="Zymbols"
+     glyphs="/Zymbols.ttf"
+     />
+  <type
+     format="ttf"
+     name="LiSongPro"
+     fullname="LiSong Pro"
+     family="LiSong Pro"
+     glyphs="/å·å® Pro.ttf"
+     />
+  <type
+     format="ttf"
+     name="STFangsong"
+     fullname="STFangsong"
+     family="STFangsong"
+     glyphs="/åæä»¿å®.ttf"
+     />
+  <type
+     format="ttf"
+     name="STSong"
+     fullname="STSong"
+     family="STSong"
+     glyphs="/åæå®ä½.ttf"
+     />
+  <type
+     format="ttf"
+     name="STKaiti"
+     fullname="STKaiti"
+     family="STKaiti"
+     glyphs="/åææ¥·ä½.ttf"
+     />
+</typemap>

@@ -38,8 +38,8 @@
         <message name="CacheResourcesExhausted">
           cache resources exhausted
         </message>
-        <message name="InconsistentPersistentCacheDepth">
-          inconsistent persistent cache depth
+        <message name="IncompatibleAPI">
+          incompatible API
         </message>
         <message name="NoPixelsDefinedInCache">
           no pixels defined in cache
@@ -68,10 +68,16 @@
         <message name="UnableToReadPixelCache">
           unable to read pixel cache
         </message>
+        <message name="UnableToWritePixelCache">
+          unable to write pixel cache
+        </message>
       </error>
       <fatalerror>
         <message name="UnableToAcquireCacheView">
           unable to acquire cache view
+        </message>
+        <message name="UnableToExtendPixelCache">
+          unable to extend pixel cache
         </message>
       </fatalerror>
     </cache>
@@ -107,8 +113,8 @@
         <message name="ImageDoesNotHaveAClipMask">
           image does not have a clip mask
         </message>
-        <message name="ImageDoesNotHaveAAlphaChannel">
-          image does not have a alpha channel
+        <message name="ImageDoesNotHaveAnAlphaChannel">
+          image does not have an alpha channel
         </message>
         <message name="ImageDoesNotHaveAThumbnail">
           image does not have a EXIF thumbnail
@@ -199,6 +205,9 @@
         </message>
       </error>
       <warning>
+        <message name="ExifProfileSizeExceedsLimit">
+          exif profile size exceeds limit and will be truncated
+        </message>
         <message name="LosslessToLossyJPEGConversion">
           lossless to lossy JPEG conversion
         </message>
@@ -312,8 +321,8 @@
           <message name="UnknownPatternType">
             unknown pattern type
           </message>
-          <message name="UnrecognizedAlphaChannelType">
-            unrecognized alpha channel tpe
+          <message name="UnrecognizedAlphaChannelOption">
+            unrecognized alpha channel option
           </message>
           <message name="UnrecognizedBitsPerPixel">
             unrecognized bits per pixel
@@ -459,6 +468,9 @@
     <file>
       <open>
         <error>
+          <message name="AnErrorHasOccurredReadingFromFile">
+            an error has occurred reading from file
+          </message>
           <message name="UnableToCreateTemporaryFile">
             unable to create temporary file
           </message>
@@ -488,8 +500,11 @@
         <message name="ImageDepthNotSupported">
           image depth not supported
         </message>
-        <message name="ImageSequenceRequired">
-          image sequence is required
+        <message name="ImageMorphologyDiffers">
+          image morphology differs
+        </message>
+        <message name="ImageListRequired">
+          image list is required
         </message>
         <message name="ImageSizeDiffers">
           image size differs
@@ -555,6 +570,9 @@
           <message name="LCMSLibraryIsNotAvailable">
             LCMS color profile library is not available
           </message>
+          <message name="NoEncodeDelegateForThisImageFormat">
+            no encode delegate for this image format
+          </message>
         </warning>
       </delegate>
     </missing>
@@ -592,6 +610,12 @@
         <message name="CompositeImageRequired">
           composite image required
         </message>
+        <message name="CurlyBrasesNestedTooDeeply">
+          curly braces nested too deeply
+        </message>
+        <message name="DeprecatedOptionNoCode">
+          option deprecated, unable to execute
+        </message>
         <message name="DivideByZero">
           divide by zero
         </message>
@@ -604,6 +628,27 @@
         <message name="GeometryDoesNotContainImage">
           geometry does not contain image
         </message>
+        <message name="InterpretPropertyFailure">
+          failure to interpret image property escapes
+        </message>
+        <message name="InvalidArgument">
+          invalid argument for option
+        </message>
+        <message name="InvalidUseOfOption">
+          invalid use of option
+        </message>
+        <message name="InvalidGeometry">
+          invalid geometry
+        </message>
+        <message name="InvalidImageIndex">
+          invalid image index
+        </message>
+        <message name="InvalidNumberList">
+          invalid list of numbers
+        </message>
+        <message name="InvalidSetting">
+          invalid setting
+        </message>
         <message name="ImagesAreNotTheSameSize">
           images are not the same size
         </message>
@@ -613,12 +658,6 @@
         <message name="ImageWidthsOrHeightsDiffer">
           image widths or heights differ
         </message>
-        <message name="InvalidArgument">
-          invalid argument for option
-        </message>
-        <message name="InvalidGeometry">
-          invalid geometry
-        </message>
         <message name="KernelWidthMustBeAnOddNumber">
           kernel width must be an odd number
         </message>
@@ -626,9 +665,10 @@
           map image required
         </message>
         <message name="MissingArgument">
-          option requires an argument
+          missing required argument
         </message>
         <message name="MissingAnImageFilename">
+        <!-- FUTURE: Depreciate using MissingOutputFilename -->
           missing an image filename
         </message>
         <message name="MissingExpression">
@@ -636,6 +676,9 @@
         </message>
         <message name="MissingNullSeparator">
           missing Null Image List Separator
+        </message>
+        <message name="MissingOutputFilename">
+          missing output filename
         </message>
         <message name="MustSpecifyAnImageName">
           must specify an image name
@@ -649,6 +692,12 @@
         <message name="NoClipPathDefined">
           no clip path defined
         </message>
+        <message name="NoImagesForWrite">
+          no images for write
+        </message>
+        <message name="NoImagesFound">
+          no images found for operation
+        </message>
         <message name="NoImagesDefined">
           no images defined
         </message>
@@ -657,6 +706,9 @@
         </message>
         <message name="NoSuchImage">
           no such image
+        </message>
+        <message name="NoSuchImageChannel">
+          no such image channel
         </message>
         <message name="NoSuchOption">
           no such option
@@ -676,6 +728,9 @@
         <message name="ReferenceIsNotMyType">
           reference is not my type
         </message>
+        <message name="SetReadOnlyProperty">
+          attempt to set read-only property
+        </message>
         <message name="SteganoImageRequired">
           stegano image required
         </message>
@@ -685,6 +740,12 @@
         <message name="SubimageSpecificationReturnsNoImages">
           subimage specification returns no images
         </message>
+        <message name="TwoOrMoreImagesRequired">
+          two or more images required
+        </message>
+        <message name="UnableToAccessPath">
+          unable to access file path
+        </message>
         <message name="UnableToOpenFile">
           unable to open file
         </message>
@@ -693,6 +754,9 @@
         </message>
         <message name="UnableToParseKernel">
           unable to parse kernel string
+        </message>
+        <message name="UnbalancedBraces">
+          unbalanced braces
         </message>
         <message name="UnbalancedParenthesis">
           unbalanced parenthesis
@@ -707,7 +771,7 @@
           unrecognized color
         </message>
         <message name="UnrecognizedColorspace">
-          unrecognized image colorspace
+          unrecognized colorspace
         </message>
         <message name="UnrecognizedComposeOperator">
           unrecognized compose operator
@@ -811,6 +875,9 @@
         <message name="UnrecognizedStretchType">
           unrecognized stretch type
         </message>
+        <message name="UnrecognizedStyleType">
+          unrecognized style type
+        </message>
         <message name="UnrecognizedType">
           unrecognized type
         </message>
@@ -845,6 +912,18 @@
         </message>
         <message name="MissingAnImageFilename">
           missing an image filename
+        </message>
+        <message name="ScriptIsBinary">
+          script is binary
+        </message>
+        <message name="ScriptTokenMemoryFailed">
+          script token too big
+        </message>
+        <message name="ScriptUnbalancedQuotes">
+          script token with unbalanced quotes
+        </message>
+        <message name="UnableToOpenScript">
+          unable to open script
         </message>
         <message name="UnrecognizedColormapType">
           unrecognized colormap type
@@ -881,11 +960,29 @@
         </message>
       </fatalerror>
       <warning>
+        <message name="ReplacedOption">
+          option has been replaced
+        </message>
         <message name="GeometryDoesNotContainImage">
           geometry does not contain image
         </message>
+        <message name="InterpretPropertyFailure">
+          failure in interpret image property escapes
+        </message>
+        <message name="InvalidSetting">
+          invalid setting
+        </message>
+        <message name="NoImageForProperty">
+          no image to apply a property
+        </message>
+        <message name="NoImageInfoForProperty">
+          no image info (wand) to apply a property
+        </message>
         <message name="NoSuchElement">
           no such element in list
+        </message>
+        <message name="UnknownImageProperty">
+          unknown image property
         </message>
         <message name="UnrecognizedColor">
           unrecognized color
@@ -920,6 +1017,9 @@
           </message>
           <message name="MemoryAllocationFailed">
             memory allocation failed
+          </message>
+          <message name="TooManyObjects">
+            too many objects
           </message>
           <message name="UnableToAcquireString">
             unable to acquire string
@@ -1277,6 +1377,11 @@
         dull image contrast
       </message>
     </DullContrast>
+    <Encode>
+      <message name="Image">
+        encode image
+      </message>
+    </Encode>
     <Equalize>
       <message name="Image">
         equalize image
