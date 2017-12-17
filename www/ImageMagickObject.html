@@ -27,7 +27,7 @@
   <link href="ImageMagickObject.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
-  <link href="../assets/magick-css.html" rel="stylesheet" />
+  <link href="assets/magick.css" rel="stylesheet" />
 </head>
 <body>
   <header>
@@ -58,10 +58,10 @@
         <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="https://legacy.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" href="https://legacy.imagemagick.org/discourse-server//">Community</a>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="https://www.imagemagick.org/script/search.php">
+    <form class="form-inline my-2 my-lg-0" action="https://legacy.imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form>
@@ -105,7 +105,7 @@
 
 <p>MagickCMD is a C++ sample, but it also serves as a replacement for all the other command line utilities in most applications. Instead of using <code>convert xxxx yyyy</code> you can use <code>MagickCMD convert xxxx yyyy</code> instead. MagickCMD calls the COM object to accomplish the designated task.  This small tight combination replaces the entire usual binary distribution in just a few mebibytes.</p>
 
-<h2 class="magick-post-title"><a id="build"></a>Build ImageMagickObject From Source</h2>
+<h2 class="magick-post-title"><a class="anchor" id="build"></a>Build ImageMagickObject From Source</h2>
 
 <p>The source code for ImageMagickObject is available from the ImageMagick <a href="http://git.imagemagick.org/repos/ImageMagick">GIT</a> repository, or as part of the <a href="install-source.html#windows">Windows source</a> distribution. Once the source code has been retrieved and extracted, the source for ImageMagickObject is the directory <code>ImageMagick\contrib\win32\ATL7ImageMagickObject</code>, however, ImageMagick itself must be built using the static-multithread (VisualStaticMT) build configuration.  Building ImageMagickObject requires Microsoft Visual C++ 7.0 as delivered with Microsoft's Visual Studio .NET package. See the <a href="install-source.html#windows">Windows compilation instructions</a> to get ImageMagick itself built before building the ImageMagick COM+ component.</p>
 
@@ -136,17 +136,19 @@ BuildImageMagickObject release
     <p><a href="security-policy.html">Security</a> •
     <a href="architecture.html">Architecture</a> •
     <a href="links.html">Related</a> •
-     <a href="sitemap.html">Sitemap</a> •
-    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a>
-</p>
-    <p><a href="support.html">Donate</a> •
-    <a href="ImageMagickObject.html#">Back to top</a> •
-    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
-        <p><small>© 1999-2018 ImageMagick Studio LLC</small></p>
+     <a href="sitemap.html">Sitemap</a>
+       
+    <a href="ImageMagickObject.html#"><img class="" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+       
+    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="support.html">Donate</a> •
+    <a href="https://legacy.imagemagick.org/script/contact.php">Contact Us</a>
+    <br/>
+        <small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
-  <script src="../assets/magick-js.html" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="../assets/jquery.min.js"><\/script>')</script>
+  <script src="assets/magick.js" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>

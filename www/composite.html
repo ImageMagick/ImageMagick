@@ -27,7 +27,7 @@
   <link href="composite.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
-  <link href="../assets/magick-css.html" rel="stylesheet" />
+  <link href="assets/magick.css" rel="stylesheet" />
 </head>
 <body>
   <header>
@@ -58,10 +58,10 @@
         <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="https://legacy.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" href="https://legacy.imagemagick.org/discourse-server//">Community</a>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="https://www.imagemagick.org/script/search.php">
+    <form class="form-inline my-2 my-lg-0" action="https://legacy.imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form>
@@ -85,7 +85,7 @@
 
 <p class="lead magick-description">Use the <code>composite</code> program to overlap one image over another.  See <a href="command-line-processing.html">Command Line Processing</a> for advice on how to structure your <code>composite</code> command or see below for example usages of the command.</p>
 
-<h2 class="magick-post-title"><a id="usage"></a>Example Usage</h2>
+<h2 class="magick-post-title"><a class="anchor" id="usage"></a>Example Usage</h2>
 
 <p>We list a few examples of the <code>composite</code> command here to illustrate its usefulness and ease of use.  To get started, lets overlay a smiley face over a rose:</p>
 
@@ -118,7 +118,7 @@ composite -compose atop -geometry -13-17 white-highlight.png red-circle.png red-
 
 <p>You can find additional examples of using <code>composite</code> in <a href="https://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.  You can find out more about them and the mathematics by looking at <a href="http://www.w3.org/TR/SVG12/rendering.html">SVG Alpha Compositing</a></p>
 
-<h2 class="magick-post-title"><a id="options"></a>Option Summary</h2>
+<h2 class="magick-post-title"><a class="anchor" id="options"></a>Option Summary</h2>
 
 <p>The <code>composite</code> command recognizes these options.  Click on an option to get more details about how that option works.</p>
 
@@ -535,17 +535,19 @@ transparent, extract, background, or shape the alpha channel</td>
     <p><a href="security-policy.html">Security</a> •
     <a href="architecture.html">Architecture</a> •
     <a href="links.html">Related</a> •
-     <a href="sitemap.html">Sitemap</a> •
-    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a>
-</p>
-    <p><a href="support.html">Donate</a> •
-    <a href="composite.html#">Back to top</a> •
-    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
-        <p><small>© 1999-2018 ImageMagick Studio LLC</small></p>
+     <a href="sitemap.html">Sitemap</a>
+       
+    <a href="composite.html#"><img class="" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+       
+    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="support.html">Donate</a> •
+    <a href="https://legacy.imagemagick.org/script/contact.php">Contact Us</a>
+    <br/>
+        <small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
-  <script src="../assets/magick-js.html" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="../assets/jquery.min.js"><\/script>')</script>
+  <script src="assets/magick.js" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>

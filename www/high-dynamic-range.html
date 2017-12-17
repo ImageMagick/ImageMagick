@@ -27,7 +27,7 @@
   <link href="high-dynamic-range.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
-  <link href="../assets/magick-css.html" rel="stylesheet" />
+  <link href="assets/magick.css" rel="stylesheet" />
 </head>
 <body>
   <header>
@@ -58,10 +58,10 @@
         <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="https://legacy.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" href="https://legacy.imagemagick.org/discourse-server//">Community</a>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="https://www.imagemagick.org/script/search.php">
+    <form class="form-inline my-2 my-lg-0" action="https://legacy.imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form>
@@ -91,7 +91,7 @@
   <li>apply tone-mapping for specific display</li>
 </ul>
 
-<h2 class="magick-post-title"><a id="enable"></a>Enabling HDRI in ImageMagick</h2>
+<h2 class="magick-post-title"><a class="anchor" id="enable"></a>Enabling HDRI in ImageMagick</h2>
 
 <p>By default, image pixels in ImageMagick are stored as unsigned values that range from 0 to the quantum depth, which is typically 16-bits (Q16).  With HDRI enabled, the pixels are stored in a floating-point representation and can include negative values as well as values that exceed the quantum depth. A majority of digital image formats do not support HDRI, and for those images any pixels outside the quantum range are clamped before they are stored.</p>
 
@@ -116,17 +116,19 @@ Features: HDRI
     <p><a href="security-policy.html">Security</a> •
     <a href="architecture.html">Architecture</a> •
     <a href="links.html">Related</a> •
-     <a href="sitemap.html">Sitemap</a> •
-    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a>
-</p>
-    <p><a href="support.html">Donate</a> •
-    <a href="high-dynamic-range.html#">Back to top</a> •
-    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
-        <p><small>© 1999-2018 ImageMagick Studio LLC</small></p>
+     <a href="sitemap.html">Sitemap</a>
+       
+    <a href="high-dynamic-range.html#"><img class="" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+       
+    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="support.html">Donate</a> •
+    <a href="https://legacy.imagemagick.org/script/contact.php">Contact Us</a>
+    <br/>
+        <small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
-  <script src="../assets/magick-js.html" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="../assets/jquery.min.js"><\/script>')</script>
+  <script src="assets/magick.js" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>

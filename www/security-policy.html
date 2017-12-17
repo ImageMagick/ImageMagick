@@ -27,7 +27,7 @@
   <link href="security-policy.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
-  <link href="../assets/magick-css.html" rel="stylesheet" />
+  <link href="assets/magick.css" rel="stylesheet" />
 </head>
 <body>
   <header>
@@ -58,10 +58,10 @@
         <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="https://legacy.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" href="https://legacy.imagemagick.org/discourse-server//">Community</a>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="https://www.imagemagick.org/script/search.php">
+    <form class="form-inline my-2 my-lg-0" action="https://legacy.imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form>
@@ -84,7 +84,7 @@
 <p class="text-center"><a href="security-policy.html#policy">Security Policy </a> • <a href="security-policy.html#synchronize">Pixel Cache Synchronize Policy</a> • <a href="security-policy.html#zero-configuration">Zero Configuration Security Policy</a> • <a href="security-policy.html#other">Other Security Considerations</a></p>
 
 
-<p class="lead magick-description">ImageMagick includes a security policy configuration file, <a href="https://www.imagemagick.org/source/policy.xml">policy.xml</a>. It is useful for limiting the resources consumed by ImageMagick and can help prevent a denial-of-service or other exploits.</p>
+<p class="lead magick-description">ImageMagick includes a security policy configuration file, <a href="https://legacy.imagemagick.org/source/policy.xml">policy.xml</a>. It is useful for limiting the resources consumed by ImageMagick and can help prevent a denial-of-service or other exploits.</p>
 
 <p>As an example, suppose you download an image from the internet and unbeknownst to you its been crafted to generate a 20000 by 20000 pixel image. ImageMagick attempts to allocate enough resources (memory, disk) and your system will likely deny the resource request and exit. However, its also possible that your computer might be temporarily sluggish or unavailable or ImageMagick may abort. To prevent such a scenario, you can set limits in the <code>policy.xml</code> configuration file. You might wonder why ImageMagick does not already include reasonable limits? Simply because what is reasonable in your environment, might not be reasonable to someone else. For example, you may have ImageMagick sandboxed where security is not a concern, whereas another user may use ImageMagick to process images on their publically accessible website.  Or ImageMagick is runs on a host with 1TB of memory whereas another ImageMagick instance runs on an iPhone. By policy, permitting giga-pixel image processing on the large memory host makes sense, not so much for the resource constrained iPhone. If you utilize ImageMagick from a public website, you may want to increase security by preventing usage of the MVG or HTTPS coders. Only you can decide what are reasonable limits taking in consideration your environment. We provide this policy with reasonable limits and encourage you to modify it to suit your local environment:</p>
 
@@ -185,7 +185,7 @@ Path: [built-in]
 
 <p>For additional details about resource limits and the policy configuration file, read <a href="resources.html">Resources</a> and <a href="architecture.html">Architecture</a>.</p>
 
-<h2 class="magick-post-title"><a id="synchronize"></a>Pixel Cache Synchronize Policy</h2>
+<h2 class="magick-post-title"><a class="anchor" id="synchronize"></a>Pixel Cache Synchronize Policy</h2>
 
 <p>When writing image pixels to disk, ImageMagick firsts preallocates the disk file, which is much faster than fully populating the file with zeros.  To further increase performance, we memory-map the file on disk.  With memory-mapping, we get an increase in performance (up to 5x), however, there remains a possibility that as the disk file is populated, it may run out of free space.  The OS then throws a SIGBUS signal which prevents ImageMagick from continuing.  To prevent a SIGBUS, use this security policy:
 
@@ -195,7 +195,7 @@ Path: [built-in]
 
 <p>Set to True to ensure all image data is fully flushed and synchronized to disk. There is a performance penalty, however, the benefits include ensuring a valid image file in the event of a system crash and early reporting if there is not enough disk space for the image pixel cache.</p>
 
-<h2 class="magick-post-title"><a id="zero-configuration"></a>Zero Configuration Security Policy</h2>
+<h2 class="magick-post-title"><a class="anchor" id="zero-configuration"></a>Zero Configuration Security Policy</h2>
 
 <p>A zero configuration build of ImageMagick does not permit external configurat
 ion files.  To define your security policy, you must instead edit the <code>magick/policy-private.h</code> source module, add your policy statements, and then build the ImageMagick distribution.  Here is an example zero configuration security policy:</p>
@@ -206,10 +206,10 @@ ion files.  To define your security policy, you must instead edit the <code>magi
   &lt;policy domain=\"coder\" rights=\"none\" pattern=\"MVG\"/> \
 &lt;/policymap>";</code></pre>
 
-<h2 class="magick-post-title"><a id="other"></a>Other Security Considerations</h2>
+<h2 class="magick-post-title"><a class="anchor" id="other"></a>Other Security Considerations</h2>
 
 <p>If you spot a security flaw in ImageMagick, post your concern to 
-<a href="https://github.com/ImageMagick/ImageMagick/issues">GitHub</a>.  Be sure to include how to reproduce the security flaw and a link to any images needed to reproduce the flaw.  Alternatively, <a href="https://www.imagemagick.org/script/contact.php">contact us</a> and select Security Issue as the issue.</p>
+<a href="https://github.com/ImageMagick/ImageMagick/issues">GitHub</a>.  Be sure to include how to reproduce the security flaw and a link to any images needed to reproduce the flaw.  Alternatively, <a href="https://legacy.imagemagick.org/script/contact.php">contact us</a> and select Security Issue as the issue.</p>
 
 <p>In addition to the security policy, you can make ImageMagick safer by ...</p>
 <ul>
@@ -227,17 +227,19 @@ ion files.  To define your security policy, you must instead edit the <code>magi
     <p><a href="security-policy.html">Security</a> •
     <a href="architecture.html">Architecture</a> •
     <a href="links.html">Related</a> •
-     <a href="sitemap.html">Sitemap</a> •
-    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a>
-</p>
-    <p><a href="support.html">Donate</a> •
-    <a href="security-policy.html#">Back to top</a> •
-    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
-        <p><small>© 1999-2018 ImageMagick Studio LLC</small></p>
+     <a href="sitemap.html">Sitemap</a>
+       
+    <a href="security-policy.html#"><img class="" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+       
+    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="support.html">Donate</a> •
+    <a href="https://legacy.imagemagick.org/script/contact.php">Contact Us</a>
+    <br/>
+        <small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
-  <script src="../assets/magick-js.html" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="../assets/jquery.min.js"><\/script>')</script>
+  <script src="assets/magick.js" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>

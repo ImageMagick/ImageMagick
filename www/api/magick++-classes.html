@@ -27,7 +27,7 @@
   <link href="magick++-classes.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
-  <link href="../assets/magick-css.html" rel="stylesheet" />
+  <link href="assets/magick.css" rel="stylesheet" />
 </head>
 <body>
   <header>
@@ -43,25 +43,25 @@
         <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../download.html">Download</a>
+        <a class="nav-link" href="../www/download.html">Download</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../command-line-tools.html">Tools</a>
+        <a class="nav-link" href="../www/command-line-tools.html">Tools</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../command-line-processing.html">Command-line</a>
+        <a class="nav-link" href="../www/command-line-processing.html">Command-line</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../resources.html">Resources</a>
+        <a class="nav-link" href="../www/resources.html">Resources</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../develop.html">Develop</a>
+        <a class="nav-link" href="../www/develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="https://legacy.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" href="../https://legacy.imagemagick.org/discourse-server//">Community</a>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="https://www.imagemagick.org/script/search.php">
+    <form class="form-inline my-2 my-lg-0" action="https://legacy.imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form>
@@ -84,9 +84,9 @@
 <div class="doc-section">
 <p><a href="http://www.imagemagick.org/Magick++">Magick++</a> provides a simple C++ API to the ImageMagick image processing library which supports reading and writing a huge number of image formats as well as supporting a broad spectrum of traditional image processing operations. The ImageMagick C API is complex and the data structures are currently not documented. Magick++ provides access to most of the features available from the C API but in a simple object-oriented and well-documented framework.</p>
 <p>Magick++ is intended to support commercial-grade application development. In order to avoid possible conflicts with the user's application, all symbols contained in Magick++ (included by the header <tt><font color="#663366">&lt;Magick++.h&gt;</font></tt>) are scoped to the <span lang="en-US">namespace</span> <i>Magick</i>. Symbols from the ImageMagick C library are imported under the <i>MagickCore</i> namespace to avoid possible conflicts and ImageMagick macros are only included within the Magick++ implementation so they won't impact the user's application.</p>
-<p>The core class in Magick++ is the <a href="Image++.html">Image</a> class. The Image class provides methods to manipulate a single image frame (e.g. a JPEG image). Standard Template Library (STL)<span lang="en-US">compatible</span> <a href="https://legacy.imagemagick.org/api/STL.html">algorithms and function objects</a> are provided in order to manipulate multiple image frames or to read and write file formats which support multiple image frames (e.g. GIF animations, MPEG animations, and Postscript files).</p>
+<p>The core class in Magick++ is the <a href="Image++.html">Image</a> class. The Image class provides methods to manipulate a single image frame (e.g. a JPEG image). Standard Template Library (STL)<span lang="en-US">compatible</span> <a href="../../api/STL.html">algorithms and function objects</a> are provided in order to manipulate multiple image frames or to read and write file formats which support multiple image frames (e.g. GIF animations, MPEG animations, and Postscript files).</p>
 <p>The Image class supports reference-counted memory management which supports the semantics of an intrinsic variable type (e.g. 'int') with an extremely efficient <tt>operator =</tt> and copy constructor (only a pointer is assigned) while ensuring that the image data is replicated as required so that it the image may be modified without impacting earlier generations. Since the Image class manages heap memory internally, images are best allocated via C++ automatic (stack-based) memory allocation. This support allows most programs using Magick++ to be written without using any pointers, simplifying the implementation and avoiding the risks of using pointers. When a program uses automatic memory allocation to allocate Magick++ images, that aspect of the program becomes naturally exception-safe and thread-safe.</p>
-<p>The image class uses a number of supportive classes in order to specify arguments. Colors are specified via the <a href="http://www.imagemagick.org/Magick++/Color.html">Color</a> class. Colors specified in X11-style string form are implicitly converted to the Color class. Geometry arguments (those specifying width, height, and/or x and y offset) are specified via the <a href="https://legacy.imagemagick.org/api/Geometry.html">Geometry</a> class. Similar to the Color class, geometries specified as an X11-style string are implicitly converted to the Geometry class. Two dimensional drawable objects are specified via the <a href="https://legacy.imagemagick.org/api/Drawable.html">Drawable</a> class. Drawable objects may be provided as a single object or as a list of objects to be rendered using the current image options. Montage options (a montage is a rendered grid of thumbnails in one image) are specified via the <a href="https://legacy.imagemagick.org/api/Montage.html">Montage</a> class.</p>
+<p>The image class uses a number of supportive classes in order to specify arguments. Colors are specified via the <a href="http://www.imagemagick.org/Magick++/Color.html">Color</a> class. Colors specified in X11-style string form are implicitly converted to the Color class. Geometry arguments (those specifying width, height, and/or x and y offset) are specified via the <a href="../../api/Geometry.html">Geometry</a> class. Similar to the Color class, geometries specified as an X11-style string are implicitly converted to the Geometry class. Two dimensional drawable objects are specified via the <a href="../../api/Drawable.html">Drawable</a> class. Drawable objects may be provided as a single object or as a list of objects to be rendered using the current image options. Montage options (a montage is a rendered grid of thumbnails in one image) are specified via the <a href="../../api/Montage.html">Montage</a> class.</p>
 <p>Errors are reported using C++ exceptions derived from the <a href="http://www.imagemagick.org/Magick++/Exception.html">Exception</a> class, which is itself derived from the standard C++ exception class. Exceptions are reported synchronous with the operation and are caught by the first matching <i>try</i> block as the stack is unraveled. This allows a clean coding style in which multiple related Magick++ commands may be executed with errors handled as a unit rather than line-by-line. Since the Image object provides reference-counted memory management, unreferenced images on the stack are automagically cleaned up, avoiding the potential for memory leaks.</p>
 <p style="margin-bottom: 0cm">For ease of access, the documentation for the available user-level classes is available via the following table.</p>
 <br />
@@ -140,20 +140,22 @@ containers of image frames.</td>
     </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
-    <p><a href="../security-policy.html">Security</a> •
-    <a href="../architecture.html">Architecture</a> •
-    <a href="../links.html">Related</a> •
-     <a href="../sitemap.html">Sitemap</a> •
-    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a>
-</p>
-    <p><a href="../support.html">Donate</a> •
-    <a href="magick++-classes.html#">Back to top</a> •
-    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
-        <p><small>© 1999-2018 ImageMagick Studio LLC</small></p>
+    <p><a href="../www/security-policy.html">Security</a> •
+    <a href="../www/architecture.html">Architecture</a> •
+    <a href="../www/links.html">Related</a> •
+     <a href="../www/sitemap.html">Sitemap</a>
+       
+    <a href="magick++-classes.html#"><img class="" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+       
+    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="../www/support.html">Donate</a> •
+    <a href="../www/contact.html">Contact Us</a>
+    <br/>
+        <small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
-  <script src="../assets/magick-js.html" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="../assets/jquery.min.js"><\/script>')</script>
+  <script src="assets/magick.js" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>

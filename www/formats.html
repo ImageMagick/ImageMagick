@@ -27,7 +27,7 @@
   <link href="formats.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
-  <link href="../assets/magick-css.html" rel="stylesheet" />
+  <link href="assets/magick.css" rel="stylesheet" />
 </head>
 <body>
   <header>
@@ -58,10 +58,10 @@
         <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="https://legacy.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" href="https://legacy.imagemagick.org/discourse-server//">Community</a>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="https://www.imagemagick.org/script/search.php">
+    <form class="form-inline my-2 my-lg-0" action="https://legacy.imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form>
@@ -92,7 +92,7 @@
 
 <p>On some platforms, ImageMagick automagically processes these extensions: .gz for Zip compression, .Z for Unix compression, .bz2 for block compression, and .pgp for PGP encryption. For example, a PNM image called image.pnm.gz is automagically uncompressed.</p>
 
-<h2 class="magick-post-title"><a id="colorspace"></a>A Word about Colorspaces</h2>
+<h2 class="magick-post-title"><a class="anchor" id="colorspace"></a>A Word about Colorspaces</h2>
  <p>A majority of the image formats assume an sRGB
 colorspace (e.g. JPEG, PNG, etc.).  A few support only linear RGB (e.g. EXR,
 DPX, CIN, HDR) or only linear GRAY (e.g. PGM).  A few formats support CMYK.
@@ -143,7 +143,7 @@ example,</p>
 <pre class="highlight"><code>  convert lab.tif -colorspace RGB -resize 50% -colorspace Lab resize.jpg
 </code></pre>
 
-<h2 class="magick-post-title"><a id="supported"></a>Supported Image Formats</h2>
+<h2 class="magick-post-title"><a class="anchor" id="supported"></a>Supported Image Formats</h2>
 
 <p>ImageMagick supports reading over 100 major file formats (not
 including sub-formats). The following table provides a summary of
@@ -1244,7 +1244,7 @@ the supported image formats.</p>
 </table>
 </div>
 
-<h2 class="magick-post-title"><a id="pseudo"></a>Pseudo-image Formats</h2>
+<h2 class="magick-post-title"><a class="anchor" id="pseudo"></a>Pseudo-image Formats</h2>
 
 <p>ImageMagick supports a number of image format specifications which refer to images prepared via an algorithm, or input/output targets. The following table lists these pseudo-image formats:</p>
 
@@ -1470,7 +1470,7 @@ the supported image formats.</p>
 </table>
 </div>
 
-<h2 class="magick-post-title"><a id="builtin-images"></a>Built-in Images</h2>
+<h2 class="magick-post-title"><a class="anchor" id="builtin-images"></a>Built-in Images</h2>
 
 <p>ImageMagick includes a number of built-in (embedded) images which may be referenced as if they were an image file. The <code>magick:</code> format tag may be used via the syntax <code>magick:</code><var>name</var> to request an embedded image (e.g. <code>magick:logo</code>). For backwards compatibility, the image specifications <code>GRANITE:</code>, <code>LOGO:</code>, <code>NETSCAPE:</code>, and <code>ROSE:</code> may also be used to request images with those names.</p>
 
@@ -1520,7 +1520,7 @@ the supported image formats.</p>
 
 </table></div>
 
-<h2 class="magick-post-title"><a id="builtin-patterns"></a>Built-in Patterns</h2>
+<h2 class="magick-post-title"><a class="anchor" id="builtin-patterns"></a>Built-in Patterns</h2>
 
 <p>ImageMagick includes a number of built-in (embedded) patterns which may be referenced as if they were an image file. The <code>pattern:</code> format tag may be used via the syntax <code>pattern:</code><var>name</var> to request an embedded pattern (e.g. <code>pattern:checkerboard</code>). The pattern size is controlled with the <a href="command-line-options.html#size">-size</a> command line option.</p>
 
@@ -1912,7 +1912,7 @@ the supported image formats.</p>
   </tr>
 </table></div>
 
-<h2 class="magick-post-title"><a id="embedded"></a>Embedded Image Profiles</h2>
+<h2 class="magick-post-title"><a class="anchor" id="embedded"></a>Embedded Image Profiles</h2>
 
 <p>ImageMagick provides a number of format identifiers which are used to add, remove, and save embedded profiles for images which can support embedded profiles. Image types which may contain embedded profiles are TIFF, JPEG, and PDF.</p>
 
@@ -1985,17 +1985,19 @@ the supported image formats.</p>
     <p><a href="security-policy.html">Security</a> •
     <a href="architecture.html">Architecture</a> •
     <a href="links.html">Related</a> •
-     <a href="sitemap.html">Sitemap</a> •
-    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a>
-</p>
-    <p><a href="support.html">Donate</a> •
-    <a href="formats.html#">Back to top</a> •
-    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
-        <p><small>© 1999-2018 ImageMagick Studio LLC</small></p>
+     <a href="sitemap.html">Sitemap</a>
+       
+    <a href="formats.html#"><img class="" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+       
+    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="support.html">Donate</a> •
+    <a href="https://legacy.imagemagick.org/script/contact.php">Contact Us</a>
+    <br/>
+        <small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
-  <script src="../assets/magick-js.html" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="../assets/jquery.min.js"><\/script>')</script>
+  <script src="assets/magick.js" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>

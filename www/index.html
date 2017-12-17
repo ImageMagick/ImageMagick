@@ -27,7 +27,7 @@
   <link href="../index.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
-  <link href="../assets/magick-css.html" rel="stylesheet" />
+  <link href="assets/magick.css" rel="stylesheet" />
 </head>
 <body>
   <header>
@@ -58,10 +58,10 @@
         <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="https://legacy.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" href="https://legacy.imagemagick.org/discourse-server//">Community</a>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="https://www.imagemagick.org/script/search.php">
+    <form class="form-inline my-2 my-lg-0" action="https://legacy.imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form>
@@ -88,17 +88,17 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
 
 <p>The functionality of ImageMagick is typically utilized from the <a href="command-line-processing.html">command-line</a> or you can use the features from programs written in your favorite language. Choose from these interfaces: <a href="develop.html#ada">G2F</a> (Ada), <a href="develop.html#c">MagickCore</a> (C), <a href="develop.html#c">MagickWand</a> (C), <a href="develop.html#ch">ChMagick</a> (Ch), <a href="develop.html#com_">ImageMagickObject</a> (COM+), <a href="develop.html#c__">Magick++</a> (C++), <a href="develop.html#java">JMagick</a> (Java), <a href="develop.html#julia">JuliaIO</a> (Julia), <a href="develop.html#lisp">L-Magick</a> (Lisp), <a href="develop.html#lua">Lua</a> (LuaJIT), <a href="develop.html#neko">NMagick</a> (Neko/haXe), <a href="develop.html#dot-net">Magick.NET</a> (.NET), <a href="develop.html#pascal">PascalMagick</a> (Pascal),  <a href="develop.html#perl">PerlMagick</a> (Perl), <a href="develop.html#php">MagickWand for PHP</a> (PHP),  <a href="develop.html#php">IMagick</a> (PHP), <a href="develop.html#python">PythonMagick</a> (Python), <a href="develop.html#r">magick</a> (R), <a href="develop.html#ruby">RMagick</a> (Ruby), or <a href="develop.html#tcl">TclMagick</a> (Tcl/TK). With a language interface, use ImageMagick to modify or create images dynamically and <var>automagically</var>.</p>
 <p>ImageMagick utilizes multiple computational threads to increase performance and can read, process, or write mega-, giga-, or tera-pixel image sizes.</p>
-<p>ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you may use, copy, modify, and distribute in both open and proprietary applications. It is distributed under the Apache 2.0 <a href="https://www.imagemagick.org/script/license.html">license</a>.</p>
+<p>ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you may use, copy, modify, and distribute in both open and proprietary applications. It is distributed under the Apache 2.0 <a href="https://www.imagemagick.org/www/license.html">license</a>.</p>
 
 <p>The ImageMagick development process ensures a stable API and <a href="https://abi-laboratory.pro/tracker/timeline/imagemagick/">ABI</a>. Before each ImageMagick release, we perform a comprehensive security assessment that includes <a href="https://github.com/google/sanitizers/wiki/AddressSanitizer">memory error</a> and <a href="ttps://github.com/google/sanitizers/wiki/ThreadSanitizer">thread data race</a> detection to help prevent security vulnerabilities.</p>
 
-<p>The current release is ImageMagick <a href="download.html">6.9.9-26</a>.  It runs on <a href="download.html#unix">Linux</a>, <a href="download.html#windows">Windows</a>, <a href="download.html#macosx">Mac Os X</a>, <a href="download.html#iOS">iOS</a>, Android OS, and others.</p>
+<p>The current release is ImageMagick <a href="download.html">6.9.9-27</a>.  It runs on <a href="download.html#unix">Linux</a>, <a href="download.html#windows">Windows</a>, <a href="download.html#macosx">Mac Os X</a>, <a href="download.html#iOS">iOS</a>, Android OS, and others.</p>
 
 <p>The authoritative ImageMagick version 6 web site is <a href="../index.html">https://legacy.imagemagick.org</a>. The authoritative source code repository is <a href="https://github.com/ImageMagick">https://github.com/ImageMagick</a>.  We maintain a source code mirror at <a href="https://gitlab.com/ImageMagick/ImageMagick/tree/ImageMagick-6">https://gitlab.com/ImageMagick/ImageMagick/tree/ImageMagick-6</a>.</p>
 
 <p>The design of ImageMagick is an evolutionary process, with the design and implementation efforts serving to influence and guide further progress in the other. With <a href="https://www.imagemagick.org/">ImageMagick version 7</a> we aim to improve the design based on lessons learned from the version 6 implementation.</p>
 
-<h2 class="magick-post-title"><a id="features"></a>Features and Capabilities</h2>
+<h2 class="magick-post-title"><a class="anchor" id="features"></a>Features and Capabilities</h2>
 <p>Here are just a few <a href="examples.html">examples</a> of what ImageMagick can do for you:</p>
 <div class="table-responsive">
 <table class="table table-sm table-striped">
@@ -235,7 +235,7 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
 
 <p><a href="https://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a> shows how to use ImageMagick from the <a href="command-line-processing.html">command-line</a> to accomplish any of these tasks and much more. Also, see <a href="http://www.fmwconcepts.com/imagemagick/">Fred's ImageMagick Scripts</a>:  a plethora of command-line scripts that perform geometric transforms, blurs, sharpens, edging, noise removal, and color manipulations. With <a href="https://github.com/dlemstra/Magick.NET">Magick.NET</a>, use ImageMagick without having to install ImageMagick on your server or desktop.</p>
 
-<h2 class="magick-post-title"><a id="news"></a>News</h2>
+<h2 class="magick-post-title"><a class="anchor" id="news"></a>News</h2>
 
 <p>ImageMagick <a href="https://www.imagemagick.org">version 7</a> has been released.</p>
 
@@ -244,13 +244,13 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
 <p>Want more performance from ImageMagick?  Try these options:</p>
 
 <ul>
-<li>Add more memory to your system, see <a href="https://www.imagemagick.org/script/architecture.html#cache">the pixel cache</a>;</li>
-<li>Add more cores to your system (up to 20), see <a href="https://www.imagemagick.org/script/architecture.html#threads">threads of execution support</a>;</li>
-<li>push large images to a solid-state drive, see <a href="https://www.imagemagick.org/script/architecture.html#tera-pixel">large image support</a>.</li>
+<li>Add more memory to your system, see <a href="https://www.imagemagick.org/www/architecture.html#cache">the pixel cache</a>;</li>
+<li>Add more cores to your system (up to 20), see <a href="https://www.imagemagick.org/www/architecture.html#threads">threads of execution support</a>;</li>
+<li>push large images to a solid-state drive, see <a href="https://www.imagemagick.org/www/architecture.html#tera-pixel">large image support</a>.</li>
 </ul>
 <p>If these options are prohibitive, you can reduce the quality of the image results.  The default build is Q16.  If you instead use a Q8 build, you use half the memory The tradeoff is reduced percision.  For a Q8 build of ImageMagick, use this <code>configure</code> script option: <code>--with-quantum-depth=8</code>.</p>
 
-<h2 class="magick-post-title"><a id="community"></a>Community</h2>
+<h2 class="magick-post-title"><a class="anchor" id="community"></a>Community</h2>
 <p>To join the ImageMagick community, try the <a href="https://www.imagemagick.org/discourse-server/">discourse server</a>.  You can review questions or comments (with informed responses) posed by ImageMagick users or ask your own questions. If you want to contribute image processing algorithms, other enhancements, or bug fixes, open an <a href="https://github.com/ImageMagick/ImageMagick">issue</a>. </p>
 </div>
     </div>
@@ -259,17 +259,19 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
     <p><a href="security-policy.html">Security</a> •
     <a href="architecture.html">Architecture</a> •
     <a href="links.html">Related</a> •
-     <a href="sitemap.html">Sitemap</a> •
-    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a>
-</p>
-    <p><a href="support.html">Donate</a> •
-    <a href="index.html#">Back to top</a> •
-    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
-        <p><small>© 1999-2018 ImageMagick Studio LLC</small></p>
+     <a href="sitemap.html">Sitemap</a>
+       
+    <a href="index.html#"><img class="" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+       
+    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="support.html">Donate</a> •
+    <a href="https://legacy.imagemagick.org/script/contact.php">Contact Us</a>
+    <br/>
+        <small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
-  <script src="../assets/magick-js.html" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="../assets/jquery.min.js"><\/script>')</script>
+  <script src="assets/magick.js" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
