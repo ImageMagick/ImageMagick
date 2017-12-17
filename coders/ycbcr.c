@@ -1086,8 +1086,8 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
         Open output image file.
       */
       assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickCoreSignature);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+      assert(exception->signature == MagickCoreSignature);
+      status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
       if (status == MagickFalse)
         return(status);
     }
