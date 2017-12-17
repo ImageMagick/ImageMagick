@@ -184,7 +184,7 @@ Path: [built-in]
 
 <p>For additional details about resource limits and the policy configuration file, read <a href="resources.html">Resources</a> and <a href="architecture.html">Architecture</a>.</p>
 
-<h2 class="magick-post-title"><a id="synchronize"></a>Pixel Cache Synchronize Policy</h2>
+<h2 class="magick-post-title"><a class="anchor" id="synchronize"></a>Pixel Cache Synchronize Policy</h2>
 
 <p>When writing image pixels to disk, ImageMagick firsts preallocates the disk file, which is much faster than fully populating the file with zeros.  To further increase performance, we memory-map the file on disk.  With memory-mapping, we get an increase in performance (up to 5x), however, there remains a possibility that as the disk file is populated, it may run out of free space.  The OS then throws a SIGBUS signal which prevents ImageMagick from continuing.  To prevent a SIGBUS, use this security policy:
 
@@ -194,7 +194,7 @@ Path: [built-in]
 
 <p>Set to True to ensure all image data is fully flushed and synchronized to disk. There is a performance penalty, however, the benefits include ensuring a valid image file in the event of a system crash and early reporting if there is not enough disk space for the image pixel cache.</p>
 
-<h2 class="magick-post-title"><a id="zero-configuration"></a>Zero Configuration Security Policy</h2>
+<h2 class="magick-post-title"><a class="anchor" id="zero-configuration"></a>Zero Configuration Security Policy</h2>
 
 <p>A zero configuration build of ImageMagick does not permit external configuration files.  To define your security policy, you must instead edit the <code>MagickCore/policy-private.h</code> source module, add your policy statements, and then build the ImageMagick distribution.  Here is an example zero configuration security policy:</p>
 
@@ -204,7 +204,7 @@ Path: [built-in]
   &lt;policy domain=\"coder\" rights=\"none\" pattern=\"MVG\"/> \
 &lt;/policymap>";</code></pre>
 
-<h2 class="magick-post-title"><a id="other"></a>Other Security Considerations</h2>
+<h2 class="magick-post-title"><a class="anchor" id="other"></a>Other Security Considerations</h2>
 
 <p>If you spot a security flaw in ImageMagick, post your concern to
 <a href="https://github.com/ImageMagick/ImageMagick/issues">GitHub</a>.  Be sure to include how to reproduce the security flaw and a link to any images needed to reproduce the flaw.  Alternatively, <a href="https://www.imagemagick.org/script/contact.php">contact us</a> and select Security Issue as the issue.</p>
@@ -225,13 +225,15 @@ Path: [built-in]
     <p><a href="security-policy.html">Security</a> •
     <a href="architecture.html">Architecture</a> •
     <a href="links.html">Related</a> •
-     <a href="sitemap.html">Sitemap</a> •
-    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a>
-</p>
-    <p><a href="support.html">Donate</a> •
-    <a href="security-policy.html#">Back to top</a> •
-    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
-        <p><small>© 1999-2018 ImageMagick Studio LLC</small></p>
+     <a href="sitemap.html">Sitemap</a>
+       
+    <a href="security-policy.html#"><img class="" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+       
+    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="support.html">Donate</a> •
+    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a>
+    <br/>
+        <small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
@@ -239,4 +241,4 @@ Path: [built-in]
   <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 16th December 2017 10:03 -->
+<!-- Magick Cache 17th December 2017 09:21 -->

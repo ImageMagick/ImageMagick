@@ -87,7 +87,7 @@
 
 <p>You could use an <a href="http://www.wizards-toolkit.org/www/encipher.html">enciphering</a> utility to scramble your image but they typically scramble the entire file making it unrecognizable as an image format.  With ImageMagick, only the pixels are scrambled.  The scrambled image continues to be recognized as an image and will even display in your web page.  However, the content appears as gibberish, nothing like the original content.</p>
 
-<h2 class="magick-post-title"><a id="encipher"></a>Encipher an Image</h2>
+<h2 class="magick-post-title"><a class="anchor" id="encipher"></a>Encipher an Image</h2>
 
 <p>Use the <a href="command-line-options.html#encipher">-encipher</a> option to scramble your image so that it is unrecognizable.  The option requires a filename that contains your passphrase.  In this example we scramble an image and save it in the PNG format:</p>
 
@@ -99,14 +99,14 @@
 <pre class="highlight"><code>convert rose.jpg -encipher smiley.gif rose.png
 </code></pre>
 
-<h2 class="magick-post-title"><a id="decipher"></a>Decipher an Image</h2>
+<h2 class="magick-post-title"><a class="anchor" id="decipher"></a>Decipher an Image</h2>
 
 <p>Use the <a href="command-line-options.html#decipher">-decipher</a> option to unscramble your image so that it is recognizable once again.  The option requires a filename that contains your passphrase.  In this example we unscramble an image and save it in the JPEG format:</p>
 
 <pre class="highlight"><code>convert rose.png -decipher passphrase.txt rose.jpg
 </code></pre>
 
-<h2 class="magick-post-title"><a id="caveats"></a>Encipher and Decipher Caveats</h2>
+<h2 class="magick-post-title"><a class="anchor" id="caveats"></a>Encipher and Decipher Caveats</h2>
 
 <p>Some formats do not support enciphered pixels-- the JPEG or GIF format, for
 example.  To ensure your image format is supported, encipher a test image and
@@ -148,13 +148,15 @@ Examples <a href="../Usage/transform/#encipher"
     <p><a href="security-policy.html">Security</a> •
     <a href="architecture.html">Architecture</a> •
     <a href="links.html">Related</a> •
-     <a href="sitemap.html">Sitemap</a> •
-    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a>
-</p>
-    <p><a href="support.html">Donate</a> •
-    <a href="cipher.html#">Back to top</a> •
-    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
-        <p><small>© 1999-2018 ImageMagick Studio LLC</small></p>
+     <a href="sitemap.html">Sitemap</a>
+       
+    <a href="cipher.html#"><img class="" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+       
+    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="support.html">Donate</a> •
+    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a>
+    <br/>
+        <small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
@@ -162,4 +164,4 @@ Examples <a href="../Usage/transform/#encipher"
   <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 16th December 2017 10:05 -->
+<!-- Magick Cache 17th December 2017 09:21 -->

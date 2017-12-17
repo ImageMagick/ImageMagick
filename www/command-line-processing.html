@@ -131,7 +131,7 @@
 
 <p>See <a href="../Usage/">Examples of ImageMagick Usage</a> for additional help when using ImageMagick from the command-line.</p>
 
-<h2 class="magick-post-title"><a id="anatomy"></a>The Anatomy of the Command-line</h2>
+<h2 class="magick-post-title"><a class="anchor" id="anatomy"></a>The Anatomy of the Command-line</h2>
 <p>The ImageMagick command-line consists of</p>
 
 <ol>
@@ -152,7 +152,7 @@
 
 <p>You can find a detailed explanation of each of the constituent parts of the command-line in the sections that follow.</p>
 
-<h2 class="magick-post-title"><a id="input"></a>Input Filename</h2>
+<h2 class="magick-post-title"><a class="anchor" id="input"></a>Input Filename</h2>
 
 <p>ImageMagick extends the concept of an input filename to include:</p>
 <ul>
@@ -329,7 +329,7 @@ image-5.jpg</pre>
 
 <pre class="highlight"><code>magick logo: gif:- | display -define stream:buffer-size=0 gif:-</code></pre>
 
-<h2 class="magick-post-title"><a id="option"></a>Command-line Options</h2>
+<h2 class="magick-post-title"><a class="anchor" id="option"></a>Command-line Options</h2>
 
 <p>You can direct the behavior of ImageMagick utilities with these command-line <a href="command-line-options.html">options</a>.  The behavior of an option falls into one of these categories:</p>
 
@@ -342,7 +342,7 @@ image-5.jpg</pre>
 <li><a href="command-line-processing.html#stack">Image Stack</a></li>
 </ul>
 
-<h4 class="magick-header"><a id="setting"></a>Image Setting</h4>
+<h4 class="magick-header"><a class="anchor" id="setting"></a>Image Setting</h4>
 
 <p>An image setting persists as it appears on the command-line and may affect
 subsequent processing such as reading an image, an image operator, or when
@@ -357,7 +357,7 @@ is reset or the command-line terminates.  The image settings include:</p>
 
 <pre class="highlight"><code>magick -channel RGB wand.png wizard.png images.png</code></pre>
 
-<h4 class="magick-header"><a id="operator"></a>Image Operator</h4>
+<h4 class="magick-header"><a class="anchor" id="operator"></a>Image Operator</h4>
 
 <p>An image operator differs from a setting in that it affects the image
 immediately as it appears on the command-line.  An operator is
@@ -375,12 +375,12 @@ include:</p>
 
 <pre class="highlight"><code>magick wand.png -negate wizard.png images.png</code></pre>
 
-<h4 class="magick-header"><a id="channel"></a>Image Channel Operator</h4>
+<h4 class="magick-header"><a class="anchor" id="channel"></a>Image Channel Operator</h4>
 <p>Operate directly on image channels:</p>
 <ul>
 <a href="command-line-options.html#channel-fx">&#x2011;channel&#x2011;fx</a>  • <a href="command-line-options.html#separate">&#x2011;separate</a> </ul>
 
-<h4 class="magick-header"><a id="sequence"></a>Image Sequence Operator</h4>
+<h4 class="magick-header"><a class="anchor" id="sequence"></a>Image Sequence Operator</h4>
 
 <p>An image sequence operator differs from a setting in that it affects an
 image sequence immediately as it appears on the command-line.  Choose from
@@ -392,7 +392,7 @@ these image sequence operators:</p>
 
 <pre class="highlight"><code>magick mikayla.png picnic.png beach.png -append vacation.png</code></pre>
 
-<h4 class="magick-header"><a id="geometry"></a>Image Geometry</h4>
+<h4 class="magick-header"><a class="anchor" id="geometry"></a>Image Geometry</h4>
 
 <p>Many command-line <a href="command-line-options.html">options</a> take a <var>geometry</var> argument
 to specify such things as the desired width and height of an image and other
@@ -536,7 +536,7 @@ magick logo: -gravity center -region '100x200-10+20' -negate wizNeg3.png</code><
 </p>
 
 
-<h4 class="magick-header"><a id="stack"></a>Image Stack</h4>
+<h4 class="magick-header"><a class="anchor" id="stack"></a>Image Stack</h4>
 
 <p>In school, your teacher probably permitted you to work on problems on a scrap of paper and then copy the results to your test paper.  An image stack is similar.  It permits you to work on an image or image sequence in isolation and subsequently introduce the results back into the command-line.  The image stack is delineated with parenthesis.  Image operators only affect images in the current stack.  For example, we can limit the image rotation to just the wizard image like this:</p>
 
@@ -558,7 +558,7 @@ above.</p>
 
 <p>The arguments to these operators are indexes into the image sequence by number, starting with zero, for the first image, and so on. However if you give a negative index, the images are indexed from the end (last image added). That is, an index of -1 is the last image in the current image sequence, -2 gives the second-to-last, and so on.</p>
 
-<h2 class="magick-post-title"><a id="output"></a>Output Filename</h2>
+<h2 class="magick-post-title"><a class="anchor" id="output"></a>Output Filename</h2>
 
 <p>ImageMagick extends the concept of an output filename to include:</p>
 
@@ -619,13 +619,15 @@ image-2.jpg</pre>
     <p><a href="security-policy.html">Security</a> •
     <a href="architecture.html">Architecture</a> •
     <a href="links.html">Related</a> •
-     <a href="sitemap.html">Sitemap</a> •
-    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a>
-</p>
-    <p><a href="support.html">Donate</a> •
-    <a href="command-line-processing.html#">Back to top</a> •
-    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
-        <p><small>© 1999-2018 ImageMagick Studio LLC</small></p>
+     <a href="sitemap.html">Sitemap</a>
+       
+    <a href="command-line-processing.html#"><img class="" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+       
+    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="support.html">Donate</a> •
+    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a>
+    <br/>
+        <small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
@@ -633,4 +635,4 @@ image-2.jpg</pre>
   <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 16th December 2017 09:58 -->
+<!-- Magick Cache 17th December 2017 09:21 -->

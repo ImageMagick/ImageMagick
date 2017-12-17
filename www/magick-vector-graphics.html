@@ -299,7 +299,7 @@ pop graphic-context
 (void) PopDrawingWand(draw_wand);
 </code></pre>
 
-<h2 class="magick-post-title"><a id="overview"></a>MVG Overview</h2>
+<h2 class="magick-post-title"><a class="anchor" id="overview"></a>MVG Overview</h2>
 
 <p>MVG ignores all white-space between commands. This allows multiple MVG commands per line. It is common convention to terminate each MVG command with a new line to make MVG easier to edit and read. This syntax description uses indentation in MVG sequences to aid with understanding. Indentation is supported but is not required.</p>
 
@@ -365,7 +365,7 @@ pop defs
 clip-path url(#%s)
 </code></pre>
 
-<h2 class="magick-post-title"><a id="primitives"></a>Drawing Primitives</h2>
+<h2 class="magick-post-title"><a class="anchor" id="primitives"></a>Drawing Primitives</h2>
 
 <p>Here is a complete description of the MVG drawing primitives:</p>
 
@@ -376,44 +376,44 @@ clip-path url(#%s)
     <th>Description</th>
   </tr>
   <tr>
-    <td><a id="affine"></a>affine <var>s<sub>x</sub></var>,<var>r<sub>x</sub></var>,<var>r<sub>y</sub></var>,<var>s<sub>y</sub></var>,<var>t<sub>x</sub></var>,<var>t<sub>y</sub></var></td>
+    <td><a class="anchor" id="affine"></a>affine <var>s<sub>x</sub></var>,<var>r<sub>x</sub></var>,<var>r<sub>y</sub></var>,<var>s<sub>y</sub></var>,<var>t<sub>x</sub></var>,<var>t<sub>y</sub></var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="arc"></a>arc <var>x<sub>0</sub></var>,<var>y<sub>0</sub></var>   <var>x<sub>1</sub></var>,<var>y<sub>1</sub></var>   <var>a<sub>0</sub></var>,<var>a<sub>1</sub></var></td>
+    <td><a class="anchor" id="arc"></a>arc <var>x<sub>0</sub></var>,<var>y<sub>0</sub></var>   <var>x<sub>1</sub></var>,<var>y<sub>1</sub></var>   <var>a<sub>0</sub></var>,<var>a<sub>1</sub></var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="bezier"></a>bezier <var>x<sub>0</sub></var>,<var>y<sub>0</sub></var> ... <var>x<sub>n</sub></var>,<var>y<sub>n</sub></var></td>
+    <td><a class="anchor" id="bezier"></a>bezier <var>x<sub>0</sub></var>,<var>y<sub>0</sub></var> ... <var>x<sub>n</sub></var>,<var>y<sub>n</sub></var></td>
     <td><code>Bezier</code> (spline) requires three or more x,y coordinates to define its shape. The first and last points are the knots (preserved coordinates) and any intermediate coordinates are the control points. If two control points are specified, the line between each end knot and its sequentially respective control point determines the tangent direction of the curve at that end. If one control point is specified, the lines from the end knots to the one control point determines the tangent directions of the curve at each end. If more than two control points are specified, then the additional control points act in combination to determine the intermediate shape of the curve. In order to draw complex curves, it is highly recommended either to use the <code>Path</code> primitive or to draw multiple four-point bezier segments with the start and end knots of each successive segment repeated. </td>
   </tr>
   <tr>
-    <td><a id="border-color"></a>border-color <var>color</var></td>
+    <td><a class="anchor" id="border-color"></a>border-color <var>color</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="circle"></a>circle <var>origin<sub>x</sub></var>,<var>origin<sub>y</sub></var>   <var>perimeter<sub>x</sub></var>,<var>perimeter<sub>y</sub></var></td>
+    <td><a class="anchor" id="circle"></a>circle <var>origin<sub>x</sub></var>,<var>origin<sub>y</sub></var>   <var>perimeter<sub>x</sub></var>,<var>perimeter<sub>y</sub></var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="clip-path"></a>clip-path url(<var>name</var>)</td>
+    <td><a class="anchor" id="clip-path"></a>clip-path url(<var>name</var>)</td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="clip-rule"></a>clip-rule <var>rule</var></td>
+    <td><a class="anchor" id="clip-rule"></a>clip-rule <var>rule</var></td>
     <td>Choose from these rule types:
 <pre class="highlight"><code>evenodd
 nonzero</code></pre></td>
   </tr>
   <tr>
-    <td><a id="clip-units"></a>clip-units <var>units</var></td>
+    <td><a class="anchor" id="clip-units"></a>clip-units <var>units</var></td>
     <td>Choose from these unit types:
 <pre class="highlight"><code>userSpace
 userSpaceOnUse
 objectBoundingBox</code></pre></td>
   </tr>
   <tr>
-    <td><a id="color"></a>color <var>x</var>,<var>y</var> <var>method</var></td>
+    <td><a class="anchor" id="color"></a>color <var>x</var>,<var>y</var> <var>method</var></td>
     <td>Choose from these method types:
 <pre class="highlight"><code>point
 replace
@@ -422,7 +422,7 @@ filltoborder
 reset</code></pre></td>
   </tr>
   <tr>
-    <td><a id="decorate"></a>decorate <var>type</var></td>
+    <td><a class="anchor" id="decorate"></a>decorate <var>type</var></td>
     <td>Choose from these types of decorations:
 <pre class="highlight"><code>none
 line-through
@@ -430,37 +430,37 @@ overline
 underline</code></pre></td>
   </tr>
   <tr>
-    <td><a id="ellipse"></a>ellipse <var>center<sub>x</sub></var>,<var>center<sub>y</sub></var>   <var>radius<sub>x</sub></var>,<var>radius<sub>y</sub></var>   <var>arc<sub>start</sub></var>,<var>arc<sub>stop</sub></var></td>
+    <td><a class="anchor" id="ellipse"></a>ellipse <var>center<sub>x</sub></var>,<var>center<sub>y</sub></var>   <var>radius<sub>x</sub></var>,<var>radius<sub>y</sub></var>   <var>arc<sub>start</sub></var>,<var>arc<sub>stop</sub></var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="fill"></a>fill <var>color</var></td>
+    <td><a class="anchor" id="fill"></a>fill <var>color</var></td>
     <td>Choose from any of these <a href="../www/color.html">colors</a>.</td>
   </tr>
   <tr>
-    <td><a id="fill-opacity"></a>fill-opacity <var>opacity</var></td>
+    <td><a class="anchor" id="fill-opacity"></a>fill-opacity <var>opacity</var></td>
     <td>The opacity ranges from 0.0 (fully transparent) to 1.0 (fully opaque) or as a percentage (e.g. 50%).</td>
   </tr>
   <tr>
-    <td><a id="fill-rule"></a>fill-rule <var>rule</var></td>
+    <td><a class="anchor" id="fill-rule"></a>fill-rule <var>rule</var></td>
     <td>Choose from these rule types:
 <pre class="highlight"><code>evenodd
 nonzero</code></pre></td>
   </tr>
   <tr>
-    <td><a id="font"></a>font <var>name</var></td>
+    <td><a class="anchor" id="font"></a>font <var>name</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="font-family"></a>font-family <var>family</var></td>
+    <td><a class="anchor" id="font-family"></a>font-family <var>family</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="font-size"></a>font-size <var>point-size</var></td>
+    <td><a class="anchor" id="font-size"></a>font-size <var>point-size</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="font-stretch"></a>font-stretch <var>type</var></td>
+    <td><a class="anchor" id="font-stretch"></a>font-stretch <var>type</var></td>
     <td>Choose from these stretch types:
 <pre class="highlight"><code>all
 normal
@@ -474,7 +474,7 @@ extra-expanded
 ultra-expanded</code></pre></td>
   </tr>
   <tr>
-    <td><a id="font-style"></a>font-style <var>style</var></td>
+    <td><a class="anchor" id="font-style"></a>font-style <var>style</var></td>
     <td>Choose from these styles:
 <pre class="highlight"><code>all
 normal
@@ -482,7 +482,7 @@ italic
 oblique</code></pre></td>
   </tr>
   <tr>
-    <td><a id="font-weight"></a>font-weight <var>weight</var></td>
+    <td><a class="anchor" id="font-weight"></a>font-weight <var>weight</var></td>
     <td>Choose from these weights:
 <pre class="highlight"><code>all
 normal
@@ -498,14 +498,14 @@ bold
 900</code></pre></td>
   </tr>
   <tr>
-    <td><a id="gradient-units"></a>gradient-units <var>units</var></td>
+    <td><a class="anchor" id="gradient-units"></a>gradient-units <var>units</var></td>
     <td>Choose from these units:
 <pre class="highlight"><code>userSpace
 userSpaceOnUse
 objectBoundingBox</code></pre></td>
   </tr>
   <tr>
-    <td><a id="gravity"></a>gravity <var>type</var></td>
+    <td><a class="anchor" id="gravity"></a>gravity <var>type</var></td>
     <td>Choose from these gravity types:
 <pre class="highlight"><code>NorthWest
 North
@@ -518,7 +518,7 @@ South
 SouthEast</code></pre></td>
   </tr>
   <tr>
-    <td><a id="compose"></a>image <var>compose x,y width,height 'filename'</var></td>
+    <td><a class="anchor" id="compose"></a>image <var>compose x,y width,height 'filename'</var></td>
     <td>Choose from these compose operations:
     <table id="table" cellpadding="2" cellspacing="0" style="width: 93%">
   <tbody>
@@ -692,23 +692,23 @@ SouthEast</code></pre></td>
 </table></td>
   </tr>
   <tr>
-    <td><a id="interline-spacing"></a>interline-spacing <var>pixels</var></td>
+    <td><a class="anchor" id="interline-spacing"></a>interline-spacing <var>pixels</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="interword-spacing"></a>interword-spacing <var>pixels</var></td>
+    <td><a class="anchor" id="interword-spacing"></a>interword-spacing <var>pixels</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="kerning"></a>kerning <var>pixels</var></td>
+    <td><a class="anchor" id="kerning"></a>kerning <var>pixels</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="line"></a>line <var>x,y x<sub>1</sub>,y<sub>1</sub></var></td>
+    <td><a class="anchor" id="line"></a>line <var>x,y x<sub>1</sub>,y<sub>1</sub></var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="matte"></a>matte <var>x,y method</var></td>
+    <td><a class="anchor" id="matte"></a>matte <var>x,y method</var></td>
     <td>Choose from these methods:
 <pre class="highlight"><code>point
 replace
@@ -717,161 +717,161 @@ filltoborder
 reset</code></pre></td>
   </tr>
   <tr>
-    <td><a id="offset"></a>offset <var>offset</var></td>
+    <td><a class="anchor" id="offset"></a>offset <var>offset</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="opacity"></a>opacity <var>opacity</var></td>
+    <td><a class="anchor" id="opacity"></a>opacity <var>opacity</var></td>
     <td>Use percent (e.g. 50%).</td>
   </tr>
   <tr>
-    <td><a id="path"></a>path <var>path</var></td>
+    <td><a class="anchor" id="path"></a>path <var>path</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="point"></a>point <var>x,y</var></td>
+    <td><a class="anchor" id="point"></a>point <var>x,y</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="polygon"></a>polygon <var>x,y x<sub>1</sub>,y<sub>1</sub>, ..., x<sub>n</sub>,y<sub>n</sub></var></td>
+    <td><a class="anchor" id="polygon"></a>polygon <var>x,y x<sub>1</sub>,y<sub>1</sub>, ..., x<sub>n</sub>,y<sub>n</sub></var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="polyline"></a>polyline <var>x,y x<sub>1</sub>,y<sub>1</sub>, ..., x<sub>n</sub>,y<sub>n</sub></var></td>
+    <td><a class="anchor" id="polyline"></a>polyline <var>x,y x<sub>1</sub>,y<sub>1</sub>, ..., x<sub>n</sub>,y<sub>n</sub></var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="pop-clip-path"></a>pop clip-path</td>
+    <td><a class="anchor" id="pop-clip-path"></a>pop clip-path</td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="pop-defs"></a>pop defs</td>
+    <td><a class="anchor" id="pop-defs"></a>pop defs</td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="pop-gradient"></a>pop gradient</td>
+    <td><a class="anchor" id="pop-gradient"></a>pop gradient</td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="pop-graphic-context"></a>pop graphic-context</td>
+    <td><a class="anchor" id="pop-graphic-context"></a>pop graphic-context</td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="pop-pattern"></a>pop pattern</td>
+    <td><a class="anchor" id="pop-pattern"></a>pop pattern</td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="push"></a>push clip-path <var>name</var></td>
+    <td><a class="anchor" id="push"></a>push clip-path <var>name</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="push-defs"></a>push defs</td>
+    <td><a class="anchor" id="push-defs"></a>push defs</td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="push-gradient-linear"></a>push gradient <var>id linear x,y x<sub>1</sub>,y<sub>1</sub></var></td>
+    <td><a class="anchor" id="push-gradient-linear"></a>push gradient <var>id linear x,y x<sub>1</sub>,y<sub>1</sub></var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="push-gradient-radial"></a>push gradient <var>id radial x<sub>c</sub>,c<sub>y</sub> x<sub>f</sub>,y<sub>f</sub> radius</var></td>
+    <td><a class="anchor" id="push-gradient-radial"></a>push gradient <var>id radial x<sub>c</sub>,c<sub>y</sub> x<sub>f</sub>,y<sub>f</sub> radius</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="push-graphic-context"></a>push graphic-context</td>
+    <td><a class="anchor" id="push-graphic-context"></a>push graphic-context</td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="push-pattern"></a>push pattern <var>id radial x,y width,height</var></td>
+    <td><a class="anchor" id="push-pattern"></a>push pattern <var>id radial x,y width,height</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="rectangle"></a>rectangle <var>x,y x<sub>1</sub>,y<sub>1</sub></var></td>
+    <td><a class="anchor" id="rectangle"></a>rectangle <var>x,y x<sub>1</sub>,y<sub>1</sub></var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="rotate"></a>rotate <var>angle</var></td>
+    <td><a class="anchor" id="rotate"></a>rotate <var>angle</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="roundrectangle"></a>roundrectangle <var>x,y x<sub>1</sub>,y<sub>1</sub> width,height</var></td>
+    <td><a class="anchor" id="roundrectangle"></a>roundrectangle <var>x,y x<sub>1</sub>,y<sub>1</sub> width,height</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="scale"></a>scale <var>x,y</var></td>
+    <td><a class="anchor" id="scale"></a>scale <var>x,y</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="skewX"></a>skewX <var>angle</var></td>
+    <td><a class="anchor" id="skewX"></a>skewX <var>angle</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="skewY"></a>skewX <var>angle</var></td>
+    <td><a class="anchor" id="skewY"></a>skewX <var>angle</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="stop-color"></a>stop-color <var>color offset</var></td>
+    <td><a class="anchor" id="stop-color"></a>stop-color <var>color offset</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="stroke"></a>stroke <var>color</var></td>
+    <td><a class="anchor" id="stroke"></a>stroke <var>color</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="stroke-antialias"></a>stroke-antialias <var>0 • 1</var></td>
+    <td><a class="anchor" id="stroke-antialias"></a>stroke-antialias <var>0 • 1</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="stroke-dasharray"></a>stroke-dasharray <var>none • numeric-list</var></td>
+    <td><a class="anchor" id="stroke-dasharray"></a>stroke-dasharray <var>none • numeric-list</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="stroke-dashoffset"></a>stroke-dashoffset <var>offset</var></td>
+    <td><a class="anchor" id="stroke-dashoffset"></a>stroke-dashoffset <var>offset</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="stroke-linecap"></a>stroke-linecap <var>type</var></td>
+    <td><a class="anchor" id="stroke-linecap"></a>stroke-linecap <var>type</var></td>
     <td>Choose from these cap types:
 <pre class="highlight"><code>butt
 round
 square</code></pre></td>
   </tr>
   <tr>
-    <td><a id="stroke-linejoin"></a>stroke-linejoin <var>type</var></td>
+    <td><a class="anchor" id="stroke-linejoin"></a>stroke-linejoin <var>type</var></td>
     <td>Choose from these join types:
 <pre class="highlight"><code>bevel
 miter
 round</code></pre></td>
   </tr>
   <tr>
-    <td><a id="stroke-miterlimit"></a>stroke-miterlimit <var>limit</var></td>
+    <td><a class="anchor" id="stroke-miterlimit"></a>stroke-miterlimit <var>limit</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="stroke-opacity"></a>stroke-opacity <var>opacity</var></td>
+    <td><a class="anchor" id="stroke-opacity"></a>stroke-opacity <var>opacity</var></td>
     <td>The opacity ranges from 0.0 (fully transparent) to 1.0 (fully opaque) or as a percentage (e.g. 50%).</td>
   </tr>
   <tr>
-    <td><a id="stroke-width"></a>stroke-width <var>width</var></td>
+    <td><a class="anchor" id="stroke-width"></a>stroke-width <var>width</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="text"></a>text <var>"text"</var></td>
+    <td><a class="anchor" id="text"></a>text <var>"text"</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="text-antialias"></a>text-antialias <var>0 • 1</var></td>
+    <td><a class="anchor" id="text-antialias"></a>text-antialias <var>0 • 1</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="text-undercolor"></a>text-undercolor <var>color</var></td>
+    <td><a class="anchor" id="text-undercolor"></a>text-undercolor <var>color</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="translate"></a>translate <var>x,y</var></td>
+    <td><a class="anchor" id="translate"></a>translate <var>x,y</var></td>
     <td></td>
   </tr>
   <tr>
-    <td><a id="viewbox"></a>viewbox <var>x,y x<sub>1</sub>,y<sub>1</sub></var></td>
+    <td><a class="anchor" id="viewbox"></a>viewbox <var>x,y x<sub>1</sub>,y<sub>1</sub></var></td>
     <td></td>
   </tr>
 </table></div>
@@ -882,13 +882,15 @@ round</code></pre></td>
     <p><a href="security-policy.html">Security</a> •
     <a href="architecture.html">Architecture</a> •
     <a href="links.html">Related</a> •
-     <a href="sitemap.html">Sitemap</a> •
-    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a>
-</p>
-    <p><a href="support.html">Donate</a> •
-    <a href="magick-vector-graphics.html#">Back to top</a> •
-    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
-        <p><small>© 1999-2018 ImageMagick Studio LLC</small></p>
+     <a href="sitemap.html">Sitemap</a>
+       
+    <a href="magick-vector-graphics.html#"><img class="" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+       
+    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="support.html">Donate</a> •
+    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a>
+    <br/>
+        <small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
@@ -896,4 +898,4 @@ round</code></pre></td>
   <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 16th December 2017 10:05 -->
+<!-- Magick Cache 17th December 2017 09:21 -->
