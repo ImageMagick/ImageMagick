@@ -40,7 +40,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#include "magick/property.h"
+#include "magick/attribute.h"
 #include "magick/cache.h"
 #include "magick/cache-private.h"
 #include "magick/cache-view.h"
@@ -59,6 +59,7 @@
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/pixel-private.h"
+#include "magick/property.h"
 #include "magick/quantize.h"
 #include "magick/quantum.h"
 #include "magick/resource_.h"
