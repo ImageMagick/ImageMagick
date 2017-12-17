@@ -1024,7 +1024,6 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
   (void) GetVirtualPixels(image,0,0,1,1,exception);
   exception=DestroyExceptionInfo(exception);
   exception=(&image->exception);
-  type=GetImageType(image,exception);
   (void) SignatureImage(image);
   JSONFormatLocaleFile(file,"{\n  \"image\": {\n    \"name\": %s,\n",
     image->filename);
@@ -1072,11 +1071,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
     }
   JSONFormatLocaleFile(file,"    \"units\": %s,\n",CommandOptionToMnemonic(
     MagickResolutionOptions,(ssize_t) image->units));
-  colorspace=image->colorspace;
   type=IdentifyImageType(image,exception);
-  if ((type == BilevelType) || (type == GrayscaleType) ||
-      (type == GrayscaleMatteType))
-    colorspace=GRAYColorspace;
   JSONFormatLocaleFile(file,"    \"type\": %s,\n",CommandOptionToMnemonic(
     MagickTypeOptions,(ssize_t) type));
   if (image->type != UndefinedType)
@@ -1121,6 +1116,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
       if (image->matte != MagickFalse)
         (void) PrintChannelLocations(file,image,AlphaChannel,"alpha",
           type,max_locations,MagickTrue,channel_statistics);
+      colorspace=image->colorspace;
       switch (colorspace)
       {
         case RGBColorspace:
@@ -1160,13 +1156,17 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
   /*
     Detail channel depth and extrema.
   */
+  colorspace=image->colorspace;
   JSONFormatLocaleFile(file,"    \"colorspace\": %s,\n",
     CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t) colorspace));
+  if (image->colorspace != colorspace)
+    JSONFormatLocaleFile(file,"    \"baseColorspace\": %s,\n",
+      CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
+      image->colorspace));
   channel_statistics=(ChannelStatistics *) NULL;
   channel_moments=(ChannelMoments *) NULL;
   channel_phash=(ChannelPerceptualHash *) NULL;
   channel_features=(ChannelFeatures *) NULL;
-  colorspace=image->colorspace;
   scale=1;
   channel_statistics=GetImageChannelStatistics(image,exception);
   if (channel_statistics == (ChannelStatistics *) NULL)

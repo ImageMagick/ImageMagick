@@ -565,12 +565,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       channel_statistics=GetLocationStatistics(image,statistic_type,exception);
       if (channel_statistics == (ChannelStatistics *) NULL)
         return(MagickFalse);
-      colorspace=image->colorspace;
-      type=IdentifyImageType(image,exception);
-      if ((type == BilevelType) || (type == GrayscaleType) ||
-          (type == GrayscaleMatteType))
-        colorspace=GRAYColorspace;
       (void) FormatLocaleFile(file,"  Channel %s locations:\n",locate);
+      colorspace=GetImageColorspaceType(image,&image->exception);
       switch (colorspace)
       {
         case RGBColorspace:
@@ -685,11 +681,6 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   /*
     Display verbose info about the image.
   */
-  colorspace=image->colorspace;
-  type=IdentifyImageType(image,exception);
-  if ((type == BilevelType) || (type == GrayscaleType) ||
-      (type == GrayscaleMatteType))
-    colorspace=GRAYColorspace;
   pixels=GetVirtualPixels(image,0,0,1,1,exception);
   exception=DestroyExceptionInfo(exception);
   ping=pixels == (const PixelPacket *) NULL ? MagickTrue : MagickFalse;
@@ -736,9 +727,10 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     }
   (void) FormatLocaleFile(file,"  Units: %s\n",CommandOptionToMnemonic(
     MagickResolutionOptions,(ssize_t) image->units));
+  type=IdentifyImageType(image,exception);
   (void) FormatLocaleFile(file,"  Type: %s\n",CommandOptionToMnemonic(
     MagickTypeOptions,(ssize_t) type));
-  if (image->type != UndefinedType)
+  if (image->type != type)
     (void) FormatLocaleFile(file,"  Base type: %s\n",CommandOptionToMnemonic(
       MagickTypeOptions,(ssize_t) image->type));
   (void) FormatLocaleFile(file,"  Endianess: %s\n",CommandOptionToMnemonic(
@@ -746,8 +738,13 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   /*
     Detail channel depth and extrema.
   */
+  colorspace=GetImageColorspaceType(image,&image->exception);
   (void) FormatLocaleFile(file,"  Colorspace: %s\n",CommandOptionToMnemonic(
     MagickColorspaceOptions,(ssize_t) colorspace));
+  if (image->colorspace != colorspace)
+    (void) FormatLocaleFile(file,"  Base Colorspace: %s\n",
+      CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
+      image->colorspace));
   channel_statistics=(ChannelStatistics *) NULL;
   channel_moments=(ChannelMoments *) NULL;
   channel_phash=(ChannelPerceptualHash *) NULL;

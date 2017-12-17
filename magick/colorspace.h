@@ -61,6 +61,9 @@ typedef enum
   xyYColorspace
 } ColorspaceType;
 
+extern MagickExport ColorspaceType
+  GetImageColorspaceType(const Image *,ExceptionInfo *);
+
 extern MagickExport MagickBooleanType
   RGBTransformImage(Image *,const ColorspaceType),
   SetImageColorspace(Image *,const ColorspaceType),
