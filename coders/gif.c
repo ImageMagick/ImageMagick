@@ -1158,6 +1158,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     ThrowReaderException(ResourceLimitError,
                       "MemoryAllocationFailed");
                   }
+                (void) ResetMagickMemory(info,0,255UL*sizeof(*info));
                 reserved_length=255;
                 for (info_length=0; ; )
                 {
