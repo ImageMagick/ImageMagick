@@ -176,9 +176,7 @@ static MagickBooleanType AcquireQuantumPixels(QuantumInfo *quantum_info,
       sizeof(**quantum_info->pixels));
     if (quantum_info->pixels[i] == (unsigned char *) NULL)
       {
-        while (--i >= 0)
-          quantum_info->pixels[i]=(unsigned char *) RelinquishMagickMemory(
-            quantum_info->pixels[i]);
+        DestroyQuantumPixels(quantum_info);
         return(MagickFalse);
       }
     (void) ResetMagickMemory(quantum_info->pixels[i],0,(extent+1)*
