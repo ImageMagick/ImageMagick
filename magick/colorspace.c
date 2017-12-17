@@ -124,7 +124,7 @@ MagickExport ColorspaceType GetImageColorspaceType(const Image *image,
   colorspace=image->colorspace;
   type=IdentifyImageType(image,exception);
   if ((type == BilevelType) || (type == GrayscaleType) ||
-      (type == GrayscaleAlphaType))
+      (type == GrayscaleMatteType))
     colorspace=GRAYColorspace;
   return(colorspace);
 }
