@@ -2801,20 +2801,9 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         }
       if (LocaleCompare("colorspace",property) == 0)
         {
-          ColorspaceType
-            colorspace;
-
-          ImageType
-            type;
-
-          colorspace=image->colorspace;
-          type=IdentifyImageType(image,exception);
-          if ((type == BilevelType) || (type == GrayscaleType) ||
-              (type == GrayscaleAlphaType))
-            colorspace=GRAYColorspace;
           WarnNoImageReturn("\"%%[%s]\"",property);
           string=CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
-            colorspace);
+            GetImageColorspaceType(image,exception));
           break;
         }
       if (LocaleCompare("compose",property) == 0)

@@ -951,7 +951,6 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
     user_time;
 
   ImageType
-    base_type,
     type;
 
   MagickBooleanType
@@ -1030,17 +1029,12 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
     }
   JSONFormatLocaleFile(file,"    \"units\": %s,\n",CommandOptionToMnemonic(
     MagickResolutionOptions,(ssize_t) image->units));
-  colorspace=image->colorspace;
-  type=IdentifyImageType(image,exception);
-  if ((type == BilevelType) || (type == GrayscaleType) ||
-      (type == GrayscaleAlphaType))
-    colorspace=GRAYColorspace;
+  type=GetImageType(image);
   JSONFormatLocaleFile(file,"    \"type\": %s,\n",CommandOptionToMnemonic(
     MagickTypeOptions,(ssize_t) type));
-  base_type=GetImageType(image);
-  if (type != base_type)
+  if (image->type != type)
     JSONFormatLocaleFile(file,"    \"baseType\": %s,\n",
-      CommandOptionToMnemonic(MagickTypeOptions,(ssize_t) base_type));
+      CommandOptionToMnemonic(MagickTypeOptions,(ssize_t) image->type));
   JSONFormatLocaleFile(file,"    \"endianess\": %s,\n",
     CommandOptionToMnemonic(MagickEndianOptions,(ssize_t) image->endian));
   locate=GetImageArtifact(image,"identify:locate");
@@ -1075,6 +1069,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       if (image->alpha_trait != UndefinedPixelTrait)
         (void) PrintChannelLocations(file,image,AlphaPixelChannel,"Alpha",
           type,max_locations,MagickTrue,channel_statistics);
+      colorspace=GetImageColorspaceType(image,exception);
       switch (colorspace)
       {
         case RGBColorspace:
@@ -1114,8 +1109,13 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   /*
     Detail channel depth and extrema.
   */
+  colorspace=GetImageColorspaceType(image,exception);
   JSONFormatLocaleFile(file,"    \"colorspace\": %s,\n",
     CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t) colorspace));
+  if (image->colorspace != colorspace)
+    JSONFormatLocaleFile(file,"    \"baseColorspace\": %s,\n",
+      CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
+        image->colorspace));
   channel_statistics=(ChannelStatistics *) NULL;
   channel_moments=(ChannelMoments *) NULL;
   channel_phash=(ChannelPerceptualHash *) NULL;

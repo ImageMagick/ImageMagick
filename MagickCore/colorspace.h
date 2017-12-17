@@ -59,6 +59,9 @@ typedef enum
   YUVColorspace
 } ColorspaceType;
 
+extern MagickExport ColorspaceType
+  GetImageColorspaceType(const Image *,ExceptionInfo *);
+
 extern MagickExport MagickBooleanType
   SetImageColorspace(Image *,const ColorspaceType,ExceptionInfo *),
   SetImageGray(Image *,ExceptionInfo *),

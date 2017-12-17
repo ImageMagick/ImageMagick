@@ -91,6 +91,58 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t I m a g e C o l o r s p a c e T y p e                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageColorspaceType() returns the potential type of image:
+%  sRGBColorspaceType, RGBColorspaceType, GRAYColorspaceType, etc.
+%
+%  To ensure the image type matches its potential, use SetImageColorspaceType():
+%
+%    (void) SetImageColorspaceType(image,GetImageColorspaceType(image),
+%      exception);
+%
+%  The format of the GetImageColorspaceType method is:
+%
+%      ColorspaceType GetImageColorspaceType(const Image *image,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport ColorspaceType GetImageColorspaceType(const Image *image,
+  ExceptionInfo *exception)
+{
+  ColorspaceType
+    colorspace;
+
+  ImageType
+    type;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  colorspace=image->colorspace;
+  type=IdentifyImageType(image,exception);
+  if ((type == BilevelType) || (type == GrayscaleType) ||
+      (type == GrayscaleAlphaType))
+    colorspace=GRAYColorspace;
+  return(colorspace);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +     s R G B T r a n s f o r m I m a g e                                     %
 %                                                                             %
 %                                                                             %
