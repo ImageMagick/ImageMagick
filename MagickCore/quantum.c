@@ -175,9 +175,7 @@ static MagickBooleanType AcquireQuantumPixels(QuantumInfo *quantum_info,
       sizeof(**quantum_info->pixels));
     if (quantum_info->pixels[i] == (unsigned char *) NULL)
       {
-        while (--i >= 0)
-          quantum_info->pixels[i]=(unsigned char *) RelinquishMagickMemory(
-            quantum_info->pixels[i]);
+        DestroyQuantumPixels(quantum_info);
         return(MagickFalse);
       }
     (void) ResetMagickMemory(quantum_info->pixels[i],0,(extent+1)*
@@ -684,7 +682,7 @@ MagickExport MagickBooleanType SetQuantumDepth(const Image *image,
     }
   if (quantum_info->pixels != (unsigned char **) NULL)
     DestroyQuantumPixels(quantum_info);
-  quantum=(quantum_info->pad+6)*(quantum_info->depth+7)/8;
+  quantum=(quantum_info->pad+MaxPixelChannels)*(quantum_info->depth+7)/8;
   extent=MagickMax(image->columns,image->rows)*quantum;
   if ((MagickMax(image->columns,image->rows) != 0) &&
       (quantum != (extent/MagickMax(image->columns,image->rows))))
