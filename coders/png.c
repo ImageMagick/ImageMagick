@@ -3516,7 +3516,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               break;
           }
       }
-      quantum_info=DestroyQuantumInfo(quantum_info);
     }
 
   else /* image->storage_class != DirectClass */
@@ -3712,7 +3711,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             ping_color_type&=0x03;
           }
       }
-    }
+  }
+  quantum_info=DestroyQuantumInfo(quantum_info);
 
   if (image->storage_class == PseudoClass)
     {
