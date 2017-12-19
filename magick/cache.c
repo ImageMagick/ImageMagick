@@ -1882,7 +1882,9 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
           clone_image.cache=ClonePixelCache(cache_info);
           clone_info=(CacheInfo *) clone_image.cache;
           status=OpenPixelCache(&clone_image,IOMode,exception);
-          if (status != MagickFalse)
+          if (status == MagickFalse)
+            clone_info=(CacheInfo *) DestroyPixelCache(clone_info);
+          else
             {
               if (clone != MagickFalse)
                 status=ClonePixelCacheRepository(clone_info,cache_info,
@@ -1890,7 +1892,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
               if (status != MagickFalse)
                 {
                   destroy=MagickTrue;
-                  image->cache=clone_image.cache;
+                  image->cache=clone_info;
                 }
             }
           DestroySemaphoreInfo(&clone_image.semaphore);
