@@ -267,6 +267,8 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
 { \
   if (montage_image != (Image *) NULL) \
     montage_image=DestroyImageList(montage_image); \
+  if (montage_info != (MontageInfo *) NULL) \
+    montage_info=DestroyMontageInfo(montage_info); \
   DestroyImageStack(); \
   for (i=0; i < (ssize_t) argc; i++) \
     argv[i]=DestroyString(argv[i]); \
@@ -1785,7 +1787,8 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
       /*
         Write image.
       */
-      (void) CopyMagickString(image_info->filename,argv[argc-1],MagickPathExtent);
+      (void) CopyMagickString(image_info->filename,argv[argc-1],
+        MagickPathExtent);
       (void) CopyMagickString(montage_image->magick_filename,argv[argc-1],
         MagickPathExtent);
       if (*montage_image->magick == '\0')
@@ -1806,7 +1809,6 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
           text=DestroyString(text);
         }
     }
-  montage_info=DestroyMontageInfo(montage_info);
   DestroyMontage();
   return(status != 0 ? MagickTrue : MagickFalse);
 }
