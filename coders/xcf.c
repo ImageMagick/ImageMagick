@@ -247,8 +247,8 @@ static CompositeOperator GIMPBlendModeToCompositeOperator(
     case GIMP_SCREEN_MODE:       return(ScreenCompositeOp);
     case GIMP_OVERLAY_MODE:      return(OverlayCompositeOp);
     case GIMP_DIFFERENCE_MODE:   return(DifferenceCompositeOp);
-    case GIMP_ADDITION_MODE:     return(AddCompositeOp);
-    case GIMP_SUBTRACT_MODE:     return(SubtractCompositeOp);
+    case GIMP_ADDITION_MODE:     return(ModulusAddCompositeOp);
+    case GIMP_SUBTRACT_MODE:     return(ModulusSubtractCompositeOp);
     case GIMP_DARKEN_ONLY_MODE:  return(DarkenCompositeOp);
     case GIMP_LIGHTEN_ONLY_MODE: return(LightenCompositeOp);
     case GIMP_HUE_MODE:          return(HueCompositeOp);
@@ -257,7 +257,7 @@ static CompositeOperator GIMPBlendModeToCompositeOperator(
     case GIMP_DODGE_MODE:        return(ColorDodgeCompositeOp);
     case GIMP_BURN_MODE:         return(ColorBurnCompositeOp);
     case GIMP_HARDLIGHT_MODE:    return(HardLightCompositeOp);
-    case GIMP_DIVIDE_MODE:       return(DivideCompositeOp);
+    case GIMP_DIVIDE_MODE:       return(DivideDstCompositeOp);
     /* these are the ones we don't support...yet */
     case GIMP_BEHIND_MODE:       return(OverCompositeOp);
     case GIMP_VALUE_MODE:        return(OverCompositeOp);
@@ -1110,15 +1110,15 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return(DestroyImageList(image));
     }
   if (image_type == GIMP_RGB)
-    ;
+    SetImageColorspace(image,sRGBColorspace);
   else
     if (image_type == GIMP_GRAY)
-      image->colorspace=GRAYColorspace;
+      SetImageColorspace(image,GRAYColorspace);
     else
       if (image_type == GIMP_INDEXED)
         ThrowReaderException(CoderError,"ColormapTypeNotSupported");
-  (void) SetImageOpacity(image,OpaqueOpacity); 
   (void) SetImageBackgroundColor(image);
+  (void) SetImageOpacity(image,OpaqueOpacity); 
   /*
     Read properties.
   */

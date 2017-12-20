@@ -1406,10 +1406,6 @@ MagickExport MagickSizeType GetBlobSize(const Image *image)
   switch (blob_info->type)
   {
     case UndefinedStream:
-    {
-      extent=blob_info->size;
-      break;
-    }
     case StandardStream:
     {
       extent=blob_info->size;
