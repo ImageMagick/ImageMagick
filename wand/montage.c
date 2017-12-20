@@ -268,6 +268,8 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
 { \
   if (montage_info != (MontageInfo *) NULL) \
     montage_info=DestroyMontageInfo(montage_info); \
+  if (montage_info != (MontageInfo *) NULL) \
+    montage_info=DestroyMontageInfo(montage_info); \
   if (montage_image != (Image *) NULL) \
     montage_image=DestroyImageList(montage_image); \
   DestroyImageStack(); \
@@ -1825,7 +1827,6 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
           text=DestroyString(text);
         }
     }
-  montage_info=DestroyMontageInfo(montage_info);
   DestroyMontage();
   return(status != 0 ? MagickTrue : MagickFalse);
 }
