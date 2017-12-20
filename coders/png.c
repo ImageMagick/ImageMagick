@@ -9254,7 +9254,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               {
                 (void) ThrowMagickException(exception,GetMagickModule(),
                   ResourceLimitError,"MemoryAllocationFailed","`%s'",
-                IMimage->filename);
+                  image->filename);
+                break;
               }
 
             for (i=0; i< (ssize_t) image_colors; i++)
