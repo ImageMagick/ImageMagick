@@ -5882,7 +5882,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
 
                 p++; /* framing mode */
 
-                while (*p && ((p-chunk) < (ssize_t) length))
+                while (*p && ((p-chunk) < (ssize_t) length-1))
                   p++;  /* frame name */
 
                 p++;  /* frame name terminator */
