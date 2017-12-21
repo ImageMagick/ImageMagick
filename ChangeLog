@@ -1,3 +1,6 @@
+2017-12-18  7.0.7-16 Cristy  <quetzlzacatenango@image...>
+  * Fix error reading multi-layer XCF image file.
+
 2017-12-16  7.0.7-15 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.7-15, GIT revision 21924:30cb31746:20171216.
 

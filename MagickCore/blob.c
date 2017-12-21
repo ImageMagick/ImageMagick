@@ -4677,7 +4677,14 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
           break;
         }
       }
-      break;
+      if (blob_info->offset < (MagickOffsetType) ((off_t) blob_info->length))
+        {
+          blob_info->eof=MagickFalse;
+          break;
+        }
+      if (blob_info->offset < (MagickOffsetType) ((off_t) blob_info->extent))
+        break;
+      return(-1);
     }
     case CustomStream:
     {
