@@ -1,5 +1,7 @@
 2017-12-18  7.0.7-16 Cristy  <quetzlzacatenango@image...>
   * Fix error reading multi-layer XCF image file.
+  * Fix possible stack overflow in WEBP reader (reference
+    https://github.com/ImageMagick/ImageMagick/issues/907)
 
 2017-12-16  7.0.7-15 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.7-15, GIT revision 21924:30cb31746:20171216.

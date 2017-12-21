@@ -626,13 +626,13 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
 #if !defined(MAGICKCORE_WEBPMUX_DELEGATE)
   picture.writer=WebPEncodeWriter;
   picture.custom_ptr=(void *) image;
+#if WEBP_DECODER_ABI_VERSION >= 0x0100
+  picture.progress_hook=WebPEncodeProgress;
+#endif
 #else
   WebPMemoryWriterInit(&writer_info);
   picture.writer=WebPMemoryWrite;
   picture.custom_ptr=(&writer_info);
-#endif
-#if WEBP_DECODER_ABI_VERSION >= 0x0100
-  picture.progress_hook=WebPEncodeProgress;
 #endif
   picture.stats=(&statistics);
   picture.width=(int) image->columns;
