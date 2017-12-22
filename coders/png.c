@@ -2261,7 +2261,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       if (image != (Image *) NULL)
         {
           InheritException(exception,&image->exception);
-          image=DestroyImage(image);
+          image=DestroyImageList(image);
         }
       return(image);
     }
