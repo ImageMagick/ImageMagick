@@ -723,6 +723,13 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     }
   (void) FormatLocaleFile(file,"  Units: %s\n",CommandOptionToMnemonic(
     MagickResolutionOptions,(ssize_t) image->units));
+  colorspace=GetImageColorspaceType(image,exception);
+  (void) FormatLocaleFile(file,"  Colorspace: %s\n",CommandOptionToMnemonic(
+    MagickColorspaceOptions,(ssize_t) colorspace));
+  if (colorspace != image->colorspace)
+    (void) FormatLocaleFile(file,"  Base colorspace: %s\n",
+      CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
+        image->colorspace));
   type=GetImageType(image);
   (void) FormatLocaleFile(file,"  Type: %s\n",CommandOptionToMnemonic(
     MagickTypeOptions,(ssize_t) type));
@@ -734,13 +741,6 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   /*
     Detail channel depth and extrema.
   */
-  colorspace=GetImageColorspaceType(image,exception);
-  (void) FormatLocaleFile(file,"  Colorspace: %s\n",CommandOptionToMnemonic(
-    MagickColorspaceOptions,(ssize_t) colorspace));
-  if (colorspace != image->colorspace)
-    (void) FormatLocaleFile(file,"  Base colorspace: %s\n",
-      CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
-        image->colorspace));
   channel_statistics=(ChannelStatistics *) NULL;
   channel_moments=(ChannelMoments *) NULL;
   channel_phash=(ChannelPerceptualHash *) NULL;
