@@ -372,7 +372,6 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
     extract_info;
 
   size_t
-    bevel_width,
     border_width,
     extent,
     height,
@@ -389,6 +388,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
     width;
 
   ssize_t
+    bevel_width,
     tile,
     x,
     x_offset,
@@ -499,12 +499,12 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       if ((flags & HeightValue) == 0)
         frame_info.height=frame_info.width;
       if ((flags & XiValue) == 0)
-        frame_info.outer_bevel=(ssize_t) frame_info.width/2;
+        frame_info.outer_bevel=(ssize_t) frame_info.width/2-1;
       if ((flags & PsiValue) == 0)
         frame_info.inner_bevel=frame_info.outer_bevel;
       frame_info.x=(ssize_t) frame_info.width;
       frame_info.y=(ssize_t) frame_info.height;
-      bevel_width=(size_t) MagickMax(frame_info.inner_bevel,
+      bevel_width=(ssize_t) MagickMax(frame_info.inner_bevel,
         frame_info.outer_bevel);
       border_width=(size_t) MagickMax((ssize_t) frame_info.width,
         (ssize_t) frame_info.height);
@@ -763,12 +763,12 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       tile_image->gravity=montage_info->gravity;
       if (image->gravity != UndefinedGravity)
         tile_image->gravity=image->gravity;
-      (void) FormatLocaleString(tile_geometry,MagickPathExtent,"%.20gx%.20g+0+0",
-        (double) image->columns,(double) image->rows);
+      (void) FormatLocaleString(tile_geometry,MagickPathExtent,
+        "%.20gx%.20g+0+0",(double) image->columns,(double) image->rows);
       flags=ParseGravityGeometry(tile_image,tile_geometry,&geometry,exception);
       x=(ssize_t) (geometry.x+border_width);
       y=(ssize_t) (geometry.y+border_width);
-      if ((montage_info->frame != (char *) NULL) && (bevel_width != 0))
+      if ((montage_info->frame != (char *) NULL) && (bevel_width > 0))
         {
           FrameInfo
             frame_clone;
