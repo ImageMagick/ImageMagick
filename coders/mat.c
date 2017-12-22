@@ -1334,6 +1334,8 @@ done_reading:
       /* row scan buffer is no longer needed */
     RelinquishMagickMemory(BImgBuff);
     BImgBuff = NULL;
+    if (quantum_info != (QuantumInfo *) NULL)
+      quantum_info=DestroyQuantumInfo(quantum_info);
 
     if(--Frames>0)
     {
@@ -1356,8 +1358,6 @@ done_reading:
         }
         }
 
-    if (quantum_info != (QuantumInfo *) NULL)
-      quantum_info=DestroyQuantumInfo(quantum_info);
     if (clone_info)
       clone_info=DestroyImageInfo(clone_info);
   }
