@@ -2384,7 +2384,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           "  exit ReadOnePNGImage() with error.");
 
       if (image != (Image *) NULL)
-        image=DestroyImage(image);
+        image=DestroyImageList(image);
       return(image);
     }
 
