@@ -3686,58 +3686,60 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   else
     {
       status=AcquireMagickResource(MapResource,cache_info->length);
-      if ((status == MagickFalse) && (cache_info->type != MapCache) &&
-          (cache_info->type != MemoryCache))
-        {
-          status=MagickTrue;
-          cache_info->type=DiskCache;
-        }
+      if (status == MagickFalse)
+        cache_info->type=DiskCache;
       else
-        {
-          status=MagickTrue;
-          cache_info->pixels=(Quantum *) MapBlob(cache_info->file,mode,
-            cache_info->offset,(size_t) cache_info->length);
-          if (cache_info->pixels == (Quantum *) NULL)
-            {
-              cache_info->type=DiskCache;
-              cache_info->pixels=source_info.pixels;
-            }
-          else
-            {
-              /*
-                Create file-backed memory-mapped pixel cache.
-              */
-              (void) ClosePixelCacheOnDisk(cache_info);
-              cache_info->type=MapCache;
-              cache_info->mapped=MagickTrue;
-              cache_info->metacontent=(void *) NULL;
-              if (cache_info->metacontent_extent != 0)
-                cache_info->metacontent=(void *) (cache_info->pixels+
-                  number_pixels*cache_info->number_channels);
-              if ((source_info.storage_class != UndefinedClass) &&
-                  (mode != ReadMode))
-                {
-                  status=ClonePixelCacheRepository(cache_info,&source_info,
-                    exception);
-                  RelinquishPixelCachePixels(&source_info);
-                }
-              if (image->debug != MagickFalse)
-                {
-                  (void) FormatMagickSize(cache_info->length,MagickTrue,"B",
-                    MagickPathExtent,format);
-                  type=CommandOptionToMnemonic(MagickCacheOptions,(ssize_t)
-                    cache_info->type);
-                  (void) FormatLocaleString(message,MagickPathExtent,
-                    "open %s (%s[%d], %s, %.20gx%.20gx%.20g %s)",
-                    cache_info->filename,cache_info->cache_filename,
-                    cache_info->file,type,(double) cache_info->columns,(double)
-                    cache_info->rows,(double) cache_info->number_channels,
-                    format);
-                  (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
-                    message);
-                }
-              return(status == 0 ? MagickFalse : MagickTrue);
-            }
+        if ((cache_info->type != MapCache) && (cache_info->type != MemoryCache))
+          {
+            cache_info->type=DiskCache;
+            RelinquishMagickResource(MapResource,cache_info->length);
+          }
+        else
+          {
+            cache_info->pixels=(Quantum *) MapBlob(cache_info->file,mode,
+              cache_info->offset,(size_t) cache_info->length);
+            if (cache_info->pixels == (Quantum *) NULL)
+              {
+                cache_info->type=DiskCache;
+                cache_info->pixels=source_info.pixels;
+                RelinquishMagickResource(MapResource,cache_info->length);
+              }
+            else
+              {
+                /*
+                  Create file-backed memory-mapped pixel cache.
+                */
+                (void) ClosePixelCacheOnDisk(cache_info);
+                cache_info->type=MapCache;
+                cache_info->mapped=MagickTrue;
+                cache_info->metacontent=(void *) NULL;
+                if (cache_info->metacontent_extent != 0)
+                  cache_info->metacontent=(void *) (cache_info->pixels+
+                    number_pixels*cache_info->number_channels);
+                if ((source_info.storage_class != UndefinedClass) &&
+                    (mode != ReadMode))
+                  {
+                    status=ClonePixelCacheRepository(cache_info,&source_info,
+                      exception);
+                    RelinquishPixelCachePixels(&source_info);
+                  }
+                if (image->debug != MagickFalse)
+                  {
+                    (void) FormatMagickSize(cache_info->length,MagickTrue,"B",
+                      MagickPathExtent,format);
+                    type=CommandOptionToMnemonic(MagickCacheOptions,(ssize_t)
+                      cache_info->type);
+                    (void) FormatLocaleString(message,MagickPathExtent,
+                      "open %s (%s[%d], %s, %.20gx%.20gx%.20g %s)",
+                      cache_info->filename,cache_info->cache_filename,
+                      cache_info->file,type,(double) cache_info->columns,
+                      (double) cache_info->rows,(double)
+                      cache_info->number_channels,format);
+                    (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
+                      message);
+                  }
+                return(status == 0 ? MagickFalse : MagickTrue);
+              }
         }
     }
   status=MagickTrue;
