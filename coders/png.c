@@ -2383,7 +2383,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  exit ReadOnePNGImage() with error.");
 
-      return(GetFirstImageInList(image));
+      if (image != (Image *) NULL)
+        image=DestroyImage(image);
+      return(image);
     }
 
   /* {  For navigation to end of SETJMP-protected block.  Within this
