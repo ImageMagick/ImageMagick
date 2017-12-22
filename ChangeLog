@@ -2,6 +2,8 @@
   * Fix error reading multi-layer XCF image file.
   * Fix possible stack overflow in WEBP reader (reference
     https://github.com/ImageMagick/ImageMagick/issues/907)
+  * Fixed numerous memory leaks (reference
+    https://github.com/ImageMagick/ImageMagick/issues).
 
 2017-12-16  6.9.9-27 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.9-26, GIT revision 12369:82d92312a:20171216.

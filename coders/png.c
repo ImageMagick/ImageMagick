@@ -2259,9 +2259,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           "  exit ReadOnePNGImage() with error.");
 
       if (image != (Image *) NULL)
-        InheritException(exception,&image->exception);
-
-      return(GetFirstImageInList(image));
+        {
+          InheritException(exception,&image->exception);
+          image=DestroyImage(image);
+        }
+      return(image);
     }
 
   /* {  For navigation to end of SETJMP-protected block.  Within this
