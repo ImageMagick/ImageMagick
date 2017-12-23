@@ -2803,7 +2803,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
           string=CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
-            GetImageColorspaceType(image,exception));
+            image->colorspace);
           break;
         }
       if (LocaleCompare("compose",property) == 0)
