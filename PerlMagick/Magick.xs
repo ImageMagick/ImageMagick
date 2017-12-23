@@ -563,7 +563,8 @@ static struct
       {"dx", IntegerReference}, {"dy", IntegerReference} } },
     { "WaveletDenoise", {  {"geometry", StringReference},
       {"threshold", RealReference}, {"softness", RealReference} } },
-    { "Colorspace", { {"colorspace", MagickColorspaceOptions} } }
+    { "Colorspace", { {"colorspace", MagickColorspaceOptions} } },
+    { "AutoThreshold", { {"method", MagickAutoThresholdOptions} } } 
   };
 
 static SplayTreeInfo
@@ -7550,6 +7551,8 @@ Mogrify(ref,...)
     WaveletDenoiseImage= 294
     Colorspace         = 295
     ColorspaceImage    = 296
+    AutoThreshold      = 297
+    AutoThresholdImage = 298
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -9189,8 +9192,8 @@ Mogrify(ref,...)
             quantize_info->dither=argument_list[3].integer_reference != 0 ?
               MagickTrue : MagickFalse;
           if (attribute_flag[4] != 0)
-            quantize_info->measure_error=
-              argument_list[4].integer_reference != 0 ? MagickTrue : MagickFalse;
+            quantize_info->measure_error=argument_list[4].integer_reference !=
+              0 ? MagickTrue : MagickFalse;
           if (attribute_flag[6] != 0)
             (void) QueryColorDatabase(argument_list[6].string_reference,
               &image->transparent_color,exception);
@@ -11147,6 +11150,17 @@ Mogrify(ref,...)
           if (attribute_flag[0] != 0)
             colorspace=(ColorspaceType) argument_list[0].integer_reference;
           (void) TransformImageColorspace(image,colorspace);
+          break;
+        }
+        case 149:  /* AutoThreshold */
+        {
+          AutoThresholdMethod
+            method;
+
+          method=UndefinedThresholdMethod;
+          if (attribute_flag[0] != 0)
+            method=(AutoThresholdMethod) argument_list[0].integer_reference;
+          (void) AutoThresholdImage(image,method,exception);
           break;
         }
       }

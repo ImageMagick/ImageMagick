@@ -74,6 +74,7 @@
 #include "magick/splay-tree.h"
 #include "magick/statistic.h"
 #include "magick/string_.h"
+#include "magick/threshold.h"
 #include "magick/token.h"
 #include "magick/utility.h"
 
@@ -113,6 +114,14 @@ static const OptionInfo
     { "Transparent", TransparentAlphaChannel, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedAlphaChannel, UndefinedOptionFlag, MagickFalse }
   },
+  AutoThresholdOptions[] =
+  {
+    { "Undefined", UndefinedThresholdMethod, UndefinedOptionFlag, MagickTrue },
+    { "Kapur", KapurThresholdMethod, UndefinedOptionFlag, MagickFalse },
+    { "OTSU", OTSUThresholdMethod, UndefinedOptionFlag, MagickFalse },
+    { "Triangle", TriangleThresholdMethod, UndefinedOptionFlag, MagickFalse },
+    { (char *) NULL, UndefinedThresholdMethod, UndefinedOptionFlag, MagickFalse }
+  },
   BooleanOptions[] =
   {
     { "False", 0L, UndefinedOptionFlag, MagickFalse },
@@ -136,6 +145,7 @@ static const OptionInfo
     { "A", AlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "All", CompositeChannels, UndefinedOptionFlag, MagickFalse },
     { "Alpha", OpacityChannel, UndefinedOptionFlag, MagickFalse },
+    { "AutoThreshold", MagickAutoThresholdOptions, UndefinedOptionFlag, MagickFalse },
     { "B", BlueChannel, UndefinedOptionFlag, MagickFalse },
     { "Black", BlackChannel, UndefinedOptionFlag, MagickFalse },
     { "Blue", BlueChannel, UndefinedOptionFlag, MagickFalse },
@@ -1982,6 +1992,7 @@ static const OptionInfo *GetOptionInfo(const CommandOption option)
   {
     case MagickAlignOptions: return(AlignOptions);
     case MagickAlphaOptions: return(AlphaOptions);
+    case MagickAutoThresholdOptions: return(AutoThresholdOptions);
     case MagickBooleanOptions: return(BooleanOptions);
     case MagickCacheOptions: return(CacheOptions);
     case MagickChannelOptions: return(ChannelOptions);
