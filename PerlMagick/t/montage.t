@@ -122,8 +122,8 @@ testMontage( q//,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80+3+3>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
-  'f0b9673408f0aa10549c3a54cc5baa8061a7a1dd57b2199dd887ce9447702644',
-  'f0b9673408f0aa10549c3a54cc5baa8061a7a1dd57b2199dd887ce9447702644',
+  'dcfa6c2bc0e20ff0b5dba464559a1e106e605ec456c21c1205a53e478e4f3e02',
+  'dcfa6c2bc0e20ff0b5dba464559a1e106e605ec456c21c1205a53e478e4f3e02',
   '72a7587a058c71cd62226e59b64c335190a37d7dd990d68534cf05df61084783');
 
 #
@@ -133,8 +133,8 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', shadow=>'True',background=>'gray'/,
-  '60ebc16a46ef5addda72c3f0776257af52eba009d6fb2331d10c83c5c26dd5da',
-  '60ebc16a46ef5addda72c3f0776257af52eba009d6fb2331d10c83c5c26dd5da',
+  'b3b7a530270164b4c5e391ac8080736a901428e5f650694170969fd292559317',
+  'b3b7a530270164b4c5e391ac8080736a901428e5f650694170969fd292559317',
   '9fe18e11ac759d3a86362f16d0bdee4b6952d617daa3ad2c3511e19050dda71d');
 
 #
@@ -144,7 +144,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', shadow=>'True', texture=>'granite:'/,
-  '71e7b38629ccddcb46dc5b37e62fa08cf4bec2cc28507f8375638aab30607616');
+  '08d4dfa09995e13a518002565d862f6e89d65de37d59c1d1ab45d7c6cde6bd47');
 
 #
 # 14) Test Un-bordered, Un-framed Montage
