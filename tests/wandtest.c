@@ -5341,11 +5341,12 @@ int main(int argc,char **argv)
       primary_colors);
     if (status == MagickFalse)
       ThrowAPIException(magick_wand);
+    ResetMagickMemory(pixels,0,sizeof(pixels));
     status=MagickExportImagePixels(magick_wand,10,10,3,3,"RGB",CharPixel,
       pixels);
     if (status == MagickFalse)
       ThrowAPIException(magick_wand);
-    for (i=0; i < 9; i++)
+    for (i=0; i < 27; i++)
       if (pixels[i] != primary_colors[i])
         {
           (void) FormatLocaleFile(stderr,

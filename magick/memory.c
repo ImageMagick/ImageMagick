@@ -1119,7 +1119,6 @@ MagickExport MemoryInfo *RelinquishVirtualMemory(MemoryInfo *memory_info)
       {
         (void) UnmapBlob(memory_info->blob,memory_info->length);
         memory_info->blob=NULL;
-        RelinquishMagickResource(MapResource,memory_info->length);
         if (*memory_info->filename != '\0')
           (void) RelinquishUniqueFileResource(memory_info->filename);
         break;
