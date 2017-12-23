@@ -3934,7 +3934,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       cache_info->type=PingCache;
       return(MagickTrue);
     }
-  status=AcquireMagickResource(AreaResource,cache_info->length);
+  status=AcquireMagickResource(AreaResource,(MagickSizeType)
+    cache_info->columns*cache_info->rows);
   if (cache_info->mode == PersistMode)
     status=MagickFalse;
   length=number_pixels*(sizeof(PixelPacket)+sizeof(IndexPacket));
