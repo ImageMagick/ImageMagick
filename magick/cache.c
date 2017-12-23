@@ -4115,8 +4115,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               cache_info->offset,(size_t) cache_info->length);
             if (cache_info->pixels == (PixelPacket *) NULL)
               {
-                cache_info->pixels=source_info.pixels;
                 cache_info->type=DiskCache;
+                cache_info->pixels=source_info.pixels;
                 RelinquishMagickResource(MapResource,cache_info->length);
               }
             else
@@ -4156,6 +4156,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               }
           }
     }
+  status=MagickTrue;
   if ((source_info.storage_class != UndefinedClass) && (mode != ReadMode))
     {
       status=ClonePixelCacheRepository(cache_info,&source_info,exception);
