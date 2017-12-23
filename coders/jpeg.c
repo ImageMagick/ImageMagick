@@ -425,7 +425,15 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   error_manager->profile=comment;
   p=GetStringInfoDatum(comment);
   for (i=0; i < (ssize_t) GetStringInfoLength(comment); i++)
-    *p++=(unsigned char) GetCharacter(jpeg_info);
+  {
+    int
+      c;
+
+    c=GetCharacter(jpeg_info);
+    if (c == EOF)
+      break;
+    *p++=(unsigned char) c;
+  }
   *p='\0';
   error_manager->profile=NULL;
   p=GetStringInfoDatum(comment);
@@ -473,7 +481,8 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
   if (length <= 14)
     {
       while (length-- > 0)
-        (void) GetCharacter(jpeg_info);
+        if (GetCharacter(jpeg_info) == EOF)
+          break;
       return(TRUE);
     }
   for (i=0; i < 12; i++)
@@ -484,7 +493,8 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
         Not a ICC profile, return.
       */
       for (i=0; i < (ssize_t) (length-12); i++)
-        (void) GetCharacter(jpeg_info);
+        if (GetCharacter(jpeg_info) == EOF)
+          break;
       return(TRUE);
     }
   (void) GetCharacter(jpeg_info);  /* id */
@@ -503,7 +513,15 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
   error_manager->profile=profile;
   p=GetStringInfoDatum(profile);
   for (i=(ssize_t) GetStringInfoLength(profile)-1; i >= 0; i--)
-    *p++=(unsigned char) GetCharacter(jpeg_info);
+  {
+    int
+      c;
+
+    c=GetCharacter(jpeg_info);
+    if (c == EOF)
+      break;
+    *p++=(unsigned char) c;
+  }
   error_manager->profile=NULL;
   icc_profile=(StringInfo *) GetImageProfile(image,"icc");
   if (icc_profile != (StringInfo *) NULL)
@@ -567,7 +585,8 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   if (length <= 14)
     {
       while (length-- > 0)
-        (void) GetCharacter(jpeg_info);
+        if (GetCharacter(jpeg_info) == EOF)
+          break;
       return(TRUE);
     }
   /*
@@ -585,14 +604,16 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
         Not a IPTC profile, return.
       */
       for (i=0; i < (ssize_t) length; i++)
-        (void) GetCharacter(jpeg_info);
+        if (GetCharacter(jpeg_info) == EOF)
+          break;
       return(TRUE);
     }
   /*
     Remove the version number.
   */
   for (i=0; i < 4; i++)
-    (void) GetCharacter(jpeg_info);
+    if (GetCharacter(jpeg_info) == EOF)
+      break;
   if (length <= 11)
     return(TRUE);
   length-=4;
@@ -609,7 +630,15 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   error_manager->profile=profile;
   p=GetStringInfoDatum(profile);
   for (i=0;  i < (ssize_t) GetStringInfoLength(profile); i++)
-    *p++=(unsigned char) GetCharacter(jpeg_info);
+  {
+    int
+      c;
+
+    c=GetCharacter(jpeg_info);
+    if (c == EOF)
+      break;
+    *p++=(unsigned char) c;
+  }
   error_manager->profile=NULL;
   iptc_profile=(StringInfo *) GetImageProfile(image,"8bim");
   if (iptc_profile != (StringInfo *) NULL)
@@ -692,7 +721,15 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
   error_manager->profile=profile;
   p=GetStringInfoDatum(profile);
   for (i=0; i < (ssize_t) GetStringInfoLength(profile); i++)
-    *p++=(unsigned char) GetCharacter(jpeg_info);
+  {
+    int
+      c;
+
+    c=GetCharacter(jpeg_info);
+    if (c == EOF)
+      break;
+    *p++=(unsigned char) c;
+  }
   error_manager->profile=NULL;
   if (marker == 1)
     {
