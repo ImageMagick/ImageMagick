@@ -974,9 +974,6 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
   ChannelStatistics
     *channel_statistics;
 
-  ColorspaceType
-    colorspace;
-
   const char
     *artifact,
     *locate,
@@ -1116,8 +1113,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
       if (image->matte != MagickFalse)
         (void) PrintChannelLocations(file,image,AlphaChannel,"alpha",
           type,max_locations,MagickTrue,channel_statistics);
-      colorspace=image->colorspace;
-      switch (colorspace)
+      switch (image->colorspace)
       {
         case RGBColorspace:
         default:
@@ -1156,13 +1152,9 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
   /*
     Detail channel depth and extrema.
   */
-  colorspace=image->colorspace;
   JSONFormatLocaleFile(file,"    \"colorspace\": %s,\n",
-    CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t) colorspace));
-  if (image->colorspace != colorspace)
-    JSONFormatLocaleFile(file,"    \"baseColorspace\": %s,\n",
-      CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
-      image->colorspace));
+    CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
+    image->colorspace));
   channel_statistics=(ChannelStatistics *) NULL;
   channel_moments=(ChannelMoments *) NULL;
   channel_phash=(ChannelPerceptualHash *) NULL;
@@ -1192,12 +1184,10 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
   (void) FormatLocaleFile(file,"    \"baseDepth\": %.20g,\n",(double)
     image->depth);
   (void) FormatLocaleFile(file,"    \"channelDepth\": {\n");
-  if (SetImageGray(image,exception) != MagickFalse)
-    colorspace=GRAYColorspace;
   if (image->matte != MagickFalse)
     (void) FormatLocaleFile(file,"      \"alpha\": %.20g,\n",(double)
       channel_statistics[OpacityChannel].depth);
-  switch (colorspace)
+  switch (image->colorspace)
   {
     case RGBColorspace:
     default:
@@ -1238,7 +1228,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
     {
       (void) FormatLocaleFile(file,"    \"pixels\": %.20g,\n",
         (double) image->columns*image->rows);
-      if (colorspace != GRAYColorspace)
+      if (image->colorspace != GRAYColorspace)
         {
           (void) FormatLocaleFile(file,"    \"imageStatistics\": {\n");
           (void) PrintChannelStatistics(file,CompositeChannels,"all",1.0/
@@ -1249,7 +1239,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
       if (image->matte != MagickFalse)
         (void) PrintChannelStatistics(file,AlphaChannel,"alpha",1.0/scale,
           MagickTrue,channel_statistics);
-      switch (colorspace)
+      switch (image->colorspace)
       {
         case RGBColorspace:
         default:
@@ -1291,7 +1281,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
       if (image->matte != MagickFalse)
         (void) PrintChannelMoments(file,AlphaChannel,"alpha",MagickTrue,
           channel_moments);
-      switch (colorspace)
+      switch (image->colorspace)
       {
         case RGBColorspace:
         default:
@@ -1349,7 +1339,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
       if (image->matte != MagickFalse)
         (void) PrintChannelFeatures(file,AlphaChannel,"alpha",MagickTrue,
           channel_features);
-      switch (colorspace)
+      switch (image->colorspace)
       {
         case RGBColorspace:
         default:
