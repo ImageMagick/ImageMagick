@@ -486,9 +486,6 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   ChannelStatistics
     *channel_statistics;
 
-  ColorspaceType
-    colorspace;
-
   const char
     *artifact,
     *locate,
@@ -555,8 +552,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (channel_statistics == (ChannelStatistics *) NULL)
         return(MagickFalse);
       (void) FormatLocaleFile(file,"Channel %s locations:\n",locate);
-      colorspace=GetImageColorspaceType(image,exception);
-      switch (colorspace)
+      switch (image->colorspace)
       {
         case RGBColorspace:
         case sRGBColorspace:
@@ -723,13 +719,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     }
   (void) FormatLocaleFile(file,"  Units: %s\n",CommandOptionToMnemonic(
     MagickResolutionOptions,(ssize_t) image->units));
-  colorspace=GetImageColorspaceType(image,exception);
   (void) FormatLocaleFile(file,"  Colorspace: %s\n",CommandOptionToMnemonic(
-    MagickColorspaceOptions,(ssize_t) colorspace));
-  if (colorspace != image->colorspace)
-    (void) FormatLocaleFile(file,"  Base colorspace: %s\n",
-      CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
-        image->colorspace));
+    MagickColorspaceOptions,(ssize_t) image->colorspace));
   type=GetImageType(image);
   (void) FormatLocaleFile(file,"  Type: %s\n",CommandOptionToMnemonic(
     MagickTypeOptions,(ssize_t) type));
@@ -774,7 +765,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         (void) FormatLocaleFile(file,"  Depth: %.20g/%.20g-bit\n",(double)
           image->depth,(double) depth);
       (void) FormatLocaleFile(file,"  Channel depth:\n");
-      switch (colorspace)
+      switch (image->colorspace)
       {
         case RGBColorspace:
         case sRGBColorspace:
@@ -826,7 +817,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       (void) FormatLocaleFile(file,"  Channel statistics:\n");
       (void) FormatLocaleFile(file,"    Pixels: %.20g\n",(double)
         image->columns*image->rows);
-      switch (colorspace)
+      switch (image->colorspace)
       {
         case RGBColorspace:
         case sRGBColorspace:
@@ -875,7 +866,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (image->alpha_trait != UndefinedPixelTrait)
         (void) PrintChannelStatistics(file,AlphaPixelChannel,"Alpha",1.0/
           scale,channel_statistics);
-      if (colorspace != GRAYColorspace)
+      if (image->colorspace != GRAYColorspace)
         {
           (void) FormatLocaleFile(file,"  Image statistics:\n");
           (void) PrintChannelStatistics(file,CompositePixelChannel,"Overall",
@@ -888,7 +879,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     {
       scale=(double) ((1UL << image->depth)-1);
       (void) FormatLocaleFile(file,"  Channel moments:\n");
-      switch (colorspace)
+      switch (image->colorspace)
       {
         case RGBColorspace:
         case sRGBColorspace:
@@ -937,7 +928,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (image->alpha_trait != UndefinedPixelTrait)
         (void) PrintChannelMoments(file,AlphaPixelChannel,"Alpha",scale,
           channel_moments);
-      if (colorspace != GRAYColorspace)
+      if (image->colorspace != GRAYColorspace)
         {
           (void) FormatLocaleFile(file,"  Image moments:\n");
           (void) PrintChannelMoments(file,CompositePixelChannel,"Overall",scale,
@@ -956,7 +947,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     {
       (void) FormatLocaleFile(file,"  Channel features (horizontal, vertical, "
         "left and right diagonals, average):\n");
-      switch (colorspace)
+      switch (image->colorspace)
       {
         case RGBColorspace:
         case sRGBColorspace:
