@@ -5426,17 +5426,22 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
         if (memcmp(type,mng_DEFI,4) == 0)
           {
             if (mng_type == 3)
-              (void) ThrowMagickException(&image->exception,GetMagickModule(),
-                CoderError,"DEFI chunk found in MNG-VLC datastream","`%s'",
-                image->filename);
+              {
+                (void) ThrowMagickException(&image->exception,GetMagickModule(),
+                  CoderError,"DEFI chunk found in MNG-VLC datastream","`%s'",
+                  image->filename);
+                chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+                continue;
+              }
 
             if (length < 2)
               {
                 chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+                mng_info=MngInfoFreeStruct(mng_info);
                 ThrowReaderException(CorruptImageError,"CorruptImage");
               }
 
-            object_id=(p[0] << 8) | p[1];
+            object_id=((unsigned int) p[0] << 8) | (unsigned int) p[1];
 
             if (mng_type == 2 && object_id != 0)
               (void) ThrowMagickException(&image->exception,
@@ -5453,7 +5458,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                 (void) ThrowMagickException(&image->exception,
                     GetMagickModule(), CoderError,
                     "object id too large","`%s'",image->filename);
-                    object_id=MNG_MAX_OBJECTS;
+                object_id=MNG_MAX_OBJECTS;
               }
 
             if (mng_info->exists[object_id])
