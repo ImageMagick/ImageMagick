@@ -23,7 +23,7 @@
 %                                 March 2003                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2007 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -5345,7 +5345,7 @@ int main(int argc,char **argv)
       pixels);
     if (status == MagickFalse)
       ThrowAPIException(magick_wand);
-    for (i=0; i < 9; i++)
+    for (i=0; i < 27; i++)
       if (pixels[i] != primary_colors[i])
         {
           (void) FormatLocaleFile(stderr,
