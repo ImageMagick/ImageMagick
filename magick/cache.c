@@ -361,6 +361,7 @@ MagickExport Cache AcquirePixelCache(const size_t number_threads)
   (void) ResetMagickMemory(cache_info,0,sizeof(*cache_info));
   cache_info->type=UndefinedCache;
   cache_info->mode=IOMode;
+  cache_info->disk_mode=IOMode;
   cache_info->colorspace=sRGBColorspace;
   cache_info->channels=4;
   cache_info->file=(-1);
@@ -3724,7 +3725,7 @@ static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
   /*
     Open pixel cache on disk.
   */
-  if ((cache_info->file != -1) && (cache_info->mode == mode))
+  if ((cache_info->file != -1) && (cache_info->disk_mode == mode))
     return(MagickTrue);  /* cache already open and in the proper mode */
   if (*cache_info->cache_filename == '\0')
     file=AcquireUniqueFileResource(cache_info->cache_filename);
@@ -3760,6 +3761,7 @@ static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
   if (cache_info->file != -1)
     (void) ClosePixelCacheOnDisk(cache_info);
   cache_info->file=file;
+  cache_info->disk_mode=mode;
   return(MagickTrue);
 }
 
