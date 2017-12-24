@@ -10016,7 +10016,7 @@ WandExport MagickBooleanType MagickSetImageColormapColor(MagickWand *wand,
 %    o wand: the magick wand.
 %
 %    o colorspace: the image colorspace:   UndefinedColorspace, RGBColorspace,
-%      GRAYColorspace, TransparentColorspace, OHTAColorspace, XYZColorspace,
+%      sGRAYColorspace, TransparentColorspace, OHTAColorspace, XYZColorspace,
 %      YCbCrColorspace, YCCColorspace, YIQColorspace, YPbPrColorspace,
 %      YPbPrColorspace, YUVColorspace, CMYKColorspace, sRGBColorspace,
 %      HSLColorspace, or HWBColorspace.
@@ -12637,7 +12637,7 @@ WandExport MagickWand *MagickTransformImage(MagickWand *wand,
 %    o wand: the magick wand.
 %
 %    o colorspace: the image colorspace:   UndefinedColorspace,
-%      sRGBColorspace, RGBColorspace, GRAYColorspace,
+%      sRGBColorspace, RGBColorspace, sGRAYColorspace,
 %      OHTAColorspace, XYZColorspace, YCbCrColorspace,
 %      YCCColorspace, YIQColorspace, YPbPrColorspace,
 %      YPbPrColorspace, YUVColorspace, CMYKColorspace,

@@ -375,23 +375,23 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               if (LocaleCompare(value,"BLACKANDWHITE") == 0)
                 {
-                  (void) SetImageColorspace(image,GRAYColorspace);
+                  (void) SetImageColorspace(image,sGRAYColorspace);
                   quantum_type=GrayQuantum;
                 }
               if (LocaleCompare(value,"BLACKANDWHITE_ALPHA") == 0)
                 {
-                  (void) SetImageColorspace(image,GRAYColorspace);
+                  (void) SetImageColorspace(image,sGRAYColorspace);
                   image->matte=MagickTrue;
                   quantum_type=GrayAlphaQuantum;
                 }
               if (LocaleCompare(value,"GRAYSCALE") == 0)
                 {
-                  (void) SetImageColorspace(image,GRAYColorspace);
+                  (void) SetImageColorspace(image,sGRAYColorspace);
                   quantum_type=GrayQuantum;
                 }
               if (LocaleCompare(value,"GRAYSCALE_ALPHA") == 0)
                 {
-                  (void) SetImageColorspace(image,GRAYColorspace);
+                  (void) SetImageColorspace(image,sGRAYColorspace);
                   image->matte=MagickTrue;
                   quantum_type=GrayAlphaQuantum;
                 }
@@ -442,7 +442,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PBM image to pixel packets.
         */
-        (void) SetImageColorspace(image,GRAYColorspace);
+        (void) SetImageColorspace(image,sGRAYColorspace);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register ssize_t
@@ -486,7 +486,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PGM image to pixel packets.
         */
-        (void) SetImageColorspace(image,GRAYColorspace);
+        (void) SetImageColorspace(image,sGRAYColorspace);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register ssize_t
@@ -573,7 +573,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PBM raw image to pixel packets.
         */
-        (void) SetImageColorspace(image,GRAYColorspace);
+        (void) SetImageColorspace(image,sGRAYColorspace);
         quantum_type=GrayQuantum;
         if (image->storage_class == PseudoClass)
           quantum_type=IndexQuantum;
@@ -636,7 +636,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PGM raw image to pixel packets.
         */
-        (void) SetImageColorspace(image,GRAYColorspace);
+        (void) SetImageColorspace(image,sGRAYColorspace);
         quantum_type=GrayQuantum;
         if (image->depth <= 8)
           extent=image->columns;
@@ -1263,7 +1263,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Convert PFM raster image to pixel packets.
         */
         if (format == 'f')
-          (void) SetImageColorspace(image,GRAYColorspace);
+          (void) SetImageColorspace(image,sGRAYColorspace);
         quantum_type=format == 'f' ? GrayQuantum : RGBQuantum;
         image->endian=quantum_scale < 0.0 ? LSBEndian : MSBEndian;
         image->depth=32;

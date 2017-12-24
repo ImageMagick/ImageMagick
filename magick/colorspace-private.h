@@ -96,7 +96,8 @@ static inline MagickBooleanType IsCMYKColorspace(
 static inline MagickBooleanType IsGrayColorspace(
   const ColorspaceType colorspace)
 {
-  if ((colorspace == GRAYColorspace) || (colorspace == Rec601LumaColorspace) ||
+  if ((colorspace == GRAYColorspace) || (colorspace == sGRAYColorspace) ||
+      (colorspace == Rec601LumaColorspace) ||
       (colorspace == Rec709LumaColorspace))
     return(MagickTrue);
   return(MagickFalse);

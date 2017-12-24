@@ -621,7 +621,8 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
   if (cube_info->quantize_info->measure_error != MagickFalse)
     (void) GetImageQuantizeError(image);
   if ((cube_info->quantize_info->number_colors == 2) &&
-      (cube_info->quantize_info->colorspace == GRAYColorspace))
+      ((cube_info->quantize_info->colorspace == GRAYColorspace) ||
+       (cube_info->quantize_info->colorspace == sGRAYColorspace)))
     {
       double
         intensity;
@@ -719,7 +720,8 @@ static inline void SetAssociatedAlpha(const Image *image,CubeInfo *cube_info)
 
   associate_alpha=image->matte;
   if ((cube_info->quantize_info->number_colors == 2) &&
-      (cube_info->quantize_info->colorspace == GRAYColorspace))
+      ((cube_info->quantize_info->colorspace == GRAYColorspace) ||
+       (cube_info->quantize_info->colorspace == sGRAYColorspace)))
     associate_alpha=MagickFalse;
   cube_info->associate_alpha=associate_alpha;
 }
@@ -3246,7 +3248,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->type != GrayscaleType)
-    (void) TransformImageColorspace(image,GRAYColorspace);
+    (void) TransformImageColorspace(image,sGRAYColorspace);
   colormap_index=(ssize_t *) AcquireQuantumMemory(MaxColormapSize,
     sizeof(*colormap_index));
   if (colormap_index == (ssize_t *) NULL)

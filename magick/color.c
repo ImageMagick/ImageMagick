@@ -1586,7 +1586,8 @@ MagickExport void GetColorTuple(const MagickPixelPacket *pixel,
   if (color.matte != MagickFalse)
     (void) ConcatenateMagickString(tuple,"a",MaxTextExtent);
   (void) ConcatenateMagickString(tuple,"(",MaxTextExtent);
-  if (color.colorspace == GRAYColorspace)
+  if ((color.colorspace == GRAYColorspace) ||
+      (color.colorspace == sGRAYColorspace))
     ConcatenateColorComponent(&color,GrayChannel,SVGCompliance,tuple);
   else
     {
@@ -2827,7 +2828,7 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
             }
           if (LocaleCompare(colorspace,"gray") == 0)
             {
-              color->colorspace=GRAYColorspace;
+              color->colorspace=sGRAYColorspace;
               color->green=color->red;
               color->blue=color->red;
               if (((flags & SigmaValue) != 0) && (color->matte != MagickFalse))

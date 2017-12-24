@@ -1289,11 +1289,11 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
     {
       if (SetImageMonochrome(image,&image->exception) == MagickFalse)
        {
-          status=TransformImageColorspace(image,GRAYColorspace);
+          status=TransformImageColorspace(image,sGRAYColorspace);
           (void) NormalizeImage(image);
           quantize_info=AcquireQuantizeInfo(image_info);
           quantize_info->number_colors=2;
-          quantize_info->colorspace=GRAYColorspace;
+          quantize_info->colorspace=sGRAYColorspace;
           status=QuantizeImage(quantize_info,image);
           quantize_info=DestroyQuantizeInfo(quantize_info);
         }
@@ -1303,14 +1303,14 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
     case GrayscaleType:
     {
       if (SetImageGray(image,&image->exception) == MagickFalse)
-        status=TransformImageColorspace(image,GRAYColorspace);
+        status=TransformImageColorspace(image,sGRAYColorspace);
       image->matte=MagickFalse;
       break;
     }
     case GrayscaleMatteType:
     {
       if (SetImageGray(image,&image->exception) == MagickFalse)
-        status=TransformImageColorspace(image,GRAYColorspace);
+        status=TransformImageColorspace(image,sGRAYColorspace);
       if (image->matte == MagickFalse)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
       break;

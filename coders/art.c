@@ -164,7 +164,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Convert bi-level image to pixel packets.
   */
-  SetImageColorspace(image,GRAYColorspace);
+  SetImageColorspace(image,sGRAYColorspace);
   quantum_type=IndexQuantum;
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)

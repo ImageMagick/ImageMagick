@@ -493,6 +493,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   ChannelStatistics
     *channel_statistics;
 
+  ColorspaceType
+    colorspace;
+
   const char
     *artifact,
     *locate,
@@ -538,6 +541,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   if (file == (FILE *) NULL)
     file=stdout;
   exception=AcquireExceptionInfo();
+  colorspace=image->colorspace;
   locate=GetImageArtifact(image,"identify:locate");
   if (locate != (const char *) NULL)
     {
@@ -563,7 +567,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (channel_statistics == (ChannelStatistics *) NULL)
         return(MagickFalse);
       (void) FormatLocaleFile(file,"  Channel %s locations:\n",locate);
-      switch (image->colorspace)
+      switch (colorspace)
       {
         case RGBColorspace:
         default:
@@ -589,6 +593,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           break;
         }
         case GRAYColorspace:
+        case sGRAYColorspace:
         {
           (void) PrintChannelLocations(file,image,GrayChannel,"Gray",
             statistic_type,max_locations,channel_statistics);
@@ -638,9 +643,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (image->type != UndefinedType)
         (void) FormatLocaleFile(file,"%s ",CommandOptionToMnemonic(
           MagickTypeOptions,(ssize_t) image->type));
-      if (image->colorspace != UndefinedColorspace)
+      if (colorspace != UndefinedColorspace)
         (void) FormatLocaleFile(file,"%s ",CommandOptionToMnemonic(
-          MagickColorspaceOptions,(ssize_t) image->colorspace));
+          MagickColorspaceOptions,(ssize_t) colorspace));
       if (image->storage_class == DirectClass)
         {
           if (image->total_colors != 0)
@@ -724,7 +729,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   (void) FormatLocaleFile(file,"  Units: %s\n",CommandOptionToMnemonic(
     MagickResolutionOptions,(ssize_t) image->units));
   (void) FormatLocaleFile(file,"  Colorspace: %s\n",CommandOptionToMnemonic(
-    MagickColorspaceOptions,(ssize_t) image->colorspace));
+    MagickColorspaceOptions,(ssize_t) colorspace));
   type=IdentifyImageType(image,exception);
   (void) FormatLocaleFile(file,"  Type: %s\n",CommandOptionToMnemonic(
     MagickTypeOptions,(ssize_t) type));
@@ -769,7 +774,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         (void) FormatLocaleFile(file,"  Depth: %.20g/%.20g-bit\n",(double)
           image->depth,(double) depth);
       (void) FormatLocaleFile(file,"  Channel depth:\n");
-      switch (image->colorspace)
+      switch (colorspace)
       {
         case RGBColorspace:
         default:
@@ -795,6 +800,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           break;
         }
         case GRAYColorspace:
+        case sGRAYColorspace:
         {
           (void) FormatLocaleFile(file,"    gray: %.20g-bit\n",(double)
             channel_statistics[GrayChannel].depth);
@@ -814,7 +820,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       (void) FormatLocaleFile(file,"  Channel statistics:\n");
       (void) FormatLocaleFile(file,"    Pixels: %.20g\n",(double)
         image->columns*image->rows);
-      switch (image->colorspace)
+      switch (colorspace)
       {
         case RGBColorspace:
         default:
@@ -840,6 +846,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           break;
         }
         case GRAYColorspace:
+        case sGRAYColorspace:
         {
           (void) PrintChannelStatistics(file,GrayChannel,"Gray",1.0/scale,
             channel_statistics);
@@ -849,7 +856,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (image->matte != MagickFalse)
         (void) PrintChannelStatistics(file,AlphaChannel,"Alpha",1.0/scale,
           channel_statistics);
-      if (image->colorspace != GRAYColorspace)
+      if ((colorspace != GRAYColorspace) && (colorspace != sGRAYColorspace))
         {
           (void) FormatLocaleFile(file,"  Image statistics:\n");
           (void) PrintChannelStatistics(file,CompositeChannels,"Overall",1.0/
@@ -862,7 +869,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     {
       scale=(double) ((1UL << image->depth)-1);
       (void) FormatLocaleFile(file,"  Channel moments:\n");
-      switch (image->colorspace)
+      switch (colorspace)
       {
         case RGBColorspace:
         default:
@@ -888,6 +895,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           break;
         }
         case GRAYColorspace:
+        case sGRAYColorspace:
         {
           (void) PrintChannelMoments(file,GrayChannel,"Gray",scale,
             channel_moments);
@@ -897,7 +905,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (image->matte != MagickFalse)
         (void) PrintChannelMoments(file,AlphaChannel,"Alpha",scale,
           channel_moments);
-      if (image->colorspace != GRAYColorspace)
+      if ((colorspace != GRAYColorspace) && (colorspace != sGRAYColorspace))
         {
           (void) FormatLocaleFile(file,"  Image moments:\n");
           (void) PrintChannelMoments(file,CompositeChannels,"Overall",scale,
@@ -925,7 +933,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     {
       (void) FormatLocaleFile(file,"  Channel features (horizontal, vertical, "
         "left and right diagonals, average):\n");
-      switch (image->colorspace)
+      switch (colorspace)
       {
         case RGBColorspace:
         default:
@@ -948,6 +956,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           break;
         }
         case GRAYColorspace:
+        case sGRAYColorspace:
         {
           (void) PrintChannelFeatures(file,GrayChannel,"Gray",channel_features);
           break;
@@ -960,7 +969,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     }
   if (ping == MagickFalse)
     {
-      if (image->colorspace == CMYKColorspace)
+      if (colorspace == CMYKColorspace)
         (void) FormatLocaleFile(file,"  Total ink density: %.*g%%\n",
           GetMagickPrecision(),100.0*GetImageTotalInkDensity(image)/(double)
           QuantumRange);

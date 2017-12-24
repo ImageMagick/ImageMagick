@@ -2622,7 +2622,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
       */
       colorspace=image->colorspace;
       if (SetImageGray(image,&image->exception) != MagickFalse)
-        colorspace=GRAYColorspace;
+        colorspace=sGRAYColorspace;
       (void) FormatLocaleString(value,MaxTextExtent,"%s %s %s",
         CommandOptionToMnemonic(MagickClassOptions,(ssize_t)
         image->storage_class),CommandOptionToMnemonic(MagickColorspaceOptions,

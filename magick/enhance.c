@@ -1191,7 +1191,7 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
   */
   exception=(&image->exception);
   if (SetImageGray(image,exception) != MagickFalse)
-    (void) SetImageColorspace(image,GRAYColorspace);
+    (void) SetImageColorspace(image,sGRAYColorspace);
   status=MagickTrue;
   (void) ResetMagickMemory(histogram,0,(MaxMap+1)*sizeof(*histogram));
   image_view=AcquireAuthenticCacheView(image,exception);
@@ -2567,7 +2567,7 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
   image_view=DestroyCacheView(image_view);
   image->intensity=method;
   image->type=GrayscaleType;
-  return(SetImageColorspace(image,GRAYColorspace));
+  return(SetImageColorspace(image,sGRAYColorspace));
 }
 
 /*

@@ -1215,7 +1215,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       case LumaComponentType:
       {
-        (void) SetImageColorspace(image,GRAYColorspace);
+        (void) SetImageColorspace(image,sGRAYColorspace);
         break;
       }
       default:
