@@ -2881,6 +2881,9 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
   if (p == (const ColorInfo *) NULL)
     return(MagickFalse);
   color->colorspace=sRGBColorspace;
+  if ((LocaleNCompare(name,"gray",4) == 0) ||
+      (LocaleNCompare(name,"grey",4) == 0))
+    color->colorspace=sGRAYColorspace;
   color->depth=8;
   color->matte=p->color.opacity != OpaqueOpacity ? MagickTrue : MagickFalse;
   color->red=(MagickRealType) p->color.red;
