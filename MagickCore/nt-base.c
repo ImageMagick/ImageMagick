@@ -2804,6 +2804,28 @@ MagickPrivate void NTWindowsGenesis(void)
       _ASSERTE(_CrtCheckMemory());
     }
 #endif
+#if defined(MAGICKCORE_INSTALLED_SUPPORT)
+  {
+    unsigned char
+      *path;
+
+    path=NTRegistryKeyLookup("LibPath");
+    if (path != (unsigned char *) NULL)
+      {
+        size_t
+          length;
+
+        wchar_t
+          lib_path[MagickPathExtent];
+
+        length=MultiByteToWideChar(CP_UTF8,0,(char *) path,-1,lib_path,
+          MagickPathExtent);
+        if (length != 0)
+          SetDllDirectoryW(lib_path);
+        path=(unsigned char *) RelinquishMagickMemory(path);
+      }
+  }
+#endif
 }
 
 /*
