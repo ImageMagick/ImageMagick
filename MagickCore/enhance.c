@@ -1990,6 +1990,9 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
     {
       image->intensity=method;
       image->type=GrayscaleType;
+      if ((method == Rec601LuminancePixelIntensityMethod) ||
+          (method == Rec709LuminancePixelIntensityMethod))
+        return(SetImageColorspace(image,GRAYColorspace,exception));
       return(SetImageColorspace(image,sGRAYColorspace,exception));
     }
 #endif
@@ -2134,6 +2137,9 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
   image_view=DestroyCacheView(image_view);
   image->intensity=method;
   image->type=GrayscaleType;
+  if ((method == Rec601LuminancePixelIntensityMethod) ||
+      (method == Rec709LuminancePixelIntensityMethod))
+    return(SetImageColorspace(image,GRAYColorspace,exception));
   return(SetImageColorspace(image,sGRAYColorspace,exception));
 }
 
