@@ -2430,8 +2430,14 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
   /* call opencl version */
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
   status=AccelerateGrayscaleImage(image,method,&image->exception);
-  if (status != MagickFalse)
-    return status;
+    {
+      image->intensity=method;
+      image->type=GrayscaleType;
+      if ((method == Rec601LuminancePixelIntensityMethod) ||
+          (method == Rec709LuminancePixelIntensityMethod))
+        return(SetImageColorspace(image,GRAYColorspace));
+      return(SetImageColorspace(image,sGRAYColorspace));
+    }
 #endif
   status=MagickTrue;
   progress=0;
@@ -2567,6 +2573,9 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
   image_view=DestroyCacheView(image_view);
   image->intensity=method;
   image->type=GrayscaleType;
+  if ((method == Rec601LuminancePixelIntensityMethod) ||
+      (method == Rec709LuminancePixelIntensityMethod))
+    return(SetImageColorspace(image,GRAYColorspace));
   return(SetImageColorspace(image,sGRAYColorspace));
 }
 
