@@ -3165,7 +3165,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
            * image->colorspace to GRAY, and reset image->chromaticity.
            */
           image->intensity = Rec709LuminancePixelIntensityMethod;
-          SetImageColorspace(image,GRAYColorspace,exception);
+          SetImageColorspace(image,sGRAYColorspace,exception);
         }
       else
         {
@@ -3174,7 +3174,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           ChromaticityInfo
             save_chromaticity = image->chromaticity;
 
-          SetImageColorspace(image,GRAYColorspace,exception);
+          SetImageColorspace(image,sGRAYColorspace,exception);
           image->rendering_intent = save_rendering_intent;
           image->chromaticity = save_chromaticity;
         }

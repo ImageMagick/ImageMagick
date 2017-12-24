@@ -98,7 +98,7 @@ static MagickBooleanType
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetImageColorspaceType() returns the potential type of image:
-%  sRGBColorspaceType, RGBColorspaceType, GRAYColorspaceType, etc.
+%  sRGBColorspaceType, RGBColorspaceType, sGRAYColorspaceType, etc.
 %
 %  To ensure the image type matches its potential, use SetImageColorspaceType():
 %
@@ -134,7 +134,7 @@ MagickExport ColorspaceType GetImageColorspaceType(const Image *image,
   type=IdentifyImageType(image,exception);
   if ((type == BilevelType) || (type == GrayscaleType) ||
       (type == GrayscaleAlphaType))
-    colorspace=GRAYColorspace;
+    colorspace=sGRAYColorspace;
   return(colorspace);
 }
 
@@ -380,6 +380,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       return(status);
     }
     case GRAYColorspace:
+    case sGRAYColorspace:
     {
       /*
         Transform image from sRGB to GRAY.
@@ -1234,7 +1235,7 @@ MagickExport MagickBooleanType SetImageGray(Image *image,
   type=IdentifyImageGray(image,exception);
   if (type == UndefinedType)
     return(MagickFalse);
-  image->colorspace=GRAYColorspace;
+  image->colorspace=sGRAYColorspace;
   if (SyncImagePixelCache((Image *) image,exception) == MagickFalse)
     return(MagickFalse);
   image->type=type;
@@ -1287,7 +1288,7 @@ MagickExport MagickBooleanType SetImageMonochrome(Image *image,
     return(MagickFalse);
   if (IdentifyImageMonochrome(image,exception) == MagickFalse)
     return(MagickFalse);
-  image->colorspace=GRAYColorspace;
+  image->colorspace=sGRAYColorspace;
   if (SyncImagePixelCache((Image *) image,exception) == MagickFalse)
     return(MagickFalse);
   image->type=BilevelType;
@@ -1334,7 +1335,8 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->colorspace == colorspace)
     return(SetImageColorspace(image,colorspace,exception));
-  if ((image->colorspace == RGBColorspace) && (colorspace == GRAYColorspace))
+  if ((image->colorspace == RGBColorspace) &&
+      ((colorspace == GRAYColorspace) || (colorspace == sGRAYColorspace)))
     return(GrayscaleImage(image,Rec709LuminancePixelIntensityMethod,exception));
   if (colorspace == UndefinedColorspace)
     return(SetImageColorspace(image,colorspace,exception));
@@ -1846,6 +1848,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       return(status);
     }
     case GRAYColorspace:
+    case sGRAYColorspace:
     {
       /*
         Transform linear GRAY to sRGB colorspace.

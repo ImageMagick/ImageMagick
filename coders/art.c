@@ -152,7 +152,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Convert bi-level image to pixel packets.
   */
-  SetImageColorspace(image,GRAYColorspace,exception);
+  SetImageColorspace(image,sGRAYColorspace,exception);
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");

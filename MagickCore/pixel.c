@@ -4207,7 +4207,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,const ssize_t x,
       case 'i':
       {
         quantum_map[i]=IndexQuantum;
-        (void) SetImageColorspace(image,GRAYColorspace,exception);
+        (void) SetImageColorspace(image,sGRAYColorspace,exception);
         break;
       }
       case 'm':
@@ -4350,7 +4350,8 @@ MagickExport void InitializePixelChannelMap(Image *image)
   if (image->alpha_trait != UndefinedPixelTrait)
     trait=(PixelTrait) (trait | BlendPixelTrait);
   n=0;
-  if (image->colorspace == GRAYColorspace)
+  if ((image->colorspace == GRAYColorspace) ||
+      (image->colorspace == sGRAYColorspace))
     {
       SetPixelChannelAttributes(image,BluePixelChannel,trait,n);
       SetPixelChannelAttributes(image,GreenPixelChannel,trait,n);
@@ -6199,7 +6200,7 @@ static void LogPixelChannels(const Image *image)
         name="red";
         if (image->colorspace == CMYKColorspace)
           name="cyan";
-        if (image->colorspace == GRAYColorspace)
+        if (image->colorspace == sGRAYColorspace)
           name="gray";
         break;
       }

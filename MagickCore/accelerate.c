@@ -114,7 +114,8 @@ static MagickBooleanType checkAccelerateCondition(const Image* image)
   /* check if the image's colorspace is supported */
   if (image->colorspace != RGBColorspace &&
       image->colorspace != sRGBColorspace &&
-      image->colorspace != GRAYColorspace)
+      image->colorspace != GRAYColorspace &&
+      image->colorspace != sGRAYColorspace)
     return(MagickFalse);
 
   /* check if the virtual pixel method is compatible with the OpenCL implementation */
@@ -1019,7 +1020,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
 
   /*
   if (IsGrayImage(image,exception) != MagickFalse)
-    (void) SetImageColorspace(image,GRAYColorspace);
+    (void) SetImageColorspace(image,sGRAYColorspace);
   */
 
   status=MagickTrue;

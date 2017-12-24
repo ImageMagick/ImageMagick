@@ -1279,7 +1279,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     }
     case JCS_GRAYSCALE:
     {
-      (void) SetImageColorspace(image,GRAYColorspace,exception);
+      (void) SetImageColorspace(image,sGRAYColorspace,exception);
       break;
     }
     case JCS_YCbCr:
@@ -2253,6 +2253,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       break;
     }
     case GRAYColorspace:
+    case sGRAYColorspace:
     {
       if (image_info->type == TrueColorType)
         break;
@@ -2656,7 +2657,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             jpeg_info.comp_info[3].v_samp_factor);
           break;
         }
-        case GRAYColorspace:
+        case sGRAYColorspace:
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Colorspace: GRAY");

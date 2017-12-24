@@ -59,7 +59,7 @@ const char *accelerateKernels =
   {
     UndefinedColorspace,
     RGBColorspace,            /* Linear RGB colorspace */
-    GRAYColorspace,           /* greyscale (linear) image (faked 1 channel) */
+    sGRAYColorspace,           /* greyscale (linear) image (faked 1 channel) */
     TransparentColorspace,
     OHTAColorspace,
     LabColorspace,
@@ -483,7 +483,7 @@ OPENCL_ENDIF()
   {
     float intensity;
 
-    if (colorspace == GRAYColorspace)
+    if (colorspace == sGRAYColorspace)
       return red;
 
     switch (method)

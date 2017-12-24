@@ -2029,7 +2029,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           /* clean up and set the write mask */
           mask_view=DestroyCacheView(mask_view);
           mask_image->alpha_trait=BlendPixelTrait;
-          (void) SetImageColorspace(_image,GRAYColorspace,_exception);
+          (void) SetImageColorspace(_image,sGRAYColorspace,_exception);
           (void) SetImageMask(_image,ReadPixelMask,mask_image,_exception);
           mask_image=DestroyImage(mask_image);
           break;

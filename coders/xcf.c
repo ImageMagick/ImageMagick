@@ -1089,7 +1089,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     SetImageColorspace(image,sRGBColorspace,exception);
   else
     if (image_type == GIMP_GRAY)
-      SetImageColorspace(image,GRAYColorspace,exception);
+      SetImageColorspace(image,sGRAYColorspace,exception);
     else
       if (image_type == GIMP_INDEXED)
         ThrowReaderException(CoderError,"ColormapTypeNotSupported");
@@ -1378,7 +1378,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if ( image_type == GIMP_GRAY ) {
               QuantizeInfo  qi;
               GetQuantizeInfo(&qi);
-              qi.colorspace = GRAYColorspace;
+              qi.colorspace = sGRAYColorspace;
               QuantizeImage( &qi, layer_info[j].image );
             }
           }

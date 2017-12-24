@@ -686,7 +686,7 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     }
     image->columns=(size_t) HDR.nRows;
     image->rows=(size_t) HDR.nCols;
-    SetImageColorspace(image,GRAYColorspace,exception);
+    SetImageColorspace(image,sGRAYColorspace,exception);
     if (image_info->ping != MagickFalse)
       {
         Swap(image->columns,image->rows);
@@ -1161,7 +1161,7 @@ RestoreMSCWarning
         ((MATLAB_HDR.StructureFlag & FLAG_COMPLEX) == 0))
       {
         image->type=GrayscaleType;
-        SetImageColorspace(image,GRAYColorspace,exception);
+        SetImageColorspace(image,sGRAYColorspace,exception);
       }
 
 

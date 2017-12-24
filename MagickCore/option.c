@@ -480,6 +480,7 @@ static const OptionInfo
     { "Rec709YCbCr", Rec709YCbCrColorspace, UndefinedOptionFlag, MagickFalse },
     { "RGB", RGBColorspace, UndefinedOptionFlag, MagickFalse },
     { "scRGB", scRGBColorspace, UndefinedOptionFlag, MagickFalse },
+    { "sGray", sGRAYColorspace, UndefinedOptionFlag, MagickFalse },
     { "sRGB", sRGBColorspace, UndefinedOptionFlag, MagickFalse },
     { "Transparent", TransparentColorspace, UndefinedOptionFlag, MagickFalse },
     { "xyY", xyYColorspace, UndefinedOptionFlag, MagickFalse },

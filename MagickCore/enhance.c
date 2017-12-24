@@ -1049,7 +1049,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (SetImageGray(image,exception) != MagickFalse)
-    (void) SetImageColorspace(image,GRAYColorspace,exception);
+    (void) SetImageColorspace(image,sGRAYColorspace,exception);
   black=(double *) AcquireQuantumMemory(MaxPixelChannels,sizeof(*black));
   white=(double *) AcquireQuantumMemory(MaxPixelChannels,sizeof(*white));
   histogram=(double *) AcquireQuantumMemory(MaxMap+1UL,MaxPixelChannels*
@@ -1990,7 +1990,7 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
     {
       image->intensity=method;
       image->type=GrayscaleType;
-      return(SetImageColorspace(image,GRAYColorspace,exception));
+      return(SetImageColorspace(image,sGRAYColorspace,exception));
     }
 #endif
   /*
@@ -2134,7 +2134,7 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
   image_view=DestroyCacheView(image_view);
   image->intensity=method;
   image->type=GrayscaleType;
-  return(SetImageColorspace(image,GRAYColorspace,exception));
+  return(SetImageColorspace(image,sGRAYColorspace,exception));
 }
 
 /*

@@ -927,7 +927,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               }
               case cmsSigGrayData:
               {
-                source_colorspace=GRAYColorspace;
+                source_colorspace=sGRAYColorspace;
                 source_type=(cmsUInt32Number) TYPE_GRAY_DBL;
                 source_channels=1;
                 break;
@@ -983,7 +983,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               }
               case cmsSigGrayData:
               {
-                target_colorspace=GRAYColorspace;
+                target_colorspace=sGRAYColorspace;
                 target_type=(cmsUInt32Number) TYPE_GRAY_DBL;
                 target_channels=1;
                 break;
@@ -1011,7 +1011,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                 (target_colorspace == UndefinedColorspace))
               ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
                 name);
-             if ((source_colorspace == GRAYColorspace) &&
+             if (((source_colorspace == GRAYColorspace) ||
+                  (source_colorspace == sGRAYColorspace)) &&
                  (SetImageGray(image,exception) == MagickFalse))
               ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
                 name);

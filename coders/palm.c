@@ -770,7 +770,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
         (void) TransformImageColorspace(image,image->colorspace,exception);
     if (bits_per_pixel < 8)
       {
-        (void) TransformImageColorspace(image,GRAYColorspace,exception);
+        (void) TransformImageColorspace(image,sGRAYColorspace,exception);
         (void) SetImageType(image,PaletteType,exception);
         (void) SortColormapByIntensity(image,exception);
       }

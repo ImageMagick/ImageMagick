@@ -56,7 +56,8 @@ typedef enum
   YDbDrColorspace,
   YIQColorspace,
   YPbPrColorspace,
-  YUVColorspace
+  YUVColorspace,
+  sGRAYColorspace
 } ColorspaceType;
 
 extern MagickExport ColorspaceType

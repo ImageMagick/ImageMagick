@@ -249,7 +249,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   ipl_info.colors=ReadBlobLong(image); 
   if(ipl_info.colors == 3){ SetImageColorspace(image,sRGBColorspace,exception);}
-  else { image->colorspace = GRAYColorspace; }
+  else { image->colorspace = sGRAYColorspace; }
   ipl_info.z=ReadBlobLong(image); 
   ipl_info.time=ReadBlobLong(image); 
 

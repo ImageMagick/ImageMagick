@@ -1463,7 +1463,7 @@ MagickExport Image *GetImageMask(const Image *image,const PixelMask type,
     return((Image *) NULL);
   status=MagickTrue;
   mask_image->alpha_trait=UndefinedPixelTrait;
-  (void) SetImageColorspace(mask_image,GRAYColorspace,exception);
+  (void) SetImageColorspace(mask_image,sGRAYColorspace,exception);
   mask_image->read_mask=MagickFalse;
   image_view=AcquireVirtualCacheView(image,exception);
   mask_view=AcquireAuthenticCacheView(mask_image,exception);
