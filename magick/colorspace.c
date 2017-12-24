@@ -1456,16 +1456,17 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->colorspace == colorspace)
     return(MagickTrue);
-  if ((image->colorspace == RGBColorspace) &&
-      ((colorspace == GRAYColorspace) || (colorspace == sGRAYColorspace)))
+  (void) DeleteImageProfile(image,"icc");
+  (void) DeleteImageProfile(image,"icm");
+  if (colorspace == GRAYColorspace)
     return(GrayscaleImage(image,Rec709LuminancePixelIntensityMethod));
+  if (colorspace == sGRAYColorspace)
+    return(GrayscaleImage(image,Rec709LumaPixelIntensityMethod));
   if (colorspace == UndefinedColorspace)
     return(SetImageColorspace(image,colorspace));
   /*
     Convert the reference image from an alternate colorspace to sRGB.
   */
-  (void) DeleteImageProfile(image,"icc");
-  (void) DeleteImageProfile(image,"icm");
   if (IssRGBColorspace(colorspace) != MagickFalse)
     return(TransformRGBImage(image,image->colorspace));
   status=MagickTrue;
