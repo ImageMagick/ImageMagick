@@ -2523,6 +2523,9 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
   if (p == (const ColorInfo *) NULL)
     return(MagickFalse);
   color->colorspace=sRGBColorspace;
+  if ((LocaleNCompare(name,"gray",4) == 0) || 
+      (LocaleNCompare(name,"grey",4) == 0))
+    color->colorspace=sGRAYColorspace;
   color->depth=8;
   color->alpha_trait=p->color.alpha != OpaqueAlpha ? BlendPixelTrait :
     UndefinedPixelTrait;
