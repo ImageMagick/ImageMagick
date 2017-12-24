@@ -1155,7 +1155,7 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
   type=image->type;
   if (IsGrayColorspace(colorspace) != MagickFalse)
     {
-      if (image->colorspace == GRAYColorspace)
+      if (colorspace == GRAYColorspace)
         image->gamma=1.000;
       type=GrayscaleType;
     }
