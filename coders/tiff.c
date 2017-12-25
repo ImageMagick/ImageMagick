@@ -3155,7 +3155,8 @@ static MagickBooleanType TIFFWritePhotoshopLayers(Image* image,
   base_image->endian=endian;
   WriteBlobString(base_image,"Adobe Photoshop Document Data Block");
   WriteBlobByte(base_image,0);
-  WriteBlobString(base_image,base_image->endian == LSBEndian ? "MIB8ryaL" : "8BIMLayr");
+  WriteBlobString(base_image,base_image->endian == LSBEndian ? "MIB8ryaL" :
+    "8BIMLayr");
   status=WritePSDLayers(base_image,clone_info,&info,exception);
   if (status != MagickFalse)
     {
