@@ -959,6 +959,8 @@ MATLAB_KO:
       goto MATLAB_KO;
     filepos += MATLAB_HDR.ObjectSize + 4 + 4;
 
+    if (clone_info != (ImageInfo *) NULL)
+      clone_info=DestroyImageInfo(clone_info);
     clone_info=CloneImageInfo(image_info);
     if ((image != image2) && (image2 != (Image *) NULL))
       image2=DestroyImage(image2);
