@@ -288,6 +288,8 @@ static const struct ReferenceFormats
     { "KDC", UndefinedCompression, 0.0 },
     { "MATTE", UndefinedCompression, 0.0 },
     { "MIFF", UndefinedCompression, 0.0 },
+    { "MIFF", RLECompression, 0.0 },
+    { "MIFF", ZipCompression, 0.0 },
     { "MNG", UndefinedCompression, 0.0 },
     { "MONO", UndefinedCompression, 0.0 },
     { "MRW", UndefinedCompression, 0.0 },
