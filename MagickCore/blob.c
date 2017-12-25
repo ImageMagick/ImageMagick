@@ -3292,6 +3292,8 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
           {
             if (mode == WriteBinaryBlobMode)
               type="wb";
+            if (mode == AppendBinaryBlobMode)
+              type="ab";
             blob_info->file_info.gzfile=gzopen(filename,type);
             if (blob_info->file_info.gzfile != (gzFile) NULL)
               blob_info->type=ZipStream;
