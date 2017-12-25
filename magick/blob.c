@@ -2629,6 +2629,8 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                 if (blob_info->file_info.file != (FILE *) NULL)
                   (void) fclose(blob_info->file_info.file);
                 blob_info->file_info.file=(FILE *) NULL;
+                if (mode == ReadBinaryBlobMode)
+                  type="r";
                 blob_info->file_info.bzfile=BZ2_bzopen(filename,type);
                 if (blob_info->file_info.bzfile != (BZFILE *) NULL)
                   blob_info->type=BZipStream;
@@ -2689,8 +2691,6 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
           {
             if (mode == WriteBinaryBlobMode)
               type="wb";
-            if (mode == AppendBinaryBlobMode)
-              type="ab";
             blob_info->file_info.gzfile=gzopen(filename,type);
             if (blob_info->file_info.gzfile != (gzFile) NULL)
               blob_info->type=ZipStream;
@@ -2700,6 +2700,8 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
           if (LocaleCompare(extension,"bz2") == 0)
             {
+              if (mode == WriteBinaryBlobMode)
+                type="w";
               blob_info->file_info.bzfile=BZ2_bzopen(filename,type);
               if (blob_info->file_info.bzfile != (BZFILE *) NULL)
                 blob_info->type=BZipStream;
