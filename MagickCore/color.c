@@ -2456,13 +2456,18 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
             }
           if (LocaleCompare(colorspace,"gray") == 0)
             {
-              color->colorspace=sGRAYColorspace;
+              color->colorspace=GRAYColorspace;
               color->green=color->red;
               color->blue=color->red;
               if (((flags & SigmaValue) != 0) &&
                   (color->alpha_trait != UndefinedPixelTrait))
                 color->alpha=(double) ClampToQuantum(QuantumRange*
                   geometry_info.sigma);
+              if (icc_color == MagickFalse)
+                {
+                  color->colorspace=sGRAYColorspace;
+                  color->depth=8;
+                }
             }
           if ((LocaleCompare(colorspace,"HCL") == 0) ||
               (LocaleCompare(colorspace,"HSB") == 0) ||
