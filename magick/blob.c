@@ -2125,9 +2125,17 @@ MagickExport MagickBooleanType IsBlobSeekable(const Image *image)
   blob_info=image->blob;
   switch (blob_info->type)
   {
+    case StandardStream:
     case FileStream:
-    case BlobStream:
     case ZipStream:
+    {
+      int
+        status;
+
+      status=fseek(blob_info->file_info.file,0,SEEK_CUR);
+      return(status == -1 ? MagickFalse : MagickTrue);
+    }
+    case BlobStream:
       return(MagickTrue);
     default:
       break;
@@ -2485,7 +2493,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       if (strchr(type,'b') != (char *) NULL)
         setmode(fileno(blob_info->file_info.file),_O_BINARY);
 #endif
-      blob_info->type=StandardStream;
+      blob_info->type=FileStream;
       blob_info->exempt=MagickTrue;
       return(SetStreamBuffering(image_info,image));
     }
@@ -2501,7 +2509,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       if (strchr(type,'b') != (char *) NULL)
         setmode(fileno(blob_info->file_info.file),_O_BINARY);
 #endif
-      blob_info->type=StandardStream;
+      blob_info->type=FileStream;
       blob_info->exempt=MagickTrue;
       return(SetStreamBuffering(image_info,image));
     }
