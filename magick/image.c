@@ -2909,11 +2909,10 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
           image=DestroyImage(image);
           return(MagickFalse);
         }
-      if ((IsBlobSeekable(image) == MagickFalse) ||
-          (IsBlobExempt(image) != MagickFalse))
+      if (IsBlobSeekable(image) == MagickFalse)
         {
           /*
-            Copy standard input or pipe to temporary file.
+            Copy image to a seekable temporary file.
           */
           *filename='\0';
           status=ImageToFile(image,filename,exception);
