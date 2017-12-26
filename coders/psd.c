@@ -2358,7 +2358,7 @@ static inline ssize_t SetPSDOffset(const PSDInfo *psd_info,Image *image,
 {
   if (psd_info->version == 1)
     return(WriteBlobMSBShort(image,(unsigned short) offset));
-  return(WriteBlobMSBLong(image,(unsigned short) offset));
+  return(WriteBlobMSBLong(image,(unsigned int) offset));
 }
 
 static inline ssize_t WritePSDOffset(const PSDInfo *psd_info,Image *image,
@@ -2375,7 +2375,7 @@ static inline ssize_t WritePSDOffset(const PSDInfo *psd_info,Image *image,
   if (psd_info->version == 1)
     result=WriteBlobMSBShort(image,(unsigned short) size);
   else
-    result=(WriteBlobMSBLong(image,(unsigned short) size));
+    result=WriteBlobMSBLong(image,(unsigned int) size);
   SeekBlob(image,current_offset,SEEK_SET);
   return(result);
 }
