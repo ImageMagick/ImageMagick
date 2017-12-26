@@ -1,3 +1,7 @@
+2017-12-27  6.9.9-29 Cristy  <quetzlzacatenango@image...>
+  * Fix heap use after free error (reference
+    https://github.com/ImageMagick/ImageMagick/issues/918).
+
 2017-12-24  6.9.9-28 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.9-28, GIT revision 12438:b01f6cc52:20171225.
 
