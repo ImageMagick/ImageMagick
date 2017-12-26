@@ -5610,7 +5610,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
             if (length < 2)
               {
                 chunk=(unsigned char *) RelinquishMagickMemory(chunk);
-                mng_info=MngInfoFreeStruct(mng_info);
                 ThrowReaderException(CorruptImageError,"CorruptImage");
               }
 
