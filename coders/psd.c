@@ -3539,7 +3539,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
       status=WritePSDLayersInternal(image,image_info,&psd_info,&size,
         exception);
       size_offset+=WritePSDSize(&psd_info,image,size+
-        (psd_info.version == 1 ? 8 : 16),size_offset);
+        (psd_info.version == 1 ? 8 : 12),size_offset);
     }
   (void) WriteBlobMSBLong(image,0);  /* user mask data */
   /*
