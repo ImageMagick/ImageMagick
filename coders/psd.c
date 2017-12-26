@@ -3417,7 +3417,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
     Write the total size
   */
   size_offset+=WritePSDSize(&psd_info,image,size+
-    (psd_info.version == 1 ? 8 : 16),size_offset);
+    (psd_info.version == 1 ? 8 : 12),size_offset);
   if ((size/2) != ((size+1)/2))
     rounded_size=size+1;
   else
