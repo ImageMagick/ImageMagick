@@ -931,7 +931,7 @@ MagickExport Image *MatrixToImage(const MatrixInfo *matrix_info,
   image=AcquireImage((ImageInfo *) NULL);
   image->columns=matrix_info->columns;
   image->rows=matrix_info->rows;
-  image->colorspace=sGRAYColorspace;
+  image->colorspace=GRAYColorspace;
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)

@@ -1362,7 +1362,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (IsGrayPixel(image->colormap+i) == MagickFalse)
             break;
         (void) SetImageColorspace(image,i == (ssize_t) image->colors ?
-          GRAYColorspace : RGBColorspace);
+          LinearGRAYColorspace : RGBColorspace);
       }
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))

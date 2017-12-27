@@ -125,8 +125,8 @@ static MagickBooleanType checkAccelerateCondition(const Image* image,
   /* check if the image's colorspace is supported */
   if (image->colorspace != RGBColorspace &&
       image->colorspace != sRGBColorspace &&
-      image->colorspace != GRAYColorspace &&
-      image->colorspace != sGRAYColorspace)
+      image->colorspace != LinearGRAYColorspace &&
+      image->colorspace != GRAYColorspace)
     return(MagickFalse);
 
   /* check if the channel is supported */
@@ -1316,7 +1316,7 @@ MagickPrivate MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
 
   /*
   if (SetImageGray(image,exception) != MagickFalse)
-    (void) SetImageColorspace(image,sGRAYColorspace);
+    (void) SetImageColorspace(image,GRAYColorspace);
   */
 
   status=MagickTrue;

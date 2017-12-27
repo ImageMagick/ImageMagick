@@ -1287,11 +1287,11 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
   {
     case BilevelType:
     {
-      status=TransformImageColorspace(image,sGRAYColorspace);
+      status=TransformImageColorspace(image,GRAYColorspace);
       (void) NormalizeImage(image);
       quantize_info=AcquireQuantizeInfo(image_info);
       quantize_info->number_colors=2;
-      quantize_info->colorspace=sGRAYColorspace;
+      quantize_info->colorspace=GRAYColorspace;
       status=QuantizeImage(quantize_info,image);
       quantize_info=DestroyQuantizeInfo(quantize_info);
       image->matte=MagickFalse;
@@ -1299,13 +1299,13 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
     }
     case GrayscaleType:
     {
-      status=TransformImageColorspace(image,sGRAYColorspace);
+      status=TransformImageColorspace(image,GRAYColorspace);
       image->matte=MagickFalse;
       break;
     }
     case GrayscaleMatteType:
     {
-      status=TransformImageColorspace(image,sGRAYColorspace);
+      status=TransformImageColorspace(image,GRAYColorspace);
       if (image->matte == MagickFalse)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
       break;

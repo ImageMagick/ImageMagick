@@ -498,8 +498,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
         switch (image->colorspace)
         {
+          case LinearGRAYColorspace:
           case GRAYColorspace:
-          case sGRAYColorspace:
           {
             if (image->matte != MagickFalse)
               {

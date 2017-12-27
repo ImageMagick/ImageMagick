@@ -1138,8 +1138,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
             type,max_locations,MagickFalse,channel_statistics);
           break;
         }
+        case LinearGRAYColorspace:
         case GRAYColorspace:
-        case sGRAYColorspace:
         {
           (void) PrintChannelLocations(file,image,GrayChannel,"gray",
             type,max_locations,MagickFalse,channel_statistics);
@@ -1213,8 +1213,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
         channel_statistics[BlackChannel].depth);
       break;
     }
+    case LinearGRAYColorspace:
     case GRAYColorspace:
-    case sGRAYColorspace:
     {
       (void) FormatLocaleFile(file,"      \"gray\": %.20g\n",(double)
         channel_statistics[GrayChannel].depth);
@@ -1230,8 +1230,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
     {
       (void) FormatLocaleFile(file,"    \"pixels\": %.20g,\n",
         (double) image->columns*image->rows);
-      if ((image->colorspace != GRAYColorspace) &&
-          (image->colorspace != sGRAYColorspace))
+      if ((image->colorspace != LinearGRAYColorspace) &&
+          (image->colorspace != GRAYColorspace))
         {
           (void) FormatLocaleFile(file,"    \"imageStatistics\": {\n");
           (void) PrintChannelStatistics(file,CompositeChannels,"all",1.0/
@@ -1267,8 +1267,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
             MagickFalse,channel_statistics);
           break;
         }
+        case LinearGRAYColorspace:
         case GRAYColorspace:
-        case sGRAYColorspace:
         {
           (void) PrintChannelStatistics(file,GrayChannel,"gray",1.0/scale,
             MagickFalse,channel_statistics);
@@ -1310,8 +1310,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
             channel_moments);
           break;
         }
+        case LinearGRAYColorspace:
         case GRAYColorspace:
-        case sGRAYColorspace:
         {
           (void) PrintChannelMoments(file,GrayChannel,"gray",MagickFalse,
             channel_moments);
@@ -1369,8 +1369,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
             channel_features);
           break;
         }
+        case LinearGRAYColorspace:
         case GRAYColorspace:
-        case sGRAYColorspace:
         {
           (void) PrintChannelFeatures(file,GrayChannel,"gray",MagickFalse,
             channel_features);

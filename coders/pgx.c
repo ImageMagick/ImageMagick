@@ -200,7 +200,7 @@ static Image *ReadPGXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Convert PGX image.
   */
-  (void) SetImageColorspace(image,sGRAYColorspace);
+  (void) SetImageColorspace(image,GRAYColorspace);
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");

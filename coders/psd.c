@@ -1408,7 +1408,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const ImageInfo *image_info,
     SetImageColorspace(layer_info->image,CMYKColorspace);
   else if ((psd_info->mode == BitmapMode) || (psd_info->mode == DuotoneMode) ||
            (psd_info->mode == GrayscaleMode))
-    SetImageColorspace(layer_info->image,sGRAYColorspace);
+    SetImageColorspace(layer_info->image,GRAYColorspace);
   /*
     Set up some hidden attributes for folks that need them.
   */
@@ -2037,7 +2037,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  Image colormap allocated");
-      SetImageColorspace(image,sGRAYColorspace);
+      SetImageColorspace(image,GRAYColorspace);
       image->matte=psd_info.channels > 1 ? MagickTrue : MagickFalse;
     }
   else

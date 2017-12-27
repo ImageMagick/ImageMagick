@@ -908,7 +908,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               }
               case cmsSigGrayData:
               {
-                source_colorspace=sGRAYColorspace;
+                source_colorspace=GRAYColorspace;
                 source_type=(cmsUInt32Number) TYPE_GRAY_DBL;
                 source_channels=1;
                 break;
@@ -956,7 +956,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               }
               case cmsSigGrayData:
               {
-                target_colorspace=sGRAYColorspace;
+                target_colorspace=GRAYColorspace;
                 target_type=(cmsUInt32Number) TYPE_GRAY_DBL;
                 target_channels=1;
                 break;
@@ -984,8 +984,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                 (target_colorspace == UndefinedColorspace))
               ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
                 name);
-             if (((source_colorspace == GRAYColorspace) ||
-                  (source_colorspace == sGRAYColorspace)) &&
+             if (((source_colorspace == LinearGRAYColorspace) ||
+                  (source_colorspace == GRAYColorspace)) &&
                  (SetImageGray(image,exception) == MagickFalse))
               ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
                 name);
@@ -1002,8 +1002,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
                 name);
              if ((source_colorspace != CMYKColorspace) &&
+                 (source_colorspace != LinearGRAYColorspace) &&
                  (source_colorspace != GRAYColorspace) &&
-                 (source_colorspace != sGRAYColorspace) &&
                  (source_colorspace != LabColorspace) &&
                  (source_colorspace != XYZColorspace) &&
                  (source_colorspace != YCbCrColorspace) &&

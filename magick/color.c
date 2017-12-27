@@ -1586,8 +1586,8 @@ MagickExport void GetColorTuple(const MagickPixelPacket *pixel,
   if (color.matte != MagickFalse)
     (void) ConcatenateMagickString(tuple,"a",MaxTextExtent);
   (void) ConcatenateMagickString(tuple,"(",MaxTextExtent);
-  if ((color.colorspace == GRAYColorspace) ||
-      (color.colorspace == sGRAYColorspace))
+  if ((color.colorspace == LinearGRAYColorspace) ||
+      (color.colorspace == GRAYColorspace))
     ConcatenateColorComponent(&color,GrayChannel,SVGCompliance,tuple);
   else
     {
@@ -2828,7 +2828,7 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
             }
           if (LocaleCompare(colorspace,"gray") == 0)
             {
-              color->colorspace=GRAYColorspace;
+              color->colorspace=LinearGRAYColorspace;
               color->green=color->red;
               color->blue=color->red;
               if (((flags & SigmaValue) != 0) && (color->matte != MagickFalse))
@@ -2836,7 +2836,7 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
                   (QuantumRange-QuantumRange*geometry_info.sigma));
               if (icc_color == MagickFalse)
                 {
-                  color->colorspace=sGRAYColorspace;
+                  color->colorspace=GRAYColorspace;
                   color->depth=8;
                 }
             }
@@ -2888,7 +2888,7 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
   color->colorspace=sRGBColorspace;
   if ((LocaleNCompare(name,"gray",4) == 0) ||
       (LocaleNCompare(name,"grey",4) == 0))
-    color->colorspace=sGRAYColorspace;
+    color->colorspace=GRAYColorspace;
   color->depth=8;
   color->matte=p->color.opacity != OpaqueOpacity ? MagickTrue : MagickFalse;
   color->red=(MagickRealType) p->color.red;

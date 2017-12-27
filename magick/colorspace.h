@@ -59,7 +59,7 @@ typedef enum
   HCLpColorspace,
   YDbDrColorspace,
   xyYColorspace,
-  sGRAYColorspace
+  LinearGRAYColorspace
 } ColorspaceType;
 
 extern MagickExport ColorspaceType

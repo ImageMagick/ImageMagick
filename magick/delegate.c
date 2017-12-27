@@ -647,7 +647,7 @@ static char *GetMagickPropertyLetter(const ImageInfo *image_info,Image *image,
       */
       colorspace=image->colorspace;
       if (SetImageGray(image,&image->exception) != MagickFalse)
-        colorspace=sGRAYColorspace;
+        colorspace=GRAYColorspace;
       (void) FormatLocaleString(value,MaxTextExtent,"%s %s %s",
         CommandOptionToMnemonic(MagickClassOptions,(ssize_t)
         image->storage_class),CommandOptionToMnemonic(MagickColorspaceOptions,

@@ -4209,7 +4209,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,const ssize_t x,
       case 'i':
       {
         quantum_map[i]=IndexQuantum;
-        (void) SetImageColorspace(image,sGRAYColorspace);
+        (void) SetImageColorspace(image,GRAYColorspace);
         break;
       }
       case 'm':

@@ -296,7 +296,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   /*
     Read VICAR pixels.
   */
-  (void) SetImageColorspace(image,sGRAYColorspace);
+  (void) SetImageColorspace(image,GRAYColorspace);
   quantum_type=GrayQuantum;
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)

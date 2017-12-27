@@ -4121,7 +4121,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
       }
     if (SetImageGray(image,exception) != MagickFalse)
-      (void) SetImageColorspace(image,sGRAYColorspace);
+      (void) SetImageColorspace(image,GRAYColorspace);
     if (EOFBlob(image) != MagickFalse)
       {
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",

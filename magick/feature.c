@@ -297,7 +297,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   kernel_info=DestroyKernelInfo(kernel_info);
   if (edge_image == (Image *) NULL)
     return((Image *) NULL);
-  if (TransformImageColorspace(edge_image,sGRAYColorspace) == MagickFalse)
+  if (TransformImageColorspace(edge_image,GRAYColorspace) == MagickFalse)
     {
       edge_image=DestroyImage(edge_image);
       return((Image *) NULL);

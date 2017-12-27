@@ -1337,8 +1337,8 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
                       channel_distortion[OpacityChannel]);
                   break;
                 }
+                case LinearGRAYColorspace:
                 case GRAYColorspace:
-                case sGRAYColorspace:
                 {
                   (void) FormatLocaleFile(stderr,"    gray: %g (%g)\n",
                     QuantumRange*channel_distortion[GrayChannel],
@@ -1391,8 +1391,8 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
                       channel_distortion[OpacityChannel]);
                   break;
                 }
+                case LinearGRAYColorspace:
                 case GRAYColorspace:
-                case sGRAYColorspace:
                 {
                   (void) FormatLocaleFile(stderr,"    gray: %g\n",
                     channel_distortion[GrayChannel]);

@@ -414,11 +414,11 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   image->compression=JPEG2000Compression;
   if (jp2_image->numcomps == 1)
-    SetImageColorspace(image,sGRAYColorspace);
+    SetImageColorspace(image,GRAYColorspace);
   else
     if (jp2_image->color_space == 2)
       {
-        SetImageColorspace(image,sGRAYColorspace);
+        SetImageColorspace(image,GRAYColorspace);
         if (jp2_image->numcomps > 1)
           image->matte=MagickTrue;
       }
