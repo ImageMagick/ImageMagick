@@ -484,7 +484,7 @@ OPENCL_ENDIF()
   {
     float intensity;
 
-    if (colorspace == GRAYColorspace)
+    if ((colorspace == GRAYColorspace) || (colorspace == LinearGRAYColorspace))
       return red;
 
     switch (method)
