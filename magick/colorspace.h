@@ -26,7 +26,7 @@ typedef enum
 {
   UndefinedColorspace,
   RGBColorspace,            /* Linear RGB colorspace */
-  GRAYColorspace,           /* greyscale (linear) image (faked 1 channel) */
+  GRAYColorspace,           /* greyscale (non-linear) image (faked 1 channel) */
   TransparentColorspace,
   OHTAColorspace,
   LabColorspace,
@@ -59,7 +59,7 @@ typedef enum
   HCLpColorspace,
   YDbDrColorspace,
   xyYColorspace,
-  LinearGRAYColorspace
+  LinearGRAYColorspace      /* greyscale (linear) image (faked 1 channel) */
 } ColorspaceType;
 
 extern MagickExport ColorspaceType
