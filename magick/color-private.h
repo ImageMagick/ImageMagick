@@ -89,7 +89,7 @@ static inline MagickBooleanType IsMagickColorEqual(const MagickPixelPacket *p,
 
 static inline MagickBooleanType IsMagickGray(const MagickPixelPacket *pixel)
 {
-  if ((pixel->colorspace != sGRAYColorspace) &&
+  if ((pixel->colorspace != GRAYColorspace) &&
       (pixel->colorspace != RGBColorspace))
     return(MagickFalse);
   if ((AbsolutePixelValue(pixel->red-pixel->green) < MagickEpsilon) &&
@@ -101,7 +101,7 @@ static inline MagickBooleanType IsMagickGray(const MagickPixelPacket *pixel)
 static inline MagickRealType MagickPixelIntensity(
   const MagickPixelPacket *pixel)
 {
-  if (pixel->colorspace == sGRAYColorspace)
+  if (pixel->colorspace == GRAYColorspace)
     return(pixel->red);
   return(0.212656*pixel->red+0.715158*pixel->green+0.072186*pixel->blue);
 }
@@ -109,7 +109,7 @@ static inline MagickRealType MagickPixelIntensity(
 static inline Quantum MagickPixelIntensityToQuantum(
   const MagickPixelPacket *pixel)
 {
-  if (pixel->colorspace == sGRAYColorspace)
+  if (pixel->colorspace == GRAYColorspace)
     return(ClampToQuantum(pixel->red));
   return(ClampToQuantum(0.212656*pixel->red+0.715158*pixel->green+
     0.072186*pixel->blue));
@@ -122,7 +122,7 @@ static inline MagickRealType MagickPixelLuma(const MagickPixelPacket *pixel)
     green,
     red;
 
-  if (pixel->colorspace == sGRAYColorspace)
+  if (pixel->colorspace == GRAYColorspace)
     return(pixel->red);
   if (pixel->colorspace == sRGBColorspace)
     return(0.212656*pixel->red+0.715158*pixel->green+0.072186*pixel->blue);
@@ -140,7 +140,7 @@ static inline MagickRealType MagickPixelLuminance(
     green,
     red;
 
-  if (pixel->colorspace == sGRAYColorspace)
+  if (pixel->colorspace == GRAYColorspace)
     return(pixel->red);
   if (pixel->colorspace != sRGBColorspace)
     return(0.212656*pixel->red+0.715158*pixel->green+0.072186*pixel->blue);
