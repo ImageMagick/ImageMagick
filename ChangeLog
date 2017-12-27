@@ -1,5 +1,5 @@
 2017-12-26  7.0.7-17 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.7-16, GIT revision 22088:354674e2b:20171226.
+  * Release ImageMagick version 7.0.7-16, GIT revision 22093:9caea323b:20171227.
 
 2017-12-26  7.0.7-17 Cristy  <quetzlzacatenango@image...>
   * Fix heap use after free error (reference
