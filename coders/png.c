@@ -8157,23 +8157,22 @@ Magick_png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
    png_free(ping,text);
 }
 
-static inline MagickBooleanType Magick_png_color_equal(const Image *image,
+static inline MagickBooleanType IsColorEqual(const Image *image,
   const Quantum *p, const PixelInfo *q)
 {
   MagickRealType
-    value;
-
-  value=(MagickRealType) p[image->channel_map[RedPixelChannel].offset];
-  if (AbsolutePixelValue(value-q->red) >= MagickEpsilon)
-    return(MagickFalse);
-  value=(MagickRealType) p[image->channel_map[GreenPixelChannel].offset];
-  if (AbsolutePixelValue(value-q->green) >= MagickEpsilon)
-    return(MagickFalse);
-  value=(MagickRealType) p[image->channel_map[BluePixelChannel].offset];
-  if (AbsolutePixelValue(value-q->blue) >= MagickEpsilon)
-    return(MagickFalse);
-
-  return(MagickTrue);
+    blue,
+    green,
+    red;
+  
+  red=(MagickRealType) GetPixelRed(image,p);
+  green=(MagickRealType) GetPixelGreen(image,p);
+  blue=(MagickRealType) GetPixelBlue(image,p);
+  if ((AbsolutePixelValue(red-q->red) < MagickEpsilon) &&
+      (AbsolutePixelValue(green-q->green) < MagickEpsilon) &&
+      (AbsolutePixelValue(blue-q->blue) < MagickEpsilon))
+    return(MagickTrue);
+  return(MagickFalse);
 }
 
 #if defined(PNG_tIME_SUPPORTED)
@@ -8997,7 +8996,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                    for (i=0; i< (ssize_t) number_opaque; i++)
                      {
-                       if (Magick_png_color_equal(image,q,opaque+i))
+                       if (IsColorEqual(image,q,opaque+i))
                          break;
                      }
 
@@ -9029,7 +9028,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                    for (i=0; i< (ssize_t) number_transparent; i++)
                      {
-                       if (Magick_png_color_equal(image,q,transparent+i))
+                       if (IsColorEqual(image,q,transparent+i))
                          break;
                      }
 
@@ -9053,7 +9052,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                    for (i=0; i< (ssize_t) number_semitransparent; i++)
                      {
-                       if (Magick_png_color_equal(image,q,semitransparent+i)
+                       if (IsColorEqual(image,q,semitransparent+i)
                            && GetPixelAlpha(image,q) ==
                            semitransparent[i].alpha)
                          break;
