@@ -193,11 +193,13 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (c == EOF)
       {
         (void) RelinquishUniqueFileResource(read_info->filename);
+        read_info=DestroyImageInfo(read_info);
         ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
       }
     if (LocaleNCompare((char *) (magick+12),"SFW94A",6) != 0)
       {
         (void) RelinquishUniqueFileResource(read_info->filename);
+        read_info=DestroyImageInfo(read_info);
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       }
     /*
@@ -209,9 +211,10 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((unique_file == -1) || (file == (FILE *) NULL))
       {
         (void) RelinquishUniqueFileResource(read_info->filename);
+        read_info=DestroyImageInfo(read_info);
+        image=DestroyImageList(image);
         ThrowFileException(exception,FileOpenError,"UnableToWriteFile",
           image->filename);
-        image=DestroyImageList(image);
         return((Image *) NULL);
       }
     length=fwrite("SFW94A",1,6,file);
@@ -228,6 +231,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (c == EOF)
       {
         (void) RelinquishUniqueFileResource(read_info->filename);
+        read_info=DestroyImageInfo(read_info);
         ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
       }
     next_image=ReadImage(read_info,exception);
