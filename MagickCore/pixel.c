@@ -6200,7 +6200,8 @@ static void LogPixelChannels(const Image *image)
         name="red";
         if (image->colorspace == CMYKColorspace)
           name="cyan";
-        if (image->colorspace == GRAYColorspace)
+        if ((image->colorspace == LinearGRAYColorspace) ||
+            (image->colorspace == GRAYColorspace))
           name="gray";
         break;
       }
