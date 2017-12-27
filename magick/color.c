@@ -2828,13 +2828,13 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
             }
           if (LocaleCompare(colorspace,"gray") == 0)
             {
-              color->colorspace=LinearGRAYColorspace;
               color->green=color->red;
               color->blue=color->red;
               if (((flags & SigmaValue) != 0) && (color->matte != MagickFalse))
                 color->opacity=(MagickRealType) ClampToQuantum((MagickRealType)
                   (QuantumRange-QuantumRange*geometry_info.sigma));
-              if (icc_color == MagickFalse)
+              if ((icc_color == MagickFalse) &&
+                  (color->colorspace == LinearGRAYColorspace))
                 {
                   color->colorspace=GRAYColorspace;
                   color->depth=8;
