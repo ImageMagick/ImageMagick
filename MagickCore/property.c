@@ -2512,7 +2512,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
       WarnNoImageReturn("\"%%%c\"",letter);
       colorspace=image->colorspace;
       if (SetImageGray(image,exception) != MagickFalse)
-        colorspace=sGRAYColorspace;   /* FUTURE: this is IMv6 not IMv7 */
+        colorspace=GRAYColorspace;   /* FUTURE: this is IMv6 not IMv7 */
       (void) FormatLocaleString(value,MagickPathExtent,"%s %s %s",
         CommandOptionToMnemonic(MagickClassOptions,(ssize_t)
         image->storage_class),CommandOptionToMnemonic(MagickColorspaceOptions,

@@ -643,8 +643,8 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
   if (cube_info->quantize_info->measure_error != MagickFalse)
     (void) GetImageQuantizeError(image,exception);
   if ((cube_info->quantize_info->number_colors == 2) &&
-      ((cube_info->quantize_info->colorspace == GRAYColorspace) ||
-       (cube_info->quantize_info->colorspace == sGRAYColorspace)))
+      ((cube_info->quantize_info->colorspace == LinearGRAYColorspace) ||
+       (cube_info->quantize_info->colorspace == GRAYColorspace)))
     {
       double
         intensity;
@@ -743,8 +743,8 @@ static inline void SetAssociatedAlpha(const Image *image,CubeInfo *cube_info)
   associate_alpha=image->alpha_trait == BlendPixelTrait ? MagickTrue :
     MagickFalse;
   if ((cube_info->quantize_info->number_colors == 2) &&
-      ((cube_info->quantize_info->colorspace == GRAYColorspace) ||
-       (cube_info->quantize_info->colorspace == sGRAYColorspace)))
+      ((cube_info->quantize_info->colorspace == LinearGRAYColorspace) ||
+       (cube_info->quantize_info->colorspace == GRAYColorspace)))
     associate_alpha=MagickFalse;
   cube_info->associate_alpha=associate_alpha;
 }
@@ -3317,7 +3317,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->type != GrayscaleType)
-    (void) TransformImageColorspace(image,sGRAYColorspace,exception);
+    (void) TransformImageColorspace(image,GRAYColorspace,exception);
   colormap_index=(ssize_t *) AcquireQuantumMemory(MaxColormapSize,
     sizeof(*colormap_index));
   if (colormap_index == (ssize_t *) NULL)

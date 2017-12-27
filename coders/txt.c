@@ -488,8 +488,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
         switch (image->colorspace)
         {
+          case LinearGRAYColorspace:
           case GRAYColorspace:
-          case sGRAYColorspace:
           {
             if (image->alpha_trait != UndefinedPixelTrait)
               {
@@ -796,8 +796,8 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
           (double) x,(double) y);
         (void) WriteBlobString(image,buffer);
         (void) CopyMagickString(tuple,"(",MagickPathExtent);
-        if ((pixel.colorspace == GRAYColorspace) ||
-            (pixel.colorspace == sGRAYColorspace))
+        if ((pixel.colorspace == LinearGRAYColorspace) ||
+            (pixel.colorspace == GRAYColorspace))
           ConcatenateColorComponent(&pixel,GrayPixelChannel,compliance,tuple);
         else
           {

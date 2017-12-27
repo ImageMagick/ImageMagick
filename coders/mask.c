@@ -237,7 +237,7 @@ static Image *MaskImage(const Image *image,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   mask_image->alpha_trait=UndefinedPixelTrait;
-  (void) SetImageColorspace(mask_image,sGRAYColorspace,exception);
+  (void) SetImageColorspace(mask_image,GRAYColorspace,exception);
   /*
     Mask image.
   */

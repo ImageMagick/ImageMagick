@@ -2433,7 +2433,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
           break;
         colors<<=1;
         quantize_info.number_colors=colors;
-        quantize_info.colorspace=sGRAYColorspace;
+        quantize_info.colorspace=GRAYColorspace;
         (void) QuantizeImage(&quantize_info,preview_image,exception);
         (void) FormatLocaleString(label,MagickPathExtent,
           "-colorspace gray -colors %.20g",(double) colors);
@@ -3169,7 +3169,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
       kernel=(MagickRealType *) RelinquishAlignedMemory(kernel);
       return((Image *) NULL);
     }
-  status=TransformImageColorspace(luminance_image,sGRAYColorspace,exception);
+  status=TransformImageColorspace(luminance_image,GRAYColorspace,exception);
   if (status == MagickFalse)
     {
       luminance_image=DestroyImage(luminance_image);

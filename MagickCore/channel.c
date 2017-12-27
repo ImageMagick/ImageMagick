@@ -284,7 +284,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
         if ((channel_op == ExtractChannelOp) && (channels == 1))
           {
             (void) SetPixelMetaChannels(destination_image,0,exception);
-            (void) SetImageColorspace(destination_image,sGRAYColorspace,
+            (void) SetImageColorspace(destination_image,GRAYColorspace,
               exception);
           }
         canvas=CloneImage(source_image,0,0,MagickTrue,exception);
@@ -444,7 +444,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
   if ((channel_op == ExtractChannelOp) && (channels == 1))
     {
       (void) SetPixelMetaChannels(destination_image,0,exception);
-      (void) SetImageColorspace(destination_image,sGRAYColorspace,exception);
+      (void) SetImageColorspace(destination_image,GRAYColorspace,exception);
     }
   return(GetFirstImageInList(destination_image));
 }
@@ -532,8 +532,8 @@ MagickExport Image *CombineImages(const Image *image,
         combine_image->alpha_trait=BlendPixelTrait;
       break;
     }
+    case LinearGRAYColorspace:
     case GRAYColorspace:
-    case sGRAYColorspace:
     {
       if (GetImageListLength(image) > 1)
         combine_image->alpha_trait=BlendPixelTrait;
@@ -733,7 +733,7 @@ MagickExport Image *SeparateImage(const Image *image,
       return((Image *) NULL);
     }
   separate_image->alpha_trait=UndefinedPixelTrait;
-  (void) SetImageColorspace(separate_image,sGRAYColorspace,exception);
+  (void) SetImageColorspace(separate_image,GRAYColorspace,exception);
   separate_image->gamma=image->gamma;
   /*
     Separate image.

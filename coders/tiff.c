@@ -1476,7 +1476,7 @@ RestoreMSCWarning
 #endif
     if ((photometric == PHOTOMETRIC_MINISBLACK) ||
         (photometric == PHOTOMETRIC_MINISWHITE))
-      SetImageColorspace(image,sGRAYColorspace,exception);
+      SetImageColorspace(image,GRAYColorspace,exception);
     if (photometric == PHOTOMETRIC_SEPARATED)
       SetImageColorspace(image,CMYKColorspace,exception);
     if (photometric == PHOTOMETRIC_CIELAB)

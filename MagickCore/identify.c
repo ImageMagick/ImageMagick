@@ -581,8 +581,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             statistic_type,max_locations,channel_statistics);
           break;
         }
+        case LinearGRAYColorspace:
         case GRAYColorspace:
-        case sGRAYColorspace:
         {
           (void) PrintChannelLocations(file,image,GrayPixelChannel,"Gray",
             statistic_type,max_locations,channel_statistics);
@@ -795,8 +795,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             channel_statistics[BlackPixelChannel].depth);
           break;
         }
+        case LinearGRAYColorspace:
         case GRAYColorspace:
-        case sGRAYColorspace:
         {
           (void) FormatLocaleFile(file,"    Gray: %.20g-bit\n",(double)
             channel_statistics[GrayPixelChannel].depth);
@@ -848,8 +848,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             scale,channel_statistics);
           break;
         }
+        case LinearGRAYColorspace:
         case GRAYColorspace:
-        case sGRAYColorspace:
         {
           (void) PrintChannelStatistics(file,GrayPixelChannel,"Gray",1.0/
             scale,channel_statistics);
@@ -873,7 +873,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (image->alpha_trait != UndefinedPixelTrait)
         (void) PrintChannelStatistics(file,AlphaPixelChannel,"Alpha",1.0/
           scale,channel_statistics);
-      if ((colorspace != GRAYColorspace) && (colorspace != sGRAYColorspace))
+      if ((colorspace != LinearGRAYColorspace) && (colorspace != GRAYColorspace))
         {
           (void) FormatLocaleFile(file,"  Image statistics:\n");
           (void) PrintChannelStatistics(file,CompositePixelChannel,"Overall",
@@ -911,7 +911,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             channel_moments);
           break;
         }
-        case sGRAYColorspace:
+        case GRAYColorspace:
         {
           (void) PrintChannelMoments(file,GrayPixelChannel,"Gray",scale,
             channel_moments);
@@ -935,7 +935,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (image->alpha_trait != UndefinedPixelTrait)
         (void) PrintChannelMoments(file,AlphaPixelChannel,"Alpha",scale,
           channel_moments);
-      if (colorspace != sGRAYColorspace)
+      if (colorspace != GRAYColorspace)
         {
           (void) FormatLocaleFile(file,"  Image moments:\n");
           (void) PrintChannelMoments(file,CompositePixelChannel,"Overall",scale,
@@ -979,7 +979,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             channel_features);
           break;
         }
-        case sGRAYColorspace:
+        case GRAYColorspace:
         {
           (void) PrintChannelFeatures(file,GrayPixelChannel,"Gray",
             channel_features);

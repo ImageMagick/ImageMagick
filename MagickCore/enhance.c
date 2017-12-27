@@ -1049,7 +1049,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (SetImageGray(image,exception) != MagickFalse)
-    (void) SetImageColorspace(image,sGRAYColorspace,exception);
+    (void) SetImageColorspace(image,GRAYColorspace,exception);
   black=(double *) AcquireQuantumMemory(MaxPixelChannels,sizeof(*black));
   white=(double *) AcquireQuantumMemory(MaxPixelChannels,sizeof(*white));
   histogram=(double *) AcquireQuantumMemory(MaxMap+1UL,MaxPixelChannels*
@@ -1992,8 +1992,8 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
       image->type=GrayscaleType;
       if ((method == Rec601LuminancePixelIntensityMethod) ||
           (method == Rec709LuminancePixelIntensityMethod))
-        return(SetImageColorspace(image,GRAYColorspace,exception));
-      return(SetImageColorspace(image,sGRAYColorspace,exception));
+        return(SetImageColorspace(image,LinearGRAYColorspace,exception));
+      return(SetImageColorspace(image,GRAYColorspace,exception));
     }
 #endif
   /*
@@ -2139,8 +2139,8 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
   image->type=GrayscaleType;
   if ((method == Rec601LuminancePixelIntensityMethod) ||
       (method == Rec709LuminancePixelIntensityMethod))
-    return(SetImageColorspace(image,GRAYColorspace,exception));
-  return(SetImageColorspace(image,sGRAYColorspace,exception));
+    return(SetImageColorspace(image,LinearGRAYColorspace,exception));
+  return(SetImageColorspace(image,GRAYColorspace,exception));
 }
 
 /*

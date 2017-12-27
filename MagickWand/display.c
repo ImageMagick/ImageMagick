@@ -1405,7 +1405,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             quantize_info->number_colors=2;
-            quantize_info->colorspace=sGRAYColorspace;
+            quantize_info->colorspace=GRAYColorspace;
             break;
           }
         ThrowDisplayException(OptionError,"UnrecognizedOption",option);

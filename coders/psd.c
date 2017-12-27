@@ -2084,7 +2084,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Image colormap allocated");
         }
-      SetImageColorspace(image,sGRAYColorspace,exception);
+      SetImageColorspace(image,GRAYColorspace,exception);
       if (psd_info.channels > 1)
         SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
     }

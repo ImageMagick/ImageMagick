@@ -154,7 +154,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   /*
     Create virtual canvas to support cropping (i.e. image.gray[100x100+10+20]).
   */
-  (void) SetImageColorspace(image,sGRAYColorspace,exception);
+  (void) SetImageColorspace(image,GRAYColorspace,exception);
   canvas_image=CloneImage(image,image->extract_info.width,1,MagickFalse,
     exception);
   (void) SetImageVirtualPixelMethod(canvas_image,BlackVirtualPixelMethod,
@@ -195,7 +195,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
       break;
-    if (SetImageColorspace(image,sGRAYColorspace,exception) == MagickFalse)
+    if (SetImageColorspace(image,GRAYColorspace,exception) == MagickFalse)
       break;
     if (scene == 0)
       {

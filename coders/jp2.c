@@ -409,11 +409,11 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     return(DestroyImageList(image));
   image->compression=JPEG2000Compression;
   if (jp2_image->numcomps == 1)
-    SetImageColorspace(image,sGRAYColorspace,exception);
+    SetImageColorspace(image,GRAYColorspace,exception);
   else
     if (jp2_image->color_space == 2)
       {
-        SetImageColorspace(image,sGRAYColorspace,exception);
+        SetImageColorspace(image,GRAYColorspace,exception);
         if (jp2_image->numcomps > 1)
           image->alpha_trait=BlendPixelTrait;
       }

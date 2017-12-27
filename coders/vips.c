@@ -453,7 +453,7 @@ static Image *ReadVIPSImage(const ImageInfo *image_info,
       break;
     case VIPSTypeB_W:
     case VIPSTypeGREY16:
-      SetImageColorspace(image,sGRAYColorspace,exception);
+      SetImageColorspace(image,GRAYColorspace,exception);
       if (channels == 2)
         image->alpha_trait=BlendPixelTrait;
       break;
@@ -672,7 +672,7 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
     case CMYKColorspace:
       (void) WriteBlobLong(image,VIPSTypeCMYK);
       break;
-    case sGRAYColorspace:
+    case GRAYColorspace:
       if (image->depth == 16)
         (void) WriteBlobLong(image, VIPSTypeGREY16);
       else

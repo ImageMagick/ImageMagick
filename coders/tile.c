@@ -133,8 +133,8 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
     }
   (void) TextureImage(image,tile_image,exception);
   tile_image=DestroyImage(tile_image);
-  if ((image->colorspace == GRAYColorspace) ||
-      (image->colorspace == sGRAYColorspace))
+  if ((image->colorspace == LinearGRAYColorspace) ||
+      (image->colorspace == GRAYColorspace))
     image->type=GrayscaleType;
   return(GetFirstImageInList(image));
 }

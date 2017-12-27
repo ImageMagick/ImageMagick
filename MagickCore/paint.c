@@ -191,7 +191,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   if (floodplane_image == (Image *) NULL)
     return(MagickFalse);
   floodplane_image->alpha_trait=UndefinedPixelTrait;
-  floodplane_image->colorspace=sGRAYColorspace;
+  floodplane_image->colorspace=GRAYColorspace;
   (void) QueryColorCompliance("#000",AllCompliance,
     &floodplane_image->background_color,exception);
   (void) SetImageBackgroundColor(floodplane_image,exception);
