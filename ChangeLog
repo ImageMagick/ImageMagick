@@ -1,5 +1,12 @@
+2017-12-26  7.0.7-18 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.7-18, GIT revision 22096:ad4bdeb40:20171228.
+
+2017-12-28  7.0.7-18 Cristy  <quetzlzacatenango@image...>
+  * Fix error reading from pipe under Windows (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=33288).
+
 2017-12-26  7.0.7-17 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.7-16, GIT revision 22093:9caea323b:20171227.
+  * Release ImageMagick version 7.0.7-17, GIT revision 22093:9caea323b:20171227.
 
 2017-12-26  7.0.7-17 Cristy  <quetzlzacatenango@image...>
   * Fix heap use after free error (reference
