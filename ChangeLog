@@ -1,3 +1,10 @@
+2017-12-28  6.9.9-30 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.9-30, GIT revision 12462:c2c8f1ab2:20171228.
+
+2017-12-28  6.9.9-30 Cristy  <quetzlzacatenango@image...>
+  * Fix error reading from pipe under Windows (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=33288).
+
 2017-12-26  6.9.9-29 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.9-29, GIT revision 12459:90e2b0782:20171227.
 
