@@ -2909,7 +2909,8 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
           image=DestroyImage(image);
           return(MagickFalse);
         }
-      if (IsBlobSeekable(image) == MagickFalse)
+      if ((IsBlobSeekable(image) == MagickFalse) ||
+          (IsBlobExempt(image) != MagickFalse))
         {
           /*
             Copy image to a seekable temporary file.
