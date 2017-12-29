@@ -2505,6 +2505,11 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       *mode=(*type);
       mode[1]='\0';
       blob_info->file_info.file=fdopen(StringToLong(filename+3),mode);
+      if (blob_info->file_info.file == (FILE *) NULL)
+        {
+          ThrowFileException(exception,BlobError,"UnableToOpenBlob",filename);
+          return(MagickFalse);
+        }
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__OS2__)
       if (strchr(type,'b') != (char *) NULL)
         setmode(fileno(blob_info->file_info.file),_O_BINARY);
