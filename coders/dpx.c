@@ -1235,7 +1235,6 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       DPX any-bit pixel format.
     */
-    status=MagickTrue;
     row=0;
     quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
@@ -1261,12 +1260,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         count,
         offset;
 
-      if (status == MagickFalse)
-        continue;
       pixels=(const unsigned char *) ReadBlobStream(image,extent,
         GetQuantumPixels(quantum_info),&count);
       if (count != (ssize_t) extent)
-        status=MagickFalse;
+        break;
       if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
           (image->previous == (Image *) NULL))
         {
@@ -1281,19 +1278,16 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       offset=row++;
       q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
       if (q == (PixelPacket *) NULL)
-        {
-          status=MagickFalse;
-          continue;
-        }
+        break;
       length=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
         quantum_type,pixels,exception);
       (void) length;
       sync=SyncAuthenticPixels(image,exception);
       if (sync == MagickFalse)
-        status=MagickFalse;
+        break;
     }
     quantum_info=DestroyQuantumInfo(quantum_info);
-    if (status == MagickFalse)
+    if (y < (ssize_t) image->rows)
       ThrowReaderException(CorruptImageError,"UnableToReadImageData");
     SetQuantumImageType(image,quantum_type);
     if (EOFBlob(image) != MagickFalse)
