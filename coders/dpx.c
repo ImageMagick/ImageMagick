@@ -1169,6 +1169,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     SetPrimaryChromaticity((DPXColorimetric)
       dpx.image.image_element[n].colorimetric,&image->chromaticity);
     image->depth=dpx.image.image_element[n].bit_size;
+    if (image->depth > 32)
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     samples_per_pixel=1;
     quantum_type=GrayQuantum;
     component_type=dpx.image.image_element[n].descriptor;
