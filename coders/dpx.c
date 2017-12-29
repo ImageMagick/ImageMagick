@@ -1273,7 +1273,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType) row,
             image->rows);
           if (proceed == MagickFalse)
-            status=MagickFalse;
+            break;
         }
       offset=row++;
       q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
