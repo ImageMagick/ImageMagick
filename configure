@@ -4559,7 +4559,7 @@ MAGICK_PATCHLEVEL_VERSION=19
 
 MAGICK_VERSION=7.0.7-19
 
-MAGICK_GIT_REVISION=22097:652508e71:20171228
+MAGICK_GIT_REVISION=22099:eacbdd623:20171229
 
 
 # Substitute library versioning
@@ -34977,12 +34977,12 @@ if test -n "$WEBPMUX_CFLAGS"; then
     pkg_cv_WEBPMUX_CFLAGS="$WEBPMUX_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libwebpmux\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libwebpmux") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libwebpmux >= 0.4.4\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libwebpmux >= 0.4.4") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_WEBPMUX_CFLAGS=`$PKG_CONFIG --cflags "libwebpmux" 2>/dev/null`
+  pkg_cv_WEBPMUX_CFLAGS=`$PKG_CONFIG --cflags "libwebpmux >= 0.4.4" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -34994,12 +34994,12 @@ if test -n "$WEBPMUX_LIBS"; then
     pkg_cv_WEBPMUX_LIBS="$WEBPMUX_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libwebpmux\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libwebpmux") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libwebpmux >= 0.4.4\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libwebpmux >= 0.4.4") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_WEBPMUX_LIBS=`$PKG_CONFIG --libs "libwebpmux" 2>/dev/null`
+  pkg_cv_WEBPMUX_LIBS=`$PKG_CONFIG --libs "libwebpmux >= 0.4.4" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -35020,9 +35020,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        WEBPMUX_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libwebpmux" 2>&1`
+	        WEBPMUX_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libwebpmux >= 0.4.4" 2>&1`
         else
-	        WEBPMUX_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libwebpmux" 2>&1`
+	        WEBPMUX_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libwebpmux >= 0.4.4" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$WEBPMUX_PKG_ERRORS" >&5

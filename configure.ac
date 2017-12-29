@@ -2799,7 +2799,7 @@ WEBPMUX_PKG=""
 if test "x$with_webp" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
   PKG_CHECK_MODULES(WEBP,[libwebp], have_webp=yes, have_webp=no)
-  PKG_CHECK_MODULES(WEBPMUX,[libwebpmux], have_webpmux=yes, have_webpmux=no)
+  PKG_CHECK_MODULES(WEBPMUX,[libwebpmux >= 0.4.4], have_webpmux=yes, have_webpmux=no)
   AC_MSG_RESULT([])
 fi
 
