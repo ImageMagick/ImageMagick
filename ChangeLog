@@ -1,3 +1,6 @@
+2018-01-01  7.0.7-19 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.7-19, GIT revision 22127:f2dfdd99a:20171231.
+
 2017-12-29  7.0.7-19 Cristy  <quetzlzacatenango@image...>
   * Check for webpmux library version 0.4.4 (reference
     https://github.com/ImageMagick/ImageMagick/issues/896).
