@@ -2523,8 +2523,8 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
             subexpression[strlen(subexpression)-1]='\0';
           if (fx_info->file != (FILE *) NULL)
             (void) FormatLocaleFile(fx_info->file,"%s[%.20g,%.20g].%s: "
-               "%s=%.*g\n",fx_info->images->filename,(double) x,(double) y,type,
-               subexpression,GetMagickPrecision(),alpha);
+              "%s=%.*g\n",fx_info->images->filename,(double) x,(double) y,type,
+              subexpression,GetMagickPrecision(),alpha);
           return(0.0);
         }
       if (LocaleNCompare(expression,"drc",3) == 0)
