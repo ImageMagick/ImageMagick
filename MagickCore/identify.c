@@ -1015,6 +1015,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       x=0;
       if (image->alpha_trait != UndefinedPixelTrait)
         {
+          MagickBooleanType
+            found = MagickFalse;
+
           p=(const Quantum *) NULL;
           for (y=0; y < (ssize_t) image->rows; y++)
           {
@@ -1024,13 +1027,16 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               if (GetPixelAlpha(image,p) == (Quantum) TransparentAlpha)
-                break;
+                {
+                  found=MagickTrue;
+                  break;
+                }
               p+=GetPixelChannels(image);
             }
-            if (x < (ssize_t) image->columns)
+            if (found != MagickFalse)
               break;
           }
-          if ((x < (ssize_t) image->columns) || (y < (ssize_t) image->rows))
+          if (found != MagickFalse)
             {
               char
                 tuple[MagickPathExtent];
@@ -1039,8 +1045,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
                 pixel;
 
               GetPixelInfo(image,&pixel);
-              if (p != (const Quantum *) NULL)
-                GetPixelInfoPixel(image,p,&pixel);
+              GetPixelInfoPixel(image,p,&pixel);
               (void) QueryColorname(image,&pixel,SVGCompliance,tuple,
                 exception);
               (void) FormatLocaleFile(file,"  Alpha: %s ",tuple);
