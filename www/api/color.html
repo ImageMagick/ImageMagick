@@ -32,7 +32,7 @@
 <body>
   <header>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="color.html#">ImageMagick</a>
+    <a class="navbar-brand" href="../../"><img class="d-block" id="logo" name="ImageMagick" alt="ImageMagick" width="32" height="32" src="../../images/wand.ico"/></a>
     <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
     </button>
@@ -58,12 +58,12 @@
         <a class="nav-link" href="../../www/develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="https://www.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="../https://www.imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
     </form>
     </div>
   </nav>
@@ -136,7 +136,7 @@ gray(127)         near mid gray
 gray(50%)         mid gray
 graya(50%, 0.5)   semi-transparent mid gray</code></pre>
 
-<p>For linear gray values add -colorspace RGB -colorspace gray when creating gray colors</p>
+<p>For linear gray values add -colorspace RGB -colorspace Gray or -colorspace LinearGray when creating gray colors. The latter is new as of Imagemagick 6.9.9-29 and 7.0.7-17.</p>
 
 <p>The ImageMagick color model also supports hue-saturation-lightness (HSL) and hue-saturation-brightness (HSB) colors as a complement to numerical sRGB colors. HSL colors are encoding as a triple (hue, saturation, lightness). Likewise HSB colors are encoding as a triple (hue, saturation, brightness). HSL or HSB triples are either direct values (hue 0—360, saturation 0—255, lightness or brightness 0—255) or with S,L,B as percentage values relative to these ranges.</p>
 
@@ -196,8 +196,15 @@ hsla(120, 255,  127.5,  1.0)       the same, with an alpha value of 1.0</code></
 -> magick -size 100x100 xc:"cielab(91.1131%,-18.8571%,-5.5436%)" -colorspace sRGB cyan.png</code></pre>
 
 <p>Or specify colors generically with the <code>icc-color</code> keyword, for example:</p>
-<pre class="highlight"><code>icc-color(cmyk, 0.11, 0.48, 0.83, 0.00)
-icc-color(rgb, white)</code></pre>
+<pre class="highlight"><code>
+icc-color(cmyk, 0.11, 0.48, 0.83, 0.00)  cymk
+icc-color(rgb, 1, 0, 0)                  linear rgb
+icc-color(rgb, red)                      linear rgb
+icc-color(lineargray, 0.5)               linear gray
+icc-color(srgb, 1, 0, 0)                 non-linear rgb
+icc-color(srgb, red)                     non-linear rgb
+icc-color(gray, 0.5)                     non-linear gray
+</code></pre>
 
 <p>Or specify uncalibrated device colors with the <code>device-</code> keyword, for example:</p>
 <pre class="highlight"><code>device-gray(0.5)
@@ -4947,7 +4954,7 @@ device-cmyk(0.11, 0.48, 0.83, 0.00)</code></pre>
     <a href="../../www/links.html">Related</a> •
      <a href="../../www/sitemap.html">Sitemap</a>
        
-    <a href="color.html#"><img class="" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../../images/wand.ico"/></a>
+    <a href="color.html#"><img class="d-inline" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../../images/wand.ico"/></a>
        
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="../../www/support.html">Donate</a> •
@@ -4961,4 +4968,4 @@ device-cmyk(0.11, 0.48, 0.83, 0.00)</code></pre>
   <script>window.jQuery || document.write('<script src="../assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 17th December 2017 09:21 -->
+<!-- Magick Cache 31st December 2017 15:38 -->

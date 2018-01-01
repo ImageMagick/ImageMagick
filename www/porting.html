@@ -32,7 +32,7 @@
 <body>
   <header>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="porting.html#">ImageMagick</a>
+    <a class="navbar-brand" href="../index.html"><img class="d-block" id="logo" name="ImageMagick" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
     <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
     </button>
@@ -58,12 +58,12 @@
         <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="https://www.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="https://www.imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
     </form>
     </div>
   </nav>
@@ -467,11 +467,7 @@ scripts.</p>
     are to be processed 'in-place'.  (not yet implemented).  However if
     not provided, "<code>-read</code>" can still be used to differentiate
     secondary image reads (for use in things like alpha composition) from
-    the 'in-place' image being processed. </dd>
-
-<dd class="col-md-8">In other commands (such as "magick") it is equivalent to a explicit
-    "<code>-read</code>" (see below) of the next option as a image (as it was in
-    IMv6).  </dd>
+    the 'in-place' image being processed.  In other commands (such as "magick") it is equivalent to a explicit "<code>-read</code>" (see below) of the next option as a image (as it was in IMv6).  </dd>
 
 <dt class="col-md-4">-alpha discrete</dt>
 <dd class="col-md-8">treat the alpha channel independently (do not blend).</dd>
@@ -508,9 +504,7 @@ scripts.</p>
 <dd class="col-md-8">Stop processing at this point. No further options will be processed after
     this option. Can be used in a script to force the "<code>magick</code>"
     command to exit, without actually closing the pipeline that it is
-    processing options from. </dd>
-
-<dd class="col-md-8">May also be used as a 'final' option on the "<code>magick</code>" command
+    processing options from.  May also be used as a 'final' option on the "<code>magick</code>" command
     line, instead of a implicit output image, to completely prevent any image
     write. ASIDE: even the "<code>NULL:</code>" coder requires at least one
     image, for it to 'not write'! This option does not require any images at
@@ -657,7 +651,7 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
     <a href="links.html">Related</a> •
      <a href="sitemap.html">Sitemap</a>
        
-    <a href="porting.html#"><img class="" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+    <a href="porting.html#"><img class="d-inline" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
        
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="support.html">Donate</a> •
@@ -671,4 +665,4 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
   <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 17th December 2017 09:20 -->
+<!-- Magick Cache 31st December 2017 17:15 -->

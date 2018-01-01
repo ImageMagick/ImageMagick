@@ -32,7 +32,7 @@
 <body>
   <header>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="command-line-options.html#">ImageMagick</a>
+    <a class="navbar-brand" href="../index.html"><img class="d-block" id="logo" name="ImageMagick" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
     <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
     </button>
@@ -58,12 +58,12 @@
         <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="https://www.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="https://www.imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
     </form>
     </div>
   </nav>
@@ -855,10 +855,12 @@ abbreviated as a concatenation of the letters '<code>R</code>', '<code>G</code>'
 
 <p>For example, to only select the <code>Red</code> and <code>Blue</code> channels
 you can use any of the following:</p>
-<pre class="highlight"><code>-channel Red,Blue</code></pre>
-<pre class="highlight"><code>-channel R,B</code></pre>
-<pre class="highlight"><code>-channel RB</code></pre>
-<pre class="highlight"><code>-channel 0,2</code></pre>
+<pre class="highlight">
+<code>-channel Red,Blue</code>
+<code>-channel R,B</code>
+<code>-channel RB</code>
+<code>-channel 0,2</code>
+</pre>
 
 <p>All the channels that are present in an image can be specified using the
 special channel type <code>All</code>. Not all operators are 'channel capable',
@@ -1271,7 +1273,7 @@ YIQ          YPbPr        YUV          Undefined
         <tr><td valign="middle">Y=<var>QuantumRange</var>*(Y−K)/(<var>QuantumRange</var>−K)</td></tr>
 
         <tr><th valign="middle">Gray</th></tr>
-        <tr><td valign="middle">Gray = 0.298839*R+0.586811*G+0.114350*B</td></tr>
+        <tr><td valign="middle">Gray = 0.212656*R+0.715158*G+0.072186*B</td></tr>
 
         <tr><th valign="middle">HSB — Hue, Saturation, Brightness; like a cone peak downward</th></tr>
         <tr><td valign="middle">H=angle around perimeter (0 to 360 deg); H=0 is red; increasing angles toward green</td></tr>
@@ -1292,6 +1294,8 @@ YIQ          YPbPr        YUV          Undefined
         <tr><td valign="middle">L (complicated equation relating X,Y,Z)</td></tr>
         <tr><td valign="middle">A (complicated equation relating X,Y,Z)</td></tr>
         <tr><td valign="middle">B (complicated equation relating X,Y,Z)</td></tr>
+        <tr><th valign="middle">LinearGray</th></tr>
+        <tr><td valign="middle">LinearGray = 0.298839*R+0.586811*G+0.114350*B</td></tr>
 
         <tr><th valign="middle">LOG</th></tr>
         <tr><td valign="middle">I1 (complicated equation involving logarithm of R)</td></tr>
@@ -1318,7 +1322,6 @@ YIQ          YPbPr        YUV          Undefined
         <tr><td valign="middle">Y=0.212656*R+0.715158*G+0.072186*B; <var>intensity-like</var></td></tr>
         <tr><td valign="middle">Cb=(−0.114572*R−0.385428*G+0.500000*B)+(<var>QuantumRange</var>+1)/2</td></tr>
         <tr><td valign="middle">Cr=(0.500000*R−0.454153*G−0.045847*B)+(<var>QuantumRange</var>+1)/2</td></tr>
-
         <tr><th valign="middle">sRGB</th></tr>
         <tr><td valign="middle">if R ≤ .0.0031308 then Rs=R/12.92 else Rs=1.055 R ^ (1.0 / 2.4) ? 0.055</td></tr>
         <tr><td valign="middle">if G ≤ .0.0031308 then Gs=B/12.92 else Gs=1.055 R ^ (1.0 / 2.4) ? 0.055</td></tr>
@@ -4553,8 +4556,13 @@ convert the given image into a grayscale image. </p>
 
 <p>which is equivalent to:</p>
 
-<pre class="highlight"><code>convert in.png -colorspace RGB -colorspace gray out.png
-</code></pre>
+<pre class="highlight">
+<code>convert in.png -colorspace RGB -colorspace Gray out.png</code>
+or
+<code>convert in.png -colorspace LinearGray out.png</code>
+</pre>
+
+<p>Note that LinearGray is new as of Imagemagick 6.9.9-29 and 7.0.7-17.</p>
 
 <p>Similarly, to convert an image to (non-linear) Rec709Luma grayscale,  type:</p>
 
@@ -4563,12 +4571,12 @@ convert the given image into a grayscale image. </p>
 
 <p>which is equivalent to:</p>
 
-<pre class="highlight"><code>convert in.png -colorspace gray out.png
+<pre class="highlight"><code>convert in.png -colorspace Gray out.png
 </code></pre>
 
 <p>Note that a 'colorspace' intensity method will produce the same result
 regardless of the current colorpsace of the image. But a 'mathematical'
-intensity method will depend on the current colorspace the image is currently
+intensity method depends on the current colorspace the image is currently
 using. </p>
 
 <p>While this operation uses an <a href="command-line-options.html#intensity" >-intensity</a> method,
@@ -8040,7 +8048,7 @@ but with strict boolean masking. </p>
     <a href="links.html">Related</a> •
      <a href="sitemap.html">Sitemap</a>
        
-    <a href="command-line-options.html#"><img class="" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+    <a href="command-line-options.html#"><img class="d-inline" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
        
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="support.html">Donate</a> •
@@ -8054,4 +8062,4 @@ but with strict boolean masking. </p>
   <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 17th December 2017 09:20 -->
+<!-- Magick Cache 31st December 2017 14:35 -->

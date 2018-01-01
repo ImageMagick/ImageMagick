@@ -32,7 +32,7 @@
 <body>
   <header>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="index.html#">ImageMagick</a>
+    <a class="navbar-brand" href="../"><img class="d-block" id="logo" name="ImageMagick" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
     <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
     </button>
@@ -58,12 +58,12 @@
         <a class="nav-link" href="../www/develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="https://www.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="https://www.imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
     </form>
     </div>
   </nav>
@@ -92,7 +92,7 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
 
 <p>The ImageMagick development process ensures a stable API and <a href="https://abi-laboratory.pro/tracker/timeline/imagemagick/">ABI</a>. Before each ImageMagick release, we perform a comprehensive security assessment that includes <a href="https://github.com/google/sanitizers/wiki/AddressSanitizer">memory error</a> and <a href="https://github.com/google/sanitizers/wiki/ThreadSanitizer">thread data race</a> detection to help prevent security vulnerabilities.</p>
 
-<p>The current release is ImageMagick <a href="../www/download.html">7.0.7-15</a>.  It runs on <a href="../www/download.html#unix">Linux</a>, <a href="../www/download.html#windows">Windows</a>, <a href="../www/download.html#macosx">Mac Os X</a>, <a href="../www/download.html#iOS">iOS</a>, Android OS, and others.</p>
+<p>The current release is ImageMagick <a href="../www/download.html">7.0.7-18</a>.  It runs on <a href="../www/download.html#unix">Linux</a>, <a href="../www/download.html#windows">Windows</a>, <a href="../www/download.html#macosx">Mac Os X</a>, <a href="../www/download.html#iOS">iOS</a>, Android OS, and others.</p>
 
 <p>The authoritative ImageMagick web site is <a href="../">https://www.imagemagick.org</a>. The authoritative source code repository is <a href="https://github.com/ImageMagick">https://github.com/ImageMagick</a>.  We maintain a source code mirror at <a href="https://gitlab.com/ImageMagick">https://gitlab.com/ImageMagick</a>.</p>
 
@@ -241,6 +241,8 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
 
 <p>ImageMagick best practices <strong>strongly</strong> encourages you to configure a <a href="../www/security-policy.html">security policy</a> that suits your local environment.</p>
 
+<p>As an analog to linear (RGB) and non-linear (sRGB) color colorspaces, as of ImageMagick 7.0.7-17, we introduce the LinearGray colorspace.  Gray is non-linear grayscale and LinearGray is linear (e.g. -colorspace linear-gray).</p>
+
 <p>Want more performance from ImageMagick?  Try these options:</p>
 
 <ul>
@@ -251,7 +253,7 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
 <p>If these options are prohibitive, you can reduce the quality of the image results.  The default build is Q16 HDRI.  If you disable <a href="../www/high-dynamic-range.html">HDRI</a>, you use half the memory and instead of predominately floating point operations, you use the typically more efficient integer operations.  The tradeoff is reduced percision and you cannot process out of range pixel values (e.g. negative).  If you build the Q8 non-HDRI  version of ImageMagick, you again reduce the memory requirements in half-- and once again there is a tradeoff, even less percision and no out of range pixel values.  For a Q8 non-HDRI build of ImageMagick, use these <code>configure</code> script options: <code>--with-quantum-depth=8 --disable-hdri</code>.</p>
 
 <h2 class="magick-post-title"><a class="anchor" id="community"></a>Community</h2>
-<p>To join the ImageMagick community, try the <a href="https://www.imagemagick.org/discourse-server/">discourse server</a>.  You can review questions or comments (with informed responses) posed by ImageMagick users or ask your own questions. If you want to contribute image processing algorithms, other enhancements, or bug fixes, open an <a href="https://github.com/ImageMagick/ImageMagick/issues">issue</a>. </p>
+<p>To join the ImageMagick community, try the <a target="_blank" href="https://www.imagemagick.org/discourse-server/">discourse server</a>.  You can review questions or comments (with informed responses) posed by ImageMagick users or ask your own questions. If you want to contribute image processing algorithms, other enhancements, or bug fixes, open an <a href="https://github.com/ImageMagick/ImageMagick/issues">issue</a>. </p>
 </div>
     </div>
   </main><!-- /.container -->
@@ -261,7 +263,7 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
     <a href="../www/links.html">Related</a> •
      <a href="../www/sitemap.html">Sitemap</a>
        
-    <a href="index.html#"><img class="" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+    <a href="index.html#"><img class="d-inline" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
        
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="../www/support.html">Donate</a> •
@@ -275,4 +277,4 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
   <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 17th December 2017 09:20 -->
+<!-- Magick Cache 31st December 2017 14:33 -->
