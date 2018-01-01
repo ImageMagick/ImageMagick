@@ -1156,7 +1156,7 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
         skewness;
 
       (void) GetImageKurtosis(image,&kurtosis,&skewness,exception);
-      (void) FormatLocaleString(statistic,MagickPathExtent,"%g",kurtosis);
+      (void) FormatLocaleString(statistic,MagickPathExtent,"%.20g",kurtosis);
     }
   if (LocaleNCompare(symbol,"maxima",6) == 0)
     {
@@ -1165,7 +1165,7 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
         minima;
 
       (void) GetImageRange(image,&minima,&maxima,exception);
-      (void) FormatLocaleString(statistic,MagickPathExtent,"%g",maxima);
+      (void) FormatLocaleString(statistic,MagickPathExtent,"%.20g",maxima);
     }
   if (LocaleNCompare(symbol,"mean",4) == 0)
     {
@@ -1174,7 +1174,7 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
         standard_deviation;
 
       (void) GetImageMean(image,&mean,&standard_deviation,exception);
-      (void) FormatLocaleString(statistic,MagickPathExtent,"%g",mean);
+      (void) FormatLocaleString(statistic,MagickPathExtent,"%.20g",mean);
     }
   if (LocaleNCompare(symbol,"minima",6) == 0)
     {
@@ -1183,7 +1183,7 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
         minima;
 
       (void) GetImageRange(image,&minima,&maxima,exception);
-      (void) FormatLocaleString(statistic,MagickPathExtent,"%g",minima);
+      (void) FormatLocaleString(statistic,MagickPathExtent,"%.20g",minima);
     }
   if (LocaleNCompare(symbol,"skewness",8) == 0)
     {
@@ -1192,7 +1192,7 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
         skewness;
 
       (void) GetImageKurtosis(image,&kurtosis,&skewness,exception);
-      (void) FormatLocaleString(statistic,MagickPathExtent,"%g",skewness);
+      (void) FormatLocaleString(statistic,MagickPathExtent,"%.20g",skewness);
     }
   if (LocaleNCompare(symbol,"standard_deviation",18) == 0)
     {
@@ -1201,7 +1201,7 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
         standard_deviation;
 
       (void) GetImageMean(image,&mean,&standard_deviation,exception);
-      (void) FormatLocaleString(statistic,MagickPathExtent,"%g",
+      (void) FormatLocaleString(statistic,MagickPathExtent,"%.20g",
         standard_deviation);
     }
   if (channel_mask != UndefinedChannel)
@@ -2310,7 +2310,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           ClearMagickException(exception);
           *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth,beta,
             exception);
-          (void) FormatLocaleString(numeric,MagickPathExtent,"%g",*beta);
+          (void) FormatLocaleString(numeric,MagickPathExtent,"%.20g",*beta);
           (void) DeleteNodeFromSplayTree(fx_info->symbols,subexpression);
           (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
             subexpression),ConstantString(numeric));
@@ -4055,7 +4055,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
           caption_image->background_color=image->border_color;
           (void) SetImageBackgroundColor(caption_image,exception);
           (void) CloneString(&annotate_info->text,text);
-          (void) FormatLocaleString(geometry,MagickPathExtent,"+0+%g",
+          (void) FormatLocaleString(geometry,MagickPathExtent,"+0+%.20g",
             metrics.ascent);
           if (annotate_info->gravity == UndefinedGravity)
             (void) CloneString(&annotate_info->geometry,AcquireString(

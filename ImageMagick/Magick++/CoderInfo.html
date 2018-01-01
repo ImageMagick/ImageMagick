@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Magick++ API: Access Raw Image Pixels</title>
+<link rel="stylesheet" href="magick.css" type="text/css" />
+</head>
+<body>
+<div class="doc-section">
+<h3 align="center">Magick::CoderInfo</h3>
+<p>The <i>CoderInfo</i> class provides the means to provide information regarding ImageMagick support for an image format (designated by a magick string). It may be used to provide support for a specific named format (provided as an argument to the constructor), or as an element of a container when format support is queried using the <a href="STL.html#coderInfoList">coderInfoList()</a> templated function.</p>
+<p>The following code fragment illustrates how CoderInfo may be used.</p>
+<pre class="code">
+CoderInfo info("GIF"); 
+cout &lt; info->name() &lt;&lt; ": (" &lt;&lt; info->description() &lt;&lt; ") : "; 
+cout &lt;&lt; "Readable = "; 
+if ( info->isReadable() ) 
+  cout &lt;&lt; "true"; 
+else 
+  cout &lt;&lt; "false"; 
+cout &lt;&lt; ", "; 
+cout &lt;&lt; "Writable = "; 
+if ( info->isWritable() ) 
+  cout &lt;&lt; "true"; 
+else 
+  cout &lt;&lt; "false"; 
+cout &lt;&lt; ", "; 
+cout &lt;&lt; "Multiframe = "; 
+if ( info->isMultiframe() ) 
+  cout &lt;&lt; "true"; 
+else 
+  cout &lt;&lt; "false"; 
+cout &lt;&lt; endl;
+</pre>
+<p style="margin-bottom: 0cm">The methods available in the <i>CoderInfo</i> class are shown in the following table:</p>
+<br />
+<ul><p align="center" style="margin-bottom: 0cm"><b>CoderInfo Methods</b></p>
+<table width="100%" border="1" cellpadding="2" cellspacing="2">
+<tr>
+<td>
+<p align="center"><b>Method</b></p></td>
+<td>
+<p align="center"><b>Returns</b></p></td>
+<td>
+<p align="center"><b>Signature</b></p></td>
+<td>
+<p align="center"><b>Description</b></p></td></tr>
+<tr>
+<td>
+<p align="center"><a name="CoderInfo"></a><font size="2">CoderInfo</font></p></td>
+<td bgcolor="#999999"></td>
+<td>
+<p><font size="2">void</font></p></td>
+<td>
+<p><font size="2">Construct object corresponding to named format (e.g. "GIF"). An exception is thrown if the format is not supported.</font></p></td></tr>
+<tr>
+<td>
+<p align="center"><a name="name"></a><font size="2">name</font></p></td>
+<td>
+<p><font size="2">std::string</font></p></td>
+<td>
+<p><font size="2">void</font></p></td>
+<td>
+<p><font size="2">Format name (e.g. "GIF").</font></p></td></tr>
+<tr>
+<td>
+<p align="center"><a name="description"></a><font size="2">description</font></p></td>
+<td>
+<p><font size="2">std::string</font></p></td>
+<td>
+<p><font size="2">void</font></p></td>
+<td>
+<p><font size="2">Format description (e.g. "CompuServe graphics interchange format").</font></p></td></tr>
+<tr>
+<td>
+<p align="center"><a name="isReadable"></a><font size="2">isReadable</font></p></td>
+<td>
+<p><font size="2">bool</font></p></td>
+<td>
+<p><font size="2">void</font></p></td>
+<td>
+<p><font size="2">Format is readable.</font></p></td></tr>
+<tr>
+<td>
+<p align="center"><a name="isWritable"></a><font size="2">isWritable</font></p></td>
+<td>
+<p><font size="2">bool</font></p></td>
+<td>
+<p><font size="2">void</font></p></td>
+<td>
+<p><font size="2">Format is writeable.</font></p></td></tr>
+<tr>
+<td>
+<p align="center"><a name="isMultiFrame"></a><font size="2">isMultiFrame</font></p></td>
+<td>
+<p><font size="2">bool</font></p></td>
+<td>
+<p><font size="2">void</font></p></td>
+<td>
+<p><font size="2">Format supports multiple frames.</font></p></td></tr></table></ul>
+</div>
+</body>
+</html>
