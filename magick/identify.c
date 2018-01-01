@@ -976,6 +976,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       x=0;
       if (image->matte != MagickFalse)
         {
+          MagickBooleanType
+            found = MagickFalse;
+
           register const IndexPacket
             *indexes;
 
@@ -993,13 +996,16 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               if (GetPixelOpacity(p) == (Quantum) TransparentOpacity)
-                break;
+                {
+                  found=MagickTrue;
+                  break;
+                }
               p++;
             }
-            if (x < (ssize_t) image->columns)
+            if (found != MagickFalse)
               break;
           }
-          if ((x < (ssize_t) image->columns) || (y < (ssize_t) image->rows))
+          if (found != MagickFalse)
             {
               char
                 tuple[MaxTextExtent];
@@ -1008,8 +1014,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
                 pixel;
 
               GetMagickPixelPacket(image,&pixel);
-              if (p != (const PixelPacket *) NULL)
-                SetMagickPixelPacket(image,p,indexes+x,&pixel);
+              SetMagickPixelPacket(image,p,indexes+x,&pixel);
               (void) QueryMagickColorname(image,&pixel,SVGCompliance,tuple,
                 exception);
               (void) FormatLocaleFile(file,"  Alpha: %s ",tuple);
