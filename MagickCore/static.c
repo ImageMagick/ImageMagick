@@ -47,6 +47,187 @@
 #include "MagickCore/policy.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+#if !defined(MAGICKCORE_BUILD_MODULES)
+static const struct
+{
+  char
+    *name;
+
+  size_t
+    (*register_module)(void);
+
+  void
+    (*unregister_module)(void);
+} MagickModules[] =
+{
+  { "AAI", RegisterAAIImage, UnregisterAAIImage },
+  { "ART", RegisterARTImage, UnregisterARTImage },
+  { "AVS", RegisterAVSImage, UnregisterAVSImage },
+  { "BGR", RegisterBGRImage, UnregisterBGRImage },
+  { "BMP", RegisterBMPImage, UnregisterBMPImage },
+  { "BRAILLE", RegisterBRAILLEImage, UnregisterBRAILLEImage },
+  { "CALS", RegisterCALSImage, UnregisterCALSImage },
+  { "CAPTION", RegisterCAPTIONImage, UnregisterCAPTIONImage },
+  { "CIN", RegisterCINImage, UnregisterCINImage },
+  { "CIP", RegisterCIPImage, UnregisterCIPImage },
+  { "CLIP", RegisterCLIPImage, UnregisterCLIPImage },
+#if defined(MAGICKCORE_WINGDI32_DELEGATE)
+  { "CLIPBOARD", RegisterCLIPBOARDImage, UnregisterCLIPBOARDImage },
+#endif
+  { "CMYK", RegisterCMYKImage, UnregisterCMYKImage },
+  { "CUT", RegisterCUTImage, UnregisterCUTImage },
+  { "DCM", RegisterDCMImage, UnregisterDCMImage },
+  { "DDS", RegisterDDSImage, UnregisterDDSImage },
+  { "DEBUG", RegisterDEBUGImage, UnregisterDEBUGImage },
+  { "DIB", RegisterDIBImage, UnregisterDIBImage },
+#if defined(MAGICKCORE_DJVU_DELEGATE)
+  { "DJVU", RegisterDJVUImage, UnregisterDJVUImage },
+#endif
+  { "DNG", RegisterDNGImage, UnregisterDNGImage },
+#if defined(MAGICKCORE_DPS_DELEGATE)
+  { "DPS", RegisterDPSImage, UnregisterDPSImage },
+#endif
+  { "DPX", RegisterDPXImage, UnregisterDPXImage },
+#if defined(MAGICKCORE_WINGDI32_DELEGATE)
+  { "EMF", RegisterEMFImage, UnregisterEMFImage },
+#endif
+#if defined(MAGICKCORE_TIFF_DELEGATE)
+  { "EPT", RegisterEPTImage, UnregisterEPTImage },
+#endif
+#if defined(MAGICKCORE_OPENEXR_DELEGATE)
+  { "EXR", RegisterEXRImage, UnregisterEXRImage },
+#endif
+  { "FAX", RegisterFAXImage, UnregisterFAXImage },
+  { "FD", RegisterFDImage, UnregisterFDImage },
+  { "FITS", RegisterFITSImage, UnregisterFITSImage },
+#if defined(MAGICKCORE_FLIF_DELEGATE)
+  { "FLIF", RegisterFLIFImage, UnregisterFLIFImage },
+#endif
+#if defined(MAGICKCORE_FPX_DELEGATE)
+  { "FPX", RegisterFPXImage, UnregisterFPXImage },
+#endif
+  { "GIF", RegisterGIFImage, UnregisterGIFImage },
+  { "GRAY", RegisterGRAYImage, UnregisterGRAYImage },
+  { "GRADIENT", RegisterGRADIENTImage, UnregisterGRADIENTImage },
+  { "HALD", RegisterHALDImage, UnregisterHALDImage },
+  { "HDR", RegisterHDRImage, UnregisterHDRImage },
+#if defined(MAGICKCORE_HEIC_DELEGATE)
+  { "HEIC", RegisterHEICImage, UnregisterHEICImage },
+#endif
+  { "HISTOGRAM", RegisterHISTOGRAMImage, UnregisterHISTOGRAMImage },
+  { "HRZ", RegisterHRZImage, UnregisterHRZImage },
+  { "HTML", RegisterHTMLImage, UnregisterHTMLImage },
+  { "ICON", RegisterICONImage, UnregisterICONImage },
+  { "INFO", RegisterINFOImage, UnregisterINFOImage },
+  { "INLINE", RegisterINLINEImage, UnregisterINLINEImage },
+  { "IPL", RegisterIPLImage, UnregisterIPLImage },
+#if defined(MAGICKCORE_JBIG_DELEGATE)
+  { "JBIG", RegisterJBIGImage, UnregisterJBIGImage },
+#endif
+  { "JNX", RegisterJNXImage, UnregisterJNXImage },
+#if defined(MAGICKCORE_JPEG_DELEGATE)
+  { "JPEG", RegisterJPEGImage, UnregisterJPEGImage },
+#endif
+#if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
+  { "JP2", RegisterJP2Image, UnregisterJP2Image },
+#endif
+  { "JSON", RegisterJSONImage, UnregisterJSONImage },
+  { "LABEL", RegisterLABELImage, UnregisterLABELImage },
+  { "MAC", RegisterMACImage, UnregisterMACImage },
+  { "MAGICK", RegisterMAGICKImage, UnregisterMAGICKImage },
+  { "MAP", RegisterMAPImage, UnregisterMAPImage },
+  { "MAT", RegisterMATImage, UnregisterMATImage },
+  { "MATTE", RegisterMATTEImage, UnregisterMATTEImage },
+  { "MASK", RegisterMASKImage, UnregisterMASKImage },
+  { "META", RegisterMETAImage, UnregisterMETAImage },
+  { "MIFF", RegisterMIFFImage, UnregisterMIFFImage },
+  { "MONO", RegisterMONOImage, UnregisterMONOImage },
+  { "MPC", RegisterMPCImage, UnregisterMPCImage },
+  { "MPEG", RegisterMPEGImage, UnregisterMPEGImage },
+  { "MPR", RegisterMPRImage, UnregisterMPRImage },
+  { "MSL", RegisterMSLImage, UnregisterMSLImage },
+  { "MTV", RegisterMTVImage, UnregisterMTVImage },
+  { "MVG", RegisterMVGImage, UnregisterMVGImage },
+  { "NULL", RegisterNULLImage, UnregisterNULLImage },
+  { "OTB", RegisterOTBImage, UnregisterOTBImage },
+  { "PALM", RegisterPALMImage, UnregisterPALMImage },
+  { "PANGO", RegisterPANGOImage, UnregisterPANGOImage },
+  { "PATTERN", RegisterPATTERNImage, UnregisterPATTERNImage },
+  { "PCD", RegisterPCDImage, UnregisterPCDImage },
+  { "PCL", RegisterPCLImage, UnregisterPCLImage },
+  { "PCX", RegisterPCXImage, UnregisterPCXImage },
+  { "PDB", RegisterPDBImage, UnregisterPDBImage },
+  { "PDF", RegisterPDFImage, UnregisterPDFImage },
+  { "PES", RegisterPESImage, UnregisterPESImage },
+  { "PGX", RegisterPGXImage, UnregisterPGXImage },
+  { "PICT", RegisterPICTImage, UnregisterPICTImage },
+  { "PIX", RegisterPIXImage, UnregisterPIXImage },
+  { "PLASMA", RegisterPLASMAImage, UnregisterPLASMAImage },
+#if defined(MAGICKCORE_PNG_DELEGATE)
+  { "PNG", RegisterPNGImage, UnregisterPNGImage },
+#endif
+  { "PNM", RegisterPNMImage, UnregisterPNMImage },
+  { "PS", RegisterPSImage, UnregisterPSImage },
+  { "PS2", RegisterPS2Image, UnregisterPS2Image },
+  { "PS3", RegisterPS3Image, UnregisterPS3Image },
+  { "PSD", RegisterPSDImage, UnregisterPSDImage },
+  { "PWP", RegisterPWPImage, UnregisterPWPImage },
+  { "RAW", RegisterRAWImage, UnregisterRAWImage },
+  { "RGB", RegisterRGBImage, UnregisterRGBImage },
+  { "RGF", RegisterRGFImage, UnregisterRGFImage },
+  { "RLA", RegisterRLAImage, UnregisterRLAImage },
+  { "RLE", RegisterRLEImage, UnregisterRLEImage },
+  { "SCR", RegisterSCRImage, UnregisterSCRImage },
+  { "SCREENSHOT", RegisterSCREENSHOTImage, UnregisterSCREENSHOTImage },
+  { "SCT", RegisterSCTImage, UnregisterSCTImage },
+  { "SFW", RegisterSFWImage, UnregisterSFWImage },
+  { "SGI", RegisterSGIImage, UnregisterSGIImage },
+  { "SIXEL", RegisterSIXELImage, UnregisterSIXELImage },
+  { "STEGANO", RegisterSTEGANOImage, UnregisterSTEGANOImage },
+  { "SUN", RegisterSUNImage, UnregisterSUNImage },
+  { "SVG", RegisterSVGImage, UnregisterSVGImage },
+  { "TGA", RegisterTGAImage, UnregisterTGAImage },
+  { "THUMBNAIL", RegisterTHUMBNAILImage, UnregisterTHUMBNAILImage },
+#if defined(MAGICKCORE_TIFF_DELEGATE)
+  { "TIFF", RegisterTIFFImage, UnregisterTIFFImage },
+#endif
+  { "TILE", RegisterTILEImage, UnregisterTILEImage },
+  { "TIM", RegisterTIMImage, UnregisterTIMImage },
+  { "TTF", RegisterTTFImage, UnregisterTTFImage },
+  { "TXT", RegisterTXTImage, UnregisterTXTImage },
+  { "UIL", RegisterUILImage, UnregisterUILImage },
+  { "URL", RegisterURLImage, UnregisterURLImage },
+  { "UYVY", RegisterUYVYImage, UnregisterUYVYImage },
+  { "VICAR", RegisterVICARImage, UnregisterVICARImage },
+  { "VID", RegisterVIDImage, UnregisterVIDImage },
+  { "VIFF", RegisterVIFFImage, UnregisterVIFFImage },
+  { "VIPS", RegisterVIPSImage, UnregisterVIPSImage },
+  { "WBMP", RegisterWBMPImage, UnregisterWBMPImage },
+#if defined(MAGICKCORE_WEBP_DELEGATE)
+  { "WEBP", RegisterWEBPImage, UnregisterWEBPImage },
+#endif
+#if defined(MAGICKCORE_WMF_DELEGATE) || defined(MAGICKCORE_WMFLITE_DELEGATE)
+  { "WMF", RegisterWMFImage, UnregisterWMFImage },
+#endif
+  { "WPG", RegisterWPGImage, UnregisterWPGImage },
+#if defined(MAGICKCORE_X11_DELEGATE)
+  { "X", RegisterXImage, UnregisterXImage },
+#endif
+  { "XBM", RegisterXBMImage, UnregisterXBMImage },
+  { "XC", RegisterXCImage, UnregisterXCImage },
+  { "XCF", RegisterXCFImage, UnregisterXCFImage },
+  { "XPM", RegisterXPMImage, UnregisterXPMImage },
+  { "XPS", RegisterXPSImage, UnregisterXPSImage },
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+  { "XTRN", RegisterXTRNImage, UnregisterXTRNImage },
+#endif
+#if defined(MAGICKCORE_X11_DELEGATE)
+  { "XWD", RegisterXWDImage, UnregisterXWDImage },
+#endif
+  { "YCBCR", RegisterYCBCRImage, UnregisterYCBCRImage },
+  { "YUV", RegisterYUVImage, UnregisterYUVImage }
+};
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -168,172 +349,11 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
 MagickExport void RegisterStaticModules(void)
 {
 #if !defined(MAGICKCORE_BUILD_MODULES)
-  (void) RegisterAAIImage();
-  (void) RegisterARTImage();
-  (void) RegisterAVSImage();
-  (void) RegisterBGRImage();
-  (void) RegisterBMPImage();
-  (void) RegisterBRAILLEImage();
-  (void) RegisterCALSImage();
-  (void) RegisterCAPTIONImage();
-  (void) RegisterCINImage();
-  (void) RegisterCIPImage();
-  (void) RegisterCLIPImage();
-#if defined(MAGICKCORE_WINGDI32_DELEGATE)
-  (void) RegisterCLIPBOARDImage();
-#endif
-  (void) RegisterCMYKImage();
-  (void) RegisterCUTImage();
-  (void) RegisterDCMImage();
-  (void) RegisterDDSImage();
-  (void) RegisterDEBUGImage();
-  (void) RegisterDIBImage();
-#if defined(MAGICKCORE_DJVU_DELEGATE)
-  (void) RegisterDJVUImage();
-#endif
-  (void) RegisterDNGImage();
-#if defined(MAGICKCORE_DPS_DELEGATE)
-  (void) RegisterDPSImage();
-#endif
-  (void) RegisterDPXImage();
-#if defined(MAGICKCORE_WINGDI32_DELEGATE)
-  (void) RegisterEMFImage();
-#endif
-#if defined(MAGICKCORE_TIFF_DELEGATE)
-  (void) RegisterEPTImage();
-#endif
-#if defined(MAGICKCORE_OPENEXR_DELEGATE)
-  (void) RegisterEXRImage();
-#endif
-  (void) RegisterFAXImage();
-  (void) RegisterFDImage();
-  (void) RegisterFITSImage();
-#if defined(MAGICKCORE_FLIF_DELEGATE)
-  (void) RegisterFLIFImage();
-#endif
-#if defined(MAGICKCORE_FPX_DELEGATE)
-  (void) RegisterFPXImage();
-#endif
-  (void) RegisterGIFImage();
-  (void) RegisterGRAYImage();
-  (void) RegisterGRADIENTImage();
-  (void) RegisterHALDImage();
-  (void) RegisterHDRImage();
-#if defined(MAGICKCORE_HEIC_DELEGATE)
-  (void) RegisterHEICImage();
-#endif
-  (void) RegisterHISTOGRAMImage();
-  (void) RegisterHRZImage();
-  (void) RegisterHTMLImage();
-  (void) RegisterICONImage();
-  (void) RegisterINFOImage();
-  (void) RegisterINLINEImage();
-  (void) RegisterIPLImage();
-#if defined(MAGICKCORE_JBIG_DELEGATE)
-  (void) RegisterJBIGImage();
-#endif
-  (void) RegisterJNXImage();
-#if defined(MAGICKCORE_JPEG_DELEGATE)
-  (void) RegisterJPEGImage();
-#endif
-#if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
-  (void) RegisterJP2Image();
-#endif
-  (void) RegisterJSONImage();
-  (void) RegisterLABELImage();
-  (void) RegisterMACImage();
-  (void) RegisterMAGICKImage();
-  (void) RegisterMAPImage();
-  (void) RegisterMATImage();
-  (void) RegisterMATTEImage();
-  (void) RegisterMASKImage();
-  (void) RegisterMETAImage();
-  (void) RegisterMIFFImage();
-  (void) RegisterMONOImage();
-  (void) RegisterMPCImage();
-  (void) RegisterMPEGImage();
-  (void) RegisterMPRImage();
-  (void) RegisterMSLImage();
-  (void) RegisterMTVImage();
-  (void) RegisterMVGImage();
-  (void) RegisterNULLImage();
-  (void) RegisterOTBImage();
-  (void) RegisterPALMImage();
-  (void) RegisterPANGOImage();
-  (void) RegisterPATTERNImage();
-  (void) RegisterPCDImage();
-  (void) RegisterPCLImage();
-  (void) RegisterPCXImage();
-  (void) RegisterPDBImage();
-  (void) RegisterPDFImage();
-  (void) RegisterPESImage();
-  (void) RegisterPGXImage();
-  (void) RegisterPICTImage();
-  (void) RegisterPIXImage();
-  (void) RegisterPLASMAImage();
-#if defined(MAGICKCORE_PNG_DELEGATE)
-  (void) RegisterPNGImage();
-#endif
-  (void) RegisterPNMImage();
-  (void) RegisterPSImage();
-  (void) RegisterPS2Image();
-  (void) RegisterPS3Image();
-  (void) RegisterPSDImage();
-  (void) RegisterPWPImage();
-  (void) RegisterRAWImage();
-  (void) RegisterRGBImage();
-  (void) RegisterRGFImage();
-  (void) RegisterRLAImage();
-  (void) RegisterRLEImage();
-  (void) RegisterSCRImage();
-  (void) RegisterSCREENSHOTImage();
-  (void) RegisterSCTImage();
-  (void) RegisterSFWImage();
-  (void) RegisterSGIImage();
-  (void) RegisterSIXELImage();
-  (void) RegisterSTEGANOImage();
-  (void) RegisterSUNImage();
-  (void) RegisterSVGImage();
-  (void) RegisterTGAImage();
-  (void) RegisterTHUMBNAILImage();
-#if defined(MAGICKCORE_TIFF_DELEGATE)
-  (void) RegisterTIFFImage();
-#endif
-  (void) RegisterTILEImage();
-  (void) RegisterTIMImage();
-  (void) RegisterTTFImage();
-  (void) RegisterTXTImage();
-  (void) RegisterUILImage();
-  (void) RegisterURLImage();
-  (void) RegisterUYVYImage();
-  (void) RegisterVICARImage();
-  (void) RegisterVIDImage();
-  (void) RegisterVIFFImage();
-  (void) RegisterVIPSImage();
-  (void) RegisterWBMPImage();
-#if defined(MAGICKCORE_WEBP_DELEGATE)
-  (void) RegisterWEBPImage();
-#endif
-#if defined(MAGICKCORE_WMF_DELEGATE) || defined(MAGICKCORE_WMFLITE_DELEGATE)
-  (void) RegisterWMFImage();
-#endif
-  (void) RegisterWPGImage();
-#if defined(MAGICKCORE_X11_DELEGATE)
-  (void) RegisterXImage();
-#endif
-  (void) RegisterXBMImage();
-  (void) RegisterXCImage();
-  (void) RegisterXCFImage();
-  (void) RegisterXPMImage();
-  (void) RegisterXPSImage();
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
-  (void) RegisterXTRNImage();
-#endif
-#if defined(MAGICKCORE_X11_DELEGATE)
-  (void) RegisterXWDImage();
-#endif
-  (void) RegisterYCBCRImage();
-  (void) RegisterYUVImage();
+  ssize_t
+    i;
+
+  for (i=0; i < (ssize_t) (sizeof(MagickModules)/sizeof(MagickModules[0]));i++)
+    (void) (MagickModules[i].register_module)();
 #endif
 }
 
@@ -359,171 +379,10 @@ MagickExport void RegisterStaticModules(void)
 MagickExport void UnregisterStaticModules(void)
 {
 #if !defined(MAGICKCORE_BUILD_MODULES)
-  UnregisterAAIImage();
-  UnregisterARTImage();
-  UnregisterAVSImage();
-  UnregisterBGRImage();
-  UnregisterBMPImage();
-  UnregisterBRAILLEImage();
-  UnregisterCALSImage();
-  UnregisterCAPTIONImage();
-  UnregisterCINImage();
-  UnregisterCIPImage();
-  UnregisterCLIPImage();
-#if defined(MAGICKCORE_WINGDI32_DELEGATE)
-  UnregisterCLIPBOARDImage();
-#endif
-  UnregisterCMYKImage();
-  UnregisterCUTImage();
-  UnregisterDCMImage();
-  UnregisterDDSImage();
-  UnregisterDEBUGImage();
-  UnregisterDIBImage();
-#if defined(MAGICKCORE_DJVU_DELEGATE)
-  UnregisterDJVUImage();
-#endif
-  UnregisterDNGImage();
-#if defined(MAGICKCORE_DPS_DELEGATE)
-  UnregisterDPSImage();
-#endif
-  UnregisterDPXImage();
-#if defined(MAGICKCORE_WINGDI32_DELEGATE)
-  UnregisterEMFImage();
-#endif
-#if defined(MAGICKCORE_TIFF_DELEGATE)
-  UnregisterEPTImage();
-#endif
-#if defined(MAGICKCORE_OPENEXR_DELEGATE)
-  UnregisterEXRImage();
-#endif
-  UnregisterFAXImage();
-  UnregisterFDImage();
-  UnregisterFITSImage();
-#if defined(MAGICKCORE_FLIF_DELEGATE)
-  UnregisterFLIFImage();
-#endif
-#if defined(MAGICKCORE_FPX_DELEGATE)
-  UnregisterFPXImage();
-#endif
-  UnregisterGIFImage();
-  UnregisterGRAYImage();
-  UnregisterGRADIENTImage();
-  UnregisterHALDImage();
-  UnregisterHDRImage();
-#if defined(MAGICKCORE_HEIC_DELEGATE)
-  UnregisterHEICImage();
-#endif
-  UnregisterHISTOGRAMImage();
-  UnregisterHRZImage();
-  UnregisterHTMLImage();
-  UnregisterICONImage();
-  UnregisterINFOImage();
-  UnregisterINLINEImage();
-  UnregisterIPLImage();
-#if defined(MAGICKCORE_JBIG_DELEGATE)
-  UnregisterJBIGImage();
-#endif
-  UnregisterJNXImage();
-#if defined(MAGICKCORE_JPEG_DELEGATE)
-  UnregisterJPEGImage();
-#endif
-#if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
-  UnregisterJP2Image();
-#endif
-  UnregisterJSONImage();
-  UnregisterLABELImage();
-  UnregisterMACImage();
-  UnregisterMAGICKImage();
-  UnregisterMAPImage();
-  UnregisterMASKImage();
-  UnregisterMATImage();
-  UnregisterMATTEImage();
-  UnregisterMETAImage();
-  UnregisterMIFFImage();
-  UnregisterMONOImage();
-  UnregisterMPCImage();
-  UnregisterMPEGImage();
-  UnregisterMPRImage();
-  UnregisterMSLImage();
-  UnregisterMTVImage();
-  UnregisterMVGImage();
-  UnregisterNULLImage();
-  UnregisterOTBImage();
-  UnregisterPALMImage();
-  UnregisterPANGOImage();
-  UnregisterPATTERNImage();
-  UnregisterPCDImage();
-  UnregisterPCLImage();
-  UnregisterPCXImage();
-  UnregisterPDBImage();
-  UnregisterPDFImage();
-  UnregisterPESImage();
-  UnregisterPGXImage();
-  UnregisterPICTImage();
-  UnregisterPIXImage();
-  UnregisterPLASMAImage();
-#if defined(MAGICKCORE_PNG_DELEGATE)
-  UnregisterPNGImage();
-#endif
-  UnregisterPNMImage();
-  UnregisterPSImage();
-  UnregisterPS2Image();
-  UnregisterPS3Image();
-  UnregisterPSDImage();
-  UnregisterPWPImage();
-  UnregisterRAWImage();
-  UnregisterRGBImage();
-  UnregisterRGFImage();
-  UnregisterRLAImage();
-  UnregisterRLEImage();
-  UnregisterSCRImage();
-  UnregisterSCREENSHOTImage();
-  UnregisterSCTImage();
-  UnregisterSFWImage();
-  UnregisterSGIImage();
-  UnregisterSIXELImage();
-  UnregisterSTEGANOImage();
-  UnregisterSUNImage();
-  UnregisterSVGImage();
-  UnregisterTGAImage();
-  UnregisterTHUMBNAILImage();
-#if defined(MAGICKCORE_TIFF_DELEGATE)
-  UnregisterTIFFImage();
-#endif
-  UnregisterTILEImage();
-  UnregisterTIMImage();
-  UnregisterTTFImage();
-  UnregisterTXTImage();
-  UnregisterUILImage();
-  UnregisterURLImage();
-  UnregisterUYVYImage();
-  UnregisterVICARImage();
-  UnregisterVIDImage();
-  UnregisterVIFFImage();
-  UnregisterVIPSImage();
-  UnregisterWBMPImage();
-#if defined(MAGICKCORE_WEBP_DELEGATE)
-  UnregisterWEBPImage();
-#endif
-#if defined(MAGICKCORE_WMF_DELEGATE) || defined(MAGICKCORE_WMFLITE_DELEGATE)
-  UnregisterWMFImage();
-#endif
-  UnregisterWPGImage();
-#if defined(MAGICKCORE_X11_DELEGATE)
-  UnregisterXImage();
-#endif
-  UnregisterXBMImage();
-  UnregisterXCImage();
-  UnregisterXCFImage();
-  UnregisterXPMImage();
-  UnregisterXPSImage();
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
-  UnregisterXTRNImage();
-#endif
-#if defined(MAGICKCORE_X11_DELEGATE)
-  UnregisterXWDImage();
-#endif
-  UnregisterYCBCRImage();
-  UnregisterYUVImage();
+  ssize_t
+    i;
+
+  for (i=0; i < (ssize_t) (sizeof(MagickModules)/sizeof(MagickModules[0]));i++)
+    (MagickModules[i].unregister_module)();
 #endif
 }
