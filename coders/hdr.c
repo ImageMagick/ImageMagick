@@ -705,7 +705,7 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image,
     Write header.
   */
   (void) ResetMagickMemory(header,' ',MagickPathExtent);
-  length=CopyMagickString(header,"#?RGBE\n",MagickPathExtent);
+  length=CopyMagickString(header,"#?RADIANCE\n",MagickPathExtent);
   (void) WriteBlob(image,length,(unsigned char *) header);
   property=GetImageProperty(image,"comment",exception);
   if ((property != (const char *) NULL) &&
