@@ -999,7 +999,8 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
     Read SIXEL file.
   */
   length=MaxTextExtent;
-  sixel_buffer=(char *) AcquireQuantumMemory((size_t) length,sizeof(*sixel_buffer));
+  sixel_buffer=(char *) AcquireQuantumMemory((size_t) length+MaxTextExtent,
+    sizeof(*sixel_buffer));
   p=sixel_buffer;
   if (sixel_buffer != (char *) NULL)
     while (ReadBlobString(image,p) != (char *) NULL)
@@ -1012,15 +1013,15 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
       if ((size_t) (p-sixel_buffer+MaxTextExtent) < length)
         continue;
       length<<=1;
-      sixel_buffer=(char *) ResizeQuantumMemory(sixel_buffer,length+MaxTextExtent,
-        sizeof(*sixel_buffer));
+      sixel_buffer=(char *) ResizeQuantumMemory(sixel_buffer,length+
+        MaxTextExtent,sizeof(*sixel_buffer));
       if (sixel_buffer == (char *) NULL)
         break;
       p=sixel_buffer+strlen(sixel_buffer);
     }
   if (sixel_buffer == (char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-
+  sixel_buffer[length]='\0';
   /*
     Decode SIXEL
   */
