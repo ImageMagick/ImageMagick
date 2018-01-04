@@ -2985,6 +2985,14 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 { \
   if (data != (unsigned char *) NULL) \
     data=(unsigned char *) RelinquishMagickMemory(data); \
+  if (graymap != (int *) NULL) \
+    graymap=(int *) RelinquishMagickMemory(graymap); \
+  if (bluemap != (int *) NULL) \
+    bluemap=(int *) RelinquishMagickMemory(bluemap); \
+  if (greenmap != (int *) NULL) \
+    greenmap=(int *) RelinquishMagickMemory(greenmap); \
+  if (redmap != (int *) NULL) \
+    redmap=(int *) RelinquishMagickMemory(redmap); \
   if (stream_info != (DCMStreamInfo *) NULL) \
     stream_info=(DCMStreamInfo *) RelinquishMagickMemory(stream_info); \
   ThrowReaderException((exception),(message)); \
@@ -3070,6 +3078,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read DCM preamble.
   */
   data=(unsigned char *) NULL;
+  graymap=(int *) NULL;
+  redmap=(int *) NULL;
+  greenmap=(int *) NULL;
+  bluemap=(int *) NULL;
   stream_info=(DCMStreamInfo *) AcquireMagickMemory(sizeof(*stream_info));
   if (stream_info == (DCMStreamInfo *) NULL)
     ThrowDCMException(ResourceLimitError,"MemoryAllocationFailed");
