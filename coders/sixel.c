@@ -999,7 +999,7 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
     Read SIXEL file.
   */
   length=MagickPathExtent;
-  sixel_buffer=(char *) AcquireQuantumMemory((size_t) length,
+  sixel_buffer=(char *) AcquireQuantumMemory((size_t) length+MagickPathExtent,
     sizeof(*sixel_buffer));
   p=sixel_buffer;
   if (sixel_buffer != (char *) NULL)
@@ -1021,6 +1021,7 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
     }
   if (sixel_buffer == (char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  sixel_buffer[length]='\0';
   /*
     Decode SIXEL
   */
