@@ -289,7 +289,10 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     offset=SeekBlob(image,scanlines[image->rows-y-1],SEEK_SET);
     if (offset < 0)
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      {
+        scanlines=(MagickOffsetType *) RelinquishMagickMemory(scanlines);
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      }
     for (channel=0; channel < (int) rla_info.number_channels; channel++)
     {
       length=ReadBlobMSBSignedShort(image);
