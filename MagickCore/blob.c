@@ -766,7 +766,7 @@ MagickExport Image *CustomStreamToImage(const ImageInfo *image_info,
     }
   image=(Image *) NULL;
   if ((GetMagickBlobSupport(magick_info) != MagickFalse) ||
-      (blob_info->custom_stream == (CustomStreamInfo *) NULL))
+      (*blob_info->filename != '\0'))
     {
       char
         filename[MagickPathExtent];
