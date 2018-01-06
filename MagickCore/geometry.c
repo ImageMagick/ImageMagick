@@ -1302,7 +1302,7 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
 %
 %  ParseMetaGeometry() is similar to GetGeometry() except the returned
 %  geometry is modified as determined by the meta characters:  %, !, <, >, @,
-%  and ^ in relation to image resizing.
+%  ~, and ^ in relation to image resizing.
 %
 %  Final image dimensions are adjusted so as to preserve the aspect ratio as
 %  much as possible, while generating a integer (pixel) size, and fitting the
@@ -1313,8 +1313,9 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
 %     !   do not try to preserve aspect ratio
 %     <   only enlarge images smaller that geometry
 %     >   only shrink images larger than geometry
-%     @   Fit image to contain at most this many pixels
-%     ^   Contain the given geometry given, (minimal dimensions given)
+%     @   fit image to contain at most this many pixels
+%     ~   width and height denotes an aspect ratio
+%     ^   contain the given geometry given, (minimal dimensions given)
 %
 %  The format of the ParseMetaGeometry method is:
 %
