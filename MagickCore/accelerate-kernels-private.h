@@ -56,53 +56,52 @@ const char *accelerateKernels =
 */
   STRINGIFY(
     typedef enum
-  {
-    UndefinedColorspace,
-    RGBColorspace,            /* Linear RGB colorspace */
-    GRAYColorspace,           /* greyscale (non-linear) image (faked 1 channel) */
-    TransparentColorspace,
-    OHTAColorspace,
-    LabColorspace,
-    XYZColorspace,
-    YCbCrColorspace,
-    YCCColorspace,
-    YIQColorspace,
-    YPbPrColorspace,
-    YUVColorspace,
-    CMYKColorspace,           /* negared linear RGB with black separated */
-    sRGBColorspace,           /* Default: non-lienar sRGB colorspace */
-    HSBColorspace,
-    HSLColorspace,
-    HWBColorspace,
-    Rec601LumaColorspace,
-    Rec601YCbCrColorspace,
-    Rec709LumaColorspace,
-    Rec709YCbCrColorspace,
-    LogColorspace,
-    CMYColorspace,            /* negated linear RGB colorspace */
-    LuvColorspace,
-    HCLColorspace,
-    LCHColorspace,            /* alias for LCHuv */
-    LMSColorspace,
-    LCHabColorspace,          /* Cylindrical (Polar) Lab */
-    LCHuvColorspace,          /* Cylindrical (Polar) Luv */
-    scRGBColorspace,
-    HSIColorspace,
-    HSVColorspace,            /* alias for HSB */
-    HCLpColorspace,
-    YDbDrColorspace,
-    LinearGrayColorspace       /* greyscale (linear) image (faked 1 channel) */
-  } ColorspaceType;
+    {
+      UndefinedColorspace,
+      CMYColorspace,           /* negated linear RGB colorspace */
+      CMYKColorspace,          /* CMY with Black separation */
+      GRAYColorspace,          /* Single Channel greyscale (non-linear) image */
+      HCLColorspace,
+      HCLpColorspace,
+      HSBColorspace,
+      HSIColorspace,
+      HSLColorspace,
+      HSVColorspace,           /* alias for HSB */
+      HWBColorspace,
+      LabColorspace,
+      LCHColorspace,           /* alias for LCHuv */
+      LCHabColorspace,         /* Cylindrical (Polar) Lab */
+      LCHuvColorspace,         /* Cylindrical (Polar) Luv */
+      LogColorspace,
+      LMSColorspace,
+      LuvColorspace,
+      OHTAColorspace,
+      Rec601YCbCrColorspace,
+      Rec709YCbCrColorspace,
+      RGBColorspace,           /* Linear RGB colorspace */
+      scRGBColorspace,         /* ??? */
+      sRGBColorspace,          /* Default: non-linear sRGB colorspace */
+      TransparentColorspace,
+      xyYColorspace,
+      XYZColorspace,           /* IEEE Color Reference colorspace */
+      YCbCrColorspace,
+      YCCColorspace,
+      YDbDrColorspace,
+      YIQColorspace,
+      YPbPrColorspace,
+      YUVColorspace,
+      LinearGRAYColorspace     /* Single Channel greyscale (linear) image */
+    } ColorspaceType;
   )
 
   STRINGIFY(
     typedef enum
     {
       UndefinedCompositeOp,
-      NoCompositeOp,
-      ModulusAddCompositeOp,
+      AlphaCompositeOp,
       AtopCompositeOp,
       BlendCompositeOp,
+      BlurCompositeOp,
       BumpmapCompositeOp,
       ChangeMaskCompositeOp,
       ClearCompositeOp,
@@ -115,31 +114,47 @@ const char *accelerateKernels =
       CopyCyanCompositeOp,
       CopyGreenCompositeOp,
       CopyMagentaCompositeOp,
-      CopyOpacityCompositeOp,
+      CopyAlphaCompositeOp,
       CopyRedCompositeOp,
       CopyYellowCompositeOp,
       DarkenCompositeOp,
+      DarkenIntensityCompositeOp,
+      DifferenceCompositeOp,
+      DisplaceCompositeOp,
+      DissolveCompositeOp,
+      DistortCompositeOp,
+      DivideDstCompositeOp,
+      DivideSrcCompositeOp,
       DstAtopCompositeOp,
       DstCompositeOp,
       DstInCompositeOp,
       DstOutCompositeOp,
       DstOverCompositeOp,
-      DifferenceCompositeOp,
-      DisplaceCompositeOp,
-      DissolveCompositeOp,
       ExclusionCompositeOp,
       HardLightCompositeOp,
+      HardMixCompositeOp,
       HueCompositeOp,
       InCompositeOp,
+      IntensityCompositeOp,
       LightenCompositeOp,
+      LightenIntensityCompositeOp,
+      LinearBurnCompositeOp,
+      LinearDodgeCompositeOp,
       LinearLightCompositeOp,
       LuminizeCompositeOp,
+      MathematicsCompositeOp,
       MinusDstCompositeOp,
+      MinusSrcCompositeOp,
       ModulateCompositeOp,
+      ModulusAddCompositeOp,
+      ModulusSubtractCompositeOp,
       MultiplyCompositeOp,
+      NoCompositeOp,
       OutCompositeOp,
       OverCompositeOp,
       OverlayCompositeOp,
+      PegtopLightCompositeOp,
+      PinLightCompositeOp,
       PlusCompositeOp,
       ReplaceCompositeOp,
       SaturateCompositeOp,
@@ -150,38 +165,22 @@ const char *accelerateKernels =
       SrcInCompositeOp,
       SrcOutCompositeOp,
       SrcOverCompositeOp,
-      ModulusSubtractCompositeOp,
       ThresholdCompositeOp,
-      XorCompositeOp,
-      /* These are new operators, added after the above was last sorted.
-       * The list should be re-sorted only when a new library version is
-       * created.
-       */
-      DivideDstCompositeOp,
-      DistortCompositeOp,
-      BlurCompositeOp,
-      PegtopLightCompositeOp,
       VividLightCompositeOp,
-      PinLightCompositeOp,
-      LinearDodgeCompositeOp,
-      LinearBurnCompositeOp,
-      MathematicsCompositeOp,
-      DivideSrcCompositeOp,
-      MinusSrcCompositeOp,
-      DarkenIntensityCompositeOp,
-      LightenIntensityCompositeOp
+      XorCompositeOp,
+      StereoCompositeOp
     } CompositeOperator;
   )
 
   STRINGIFY(
-     typedef enum
-     {
-       UndefinedFunction,
-       ArcsinFunction,
-       ArctanFunction,
-       PolynomialFunction,
-       SinusoidFunction
-     } MagickFunction;
+    typedef enum
+    {
+      UndefinedFunction,
+      ArcsinFunction,
+      ArctanFunction,
+      PolynomialFunction,
+      SinusoidFunction
+    } MagickFunction;
   )
 
   STRINGIFY(
@@ -200,74 +199,75 @@ const char *accelerateKernels =
 
   STRINGIFY(
     typedef enum
-  {
-    UndefinedPixelIntensityMethod = 0,
-    AveragePixelIntensityMethod,
-    BrightnessPixelIntensityMethod,
-    LightnessPixelIntensityMethod,
-    Rec601LumaPixelIntensityMethod,
-    Rec601LuminancePixelIntensityMethod,
-    Rec709LumaPixelIntensityMethod,
-    Rec709LuminancePixelIntensityMethod,
-    RMSPixelIntensityMethod,
-    MSPixelIntensityMethod
-  } PixelIntensityMethod;
+    {
+      UndefinedPixelIntensityMethod = 0,
+      AveragePixelIntensityMethod,
+      BrightnessPixelIntensityMethod,
+      LightnessPixelIntensityMethod,
+      MSPixelIntensityMethod,
+      Rec601LumaPixelIntensityMethod,
+      Rec601LuminancePixelIntensityMethod,
+      Rec709LumaPixelIntensityMethod,
+      Rec709LuminancePixelIntensityMethod,
+      RMSPixelIntensityMethod
+    } PixelIntensityMethod;
   )
 
   STRINGIFY(
-  typedef enum {
-    BoxWeightingFunction = 0,
-    TriangleWeightingFunction,
-    CubicBCWeightingFunction,
-    HannWeightingFunction,
-    HammingWeightingFunction,
-    BlackmanWeightingFunction,
-    GaussianWeightingFunction,
-    QuadraticWeightingFunction,
-    JincWeightingFunction,
-    SincWeightingFunction,
-    SincFastWeightingFunction,
-    KaiserWeightingFunction,
-    WelshWeightingFunction,
-    BohmanWeightingFunction,
-    LagrangeWeightingFunction,
-    CosineWeightingFunction,
-  } ResizeWeightingFunctionType;
+    typedef enum
+    {
+      BoxWeightingFunction = 0,
+      TriangleWeightingFunction,
+      CubicBCWeightingFunction,
+      HannWeightingFunction,
+      HammingWeightingFunction,
+      BlackmanWeightingFunction,
+      GaussianWeightingFunction,
+      QuadraticWeightingFunction,
+      JincWeightingFunction,
+      SincWeightingFunction,
+      SincFastWeightingFunction,
+      KaiserWeightingFunction,
+      WelchWeightingFunction,
+      BohmanWeightingFunction,
+      LagrangeWeightingFunction,
+      CosineWeightingFunction
+    } ResizeWeightingFunctionType;
   )
 
   STRINGIFY(
-     typedef enum
-     {
-       UndefinedChannel = 0x0000,
-       RedChannel = 0x0001,
-       GrayChannel = 0x0001,
-       CyanChannel = 0x0001,
-       GreenChannel = 0x0002,
-       MagentaChannel = 0x0002,
-       BlueChannel = 0x0004,
-       YellowChannel = 0x0004,
-       BlackChannel = 0x0008,
-       AlphaChannel = 0x0010,
-       OpacityChannel = 0x0010,
-       IndexChannel = 0x0020,             /* Color Index Table? */
-       ReadMaskChannel = 0x0040,          /* Pixel is Not Readable? */
-       WriteMaskChannel = 0x0080,         /* Pixel is Write Protected? */
-       MetaChannel = 0x0100,              /* ???? */
-       CompositeChannels = 0x001F,
-       AllChannels = 0x7ffffff,
-       /*
-         Special purpose channel types.
-         FUTURE: are these needed any more - they are more like hacks
-         SyncChannels for example is NOT a real channel but a 'flag'
-         It really says -- "User has not defined channels"
-         Though it does have extra meaning in the "-auto-level" operator
-       */
-       TrueAlphaChannel = 0x0100, /* extract actual alpha channel from opacity */
-       RGBChannels = 0x0200,      /* set alpha from grayscale mask in RGB */
-       GrayChannels = 0x0400,
-       SyncChannels = 0x20000,    /* channels modified as a single unit */
-       DefaultChannels = AllChannels
-     } ChannelType;  /* must correspond to PixelChannel */
+    typedef enum
+    {
+      UndefinedChannel = 0x0000,
+      RedChannel = 0x0001,
+      GrayChannel = 0x0001,
+      CyanChannel = 0x0001,
+      GreenChannel = 0x0002,
+      MagentaChannel = 0x0002,
+      BlueChannel = 0x0004,
+      YellowChannel = 0x0004,
+      BlackChannel = 0x0008,
+      AlphaChannel = 0x0010,
+      OpacityChannel = 0x0010,
+      IndexChannel = 0x0020,             /* Color Index Table? */
+      ReadMaskChannel = 0x0040,          /* Pixel is Not Readable? */
+      WriteMaskChannel = 0x0080,         /* Pixel is Write Protected? */
+      MetaChannel = 0x0100,              /* ???? */
+      CompositeChannels = 0x001F,
+      AllChannels = 0x7ffffff,
+      /*
+        Special purpose channel types.
+        FUTURE: are these needed any more - they are more like hacks
+        SyncChannels for example is NOT a real channel but a 'flag'
+        It really says -- "User has not defined channels"
+        Though it does have extra meaning in the "-auto-level" operator
+      */
+      TrueAlphaChannel = 0x0100, /* extract actual alpha channel from opacity */
+      RGBChannels = 0x0200,      /* set alpha from grayscale mask in RGB */
+      GrayChannels = 0x0400,
+      SyncChannels = 0x20000,    /* channels modified as a single unit */
+      DefaultChannels = AllChannels
+    } ChannelType;  /* must correspond to PixelChannel */
   )
 
 /*
