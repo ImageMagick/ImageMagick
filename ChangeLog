@@ -1,3 +1,9 @@
+2018-01-06  6.9.9-33 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.9-33, GIT revision 12491:5c40f3a88:20180106.
+
+2018-01-06  6.9.9-23 Dirk Lemstra <dirk@lem.....org>
+  * Fix some enum values in the OpenCL code.
+
 2018-01-06  6.9.9-32 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.9-32, GIT revision 12489:33a04d3e5:20180105.
 
