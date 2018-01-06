@@ -129,6 +129,12 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
     c=(int)*p;
     switch (c)
     {
+      case '~':
+      {
+        flags|=TildeValue;
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
+        break;
+      }
       case '%':
       {
         flags|=PercentValue;
@@ -887,6 +893,12 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       }
     switch (c)
     {
+      case '~':
+      {
+        flags|=TildeValue;
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
+        break;
+      }
       case '%':
       {
         flags|=PercentValue;
@@ -1225,6 +1237,43 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
       region_info->width=(size_t) floor((scale.x*image->columns/100.0)+0.5);
       region_info->height=(size_t) floor((scale.y*image->rows/100.0)+0.5);
     }
+  if ((flags & TildeValue) != 0)
+    {
+      double
+        geometry_aspect,
+        image_aspect;
+
+      GeometryInfo
+        geometry_info;
+
+      MagickStatusType
+        status;
+
+      PointInfo
+        scale;
+
+      /*
+        Geometry is a relative to image size and aspect ratio.
+      */
+      if (image->gravity != UndefinedGravity)
+        flags|=XValue | YValue;
+      status=ParseGeometry(geometry,&geometry_info);
+      scale.x=geometry_info.rho;
+      scale.y=geometry_info.sigma;
+      if ((status & SigmaValue) == 0)
+        scale.y=scale.x;
+      geometry_aspect=scale.x/scale.y;
+      image_aspect=image->columns/(double) image->rows;
+      region_info->width=image->columns;
+      region_info->height=image->rows;
+      if (geometry_aspect >= image_aspect)
+        {
+          region_info->width=(size_t) floor((image->columns*geometry_aspect/
+            image_aspect)+0.5);
+          region_info->height=(size_t) floor((image->rows*image_aspect/
+            geometry_aspect)+0.5);
+        }
+    }
   /*
     Adjust offset according to gravity setting.
   */
@@ -1333,6 +1382,43 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
         scale.y=scale.x;
       *width=(size_t) MagickMax(floor(scale.x*former_width/100.0+0.5),1.0);
       *height=(size_t) MagickMax(floor(scale.y*former_height/100.0+0.5),1.0);
+      former_width=(*width);
+      former_height=(*height);
+    }
+  if ((flags & TildeValue) != 0)
+    {
+      double
+        geometry_aspect,
+        image_aspect;
+
+      GeometryInfo
+        geometry_info;
+
+      MagickStatusType
+        status;
+
+      PointInfo
+        scale;
+
+      /*
+        Geometry is a relative to image size and aspect ratio.
+      */
+      status=ParseGeometry(geometry,&geometry_info);
+      scale.x=geometry_info.rho;
+      scale.y=geometry_info.sigma;
+      if ((status & SigmaValue) == 0)
+        scale.y=scale.x;
+      geometry_aspect=scale.x/scale.y;
+      image_aspect=former_width/(double) former_height;
+      *width=former_width;
+      *height=former_height;
+      if (geometry_aspect >= image_aspect)
+        {
+          *width=(size_t) floor((former_width*geometry_aspect/
+            image_aspect)+0.5);
+          *height=(size_t) floor((former_height*image_aspect/
+            geometry_aspect)+0.5);
+        }
       former_width=(*width);
       former_height=(*height);
     }
