@@ -102,3 +102,10 @@ h6, .h6 {
   font-weight: 400;
   color: #333;
 }
+
+a.anchor {
+  display: block;
+  position: relative;
+  top: -4.5rem;
+  visibility: hidden;
+}
