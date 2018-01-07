@@ -1804,6 +1804,8 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
         offset.x=((double) x+0.5)*scale.x-0.5;
         status=InterpolatePixelChannels(image,image_view,resize_image,method,
           offset.x,offset.y,q,exception);
+        if (status == MagickFalse)
+          break;
       }
       q+=GetPixelChannels(resize_image);
     }

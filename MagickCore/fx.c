@@ -1265,6 +1265,9 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
   Image
     *image;
 
+  MagickBooleanType
+    status;
+
   PixelInfo
     pixel;
 
@@ -1400,8 +1403,9 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
       return(0.0);
     }
   GetPixelInfo(image,&pixel);
-  (void) InterpolatePixelInfo(image,fx_info->view[i],image->interpolate,
+  status=InterpolatePixelInfo(image,fx_info->view[i],image->interpolate,
     point.x,point.y,&pixel,exception);
+  (void) status;
   if ((strlen(p) > 2) && (LocaleCompare(p,"intensity") != 0) &&
       (LocaleCompare(p,"luma") != 0) && (LocaleCompare(p,"luminance") != 0) &&
       (LocaleCompare(p,"hue") != 0) && (LocaleCompare(p,"saturation") != 0) &&
@@ -3386,6 +3390,8 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
           status=InterpolatePixelChannels(canvas,interpolate_view,implode_image,
             method,(double) (factor*delta.x/scale.x+center.x),(double) (factor*
             delta.y/scale.y+center.y),q,exception);
+          if (status == MagickFalse)
+            break;
         }
       p+=GetPixelChannels(canvas);
       q+=GetPixelChannels(implode_image);
@@ -5240,6 +5246,8 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
           status=InterpolatePixelChannels(canvas,interpolate_view,swirl_image,
             method,((cosine*delta.x-sine*delta.y)/scale.x+center.x),(double)
             ((sine*delta.x+cosine*delta.y)/scale.y+center.y),q,exception);
+          if (status == MagickFalse)
+            break;
         }
       p+=GetPixelChannels(canvas);
       q+=GetPixelChannels(swirl_image);
@@ -5709,6 +5717,8 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     {
       status=InterpolatePixelChannels(canvas,canvas_view,wave_image,method,
         (double) x,(double) (y-sine_map[x]),q,exception);
+      if (status == MagickFalse)
+        break;
       q+=GetPixelChannels(wave_image);
     }
     if (SyncCacheViewAuthenticPixels(wave_view,exception) == MagickFalse)

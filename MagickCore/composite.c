@@ -1110,9 +1110,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             (((MagickRealType) QuantumRange+1.0)/2.0)))/(((MagickRealType)
             QuantumRange+1.0)/2.0)+center.y+((compose == DisplaceCompositeOp) ?
             y : 0);
-          (void) InterpolatePixelInfo(image,image_view,
+          status=InterpolatePixelInfo(image,image_view,
             UndefinedInterpolatePixel,(double) offset.x,(double) offset.y,
             &pixel,exception);
+          if (status == MagickFalse)
+            break;
           /*
             Mask with the 'invalid pixel mask' in alpha channel.
           */
@@ -1122,6 +1124,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           p+=GetPixelChannels(source_image);
           q+=GetPixelChannels(canvas_image);
         }
+        if (x < (ssize_t) source_image->columns)
+          break;
         sync=SyncCacheViewAuthenticPixels(canvas_view,exception);
         if (sync == MagickFalse)
           break;

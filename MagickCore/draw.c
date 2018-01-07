@@ -1200,8 +1200,10 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
         inverse_affine.tx;
       point.y=(double) x*inverse_affine.rx+y*inverse_affine.sy+
         inverse_affine.ty;
-      (void) InterpolatePixelInfo(source,source_view,UndefinedInterpolatePixel,
+      status=InterpolatePixelInfo(source,source_view,UndefinedInterpolatePixel,
         point.x,point.y,&pixel,exception);
+      if (status == MagickFalse)
+        break;
       GetPixelInfoPixel(image,q,&composite);
       CompositePixelInfoOver(&pixel,pixel.alpha,&composite,composite.alpha,
         &composite);

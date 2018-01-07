@@ -1615,6 +1615,8 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
       status=InterpolatePixelChannels(gaussian_image,image_view,kuwahara_image,
         UndefinedInterpolatePixel,(double) target.x+target.width/2.0,(double)
         target.y+target.height/2.0,q,exception);
+      if (status == MagickFalse)
+        break;
       q+=GetPixelChannels(kuwahara_image);
     }
     if (SyncCacheViewAuthenticPixels(kuwahara_view,exception) == MagickFalse)
@@ -3839,6 +3841,8 @@ MagickExport Image *SpreadImage(const Image *image,
       status=InterpolatePixelChannels(image,image_view,spread_image,method,
         (double) x+width*(point.x-0.5),(double) y+width*(point.y-0.5),q,
         exception);
+      if (status == MagickFalse)
+        break;
       q+=GetPixelChannels(spread_image);
     }
     if (SyncCacheViewAuthenticPixels(spread_view,exception) == MagickFalse)

@@ -345,9 +345,11 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
     GetPixelInfo(clut_image,clut_map+i);
-    (void) InterpolatePixelInfo(clut_image,clut_view,method,
+    status=InterpolatePixelInfo(clut_image,clut_view,method,
       (double) i*(clut_image->columns-adjust)/MaxMap,(double) i*
       (clut_image->rows-adjust)/MaxMap,clut_map+i,exception);
+    if (status == MagickFalse)
+      break;
   }
   clut_view=DestroyCacheView(clut_view);
   image_view=AcquireAuthenticCacheView(image,exception);
@@ -2278,19 +2280,27 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
       point.y-=floor(point.y);
       point.z-=floor(point.z);
       pixel1=zero;
-      (void) InterpolatePixelInfo(hald_image,hald_view,hald_image->interpolate,
+      status=InterpolatePixelInfo(hald_image,hald_view,hald_image->interpolate,
         fmod(offset,width),floor(offset/width),&pixel1,exception);
+      if (status == MagickFalse)
+        break;
       pixel2=zero;
-      (void) InterpolatePixelInfo(hald_image,hald_view,hald_image->interpolate,
+      status=InterpolatePixelInfo(hald_image,hald_view,hald_image->interpolate,
         fmod(offset+level,width),floor((offset+level)/width),&pixel2,exception);
+      if (status == MagickFalse)
+        break;
       pixel3=zero;
       CompositePixelInfoAreaBlend(&pixel1,pixel1.alpha,&pixel2,pixel2.alpha,
         point.y,&pixel3);
       offset+=cube_size;
-      (void) InterpolatePixelInfo(hald_image,hald_view,hald_image->interpolate,
+      status=InterpolatePixelInfo(hald_image,hald_view,hald_image->interpolate,
         fmod(offset,width),floor(offset/width),&pixel1,exception);
-      (void) InterpolatePixelInfo(hald_image,hald_view,hald_image->interpolate,
+      if (status == MagickFalse)
+        break;
+      status=InterpolatePixelInfo(hald_image,hald_view,hald_image->interpolate,
         fmod(offset+level,width),floor((offset+level)/width),&pixel2,exception);
+      if (status == MagickFalse)
+        break;
       pixel4=zero;
       CompositePixelInfoAreaBlend(&pixel1,pixel1.alpha,&pixel2,pixel2.alpha,
         point.y,&pixel4);
