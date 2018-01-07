@@ -129,12 +129,6 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
     c=(int)*p;
     switch (c)
     {
-      case '~':
-      {
-        flags|=TildeValue;
-        (void) CopyMagickString(p,p+1,MagickPathExtent);
-        break;
-      }
       case '%':
       {
         flags|=PercentValue;
@@ -185,7 +179,6 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
         break;
       }
       case '-':
-      case '.':
       case ',':
       case '+':
       case '0':
@@ -203,6 +196,18 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
       case 'E':
       {
         p++;
+        break;
+      }
+      case '.':
+      {
+        p++;
+        flags|=DecimalValue;
+        break;
+      }
+      case ':':
+      {
+        p++;
+        flags|=AspectRatioValue;
         break;
       }
       default:
@@ -893,12 +898,6 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       }
     switch (c)
     {
-      case '~':
-      {
-        flags|=TildeValue;
-        (void) CopyMagickString(p,p+1,MagickPathExtent);
-        break;
-      }
       case '%':
       {
         flags|=PercentValue;
@@ -962,7 +961,6 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       case '8':
       case '9':
       case '/':
-      case ':':
       case 215:
       case 'e':
       case 'E':
@@ -974,6 +972,12 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       {
         p++;
         flags|=DecimalValue;
+        break;
+      }
+      case ':':
+      {
+        p++;
+        flags|=AspectRatioValue;
         break;
       }
       default:
@@ -1237,41 +1241,31 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
       region_info->width=(size_t) floor((scale.x*image->columns/100.0)+0.5);
       region_info->height=(size_t) floor((scale.y*image->rows/100.0)+0.5);
     }
-  if ((flags & TildeValue) != 0)
+  if ((flags & AspectRatioValue) != 0)
     {
       double
-        geometry_aspect,
-        image_aspect;
+        geometry_ratio,
+        image_ratio;
 
       GeometryInfo
         geometry_info;
-
-      MagickStatusType
-        status;
-
-      PointInfo
-        scale;
 
       /*
         Geometry is a relative to image size and aspect ratio.
       */
       if (image->gravity != UndefinedGravity)
         flags|=XValue | YValue;
-      status=ParseGeometry(geometry,&geometry_info);
-      scale.x=geometry_info.rho;
-      scale.y=geometry_info.sigma;
-      if ((status & SigmaValue) == 0)
-        scale.y=scale.x;
-      geometry_aspect=scale.x/scale.y;
-      image_aspect=image->columns/(double) image->rows;
+      (void) ParseGeometry(geometry,&geometry_info);
+      geometry_ratio=geometry_info.rho;
+      image_ratio=image->columns/(double) image->rows;
       region_info->width=image->columns;
       region_info->height=image->rows;
-      if (geometry_aspect >= image_aspect)
+      if (geometry_ratio >= image_ratio)
         {
-          region_info->width=(size_t) floor((image->columns*geometry_aspect/
-            image_aspect)+0.5);
-          region_info->height=(size_t) floor((image->rows*image_aspect/
-            geometry_aspect)+0.5);
+          region_info->width=(size_t) floor((image->columns*geometry_ratio/
+            image_ratio)+0.5);
+          region_info->height=(size_t) floor((image->rows*image_ratio/
+            geometry_ratio)+0.5);
         }
     }
   /*
@@ -1386,39 +1380,28 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
       former_width=(*width);
       former_height=(*height);
     }
-  if ((flags & TildeValue) != 0)
+  if ((flags & AspectRatioValue) != 0)
     {
       double
-        geometry_aspect,
-        image_aspect;
+        geometry_ratio,
+        image_ratio;
 
       GeometryInfo
         geometry_info;
 
-      MagickStatusType
-        status;
-
-      PointInfo
-        scale;
-
       /*
         Geometry is a relative to image size and aspect ratio.
       */
-      status=ParseGeometry(geometry,&geometry_info);
-      scale.x=geometry_info.rho;
-      scale.y=geometry_info.sigma;
-      if ((status & SigmaValue) == 0)
-        scale.y=scale.x;
-      geometry_aspect=scale.x/scale.y;
-      image_aspect=former_width/(double) former_height;
+      (void) ParseGeometry(geometry,&geometry_info);
+      geometry_ratio=geometry_info.rho;
+      image_ratio=former_width/(double) former_height;
       *width=former_width;
       *height=former_height;
-      if (geometry_aspect >= image_aspect)
+      if (geometry_ratio >= image_ratio)
         {
-          *width=(size_t) floor((former_width*geometry_aspect/
-            image_aspect)+0.5);
-          *height=(size_t) floor((former_height*image_aspect/
-            geometry_aspect)+0.5);
+          *width=(size_t) floor((former_width*geometry_ratio/image_ratio)+0.5);
+          *height=(size_t) floor((former_height*image_ratio/geometry_ratio)+
+            0.5);
         }
       former_width=(*width);
       former_height=(*height);
