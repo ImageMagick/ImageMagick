@@ -1245,14 +1245,17 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
       (void) ParseGeometry(geometry,&geometry_info);
       geometry_ratio=geometry_info.rho;
       image_ratio=image->columns/(double) image->rows;
-      region_info->width=image->columns;
-      region_info->height=image->rows;
       if (geometry_ratio >= image_ratio)
+        {
+          region_info->width=image->columns;
+          region_info->height=(size_t) floor((image->rows*image_ratio/
+            geometry_ratio)+0.5);
+        }
+      else
         {
           region_info->width=(size_t) floor((image->columns*geometry_ratio/
             image_ratio)+0.5);
-          region_info->height=(size_t) floor((image->rows*image_ratio/
-            geometry_ratio)+0.5);
+          region_info->height=image->rows;
         }
     }
   /*
@@ -1381,13 +1384,16 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
       (void) ParseGeometry(geometry,&geometry_info);
       geometry_ratio=geometry_info.rho;
       image_ratio=former_width/(double) former_height;
-      *width=former_width;
-      *height=former_height;
       if (geometry_ratio >= image_ratio)
         {
-          *width=(size_t) floor((former_width*geometry_ratio/image_ratio)+0.5);
+          *width=former_width;
           *height=(size_t) floor((former_height*image_ratio/geometry_ratio)+
             0.5);
+        }
+      else
+        {
+          *width=(size_t) floor((former_width*geometry_ratio/image_ratio)+0.5);
+          *height=former_height;
         }
       former_width=(*width);
       former_height=(*height);
