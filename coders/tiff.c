@@ -3477,7 +3477,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       compression=image->compression;
     if (image_info->compression != UndefinedCompression)
       compression=image_info->compression;
-    switch (image_info->compression)
+    switch (compression)
     {
       case FaxCompression:
       case Group4Compression:
