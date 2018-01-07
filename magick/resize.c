@@ -1753,8 +1753,10 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
     for (x=0; x < (ssize_t) resize_image->columns; x++)
     {
       offset.x=((MagickRealType) x+0.5)*scale.x-0.5;
-      (void) InterpolateMagickPixelPacket(image,image_view,method,offset.x,
+      status=InterpolateMagickPixelPacket(image,image_view,method,offset.x,
         offset.y,&pixel,exception);
+      if (status == MagickFalse)
+        break;
       SetPixelPacket(resize_image,&pixel,q,resize_indexes+x);
       q++;
     }

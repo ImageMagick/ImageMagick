@@ -2437,9 +2437,11 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
           status=MagickFalse;
           break;
         }
-      (void) InterpolateMagickPixelPacket(gaussian_image,image_view,
+      status=InterpolateMagickPixelPacket(gaussian_image,image_view,
         UndefinedInterpolatePixel,(double) target.x+target.width/2.0,
         (double) target.y+target.height/2.0,&pixel,exception);
+      if (status == MagickFalse)
+        break;
       SetPixelPacket(kuwahara_image,&pixel,q,kuwahara_indexes+x);
       q++;
     }
@@ -4484,9 +4486,11 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 
       point.x=GetPseudoRandomValue(random_info[id]);
       point.y=GetPseudoRandomValue(random_info[id]);
-      (void) InterpolateMagickPixelPacket(image,image_view,image->interpolate,
+      status=InterpolateMagickPixelPacket(image,image_view,image->interpolate,
         (double) x+width*(point.x-0.5),(double) y+width*(point.y-0.5),&pixel,
         exception);
+      if (status == MagickFalse)
+        break;
       SetPixelPacket(spread_image,&pixel,q,indexes+x);
       q++;
     }

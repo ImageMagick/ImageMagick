@@ -795,9 +795,11 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
     GetMagickPixelPacket(clut_image,clut_map+i);
-    (void) InterpolateMagickPixelPacket(clut_image,clut_view,
+    status=InterpolateMagickPixelPacket(clut_image,clut_view,
       UndefinedInterpolatePixel,(double) i*(clut_image->columns-adjust)/MaxMap,
       (double) i*(clut_image->rows-adjust)/MaxMap,clut_map+i,exception);
+    if (status == MagickFalse)
+      break;
   }
   clut_view=DestroyCacheView(clut_view);
   image_view=AcquireAuthenticCacheView(image,exception);
@@ -2736,21 +2738,29 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
       point.x-=floor(point.x);
       point.y-=floor(point.y);
       point.z-=floor(point.z);
-      (void) InterpolateMagickPixelPacket(image,hald_view,
+      status=InterpolateMagickPixelPacket(image,hald_view,
         UndefinedInterpolatePixel,fmod(offset,width),floor(offset/width),
         &pixel1,exception);
-      (void) InterpolateMagickPixelPacket(image,hald_view,
+      if (status == MagickFalse)
+        break;
+      status=InterpolateMagickPixelPacket(image,hald_view,
         UndefinedInterpolatePixel,fmod(offset+level,width),floor((offset+level)/
         width),&pixel2,exception);
+      if (status == MagickFalse)
+        break;
       MagickPixelCompositeAreaBlend(&pixel1,pixel1.opacity,&pixel2,
         pixel2.opacity,point.y,&pixel3);
       offset+=cube_size;
-      (void) InterpolateMagickPixelPacket(image,hald_view,
+      status=InterpolateMagickPixelPacket(image,hald_view,
         UndefinedInterpolatePixel,fmod(offset,width),floor(offset/width),
         &pixel1,exception);
-      (void) InterpolateMagickPixelPacket(image,hald_view,
+      if (status == MagickFalse)
+        break;
+      status=InterpolateMagickPixelPacket(image,hald_view,
         UndefinedInterpolatePixel,fmod(offset+level,width),floor((offset+level)/
         width),&pixel2,exception);
+      if (status == MagickFalse)
+        break;
       MagickPixelCompositeAreaBlend(&pixel1,pixel1.opacity,&pixel2,
         pixel2.opacity,point.y,&pixel4);
       MagickPixelCompositeAreaBlend(&pixel3,pixel3.opacity,&pixel4,
