@@ -3510,6 +3510,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
         }
+        if (y < (long) image->rows)
+          break;
 
         if (num_passes != 1)
           {
@@ -3685,7 +3687,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               break;
           }
       }
-
+      quantum_scanline=(Quantum *) RelinquishMagickMemory(quantum_scanline);
+      if (y < (long) image->rows)
+        break;
       if (num_passes != 1)
         {
           status=SetImageProgress(image,LoadImageTag,pass,num_passes);
@@ -3693,8 +3697,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           if (status == MagickFalse)
             break;
         }
-
-      quantum_scanline=(Quantum *) RelinquishMagickMemory(quantum_scanline);
     }
 
     image->alpha_trait=found_transparent_pixel ? BlendPixelTrait :
