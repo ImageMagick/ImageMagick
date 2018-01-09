@@ -351,6 +351,12 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->resolution.x=(double) pcx_info.horizontal_resolution;
     image->resolution.y=(double) pcx_info.vertical_resolution;
     image->colors=16;
+    if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
+      if (image->scene >= (image_info->scene+image_info->number_scenes-1))
+        break;
+    status=SetImageExtent(image,image->columns,image->rows,exception);
+    if (status == MagickFalse)
+      ThrowPCXException(exception->severity,exception->reason);
     count=ReadBlob(image,3*image->colors,pcx_colormap);
     if (count != (ssize_t) (3*image->colors))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
@@ -385,12 +391,6 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pcx_info.vertical_screensize=ReadBlobLSBShort(image);
     for (i=0; i < 54; i++)
       (void) ReadBlobByte(image);
-    if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
-      if (image->scene >= (image_info->scene+image_info->number_scenes-1))
-        break;
-    status=SetImageExtent(image,image->columns,image->rows,exception);
-    if (status == MagickFalse)
-      ThrowPCXException(exception->severity,exception->reason);
     /*
       Read image data.
     */
