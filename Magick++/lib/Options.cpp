@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
-// Copyright Dirk Lemstra 2014-2016
+// Copyright Dirk Lemstra 2014-2018
 //
 // Implementation of Options
 //
@@ -394,10 +394,10 @@ void Magick::Options::magick(const std::string &magick_)
     magick_.c_str());
   GetPPException;
   SetImageInfo(_imageInfo,1,exceptionInfo);
+  ThrowPPException(_quiet);
   if ( _imageInfo->magick[0] == '\0' )
     throwExceptionExplicit(MagickCore::OptionError,"Unrecognized image format",
       magick_.c_str());
-  ThrowPPException(_quiet);
 }
 
 std::string Magick::Options::magick(void) const
