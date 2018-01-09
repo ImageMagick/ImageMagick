@@ -21,7 +21,8 @@ script:
   - ./configure --disable-openmp --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
   - make
   - # Generate AppImage
-  - make install DESTDIR=$(readlink -f appdir) ; find appdir/
+  - make install DESTDIR=$(readlink -f appdir)
+  - find appdir/
   - mkdir -p appdir/usr/share/applications/ ; cp imagemagick.desktop appdir/usr/share/applications/
   - mkdir -p appdir/usr/share/icons/hicolor/128x128/apps/ ; touch appdir/usr/share/icons/hicolor/128x128/apps/imagemagick.png # FIXME
   - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
