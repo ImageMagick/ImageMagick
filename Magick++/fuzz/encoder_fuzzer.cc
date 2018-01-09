@@ -10,6 +10,8 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
   const Magick::Blob blob(Data, Size);
   Magick::Image image;
   try {
+    image.magick(FUZZ_ENCODER);
+    image.fileName(FUZZ_ENCODER + ':');
     image.read(blob);
   } catch (Magick::Exception &e) {
     return 0;
