@@ -750,6 +750,8 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   unsigned char
     magick[2*MagickPathExtent];
 
+  ssize_t
+    count;
 
   if ((clone_info=CloneImageInfo(image_info)) == NULL)
     return(image);
@@ -764,7 +766,9 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
 
   /* Copy postscript to temporary file */
   (void) SeekBlob(image,PS_Offset,SEEK_SET);
-  (void) ReadBlob(image, 2*MagickPathExtent, magick);
+  count=ReadBlob(image, 2*MagickPathExtent, magick);
+  if (count < 1)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
   (void) SeekBlob(image,PS_Offset,SEEK_SET);
   while (PS_Size-- > 0)
@@ -777,7 +781,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   (void) fclose(ps_file);
 
     /* Detect file format - Check magic.mgk configuration file. */
-  magic_info=GetMagicInfo(magick,2*MagickPathExtent,exception);
+  magic_info=GetMagicInfo(magick,count,exception);
   if(magic_info == (const MagicInfo *) NULL) goto FINISH_UNL;
   /*     printf("Detected:%s  \n",magic_info->name); */
   if(exception->severity != UndefinedException) goto FINISH_UNL;
