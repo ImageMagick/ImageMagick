@@ -19,7 +19,7 @@ script:
   - export OMP_NUM_THREADS=1
   - export CFLAGS="-Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable"
   - ./configure --disable-openmp --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
-  - make -j$(nproc)
+  - make
   - # Generate AppImage
   - make install DESTDIR=$(readlink -f appdir) ; find appdir/
   - mkdir -p appdir/usr/share/applications/ ; cp imagemagick.desktop appdir/usr/share/applications/
