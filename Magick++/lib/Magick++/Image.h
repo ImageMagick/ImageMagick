@@ -1204,6 +1204,9 @@ namespace Magick
     // Read single image frame from in-memory BLOB
     void read(const Blob &blob_);
 
+    // Read single image frame of specified format from in-memory BLOB
+    void read(const Blob &blob_,const std::string &magick_);
+
     // Read single image frame of specified size from in-memory BLOB
     void read(const Blob &blob_,const Geometry &size_);
 
