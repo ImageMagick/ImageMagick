@@ -3,6 +3,10 @@
 #include <Magick++/Blob.h>
 #include <Magick++/Image.h>
 
+#include "utils.cc"
+
+static FuzzingResourceLimits kFuzzLimits;
+
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
   uint16_t Width;
   uint16_t Height;
