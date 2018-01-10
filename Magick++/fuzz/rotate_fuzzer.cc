@@ -11,6 +11,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
   if (!isfinite(Degrees)) {
     return 0;
   }
+  Magick::ResourceLimits::memory(1500000000);
   const Magick::Blob blob(Data + sizeof(Degrees), Size - sizeof(Degrees));
   Magick::Image image;
   try {
