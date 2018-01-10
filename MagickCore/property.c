@@ -2892,6 +2892,12 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           string=image->filename;
           break;
         }
+      if (LocaleCompare("interlace",property) == 0)
+        {
+          string=CommandOptionToMnemonic(MagickInterlaceOptions,(ssize_t)
+            image->interlace);
+          break;
+        }
       break;
     }
     case 'k':
@@ -2980,7 +2986,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           (void) CopyMagickString(value,image_info->filename,MagickPathExtent);
           break;
         }
-     break;
+      break;
     }
     case 'p':
     {
@@ -3109,7 +3115,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             GetMagickPrecision(),standard_deviation);
           break;
         }
-       break;
+      break;
     }
     case 't':
     {
