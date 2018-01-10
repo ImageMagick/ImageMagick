@@ -796,22 +796,54 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
 
   if (!image2)
     goto FINISH_UNL;
+  if(exception->severity>=ErrorException)
+  {
+    CloseBlob(image2);
+    DestroyImageList(image2); 
+    goto FINISH_UNL;
+  }
 
-  /*
-    Replace current image with new image while copying base image
-    attributes.
-  */
-  (void) CopyMagickString(image2->filename,image->filename,MagickPathExtent);
-  (void) CopyMagickString(image2->magick_filename,image->magick_filename,MagickPathExtent);
-  (void) CopyMagickString(image2->magick,image->magick,MagickPathExtent);
-  image2->depth=image->depth;
-  DestroyBlob(image2);
-  image2->blob=ReferenceBlob(image->blob);
+  {
+    Image
+      *p;
 
-  if ((image->rows == 0) || (image->columns == 0))
+    /*
+      Replace current image with new image while copying base image attributes.
+    */
+    p=image2;
+    do
+    {
+      (void) CopyMagickString(p->filename,image->filename,MagickPathExtent);
+      (void) CopyMagickString(p->magick_filename,image->magick_filename,
+        MagickPathExtent);
+      (void) CopyMagickString(p->magick,image->magick,MagickPathExtent);
+      DestroyBlob(p);
+      if ((p->rows == 0) || (p->columns == 0))
+        {
+          DeleteImageFromList(&p);
+          if (p == (Image *) NULL)
+            {
+              image2=(Image *) NULL;
+              goto FINISH_UNL;
+            }
+        }
+      else 
+        {
+          p->blob=ReferenceBlob(image->blob);
+          p=p->next;
+        }
+    } while (p != (Image *) NULL);
+  }
+
+  if ((image->rows == 0 || image->columns == 0) &&
+      (image->previous != NULL || image->next != NULL))
+  {
     DeleteImageFromList(&image);
+  }
 
   AppendImageToList(&image,image2);
+  while (image->next != NULL)
+    image=image->next;
 
  FINISH_UNL:
   (void) RelinquishUniqueFileResource(postscript_file);
