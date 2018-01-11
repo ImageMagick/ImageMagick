@@ -275,41 +275,6 @@ inline static void DBSkip(DataBuffer *db, size_t skip)
   }
 }
 
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I s H E I C                                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  IsHEIC() returns MagickTrue if the image format type, identified by the
-%  magick string, is Heic.
-%
-%  The format of the IsHEIC method is:
-%
-%      MagickBooleanType IsHEIC(const unsigned char *magick,const size_t length)
-%
-%  A description of each parameter follows:
-%
-%    o magick: compare image format pattern against these bytes.
-%
-%    o length: Specifies the length of the magick string.
-%
-*/
-static MagickBooleanType IsHEIC(const unsigned char *magick,const size_t length)
-{
-  if (length < 12)
-    return(MagickFalse);
-  if (LocaleNCompare((const char *) magick+8,"heic",4) == 0)
-    return(MagickTrue);
-  return(MagickFalse);
-}
-
 static MagickBooleanType ParseAtom(Image *image, DataBuffer *db,
     HEICImageContext *ctx, ExceptionInfo *exception);
 
@@ -1317,6 +1282,40 @@ cleanup:
   return cropped;
 }
 #endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s H E I C                                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsHEIC() returns MagickTrue if the image format type, identified by the
+%  magick string, is Heic.
+%
+%  The format of the IsHEIC method is:
+%
+%      MagickBooleanType IsHEIC(const unsigned char *magick,const size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o magick: compare image format pattern against these bytes.
+%
+%    o length: Specifies the length of the magick string.
+%
+*/
+static MagickBooleanType IsHEIC(const unsigned char *magick,const size_t length)
+{
+  if (length < 12)
+    return(MagickFalse);
+  if (LocaleNCompare((const char *) magick+8,"heic",4) == 0)
+    return(MagickTrue);
+  return(MagickFalse);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
