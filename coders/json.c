@@ -1529,7 +1529,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
           JSONFormatLocaleFile(file,"%s",value);
           property=GetNextImageProperty(tile);
         }
-        tile=DestroyImage(tile);
+        tile=DestroyImageList(tile);
         if (*p != '\0')
           (void) FormatLocaleFile(file,"\n    },");
         else
