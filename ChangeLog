@@ -1,5 +1,7 @@
 2018-01-06  7.0.7-22 Cristy  <quetzlzacatenango@image...>
   * Support aspect ratio geometry, e.g. -crop 3:2.
+  * Add support for reading the HEIC image format (reference
+    https://github.com/ImageMagick/ImageMagick/issues/507).
 
 2018-01-06  7.0.7-21 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.0-21, GIT revision 22168:a91afc45b:20180106.
