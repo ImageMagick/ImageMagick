@@ -3870,6 +3870,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         (void) RelinquishUniqueFileResource(filename);
       }
+      stream_info=(DCMStreamInfo *) RelinquishMagickMemory(stream_info);
       read_info=DestroyImageInfo(read_info);
       image=DestroyImage(image);
       return(GetFirstImageInList(images));
