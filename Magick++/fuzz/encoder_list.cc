@@ -14,4 +14,6 @@ extern "C" int main() {
       std::cout << format->name << std::endl;
     }
   }
+
+  RelinquishMagickMemory(formats);
 }
