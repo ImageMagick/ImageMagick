@@ -182,6 +182,8 @@ static Image *ReadPGXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   count=(ssize_t) sscanf(buffer,"PG%[ \t]%2s%[ \t+-]%d%[ \t]%d%[ \t]%d",sans,
     endian,sign,&precision,sans,&width,sans,&height);
+  if (count != 8)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   image->depth=(size_t) precision;
   if (LocaleCompare(endian,"ML") == 0)
     image->endian=MSBEndian;
