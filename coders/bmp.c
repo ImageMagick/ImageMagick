@@ -1924,7 +1924,6 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
         /*
           Convert PseudoClass packet to BMP pixel.
         */
-puts("a");
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
