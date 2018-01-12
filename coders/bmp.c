@@ -1633,7 +1633,8 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
     /*
       Initialize BMP raster file header.
     */
-    (void) TransformImageColorspace(image,sRGBColorspace,exception);
+    if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+      (void) TransformImageColorspace(image,sRGBColorspace,exception);
     (void) ResetMagickMemory(&bmp_info,0,sizeof(bmp_info));
     bmp_info.file_size=14+12;
     if (type > 2)
@@ -1923,6 +1924,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
         /*
           Convert PseudoClass packet to BMP pixel.
         */
+puts("a");
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
