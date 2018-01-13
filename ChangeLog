@@ -1,3 +1,6 @@
+2018-01-13  7.0.7-22 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.0-22, GIT revision 22244:750548211:20180113.
+
 2018-01-06  7.0.7-22 Cristy  <quetzlzacatenango@image...>
   * Support aspect ratio geometry, e.g. -crop 3:2.
   * Add support for reading the HEIC image format (reference
