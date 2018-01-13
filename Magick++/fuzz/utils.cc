@@ -4,6 +4,6 @@
 class FuzzingResourceLimits {
 public:
     FuzzingResourceLimits() {
-        Magick::ResourceLimits::memory(1500000000);
+        Magick::ResourceLimits::memory(1000000000);
     }
 };
