@@ -1376,6 +1376,10 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
   char
     *value;
 
+  MagickBooleanType
+    status;
+
+  status=MagickTrue;
   if (resource_semaphore == (SemaphoreInfo *) NULL)
     resource_semaphore=AcquireSemaphoreInfo();
   LockSemaphoreInfo(resource_semaphore);
@@ -1474,10 +1478,11 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
       break;
     }
     default:
+      status=MagickFalse;
       break;
   }
   if (value != (char *) NULL)
     value=DestroyString(value);
   UnlockSemaphoreInfo(resource_semaphore);
-  return(MagickTrue);
+  return(status);
 }
