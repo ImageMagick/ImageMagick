@@ -162,25 +162,27 @@ static MagickBooleanType AcquireQuantumPixels(QuantumInfo *quantum_info,
   assert(quantum_info != (QuantumInfo *) NULL);
   assert(quantum_info->signature == MagickCoreSignature);
   quantum_info->number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
-  quantum_info->pixels=(unsigned char **) AcquireQuantumMemory(
+  quantum_info->pixels=(MemoryInfo **) AcquireQuantumMemory(
     quantum_info->number_threads,sizeof(*quantum_info->pixels));
-  if (quantum_info->pixels == (unsigned char **) NULL)
+  if (quantum_info->pixels == (MemoryInfo **) NULL)
     return(MagickFalse);
   quantum_info->extent=extent;
   (void) ResetMagickMemory(quantum_info->pixels,0,quantum_info->number_threads*
     sizeof(*quantum_info->pixels));
   for (i=0; i < (ssize_t) quantum_info->number_threads; i++)
   {
-    quantum_info->pixels[i]=(unsigned char *) AcquireQuantumMemory(extent+1,
-      sizeof(**quantum_info->pixels));
-    if (quantum_info->pixels[i] == (unsigned char *) NULL)
+    unsigned char
+      *pixels;
+
+    quantum_info->pixels[i]=AcquireVirtualMemory(extent+1,sizeof(*pixels));
+    if (quantum_info->pixels[i] == (MemoryInfo *) NULL)
       {
         DestroyQuantumPixels(quantum_info);
         return(MagickFalse);
       }
-    (void) ResetMagickMemory(quantum_info->pixels[i],0,(extent+1)*
-      sizeof(**quantum_info->pixels));
-    quantum_info->pixels[i][extent]=QuantumSignature;
+    pixels=(unsigned char *)  GetVirtualMemoryBlob(quantum_info->pixels[i]);
+    (void) ResetMagickMemory(pixels,0,(extent+1)*sizeof(*pixels));
+    pixels[extent]=QuantumSignature;
   }
   return(MagickTrue);
 }
@@ -212,7 +214,7 @@ MagickExport QuantumInfo *DestroyQuantumInfo(QuantumInfo *quantum_info)
 {
   assert(quantum_info != (QuantumInfo *) NULL);
   assert(quantum_info->signature == MagickCoreSignature);
-  if (quantum_info->pixels != (unsigned char **) NULL)
+  if (quantum_info->pixels != (MemoryInfo **) NULL)
     DestroyQuantumPixels(quantum_info);
   if (quantum_info->semaphore != (SemaphoreInfo *) NULL)
     RelinquishSemaphoreInfo(&quantum_info->semaphore);
@@ -253,19 +255,23 @@ static void DestroyQuantumPixels(QuantumInfo *quantum_info)
 
   assert(quantum_info != (QuantumInfo *) NULL);
   assert(quantum_info->signature == MagickCoreSignature);
-  assert(quantum_info->pixels != (unsigned char **) NULL);
+  assert(quantum_info->pixels != (MemoryInfo **) NULL);
   extent=(ssize_t) quantum_info->extent;
   for (i=0; i < (ssize_t) quantum_info->number_threads; i++)
-    if (quantum_info->pixels[i] != (unsigned char *) NULL)
+    if (quantum_info->pixels[i] != (MemoryInfo *) NULL)
       {
+        unsigned char
+          *pixels;
+
         /*
           Did we overrun our quantum buffer?
         */
-        assert(quantum_info->pixels[i][extent] == QuantumSignature);
-        quantum_info->pixels[i]=(unsigned char *) RelinquishMagickMemory(
+        pixels=(unsigned char *) GetVirtualMemoryBlob(quantum_info->pixels[i]);
+        assert(pixels[extent] == QuantumSignature);
+        quantum_info->pixels[i]=RelinquishVirtualMemory(
           quantum_info->pixels[i]);
       }
-  quantum_info->pixels=(unsigned char **) RelinquishMagickMemory(
+  quantum_info->pixels=(MemoryInfo **) RelinquishMagickMemory(
     quantum_info->pixels);
 }
 
@@ -487,7 +493,7 @@ MagickExport unsigned char *GetQuantumPixels(const QuantumInfo *quantum_info)
 
   assert(quantum_info != (QuantumInfo *) NULL);
   assert(quantum_info->signature == MagickCoreSignature);
-  return(quantum_info->pixels[id]);
+  return((unsigned char *) GetVirtualMemoryBlob(quantum_info->pixels[id]));
 }
 
 /*
@@ -680,7 +686,7 @@ MagickExport MagickBooleanType SetQuantumDepth(const Image *image,
         else
           quantum_info->depth=16;
     }
-  if (quantum_info->pixels != (unsigned char **) NULL)
+  if (quantum_info->pixels != (MemoryInfo **) NULL)
     DestroyQuantumPixels(quantum_info);
   quantum=(quantum_info->pad+MaxPixelChannels)*(quantum_info->depth+7)/8;
   extent=MagickMax(image->columns,image->rows)*quantum;

@@ -18,6 +18,7 @@
 #ifndef MAGICKCORE_QUANTUM_PRIVATE_H
 #define MAGICKCORE_QUANTUM_PRIVATE_H
 
+#include "MagickCore/memory_.h"
 #include "MagickCore/cache.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -66,7 +67,7 @@ struct _QuantumInfo
   size_t
     number_threads;
 
-  unsigned char
+  MemoryInfo
     **pixels;
 
   size_t
