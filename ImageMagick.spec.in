@@ -153,7 +153,8 @@ cp -p Magick++/demo/*.cpp Magick++/demo/*.miff Magick++/examples
         --with-rsvg \
         --with-xml \
         --with-perl-options="INSTALLDIRS=vendor %{?perl_prefix} CC='%__cc -L$PWD/MagickCore/.libs' LDDLFLAGS='-shared -L$PWD/MagickCore/.libs'" \
-        --without-dps  \
+        --without-dps \
+        --without-heic \
         --without-gcc-arch \
         --with-jbig \
         --with-openjp2
