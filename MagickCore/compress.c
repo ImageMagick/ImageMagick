@@ -449,6 +449,8 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (image->blob == (BlobInfo *) NULL)
+    ThrowBinaryException(BlobError,"UnableToOpenBlob",image->filename);
   mb_hash=(HuffmanTable **) AcquireQuantumMemory(HashSize,sizeof(*mb_hash));
   mw_hash=(HuffmanTable **) AcquireQuantumMemory(HashSize,sizeof(*mw_hash));
   scanline=(unsigned char *) AcquireQuantumMemory((size_t) image->columns,
