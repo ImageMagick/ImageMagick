@@ -1244,7 +1244,7 @@ MagickExport MagickBooleanType SetMagickSecurityPolicyValue(
             type;
 
           type=(ResourceType) ParseCommandOption(MagickResourceOptions,
-            MagickFalse,value);
+            MagickFalse,name);
           limit=MagickResourceInfinity;
           if (LocaleCompare("unlimited",value) != 0)
             limit=StringToMagickSizeType(value,100.0);
