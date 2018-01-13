@@ -1162,6 +1162,7 @@ static MagickBooleanType SetPolicyValue(const PolicyDomain domain,
       (void) ResetMagickMemory(p,0,sizeof(*p));
       p->exempt=MagickFalse;
       p->signature=MagickCoreSignature;
+      p->domain=domain;
       p->name=ConstantString(name);
       status=AppendValueToLinkedList(policy_cache,p);
     }
