@@ -1055,6 +1055,29 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   R e s e t S t r e a m A n o n y m o u s M e m o r y                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ResetStreamAnonymousMemory() resets the anonymous_memory value.
+%
+%  The format of the ResetStreamAnonymousMemory method is:
+%
+%      void ResetStreamAnonymousMemory(void)
+%
+*/
+MagickPrivate void ResetStreamAnonymousMemory(void)
+{
+  cache_anonymous_memory=0;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   S e t S t r e a m I n f o C l i e n t D a t a                             %
 %                                                                             %
 %                                                                             %

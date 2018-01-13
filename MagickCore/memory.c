@@ -165,6 +165,10 @@ typedef struct _MemoryPool
 /*
   Global declarations.
 */
+static size_t
+  max_memory_request = 0,
+  virtual_anonymous_memory = 0;
+
 #if defined _MSC_VER
 static void* MSCMalloc(size_t size)
 {
@@ -564,17 +568,6 @@ MagickExport void *AcquireQuantumMemory(const size_t count,const size_t quantum)
 %
 */
 
-static inline size_t StringToSizeType(const char *string,const double interval)
-{
-  double
-    value;
-
-  value=SiPrefixToDoubleInterval(string,interval);
-  if (value >= (double) MagickULLConstant(~0))
-    return((size_t) MagickULLConstant(~0));
-  return((size_t) value);
-}
-
 MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
   const size_t quantum)
 {
@@ -586,10 +579,6 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
 
   size_t
     extent;
-
-  static size_t
-    max_memory_request = 0,
-    virtual_anonymous_memory = 0;
 
   if (HeapOverflowSanityCheck(count,quantum) != MagickFalse)
     return((MemoryInfo *) NULL);
@@ -1165,6 +1154,52 @@ MagickExport void *ResetMagickMemory(void *memory,int byte,const size_t size)
 {
   assert(memory != (void *) NULL);
   return(memset(memory,byte,size));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   R e s e t M a x M e m o r y R e q u e s t                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ResetMaxMemoryRequest() resets the anonymous_memory value.
+%
+%  The format of the ResetMaxMemoryRequest method is:
+%
+%      void ResetMaxMemoryRequest(void)
+%
+*/
+MagickPrivate void ResetMaxMemoryRequest(void)
+{
+  max_memory_request=0;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   R e s e t V i r t u a l A n o n y m o u s M e m o r y                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ResetVirtualAnonymousMemory() resets the anonymous_memory value.
+%
+%  The format of the ResetVirtualAnonymousMemory method is:
+%
+%      void ResetVirtualAnonymousMemory(void)
+%
+*/
+MagickPrivate void ResetVirtualAnonymousMemory(void)
+{
+  virtual_anonymous_memory=0;
 }
 
 /*

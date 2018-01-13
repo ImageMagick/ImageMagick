@@ -70,6 +70,30 @@ static inline long StringToLong(const char *magick_restrict value)
   return(strtol(value,(char **) NULL,10));
 }
 
+static inline MagickSizeType StringToMagickSizeType(const char *string,
+  const double interval)
+{
+  double
+    value;
+
+  value=SiPrefixToDoubleInterval(string,interval);
+  if (value >= (double) MagickULLConstant(~0))
+    return(MagickULLConstant(~0));
+  return((MagickSizeType) value);
+}
+
+static inline size_t StringToSizeType(const char *string,
+  const double interval)
+{
+  double
+    value;
+
+  value=SiPrefixToDoubleInterval(string,interval);
+  if (value >= (double) MagickULLConstant(~0))
+    return((size_t) MagickULLConstant(~0));
+  return((size_t) value);
+}
+
 static inline unsigned long StringToUnsignedLong(
   const char *magick_restrict value)
 {

@@ -46,6 +46,10 @@ extern "C" {
 MagickExport MagickBooleanType 
   HeapOverflowSanityCheck(const size_t,const size_t) magick_alloc_sizes(1,2);
 
+extern MagickPrivate void
+  ResetMaxMemoryRequest(void),
+  ResetVirtualAnonymousMemory(void);
+
 static inline void *AcquireCriticalMemory(const size_t size)
 {
   register void

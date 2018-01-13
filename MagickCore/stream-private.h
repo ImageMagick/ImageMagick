@@ -26,6 +26,7 @@ extern MagickPrivate const void
   *GetStreamInfoClientData(StreamInfo *);
 
 extern MagickPrivate void
+  ResetStreamAnonymousMemory(void),
   SetStreamInfoClientData(StreamInfo *,const void *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

@@ -4579,6 +4579,29 @@ MagickPrivate void ResetPixelCacheChannels(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   R e s e t C a c h e A n o n y m o u s M e m o r y                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ResetCacheAnonymousMemory() resets the anonymous_memory value.
+%
+%  The format of the ResetCacheAnonymousMemory method is:
+%
+%      void ResetCacheAnonymousMemory(void)
+%
+*/
+MagickPrivate void ResetCacheAnonymousMemory(void)
+{
+  cache_anonymous_memory=0;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   R e s e t P i x e l C a c h e E p o c h                                   %
 %                                                                             %
 %                                                                             %

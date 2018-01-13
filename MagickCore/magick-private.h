@@ -27,7 +27,8 @@ extern MagickPrivate MagickBooleanType
   MagickComponentGenesis(void);
 
 extern MagickPrivate void
-  MagickComponentTerminus(void);
+  MagickComponentTerminus(void),
+  ResetMagickPrecision(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

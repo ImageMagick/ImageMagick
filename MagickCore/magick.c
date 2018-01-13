@@ -128,6 +128,9 @@ static volatile MagickBooleanType
   instantiate_magickcore = MagickFalse,
   magickcore_signal_in_progress = MagickFalse,
   magick_list_initialized = MagickFalse;
+
+static int
+  magick_precision = 0;
 
 /*
   Forward declarations.
@@ -1631,6 +1634,29 @@ MagickExport MagickBooleanType RegisterMagickInfo(MagickInfo *magick_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   R e s e t M a g i c k P r e c i s i o n                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ResetMagickPrecision() resets the magick_precision value.
+%
+%  The format of the ResetMagickPrecision method is:
+%
+%      void ResetMagickPrecision(void)
+%
+*/
+MagickPrivate void ResetMagickPrecision(void)
+{
+  magick_precision=0;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S e t M a g i c k P r e c i s i o n                                       %
 %                                                                             %
 %                                                                             %
@@ -1658,9 +1684,6 @@ MagickExport MagickBooleanType RegisterMagickInfo(MagickInfo *magick_info)
 MagickExport int SetMagickPrecision(const int precision)
 {
 #define MagickPrecision  6
-
-  static int
-    magick_precision = 0;
 
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (precision > 0)
