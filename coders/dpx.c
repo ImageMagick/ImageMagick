@@ -803,7 +803,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     case 7: image->orientation=RightBottomOrientation; break;
   }
   dpx.image.number_elements=ReadBlobShort(image);
-  if (dpx.image.number_elements > MaxNumberImageElements)
+  if ((dpx.image.number_elements < 1) ||
+      (dpx.image.number_elements > MaxNumberImageElements))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   offset+=2;
   dpx.image.pixels_per_line=ReadBlobLong(image);
