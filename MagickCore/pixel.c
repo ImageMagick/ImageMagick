@@ -5512,6 +5512,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
   interpolate=method;
   if (interpolate == UndefinedInterpolatePixel)
     interpolate=image->interpolate;
+  GetPixelInfoPixel(image,(const Quantum *) NULL,pixel);
   (void) ResetMagickMemory(&pixels,0,sizeof(pixels));
   switch (interpolate)
   {
@@ -5542,11 +5543,6 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           status=MagickFalse;
           break;
         }
-      pixel->red=0.0;
-      pixel->green=0.0;
-      pixel->blue=0.0;
-      pixel->black=0.0;
-      pixel->alpha=0.0;
       count*=count;  /* number of pixels - square of size */
       for (i=0; i < (ssize_t) count; i++)
       {
