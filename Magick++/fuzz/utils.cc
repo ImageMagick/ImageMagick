@@ -1,11 +1,13 @@
 #include <Magick++/ResourceLimits.h>
 
-class FuzzingResourceLimits {
+class FuzzingLimits {
 public:
-    FuzzingResourceLimits() {
-        Magick::ResourceLimits::memory(1000000000);
-    }
+  FuzzingLimits() {
+    Magick::ResourceLimits::memory(1000000000);
+  }
 };
+
+FuzzingLimits fuzzingLimits;
 
 #if BUILD_MAIN
 #include "encoder_format.h"

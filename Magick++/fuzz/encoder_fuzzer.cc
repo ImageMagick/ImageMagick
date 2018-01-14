@@ -5,8 +5,6 @@
 
 #include "utils.cc"
 
-static FuzzingResourceLimits kFuzzLimits;
-
 #define FUZZ_ENCODER_STRING_LITERAL(name) #name
 #ifndef FUZZ_ENCODER
 #define FUZZ_ENCODER FUZZ_ENCODER_STRING_LITERAL(FUZZ_IMAGEMAGICK_ENCODER)
