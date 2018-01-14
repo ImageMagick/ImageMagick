@@ -70,7 +70,7 @@ bool Magick::SecurityPolicy::setValue(const PolicyDomain domain_,
 }
 
 template <typename T>
-static std::string Magick::SecurityPolicy::toString(const T& value)
+std::string Magick::SecurityPolicy::toString(const T& value)
 {
   stringstream ss;
   ss << value;
