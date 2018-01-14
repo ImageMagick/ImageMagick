@@ -1072,10 +1072,10 @@ MagickExport MagickBooleanType SetMagickSecurityPolicy(const char *policy,
 {
   PolicyInfo
     *p;
-  
+
   MagickBooleanType
     status;
-  
+
   assert(exception != (ExceptionInfo *) NULL);
   if (policy == (const char *) NULL)
     return(MagickFalse);
@@ -1107,9 +1107,10 @@ MagickExport MagickBooleanType SetMagickSecurityPolicy(const char *policy,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetMagickSecurityPolicyValue() sets the a value in the ImageMagick security
-%  policy. It returns MagickFalse if the policy cannot be changed or if the
-%  policy does not parse.
+%  SetMagickSecurityPolicyValue() sets a value associated with an ImageMagick
+%  security policy.  For most policies, the value must be less than any value
+%  set by the security policy configuration file (i.e. policy.xml).  It returns
+%  MagickFalse if the policy cannot be modified or if the policy does not parse.
 %
 %  The format of the SetMagickSecurityPolicyValue method is:
 %
@@ -1137,9 +1138,6 @@ static MagickBooleanType SetPolicyValue(const PolicyDomain domain,
 
   register PolicyInfo
     *p;
-
-  register char
-    *q;
 
   status=MagickTrue;
   LockSemaphoreInfo(policy_semaphore);
@@ -1188,8 +1186,6 @@ MagickExport MagickBooleanType SetMagickSecurityPolicyValue(
   {
     case CachePolicyDomain:
     {
-      if (LocaleCompare(name,"synchronize") == 0)
-        return(SetPolicyValue(domain,name,value));
       if (LocaleCompare(name,"memory-map") == 0)
         {
           if (LocaleCompare(value,"anonymous") != 0)
@@ -1198,9 +1194,49 @@ MagickExport MagickBooleanType SetMagickSecurityPolicyValue(
           ResetStreamAnonymousMemory();
           return(SetPolicyValue(domain,name,value));
         }
+      if (LocaleCompare(name,"synchronize") == 0)
+        return(SetPolicyValue(domain,name,value));
+      break;
+    }
+    case ResourcePolicyDomain:
+    {
+      ssize_t
+        type;
+
+      if (LocaleCompare(name,"temporary-path") == 0)
+        return(SetPolicyValue(domain,name,value));
+      type=ParseCommandOption(MagickResourceOptions,MagickFalse,name);
+      if (type >= 0)
+        {
+          MagickSizeType
+            limit;
+
+          limit=MagickResourceInfinity;
+          if (LocaleCompare("unlimited",value) != 0)
+            limit=StringToMagickSizeType(value,100.0);
+          return(SetMagickResourceLimit((ResourceType) type,limit));
+        }
+      break;
     }
     case SystemPolicyDomain:
     {
+      if (LocaleCompare(name,"max-memory-request") == 0)
+        {
+          current_value=GetPolicyValue("system:max-memory-request");
+          if ((current_value == (char *) NULL) ||
+              (StringToSizeType(value,100.0) < StringToSizeType(current_value,100.0)))
+            {
+              ResetMaxMemoryRequest();
+              return(SetPolicyValue(domain,name,value));
+            }
+        }
+      if (LocaleCompare(name,"memory-map") == 0)
+        {
+          if (LocaleCompare(value,"anonymous") != 0)
+            return(MagickFalse);
+          ResetVirtualAnonymousMemory();
+          return(SetPolicyValue(domain,name,value));
+        }
       if (LocaleCompare(name,"precision") == 0)
         {
           ResetMagickPrecision();
@@ -1213,50 +1249,13 @@ MagickExport MagickBooleanType SetMagickSecurityPolicyValue(
               (StringToInteger(value) > StringToInteger(current_value)))
             return(SetPolicyValue(domain,name,value));
         }
-      else if (LocaleCompare(name,"memory-map") == 0)
-        {
-          if (LocaleCompare(value,"anonymous") != 0)
-            return(MagickFalse);
-          ResetVirtualAnonymousMemory();
-          return(SetPolicyValue(domain,name,value));
-        }
-      else if (LocaleCompare(name,"max-memory-request") == 0)
-        {
-          current_value=GetPolicyValue("system:max-memory-request");
-          if ((current_value == (char *) NULL) ||
-              (StringToSizeType(value,100.0) < StringToSizeType(
-                current_value,100.0)))
-            {
-              ResetMaxMemoryRequest();
-              return(SetPolicyValue(domain,name,value));
-            }
-        }
+      break;
     }
-    case ResourcePolicyDomain:
-    {
-      if (LocaleCompare(name,"temporary-path") == 0)
-        return(SetPolicyValue(domain,name,value));
-      else
-        {
-          MagickSizeType
-            limit;
-
-          ResourceType
-            type;
-
-          type=(ResourceType) ParseCommandOption(MagickResourceOptions,
-            MagickFalse,name);
-          limit=MagickResourceInfinity;
-          if (LocaleCompare("unlimited",value) != 0)
-            limit=StringToMagickSizeType(value,100.0);
-          return(SetMagickResourceLimit(type,limit));
-      }
-    }
-    default:
     case CoderPolicyDomain:
     case DelegatePolicyDomain:
     case FilterPolicyDomain:
     case PathPolicyDomain:
+    default:
       break;
   }
   return(MagickFalse);
