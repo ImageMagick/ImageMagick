@@ -963,6 +963,17 @@ namespace Magick
   using MagickCore::UpdatePixelTrait;
   using MagickCore::BlendPixelTrait;
 
+  // Policy domains
+  using MagickCore::PolicyDomain;
+  using MagickCore::UndefinedPolicyDomain;
+  using MagickCore::CoderPolicyDomain;
+  using MagickCore::DelegatePolicyDomain;
+  using MagickCore::FilterPolicyDomain;
+  using MagickCore::PathPolicyDomain;
+  using MagickCore::ResourcePolicyDomain;
+  using MagickCore::SystemPolicyDomain;
+  using MagickCore::CachePolicyDomain;
+
   // Preview types.  Not currently used by Magick++
   using MagickCore::PreviewType;
   using MagickCore::UndefinedPreview;

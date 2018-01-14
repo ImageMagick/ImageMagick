@@ -85,6 +85,7 @@ Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES =
 	Magick++/lib/Options.cpp \
 	Magick++/lib/Pixels.cpp \
 	Magick++/lib/ResourceLimits.cpp \
+	Magick++/lib/SecurityPolicy.cpp \
 	Magick++/lib/Statistic.cpp \
 	Magick++/lib/STL.cpp \
 	Magick++/lib/Thread.cpp \
@@ -105,6 +106,7 @@ Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES =
 	Magick++/lib/Magick++/Options.h \
 	Magick++/lib/Magick++/Pixels.h \
 	Magick++/lib/Magick++/ResourceLimits.h \
+	Magick++/lib/Magick++/SecurityPolicy.h \
 	Magick++/lib/Magick++/Statistic.h \
 	Magick++/lib/Magick++/STL.h \
 	Magick++/lib/Magick++/Thread.h \
@@ -137,6 +139,7 @@ MAGICKPP_INCHEADERS_OPT = \
 	Magick++/lib/Magick++/Montage.h \
 	Magick++/lib/Magick++/Pixels.h \
 	Magick++/lib/Magick++/ResourceLimits.h \
+	Magick++/lib/Magick++/SecurityPolicy.h \
 	Magick++/lib/Magick++/Statistic.h \
 	Magick++/lib/Magick++/STL.h \
 	Magick++/lib/Magick++/TypeMetric.h

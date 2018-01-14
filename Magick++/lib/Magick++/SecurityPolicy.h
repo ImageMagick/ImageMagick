@@ -1,0 +1,45 @@
+// This may look like C code, but it is really -*- C++ -*-
+//
+// Copyright Dirk Lemstra 2018
+//
+// Definition of the security policy.
+//
+
+#if !defined(Magick_SecurityPolicy_header)
+#define Magick_SecurityPolicy_header
+
+#include "Magick++/Include.h"
+#include <string>
+
+namespace Magick
+{
+  class MagickPPExport SecurityPolicy
+  {
+  public:
+
+    // The maximum number of significant digits to be printed.
+    static bool precision(const int precision_);
+
+    // Enables anonymous mapping for pixel cache.
+    static bool anonymousCacheMemoryMap();
+
+    // Enables anonymous virtual memory.
+    static bool anonymousSystemMemoryMap();
+
+    // The memory request limit in bytes.
+    static bool maxMemoryRequest(const MagickSizeType limit_);
+
+    // The number of passes to use when shredding files.
+    static bool shred(const int passes_);
+
+  private:
+    SecurityPolicy(void);
+
+    static bool setValue(const PolicyDomain domain_, const std::string name_,
+      const std::string value_);
+
+  }; // class SecurityPolicy
+
+} // Magick namespace
+
+#endif // Magick_SecurityPolicy_header

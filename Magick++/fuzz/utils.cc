@@ -1,8 +1,10 @@
 #include <Magick++/ResourceLimits.h>
+#include <Magick++/SecurityPolicy.h>
 
 class FuzzingLimits {
 public:
   FuzzingLimits() {
+    Magick::SecurityPolicy::maxMemoryRequest(256000000);
     Magick::ResourceLimits::memory(1000000000);
   }
 };
