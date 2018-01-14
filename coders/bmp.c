@@ -1062,31 +1062,63 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (bmp_info.red_mask != 0)
           while (((bmp_info.red_mask << shift.red) & 0x80000000UL) == 0)
+          {
             shift.red++;
+            if (shift.red > 32U)
+              break;
+          }
         if (bmp_info.green_mask != 0)
           while (((bmp_info.green_mask << shift.green) & 0x80000000UL) == 0)
+          {
             shift.green++;
+            if (shift.green > 32U)
+              break;
+          }
         if (bmp_info.blue_mask != 0)
           while (((bmp_info.blue_mask << shift.blue) & 0x80000000UL) == 0)
+          {
             shift.blue++;
+            if (shift.blue > 32U)
+              break;
+          }
         if (bmp_info.alpha_mask != 0)
           while (((bmp_info.alpha_mask << shift.opacity) & 0x80000000UL) == 0)
+          {
             shift.opacity++;
+            if (shift.opacity > 32U)
+              break;
+          }
         sample=shift.red;
         while (((bmp_info.red_mask << sample) & 0x80000000UL) != 0)
+        {
           sample++;
+          if (sample > 32U)
+            break;
+        }
         quantum_bits.red=ClampToQuantum((MagickRealType) sample-shift.red);
         sample=shift.green;
         while (((bmp_info.green_mask << sample) & 0x80000000UL) != 0)
+        {
           sample++;
+          if (sample > 32U)
+            break;
+        }
         quantum_bits.green=ClampToQuantum((MagickRealType) sample-shift.green);
         sample=shift.blue;
         while (((bmp_info.blue_mask << sample) & 0x80000000UL) != 0)
+        {
           sample++;
+          if (sample > 32U)
+            break;
+        }
         quantum_bits.blue=ClampToQuantum((MagickRealType) sample-shift.blue);
         sample=shift.opacity;
         while (((bmp_info.alpha_mask << sample) & 0x80000000UL) != 0)
+        {
           sample++;
+          if (sample > 32U)
+            break;
+        }
         quantum_bits.opacity=ClampToQuantum((MagickRealType) sample-
           shift.opacity);
       }
