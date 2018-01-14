@@ -803,7 +803,8 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
             /*
               Sparse-color format.
             */
-            if (GetPixelOpacity(p) == (Quantum) OpaqueOpacity)
+            if ((image->matte == MagickFalse) ||
+                (GetPixelOpacity(p) == (Quantum) OpaqueOpacity))
               {
                 GetColorTuple(&pixel,MagickFalse,tuple);
                 (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g,",
