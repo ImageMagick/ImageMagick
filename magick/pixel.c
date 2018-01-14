@@ -4485,6 +4485,7 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
   interpolate = method;
   if (interpolate == UndefinedInterpolatePixel)
     interpolate=image->interpolate;
+  GetMagickPixelPacket(image,pixel);
   switch (interpolate)
   {
     case AverageInterpolatePixel:        /* nearest 4 neighbours */
