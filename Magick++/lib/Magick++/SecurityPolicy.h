@@ -38,6 +38,9 @@ namespace Magick
     static bool setValue(const PolicyDomain domain_, const std::string name_,
       const std::string value_);
 
+    template <typename T>
+    static std::string toString(const T& value);
+
   }; // class SecurityPolicy
 
 } // Magick namespace

@@ -11,6 +11,7 @@
 #include "Magick++/SecurityPolicy.h"
 #include "Magick++/Exception.h"
 #include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -29,7 +30,7 @@ bool Magick::SecurityPolicy::precision(const int precision_)
   string
     value;
 
-  value=std::to_string(precision_);
+  value=toString(precision_);
   return(setValue(SystemPolicyDomain,"precision",value));
 }
 
@@ -38,7 +39,7 @@ bool Magick::SecurityPolicy::maxMemoryRequest(const MagickSizeType limit_)
   string
     value;
 
-  value=std::to_string(limit_);
+  value=toString(limit_);
   return(setValue(SystemPolicyDomain,"max-memory-request",value));
 }
 
@@ -47,7 +48,7 @@ bool Magick::SecurityPolicy::shred(const int passes_)
   string
     value;
 
-  value=std::to_string(passes_);
+  value=toString(passes_);
   return(setValue(SystemPolicyDomain,"shred",value));
 }
 
@@ -66,4 +67,12 @@ bool Magick::SecurityPolicy::setValue(const PolicyDomain domain_,
     value_.c_str(),exceptionInfo);
   ThrowPPException(false);
   return(status != MagickFalse);
+}
+
+template <typename T>
+static std::string Magick::SecurityPolicy::toString(const T& value)
+{
+  stringstream ss;
+  ss << value;
+  return ss.str();
 }
