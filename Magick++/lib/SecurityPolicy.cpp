@@ -29,7 +29,7 @@ bool Magick::SecurityPolicy::precision(const int precision_)
   string
     value;
 
-  value=to_string(precision_);
+  value=std::to_string(precision_);
   return(setValue(SystemPolicyDomain,"precision",value));
 }
 
@@ -38,7 +38,7 @@ bool Magick::SecurityPolicy::maxMemoryRequest(const MagickSizeType limit_)
   string
     value;
 
-  value=to_string(limit_);
+  value=std::to_string(limit_);
   return(setValue(SystemPolicyDomain,"max-memory-request",value));
 }
 
@@ -47,7 +47,7 @@ bool Magick::SecurityPolicy::shred(const int passes_)
   string
     value;
 
-  value=to_string(passes_);
+  value=std::to_string(passes_);
   return(setValue(SystemPolicyDomain,"shred",value));
 }
 
