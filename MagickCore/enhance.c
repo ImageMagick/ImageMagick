@@ -1446,11 +1446,14 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
       r=p+4*GetPixelChannels(image)*(image->columns+4);
       EnhancePixel(5.0); EnhancePixel(8.0); EnhancePixel(10.0);
         EnhancePixel(8.0); EnhancePixel(5.0);
-      pixel.red=((aggregate.red+total_weight/2.0)/total_weight);
-      pixel.green=((aggregate.green+total_weight/2.0)/total_weight);
-      pixel.blue=((aggregate.blue+total_weight/2.0)/total_weight);
-      pixel.black=((aggregate.black+total_weight/2.0)/total_weight);
-      pixel.alpha=((aggregate.alpha+total_weight/2.0)/total_weight);
+      if (total_weight > MagickEpsilon)
+        {
+          pixel.red=((aggregate.red+total_weight/2.0)/total_weight);
+          pixel.green=((aggregate.green+total_weight/2.0)/total_weight);
+          pixel.blue=((aggregate.blue+total_weight/2.0)/total_weight);
+          pixel.black=((aggregate.black+total_weight/2.0)/total_weight);
+          pixel.alpha=((aggregate.alpha+total_weight/2.0)/total_weight);
+        }
       SetPixelViaPixelInfo(image,&pixel,q);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(enhance_image);
