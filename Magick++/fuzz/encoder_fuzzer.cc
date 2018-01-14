@@ -5,9 +5,10 @@
 
 #include "utils.cc"
 
+#define FUZZ_ENCODER_STRING_LITERAL_X(name) FUZZ_ENCODER_STRING_LITERAL(name)
 #define FUZZ_ENCODER_STRING_LITERAL(name) #name
 #ifndef FUZZ_ENCODER
-#define FUZZ_ENCODER FUZZ_ENCODER_STRING_LITERAL(FUZZ_IMAGEMAGICK_ENCODER)
+#define FUZZ_ENCODER FUZZ_ENCODER_STRING_LITERAL_X(FUZZ_IMAGEMAGICK_ENCODER)
 #endif
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
@@ -15,7 +16,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
   Magick::Image image;
   try {
     image.magick(FUZZ_ENCODER);
-    image.fileName(FUZZ_ENCODER + ':');
+    image.fileName(std::string(FUZZ_ENCODER) + ":");
     image.read(blob);
   }
   catch (Magick::Exception &e) {
