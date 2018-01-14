@@ -227,6 +227,10 @@ static LZWInfo *AcquireLZWInfo(Image *image,const size_t data_size)
       lzw_info=RelinquishLZWInfo(lzw_info);
       return((LZWInfo *) NULL);
     }
+  (void) ResetMagickMemory(lzw_info->table[0],0,MaximumLZWCode*
+    sizeof(**lzw_info->table));
+  (void) ResetMagickMemory(lzw_info->table[1],0,MaximumLZWCode*
+    sizeof(**lzw_info->table));
   for (i=0; i <= (ssize_t) lzw_info->maximum_data_value; i++)
   {
     lzw_info->table[0][i]=0;
