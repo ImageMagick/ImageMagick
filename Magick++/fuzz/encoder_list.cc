@@ -1,19 +1,16 @@
 #include <iostream>
+#include <list>
 
-#include <Magick++/Blob.h>
 #include <Magick++/Image.h>
+#include <Magick++/STL.h>
 
-extern "C" int main() {
-  size_t nFormats;
-  Magick::ExceptionInfo ex;
-  const Magick::MagickInfo **formats = GetMagickInfoList("*", &nFormats, &ex);
+int main() {
+  std::list<Magick::CoderInfo> coderList;
+  coderInfoList(&coderList, Magick::CoderInfo::TrueMatch, Magick::CoderInfo::AnyMatch, Magick::CoderInfo::AnyMatch);
 
-  for (size_t i = 0; i < nFormats; i++) {
-    const Magick::MagickInfo *format = formats[i];
-    if (format->encoder && format->name) {
-      std::cout << format->name << std::endl;
-    }
+  for (std::list<Magick::CoderInfo>::iterator it = coderList.begin(); it != coderList.end(); it++)
+  {
+    //std::cout << ((*it).isWritable() ? "+" : "-") << (*it).name() << std::endl;
+    std::cout << (*it).name() << std::endl;
   }
-
-  RelinquishMagickMemory(formats);
 }
