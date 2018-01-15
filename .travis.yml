@@ -20,8 +20,10 @@ script:
   - export CFLAGS="-Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable"
   - ./configure --disable-openmp --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
   - make
-  - # Generate AppImage
   - make install DESTDIR=$(readlink -f appdir)
+  - # Build the fuzzers
+  - ./.travis/build_fuzzers.sh
+  - # Generate AppImage
   - mkdir -p appdir/usr/share/applications/ ; cp imagemagick.desktop appdir/usr/share/applications/
   - mkdir -p appdir/usr/share/icons/hicolor/128x128/apps/ ; touch appdir/usr/share/icons/hicolor/128x128/apps/imagemagick.png # FIXME
   - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
