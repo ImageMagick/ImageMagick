@@ -2719,7 +2719,7 @@ MagickExport MagickBooleanType IsBlobSeekable(const Image *image)
       int
         status;
 
-      if (fileno(blob_info->file_info.file) == -1)
+      if (blob_info->file_info.file == (FILE *) NULL)
         return(MagickFalse);
       status=fseek(blob_info->file_info.file,0,SEEK_CUR);
       return(status == -1 ? MagickFalse : MagickTrue);
