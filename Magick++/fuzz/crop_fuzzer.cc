@@ -24,3 +24,5 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
   image.crop(Magick::Geometry(Width, Height));
   return 0;
 }
+
+#include "travis.cc"
