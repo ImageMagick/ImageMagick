@@ -15,7 +15,7 @@ popd
 
 clang++ -std=c++11 -I$MAGICKINCLUDE "Magick++/fuzz/encoder_list.cc" \
     -o "encoder_list" \
-    -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 $MAGICKSTATICLIBS -lpthread
+    -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 $MAGICKSTATICLIBS -lpthread -lfreetype
 
 for f in Magick++/fuzz/*_fuzzer.cc; do
     fuzzer=$(basename "$f" _fuzzer.cc)
@@ -25,12 +25,12 @@ for f in Magick++/fuzz/*_fuzzer.cc; do
     fi
     clang++ -std=c++11 -I$MAGICKINCLUDE \
         "$f" -o "${fuzzer}_fuzzer" \
-        -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 $MAGICKSTATICLIBS -lpthread
+        -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 $MAGICKSTATICLIBS -lpthread-lfreetype
 done
 
 for encoder in $("./encoder_list"); do
     clang++ -std=c++11 -I$MAGICKINCLUDE \
         "Magick++/fuzz/encoder_fuzzer.cc" -o "encoder_${encoder,,}_fuzzer" \
         -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 \
-        "-DFUZZ_IMAGEMAGICK_ENCODER=$encoder" $MAGICKSTATICLIBS -lpthread
+        "-DFUZZ_IMAGEMAGICK_ENCODER=$encoder" $MAGICKSTATICLIBS -lpthread -lfreetype
 done
