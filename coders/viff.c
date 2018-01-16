@@ -292,6 +292,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       &viff_info.machine_dependency);
     (void) ReadBlob(image,sizeof(viff_info.reserve),viff_info.reserve);
     count=ReadBlob(image,512,(unsigned char *) viff_info.comment);
+    if (count != 512)
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     viff_info.comment[511]='\0';
     if (strlen(viff_info.comment) > 4)
       (void) SetImageProperty(image,"comment",viff_info.comment,exception);
