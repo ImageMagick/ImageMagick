@@ -5,7 +5,8 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include "Shlwapi.h"
+#include <Shlwapi.h>
+#include <stdint.h>
 #include "encoder_format.h"
 using namespace std;
 
