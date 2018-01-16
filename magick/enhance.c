@@ -2923,7 +2923,7 @@ MagickExport MagickBooleanType LevelImage(Image *image,const char *levels)
 %
 %    o black_point: The level which is to be mapped to zero (black)
 %
-%    o white_point: The level which is to be mapped to QuantiumRange (white)
+%    o white_point: The level which is to be mapped to QuantumRange (white)
 %
 %    o gamma: adjust gamma by this factor before mapping values.
 %      use 1.0 for purely linear stretching of image color values
@@ -3106,7 +3106,7 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
 %
 %    o black_point: The level to map zero (black) to.
 %
-%    o white_point: The level to map QuantiumRange (white) to.
+%    o white_point: The level to map QuantumRange (white) to.
 %
 %    o gamma: adjust gamma by this factor before mapping values.
 %
