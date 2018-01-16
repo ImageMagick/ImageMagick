@@ -142,7 +142,7 @@ extern "C" {
 */
 typedef enum
 {
-  UndefinedReference = 0,
+  NullReference = 0,
   ArrayReference = (~0),
   RealReference = (~0)-1,
   FileReference = (~0)-2,
