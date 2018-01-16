@@ -6,5 +6,6 @@ MAGICK_INCLUDE="appdir/usr/include/ImageMagick-7"
 MAGICK_SRC="Magick++/fuzz"
 MAGICK_LIBS="-Lappdir/usr/lib -lz -lpng -lfontconfig -lxcb -lX11 -lXext -lbz2 -ljpeg -ljbig -lIlmImf -ldjvulibre -ltiff -llqr-1 -lwmf -lwmflite -lraqm -lxml2 -llzma -llcms2 -lpthread -lfreetype -lMagick++-7.Q16 -lMagickWand-7.Q16 -lMagickCore-7.Q16"
 MAGICK_OUTPUT="Magick++/fuzz"
+MAGICK_FAST_BUILD=1
 
 . $MAGICK_SRC/build_fuzzers.sh

@@ -10,6 +10,7 @@ MAGICK_INCLUDE="$WORK/include/ImageMagick-7"
 MAGICK_SRC="$SRC/imagemagick/Magick++/fuzz"
 MAGICK_LIBS="-lFuzzingEngine $WORK/lib/libMagick++-7.Q16HDRI.a $WORK/lib/libMagickWand-7.Q16HDRI.a $WORK/lib/libMagickCore-7.Q16HDRI.a"
 MAGICK_OUTPUT=$OUT
+MAGICK_FAST_BUILD=0
 
 . $MAGICK_SRC/build_fuzzers.sh
 

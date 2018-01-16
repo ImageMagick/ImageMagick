@@ -20,4 +20,8 @@ for encoder in $("$MAGICK_SRC/encoder_list"); do
     $MAGICK_COMPILER $MAGICK_COMPILER_FLAGS -std=c++11 -I$MAGICK_INCLUDE \
         "$MAGICK_SRC/encoder_fuzzer.cc" -o "$MAGICK_OUTPUT/encoder_${encoder,,}_fuzzer" \
          $encoder_flags $MAGICK_LIBS
+
+    if [ $MAGICK_FAST_BUILD -eq 1 ]; then
+        break
+    fi
 done
