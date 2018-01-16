@@ -153,10 +153,10 @@
    Most functions use a blending mode of over (X=1,Y=1,Z=1) this results in
    the following optimizations...
       gamma = Sa+Da-Sa*Da;
-      gamma = 1 - QuantiumScale*alpha * QuantiumScale*beta;
-      opacity = QuantiumScale*alpha*beta;  // over blend, optimized 1-Gamma
+      gamma = 1 - QuantumScale*alpha * QuantumScale*beta;
+      opacity = QuantumScale*alpha*beta;  // over blend, optimized 1-Gamma
 
-   The above SVG definitions also definate that Mathematical Composition
+   The above SVG definitions also define that Mathematical Composition
    methods should use a 'Over' blending mode for Alpha Channel.
    It however was not applied for composition modes of 'Plus', 'Minus',
    the modulus versions of 'Add' and 'Subtract'.
