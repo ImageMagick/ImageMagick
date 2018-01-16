@@ -10,7 +10,6 @@ int main() {
 
   for (std::list<Magick::CoderInfo>::iterator it = coderList.begin(); it != coderList.end(); it++)
   {
-    //std::cout << ((*it).isWritable() ? "+" : "-") << (*it).name() << std::endl;
-    std::cout << (*it).name() << std::endl;
+    std::cout << ((*it).isWritable() ? "+" : "-") << (*it).name() << std::endl;
   }
 }
