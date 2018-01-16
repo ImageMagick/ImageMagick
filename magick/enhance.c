@@ -2435,7 +2435,7 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
 
   /* call opencl version */
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
-  status=AccelerateGrayscaleImage(image,method,&image->exception);
+  if (AccelerateGrayscaleImage(image,method,&image->exception) != MagickFalse)
     {
       image->intensity=method;
       image->type=GrayscaleType;
