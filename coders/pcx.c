@@ -418,6 +418,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowPCXException(ResourceLimitError,"MemoryAllocationFailed");
       }
     pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
+    (void) ResetMagickMemory(pixels,0,(size_t) pcx_packets*(2*sizeof(*pixels)));
     /*
       Uncompress image data.
     */
