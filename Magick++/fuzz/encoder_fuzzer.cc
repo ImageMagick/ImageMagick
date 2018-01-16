@@ -23,7 +23,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
     return 0;
   }
 
-#if FUZZ_IMAGEMAGICK_ENCODER_WRITE
+#if FUZZ_IMAGEMAGICK_ENCODER_WRITE || BUILD_MAIN
 
   Magick::Blob outBlob;
   try {
