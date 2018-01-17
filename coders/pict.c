@@ -927,6 +927,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
+  (void) SetImageBackgroundColor(image,exception);
   /*
     Interpret PICT opcodes.
   */
