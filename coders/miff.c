@@ -899,8 +899,12 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     profile=BlobToStringInfo((const void *) NULL,(size_t)
                       StringToLong(options));
                     if (profile == (StringInfo *) NULL)
-                      ThrowReaderException(ResourceLimitError,
-                        "MemoryAllocationFailed");
+                      {
+                        profiles=DestroyLinkedList(profiles,
+                          RelinquishMagickMemory);
+                        ThrowReaderException(ResourceLimitError,
+                          "MemoryAllocationFailed");
+                      }
                     (void) SetImageProfile(image,keyword+8,profile,exception);
                     profile=DestroyStringInfo(profile);
                     break;
