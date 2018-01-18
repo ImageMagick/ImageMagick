@@ -267,7 +267,10 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
   (void) CloneString(&draw_info->geometry,geometry);
   status=GetTypeMetrics(image,draw_info,&metrics,exception);
   if (status == MagickFalse)
-    ThrowReaderException(TypeError,"UnableToGetTypeMetrics");
+    {
+      draw_info=DestroyDrawInfo(draw_info);
+      ThrowReaderException(TypeError,"UnableToGetTypeMetrics");
+    }
   page.y=(ssize_t) ceil((double) page.y+metrics.ascent-0.5);
   (void) FormatLocaleString(geometry,MagickPathExtent,"%gx%g%+g%+g",(double)
     image->columns,(double) image->rows,(double) page.x,(double) page.y);
