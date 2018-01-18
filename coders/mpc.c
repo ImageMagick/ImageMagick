@@ -266,7 +266,11 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             *p=(char) c;
           }
           if (comment == (char *) NULL)
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+            {
+              options=DestroyString(options);
+              ThrowReaderException(ResourceLimitError,
+                "MemoryAllocationFailed");
+            }
           *p='\0';
           (void) SetImageProperty(image,"comment",comment);
           comment=DestroyString(comment);
@@ -618,6 +622,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       StringToLong(options));
                     if (profile == (StringInfo *) NULL)
                       {
+                        options=DestroyString(options);
                         profiles=DestroyLinkedList(profiles,
                           RelinquishMagickMemory);
                         ThrowReaderException(ResourceLimitError,
