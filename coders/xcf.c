@@ -1341,11 +1341,13 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       saved_pos=TellBlob(image);
       /* seek to the layer offset */
-      if (SeekBlob(image,offset,SEEK_SET) != offset)
-        ThrowReaderException(CorruptImageError,"NotEnoughPixelData");
-      /* read in the layer */
-      layer_ok=ReadOneLayer(image_info,image,&doc_info,
-        &layer_info[current_layer],current_layer,exception);
+      layer_ok=MagickFalse;
+      if (SeekBlob(image,offset,SEEK_SET) == offset)
+        {
+          /* read in the layer */
+          layer_ok=ReadOneLayer(image_info,image,&doc_info,
+            &layer_info[current_layer],current_layer,exception);
+        }
       if (layer_ok == MagickFalse)
         {
           ssize_t j;
@@ -1354,7 +1356,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (layer_info[j].image != (Image *) NULL)
               layer_info[j].image=DestroyImage(layer_info[j].image);
           layer_info=(XCFLayerInfo *) RelinquishMagickMemory(layer_info);
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+          ThrowReaderException(CorruptImageError,"NotEnoughPixelData");
         }
       /* restore the saved position so we'll be ready to
       *  read the next offset.
