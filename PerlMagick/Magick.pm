@@ -50,6 +50,7 @@ sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
     # XS function.  If a constant is not found then control is passed
     # to the AUTOLOAD in AutoLoader.
+    no warnings;
 
     my $constname;
     ($constname = $AUTOLOAD) =~ s/.*:://;
