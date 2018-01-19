@@ -377,7 +377,7 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
             /* DECGRI Graphics Repeat Introducer ! Pn Ch */
             p = get_params(++p, param, &n);
 
-            if (n > 0) {
+            if ((n > 0) && (param[0] > 0)) {
                 repeat_count = param[0];
             }
 
