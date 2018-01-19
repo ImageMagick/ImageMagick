@@ -12,10 +12,17 @@
 #endif
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
+  std::string encoder = FUZZ_ENCODER;
+  // Due to macro foolishness, if we pass -DFUZZ_IMAGEMAGICK_ENCODER=NULL,
+  // FUZZ_ENCODER ends up being "__null".
+  if (encoder == "__null") {
+    encoder = "NULL";
+  }
+  
   const Magick::Blob blob(Data, Size);
   Magick::Image image;
-  image.magick(FUZZ_ENCODER);
-  image.fileName(std::string(FUZZ_ENCODER) + ":");
+  image.magick(encoder);
+  image.fileName(std::string(encoder) + ":");
   try {
     image.read(blob);
   }
@@ -27,7 +34,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
 
   Magick::Blob outBlob;
   try {
-    image.write(&outBlob, FUZZ_ENCODER);
+    image.write(&outBlob, encoder);
   }
   catch (Magick::Exception &e) {
   }
