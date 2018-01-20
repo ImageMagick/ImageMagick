@@ -547,10 +547,10 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         j++;
         blocks[j].offset=(ssize_t) i;
-        if (j >= 256)
+        if (j >= 255)
           {
             stitches=(PointInfo *) RelinquishMagickMemory(stitches);
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+            ThrowReaderException(ResourceLimitError,"CorruptImage");
           }
         (void) ReadBlobByte(image);
         continue;
