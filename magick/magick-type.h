@@ -192,6 +192,29 @@ typedef enum
   MagickTrue = 1
 } MagickBooleanType;
 
+/*
+  The IsNaN test is for special floating point numbers of value Nan (not a
+  number). NaN's are defined as part of the IEEE standard for floating point
+  number representation, and need to be watched out for. Morphology Kernels
+  often use these special numbers as neighbourhood masks.
+
+  The special property that two NaN's are never equal, even if they are from
+  the same variable allows you to test if a value is special NaN value.
+
+  The macros are thus is only true if the value given is NaN.
+*/
+#if defined(MAGICKCORE_HAVE_ISNAN)
+#  define IsNaN(a) isnan(a)
+#elif defined(_MSC_VER) && (_MSC_VER >= 1310)
+#  include <float.h>
+#  define IsNaN(a) _isnan(a)
+#else
+#  define IsNaN(a) (a != a)
+#endif
+#if !defined(INFINITY)
+#  define INFINITY (-logf(0))
+#endif
+
 typedef struct _BlobInfo BlobInfo;
 
 typedef struct _ExceptionInfo ExceptionInfo;
