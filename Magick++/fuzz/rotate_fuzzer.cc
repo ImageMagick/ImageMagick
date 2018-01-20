@@ -17,10 +17,10 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
   Magick::Image image;
   try {
     image.read(blob);
+    image.rotate(Degrees);
   } catch (Magick::Exception &e) {
     return 0;
   }
-  image.rotate(Degrees);
   return 0;
 }
 

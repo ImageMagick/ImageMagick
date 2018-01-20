@@ -18,10 +18,10 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
   Magick::Image image;
   try {
     image.read(blob);
+    image.crop(Magick::Geometry(Width, Height));
   } catch (Magick::Exception &e) {
     return 0;
   }
-  image.crop(Magick::Geometry(Width, Height));
   return 0;
 }
 
