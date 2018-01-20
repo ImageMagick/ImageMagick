@@ -777,17 +777,17 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
       }
     if (quantum_info != (QuantumInfo *) NULL)
       quantum_info=DestroyQuantumInfo(quantum_info);
-    rotate_image=RotateImage(image,90.0,exception);
-    if (rotate_image != (Image *) NULL)
-      {
-        image=DestroyImage(image);
-        image=rotate_image;
-      }
     if (EOFBlob(image) != MagickFalse)
       {
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
           image->filename);
         break;
+      }
+    rotate_image=RotateImage(image,90.0,exception);
+    if (rotate_image != (Image *) NULL)
+      {
+        image=DestroyImage(image);
+        image=rotate_image;
       }
     /*
       Proceed to next image.
