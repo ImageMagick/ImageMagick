@@ -556,7 +556,7 @@ ssize_t TotalSize = 0;
     if ((zip_status != Z_OK) && (zip_status != Z_STREAM_END))
       break;
 
-    *Size -= magick_size;
+    *Size -= (unsigned int) magick_size;
   }
 DblBreak:
 
