@@ -511,7 +511,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
       (void) TransformImageColorspace(image,sRGBColorspace,exception);
   if (AcquireImageColormap(image,cube_info->colors,exception) == MagickFalse)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);;
+      image->filename);
   image->colors=0;
   cube_info->transparent_pixels=0;
   cube_info->transparent_index=(-1);
