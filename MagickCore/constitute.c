@@ -927,7 +927,10 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
   length=0;
   blob=Base64Decode(p,&length);
   if (length == 0)
-    ThrowReaderException(CorruptImageError,"CorruptImage");
+    {
+      blob=(unsigned char *) RelinquishMagickMemory(blob);
+      ThrowReaderException(CorruptImageError,"CorruptImage");
+    }
   read_info=CloneImageInfo(image_info);
   (void) SetImageInfoProgressMonitor(read_info,(MagickProgressMonitor) NULL,
     (void *) NULL);
