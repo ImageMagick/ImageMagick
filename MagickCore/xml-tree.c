@@ -2308,6 +2308,8 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
   utf8=DestroyString(utf8);
   if (root->node == (XMLTreeInfo *) NULL)
     return(&root->root);
+  if (l != 0)
+    (void) DestroyXMLTreeAttributes(attributes);
   if (root->node->tag == (char *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
