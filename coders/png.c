@@ -1706,7 +1706,7 @@ Magick_png_read_raw_profile(png_struct *ping,Image *image,
   register png_charp
     sp;
 
-  png_uint_32
+  size_t
     extent,
     length,
     nibbles;
@@ -1738,7 +1738,7 @@ Magick_png_read_raw_profile(png_struct *ping,Image *image,
       return(MagickFalse);
     }
 
-  length=(png_uint_32) StringToLong(sp);
+  length=StringToLong(sp);
 
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
        "      length: %lu",(unsigned long) length);
