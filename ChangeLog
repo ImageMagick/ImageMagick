@@ -6,6 +6,7 @@
   * Add support for reading the HEIC image format (reference
     https://github.com/ImageMagick/ImageMagick/issues/507).
   * Fix IM build when HEIC is enabled.
+  * Fixed numerous memory leaks, credit to OSS Fuzz.
 
 2018-01-06  6.9.9-33 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.9-33, GIT revision 12491:5c40f3a88:20180106.
