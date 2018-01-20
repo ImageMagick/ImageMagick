@@ -180,6 +180,8 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
   MagickSizeType
     limit;
 
+  if ((MagickOffsetType) size < 0)
+    return(MagickFalse);
   status=MagickFalse;
   logging=IsEventLogging();
   if (resource_semaphore == (SemaphoreInfo *) NULL)
@@ -203,6 +205,8 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     }
     case MemoryResource:
     {
+      if ((resource_info.memory+(MagickOffsetType) size) < 0)
+        return(MagickFalse);
       resource_info.memory+=(MagickOffsetType) size;
       limit=resource_info.memory_limit;
       if ((limit == MagickResourceInfinity) ||
@@ -221,6 +225,8 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     }
     case MapResource:
     {
+      if ((resource_info.map+(MagickOffsetType) size) < 0)
+        return(MagickFalse);
       resource_info.map+=(MagickOffsetType) size;
       limit=resource_info.map_limit;
       if ((limit == MagickResourceInfinity) ||
@@ -239,6 +245,8 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     }
     case DiskResource:
     {
+      if ((resource_info.disk+(MagickOffsetType) size) < 0)
+        return(MagickFalse);
       resource_info.disk+=(MagickOffsetType) size;
       limit=resource_info.disk_limit;
       if ((limit == MagickResourceInfinity) ||
@@ -257,6 +265,8 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     }
     case FileResource:
     {
+      if ((resource_info.file+(MagickOffsetType) size) < 0)
+        return(MagickFalse);
       resource_info.file+=(MagickOffsetType) size;
       limit=resource_info.file_limit;
       if ((limit == MagickResourceInfinity) ||
@@ -319,6 +329,8 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     }
     case TimeResource:
     {
+      if ((resource_info.file+(MagickOffsetType) size) < 0)
+        return(MagickFalse);
       resource_info.time+=(MagickOffsetType) size;
       limit=resource_info.time_limit;
       if ((limit == MagickResourceInfinity) ||
