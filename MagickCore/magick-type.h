@@ -179,7 +179,7 @@ typedef enum
 #  define IsNaN(a) (a != a)
 #endif
 #if !defined(INFINITY)
-#  define INFINITY (-logf(0))
+#  define INFINITY (-logf(0f))
 #endif
 
 typedef struct _BlobInfo BlobInfo;
