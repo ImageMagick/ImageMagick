@@ -768,7 +768,10 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   (void) SeekBlob(image,PS_Offset,SEEK_SET);
   count=ReadBlob(image, 2*MagickPathExtent, magick);
   if (count < 1)
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    {
+      DestroyImageInfo(clone_info);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
 
   (void) SeekBlob(image,PS_Offset,SEEK_SET);
   while (PS_Size-- > 0)
@@ -1115,10 +1118,15 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               break;
 
             case 0x11:  /* Start PS l1 */
-              if(Rec.RecordLength > 8)
-                image=ExtractPostscript(image,image_info,
-                  TellBlob(image)+8,   /* skip PS header in the wpg */
-                  (ssize_t) Rec.RecordLength-8,exception);
+              if (Rec.RecordLength > 8)
+                {
+                  image=ExtractPostscript(image,image_info,
+                    TellBlob(image)+8,   /* skip PS header in the wpg */
+                    (ssize_t) Rec.RecordLength-8,exception);
+                  if (image == NULL)
+                    ThrowReaderException(CorruptImageError,
+                      "ImproperImageHeader");
+                }
               break;
 
             case 0x14:  /* bitmap type 2 */
@@ -1255,10 +1263,15 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               break;
 
             case 0x1B:  /* Postscript l2 */
-              if(Rec.RecordLength>0x3C)
-                image=ExtractPostscript(image,image_info,
-                  TellBlob(image)+0x3C,   /* skip PS l2 header in the wpg */
-                  (ssize_t) Rec.RecordLength-0x3C,exception);
+              if (Rec.RecordLength>0x3C)
+                {
+                  image=ExtractPostscript(image,image_info,
+                    TellBlob(image)+0x3C,   /* skip PS l2 header in the wpg */
+                    (ssize_t) Rec.RecordLength-0x3C,exception);
+                  if (image == NULL)
+                    ThrowReaderException(CorruptImageError,
+                      "ImproperImageHeader");
+                }
               break;
             }
         }
@@ -1446,10 +1459,15 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 
             case 0x12:  /* Postscript WPG2*/
         i=ReadBlobLSBShort(image);
-              if(Rec2.RecordLength > (unsigned int) i)
-                image=ExtractPostscript(image,image_info,
-                  TellBlob(image)+i,    /*skip PS header in the wpg2*/
-                  (ssize_t) (Rec2.RecordLength-i-2),exception);
+              if (Rec2.RecordLength > (unsigned int) i)
+                {
+                  image=ExtractPostscript(image,image_info,
+                    TellBlob(image)+i,    /*skip PS header in the wpg2*/
+                    (ssize_t) (Rec2.RecordLength-i-2),exception);
+                  if (image == NULL)
+                    ThrowReaderException(CorruptImageError,
+                      "ImproperImageHeader");
+                }
               break;
 
       case 0x1B:          /*bitmap rectangle*/
