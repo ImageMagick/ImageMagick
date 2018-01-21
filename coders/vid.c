@@ -100,6 +100,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define ClientName  "montage"
 
   char
+    **list,
     **filelist,
     *label;
 
@@ -139,12 +140,15 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   image=AcquireImage(image_info,exception);
-  filelist=(char **) AcquireMagickMemory(sizeof(*filelist));
-  if (filelist == (char **) NULL)
+  list=(char **) AcquireMagickMemory(sizeof(*filelist));
+  if (list == (char **) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  filelist[0]=ConstantString(image_info->filename);
+  list[0]=ConstantString(image_info->filename);
+  filelist=list;
   number_files=1;
   status=ExpandFilenames(&number_files,&filelist);
+  list[0]=DestroyString(list[0]);
+  list=(char **) RelinquishMagickMemory(list);
   if ((status == MagickFalse) || (number_files == 0))
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   image=DestroyImage(image);
