@@ -2113,7 +2113,7 @@ static MagickBooleanType ReadDXT3Pixels(Image *image,
       {
         for (i = 0; i < 4; i++)
         {
-          if ((x + i) < (ssize_t) image->rows && (y + j) < (ssize_t) image->columns)
+          if ((x + i) < (ssize_t) image->columns && (y + j) < (ssize_t) image->rows)
             {
               code = (bits >> ((4*j+i)*2)) & 0x3;
               SetPixelRed(image,ScaleCharToQuantum(colors.r[code]),q);
