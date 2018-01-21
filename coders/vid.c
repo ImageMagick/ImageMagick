@@ -100,9 +100,9 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define ClientName  "montage"
 
   char
-    **list,
     **filelist,
-    *label;
+    *label,
+    **list;
 
   Image
     *image,
