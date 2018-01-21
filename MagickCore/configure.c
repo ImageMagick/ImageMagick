@@ -955,6 +955,9 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
       }
   }
 #endif
+  if (GetNumberOfElementsInLinkedList(paths) == 0)
+    (void) ThrowMagickException(exception,GetMagickModule(),ConfigureWarning,
+      "no configuration paths found","`%s'",filename);
   return(paths);
 }
 

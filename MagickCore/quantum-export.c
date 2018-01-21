@@ -250,6 +250,7 @@ static void ExportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
 
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  (void) exception;
   switch (quantum_info->depth)
   {
     case 8:

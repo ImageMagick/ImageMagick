@@ -2230,9 +2230,10 @@ MagickPrivate unsigned char *NTResourceToBlob(const char *id)
 */
 MagickPrivate void NTSeekDirectory(DIR *entry,ssize_t position)
 {
-  (void) position;
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(entry != (DIR *) NULL);
+  (void) entry;
+  (void) position;
 }
 
 /*

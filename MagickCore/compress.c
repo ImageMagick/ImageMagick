@@ -925,9 +925,9 @@ MagickExport MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
     number_bits+=code_width; \
     while (number_bits >= 8) \
     { \
-        (void) WriteBlobByte(image,(unsigned char) (accumulator >> 24)); \
-        accumulator=accumulator << 8; \
-        number_bits-=8; \
+      (void) WriteBlobByte(image,(unsigned char) (accumulator >> 24)); \
+      accumulator=accumulator << 8; \
+      number_bits-=8; \
     } \
 }
 
@@ -967,7 +967,8 @@ MagickExport MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
   assert(exception->signature == MagickCoreSignature);
   table=(TableType *) AcquireQuantumMemory(1UL << 12,sizeof(*table));
   if (table == (TableType *) NULL)
-    return(MagickFalse);
+    ThrowBinaryException(ResourceLimitWarning,"MemoryAllocationFailed",
+      image->filename);
   /*
     Initialize variables.
   */

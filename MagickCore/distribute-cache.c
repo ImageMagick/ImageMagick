@@ -926,6 +926,7 @@ MagickExport void DistributePixelCacheServer(const int port,
   */
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  magick_unreferenced(exception);
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   NTInitializeWinsock(MagickFalse);
 #endif
@@ -998,7 +999,6 @@ MagickExport void DistributePixelCacheServer(const int port,
   }
 #else
   magick_unreferenced(port);
-  magick_unreferenced(exception);
   ThrowFatalException(MissingDelegateError,"DelegateLibrarySupportNotBuiltIn");
 #endif
 }

@@ -594,6 +594,7 @@ static double TriangleThreshold(const Image *image,const double *histogram,
   /*
     Compute optimal threshold with triangle algorithm.
   */
+  (void) exception;
   start=0;  /* find start bin, first bin not zero count */
   for (i=0; i <= (ssize_t) MaxIntensity; i++)
     if (histogram[i] > 0.0)

@@ -932,6 +932,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   assert(UndefinedFilter < filter && filter < SentinelFilter);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  (void) exception;
   resize_filter=(ResizeFilter *) AcquireCriticalMemory(sizeof(*resize_filter));
   (void) ResetMagickMemory(resize_filter,0,sizeof(*resize_filter));
   /*
@@ -941,7 +942,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   window_type=mapping[filter].window;
   resize_filter->blur=1.0;
   /* Promote 1D Windowed Sinc Filters to a 2D Windowed Jinc filters */
-  if ( cylindrical != MagickFalse && (filter_type == SincFastFilter) &&
+  if ((cylindrical != MagickFalse) && (filter_type == SincFastFilter) &&
       (filter != SincFastFilter))
     filter_type=JincFilter;  /* 1D Windowed Sinc => 2D Windowed Jinc filters */
 
