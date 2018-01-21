@@ -917,6 +917,8 @@ MagickExport void DistributePixelCacheServer(const int port,
   /*
     Launch distributed pixel cache server.
   */
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
   magick_unreferenced(exception);
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   NTInitializeWinsock(MagickFalse);

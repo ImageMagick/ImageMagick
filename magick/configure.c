@@ -176,8 +176,8 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
     option=(const StringInfo *) GetNextValueInLinkedList(options);
     while (option != (const StringInfo *) NULL)
     {
-      status&=LoadConfigureCache(cache,(const char *) GetStringInfoDatum(option),
-        GetStringInfoPath(option),0,exception);
+      status&=LoadConfigureCache(cache,(const char *)
+        GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
       option=(const StringInfo *) GetNextValueInLinkedList(options);
     }
     options=DestroyConfigureOptions(options);
@@ -960,6 +960,9 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
       }
   }
 #endif
+  if (GetNumberOfElementsInLinkedList(paths) == 0)
+    (void) ThrowMagickException(exception,GetMagickModule(),ConfigureWarning,
+      "no configuration paths found","`%s'",filename);
   return(paths);
 }
 

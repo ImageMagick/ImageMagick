@@ -903,8 +903,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   assert(UndefinedFilter < filter && filter < SentinelFilter);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  resize_filter=(ResizeFilter *) AcquireMagickMemory(sizeof(*resize_filter));
   (void) exception;
+  resize_filter=(ResizeFilter *) AcquireMagickMemory(sizeof(*resize_filter));
   if (resize_filter == (ResizeFilter *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(resize_filter,0,sizeof(*resize_filter));
@@ -915,8 +915,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   window_type=mapping[filter].window;
   resize_filter->blur = blur;     /* function argument blur factor (1.0) */
   /* Promote 1D Windowed Sinc Filters to a 2D Windowed Jinc filters */
-  if (cylindrical != MagickFalse && filter_type == SincFastFilter
-       && filter != SincFastFilter )
+  if ((cylindrical != MagickFalse) && (filter_type == SincFastFilter) &&
+      (filter != SincFastFilter))
     filter_type=JincFilter;  /* 1D Windowed Sinc => 2D Windowed Jinc filters */
 
   /* Expert filter setting override */
