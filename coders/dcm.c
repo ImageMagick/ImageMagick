@@ -3885,7 +3885,14 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Read RLE offset table.
       */
       for (i=0; i < (ssize_t) stream_info->remaining; i++)
-        (void) ReadBlobByte(image);
+      {
+        int
+          c;
+
+        c=ReadBlobByte(image);
+        if (c == EOF)
+          break;
+      }
       tag=(ReadBlobLSBShort(image) << 16) | ReadBlobLSBShort(image);
       (void) tag;
       length=(size_t) ReadBlobLSBLong(image);
@@ -3897,7 +3904,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (stream_info->offsets == (ssize_t *) NULL)
             ThrowDCMException(ResourceLimitError,"MemoryAllocationFailed");
           for (i=0; i < (ssize_t) stream_info->offset_count; i++)
+          {
             stream_info->offsets[i]=(ssize_t) ReadBlobLSBSignedLong(image);
+            if (EOFBlob(image) != MagickFalse)
+              break;
+          }
           offset=TellBlob(image)+8;
           for (i=0; i < (ssize_t) stream_info->offset_count; i++)
             stream_info->offsets[i]+=offset;
@@ -3981,7 +3992,14 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         stream_info->remaining=(size_t) ReadBlobLSBLong(image);
         if ((tag != 0xFFFEE000) || (stream_info->remaining <= 64) ||
             (EOFBlob(image) != MagickFalse))
-          ThrowDCMException(CorruptImageError,"ImproperImageHeader");
+          {
+            if (stream_info->offsets != (ssize_t *) NULL)
+              stream_info->offsets=(ssize_t *)
+                RelinquishMagickMemory(stream_info->offsets);
+            if (info.scale != (Quantum *) NULL)
+              info.scale=(Quantum *) RelinquishMagickMemory(info.scale);
+            ThrowDCMException(CorruptImageError,"ImproperImageHeader");
+          }
         stream_info->count=0;
         stream_info->segment_count=ReadBlobLSBLong(image);
         for (i=0; i < 15; i++)
