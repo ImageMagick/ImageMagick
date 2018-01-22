@@ -176,6 +176,8 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read control block.
   */
+  ResetMagickMemory(magick,0,sizeof(magick));
+  ResetMagickMemory(buffer,0,sizeof(buffer));
   count=ReadBlob(image,80,buffer);
   (void) count;
   count=ReadBlob(image,2,(unsigned char *) magick);
