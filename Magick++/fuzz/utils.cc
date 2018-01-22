@@ -7,6 +7,8 @@ public:
     Magick::SecurityPolicy::maxMemoryRequest(256000000);
     Magick::ResourceLimits::memory(1000000000);
     Magick::ResourceLimits::map(500000000);
+    Magick::ResourceLimits::width(2048);
+    Magick::ResourceLimits::height(2048);
   }
 };
 
