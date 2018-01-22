@@ -3555,6 +3555,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             colors=(size_t) (length/info.bytes_per_pixel);
             datum=(int) colors;
+            if (graymap != (int *) NULL)
+              graymap=(int *) RelinquishMagickMemory(graymap);
             graymap=(int *) AcquireQuantumMemory((size_t) colors,
               sizeof(*graymap));
             if (graymap == (int *) NULL)
