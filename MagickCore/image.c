@@ -2554,7 +2554,7 @@ MagickExport MagickBooleanType SetImageExtent(Image *image,const size_t columns,
     ThrowBinaryException(ImageError,"NegativeOrZeroImageSize",image->filename);
   image->columns=columns;
   image->rows=rows;
-  if (image->depth > (8*sizeof(MagickSizeType)))
+  if ((image->depth == 0) || (image->depth > (8*sizeof(MagickSizeType))))
     ThrowBinaryException(ImageError,"ImageDepthNotSupported",image->filename);
   return(SyncImagePixelCache(image,exception));
 }
