@@ -394,7 +394,11 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     if ((fits_info.bits_per_pixel != 8) && (fits_info.bits_per_pixel != 16) &&
         (fits_info.bits_per_pixel != 32) && (fits_info.bits_per_pixel != 64) &&
         (fits_info.bits_per_pixel != -32) && (fits_info.bits_per_pixel != -64))
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      {
+        if (comment != (char *) NULL)
+          comment=DestroyString(comment);
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      }
     number_pixels=(MagickSizeType) fits_info.columns*fits_info.rows;
     if ((fits_info.simple != MagickFalse) && (fits_info.number_axes >= 1) &&
         (fits_info.number_axes <= 4) && (number_pixels != 0))
