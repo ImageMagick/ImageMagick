@@ -1,5 +1,5 @@
 2018-01-23  7.0.7-23 Cristy  <quetzlzacatenango@image...>
-  * Fixed numerous memory leaks, credit to OSS Fuzz.
+  * Fixed numerous use of uninitialized value, credit to OSS Fuzz.
 
 2018-01-22  7.0.7-22 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.0-22, GIT revision 22391:e8be814f1:20180122.
