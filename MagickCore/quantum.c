@@ -174,15 +174,15 @@ static MagickBooleanType AcquireQuantumPixels(QuantumInfo *quantum_info,
     unsigned char
       *pixels;
 
-    quantum_info->pixels[i]=AcquireVirtualMemory(extent+1,sizeof(*pixels));
+    quantum_info->pixels[i]=AcquireVirtualMemory(4*(extent+1),sizeof(*pixels));
     if (quantum_info->pixels[i] == (MemoryInfo *) NULL)
       {
         DestroyQuantumPixels(quantum_info);
         return(MagickFalse);
       }
     pixels=(unsigned char *)  GetVirtualMemoryBlob(quantum_info->pixels[i]);
-    (void) ResetMagickMemory(pixels,0,(extent+1)*sizeof(*pixels));
-    pixels[extent]=QuantumSignature;
+    (void) ResetMagickMemory(pixels,0,(4*extent+1)*sizeof(*pixels));
+    pixels[4*extent]=QuantumSignature;
   }
   return(MagickTrue);
 }
@@ -267,7 +267,7 @@ static void DestroyQuantumPixels(QuantumInfo *quantum_info)
           Did we overrun our quantum buffer?
         */
         pixels=(unsigned char *) GetVirtualMemoryBlob(quantum_info->pixels[i]);
-        assert(pixels[extent] == QuantumSignature);
+        assert(pixels[4*extent] == QuantumSignature);
         quantum_info->pixels[i]=RelinquishVirtualMemory(
           quantum_info->pixels[i]);
       }
@@ -689,7 +689,7 @@ MagickExport MagickBooleanType SetQuantumDepth(const Image *image,
   if (quantum_info->pixels != (MemoryInfo **) NULL)
     DestroyQuantumPixels(quantum_info);
   quantum=(quantum_info->pad+MaxPixelChannels)*(quantum_info->depth+7)/8;
-  extent=4*MagickMax(image->columns,image->rows)*quantum;
+  extent=MagickMax(image->columns,image->rows)*quantum;
   if ((MagickMax(image->columns,image->rows) != 0) &&
       (quantum != (extent/MagickMax(image->columns,image->rows))))
     return(MagickFalse);
