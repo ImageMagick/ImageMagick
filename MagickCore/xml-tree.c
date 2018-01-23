@@ -1484,23 +1484,26 @@ static char *ParseEntities(char *xml,char **entities,int state)
                     offset=(ssize_t) (xml-p);
                     extent=(size_t) (offset+length+strlen(entity));
                     if (p != q)
-                      p=(char *) ResizeQuantumMemory(p,extent+1,sizeof(*p));
+                      p=(char *) ResizeQuantumMemory(p,extent,sizeof(*p));
                     else
                       {
                         char
                           *extent_xml;
 
-                        extent_xml=(char *) AcquireQuantumMemory(extent+1,
+                        extent_xml=(char *) AcquireQuantumMemory(extent,
                           sizeof(*extent_xml));
                         if (extent_xml != (char *) NULL)
-                          (void) CopyMagickString(extent_xml,p,extent*
-                            sizeof(*extent_xml));
+                          {
+                            ResetMagickMemory(extent_xml,0,extent*
+                              sizeof(*extent_xml));
+                            (void) CopyMagickString(extent_xml,p,extent*
+                              sizeof(*extent_xml));
+                          }
                         p=extent_xml;
                       }
                     if (p == (char *) NULL)
                       ThrowFatalException(ResourceLimitFatalError,
                         "MemoryAllocationFailed");
-                    p[extent]='\0';
                     xml=p+offset;
                     entity=strchr(xml,';');
                   }
