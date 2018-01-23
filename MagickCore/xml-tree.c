@@ -596,7 +596,6 @@ MagickExport XMLTreeInfo *DestroyXMLTree(XMLTreeInfo *xml_info)
 %    o extent: Maximum length of the string.
 %
 */
-
 MagickPrivate char *FileToXML(const char *filename,const size_t extent)
 {
   char
@@ -846,8 +845,8 @@ MagickExport const char *GetXMLTreeAttribute(XMLTreeInfo *xml_info,
 %    o attributes: the attribute splay-tree.
 %
 */
-MagickPrivate MagickBooleanType GetXMLTreeAttributes(const XMLTreeInfo *xml_info,
-  SplayTreeInfo *attributes)
+MagickPrivate MagickBooleanType GetXMLTreeAttributes(
+  const XMLTreeInfo *xml_info,SplayTreeInfo *attributes)
 {
   register ssize_t
     i;
@@ -1001,7 +1000,8 @@ MagickPrivate XMLTreeInfo *GetXMLTreeOrdered(XMLTreeInfo *xml_info)
 %    o path: the path (e.g. property/elapsed-time).
 %
 */
-MagickPrivate XMLTreeInfo *GetXMLTreePath(XMLTreeInfo *xml_info,const char *path)
+MagickPrivate XMLTreeInfo *GetXMLTreePath(XMLTreeInfo *xml_info,
+  const char *path)
 {
   char
     **components,
