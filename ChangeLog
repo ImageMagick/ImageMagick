@@ -1,3 +1,6 @@
+2018-01-23  6.9.9-35 Cristy  <quetzlzacatenango@image...>
+  * Fixed numerous use of uninitialized value, credit to OSS Fuzz.
+
 2018-01-22  6.9.9-34 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.9-34, GIT revision 12574:5370ede60:20180122.
 
