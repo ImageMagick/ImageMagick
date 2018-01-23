@@ -741,6 +741,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
       InheritException(exception,&image->exception);
       return(DestroyImageList(image));
     }
+  (void) SetImageBackgroundColor(image);
   /*
     Convert CIN raster image to pixel packets.
   */
