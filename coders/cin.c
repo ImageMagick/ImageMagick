@@ -740,6 +740,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
+  (void) SetImageBackgroundColor(image,exception);
   /*
     Convert CIN raster image to pixel packets.
   */
