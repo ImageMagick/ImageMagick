@@ -393,7 +393,8 @@ static MagickBooleanType ApplyPSDLayerOpacity(Image *image,Quantum opacity,
       "  applying layer opacity %.20g", (double) opacity);
   if (opacity == OpaqueAlpha)
     return(MagickTrue);
-  image->alpha_trait=BlendPixelTrait;
+  if (image->alpha_trait != BlendPixelTrait)
+    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
   status=MagickTrue;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 #pragma omp parallel for schedule(static,4) shared(status) \
