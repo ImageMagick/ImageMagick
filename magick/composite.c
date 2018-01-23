@@ -261,6 +261,8 @@ static MagickRealType ColorBurn(const MagickRealType Sca,
     return(Sa*Da+Dca*(1.0-Sa));
   if (Sca < MagickEpsilon)
     return(Dca*(1.0-Sa));
+  if (IsNaN(Sca) != MagickFalse)
+    return(0.0);
   return(Sa*Da-Sa*MagickMin(Da,(Da-Dca)*Sa/Sca)+Sca*(1.0-Da)+Dca*(1.0-Sa));
 #endif
 }
@@ -1328,6 +1330,8 @@ static MagickRealType PegtopLight(const MagickRealType Sca,
   */
   if (fabs(Da) < MagickEpsilon)
     return(Sca);
+  if (IsNaN(Da) != MagickFalse)
+    return(0.0);
   return(Dca*Dca*(Sa-2.0*Sca)/Da+Sca*(2.0*Dca+1.0-Da)+Dca*(1.0-Sa));
 }
 
@@ -1470,7 +1474,9 @@ static MagickRealType SoftLight(const MagickRealType Sca,
   /*
     New specification:  March 2009 SVG specification.
   */
-  alpha=Dca/Da;
+  alpha=0.0;
+  if (IsNaN(Da) == MagickFalse)
+    alpha=Dca/Da;
   if ((2.0*Sca) < Sa)
     return(Dca*(Sa+(2.0*Sca-Sa)*(1.0-alpha))+Sca*(1.0-Da)+Dca*(1.0-Sa));
   if (((2.0*Sca) > Sa) && ((4.0*Dca) <= Da))
