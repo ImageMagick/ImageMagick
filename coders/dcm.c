@@ -3957,6 +3957,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       }
     image->colorspace=RGBColorspace;
+    (void) SetImageBackgroundColor(image);
     if ((image->colormap == (PixelPacket *) NULL) &&
         (info.samples_per_pixel == 1))
       {
