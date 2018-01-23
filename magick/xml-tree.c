@@ -595,7 +595,6 @@ MagickExport XMLTreeInfo *DestroyXMLTree(XMLTreeInfo *xml_info)
 %    o extent: Maximum length of the string.
 %
 */
-
 MagickPrivate char *FileToXML(const char *filename,const size_t extent)
 {
   char
