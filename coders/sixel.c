@@ -245,6 +245,7 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
     int imsx, imsy;
     int dmsx, dmsy;
     int y;
+    size_t offset;
 
     posision_x = posision_y = 0;
     max_x = max_y = 0;
@@ -459,7 +460,13 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
                 if (repeat_count <= 1) {
                     for (i = 0; i < 6; i++) {
                         if ((b & sixel_vertical_mask) != 0) {
-                            imbuf[imsx * (posision_y + i) + posision_x] = color_index;
+                            offset=(size_t) imsx * (posision_y + i) + posision_x;
+                            if (offset >= (size_t) imsx * imsy)
+                              {
+                                imbuf = (unsigned char *) RelinquishMagickMemory(imbuf);
+                                return (MagickFalse);
+                              }
+                            imbuf[offset] = color_index;
                             if (max_x < posision_x) {
                                 max_x = posision_x;
                             }
@@ -482,7 +489,13 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
                                 c <<= 1;
                             }
                             for (y = posision_y + i; y < posision_y + i + n; ++y) {
-                                (void) ResetMagickMemory(imbuf + (size_t) imsx * y + posision_x, color_index, repeat_count);
+                                offset=(size_t) imsx * y + posision_x;
+                                if (offset + repeat_count >= (size_t) imsx * imsy)
+                                  {
+                                    imbuf = (unsigned char *) RelinquishMagickMemory(imbuf);
+                                    return (MagickFalse);
+                                  }
+                                (void) ResetMagickMemory(imbuf + offset, color_index, repeat_count);
                             }
                             if (max_x < (posision_x + repeat_count - 1)) {
                                 max_x = posision_x + repeat_count - 1;
