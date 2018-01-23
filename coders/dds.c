@@ -1414,7 +1414,7 @@ static void ComputePrincipleComponent(const float *covariance,
     w.z = (row2.z * v.z) + w.z;
     w.w = (row2.w * v.z) + w.w;
 
-    a = 1.0f / MagickMax(w.x,MagickMax(w.y,w.z));
+    a = (float) PerceptibleReciprocal(MagickMax(w.x,MagickMax(w.y,w.z)));
 
     v.x = w.x * a;
     v.y = w.y * a;
@@ -1805,7 +1805,7 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         InheritException(exception,&image->exception);
         return(DestroyImageList(image));
       }
-
+    (void) SetImageBackgroundColor(image);
     if ((decoder)(image, &dds_info, exception) != MagickTrue)
       {
         (void) CloseBlob(image);
