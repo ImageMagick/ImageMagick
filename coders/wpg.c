@@ -1406,7 +1406,12 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 
                     for (i=0; i< (ssize_t) image->rows; i++)
                     {
-                      (void) ReadBlob(image,ldblk,BImgBuff);
+                      ssize_t
+                        count;
+
+                      count=ReadBlob(image,(size_t) ldblk,BImgBuff);
+                      if (count != ldblk)
+                        break;
                       if (InsertRow(BImgBuff,i,image,bpp) == MagickFalse)
                         {
                           if(BImgBuff)
