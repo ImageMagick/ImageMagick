@@ -181,7 +181,7 @@ static MagickBooleanType AcquireQuantumPixels(QuantumInfo *quantum_info,
         return(MagickFalse);
       }
     pixels=(unsigned char *)  GetVirtualMemoryBlob(quantum_info->pixels[i]);
-    (void) ResetMagickMemory(pixels,0,(4*extent+1)*sizeof(*pixels));
+    (void) ResetMagickMemory(pixels,0,4*(extent+1)*sizeof(*pixels));
     pixels[4*extent]=QuantumSignature;
   }
   return(MagickTrue);
