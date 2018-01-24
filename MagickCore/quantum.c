@@ -174,15 +174,15 @@ static MagickBooleanType AcquireQuantumPixels(QuantumInfo *quantum_info,
     unsigned char
       *pixels;
 
-    quantum_info->pixels[i]=AcquireVirtualMemory(4*(extent+1),sizeof(*pixels));
+    quantum_info->pixels[i]=AcquireVirtualMemory((extent+1),sizeof(*pixels));
     if (quantum_info->pixels[i] == (MemoryInfo *) NULL)
       {
         DestroyQuantumPixels(quantum_info);
         return(MagickFalse);
       }
     pixels=(unsigned char *)  GetVirtualMemoryBlob(quantum_info->pixels[i]);
-    (void) ResetMagickMemory(pixels,0,4*(extent+1)*sizeof(*pixels));
-    pixels[4*extent]=QuantumSignature;
+    (void) ResetMagickMemory(pixels,0,(extent+1)*sizeof(*pixels));
+    pixels[extent]=QuantumSignature;
   }
   return(MagickTrue);
 }
@@ -267,7 +267,7 @@ static void DestroyQuantumPixels(QuantumInfo *quantum_info)
           Did we overrun our quantum buffer?
         */
         pixels=(unsigned char *) GetVirtualMemoryBlob(quantum_info->pixels[i]);
-        assert(pixels[4*extent] == QuantumSignature);
+        assert(pixels[extent] == QuantumSignature);
         quantum_info->pixels[i]=RelinquishVirtualMemory(
           quantum_info->pixels[i]);
       }
