@@ -1421,7 +1421,7 @@ static void ImportCbYCrYQuantum(const Image *image,QuantumInfo *quantum_info,
 
           n=0;
           quantum=0;
-          for (x=0; x < (ssize_t) number_pixels; x+=4)
+          for (x=0; x < (ssize_t) (number_pixels-3); x+=4)
           {
             for (i=0; i < 4; i++)
             {
