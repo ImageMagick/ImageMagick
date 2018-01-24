@@ -300,7 +300,7 @@ MagickExport void GetNextToken(const char *start,const char **end,
     }
   }
   token[i]='\0';
-  if ((LocaleNCompare(token,"url(",4) == 0) && (strlen(token) > 4))
+  if ((LocaleNCompare(token,"url(",4) == 0) && (strlen(token) > 5))
     {
       ssize_t
         offset;
