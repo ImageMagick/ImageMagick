@@ -47,6 +47,7 @@
 #include "MagickCore/geometry.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/pixel-accessor.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/token.h"
@@ -1118,7 +1119,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       /*
         Normalize sampling factor (e.g. 4:2:2 => 2x1).
       */
-      geometry_info->rho/=geometry_info->sigma;
+      geometry_info->rho*=PerceptibleReciprocal(geometry_info->sigma);
       geometry_info->sigma=1.0;
       if (geometry_info->xi == 0.0)
         geometry_info->sigma=2.0;
@@ -1257,17 +1258,17 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
         flags|=XValue | YValue;
       (void) ParseGeometry(geometry,&geometry_info);
       geometry_ratio=geometry_info.rho;
-      image_ratio=image->columns/(double) image->rows;
+      image_ratio=(double) image->columns/image->rows;
       if (geometry_ratio >= image_ratio)
         {
           region_info->width=image->columns;
-          region_info->height=(size_t) floor((image->rows*image_ratio/
+          region_info->height=(size_t) floor((double) (image->rows*image_ratio/
             geometry_ratio)+0.5);
         }
       else
         {
-          region_info->width=(size_t) floor((image->columns*geometry_ratio/
-            image_ratio)+0.5);
+          region_info->width=(size_t) floor((double) (image->columns*
+            geometry_ratio/image_ratio)+0.5);
           region_info->height=image->rows;
         }
     }
@@ -1397,16 +1398,17 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
       */
       (void) ParseGeometry(geometry,&geometry_info);
       geometry_ratio=geometry_info.rho;
-      image_ratio=former_width/(double) former_height;
+      image_ratio=(double) former_width/former_height;
       if (geometry_ratio >= image_ratio)
         {
           *width=former_width;
-          *height=(size_t) floor((former_height*image_ratio/geometry_ratio)+
-            0.5);
+          *height=(size_t) floor((double) (former_height*image_ratio/
+            geometry_ratio)+0.5);
         }
       else
         {
-          *width=(size_t) floor((former_width*geometry_ratio/image_ratio)+0.5);
+          *width=(size_t) floor((double) (former_width*geometry_ratio/
+            image_ratio)+0.5);
           *height=former_height;
         }
       former_width=(*width);
