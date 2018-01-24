@@ -191,12 +191,14 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     status=SetImageExtent(image,image->columns,image->rows);
   if (status == MagickFalse)
     { 
+      caption=DestroyString(caption);
       draw_info=DestroyDrawInfo(draw_info);
       InheritException(exception,&image->exception);
       return(DestroyImageList(image));
     }
   if (SetImageBackgroundColor(image) == MagickFalse)
     {
+      caption=DestroyString(caption);
       draw_info=DestroyDrawInfo(draw_info);
       InheritException(exception,&image->exception);
       image=DestroyImageList(image);
