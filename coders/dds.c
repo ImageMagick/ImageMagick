@@ -1771,7 +1771,7 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (volume)
     num_images = dds_info.depth;
 
-  if (num_images < 1)
+  if ((num_images == 0) || (num_images > GetBlobSize(image)))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
   for (n = 0; n < num_images; n++)
