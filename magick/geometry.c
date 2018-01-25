@@ -870,6 +870,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
     Remove whitespaces meta characters from geometry specification.
   */
   assert(geometry_info != (GeometryInfo *) NULL);
+  (void) ResetMagickMemory(geometry_info,0,sizeof(*geometry_info));
   flags=NoValue;
   if ((geometry == (char *) NULL) || (*geometry == '\0'))
     return(flags);
@@ -1106,7 +1107,8 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       /*
         Normalize sampling factor (e.g. 4:2:2 => 2x1).
       */
-      geometry_info->rho*=PerceptibleReciprocal(geometry_info->sigma);
+      if ((flags & SigmaValue) != 0)
+        geometry_info->rho*=PerceptibleReciprocal(geometry_info->sigma);
       geometry_info->sigma=1.0;
       if (geometry_info->xi == 0.0)
         geometry_info->sigma=2.0;
