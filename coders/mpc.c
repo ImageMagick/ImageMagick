@@ -208,7 +208,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  (void) CopyMagickString(cache_filename,image->filename,MaxTextExtent);
+  (void) CopyMagickString(cache_filename,image->filename,MaxTextExtent-6);
   AppendImageFormat("cache",cache_filename);
   c=ReadBlobByte(image);
   if (c == EOF)
@@ -1128,7 +1128,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
-  (void) CopyMagickString(cache_filename,image->filename,MaxTextExtent);
+  (void) CopyMagickString(cache_filename,image->filename,MaxTextExtent-6);
   AppendImageFormat("cache",cache_filename);
   scene=0;
   offset=0;
