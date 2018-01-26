@@ -1131,6 +1131,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           }
                         q+=GetPixelChannels(image);
                       }
+                      break;
                     }
                   for (x=0; x < (ssize_t) image->columns; x++)
                   {
