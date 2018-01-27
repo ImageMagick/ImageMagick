@@ -197,6 +197,9 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   QuantumType
     quantum_type;
 
+  size_t
+    extent;
+
   /*
    Open Image
    */
@@ -296,11 +299,13 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       quantum_format = UnsignedQuantumFormat;
       break;
   }
+  extent=ipl_info.width*ipl_info.height*ipl_info.z*ipl_info.depth/8;
+  if (extent > GetBlobSize(image))
+    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
 
   /*
     Set number of scenes of image
   */
-
   SetHeaderFromIPL(image, &ipl_info);
 
   /* Thats all we need if we are pinging. */
@@ -451,10 +456,11 @@ ModuleExport size_t RegisterIPLImage(void)
   entry->description=ConstantString("IPL Image Sequence");
   entry->module=ConstantString("IPL");
   entry->endian_support=MagickTrue;
+  entry->seekable_stream=MagickTrue;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
-
+
 /*
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  %                                                                             %
@@ -478,7 +484,7 @@ ModuleExport void UnregisterIPLImage(void)
 {
   (void) UnregisterMagickInfo("IPL");
 }
-
+
 /*
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  %                                                                             %
