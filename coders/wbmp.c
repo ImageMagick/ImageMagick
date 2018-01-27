@@ -185,6 +185,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
+  (void) SetImageBackgroundColor(image,exception);
   /*
     Convert bi-level image to pixel packets.
   */
