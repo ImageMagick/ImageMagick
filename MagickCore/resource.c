@@ -1449,72 +1449,80 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
   {
     case AreaResource:
     {
-      resource_info.area_limit=limit;
       value=GetPolicyValue("resource:area");
-      if (value != (char *) NULL)
+      if (value == (char *) NULL)
+        resource_info.area_limit=limit;
+      else
         resource_info.area_limit=MagickMin(limit,StringToMagickSizeType(value,
           100.0));
       break;
     }
     case DiskResource:
     {
-      resource_info.disk_limit=limit;
       value=GetPolicyValue("resource:disk");
-      if (value != (char *) NULL)
+      if (value == (char *) NULL)
+        resource_info.disk_limit=limit;
+      else
         resource_info.disk_limit=MagickMin(limit,StringToMagickSizeType(value,
           100.0));
       break;
     }
     case FileResource:
     {
-      resource_info.file_limit=limit;
       value=GetPolicyValue("resource:file");
-      if (value != (char *) NULL)
+      if (value == (char *) NULL)
+        resource_info.file_limit=limit;
+      else
         resource_info.file_limit=MagickMin(limit,StringToMagickSizeType(value,
           100.0));
       break;
     }
     case HeightResource:
     {
-      resource_info.height_limit=limit;
       value=GetPolicyValue("resource:height");
-      if (value != (char *) NULL)
+      if (value == (char *) NULL)
+        resource_info.height_limit=limit;
+      else
         resource_info.height_limit=MagickMin(limit,StringToMagickSizeType(
           value,100.0));
       break;
     }
     case ListLengthResource:
     {
-      resource_info.list_length_limit=limit;
       value=GetPolicyValue("resource:list-length");
-      if (value != (char *) NULL)
+      if (value == (char *) NULL)
+        resource_info.list_length_limit=limit;
+      else
         resource_info.list_length_limit=MagickMin(limit,
           StringToMagickSizeType(value,100.0));
       break;
     }
     case MapResource:
     {
-      resource_info.map_limit=limit;
       value=GetPolicyValue("resource:map");
-      if (value != (char *) NULL)
+      if (value == (char *) NULL)
+        resource_info.map_limit=limit;
+      else
         resource_info.map_limit=MagickMin(limit,StringToMagickSizeType(
           value,100.0));
       break;
     }
     case MemoryResource:
     {
-      resource_info.memory_limit=limit;
       value=GetPolicyValue("resource:memory");
-      if (value != (char *) NULL)
+      if (value == (char *) NULL)
+        resource_info.memory_limit=limit;
+      else
         resource_info.memory_limit=MagickMin(limit,StringToMagickSizeType(
           value,100.0));
       break;
     }
     case ThreadResource:
     {
-      resource_info.thread_limit=limit;
       value=GetPolicyValue("resource:thread");
-      if (value != (char *) NULL)
+      if (value == (char *) NULL)
+        resource_info.thread_limit=limit;
+      else
         resource_info.thread_limit=MagickMin(limit,StringToMagickSizeType(
           value,100.0));
       if (resource_info.thread_limit > GetOpenMPMaximumThreads())
@@ -1526,18 +1534,20 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
     }
     case ThrottleResource:
     {
-      resource_info.throttle_limit=limit;
       value=GetPolicyValue("resource:throttle");
-      if (value != (char *) NULL)
+      if (value == (char *) NULL)
+        resource_info.throttle_limit=limit;
+      else
         resource_info.throttle_limit=MagickMax(limit,StringToMagickSizeType(
           value,100.0));
       break;
     }
     case TimeResource:
     {
-      resource_info.time_limit=limit;
       value=GetPolicyValue("resource:time");
-      if (value != (char *) NULL)
+      if (value == (char *) NULL)
+        resource_info.time_limit=limit;
+      else
         resource_info.time_limit=MagickMin(limit,StringToMagickSizeType(value,
           100.0));
       ResetPixelCacheEpoch();
@@ -1545,9 +1555,10 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
     }
     case WidthResource:
     {
-      resource_info.width_limit=limit;
       value=GetPolicyValue("resource:width");
-      if (value != (char *) NULL)
+      if (value == (char *) NULL)
+        resource_info.width_limit=limit;
+      else
         resource_info.width_limit=MagickMin(limit,StringToMagickSizeType(value,
           100.0));
       break;
