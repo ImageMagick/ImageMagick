@@ -191,6 +191,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
       InheritException(exception,&image->exception);
       return(DestroyImageList(image));
     }
+  (void) SetImageBackgroundColor(image);
   /*
     Convert bi-level image to pixel packets.
   */
