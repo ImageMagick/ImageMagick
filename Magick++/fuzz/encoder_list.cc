@@ -33,8 +33,14 @@ int main() {
   allowedNames.push_back("TXT");
   allowedNames.push_back("YCBCR");
 
+  std::list<std::string> excludeList;
+  excludeList.push_back("SCREENSHOT");
+
   for (std::list<Magick::CoderInfo>::iterator it = coderList.begin(); it != coderList.end(); it++)
   {
+    if (std::find(excludeList.begin(), excludeList.end(), (*it).module()) != excludeList.end())
+      continue;
+
     if ((*it).name() == (*it).module())
       std::cout << ((*it).isWritable() ? "+" : "-") << (*it).module() << std::endl;
     else if (std::find(allowedNames.begin(), allowedNames.end(), (*it).module()) != allowedNames.end())
