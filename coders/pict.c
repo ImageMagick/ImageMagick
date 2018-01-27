@@ -459,6 +459,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
       pixels=(unsigned char *) RelinquishMagickMemory(pixels);
       return((unsigned char *) NULL);
     }
+  (void) ResetMagickMemory(scanline,0,2*row_bytes*sizeof(*scanline));
   if (bytes_per_line < 8)
     {
       /*
