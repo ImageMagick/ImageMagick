@@ -178,8 +178,6 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
   if (DiscardBlobBytes(image,image->offset) == MagickFalse)
     ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
-  if (AcquireImageColormap(image,2) == MagickFalse)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if (image_info->ping != MagickFalse)
     {
       (void) CloseBlob(image);
@@ -192,6 +190,8 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
       return(DestroyImageList(image));
     }
   (void) SetImageBackgroundColor(image);
+  if (AcquireImageColormap(image,2) == MagickFalse)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   /*
     Convert bi-level image to pixel packets.
   */
