@@ -50,7 +50,7 @@
 #if !defined(MAGICKCORE_BUILD_MODULES)
 static const struct
 {
-  char
+  const char
     *name;
 
   size_t
