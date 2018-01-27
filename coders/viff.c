@@ -519,6 +519,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         InheritException(exception,&image->exception);
         return(DestroyImageList(image));
       }
+    (void) SetImageBackgroundColor(image);
     pixels=(unsigned char *) AcquireQuantumMemory(MagickMax(number_pixels,
       max_packets),bytes_per_pixel*sizeof(*pixels));
     if (pixels == (unsigned char *) NULL)
