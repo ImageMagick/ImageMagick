@@ -1163,6 +1163,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               status=SetImageExtent(image,image->columns,image->rows,exception);
               if (status == MagickFalse)
                 break;
+              (void) SetImageBackgroundColor(image,exception);
               if ((image->storage_class != PseudoClass) && (bpp < 24))
                 {
                   image->colors=one << bpp;
@@ -1363,6 +1364,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               status=SetImageExtent(image,image->columns,image->rows,exception);
               if (status == MagickFalse)
                 break;
+              (void) SetImageBackgroundColor(image,exception);
               if ((image->colors == 0) && (bpp != 24))
                 {
                   image->colors=one << bpp;
