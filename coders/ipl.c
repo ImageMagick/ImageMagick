@@ -95,7 +95,7 @@ static void increase (void *pixel, int byteType){
   }  
 }
 */
-
+
 /*
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  %                                                                             %
@@ -129,7 +129,7 @@ static MagickBooleanType IsIPL(const unsigned char *magick,const size_t length)
     return(MagickTrue);
   return(MagickFalse);
 }
-
+
 /*
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  %                                                                             %
@@ -195,6 +195,9 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *quantum_info;
   QuantumType
     quantum_type;
+
+  size_t
+    extent;
 
   /*
    Open Image
@@ -295,11 +298,13 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       quantum_format = UnsignedQuantumFormat;
       break;
   }
+  extent=ipl_info.width*ipl_info.height*ipl_info.z*ipl_info.depth/8;
+  if (extent > GetBlobSize(image))
+    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
 
   /*
     Set number of scenes of image
   */
-
   SetHeaderFromIPL(image, &ipl_info);
 
   /* Thats all we need if we are pinging. */
@@ -417,7 +422,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   CloseBlob(image);
   return(GetFirstImageInList(image));
 }
-
+
 /*
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  %                                                                             %
@@ -443,11 +448,12 @@ ModuleExport size_t RegisterIPLImage(void)
   entry->decoder=(DecodeImageHandler *) ReadIPLImage;
   entry->encoder=(EncodeImageHandler *) WriteIPLImage;
   entry->magick=(IsImageFormatHandler *) IsIPL;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags|=CoderEndianSupportFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
-
+
 /*
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  %                                                                             %
