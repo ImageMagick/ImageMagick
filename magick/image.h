@@ -538,6 +538,7 @@ extern MagickExport MagickBooleanType
   ListMagickInfo(FILE *,ExceptionInfo *),
   ModifyImage(Image **,ExceptionInfo *),
   ResetImagePage(Image *,const char *),
+  ResetImagePixels(Image *,ExceptionInfo *),
   SetImageBackgroundColor(Image *),
   SetImageClipMask(Image *,const Image *),
   SetImageColor(Image *,const MagickPixelPacket *),
