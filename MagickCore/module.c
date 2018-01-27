@@ -373,7 +373,7 @@ static int ModuleCompare(const void *x,const void *y)
     **p,
     **q;
 
-   p=(const char **) x;
+  p=(const char **) x;
   q=(const char **) y;
   return(LocaleCompare(*p,*q));
 }
