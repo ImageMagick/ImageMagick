@@ -607,7 +607,7 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     endian;
 
   Image
-    *rotate_image;
+    *rotated_image;
 
   MagickBooleanType
     status;
@@ -787,11 +787,21 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
           image->filename);
         break;
       }
-    rotate_image=RotateImage(image,90.0,exception);
-    if (rotate_image != (Image *) NULL)
+    rotated_image=RotateImage(image,90.0,exception);
+    if (rotated_image != (Image *) NULL)
       {
-        image=DestroyImage(image);
-        image=rotate_image;
+        void
+          *blob;
+        
+        rotated_image->page.x=0;
+        rotated_image->page.y=0;
+        blob = rotated_image->blob;
+        rotated_image->blob = image->blob;
+        rotated_image->colors = image->colors;
+        image->blob = blob;
+        AppendImageToList(&image,rotated_image);
+        DeleteImageFromList(&image->previous);
+        image = rotated_image;
       }
     /*
       Proceed to next image.
