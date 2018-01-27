@@ -334,6 +334,13 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     image->rows=viff_info.columns;
     image->depth=viff_info.x_bits_per_pixel <= 8 ? 8UL :
       MAGICKCORE_QUANTUM_DEPTH;
+    status=SetImageExtent(image,image->columns,image->rows);
+    if (status == MagickFalse)
+      {
+        InheritException(exception,&image->exception);
+        return(DestroyImageList(image));
+      }
+    (void) SetImageBackgoundColor(image);
     /*
       Verify that we can read this VIFF image.
     */
@@ -513,13 +520,6 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       }
     if ((bytes_per_pixel*max_packets) > GetBlobSize(image))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    status=SetImageExtent(image,image->columns,image->rows);
-    if (status == MagickFalse)
-      {
-        InheritException(exception,&image->exception);
-        return(DestroyImageList(image));
-      }
-    (void) ResetImagePixels(image,exception);
     pixels=(unsigned char *) AcquireQuantumMemory(MagickMax(number_pixels,
       max_packets),bytes_per_pixel*sizeof(*pixels));
     if (pixels == (unsigned char *) NULL)
