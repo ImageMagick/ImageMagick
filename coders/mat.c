@@ -798,7 +798,7 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
         blob = rotated_image->blob;
         rotated_image->blob = image->blob;
         rotated_image->colors = image->colors;
-        image->blob = blob;
+        image->blob = (BlobInfo *) blob;
         AppendImageToList(&image,rotated_image);
         DeleteImageFromList(&image->previous);
         image = rotated_image;
