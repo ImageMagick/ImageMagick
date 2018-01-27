@@ -3485,6 +3485,9 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     ThrowBinaryException(CacheError,"NoPixelsDefinedInCache",image->filename);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickCoreSignature);
+  length=GetImageListLength(image);
+  if (AcquireMagickResource(ListLengthResource,length) == MagickFalse)
+    ThrowBinaryException(ImageError,"ListLengthExceedsLimit",image->filename);
   if ((AcquireMagickResource(WidthResource,image->columns) == MagickFalse) ||
       (AcquireMagickResource(HeightResource,image->rows) == MagickFalse))
     ThrowBinaryException(ImageError,"WidthOrHeightExceedsLimit",

@@ -525,6 +525,9 @@
         <message name="LeftAndRightImageSizesDiffer">
           différences dans les tailles des images gauche et droite
         </message>
+        <message name="ListLengthExceedsLimit">
+          list length exceeds limit
+        </message>
         <message name="NegativeOrZeroImageSize">
           Taille d'image négative ou nulle
         </message>
