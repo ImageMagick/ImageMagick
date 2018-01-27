@@ -2539,7 +2539,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             */
             (void) SyncImageSettings(mogrify_info,*image,exception);
             flags=ParseGeometry(argv[i+1],&geometry_info);
-            mogrify_image=RotationalBlurImage(*image,geometry_info.rho,exception);
+            mogrify_image=RotationalBlurImage(*image,geometry_info.rho,
+              exception);
             break;
           }
         if (LocaleCompare("raise",option+1) == 0)
