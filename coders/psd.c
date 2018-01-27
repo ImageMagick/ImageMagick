@@ -370,7 +370,7 @@ static MagickBooleanType ApplyPSDLayerOpacity(Image *image,Quantum opacity,
   if (opacity == QuantumRange)
     return(MagickTrue);
   if (image->matte != MagickTrue)
-    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
+    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
   status=MagickTrue;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 #pragma omp parallel for schedule(static,4) shared(status) \
