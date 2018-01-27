@@ -1052,6 +1052,7 @@ namespace Magick
   using MagickCore::ThrottleResource;
   using MagickCore::TimeResource;
   using MagickCore::WidthResource;
+  using MagickCore::ListLengthResource;
 
   // Resolution units
   using MagickCore::ResolutionType;

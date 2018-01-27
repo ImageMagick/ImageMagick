@@ -50,6 +50,16 @@ MagickCore::MagickSizeType Magick::ResourceLimits::height(void)
   return(GetMagickResourceLimit(HeightResource));
 }
 
+void Magick::ResourceLimits::listLength(const MagickSizeType limit_)
+{
+  (void) SetMagickResourceLimit(ListLengthResource,limit_);
+}
+
+MagickCore::MagickSizeType Magick::ResourceLimits::listLength(void)
+{
+  return(GetMagickResourceLimit(ListLengthResource));
+}
+
 void Magick::ResourceLimits::map(const MagickSizeType limit_)
 {
   (void) SetMagickResourceLimit(MapResource,limit_);

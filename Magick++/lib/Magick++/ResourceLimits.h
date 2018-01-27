@@ -38,6 +38,10 @@ namespace Magick
     static void height(const MagickSizeType limit_);
     static MagickSizeType height(void);
 
+    // The maximum number of images in an image list.
+    static void listLength(const MagickSizeType limit_);
+    static MagickSizeType listLength();
+
     // Pixel cache limit in bytes.  Once this memory limit is exceeded,
     // all subsequent pixels cache operations are to/from disk.
     static void map(const MagickSizeType limit_);
