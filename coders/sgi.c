@@ -380,6 +380,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         InheritException(exception,&image->exception);
         return(DestroyImageList(image));
       }
+    (void) SetImageBackgroundColor(image);
     /*
       Allocate SGI pixels.
     */
