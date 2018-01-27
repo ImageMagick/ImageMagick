@@ -320,6 +320,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
         InheritException(exception,&image->exception);
         return(DestroyImageList(image));
       }
+    (void) SetImageBackgroundColor(image);
     bytes_per_row=ReadBlobMSBShort(image);
     flags=ReadBlobMSBShort(image);
     bits_per_pixel=(size_t) ReadBlobByte(image);
