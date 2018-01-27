@@ -1504,7 +1504,7 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
     case MemoryResource:
     {
       value=GetPolicyValue("resource:memory");
-      if (value != (char *) NULL)
+      if (value == (char *) NULL)
         resource_info.memory_limit=limit;
       else
         resource_info.memory_limit=MagickMin(limit,StringToSizeType(value,
