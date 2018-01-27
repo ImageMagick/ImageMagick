@@ -9,7 +9,7 @@ public:
     Magick::ResourceLimits::map(500000000);
     Magick::ResourceLimits::width(2048);
     Magick::ResourceLimits::height(2048);
-    Magick::ResourceLimits::listLength(64);
+    Magick::ResourceLimits::listLength(32);
   }
 };
 
