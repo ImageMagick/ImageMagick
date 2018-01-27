@@ -1123,7 +1123,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       if ((flags & SigmaValue) != 0)
         geometry_info->rho*=PerceptibleReciprocal(geometry_info->sigma);
       geometry_info->sigma=1.0;
-      if (geometry_info->xi == 0.0)
+      if (((flags & XiNegative) != 0) && (geometry_info->xi == 0.0))
         geometry_info->sigma=2.0;
     }
   if (((flags & SigmaValue) == 0) && ((flags & XiValue) != 0) &&
