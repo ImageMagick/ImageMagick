@@ -34,7 +34,8 @@ typedef enum
   TimeResource,
   ThrottleResource,
   WidthResource,
-  HeightResource
+  HeightResource,
+  ListLengthResource
 } ResourceType;
 
 #define MagickResourceInfinity  MagickULLConstant(~0)
