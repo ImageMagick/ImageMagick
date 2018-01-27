@@ -340,7 +340,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         InheritException(exception,&image->exception);
         return(DestroyImageList(image));
       }
-    (void) SetImageBackgoundColor(image);
+    (void) SetImageBackgroundColor(image);
     /*
       Verify that we can read this VIFF image.
     */
