@@ -256,9 +256,10 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     *q;
 
   size_t
+    bits_per_pixel,
     bytes_per_row,
     flags,
-    bits_per_pixel,
+    extent,
     version,
     nextDepthOffset,
     transparentIndex,
@@ -405,10 +406,11 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
       return(DestroyImageList(image));
-    one_row=(unsigned char *) AcquireQuantumMemory(MagickMax(bytes_per_row,
-      2*image->columns),sizeof(*one_row));
+    extent=MagickMax(bytes_per_row,2*image->columns);
+    one_row=(unsigned char *) AcquireQuantumMemory(extent,sizeof(*one_row));
     if (one_row == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    (void) ResetMagickMemory(one_row,0,extent*sizeof(*one_row));
     last_row=(unsigned char *) NULL;
     if (compressionType == PALM_COMPRESSION_SCANLINE)
       {
