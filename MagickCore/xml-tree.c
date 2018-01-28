@@ -1789,8 +1789,8 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
                    (n != (char *) NULL) &&
                    (strcmp(n,root->attributes[i][0]) != 0))
               i++;
-            while ((*(n=xml+strspn(xml+1,XMLWhitespace)+1) != '\0') &&
-                   (*n != '>'))
+            xml++;
+            while ((*(n=xml+strspn(xml,XMLWhitespace)) != '\0') && (*n != '>'))
             {
               xml=n+strcspn(n,XMLWhitespace);
               if (*xml != '\0')

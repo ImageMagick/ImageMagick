@@ -791,6 +791,8 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   if(magic_info->name == (char *) NULL) goto FINISH_UNL;
 
   (void) strncpy(clone_info->magick,magic_info->name,MagickPathExtent-1);
+  if (LocaleCompare(image_info->magick,clone_info->magick) == 0)
+    (void) strcpy(clone_info->magick,"PS");
 
     /* Read nested image */
   /*FormatString(clone_info->filename,"%s:%s",magic_info->name,postscript_file);*/
