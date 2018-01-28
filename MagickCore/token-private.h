@@ -118,19 +118,15 @@ static inline int GetNextUTFCode(const char *text,unsigned int *octets)
       {
         unicode&=utf_info[i].utf_mask;
         if (unicode < utf_info[i].utf_value)
-          {
-            errno=EILSEQ;
-            return(-1);
-          }
+          break;
         *octets=(unsigned int) (i+1);
         return(unicode);
       }
     c=(int) (*text++ ^ 0x80) & 0xff;
     if ((c & 0xc0) != 0)
-      {
-        errno=EILSEQ;
-        return(-1);
-      }
+      break;
+    if (unicode > 0x10FFFF)
+      break;
     unicode=(unicode << 6) | c;
   }
   errno=EILSEQ;
