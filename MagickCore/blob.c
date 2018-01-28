@@ -3098,7 +3098,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       if (strchr(type,'b') != (char *) NULL)
         setmode(fileno(blob_info->file_info.file),_O_BINARY);
 #endif
-      blob_info->type=FileStream;
+      blob_info->type=StandardStream;
       blob_info->exempt=MagickTrue;
       return(SetStreamBuffering(image_info,image));
     }
