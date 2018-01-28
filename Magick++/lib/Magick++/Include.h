@@ -932,9 +932,15 @@ namespace Magick
   using MagickCore::ResourceType;
   using MagickCore::AreaResource;
   using MagickCore::DiskResource;
+  using MagickCore::FileResource;
   using MagickCore::MapResource;
   using MagickCore::MemoryResource;
   using MagickCore::ThreadResource;
+  using MagickCore::TimeResource;
+  using MagickCore::ThrottleResource;
+  using MagickCore::WidthResource;
+  using MagickCore::HeightResource;
+  using MagickCore::ListLengthResource;
 
   // Resolution units
   using MagickCore::ResolutionType;
