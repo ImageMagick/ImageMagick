@@ -48,6 +48,9 @@
 #include "MagickCore/policy.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+/*
+  ImageMagick modules.
+*/
 static struct
 {
   const char
@@ -229,8 +232,9 @@ static struct
   { "XWD", MagickFalse, RegisterXWDImage, UnregisterXWDImage },
 #endif
   { "YCBCR", MagickFalse, RegisterYCBCRImage, UnregisterYCBCRImage },
-  { "YUV", MagickFalse, RegisterYUVImage, UnregisterYUVImage }
+  { "YUV", MagickFalse, RegisterYUVImage, UnregisterYUVImage },
 #endif
+  { (const char *) NULL, MagickFalse, NULL, NULL }
 };
 
 /*
@@ -346,7 +350,7 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
 %
 %  The format of the RegisterStaticModule method is:
 %
-%      void RegisterStaticModule(const char module,
+%      MagickBooleanType RegisterStaticModule(const char module,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -356,7 +360,7 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport void RegisterStaticModule(const char *module,
+MagickExport MagickBooleanType RegisterStaticModule(const char *module,
   ExceptionInfo *exception)
 {
   char
@@ -364,6 +368,9 @@ MagickExport void RegisterStaticModule(const char *module,
 
   register const CoderInfo
     *p;
+
+  size_t
+    extent;
 
   ssize_t
     i;
@@ -376,7 +383,8 @@ MagickExport void RegisterStaticModule(const char *module,
   p=GetCoderInfo(module,exception);
   if (p != (CoderInfo *) NULL)
     (void) CopyMagickString(module_name,p->name,MagickPathExtent);
-  for (i=0; i < (ssize_t) (sizeof(MagickModules)/sizeof(MagickModules[0])); i++)
+  extent=sizeof(MagickModules)/sizeof(MagickModules[0]);
+  for (i=0; i < (ssize_t) extent; i++)
     if (LocaleCompare(MagickModules[i].module,module_name) == 0)
       {
         if (MagickModules[i].registered == MagickFalse)
@@ -384,7 +392,9 @@ MagickExport void RegisterStaticModule(const char *module,
             (void) (MagickModules[i].register_module)();
             MagickModules[i].registered=MagickTrue;
           }
+        return(MagickTrue);
       }
+  return(MagickFalse);
 }
 
 /*
@@ -408,10 +418,14 @@ MagickExport void RegisterStaticModule(const char *module,
 */
 MagickExport void RegisterStaticModules(void)
 {
+  size_t
+    extent;
+
   ssize_t
     i;
 
-  for (i=0; i < (ssize_t) (sizeof(MagickModules)/sizeof(MagickModules[0])); i++)
+  extent=sizeof(MagickModules)/sizeof(MagickModules[0]);
+  for (i=0; i < (ssize_t) extent; i++)
   {
     if (MagickModules[i].registered == MagickFalse)
       {
@@ -436,19 +450,23 @@ MagickExport void RegisterStaticModules(void)
 %
 %  The format of the UnregisterStaticModule method is:
 %
-%      void UnregisterStaticModule(const char *module)
+%      MagickBooleanType UnregisterStaticModule(const char *module)
 %
 %  A description of each parameter follows:
 %
 %    o module: the module we want to unregister.
 %
 */
-MagickExport void UnregisterStaticModule(const char *module)
+MagickExport MagickBooleanType UnregisterStaticModule(const char *module)
 {
+  size_t
+    extent;
+
   ssize_t
     i;
 
-  for (i=0; i < (ssize_t) (sizeof(MagickModules)/sizeof(MagickModules[0])); i++)
+  extent=sizeof(MagickModules)/sizeof(MagickModules[0]);
+  for (i=0; i < (ssize_t) extent; i++)
     if (LocaleCompare(MagickModules[i].module,module) == 0)
       {
         if (MagickModules[i].registered != MagickFalse)
@@ -456,7 +474,9 @@ MagickExport void UnregisterStaticModule(const char *module)
             (MagickModules[i].unregister_module)();
             MagickModules[i].registered=MagickFalse;
           }
+        return(MagickTrue);
       }
+  return(MagickFalse);
 }
 
 /*
@@ -480,10 +500,14 @@ MagickExport void UnregisterStaticModule(const char *module)
 */
 MagickExport void UnregisterStaticModules(void)
 {
+  size_t
+    extent;
+
   ssize_t
     i;
 
-  for (i=0; i < (ssize_t) (sizeof(MagickModules)/sizeof(MagickModules[0])); i++)
+  extent=sizeof(MagickModules)/sizeof(MagickModules[0]);
+  for (i=0; i < (ssize_t) extent; i++)
   {
     if (MagickModules[i].registered != MagickFalse)
       {

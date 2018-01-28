@@ -24,7 +24,9 @@ extern "C" {
 
 extern MagickExport MagickBooleanType
   InvokeStaticImageFilter(const char *,Image **,const int,const char **,
-    ExceptionInfo *);
+    ExceptionInfo *),
+  RegisterStaticModule(const char *,ExceptionInfo *exception),
+  UnregisterStaticModule(const char *);
 
 extern ModuleExport size_t
   RegisterAAIImage(void),
@@ -356,9 +358,7 @@ extern ModuleExport void
   UnregisterYUVImage(void);
 
 extern MagickExport void
-  RegisterStaticModule(const char *,ExceptionInfo *exception),
   RegisterStaticModules(void),
-  UnregisterStaticModule(const char *),
   UnregisterStaticModules(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
