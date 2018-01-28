@@ -355,6 +355,12 @@ extern ModuleExport void
   UnregisterYCBCRImage(void),
   UnregisterYUVImage(void);
 
+extern MagickExport void
+  RegisterStaticModule(const char *,ExceptionInfo *exception),
+  RegisterStaticModules(void),
+  UnregisterStaticModule(const char *),
+  UnregisterStaticModules(void);
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

@@ -76,9 +76,7 @@ extern MagickExport ModuleInfo
   *GetModuleInfo(const char *,ExceptionInfo *);
 
 extern MagickExport void
-  DestroyModuleList(void),
-  RegisterStaticModules(void),
-  UnregisterStaticModules(void);
+  DestroyModuleList(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

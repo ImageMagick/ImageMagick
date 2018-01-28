@@ -80,6 +80,7 @@
 #include "MagickCore/semaphore-private.h"
 #include "MagickCore/signature-private.h"
 #include "MagickCore/splay-tree.h"
+#include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread_.h"
@@ -610,22 +611,28 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
   if (IsMagickTreeInstantiated(exception) == MagickFalse)
     return((const MagickInfo *) NULL);
   magick_info=(const MagickInfo *) NULL;
-#if defined(MAGICKCORE_MODULES_SUPPORT)
   if ((name != (const char *) NULL) && (*name != '\0'))
     {
       LockSemaphoreInfo(magick_semaphore);
       if (LocaleCompare(name,"*") == 0)
+#if defined(MAGICKCORE_MODULES_SUPPORT)
         (void) OpenModules(exception);
+#else
+        RegisterStaticModules();
+#endif
       else
         {
           magick_info=(const MagickInfo *) GetValueFromSplayTree(magick_list,
             name);
           if (magick_info == (const MagickInfo *) NULL)
+#if defined(MAGICKCORE_MODULES_SUPPORT)
             (void) OpenModule(name,exception);
+#else
+            (void) RegisterStaticModule(name,exception);
+#endif
         }
       UnlockSemaphoreInfo(magick_semaphore);
     }
-#endif
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     magick_info=(const MagickInfo *) GetRootValueFromSplayTree(magick_list);
   if (magick_info == (const MagickInfo *) NULL)
@@ -1027,9 +1034,6 @@ static MagickBooleanType IsMagickTreeInstantiated(ExceptionInfo *exception)
             NULL,DestroyMagickNode);
 #if defined(MAGICKCORE_MODULES_SUPPORT)
           (void) GetModuleInfo((char *) NULL,exception);
-#endif
-#if !defined(MAGICKCORE_BUILD_MODULES)
-          RegisterStaticModules();
 #endif
           magick_list_initialized=MagickTrue;
         }
