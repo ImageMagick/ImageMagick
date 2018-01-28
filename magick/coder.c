@@ -206,7 +206,6 @@ static const CoderMapInfo
     { "PFB", "TTF" },
     { "PFM", "PNM" },
     { "PGM", "PNM" },
-    { "PGX", "JP2" },
     { "PICON", "XPM" },
     { "PJPEG", "JPEG" },
     { "PM", "XPM" },
