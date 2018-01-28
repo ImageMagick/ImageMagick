@@ -8,4 +8,6 @@ MAGICK_LIBS="-Lappdir/usr/lib -lz -lpng -lfontconfig -lxcb -lX11 -lXext -lbz2 -l
 MAGICK_OUTPUT="Magick++/fuzz"
 MAGICK_FAST_BUILD=1
 
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:appdir/usr/lib
+
 . $MAGICK_SRC/build_fuzzers.sh
