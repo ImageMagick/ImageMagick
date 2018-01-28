@@ -757,10 +757,17 @@ Magick::Blob Magick::Image::exifProfile(void) const
 
 void Magick::Image::fileName(const std::string &fileName_)
 {
+  ssize_t
+    max_length;
+
   modifyImage();
 
-  fileName_.copy(image()->filename,sizeof(image()->filename)-1);
-  image()->filename[fileName_.length()]=0; // Null terminate
+  max_length=sizeof(image()->filename)-1;
+  fileName_.copy(image()->filename,max_length);
+  if (fileName_.length() > max_length)
+    image()->filename[max_length]=0;
+  else
+    image()->filename[fileName_.length()]=0;
 
   options()->fileName(fileName_);
 }
