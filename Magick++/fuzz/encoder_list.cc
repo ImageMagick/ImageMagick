@@ -36,6 +36,7 @@ int main() {
   std::list<std::string> excludeList;
   excludeList.push_back("NULL");
   excludeList.push_back("SCREENSHOT");
+  excludeList.push_back("XC");
 
   for (std::list<Magick::CoderInfo>::iterator it = coderList.begin(); it != coderList.end(); it++)
   {
