@@ -85,9 +85,7 @@ extern MagickExport ModuleInfo
 
 extern MagickExport void
   DestroyModuleList(void),
-  ModuleComponentTerminus(void),
-  RegisterStaticModules(void),
-  UnregisterStaticModules(void);
+  ModuleComponentTerminus(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

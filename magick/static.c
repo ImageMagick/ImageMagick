@@ -41,197 +41,197 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/coder.h"
 #include "magick/exception-private.h"
 #include "magick/image.h"
 #include "magick/module.h"
 #include "magick/policy.h"
 #include "magick/static.h"
 #include "magick/string_.h"
-#if !defined(MAGICKCORE_BUILD_MODULES)
-static const struct
+static struct
 {
   const char
-    *name;
+    *module;
 
-  size_t
+  MagickBooleanType
+    registered;
+
+  const size_t
     (*register_module)(void);
 
-  void
+  const void
     (*unregister_module)(void);
 } MagickModules[] =
 {
-  { "AAI", RegisterAAIImage, UnregisterAAIImage },
-  { "ART", RegisterARTImage, UnregisterARTImage },
-  { "AVS", RegisterAVSImage, UnregisterAVSImage },
-  { "BMP", RegisterBMPImage, UnregisterBMPImage },
-  { "BGR", RegisterBGRImage, UnregisterBGRImage },
-  { "BRAILLE", RegisterBRAILLEImage, UnregisterBRAILLEImage },
-  { "CALS", RegisterCALSImage, UnregisterCALSImage },
-  { "CAPTION", RegisterCAPTIONImage, UnregisterCAPTIONImage },
-  { "CIN", RegisterCINImage, UnregisterCINImage },
-  { "CIP", RegisterCIPImage, UnregisterCIPImage },
-  { "CLIP", RegisterCLIPImage, UnregisterCLIPImage },
+#if !defined(MAGICKCORE_BUILD_MODULES)
+  { "AAI", MagickFalse, RegisterAAIImage, UnregisterAAIImage },
+  { "ART", MagickFalse, RegisterARTImage, UnregisterARTImage },
+  { "AVS", MagickFalse, RegisterAVSImage, UnregisterAVSImage },
+  { "BGR", MagickFalse, RegisterBGRImage, UnregisterBGRImage },
+  { "BMP", MagickFalse, RegisterBMPImage, UnregisterBMPImage },
+  { "BRAILLE", MagickFalse, RegisterBRAILLEImage, UnregisterBRAILLEImage },
+  { "CALS", MagickFalse, RegisterCALSImage, UnregisterCALSImage },
+  { "CAPTION", MagickFalse, RegisterCAPTIONImage, UnregisterCAPTIONImage },
+  { "CIN", MagickFalse, RegisterCINImage, UnregisterCINImage },
+  { "CIP", MagickFalse, RegisterCIPImage, UnregisterCIPImage },
+  { "CLIP", MagickFalse, RegisterCLIPImage, UnregisterCLIPImage },
 #if defined(MAGICKCORE_WINGDI32_DELEGATE)
-  { "CLIPBOARD", RegisterCLIPBOARDImage, UnregisterCLIPBOARDImage },
+  { "CLIPBOARD", MagickFalse, RegisterCLIPBOARDImage, UnregisterCLIPBOARDImage },
 #endif
-  { "CMYK", RegisterCMYKImage, UnregisterCMYKImage },
-  { "CUT", RegisterCUTImage, UnregisterCUTImage },
-  { "DCM", RegisterDCMImage, UnregisterDCMImage },
-  { "DDS", RegisterDDSImage, UnregisterDDSImage },
-  { "DEBUG", RegisterDEBUGImage, UnregisterDEBUGImage },
-  { "DIB", RegisterDIBImage, UnregisterDIBImage },
+  { "CMYK", MagickFalse, RegisterCMYKImage, UnregisterCMYKImage },
+  { "CUT", MagickFalse, RegisterCUTImage, UnregisterCUTImage },
+  { "DCM", MagickFalse, RegisterDCMImage, UnregisterDCMImage },
+  { "DDS", MagickFalse, RegisterDDSImage, UnregisterDDSImage },
+  { "DEBUG", MagickFalse, RegisterDEBUGImage, UnregisterDEBUGImage },
+  { "DIB", MagickFalse, RegisterDIBImage, UnregisterDIBImage },
 #if defined(MAGICKCORE_DJVU_DELEGATE)
-  { "DJVU", RegisterDJVUImage, UnregisterDJVUImage },
+  { "DJVU", MagickFalse, RegisterDJVUImage, UnregisterDJVUImage },
 #endif
-  { "DNG", RegisterDNGImage, UnregisterDNGImage },
-#if defined(MAGICKCORE_GVC_DELEGATE)
-  { "DOT", RegisterDOTImage, UnregisterDOTImage },
-#endif
+  { "DNG", MagickFalse, RegisterDNGImage, UnregisterDNGImage },
 #if defined(MAGICKCORE_DPS_DELEGATE)
-  { "DPS", RegisterDPSImage, UnregisterDPSImage },
+  { "DPS", MagickFalse, RegisterDPSImage, UnregisterDPSImage },
 #endif
-  { "DPX", RegisterDPXImage, UnregisterDPXImage },
+  { "DPX", MagickFalse, RegisterDPXImage, UnregisterDPXImage },
 #if defined(MAGICKCORE_WINGDI32_DELEGATE)
-  { "EMF", RegisterEMFImage, UnregisterEMFImage },
+  { "EMF", MagickFalse, RegisterEMFImage, UnregisterEMFImage },
 #endif
 #if defined(MAGICKCORE_TIFF_DELEGATE)
-  { "EPT", RegisterEPTImage, UnregisterEPTImage },
+  { "EPT", MagickFalse, RegisterEPTImage, UnregisterEPTImage },
 #endif
 #if defined(MAGICKCORE_OPENEXR_DELEGATE)
-  { "EXR", RegisterEXRImage, UnregisterEXRImage },
+  { "EXR", MagickFalse, RegisterEXRImage, UnregisterEXRImage },
 #endif
-  { "FAX", RegisterFAXImage, UnregisterFAXImage },
-  { "FD", RegisterFDImage, UnregisterFDImage },
-  { "FITS", RegisterFITSImage, UnregisterFITSImage },
+  { "FAX", MagickFalse, RegisterFAXImage, UnregisterFAXImage },
+  { "FD", MagickFalse, RegisterFDImage, UnregisterFDImage },
+  { "FITS", MagickFalse, RegisterFITSImage, UnregisterFITSImage },
 #if defined(MAGICKCORE_FLIF_DELEGATE)
-  { "FLIF", RegisterFLIFImage, UnregisterFLIFImage },
+  { "FLIF", MagickFalse, RegisterFLIFImage, UnregisterFLIFImage },
 #endif
 #if defined(MAGICKCORE_FPX_DELEGATE)
-  { "FPX", RegisterFPXImage, UnregisterFPXImage },
+  { "FPX", MagickFalse, RegisterFPXImage, UnregisterFPXImage },
 #endif
-  { "GIF", RegisterGIFImage, UnregisterGIFImage },
-  { "GRAY", RegisterGRAYImage, UnregisterGRAYImage },
-  { "GRADIENT", RegisterGRADIENTImage, UnregisterGRADIENTImage },
-  { "HALD", RegisterHALDImage, UnregisterHALDImage },
-  { "HDR", RegisterHDRImage, UnregisterHDRImage },
+  { "GIF", MagickFalse, RegisterGIFImage, UnregisterGIFImage },
+  { "GRAY", MagickFalse, RegisterGRAYImage, UnregisterGRAYImage },
+  { "GRADIENT", MagickFalse, RegisterGRADIENTImage, UnregisterGRADIENTImage },
+  { "HALD", MagickFalse, RegisterHALDImage, UnregisterHALDImage },
+  { "HDR", MagickFalse, RegisterHDRImage, UnregisterHDRImage },
 #if defined(MAGICKCORE_HEIC_DELEGATE)
-  { "HEIC", RegisterHEICImage, UnregisterHEICImage },
+  { "HEIC", MagickFalse, RegisterHEICImage, UnregisterHEICImage },
 #endif
-  { "HISTOGRAM", RegisterHISTOGRAMImage, UnregisterHISTOGRAMImage },
-  { "HRZ", RegisterHRZImage, UnregisterHRZImage },
-  { "HTML", RegisterHTMLImage, UnregisterHTMLImage },
-  { "ICON", RegisterICONImage, UnregisterICONImage },
-  { "INFO", RegisterINFOImage, UnregisterINFOImage },
-  { "INLINE", RegisterINLINEImage, UnregisterINLINEImage },
-  { "IPL", RegisterIPLImage, UnregisterIPLImage },
+  { "HISTOGRAM", MagickFalse, RegisterHISTOGRAMImage, UnregisterHISTOGRAMImage },
+  { "HRZ", MagickFalse, RegisterHRZImage, UnregisterHRZImage },
+  { "HTML", MagickFalse, RegisterHTMLImage, UnregisterHTMLImage },
+  { "ICON", MagickFalse, RegisterICONImage, UnregisterICONImage },
+  { "INFO", MagickFalse, RegisterINFOImage, UnregisterINFOImage },
+  { "INLINE", MagickFalse, RegisterINLINEImage, UnregisterINLINEImage },
+  { "IPL", MagickFalse, RegisterIPLImage, UnregisterIPLImage },
 #if defined(MAGICKCORE_JBIG_DELEGATE)
-  { "JBIG", RegisterJBIGImage, UnregisterJBIGImage },
+  { "JBIG", MagickFalse, RegisterJBIGImage, UnregisterJBIGImage },
 #endif
-  { "JNX", RegisterJNXImage, UnregisterJNXImage },
+  { "JNX", MagickFalse, RegisterJNXImage, UnregisterJNXImage },
 #if defined(MAGICKCORE_JPEG_DELEGATE)
-  { "JPEG", RegisterJPEGImage, UnregisterJPEGImage },
+  { "JPEG", MagickFalse, RegisterJPEGImage, UnregisterJPEGImage },
 #endif
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
-  { "JP2", RegisterJP2Image, UnregisterJP2Image },
+  { "JP2", MagickFalse, RegisterJP2Image, UnregisterJP2Image },
 #endif
-  { "JSON", RegisterJSONImage, UnregisterJSONImage },
-  { "LABEL", RegisterLABELImage, UnregisterLABELImage },
-  { "MAC", RegisterMACImage, UnregisterMACImage },
-  { "MAGICK", RegisterMAGICKImage, UnregisterMAGICKImage },
-  { "MAP", RegisterMAPImage, UnregisterMAPImage },
-  { "MASK", RegisterMASKImage, UnregisterMASKImage },
-  { "MAT", RegisterMATImage, UnregisterMATImage },
-  { "MATTE", RegisterMATTEImage, UnregisterMATTEImage },
-  { "META", RegisterMETAImage, UnregisterMETAImage },
-  { "MIFF", RegisterMIFFImage, UnregisterMIFFImage },
-  { "MONO", RegisterMONOImage, UnregisterMONOImage },
-  { "MPC", RegisterMPCImage, UnregisterMPCImage },
-  { "MPEG", RegisterMPEGImage, UnregisterMPEGImage },
-  { "MPR", RegisterMPRImage, UnregisterMPRImage },
-  { "MSL", RegisterMSLImage, UnregisterMSLImage },
-  { "MTV", RegisterMTVImage, UnregisterMTVImage },
-  { "MVG", RegisterMVGImage, UnregisterMVGImage },
-  { "NULL", RegisterNULLImage, UnregisterNULLImage },
-  { "OTB", RegisterOTBImage, UnregisterOTBImage },
-  { "PALM", RegisterPALMImage, UnregisterPALMImage },
-  { "PANGO", RegisterPANGOImage, UnregisterPANGOImage },
-  { "PATTERN", RegisterPATTERNImage, UnregisterPATTERNImage },
-  { "PCD", RegisterPCDImage, UnregisterPCDImage },
-  { "PCL", RegisterPCLImage, UnregisterPCLImage },
-  { "PCX", RegisterPCXImage, UnregisterPCXImage },
-  { "PDB", RegisterPDBImage, UnregisterPDBImage },
-  { "PDF", RegisterPDFImage, UnregisterPDFImage },
-  { "PES", RegisterPESImage, UnregisterPESImage },
-  { "PGX", RegisterPGXImage, UnregisterPGXImage },
-  { "PICT", RegisterPICTImage, UnregisterPICTImage },
-  { "PIX", RegisterPIXImage, UnregisterPIXImage },
-  { "PLASMA", RegisterPLASMAImage, UnregisterPLASMAImage },
+  { "JSON", MagickFalse, RegisterJSONImage, UnregisterJSONImage },
+  { "LABEL", MagickFalse, RegisterLABELImage, UnregisterLABELImage },
+  { "MAC", MagickFalse, RegisterMACImage, UnregisterMACImage },
+  { "MAGICK", MagickFalse, RegisterMAGICKImage, UnregisterMAGICKImage },
+  { "MAP", MagickFalse, RegisterMAPImage, UnregisterMAPImage },
+  { "MAT", MagickFalse, RegisterMATImage, UnregisterMATImage },
+  { "MATTE", MagickFalse, RegisterMATTEImage, UnregisterMATTEImage },
+  { "MASK", MagickFalse, RegisterMASKImage, UnregisterMASKImage },
+  { "META", MagickFalse, RegisterMETAImage, UnregisterMETAImage },
+  { "MIFF", MagickFalse, RegisterMIFFImage, UnregisterMIFFImage },
+  { "MONO", MagickFalse, RegisterMONOImage, UnregisterMONOImage },
+  { "MPC", MagickFalse, RegisterMPCImage, UnregisterMPCImage },
+  { "MPEG", MagickFalse, RegisterMPEGImage, UnregisterMPEGImage },
+  { "MPR", MagickFalse, RegisterMPRImage, UnregisterMPRImage },
+  { "MSL", MagickFalse, RegisterMSLImage, UnregisterMSLImage },
+  { "MTV", MagickFalse, RegisterMTVImage, UnregisterMTVImage },
+  { "MVG", MagickFalse, RegisterMVGImage, UnregisterMVGImage },
+  { "NULL", MagickFalse, RegisterNULLImage, UnregisterNULLImage },
+  { "OTB", MagickFalse, RegisterOTBImage, UnregisterOTBImage },
+  { "PALM", MagickFalse, RegisterPALMImage, UnregisterPALMImage },
+  { "PANGO", MagickFalse, RegisterPANGOImage, UnregisterPANGOImage },
+  { "PATTERN", MagickFalse, RegisterPATTERNImage, UnregisterPATTERNImage },
+  { "PCD", MagickFalse, RegisterPCDImage, UnregisterPCDImage },
+  { "PCL", MagickFalse, RegisterPCLImage, UnregisterPCLImage },
+  { "PCX", MagickFalse, RegisterPCXImage, UnregisterPCXImage },
+  { "PDB", MagickFalse, RegisterPDBImage, UnregisterPDBImage },
+  { "PDF", MagickFalse, RegisterPDFImage, UnregisterPDFImage },
+  { "PES", MagickFalse, RegisterPESImage, UnregisterPESImage },
+  { "PGX", MagickFalse, RegisterPGXImage, UnregisterPGXImage },
+  { "PICT", MagickFalse, RegisterPICTImage, UnregisterPICTImage },
+  { "PIX", MagickFalse, RegisterPIXImage, UnregisterPIXImage },
+  { "PLASMA", MagickFalse, RegisterPLASMAImage, UnregisterPLASMAImage },
 #if defined(MAGICKCORE_PNG_DELEGATE)
-  { "PNG", RegisterPNGImage, UnregisterPNGImage },
+  { "PNG", MagickFalse, RegisterPNGImage, UnregisterPNGImage },
 #endif
-  { "PNM", RegisterPNMImage, UnregisterPNMImage },
-  { "PREVIEW", RegisterPREVIEWImage, UnregisterPREVIEWImage },
-  { "PS", RegisterPSImage, UnregisterPSImage },
-  { "PS2", RegisterPS2Image, UnregisterPS2Image },
-  { "PS3", RegisterPS3Image, UnregisterPS3Image },
-  { "PSD", RegisterPSDImage, UnregisterPSDImage },
-  { "PWP", RegisterPWPImage, UnregisterPWPImage },
-  { "RAW", RegisterRAWImage, UnregisterRAWImage },
-  { "RGB", RegisterRGBImage, UnregisterRGBImage },
-  { "RGF", RegisterRGFImage, UnregisterRGFImage },
-  { "RLA", RegisterRLAImage, UnregisterRLAImage },
-  { "RLE", RegisterRLEImage, UnregisterRLEImage },
-  { "SCR", RegisterSCRImage, UnregisterSCRImage },
-  { "SCREENSHOT", RegisterSCREENSHOTImage, UnregisterSCREENSHOTImage },
-  { "SCT", RegisterSCTImage, UnregisterSCTImage },
-  { "SFW", RegisterSFWImage, UnregisterSFWImage },
-  { "SGI", RegisterSGIImage, UnregisterSGIImage },
-  { "SIXEL", RegisterSIXELImage, UnregisterSIXELImage },
-  { "STEGANO", RegisterSTEGANOImage, UnregisterSTEGANOImage },
-  { "SUN", RegisterSUNImage, UnregisterSUNImage },
-  { "SVG", RegisterSVGImage, UnregisterSVGImage },
-  { "TGA", RegisterTGAImage, UnregisterTGAImage },
-  { "THUMBNAIL", RegisterTHUMBNAILImage, UnregisterTHUMBNAILImage },
+  { "PNM", MagickFalse, RegisterPNMImage, UnregisterPNMImage },
+  { "PS", MagickFalse, RegisterPSImage, UnregisterPSImage },
+  { "PS2", MagickFalse, RegisterPS2Image, UnregisterPS2Image },
+  { "PS3", MagickFalse, RegisterPS3Image, UnregisterPS3Image },
+  { "PSD", MagickFalse, RegisterPSDImage, UnregisterPSDImage },
+  { "PWP", MagickFalse, RegisterPWPImage, UnregisterPWPImage },
+  { "RAW", MagickFalse, RegisterRAWImage, UnregisterRAWImage },
+  { "RGB", MagickFalse, RegisterRGBImage, UnregisterRGBImage },
+  { "RGF", MagickFalse, RegisterRGFImage, UnregisterRGFImage },
+  { "RLA", MagickFalse, RegisterRLAImage, UnregisterRLAImage },
+  { "RLE", MagickFalse, RegisterRLEImage, UnregisterRLEImage },
+  { "SCR", MagickFalse, RegisterSCRImage, UnregisterSCRImage },
+  { "SCREENSHOT", MagickFalse, RegisterSCREENSHOTImage, UnregisterSCREENSHOTImage },
+  { "SCT", MagickFalse, RegisterSCTImage, UnregisterSCTImage },
+  { "SFW", MagickFalse, RegisterSFWImage, UnregisterSFWImage },
+  { "SGI", MagickFalse, RegisterSGIImage, UnregisterSGIImage },
+  { "SIXEL", MagickFalse, RegisterSIXELImage, UnregisterSIXELImage },
+  { "STEGANO", MagickFalse, RegisterSTEGANOImage, UnregisterSTEGANOImage },
+  { "SUN", MagickFalse, RegisterSUNImage, UnregisterSUNImage },
+  { "SVG", MagickFalse, RegisterSVGImage, UnregisterSVGImage },
+  { "TGA", MagickFalse, RegisterTGAImage, UnregisterTGAImage },
+  { "THUMBNAIL", MagickFalse, RegisterTHUMBNAILImage, UnregisterTHUMBNAILImage },
 #if defined(MAGICKCORE_TIFF_DELEGATE)
-  { "TIFF", RegisterTIFFImage, UnregisterTIFFImage },
+  { "TIFF", MagickFalse, RegisterTIFFImage, UnregisterTIFFImage },
 #endif
-  { "TILE", RegisterTILEImage, UnregisterTILEImage },
-  { "TIM", RegisterTIMImage, UnregisterTIMImage },
-  { "TTF", RegisterTTFImage, UnregisterTTFImage },
-  { "TXT", RegisterTXTImage, UnregisterTXTImage },
-  { "UIL", RegisterUILImage, UnregisterUILImage },
-  { "URL", RegisterURLImage, UnregisterURLImage },
-  { "UYVY", RegisterUYVYImage, UnregisterUYVYImage },
-  { "VICAR", RegisterVICARImage, UnregisterVICARImage },
-  { "VID", RegisterVIDImage, UnregisterVIDImage },
-  { "VIFF", RegisterVIFFImage, UnregisterVIFFImage },
-  { "VIPS", RegisterVIPSImage, UnregisterVIPSImage },
-  { "WBMP", RegisterWBMPImage, UnregisterWBMPImage },
+  { "TILE", MagickFalse, RegisterTILEImage, UnregisterTILEImage },
+  { "TIM", MagickFalse, RegisterTIMImage, UnregisterTIMImage },
+  { "TTF", MagickFalse, RegisterTTFImage, UnregisterTTFImage },
+  { "TXT", MagickFalse, RegisterTXTImage, UnregisterTXTImage },
+  { "UIL", MagickFalse, RegisterUILImage, UnregisterUILImage },
+  { "URL", MagickFalse, RegisterURLImage, UnregisterURLImage },
+  { "UYVY", MagickFalse, RegisterUYVYImage, UnregisterUYVYImage },
+  { "VICAR", MagickFalse, RegisterVICARImage, UnregisterVICARImage },
+  { "VID", MagickFalse, RegisterVIDImage, UnregisterVIDImage },
+  { "VIFF", MagickFalse, RegisterVIFFImage, UnregisterVIFFImage },
+  { "VIPS", MagickFalse, RegisterVIPSImage, UnregisterVIPSImage },
+  { "WBMP", MagickFalse, RegisterWBMPImage, UnregisterWBMPImage },
 #if defined(MAGICKCORE_WEBP_DELEGATE)
-  { "WEBP", RegisterWEBPImage, UnregisterWEBPImage },
+  { "WEBP", MagickFalse, RegisterWEBPImage, UnregisterWEBPImage },
 #endif
 #if defined(MAGICKCORE_WMF_DELEGATE) || defined(MAGICKCORE_WMFLITE_DELEGATE)
-  { "WMF", RegisterWMFImage, UnregisterWMFImage },
+  { "WMF", MagickFalse, RegisterWMFImage, UnregisterWMFImage },
 #endif
-  { "WPG", RegisterWPGImage, UnregisterWPGImage },
+  { "WPG", MagickFalse, RegisterWPGImage, UnregisterWPGImage },
 #if defined(MAGICKCORE_X11_DELEGATE)
-  { "X", RegisterXImage, UnregisterXImage },
+  { "X", MagickFalse, RegisterXImage, UnregisterXImage },
 #endif
-  { "XBM", RegisterXBMImage, UnregisterXBMImage },
-  { "XC", RegisterXCImage, UnregisterXCImage },
-  { "XCF", RegisterXCFImage, UnregisterXCFImage },
-  { "XPM", RegisterXPMImage, UnregisterXPMImage },
-  { "XPS", RegisterXPSImage, UnregisterXPSImage },
-#if defined(_VISUALC_)
-  { "XTRN", RegisterXTRNImage, UnregisterXTRNImage },
+  { "XBM", MagickFalse, RegisterXBMImage, UnregisterXBMImage },
+  { "XC", MagickFalse, RegisterXCImage, UnregisterXCImage },
+  { "XCF", MagickFalse, RegisterXCFImage, UnregisterXCFImage },
+  { "XPM", MagickFalse, RegisterXPMImage, UnregisterXPMImage },
+  { "XPS", MagickFalse, RegisterXPSImage, UnregisterXPSImage },
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+  { "XTRN", MagickFalse, RegisterXTRNImage, UnregisterXTRNImage },
 #endif
 #if defined(MAGICKCORE_X11_DELEGATE)
-  { "XWD", RegisterXWDImage, UnregisterXWDImage },
+  { "XWD", MagickFalse, RegisterXWDImage, UnregisterXWDImage },
 #endif
-  { "YCBCR", RegisterYCBCRImage, UnregisterYCBCRImage },
-  { "YUV", RegisterYUVImage, UnregisterYUVImage }
+  { "YCBCR", MagickFalse, RegisterYCBCRImage, UnregisterYCBCRImage },
+  { "YUV", MagickFalse, RegisterYUVImage, UnregisterYUVImage }
+#endif
 };
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -319,7 +319,7 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
         if (signature != MagickImageFilterSignature)
           {
             (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
-              "ImageFilterSignatureMismatch","`%s': %8lx != %8lx",tag,
+              "ImageFilterSignatureMismatch","'%s': %8lx != %8lx",tag,
               (unsigned long) signature,(unsigned long)
               MagickImageFilterSignature);
             return(MagickFalse);
@@ -330,6 +330,62 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
   return(MagickTrue);
 }
 #endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r S t a t i c M o d u l e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  RegisterStaticModule() statically registers a module.
+%
+%  The format of the RegisterStaticModule method is:
+%
+%      void RegisterStaticModule(const char module,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o module: the want to register.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport void RegisterStaticModule(const char *module,
+  ExceptionInfo *exception)
+{
+  char
+    module_name[MagickPathExtent];
+
+  register const CoderInfo
+    *p;
+
+  ssize_t
+    i;
+
+  /*
+    Assign module name from alias.
+  */
+  assert(module != (const char *) NULL);
+  (void) CopyMagickString(module_name,module,MagickPathExtent);
+  p=GetCoderInfo(module,exception);
+  if (p != (CoderInfo *) NULL)
+    (void) CopyMagickString(module_name,p->name,MagickPathExtent);
+  for (i=0; i < (ssize_t) (sizeof(MagickModules)/sizeof(MagickModules[0])); i++)
+    if (LocaleCompare(MagickModules[i].module,module_name) == 0)
+      {
+        if (MagickModules[i].registered == MagickFalse)
+          {
+            (void) (MagickModules[i].register_module)();
+            MagickModules[i].registered=MagickTrue;
+          }
+      }
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -352,13 +408,55 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
 */
 MagickExport void RegisterStaticModules(void)
 {
-#if !defined(MAGICKCORE_BUILD_MODULES)
+  ssize_t
+    i;
+
+  for (i=0; i < (ssize_t) (sizeof(MagickModules)/sizeof(MagickModules[0])); i++)
+  {
+    if (MagickModules[i].registered == MagickFalse)
+      {
+        (void) (MagickModules[i].register_module)();
+        MagickModules[i].registered=MagickTrue;
+      }
+  }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r S t a t i c M o d u l e                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  UnregisterStaticModule() statically unregisters the named module.
+%
+%  The format of the UnregisterStaticModule method is:
+%
+%      void UnregisterStaticModule(const char *module)
+%
+%  A description of each parameter follows:
+%
+%    o module: the module we want to unregister.
+%
+*/
+MagickExport void UnregisterStaticModule(const char *module)
+{
   ssize_t
     i;
 
   for (i=0; i < (ssize_t) (sizeof(MagickModules)/sizeof(MagickModules[0]));i++)
-    (void) (MagickModules[i].register_module)();
-#endif
+    if (LocaleCompare(MagickModules[i].module,module) == 0)
+      {
+        if (MagickModules[i].registered != MagickFalse)
+          {
+            (MagickModules[i].unregister_module)();
+            MagickModules[i].registered=MagickFalse;
+          }
+      }
 }
 
 /*
@@ -382,11 +480,15 @@ MagickExport void RegisterStaticModules(void)
 */
 MagickExport void UnregisterStaticModules(void)
 {
-#if !defined(MAGICKCORE_BUILD_MODULES)
   ssize_t
     i;
 
-  for (i=0; i < (ssize_t) (sizeof(MagickModules)/sizeof(MagickModules[0]));i++)
-    (MagickModules[i].unregister_module)();
-#endif
+  for (i=0; i < (ssize_t) (sizeof(MagickModules)/sizeof(MagickModules[0])); i++)
+  {
+    if (MagickModules[i].registered != MagickFalse)
+      {
+        (MagickModules[i].unregister_module)();
+        MagickModules[i].registered=MagickFalse;
+      }
+  }
 }
