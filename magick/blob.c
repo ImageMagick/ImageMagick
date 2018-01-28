@@ -2125,7 +2125,8 @@ MagickExport MagickBooleanType IsBlobSeekable(const Image *image)
   blob_info=image->blob;
   switch (blob_info->type)
   {
-    case StandardStream:
+    case BlobStream:
+      return(MagickTrue);
     case FileStream:
     case ZipStream:
     {
@@ -2137,8 +2138,12 @@ MagickExport MagickBooleanType IsBlobSeekable(const Image *image)
       status=fseek(blob_info->file_info.file,0,SEEK_CUR);
       return(status == -1 ? MagickFalse : MagickTrue);
     }
-    case BlobStream:
-      return(MagickTrue);
+    case UndefinedStream:
+    case BZipStream:
+    case FifoStream:
+    case PipeStream:
+    case StandardStream:
+      return(MagickFalse);
     default:
       break;
   }
