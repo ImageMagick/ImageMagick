@@ -955,11 +955,13 @@ static inline void SetPSDPixel(Image *image,const size_t channels,
       SetPixelRed(image,pixel,q);
       break;
     }
+    case -3:
     case 1:
     {
       SetPixelGreen(image,pixel,q);
       break;
     }
+    case -4:
     case 2:
     {
       SetPixelBlue(image,pixel,q);
@@ -1652,6 +1654,13 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
         for (j=0; j < (ssize_t) layer_info[i].channels; j++)
         {
           layer_info[i].channel_info[j].type=(short) ReadBlobShort(image);
+          if ((layer_info[i].channel_info[j].type < -4) ||
+              (layer_info[i].channel_info[j].type > 4))
+            {
+              layer_info=DestroyLayerInfo(layer_info,number_layers);
+              ThrowBinaryException(CorruptImageError,"NoSuchImageChannel",
+                image->filename);
+            }
           layer_info[i].channel_info[j].size=(size_t) GetPSDSize(psd_info,
             image);
           if (image->debug != MagickFalse)
