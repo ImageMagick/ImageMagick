@@ -48,6 +48,19 @@
 #include "magick/policy.h"
 #include "magick/static.h"
 #include "magick/string_.h"
+
+/*
+  ImageMagick module stub.
+*/
+ModuleExport size_t RegisterUndefinedImage(void)
+{
+  return(MagickImageCoderSignature);
+}
+
+ModuleExport void UnregisterUndefinedImage(void)
+{
+}
+
 /*
   ImageMagick modules.
 */
@@ -234,7 +247,7 @@ static struct
   { "YCBCR", MagickFalse, RegisterYCBCRImage, UnregisterYCBCRImage },
   { "YUV", MagickFalse, RegisterYUVImage, UnregisterYUVImage },
 #endif
-  { (const char *) NULL, MagickFalse, NULL, NULL }
+  { (const char *) NULL, MagickFalse, RegisterUndefinedImage, UnregisterUndefinedImage }
 };
 
 /*
@@ -408,7 +421,7 @@ MagickExport MagickBooleanType RegisterStaticModule(const char *module,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  (void) RegisterStaticModules() statically registers all the available module
+%  RegisterStaticModules() statically registers all the available module
 %  handlers.
 %
 %  The format of the RegisterStaticModules method is:
