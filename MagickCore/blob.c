@@ -1913,7 +1913,6 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,
           else
             blob=ResizeQuantumMemory(blob,*length+1,sizeof(unsigned char));
         }
-      blob_info->blob=RelinquishMagickMemory(blob_info->blob);
     }
   else
     {
