@@ -764,7 +764,7 @@ void Magick::Image::fileName(const std::string &fileName_)
 
   max_length=sizeof(image()->filename)-1;
   fileName_.copy(image()->filename,max_length);
-  if (fileName_.length() > max_length)
+  if ((ssize_t) fileName_.length() > max_length)
     image()->filename[max_length]=0;
   else
     image()->filename[fileName_.length()]=0;
