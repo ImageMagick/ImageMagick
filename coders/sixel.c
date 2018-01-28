@@ -245,8 +245,9 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
     int imsx, imsy;
     int dmsx, dmsy;
     int y;
-    size_t offset;
+    size_t extent,offset;
 
+    extent=strlen((char *) p);
     posision_x = posision_y = 0;
     max_x = max_y = 0;
     attributed_pan = 2;
@@ -380,6 +381,8 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
 
             if ((n > 0) && (param[0] > 0)) {
                 repeat_count = param[0];
+                if (repeat_count > extent)
+                  break;
             }
 
         } else if (*p == '#') {
