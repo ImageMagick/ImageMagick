@@ -683,9 +683,11 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
             status=MagickTrue;
           break;
         case COMPRESS_ZLIB:
+          tile_image=DestroyImage(tile_image);
           ThrowBinaryException(CoderError,"ZipCompressNotSupported",
             image->filename)
         case COMPRESS_FRACTAL:
+          tile_image=DestroyImage(tile_image);
           ThrowBinaryException(CoderError,"FractalCompressNotSupported",
             image->filename)
       }
