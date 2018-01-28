@@ -5,6 +5,13 @@
 #include <Magick++/Image.h>
 #include <Magick++/STL.h>
 
+static std::string getInitializer(const std::string module)
+{
+  if ((module == "BGR") || (module == "CMYK") || (module =="RGB") || (module =="YUV"))
+    return "interlace";
+  return "";
+}
+
 int main() {
   std::list<Magick::CoderInfo> coderList;
   coderInfoList(&coderList, Magick::CoderInfo::TrueMatch, Magick::CoderInfo::AnyMatch, Magick::CoderInfo::AnyMatch);
@@ -40,12 +47,13 @@ int main() {
 
   for (std::list<Magick::CoderInfo>::iterator it = coderList.begin(); it != coderList.end(); it++)
   {
-    if (std::find(excludeList.begin(), excludeList.end(), (*it).module()) != excludeList.end())
+    std::string module=(*it).module();
+    if (std::find(excludeList.begin(), excludeList.end(), module) != excludeList.end())
       continue;
 
-    if ((*it).name() == (*it).module())
-      std::cout << ((*it).isWritable() ? "+" : "-") << (*it).module() << std::endl;
-    else if (std::find(allowedNames.begin(), allowedNames.end(), (*it).module()) != allowedNames.end())
-      std::cout << ((*it).isWritable() ? "+" : "-") << (*it).name() << std::endl;
+    if ((*it).name() == module)
+      std::cout << ((*it).isWritable() ? "+" : "-") << module << ":" << getInitializer(module) << std::endl;
+    else if (std::find(allowedNames.begin(), allowedNames.end(), module) != allowedNames.end())
+      std::cout << ((*it).isWritable() ? "+" : "-") << (*it).name() << ":" << getInitializer(module) << std::endl;
   }
 }
