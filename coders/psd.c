@@ -1583,6 +1583,12 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
         layer_info[i].page.width=(size_t) (x-layer_info[i].page.x);
         layer_info[i].page.height=(size_t) (y-layer_info[i].page.y);
         layer_info[i].channels=ReadBlobShort(image);
+        if (layer_info[i].channels < 1)
+          {
+            layer_info=DestroyLayerInfo(layer_info,number_layers);
+            ThrowBinaryException(CorruptImageError,"MissingImageChannel",
+              image->filename);
+          }
         if (layer_info[i].channels > MaxPSDChannels)
           {
             layer_info=DestroyLayerInfo(layer_info,number_layers);
@@ -1985,6 +1991,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   (void) ReadBlob(image,6,psd_info.reserved);
   psd_info.channels=ReadBlobMSBShort(image);
+  if (psd_info.channels < 1)
+    ThrowReaderException(CorruptImageError,"MissingImageChannel");
   if (psd_info.channels > MaxPSDChannels)
     ThrowReaderException(CorruptImageError,"MaximumChannelsExceeded");
   psd_info.rows=ReadBlobMSBLong(image);
