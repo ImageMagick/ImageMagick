@@ -448,7 +448,7 @@ MagickExport void UnregisterStaticModule(const char *module)
   ssize_t
     i;
 
-  for (i=0; i < (ssize_t) (sizeof(MagickModules)/sizeof(MagickModules[0]));i++)
+  for (i=0; i < (ssize_t) (sizeof(MagickModules)/sizeof(MagickModules[0])); i++)
     if (LocaleCompare(MagickModules[i].module,module) == 0)
       {
         if (MagickModules[i].registered != MagickFalse)
