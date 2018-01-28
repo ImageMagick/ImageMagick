@@ -2712,7 +2712,6 @@ MagickExport MagickBooleanType IsBlobSeekable(const Image *image)
   {
     case BlobStream:
       return(MagickTrue);
-    case StandardStream:
     case FileStream:
     case ZipStream:
     {
@@ -2728,6 +2727,7 @@ MagickExport MagickBooleanType IsBlobSeekable(const Image *image)
     case BZipStream:
     case FifoStream:
     case PipeStream:
+    case StandardStream:
       return(MagickFalse);
     case CustomStream:
     {
