@@ -149,6 +149,7 @@ extern "C" {
 #include "magick/shear.h"
 #include "magick/signature.h"
 #include "magick/splay-tree.h"
+#include "magick/static.h"
 #include "magick/stream.h"
 #include "magick/statistic.h"
 #include "magick/string_.h"
