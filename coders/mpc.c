@@ -646,6 +646,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     profile=DestroyStringInfo(profile);
                     break;
                   }
+                if (LocaleCompare(keyword,"profile") == 0) 
+                  break;
                 (void) SetImageProperty(image,keyword,options,exception);
                 break;
               }
