@@ -1148,7 +1148,7 @@ ModuleExport size_t RegisterSIXELImage(void)
   entry->magick=(IsImageFormatHandler *) IsSIXEL;
   entry->adjoin=MagickFalse;
   entry->description=ConstantString("DEC SIXEL Graphics Format");
-  entry->module=ConstantString("SIX");
+  entry->module=ConstantString("SIXEL");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
