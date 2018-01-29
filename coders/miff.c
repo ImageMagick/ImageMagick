@@ -915,6 +915,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     profile=DestroyStringInfo(profile);
                     break;
                   }
+                if (LocaleCompare(keyword,"profile") == 0) 
+                  break;
                 (void) SetImageProperty(image,keyword,options);
                 break;
               }
