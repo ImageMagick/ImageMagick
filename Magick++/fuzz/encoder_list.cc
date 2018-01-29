@@ -41,6 +41,7 @@ int main() {
   allowedNames.push_back("YCBCR");
 
   std::list<std::string> excludeList;
+  excludeList.push_back("LABEL");
   excludeList.push_back("NULL");
   excludeList.push_back("SCREENSHOT");
   excludeList.push_back("XC");
