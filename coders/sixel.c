@@ -1139,7 +1139,7 @@ ModuleExport size_t RegisterSIXELImage(void)
   entry->magick=(IsImageFormatHandler *) IsSIXEL;
   entry->flags^=CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
-  entry=AcquireMagickInfo("SIX","SIX","DEC SIXEL Graphics Format");
+  entry=AcquireMagickInfo("SIXEL","SIX","DEC SIXEL Graphics Format");
   entry->decoder=(DecodeImageHandler *) ReadSIXELImage;
   entry->encoder=(EncodeImageHandler *) WriteSIXELImage;
   entry->magick=(IsImageFormatHandler *) IsSIXEL;
