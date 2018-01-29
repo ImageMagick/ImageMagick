@@ -23,7 +23,6 @@ int main() {
   allowedNames.push_back("DDS");
   allowedNames.push_back("EPT");
   allowedNames.push_back("FAX");
-  allowedNames.push_back("GRADIENT");
   allowedNames.push_back("HTML");
   allowedNames.push_back("JP2");
   allowedNames.push_back("JPEG");
