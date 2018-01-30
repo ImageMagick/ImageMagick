@@ -411,7 +411,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image,
   montage_info=DestroyMontageInfo(montage_info);
   if (montage_image == (Image *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  image=DestroyImage(image);
+  image=DestroyImageList(image);
   return(montage_image);
 }
 
