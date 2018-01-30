@@ -212,9 +212,9 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         (void) RelinquishUniqueFileResource(read_info->filename);
         read_info=DestroyImageInfo(read_info);
-        image=DestroyImageList(image);
         ThrowFileException(exception,FileOpenError,"UnableToWriteFile",
           image->filename);
+        image=DestroyImageList(image);
         return((Image *) NULL);
       }
     length=fwrite("SFW94A",1,6,file);
