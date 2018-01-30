@@ -374,7 +374,11 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     y=0;
     opcode=ReadBlobByte(image);
     if (opcode == EOF)
-      ThrowRLEException(CorruptImageError,"UnexpectedEndOfFile");
+      {
+        if (number_colormaps != 0)
+          colormap=(unsigned char *) RelinquishMagickMemory(colormap);
+        ThrowRLEException(CorruptImageError,"UnexpectedEndOfFile");
+      }
     do
     {
       switch (opcode & 0x3f)
