@@ -3580,6 +3580,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             colors=(size_t) (length/2);
             datum=(int) colors;
+            if (redmap != (int *) NULL)
+              redmap=(int *) RelinquishMagickMemory(redmap);
             redmap=(int *) AcquireQuantumMemory((size_t) colors,
               sizeof(*redmap));
             if (redmap == (int *) NULL)
@@ -3608,6 +3610,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             colors=(size_t) (length/2);
             datum=(int) colors;
+            if (greenmap != (int *) NULL)
+              greenmap=(int *) RelinquishMagickMemory(greenmap);
             greenmap=(int *) AcquireQuantumMemory((size_t) colors,
               sizeof(*greenmap));
             if (greenmap == (int *) NULL)
@@ -3636,6 +3640,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             colors=(size_t) (length/2);
             datum=(int) colors;
+            if (bluemap != (int *) NULL)
+              bluemap=(int *) RelinquishMagickMemory(bluemap);
             bluemap=(int *) AcquireQuantumMemory((size_t) colors,
               sizeof(*bluemap));
             if (bluemap == (int *) NULL)
