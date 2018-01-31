@@ -336,8 +336,8 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
                     if (param[2] == 0) {
                         param[2] = 10;
                     }
-                    attributed_pan = attributed_pan * param[2] / 10;
-                    attributed_pad = attributed_pad * param[2] / 10;
+                    attributed_pan = (int) ((ssize_t) attributed_pan * param[2]) / 10;
+                    attributed_pad = (int) ((ssize_t) attributed_pad * param[2]) / 10;
                     if (attributed_pan <= 0) attributed_pan = 1;
                     if (attributed_pad <= 0) attributed_pad = 1;
                 }
