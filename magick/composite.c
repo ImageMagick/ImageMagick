@@ -300,7 +300,7 @@ static MagickRealType ColorDodge(const MagickRealType Sca,
   */
   if ((Sca*Da+Dca*Sa) >= Sa*Da)
     return(Sa*Da+Sca*(1.0-Da)+Dca*(1.0-Sa));
-  return(Dca*Sa*Sa/(Sa-Sca)+Sca*(1.0-Da)+Dca*(1.0-Sa));
+  return(Dca*Sa*Sa*PerceptibleReciprocal(Sa-Sca)+Sca*(1.0-Da)+Dca*(1.0-Sa));
 #if 0
   /*
     New specification, March 2009 SVG specification.  This specification was
@@ -1559,8 +1559,10 @@ static MagickRealType VividLight(const MagickRealType Sca,
   if ((fabs(Sa) < MagickEpsilon) || (fabs(Sca-Sa) < MagickEpsilon))
     return(Sa*Da+Sca*(1.0-Da)+Dca*(1.0-Sa));
   if ((2*Sca) <= Sa)
-    return(Sa*(Da+Sa*(Dca-Da)/(2.0*Sca))+Sca*(1.0-Da)+Dca*(1.0-Sa));
-  return(Dca*Sa*Sa/(2.0*(Sa-Sca))+Sca*(1.0-Da)+Dca*(1.0-Sa));
+    return(Sa*(Da+Sa*(Dca-Da)*PerceptibleReciprocal(2.0*Sca))+Sca*(1.0-Da)+
+      Dca*(1.0-Sa));
+  return(Dca*Sa*Sa*PerceptibleReciprocal(2.0*(Sa-Sca))+Sca*(1.0-Da)+Dca*
+    (1.0-Sa));
 }
 
 static inline void CompositeVividLight(const MagickPixelPacket *p,
