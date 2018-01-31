@@ -825,8 +825,11 @@ static MagickBooleanType decodeH265Image(Image *image, HEICImageContext *ctx, un
   unsigned char
     *buffer = NULL;
 
+  unsigned char
+    *p;
+
   size_t
-    count, pos;
+    count, pos, nal_unit_size;
 
   int
     more, i;
@@ -895,10 +898,14 @@ static MagickBooleanType decodeH265Image(Image *image, HEICImageContext *ctx, un
   /*
    * AVCC to AnnexB
    */
-  buffer[0] = 0;
-  buffer[1] = 0;
-  buffer[2] = 0;
-  buffer[3] = 1;
+  for (p = buffer; p < buffer + ctx->itemInfo[id].size; /* void */) {
+    nal_unit_size = readInt(p);
+    p[0] = 0;
+    p[1] = 0;
+    p[2] = 0;
+    p[3] = 1;
+    p += nal_unit_size + 4;
+  }
 
   err = de265_push_data(ctx->h265Ctx, buffer, ctx->itemInfo[id].size, pos, (void*)2);
   if (err != DE265_OK) {
