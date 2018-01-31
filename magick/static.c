@@ -79,7 +79,7 @@ static struct
     (*unregister_module)(void);
 } MagickModules[] =
 {
-#if !defined(MAGICKCORE_BUILD_MODULES)
+#if !defined(MAGICKCORE_MODULES_SUPPORT)
   { "AAI", MagickFalse, RegisterAAIImage, UnregisterAAIImage },
   { "ART", MagickFalse, RegisterARTImage, UnregisterARTImage },
   { "AVS", MagickFalse, RegisterAVSImage, UnregisterAVSImage },
@@ -302,7 +302,7 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
         "NotAuthorized","`%s'",tag);
       return(MagickFalse);
     }
-#if defined(MAGICKCORE_BUILD_MODULES)
+#if defined(MAGICKCORE_MODULES_SUPPORT)
   (void) tag;
   (void) argc;
   (void) argv;
