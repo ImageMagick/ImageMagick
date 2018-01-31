@@ -240,7 +240,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
               if (LocaleNCompare(p,"0x",2) == 0)
                 *width=(size_t) strtol(p,&p,10);
               else
-                *width=(size_t) floor(StringToDouble(p,&p)+0.5);
+                *width=((size_t) floor(StringToDouble(p,&p)+0.5)) & 0x7fffffff;
             }
           if (p != q)
             flags|=WidthValue;
@@ -259,7 +259,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
               */
               q=p;
               if (height != (size_t *) NULL)
-                *height=(size_t) floor(StringToDouble(p,&p)+0.5);
+                *height=((size_t) floor(StringToDouble(p,&p)+0.5)) & 0x7fffffff;
               if (p != q)
                 flags|=HeightValue;
             }
@@ -278,7 +278,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
       }
       q=p;
       if (x != (ssize_t *) NULL)
-        *x=(ssize_t) ceil(StringToDouble(p,&p)-0.5);
+        *x=((ssize_t) ceil(StringToDouble(p,&p)-0.5)) & 0x7fffffff;
       if (p != q)
         {
           flags|=XValue;
@@ -299,7 +299,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
       }
       q=p;
       if (y != (ssize_t *) NULL)
-        *y=(ssize_t) ceil(StringToDouble(p,&p)-0.5);
+        *y=((ssize_t) ceil(StringToDouble(p,&p)-0.5)) & 0x7fffffff;
       if (p != q)
         {
           flags|=YValue;
