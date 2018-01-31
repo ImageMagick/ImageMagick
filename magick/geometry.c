@@ -240,7 +240,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
               if (LocaleNCompare(p,"0x",2) == 0)
                 *width=(size_t) strtol(p,&p,10);
               else
-                *width=((size_t) floor(StringToDouble(p,&p)+0.5) & 0x7fffffff;
+                *width=((size_t) floor(StringToDouble(p,&p)+0.5)) & 0x7fffffff;
             }
           if (p != q)
             flags|=WidthValue;
