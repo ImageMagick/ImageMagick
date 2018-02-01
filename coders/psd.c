@@ -2013,6 +2013,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((psd_info.depth != 1) && (psd_info.depth != 8) && (psd_info.depth != 16))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   psd_info.mode=ReadBlobMSBShort(image);
+  if ((psd_info.mode == IndexedMode) && (psd_info.channels > 3))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  Image is %.20g x %.20g with channels=%.20g, depth=%.20g, mode=%s",
@@ -2064,6 +2066,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read PSD raster colormap only present for indexed and duotone images.
   */
   length=ReadBlobMSBLong(image);
+  if ((psd_info.mode == IndexedMode) && (length < 3))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if (length != 0)
     {
       if (image->debug != MagickFalse)
