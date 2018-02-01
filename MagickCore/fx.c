@@ -1872,11 +1872,11 @@ static const char *FxOperatorPrecedence(const char *expression,
   size_t
     level;
 
-  c=0;
+  c=(-1);
   level=0;
   subexpression=(const char *) NULL;
   target=NullPrecedence;
-  while (*expression != '\0')
+  while ((c != '\0') && (*expression != '\0'))
   {
     precedence=UndefinedPrecedence;
     if ((isspace((int) ((unsigned char) *expression)) != 0) || (c == (int) '@'))
