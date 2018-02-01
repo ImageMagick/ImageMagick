@@ -702,7 +702,7 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     status=SetImageExtent(image,image->columns,image->rows);
     if (status == MagickFalse)
       return((Image *) NULL);
-    (void) SetImageBackgroundColor(image,exception);
+    (void) SetImageBackgroundColor(image);
     quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       return((Image *) NULL);
@@ -1202,7 +1202,7 @@ RestoreMSCWarning
         InheritException(exception,&image->exception);
         return(DestroyImageList(image));
       }
-    (void) SetImageBackgroundColor(image,exception);
+    (void) SetImageBackgroundColor(image);
     quantum_info=AcquireQuantumInfo(clone_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
