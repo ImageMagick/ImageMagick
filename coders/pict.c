@@ -1146,6 +1146,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 if (tile_image->alpha_trait != UndefinedPixelTrait)
                   image->alpha_trait=tile_image->alpha_trait;
               }
+            (void) SetImageBackgroundColor(tile_image,exception);
             if ((code != 0x9a) && (code != 0x9b))
               {
                 /*
