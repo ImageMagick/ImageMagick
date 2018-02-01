@@ -1156,6 +1156,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 if (tile_image->matte != MagickFalse)
                   image->matte=tile_image->matte;
               }
+            (void) SetImageBackgroundColor(tile_image);
             if ((code != 0x9a) && (code != 0x9b))
               {
                 /*
