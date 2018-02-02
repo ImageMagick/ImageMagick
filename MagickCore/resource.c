@@ -1209,7 +1209,8 @@ MagickExport MagickBooleanType RelinquishUniqueFileResource(const char *path)
   UnlockSemaphoreInfo(resource_semaphore);
   (void) CopyMagickString(cache_path,path,MagickPathExtent);
   AppendImageFormat("cache",cache_path);
-  (void) ShredFile(cache_path);
+  if (access_utf8(cache_path,F_OK) == 0)
+    (void) ShredFile(cache_path);
   if (status == MagickFalse)
     status=ShredFile(path);
   return(status);
