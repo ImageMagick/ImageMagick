@@ -167,7 +167,8 @@ MagickExport char *AcquireString(const char *source)
 %    o length: the string length.
 %
 */
-MagickExport StringInfo *AcquireStringInfo(const size_t length)
+
+static StringInfo *AcquireEmptyStringInfo()
 {
   StringInfo
     *string_info;
@@ -175,8 +176,16 @@ MagickExport StringInfo *AcquireStringInfo(const size_t length)
   string_info=(StringInfo *) AcquireCriticalMemory(sizeof(*string_info));
   (void) ResetMagickMemory(string_info,0,sizeof(*string_info));
   string_info->signature=MagickCoreSignature;
+  return(string_info);
+}
+
+MagickExport StringInfo *AcquireStringInfo(const size_t length)
+{
+  StringInfo
+    *string_info;
+
+  string_info=AcquireEmptyStringInfo();
   string_info->length=length;
-  string_info->datum=(unsigned char *) NULL;
   if (~string_info->length >= (MagickPathExtent-1))
     string_info->datum=(unsigned char *) AcquireQuantumMemory(
       string_info->length+MagickPathExtent,sizeof(*string_info->datum));
@@ -217,14 +226,10 @@ MagickExport StringInfo *BlobToStringInfo(const void *blob,const size_t length)
 
   if (~length < MagickPathExtent)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  string_info=AcquireStringInfo(0);
+  string_info=AcquireEmptyStringInfo();
   string_info->length=length;
-  if (string_info->datum == (unsigned char *) NULL)
-    string_info->datum=(unsigned char *) AcquireQuantumMemory(length+
-      MagickPathExtent,sizeof(*string_info->datum));
-  else
-    string_info->datum=(unsigned char *) ResizeQuantumMemory(string_info->datum,
-      length+MagickPathExtent,sizeof(*string_info->datum));
+  string_info->datum=(unsigned char *) AcquireQuantumMemory(length+
+    MagickPathExtent,sizeof(*string_info->datum));
   if (string_info->datum == (unsigned char *) NULL)
     {
       string_info=DestroyStringInfo(string_info);
@@ -648,12 +653,9 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
     }
   string[length]='\0';
   file=close(file)-1;
-  string_info=AcquireStringInfo(0);
+  string_info=AcquireEmptyStringInfo();
   string_info->path=ConstantString(filename);
   string_info->length=length;
-  if (string_info->datum != (unsigned char *) NULL)
-    string_info->datum=(unsigned char *) RelinquishMagickMemory(
-      string_info->datum);
   string_info->datum=(unsigned char *) string;
   return(string_info);
 }
@@ -1030,11 +1032,8 @@ MagickExport StringInfo *FileToStringInfo(const char *filename,
   assert(filename != (const char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
   assert(exception != (ExceptionInfo *) NULL);
-  string_info=AcquireStringInfo(0);
+  string_info=AcquireEmptyStringInfo();
   string_info->path=ConstantString(filename);
-  if (string_info->datum != (unsigned char *) NULL)
-    string_info->datum=(unsigned char *) RelinquishMagickMemory(
-      string_info->datum);
   string_info->datum=(unsigned char *) FileToBlob(filename,extent,
     &string_info->length,exception);
   if (string_info->datum == (unsigned char *) NULL)
