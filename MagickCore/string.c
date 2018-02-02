@@ -168,7 +168,7 @@ MagickExport char *AcquireString(const char *source)
 %
 */
 
-static StringInfo *AcquireEmptyStringInfo()
+static StringInfo *AcquireStringInfoContainer()
 {
   StringInfo
     *string_info;
@@ -184,7 +184,7 @@ MagickExport StringInfo *AcquireStringInfo(const size_t length)
   StringInfo
     *string_info;
 
-  string_info=AcquireEmptyStringInfo();
+  string_info=AcquireStringInfoContainer();
   string_info->length=length;
   if (~string_info->length >= (MagickPathExtent-1))
     string_info->datum=(unsigned char *) AcquireQuantumMemory(
@@ -226,7 +226,7 @@ MagickExport StringInfo *BlobToStringInfo(const void *blob,const size_t length)
 
   if (~length < MagickPathExtent)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  string_info=AcquireEmptyStringInfo();
+  string_info=AcquireStringInfoContainer();
   string_info->length=length;
   string_info->datum=(unsigned char *) AcquireQuantumMemory(length+
     MagickPathExtent,sizeof(*string_info->datum));
@@ -653,7 +653,7 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
     }
   string[length]='\0';
   file=close(file)-1;
-  string_info=AcquireEmptyStringInfo();
+  string_info=AcquireStringInfoContainer();
   string_info->path=ConstantString(filename);
   string_info->length=length;
   string_info->datum=(unsigned char *) string;
@@ -1032,7 +1032,7 @@ MagickExport StringInfo *FileToStringInfo(const char *filename,
   assert(filename != (const char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
   assert(exception != (ExceptionInfo *) NULL);
-  string_info=AcquireEmptyStringInfo();
+  string_info=AcquireStringInfoContainer();
   string_info->path=ConstantString(filename);
   string_info->datum=(unsigned char *) FileToBlob(filename,extent,
     &string_info->length,exception);
