@@ -3029,8 +3029,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
 
         alpha=bounds.x2-bounds.x1;
         beta=bounds.y2-bounds.y1;
-        radius=hypot((double) alpha,(double) beta);
-        points_extent=2*ceil((double) MagickPI*radius)+6*BezierQuantum+360;
+        radius=hypot(alpha,beta);
+        points_extent=ceil(MagickPI*MagickPI*radius)+6*BezierQuantum+360;
         break;
       }
       default:
