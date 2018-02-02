@@ -893,6 +893,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 if ((LocaleNCompare(keyword,"profile:",8) == 0) ||
                     (LocaleNCompare(keyword,"profile-",8) == 0))
                   {
+                    size_t
+                      length;
+
                     StringInfo
                       *profile;
 
@@ -900,8 +903,16 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       profiles=NewLinkedList(0);
                     (void) AppendValueToLinkedList(profiles,
                       AcquireString(keyword+8));
-                    profile=BlobToStringInfo((const void *) NULL,(size_t)
-                      StringToLong(options));
+                    length=(size_t) StringToLong(options);
+                    if (length > sizeof(keyword)-8)
+                      {
+                        options=DestroyString(options);
+                        profiles=DestroyLinkedList(profiles,
+                          RelinquishMagickMemory);
+                        ThrowReaderException(CorruptImageError,
+                          "ImproperImageHeader");
+                      }
+                    profile=BlobToStringInfo((const void *) NULL,length);
                     if (profile == (StringInfo *) NULL)
                       {
                         options=DestroyString(options);
