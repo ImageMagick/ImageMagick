@@ -309,8 +309,11 @@ MagickExport void GetNextToken(const char *start,const char **end,
       if (token[offset] == '#')
         offset++;
       i=(ssize_t) strlen(token);
-      (void) CopyMagickString(token,token+offset,MagickPathExtent);
-      token[i-offset-1]='\0';
+      if (i > offset)
+        {
+          (void) CopyMagickString(token,token+offset,MagickPathExtent);
+          token[i-offset-1]='\0';
+        }
     }
   while (isspace((int) ((unsigned char) *p)) != 0)
     p++;
