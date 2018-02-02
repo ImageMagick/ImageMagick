@@ -1198,8 +1198,9 @@ MagickExport MagickBooleanType RelinquishUniqueFileResource(const char *path)
     status=DeleteNodeFromSplayTree(temporary_resources, (const void *) path);
   UnlockSemaphoreInfo(resource_semaphore);
   (void) CopyMagickString(cache_path,path,MaxTextExtent);
-  AppendImageFormat("cache",cache_path);
-  (void) ShredFile(cache_path);
+    AppendImageFormat("cache",cache_path);
+  if (access_utf8(cache_path,F_OK) == 0)
+    (void) ShredFile(cache_path);
   if (status == MagickFalse)
     status=ShredFile(path);
   return(status);
