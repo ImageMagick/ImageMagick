@@ -3485,6 +3485,11 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
       offset*=PerceptibleReciprocal(length);
     for (x=bounding_box.x; x < (ssize_t) bounding_box.width; x++)
     {
+      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
+        {
+          q+=GetPixelChannels(image);
+          continue;
+        }
       GetPixelInfoPixel(image,q,&pixel);
       switch (gradient->spread)
       {
@@ -4167,6 +4172,11 @@ RestoreMSCWarning
       /*
         Fill and/or stroke.
       */
+      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
+        {
+          q+=GetPixelChannels(image);
+          continue;
+        }
       fill_alpha=GetFillAlpha(polygon_info[id],mid,fill,draw_info->fill_rule,
         x,y,&stroke_alpha);
       if (draw_info->stroke_antialias == MagickFalse)
@@ -4408,6 +4418,11 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
+              if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
+                {
+                  q+=GetPixelChannels(image);
+                  continue;
+                }
               GetPixelInfoPixel(image,q,&pixel);
               if (IsFuzzyEquivalencePixelInfo(&pixel,&target) == MagickFalse)
                 {
@@ -4467,6 +4482,11 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
+              if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
+                {
+                  q+=GetPixelChannels(image);
+                  continue;
+                }
               GetFillColor(draw_info,x,y,&pixel,exception);
               SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
               q+=GetPixelChannels(image);
@@ -4524,6 +4544,11 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
+              if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
+                {
+                  q+=GetPixelChannels(image);
+                  continue;
+                }
               GetPixelInfoPixel(image,q,&pixel);
               if (IsFuzzyEquivalencePixelInfo(&pixel,&target) == MagickFalse)
                 {
@@ -4579,6 +4604,11 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
+              if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
+                {
+                  q+=GetPixelChannels(image);
+                  continue;
+                }
               GetFillColor(draw_info,x,y,&pixel,exception);
               SetPixelViaPixelInfo(image,&pixel,q);
               q+=GetPixelChannels(image);
