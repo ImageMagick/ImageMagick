@@ -3,6 +3,8 @@
 # Example of using a lsys fractal,
 # which in turm used Turtle Graphics
 #
+use Cwd;
+use lib cwd;
 require "lsys.pl";
 
 %rule = (
