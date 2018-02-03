@@ -306,8 +306,8 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
 
       p=PushShortPixel(MSBEndian,p,&quantum);
       SetPixelRed(pixel,quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH));
-      SetPixelGreen(pixel,ScaleCharToQuantum(quantum));
-      SetPixelBlue(pixel,ScaleCharToQuantum(quantum));
+      SetPixelGreen(pixel,ScaleCharToQuantum((unsigned char) quantum));
+      SetPixelBlue(pixel,ScaleCharToQuantum((unsigned char) quantum));
       if (IsGrayColorspace(image->colorspace) == MagickFalse)
         {
           p=PushShortPixel(MSBEndian,p,&quantum);
@@ -900,6 +900,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     StringInfo
                       *profile;
 
+                    if ((MagickSizeType) StringToLong(options) > GetBlobSize(image))
+                      ThrowReaderException(CorruptImageError,
+                        "InsufficientImageDataInFile");
                     if (profiles == (LinkedListInfo *) NULL)
                       profiles=NewLinkedList(0);
                     (void) AppendValueToLinkedList(profiles,
@@ -1191,7 +1194,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           Create image colormap.
         */
         packet_size=(size_t) (3UL*image->depth/8UL);
-        if ((packet_size*colors) > GetBlobSize(image))
+        if (((MagickSizeType) packet_size*colors) > GetBlobSize(image))
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         status=AcquireImageColormap(image,colors != 0 ? colors : 256);
         if (status == MagickFalse)
@@ -2072,7 +2075,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       }
     else
       if (image->depth < 16)
-        DeleteImageProperty(image,"quantum:format");
+        (void) DeleteImageProperty(image,"quantum:format");
     compression=UndefinedCompression;
     if (image_info->compression != UndefinedCompression)
       compression=image_info->compression;
@@ -2347,7 +2350,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
                 {
                   if (value[i] == (int) '}')
                     (void) WriteBlobByte(image,'\\');
-                  (void) WriteBlobByte(image,value[i]);
+                  (void) WriteBlobByte(image,(unsigned char) value[i]);
                 }
               (void) WriteBlobByte(image,'}');
             }
