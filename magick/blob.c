@@ -117,6 +117,9 @@ struct _BlobInfo
     extent,
     quantum;
 
+  BlobMode
+    mode;
+
   MagickBooleanType
     mapped,
     eof;
@@ -2465,6 +2468,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       return(MagickTrue);
     }
   (void) DetachBlob(blob_info);
+  blob_info->mode=mode;
   switch (mode)
   {
     default: type="r"; break;
@@ -4098,14 +4102,30 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
           break;
         }
       }
-      if (blob_info->offset < (MagickOffsetType) ((off_t) blob_info->length))
+      if (blob_info->offset <= (MagickOffsetType) ((off_t) blob_info->length))
         {
           blob_info->eof=MagickFalse;
           break;
         }
-      if (blob_info->offset < (MagickOffsetType) ((off_t) blob_info->extent))
-        break;
-      return(-1);
+      if ((image->blob->mapped == MagickFalse) &&
+          ((image->blob->mode == WriteBlobMode) ||
+           (image->blob->mode == WriteBinaryBlobMode)))
+        {
+          image->blob->extent=(size_t) (image->blob->offset+
+            image->blob->quantum);
+          image->blob->quantum<<=1;
+          image->blob->data=(unsigned char *) ResizeQuantumMemory(
+            image->blob->data,image->blob->extent+1,sizeof(*image->blob->data));
+          (void) SyncBlob(image);
+          if (image->blob->data == (unsigned char *) NULL)
+            {
+              (void) DetachBlob(image->blob);
+              return(-1);
+            }
+        }
+      if (blob_info->offset > (MagickOffsetType) ((off_t) blob_info->extent))
+        return(-1);
+      break;
     }
   }
   return(blob_info->offset);
