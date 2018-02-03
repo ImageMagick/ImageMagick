@@ -194,27 +194,28 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
   p=pixels;
   if (image->storage_class == PseudoClass)
     {
-      pixel->index=0;
+      pixel->index=0.0;
       switch (image->depth)
       {
         case 32:
         {
-          pixel->index=ConstrainColormapIndex(image,((size_t) *p << 24) |
-            ((size_t) *(p+1) << 16) | ((size_t) *(p+2) << 8) | (size_t) *(p+3),
-            exception);
+          pixel->index=(MagickRealType) ConstrainColormapIndex(image,(ssize_t)
+            (((size_t) *p << 24) | ((size_t) *(p+1) << 16) |
+            ((size_t) *(p+2) << 8) | (size_t) *(p+3)),exception);
           p+=4;
           break;
         }
         case 16:
         {
-          pixel->index=ConstrainColormapIndex(image,(*p << 8) | *(p+1),
-            exception);
+          pixel->index=(MagickRealType) ConstrainColormapIndex(image,(ssize_t)
+            ((*p << 8) | *(p+1)),exception);
           p+=2;
           break;
         }
         case 8:
         {
-          pixel->index=ConstrainColormapIndex(image,*p,exception);
+          pixel->index=(MagickRealType) ConstrainColormapIndex(image,
+            (ssize_t) *p,exception);
           p++;
           break;
         }
@@ -232,7 +233,7 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
           if (image->alpha_trait != UndefinedPixelTrait)
             {
               p=PushCharPixel(p,&quantum);
-              pixel->alpha=ScaleCharToQuantum(quantum);
+              pixel->alpha=(MagickRealType) ScaleCharToQuantum(quantum);
             }
           break;
         }
@@ -244,7 +245,7 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
           if (image->alpha_trait != UndefinedPixelTrait)
             {
               p=PushShortPixel(MSBEndian,p,&quantum);
-              pixel->alpha=(Quantum) (quantum >> (image->depth-
+              pixel->alpha=(MagickRealType) (quantum >> (image->depth-
                 MAGICKCORE_QUANTUM_DEPTH));
             }
           break;
@@ -257,7 +258,7 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
           if (image->alpha_trait != UndefinedPixelTrait)
             {
               p=PushLongPixel(MSBEndian,p,&quantum);
-              pixel->alpha=(Quantum) (quantum >> (image->depth-
+              pixel->alpha=(MagickRealType) (quantum >> (image->depth-
                 MAGICKCORE_QUANTUM_DEPTH));
             }
           break;
@@ -277,25 +278,25 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
         quantum;
 
       p=PushCharPixel(p,&quantum);
-      pixel->red=ScaleCharToQuantum(quantum);
+      pixel->red=(MagickRealType) ScaleCharToQuantum(quantum);
       pixel->green=pixel->red;
       pixel->blue=pixel->red;
       if (IsGrayColorspace(image->colorspace) == MagickFalse)
         {
           p=PushCharPixel(p,&quantum);
-          pixel->green=ScaleCharToQuantum(quantum);
+          pixel->green=(MagickRealType) ScaleCharToQuantum(quantum);
           p=PushCharPixel(p,&quantum);
-          pixel->blue=ScaleCharToQuantum(quantum);
+          pixel->blue=(MagickRealType) ScaleCharToQuantum(quantum);
         }
       if (image->colorspace == CMYKColorspace)
         {
           p=PushCharPixel(p,&quantum);
-          pixel->black=ScaleCharToQuantum(quantum);
+          pixel->black=(MagickRealType) ScaleCharToQuantum(quantum);
         }
       if (image->alpha_trait != UndefinedPixelTrait)
         {
           p=PushCharPixel(p,&quantum);
-          pixel->alpha=ScaleCharToQuantum(quantum);
+          pixel->alpha=(MagickRealType) ScaleCharToQuantum(quantum);
         }
       break;
     }
@@ -305,25 +306,30 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
         quantum;
 
       p=PushShortPixel(MSBEndian,p,&quantum);
-      pixel->red=quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH);
+      pixel->red=(MagickRealType) (quantum >> (image->depth-
+        MAGICKCORE_QUANTUM_DEPTH));
       pixel->green=pixel->red;
       pixel->blue=pixel->red;
       if (IsGrayColorspace(image->colorspace) == MagickFalse)
         {
           p=PushShortPixel(MSBEndian,p,&quantum);
-          pixel->green=quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH);
+          pixel->green=(MagickRealType) (quantum >> (image->depth-
+            MAGICKCORE_QUANTUM_DEPTH));
           p=PushShortPixel(MSBEndian,p,&quantum);
-          pixel->blue=quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH);
+          pixel->blue=(MagickRealType) (quantum >> (image->depth-
+            MAGICKCORE_QUANTUM_DEPTH));
         }
       if (image->colorspace == CMYKColorspace)
         {
           p=PushShortPixel(MSBEndian,p,&quantum);
-          pixel->black=quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH);
+          pixel->black=(MagickRealType) (quantum >> (image->depth-
+            MAGICKCORE_QUANTUM_DEPTH));
         }
       if (image->alpha_trait != UndefinedPixelTrait)
         {
           p=PushShortPixel(MSBEndian,p,&quantum);
-          pixel->alpha=quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH);
+          pixel->alpha=(MagickRealType) (quantum >> (image->depth-
+            MAGICKCORE_QUANTUM_DEPTH));
         }
       break;
     }
@@ -333,25 +339,30 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
         quantum;
 
       p=PushLongPixel(MSBEndian,p,&quantum);
-      pixel->red=quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH);
+      pixel->red=(MagickRealType) (quantum >> (image->depth-
+        MAGICKCORE_QUANTUM_DEPTH));
       pixel->green=pixel->red;
       pixel->blue=pixel->red;
       if (IsGrayColorspace(image->colorspace) == MagickFalse)
         {
           p=PushLongPixel(MSBEndian,p,&quantum);
-          pixel->green=quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH);
+          pixel->green=(MagickRealType) (quantum >> (image->depth-
+            MAGICKCORE_QUANTUM_DEPTH));
           p=PushLongPixel(MSBEndian,p,&quantum);
-          pixel->blue=quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH);
+          pixel->blue=(MagickRealType) (quantum >> (image->depth-
+            MAGICKCORE_QUANTUM_DEPTH));
         }
       if (image->colorspace == CMYKColorspace)
         {
           p=PushLongPixel(MSBEndian,p,&quantum);
-          pixel->black=quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH);
+          pixel->black=(MagickRealType) (quantum >> (image->depth-
+            MAGICKCORE_QUANTUM_DEPTH));
         }
       if (image->alpha_trait != UndefinedPixelTrait)
         {
           p=PushLongPixel(MSBEndian,p,&quantum);
-          pixel->alpha=quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH);
+          pixel->alpha=(MagickRealType) (quantum >> (image->depth-
+            MAGICKCORE_QUANTUM_DEPTH));
         }
       break;
     }
@@ -899,6 +910,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     StringInfo
                       *profile;
 
+                    if ((MagickSizeType) StringToLong(options) > GetBlobSize(image))
+                      ThrowReaderException(CorruptImageError,
+                        "InsufficientImageDataInFile");
                     if (profiles == (LinkedListInfo *) NULL)
                       profiles=NewLinkedList(0);
                     (void) AppendValueToLinkedList(profiles,
@@ -1191,7 +1205,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           Create image colormap.
         */
         packet_size=(size_t) (3UL*image->depth/8UL);
-        if ((packet_size*colors) > GetBlobSize(image))
+        if (((MagickSizeType) packet_size*colors) > GetBlobSize(image))
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         status=AcquireImageColormap(image,colors != 0 ? colors : 256,exception);
         if (status == MagickFalse)
@@ -1221,11 +1235,14 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 for (i=0; i < (ssize_t) image->colors; i++)
                 {
                   p=PushCharPixel(p,&pixel);
-                  image->colormap[i].red=ScaleCharToQuantum(pixel);
+                  image->colormap[i].red=(MagickRealType)
+                    ScaleCharToQuantum(pixel);
                   p=PushCharPixel(p,&pixel);
-                  image->colormap[i].green=ScaleCharToQuantum(pixel);
+                  image->colormap[i].green=(MagickRealType)
+                    ScaleCharToQuantum(pixel);
                   p=PushCharPixel(p,&pixel);
-                  image->colormap[i].blue=ScaleCharToQuantum(pixel);
+                  image->colormap[i].blue=(MagickRealType)
+                    ScaleCharToQuantum(pixel);
                 }
                 break;
               }
@@ -1237,11 +1254,14 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 for (i=0; i < (ssize_t) image->colors; i++)
                 {
                   p=PushShortPixel(MSBEndian,p,&pixel);
-                  image->colormap[i].red=ScaleShortToQuantum(pixel);
+                  image->colormap[i].red=(MagickRealType)
+                    ScaleShortToQuantum(pixel);
                   p=PushShortPixel(MSBEndian,p,&pixel);
-                  image->colormap[i].green=ScaleShortToQuantum(pixel);
+                  image->colormap[i].green=(MagickRealType)
+                    ScaleShortToQuantum(pixel);
                   p=PushShortPixel(MSBEndian,p,&pixel);
-                  image->colormap[i].blue=ScaleShortToQuantum(pixel);
+                  image->colormap[i].blue=(MagickRealType)
+                    ScaleShortToQuantum(pixel);
                 }
                 break;
               }
@@ -1253,11 +1273,14 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 for (i=0; i < (ssize_t) image->colors; i++)
                 {
                   p=PushLongPixel(MSBEndian,p,&pixel);
-                  image->colormap[i].red=ScaleLongToQuantum(pixel);
+                  image->colormap[i].red=(MagickRealType)
+                    ScaleLongToQuantum(pixel);
                   p=PushLongPixel(MSBEndian,p,&pixel);
-                  image->colormap[i].green=ScaleLongToQuantum(pixel);
+                  image->colormap[i].green=(MagickRealType)
+                    ScaleLongToQuantum(pixel);
                   p=PushLongPixel(MSBEndian,p,&pixel);
-                  image->colormap[i].blue=ScaleLongToQuantum(pixel);
+                  image->colormap[i].blue=(MagickRealType)
+                    ScaleLongToQuantum(pixel);
                 }
                 break;
               }
@@ -2066,7 +2089,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       }
     else
       if (image->depth < 16)    
-        DeleteImageProperty(image,"quantum:format");
+        (void) DeleteImageProperty(image,"quantum:format");
     compression=UndefinedCompression;
     if (image_info->compression != UndefinedCompression)
       compression=image_info->compression;
@@ -2347,7 +2370,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
                 {
                   if (value[i] == (int) '}')
                     (void) WriteBlobByte(image,'\\');
-                  (void) WriteBlobByte(image,value[i]);
+                  (void) WriteBlobByte(image,(unsigned char) value[i]);
                 }
               (void) WriteBlobByte(image,'}');
             }
@@ -2419,11 +2442,11 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
               register unsigned int
                 pixel;
 
-              pixel=ScaleQuantumToLong(image->colormap[i].red);
+              pixel=ScaleQuantumToLong((Quantum) image->colormap[i].red);
               q=PopLongPixel(MSBEndian,pixel,q);
-              pixel=ScaleQuantumToLong(image->colormap[i].green);
+              pixel=ScaleQuantumToLong((Quantum) image->colormap[i].green);
               q=PopLongPixel(MSBEndian,pixel,q);
-              pixel=ScaleQuantumToLong(image->colormap[i].blue);
+              pixel=ScaleQuantumToLong((Quantum) image->colormap[i].blue);
               q=PopLongPixel(MSBEndian,pixel,q);
               break;
             }
@@ -2432,11 +2455,11 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
               register unsigned short
                 pixel;
 
-              pixel=ScaleQuantumToShort(image->colormap[i].red);
+              pixel=ScaleQuantumToShort((Quantum) image->colormap[i].red);
               q=PopShortPixel(MSBEndian,pixel,q);
-              pixel=ScaleQuantumToShort(image->colormap[i].green);
+              pixel=ScaleQuantumToShort((Quantum) image->colormap[i].green);
               q=PopShortPixel(MSBEndian,pixel,q);
-              pixel=ScaleQuantumToShort(image->colormap[i].blue);
+              pixel=ScaleQuantumToShort((Quantum) image->colormap[i].blue);
               q=PopShortPixel(MSBEndian,pixel,q);
               break;
             }
@@ -2445,12 +2468,14 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
               register unsigned char
                 pixel;
 
-              pixel=(unsigned char) ScaleQuantumToChar(image->colormap[i].red);
+              pixel=(unsigned char) ScaleQuantumToChar((Quantum)
+                image->colormap[i].red);
               q=PopCharPixel(pixel,q);
-              pixel=(unsigned char) ScaleQuantumToChar(
+              pixel=(unsigned char) ScaleQuantumToChar((Quantum)
                 image->colormap[i].green);
               q=PopCharPixel(pixel,q);
-              pixel=(unsigned char) ScaleQuantumToChar(image->colormap[i].blue);
+              pixel=(unsigned char) ScaleQuantumToChar((Quantum)
+                image->colormap[i].blue);
               q=PopCharPixel(pixel,q);
               break;
             }
