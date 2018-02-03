@@ -179,9 +179,9 @@ static int hls_to_rgb(int hue, int lum, int sat)
         R = G = B = (lum * RGBMAX) / HLSMAX;
     } else {
         if (lum <= (HLSMAX / 2)) {
-            Magic2 = (lum * (HLSMAX + sat) + (HLSMAX / 2)) / HLSMAX;
+            Magic2 = (int) (((ssize_t) lum * (HLSMAX + sat) + (HLSMAX / 2)) / HLSMAX);
         } else {
-            Magic2 = lum + sat - ((lum * sat) + (HLSMAX / 2)) / HLSMAX;
+            Magic2 = (int) (lum + sat - (((ssize_t) lum * sat) + (HLSMAX / 2)) / HLSMAX);
         }
         Magic1 = 2 * lum - Magic2;
 
