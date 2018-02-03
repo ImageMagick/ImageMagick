@@ -116,7 +116,7 @@ typedef enum
 */
 typedef struct _ChannelInfo
 {
-  short int
+  short
     type;
 
   size_t
@@ -1524,6 +1524,55 @@ static MagickBooleanType ReadPSDLayer(Image *image,const ImageInfo *image_info,
   return(status);
 }
 
+static MagickBooleanType CheckPSDChannels(const PSDInfo *psd_info,
+  LayerInfo *layer_info)
+{
+  ChannelType
+    channel_type;
+
+  MagickBooleanType
+    has_alpha;
+
+  register ssize_t
+    i;
+
+  if (layer_info->channels < psd_info->min_channels)
+    return(MagickFalse);
+  channel_type=RedChannel;
+  if (psd_info->min_channels >= 3)
+    channel_type|=(GreenChannel | BlueChannel);
+  if (psd_info->min_channels >= 4)
+    channel_type|=BlackChannel;
+  for (i=0; i < layer_info->channels; i++)
+  {
+    short
+      type;
+
+    type=layer_info->channel_info[i].type;
+    if (type == -1)
+      {
+        channel_type|=AlphaChannel;
+        continue;
+      }
+    if (type < -1)
+      type=MagickAbsoluteValue(type+2);
+    if (type == 0)
+      channel_type&=~RedChannel;
+    else if (type == 1)
+      channel_type&=~GreenChannel;
+    else if (type == 2)
+      channel_type&=~BlueChannel;
+    else if (type == 3)
+      channel_type&=~BlackChannel;
+  }
+  if (channel_type == 0)
+    return(MagickTrue);
+  if ((channel_type == AlphaChannel) &&
+      (layer_info->channels >= psd_info->min_channels + 1))
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
 static MagickBooleanType ReadPSDLayersInternal(Image *image,
   const ImageInfo *image_info,const PSDInfo *psd_info,
   const MagickBooleanType skip_layers,ExceptionInfo *exception)
@@ -1633,12 +1682,6 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
         layer_info[i].page.width=(size_t) (x-layer_info[i].page.x);
         layer_info[i].page.height=(size_t) (y-layer_info[i].page.y);
         layer_info[i].channels=ReadBlobShort(image);
-        if (layer_info[i].channels < 1)
-          {
-            layer_info=DestroyLayerInfo(layer_info,number_layers);
-            ThrowBinaryException(CorruptImageError,"MissingImageChannel",
-              image->filename);
-          }
         if (layer_info[i].channels > MaxPSDChannels)
           {
             layer_info=DestroyLayerInfo(layer_info,number_layers);
@@ -1669,6 +1712,12 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
               (double) layer_info[i].channel_info[j].type,
               (double) layer_info[i].channel_info[j].size);
         }
+        if (CheckPSDChannels(psd_info,&layer_info[i]) == MagickFalse)
+          {
+            layer_info=DestroyLayerInfo(layer_info,number_layers);
+            ThrowBinaryException(CorruptImageError,"ImproperImageHeader",
+              image->filename);
+          }
         count=ReadBlob(image,4,(unsigned char *) type);
         ReversePSDString(image,type,4);
         if ((count == 0) || (LocaleNCompare(type,"8BIM",4) != 0))
@@ -2083,10 +2132,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
+  psd_info.min_channels=3;
   if (psd_info.mode == LabMode)
     SetImageColorspace(image,LabColorspace,exception);
   if (psd_info.mode == CMYKMode)
     {
+      psd_info.min_channels=4;
       SetImageColorspace(image,CMYKColorspace,exception);
       if (psd_info.channels > 4)
         SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
@@ -2104,6 +2155,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Image colormap allocated");
         }
+      psd_info.min_channels=1;
       SetImageColorspace(image,GRAYColorspace,exception);
       if (psd_info.channels > 1)
         SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
@@ -2111,6 +2163,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     if (psd_info.channels > 3)
       SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
+  if (psd_info.channels < psd_info.min_channels)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   /*
     Read PSD raster colormap only present for indexed and duotone images.
   */

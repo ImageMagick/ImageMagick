@@ -38,6 +38,7 @@ typedef struct _PSDInfo
     channels,
     depth,
     mode,
+    min_channels,
     version;
 } PSDInfo;
 
