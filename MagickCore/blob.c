@@ -2713,7 +2713,6 @@ MagickExport MagickBooleanType IsBlobSeekable(const Image *image)
     case BlobStream:
       return(MagickTrue);
     case FileStream:
-    case ZipStream:
     {
       int
         status;
@@ -2721,6 +2720,16 @@ MagickExport MagickBooleanType IsBlobSeekable(const Image *image)
       if (blob_info->file_info.file == (FILE *) NULL)
         return(MagickFalse);
       status=fseek(blob_info->file_info.file,0,SEEK_CUR);
+      return(status == -1 ? MagickFalse : MagickTrue);
+    }
+    case ZipStream:
+    {
+      int
+        status;
+
+      if (blob_info->file_info.gzfile == (gzFile) NULL)
+        return(MagickFalse);
+      status=gzseek(blob_info->file_info.gzfile,0,SEEK_CUR);
       return(status == -1 ? MagickFalse : MagickTrue);
     }
     case UndefinedStream:
