@@ -1011,30 +1011,6 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                 (target_colorspace == UndefinedColorspace))
               ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
                 name);
-             if (((source_colorspace == LinearGRAYColorspace) ||
-                  (source_colorspace == GRAYColorspace)) &&
-                 (SetImageGray(image,exception) == MagickFalse))
-              ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
-                name);
-             if ((source_colorspace == CMYKColorspace) &&
-                 (image->colorspace != CMYKColorspace))
-              ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
-                name);
-             if ((source_colorspace == XYZColorspace) &&
-                 (image->colorspace != XYZColorspace))
-              ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
-                name);
-             if ((source_colorspace == YCbCrColorspace) &&
-                 (image->colorspace != YCbCrColorspace))
-              ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
-                name);
-             if ((source_colorspace != CMYKColorspace) &&
-                 (source_colorspace != LabColorspace) &&
-                 (source_colorspace != XYZColorspace) &&
-                 (source_colorspace != YCbCrColorspace) &&
-                 (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse))
-              ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
-                name);
             switch (image->rendering_intent)
             {
               case AbsoluteIntent: intent=INTENT_ABSOLUTE_COLORIMETRIC; break;
