@@ -3115,14 +3115,14 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("region",option+1) == 0)
         {
-          if (IsGeometry(arg1) == MagickFalse)
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if (*option == '+')
             {
               (void) SetImageRegionMask(_image,WritePixelMask,
                 (const RectangleInfo *) NULL,_exception);
               break;
             }
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) ParseGravityGeometry(_image,arg1,&geometry,_exception);
           (void) SetImageRegionMask(_image,WritePixelMask,&geometry,_exception);
           break;
