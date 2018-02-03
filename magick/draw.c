@@ -3042,6 +3042,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
       default:
         break;
     }
+    if (status == MagickFalse)
+      break;
     if (((double) ((size_t) points_extent)) < points_extent)
       {
         (void) ThrowMagickException(&image->exception,GetMagickModule(),
