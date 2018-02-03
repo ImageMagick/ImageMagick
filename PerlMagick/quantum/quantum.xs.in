@@ -558,11 +558,11 @@ static struct
     { "CopyPixels", { {"image", ImageReference}, {"geometry", StringReference},
       {"width", IntegerReference}, {"height", IntegerReference},
       {"x", IntegerReference}, {"y", IntegerReference},
-      {"gravity", MagickGravityOptions}, {"offset", StringReference}, 
+      {"gravity", MagickGravityOptions}, {"offset", StringReference},
       {"dx", IntegerReference}, {"dy", IntegerReference} } },
     { "Color", { {"color", StringReference} } },
     { "WaveletDenoise", {  {"geometry", StringReference},
-      {"threshold", RealReference}, {"softness", RealReference}, 
+      {"threshold", RealReference}, {"softness", RealReference},
       {"channel", MagickChannelOptions} } },
     { "Colorspace", { {"colorspace", MagickColorspaceOptions} } },
     { "AutoThreshold", { {"method", MagickAutoThresholdOptions} } }
@@ -7665,8 +7665,7 @@ Mogrify(ref,...)
 
     Image
       *image,
-      *next,
-      *region_image;
+      *next;
 
     MagickBooleanType
       status;
@@ -7709,7 +7708,6 @@ Mogrify(ref,...)
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     reference_vector=NULL;
-    region_image=NULL;
     number_images=0;
     base=2;
     if (sv_isobject(ST(0)) == 0)
@@ -7723,7 +7721,6 @@ Mogrify(ref,...)
     region_info.height=0;
     region_info.x=0;
     region_info.y=0;
-    region_image=(Image *) NULL;
     image=SetupList(aTHX_ reference,&info,&reference_vector,exception);
     if (ix && (ix != 666))
       {
@@ -7895,10 +7892,7 @@ Mogrify(ref,...)
       image=next;
       SetGeometry(image,&geometry);
       if ((region_info.width*region_info.height) != 0)
-        {
-          region_image=image;
-          image=CropImage(image,&region_info,exception);
-        }
+        (void) SetImageRegionMask(image,WritePixelMask,&region_info,exception);
       switch (ix)
       {
         default:
@@ -8223,7 +8217,7 @@ Mogrify(ref,...)
               flags=ParsePageGeometry(image,argument_list[0].string_reference,
                 &geometry,exception);
               if ((flags & PercentValue) != 0)
-                { 
+                {
                   geometry.x*=(double) image->columns/100.0;
                   geometry.y*=(double) image->rows/100.0;
                 }
@@ -11430,18 +11424,9 @@ Mogrify(ref,...)
       }
       if (next != (Image *) NULL)
         (void) CatchImageException(next);
-      if (region_image != (Image *) NULL)
-        {
-          /*
-            Composite region.
-          */
-          status=CompositeImage(region_image,image,CopyCompositeOp,MagickTrue,
-            region_info.x,region_info.y,exception);
-          (void) status;
-          (void) CatchImageException(region_image);
-          image=DestroyImage(image);
-          image=region_image;
-        }
+      if ((region_info.width*region_info.height) != 0)
+        (void) SetImageRegionMask(image,WritePixelMask,
+          (const RectangleInfo *) NULL,exception);
       if (image != (Image *) NULL)
         {
           number_images++;
