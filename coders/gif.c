@@ -66,6 +66,7 @@
 #include "MagickCore/property.h"
 #include "MagickCore/quantize.h"
 #include "MagickCore/quantum-private.h"
+#include "MagickCore/resource_.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
@@ -958,6 +959,9 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
+  MagickSizeType
+    max_image_count;
+
   register ssize_t
     i;
 
@@ -1038,6 +1042,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   duration=0;
   opacity=(-1);
   image_count=0;
+  max_image_count=GetMagickResourceLimit(ListLengthResource);
   for ( ; ; )
   {
     count=ReadBlob(image,1,&c);
@@ -1228,8 +1233,16 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (c != (unsigned char) ',')
       continue;
-    if (image_count != 0)
+    image_count++;
+    if (image_count != 1)
       {
+        if ((MagickSizeType) image_count == max_image_count)
+          {
+            image=DestroyImageList(image);
+            global_colormap=(unsigned char *) RelinquishMagickMemory(
+              global_colormap);
+            ThrowReaderException(CorruptImageError,"ListLengthExceedsLimit");
+          }
         /*
           Allocate next image structure.
         */
@@ -1243,7 +1256,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         image=SyncNextImageInList(image);
       }
-    image_count++;
     /*
       Read image attributes.
     */
