@@ -1312,7 +1312,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         Da,
         Dc,
         Dca,
+        DcaDa,
         Sa,
+        SaSca,
         Sc,
         Sca;
 
@@ -1681,6 +1683,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         */
         Sca=QuantumScale*Sa*Sc;
         Dca=QuantumScale*Da*Dc;
+        SaSca=Sa*PerceptibleReciprocal(Sca);
+        DcaDa=Dca*PerceptibleReciprocal(Da);
         switch (compose)
         {
           case DarkenCompositeOp:
@@ -1761,10 +1765,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=QuantumRange*gamma*(Dca*(1.0-Sa));
                 break;
               }
-            pixel=0.0;
-            if ((IsNaN(Da) == MagickFalse) && (IsNaN(Sca) == MagickFalse))
-              pixel=QuantumRange*gamma*(Sa*Da-Sa*Da*MagickMin(1.0,(1.0-Dca/Da)*
-                Sa/Sca)+Sca*(1.0-Da)+Dca*(1.0-Sa));
+            pixel=QuantumRange*gamma*(Sa*Da-Sa*Da*MagickMin(1.0,(1.0-DcaDa)*
+              SaSca)+Sca*(1.0-Da)+Dca*(1.0-Sa));
             break;
           }
           case ColorDodgeCompositeOp:
@@ -1896,7 +1898,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=QuantumRange*gamma*(Da*Sa+Dca*(1.0-Sa)+Sca*(1.0-Da));
                 break;
               }
-            pixel=QuantumRange*gamma*(Dca*Sa*Sa/Sca+Dca*(1.0-Sa)+Sca*(1.0-Da));
+            pixel=QuantumRange*gamma*(Dca*Sa*SaSca+Dca*(1.0-Sa)+Sca*(1.0-Da));
             break;
           }
           case DstAtopCompositeOp:
@@ -2259,19 +2261,19 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           {
             if ((2.0*Sca) < Sa)
               {
-                pixel=QuantumRange*gamma*(Dca*(Sa+(2.0*Sca-Sa)*(1.0-(Dca/Da)))+
+                pixel=QuantumRange*gamma*(Dca*(Sa+(2.0*Sca-Sa)*(1.0-DcaDa))+
                   Sca*(1.0-Da)+Dca*(1.0-Sa));
                 break;
               }
             if (((2.0*Sca) > Sa) && ((4.0*Dca) <= Da))
               {
-                pixel=QuantumRange*gamma*(Dca*Sa+Da*(2.0*Sca-Sa)*(4.0*(Dca/Da)*
-                  (4.0*(Dca/Da)+1.0)*((Dca/Da)-1.0)+7.0*(Dca/Da))+Sca*(1.0-Da)+
+                pixel=QuantumRange*gamma*(Dca*Sa+Da*(2.0*Sca-Sa)*(4.0*DcaDa*
+                  (4.0*DcaDa+1.0)*(DcaDa-1.0)+7.0*DcaDa)+Sca*(1.0-Da)+
                   Dca*(1.0-Sa));
                 break;
               }
-            pixel=QuantumRange*gamma*(Dca*Sa+Da*(2.0*Sca-Sa)*(pow((Dca/Da),0.5)-
-              (Dca/Da))+Sca*(1.0-Da)+Dca*(1.0-Sa));
+            pixel=QuantumRange*gamma*(Dca*Sa+Da*(2.0*Sca-Sa)*(pow(DcaDa,0.5)-
+              DcaDa)+Sca*(1.0-Da)+Dca*(1.0-Sa));
             break;
           }
           case StereoCompositeOp:
