@@ -2360,8 +2360,8 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,const ChannelType channel,
         }
         default:
         {
-          gamma=alpha*FxEvaluateSubexpression(fx_info,channel,x,y,p,depth,beta,
-            exception);
+          gamma=alpha*FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth,
+            beta,exception);
           return(gamma);
         }
       }
