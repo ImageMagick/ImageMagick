@@ -689,6 +689,7 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
       if (tile_image == (Image *) NULL)
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
+      (void) SetImageBackgroundColor(tile_image);
 
       /* read in the tile */
       switch (inDocInfo->compression)
