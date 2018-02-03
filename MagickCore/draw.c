@@ -2987,8 +2987,12 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       case BezierPrimitive:
       {
         if (primitive_info[j].coordinates > 107)
-          (void) ThrowMagickException(exception,GetMagickModule(),DrawError,
-            "TooManyBezierCoordinates","`%s'",token);
+          {
+            (void) ThrowMagickException(exception,GetMagickModule(),DrawError,
+              "TooManyBezierCoordinates","`%s'",token);
+            status=MagickFalse;
+            break;
+          }
         points_extent=(double) (BezierQuantum*primitive_info[j].coordinates);
         break;
       }
@@ -3030,6 +3034,13 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         alpha=bounds.x2-bounds.x1;
         beta=bounds.y2-bounds.y1;
         radius=hypot(alpha,beta);
+        if (points_extent > 21400)
+          {
+            (void) ThrowMagickException(exception,GetMagickModule(),DrawError,
+              "TooManyBezierCoordinates","`%s'",token);
+            status=MagickFalse;
+            break;
+          }
         points_extent=ceil(MagickPI*MagickPI*radius)+6*BezierQuantum+360;
         break;
       }
