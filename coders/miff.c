@@ -910,7 +910,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     StringInfo
                       *profile;
 
-                    if ((MagickSizeType) StringToLong(options) > GetBlobSize(image))
+                    length=(size_t) StringToLong(options);
+                    if ((MagickSizeType) length > GetBlobSize(image))
                       {
                         options=DestroyString(options);
                         ThrowReaderException(CorruptImageError,
@@ -920,15 +921,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       profiles=NewLinkedList(0);
                     (void) AppendValueToLinkedList(profiles,
                       AcquireString(keyword+8));
-                    length=(size_t) StringToLong(options);
-                    if (length > sizeof(keyword)-8)
-                      {
-                        options=DestroyString(options);
-                        profiles=DestroyLinkedList(profiles,
-                          RelinquishMagickMemory);
-                        ThrowReaderException(CorruptImageError,
-                          "ImproperImageHeader");
-                      }
                     profile=BlobToStringInfo((const void *) NULL,length);
                     if (profile == (StringInfo *) NULL)
                       {

@@ -625,10 +625,14 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if ((LocaleNCompare(keyword,"profile:",8) == 0) ||
                     (LocaleNCompare(keyword,"profile-",8) == 0))
                   {
+                    size_t
+                      length;
+
                     StringInfo
                       *profile;
 
-                    if ((MagickSizeType) StringToLong(options) > GetBlobSize(image))
+                    length=StringToLong(options);
+                    if ((MagickSizeType) length > GetBlobSize(image))
                       {
                         options=DestroyString(options);
                         ThrowReaderException(CorruptImageError,
