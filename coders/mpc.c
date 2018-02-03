@@ -611,10 +611,14 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if ((LocaleNCompare(keyword,"profile:",8) == 0) ||
                     (LocaleNCompare(keyword,"profile-",8) == 0))
                   {
+                    size_t
+                      length;
+
                     StringInfo
                       *profile;
 
-                    if ((MagickSizeType) StringToLong(options) > GetBlobSize(image))
+                    length=StringToLong(options);
+                    if ((MagickSizeType) length > GetBlobSize(image))
                       {
                         options=DestroyString(options);
                         ThrowReaderException(CorruptImageError,
@@ -624,8 +628,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       profiles=NewLinkedList(0);
                     (void) AppendValueToLinkedList(profiles,
                       AcquireString(keyword+8));
-                    profile=BlobToStringInfo((const void *) NULL,
-                      StringToLong(options));
+                    profile=BlobToStringInfo((const void *) NULL,length);
                     if (profile == (StringInfo *) NULL)
                       {
                         options=DestroyString(options);
