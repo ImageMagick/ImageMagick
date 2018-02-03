@@ -901,8 +901,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       *profile;
 
                     if ((MagickSizeType) StringToLong(options) > GetBlobSize(image))
-                      ThrowReaderException(CorruptImageError,
-                        "InsufficientImageDataInFile");
+                      {
+                        options=DestroyString(options);
+                        ThrowReaderException(CorruptImageError,
+                          "InsufficientImageDataInFile");
+                      }
                     if (profiles == (LinkedListInfo *) NULL)
                       profiles=NewLinkedList(0);
                     (void) AppendValueToLinkedList(profiles,
