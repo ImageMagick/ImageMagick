@@ -1856,6 +1856,7 @@ static MagickBooleanType Sync8BimProfile(Image *image,StringInfo *profile)
     if ((count > (ssize_t) length) || (count < 0))
       return(MagickFalse);
     p+=count;
+    length-=count;
     if ((*p & 0x01) == 0)
       (void) ReadProfileByte(&p,&length);
     count=(ssize_t) ReadProfileMSBLong(&p,&length);
