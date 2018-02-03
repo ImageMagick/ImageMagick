@@ -246,25 +246,15 @@ static inline void CompositeClear(const MagickPixelPacket *q,
 static MagickRealType ColorBurn(const MagickRealType Sca,
   const MagickRealType Sa,const MagickRealType Dca,const MagickRealType Da)
 {
-#if 0
-  /*
-    Oct 2004 SVG specification.
-  */
-  if (Sca*Da + Dca*Sa <= Sa*Da)
-    return(Sca*(1.0-Da)+Dca*(1.0-Sa));
-  return(Sa*(Sca*Da+Dca*Sa-Sa*Da)/Sca + Sca*(1.0-Da) + Dca*(1.0-Sa));
-#else
-  /*
-    March 2009 SVG specification.
-  */
+  double
+    SaSca;
+
   if ((fabs(Sca) < MagickEpsilon) && (fabs(Dca-Da) < MagickEpsilon))
     return(Sa*Da+Dca*(1.0-Sa));
   if (Sca < MagickEpsilon)
     return(Dca*(1.0-Sa));
-  if (IsNaN(Sca) != MagickFalse)
-    return(0.0);
-  return(Sa*Da-Sa*MagickMin(Da,(Da-Dca)*Sa/Sca)+Sca*(1.0-Da)+Dca*(1.0-Sa));
-#endif
+  SaSca=Sa*PerceptibleReciprocal(Sca);    
+  return(Sa*Da-Sa*MagickMin(Da,(Da-Dca)*SaSca)+Sca*(1.0-Da)+Dca*(1.0-Sa));
 }
 
 static inline void CompositeColorBurn(const MagickPixelPacket *p,
@@ -493,7 +483,7 @@ static MagickRealType Divide(const MagickRealType Sca,const MagickRealType Sa,
     return(Sca*(1.0-Da)+Dca*(1.0-Sa));
   if (fabs(Dca) < MagickEpsilon)
     return(Sa*Da+Sca*(1.0-Da)+Dca*(1.0-Sa));
-  return(Sca*Da*Da/Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
+  return(Sca*Da*Da*PerceptibleReciprocal(Dca)+Sca*(1.0-Da)+Dca*(1.0-Sa));
 }
 
 static inline void CompositeDivide(const MagickPixelPacket *p,
@@ -1330,9 +1320,7 @@ static MagickRealType PegtopLight(const MagickRealType Sca,
   */
   if (fabs(Da) < MagickEpsilon)
     return(Sca);
-  if (IsNaN(Da) != MagickFalse)
-    return(0.0);
-  return(Dca*Dca*(Sa-2.0*Sca)/Da+Sca*(2.0*Dca+1.0-Da)+Dca*(1.0-Sa));
+  return(Dca*Dca*(Sa-2.0*Sca)*PerceptibleReciprocal(Da)+Sca*(2.0*Dca+1.0-Da)+Dca*(1.0-Sa));
 }
 
 static inline void CompositePegtopLight(const MagickPixelPacket *p,
@@ -1454,29 +1442,11 @@ static inline void CompositeScreen(const MagickPixelPacket *p,
 static MagickRealType SoftLight(const MagickRealType Sca,
   const MagickRealType Sa, const MagickRealType Dca, const MagickRealType Da)
 {
-#if 0
-  /*
-    Oct 2004 SVG specification -- was found to be incorrect
-    See  http://lists.w3.org/Archives/Public/www-svg/2009Feb/0014.html.
-  */
-  if (2.0*Sca < Sa)
-    return(Dca*(Sa-(1.0-Dca/Da)*(2.0*Sca-Sa))+Sca*(1.0-Da)+Dca*(1.0-Sa));
-  if (8.0*Dca <= Da)
-    return(Dca*(Sa-(1.0-Dca/Da)*(2.0*Sca-Sa)*(3.0-8.0*Dca/Da))+
-      Sca*(1.0-Da)+Dca*(1.0-Sa));
-  return((Dca*Sa+(pow(Dca/Da,0.5)*Da-Dca)*(2.0*Sca-Sa))+Sca*(1.0-Da)+
-    Dca*(1.0-Sa));
-#else
   MagickRealType
     alpha,
     beta;
 
-  /*
-    New specification:  March 2009 SVG specification.
-  */
-  alpha=0.0;
-  if (IsNaN(Da) == MagickFalse)
-    alpha=Dca/Da;
+  alpha=Dca*PerceptibleReciprocal(Da);
   if ((2.0*Sca) < Sa)
     return(Dca*(Sa+(2.0*Sca-Sa)*(1.0-alpha))+Sca*(1.0-Da)+Dca*(1.0-Sa));
   if (((2.0*Sca) > Sa) && ((4.0*Dca) <= Da))
@@ -1487,7 +1457,6 @@ static MagickRealType SoftLight(const MagickRealType Sca,
     }
   beta=Dca*Sa+Da*(2.0*Sca-Sa)*(pow(alpha,0.5)-alpha)+Sca*(1.0-Da)+Dca*(1.0-Sa);
   return(beta);
-#endif
 }
 
 static inline void CompositeSoftLight(const MagickPixelPacket *p,
