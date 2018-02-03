@@ -10,6 +10,8 @@ END {print "not ok $test\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
 
+use Cwd;
+use lib cwd;
 require 't/subroutines.pl';
 
 chdir 't/zlib' || die 'Cd failed';
