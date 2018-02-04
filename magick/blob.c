@@ -2142,6 +2142,7 @@ MagickExport MagickBooleanType IsBlobSeekable(const Image *image)
     }
     case ZipStream:
     {
+#if defined(MAGICKCORE_ZLIB_DELEGATE)
       int
         status;
 
@@ -2149,13 +2150,16 @@ MagickExport MagickBooleanType IsBlobSeekable(const Image *image)
         return(MagickFalse);
       status=gzseek(blob_info->file_info.gzfile,0,SEEK_CUR);
       return(status == -1 ? MagickFalse : MagickTrue);
+#else
+      break;
+#endif
     }
     case UndefinedStream:
     case BZipStream:
     case FifoStream:
     case PipeStream:
     case StandardStream:
-      return(MagickFalse);
+      break;
     default:
       break;
   }
