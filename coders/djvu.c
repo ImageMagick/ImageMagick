@@ -47,6 +47,7 @@
 #include "magick/constitute.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
+#include "magick/image-private.h"
 #include "magick/list.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
@@ -558,13 +559,6 @@ get_page_line(LoadContext *lc, int row, QuantumInfo* quantum_info)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline double MagickMax(const double x,const double y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
 
 static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
   const ImageInfo *image_info,ExceptionInfo *exception)
