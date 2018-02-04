@@ -2745,7 +2745,7 @@ MagickExport MagickBooleanType IsBlobSeekable(const Image *image)
     case FifoStream:
     case PipeStream:
     case StandardStream:
-      return(MagickFalse);
+      break;
     case CustomStream:
     {
       if ((blob_info->custom_stream->seeker != (CustomStreamSeeker) NULL) &&
