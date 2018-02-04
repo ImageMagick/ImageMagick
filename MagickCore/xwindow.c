@@ -1552,13 +1552,15 @@ MagickPrivate void XClientMessage(Display *display,const Window window,
     client_event;
 
   assert(display != (Display *) NULL);
+  (void) memset(&client_event,0,sizeof(client_event));
   client_event.type=ClientMessage;
   client_event.window=window;
   client_event.message_type=protocol;
   client_event.format=32;
   client_event.data.l[0]=(long) reason;
   client_event.data.l[1]=(long) timestamp;
-  (void) XSendEvent(display,window,MagickFalse,NoEventMask,(XEvent *) &client_event);
+  (void) XSendEvent(display,window,MagickFalse,NoEventMask,(XEvent *)
+    &client_event);
 }
 
 /*
@@ -3118,13 +3120,13 @@ MagickPrivate void XGetPixelInfo(Display *display,
   /*
     Set highlight color.
   */
-  pixel->highlight_color.red=(unsigned short) (((double) 
+  pixel->highlight_color.red=(unsigned short) (((double)
     pixel->matte_color.red*ScaleQuantumToShort(HighlightModulate))/65535L+
     (ScaleQuantumToShort((Quantum) (QuantumRange-HighlightModulate))));
-  pixel->highlight_color.green=(unsigned short) (((double) 
+  pixel->highlight_color.green=(unsigned short) (((double)
     pixel->matte_color.green*ScaleQuantumToShort(HighlightModulate))/65535L+
     (ScaleQuantumToShort((Quantum) (QuantumRange-HighlightModulate))));
-  pixel->highlight_color.blue=(unsigned short) (((double) 
+  pixel->highlight_color.blue=(unsigned short) (((double)
     pixel->matte_color.blue*ScaleQuantumToShort(HighlightModulate))/65535L+
     (ScaleQuantumToShort((Quantum) (QuantumRange-HighlightModulate))));
   pixel->highlight_color.pixel=XStandardPixel(map_info,&pixel->highlight_color);
@@ -5641,12 +5643,22 @@ MagickPrivate MagickBooleanType XMakeImage(Display *display,
     }
   if (window->shared_memory == MagickFalse)
     {
-      if (ximage->format != XYBitmap)
-        ximage->data=(char *) malloc((size_t) ximage->bytes_per_line*
-          ximage->height);
+      if (ximage->format == XYBitmap)
+        {
+          ximage->data=(char *) AcquireMagickMemory((size_t)
+            ximage->bytes_per_line,(size_t) ximage->depth*ximage->height);
+          if (ximage->data != (char *) NULL)
+            (void) ResetMagickMemory(ximage->data,0,(size_t)
+              image->bytes_per_line*ximage->depth*ximage->height);
+        }
       else
-        ximage->data=(char *) malloc((size_t) ximage->bytes_per_line*
-          ximage->depth*ximage->height);
+        {
+          ximage->data=(char *) AcquireMagickMemory((size_t)
+            ximage->bytes_per_line,(size_t) ximage->height);
+          if (ximage->data != (char *) NULL)
+            (void) ResetMagickMemory(ximage->data,0,(size_t)
+              image->bytes_per_line*ximage->height);
+        }
     }
   if (ximage->data == (char *) NULL)
     {
