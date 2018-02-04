@@ -273,7 +273,10 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
      else
        delegate_info=GetDelegateInfo("xps:color",(char *) NULL,exception);
   if (delegate_info == (const DelegateInfo *) NULL)
-    return((Image *) NULL);
+    {
+      image=DestroyImage(image);
+      return((Image *) NULL);
+    }
   density=AcquireString("");
   options=AcquireString("");
   (void) FormatLocaleString(density,MagickPathExtent,"%gx%g",
