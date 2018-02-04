@@ -235,6 +235,8 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     width=ReadBlobLSBShort(image);
     height=ReadBlobLSBShort(image);
     image_size=2*width*height;
+    if (image_size > GetBlobSize(image))
+      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     bytes_per_line=width*2;
     width=(width*16)/bits_per_pixel;
     tim_pixels=(unsigned char *) AcquireQuantumMemory(image_size,
@@ -458,6 +460,7 @@ ModuleExport size_t RegisterTIMImage(void)
 
   entry=AcquireMagickInfo("TIM","TIM","PSX TIM");
   entry->decoder=(DecodeImageHandler *) ReadTIMImage;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
