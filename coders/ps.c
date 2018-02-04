@@ -683,6 +683,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           SetStringInfoLength(profile,i+1);
           c=ReadBlobByte(image);
+          if (c == EOF)
+            continue;
           GetStringInfoDatum(profile)[i]=(unsigned char) c;
           *p++=(char) c;
           if ((strchr("\n\r%",c) == (char *) NULL) &&
