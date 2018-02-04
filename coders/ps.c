@@ -700,7 +700,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         SetStringInfoLength(profile,i);
         if (EOFBlob(image) == MagickFalse)
-          (void) SetImageProfile(image,"xmp",profile,exception);
+          (void) SetImageProfile(image,"xmp",profile);
         profile=DestroyStringInfo(profile);
         continue;
       }
