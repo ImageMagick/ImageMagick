@@ -1365,6 +1365,7 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
         100.0));
       limit=DestroyString(limit);
     }
+  (void) SetMagickResourceLimit(ListLengthResource,MagickResourceInfinity);
   limit=GetEnvironmentValue("MAGICK_LIST_LENGTH_LIMIT");
   if (limit != (char *) NULL)
     {

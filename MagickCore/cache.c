@@ -1580,6 +1580,9 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
     destroy,
     status;
 
+  MagickSizeType
+    length;
+
   static MagickSizeType
     cache_timelimit = MagickResourceInfinity,
     cpu_throttle = MagickResourceInfinity,
@@ -1605,6 +1608,13 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
       errno=ECANCELED;
 #endif
       ThrowFatalException(ResourceLimitFatalError,"TimeLimitExceeded");
+    }
+  length=GetImageListLength(image);
+  if (AcquireMagickResource(ListLengthResource,length) == MagickFalse)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
+        "ListLengthExceedsLimit","`%s'",image->filename);
+      return((Cache) NULL);
     }
   LockSemaphoreInfo(image->semaphore);
   assert(image->cache != (Cache) NULL);
@@ -3485,9 +3495,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     ThrowBinaryException(CacheError,"NoPixelsDefinedInCache",image->filename);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickCoreSignature);
-  length=GetImageListLength(image);
-  if (AcquireMagickResource(ListLengthResource,length) == MagickFalse)
-    ThrowBinaryException(ImageError,"ListLengthExceedsLimit",image->filename);
   if ((AcquireMagickResource(WidthResource,image->columns) == MagickFalse) ||
       (AcquireMagickResource(HeightResource,image->rows) == MagickFalse))
     ThrowBinaryException(ImageError,"WidthOrHeightExceedsLimit",
