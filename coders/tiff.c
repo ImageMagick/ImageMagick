@@ -293,7 +293,12 @@ static void InitPSDInfo(const Image *image, PSDInfo *info)
   if (image->storage_class == PseudoClass)
     info->mode=2; // indexed mode
   else
-    info->channels=(unsigned short) image->number_channels;
+    {
+      info->channels=(unsigned short) image->number_channels;
+      info->min_channels=info->channels;
+      if (image->alpha_trait == BlendPixelTrait)
+        info->min_channels--;
+    }
 }
 #endif
 
