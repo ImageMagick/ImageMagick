@@ -694,7 +694,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
         }
         SetStringInfoLength(profile,i);
-        (void) SetImageProfile(image,"xmp",profile,exception);
+        if (EOFBlob(image) == MagickFalse)
+          (void) SetImageProfile(image,"xmp",profile,exception);
         profile=DestroyStringInfo(profile);
         continue;
       }
