@@ -1082,20 +1082,23 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               q-=image->columns;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetPixelRed(q,target_scale*QuantumRange*(*p));
+                SetPixelRed(q,ClampToQuantum(target_scale*QuantumRange*(*p)));
                 SetPixelGreen(q,GetPixelRed(q));
                 SetPixelBlue(q,GetPixelRed(q));
                 p++;
                 if (target_channels > 1)
                   {
-                    SetPixelGreen(q,target_scale*QuantumRange*(*p));
+                    SetPixelGreen(q,ClampToQuantum(target_scale*
+                      QuantumRange*(*p)));
                     p++;
-                    SetPixelBlue(q,target_scale*QuantumRange*(*p));
+                    SetPixelBlue(q,ClampToQuantum(target_scale*
+                      QuantumRange*(*p)));
                     p++;
                   }
                 if (target_channels > 3)
                   {
-                    SetPixelIndex(indexes+x,target_scale*QuantumRange*(*p));
+                    SetPixelIndex(indexes+x,ClampToQuantum(target_scale*
+                      QuantumRange*(*p)));
                     p++;
                   }
                 q++;
