@@ -555,6 +555,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     magick[12],
     *pixels;
 
+  unsigned long
+    offset_bits;
+
   /*
     Open image file.
   */
@@ -578,6 +581,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ResetMagickMemory(&bmp_info,0,sizeof(bmp_info));
   bmp_info.ba_offset=0;
   start_position=0;
+  offset_bits=0;
   count=ReadBlob(image,2,magick);
   if (count != 2)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
@@ -948,6 +952,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read image data.
     */
+    if (bmp_info.offset_bits == offset_bits)
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    offset_bits=bmp_info.offset_bits;
     offset=SeekBlob(image,start_position+bmp_info.offset_bits,SEEK_SET);
     if (offset < 0)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
