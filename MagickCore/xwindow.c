@@ -5645,19 +5645,19 @@ MagickPrivate MagickBooleanType XMakeImage(Display *display,
     {
       if (ximage->format == XYBitmap)
         {
-          ximage->data=(char *) AcquireMagickMemory((size_t)
+          ximage->data=(char *) AcquireQuantumMemory((size_t)
             ximage->bytes_per_line,(size_t) ximage->depth*ximage->height);
           if (ximage->data != (char *) NULL)
             (void) ResetMagickMemory(ximage->data,0,(size_t)
-              image->bytes_per_line*ximage->depth*ximage->height);
+              ximage->bytes_per_line*ximage->depth*ximage->height);
         }
       else
         {
-          ximage->data=(char *) AcquireMagickMemory((size_t)
+          ximage->data=(char *) AcquireQuantumMemory((size_t)
             ximage->bytes_per_line,(size_t) ximage->height);
           if (ximage->data != (char *) NULL)
             (void) ResetMagickMemory(ximage->data,0,(size_t)
-              image->bytes_per_line*ximage->height);
+              ximage->bytes_per_line*ximage->height);
         }
     }
   if (ximage->data == (char *) NULL)
