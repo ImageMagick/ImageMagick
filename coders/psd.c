@@ -1483,9 +1483,6 @@ static MagickBooleanType CheckPSDChannels(const PSDInfo *psd_info,
   ChannelType
     channel_type;
 
-  MagickBooleanType
-    has_alpha;
-
   register ssize_t
     i;
 
