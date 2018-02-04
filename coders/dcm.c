@@ -3795,6 +3795,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       tag=(ReadBlobLSBShort(image) << 16) | ReadBlobLSBShort(image);
       (void) tag;
       length=(size_t) ReadBlobLSBLong(image);
+      if (length > GetBlobSize(image))
+        ThrowDCMException(CorruptImageError,"InsufficientImageDataInFile");
       stream_info->offset_count=length >> 2;
       if (stream_info->offset_count != 0)
         {
