@@ -4536,36 +4536,31 @@ MagickExport const void *ReadBlobStream(Image *image,const size_t length,
 */
 MagickExport char *ReadBlobString(Image *image,char *string)
 {
-  register const unsigned char
-    *p;
+  int
+    c;
 
   register ssize_t
     i;
-
-  ssize_t
-    count;
-
-  unsigned char
-    buffer[1];
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   for (i=0; i < (MagickPathExtent-1L); i++)
   {
-    p=(const unsigned char *) ReadBlobStream(image,1,buffer,&count);
-    if (count != 1)
+    c=ReadBlobByte(image);
+    if (c == EOF)
       {
         if (i == 0)
           return((char *) NULL);
-        string[i]='\0';
         break;
       }
-    string[i]=(char) (*p);
-    if ((string[i] == '\r') || (string[i] == '\n'))
-      break;
+    string[i]=c;
+    if (c == '\n')
+      {
+        if ((i > 0) && (string[i-1] == '\r'))
+          i--;
+        break;
+      }
   }
-  if (string[i] == '\r')
-    (void) ReadBlobStream(image,1,buffer,&count);
   string[i]='\0';
   return(string);
 }

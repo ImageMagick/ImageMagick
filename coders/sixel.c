@@ -226,12 +226,14 @@ static unsigned char *get_params(unsigned char *p, int *param, int *len)
 }
 
 /* convert sixel data into indexed pixel bytes and palette data */
-MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         /* sixel bytes */
+MagickBooleanType sixel_decode(Image *image,
+                               unsigned char              /* in */  *p,         /* sixel bytes */
                                unsigned char              /* out */ **pixels,   /* decoded pixels */
                                size_t                     /* out */ *pwidth,    /* image width */
                                size_t                     /* out */ *pheight,   /* image height */
                                unsigned char              /* out */ **palette,  /* ARGB palette */
-                               size_t                     /* out */ *ncolors    /* palette size (<= 256) */)
+                               size_t                     /* out */ *ncolors,    /* palette size (<= 256) */
+  ExceptionInfo *exception)
 {
     int n, i, r, g, b, sixel_vertical_mask, c;
     int posision_x, posision_y;
@@ -259,6 +261,8 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
 
     imsx = 2048;
     imsy = 2048;
+    if (SetImageExtent(image,imsx,imsy,exception) == MagickFalse)
+      return(MagickFalse);
     imbuf = (unsigned char *) AcquireQuantumMemory(imsx , imsy);
 
     if (imbuf == NULL) {
@@ -360,6 +364,8 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
             if (imsx < attributed_ph || imsy < attributed_pv) {
                 dmsx = imsx > attributed_ph ? imsx : attributed_ph;
                 dmsy = imsy > attributed_pv ? imsy : attributed_pv;
+                if (SetImageExtent(image,dmsx,dmsy,exception) == MagickFalse)
+                  break;
                 dmbuf = (unsigned char *) AcquireQuantumMemory(dmsx , dmsy);
                 if (dmbuf == (unsigned char *) NULL) {
                     imbuf = (unsigned char *) RelinquishMagickMemory(imbuf);
@@ -436,6 +442,8 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
 
                 dmsx = nx;
                 dmsy = ny;
+                if (SetImageExtent(image,dmsx,dmsy,exception) == MagickFalse)
+                  break;
                 dmbuf = (unsigned char *) AcquireQuantumMemory(dmsx , dmsy);
                 if (dmbuf == (unsigned char *) NULL) {
                     imbuf = (unsigned char *) RelinquishMagickMemory(imbuf);
@@ -531,6 +539,11 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
     if (imsx > max_x || imsy > max_y) {
         dmsx = max_x;
         dmsy = max_y;
+        if (SetImageExtent(image,dmsx,dmsy,exception) == MagickFalse)
+          {
+            imbuf = (unsigned char *) RelinquishMagickMemory(imbuf);
+            return (MagickFalse);
+          }
         if ((dmbuf = (unsigned char *) AcquireQuantumMemory(dmsx , dmsy)) == NULL) {
             imbuf = (unsigned char *) RelinquishMagickMemory(imbuf);
             return (MagickFalse);
@@ -1041,7 +1054,7 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
   /*
     Decode SIXEL
   */
-  if (sixel_decode((unsigned char *) sixel_buffer,&sixel_pixels,&image->columns,&image->rows,&sixel_palette,&image->colors) == MagickFalse)
+  if (sixel_decode(image,(unsigned char *) sixel_buffer,&sixel_pixels,&image->columns,&image->rows,&sixel_palette,&image->colors,exception) == MagickFalse)
     {
       sixel_buffer=(char *) RelinquishMagickMemory(sixel_buffer);
       ThrowReaderException(CorruptImageError,"CorruptImage");
