@@ -1878,7 +1878,7 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
             ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
               image->filename);
           }
-
+        (void) SetImageBackgroundColor(layer_info[i].image,exception);
         if (layer_info[i].info != (StringInfo *) NULL)
           {
             (void) SetImageProfile(layer_info[i].image,"psd:additional-info",
