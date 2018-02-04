@@ -224,7 +224,7 @@ MagickExport StringInfo *BlobToStringInfo(const void *blob,const size_t length)
 
   if (~length < MaxTextExtent)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  string_info=AcquireStringInfoContainer(0);
+  string_info=AcquireStringInfoContainer();
   string_info->length=length;
   string_info->datum=(unsigned char *) AcquireQuantumMemory(length+
     MaxTextExtent,sizeof(*string_info->datum));
