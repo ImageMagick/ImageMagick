@@ -20,6 +20,7 @@
 
 #include "magick/memory_.h"
 #include "magick/cache.h"
+#include "magick/image-private.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -95,8 +96,8 @@ static inline MagickSizeType GetQuantumRange(const size_t depth)
     one;
 
   one=1;
-  return((MagickSizeType) ((one << (MagickMax(depth,64)-1))+
-    ((one << (MagickMax(depth,64)-1))-1)));
+  return((MagickSizeType) ((one << (MagickMin(depth,64)-1))+
+    ((one << (MagickMin(depth,64)-1))-1)));
 }
 
 static inline float HalfToSinglePrecision(const unsigned short half)
