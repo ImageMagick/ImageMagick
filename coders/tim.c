@@ -226,12 +226,6 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
-    status=SetImageExtent(image,image->columns,image->rows);
-    if (status == MagickFalse)
-      {
-        InheritException(exception,&image->exception);
-        return(DestroyImageList(image));
-      }
     /*
       Read image data.
     */
@@ -243,6 +237,14 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image_size=2*width*height;
     bytes_per_line=width*2;
     width=(width*16)/bits_per_pixel;
+    image->columns=width;
+    image->rows=height;
+    status=SetImageExtent(image,image->columns,image->rows);
+    if (status == MagickFalse)
+      {
+        InheritException(exception,&image->exception);
+        return(DestroyImageList(image));
+      }
     tim_pixels=(unsigned char *) AcquireQuantumMemory(image_size,
       sizeof(*tim_pixels));
     if (tim_pixels == (unsigned char *) NULL)
@@ -253,11 +255,6 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         tim_pixels=(unsigned char *) RelinquishMagickMemory(tim_pixels);
         ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
       }
-    /*
-      Initialize image structure.
-    */
-    image->columns=width;
-    image->rows=height;
     /*
       Convert TIM raster image to pixel packets.
     */
