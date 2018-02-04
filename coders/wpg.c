@@ -1169,6 +1169,9 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               if ((image->storage_class != PseudoClass) && (bpp < 24))
                 {
                   image->colors=one << bpp;
+                  if (image->colors > GetBlobSize(image))
+                    ThrowReaderException(CorruptImageError,
+                      "InsufficientImageDataInFile");
                   if (!AcquireImageColormap(image,image->colors,exception))
                     {
                     NoMemory:
