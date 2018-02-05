@@ -398,6 +398,8 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         icon_info.x_pixels=ReadBlobLSBLong(image);
         icon_info.y_pixels=ReadBlobLSBLong(image);
         icon_info.number_colors=ReadBlobLSBLong(image);
+        if (icon_info.number_colors > GetBlobSize(image))
+          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         icon_info.colors_important=ReadBlobLSBLong(image);
         image->alpha_trait=BlendPixelTrait;
         image->columns=(size_t) icon_file.directory[i].width;
