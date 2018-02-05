@@ -106,7 +106,7 @@
 #define NotEqualOperator  0xfaU
 #define LogicalAndOperator  0xfbU
 #define LogicalOrOperator  0xfcU
-#define ExponentialNotation 0xfdU
+#define ExponentialNotation  0xfdU
 
 struct _FxInfo
 {
@@ -2109,6 +2109,12 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
     *p;
 
   *beta=0.0;
+  if (*depth > MagickMaxRecursionDepth)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "UnableToParseExpression","`%s'",expression);
+      return(0.0);
+    }
   if (exception->severity >= ErrorException)
     return(0.0);
   while (isspace((int) ((unsigned char) *expression)) != 0)
