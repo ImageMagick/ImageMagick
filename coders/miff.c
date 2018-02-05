@@ -920,7 +920,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                         ThrowReaderException(ResourceLimitError,
                           "MemoryAllocationFailed");
                       }
-                    (void) SetImageProfile(image,keyword+8,profile);
+                    if (EOFBlob(image) == MagickFalse)
+                      (void) SetImageProfile(image,keyword+8,profile);
                     profile=DestroyStringInfo(profile);
                     break;
                   }
