@@ -1534,6 +1534,8 @@ static char *ParseEntities(char *xml,char **entities,int state)
           (void) CopyMagickMemory(xml,xml+i,strlen(xml+i)+1);
         while ((*xml != '\0') && (*xml != ' '))
           xml++;
+        if (*xml == '\0')
+          break;
       }
       xml--;
       if ((xml >= p) && (*xml == ' '))
