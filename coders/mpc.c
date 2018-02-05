@@ -651,7 +651,9 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         ThrowReaderException(ResourceLimitError,
                           "MemoryAllocationFailed");
                       }
-                    (void) SetImageProfile(image,keyword+8,profile,exception);
+                    if (EOFBlob(image) == MagickFalse)
+                      (void) SetImageProfile(image,keyword+8,profile,
+                        exception);
                     profile=DestroyStringInfo(profile);
                     break;
                   }
