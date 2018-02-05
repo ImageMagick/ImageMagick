@@ -2131,6 +2131,12 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,const ChannelType channel,
     *p;
 
   *beta=0.0;
+  if (*depth > MagickMaxRecursionDepth)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "UnableToParseExpression","`%s'",expression);
+      return(0.0);
+    }
   if (exception->severity >= ErrorException)
     return(0.0);
   while (isspace((int) ((unsigned char) *expression)) != 0)
