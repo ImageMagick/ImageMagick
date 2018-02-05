@@ -1125,7 +1125,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
            offset+=ReadBlob(image,GetStringInfoLength(profile),
              GetStringInfoDatum(profile));
-           (void) SetImageProfile(image,"dpx:user-data",profile);
+           if (EOFBlob(image) != MagickFalse)
+             (void) SetImageProfile(image,"dpx:user-data",profile);
            profile=DestroyStringInfo(profile);
         }
     }
