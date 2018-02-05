@@ -379,6 +379,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     p=next;
     next=NextXPMLine(p);
+    if (next == (char *) NULL)
+      break;
     (void) CopyXPMColor(key,p,MagickMin((size_t) width,MagickPathExtent-1));
     status=AddValueToSplayTree(xpm_colors,ConstantString(key),(void *) j);
     /*
