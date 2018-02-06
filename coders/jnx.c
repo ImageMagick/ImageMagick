@@ -281,6 +281,8 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Read a tile.
       */
+      if (((MagickSizeType) tile_length) > GetBlobSize(image))
+        ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
       blob=(unsigned char *) AcquireQuantumMemory((size_t) tile_length+2,
         sizeof(*blob));
       if (blob == (unsigned char *) NULL)
