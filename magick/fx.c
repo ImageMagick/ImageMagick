@@ -2220,6 +2220,12 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,const ChannelType channel,
         {
           gamma=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth,beta,
             exception);
+          if ((size_t) (gamma+0.5) > (8*sizeof(size_t)))
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"ShiftCountOverflow","`%s'",subexpression);
+              return(0.0);
+            }
           *beta=(double) ((size_t) (alpha+0.5) << (size_t) (gamma+0.5));
           return(*beta);
         }
@@ -2227,6 +2233,12 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,const ChannelType channel,
         {
           gamma=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth,beta,
             exception);
+          if ((size_t) (gamma+0.5) > (8*sizeof(size_t)))
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"ShiftCountOverflow","`%s'",subexpression);
+              return(0.0);
+            }
           *beta=(double) ((size_t) (alpha+0.5) >> (size_t) (gamma+0.5));
           return(*beta);
         }
