@@ -2198,6 +2198,12 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
         {
           gamma=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth,beta,
             exception);
+          if ((size_t) (gamma+0.5) >= (8*sizeof(size_t)))
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"ShiftCountOverflow","`%s'",subexpression);
+              return(0.0);
+            }
           *beta=(double) ((size_t) (alpha+0.5) << (size_t) (gamma+0.5));
           return(*beta);
         }
@@ -2205,6 +2211,12 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
         {
           gamma=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth,beta,
             exception);
+          if ((size_t) (gamma+0.5) >= (8*sizeof(size_t)))
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"ShiftCountOverflow","`%s'",subexpression);
+              return(0.0);
+            }
           *beta=(double) ((size_t) (alpha+0.5) >> (size_t) (gamma+0.5));
           return(*beta);
         }
@@ -5446,18 +5458,18 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
           continue;
         }
       weight=QuantumScale*GetPixelRed(image,p)-0.5;
-      pixel.red=(double) GetPixelRed(image,p)+color_vector.red*(1.0-(4.0*
-        (weight*weight)));
+      pixel.red=(MagickRealType) GetPixelRed(image,p)+color_vector.red*
+        (1.0-(4.0*(weight*weight)));
       weight=QuantumScale*GetPixelGreen(image,p)-0.5;
-      pixel.green=(double) GetPixelGreen(image,p)+color_vector.green*(1.0-(4.0*
-        (weight*weight)));
+      pixel.green=(MagickRealType) GetPixelGreen(image,p)+color_vector.green*
+        (1.0-(4.0*(weight*weight)));
       weight=QuantumScale*GetPixelBlue(image,p)-0.5;
-      pixel.blue=(double) GetPixelBlue(image,p)+color_vector.blue*(1.0-(4.0*
-        (weight*weight)));
+      pixel.blue=(MagickRealType) GetPixelBlue(image,p)+color_vector.blue*
+        (1.0-(4.0*(weight*weight)));
       weight=QuantumScale*GetPixelBlack(image,p)-0.5;
-      pixel.black=(double) GetPixelBlack(image,p)+color_vector.black*(1.0-(4.0*
-        (weight*weight)));
-      pixel.alpha=GetPixelAlpha(image,p);
+      pixel.black=(MagickRealType) GetPixelBlack(image,p)+color_vector.black*
+        (1.0-(4.0*(weight*weight)));
+      pixel.alpha=(MagickRealType) GetPixelAlpha(image,p);
       SetPixelViaPixelInfo(tint_image,&pixel,q);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(tint_image);
