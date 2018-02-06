@@ -711,7 +711,8 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image,
   if ((property != (const char *) NULL) &&
       (strchr(property,'\n') == (char *) NULL))
     {
-      count=FormatLocaleString(header,MagickPathExtent,"#%s\n",property);
+      count=FormatLocaleString(header,MagickPathExtent,"#%.*s\n",
+        MagickPathExtent-3,property);
       (void) WriteBlob(image,(size_t) count,(unsigned char *) header);
     }
   property=GetImageProperty(image,"hdr:exposure",exception);
