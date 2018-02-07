@@ -1584,7 +1584,7 @@ static XMLTreeInfo *ParseCloseTag(XMLTreeRoot *root,char *tag,
 }
 
 static MagickBooleanType ValidateEntities(char *tag,char *xml,
-  const size_t depthm,char **entities)
+  const size_t depth,char **entities)
 {
   register ssize_t
     i;
