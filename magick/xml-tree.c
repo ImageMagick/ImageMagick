@@ -1579,7 +1579,8 @@ static XMLTreeInfo *ParseCloseTag(XMLTreeRoot *root,char *tag,
   return((XMLTreeInfo *) NULL);
 }
 
-static MagickBooleanType ValidateEntities(char *tag,char *xml,char **entities)
+static MagickBooleanType ValidateEntities(char *tag,char *xml,
+  const size_t depth,char **entities)
 {
   register ssize_t
     i;
@@ -1587,6 +1588,8 @@ static MagickBooleanType ValidateEntities(char *tag,char *xml,char **entities)
   /*
     Check for circular entity references.
   */
+  if (depth > MagickMaxRecursionDepth)
+    return(MagickFalse);
   for ( ; ; xml++)
   {
     while ((*xml != '\0') && (*xml != '&'))
@@ -1600,7 +1603,7 @@ static MagickBooleanType ValidateEntities(char *tag,char *xml,char **entities)
            (strncmp(entities[i],xml+1,strlen(entities[i])) == 0))
       i+=2;
     if ((entities[i] != (char *) NULL) &&
-        (ValidateEntities(tag,entities[i+1],entities) == 0))
+        (ValidateEntities(tag,entities[i+1],depth+1,entities) == 0))
       return(MagickFalse);
   }
 }
@@ -1752,7 +1755,7 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
           }
         entities[i+1]=ParseEntities(v,predefined_entitites,'%');
         entities[i+2]=(char *) NULL;
-        if (ValidateEntities(n,entities[i+1],entities) != MagickFalse)
+        if (ValidateEntities(n,entities[i+1],0,entities) != MagickFalse)
           entities[i]=n;
         else
           {
