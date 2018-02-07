@@ -3889,9 +3889,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       length=(size_t) (GetQuantumRange(info.depth)+1);
       if (length > GetBlobSize(image)) 
         ThrowDCMException(CorruptImageError,"InsufficientImageDataInFile");
-      info.scale=(Quantum *) AcquireQuantumMemory(length,sizeof(*info.scale));
+      info.scale=(Quantum *) AcquireQuantumMemory(MagickMax(length,256),
+        sizeof(*info.scale));
       if (info.scale == (Quantum *) NULL)
         ThrowDCMException(ResourceLimitError,"MemoryAllocationFailed");
+      (void) ResetMagickMemory(info.scale,0,MagickMax(length,256)*
+        sizeof(*info.scale));
       range=GetQuantumRange(info.depth);
       for (i=0; i <= (ssize_t) GetQuantumRange(info.depth); i++)
         info.scale[i]=ScaleAnyToQuantum((size_t) i,range);
