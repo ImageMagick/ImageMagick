@@ -634,6 +634,9 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     length=StringToLong(options);
                     if ((MagickSizeType) length > GetBlobSize(image))
                       {
+                        if (profiles != (LinkedListInfo *) NULL)
+                          profiles=DestroyLinkedList(profiles,
+                            RelinquishMagickMemory);
                         options=DestroyString(options);
                         ThrowReaderException(CorruptImageError,
                           "InsufficientImageDataInFile");

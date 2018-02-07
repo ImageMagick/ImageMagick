@@ -913,6 +913,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     length=(size_t) StringToLong(options);
                     if ((MagickSizeType) length > GetBlobSize(image))
                       {
+                        if (profiles != (LinkedListInfo *) NULL)
+                          profiles=DestroyLinkedList(profiles,
+                            RelinquishMagickMemory);
                         options=DestroyString(options);
                         ThrowReaderException(CorruptImageError,
                           "InsufficientImageDataInFile");
