@@ -3887,6 +3887,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Compute pixel scaling table.
       */
       length=(size_t) (GetQuantumRange(info.depth)+1);
+      if (length > GetBlobSize(image)) 
+        ThrowDCMException(CorruptImageError,"InsufficientImageDataInFile");
       info.scale=(Quantum *) AcquireQuantumMemory(length,sizeof(*info.scale));
       if (info.scale == (Quantum *) NULL)
         ThrowDCMException(ResourceLimitError,"MemoryAllocationFailed");
