@@ -168,6 +168,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Determine size of image canvas.
       */
+      (void) ResetMagickMemory(&bounds,0,sizeof(bounds));
       while (ReadBlobString(image,primitive) != (char *) NULL)
       {
         for (p=primitive; (*p == ' ') || (*p == '\t'); p++) ;
