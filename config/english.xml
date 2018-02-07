@@ -515,9 +515,6 @@
         <message name="LeftAndRightImageSizesDiffer">
           left and right image sizes differ
         </message>
-        <message name="ListLengthExceedsLimit">
-          list length exceeds limit
-        </message>
         <message name="NegativeOrZeroImageSize">
           negative or zero image size
         </message>
@@ -1015,11 +1012,14 @@
     <resource>
       <limit>
         <error>
-          <message name="PixelCacheAllocationFailed">
-            pixel cache allocation failed
+          <message name="ListLengthExceedsLimit">
+            list length exceeds limit
           </message>
           <message name="MemoryAllocationFailed">
             memory allocation failed
+          </message>
+          <message name="PixelCacheAllocationFailed">
+            pixel cache allocation failed
           </message>
           <message name="TooManyObjects">
             too many objects

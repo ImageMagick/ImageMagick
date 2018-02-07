@@ -1612,8 +1612,8 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
   length=GetImageListLength(image);
   if (AcquireMagickResource(ListLengthResource,length) == MagickFalse)
     {
-      (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-        "ListLengthExceedsLimit","`%s'",image->filename);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"ListLengthExceedsLimit","`%s'",image->filename);
       return((Cache) NULL);
     }
   LockSemaphoreInfo(image->semaphore);
