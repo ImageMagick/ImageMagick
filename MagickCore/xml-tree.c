@@ -1716,7 +1716,7 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
       xml++;
     if (*xml == '\0')
       break;
-    if (strncmp(xml,"<!ENTITY",8) == 0)
+    if ((strlen(xml) > 9) && (strncmp(xml,"<!ENTITY",8) == 0))
       {
         /*
           Parse entity definitions.
