@@ -2055,25 +2055,33 @@ namespace Magick
   // the updated image sequence is passed via the coalescedImages_
   // option.
   template <class InputIterator, class Container >
-  void coalesceImages( Container *coalescedImages_,
-                       InputIterator first_,
-                       InputIterator last_ ) {
+  void coalesceImages(Container *coalescedImages_,InputIterator first_,
+    InputIterator last_)
+  {
+    bool
+      quiet;
+
+    MagickCore::Image
+      *images;
+
     if (linkImages(first_,last_) == false)
       return;
+
     GetPPException;
-    MagickCore::Image* images = MagickCore::CoalesceImages( first_->image(),
-                                                          exceptionInfo);
+    quiet=first_->quiet();
+    images=MagickCore::CoalesceImages(first_->image(),exceptionInfo);
+
     // Unlink image list
-    unlinkImages( first_, last_ );
+    unlinkImages(first_,last_);
 
     // Ensure container is empty
     coalescedImages_->clear();
 
     // Move images to container
-    insertImages( coalescedImages_, images );
+    insertImages(coalescedImages_,images);
 
     // Report any error
-    ThrowPPException(first_->quiet());
+    ThrowPPException(quiet);
   }
 
   // Return format coders matching specified conditions.
@@ -2261,19 +2269,23 @@ namespace Magick
   void deconstructImages(Container *deconstructedImages_,
     InputIterator first_,InputIterator last_)
   {
+    bool
+      quiet;
+
     MagickCore::Image
       *images;
 
     if (linkImages(first_,last_) == false)
       return;
     GetPPException;
+    quiet=first_->quiet();
     images=CompareImagesLayers(first_->image(),CompareAnyLayer,exceptionInfo);
     unlinkImages(first_,last_);
 
     deconstructedImages_->clear();
     insertImages(deconstructedImages_,images);
 
-    ThrowPPException(first_->quiet());
+    ThrowPPException(quiet);
   }
 
   //
@@ -2463,6 +2475,9 @@ namespace Magick
   void montageImages(Container *montageImages_,InputIterator first_,
     InputIterator last_,const Montage &options_)
   {
+    bool
+      quiet;
+
     MagickCore::Image
       *images;
 
@@ -2484,6 +2499,7 @@ namespace Magick
 
     // Do montage
     GetPPException;
+    quiet=first_->quiet();
     images=MagickCore::MontageImages(first_->image(),montageInfo,
       exceptionInfo);
 
@@ -2500,7 +2516,7 @@ namespace Magick
     MagickCore::DestroyMontageInfo(montageInfo);
 
     // Report any montage error
-    ThrowPPException(first_->quiet());
+    ThrowPPException(quiet);
 
     // Apply transparency to montage images
     if (montageImages_->size() > 0 && options_.transparentColor().isValid())
@@ -2510,27 +2526,33 @@ namespace Magick
 
   // Morph a set of images
   template <class InputIterator, class Container >
-  void morphImages( Container *morphedImages_,
-        InputIterator first_,
-        InputIterator last_,
-        size_t frames_ ) {
+  void morphImages(Container *morphedImages_,InputIterator first_,
+    InputIterator last_,size_t frames_)
+  {
+    bool
+      quiet;
+
+    MagickCore::Image
+      *images;
+
     if (linkImages(first_,last_) == false)
       return;
-    GetPPException;
 
-    MagickCore::Image* images = MagickCore::MorphImages( first_->image(), frames_,
-                   exceptionInfo);
+    GetPPException;
+    quiet=first_->quiet();
+    images=MagickCore::MorphImages(first_->image(),frames_,exceptionInfo);
+
     // Unlink image list
-    unlinkImages( first_, last_ );
+    unlinkImages(first_,last_);
 
     // Ensure container is empty
     morphedImages_->clear();
 
     // Move images to container
-    insertImages( morphedImages_, images );
+    insertImages(morphedImages_,images);
 
     // Report any error
-    ThrowPPException(first_->quiet());
+    ThrowPPException(quiet);
   }
 
   // Inlay a number of images to form a single coherent picture.
@@ -2553,42 +2575,58 @@ namespace Magick
   // image to replace each frame, while preserving the results of the
   // GIF animation.
   template <class InputIterator, class Container >
-  void optimizeImageLayers( Container *optimizedImages_,
-                            InputIterator first_,
-                            InputIterator last_ ) {
+  void optimizeImageLayers(Container *optimizedImages_,InputIterator first_,
+    InputIterator last_)
+  {
+    bool
+      quiet;
+
+    MagickCore::Image
+      *images;
+
     if (linkImages(first_,last_) == false)
       return;
-    GetPPException;
-    MagickCore::Image* images = OptimizeImageLayers( first_->image(), exceptionInfo );
 
-    unlinkImages( first_, last_ );
+    GetPPException;
+    bool quiet=first_->quiet();
+    images=OptimizeImageLayers(first_->image(),exceptionInfo);
+
+    unlinkImages(first_,last_);
 
     optimizedImages_->clear();
 
-    insertImages( optimizedImages_, images );
+    insertImages(optimizedImages_,images);
 
-    ThrowPPException(first_->quiet());
+    ThrowPPException(quiet);
   }
   
   // optimizeImagePlusLayers is exactly as optimizeImageLayers, but may
   // also add or even remove extra frames in the animation, if it improves
   // the total number of pixels in the resulting GIF animation.
   template <class InputIterator, class Container >
-  void optimizePlusImageLayers( Container *optimizedImages_,
-                                InputIterator first_,
-                                InputIterator last_ ) {
+  void optimizePlusImageLayers(Container *optimizedImages_,
+    InputIterator first_,InputIterator last_ )
+  {
+    bool
+      quiet;
+
+    MagickCore::Image
+      *images;
+
     if (linkImages(first_,last_) == false)
       return;
-    GetPPException;
-    MagickCore::Image* images = OptimizePlusImageLayers( first_->image(), exceptionInfo );
 
-    unlinkImages( first_, last_ );
+    GetPPException;
+    quiet=first_->quiet();
+    images=OptimizePlusImageLayers(first_->image(),exceptionInfo);
+
+    unlinkImages(first_,last_);
 
     optimizedImages_->clear();
 
-    insertImages( optimizedImages_, images );
+    insertImages(optimizedImages_,images);
 
-    ThrowPPDrawException(first_->quiet());
+    ThrowPPException(quiet);
   }
 
   // Compares each image the GIF disposed forms of the previous image in the
