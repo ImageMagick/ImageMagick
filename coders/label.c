@@ -123,9 +123,15 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   image=AcquireImage(image_info,exception);
+  image->columns=1;
+  image->rows=1;
+  (void) SetImageBackgroundColor(image,exception);
   (void) ResetImagePage(image,"0x0+0+0");
   property=InterpretImageProperties((ImageInfo *) image_info,image,
     image_info->filename,exception);
+  image=DestroyImage(image);
+  image=AcquireImage(image_info,exception);
+  (void) ResetImagePage(image,"0x0+0+0");
   (void) SetImageProperty(image,"label",property,exception);
   property=DestroyString(property);
   label=GetImageProperty(image,"label",exception);
