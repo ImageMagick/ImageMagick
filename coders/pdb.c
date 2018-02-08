@@ -595,8 +595,8 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             *p='\0';
             length<<=1;
             length+=MagickPathExtent;
-            comment=(char *) ResizeQuantumMemory(comment,length+MagickPathExtent,
-              sizeof(*comment));
+            comment=(char *) ResizeQuantumMemory(comment,length+
+              MagickPathExtent,sizeof(*comment));
             if (comment == (char *) NULL)
               break;
             p=comment+strlen(comment);
