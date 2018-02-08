@@ -450,6 +450,9 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     c,
     file;
 
+  LinkedListInfo
+    *profiles;
+
   MagickBooleanType
     cmyk,
     fitPage,
@@ -584,6 +587,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ResetMagickMemory(command,0,sizeof(command));
   cmyk=image_info->colorspace == CMYKColorspace ? MagickTrue : MagickFalse;
   (void) ResetMagickMemory(&hires_bounds,0,sizeof(hires_bounds));
+  profiles=(LinkedListInfo *) NULL;
   priority=0;
   columns=0;
   rows=0;
@@ -645,7 +649,9 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           datum[i]=(unsigned char) c;
         }
         SetStringInfoLength(profile,(size_t) i+1);
-        (void) SetImageProfile(image,"icc",profile);
+        if (profiles == (LinkedListInfo *) NULL)
+          profiles=NewLinkedList(0);
+        (void) AppendValueToLinkedList(profiles,AcquireString("icc"));
         profile=DestroyStringInfo(profile);
         continue;
       }
@@ -661,7 +667,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (count != 1)
           continue;
         length=extent;
-        if (length > GetBlobSize(image))
+        if ((MagickSizeType) length > GetBlobSize(image))
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         profile=BlobToStringInfo((const void *) NULL,length);
         if (profile != (StringInfo *) NULL)
@@ -669,7 +675,9 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
             p=GetStringInfoDatum(profile);
             for (i=0; i < (ssize_t) length; i++)
               *p++=(unsigned char) ProfileInteger(image,hex_digits);
-            (void) SetImageProfile(image,"8bim",profile);
+            if (profiles == (LinkedListInfo *) NULL)
+              profiles=NewLinkedList(0);
+            (void) AppendValueToLinkedList(profiles,AcquireString("8bim"));
             profile=DestroyStringInfo(profile);
           }
         continue;
@@ -702,7 +710,11 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         SetStringInfoLength(profile,i);
         if (EOFBlob(image) == MagickFalse)
-          (void) SetImageProfile(image,"xmp",profile);
+          {
+            if (profiles == (LinkedListInfo *) NULL)
+              profiles=NewLinkedList(0);
+            (void) AppendValueToLinkedList(profiles,AcquireString("xmp"));
+          }
         profile=DestroyStringInfo(profile);
         continue;
       }
@@ -793,7 +805,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (i == (ssize_t) priority)
         continue;
     hires_bounds=bounds;
-    priority=i;
+    priority=(size_t) i;
   }
   if ((fabs(hires_bounds.x2-hires_bounds.x1) >= MagickEpsilon) &&
       (fabs(hires_bounds.y2-hires_bounds.y1) >= MagickEpsilon))
@@ -826,6 +838,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
           "InvalidGeometry","`%s'",option);
+        if (profiles != (LinkedListInfo *) NULL)
+          profiles=DestroyLinkedList(profiles,RelinquishMagickMemory);
         image=DestroyImage(image);
         return((Image *) NULL);
       }
@@ -847,6 +861,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       ThrowFileException(&image->exception,FileOpenError,"UnableToOpenFile",
         image_info->filename);
+      if (profiles != (LinkedListInfo *) NULL)
+        profiles=DestroyLinkedList(profiles,RelinquishMagickMemory);
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
@@ -878,6 +894,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (delegate_info == (const DelegateInfo *) NULL)
     {
       (void) RelinquishUniqueFileResource(postscript_filename);
+      if (profiles != (LinkedListInfo *) NULL)
+        profiles=DestroyLinkedList(profiles,RelinquishMagickMemory);
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
@@ -967,6 +985,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (*message != '\0')
         (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
           "PostscriptDelegateFailed","`%s'",message);
+      if (profiles != (LinkedListInfo *) NULL)
+        profiles=DestroyLinkedList(profiles,RelinquishMagickMemory);
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
@@ -999,6 +1019,35 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (clone_image != (Image *) NULL)
           PrependImageToList(&postscript_image,clone_image);
       }
+    }
+  if (profiles != (LinkedListInfo *) NULL)
+    {
+      const char
+        *name;
+
+      const StringInfo
+        *profile;
+
+      /*
+        Read image profiles.
+      */
+      ResetLinkedListIterator(profiles);
+      name=(const char *) GetNextValueInLinkedList(profiles);
+      while (name != (const char *) NULL)
+      {
+        profile=GetImageProfile(image,name);
+        if (profile != (StringInfo *) NULL)
+          {
+            register unsigned char
+              *p;
+
+            p=GetStringInfoDatum(profile);
+            count=ReadBlob(image,GetStringInfoLength(profile),p);
+            (void) count;
+          }
+        name=(const char *) GetNextValueInLinkedList(profiles);
+      }
+      profiles=DestroyLinkedList(profiles,RelinquishMagickMemory);
     }
   do
   {
