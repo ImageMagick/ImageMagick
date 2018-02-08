@@ -2588,7 +2588,7 @@ namespace Magick
       return;
 
     GetPPException;
-    bool quiet=first_->quiet();
+    quiet=first_->quiet();
     images=OptimizeImageLayers(first_->image(),exceptionInfo);
 
     unlinkImages(first_,last_);
