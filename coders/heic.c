@@ -1106,6 +1106,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
     image=DestroyImageList(image);
     return((Image *) NULL);
   }
+  cropped=(Image *) NULL;
 
   length=GetBlobSize(image);
   count = MAX_ATOMS_IN_BOX;
@@ -1137,18 +1138,25 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   image->rows = 512 * (ctx.grid.rowsMinusOne + 1);
   image->depth=8;
 
-  ctx.tmp = CloneImage(image, 256, 256, MagickTrue, exception);
-  if (ctx.tmp == NULL) {
-    (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
-      "MemoryAllocationFailed","`%s'",image->filename);
+  status=SetImageExtent(image,image->columns,image->rows);
+  if (status == MagickFalse)
     goto cleanup;
-  }
 
-  DuplicateBlob(ctx.tmp, image);
+  if (image_info->ping == MagickFalse)
+    {
+      ctx.tmp = CloneImage(image, 256, 256, MagickTrue, exception);
+      if (ctx.tmp == NULL) {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+        goto cleanup;
+      }
 
-  for (i = 0; i < count; i++) {
-    decodeH265Image(image, &ctx, i+1, exception);
-  }
+      DuplicateBlob(ctx.tmp, image);
+
+      for (i = 0; i < count; i++) {
+        decodeH265Image(image, &ctx, i+1, exception);
+      }
+    }
 
 
   crop_info.x = 0;
@@ -1242,9 +1250,13 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
 
   cropped = CropImage(image, &crop_info, exception);
   image = DestroyImage(image);
-
   if (cropped != NULL)
-    SetImageColorspace(cropped, YCbCrColorspace);
+    {
+      if (image_info->ping != MagickFalse)
+        cropped->colorspace=YCbCrColorspace;
+      else
+        SetImageColorspace(cropped,YCbCrColorspace);
+    }
 
 cleanup:
   if (image) {
