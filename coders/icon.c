@@ -450,6 +450,9 @@ static Image *ReadICONImage(const ImageInfo *image_info,
           /*
             Read Icon raster colormap.
           */
+          if (image->colors > GetBlobSize(image))
+            ThrowReaderException(CorruptImageError,
+              "InsufficientImageDataInFile");
           if (AcquireImageColormap(image,image->colors,exception) ==
               MagickFalse)
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
