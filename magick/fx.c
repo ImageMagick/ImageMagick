@@ -1414,7 +1414,8 @@ static double FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
                   &depth,&beta,exception);
                 point.x+=alpha;
                 point.y+=beta;
-                p++;
+                if (*p != '\0')
+                  p++;
               }
           if (*p == '.')
             p++;
