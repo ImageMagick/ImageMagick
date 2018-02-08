@@ -2636,7 +2636,7 @@ namespace Magick
     if (linkImages(first_,last_) == false)
       return;
     GetPPException;
-    bool quiet=first_->quiet();
+    quiet=first_->quiet();
     images=OptimizePlusImageLayers(first_->image(),exceptionInfo);
 
     unlinkImages(first_,last_);
