@@ -1112,11 +1112,6 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
     return((Image *) NULL);
   }
 
-  if (!IsBlobSeekable(image)) {
-    ThrowFileException(exception,CorruptImageError,"Only seekable sources are supported","ReadHEIC");
-    goto cleanup;
-  }
-
   length=GetBlobSize(image);
   count = MAX_ATOMS_IN_BOX;
   while (length && ctx.finished == MagickFalse && count--)
@@ -1347,7 +1342,6 @@ ModuleExport size_t RegisterHEICImage(void)
   entry=AcquireMagickInfo("HEIC","HEIC","Apple High efficiency Image Format");
 #if defined(MAGICKCORE_HEIC_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadHEICImage;
-  /* entry->encoder=(EncodeImageHandler *) WriteHEICImage; */
 #endif
   entry->magick=(IsImageFormatHandler *) IsHEIC;
   entry->mime_type=ConstantString("image/x-heic");
