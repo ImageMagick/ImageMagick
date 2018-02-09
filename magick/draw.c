@@ -1755,10 +1755,12 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"begin draw-image");
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
+  primitive=(char *) NULL;
   if (*draw_info->primitive != '@')
     primitive=AcquireString(draw_info->primitive);
   else
-    primitive=FileToString(draw_info->primitive+1,~0UL,&image->exception);
+    if (*(draw_info->primitive+1) != '-')
+      primitive=FileToString(draw_info->primitive+1,~0UL,&image->exception);
   if (primitive == (char *) NULL)
     return(MagickFalse);
   primitive_extent=(double) strlen(primitive);
