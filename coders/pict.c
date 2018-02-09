@@ -935,6 +935,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
       InheritException(exception,&image->exception);
       return(DestroyImageList(image));
     }
+  image->matte=MagickTrue;
   (void) SetImageBackgroundColor(image);
   /*
     Interpret PICT opcodes.
