@@ -1,3 +1,6 @@
+2018-02-09  7.0.7-23 Dirk Lemstra <dirk@lem.....org>
+  * Add support for reading the HEIC image format to the Windows build.
+
 2018-01-23  7.0.7-23 Cristy  <quetzlzacatenango@image...>
   * Fixed numerous use of uninitialized values, integer overflow,
 	  memory exceeded, and timeouts (credit to OSS Fuzz).
