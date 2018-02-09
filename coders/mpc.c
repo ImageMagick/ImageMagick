@@ -978,7 +978,10 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     status=PersistPixelCache(image,cache_filename,MagickTrue,&offset,exception);
     if (status == MagickFalse)
-      ThrowReaderException(CacheError,"UnableToPersistPixelCache");
+      {
+        status=SetImageExtent(image,image->columns,image->rows);
+        ThrowReaderException(CacheError,"UnableToPersistPixelCache");
+      }
     if (EOFBlob(image) != MagickFalse)
       {
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
