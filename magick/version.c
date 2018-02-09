@@ -139,6 +139,9 @@ MagickExport const char *GetMagickDelegates(void)
 #if defined(MAGICKCORE_GVC_DELEGATE)
   "gvc "
 #endif
+#if defined(MAGICKCORE_HEIC_DELEGATE)
+  "heic "
+#endif
 #if defined(MAGICKCORE_JBIG_DELEGATE)
   "jbig "
 #endif
