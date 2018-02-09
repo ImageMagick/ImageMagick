@@ -141,6 +141,7 @@ static const CoderMapInfo
     { "HTM", "HTML" },
     { "ICB", "TGA" },
     { "ICO", "ICON" },
+    { "ICODIB", "DIB" },
     { "IIQ", "DNG" },
     { "K25", "DNG" },
     { "KDC", "DNG" },

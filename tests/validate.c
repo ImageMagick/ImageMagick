@@ -2492,7 +2492,8 @@ int main(int argc,char **argv)
   (void) regard_warnings;
   exception=AcquireExceptionInfo();
   image_info=AcquireImageInfo();
-  (void) CopyMagickString(image_info->filename,ReferenceFilename,MagickPathExtent);
+  (void) CopyMagickString(image_info->filename,ReferenceFilename,
+    MagickPathExtent);
   for (i=1; i < (ssize_t) argc; i++)
   {
     option=argv[i];
