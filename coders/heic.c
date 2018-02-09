@@ -766,12 +766,12 @@ static MagickBooleanType ParseRootAtom(Image *image,MagickSizeType *size,
       DiscardBlobBytes(image, atom_size-8);
       break;
   }
-
   *size=*size-atom_size;
-  return(MagickTrue);
+  return(status);
 }
 
-static MagickBooleanType decodeGrid(HEICImageContext *ctx, ExceptionInfo *exception)
+static MagickBooleanType decodeGrid(HEICImageContext *ctx,
+  ExceptionInfo *exception)
 {
   unsigned int
     i, flags;
