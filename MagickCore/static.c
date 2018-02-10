@@ -72,10 +72,10 @@ static struct
   MagickBooleanType
     registered;
 
-  const size_t
+  size_t
     (*register_module)(void);
 
-  const void
+  void
     (*unregister_module)(void);
 } MagickModules[] =
 {
