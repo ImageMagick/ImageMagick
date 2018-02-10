@@ -3778,7 +3778,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       for (i=0; i < (ssize_t) stream_info->remaining; i++)
         (void) ReadBlobByte(image);
-      (void) ((ReadBlobLSBShort(image) << 16) | ReadBlobLSBShort(image));
+      (void) (((ssize_t) ReadBlobLSBShort(image) << 16) |
+        ReadBlobLSBShort(image));
       length=(size_t) ReadBlobLSBLong(image);
       if (length > GetBlobSize(image))
         ThrowDCMException(CorruptImageError,"InsufficientImageDataInFile");
