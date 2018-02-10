@@ -387,7 +387,7 @@ MagickBooleanType sixel_decode(Image *image,
 
             if ((n > 0) && (param[0] > 0)) {
                 repeat_count = param[0];
-                if (repeat_count > extent)
+                if (repeat_count > (ssize_t) extent)
                   break;
             }
 
