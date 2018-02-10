@@ -644,7 +644,7 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
     /* read in the offset of the next tile so we can calculate the amount
        of data needed for this tile*/
     offset2=(MagickOffsetType)ReadBlobMSBLong(image);
-    if (offset2 > GetBlobSize(image))
+    if ((MagickSizeType) offset2 > GetBlobSize(image))
       ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
         image->filename);
     /* if the offset is 0 then we need to read in the maximum possible
