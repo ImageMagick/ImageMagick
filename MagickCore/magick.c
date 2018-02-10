@@ -169,8 +169,8 @@ static MagickBooleanType
 %      associated with the MagickInfo structure.
 %
 */
-MagickExport MagickInfo *AcquireMagickInfo(const char *module,
-  const char *name, const char *description)
+MagickExport MagickInfo *AcquireMagickInfo(const char *module,const char *name,
+  const char *description)
 {
   MagickInfo
     *magick_info;
