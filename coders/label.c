@@ -127,7 +127,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   property=InterpretImageProperties((ImageInfo *) image_info,image,
     image_info->filename,exception);
   if (property == (char *) NULL)
-    return((Image *) NULL);
+    return(DestroyImageList(image));
   (void) SetImageProperty(image,"label",property,exception);
   property=DestroyString(property);
   label=GetImageProperty(image,"label",exception);
