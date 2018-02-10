@@ -1158,6 +1158,12 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
 {
 #define CFormat  "/Filter [ /%s ]\n"
 #define ObjectsPerImage  14
+#define ThrowPDFException(exception,message) \
+{ \
+  if (xref != (MagickOffsetType *) NULL) \
+    xref=(MagickOffsetType *) RelinquishMagickMemory(xref); \
+  ThrowWriterException((exception),(message)); \
+}
 
 DisableMSCWarning(4310)
   static const char
@@ -1830,7 +1836,7 @@ RestoreMSCWarning
     offset=TellBlob(image);
     number_pixels=(MagickSizeType) image->columns*image->rows;
     if ((4*number_pixels) != (MagickSizeType) ((size_t) (4*number_pixels)))
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+      ThrowPDFException(ResourceLimitError,"MemoryAllocationFailed");
     if ((compression == FaxCompression) || (compression == Group4Compression) ||
         ((image_info->type != TrueColorType) &&
          (SetImageGray(image,exception) != MagickFalse)))
@@ -1880,7 +1886,7 @@ RestoreMSCWarning
             length=(size_t) number_pixels;
             pixel_info=AcquireVirtualMemory(length,sizeof(*pixels));
             if (pixel_info == (MemoryInfo *) NULL)
-              ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+              ThrowPDFException(ResourceLimitError,"MemoryAllocationFailed");
             pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
             /*
               Dump Runlength encoded pixels.
@@ -1992,8 +1998,7 @@ RestoreMSCWarning
             if (pixel_info == (MemoryInfo *) NULL)
               {
                 xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
-                ThrowWriterException(ResourceLimitError,
-                  "MemoryAllocationFailed");
+                ThrowPDFException(ResourceLimitError,"MemoryAllocationFailed");
               }
             pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
             /*
@@ -2093,7 +2098,7 @@ RestoreMSCWarning
               if (pixel_info == (MemoryInfo *) NULL)
                 {
                   xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
-                  ThrowWriterException(ResourceLimitError,
+                  ThrowPDFException(ResourceLimitError,
                     "MemoryAllocationFailed");
                 }
               pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
@@ -2408,8 +2413,7 @@ RestoreMSCWarning
             if (pixel_info == (MemoryInfo *) NULL)
               {
                 tile_image=DestroyImage(tile_image);
-                ThrowWriterException(ResourceLimitError,
-                  "MemoryAllocationFailed");
+                ThrowPDFException(ResourceLimitError,"MemoryAllocationFailed");
               }
             pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
             /*
@@ -2512,8 +2516,7 @@ RestoreMSCWarning
             if (pixel_info == (MemoryInfo *) NULL)
               {
                 tile_image=DestroyImage(tile_image);
-                ThrowWriterException(ResourceLimitError,
-                  "MemoryAllocationFailed");
+                ThrowPDFException(ResourceLimitError,"MemoryAllocationFailed");
               }
             pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
             /*
@@ -2604,7 +2607,7 @@ RestoreMSCWarning
               if (pixel_info == (MemoryInfo *) NULL)
                 {
                   tile_image=DestroyImage(tile_image);
-                  ThrowWriterException(ResourceLimitError,
+                  ThrowPDFException(ResourceLimitError,
                     "MemoryAllocationFailed");
                 }
               pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
@@ -2818,8 +2821,7 @@ RestoreMSCWarning
             if (pixel_info == (MemoryInfo *) NULL)
               {
                 image=DestroyImage(image);
-                ThrowWriterException(ResourceLimitError,
-                  "MemoryAllocationFailed");
+                ThrowPDFException(ResourceLimitError,"MemoryAllocationFailed");
               }
             pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
             /*
