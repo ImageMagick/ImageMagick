@@ -1502,7 +1502,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       while (*p != '\0')
       {
         q=p;
-        while ((*q != '\n') && (*q != '\0'))
+        while ((*q != '\377') && (*q != '\0'))
           q++;
         (void) CopyMagickString(image_info->filename,p,(size_t) (q-p+1));
         p=q+1;

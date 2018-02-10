@@ -334,7 +334,8 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
       (void) FormatLocaleString(buffer,MagickPathExtent,
         "<map id=\"%s\" name=\"%s\">\n",mapname,mapname);
       (void) WriteBlobString(image,buffer);
-      (void) FormatLocaleString(buffer,MagickPathExtent,"  <area href=\"%s",url);
+      (void) FormatLocaleString(buffer,MagickPathExtent,"  <area href=\"%s",
+        url);
       (void) WriteBlobString(image,buffer);
       if (image->directory == (char *) NULL)
         {
@@ -346,7 +347,7 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
         }
       else
         for (p=image->directory; *p != '\0'; p++)
-          if (*p != '\n')
+          if (*p != '\377')
             (void) WriteBlobByte(image,(unsigned char) *p);
           else
             {
@@ -421,7 +422,7 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
     }
   else
     for (p=image->directory; *p != '\0'; p++)
-      if (*p != '\n')
+      if (*p != '\377')
         (void) WriteBlobByte(image,(unsigned char) *p);
       else
         {
