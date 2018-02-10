@@ -576,8 +576,8 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     default:
       ThrowReaderException(CorruptImageError,"UnrecognizedImageCompression");
   }
-  image->columns=(size_t) MagickAbsoluteValue(dib_info.width);
-  image->rows=(size_t) MagickAbsoluteValue(dib_info.height);
+  image->columns=(size_t) MagickAbsoluteValue((ssize_t) dib_info.width);
+  image->rows=(size_t) MagickAbsoluteValue((ssize_t) dib_info.height);
   image->depth=8;
   image->alpha_trait=dib_info.bits_per_pixel == 32 ? BlendPixelTrait :
     UndefinedPixelTrait;
