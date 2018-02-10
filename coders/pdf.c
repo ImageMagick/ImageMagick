@@ -642,27 +642,27 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   fitPage=MagickFalse;
   option=GetImageOption(image_info,"pdf:fit-page");
   if (option != (char *) NULL)
-  {
-    char
-      *page_geometry;
+    {
+      char
+        *page_geometry;
 
-    page_geometry=GetPageGeometry(option);
-    flags=ParseMetaGeometry(page_geometry,&page.x,&page.y,&page.width,
-      &page.height);
-    page_geometry=DestroyString(page_geometry);
-    if (flags == NoValue)
-      {
-        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "InvalidGeometry","`%s'",option);
-        image=DestroyImage(image);
-        return((Image *) NULL);
-      }
-    page.width=(size_t) ceil((double) (page.width*image->resolution.x/delta.x)
-      -0.5);
-    page.height=(size_t) ceil((double) (page.height*image->resolution.y/
-      delta.y) -0.5);
-    fitPage=MagickTrue;
-  }
+      page_geometry=GetPageGeometry(option);
+      flags=ParseMetaGeometry(page_geometry,&page.x,&page.y,&page.width,
+        &page.height);
+      page_geometry=DestroyString(page_geometry);
+      if (flags == NoValue)
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+            "InvalidGeometry","`%s'",option);
+          image=DestroyImage(image);
+          return((Image *) NULL);
+        }
+      page.width=(size_t) ceil((double) (page.width*image->resolution.x/delta.x)
+        -0.5);
+      page.height=(size_t) ceil((double) (page.height*image->resolution.y/
+        delta.y) -0.5);
+      fitPage=MagickTrue;
+    }
   (void) CloseBlob(image);
   if ((fabs(angle) == 90.0) || (fabs(angle) == 270.0))
     {
