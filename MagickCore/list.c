@@ -135,10 +135,14 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
     return((Image *) NULL);
   assert(images->signature == MagickCoreSignature);
   while (images->previous != (Image *) NULL)
+  {
+    assert(images != images->previous);
     images=images->previous;
+  }
   image=(Image *) NULL;
   for (p=(Image *) NULL; images != (Image *) NULL; images=images->next)
   {
+    assert(images != images->next);
     clone=CloneImage(images,0,0,MagickTrue,exception);
     if (clone == (Image *) NULL)
       {
@@ -650,7 +654,10 @@ MagickExport ssize_t GetImageIndexInList(const Image *images)
     return(-1);
   assert(images->signature == MagickCoreSignature);
   for (i=0; images->previous != (Image *) NULL; i++)
+  {
+    assert(images != images->previous);
     images=images->previous;
+  }
   return(i);
 }
 
@@ -689,7 +696,10 @@ MagickExport size_t GetImageListLength(const Image *images)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   images=GetLastImageInList(images);
   for (i=0; images != (Image *) NULL; images=images->previous)
+  {
+    assert(images != images->previous);
     i++;
+  }
   return((size_t) i);
 }
 
@@ -846,7 +856,10 @@ MagickExport Image **ImageListToArray(const Image *images,
     }
   images=GetFirstImageInList(images);
   for (i=0; images != (Image *) NULL; images=images->next)
+  {
+    assert(images != images->next);
     group[i++]=(Image *) images;
+  }
   group[i]=(Image *) NULL;
   return(group);
 }

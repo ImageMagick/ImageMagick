@@ -686,7 +686,6 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     }
     image->columns=(size_t) HDR.nRows;
     image->rows=(size_t) HDR.nCols;
-    SetImageColorspace(image,GRAYColorspace,exception);
     if (image_info->ping != MagickFalse)
       {
         Swap(image->columns,image->rows);
@@ -698,6 +697,7 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     if (status == MagickFalse)
       return((Image *) NULL);
     (void) SetImageBackgroundColor(image,exception);
+    (void) SetImageColorspace(image,GRAYColorspace,exception);
     quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       return((Image *) NULL);
