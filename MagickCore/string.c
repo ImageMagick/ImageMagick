@@ -191,7 +191,8 @@ MagickExport StringInfo *AcquireStringInfo(const size_t length)
       string_info->length+MagickPathExtent,sizeof(*string_info->datum));
   if (string_info->datum == (unsigned char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) memset(string_info->datum,0,length+MagickPathExtent);
+  (void) memset(string_info->datum,0,(length+MagickPathExtent)*
+    sizeof(*string_info->datum));
   return(string_info);
 }
 
@@ -238,7 +239,8 @@ MagickExport StringInfo *BlobToStringInfo(const void *blob,const size_t length)
     }
   if (blob != (const void *) NULL)
     (void) memcpy(string_info->datum,blob,length);
-  (void) memset(string_info->datum+length,0,MagickPathExtent);
+  (void) memset(string_info->datum+length,0,MagickPathExtent*
+    sizeof(*string_info->datum));
   return(string_info);
 }
 
