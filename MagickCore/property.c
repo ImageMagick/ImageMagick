@@ -1330,6 +1330,8 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
   if (tag == (~0UL))
     return(MagickFalse);
   length=GetStringInfoLength(profile);
+  if (length < 6)
+    return(MagickFalse);
   exif=GetStringInfoDatum(profile);
   while (length != 0)
   {
