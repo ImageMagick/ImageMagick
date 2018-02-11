@@ -3978,7 +3978,7 @@ EvaluateImages(ref,...)
     AV
       *av;
 
-    ,...char
+    char
       *attribute,
       *p;
 
