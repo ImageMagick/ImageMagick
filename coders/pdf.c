@@ -372,10 +372,12 @@ static MagickBooleanType IsPDFRendered(const char *path)
 
 static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+#define BeginXMPPacket  "<?xpacket begin="
 #define CMYKProcessColor  "CMYKProcessColor"
 #define CropBox  "CropBox"
 #define DefaultCMYK  "DefaultCMYK"
 #define DeviceCMYK  "DeviceCMYK"
+#define EndXMPPacket  "<?xpacket end="
 #define MediaBox  "MediaBox"
 #define RenderPostscriptText  "Rendering Postscript...  "
 #define PDFRotate  "Rotate"
@@ -663,7 +665,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         delta.y) -0.5);
       fitPage=MagickTrue;
     }
-  (void) CloseBlob(image);
   if ((fabs(angle) == 90.0) || (fabs(angle) == 270.0))
     {
       size_t
@@ -808,6 +809,49 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           pdf_image=cmyk_image;
         }
     }
+  (void) SeekBlob(image,0,SEEK_SET);
+  for (c=ReadBlobByte(image); c != EOF; c=ReadBlobByte(image))
+  {
+    /*
+      Note document structuring comments.
+    */
+    *p++=(char) c;
+    if ((strchr("\n\r%",c) == (char *) NULL) &&
+        ((size_t) (p-command) < (MagickPathExtent-1)))
+      continue;
+    *p='\0';
+    p=command;
+    if (LocaleNCompare(BeginXMPPacket,command,strlen(BeginXMPPacket)) == 0)
+      {
+        StringInfo
+          *profile;
+
+        /*
+          Read XMP profile.
+        */
+        p=command;
+        profile=StringToStringInfo(command);
+        for (i=(ssize_t) GetStringInfoLength(profile)-1; c != EOF; i++)
+        {
+          SetStringInfoLength(profile,(size_t) (i+1));
+          c=ReadBlobByte(image);
+          GetStringInfoDatum(profile)[i]=(unsigned char) c;
+          *p++=(char) c;
+          if ((strchr("\n\r%",c) == (char *) NULL) &&
+              ((size_t) (p-command) < (MagickPathExtent-1)))
+            continue;
+          *p='\0';
+          p=command;
+          if (LocaleNCompare(EndXMPPacket,command,strlen(EndXMPPacket)) == 0)
+            break;
+        }
+        SetStringInfoLength(profile,(size_t) i);
+        (void) SetImageProfile(image,"xmp",profile,exception);
+        profile=DestroyStringInfo(profile);
+        continue;
+      }
+  }
+  (void) CloseBlob(image);
   if (image_info->number_scenes != 0)
     {
       Image
