@@ -696,6 +696,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         RectangleInfo
           geometry;
 
+        SetGeometry(next,&geometry);
         flags=ParseAbsoluteGeometry(read_info->extract,&geometry);
         if ((next->columns != geometry.width) ||
             (next->rows != geometry.height))
