@@ -3511,7 +3511,7 @@ Compare(ref,...)
 #
 #
 void
-ComplexImages(ref)
+ComplexImages(ref,...)
   Image::Magick::@MAGICK_ABI_SUFFIX@ ref = NO_INIT
   ALIAS:
     ComplexImages   = 1
@@ -3668,7 +3668,7 @@ ComplexImages(ref)
 #
 #
 void
-CompareLayers(ref)
+CompareLayers(ref,...)
   Image::Magick::@MAGICK_ABI_SUFFIX@ ref = NO_INIT
   ALIAS:
     CompareImagesLayers   = 1
@@ -3968,7 +3968,7 @@ Display(ref,...)
 #
 #
 void
-EvaluateImages(ref)
+EvaluateImages(ref,...)
   Image::Magick::@MAGICK_ABI_SUFFIX@ ref = NO_INIT
   ALIAS:
     EvaluateImages   = 1
@@ -3978,7 +3978,7 @@ EvaluateImages(ref)
     AV
       *av;
 
-    char
+    ,...char
       *attribute,
       *p;
 
@@ -4303,7 +4303,7 @@ Features(ref,...)
 #
 #
 void
-Flatten(ref)
+Flatten(ref,...)
   Image::Magick::@MAGICK_ABI_SUFFIX@ ref = NO_INIT
   ALIAS:
     FlattenImage   = 1
@@ -4513,7 +4513,8 @@ Fx(ref,...)
     channel=DefaultChannels;
     (void) CopyMagickString(expression,"u",MagickPathExtent);
     if (items == 2)
-      (void) CopyMagickString(expression,(char *) SvPV(ST(1),na),MagickPathExtent);
+      (void) CopyMagickString(expression,(char *) SvPV(ST(1),na),
+        MagickPathExtent);
     else
       for (i=2; i < items; i+=2)
       {
@@ -12370,8 +12371,8 @@ Preview(ref,...)
     info=GetPackageInfo(aTHX_ (void *) av,info,exception);
     preview_type=GammaPreview;
     if (items > 1)
-      preview_type=(PreviewType)
-        ParseCommandOption(MagickPreviewOptions,MagickFalse,SvPV(ST(1),na));
+      preview_type=(PreviewType) ParseCommandOption(MagickPreviewOptions,
+        MagickFalse,SvPV(ST(1),na));
     for ( ; image; image=image->next)
     {
       preview_image=PreviewImage(image,preview_type,exception);
