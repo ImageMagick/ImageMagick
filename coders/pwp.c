@@ -121,6 +121,9 @@ static MagickBooleanType IsPWP(const unsigned char *magick,const size_t length)
 */
 static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+  char
+    filename[MagickPathExtent];
+
   FILE
     *file;
 
@@ -178,7 +181,9 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) SetImageInfoProgressMonitor(read_info,(MagickProgressMonitor) NULL,
     (void *) NULL);
   SetImageInfoBlob(read_info,(void *) NULL,0);
-  unique_file=AcquireUniqueFileResource(read_info->filename);
+  unique_file=AcquireUniqueFileResource(filename);
+  (void) FormatLocaleString(read_info->filename,MagickPathExtent,"sfw:%s",
+    filename);
   for ( ; ; )
   {
     (void) memset(magick,0,sizeof(magick));
@@ -192,13 +197,13 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     if (c == EOF)
       {
-        (void) RelinquishUniqueFileResource(read_info->filename);
+        (void) RelinquishUniqueFileResource(filename);
         read_info=DestroyImageInfo(read_info);
         ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
       }
     if (LocaleNCompare((char *) (magick+12),"SFW94A",6) != 0)
       {
-        (void) RelinquishUniqueFileResource(read_info->filename);
+        (void) RelinquishUniqueFileResource(filename);
         read_info=DestroyImageInfo(read_info);
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       }
@@ -210,7 +215,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       file=fdopen(unique_file,"wb");
     if ((unique_file == -1) || (file == (FILE *) NULL))
       {
-        (void) RelinquishUniqueFileResource(read_info->filename);
+        (void) RelinquishUniqueFileResource(filename);
         read_info=DestroyImageInfo(read_info);
         ThrowFileException(exception,FileOpenError,"UnableToWriteFile",
           image->filename);
@@ -230,7 +235,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) fclose(file);
     if (c == EOF)
       {
-        (void) RelinquishUniqueFileResource(read_info->filename);
+        (void) RelinquishUniqueFileResource(filename);
         read_info=DestroyImageInfo(read_info);
         ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
       }
@@ -261,7 +266,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   if (unique_file != -1)
     (void) close(unique_file);
-  (void) RelinquishUniqueFileResource(read_info->filename);
+  (void) RelinquishUniqueFileResource(filename);
   read_info=DestroyImageInfo(read_info);
   if (image != (Image *) NULL)
     {
