@@ -7668,9 +7668,6 @@ Mogrify(ref,...)
       *image,
       *next;
 
-    MagickBooleanType
-      status;
-
     MagickStatusType
       flags;
 

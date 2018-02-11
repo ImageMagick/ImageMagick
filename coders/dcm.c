@@ -2629,7 +2629,7 @@ static const DicomInfo
 %  IsDCM() returns MagickTrue if the image format type, identified by the
 %  magick string, is DCM.
 %
-%  The format of the ReadDCMImage method is:
+%  The format of the IsDCM method is:
 %
 %      MagickBooleanType IsDCM(const unsigned char *magick,const size_t length)
 %
@@ -3094,8 +3094,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read DCM Medical image.
   */
   (void) CopyMagickString(photometric,"MONOCHROME1 ",MagickPathExtent);
-  info.polarity=MagickFalse;
-  info.scale=(Quantum *) NULL;
+  (void) memset(&info,0,sizeof(info));
   info.bits_allocated=8;
   info.bytes_per_pixel=1;
   info.depth=8;
@@ -3103,12 +3102,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   info.max_value=255UL;
   info.samples_per_pixel=1;
   info.signed_data=(~0UL);
-  info.significant_bits=0;
-  info.rescale=MagickFalse;
-  info.rescale_intercept=0.0;
   info.rescale_slope=1.0;
-  info.window_center=0.0;
-  info.window_width=0.0;
   data=(unsigned char *) NULL;
   element=0;
   explicit_vr[2]='\0';
