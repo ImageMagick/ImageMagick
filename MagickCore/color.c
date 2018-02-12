@@ -2345,7 +2345,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
   if (strchr(name,'(') != (char *) NULL)
     {
       char
-        colorspace[MagickPathExtent+1];
+        colorspace[2*MagickPathExtent];
 
       MagickBooleanType
         icc_color;
