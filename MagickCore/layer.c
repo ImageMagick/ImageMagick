@@ -1096,7 +1096,8 @@ static Image *OptimizeLayerFrames(const Image *image,
         dup_bounds.width=dup_bounds.height=0; /* no dup, no pixel added */
         if ( add_frames )
           {
-            dup_image=CloneImage(curr->previous,0,0,MagickTrue,exception);
+            dup_image=CloneImage(curr->previous,curr->previous->page.width,
+                curr->previous->page.height,MagickTrue,exception);
             if (dup_image == (Image *) NULL)
               {
                 bounds=(RectangleInfo *) RelinquishMagickMemory(bounds);
@@ -1123,7 +1124,8 @@ static Image *OptimizeLayerFrames(const Image *image,
         /*
           Now compare against a simple background disposal
         */
-        bgnd_image=CloneImage(curr->previous,0,0,MagickTrue,exception);
+        bgnd_image=CloneImage(curr->previous,curr->previous->page.width,
+          curr->previous->page.height,MagickTrue,exception);
         if (bgnd_image == (Image *) NULL)
           {
             bounds=(RectangleInfo *) RelinquishMagickMemory(bounds);
@@ -1278,7 +1280,8 @@ static Image *OptimizeLayerFrames(const Image *image,
           bgnd_image=DestroyImage(bgnd_image);
         if ( disposals[i-1] == NoneDispose )
           {
-            prev_image=ReferenceImage(curr->previous);
+            prev_image=CloneImage(curr->previous,curr->previous->page.width,
+              curr->previous->page.height,MagickTrue,exception);
             if (prev_image == (Image *) NULL)
               {
                 bounds=(RectangleInfo *) RelinquishMagickMemory(bounds);
