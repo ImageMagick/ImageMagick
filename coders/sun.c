@@ -478,7 +478,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       }
-    ResetMagickMemory(sun_pixels,0,pixels_length*sizeof(*sun_pixels));
+    (void) ResetMagickMemory(sun_pixels,0,(pixels_length+image->rows)*
+      sizeof(*sun_pixels));
     if (sun_info.type == RT_ENCODED)
       {
         status=DecodeImage(sun_data,sun_info.length,sun_pixels,pixels_length);
