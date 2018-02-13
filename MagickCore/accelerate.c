@@ -4325,7 +4325,7 @@ static Image *ComputeResizeImage(const Image* image,MagickCLEnv clEnv,
   for (i = 0; i < 7; i++)
     coefficientBuffer[i]=(float) resizeFilterCoefficient[i];
   cubicCoefficientsBuffer=CreateOpenCLBuffer(device,CL_MEM_COPY_HOST_PTR |
-    CL_MEM_READ_ONLY,7*sizeof(*cubicCoefficientsBuffer),&coefficientBuffer);
+    CL_MEM_READ_ONLY,sizeof(coefficientBuffer),&coefficientBuffer);
   if (cubicCoefficientsBuffer == (cl_mem) NULL)
   {
     (void) OpenCLThrowMagickException(device,exception,GetMagickModule(),
