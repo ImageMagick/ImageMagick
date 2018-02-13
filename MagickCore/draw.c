@@ -2052,7 +2052,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           {
             GetNextToken(q,&q,extent,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->fill.alpha=(MagickRealType) (QuantumRange-
+            graphic_context[n]->fill_alpha=(MagickRealType) (QuantumRange-
               ClampToQuantum((MagickRealType) QuantumRange*(1.0-factor*
               StringToDouble(token,&next_token))));
             if (token == next_token)
@@ -2732,7 +2732,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           {
             GetNextToken(q,&q,extent,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->stroke.alpha=(MagickRealType) (QuantumRange-
+            graphic_context[n]->stroke_alpha=(MagickRealType) (QuantumRange-
               ClampToQuantum((MagickRealType) QuantumRange*(1.0-factor*
               StringToDouble(token,&next_token))));
             if (token == next_token)
