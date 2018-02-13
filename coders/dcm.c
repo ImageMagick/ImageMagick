@@ -4008,7 +4008,14 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Read RLE segment table.
         */
         for (i=0; i < (ssize_t) stream_info->remaining; i++)
-          (void) ReadBlobByte(image);
+        {
+          int
+            c;
+
+          c=ReadBlobByte(image);
+          if (c == EOF)
+            break;
+        }
         tag=(ReadBlobLSBShort(image) << 16) | ReadBlobLSBShort(image);
         stream_info->remaining=(size_t) ReadBlobLSBLong(image);
         if ((tag != 0xFFFEE000) || (stream_info->remaining <= 64) ||
