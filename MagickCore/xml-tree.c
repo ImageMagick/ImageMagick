@@ -1721,6 +1721,8 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
         /*
           Parse entity definitions.
         */
+        if (strspn(xml+8,XMLWhitespace) == 0)
+          break;
         xml+=strspn(xml+8,XMLWhitespace)+8;
         c=xml;
         n=xml+strspn(xml,XMLWhitespace "%");
