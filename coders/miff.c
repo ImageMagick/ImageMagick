@@ -1147,6 +1147,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         while (name != (const char *) NULL)
         {
           length=ReadBlobMSBLong(image);
+          if ((MagickSizeType) length > GetBlobSize(image))
+            break;
           profile=AcquireStringInfo(length);
           if (profile == (StringInfo *) NULL)
             break;

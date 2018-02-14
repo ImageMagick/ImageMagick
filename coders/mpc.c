@@ -844,6 +844,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         while (name != (const char *) NULL)
         {
           length=ReadBlobMSBLong(image);
+          if ((MagickSizeType) length > GetBlobSize(image))
+            break;
           profile=AcquireStringInfo(length);
           if (profile == (StringInfo *) NULL)
             break;
