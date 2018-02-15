@@ -4165,10 +4165,11 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
             geometry_info;
 
           flags=ParseGeometry(value,&geometry_info);
-          image->resolution.x=geometry_info.rho;
-          image->resolution.y=geometry_info.sigma;
-          if ((flags & SigmaValue) == 0)
-            image->resolution.y=image->resolution.x;
+          if ((flags & RhoValue) != 0)
+            image->resolution.x=geometry_info.rho;
+          image->resolution.y=image->resolution.x;
+          if ((flags & SigmaValue) != 0)
+            image->resolution.y=geometry_info.sigma;
           return(MagickTrue);
         }
       if (LocaleCompare("depth",property) == 0)
