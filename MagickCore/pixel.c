@@ -2169,18 +2169,12 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
 */
 MagickExport void GetPixelInfo(const Image *image,PixelInfo *pixel)
 {
+  (void) memset(pixel,0,sizeof(*pixel));
   pixel->storage_class=DirectClass;
   pixel->colorspace=sRGBColorspace;
-  pixel->alpha_trait=UndefinedPixelTrait;
-  pixel->fuzz=0.0;
   pixel->depth=MAGICKCORE_QUANTUM_DEPTH;
-  pixel->red=0.0;
-  pixel->green=0.0;
-  pixel->blue=0.0;
-  pixel->black=0.0;
+  pixel->alpha_trait=UndefinedPixelTrait;
   pixel->alpha=(double) OpaqueAlpha;
-  pixel->index=0.0;
-  pixel->count=0;
   if (image == (const Image *) NULL)
     return;
   pixel->storage_class=image->storage_class;

@@ -25,6 +25,7 @@
 #include "MagickCore/colorspace.h"
 #include "MagickCore/gem.h"
 #include "MagickCore/image.h"
+#include "MagickCore/memory_.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -377,18 +378,12 @@ static inline PixelTrait GetPixelRedTraits(const Image *magick_restrict image)
 static inline void GetPixelInfoPixel(const Image *magick_restrict image,
   const Quantum *magick_restrict pixel,PixelInfo *magick_restrict pixel_info)
 {
+  (void) ResetMagickMemory(pixel_info,0,sizeof(*pixel_info));
   pixel_info->storage_class=DirectClass;
   pixel_info->colorspace=sRGBColorspace;
-  pixel_info->fuzz=0.0f;
   pixel_info->depth=MAGICKCORE_QUANTUM_DEPTH;
-  pixel_info->red=0.0f;
-  pixel_info->green=0.0f;
-  pixel_info->blue=0.0f;
-  pixel_info->black=0.0f;
-  pixel_info->index=0.0f;
   pixel_info->alpha_trait=UndefinedPixelTrait;
   pixel_info->alpha=(MagickRealType) OpaqueAlpha;
-  pixel_info->count=0;
   if (image != (Image *) NULL)
     {
       pixel_info->storage_class=image->storage_class;
