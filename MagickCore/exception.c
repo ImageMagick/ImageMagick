@@ -73,7 +73,7 @@ static void
 /*
   Global declarations.
 */
-#define MaxExceptions  128
+#define MaxExceptions  32
 
 /*
   Global declarations.
