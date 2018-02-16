@@ -798,6 +798,7 @@ static double *GenerateCoefficients(const Image *image,
       /* 8x8 least-squares matrix (zeroed) */
       matrix = AcquireMagickMatrix(8UL,8UL);
       if (matrix == (double **) NULL) {
+        coeff=(double *) RelinquishMagickMemory(coeff);
         (void) ThrowMagickException(exception,GetMagickModule(),
                   ResourceLimitError,"MemoryAllocationFailed",
                   "%s", "DistortCoefficients");
@@ -855,6 +856,7 @@ static double *GenerateCoefficients(const Image *image,
         Arguments: Perspective Coefficents (forward mapping)
       */
       if (number_arguments != 8) {
+        coeff = (double *) RelinquishMagickMemory(coeff);
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
               "InvalidArgument", "%s : 'Needs 8 coefficient values'",
               CommandOptionToMnemonic(MagickDistortOptions, *method));
@@ -2276,6 +2278,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
   /* if image is ColorMapped - change it to DirectClass */
   if (SetImageStorageClass(distort_image,DirectClass,exception) == MagickFalse)
     {
+       coeff = (double *) RelinquishMagickMemory(coeff);
       distort_image=DestroyImage(distort_image);
       return((Image *) NULL);
     }
