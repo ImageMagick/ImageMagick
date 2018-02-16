@@ -435,7 +435,7 @@ static MagickBooleanType ParseIinfAtom(Image *image, DataBuffer *db,
 
   flags = DBReadUInt(db);
   version = flags >> 24;
-  flags = 0xffffff;
+  flags &= 0xffffff;
 
   if (version == 0) {
    count = DBReadUShort(db);
@@ -474,7 +474,7 @@ static MagickBooleanType ParseInfeAtom(Image *image, DataBuffer *db,
 
   flags = DBReadUInt(db);
   version = flags >> 24;
-  flags = 0xffffff;
+  flags &= 0xffffff;
 
   if (version != 2) {
     ThrowAndReturn("unsupported infe atom version");
@@ -508,7 +508,7 @@ static MagickBooleanType ParseIpmaAtom(Image *image, DataBuffer *db,
 
   flags = DBReadUInt(db);
   version = flags >> 24;
-  flags = 0xffffff;
+  flags &= 0xffffff;
 
   count = DBReadUInt(db);
 
@@ -557,7 +557,7 @@ static MagickBooleanType ParseIlocAtom(Image *image, DataBuffer *db,
 
   flags = DBReadUInt(db);
   version = flags >> 24;
-  flags = 0xffffff;
+  flags &= 0xffffff;
 
   tmp = DBReadUChar(db);
   if (tmp != 0x44) {
