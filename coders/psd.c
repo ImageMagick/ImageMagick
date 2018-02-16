@@ -1878,7 +1878,6 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
             ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
               image->filename);
           }
-        (void) SetImageBackgroundColor(layer_info[i].image,exception);
         if (layer_info[i].info != (StringInfo *) NULL)
           {
             (void) SetImageProfile(layer_info[i].image,"psd:additional-info",
@@ -2124,11 +2123,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
-  if (SetImageBackgroundColor(image,exception) == MagickFalse)
-    {
-      image=DestroyImageList(image);
-      return((Image *) NULL);
-    }
   psd_info.min_channels=3;
   if (psd_info.mode == LabMode)
     SetImageColorspace(image,LabColorspace,exception);
