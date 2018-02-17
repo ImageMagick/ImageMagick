@@ -1012,6 +1012,9 @@
           <message name="PixelCacheAllocationFailed">
             Échec allocation du cache pixel
           </message>
+          <message name="TooManyExceptions">
+            too man exceptions
+          </message>
           <message name="TooManyObjects">
             too many objects
           </message>
