@@ -753,7 +753,7 @@ static MagickBooleanType NegateCMYK(Image *image,ExceptionInfo *exception)
   return(status);
 }
 
-static void ParseImageResourceBlocks(Image *image,
+static StringInfo *ParseImageResourceBlocks(Image *image,
   const unsigned char *blocks,size_t length,
   MagickBooleanType *has_merged_image,ExceptionInfo *exception)
 {
@@ -774,11 +774,10 @@ static void ParseImageResourceBlocks(Image *image,
     short_sans;
 
   if (length < 16)
-    return;
+    return((StringInfo *) NULL);
   profile=BlobToStringInfo((const unsigned char *) NULL,length);
   SetStringInfoDatum(profile,blocks);
-  (void) SetImageProfile(image,"8bim",profile,exception);
-  profile=DestroyStringInfo(profile);
+  SetStringInfoName(profile,"8bim");
   for (p=blocks; (p >= blocks) && (p < (blocks+length-7)); )
   {
     if (LocaleNCompare((const char *) p,"8BIM",4) != 0)
@@ -790,10 +789,10 @@ static void ParseImageResourceBlocks(Image *image,
       name_length++;
     p+=name_length;
     if (p > (blocks+length-4))
-      return;
+      break;
     p=PushLongPixel(MSBEndian,p,&count);
     if ((p+count) > (blocks+length))
-      return;
+      break;
     switch (id)
     {
       case 0x03ed:
@@ -808,7 +807,7 @@ static void ParseImageResourceBlocks(Image *image,
           Resolution info.
         */
         if (count < 16)
-          return;
+          break;
         p=PushShortPixel(MSBEndian,p,&resolution);
         image->resolution.x=(double) resolution;
         (void) FormatLocaleString(value,MagickPathExtent,"%g",
@@ -844,7 +843,7 @@ static void ParseImageResourceBlocks(Image *image,
     if ((count & 0x01) != 0)
       p++;
   }
-  return;
+  return(profile);
 }
 
 static CompositeOperator PSDBlendModeToCompositeOperator(const char *mode)
@@ -2061,6 +2060,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ssize_t
     count;
 
+  StringInfo
+    *profile;
+
   /*
     Open image file.
   */
@@ -2203,6 +2205,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((image->depth == 1) && (image->storage_class != PseudoClass))
     ThrowReaderException(CorruptImageError, "ImproperImageHeader");
   has_merged_image=MagickTrue;
+  profile=(StringInfo *) NULL;
   length=ReadBlobMSBLong(image);
   if (length != 0)
     {
@@ -2229,8 +2232,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           blocks=(unsigned char *) RelinquishMagickMemory(blocks);
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         }
-      ParseImageResourceBlocks(image,blocks,(size_t) length,&has_merged_image,
-        exception);
+      profile=ParseImageResourceBlocks(image,blocks,(size_t) length,
+        &has_merged_image,exception);
       blocks=(unsigned char *) RelinquishMagickMemory(blocks);
     }
   /*
@@ -2317,6 +2320,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->background_color.alpha_trait=BlendPixelTrait;
       merged=MergeImageLayers(image,FlattenLayer,exception);
       ReplaceImageInList(&image,merged);
+    }
+  if (profile != (StringInfo *) NULL)
+    {
+      (void) SetImageProfile(image,GetStringInfoName(profile),profile,
+        exception);
+      profile=DestroyStringInfo(profile);
     }
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
