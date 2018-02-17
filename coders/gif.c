@@ -917,6 +917,12 @@ static ssize_t ReadBlobBlock(Image *image,unsigned char *data)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static void *DestroyGIFProfile(void *profile)
+{
+  return((void *) DestroyStringInfo((StringInfo *) profile));
+}
+
 static MagickBooleanType PingGIFImage(Image *image,ExceptionInfo *exception)
 {
   unsigned char
@@ -953,8 +959,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image,
     *meta_image;
 
-  int
-    number_extensionss=0;
+  LinkedListInfo
+    *profiles;
 
   MagickBooleanType
     status;
@@ -1039,6 +1045,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         }
     }
+  profiles=(LinkedListInfo *) NULL;
   duration=0;
   opacity=(-1);
   image_count=0;
@@ -1058,6 +1065,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         count=ReadBlob(image,1,&c);
         if (count != 1)
           {
+            if (profiles != (LinkedListInfo *) NULL)
+              profiles=DestroyLinkedList(profiles,DestroyGIFProfile);
             global_colormap=(unsigned char *) RelinquishMagickMemory(
               global_colormap);
             meta_image=DestroyImage(meta_image);
@@ -1154,13 +1163,14 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   MagickTrue : MagickFalse;
                 iptc=LocaleNCompare((char *) buffer,"MGKIPTC0000",11) == 0 ?
                   MagickTrue : MagickFalse;
-                number_extensionss++;
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "    Reading GIF application extension");
                 info=(unsigned char *) AcquireQuantumMemory(255UL,
                   sizeof(*info));
                 if (info == (unsigned char *) NULL)
                   {
+                    if (profiles != (LinkedListInfo *) NULL)
+                      profiles=DestroyLinkedList(profiles,DestroyGIFProfile);
                     meta_image=DestroyImage(meta_image);
                     global_colormap=(unsigned char *) RelinquishMagickMemory(
                       global_colormap);
@@ -1193,6 +1203,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 profile=BlobToStringInfo(info,(size_t) info_length);
                 if (profile == (StringInfo *) NULL)
                   {
+                    if (profiles != (LinkedListInfo *) NULL)
+                      profiles=DestroyLinkedList(profiles,DestroyGIFProfile);
                     meta_image=DestroyImage(meta_image);
                     global_colormap=(unsigned char *) RelinquishMagickMemory(
                       global_colormap);
@@ -1215,12 +1227,18 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 else
                   (void) FormatLocaleString(name,sizeof(name),"gif:%.11s",
                     buffer);
-                info=(unsigned char *) RelinquishMagickMemory(info);
-                if (magick == MagickFalse)
-                  (void) SetImageProfile(meta_image,name,profile,exception);
-                profile=DestroyStringInfo(profile);
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "      profile name=%s",name);
+                info=(unsigned char *) RelinquishMagickMemory(info);
+                if (magick != MagickFalse)
+                  profile=DestroyStringInfo(profile);
+                else
+                  {
+                    if (profiles == (LinkedListInfo *) NULL)
+                      profiles=NewLinkedList(0);
+                    SetStringInfoName(profile,name);
+                    (void) AppendValueToLinkedList(profiles,profile);
+                  }
               }
             break;
           }
@@ -1238,6 +1256,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         if ((MagickSizeType) image_count == max_image_count)
           {
+            if (profiles != (LinkedListInfo *) NULL)
+              profiles=DestroyLinkedList(profiles,DestroyGIFProfile);
             image=DestroyImageList(image);
             global_colormap=(unsigned char *) RelinquishMagickMemory(
               global_colormap);
@@ -1249,6 +1269,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         AcquireNextImage(image_info,image,exception);
         if (GetNextImageInList(image) == (Image *) NULL)
           {
+            if (profiles != (LinkedListInfo *) NULL)
+              profiles=DestroyLinkedList(profiles,DestroyGIFProfile);
             image=DestroyImageList(image);
             global_colormap=(unsigned char *) RelinquishMagickMemory(
               global_colormap);
@@ -1264,8 +1286,25 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     meta_image->scene=image->scene;
     (void) CloneImageProperties(image,meta_image);
     DestroyImageProperties(meta_image);
-    (void) CloneImageProfiles(image,meta_image);
-    DestroyImageProfiles(meta_image);
+    if (profiles != (LinkedListInfo *) NULL)
+      {
+        StringInfo
+          *profile;
+
+        /*
+          Set image profiles.
+        */
+        ResetLinkedListIterator(profiles);
+        profile=(StringInfo *) GetNextValueInLinkedList(profiles);
+        while (profile != (StringInfo *) NULL)
+        {
+          (void) SetImageProfile(image,GetStringInfoName(profile),profile,
+            exception);
+          profile=(StringInfo *) GetNextValueInLinkedList(profiles);
+        }
+      }
+    if (profiles != (LinkedListInfo *) NULL)
+      profiles=DestroyLinkedList(profiles,DestroyGIFProfile);
     image->storage_class=PseudoClass;
     image->compression=LZWCompression;
     image->columns=ReadBlobLSBShort(image);
@@ -1282,6 +1321,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->alpha_trait=opacity >= 0 ? BlendPixelTrait : UndefinedPixelTrait;
     if ((image->columns == 0) || (image->rows == 0))
       {
+        if (profiles != (LinkedListInfo *) NULL)
+          profiles=DestroyLinkedList(profiles,DestroyGIFProfile);
         global_colormap=(unsigned char *) RelinquishMagickMemory(
           global_colormap);
         meta_image=DestroyImage(meta_image);
@@ -1292,6 +1333,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
       {
+        if (profiles != (LinkedListInfo *) NULL)
+          profiles=DestroyLinkedList(profiles,DestroyGIFProfile);
         global_colormap=(unsigned char *) RelinquishMagickMemory(
           global_colormap);
         meta_image=DestroyImage(meta_image);
@@ -1329,6 +1372,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           MagickMax(local_colors,256),3UL*sizeof(*colormap));
         if (colormap == (unsigned char *) NULL)
           {
+            if (profiles != (LinkedListInfo *) NULL)
+              profiles=DestroyLinkedList(profiles,DestroyGIFProfile);
             global_colormap=(unsigned char *) RelinquishMagickMemory(
               global_colormap);
             meta_image=DestroyImage(meta_image);
@@ -1339,6 +1384,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         count=ReadBlob(image,(3*local_colors)*sizeof(*colormap),colormap);
         if (count != (ssize_t) (3*local_colors))
           {
+            if (profiles != (LinkedListInfo *) NULL)
+              profiles=DestroyLinkedList(profiles,DestroyGIFProfile);
             global_colormap=(unsigned char *) RelinquishMagickMemory(
               global_colormap);
             colormap=(unsigned char *) RelinquishMagickMemory(colormap);
@@ -1371,6 +1418,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
       {
+        if (profiles != (LinkedListInfo *) NULL)
+          profiles=DestroyLinkedList(profiles,DestroyGIFProfile);
         global_colormap=(unsigned char *) RelinquishMagickMemory(
           global_colormap);
         meta_image=DestroyImage(meta_image);
@@ -1385,6 +1434,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       status=DecodeImage(image,opacity,exception);
     if ((image_info->ping == MagickFalse) && (status == MagickFalse))
       {
+        if (profiles != (LinkedListInfo *) NULL)
+          profiles=DestroyLinkedList(profiles,DestroyGIFProfile);
         global_colormap=(unsigned char *) RelinquishMagickMemory(
           global_colormap);
         meta_image=DestroyImage(meta_image);
@@ -1401,6 +1452,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
   }
   image->duration=duration;
+  if (profiles != (LinkedListInfo *) NULL)
+    profiles=DestroyLinkedList(profiles,DestroyGIFProfile);
   meta_image=DestroyImage(meta_image);
   global_colormap=(unsigned char *) RelinquishMagickMemory(global_colormap);
   if ((image->columns == 0) || (image->rows == 0))
