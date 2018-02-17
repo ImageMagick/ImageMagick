@@ -35,6 +35,9 @@ typedef struct _StringInfo
   size_t
     length,
     signature;
+
+  char
+    *name;
 } StringInfo;
 
 extern MagickExport char
@@ -54,6 +57,7 @@ extern MagickExport char
   **StringToList(const char *);
 
 extern MagickExport const char
+  *GetStringInfoName(const StringInfo *),
   *GetStringInfoPath(const StringInfo *);
 
 extern MagickExport double
@@ -102,6 +106,7 @@ extern MagickExport void
   SetStringInfo(StringInfo *,const StringInfo *),
   SetStringInfoDatum(StringInfo *,const unsigned char *),
   SetStringInfoLength(StringInfo *,const size_t),
+  SetStringInfoName(StringInfo *,const char *),
   SetStringInfoPath(StringInfo *,const char *),
   StripString(char *);
 

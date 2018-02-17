@@ -847,6 +847,8 @@ MagickExport StringInfo *DestroyStringInfo(StringInfo *string_info)
   if (string_info->datum != (unsigned char *) NULL)
     string_info->datum=(unsigned char *) RelinquishMagickMemory(
       string_info->datum);
+  if (string_info->name != (char *) NULL)
+    string_info->name=DestroyString(string_info->name);
   if (string_info->path != (char *) NULL)
     string_info->path=DestroyString(string_info->path);
   string_info->signature=(~MagickCoreSignature);
@@ -1317,6 +1319,35 @@ MagickExport size_t GetStringInfoLength(const StringInfo *string_info)
   assert(string_info != (StringInfo *) NULL);
   assert(string_info->signature == MagickCoreSignature);
   return(string_info->length);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t S t r i n g I n f o N a m e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetStringInfoName() returns the name associated with the string.
+%
+%  The format of the GetStringInfoName method is:
+%
+%      const char *GetStringInfoName(const StringInfo *string_info)
+%
+%  A description of each parameter follows:
+%
+%    o string_info: the string info.
+%
+*/
+MagickExport const char *GetStringInfoName(const StringInfo *string_info)
+{
+  assert(string_info != (StringInfo *) NULL);
+  assert(string_info->signature == MagickCoreSignature);
+  return(string_info->name);
 }
 
 /*
@@ -1809,7 +1840,39 @@ MagickExport void SetStringInfoLength(StringInfo *string_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e t S t r i n g I n f o D a t u m                                       %
+%   S e t S t r i n g I n f o N a m e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetStringInfoName() sets the name associated with the string.
+%
+%  The format of the SetStringInfoName method is:
+%
+%      void SetStringInfoName(StringInfo *string_info,const char *name)
+%
+%  A description of each parameter follows:
+%
+%    o string_info: the string info.
+%
+%    o name: the name.
+%
+*/
+MagickExport void SetStringInfoName(StringInfo *string_info,const char *name)
+{
+  assert(string_info != (StringInfo *) NULL);
+  assert(string_info->signature == MagickCoreSignature);
+  assert(name != (const char *) NULL);
+  string_info->name=ConstantString(name);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t S t r i n g I n f o P a t h                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
