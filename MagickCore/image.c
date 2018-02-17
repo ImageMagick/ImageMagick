@@ -2297,8 +2297,8 @@ MagickExport MagickBooleanType ResetImagePixels(Image *image,
 %
 %    o image: the image.
 %
-%    o Alpha: the level of transparency: 0 is fully opaque and QuantumRange is
-%      fully transparent.
+%    o Alpha: the level of transparency: 0 is fully transparent and QuantumRange
+%      is fully opaque.
 %
 */
 MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
@@ -2308,6 +2308,7 @@ MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
     *image_view;
 
   MagickBooleanType
+    set_opaque,
     status;
 
   ssize_t
@@ -2317,6 +2318,8 @@ MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickCoreSignature);
+  set_opaque=(image->alpha_trait == UndefinedPixelTrait) ? MagickTrue :
+    MagickFalse;
   image->alpha_trait=BlendPixelTrait;
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
@@ -2344,6 +2347,8 @@ MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
     {
       if (GetPixelWriteMask(image,q) > (QuantumRange/2))
         SetPixelAlpha(image,alpha,q);
+      else if (set_opaque != MagickFalse)
+        SetPixelAlpha(image,OpaqueAlpha,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
