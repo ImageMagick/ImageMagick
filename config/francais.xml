@@ -1013,7 +1013,7 @@
             Échec allocation du cache pixel
           </message>
           <message name="TooManyExceptions">
-            too man exceptions
+            too many exceptions
           </message>
           <message name="TooManyObjects">
             too many objects
