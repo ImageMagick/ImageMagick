@@ -274,8 +274,6 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
           if (image->colors > GetBlobSize(image))
             ThrowReaderException(CorruptImageError,
               "InsufficientImageDataInFile");
-          if (image->colors > ((~0U)/sizeof(*image->colormap)))
-            ThrowReaderException(CorruptImageError,"ImproperImageHeader");
           if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
