@@ -1428,6 +1428,7 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
   (void) QueryColorCompliance("#0000",AllCompliance,
     &clip_mask->background_color,exception);
   clip_mask->background_color.alpha=(MagickRealType) TransparentAlpha;
+  clip_mask->background_color.alpha_trait=BlendPixelTrait;
   (void) SetImageBackgroundColor(clip_mask,exception);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"\nbegin clip-path %s",
@@ -1437,10 +1438,9 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
   (void) QueryColorCompliance("#ffffff",AllCompliance,&clone_info->fill,
     exception);
   clone_info->clip_mask=(char *) NULL;
-  status=NegateImage(clip_mask,MagickFalse,exception);
-  (void) SetImageMask(image,ReadPixelMask,clip_mask,exception);
+  status=DrawImage(clip_mask,clone_info,exception);
+  (void) SetImageMask(image,WritePixelMask,clip_mask,exception);
   clip_mask=DestroyImage(clip_mask);
-  status&=DrawImage(image,clone_info,exception);
   clone_info=DestroyDrawInfo(clone_info);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"end clip-path");
