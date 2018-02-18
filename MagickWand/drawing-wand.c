@@ -6782,7 +6782,6 @@ WandExport DrawInfo *PeekDrawingWand(const DrawingWand *wand)
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   draw_info=CloneDrawInfo((ImageInfo *) NULL,CurrentContext);
-  GetAffineMatrix(&draw_info->affine);
   (void) CloneString(&draw_info->primitive,wand->mvg);
   return(draw_info);
 }
