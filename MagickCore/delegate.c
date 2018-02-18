@@ -931,7 +931,7 @@ RestoreMSCWarning
   extent=MagickPathExtent;  /* allocated space in string */
   number=MagickFalse;  /* is last char a number? */
   for (q=interpret_text; *p!='\0';
-    number=isdigit(*p) ? MagickTrue : MagickFalse,p++)
+    number=isdigit((int) ((unsigned char) *p)) ? MagickTrue : MagickFalse,p++)
   {
     /*
       Interpret escape characters (e.g. Filename: %M).
