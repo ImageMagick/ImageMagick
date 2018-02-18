@@ -237,6 +237,7 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
       RectangleInfo
         geometry;
 
+      (void) ResetMagickMemory(&geometry,0,sizeof(geometry));
       flags=ParseAbsoluteGeometry(image_info->extract,&geometry);
       if (((flags & XValue) != 0) || ((flags & YValue) != 0))
         {
