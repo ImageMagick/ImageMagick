@@ -1921,7 +1921,7 @@ static const char *FxOperatorPrecedence(const char *expression,
       case 'E':
       case 'e':
       {
-        if ((isdigit((int) ((unsigned char) c)) != 0) &&
+        if ((isdigit(c) != 0) &&
             ((LocaleNCompare(expression,"E+",2) == 0) ||
              (LocaleNCompare(expression,"E-",2) == 0)))
           {
@@ -1971,11 +1971,11 @@ static const char *FxOperatorPrecedence(const char *expression,
         }
         default:
         {
-          if (((c != 0) && ((isdigit((int) ((unsigned char) c)) != 0) ||
-               (strchr(")",(int) ((unsigned char) c)) != (char *) NULL))) &&
+          if (((c != 0) && ((isdigit(c) != 0) ||
+               (strchr(")",c) != (char *) NULL))) &&
               (((islower((int) ((unsigned char) *expression)) != 0) ||
                (strchr("(",(int) ((unsigned char) *expression)) != (char *) NULL)) ||
-               ((isdigit((int) ((unsigned char) c)) == 0) &&
+               ((isdigit(c) == 0) &&
                 (isdigit((int) ((unsigned char) *expression)) != 0))) &&
               (strchr("xy",(int) ((unsigned char) *expression)) == (char *) NULL))
             precedence=MultiplyPrecedence;

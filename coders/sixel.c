@@ -201,8 +201,8 @@ static unsigned char *get_params(unsigned char *p, int *param, int *len)
         while (*p == ' ' || *p == '\t') {
             p++;
         }
-        if (isdigit(*p)) {
-            for (n = 0; isdigit(*p); p++) {
+        if (isdigit((int) ((unsigned char) *p))) {
+            for (n = 0; isdigit((int) ((unsigned char) *p)); p++) {
                 n = (int) ((ssize_t) n * 10 + (*p - '0'));
             }
             if (*len < 10) {
