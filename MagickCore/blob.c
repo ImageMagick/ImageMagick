@@ -1912,7 +1912,9 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,
           status=WriteImage(blob_info,image,exception);
           *length=image->blob->length;
           blob=DetachBlob(image->blob);
-          if (status == MagickFalse)
+          if (blob == (void *) NULL)
+            blob_info->blob=RelinquishMagickMemory(blob_info->blob);
+          else if (status == MagickFalse)
             blob=RelinquishMagickMemory(blob);
           else
             blob=ResizeQuantumMemory(blob,*length+1,sizeof(unsigned char));
@@ -2308,7 +2310,9 @@ MagickExport void *ImagesToBlob(const ImageInfo *image_info,Image *images,
           status=WriteImages(clone_info,images,images->filename,exception);
           *length=images->blob->length;
           blob=DetachBlob(images->blob);
-          if (status == MagickFalse)
+          if (blob == (void *) NULL)
+            clone_info->blob=RelinquishMagickMemory(clone_info->blob);
+          else if (status == MagickFalse)
             blob=RelinquishMagickMemory(blob);
           else
             blob=ResizeQuantumMemory(blob,*length+1,sizeof(unsigned char));
