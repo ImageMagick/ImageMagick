@@ -1,3 +1,6 @@
+2018-02-18  7.0.7-23 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.0-23, GIT revision 22949:7c392b26d:20180218.
+
 2018-02-09  7.0.7-23 Dirk Lemstra <dirk@lem.....org>
   * Add support for reading the HEIC image format to the Windows build.
 
