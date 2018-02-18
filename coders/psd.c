@@ -2280,7 +2280,11 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     If we are only "pinging" the image, then we're done - so return.
   */
   if (EOFBlob(image) != MagickFalse)
-    ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+    {
+      if (profile != (StringInfo *) NULL)
+        profile=DestroyStringInfo(profile);
+      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+    }
   if (image_info->ping != MagickFalse)
     {
       (void) CloseBlob(image);
