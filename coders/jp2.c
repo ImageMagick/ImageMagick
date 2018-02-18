@@ -387,8 +387,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   for (i=0; i < (ssize_t) jp2_image->numcomps; i++)
   {
     if ((jp2_image->comps[0].dx == 0) || (jp2_image->comps[0].dy == 0) ||
-        (jp2_image->comps[0].dx != jp2_image->comps[i].dx) ||
-        (jp2_image->comps[0].dy != jp2_image->comps[i].dy) ||
         (jp2_image->comps[0].prec != jp2_image->comps[i].prec) ||
         (jp2_image->comps[0].sgnd != jp2_image->comps[i].sgnd) ||
         ((image->ping == MagickFalse) && (jp2_image->comps[i].data == NULL)))
