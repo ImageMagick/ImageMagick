@@ -12099,7 +12099,7 @@ Mosaic(ref)
 #
 void
 PerceptualHash(ref)
-  Image::Magick::Q16HDRI ref = NO_INIT
+  Image::Magick::@MAGICK_ABI_SUFFIX@ ref = NO_INIT
   ALIAS:
     PerceptualHashImage = 1
     perceptualhash      = 2
