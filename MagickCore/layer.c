@@ -962,10 +962,11 @@ static Image *OptimizeLayerFrames(const Image *image,
   {
     if ((curr->columns != image->columns) || (curr->rows != image->rows))
       ThrowImageException(OptionError,"ImagesAreNotTheSameSize");
-    /*
-      FUTURE: also check that image is also fully coalesced (full page)
-      Though as long as they are the same size it should not matter.
-    */
+
+    if ((curr->page.x != 0) || (curr->page.y != 0) ||
+        (curr->page.width != image->page.width) ||
+        (curr->page.height != image->page.height))
+      ThrowImageException(OptionError,"ImagePagesAreNotCoalesced");
   }
   /*
     Allocate memory (times 2 if we allow the use of frame duplications)

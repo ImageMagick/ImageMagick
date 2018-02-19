@@ -652,6 +652,9 @@
         <message name="ImagesAreNotTheSameSize">
           images are not the same size
         </message>
+        <message name="ImagePagesAreNotCoalesced">
+          image pages are not coalesced
+        </message>
         <message name="ImageSizeMustExceedBevelWidth">
           size must exceed bevel width
         </message>
