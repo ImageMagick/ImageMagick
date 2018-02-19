@@ -1050,7 +1050,7 @@ sub testMontage {
       } else {
         # Check montage directory
         my $directory = $montage->Get('directory');
-        my $expected = join( "\n", @colors ) . "\n";
+        my $expected = join( "\xff", @colors ) . "\xff";
         if ( !defined($directory) ) {
           print "ok $test\n";
         } elsif ( $directory  ne $expected) {
