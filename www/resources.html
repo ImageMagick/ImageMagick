@@ -320,6 +320,10 @@ $MAGICK_FONT_PATH</code></pre>
     <td>Set the path at the top of ImageMagick installation directory.  This path is consulted by <var>uninstalled</var> builds of ImageMagick which do not have their location hard-coded or set by an installer.</td>
   </tr>
   <tr>
+    <td>MAGICK_LIST_LENGTH_LIMIT</td>
+    <td>Set the maximum length of an image sequence.</td>
+  </tr>
+  <tr>
     <td><a class="anchor" id="map-limit"></a>MAGICK_MAP_LIMIT</td>
     <td>Set maximum amount of memory map in bytes to allocate for the pixel cache.  When this limit is exceeded, the image pixels are cached to disk (see MAGICK_DISK_LIMIT).</td>
   </tr>
@@ -365,7 +369,7 @@ $MAGICK_FONT_PATH</code></pre>
   </tr>
 </table></div>
 
-<p>Define arguments for the <code>MAGICK_AREA_LIMIT</code>, <code>MAGICK_DISK_LIMIT</code>, <code>MAGICK_MAP_LIMIT</code>, and <code>MAGICK_MEMORY_LIMIT</code> environment variables with SI prefixes (.e.g <code>100MB</code>). <code>MAGICK_WIDTH_LIMIT</code> and <code>MAGICK_HEIGHT_LIMIT</code> accepts pixel suffixes such as MP for mega-pixels (e.g. 100MP).</p>
+<p>Define arguments for the <code>MAGICK_MEMORY_LIMIT</code>, <code>MAGICK_DISK_LIMIT</code>, and <code>MAGICK_MEMORY_LIMIT</code> environment variables with SI prefixes (.e.g <code>100MB</code>). <code>MAGICK_WIDTH_LIMIT</code>, <code>MAGICK_HEIGHT_LIMIT</code> and <code>MAGICK_AREA_LIMIT</code> accepts pixel suffixes such as MP for mega-pixels (e.g. 100MP).</p>
 
 </div>
     </div>
@@ -390,4 +394,4 @@ $MAGICK_FONT_PATH</code></pre>
   <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 31st December 2017 14:34 -->
+<!-- Magick Cache 18th February 2018 12:52 -->

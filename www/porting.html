@@ -446,6 +446,8 @@ be applied to expand the one channel into separate RGB (or other) channels.
 <dd class="col-md-8">This option now requires an argument, the image colorspace (e.g. +combine sRGB).</dd>
 <dt class="col-md-4">-gamma</dt>
 <dd class="col-md-8">Multiple gamma arguments (e.g. <code>-gamma 1,2,3</code>) are no longer supported, instead use <code>-channel</code> (e.g. <code>-channel blue -gamma 2)</code>.</dd>
+<dt class="col-md-4">-region</dt>
+<dd class="col-md-8">The draw transformations are relative to the upper left corner of the image, previously in IMv6 they were relative to the region.</dd>
 </dl>
 
 <h3>New Options</h3>
@@ -665,4 +667,4 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
   <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 31st December 2017 17:15 -->
+<!-- Magick Cache 18th February 2018 16:09 -->

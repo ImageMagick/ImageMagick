@@ -101,7 +101,7 @@
 <pre class="highlight"><code>tar xvzf ImageMagick.tar.gz
 </code></pre>
 
-<p>Next configure and compile ImageMagick:</p>
+<p>Next configure and compile ImageMagick.  Note the <a href="https://en.wikipedia.org/wiki/Pkg-config">pkg-config</a> script is required so that ImageMagick can find certain optional delegate libraries on your system.  To configure, type:</p>
 
 <pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.7</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>./configure</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>make</span></pre>
 <p>If ImageMagick configured and compiled without complaint, you are ready to install it on your system.  Administrator privileges are required to install.  To install, type</p>
@@ -132,12 +132,13 @@
 
 <p>Building ImageMagick source for Windows requires a modern version of Microsoft Visual Studio IDE.  Users have reported success with the Borland C++ compiler as well.  If you don't have a compiler you can still install a self-installing <a href="download.html">binary release</a>.</p>
 
-<p>Download <a href="https://www.imagemagick.org/download/windows/ImageMagick-windows.zip">ImageMagick-windows.zip</a> from <a href="https://www.imagemagick.org/download/windows">www.imagemagick.org</a> or a <a href="mirror.html">mirrors</a> and verify its <a href="https://www.imagemagick.org/download/windows/digest.rdf">message digest</a>.</p>
+<p>Clone the Github repo:<p>
 
-<p>You can unpack the distribution with <a href="http://www.winzip.com">WinZip</a> or type the following from any MS-DOS Command Prompt window:</p>
+<pre class="highlight"><code>git clone git@github.com:ImageMagick/ImageMagick-Windows.git ImageMagick-Windows-7</code></pre>
 
-<pre class="highlight"><code>unzip ImageMagick-windows.zip
-</code></pre>
+<p>and run <code>CloneRepositories.cmd</code>.  Alternatively, download <a href="https://www.imagemagick.org/download/windows/ImageMagick-windows.zip">ImageMagick-windows.zip</a> and verify its <a href="https://www.imagemagick.org/download/windows/digest.rdf">message digest</a>.  For the latter, you can unpack the distribution with <a href="http://www.winzip.com">WinZip</a> or type the following from any MS-DOS Command Prompt window:</p>
+
+<pre class="highlight"><code>unzip ImageMagick-windows.zip</code></pre>
 
 <p>Next, launch your Visual Studio IDE and choose <kbd>Open->Project</kbd>.  Select the configure workspace from the <kbd>ImageMagick-7.0.7/VisualMagick/configure</kbd> folder and press Open.  Choose <kbd>Build->Build Solution</kbd>
 to compile the program and on completion run the program.</p>
@@ -181,4 +182,4 @@ to compile the program and on completion run the program.</p>
   <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 31st December 2017 14:37 -->
+<!-- Magick Cache 18th February 2018 12:51 -->

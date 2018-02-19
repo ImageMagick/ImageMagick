@@ -7,12 +7,12 @@
 <head>
   <meta charset="utf-8"  />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"  />
-  <title>MagickWand, C API @ ImageMagick</title>
+  <title>MagickWand, C API: Wand Methods @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick" />
   <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves." />
   <meta name="application-url" content="https://www.imagemagick.org" />
   <meta name="generator" content="PHP" />
-  <meta name="keywords" content="magickwc, api, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
+  <meta name="keywords" content="magickwc, api:, wmethods, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
   <meta name="rating" content="GENERAL" />
   <meta name="robots" content="INDEX, FOLLOW" />
   <meta name="generator" content="ImageMagick Studio LLC" />
@@ -24,7 +24,7 @@
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="../../www/magick-wand.html" rel="canonical" />
+  <link href="magick-wand.html" rel="canonical" />
   <link href="../../images/wand.png" rel="icon" />
   <link href="../../images/wand.ico" rel="shortcut icon" />
   <link href="../assets/magick.css" rel="stylesheet" />
@@ -81,310 +81,592 @@
   <main role="main" class="container">
     <div class="magick-template">
 <div class="magick-header">
+<p class="text-center"><a href="magick-wand.html#ClearMagickWand">ClearMagickWand</a> &#8226; <a href="magick-wand.html#CloneMagickWand">CloneMagickWand</a> &#8226; <a href="magick-wand.html#DestroyMagickWand">DestroyMagickWand</a> &#8226; <a href="magick-wand.html#IsMagickWand">IsMagickWand</a> &#8226; <a href="magick-wand.html#MagickClearException">MagickClearException</a> &#8226; <a href="magick-wand.html#MagickGetException">MagickGetException</a> &#8226; <a href="magick-wand.html#MagickGetExceptionType">MagickGetExceptionType</a> &#8226; <a href="magick-wand.html#MagickGetIteratorIndex">MagickGetIteratorIndex</a> &#8226; <a href="magick-wand.html#MagickQueryConfigureOption">MagickQueryConfigureOption</a> &#8226; <a href="magick-wand.html#MagickQueryConfigureOptions">MagickQueryConfigureOptions</a> &#8226; <a href="magick-wand.html#MagickQueryFontMetrics">MagickQueryFontMetrics</a> &#8226; <a href="magick-wand.html#MagickQueryMultilineFontMetrics">MagickQueryMultilineFontMetrics</a> &#8226; <a href="magick-wand.html#MagickQueryFonts">MagickQueryFonts</a> &#8226; <a href="magick-wand.html#MagickQueryFormats">MagickQueryFormats</a> &#8226; <a href="magick-wand.html#MagickRelinquishMemory">MagickRelinquishMemory</a> &#8226; <a href="magick-wand.html#MagickResetIterator">MagickResetIterator</a> &#8226; <a href="magick-wand.html#MagickSetFirstIterator">MagickSetFirstIterator</a> &#8226; <a href="magick-wand.html#MagickSetIteratorIndex">MagickSetIteratorIndex</a> &#8226; <a href="magick-wand.html#MagickSetLastIterator">MagickSetLastIterator</a> &#8226; <a href="magick-wand.html#MagickWandGenesis">MagickWandGenesis</a> &#8226; <a href="magick-wand.html#MagickWandTerminus">MagickWandTerminus</a> &#8226; <a href="magick-wand.html#NewMagickWand">NewMagickWand</a> &#8226; <a href="magick-wand.html#NewMagickWandFromImage">NewMagickWandFromImage</a> &#8226; <a href="magick-wand.html#IsMagickWandInstantiated">IsMagickWandInstantiated</a></p>
 
-<p class="lead magick-description">The <a href="../../api/MagickWand/index.html">MagickWand API</a> is the recommended interface between the C programming language and the ImageMagick image processing libraries.  Unlike the <a href="../../www/magick-core.html">MagickCore</a> C API, MagickWand uses only a few opaque types.  Accessors are available to set or get important wand properties.  A description of the MagickWand public methods are found here:</p>
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="ClearMagickWand">ClearMagickWand</a></h2>
 
-<ul>
-  <li><a href="magick-wand.html">Magick Wand Methods</a></li>
-  <li><a href="magick-property.html">Set or Get Magick Wand Properties</a></li>
-  <li><a href="magick-image.html">Magick Wand Image Methods</a></li>
-  <li><a href="pixel-iterator.html">Pixel Iterator Methods</a></li>
-  <li><a href="pixel-wand.html">Pixel Wand Methods</a></li>
-  <li><a href="drawing-wand.html">Image Vector Drawing</a></li>
-  <li><a href="mogrify.html">Command-line Interface</a></li>
-  <li><a href="../../api/wand-view.html">Wand View Methods</a></li>
-  <li><a href="magick-deprecate.html">Deprecated Methods</a></li>
-  <li><a href="../www/exception.html">Error and Warning Codes</a></li>
-</ul>
+<p>ClearMagickWand() clears resources associated with the wand, leaving the wand blank, and ready to be used for a new set of images.</p>
 
-<p>After you write your MagickWand program, compile it like this:</p>
+<p>The format of the ClearMagickWand method is:</p>
 
-<pre class="highlight"><code>cc -o wand wand.c `pkg-config --cflags --libs MagickWand`
-</code></pre>
+<pre class="text">
+void ClearMagickWand(MagickWand *wand)
+</pre>
 
-<p>Set the <code>PKG_CONFIG_PATH</code> environment variable if ImageMagick is not in your default system path:</p>
+<p>A description of each parameter follows:</p>
 
-<pre class="highlight"><code>export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
-</code></pre>
+<dd>
+</dd>
 
-<p>Here is a example program that utilizes the MagickWand API to get you started, <a href="../source/wand.c">wand.c</a>. It reads an image, creates a thumbnail, and writes the result to disk.</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>wand</dt>
+<dd>the magick wand. </dd>
 
-<pre class="pre-scrollable"><code>#include &lt;stdio.h>
-#include &lt;stdlib.h>
-#include &lt;wand/MagickWand.h>
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="CloneMagickWand">CloneMagickWand</a></h2>
 
-int main(int argc,char **argv)
-{
-#define ThrowWandException(wand) \
-{ \
-  char \
-    *description; \
- \
-  ExceptionType \
-    severity; \
- \
-  description=MagickGetException(wand,&amp;severity); \
-  (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
-  description=(char *) MagickRelinquishMemory(description); \
-  exit(-1); \
-}
+<p>CloneMagickWand() makes an exact copy of the specified wand.</p>
 
-  MagickBooleanType
-    status;
+<p>The format of the CloneMagickWand method is:</p>
 
-  MagickWand
-    *magick_wand;
+<pre class="text">
+MagickWand *CloneMagickWand(const MagickWand *wand)
+</pre>
 
-  if (argc != 3)
-    {
-      (void) fprintf(stdout,"Usage: %s image thumbnail\n",argv[0]);
-      exit(0);
-    }
-  /*
-    Read an image.
-  */
-  MagickWandGenesis();
-  magick_wand=NewMagickWand();
-  status=MagickReadImage(magick_wand,argv[1]);
-  if (status == MagickFalse)
-    ThrowWandException(magick_wand);
-  /*
-    Turn the images into a thumbnail sequence.
-  */
-  MagickResetIterator(magick_wand);
-  while (MagickNextImage(magick_wand) != MagickFalse)
-    MagickResizeImage(magick_wand,106,80,LanczosFilter,1.0);
-  /*
-    Write the image then destroy it.
-  */
-  status=MagickWriteImages(magick_wand,argv[2],MagickTrue);
-  if (status == MagickFalse)
-    ThrowWandException(magick_wand);
-  magick_wand=DestroyMagickWand(magick_wand);
-  MagickWandTerminus();
-  return(0);
-}
-</code></pre>
+<p>A description of each parameter follows:</p>
 
-<p>Here is another program that shows one way to get and set image pixels with the MagickWand API, <a href="../source/contrast.c">contrast.c</a>. It reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk.</p>
+<dd>
+</dd>
 
-<pre class="pre-scrollable"><code>#include &lt;stdio.h>
-#include &lt;stdlib.h>
-#include &lt;math.h>
-#include &lt;wand/MagickWand.h>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>wand</dt>
+<dd>the magick wand. </dd>
 
-int main(int argc,char **argv)
-{
-#define QuantumScale  ((MagickRealType) 1.0/(MagickRealType) QuantumRange)
-#define SigmoidalContrast(x) \
-  (QuantumRange*(1.0/(1+exp(10.0*(0.5-QuantumScale*x)))-0.0066928509)*1.0092503)
-#define ThrowWandException(wand) \
-{ \
-  char \
-    *description; \
- \
-  ExceptionType \
-    severity; \
- \
-  description=MagickGetException(wand,&amp;severity); \
-  (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
-  description=(char *) MagickRelinquishMemory(description); \
-  exit(-1); \
-}
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="DestroyMagickWand">DestroyMagickWand</a></h2>
 
-  long
-    y;
+<p>DestroyMagickWand() deallocates memory associated with an MagickWand.</p>
 
-  MagickBooleanType
-    status;
+<p>The format of the DestroyMagickWand method is:</p>
 
-  MagickPixelPacket
-    pixel;
+<pre class="text">
+MagickWand *DestroyMagickWand(MagickWand *wand)
+</pre>
 
-  MagickWand
-    *contrast_wand,
-    *image_wand;
+<p>A description of each parameter follows:</p>
 
-  PixelIterator
-    *contrast_iterator,
-    *iterator;
+<dd>
+</dd>
 
-  PixelWand
-    **contrast_pixels,
-    **pixels;
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>wand</dt>
+<dd>the magick wand. </dd>
 
-  register long
-    x;
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="IsMagickWand">IsMagickWand</a></h2>
 
-  unsigned long
-    width;
+<p>IsMagickWand() returns MagickTrue if the wand is verified as a magick wand.</p>
 
-  if (argc != 3)
-    {
-      (void) fprintf(stdout,"Usage: %s image sigmoidal-image\n",argv[0]);
-      exit(0);
-    }
-  /*
-    Read an image.
-  */
-  MagickWandGenesis();
-  image_wand=NewMagickWand();
-  status=MagickReadImage(image_wand,argv[1]);
-  if (status == MagickFalse)
-    ThrowWandException(image_wand);
-  contrast_wand=CloneMagickWand(image_wand);
-  /*
-    Sigmoidal non-linearity contrast control.
-  */
-  iterator=NewPixelIterator(image_wand);
-  contrast_iterator=NewPixelIterator(contrast_wand);
-  if ((iterator == (PixelIterator *) NULL) ||
-      (contrast_iterator == (PixelIterator *) NULL))
-    ThrowWandException(image_wand);
-  for (y=0; y &lt; (long) MagickGetImageHeight(image_wand); y++)
-  {
-    pixels=PixelGetNextIteratorRow(iterator,&amp;width);
-    contrast_pixels=PixelGetNextIteratorRow(contrast_iterator,&amp;width);
-    if ((pixels == (PixelWand **) NULL) ||
-        (contrast_pixels == (PixelWand **) NULL))
-      break;
-    for (x=0; x &lt; (long) width; x++)
-    {
-      PixelGetMagickColor(pixels[x],&amp;pixel);
-      pixel.red=SigmoidalContrast(pixel.red);
-      pixel.green=SigmoidalContrast(pixel.green);
-      pixel.blue=SigmoidalContrast(pixel.blue);
-      pixel.index=SigmoidalContrast(pixel.index);
-      PixelSetMagickColor(contrast_pixels[x],&amp;pixel);
-    }
-    (void) PixelSyncIterator(contrast_iterator);
-  }
-  if (y &lt; (long) MagickGetImageHeight(image_wand))
-    ThrowWandException(image_wand);
-  contrast_iterator=DestroyPixelIterator(contrast_iterator);
-  iterator=DestroyPixelIterator(iterator);
-  image_wand=DestroyMagickWand(image_wand);
-  /*
-    Write the image then destroy it.
-  */
-  status=MagickWriteImages(contrast_wand,argv[2],MagickTrue);
-  if (status == MagickFalse)
-    ThrowWandException(image_wand);
-  contrast_wand=DestroyMagickWand(contrast_wand);
-  MagickWandTerminus();
-  return(0);
-}
-</code></pre>
-<p><a class="anchor" id="wand-view"></a>Now lets perform the same contrast enhancement while taking advantage of our dual or quad-core processing system by running the algorithm in parallel utilizing wand views.  The <a href="../source/wand/sigmoidal-contrast.c">sigmoidal-contrast.c</a> module reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk just like the previous contrast enhancement program, but now it does its work in parallel (assumes ImageMagick is built with OpenMP support).</p>
+<p>The format of the IsMagickWand method is:</p>
 
-<pre class="pre-scrollable"><code>#include &lt;stdio.h>
-#include &lt;stdlib.h>
-#include &lt;math.h>
-#include &lt;wand/MagickWand.h>
+<pre class="text">
+MagickBooleanType IsMagickWand(const MagickWand *wand)
+</pre>
 
-static MagickBooleanType SigmoidalContrast(WandView *pixel_view,
-  const ssize_t y,const int id,void *context)
-{
-#define QuantumScale  ((MagickRealType) 1.0/(MagickRealType) QuantumRange)
-#define SigmoidalContrast(x) \
-  (QuantumRange*(1.0/(1+exp(10.0*(0.5-QuantumScale*x)))-0.0066928509)*1.0092503)
+<p>A description of each parameter follows:</p>
 
-  RectangleInfo
-    extent;
+<dd>
+</dd>
 
-  MagickPixelPacket
-    pixel;
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>wand</dt>
+<dd>the magick wand. </dd>
 
-  PixelWand
-    **pixels;
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="MagickClearException">MagickClearException</a></h2>
 
-  register long
-    x;
+<p>MagickClearException() clears any exceptions associated with the wand.</p>
 
-  extent=GetWandViewExtent(contrast_view);
-  pixels=GetWandViewPixels(contrast_view);
-  for (x=0; x &lt; (long) (extent.width-extent.height); x++)
-  {
-    PixelGetMagickColor(pixels[x],&amp;pixel);
-    pixel.red=SigmoidalContrast(pixel.red);
-    pixel.green=SigmoidalContrast(pixel.green);
-    pixel.blue=SigmoidalContrast(pixel.blue);
-    pixel.index=SigmoidalContrast(pixel.index);
-    PixelSetMagickColor(contrast_pixels[x],&amp;pixel);
-  }
-  return(MagickTrue);
-}
+<p>The format of the MagickClearException method is:</p>
 
-int main(int argc,char **argv)
-{
-#define ThrowViewException(view) \
-{ \
-  description=GetWandViewException(view,&amp;severity); \
-  (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
-  description=(char *) MagickRelinquishMemory(description); \
-  exit(-1); \
-}
-#define ThrowWandException(wand) \
-{ \
-  description=MagickGetException(wand,&amp;severity); \
-  (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
-  description=(char *) MagickRelinquishMemory(description); \
-  exit(-1); \
-}
+<pre class="text">
+MagickBooleanType MagickClearException(MagickWand *wand)
+</pre>
 
-  char
-    *description;
+<p>A description of each parameter follows:</p>
 
-  ExceptionType
-    severity;
+<dd>
+</dd>
 
-  MagickBooleanType
-    status;
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>wand</dt>
+<dd>the magick wand. </dd>
 
-  MagickPixelPacket
-    pixel;
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="MagickGetException">MagickGetException</a></h2>
 
-  MagickWand
-    *contrast_wand;
+<p>MagickGetException() returns the severity, reason, and description of any error that occurs when using other methods in this API.</p>
 
-  WandView
-    *contrast_view;
+<p>The format of the MagickGetException method is:</p>
 
-  if (argc != 3)
-    {
-      (void) fprintf(stdout,"Usage: %s image sigmoidal-image\n",argv[0]);
-      exit(0);
-    }
-  /*
-    Read an image.
-  */
-  MagickWandGenesis();
-  contrast_wand=NewMagickWand();
-  status=MagickReadImage(contrast_wand,argv[1]);
-  if (status == MagickFalse)
-    ThrowWandException(contrast_wand);
-  /*
-    Sigmoidal non-linearity contrast control.
-  */
-  contrast_view=NewWandView(contrast_wand);
-  if (contrast_view == (WandView *) NULL)
-    ThrowWandException(contrast_wand);
-  status=UpdateWandViewIterator(contrast_view,SigmoidalContrast,(void *) NULL);
-  if (status == MagickFalse)
-    ThrowWandException(contrast_wand);
-  contrast_view=DestroyWandView(contrast_view);
-  /*
-    Write the image then destroy it.
-  */
-  status=MagickWriteImages(contrast_wand,argv[2],MagickTrue);
-  if (status == MagickFalse)
-    ThrowWandException(contrast_wand);
-  contrast_wand=DestroyMagickWand(contrast_wand);
-  MagickWandTerminus();
-  return(0);
-}
-</code></pre>
-<p><a href="../MagickWand/index.html">MagickWand Examples in C</a> illustrates how to use the ImageMagick MagickWand API. Each example is presented as a C function, complete with headers, so that it can be copied to a file and then included in your own C project.</p>
+<pre class="text">
+char *MagickGetException(const MagickWand *wand,ExceptionType *severity)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>wand</dt>
+<dd>the magick wand. </dd>
+
+<dd> </dd>
+<dt>severity</dt>
+<dd>the severity of the error is returned here. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="MagickGetExceptionType">MagickGetExceptionType</a></h2>
+
+<p>MagickGetExceptionType() returns the exception type associated with the wand.  If no exception has occurred, UndefinedExceptionType is returned.</p>
+
+<p>The format of the MagickGetExceptionType method is:</p>
+
+<pre class="text">
+ExceptionType MagickGetExceptionType(const MagickWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>wand</dt>
+<dd>the magick wand. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="MagickGetIteratorIndex">MagickGetIteratorIndex</a></h2>
+
+<p>MagickGetIteratorIndex() returns the position of the iterator in the image list.</p>
+
+<p>The format of the MagickGetIteratorIndex method is:</p>
+
+<pre class="text">
+ssize_t MagickGetIteratorIndex(MagickWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>wand</dt>
+<dd>the magick wand. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="MagickQueryConfigureOption">MagickQueryConfigureOption</a></h2>
+
+<p>MagickQueryConfigureOption() returns the value associated with the specified configure option.</p>
+
+<p>The format of the MagickQueryConfigureOption function is:</p>
+
+<pre class="text">
+char *MagickQueryConfigureOption(const char *option)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>option</dt>
+<dd>the option name. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="MagickQueryConfigureOptions">MagickQueryConfigureOptions</a></h2>
+
+<p>MagickQueryConfigureOptions() returns any configure options that match the specified pattern (e.g.  "*" for all).  Options include NAME, VERSION, LIB_VERSION, etc.</p>
+
+<p>The format of the MagickQueryConfigureOptions function is:</p>
+
+<pre class="text">
+char **MagickQueryConfigureOptions(const char *pattern,
+  size_t *number_options)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>pattern</dt>
+<dd>Specifies a pointer to a text string containing a pattern. </dd>
+
+<dd> </dd>
+<dt>number_options</dt>
+<dd> Returns the number of configure options in the list. </dd>
+
+<dd> </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="MagickQueryFontMetrics">MagickQueryFontMetrics</a></h2>
+
+<p>MagickQueryFontMetrics() returns a 13 element array representing the following font metrics:</p>
+
+<pre class="text">
+    Element Description
+    -------------------------------------------------
+    0 character width
+    1 character height
+    2 ascender
+    3 descender
+    4 text width
+    5 text height
+    6 maximum horizontal advance
+    7 bounding box: x1
+    8 bounding box: y1
+    9 bounding box: x2
+   10 bounding box: y2
+   11 origin: x
+   12 origin: y
+</pre>
+
+<p>The format of the MagickQueryFontMetrics method is:</p>
+
+<pre class="text">
+double *MagickQueryFontMetrics(MagickWand *wand,
+  const DrawingWand *drawing_wand,const char *text)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>wand</dt>
+<dd>the Magick wand. </dd>
+
+<dd> </dd>
+<dt>drawing_wand</dt>
+<dd>the drawing wand. </dd>
+
+<dd> </dd>
+<dt>text</dt>
+<dd>the text. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="MagickQueryMultilineFontMetrics">MagickQueryMultilineFontMetrics</a></h2>
+
+<p>MagickQueryMultilineFontMetrics() returns a 13 element array representing the following font metrics:</p>
+
+<pre class="text">
+    Element Description
+    -------------------------------------------------
+    0 character width
+    1 character height
+    2 ascender
+    3 descender
+    4 text width
+    5 text height
+    6 maximum horizontal advance
+    7 bounding box: x1
+    8 bounding box: y1
+    9 bounding box: x2
+   10 bounding box: y2
+   11 origin: x
+   12 origin: y
+</pre>
+
+<p>This method is like MagickQueryFontMetrics() but it returns the maximum text width and height for multiple lines of text.</p>
+
+<p>The format of the MagickQueryFontMetrics method is:</p>
+
+<pre class="text">
+double *MagickQueryMultilineFontMetrics(MagickWand *wand,
+  const DrawingWand *drawing_wand,const char *text)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>wand</dt>
+<dd>the Magick wand. </dd>
+
+<dd> </dd>
+<dt>drawing_wand</dt>
+<dd>the drawing wand. </dd>
+
+<dd> </dd>
+<dt>text</dt>
+<dd>the text. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="MagickQueryFonts">MagickQueryFonts</a></h2>
+
+<p>MagickQueryFonts() returns any font that match the specified pattern (e.g. "*" for all).</p>
+
+<p>The format of the MagickQueryFonts function is:</p>
+
+<pre class="text">
+char **MagickQueryFonts(const char *pattern,size_t *number_fonts)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>pattern</dt>
+<dd>Specifies a pointer to a text string containing a pattern. </dd>
+
+<dd> </dd>
+<dt>number_fonts</dt>
+<dd> Returns the number of fonts in the list. </dd>
+
+<dd> </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="MagickQueryFormats">MagickQueryFormats</a></h2>
+
+<p>MagickQueryFormats() returns any image formats that match the specified pattern (e.g.  "*" for all).</p>
+
+<p>The format of the MagickQueryFormats function is:</p>
+
+<pre class="text">
+char **MagickQueryFormats(const char *pattern,size_t *number_formats)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>pattern</dt>
+<dd>Specifies a pointer to a text string containing a pattern. </dd>
+
+<dd> </dd>
+<dt>number_formats</dt>
+<dd> This integer returns the number of image formats in the list. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="MagickRelinquishMemory">MagickRelinquishMemory</a></h2>
+
+<p>MagickRelinquishMemory() relinquishes memory resources returned by such methods as MagickIdentifyImage(), MagickGetException(), etc.</p>
+
+<p>The format of the MagickRelinquishMemory method is:</p>
+
+<pre class="text">
+void *MagickRelinquishMemory(void *resource)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>resource</dt>
+<dd>Relinquish the memory associated with this resource. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="MagickResetIterator">MagickResetIterator</a></h2>
+
+<p>MagickResetIterator() resets the wand iterator.</p>
+
+<p>It is typically used either before iterating though images, or before calling specific functions such as  MagickAppendImages() to append all images together.</p>
+
+<p>Afterward you can use MagickNextImage() to iterate over all the images in a wand container, starting with the first image.</p>
+
+<p>Using this before MagickAddImages() or MagickReadImages() will cause new images to be inserted between the first and second image.</p>
+
+<p>The format of the MagickResetIterator method is:</p>
+
+<pre class="text">
+void MagickResetIterator(MagickWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>wand</dt>
+<dd>the magick wand. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="MagickSetFirstIterator">MagickSetFirstIterator</a></h2>
+
+<p>MagickSetFirstIterator() sets the wand iterator to the first image.</p>
+
+<p>After using any images added to the wand using MagickAddImage() or MagickReadImage() will be prepended before any image in the wand.</p>
+
+<p>Also the current image has been set to the first image (if any) in the Magick Wand.  Using MagickNextImage() will then set teh current image to the second image in the list (if present).</p>
+
+<p>This operation is similar to MagickResetIterator() but differs in how MagickAddImage(), MagickReadImage(), and MagickNextImage() behaves afterward.</p>
+
+<p>The format of the MagickSetFirstIterator method is:</p>
+
+<pre class="text">
+void MagickSetFirstIterator(MagickWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>wand</dt>
+<dd>the magick wand. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="MagickSetIteratorIndex">MagickSetIteratorIndex</a></h2>
+
+<p>MagickSetIteratorIndex() set the iterator to the given position in the image list specified with the index parameter.  A zero index will set the first image as current, and so on.  Negative indexes can be used to specify an image relative to the end of the images in the wand, with -1 being the last image in the wand.</p>
+
+<p>If the index is invalid (range too large for number of images in wand) the function will return MagickFalse, but no 'exception' will be raised, as it is not actually an error.  In that case the current image will not change.</p>
+
+<p>After using any images added to the wand using MagickAddImage() or MagickReadImage() will be added after the image indexed, regardless of if a zero (first image in list) or negative index (from end) is used.</p>
+
+<p>Jumping to index 0 is similar to MagickResetIterator() but differs in how MagickNextImage() behaves afterward.</p>
+
+<p>The format of the MagickSetIteratorIndex method is:</p>
+
+<pre class="text">
+MagickBooleanType MagickSetIteratorIndex(MagickWand *wand,
+  const ssize_t index)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>wand</dt>
+<dd>the magick wand. </dd>
+
+<dd> </dd>
+<dt>index</dt>
+<dd>the scene number. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="MagickSetLastIterator">MagickSetLastIterator</a></h2>
+
+<p>MagickSetLastIterator() sets the wand iterator to the last image.</p>
+
+<p>The last image is actually the current image, and the next use of MagickPreviousImage() will not change this allowing this function to be used to iterate over the images in the reverse direction. In this sense it is more like  MagickResetIterator() than MagickSetFirstIterator().</p>
+
+<p>Typically this function is used before MagickAddImage(), MagickReadImage() functions to ensure new images are appended to the very end of wand's image list.</p>
+
+<p>The format of the MagickSetLastIterator method is:</p>
+
+<pre class="text">
+void MagickSetLastIterator(MagickWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>wand</dt>
+<dd>the magick wand. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="MagickWandGenesis">MagickWandGenesis</a></h2>
+
+<p>MagickWandGenesis() initializes the MagickWand environment.</p>
+
+<p>The format of the MagickWandGenesis method is:</p>
+
+<pre class="text">
+void MagickWandGenesis(void)
+</pre>
+
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="MagickWandTerminus">MagickWandTerminus</a></h2>
+
+<p>MagickWandTerminus() terminates the MagickWand environment.</p>
+
+<p>The format of the MaickWandTerminus method is:</p>
+
+<pre class="text">
+void MagickWandTerminus(void)
+</pre>
+
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="NewMagickWand">NewMagickWand</a></h2>
+
+<p>NewMagickWand() returns a wand required for all other methods in the API. A fatal exception is thrown if there is not enough memory to allocate the wand.   Use DestroyMagickWand() to dispose of the wand when it is no longer needed.</p>
+
+<p>The format of the NewMagickWand method is:</p>
+
+<pre class="text">
+MagickWand *NewMagickWand(void)
+</pre>
+
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="NewMagickWandFromImage">NewMagickWandFromImage</a></h2>
+
+<p>NewMagickWandFromImage() returns a wand with an image.</p>
+
+<p>The format of the NewMagickWandFromImage method is:</p>
+
+<pre class="text">
+MagickWand *NewMagickWandFromImage(const Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickWand/magick-wand_8c.html" id="IsMagickWandInstantiated">IsMagickWandInstantiated</a></h2>
+
+<p>IsMagickWandInstantiated() returns MagickTrue if the ImageMagick environment is currently instantiated--  that is, MagickWandGenesis() has been called but MagickWandTerminus() has not.</p>
+
+<p>The format of the IsMagickWandInstantiated method is:</p>
+
+<pre class="text">
+MagickBooleanType IsMagickWandInstantiated(void)
+</pre>
+
 </div>
     </div>
   </main><!-- /.container -->
@@ -408,4 +690,4 @@ int main(int argc,char **argv)
   <script>window.jQuery || document.write('<script src="../assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 31st December 2017 15:14 -->
+<!-- Magick Cache 14th February 2018 09:25 -->

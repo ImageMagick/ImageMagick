@@ -1865,12 +1865,6 @@ $width = $image-&gt;[3]-&gt;Get('columns');
   </tr>
 
   <tr>
-    <td>magick</td>
-    <td><i>string</i></td>
-    <td>get the image format tag</td>
-  </tr>
-
-  <tr>
     <td>mean-error</td>
     <td><i>double</i></td>
     <td>the normalized mean error per pixel computed with methods Compare() or Quantize()</td>
@@ -2310,11 +2304,6 @@ $image-&gt;BlobToImage(@blob);
 <pre class="highlight"><code>@features = $image-&gt;Features(1);
 </code></pre>
 
-<p>Finally, the Transform() method accepts a fully-qualified geometry specification for cropping or resizing one or more images.  For example,</p>
-
-<pre class="highlight"><code>$p = $images-&gt;Transform(crop=>'100x100+10+60');
-</code></pre>
-
 <p>The Flatten() method flattens a set of images and returns it. For example,</p>
 
 <pre class="highlight"><code>$p = $images-&gt;Flatten(background=&gt;'none');
@@ -2354,6 +2343,10 @@ $image-&gt;Mogrify('crop', '340x256+0+0');
 
 <pre class="highlight"><code>$image-&gt;MogrifyRegion('100x100+40+50', 'modulate', brightness=&gt;50);
 </code></pre>
+
+<p>PerceptualHash() maps visually identical images to the same or similar hash-- useful in image retrieval, authentication, indexing, or copy detection as well as digital watermarking.  For each channel and for the sRGB and the HCLp colorspaces, 7 hash values are returned  For an sRGB images, for example, expect 42 perceptual hashes.</p>
+
+<pre class="highlight"><code>@phash = $image-&gt;PerceptualHash();</code></pre>
 
 <p>Ping() is a convenience method that returns information about an image without having to read the image into memory. It returns the width, height, file size in bytes, and the file format of the image. You can specify more than one filename but only one filehandle:</p>
 
@@ -2404,8 +2397,8 @@ $preview-&gt;Display();
 <p>Call QueryColor() with no parameters to return a list of known colors names or specify one or more color names to get these attributes: red, green, blue, and opacity value.</p>
 
 <pre class="highlight"><code>@colors = $image-&gt;QueryColor();
-($red, $green, $blue, $opacity) = $image-&gt;QueryColor('cyan');
-($red, $green, $blue, $opacity) = $image-&gt;QueryColor('#716bae');
+($red, $green, $blue) = $image-&gt;QueryColor('cyan');
+($red, $green, $blue, $alpha) = $image-&gt;QueryColor('#716baeff');
 </code></pre>
 
 <p>QueryColorname() accepts a color value and returns its respective name or hex value;</p>
@@ -2574,4 +2567,4 @@ XServerWarning
   <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 31st December 2017 16:09 -->
+<!-- Magick Cache 18th February 2018 13:09 -->

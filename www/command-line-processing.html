@@ -94,7 +94,7 @@
   \( -clone 0 -shade 110x50 -normalize -channel BG -fx 0 +channel -matte \) \
   -delete 0 +swap  -compose Multiply -composite  button.gif");</code></pre>
 
-<p class="bg-info">This example command is long enough that the command must be written across several lines, so we formatted it for clarity by inserting backslashes (<code>\</code>). The backslash is the Unix <var>line-continuation</var> character. In the Windows shell, use a carat character (<code>^</code>) for line-continuation. We use the Unix style on these web pages, as above. Sometimes, however, the lines are wrapped by your browser if the browser window is small enough, but the command-lines, shown in white, are still intended to be typed as one line. Line continuation characters need not be entered. The <var>parentheses</var> that are <var>escaped</var> above using the backslash are not escaped in Windows. There are some other differences between Windows and Unix (involving quotation marks, for instance), but we'll discuss some of those issues later, as they arise. </p>
+<p class="text-info">This example command is long enough that the command must be written across several lines, so we formatted it for clarity by inserting backslashes (<code>\</code>). The backslash is the Unix <var>line-continuation</var> character. In the Windows shell, use a carat character (<code>^</code>) for line-continuation. We use the Unix style on these web pages, as above. Sometimes, however, the lines are wrapped by your browser if the browser window is small enough, but the command-lines, shown in white, are still intended to be typed as one line. Line continuation characters need not be entered. The <var>parentheses</var> that are <var>escaped</var> above using the backslash are not escaped in Windows. There are some other differences between Windows and Unix (involving quotation marks, for instance), but we'll discuss some of those issues later, as they arise. </p>
 
 <p>Without knowing much about the ImageMagick command-line, you can probably surmise that the first command above converts an image in the JPEG format to one in the PNG format.  However, very few may realize the second, more complex command, gives a flat two-dimensional label a three-dimensional look with rich textures and simulated depth:</p>
 
@@ -229,7 +229,7 @@ so we explicitly set one:
 
 <pre class="highlight"><code>magick 'images.gif[0]' image.png</code></pre>
 
-<p class="bg-info">Unix shells generally interpret brackets so we enclosed the filename in quotes above.
+<p class="text-info">Unix shells generally interpret brackets so we enclosed the filename in quotes above.
 In a Windows command shell the brackets are not interpreted but using quotes doesn't hurt. However, in most cases the roles of single-quotes and double-quotes are reversed with respect to Unix and Windows, so Windows users should usually try double-quotes where we display single-quotes, and vice versa.
 </p>
 
@@ -462,6 +462,10 @@ setting for more specifics.</p>
   <tr>
     <td><var>area</var>@</td>
     <td>Resize image to have specified area in pixels. Aspect ratio is preserved.</td>
+  <tr>
+    <td><var>x</var>:<var>y</var>~</td>
+    <td>Here x and y denotes an aspect ratio (e.g. 3:2 = 1.5).</td>
+  </tr>
   </tr>
   <tr>
     <td>{<var>size</var>}{<var>offset</var>}</td>
@@ -515,7 +519,7 @@ magick logo: -resize '100x200&lt;' wiz4.png</code></pre>
 
 <pre class="highlight"><code>magick logo: -resize '10000@' wiz10000.png</code></pre>
 
-<p class="bg-info">In all the examples above and below, we have enclosed the <var>geometry</var> arguments  within quotation marks. Doing so is optional in many cases, but not always. We <var>must</var> enclose the geometry specifications in quotation marks when using <code>&lt;</code> or <code>&gt;</code> to prevent these characters from being interpreted by the shell as <var>file redirection</var>. On Windows systems, the carat <code>^</code>  needs to be within quotes, else it is ignored. To be safe, one should probably maintain a habit of enclosing all <var>geometry</var> arguments in quotes, as we have here.
+<p class="text-info">In all the examples above and below, we have enclosed the <var>geometry</var> arguments  within quotation marks. Doing so is optional in many cases, but not always. We <var>must</var> enclose the geometry specifications in quotation marks when using <code>&lt;</code> or <code>&gt;</code> to prevent these characters from being interpreted by the shell as <var>file redirection</var>. On Windows systems, the carat <code>^</code>  needs to be within quotes, else it is ignored. To be safe, one should probably maintain a habit of enclosing all <var>geometry</var> arguments in quotes, as we have here.
 </p>
 
 <h4>Offsets in geometry</h4>
@@ -543,7 +547,7 @@ magick logo: -gravity center -region '100x200-10+20' -negate wizNeg3.png</code><
 <pre class="highlight"><code>magick wand.gif \( wizard.gif -rotate 30 \) +append images.gif</code></pre>
 
 
-<p class="bg-info">Notice again that the  parentheses are <var>escaped</var> by preceding them with
+<p class="text-info">Notice again that the  parentheses are <var>escaped</var> by preceding them with
 backslashes.  This is required under Unix, where parentheses are special
 <var>shell</var> characters.  The backslash tells the shell not to interpret
 these characters, but to pass them directly to the command being executed. Do
@@ -635,4 +639,4 @@ image-2.jpg</pre>
   <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 31st December 2017 14:36 -->
+<!-- Magick Cache 18th February 2018 12:54 -->

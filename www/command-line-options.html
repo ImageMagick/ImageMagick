@@ -1823,6 +1823,12 @@ available:</p>
   </tr>
 
   <tr>
+    <td>bmp:subtype=<var>RGB555|RGB565|ARGB4444|ARGB1555</var></td>
+    <td>BMP channel depth subtypes. Only support in BMP (BMP4). BMP3 and BMP2 do not 
+    contain header fields to support these options.</td>
+  </tr>
+
+  <tr>
     <td>colorspace:auto-grayscale=<var>on|off</var></td>
     <td>prevent automatic conversion to grayscale inside coders that support
     grayscale. This should be accompanied by -type truecolor. PNG and TIF do
@@ -2326,6 +2332,12 @@ available:</p>
   </tr>
 
   <tr>
+    <td>png:ignore-crc[=<var>true</var>]</td>
+     <td>When you know your image has no CRC or ADLER32 errors, this can speed up 
+     decoding. It is also helpful in debugging bug reports from "fuzzers"</td>
+  </tr>
+
+  <tr>
     <td>png:preserve-colormap[=<var>true</var>]</td>
      <td>Use the existing image->colormap. Normally the PNG encoder will
     try to optimize the palette, eliminating unused entries and putting
@@ -2502,7 +2514,7 @@ available:</p>
 
   <tr>
     <td>txt:compliance=<var>css</var></td>
-    <td> </td>
+    <td>The first argument of a hsl() color is integer, not percentage</td>
   </tr>
 
   <tr>
@@ -2632,7 +2644,7 @@ or CMYK, or to change the depth of any image after it has been read.</p>
   <h3><a class="anchor" id="direction"></a>-direction <var>type</var></h3>
 </div>
 
-<p class="magick-description">render text right-to-left or left-to-right.</p>
+<p class="magick-description">render text right-to-left or left-to-right.  Requires the <a href="https://github.com/HOST-Oman/libraqm">RAQM</a> delegate library and <a href="https://en.wikipedia.org/wiki/Complex_text_layout">complex text layout</a>.</p>
 
 <div style="margin: auto;">
   <h3><a class="anchor" id="displace"></a>-displace <var>horizontal-scale</var>{%}{!}<br />-displace <var>horizontal-scale</var>x<var>vertical-scale</var>{%}{!}</h3>
@@ -3354,10 +3366,7 @@ magick!</code> for an image titled <code>bird.miff</code>. </p>
 to annotate an image with text.</p>
 
 <p>The <code>rotate</code> primitive rotates subsequent shape primitives and
-text primitives about the origin of the main image. If the <a
-href="command-line-options.html#region">-region</a> option precedes the <a href="command-line-options.html#draw">-draw</a>
-option, the origin for transformations is the upper left corner of the
-region.</p>
+text primitives about the origin of the main image.</p>
 
 <p>The <code>translate</code> primitive translates subsequent shape and text
 primitives.</p>
@@ -8062,4 +8071,4 @@ but with strict boolean masking. </p>
   <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 31st December 2017 14:35 -->
+<!-- Magick Cache 18th February 2018 12:51 -->
