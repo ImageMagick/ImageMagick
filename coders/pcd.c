@@ -614,6 +614,12 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         luma=(unsigned char *) RelinquishMagickMemory(luma);
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
+  (void) ResetMagickMemory(chroma1,0,(image->columns+1UL)*image->rows*
+    10*sizeof(*chroma1));
+  (void) ResetMagickMemory(chroma2,0,(image->columns+1UL)*image->rows*
+    10*sizeof(*chroma2));
+  (void) ResetMagickMemory(luma,0,(image->columns+1UL)*image->rows*
+    10*sizeof(*luma));
   /*
     Advance to image data.
   */
