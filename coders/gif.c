@@ -1261,25 +1261,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     meta_image->scene=image->scene;
     (void) CloneImageProperties(image,meta_image);
     DestroyImageProperties(meta_image);
-    if (profiles != (LinkedListInfo *) NULL)
-      {
-        StringInfo
-          *profile;
-
-        /*
-          Set image profiles.
-        */
-        ResetLinkedListIterator(profiles);
-        profile=(StringInfo *) GetNextValueInLinkedList(profiles);
-        while (profile != (StringInfo *) NULL)
-        {
-          (void) SetImageProfile(image,GetStringInfoName(profile),profile,
-            exception);
-          profile=(StringInfo *) GetNextValueInLinkedList(profiles);
-        }
-      }
-    if (profiles != (LinkedListInfo *) NULL)
-      profiles=DestroyLinkedList(profiles,DestroyGIFProfile);
     image->storage_class=PseudoClass;
     image->compression=LZWCompression;
     image->columns=ReadBlobLSBShort(image);
@@ -1382,6 +1363,24 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       status=DecodeImage(image,opacity,exception);
     if ((image_info->ping == MagickFalse) && (status == MagickFalse))
       ThrowGIFException(CorruptImageError,"CorruptImage");
+    if (profiles != (LinkedListInfo *) NULL)
+      {
+        StringInfo
+          *profile;
+
+        /*
+          Set image profiles.
+        */
+        ResetLinkedListIterator(profiles);
+        profile=(StringInfo *) GetNextValueInLinkedList(profiles);
+        while (profile != (StringInfo *) NULL)
+        {
+          (void) SetImageProfile(image,GetStringInfoName(profile),profile,
+            exception);
+          profile=(StringInfo *) GetNextValueInLinkedList(profiles);
+        }
+        profiles=DestroyLinkedList(profiles,DestroyGIFProfile);
+      }
     duration+=image->delay*image->iterations;
     if (image_info->number_scenes != 0)
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
