@@ -1,3 +1,8 @@
+2018-02-19  7.0.7-24 Cristy  <quetzlzacatenango@image...>
+  * Do not refer to page in OptimizeLayerFrames (reference
+    https://github.com/ImageMagick/ImageMagick/pull/987).
+  * PerlMagick unit tests pass again.
+
 2018-02-18  7.0.7-23 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.0-23, GIT revision 22969:c6b3a22b0:20180218.
 
