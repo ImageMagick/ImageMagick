@@ -649,6 +649,9 @@
         <message name="ImagesAreNotTheSameSize">
           images diffèrent par la taille
         </message>
+        <message name="ImagePagesAreNotCoalesced">
+          image pages are not coalesced
+        </message>
         <message name="ImageSizeMustExceedBevelWidth">
           la taille doit être supérieure à la largeur de la facette
         </message>
