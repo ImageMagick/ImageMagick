@@ -831,6 +831,15 @@ static void SVGStartElement(void *context,const xmlChar *name,
   *id='\0';
   *token='\0';
   value=(const char *) NULL;
+  if ((LocaleCompare((char *) name,"image") == 0) ||
+      (LocaleCompare((char *) name,"pattern") == 0) ||
+      (LocaleCompare((char *) name,"rect") == 0) ||
+      (LocaleCompare((char *) name,"text") == 0) ||
+      (LocaleCompare((char *) name,"use") == 0))
+    {
+      svg_info->bounds.x=0.0;
+      svg_info->bounds.y=0.0;
+    }
   if (attributes != (const xmlChar **) NULL)
     for (i=0; (attributes[i] != (const xmlChar *) NULL); i+=2)
     {
@@ -920,8 +929,9 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"x") == 0)
             {
-              svg_info->bounds.x=GetUserSpaceCoordinateValue(svg_info,1,value)-
-                svg_info->center.x;
+              if (LocaleCompare((char *) name,"tspan") != 0)
+                svg_info->bounds.x=GetUserSpaceCoordinateValue(svg_info,1,value)-
+                  svg_info->center.x;
               break;
             }
           if (LocaleCompare(keyword,"x1") == 0)
@@ -943,20 +953,21 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"y") == 0)
             {
-              svg_info->bounds.y=GetUserSpaceCoordinateValue(svg_info,-1,value)-
-                svg_info->center.y;
+              if (LocaleCompare((char *) name,"tspan") != 0)
+                svg_info->bounds.y=GetUserSpaceCoordinateValue(svg_info,-1,
+                  value)-svg_info->center.y;
               break;
             }
           if (LocaleCompare(keyword,"y1") == 0)
             {
-              svg_info->segment.y1=
-                GetUserSpaceCoordinateValue(svg_info,-1,value);
+              svg_info->segment.y1=GetUserSpaceCoordinateValue(svg_info,-1,
+                value);
               break;
             }
           if (LocaleCompare(keyword,"y2") == 0)
             {
-              svg_info->segment.y2=
-                GetUserSpaceCoordinateValue(svg_info,-1,value);
+              svg_info->segment.y2=GetUserSpaceCoordinateValue(svg_info,-1,
+                value);
               break;
             }
           break;
@@ -1101,6 +1112,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
       if (LocaleCompare((const char *) name,"svg") == 0)
         {
           (void) FormatLocaleFile(svg_info->file,"push graphic-context\n");
+          (void) FormatLocaleFile(svg_info->file,"fill 'black'\n");
+          (void) FormatLocaleFile(svg_info->file,"fill-opacity 1\n");
+          (void) FormatLocaleFile(svg_info->file,"stroke 'none'\n");
+          (void) FormatLocaleFile(svg_info->file,"stroke-width 1\n");
+          (void) FormatLocaleFile(svg_info->file,"stroke-opacity 1\n");
           break;
         }
       break;
