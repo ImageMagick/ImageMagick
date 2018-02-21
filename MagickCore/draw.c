@@ -5534,12 +5534,12 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
     number_coordinates,
     z_count;
 
+  status=MagickTrue;
   attribute=0;
   number_coordinates=0;
   z_count=0;
   primitive_type=primitive_info->primitive;
   q=primitive_info;
-  status=MagickTrue;
   for (p=path; *p != '\0'; )
   {
     if (status == MagickFalse)
