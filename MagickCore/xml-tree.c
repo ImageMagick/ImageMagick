@@ -2033,7 +2033,8 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
         p+=strcspn(p,XMLWhitespace "/>");
         while (isspace((int) ((unsigned char) *p)) != 0)
           *p++='\0';
-        if (ignore_depth == 0)
+        if (((isalpha((int) ((unsigned char) *p)) != 0) || (*p == '_')) &&
+            (ignore_depth == 0))
           {
             if ((*p != '\0') && (*p != '/') && (*p != '>'))
               {
