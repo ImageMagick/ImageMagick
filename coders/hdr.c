@@ -403,6 +403,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  (void) ResetMagickMemory(pixels,0,4*image->columns*sizeof(*pixels));
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     if (image->compression != RLECompression)

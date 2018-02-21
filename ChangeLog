@@ -2,6 +2,8 @@
   * Do not refer to page in OptimizeLayerFrames (reference
     https://github.com/ImageMagick/ImageMagick/pull/987).
   * PerlMagick unit tests pass again.
+  * Fixed numerous use of uninitialized values, integer overflow,
+    memory exceeded, and timeouts (credit to OSS Fuzz).
 
 2018-02-18  7.0.7-23 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.0-23, GIT revision 22969:c6b3a22b0:20180218.
