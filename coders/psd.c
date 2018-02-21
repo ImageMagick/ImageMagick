@@ -2312,6 +2312,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           return((Image *) NULL);
         }
     }
+  if (profile != (StringInfo *) NULL)
+    {
+      (void) SetImageProfile(image,GetStringInfoName(profile),profile,
+        exception);
+      profile=DestroyStringInfo(profile);
+    }
   if (has_merged_image == MagickFalse)
     {
       Image
@@ -2324,12 +2330,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->background_color.alpha_trait=BlendPixelTrait;
       merged=MergeImageLayers(image,FlattenLayer,exception);
       ReplaceImageInList(&image,merged);
-    }
-  if (profile != (StringInfo *) NULL)
-    {
-      (void) SetImageProfile(image,GetStringInfoName(profile),profile,
-        exception);
-      profile=DestroyStringInfo(profile);
     }
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
