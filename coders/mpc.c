@@ -220,6 +220,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Decode image header;  header terminates one character beyond a ':'.
     */
+    SetGeometryInfo(&geometry_info);
     profiles=(LinkedListInfo *) NULL;
     length=MagickPathExtent;
     options=AcquireString((char *) NULL);

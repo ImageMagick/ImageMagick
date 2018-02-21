@@ -517,6 +517,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     /*
       Decode image header;  header terminates one character beyond a ':'.
     */
+    SetGeometryInfo(&geometry_info);
     length=MagickPathExtent;
     options=AcquireString((char *) NULL);
     quantum_format=UndefinedQuantumFormat;
