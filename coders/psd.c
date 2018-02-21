@@ -2313,7 +2313,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
   if (profile != (StringInfo *) NULL)
-    {
+    { 
       (void) SetImageProfile(image,GetStringInfoName(profile),profile,
         exception);
       profile=DestroyStringInfo(profile);
