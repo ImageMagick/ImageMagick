@@ -3825,7 +3825,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (tag == 0xFFFEE0DD)
           break; /* sequence delimiter tag */
         if (tag != 0xFFFEE000)
-          ThrowDCMException(CorruptImageError,"ImproperImageHeader");
+          {
+            read_info=DestroyImageInfo(read_info);
+            ThrowDCMException(CorruptImageError,"ImproperImageHeader");
+          }
         file=(FILE *) NULL;
         unique_file=AcquireUniqueFileResource(filename);
         if (unique_file != -1)
