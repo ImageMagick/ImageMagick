@@ -79,6 +79,7 @@ static struct
     (*unregister_module)(void);
 } MagickModules[] =
 {
+#if !defined(MAGICKCORE_MODULES_SUPPORT)
   { "AAI", MagickFalse, RegisterAAIImage, UnregisterAAIImage },
   { "ART", MagickFalse, RegisterARTImage, UnregisterARTImage },
   { "AVS", MagickFalse, RegisterAVSImage, UnregisterAVSImage },
@@ -245,6 +246,7 @@ static struct
 #endif
   { "YCBCR", MagickFalse, RegisterYCBCRImage, UnregisterYCBCRImage },
   { "YUV", MagickFalse, RegisterYUVImage, UnregisterYUVImage },
+#endif
   { (const char *) NULL, MagickFalse, RegisterUndefinedImage, UnregisterUndefinedImage }
 };
 
