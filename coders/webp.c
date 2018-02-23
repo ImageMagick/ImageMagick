@@ -187,7 +187,7 @@ static MagickBooleanType IsWEBPImageLossless(const unsigned char *stream,
     Read extended header.
   */
   offset=RIFF_HEADER_SIZE+TAG_SIZE+CHUNK_SIZE_BYTES+VP8X_CHUNK_SIZE;
-  while (offset <= (ssize_t) length)
+  while (offset <= (ssize_t) (length-TAG_SIZE))
   {
     uint32_t
       chunk_size,
