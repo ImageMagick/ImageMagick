@@ -374,7 +374,6 @@ rpm:	dist
 	$(MKDIR_P) $(RPMDIR)/BUILD
 	$(MKDIR_P) $(RPMDIR)/RPMS
 	$(RPM) --define="_sourcedir `pwd`" --define="_rpmdir `pwd`/$(RPMDIR)/RPMS" --define="_builddir `pwd`/$(RPMDIR)/BUILD" --nodeps -bb ImageMagick.spec
-	rm -rf rpmbuild
 	@echo ==============================================================
 	@echo $(DIST_ARCHIVE_RPM) is ready for distribution.
 	@echo ==============================================================
