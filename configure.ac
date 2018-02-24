@@ -30,7 +30,7 @@ m4_define([magick_micro_version], [7])
 m4_define([magick_patchlevel_version], [24])
 m4_define([magick_version],
           [magick_major_version.magick_minor_version.magick_micro_version-magick_patchlevel_version])
-m4_define([magick_git_revision], esyscmd([sh -c "(gitversion.sh .) | tr -d '\n'"]))
+m4_define([magick_git_revision], esyscmd([sh -c "(gitversion.sh .) | awk '{ print \$1 }' | tr -d '\n'"]))
 m4_define([magick_tar_name],[ImageMagick])
 
 # ==============================================================================
@@ -3929,6 +3929,11 @@ if test "${ghostscript_font_dir}x" != 'x'; then
     result_ghostscript_font_dir=$ghostscript_font_dir
 fi
 
+result_urw_base35_font_dir='none'
+if test "${urw_base35_font_dir}x" != 'x'; then
+    result_urw_base35_font_dir=$urw_base35_font_dir
+fi
+
 result_windows_font_dir='none'
 if test "${windows_font_dir}x" != 'x'; then
     result_windows_font_dir=${windows_font_dir}
@@ -4021,7 +4026,7 @@ matches your expectations.
   FreeType          --with-freetype=$with_freetype		$have_freetype
   Ghostscript lib   --with-gslib=$with_gslib		$have_gslib
   Graphviz          --with-gvc=$with_gvc		$have_gvc
-  HEIC              --with-heic=$with_heic		$have_heic
+  HEIC              --with-heic=$with_heic    $have_heic
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
   LCMS              --with-lcms=$with_lcms		$have_lcms
@@ -4035,7 +4040,7 @@ matches your expectations.
   PERL              --with-perl=$with_perl		$have_perl
   PNG               --with-png=$with_png		$have_png
   RAQM              --with-raqm=$with_raqm		$have_raqm
-  RAW               --with-raw=$with_raw		$have_raw
+  RAW               --with-raw=$with_raw    $have_raw
   RSVG              --with-rsvg=$with_rsvg		$have_rsvg
   TIFF              --with-tiff=$with_tiff		$have_tiff
   WEBP              --with-webp=$with_webp		$have_webp
