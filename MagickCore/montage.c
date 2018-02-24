@@ -663,7 +663,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
     {
       (void) ConcatenateMagickString(montage->directory,
         image_list[tile]->filename,extent);
-      (void) ConcatenateMagickString(montage->directory,"\377",extent);
+      (void) ConcatenateMagickString(montage->directory,"\xff",extent);
       tile++;
     }
     progress_monitor=SetImageProgressMonitor(montage,(MagickProgressMonitor)

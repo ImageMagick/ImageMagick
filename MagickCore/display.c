@@ -13149,7 +13149,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
   p=image->directory;
   for (i=tile; (i != 0) && (*p != '\0'); )
   {
-    if (*p == '\377')
+    if (*p == '\xff')
       i--;
     p++;
   }
@@ -13259,7 +13259,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
           *image_view;
 
         q=p;
-        while ((*q != '\377') && (*q != '\0'))
+        while ((*q != '\xff') && (*q != '\0'))
           q++;
         (void) CopyMagickString(filename,p,(size_t) (q-p+1));
         p=q;
