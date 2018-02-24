@@ -2266,6 +2266,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (ReadPSDLayersInternal(image,image_info,&psd_info,skip_layers,
             exception) != MagickTrue)
         {
+          if (profile != (StringInfo *) NULL)
+            profile=DestroyStringInfo(profile);
           (void) CloseBlob(image);
           image=DestroyImageList(image);
           return((Image *) NULL);
