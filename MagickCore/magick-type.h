@@ -176,7 +176,7 @@ typedef enum
 #  include <float.h>
 #  define IsNaN(a) _isnan(a)
 #else
-#  define IsNaN(a) (a != a)
+#  define IsNaN(a) ((a) != (a))
 #endif
 #if !defined(INFINITY)
 #  define INFINITY (-logf(0f))
