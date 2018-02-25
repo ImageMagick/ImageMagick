@@ -209,7 +209,6 @@ static MagickBooleanType InvokePDFDelegate(const MagickBooleanType verbose,
   register ssize_t
     i;
 
-{int file=open("abc",O_WRONLY | O_CREAT | O_BINARY,0644);printf("%d\n",file);close(file);}
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   ghost_info=NTGhostscriptDLLVectors();
 #else
@@ -262,7 +261,6 @@ static MagickBooleanType InvokePDFDelegate(const MagickBooleanType verbose,
       0,&code);
   (ghost_info->exit)(interpreter);
   (ghost_info->delete_instance)(interpreter);
-{int file=open("abc",O_WRONLY | O_CREAT | O_BINARY,0644);printf("%d\n",file);close(file);}
   for (i=0; i < (ssize_t) argc; i++)
     argv[i]=DestroyString(argv[i]);
   argv=(char **) RelinquishMagickMemory(argv);
