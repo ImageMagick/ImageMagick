@@ -4550,7 +4550,7 @@ MAGICK_PATCHLEVEL_VERSION=24
 
 MAGICK_VERSION=7.0.7-24
 
-MAGICK_GIT_REVISION=23045:c671fd1ef:20180224
+MAGICK_GIT_REVISION=23048:9eda7a1e1:20180224
 
 
 # Substitute library versioning
@@ -39894,7 +39894,7 @@ matches your expectations.
   FreeType          --with-freetype=$with_freetype		$have_freetype
   Ghostscript lib   --with-gslib=$with_gslib		$have_gslib
   Graphviz          --with-gvc=$with_gvc		$have_gvc
-  HEIC              --with-heic=$with_heic    $have_heic
+  HEIC              --with-heic=$with_heic    	$have_heic
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
   LCMS              --with-lcms=$with_lcms		$have_lcms
@@ -39984,7 +39984,7 @@ matches your expectations.
   FreeType          --with-freetype=$with_freetype		$have_freetype
   Ghostscript lib   --with-gslib=$with_gslib		$have_gslib
   Graphviz          --with-gvc=$with_gvc		$have_gvc
-  HEIC              --with-heic=$with_heic    $have_heic
+  HEIC              --with-heic=$with_heic    	$have_heic
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
   LCMS              --with-lcms=$with_lcms		$have_lcms
