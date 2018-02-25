@@ -2326,12 +2326,22 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         *merged;
 
       if (GetImageListLength(image) == 1)
-        ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+        {
+          if (profile != (StringInfo *) NULL)
+            profile=DestroyStringInfo(profile);
+          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+        }
       SetImageAlphaChannel(image,TransparentAlphaChannel,exception);
       image->background_color.alpha=TransparentAlpha;
       image->background_color.alpha_trait=BlendPixelTrait;
       merged=MergeImageLayers(image,FlattenLayer,exception);
       ReplaceImageInList(&image,merged);
+    }
+  if (profile != (StringInfo *) NULL)
+    {
+      (void) SetImageProfile(image,GetStringInfoName(profile),profile,
+        exception);
+      profile=DestroyStringInfo(profile);
     }
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
