@@ -265,8 +265,8 @@ static MagickBooleanType InvokePostscriptDelegate(
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
             DelegateError,"PostscriptDelegateFailed",
-            "`[ghostscript library %.2f]%s': %s",
-            (double)revision.revision / 100,args_start,errors);
+            "`[ghostscript library %.2f]%s': %s",(double) revision.revision/
+            100.0,args_start,errors);
           if (errors != (char *) NULL)
             errors=DestroyString(errors);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
