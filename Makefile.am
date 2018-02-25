@@ -348,7 +348,7 @@ endif # P7ZIP_DELEGATE
 #
 if RPM_DELEGATE
 
-DIST_ARCHIVE_SRPM=$(distdir)-1.src.rpm
+DIST_ARCHIVE_SRPM=$(distdir).src.rpm
 .PHONY: srpm
 $(DIST_ARCHIVE_SRPM) srpm: dist-bzip2
 	rm -f $(DIST_ARCHIVE_SRPM)
