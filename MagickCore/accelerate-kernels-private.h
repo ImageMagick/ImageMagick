@@ -303,17 +303,30 @@ OPENCL_ELIF((MAGICKCORE_QUANTUM_DEPTH == 32))
 
 OPENCL_ENDIF()
 
+OPENCL_IF((MAGICKCORE_HDRI_SUPPORT == 1))
+
   STRINGIFY(
-    inline int ClampToCanvas(const int offset,const int range)
+    inline CLQuantum ClampToQuantum(const float value)
       {
-        return clamp(offset, (int)0, range-1);
+        return (CLQuantum) value;
       }
   )
+
+OPENCL_ELSE()
 
   STRINGIFY(
     inline CLQuantum ClampToQuantum(const float value)
       {
         return (CLQuantum) (clamp(value, 0.0f, QuantumRange) + 0.5f);
+      }
+  )
+
+OPENCL_ENDIF()
+
+  STRINGIFY(
+    inline int ClampToCanvas(const int offset,const int range)
+      {
+        return clamp(offset, (int)0, range-1);
       }
   )
 
