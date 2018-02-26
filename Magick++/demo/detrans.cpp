@@ -30,7 +30,7 @@ int main(int argc,char **argv)
     try {
       color = Color(argv[1]);
     }
-    catch ( Exception error_ )
+    catch ( Exception &error_ )
       {
         cout << error_.what() << endl;
         cout.flush();

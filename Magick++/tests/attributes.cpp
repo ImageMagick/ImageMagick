@@ -789,7 +789,7 @@ int main( int /*argc*/, char ** argv)
 	{
 	  image.geometry();
 	}
-      catch ( Exception )
+      catch ( Exception& )
 	{
 	  caughtException = true;
 	}
@@ -972,7 +972,7 @@ int main( int /*argc*/, char ** argv)
 	{
 	  image.montageGeometry();
 	}
-      catch ( Exception )
+      catch ( Exception& )
 	{
 	  caughtException = true;
 	}

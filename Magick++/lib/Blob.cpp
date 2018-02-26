@@ -40,7 +40,7 @@ Magick::Blob::~Blob()
     if (_blobRef->decrease() == 0)
       delete _blobRef;
   }
-  catch(Magick::Exception)
+  catch(Magick::Exception&)
   {
   }
 

@@ -2150,7 +2150,7 @@ namespace Magick
           container_->push_back( coderInfo );
         }
         // Intentionally ignore missing module errors
-        catch ( Magick::ErrorModule )
+        catch ( Magick::ErrorModule& )
           {
             continue;
           }

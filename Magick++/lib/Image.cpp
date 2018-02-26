@@ -270,7 +270,7 @@ Magick::Image::~Image()
     if (_imgRef->decrease() == 0)
       delete _imgRef;
   }
-  catch(Magick::Exception)
+  catch(Magick::Exception&)
   {
   }
 
