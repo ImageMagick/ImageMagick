@@ -147,7 +147,6 @@ cp -p Magick++/demo/*.cpp Magick++/demo/*.miff Magick++/examples
         --with-x \
         --with-threads \
         --with-magick_plus_plus \
-        --with-gslib \
         --with-wmf \
         --with-webp \
         --with-openexr \
