@@ -3853,7 +3853,7 @@ WandExport unsigned char *MagickGetImageBlob(MagickWand *wand,size_t *length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetImageBlob() implements direct to memory image formats.  It
+%  MagickGetImagesBlob() implements direct to memory image formats.  It
 %  returns the image sequence as a blob and its length.  The format of the image
 %  determines the format of the returned blob (GIF, JPEG,  PNG, etc.).  To
 %  return a different image format, use MagickSetImageFormat().
