@@ -727,8 +727,8 @@ MagickExport MagickBooleanType IdentifyImageMonochrome(const Image *image,
   CacheView
     *image_view;
 
-  ImageType
-    type;
+  MagickBooleanType
+    bilevel;
 
   register ssize_t
     x;
@@ -747,7 +747,7 @@ MagickExport MagickBooleanType IdentifyImageMonochrome(const Image *image,
     return(MagickTrue);
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     return(MagickFalse);
-  type=BilevelType;
+  bilevel=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -758,18 +758,16 @@ MagickExport MagickBooleanType IdentifyImageMonochrome(const Image *image,
     {
       if (IsPixelMonochrome(image,p) == MagickFalse)
         {
-          type=UndefinedType;
+          bilevel=MagickFalse;
           break;
         }
       p+=GetPixelChannels(image);
     }
-    if (type == UndefinedType)
+    if (bilevel == MagickFalse)
       break;
   }
   image_view=DestroyCacheView(image_view);
-  if (type == BilevelType)
-    return(MagickTrue);
-  return(MagickFalse);
+  return(bilevel);
 }
 
 /*
