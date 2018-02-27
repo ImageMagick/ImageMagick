@@ -96,6 +96,15 @@
 #include "lcms.h"
 #endif
 #endif
+#if defined(MAGICKCORE_XML_DELEGATE)
+#  if defined(MAGICKCORE_WINDOWS_SUPPORT)
+#    if !defined(__MINGW32__)
+#      include <win32config.h>
+#    endif
+#  endif
+#  include <libxml/parser.h>
+#  include <libxml/tree.h>
+#endif
 
 /*
   Define declarations.
@@ -1751,6 +1760,25 @@ static MagickBooleanType GetXMPProperty(const Image *image,const char *property)
   xmp_profile=StringInfoToString(profile);
   if (xmp_profile == (char *) NULL)
     return(MagickFalse);
+#if defined(MAGICKCORE_XML_DELEGATE)
+  {
+    xmlDocPtr
+      xmp;
+
+    /*
+      Parse XML profile.
+    */
+    xmp=xmlReadMemory(xmp_profile,GetStringInfoLength(profile),"xmp.xml",NULL,
+      XML_PARSE_NOERROR | XML_PARSE_NOWARNING);
+    if (xmp == (xmlDocPtr) NULL)
+      {
+        xmlCleanupParser();
+        xmp_profile=DestroyString(xmp_profile);
+        return(MagickFalse);
+      }
+    xmlFreeDoc(xmp);
+  }
+#endif
   if ((strstr(xmp_profile,"<x:x") == (char *) NULL) ||
       (strstr(xmp_profile,"</x:x") == (char *) NULL) ||
       (strstr(xmp_profile,"<rdf:RDF") == (char *) NULL) ||
