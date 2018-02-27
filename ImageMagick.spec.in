@@ -150,6 +150,7 @@ cp -p Magick++/demo/*.cpp Magick++/demo/*.miff Magick++/examples
         --with-wmf \
         --with-webp \
         --with-openexr \
+        --with-gslib \
         --with-rsvg \
         --with-xml \
         --with-perl-options="INSTALLDIRS=vendor %{?perl_prefix} CC='%__cc -L$PWD/MagickCore/.libs' LDDLFLAGS='-shared -L$PWD/MagickCore/.libs'" \
