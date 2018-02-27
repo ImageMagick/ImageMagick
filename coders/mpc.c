@@ -279,7 +279,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Get the keyword.
             */
-            length=MagickPathExtent;
+            length=MagickPathExtent-1;
             p=keyword;
             do
             {
