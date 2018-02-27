@@ -5739,8 +5739,13 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                     sizeof(*mng_info->global_plte));
 
                 if (mng_info->global_plte == (png_colorp) NULL)
-                  ThrowReaderException(ResourceLimitError,
-                    "MemoryAllocationFailed");
+                  {
+                    mng_info->global_plte_length=0;
+                    chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+                    mng_info=MngInfoFreeStruct(mng_info);
+                    ThrowReaderException(ResourceLimitError,
+                      "MemoryAllocationFailed");
+                  }
 
                 for (i=0; i < (ssize_t) (length/3); i++)
                 {
