@@ -1723,6 +1723,44 @@ static MagickBooleanType SkipXMPValue(const char *value)
   return(MagickTrue);
 }
 
+static MagickBooleanType ValidateXMPProfile(const char *profile,
+  const size_t length)
+{
+  const char
+    *p;
+
+  if (length < 17)
+    return(MagickFalse);
+#if defined(MAGICKCORE_XML_DELEGATE)
+  {
+    xmlDocPtr
+      xmp;
+
+    /*
+      Parse XML profile.
+    */
+    xmp=xmlReadMemory(profile,length,"xmp.xml",NULL,XML_PARSE_NOERROR |
+      XML_PARSE_NOWARNING);
+    if (xmp == (xmlDocPtr) NULL)
+      return(MagickFalse);
+    xmlFreeDoc(xmp);
+  }
+#endif
+  p=profile;
+  while ((*p == '\t') || (*p == '\r') || (*p == '\n') || (*p == ' '))
+    p++;
+  if (*p != '<')
+    return(MagickFalse);
+  if ((strstr(profile,"<x:x") == (char *) NULL) ||
+      (strstr(profile,"</x:x") == (char *) NULL) ||
+      (strstr(profile,"<rdf:RDF") == (char *) NULL) ||
+      (strstr(profile,"</rdf:RDF>") == (char *) NULL) ||
+      (strstr(profile,"<rdf:Description") == (char *) NULL) ||
+      (strstr(profile,"</rdf:Description>") == (char *) NULL))
+    return(MagickFalse);
+  return(MagickTrue);
+}
+
 static MagickBooleanType GetXMPProperty(const Image *image,const char *property)
 {
   char
@@ -1760,31 +1798,7 @@ static MagickBooleanType GetXMPProperty(const Image *image,const char *property)
   xmp_profile=StringInfoToString(profile);
   if (xmp_profile == (char *) NULL)
     return(MagickFalse);
-#if defined(MAGICKCORE_XML_DELEGATE)
-  {
-    xmlDocPtr
-      xmp;
-
-    /*
-      Parse XML profile.
-    */
-    xmp=xmlReadMemory(xmp_profile,GetStringInfoLength(profile),"xmp.xml",NULL,
-      XML_PARSE_NOERROR | XML_PARSE_NOWARNING);
-    if (xmp == (xmlDocPtr) NULL)
-      {
-        xmlCleanupParser();
-        xmp_profile=DestroyString(xmp_profile);
-        return(MagickFalse);
-      }
-    xmlFreeDoc(xmp);
-  }
-#endif
-  if ((strstr(xmp_profile,"<x:x") == (char *) NULL) ||
-      (strstr(xmp_profile,"</x:x") == (char *) NULL) ||
-      (strstr(xmp_profile,"<rdf:RDF") == (char *) NULL) ||
-      (strstr(xmp_profile,"</rdf:RDF>") == (char *) NULL) ||
-      (strstr(xmp_profile,"<rdf:Description") == (char *) NULL) ||
-      (strstr(xmp_profile,"</rdf:Description>") == (char *) NULL))
+  if (ValidateXMPProfile(xmp_profile,GetStringInfoLength(profile)) == MagickFalse)
     {
       xmp_profile=DestroyString(xmp_profile);
       return(MagickFalse);
