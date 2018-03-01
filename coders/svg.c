@@ -1021,7 +1021,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
       break;
     }
     case 'F':
-    case 'F':
+    case 'f':
     {
       if (LocaleCompare((const char *) name,"foreignObject") == 0)
         {
@@ -2345,7 +2345,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
       break;
     }
     case 'F':
-    case 'F':
+    case 'f':
     {
       if (LocaleCompare((const char *) name,"foreignObject") == 0)
         {
