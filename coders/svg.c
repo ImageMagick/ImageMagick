@@ -1020,6 +1020,16 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       break;
     }
+    case 'F':
+    case 'F':
+    {
+      if (LocaleCompare((const char *) name,"foreignObject") == 0)
+        {
+          (void) FormatLocaleFile(svg_info->file,"push graphic-context\n");
+          break;
+        }
+      break;
+    }
     case 'G':
     case 'g':
     {
@@ -2329,6 +2339,16 @@ static void SVGEndElement(void *context,const xmlChar *name)
             svg_info->element.cx,svg_info->element.cy,
             angle == 0.0 ? svg_info->element.major : svg_info->element.minor,
             angle == 0.0 ? svg_info->element.minor : svg_info->element.major);
+          (void) FormatLocaleFile(svg_info->file,"pop graphic-context\n");
+          break;
+        }
+      break;
+    }
+    case 'F':
+    case 'F':
+    {
+      if (LocaleCompare((const char *) name,"foreignObject") == 0)
+        {
           (void) FormatLocaleFile(svg_info->file,"pop graphic-context\n");
           break;
         }
