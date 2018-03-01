@@ -1726,39 +1726,24 @@ static MagickBooleanType SkipXMPValue(const char *value)
 static MagickBooleanType ValidateXMPProfile(const char *profile,
   const size_t length)
 {
-  const char
-    *p;
-
-  if (length < 17)
-    return(MagickFalse);
 #if defined(MAGICKCORE_XML_DELEGATE)
   {
     xmlDocPtr
-      xmp;
+      document;
 
     /*
       Parse XML profile.
     */
-    xmp=xmlReadMemory(profile,length,"xmp.xml",NULL,XML_PARSE_NOERROR |
+    document=xmlReadMemory(profile,length,"xmp.xml",NULL,XML_PARSE_NOERROR |
       XML_PARSE_NOWARNING);
-    if (xmp == (xmlDocPtr) NULL)
+    if (document == (xmlDocPtr) NULL)
       return(MagickFalse);
-    xmlFreeDoc(xmp);
+    xmlFreeDoc(document);
+    return(MagickTrue);
   }
+#else
+  return(MagickFalse);
 #endif
-  p=profile;
-  while ((*p == '\t') || (*p == '\r') || (*p == '\n') || (*p == ' '))
-    p++;
-  if (*p != '<')
-    return(MagickFalse);
-  if ((strstr(profile,"<x:x") == (char *) NULL) ||
-      (strstr(profile,"</x:x") == (char *) NULL) ||
-      (strstr(profile,"<rdf:RDF") == (char *) NULL) ||
-      (strstr(profile,"</rdf:RDF>") == (char *) NULL) ||
-      (strstr(profile,"<rdf:Description") == (char *) NULL) ||
-      (strstr(profile,"</rdf:Description>") == (char *) NULL))
-    return(MagickFalse);
-  return(MagickTrue);
 }
 
 static MagickBooleanType GetXMPProperty(const Image *image,const char *property)
