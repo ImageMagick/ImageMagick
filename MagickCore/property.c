@@ -2775,7 +2775,8 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
         Image signature.
       */
       WarnNoImageReturn("\"%%%c\"",letter);
-      (void) SignatureImage(image,exception);
+      if ((image->columns != 0) && (image->rows != 0))
+        (void) SignatureImage(image,exception);
       string=GetImageProperty(image,"signature",exception);
       break;
     }

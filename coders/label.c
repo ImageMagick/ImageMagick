@@ -124,6 +124,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   assert(exception->signature == MagickCoreSignature);
   image=AcquireImage(image_info,exception);
   (void) ResetImagePage(image,"0x0+0+0");
+  if ((image->columns != 0) && (image->rows != 0))
+    (void) SetImageBackgroundColor(image,exception);
   property=InterpretImageProperties((ImageInfo *) image_info,image,
     image_info->filename,exception);
   if (property == (char *) NULL)
@@ -240,7 +242,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     Draw label.
   */
   (void) FormatLocaleString(geometry,MagickPathExtent,"%+g%+g",
-    draw_info->direction == RightToLeftDirection ? image->columns-
+    draw_info->direction == RightToLeftDirection ? (double) image->columns-
     metrics.bounds.x2 : 0.0,draw_info->gravity == UndefinedGravity ?
     metrics.ascent : 0.0);
   (void) CloneString(&draw_info->geometry,geometry);
