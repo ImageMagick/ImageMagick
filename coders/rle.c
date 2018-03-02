@@ -243,6 +243,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((number_planes == 0) || (number_planes == 2) || ((flags & 0x04) &&
         ((number_planes <= 2) || number_planes > 254)) || (bits_per_pixel != 8))
       ThrowRLEException(CorruptImageError,"ImproperImageHeader");
+    if (number_planes > 4)
+      ThrowRLEException(CorruptImageError,"ImproperImageHeader");
     if ((image->columns == 0) || (image->columns >= 32768) ||
         (image->rows == 0) || (image->rows >= 32768))
       ThrowRLEException(CorruptImageError,"ImproperImageHeader");
