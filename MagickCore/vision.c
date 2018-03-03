@@ -564,19 +564,20 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       {
         while ((isspace((int) ((unsigned char) *c)) != 0) || (*c == ','))
           c++;
-        first=strtol(c,&c,10);
+        first=(ssize_t) strtol(c,&c,10);
         if (first < 0)
-          first+=(long) component_image->colors;
+          first+=(ssize_t) component_image->colors;
         last=first;
         while (isspace((int) ((unsigned char) *c)) != 0)
           c++;
         if (*c == '-')
           {
-            last=strtol(c+1,&c,10);
+            last=(ssize_t) strtol(c+1,&c,10);
             if (last < 0)
-              last+=(long) component_image->colors;
+              last+=(ssize_t) component_image->colors;
           }
-        for (step=first > last ? -1 : 1; first != (last+step); first+=step)
+        step=(ssize_t) (first > last ? -1 : 1);
+        for ( ; first != (last+step); first+=step)
           object[first].census++;
       }
       for (i=0; i < (ssize_t) component_image->colors; i++)
@@ -584,7 +585,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         if (object[i].census != 0)
           continue;
         component_image->alpha_trait=BlendPixelTrait;
-        component_image->colormap[i].alpha=TransparentAlpha;
+        component_image->colormap[i].alpha=(MagickRealType) TransparentAlpha;
       }
     }
   artifact=GetImageArtifact(image,"connected-components:remove");
@@ -597,22 +598,24 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       {
         while ((isspace((int) ((unsigned char) *c)) != 0) || (*c == ','))
           c++;
-        first=strtol(c,&c,10);
+        first=(ssize_t) strtol(c,&c,10);
         if (first < 0)
-          first+=(long) component_image->colors;
+          first+=(ssize_t) component_image->colors;
         last=first;
         while (isspace((int) ((unsigned char) *c)) != 0)
           c++;
         if (*c == '-')
           {
-            last=strtol(c+1,&c,10);
+            last=(ssize_t) strtol(c+1,&c,10);
             if (last < 0)
-              last+=(long) component_image->colors;
+              last+=(ssize_t) component_image->colors;
           }
-        for (step=first > last ? -1 : 1; first != (last+step); first+=step)
+        step=(ssize_t) (first > last ? -1 : 1);
+        for ( ; first != (last+step); first+=step)
         {
           component_image->alpha_trait=BlendPixelTrait;
-          component_image->colormap[first].alpha=TransparentAlpha;
+          component_image->colormap[first].alpha=(MagickRealType)
+            TransparentAlpha;
         }
       }
     }
@@ -645,8 +648,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 
         if (status == MagickFalse)
           continue;
-        p=GetCacheViewVirtualPixels(component_view,0,y,
-          component_image->columns,1,exception);
+        p=GetCacheViewVirtualPixels(component_view,0,y,component_image->columns,
+          1,exception);
         if (p == (const Quantum *) NULL)
           {
             status=MagickFalse;

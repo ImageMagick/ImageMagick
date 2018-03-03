@@ -259,7 +259,7 @@ static MagickBooleanType InvokePostscriptDelegate(
       SetArgsStart(command,args_start);
       if (status == -101) /* quit */
         (void) FormatLocaleString(message,MagickPathExtent,
-          "[ghostscript library %.2f]%s: %s",(double)revision.revision / 100,
+          "[ghostscript library %.2f]%s: %s",(double) revision.revision/100.0,
           args_start,errors);
       else
         {
