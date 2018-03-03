@@ -502,13 +502,9 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
   /*
     Allocate image colormap.
   */
-  if ((cube_info->quantize_info->colorspace != UndefinedColorspace) &&
-      (cube_info->quantize_info->colorspace != CMYKColorspace))
+  if (cube_info->quantize_info->colorspace != UndefinedColorspace)
     (void) TransformImageColorspace(image,cube_info->quantize_info->colorspace,
       exception);
-  else
-    if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-      (void) TransformImageColorspace(image,sRGBColorspace,exception);
   if (AcquireImageColormap(image,cube_info->colors,exception) == MagickFalse)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
@@ -668,9 +664,8 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
         }
     }
   (void) SyncImage(image,exception);
-  if ((cube_info->quantize_info->colorspace != UndefinedColorspace) &&
-      (cube_info->quantize_info->colorspace != CMYKColorspace))
-    (void) TransformImageColorspace((Image *) image,sRGBColorspace,exception);
+  if (cube_info->quantize_info->colorspace != UndefinedColorspace)
+    (void) TransformImageColorspace(image,image->colorspace,exception);
   return(MagickTrue);
 }
 
