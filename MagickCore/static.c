@@ -118,7 +118,6 @@ static struct
   { "EXR", MagickFalse, RegisterEXRImage, UnregisterEXRImage },
 #endif
   { "FAX", MagickFalse, RegisterFAXImage, UnregisterFAXImage },
-  { "FD", MagickFalse, RegisterFDImage, UnregisterFDImage },
   { "FITS", MagickFalse, RegisterFITSImage, UnregisterFITSImage },
 #if defined(MAGICKCORE_FLIF_DELEGATE)
   { "FLIF", MagickFalse, RegisterFLIFImage, UnregisterFLIFImage },

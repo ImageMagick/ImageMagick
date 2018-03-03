@@ -118,7 +118,6 @@ MAGICKCORE_CODER_SRCS = \
 	coders/dot.c \
 	coders/dpx.c \
 	coders/fax.c \
-	coders/fd.c \
 	coders/fits.c \
 	coders/gif.c \
 	coders/gradient.c \
@@ -517,12 +516,6 @@ coders_fax_la_SOURCES      = coders/fax.c
 coders_fax_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_fax_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_fax_la_LIBADD       = $(MAGICKCORE_LIBS)
-
-# FD coder module
-coders_fd_la_SOURCES       = coders/fd.c
-coders_fd_la_CPPFLAGS      = $(MAGICK_CODER_CPPFLAGS)
-coders_fd_la_LDFLAGS       = $(MODULECOMMONFLAGS)
-coders_fd_la_LIBADD        = $(MAGICKCORE_LIBS)
 
 # FITS coder module
 coders_fits_la_SOURCES     = coders/fits.c
