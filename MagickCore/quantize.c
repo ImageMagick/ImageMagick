@@ -669,7 +669,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
     }
   (void) SyncImage(image,exception);
   if ((cube_info->quantize_info->colorspace != UndefinedColorspace) &&
-      (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse))
+      (IssRGBCompatibleColorspace(colorspace) == MagickFalse))
     (void) TransformImageColorspace(image,colorspace,exception);
   return(MagickTrue);
 }
