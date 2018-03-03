@@ -496,12 +496,16 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
 {
 #define AssignImageTag  "Assign/Image"
 
+  ColorspaceType
+    colorspace;
+
   ssize_t
     y;
 
   /*
     Allocate image colormap.
   */
+  colorspace=image->colorspace;
   if (cube_info->quantize_info->colorspace != UndefinedColorspace)
     (void) TransformImageColorspace(image,cube_info->quantize_info->colorspace,
       exception);
@@ -665,7 +669,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
     }
   (void) SyncImage(image,exception);
   if (cube_info->quantize_info->colorspace != UndefinedColorspace)
-    (void) TransformImageColorspace(image,image->colorspace,exception);
+    (void) TransformImageColorspace(image,colorspace,exception);
   return(MagickTrue);
 }
 
