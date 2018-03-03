@@ -3326,6 +3326,9 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         double
           pixel;
 
+        PixelChannel
+          channel;
+
         PixelTrait
           traits;
 
@@ -3341,7 +3344,8 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         ssize_t
           v;
 
-        traits=GetPixelChannelTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
         if (((traits & CopyPixelTrait) != 0) ||
@@ -3487,6 +3491,9 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         double
           pixel;
 
+        PixelChannel
+          channel;
+
         PixelTrait
           traits;
 
@@ -3502,7 +3509,8 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         ssize_t
           v;
 
-        traits=GetPixelChannelTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
         if (((traits & CopyPixelTrait) != 0) ||
