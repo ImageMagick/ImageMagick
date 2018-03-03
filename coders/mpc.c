@@ -572,6 +572,9 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     image->number_meta_channels=StringToUnsignedLong(options);
                     if (image->number_meta_channels > MaxPixelChannels)
                       {
+                        if (profiles != (LinkedListInfo *) NULL)
+                          profiles=DestroyLinkedList(profiles,
+                            RelinquishMagickMemory);
                         options=DestroyString(options);
                         ThrowReaderException(CorruptImageError,
                           "ImproperImageHeader");
