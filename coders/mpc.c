@@ -784,7 +784,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (image->compression == UndefinedCompression) ||
         (image->columns == 0) || (image->rows == 0) ||
         (image->number_channels > MaxPixelChannels) ||
-        (image->number_meta_channels > MaxPixelChannels) ||
+        (image->number_meta_channels > (MaxPixelChannels-8)) ||
         ((image->number_channels+image->number_meta_channels) >= MaxPixelChannels))
       {
         if (profiles != (LinkedListInfo *) NULL)
