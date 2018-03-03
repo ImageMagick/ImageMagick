@@ -1013,10 +1013,6 @@ coders_fax_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_fax_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_fax_la_rpath = -rpath $(codersdir)
-coders_fd_la_LIBADD =
-coders_fd_la_SOURCES = coders/fd.c
-coders_fd_la_OBJECTS = coders/fd.lo
-@WITH_MODULES_TRUE@am_coders_fd_la_rpath = -rpath $(codersdir)
 coders_fits_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
 am_coders_fits_la_OBJECTS = coders/coders_fits_la-fits.lo
 coders_fits_la_OBJECTS = $(am_coders_fits_la_OBJECTS)
@@ -2035,7 +2031,7 @@ SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_
 	$(coders_dot_la_SOURCES) $(coders_dps_la_SOURCES) \
 	$(coders_dpx_la_SOURCES) $(coders_emf_la_SOURCES) \
 	$(coders_ept_la_SOURCES) $(coders_exr_la_SOURCES) \
-	$(coders_fax_la_SOURCES) coders/fd.c $(coders_fits_la_SOURCES) \
+	$(coders_fax_la_SOURCES) $(coders_fits_la_SOURCES) \
 	$(coders_flif_la_SOURCES) $(coders_fpx_la_SOURCES) \
 	$(coders_gif_la_SOURCES) $(coders_gradient_la_SOURCES) \
 	$(coders_gray_la_SOURCES) $(coders_hald_la_SOURCES) \
@@ -2123,7 +2119,7 @@ DIST_SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUF
 	$(coders_dot_la_SOURCES) $(coders_dps_la_SOURCES) \
 	$(coders_dpx_la_SOURCES) $(coders_emf_la_SOURCES) \
 	$(coders_ept_la_SOURCES) $(coders_exr_la_SOURCES) \
-	$(coders_fax_la_SOURCES) coders/fd.c $(coders_fits_la_SOURCES) \
+	$(coders_fax_la_SOURCES) $(coders_fits_la_SOURCES) \
 	$(coders_flif_la_SOURCES) $(coders_fpx_la_SOURCES) \
 	$(coders_gif_la_SOURCES) $(coders_gradient_la_SOURCES) \
 	$(coders_gray_la_SOURCES) $(coders_hald_la_SOURCES) \
@@ -3274,7 +3270,6 @@ MAGICKCORE_CODER_SRCS = \
 @WITH_MODULES_TRUE@	coders/dot.la \
 @WITH_MODULES_TRUE@	coders/dpx.la \
 @WITH_MODULES_TRUE@	coders/fax.la \
-@WITH_MODULES_TRUE@	coders/fd.la \
 @WITH_MODULES_TRUE@	coders/fits.la \
 @WITH_MODULES_TRUE@	coders/gif.la \
 @WITH_MODULES_TRUE@	coders/gradient.la \
@@ -6270,10 +6265,6 @@ coders/coders_fax_la-fax.lo: coders/$(am__dirstamp) \
 
 coders/fax.la: $(coders_fax_la_OBJECTS) $(coders_fax_la_DEPENDENCIES) $(EXTRA_coders_fax_la_DEPENDENCIES) coders/$(am__dirstamp)
 	$(AM_V_CCLD)$(coders_fax_la_LINK) $(am_coders_fax_la_rpath) $(coders_fax_la_OBJECTS) $(coders_fax_la_LIBADD) $(LIBS)
-coders/fd.lo: coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
-
-coders/fd.la: $(coders_fd_la_OBJECTS) $(coders_fd_la_DEPENDENCIES) $(EXTRA_coders_fd_la_DEPENDENCIES) coders/$(am__dirstamp)
-	$(AM_V_CCLD)$(LINK) $(am_coders_fd_la_rpath) $(coders_fd_la_OBJECTS) $(coders_fd_la_LIBADD) $(LIBS)
 coders/coders_fits_la-fits.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 
@@ -7511,7 +7502,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_xwd_la-xwd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_ycbcr_la-ycbcr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_yuv_la-yuv.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/fd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@filters/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-analyze.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@filters/$(DEPDIR)/filters_analyze_la-analyze.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/tests_drawtest-drawtest.Po@am__quote@

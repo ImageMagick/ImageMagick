@@ -247,7 +247,6 @@ coders_LTLIBRARIES = \
 	coders/dot.la \
 	coders/dpx.la \
 	coders/fax.la \
-	coders/fd.la \
 	coders/fits.la \
 	coders/gif.la \
 	coders/gradient.la \
