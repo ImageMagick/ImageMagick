@@ -781,8 +781,11 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     if ((LocaleCompare(id,"MagickCache") != 0) ||
         (image->storage_class == UndefinedClass) ||
-        (image->compression == UndefinedCompression) || (image->columns == 0) ||
-        (image->rows == 0))
+        (image->compression == UndefinedCompression) ||
+        (image->columns == 0) || (image->rows == 0) ||
+        (image->number_channels > MaxPixelChannels) ||
+        (image->number_meta_channels > MaxPixelChannels) ||
+        ((image->number_channels+image->number_meta_channels) >= MaxPixelChannels))
       {
         if (profiles != (LinkedListInfo *) NULL)
           profiles=DestroyLinkedList(profiles,RelinquishMagickMemory);
