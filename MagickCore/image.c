@@ -1638,12 +1638,12 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
   register const char
     *p;
 
-  size_t
-   field_width,
-    length;
+  ssize_t
+    field_width,
+    offset;
 
   canonical=MagickFalse;
-  length=0;
+  offset=0;
   (void) CopyMagickString(filename,format,MagickPathExtent);
   for (p=strchr(format,'%'); p != (char *) NULL; p=strchr(p+1,'%'))
   {
@@ -1665,9 +1665,9 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
         q++;
         c=(*q);
         *q='\0';
-        (void) FormatLocaleString(filename+(p-format),(size_t)
-          (MagickPathExtent-(p-format)),p,value);
-        length+=(4-field_width);
+        (void) FormatLocaleString(filename+(p-format-offset),(size_t)
+          (MagickPathExtent-(p-format-offset)),p,value);
+        offset+=(4-field_width);
         *q=c;
         (void) ConcatenateMagickString(filename,q,MagickPathExtent);
         canonical=MagickTrue;
@@ -1695,9 +1695,6 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
 
         /*
           Image option.
-        */
-        /* FUTURE: Compare update with code from InterpretImageProperties()
-           Note that a 'filename:' property should not need depth recursion.
         */
         if (strchr(p,']') == (char *) NULL)
           break;
@@ -1729,9 +1726,9 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
         q--;
         c=(*q);
         *q='\0';
-        (void) CopyMagickString(filename+(p-format-length),option,(size_t)
-          (MagickPathExtent-(p-format-length)));
-        length+=strlen(pattern)-1;
+        (void) CopyMagickString(filename+(p-format-offset),option,(size_t)
+          (MagickPathExtent-(p-format-offset)));
+        offset+=strlen(pattern)-4;
         *q=c;
         (void) ConcatenateMagickString(filename,r+1,MagickPathExtent);
         canonical=MagickTrue;
