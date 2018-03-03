@@ -688,18 +688,15 @@ OPENCL_ENDIF()
   }
 
   //! Represents the state of a particular generator
-  typedef struct{ uint x; uint c; } mwc64x_state_t;
-
-  enum{ MWC64X_A = 4294883355U };
-  enum{ MWC64X_M = 18446383549859758079UL };
+  typedef struct{ uint x; uint c; uint seed0; ulong seed1; } mwc64x_state_t;
 
   void MWC64X_Step(mwc64x_state_t *s)
   {
     uint X=s->x, C=s->c;
 
-    uint Xn=MWC64X_A*X+C;
+    uint Xn=s->seed0*X+C;
     uint carry=(uint)(Xn<C); // The (Xn<C) will be zero or one for scalar
-    uint Cn=mad_hi(MWC64X_A,X,carry);
+    uint Cn=mad_hi(s->seed0,X,carry);
 
     s->x=Xn;
     s->c=Cn;
@@ -707,14 +704,14 @@ OPENCL_ENDIF()
 
   void MWC64X_Skip(mwc64x_state_t *s, ulong distance)
   {
-    uint2 tmp=MWC_SkipImpl_Mod64((uint2)(s->x,s->c), MWC64X_A, MWC64X_M, distance);
+    uint2 tmp=MWC_SkipImpl_Mod64((uint2)(s->x,s->c), s->seed0, s->seed1, distance);
     s->x=tmp.x;
     s->c=tmp.y;
   }
 
   void MWC64X_SeedStreams(mwc64x_state_t *s, ulong baseOffset, ulong perStreamOffset)
   {
-    uint2 tmp=MWC_SeedImpl_Mod64(MWC64X_A, MWC64X_M, 1, 0, baseOffset, perStreamOffset);
+    uint2 tmp=MWC_SeedImpl_Mod64(s->seed0, s->seed1, 1, 0, baseOffset, perStreamOffset);
     s->x=tmp.x;
     s->c=tmp.y;
   }
@@ -840,8 +837,8 @@ OPENCL_ENDIF()
     __global CLQuantum *filteredImage)
   {
     mwc64x_state_t rng;
-    rng.x = seed0;
-    rng.c = seed1;
+    rng.seed0 = seed0;
+    rng.seed1 = seed1;
 
     uint span = pixelsPerWorkItem * numRandomNumbersPerPixel; // length of RNG substream each workitem will use
     uint offset = span * get_local_size(0) * get_group_id(0); // offset of this workgroup's RNG substream (in master stream);
