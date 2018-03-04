@@ -329,7 +329,13 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
-      return(DestroyImageList(image));
+      {
+        if (colormap != (unsigned char *) NULL)
+          colormap=(unsigned char *) RelinquishMagickMemory(colormap);
+        if (pixel_info != (MemoryInfo *) NULL)
+          pixel_info=RelinquishVirtualMemory(pixel_info);
+        return(DestroyImageList(image));
+      }
     /*
       Allocate RLE pixels.
     */
