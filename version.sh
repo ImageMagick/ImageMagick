@@ -6,6 +6,7 @@
 #
 # Package base name
 PACKAGE_NAME='ImageMagick'
+PACKAGE_BUGREPORT="https://github.com/ImageMagick/ImageMagick/issues"
 
 #
 # Date of last ChangeLog update
