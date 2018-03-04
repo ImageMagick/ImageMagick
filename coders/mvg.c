@@ -199,8 +199,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (SetImageBackgroundColor(image,exception) == MagickFalse)
     {
       draw_info=DestroyDrawInfo(draw_info);
-      image=DestroyImageList(image);
-      return((Image *) NULL);
+      return(DestroyImageList(image));
     }
   /*
     Render drawing.
