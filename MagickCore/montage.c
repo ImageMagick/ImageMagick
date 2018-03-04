@@ -438,6 +438,8 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   }
   if (i < (ssize_t) number_images)
     {
+      if (image != (Image *) NULL)
+        image=DestroyImage(image);
       if (thumbnail == (Image *) NULL)
         i--;
       for (tile=0; (ssize_t) tile <= i; tile++)
