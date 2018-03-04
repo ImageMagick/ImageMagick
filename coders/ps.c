@@ -216,8 +216,8 @@ static MagickBooleanType InvokePostscriptDelegate(
     gsapi_init_with_args;
   ghost_info_struct.run_string=(int (*)(gs_main_instance *,const char *,int,
     int *)) gsapi_run_string;
-  ghost_info_struct.set_stdio=(int (*)(gs_main_instance *,int(*)(void *,char *,
-    int),int(*)(void *,const char *,int),int(*)(void *, const char *, int)))
+  ghost_info_struct.set_stdio=(int (*)(gs_main_instance *,int (*)(void *,char *,
+    int),int (*)(void *,const char *,int),int (*)(void *, const char *, int)))
     gsapi_set_stdio;
   ghost_info_struct.revision=(int (*)(gsapi_revision_t *,int)) gsapi_revision;
 #endif
@@ -243,7 +243,7 @@ static MagickBooleanType InvokePostscriptDelegate(
       (ghost_info->delete_instance)(interpreter);
       return(MagickFalse);
     }
-  (void) (ghost_info->set_stdio)(interpreter,(int(MagickDLLCall *)(void *,
+  (void) (ghost_info->set_stdio)(interpreter,(int (MagickDLLCall *)(void *,
     char *,int)) NULL,PostscriptDelegateMessage,PostscriptDelegateMessage);
   status=(ghost_info->init_with_args)(interpreter,argc-1,argv+1);
   if (status == 0)
