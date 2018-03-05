@@ -2776,7 +2776,8 @@ static int ReadDCMByte(DCMStreamInfo *stream_info,Image *image)
 static unsigned short ReadDCMShort(DCMStreamInfo *stream_info,Image *image)
 {
   int
-    shift;
+    shift,
+    val;
 
   unsigned short
     value;
@@ -2784,8 +2785,11 @@ static unsigned short ReadDCMShort(DCMStreamInfo *stream_info,Image *image)
   if (image->compression != RLECompression)
     return(ReadBlobLSBShort(image));
   shift=image->depth < 16 ? 4 : 8;
-  value=ReadDCMByte(stream_info,image) | (unsigned short)
-    (ReadDCMByte(stream_info,image) << shift);
+  value=ReadDCMByte(stream_info,image);
+  val=ReadDCMByte(stream_info,image);
+  if (val < 0)
+    return(0);
+  value|=(unsigned short)(val << shift);
   return(value);
 }
 
