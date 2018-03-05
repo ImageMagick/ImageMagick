@@ -1554,7 +1554,7 @@ static MagickBooleanType CheckPSDChannels(const PSDInfo *psd_info,
         continue;
       }
     if (type < -1)
-      type=MagickAbsoluteValue(type+2);
+      continue;
     if (type == 0)
       channel_type&=~RedChannel;
     else if (type == 1)
