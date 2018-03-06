@@ -134,6 +134,9 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     height,
     width;
 
+  int
+    c;
+
   Quantum
     pixel;
 
@@ -232,6 +235,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Convert SCT raster image to pixel packets.
   */
+  c=0;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     for (i=0; i < (ssize_t) separations; i++)
@@ -241,7 +245,10 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        pixel=(Quantum) ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
+        c=ReadBlobByte(image);
+        if (c == EOF)
+          break;
+        pixel=(Quantum) ScaleCharToQuantum((unsigned char) c);
         if (image->colorspace == CMYKColorspace)
           pixel=(Quantum) (QuantumRange-pixel);
         switch (i)
@@ -272,6 +279,8 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         q+=GetPixelChannels(image);
       }
+      if (c == EOF)
+        break;
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;
       if ((image->columns % 2) != 0)
