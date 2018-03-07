@@ -565,6 +565,7 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
     sizeof(*BImgBuff));
   if(BImgBuff==NULL)
     return(-2);
+  (void) ResetMagickMemory(BImgBuff,0,ldblk*sizeof(*BImgBuff));
 
   while( y< image->rows)
     {
