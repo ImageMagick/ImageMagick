@@ -401,8 +401,6 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pcx_packets=(size_t) image->rows*pcx_info.bytes_per_line;
     if (HeapOverflowSanityCheck(pcx_packets, (size_t) pcx_info.planes) != MagickFalse)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    if ((pcx_packets/8) > GetBlobSize(image))
-      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     pcx_packets=(size_t) pcx_packets*pcx_info.planes;
     if ((size_t) (pcx_info.bits_per_pixel*pcx_info.planes*image->columns) >
         (pcx_packets*8U))
