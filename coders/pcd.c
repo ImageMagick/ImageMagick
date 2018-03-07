@@ -1120,6 +1120,8 @@ static MagickBooleanType WritePCDImage(const ImageInfo *image_info,Image *image,
       if (rotate_image == (Image *) NULL)
         return(MagickFalse);
       pcd_image=rotate_image;
+      DestroyBlob(rotate_image);
+      pcd_image->blob=ReferenceBlob(image->blob);
     }
   /*
     Open output image file.
