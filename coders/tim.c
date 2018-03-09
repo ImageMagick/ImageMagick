@@ -241,6 +241,9 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
       return(DestroyImageList(image));
+    status=ResetImagePixels(image,exception);
+    if (status == MagickFalse)
+      return(DestroyImageList(image));
     tim_pixels=(unsigned char *) AcquireQuantumMemory(image_size,
       sizeof(*tim_pixels));
     if (tim_pixels == (unsigned char *) NULL)
