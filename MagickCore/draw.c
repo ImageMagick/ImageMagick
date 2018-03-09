@@ -2084,19 +2084,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                   &graphic_context[n]->fill,exception);
                 if (graphic_context[n]->fill_alpha != OpaqueAlpha)
                   graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
-                if (status == MagickFalse)
-                  {
-                    ImageInfo
-                      *pattern_info;
-
-                    pattern_info=AcquireImageInfo();
-                    (void) CopyMagickString(pattern_info->filename,token,
-                      MagickPathExtent);
-                    graphic_context[n]->fill_pattern=ReadImage(pattern_info,
-                      exception);
-                    CatchException(exception);
-                    pattern_info=DestroyImageInfo(pattern_info);
-                  }
               }
             break;
           }
@@ -2676,19 +2663,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 if (graphic_context[n]->stroke_alpha != OpaqueAlpha)
                   graphic_context[n]->stroke.alpha=
                     graphic_context[n]->stroke_alpha;
-                if (status == MagickFalse)
-                  {
-                    ImageInfo
-                      *pattern_info;
-
-                    pattern_info=AcquireImageInfo();
-                    (void) CopyMagickString(pattern_info->filename,token,
-                      MagickPathExtent);
-                    graphic_context[n]->stroke_pattern=ReadImage(pattern_info,
-                      exception);
-                    CatchException(exception);
-                    pattern_info=DestroyImageInfo(pattern_info);
-                  }
               }
             break;
           }
