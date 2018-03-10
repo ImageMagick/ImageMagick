@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003, 2008
-// Copyright Dirk Lemstra 2013-2014
+// Copyright Dirk Lemstra 2013-2018
 //
 // Color Implementation
 //
@@ -179,6 +179,8 @@ namespace Magick
 
     // Common initializer for PixelInfo representation
     void initPixel();
+
+    void setAlpha(const Magick::Quantum alpha_);
 
     // Sets the pixel type using the specified PixelInfo.
     void setPixelType(const PixelInfo &color_);

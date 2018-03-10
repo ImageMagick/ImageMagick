@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
-// Copyright Dirk Lemstra 2013-2015
+// Copyright Dirk Lemstra 2013-2018
 //
 // Color Implementation
 //
@@ -74,7 +74,7 @@ Magick::Color::Color(void)
 {
   initPixel();
 
-  quantumAlpha(TransparentAlpha);
+  setAlpha(TransparentAlpha);
 }
 
 Magick::Color::Color(const Magick::Quantum red_,const Magick::Quantum green_,
@@ -309,23 +309,7 @@ void Magick::Color::isValid(bool valid_)
 
 void Magick::Color::quantumAlpha(const Magick::Quantum alpha_)
 {
-  _pixel->alpha=alpha_;
-  if (alpha_ == QuantumRange)
-    {
-      _pixel->alpha_trait=UndefinedPixelTrait;
-      if (_pixelType == RGBAPixel)
-        _pixelType=RGBPixel;
-      else if (_pixelType == CMYKAPixel)
-        _pixelType=CMYKPixel;
-    }
-  else
-    {
-      _pixel->alpha_trait=BlendPixelTrait;
-      if (_pixelType == RGBPixel)
-        _pixelType=RGBAPixel;
-      else if (_pixelType == CMYKPixel)
-        _pixelType=CMYKAPixel;
-    }
+  setAlpha(alpha_);
   _isValid=true;
 }
 
@@ -425,6 +409,27 @@ void Magick::Color::initPixel()
   MagickCore::GetPixelInfo((MagickCore::Image *) NULL, _pixel);
   if (_pixelType == CMYKPixel || _pixelType == CMYKAPixel)
     _pixel->colorspace=CMYKColorspace;
+}
+
+void Magick::Color::setAlpha(const Magick::Quantum alpha_)
+{
+  _pixel->alpha=alpha_;
+  if (alpha_ == QuantumRange)
+    {
+      _pixel->alpha_trait=UndefinedPixelTrait;
+      if (_pixelType == RGBAPixel)
+        _pixelType=RGBPixel;
+      else if (_pixelType == CMYKAPixel)
+        _pixelType=CMYKPixel;
+    }
+  else
+    {
+      _pixel->alpha_trait=BlendPixelTrait;
+      if (_pixelType == RGBPixel)
+        _pixelType=RGBAPixel;
+      else if (_pixelType == CMYKPixel)
+        _pixelType=CMYKAPixel;
+    }
 }
 
 void Magick::Color::setPixelType(const PixelInfo &color_)
