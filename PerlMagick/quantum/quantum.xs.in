@@ -14298,6 +14298,7 @@ SetPixel(ref,...)
     exception=DestroyExceptionInfo(exception);
     SvREFCNT_dec(perl_exception);
   }
+
 #
 ###############################################################################
 #                                                                             #
@@ -14342,9 +14343,6 @@ SetPixels(ref,...)
 
     register Quantum
       *q;
-
-    ssize_t
-      option;
 
     struct PackageInfo
       *info;
