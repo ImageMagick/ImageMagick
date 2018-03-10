@@ -749,6 +749,9 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   Image
     *image2;
 
+  MagickBooleanType
+    status;
+
   unsigned char
     magick[2*MagickPathExtent];
 
@@ -759,6 +762,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
     return(image);
   clone_info->blob=(void *) NULL;
   clone_info->length=0;
+  status=MagickFalse;
 
   /* Obtain temporary file */
   (void) AcquireUniqueFilename(postscript_file);
@@ -808,7 +812,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   if(exception->severity>=ErrorException)
   {
     CloseBlob(image2);
-    DestroyImageList(image2); 
+    DestroyImageList(image2);
     goto FINISH_UNL;
   }
 
@@ -853,11 +857,14 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   AppendImageToList(&image,image2);
   while (image->next != NULL)
     image=image->next;
+  status=MagickTrue;
 
  FINISH_UNL:
   (void) RelinquishUniqueFileResource(postscript_file);
  FINISH:
   DestroyImageInfo(clone_info);
+  if (status == MagickFalse)
+    return((Image *) NULL);
   return(image);
 }
 
