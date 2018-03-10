@@ -4085,10 +4085,10 @@ exit_cleanup:
 %    * Output Bias for Convolution and correlation ("-define convolve:bias=??")
 %    * Kernel Scale/normalize settings            ("-define convolve:scale=??")
 %      This can also includes the addition of a scaled unity kernel.
-%    * Show Kernel being applied            ("-define morphology:showkernel=1")
+%    * Show Kernel being applied            ("-define morphology:showKernel=1")
 %
 %  Other operators that do not want user supplied options interfering,
-%  especially "convolve:bias" and "morphology:showkernel" should use
+%  especially "convolve:bias" and "morphology:showKernel" should use
 %  MorphologyApply() directly.
 %
 %  The format of the MorphologyImage method is:
@@ -4170,7 +4170,7 @@ MagickExport Image *MorphologyImage(const Image *image,
     }
 
   /* display the (normalized) kernel via stderr */
-  artifact=GetImageArtifact(image,"morphology:showkernel");
+  artifact=GetImageArtifact(image,"morphology:showKernel");
   if (IsStringTrue(artifact) != MagickFalse)
     ShowKernelInfo(curr_kernel);
 
@@ -4624,7 +4624,7 @@ MagickExport void ScaleKernelInfo(KernelInfo *kernel,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ShowKernelInfo() outputs the details of the given kernel defination to
-%  standard error, generally due to a users 'morphology:showkernel' option
+%  standard error, generally due to a users 'morphology:showKernel' option
 %  request.
 %
 %  The format of the ShowKernel method is:
