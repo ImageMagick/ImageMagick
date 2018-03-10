@@ -3914,7 +3914,7 @@ MagickPrivate MagickBooleanType XGetWindowColor(Display *display,
   pixel.red=(double) ScaleShortToQuantum(color.red);
   pixel.green=(double) ScaleShortToQuantum(color.green);
   pixel.blue=(double) ScaleShortToQuantum(color.blue);
-  pixel.alpha=OpaqueAlpha;
+  pixel.alpha=(MagickRealType) OpaqueAlpha;
   (void) QueryColorname(windows->image.image,&pixel,X11Compliance,name,
     exception);
   return(MagickTrue);
@@ -9121,7 +9121,7 @@ MagickPrivate MagickBooleanType XRenderImage(Image *image,
   metrics->ascent=(double) font_info->ascent+4;
   metrics->descent=(double) (-font_info->descent);
   metrics->width=annotate_info.width/ExpandAffine(&draw_info->affine);
-  metrics->height=font_info->ascent+font_info->descent;
+  metrics->height=(double) font_info->ascent+font_info->descent;
   metrics->max_advance=(double) font_info->max_bounds.width;
   metrics->bounds.x1=0.0;
   metrics->bounds.y1=metrics->descent;
@@ -9150,9 +9150,12 @@ MagickPrivate MagickBooleanType XRenderImage(Image *image,
     "%.20gx%.20g%+.20g%+.20g",(double) width,(double) height,
     ceil(offset->x-0.5),ceil(offset->y-metrics->ascent-metrics->descent+
     draw_info->interline_spacing-0.5));
-  pixel.pen_color.red=ScaleQuantumToShort(draw_info->fill.red);
-  pixel.pen_color.green=ScaleQuantumToShort(draw_info->fill.green);
-  pixel.pen_color.blue=ScaleQuantumToShort(draw_info->fill.blue);
+  pixel.pen_color.red=ScaleQuantumToShort(
+    ClampToQuantum(draw_info->fill.red));
+  pixel.pen_color.green=ScaleQuantumToShort(
+    ClampToQuantum(draw_info->fill.green));
+  pixel.pen_color.blue=ScaleQuantumToShort(
+    ClampToQuantum(draw_info->fill.blue));
   status=XAnnotateImage(display,&pixel,&annotate_info,image,exception);
   if (status == 0)
     {
