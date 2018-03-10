@@ -892,7 +892,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
           ClampPixel(pixel.alpha);
       else
         node_info->total_color.alpha+=count*QuantumScale*
-          ClampPixel(OpaqueAlpha);
+          ClampPixel((MagickRealType) OpaqueAlpha);
       p+=count*GetPixelChannels(image);
     }
     if (cube_info->colors > cube_info->maximum_colors)
@@ -999,7 +999,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
           ClampPixel(pixel.alpha);
       else
         node_info->total_color.alpha+=count*QuantumScale*
-          ClampPixel(OpaqueAlpha);
+          ClampPixel((MagickRealType) OpaqueAlpha);
       p+=count*GetPixelChannels(image);
     }
     proceed=SetImageProgress(image,ClassifyImageTag,(MagickOffsetType) y,
