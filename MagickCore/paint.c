@@ -568,7 +568,7 @@ MagickExport MagickBooleanType GradientImage(Image *image,
         }
       if (LocaleCompare(artifact,"Diagonal") == 0)
         {
-          gradient->radii.x=(double) (sqrt((image->columns-1.0)*
+          gradient->radii.x=(double) (sqrt((double) (image->columns-1.0)*
             (image->columns-1.0)+(image->rows-1.0)*(image->rows-1.0)))/2.0;
           gradient->radii.y=gradient->radii.x;
         }
@@ -983,19 +983,19 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
 
           traits=GetPixelChannelTraits(image,RedPixelChannel);
           if ((traits & UpdatePixelTrait) != 0)
-            SetPixelRed(image,conform_fill.red,q);
+            SetPixelRed(image,(Quantum) conform_fill.red,q);
           traits=GetPixelChannelTraits(image,GreenPixelChannel);
           if ((traits & UpdatePixelTrait) != 0)
-            SetPixelGreen(image,conform_fill.green,q);
+            SetPixelGreen(image,(Quantum) conform_fill.green,q);
           traits=GetPixelChannelTraits(image,BluePixelChannel);
           if ((traits & UpdatePixelTrait) != 0)
-            SetPixelBlue(image,conform_fill.blue,q);
+            SetPixelBlue(image,(Quantum) conform_fill.blue,q);
           traits=GetPixelChannelTraits(image,BlackPixelChannel);
           if ((traits & UpdatePixelTrait) != 0)
-            SetPixelBlack(image,conform_fill.black,q);
+            SetPixelBlack(image,(Quantum) conform_fill.black,q);
           traits=GetPixelChannelTraits(image,AlphaPixelChannel);
           if ((traits & UpdatePixelTrait) != 0)
-            SetPixelAlpha(image,conform_fill.alpha,q);
+            SetPixelAlpha(image,(Quantum) conform_fill.alpha,q);
         }
       q+=GetPixelChannels(image);
     }
