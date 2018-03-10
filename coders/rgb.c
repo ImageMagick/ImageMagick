@@ -572,12 +572,6 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         if (image->previous == (Image *) NULL)
           {
-            status=SetImageProgress(image,LoadImageTag,3,6);
-            if (status == MagickFalse)
-              break;
-          }
-        if (image->previous == (Image *) NULL)
-          {
             status=SetImageProgress(image,LoadImageTag,4,6);
             if (status == MagickFalse)
               break;
