@@ -1995,6 +1995,7 @@ MagickExport void ImageToCustomStream(const ImageInfo *image_info,Image *image,
     *clone_info;
 
   MagickBooleanType
+    blob_support,
     status;
 
   assert(image_info != (const ImageInfo *) NULL);
@@ -2023,7 +2024,15 @@ MagickExport void ImageToCustomStream(const ImageInfo *image_info,Image *image,
       return;
     }
   (void) CopyMagickString(clone_info->magick,image->magick,MagickPathExtent);
-  if (GetMagickBlobSupport(magick_info) != MagickFalse)
+  blob_support=GetMagickBlobSupport(magick_info);
+  if ((blob_support != MagickFalse) &&
+      (GetMagickEncoderSeekableStream(magick_info) != MagickFalse))
+    {
+      if ((clone_info->custom_stream->seeker == (CustomStreamSeeker) NULL) ||
+          (clone_info->custom_stream->teller == (CustomStreamTeller) NULL))
+        blob_support=MagickFalse;
+    }
+  if (blob_support != MagickFalse)
     {
       /*
         Native blob support for this image format.
@@ -2394,6 +2403,7 @@ MagickExport void ImagesToCustomStream(const ImageInfo *image_info,
     *clone_info;
 
   MagickBooleanType
+    blob_support,
     status;
 
   assert(image_info != (const ImageInfo *) NULL);
@@ -2423,7 +2433,15 @@ MagickExport void ImagesToCustomStream(const ImageInfo *image_info,
       return;
     }
   (void) CopyMagickString(clone_info->magick,images->magick,MagickPathExtent);
-  if (GetMagickBlobSupport(magick_info) != MagickFalse)
+  blob_support=GetMagickBlobSupport(magick_info);
+  if ((blob_support != MagickFalse) &&
+      (GetMagickEncoderSeekableStream(magick_info) != MagickFalse))
+    {
+      if ((clone_info->custom_stream->seeker == (CustomStreamSeeker) NULL) ||
+          (clone_info->custom_stream->teller == (CustomStreamTeller) NULL))
+        blob_support=MagickFalse;
+    }
+  if (blob_support != MagickFalse)
     {
       /*
         Native blob support for this image format.
