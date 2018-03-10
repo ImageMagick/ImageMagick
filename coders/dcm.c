@@ -2993,7 +2993,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     greenmap=(int *) RelinquishMagickMemory(greenmap); \
   if (redmap != (int *) NULL) \
     redmap=(int *) RelinquishMagickMemory(redmap); \
-  if (stream_info->offsets == (ssize_t *) NULL) \
+  if (stream_info->offsets != (ssize_t *) NULL) \
     stream_info->offsets=(ssize_t *) RelinquishMagickMemory( \
       stream_info->offsets); \
   if (stream_info != (DCMStreamInfo *) NULL) \
