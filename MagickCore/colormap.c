@@ -138,7 +138,7 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
     image->colormap[i].red=pixel;
     image->colormap[i].green=pixel;
     image->colormap[i].blue=pixel;
-    image->colormap[i].alpha=OpaqueAlpha;
+    image->colormap[i].alpha=(MagickRealType) OpaqueAlpha;
     image->colormap[i].alpha_trait=BlendPixelTrait;
   }
   return(SetImageStorageClass(image,PseudoClass,exception));
