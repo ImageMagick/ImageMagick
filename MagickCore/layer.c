@@ -268,7 +268,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     exception);
   if (coalesce_image == (Image *) NULL)
     return((Image *) NULL);
-  coalesce_image->background_color.alpha=(Quantum) TransparentAlpha;
+  coalesce_image->background_color.alpha=(MagickRealType) TransparentAlpha;
   (void) SetImageBackgroundColor(coalesce_image,exception);
   coalesce_image->alpha_trait=next->alpha_trait;
   coalesce_image->page=bounds;
@@ -405,7 +405,7 @@ MagickExport Image *DisposeImages(const Image *images,ExceptionInfo *exception)
   dispose_image->page.x=0;
   dispose_image->page.y=0;
   dispose_image->dispose=NoneDispose;
-  dispose_image->background_color.alpha=(Quantum) TransparentAlpha;
+  dispose_image->background_color.alpha=(MagickRealType) TransparentAlpha;
   (void) SetImageBackgroundColor(dispose_image,exception);
   dispose_images=NewImageList();
   for (next=image; image != (Image *) NULL; image=GetNextImageInList(image))
@@ -784,7 +784,7 @@ MagickExport Image *CompareImagesLayers(const Image *image,
       bounds=(RectangleInfo *) RelinquishMagickMemory(bounds);
       return((Image *) NULL);
     }
-  image_a->background_color.alpha=(Quantum) TransparentAlpha;
+  image_a->background_color.alpha=(MagickRealType) TransparentAlpha;
   (void) SetImageBackgroundColor(image_a,exception);
   image_a->page=next->page;
   image_a->page.x=0;
@@ -1000,7 +1000,7 @@ static Image *OptimizeLayerFrames(const Image *image,
   prev_image->page.y=0;
   prev_image->dispose=NoneDispose;
   prev_image->background_color.alpha_trait=BlendPixelTrait;
-  prev_image->background_color.alpha=(Quantum) TransparentAlpha;
+  prev_image->background_color.alpha=(MagickRealType) TransparentAlpha;
   (void) SetImageBackgroundColor(prev_image,exception);
   /*
     Figure out the area of overlay of the first frame
@@ -1484,7 +1484,7 @@ MagickExport void OptimizeImageTransparency(const Image *image,
   dispose_image->page.y=0;
   dispose_image->dispose=NoneDispose;
   dispose_image->background_color.alpha_trait=BlendPixelTrait;
-  dispose_image->background_color.alpha=(Quantum) TransparentAlpha;
+  dispose_image->background_color.alpha=(MagickRealType) TransparentAlpha;
   (void) SetImageBackgroundColor(dispose_image,exception);
 
   while ( next != (Image *) NULL )
