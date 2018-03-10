@@ -154,6 +154,7 @@ static const OptionInfo
     { "B", BlueChannel, UndefinedOptionFlag, MagickFalse },
     { "Blue", BlueChannel, UndefinedOptionFlag, MagickFalse },
     { "C", CyanChannel, UndefinedOptionFlag, MagickFalse },
+    { "Chroma", GreenChannel, UndefinedOptionFlag, MagickFalse },
     { "Cyan", CyanChannel, UndefinedOptionFlag, MagickFalse },
     { "Gray", GrayChannel, UndefinedOptionFlag, MagickFalse },
     { "G", GreenChannel, UndefinedOptionFlag, MagickFalse },
