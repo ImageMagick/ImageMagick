@@ -346,7 +346,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
                   {
                     case GrayQuantum:
                     {
-                      SetPixelGray(image,GetPixelRed(canvas_image,p),q);
+                      SetPixelGray(image,GetPixelGray(canvas_image,p),q);
                       break;
                     }
                     case AlphaQuantum:
