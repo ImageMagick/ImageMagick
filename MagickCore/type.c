@@ -367,7 +367,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   (void) GetTypeInfo("*",exception);
   if (type_cache == (SplayTreeInfo *) NULL)
     return((TypeInfo *) NULL);
-  font_weight=weight == 0 ? 400 : weight;
+  font_weight=(size_t) (weight == 0 ? 400 : weight);
   LockSemaphoreInfo(type_semaphore);
   ResetSplayTreeIterator(type_cache);
   type_info=(const TypeInfo *) NULL;
@@ -1309,7 +1309,7 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *cache,const char *xml,
 
             weight=ParseCommandOption(MagickWeightOptions,MagickFalse,token);
             if (weight == -1)
-              weight=StringToUnsignedLong(token);
+              weight=(ssize_t) StringToUnsignedLong(token);
             type_info->weight=(size_t) weight;
             break;
           }
