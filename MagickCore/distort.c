@@ -3242,17 +3242,17 @@ MagickExport Image *SparseColorImage(const Image *image,
         }
         /* set the color directly back into the source image */
         if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-          pixel.red=ClampPixel(QuantumRange*pixel.red);
+          pixel.red=(MagickRealType) ClampPixel(QuantumRange*pixel.red);
         if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-          pixel.green=ClampPixel(QuantumRange*pixel.green);
+          pixel.green=(MagickRealType) ClampPixel(QuantumRange*pixel.green);
         if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-          pixel.blue=ClampPixel(QuantumRange*pixel.blue);
+          pixel.blue=(MagickRealType) ClampPixel(QuantumRange*pixel.blue);
         if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
             (image->colorspace == CMYKColorspace))
-          pixel.black=ClampPixel(QuantumRange*pixel.black);
+          pixel.black=(MagickRealType) ClampPixel(QuantumRange*pixel.black);
         if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
             (image->alpha_trait != UndefinedPixelTrait))
-          pixel.alpha=ClampPixel(QuantumRange*pixel.alpha);
+          pixel.alpha=(MagickRealType) ClampPixel(QuantumRange*pixel.alpha);
         SetPixelViaPixelInfo(sparse_image,&pixel,q);
         q+=GetPixelChannels(sparse_image);
       }
