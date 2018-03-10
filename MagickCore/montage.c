@@ -228,8 +228,8 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
     montage_info->font=AcquireString(image_info->font);
   montage_info->gravity=CenterGravity;
   montage_info->pointsize=image_info->pointsize;
-  montage_info->fill.alpha=OpaqueAlpha;
-  montage_info->stroke.alpha=(Quantum) TransparentAlpha;
+  montage_info->fill.alpha=(MagickRealType) OpaqueAlpha;
+  montage_info->stroke.alpha=(MagickRealType) TransparentAlpha;
   montage_info->matte_color=image_info->matte_color;
   montage_info->background_color=image_info->background_color;
   montage_info->border_color=image_info->border_color;
