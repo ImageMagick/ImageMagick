@@ -250,7 +250,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
       StringInfo
         *nonce;
 
-      nonce=AcquireStringInfo(count);
+      nonce=AcquireStringInfo((size_t) count);
       (void) memcpy(GetStringInfoDatum(nonce),secret,(size_t) count);
       *session_key=GetMagickSignature(nonce);
       nonce=DestroyStringInfo(nonce);
