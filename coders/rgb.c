@@ -369,7 +369,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     }
                     case OpacityQuantum:
                     {
-                      SetPixelAlpha(image,GetPixelAlpha(canvas_image,p),q);
+                      SetPixelOpacity(image,GetPixelOpacity(canvas_image,p),q);
                       break;
                     }
                     case AlphaQuantum:
