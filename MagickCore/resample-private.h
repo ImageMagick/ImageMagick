@@ -56,7 +56,7 @@ static inline ResampleFilter **AcquireResampleFilterThreadSet(
     sizeof(*filter));
   if (filter == (ResampleFilter **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(filter,0,number_threads*sizeof(*filter));
+  (void) memset(filter,0,number_threads*sizeof(*filter));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
     filter[i]=AcquireResampleFilter(image,exception);

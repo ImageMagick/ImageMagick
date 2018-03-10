@@ -65,7 +65,7 @@ static inline RandomInfo **AcquireRandomInfoThreadSet(void)
     sizeof(*random_info));
   if (random_info == (RandomInfo **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(random_info,0,number_threads*sizeof(*random_info));
+  (void) memset(random_info,0,number_threads*sizeof(*random_info));
   for (i=0; i < (ssize_t) number_threads; i++)
     random_info[i]=AcquireRandomInfo();
   return(random_info);

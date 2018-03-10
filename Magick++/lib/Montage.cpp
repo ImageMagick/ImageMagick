@@ -179,7 +179,7 @@ Magick::Color Magick::Montage::transparentColor(void) const
 
 void Magick::Montage::updateMontageInfo(MontageInfo &montageInfo_ ) const
 {
-  (void) MagickCore::ResetMagickMemory(&montageInfo_,0,sizeof(montageInfo_));
+  (void) memset(&montageInfo_,0,sizeof(montageInfo_));
 
   // matte_color
   montageInfo_.matte_color=Color();

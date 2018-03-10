@@ -378,7 +378,7 @@ static inline PixelTrait GetPixelRedTraits(const Image *magick_restrict image)
 static inline void GetPixelInfoPixel(const Image *magick_restrict image,
   const Quantum *magick_restrict pixel,PixelInfo *magick_restrict pixel_info)
 {
-  (void) ResetMagickMemory(pixel_info,0,sizeof(*pixel_info));
+  (void) memset(pixel_info,0,sizeof(*pixel_info));
   pixel_info->storage_class=DirectClass;
   pixel_info->colorspace=sRGBColorspace;
   pixel_info->depth=MAGICKCORE_QUANTUM_DEPTH;
