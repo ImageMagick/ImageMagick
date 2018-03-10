@@ -3081,7 +3081,7 @@ static void RemoveICCProfileFromResourceBlock(StringInfo *bim_profile)
         if ((quantum >= 12) && (quantum < (ssize_t) length))
           {
             if ((q+quantum < (datum+length-16)))
-              (void) CopyMagickMemory(q,q+quantum,length-quantum-(q-datum));
+              (void) memmove(q,q+quantum,length-quantum-(q-datum));
             SetStringInfoLength(bim_profile,length-quantum);
           }
         break;
@@ -3136,7 +3136,7 @@ static void RemoveResolutionFromResourceBlock(StringInfo *bim_profile)
     if ((id == 0x000003ed) && (cnt < (ssize_t) (length-12)) &&
         ((ssize_t) length-(cnt+12)-(q-datum)) > 0)
       {
-        (void) CopyMagickMemory(q,q+cnt+12,length-(cnt+12)-(q-datum));
+        (void) memmove(q,q+cnt+12,length-(cnt+12)-(q-datum));
         SetStringInfoLength(bim_profile,length-(cnt+12));
         break;
       }
@@ -3232,7 +3232,7 @@ static const StringInfo *GetAdditionalInformation(const ImageInfo *image_info,
     if (found == MagickFalse)
       {
         if (remaining_length > 0)
-          p=(unsigned char *) CopyMagickMemory(p-12,p+size,remaining_length);
+          p=(unsigned char *) memmove(p-12,p+size,remaining_length);
         continue;
       }
     length+=(size_t) size+12;

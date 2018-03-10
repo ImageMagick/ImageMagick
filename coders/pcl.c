@@ -943,7 +943,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image,
             (double) packets);
           (void) WriteBlobString(image,buffer);
           (void) WriteBlob(image,packets,compress_pixels);
-          (void) CopyMagickMemory(previous_pixels,pixels,length*
+          (void) memcpy(previous_pixels,pixels,length*
             sizeof(*pixels));
           break;
         }

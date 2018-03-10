@@ -1107,7 +1107,7 @@ static void XEditText(Display *display,XWidgetInfo *text_info,
       if (text_info->cursor != text_info->text)
         {
           text_info->cursor--;
-          (void) CopyMagickString(text_info->cursor,text_info->cursor+1,
+          (void) memmove(text_info->cursor,text_info->cursor+1,
             MagickPathExtent);
           text_info->highlight=MagickFalse;
           break;

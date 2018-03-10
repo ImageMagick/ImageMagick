@@ -708,7 +708,7 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key,
         sizeof(*attribute));
     if (attribute != (char *) NULL)
       {
-        (void) CopyMagickMemory(attribute,(char *) info,(size_t) count);
+        (void) memcpy(attribute,(char *) info,(size_t) count);
         attribute[count]='\0';
         info+=count;
         length-=MagickMin(count,(ssize_t) length);

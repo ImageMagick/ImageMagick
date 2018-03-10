@@ -485,7 +485,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
               image->filename);
             break;
           }
-        (void) CopyMagickMemory(q,p,(size_t) number_pixels);
+        (void) memcpy(q,p,(size_t) number_pixels);
       }
       scanline=(unsigned char *) RelinquishMagickMemory(scanline);
       return(pixels);
@@ -520,7 +520,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
           number_pixels=length*bytes_per_pixel;
           p=ExpandBuffer(scanline+j+1,&number_pixels,bits_per_pixel);
           if ((q-pixels+number_pixels) <= *extent)
-            (void) CopyMagickMemory(q,p,(size_t) number_pixels);
+            (void) memcpy(q,p,(size_t) number_pixels);
           q+=number_pixels;
           j+=(ssize_t) (length*bytes_per_pixel+1);
         }
@@ -532,7 +532,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
           for (i=0; i < (ssize_t) length; i++)
           {
             if ((q-pixels+number_pixels) <= *extent)
-              (void) CopyMagickMemory(q,p,(size_t) number_pixels);
+              (void) memcpy(q,p,(size_t) number_pixels);
             q+=number_pixels;
           }
           j+=(ssize_t) bytes_per_pixel+1;

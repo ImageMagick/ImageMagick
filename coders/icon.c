@@ -362,7 +362,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         png=(unsigned char *) AcquireQuantumMemory(length+16,sizeof(*png));
         if (png == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-        (void) CopyMagickMemory(png,"\211PNG\r\n\032\n\000\000\000\015",12);
+        (void) memcpy(png,"\211PNG\r\n\032\n\000\000\000\015",12);
         png[12]=(unsigned char) icon_info.planes;
         png[13]=(unsigned char) (icon_info.planes >> 8);
         png[14]=(unsigned char) icon_info.bits_per_pixel;

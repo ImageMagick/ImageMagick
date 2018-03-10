@@ -2004,14 +2004,14 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image,
 
         tag_length=strlen(ICC_PROFILE);
         p=GetStringInfoDatum(custom_profile);
-        (void) CopyMagickMemory(p,ICC_PROFILE,tag_length);
+        (void) memcpy(p,ICC_PROFILE,tag_length);
         p[tag_length]='\0';
         for (i=0; i < (ssize_t) GetStringInfoLength(profile); i+=65519L)
         {
           length=MagickMin(GetStringInfoLength(profile)-i,65519L);
           p[12]=(unsigned char) ((i/65519L)+1);
           p[13]=(unsigned char) (GetStringInfoLength(profile)/65519L+1);
-          (void) CopyMagickMemory(p+tag_length+3,GetStringInfoDatum(profile)+i,
+          (void) memcpy(p+tag_length+3,GetStringInfoDatum(profile)+i,
             length);
           jpeg_write_marker(jpeg_info,ICC_MARKER,GetStringInfoDatum(
             custom_profile),(unsigned int) (length+tag_length+3));
@@ -2039,7 +2039,7 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image,
             }
           else
             {
-              (void) CopyMagickMemory(p,"Photoshop 3.0 8BIM\04\04\0\0\0\0",24);
+              (void) memcpy(p,"Photoshop 3.0 8BIM\04\04\0\0\0\0",24);
               tag_length=26;
               p[24]=(unsigned char) (length >> 8);
               p[25]=(unsigned char) (length & 0xff);

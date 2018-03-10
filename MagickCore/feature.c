@@ -1812,7 +1812,7 @@ static Image *RenderHoughLines(const ImageInfo *image_info,const size_t columns,
         GetBlobSize(image)+1);
       if (draw_info->primitive != (char *) NULL)
         {
-          (void) CopyMagickMemory(draw_info->primitive,GetBlobStreamData(image),
+          (void) memcpy(draw_info->primitive,GetBlobStreamData(image),
             (size_t) GetBlobSize(image));
           draw_info->primitive[GetBlobSize(image)]='\0';
         }

@@ -428,7 +428,7 @@ static MagickBooleanType RollFourier(const size_t width,const size_t height,
       source_pixels[v*width+u]=roll_pixels[i++];
     }
   }
-  (void) CopyMagickMemory(roll_pixels,source_pixels,height*width*
+  (void) memcpy(roll_pixels,source_pixels,height*width*
     sizeof(*source_pixels));
   source_info=RelinquishVirtualMemory(source_info);
   return(MagickTrue);
@@ -1190,7 +1190,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
   magnitude_view=DestroyCacheView(magnitude_view);
   status=InverseQuadrantSwap(fourier_info->width,fourier_info->height,
     magnitude_pixels,inverse_pixels);
-  (void) CopyMagickMemory(magnitude_pixels,inverse_pixels,fourier_info->height*
+  (void) memcpy(magnitude_pixels,inverse_pixels,fourier_info->height*
     fourier_info->center*sizeof(*magnitude_pixels));
   i=0L;
   phase_view=AcquireVirtualCacheView(phase_image,exception);
@@ -1251,7 +1251,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
   if (status != MagickFalse)
     status=InverseQuadrantSwap(fourier_info->width,fourier_info->height,
       phase_pixels,inverse_pixels);
-  (void) CopyMagickMemory(phase_pixels,inverse_pixels,fourier_info->height*
+  (void) memcpy(phase_pixels,inverse_pixels,fourier_info->height*
     fourier_info->center*sizeof(*phase_pixels));
   inverse_info=RelinquishVirtualMemory(inverse_info);
   /*

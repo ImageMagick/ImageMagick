@@ -3006,7 +3006,7 @@ static int32 TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
     Fill scanlines to tile height.
   */
   i=(ssize_t) (row % tiff_info->tile_geometry.height)*TIFFScanlineSize(tiff);
-  (void) CopyMagickMemory(tiff_info->scanlines+i,(char *) tiff_info->scanline,
+  (void) memcpy(tiff_info->scanlines+i,(char *) tiff_info->scanline,
     (size_t) TIFFScanlineSize(tiff));
   if (((size_t) (row % tiff_info->tile_geometry.height) !=
       (tiff_info->tile_geometry.height-1)) &&

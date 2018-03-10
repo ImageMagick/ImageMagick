@@ -320,8 +320,8 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
       if (clone_info->dash_pattern == (double *) NULL)
         ThrowFatalException(ResourceLimitFatalError,
           "UnableToAllocateDashPattern");
-      (void) CopyMagickMemory(clone_info->dash_pattern,draw_info->dash_pattern,
-        (size_t) (x+1)*sizeof(*clone_info->dash_pattern));
+      (void) memcpy(clone_info->dash_pattern,draw_info->dash_pattern,(size_t)
+        (x+1)*sizeof(*clone_info->dash_pattern));
     }
   clone_info->gradient=draw_info->gradient;
   if (draw_info->gradient.stops != (StopInfo *) NULL)
@@ -335,7 +335,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
       if (clone_info->gradient.stops == (StopInfo *) NULL)
         ThrowFatalException(ResourceLimitFatalError,
           "UnableToAllocateDashPattern");
-      (void) CopyMagickMemory(clone_info->gradient.stops,
+      (void) memcpy(clone_info->gradient.stops,
         draw_info->gradient.stops,(size_t) number_stops*
         sizeof(*clone_info->gradient.stops));
     }
@@ -899,7 +899,7 @@ static size_t DestroyEdge(PolygonInfo *polygon_info,
     polygon_info->edges[edge].points);
   polygon_info->number_edges--;
   if (edge < polygon_info->number_edges)
-    (void) CopyMagickMemory(polygon_info->edges+edge,polygon_info->edges+edge+1,
+    (void) memmove(polygon_info->edges+edge,polygon_info->edges+edge+1,
       (size_t) (polygon_info->number_edges-edge)*sizeof(*polygon_info->edges));
   return(polygon_info->number_edges);
 }
@@ -6213,7 +6213,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
           polygon_primitive);
       return((PrimitiveInfo *) NULL);
     }
-  (void) CopyMagickMemory(polygon_primitive,primitive_info,(size_t)
+  (void) memcpy(polygon_primitive,primitive_info,(size_t)
     number_vertices*sizeof(*polygon_primitive));
   closed_path=
     (fabs(primitive_info[number_vertices-1].point.x-primitive_info[0].point.x) < DrawEpsilon) &&

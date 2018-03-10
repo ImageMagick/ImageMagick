@@ -221,7 +221,7 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
   if (random_info->secret_key == ~0UL)
     {
       key=GetRandomKey(random_info,sizeof(random_info->secret_key));
-      (void) CopyMagickMemory(random_info->seed,GetStringInfoDatum(key),
+      (void) memcpy(random_info->seed,GetStringInfoDatum(key),
         GetStringInfoLength(key));
       key=DestroyStringInfo(key);
     }
@@ -237,7 +237,7 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
       key=DestroyStringInfo(key);
       FinalizeSignature(signature_info);
       digest=GetSignatureDigest(signature_info);
-      (void) CopyMagickMemory(random_info->seed,GetStringInfoDatum(digest),
+      (void) memcpy(random_info->seed,GetStringInfoDatum(digest),
         MagickMin(GetSignatureDigestsize(signature_info),
         sizeof(*random_info->seed)));
       signature_info=DestroySignatureInfo(signature_info);
@@ -910,7 +910,7 @@ MagickExport void SetRandomKey(RandomInfo *random_info,const size_t length,
     UpdateSignature(signature_info,random_info->nonce);
     FinalizeSignature(signature_info);
     IncrementRandomNonce(random_info->nonce);
-    (void) CopyMagickMemory(p,GetStringInfoDatum(GetSignatureDigest(
+    (void) memcpy(p,GetStringInfoDatum(GetSignatureDigest(
       signature_info)),GetSignatureDigestsize(signature_info));
     p+=GetSignatureDigestsize(signature_info);
     i-=GetSignatureDigestsize(signature_info);

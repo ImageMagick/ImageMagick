@@ -808,7 +808,7 @@ MagickPrivate void UpdateSignature(SignatureInfo *signature_info,
       i=GetStringInfoLength(signature_info->message)-signature_info->extent;
       if (i > n)
         i=n;
-      (void) CopyMagickMemory(GetStringInfoDatum(signature_info->message)+
+      (void) memcpy(GetStringInfoDatum(signature_info->message)+
         signature_info->extent,p,i);
       n-=i;
       p+=i;
@@ -824,6 +824,6 @@ MagickPrivate void UpdateSignature(SignatureInfo *signature_info,
     n-=GetStringInfoLength(signature_info->message);
     TransformSignature(signature_info);
   }
-  (void) CopyMagickMemory(GetStringInfoDatum(signature_info->message),p,n);
+  (void) memcpy(GetStringInfoDatum(signature_info->message),p,n);
   signature_info->extent=n;
 }

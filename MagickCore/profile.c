@@ -1336,7 +1336,7 @@ static inline void WriteResourceLong(unsigned char *p,
   buffer[1]=(unsigned char) (quantum >> 16);
   buffer[2]=(unsigned char) (quantum >> 8);
   buffer[3]=(unsigned char) quantum;
-  (void) CopyMagickMemory(p,buffer,4);
+  (void) memcpy(p,buffer,4);
 }
 
 static void WriteTo8BimProfile(Image *image,const char *name,
@@ -1423,7 +1423,7 @@ static void WriteTo8BimProfile(Image *image,const char *name,
           {
             offset=(q-datum);
             extract_profile=AcquireStringInfo(offset+extent);
-            (void) CopyMagickMemory(extract_profile->datum,datum,offset);
+            (void) memcpy(extract_profile->datum,datum,offset);
           }
         else
           {
@@ -1432,13 +1432,13 @@ static void WriteTo8BimProfile(Image *image,const char *name,
             if ((extract_extent & 0x01) != 0)
               extract_extent++;
             extract_profile=AcquireStringInfo(offset+extract_extent+extent);
-            (void) CopyMagickMemory(extract_profile->datum,datum,offset-4);
+            (void) memcpy(extract_profile->datum,datum,offset-4);
             WriteResourceLong(extract_profile->datum+offset-4,(unsigned int)
               profile->length);
-            (void) CopyMagickMemory(extract_profile->datum+offset,
+            (void) memcpy(extract_profile->datum+offset,
               profile->datum,profile->length);
           }
-        (void) CopyMagickMemory(extract_profile->datum+offset+extract_extent,
+        (void) memcpy(extract_profile->datum+offset+extract_extent,
           p+count,extent);
         (void) AddValueToSplayTree((SplayTreeInfo *) image->profiles,
           ConstantString("8bim"),CloneStringInfo(extract_profile));
@@ -1776,14 +1776,14 @@ static inline void WriteProfileLong(const EndianType endian,
       buffer[1]=(unsigned char) (value >> 8);
       buffer[2]=(unsigned char) (value >> 16);
       buffer[3]=(unsigned char) (value >> 24);
-      (void) CopyMagickMemory(p,buffer,4);
+      (void) memcpy(p,buffer,4);
       return;
     }
   buffer[0]=(unsigned char) (value >> 24);
   buffer[1]=(unsigned char) (value >> 16);
   buffer[2]=(unsigned char) (value >> 8);
   buffer[3]=(unsigned char) value;
-  (void) CopyMagickMemory(p,buffer,4);
+  (void) memcpy(p,buffer,4);
 }
 
 static void WriteProfileShort(const EndianType endian,
@@ -1796,12 +1796,12 @@ static void WriteProfileShort(const EndianType endian,
     {
       buffer[0]=(unsigned char) value;
       buffer[1]=(unsigned char) (value >> 8);
-      (void) CopyMagickMemory(p,buffer,2);
+      (void) memcpy(p,buffer,2);
       return;
     }
   buffer[0]=(unsigned char) (value >> 8);
   buffer[1]=(unsigned char) value;
-  (void) CopyMagickMemory(p,buffer,2);
+  (void) memcpy(p,buffer,2);
 }
 
 static MagickBooleanType Sync8BimProfile(Image *image,StringInfo *profile)

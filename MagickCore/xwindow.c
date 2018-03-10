@@ -8418,7 +8418,7 @@ MagickPrivate void XMakeWindow(Display *display,Window parent,char **argv,
         if ((isspace((int) ((unsigned char) *p)) == 0) && (*p != '%'))
           p++;
         else
-          (void) CopyMagickString(p,p+1,MagickPathExtent-(p-geometry));
+          (void) memmove(p,p+1,MagickPathExtent-(p-geometry));
       }
       flags=XWMGeometry(display,window_info->screen,geometry,default_geometry,
         window_info->border_width,size_hints,&size_hints->x,&size_hints->y,

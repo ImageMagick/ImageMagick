@@ -365,7 +365,7 @@ static void StripStyleTokens(char *message)
   q=message+length-1;
   while ((isspace((int) ((unsigned char) *q)) != 0) && (q > p))
     q--;
-  (void) CopyMagickMemory(message,p,(size_t) (q-p+1));
+  (void) memcpy(message,p,(size_t) (q-p+1));
   message[q-p+1]='\0';
   StripString(message);
 }

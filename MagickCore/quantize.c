@@ -1898,7 +1898,7 @@ static MagickBooleanType RiemersmaDither(Image *image,CacheView *image_view,
       /*
         Propagate the error as the last entry of the error queue.
       */
-      (void) CopyMagickMemory(p->error,p->error+1,(ErrorQueueLength-1)*
+      (void) memmove(p->error,p->error+1,(ErrorQueueLength-1)*
         sizeof(p->error[0]));
       AssociateAlphaPixelInfo(cube_info,image->colormap+index,&color);
       p->error[ErrorQueueLength-1].red=pixel.red-color.red;

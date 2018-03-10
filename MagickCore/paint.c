@@ -605,7 +605,7 @@ MagickExport MagickBooleanType GradientImage(Image *image,
   if (gradient->stops == (StopInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
-  (void) CopyMagickMemory(gradient->stops,stops,(size_t) number_stops*
+  (void) memcpy(gradient->stops,stops,(size_t) number_stops*
     sizeof(*stops));
   /*
     Draw a gradient on the image.

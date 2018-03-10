@@ -498,7 +498,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
             sun_pixels=(unsigned char *) RelinquishMagickMemory(sun_pixels);
             ThrowReaderException(ResourceLimitError,"ImproperImageHeader");
           }
-        (void) CopyMagickMemory(sun_pixels,sun_data,sun_info.length);
+        (void) memcpy(sun_pixels,sun_data,sun_info.length);
       }
     sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
     /*
