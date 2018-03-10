@@ -383,7 +383,8 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
     Compute the absolute difference in pixels between two images.
   */
   status=MagickTrue;
-  fuzz=MagickMin(GetPixelChannels(image),GetPixelChannels(reconstruct_image))*
+  fuzz=(double) MagickMin(GetPixelChannels(image),
+    GetPixelChannels(reconstruct_image))*
     GetFuzzyColorDistance(image,reconstruct_image);
   rows=MagickMax(image->rows,reconstruct_image->rows);
   columns=MagickMax(image->columns,reconstruct_image->columns);
