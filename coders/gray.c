@@ -288,17 +288,13 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         static QuantumType
           quantum_types[4] =
           {
-            RedQuantum,
-            GreenQuantum,
-            BlueQuantum,
+            GrayQuantum,
             AlphaQuantum
           };
 
         /*
-          Line interlacing:  RRR...GGG...BBB...RRR...GGG...BBB...
+          Line interlacing:  GGG...
         */
-        if (LocaleCompare(image_info->magick,"GRAYO") == 0)
-          quantum_types[3]=OpacityQuantum;
         if (scene == 0)
           {
             length=GetQuantumExtent(canvas_image,quantum_info,RedQuantum);
@@ -348,24 +344,9 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
                 {
                   switch (quantum_type)
                   {
-                    case RedQuantum:
+                    case GrayQuantum:
                     {
-                      SetPixelRed(image,GetPixelRed(canvas_image,p),q);
-                      break;
-                    }
-                    case GreenQuantum:
-                    {
-                      SetPixelGreen(image,GetPixelGreen(canvas_image,p),q);
-                      break;
-                    }
-                    case BlueQuantum:
-                    {
-                      SetPixelBlue(image,GetPixelBlue(canvas_image,p),q);
-                      break;
-                    }
-                    case OpacityQuantum:
-                    {
-                      SetPixelAlpha(image,GetPixelAlpha(canvas_image,p),q);
+                      SetPixelGray(image,GetPixelRed(canvas_image,p),q);
                       break;
                     }
                     case AlphaQuantum:
@@ -400,7 +381,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
       case PlaneInterlace:
       {
         /*
-          Plane interlacing:  RRRRRR...GGGGGG...BBBBBB...
+          Plane interlacing:  GGG...
         */
         if (scene == 0)
           {
@@ -647,7 +628,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
       case PartitionInterlace:
       {
         /*
-          Partition interlacing:  RRRRRR..., GGGGGG..., BBBBBB...
+          Partition interlacing:  GGG...
         */
         AppendImageFormat("R",image->filename);
         status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
