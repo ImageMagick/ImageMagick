@@ -136,6 +136,7 @@ static const CoderMapInfo
     { "GIF87", "GIF" },
     { "G", "RAW" },
     { "GRANITE", "MAGICK" },
+    { "GRAYA", "GRAY" },
     { "GROUP4", "TIFF" },
     { "GV", "DOT" },
     { "HTM", "HTML" },
