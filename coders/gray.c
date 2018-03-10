@@ -211,7 +211,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
       default:
       {
         /*
-          No interlacing:  GRAYGRAYGRAYGRAYGRAYGRAY...
+          No interlacing:  GGG...
         */
         if (scene == 0)
           {
@@ -293,7 +293,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
           };
 
         /*
-          Line interlacing:  GGG...
+          Line interlacing:  G...G...G...
         */
         if (scene == 0)
           {
@@ -381,7 +381,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
       case PlaneInterlace:
       {
         /*
-          Plane interlacing:  GGG...
+          Plane interlacing:  G...G...G...
         */
         if (scene == 0)
           {
@@ -514,7 +514,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
       case PartitionInterlace:
       {
         /*
-          Partition interlacing:  GGG...
+          Partition interlacing:  G..., G..., G...
         */
         AppendImageFormat("R",image->filename);
         status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
@@ -1073,7 +1073,7 @@ static MagickBooleanType WriteGRAYImage(const ImageInfo *image_info,
       case LineInterlace:
       {
         /*
-          Line interlacing:  GGG...
+          Line interlacing:  G...G...G...
         */
         for (y=0; y < (ssize_t) image->rows; y++)
         {
@@ -1109,7 +1109,7 @@ static MagickBooleanType WriteGRAYImage(const ImageInfo *image_info,
       case PlaneInterlace:
       {
         /*
-          Plane interlacing:  GGG...
+          Plane interlacing:  G...G...G...
         */
         for (y=0; y < (ssize_t) image->rows; y++)
         {
@@ -1168,7 +1168,7 @@ static MagickBooleanType WriteGRAYImage(const ImageInfo *image_info,
       case PartitionInterlace:
       {
         /*
-          Partition interlacing:  GGG...
+          Partition interlacing:  G..., G..., G...
         */
         AppendImageFormat("G",image->filename);
         status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :

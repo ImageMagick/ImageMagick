@@ -478,7 +478,7 @@ MagickExport void *AcquireMagickMemory(const size_t size)
             i;
 
           assert(2*sizeof(size_t) > (size_t) (~SizeMask));
-          (void) ResetMagickMemory(&memory_pool,0,sizeof(memory_pool));
+          (void) memset(&memory_pool,0,sizeof(memory_pool));
           memory_pool.allocation=SegmentSize;
           memory_pool.blocks[MaxBlocks]=(void *) (-1);
           for (i=0; i < MaxSegments; i++)
@@ -614,7 +614,7 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
     sizeof(*memory_info)));
   if (memory_info == (MemoryInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(memory_info,0,sizeof(*memory_info));
+  (void) memset(memory_info,0,sizeof(*memory_info));
   extent=count*quantum;
   memory_info->length=extent;
   memory_info->signature=MagickCoreSignature;
@@ -772,7 +772,7 @@ MagickExport void DestroyMagickMemory(void)
       (void) UnmapBlob(memory_pool.segments[i]->allocation,
         memory_pool.segments[i]->length);
   free_segments=(DataSegmentInfo *) NULL;
-  (void) ResetMagickMemory(&memory_pool,0,sizeof(memory_pool));
+  (void) memset(&memory_pool,0,sizeof(memory_pool));
   UnlockSemaphoreInfo(memory_semaphore);
   RelinquishSemaphoreInfo(&memory_semaphore);
 #endif
