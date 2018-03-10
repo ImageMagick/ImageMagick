@@ -427,7 +427,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetPixelRed(image,GetPixelRed(canvas_image,p),q);
+                SetPixelGray(image,GetPixelGray(canvas_image,p),q);
                 p+=GetPixelChannels(canvas_image);
                 q+=GetPixelChannels(image);
               }
@@ -442,120 +442,6 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         if (image->previous == (Image *) NULL)
           {
             status=SetImageProgress(image,LoadImageTag,1,6);
-            if (status == MagickFalse)
-              break;
-          }
-        for (y=0; y < (ssize_t) image->extract_info.height; y++)
-        {
-          register const Quantum
-            *magick_restrict p;
-
-          register Quantum
-            *magick_restrict q;
-
-          register ssize_t
-            x;
-
-          if (count != (ssize_t) length)
-            {
-              ThrowFileException(exception,CorruptImageError,
-                "UnexpectedEndOfFile",image->filename);
-              break;
-            }
-          q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
-            exception);
-          if (q == (Quantum *) NULL)
-            break;
-          length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
-            quantum_info,GreenQuantum,pixels,exception);
-          if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
-            break;
-          if (((y-image->extract_info.y) >= 0) && 
-              ((y-image->extract_info.y) < (ssize_t) image->rows))
-            {
-              p=GetVirtualPixels(canvas_image,canvas_image->extract_info.x,0,
-                canvas_image->columns,1,exception);
-              q=GetAuthenticPixels(image,0,y-image->extract_info.y,
-                image->columns,1,exception);
-              if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
-                break;
-              for (x=0; x < (ssize_t) image->columns; x++)
-              {
-                SetPixelGreen(image,GetPixelGreen(canvas_image,p),q);
-                p+=GetPixelChannels(canvas_image);
-                q+=GetPixelChannels(image);
-              }
-              if (SyncAuthenticPixels(image,exception) == MagickFalse)
-                break;
-           }
-          pixels=(const unsigned char *) ReadBlobStream(image,length,
-            GetQuantumPixels(quantum_info),&count);
-          if (count != (ssize_t) length)
-            break;
-        }
-        if (image->previous == (Image *) NULL)
-          {
-            status=SetImageProgress(image,LoadImageTag,2,6);
-            if (status == MagickFalse)
-              break;
-          }
-        for (y=0; y < (ssize_t) image->extract_info.height; y++)
-        {
-          register const Quantum
-            *magick_restrict p;
-
-          register Quantum
-            *magick_restrict q;
-
-          register ssize_t
-            x;
-
-          if (count != (ssize_t) length)
-            {
-              ThrowFileException(exception,CorruptImageError,
-                "UnexpectedEndOfFile",image->filename);
-              break;
-            }
-          q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
-            exception);
-          if (q == (Quantum *) NULL)
-            break;
-          length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
-            quantum_info,BlueQuantum,pixels,exception);
-          if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
-            break;
-          if (((y-image->extract_info.y) >= 0) && 
-              ((y-image->extract_info.y) < (ssize_t) image->rows))
-            {
-              p=GetVirtualPixels(canvas_image,canvas_image->extract_info.x,0,
-                canvas_image->columns,1,exception);
-              q=GetAuthenticPixels(image,0,y-image->extract_info.y,
-                image->columns,1,exception);
-              if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
-                break;
-              for (x=0; x < (ssize_t) image->columns; x++)
-              {
-                SetPixelBlue(image,GetPixelBlue(canvas_image,p),q);
-                p+=GetPixelChannels(canvas_image);
-                q+=GetPixelChannels(image);
-              }
-              if (SyncAuthenticPixels(image,exception) == MagickFalse)
-                break;
-            }
-          pixels=(const unsigned char *) ReadBlobStream(image,length,
-            GetQuantumPixels(quantum_info),&count);
-          if (count != (ssize_t) length)
-            break;
-        }
-        if (image->previous == (Image *) NULL)
-          {
-            status=SetImageProgress(image,LoadImageTag,3,6);
-            if (status == MagickFalse)
-              break;
-          }
-        if (image->previous == (Image *) NULL)
-          {
-            status=SetImageProgress(image,LoadImageTag,4,6);
             if (status == MagickFalse)
               break;
           }
