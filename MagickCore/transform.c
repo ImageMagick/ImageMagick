@@ -474,7 +474,7 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
           Quantum
             pixel;
 
-          pixel=QuantumRange-GetPixelIntensity(images,p);
+          pixel=ClampToQuantum(QuantumRange-GetPixelIntensity(images,p));
           switch (i)
           {
             case 0: SetPixelCyan(cmyk_image,pixel,q);  break;
@@ -592,7 +592,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
       crop_image=CloneImage(image,1,1,MagickTrue,exception);
       if (crop_image == (Image *) NULL)
         return((Image *) NULL);
-      crop_image->background_color.alpha=(Quantum) TransparentAlpha;
+      crop_image->background_color.alpha=(MagickRealType) TransparentAlpha;
       crop_image->alpha_trait=BlendPixelTrait;
       (void) SetImageBackgroundColor(crop_image,exception);
       crop_image->page=bounding_box;
@@ -2469,7 +2469,7 @@ MagickExport Image *TrimImage(const Image *image,ExceptionInfo *exception)
       crop_image=CloneImage(image,1,1,MagickTrue,exception);
       if (crop_image == (Image *) NULL)
         return((Image *) NULL);
-      crop_image->background_color.alpha=(Quantum) TransparentAlpha;
+      crop_image->background_color.alpha=(MagickRealType) TransparentAlpha;
       crop_image->alpha_trait=BlendPixelTrait;
       (void) SetImageBackgroundColor(crop_image,exception);
       crop_image->page=image->page;
