@@ -495,7 +495,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
             /*
               Copy channel.
             */
-            q[i]=Sc;
+            q[i]=ClampToQuantum(Sc);
             continue;
           }
         /*
@@ -1673,7 +1673,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             /*
               Copy channel.
             */
-            q[i]=Dc;
+            q[i]=ClampToQuantum(Dc);
             continue;
           }
         /*
