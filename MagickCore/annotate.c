@@ -804,8 +804,8 @@ MagickExport MagickBooleanType GetMultilineTypeMetrics(Image *image,
     return(MagickFalse);
   annotate_info->render=MagickFalse;
   annotate_info->direction=UndefinedDirection;
-  (void) ResetMagickMemory(metrics,0,sizeof(*metrics));
-  (void) ResetMagickMemory(&extent,0,sizeof(extent));
+  (void) memset(metrics,0,sizeof(*metrics));
+  (void) memset(&extent,0,sizeof(extent));
   /*
     Find the widest of the text lines.
   */
@@ -900,7 +900,7 @@ MagickExport MagickBooleanType GetTypeMetrics(Image *image,
   annotate_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   annotate_info->render=MagickFalse;
   annotate_info->direction=UndefinedDirection;
-  (void) ResetMagickMemory(metrics,0,sizeof(*metrics));
+  (void) memset(metrics,0,sizeof(*metrics));
   offset.x=0.0;
   offset.y=0.0;
   status=RenderType(image,annotate_info,&offset,metrics,exception);

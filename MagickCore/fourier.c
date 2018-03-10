@@ -540,10 +540,10 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
       return(MagickFalse);
     }
   magnitude_pixels=(double *) GetVirtualMemoryBlob(magnitude_info);
-  (void) ResetMagickMemory(magnitude_pixels,0,fourier_info->width*
+  (void) memset(magnitude_pixels,0,fourier_info->width*
     fourier_info->height*sizeof(*magnitude_pixels));
   phase_pixels=(double *) GetVirtualMemoryBlob(phase_info);
-  (void) ResetMagickMemory(phase_pixels,0,fourier_info->width*
+  (void) memset(phase_pixels,0,fourier_info->width*
     fourier_info->height*sizeof(*phase_pixels));
   status=ForwardQuadrantSwap(fourier_info->width,fourier_info->height,
     magnitude,magnitude_pixels);
@@ -716,7 +716,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
       return(MagickFalse);
     }
   source_pixels=(double *) GetVirtualMemoryBlob(source_info);
-  ResetMagickMemory(source_pixels,0,fourier_info->width*fourier_info->height*
+  memset(source_pixels,0,fourier_info->width*fourier_info->height*
     sizeof(*source_pixels));
   i=0L;
   image_view=AcquireVirtualCacheView(image,exception);

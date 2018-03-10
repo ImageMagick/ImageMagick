@@ -810,7 +810,7 @@ static Image *ReadDJVUImage(const ImageInfo *image_info,
   /*
    * Initialize members of the MngInfo structure.
    */
-  (void) ResetMagickMemory(lc,0,sizeof(LoadContext));
+  (void) memset(lc,0,sizeof(LoadContext));
 
   lc->image = image;
   lc->pages = 0;

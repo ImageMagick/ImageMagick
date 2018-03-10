@@ -1547,13 +1547,13 @@ MagickPrivate int NTGhostscriptLoadDLL(void)
       UnlockSemaphoreInfo(ghost_semaphore);
       return(FALSE);
     }
-  (void) ResetMagickMemory((void *) &nt_ghost_info,0,sizeof(NTGhostInfo));
+  (void) memset((void *) &nt_ghost_info,0,sizeof(NTGhostInfo));
   nt_ghost_info.delete_instance=(void (MagickDLLCall *)(gs_main_instance *)) (
     lt_dlsym(ghost_handle,"gsapi_delete_instance"));
   nt_ghost_info.new_instance=(int (MagickDLLCall *)(gs_main_instance **,
     void *)) (lt_dlsym(ghost_handle,"gsapi_new_instance"));
   nt_ghost_info.has_instance=MagickFalse;
-  (void) ResetMagickMemory((void *) &ghost_info,0,sizeof(GhostInfo));
+  (void) memset((void *) &ghost_info,0,sizeof(GhostInfo));
   ghost_info.delete_instance=NTGhostscriptDeleteInstance;
   ghost_info.exit=(int (MagickDLLCall *)(gs_main_instance*))
     lt_dlsym(ghost_handle,"gsapi_exit");
@@ -1600,7 +1600,7 @@ MagickPrivate void NTGhostscriptUnLoadDLL(void)
     {
       (void) lt_dlclose(ghost_handle);
       ghost_handle=(void *) NULL;
-      (void) ResetMagickMemory((void *) &ghost_info,0,sizeof(GhostInfo));
+      (void) memset((void *) &ghost_info,0,sizeof(GhostInfo));
     }
   UnlockSemaphoreInfo(ghost_semaphore);
   RelinquishSemaphoreInfo(&ghost_semaphore);

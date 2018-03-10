@@ -297,7 +297,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read SUN raster header.
   */
-  (void) ResetMagickMemory(&sun_info,0,sizeof(sun_info));
+  (void) memset(&sun_info,0,sizeof(sun_info));
   sun_info.magic=ReadBlobMSBLong(image);
   do
   {
@@ -478,7 +478,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       }
-    (void) ResetMagickMemory(sun_pixels,0,(pixels_length+image->rows)*
+    (void) memset(sun_pixels,0,(pixels_length+image->rows)*
       sizeof(*sun_pixels));
     if (sun_info.type == RT_ENCODED)
       {

@@ -168,7 +168,7 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   */
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   image=(Image *) AcquireCriticalMemory(sizeof(*image));
-  (void) ResetMagickMemory(image,0,sizeof(*image));
+  (void) memset(image,0,sizeof(*image));
   /*
     Initialize Image structure.
   */
@@ -237,7 +237,7 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
       RectangleInfo
         geometry;
 
-      (void) ResetMagickMemory(&geometry,0,sizeof(geometry));
+      (void) memset(&geometry,0,sizeof(geometry));
       flags=ParseAbsoluteGeometry(image_info->extract,&geometry);
       if (((flags & XValue) != 0) || ((flags & YValue) != 0))
         {
@@ -825,7 +825,7 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
       return((Image *) NULL);
     }
   clone_image=(Image *) AcquireCriticalMemory(sizeof(*clone_image));
-  (void) ResetMagickMemory(clone_image,0,sizeof(*clone_image));
+  (void) memset(clone_image,0,sizeof(*clone_image));
   clone_image->signature=MagickCoreSignature;
   clone_image->storage_class=image->storage_class;
   clone_image->number_channels=image->number_channels;
@@ -1357,7 +1357,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   */
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image_info != (ImageInfo *) NULL);
-  (void) ResetMagickMemory(image_info,0,sizeof(*image_info));
+  (void) memset(image_info,0,sizeof(*image_info));
   image_info->adjoin=MagickTrue;
   image_info->interlace=NoInterlace;
   image_info->channel=DefaultChannels;
@@ -2962,7 +2962,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
           image=DestroyImage(image);
           return(MagickFalse);
         }
-      (void) ResetMagickMemory(magick,0,magick_size);
+      (void) memset(magick,0,magick_size);
       count=ReadBlob(image,magick_size,magick);
       (void) SeekBlob(image,-((MagickOffsetType) count),SEEK_CUR);
       (void) CloseBlob(image);

@@ -2590,7 +2590,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     {
       image->rendering_intent=UndefinedIntent;
       intent=Magick_RenderingIntent_to_PNG_RenderingIntent(UndefinedIntent);
-      (void) ResetMagickMemory(&image->chromaticity,0,
+      (void) memset(&image->chromaticity,0,
         sizeof(image->chromaticity));
     }
 
@@ -4247,7 +4247,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
   /*
     Initialize members of the MngInfo structure.
   */
-  (void) ResetMagickMemory(mng_info,0,sizeof(MngInfo));
+  (void) memset(mng_info,0,sizeof(MngInfo));
   mng_info->image=image;
 
   image=ReadOnePNGImage(mng_info,image_info,exception);
@@ -5206,7 +5206,7 @@ static Image *ReadJNGImage(const ImageInfo *image_info,
 
   /* Initialize members of the MngInfo structure.  */
 
-  (void) ResetMagickMemory(mng_info,0,sizeof(MngInfo));
+  (void) memset(mng_info,0,sizeof(MngInfo));
 
   mng_info->image=image;
   image=ReadOneJNGImage(mng_info,image_info,exception);
@@ -7702,7 +7702,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
 
   /* Initialize members of the MngInfo structure.  */
 
-  (void) ResetMagickMemory(mng_info,0,sizeof(MngInfo));
+  (void) memset(mng_info,0,sizeof(MngInfo));
   mng_info->image=image;
   image=ReadOneMNGImage(mng_info,image_info,exception);
   mng_info=MngInfoFreeStruct(mng_info);
@@ -12047,7 +12047,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   /*
     Initialize members of the MngInfo structure.
   */
-  (void) ResetMagickMemory(mng_info,0,sizeof(MngInfo));
+  (void) memset(mng_info,0,sizeof(MngInfo));
   mng_info->image=image;
   mng_info->equal_backgrounds=MagickTrue;
 
@@ -13315,7 +13315,7 @@ static MagickBooleanType WriteJNGImage(const ImageInfo *image_info,
   /*
     Initialize members of the MngInfo structure.
   */
-  (void) ResetMagickMemory(mng_info,0,sizeof(MngInfo));
+  (void) memset(mng_info,0,sizeof(MngInfo));
   mng_info->image=image;
 
   (void) WriteBlob(image,8,(const unsigned char *) "\213JNG\r\n\032\n");
@@ -13405,7 +13405,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,
   /*
     Initialize members of the MngInfo structure.
   */
-  (void) ResetMagickMemory(mng_info,0,sizeof(MngInfo));
+  (void) memset(mng_info,0,sizeof(MngInfo));
   mng_info->image=image;
   write_mng=LocaleCompare(image_info->magick,"MNG") == 0;
 

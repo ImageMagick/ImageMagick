@@ -1325,7 +1325,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *cache,const char *xml,
         (void) CopyMagickString(message,p,MagickMin((size_t) (q-p+2),
           MagickLocaleExtent));
         locale_info=(LocaleInfo *) AcquireCriticalMemory(sizeof(*locale_info));
-        (void) ResetMagickMemory(locale_info,0,sizeof(*locale_info));
+        (void) memset(locale_info,0,sizeof(*locale_info));
         locale_info->path=ConstantString(filename);
         locale_info->tag=ConstantString(tag);
         locale_info->message=ConstantString(message);

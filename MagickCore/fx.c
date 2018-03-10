@@ -176,7 +176,7 @@ MagickPrivate FxInfo *AcquireFxInfo(const Image *images,const char *expression,
     i;
 
   fx_info=(FxInfo *) AcquireCriticalMemory(sizeof(*fx_info));
-  (void) ResetMagickMemory(fx_info,0,sizeof(*fx_info));
+  (void) memset(fx_info,0,sizeof(*fx_info));
   fx_info->exception=AcquireExceptionInfo();
   fx_info->images=images;
   fx_info->colors=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
@@ -3071,7 +3071,7 @@ static FxInfo **AcquireFxThreadSet(const Image *image,const char *expression,
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return((FxInfo **) NULL);
     }
-  (void) ResetMagickMemory(fx_info,0,number_threads*sizeof(*fx_info));
+  (void) memset(fx_info,0,number_threads*sizeof(*fx_info));
   if (*expression != '@')
     fx_expression=ConstantString(expression);
   else

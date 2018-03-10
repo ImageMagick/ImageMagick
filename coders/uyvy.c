@@ -331,7 +331,7 @@ static MagickBooleanType WriteUYVYImage(const ImageInfo *image_info,
     return(MagickFalse);
   (void) TransformImageColorspace(uyvy_image,YCbCrColorspace,exception);
   full=MagickFalse;
-  (void) ResetMagickMemory(&pixel,0,sizeof(PixelInfo));
+  (void) memset(&pixel,0,sizeof(PixelInfo));
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(uyvy_image,0,y,image->columns,1,exception);

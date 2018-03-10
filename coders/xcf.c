@@ -805,7 +805,7 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
     layer_mask_offset;
 
   /* clear the block! */
-  (void) ResetMagickMemory( outLayer, 0, sizeof( XCFLayerInfo ) );
+  (void) memset( outLayer, 0, sizeof( XCFLayerInfo ) );
   /* read in the layer width, height, type and name */
   outLayer->width = ReadBlobMSBLong(image);
   outLayer->height = ReadBlobMSBLong(image);
@@ -1079,7 +1079,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((count != 14) ||
       (LocaleNCompare((char *) magick,"gimp xcf",8) != 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  (void) ResetMagickMemory(&doc_info,0,sizeof(XCFDocInfo));
+  (void) memset(&doc_info,0,sizeof(XCFDocInfo));
   doc_info.width=ReadBlobMSBLong(image);
   doc_info.height=ReadBlobMSBLong(image);
   if ((doc_info.width > 262144) || (doc_info.height > 262144))
@@ -1333,7 +1333,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       sizeof(*layer_info));
     if (layer_info == (XCFLayerInfo *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    (void) ResetMagickMemory(layer_info,0,number_layers*sizeof(XCFLayerInfo));
+    (void) memset(layer_info,0,number_layers*sizeof(XCFLayerInfo));
     for ( ; ; )
     {
       MagickBooleanType

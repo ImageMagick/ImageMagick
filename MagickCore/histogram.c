@@ -487,7 +487,7 @@ static CubeInfo *GetCubeInfo(void)
   cube_info=(CubeInfo *) AcquireMagickMemory(sizeof(*cube_info));
   if (cube_info == (CubeInfo *) NULL)
     return((CubeInfo *) NULL);
-  (void) ResetMagickMemory(cube_info,0,sizeof(*cube_info));
+  (void) memset(cube_info,0,sizeof(*cube_info));
   /*
     Initialize root node.
   */
@@ -605,7 +605,7 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const size_t level)
     }
   cube_info->free_nodes--;
   node_info=cube_info->node_info++;
-  (void) ResetMagickMemory(node_info,0,sizeof(*node_info));
+  (void) memset(node_info,0,sizeof(*node_info));
   node_info->level=level;
   return(node_info);
 }

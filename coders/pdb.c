@@ -330,7 +330,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine if this a PDB image file.
   */
-  (void) ResetMagickMemory(&pdb_info,0,sizeof(pdb_info));
+  (void) memset(&pdb_info,0,sizeof(pdb_info));
   count=ReadBlob(image,sizeof(pdb_info.name),(unsigned char *) pdb_info.name);
   if (count != sizeof(pdb_info.name))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
@@ -420,7 +420,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(pixels,0,(packets+257UL)*image->rows*sizeof(*pixels));
+  (void) memset(pixels,0,(packets+257UL)*image->rows*sizeof(*pixels));
   switch (pdb_image.version & 0x07) 
   {
     case 0:
@@ -787,7 +787,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
   } else {
     bits_per_pixel=4;
   }
-  (void) ResetMagickMemory(&pdb_info,0,sizeof(pdb_info));
+  (void) memset(&pdb_info,0,sizeof(pdb_info));
   (void) CopyMagickString(pdb_info.name,image_info->filename,
     sizeof(pdb_info.name));
   pdb_info.attributes=0;

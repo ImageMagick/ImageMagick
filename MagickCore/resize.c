@@ -934,7 +934,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   assert(exception->signature == MagickCoreSignature);
   (void) exception;
   resize_filter=(ResizeFilter *) AcquireCriticalMemory(sizeof(*resize_filter));
-  (void) ResetMagickMemory(resize_filter,0,sizeof(*resize_filter));
+  (void) memset(resize_filter,0,sizeof(*resize_filter));
   /*
     Defaults for the requested filter.
   */
@@ -2418,7 +2418,7 @@ static ContributionInfo **AcquireContributionThreadSet(const size_t count)
     sizeof(*contribution));
   if (contribution == (ContributionInfo **) NULL)
     return((ContributionInfo **) NULL);
-  (void) ResetMagickMemory(contribution,0,number_threads*sizeof(*contribution));
+  (void) memset(contribution,0,number_threads*sizeof(*contribution));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
     contribution[i]=(ContributionInfo *) MagickAssumeAligned(
@@ -3306,7 +3306,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
   next_row=MagickTrue;
   span.y=1.0;
   scale.y=(double) scale_image->rows/(double) image->rows;
-  (void) ResetMagickMemory(y_vector,0,(size_t) MaxPixelChannels*image->columns*
+  (void) memset(y_vector,0,(size_t) MaxPixelChannels*image->columns*
     sizeof(*y_vector));
   n=0;
   status=MagickTrue;

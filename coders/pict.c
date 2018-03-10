@@ -451,7 +451,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
   if (pixels == (unsigned char *) NULL)
     return((unsigned char *) NULL);
   *extent=row_bytes*image->rows*sizeof(*pixels);
-  (void) ResetMagickMemory(pixels,0,*extent);
+  (void) memset(pixels,0,*extent);
   scanline=(unsigned char *) AcquireQuantumMemory(row_bytes,2*
     sizeof(*scanline));
   if (scanline == (unsigned char *) NULL)
@@ -459,7 +459,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
       pixels=(unsigned char *) RelinquishMagickMemory(pixels);
       return((unsigned char *) NULL);
     }
-  (void) ResetMagickMemory(scanline,0,2*row_bytes*sizeof(*scanline));
+  (void) memset(scanline,0,2*row_bytes*sizeof(*scanline));
   if (bytes_per_line < 8)
     {
       /*
@@ -1782,12 +1782,12 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
         buffer=(unsigned char *) RelinquishMagickMemory(buffer);
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  (void) ResetMagickMemory(scanline,0,row_bytes);
-  (void) ResetMagickMemory(packed_scanline,0,(size_t) (row_bytes+MaxCount));
+  (void) memset(scanline,0,row_bytes);
+  (void) memset(packed_scanline,0,(size_t) (row_bytes+MaxCount));
   /*
     Write header, header size, size bounding box, version, and reserved.
   */
-  (void) ResetMagickMemory(buffer,0,PictInfoSize);
+  (void) memset(buffer,0,PictInfoSize);
   (void) WriteBlob(image,PictInfoSize,buffer);
   (void) WriteBlobMSBShort(image,0);
   (void) WriteBlobMSBShort(image,(unsigned short) size_rectangle.top);
@@ -2020,7 +2020,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
   else
     if (image_info->compression == JPEGCompression)
       {
-        (void) ResetMagickMemory(scanline,0,row_bytes);
+        (void) memset(scanline,0,row_bytes);
         for (y=0; y < (ssize_t) image->rows; y++)
           count+=EncodeImage(image,scanline,(size_t) (row_bytes & 0x7FFF),
             packed_scanline);

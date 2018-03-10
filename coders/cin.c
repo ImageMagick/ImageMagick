@@ -447,7 +447,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((count != 4) ||
       ((LocaleNCompare((char *) magick,"\200\052\137\327",4) != 0)))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  ResetMagickMemory(&cin,0,sizeof(cin));
+  memset(&cin,0,sizeof(cin));
   image->endian=(magick[0] == 0x80) && (magick[1] == 0x2a) &&
     (magick[2] == 0x5f) && (magick[3] == 0xd7) ? MSBEndian : LSBEndian;
   cin.file.image_offset=ReadBlobLong(image);
@@ -622,7 +622,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) CopyMagickString(property,cin.origination.model,
     sizeof(cin.origination.model));
   (void) SetImageProperty(image,"dpx:origination.model",property,exception);
-  (void) ResetMagickMemory(cin.origination.serial,0, 
+  (void) memset(cin.origination.serial,0, 
     sizeof(cin.origination.serial));
   offset+=ReadBlob(image,sizeof(cin.origination.serial),(unsigned char *)
     cin.origination.serial);
@@ -957,7 +957,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
   /*
     Write image information.
   */
-  (void) ResetMagickMemory(&cin,0,sizeof(cin));
+  (void) memset(&cin,0,sizeof(cin));
   offset=0;
   cin.file.magic=0x802A5FD7UL;
   offset+=WriteBlobLong(image,(unsigned int) cin.file.magic);

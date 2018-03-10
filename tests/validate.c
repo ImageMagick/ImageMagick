@@ -2108,7 +2108,7 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
           reference_image=DestroyImage(reference_image);
           continue;
         }
-      (void) ResetMagickMemory(pixels,0,length*sizeof(*pixels));
+      (void) memset(pixels,0,length*sizeof(*pixels));
       status=ExportImagePixels(reference_image,0,0,reference_image->columns,
         reference_image->rows,reference_map[i],reference_storage[j].type,pixels,
         exception);

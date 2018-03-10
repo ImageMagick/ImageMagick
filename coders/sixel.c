@@ -290,7 +290,7 @@ MagickBooleanType sixel_decode(Image *image,
         sixel_palet[n] = SIXEL_RGB(255, 255, 255);
     }
 
-    (void) ResetMagickMemory(imbuf, background_color_index, (size_t) imsx * imsy);
+    (void) memset(imbuf, background_color_index, (size_t) imsx * imsy);
 
     while (*p != '\0') {
         if ((p[0] == '\033' && p[1] == 'P') || *p == 0x90) {
@@ -371,7 +371,7 @@ MagickBooleanType sixel_decode(Image *image,
                     imbuf = (unsigned char *) RelinquishMagickMemory(imbuf);
                     return (MagickFalse);
                 }
-                (void) ResetMagickMemory(dmbuf, background_color_index, (size_t) dmsx * dmsy);
+                (void) memset(dmbuf, background_color_index, (size_t) dmsx * dmsy);
                 for (y = 0; y < imsy; ++y) {
                     (void) CopyMagickMemory(dmbuf + dmsx * y, imbuf + imsx * y, imsx);
                 }
@@ -449,7 +449,7 @@ MagickBooleanType sixel_decode(Image *image,
                     imbuf = (unsigned char *) RelinquishMagickMemory(imbuf);
                     return (MagickFalse);
                 }
-                (void) ResetMagickMemory(dmbuf, background_color_index, (size_t) dmsx * dmsy);
+                (void) memset(dmbuf, background_color_index, (size_t) dmsx * dmsy);
                 for (y = 0; y < imsy; ++y) {
                     (void) CopyMagickMemory(dmbuf + dmsx * y, imbuf + imsx * y, imsx);
                 }
@@ -506,7 +506,7 @@ MagickBooleanType sixel_decode(Image *image,
                                     imbuf = (unsigned char *) RelinquishMagickMemory(imbuf);
                                     return (MagickFalse);
                                   }
-                                (void) ResetMagickMemory(imbuf + offset, color_index, repeat_count);
+                                (void) memset(imbuf + offset, color_index, repeat_count);
                             }
                             if (max_x < (posision_x + repeat_count - 1)) {
                                 max_x = posision_x + repeat_count - 1;
@@ -735,7 +735,7 @@ static MagickBooleanType sixel_encode_impl(unsigned char *pixels, size_t width,s
     if ((map = (unsigned char *)AcquireQuantumMemory(len, sizeof(unsigned char))) == NULL) {
         return (MagickFalse);
     }
-    (void) ResetMagickMemory(map, 0, len);
+    (void) memset(map, 0, len);
 
     if (context->has_8bit_control) {
         nwrite = sprintf((char *)context->buffer, "\x90" "0;0;0" "q");
@@ -875,7 +875,7 @@ static MagickBooleanType sixel_encode_impl(unsigned char *pixels, size_t width,s
         }
 
         i = 0;
-        (void) ResetMagickMemory(map, 0, len);
+        (void) memset(map, 0, len);
     }
 
     if (context->has_8bit_control) {

@@ -1107,9 +1107,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   /*
     Initialize JPEG parameters.
   */
-  (void) ResetMagickMemory(&error_manager,0,sizeof(error_manager));
-  (void) ResetMagickMemory(&jpeg_info,0,sizeof(jpeg_info));
-  (void) ResetMagickMemory(&jpeg_error,0,sizeof(jpeg_error));
+  (void) memset(&error_manager,0,sizeof(error_manager));
+  (void) memset(&jpeg_info,0,sizeof(jpeg_info));
+  (void) memset(&jpeg_error,0,sizeof(jpeg_error));
   jpeg_info.err=jpeg_std_error(&jpeg_error);
   jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGWarningHandler;
   jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
@@ -1355,7 +1355,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
   jpeg_pixels=(JSAMPLE *) GetVirtualMemoryBlob(memory_info);
-  (void) ResetMagickMemory(jpeg_pixels,0,image->columns*
+  (void) memset(jpeg_pixels,0,image->columns*
     jpeg_info.output_components*sizeof(*jpeg_pixels));
   /*
     Convert JPEG pixels to pixel packets.
@@ -2209,9 +2209,9 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   /*
     Initialize JPEG parameters.
   */
-  (void) ResetMagickMemory(&error_manager,0,sizeof(error_manager));
-  (void) ResetMagickMemory(&jpeg_info,0,sizeof(jpeg_info));
-  (void) ResetMagickMemory(&jpeg_error,0,sizeof(jpeg_error));
+  (void) memset(&error_manager,0,sizeof(error_manager));
+  (void) memset(&jpeg_info,0,sizeof(jpeg_info));
+  (void) memset(&jpeg_error,0,sizeof(jpeg_error));
   volatile_image=image;
   jpeg_info.client_data=(void *) volatile_image;
   jpeg_info.err=jpeg_std_error(&jpeg_error);

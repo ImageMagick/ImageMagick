@@ -859,7 +859,7 @@ static MagickBooleanType LoadMimeCache(LinkedListInfo *cache,const char *xml,
       Process mime element.
     */
     mime_info=(MimeInfo *) AcquireCriticalMemory(sizeof(*mime_info));
-    (void) ResetMagickMemory(mime_info,0,sizeof(*mime_info));
+    (void) memset(mime_info,0,sizeof(*mime_info));
     mime_info->path=ConstantString(filename);
     mime_info->signature=MagickCoreSignature;
     attribute=GetXMLTreeAttribute(mime,"data-type");

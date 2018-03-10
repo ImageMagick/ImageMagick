@@ -164,7 +164,7 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read JNX header.
   */
-  (void) ResetMagickMemory(&jnx_info,0,sizeof(jnx_info));
+  (void) memset(&jnx_info,0,sizeof(jnx_info));
   jnx_info.version=ReadBlobLSBSignedLong(image);
   if ((jnx_info.version != 3) && (jnx_info.version != 4))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
@@ -191,7 +191,7 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read JNX levels.
   */
-  (void) ResetMagickMemory(&jnx_level_info,0,sizeof(jnx_level_info));
+  (void) memset(&jnx_level_info,0,sizeof(jnx_level_info));
   for (i=0; i < (ssize_t) jnx_info.levels; i++)
   {
     jnx_level_info[i].count=ReadBlobLSBSignedLong(image);

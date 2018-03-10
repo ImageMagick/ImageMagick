@@ -694,7 +694,7 @@ MagickExport MagickBooleanType AutoThresholdImage(Image *image,
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   status=MagickTrue;
-  (void) ResetMagickMemory(histogram,0,(MaxIntensity+1UL)*sizeof(*histogram));
+  (void) memset(histogram,0,(MaxIntensity+1UL)*sizeof(*histogram));
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {

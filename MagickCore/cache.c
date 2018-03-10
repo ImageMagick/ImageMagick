@@ -190,7 +190,7 @@ MagickPrivate Cache AcquirePixelCache(const size_t number_threads)
     *value;
 
   cache_info=(CacheInfo *) AcquireCriticalMemory(sizeof(*cache_info));
-  (void) ResetMagickMemory(cache_info,0,sizeof(*cache_info));
+  (void) memset(cache_info,0,sizeof(*cache_info));
   cache_info->type=UndefinedCache;
   cache_info->mode=IOMode;
   cache_info->disk_mode=IOMode;
@@ -265,7 +265,7 @@ MagickPrivate NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
     sizeof(**nexus_info));
   if (nexus_info[0] == (NexusInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(nexus_info[0],0,number_threads*sizeof(**nexus_info));
+  (void) memset(nexus_info[0],0,number_threads*sizeof(**nexus_info));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
     nexus_info[i]=(&nexus_info[0][i]);
@@ -647,7 +647,7 @@ static MagickBooleanType ClonePixelCacheRepository(
       clone_nexus[id],exception);
     if (pixels == (Quantum *) NULL)
       continue;
-    (void) ResetMagickMemory(clone_nexus[id]->pixels,0,(size_t)
+    (void) memset(clone_nexus[id]->pixels,0,(size_t)
       clone_nexus[id]->length);
     if (optimize != MagickFalse)
       (void) memcpy(clone_nexus[id]->pixels,cache_nexus[id]->pixels,length*
@@ -2123,7 +2123,7 @@ MagickExport const char *GetPixelCacheFilename(const Image *image)
 MagickPrivate void GetPixelCacheMethods(CacheMethods *cache_methods)
 {
   assert(cache_methods != (CacheMethods *) NULL);
-  (void) ResetMagickMemory(cache_methods,0,sizeof(*cache_methods));
+  (void) memset(cache_methods,0,sizeof(*cache_methods));
   cache_methods->get_virtual_pixel_handler=GetVirtualPixelCache;
   cache_methods->get_virtual_pixels_handler=GetVirtualPixelsCache;
   cache_methods->get_virtual_metacontent_from_handler=
@@ -2716,7 +2716,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
         "UnableToGetCacheNexus","`%s'",image->filename);
       return((const Quantum *) NULL);
     }
-  (void) ResetMagickMemory(virtual_pixel,0,cache_info->number_channels*
+  (void) memset(virtual_pixel,0,cache_info->number_channels*
     sizeof(*virtual_pixel));
   virtual_metacontent=(void *) NULL;
   switch (virtual_pixel_method)
@@ -2746,7 +2746,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
                 CacheError,"UnableToGetCacheNexus","`%s'",image->filename);
               return((const Quantum *) NULL);
             }
-          (void) ResetMagickMemory(virtual_metacontent,0,
+          (void) memset(virtual_metacontent,0,
             cache_info->metacontent_extent);
         }
       switch (virtual_pixel_method)
@@ -4759,7 +4759,7 @@ static inline MagickBooleanType AcquireCacheNexusPixels(
       nexus_info->cache=(Quantum *) MagickAssumeAligned(AcquireAlignedMemory(1,
         (size_t) nexus_info->length));
       if (nexus_info->cache != (Quantum *) NULL)
-        (void) ResetMagickMemory(nexus_info->cache,0,(size_t)
+        (void) memset(nexus_info->cache,0,(size_t)
           nexus_info->length);
     }
   else

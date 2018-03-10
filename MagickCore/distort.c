@@ -1490,7 +1490,7 @@ MagickExport Image *DistortResizeImage(const Image *image,
     return((Image *) NULL);
   /* Do not short-circuit this resize if final image size is unchanged */
 
-  (void) ResetMagickMemory(distort_args,0,12*sizeof(double));
+  (void) memset(distort_args,0,12*sizeof(double));
   distort_args[4]=(double) image->columns;
   distort_args[6]=(double) columns;
   distort_args[9]=(double) image->rows;

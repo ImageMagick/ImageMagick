@@ -183,7 +183,7 @@ static MagickBooleanType DecodeImage(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(pixels != (unsigned char *) NULL);
-  (void) ResetMagickMemory(pixels,0,number_pixels*sizeof(*pixels));
+  (void) memset(pixels,0,number_pixels*sizeof(*pixels));
   byte=0;
   x=0;
   p=pixels;
@@ -511,7 +511,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine if this a DIB file.
   */
-  (void) ResetMagickMemory(&dib_info,0,sizeof(dib_info));
+  (void) memset(&dib_info,0,sizeof(dib_info));
   dib_info.size=ReadBlobLSBLong(image);
   if (dib_info.size != 40)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
@@ -1175,7 +1175,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
     sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(pixels,0,dib_info.image_size);
+  (void) memset(pixels,0,dib_info.image_size);
   switch (dib_info.bits_per_pixel)
   {
     case 1:

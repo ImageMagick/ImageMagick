@@ -928,7 +928,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     default:
       break;
   }
-  (void) ResetMagickMemory(&bounds,0,sizeof(bounds));
+  (void) memset(&bounds,0,sizeof(bounds));
   page=0;
   scene=0;
   do

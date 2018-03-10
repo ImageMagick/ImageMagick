@@ -869,7 +869,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
     Remove whitespaces meta characters from geometry specification.
   */
   assert(geometry_info != (GeometryInfo *) NULL);
-  (void) ResetMagickMemory(geometry_info,0,sizeof(geometry_info));
+  (void) memset(geometry_info,0,sizeof(*geometry_info));
   flags=NoValue;
   if ((geometry == (char *) NULL) || (*geometry == '\0'))
     return(flags);
@@ -1657,7 +1657,7 @@ MagickExport void SetGeometry(const Image *image,RectangleInfo *geometry)
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(geometry != (RectangleInfo *) NULL);
-  (void) ResetMagickMemory(geometry,0,sizeof(*geometry));
+  (void) memset(geometry,0,sizeof(*geometry));
   geometry->width=image->columns;
   geometry->height=image->rows;
 }
@@ -1688,5 +1688,5 @@ MagickExport void SetGeometryInfo(GeometryInfo *geometry_info)
 {
   assert(geometry_info != (GeometryInfo *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  (void) ResetMagickMemory(geometry_info,0,sizeof(*geometry_info));
+  (void) memset(geometry_info,0,sizeof(*geometry_info));
 }

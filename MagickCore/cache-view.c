@@ -164,7 +164,7 @@ MagickExport CacheView *AcquireVirtualCacheView(const Image *image,
     sizeof(*cache_view)));
   if (cache_view == (CacheView *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(cache_view,0,sizeof(*cache_view));
+  (void) memset(cache_view,0,sizeof(*cache_view));
   cache_view->image=ReferenceImage((Image *) image);
   cache_view->number_threads=GetOpenMPMaximumThreads();
   if (GetMagickResourceLimit(ThreadResource) > cache_view->number_threads)
@@ -216,7 +216,7 @@ MagickExport CacheView *CloneCacheView(const CacheView *cache_view)
     sizeof(*clone_view)));
   if (clone_view == (CacheView *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(clone_view,0,sizeof(*clone_view));
+  (void) memset(clone_view,0,sizeof(*clone_view));
   clone_view->image=ReferenceImage(cache_view->image);
   clone_view->number_threads=cache_view->number_threads;
   clone_view->nexus_info=AcquirePixelCacheNexus(cache_view->number_threads);

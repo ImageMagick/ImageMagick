@@ -482,7 +482,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
     default:
       break;
   }
-  (void) ResetMagickMemory(&bounds,0,sizeof(bounds));
+  (void) memset(&bounds,0,sizeof(bounds));
   page=1;
   scene=0;
   do

@@ -512,7 +512,7 @@ MagickExport MagickBooleanType SetImageRegistry(const RegistryType type,
   if (clone_value == (void *) NULL)
     return(MagickFalse);
   registry_info=(RegistryInfo *) AcquireCriticalMemory(sizeof(*registry_info));
-  (void) ResetMagickMemory(registry_info,0,sizeof(*registry_info));
+  (void) memset(registry_info,0,sizeof(*registry_info));
   registry_info->type=type;
   registry_info->value=clone_value;
   registry_info->signature=MagickCoreSignature;

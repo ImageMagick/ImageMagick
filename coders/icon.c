@@ -950,8 +950,8 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   (void) WriteBlobLSBShort(image,0);
   (void) WriteBlobLSBShort(image,1);
   (void) WriteBlobLSBShort(image,(unsigned char) scene);
-  (void) ResetMagickMemory(&icon_file,0,sizeof(icon_file));
-  (void) ResetMagickMemory(&icon_info,0,sizeof(icon_info));
+  (void) memset(&icon_file,0,sizeof(icon_file));
+  (void) memset(&icon_info,0,sizeof(icon_info));
   scene=0;
   next=(images != (Image *) NULL) ? images : image;
   do
@@ -1122,7 +1122,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
             images=DestroyImageList(images);
             ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
           }
-        (void) ResetMagickMemory(pixels,0,(size_t) icon_info.image_size);
+        (void) memset(pixels,0,(size_t) icon_info.image_size);
         switch (icon_info.bits_per_pixel)
         {
           case 1:

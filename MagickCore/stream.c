@@ -163,7 +163,7 @@ MagickExport StreamInfo *AcquireStreamInfo(const ImageInfo *image_info,
     *stream_info;
 
   stream_info=(StreamInfo *) AcquireCriticalMemory(sizeof(*stream_info));
-  (void) ResetMagickMemory(stream_info,0,sizeof(*stream_info));
+  (void) memset(stream_info,0,sizeof(*stream_info));
   stream_info->pixels=(unsigned char *) MagickAssumeAligned(
     AcquireAlignedMemory(1,sizeof(*stream_info->pixels)));
   if (stream_info->pixels == (unsigned char *) NULL)
@@ -1251,7 +1251,7 @@ static size_t WriteStreamImage(const Image *image,const void *pixels,
       stream_info->pixels=(unsigned char *) AcquireAlignedMemory(1,length);
       if (stream_info->pixels == (unsigned char *) NULL)
         return(0);
-      (void) ResetMagickMemory(stream_info->pixels,0,length);
+      (void) memset(stream_info->pixels,0,length);
       stream_info->image=image;
       write_info=CloneImageInfo(stream_info->image_info);
       (void) SetImageInfo(write_info,1,stream_info->exception);

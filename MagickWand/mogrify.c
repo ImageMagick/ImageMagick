@@ -552,7 +552,7 @@ static Image *SparseColorOption(const Image *image,
       "MemoryAllocationFailed","%s","SparseColorOption");
     return( (Image *) NULL);
   }
-  (void) ResetMagickMemory(sparse_arguments,0,number_arguments*
+  (void) memset(sparse_arguments,0,number_arguments*
     sizeof(*sparse_arguments));
   p=arguments;
   x=0;
@@ -1443,7 +1443,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if (arguments == (double *) NULL)
               ThrowWandFatalException(ResourceLimitFatalError,
                 "MemoryAllocationFailed",(*image)->filename);
-            (void) ResetMagickMemory(arguments,0,number_arguments*
+            (void) memset(arguments,0,number_arguments*
               sizeof(*arguments));
             p=(char *) args;
             for (x=0; (x < (ssize_t) number_arguments) && (*p != '\0'); x++)
@@ -1748,7 +1748,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if (parameters == (double *) NULL)
               ThrowWandFatalException(ResourceLimitFatalError,
                 "MemoryAllocationFailed",(*image)->filename);
-            (void) ResetMagickMemory(parameters,0,number_parameters*
+            (void) memset(parameters,0,number_parameters*
               sizeof(*parameters));
             p=(char *) arguments;
             for (x=0; (x < (ssize_t) number_parameters) && (*p != '\0'); x++)
@@ -7328,7 +7328,7 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
                 (void) CloneString(&image_info->page,(char *) NULL);
                 break;
               }
-            (void) ResetMagickMemory(&geometry,0,sizeof(geometry));
+            (void) memset(&geometry,0,sizeof(geometry));
             image_option=GetImageOption(image_info,"page");
             if (image_option != (const char *) NULL)
               flags=ParseAbsoluteGeometry(image_option,&geometry);
@@ -8618,7 +8618,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             if (arguments == (double *) NULL)
               ThrowWandFatalException(ResourceLimitFatalError,
                 "MemoryAllocationFailed",(*images)->filename);
-            (void) ResetMagickMemory(arguments,0,number_arguments*
+            (void) memset(arguments,0,number_arguments*
               sizeof(*arguments));
             p=(char *) args;
             for (x=0; (x < (ssize_t) number_arguments) && (*p != '\0'); x++)

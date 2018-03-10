@@ -379,7 +379,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
   respect_parenthesis=MagickFalse;
   nostdin=MagickFalse;
   resource_database=(XrmDatabase) NULL;
-  (void) ResetMagickMemory(&resource_info,0,sizeof(resource_info));
+  (void) memset(&resource_info,0,sizeof(resource_info));
   server_name=(char *) NULL;
   state=0;
   status=MagickTrue;

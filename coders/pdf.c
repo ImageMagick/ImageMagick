@@ -216,7 +216,7 @@ static MagickBooleanType InvokePDFDelegate(const MagickBooleanType verbose,
     ghost_info_struct;
 
   ghost_info=(&ghost_info_struct);
-  (void) ResetMagickMemory(&ghost_info_struct,0,sizeof(ghost_info_struct));
+  (void) memset(&ghost_info_struct,0,sizeof(ghost_info_struct));
   ghost_info_struct.delete_instance=(void (*)(gs_main_instance *))
     gsapi_delete_instance;
   ghost_info_struct.exit=(int (*)(gs_main_instance *)) gsapi_exit;
@@ -500,7 +500,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((flags & SigmaValue) == 0)
         image->resolution.y=image->resolution.x;
     }
-  (void) ResetMagickMemory(&page,0,sizeof(page));
+  (void) memset(&page,0,sizeof(page));
   (void) ParseAbsoluteGeometry(PSPageGeometry,&page);
   if (image_info->page != (char *) NULL)
     (void) ParseAbsoluteGeometry(image_info->page,&page);
@@ -517,10 +517,10 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   trimbox=IsStringTrue(GetImageOption(image_info,"pdf:use-trimbox"));
   count=0;
   spotcolor=0;
-  (void) ResetMagickMemory(&bounding_box,0,sizeof(bounding_box));
-  (void) ResetMagickMemory(&bounds,0,sizeof(bounds));
-  (void) ResetMagickMemory(&hires_bounds,0,sizeof(hires_bounds));
-  (void) ResetMagickMemory(command,0,sizeof(command));
+  (void) memset(&bounding_box,0,sizeof(bounding_box));
+  (void) memset(&bounds,0,sizeof(bounds));
+  (void) memset(&hires_bounds,0,sizeof(hires_bounds));
+  (void) memset(command,0,sizeof(command));
   angle=0.0;
   p=command;
   for (c=ReadBlobByte(image); c != EOF; c=ReadBlobByte(image))
@@ -1364,7 +1364,7 @@ RestoreMSCWarning
   xref=(MagickOffsetType *) AcquireQuantumMemory(2048UL,sizeof(*xref));
   if (xref == (MagickOffsetType *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(xref,0,2048UL*sizeof(*xref));
+  (void) memset(xref,0,2048UL*sizeof(*xref));
   /*
     Write Info object.
   */

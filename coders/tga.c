@@ -323,7 +323,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
-  (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
+  (void) memset(&pixel,0,sizeof(pixel));
   pixel.alpha=(MagickRealType) OpaqueAlpha;
   if (tga_info.colormap_type != 0)
     {

@@ -567,7 +567,7 @@ static Image *ReadEMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize the bitmap header info.
   */
-  (void) ResetMagickMemory(&DIBinfo,0,sizeof(BITMAPINFO));
+  (void) memset(&DIBinfo,0,sizeof(BITMAPINFO));
   DIBinfo.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
   DIBinfo.bmiHeader.biWidth=(LONG) image->columns;
   DIBinfo.bmiHeader.biHeight=(-1)*(LONG) image->rows;

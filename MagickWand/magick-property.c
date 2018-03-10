@@ -1261,7 +1261,7 @@ WandExport MagickBooleanType MagickGetPage(const MagickWand *wand,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
 
-  (void) ResetMagickMemory(&geometry,0,sizeof(geometry));
+  (void) memset(&geometry,0,sizeof(geometry));
   (void) ParseAbsoluteGeometry(wand->image_info->page,&geometry);
   *width=geometry.width;
   *height=geometry.height;
@@ -1601,7 +1601,7 @@ WandExport MagickBooleanType MagickGetSize(const MagickWand *wand,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
 
-  (void) ResetMagickMemory(&geometry,0,sizeof(geometry));
+  (void) memset(&geometry,0,sizeof(geometry));
   (void) ParseAbsoluteGeometry(wand->image_info->size,&geometry);
   *columns=geometry.width;
   *rows=geometry.height;
@@ -1645,7 +1645,7 @@ WandExport MagickBooleanType MagickGetSizeOffset(const MagickWand *wand,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
 
-  (void) ResetMagickMemory(&geometry,0,sizeof(geometry));
+  (void) memset(&geometry,0,sizeof(geometry));
   (void) ParseAbsoluteGeometry(wand->image_info->size,&geometry);
   *offset=geometry.x;
   return(MagickTrue);

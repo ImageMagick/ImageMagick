@@ -259,7 +259,7 @@ static Image *SparseColorOption(const Image *image,
       "MemoryAllocationFailed","%s","SparseColorOption");
     return( (Image *) NULL);
   }
-  (void) ResetMagickMemory(sparse_arguments,0,number_arguments*
+  (void) memset(sparse_arguments,0,number_arguments*
     sizeof(*sparse_arguments));
   p=arguments;
   x=0;
@@ -1187,7 +1187,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
               (void) CloneString(&_image_info->page,(char *) NULL);
               break;
             }
-          (void) ResetMagickMemory(&geometry,0,sizeof(geometry));
+          (void) memset(&geometry,0,sizeof(geometry));
           image_option=GetImageOption(_image_info,"page");
           if (image_option != (const char *) NULL)
             flags=ParseAbsoluteGeometry(image_option,&geometry);

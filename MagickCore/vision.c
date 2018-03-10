@@ -219,7 +219,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       component_image=DestroyImage(component_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  (void) ResetMagickMemory(object,0,MaxColormapSize*sizeof(*object));
+  (void) memset(object,0,MaxColormapSize*sizeof(*object));
   for (i=0; i < (ssize_t) MaxColormapSize; i++)
   {
     object[i].id=i;

@@ -881,7 +881,7 @@ static LinkedListInfo *AcquireColorCache(const char *filename,
           ResourceLimitError,"MemoryAllocationFailed","`%s'",p->name);
         continue;
       }
-    (void) ResetMagickMemory(color_info,0,sizeof(*color_info));
+    (void) memset(color_info,0,sizeof(*color_info));
     color_info->path=(char *) "[built-in]";
     color_info->name=(char *) p->name;
     GetPixelInfo((Image *) NULL,&color_info->color);
@@ -2101,7 +2101,7 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *cache,const char *xml,
           Color element.
         */
         color_info=(ColorInfo *) AcquireCriticalMemory(sizeof(*color_info));
-        (void) ResetMagickMemory(color_info,0,sizeof(*color_info));
+        (void) memset(color_info,0,sizeof(*color_info));
         color_info->path=ConstantString(filename);
         color_info->exempt=MagickFalse;
         color_info->signature=MagickCoreSignature;
@@ -2266,7 +2266,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
       /*
         Parse hex color.
       */
-      (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
+      (void) memset(&pixel,0,sizeof(pixel));
       name++;
       for (n=0; isxdigit((int) ((unsigned char) name[n])) != 0; n++) ;
       if ((n % 3) == 0)

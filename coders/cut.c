@@ -560,7 +560,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if((int) RunCount>0x80)
             {
               RunValue=(unsigned char) ReadBlobByte(image);
-              (void) ResetMagickMemory(ptrB,(int) RunValue,(size_t) RunCountMasked);
+              (void) memset(ptrB,(int) RunValue,(size_t) RunCountMasked);
             }
           else {
             (void) ReadBlob(image,(size_t) RunCountMasked,ptrB);

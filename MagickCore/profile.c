@@ -366,7 +366,7 @@ static double **AcquirePixelThreadSet(const size_t columns,
   pixels=(double **) AcquireQuantumMemory(number_threads,sizeof(*pixels));
   if (pixels == (double **) NULL)
     return((double **) NULL);
-  (void) ResetMagickMemory(pixels,0,number_threads*sizeof(*pixels));
+  (void) memset(pixels,0,number_threads*sizeof(*pixels));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
     pixels[i]=(double *) AcquireQuantumMemory(columns,channels*
@@ -409,7 +409,7 @@ static cmsHTRANSFORM *AcquireTransformThreadSet(Image *image,
     sizeof(*transform));
   if (transform == (cmsHTRANSFORM *) NULL)
     return((cmsHTRANSFORM *) NULL);
-  (void) ResetMagickMemory(transform,0,number_threads*sizeof(*transform));
+  (void) memset(transform,0,number_threads*sizeof(*transform));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
     transform[i]=cmsCreateTransformTHR((cmsContext) image,source_profile,

@@ -204,7 +204,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  (void) ResetMagickMemory(&rla_info,0,sizeof(rla_info));
+  (void) memset(&rla_info,0,sizeof(rla_info));
   rla_info.window.left=(short) ReadBlobMSBShort(image);
   rla_info.window.right=(short) ReadBlobMSBShort(image);
   rla_info.window.bottom=(short) ReadBlobMSBShort(image);

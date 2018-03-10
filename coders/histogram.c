@@ -249,7 +249,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   /*
     Initialize histogram count arrays.
   */
-  (void) ResetMagickMemory(histogram,0,length*sizeof(*histogram));
+  (void) memset(histogram,0,length*sizeof(*histogram));
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);

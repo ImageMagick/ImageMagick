@@ -213,7 +213,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   *id='\0';
-  (void) ResetMagickMemory(keyword,0,sizeof(keyword));
+  (void) memset(keyword,0,sizeof(keyword));
   offset=0;
   do
   {

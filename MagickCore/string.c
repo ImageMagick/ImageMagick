@@ -174,7 +174,7 @@ static StringInfo *AcquireStringInfoContainer()
     *string_info;
 
   string_info=(StringInfo *) AcquireCriticalMemory(sizeof(*string_info));
-  (void) ResetMagickMemory(string_info,0,sizeof(*string_info));
+  (void) memset(string_info,0,sizeof(*string_info));
   string_info->signature=MagickCoreSignature;
   return(string_info);
 }
@@ -1192,8 +1192,8 @@ MagickExport ssize_t FormatMagickTime(const time_t time,const size_t length,
     timezone;
 
   assert(timestamp != (char *) NULL);
-  (void) ResetMagickMemory(&local_time,0,sizeof(local_time));
-  (void) ResetMagickMemory(&gm_time,0,sizeof(gm_time));
+  (void) memset(&local_time,0,sizeof(local_time));
+  (void) memset(&gm_time,0,sizeof(gm_time));
 #if defined(MAGICKCORE_HAVE_LOCALTIME_R)
   (void) localtime_r(&time,&local_time);
 #else
@@ -1666,7 +1666,7 @@ MagickExport void ResetStringInfo(StringInfo *string_info)
 {
   assert(string_info != (StringInfo *) NULL);
   assert(string_info->signature == MagickCoreSignature);
-  (void) ResetMagickMemory(string_info->datum,0,string_info->length);
+  (void) memset(string_info->datum,0,string_info->length);
 }
 
 /*
@@ -1751,7 +1751,7 @@ MagickExport void SetStringInfo(StringInfo *string_info,
   assert(source->signature == MagickCoreSignature);
   if (string_info->length == 0)
     return;
-  (void) ResetMagickMemory(string_info->datum,0,string_info->length);
+  (void) memset(string_info->datum,0,string_info->length);
   (void) memcpy(string_info->datum,source->datum,MagickMin(string_info->length,
     source->length));
 }

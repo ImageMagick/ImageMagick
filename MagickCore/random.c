@@ -175,7 +175,7 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
     *nonce;
 
   random_info=(RandomInfo *) AcquireCriticalMemory(sizeof(*random_info));
-  (void) ResetMagickMemory(random_info,0,sizeof(*random_info));
+  (void) memset(random_info,0,sizeof(*random_info));
   random_info->signature_info=AcquireSignatureInfo();
   random_info->nonce=AcquireStringInfo(2*GetSignatureDigestsize(
     random_info->signature_info));
@@ -284,7 +284,7 @@ MagickExport RandomInfo *DestroyRandomInfo(RandomInfo *random_info)
   if (random_info->signature_info != (SignatureInfo *) NULL)
     random_info->signature_info=DestroySignatureInfo(
       random_info->signature_info);
-  (void) ResetMagickMemory(random_info->seed,0,sizeof(*random_info->seed));
+  (void) memset(random_info->seed,0,sizeof(*random_info->seed));
   random_info->signature=(~MagickCoreSignature);
   UnlockSemaphoreInfo(random_info->semaphore);
   RelinquishSemaphoreInfo(&random_info->semaphore);

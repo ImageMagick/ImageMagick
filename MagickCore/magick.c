@@ -180,7 +180,7 @@ MagickExport MagickInfo *AcquireMagickInfo(const char *module,const char *name,
   assert(description != (const char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",name);
   magick_info=(MagickInfo *) AcquireCriticalMemory(sizeof(*magick_info));
-  (void) ResetMagickMemory(magick_info,0,sizeof(*magick_info));
+  (void) memset(magick_info,0,sizeof(*magick_info));
   magick_info->module=ConstantString(module);
   magick_info->name=ConstantString(name);
   magick_info->description=ConstantString(description);

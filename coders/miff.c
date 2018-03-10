@@ -509,7 +509,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
   if (c == EOF)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   *id='\0';
-  (void) ResetMagickMemory(keyword,0,sizeof(keyword));
+  (void) memset(keyword,0,sizeof(keyword));
   version=0.0;
   (void) version;
   do
@@ -1335,13 +1335,13 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     status=MagickTrue;
     GetPixelInfo(image,&pixel);
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
-   (void) ResetMagickMemory(&bzip_info,0,sizeof(bzip_info));
+   (void) memset(&bzip_info,0,sizeof(bzip_info));
 #endif
 #if defined(MAGICKCORE_LZMA_DELEGATE)
-    (void) ResetMagickMemory(&allocator,0,sizeof(allocator));
+    (void) memset(&allocator,0,sizeof(allocator));
 #endif
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
-    (void) ResetMagickMemory(&zip_info,0,sizeof(zip_info));
+    (void) memset(&zip_info,0,sizeof(zip_info));
 #endif
     switch (image->compression)
     {
@@ -2474,7 +2474,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         int
           code;
 
-        (void) ResetMagickMemory(&bzip_info,0,sizeof(bzip_info));
+        (void) memset(&bzip_info,0,sizeof(bzip_info));
         bzip_info.bzalloc=AcquireBZIPMemory;
         bzip_info.bzfree=RelinquishBZIPMemory;
         code=BZ2_bzCompressInit(&bzip_info,(int) (image->quality ==
@@ -2491,7 +2491,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         int
           code;
 
-        (void) ResetMagickMemory(&allocator,0,sizeof(allocator));
+        (void) memset(&allocator,0,sizeof(allocator));
         allocator.alloc=AcquireLZMAMemory;
         allocator.free=RelinquishLZMAMemory;
         lzma_info=initialize_lzma;
@@ -2509,7 +2509,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         int
           code;
 
-        (void) ResetMagickMemory(&zip_info,0,sizeof(zip_info));
+        (void) memset(&zip_info,0,sizeof(zip_info));
         zip_info.zalloc=AcquireZIPMemory;
         zip_info.zfree=RelinquishZIPMemory;
         code=deflateInit(&zip_info,(int) (image->quality ==

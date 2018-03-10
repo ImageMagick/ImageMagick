@@ -1690,7 +1690,7 @@ MagickExport MagickBooleanType DisplayImages(const ImageInfo *image_info,
     CatchException(exception);
   (void) XSetErrorHandler(XError);
   resource_database=XGetResourceDatabase(display,GetClientName());
-  (void) ResetMagickMemory(&resource_info,0,sizeof(resource_info));
+  (void) memset(&resource_info,0,sizeof(resource_info));
   XGetResourceInfo(image_info,resource_database,GetClientName(),&resource_info);
   if (image_info->page != (char *) NULL)
     resource_info.image_geometry=AcquireString(image_info->page);
@@ -2931,7 +2931,7 @@ static MagickBooleanType XChopImage(Display *display,
   (void) XSelectInput(display,windows->image.id,
     windows->image.attributes.event_mask | PointerMotionMask);
   state=DefaultState;
-  (void) ResetMagickMemory(&segment_info,0,sizeof(segment_info));
+  (void) memset(&segment_info,0,sizeof(segment_info));
   do
   {
     if (windows->info.mapped != MagickFalse )

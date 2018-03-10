@@ -498,7 +498,7 @@ WandExport DrawingWand *CloneDrawingWand(const DrawingWand *wand)
   if (clone_wand == (DrawingWand *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,
       "MemoryAllocationFailed",GetExceptionMessage(errno));
-  (void) ResetMagickMemory(clone_wand,0,sizeof(*clone_wand));
+  (void) memset(clone_wand,0,sizeof(*clone_wand));
   clone_wand->id=AcquireWandId();
   (void) FormatLocaleString(clone_wand->name,MagickPathExtent,
     "DrawingWand-%.20g",(double) clone_wand->id);
@@ -6715,7 +6715,7 @@ WandExport DrawingWand *NewDrawingWand(void)
   if (wand == (DrawingWand *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
-  (void) ResetMagickMemory(wand,0,sizeof(*wand));
+  (void) memset(wand,0,sizeof(*wand));
   wand->id=AcquireWandId();
   (void) FormatLocaleString(wand->name,MagickPathExtent,"%s-%.20g",
     DrawingWandId,(double) wand->id);

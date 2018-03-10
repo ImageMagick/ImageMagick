@@ -372,7 +372,7 @@ static MagickBooleanType CompositeUsage(void)
 
 static void GetCompositeOptions(CompositeOptions *composite_options)
 {
-  (void) ResetMagickMemory(composite_options,0,sizeof(*composite_options));
+  (void) memset(composite_options,0,sizeof(*composite_options));
   composite_options->channel=DefaultChannels;
   composite_options->compose=OverCompositeOp;
 }

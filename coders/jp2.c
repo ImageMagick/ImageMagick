@@ -945,7 +945,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
         channels++;
     }
   parameters.tcp_mct=channels == 3 ? 1 : 0;
-  ResetMagickMemory(jp2_info,0,sizeof(jp2_info));
+  memset(jp2_info,0,sizeof(jp2_info));
   for (i=0; i < (ssize_t) channels; i++)
   {
     jp2_info[i].prec=(OPJ_UINT32) image->depth;

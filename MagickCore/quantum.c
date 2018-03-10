@@ -167,7 +167,7 @@ static MagickBooleanType AcquireQuantumPixels(QuantumInfo *quantum_info,
   if (quantum_info->pixels == (MemoryInfo **) NULL)
     return(MagickFalse);
   quantum_info->extent=extent;
-  (void) ResetMagickMemory(quantum_info->pixels,0,quantum_info->number_threads*
+  (void) memset(quantum_info->pixels,0,quantum_info->number_threads*
     sizeof(*quantum_info->pixels));
   for (i=0; i < (ssize_t) quantum_info->number_threads; i++)
   {
@@ -181,7 +181,7 @@ static MagickBooleanType AcquireQuantumPixels(QuantumInfo *quantum_info,
         return(MagickFalse);
       }
     pixels=(unsigned char *)  GetVirtualMemoryBlob(quantum_info->pixels[i]);
-    (void) ResetMagickMemory(pixels,0,(extent+1)*sizeof(*pixels));
+    (void) memset(pixels,0,(extent+1)*sizeof(*pixels));
     pixels[extent]=QuantumSignature;
   }
   return(MagickTrue);
@@ -422,7 +422,7 @@ MagickExport void GetQuantumInfo(const ImageInfo *image_info,
     *option;
 
   assert(quantum_info != (QuantumInfo *) NULL);
-  (void) ResetMagickMemory(quantum_info,0,sizeof(*quantum_info));
+  (void) memset(quantum_info,0,sizeof(*quantum_info));
   quantum_info->quantum=8;
   quantum_info->maximum=1.0;
   quantum_info->scale=QuantumRange;

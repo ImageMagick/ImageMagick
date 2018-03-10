@@ -210,7 +210,7 @@ WandExport ScriptTokenInfo *AcquireScriptTokenInfo(const char *filename)
   token_info=(ScriptTokenInfo *) AcquireMagickMemory(sizeof(*token_info));
   if (token_info == (ScriptTokenInfo *) NULL)
     return token_info;
-  (void) ResetMagickMemory(token_info,0,sizeof(*token_info));
+  (void) memset(token_info,0,sizeof(*token_info));
 
   token_info->opened=MagickFalse;
   if ( LocaleCompare(filename,"-") == 0 ) {

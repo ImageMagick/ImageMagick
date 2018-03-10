@@ -238,7 +238,7 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
   kernel=(KernelInfo *) AcquireQuantumMemory(1,sizeof(*kernel));
   if (kernel == (KernelInfo *) NULL)
     return(kernel);
-  (void) ResetMagickMemory(kernel,0,sizeof(*kernel));
+  (void) memset(kernel,0,sizeof(*kernel));
   kernel->minimum = kernel->maximum = kernel->angle = 0.0;
   kernel->negative_range = kernel->positive_range = 0.0;
   kernel->type = UserDefinedKernel;
@@ -1017,7 +1017,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       kernel=(KernelInfo *) AcquireMagickMemory(sizeof(*kernel));
       if (kernel == (KernelInfo *) NULL)
         return(kernel);
-      (void) ResetMagickMemory(kernel,0,sizeof(*kernel));
+      (void) memset(kernel,0,sizeof(*kernel));
       kernel->minimum = kernel->maximum = kernel->angle = 0.0;
       kernel->negative_range = kernel->positive_range = 0.0;
       kernel->type = type;
@@ -1081,7 +1081,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
                       kernel->values[i] = exp(-((double)(u*u+v*v))*A)*B;
               }
             else /* limiting case - a unity (normalized Dirac) kernel */
-              { (void) ResetMagickMemory(kernel->values,0, (size_t)
+              { (void) memset(kernel->values,0, (size_t)
                   kernel->width*kernel->height*sizeof(*kernel->values));
                 kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
               }
@@ -1113,7 +1113,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
                     }
               }
             else /* special case - generate a unity kernel */
-              { (void) ResetMagickMemory(kernel->values,0, (size_t)
+              { (void) memset(kernel->values,0, (size_t)
                   kernel->width*kernel->height*sizeof(*kernel->values));
                 kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
               }
@@ -1173,7 +1173,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 
         /* initialize */
         v = (ssize_t) (kernel->width*KernelRank-1)/2; /* start/end points to fit range */
-        (void) ResetMagickMemory(kernel->values,0, (size_t)
+        (void) memset(kernel->values,0, (size_t)
           kernel->width*kernel->height*sizeof(*kernel->values));
         /* Calculate a Positive 1D Gaussian */
         if ( sigma > MagickEpsilon )
@@ -1199,7 +1199,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
               kernel->values[i] = exp(-((double)(u*u))*alpha)*beta;
           }
         else /* special case - generate a unity kernel */
-          { (void) ResetMagickMemory(kernel->values,0, (size_t)
+          { (void) memset(kernel->values,0, (size_t)
               kernel->width*kernel->height*sizeof(*kernel->values));
             kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
           }
@@ -1258,7 +1258,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 #if 1
 #define KernelRank 3
             v = (ssize_t) kernel->width*KernelRank; /* start/end points */
-            (void) ResetMagickMemory(kernel->values,0, (size_t)
+            (void) memset(kernel->values,0, (size_t)
               kernel->width*sizeof(*kernel->values));
             sigma *= KernelRank;            /* simplify the loop expression */
             A = 1.0/(2.0*sigma*sigma);
@@ -1280,7 +1280,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 #endif
           }
         else /* special case - generate a unity kernel */
-          { (void) ResetMagickMemory(kernel->values,0, (size_t)
+          { (void) memset(kernel->values,0, (size_t)
               kernel->width*kernel->height*sizeof(*kernel->values));
             kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
             kernel->positive_range = 1.0;

@@ -332,7 +332,7 @@ static ChannelStatistics *GetLocationStatistics(const Image *image,
     MaxPixelChannels+1,sizeof(*channel_statistics));
   if (channel_statistics == (ChannelStatistics *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(channel_statistics,0,(MaxPixelChannels+1)*
+  (void) memset(channel_statistics,0,(MaxPixelChannels+1)*
     sizeof(*channel_statistics));
   for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
   {

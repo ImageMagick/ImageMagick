@@ -671,7 +671,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
   keyword=(const char *) NULL;
   value=(char *) NULL;
   SetGeometryInfo(&geometry_info);
-  (void) ResetMagickMemory(&geometry,0,sizeof(geometry));
+  (void) memset(&geometry,0,sizeof(geometry));
   channel=DefaultChannels;
   switch (*tag)
   {
@@ -3072,7 +3072,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 (const char *) tag);
               break;
             }
-          (void) ResetMagickMemory(&frame_info,0,sizeof(frame_info));
+          (void) memset(&frame_info,0,sizeof(frame_info));
           SetGeometry(msl_info->image[n],&geometry);
           if (attributes != (const xmlChar **) NULL)
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
@@ -6193,7 +6193,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 RectangleInfo
                   geometry;
 
-                (void) ResetMagickMemory(&geometry,0,sizeof(geometry));
+                (void) memset(&geometry,0,sizeof(geometry));
                 image_option=GetImageArtifact(msl_info->image[n],"page");
                 if (image_option != (const char *) NULL)
                   flags=ParseAbsoluteGeometry(image_option,&geometry);
@@ -7830,7 +7830,7 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   /*
     Parse MSL file.
   */
-  (void) ResetMagickMemory(&msl_info,0,sizeof(msl_info));
+  (void) memset(&msl_info,0,sizeof(msl_info));
   msl_info.exception=exception;
   msl_info.image_info=(ImageInfo **) AcquireMagickMemory(
     sizeof(*msl_info.image_info));
@@ -7856,7 +7856,7 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   if (*image != (Image *) NULL)
     MSLPushImage(&msl_info,*image);
   (void) xmlSubstituteEntitiesDefault(1);
-  (void) ResetMagickMemory(&sax_modules,0,sizeof(sax_modules));
+  (void) memset(&sax_modules,0,sizeof(sax_modules));
   sax_modules.internalSubset=MSLInternalSubset;
   sax_modules.isStandalone=MSLIsStandalone;
   sax_modules.hasInternalSubset=MSLHasInternalSubset;

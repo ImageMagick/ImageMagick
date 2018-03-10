@@ -175,7 +175,7 @@ MagickExport XMLTreeInfo *AddChildToXMLTree(XMLTreeInfo *xml_info,
   child=(XMLTreeInfo *) AcquireMagickMemory(sizeof(*child));
   if (child == (XMLTreeInfo *) NULL)
     return((XMLTreeInfo *) NULL);
-  (void) ResetMagickMemory(child,0,sizeof(*child));
+  (void) memset(child,0,sizeof(*child));
   child->tag=ConstantString(tag);
   child->attributes=sentinel;
   child->content=ConstantString("");
@@ -1494,7 +1494,7 @@ static char *ParseEntities(char *xml,char **entities,int state)
                           sizeof(*extent_xml));
                         if (extent_xml != (char *) NULL)
                           {
-                            ResetMagickMemory(extent_xml,0,extent*
+                            memset(extent_xml,0,extent*
                               sizeof(*extent_xml));
                             (void) CopyMagickString(extent_xml,p,extent*
                               sizeof(*extent_xml));
@@ -2368,7 +2368,7 @@ MagickExport XMLTreeInfo *NewXMLTreeTag(const char *tag)
   root=(XMLTreeRoot *) AcquireMagickMemory(sizeof(*root));
   if (root == (XMLTreeRoot *) NULL)
     return((XMLTreeInfo *) NULL);
-  (void) ResetMagickMemory(root,0,sizeof(*root));
+  (void) memset(root,0,sizeof(*root));
   root->root.tag=(char *) NULL;
   if (tag != (char *) NULL)
     root->root.tag=ConstantString(tag);

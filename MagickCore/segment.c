@@ -293,9 +293,9 @@ static MagickBooleanType Classify(Image *image,short **extrema,
   */
   cluster=(Cluster *) NULL;
   head=(Cluster *) NULL;
-  (void) ResetMagickMemory(&red,0,sizeof(red));
-  (void) ResetMagickMemory(&green,0,sizeof(green));
-  (void) ResetMagickMemory(&blue,0,sizeof(blue));
+  (void) memset(&red,0,sizeof(red));
+  (void) memset(&green,0,sizeof(green));
+  (void) memset(&blue,0,sizeof(blue));
   while (DefineRegion(extrema[Red],&red) != 0)
   {
     green.index=0;
@@ -1005,9 +1005,9 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
   */
   cluster=(Cluster *) NULL;
   head=(Cluster *) NULL;
-  (void) ResetMagickMemory(&red,0,sizeof(red));
-  (void) ResetMagickMemory(&green,0,sizeof(green));
-  (void) ResetMagickMemory(&blue,0,sizeof(blue));
+  (void) memset(&red,0,sizeof(red));
+  (void) memset(&green,0,sizeof(green));
+  (void) memset(&blue,0,sizeof(blue));
   while (DefineRegion(extrema[Red],&red) != 0)
   {
     green.index=0;

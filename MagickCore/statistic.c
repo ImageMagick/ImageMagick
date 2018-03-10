@@ -166,7 +166,7 @@ static PixelChannels **AcquirePixelThreadSet(const Image *image)
     sizeof(*pixels));
   if (pixels == (PixelChannels **) NULL)
     return((PixelChannels **) NULL);
-  (void) ResetMagickMemory(pixels,0,number_threads*sizeof(*pixels));
+  (void) memset(pixels,0,number_threads*sizeof(*pixels));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
     register ssize_t
@@ -1394,20 +1394,20 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
     sizeof(*channel_moments));
   if (channel_moments == (ChannelMoments *) NULL)
     return(channel_moments);
-  (void) ResetMagickMemory(channel_moments,0,(MaxPixelChannels+1)*
+  (void) memset(channel_moments,0,(MaxPixelChannels+1)*
     sizeof(*channel_moments));
-  (void) ResetMagickMemory(centroid,0,sizeof(centroid));
-  (void) ResetMagickMemory(M00,0,sizeof(M00));
-  (void) ResetMagickMemory(M01,0,sizeof(M01));
-  (void) ResetMagickMemory(M02,0,sizeof(M02));
-  (void) ResetMagickMemory(M03,0,sizeof(M03));
-  (void) ResetMagickMemory(M10,0,sizeof(M10));
-  (void) ResetMagickMemory(M11,0,sizeof(M11));
-  (void) ResetMagickMemory(M12,0,sizeof(M12));
-  (void) ResetMagickMemory(M20,0,sizeof(M20));
-  (void) ResetMagickMemory(M21,0,sizeof(M21));
-  (void) ResetMagickMemory(M22,0,sizeof(M22));
-  (void) ResetMagickMemory(M30,0,sizeof(M30));
+  (void) memset(centroid,0,sizeof(centroid));
+  (void) memset(M00,0,sizeof(M00));
+  (void) memset(M01,0,sizeof(M01));
+  (void) memset(M02,0,sizeof(M02));
+  (void) memset(M03,0,sizeof(M03));
+  (void) memset(M10,0,sizeof(M10));
+  (void) memset(M11,0,sizeof(M11));
+  (void) memset(M12,0,sizeof(M12));
+  (void) memset(M20,0,sizeof(M20));
+  (void) memset(M21,0,sizeof(M21));
+  (void) memset(M22,0,sizeof(M22));
+  (void) memset(M30,0,sizeof(M30));
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1986,7 +1986,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
           channel_statistics);
       return(channel_statistics);
     }
-  (void) ResetMagickMemory(channel_statistics,0,(MaxPixelChannels+1)*
+  (void) memset(channel_statistics,0,(MaxPixelChannels+1)*
     sizeof(*channel_statistics));
   for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
   {
@@ -1994,7 +1994,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     channel_statistics[i].maxima=(-MagickMaximumValue);
     channel_statistics[i].minima=MagickMaximumValue;
   }
-  (void) ResetMagickMemory(histogram,0,(MaxMap+1)*GetPixelChannels(image)*
+  (void) memset(histogram,0,(MaxMap+1)*GetPixelChannels(image)*
     sizeof(*histogram));
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -2481,13 +2481,13 @@ static PixelList *AcquirePixelList(const size_t width,const size_t height)
   pixel_list=(PixelList *) AcquireMagickMemory(sizeof(*pixel_list));
   if (pixel_list == (PixelList *) NULL)
     return(pixel_list);
-  (void) ResetMagickMemory((void *) pixel_list,0,sizeof(*pixel_list));
+  (void) memset((void *) pixel_list,0,sizeof(*pixel_list));
   pixel_list->length=width*height;
   pixel_list->skip_list.nodes=(SkipNode *) AcquireAlignedMemory(65537UL,
     sizeof(*pixel_list->skip_list.nodes));
   if (pixel_list->skip_list.nodes == (SkipNode *) NULL)
     return(DestroyPixelList(pixel_list));
-  (void) ResetMagickMemory(pixel_list->skip_list.nodes,0,65537UL*
+  (void) memset(pixel_list->skip_list.nodes,0,65537UL*
     sizeof(*pixel_list->skip_list.nodes));
   pixel_list->signature=MagickCoreSignature;
   return(pixel_list);
@@ -2510,7 +2510,7 @@ static PixelList **AcquirePixelListThreadSet(const size_t width,
     sizeof(*pixel_list));
   if (pixel_list == (PixelList **) NULL)
     return((PixelList **) NULL);
-  (void) ResetMagickMemory(pixel_list,0,number_threads*sizeof(*pixel_list));
+  (void) memset(pixel_list,0,number_threads*sizeof(*pixel_list));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
     pixel_list[i]=AcquirePixelList(width,height);

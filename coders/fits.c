@@ -302,7 +302,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   /*
     Initialize image header.
   */
-  (void) ResetMagickMemory(&fits_info,0,sizeof(fits_info));
+  (void) memset(&fits_info,0,sizeof(fits_info));
   fits_info.extend=MagickFalse;
   fits_info.simple=MagickFalse;
   fits_info.bits_per_pixel=8;
@@ -661,7 +661,7 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   fits_info=(char *) AcquireQuantumMemory(FITSBlocksize,sizeof(*fits_info));
   if (fits_info == (char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(fits_info,' ',FITSBlocksize*sizeof(*fits_info));
+  (void) memset(fits_info,' ',FITSBlocksize*sizeof(*fits_info));
   /*
     Initialize image header.
   */
@@ -834,7 +834,7 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   length=(size_t) (FITSBlocksize-TellBlob(image) % FITSBlocksize);
   if (length != 0)
     {
-      (void) ResetMagickMemory(fits_info,0,length*sizeof(*fits_info));
+      (void) memset(fits_info,0,length*sizeof(*fits_info));
       (void) WriteBlob(image,length,(unsigned char *) fits_info);
     }
   fits_info=DestroyString(fits_info);

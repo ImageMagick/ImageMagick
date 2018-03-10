@@ -214,7 +214,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   NTInitializeWinsock(MagickTrue);
 #endif
-  (void) ResetMagickMemory(&hint,0,sizeof(hint));
+  (void) memset(&hint,0,sizeof(hint));
   hint.ai_family=AF_INET;
   hint.ai_socktype=SOCK_STREAM;
   hint.ai_flags=AI_PASSIVE;
@@ -341,7 +341,7 @@ MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(
   */
   server_info=(DistributeCacheInfo *) AcquireCriticalMemory(
     sizeof(*server_info));
-  (void) ResetMagickMemory(server_info,0,sizeof(*server_info));
+  (void) memset(server_info,0,sizeof(*server_info));
   server_info->signature=MagickCoreSignature;
   server_info->port=0;
   hostname=GetHostname(&server_info->port,exception);
@@ -930,7 +930,7 @@ MagickExport void DistributePixelCacheServer(const int port,
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   NTInitializeWinsock(MagickFalse);
 #endif
-  (void) ResetMagickMemory(&hint,0,sizeof(hint));
+  (void) memset(&hint,0,sizeof(hint));
   hint.ai_family=AF_INET;
   hint.ai_socktype=SOCK_STREAM;
   hint.ai_flags=AI_PASSIVE;

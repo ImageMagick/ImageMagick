@@ -1202,7 +1202,7 @@ RestoreMSCWarning
     BImgBuff = (unsigned char *) AcquireQuantumMemory((size_t) (ldblk),sizeof(double));    /* Ldblk was set in the check phase */
     if (BImgBuff == NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    (void) ResetMagickMemory(BImgBuff,0,ldblk*sizeof(double));
+    (void) memset(BImgBuff,0,ldblk*sizeof(double));
 
     MinVal = 0;
     MaxVal = 0;

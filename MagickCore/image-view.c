@@ -109,7 +109,7 @@ MagickExport ImageView *CloneImageView(const ImageView *image_view)
   assert(image_view != (ImageView *) NULL);
   assert(image_view->signature == MagickCoreSignature);
   clone_view=(ImageView *) AcquireCriticalMemory(sizeof(*clone_view));
-  (void) ResetMagickMemory(clone_view,0,sizeof(*clone_view));
+  (void) memset(clone_view,0,sizeof(*clone_view));
   clone_view->description=ConstantString(image_view->description);
   clone_view->extent=image_view->extent;
   clone_view->view=CloneCacheView(image_view->view);
@@ -720,7 +720,7 @@ MagickExport ImageView *NewImageView(Image *image,ExceptionInfo *exception)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   image_view=(ImageView *) AcquireCriticalMemory(sizeof(*image_view));
-  (void) ResetMagickMemory(image_view,0,sizeof(*image_view));
+  (void) memset(image_view,0,sizeof(*image_view));
   image_view->description=ConstantString("ImageView");
   image_view->image=image;
   image_view->view=AcquireVirtualCacheView(image_view->image,exception);
@@ -774,7 +774,7 @@ MagickExport ImageView *NewImageViewRegion(Image *image,const ssize_t x,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   image_view=(ImageView *) AcquireCriticalMemory(sizeof(*image_view));
-  (void) ResetMagickMemory(image_view,0,sizeof(*image_view));
+  (void) memset(image_view,0,sizeof(*image_view));
   image_view->description=ConstantString("ImageView");
   image_view->view=AcquireVirtualCacheView(image_view->image,exception);
   image_view->image=image;

@@ -312,7 +312,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read SGI raster header.
   */
-  (void) ResetMagickMemory(&iris_info,0,sizeof(iris_info));
+  (void) memset(&iris_info,0,sizeof(iris_info));
   iris_info.magic=ReadBlobMSBShort(image);
   do
   {
@@ -389,7 +389,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (pixel_info == (MemoryInfo *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
-    (void) ResetMagickMemory(pixels,0,iris_info.columns*iris_info.rows*4*
+    (void) memset(pixels,0,iris_info.columns*iris_info.rows*4*
       bytes_per_pixel*sizeof(*pixels));
     if ((int) iris_info.storage != 0x01)
       {
@@ -953,7 +953,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image,
       Initialize SGI raster file header.
     */
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
-    (void) ResetMagickMemory(&iris_info,0,sizeof(iris_info));
+    (void) memset(&iris_info,0,sizeof(iris_info));
     iris_info.magic=0x01DA;
     compression=image->compression;
     if (image_info->compression != UndefinedCompression)

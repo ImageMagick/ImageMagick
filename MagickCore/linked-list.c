@@ -716,7 +716,7 @@ MagickExport LinkedListInfo *NewLinkedList(const size_t capacity)
     *list_info;
 
   list_info=(LinkedListInfo *) AcquireCriticalMemory(sizeof(*list_info));
-  (void) ResetMagickMemory(list_info,0,sizeof(*list_info));
+  (void) memset(list_info,0,sizeof(*list_info));
   list_info->capacity=capacity == 0 ? (size_t) (~0) : capacity;
   list_info->elements=0;
   list_info->head=(ElementInfo *) NULL;

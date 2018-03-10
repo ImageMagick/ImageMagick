@@ -98,7 +98,7 @@ static MagickWand *CloneMagickWandFromImages(const MagickWand *wand,
   if (clone_wand == (MagickWand *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       images->filename);
-  (void) ResetMagickMemory(clone_wand,0,sizeof(*clone_wand));
+  (void) memset(clone_wand,0,sizeof(*clone_wand));
   clone_wand->id=AcquireWandId();
   (void) FormatLocaleString(clone_wand->name,MagickPathExtent,"%s-%.20g",
     MagickWandId,(double) clone_wand->id);
@@ -3424,7 +3424,7 @@ WandExport MagickBooleanType MagickFrameImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  (void) ResetMagickMemory(&frame_info,0,sizeof(frame_info));
+  (void) memset(&frame_info,0,sizeof(frame_info));
   frame_info.width=wand->images->columns+2*width;
   frame_info.height=wand->images->rows+2*height;
   frame_info.x=(ssize_t) width;

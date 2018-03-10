@@ -415,7 +415,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
         status=MagickFalse;
         continue;
       }
-    (void) ResetMagickMemory(channel_distortion,0,sizeof(channel_distortion));
+    (void) memset(channel_distortion,0,sizeof(channel_distortion));
     for (x=0; x < (ssize_t) columns; x++)
     {
       double
@@ -533,7 +533,7 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
         status=MagickFalse;
         continue;
       }
-    (void) ResetMagickMemory(channel_distortion,0,sizeof(channel_distortion));
+    (void) memset(channel_distortion,0,sizeof(channel_distortion));
     for (x=0; x < (ssize_t) columns; x++)
     {
       double
@@ -648,7 +648,7 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
         status=MagickFalse;
         continue;
       }
-    (void) ResetMagickMemory(channel_distortion,0,sizeof(channel_distortion));
+    (void) memset(channel_distortion,0,sizeof(channel_distortion));
     for (x=0; x < (ssize_t) columns; x++)
     {
       double
@@ -864,7 +864,7 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
         status=MagickFalse;
         continue;
       }
-    (void) ResetMagickMemory(channel_distortion,0,sizeof(channel_distortion));
+    (void) memset(channel_distortion,0,sizeof(channel_distortion));
     for (x=0; x < (ssize_t) columns; x++)
     {
       double
@@ -1163,7 +1163,7 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
         status=MagickFalse;
         continue;
       }
-    (void) ResetMagickMemory(channel_distortion,0,sizeof(channel_distortion));
+    (void) memset(channel_distortion,0,sizeof(channel_distortion));
     for (x=0; x < (ssize_t) columns; x++)
     {
       double
@@ -1445,7 +1445,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
         status=MagickFalse;
         continue;
       }
-    (void) ResetMagickMemory(channel_distortion,0,sizeof(channel_distortion));
+    (void) memset(channel_distortion,0,sizeof(channel_distortion));
     for (x=0; x < (ssize_t) columns; x++)
     {
       double
@@ -1465,14 +1465,14 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
       ssize_t
         v;
 
-      (void) ResetMagickMemory(x_pixel_mu,0,sizeof(x_pixel_mu));
-      (void) ResetMagickMemory(x_pixel_sigma_squared,0,
+      (void) memset(x_pixel_mu,0,sizeof(x_pixel_mu));
+      (void) memset(x_pixel_sigma_squared,0,
         sizeof(x_pixel_sigma_squared));
-      (void) ResetMagickMemory(xy_sigma,0,sizeof(xy_sigma));
-      (void) ResetMagickMemory(x_pixel_sigma_squared,0,
+      (void) memset(xy_sigma,0,sizeof(xy_sigma));
+      (void) memset(x_pixel_sigma_squared,0,
         sizeof(y_pixel_sigma_squared));
-      (void) ResetMagickMemory(y_pixel_mu,0,sizeof(y_pixel_mu));
-      (void) ResetMagickMemory(y_pixel_sigma_squared,0,
+      (void) memset(y_pixel_mu,0,sizeof(y_pixel_mu));
+      (void) memset(y_pixel_sigma_squared,0,
         sizeof(y_pixel_sigma_squared));
       k=kernel_info->values;
       reference=p;
@@ -1617,7 +1617,7 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
     sizeof(*channel_distortion));
   if (channel_distortion == (double *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(channel_distortion,0,length*
+  (void) memset(channel_distortion,0,length*
     sizeof(*channel_distortion));
   switch (metric)
   {
@@ -1763,7 +1763,7 @@ MagickExport double *GetImageDistortions(Image *image,
     sizeof(*channel_distortion));
   if (channel_distortion == (double *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(channel_distortion,0,length*
+  (void) memset(channel_distortion,0,length*
     sizeof(*channel_distortion));
   status=MagickTrue;
   switch (metric)

@@ -270,7 +270,7 @@ MagickExport void Ascii85Initialize(Image *image)
     image->ascii85=(Ascii85Info *) AcquireMagickMemory(sizeof(*image->ascii85));
   if (image->ascii85 == (Ascii85Info *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(image->ascii85,0,sizeof(*image->ascii85));
+  (void) memset(image->ascii85,0,sizeof(*image->ascii85));
   image->ascii85->line_break=MaxLineExtent << 1;
   image->ascii85->offset=0;
 }
@@ -507,7 +507,7 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
     /*
       Initialize scanline to white.
     */
-    ResetMagickMemory(scanline,0,sizeof(*scanline)*image->columns);
+    memset(scanline,0,sizeof(*scanline)*image->columns);
     /*
       Decode Huffman encoded scanline.
     */
@@ -759,7 +759,7 @@ RestoreMSCWarning \
   if (scanline == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       inject_image->filename);
-  (void) ResetMagickMemory(scanline,0,width*sizeof(*scanline));
+  (void) memset(scanline,0,width*sizeof(*scanline));
   huffman_image=CloneImage(inject_image,0,0,MagickTrue,exception);
   if (huffman_image == (Image *) NULL)
     {

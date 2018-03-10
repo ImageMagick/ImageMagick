@@ -1834,7 +1834,7 @@ MagickExport void XDestroyResourceInfo(XResourceInfo *resource_info)
       RelinquishMagickMemory(resource_info->client_name);
   if (resource_info->name != (char *) NULL)
     resource_info->name=DestroyString(resource_info->name);
-  (void) ResetMagickMemory(resource_info,0,sizeof(*resource_info));
+  (void) memset(resource_info,0,sizeof(*resource_info));
 }
 
 /*
@@ -3466,7 +3466,7 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
   */
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(resource_info != (XResourceInfo *) NULL);
-  (void) ResetMagickMemory(resource_info,0,sizeof(*resource_info));
+  (void) memset(resource_info,0,sizeof(*resource_info));
   resource_info->resource_database=database;
   resource_info->image_info=(ImageInfo *) image_info;
   (void) SetImageInfoProgressMonitor(resource_info->image_info,
@@ -5140,7 +5140,7 @@ MagickPrivate XWindows *XInitializeWindows(Display *display,
         "...");
       return((XWindows *) NULL);
     }
-  (void) ResetMagickMemory(windows,0,sizeof(*windows));
+  (void) memset(windows,0,sizeof(*windows));
   windows->pixel_info=(XPixelInfo *) AcquireMagickMemory(
     sizeof(*windows->pixel_info));
   windows->icon_pixel=(XPixelInfo *) AcquireMagickMemory(
@@ -5648,7 +5648,7 @@ MagickPrivate MagickBooleanType XMakeImage(Display *display,
           ximage->data=(char *) AcquireQuantumMemory((size_t)
             ximage->bytes_per_line,(size_t) ximage->depth*ximage->height);
           if (ximage->data != (char *) NULL)
-            (void) ResetMagickMemory(ximage->data,0,(size_t)
+            (void) memset(ximage->data,0,(size_t)
               ximage->bytes_per_line*ximage->depth*ximage->height);
         }
       else
@@ -5656,7 +5656,7 @@ MagickPrivate MagickBooleanType XMakeImage(Display *display,
           ximage->data=(char *) AcquireQuantumMemory((size_t)
             ximage->bytes_per_line,(size_t) ximage->height);
           if (ximage->data != (char *) NULL)
-            (void) ResetMagickMemory(ximage->data,0,(size_t)
+            (void) memset(ximage->data,0,(size_t)
               ximage->bytes_per_line*ximage->height);
         }
     }

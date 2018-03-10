@@ -2348,7 +2348,7 @@ static void TIFFIgnoreTags(TIFF *tiff)
   if (ignore == (TIFFFieldInfo *) NULL)
     return;
   /* This also sets field_bit to 0 (FIELD_IGNORE) */
-  ResetMagickMemory(ignore,0,count*sizeof(*ignore));
+  memset(ignore,0,count*sizeof(*ignore));
   while (*p != '\0')
   {
     while ((isspace((int) ((unsigned char) *p)) != 0))
@@ -2934,7 +2934,7 @@ static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,
     tile_rows;
 
   assert(tiff_info != (TIFFInfo *) NULL);
-  (void) ResetMagickMemory(tiff_info,0,sizeof(*tiff_info));
+  (void) memset(tiff_info,0,sizeof(*tiff_info));
   option=GetImageOption(image_info,"tiff:tile-geometry");
   if (option == (const char *) NULL)
     {
@@ -4154,9 +4154,9 @@ RestoreMSCWarning
         /*
           Initialize TIFF colormap.
         */
-        (void) ResetMagickMemory(red,0,65536*sizeof(*red));
-        (void) ResetMagickMemory(green,0,65536*sizeof(*green));
-        (void) ResetMagickMemory(blue,0,65536*sizeof(*blue));
+        (void) memset(red,0,65536*sizeof(*red));
+        (void) memset(green,0,65536*sizeof(*green));
+        (void) memset(blue,0,65536*sizeof(*blue));
         for (i=0; i < (ssize_t) image->colors; i++)
         {
           red[i]=ScaleQuantumToShort(image->colormap[i].red);

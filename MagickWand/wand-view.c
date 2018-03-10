@@ -131,7 +131,7 @@ WandExport WandView *CloneWandView(const WandView *wand_view)
   if (clone_view == (WandView *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       wand_view->name);
-  (void) ResetMagickMemory(clone_view,0,sizeof(*clone_view));
+  (void) memset(clone_view,0,sizeof(*clone_view));
   clone_view->id=AcquireWandId();
   (void) FormatLocaleString(clone_view->name,MagickPathExtent,"%s-%.20g",
     WandViewId,(double) clone_view->id);
@@ -730,7 +730,7 @@ static PixelWand ***AcquirePixelsThreadSet(const size_t number_wands)
     sizeof(*pixel_wands));
   if (pixel_wands == (PixelWand ***) NULL)
     return((PixelWand ***) NULL);
-  (void) ResetMagickMemory(pixel_wands,0,number_threads*sizeof(*pixel_wands));
+  (void) memset(pixel_wands,0,number_threads*sizeof(*pixel_wands));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
     pixel_wands[i]=NewPixelWands(number_wands);
@@ -754,7 +754,7 @@ WandExport WandView *NewWandView(MagickWand *wand)
   if (wand_view == (WandView *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
-  (void) ResetMagickMemory(wand_view,0,sizeof(*wand_view));
+  (void) memset(wand_view,0,sizeof(*wand_view));
   wand_view->id=AcquireWandId();
   (void) FormatLocaleString(wand_view->name,MagickPathExtent,"%s-%.20g",
     WandViewId,(double) wand_view->id);
@@ -816,7 +816,7 @@ WandExport WandView *NewWandViewExtent(MagickWand *wand,const ssize_t x,
   if (wand_view == (WandView *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
-  (void) ResetMagickMemory(wand_view,0,sizeof(*wand_view));
+  (void) memset(wand_view,0,sizeof(*wand_view));
   wand_view->id=AcquireWandId();
   (void) FormatLocaleString(wand_view->name,MagickPathExtent,"%s-%.20g",
     WandViewId,(double) wand_view->id);

@@ -670,7 +670,7 @@ MagickExport void InheritException(ExceptionInfo *exception,
 MagickPrivate void InitializeExceptionInfo(ExceptionInfo *exception)
 {
   assert(exception != (ExceptionInfo *) NULL);
-  (void) ResetMagickMemory(exception,0,sizeof(*exception));
+  (void) memset(exception,0,sizeof(*exception));
   exception->severity=UndefinedException;
   exception->exceptions=(void *) NewLinkedList(0);
   exception->semaphore=AcquireSemaphoreInfo();
@@ -944,7 +944,7 @@ MagickExport MagickBooleanType ThrowException(ExceptionInfo *exception,
       UnlockSemaphoreInfo(exception->semaphore);
       ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
     }
-  (void) ResetMagickMemory(p,0,sizeof(*p));
+  (void) memset(p,0,sizeof(*p));
   p->severity=severity;
   if (reason != (const char *) NULL)
     p->reason=ConstantString(reason);

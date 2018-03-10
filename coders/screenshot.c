@@ -179,7 +179,7 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
           DeleteDC(hDC);
           ThrowReaderException(CoderError,"UnableToCreateDC");
         }
-      (void) ResetMagickMemory(&bmi,0,sizeof(BITMAPINFO));
+      (void) memset(&bmi,0,sizeof(BITMAPINFO));
       bmi.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
       bmi.bmiHeader.biWidth=(LONG) screen->columns;
       bmi.bmiHeader.biHeight=(-1)*(LONG) screen->rows;

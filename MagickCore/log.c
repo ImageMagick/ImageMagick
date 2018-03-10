@@ -311,7 +311,7 @@ static LinkedListInfo *AcquireLogCache(const char *filename,
           ResourceLimitError,"MemoryAllocationFailed","`%s'",p->filename);
         continue;
       }
-    (void) ResetMagickMemory(log_info,0,sizeof(*log_info));
+    (void) memset(log_info,0,sizeof(*log_info));
     log_info->path=ConstantString("[built-in]");
     GetTimerInfo((TimerInfo *) &log_info->timer);
     log_info->event_mask=p->event_mask;
@@ -1545,7 +1545,7 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *cache,const char *xml,
           Allocate memory for the log list.
         */
         log_info=(LogInfo *) AcquireCriticalMemory(sizeof(*log_info));
-        (void) ResetMagickMemory(log_info,0,sizeof(*log_info));
+        (void) memset(log_info,0,sizeof(*log_info));
         log_info->path=ConstantString(filename);
         GetTimerInfo((TimerInfo *) &log_info->timer);
         log_info->signature=MagickCoreSignature;

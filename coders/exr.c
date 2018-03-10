@@ -268,7 +268,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         continue;
       }
-    ResetMagickMemory(scanline,0,columns*sizeof(*scanline));
+    memset(scanline,0,columns*sizeof(*scanline));
     ImfInputSetFrameBuffer(file,scanline-data_window.min_x-columns*yy,1,
       columns);
     ImfInputReadPixels(file,yy,yy);
@@ -576,7 +576,7 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image,
       write_info=DestroyImageInfo(write_info);
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  ResetMagickMemory(scanline,0,image->columns*sizeof(*scanline));
+  memset(scanline,0,image->columns*sizeof(*scanline));
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);

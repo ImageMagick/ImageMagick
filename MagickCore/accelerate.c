@@ -1016,7 +1016,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed", image->filename);
  
   /* reset histogram */
-  (void) ResetMagickMemory(histogram,0,(MaxMap+1)*sizeof(*histogram));
+  (void) memset(histogram,0,(MaxMap+1)*sizeof(*histogram));
 
   /*
   if (IsGrayImage(image,exception) != MagickFalse)
@@ -1219,7 +1219,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
   /*
     Stretch the histogram to create the stretched image mapping.
   */
-  (void) ResetMagickMemory(stretch_map,0,(MaxMap+1)*sizeof(*stretch_map));
+  (void) memset(stretch_map,0,(MaxMap+1)*sizeof(*stretch_map));
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
     if ((image->channel_mask & RedChannel) != 0)
@@ -2333,7 +2333,7 @@ static MagickBooleanType ComputeEqualizeImage(Image *image,MagickCLEnv clEnv,
       ThrowBinaryException(ResourceLimitWarning,"MemoryAllocationFailed", image->filename);
 
   /* reset histogram */
-  (void) ResetMagickMemory(histogram,0,(MaxMap+1)*sizeof(*histogram));
+  (void) memset(histogram,0,(MaxMap+1)*sizeof(*histogram));
 
   /* Create and initialize OpenCL buffers. */
   /* inputPixels = AcquirePixelCachePixels(image, &length, exception); */
@@ -2438,7 +2438,7 @@ static MagickBooleanType ComputeEqualizeImage(Image *image,MagickCLEnv clEnv,
   /*
     Integrate the histogram to get the equalization map.
   */
-  (void) ResetMagickMemory(&intensity,0,sizeof(intensity));
+  (void) memset(&intensity,0,sizeof(intensity));
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
     if ((image->channel_mask & SyncChannels) != 0)
@@ -2459,7 +2459,7 @@ static MagickBooleanType ComputeEqualizeImage(Image *image,MagickCLEnv clEnv,
   }
   black=map[0];
   white=map[(int) MaxMap];
-  (void) ResetMagickMemory(equalize_map,0,(MaxMap+1)*sizeof(*equalize_map));
+  (void) memset(equalize_map,0,(MaxMap+1)*sizeof(*equalize_map));
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
     if ((image->channel_mask & SyncChannels) != 0)

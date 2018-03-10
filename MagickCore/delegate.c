@@ -2096,7 +2096,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *cache,
         */
         delegate_info=(DelegateInfo *) AcquireCriticalMemory(
           sizeof(*delegate_info));
-        (void) ResetMagickMemory(delegate_info,0,sizeof(*delegate_info));
+        (void) memset(delegate_info,0,sizeof(*delegate_info));
         delegate_info->path=ConstantString(filename);
         delegate_info->thread_support=MagickTrue;
         delegate_info->signature=MagickCoreSignature;

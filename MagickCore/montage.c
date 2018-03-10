@@ -220,7 +220,7 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(montage_info != (MontageInfo *) NULL);
-  (void) ResetMagickMemory(montage_info,0,sizeof(*montage_info));
+  (void) memset(montage_info,0,sizeof(*montage_info));
   (void) CopyMagickString(montage_info->filename,image_info->filename,
     MagickPathExtent);
   montage_info->geometry=AcquireString(DefaultTileGeometry);
@@ -486,7 +486,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
     }
   border_width=montage_info->border_width;
   bevel_width=0;
-  (void) ResetMagickMemory(&frame_info,0,sizeof(frame_info));
+  (void) memset(&frame_info,0,sizeof(frame_info));
   if (montage_info->frame != (char *) NULL)
     {
       char

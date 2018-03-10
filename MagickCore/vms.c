@@ -261,7 +261,7 @@ MagickExport MagickBooleanType VMSIsMagickConflict(const char *magick)
   item_list[0].ile3$w_code=DVI$_DEVCLASS;
   item_list[0].ile3$ps_bufaddr=&device_class;
   item_list[0].ile3$ps_retlen_addr=NULL;
-  (void) ResetMagickMemory(&item_list[1],0,sizeof(item_list[1]));
+  (void) memset(&item_list[1],0,sizeof(item_list[1]));
   status=sys$getdviw(0,0,&device,&item_list,0,0,0,0);
   if ((status == SS$_NONLOCAL) ||
       ((status & 0x01) && (device_class & (DC$_DISK | DC$_TAPE))))

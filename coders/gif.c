@@ -211,7 +211,7 @@ static LZWInfo *AcquireLZWInfo(Image *image,const size_t data_size)
   lzw_info=(LZWInfo *) AcquireMagickMemory(sizeof(*lzw_info));
   if (lzw_info == (LZWInfo *) NULL)
     return((LZWInfo *) NULL);
-  (void) ResetMagickMemory(lzw_info,0,sizeof(*lzw_info));
+  (void) memset(lzw_info,0,sizeof(*lzw_info));
   lzw_info->image=image;
   lzw_info->data_size=data_size;
   one=1;
@@ -228,9 +228,9 @@ static LZWInfo *AcquireLZWInfo(Image *image,const size_t data_size)
       lzw_info=RelinquishLZWInfo(lzw_info);
       return((LZWInfo *) NULL);
     }
-  (void) ResetMagickMemory(lzw_info->table[0],0,MaximumLZWCode*
+  (void) memset(lzw_info->table[0],0,MaximumLZWCode*
     sizeof(**lzw_info->table));
-  (void) ResetMagickMemory(lzw_info->table[1],0,MaximumLZWCode*
+  (void) memset(lzw_info->table[1],0,MaximumLZWCode*
     sizeof(**lzw_info->table));
   for (i=0; i <= (ssize_t) lzw_info->maximum_data_value; i++)
   {
@@ -633,9 +633,9 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
   /*
     Initialize GIF encoder.
   */
-  (void) ResetMagickMemory(hash_code,0,MaxHashTable*sizeof(*hash_code));
-  (void) ResetMagickMemory(hash_prefix,0,MaxHashTable*sizeof(*hash_prefix));
-  (void) ResetMagickMemory(hash_suffix,0,MaxHashTable*sizeof(*hash_suffix));
+  (void) memset(hash_code,0,MaxHashTable*sizeof(*hash_code));
+  (void) memset(hash_prefix,0,MaxHashTable*sizeof(*hash_prefix));
+  (void) memset(hash_suffix,0,MaxHashTable*sizeof(*hash_suffix));
   number_bits=data_size;
   max_code=MaxCode(number_bits);
   clear_code=((short) one << (data_size-1));
@@ -1023,7 +1023,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((count != 6) || ((LocaleNCompare((char *) buffer,"GIF87",5) != 0) &&
       (LocaleNCompare((char *) buffer,"GIF89",5) != 0)))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  (void) ResetMagickMemory(buffer,0,sizeof(buffer));
+  (void) memset(buffer,0,sizeof(buffer));
   meta_image=AcquireImage(image_info,exception);  /* metadata container */
   meta_image->page.width=ReadBlobLSBShort(image);
   meta_image->page.height=ReadBlobLSBShort(image);
@@ -1039,7 +1039,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       meta_image=DestroyImage(meta_image);
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  (void) ResetMagickMemory(global_colormap,0,3*MagickMax(global_colors,256)*
+  (void) memset(global_colormap,0,3*MagickMax(global_colors,256)*
     sizeof(*global_colormap));
   if (BitSet((int) flag,0x80) != 0)
     {
@@ -1168,7 +1168,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (info == (unsigned char *) NULL)
                   ThrowGIFException(ResourceLimitError,
                     "MemoryAllocationFailed");
-                (void) ResetMagickMemory(info,0,255UL*sizeof(*info));
+                (void) memset(info,0,255UL*sizeof(*info));
                 reserved_length=255;
                 for (info_length=0; ; )
                 {
@@ -1314,7 +1314,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           MagickMax(local_colors,256),3UL*sizeof(*colormap));
         if (colormap == (unsigned char *) NULL)
           ThrowGIFException(ResourceLimitError,"MemoryAllocationFailed");
-        (void) ResetMagickMemory(colormap,0,3*MagickMax(local_colors,256)*
+        (void) memset(colormap,0,3*MagickMax(local_colors,256)*
           sizeof(*colormap));
         count=ReadBlob(image,(3*local_colors)*sizeof(*colormap),colormap);
         if (count != (ssize_t) (3*local_colors))

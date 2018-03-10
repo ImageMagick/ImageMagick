@@ -209,7 +209,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ept_info.postscript_length+1,sizeof(*ept_info.postscript));
   if (ept_info.postscript == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(ept_info.postscript,0,(ept_info.postscript_length+1)*
+  (void) memset(ept_info.postscript,0,(ept_info.postscript_length+1)*
     sizeof(*ept_info.postscript));
   ept_info.tiff=(unsigned char *) AcquireQuantumMemory(ept_info.tiff_length+1,
     sizeof(*ept_info.tiff));
@@ -219,7 +219,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ept_info.postscript);
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  (void) ResetMagickMemory(ept_info.tiff,0,(ept_info.tiff_length+1)*
+  (void) memset(ept_info.tiff,0,(ept_info.tiff_length+1)*
     sizeof(*ept_info.tiff));
   offset=SeekBlob(image,ept_info.tiff_offset,SEEK_SET);
   if ((ept_info.tiff_length != 0) && (offset < 30))
@@ -419,7 +419,7 @@ static MagickBooleanType WriteEPTImage(const ImageInfo *image_info,Image *image,
     (void) CopyMagickString(write_info->magick,"EPS2",MagickPathExtent);
   if (LocaleCompare(image_info->magick,"EPT3") == 0)
     (void) CopyMagickString(write_info->magick,"EPS3",MagickPathExtent);
-  (void) ResetMagickMemory(&ept_info,0,sizeof(ept_info));
+  (void) memset(&ept_info,0,sizeof(ept_info));
   ept_info.magick=0xc6d3d0c5ul;
   ept_info.postscript=(unsigned char *) ImageToBlob(write_info,write_image,
     &ept_info.postscript_length,exception);

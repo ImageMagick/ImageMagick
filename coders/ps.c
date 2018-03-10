@@ -206,7 +206,7 @@ static MagickBooleanType InvokePostscriptDelegate(
     ghost_info_struct;
 
   ghost_info=(&ghost_info_struct);
-  (void) ResetMagickMemory(&ghost_info_struct,0,sizeof(ghost_info_struct));
+  (void) memset(&ghost_info_struct,0,sizeof(ghost_info_struct));
   ghost_info_struct.delete_instance=(void (*)(gs_main_instance *))
     gsapi_delete_instance;
   ghost_info_struct.exit=(int (*)(gs_main_instance *)) gsapi_exit;
@@ -524,7 +524,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize hex values.
   */
-  (void) ResetMagickMemory(hex_digits,0,sizeof(hex_digits));
+  (void) memset(hex_digits,0,sizeof(hex_digits));
   hex_digits[(int) '0']=0;
   hex_digits[(int) '1']=1;
   hex_digits[(int) '2']=2;
@@ -577,10 +577,10 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine page geometry from the Postscript bounding box.
   */
-  (void) ResetMagickMemory(&bounds,0,sizeof(bounds));
-  (void) ResetMagickMemory(command,0,sizeof(command));
+  (void) memset(&bounds,0,sizeof(bounds));
+  (void) memset(command,0,sizeof(command));
   cmyk=image_info->colorspace == CMYKColorspace ? MagickTrue : MagickFalse;
-  (void) ResetMagickMemory(&hires_bounds,0,sizeof(hires_bounds));
+  (void) memset(&hires_bounds,0,sizeof(hires_bounds));
   columns=0;
   rows=0;
   priority=0;
@@ -1579,7 +1579,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
-  (void) ResetMagickMemory(&bounds,0,sizeof(bounds));
+  (void) memset(&bounds,0,sizeof(bounds));
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
@@ -1907,7 +1907,7 @@ RestoreMSCWarning
         }
         labels=(char **) RelinquishMagickMemory(labels);
       }
-    (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
+    (void) memset(&pixel,0,sizeof(pixel));
     pixel.alpha=(MagickRealType) TransparentAlpha;
     index=0;
     x=0;

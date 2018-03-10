@@ -142,7 +142,7 @@ MagickExport ModuleInfo *AcquireModuleInfo(const char *path,const char *tag)
     *module_info;
 
   module_info=(ModuleInfo *) AcquireCriticalMemory(sizeof(*module_info));
-  (void) ResetMagickMemory(module_info,0,sizeof(*module_info));
+  (void) memset(module_info,0,sizeof(*module_info));
   if (path != (const char *) NULL)
     module_info->path=ConstantString(path);
   if (tag != (const char *) NULL)

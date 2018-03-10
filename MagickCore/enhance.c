@@ -1076,7 +1076,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
     Form histogram.
   */
   status=MagickTrue;
-  (void) ResetMagickMemory(histogram,0,(MaxMap+1)*GetPixelChannels(image)*
+  (void) memset(histogram,0,(MaxMap+1)*GetPixelChannels(image)*
     sizeof(*histogram));
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -1146,7 +1146,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   /*
     Stretch the histogram to create the stretched image mapping.
   */
-  (void) ResetMagickMemory(stretch_map,0,(MaxMap+1)*GetPixelChannels(image)*
+  (void) memset(stretch_map,0,(MaxMap+1)*GetPixelChannels(image)*
     sizeof(*stretch_map));
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
@@ -1563,7 +1563,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
     Form histogram.
   */
   status=MagickTrue;
-  (void) ResetMagickMemory(histogram,0,(MaxMap+1)*GetPixelChannels(image)*
+  (void) memset(histogram,0,(MaxMap+1)*GetPixelChannels(image)*
     sizeof(*histogram));
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -1616,10 +1616,10 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
       map[GetPixelChannels(image)*j+i]=intensity;
     }
   }
-  (void) ResetMagickMemory(equalize_map,0,(MaxMap+1)*GetPixelChannels(image)*
+  (void) memset(equalize_map,0,(MaxMap+1)*GetPixelChannels(image)*
     sizeof(*equalize_map));
-  (void) ResetMagickMemory(black,0,sizeof(*black));
-  (void) ResetMagickMemory(white,0,sizeof(*white));
+  (void) memset(black,0,sizeof(*black));
+  (void) memset(white,0,sizeof(*white));
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
     register ssize_t
@@ -1823,7 +1823,7 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
   if (gamma_map == (Quantum *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
-  (void) ResetMagickMemory(gamma_map,0,(MaxMap+1)*sizeof(*gamma_map));
+  (void) memset(gamma_map,0,(MaxMap+1)*sizeof(*gamma_map));
   if (gamma != 0.0)
     for (i=0; i <= (ssize_t) MaxMap; i++)
       gamma_map[i]=ScaleMapToQuantum((double) (MaxMap*pow((double) i/
@@ -2879,7 +2879,7 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
   /*
     Form histogram.
   */
-  (void) ResetMagickMemory(histogram,0,(MaxMap+1)*sizeof(*histogram));
+  (void) memset(histogram,0,(MaxMap+1)*sizeof(*histogram));
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {

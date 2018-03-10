@@ -152,7 +152,7 @@ WandExport PixelWand *ClonePixelWand(const PixelWand *wand)
   if (clone_wand == (PixelWand *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       wand->name);
-  (void) ResetMagickMemory(clone_wand,0,sizeof(*clone_wand));
+  (void) memset(clone_wand,0,sizeof(*clone_wand));
   clone_wand->id=AcquireWandId();
   (void) FormatLocaleString(clone_wand->name,MagickPathExtent,"%s-%.20g",
     PixelWandId,(double) clone_wand->id);
@@ -404,7 +404,7 @@ WandExport PixelWand *NewPixelWand(void)
   if (wand == (PixelWand *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
-  (void) ResetMagickMemory(wand,0,sizeof(*wand));
+  (void) memset(wand,0,sizeof(*wand));
   wand->id=AcquireWandId();
   (void) FormatLocaleString(wand->name,MagickPathExtent,"%s-%.20g",PixelWandId,
     (double) wand->id);

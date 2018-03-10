@@ -222,7 +222,7 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(pixels != (unsigned char *) NULL);
-  (void) ResetMagickMemory(pixels,0,number_pixels*sizeof(*pixels));
+  (void) memset(pixels,0,number_pixels*sizeof(*pixels));
   byte=0;
   x=0;
   p=pixels;
@@ -577,7 +577,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine if this a BMP file.
   */
-  (void) ResetMagickMemory(&bmp_info,0,sizeof(bmp_info));
+  (void) memset(&bmp_info,0,sizeof(bmp_info));
   bmp_info.ba_offset=0;
   start_position=0;
   offset_bits=0;
@@ -1047,8 +1047,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bmp_info.blue_mask=0x0000001fU;
           }
       }
-    (void) ResetMagickMemory(&shift,0,sizeof(shift));
-    (void) ResetMagickMemory(&quantum_bits,0,sizeof(quantum_bits));
+    (void) memset(&shift,0,sizeof(shift));
+    (void) memset(&quantum_bits,0,sizeof(quantum_bits));
     if ((bmp_info.bits_per_pixel == 16) || (bmp_info.bits_per_pixel == 32))
       {
         register unsigned int
@@ -1675,7 +1675,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
     */
     if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,sRGBColorspace,exception);
-    (void) ResetMagickMemory(&bmp_info,0,sizeof(bmp_info));
+    (void) memset(&bmp_info,0,sizeof(bmp_info));
     bmp_info.file_size=14+12;
     if (type > 2)
       bmp_info.file_size+=28;
@@ -1854,7 +1854,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
     if (pixel_info == (MemoryInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
-    (void) ResetMagickMemory(pixels,0,(size_t) bmp_info.image_size);
+    (void) memset(pixels,0,(size_t) bmp_info.image_size);
     switch (bmp_info.bits_per_pixel)
     {
       case 1:

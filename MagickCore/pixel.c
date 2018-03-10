@@ -102,7 +102,7 @@ MagickExport PixelChannelMap *AcquirePixelChannelMap(void)
     sizeof(*channel_map));
   if (channel_map == (PixelChannelMap *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(channel_map,0,MaxPixelChannels*sizeof(*channel_map));
+  (void) memset(channel_map,0,MaxPixelChannels*sizeof(*channel_map));
   for (i=0; i < MaxPixelChannels; i++)
     channel_map[i].channel=(PixelChannel) i;
   return(channel_map);
@@ -4338,7 +4338,7 @@ MagickExport void InitializePixelChannelMap(Image *image)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  (void) ResetMagickMemory(image->channel_map,0,MaxPixelChannels*
+  (void) memset(image->channel_map,0,MaxPixelChannels*
     sizeof(*image->channel_map));
   trait=UpdatePixelTrait;
   if (image->alpha_trait != UndefinedPixelTrait)
@@ -5507,7 +5507,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
   if (interpolate == UndefinedInterpolatePixel)
     interpolate=image->interpolate;
   GetPixelInfoPixel(image,(const Quantum *) NULL,pixel);
-  (void) ResetMagickMemory(&pixels,0,sizeof(pixels));
+  (void) memset(&pixels,0,sizeof(pixels));
   switch (interpolate)
   {
     case AverageInterpolatePixel:  /* nearest 4 neighbours */

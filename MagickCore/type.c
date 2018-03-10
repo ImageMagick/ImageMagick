@@ -798,7 +798,7 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_cache,
     type_info=(TypeInfo *) AcquireMagickMemory(sizeof(*type_info));
     if (type_info == (TypeInfo *) NULL)
       continue;
-    (void) ResetMagickMemory(type_info,0,sizeof(*type_info));
+    (void) memset(type_info,0,sizeof(*type_info));
     type_info->path=ConstantString("System Fonts");
     type_info->signature=MagickCoreSignature;
     (void) CopyMagickString(name,"Unknown",MagickPathExtent);
@@ -1179,7 +1179,7 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *cache,const char *xml,
           Type element.
         */
         type_info=(TypeInfo *) AcquireCriticalMemory(sizeof(*type_info));
-        (void) ResetMagickMemory(type_info,0,sizeof(*type_info));
+        (void) memset(type_info,0,sizeof(*type_info));
         type_info->path=ConstantString(filename);
         type_info->signature=MagickCoreSignature;
         continue;

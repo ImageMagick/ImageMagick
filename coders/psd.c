@@ -1177,7 +1177,7 @@ static MagickBooleanType ReadPSDChannelRLE(Image *image,const PSDInfo *psd_info,
         image->filename);
     }
 
-  (void) ResetMagickMemory(compact_pixels,0,length*sizeof(*compact_pixels));
+  (void) memset(compact_pixels,0,length*sizeof(*compact_pixels));
 
   status=MagickTrue;
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -1260,7 +1260,7 @@ static MagickBooleanType ReadPSDChannelZip(Image *image,const size_t channels,
         image->filename);
     }
 
-  ResetMagickMemory(&stream,0,sizeof(stream));
+  memset(&stream,0,sizeof(stream));
   stream.data_type=Z_BINARY;
   stream.next_in=(Bytef *)compact_pixels;
   stream.avail_in=(uInt) compact_size;
@@ -1662,7 +1662,7 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
           ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
             image->filename);
         }
-      (void) ResetMagickMemory(layer_info,0,(size_t) number_layers*
+      (void) memset(layer_info,0,(size_t) number_layers*
         sizeof(*layer_info));
 
       for (i=0; i < number_layers; i++)
@@ -2716,7 +2716,7 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
           quantum_info=DestroyQuantumInfo(quantum_info);
           return(0);
         }
-      ResetMagickMemory(&stream,0,sizeof(stream));
+      memset(&stream,0,sizeof(stream));
       stream.data_type=Z_BINARY;
       level=Z_DEFAULT_COMPRESSION;
       if ((image_info->quality > 0 && image_info->quality < 10))

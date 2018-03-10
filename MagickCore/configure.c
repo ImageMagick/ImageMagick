@@ -204,7 +204,7 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
           ResourceLimitError,"MemoryAllocationFailed","`%s'",p->name);
         continue;
       }
-    (void) ResetMagickMemory(configure_info,0,sizeof(*configure_info));
+    (void) memset(configure_info,0,sizeof(*configure_info));
     configure_info->path=(char *) "[built-in]";
     configure_info->name=(char *) p->name;
     configure_info->value=(char *) p->value;
@@ -1250,7 +1250,7 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *cache,
         */
         configure_info=(ConfigureInfo *) AcquireCriticalMemory(
           sizeof(*configure_info));
-        (void) ResetMagickMemory(configure_info,0,sizeof(*configure_info));
+        (void) memset(configure_info,0,sizeof(*configure_info));
         configure_info->path=ConstantString(filename);
         configure_info->exempt=MagickFalse;
         configure_info->signature=MagickCoreSignature;

@@ -446,7 +446,7 @@ static int UnpackWPGRaster(Image *image,int bpp,ExceptionInfo *exception)
   BImgBuff=(unsigned char *) AcquireQuantumMemory((size_t) ldblk,
     8*sizeof(*BImgBuff));
   if(BImgBuff==NULL) return(-2);
-  (void) ResetMagickMemory(BImgBuff,0,(size_t) ldblk*8*sizeof(*BImgBuff));
+  (void) memset(BImgBuff,0,(size_t) ldblk*8*sizeof(*BImgBuff));
 
   while(y<(ssize_t) image->rows)
     {
@@ -565,7 +565,7 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
     sizeof(*BImgBuff));
   if(BImgBuff==NULL)
     return(-2);
-  (void) ResetMagickMemory(BImgBuff,0,ldblk*sizeof(*BImgBuff));
+  (void) memset(BImgBuff,0,ldblk*sizeof(*BImgBuff));
 
   while( y< image->rows)
     {
