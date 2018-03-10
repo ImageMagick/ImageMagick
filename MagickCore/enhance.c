@@ -1589,10 +1589,11 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
         double
           intensity;
 
-        intensity=p[i];
+        intensity=(double) p[i];
         if ((image->channel_mask & SyncChannels) != 0)
           intensity=GetPixelIntensity(image,p);
-        histogram[GetPixelChannels(image)*ScaleQuantumToMap(intensity)+i]++;
+        histogram[GetPixelChannels(image)*ScaleQuantumToMap(
+          ClampToQuantum(intensity))+i]++;
       }
       p+=GetPixelChannels(image);
     }
