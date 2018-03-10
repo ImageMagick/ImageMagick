@@ -1404,7 +1404,8 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
       */
       (void) ParseGeometry(geometry,&geometry_info);
       geometry_ratio=geometry_info.rho;
-      image_ratio=(double) former_width*PerceptibleReciprocal(former_height);
+      image_ratio=(double) former_width*
+        PerceptibleReciprocal((double) former_height);
       if (geometry_ratio >= image_ratio)
         {
           *width=former_width;
