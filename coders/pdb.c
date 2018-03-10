@@ -788,6 +788,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
     bits_per_pixel=4;
   }
   (void) memset(&pdb_info,0,sizeof(pdb_info));
+  (void) memset(&pdb_image,0,sizeof(pdb_image));
   (void) CopyMagickString(pdb_info.name,image_info->filename,
     sizeof(pdb_info.name));
   pdb_info.attributes=0;
