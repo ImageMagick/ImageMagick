@@ -420,6 +420,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  (void) ResetMagickMemory(pixels,0,(packets+257UL)*image->rows*sizeof(*pixels));
   switch (pdb_image.version & 0x07) 
   {
     case 0:
