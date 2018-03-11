@@ -473,6 +473,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) SetImageBackgroundColor(image,exception);
     GetPixelInfo(image,&pixel);
     range=GetQuantumRange(image->depth);
+    status=MagickTrue;
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       double
@@ -482,6 +483,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         green,
         red;
 
+      if (status == MagickFalse)
+        break;
       red=0.0;
       green=0.0;
       blue=0.0;
@@ -490,7 +493,10 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         if (ReadBlobString(image,text) == (char *) NULL)
-          break;
+          {
+            status=MagickFalse;
+            break;
+          }
         switch (image->colorspace)
         {
           case LinearGRAYColorspace:
@@ -568,7 +574,10 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           continue;
         SetPixelViaPixelInfo(image,&pixel,q);
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
-          break;
+          {
+            status=MagickFalse;
+            break;
+          }
       }
     }
     *text='\0';
