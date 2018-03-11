@@ -46,6 +46,7 @@ int main() {
   excludeList.push_back("PATTERN");
   excludeList.push_back("PLASMA");
   excludeList.push_back("SCREENSHOT");
+  excludeList.push_back("TXT");
   excludeList.push_back("XC");
 
   for (std::list<Magick::CoderInfo>::iterator it = coderList.begin(); it != coderList.end(); it++)
