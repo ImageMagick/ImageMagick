@@ -6,16 +6,13 @@ public:
     std::wstring format=fileName;
 
     size_t index = format.find(L"_", 0);
-    if (index != std::wstring::npos) {
-      format=format.substr(index + 1);
-      index = format.find(L"_", 0);
-      if (index != std::wstring::npos) {
-        _format=format.substr(0, index);
-        return;
-      }
-    }
+    if (index == std::wstring::npos)
+      return;
 
-    throw std::invalid_argument("fileName");
+    format=format.substr(index + 1);
+    index = format.find(L"_", 0);
+    if (index != std::wstring::npos)
+      _format=format.substr(0, index);
   }
 private:
   std::wstring _format = L".notset";
