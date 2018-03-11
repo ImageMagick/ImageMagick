@@ -308,7 +308,7 @@ OPENCL_IF((MAGICKCORE_HDRI_SUPPORT == 1))
   STRINGIFY(
     inline CLQuantum ClampToQuantum(const float value)
       {
-        return (CLQuantum) value;
+        return (CLQuantum) clamp(value, 0.0f, QuantumRange);
       }
   )
 
