@@ -35,7 +35,7 @@ public:
     file.read(_data, size);
     file.close();
 
-    encoderFormat.set(wstring(PathFindExtension(fileName.c_str())));
+    encoderFormat.set(fileName);
 
     return(true);
   }
