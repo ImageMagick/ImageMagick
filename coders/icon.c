@@ -620,7 +620,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 byte=(size_t) ReadBlobByte(image);
-                byte|=(size_t) (ReadBlobByte(image) << 8);
+                byte|=((size_t) ReadBlobByte(image) << 8);
                 SetPixelIndex(image,(Quantum) byte,q);
                 q+=GetPixelChannels(image);
               }
