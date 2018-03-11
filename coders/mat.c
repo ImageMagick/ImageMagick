@@ -872,7 +872,6 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int logging;
   int sample_size;
   MagickOffsetType filepos=0x80;
-  BlobInfo *blob;
 
   unsigned int (*ReadBlobXXXLong)(Image *image);
   unsigned short (*ReadBlobXXXShort)(Image *image);
@@ -1305,11 +1304,9 @@ ExitLoop:
         /* Remove page offsets added by RotateImage */
       rotated_image->page.x=0;
       rotated_image->page.y=0;
-
-      blob = rotated_image->blob;
-      rotated_image->blob = image->blob;
       rotated_image->colors = image->colors;
-      image->blob = blob;
+      DestroyBlob(rotated_image);
+      rotated_image->blob=ReferenceBlob(image->blob);
       AppendImageToList(&image,rotated_image);
       DeleteImageFromList(&image);
     }
