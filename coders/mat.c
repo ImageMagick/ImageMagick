@@ -787,15 +787,11 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     rotated_image=RotateImage(image,90.0,exception);
     if (rotated_image != (Image *) NULL)
       {
-        void
-          *blob;
-        
         rotated_image->page.x=0;
         rotated_image->page.y=0;
-        blob = rotated_image->blob;
-        rotated_image->blob = image->blob;
         rotated_image->colors = image->colors;
-        image->blob = (BlobInfo *) blob;
+        DestroyBlob(rotated_image);
+        rotated_image->blob=ReferenceBlob(image->blob);
         AppendImageToList(&image,rotated_image);
         DeleteImageFromList(&image);
       }
