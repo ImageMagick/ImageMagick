@@ -580,6 +580,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
       }
     }
+    if (status == MagickFalse)
+      break;
     *text='\0';
     (void) ReadBlobString(image,text);
     if (LocaleNCompare((char *) text,MagickID,strlen(MagickID)) == 0)
