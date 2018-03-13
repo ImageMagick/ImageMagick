@@ -4968,12 +4968,13 @@ static MagickBooleanType DrawStrokePolygon(Image *image,
     if (stroke_polygon == (PrimitiveInfo *) NULL)
       {
         status=0;
+        stroke_polygon=(PrimitiveInfo *) RelinquishMagickMemory(stroke_polygon);
         break;
       }
     status&=DrawPolygonPrimitive(image,clone_info,stroke_polygon,exception);
+    stroke_polygon=(PrimitiveInfo *) RelinquishMagickMemory(stroke_polygon);
     if (status == 0)
       break;
-    stroke_polygon=(PrimitiveInfo *) RelinquishMagickMemory(stroke_polygon);
     q=p+p->coordinates-1;
     closed_path=(fabs(q->point.x-p->point.x) < DrawEpsilon) &&
       (fabs(q->point.y-p->point.y) < DrawEpsilon) ? MagickTrue : MagickFalse;
