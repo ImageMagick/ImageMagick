@@ -206,6 +206,7 @@ static Image *ReadMPEGImage(const ImageInfo *image_info,
   (void) InvokeDelegate(read_info,image,"mpeg:decode",(char *) NULL,exception);
   (void) FormatLocaleString(read_info->filename,MagickPathExtent,"%s.%s",
     read_info->unique,ReadMPEGIntermediateFormat);
+  *read_info->magick='\0';
   images=ReadImage(read_info,exception);
   if (images != (Image *) NULL)
     for (next=images; next != (Image *) NULL; next=next->next)
