@@ -3881,11 +3881,21 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         (void) RelinquishUniqueFileResource(filename);
       }
+      read_info=DestroyImageInfo(read_info);
       if (stream_info->offsets != (ssize_t *) NULL)
         stream_info->offsets=(ssize_t *)
           RelinquishMagickMemory(stream_info->offsets);
       stream_info=(DCMStreamInfo *) RelinquishMagickMemory(stream_info);
-      read_info=DestroyImageInfo(read_info);
+      if (info.scale != (Quantum *) NULL)
+        info.scale=(Quantum *) RelinquishMagickMemory(info.scale);
+      if (graymap != (int *) NULL)
+        graymap=(int *) RelinquishMagickMemory(graymap);
+      if (bluemap != (int *) NULL)
+        bluemap=(int *) RelinquishMagickMemory(bluemap);
+      if (greenmap != (int *) NULL)
+        greenmap=(int *) RelinquishMagickMemory(greenmap);
+      if (redmap != (int *) NULL)
+        redmap=(int *) RelinquishMagickMemory(redmap);
       image=DestroyImage(image);
       return(GetFirstImageInList(images));
     }
