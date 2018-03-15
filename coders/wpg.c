@@ -1329,6 +1329,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               if ((WPG_Palette.NumOfEntries-WPG_Palette.StartIndex) >
                   (Rec2.RecordLength-2-2) / 3)
                 ThrowReaderException(CorruptImageError,"InvalidColormapIndex");
+              if (WPG_Palette.StartIndex >= WPG_Palette.NumOfEntries)
+                ThrowReaderException(CorruptImageError,"InvalidColormapIndex");
               image->colors=WPG_Palette.NumOfEntries;
               if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
                 ThrowReaderException(ResourceLimitError,
