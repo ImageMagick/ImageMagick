@@ -1795,8 +1795,8 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((num_images == 0) || (num_images > GetBlobSize(image)))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
-  if (GetMagickResourceLimit(ListLengthResource) < (MagickSizeType) num_images)
-    ThrowReaderException(ImageError,"ListLengthExceedsLimit");
+  if (AcquireMagickResource(ListLengthResource,num_images) == MagickFalse)
+    ThrowReaderException(ResourceLimitError,"ListLengthExceedsLimit");
 
   option=GetImageOption(image_info,"dds:skip-mipmaps");
   if (IsStringFalse(option) != MagickFalse)
