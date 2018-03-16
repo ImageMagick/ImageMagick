@@ -500,7 +500,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
       scanline_length=ReadBlobMSBShort(blob);
     else
       scanline_length=1UL*ReadBlobByte(blob);
-    if (scanline_length >= row_bytes)
+    if ((scanline_length >= row_bytes) || (scanline_length == 0))
       {
         (void) ThrowMagickException(exception,GetMagickModule(),
           CorruptImageError,"UnableToUncompressImage","`%s'",image->filename);
@@ -945,6 +945,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
       code=ReadBlobMSBSignedShort(image);
     if (code < 0)
       break;
+    if (code == 0)
+      continue;
     if (code > 0xa1)
       {
         if (image->debug != MagickFalse)
