@@ -1068,6 +1068,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           GIF Extension block.
         */
+        (void) memset(buffer,0,sizeof(buffer));
         count=ReadBlob(image,1,&c);
         if (count != 1)
           ThrowGIFException(CorruptImageError,"UnableToReadExtensionBlock");
@@ -1078,7 +1079,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Read graphics control extension.
             */
-            (void) memset(buffer,0,sizeof(buffer));
             while (ReadBlobBlock(image,buffer) != 0) ;
             meta_image->dispose=(DisposeType) ((buffer[0] >> 2) & 0x07);
             meta_image->delay=((size_t) buffer[2] << 8) | buffer[1];
@@ -1118,7 +1118,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Read Netscape Loop extension.
             */
-            (void) memset(buffer,0,sizeof(buffer));
             loop=MagickFalse;
             if (ReadBlobBlock(image,buffer) != 0)
               loop=LocaleNCompare((char *) buffer,"NETSCAPE2.0",11) == 0 ?
