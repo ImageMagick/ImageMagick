@@ -201,20 +201,25 @@ static Image *ReadMPEGImage(const ImageInfo *image_info,
   /*
     Convert MPEG to PAM with delegate.
   */
+  images=(Image *) NULL;
   read_info=CloneImageInfo(image_info);
   image=AcquireImage(image_info,exception);
-  (void) InvokeDelegate(read_info,image,"mpeg:decode",(char *) NULL,exception);
-  (void) FormatLocaleString(read_info->filename,MagickPathExtent,"%s.%s",
-    read_info->unique,ReadMPEGIntermediateFormat);
-  *read_info->magick='\0';
-  images=ReadImage(read_info,exception);
-  if (images != (Image *) NULL)
-    for (next=images; next != (Image *) NULL; next=next->next)
+  status=InvokeDelegate(read_info,image,"mpeg:decode",(char *) NULL,exception);
+  if (status != MagickFalse)
     {
-      (void) CopyMagickString(next->filename,image->filename,MagickPathExtent);
-      (void) CopyMagickString(next->magick,image->magick,MagickPathExtent);
+      (void) FormatLocaleString(read_info->filename,MagickPathExtent,"%s.%s",
+        read_info->unique,ReadMPEGIntermediateFormat);
+      *read_info->magick='\0';
+      images=ReadImage(read_info,exception);
+      if (images != (Image *) NULL)
+        for (next=images; next != (Image *) NULL; next=next->next)
+        {
+          (void) CopyMagickString(next->filename,image->filename,
+            MagickPathExtent);
+          (void) CopyMagickString(next->magick,image->magick,MagickPathExtent);
+        }
+      (void) RelinquishUniqueFileResource(read_info->filename);
     }
-  (void) RelinquishUniqueFileResource(read_info->filename);
   read_info=DestroyImageInfo(read_info);
   image=DestroyImage(image);
   return(images);
