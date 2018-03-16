@@ -1222,13 +1222,13 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                         image->colormap[1].blue = QuantumRange;
                     }
                 }
-
-              if(UnpackWPGRaster(image,bpp,exception) < 0)
-                /* The raster cannot be unpacked */
-                {
-                DecompressionFailed:
-                  ThrowReaderException(CoderError,"UnableToDecompressImage");
-                    }
+              if(!image_info->ping)
+                if(UnpackWPGRaster(image,bpp,exception) < 0)
+                  /* The raster cannot be unpacked */
+                  {
+                  DecompressionFailed:
+                    ThrowReaderException(CoderError,"UnableToDecompressImage");
+                  }
 
               if(Rec.RecType==0x14 && BitmapHeader2.RotAngle!=0 && !image_info->ping)
                 {
