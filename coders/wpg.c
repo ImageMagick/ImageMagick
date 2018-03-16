@@ -478,8 +478,10 @@ static int UnpackWPGRaster(Image *image,int bpp,ExceptionInfo *exception)
           {
             for(i=0;i < (int) RunCount;i++)
               {
-                bbuf=ReadBlobByte(image);
-                InsertByte(bbuf);
+                c=ReadBlobByte(image);
+                if (c < 0)
+                  break;
+                InsertByte(c);
               }
           }
         else {  /* repeat previous line runcount* */
