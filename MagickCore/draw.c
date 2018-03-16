@@ -1676,12 +1676,14 @@ static size_t EllipsePoints(const PrimitiveInfo *primitive_info,
   /*
     Ellipses are just short segmented polys.
   */
-  if ((fabs(stop.x) < DrawEpsilon) || (fabs(stop.y) < DrawEpsilon))
+  if ((fabs(stop.x) < DrawEpsilon) && (fabs(stop.y) < DrawEpsilon))
     return(1);
   delta=2.0/MagickMax(stop.x,stop.y);
   step=MagickPI/8.0;
   if ((delta >= 0.0) && (delta < (MagickPI/8.0)))
     step=MagickPI/(4*(MagickPI/delta/2+0.5));
+  if (step < 0.0000001)
+    step=0.0000001;
   angle.x=DegreesToRadians(degrees.x);
   y=degrees.y;
   while (y < degrees.x)
@@ -5498,7 +5500,7 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   /*
     Ellipses are just short segmented polys.
   */
-  if ((fabs(stop.x) < DrawEpsilon) || (fabs(stop.y) < DrawEpsilon))
+  if ((fabs(stop.x) < DrawEpsilon) && (fabs(stop.y) < DrawEpsilon))
     {
       TracePoint(primitive_info,start);
       return;
@@ -5507,6 +5509,8 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   step=MagickPI/8.0;
   if ((delta >= 0.0) && (delta < (MagickPI/8.0)))
     step=MagickPI/(4*(MagickPI/delta/2+0.5));
+  if (step < 0.0000001)
+    step=0.0000001;
   angle.x=DegreesToRadians(degrees.x);
   y=degrees.y;
   while (y < degrees.x)
