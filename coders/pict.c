@@ -930,7 +930,6 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   if (status == MagickFalse)
     return(DestroyImageList(image));
   image->alpha_trait=BlendPixelTrait;
-  (void) SetImageBackgroundColor(image,exception);
   /*
     Interpret PICT opcodes.
   */
@@ -980,7 +979,6 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             status=SetImageExtent(image,image->columns,image->rows,exception);
             if (status == MagickFalse)
               return(DestroyImageList(image));
-            (void) SetImageBackgroundColor(image,exception);
             break;
           }
           case 0x12:
@@ -1152,7 +1150,6 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 if (tile_image->alpha_trait != UndefinedPixelTrait)
                   image->alpha_trait=tile_image->alpha_trait;
               }
-            (void) SetImageBackgroundColor(tile_image,exception);
             if ((code != 0x9a) && (code != 0x9b))
               {
                 /*
