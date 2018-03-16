@@ -1930,6 +1930,7 @@ static const OptionInfo
     { "Throttle", ThrottleResource, UndefinedOptionFlag, MagickFalse },
     { "Time", TimeResource, UndefinedOptionFlag, MagickFalse },
     { "Width", WidthResource, UndefinedOptionFlag, MagickFalse },
+    { "ListLength", ListLengthResource, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedResource, UndefinedOptionFlag, MagickFalse }
   },
   SparseColorOptions[] =
