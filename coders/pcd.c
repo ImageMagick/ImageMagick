@@ -537,9 +537,13 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (header == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   count=ReadBlob(image,3*0x800,header);
+  if (count != (3*0x800))
+    {
+      header=(unsigned char *) RelinquishMagickMemory(header);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
   overview=LocaleNCompare((char *) header,"PCD_OPA",7) == 0;
-  if ((count != (3*0x800)) ||
-      ((LocaleNCompare((char *) header+0x800,"PCD",3) != 0) && (overview ==0)))
+  if ((LocaleNCompare((char *) header+0x800,"PCD",3) != 0) && (overview == 0))
     {
       header=(unsigned char *) RelinquishMagickMemory(header);
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
