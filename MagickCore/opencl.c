@@ -2577,7 +2577,7 @@ MagickPrivate void OpenCLTerminus()
 %
 %  The format of the OpenCLThrowMagickException method is:
 %
-%      MagickBooleanType ThrowFileException(ExceptionInfo *exception,
+%      MagickBooleanType OpenCLThrowMagickException(ExceptionInfo *exception,
 %        const char *module,const char *function,const size_t line,
 %        const ExceptionType severity,const char *tag,const char *format,...)
 %
