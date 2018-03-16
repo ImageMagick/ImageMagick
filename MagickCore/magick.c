@@ -1319,6 +1319,9 @@ static SignalHandler *SetMagickSignalHandler(int signal_number,
 #if defined(SA_INTERRUPT)
   action.sa_flags|=SA_INTERRUPT;
 #endif
+#if defined(SA_ONSTACK)
+  action.sa_flags|=SA_ONSTACK;
+#endif
   status=sigaction(signal_number,&action,&previous_action);
   if (status < 0)
     return(SIG_ERR);
