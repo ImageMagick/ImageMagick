@@ -545,6 +545,8 @@ MagickExport int AcquireUniqueFileResource(char *path)
   (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"...");
   if (random_info == (RandomInfo *) NULL)
     {
+      if (resource_semaphore == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&resource_semaphore);
       LockSemaphoreInfo(resource_semaphore);
       if (random_info == (RandomInfo *) NULL)
         random_info=AcquireRandomInfo();
