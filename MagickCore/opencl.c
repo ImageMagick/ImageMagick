@@ -1290,7 +1290,7 @@ static MagickBooleanType LoadCachedOpenCLKernel(MagickCLDevice device,
     status;
 
   ExceptionInfo
-    *exception;
+    *sans_exception;
 
   size_t
     length;
@@ -1298,9 +1298,10 @@ static MagickBooleanType LoadCachedOpenCLKernel(MagickCLDevice device,
   unsigned char
     *binaryProgram;
 
-  exception=AcquireExceptionInfo();
-  binaryProgram=(unsigned char *) FileToBlob(filename,~0UL,&length,exception);
-  exception=DestroyExceptionInfo(exception);
+  sans_exception=AcquireExceptionInfo();
+  binaryProgram=(unsigned char *) FileToBlob(filename,~0UL,&length,
+    sans_exception);
+  sans_exception=DestroyExceptionInfo(sans_exception);
   if (binaryProgram == (unsigned char *) NULL)
     return(MagickFalse);
   device->program=openCL_library->clCreateProgramWithBinary(device->context,1,
