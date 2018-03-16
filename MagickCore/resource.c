@@ -271,6 +271,23 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
         }
       break;
     }
+    case ListLengthResource:
+    {
+      resource_info.list_length=(MagickOffsetType) size;
+      limit=resource_info.list_length_limit;
+      if ((limit == MagickResourceInfinity) || (size < limit))
+        status=MagickTrue;
+      if (logging != MagickFalse)
+        {
+          (void) FormatMagickSize(size,MagickFalse,(const char *) NULL,
+            MagickFormatExtent,resource_request);
+          (void) FormatMagickSize(size,MagickFalse,(const char *) NULL,
+            MagickFormatExtent,resource_current);
+          (void) FormatMagickSize(limit,MagickFalse,(const char *) NULL,
+            MagickFormatExtent,resource_limit);
+        }
+      break;
+    }
     case MapResource:
     {
       if ((resource_info.map+(MagickOffsetType) size) < 0)
@@ -290,23 +307,6 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
             MagickTrue,"B",MagickFormatExtent,resource_current);
           (void) FormatMagickSize(limit,MagickTrue,"B",MagickFormatExtent,
             resource_limit);
-        }
-      break;
-    }
-    case ListLengthResource:
-    {
-      resource_info.list_length=(MagickOffsetType) size;
-      limit=resource_info.list_length_limit;
-      if ((limit == MagickResourceInfinity) || (size < limit))
-        status=MagickTrue;
-      if (logging != MagickFalse)
-        {
-          (void) FormatMagickSize(size,MagickFalse,(const char *) NULL,
-            MagickFormatExtent,resource_request);
-          (void) FormatMagickSize(size,MagickFalse,(const char *) NULL,
-            MagickFormatExtent,resource_current);
-          (void) FormatMagickSize(limit,MagickFalse,(const char *) NULL,
-            MagickFormatExtent,resource_limit);
         }
       break;
     }
