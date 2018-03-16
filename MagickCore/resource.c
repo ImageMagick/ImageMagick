@@ -229,6 +229,8 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
       limit=resource_info.width_limit;
       break;
     }
+    default:
+      break;
   }
   if (limit != 0)
     {
@@ -332,6 +334,11 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
             resource_info.time-=request;
         }
       current=resource_info.time;
+      break;
+    }
+    default:
+    {
+      current=0;
       break;
     }
   }
@@ -705,6 +712,8 @@ MagickExport MagickSizeType GetMagickResource(const ResourceType type)
           resource=(MagickSizeType) resource_info.time;
           break;
         }
+        default:
+          break;
       }
       UnlockSemaphoreInfo(resource_semaphore);
       break;
@@ -983,6 +992,11 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
       current=(MagickSizeType) resource_info.time;
       limit=resource_info.time_limit;
       assert(resource_info.time >= 0);
+      break;
+    }
+    default:
+    {
+      current=0;
       break;
     }
   }
