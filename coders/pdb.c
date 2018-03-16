@@ -424,7 +424,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   (void) memset(pixels,0,(packets+257UL)*image->rows*sizeof(*pixels));
-  switch (pdb_image.version & 0x07) 
+  switch (pdb_image.version & 0x07)
   {
     case 0:
     {
@@ -860,6 +860,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
         scanline=(unsigned char *) RelinquishMagickMemory(scanline);
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     }
+  (void) ResetMagickMemory(buffer,0,512*sizeof(*buffer));
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
   /*
