@@ -1329,7 +1329,8 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
               alpha=FxEvaluateSubexpression(fx_info,channel,x,y,subexpression,
                 &depth,&beta,exception);
               i=(ssize_t) alpha;
-              p++;
+              if (*p != '\0')
+                p++;
             }
           if (*p == '.')
             p++;
