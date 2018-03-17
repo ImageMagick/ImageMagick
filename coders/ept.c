@@ -414,11 +414,18 @@ static MagickBooleanType WriteEPTImage(const ImageInfo *image_info,Image *image,
   if (write_image == (Image *) NULL)
     return(MagickFalse);
   write_info=CloneImageInfo(image_info);
+  (void) CopyMagickString(write_info->filename,"EPS:",MagickPathExtent);
   (void) CopyMagickString(write_info->magick,"EPS",MagickPathExtent);
   if (LocaleCompare(image_info->magick,"EPT2") == 0)
-    (void) CopyMagickString(write_info->magick,"EPS2",MagickPathExtent);
+    {
+      (void) CopyMagickString(write_info->filename,"EPS2:",MagickPathExtent);
+      (void) CopyMagickString(write_info->magick,"EPS2",MagickPathExtent);
+    }
   if (LocaleCompare(image_info->magick,"EPT3") == 0)
-    (void) CopyMagickString(write_info->magick,"EPS3",MagickPathExtent);
+    {
+      (void) CopyMagickString(write_info->filename,"EPS3:",MagickPathExtent);
+      (void) CopyMagickString(write_info->magick,"EPS3",MagickPathExtent);
+    }
   (void) memset(&ept_info,0,sizeof(ept_info));
   ept_info.magick=0xc6d3d0c5ul;
   ept_info.postscript=(unsigned char *) ImageToBlob(write_info,write_image,
