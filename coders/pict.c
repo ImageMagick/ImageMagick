@@ -930,6 +930,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   if (status == MagickFalse)
     return(DestroyImageList(image));
   image->alpha_trait=BlendPixelTrait;
+  status=ResetImagePixels(image,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   /*
     Interpret PICT opcodes.
   */
