@@ -1681,7 +1681,7 @@ static size_t EllipsePoints(const PrimitiveInfo *primitive_info,
   delta=2.0/MagickMax(stop.x,stop.y);
   step=MagickPI/8.0;
   if ((delta >= 0.0) && (delta < (MagickPI/8.0)))
-    step=MagickPI/(4*(MagickPI*PerceptibleReciprocal(delta)/2.0+0.5));
+    step=MagickPI/(4.0*(MagickPI*PerceptibleReciprocal(delta)/2.0));
   if (step < 0.00001)
     step=0.00001;
   angle.x=DegreesToRadians(degrees.x);
@@ -5508,7 +5508,7 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   delta=2.0/MagickMax(stop.x,stop.y);
   step=MagickPI/8.0;
   if ((delta >= 0.0) && (delta < (MagickPI/8.0)))
-    step=MagickPI/(4*(MagickPI*PerceptibleReciprocal(delta)/2.0+0.5));
+    step=MagickPI/(4.0*(MagickPI*PerceptibleReciprocal(delta)/2.0));
   if (step < 0.00001)
     step=0.00001;
   angle.x=DegreesToRadians(degrees.x);
