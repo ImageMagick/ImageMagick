@@ -540,10 +540,8 @@ static MagickBooleanType ClonePixelCacheRepository(
 #define MaxCacheThreads  ((size_t) GetMagickResourceLimit(ThreadResource))
 #define cache_number_threads(source,destination,chunk,multithreaded) \
   num_threads((multithreaded) == 0 ? 1 : \
-    (((source)->type != MemoryCache) && \
-     ((source)->type != MapCache)) || \
-    (((destination)->type != MemoryCache) && \
-     ((destination)->type != MapCache)) ? \
+    (((source)->type != MemoryCache) && ((source)->type != MapCache)) || \
+    (((destination)->type != MemoryCache) && ((destination)->type != MapCache)) ? \
     MagickMax(MagickMin(GetMagickResourceLimit(ThreadResource),2),1) : \
     MagickMax(MagickMin((ssize_t) GetMagickResourceLimit(ThreadResource),(ssize_t) (chunk)/256),1))
 
@@ -647,8 +645,7 @@ static MagickBooleanType ClonePixelCacheRepository(
       clone_nexus[id],exception);
     if (pixels == (Quantum *) NULL)
       continue;
-    (void) memset(clone_nexus[id]->pixels,0,(size_t)
-      clone_nexus[id]->length);
+    (void) memset(clone_nexus[id]->pixels,0,(size_t) clone_nexus[id]->length);
     if (optimize != MagickFalse)
       (void) memcpy(clone_nexus[id]->pixels,cache_nexus[id]->pixels,length*
         sizeof(Quantum));
@@ -1783,10 +1780,8 @@ MagickExport MagickBooleanType GetOneAuthenticPixel(Image *image,
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickCoreSignature);
   (void) memset(pixel,0,MaxPixelChannels*sizeof(*pixel));
-  if (cache_info->methods.get_one_authentic_pixel_from_handler !=
-       (GetOneAuthenticPixelFromHandler) NULL)
-    return(cache_info->methods.get_one_authentic_pixel_from_handler(image,x,y,
-      pixel,exception));
+  if (cache_info->methods.get_one_authentic_pixel_from_handler != (GetOneAuthenticPixelFromHandler) NULL)
+    return(cache_info->methods.get_one_authentic_pixel_from_handler(image,x,y,pixel,exception));
   q=GetAuthenticPixelsCache(image,x,y,1UL,1UL,exception);
   return(CopyPixel(image,q,pixel));
 }
@@ -2746,8 +2741,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
                 CacheError,"UnableToGetCacheNexus","`%s'",image->filename);
               return((const Quantum *) NULL);
             }
-          (void) memset(virtual_metacontent,0,
-            cache_info->metacontent_extent);
+          (void) memset(virtual_metacontent,0,cache_info->metacontent_extent);
         }
       switch (virtual_pixel_method)
       {
@@ -4759,8 +4753,7 @@ static inline MagickBooleanType AcquireCacheNexusPixels(
       nexus_info->cache=(Quantum *) MagickAssumeAligned(AcquireAlignedMemory(1,
         (size_t) nexus_info->length));
       if (nexus_info->cache != (Quantum *) NULL)
-        (void) memset(nexus_info->cache,0,(size_t)
-          nexus_info->length);
+        (void) memset(nexus_info->cache,0,(size_t) nexus_info->length);
     }
   else
     {

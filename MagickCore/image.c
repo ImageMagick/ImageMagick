@@ -2242,6 +2242,10 @@ MagickExport MagickBooleanType ResetImagePixels(Image *image,
   */
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    magick_number_threads(image,image,image->rows,1)
+#endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
@@ -2260,7 +2264,7 @@ MagickExport MagickBooleanType ResetImagePixels(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      memset(q,0,GetPixelChannels(image)*sizeof(Quantum));
+      (void) memset(q,0,GetPixelChannels(image)*sizeof(Quantum));
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
