@@ -14313,7 +14313,7 @@ SetPixel(ref,...)
 #
 void
 SetPixels(ref,...)
-  Image::Magick::Q16HDRI ref = NO_INIT
+  Image::Magick::@MAGICK_ABI_SUFFIX@ ref = NO_INIT
   ALIAS:
     setpixel = 1
     setPixel = 2
