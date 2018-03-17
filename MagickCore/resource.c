@@ -283,8 +283,6 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
           if ((limit == MagickResourceInfinity) ||
               (resource_info.file < (MagickOffsetType) limit))
             status=MagickTrue;
-          else
-            resource_info.file-=request;
         }
       current=resource_info.file;
       break;
