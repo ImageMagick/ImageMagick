@@ -242,7 +242,7 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   height=source->extent.height-source->extent.y;
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+  #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(source_image,destination_image,height,1)
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
@@ -554,7 +554,7 @@ MagickExport MagickBooleanType GetImageViewIterator(ImageView *source,
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   height=source->extent.height-source->extent.y;
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+  #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(source_image,source_image,height,1)
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
@@ -898,7 +898,7 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   height=destination->extent.height-destination->extent.y;
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+  #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(destination_image,destination_image,height,1)
 #endif
   for (y=destination->extent.y; y < (ssize_t) destination->extent.height; y++)
@@ -1026,7 +1026,7 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   height=source->extent.height-source->extent.y;
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+  #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(source_image,destination_image,height,1)
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
@@ -1157,7 +1157,7 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   height=source->extent.height-source->extent.y;
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+  #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(source_image,source_image,height,1)
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)

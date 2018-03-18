@@ -1165,7 +1165,7 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   source_view=AcquireVirtualCacheView(source,exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status) \
+  #pragma omp parallel for schedule(static) shared(status) \
     magick_number_threads(source,image,stop-start,1)
 #endif
   for (y=start; y <= stop; y++)
@@ -3514,7 +3514,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
   GetPixelInfo(image,&zero);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status) \
+  #pragma omp parallel for schedule(static) shared(status) \
     magick_number_threads(image,image,bounding_box.height-bounding_box.y,1)
 #endif
   for (y=bounding_box.y; y < (ssize_t) bounding_box.height; y++)
@@ -4135,7 +4135,7 @@ RestoreMSCWarning
       start_y=(ssize_t) ceil(bounds.y1-0.5);
       stop_y=(ssize_t) floor(bounds.y2+0.5);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(status) \
+      #pragma omp parallel for schedule(static) shared(status) \
         magick_number_threads(image,image,stop_y-start_y+1,1)
 #endif
       for (y=start_y; y <= stop_y; y++)
@@ -4198,7 +4198,7 @@ RestoreMSCWarning
   start_y=(ssize_t) ceil(bounds.y1-0.5);
   stop_y=(ssize_t) floor(bounds.y2+0.5);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status) \
+  #pragma omp parallel for schedule(static) shared(status) \
     magick_number_threads(image,image,stop_y-start_y+1,1)
 #endif
   for (y=start_y; y <= stop_y; y++)

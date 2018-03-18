@@ -532,7 +532,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
       status=MagickTrue;
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(status) \
+      #pragma omp parallel for schedule(static) shared(status) \
         magick_number_threads(image,image,image->rows,1)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
@@ -2371,7 +2371,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
   assert(exception->signature == MagickCoreSignature);
   if (image->storage_class == PseudoClass)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    #pragma omp parallel for schedule(static) shared(progress,status) \
       magick_number_threads(image,image,image->colors,1)
 #endif
     for (i=0; i < (ssize_t) image->colors; i++)
@@ -2399,7 +2399,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
   progress=0;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+  #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -3341,7 +3341,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
       status=MagickTrue;
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(status) \
+      #pragma omp parallel for schedule(static) shared(status) \
         magick_number_threads(image,image,image->rows,1)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
@@ -3420,7 +3420,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status) \
+  #pragma omp parallel for schedule(static) shared(status) \
     magick_number_threads(image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)

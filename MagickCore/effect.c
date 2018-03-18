@@ -252,7 +252,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
   edge_view=AcquireVirtualCacheView(edge_image,exception);
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+  #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(image,blur_image,blur_image->rows,1)
 #endif
   for (y=0; y < (ssize_t) blur_image->rows; y++)
@@ -573,7 +573,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
   edge_view=AcquireVirtualCacheView(edge_image,exception);
   sharp_view=AcquireAuthenticCacheView(sharp_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+  #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(image,sharp_image,sharp_image->rows,1)
 #endif
   for (y=0; y < (ssize_t) sharp_image->rows; y++)
@@ -897,7 +897,7 @@ static void Hull(const Image *image,const ssize_t x_offset,
   q=g+(columns+2);
   r=p+(y_offset*(columns+2)+x_offset);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) \
+  #pragma omp parallel for schedule(static) \
     magick_number_threads(image,image,rows,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
@@ -934,7 +934,7 @@ static void Hull(const Image *image,const ssize_t x_offset,
   r=q+(y_offset*(columns+2)+x_offset);
   s=q-(y_offset*(columns+2)+x_offset);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) \
+  #pragma omp parallel for schedule(static) \
     magick_number_threads(image,image,rows,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
@@ -1496,7 +1496,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
   image_view=AcquireVirtualCacheView(gaussian_image,exception);
   kuwahara_view=AcquireAuthenticCacheView(kuwahara_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+  #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(image,kuwahara_image,gaussian_image->rows,1)
 #endif
   for (y=0; y < (ssize_t) gaussian_image->rows; y++)
@@ -1764,7 +1764,7 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
       x;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-#pragma omp parallel for schedule(static,4) \
+#pragma omp parallel for schedule(static) \
     magick_number_threads(image,image,image->columns,1)
 #endif
     for (x=0; x < (ssize_t) image->columns; x++)
@@ -1843,7 +1843,7 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
       y;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-#pragma omp parallel for schedule(static,4) \
+#pragma omp parallel for schedule(static) \
     magick_number_threads(image,image,image->rows,1)
 #endif
     for (y=0; y < (ssize_t) image->rows; y++)
@@ -2088,7 +2088,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   motion_view=AcquireVirtualCacheView(image,exception);
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+  #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(image,blur_image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -2875,7 +2875,7 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
   radial_view=AcquireVirtualCacheView(image,exception);
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+  #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(image,blur_image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -3190,7 +3190,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
   luminance_view=AcquireVirtualCacheView(luminance_image,exception);
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+  #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(image,blur_image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -3464,7 +3464,7 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
   image_view=AcquireVirtualCacheView(linear_image,exception);
   shade_view=AcquireAuthenticCacheView(shade_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+  #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(linear_image,shade_image,linear_image->rows,1)
 #endif
   for (y=0; y < (ssize_t) linear_image->rows; y++)
@@ -3808,7 +3808,7 @@ MagickExport Image *SpreadImage(const Image *image,
   spread_view=AcquireAuthenticCacheView(spread_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   key=GetRandomSecretKey(random_info[0]);
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+  #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(image,spread_image,image->rows,key == ~0UL)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -3955,7 +3955,7 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
   image_view=AcquireVirtualCacheView(image,exception);
   unsharp_view=AcquireAuthenticCacheView(unsharp_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+  #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(image,unsharp_image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
