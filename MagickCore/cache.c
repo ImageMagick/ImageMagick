@@ -279,7 +279,7 @@ MagickPrivate NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   A c q u i r e P i x e l C a c h e P i x e l s                             %
+%   A c q u i r e P i x e l C a c h e P i x e l s                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -290,8 +290,8 @@ MagickPrivate NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
 %
 %  The format of the AcquirePixelCachePixels() method is:
 %
-%      const void *AcquirePixelCachePixels(const Image *image,
-%        MagickSizeType *length,ExceptionInfo *exception)
+%      void *AcquirePixelCachePixels(const Image *image,size_t *length,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -302,8 +302,8 @@ MagickPrivate NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickPrivate const void *AcquirePixelCachePixels(const Image *image,
-  MagickSizeType *length,ExceptionInfo *exception)
+MagickExport void *AcquirePixelCachePixels(const Image *image,size_t *length,
+  ExceptionInfo *exception)
 {
   CacheInfo
     *magick_restrict cache_info;
@@ -317,9 +317,9 @@ MagickPrivate const void *AcquirePixelCachePixels(const Image *image,
   assert(cache_info->signature == MagickCoreSignature);
   *length=0;
   if ((cache_info->type != MemoryCache) && (cache_info->type != MapCache))
-    return((const void *) NULL);
-  *length=cache_info->length;
-  return((const void *) cache_info->pixels);
+    return((void *) NULL);
+  *length=(size_t) cache_info->length;
+  return(cache_info->pixels);
 }
 
 /*

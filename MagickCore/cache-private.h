@@ -245,7 +245,6 @@ extern MagickPrivate const Quantum
   *GetVirtualPixelsNexus(const Cache,NexusInfo *magick_restrict);
 
 extern MagickPrivate const void
-  *AcquirePixelCachePixels(const Image *,MagickSizeType *,ExceptionInfo *),
   *GetVirtualMetacontentFromNexus(const Cache,NexusInfo *magick_restrict);
 
 extern MagickPrivate MagickBooleanType

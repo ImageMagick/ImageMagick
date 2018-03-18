@@ -2230,13 +2230,25 @@ MagickExport MagickBooleanType ResetImagePixels(Image *image,
   MagickBooleanType
     status;
 
+  size_t
+    length;
+
   ssize_t
     y;
+
+  void
+    *pixels;
 
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickCoreSignature);
+  pixels=AcquirePixelCachePixels(image,&length,exception);
+  if (pixels != (void *) NULL)
+    {   
+      (void) memset(pixels,0,length);
+      return(MagickTrue);
+    }
   /*
     Reset image pixels.
   */
