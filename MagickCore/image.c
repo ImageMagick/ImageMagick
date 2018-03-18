@@ -2246,6 +2246,9 @@ MagickExport MagickBooleanType ResetImagePixels(Image *image,
   pixels=AcquirePixelCachePixels(image,&length,exception);
   if (pixels != (void *) NULL)
     {   
+      /*
+        Reset in-core image pixels.
+      */
       (void) memset(pixels,0,length);
       return(MagickTrue);
     }
