@@ -1028,6 +1028,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   meta_image->page.width=ReadBlobLSBShort(image);
   meta_image->page.height=ReadBlobLSBShort(image);
   flag=(unsigned char) ReadBlobByte(image);
+  profiles=(LinkedListInfo *) NULL;
   background=(unsigned char) ReadBlobByte(image);
   c=(unsigned char) ReadBlobByte(image);  /* reserved */
   one=1;
@@ -1044,7 +1045,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (count != (ssize_t) (3*global_colors))
         ThrowGIFException(CorruptImageError,"InsufficientImageDataInFile");
     }
-  profiles=(LinkedListInfo *) NULL;
   duration=0;
   opacity=(-1);
   image_count=0;
