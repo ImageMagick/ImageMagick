@@ -190,9 +190,6 @@ static MagickBooleanType DecodeImage(Image *image,
   q=pixels+number_pixels;
   for (y=0; y < (ssize_t) image->rows; )
   {
-    MagickBooleanType
-      status;
-
     if ((p < pixels) || (p >= q))
       break;
     count=ReadBlobByte(image);
@@ -200,10 +197,10 @@ static MagickBooleanType DecodeImage(Image *image,
       break;
     if (count > 0)
       {
+        count=(int) MagickMin((size_t) count,(size_t) (q-p));
         /*
           Encoded mode.
         */
-        count=(int) MagickMin((size_t) count,(size_t) (q-p));
         byte=ReadBlobByte(image);
         if (byte == EOF)
           break;
@@ -226,8 +223,6 @@ static MagickBooleanType DecodeImage(Image *image,
           Escape mode.
         */
         count=ReadBlobByte(image);
-        if (count == EOF)
-          break;
         if (count == 0x01)
           return(MagickTrue);
         switch (count)
@@ -247,14 +242,8 @@ static MagickBooleanType DecodeImage(Image *image,
             /*
               Delta mode.
             */
-            byte=ReadBlobByte(image);
-            if (byte == EOF)
-              break;
-            x+=byte;
-            byte=ReadBlobByte(image);
-            if (byte == EOF)
-              break;
-            y+=byte;
+            x+=ReadBlobByte(image);
+            y+=ReadBlobByte(image);
             p=pixels+y*image->columns+x;
             break;
           }
@@ -264,8 +253,6 @@ static MagickBooleanType DecodeImage(Image *image,
               Absolute mode.
             */
             count=(int) MagickMin((size_t) count,(size_t) (q-p));
-            if (count < 0)
-              break;
             if (compression == BI_RLE8)
               for (i=0; i < (ssize_t) count; i++)
               {
@@ -304,14 +291,12 @@ static MagickBooleanType DecodeImage(Image *image,
           }
         }
       }
-    status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-      image->rows);
-    if (status == MagickFalse)
+    if (SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,image->rows) == MagickFalse)
       break;
   }
   (void) ReadBlobByte(image);  /* end of line */
   (void) ReadBlobByte(image);
-  return(y < (ssize_t) image->rows ? MagickFalse : MagickTrue);
+  return(MagickTrue);
 }
 
 /*
