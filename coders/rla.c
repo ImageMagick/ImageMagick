@@ -216,7 +216,11 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   rla_info.frame=(short) ReadBlobMSBShort(image);
   rla_info.storage_type=(short) ReadBlobMSBShort(image);
   rla_info.number_channels=(short) ReadBlobMSBShort(image);
+  if (rla_info.number_channels < 0)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   rla_info.number_matte_channels=(short) ReadBlobMSBShort(image);
+  if (rla_info.number_matte_channels < 0)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if (rla_info.number_channels == 0)
     rla_info.number_channels=3;
   rla_info.number_channels+=rla_info.number_matte_channels;
