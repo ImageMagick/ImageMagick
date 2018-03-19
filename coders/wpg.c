@@ -833,7 +833,6 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
       (void) CopyMagickString(p->magick_filename,image->magick_filename,
         MagickPathExtent);
       (void) CopyMagickString(p->magick,image->magick,MagickPathExtent);
-      DestroyBlob(p);
       if ((p->rows == 0) || (p->columns == 0))
         {
           DeleteImageFromList(&p);
@@ -843,8 +842,9 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
               goto FINISH_UNL;
             }
         }
-      else 
+      else
         {
+          DestroyBlob(p);
           p->blob=ReferenceBlob(image->blob);
           p=p->next;
         }
