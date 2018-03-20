@@ -1369,7 +1369,8 @@ done_reading:
     {
       z = z2;
       if(image2==NULL) image2 = image;
-      goto NEXT_FRAME;
+      if (EOFBlob(image) == MagickFalse)
+        goto NEXT_FRAME;
     }
     if ((image2!=NULL) && (image2!=image))   /* Does shadow temporary decompressed image exist? */
       {
