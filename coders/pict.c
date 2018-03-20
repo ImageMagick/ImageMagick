@@ -1328,7 +1328,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 break;
             }
             pixels=(unsigned char *) RelinquishMagickMemory(pixels);
-            if (jpeg == MagickFalse)
+            if ((jpeg == MagickFalse) && (EOFBlob(image) == MagickFalse))
               if ((code == 0x9a) || (code == 0x9b) ||
                   ((bytes_per_line & 0x8000) != 0))
                 (void) CompositeImage(image,tile_image,CopyCompositeOp,
