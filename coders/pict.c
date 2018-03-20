@@ -984,6 +984,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             status=SetImageExtent(image,image->columns,image->rows,exception);
             if (status == MagickFalse)
               return(DestroyImageList(image));
+            status=ResetImagePixels(image,exception);
+            if (status == MagickFalse)
+              return(DestroyImageList(image));
             break;
           }
           case 0x12:
