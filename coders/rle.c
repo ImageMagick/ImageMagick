@@ -287,6 +287,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           3*map_length*sizeof(*colormap));
         if (colormap == (unsigned char *) NULL)
           ThrowRLEException(ResourceLimitError,"MemoryAllocationFailed");
+        (void) memset(colormap,0,number_colormaps*3*map_length*
+          sizeof(*colormap));
         p=colormap;
         for (i=0; i < (ssize_t) number_colormaps; i++)
           for (x=0; x < (ssize_t) map_length; x++)
