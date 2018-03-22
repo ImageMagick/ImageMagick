@@ -710,8 +710,9 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
     /*
       Output image data.
     */
-    (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g %.20g\n%g %g\n%g\n",
-      (double) geometry.x,(double) geometry.y,scale.x,scale.y,pointsize);
+    (void) FormatLocaleString(buffer,MagickPathExtent,
+      "%.20g %.20g\n%g %g\n%g\n",(double) geometry.x,(double) geometry.y,
+      scale.x,scale.y,pointsize);
     (void) WriteBlobString(image,buffer);
     labels=(char **) NULL;
     value=GetImageProperty(image,"label",exception);
@@ -735,12 +736,12 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
         ((image_info->type != TrueColorType) &&
          (SetImageGray(image,exception) != MagickFalse)))
       {
-        (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g %.20g\n1\n%d\n",
-          (double) image->columns,(double) image->rows,(int)
-          (image->colorspace == CMYKColorspace));
+        (void) FormatLocaleString(buffer,MagickPathExtent,
+          "%.20g %.20g\n1\n%d\n",(double) image->columns,(double) image->rows,
+          (int) (image->colorspace == CMYKColorspace));
         (void) WriteBlobString(image,buffer);
-        (void) FormatLocaleString(buffer,MagickPathExtent,"%d\n",
-          (int) ((compression != FaxCompression) &&
+        (void) FormatLocaleString(buffer,MagickPathExtent,"%d\n",(int)
+          ((compression != FaxCompression) &&
            (compression != Group4Compression)));
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,"0\n");
@@ -851,9 +852,9 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
       if ((image->storage_class == DirectClass) || (image->colors > 256) ||
           (compression == JPEGCompression) || (image->alpha_trait != UndefinedPixelTrait))
         {
-          (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g %.20g\n0\n%d\n",
-            (double) image->columns,(double) image->rows,(int)
-            (image->colorspace == CMYKColorspace));
+          (void) FormatLocaleString(buffer,MagickPathExtent,
+            "%.20g %.20g\n0\n%d\n",(double) image->columns,(double) image->rows,
+            (int) (image->colorspace == CMYKColorspace));
           (void) WriteBlobString(image,buffer);
           (void) FormatLocaleString(buffer,MagickPathExtent,"%d\n",
             (int) (compression == NoCompression));
@@ -1001,9 +1002,9 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
           /*
             Dump number of colors and colormap.
           */
-          (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g %.20g\n1\n%d\n",
-            (double) image->columns,(double) image->rows,(int)
-            (image->colorspace == CMYKColorspace));
+          (void) FormatLocaleString(buffer,MagickPathExtent,
+            "%.20g %.20g\n1\n%d\n",(double) image->columns,(double) image->rows,
+            (int) (image->colorspace == CMYKColorspace));
           (void) WriteBlobString(image,buffer);
           (void) FormatLocaleString(buffer,MagickPathExtent,"%d\n",
             (int) (compression == NoCompression));
