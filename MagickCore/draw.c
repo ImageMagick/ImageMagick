@@ -3105,6 +3105,23 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       }
       case EllipsePrimitive:
       {
+        double
+          alpha,
+          beta,
+          coordinates,
+          radius;
+
+        alpha=bounds.x2-bounds.x1;
+        beta=bounds.y2-bounds.y1;
+        radius=hypot(alpha,beta);
+        coordinates=2.0*ceil(MagickPI*MagickPI*radius)+6*BezierQuantum+360;
+        if (coordinates > 1.0e+06)
+          { 
+            (void) ThrowMagickException(exception,GetMagickModule(),DrawError,
+              "TooManyBezierCoordinates","`%s'",token);
+            status=MagickFalse;
+            break;
+          }
         points_extent=(double) EllipsePoints(primitive_info+j,
           primitive_info[j].point,primitive_info[j+1].point,
           primitive_info[j+2].point);
