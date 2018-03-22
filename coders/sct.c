@@ -279,13 +279,15 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         q+=GetPixelChannels(image);
       }
-      if (c == EOF)
+      if (x < (ssize_t) image->columns)
         break;
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;
       if ((image->columns % 2) != 0)
         (void) ReadBlobByte(image);  /* pad */
     }
+    if (i < (ssize_t) separations)
+      break;
     status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
       image->rows);
     if (status == MagickFalse)
