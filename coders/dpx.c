@@ -726,6 +726,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     dpx.file.version);
   (void) FormatImageProperty(image,"dpx:file.version","%.8s",dpx.file.version);
   dpx.file.file_size=ReadBlobLong(image);
+  if (dpx.file.file_size >= GetBlobSize(image))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   offset+=4;
   dpx.file.ditto_key=ReadBlobLong(image);
   offset+=4;
@@ -733,10 +735,16 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) FormatImageProperty(image,"dpx:file.ditto.key","%u",
       dpx.file.ditto_key);
   dpx.file.generic_size=ReadBlobLong(image);
+  if (dpx.file.generic_size >= GetBlobSize(image))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   offset+=4;
   dpx.file.industry_size=ReadBlobLong(image);
+  if (dpx.file.industry_size >= GetBlobSize(image))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   offset+=4;
   dpx.file.user_size=ReadBlobLong(image);
+  if (dpx.file.user_size >= GetBlobSize(image))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   offset+=4;
   offset+=ReadBlob(image,sizeof(dpx.file.filename),(unsigned char *)
     dpx.file.filename);
