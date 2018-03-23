@@ -1494,6 +1494,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
     i;
 
   size_t
+    channels,
     extent;
 
   ssize_t
@@ -1559,7 +1560,12 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
   offset+=WriteBlobLong(image,dpx.file.image_offset);
   (void) strncpy(dpx.file.version,"V2.0",sizeof(dpx.file.version)-1);
   offset+=WriteBlob(image,8,(unsigned char *) &dpx.file.version);
-  dpx.file.file_size=(unsigned int) (3U*image->columns*image->rows+
+  channels=1;
+  if (IsImageGray(image) == MagickFalse)
+    channels=3;
+  if (image->alpha_trait != UndefinedPixelTrait)
+    channels++;
+  dpx.file.file_size=(unsigned int) (channels*image->columns*image->rows+
     dpx.file.image_offset);
   offset+=WriteBlobLong(image,dpx.file.file_size);
   dpx.file.ditto_key=1U;  /* new frame */
