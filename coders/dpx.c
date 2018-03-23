@@ -726,7 +726,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     dpx.file.version);
   (void) FormatImageProperty(image,"dpx:file.version","%.8s",dpx.file.version);
   dpx.file.file_size=ReadBlobLong(image);
-  if (dpx.file.file_size >= GetBlobSize(image))
+  if (dpx.file.file_size > GetBlobSize(image))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   offset+=4;
   dpx.file.ditto_key=ReadBlobLong(image);
@@ -735,15 +735,15 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) FormatImageProperty(image,"dpx:file.ditto.key","%u",
       dpx.file.ditto_key);
   dpx.file.generic_size=ReadBlobLong(image);
-  if (dpx.file.generic_size >= GetBlobSize(image))
+  if (dpx.file.generic_size > GetBlobSize(image))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   offset+=4;
   dpx.file.industry_size=ReadBlobLong(image);
-  if (dpx.file.industry_size >= GetBlobSize(image))
+  if (dpx.file.industry_size > GetBlobSize(image))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   offset+=4;
   dpx.file.user_size=ReadBlobLong(image);
-  if (dpx.file.user_size >= GetBlobSize(image))
+  if (dpx.file.user_size > GetBlobSize(image))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   offset+=4;
   offset+=ReadBlob(image,sizeof(dpx.file.filename),(unsigned char *)
@@ -1559,7 +1559,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
   offset+=WriteBlobLong(image,dpx.file.image_offset);
   (void) strncpy(dpx.file.version,"V2.0",sizeof(dpx.file.version)-1);
   offset+=WriteBlob(image,8,(unsigned char *) &dpx.file.version);
-  dpx.file.file_size=(unsigned int) (4U*image->columns*image->rows+
+  dpx.file.file_size=(unsigned int) (3U*image->columns*image->rows+
     dpx.file.image_offset);
   offset+=WriteBlobLong(image,dpx.file.file_size);
   dpx.file.ditto_key=1U;  /* new frame */
