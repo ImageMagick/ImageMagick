@@ -1,6 +1,23 @@
 #!/bin/bash -eu
 
-./configure --prefix="$WORK" --disable-shared --disable-docs
+# Build libtiff
+pushd "$SRC/libtiff"
+./autogen.sh
+./configure --enable-static --disable-shared --prefix="$WORK"
+make -j$(nproc)
+make install
+popd
+
+# Build libde265
+pushd "$SRC/libde265"
+./autogen.sh
+./configure --disable-shared --prefix="$WORK"
+make -j$(nproc)
+make install
+popd
+
+# Build ImageMagick
+./configure --prefix="$WORK" --disable-shared --disable-docs LIBS="-lc++" LDFLAGS="${LDFLAGS:-} -L$WORK/lib" CFLAGS="$CFLAGS -I$WORK/include" PKG_CONFIG_PATH="$WORK/lib/pkgconfig"
 make "-j$(nproc)"
 make install
 
@@ -8,7 +25,7 @@ MAGICK_COMPILER=$CXX
 MAGICK_COMPILER_FLAGS=$CXXFLAGS
 MAGICK_INCLUDE="$WORK/include/ImageMagick-7"
 MAGICK_SRC="$SRC/imagemagick/Magick++/fuzz"
-MAGICK_LIBS="-lFuzzingEngine $WORK/lib/libMagick++-7.Q16HDRI.a $WORK/lib/libMagickWand-7.Q16HDRI.a $WORK/lib/libMagickCore-7.Q16HDRI.a"
+MAGICK_LIBS="-lFuzzingEngine $WORK/lib/libMagick++-7.Q16HDRI.a $WORK/lib/libMagickWand-7.Q16HDRI.a $WORK/lib/libMagickCore-7.Q16HDRI.a $WORK/lib/libtiff.a $WORK/lib/libde265.a"
 MAGICK_OUTPUT=$OUT
 MAGICK_FAST_BUILD=0
 
