@@ -3115,7 +3115,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         beta=bounds.y2-bounds.y1;
         radius=hypot(alpha,beta);
         coordinates=2.0*ceil(MagickPI*MagickPI*radius)+6*BezierQuantum+360;
-        if (coordinates > 1.0e+06)
+        if (coordinates > 1048576)
           { 
             (void) ThrowMagickException(exception,GetMagickModule(),DrawError,
               "TooManyBezierCoordinates","`%s'",token);
