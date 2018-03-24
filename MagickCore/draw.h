@@ -324,6 +324,9 @@ typedef struct _DrawInfo
   double
     fill_alpha,
     stroke_alpha;
+
+  MagickBooleanType
+    clip_path;
 } DrawInfo;
 
 

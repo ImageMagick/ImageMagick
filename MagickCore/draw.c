@@ -344,10 +344,11 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     (void) CloneString(&clone_info->clip_mask,draw_info->clip_mask);
   clone_info->bounds=draw_info->bounds;
   clone_info->clip_units=draw_info->clip_units;
-  clone_info->render=draw_info->render;
   clone_info->fill_alpha=draw_info->fill_alpha;
   clone_info->stroke_alpha=draw_info->stroke_alpha;
   clone_info->element_reference=draw_info->element_reference;
+  clone_info->render=draw_info->render;
+  clone_info->clip_path=draw_info->clip_path;
   clone_info->debug=IsEventLogging();
   exception=DestroyExceptionInfo(exception);
   return(clone_info);
@@ -1443,6 +1444,11 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
     exception);
   if (clone_info->clip_mask != (char *) NULL)
     clone_info->clip_mask=DestroyString(clone_info->clip_mask);
+  (void) QueryColorCompliance("#000000",AllCompliance,&clone_info->stroke,
+    exception);
+  clone_info->stroke_width=0.0;
+  clone_info->alpha=OpaqueAlpha;
+  clone_info->clip_path=MagickTrue;
   status=DrawImage(clip_mask,clone_info,exception);
   (void) SetImageMask(image,WritePixelMask,clip_mask,exception);
   clip_mask=DestroyImage(clip_mask);
@@ -2078,6 +2084,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (LocaleCompare("fill",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
+            if (graphic_context[n]->clip_path != MagickFalse)
+              break;
             (void) FormatLocaleString(pattern,MagickPathExtent,"%s",token);
             if (GetImageArtifact(image,pattern) != (const char *) NULL)
               (void) DrawPatternPath(image,draw_info,token,
@@ -2097,6 +2105,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               opacity;
 
             GetNextToken(q,&q,extent,token);
+            if (graphic_context[n]->clip_path != MagickFalse)
+              break;
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
             opacity=MagickMin(MagickMax(factor*
               StringToDouble(token,&next_token),0.0),1.0);
@@ -2280,6 +2290,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (LocaleCompare("opacity",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
+            if (graphic_context[n]->clip_path != MagickFalse)
+              break;
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
             graphic_context[n]->alpha=(Quantum) (QuantumRange*(1.0-
               (QuantumScale*graphic_context[n]->alpha*(1.0-factor*
@@ -2656,6 +2668,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (LocaleCompare("stroke",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
+            if (graphic_context[n]->clip_path != MagickFalse)
+              break;
             (void) FormatLocaleString(pattern,MagickPathExtent,"%s",token);
             if (GetImageArtifact(image,pattern) != (const char *) NULL)
               (void) DrawPatternPath(image,draw_info,token,
@@ -2778,6 +2792,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               opacity;
 
             GetNextToken(q,&q,extent,token);
+            if (graphic_context[n]->clip_path != MagickFalse)
+              break;
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
             opacity=MagickMin(MagickMax(factor*
               StringToDouble(token,&next_token),0.0),1.0);
@@ -2790,6 +2806,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (LocaleCompare("stroke-width",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
+            if (graphic_context[n]->clip_path != MagickFalse)
+              break;
             graphic_context[n]->stroke_width=StringToDouble(token,&next_token);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
@@ -3117,7 +3135,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         radius=hypot(alpha,beta);
         coordinates=2.0*ceil(MagickPI*MagickPI*radius)+6*BezierQuantum+360;
         if (coordinates > 1048576)
-          { 
+          {
             (void) ThrowMagickException(exception,GetMagickModule(),DrawError,
               "TooManyBezierCoordinates","`%s'",token);
             status=MagickFalse;
@@ -5108,6 +5126,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->undercolor.alpha=(MagickRealType) TransparentAlpha;
   draw_info->compose=OverCompositeOp;
   draw_info->render=MagickTrue;
+  draw_info->clip_path=MagickFalse;
   draw_info->debug=IsEventLogging();
   draw_info->stroke_antialias=clone_info->antialias;
   if (clone_info->font != (char *) NULL)
