@@ -488,7 +488,7 @@ static MagickBooleanType ParseInfeAtom(Image *image, DataBuffer *db,
   /*
      item indicies starts from 1
   */
-  if (id > (ssize_t) ctx->idsCount) {
+  if (id >= (ssize_t) ctx->idsCount) {
     ThrowAndReturn("item id is incorrect");
   }
 
