@@ -1217,6 +1217,8 @@ RestoreMSCWarning
           clone_info=DestroyImageInfo(clone_info);
         if ((image != image2) && (image2 != (Image *) NULL))
           image2=DestroyImage(image2);
+        if (quantum_info != (QuantumInfo *) NULL)
+          quantum_info=DestroyQuantumInfo(quantum_info);
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       }
     (void) memset(BImgBuff,0,ldblk*sizeof(double));
