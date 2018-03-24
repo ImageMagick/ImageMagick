@@ -382,7 +382,7 @@ static MagickBooleanType WriteEPTImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
   char
-     filename[MagickPathExtent];
+    filename[MagickPathExtent];
 
   EPTInfo
     ept_info;
