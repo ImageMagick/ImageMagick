@@ -165,7 +165,10 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
     exception);
   quantum_info=AcquireQuantumInfo(image_info,canvas_image);
   if (quantum_info == (QuantumInfo *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    {
+      canvas_image=DestroyImage(canvas_image);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   quantum_type=BGRQuantum;
   if (LocaleCompare(image_info->magick,"BGRA") == 0)
     {
