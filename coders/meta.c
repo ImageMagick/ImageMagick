@@ -2198,12 +2198,12 @@ static int format8BIM(Image *ifile, Image *ofile)
       }
     }
     count=(ssize_t) ReadBlobMSBSignedLong(ifile);
-    if (count < 0)
+    if ((count < 0) || (count > GetBlobSize(ifile)))
       {
         PString=(unsigned char *) RelinquishMagickMemory(PString);
         return -1;
       }
-    /* make a buffer to hold the datand snag it from the input stream */
+    /* make a buffer to hold the data and snag it from the input stream */
     str=(unsigned char *) AcquireQuantumMemory((size_t) count,sizeof(*str));
     if (str == (unsigned char *) NULL)
       {
