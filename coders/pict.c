@@ -467,7 +467,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
       */
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        q=pixels+y*width*GetPixelChannels(image);;
+        q=pixels+y*width*GetPixelChannels(image);
         number_pixels=bytes_per_line;
         count=ReadBlob(blob,(size_t) number_pixels,scanline);
         if (count != (ssize_t) number_pixels)
@@ -929,7 +929,6 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
-  image->alpha_trait=BlendPixelTrait;
   status=ResetImagePixels(image,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
