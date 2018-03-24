@@ -3513,7 +3513,10 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       {
         status=SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
         if (status == MagickFalse)
-          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+          {
+            quantum_info=DestroyQuantumInfo(quantum_info);
+            ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+          }
       }
     if ((LocaleCompare(image_info->magick,"PTIF") == 0) &&
         (GetPreviousImageInList(image) != (Image *) NULL))
