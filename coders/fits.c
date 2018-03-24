@@ -669,7 +669,10 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   image->endian=MSBEndian;
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    {
+      fits_info=DestroyString(fits_info);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   offset=0;
   (void) FormatLocaleString(header,FITSBlocksize,
     "SIMPLE  =                    T");
