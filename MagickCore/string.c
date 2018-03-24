@@ -2369,6 +2369,37 @@ MagickExport char *StringToken(const char *delimiters,char **string)
 */
 MagickExport char **StringToList(const char *text)
 {
+  return(StringToStrings(text, (size_t *) NULL));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  S t r i n g T o S t r i n g s                                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  StringToList() converts a text string into a list by segmenting the text
+%  string at each carriage return discovered.  The list is converted to HEX
+%  characters if any control characters are discovered within the text string.
+%
+%  The format of the StringToList method is:
+%
+%      char **StringToList(const char *text,size_t *lines)
+%
+%  A description of each parameter follows:
+%
+%    o text:  Specifies the string to segment into a list.
+%
+%    o count: Return value for the number of items in the list.
+%
+*/
+MagickExport char **StringToStrings(const char *text,size_t *count)
+{
   char
     **textlist;
 
@@ -2382,7 +2413,11 @@ MagickExport char **StringToList(const char *text)
     lines;
 
   if (text == (char *) NULL)
-    return((char **) NULL);
+    {
+      if (count != (size_t *) NULL)
+        *count=0;
+      return((char **) NULL);
+    }
   for (p=text; *p != '\0'; p++)
     if (((int) ((unsigned char) *p) < 32) &&
         (isspace((int) ((unsigned char) *p)) == 0))
@@ -2476,6 +2511,8 @@ MagickExport char **StringToList(const char *text)
         *q='\0';
       }
     }
+  if (count != (size_t *) NULL)
+    *count=lines;
   textlist[i]=(char *) NULL;
   return(textlist);
 }

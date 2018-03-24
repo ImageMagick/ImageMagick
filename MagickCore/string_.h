@@ -54,7 +54,8 @@ extern MagickExport char
   *StringInfoToString(const StringInfo *),
   **StringToArgv(const char *,int *),
   *StringToken(const char *,char **),
-  **StringToList(const char *);
+  **StringToList(const char *),
+  **StringToStrings(const char *,size_t *);
 
 extern MagickExport const char
   *GetStringInfoName(const StringInfo *),
