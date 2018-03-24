@@ -2409,8 +2409,8 @@ MagickExport char **StringToList(const char *text)
         for (q=p; *q != '\0'; q++)
           if ((*q == '\r') || (*q == '\n'))
             break;
-        textlist[i]=(char *) AcquireQuantumMemory((size_t) (q-p)+
-          MagickPathExtent,sizeof(**textlist));
+        textlist[i]=(char *) AcquireQuantumMemory((size_t) (q-p)+1,
+          sizeof(**textlist));
         if (textlist[i] == (char *) NULL)
           ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
         (void) memcpy(textlist[i],p,(size_t) (q-p));
