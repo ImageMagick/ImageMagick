@@ -2736,11 +2736,13 @@ MagickPrivate MagickBooleanType RecordProfileData(MagickCLDevice device,
     name=DestroyString(name);
   else
     {
-      profile_record=AcquireMagickMemory(sizeof(*profile_record));
+      profile_record=AcquireCriticalMemory(sizeof(*profile_record));
       (void) memset(profile_record,0,sizeof(*profile_record));
       profile_record->kernel_name=name;
       device->profile_records=ResizeMagickMemory(device->profile_records,(i+2)*
         sizeof(*device->profile_records));
+      if (device->profile_records == (KernelProfileRecord *) NULL)
+        ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
       device->profile_records[i]=profile_record;
       device->profile_records[i+1]=(KernelProfileRecord) NULL;
     }
