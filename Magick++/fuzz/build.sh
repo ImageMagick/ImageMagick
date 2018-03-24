@@ -1,5 +1,21 @@
 #!/bin/bash -eu
 
+# build bzip2
+pushd $SRC
+tar zxf bzip2-1.0.6.tar.gz
+popd
+pushd "$SRC/bzip2-1.0.6"
+make -j$(nproc)
+make install PREFIX="$WORK"
+popd
+
+# build zlib
+pushd "$SRC/zlib"
+./configure --static --prefix="$WORK"
+make -j$(nproc)
+make install
+popd
+
 # Build libtiff
 pushd "$SRC/libtiff"
 ./autogen.sh
@@ -16,6 +32,22 @@ make -j$(nproc)
 make install
 popd
 
+# Build webp
+pushd "$SRC/libwebp"
+./autogen.sh
+./configure --disable-shared --prefix="$WORK"
+make -j$(nproc)
+make install
+popd
+
+# Build openjpg
+pushd "$SRC/openjpeg"
+cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DBUILD_SHARED_LIBS:bool=off -DBUILD_CODEC:bool=off -DCMAKE_BUILD_TYPE=Release
+make -j$(nproc)
+make install
+popd
+
+
 # Build ImageMagick
 ./configure --prefix="$WORK" --disable-shared --disable-docs LIBS="-lc++" LDFLAGS="${LDFLAGS:-} -L$WORK/lib" CFLAGS="$CFLAGS -I$WORK/include" PKG_CONFIG_PATH="$WORK/lib/pkgconfig"
 make "-j$(nproc)"
@@ -25,7 +57,7 @@ MAGICK_COMPILER=$CXX
 MAGICK_COMPILER_FLAGS=$CXXFLAGS
 MAGICK_INCLUDE="$WORK/include/ImageMagick-7"
 MAGICK_SRC="$SRC/imagemagick/Magick++/fuzz"
-MAGICK_LIBS="-lFuzzingEngine $WORK/lib/libMagick++-7.Q16HDRI.a $WORK/lib/libMagickWand-7.Q16HDRI.a $WORK/lib/libMagickCore-7.Q16HDRI.a $WORK/lib/libtiff.a $WORK/lib/libde265.a"
+MAGICK_LIBS="-lFuzzingEngine $WORK/lib/libMagick++-7.Q16HDRI.a $WORK/lib/libMagickWand-7.Q16HDRI.a $WORK/lib/libMagickCore-7.Q16HDRI.a $WORK/lib/libz.a $WORK/lib/libbz2.a $WORK/lib/libtiff.a $WORK/lib/libde265.a $WORK/lib/libopenjp2.a $WORK/lib/libwebp.a"
 MAGICK_OUTPUT=$OUT
 MAGICK_FAST_BUILD=0
 
