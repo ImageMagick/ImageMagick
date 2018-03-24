@@ -868,7 +868,10 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
   */
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    {
+      runlength=(unsigned char *) RelinquishMagickMemory(runlength);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   status=SetQuantumDepth(image,quantum_info,image->depth > 8 ? 16 : 8);
   bits=8/(int) bits_per_pixel-1;  /* start at most significant bits */
   literal=0;
