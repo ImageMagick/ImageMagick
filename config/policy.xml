@@ -61,11 +61,11 @@
   <!-- <policy domain="system" name="memory-map" value="anonymous"/> -->
   <!-- <policy domain="system" name="max-memory-request" value="256MiB"/> -->
   <!-- <policy domain="resource" name="temporary-path" value="/tmp"/> -->
-  <!-- <policy domain="resource" name="list-length" value="128"/> -->
   <!-- <policy domain="resource" name="memory" value="2GiB"/> -->
   <!-- <policy domain="resource" name="map" value="4GiB"/> -->
   <!-- <policy domain="resource" name="width" value="10KP"/> -->
   <!-- <policy domain="resource" name="height" value="10KP"/> -->
+  <!-- <policy domain="resource" name="list-length" value="128"/> -->
   <!-- <policy domain="resource" name="area" value="100MP"/> -->
   <!-- <policy domain="resource" name="disk" value="16EiB"/> -->
   <!-- <policy domain="resource" name="file" value="768"/> -->
