@@ -2204,7 +2204,7 @@ static int format8BIM(Image *ifile, Image *ofile)
         return -1;
       }
     /* make a buffer to hold the data and snag it from the input stream */
-    str=(unsigned char *) AcquireQuantumMemory((size_t) count,sizeof(*str));
+    str=(unsigned char *) AcquireQuantumMemory((size_t) count+1,sizeof(*str));
     if (str == (unsigned char *) NULL)
       {
         PString=(unsigned char *) RelinquishMagickMemory(PString);
