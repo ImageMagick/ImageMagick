@@ -7843,6 +7843,7 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   msl_info.group_info=(MSLGroupInfo *) AcquireMagickMemory(
     sizeof(*msl_info.group_info));
   if ((msl_info.image_info == (ImageInfo **) NULL) ||
+      (msl_info.draw_info == (DrawInfo **) NULL) ||
       (msl_info.image == (Image **) NULL) ||
       (msl_info.attributes == (Image **) NULL) ||
       (msl_info.group_info == (MSLGroupInfo *) NULL))
