@@ -998,7 +998,11 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     pcx_colormap=(unsigned char *) AcquireQuantumMemory(256UL,
       3*sizeof(*pcx_colormap));
     if (pcx_colormap == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+      {
+        if (page_table != (MagickOffsetType *) NULL)
+          page_table=(MagickOffsetType *) RelinquishMagickMemory(page_table);
+        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+      }
     (void) memset(pcx_colormap,0,3*256*sizeof(*pcx_colormap));
     q=pcx_colormap;
     if ((image->storage_class == PseudoClass) && (image->colors <= 256))
