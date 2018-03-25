@@ -23,8 +23,8 @@ MagickPPExport int Magick::operator == (const Magick::Color &left_,
 #if defined(MAGICKCORE_HDRI_SUPPORT)
   return((left_.isValid() == right_.isValid()) &&
     (fabs(left_.quantumRed()-right_.quantumRed()) < MagickEpsilon) &&
-    (fabs(left_.quantumGreen()-right_.quantumGreen() < MagickEpsilon) &&
-    (fabs(left_.quantumBlue()-right_.quantumBlue() < MagickEpsilon));
+    (fabs(left_.quantumGreen()-right_.quantumGreen()) < MagickEpsilon) &&
+    (fabs(left_.quantumBlue()-right_.quantumBlue()) < MagickEpsilon));
 #else
   return((left_.isValid() == right_.isValid()) &&
     (left_.quantumRed() == right_.quantumRed()) &&
