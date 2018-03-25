@@ -66,6 +66,8 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
 
+#define BMP_HEADER_SIZE 14
+
 /*
   Forward declarations.
 */
@@ -105,8 +107,20 @@ static MagickBooleanType
 static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+  unsigned char
+    *p;
+
+  HANDLE
+    clip_handle;
+
   Image
     *image;
+
+  ImageInfo
+    *read_info;
+
+  LPVOID
+    clip_mem;
 
   MagickBooleanType
     status;
@@ -117,8 +131,18 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   register Quantum
     *q;
 
+  size_t
+    clip_size,
+    total_size;
+
   ssize_t
     y;
+
+  unsigned int
+    offset;
+
+  void
+    *clip_data;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
@@ -128,115 +152,55 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   image=AcquireImage(image_info,exception);
-  {
-    HBITMAP
-      bitmapH;
-
-    HPALETTE
-      hPal;
-
-    OpenClipboard(NULL);
-    bitmapH=(HBITMAP) GetClipboardData(CF_BITMAP);
-    hPal=(HPALETTE) GetClipboardData(CF_PALETTE);
-    CloseClipboard();
-    if ( bitmapH == NULL )
-      ThrowReaderException(CoderError,"NoBitmapOnClipboard");
+  if (!IsClipboardFormatAvailable(CF_BITMAP) &&
+      !IsClipboardFormatAvailable(CF_DIB) &&
+      !IsClipboardFormatAvailable(CF_DIBV5))
+    ThrowReaderException(CoderError,"NoBitmapOnClipboard");
+  if (!OpenClipboard(NULL))
+    ThrowReaderException(CoderError,"UnableToReadImageData");
+  clip_handle=GetClipboardData(CF_DIBV5);
+  if (!clip_handle)
+    clip_handle=GetClipboardData(CF_DIB);
+  if ((clip_handle == NULL) || (clip_handle == INVALID_HANDLE_VALUE))
     {
-      BITMAPINFO
-        DIBinfo;
-
-      BITMAP
-        bitmap;
-
-      HBITMAP
-        hBitmap,
-        hOldBitmap;
-
-      HDC
-        hDC,
-        hMemDC;
-
-      RGBQUAD
-        *pBits,
-        *ppBits;
-
-      /* create an offscreen DC for the source */
-      hMemDC=CreateCompatibleDC(NULL);
-      hOldBitmap=(HBITMAP) SelectObject(hMemDC,bitmapH);
-      GetObject(bitmapH,sizeof(BITMAP),(LPSTR) &bitmap);
-      if ((image->columns == 0) || (image->rows == 0))
-        {
-          image->columns=bitmap.bmWidth;
-          image->rows=bitmap.bmHeight;
-        }
-      status=SetImageExtent(image,image->columns,image->rows,exception);
-      if (status == MagickFalse)
-        return(DestroyImageList(image));
-      /*
-        Initialize the bitmap header info.
-      */
-      (void) memset(&DIBinfo,0,sizeof(BITMAPINFO));
-      DIBinfo.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
-      DIBinfo.bmiHeader.biWidth=(LONG) image->columns;
-      DIBinfo.bmiHeader.biHeight=(-1)*(LONG) image->rows;
-      DIBinfo.bmiHeader.biPlanes=1;
-      DIBinfo.bmiHeader.biBitCount=32;
-      DIBinfo.bmiHeader.biCompression=BI_RGB;
-      hDC=GetDC(NULL);
-      if (hDC == 0)
-        ThrowReaderException(CoderError,"UnableToCreateADC");
-      hBitmap=CreateDIBSection(hDC,&DIBinfo,DIB_RGB_COLORS,(void **) &ppBits,
-        NULL,0);
-      ReleaseDC(NULL,hDC);
-      if (hBitmap == 0)
-        ThrowReaderException(CoderError,"UnableToCreateBitmap");
-      /* create an offscreen DC */
-      hDC=CreateCompatibleDC(NULL);
-      if (hDC == 0)
-        {
-          DeleteObject(hBitmap);
-          ThrowReaderException(CoderError,"UnableToCreateADC");
-        }
-      hOldBitmap=(HBITMAP) SelectObject(hDC,hBitmap);
-      if (hOldBitmap == 0)
-        {
-          DeleteDC(hDC);
-          DeleteObject(hBitmap);
-          ThrowReaderException(CoderError,"UnableToCreateBitmap");
-        }
-      if (hPal != NULL)
-      {
-        /* Kenichi Masuko says this needed */
-        SelectPalette(hDC, hPal, FALSE);
-        RealizePalette(hDC);
-      }
-      /* bitblt from the memory to the DIB-based one */
-      BitBlt(hDC,0,0,(int) image->columns,(int) image->rows,hMemDC,0,0,SRCCOPY);
-      /* finally copy the pixels! */
-      pBits=ppBits;
-      for (y=0; y < (ssize_t) image->rows; y++)
-      {
-        q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (Quantum *) NULL)
-          break;
-        for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          SetPixelRed(image,ScaleCharToQuantum(pBits->rgbRed),q);
-          SetPixelGreen(image,ScaleCharToQuantum(pBits->rgbGreen),q);
-          SetPixelBlue(image,ScaleCharToQuantum(pBits->rgbBlue),q);
-          SetPixelAlpha(image,OpaqueAlpha,q);
-          pBits++;
-          q+=GetPixelChannels(image);
-        }
-        if (SyncAuthenticPixels(image,exception) == MagickFalse)
-          break;
-      }
-      DeleteDC(hDC);
-      DeleteObject(hBitmap);
+      CloseClipboard();
+      ThrowReaderException(CoderError,"UnableToReadImageData");
     }
-  }
-  (void) CloseBlob(image);
-  return(GetFirstImageInList(image));
+  clip_size=(size_t) GlobalSize(clip_handle);
+  total_size=clip_size+BMP_HEADER_SIZE;
+  clip_data=AcquireMagickMemory(total_size);
+  if (clip_data == (void *) NULL)
+    {
+      CloseClipboard();
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  clip_mem=GlobalLock(clip_handle);
+  if (clip_mem == (LPVOID) NULL)
+    {
+      CloseClipboard();
+      ThrowReaderException(CoderError,"UnableToReadImageData");
+    }
+  p=(unsigned char *) clip_data;
+  p+=BMP_HEADER_SIZE;
+  (void) memcpy(p,clip_mem,clip_size);
+  (void) GlobalUnlock(clip_mem);
+  (void) CloseClipboard();
+  memset(clip_data,0,BMP_HEADER_SIZE);
+  offset=((unsigned int) p[0])+BMP_HEADER_SIZE;
+  p-=BMP_HEADER_SIZE;
+  p[0]='B';
+  p[1]='M';
+  p[2]=(unsigned char) total_size;
+  p[3]=(unsigned char) (total_size >> 8);
+  p[4]=(unsigned char) (total_size >> 16);
+  p[5]=(unsigned char) (total_size >> 24);
+  p[10]=offset;
+  read_info=CloneImageInfo(image_info);
+  (void) CopyMagickString(read_info->magick,"BMP",MaxTextExtent);
+  image=BlobToImage(read_info,clip_data,total_size,exception);
+  read_info=DestroyImageInfo(read_info);
+  clip_data=RelinquishMagickMemory(clip_data);
+  return(image);
 }
 #endif /* MAGICKCORE_WINGDI32_DELEGATE */
 
@@ -334,25 +298,70 @@ ModuleExport void UnregisterCLIPBOARDImage(void)
 static MagickBooleanType WriteCLIPBOARDImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
-  /*
-    Allocate memory for pixels.
-  */
+  HANDLE
+    clip_handle;
+
+  ImageInfo
+    *write_info;
+
+  LPVOID
+    clip_mem;
+
+  size_t
+    length;
+
+  unsigned char
+    *p;
+
+  void
+    *clip_data;
+
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  {
-    HBITMAP
-      bitmapH;
-
-    OpenClipboard(NULL);
-    EmptyClipboard();
-    bitmapH=(HBITMAP) ImageToHBITMAP(image,exception);
-    SetClipboardData(CF_BITMAP,bitmapH);
-    CloseClipboard();
-  }
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+    ThrowWriterException(CoderError,"UnableToWriteImageData");
+  write_info=CloneImageInfo(image_info);
+  if (image->alpha_trait == UndefinedPixelTrait)
+    (void) CopyMagickString(write_info->magick,"BMP3",MaxTextExtent);
+  else
+    (void) CopyMagickString(write_info->magick,"BMP",MaxTextExtent);
+  clip_data=ImageToBlob(write_info,image,&length,exception);
+  write_info=DestroyImageInfo(write_info);
+  if (clip_data == (void *) NULL)
+    ThrowWriterException(CoderError,"UnableToWriteImageData");
+  clip_handle=(HANDLE) GlobalAlloc(GMEM_MOVEABLE,length-BMP_HEADER_SIZE);
+  if (clip_handle == (HANDLE) NULL)
+    {
+      clip_data=RelinquishMagickMemory(clip_data);
+      ThrowWriterException(CoderError,"UnableToWriteImageData");
+    }
+  clip_mem=GlobalLock(clip_handle);
+  if (clip_handle == (LPVOID) NULL)
+    {
+      (void) GlobalFree((HGLOBAL) clip_handle);
+      clip_data=RelinquishMagickMemory(clip_data);
+      ThrowWriterException(CoderError,"UnableToWriteImageData");
+    }
+  p=(unsigned char *) clip_data;
+  p+=BMP_HEADER_SIZE;
+  (void) memcpy(clip_mem,p,length-BMP_HEADER_SIZE);
+  (void) GlobalUnlock(clip_mem);
+  clip_data=RelinquishMagickMemory(clip_data);
+  if (!OpenClipboard(NULL))
+    {
+      (void) GlobalFree((HGLOBAL) clip_handle);
+      ThrowWriterException(CoderError,"UnableToWriteImageData");
+    }
+  (void) EmptyClipboard();
+  if (image->alpha_trait == UndefinedPixelTrait)
+    SetClipboardData(CF_DIB,clip_handle);
+  else
+    SetClipboardData(CF_DIBV5,clip_handle);
+  (void) CloseClipboard();
   return(MagickTrue);
 }
 #endif /* MAGICKCORE_WINGDI32_DELEGATE */
