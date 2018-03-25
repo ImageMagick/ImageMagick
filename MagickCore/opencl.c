@@ -663,7 +663,7 @@ MagickPrivate cl_command_queue AcquireOpenCLCommandQueue(MagickCLDevice device)
   else
   {
     UnlockSemaphoreInfo(device->lock);
-    properties=(cl_command_queue_properties) NULL;
+    properties=0;
     if (device->profile_kernels != MagickFalse)
       properties=CL_QUEUE_PROFILING_ENABLE;
     queue=openCL_library->clCreateCommandQueue(device->context,
