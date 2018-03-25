@@ -20,10 +20,17 @@ using namespace std;
 MagickPPExport int Magick::operator == (const Magick::Color &left_,
   const Magick::Color &right_)
 {
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+  return((left_.isValid() == right_.isValid()) &&
+    (fabs(left_.quantumRed()-right_.quantumRed()) < MagickEpsilon) &&
+    (fabs(left_.quantumGreen()-right_.quantumGreen() < MagickEpsilon) &&
+    (fabs(left_.quantumBlue()-right_.quantumBlue() < MagickEpsilon));
+#else
   return((left_.isValid() == right_.isValid()) &&
     (left_.quantumRed() == right_.quantumRed()) &&
     (left_.quantumGreen() == right_.quantumGreen()) &&
     (left_.quantumBlue() == right_.quantumBlue()));
+#endif
 }
 
 MagickPPExport int Magick::operator != (const Magick::Color &left_,
