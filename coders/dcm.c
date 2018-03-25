@@ -3412,6 +3412,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Samples per pixel.
             */
             info.samples_per_pixel=(size_t) datum;
+            if ((info.samples_per_pixel == 0) || (info.samples_per_pixel > 4))
+              ThrowDCMException(CorruptImageError,"ImproperImageHeader");
             break;
           }
           case 0x0004:
@@ -3791,7 +3793,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
          if (stream_info->offsets != (ssize_t *) NULL)
             stream_info->offsets=(ssize_t *) RelinquishMagickMemory(
-              stream_info->offsets); 
+              stream_info->offsets);
           stream_info->offsets=(ssize_t *) AcquireQuantumMemory(
             stream_info->offset_count,sizeof(*stream_info->offsets));
           if (stream_info->offsets == (ssize_t *) NULL)
@@ -3908,7 +3910,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Compute pixel scaling table.
       */
       length=(size_t) (GetQuantumRange(info.depth)+1);
-      if (length > GetBlobSize(image)) 
+      if (length > GetBlobSize(image))
         ThrowDCMException(CorruptImageError,"InsufficientImageDataInFile");
       info.scale=(Quantum *) AcquireQuantumMemory(MagickMax(length,256),
         sizeof(*info.scale));
