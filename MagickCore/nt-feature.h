@@ -26,10 +26,6 @@
 extern "C" {
 #endif
 
-extern MagickExport void
-  *CropImageToHBITMAP(Image *,const RectangleInfo *,ExceptionInfo *),
-  *ImageToHBITMAP(Image *,ExceptionInfo *);
-
 #if !defined(XS_VERSION)
 
 extern MagickExport MagickBooleanType

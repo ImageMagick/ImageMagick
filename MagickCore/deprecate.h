@@ -32,6 +32,10 @@ typedef int
 extern MagickExport MagickBooleanType
   GetMagickSeekableStream(const MagickInfo *);
 
+extern MagickExport void
+  *CropImageToHBITMAP(Image *,const RectangleInfo *,ExceptionInfo *),
+  *ImageToHBITMAP(Image *,ExceptionInfo *);
+
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
