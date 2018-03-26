@@ -3350,7 +3350,7 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
     if (mask != (Image *) NULL)
       size+=WriteChannelSize(psd_info,image,-2);
     size+=WriteBlobString(image,image->endian == LSBEndian ? "MIB8" :"8BIM");
-    size+=WriteBlobString(image,CompositeOperatorToPSDBlendMode(image));
+    size+=WriteBlobString(image,CompositeOperatorToPSDBlendMode(next_image));
     property=GetImageArtifact(next_image,"psd:layer.opacity");
     if (property != (const char *) NULL)
       {
