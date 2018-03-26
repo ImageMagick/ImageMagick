@@ -5,14 +5,14 @@ pushd $SRC
 tar zxf bzip2-1.0.6.tar.gz
 popd
 pushd "$SRC/bzip2-1.0.6"
-make -j$(nproc)
+make -j$(nproc) CFLAGS="$CFLAGS -fPIC" CC="$CC"
 make install PREFIX="$WORK"
 popd
 
 # build zlib
 pushd "$SRC/zlib"
 ./configure --static --prefix="$WORK"
-make -j$(nproc)
+make -j$(nproc) CFLAGS="$CFLAGS -fPIC"
 make install
 popd
 
@@ -22,6 +22,23 @@ pushd "$SRC/libtiff"
 ./configure --enable-static --disable-shared --prefix="$WORK"
 make -j$(nproc)
 make install
+popd
+
+# Build libjpeg-turbo
+pushd "$SRC/libjpeg-turbo"
+cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DENABLE_STATIC=on -DENABLE_SHARED=off
+make -j$(nproc)
+make install
+popd
+
+# Build freetype2
+pushd "$SRC/freetype2"
+mkdir build
+pushd build
+cmake -DCMAKE_INSTALL_PREFIX=$WORK -DBUILD_SHARED_LIBS=false ..
+make -j$(nproc)
+make install
+popd
 popd
 
 # Build libde265
@@ -42,7 +59,7 @@ popd
 
 # Build openjpg
 pushd "$SRC/openjpeg"
-cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DBUILD_SHARED_LIBS:bool=off -DBUILD_CODEC:bool=off -DCMAKE_BUILD_TYPE=Release
+cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DBUILD_SHARED_LIBS=off -DBUILD_CODEC=off -DCMAKE_BUILD_TYPE=Release
 make -j$(nproc)
 make install
 popd
@@ -57,7 +74,7 @@ MAGICK_COMPILER=$CXX
 MAGICK_COMPILER_FLAGS=$CXXFLAGS
 MAGICK_INCLUDE="$WORK/include/ImageMagick-7"
 MAGICK_SRC="$SRC/imagemagick/Magick++/fuzz"
-MAGICK_LIBS="-lFuzzingEngine $WORK/lib/libMagick++-7.Q16HDRI.a $WORK/lib/libMagickWand-7.Q16HDRI.a $WORK/lib/libMagickCore-7.Q16HDRI.a $WORK/lib/libz.a $WORK/lib/libbz2.a $WORK/lib/libtiff.a $WORK/lib/libde265.a $WORK/lib/libopenjp2.a $WORK/lib/libwebp.a"
+MAGICK_LIBS="-lFuzzingEngine $WORK/lib/libMagick++-7.Q16HDRI.a $WORK/lib/libMagickWand-7.Q16HDRI.a $WORK/lib/libMagickCore-7.Q16HDRI.a $WORK/lib/libz.a $WORK/lib/libbz2.a $WORK/lib/libtiff.a $WORK/lib/libde265.a $WORK/lib/libopenjp2.a $WORK/lib/libwebp.a $WORK/lib/libturbojpeg.a $WORK/lib/libjpeg.a $WORK/lib/libfreetype.a"
 MAGICK_OUTPUT=$OUT
 MAGICK_FAST_BUILD=0
 
