@@ -686,8 +686,10 @@ static MagickBooleanType ParseAtom(Image *image, DataBuffer *db,
     case ATOM('i', 'd', 'a', 't'):
       {
         ctx->idatSize = atom_size - 8;
+        if (ctx->idat != (uint8_t *) NULL)
+          ctx->idat = (uint8_t *) RelinquishMagickMemory(ctx->idat);
         ctx->idat = (uint8_t *) AcquireMagickMemory(ctx->idatSize);
-        if (ctx->idat == NULL)
+        if (ctx->idat == (uint8_t *) NULL)
           ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
             image->filename);
 
