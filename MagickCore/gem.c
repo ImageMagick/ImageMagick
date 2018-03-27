@@ -1068,9 +1068,15 @@ MagickExport void ConvertRGBToHSL(const double red,const double green,
   const double blue,double *hue,double *saturation,double *lightness)
 {
   double
-    c,
+    b,
+    delta,
+    g,
+    h,
+    l,
     max,
-    min;
+    min,
+    r,
+    s;
 
   /*
     Convert RGB to HSL colorspace.
@@ -1078,34 +1084,30 @@ MagickExport void ConvertRGBToHSL(const double red,const double green,
   assert(hue != (double *) NULL);
   assert(saturation != (double *) NULL);
   assert(lightness != (double *) NULL);
-  max=MagickMax(QuantumScale*red,MagickMax(QuantumScale*green,
-    QuantumScale*blue));
-  min=MagickMin(QuantumScale*red,MagickMin(QuantumScale*green,
-    QuantumScale*blue));
-  c=max-min;
-  *lightness=(max+min)/2.0;
-  if (c < MagickEpsilon)
+  r=QuantumScale*red;
+  g=QuantumScale*green;
+  b=QuantumScale*blue;
+  max=MagickMax(r,MagickMax(g,b));
+  min=MagickMin(r,MagickMin(g,b));
+  h=0.0;
+  s=0.0;
+  l=(min+max)/2.0;
+  delta=max-min;
+  if (delta != 0.0)
     {
-      *hue=0.0;
-      *saturation=0.0;
-      return;
+      s=delta/((l <= 0.5) ? (min+max) : (2.0-max-min));
+      if (r == max)
+        h=(g == min ? 5.0+(max-b)/delta : 1.0-(max-g)/delta);
+      else
+        if (g == max)
+          h=(b == min ? 1.0+(max-r)/delta : 3.0-(max-b)/delta);
+        else
+          h=(r == min ? 3.0+(max-g)/delta : 5.0-(max-r)/delta);
+      h/=6.0;
     }
-  if (fabs(max-QuantumScale*red) < MagickEpsilon)
-    {
-      *hue=(QuantumScale*green-QuantumScale*blue)/c;
-      if ((QuantumScale*green) < (QuantumScale*blue))
-        *hue+=6.0;
-    }
-  else
-    if (fabs(max-QuantumScale*green) < MagickEpsilon)
-      *hue=2.0+(QuantumScale*blue-QuantumScale*red)/c;
-    else
-      *hue=4.0+(QuantumScale*red-QuantumScale*green)/c;
-  *hue*=60.0/360.0;
-  if (*lightness <= 0.5)
-    *saturation=c/(2.0*(*lightness));
-  else
-    *saturation=c/(2.0-2.0*(*lightness));
+  *hue=MagickMin(MagickMax(h,0.0),1.0);
+  *saturation=MagickMin(MagickMax(s,0.0),1.0);
+  *lightness=MagickMin(MagickMax(l,0.0),1.0);
 }
 
 /*
