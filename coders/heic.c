@@ -316,7 +316,7 @@ static MagickBooleanType ParseBox(Image *image, DataBuffer *db,
 
   for (i = 0; i < MAX_ATOMS_IN_BOX && DBGetSize(db) > 0; i++) {
     if (ParseAtom(image, db, ctx, exception) == MagickFalse)
-      break;
+      return MagickFalse;
   }
 
   return MagickTrue;
