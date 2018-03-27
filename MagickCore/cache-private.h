@@ -286,7 +286,7 @@ extern MagickPrivate void
 
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 extern MagickPrivate cl_mem
-  GetAuthenticOpenCLBuffer(const Image *,MagickCLDevice,ExceptionInfo *);
+  GetAuthenticOpenCLBuffer(Image *,MagickCLDevice,ExceptionInfo *);
 
 extern MagickPrivate void
   SyncAuthenticOpenCLBuffer(const Image *);
