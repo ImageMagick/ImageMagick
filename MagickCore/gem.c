@@ -1084,7 +1084,7 @@ MagickExport void ConvertRGBToHSL(const double red,const double green,
     QuantumScale*blue));
   c=max-min;
   *lightness=(max+min)/2.0;
-  if (c <= 0.0)
+  if (c < MagickEpsilon)
     {
       *hue=0.0;
       *saturation=0.0;
