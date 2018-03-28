@@ -49,8 +49,8 @@ extern "C" {
 #define MagickppLibMinInterface  @MAGICKPP_LIBRARY_CURRENT_MIN@
 #define MagickReleaseDate  "@PACKAGE_RELEASE_DATE@"
 #define MagickAuthoritativeLicense  \
-  "http://www.imagemagick.org/script/license.php"
-#define MagickAuthoritativeURL  "http://www.imagemagick.org"
+  "https://www.imagemagick.org/script/license.php"
+#define MagickAuthoritativeURL  "https://www.imagemagick.org"
 #define MagickHomeURL  "file://@DOCUMENTATION_PATH@/index.html"
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define MagickQuantumDepth  "Q8"

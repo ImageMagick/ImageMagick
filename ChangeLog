@@ -1,3 +1,7 @@
+2018-03-26  7.0.7-29  <quetzlzacatenango@image...>
+  * Fixed numerous use of uninitialized values, integer overflow, memory
+    exceeded, and timeouts (credit to OSS Fuzz).
+
 2018-03-24  7.0.7-28 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.7-28, GIT revision 23615:edd71782e:20180325.
 
