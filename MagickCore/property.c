@@ -3040,6 +3040,13 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
     }
     case 'p':
     {
+      if (LocaleCompare("page",property) == 0)
+        {
+          WarnNoImageReturn("\"%%[%s]\"",property);
+          (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
+            GetImageIndexInList(image)+1);
+          break;
+        }
 #if defined(MAGICKCORE_LCMS_DELEGATE)
       if (LocaleCompare("profile:icc",property) == 0 ||
           LocaleCompare("profile:icm",property) == 0)
@@ -3089,6 +3096,17 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
                 name=GetNextImageProfile(image);
               }
             }
+          break;
+        }
+      break;
+    }
+    case 'q':
+    {
+      if (LocaleCompare("quality",property) == 0)
+        {
+          WarnNoImageReturn("\"%%[%s]\"",property);
+          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+            image->quality);
           break;
         }
       break;
