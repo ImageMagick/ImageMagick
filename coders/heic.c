@@ -495,9 +495,9 @@ static MagickBooleanType ParseInfeAtom(Image *image, DataBuffer *db,
   /*
      item indicies starts from 1
   */
-  if (id > (ssize_t) ctx->idsCount) {
+  if ((id > (ssize_t) ctx->idsCount) ||
+      (ctx->itemInfo == (HEICItemInfo *) NULL))
     ThrowAndReturn("item id is incorrect");
-  }
 
   ctx->itemInfo[id].type = type;
 
@@ -533,9 +533,9 @@ static MagickBooleanType ParseIpmaAtom(Image *image, DataBuffer *db,
     /*
        item indicies starts from 1
        */
-    if (id > (ssize_t) ctx->idsCount) {
+    if ((id > (ssize_t) ctx->idsCount) ||
+        (ctx->itemInfo == (HEICItemInfo *) NULL))
       ThrowAndReturn("item id is incorrect");
-    }
 
     assoc_count = DBReadUChar(db);
 
@@ -594,9 +594,9 @@ static MagickBooleanType ParseIlocAtom(Image *image, DataBuffer *db,
     /*
        item indicies starts from 1
     */
-    if (id > (ssize_t) ctx->idsCount) {
+    if ((id > (ssize_t) ctx->idsCount) ||
+        (ctx->itemInfo == (HEICItemInfo *) NULL))
       ThrowAndReturn("item id is incorrect");
-    }
 
     item = &ctx->itemInfo[id];
 
