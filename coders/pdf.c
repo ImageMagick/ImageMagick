@@ -1454,7 +1454,6 @@ RestoreMSCWarning
       i=FormatLocaleString(xmp_profile,MagickPathExtent,XMPProfile,
         XMPProfileMagick,modify_date,create_date,timestamp,url,escape,url);
       escape=DestroyString(escape);
-      url=DestroyString(url);
       (void) FormatLocaleString(buffer,MagickPathExtent,"/Length %.20g\n",
         (double) i);
       (void) WriteBlobString(image,buffer);
@@ -2982,7 +2981,6 @@ RestoreMSCWarning
   escape=EscapeParenthesis(url);
   (void) FormatLocaleString(buffer,MagickPathExtent,"/Producer (%s)\n",escape);
   escape=DestroyString(escape);
-  url=DestroyString(url);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,">>\n");
   (void) WriteBlobString(image,"endobj\n");
