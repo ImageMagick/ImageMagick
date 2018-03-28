@@ -181,6 +181,8 @@ static MagickBooleanType IsWEBPImageLossless(const unsigned char *stream,
   /*
     Read simple header.
   */
+  if (length <= VP8_CHUNK_INDEX)
+    return(MagickFalse);
   if (stream[VP8_CHUNK_INDEX] != EXTENDED_HEADER)
     return(stream[VP8_CHUNK_INDEX] == LOSSLESS_FLAG ? MagickTrue : MagickFalse);
   /*
