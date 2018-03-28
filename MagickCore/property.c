@@ -2856,6 +2856,13 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             image->compose);
           break;
         }
+      if (LocaleCompare("compression",property) == 0)
+        {
+          WarnNoImageReturn("\"%%[%s]\"",property);
+          string=CommandOptionToMnemonic(MagickCompressOptions,(ssize_t)
+            image->compression);
+          break;
+        }
       if (LocaleCompare("copyright",property) == 0)
         {
           (void) CopyMagickString(value,GetMagickCopyright(),MagickPathExtent);
