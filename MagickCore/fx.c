@@ -1255,7 +1255,6 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
 {
   char
     *q,
-    subexpression[MagickPathExtent],
     symbol[MagickPathExtent];
 
   const char
@@ -1292,6 +1291,10 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
   point.y=(double) y;
   if (isalpha((int) ((unsigned char) *(p+1))) == 0)
     {
+      char
+        *subexpression;
+
+      subexpression=AcquireString(expression);
       if (strchr("suv",(int) *p) != (char *) NULL)
         {
           switch (*p)
@@ -1390,6 +1393,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
           if (*p == '.')
             p++;
         }
+      subexpression=DestroyString(subexpression);
     }
   length=GetImageListLength(fx_info->images);
   while (i < 0)
