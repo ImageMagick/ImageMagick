@@ -1163,7 +1163,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 tile_image->resolution.y=(double) pixmap.vertical_resolution;
                 tile_image->units=PixelsPerInchResolution;
                 if (tile_image->alpha_trait != UndefinedPixelTrait)
-                  (void) SetImageAlpha(image,OpaqueAlphaChannel,exception);
+                  (void) SetImageAlpha(tile_image,OpaqueAlphaChannel,exception);
               }
             if ((code != 0x9a) && (code != 0x9b))
               {
