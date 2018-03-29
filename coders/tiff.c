@@ -567,8 +567,6 @@ static MagickBooleanType DecodeLabImage(Image *image,ExceptionInfo *exception)
     register ssize_t
       x;
 
-    if (status == MagickFalse)
-      continue;
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       {
@@ -592,7 +590,10 @@ static MagickBooleanType DecodeLabImage(Image *image,ExceptionInfo *exception)
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
-      status=MagickFalse;
+      {
+        status=MagickFalse;
+        break;
+      }
   }
   image_view=DestroyCacheView(image_view);
   return(status);
