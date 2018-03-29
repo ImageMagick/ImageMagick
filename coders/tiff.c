@@ -1728,9 +1728,9 @@ RestoreMSCWarning
         (void) FormatLocaleString(value,MagickPathExtent,"%u",
           (unsigned int) rows_per_strip);
         (void) SetImageProperty(image,"tiff:rows-per-strip",value,exception);
+        if (rows_per_strip > (image->columns*image->rows))
+          ThrowTIFFException(CorruptImageError,"ImproperImageHeader");
       }
-    if (rows_per_strip > (image->columns*image->rows))
-      ThrowTIFFException(CorruptImageError,"ImproperImageHeader");
     if ((samples_per_pixel >= 3) && (interlace == PLANARCONFIG_CONTIG))
       if ((image->alpha_trait == UndefinedPixelTrait) ||
           (samples_per_pixel >= 4))
