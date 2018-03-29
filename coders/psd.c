@@ -1609,9 +1609,9 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
       */
       (void) ReadBlobLong(image);
       count=ReadBlob(image,4,(unsigned char *) type);
-      ReversePSDString(image,type,4);
+      ReversePSDString(image,type,count);
       status=MagickFalse;
-      if ((count == 0) || (LocaleNCompare(type,"8BIM",4) != 0))
+      if ((count != 4) || (LocaleNCompare(type,"8BIM",4) != 0))
         return(MagickTrue);
       else
         {
