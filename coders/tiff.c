@@ -573,7 +573,7 @@ static MagickBooleanType DecodeLabImage(Image *image,ExceptionInfo *exception)
     if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
-        continue;
+        break;
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
