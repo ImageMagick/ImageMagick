@@ -786,6 +786,8 @@ static MagickBooleanType decodeGrid(HEICImageContext *ctx,
   unsigned int
     i, flags;
 
+  if (ctx->itemInfo == (HEICItemInfo *) NULL)
+    ThrowAndReturn("no atoms defined");
   for (i = 1; i <= (ssize_t) ctx->idsCount; i++) {
     HEICItemInfo
       *info = &ctx->itemInfo[i];
