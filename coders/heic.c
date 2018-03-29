@@ -452,7 +452,7 @@ static MagickBooleanType ParseIinfAtom(Image *image, DataBuffer *db,
   ctx->idsCount = count;
   if (ctx->itemInfo != (HEICItemInfo *) NULL)
     ctx->itemInfo=(HEICItemInfo *) RelinquishMagickMemory(ctx->itemInfo);
-  if (DBGetSize(db) < (8*count))
+  if ((8.0*count) > (double)DBGetSize(db))
     ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
       image->filename);
   ctx->itemInfo = (HEICItemInfo *)AcquireMagickMemory(sizeof(HEICItemInfo)*(count+1));
@@ -539,7 +539,7 @@ static MagickBooleanType ParseIpmaAtom(Image *image, DataBuffer *db,
 
     assoc_count = DBReadUChar(db);
 
-    if (assoc_count > MAX_ASSOCS_COUNT) {
+    if (assoc_count >= MAX_ASSOCS_COUNT) {
       ThrowAndReturn("too many associations");
     }
 
