@@ -1720,7 +1720,8 @@ RestoreMSCWarning
           }
       }
     method=ReadGenericMethod;
-    if (TIFFGetFieldDefaulted(tiff,TIFFTAG_ROWSPERSTRIP,&rows_per_strip) == 1)
+    rows_per_strip=(uint32) image->rows;
+    if (TIFFGetField(tiff,TIFFTAG_ROWSPERSTRIP,&rows_per_strip) == 1)
       {
         char
           value[MagickPathExtent];
@@ -1730,7 +1731,7 @@ RestoreMSCWarning
           (unsigned int) rows_per_strip);
         (void) SetImageProperty(image,"tiff:rows-per-strip",value,exception);
       }
-    if (rows_per_strip > (image->columns*image->rows))
+    if (rows_per_strip > (uint32) image->rows)
       ThrowTIFFException(CorruptImageError,"ImproperImageHeader");
     if ((samples_per_pixel >= 3) && (interlace == PLANARCONFIG_CONTIG))
       if ((image->alpha_trait == UndefinedPixelTrait) ||
