@@ -1720,8 +1720,7 @@ RestoreMSCWarning
           }
       }
     method=ReadGenericMethod;
-    rows_per_strip=image->columns*image->rows;
-    if (TIFFGetField(tiff,TIFFTAG_ROWSPERSTRIP,&rows_per_strip) == 1)
+    if (TIFFGetFieldDefaulted(tiff,TIFFTAG_ROWSPERSTRIP,&rows_per_strip) == 1)
       {
         char
           value[MagickPathExtent];
