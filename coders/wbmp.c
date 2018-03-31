@@ -160,7 +160,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   header=0;
-  if (ReadBlob(image,2,(unsigned char *) &header) == 0)
+  if (ReadBlob(image,2,(unsigned char *) &header) != 2)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if (header != 0)
     ThrowReaderException(CoderError,"OnlyLevelZerofilesSupported");
