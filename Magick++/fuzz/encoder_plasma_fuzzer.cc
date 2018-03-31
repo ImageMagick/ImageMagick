@@ -3,6 +3,8 @@
 #include <Magick++/Blob.h>
 #include <Magick++/Image.h>
 
+#define FUZZ_MAX_SIZE 128
+
 #include "utils.cc"
 #include "encoder_utils.cc"
 
