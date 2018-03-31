@@ -992,6 +992,9 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
   const MagickInfo
     *magick_info;
 
+  EncodeImageHandler
+    *encoder;
+
   ExceptionInfo
     *sans_exception;
 
@@ -1110,15 +1113,15 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
           (void) CloseBlob(image);
         }
     }
-  if ((magick_info != (const MagickInfo *) NULL) &&
-      (GetImageEncoder(magick_info) != (EncodeImageHandler *) NULL))
+  encoder=GetImageEncoder(magick_info);
+  if (encoder != (EncodeImageHandler *) NULL)
     {
       /*
         Call appropriate image writer based on image type.
       */
       if (GetMagickEncoderThreadSupport(magick_info) == MagickFalse)
         LockSemaphoreInfo(magick_info->semaphore);
-      status=GetImageEncoder(magick_info)(write_info,image,exception);
+      status=encoder(write_info,image,exception);
       if (GetMagickEncoderThreadSupport(magick_info) == MagickFalse)
         UnlockSemaphoreInfo(magick_info->semaphore);
     }
@@ -1151,8 +1154,8 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
                 MagickPathExtent);
               magick_info=GetMagickInfo(write_info->magick,exception);
             }
-          if ((magick_info == (const MagickInfo *) NULL) ||
-              (GetImageEncoder(magick_info) == (EncodeImageHandler *) NULL))
+          encoder=GetImageEncoder(magick_info);
+          if (encoder == (EncodeImageHandler *) NULL)
             {
               char
                 extension[MagickPathExtent];
@@ -1164,30 +1167,25 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
                 magick_info=GetMagickInfo(image->magick,exception);
               (void) CopyMagickString(image->filename,filename,
                 MagickPathExtent);
+              encoder=GetImageEncoder(magick_info);
             }
-          if ((magick_info == (const MagickInfo *) NULL) ||
-              (GetImageEncoder(magick_info) == (EncodeImageHandler *) NULL))
+          if (encoder == (EncodeImageHandler *) NULL)
             {
               magick_info=GetMagickInfo(image->magick,exception);
-              if ((magick_info == (const MagickInfo *) NULL) ||
-                  (GetImageEncoder(magick_info) == (EncodeImageHandler *) NULL))
+              encoder=GetImageEncoder(magick_info);
+              if (encoder == (EncodeImageHandler *) NULL)
                 (void) ThrowMagickException(exception,GetMagickModule(),
                   MissingDelegateError,"NoEncodeDelegateForThisImageFormat",
                   "`%s'",write_info->magick);
-              else
-                (void) ThrowMagickException(exception,GetMagickModule(),
-                  MissingDelegateWarning,"NoEncodeDelegateForThisImageFormat",
-                  "`%s'",write_info->magick);
             }
-          if ((magick_info != (const MagickInfo *) NULL) &&
-              (GetImageEncoder(magick_info) != (EncodeImageHandler *) NULL))
+          if (encoder != (EncodeImageHandler *) NULL)
             {
               /*
                 Call appropriate image writer based on image type.
               */
               if (GetMagickEncoderThreadSupport(magick_info) == MagickFalse)
                 LockSemaphoreInfo(magick_info->semaphore);
-              status=GetImageEncoder(magick_info)(write_info,image,exception);
+              status=encoder(write_info,image,exception);
               if (GetMagickEncoderThreadSupport(magick_info) == MagickFalse)
                 UnlockSemaphoreInfo(magick_info->semaphore);
             }
