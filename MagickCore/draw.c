@@ -6021,8 +6021,12 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
       default:
       {
         if (isalpha((int) ((unsigned char) attribute)) != 0)
-          (void) FormatLocaleFile(stderr,"attribute not recognized: %c\n",
-            attribute);
+          {
+            (void) ThrowMagickException(exception,GetMagickModule(),DrawError,
+              "attribute not recognized","`%c'",attribute);
+            primitive_info->coordinates=0;
+            return(0);
+          }
         break;
       }
     }
