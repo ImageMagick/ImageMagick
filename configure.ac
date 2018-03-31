@@ -782,6 +782,12 @@ AC_ARG_ENABLE(legacy-support,
               [with_legacy_support='no'])
 AM_CONDITIONAL(LEGACY_SUPPORT, test "$with_legacy_support" != 'no')
 
+# Enable building command line utilities (default yes)
+AC_ARG_WITH(utilities,
+            [  --with-utilities enable building command-line utilities (default yes)],
+            [with_utilities=$withval], [with_utilities='yes'])
+AM_CONDITIONAL(WITH_UTILITIES, test "$with_utilities" = 'yes')
+
 # Number of bits in a Quantum
 AC_ARG_WITH([quantum-depth],
     [AC_HELP_STRING([--with-quantum-depth=DEPTH],
@@ -4006,6 +4012,7 @@ matches your expectations.
   ------------------------------------------------------------------------------
   Shared libraries  --enable-shared=$enable_shared		$libtool_build_shared_libs
   Static libraries  --enable-static=$enable_static		$libtool_build_static_libs
+  Build utilities   --with-utilities=$with_utilities        $with_utilities
   Module support    --with-modules=$build_modules		$build_modules
   GNU ld            --with-gnu-ld=$with_gnu_ld		$lt_cv_prog_gnu_ld
   Quantum depth     --with-quantum-depth=$with_quantum_depth	$with_quantum_depth
