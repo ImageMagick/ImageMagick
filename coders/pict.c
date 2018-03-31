@@ -1210,6 +1210,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                     }
                   }
               }
+            if (EOFBlob(image) != MagickFalse)
+              break;
             if (ReadRectangle(image,&source) == MagickFalse)
               ThrowPICTException(CorruptImageError,"ImproperImageHeader");
             if (ReadRectangle(image,&destination) == MagickFalse)
