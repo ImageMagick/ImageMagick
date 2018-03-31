@@ -763,7 +763,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
     count=ReadBlob(image,1,&viff_info.identifier);
-    if ((count != 0) && (viff_info.identifier == 0xab))
+    if ((count == 1) && (viff_info.identifier == 0xab))
       {
         /*
           Allocate next image structure.
