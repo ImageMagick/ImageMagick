@@ -1813,7 +1813,7 @@ filters_analyze_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(filters_analyze_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_filters_analyze_la_rpath = -rpath $(filtersdir)
-am__EXEEXT_1 = utilities/magick$(EXEEXT)
+@WITH_UTILITIES_TRUE@am__EXEEXT_1 = utilities/magick$(EXEEXT)
 am__EXEEXT_2 = tests/validate$(EXEEXT) tests/drawtest$(EXEEXT) \
 	tests/wandtest$(EXEEXT)
 am__EXEEXT_3 = Magick++/demo/analyze$(EXEEXT) \
@@ -1955,9 +1955,12 @@ tests_wandtest_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(tests_wandtest_LDFLAGS) $(LDFLAGS) -o \
 	$@
-am_utilities_magick_OBJECTS = utilities/magick.$(OBJEXT)
+am__utilities_magick_SOURCES_DIST = utilities/magick.c
+@WITH_UTILITIES_TRUE@am_utilities_magick_OBJECTS =  \
+@WITH_UTILITIES_TRUE@	utilities/magick.$(OBJEXT)
 utilities_magick_OBJECTS = $(am_utilities_magick_OBJECTS)
-utilities_magick_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+@WITH_UTILITIES_TRUE@utilities_magick_DEPENDENCIES =  \
+@WITH_UTILITIES_TRUE@	$(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 utilities_magick_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(utilities_magick_LDFLAGS) $(LDFLAGS) \
@@ -2190,7 +2193,7 @@ DIST_SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUF
 	$(Magick___tests_readWriteBlob_SOURCES) \
 	$(Magick___tests_readWriteImages_SOURCES) \
 	$(tests_drawtest_SOURCES) $(tests_validate_SOURCES) \
-	$(tests_wandtest_SOURCES) $(utilities_magick_SOURCES)
+	$(tests_wandtest_SOURCES) $(am__utilities_magick_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -4969,56 +4972,62 @@ filters_analyze_la_SOURCES = filters/analyze.c
 filters_analyze_la_CPPFLAGS = $(MAGICK_FILTER_CPPFLAGS)
 filters_analyze_la_LDFLAGS = $(MODULECOMMONFLAGS)
 filters_analyze_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
-UTILITIES_PGMS = \
-	utilities/magick 
+@WITH_UTILITIES_FALSE@UTILITIES_PGMS = 
+@WITH_UTILITIES_TRUE@UTILITIES_PGMS = \
+@WITH_UTILITIES_TRUE@	utilities/magick
 
-UTILITIES_XFAIL_TESTS = \
-  $(UTILITIES_TTF_XFAIL_TESTS) \
-  $(UTILITIES_XML_XFAIL_TESTS)
+@WITH_UTILITIES_TRUE@UTILITIES_XFAIL_TESTS = \
+@WITH_UTILITIES_TRUE@  $(UTILITIES_TTF_XFAIL_TESTS) \
+@WITH_UTILITIES_TRUE@  $(UTILITIES_XML_XFAIL_TESTS)
 
-utilities_magick_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_magick_LDFLAGS = $(LDFLAGS)
-utilities_magick_SOURCES = utilities/magick.c
-UTILITIES_MANS = \
-	utilities/ImageMagick.1 \
-	utilities/animate.1 \
-	utilities/compare.1 \
-	utilities/composite.1 \
-	utilities/conjure.1 \
-	utilities/convert.1 \
-	utilities/display.1 \
-	utilities/identify.1 \
-	utilities/import.1 \
-	utilities/magick.1 \
-	utilities/magick-script.1 \
-	utilities/mogrify.1 \
-	utilities/montage.1 \
-	utilities/stream.1
+@WITH_UTILITIES_TRUE@utilities_magick_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+@WITH_UTILITIES_TRUE@utilities_magick_LDFLAGS = $(LDFLAGS)
+@WITH_UTILITIES_TRUE@utilities_magick_SOURCES = utilities/magick.c
+@WITH_UTILITIES_FALSE@UTILITIES_MANS = 
+@WITH_UTILITIES_TRUE@UTILITIES_MANS = \
+@WITH_UTILITIES_TRUE@	utilities/ImageMagick.1 \
+@WITH_UTILITIES_TRUE@	utilities/animate.1 \
+@WITH_UTILITIES_TRUE@	utilities/compare.1 \
+@WITH_UTILITIES_TRUE@	utilities/composite.1 \
+@WITH_UTILITIES_TRUE@	utilities/conjure.1 \
+@WITH_UTILITIES_TRUE@	utilities/convert.1 \
+@WITH_UTILITIES_TRUE@	utilities/display.1 \
+@WITH_UTILITIES_TRUE@	utilities/identify.1 \
+@WITH_UTILITIES_TRUE@	utilities/import.1 \
+@WITH_UTILITIES_TRUE@	utilities/magick.1 \
+@WITH_UTILITIES_TRUE@	utilities/magick-script.1 \
+@WITH_UTILITIES_TRUE@	utilities/mogrify.1 \
+@WITH_UTILITIES_TRUE@	utilities/montage.1 \
+@WITH_UTILITIES_TRUE@	utilities/stream.1
 
-UTILITIES_CONFIGURE = \
-	utilities/ImageMagick.1.in \
-	utilities/animate.1.in \
-	utilities/compare.1.in \
-	utilities/composite.1.in \
-	utilities/conjure.1.in \
-	utilities/convert.1.in \
-	utilities/display.1.in \
-	utilities/identify.1.in \
-	utilities/import.1.in \
-	utilities/magick.1.in \
-	utilities/magick-script.1.in \
-	utilities/mogrify.1.in \
-	utilities/montage.1.in \
-	utilities/stream.1.in
+@WITH_UTILITIES_FALSE@UTILITIES_CONFIGURE = 
+@WITH_UTILITIES_TRUE@UTILITIES_CONFIGURE = \
+@WITH_UTILITIES_TRUE@	utilities/ImageMagick.1.in \
+@WITH_UTILITIES_TRUE@	utilities/animate.1.in \
+@WITH_UTILITIES_TRUE@	utilities/compare.1.in \
+@WITH_UTILITIES_TRUE@	utilities/composite.1.in \
+@WITH_UTILITIES_TRUE@	utilities/conjure.1.in \
+@WITH_UTILITIES_TRUE@	utilities/convert.1.in \
+@WITH_UTILITIES_TRUE@	utilities/display.1.in \
+@WITH_UTILITIES_TRUE@	utilities/identify.1.in \
+@WITH_UTILITIES_TRUE@	utilities/import.1.in \
+@WITH_UTILITIES_TRUE@	utilities/magick.1.in \
+@WITH_UTILITIES_TRUE@	utilities/magick-script.1.in \
+@WITH_UTILITIES_TRUE@	utilities/mogrify.1.in \
+@WITH_UTILITIES_TRUE@	utilities/montage.1.in \
+@WITH_UTILITIES_TRUE@	utilities/stream.1.in
 
-UTILITIES_EXTRA_DIST = \
-	$(UTILITIES_MANS) \
-	$(UTILITIES_TESTS) 
+@WITH_UTILITIES_FALSE@UTILITIES_EXTRA_DIST = 
+@WITH_UTILITIES_TRUE@UTILITIES_EXTRA_DIST = \
+@WITH_UTILITIES_TRUE@	$(UTILITIES_MANS) \
+@WITH_UTILITIES_TRUE@	$(UTILITIES_TESTS)
 
-UTILITIES_CLEANFILES = 
+@WITH_UTILITIES_FALSE@UTILITIES_CLEANFILES = 
+@WITH_UTILITIES_TRUE@UTILITIES_CLEANFILES = 
+@WITH_UTILITIES_FALSE@MAGICK_UTILITIES = 
 
 # Link these utilities to 'magick'.
-MAGICK_UTILITIES = animate compare composite conjure convert display identify import magick-script mogrify montage stream
+@WITH_UTILITIES_TRUE@MAGICK_UTILITIES = animate compare composite conjure convert display identify import magick-script mogrify montage stream
 UTILITIES_INSTALL_EXEC_LOCAL_TARGETS = install-exec-local-utilities
 UTILITIES_UNINSTALL_LOCAL_TARGETS = uninstall-local-utilities
 

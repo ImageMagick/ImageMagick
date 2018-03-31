@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2018 Free Software Foundation, Inc.
+# Copyright (C) 2011-2017 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # As a special exception to the GNU General Public License, if you
 # distribute this file as part of a program that contains a
@@ -132,7 +132,7 @@ fi
     # last `echo $?' statement), and would thus die reporting an internal
     # error.
     # For more information, see the Autoconf manual and the threads:
-    # <https://lists.gnu.org/archive/html/bug-autoconf/2011-09/msg00004.html>
+    # <http://lists.gnu.org/archive/html/bug-autoconf/2011-09/msg00004.html>
     # <http://mail.opensolaris.org/pipermail/ksh93-integration-discuss/2009-February/004121.html>
     trap : 1 3 2 13 15
     if test $merge -gt 0; then

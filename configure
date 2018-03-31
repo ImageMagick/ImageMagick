@@ -925,6 +925,8 @@ PERL_MAKE_OPTIONS
 MAGICK_LT_RELEASE_OPTS
 MAGICK_ABI_SUFFIX
 QUANTUM_DEPTH
+WITH_UTILITIES_FALSE
+WITH_UTILITIES_TRUE
 LEGACY_SUPPORT_FALSE
 LEGACY_SUPPORT_TRUE
 MAINT
@@ -1188,6 +1190,7 @@ enable_gprof
 enable_gcov
 with_method_prefix
 enable_legacy_support
+with_utilities
 with_quantum_depth
 with_cache
 with_frozenpaths
@@ -1990,6 +1993,7 @@ Optional Packages:
   --with-modules          enable building dynamically loadable modules
   --with-method-prefix=PREFIX
                           prefix MagickCore API methods
+  --with-utilities enable building command-line utilities (default yes)
   --with-quantum-depth=DEPTH
                           number of bits in a pixel quantum (default 16)
   --with-cache=THRESHOLD  set pixel cache threshhold in MB (default available
@@ -4550,7 +4554,7 @@ MAGICK_PATCHLEVEL_VERSION=29
 
 MAGICK_VERSION=7.0.7-29
 
-MAGICK_GIT_REVISION=23621:c2b89f224:20180325
+MAGICK_GIT_REVISION=23705:f77d92bcf:20180331
 
 
 # Substitute library versioning
@@ -23021,6 +23025,24 @@ else
 fi
 
 
+# Enable building command line utilities (default yes)
+
+# Check whether --with-utilities was given.
+if test "${with_utilities+set}" = set; then :
+  withval=$with_utilities; with_utilities=$withval
+else
+  with_utilities='yes'
+fi
+
+ if test "$with_utilities" = 'yes'; then
+  WITH_UTILITIES_TRUE=
+  WITH_UTILITIES_FALSE='#'
+else
+  WITH_UTILITIES_TRUE='#'
+  WITH_UTILITIES_FALSE=
+fi
+
+
 # Number of bits in a Quantum
 
 # Check whether --with-quantum-depth was given.
@@ -37111,6 +37133,10 @@ if test -z "${LEGACY_SUPPORT_TRUE}" && test -z "${LEGACY_SUPPORT_FALSE}"; then
   as_fn_error $? "conditional \"LEGACY_SUPPORT\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
+if test -z "${WITH_UTILITIES_TRUE}" && test -z "${WITH_UTILITIES_FALSE}"; then
+  as_fn_error $? "conditional \"WITH_UTILITIES\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
 
 if test -z "${am__fastdepCXX_TRUE}" && test -z "${am__fastdepCXX_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCXX\" was never defined.
@@ -39874,6 +39900,7 @@ matches your expectations.
   ------------------------------------------------------------------------------
   Shared libraries  --enable-shared=$enable_shared		$libtool_build_shared_libs
   Static libraries  --enable-static=$enable_static		$libtool_build_static_libs
+  Build utilities   --with-utilities=$with_utilities        $with_utilities
   Module support    --with-modules=$build_modules		$build_modules
   GNU ld            --with-gnu-ld=$with_gnu_ld		$lt_cv_prog_gnu_ld
   Quantum depth     --with-quantum-depth=$with_quantum_depth	$with_quantum_depth
@@ -39964,6 +39991,7 @@ matches your expectations.
   ------------------------------------------------------------------------------
   Shared libraries  --enable-shared=$enable_shared		$libtool_build_shared_libs
   Static libraries  --enable-static=$enable_static		$libtool_build_static_libs
+  Build utilities   --with-utilities=$with_utilities        $with_utilities
   Module support    --with-modules=$build_modules		$build_modules
   GNU ld            --with-gnu-ld=$with_gnu_ld		$lt_cv_prog_gnu_ld
   Quantum depth     --with-quantum-depth=$with_quantum_depth	$with_quantum_depth
