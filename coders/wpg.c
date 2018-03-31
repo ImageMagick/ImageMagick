@@ -1413,7 +1413,6 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                       ldblk+1,sizeof(*BImgBuff));
                     if (BImgBuff == (unsigned char *) NULL)
                       goto NoMemory;
-
                     for (i=0; i< (ssize_t) image->rows; i++)
                     {
                       ssize_t
@@ -1423,15 +1422,11 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                       if (count != ldblk)
                         break;
                       if (InsertRow(image,BImgBuff,i,bpp,exception) == MagickFalse)
-                        {
-                          if(BImgBuff)
-                            BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
-                          goto DecompressionFailed;
-                        }
+                        break;
                     }
-
-                    if(BImgBuff)
-                      BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
+                    BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
+                    if (i < (ssize_t) image->rows)
+                      goto DecompressionFailed;
                     break;
                   }
                 case 1:    /*RLE for WPG2 */
