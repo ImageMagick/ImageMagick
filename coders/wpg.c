@@ -807,7 +807,8 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
 
     /* Read nested image */
   /*FormatString(clone_info->filename,"%s:%s",magic_info->name,postscript_file);*/
-  FormatLocaleString(clone_info->filename,MagickPathExtent,"%s",postscript_file);
+  FormatLocaleString(clone_info->filename,MagickPathExtent,"%.1024s:%.1024s",
+    clone_info->magick,postscript_file);
   image2=ReadImage(clone_info,exception);
 
   if (!image2)
