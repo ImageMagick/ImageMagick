@@ -14,8 +14,9 @@
 #
 #  Makefile for building ImageMagick utilities.
 
+if WITH_UTILITIES
 UTILITIES_PGMS = \
-	utilities/magick 
+	utilities/magick
 
 UTILITIES_XFAIL_TESTS = \
   $(UTILITIES_TTF_XFAIL_TESTS) \
@@ -60,12 +61,21 @@ UTILITIES_CONFIGURE = \
 
 UTILITIES_EXTRA_DIST = \
 	$(UTILITIES_MANS) \
-	$(UTILITIES_TESTS) 
+	$(UTILITIES_TESTS)
 
-UTILITIES_CLEANFILES = 
+UTILITIES_CLEANFILES =
 
 # Link these utilities to 'magick'.
 MAGICK_UTILITIES=animate compare composite conjure convert display identify import magick-script mogrify montage stream
+
+else
+UTILITIES_PGMS =
+UTILITIES_MANS =
+UTILITIES_CONFIGURE =
+UTILITIES_EXTRA_DIST =
+UTILITIES_CLEANFILES =
+MAGICK_UTILITIES=
+endif
 
 UTILITIES_INSTALL_EXEC_LOCAL_TARGETS=install-exec-local-utilities
 install-exec-local-utilities:
