@@ -385,6 +385,7 @@ static MagickBooleanType IsPCD(const unsigned char *magick,const size_t length)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
 static Image *OverviewImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
@@ -470,6 +471,19 @@ static void Upsample(const size_t width,const size_t height,
 
 static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+#define ThrowPCDException(exception,message) \
+{ \
+  if (header != (unsigned char *) NULL) \
+    header=(unsigned char *) RelinquishMagickMemory(header); \
+  if (luma != (unsigned char *) NULL) \
+    luma=(unsigned char *) RelinquishMagickMemory(luma); \
+  if (chroma2 != (unsigned char *) NULL) \
+    chroma2=(unsigned char *) RelinquishMagickMemory(chroma2); \
+  if (chroma1 != (unsigned char *) NULL) \
+    chroma1=(unsigned char *) RelinquishMagickMemory(chroma1); \
+  ThrowReaderException((exception),(message)); \
+}
+
   Image
     *image;
 
@@ -537,25 +551,21 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   header=(unsigned char *) AcquireQuantumMemory(0x800,3UL*sizeof(*header));
   if (header == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  chroma1=(unsigned char *) NULL;
+  chroma2=(unsigned char *) NULL;
+  luma=(unsigned char *) NULL;
   count=ReadBlob(image,3*0x800,header);
   if (count != (3*0x800))
-    {
-      header=(unsigned char *) RelinquishMagickMemory(header);
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    }
+    ThrowPCDException(CorruptImageError,"ImproperImageHeader");
   overview=LocaleNCompare((char *) header,"PCD_OPA",7) == 0;
   if ((LocaleNCompare((char *) header+0x800,"PCD",3) != 0) && (overview == 0))
-    {
-      header=(unsigned char *) RelinquishMagickMemory(header);
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    }
+    ThrowPCDException(CorruptImageError,"ImproperImageHeader");
   rotate=header[0x0e02] & 0x03;
-  number_images=(header[10] << 8) | header[11];
+  number_images=((header[10] << 8) | header[11]) & 0xffff;
   header=(unsigned char *) RelinquishMagickMemory(header);
-  if (number_images > 65535)
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  if (AcquireMagickResource(ListLengthResource,number_images) == MagickFalse)
-    ThrowReaderException(ResourceLimitError,"ListLengthExceedsLimit");
+  if ((overview != 0) &&
+      (AcquireMagickResource(ListLengthResource,number_images) == MagickFalse))
+    ThrowPCDException(ResourceLimitError,"ListLengthExceedsLimit");
   /*
     Determine resolution by scene specification.
   */
@@ -606,7 +616,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   number_pixels=(MagickSizeType) image->columns*image->rows;
   if (number_pixels != (size_t) number_pixels)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    ThrowPCDException(ResourceLimitError,"MemoryAllocationFailed");
   chroma1=(unsigned char *) AcquireQuantumMemory(image->columns+1UL,image->rows*
     10*sizeof(*chroma1));
   chroma2=(unsigned char *) AcquireQuantumMemory(image->columns+1UL,image->rows*
@@ -615,15 +625,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     10*sizeof(*luma));
   if ((chroma1 == (unsigned char *) NULL) ||
       (chroma2 == (unsigned char *) NULL) || (luma == (unsigned char *) NULL))
-    {
-      if (chroma1 != (unsigned char *) NULL)
-        chroma1=(unsigned char *) RelinquishMagickMemory(chroma1);
-      if (chroma2 != (unsigned char *) NULL)
-        chroma2=(unsigned char *) RelinquishMagickMemory(chroma2);
-      if (luma != (unsigned char *) NULL)
-        luma=(unsigned char *) RelinquishMagickMemory(luma);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    }
+    ThrowPCDException(ResourceLimitError,"MemoryAllocationFailed");
   (void) memset(chroma1,0,(image->columns+1UL)*image->rows*
     10*sizeof(*chroma1));
   (void) memset(chroma2,0,(image->columns+1UL)*image->rows*
@@ -643,12 +645,10 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (scene <= 1)
         offset=1;
   for (i=0; i < (ssize_t) (offset*0x800); i++)
-    (void) ReadBlobByte(image);
+    if (ReadBlobByte(image) == EOF)
+      ThrowPCDException(CorruptImageError,"UnexpectedEndOfFile");
   if (overview != 0)
     {
-      Image
-        *overview_image;
-
       MagickProgressMonitor
         progress_monitor;
 
@@ -683,6 +683,8 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           c1+=image->columns;
           count=ReadBlob(image,width >> 1,c2);
           c2+=image->columns;
+          if (EOFBlob(image) != MagickFalse)
+            ThrowPCDException(CorruptImageError,"UnexpectedEndOfFile");
         }
         Upsample(image->columns >> 1,image->rows >> 1,image->columns,chroma1);
         Upsample(image->columns >> 1,image->rows >> 1,image->columns,chroma2);
@@ -738,8 +740,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       chroma1=(unsigned char *) RelinquishMagickMemory(chroma1);
       luma=(unsigned char *) RelinquishMagickMemory(luma);
       image=GetFirstImageInList(image);
-      overview_image=OverviewImage(image_info,image,exception);
-      return(overview_image);
+      return(OverviewImage(image_info,image,exception));
     }
   /*
     Read interleaved image.
@@ -757,6 +758,8 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     c1+=image->columns;
     count=ReadBlob(image,width >> 1,c2);
     c2+=image->columns;
+    if (EOFBlob(image) != MagickFalse)
+      ThrowPCDException(CorruptImageError,"UnexpectedEndOfFile");
   }
   if (scene >= 4)
     {
