@@ -911,7 +911,9 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
       break;
     }
   }
-
+  if (EOFBlob(image) != MagickFalse)
+    ThrowBinaryException(CorruptImageError,"UnexpectedEndOfFile",
+      image->filename);
   if (foundPropEnd == MagickFalse)
     return(MagickFalse);
   /* allocate the image for this layer */
