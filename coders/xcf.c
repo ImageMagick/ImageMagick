@@ -643,8 +643,8 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
     saved_pos=TellBlob(image);
     /* read in the offset of the next tile so we can calculate the amount
        of data needed for this tile*/
-    offset2=(MagickOffsetType)ReadBlobMSBLong(image);
-    if ((MagickSizeType) offset2 > GetBlobSize(image))
+    offset2=(MagickOffsetType) ReadBlobMSBLong(image);
+    if ((MagickSizeType) offset2 >= inDocInfo->file_size)
       ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
         image->filename);
     /* if the offset is 0 then we need to read in the maximum possible
@@ -748,6 +748,9 @@ static MagickBooleanType load_hierarchy(Image *image,XCFDocInfo *inDocInfo,
    *  as the number of levels found in the file.
    */
   offset=(MagickOffsetType) ReadBlobMSBLong(image);  /* top level */
+  if ((MagickSizeType) offset >= GetBlobSize(image))
+    ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
+      image->filename);
 
   /* discard offsets for layers below first, if any.
    */
