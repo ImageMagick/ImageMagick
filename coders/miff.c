@@ -1647,7 +1647,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               }
           }
         code=inflateEnd(&zip_info);
-        if (code != LZMA_OK)
+        if (code != Z_OK)
           status=MagickFalse;
         break;
       }
