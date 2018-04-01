@@ -757,11 +757,11 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      *q++=(uint32_t) (image->alpha_trait != UndefinedPixelTrait ?
+      *q++=(uint32_t) (image->alpha_trait != UndefinedPixelTrait ? (uint32_t)
         ScaleQuantumToChar(GetPixelAlpha(image,p)) << 24 : 0xff000000) |
-        (ScaleQuantumToChar(GetPixelRed(image,p)) << 16) |
-        (ScaleQuantumToChar(GetPixelGreen(image,p)) << 8) |
-        (ScaleQuantumToChar(GetPixelBlue(image,p)));
+        ((uint32_t) ScaleQuantumToChar(GetPixelRed(image,p)) << 16) |
+        ((uint32_t) ScaleQuantumToChar(GetPixelGreen(image,p)) << 8) |
+        ((uint32_t) ScaleQuantumToChar(GetPixelBlue(image,p)));
       p+=GetPixelChannels(image);
     }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
