@@ -430,12 +430,17 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       image->compression=NoCompression;
       count=(ssize_t) ReadBlob(image,packets*image->rows,pixels);
+      if (count != (packets*image->rows))
+        {
+          pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+          ThrowReaderException(CorruptImageError,"RLEDecoderError");
+        }
       break;
     }
     case 1:
     {
       image->compression=RLECompression;
-      if (!DecodeImage(image,pixels,packets*image->rows))
+      if (DecodeImage(image,pixels,packets*image->rows) == MagickFalse)
         {
           pixels=(unsigned char *) RelinquishMagickMemory(pixels);
           ThrowReaderException(CorruptImageError,"RLEDecoderError");
@@ -465,15 +470,18 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (Quantum *) NULL)
           break;
-        for (x=0; x < ((ssize_t) image->columns-7); x+=8)
+        bit=0;
+        for (x=0; x < (ssize_t) image->columns; x++)
         {
-          for (bit=0; bit < 8; bit++)
-          {
-            index=(Quantum) (*p & (0x80 >> bit) ? 0x00 : 0x01);
-            SetPixelIndex(image,index,q);
-            q+=GetPixelChannels(image);
-          }
-          p++;
+          index=(Quantum) (*p & (0x80 >> bit) ? 0x00 : 0x01);
+          SetPixelIndex(image,index,q);
+          q+=GetPixelChannels(image);
+          bit++;
+          if (bit == 8)
+            {
+              p++;
+              bit=0;
+            }
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -487,6 +495,9 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     case 2:
     {
+      unsigned int
+        shift;
+
       /*
         Read 2-bit PDB image.
       */
@@ -495,21 +506,19 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (Quantum *) NULL)
           break;
-        for (x=0; x < (ssize_t) image->columns-3; x+=4)
+        shift=8;
+        for (x=0; x < (ssize_t) image->columns; x++)
         {
-          index=ConstrainColormapIndex(image,3UL-((*p >> 6) & 0x03),exception);
+          shift-=2;
+          index=ConstrainColormapIndex(image,3UL-((*p >> shift) & 0x03),
+            exception);
           SetPixelIndex(image,index,q);
           q+=GetPixelChannels(image);
-          index=ConstrainColormapIndex(image,3UL-((*p >> 4) & 0x03),exception);
-          SetPixelIndex(image,index,q);
-          q+=GetPixelChannels(image);
-          index=ConstrainColormapIndex(image,3UL-((*p >> 2) & 0x03),exception);
-          SetPixelIndex(image,index,q);
-          q+=GetPixelChannels(image);
-          index=ConstrainColormapIndex(image,3UL-((*p) & 0x03),exception);
-          SetPixelIndex(image,index,q);
-          p++;
-          q+=GetPixelChannels(image);
+          if (shift == 0)
+            {
+              shift=8;
+              p++;
+            }
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -523,6 +532,9 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     case 4:
     {
+      unsigned int
+        shift;
+
       /*
         Read 4-bit PDB image.
       */
@@ -531,15 +543,19 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (Quantum *) NULL)
           break;
-        for (x=0; x < (ssize_t) image->columns-1; x+=2)
+        shift=8;
+        for (x=0; x < (ssize_t) image->columns; x++)
         {
-          index=ConstrainColormapIndex(image,15UL-((*p >> 4) & 0x0f),exception);
+          shift-=4;
+          index=ConstrainColormapIndex(image,15UL-((*p >> shift) & 0x0f),
+            exception);
           SetPixelIndex(image,index,q);
           q+=GetPixelChannels(image);
-          index=ConstrainColormapIndex(image,15UL-((*p) & 0x0f),exception);
-          SetPixelIndex(image,index,q);
-          p++;
-          q+=GetPixelChannels(image);
+          if (shift == 0)
+            {
+              shift=8;
+              p++;
+            }
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
