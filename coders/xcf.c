@@ -419,7 +419,8 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
     size;
 
   Quantum
-    alpha;
+    alpha,
+    data;
 
   register Quantum
     *q;
@@ -434,7 +435,6 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
     j;
 
   unsigned char
-    data,
     pixel,
     *xcfdata,
     *xcfodata,
@@ -449,7 +449,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
   count=ReadBlob(image, (size_t) data_length, xcfdata);
   xcfdatalimit = xcfodata+count-1;
   alpha=ScaleCharToQuantum((unsigned char) inLayerInfo->alpha);
-  for (i=0; i < (ssize_t) bytes_per_pixel; i++)
+  for (i=0; i < bytes_per_pixel; i++)
   {
     q=GetAuthenticPixels(tile_image,0,0,tile_image->columns,tile_image->rows,
       exception);
@@ -479,18 +479,18 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
             goto bogus_rle;
           while (length-- > 0)
           {
-            data=(*xcfdata++);
+            data=ScaleCharToQuantum(*xcfdata++);
             switch (i)
             {
               case 0:
               {
                 if (inDocInfo->image_type == GIMP_GRAY)
-                  SetPixelGray(tile_image,ScaleCharToQuantum(data),q);
+                  SetPixelGray(tile_image,data,q);
                 else
                   {
-                    SetPixelRed(tile_image,ScaleCharToQuantum(data),q);
-                    SetPixelGreen(tile_image,ScaleCharToQuantum(data),q);
-                    SetPixelBlue(tile_image,ScaleCharToQuantum(data),q);
+                    SetPixelRed(tile_image,data,q);
+                    SetPixelGreen(tile_image,data,q);
+                    SetPixelBlue(tile_image,data,q);
                   }
                 SetPixelAlpha(tile_image,alpha,q);
                 break;
@@ -498,19 +498,19 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
               case 1:
               {
                 if (inDocInfo->image_type == GIMP_GRAY)
-                  SetPixelAlpha(tile_image,ScaleCharToQuantum(data),q);
+                  SetPixelAlpha(tile_image,data,q);
                 else
-                  SetPixelGreen(tile_image,ScaleCharToQuantum(data),q);
+                  SetPixelGreen(tile_image,data,q);
                 break;
               }
               case 2:
               {
-                SetPixelBlue(tile_image,ScaleCharToQuantum(data),q);
+                SetPixelBlue(tile_image,data,q);
                 break;
               }
               case 3:
               {
-                SetPixelAlpha(tile_image,ScaleCharToQuantum(data),q);
+                SetPixelAlpha(tile_image,data,q);
                 break;
               }
             }
@@ -535,18 +535,18 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
           pixel=(*xcfdata++);
           for (j=0; j < (ssize_t) length; j++)
           {
-            data=pixel;
+            data=ScaleCharToQuantum(pixel);
             switch (i)
             {
               case 0:
               {
                 if (inDocInfo->image_type == GIMP_GRAY)
-                  SetPixelGray(tile_image,ScaleCharToQuantum(data),q);
+                  SetPixelGray(tile_image,data,q);
                 else
                   {
-                    SetPixelRed(tile_image,ScaleCharToQuantum(data),q);
-                    SetPixelGreen(tile_image,ScaleCharToQuantum(data),q);
-                    SetPixelBlue(tile_image,ScaleCharToQuantum(data),q);
+                    SetPixelRed(tile_image,data,q);
+                    SetPixelGreen(tile_image,data,q);
+                    SetPixelBlue(tile_image,data,q);
                   }
                 SetPixelAlpha(tile_image,alpha,q);
                 break;
@@ -554,19 +554,19 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
               case 1:
               {
                 if (inDocInfo->image_type == GIMP_GRAY)
-                  SetPixelAlpha(tile_image,ScaleCharToQuantum(data),q);
+                  SetPixelAlpha(tile_image,data,q);
                 else
-                  SetPixelGreen(tile_image,ScaleCharToQuantum(data),q);
+                  SetPixelGreen(tile_image,data,q);
                 break;
               }
               case 2:
               {
-                SetPixelBlue(tile_image,ScaleCharToQuantum(data),q);
+                SetPixelBlue(tile_image,data,q);
                 break;
               }
               case 3:
               {
-                SetPixelAlpha(tile_image,ScaleCharToQuantum(data),q);
+                SetPixelAlpha(tile_image,data,q);
                 break;
               }
             }
@@ -581,8 +581,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
   return(MagickTrue);
 
   bogus_rle:
-    if (xcfodata != (unsigned char *) NULL)
-      xcfodata=(unsigned char *) RelinquishMagickMemory(xcfodata);
+  xcfodata=(unsigned char *) RelinquishMagickMemory(xcfodata);
   return(MagickFalse);
 }
 
@@ -731,17 +730,9 @@ static MagickBooleanType load_hierarchy(Image *image,XCFDocInfo *inDocInfo,
     offset,
     junk;
 
-  size_t
-    width,
-    height,
-    bytes_per_pixel;
-
-  width=ReadBlobMSBLong(image);
-  (void) width;
-  height=ReadBlobMSBLong(image);
-  (void) height;
-  bytes_per_pixel=inDocInfo->bytes_per_pixel=ReadBlobMSBLong(image);
-  (void) bytes_per_pixel;
+  (void) ReadBlobMSBLong(image); // width
+  (void) ReadBlobMSBLong(image); // height
+  inDocInfo->bytes_per_pixel=ReadBlobMSBLong(image);
 
   /* load in the levels...we make sure that the number of levels
    *  calculated when the TileManager was created is the same
@@ -947,6 +938,11 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
   /* clear the image based on the layer opacity */
   outLayer->image->background_color.alpha=
     ScaleCharToQuantum((unsigned char) outLayer->alpha);
+  if (outLayer->alpha != 255U)
+    {
+      outLayer->image->background_color.alpha_trait=BlendPixelTrait;
+      outLayer->image->alpha_trait=BlendPixelTrait;
+    }
   (void) SetImageBackgroundColor(outLayer->image,exception);
 
   InitXCFImage(outLayer,exception);
