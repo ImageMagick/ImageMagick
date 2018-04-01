@@ -1681,9 +1681,7 @@ static size_t GetEllipseCoordinates(const PointInfo start,const PointInfo stop,
   /*
     Ellipses are just short segmented polys.
   */
-  if ((fabs(stop.x) < DrawEpsilon) && (fabs(stop.y) < DrawEpsilon))
-    return(1);
-  delta=2.0/MagickMax(stop.x,stop.y);
+  delta=2.0*PerceptibleReciprocal(MagickMax(stop.x,stop.y));
   step=MagickPI/8.0;
   if ((delta >= 0.0) && (delta < (MagickPI/8.0)))
     step=MagickPI/(4.0*(MagickPI*PerceptibleReciprocal(delta)/2.0));
@@ -5526,12 +5524,7 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   /*
     Ellipses are just short segmented polys.
   */
-  if ((fabs(stop.x) < DrawEpsilon) && (fabs(stop.y) < DrawEpsilon))
-    {
-      TracePoint(primitive_info,start);
-      return;
-    }
-  delta=2.0/MagickMax(stop.x,stop.y);
+  delta=2.0*PerceptibleReciprocal(MagickMax(stop.x,stop.y));
   step=MagickPI/8.0;
   if ((delta >= 0.0) && (delta < (MagickPI/8.0)))
     step=MagickPI/(4.0*(MagickPI*PerceptibleReciprocal(delta)/2.0));
