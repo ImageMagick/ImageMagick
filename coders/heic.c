@@ -191,10 +191,10 @@ inline static unsigned int readInt(const unsigned char* data)
 {
   unsigned int val = 0;
 
-  val += (unsigned char)(data[0]) << 24;
-  val += (unsigned char)(data[1]) << 16;
-  val += (unsigned char)(data[2]) << 8;
-  val += (unsigned char)(data[3]);
+  val=(unsigned int)(data[0]) << 24;
+  val|=(unsigned int)(data[1]) << 16;
+  val|=(unsigned int)(data[2]) << 8;
+  val|=(unsigned int)(data[3]);
 
   return val;
 }
@@ -223,10 +223,10 @@ inline static uint32_t DBReadUInt(DataBuffer *db)
     return 0;
   }
 
-  val  = (unsigned char)(db->data[db->pos+0]) << 24;
-  val += (unsigned char)(db->data[db->pos+1]) << 16;
-  val += (unsigned char)(db->data[db->pos+2]) << 8;
-  val += (unsigned char)(db->data[db->pos+3]);
+  val=(uint32_t) db->data[db->pos+0] << 24;
+  val|=(uint32_t) db->data[db->pos+1] << 16;
+  val|=(uint32_t) db->data[db->pos+2] << 8;
+  val|=(uint32_t) db->data[db->pos+3];
 
   db->pos += 4;
 
@@ -242,8 +242,8 @@ inline static uint16_t DBReadUShort(DataBuffer *db)
     return 0;
   }
 
-  val  = (unsigned char)(db->data[db->pos+0]) << 8;
-  val += (unsigned char)(db->data[db->pos+1]);
+  val=(uint16_t) db->data[db->pos+0] << 8;
+  val|=(uint16_t) db->data[db->pos+1];
 
   db->pos += 2;
 
@@ -259,7 +259,7 @@ inline static uint8_t DBReadUChar(DataBuffer *db)
     return 0;
   }
 
-  val = (unsigned char)(db->data[db->pos]);
+  val=(uint8_t) db->data[db->pos];
   db->pos += 1;
 
   return val;
