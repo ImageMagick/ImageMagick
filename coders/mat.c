@@ -686,6 +686,8 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     }
     image->columns=(size_t) HDR.nRows;
     image->rows=(size_t) HDR.nCols;
+    if ((image->columns == 0) || (image->rows == 0))
+      return(image);
     if (image_info->ping != MagickFalse)
       {
         Swap(image->columns,image->rows);
@@ -938,9 +940,6 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->endian = MSBEndian;
   }
   else
-    goto MATLAB_KO;    /* unsupported endian */
-
-  if (strncmp(MATLAB_HDR.identific, "MATLAB", 6))
     {
 MATLAB_KO:
       if ((image != image2) && (image2 != (Image *) NULL))
