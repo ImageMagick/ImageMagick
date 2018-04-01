@@ -1593,10 +1593,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             MagickOffsetType
               offset;
 
-            offset=SeekBlob(image,-((MagickOffsetType)
-              bzip_info.avail_in),SEEK_CUR);
+            offset=SeekBlob(image,-((MagickOffsetType) bzip_info.avail_in),
+              SEEK_CUR);
             if (offset < 0)
               {
+                (void) BZ2_bzDecompressEnd(&bzip_info);
                 quantum_info=DestroyQuantumInfo(quantum_info);
                 compress_pixels=(unsigned char *) RelinquishMagickMemory(
                   compress_pixels);
@@ -1638,6 +1639,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               SEEK_CUR);
             if (offset < 0)
               {
+                (void) inflateEnd(&zip_info);
                 quantum_info=DestroyQuantumInfo(quantum_info);
                 compress_pixels=(unsigned char *) RelinquishMagickMemory(
                   compress_pixels);
