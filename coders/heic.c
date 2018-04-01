@@ -399,6 +399,8 @@ static MagickBooleanType ParseIpcoAtom(Image *image, DataBuffer *db,
       propDb;
 
     length = DBReadUInt(db);
+    if (length >= DBGetSize(db))
+      ThrowAndReturn("insufficient data");
     atom = DBReadUInt(db);
 
     if (ctx->itemPropsCount == MAX_ITEM_PROPS) {
