@@ -407,6 +407,9 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Proceed to next image.
     */
+    if (image_info->number_scenes != 0)
+      if (image->scene >= (image_info->scene+image_info->number_scenes-1))
+        break;
     tim_info.id=ReadBlobLSBLong(image);
     if (tim_info.id == 0x00000010)
       {
