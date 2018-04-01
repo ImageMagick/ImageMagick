@@ -1235,6 +1235,9 @@ static MagickBooleanType ReadPSDChannelZip(Image *image,const size_t channels,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
        "      layer data is ZIP compressed");
 
+  if ((MagickSizeType) compact_size > GetBlobSize(image))
+    ThrowBinaryException(CorruptImageError,"UnexpectedEndOfFile",
+      image->filename);
   compact_pixels=(unsigned char *) AcquireQuantumMemory(compact_size,
     sizeof(*compact_pixels));
   if (compact_pixels == (unsigned char *) NULL)
