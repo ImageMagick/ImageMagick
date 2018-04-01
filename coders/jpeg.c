@@ -1265,7 +1265,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   if (option != (const char *) NULL)
     jpeg_info.do_fancy_upsampling=IsStringTrue(option) != MagickFalse ? TRUE :
       FALSE;
-  (void) jpeg_start_decompress(&jpeg_info);
+  jpeg_calc_output_dimensions(&jpeg_info);
   image->columns=jpeg_info.output_width;
   image->rows=jpeg_info.output_height;
   image->depth=(size_t) jpeg_info.data_precision;
@@ -1330,11 +1330,6 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Geometry: %dx%d",
         (int) jpeg_info.output_width,(int) jpeg_info.output_height);
     }
-  JPEGSetImageQuality(&jpeg_info,image);
-  JPEGSetImageSamplingFactor(&jpeg_info,image,exception);
-  (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
-    jpeg_info.out_color_space);
-  (void) SetImageProperty(image,"jpeg:colorspace",value,exception);
   if (image_info->ping != MagickFalse)
     {
       jpeg_destroy_decompress(&jpeg_info);
@@ -1347,6 +1342,12 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       jpeg_destroy_decompress(&jpeg_info);
       return(DestroyImageList(image));
     }
+  (void) jpeg_start_decompress(&jpeg_info);
+  JPEGSetImageQuality(&jpeg_info,image);
+  JPEGSetImageSamplingFactor(&jpeg_info,image,exception);
+  (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+    jpeg_info.out_color_space);
+  (void) SetImageProperty(image,"jpeg:colorspace",value,exception);
   if ((jpeg_info.output_components != 1) &&
       (jpeg_info.output_components != 3) && (jpeg_info.output_components != 4))
     {
