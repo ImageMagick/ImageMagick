@@ -3493,7 +3493,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   source_info=(*cache_info);
   source_info.file=(-1);
   (void) FormatLocaleString(cache_info->filename,MagickPathExtent,"%s[%.20g]",
-    image->filename,(double) GetImageIndexInList(image));
+    image->filename,(double) image->scene);
   cache_info->storage_class=image->storage_class;
   cache_info->colorspace=image->colorspace;
   cache_info->alpha_trait=image->alpha_trait;
@@ -3525,7 +3525,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       cache_info->type=PingCache;
       return(MagickTrue);
     }
-  status=AcquireMagickResource(AreaResource,(MagickSizeType) 
+  status=AcquireMagickResource(AreaResource,(MagickSizeType)
     cache_info->columns*cache_info->rows);
   if (cache_info->mode == PersistMode)
     status=MagickFalse;
