@@ -501,8 +501,11 @@ static int UnpackWPGRaster(Image *image,int bpp,ExceptionInfo *exception)
           }
         else {  /* repeat previous line runcount* */
           c=ReadBlobByte(image);
-          if (c < 0)
-            break;
+          if (c == EOF)
+            {
+              BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
+              return(-7);
+            }
           RunCount=(unsigned char) c;
           if(x) {    /* attempt to duplicate row from x position: */
             /* I do not know what to do here */
@@ -1215,6 +1218,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                       image->colormap[i].red=ScaleCharToQuantum(WPG1_Palette[i].Red);
                       image->colormap[i].green=ScaleCharToQuantum(WPG1_Palette[i].Green);
                       image->colormap[i].blue=ScaleCharToQuantum(WPG1_Palette[i].Blue);
+                      image->colormap[i].alpha=OpaqueAlpha;
                     }
                 }
               else
@@ -1238,6 +1242,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                       image->colormap[1].red =
                         image->colormap[1].green =
                         image->colormap[1].blue = QuantumRange;
+                      image->colormap[1].alpha=OpaqueAlpha;
                     }
                 }
               if(!image_info->ping)
@@ -1364,6 +1369,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                     ReadBlobByte(image));
                   image->colormap[i].blue=ScaleCharToQuantum((char)
                     ReadBlobByte(image));
+                  image->colormap[i].alpha=OpaqueAlpha;
                   (void) ReadBlobByte(image);   /*Opacity??*/
                 }
               break;
