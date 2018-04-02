@@ -49,6 +49,7 @@
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache.h"
+#include "MagickCore/channel.h"
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
 #include "MagickCore/colormap.h"
@@ -1718,6 +1719,8 @@ RestoreMSCWarning
                   exception);
           }
       }
+    if (image->alpha_trait != UndefinedPixelTrait)
+      (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
     method=ReadGenericMethod;
     rows_per_strip=(uint32) image->rows;
     if (TIFFGetField(tiff,TIFFTAG_ROWSPERSTRIP,&rows_per_strip) == 1)
