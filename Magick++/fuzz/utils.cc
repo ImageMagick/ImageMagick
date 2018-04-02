@@ -1,3 +1,4 @@
+#include <Magick++/Functions.h>
 #include <Magick++/ResourceLimits.h>
 #include <Magick++/SecurityPolicy.h>
 
@@ -5,9 +6,10 @@
 #define FUZZ_MAX_SIZE 2048
 #endif
 
-class FuzzingLimits {
+class FuzzingInitializer {
 public:
-  FuzzingLimits() {
+  FuzzingInitializer() {
+    Magick::InitializeMagick((const char *) NULL);
     Magick::SecurityPolicy::maxMemoryRequest(256000000);
     Magick::ResourceLimits::memory(1000000000);
     Magick::ResourceLimits::map(500000000);
@@ -17,7 +19,7 @@ public:
   }
 };
 
-FuzzingLimits fuzzingLimits;
+FuzzingInitializer fuzzingInitializer;
 
 #if BUILD_MAIN
 #include "encoder_format.h"
