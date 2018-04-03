@@ -1825,7 +1825,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
     case 'z':
     {
       if (LocaleCompare(symbol,"z") == 0)
-        return((double)GetImageDepth(image, fx_info->exception));
+        return((double) GetImageDepth(image,fx_info->exception));
       break;
     }
     default:

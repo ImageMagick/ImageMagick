@@ -3654,6 +3654,8 @@ RestoreMSCWarning
                 OptionWarning,"NoImageForProperty","\"%%[%s]\"",pattern);
               continue; /* else no image to retrieve artifact */
             }
+          if ((image->columns == 0) || (image->rows == 0))
+            break;
           fx_info=AcquireFxInfo(image,pattern+3,exception);
           status=FxEvaluateChannelExpression(fx_info,IntensityPixelChannel,0,0,
             &value,exception);
