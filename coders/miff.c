@@ -1446,7 +1446,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   (unsigned char *) bzip_info.next_in);
               }
             code=BZ2_bzDecompress(&bzip_info);
-            if (code < 0)
+            if ((code != BZ_OK) && (code != BZ_STREAM_END))
               {
                 status=MagickFalse;
                 break;
@@ -1486,7 +1486,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   (unsigned char *) lzma_info.next_in);
               }
             code=lzma_code(&lzma_info,LZMA_RUN);
-            if (code < 0)
+            if ((code != LZMA_OK) && (code != LZMA_STREAM_END))
               {
                 status=MagickFalse;
                 break;
