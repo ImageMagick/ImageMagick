@@ -851,6 +851,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     dpx.image.image_element[i].bit_size=(unsigned char) ReadBlobByte(image);
     offset++;
     dpx.image.image_element[i].packing=ReadBlobShort(image);
+    if (dpx.image.image_element[i].packing > 2)
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     offset+=2;
     dpx.image.image_element[i].encoding=ReadBlobShort(image);
     offset+=2;
