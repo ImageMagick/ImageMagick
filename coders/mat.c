@@ -537,6 +537,8 @@ ssize_t TotalSize = 0;
   while(*Size>0 && !EOFBlob(orig))
   {
     magick_size = ReadBlob(orig, (*Size < 16384) ? *Size : 16384, (unsigned char *) cache_block);
+    if (magick_size == 0)
+      break;
     zip_info.next_in = (Bytef *) cache_block;
     zip_info.avail_in = (uInt) magick_size;
 
