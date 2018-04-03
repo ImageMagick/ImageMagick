@@ -1529,7 +1529,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   zip_info.next_in);
               }
             code=inflate(&zip_info,Z_SYNC_FLUSH);
-            if ((code < 0) || (code == Z_NEED_DICT))
+            if ((code != Z_OK) && (code != Z_STREAM_END))
               {
                 status=MagickFalse;
                 break;
