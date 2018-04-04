@@ -1250,7 +1250,7 @@ static inline const char *FxSubexpression(const char *expression,
 }
 
 static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
-  const ssize_t x,const ssize_t y,const char *expression,
+  const ssize_t x,const ssize_t y,const char *expression,const size_t depth,
   ExceptionInfo *exception)
 {
   char
@@ -1328,7 +1328,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
               }
               *q='\0';
               alpha=FxEvaluateSubexpression(fx_info,channel,x,y,subexpression,
-                0,&beta,exception);
+                depth,&beta,exception);
               i=(ssize_t) alpha;
               if (*p != '\0')
                 p++;
@@ -1358,7 +1358,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
               }
               *q='\0';
               alpha=FxEvaluateSubexpression(fx_info,channel,x,y,subexpression,
-                0,&beta,exception);
+                depth,&beta,exception);
               point.x=alpha;
               point.y=beta;
               if (*p != '\0')
@@ -1384,7 +1384,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
                 }
                 *q='\0';
                 alpha=FxEvaluateSubexpression(fx_info,channel,x,y,subexpression,
-                  0,&beta,exception);
+                  depth,&beta,exception);
                 point.x+=alpha;
                 point.y+=beta;
                 if (*p != '\0')
@@ -2478,14 +2478,14 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           FxReturn(atan(alpha));
         }
       if (LocaleCompare(expression,"a") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       break;
     }
     case 'B':
     case 'b':
     {
       if (LocaleCompare(expression,"b") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       break;
     }
     case 'C':
@@ -2520,7 +2520,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           FxReturn(cos(alpha));
         }
       if (LocaleCompare(expression,"c") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       break;
     }
     case 'D':
@@ -2625,16 +2625,16 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           FxReturn((double) gcd);
         }
       if (LocaleCompare(expression,"g") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       break;
     }
     case 'H':
     case 'h':
     {
       if (LocaleCompare(expression,"h") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       if (LocaleCompare(expression,"hue") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       if (LocaleNCompare(expression,"hypot",5) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,
@@ -2647,14 +2647,14 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
     case 'k':
     {
       if (LocaleCompare(expression,"k") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       break;
     }
     case 'I':
     case 'i':
     {
       if (LocaleCompare(expression,"intensity") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       if (LocaleNCompare(expression,"int",3) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,
@@ -2668,14 +2668,14 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           FxReturn((double) !!IsNaN(alpha));
         }
       if (LocaleCompare(expression,"i") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       break;
     }
     case 'J':
     case 'j':
     {
       if (LocaleCompare(expression,"j") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
 #if defined(MAGICKCORE_HAVE_J0)
       if (LocaleNCompare(expression,"j0",2) == 0)
         {
@@ -2727,7 +2727,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           FxReturn(log10(alpha));
         }
       if (LocaleCompare(expression,"lightness") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       break;
     }
     case 'M':
@@ -2759,7 +2759,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           FxReturn(gamma);
         }
       if (LocaleCompare(expression,"m") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       break;
     }
     case 'N':
@@ -2772,7 +2772,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           FxReturn((double) (alpha < MagickEpsilon));
         }
       if (LocaleCompare(expression,"n") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       break;
     }
     case 'O':
@@ -2781,7 +2781,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
       if (LocaleCompare(expression,"Opaque") == 0)
         FxReturn(1.0);
       if (LocaleCompare(expression,"o") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       break;
     }
     case 'P':
@@ -2798,7 +2798,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           FxReturn(pow(alpha,*beta));
         }
       if (LocaleCompare(expression,"p") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       break;
     }
     case 'Q':
@@ -2828,14 +2828,14 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           FxReturn(floor(alpha+0.5));
         }
       if (LocaleCompare(expression,"r") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       break;
     }
     case 'S':
     case 's':
     {
       if (LocaleCompare(expression,"saturation") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       if (LocaleNCompare(expression,"sign",4) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,
@@ -2876,7 +2876,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           FxReturn((1.0/(1.0+exp(-alpha))));
         }
       if (LocaleCompare(expression,"s") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       break;
     }
     case 'T':
@@ -2905,21 +2905,21 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           FxReturn(ceil(alpha));
         }
       if (LocaleCompare(expression,"t") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       break;
     }
     case 'U':
     case 'u':
     {
       if (LocaleCompare(expression,"u") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       break;
     }
     case 'V':
     case 'v':
     {
       if (LocaleCompare(expression,"v") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       break;
     }
     case 'W':
@@ -2935,21 +2935,21 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           FxReturn(*beta);
         }
       if (LocaleCompare(expression,"w") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       break;
     }
     case 'Y':
     case 'y':
     {
       if (LocaleCompare(expression,"y") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       break;
     }
     case 'Z':
     case 'z':
     {
       if (LocaleCompare(expression,"z") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       break;
     }
     default:
@@ -2959,7 +2959,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
   q=(char *) expression;
   alpha=InterpretSiPrefixValue(expression,&q);
   if (q == expression)
-    FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,exception));
+    FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
   FxReturn(alpha);
 }
 
