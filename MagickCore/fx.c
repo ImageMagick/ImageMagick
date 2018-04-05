@@ -2755,7 +2755,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,
             depth+1,beta,exception);
-          gamma=alpha-floor((alpha/(*beta)))*(*beta);
+          gamma=alpha-floor((alpha*PerceptibleReciprocal(*beta)))*(*beta);
           FxReturn(gamma);
         }
       if (LocaleCompare(expression,"m") == 0)
