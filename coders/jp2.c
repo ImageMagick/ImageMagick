@@ -453,9 +453,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
-        i;
-
       for (i=0; i < (ssize_t) jp2_image->numcomps; i++)
       {
         double
