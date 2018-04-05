@@ -3782,7 +3782,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Read offset table.
       */
       for (i=0; i < (ssize_t) stream_info->remaining; i++)
-        (void) ReadBlobByte(image);
+        if (ReadBlobByte(image) == EOF)
+          break;
       (void) (((ssize_t) ReadBlobLSBShort(image) << 16) |
         ReadBlobLSBShort(image));
       length=(size_t) ReadBlobLSBLong(image);
@@ -3791,7 +3792,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       stream_info->offset_count=length >> 2;
       if (stream_info->offset_count != 0)
         {
-         if (stream_info->offsets != (ssize_t *) NULL)
+          if (stream_info->offsets != (ssize_t *) NULL)
             stream_info->offsets=(ssize_t *) RelinquishMagickMemory(
               stream_info->offsets);
           stream_info->offsets=(ssize_t *) AcquireQuantumMemory(
@@ -3851,7 +3852,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               "UnableToCreateTemporaryFile",filename);
             break;
           }
-        for ( ; length != 0; length--)
+        for (c=EOF; length != 0; length--)
         {
           c=ReadBlobByte(image);
           if (c == EOF)
@@ -3863,6 +3864,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) fputc(c,file);
         }
         (void) fclose(file);
+        if (c == EOF)
+          break;
         (void) FormatLocaleString(read_info->filename,MagickPathExtent,
           "jpeg:%s",filename);
         if (image->compression == JPEG2000Compression)
