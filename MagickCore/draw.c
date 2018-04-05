@@ -91,7 +91,6 @@
 */
 #define BezierQuantum  200
 #define DrawEpsilon  (1.0e-10)
-#define EllipseEpsilon  (0.0001)
 #define ThrowPointExpectedException(token,exception) \
 { \
   (void) ThrowMagickException(exception,GetMagickModule(),DrawError, \
@@ -1677,9 +1676,6 @@ static size_t GetEllipseCoordinates(const PointInfo start,const PointInfo stop,
   PointInfo
     angle;
 
-  size_t
-    coordinates;
-
   /*
     Ellipses are just short segmented polys.
   */
@@ -1687,16 +1683,12 @@ static size_t GetEllipseCoordinates(const PointInfo start,const PointInfo stop,
   step=MagickPI/8.0;
   if ((delta >= 0.0) && (delta < (MagickPI/8.0)))
     step=MagickPI/(4.0*(MagickPI*PerceptibleReciprocal(delta)/2.0));
-  if (step < EllipseEpsilon)
-    step=EllipseEpsilon;
   angle.x=DegreesToRadians(degrees.x);
   y=degrees.y;
   while (y < degrees.x)
     y+=360.0;
   angle.y=DegreesToRadians(y);
-  for (coordinates=0; angle.x < angle.y; angle.x+=step)
-    coordinates++;
-  return(coordinates+1);
+  return((size_t) floor((angle.y-angle.x)/step+0.5)+2);
 }
 
 static size_t GetRoundRectangleCoordinates(const PointInfo start,
@@ -5549,8 +5541,6 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   step=MagickPI/8.0;
   if ((delta >= 0.0) && (delta < (MagickPI/8.0)))
     step=MagickPI/(4.0*(MagickPI*PerceptibleReciprocal(delta)/2.0));
-  if (step < EllipseEpsilon)
-    step=EllipseEpsilon;
   angle.x=DegreesToRadians(degrees.x);
   y=degrees.y;
   while (y < degrees.x)
