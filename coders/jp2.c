@@ -425,7 +425,10 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       profile=BlobToStringInfo(jp2_image->icc_profile_buf,
         jp2_image->icc_profile_len);
       if (profile != (StringInfo *) NULL)
-        SetImageProfile(image,"icc",profile,exception);
+        {
+          SetImageProfile(image,"icc",profile,exception);
+          profile=DestroyStringInfo(profile);
+        }
     }
   if (image->ping != MagickFalse)
     {
