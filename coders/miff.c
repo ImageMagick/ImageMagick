@@ -1433,7 +1433,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 length=(size_t) BZipMaxExtent(packet_size*image->columns);
                 if (version != 0.0)
                   length=(size_t) ReadBlobMSBLong(image);
-                if (length > compress_extent)
+                if (length <= compress_extent)
+                  bzip_info.avail_in=(unsigned int) ReadBlob(image,length,
+                    (unsigned char *) bzip_info.next_in);
+                if ((length > compress_extent) ||
+                    ((size_t) bzip_info.avail_in != length))
                   {
                     (void) BZ2_bzDecompressEnd(&bzip_info);
                     quantum_info=DestroyQuantumInfo(quantum_info);
@@ -1442,8 +1446,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     ThrowReaderException(CorruptImageError,
                       "UnableToReadImageData");
                   }
-                bzip_info.avail_in=(unsigned int) ReadBlob(image,length,
-                  (unsigned char *) bzip_info.next_in);
               }
             code=BZ2_bzDecompress(&bzip_info);
             if ((code != BZ_OK) && (code != BZ_STREAM_END))
@@ -1473,7 +1475,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 lzma_info.next_in=compress_pixels;
                 length=(size_t) ReadBlobMSBLong(image);
-                if (length > compress_extent)
+                if (length <= compress_extent)
+                  lzma_info.avail_in=(unsigned int) ReadBlob(image,length,
+                    (unsigned char *) lzma_info.next_in);
+                if ((length > compress_extent) ||
+                    (lzma_info.avail_in != length))
                   {
                     lzma_end(&lzma_info);
                     quantum_info=DestroyQuantumInfo(quantum_info);
@@ -1482,8 +1488,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     ThrowReaderException(CorruptImageError,
                       "UnableToReadImageData");
                   }
-                lzma_info.avail_in=(unsigned int) ReadBlob(image,length,
-                  (unsigned char *) lzma_info.next_in);
               }
             code=lzma_code(&lzma_info,LZMA_RUN);
             if ((code != LZMA_OK) && (code != LZMA_STREAM_END))
@@ -1516,7 +1520,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 length=(size_t) ZipMaxExtent(packet_size*image->columns);
                 if (version != 0.0)
                   length=(size_t) ReadBlobMSBLong(image);
-                if (length > compress_extent)
+                if (length <= compress_extent)
+                  zip_info.avail_in=(unsigned int) ReadBlob(image,length,
+                    zip_info.next_in);
+                if ((length > compress_extent) ||
+                    ((size_t) zip_info.avail_in != length))
                   {
                     (void) inflateEnd(&zip_info);
                     quantum_info=DestroyQuantumInfo(quantum_info);
@@ -1525,8 +1533,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     ThrowReaderException(CorruptImageError,
                       "UnableToReadImageData");
                   }
-                zip_info.avail_in=(unsigned int) ReadBlob(image,length,
-                  zip_info.next_in);
               }
             code=inflate(&zip_info,Z_SYNC_FLUSH);
             if ((code != Z_OK) && (code != Z_STREAM_END))
