@@ -421,6 +421,8 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
             one_row=(unsigned char *) RelinquishMagickMemory(one_row);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           }
+         (void) memset(last_row,0,MagickMax(bytes_per_row,2*image->columns)*
+           sizeof(*last_row));
       }
     mask=(size_t) (1U << bits_per_pixel)-1;
     for (y=0; y < (ssize_t) image->rows; y++)
