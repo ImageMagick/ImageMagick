@@ -1028,15 +1028,23 @@ MATLAB_KO:
              ThrowReaderException(CoderError,
                "MultidimensionalMatricesAreNotSupported");
            }
-         Frames = ReadBlobXXXLong(image2);
-         if (Frames == 0)
-           {
-             if (clone_info != (ImageInfo *) NULL)
-               clone_info=DestroyImageInfo(clone_info);
-             if ((image != image2) && (image2 != (Image *) NULL))
-               image2=DestroyImage(image2);
-             ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-           }
+          Frames = ReadBlobXXXLong(image2);
+          if (Frames == 0)
+            {
+              if (clone_info != (ImageInfo *) NULL)
+                clone_info=DestroyImageInfo(clone_info);
+              if ((image != image2) && (image2 != (Image *) NULL))
+                image2=DestroyImage(image2);
+              ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+            }
+          if (AcquireMagickResource(ListLengthResource,Frames) == MagickFalse)
+            {
+              if (clone_info != (ImageInfo *) NULL)
+                clone_info=DestroyImageInfo(clone_info);
+              if ((image != image2) && (image2 != (Image *) NULL))
+                image2=DestroyImage(image2);
+              ThrowReaderException(ResourceLimitError,"ListLengthExceedsLimit");
+            }
          break;
       default:
         if (clone_info != (ImageInfo *) NULL)
