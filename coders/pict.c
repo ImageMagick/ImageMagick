@@ -502,8 +502,8 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
       scanline_length=(size_t) ReadBlobByte(blob);
     if ((scanline_length >= row_bytes) || (scanline_length == 0))
       {
-        (void) ThrowMagickException(exception,GetMagickModule(),
-          CorruptImageError,"UnableToUncompressImage","`%s'",image->filename);
+        //(void) ThrowMagickException(exception,GetMagickModule(),
+        //  CorruptImageError,"UnableToUncompressImage","`%s'",image->filename);
         break;
       }
     count=ReadBlob(blob,scanline_length,scanline);
@@ -1244,7 +1244,10 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             for (y=0; y < (ssize_t) tile_image->rows; y++)
             {
               if (p > (pixels+extent+image->columns))
-                ThrowPICTException(CorruptImageError,"NotEnoughPixelData");
+                {
+                  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+                  ThrowPICTException(CorruptImageError,"NotEnoughPixelData");
+                }
               q=QueueAuthenticPixels(tile_image,0,y,tile_image->columns,1,
                 exception);
               if (q == (Quantum *) NULL)
