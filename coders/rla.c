@@ -396,6 +396,8 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         while (runlength > 0);
       }
     }
+    if (EOFBlob(image) != MagickFalse)
+      break;
     status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
       image->rows);
     if (status == MagickFalse)
