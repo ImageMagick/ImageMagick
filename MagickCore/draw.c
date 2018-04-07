@@ -1689,7 +1689,7 @@ static size_t GetEllipseCoordinates(const PointInfo start,const PointInfo stop,
   while (y < degrees.x)
     y+=360.0;
   angle.y=DegreesToRadians(y);
-  return((size_t) floor((angle.y-angle.x)/step+0.5)+2);
+  return((size_t) floor((angle.y-angle.x)/step+0.5)+3);
 }
 
 static size_t GetRoundRectangleCoordinates(const PointInfo start,
