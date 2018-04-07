@@ -396,8 +396,6 @@ MagickExport MagickBooleanType GlobExpression(const char *expression,
     Evaluate glob expression.
   */
   done=MagickFalse;
-  while (GetUTFCode(pattern) == '*')
-    pattern+=GetUTFOctets(pattern);
   while ((GetUTFCode(pattern) != 0) && (done == MagickFalse))
   {
     if (GetUTFCode(expression) == 0)
