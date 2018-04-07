@@ -168,11 +168,14 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  pwp_image=AcquireImage(image_info,exception);
-  image=pwp_image;
-  status=OpenBlob(image_info,pwp_image,ReadBinaryBlobMode,exception);
+  image=AcquireImage(image_info,exception);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
-    return((Image *) NULL);
+    {
+      image=DestroyImage(image);
+      return((Image *) NULL);
+    }
+  pwp_image=image;
   memset(magick,0,sizeof(magick));
   count=ReadBlob(pwp_image,5,magick);
   if ((count != 5) || (LocaleNCompare((char *) magick,"SFW95",5) != 0))
