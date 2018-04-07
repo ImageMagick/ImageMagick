@@ -409,7 +409,8 @@ MagickExport MagickBooleanType GlobExpression(const char *expression,
           status;
 
         status=MagickFalse;
-        pattern+=GetUTFOctets(pattern);
+        while (GetUTFCode(pattern) == '*')
+          pattern+=GetUTFOctets(pattern);
         while ((GetUTFCode(expression) != 0) && (status == MagickFalse))
         {
           status=GlobExpression(expression,pattern,case_insensitive);
