@@ -20,6 +20,8 @@ public:
     index = format.find(L"_", 0);
     if (index != std::wstring::npos)
       _format=format.substr(0, index);
+    else if (extension.length() > 1)
+      _format=extension.substr(1, extension.size() - 1);
   }
 private:
   std::wstring _format = L".notset";
