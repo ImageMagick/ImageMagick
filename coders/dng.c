@@ -304,6 +304,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
           libraw_strerror(errcode),"`%s'",image->filename);
+        libraw_close(raw_info);
         return(DestroyImageList(image));
       }
     image->columns=raw_info->sizes.width;
