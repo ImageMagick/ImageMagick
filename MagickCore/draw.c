@@ -91,6 +91,7 @@
 */
 #define BezierQuantum  200
 #define DrawEpsilon  (1.0e-10)
+#define MaxBezierCoordinates  2097152
 #define ThrowPointExpectedException(token,exception) \
 { \
   (void) ThrowMagickException(exception,GetMagickModule(),DrawError, \
@@ -3143,7 +3144,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       default:
         break;
     }
-    if (coordinates > 2097152)
+    if (coordinates > MaxBezierCoordinates)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),DrawError,
           "TooManyBezierCoordinates","`%s'",token);
