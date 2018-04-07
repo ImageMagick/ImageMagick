@@ -1560,6 +1560,9 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image,
   MagickOffsetType
     scene;
 
+  size_t
+    imageListLength;
+
   struct tm
     local_time;
 
@@ -1599,6 +1602,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image,
   MATLAB_HDR[0x7F]='M';
   (void) WriteBlob(image,sizeof(MATLAB_HDR),(unsigned char *) MATLAB_HDR);
   scene=0;
+  imageListLength=GetImageListLength(image);
   do
   {
     char
@@ -1686,8 +1690,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,
-      GetImageListLength(image));
+    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);

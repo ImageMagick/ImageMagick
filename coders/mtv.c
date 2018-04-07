@@ -346,6 +346,9 @@ static MagickBooleanType WriteMTVImage(const ImageInfo *image_info,Image *image,
   register unsigned char
     *q;
 
+  size_t
+    imageListLength;
+
   ssize_t
     y;
 
@@ -367,6 +370,7 @@ static MagickBooleanType WriteMTVImage(const ImageInfo *image_info,Image *image,
   if (status == MagickFalse)
     return(status);
   scene=0;
+  imageListLength=GetImageListLength(image);
   do
   {
     /*
@@ -409,8 +413,7 @@ static MagickBooleanType WriteMTVImage(const ImageInfo *image_info,Image *image,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene,
-      GetImageListLength(image));
+    status=SetImageProgress(image,SaveImagesTag,scene,imageListLength);
     if (status == MagickFalse)
       break;
     scene++;

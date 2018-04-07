@@ -901,6 +901,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
 
   size_t
     bytes_per_line,
+    imageListLength,
     scanline_pad;
 
   ssize_t
@@ -971,6 +972,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   } while ((next != (Image *) NULL) && (image_info->adjoin != MagickFalse));
   scene=0;
   next=(images != (Image *) NULL) ? images : image;
+  imageListLength=GetImageListLength(image);
   do
   {
     if ((next->columns > 255L) && (next->rows > 255L) &&
@@ -1363,8 +1365,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
       }
     if (GetNextImageInList(next) == (Image *) NULL)
       break;
-    status=SetImageProgress(next,SaveImagesTag,scene++,
-      GetImageListLength(next));
+    status=SetImageProgress(next,SaveImagesTag,scene++,imageListLength);
     if (status == MagickFalse)
       break;
     next=SyncNextImageInList(next);

@@ -2075,6 +2075,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register ssize_t
     i;
 
+  size_t
+    imageListLength;
+
   ssize_t
     count;
 
@@ -2321,10 +2324,11 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  reading the precombined layer");
-  if ((has_merged_image != MagickFalse) || (GetImageListLength(image) == 1))
+  imageListLength=GetImageListLength(image);
+  if ((has_merged_image != MagickFalse) || (imageListLength == 1))
     has_merged_image=(MagickBooleanType) ReadPSDMergedImage(image_info,image,
       &psd_info,exception);
-  if ((has_merged_image == MagickFalse) && (GetImageListLength(image) == 1) &&
+  if ((has_merged_image == MagickFalse) && (imageListLength == 1) &&
       (length != 0))
     {
       SeekBlob(image,offset,SEEK_SET);
@@ -2344,7 +2348,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Image
         *merged;
 
-      if (GetImageListLength(image) == 1)
+      if (imageListLength == 1)
         {
           if (profile != (StringInfo *) NULL)
             profile=DestroyStringInfo(profile);

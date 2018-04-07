@@ -1522,6 +1522,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
   size_t
     bits_per_pixel,
     delay,
+    imageListLength,
     length,
     one;
 
@@ -1597,6 +1598,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
     write_info->interlace=NoInterlace;
   scene=0;
   one=1;
+  imageListLength=GetImageListLength(image);
   do
   {
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
@@ -1924,8 +1926,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
       break;
     image=SyncNextImageInList(image);
     scene++;
-    status=SetImageProgress(image,SaveImagesTag,scene,
-      GetImageListLength(image));
+    status=SetImageProgress(image,SaveImagesTag,scene,imageListLength);
     if (status == MagickFalse)
       break;
   } while (write_info->adjoin != MagickFalse);

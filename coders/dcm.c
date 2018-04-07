@@ -3491,7 +3491,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (info.significant_bits > 8)
               info.bytes_per_pixel=2;
             info.depth=info.significant_bits;
-            if ((info.depth == 0) || (info.depth > 32))
+            if ((info.depth == 0) || (info.depth > 16))
               ThrowDCMException(CorruptImageError,"ImproperImageHeader");
             info.max_value=(1UL << info.significant_bits)-1;
             info.mask=(size_t) GetQuantumRange(info.significant_bits);

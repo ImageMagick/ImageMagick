@@ -1123,6 +1123,9 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
   size_t
     length;
 
+  size_t
+    imageListLength;
+
   ssize_t
     count,
     y;
@@ -1145,8 +1148,8 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
         Open output image file.
       */
       assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickCoreSignature);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+      assert(exception->signature == MagickCoreSignature);
+      status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
       if (status == MagickFalse)
         return(status);
     }
@@ -1157,6 +1160,7 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
       image->alpha_trait=BlendPixelTrait;
     }
   scene=0;
+  imageListLength=GetImageListLength(image);
   do
   {
     /*
@@ -1474,8 +1478,7 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,
-      GetImageListLength(image));
+    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);

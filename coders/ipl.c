@@ -523,6 +523,9 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image,
   QuantumInfo
     *quantum_info;
 
+  size_t
+    imageListLength;
+
   ssize_t
     y;
   
@@ -579,7 +582,8 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image,
     break;
     
   }
-  ipl_info.z = (unsigned int) GetImageListLength(image);
+  imageListLength=GetImageListLength(image);
+  ipl_info.z = (unsigned int) imageListLength;
   /* There is no current method for detecting whether we have T or Z stacks */
   ipl_info.time = 1;
   ipl_info.width = (unsigned int) image->columns;
@@ -679,8 +683,7 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image,
   if (GetNextImageInList(image) == (Image *) NULL)
     break;
       image=SyncNextImageInList(image);
-      status=SetImageProgress(image,SaveImagesTag,scene++,
-        GetImageListLength(image));
+      status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
       if (status == MagickFalse)
         break;
     }while (image_info->adjoin != MagickFalse);

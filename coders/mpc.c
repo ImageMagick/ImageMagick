@@ -1140,7 +1140,8 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
     i;
 
   size_t
-    depth;
+    depth,
+    imageListLength;
 
   /*
     Open persistent cache.
@@ -1160,6 +1161,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
   AppendImageFormat("cache",cache_filename);
   scene=0;
   offset=0;
+  imageListLength=GetImageListLength(image);
   do
   {
     /*
@@ -1530,7 +1532,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         status=image->progress_monitor(SaveImagesTag,scene,
-          GetImageListLength(image),image->client_data);
+          imageListLength,image->client_data);
         if (status == MagickFalse)
           break;
       }

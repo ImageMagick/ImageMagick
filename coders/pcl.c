@@ -677,6 +677,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image,
 
   size_t
     density,
+    imageListLength,
     length,
     one,
     packets;
@@ -715,6 +716,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image,
     }
   scene=0;
   one=1;
+  imageListLength=GetImageListLength(image);
   do
   {
     /*
@@ -973,8 +975,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,
-      GetImageListLength(image));
+    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);

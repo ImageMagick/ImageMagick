@@ -362,6 +362,9 @@ static MagickBooleanType WriteFAXImage(const ImageInfo *image_info,Image *image,
   MagickOffsetType
     scene;
 
+  size_t
+    imageListLength;
+
   /*
     Open output image file.
   */
@@ -379,6 +382,7 @@ static MagickBooleanType WriteFAXImage(const ImageInfo *image_info,Image *image,
   write_info=CloneImageInfo(image_info);
   (void) CopyMagickString(write_info->magick,"FAX",MagickPathExtent);
   scene=0;
+  imageListLength=GetImageListLength(image);
   do
   {
     /*
@@ -389,8 +393,7 @@ static MagickBooleanType WriteFAXImage(const ImageInfo *image_info,Image *image,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,
-      GetImageListLength(image));
+    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
     if (status == MagickFalse)
       break;
   } while (write_info->adjoin != MagickFalse);

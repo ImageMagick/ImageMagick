@@ -13375,6 +13375,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,
 
   size_t
     final_delay=0,
+    imageListLength,
     initial_delay;
 
 #if (PNG_LIBPNG_VER < 10200)
@@ -13988,6 +13989,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,
     defined(PNG_MNG_FEATURES_SUPPORTED)
   mng_info->equal_palettes=MagickFalse;
 #endif
+  imageListLength=GetImageListLength(image);
   do
   {
     if (mng_info->adjoin)
@@ -14173,8 +14175,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,
-      GetImageListLength(image));
+    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
 
     if (status == MagickFalse)
       break;

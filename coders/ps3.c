@@ -866,6 +866,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     bounds;
 
   size_t
+    imageListLength,
     length,
     page,
     pixel,
@@ -933,6 +934,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
   (void) memset(&bounds,0,sizeof(bounds));
   page=0;
   scene=0;
+  imageListLength=GetImageListLength(image);
   do
   {
     /*
@@ -1070,7 +1072,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
               (void) CopyMagickString(buffer,"%%Pages: 1\n",MagickPathExtent);
             else
               (void) FormatLocaleString(buffer,MagickPathExtent,
-                "%%%%Pages: %.20g\n",(double) GetImageListLength(image));
+                "%%%%Pages: %.20g\n",(double) imageListLength);
             (void) WriteBlobString(image,buffer);
           }
         if (image->colorspace == CMYKColorspace)
@@ -1600,8 +1602,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,
-      GetImageListLength(image));
+    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);

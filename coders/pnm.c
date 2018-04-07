@@ -1519,6 +1519,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
 
   size_t
     extent,
+    imageListLength,
     packet_size;
 
   ssize_t
@@ -1540,6 +1541,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
   if (status == MagickFalse)
     return(status);
   scene=0;
+  imageListLength=GetImageListLength(image);
   do
   {
     QuantumAny
@@ -2431,8 +2433,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,
-      GetImageListLength(image));
+    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);

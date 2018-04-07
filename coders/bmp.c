@@ -1615,6 +1615,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
 
   size_t
     bytes_per_line,
+    imageListLength,
     type;
 
   ssize_t
@@ -1644,13 +1645,11 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
   else
     if (LocaleCompare(image_info->magick,"BMP3") == 0)
       type=3;
-
   option=GetImageOption(image_info,"bmp:format");
   if (option != (char *) NULL)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  Format=%s",option);
-
       if (LocaleCompare(option,"bmp2") == 0)
         type=2;
       if (LocaleCompare(option,"bmp3") == 0)
@@ -1658,8 +1657,8 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
       if (LocaleCompare(option,"bmp4") == 0)
         type=4;
     }
-
   scene=0;
+  imageListLength=GetImageListLength(image);
   do
   {
     /*
@@ -2345,8 +2344,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,
-      GetImageListLength(image));
+    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);

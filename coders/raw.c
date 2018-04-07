@@ -465,6 +465,7 @@ static MagickBooleanType WriteRAWImage(const ImageInfo *image_info,Image *image,
     *p;
 
   size_t
+    imageListLength,
     length;
 
   ssize_t
@@ -565,6 +566,7 @@ static MagickBooleanType WriteRAWImage(const ImageInfo *image_info,Image *image,
     }
   }
   scene=0;
+  imageListLength=GetImageListLength(image);
   do
   {
     /*
@@ -596,8 +598,7 @@ static MagickBooleanType WriteRAWImage(const ImageInfo *image_info,Image *image,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,
-      GetImageListLength(image));
+    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);

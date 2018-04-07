@@ -341,6 +341,9 @@ static MagickBooleanType WriteAAIImage(const ImageInfo *image_info,Image *image,
   register unsigned char
     *magick_restrict q;
 
+  size_t
+    imageListLength;
+
   ssize_t
     count,
     y;
@@ -363,6 +366,7 @@ static MagickBooleanType WriteAAIImage(const ImageInfo *image_info,Image *image,
   if (status == MagickFalse)
     return(status);
   scene=0;
+  imageListLength=GetImageListLength(image);
   do
   {
     /*
@@ -414,8 +418,7 @@ static MagickBooleanType WriteAAIImage(const ImageInfo *image_info,Image *image,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,
-      GetImageListLength(image));
+    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);
