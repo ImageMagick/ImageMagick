@@ -366,6 +366,8 @@ MagickExport MagickBooleanType GlobExpression(const char *expression,
     return(MagickTrue);
   if (GetUTFCode(pattern) == 0)
     return(MagickTrue);
+  while (GetUTFCode(pattern) == '*')
+    pattern+=GetUTFOctets(pattern);
   if (LocaleCompare(pattern,"*") == 0)
     return(MagickTrue);
   p=pattern+strlen(pattern)-1;
