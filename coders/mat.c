@@ -669,7 +669,7 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     if ((HDR.imagf != 0) && (HDR.imagf != 1))
       break;
     if (HDR.nameLen > 0xFFFF)
-      return((Image *) NULL);
+      return(DestroyImageList(image));
     for (i=0; i < (ssize_t) HDR.nameLen; i++)
     {
       int
@@ -689,24 +689,25 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     image->columns=(size_t) HDR.nRows;
     image->rows=(size_t) HDR.nCols;
     if ((image->columns == 0) || (image->rows == 0))
-      return(image);
+      return(DestroyImageList(image));
     if (image_info->ping != MagickFalse)
       {
         Swap(image->columns,image->rows);
         if(HDR.imagf==1) ldblk *= 2;
         SeekBlob(image, HDR.nCols*ldblk, SEEK_CUR);
-        if ((image->columns == 0) || (image->rows == 0)) 
-          return(image->previous == (Image *) NULL ? (Image *) NULL : image);
+        if ((image->columns == 0) || (image->rows == 0))
+          return(image->previous == (Image *) NULL ? DestroyImageList(image)
+            : image);
         goto skip_reading_current;
       }
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
-      return((Image *) NULL);
+      return(DestroyImageList(image));
     (void) SetImageBackgroundColor(image,exception);
     (void) SetImageColorspace(image,GRAYColorspace,exception);
     quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
-      return((Image *) NULL);
+      return(DestroyImageList(image));
     switch(HDR.Type[1])
     {
       case 0:
@@ -813,10 +814,7 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
 skip_reading_current:
     AcquireNextImage(image_info,image,exception);
     if (GetNextImageInList(image) == (Image *) NULL)
-      {
-        image=DestroyImageList(image);
-        return((Image *) NULL);
-      }
+      return(DestroyImageList(image));
     image=SyncNextImageInList(image);
     status=SetImageProgress(image,LoadImagesTag,TellBlob(image),
       GetBlobSize(image));
@@ -912,10 +910,15 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if (strncmp(MATLAB_HDR.identific,"MATLAB",6) != 0)
     {
-      image2=ReadMATImageV4(image_info,image,exception);
-      if (image2  == NULL)
-        goto MATLAB_KO;
-      image=image2;
+      image=ReadMATImageV4(image_info,image,exception);
+      if (image == NULL)
+        {
+          if ((image != image2) && (image2 != (Image *) NULL))
+            image2=DestroyImage(image2);
+          if (clone_info != (ImageInfo *) NULL)
+            clone_info=DestroyImageInfo(clone_info);
+          return((Image *) NULL);
+        }
       goto END_OF_READING;
     }
   MATLAB_HDR.Version = ReadBlobLSBShort(image);
