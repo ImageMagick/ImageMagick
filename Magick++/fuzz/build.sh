@@ -21,17 +21,16 @@ make -j$(nproc)
 make install
 popd
 
-# Build libtiff
-pushd "$SRC/libtiff"
-./autogen.sh
-./configure --enable-static --disable-shared --prefix="$WORK"
+# Build libjpeg-turbo
+pushd "$SRC/libjpeg-turbo"
+cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DENABLE_STATIC=on -DENABLE_SHARED=off
 make -j$(nproc)
 make install
 popd
 
-# Build libjpeg-turbo
-pushd "$SRC/libjpeg-turbo"
-cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DENABLE_STATIC=on -DENABLE_SHARED=off
+# Build libtiff
+pushd "$SRC/libtiff"
+cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DBUILD_SHARED_LIBS=off
 make -j$(nproc)
 make install
 popd
