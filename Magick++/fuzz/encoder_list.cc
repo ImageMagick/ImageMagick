@@ -9,6 +9,8 @@ static std::string getInitializer(const std::string module)
 {
   if ((module == "BGR") || (module == "CMYK") || (module =="RGB") || (module =="YUV"))
     return "interlace";
+  if (module == "PNG")
+    return "png";
   return "";
 }
 

@@ -26,6 +26,9 @@ static ssize_t EncoderInitializer(const uint8_t *Data, const size_t Size, Magick
     image.interlaceType(interlace);
     return 1;
   }
+  if (FUZZ_ENCODER_INITIALIZER == "png") {
+    image.defineValue("png", "ignore-crc", "1");
+  }
 
   return 0;
 }
@@ -35,9 +38,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
   const ssize_t offset = EncoderInitializer(Data, Size, image);
   if (offset < 0)
     return 0;
-  if (FUZZ_ENCODER == "PNG") {
-      SetImageOption(image.imageInfo(), "png:ignore-crc", "1");
-  }
   std::string encoder = FUZZ_ENCODER;
   image.magick(encoder);
   image.fileName(std::string(encoder) + ":");
