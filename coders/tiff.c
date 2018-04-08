@@ -1656,6 +1656,12 @@ RestoreMSCWarning
         TIFFClose(tiff);
         return(DestroyImageList(image));
       }
+    status=ResetImagePixels(image,exception);
+    if (status == MagickFalse)
+      {
+        TIFFClose(tiff);
+        return(DestroyImageList(image));
+      }
     /*
       Allocate memory for the image and pixel buffer.
     */
