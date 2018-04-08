@@ -8,6 +8,7 @@
 #include <Shlwapi.h>
 #include <stdint.h>
 #include "encoder_format.h"
+#include <Magick++/Functions.h>
 using namespace std;
 
 extern EncoderFormat encoderFormat;
@@ -47,6 +48,8 @@ public:
 
     data = reinterpret_cast<const uint8_t *>(_data);
     LLVMFuzzerTestOneInput(data, _size);
+
+    delete _data;
   }
 
 
@@ -59,6 +62,9 @@ int wmain(int argc, wchar_t *argv[])
 {
   FuzzingDebugger
     debugger;
+
+  int
+    debug;
 
   wstring
     fileName;
@@ -77,11 +83,24 @@ int wmain(int argc, wchar_t *argv[])
   else
     fileName = wstring(argv[1]);
 
-  if (!debugger.load(fileName))
+  debug=_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+  debug |= _CRTDBG_DELAY_FREE_MEM_DF;
+  debug |= _CRTDBG_LEAK_CHECK_DF;
+  (void) _CrtSetDbgFlag(debug);
+
+  //_CrtSetBreakAlloc(42);
+
   {
-    wcerr << L"Unable to load " << fileName;
-    cin.get();
+    if (!debugger.load(fileName))
+    {
+      wcerr << L"Unable to load " << fileName;
+      cin.get();
+    }
+    else
+      debugger.start();
   }
-  else
-    debugger.start();
+
+  Magick::TerminateMagick();
+
+  _CrtCheckMemory();
 }
