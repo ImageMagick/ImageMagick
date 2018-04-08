@@ -3032,6 +3032,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
     }
+    if (status == MagickFalse)
+      break;
     primitive_info[j].primitive=primitive_type;
     primitive_info[j].coordinates=(size_t) x;
     primitive_info[j].method=FloodfillMethod;
