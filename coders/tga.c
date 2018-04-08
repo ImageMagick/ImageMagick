@@ -297,7 +297,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
       if (comment == (char *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       count=ReadBlob(image,length,(unsigned char *) comment);
-      if (count == length)
+      if (count == (ssize_t) length)
         {
           comment[length]='\0';
           (void) SetImageProperty(image,"comment",comment,exception);
