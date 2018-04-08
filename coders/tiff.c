@@ -1557,9 +1557,6 @@ RestoreMSCWarning
            char
              sampling_factor[MagickPathExtent];
 
-           int
-             tiff_status;
-
            uint16
              horizontal,
              vertical;
@@ -1607,9 +1604,6 @@ RestoreMSCWarning
       image->scene=value;
     if (image->storage_class == PseudoClass)
       {
-        int
-          tiff_status;
-
         size_t
           range;
 
@@ -1726,12 +1720,12 @@ RestoreMSCWarning
     if (TIFFGetField(tiff,TIFFTAG_ROWSPERSTRIP,&rows_per_strip) == 1)
       {
         char
-          value[MagickPathExtent];
+          buffer[MagickPathExtent];
 
         method=ReadStripMethod;
-        (void) FormatLocaleString(value,MagickPathExtent,"%u",
+        (void) FormatLocaleString(buffer,MagickPathExtent,"%u",
           (unsigned int) rows_per_strip);
-        (void) SetImageProperty(image,"tiff:rows-per-strip",value,exception);
+        (void) SetImageProperty(image,"tiff:rows-per-strip",buffer,exception);
       }
     if (rows_per_strip > (uint32) image->rows)
       ThrowTIFFException(CorruptImageError,"ImproperImageHeader");
@@ -1808,14 +1802,11 @@ RestoreMSCWarning
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          int
-            status;
-
           register Quantum
             *magick_restrict q;
 
-          status=TIFFReadPixels(tiff,0,y,(char *) tiff_pixels);
-          if (status == -1)
+         tiff_status=TIFFReadPixels(tiff,0,y,(char *) tiff_pixels);
+          if (tiff_status == -1)
             break;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
@@ -1861,14 +1852,11 @@ RestoreMSCWarning
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          int
-            status;
-
           register Quantum
             *magick_restrict q;
 
-          status=TIFFReadPixels(tiff,0,y,(char *) tiff_pixels);
-          if (status == -1)
+          tiff_status=TIFFReadPixels(tiff,0,y,(char *) tiff_pixels);
+          if (tiff_status == -1)
             break;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
@@ -1899,11 +1887,8 @@ RestoreMSCWarning
             register Quantum
               *magick_restrict q;
 
-            int
-              status;
-
-            status=TIFFReadPixels(tiff,(tsample_t) i,y,(char *) tiff_pixels);
-            if (status == -1)
+            tiff_status=TIFFReadPixels(tiff,(tsample_t) i,y,(char *) tiff_pixels);
+            if (tiff_status == -1)
               break;
             q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
             if (q == (Quantum *) NULL)
@@ -1946,9 +1931,6 @@ RestoreMSCWarning
       {
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          int
-            status;
-
           register Quantum
             *magick_restrict q;
 
@@ -1958,8 +1940,8 @@ RestoreMSCWarning
           unsigned char
             *p;
 
-          status=TIFFReadPixels(tiff,0,y,(char *) tiff_pixels);
-          if (status == -1)
+          tiff_status=TIFFReadPixels(tiff,0,y,(char *) tiff_pixels);
+          if (tiff_status == -1)
             break;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
