@@ -1570,7 +1570,9 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
   {
     dx=primitive_info[i].point.x-primitive_info[i-1].point.x;
     dy=primitive_info[i].point.y-primitive_info[i-1].point.y;
-    maximum_length=hypot((double) dx,dy);
+    maximum_length=hypot(dx,dy);
+    if (maximum_length > MaxBezierCoordinates)
+      break;
     if (fabs(length) < DrawEpsilon)
       {
         n++;
