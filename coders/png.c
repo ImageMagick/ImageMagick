@@ -1945,32 +1945,32 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
         }
       p=GetStringInfoDatum(profile);
 
-      if (*p != 'E')
+      /* Initialize profile with "Exif\0\0" */
+      *p++ ='E';
+      *p++ ='x';
+      *p++ ='i';
+      *p++ ='f';
+      *p++ ='\0';
+      *p++ ='\0';
+
+      s=chunk->data;
+      i=0;
+      if (chunk->size > 6)
         {
-          /* Initialize profile with "Exif\0\0" if it is not
+          /* Skip first 6 bytes if "Exif\0\0" is
              already present by accident
           */
-          *p++ ='E';
-          *p++ ='x';
-          *p++ ='i';
-          *p++ ='f';
-          *p++ ='\0';
-          *p++ ='\0';
+          if (s[0] == 'E' && s[1] == 'x'  && s[2] == 'i' &&
+              s[3] == 'f' && s[4] == '\0' && s[5] == '\0')
+          {
+            s+=6;
+            i=6;
+            SetStringInfoLength(profile,chunk->size);
+          }
         }
-      else
-        {
-          if (p[1] != 'x' || p[2] != 'i' || p[3] != 'f' ||
-              p[4] != '\0' || p[5] != '\0')
-            {
-              /* Chunk is malformed */
-              profile=DestroyStringInfo(profile);
-              return(-1);
-            }
-         }
 
       /* copy chunk->data to profile */
-      s=chunk->data;
-      for (i=0; i<chunk->size; i++)
+      for (; i<chunk->size; i++)
         *p++ = *s++;
 
       error_info=(PNGErrorInfo *) png_get_error_ptr(ping);
