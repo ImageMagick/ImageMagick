@@ -301,8 +301,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
         {
           comment[length]='\0';
           (void) SetImageProperty(image,"comment",comment,exception);
-          comment=DestroyString(comment);
         }
+      comment=DestroyString(comment);
     }
   if (tga_info.attributes & (1UL << 4))
     {
