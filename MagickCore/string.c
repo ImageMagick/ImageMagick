@@ -239,6 +239,8 @@ MagickExport StringInfo *BlobToStringInfo(const void *blob,const size_t length)
     }
   if (blob != (const void *) NULL)
     (void) memcpy(string_info->datum,blob,length);
+  else
+    (void) memset(string_info->datum,0,length*sizeof(*string_info->datum));
   (void) memset(string_info->datum+length,0,MagickPathExtent*
     sizeof(*string_info->datum));
   return(string_info);
