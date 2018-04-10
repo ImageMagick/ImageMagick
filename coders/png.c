@@ -4534,6 +4534,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             break;
           chunk[i]=(unsigned char) c;
         }
+        for ( ; i < (ssize_t) length; i++)
+          chunk[i]='\0';
 
         p=chunk;
       }
