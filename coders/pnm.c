@@ -635,14 +635,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         (void) SetImageColorspace(image,GRAYColorspace,exception);
         quantum_type=GrayQuantum;
-        if (image->depth <= 8)
-          extent=image->columns;
-        else
-          if (image->depth <= 16)
-            extent=2*image->columns;
-          else
-            extent=4*image->columns;
-        quantum_info=AcquireQuantumInfo(image_info,image);
+        extent=3*(image->depth <= 8 ? 1 : image->depth <= 16 ? 2 : 4)*
+          image->columns;
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         for (y=0; y < (ssize_t) image->rows; y++)
@@ -750,7 +744,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Convert PNM raster image to pixel packets.
         */
         quantum_type=RGBQuantum;
-        extent=3*(image->depth <= 8 ? 1 : 2)*image->columns;
+        extent=3*(image->depth <= 8 ? 1 : image->depth <= 16 ? 2 : 4)*
+          image->columns;
         quantum_info=AcquireQuantumInfo(image_info,image);
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
