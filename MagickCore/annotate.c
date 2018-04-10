@@ -1760,7 +1760,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
                 double
                   Sa,
                   Da;
-                
+
                 Da=1.0-(QuantumScale*GetPixelAlpha(image,q));
                 Sa=fill_opacity;
                 fill_opacity=(1.0-RoundToUnity(Sa+Da-Sa*Da))*QuantumRange;
