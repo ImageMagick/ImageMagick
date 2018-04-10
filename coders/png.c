@@ -1966,6 +1966,7 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
             s+=6;
             i=6;
             SetStringInfoLength(profile,chunk->size);
+            p=GetStringInfoDatum(profile);
           }
         }
 
