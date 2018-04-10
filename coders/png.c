@@ -5437,7 +5437,11 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
 
               c=ReadBlobByte(image);
               if (c == EOF)
-                break;
+                {
+                  chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+                  ThrowReaderException(CorruptImageError,
+                    "InsufficientImageDataInFile");
+                }
               chunk[i]=(unsigned char) c;
             }
 
