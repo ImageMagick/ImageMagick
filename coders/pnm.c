@@ -637,6 +637,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         quantum_type=GrayQuantum;
         extent=3*(image->depth <= 8 ? 1 : image->depth <= 16 ? 2 : 4)*
           image->columns;
+        quantum_info=AcquireQuantumInfo(image_info,image);
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         for (y=0; y < (ssize_t) image->rows; y++)
