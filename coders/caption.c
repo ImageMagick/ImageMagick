@@ -159,6 +159,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   width=draw_info->pointsize*strlen(caption);
   if (AcquireMagickResource(WidthResource,width) == MagickFalse)
     {
+      caption=DestroyString(caption);
       draw_info=DestroyDrawInfo(draw_info);
       ThrowReaderException(ImageError,"WidthOrHeightExceedsLimit");
     }
