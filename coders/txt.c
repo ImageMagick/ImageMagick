@@ -382,12 +382,12 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     colorspace[MagickPathExtent],
     text[MagickPathExtent];
 
-  Image
-    *image;
-
-  long
+  double
     x_offset,
     y_offset;
+
+  Image
+    *image;
 
   PixelInfo
     pixel;
@@ -437,8 +437,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ReadBlobString(image,text);
   if (LocaleNCompare((char *) text,MagickID,strlen(MagickID)) != 0)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  x_offset=(-1);
-  y_offset=(-1);
+  x_offset=(-1.0);
+  y_offset=(-1.0);
   do
   {
     width=0;
@@ -504,29 +504,29 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             if (image->alpha_trait != UndefinedPixelTrait)
               {
-                count=(ssize_t) sscanf(text,"%ld,%ld: (%lf%*[%,]%lf%*[%,]",
+                count=(ssize_t) sscanf(text,"%lf,%lf: (%lf%*[%,]%lf%*[%,]",
                   &x_offset,&y_offset,&red,&alpha);
                 green=red;
                 blue=red;
                 break;
               }
-            count=(ssize_t) sscanf(text,"%ld,%ld: (%lf%*[%,]",&x_offset,
+            count=(ssize_t) sscanf(text,"%lf,%lf: (%lf%*[%,]",&x_offset,
               &y_offset,&red);
             green=red;
             blue=red;
-            break;       
+            break;
           }
           case CMYKColorspace:
           {
             if (image->alpha_trait != UndefinedPixelTrait)
               {
                 count=(ssize_t) sscanf(text,
-                  "%ld,%ld: (%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]",
+                  "%lf,%lf: (%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]",
                   &x_offset,&y_offset,&red,&green,&blue,&black,&alpha);
                 break;
               }
             count=(ssize_t) sscanf(text,
-              "%ld,%ld: (%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]",&x_offset,
+              "%lf,%lf: (%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]",&x_offset,
               &y_offset,&red,&green,&blue,&black);
             break;
           }
@@ -535,14 +535,13 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (image->alpha_trait != UndefinedPixelTrait)
               {
                 count=(ssize_t) sscanf(text,
-                  "%ld,%ld: (%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]",
+                  "%lf,%lf: (%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]",
                   &x_offset,&y_offset,&red,&green,&blue,&alpha);
                 break;
               }
-            count=(ssize_t) sscanf(text,
-              "%ld,%ld: (%lf%*[%,]%lf%*[%,]%lf%*[%,]",&x_offset,
-              &y_offset,&red,&green,&blue);
-            break;       
+            count=(ssize_t) sscanf(text,"%lf,%lf: (%lf%*[%,]%lf%*[%,]%lf%*[%,]",
+              &x_offset,&y_offset,&red,&green,&blue);
+            break;
           }
         }
         if (strchr(text,'%') != (char *) NULL)
