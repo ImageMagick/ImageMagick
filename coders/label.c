@@ -92,9 +92,6 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
 {
   char
     geometry[MagickPathExtent],
-    *property;
-
-  const char
     *label;
 
   DrawInfo
@@ -127,17 +124,16 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   (void) ResetImagePage(image,"0x0+0+0");
   if ((image->columns != 0) && (image->rows != 0))
     (void) SetImageBackgroundColor(image,exception);
-  property=InterpretImageProperties((ImageInfo *) image_info,image,
+  label=InterpretImageProperties((ImageInfo *) image_info,image,
     image_info->filename,exception);
-  if (property == (char *) NULL)
+  if (label == (char *) NULL)
     return(DestroyImageList(image));
-  (void) SetImageProperty(image,"label",property,exception);
-  property=DestroyString(property);
-  label=GetImageProperty(image,"label",exception);
+  (void) SetImageProperty(image,"label",label,exception);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  width=draw_info->pointsize*strlen(label);
+  width=(size_t) floor(draw_info->pointsize*strlen(label)+0.5);
   if (AcquireMagickResource(WidthResource,width) == MagickFalse)
     {
+      label=DestroyString(label);
       draw_info=DestroyDrawInfo(draw_info);
       ThrowReaderException(ImageError,"WidthOrHeightExceedsLimit");
     }
@@ -189,6 +185,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         }
         if (status == MagickFalse)
           {
+            label=DestroyString(label);
             draw_info=DestroyDrawInfo(draw_info);
             image=DestroyImageList(image);
             return((Image *) NULL);
@@ -226,6 +223,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
             status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
           }
       }
+   label=DestroyString(label);
    if (status == MagickFalse)
      {
        draw_info=DestroyDrawInfo(draw_info);
