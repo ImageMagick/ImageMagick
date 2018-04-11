@@ -54,6 +54,7 @@
 #include "MagickCore/memory_.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
+#include "MagickCore/resource_.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
@@ -134,6 +135,12 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   property=DestroyString(property);
   label=GetImageProperty(image,"label",exception);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  width=draw_info->pointsize*strlen(label);
+  if (AcquireMagickResource(WidthResource,width) == MagickFalse)
+    {
+      draw_info=DestroyDrawInfo(draw_info);
+      ThrowReaderException(ImageError,"WidthOrHeightExceedsLimit");
+    }
   draw_info->text=ConstantString(label);
   metrics.width=0.0;
   metrics.height=0.0;

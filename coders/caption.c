@@ -58,6 +58,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
+#include "MagickCore/resource_.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
@@ -155,6 +156,12 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   property=DestroyString(property);
   caption=ConstantString(GetImageProperty(image,"caption",exception));
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  width=draw_info->pointsize*strlen(caption);
+  if (AcquireMagickResource(WidthResource,width) == MagickFalse)
+    {
+      draw_info=DestroyDrawInfo(draw_info);
+      ThrowReaderException(ImageError,"WidthOrHeightExceedsLimit");
+    }
   (void) CloneString(&draw_info->text,caption);
   gravity=GetImageOption(image_info,"gravity");
   if (gravity != (char *) NULL)
