@@ -75,6 +75,30 @@
 #include "lcms2.h"
 #endif
 #endif
+
+/*
+  Definitions
+*/
+#define lcms_hdri
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
+  #if (MAGICKCORE_QUANTUM_DEPTH == 8)
+  #undef lcms_hdri
+  #define lcms_type unsigned short
+  #define lcms_scale_source(pixel) ScaleQuantumToShort(pixel)
+  #define lcms_scale_target(pixel) ScaleShortToQuantum(pixel)
+  #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
+  #undef lcms_hdri
+  #define lcms_type unsigned short
+  #define lcms_scale_source(pixel) pixel
+  #define lcms_scale_target(pixel) pixel
+  #endif
+#endif
+
+#if defined(lcms_hdri)
+#define lcms_type double
+#define lcms_scale_source(pixel) source_scale*QuantumScale*pixel
+#define lcms_scale_target(pixel) target_scale*QuantumRange*(pixel)
+#endif
 
 /*
   Forward declarations
@@ -337,23 +361,24 @@ MagickExport char *GetNextImageProfile(const Image *image)
 */
 
 #if defined(MAGICKCORE_LCMS_DELEGATE)
-static double **DestroyPixelThreadSet(double **pixels)
+static lcms_type **DestroyPixelThreadSet(lcms_type **pixels)
 {
   register ssize_t
     i;
 
-  assert(pixels != (double **) NULL);
+  if (pixels != (lcms_type **) NULL)
+    return((lcms_type **) NULL);
   for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
-    if (pixels[i] != (double *) NULL)
-      pixels[i]=(double *) RelinquishMagickMemory(pixels[i]);
-  pixels=(double **) RelinquishMagickMemory(pixels);
+    if (pixels[i] != (lcms_type *) NULL)
+      pixels[i]=(lcms_type *) RelinquishMagickMemory(pixels[i]);
+  pixels=(lcms_type **) RelinquishMagickMemory(pixels);
   return(pixels);
 }
 
-static double **AcquirePixelThreadSet(const size_t columns,
+static lcms_type **AcquirePixelThreadSet(const size_t columns,
   const size_t channels)
 {
-  double
+  lcms_type
     **pixels;
 
   register ssize_t
@@ -363,15 +388,15 @@ static double **AcquirePixelThreadSet(const size_t columns,
     number_threads;
 
   number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
-  pixels=(double **) AcquireQuantumMemory(number_threads,sizeof(*pixels));
-  if (pixels == (double **) NULL)
-    return((double **) NULL);
+  pixels=(lcms_type **) AcquireQuantumMemory(number_threads,sizeof(*pixels));
+  if (pixels == (lcms_type **) NULL)
+    return((lcms_type **) NULL);
   (void) memset(pixels,0,number_threads*sizeof(*pixels));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
-    pixels[i]=(double *) AcquireQuantumMemory(columns,channels*
+    pixels[i]=(lcms_type *) AcquireQuantumMemory(columns,channels*
       sizeof(**pixels));
-    if (pixels[i] == (double *) NULL)
+    if (pixels[i] == (lcms_type *) NULL)
       return(DestroyPixelThreadSet(pixels));
   }
   return(pixels);
@@ -883,14 +908,18 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               source_type,
               target_type;
 
-            double
-              **magick_restrict source_pixels,
-              source_scale,
-              **magick_restrict target_pixels,
-              target_scale;
-
             int
               intent;
+
+            lcms_type
+              **magick_restrict source_pixels,
+              **magick_restrict target_pixels;
+
+#if defined(lcms_hdri)
+            lcms_type
+              source_scale,
+              target_scale;
+#endif
 
             MagickOffsetType
               progress;
@@ -913,104 +942,169 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                   ThrowProfileException(ResourceLimitError,
                     "ColorspaceColorProfileMismatch",name);
               }
+#if defined(lcms_hdri)
             source_scale=1.0;
+#endif
             source_channels=3;
             switch (cmsGetColorSpace(source_profile))
             {
               case cmsSigCmykData:
               {
                 source_colorspace=CMYKColorspace;
-                source_type=(cmsUInt32Number) TYPE_CMYK_DBL;
                 source_channels=4;
+#if defined(lcms_hdri)
+                source_type=(cmsUInt32Number) TYPE_CMYK_DBL;
                 source_scale=100.0;
+#else
+                source_type=(cmsUInt32Number) TYPE_CMYK_16;
+#endif
                 break;
               }
               case cmsSigGrayData:
               {
                 source_colorspace=GRAYColorspace;
-                source_type=(cmsUInt32Number) TYPE_GRAY_DBL;
                 source_channels=1;
+#if defined(lcms_hdri)
+                source_type=(cmsUInt32Number) TYPE_GRAY_DBL;
+#else
+                source_type=(cmsUInt32Number) TYPE_GRAY_16;
+#endif
                 break;
               }
               case cmsSigLabData:
               {
                 source_colorspace=LabColorspace;
+#if defined(lcms_hdri)
                 source_type=(cmsUInt32Number) TYPE_Lab_DBL;
                 source_scale=100.0;
-                break;
+#else
+                source_type=(cmsUInt32Number) TYPE_Lab_16;
+#endif
                 break;
               }
+#if !defined(lcms_hdri)
+              case cmsSigLuvData:
+              {
+                source_colorspace=YUVColorspace;
+                source_type=(cmsUInt32Number) TYPE_YUV_16;
+                break;
+              }
+#endif
               case cmsSigRgbData:
               {
                 source_colorspace=sRGBColorspace;
+#if defined(lcms_hdri)
                 source_type=(cmsUInt32Number) TYPE_RGB_DBL;
+#else
+                source_type=(cmsUInt32Number) TYPE_RGB_16;
+#endif
                 break;
               }
               case cmsSigXYZData:
               {
                 source_colorspace=XYZColorspace;
+#if defined(lcms_hdri)
                 source_type=(cmsUInt32Number) TYPE_XYZ_DBL;
+#else
+                source_type=(cmsUInt32Number) TYPE_XYZ_16;
+#endif
                 break;
               }
-              default:
+#if !defined(lcms_hdri)
+              case cmsSigYCbCrData:
               {
-                source_colorspace=UndefinedColorspace;
-                source_type=(cmsUInt32Number) TYPE_RGB_DBL;
+                source_colorspace=YUVColorspace;
+                source_type=(cmsUInt32Number) TYPE_YCbCr_16;
                 break;
               }
+#endif
+              default:
+                ThrowProfileException(ImageError,
+                  "ColorspaceColorProfileMismatch",name);
             }
             signature=cmsGetPCS(source_profile);
             if (target_profile != (cmsHPROFILE) NULL)
               signature=cmsGetColorSpace(target_profile);
+#if defined(lcms_hdri)
             target_scale=1.0;
+#endif
             target_channels=3;
             switch (signature)
             {
               case cmsSigCmykData:
               {
                 target_colorspace=CMYKColorspace;
-                target_type=(cmsUInt32Number) TYPE_CMYK_DBL;
                 target_channels=4;
+#if defined(lcms_hdri)
+                target_type=(cmsUInt32Number) TYPE_CMYK_DBL;
                 target_scale=0.01;
-                break;
-              }
-              case cmsSigLabData:
-              {
-                target_colorspace=LabColorspace;
-                target_type=(cmsUInt32Number) TYPE_Lab_DBL;
-                target_scale=0.01;
+#else
+                target_type=(cmsUInt32Number) TYPE_CMYK_16;
+#endif
                 break;
               }
               case cmsSigGrayData:
               {
                 target_colorspace=GRAYColorspace;
-                target_type=(cmsUInt32Number) TYPE_GRAY_DBL;
                 target_channels=1;
+#if defined(lcms_hdri)
+                target_type=(cmsUInt32Number) TYPE_GRAY_DBL;
+#else
+                target_type=(cmsUInt32Number) TYPE_GRAY_16;
+#endif
                 break;
               }
+              case cmsSigLabData:
+              {
+                target_colorspace=LabColorspace;
+#if defined(lcms_hdri)
+                target_type=(cmsUInt32Number) TYPE_Lab_DBL;
+                target_scale=0.01;
+#else
+                target_type=(cmsUInt32Number) TYPE_Lab_16;
+#endif
+                break;
+              }
+#if !defined(lcms_hdri)
+              case cmsSigLuvData:
+              {
+                target_colorspace=YUVColorspace;
+                target_type=(cmsUInt32Number) TYPE_YUV_16;
+                break;
+              }
+#endif
               case cmsSigRgbData:
               {
                 target_colorspace=sRGBColorspace;
+#if defined(lcms_hdri)
                 target_type=(cmsUInt32Number) TYPE_RGB_DBL;
+#else
+                target_type=(cmsUInt32Number) TYPE_RGB_16;
+#endif
                 break;
               }
               case cmsSigXYZData:
               {
                 target_colorspace=XYZColorspace;
+#if defined(lcms_hdri)
                 target_type=(cmsUInt32Number) TYPE_XYZ_DBL;
+#else
+                target_type=(cmsUInt32Number) TYPE_XYZ_16;
+#endif
                 break;
               }
-              default:
+#if !defined(lcms_hdri)
+              case cmsSigYCbCrData:
               {
-                target_colorspace=UndefinedColorspace;
-                target_type=(cmsUInt32Number) TYPE_RGB_DBL;
+                target_colorspace=YUVColorspace;
+                target_type=(cmsUInt32Number) TYPE_YCbCr_16;
                 break;
               }
+#endif
+              default:
+                ThrowProfileException(ImageError,
+                  "ColorspaceColorProfileMismatch",name);
             }
-            if ((source_colorspace == UndefinedColorspace) ||
-                (target_colorspace == UndefinedColorspace))
-              ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
-                name);
             switch (image->rendering_intent)
             {
               case AbsoluteIntent: intent=INTENT_ABSOLUTE_COLORIMETRIC; break;
@@ -1034,9 +1128,11 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             */
             source_pixels=AcquirePixelThreadSet(image->columns,source_channels);
             target_pixels=AcquirePixelThreadSet(image->columns,target_channels);
-            if ((source_pixels == (double **) NULL) ||
-                (target_pixels == (double **) NULL))
+            if ((source_pixels == (lcms_type **) NULL) ||
+                (target_pixels == (lcms_type **) NULL))
               {
+                target_pixels=DestroyPixelThreadSet(target_pixels);
+                source_pixels=DestroyPixelThreadSet(source_pixels);
                 transform=DestroyTransformThreadSet(transform);
                 ThrowProfileException(ResourceLimitError,
                   "MemoryAllocationFailed",image->filename);
@@ -1068,7 +1164,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               MagickBooleanType
                 sync;
 
-              register double
+              register lcms_type
                 *p;
 
               register Quantum
@@ -1089,14 +1185,14 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               p=source_pixels[id];
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                *p++=source_scale*QuantumScale*GetPixelRed(image,q);
+                *p++=lcms_scale_source(GetPixelRed(image,q));
                 if (source_channels > 1)
                   {
-                    *p++=source_scale*QuantumScale*GetPixelGreen(image,q);
-                    *p++=source_scale*QuantumScale*GetPixelBlue(image,q);
+                    *p++=lcms_scale_source(GetPixelGreen(image,q));
+                    *p++=lcms_scale_source(GetPixelBlue(image,q));
                   }
                 if (source_channels > 3)
-                  *p++=source_scale*QuantumScale*GetPixelBlack(image,q);
+                  *p++=lcms_scale_source(GetPixelBlack(image,q));
                 q+=GetPixelChannels(image);
               }
               cmsDoTransform(transform[id],source_pixels[id],target_pixels[id],
@@ -1106,25 +1202,20 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 if (target_channels == 1)
-                  SetPixelGray(image,ClampToQuantum(target_scale*
-                    QuantumRange*(*p)),q);
+                  SetPixelGray(image,lcms_scale_target(*p),q);
                 else
-                  SetPixelRed(image,ClampToQuantum(target_scale*
-                    QuantumRange*(*p)),q);
+                  SetPixelRed(image,lcms_scale_target(*p),q);
                 p++;
                 if (target_channels > 1)
                   {
-                    SetPixelGreen(image,ClampToQuantum(target_scale*
-                      QuantumRange*(*p)),q);
+                    SetPixelGreen(image,lcms_scale_target(*p),q);
                     p++;
-                    SetPixelBlue(image,ClampToQuantum(target_scale*
-                      QuantumRange*(*p)),q);
+                    SetPixelBlue(image,lcms_scale_target(*p),q);
                     p++;
                   }
                 if (target_channels > 3)
                   {
-                    SetPixelBlack(image,ClampToQuantum(target_scale*
-                      QuantumRange*(*p)),q);
+                    SetPixelBlack(image,lcms_scale_target(*p),q);
                     p++;
                   }
                 q+=GetPixelChannels(image);
