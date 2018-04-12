@@ -2799,7 +2799,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
 #endif
   image_info->affirm=MagickFalse;
   sans_exception=AcquireExceptionInfo();
-  if (*component != '\0')
+  if ((*component != '\0') && (*component != '*'))
     {
       MagickFormatType
         format_type;
