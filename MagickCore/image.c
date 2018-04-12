@@ -97,6 +97,7 @@
 #include "MagickCore/threshold.h"
 #include "MagickCore/timer.h"
 #include "MagickCore/token.h"
+#include "MagickCore/token-private.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
 #include "MagickCore/version.h"
@@ -2799,7 +2800,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
 #endif
   image_info->affirm=MagickFalse;
   sans_exception=AcquireExceptionInfo();
-  if ((*component != '\0') && (*component != '*'))
+  if ((*component != '\0') && (IsGlob(component) == MagickFalse))
     {
       MagickFormatType
         format_type;
