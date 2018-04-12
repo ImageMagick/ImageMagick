@@ -1734,7 +1734,7 @@ RestoreMSCWarning
         (void) SetImageProperty(image,"tiff:rows-per-strip",buffer,exception);
       }
     if (rows_per_strip > (uint32) image->rows)
-      ThrowTIFFException(CorruptImageError,"ImproperImageHeader");
+      rows_per_strip=(uint32) image->rows;
     if ((samples_per_pixel >= 3) && (interlace == PLANARCONFIG_CONTIG))
       if ((image->alpha_trait == UndefinedPixelTrait) ||
           (samples_per_pixel >= 4))
