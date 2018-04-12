@@ -1136,7 +1136,7 @@ static void *GetAuthenticMetacontentFromCache(const Image *image)
 %
 %  The format of the GetAuthenticOpenCLBuffer() method is:
 %
-%      cl_mem GetAuthenticOpenCLBuffer(Image *image,
+%      cl_mem GetAuthenticOpenCLBuffer(const Image *image,
 %        MagickCLDevice device,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1148,7 +1148,7 @@ static void *GetAuthenticMetacontentFromCache(const Image *image)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickPrivate cl_mem GetAuthenticOpenCLBuffer(Image *image,
+MagickPrivate cl_mem GetAuthenticOpenCLBuffer(const Image *image,
   MagickCLDevice device,ExceptionInfo *exception)
 {
   CacheInfo
@@ -1159,7 +1159,7 @@ MagickPrivate cl_mem GetAuthenticOpenCLBuffer(Image *image,
   cache_info=(CacheInfo *) image->cache;
   if ((cache_info->type == UndefinedCache) || (cache_info->reference_count > 1))
     {
-      SyncImagePixelCache(image,exception);
+      SyncImagePixelCache((Image *) image,exception);
       cache_info=(CacheInfo *) image->cache;
     }
   if ((cache_info->type != MemoryCache) || (cache_info->mapped != MagickFalse))
