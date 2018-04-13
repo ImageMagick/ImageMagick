@@ -435,9 +435,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     keyword[MagickPathExtent],
     *options;
 
-  const unsigned char
-    *p;
-
   double
     version;
 
@@ -1191,9 +1188,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     image->depth=GetImageQuantumDepth(image,MagickFalse);
     if (image->storage_class == PseudoClass)
       {
-        size_t
-          packet_size;
-
         unsigned char
           *colormap;
 
@@ -1210,6 +1204,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         if (colors != 0)
           {
+            const unsigned char
+              *p;
+
             /*
               Read image colormap from file.
             */
@@ -1228,57 +1225,57 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               case 8:
               {
                 unsigned char
-                  pixel;
+                  char_pixel;
 
                 for (i=0; i < (ssize_t) image->colors; i++)
                 {
-                  p=PushCharPixel(p,&pixel);
+                  p=PushCharPixel(p,&char_pixel);
                   image->colormap[i].red=(MagickRealType)
-                    ScaleCharToQuantum(pixel);
-                  p=PushCharPixel(p,&pixel);
+                    ScaleCharToQuantum(char_pixel);
+                  p=PushCharPixel(p,&char_pixel);
                   image->colormap[i].green=(MagickRealType)
-                    ScaleCharToQuantum(pixel);
-                  p=PushCharPixel(p,&pixel);
+                    ScaleCharToQuantum(char_pixel);
+                  p=PushCharPixel(p,&char_pixel);
                   image->colormap[i].blue=(MagickRealType)
-                    ScaleCharToQuantum(pixel);
+                    ScaleCharToQuantum(char_pixel);
                 }
                 break;
               }
               case 16:
               {
                 unsigned short
-                  pixel;
+                  short_pixel;
 
                 for (i=0; i < (ssize_t) image->colors; i++)
                 {
-                  p=PushShortPixel(MSBEndian,p,&pixel);
+                  p=PushShortPixel(MSBEndian,p,&short_pixel);
                   image->colormap[i].red=(MagickRealType)
-                    ScaleShortToQuantum(pixel);
-                  p=PushShortPixel(MSBEndian,p,&pixel);
+                    ScaleShortToQuantum(short_pixel);
+                  p=PushShortPixel(MSBEndian,p,&short_pixel);
                   image->colormap[i].green=(MagickRealType)
-                    ScaleShortToQuantum(pixel);
-                  p=PushShortPixel(MSBEndian,p,&pixel);
+                    ScaleShortToQuantum(short_pixel);
+                  p=PushShortPixel(MSBEndian,p,&short_pixel);
                   image->colormap[i].blue=(MagickRealType)
-                    ScaleShortToQuantum(pixel);
+                    ScaleShortToQuantum(short_pixel);
                 }
                 break;
               }
               case 32:
               {
                 unsigned int
-                  pixel;
+                  long_pixel;
 
                 for (i=0; i < (ssize_t) image->colors; i++)
                 {
-                  p=PushLongPixel(MSBEndian,p,&pixel);
+                  p=PushLongPixel(MSBEndian,p,&long_pixel);
                   image->colormap[i].red=(MagickRealType)
-                    ScaleLongToQuantum(pixel);
-                  p=PushLongPixel(MSBEndian,p,&pixel);
+                    ScaleLongToQuantum(long_pixel);
+                  p=PushLongPixel(MSBEndian,p,&long_pixel);
                   image->colormap[i].green=(MagickRealType)
-                    ScaleLongToQuantum(pixel);
-                  p=PushLongPixel(MSBEndian,p,&pixel);
+                    ScaleLongToQuantum(long_pixel);
+                  p=PushLongPixel(MSBEndian,p,&long_pixel);
                   image->colormap[i].blue=(MagickRealType)
-                    ScaleLongToQuantum(pixel);
+                    ScaleLongToQuantum(long_pixel);
                 }
                 break;
               }
@@ -1395,7 +1392,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         allocator.opaque=(void *) image;
         lzma_info=initialize_lzma;
         lzma_info.allocator=(&allocator);
-        code=lzma_auto_decoder(&lzma_info,-1,0);
+        code=lzma_auto_decoder(&lzma_info,(uint64_t) -1,0);
         if (code != LZMA_OK)
           status=MagickFalse;
         break;
@@ -1866,37 +1863,37 @@ static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
         case 32:
         {
           unsigned int
-            value;
+            long_value;
 
           if (image->alpha_trait != UndefinedPixelTrait)
             {
-              value=ScaleQuantumToLong(ClampToQuantum(pixel->alpha));
-              pixels=PopLongPixel(MSBEndian,value,pixels);
+              long_value=ScaleQuantumToLong(ClampToQuantum(pixel->alpha));
+              pixels=PopLongPixel(MSBEndian,long_value,pixels);
             }
           break;
         }
         case 16:
         {
           unsigned short
-            value;
+            short_value;
 
           if (image->alpha_trait != UndefinedPixelTrait)
             {
-              value=ScaleQuantumToShort(ClampToQuantum(pixel->alpha));
-              pixels=PopShortPixel(MSBEndian,value,pixels);
+              short_value=ScaleQuantumToShort(ClampToQuantum(pixel->alpha));
+              pixels=PopShortPixel(MSBEndian,short_value,pixels);
             }
           break;
         }
         case 8:
         {
           unsigned char
-            value;
+            char_value;
 
           if (image->alpha_trait != UndefinedPixelTrait)
             {
-              value=(unsigned char) ScaleQuantumToChar(ClampToQuantum(
+              char_value=(unsigned char) ScaleQuantumToChar(ClampToQuantum(
                 pixel->alpha));
-              pixels=PopCharPixel(value,pixels);
+              pixels=PopCharPixel(char_value,pixels);
             }
           break;
         }
@@ -2363,9 +2360,6 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       value=GetImageProperty(image,property,exception);
       if (value != (const char *) NULL)
         {
-          size_t
-            length;
-
           length=strlen(value);
           for (i=0; i < (ssize_t) length; i++)
             if ((isspace((int) ((unsigned char) value[i])) != 0) ||
@@ -2427,12 +2421,8 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       }
     if (image->storage_class == PseudoClass)
       {
-        size_t
-          packet_size;
-
         unsigned char
-          *colormap,
-          *q;
+          *colormap;
 
         /*
           Allocate colormap.
@@ -2455,43 +2445,49 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
             case 32:
             {
               register unsigned int
-                pixel;
+                long_pixel;
 
-              pixel=ScaleQuantumToLong((Quantum) image->colormap[i].red);
-              q=PopLongPixel(MSBEndian,pixel,q);
-              pixel=ScaleQuantumToLong((Quantum) image->colormap[i].green);
-              q=PopLongPixel(MSBEndian,pixel,q);
-              pixel=ScaleQuantumToLong((Quantum) image->colormap[i].blue);
-              q=PopLongPixel(MSBEndian,pixel,q);
+              long_pixel=ScaleQuantumToLong((Quantum)
+                image->colormap[i].red);
+              q=PopLongPixel(MSBEndian,long_pixel,q);
+              long_pixel=ScaleQuantumToLong((Quantum)
+                image->colormap[i].green);
+              q=PopLongPixel(MSBEndian,long_pixel,q);
+              long_pixel=ScaleQuantumToLong((Quantum)
+                image->colormap[i].blue);
+              q=PopLongPixel(MSBEndian,long_pixel,q);
               break;
             }
             case 16:
             {
               register unsigned short
-                pixel;
+                short_pixel;
 
-              pixel=ScaleQuantumToShort((Quantum) image->colormap[i].red);
-              q=PopShortPixel(MSBEndian,pixel,q);
-              pixel=ScaleQuantumToShort((Quantum) image->colormap[i].green);
-              q=PopShortPixel(MSBEndian,pixel,q);
-              pixel=ScaleQuantumToShort((Quantum) image->colormap[i].blue);
-              q=PopShortPixel(MSBEndian,pixel,q);
+              short_pixel=ScaleQuantumToShort((Quantum)
+                image->colormap[i].red);
+              q=PopShortPixel(MSBEndian,short_pixel,q);
+              short_pixel=ScaleQuantumToShort((Quantum)
+                image->colormap[i].green);
+              q=PopShortPixel(MSBEndian,short_pixel,q);
+              short_pixel=ScaleQuantumToShort((Quantum)
+                image->colormap[i].blue);
+              q=PopShortPixel(MSBEndian,short_pixel,q);
               break;
             }
             case 8:
             {
               register unsigned char
-                pixel;
+                char_pixel;
 
-              pixel=(unsigned char) ScaleQuantumToChar((Quantum)
+              char_pixel=(unsigned char) ScaleQuantumToChar((Quantum)
                 image->colormap[i].red);
-              q=PopCharPixel(pixel,q);
-              pixel=(unsigned char) ScaleQuantumToChar((Quantum)
+              q=PopCharPixel(char_pixel,q);
+              char_pixel=(unsigned char) ScaleQuantumToChar((Quantum)
                 image->colormap[i].green);
-              q=PopCharPixel(pixel,q);
-              pixel=(unsigned char) ScaleQuantumToChar((Quantum)
+              q=PopCharPixel(char_pixel,q);
+              char_pixel=(unsigned char) ScaleQuantumToChar((Quantum)
                 image->colormap[i].blue);
-              q=PopCharPixel(pixel,q);
+              q=PopCharPixel(char_pixel,q);
               break;
             }
           }
@@ -2534,7 +2530,8 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         allocator.opaque=(void *) NULL;
         lzma_info=initialize_lzma;
         lzma_info.allocator=&allocator;
-        code=lzma_easy_encoder(&lzma_info,image->quality/10,LZMA_CHECK_SHA256);
+        code=lzma_easy_encoder(&lzma_info,(uint32_t) (image->quality/10),
+          LZMA_CHECK_SHA256);
         if (code != LZMA_OK)
           status=MagickTrue;
         break;
