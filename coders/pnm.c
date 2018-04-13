@@ -301,8 +301,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             char
               scale[MagickPathExtent];
 
-            (void) ReadBlobString(image,scale);
-            quantum_scale=StringToDouble(scale,(char **) NULL);
+            if (ReadBlobString(image,scale) != (char *) NULL)
+              quantum_scale=StringToDouble(scale,(char **) NULL);
           }
         else
           {
