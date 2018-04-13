@@ -442,7 +442,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
       if (image->storage_class == PseudoClass)
         {
           register ssize_t
-            i;
+            j;
 
           unsigned char
             *icon_colormap;
@@ -469,11 +469,11 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                 "InsufficientImageDataInFile");
             }
           p=icon_colormap;
-          for (i=0; i < (ssize_t) image->colors; i++)
+          for (j=0; j < (ssize_t) image->colors; j++)
           {
-            image->colormap[i].blue=(Quantum) ScaleCharToQuantum(*p++);
-            image->colormap[i].green=(Quantum) ScaleCharToQuantum(*p++);
-            image->colormap[i].red=(Quantum) ScaleCharToQuantum(*p++);
+            image->colormap[j].blue=(Quantum) ScaleCharToQuantum(*p++);
+            image->colormap[j].green=(Quantum) ScaleCharToQuantum(*p++);
+            image->colormap[j].red=(Quantum) ScaleCharToQuantum(*p++);
             p++;
           }
           icon_colormap=(unsigned char *) RelinquishMagickMemory(icon_colormap);
@@ -908,8 +908,6 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
     y;
 
   unsigned char
-    bit,
-    byte,
     *pixels;
 
   /*
@@ -1073,9 +1071,6 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
               }
             else
               {
-                size_t
-                  one;
-
                 one=1;
                 icon_info.file_size+=3*(one << icon_info.bits_per_pixel);
                 icon_info.offset_bits+=3*(one << icon_info.bits_per_pixel);
@@ -1337,6 +1332,10 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         scanline_pad=(((next->columns+31) & ~31)-next->columns) >> 3;
         for (y=((ssize_t) next->rows - 1); y >= 0; y--)
         {
+          unsigned char
+            bit,
+            byte;
+
           p=GetVirtualPixels(next,0,y,next->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
