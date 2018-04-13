@@ -226,8 +226,9 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Determine endianness 
    If we get back "iiii", we have LSB,"mmmm", MSB
    */
-  count=ReadBlob(image,4,magick); 
-  (void) count;
+  count=ReadBlob(image,4,magick);
+  if (count != 4)
+    ThrowReaderException(CorruptImageError, "ImproperImageHeader");
   if((LocaleNCompare((char *) magick,"iiii",4) == 0))  
     image->endian=LSBEndian;
   else{
@@ -243,7 +244,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
    Excellent, now we read the header unimpeded.
    */
   count=ReadBlob(image,4,magick); 
-  if((LocaleNCompare((char *) magick,"data",4) != 0))  
+  if((count != 4) || (LocaleNCompare((char *) magick,"data",4) != 0))
     ThrowReaderException(CorruptImageError, "ImproperImageHeader");
   ipl_info.size=ReadBlobLong(image); 
   ipl_info.width=ReadBlobLong(image); 
