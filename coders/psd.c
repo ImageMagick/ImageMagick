@@ -163,7 +163,7 @@ typedef struct _LayerInfo
   unsigned char
     clipping,
     flags,
-    name[256],
+    name[257],
     visible;
 
   unsigned short
