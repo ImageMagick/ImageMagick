@@ -2108,7 +2108,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->endian=MSBEndian;
   count=ReadBlob(image,4,(unsigned char *) psd_info.signature);
   psd_info.version=ReadBlobMSBShort(image);
-  if ((count == 0) || (LocaleNCompare(psd_info.signature,"8BPS",4) != 0) ||
+  if ((count != 4) || (LocaleNCompare(psd_info.signature,"8BPS",4) != 0) ||
       ((psd_info.version != 1) && (psd_info.version != 2)))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   (void) ReadBlob(image,6,psd_info.reserved);
