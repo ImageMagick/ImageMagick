@@ -2421,15 +2421,18 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       }
     if (image->storage_class == PseudoClass)
       {
+        size_t
+          colormap_size;
+
         unsigned char
           *colormap;
 
         /*
           Allocate colormap.
         */
-        packet_size=(size_t) (3*quantum_info->depth/8);
+        colormap_size=(size_t) (3*quantum_info->depth/8);
         colormap=(unsigned char *) AcquireQuantumMemory(image->colors,
-          packet_size*sizeof(*colormap));
+          colormap_size*sizeof(*colormap));
         if (colormap == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
         /*
@@ -2492,7 +2495,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
             }
           }
         }
-        (void) WriteBlob(image,packet_size*image->colors,colormap);
+        (void) WriteBlob(image,colormap_size*image->colors,colormap);
         colormap=(unsigned char *) RelinquishMagickMemory(colormap);
       }
     /*
