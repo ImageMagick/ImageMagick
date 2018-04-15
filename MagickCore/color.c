@@ -2402,9 +2402,9 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
           color->depth=8;
         }
       SetGeometryInfo(&geometry_info);
-      flags=0;
-      if (i < strlen(name))
-        flags=ParseGeometry(name+i+1,&geometry_info);
+      if (i >= strlen(name))
+        i=(-1);
+      flags=ParseGeometry(name+i+1,&geometry_info);
       if (flags == 0)
         {
           char
