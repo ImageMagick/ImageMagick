@@ -2402,7 +2402,9 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
           color->depth=8;
         }
       SetGeometryInfo(&geometry_info);
-      flags=ParseGeometry(name+i+1,&geometry_info);
+      flags=0;
+      if (i < strlen(name))
+        flags=ParseGeometry(name+i+1,&geometry_info);
       if (flags == 0)
         {
           char
@@ -2529,7 +2531,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
   if (p == (const ColorInfo *) NULL)
     return(MagickFalse);
   color->colorspace=sRGBColorspace;
-  if ((LocaleNCompare(name,"gray",4) == 0) || 
+  if ((LocaleNCompare(name,"gray",4) == 0) ||
       (LocaleNCompare(name,"grey",4) == 0))
     color->colorspace=GRAYColorspace;
   color->depth=8;
