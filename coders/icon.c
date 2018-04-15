@@ -367,24 +367,20 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         png[13]=(unsigned char) (icon_info.planes >> 8);
         png[14]=(unsigned char) icon_info.bits_per_pixel;
         png[15]=(unsigned char) (icon_info.bits_per_pixel >> 8);
-        count=ReadBlob(image,length-16,png+16);
-        icon_image=(Image *) NULL;
-        if (count == (ssize_t) length-16)
+        count=ReadBlob(image,length,png+16);
+        if (count != (ssize_t) length)
           {
-            read_info=CloneImageInfo(image_info);
-            (void) CopyMagickString(read_info->magick,"PNG",MagickPathExtent);
-            icon_image=BlobToImage(read_info,png,length+16,exception);
-            read_info=DestroyImageInfo(read_info);
+            png=(unsigned char *) RelinquishMagickMemory(png);
+            ThrowReaderException(CorruptImageError,
+                "InsufficientImageDataInFile");
           }
+        read_info=CloneImageInfo(image_info);
+        (void) CopyMagickString(read_info->magick,"PNG",MagickPathExtent);
+        icon_image=BlobToImage(read_info,png,length+16,exception);
+        read_info=DestroyImageInfo(read_info);
         png=(unsigned char *) RelinquishMagickMemory(png);
         if (icon_image == (Image *) NULL)
-          {
-            if (count != (ssize_t) (length-16))
-              ThrowReaderException(CorruptImageError,
-                "InsufficientImageDataInFile");
-            image=DestroyImageList(image);
-            return((Image *) NULL);
-          }
+          return(DestroyImageList(image));
         DestroyBlob(icon_image);
         icon_image->blob=ReferenceBlob(image->blob);
         ReplaceImageInList(&image,icon_image);
