@@ -1612,15 +1612,16 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
       */
       (void) ReadBlobLong(image);
       count=ReadBlob(image,4,(unsigned char *) type);
-      ReversePSDString(image,type,count);
-      status=MagickFalse;
+      if (count == 4)
+        ReversePSDString(image,type,count);
       if ((count != 4) || (LocaleNCompare(type,"8BIM",4) != 0))
         return(MagickTrue);
       else
         {
           count=ReadBlob(image,4,(unsigned char *) type);
-          ReversePSDString(image,type,4);
-          if ((count != 0) && ((LocaleNCompare(type,"Lr16",4) == 0) ||
+          if (count == 4)
+            ReversePSDString(image,type,4);
+          if ((count == 4) && ((LocaleNCompare(type,"Lr16",4) == 0) ||
               (LocaleNCompare(type,"Lr32",4) == 0)))
             size=GetPSDSize(psd_info,image);
           else
@@ -1726,8 +1727,9 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
               image->filename);
           }
         count=ReadBlob(image,4,(unsigned char *) type);
-        ReversePSDString(image,type,4);
-        if ((count == 0) || (LocaleNCompare(type,"8BIM",4) != 0))
+        if (count == 4)
+          ReversePSDString(image,type,4);
+        if ((count != 4) || (LocaleNCompare(type,"8BIM",4) != 0))
           {
             if (image->debug != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -1737,6 +1739,12 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
               image->filename);
           }
         count=ReadBlob(image,4,(unsigned char *) layer_info[i].blendkey);
+        if (count != 4)
+          {
+            layer_info=DestroyLayerInfo(layer_info,number_layers);
+            ThrowBinaryException(CorruptImageError,"ImproperImageHeader",
+              image->filename);
+          }
         ReversePSDString(image,layer_info[i].blendkey,4);
         layer_info[i].opacity=(Quantum) ScaleCharToQuantum((unsigned char)
           ReadBlobByte(image));
