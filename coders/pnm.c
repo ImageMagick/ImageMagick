@@ -634,7 +634,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         (void) SetImageColorspace(image,GRAYColorspace,exception);
         quantum_type=GrayQuantum;
-        extent=3*(image->depth <= 8 ? 1 : image->depth <= 16 ? 2 : 4)*
+        extent=(image->depth <= 8 ? 1 : image->depth <= 16 ? 2 : 4)*
           image->columns;
         quantum_info=AcquireQuantumInfo(image_info,image);
         if (quantum_info == (QuantumInfo *) NULL)
