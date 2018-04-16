@@ -202,7 +202,7 @@ const struct sRGB_info_struct sRGB_info[] =
         LBR01PacketBlue((pixelpacket)); \
         }
 
-#define LBR01PacketRGBO(pixelpacket) \
+#define LBR01PacketRGBA(pixelpacket) \
         { \
         LBR01PacketRGB((pixelpacket)); \
         LBR01PacketAlpha((pixelpacket)); \
@@ -275,7 +275,7 @@ const struct sRGB_info_struct sRGB_info[] =
         LBR02PacketBlue((pixelpacket)); \
         }
 
-#define LBR02PacketRGBO(pixelpacket) \
+#define LBR02PacketRGBA(pixelpacket) \
         { \
         LBR02PacketRGB((pixelpacket)); \
         LBR02PacketAlpha((pixelpacket)); \
@@ -415,7 +415,7 @@ const struct sRGB_info_struct sRGB_info[] =
         LBR04PacketBlue((pixelpacket)); \
         }
 
-#define LBR04PacketRGBO(pixelpacket) \
+#define LBR04PacketRGBA(pixelpacket) \
         { \
         LBR04PacketRGB((pixelpacket)); \
         LBR04PacketAlpha((pixelpacket)); \
@@ -8729,7 +8729,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
        if (image->depth > 2)
          {
            /* Scale to 4-bit */
-           LBR04PacketRGBO(image->background_color);
+           LBR04PacketRGBA(image->background_color);
 
            for (y=0; y < (ssize_t) image->rows; y++)
            {
@@ -8752,14 +8752,14 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
            {
              for (i=0; i < (ssize_t) image->colors; i++)
              {
-               LBR04PacketRGBO(image->colormap[i]);
+               LBR04PacketRGBA(image->colormap[i]);
              }
            }
          }
        else if (image->depth > 1)
          {
            /* Scale to 2-bit */
-           LBR02PacketRGBO(image->background_color);
+           LBR02PacketRGBA(image->background_color);
 
            for (y=0; y < (ssize_t) image->rows; y++)
            {
@@ -8782,14 +8782,14 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
            {
              for (i=0; i < (ssize_t) image->colors; i++)
              {
-               LBR02PacketRGBO(image->colormap[i]);
+               LBR02PacketRGBA(image->colormap[i]);
              }
            }
          }
        else
          {
            /* Scale to 1-bit */
-           LBR01PacketRGBO(image->background_color);
+           LBR01PacketRGBA(image->background_color);
 
            for (y=0; y < (ssize_t) image->rows; y++)
            {
@@ -8812,7 +8812,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
            {
              for (i=0; i < (ssize_t) image->colors; i++)
              {
-               LBR01PacketRGBO(image->colormap[i]);
+               LBR01PacketRGBA(image->colormap[i]);
              }
            }
          }
