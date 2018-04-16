@@ -10,14 +10,21 @@
 %                        H   H  EEEEE  IIIII   CCCC                           %
 %                                                                             %
 %                                                                             %
-%                         Read/Write Heic Image Format                        %
+%                           Read Heic Image Format                            %
 %                                                                             %
 %                              Software Design                                %
 %                               Anton Kortunov                                %
 %                               December 2017                                 %
 %                                                                             %
-%                                                                             %
 %                      Copyright 2017-2018 YANDEX LLC.                        %
+%                                                                             %
+%                                                                             %
+%                           Write Heic Image Format                           %
+%                                                                             %
+%                                 Dirk Farin                                  %
+%                                 April 2018                                  %
+%                                                                             %
+%                         Copyright 2018 Struktur AG                          %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
@@ -68,7 +75,13 @@
 #include "MagickCore/utility.h"
 #if defined(MAGICKCORE_HEIC_DELEGATE)
 #include <libde265/de265.h>
+#include <libheif/heif.h>
 #endif
+
+
+static MagickBooleanType
+  WriteHEICImage(const ImageInfo *,Image *,ExceptionInfo *);
+
 
 /*
   Typedef declarations.
@@ -1367,6 +1380,7 @@ ModuleExport size_t RegisterHEICImage(void)
   entry=AcquireMagickInfo("HEIC","HEIC","Apple High efficiency Image Format");
 #if defined(MAGICKCORE_HEIC_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadHEICImage;
+  entry->encoder=(EncodeImageHandler *) WriteHEICImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsHEIC;
   entry->mime_type=ConstantString("image/x-heic");
@@ -1398,4 +1412,242 @@ ModuleExport size_t RegisterHEICImage(void)
 ModuleExport void UnregisterHEICImage(void)
 {
   (void) UnregisterMagickInfo("HEIC");
+}
+
+
+
+static struct heif_error heif_write_func(struct heif_context* ctx,
+                                         const void* data,
+                                         size_t size,
+                                         void* userdata)
+{
+  Image* image = (Image*)userdata;
+  (void) WriteBlob(image, size, data);
+}
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e H E I C I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteHEICImage() writes an HEIF image using the libheif library.
+%
+%  The format of the WriteHEICImage method is:
+%
+%      MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
+%        Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o image_info: the image info.
+%
+%    o image:  The image.
+%
+%    o exception:  return any errors or warnings in this structure.
+%
+*/
+static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
+{
+  long
+    y;
+
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    scene;
+
+  const Quantum
+    *src;
+
+  long
+    x;
+
+  /*
+    Open output image file.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickCoreSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    return(status);
+  scene=0;
+
+
+  struct heif_context* heif_context = heif_context_alloc();
+  struct heif_image* heif_image = NULL;
+  struct heif_encoder* heif_encoder = NULL;
+
+  do
+  {
+    /* Initialize HEIF encoder context
+     */
+
+    struct heif_error error;
+    error = heif_image_create(image->columns, image->rows,
+                              heif_colorspace_YCbCr,
+                              heif_chroma_420,
+                              &heif_image);
+    if (error.code) {
+      goto error_cleanup;
+    }
+
+    error = heif_image_add_plane(heif_image,
+                                 heif_channel_Y,
+                                 image->columns, image->rows, 8);
+    if (error.code) {
+      goto error_cleanup;
+    }
+
+    error = heif_image_add_plane(heif_image,
+                                 heif_channel_Cb,
+                                 (image->columns+1)/2, (image->rows+1)/2, 8);
+    if (error.code) {
+      goto error_cleanup;
+    }
+
+    error = heif_image_add_plane(heif_image,
+                                 heif_channel_Cr,
+                                 (image->columns+1)/2, (image->rows+1)/2, 8);
+    if (error.code) {
+      goto error_cleanup;
+    }
+
+
+    uint8_t* p_y;
+    uint8_t* p_cb;
+    uint8_t* p_cr;
+    int stride_y, stride_cb, stride_cr;
+
+    p_y  = heif_image_get_plane(heif_image, heif_channel_Y,  &stride_y);
+    p_cb = heif_image_get_plane(heif_image, heif_channel_Cb, &stride_cb);
+    p_cr = heif_image_get_plane(heif_image, heif_channel_Cr, &stride_cr);
+
+    /*
+      Transform colorspace to YCbCr.
+    */
+    if (image->colorspace != YCbCrColorspace) {
+      (void) TransformImageColorspace(image,YCbCrColorspace,exception);
+    }
+
+
+    /*
+      Copy image to heif_image
+    */
+
+    for (y=0; y < (long) image->rows; y++)
+    {
+      src=GetVirtualPixels(image,0,y,image->columns,1,exception);
+      if (src == (const Quantum *) NULL)
+        break;
+
+      if ((y & 1)==0)
+        {
+          for (x=0; x < (long) image->columns; x+=2)
+            {
+              p_y[y*stride_y + x] = ScaleQuantumToChar(GetPixelRed(image,src));
+              p_cb[y/2*stride_cb + x/2] = ScaleQuantumToChar(GetPixelGreen(image,src));
+              p_cr[y/2*stride_cr + x/2] = ScaleQuantumToChar(GetPixelBlue(image,src));
+              src+=GetPixelChannels(image);
+
+              if (x+1 < image->columns) {
+                p_y[y*stride_y + x+1] = ScaleQuantumToChar(GetPixelRed(image,src));
+                src+=GetPixelChannels(image);
+              }
+            }
+        }
+      else
+        {
+          for (x=0; x < (long) image->columns; x++)
+            {
+              p_y[y*stride_y + x] = ScaleQuantumToChar(GetPixelRed(image,src));
+              src+=GetPixelChannels(image);
+            }
+        }
+
+
+      if (image->previous == (Image *) NULL)
+        if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
+            (QuantumTick(y,image->rows) != MagickFalse))
+          {
+            status=image->progress_monitor(SaveImageTag,y,image->rows,
+              image->client_data);
+            if (status == MagickFalse)
+              break;
+          }
+    }
+
+
+    /*
+      Code and actually write the HEIC image
+    */
+
+    error = heif_context_get_encoder_for_format(heif_context,
+                                                heif_compression_HEVC,
+                                                &heif_encoder);
+    if (error.code) {
+      goto error_cleanup;
+    }
+
+    error = heif_context_encode_image(heif_context,
+                                      heif_image,
+                                      heif_encoder,
+                                      NULL);
+    if (error.code) {
+      goto error_cleanup;
+    }
+
+    struct heif_writer writer;
+    writer.writer_api_version = 1;
+    writer.write = heif_write_func;
+
+    error = heif_context_write(heif_context, &writer, image);
+    if (error.code) {
+      goto error_cleanup;
+    }
+
+
+    heif_image_release(heif_image);
+    heif_image = NULL;
+
+    heif_encoder_release(heif_encoder);
+    heif_encoder = NULL;
+
+
+    if (GetNextImageInList(image) == (Image *) NULL)
+      break;
+
+    image=SyncNextImageInList(image);
+    status=SetImageProgress(image,SaveImagesTag,scene,
+      GetImageListLength(image));
+    if (status == MagickFalse)
+      break;
+    scene++;
+  } while (image_info->adjoin != MagickFalse);
+
+
+  if (heif_context) {
+    heif_context_free(heif_context);
+  }
+
+  (void) CloseBlob(image);
+  return(MagickTrue);
+
+
+error_cleanup:
+  heif_image_release(heif_image);
+  heif_encoder_release(heif_encoder);
+  return MagickFalse;
 }
