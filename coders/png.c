@@ -3822,13 +3822,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                 {
                   SetPixelAlpha(image,TransparentAlpha,q);
                 }
-
-#if 0 /* I have not found a case where this is needed. */
               else
                 {
-                  SetPixelAlpha(image,q)=(Quantum) OpaqueAlpha;
+                  SetPixelAlpha(image,OpaqueAlpha,q);
                 }
-#endif
 
               q+=GetPixelChannels(image);
             }
