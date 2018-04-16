@@ -933,13 +933,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         if (image->alpha_trait != UndefinedPixelTrait)
           channels++;
-        if (image->depth <= 8)
-          extent=channels*image->columns;
-        else
-          if (image->depth <= 16)
-            extent=2*channels*image->columns;
-          else
-            extent=4*channels*image->columns;
+        extent=channels*(image->depth <= 8 ? 1 : image->depth <= 16 ? 2 : 4)*
+          image->columns;
         quantum_info=AcquireQuantumInfo(image_info,image);
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
