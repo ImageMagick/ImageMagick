@@ -1078,8 +1078,7 @@ coders_hdr_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_hdr_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_hdr_la_rpath = -rpath $(codersdir)
-coders_heic_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+coders_heic_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
 am_coders_heic_la_OBJECTS = coders/coders_heic_la-heic.lo
 coders_heic_la_OBJECTS = $(am_coders_heic_la_OBJECTS)
 coders_heic_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -2591,8 +2590,6 @@ GS_LIBS = @GS_LIBS@
 GVCDecodeDelegate = @GVCDecodeDelegate@
 GVC_CFLAGS = @GVC_CFLAGS@
 GVC_LIBS = @GVC_LIBS@
-HEIC_CFLAGS = @HEIC_CFLAGS@
-HEIC_LIBS = @HEIC_LIBS@
 HEIF_CFLAGS = @HEIF_CFLAGS@
 HEIF_LIBS = @HEIF_LIBS@
 HPGLDecodeDelegate = @HPGLDecodeDelegate@
@@ -3602,7 +3599,7 @@ coders_hdr_la_LIBADD = $(MAGICKCORE_LIBS) $(GOMP_LIBS) $(MATH_LIBS)
 coders_heic_la_SOURCES = coders/heic.c
 coders_heic_la_CPPFLAGS = $(MODULE_CODER_CPPFLAGS)
 coders_heic_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_heic_la_LIBADD = $(MAGICKCORE_LIBS) $(HEIC_LIBS) $(HEIF_LIBS)
+coders_heic_la_LIBADD = $(MAGICKCORE_LIBS) $(HEIF_LIBS)
 
 # HRZ coder module
 coders_hrz_la_SOURCES = coders/hrz.c
