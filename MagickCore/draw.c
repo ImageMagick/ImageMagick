@@ -4163,6 +4163,9 @@ RestoreMSCWarning
   bounds.y2=bounds.y2 < 0.0 ? 0.0 : bounds.y2 >= (double) image->rows-1.0 ?
     (double) image->rows-1.0 : bounds.y2;
   status=MagickTrue;
+  if ((fabs(bounds.x2-bounds.x1) < MagickEpsilon) ||
+      (fabs(bounds.y2-bounds.y1) < MagickEpsilon))
+    status=MagickFalse;
   image_view=AcquireAuthenticCacheView(image,exception);
   if ((primitive_info->coordinates == 1) ||
       (polygon_info[0]->number_edges == 0))
