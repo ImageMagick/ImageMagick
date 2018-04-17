@@ -575,6 +575,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,Image *image
     error = heif_context_encode_image(heif_context,
                                       heif_image,
                                       heif_encoder,
+                                      NULL,
                                       NULL);
     if (error.code) {
       goto error_cleanup;
