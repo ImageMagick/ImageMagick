@@ -115,7 +115,7 @@ static MagickBooleanType
 %
 */
 static Image *ReadHEICImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+                            ExceptionInfo *exception)
 {
   Image
     *image;
@@ -137,16 +137,16 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image_info->filename);
+                          image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
-  {
-    image=DestroyImageList(image);
-    return((Image *) NULL);
-  }
+    {
+      image=DestroyImageList(image);
+      return((Image *) NULL);
+    }
 
   length=GetBlobSize(image);
 
@@ -186,9 +186,10 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   }
 
 
+
   /*
-    Copy HEIF image into ImageMagick data structures
-  */
+    Set image size
+   */
 
   int width  = heif_image_handle_get_width(image_handle);
   int height = heif_image_handle_get_height(image_handle);
@@ -198,53 +199,60 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   if (status == MagickFalse)
     goto cleanup;
 
-
+  image->depth = 8;
 
 
   struct heif_image* heif_image = NULL;
-  error = heif_decode_image(image_handle,
-                            &heif_image,
-                            heif_colorspace_YCbCr,
-                            heif_chroma_420,
-                            NULL);
 
-  uint8_t* p_y;
-  uint8_t* p_cb;
-  uint8_t* p_cr;
-  int stride_y, stride_cb, stride_cr;
-
-  p_y  = heif_image_get_plane(heif_image, heif_channel_Y,  &stride_y);
-  p_cb = heif_image_get_plane(heif_image, heif_channel_Cb, &stride_cb);
-  p_cr = heif_image_get_plane(heif_image, heif_channel_Cr, &stride_cr);
-
-
-  int x,y;
-  Quantum* q;
-
-  for (y=0; y < (long) height; y++)
+  if (image_info->ping == MagickFalse)
     {
-      q=QueueAuthenticPixels(image,0,y,width,1,exception);
-      if (q == (Quantum *) NULL)
-        break;
+      /*
+        Copy HEIF image into ImageMagick data structures
+      */
 
-      for (x=0; x < (long) width; x++)
+      error = heif_decode_image(image_handle,
+                                &heif_image,
+                                heif_colorspace_YCbCr,
+                                heif_chroma_420,
+                                NULL);
+
+      uint8_t* p_y;
+      uint8_t* p_cb;
+      uint8_t* p_cr;
+      int stride_y, stride_cb, stride_cr;
+
+      p_y  = heif_image_get_plane(heif_image, heif_channel_Y,  &stride_y);
+      p_cb = heif_image_get_plane(heif_image, heif_channel_Cb, &stride_cb);
+      p_cr = heif_image_get_plane(heif_image, heif_channel_Cr, &stride_cr);
+
+
+      int x,y;
+      Quantum* q;
+
+      for (y=0; y < (long) height; y++)
         {
-          SetPixelRed(image,ScaleCharToQuantum(p_y[y*stride_y + x]),q);
-          SetPixelGreen(image,ScaleCharToQuantum(p_cb[(y/2)*stride_cb + x/2]),q);
-          SetPixelBlue(image,ScaleCharToQuantum(p_cr[(y/2)*stride_cr + x/2]),q);
-          q+=GetPixelChannels(image);
+          q=QueueAuthenticPixels(image,0,y,width,1,exception);
+          if (q == (Quantum *) NULL)
+            break;
+
+          for (x=0; x < (long) width; x++)
+            {
+              SetPixelRed(image,ScaleCharToQuantum(p_y[y*stride_y + x]),q);
+              SetPixelGreen(image,ScaleCharToQuantum(p_cb[(y/2)*stride_cb + x/2]),q);
+              SetPixelBlue(image,ScaleCharToQuantum(p_cr[(y/2)*stride_cr + x/2]),q);
+              q+=GetPixelChannels(image);
+            }
+
+          if (SyncAuthenticPixels(image,exception) == MagickFalse)
+            break;
         }
 
-      if (SyncAuthenticPixels(image,exception) == MagickFalse)
-        break;
+      SetImageColorspace(image,YCbCrColorspace,exception);
     }
-
-  SetImageColorspace(image,YCbCrColorspace,exception);
-
 
   /*
     Read Exif data from HEIC file
-   */
+  */
 
   heif_item_id exif_id;
   int nMetadata = heif_image_handle_get_list_of_metadata_block_IDs(image_handle,
@@ -269,7 +277,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   }
 
 
-cleanup:
+ cleanup:
 
   if (heif_image)
     heif_image_release(heif_image);
