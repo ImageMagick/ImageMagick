@@ -239,42 +239,46 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
         break;
     }
 
+  SetImageColorspace(image,YCbCrColorspace,exception);
+
+
   /*
-  for (i = 1; i <= ctx.idsCount; i++) {
-    unsigned char
-      *buffer = NULL;
+    Read Exif data from HEIC file
+   */
 
-    StringInfo
-      *profile;
+  heif_item_id exif_id;
+  int nMetadata = heif_image_handle_get_list_of_metadata_block_IDs(image_handle,
+                                                                   "Exif",
+                                                                   &exif_id, 1);
 
-    HEICItemInfo
-      *info = &ctx.itemInfo[i];
+  if (nMetadata > 0) {
+    size_t exif_size = heif_image_handle_get_metadata_size(image_handle,
+                                                           exif_id);
 
-    if (info->type != ATOM('E','x','i','f'))
-      continue;
-    if (info->size <= 4)
-      continue;
+    uint8_t* exif_buffer = (unsigned char *) AcquireMagickMemory(exif_size);
 
-    buffer = (unsigned char *) AcquireMagickMemory(info->size);
-    if (buffer == NULL) {
-      (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
-        "MemoryAllocationFailed","`%s'",image->filename);
-      goto cleanup;
-    }
+    error = heif_image_handle_get_metadata(image_handle,
+                                           exif_id,
+                                           exif_buffer);
 
-    SeekBlob(image, info->offset+4, SEEK_SET);
-    count = ReadBlob(image, info->size-4, buffer);
-    profile=BlobToStringInfo(buffer, count);
+    StringInfo* profile = BlobToStringInfo(exif_buffer, exif_size);
     SetImageProfile(image, "exif", profile, exception);
 
     profile = DestroyStringInfo(profile);
-    RelinquishMagickMemory(buffer);
+    RelinquishMagickMemory(exif_buffer);
   }
-  */
 
-  SetImageColorspace(image,YCbCrColorspace,exception);
 
 cleanup:
+
+  if (heif_image)
+    heif_image_release(heif_image);
+
+  if (image_handle)
+    heif_image_handle_release(image_handle);
+
+  if (heif_context)
+    heif_context_free(heif_context);
 
   return image;
 }
