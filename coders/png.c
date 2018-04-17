@@ -6180,7 +6180,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                     "  LOOP level %.20g has %.20g iterations ",
                     (double) loop_level, (double) loop_iters);
 
-                if (loop_iters == 0)
+                if (loop_iters <= 0)
                   skipping_loop=loop_level;
 
                 else
