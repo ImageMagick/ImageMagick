@@ -341,7 +341,7 @@ ModuleExport size_t RegisterHEICImage(void)
   MagickInfo
     *entry;
 
-  entry=AcquireMagickInfo("HEIC","HEIC","Apple High efficiency Image Format");
+  entry=AcquireMagickInfo("HEIC","HEIC","High Efficiency Image Format");
 #if defined(MAGICKCORE_HEIC_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadHEICImage;
   entry->encoder=(EncodeImageHandler *) WriteHEICImage;
