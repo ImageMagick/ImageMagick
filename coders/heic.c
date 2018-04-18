@@ -595,12 +595,12 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,Image *image
     }
 
 
-    if (image->quality != UndefinedCompressionQuality) {
+    if (image_info->quality != UndefinedCompressionQuality) {
       error = heif_encoder_set_lossy_quality(heif_encoder,
-                                           image->quality);
+                                             image_info->quality);
       if (error.code) {
         (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
-                                    error.message,"`quality=%zu'",image->quality);
+                                    error.message,"`quality=%zu'",image_info->quality);
 
         goto error_cleanup;
       }
