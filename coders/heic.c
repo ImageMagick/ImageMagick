@@ -484,6 +484,8 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,Image *image
                               heif_chroma_420,
                               &heif_image);
     if (error.code) {
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
+                                  error.message,"`%s'",image->filename);
       goto error_cleanup;
     }
 
@@ -491,6 +493,8 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,Image *image
                                  heif_channel_Y,
                                  image->columns, image->rows, 8);
     if (error.code) {
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
+                                  error.message,"`%s'",image->filename);
       goto error_cleanup;
     }
 
@@ -498,6 +502,8 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,Image *image
                                  heif_channel_Cb,
                                  (image->columns+1)/2, (image->rows+1)/2, 8);
     if (error.code) {
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
+                                  error.message,"`%s'",image->filename);
       goto error_cleanup;
     }
 
@@ -505,6 +511,8 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,Image *image
                                  heif_channel_Cr,
                                  (image->columns+1)/2, (image->rows+1)/2, 8);
     if (error.code) {
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
+                                  error.message,"`%s'",image->filename);
       goto error_cleanup;
     }
 
@@ -581,6 +589,8 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,Image *image
                                                 heif_compression_HEVC,
                                                 &heif_encoder);
     if (error.code) {
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
+                                  error.message,"`%s'",image->filename);
       goto error_cleanup;
     }
 
@@ -602,6 +612,8 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,Image *image
                                       NULL,
                                       NULL);
     if (error.code) {
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
+                                  error.message,"`%s'",image->filename);
       goto error_cleanup;
     }
 
@@ -611,6 +623,8 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,Image *image
 
     error = heif_context_write(heif_context, &writer, image);
     if (error.code) {
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
+                                  error.message,"`%s'",image->filename);
       goto error_cleanup;
     }
 
