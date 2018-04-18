@@ -599,17 +599,10 @@ MagickExport Image *GetImageFromList(const Image *images,const ssize_t index)
   assert(images->signature == MagickCoreSignature);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
-
-  /*
-    Designed to efficiently find first image (index == 0), or last image
-    (index == -1) as appropriate, without to go through the whole image list.
-    That is it tries to avoid 'counting the whole list' to  handle the
-    most common image indexes.
-  */
-  if ( index < 0 )
+  if (index < 0)
     {
       p=GetLastImageInList(images);
-      for (i=-1; p != (Image *) NULL; p=p->previous)
+      for (i=(-1); p != (Image *) NULL; p=p->previous)
         if (i-- == index)
           break;
     }
