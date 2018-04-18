@@ -1574,6 +1574,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             if (length == 0)
               {
                 count=ReadBlob(image,packet_size,pixels);
+                if (count != packet_size)
+                  ThrowReaderException(CorruptImageError,
+                    "UnableToReadImageData");
                 PushRunlengthPacket(image,pixels,&length,&pixel,exception);
               }
             length--;
@@ -1596,6 +1599,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         default:
         {
           count=ReadBlob(image,packet_size*image->columns,pixels);
+          if (count != (packet_size*image->columns))
+            ThrowReaderException(CorruptImageError,"UnableToReadImageData");
           (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
           break;
