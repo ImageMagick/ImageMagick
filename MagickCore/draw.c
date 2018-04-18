@@ -91,7 +91,7 @@
 */
 #define BezierQuantum  200
 #define DrawEpsilon  (1.0e-10)
-#define MaxBezierCoordinates  2097152
+#define MaxBezierCoordinates  1048576
 #define ThrowPointExpectedException(token,exception) \
 { \
   (void) ThrowMagickException(exception,GetMagickModule(),DrawError, \
