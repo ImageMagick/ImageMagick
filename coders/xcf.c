@@ -930,6 +930,8 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
   outLayer->width=outLayer->image->columns;
   status=SetImageExtent(outLayer->image,outLayer->image->columns,
     outLayer->image->rows,exception);
+  if (status != MagickFalse)
+    status=ResetImagePixels(image,exception);
   if (status == MagickFalse)
     {
       outLayer->image=DestroyImageList(outLayer->image);
@@ -943,7 +945,6 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
       outLayer->image->background_color.alpha_trait=BlendPixelTrait;
       outLayer->image->alpha_trait=BlendPixelTrait;
     }
-  (void) SetImageBackgroundColor(outLayer->image,exception);
 
   InitXCFImage(outLayer,exception);
 
