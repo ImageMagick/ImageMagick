@@ -943,9 +943,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         return(GetFirstImageInList(image));
       }
   status=SetImageExtent(image,image->columns,image->rows,exception);
-  if (status == MagickFalse)
-    return(DestroyImageList(image));
-  status=ResetImagePixels(image,exception);
+  if (status != MagickFalse)
+    status=ResetImagePixels(image,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
   /*
@@ -997,9 +996,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             image->columns=(size_t) (frame.right-frame.left);
             image->rows=(size_t) (frame.bottom-frame.top);
             status=SetImageExtent(image,image->columns,image->rows,exception);
-            if (status == MagickFalse)
-              return(DestroyImageList(image));
-            status=ResetImagePixels(image,exception);
+            if (status != MagickFalse)
+              status=ResetImagePixels(image,exception);
             if (status == MagickFalse)
               return(DestroyImageList(image));
             break;
