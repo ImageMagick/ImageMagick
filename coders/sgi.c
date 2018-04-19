@@ -373,9 +373,10 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
     status=SetImageExtent(image,image->columns,image->rows,exception);
+    if (status != MagickFalse)
+      status=ResetImagePixels(image,exception);
     if (status == MagickFalse)
       return(DestroyImageList(image));
-    (void) SetImageBackgroundColor(image,exception);
     /*
       Allocate SGI pixels.
     */
