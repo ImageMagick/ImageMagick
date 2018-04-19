@@ -671,7 +671,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               bmp_info.height);
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Bits per pixel: %.20g",(double) bmp_info.bits_per_pixel);
-            switch ((int) bmp_info.compression)
+            switch (bmp_info.compression)
             {
               case BI_RGB:
               {
