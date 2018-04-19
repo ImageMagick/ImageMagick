@@ -633,6 +633,7 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
   /*
     Initialize GIF encoder.
   */
+  (void) memset(packet,0,256*sizeof(*packet));
   (void) memset(hash_code,0,MaxHashTable*sizeof(*hash_code));
   (void) memset(hash_prefix,0,MaxHashTable*sizeof(*hash_prefix));
   (void) memset(hash_suffix,0,MaxHashTable*sizeof(*hash_suffix));
