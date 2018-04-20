@@ -763,30 +763,34 @@ static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info)
     code=LineToCode;
     if (coordinates <= 0)
       {
+        /*
+          New subpath.
+        */ 
         coordinates=(ssize_t) primitive_info[i].coordinates;
         p=primitive_info[i].point;
         start=n;
         code=MoveToCode;
       }
     coordinates--;
-    /*
-      Eliminate duplicate points.
-    */
-    if ((i == 0) || (fabs(q.x-primitive_info[i].point.x) >= DrawEpsilon) ||
+    if ((code == MoveToCode) ||
+        (fabs(q.x-primitive_info[i].point.x) >= DrawEpsilon) ||
         (fabs(q.y-primitive_info[i].point.y) >= DrawEpsilon))
       {
+        /*
+          Eliminate duplicate points.
+        */
         path_info[n].code=code;
         path_info[n].point=primitive_info[i].point;
         q=primitive_info[i].point;
         n++;
       }
     if (coordinates > 0)
-      continue;
+      continue;  /* next point in current subpath */
     if ((fabs(p.x-primitive_info[i].point.x) < DrawEpsilon) &&
         (fabs(p.y-primitive_info[i].point.y) < DrawEpsilon))
-      continue;
+      continue;  /* new subpath */
     /*
-      Mark the p point as open if it does not match the q.
+      Subpath is not closed-- close it with a "ghost" line.
     */
     path_info[start].code=OpenCode;
     path_info[n].code=GhostlineCode;
