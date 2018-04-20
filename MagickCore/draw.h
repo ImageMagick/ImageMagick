@@ -327,6 +327,9 @@ typedef struct _DrawInfo
 
   MagickBooleanType
     clip_path;
+
+  char
+    *id;
 } DrawInfo;
 
 

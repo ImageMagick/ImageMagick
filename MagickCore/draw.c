@@ -91,7 +91,7 @@
 */
 #define BezierQuantum  200
 #define DrawEpsilon  (1.0e-10)
-#define MaxBezierCoordinates  1048576
+#define MaxBezierCoordinates  2097152
 #define ThrowPointExpectedException(token,exception) \
 { \
   (void) ThrowMagickException(exception,GetMagickModule(),DrawError, \
@@ -260,6 +260,8 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   if (draw_info == (DrawInfo *) NULL)
     return(clone_info);
   exception=AcquireExceptionInfo();
+  if (clone_info->id != (char *) NULL)
+    (void) CloneString(&clone_info->id,draw_info->id);
   if (clone_info->primitive != (char *) NULL)
     (void) CloneString(&clone_info->primitive,draw_info->primitive);
   if (draw_info->geometry != (char *) NULL)
@@ -763,34 +765,30 @@ static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info)
     code=LineToCode;
     if (coordinates <= 0)
       {
-        /*
-          New subpath.
-        */ 
         coordinates=(ssize_t) primitive_info[i].coordinates;
         p=primitive_info[i].point;
         start=n;
         code=MoveToCode;
       }
     coordinates--;
-    if ((code == MoveToCode) ||
-        (fabs(q.x-primitive_info[i].point.x) >= DrawEpsilon) ||
+    /*
+      Eliminate duplicate points.
+    */
+    if ((code == MoveToCode) || (fabs(q.x-primitive_info[i].point.x) >= DrawEpsilon) ||
         (fabs(q.y-primitive_info[i].point.y) >= DrawEpsilon))
       {
-        /*
-          Eliminate duplicate points.
-        */
         path_info[n].code=code;
         path_info[n].point=primitive_info[i].point;
         q=primitive_info[i].point;
         n++;
       }
     if (coordinates > 0)
-      continue;  /* next point in current subpath */
+      continue;
     if ((fabs(p.x-primitive_info[i].point.x) < DrawEpsilon) &&
         (fabs(p.y-primitive_info[i].point.y) < DrawEpsilon))
-      continue;  /* new subpath */
+      continue;
     /*
-      Subpath is not closed-- close it with a "ghost" line.
+      Mark the p point as open if it does not match the q.
     */
     path_info[start].code=OpenCode;
     path_info[n].code=GhostlineCode;
@@ -837,6 +835,8 @@ MagickExport DrawInfo *DestroyDrawInfo(DrawInfo *draw_info)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(draw_info != (DrawInfo *) NULL);
   assert(draw_info->signature == MagickCoreSignature);
+  if (draw_info->id != (char *) NULL)
+    draw_info->id=DestroyString(draw_info->id);
   if (draw_info->primitive != (char *) NULL)
     draw_info->primitive=DestroyString(draw_info->primitive);
   if (draw_info->text != (char *) NULL)
@@ -2589,6 +2589,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                   }
                 graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,
                   graphic_context[n-1]);
+                if (*q == '"')
+                  {
+                    GetNextToken(q,&q,extent,token);
+                    (void) CloneString(&graphic_context[n]->id,token);
+                  }
                 break;
               }
             if (LocaleCompare("defs",token) == 0)
