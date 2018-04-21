@@ -1691,7 +1691,7 @@ static size_t GetEllipseCoordinates(const PointInfo start,const PointInfo stop,
   return((size_t) floor((angle.y-angle.x)/step+0.5)+3);
 }
 
-static char *GetGroupByID(const char *primitive,const char *id)
+static char *GetNodeByID(const char *primitive,const char *id)
 {
   char
     *token;
@@ -1719,8 +1719,9 @@ static char *GetGroupByID(const char *primitive,const char *id)
   n=0;
   start=(const char *) NULL;
   p=(const char *) NULL;
-  for (q=primitive; *q != '\0'; )
+  for (q=primitive; (*q != '\0') && (length == 0); )
   {
+    p=q;
     GetNextToken(q,&q,extent,token);
     if (*token == '\0')
       break;
@@ -1742,12 +1743,12 @@ static char *GetGroupByID(const char *primitive,const char *id)
               /*
                 End of group by ID.
               */
-              length=(size_t) (q-start);
+              if (start != (const char *) NULL)
+                length=(size_t) (p-start);
               break;
             }
         n--;
       }
-    p=q;
     if (LocaleCompare("push",token) == 0)
       {
         GetNextToken(q,&q,extent,token);
@@ -1763,13 +1764,13 @@ static char *GetGroupByID(const char *primitive,const char *id)
                       Start of group by ID.
                     */
                     n=0;
-                    start=p;
+                    start=q;
                   }
               }
           }
       }
   }
-  if (length == 0)
+  if (start == (const char *) NULL)
     return((char *) NULL);
   (void) CopyMagickString(token,start,length);
   return(token);
@@ -2991,6 +2992,34 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             break;
           }
         status=MagickFalse;
+        break;
+      }
+      case 'u':
+      case 'U':
+      {
+        if (LocaleCompare("use",keyword) == 0)
+          {
+            char
+              *node;
+
+            /*
+              Take a node from within the MVG document, and duplicate it here.
+            */
+            GetNextToken(q,&q,extent,token);
+            node=GetNodeByID(primitive,token);
+            if (node != (char *) NULL)
+              {
+                DrawInfo
+                  *clone_info;
+
+                clone_info=CloneDrawInfo((ImageInfo *) NULL,graphic_context[n]);
+                (void) CloneString(&clone_info->primitive,node);
+                node=DestroyString(node);
+                status=DrawImage(image,clone_info,exception);
+                clone_info=DestroyDrawInfo(clone_info);
+              }
+            break;
+          }
         break;
       }
       case 'v':

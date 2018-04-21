@@ -786,6 +786,15 @@ static void SVGEndDocument(void *context)
 static void SVGStartElement(void *context,const xmlChar *name,
   const xmlChar **attributes)
 {
+#define PushGraphicContext(id) \
+{ \
+  if (*id == '\0') \
+    (void) FormatLocaleFile(svg_info->file,"push graphic-context\n"); \
+  else \
+    (void) FormatLocaleFile(svg_info->file,"push graphic-context \"%s\"\n", \
+      id); \
+}
+
   char
     *color,
     background[MagickPathExtent],
@@ -992,7 +1001,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
     {
       if (LocaleCompare((const char *) name,"circle") == 0)
         {
-          (void) FormatLocaleFile(svg_info->file,"push graphic-context\n");
+          PushGraphicContext(id);
           break;
         }
       if (LocaleCompare((const char *) name,"clipPath") == 0)
@@ -1017,7 +1026,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
     {
       if (LocaleCompare((const char *) name,"ellipse") == 0)
         {
-          (void) FormatLocaleFile(svg_info->file,"push graphic-context\n");
+          PushGraphicContext(id);
           break;
         }
       break;
@@ -1027,7 +1036,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
     {
       if (LocaleCompare((const char *) name,"foreignObject") == 0)
         {
-          (void) FormatLocaleFile(svg_info->file,"push graphic-context\n");
+          PushGraphicContext(id);
           break;
         }
       break;
@@ -1037,7 +1046,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
     {
       if (LocaleCompare((const char *) name,"g") == 0)
         {
-          (void) FormatLocaleFile(svg_info->file,"push graphic-context\n");
+          PushGraphicContext(id);
           break;
         }
       break;
@@ -1047,7 +1056,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
     {
       if (LocaleCompare((const char *) name,"image") == 0)
         {
-          (void) FormatLocaleFile(svg_info->file,"push graphic-context\n");
+          PushGraphicContext(id);
           break;
         }
       break;
@@ -1057,7 +1066,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
     {
       if (LocaleCompare((const char *) name,"line") == 0)
         {
-          (void) FormatLocaleFile(svg_info->file,"push graphic-context\n");
+          PushGraphicContext(id);
           break;
         }
       if (LocaleCompare((const char *) name,"linearGradient") == 0)
@@ -1075,7 +1084,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
     {
       if (LocaleCompare((const char *) name,"path") == 0)
         {
-          (void) FormatLocaleFile(svg_info->file,"push graphic-context\n");
+          PushGraphicContext(id);
           break;
         }
       if (LocaleCompare((const char *) name,"pattern") == 0)
@@ -1088,12 +1097,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare((const char *) name,"polygon") == 0)
         {
-          (void) FormatLocaleFile(svg_info->file,"push graphic-context\n");
+          PushGraphicContext(id);
           break;
         }
       if (LocaleCompare((const char *) name,"polyline") == 0)
         {
-          (void) FormatLocaleFile(svg_info->file,"push graphic-context\n");
+          PushGraphicContext(id);
           break;
         }
       break;
@@ -1112,7 +1121,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare((const char *) name,"rect") == 0)
         {
-          (void) FormatLocaleFile(svg_info->file,"push graphic-context\n");
+          PushGraphicContext(id);
           break;
         }
       break;
@@ -1122,7 +1131,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
     {
       if (LocaleCompare((const char *) name,"svg") == 0)
         {
-          (void) FormatLocaleFile(svg_info->file,"push graphic-context\n");
+          PushGraphicContext(id);
           (void) FormatLocaleFile(svg_info->file,"fill \"black\"\n");
           (void) FormatLocaleFile(svg_info->file,"fill-opacity 1\n");
           (void) FormatLocaleFile(svg_info->file,"stroke \"none\"\n");
@@ -1137,7 +1146,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
     {
       if (LocaleCompare((const char *) name,"text") == 0)
         {
-          (void) FormatLocaleFile(svg_info->file,"push graphic-context\n");
+          PushGraphicContext(id);
           svg_info->bounds.x=0.0;
           svg_info->bounds.y=0.0;
           svg_info->bounds.width=0.0;
@@ -1172,7 +1181,17 @@ static void SVGStartElement(void *context,const xmlChar *name,
               draw_info=DestroyDrawInfo(draw_info);
               *svg_info->text='\0';
             }
-          (void) FormatLocaleFile(svg_info->file,"push graphic-context\n");
+          PushGraphicContext(id);
+          break;
+        }
+      break;
+    }
+    case 'U':
+    case 'u':
+    {
+      if (LocaleCompare((char *) name,"use") == 0)
+        {
+          PushGraphicContext(id);
           break;
         }
       break;
@@ -1513,7 +1532,10 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"href") == 0)
             {
-              (void) CloneString(&svg_info->url,value);
+              if (*value != '#')
+                (void) CloneString(&svg_info->url,value);
+              else
+                (void) CloneString(&svg_info->url,value+1);
               break;
             }
           break;
@@ -2196,7 +2218,10 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"xlink:href") == 0)
             {
-              (void) CloneString(&svg_info->url,value);
+              if (*value != '#')
+                (void) CloneString(&svg_info->url,value);
+              else
+                (void) CloneString(&svg_info->url,value+1);
               break;
             }
           if (LocaleCompare(keyword,"x1") == 0)
@@ -2273,7 +2298,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
             sx,sy,tx,ty);
           if (*background != '\0')
             {
-              (void) FormatLocaleFile(svg_info->file,"push graphic-context\n");
+              PushGraphicContext(id);
               (void) FormatLocaleFile(svg_info->file,"fill %s\n",background);
               (void) FormatLocaleFile(svg_info->file,
                 "rectangle 0,0 %g,%g\n",svg_info->view_box.width,
@@ -2562,6 +2587,20 @@ static void SVGEndElement(void *context,const xmlChar *name)
             break;
           (void) CloneString(&svg_info->title,svg_info->text);
           *svg_info->text='\0';
+          break;
+        }
+      break;
+    }
+    case 'U':
+    case 'u':
+    {
+      if (LocaleCompare((char *) name,"use") == 0)
+        {
+          if ((svg_info->bounds.x != 0.0) || (svg_info->bounds.y != 0.0))
+            (void) FormatLocaleFile(svg_info->file,"translate %g,%g\n",
+              svg_info->bounds.x,svg_info->bounds.y);
+          (void) FormatLocaleFile(svg_info->file,"use \"%s\"\n",svg_info->url);
+          (void) FormatLocaleFile(svg_info->file,"pop graphic-context\n");
           break;
         }
       break;
@@ -3708,7 +3747,7 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     blob=(unsigned char *) RelinquishMagickMemory(blob);
     (void) FormatLocaleString(message,MagickPathExtent,
       "  <image id=\"image%.20g\" width=\"%.20g\" height=\"%.20g\" "
-      "x=\"%.20g\" y=\"%.20g\"\n    xlink:href=\"data:image/png;base64,",
+      "x=\"%.20g\" y=\"%.20g\"\n    href=\"data:image/png;base64,",
       (double) image->scene,(double) image->columns,(double) image->rows,
       (double) image->page.x,(double) image->page.y);
     (void) WriteBlobString(image,message);
@@ -4817,7 +4856,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
         GetNextToken(q,&q,extent,token);
         (void) FormatLocaleString(message,MagickPathExtent,
           "  <image x=\"%g\" y=\"%g\" width=\"%g\" height=\"%g\" "
-          "xlink:href=\"%s\"/>\n",primitive_info[j].point.x,
+          "href=\"%s\"/>\n",primitive_info[j].point.x,
           primitive_info[j].point.y,primitive_info[j+1].point.x,
           primitive_info[j+1].point.y,token);
         (void) WriteBlobString(image,message);
