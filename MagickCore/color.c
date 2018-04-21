@@ -2415,7 +2415,10 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
             colorspaceType;
 
           colorspaceType=color->colorspace;
-          colorname=AcquireString(name+i+1);
+          if (i >= strlen(name))
+            colorname=AcquireString(name);
+          else
+            colorname=AcquireString(name+i+1);
           (void) SubstituteString(&colorname,")","");
           (void) QueryColorCompliance(colorname,AllCompliance,color,exception);
           colorname=DestroyString(colorname);
