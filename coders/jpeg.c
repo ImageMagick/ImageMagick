@@ -1473,8 +1473,11 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       if (jpeg_info.output_components == 1)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          index=(Quantum) ConstrainColormapIndex(image,(ssize_t) GETJSAMPLE(*p),
-            exception);
+          ssize_t
+            pixel;
+
+          pixel=(ssize_t) GETJSAMPLE(*p);
+          index=(Quantum) ConstrainColormapIndex(image,pixel,exception);
           SetPixelIndex(image,index,q);
           SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
           p++;

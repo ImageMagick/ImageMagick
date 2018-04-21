@@ -260,8 +260,6 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   if (draw_info == (DrawInfo *) NULL)
     return(clone_info);
   exception=AcquireExceptionInfo();
-  if (clone_info->id != (char *) NULL)
-    (void) CloneString(&clone_info->id,draw_info->id);
   if (clone_info->primitive != (char *) NULL)
     (void) CloneString(&clone_info->primitive,draw_info->primitive);
   if (draw_info->geometry != (char *) NULL)
@@ -835,8 +833,6 @@ MagickExport DrawInfo *DestroyDrawInfo(DrawInfo *draw_info)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(draw_info != (DrawInfo *) NULL);
   assert(draw_info->signature == MagickCoreSignature);
-  if (draw_info->id != (char *) NULL)
-    draw_info->id=DestroyString(draw_info->id);
   if (draw_info->primitive != (char *) NULL)
     draw_info->primitive=DestroyString(draw_info->primitive);
   if (draw_info->text != (char *) NULL)
@@ -1693,6 +1689,90 @@ static size_t GetEllipseCoordinates(const PointInfo start,const PointInfo stop,
   angle.x=DegreesToRadians(degrees.x);
   angle.y=DegreesToRadians(degrees.y);
   return((size_t) floor((angle.y-angle.x)/step+0.5)+3);
+}
+
+static char *GetGroupByID(const char *primitive,const char *id)
+{
+  char
+    *token;
+
+  const char
+    *q,
+    *start;
+
+  register const char
+    *p;
+
+  size_t
+    extent,
+    length;
+
+  ssize_t
+    n;
+
+  /*
+    Find and return group by ID.
+  */
+  token=AcquireString(primitive);
+  extent=strlen(token)+MagickPathExtent;
+  length=0;
+  n=0;
+  start=(const char *) NULL;
+  p=(const char *) NULL;
+  for (q=primitive; *q != '\0'; )
+  {
+    GetNextToken(q,&q,extent,token);
+    if (*token == '\0')
+      break;
+    if (*token == '#')
+      {
+        /*
+          Comment.
+        */
+        while ((*q != '\n') && (*q != '\0'))
+          q++;
+        continue;
+      }
+    if (LocaleCompare("pop",token) == 0)
+      {
+        GetNextToken(q,&q,extent,token);
+        if (LocaleCompare("graphic-context",token) == 0)
+          if (n == 0)
+            {
+              /*
+                End of group by ID.
+              */
+              length=(size_t) (q-start);
+              break;
+            }
+        n--;
+      }
+    p=q;
+    if (LocaleCompare("push",token) == 0)
+      {
+        GetNextToken(q,&q,extent,token);
+        if (LocaleCompare("graphic-context",token) == 0)
+          {
+            n++;
+            if (*q == '"')
+              {
+                GetNextToken(q,&q,extent,token);
+                if (LocaleCompare(id,token) == 0)
+                  {
+                    /*
+                      Start of group by ID.
+                    */
+                    n=0;
+                    start=p;
+                  }
+              }
+          }
+      }
+  }
+  if (length == 0)
+    return((char *) NULL);
+  (void) CopyMagickString(token,start,length);
+  return(token);
 }
 
 static size_t GetRoundRectangleCoordinates(const PointInfo start,
@@ -2590,10 +2670,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,
                   graphic_context[n-1]);
                 if (*q == '"')
-                  {
-                    GetNextToken(q,&q,extent,token);
-                    (void) CloneString(&graphic_context[n]->id,token);
-                  }
+                  GetNextToken(q,&q,extent,token);
                 break;
               }
             if (LocaleCompare("defs",token) == 0)
