@@ -2547,7 +2547,10 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
               case AlphaPixelChannel: type="opacity"; break;
               default: type="unknown"; break;
             }
-          (void) CopyMagickString(subexpression,expression+6,MagickPathExtent);
+          *subexpression='\0';
+          if (strlen(expression) > 6)
+            (void) CopyMagickString(subexpression,expression+6,
+              MagickPathExtent);
           if (strlen(subexpression) > 1)
             subexpression[strlen(subexpression)-1]='\0';
           if (fx_info->file != (FILE *) NULL)
