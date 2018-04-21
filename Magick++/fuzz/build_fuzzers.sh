@@ -40,6 +40,12 @@ for item in $("$MAGICK_SRC/encoder_list"); do
          $encoder_flags $MAGICK_LIBS
 
     echo -e "[libfuzzer]\nclose_fd_mask=3" > "$MAGICK_OUTPUT/encoder_${encoder,,}_fuzzer.options"
+    
+    if [ -f "$MAGICK_SRC/dictionaries/${encoder,,}.dict" ]; then
+        cp "$MAGICK_SRC/dictionaries/${encoder,,}.dict" "$MAGICK_OUTPUT/${encoder,,}.dict"
+        echo -e "\ndict=${encoder,,}.dict" >> "$MAGICK_OUTPUT/ping_${encoder,,}_fuzzer.options"
+        echo -e "\ndict=${encoder,,}.dict" >> "$MAGICK_OUTPUT/encoder_${encoder,,}_fuzzer.options"
+    fi
 
     if [ $MAGICK_FAST_BUILD -eq 1 ]; then
         break
