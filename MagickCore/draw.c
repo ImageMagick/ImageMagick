@@ -747,7 +747,7 @@ static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info)
       break;
   }
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++) ;
-  path_info=(PathInfo *) AcquireQuantumMemory((size_t) (2UL*i+3UL),
+  path_info=(PathInfo *) AcquireQuantumMemory((size_t) (2UL*i+4UL),
     sizeof(*path_info));
   if (path_info == (PathInfo *) NULL)
     return((PathInfo *) NULL);
