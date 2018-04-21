@@ -1744,7 +1744,7 @@ static char *GetNodeByID(const char *primitive,const char *id)
                 End of group by ID.
               */
               if (start != (const char *) NULL)
-                length=(size_t) (p-start);
+                length=(size_t) (p-start+1);
               break;
             }
         n--;
