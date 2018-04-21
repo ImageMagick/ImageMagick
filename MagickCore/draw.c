@@ -2058,7 +2058,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (LocaleCompare("border-color",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
-            (void) QueryColorCompliance(token,AllCompliance,
+            status&=QueryColorCompliance(token,AllCompliance,
               &graphic_context[n]->border_color,exception);
             break;
           }
@@ -2768,7 +2768,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 break;
               }
             GetNextToken(q,&q,extent,token);
-            (void) QueryColorCompliance(token,AllCompliance,&stop_color,
+            status&=QueryColorCompliance(token,AllCompliance,&stop_color,
               exception);
             stops[number_stops-1].color=stop_color;
             GetNextToken(q,&q,extent,token);
@@ -2972,7 +2972,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (LocaleCompare("text-undercolor",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
-            (void) QueryColorCompliance(token,AllCompliance,
+            status&=QueryColorCompliance(token,AllCompliance,
               &graphic_context[n]->undercolor,exception);
             break;
           }
