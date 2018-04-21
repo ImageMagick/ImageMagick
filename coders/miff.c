@@ -423,6 +423,14 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 {
 #define BZipMaxExtent(x)  ((x)+((x)/100)+600)
 #define LZMAMaxExtent(x)  ((x)+((x)/3)+128)
+#define ThrowMIFFException(exception,message) \
+{ \
+  if (quantum_info != (QuantumInfo *) NULL) \
+    quantum_info=DestroyQuantumInfo(quantum_info); \
+  if (compress_pixels != (unsigned char *) NULL) \
+    compress_pixels=(unsigned char *) RelinquishMagickMemory(compress_pixels); \
+  ThrowReaderException((exception),(message)); \
+}
 #define ZipMaxExtent(x)  ((x)+(((x)+7) >> 3)+(((x)+63) >> 6)+11)
 
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
@@ -527,6 +535,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
   if (c == EOF)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   *id='\0';
+  compress_pixels=(unsigned char *) NULL;
+  quantum_info=(QuantumInfo *) NULL;
   (void) memset(keyword,0,sizeof(keyword));
   version=0.0;
   (void) version;
@@ -581,8 +591,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           if (comment == (char *) NULL)
             {
               options=DestroyString(options);
-              ThrowReaderException(ResourceLimitError,
-                "MemoryAllocationFailed");
+              ThrowMIFFException(ResourceLimitError,"MemoryAllocationFailed");
             }
           *p='\0';
           (void) SetImageProperty(image,"comment",comment,exception);
@@ -643,7 +652,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       break;
                 }
                 if (options == (char *) NULL)
-                  ThrowReaderException(ResourceLimitError,
+                  ThrowMIFFException(ResourceLimitError,
                     "MemoryAllocationFailed");
               }
             *p='\0';
@@ -1112,7 +1121,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         if (profiles != (LinkedListInfo *) NULL)
           profiles=DestroyLinkedList(profiles,RelinquishMagickMemory);
         if (image->previous == (Image *) NULL)
-          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          ThrowMIFFException(CorruptImageError,"ImproperImageHeader");
         DeleteImageFromList(&image);
         (void) ThrowMagickException(exception,GetMagickModule(),
           CorruptImageError,"ImproperImageHeader","`%s'",image->filename);
@@ -1141,7 +1150,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               image->directory=(char *) ResizeQuantumMemory(image->directory,
                 length+MagickPathExtent,sizeof(*image->directory));
               if (image->directory == (char *) NULL)
-                ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+                ThrowMIFFException(CorruptImageError,"UnableToReadImageData");
               p=image->directory+strlen(image->directory);
             }
           c=ReadBlobByte(image);
@@ -1196,12 +1205,12 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         */
         packet_size=(size_t) (3UL*image->depth/8UL);
         if ((MagickSizeType) colors > GetBlobSize(image))
-          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+          ThrowMIFFException(CorruptImageError,"InsufficientImageDataInFile");
         if (((MagickSizeType) packet_size*colors) > GetBlobSize(image))
-          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+          ThrowMIFFException(CorruptImageError,"InsufficientImageDataInFile");
         status=AcquireImageColormap(image,colors != 0 ? colors : 256,exception);
         if (status == MagickFalse)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+          ThrowMIFFException(ResourceLimitError,"MemoryAllocationFailed");
         if (colors != 0)
           {
             const unsigned char
@@ -1213,15 +1222,14 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             colormap=(unsigned char *) AcquireQuantumMemory(image->colors,
               packet_size*sizeof(*colormap));
             if (colormap == (unsigned char *) NULL)
-              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+              ThrowMIFFException(ResourceLimitError,"MemoryAllocationFailed");
             count=ReadBlob(image,packet_size*image->colors,colormap);
             p=colormap;
             switch (image->depth)
             {
               default:
                 colormap=(unsigned char *) RelinquishMagickMemory(colormap);
-                ThrowReaderException(CorruptImageError,
-                  "ImageDepthNotSupported");
+                ThrowMIFFException(CorruptImageError,"ImageDepthNotSupported");
               case 8:
               {
                 unsigned char
@@ -1297,15 +1305,12 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     */
     quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      ThrowMIFFException(ResourceLimitError,"MemoryAllocationFailed");
     if (quantum_format != UndefinedQuantumFormat)
       {
         status=SetQuantumFormat(image,quantum_info,quantum_format);
         if (status == MagickFalse)
-          {
-            quantum_info=DestroyQuantumInfo(quantum_info);
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-          }
+          ThrowMIFFException(ResourceLimitError,"MemoryAllocationFailed");
       }
     packet_size=(size_t) (quantum_info->depth/8);
     if (image->storage_class == DirectClass)
@@ -1324,10 +1329,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     compress_pixels=(unsigned char *) AcquireQuantumMemory(compress_extent,
       sizeof(*compress_pixels));
     if (compress_pixels == (unsigned char *) NULL)
-      {
-        quantum_info=DestroyQuantumInfo(quantum_info);
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      }
+      ThrowMIFFException(ResourceLimitError,"MemoryAllocationFailed");
     /*
       Read image pixels.
     */
@@ -1459,10 +1461,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     ((size_t) bzip_info.avail_in != length))
                   {
                     (void) BZ2_bzDecompressEnd(&bzip_info);
-                    quantum_info=DestroyQuantumInfo(quantum_info);
-                    compress_pixels=(unsigned char *) RelinquishMagickMemory(
-                      compress_pixels);
-                    ThrowReaderException(CorruptImageError,
+                    ThrowMIFFException(CorruptImageError,
                       "UnableToReadImageData");
                   }
               }
@@ -1501,10 +1500,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     (lzma_info.avail_in != length))
                   {
                     lzma_end(&lzma_info);
-                    quantum_info=DestroyQuantumInfo(quantum_info);
-                    compress_pixels=(unsigned char *) RelinquishMagickMemory(
-                      compress_pixels);
-                    ThrowReaderException(CorruptImageError,
+                    ThrowMIFFException(CorruptImageError,
                       "UnableToReadImageData");
                   }
               }
@@ -1546,10 +1542,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     ((size_t) zip_info.avail_in != length))
                   {
                     (void) inflateEnd(&zip_info);
-                    quantum_info=DestroyQuantumInfo(quantum_info);
-                    compress_pixels=(unsigned char *) RelinquishMagickMemory(
-                      compress_pixels);
-                    ThrowReaderException(CorruptImageError,
+                    ThrowMIFFException(CorruptImageError,
                       "UnableToReadImageData");
                   }
               }
@@ -1575,8 +1568,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 count=ReadBlob(image,packet_size,pixels);
                 if (count != packet_size)
-                  ThrowReaderException(CorruptImageError,
-                    "UnableToReadImageData");
+                  ThrowMIFFException(CorruptImageError,"UnableToReadImageData");
                 PushRunlengthPacket(image,pixels,&length,&pixel,exception);
               }
             length--;
@@ -1600,7 +1592,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         {
           count=ReadBlob(image,packet_size*image->columns,pixels);
           if (count != (packet_size*image->columns))
-            ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+            ThrowMIFFException(CorruptImageError,"UnableToReadImageData");
           (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
           break;
@@ -1628,10 +1620,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             if (offset < 0)
               {
                 (void) BZ2_bzDecompressEnd(&bzip_info);
-                quantum_info=DestroyQuantumInfo(quantum_info);
-                compress_pixels=(unsigned char *) RelinquishMagickMemory(
-                  compress_pixels);
-                ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+                ThrowMIFFException(CorruptImageError,"ImproperImageHeader");
               }
           }
         code=BZ2_bzDecompressEnd(&bzip_info);
@@ -1670,10 +1659,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             if (offset < 0)
               {
                 (void) inflateEnd(&zip_info);
-                quantum_info=DestroyQuantumInfo(quantum_info);
-                compress_pixels=(unsigned char *) RelinquishMagickMemory(
-                  compress_pixels);
-                ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+                ThrowMIFFException(CorruptImageError,"ImproperImageHeader");
               }
           }
         code=inflateEnd(&zip_info);
