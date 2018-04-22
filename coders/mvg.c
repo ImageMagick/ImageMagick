@@ -126,8 +126,6 @@ static MagickBooleanType IsMVG(const unsigned char *magick,const size_t length)
 */
 static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-#define BoundingBox  "viewbox"
-
   DrawInfo
     *draw_info;
 
@@ -171,11 +169,14 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) memset(&bounds,0,sizeof(bounds));
       while (ReadBlobString(image,primitive) != (char *) NULL)
       {
+        int
+          count;
+
         for (p=primitive; (*p == ' ') || (*p == '\t'); p++) ;
-        if (LocaleNCompare(BoundingBox,p,strlen(BoundingBox)) != 0)
-          continue;
-        (void) sscanf(p,"viewbox %lf %lf %lf %lf",&bounds.x1,&bounds.y1,
+        count=sscanf(p,"viewbox %lf %lf %lf %lf",&bounds.x1,&bounds.y1,
           &bounds.x2,&bounds.y2);
+        if (count != 4)
+          continue;
         image->columns=(size_t) floor((bounds.x2-bounds.x1)+0.5);
         image->rows=(size_t) floor((bounds.y2-bounds.y1)+0.5);
         break;
