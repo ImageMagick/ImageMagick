@@ -1690,6 +1690,9 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
   MagickBooleanType
     viewport_given;
 
+  PixelInfo
+    invalid;  /* the color to assign when distort result is invalid */
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
@@ -2292,6 +2295,8 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
     distort_image->alpha_trait=BlendPixelTrait;
   distort_image->page.x=geometry.x;
   distort_image->page.y=geometry.y;
+  ConformPixelInfo(distort_image,&distort_image->matte_color,&invalid,
+    exception);
 
   { /* ----- MAIN CODE -----
        Sample the source image to each pixel in the distort image.
@@ -2336,8 +2341,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
         sync;
 
       PixelInfo
-        pixel,    /* pixel color to assign to distorted image */
-        invalid;  /* the color to assign when distort result is invalid */
+        pixel;    /* pixel color to assign to distorted image */
 
       PointInfo
         d,
@@ -2379,8 +2383,6 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
       */
       validity = 1.0;
 
-      ConformPixelInfo(distort_image,&distort_image->matte_color,&invalid,
-        exception);
       for (i=0; i < (ssize_t) distort_image->columns; i++)
       {
         /* map pixel coordinate to distortion space coordinate */
