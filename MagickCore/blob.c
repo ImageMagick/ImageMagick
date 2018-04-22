@@ -3431,11 +3431,18 @@ static size_t PingStream(const Image *magick_unused(image),
 MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
   const size_t length,ExceptionInfo *exception)
 {
+  const MagickInfo
+    *magick_info;
+
   Image
     *image;
 
   ImageInfo
+    *clone_info,
     *ping_info;
+
+  MagickBooleanType
+    status;
 
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
@@ -3446,22 +3453,80 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
   if ((blob == (const void *) NULL) || (length == 0))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),BlobError,
-        "UnrecognizedImageFormat","`%s'",image_info->magick);
+        "ZeroLengthBlobNotPermitted","`%s'",image_info->filename);
       return((Image *) NULL);
     }
   ping_info=CloneImageInfo(image_info);
-  ping_info->blob=(void *) AcquireQuantumMemory(length,sizeof(unsigned char));
-  if (ping_info->blob == (const void *) NULL)
+  ping_info->blob=(void *) blob;
+  ping_info->length=length;
+  if (*ping_info->magick == '\0')
+    (void) SetImageInfo(ping_info,0,exception);
+  magick_info=GetMagickInfo(ping_info->magick,exception);
+  if (magick_info == (const MagickInfo *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitFatalError,"MemoryAllocationFailed","`%s'","");
+        MissingDelegateError,"NoDecodeDelegateForThisImageFormat","`%s'",
+        ping_info->magick);
+      ping_info=DestroyImageInfo(ping_info);
       return((Image *) NULL);
     }
-  (void) memcpy(ping_info->blob,blob,length);
-  ping_info->length=length;
+  if (GetMagickBlobSupport(magick_info) != MagickFalse)
+    {
+      char
+        filename[MagickPathExtent];
+
+      /*
+        Native blob support for this image format.
+      */
+      (void) CopyMagickString(filename,ping_info->filename,MagickPathExtent);
+      (void) FormatLocaleString(ping_info->filename,MagickPathExtent,"%s:%s",
+        ping_info->magick,filename);
+      ping_info->ping=MagickTrue;
+      image=ReadStream(ping_info,&PingStream,exception);
+      if (image != (Image *) NULL)
+        (void) DetachBlob(image->blob);
+      ping_info=DestroyImageInfo(ping_info);
+      return(image);
+    }
+  /*
+    Write blob to a temporary file on disk.
+  */
+  ping_info->blob=(void *) NULL;
+  ping_info->length=0;
+  *ping_info->filename='\0';
+  status=BlobToFile(ping_info->filename,blob,length,exception);
+  if (status == MagickFalse)
+    {
+      (void) RelinquishUniqueFileResource(ping_info->filename);
+      ping_info=DestroyImageInfo(ping_info);
+      return((Image *) NULL);
+    }
+  clone_info=CloneImageInfo(ping_info);
+  (void) FormatLocaleString(clone_info->filename,MagickPathExtent,"%s:%s",
+    ping_info->magick,ping_info->filename);
   ping_info->ping=MagickTrue;
-  image=ReadStream(ping_info,&PingStream,exception);
-  ping_info->blob=(void *) RelinquishMagickMemory(ping_info->blob);
+  image=ReadStream(clone_info,&PingStream,exception);
+  if (image != (Image *) NULL)
+    {
+      Image
+        *images;
+
+      /*
+        Restore original filenames and image format.
+      */
+      for (images=GetFirstImageInList(image); images != (Image *) NULL; )
+      {
+        (void) CopyMagickString(images->filename,image_info->filename,
+          MagickPathExtent);
+        (void) CopyMagickString(images->magick_filename,image_info->filename,
+          MagickPathExtent);
+        (void) CopyMagickString(images->magick,magick_info->name,
+          MagickPathExtent);
+        images=GetNextImageInList(images);
+      }
+    }
+  clone_info=DestroyImageInfo(clone_info);
+  (void) RelinquishUniqueFileResource(ping_info->filename);
   ping_info=DestroyImageInfo(ping_info);
   return(image);
 }
