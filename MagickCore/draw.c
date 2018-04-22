@@ -1686,8 +1686,8 @@ static size_t GetEllipseCoordinates(const PointInfo start,const PointInfo stop,
   step=MagickPI/8.0;
   if ((delta >= 0.0) && (delta < (MagickPI/8.0)))
     step=MagickPI/(4.0*(MagickPI*PerceptibleReciprocal(delta)/2.0));
-  angle.x=DegreesToRadians(degrees.x);
-  angle.y=DegreesToRadians(degrees.y);
+  angle.x=DegreesToRadians(fmod(degrees.x,360.0));
+  angle.y=DegreesToRadians(fmod(degrees.y,360.0));
   return((size_t) floor((angle.y-angle.x)/step+0.5)+3);
 }
 
