@@ -31,8 +31,9 @@ static inline ssize_t ConstrainColormapIndex(Image *image,const ssize_t index,
 {
   if ((index < 0) || (index >= (ssize_t) image->colors))
     {
-      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-        "InvalidColormapIndex","`%s'",image->filename);
+      if (exception->severity != CorruptImageError)
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageError,"InvalidColormapIndex","`%s'",image->filename);
       return(0);
     }
   return((ssize_t) index);
@@ -43,8 +44,9 @@ static inline void ValidateColormapValue(Image *image,
 { 
   if ((index < 0) || (index >= (ssize_t) image->colors))
     {
-      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-        "InvalidColormapIndex","`%s'",image->filename);
+      if (exception->severity != CorruptImageError)
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageError,"InvalidColormapIndex","`%s'",image->filename);
       *target=(Quantum) 0;
     }
   else
