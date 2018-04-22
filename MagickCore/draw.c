@@ -1771,7 +1771,7 @@ static char *GetGroupByURL(const char *primitive,const char *url)
       }
   }
   if (start == (const char *) NULL)
-    return((char *) NULL);
+    return(DestroyString(token));
   (void) CopyMagickString(token,start,length);
   return(token);
 }
