@@ -1691,7 +1691,7 @@ static size_t GetEllipseCoordinates(const PointInfo start,const PointInfo stop,
   return((size_t) floor((angle.y-angle.x)/step+0.5)+3);
 }
 
-static char *GetNodeByID(const char *primitive,const char *id)
+static char *GetGroupByURL(const char *primitive,const char *url)
 {
   char
     *token;
@@ -1758,7 +1758,7 @@ static char *GetNodeByID(const char *primitive,const char *id)
             if (*q == '"')
               {
                 GetNextToken(q,&q,extent,token);
-                if (LocaleCompare(id,token) == 0)
+                if (LocaleCompare(url,token) == 0)
                   {
                     /*
                       Start of group by ID.
@@ -1901,7 +1901,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
     defsDepth,
     j,
     k,
-    n;
+    n,
+    symbolDepth;
 
   StopInfo
     *stops;
@@ -1968,6 +1969,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   defsDepth=0;
+  symbolDepth=0;
   status=MagickTrue;
   for (q=primitive; *q != '\0'; )
   {
@@ -2478,6 +2480,13 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               }
             if (LocaleCompare("pattern",token) == 0)
               break;
+            if (LocaleCompare("symbol",token) == 0)
+              {
+                symbolDepth--;
+                graphic_context[n]->render=symbolDepth > 0 ? MagickFalse :
+                  MagickTrue;
+                break;
+              }
             status=MagickFalse;
             break;
           }
@@ -2507,6 +2516,13 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                     (void) SetImageArtifact(image,name,token);
                   }
                 GetNextToken(q,&q,extent,token);
+                break;
+              }
+            if (LocaleCompare("defs",token) == 0)
+              {
+                defsDepth++;
+                graphic_context[n]->render=defsDepth > 0 ? MagickFalse :
+                  MagickTrue;
                 break;
               }
             if (LocaleCompare("gradient",token) == 0)
@@ -2593,6 +2609,24 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 GetNextToken(q,&q,extent,token);
                 break;
               }
+            if (LocaleCompare("graphic-context",token) == 0)
+              {
+                n++;
+                graphic_context=(DrawInfo **) ResizeQuantumMemory(
+                  graphic_context,(size_t) (n+1),sizeof(*graphic_context));
+                if (graphic_context == (DrawInfo **) NULL)
+                  {
+                    (void) ThrowMagickException(exception,GetMagickModule(),
+                      ResourceLimitError,"MemoryAllocationFailed","`%s'",
+                      image->filename);
+                    break;
+                  }
+                graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,
+                  graphic_context[n-1]);
+                if (*q == '"')
+                  GetNextToken(q,&q,extent,token);
+                break;
+              }
             if (LocaleCompare("pattern",token) == 0)
               {
                 char
@@ -2656,28 +2690,10 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 GetNextToken(q,&q,extent,token);
                 break;
               }
-            if (LocaleCompare("graphic-context",token) == 0)
+            if (LocaleCompare("symbol",token) == 0)
               {
-                n++;
-                graphic_context=(DrawInfo **) ResizeQuantumMemory(
-                  graphic_context,(size_t) (n+1),sizeof(*graphic_context));
-                if (graphic_context == (DrawInfo **) NULL)
-                  {
-                    (void) ThrowMagickException(exception,GetMagickModule(),
-                      ResourceLimitError,"MemoryAllocationFailed","`%s'",
-                      image->filename);
-                    break;
-                  }
-                graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,
-                  graphic_context[n-1]);
-                if (*q == '"')
-                  GetNextToken(q,&q,extent,token);
-                break;
-              }
-            if (LocaleCompare("defs",token) == 0)
-              {
-                defsDepth++;
-                graphic_context[n]->render=defsDepth > 0 ? MagickFalse :
+                symbolDepth++;
+                graphic_context[n]->render=symbolDepth > 0 ? MagickFalse :
                   MagickTrue;
                 break;
               }
@@ -3000,21 +3016,21 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (LocaleCompare("use",keyword) == 0)
           {
             char
-              *node;
+              *group;
 
             /*
               Take a node from within the MVG document, and duplicate it here.
             */
             GetNextToken(q,&q,extent,token);
-            node=GetNodeByID(primitive,token);
-            if (node != (char *) NULL)
+            group=GetGroupByURL(primitive,token);
+            if (group != (char *) NULL)
               {
                 DrawInfo
                   *clone_info;
 
                 clone_info=CloneDrawInfo((ImageInfo *) NULL,graphic_context[n]);
-                (void) CloneString(&clone_info->primitive,node);
-                node=DestroyString(node);
+                (void) CloneString(&clone_info->primitive,group);
+                group=DestroyString(group);
                 status=DrawImage(image,clone_info,exception);
                 clone_info=DestroyDrawInfo(clone_info);
               }
