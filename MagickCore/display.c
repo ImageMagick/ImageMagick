@@ -5746,8 +5746,8 @@ static MagickBooleanType XDrawEditImage(Display *display,
               if (stipple_image == (Image *) NULL)
                 break;
               (void) AcquireUniqueFileResource(filename);
-              (void) FormatLocaleString(stipple_image->filename,MagickPathExtent,
-                "xbm:%s",filename);
+              (void) FormatLocaleString(stipple_image->filename,
+                MagickPathExtent,"xbm:%s",filename);
               (void) WriteImage(image_info,stipple_image,exception);
               stipple_image=DestroyImage(stipple_image);
               image_info=DestroyImageInfo(image_info);
@@ -7530,8 +7530,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           height=(unsigned int) (*image)->rows;
           (void) XParseGeometry(windows->image.crop_geometry,&x,&y,
             &width,&height);
-          (void) FormatLocaleString(windows->image.crop_geometry,MagickPathExtent,
-            "%ux%u%+d%+d",width,height,(int) (*image)->columns-(int) width-x,y);
+          (void) FormatLocaleString(windows->image.crop_geometry,
+            MagickPathExtent,"%ux%u%+d%+d",width,height,(int) (*image)->columns-
+            (int) width-x,y);
         }
       if (windows->image.orphan != MagickFalse )
         break;
@@ -7565,8 +7566,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           height=(unsigned int) (*image)->rows;
           (void) XParseGeometry(windows->image.crop_geometry,&x,&y,
             &width,&height);
-          (void) FormatLocaleString(windows->image.crop_geometry,MagickPathExtent,
-            "%ux%u%+d%+d",width,height,x,(int) (*image)->rows-(int) height-y);
+          (void) FormatLocaleString(windows->image.crop_geometry,
+            MagickPathExtent,"%ux%u%+d%+d",width,height,x,(int) (*image)->rows-
+            (int) height-y);
         }
       if (windows->image.orphan != MagickFalse )
         break;
@@ -9133,8 +9135,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) DeleteImageProperty(*image,"label");
       (void) SetImageProperty(*image,"label","Histogram",exception);
       (void) AcquireUniqueFilename(filename);
-      (void) FormatLocaleString((*image)->filename,MagickPathExtent,"histogram:%s",
-        filename);
+      (void) FormatLocaleString((*image)->filename,MagickPathExtent,
+        "histogram:%s",filename);
       status=WriteImage(image_info,*image,exception);
       (void) CopyMagickString(image_info->filename,filename,MagickPathExtent);
       histogram_image=ReadImage(image_info,exception);
@@ -9903,8 +9905,8 @@ static MagickBooleanType XMatteEditImage(Display *display,
                 (void) FormatLocaleString(matte,MagickPathExtent,QuantumFormat,
                   OpaqueAlpha);
                 if (LocaleCompare(MatteMenu[entry],"Transparent") == 0)
-                  (void) FormatLocaleString(matte,MagickPathExtent,QuantumFormat,
-                    (Quantum) TransparentAlpha);
+                  (void) FormatLocaleString(matte,MagickPathExtent,
+                    QuantumFormat,(Quantum) TransparentAlpha);
                 break;
               }
             (void) FormatLocaleString(message,MagickPathExtent,
@@ -12439,8 +12441,8 @@ static MagickBooleanType XRotateImage(Display *display,
           /*
             Rotate 90 degrees.
           */
-          (void) FormatLocaleString(windows->image.crop_geometry,MagickPathExtent,
-            "%ux%u%+d%+d",height,width,(int) (*image)->columns-
+          (void) FormatLocaleString(windows->image.crop_geometry,
+            MagickPathExtent,"%ux%u%+d%+d",height,width,(int) (*image)->columns-
             (int) height-y,x);
           break;
         }
@@ -12449,8 +12451,9 @@ static MagickBooleanType XRotateImage(Display *display,
           /*
             Rotate 180 degrees.
           */
-          (void) FormatLocaleString(windows->image.crop_geometry,MagickPathExtent,
-            "%ux%u%+d%+d",width,height,(int) width-x,(int) height-y);
+          (void) FormatLocaleString(windows->image.crop_geometry,
+            MagickPathExtent,"%ux%u%+d%+d",width,height,(int) width-x,(int)
+            height-y);
           break;
         }
         case 3:
@@ -12458,8 +12461,9 @@ static MagickBooleanType XRotateImage(Display *display,
           /*
             Rotate 270 degrees.
           */
-          (void) FormatLocaleString(windows->image.crop_geometry,MagickPathExtent,
-            "%ux%u%+d%+d",height,width,y,(int) (*image)->rows-(int) width-x);
+          (void) FormatLocaleString(windows->image.crop_geometry,
+            MagickPathExtent,"%ux%u%+d%+d",height,width,y,(int) (*image)->rows-
+            (int) width-x);
           break;
         }
       }
