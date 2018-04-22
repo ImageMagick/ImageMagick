@@ -829,7 +829,7 @@ static StringInfo *ParseImageResourceBlocks(Image *image,
       }
       case 0x0421:
       {
-        if ((count > 3) && (*(p+4) == 0))
+        if ((count > 4) && (*(p+4) == 0))
           *has_merged_image=MagickFalse;
         p+=count;
         break;
