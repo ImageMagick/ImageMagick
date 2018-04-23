@@ -3459,6 +3459,7 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
   ping_info=CloneImageInfo(image_info);
   ping_info->blob=(void *) blob;
   ping_info->length=length;
+  ping_info->ping=MagickTrue;
   if (*ping_info->magick == '\0')
     (void) SetImageInfo(ping_info,0,exception);
   magick_info=GetMagickInfo(ping_info->magick,exception);
@@ -3481,7 +3482,6 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
       (void) CopyMagickString(filename,ping_info->filename,MagickPathExtent);
       (void) FormatLocaleString(ping_info->filename,MagickPathExtent,"%s:%s",
         ping_info->magick,filename);
-      ping_info->ping=MagickTrue;
       image=ReadStream(ping_info,&PingStream,exception);
       if (image != (Image *) NULL)
         (void) DetachBlob(image->blob);
@@ -3504,7 +3504,6 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
   clone_info=CloneImageInfo(ping_info);
   (void) FormatLocaleString(clone_info->filename,MagickPathExtent,"%s:%s",
     ping_info->magick,ping_info->filename);
-  ping_info->ping=MagickTrue;
   image=ReadStream(clone_info,&PingStream,exception);
   if (image != (Image *) NULL)
     {
