@@ -29,14 +29,9 @@ make install
 popd
 
 # Build libtiff
-# We build shared and static here to make IM's libtiff detection via autoconf more reliable
-# The fuzzers themselves link solely against the static build though.
 pushd "$SRC/libtiff"
-cmake . -DCMAKE_INSTALL_PREFIX=$WORK
-make -j$(nproc)
-make install
-git clean -fd
-cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DBUILD_SHARED_LIBS=off
+autoreconf -fiv
+./configure --prefix="$WORK"
 make -j$(nproc)
 make install
 popd
