@@ -1142,6 +1142,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
           (void) FormatLocaleFile(svg_info->file,"stroke \"none\"\n");
           (void) FormatLocaleFile(svg_info->file,"stroke-width 1\n");
           (void) FormatLocaleFile(svg_info->file,"stroke-opacity 1\n");
+          (void) FormatLocaleFile(svg_info->file,"fill-rule nonzero\n");
           break;
         }
       break;
