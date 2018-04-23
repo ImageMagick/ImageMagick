@@ -1,5 +1,19 @@
 #!/bin/bash -eu
 
+# Build libjpeg-turbo
+pushd "$SRC/libjpeg-turbo"
+cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DENABLE_STATIC=on -DENABLE_SHARED=off
+make -j$(nproc)
+make install
+popd
+
+# Build libtiff
+pushd "$SRC/libtiff"
+cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DBUILD_SHARED_LIBS=off
+make -j$(nproc)
+make install
+popd
+
 # build zlib
 pushd "$SRC/zlib"
 ./configure --static --prefix="$WORK"
@@ -17,20 +31,6 @@ popd
 
 pushd "$SRC/libpng"
 cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DPNG_SHARED=off
-make -j$(nproc)
-make install
-popd
-
-# Build libjpeg-turbo
-pushd "$SRC/libjpeg-turbo"
-cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DENABLE_STATIC=on -DENABLE_SHARED=off
-make -j$(nproc)
-make install
-popd
-
-# Build libtiff
-pushd "$SRC/libtiff"
-cmake . -DCMAKE_INSTALL_PREFIX=$WORK
 make -j$(nproc)
 make install
 popd
