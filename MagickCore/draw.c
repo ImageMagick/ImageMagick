@@ -1741,35 +1741,30 @@ static char *GetGroupByURL(const char *primitive,const char *url)
     if (LocaleCompare("pop",token) == 0)
       {
         GetNextToken(q,&q,extent,token);
-        if (LocaleCompare("graphic-context",token) == 0)
-          if (n == 0)
-            {
-              /*
-                End of group by ID.
-              */
-              if (start != (const char *) NULL)
-                length=(size_t) (p-start+1);
-              break;
-            }
+        if ((n == 0) && (start != (const char *) NULL))
+          {
+            /*
+              End of group by ID.
+            */
+            length=(size_t) (p-start+1);
+            break;
+          }
         n--;
       }
     if (LocaleCompare("push",token) == 0)
       {
         GetNextToken(q,&q,extent,token);
-        if (LocaleCompare("graphic-context",token) == 0)
+        n++;
+        if (*q == '"')
           {
-            n++;
-            if (*q == '"')
+            GetNextToken(q,&q,extent,token);
+            if (LocaleCompare(url,token) == 0)
               {
-                GetNextToken(q,&q,extent,token);
-                if (LocaleCompare(url,token) == 0)
-                  {
-                    /*
-                      Start of group by ID.
-                    */
-                    n=0;
-                    start=q;
-                  }
+                /*
+                  Start of group by ID.
+                */
+                n=0;
+                start=q;
               }
           }
       }
