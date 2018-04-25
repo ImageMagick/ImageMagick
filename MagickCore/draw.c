@@ -1534,6 +1534,8 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
     (2UL*number_vertices+32UL),sizeof(*dash_polygon));
   if (dash_polygon == (PrimitiveInfo *) NULL)
     return(MagickFalse);
+  (void) memset(dash_polygon,0,(2UL*number_vertices+32UL)*
+    sizeof(*dash_polygon));
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info->miterlimit=0;
   dash_polygon[0]=primitive_info[0];
@@ -2850,6 +2852,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                     status=MagickFalse;
                     break;
                   }
+                (void) memset(graphic_context[n]->dash_pattern,0,(2UL*x+2UL)*
+                  sizeof(*graphic_context[n]->dash_pattern));
                 for (j=0; j < x; j++)
                 {
                   GetNextToken(q,&q,extent,token);
