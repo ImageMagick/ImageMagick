@@ -2852,8 +2852,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                     status=MagickFalse;
                     break;
                   }
-                (void) memset(graphic_context[n]->dash_pattern,0,(2UL*x+2UL)*
-                  sizeof(*graphic_context[n]->dash_pattern));
+                (void) memset(graphic_context[n]->dash_pattern,0,(size_t)
+                  (2UL*x+2UL)*sizeof(*graphic_context[n]->dash_pattern));
                 for (j=0; j < x; j++)
                 {
                   GetNextToken(q,&q,extent,token);
@@ -3246,13 +3246,24 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       }
       case CirclePrimitive:
       {
+        double
+          alpha,
+          beta,
+          radius;
+
         PointInfo
+          offset,
           degrees;
 
+        alpha=primitive_info[j+1].point.x-primitive_info[j].point.x;
+        beta=primitive_info[j+1].point.y-primitive_info[j].point.y;
+        radius=hypot((double) alpha,(double) beta);
+        offset.x=(double) radius;
+        offset.y=(double) radius;
         degrees.x=0.0;
         degrees.y=360.0;
-        coordinates=GetEllipseCoordinates(primitive_info[j].point,
-          primitive_info[j+1].point,degrees);
+        coordinates=GetEllipseCoordinates(primitive_info[j].point,offset,
+          degrees);
         break;
       }
       case ArcPrimitive:
