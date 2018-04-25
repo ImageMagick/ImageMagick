@@ -1112,7 +1112,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     /*
       Verify that required image information is defined.
     */
-    if ((LocaleCompare(id,"ImageMagick") != 0) || (image->depth > 128) ||
+    if ((LocaleCompare(id,"ImageMagick") != 0) || (image->depth > 64) ||
         (image->storage_class == UndefinedClass) ||
         (image->compression == UndefinedCompression) ||
         (image->colorspace == UndefinedColorspace) ||
