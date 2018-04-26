@@ -59,7 +59,12 @@
 #include "MagickCore/utility-private.h"
 
 /*
-  static declarations.
+  Define declarations.
+*/
+#define CharsPerLine  0x14
+
+/*
+  Static declarations.
 */
 #ifdef __VMS
 #define asciimap AsciiMap
@@ -1613,16 +1618,16 @@ MagickExport void PrintStringInfo(FILE *file,const char *id,
     Convert string to a HEX list.
   */
   p=(char *) string_info->datum;
-  for (i=0; i < string_info->length; i+=0x14)
+  for (i=0; i < string_info->length; i+=CharsPerLine)
   {
-    (void) FormatLocaleFile(file,"0x%08lx: ",(unsigned long) (0x14*i));
-    for (j=1; j <= MagickMin(string_info->length-i,0x14); j++)
+    (void) FormatLocaleFile(file,"0x%08lx: ",(unsigned long) (CharsPerLine*i));
+    for (j=1; j <= MagickMin(string_info->length-i,CharsPerLine); j++)
     {
       (void) FormatLocaleFile(file,"%02lx",(unsigned long) (*(p+j)) & 0xff);
       if ((j % 0x04) == 0)
         (void) fputc(' ',file);
     }
-    for ( ; j <= 0x14; j++)
+    for ( ; j <= CharsPerLine; j++)
     {
       (void) fputc(' ',file);
       (void) fputc(' ',file);
@@ -1630,7 +1635,7 @@ MagickExport void PrintStringInfo(FILE *file,const char *id,
         (void) fputc(' ',file);
     }
     (void) fputc(' ',file);
-    for (j=1; j <= MagickMin(string_info->length-i,0x14); j++)
+    for (j=1; j <= MagickMin(string_info->length-i,CharsPerLine); j++)
     {
       if (isprint((int) ((unsigned char) *p)) != 0)
         (void) fputc(*p,file);
@@ -2471,7 +2476,7 @@ MagickExport char **StringToStrings(const char *text,size_t *count)
       /*
         Convert string to a HEX list.
       */
-      lines=(size_t) (strlen(text)/0x14)+1;
+      lines=(size_t) (strlen(text)/CharsPerLine)+1;
       textlist=(char **) AcquireQuantumMemory((size_t) lines+1UL,
         sizeof(*textlist));
       if (textlist == (char **) NULL)
@@ -2484,9 +2489,9 @@ MagickExport char **StringToStrings(const char *text,size_t *count)
         if (textlist[i] == (char *) NULL)
           ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
         (void) FormatLocaleString(textlist[i],MagickPathExtent,"0x%08lx: ",
-          (long) (0x14*i));
+          (long) (CharsPerLine*i));
         q=textlist[i]+strlen(textlist[i]);
-        for (j=1; j <= (ssize_t) MagickMin(strlen(p),0x14); j++)
+        for (j=1; j <= (ssize_t) MagickMin(strlen(p),CharsPerLine); j++)
         {
           (void) FormatLocaleString(hex_string,MagickPathExtent,"%02x",*(p+j));
           (void) CopyMagickString(q,hex_string,MagickPathExtent);
@@ -2494,7 +2499,7 @@ MagickExport char **StringToStrings(const char *text,size_t *count)
           if ((j % 0x04) == 0)
             *q++=' ';
         }
-        for ( ; j <= 0x14; j++)
+        for ( ; j <= CharsPerLine; j++)
         {
           *q++=' ';
           *q++=' ';
@@ -2502,7 +2507,7 @@ MagickExport char **StringToStrings(const char *text,size_t *count)
             *q++=' ';
         }
         *q++=' ';
-        for (j=1; j <= (ssize_t) MagickMin(strlen(p),0x14); j++)
+        for (j=1; j <= (ssize_t) MagickMin(strlen(p),CharsPerLine); j++)
         {
           if (isprint((int) ((unsigned char) *p)) != 0)
             *q++=(*p);
@@ -2511,6 +2516,10 @@ MagickExport char **StringToStrings(const char *text,size_t *count)
           p++;
         }
         *q='\0';
+        textlist[i]=(char *) ResizeQuantumMemory(textlist[i],q-textlist[i]+1,
+          sizeof(**textlist));
+        if (textlist[i] == (char *) NULL)
+          ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
       }
     }
   if (count != (size_t *) NULL)
