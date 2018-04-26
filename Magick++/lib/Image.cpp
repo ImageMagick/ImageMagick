@@ -3527,6 +3527,20 @@ void Magick::Image::localContrast(const double radius_,const double strength_)
   ThrowImageException;
 }
 
+void Magick::Image::localContrastChannel(const ChannelType channel_,
+  const double radius_,const double strength_)
+{
+  MagickCore::Image
+    *newImage;
+
+  GetPPException;
+  GetAndSetPPChannelMask(channel_);
+  newImage=LocalContrastImage(constImage(),radius_,strength_,exceptionInfo);
+  RestorePPChannelMask;
+  replaceImage(newImage);
+  ThrowImageException;
+}
+
 void Magick::Image::magnify(void)
 {
   MagickCore::Image

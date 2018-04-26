@@ -1889,6 +1889,9 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
           sum,
           weight;
 
+        PixelTrait
+          traits;
+
         weight=1.0f;
         sum=0;
         pix=pixels+x;
@@ -1906,12 +1909,18 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
         srcVal=(float) GetPixelLuma(image,p);
         mult=(srcVal-(sum/totalWeight))*(strength/100.0f);
         mult=(srcVal+mult)/srcVal;
-        SetPixelRed(contrast_image,ClampToQuantum(GetPixelRed(image,p)*mult),
-          q);
-        SetPixelGreen(contrast_image,ClampToQuantum(GetPixelGreen(image,p)*
-          mult),q);
-        SetPixelBlue(contrast_image,ClampToQuantum(GetPixelBlue(image,p)*mult),
-          q);
+        traits=GetPixelChannelTraits(image,RedPixelChannel);
+        if ((traits & UpdatePixelTrait) != 0)
+          SetPixelRed(contrast_image,ClampToQuantum(GetPixelRed(image,p)*mult),
+            q);
+        traits=GetPixelChannelTraits(image,GreenPixelChannel);
+        if ((traits & UpdatePixelTrait) != 0)
+          SetPixelGreen(contrast_image,ClampToQuantum(GetPixelGreen(image,p)*
+            mult),q);
+        traits=GetPixelChannelTraits(image,BluePixelChannel);
+        if ((traits & UpdatePixelTrait) != 0)
+          SetPixelBlue(contrast_image,ClampToQuantum(GetPixelBlue(image,p)*
+            mult),q);
         p+=image->number_channels;
         q+=contrast_image->number_channels;
       }

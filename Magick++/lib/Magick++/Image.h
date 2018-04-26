@@ -1065,6 +1065,8 @@ namespace Magick
 
     // Local contrast enhancement
     void localContrast(const double radius_,const double strength_);
+    void localContrastChannel(const ChannelType channel_,const double radius_,
+      const double strength_);
 
     // Magnify image by integral size
     void magnify(void);
