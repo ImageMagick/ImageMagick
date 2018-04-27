@@ -823,8 +823,8 @@ JBIG_DELEGATE_FALSE
 JBIG_DELEGATE_TRUE
 HEIC_DELEGATE_FALSE
 HEIC_DELEGATE_TRUE
-HEIC_LIBS
-HEIC_CFLAGS
+HEIF_LIBS
+HEIF_CFLAGS
 GVC_DELEGATE_FALSE
 GVC_DELEGATE_TRUE
 GVC_LIBS
@@ -1273,8 +1273,8 @@ RAQM_CFLAGS
 RAQM_LIBS
 GVC_CFLAGS
 GVC_LIBS
-HEIC_CFLAGS
-HEIC_LIBS
+HEIF_CFLAGS
+HEIF_LIBS
 LCMS2_CFLAGS
 LCMS2_LIBS
 LIBOPENJP2_CFLAGS
@@ -2096,8 +2096,8 @@ Some influential environment variables:
   RAQM_LIBS   linker flags for RAQM, overriding pkg-config
   GVC_CFLAGS  C compiler flags for GVC, overriding pkg-config
   GVC_LIBS    linker flags for GVC, overriding pkg-config
-  HEIC_CFLAGS C compiler flags for HEIC, overriding pkg-config
-  HEIC_LIBS   linker flags for HEIC, overriding pkg-config
+  HEIF_CFLAGS C compiler flags for HEIF, overriding pkg-config
+  HEIF_LIBS   linker flags for HEIF, overriding pkg-config
   LCMS2_CFLAGS
               C compiler flags for LCMS2, overriding pkg-config
   LCMS2_LIBS  linker flags for LCMS2, overriding pkg-config
@@ -4554,7 +4554,7 @@ MAGICK_PATCHLEVEL_VERSION=29
 
 MAGICK_VERSION=7.0.7-29
 
-MAGICK_GIT_REVISION=14173:859511c02:20180422
+MAGICK_GIT_REVISION=14195:eb005622e:20180427
 
 
 # Substitute library versioning
@@ -31382,27 +31382,27 @@ if test "$with_heic" != 'yes'; then
 fi
 
 have_heic='no'
-HEIC_CFLAGS=""
-HEIC_LIBS=""
-HEIC_PKG=""
+HEIF_CFLAGS=""
+HEIF_LIBS=""
+HEIF_PKG=""
 if test "x$with_heic" = "xyes"; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for HEIC" >&5
-$as_echo_n "checking for HEIC... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for HEIF" >&5
+$as_echo_n "checking for HEIF... " >&6; }
 
-if test -n "$HEIC_CFLAGS"; then
-    pkg_cv_HEIC_CFLAGS="$HEIC_CFLAGS"
+if test -n "$HEIF_CFLAGS"; then
+    pkg_cv_HEIF_CFLAGS="$HEIF_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libde265\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libde265") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libheif\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libheif") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_HEIC_CFLAGS=`$PKG_CONFIG --cflags "libde265" 2>/dev/null`
+  pkg_cv_HEIF_CFLAGS=`$PKG_CONFIG --cflags "libheif" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -31410,16 +31410,16 @@ fi
  else
     pkg_failed=untried
 fi
-if test -n "$HEIC_LIBS"; then
-    pkg_cv_HEIC_LIBS="$HEIC_LIBS"
+if test -n "$HEIF_LIBS"; then
+    pkg_cv_HEIF_LIBS="$HEIF_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libde265\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libde265") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libheif\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libheif") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_HEIC_LIBS=`$PKG_CONFIG --libs "libde265" 2>/dev/null`
+  pkg_cv_HEIF_LIBS=`$PKG_CONFIG --libs "libheif" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -31440,12 +31440,12 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        HEIC_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libde265" 2>&1`
+	        HEIF_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libheif" 2>&1`
         else
-	        HEIC_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libde265" 2>&1`
+	        HEIF_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libheif" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
-	echo "$HEIC_PKG_ERRORS" >&5
+	echo "$HEIF_PKG_ERRORS" >&5
 
 	have_heic=no
 elif test $pkg_failed = untried; then
@@ -31453,8 +31453,8 @@ elif test $pkg_failed = untried; then
 $as_echo "no" >&6; }
 	have_heic=no
 else
-	HEIC_CFLAGS=$pkg_cv_HEIC_CFLAGS
-	HEIC_LIBS=$pkg_cv_HEIC_LIBS
+	HEIF_CFLAGS=$pkg_cv_HEIF_CFLAGS
+	HEIF_LIBS=$pkg_cv_HEIF_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 	have_heic=yes
@@ -31467,7 +31467,7 @@ if test "$have_heic" = 'yes'; then
 
 $as_echo "#define HEIC_DELEGATE 1" >>confdefs.h
 
-  CFLAGS="$HEIC_CFLAGS $CFLAGS"
+  CFLAGS="$HEIF_CFLAGS $CFLAGS"
 fi
 
  if test "$have_heic" = 'yes'; then
@@ -36874,7 +36874,7 @@ fi
 if test "$build_modules" != 'no'; then
     MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIC_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 fi
 
 
@@ -39921,7 +39921,7 @@ matches your expectations.
   FreeType          --with-freetype=$with_freetype		$have_freetype
   Ghostscript lib   --with-gslib=$with_gslib		$have_gslib
   Graphviz          --with-gvc=$with_gvc		$have_gvc
-  HEIC              --with-heic=$with_heic    	$have_heic
+  HEIC              --with-heic=$with_heic              $have_heic
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
   LCMS              --with-lcms=$with_lcms		$have_lcms
@@ -40012,7 +40012,7 @@ matches your expectations.
   FreeType          --with-freetype=$with_freetype		$have_freetype
   Ghostscript lib   --with-gslib=$with_gslib		$have_gslib
   Graphviz          --with-gvc=$with_gvc		$have_gvc
-  HEIC              --with-heic=$with_heic    	$have_heic
+  HEIC              --with-heic=$with_heic              $have_heic
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
   LCMS              --with-lcms=$with_lcms		$have_lcms

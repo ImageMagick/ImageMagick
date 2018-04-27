@@ -718,7 +718,7 @@
 /* Whether hdri is enabled or not */
 #undef HDRI_ENABLE_OBSOLETE_IN_H
 
-/* Define if you have HEIC library */
+/* Define if you have libheif library */
 #undef HEIC_DELEGATE
 
 /* Define if you have jemalloc memory allocation library */
