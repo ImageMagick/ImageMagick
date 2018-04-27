@@ -191,7 +191,10 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   error=heif_context_read_from_memory(heif_context,file_data,length,NULL);
   file_data=RelinquishMagickMemory(file_data);
   if (error.code != 0)
-    ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+    {
+      heif_context_free(heif_context);
+      ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+    }
   image_handle=(struct heif_image_handle *) NULL;
   error=heif_context_get_primary_image_handle(heif_context,&image_handle);
   if (error.code != 0)
