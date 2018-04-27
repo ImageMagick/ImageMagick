@@ -3272,6 +3272,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           center,
           radii;
 
+        if ((primitive_info[j+2].point.x < -360.0) ||
+            (primitive_info[j+2].point.x > 360.0) ||
+            (primitive_info[j+2].point.y < -360.0) ||
+            (primitive_info[j+2].point.y > 360.0))
+          ThrowPointExpectedException(token,exception);
         center.x=0.5*(primitive_info[j+1].point.x+primitive_info[j].point.x);
         center.y=0.5*(primitive_info[j+1].point.y+primitive_info[j].point.y);
         radii.x=fabs(center.x-primitive_info[j].point.x);
@@ -3282,6 +3287,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       }
       case EllipsePrimitive:
       {
+        if ((primitive_info[j+2].point.x < -360.0) ||
+            (primitive_info[j+2].point.x > 360.0) ||
+            (primitive_info[j+2].point.y < -360.0) ||
+            (primitive_info[j+2].point.y > 360.0))
+          ThrowPointExpectedException(token,exception);
         coordinates=GetEllipseCoordinates(primitive_info[j].point,
           primitive_info[j+1].point,primitive_info[j+2].point);
         break;
@@ -3371,11 +3381,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             primitive_type=UndefinedPrimitive;
             break;
           }
-        if ((primitive_info[j+2].point.x < -360.0) ||
-            (primitive_info[j+2].point.x > 360.0) ||
-            (primitive_info[j+2].point.y < -360.0) ||
-            (primitive_info[j+2].point.y > 360.0))
-          ThrowPointExpectedException(token,exception);
         TraceArc(primitive_info+j,primitive_info[j].point,
           primitive_info[j+1].point,primitive_info[j+2].point);
         i=(ssize_t) (j+primitive_info[j].coordinates);
@@ -3388,11 +3393,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             status=MagickFalse;
             break;
           }
-        if ((primitive_info[j+2].point.x < -360.0) ||
-            (primitive_info[j+2].point.x > 360.0) ||
-            (primitive_info[j+2].point.y < -360.0) ||
-            (primitive_info[j+2].point.y > 360.0))
-          ThrowPointExpectedException(token,exception);
         TraceEllipse(primitive_info+j,primitive_info[j].point,
           primitive_info[j+1].point,primitive_info[j+2].point);
         i=(ssize_t) (j+primitive_info[j].coordinates);
