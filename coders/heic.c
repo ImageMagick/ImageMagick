@@ -72,21 +72,21 @@
 #include "MagickCore/utility.h"
 #if defined(MAGICKCORE_HEIC_DELEGATE)
 #include <libde265/de265.h>
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+#include <heif.h>
+#else
 #include <libheif/heif.h>
+#endif
 #endif
 
 
-static MagickBooleanType
-  WriteHEICImage(const ImageInfo *,Image *,ExceptionInfo *);
-
-
-/*
-  Typedef declarations.
-*/
 #if defined(MAGICKCORE_HEIC_DELEGATE)
 
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT)
+static MagickBooleanType
+  WriteHEICImage(const ImageInfo *,Image *,ExceptionInfo *);
+#endif
 
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -115,7 +115,7 @@ static MagickBooleanType
 %
 */
 static Image *ReadHEICImage(const ImageInfo *image_info,
-                            ExceptionInfo *exception)
+  ExceptionInfo *exception)
 {
   Image
     *image;
@@ -129,7 +129,6 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   ssize_t
     count;
 
-
   /*
     Open image file.
   */
@@ -137,7 +136,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-                          image_info->filename);
+      image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   image=AcquireImage(image_info,exception);
@@ -356,7 +355,9 @@ ModuleExport size_t RegisterHEICImage(void)
   entry=AcquireMagickInfo("HEIC","HEIC","High Efficiency Image Format");
 #if defined(MAGICKCORE_HEIC_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadHEICImage;
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT)
   entry->encoder=(EncodeImageHandler *) WriteHEICImage;
+#endif
 #endif
   entry->magick=(IsImageFormatHandler *) IsHEIC;
   entry->mime_type=ConstantString("image/x-heic");
@@ -391,23 +392,6 @@ ModuleExport void UnregisterHEICImage(void)
 }
 
 
-
-static struct heif_error heif_write_func(struct heif_context* ctx,
-                                         const void* data,
-                                         size_t size,
-                                         void* userdata)
-{
-  Image* image = (Image*)userdata;
-  (void) WriteBlob(image, size, data);
-
-  struct heif_error error_ok;
-  error_ok.code = heif_error_Ok;
-  error_ok.subcode = heif_suberror_Unspecified;
-  error_ok.message = "ok";
-  return error_ok;
-}
-
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -435,7 +419,22 @@ static struct heif_error heif_write_func(struct heif_context* ctx,
 %    o exception:  return any errors or warnings in this structure.
 %
 */
-#if defined(MAGICKCORE_HEIC_DELEGATE)
+#if defined(MAGICKCORE_HEIC_DELEGATE) && !defined(MAGICKCORE_WINDOWS_SUPPORT)
+static struct heif_error heif_write_func(struct heif_context* ctx,
+                                         const void* data,
+                                         size_t size,
+                                         void* userdata)
+{
+  Image* image = (Image*)userdata;
+  (void) WriteBlob(image, size, data);
+
+  struct heif_error error_ok;
+  error_ok.code = heif_error_Ok;
+  error_ok.subcode = heif_suberror_Unspecified;
+  error_ok.message = "ok";
+  return error_ok;
+}
+
 static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
