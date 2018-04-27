@@ -10,7 +10,6 @@
 %                        H   H  EEEEE  IIIII   CCCC                           %
 %                                                                             %
 %                                                                             %
-%                                                                             %
 %                        Read/Write Heic Image Format                         %
 %                                                                             %
 %                                 Dirk Farin                                  %
@@ -71,7 +70,6 @@
 #include "MagickCore/module.h"
 #include "MagickCore/utility.h"
 #if defined(MAGICKCORE_HEIC_DELEGATE)
-#include <libde265/de265.h>
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #include <heif.h>
 #else
