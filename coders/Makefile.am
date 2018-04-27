@@ -574,7 +574,7 @@ coders_hdr_la_LIBADD       = $(MAGICKCORE_LIBS) $(GOMP_LIBS) $(MATH_LIBS)
 coders_heic_la_SOURCES     = coders/heic.c
 coders_heic_la_CPPFLAGS    = $(MODULE_CODER_CPPFLAGS)
 coders_heic_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_heic_la_LIBADD      = $(MAGICKCORE_LIBS) $(HEIC_LIBS)
+coders_heic_la_LIBADD      = $(MAGICKCORE_LIBS) $(HEIF_LIBS)
 
 # HRZ coder module
 coders_hrz_la_SOURCES      = coders/hrz.c
@@ -623,7 +623,7 @@ coders_jpeg_la_SOURCES     = coders/jpeg.c
 coders_jpeg_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
 coders_jpeg_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 coders_jpeg_la_LIBADD      = $(MAGICKCORE_LIBS) $(JPEG_LIBS) $(MATH_LIBS)
- 
+
 # JPEG 2000 coder module
 coders_jp2_la_SOURCES      = coders/jp2.c
 coders_jp2_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS) $(LIBOPENJP2_CFLAGS)
