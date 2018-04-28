@@ -2362,9 +2362,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             profile=DestroyStringInfo(profile);
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         }
-      SetImageAlphaChannel(image,TransparentAlphaChannel,exception);
       image->background_color.alpha=TransparentAlpha;
       image->background_color.alpha_trait=BlendPixelTrait;
+      (void) SetImageBackgroundColor(image,exception);
       merged=MergeImageLayers(image,FlattenLayer,exception);
       ReplaceImageInList(&image,merged);
     }
