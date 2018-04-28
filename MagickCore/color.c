@@ -2423,6 +2423,8 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
           else
             colorname=AcquireString(name+i+1);
           (void) SubstituteString(&colorname,")","");
+          if (LocaleCompare(name,colorname) == 0)
+            return(MagickFalse);
           status=QueryColorCompliance(colorname,AllCompliance,color,exception);
           colorname=DestroyString(colorname);
           color->colorspace=colorspaceType;
