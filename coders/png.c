@@ -6185,6 +6185,10 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
 
                 else
                   {
+                    if (loop_iters > GetMagickResourceLimit(ListLengthResource))
+                      loop_iters=GetMagickResourceLimit(ListLengthResource);
+                    if (loop_iters >= 2147483647L)
+                      loop_iters=2147483647L;
                     mng_info->loop_jump[loop_level]=TellBlob(image);
                     mng_info->loop_count[loop_level]=loop_iters;
                   }
