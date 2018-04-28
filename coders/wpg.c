@@ -1405,6 +1405,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                 }
               image->columns=Bitmap2Header1.Width;
               image->rows=Bitmap2Header1.Height;
+              if (image_info->ping != MagickFalse)
+                return(image);
               status=SetImageExtent(image,image->columns,image->rows,exception);
               if (status == MagickFalse)
                 break;
@@ -1452,9 +1454,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                   }
                 case 1:    /*RLE for WPG2 */
                   {
-                    if(!image_info->ping)
-                      if( UnpackWPG2Raster(image,bpp,exception) < 0)
-                        goto DecompressionFailed;
+                    if( UnpackWPG2Raster(image,bpp,exception) < 0)
+                      goto DecompressionFailed;
                     break;
                   }
                 }
