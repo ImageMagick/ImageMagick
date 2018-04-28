@@ -262,7 +262,6 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
     heif_chroma_420,NULL);
   if (error.code != 0)
     {
-      heif_image_release(heif_image);
       heif_image_handle_release(image_handle);
       heif_context_free(heif_context);
       ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
