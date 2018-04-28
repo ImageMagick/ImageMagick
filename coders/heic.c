@@ -112,6 +112,15 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
+static MagickBooleanType IsHeifSuccess(struct heif_error *error, Image *image,
+  ExceptionInfo *exception)
+{
+  if (error->code == 0)
+    return(MagickTrue);
+
+  ThrowBinaryException(CorruptImageError,error->message,image->filename);
+}
+
 static Image *ReadHEICImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -169,10 +178,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
-    {
-      image=DestroyImageList(image);
-      return((Image *) NULL);
-    }
+    return(DestroyImageList(image));
   length=GetBlobSize(image);
   file_data=AcquireMagickMemory(length);
   if (file_data == (void *) NULL)
@@ -188,17 +194,17 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   heif_context=heif_context_alloc();
   error=heif_context_read_from_memory(heif_context,file_data,length,NULL);
   file_data=RelinquishMagickMemory(file_data);
-  if (error.code != 0)
+  if (IsHeifSuccess(&error,image,exception) == MagickFalse)
     {
       heif_context_free(heif_context);
-      ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+      return(DestroyImageList(image));
     }
   image_handle=(struct heif_image_handle *) NULL;
   error=heif_context_get_primary_image_handle(heif_context,&image_handle);
-  if (error.code != 0)
+  if (IsHeifSuccess(&error,image,exception) == MagickFalse)
     {
       heif_context_free(heif_context);
-      ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+      return(DestroyImageList(image));
     }
   /*
     Read Exif data from HEIC file
@@ -260,11 +266,11 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   (void) SetImageColorspace(image,YCbCrColorspace,exception);
   error=heif_decode_image(image_handle,&heif_image,heif_colorspace_YCbCr,
     heif_chroma_420,NULL);
-  if (error.code != 0)
+  if (IsHeifSuccess(&error,image,exception) == MagickFalse)
     {
       heif_image_handle_release(image_handle);
       heif_context_free(heif_context);
-      ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
+      return(DestroyImageList(image));
     }
   p_y=heif_image_get_plane(heif_image,heif_channel_Y,&stride_y);
   p_cb=heif_image_get_plane(heif_image,heif_channel_Cb,&stride_cb);
