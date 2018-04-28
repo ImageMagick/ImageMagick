@@ -36,8 +36,7 @@
 %
 %
 */
-
-
+
 /*
   Include declarations.
 */
@@ -101,8 +100,7 @@
 #include "librsvg/librsvg-features.h"
 #endif
 #endif
-
-
+
 /*
   Typedef declarations.
 */
@@ -187,8 +185,7 @@ typedef struct _SVGInfo
     document;
 #endif
 } SVGInfo;
-
-
+
 /*
   Forward declarations.
 */
@@ -1854,12 +1851,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       }
                     if (LocaleCompare(keyword,"stroke") == 0)
                       {
-                         if (LocaleCompare(value,"currentColor") == 0)
-                           {
-                             (void) FormatLocaleFile(svg_info->file,
-                               "stroke \"%s\"\n",color);
-                             break;
-                           }
+                        if (LocaleCompare(value,"currentColor") == 0)
+                          {
+                            (void) FormatLocaleFile(svg_info->file,
+                              "stroke \"%s\"\n",color);
+                            break;
+                          }
                         if (LocaleCompare(value,"#000000ff") == 0)
                           (void) FormatLocaleFile(svg_info->file,
                             "fill '#000000'\n");
@@ -2904,7 +2901,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *file;
 
   Image
-    *image;
+    *image,
+    *next;
 
   int
     status,
@@ -2981,7 +2979,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             attributes;
 
           /*
-            Our best hope of compliance with the SVG standard.
+            Our best hope for compliance with the SVG standard.
           */
           status=AcquireUniqueSymbolicLink(image->filename,input_filename);
           (void) AcquireUniqueFilename(output_filename);
@@ -3021,6 +3019,14 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (void) RelinquishUniqueFileResource(output_filename);
               if (svg_image != (Image *) NULL)
                 {
+                  for (next=GetFirstImageInList(svg_image); next != (Image *) NULL; )
+                  {
+                    (void) CopyMagickString(next->filename,image->filename,
+                      MaxTextExtent);
+                    (void) CopyMagickString(next->magick,image->magick,
+                      MaxTextExtent);
+                    next=GetNextImageInList(next);
+                  }
                   image=DestroyImage(image);
                   return(svg_image);
                 }
@@ -3267,6 +3273,12 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         g_object_unref(G_OBJECT(pixel_buffer));
 #endif
         (void) CloseBlob(image);
+        for (next=GetFirstImageInList(image); next != (Image *) NULL; )
+        {
+          (void) CopyMagickString(next->filename,image->filename,MaxTextExtent);
+          (void) CopyMagickString(next->magick,image->magick,MaxTextExtent);
+          next=GetNextImageInList(next);
+        }
         return(GetFirstImageInList(image));
 #endif
       }
@@ -3398,6 +3410,12 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) SetImageProperty(image,"svg:comment",svg_info->comment,
           exception);
     }
+  for (next=GetFirstImageInList(image); next != (Image *) NULL; )
+  {
+    (void) CopyMagickString(next->filename,image->filename,MaxTextExtent);
+    (void) CopyMagickString(next->magick,image->magick,MaxTextExtent);
+    next=GetNextImageInList(next);
+  }
   svg_info=DestroySVGInfo(svg_info);
   (void) RelinquishUniqueFileResource(filename);
   return(GetFirstImageInList(image));
@@ -3989,8 +4007,8 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
         if (LocaleCompare("clip-rule",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
-            (void) FormatLocaleString(message,MagickPathExtent,
-              "clip-rule:%s;",token);
+            (void) FormatLocaleString(message,MagickPathExtent,"clip-rule:%s;",
+              token);
             (void) WriteBlobString(image,message);
             break;
           }

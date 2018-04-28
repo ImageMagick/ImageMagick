@@ -327,6 +327,9 @@ typedef struct _DrawInfo
 
   MagickBooleanType
     clip_path;
+
+  Image
+    *clipping_mask;
 } DrawInfo;
 
 typedef struct _PrimitiveInfo
