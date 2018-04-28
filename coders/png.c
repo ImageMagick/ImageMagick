@@ -4989,11 +4989,19 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     {
+      DestroyJNG(NULL,&color_image,&color_image_info,&alpha_image,
+        &alpha_image_info);
       jng_image=DestroyImageList(jng_image);
-      DestroyJNG(NULL,NULL,NULL,&alpha_image,&alpha_image_info);
       return(DestroyImageList(image));
     }
-
+  if ((image->columns != jng_image->columns) ||
+      (image->rows != jng_image->rows))
+    {
+      DestroyJNG(NULL,&color_image,&color_image_info,&alpha_image,
+        &alpha_image_info);
+      jng_image=DestroyImageList(jng_image);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     s=GetVirtualPixels(jng_image,0,y,image->columns,1,exception);
