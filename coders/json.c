@@ -723,6 +723,7 @@ static ssize_t PrintChannelStatistics(FILE *file,const PixelChannel channel,
     GetMagickPrecision(),(double) ClampToQuantum(scale*
     channel_statistics[channel].maxima),GetMagickPrecision(),scale*
     channel_statistics[channel].mean,GetMagickPrecision(),scale*
+    IsNaN(channel_statistics[channel].standard_deviation) != 0 ? MagickEpsilon :
     channel_statistics[channel].standard_deviation,GetMagickPrecision(),
     channel_statistics[channel].kurtosis,GetMagickPrecision(),
     channel_statistics[channel].skewness,GetMagickPrecision(),
