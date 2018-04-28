@@ -1408,9 +1408,10 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               if (image_info->ping != MagickFalse)
                 return(image);
               status=SetImageExtent(image,image->columns,image->rows,exception);
+              if (status != MagickFalse)
+                status=ResetImagePixels(image,exception);
               if (status == MagickFalse)
                 break;
-              (void) ResetImagePixels(image,exception);
               if ((image->colors == 0) && (bpp != 24))
                 {
                   image->colors=one << bpp;
