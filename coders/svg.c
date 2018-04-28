@@ -1076,6 +1076,16 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       break;
     }
+    case 'M':
+    case 'm':
+    {
+      if (LocaleCompare((const char *) name,"mask") == 0)
+        {
+          (void) FormatLocaleFile(svg_info->file,"push mask \"%s\"\n",id);
+          break;
+        }
+      break;
+    }
     case 'P':
     case 'p':
     {
@@ -1547,6 +1557,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
             {
               svg_info->element.major=
                 GetUserSpaceCoordinateValue(svg_info,1,value);
+              break;
+            }
+          if (LocaleCompare(keyword,"mask") == 0)
+            {
+              (void) FormatLocaleFile(svg_info->file,"mask \"%s\"\n",value);
               break;
             }
           if (LocaleCompare(keyword,"minor") == 0)
@@ -2443,6 +2458,16 @@ static void SVGEndElement(void *context,const xmlChar *name)
       if (LocaleCompare((const char *) name,"linearGradient") == 0)
         {
           (void) FormatLocaleFile(svg_info->file,"pop gradient\n");
+          break;
+        }
+      break;
+    }
+    case 'M':
+    case 'm':
+    {
+      if (LocaleCompare((const char *) name,"mask") == 0)
+        {
+          (void) FormatLocaleFile(svg_info->file,"pop mask\n");
           break;
         }
       break;
