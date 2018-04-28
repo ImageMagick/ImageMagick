@@ -4545,7 +4545,8 @@ WandExport MagickBooleanType DrawSetClipPath(DrawingWand *wand,
 #if DRAW_BINARY_IMPLEMENTATION
       if (wand->image == (Image *) NULL)
         ThrowDrawException(WandError,"ContainsNoImages",wand->name);
-      (void) DrawClipPath(wand->image,CurrentContext,CurrentContext->clip_mask);
+      (void) DrawClipPath(wand->image,CurrentContext,CurrentContext->clip_mask,
+        wand->exception);
 #endif
       (void) MVGPrintf(wand,"clip-path url(#%s)\n",clip_mask);
     }
