@@ -1039,11 +1039,11 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
       if ((*p == '}') && (*(p+1) == ';'))
         break;
       p+=strlen(p);
-      if ((size_t) (p-sixel_buffer+MagickPathExtent) < length)
+      if ((size_t) (p-sixel_buffer+MagickPathExtent+1) < length)
         continue;
       length<<=1;
       sixel_buffer=(char *) ResizeQuantumMemory(sixel_buffer,length+
-        MagickPathExtent,sizeof(*sixel_buffer));
+        MagickPathExtent+1,sizeof(*sixel_buffer));
       if (sixel_buffer == (char *) NULL)
         break;
       p=sixel_buffer+strlen(sixel_buffer);
