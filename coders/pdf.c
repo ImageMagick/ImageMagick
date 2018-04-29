@@ -731,7 +731,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         passphrase[MagickPathExtent];
 
       (void) FormatLocaleString(passphrase,MagickPathExtent,
-        "'-sPDFPassword=%s' ",option);
+        "\"-sPDFPassword=%s\" ",option);
       (void) ConcatenateMagickString(options,passphrase,MagickPathExtent);
     }
   read_info=CloneImageInfo(image_info);
