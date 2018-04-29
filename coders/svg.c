@@ -1144,6 +1144,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
       if (LocaleCompare((const char *) name,"svg") == 0)
         {
           PushGraphicContext(id);
+          (void) FormatLocaleFile(svg_info->file,"compliance \"SVG\"\n");
           (void) FormatLocaleFile(svg_info->file,"fill \"black\"\n");
           (void) FormatLocaleFile(svg_info->file,"fill-opacity 1\n");
           (void) FormatLocaleFile(svg_info->file,"stroke \"none\"\n");
