@@ -25,10 +25,6 @@
 
     <policy domain="coder" rights="none" pattern="HTTP" />
 
-  Lets prevent users from executing any image filters:
-
-    <policy domain="filter" rights="none" pattern="*" />
-
   The /repository file system is restricted to read only.  We use a glob
   expression to match all paths that start with /repository:
 
