@@ -777,8 +777,9 @@ static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info)
     /*
       Eliminate duplicate points.
     */
-    if ((code == MoveToCode) || (fabs(q.x-primitive_info[i].point.x) >= DrawEpsilon) ||
-        (fabs(q.y-primitive_info[i].point.y) >= DrawEpsilon))
+    if ((code == MoveToCode) || (coordinates <= 0) ||
+        (fabs(q.x-primitive_info[i].point.x) > DrawEpsilon) ||
+        (fabs(q.y-primitive_info[i].point.y) > DrawEpsilon))
       {
         path_info[n].code=code;
         path_info[n].point=primitive_info[i].point;
