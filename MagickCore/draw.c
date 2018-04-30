@@ -1969,7 +1969,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
   if (*draw_info->primitive != '@')
     primitive=AcquireString(draw_info->primitive);
   else
-    if (*(draw_info->primitive+1) != '-')
+    if ((strlen(draw_info->primitive) > 1) && 
+        (*(draw_info->primitive+1) != '-'))
       primitive=FileToString(draw_info->primitive+1,~0UL,exception);
   if (primitive == (char *) NULL)
     return(MagickFalse);
