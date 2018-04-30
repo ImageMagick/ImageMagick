@@ -918,9 +918,11 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               **magick_restrict source_pixels,
               **magick_restrict target_pixels;
 
+#if defined(LCMSHDRI)
             LCMSType
               source_scale,
               target_scale;
+#endif
 
             MagickOffsetType
               progress;
