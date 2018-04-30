@@ -371,22 +371,28 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((pcx_info.bits_per_pixel*pcx_info.planes) >= 64)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     one=1;
-    if ((pcx_info.bits_per_pixel != 8) || (pcx_info.planes == 1))
-      if ((pcx_info.version == 3) || (pcx_info.version == 5) ||
-          ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
-        image->colors=(size_t) MagickMin(one << (1UL*
-          (pcx_info.bits_per_pixel*pcx_info.planes)),256UL);
-    if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
-      ThrowPCXException(ResourceLimitError,"MemoryAllocationFailed");
-    if ((pcx_info.bits_per_pixel >= 8) && (pcx_info.planes != 1))
+    if ((pcx_info.bits_per_pixel >= 8) || (pcx_info.planes != 1))
       image->storage_class=DirectClass;
-    p=pcx_colormap;
-    for (i=0; i < (ssize_t) image->colors; i++)
-    {
-      image->colormap[i].red=ScaleCharToQuantum(*p++);
-      image->colormap[i].green=ScaleCharToQuantum(*p++);
-      image->colormap[i].blue=ScaleCharToQuantum(*p++);
-    }
+    else
+      {
+        if ((pcx_info.bits_per_pixel != 8) || (pcx_info.planes == 1))
+          if ((pcx_info.version == 3) || (pcx_info.version == 5) ||
+              ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
+            image->colors=(size_t) MagickMin(one << (1UL*
+              (pcx_info.bits_per_pixel*pcx_info.planes)),256UL);
+        if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
+          ThrowPCXException(ResourceLimitError,"MemoryAllocationFailed");
+      }
+    if (image->colors <= 16)
+      {
+        p=pcx_colormap;
+        for (i=0; i < (ssize_t) image->colors; i++)
+        {
+          image->colormap[i].red=ScaleCharToQuantum(*p++);
+          image->colormap[i].green=ScaleCharToQuantum(*p++);
+          image->colormap[i].blue=ScaleCharToQuantum(*p++);
+        }
+      }
     pcx_info.bytes_per_line=ReadBlobLSBShort(image);
     pcx_info.palette_info=ReadBlobLSBShort(image);
     pcx_info.horizontal_screensize=ReadBlobLSBShort(image);
