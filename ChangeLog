@@ -1,3 +1,6 @@
+2018-05-01  7.0.7-30  <quetzlzacatenango@image...>
+  * Missing break when checking "compliance" element.
+
 2018-04-30  7.0.7-29 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.7-29, GIT revision 14225:41edbdcea:20180430.
 
