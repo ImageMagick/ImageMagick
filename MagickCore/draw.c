@@ -2188,6 +2188,10 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           }
         if (LocaleCompare("compliance",keyword) == 0)
           {
+            /*
+              MVG compliance associates a clipping mask with an image; SVG
+              compliance associates a clipping mask with a graphics context.
+            */
             GetNextToken(q,&q,extent,token);
             graphic_context[n]->compliance=(ComplianceType) ParseCommandOption(
               MagickComplianceOptions,MagickFalse,token);
