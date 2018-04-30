@@ -2128,6 +2128,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             clip_path=GetNodeByURL(primitive,token);
             if (clip_path != (char *) NULL)
               {
+                if (graphic_context[n]->clipping_mask != (Image *) NULL)
+                  graphic_context[n]->clipping_mask=
+                    DestroyImage(graphic_context[n]->clipping_mask);
                 graphic_context[n]->clipping_mask=DrawClippingMask(image,
                   graphic_context[n],clip_path,exception);
                 clip_path=DestroyString(clip_path);
