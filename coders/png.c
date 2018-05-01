@@ -4732,7 +4732,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "    Copying JDAT chunk data to color_blob.");
 
-        if (length != 0)
+        if ((length != 0) && (color_image != (Image *) NULL))
           {
             (void) WriteBlob(color_image,length,chunk);
             chunk=(unsigned char *) RelinquishMagickMemory(chunk);
