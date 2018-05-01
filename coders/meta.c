@@ -1945,8 +1945,8 @@ static int formatIPTC(Image *ifile, Image *ofile)
     if (taglen < 0)
       return(-1);
     /* make a buffer to hold the tag datand snag it from the input stream */
-    str=(unsigned char *) AcquireQuantumMemory((size_t) (taglen+MagickPathExtent),
-      sizeof(*str));
+    str=(unsigned char *) AcquireQuantumMemory((size_t) (taglen+
+      MagickPathExtent),sizeof(*str));
     if (str == (unsigned char *) NULL)
       return(0);
     for (tagindx=0; tagindx<taglen; tagindx++)
@@ -2078,15 +2078,21 @@ static int formatIPTCfromBuffer(Image *ofile, char *s, ssize_t len)
     if (taglen > 65535)
       return(-1);
     /* make a buffer to hold the tag datand snag it from the input stream */
-    str=(unsigned char *) AcquireQuantumMemory((size_t) (taglen+MagickPathExtent),
-      sizeof(*str));
+    str=(unsigned char *) AcquireQuantumMemory((size_t) (taglen+
+      MagickPathExtent),sizeof(*str));
     if (str == (unsigned char *) NULL)
-      printf("MemoryAllocationFailed");
+      {
+        (void) printf("MemoryAllocationFailed");
+        return 0;
+      }
     for (tagindx=0; tagindx<taglen; tagindx++)
     {
       c = *s++; len--;
       if (len < 0)
-        return(-1);
+        {
+          str=(unsigned char *) RelinquishMagickMemory(str);
+          return(-1);
+        }
       str[tagindx]=(unsigned char) c;
     }
     str[taglen]=0;
