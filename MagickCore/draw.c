@@ -777,7 +777,7 @@ static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info)
     /*
       Eliminate duplicate points.
     */
-    if ((code == MoveToCode) || (coordinates <= 0) ||
+    if ((code == MoveToCode) ||
         (fabs(q.x-primitive_info[i].point.x) >= DrawEpsilon) ||
         (fabs(q.y-primitive_info[i].point.y) >= DrawEpsilon))
       {
@@ -1846,9 +1846,11 @@ static size_t ReckonRoundRectangleCoordinates(const PointInfo start,
   size_t
     coordinates;
 
-  coordinates=0;
   offset.x=fabs(end.x-start.x);
   offset.y=fabs(end.y-start.y);
+  if ((offset.x < DrawEpsilon) || (offset.y < DrawEpsilon))
+    return(0);
+  coordinates=0;
   if (arc.x > (0.5*offset.x))
     arc.x=0.5*offset.x;
   if (arc.y > (0.5*offset.y))
@@ -1963,7 +1965,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
   if (*draw_info->primitive != '@')
     primitive=AcquireString(draw_info->primitive);
   else
-    if ((strlen(draw_info->primitive) > 1) && 
+    if ((strlen(draw_info->primitive) > 1) &&
         (*(draw_info->primitive+1) != '-'))
       primitive=FileToString(draw_info->primitive+1,~0UL,exception);
   if (primitive == (char *) NULL)
