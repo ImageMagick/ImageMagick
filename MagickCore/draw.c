@@ -1716,32 +1716,6 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
 %
 */
 
-static size_t GetEllipseCoordinates(const PointInfo start,const PointInfo stop,
-  const PointInfo degrees)
-{
-  double
-    delta,
-    step,
-    y;
-
-  PointInfo
-    angle;
-
-  /*
-    Ellipses are just short segmented polys.
-  */
-  delta=2.0*PerceptibleReciprocal(MagickMax(stop.x,stop.y));
-  step=MagickPI/8.0;
-  if ((delta >= 0.0) && (delta < (MagickPI/8.0)))
-    step=MagickPI/(4.0*(MagickPI*PerceptibleReciprocal(delta)/2.0));
-  angle.x=DegreesToRadians(degrees.x);
-  y=degrees.y;
-  while (y < degrees.x)
-    y+=360.0;
-  angle.y=DegreesToRadians(y);
-  return((size_t) floor((angle.y-angle.x)/step+0.5)+3);
-}
-
 static char *GetNodeByURL(const char *primitive,const char *url)
 {
   char
@@ -1822,13 +1796,50 @@ static char *GetNodeByURL(const char *primitive,const char *url)
   return(token);
 }
 
-static size_t GetRoundRectangleCoordinates(const PointInfo start,
+static inline MagickBooleanType IsPoint(const char *point)
+{
+  char
+    *p;
+
+  double
+    value;
+
+  value=StringToDouble(point,&p);
+  return((fabs(value) < DrawEpsilon) && (p == point) ? MagickFalse : MagickTrue);
+}
+
+static size_t ReckonEllipseCoordinates(const PointInfo stop,
+  const PointInfo degrees)
+{
+  double
+    delta,
+    step,
+    y;
+
+  PointInfo
+    angle;
+
+  /*
+    Ellipses are just short segmented polys.
+  */
+  delta=2.0*PerceptibleReciprocal(MagickMax(stop.x,stop.y));
+  step=MagickPI/8.0;
+  if ((delta >= 0.0) && (delta < (MagickPI/8.0)))
+    step=MagickPI/(4.0*(MagickPI*PerceptibleReciprocal(delta)/2.0));
+  angle.x=DegreesToRadians(degrees.x);
+  y=degrees.y;
+  while (y < degrees.x)
+    y+=360.0;
+  angle.y=DegreesToRadians(y);
+  return((size_t) floor((angle.y-angle.x)/step+0.5)+3);
+}
+
+static size_t ReckonRoundRectangleCoordinates(const PointInfo start,
   const PointInfo end,PointInfo arc)
 {
   PointInfo
     degrees,
-    offset,
-    point;
+    offset;
 
   size_t
     coordinates;
@@ -1840,39 +1851,19 @@ static size_t GetRoundRectangleCoordinates(const PointInfo start,
     arc.x=0.5*offset.x;
   if (arc.y > (0.5*offset.y))
     arc.y=0.5*offset.y;
-  point.x=start.x+offset.x-arc.x;
-  point.y=start.y+arc.y;
   degrees.x=270.0;
   degrees.y=360.0;
-  coordinates+=GetEllipseCoordinates(point,arc,degrees);
-  point.x=start.x+offset.x-arc.x;
-  point.y=start.y+offset.y-arc.y;
+  coordinates+=ReckonEllipseCoordinates(arc,degrees);
   degrees.x=0.0;
   degrees.y=90.0;
-  coordinates+=GetEllipseCoordinates(point,arc,degrees);
-  point.x=start.x+arc.x;
-  point.y=start.y+offset.y-arc.y;
+  coordinates+=ReckonEllipseCoordinates(arc,degrees);
   degrees.x=90.0;
   degrees.y=180.0;
-  coordinates+=GetEllipseCoordinates(point,arc,degrees);
-  point.x=start.x+arc.x;
-  point.y=start.y+arc.y;
+  coordinates+=ReckonEllipseCoordinates(arc,degrees);
   degrees.x=180.0;
   degrees.y=270.0;
-  coordinates+=GetEllipseCoordinates(point,arc,degrees);
+  coordinates+=ReckonEllipseCoordinates(arc,degrees);
   return(coordinates+1);
-}
-
-static inline MagickBooleanType IsPoint(const char *point)
-{
-  char
-    *p;
-
-  double
-    value;
-
-  value=StringToDouble(point,&p);
-  return((fabs(value) < DrawEpsilon) && (p == point) ? MagickFalse : MagickTrue);
 }
 
 static inline void TracePoint(PrimitiveInfo *primitive_info,
@@ -3264,7 +3255,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       }
       case RoundRectanglePrimitive:
       {
-        coordinates=GetRoundRectangleCoordinates(primitive_info[j].point,
+        coordinates=ReckonRoundRectangleCoordinates(primitive_info[j].point,
           primitive_info[j+1].point,primitive_info[j+2].point);
         break;
       }
@@ -3324,8 +3315,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         offset.y=(double) radius;
         degrees.x=0.0;
         degrees.y=360.0;
-        coordinates=GetEllipseCoordinates(primitive_info[j].point,offset,
-          degrees);
+        coordinates=ReckonEllipseCoordinates(offset,degrees);
         break;
       }
       case ArcPrimitive:
@@ -3343,8 +3333,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         center.y=0.5*(primitive_info[j+1].point.y+primitive_info[j].point.y);
         radii.x=fabs(center.x-primitive_info[j].point.x);
         radii.y=fabs(center.y-primitive_info[j].point.y);
-        coordinates=GetEllipseCoordinates(center,radii,
-          primitive_info[j+2].point);
+        coordinates=ReckonEllipseCoordinates(radii,primitive_info[j+2].point);
         break;
       }
       case EllipsePrimitive:
@@ -3354,8 +3343,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             (primitive_info[j+2].point.y < -360.0) ||
             (primitive_info[j+2].point.y > 360.0))
           ThrowPointExpectedException(token,exception);
-        coordinates=GetEllipseCoordinates(primitive_info[j].point,
-          primitive_info[j+1].point,primitive_info[j+2].point);
+        coordinates=ReckonEllipseCoordinates(primitive_info[j+1].point,
+          primitive_info[j+2].point);
         break;
       }
       default:
