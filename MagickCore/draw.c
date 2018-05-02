@@ -4354,21 +4354,21 @@ RestoreMSCWarning
       bounds.y2=p->bounds.y2;
   }
   bounds.x1-=(mid+1.0);
+  bounds.y1-=(mid+1.0);
+  bounds.x2+=(mid+1.0);
+  bounds.y2+=(mid+1.0);
+  if ((bounds.x1 >= image->columns) || (bounds.y1 >= image->rows) ||
+      (bounds.x2 <= 0.0) || (bounds.y2 <= 0.0))
+    return(MagickTrue);
   bounds.x1=bounds.x1 < 0.0 ? 0.0 : bounds.x1 >= (double) image->columns-1.0 ?
     (double) image->columns-1.0 : bounds.x1;
-  bounds.y1-=(mid+1.0);
   bounds.y1=bounds.y1 < 0.0 ? 0.0 : bounds.y1 >= (double) image->rows-1.0 ?
     (double) image->rows-1.0 : bounds.y1;
-  bounds.x2+=(mid+1.0);
   bounds.x2=bounds.x2 < 0.0 ? 0.0 : bounds.x2 >= (double) image->columns-1.0 ?
     (double) image->columns-1.0 : bounds.x2;
-  bounds.y2+=(mid+1.0);
   bounds.y2=bounds.y2 < 0.0 ? 0.0 : bounds.y2 >= (double) image->rows-1.0 ?
     (double) image->rows-1.0 : bounds.y2;
   status=MagickTrue;
-  if ((fabs(bounds.x2-bounds.x1) < MagickEpsilon) ||
-      (fabs(bounds.y2-bounds.y1) < MagickEpsilon))
-    status=MagickFalse;
   image_view=AcquireAuthenticCacheView(image,exception);
   if ((primitive_info->coordinates == 1) ||
       (polygon_info[0]->number_edges == 0))
