@@ -1208,16 +1208,31 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
           buff=DestroyImage(buff);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
+      (void) memset(blob,0,length);
       AttachBlob(buff->blob,blob,length);
       if (LocaleCompare(image_info->magick,"8BIMTEXT") == 0)
         {
           length=(size_t) parse8BIM(image, buff);
+          if (length == 0)
+            {
+              blob=DetachBlob(buff->blob);
+              blob=(unsigned char *) RelinquishMagickMemory(blob);
+              buff=DestroyImage(buff);
+              ThrowReaderException(CorruptImageError,"CorruptImage");
+            }
           if (length & 1)
             (void) WriteBlobByte(buff,0x0);
         }
       else if (LocaleCompare(image_info->magick,"8BIMWTEXT") == 0)
         {
           length=(size_t) parse8BIMW(image, buff);
+          if (length == 0)
+            {
+              blob=DetachBlob(buff->blob);
+              blob=(unsigned char *) RelinquishMagickMemory(blob);
+              buff=DestroyImage(buff);
+              ThrowReaderException(CorruptImageError,"CorruptImage");
+            }
           if (length & 1)
             (void) WriteBlobByte(buff,0x0);
         }
