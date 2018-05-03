@@ -4429,7 +4429,10 @@ RestoreMSCWarning
   if ((bounds.x1 >= (double) image->columns) ||
       (bounds.y1 >= (double) image->rows) ||
       (bounds.x2 <= 0.0) || (bounds.y2 <= 0.0))
-    return(MagickTrue);
+    {
+      polygon_info=DestroyPolygonThreadSet(polygon_info);
+      return(MagickTrue);  /* virtual polygon */
+    }
   bounds.x1=bounds.x1 < 0.0 ? 0.0 : bounds.x1 >= (double) image->columns-1.0 ?
     (double) image->columns-1.0 : bounds.x1;
   bounds.y1=bounds.y1 < 0.0 ? 0.0 : bounds.y1 >= (double) image->rows-1.0 ?
@@ -6495,8 +6498,7 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
   const DrawInfo *draw_info,const PrimitiveInfo *primitive_info)
 {
 #define CheckPathExtent(pad) \
-  if (((p+(pad)) >= (ssize_t) max_strokes) || \
-      ((q+(pad)) >= (ssize_t) max_strokes)) \
+  if ((q+(pad)) >= (ssize_t) max_strokes) \
     { \
       if (~max_strokes < (pad)) \
         { \
