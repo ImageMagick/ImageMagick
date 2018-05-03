@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 # Wrapper for Microsoft lib.exe
 
 me=ar-lib

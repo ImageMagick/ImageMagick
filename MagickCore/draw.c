@@ -6494,6 +6494,34 @@ static void TraceSquareLinecap(PrimitiveInfo *primitive_info,
 static PrimitiveInfo *TraceStrokePolygon(const Image *image,
   const DrawInfo *draw_info,const PrimitiveInfo *primitive_info)
 {
+#define CheckPathExtent(extent) \
+  if (q >= (ssize_t) (max_strokes-(extent)-6*BezierQuantum-360)) \
+    { \
+      if (~max_strokes < (extent+6*BezierQuantum+360)) \
+        { \
+          path_p=(PointInfo *) RelinquishMagickMemory(path_p); \
+          path_q=(PointInfo *) RelinquishMagickMemory(path_q); \
+        } \
+      else \
+        { \
+          max_strokes+=extent+6*BezierQuantum+360; \
+          path_p=(PointInfo *) ResizeQuantumMemory(path_p,max_strokes, \
+            sizeof(*path_p)); \
+          path_q=(PointInfo *) ResizeQuantumMemory(path_q,max_strokes, \
+            sizeof(*path_q)); \
+        } \
+      if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL)) \
+        { \
+          if (path_p != (PointInfo *) NULL) \
+            path_p=(PointInfo *) RelinquishMagickMemory(path_p); \
+          if (path_q != (PointInfo *) NULL) \
+            path_q=(PointInfo *) RelinquishMagickMemory(path_q); \
+          polygon_primitive=(PrimitiveInfo *) \
+            RelinquishMagickMemory(polygon_primitive); \
+          return((PrimitiveInfo *) NULL); \
+        } \
+    }
+
   typedef struct _LineSegment
   {
     double
@@ -6736,32 +6764,7 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
           box_q[3].y)/(slope.p-slope.q));
         box_q[4].y=(double) (slope.p*(box_q[4].x-box_q[0].x)+box_q[0].y);
       }
-    if (q >= (ssize_t) (max_strokes-6*BezierQuantum-360))
-      {
-        if (~max_strokes < (6*BezierQuantum+360))
-          {
-            path_p=(PointInfo *) RelinquishMagickMemory(path_p);
-            path_q=(PointInfo *) RelinquishMagickMemory(path_q);
-          }
-        else
-          {
-            max_strokes+=6*BezierQuantum+360;
-            path_p=(PointInfo *) ResizeQuantumMemory(path_p,max_strokes,
-              sizeof(*path_p));
-            path_q=(PointInfo *) ResizeQuantumMemory(path_q,max_strokes,
-              sizeof(*path_q));
-          }
-        if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL))
-          {
-            if (path_p != (PointInfo *) NULL)
-              path_p=(PointInfo *) RelinquishMagickMemory(path_p);
-            if (path_q != (PointInfo *) NULL)
-              path_q=(PointInfo *) RelinquishMagickMemory(path_q);
-            polygon_primitive=(PrimitiveInfo *)
-              RelinquishMagickMemory(polygon_primitive);
-            return((PrimitiveInfo *) NULL);
-          }
-      }
+    CheckPathExtent(0);
     dot_product=dx.q*dy.p-dx.p*dy.q;
     if (dot_product <= 0.0)
       switch (draw_info->linejoin)
@@ -6817,6 +6820,7 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
             theta.q+=2.0*MagickPI;
           arc_segments=(size_t) ceil((double) ((theta.q-theta.p)/
             (2.0*sqrt((double) (1.0/mid)))));
+          CheckPathExtent(arc_segments);
           path_q[q].x=box_q[1].x;
           path_q[q].y=box_q[1].y;
           q++;
@@ -6889,6 +6893,7 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
             theta.p+=2.0*MagickPI;
           arc_segments=(size_t) ceil((double) ((theta.p-theta.q)/
             (2.0*sqrt((double) (1.0/mid)))));
+          CheckPathExtent(arc_segments);
           path_p[p++]=box_p[1];
           for (j=1; j < (ssize_t) arc_segments; j++)
           {
