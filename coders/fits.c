@@ -612,6 +612,21 @@ ModuleExport void UnregisterFITSImage(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static inline void CopyFitsRecord(char *buffer,const char *data,
+  const ssize_t offset)
+{
+  size_t
+    length;
+
+  if (data == (char *) NULL)
+    return;
+  length=MagickMin(strlen(data),80);
+  if (length > (size_t) (FITSBlocksize-offset))
+    length=FITSBlocksize-offset;
+  (void) strncpy(buffer+offset,data,length);
+}
+
 static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
@@ -676,59 +691,59 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   offset=0;
   (void) FormatLocaleString(header,FITSBlocksize,
     "SIMPLE  =                    T");
-  (void) strncpy(fits_info+offset,header,strlen(header));
+  CopyFitsRecord(fits_info,header,offset);
   offset+=80;
   (void) FormatLocaleString(header,FITSBlocksize,"BITPIX  =           %10ld",
     (long) ((quantum_info->format == FloatingPointQuantumFormat ? -1 : 1)*
     image->depth));
-  (void) strncpy(fits_info+offset,header,strlen(header));
+  CopyFitsRecord(fits_info,header,offset);
   offset+=80;
   (void) FormatLocaleString(header,FITSBlocksize,"NAXIS   =           %10lu",
     SetImageGray(image,exception) != MagickFalse ? 2UL : 3UL);
-  (void) strncpy(fits_info+offset,header,strlen(header));
+  CopyFitsRecord(fits_info,header,offset);
   offset+=80;
   (void) FormatLocaleString(header,FITSBlocksize,"NAXIS1  =           %10lu",
     (unsigned long) image->columns);
-  (void) strncpy(fits_info+offset,header,strlen(header));
+  CopyFitsRecord(fits_info,header,offset);
   offset+=80;
   (void) FormatLocaleString(header,FITSBlocksize,"NAXIS2  =           %10lu",
     (unsigned long) image->rows);
-  (void) strncpy(fits_info+offset,header,strlen(header));
+  CopyFitsRecord(fits_info,header,offset);
   offset+=80;
   if (SetImageGray(image,exception) == MagickFalse)
     {
       (void) FormatLocaleString(header,FITSBlocksize,
         "NAXIS3  =           %10lu",3UL);
-      (void) strncpy(fits_info+offset,header,strlen(header));
+      CopyFitsRecord(fits_info,header,offset);
       offset+=80;
     }
   (void) FormatLocaleString(header,FITSBlocksize,"BSCALE  =         %E",1.0);
-  (void) strncpy(fits_info+offset,header,strlen(header));
+  CopyFitsRecord(fits_info,header,offset);
   offset+=80;
   (void) FormatLocaleString(header,FITSBlocksize,"BZERO   =         %E",
     image->depth > 8 ? GetFITSPixelRange(image->depth)/2.0 : 0.0);
-  (void) strncpy(fits_info+offset,header,strlen(header));
+  CopyFitsRecord(fits_info,header,offset);
   offset+=80;
   (void) FormatLocaleString(header,FITSBlocksize,"DATAMAX =         %E",
     1.0*((MagickOffsetType) GetQuantumRange(image->depth)));
-  (void) strncpy(fits_info+offset,header,strlen(header));
+  CopyFitsRecord(fits_info,header,offset);
   offset+=80;
   (void) FormatLocaleString(header,FITSBlocksize,"DATAMIN =         %E",0.0);
-  (void) strncpy(fits_info+offset,header,strlen(header));
+  CopyFitsRecord(fits_info,header,offset);
   offset+=80;
   if (image->endian == LSBEndian)
     {
       (void) FormatLocaleString(header,FITSBlocksize,"XENDIAN = 'SMALL'");
-      (void) strncpy(fits_info+offset,header,strlen(header));
+      CopyFitsRecord(fits_info,header,offset);
       offset+=80;
     }
   url=GetMagickHomeURL();
   (void) FormatLocaleString(header,FITSBlocksize,"HISTORY %.72s",url);
   url=DestroyString(url);
-  (void) strncpy(fits_info+offset,header,strlen(header));
+  CopyFitsRecord(fits_info,header,offset);
   offset+=80;
   (void) strncpy(header,"END",FITSBlocksize);
-  (void) strncpy(fits_info+offset,header,strlen(header));
+  CopyFitsRecord(fits_info,header,offset);
   offset+=80;
   (void) WriteBlob(image,FITSBlocksize,(unsigned char *) fits_info);
   /*
