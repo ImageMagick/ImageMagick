@@ -352,6 +352,9 @@ typedef struct _PrimitiveInfo
 
   char
     *text;
+
+  MagickBooleanType
+    closed_subpath;
 } PrimitiveInfo;
 
 typedef struct _TypeMetric
