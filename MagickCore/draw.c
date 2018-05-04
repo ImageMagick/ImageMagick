@@ -6583,8 +6583,8 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
     number_vertices+2UL,sizeof(*polygon_primitive));
   if (polygon_primitive == (PrimitiveInfo *) NULL)
     return((PrimitiveInfo *) NULL);
-  (void) memcpy(polygon_primitive,primitive_info,(size_t)
-    number_vertices*sizeof(*polygon_primitive));
+  (void) memcpy(polygon_primitive,primitive_info,(size_t) number_vertices*
+    sizeof(*polygon_primitive));
   closed_path=primitive_info[0].closed_subpath;
   if (((draw_info->linejoin == RoundJoin) ||
        (draw_info->linejoin == MiterJoin)) && (closed_path != MagickFalse))

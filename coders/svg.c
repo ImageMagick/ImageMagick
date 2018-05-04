@@ -184,6 +184,9 @@ typedef struct _SVGInfo
   xmlDocPtr
     document;
 #endif
+
+  ssize_t
+    svgDepth;
 } SVGInfo;
 
 /*
@@ -1143,6 +1146,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare((const char *) name,"svg") == 0)
         {
+          svg_info->svgDepth++;
           PushGraphicContext(id);
           (void) FormatLocaleFile(svg_info->file,"compliance \"SVG\"\n");
           (void) FormatLocaleFile(svg_info->file,"fill \"black\"\n");
@@ -2309,7 +2313,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
             0.0;
           (void) FormatLocaleFile(svg_info->file,"affine %g 0 0 %g %g %g\n",
             sx,sy,tx,ty);
-          if (*background != '\0')
+          if ((svg_info->svgDepth == 1) && (*background != '\0'))
             {
               PushGraphicContext(id);
               (void) FormatLocaleFile(svg_info->file,"fill %s\n",background);
@@ -2556,6 +2560,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
       if (LocaleCompare((const char *) name,"svg") == 0)
         {
           (void) FormatLocaleFile(svg_info->file,"pop graphic-context\n");
+          svg_info->svgDepth--;
           break;
         }
       break;
@@ -3339,6 +3344,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   svg_info->image_info=image_info;
   svg_info->bounds.width=image->columns;
   svg_info->bounds.height=image->rows;
+  svg_info->svgDepth=0;
   if (image_info->size != (char *) NULL)
     (void) CloneString(&svg_info->size,image_info->size);
   if (image->debug != MagickFalse)
