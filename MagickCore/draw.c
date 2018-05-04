@@ -3237,10 +3237,12 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       if (i < (ssize_t) number_points)
         continue;
       number_points<<=1;
+      if (number_points != (MagickSizeType) ((size_t) number_points))
+        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+          image->filename);
       primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(primitive_info,
-        (size_t) number_points,sizeof(*primitive_info));
-      if ((primitive_info == (PrimitiveInfo *) NULL) ||
-          (number_points != (MagickSizeType) ((size_t) number_points)))
+        (size_t) number_points+4096,sizeof(*primitive_info));
+      if (primitive_info == (PrimitiveInfo *) NULL)
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
     }
@@ -5995,11 +5997,7 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
             ThrowPointExpectedException(token,exception);
           end.x=(double) (attribute == (int) 'A' ? x : point.x+x);
           end.y=(double) (attribute == (int) 'A' ? y : point.y+y);
-          if ((fabs(end.x-point.x) >= DrawEpsilon) ||
-              (fabs(end.y-point.y) >= DrawEpsilon))
-            TraceArcPath(q,point,end,arc,angle,large_arc,sweep);
-          else
-            TracePoint(q,end);
+          TraceArcPath(q,point,end,arc,angle,large_arc,sweep);
           q+=q->coordinates;
           point=end;
           while (isspace((int) ((unsigned char) *p)) != 0)
