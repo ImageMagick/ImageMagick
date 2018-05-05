@@ -582,7 +582,6 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
 
   if (HeapOverflowSanityCheck(count,quantum) != MagickFalse)
     return((MemoryInfo *) NULL);
-  (void) GetMaxMemoryRequest();
   if (virtual_anonymous_memory == 0)
     {
       virtual_anonymous_memory=1;
@@ -607,7 +606,7 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
   memory_info->length=extent;
   memory_info->signature=MagickCoreSignature;
   if ((virtual_anonymous_memory == 1) &&
-      ((count*quantum) <= (size_t) max_memory_request))
+      ((count*quantum) <= (size_t) GetMaxMemoryRequest()))
     {
       memory_info->blob=AcquireAlignedMemory(1,extent);
       if (memory_info->blob != NULL)
@@ -619,7 +618,7 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
         Acquire anonymous memory map.
       */
       memory_info->blob=NULL;
-      if ((count*quantum) <= (size_t) max_memory_request)
+      if ((count*quantum) <= (size_t) GetMaxMemoryRequest())
         memory_info->blob=MapBlob(-1,IOMode,0,extent);
       if (memory_info->blob != NULL)
         memory_info->type=MapVirtualMemory;
