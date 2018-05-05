@@ -167,19 +167,12 @@ static void *AcquireCompressionMemory(void *context,
   size_t
     extent;
 
+  (void) context;
   if (HeapOverflowSanityCheck(items,size) != MagickFalse)
     return((void *) NULL);
   extent=items*size;
-  /* Check if the buffer is big enough when we get a large request */
-  if ((context != (void *) NULL) && (extent > 2000000))
-    {
-      Image
-        *image;
-
-      image=(Image *) context;
-      if ((MagickSizeType) extent > GetBlobSize(image))
-        return((void *) NULL);
-    }
+  if (extent > GetMaxMemoryRequest())
+    return((void *) NULL);
   return(AcquireMagickMemory(extent));
 }
 
@@ -1567,7 +1560,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             if (length == 0)
               {
                 count=ReadBlob(image,packet_size,pixels);
-                if (count != packet_size)
+                if (count != (ssize_t) packet_size)
                   ThrowMIFFException(CorruptImageError,"UnableToReadImageData");
                 PushRunlengthPacket(image,pixels,&length,&pixel,exception);
               }
@@ -1591,7 +1584,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         default:
         {
           count=ReadBlob(image,packet_size*image->columns,pixels);
-          if (count != (packet_size*image->columns))
+          if (count != (ssize_t) (packet_size*image->columns))
             ThrowMIFFException(CorruptImageError,"UnableToReadImageData");
           (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);

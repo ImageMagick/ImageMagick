@@ -582,19 +582,7 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
 
   if (HeapOverflowSanityCheck(count,quantum) != MagickFalse)
     return((MemoryInfo *) NULL);
-  if (max_memory_request == 0)
-    {
-      max_memory_request=(size_t) MagickULLConstant(~0);
-      value=GetPolicyValue("system:max-memory-request");
-      if (value != (char *) NULL)
-        {
-          /*
-            The security policy sets a max memory request limit.
-          */
-          max_memory_request=StringToSizeType(value,100.0);
-          value=DestroyString(value);
-        }
-    }
+  (void) GetMaxMemoryRequest();
   if (virtual_anonymous_memory == 0)
     {
       virtual_anonymous_memory=1;
@@ -901,6 +889,45 @@ MagickExport void GetMagickMemoryMethods(
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   G e t M a x M e m o r y R e q u e s t                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMaxMemoryRequest() returns the max_memory_request value.
+%
+%  The format of the GetMaxMemoryRequest method is:
+%
+%      size_t GetMaxMemoryRequest(void)
+%
+*/
+MagickExport size_t GetMaxMemoryRequest(void)
+{
+  if (max_memory_request == 0)
+    {
+      char
+        *value;
+
+      max_memory_request=(size_t) MagickULLConstant(~0);
+      value=GetPolicyValue("system:max-memory-request");
+      if (value != (char *) NULL)
+        {
+          /*
+            The security policy sets a max memory request limit.
+          */
+          max_memory_request=StringToSizeType(value,100.0);
+          value=DestroyString(value);
+        }
+    }
+  return(max_memory_request);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t V i r t u a l M e m o r y B l o b                                   %
 %                                                                             %
 %                                                                             %
@@ -1167,7 +1194,7 @@ MagickExport void *ResetMagickMemory(void *memory,int byte,const size_t size)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ResetMaxMemoryRequest() resets the anonymous_memory value.
+%  ResetMaxMemoryRequest() resets the max_memory_request value.
 %
 %  The format of the ResetMaxMemoryRequest method is:
 %
@@ -1190,7 +1217,7 @@ MagickPrivate void ResetMaxMemoryRequest(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ResetVirtualAnonymousMemory() resets the anonymous_memory value.
+%  ResetVirtualAnonymousMemory() resets the virtual_anonymous_memory value.
 %
 %  The format of the ResetVirtualAnonymousMemory method is:
 %
