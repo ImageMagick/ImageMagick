@@ -161,8 +161,8 @@ static MagickBooleanType IsMIFF(const unsigned char *magick,const size_t length)
 %
 */
 
-static void *AcquireCompressionMemory(void *context,
-  const size_t items,const size_t size)
+static void *AcquireCompressionMemory(void *context,const size_t items,
+  const size_t size)
 {
   size_t
     extent;
