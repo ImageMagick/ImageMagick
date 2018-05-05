@@ -1513,6 +1513,8 @@ static Image *DrawClippingMask(Image *image,const DrawInfo *draw_info,
   clone_info->alpha=OpaqueAlpha;
   clone_info->clip_path=MagickTrue;
   status=DrawImage(clip_mask,clone_info,exception);
+  (void) CompositeImage(clip_mask,clip_mask,AlphaCompositeOp,MagickTrue,0,0,
+    exception);
   clone_info=DestroyDrawInfo(clone_info);
   if (status == MagickFalse)
     clip_mask=DestroyImage(clip_mask);
@@ -4525,14 +4527,6 @@ RestoreMSCWarning
     const int
       id = GetOpenMPThreadId();
 
-    double
-      fill_alpha,
-      stroke_alpha;
-
-    PixelInfo
-      fill_color,
-      stroke_color;
-
     register Quantum
       *magick_restrict q;
 
@@ -4556,14 +4550,18 @@ RestoreMSCWarning
       }
     for (x=start_x; x <= stop_x; x++)
     {
+      double
+        fill_alpha,
+        mask_alpha,
+        stroke_alpha;
+
+      PixelInfo
+        fill_color,
+        stroke_color;
+
       /*
         Fill and/or stroke.
       */
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       fill_alpha=GetFillAlpha(polygon_info[id],mid,fill,draw_info->fill_rule,
         x,y,&stroke_alpha);
       if (draw_info->stroke_antialias == MagickFalse)
@@ -4571,14 +4569,13 @@ RestoreMSCWarning
           fill_alpha=fill_alpha > 0.25 ? 1.0 : 0.0;
           stroke_alpha=stroke_alpha > 0.25 ? 1.0 : 0.0;
         }
+      mask_alpha=QuantumScale*GetPixelWriteMask(image,q);
       GetFillColor(draw_info,x-start_x,y-start_y,&fill_color,exception);
-      fill_alpha=fill_alpha*fill_color.alpha;
-      CompositePixelOver(image,&fill_color,fill_alpha,q,(double)
-        GetPixelAlpha(image,q),q);
+      CompositePixelOver(image,&fill_color,mask_alpha*fill_alpha*
+        fill_color.alpha,q,(double) GetPixelAlpha(image,q),q);
       GetStrokeColor(draw_info,x-start_x,y-start_y,&stroke_color,exception);
-      stroke_alpha=stroke_alpha*stroke_color.alpha;
-      CompositePixelOver(image,&stroke_color,stroke_alpha,q,(double)
-        GetPixelAlpha(image,q),q);
+      CompositePixelOver(image,&stroke_color,mask_alpha*stroke_alpha*
+        stroke_color.alpha,q,(double) GetPixelAlpha(image,q),q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)

@@ -1244,8 +1244,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           FlattenPixelInfo(image,&image->background_color,
-            image->background_color.alpha,q,(double)
-            GetPixelAlpha(image,q),q);
+            image->background_color.alpha,q,(double) GetPixelAlpha(image,q),q);
           q+=GetPixelChannels(image);
         }
         if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
