@@ -3347,7 +3347,13 @@ DisableMSCWarning(4127) \
       interpret_text=(char *) ResizeQuantumMemory(interpret_text,extent+ \
         MaxTextExtent,sizeof(*interpret_text)); \
       if (interpret_text == (char *) NULL) \
-        return((char *) NULL); \
+        { \
+          if (property_image != image) \
+            property_image=DestroyImage(property_image); \
+          if (property_info != image_info) \
+            property_info=DestroyImageInfo(property_info); \
+          return((char *) NULL); \
+        } \
       q=interpret_text+strlen(interpret_text); \
    } \
 } \
@@ -3363,7 +3369,13 @@ DisableMSCWarning(4127) \
       interpret_text=(char *) ResizeQuantumMemory(interpret_text,extent+ \
         MaxTextExtent,sizeof(*interpret_text)); \
       if (interpret_text == (char *) NULL) \
-        return((char *) NULL); \
+        { \
+          if (property_image != image) \
+            property_image=DestroyImage(property_image); \
+          if (property_info != image_info) \
+            property_info=DestroyImageInfo(property_info); \
+          return((char *) NULL); \
+        } \
       q=interpret_text+strlen(interpret_text); \
      } \
    q+=FormatLocaleString(q,extent,"%s=%s\n",(key),(value)); \
@@ -3380,7 +3392,13 @@ DisableMSCWarning(4127) \
       interpret_text=(char *) ResizeQuantumMemory(interpret_text,extent+ \
         MaxTextExtent,sizeof(*interpret_text)); \
       if (interpret_text == (char *) NULL) \
-        return((char *) NULL); \
+        { \
+          if (property_image != image) \
+            property_image=DestroyImage(property_image); \
+          if (property_info != image_info) \
+            property_info=DestroyImageInfo(property_info); \
+          return((char *) NULL); \
+        } \
       q=interpret_text+strlen(interpret_text); \
     } \
   (void) CopyMagickString(q,(string),extent); \
