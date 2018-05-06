@@ -348,12 +348,15 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   clone_info->fill_alpha=draw_info->fill_alpha;
   clone_info->stroke_alpha=draw_info->stroke_alpha;
   clone_info->element_reference=draw_info->element_reference;
+  clone_info->clip_units=draw_info->clip_units;
   if (draw_info->clip_mask != (char *) NULL)
     (void) CloneString(&clone_info->clip_mask,draw_info->clip_mask);
   if (draw_info->clipping_mask != (Image *) NULL)
     clone_info->clipping_mask=CloneImage(draw_info->clipping_mask,0,0,
       MagickTrue,exception);
-  clone_info->clip_units=draw_info->clip_units;
+  if (draw_info->composite_mask != (Image *) NULL)
+    clone_info->composite_mask=CloneImage(draw_info->composite_mask,0,0,
+      MagickTrue,exception);
   clone_info->render=draw_info->render;
   clone_info->debug=IsEventLogging();
   exception=DestroyExceptionInfo(exception);
@@ -879,6 +882,8 @@ MagickExport DrawInfo *DestroyDrawInfo(DrawInfo *draw_info)
     draw_info->clip_mask=DestroyString(draw_info->clip_mask);
   if (draw_info->clipping_mask != (Image *) NULL)
     draw_info->clipping_mask=DestroyImage(draw_info->clipping_mask);
+  if (draw_info->composite_mask != (Image *) NULL)
+    draw_info->composite_mask=DestroyImage(draw_info->composite_mask);
   draw_info->signature=(~MagickCoreSignature);
   draw_info=(DrawInfo *) RelinquishMagickMemory(draw_info);
   return(draw_info);
@@ -1525,6 +1530,90 @@ static Image *DrawClippingMask(Image *image,const DrawInfo *draw_info,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"end clip-path");
   return(clip_mask);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w C o m p o s i t e M a s k                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawCompositeMask() draws the mask path and returns it as an image mask.
+%
+%  The format of the DrawCompositeMask method is:
+%
+%      Image *DrawCompositeMask(Image *image,const DrawInfo *draw_info,
+%        const char *id,const char *mask_path,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o draw_info: the draw info.
+%
+%    o id: the mask path id.
+%
+%    o mask_path: the mask path.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+static Image *DrawCompositeMask(Image *image,const DrawInfo *draw_info,
+  const char *id,const char *mask_path,ExceptionInfo *exception)
+{
+  Image
+    *composite_mask;
+
+  DrawInfo
+    *clone_info;
+
+  MagickStatusType
+    status;
+
+  /*
+    Draw a mask path.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(draw_info != (const DrawInfo *) NULL);
+  composite_mask=CloneImage(image,image->columns,image->rows,MagickTrue,
+    exception);
+  if (composite_mask == (Image *) NULL)
+    return((Image *) NULL);
+  (void) SetImageMask(composite_mask,ReadPixelMask,(Image *) NULL,exception);
+  (void) SetImageMask(composite_mask,WritePixelMask,(Image *) NULL,exception);
+  (void) QueryColorCompliance("#0000",AllCompliance,
+    &composite_mask->background_color,exception);
+  composite_mask->background_color.alpha=(MagickRealType) TransparentAlpha;
+  composite_mask->background_color.alpha_trait=BlendPixelTrait;
+  (void) SetImageBackgroundColor(composite_mask,exception);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(DrawEvent,GetMagickModule(),"\nbegin mask-path %s",
+      id);
+  clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  (void) CloneString(&clone_info->primitive,mask_path);
+  (void) QueryColorCompliance("#ffffff",AllCompliance,&clone_info->fill,
+    exception);
+  (void) QueryColorCompliance("#00000000",AllCompliance,&clone_info->stroke,
+    exception);
+  clone_info->stroke_width=0.0;
+  clone_info->alpha=OpaqueAlpha;
+  status=DrawImage(composite_mask,clone_info,exception);
+  (void) CompositeImage(composite_mask,composite_mask,AlphaCompositeOp,
+    MagickTrue,0,0,exception);
+  clone_info=DestroyDrawInfo(clone_info);
+  if (status == MagickFalse)
+    composite_mask=DestroyImage(composite_mask);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(DrawEvent,GetMagickModule(),"end mask-path");
+  return(composite_mask);
 }
 
 /*
@@ -2821,7 +2910,26 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       {
         if (LocaleCompare("mask",keyword) == 0)
           {
+            char
+              *mask_path;
+
+            /*
+              Take a node from within the MVG document, and duplicate it here.
+            */
             GetNextToken(q,&q,extent,token);
+            mask_path=GetNodeByURL(primitive,token);
+            if (mask_path != (char *) NULL)
+              {
+                if (graphic_context[n]->composite_mask != (Image *) NULL)
+                  graphic_context[n]->composite_mask=
+                    DestroyImage(graphic_context[n]->composite_mask);
+                graphic_context[n]->composite_mask=DrawCompositeMask(image,
+                  graphic_context[n],token,mask_path,exception);
+                mask_path=DestroyString(mask_path);
+                if (draw_info->compliance != SVGCompliance)
+                  status=SetImageMask(image,WritePixelMask,
+                    graphic_context[n]->composite_mask,exception);
+              }
             break;
           }
         break;
