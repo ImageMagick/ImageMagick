@@ -168,7 +168,8 @@ typedef struct _PathInfo
   Forward declarations.
 */
 static Image
-  *DrawClippingMask(Image *,const DrawInfo *,const char *,ExceptionInfo *);
+  *DrawClippingMask(Image *,const DrawInfo *,const char *,const char *,
+    ExceptionInfo *);
 
 static MagickBooleanType
   DrawStrokePolygon(Image *,const DrawInfo *,const PrimitiveInfo *,
@@ -1430,7 +1431,8 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
   MagickBooleanType
     status;
 
-  clipping_mask=DrawClippingMask(image,draw_info,clip_path,exception);
+  clipping_mask=DrawClippingMask(image,draw_info,draw_info->clip_mask,
+    clip_path,exception);
   if (clipping_mask == (Image *) NULL)
     return(MagickFalse);
   status=SetImageMask(image,WritePixelMask,clipping_mask,exception);
@@ -1455,7 +1457,7 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
 %  The format of the DrawClippingMask method is:
 %
 %      Image *DrawClippingMask(Image *image,const DrawInfo *draw_info,
-%        const char *clip_path,ExceptionInfo *exception)
+%        const char *id,const char *clip_path,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1463,13 +1465,15 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
 %
 %    o draw_info: the draw info.
 %
+%    o id: the clip path id.
+%
 %    o clip_path: the clip path.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 static Image *DrawClippingMask(Image *image,const DrawInfo *draw_info,
-  const char *clip_path,ExceptionInfo *exception)
+  const char *id,const char *clip_path,ExceptionInfo *exception)
 {
   Image
     *clip_mask;
@@ -1500,7 +1504,7 @@ static Image *DrawClippingMask(Image *image,const DrawInfo *draw_info,
   (void) SetImageBackgroundColor(clip_mask,exception);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"\nbegin clip-path %s",
-      draw_info->clip_mask);
+      id);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   (void) CloneString(&clone_info->primitive,clip_path);
   (void) QueryColorCompliance("#ffffff",AllCompliance,&clone_info->fill,
@@ -2483,7 +2487,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                   graphic_context[n]->clipping_mask=
                     DestroyImage(graphic_context[n]->clipping_mask);
                 graphic_context[n]->clipping_mask=DrawClippingMask(image,
-                  graphic_context[n],clip_path,exception);
+                  graphic_context[n],token,clip_path,exception);
                 clip_path=DestroyString(clip_path);
                 if (draw_info->compliance != SVGCompliance)
                   status=SetImageMask(image,WritePixelMask,
