@@ -1779,7 +1779,8 @@ MagickExport MagickBooleanType GetOneAuthenticPixel(Image *image,
   assert(cache_info->signature == MagickCoreSignature);
   (void) memset(pixel,0,MaxPixelChannels*sizeof(*pixel));
   if (cache_info->methods.get_one_authentic_pixel_from_handler != (GetOneAuthenticPixelFromHandler) NULL)
-    return(cache_info->methods.get_one_authentic_pixel_from_handler(image,x,y,pixel,exception));
+    return(cache_info->methods.get_one_authentic_pixel_from_handler(image,x,y,
+      pixel,exception));
   q=GetAuthenticPixelsCache(image,x,y,1UL,1UL,exception);
   return(CopyPixel(image,q,pixel));
 }
@@ -1888,8 +1889,7 @@ MagickExport MagickBooleanType GetOneVirtualPixel(const Image *image,
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickCoreSignature);
   (void) memset(pixel,0,MaxPixelChannels*sizeof(*pixel));
-  if (cache_info->methods.get_one_virtual_pixel_from_handler !=
-       (GetOneVirtualPixelFromHandler) NULL)
+  if (cache_info->methods.get_one_virtual_pixel_from_handler != (GetOneVirtualPixelFromHandler) NULL)
     return(cache_info->methods.get_one_virtual_pixel_from_handler(image,
       GetPixelCacheVirtualMethod(image),x,y,pixel,exception));
   assert(id < (int) cache_info->number_threads);
@@ -4686,8 +4686,7 @@ MagickPrivate void SetPixelCacheMethods(Cache cache,CacheMethods *cache_methods)
       cache_methods->get_authentic_metacontent_from_handler;
   get_one_virtual_pixel_from_handler=
     cache_info->methods.get_one_virtual_pixel_from_handler;
-  if (get_one_virtual_pixel_from_handler !=
-      (GetOneVirtualPixelFromHandler) NULL)
+  if (get_one_virtual_pixel_from_handler != (GetOneVirtualPixelFromHandler) NULL)
     cache_info->methods.get_one_virtual_pixel_from_handler=
       cache_methods->get_one_virtual_pixel_from_handler;
   get_one_authentic_pixel_from_handler=
