@@ -3636,6 +3636,10 @@ RestoreMSCWarning
           (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
             "UnbalancedBraces","\"%%[%s\"",pattern);
           interpret_text=DestroyString(interpret_text);
+          if (property_image != image)
+            property_image=DestroyImage(property_image);
+          if (property_info != image_info)
+            property_info=DestroyImageInfo(property_info);
           return((char *) NULL);
         }
       /*
