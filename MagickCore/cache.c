@@ -205,8 +205,6 @@ MagickPrivate Cache AcquirePixelCache(const size_t number_threads)
   if (cache_info->number_threads == 0)
     cache_info->number_threads=1;
   cache_info->nexus_info=AcquirePixelCacheNexus(cache_info->number_threads);
-  if (cache_info->nexus_info == (NexusInfo **) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   value=GetEnvironmentValue("MAGICK_SYNCHRONIZE");
   if (value != (const char *) NULL)
     {
@@ -597,9 +595,6 @@ static MagickBooleanType ClonePixelCacheRepository(
   */
   cache_nexus=AcquirePixelCacheNexus(MaxCacheThreads);
   clone_nexus=AcquirePixelCacheNexus(MaxCacheThreads);
-  if ((cache_nexus == (NexusInfo **) NULL) ||
-      (clone_nexus == (NexusInfo **) NULL))
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   length=cache_info->number_channels*sizeof(*cache_info->channel_map);
   optimize=(cache_info->number_channels == clone_info->number_channels) &&
     (memcmp(cache_info->channel_map,clone_info->channel_map,length) == 0) ?
@@ -2708,12 +2703,6 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
   */
   s=(unsigned char *) nexus_info->metacontent;
   virtual_nexus=AcquirePixelCacheNexus(1);
-  if (virtual_nexus == (NexusInfo **) NULL)
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
-        "UnableToGetCacheNexus","`%s'",image->filename);
-      return((const Quantum *) NULL);
-    }
   (void) memset(virtual_pixel,0,cache_info->number_channels*
     sizeof(*virtual_pixel));
   virtual_metacontent=(void *) NULL;
