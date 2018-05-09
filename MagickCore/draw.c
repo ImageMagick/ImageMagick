@@ -5822,7 +5822,7 @@ static void TraceBezier(PrimitiveInfo *primitive_info,
     quantum;
 
   /*
-    Allocate coeficients.
+    Allocate coefficients.
   */
   quantum=number_coordinates;
   for (i=0; i < (ssize_t) number_coordinates; i++)
@@ -6211,7 +6211,7 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
       case 'm':
       {
         /*
-          Move to;
+          Move to.
         */
         if (q != primitive_info)
           {
