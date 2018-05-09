@@ -3471,6 +3471,7 @@ RestoreMSCWarning
     {
       property_image=AcquireImage(image_info,exception);
       (void) SetImageExtent(property_image,1,1,exception);
+      (void) SetImageBackgroundColor(property_image,exception);
     }
   interpret_text=AcquireString(embed_text); /* new string with extra space */
   extent=MagickPathExtent;                     /* allocated space in string */
