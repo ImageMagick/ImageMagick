@@ -318,6 +318,12 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         libraw_close(raw_info);
         return(image);
       }
+    status=SetImageExtent(image,image->columns,image->rows,exception);
+    if (status == MagickFalse)
+      {
+        libraw_close(raw_info);
+        return(image);
+      }
     errcode=libraw_unpack(raw_info);
     if (errcode != LIBRAW_SUCCESS)
       {
