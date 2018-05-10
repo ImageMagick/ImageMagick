@@ -6223,7 +6223,7 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
         do
         {
           GetNextToken(p,&p,MagickPathExtent,token);
-          if (*token == ',')
+          if ((i != 0) && (*token == ','))
             GetNextToken(p,&p,MagickPathExtent,token);
           x=StringToDouble(token,&next_token);
           if (token == next_token)
