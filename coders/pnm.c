@@ -230,7 +230,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define ThrowPNMException(exception,message) \
 { \
-  if (comment_info.comment == (char *) NULL)  \
+  if (comment_info.comment != (char *) NULL)  \
     comment_info.comment=DestroyString(comment_info.comment); \
   ThrowReaderException((exception),(message)); \
 }
