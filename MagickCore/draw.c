@@ -6429,8 +6429,7 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
       }
       default:
       {
-        if (isalpha((int) ((unsigned char) attribute)) != 0)
-          ThrowPointExpectedException(token,exception);
+        ThrowPointExpectedException(token,exception);
         break;
       }
     }
