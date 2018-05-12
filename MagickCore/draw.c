@@ -522,6 +522,14 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
   points=(PointInfo *) NULL;
   (void) memset(&point,0,sizeof(point));
   (void) memset(&bounds,0,sizeof(bounds));
+  polygon_info->edges[edge].number_points=n;
+  polygon_info->edges[edge].scanline=0.0;
+  polygon_info->edges[edge].highwater=0;
+  polygon_info->edges[edge].ghostline=ghostline;
+  polygon_info->edges[edge].direction=direction;
+  polygon_info->edges[edge].points=points;
+  polygon_info->edges[edge].bounds=bounds;
+  polygon_info->number_edges=0;
   for (i=0; path_info[i].code != EndCode; i++)
   {
     if ((path_info[i].code == MoveToCode) || (path_info[i].code == OpenCode) ||
@@ -759,7 +767,7 @@ static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info)
       break;
   }
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++) ;
-  path_info=(PathInfo *) AcquireQuantumMemory((size_t) (2UL*i+4UL),
+  path_info=(PathInfo *) AcquireQuantumMemory((size_t) (3UL*i+1UL),
     sizeof(*path_info));
   if (path_info == (PathInfo *) NULL)
     return((PathInfo *) NULL);
@@ -2432,7 +2440,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
-  number_points=65536;
+  number_points=4096;
   primitive_info=(PrimitiveInfo *) AcquireQuantumMemory((size_t) number_points,
     sizeof(*primitive_info));
   if (primitive_info == (PrimitiveInfo *) NULL)
@@ -3845,7 +3853,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         */
         number_points+=coordinates+1;
         primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(primitive_info,
-          (size_t) number_points,sizeof(*primitive_info));
+          (size_t) number_points+4096,sizeof(*primitive_info));
         if ((primitive_info == (PrimitiveInfo *) NULL) ||
             (number_points != (MagickSizeType) ((size_t) number_points)))
           {
@@ -6013,7 +6021,7 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
 
   PointInfo
     end = {0.0, 0.0},
-    points[4] = { {0.0,0.0}, {0.0,0.0}, {0.0,0.0}, {0.0,0.0} },
+    points[4] = { {0.0, 0.0}, {0.0, 0.0}, {0.0, 0.0}, {0.0, 0.0} },
     point = {0.0, 0.0},
     start = {0.0, 0.0};
 
@@ -6052,14 +6060,14 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
       case 'A':
       {
         double
-          angle;
+          angle = 0.0;
 
         MagickBooleanType
-          large_arc,
-          sweep;
+          large_arc = MagickFalse,
+          sweep = MagickFalse;
 
         PointInfo
-          arc;
+          arc = {0.0, 0.0};
 
         /*
           Elliptical arc.
