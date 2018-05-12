@@ -430,12 +430,6 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
-        {
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(reconstruct_image);
-          continue;
-        }
       difference=MagickFalse;
       distance=0.0;
       Sa=QuantumScale*GetPixelAlpha(image,p);
@@ -1919,12 +1913,6 @@ MagickExport MagickBooleanType IsImagesEqual(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
-        {
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(reconstruct_image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
@@ -2058,12 +2046,6 @@ MagickExport MagickBooleanType SetImageColorMetric(Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
-        {
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(reconstruct_image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
@@ -2276,12 +2258,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
         }
       if (metric == PerceptualHashErrorMetric)
         similarity=MagickMin(0.01*similarity,1.0);
-      if (GetPixelWriteMask(similarity_image,q) <= (QuantumRange/2))
-        {
-          SetPixelBackgoundColor(similarity_image,q);
-          q+=GetPixelChannels(similarity_image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);

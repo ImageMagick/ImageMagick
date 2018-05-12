@@ -1489,7 +1489,8 @@ static Image *DrawClippingMask(Image *image,const DrawInfo *draw_info,
   const char *id,const char *clip_path,ExceptionInfo *exception)
 {
   Image
-    *clip_mask;
+    *clip_mask,
+    *separate_mask;
 
   DrawInfo
     *clone_info;
@@ -1530,11 +1531,16 @@ static Image *DrawClippingMask(Image *image,const DrawInfo *draw_info,
   clone_info->alpha=OpaqueAlpha;
   clone_info->clip_path=MagickTrue;
   status=DrawImage(clip_mask,clone_info,exception);
-  (void) CompositeImage(clip_mask,clip_mask,AlphaCompositeOp,MagickTrue,0,0,
-    exception);
   clone_info=DestroyDrawInfo(clone_info);
-  if (status == MagickFalse)
-    clip_mask=DestroyImage(clip_mask);
+  separate_mask=SeparateImage(clip_mask,AlphaChannel,exception);
+  if (separate_mask != (Image *) NULL)
+    {
+      clip_mask=DestroyImage(clip_mask);
+      clip_mask=separate_mask;
+      status=NegateImage(clip_mask,MagickFalse,exception);
+      if (status == MagickFalse)
+        clip_mask=DestroyImage(clip_mask);
+    }
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"end clip-path");
   return(clip_mask);
@@ -1575,7 +1581,8 @@ static Image *DrawCompositeMask(Image *image,const DrawInfo *draw_info,
   const char *id,const char *mask_path,ExceptionInfo *exception)
 {
   Image
-    *composite_mask;
+    *composite_mask,
+    *separate_mask;
 
   DrawInfo
     *clone_info;
@@ -1595,8 +1602,8 @@ static Image *DrawCompositeMask(Image *image,const DrawInfo *draw_info,
     exception);
   if (composite_mask == (Image *) NULL)
     return((Image *) NULL);
-  (void) SetImageMask(composite_mask,ReadPixelMask,(Image *) NULL,exception);
-  (void) SetImageMask(composite_mask,WritePixelMask,(Image *) NULL,exception);
+  (void) SetImageMask(composite_mask,CompositePixelMask,(Image *) NULL,
+    exception);
   (void) QueryColorCompliance("#0000",AllCompliance,
     &composite_mask->background_color,exception);
   composite_mask->background_color.alpha=(MagickRealType) TransparentAlpha;
@@ -1614,11 +1621,16 @@ static Image *DrawCompositeMask(Image *image,const DrawInfo *draw_info,
   clone_info->stroke_width=0.0;
   clone_info->alpha=OpaqueAlpha;
   status=DrawImage(composite_mask,clone_info,exception);
-  (void) CompositeImage(composite_mask,composite_mask,AlphaCompositeOp,
-    MagickTrue,0,0,exception);
   clone_info=DestroyDrawInfo(clone_info);
-  if (status == MagickFalse)
-    composite_mask=DestroyImage(composite_mask);
+  separate_mask=SeparateImage(composite_mask,AlphaChannel,exception);
+  if (separate_mask != (Image *) NULL)
+    {
+      composite_mask=DestroyImage(composite_mask);
+      composite_mask=separate_mask;
+      status=NegateImage(composite_mask,MagickFalse,exception);
+      if (status == MagickFalse)
+        composite_mask=DestroyImage(composite_mask);
+    }
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"end mask-path");
   return(composite_mask);
@@ -1989,11 +2001,6 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
       offset*=PerceptibleReciprocal(length);
     for (x=bounding_box.x; x < (ssize_t) bounding_box.width; x++)
     {
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       GetPixelInfoPixel(image,q,&pixel);
       switch (gradient->spread)
       {
@@ -2935,7 +2942,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                   graphic_context[n],token,mask_path,exception);
                 mask_path=DestroyString(mask_path);
                 if (draw_info->compliance != SVGCompliance)
-                  status=SetImageMask(image,WritePixelMask,
+                  status=SetImageMask(image,CompositePixelMask,
                     graphic_context[n]->composite_mask,exception);
               }
             break;
@@ -3896,16 +3903,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             status=MagickFalse;
             break;
           }
-        if ((primitive_info[j+1].point.x-primitive_info[j].point.x) < 0.0)
-          {
-            status=MagickFalse;
-            break;
-          }
-        if ((primitive_info[j+1].point.y-primitive_info[j].point.y) < 0.0)
-          {
-            status=MagickFalse;
-            break;
-          }
         TraceRectangle(primitive_info+j,primitive_info[j].point,
           primitive_info[j+1].point);
         i=(ssize_t) (j+primitive_info[j].coordinates);
@@ -4672,7 +4669,6 @@ RestoreMSCWarning
     {
       double
         fill_alpha,
-        mask_alpha,
         stroke_alpha;
 
       PixelInfo
@@ -4689,13 +4685,12 @@ RestoreMSCWarning
           fill_alpha=fill_alpha > 0.25 ? 1.0 : 0.0;
           stroke_alpha=stroke_alpha > 0.25 ? 1.0 : 0.0;
         }
-      mask_alpha=QuantumScale*GetPixelWriteMask(image,q);
       GetFillColor(draw_info,x-start_x,y-start_y,&fill_color,exception);
-      CompositePixelOver(image,&fill_color,mask_alpha*fill_alpha*
-        fill_color.alpha,q,(double) GetPixelAlpha(image,q),q);
+      CompositePixelOver(image,&fill_color,fill_alpha*fill_color.alpha,q,
+        (double) GetPixelAlpha(image,q),q);
       GetStrokeColor(draw_info,x-start_x,y-start_y,&stroke_color,exception);
-      CompositePixelOver(image,&stroke_color,mask_alpha*stroke_alpha*
-        stroke_color.alpha,q,(double) GetPixelAlpha(image,q),q);
+      CompositePixelOver(image,&stroke_color,stroke_alpha*stroke_color.alpha,q,
+        (double) GetPixelAlpha(image,q),q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -4872,8 +4867,12 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
     (void) SetImageColorspace(image,sRGBColorspace,exception);
   status=MagickTrue;
   if (draw_info->compliance == SVGCompliance)
-    status=SetImageMask(image,WritePixelMask,draw_info->clipping_mask,
-      exception);
+    {
+      status=SetImageMask(image,WritePixelMask,draw_info->clipping_mask,
+        exception);
+      status&=SetImageMask(image,CompositePixelMask,draw_info->composite_mask,
+        exception);
+    }
   x=(ssize_t) ceil(primitive_info->point.x-0.5);
   y=(ssize_t) ceil(primitive_info->point.y-0.5);
   image_view=AcquireAuthenticCacheView(image,exception);
@@ -4925,11 +4924,6 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-                {
-                  q+=GetPixelChannels(image);
-                  continue;
-                }
               GetPixelInfoPixel(image,q,&pixel);
               if (IsFuzzyEquivalencePixelInfo(&pixel,&target) == MagickFalse)
                 {
@@ -4989,11 +4983,6 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-                {
-                  q+=GetPixelChannels(image);
-                  continue;
-                }
               GetFillColor(draw_info,x,y,&pixel,exception);
               SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
               q+=GetPixelChannels(image);
@@ -5051,11 +5040,6 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-                {
-                  q+=GetPixelChannels(image);
-                  continue;
-                }
               GetPixelInfoPixel(image,q,&pixel);
               if (IsFuzzyEquivalencePixelInfo(&pixel,&target) == MagickFalse)
                 {
@@ -5111,11 +5095,6 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-                {
-                  q+=GetPixelChannels(image);
-                  continue;
-                }
               GetFillColor(draw_info,x,y,&pixel,exception);
               SetPixelViaPixelInfo(image,&pixel,q);
               q+=GetPixelChannels(image);
@@ -5309,7 +5288,10 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
   }
   image_view=DestroyCacheView(image_view);
   if (draw_info->compliance == SVGCompliance)
-    status&=SetImageMask(image,WritePixelMask,(Image *) NULL,exception);
+    {
+      status&=SetImageMask(image,WritePixelMask,(Image *) NULL,exception);
+      status&=SetImageMask(image,CompositePixelMask,(Image *) NULL,exception);
+    }
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"  end draw-primitive");
   return(status != 0 ? MagickTrue : MagickFalse);
@@ -6231,7 +6213,7 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
         do
         {
           GetNextToken(p,&p,MagickPathExtent,token);
-          if (*token == ',')
+          if ((i != 0) && (*token == ','))
             GetNextToken(p,&p,MagickPathExtent,token);
           x=StringToDouble(token,&next_token);
           if (token == next_token)

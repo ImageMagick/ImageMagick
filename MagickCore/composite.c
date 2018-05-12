@@ -420,11 +420,6 @@ static MagickBooleanType CompositeOverImage(Image *image,
           */
           (void) GetOneVirtualPixel(source_image,x-x_offset,y-y_offset,source,
             exception);
-          if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-            {
-              q+=GetPixelChannels(image);
-              continue;
-            }
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             MagickRealType
@@ -455,12 +450,6 @@ static MagickBooleanType CompositeOverImage(Image *image,
       Sa=QuantumScale*GetPixelAlpha(source_image,p);
       Da=QuantumScale*GetPixelAlpha(image,q);
       alpha=Sa+Da-Sa*Da;
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          p+=GetPixelChannels(source_image);
-          q+=GetPixelChannels(image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
@@ -1347,11 +1336,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           */
           (void) GetOneVirtualPixel(source_image,x-x_offset,y-y_offset,source,
             exception);
-          if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-            {
-              q+=GetPixelChannels(image);
-              continue;
-            }
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             MagickRealType
@@ -1506,12 +1490,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           break;
         }
       }
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          p+=GetPixelChannels(source_image);
-          q+=GetPixelChannels(image);
-          continue;
-        }
       switch (compose)
       {
         case ColorizeCompositeOp:
@@ -2521,12 +2499,6 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
         register ssize_t
           i;
 
-        if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-          {
-            p+=GetPixelChannels(texture_image);
-            q+=GetPixelChannels(image);
-            continue;
-          }
         for (i=0; i < (ssize_t) GetPixelChannels(texture_image); i++)
         {
           PixelChannel channel = GetPixelChannelChannel(texture_image,i);

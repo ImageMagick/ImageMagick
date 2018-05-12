@@ -4372,6 +4372,9 @@ MagickExport void InitializePixelChannelMap(Image *image)
     SetPixelChannelAttributes(image,ReadMaskPixelChannel,CopyPixelTrait,n++);
   if (image->write_mask != MagickFalse)
     SetPixelChannelAttributes(image,WriteMaskPixelChannel,CopyPixelTrait,n++);
+  if (image->composite_mask != MagickFalse)
+    SetPixelChannelAttributes(image,CompositeMaskPixelChannel,CopyPixelTrait,
+      n++);
   image->number_channels=(size_t) n;
   (void) SetPixelChannelMask(image,image->channel_mask);
 }

@@ -583,13 +583,6 @@ MagickExport Image *AppendImages(const Image *images,
       GetPixelInfo(next,&pixel);
       for (x=0; x < (ssize_t) next->columns; x++)
       {
-        if (GetPixelWriteMask(next,p) <= (QuantumRange/2))
-          {
-            SetPixelBackgoundColor(append_image,q);
-            p+=GetPixelChannels(next);
-            q+=GetPixelChannels(append_image);
-            continue;
-          }
         GetPixelInfoPixel(next,p,&pixel);
         SetPixelViaPixelInfo(append_image,&pixel,q);
         p+=GetPixelChannels(next);
@@ -1494,6 +1487,11 @@ MagickExport Image *GetImageMask(const Image *image,const PixelMask type,
     {
       switch (type)
       {
+        case ReadPixelMask:
+        {
+          SetPixelGray(mask_image,GetPixelReadMask(image,p),q);
+          break;
+        }
         case WritePixelMask:
         {
           SetPixelGray(mask_image,GetPixelWriteMask(image,p),q);
@@ -1501,7 +1499,7 @@ MagickExport Image *GetImageMask(const Image *image,const PixelMask type,
         }
         default:
         {
-          SetPixelGray(mask_image,GetPixelReadMask(image,p),q);
+          SetPixelGray(mask_image,GetPixelCompositeMask(image,p),q);
           break;
         }
       }
@@ -1828,11 +1826,6 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
-        {
-          p+=GetPixelChannels(image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
@@ -2360,9 +2353,7 @@ MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelWriteMask(image,q) > (QuantumRange/2))
-        SetPixelAlpha(image,alpha,q);
-      else if (set_opaque != MagickFalse)
+      if (set_opaque != MagickFalse)
         SetPixelAlpha(image,OpaqueAlpha,q);
       q+=GetPixelChannels(image);
     }
@@ -3189,15 +3180,17 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
     {
       switch (type)
       {
+        case ReadPixelMask: image->read_mask=MagickFalse; break;
         case WritePixelMask: image->write_mask=MagickFalse; break;
-        default: image->read_mask=MagickFalse; break;
+        default: image->composite_mask=MagickFalse; break;
       }
       return(SyncImagePixelCache(image,exception));
     }
   switch (type)
   {
+    case ReadPixelMask: image->read_mask=MagickTrue; break;
     case WritePixelMask: image->write_mask=MagickTrue; break;
-    default: image->read_mask=MagickTrue; break;
+    default: image->composite_mask=MagickTrue; break;
   }
   if (SyncImagePixelCache(image,exception) == MagickFalse)
     return(MagickFalse);
@@ -3238,6 +3231,11 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
         intensity=GetPixelIntensity(mask,p);
       switch (type)
       {
+        case ReadPixelMask:
+        {
+          SetPixelReadMask(image,ClampToQuantum(intensity),q);
+          break;
+        }
         case WritePixelMask:
         {
           SetPixelWriteMask(image,ClampToQuantum(intensity),q);
@@ -3245,7 +3243,7 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
         }
         default:
         {
-          SetPixelReadMask(image,ClampToQuantum(intensity),q);
+          SetPixelCompositeMask(image,ClampToQuantum(intensity),q);
           break;
         }
       }
@@ -3313,15 +3311,17 @@ MagickExport MagickBooleanType SetImageRegionMask(Image *image,
     {
       switch (type)
       {
+        case ReadPixelMask: image->read_mask=MagickFalse; break;
         case WritePixelMask: image->write_mask=MagickFalse; break;
-        default: image->read_mask=MagickFalse; break;
+        default: image->composite_mask=MagickFalse; break;
       }
       return(SyncImagePixelCache(image,exception));
     }
   switch (type)
   {
+    case ReadPixelMask: image->read_mask=MagickTrue; break;
     case WritePixelMask: image->write_mask=MagickTrue; break;
-    default: image->read_mask=MagickTrue; break;
+    default: image->composite_mask=MagickTrue; break;
   }
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
@@ -3358,6 +3358,11 @@ MagickExport MagickBooleanType SetImageRegionMask(Image *image,
         pixel=QuantumRange;
       switch (type)
       {
+        case ReadPixelMask:
+        {
+          SetPixelReadMask(image,pixel,q);
+          break;
+        }
         case WritePixelMask:
         {
           SetPixelWriteMask(image,pixel,q);
@@ -3365,7 +3370,7 @@ MagickExport MagickBooleanType SetImageRegionMask(Image *image,
         }
         default:
         {
-          SetPixelReadMask(image,pixel,q);
+          SetPixelCompositeMask(image,pixel,q);
           break;
         }
       }

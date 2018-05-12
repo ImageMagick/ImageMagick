@@ -4280,11 +4280,6 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
         register ssize_t
           i;
 
-        if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-          {
-            q+=GetPixelChannels(image);
-            continue;
-          }
         Sa=QuantumScale*GetPixelAlpha(image,q);
         gamma=PerceptibleReciprocal(Sa);
         for (i=0; i < (ssize_t) GetPixelChannels(image); i++)

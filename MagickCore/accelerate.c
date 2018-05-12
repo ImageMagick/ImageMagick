@@ -123,8 +123,10 @@ static MagickBooleanType checkAccelerateCondition(const Image* image)
       (GetImageVirtualPixelMethod(image) != EdgeVirtualPixelMethod))
     return(MagickFalse);
 
-  /* check if the image has read / write mask */
-  if (image->read_mask != MagickFalse || image->write_mask != MagickFalse)
+  /* check if the image has mask */
+  if (image->composite_mask != MagickFalse ||
+      image->read_mask != MagickFalse ||
+      image->write_mask != MagickFalse)
     return(MagickFalse);
 
   if (image->number_channels > 4)

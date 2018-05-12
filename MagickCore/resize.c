@@ -1782,11 +1782,6 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(resize_image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(resize_image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel

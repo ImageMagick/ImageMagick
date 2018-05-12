@@ -2720,8 +2720,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             if ((traits == UndefinedPixelTrait) ||
                 (morphology_traits == UndefinedPixelTrait))
               continue;
-            if (((traits & CopyPixelTrait) != 0) ||
-                (GetPixelWriteMask(image,p+center) <= (QuantumRange/2)))
+            if ((traits & CopyPixelTrait) != 0)
               {
                 SetPixelChannel(morphology_image,channel,p[center+i],q);
                 continue;
@@ -2871,8 +2870,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         if ((traits == UndefinedPixelTrait) ||
             (morphology_traits == UndefinedPixelTrait))
           continue;
-        if (((traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,p+center) <= (QuantumRange/2)))
+        if ((traits & CopyPixelTrait) != 0)
           {
             SetPixelChannel(morphology_image,channel,p[center+i],q);
             continue;
@@ -3292,9 +3290,6 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
     register ssize_t
       x;
 
-    ssize_t
-      center;
-
     /*
       Read virtual pixels, and authentic pixels, from the same image!  We read
       using virtual to get virtual pixel handling, but write back into the same
@@ -3314,8 +3309,6 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         status=MagickFalse;
         continue;
       }
-    center=(ssize_t) (GetPixelChannels(image)*width*offset.y+
-      GetPixelChannels(image)*offset.x);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       register ssize_t
@@ -3348,8 +3341,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         traits=GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        if (((traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,p+center) <= (QuantumRange/2)))
+        if ((traits & CopyPixelTrait) != 0)
           continue;
         pixels=p;
         pixel=(double) QuantumRange;
@@ -3457,9 +3449,6 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
     register ssize_t
       x;
 
-    ssize_t
-      center;
-
     /*
        Read virtual pixels, and authentic pixels, from the same image.  We
        read using virtual to get virtual pixel handling, but write back
@@ -3480,7 +3469,6 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
       }
     p+=(image->columns-1)*GetPixelChannels(image);
     q+=(image->columns-1)*GetPixelChannels(image);
-    center=(ssize_t) (offset.x*GetPixelChannels(image));
     for (x=(ssize_t) image->columns-1; x >= 0; x--)
     {
       register ssize_t
@@ -3513,8 +3501,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         traits=GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        if (((traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,p+center) <= (QuantumRange/2)))
+        if ((traits & CopyPixelTrait) != 0)
           continue;
         pixels=p;
         pixel=(double) QuantumRange;

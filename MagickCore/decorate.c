@@ -679,11 +679,6 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       }
     for (x=0; x < y; x++)
     {
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -697,11 +692,6 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
     }
     for ( ; x < (ssize_t) (image->columns-y); x++)
     {
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -715,11 +705,6 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
     }
     for ( ; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -769,11 +754,6 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       }
     for (x=0; x < (ssize_t) raise_info->width; x++)
     {
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -789,11 +769,6 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       q+=GetPixelChannels(image);
     for ( ; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -843,11 +818,6 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       }
     for (x=0; x < (ssize_t) (image->rows-y); x++)
     {
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -874,11 +844,6 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
     }
     for ( ; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);

@@ -139,6 +139,14 @@ static inline size_t GetPixelChannels(const Image *magick_restrict image)
   return(image->number_channels);
 }
 
+static inline Quantum GetPixelCompositeMask(const Image *magick_restrict image,
+  const Quantum *magick_restrict pixel)
+{
+  if (image->channel_map[CompositeMaskPixelChannel].traits == UndefinedPixelTrait)
+    return((Quantum) QuantumRange);
+  return(pixel[image->channel_map[CompositeMaskPixelChannel].offset]);
+}
+
 static inline Quantum GetPixelCr(const Image *magick_restrict image,
   const Quantum *magick_restrict pixel)
 {
@@ -718,6 +726,13 @@ static inline void SetPixelChannelTraits(Image *image,
   const PixelChannel channel,const PixelTrait traits)
 {
   image->channel_map[channel].traits=traits;
+}
+
+static inline void SetPixelCompositeMask(const Image *magick_restrict image,
+  const Quantum mask,Quantum *magick_restrict pixel)
+{
+  if (image->channel_map[CompositeMaskPixelChannel].traits != UndefinedPixelTrait)
+    pixel[image->channel_map[CompositeMaskPixelChannel].offset]=mask;
 }
 
 static inline void SetPixelCr(const Image *magick_restrict image,

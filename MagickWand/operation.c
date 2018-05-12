@@ -1980,58 +1980,19 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("clip-mask",option+1) == 0)
         {
-          /* Note: arguments do not have percent escapes expanded */
-          CacheView
-            *mask_view;
-
           Image
-            *mask_image;
-
-          register Quantum
-            *magick_restrict q;
-
-          register ssize_t
-            x;
-
-          ssize_t
-            y;
+            *clip_mask;
 
           if (IfPlusOp) {
             /* use "+clip-mask" Remove the write mask for -clip-path */
-            (void) SetImageMask(_image,ReadPixelMask,(Image *) NULL,_exception);
+            (void) SetImageMask(_image,WritePixelMask,(Image *) NULL,_exception);
             break;
           }
-          mask_image=GetImageCache(_image_info,arg1,_exception);
-          if (mask_image == (Image *) NULL)
+          clip_mask=GetImageCache(_image_info,arg1,_exception);
+          if (clip_mask == (Image *) NULL)
             break;
-          if (SetImageStorageClass(mask_image,DirectClass,_exception) == MagickFalse)
-            break;
-          /* Create a write mask from cli_wand mask image */
-          /* FUTURE: use Alpha operations instead and create a Grey Image */
-          mask_view=AcquireAuthenticCacheView(mask_image,_exception);
-          for (y=0; y < (ssize_t) mask_image->rows; y++)
-          {
-            q=GetCacheViewAuthenticPixels(mask_view,0,y,mask_image->columns,1,
-              _exception);
-            if (q == (Quantum *) NULL)
-              break;
-            for (x=0; x < (ssize_t) mask_image->columns; x++)
-            {
-              if (mask_image->alpha_trait == UndefinedPixelTrait)
-                SetPixelAlpha(mask_image,(Quantum)
-                  GetPixelIntensity(mask_image,q),q);
-              SetPixelGray(mask_image,GetPixelAlpha(mask_image,q),q);
-              q+=GetPixelChannels(mask_image);
-            }
-            if (SyncCacheViewAuthenticPixels(mask_view,_exception) == MagickFalse)
-              break;
-          }
-          /* clean up and set the write mask */
-          mask_view=DestroyCacheView(mask_view);
-          mask_image->alpha_trait=BlendPixelTrait;
-          (void) SetImageColorspace(_image,GRAYColorspace,_exception);
-          (void) SetImageMask(_image,ReadPixelMask,mask_image,_exception);
-          mask_image=DestroyImage(mask_image);
+          (void) SetImageMask(_image,WritePixelMask,clip_mask,_exception);
+          clip_mask=DestroyImage(clip_mask);
           break;
         }
       if (LocaleCompare("clip-path",option+1) == 0)

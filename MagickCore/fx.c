@@ -366,8 +366,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
         if ((traits == UndefinedPixelTrait) ||
             (noise_traits == UndefinedPixelTrait))
           continue;
-        if (((noise_traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,p) <= (QuantumRange/2)))
+        if ((noise_traits & CopyPixelTrait) != 0)
           {
             SetPixelChannel(noise_image,channel,p[i],q);
             continue;
@@ -771,8 +770,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
           (PixelChannel) i);
         if (traits == UndefinedPixelTrait)
           continue;
-        if (((traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(colorize_image,q) <= (QuantumRange/2)))
+        if ((traits & CopyPixelTrait) != 0)
           continue;
         SetPixelChannel(colorize_image,(PixelChannel) i,ClampToQuantum(
           Colorize(q[i],GetPixelInfoChannel(&blend_percentage,(PixelChannel) i),
@@ -3185,8 +3183,7 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
         if ((traits == UndefinedPixelTrait) ||
             (fx_traits == UndefinedPixelTrait))
           continue;
-        if (((fx_traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,p) <= (QuantumRange/2)))
+        if ((fx_traits & CopyPixelTrait) != 0)
           {
             SetPixelChannel(fx_image,channel,p[i],q);
             continue;
@@ -3380,13 +3377,6 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
       /*
         Determine if the pixel is within an ellipse.
       */
-      if (GetPixelWriteMask(canvas,p) <= (QuantumRange/2))
-        {
-          SetPixelBackgoundColor(implode_image,q);
-          p+=GetPixelChannels(canvas);
-          q+=GetPixelChannels(implode_image);
-          continue;
-        }
       delta.x=scale.x*(double) (x-center.x);
       distance=delta.x*delta.x+delta.y*delta.y;
       if (distance >= (radius*radius))
@@ -3626,8 +3616,7 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
             if ((traits == UndefinedPixelTrait) ||
                 (morph_traits == UndefinedPixelTrait))
               continue;
-            if (((morph_traits & CopyPixelTrait) != 0) ||
-                (GetPixelWriteMask(morph_images,p) <= (QuantumRange/2)))
+            if ((morph_traits & CopyPixelTrait) != 0)
               {
                 SetPixelChannel(morph_image,channel,p[i],q);
                 continue;
@@ -4569,11 +4558,6 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(random_image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(random_image);
-          continue;
-        }
       value=GetPseudoRandomValue(random_info[id]);
       for (i=0; i < (ssize_t) GetPixelChannels(random_image); i++)
       {
@@ -4732,11 +4716,6 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -5229,13 +5208,6 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
       /*
         Determine if the pixel is within an ellipse.
       */
-      if (GetPixelWriteMask(canvas,p) <= (QuantumRange/2))
-        {
-          SetPixelBackgoundColor(swirl_image,q);
-          p+=GetPixelChannels(canvas);
-          q+=GetPixelChannels(swirl_image);
-          continue;
-        }
       delta.x=scale.x*(double) (x-center.x);
       distance=delta.x*delta.x+delta.y*delta.y;
       if (distance >= (radius*radius))
@@ -5457,13 +5429,6 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
         weight;
 
       GetPixelInfo(image,&pixel);
-      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
-        {
-          SetPixelViaPixelInfo(tint_image,&pixel,q);
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(tint_image);
-          continue;
-        }
       weight=QuantumScale*GetPixelRed(image,p)-0.5;
       pixel.red=(MagickRealType) GetPixelRed(image,p)+color_vector.red*
         (1.0-(4.0*(weight*weight)));

@@ -355,6 +355,9 @@ struct _Image
 
   PixelInfo
     matte_color;        /* current mattecolor attribute */
+
+  MagickBooleanType
+    composite_mask;
 };
 
 /*

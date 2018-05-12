@@ -670,11 +670,6 @@ MagickExport Image *EvaluateImages(const Image *images,
             register ssize_t
               i;
 
-            if (GetPixelWriteMask(next,p) <= (QuantumRange/2))
-              {
-                p+=GetPixelChannels(next);
-                continue;
-              }
             for (i=0; i < (ssize_t) GetPixelChannels(next); i++)
             {
               PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -735,11 +730,6 @@ MagickExport Image *EvaluateImages(const Image *images,
           register ssize_t
             i;
 
-          if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-            {
-              q+=GetPixelChannels(image);
-              continue;
-            }
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -850,8 +840,7 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        if (((traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,q) <= (QuantumRange/2)))
+        if ((traits & CopyPixelTrait) != 0)
           continue;
         if ((traits & UpdatePixelTrait) == 0)
           continue;
@@ -1073,11 +1062,6 @@ MagickExport MagickBooleanType FunctionImage(Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -1428,11 +1412,6 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
-        {
-          p+=GetPixelChannels(image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -1486,11 +1465,6 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
-        {
-          p+=GetPixelChannels(image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -1857,11 +1831,6 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
-        {
-          p+=GetPixelChannels(image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -2015,11 +1984,6 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
-        {
-          p+=GetPixelChannels(image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -2312,11 +2276,6 @@ MagickExport Image *PolynomialImage(const Image *images,
         register ssize_t
           i;
 
-        if (GetPixelWriteMask(next,p) <= (QuantumRange/2))
-          {
-            p+=GetPixelChannels(next);
-            continue;
-          }
         for (i=0; i < (ssize_t) GetPixelChannels(next); i++)
         {
           MagickRealType
@@ -2346,11 +2305,6 @@ MagickExport Image *PolynomialImage(const Image *images,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);

@@ -1769,6 +1769,7 @@ static const OptionInfo
     { "Blue", BluePixelChannel, UndefinedOptionFlag, MagickFalse },
     { "Cb", CbPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "Composite", CompositePixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "CompositeMask", CompositeMaskPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "C", CyanPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "Cr", CrPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "Cyan", CyanPixelChannel, UndefinedOptionFlag, MagickFalse },

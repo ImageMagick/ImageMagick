@@ -698,13 +698,6 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
-        {
-          SetPixelBackgoundColor(crop_image,q);
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(crop_image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -1051,13 +1044,6 @@ MagickExport Image *ExcerptImage(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
-        {
-          SetPixelBackgoundColor(excerpt_image,q);
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(excerpt_image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -1249,13 +1235,6 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
-        {
-          SetPixelBackgoundColor(flip_image,q);
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(flip_image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -1392,11 +1371,6 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
         i;
 
       q-=GetPixelChannels(flop_image);
-      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
-        {
-          p+=GetPixelChannels(image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -1518,13 +1492,6 @@ static MagickBooleanType CopyImageRegion(Image *destination,const Image *source,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(source,p) <= (QuantumRange/2))
-        {
-          SetPixelBackgoundColor(destination,q);
-          p+=GetPixelChannels(source);
-          q+=GetPixelChannels(destination);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(source,i);
@@ -1846,13 +1813,6 @@ MagickExport Image *SpliceImage(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
-        {
-          SetPixelBackgoundColor(splice_image,q);
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(splice_image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -1877,13 +1837,6 @@ MagickExport Image *SpliceImage(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
-        {
-          SetPixelBackgoundColor(splice_image,q);
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(splice_image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -1951,13 +1904,6 @@ MagickExport Image *SpliceImage(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          SetPixelBackgoundColor(splice_image,q);
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(splice_image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -1982,13 +1928,6 @@ MagickExport Image *SpliceImage(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          SetPixelBackgoundColor(splice_image,q);
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(splice_image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -2225,13 +2164,6 @@ MagickExport Image *TransposeImage(const Image *image,ExceptionInfo *exception)
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          SetPixelBackgoundColor(transpose_image,q);
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(transpose_image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -2374,11 +2306,6 @@ MagickExport Image *TransverseImage(const Image *image,ExceptionInfo *exception)
         i;
 
       q-=GetPixelChannels(transverse_image);
-      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
-        {
-          p+=GetPixelChannels(image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);

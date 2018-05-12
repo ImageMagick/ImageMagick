@@ -828,8 +828,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
         if ((traits == UndefinedPixelTrait) ||
             (paint_traits == UndefinedPixelTrait))
           continue;
-        if (((paint_traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(linear_image,p) <= (QuantumRange/2)))
+        if ((paint_traits & CopyPixelTrait) != 0)
           {
             SetPixelChannel(paint_image,channel,p[center+i],q);
             continue;
@@ -970,11 +969,6 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
     pixel=zero;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       GetPixelInfoPixel(image,q,&pixel);
       if (IsFuzzyEquivalencePixelInfo(&pixel,&conform_target) != invert)
         {
@@ -1121,11 +1115,6 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
     pixel=zero;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       GetPixelInfoPixel(image,q,&pixel);
       if (IsFuzzyEquivalencePixelInfo(&pixel,target) != invert)
         SetPixelAlpha(image,opacity,q);
@@ -1256,11 +1245,6 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
     GetPixelInfo(image,&pixel);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       GetPixelInfoPixel(image,q,&pixel);
       match=((pixel.red >= low->red) && (pixel.red <= high->red) &&
         (pixel.green >= low->green) && (pixel.green <= high->green) &&

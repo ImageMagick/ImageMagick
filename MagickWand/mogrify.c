@@ -1093,20 +1093,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("clip-mask",option+1) == 0)
           {
-            CacheView
-              *mask_view;
-
             Image
-              *mask_image;
-
-            register Quantum
-              *magick_restrict q;
-
-            register ssize_t
-              x;
-
-            ssize_t
-              y;
+              *clip_mask;
 
             (void) SyncImageSettings(mogrify_info,*image,exception);
             if (*option == '+')
@@ -1114,42 +1102,18 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 /*
                   Remove a mask.
                 */
-                (void) SetImageMask(*image,ReadPixelMask,(Image *) NULL,
+                (void) SetImageMask(*image,WritePixelMask,(Image *) NULL,
                   exception);
                 break;
               }
             /*
               Set the image mask.
-              FUTURE: This Should Be a SetImageAlphaChannel() call, Or two.
             */
-            mask_image=GetImageCache(mogrify_info,argv[i+1],exception);
-            if (mask_image == (Image *) NULL)
+            clip_mask=GetImageCache(mogrify_info,argv[i+1],exception);
+            if (clip_mask == (Image *) NULL)
               break;
-            if (SetImageStorageClass(mask_image,DirectClass,exception) == MagickFalse)
-              return(MagickFalse);
-            mask_view=AcquireAuthenticCacheView(mask_image,exception);
-            for (y=0; y < (ssize_t) mask_image->rows; y++)
-            {
-              q=GetCacheViewAuthenticPixels(mask_view,0,y,mask_image->columns,1,
-                exception);
-              if (q == (Quantum *) NULL)
-                break;
-              for (x=0; x < (ssize_t) mask_image->columns; x++)
-              {
-                if (mask_image->alpha_trait == UndefinedPixelTrait)
-                  SetPixelAlpha(mask_image,(Quantum)
-                    GetPixelIntensity(mask_image,q),q);
-                SetPixelRed(mask_image,GetPixelAlpha(mask_image,q),q);
-                SetPixelGreen(mask_image,GetPixelAlpha(mask_image,q),q);
-                SetPixelBlue(mask_image,GetPixelAlpha(mask_image,q),q);
-                q+=GetPixelChannels(mask_image);
-              }
-              if (SyncCacheViewAuthenticPixels(mask_view,exception) == MagickFalse)
-                break;
-            }
-            mask_view=DestroyCacheView(mask_view);
-            mask_image->alpha_trait=BlendPixelTrait;
-            (void) SetImageMask(*image,ReadPixelMask,mask_image,exception);
+            (void) SetImageMask(*image,WritePixelMask,clip_mask,exception);
+            clip_mask=DestroyImage(clip_mask);
             break;
           }
         if (LocaleCompare("clip-path",option+1) == 0)

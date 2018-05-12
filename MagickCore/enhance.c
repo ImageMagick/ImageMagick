@@ -382,11 +382,6 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
       PixelTrait
         traits;
 
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       GetPixelInfoPixel(image,q,&pixel);
       traits=GetPixelChannelTraits(image,RedPixelChannel);
       if ((traits & UpdatePixelTrait) != 0)
@@ -1237,11 +1232,6 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
       register ssize_t
         j;
 
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,j);
@@ -1421,13 +1411,6 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
       register const Quantum
         *magick_restrict r;
 
-      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
-        {
-          SetPixelBackgoundColor(enhance_image,q);
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(enhance_image);
-          continue;
-        }
       GetPixelInfo(image,&aggregate);
       total_weight=0.0;
       GetPixelInfoPixel(image,p+center,&pixel);
@@ -1712,11 +1695,6 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
       register ssize_t
         j;
 
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,j);
@@ -1894,11 +1872,6 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
       register ssize_t
         j;
 
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,j);
@@ -2036,11 +2009,6 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
         red,
         intensity;
 
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       red=(MagickRealType) GetPixelRed(image,q);
       green=(MagickRealType) GetPixelGreen(image,q);
       blue=(MagickRealType) GetPixelBlue(image,q);
@@ -2481,11 +2449,6 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
       register ssize_t
         j;
 
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,j);
@@ -2637,11 +2600,6 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
       register ssize_t
         j;
 
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,j);
@@ -3304,11 +3262,6 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
         green,
         red;
 
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       red=(double) GetPixelRed(image,q);
       green=(double) GetPixelGreen(image,q);
       blue=(double) GetPixelBlue(image,q);
@@ -3491,8 +3444,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
           register ssize_t
             j;
 
-          if ((GetPixelWriteMask(image,q) <= (QuantumRange/2)) ||
-              IsPixelGray(image,q) != MagickFalse)
+          if (IsPixelGray(image,q) != MagickFalse)
             {
               q+=GetPixelChannels(image);
               continue;
@@ -3555,11 +3507,6 @@ MagickExport MagickBooleanType NegateImage(Image *image,
       register ssize_t
         j;
 
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,j);
@@ -3859,11 +3806,6 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
