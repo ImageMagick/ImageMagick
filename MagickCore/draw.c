@@ -784,6 +784,9 @@ static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info)
     code=LineToCode;
     if (coordinates <= 0)
       {
+        /*
+          New subpath.
+        */
         coordinates=(ssize_t) primitive_info[i].coordinates;
         p=primitive_info[i].point;
         start=n;
@@ -804,7 +807,7 @@ static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info)
         n++;
       }
     if (coordinates > 0)
-      continue;
+      continue;  /* next point in current subpath */
     if (closed_subpath != MagickFalse)
       {
         closed_subpath=MagickFalse;
@@ -1510,7 +1513,6 @@ static Image *DrawClippingMask(Image *image,const DrawInfo *draw_info,
   clip_mask=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (clip_mask == (Image *) NULL)
     return((Image *) NULL);
-  (void) SetImageMask(clip_mask,ReadPixelMask,(Image *) NULL,exception);
   (void) SetImageMask(clip_mask,WritePixelMask,(Image *) NULL,exception);
   (void) QueryColorCompliance("#0000",AllCompliance,
     &clip_mask->background_color,exception);
@@ -2424,6 +2426,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
     return(MagickFalse);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"begin draw-image");
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+    return(MagickFalse);
   primitive=(char *) NULL;
   if (*draw_info->primitive != '@')
     primitive=AcquireString(draw_info->primitive);
@@ -2609,9 +2613,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             fill_rule=ParseCommandOption(MagickFillRuleOptions,MagickFalse,
               token);
             if (fill_rule == -1)
-              status=MagickFalse;
-            else
-              graphic_context[n]->fill_rule=(FillRule) fill_rule;
+              {
+                status=MagickFalse;
+                break;
+              }
+            graphic_context[n]->fill_rule=(FillRule) fill_rule;
             break;
           }
         if (LocaleCompare("clip-units",keyword) == 0)
@@ -2675,9 +2681,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             decorate=ParseCommandOption(MagickDecorateOptions,MagickFalse,
               token);
             if (decorate == -1)
-              status=MagickFalse;
-            else
-              graphic_context[n]->decorate=(DecorationType) decorate;
+              {
+                status=MagickFalse;
+                break;
+              }
+            graphic_context[n]->decorate=(DecorationType) decorate;
             break;
           }
         if (LocaleCompare("density",keyword) == 0)
@@ -2767,9 +2775,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             fill_rule=ParseCommandOption(MagickFillRuleOptions,MagickFalse,
               token);
             if (fill_rule == -1)
-              status=MagickFalse;
-            else
-              graphic_context[n]->fill_rule=(FillRule) fill_rule;
+              {
+                status=MagickFalse;
+                break;
+              }
+            graphic_context[n]->fill_rule=(FillRule) fill_rule;
             break;
           }
         if (LocaleCompare("font",keyword) == 0)
@@ -2803,9 +2813,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             GetNextToken(q,&q,extent,token);
             stretch=ParseCommandOption(MagickStretchOptions,MagickFalse,token);
             if (stretch == -1)
-              status=MagickFalse;
-            else
-              graphic_context[n]->stretch=(StretchType) stretch;
+              {
+                status=MagickFalse;
+                break;
+              }
+            graphic_context[n]->stretch=(StretchType) stretch;
             break;
           }
         if (LocaleCompare("font-style",keyword) == 0)
@@ -2816,9 +2828,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             GetNextToken(q,&q,extent,token);
             style=ParseCommandOption(MagickStyleOptions,MagickFalse,token);
             if (style == -1)
-              status=MagickFalse;
-            else
-              graphic_context[n]->style=(StyleType) style;
+              {
+                status=MagickFalse;
+                break;
+              }
+            graphic_context[n]->style=(StyleType) style;
             break;
           }
         if (LocaleCompare("font-weight",keyword) == 0)
@@ -2852,9 +2866,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             GetNextToken(q,&q,extent,token);
             gravity=ParseCommandOption(MagickGravityOptions,MagickFalse,token);
             if (gravity == -1)
-              status=MagickFalse;
-            else
-              graphic_context[n]->gravity=(GravityType) gravity;
+              {
+                status=MagickFalse;
+                break;
+              }
+            graphic_context[n]->gravity=(GravityType) gravity;
             break;
           }
         status=MagickFalse;
@@ -2872,9 +2888,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             GetNextToken(q,&q,extent,token);
             compose=ParseCommandOption(MagickComposeOptions,MagickFalse,token);
             if (compose == -1)
-              status=MagickFalse;
-            else
-              graphic_context[n]->compose=(CompositeOperator) compose;
+              {
+                status=MagickFalse;
+                break;
+              }
+            graphic_context[n]->compose=(CompositeOperator) compose;
             break;
           }
         if (LocaleCompare("interline-spacing",keyword) == 0)
@@ -3175,34 +3193,32 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                   name[MagickPathExtent];
 
                 RectangleInfo
-                  pattern_bounds;
+                  bounds;
 
                 GetNextToken(q,&q,extent,token);
                 (void) CopyMagickString(name,token,MagickPathExtent);
                 GetNextToken(q,&q,extent,token);
-                pattern_bounds.x=(ssize_t) ceil(StringToDouble(token,
-                  &next_token)-0.5);
+                bounds.x=(ssize_t) ceil(StringToDouble(token,&next_token)-0.5);
                 if (token == next_token)
                   ThrowPointExpectedException(token,exception);
                 GetNextToken(q,&q,extent,token);
                 if (*token == ',')
                   GetNextToken(q,&q,extent,token);
-                pattern_bounds.y=(ssize_t) ceil(StringToDouble(token,
-                  &next_token)-0.5);
+                bounds.y=(ssize_t) ceil(StringToDouble(token,&next_token)-0.5);
                 if (token == next_token)
                   ThrowPointExpectedException(token,exception);
                 GetNextToken(q,&q,extent,token);
                 if (*token == ',')
                   GetNextToken(q,&q,extent,token);
-                pattern_bounds.width=(size_t) floor(StringToDouble(token,
-                  &next_token)+0.5);
+                bounds.width=(size_t) floor(StringToDouble(token,&next_token)+
+                  0.5);
                 if (token == next_token)
                   ThrowPointExpectedException(token,exception);
                 GetNextToken(q,&q,extent,token);
                 if (*token == ',')
                   GetNextToken(q,&q,extent,token);
-                pattern_bounds.height=(size_t) floor(StringToDouble(token,
-                  &next_token)+0.5);
+                bounds.height=(size_t) floor(StringToDouble(token,&next_token)+
+                  0.5);
                 if (token == next_token)
                   ThrowPointExpectedException(token,exception);
                 for (p=q; *q != '\0'; )
@@ -3226,9 +3242,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 (void) FormatLocaleString(key,MagickPathExtent,"%s-geometry",
                   name);
                 (void) FormatLocaleString(geometry,MagickPathExtent,
-                  "%.20gx%.20g%+.20g%+.20g",(double)pattern_bounds.width,
-                  (double)pattern_bounds.height,(double)pattern_bounds.x,
-                  (double)pattern_bounds.y);
+                  "%.20gx%.20g%+.20g%+.20g",(double)bounds.width,(double)
+                  bounds.height,(double)bounds.x,(double) bounds.y);
                 (void) SetImageArtifact(image,key,geometry);
                 GetNextToken(q,&q,extent,token);
                 break;
@@ -3506,9 +3521,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             GetNextToken(q,&q,extent,token);
             align=ParseCommandOption(MagickAlignOptions,MagickFalse,token);
             if (align == -1)
-              status=MagickFalse;
-            else
-              graphic_context[n]->align=(AlignType) align;
+              {
+                status=MagickFalse;
+                break;
+              }
+            graphic_context[n]->align=(AlignType) align;
             break;
           }
         if (LocaleCompare("text-anchor",keyword) == 0)
@@ -3519,9 +3536,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             GetNextToken(q,&q,extent,token);
             align=ParseCommandOption(MagickAlignOptions,MagickFalse,token);
             if (align == -1)
-              status=MagickFalse;
-            else
-              graphic_context[n]->align=(AlignType) align;
+              {
+                status=MagickFalse;
+                break;
+              }
+            graphic_context[n]->align=(AlignType) align;
             break;
           }
         if (LocaleCompare("text-antialias",keyword) == 0)
@@ -3764,7 +3783,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             status=MagickFalse;
             break;
           }
-        coordinates=BezierQuantum*primitive_info[j].coordinates;
+        coordinates=(BezierQuantum*primitive_info[j].coordinates);
         break;
       }
       case PathPrimitive:
@@ -4038,9 +4057,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         GetNextToken(q,&q,extent,token);
         method=ParseCommandOption(MagickMethodOptions,MagickFalse,token);
         if (method == -1)
-          status=MagickFalse;
-        else
-          primitive_info[j].method=(PaintMethod) method;
+          {
+            status=MagickFalse;
+            break;
+          }
+        primitive_info[j].method=(PaintMethod) method;
         break;
       }
       case TextPrimitive:
@@ -5496,8 +5517,9 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   exception=AcquireExceptionInfo();
   (void) QueryColorCompliance("#000F",AllCompliance,&draw_info->fill,
     exception);
-  (void) QueryColorCompliance("#0000",AllCompliance,&draw_info->stroke,
+  (void) QueryColorCompliance("#FFF0",AllCompliance,&draw_info->stroke,
     exception);
+  draw_info->stroke_antialias=clone_info->antialias;
   draw_info->stroke_width=1.0;
   draw_info->fill_rule=EvenOddRule;
   draw_info->alpha=OpaqueAlpha;
@@ -5513,7 +5535,6 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->render=MagickTrue;
   draw_info->clip_path=MagickFalse;
   draw_info->debug=IsEventLogging();
-  draw_info->stroke_antialias=clone_info->antialias;
   if (clone_info->font != (char *) NULL)
     draw_info->font=AcquireString(clone_info->font);
   if (clone_info->density != (char *) NULL)
@@ -6864,7 +6885,7 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
           box_q[3].y)/(slope.p-slope.q));
         box_q[4].y=(double) (slope.p*(box_q[4].x-box_q[0].x)+box_q[0].y);
       }
-    CheckPathExtent(6*BezierQuantum-360);
+    CheckPathExtent(6*BezierQuantum+360);
     dot_product=dx.q*dy.p-dx.p*dy.q;
     if (dot_product <= 0.0)
       switch (draw_info->linejoin)
@@ -6920,7 +6941,7 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
             theta.q+=2.0*MagickPI;
           arc_segments=(size_t) ceil((double) ((theta.q-theta.p)/
             (2.0*sqrt((double) (1.0/mid)))));
-          CheckPathExtent(arc_segments+6*BezierQuantum-360);
+          CheckPathExtent(arc_segments+6*BezierQuantum+360);
           path_q[q].x=box_q[1].x;
           path_q[q].y=box_q[1].y;
           q++;
@@ -6993,7 +7014,7 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
             theta.p+=2.0*MagickPI;
           arc_segments=(size_t) ceil((double) ((theta.p-theta.q)/
             (2.0*sqrt((double) (1.0/mid)))));
-          CheckPathExtent(arc_segments+6*BezierQuantum-360);
+          CheckPathExtent(arc_segments+6*BezierQuantum+360);
           path_p[p++]=box_p[1];
           for (j=1; j < (ssize_t) arc_segments; j++)
           {
