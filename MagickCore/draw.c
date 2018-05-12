@@ -348,6 +348,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   clone_info->fill_alpha=draw_info->fill_alpha;
   clone_info->stroke_alpha=draw_info->stroke_alpha;
   clone_info->element_reference=draw_info->element_reference;
+  clone_info->clip_path=draw_info->clip_path;
   clone_info->clip_units=draw_info->clip_units;
   if (draw_info->clip_mask != (char *) NULL)
     (void) CloneString(&clone_info->clip_mask,draw_info->clip_mask);
