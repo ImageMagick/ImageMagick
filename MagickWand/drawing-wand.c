@@ -6054,7 +6054,7 @@ WandExport void DrawSetTextKerning(DrawingWand *wand,const double kerning)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D r a w S e t T e x t I n t e r L i n e S p a c i n g                     %
+%   D r a w S e t T e x t I n t e r l i n e S p a c i n g                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -6458,7 +6458,15 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->stroke_width=StringToDouble(value,(char **) NULL);
+        {
+          ssize_t
+            weight;
+
+          weight=ParseCommandOption(MagickWeightOptions,MagickFalse,value);
+          if (weight == -1)
+            weight=StringToUnsignedLong(value);
+          CurrentContext->stroke_width=(size_t) weight;
+        }
     }
   child=GetXMLTreeChild(xml_info,"text-align");
   if (child != (XMLTreeInfo *) NULL)
@@ -6832,7 +6840,7 @@ WandExport MagickBooleanType PopDrawingWand(DrawingWand *wand)
   if (CurrentContext->clip_mask != (char *) NULL)
     if (LocaleCompare(CurrentContext->clip_mask,
         wand->graphic_context[wand->index-1]->clip_mask) != 0)
-      (void) SetImageMask(wand->image,ReadPixelMask,(Image *) NULL,
+      (void) SetImageMask(wand->image,WritePixelMask,(Image *) NULL,
         wand->exception);
 #endif
   CurrentContext=DestroyDrawInfo(CurrentContext);
