@@ -984,9 +984,13 @@ MATLAB_KO:
     }
 #endif
 
-    if (MATLAB_HDR.DataType!=miMATRIX)
+    if (MATLAB_HDR.DataType != miMATRIX)
       {
         clone_info=DestroyImageInfo(clone_info);
+#if defined(MAGICKCORE_ZLIB_DELEGATE)
+        if (image2 != image)
+          DeleteImageFromList(&image2);
+#endif
         continue;  /* skip another objects. */
       }
 
@@ -1074,7 +1078,7 @@ MATLAB_KO:
         MATLAB_HDR.StructureClass != mxINT64_CLASS &&
         MATLAB_HDR.StructureClass != mxUINT64_CLASS)    /* uint64 + uint64 3D */
       {
-        if ((image2 != (Image*) NULL) && (image2 != (Image *) image))
+        if (image2 != (Image*) NULL)
           {
             CloseBlob(image2);
             DeleteImageFromList(&image2);
