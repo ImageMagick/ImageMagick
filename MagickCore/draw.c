@@ -1491,12 +1491,12 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
 static Image *DrawClippingMask(Image *image,const DrawInfo *draw_info,
   const char *id,const char *clip_path,ExceptionInfo *exception)
 {
+  DrawInfo
+    *clone_info;
+
   Image
     *clip_mask,
     *separate_mask;
-
-  DrawInfo
-    *clone_info;
 
   MagickStatusType
     status;
@@ -2201,6 +2201,8 @@ static char *GetNodeByURL(const char *primitive,const char *url)
   /*
     Find and return node by ID.
   */
+  if (primitive == (const char *) NULL)
+    return((char *) NULL);
   token=AcquireString(primitive);
   extent=strlen(token)+MagickPathExtent;
   length=0;
