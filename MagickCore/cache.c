@@ -3378,6 +3378,20 @@ MagickPrivate const Quantum *GetVirtualPixelsNexus(const Cache cache,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static inline Quantum ApplyPixelCompositeMask(const Quantum p,
+  const MagickRealType alpha,const Quantum q,const MagickRealType beta)
+{
+  double
+    mask_alpha;
+
+  if (alpha == TransparentAlpha)
+    return(q);
+  mask_alpha=1.0-QuantumScale*QuantumScale*alpha*beta;
+  mask_alpha=PerceptibleReciprocal(mask_alpha);
+  return(mask_alpha*MagickOver_(p,alpha,q,beta));
+}
+
 static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
   ExceptionInfo *exception)
 {
@@ -3424,15 +3438,14 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
 
     if (p == (Quantum *) NULL)
       break;
-    mask_alpha=QuantumScale*GetPixelCompositeMask(image,p);
+    mask_alpha=GetPixelCompositeMask(image,p);
     for (i=0; i < (ssize_t) image->number_channels; i++)
     {
       PixelChannel channel = GetPixelChannelChannel(image,i);
       PixelTrait traits = GetPixelChannelTraits(image,channel);
       if ((traits & UpdatePixelTrait) == 0)
         continue;
-      q[i]=MagickOver_(p[i],mask_alpha*GetPixelAlpha(image,p),q[i],
-        GetPixelAlpha(image,q));
+      q[i]=ApplyPixelCompositeMask(q[i],mask_alpha,p[i],GetPixelAlpha(image,p));
     }
     p+=GetPixelChannels(image);
     q+=GetPixelChannels(image);
