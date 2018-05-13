@@ -843,8 +843,7 @@ static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyDrawInfo() deallocates memory associated with an DrawInfo
-%  structure.
+%  DestroyDrawInfo() deallocates memory associated with an DrawInfo structure.
 %
 %  The format of the DestroyDrawInfo method is:
 %
@@ -2475,8 +2474,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
     }
   token=AcquireString(primitive);
   extent=strlen(token)+MagickPathExtent;
-  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-    return(MagickFalse);
   defsDepth=0;
   symbolDepth=0;
   status=MagickTrue;
@@ -2934,9 +2931,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       case 'L':
       {
         if (LocaleCompare("line",keyword) == 0)
-          primitive_type=LinePrimitive;
-        else
-          status=MagickFalse;
+          {
+            primitive_type=LinePrimitive;
+            break;
+          }
+        status=MagickFalse;
         break;
       }
       case 'm':
@@ -3436,8 +3435,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (LocaleCompare("stroke-dashoffset",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
-            graphic_context[n]->dash_offset=StringToDouble(token,
-              &next_token);
+            graphic_context[n]->dash_offset=StringToDouble(token,&next_token);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             break;
@@ -3450,9 +3448,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             GetNextToken(q,&q,extent,token);
             linecap=ParseCommandOption(MagickLineCapOptions,MagickFalse,token);
             if (linecap == -1)
-              status=MagickFalse;
-            else
-              graphic_context[n]->linecap=(LineCap) linecap;
+              {
+                status=MagickFalse;
+                break;
+              }
+            graphic_context[n]->linecap=(LineCap) linecap;
             break;
           }
         if (LocaleCompare("stroke-linejoin",keyword) == 0)
@@ -3464,9 +3464,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             linejoin=ParseCommandOption(MagickLineJoinOptions,MagickFalse,
               token);
             if (linejoin == -1)
-              status=MagickFalse;
-            else
-              graphic_context[n]->linejoin=(LineJoin) linejoin;
+              {
+                status=MagickFalse;
+                break;
+              }
+            graphic_context[n]->linejoin=(LineJoin) linejoin;
             break;
           }
         if (LocaleCompare("stroke-miterlimit",keyword) == 0)
@@ -3583,7 +3585,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               *node;
 
             /*
-              Take a node from within the MVG document, and duplicate it here.
+              Get a node from the MVG document, and "use" it here.
             */
             GetNextToken(q,&q,extent,token);
             node=GetNodeByURL(primitive,token);
