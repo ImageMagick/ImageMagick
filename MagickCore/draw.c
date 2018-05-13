@@ -2588,6 +2588,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               Take a node from within the MVG document, and duplicate it here.
             */
             GetNextToken(q,&q,extent,token);
+            if (*token == '\0')
+              {
+                status=MagickFalse;
+                break;
+              }
             clip_path=GetNodeByURL(primitive,token);
             if (clip_path != (char *) NULL)
               {
