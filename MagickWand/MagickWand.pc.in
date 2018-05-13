@@ -7,7 +7,7 @@ libname=MagickWand-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@
  
 Name: MagickWand
 Description: MagickWand - C API for ImageMagick (ABI @MAGICK_ABI_SUFFIX@)
-URL: https://www.imagemagick.org
+URL: https://github.com/ImageMagick
 Version: @PACKAGE_VERSION@
 Requires: MagickCore
 Cflags: -I${includearchdir} -I${includedir} @MAGICK_PCFLAGS@

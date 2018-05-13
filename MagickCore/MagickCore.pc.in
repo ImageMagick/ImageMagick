@@ -8,7 +8,7 @@ moduledir=@libdir@/ImageMagick-@MAGICK_MAJOR_VERSION@.@MAGICK_MINOR_VERSION@.@MA
  
 Name: MagickCore
 Description: MagickCore - C API for ImageMagick (ABI @MAGICK_ABI_SUFFIX@)
-URL: https://www.imagemagick.org
+URL: https://github.com/ImageMagick
 Version: @PACKAGE_VERSION@
 Cflags: -I${includearchdir} -I${includedir} @MAGICK_PCFLAGS@
 Libs: -L${libdir} -l${libname}
