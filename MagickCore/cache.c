@@ -457,8 +457,9 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=MagickOver_(p[i],mask_alpha*GetPixelAlpha(image,p),q[i],
-          GetPixelAlpha(image,q));
+        q[i]=ClampToQuantum(MagickOver_((double) p[i],mask_alpha*
+          GetPixelAlpha(image,p),(double) q[i],(double)
+          GetPixelAlpha(image,q)));
       }
     p+=GetPixelChannels(image);
     q+=GetPixelChannels(image);
@@ -3390,7 +3391,7 @@ static inline Quantum ApplyPixelCompositeMask(const Quantum p,
     return(p);
   mask_alpha=1.0-QuantumScale*QuantumScale*alpha*beta;
   mask_alpha=PerceptibleReciprocal(mask_alpha);
-  return(mask_alpha*MagickOver_(p,alpha,q,beta));
+  return(ClampToQuantum(mask_alpha*MagickOver_((double) p,alpha,(double) q,beta)));
 }
 
 static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
@@ -3439,14 +3440,15 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
 
     if (p == (Quantum *) NULL)
       break;
-    mask_alpha=GetPixelCompositeMask(image,p);
+    mask_alpha=(double) GetPixelCompositeMask(image,p);
     for (i=0; i < (ssize_t) image->number_channels; i++)
     {
       PixelChannel channel = GetPixelChannelChannel(image,i);
       PixelTrait traits = GetPixelChannelTraits(image,channel);
       if ((traits & UpdatePixelTrait) == 0)
         continue;
-      q[i]=ApplyPixelCompositeMask(p[i],mask_alpha,q[i],GetPixelAlpha(image,q));
+      q[i]=ApplyPixelCompositeMask(p[i],mask_alpha,q[i],
+        (MagickRealType) GetPixelAlpha(image,q));
     }
     p+=GetPixelChannels(image);
     q+=GetPixelChannels(image);
