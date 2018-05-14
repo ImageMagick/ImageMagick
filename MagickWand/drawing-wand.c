@@ -6329,8 +6329,8 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
 
           weight=ParseCommandOption(MagickWeightOptions,MagickFalse,value);
           if (weight == -1)
-            weight=StringToUnsignedLong(value);
-          CurrentContext->weight=weight;
+            weight=(ssize_t) StringToUnsignedLong(value);
+          CurrentContext->weight=(size_t) weight;
         }
     }
   child=GetXMLTreeChild(xml_info,"gravity");
@@ -6464,8 +6464,8 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
 
           weight=ParseCommandOption(MagickWeightOptions,MagickFalse,value);
           if (weight == -1)
-            weight=StringToUnsignedLong(value);
-          CurrentContext->stroke_width=(size_t) weight;
+            weight=(ssize_t) StringToUnsignedLong(value);
+          CurrentContext->stroke_width=(double) weight;
         }
     }
   child=GetXMLTreeChild(xml_info,"text-align");
