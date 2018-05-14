@@ -523,11 +523,11 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
   points=(PointInfo *) NULL;
   (void) memset(&point,0,sizeof(point));
   (void) memset(&bounds,0,sizeof(bounds));
-  polygon_info->edges[edge].number_points=n;
+  polygon_info->edges[edge].number_points=(size_t) n;
   polygon_info->edges[edge].scanline=0.0;
   polygon_info->edges[edge].highwater=0;
   polygon_info->edges[edge].ghostline=ghostline;
-  polygon_info->edges[edge].direction=direction;
+  polygon_info->edges[edge].direction=(ssize_t) direction;
   polygon_info->edges[edge].points=points;
   polygon_info->edges[edge].bounds=bounds;
   polygon_info->number_edges=0;
