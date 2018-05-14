@@ -2594,6 +2594,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 status=MagickFalse;
                 break;
               }
+            (void) CloneString(&graphic_context[n]->clip_mask,token);
             clip_path=GetNodeByURL(primitive,token);
             if (clip_path != (char *) NULL)
               {
@@ -2601,7 +2602,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                   graphic_context[n]->clipping_mask=
                     DestroyImage(graphic_context[n]->clipping_mask);
                 graphic_context[n]->clipping_mask=DrawClippingMask(image,
-                  graphic_context[n],token,clip_path,exception);
+                  graphic_context[n],graphic_context[n]->clip_mask,clip_path,
+                  exception);
                 clip_path=DestroyString(clip_path);
                 if (draw_info->compliance != SVGCompliance)
                   status=SetImageMask(image,WritePixelMask,
@@ -3052,6 +3054,12 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                     n=0;
                     break;
                   }
+                if ((graphic_context[n]->clip_mask != (char *) NULL) &&
+                    (draw_info->compliance != SVGCompliance))
+                  if (LocaleCompare(graphic_context[n]->clip_mask,
+                      graphic_context[n-1]->clip_mask) != 0)
+                    (void) SetImageMask(image,WritePixelMask,(Image *) NULL,
+                      exception);
                 graphic_context[n]=DestroyDrawInfo(graphic_context[n]);
                 n--;
                 break;
@@ -4132,8 +4140,16 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
     }
     if (graphic_context[n]->render != MagickFalse)
-      status&=DrawPrimitive(image,graphic_context[n],primitive_info,
-        exception);
+      {
+        if ((n != 0) && (draw_info->compliance != SVGCompliance) &&
+            (graphic_context[n]->clip_mask != (char *) NULL) &&
+            (LocaleCompare(graphic_context[n]->clip_mask,
+             graphic_context[n-1]->clip_mask) != 0))
+          status=SetImageMask(image,WritePixelMask,
+            graphic_context[n]->clipping_mask,exception);
+        status&=DrawPrimitive(image,graphic_context[n],primitive_info,
+          exception);
+      }
     if (primitive_info->text != (char *) NULL)
       primitive_info->text=(char *) RelinquishMagickMemory(
         primitive_info->text);
