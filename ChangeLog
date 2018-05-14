@@ -1,5 +1,8 @@
-2018-05-13  7.0.7-31 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.7-31, GIT revision 14307:f61f674e3:20180513.
+2018-05-03  7.0.7-33  <quetzlzacatenango@image...>
+  * Restore SetImageAlpha() behavior.
+
+2018-05-13  7.0.7-32 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.7-32, GIT revision 14307:f61f674e3:20180513.
 
 2018-05-03  7.0.7-31  <quetzlzacatenango@image...>
   * Fixed numerous use of uninitialized values, integer overflow, memory
