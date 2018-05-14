@@ -773,6 +773,7 @@ static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info)
   if (path_info == (PathInfo *) NULL)
     return((PathInfo *) NULL);
   coordinates=0;
+  closed_subpath=MagickFalse;
   n=0;
   p.x=(-1.0);
   p.y=(-1.0);
