@@ -743,7 +743,7 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
       if (SetImageStorageClass(clip_mask,DirectClass,exception) == MagickFalse)
         return(MagickFalse);
     }
-  if (inside != MagickFalse)
+  if (inside == MagickFalse)
     (void) NegateImage(clip_mask,MagickFalse,exception);
   (void) FormatLocaleString(clip_mask->magick_filename,MagickPathExtent,
     "8BIM:1999,2998:%s\nPS",pathname);

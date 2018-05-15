@@ -2439,6 +2439,12 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"begin draw-image");
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
+  if (image->alpha_trait == UndefinedPixelTrait)
+    {
+      status=SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
+      if (status == MagickFalse)
+        return(status);
+    }
   primitive=(char *) NULL;
   if (*draw_info->primitive != '@')
     primitive=AcquireString(draw_info->primitive);
@@ -4695,8 +4701,6 @@ RestoreMSCWarning
   /*
     Draw polygon or line.
   */
-  if (image->alpha_trait == UndefinedPixelTrait)
-    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
   start_y=(ssize_t) ceil(bounds.y1-0.5);
   stop_y=(ssize_t) floor(bounds.y2+0.5);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
