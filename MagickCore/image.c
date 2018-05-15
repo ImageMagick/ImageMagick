@@ -2318,7 +2318,6 @@ MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
     *image_view;
 
   MagickBooleanType
-    set_opaque,
     status;
 
   ssize_t
@@ -2328,8 +2327,6 @@ MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickCoreSignature);
-  set_opaque=(image->alpha_trait == UndefinedPixelTrait) ? MagickTrue :
-    MagickFalse;
   image->alpha_trait=BlendPixelTrait;
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
@@ -2355,10 +2352,7 @@ MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (set_opaque != MagickFalse)
-        SetPixelAlpha(image,OpaqueAlpha,q);
-      else
-        SetPixelAlpha(image,alpha,q);
+      SetPixelAlpha(image,alpha,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
