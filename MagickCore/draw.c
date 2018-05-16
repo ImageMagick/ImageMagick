@@ -3105,7 +3105,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 GetNextToken(q,&q,extent,token);
                 (void) FormatLocaleString(name,MaxTextExtent,"%s",token);
                 clip_path=GetNodeByURL(primitive,name);
-                (void) SetImageArtifact(image,name,clip_path);
+                if (clip_path != (char *) NULL)
+                  {
+                    (void) SetImageArtifact(image,name,clip_path);
+                    clip_path=DestroyString(clip_path);
+                  }
                 break;
               }
             if (LocaleCompare("defs",token) == 0)
