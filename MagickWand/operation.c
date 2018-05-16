@@ -2725,7 +2725,6 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           mask=GetImageCache(_image_info,arg1,_exception);
           if (mask == (Image *) NULL)
             break;
-          (void) NegateImage(mask,MagickFalse,exception);
           (void) SetImageMask(_image,WritePixelMask,mask,_exception);
           mask=DestroyImage(mask);
           break;

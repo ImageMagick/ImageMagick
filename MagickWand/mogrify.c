@@ -2119,7 +2119,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             mask=GetImageCache(mogrify_info,argv[i+1],exception);
             if (mask == (Image *) NULL)
               break;
-            (void) NegateImage(mask,MagickFalse,exception);
             (void) SetImageMask(*image,WritePixelMask,mask,exception);
             mask=DestroyImage(mask);
             break;
