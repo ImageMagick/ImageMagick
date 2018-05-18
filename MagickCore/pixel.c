@@ -6239,6 +6239,11 @@ static void LogPixelChannels(const Image *image)
         name="write-mask";
         break;
       }
+      case CompositeMaskPixelChannel:
+      {
+        name="composite-mask";
+        break;
+      }
       case MetaPixelChannel:
       {
         name="meta";
@@ -6318,6 +6323,8 @@ MagickExport ChannelType SetPixelChannelMask(Image *image,
     SetPixelChannelTraits(image,ReadMaskPixelChannel,CopyPixelTrait);
   if (image->write_mask != MagickFalse)
     SetPixelChannelTraits(image,WriteMaskPixelChannel,CopyPixelTrait);
+  if (image->composite_mask != MagickFalse)
+    SetPixelChannelTraits(image,CompositeMaskPixelChannel,CopyPixelTrait);
   if (image->debug != MagickFalse)
     LogPixelChannels(image);
   return(mask);

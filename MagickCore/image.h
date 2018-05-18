@@ -358,6 +358,9 @@ struct _Image
 
   MagickBooleanType
     composite_mask;
+
+  PixelTrait
+    mask_trait;       /* apply the clip or composite mask */
 };
 
 /*

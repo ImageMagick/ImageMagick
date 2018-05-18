@@ -5340,12 +5340,15 @@ MagickPrivate MagickBooleanType SyncAuthenticPixelCacheNexus(Image *image,
   assert(cache_info->signature == MagickCoreSignature);
   if (cache_info->type == UndefinedCache)
     return(MagickFalse);
-  if ((image->write_mask != MagickFalse) &&
-      (ClipPixelCacheNexus(image,nexus_info,exception) == MagickFalse))
-    return(MagickFalse);
-  if ((image->composite_mask != MagickFalse) &&
-      (MaskPixelCacheNexus(image,nexus_info,exception) == MagickFalse))
-    return(MagickFalse);
+  if (image->mask_trait != UpdatePixelTrait)
+    {
+      if ((image->write_mask != MagickFalse) &&
+          (ClipPixelCacheNexus(image,nexus_info,exception) == MagickFalse))
+        return(MagickFalse);
+      if ((image->composite_mask != MagickFalse) &&
+          (MaskPixelCacheNexus(image,nexus_info,exception) == MagickFalse))
+        return(MagickFalse);
+    }
   if (nexus_info->authentic_pixel_cache != MagickFalse)
     {
       image->taint=MagickTrue;

@@ -376,6 +376,11 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
               destination_image->alpha_trait=BlendPixelTrait;
               break;
             }
+            case CompositeMaskPixelChannel:
+            {
+              destination_image->composite_mask=MagickTrue;
+              break;
+            }
             case ReadMaskPixelChannel:
             {
               destination_image->read_mask=MagickTrue;

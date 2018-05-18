@@ -828,7 +828,9 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   clone_image->colorspace=image->colorspace;
   clone_image->read_mask=image->read_mask;
   clone_image->write_mask=image->write_mask;
+  clone_image->composite_mask=image->composite_mask;
   clone_image->alpha_trait=image->alpha_trait;
+  clone_image->mask_trait=image->mask_trait;
   clone_image->columns=image->columns;
   clone_image->rows=image->rows;
   clone_image->dither=image->dither;
@@ -3193,6 +3195,7 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
   if (SyncImagePixelCache(image,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
+  image->mask_trait=UpdatePixelTrait;
   mask_view=AcquireVirtualCacheView(mask,exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -3251,6 +3254,7 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
   }
+  image->mask_trait=UndefinedPixelTrait;
   mask_view=DestroyCacheView(mask_view);
   image_view=DestroyCacheView(image_view);
   return(status);
@@ -3321,9 +3325,10 @@ MagickExport MagickBooleanType SetImageRegionMask(Image *image,
     case WritePixelMask: image->write_mask=MagickTrue; break;
     default: image->composite_mask=MagickTrue; break;
   }
-  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+  if (SyncImagePixelCache(image,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
+  image->mask_trait=UpdatePixelTrait;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
@@ -3377,6 +3382,7 @@ MagickExport MagickBooleanType SetImageRegionMask(Image *image,
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
   }
+  image->mask_trait=UndefinedPixelTrait;
   image_view=DestroyCacheView(image_view);
   return(status);
 }

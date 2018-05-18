@@ -409,10 +409,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
           {
             PixelChannel channel = GetPixelChannelChannel(image,i);
             PixelTrait traits = GetPixelChannelTraits(image,channel);
-            if ((traits == UndefinedPixelTrait) ||
-                (channel == IndexPixelChannel) ||
-                (channel == ReadMaskPixelChannel) ||
-                (channel == MetaPixelChannel))
+            if ((traits & UpdatePixelTrait) == 0)
               continue;
             if (depth_map[ScaleQuantumToMap(p[i])] > current_depth[id])
               current_depth[id]=depth_map[ScaleQuantumToMap(p[i])];
@@ -470,8 +467,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
 
         channel=GetPixelChannelChannel(image,i);
         traits=GetPixelChannelTraits(image,channel);
-        if ((traits == UndefinedPixelTrait) || (channel == IndexPixelChannel) ||
-            (channel == ReadMaskPixelChannel))
+        if ((traits & UpdatePixelTrait) == 0)
           continue;
         while (current_depth[id] < MAGICKCORE_QUANTUM_DEPTH)
         {
@@ -1094,9 +1090,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
 
             channel=GetPixelChannelChannel(image,i);
             traits=GetPixelChannelTraits(image,channel);
-            if ((traits == UndefinedPixelTrait) ||
-                (channel == IndexPixelChannel) ||
-                (channel == ReadMaskPixelChannel))
+            if ((traits & UpdatePixelTrait) == 0)
               continue;
             q[i]=depth_map[ScaleQuantumToMap(q[i])];
           }
@@ -1153,8 +1147,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
 
         channel=GetPixelChannelChannel(image,i);
         traits=GetPixelChannelTraits(image,channel);
-        if ((traits == UndefinedPixelTrait) || (channel == IndexPixelChannel) ||
-            (channel == ReadMaskPixelChannel))
+        if ((traits & UpdatePixelTrait) == 0)
           continue;
         q[i]=ScaleAnyToQuantum(ScaleQuantumToAny(ClampPixel((MagickRealType)
           q[i]),range),range);
