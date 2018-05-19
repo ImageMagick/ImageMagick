@@ -4836,7 +4836,7 @@ Get(ref,...)
                     *sv;
 
                   sv=NULL;
-                  if (image->channels & WriteMaskChannel) == 0)
+                  if ((image->channels & WriteMaskChannel) == 0)
                     (void) ClipImage(image,exception);
                   mask_image=GetImageMask(image,ReadPixelMask,exception);
                   if (mask_image != (Image *) NULL)
@@ -4859,7 +4859,7 @@ Get(ref,...)
                     *sv;
 
                   sv=NULL;
-                  if (image->channels & WriteMaskChannel) == 0)
+                  if ((image->channels & WriteMaskChannel) == 0)
                     (void) ClipImage(image,exception);
                   mask_image=GetImageMask(image,ReadPixelMask,exception);
                   if (mask_image != (Image *) NULL)
