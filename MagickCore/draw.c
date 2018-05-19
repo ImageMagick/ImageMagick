@@ -3851,9 +3851,10 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               t++;
               continue;
             }
+          if (strspn(t,"AaCcQqSsTt") != 0)
+            coordinates+=(6*BezierQuantum)+360;
           coordinates++;
         }
-        coordinates*=(6*BezierQuantum)+360;
         break;
       }
       case CirclePrimitive:
@@ -6285,7 +6286,7 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
         do
         {
           GetNextToken(p,&p,MagickPathExtent,token);
-          if ((i != 0) && (*token == ','))
+          if (*token == ',')
             GetNextToken(p,&p,MagickPathExtent,token);
           x=StringToDouble(token,&next_token);
           if (token == next_token)
