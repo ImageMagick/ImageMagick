@@ -279,13 +279,16 @@ static CompositeOperator GIMPBlendModeToCompositeOperator(
 %
 %  The format of the ReadBlobStringWithLongSize method is:
 %
-%      char *ReadBlobStringWithLongSize(Image *image,char *string)
+%      char *ReadBlobStringWithLongSize(Image *image,char *string,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
 %    o string: the address of a character buffer.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -581,7 +584,8 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
   return(MagickTrue);
 
   bogus_rle:
-  xcfodata=(unsigned char *) RelinquishMagickMemory(xcfodata);
+  if (xcfodata != (unsigned char *) NULL)
+    xcfodata=(unsigned char *) RelinquishMagickMemory(xcfodata);
   return(MagickFalse);
 }
 
@@ -619,15 +623,16 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
   width=ReadBlobMSBLong(image);
   height=ReadBlobMSBLong(image);
 
-  /* read in the first tile offset.
-   *  if it is '0', then this tile level is empty
-   *  and we can simply return.
-   */
+  /*
+    Read in the first tile offset.  If it is '0', then this tile level is empty
+    and we can simply return.
+  */
   offset=(MagickOffsetType) ReadBlobMSBLong(image);
   if (offset == 0)
     return(MagickTrue);
-  /* Initialise the reference for the in-memory tile-compression
-   */
+  /*
+    Initialise the reference for the in-memory tile-compression
+  */
   ntile_rows=(height+TILE_HEIGHT-1)/TILE_HEIGHT;
   ntile_cols=(width+TILE_WIDTH-1)/TILE_WIDTH;
   ntiles=ntile_rows*ntile_cols;
@@ -636,9 +641,9 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
     status=MagickFalse;
     if (offset == 0)
       ThrowBinaryException(CorruptImageError,"NotEnoughTiles",image->filename);
-    /* save the current position as it is where the
-     *  next tile offset is stored.
-     */
+    /*
+      Save the current position as it is where the next tile offset is stored.
+    */
     saved_pos=TellBlob(image);
     /* read in the offset of the next tile so we can calculate the amount
        of data needed for this tile*/
