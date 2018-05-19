@@ -3852,10 +3852,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               t++;
               continue;
             }
-          if (strspn(t,"AaCcQqSsTt") != 0)
-            coordinates+=(6*BezierQuantum)+360;
           coordinates++;
         }
+        for (s=token; *s != '\0'; s++)
+          if (strspn(s,"AaCcQqSsTt") != 0)
+            coordinates+=(20*BezierQuantum)+360;
         break;
       }
       case CirclePrimitive:
