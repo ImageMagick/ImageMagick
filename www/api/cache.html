@@ -22,7 +22,6 @@
   <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link href="../../api/cache.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
@@ -32,9 +31,9 @@
 <body>
   <header>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="../index.html"><img class="d-block" id="logo" name="ImageMagick" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
-    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
@@ -76,12 +75,13 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
+
   </div>
   </header>
-  <main role="main" class="container">
+  <main class="container">
     <div class="magick-template">
 <div class="magick-header">
-<p class="text-center"><a href="cache.html#AcquirePixelCacheNexus">AcquirePixelCacheNexus</a> &#8226; <a href="cache.html#GetAuthenticMetacontent">GetAuthenticMetacontent</a> &#8226; <a href="cache.html#GetAuthenticPixelQueue">GetAuthenticPixelQueue</a> &#8226; <a href="cache.html#GetAuthenticPixels">GetAuthenticPixels</a> &#8226; <a href="cache.html#GetOneAuthenticPixel">GetOneAuthenticPixel</a> &#8226; <a href="cache.html#GetOneVirtualPixel">GetOneVirtualPixel</a> &#8226; <a href="cache.html#GetOneVirtualPixelInfo">GetOneVirtualPixelInfo</a> &#8226; <a href="cache.html#GetVirtualMetacontent">GetVirtualMetacontent</a> &#8226; <a href="cache.html#GetVirtualPixelQueue">GetVirtualPixelQueue</a> &#8226; <a href="cache.html#GetVirtualPixels">GetVirtualPixels</a> &#8226; <a href="cache.html#QueueAuthenticPixels">QueueAuthenticPixels</a> &#8226; <a href="cache.html#SetPixelCacheVirtualMethod">SetPixelCacheVirtualMethod</a> &#8226; <a href="cache.html#SyncAuthenticPixels">SyncAuthenticPixels</a></p>
+<p class="text-center"><a href="cache.html#AcquirePixelCacheNexus">AcquirePixelCacheNexus</a> &#8226; <a href="cache.html#AcquirePixelCachePixels">AcquirePixelCachePixels</a> &#8226; <a href="cache.html#GetAuthenticMetacontent">GetAuthenticMetacontent</a> &#8226; <a href="cache.html#GetAuthenticPixelQueue">GetAuthenticPixelQueue</a> &#8226; <a href="cache.html#GetAuthenticPixels">GetAuthenticPixels</a> &#8226; <a href="cache.html#GetOneAuthenticPixel">GetOneAuthenticPixel</a> &#8226; <a href="cache.html#GetOneVirtualPixel">GetOneVirtualPixel</a> &#8226; <a href="cache.html#GetOneVirtualPixelInfo">GetOneVirtualPixelInfo</a> &#8226; <a href="cache.html#GetVirtualMetacontent">GetVirtualMetacontent</a> &#8226; <a href="cache.html#GetVirtualPixelQueue">GetVirtualPixelQueue</a> &#8226; <a href="cache.html#GetVirtualPixels">GetVirtualPixels</a> &#8226; <a href="cache.html#QueueAuthenticPixels">QueueAuthenticPixels</a> &#8226; <a href="cache.html#SetPixelCacheVirtualMethod">SetPixelCacheVirtualMethod</a> &#8226; <a href="cache.html#SyncAuthenticPixels">SyncAuthenticPixels</a></p>
 
 <h2><a href="../../api/MagickCore/cache_8c.html" id="AcquirePixelCacheNexus">AcquirePixelCacheNexus</a></h2>
 
@@ -102,6 +102,37 @@ NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
 <dl class="dl-horizontal">
 <dt>number_threads</dt>
 <dd>the number of nexus threads. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickCore/cache_8c.html" id="AcquirePixelCachePixels">AcquirePixelCachePixels</a></h2>
+
+<p>AcquirePixelCachePixels() returns the pixels associated with the specified image.</p>
+
+<p>The format of the AcquirePixelCachePixels() method is:</p>
+
+<pre class="text">
+void *AcquirePixelCachePixels(const Image *image,size_t *length,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>length</dt>
+<dd>the pixel cache length. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>
@@ -482,7 +513,7 @@ MagickBooleanType SyncAuthenticPixels(Image *image,
     <a href="../www/links.html">Related</a> •
      <a href="../www/sitemap.html">Sitemap</a>
        
-    <a href="cache.html#"><img class="d-inline" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+    <a href="cache.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
        
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="../www/support.html">Donate</a> •
@@ -496,4 +527,4 @@ MagickBooleanType SyncAuthenticPixels(Image *image,
   <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 15th February 2018 05:01 -->
+<!-- Magick Cache 12th May 2018 12:10 -->

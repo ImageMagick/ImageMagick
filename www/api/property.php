@@ -5,32 +5,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-    <title>ImageMagick: MagickCore, C API for ImageMagick: Get/Set Image Properties</title>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-  <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
-  <meta name="application-url" content="http://www.imagemagick.org"/>
-  <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, get/set, image, properties, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
-  <meta name="rating" content="GENERAL"/>
-  <meta name="robots" content="INDEX, FOLLOW"/>
-  <meta name="generator" content="ImageMagick Studio LLC"/>
-  <meta name="author" content="ImageMagick Studio LLC"/>
-  <meta name="revisit-after" content="2 DAYS"/>
-  <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2016 ImageMagick Studio LLC"/>
-  <meta name="distribution" content="Global"/>
-  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
-  <link rel="icon" href="../image/wand.png"/>
-  <link rel="shortcut icon" href="../image/wand.ico"/>
-  <link rel="stylesheet" href="../css/magick.php"/>
+  <meta charset="utf-8" >
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" >
+  <title>MagickCore, C API: Get/Set Image Properties @ ImageMagick</title>
+  <meta name="application-name" content="ImageMagick">
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
+  <meta name="application-url" content="https://www.imagemagick.org">
+  <meta name="generator" content="PHP">
+  <meta name="keywords" content="magickcore, c, api:, get/set, image, properties, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
+  <meta name="rating" content="GENERAL">
+  <meta name="robots" content="INDEX, FOLLOW">
+  <meta name="generator" content="ImageMagick Studio LLC">
+  <meta name="author" content="ImageMagick Studio LLC">
+  <meta name="revisit-after" content="2 DAYS">
+  <meta name="resource-type" content="document">
+  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC">
+  <meta name="distribution" content="Global">
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
+  <link href="https://www.imagemagick.org/api/property.php" rel="canonical">
+  <link href="../image/wand.png" rel="icon">
+  <link href="../image/wand.ico" rel="shortcut icon">
+  <link href="../assets/magick-css.php" rel="stylesheet">
 </head>
 <body>
-<div class="main">
-<div class="magick-masthead">
+  <header>
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../image/wand.ico"/></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item ">
+        <a class="nav-link" href="../index.php">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="../script/download.php">Download</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="../script/command-line-tools.php">Tools</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="../script/command-line-processing.php">Command-line</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="../script/resources.php">Resources</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="../script/develop.php">Develop</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" target="_blank" href="../discourse-server">Community</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0" action="../script/search.php">
+      <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
+    </form>
+    </div>
+  </nav>
   <div class="container">
-    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+   <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -38,23 +75,15 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.php">Home</a>
-      <a class="magick-nav-item " href="../script/binary-releases.php">Download</a>
-      <a class="magick-nav-item " href="../script/command-line-tools.php">Tools</a>
-      <a class="magick-nav-item " href="../script/command-line-options.php">Options</a>
-      <a class="magick-nav-item " href="../script/resources.php">Resources</a>
-      <a class="magick-nav-item " href="../script/api.php">Develop</a>
-      <a class="magick-nav-item " href="../script/search.php">Search</a>
-      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
-    </nav>
-  </div>
-</div>
-<div class="container">
-<div class="magick-header">
-<p class="text-center"><a href="property.php#CloneImageProperties">CloneImageProperties</a> &bull; <a href="property.php#DefineImageProperty">DefineImageProperty</a> &bull; <a href="property.php#DeleteImageProperty">DeleteImageProperty</a> &bull; <a href="property.php#DestroyImageProperties">DestroyImageProperties</a> &bull; <a href="property.php#FormatImageProperty">FormatImageProperty</a> &bull; <a href="property.php#GetImageProperty">GetImageProperty</a> &bull; <a href="property.php#GetNextImageProperty">GetNextImageProperty</a> &bull; <a href="property.php#InterpretImageProperties">InterpretImageProperties</a> &bull; <a href="property.php#(void) LogMagickEvent(TraceEvent,GetMagickModule">(void) LogMagickEvent(TraceEvent,GetMagickModule</a> &bull; <a href="property.php#RemoveImageProperty">RemoveImageProperty</a> &bull; <a href="property.php#ResetImagePropertyIterator">ResetImagePropertyIterator</a> &bull; <a href="property.php#SetImageProperty">SetImageProperty</a></p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/property_8c.html" id="CloneImageProperties">CloneImageProperties</a></h2>
+  </div>
+  </header>
+  <main class="container">
+    <div class="magick-template">
+<div class="magick-header">
+<p class="text-center"><a href="property.php#CloneImageProperties">CloneImageProperties</a> &bull; <a href="property.php#DefineImageProperty">DefineImageProperty</a> &bull; <a href="property.php#DeleteImageProperty">DeleteImageProperty</a> &bull; <a href="property.php#DestroyImageProperties">DestroyImageProperties</a> &bull; <a href="property.php#FormatImageProperty">FormatImageProperty</a> &bull; <a href="property.php#GetImageProperty">GetImageProperty</a> &bull; <a href="property.php#GetNextImageProperty">GetNextImageProperty</a> &bull; <a href="property.php#InterpretImageProperties">InterpretImageProperties</a> &bull; <a href="property.php#RemoveImageProperty">RemoveImageProperty</a> &bull; <a href="property.php#ResetImagePropertyIterator">ResetImagePropertyIterator</a> &bull; <a href="property.php#SetImageProperty">SetImageProperty</a></p>
+
+<h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="CloneImageProperties">CloneImageProperties</a></h2>
 
 <p>CloneImageProperties() clones all the image properties to another image.</p>
 
@@ -81,9 +110,9 @@ MagickBooleanType CloneImageProperties(Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/property_8c.html" id="DefineImageProperty">DefineImageProperty</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="DefineImageProperty">DefineImageProperty</a></h2>
 
-<p>DefineImageProperty() associates an assignment string of the form "key=value" with an artifact or options. It is equivelent to SetImageProperty()</p>
+<p>DefineImageProperty() associates an assignment string of the form "key=value" with an artifact or options. It is equivelent to SetImageProperty().</p>
 
 <p>The format of the DefineImageProperty method is:</p>
 
@@ -112,7 +141,7 @@ MagickBooleanType DefineImageProperty(Image *image,const char *property,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/property_8c.html" id="DeleteImageProperty">DeleteImageProperty</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="DeleteImageProperty">DeleteImageProperty</a></h2>
 
 <p>DeleteImageProperty() deletes an image property.</p>
 
@@ -138,7 +167,7 @@ MagickBooleanType DeleteImageProperty(Image *image,const char *property)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/property_8c.html" id="DestroyImageProperties">DestroyImageProperties</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="DestroyImageProperties">DestroyImageProperties</a></h2>
 
 <p>DestroyImageProperties() destroys all properties and associated memory attached to the given image.</p>
 
@@ -160,7 +189,7 @@ void DestroyImageProperties(Image *image)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/property_8c.html" id="FormatImageProperty">FormatImageProperty</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="FormatImageProperty">FormatImageProperty</a></h2>
 
 <p>FormatImageProperty() permits formatted property/value pairs to be saved as an image property.</p>
 
@@ -182,7 +211,7 @@ MagickBooleanType FormatImageProperty(Image *image,const char *property,
 <dt> format</dt>
 <p>A string describing the format to use to write the remaining arguments.</p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/property_8c.html" id="GetImageProperty">GetImageProperty</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="GetImageProperty">GetImageProperty</a></h2>
 
 <p>GetImageProperty() gets a value associated with an image property.</p>
 
@@ -217,7 +246,7 @@ const char *GetImageProperty(const Image *image,const char *key,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/property_8c.html" id="GetNextImageProperty">GetNextImageProperty</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="GetNextImageProperty">GetNextImageProperty</a></h2>
 
 <p>GetNextImageProperty() gets the next free-form string property name.</p>
 
@@ -239,7 +268,7 @@ char *GetNextImageProperty(const Image *image)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/property_8c.html" id="InterpretImageProperties">InterpretImageProperties</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="InterpretImageProperties">InterpretImageProperties</a></h2>
 
 <p>InterpretImageProperties() replaces any embedded formatting characters with the appropriate image property and returns the interpreted text.</p>
 
@@ -284,18 +313,7 @@ char *InterpretImageProperties(ImageInfo *image_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/property_8c.html" id="(void)_LogMagickEvent(TraceEvent,GetMagickModule">(void) LogMagickEvent(TraceEvent,GetMagickModule</a></h2>
-
-<p>(void) LogMagickEvent(TraceEvent,GetMagickModule(),"s",image-&gt;filename); else if( image_info != (ImageInfo *) NULL &amp;&amp; IfMagickTrue(image_info-&gt;debug)) (void) LogMagickEvent(TraceEvent,GetMagickModule(),"s","no-image");</p>
-
-<p>if (embed_text == (const char *) NULL) return(ConstantString("")); p=embed_text;</p>
-
-<p>if (*p == '\0') return(ConstantString(""));</p>
-
-<p>if ((*p == '@') &amp;&amp; (IsPathAccessible(p+1) != MagickFalse)) { /* handle a '@' replace string from file */ interpret_text=FileToString(p+1,~0UL,exception); if (interpret_text != (char *) NULL) return(interpret_text); }</p>
-
-<p>/* Translate any embedded format characters. </p>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/property_8c.html" id="RemoveImageProperty">RemoveImageProperty</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="RemoveImageProperty">RemoveImageProperty</a></h2>
 
 <p>RemoveImageProperty() removes a property from the image and returns its value.</p>
 
@@ -323,7 +341,7 @@ char *RemoveImageProperty(Image *image,const char *property)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/property_8c.html" id="ResetImagePropertyIterator">ResetImagePropertyIterator</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="ResetImagePropertyIterator">ResetImagePropertyIterator</a></h2>
 
 <p>ResetImagePropertyIterator() resets the image properties iterator.  Use it in conjunction with GetNextImageProperty() to iterate over all the values associated with an image property.</p>
 
@@ -345,7 +363,7 @@ ResetImagePropertyIterator(Image *image)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/property_8c.html" id="SetImageProperty">SetImageProperty</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="SetImageProperty">SetImageProperty</a></h2>
 
 <p>SetImageProperty() saves the given string value either to specific known attribute or to a freeform property string.</p>
 
@@ -383,21 +401,26 @@ MagickBooleanType SetImageProperty(Image *image,const char *property,
 <dd>  </dd>
 </dl>
 </div>
+    </div>
+  </main><!-- /.container -->
   <footer class="magick-footer">
-    <p><a href="../script/support.php">Donate</a> •
-     <a href="../script/sitemap.php">Sitemap</a> •
+    <p><a href="../script/security-policy.php">Security</a> •
+    <a href="../script/architecture.php">Architecture</a> •
     <a href="../script/links.php">Related</a> •
-    <a href="../script/architecture.php">Architecture</a>
-</p>
-    <p><a href="property.php#">Back to top</a> •
-    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="../script/contact.php">Contact Us</a></p>
-        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
+     <a href="../script/sitemap.php">Sitemap</a>
+    &nbsp; &nbsp;
+    <a href="property.php#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../image/wand.ico"/></a>
+    &nbsp; &nbsp;
+    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="../script/support.php">Donate</a> •
+    <a href="../script/contact.php">Contact Us</a>
+    <br/>
+        <small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
-</div><!-- /.container -->
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="http://nextgen.imagemagick.org/js/magick.php"></script>
-</div>
+  <!-- Javascript assets -->
+  <script src="../assets/magick-js.php" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="../assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
+<!-- Magick Cache 12th May 2018 16:39 -->

@@ -5,32 +5,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-    <title>ImageMagick: MagickCore, C API for ImageMagick: Composite an Image</title>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-  <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
-  <meta name="application-url" content="http://www.imagemagick.org"/>
-  <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, composite, an, image, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
-  <meta name="rating" content="GENERAL"/>
-  <meta name="robots" content="INDEX, FOLLOW"/>
-  <meta name="generator" content="ImageMagick Studio LLC"/>
-  <meta name="author" content="ImageMagick Studio LLC"/>
-  <meta name="revisit-after" content="2 DAYS"/>
-  <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2016 ImageMagick Studio LLC"/>
-  <meta name="distribution" content="Global"/>
-  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
-  <link rel="icon" href="../image/wand.png"/>
-  <link rel="shortcut icon" href="../image/wand.ico"/>
-  <link rel="stylesheet" href="../css/magick.php"/>
+  <meta charset="utf-8" >
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" >
+  <title>MagickCore, C API: Composite an Image @ ImageMagick</title>
+  <meta name="application-name" content="ImageMagick">
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
+  <meta name="application-url" content="https://www.imagemagick.org">
+  <meta name="generator" content="PHP">
+  <meta name="keywords" content="magickcore, c, api:, composite, an, image, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
+  <meta name="rating" content="GENERAL">
+  <meta name="robots" content="INDEX, FOLLOW">
+  <meta name="generator" content="ImageMagick Studio LLC">
+  <meta name="author" content="ImageMagick Studio LLC">
+  <meta name="revisit-after" content="2 DAYS">
+  <meta name="resource-type" content="document">
+  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC">
+  <meta name="distribution" content="Global">
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
+  <link href="https://www.imagemagick.org/api/composite.php" rel="canonical">
+  <link href="../image/wand.png" rel="icon">
+  <link href="../image/wand.ico" rel="shortcut icon">
+  <link href="../assets/magick-css.php" rel="stylesheet">
 </head>
 <body>
-<div class="main">
-<div class="magick-masthead">
+  <header>
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../image/wand.ico"/></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item ">
+        <a class="nav-link" href="../index.php">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="../script/download.php">Download</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="../script/command-line-tools.php">Tools</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="../script/command-line-processing.php">Command-line</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="../script/resources.php">Resources</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="../script/develop.php">Develop</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" target="_blank" href="../discourse-server">Community</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0" action="../script/search.php">
+      <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
+    </form>
+    </div>
+  </nav>
   <div class="container">
-    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+   <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -38,33 +75,23 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.php">Home</a>
-      <a class="magick-nav-item " href="../script/binary-releases.php">Download</a>
-      <a class="magick-nav-item " href="../script/command-line-tools.php">Tools</a>
-      <a class="magick-nav-item " href="../script/command-line-options.php">Options</a>
-      <a class="magick-nav-item " href="../script/resources.php">Resources</a>
-      <a class="magick-nav-item " href="../script/api.php">Develop</a>
-      <a class="magick-nav-item " href="../script/search.php">Search</a>
-      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
-    </nav>
+
   </div>
-</div>
-<div class="container">
+  </header>
+  <main class="container">
+    <div class="magick-template">
 <div class="magick-header">
-<p class="text-center"><a href="composite.php#CompositeImage">CompositeImage</a> &bull; <a href="composite.php#TextureImage">TextureImage</a></p>
+<p class="text-center"><a href="composite.php#CompositeImageCommand">CompositeImageCommand</a></p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/composite_8c.html" id="CompositeImage">CompositeImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/composite_8c.html" id="CompositeImageCommand">CompositeImageCommand</a></h2>
 
-<p>CompositeImage() returns the second image composited onto the first at the specified offset, using the specified composite method.</p>
+<p>CompositeImageCommand() reads one or more images and an optional mask and composites them into a new image.</p>
 
-<p>The format of the CompositeImage method is:</p>
+<p>The format of the CompositeImageCommand method is:</p>
 
 <pre class="text">
-MagickBooleanType CompositeImage(Image *image,
-  const Image *source_image,const CompositeOperator compose,
-  const MagickBooleanType clip_to_self,const ssize_t x_offset,
-  const ssize_t y_offset,ExceptionInfo *exception)
+MagickBooleanType CompositeImageCommand(ImageInfo *image_info,int argc,
+  char **argv,char **metadata,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -74,34 +101,20 @@ MagickBooleanType CompositeImage(Image *image,
 
 <dd> </dd>
 <dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the canvas image, modified by he composition </dd>
+<dt>image_info</dt>
+<dd>the image info. </dd>
 
 <dd> </dd>
-<dt>source_image</dt>
-<dd>the source image. </dd>
+<dt>argc</dt>
+<dd>the number of elements in the argument vector. </dd>
 
 <dd> </dd>
-<dt>compose</dt>
-<dd>This operator affects how the composite is applied to the image.  The operators and how they are utilized are listed here http://www.w3.org/TR/SVG12/#compositing. </dd>
+<dt>argv</dt>
+<dd>A text array containing the command line arguments. </dd>
 
 <dd> </dd>
-<dt>clip_to_self</dt>
-<dd>set to MagickTrue to limit composition to area composed. </dd>
-
-<dd> </dd>
-<dt>x_offset</dt>
-<dd>the column offset of the composited image. </dd>
-
-<dd> </dd>
-<dt>y_offset</dt>
-<dd>the row offset of the composited image. </dd>
-
-<dd> Extra Controls from Image meta-data in 'image' (artifacts) </dd>
-
-<dd> o "compose:args" A string containing extra numerical arguments for specific compose methods, generally expressed as a 'geometry' or a comma separated list of numbers. </dd>
-
-<dd> Compose methods needing such arguments include "BlendCompositeOp" and "DisplaceCompositeOp". </dd>
+<dt>metadata</dt>
+<dd>any metadata is returned here. </dd>
 
 <dd> </dd>
 <dt>exception</dt>
@@ -109,49 +122,27 @@ MagickBooleanType CompositeImage(Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/composite_8c.html" id="TextureImage">TextureImage</a></h2>
-
-<p>TextureImage() repeatedly tiles the texture image across and down the image canvas.</p>
-
-<p>The format of the TextureImage method is:</p>
-
-<pre class="text">
-MagickBooleanType TextureImage(Image *image,const Image *texture,
-  ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>texture_image</dt>
-<dd>This image is the texture to layer on the background. </dd>
-
-<dd>  </dd>
-</dl>
 </div>
+    </div>
+  </main><!-- /.container -->
   <footer class="magick-footer">
-    <p><a href="../script/support.php">Donate</a> •
-     <a href="../script/sitemap.php">Sitemap</a> •
+    <p><a href="../script/security-policy.php">Security</a> •
+    <a href="../script/architecture.php">Architecture</a> •
     <a href="../script/links.php">Related</a> •
-    <a href="../script/architecture.php">Architecture</a>
-</p>
-    <p><a href="composite.php#">Back to top</a> •
-    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="../script/contact.php">Contact Us</a></p>
-        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
+     <a href="../script/sitemap.php">Sitemap</a>
+    &nbsp; &nbsp;
+    <a href="composite.php#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../image/wand.ico"/></a>
+    &nbsp; &nbsp;
+    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="../script/support.php">Donate</a> •
+    <a href="../script/contact.php">Contact Us</a>
+    <br/>
+        <small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
-</div><!-- /.container -->
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="http://nextgen.imagemagick.org/js/magick.php"></script>
-</div>
+  <!-- Javascript assets -->
+  <script src="../assets/magick-js.php" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="../assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
+<!-- Magick Cache 17th May 2018 18:54 -->
