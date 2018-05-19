@@ -1519,9 +1519,10 @@ static Image *DrawClippingMask(Image *image,const DrawInfo *draw_info,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(draw_info != (const DrawInfo *) NULL);
-  clip_mask=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
-  if (clip_mask == (Image *) NULL)
-    return((Image *) NULL);
+  clip_mask=AcquireImage((const ImageInfo *) NULL,exception);
+  status=SetImageExtent(clip_mask,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImage(clip_mask));
   (void) SetImageMask(clip_mask,WritePixelMask,(Image *) NULL,exception);
   (void) QueryColorCompliance("#0000",AllCompliance,
     &clip_mask->background_color,exception);
@@ -1610,10 +1611,10 @@ static Image *DrawCompositeMask(Image *image,const DrawInfo *draw_info,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(draw_info != (const DrawInfo *) NULL);
-  composite_mask=CloneImage(image,image->columns,image->rows,MagickTrue,
-    exception);
-  if (composite_mask == (Image *) NULL)
-    return((Image *) NULL);
+  composite_mask=AcquireImage((const ImageInfo *) NULL,exception);
+  status=SetImageExtent(composite_mask,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImage(composite_mask));
   (void) SetImageMask(composite_mask,CompositePixelMask,(Image *) NULL,
     exception);
   (void) QueryColorCompliance("#0000",AllCompliance,
