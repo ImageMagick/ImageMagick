@@ -273,8 +273,8 @@ struct _Image
     ping;              /* no image data read, just attributes */
 
   MagickBooleanType
-    Xread_mask,
-    Xwrite_mask;
+    read_mask,
+    write_mask;
 
   PixelTrait
     alpha_trait;       /* is transparency channel defined and active */
@@ -357,7 +357,7 @@ struct _Image
     matte_color;        /* current mattecolor attribute */
 
   MagickBooleanType
-    Xcomposite_mask;
+    composite_mask;
 
   PixelTrait
     mask_trait;       /* apply the clip or composite mask */
