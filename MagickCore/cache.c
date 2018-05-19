@@ -427,7 +427,7 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
   */
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (image->write_mask == MagickFalse)
+  if ((image->channels & WriteMaskChannel) == 0)
     return(MagickTrue);
   cache_info=(CacheInfo *) image->cache;
   if (cache_info == (Cache) NULL)
@@ -1655,9 +1655,7 @@ static inline MagickBooleanType ValidatePixelCacheMorphology(
   if ((image->storage_class != cache_info->storage_class) ||
       (image->colorspace != cache_info->colorspace) ||
       (image->alpha_trait != cache_info->alpha_trait) ||
-      (image->composite_mask != cache_info->composite_mask) ||
-      (image->read_mask != cache_info->read_mask) ||
-      (image->write_mask != cache_info->write_mask) ||
+      (image->channels != cache_info->channels) ||
       (image->columns != cache_info->columns) ||
       (image->rows != cache_info->rows) ||
       (image->number_channels != cache_info->number_channels) ||
@@ -2769,7 +2767,9 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
   region.width=columns;
   region.height=rows;
   pixels=SetPixelCacheNexusPixels(cache_info,ReadMode,&region,
-    image->write_mask || image->composite_mask ? MagickTrue : MagickFalse,
+    ((image->channels & ReadMaskChannel) != 0) ||
+    ((image->channels & WriteMaskChannel) != 0) ||
+    ((image->channels & CompositeMaskChannel) != 0) ?  MagickTrue : MagickFalse,
     nexus_info,exception);
   if (pixels == (Quantum *) NULL)
     return((const Quantum *) NULL);
@@ -3421,7 +3421,7 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
   */
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (image->composite_mask == MagickFalse)
+  if ((image->channels & CompositeMaskChannel) == 0)
     return(MagickTrue);
   cache_info=(CacheInfo *) image->cache;
   if (cache_info == (Cache) NULL)
@@ -3698,9 +3698,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   cache_info->storage_class=image->storage_class;
   cache_info->colorspace=image->colorspace;
   cache_info->alpha_trait=image->alpha_trait;
-  cache_info->composite_mask=image->composite_mask;
-  cache_info->read_mask=image->read_mask;
-  cache_info->write_mask=image->write_mask;
+  cache_info->channels=image->channels;
   cache_info->rows=image->rows;
   cache_info->columns=image->columns;
   InitializePixelChannelMap(image);
@@ -4069,9 +4067,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   clone_info->storage_class=cache_info->storage_class;
   clone_info->colorspace=cache_info->colorspace;
   clone_info->alpha_trait=cache_info->alpha_trait;
-  clone_info->composite_mask=cache_info->composite_mask;
-  clone_info->read_mask=cache_info->read_mask;
-  clone_info->write_mask=cache_info->write_mask;
+  clone_info->channels=cache_info->channels;
   clone_info->columns=cache_info->columns;
   clone_info->rows=cache_info->rows;
   clone_info->number_channels=cache_info->number_channels;
@@ -4177,7 +4173,9 @@ MagickPrivate Quantum *QueueAuthenticPixelCacheNexus(Image *image,
   region.width=columns;
   region.height=rows;
   pixels=SetPixelCacheNexusPixels(cache_info,WriteMode,&region,
-    image->write_mask || image->composite_mask ? MagickTrue : MagickFalse,
+    ((image->channels & ReadMaskChannel) != 0) ||
+    ((image->channels & WriteMaskChannel) != 0) ||
+    ((image->channels & CompositeMaskChannel) != 0) ?  MagickTrue : MagickFalse,
     nexus_info,exception);
   return(pixels);
 }
@@ -5342,10 +5340,10 @@ MagickPrivate MagickBooleanType SyncAuthenticPixelCacheNexus(Image *image,
     return(MagickFalse);
   if (image->mask_trait != UpdatePixelTrait)
     {
-      if ((image->write_mask != MagickFalse) &&
+      if (((image->channels & WriteMaskChannel) != 0) &&
           (ClipPixelCacheNexus(image,nexus_info,exception) == MagickFalse))
         return(MagickFalse);
-      if ((image->composite_mask != MagickFalse) &&
+      if (((image->channels & CompositeMaskChannel) != 0) &&
           (MaskPixelCacheNexus(image,nexus_info,exception) == MagickFalse))
         return(MagickFalse);
     }

@@ -225,9 +225,9 @@ static MagickBooleanType WriteCLIPImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  if (image->write_mask == MagickFalse)
-    (void) ClipImage(image,exception);
-  if (image->write_mask == MagickFalse)
+  if ((image->channels & WriteMaskChannel) == 0)
+    status=ClipImage(image,exception);
+  if ((image->channels & WriteMaskChannel) == 0)
     ThrowWriterException(CoderError,"ImageDoesNotHaveAClipMask");
   clip_image=GetImageMask(image,WritePixelMask,exception);
   if (clip_image == (Image *) NULL)

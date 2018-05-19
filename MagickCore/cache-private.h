@@ -137,9 +137,8 @@ typedef struct _CacheInfo
   PixelTrait
     alpha_trait;
 
-  MagickBooleanType
-    read_mask,
-    write_mask;
+  ChannelType
+    channels;
 
   size_t
     columns,

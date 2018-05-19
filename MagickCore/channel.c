@@ -378,17 +378,17 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             }
             case CompositeMaskPixelChannel:
             {
-              destination_image->composite_mask=MagickTrue;
+              destination_image->channels|=CompositeMaskChannel;
               break;
             }
             case ReadMaskPixelChannel:
             {
-              destination_image->read_mask=MagickTrue;
+              destination_image->channels|=ReadMaskChannel;
               break;
             }
             case WriteMaskPixelChannel:
             {
-              destination_image->write_mask=MagickTrue;
+              destination_image->channels|=WriteMaskChannel;
               break;
             }
             case MetaPixelChannel:
@@ -777,7 +777,7 @@ MagickExport Image *SeparateImage(const Image *image,
       register ssize_t
         i;
 
-      SetPixelChannel(separate_image,GrayPixelChannel,0,q);
+      SetPixelChannel(separate_image,GrayPixelChannel,(Quantum) 0,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);

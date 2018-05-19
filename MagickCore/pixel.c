@@ -4368,11 +4368,11 @@ MagickExport void InitializePixelChannelMap(Image *image)
     SetPixelChannelAttributes(image,AlphaPixelChannel,CopyPixelTrait,n++);
   if (image->storage_class == PseudoClass)
     SetPixelChannelAttributes(image,IndexPixelChannel,CopyPixelTrait,n++);
-  if (image->read_mask != MagickFalse)
+  if ((image->channels & ReadMaskChannel) != 0)
     SetPixelChannelAttributes(image,ReadMaskPixelChannel,CopyPixelTrait,n++);
-  if (image->write_mask != MagickFalse)
+  if ((image->channels & WriteMaskChannel) != 0)
     SetPixelChannelAttributes(image,WriteMaskPixelChannel,CopyPixelTrait,n++);
-  if (image->composite_mask != MagickFalse)
+  if ((image->channels & CompositeMaskChannel) != 0)
     SetPixelChannelAttributes(image,CompositeMaskPixelChannel,CopyPixelTrait,
       n++);
   image->number_channels=(size_t) n;
@@ -6319,11 +6319,11 @@ MagickExport ChannelType SetPixelChannelMask(Image *image,
   }
   if (image->storage_class == PseudoClass)
     SetPixelChannelTraits(image,IndexPixelChannel,CopyPixelTrait);
-  if (image->read_mask != MagickFalse)
+  if ((image->channels & ReadMaskChannel) != 0)
     SetPixelChannelTraits(image,ReadMaskPixelChannel,CopyPixelTrait);
-  if (image->write_mask != MagickFalse)
+  if ((image->channels & WriteMaskChannel) != 0)
     SetPixelChannelTraits(image,WriteMaskPixelChannel,CopyPixelTrait);
-  if (image->composite_mask != MagickFalse)
+  if ((image->channels & CompositeMaskChannel) != 0)
     SetPixelChannelTraits(image,CompositeMaskPixelChannel,CopyPixelTrait);
   if (image->debug != MagickFalse)
     LogPixelChannels(image);

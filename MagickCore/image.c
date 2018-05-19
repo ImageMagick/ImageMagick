@@ -826,10 +826,8 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   clone_image->number_meta_channels=image->number_meta_channels;
   clone_image->metacontent_extent=image->metacontent_extent;
   clone_image->colorspace=image->colorspace;
-  clone_image->read_mask=image->read_mask;
-  clone_image->write_mask=image->write_mask;
-  clone_image->composite_mask=image->composite_mask;
   clone_image->alpha_trait=image->alpha_trait;
+  clone_image->channels=image->channels;
   clone_image->mask_trait=image->mask_trait;
   clone_image->columns=image->columns;
   clone_image->rows=image->rows;
@@ -1455,13 +1453,13 @@ MagickExport Image *GetImageMask(const Image *image,const PixelMask type,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickCoreSignature);
-  mask_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
-  if (mask_image == (Image *) NULL)
-    return((Image *) NULL);
+  mask_image=AcquireImage((ImageInfo *) NULL,exception);
+  status=SetImageExtent(mask_image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImage(mask_image));
   status=MagickTrue;
   mask_image->alpha_trait=UndefinedPixelTrait;
   (void) SetImageColorspace(mask_image,GRAYColorspace,exception);
-  mask_image->read_mask=MagickFalse;
   image_view=AcquireVirtualCacheView(image,exception);
   mask_view=AcquireAuthenticCacheView(mask_image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -3180,17 +3178,17 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
     {
       switch (type)
       {
-        case ReadPixelMask: image->read_mask=MagickFalse; break;
-        case WritePixelMask: image->write_mask=MagickFalse; break;
-        default: image->composite_mask=MagickFalse; break;
+        case ReadPixelMask: image->channels&=(~ReadMaskChannel); break;
+        case WritePixelMask: image->channels&=(~WriteMaskChannel); break;
+        default: image->channels&=(~CompositeMaskChannel); break;
       }
       return(SyncImagePixelCache(image,exception));
     }
   switch (type)
   {
-    case ReadPixelMask: image->read_mask=MagickTrue; break;
-    case WritePixelMask: image->write_mask=MagickTrue; break;
-    default: image->composite_mask=MagickTrue; break;
+    case ReadPixelMask: image->channels|=ReadMaskChannel; break;
+    case WritePixelMask: image->channels|=WriteMaskChannel; break;
+    default: image->channels|=CompositeMaskChannel; break;
   }
   if (SyncImagePixelCache(image,exception) == MagickFalse)
     return(MagickFalse);
@@ -3313,17 +3311,17 @@ MagickExport MagickBooleanType SetImageRegionMask(Image *image,
     {
       switch (type)
       {
-        case ReadPixelMask: image->read_mask=MagickFalse; break;
-        case WritePixelMask: image->write_mask=MagickFalse; break;
-        default: image->composite_mask=MagickFalse; break;
+        case ReadPixelMask: image->channels&=(~ReadMaskChannel); break;
+        case WritePixelMask: image->channels&=(~WriteMaskChannel); break;
+        default: image->channels&=(~CompositeMaskChannel); break;
       }
       return(SyncImagePixelCache(image,exception));
     }
   switch (type)
   {
-    case ReadPixelMask: image->read_mask=MagickTrue; break;
-    case WritePixelMask: image->write_mask=MagickTrue; break;
-    default: image->composite_mask=MagickTrue; break;
+    case ReadPixelMask: image->channels|=ReadMaskChannel; break;
+    case WritePixelMask: image->channels|=WriteMaskChannel; break;
+    default: image->channels|=CompositeMaskChannel; break;
   }
   if (SyncImagePixelCache(image,exception) == MagickFalse)
     return(MagickFalse);

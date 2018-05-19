@@ -962,8 +962,8 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
       }
     if (image->units == PixelsPerCentimeterResolution)
       {
-        resolution.x=(size_t) (100.0*2.54*resolution.x+0.5)/100.0;
-        resolution.y=(size_t) (100.0*2.54*resolution.y+0.5)/100.0;
+        resolution.x=(size_t) ((100.0*2.54*resolution.x+0.5)/100.0);
+        resolution.y=(size_t) ((100.0*2.54*resolution.y+0.5)/100.0);
       }
     SetGeometry(image,&geometry);
     (void) FormatLocaleString(page_geometry,MagickPathExtent,"%.20gx%.20g",
@@ -1155,7 +1155,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     /*
       PS clipping path from Photoshop clipping path.
     */
-    if ((image->read_mask != MagickFalse) ||
+    if (((image->channels & WriteMaskChannel) != 0) ||
         (LocaleNCompare("8BIM:",image->magick_filename,5) != 0))
       (void) WriteBlobString(image,"/ClipImage {} def\n");
     else
@@ -1235,7 +1235,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     /*
       Photoshop clipping path active?
     */
-    if ((image->read_mask != MagickFalse) &&
+    if (((image->channels & WriteMaskChannel) != 0) &&
         (LocaleNCompare("8BIM:",image->magick_filename,5) == 0))
         (void) WriteBlobString(image,"true\n");
       else
