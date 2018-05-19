@@ -2767,7 +2767,6 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
   region.width=columns;
   region.height=rows;
   pixels=SetPixelCacheNexusPixels(cache_info,ReadMode,&region,
-    ((image->channels & ReadMaskChannel) != 0) ||
     ((image->channels & WriteMaskChannel) != 0) ||
     ((image->channels & CompositeMaskChannel) != 0) ?  MagickTrue : MagickFalse,
     nexus_info,exception);
@@ -4173,7 +4172,6 @@ MagickPrivate Quantum *QueueAuthenticPixelCacheNexus(Image *image,
   region.width=columns;
   region.height=rows;
   pixels=SetPixelCacheNexusPixels(cache_info,WriteMode,&region,
-    ((image->channels & ReadMaskChannel) != 0) ||
     ((image->channels & WriteMaskChannel) != 0) ||
     ((image->channels & CompositeMaskChannel) != 0) ?  MagickTrue : MagickFalse,
     nexus_info,exception);
