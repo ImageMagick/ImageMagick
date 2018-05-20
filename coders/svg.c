@@ -1139,11 +1139,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
     case 'S':
     case 's':
     {
-      if (LocaleCompare((const char *) name,"symbol") == 0)
-        {
-          (void) FormatLocaleFile(svg_info->file,"push symbol\n");
-          break;
-        }
+      if (LocaleCompare((char *) name,"style") == 0)
+        break;
       if (LocaleCompare((const char *) name,"svg") == 0)
         {
           svg_info->svgDepth++;
@@ -1155,6 +1152,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
           (void) FormatLocaleFile(svg_info->file,"stroke-width 1\n");
           (void) FormatLocaleFile(svg_info->file,"stroke-opacity 1\n");
           (void) FormatLocaleFile(svg_info->file,"fill-rule nonzero\n");
+          break;
+        }
+      if (LocaleCompare((const char *) name,"symbol") == 0)
+        {
+          (void) FormatLocaleFile(svg_info->file,"push symbol\n");
           break;
         }
       break;
@@ -2552,15 +2554,22 @@ static void SVGEndElement(void *context,const xmlChar *name)
             svg_info->stop_color,svg_info->offset);
           break;
         }
-      if (LocaleCompare((const char *) name,"symbol") == 0)
+      if (LocaleCompare((char *) name,"style") == 0)
         {
-          (void) FormatLocaleFile(svg_info->file,"pop symbol\n");
+          /*
+            Find style definitions in svg_info->text.
+          */
           break;
         }
       if (LocaleCompare((const char *) name,"svg") == 0)
         {
           (void) FormatLocaleFile(svg_info->file,"pop graphic-context\n");
           svg_info->svgDepth--;
+          break;
+        }
+      if (LocaleCompare((const char *) name,"symbol") == 0)
+        {
+          (void) FormatLocaleFile(svg_info->file,"pop symbol\n");
           break;
         }
       break;
