@@ -1,4 +1,7 @@
-2018-02-09  7.0.7-34 Dirk Lemstra <dirk@lem.....org>
+2018-05-20  7.0.7-34 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.7-34, GIT revision 14348:ac9ff6ba1:20180520.
+
+2018-05-20  7.0.7-34 Dirk Lemstra <dirk@lem.....org>
   * Added support for reading eXIf chunks to the PNG coder.
 
 2018-05-19  7.0.7-34  <quetzlzacatenango@image...>
