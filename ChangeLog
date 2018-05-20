@@ -1,10 +1,13 @@
+2018-02-09  7.0.7-34 Dirk Lemstra <dirk@lem.....org>
+  * Added support for reading eXIf chunks to the PNG coder.
+
 2018-05-19  7.0.7-34  <quetzlzacatenango@image...>
   * Fixed numerous use of uninitialized values, integer overflow, memory
     exceeded, and timeouts (credit to OSS Fuzz).
   * Improved clip / composite mask handling.
 
 2018-05-16  7.0.7-33 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.7-32, GIT revision 14326:58c2e4972:20180516.
+  * Release ImageMagick version 7.0.7-33, GIT revision 14326:58c2e4972:20180516.
 
 2018-05-03  7.0.7-33  <quetzlzacatenango@image...>
   * Restore SetImageAlpha() behavior.

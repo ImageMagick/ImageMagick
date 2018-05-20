@@ -1880,6 +1880,83 @@ Magick_png_read_raw_profile(png_struct *ping,Image *image,
   return MagickTrue;
 }
 
+#if defined(PNG_READ_eXIf_SUPPORTED)
+static int PNGSetExifProfile(Image *image,png_size_t size,png_byte *data,
+  ExceptionInfo *exception)
+{
+  StringInfo
+    *profile;
+
+  unsigned char
+    *p;
+
+  png_byte
+    *s;
+
+  size_t
+    i;
+
+  profile=BlobToStringInfo((const void *) NULL,size+6);
+
+  if (profile == (StringInfo *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        image->filename);
+      return(-1);
+    }
+  p=GetStringInfoDatum(profile);
+
+  /* Initialize profile with "Exif\0\0" */
+  *p++ ='E';
+  *p++ ='x';
+  *p++ ='i';
+  *p++ ='f';
+  *p++ ='\0';
+  *p++ ='\0';
+
+  s=data;
+  i=0;
+  if (size > 6)
+    {
+      /* Skip first 6 bytes if "Exif\0\0" is
+          already present by accident
+      */
+      if (s[0] == 'E' && s[1] == 'x'  && s[2] == 'i' &&
+          s[3] == 'f' && s[4] == '\0' && s[5] == '\0')
+      {
+        s+=6;
+        i=6;
+        SetStringInfoLength(profile,size);
+        p=GetStringInfoDatum(profile);
+      }
+    }
+
+  /* copy chunk->data to profile */
+  for (; i<size; i++)
+    *p++ = *s++;
+
+  (void) SetImageProfile(image,"exif",profile,exception);
+
+  profile=DestroyStringInfo(profile);
+
+  return(1);
+}
+
+static void read_eXIf_chunk(Image *image,png_struct *ping,png_info *info,
+  ExceptionInfo *exception)
+{
+  png_uint_32
+    size;
+
+  png_bytep
+    data;
+
+  if (png_get_eXIf_1(ping,info,&size,&data))
+    (void) PNGSetExifProfile(image,size,data,exception);
+}
+#endif
+
 #if defined(PNG_UNKNOWN_CHUNKS_SUPPORTED)
 
 static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
@@ -1915,18 +1992,6 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
       PNGErrorInfo
         *error_info;
 
-      StringInfo
-        *profile;
-
-      unsigned char
-        *p;
-
-      png_byte
-        *s;
-
-      size_t
-        i;
-
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         " recognized eXIf chunk");
 
@@ -1934,53 +1999,8 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
 
       error_info=(PNGErrorInfo *) png_get_error_ptr(ping);
 
-      profile=BlobToStringInfo((const void *) NULL,chunk->size+6);
-
-      if (profile == (StringInfo *) NULL)
-        {
-          (void) ThrowMagickException(error_info->exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","`%s'",
-            image->filename);
-          return(-1);
-        }
-      p=GetStringInfoDatum(profile);
-
-      /* Initialize profile with "Exif\0\0" */
-      *p++ ='E';
-      *p++ ='x';
-      *p++ ='i';
-      *p++ ='f';
-      *p++ ='\0';
-      *p++ ='\0';
-
-      s=chunk->data;
-      i=0;
-      if (chunk->size > 6)
-        {
-          /* Skip first 6 bytes if "Exif\0\0" is
-             already present by accident
-          */
-          if (s[0] == 'E' && s[1] == 'x'  && s[2] == 'i' &&
-              s[3] == 'f' && s[4] == '\0' && s[5] == '\0')
-          {
-            s+=6;
-            i=6;
-            SetStringInfoLength(profile,chunk->size);
-            p=GetStringInfoDatum(profile);
-          }
-        }
-
-      /* copy chunk->data to profile */
-      for (; i<chunk->size; i++)
-        *p++ = *s++;
-
-      error_info=(PNGErrorInfo *) png_get_error_ptr(ping);
-      (void) SetImageProfile(image,"exif",profile,
-        error_info->exception);
-
-      profile=DestroyStringInfo(profile);
-
-      return(1);
+      return(PNGSetExifProfile(image,chunk->size,chunk->data,
+        error_info->exception));
     }
 
   /* orNT */
@@ -3328,6 +3348,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_tIME_SUPPORTED)
    read_tIME_chunk(image,ping,ping_info,exception);
 #endif
+#if defined(PNG_READ_eXIf_SUPPORTED)
+  read_eXIf_chunk(image,ping,ping_info,exception);
+#endif
 
 
   /*
@@ -4141,6 +4164,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
 #if defined(PNG_tIME_SUPPORTED)
      read_tIME_chunk(image,ping,end_info,exception);
+#endif
+#if defined(PNG_READ_eXIf_SUPPORTED)
+    read_eXIf_chunk(image,ping,end_info,exception);
 #endif
 
      /* caNv chunk: */
