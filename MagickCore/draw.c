@@ -137,6 +137,21 @@ typedef struct _ElementInfo
     angle;
 } ElementInfo;
 
+typedef struct _MVGInfo
+{
+  PrimitiveInfo
+    **primitive_info;
+
+  size_t
+    *extent;
+
+  ssize_t
+    offset;
+
+  ExceptionInfo
+    *exception;
+} MVGInfo;
+
 typedef struct _PolygonInfo
 {
   EdgeInfo
@@ -182,20 +197,18 @@ static PrimitiveInfo
   *TraceStrokePolygon(const Image *,const DrawInfo *,const PrimitiveInfo *);
 
 static size_t
-  TracePath(PrimitiveInfo *,const char *,ExceptionInfo *);
+  TracePath(MVGInfo *,const char *,ExceptionInfo *);
 
 static void
-  TraceArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo),
-  TraceArcPath(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
+  TraceArc(MVGInfo *,const PointInfo,const PointInfo,const PointInfo),
+  TraceArcPath(MVGInfo *,const PointInfo,const PointInfo,const PointInfo,
     const double,const MagickBooleanType,const MagickBooleanType),
-  TraceBezier(PrimitiveInfo *,const size_t),
-  TraceCircle(PrimitiveInfo *,const PointInfo,const PointInfo),
-  TraceEllipse(PrimitiveInfo *,const PointInfo,const PointInfo,
-    const PointInfo),
+  TraceBezier(MVGInfo *,const size_t),
+  TraceCircle(MVGInfo *,const PointInfo,const PointInfo),
+  TraceEllipse(MVGInfo *,const PointInfo,const PointInfo,const PointInfo),
   TraceLine(PrimitiveInfo *,const PointInfo,const PointInfo),
   TraceRectangle(PrimitiveInfo *,const PointInfo,const PointInfo),
-  TraceRoundRectangle(PrimitiveInfo *,const PointInfo,const PointInfo,
-    PointInfo),
+  TraceRoundRectangle(MVGInfo *,const PointInfo,const PointInfo,PointInfo),
   TraceSquareLinecap(PrimitiveInfo *,const size_t,const double);
 
 /*
@@ -2190,6 +2203,35 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
 %
 */
 
+static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
+  const size_t pad)
+{
+  PrimitiveInfo
+    *primitive_info;
+
+  size_t
+    extent;
+
+  /*
+    Check if there is enough storage for drawing pimitives.
+  */
+  extent=(size_t) mvg_info->offset+pad+4096;
+  if (extent <= *mvg_info->extent)
+    return(MagickFalse);
+  primitive_info=(*mvg_info->primitive_info);
+  primitive_info=ResizeQuantumMemory(primitive_info,extent,
+    sizeof(*primitive_info));
+  if (primitive_info == (PrimitiveInfo *) NULL)
+    {
+      (void) ThrowMagickException(mvg_info->exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'","");
+      return(MagickFalse);
+    }
+  *mvg_info->primitive_info=primitive_info;
+  *mvg_info->extent=extent;
+  return(MagickTrue);
+}
+
 static char *GetNodeByURL(const char *primitive,const char *url)
 {
   char
@@ -2284,68 +2326,6 @@ static inline MagickBooleanType IsPoint(const char *point)
   return((fabs(value) < DrawEpsilon) && (p == point) ? MagickFalse : MagickTrue);
 }
 
-static size_t ReckonEllipseCoordinates(const PointInfo radii,
-  const PointInfo arc)
-{
-  double
-    delta,
-    step,
-    y;
-
-  PointInfo
-    angle;
-
-  /*
-    Ellipses are just short segmented polys.
-  */
-  if ((fabs(radii.x) < DrawEpsilon) || (fabs(radii.y) < DrawEpsilon))
-    return(0);
-  delta=2.0*PerceptibleReciprocal(MagickMax(radii.x,radii.y));
-  step=MagickPI/8.0;
-  if ((delta >= 0.0) && (delta < (MagickPI/8.0)))
-    step=MagickPI/(4.0*(MagickPI*PerceptibleReciprocal(delta)/2.0));
-  angle.x=DegreesToRadians(arc.x);
-  y=arc.y;
-  while (y < arc.x)
-    y+=360.0;
-  angle.y=DegreesToRadians(y);
-  return((size_t) floor((angle.y-angle.x)/step+0.5)+3);
-}
-
-static size_t ReckonRoundRectangleCoordinates(const PointInfo start,
-  const PointInfo end,PointInfo arc)
-{
-  PointInfo
-    degrees,
-    offset;
-
-  size_t
-    coordinates;
-
-  offset.x=fabs(end.x-start.x);
-  offset.y=fabs(end.y-start.y);
-  if ((offset.x < DrawEpsilon) || (offset.y < DrawEpsilon))
-    return(0);
-  coordinates=0;
-  if (arc.x > (0.5*offset.x))
-    arc.x=0.5*offset.x;
-  if (arc.y > (0.5*offset.y))
-    arc.y=0.5*offset.y;
-  degrees.x=270.0;
-  degrees.y=360.0;
-  coordinates+=ReckonEllipseCoordinates(arc,degrees);
-  degrees.x=0.0;
-  degrees.y=90.0;
-  coordinates+=ReckonEllipseCoordinates(arc,degrees);
-  degrees.x=90.0;
-  degrees.y=180.0;
-  coordinates+=ReckonEllipseCoordinates(arc,degrees);
-  degrees.x=180.0;
-  degrees.y=270.0;
-  coordinates+=ReckonEllipseCoordinates(arc,degrees);
-  return(coordinates+1);
-}
-
 static inline void TracePoint(PrimitiveInfo *primitive_info,
   const PointInfo point)
 {
@@ -2386,10 +2366,13 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
     proceed;
 
   MagickSizeType
-    number_points;
+    coordinates;
 
   MagickStatusType
     status;
+
+  MVGInfo
+    mvg_info;
 
   PointInfo
     point;
@@ -2411,8 +2394,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
     bounds;
 
   size_t
-    coordinates,
     extent,
+    number_points,
     number_stops;
 
   ssize_t
@@ -2484,6 +2467,10 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
     }
   (void) memset(primitive_info,0,(size_t) number_points*
     sizeof(*primitive_info));
+  mvg_info.primitive_info=(&primitive_info);
+  mvg_info.extent=(&number_points);
+  mvg_info.offset=0;
+  mvg_info.exception=exception;
   graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   graphic_context[n]->viewbox=image->page;
   if ((image->page.width == 0) || (image->page.height == 0))
@@ -3732,6 +3719,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       Parse the primitive attributes.
     */
     i=0;
+    mvg_info.offset=i;
     j=0;
     primitive_info[0].point.x=0.0;
     primitive_info[0].point.y=0.0;
@@ -3764,17 +3752,10 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       primitive_info[i].method=FloodfillMethod;
       primitive_info[i].closed_subpath=MagickFalse;
       i++;
+      mvg_info.offset=i;
       if (i < (ssize_t) number_points)
         continue;
-      number_points<<=1;
-      if (number_points != (MagickSizeType) ((size_t) number_points))
-        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-          image->filename);
-      primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(primitive_info,
-        (size_t) number_points+4096,sizeof(*primitive_info));
-      if (primitive_info == (PrimitiveInfo *) NULL)
-        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-          image->filename);
+      (void) CheckPrimitiveExtent(&mvg_info,number_points);
     }
     if (status == MagickFalse)
       break;
@@ -3815,8 +3796,17 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       }
       case RoundRectanglePrimitive:
       {
-        coordinates=ReckonRoundRectangleCoordinates(primitive_info[j].point,
-          primitive_info[j+1].point,primitive_info[j+2].point);
+        double
+          alpha,
+          beta,
+          radius;
+
+        alpha=bounds.x2-bounds.x1;
+        beta=bounds.y2-bounds.y1;
+        radius=hypot((double) alpha,(double) beta);
+        coordinates*=5;
+        coordinates+=2*((size_t) ceil((double) MagickPI*radius))+6*
+          BezierQuantum+360;
         break;
       }
       case BezierPrimitive:
@@ -3860,53 +3850,19 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         break;
       }
       case CirclePrimitive:
+      case ArcPrimitive:
+      case EllipsePrimitive:
       {
         double
           alpha,
           beta,
           radius;
 
-        PointInfo
-          offset,
-          degrees;
-
-        alpha=primitive_info[j+1].point.x-primitive_info[j].point.x;
-        beta=primitive_info[j+1].point.y-primitive_info[j].point.y;
-        radius=hypot((double) alpha,(double) beta);
-        offset.x=(double) radius;
-        offset.y=(double) radius;
-        degrees.x=0.0;
-        degrees.y=360.0;
-        coordinates=ReckonEllipseCoordinates(offset,degrees);
-        break;
-      }
-      case ArcPrimitive:
-      {
-        PointInfo
-          center,
-          radii;
-
-        if ((primitive_info[j+2].point.x < -360.0) ||
-            (primitive_info[j+2].point.x > 360.0) ||
-            (primitive_info[j+2].point.y < -360.0) ||
-            (primitive_info[j+2].point.y > 360.0))
-          ThrowPointExpectedException(token,exception);
-        center.x=0.5*(primitive_info[j+1].point.x+primitive_info[j].point.x);
-        center.y=0.5*(primitive_info[j+1].point.y+primitive_info[j].point.y);
-        radii.x=fabs(center.x-primitive_info[j].point.x);
-        radii.y=fabs(center.y-primitive_info[j].point.y);
-        coordinates=ReckonEllipseCoordinates(radii,primitive_info[j+2].point);
-        break;
-      }
-      case EllipsePrimitive:
-      {
-        if ((primitive_info[j+2].point.x < -360.0) ||
-            (primitive_info[j+2].point.x > 360.0) ||
-            (primitive_info[j+2].point.y < -360.0) ||
-            (primitive_info[j+2].point.y > 360.0))
-          ThrowPointExpectedException(token,exception);
-        coordinates=ReckonEllipseCoordinates(primitive_info[j+1].point,
-          primitive_info[j+2].point);
+        alpha=bounds.x2-bounds.x1;
+        beta=bounds.y2-bounds.y1;
+        radius=hypot(alpha,beta);
+        coordinates=(MagickSizeType) (2*(ceil(MagickPI*radius))+
+          6*BezierQuantum+360);
         break;
       }
       default:
@@ -3926,17 +3882,18 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           Resize based on speculative points required by primitive.
         */
         number_points+=coordinates+1;
-        primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(primitive_info,
-          (size_t) number_points+4096,sizeof(*primitive_info));
-        if ((primitive_info == (PrimitiveInfo *) NULL) ||
-            (number_points != (MagickSizeType) ((size_t) number_points)))
+        if (number_points < (size_t) coordinates)
           {
             (void) ThrowMagickException(exception,GetMagickModule(),
               ResourceLimitError,"MemoryAllocationFailed","`%s'",
               image->filename);
             break;
           }
+        mvg_info.offset=i;
+        (void) CheckPrimitiveExtent(&mvg_info,number_points);
       }
+    (void) CheckPrimitiveExtent(&mvg_info,4096);
+    mvg_info.offset=j;
     switch (primitive_type)
     {
       case PointPrimitive:
@@ -3998,7 +3955,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             status=MagickFalse;
             break;
           }
-        TraceRoundRectangle(primitive_info+j,primitive_info[j].point,
+        TraceRoundRectangle(&mvg_info,primitive_info[j].point,
           primitive_info[j+1].point,primitive_info[j+2].point);
         i=(ssize_t) (j+primitive_info[j].coordinates);
         break;
@@ -4010,8 +3967,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             primitive_type=UndefinedPrimitive;
             break;
           }
-        TraceArc(primitive_info+j,primitive_info[j].point,
-          primitive_info[j+1].point,primitive_info[j+2].point);
+        TraceArc(&mvg_info,primitive_info[j].point,primitive_info[j+1].point,
+          primitive_info[j+2].point);
         i=(ssize_t) (j+primitive_info[j].coordinates);
         break;
       }
@@ -4028,8 +3985,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             status=MagickFalse;
             break;
           }
-        TraceEllipse(primitive_info+j,primitive_info[j].point,
-          primitive_info[j+1].point,primitive_info[j+2].point);
+        TraceEllipse(&mvg_info,primitive_info[j].point,primitive_info[j+1].point,
+          primitive_info[j+2].point);
         i=(ssize_t) (j+primitive_info[j].coordinates);
         break;
       }
@@ -4040,8 +3997,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             status=MagickFalse;
             break;
           }
-        TraceCircle(primitive_info+j,primitive_info[j].point,
-          primitive_info[j+1].point);
+        TraceCircle(&mvg_info,primitive_info[j].point,primitive_info[j+1].point);
         i=(ssize_t) (j+primitive_info[j].coordinates);
         break;
       }
@@ -4075,13 +4031,13 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             status=MagickFalse;
             break;
           }
-        TraceBezier(primitive_info+j,primitive_info[j].coordinates);
+        TraceBezier(&mvg_info,primitive_info[j].coordinates);
         i=(ssize_t) (j+primitive_info[j].coordinates);
         break;
       }
       case PathPrimitive:
       {
-        coordinates=TracePath(primitive_info+j,token,exception);
+        coordinates=TracePath(&mvg_info,token,exception);
         if (coordinates == 0)
           {
             status=MagickFalse;
@@ -4135,6 +4091,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         break;
       }
     }
+    mvg_info.offset=i;
     if (primitive_info == (PrimitiveInfo *) NULL)
       break;
     if (image->debug != MagickFalse)
@@ -5715,7 +5672,7 @@ static inline double Permutate(const ssize_t n,const ssize_t k)
 %
 */
 
-static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
+static void TraceArc(MVGInfo *mvg_info,const PointInfo start,
   const PointInfo end,const PointInfo degrees)
 {
   PointInfo
@@ -5726,10 +5683,10 @@ static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
   center.y=0.5*(end.y+start.y);
   radius.x=fabs(center.x-start.x);
   radius.y=fabs(center.y-start.y);
-  TraceEllipse(primitive_info,center,radius,degrees);
+  TraceEllipse(mvg_info,center,radius,degrees);
 }
 
-static void TraceArcPath(PrimitiveInfo *primitive_info,const PointInfo start,
+static void TraceArcPath(MVGInfo *mvg_info,const PointInfo start,
   const PointInfo end,const PointInfo arc,const double angle,
   const MagickBooleanType large_arc,const MagickBooleanType sweep)
 {
@@ -5750,6 +5707,9 @@ static void TraceArcPath(PrimitiveInfo *primitive_info,const PointInfo start,
     cosine,
     sine;
 
+  PrimitiveInfo
+    *primitive_info;
+
   register PrimitiveInfo
     *p;
 
@@ -5759,6 +5719,12 @@ static void TraceArcPath(PrimitiveInfo *primitive_info,const PointInfo start,
   size_t
     arc_segments;
 
+  ssize_t
+    offset;
+
+  offset=mvg_info->offset;
+  primitive_info=(*mvg_info->primitive_info)+mvg_info->offset;
+  primitive_info->coordinates=0;
   if ((fabs(start.x-end.x) < DrawEpsilon) &&
       (fabs(start.y-end.y) < DrawEpsilon))
     {
@@ -5850,9 +5816,13 @@ static void TraceArcPath(PrimitiveInfo *primitive_info,const PointInfo start,
       points[2].y);
     if (i == (ssize_t) (arc_segments-1))
       (p+3)->point=end;
-    TraceBezier(p,4);
+    TraceBezier(mvg_info,4);
+    p=(*mvg_info->primitive_info)+mvg_info->offset;
+    mvg_info->offset+=p->coordinates;
     p+=p->coordinates;
   }
+  mvg_info->offset=offset;
+  primitive_info=(*mvg_info->primitive_info)+mvg_info->offset;
   primitive_info->coordinates=(size_t) (p-primitive_info);
   primitive_info->closed_subpath=MagickFalse;
   for (i=0; i < (ssize_t) primitive_info->coordinates; i++)
@@ -5862,8 +5832,7 @@ static void TraceArcPath(PrimitiveInfo *primitive_info,const PointInfo start,
   }
 }
 
-static void TraceBezier(PrimitiveInfo *primitive_info,
-  const size_t number_coordinates)
+static void TraceBezier(MVGInfo *mvg_info,const size_t number_coordinates)
 {
   double
     alpha,
@@ -5874,6 +5843,9 @@ static void TraceBezier(PrimitiveInfo *primitive_info,
     end,
     point,
     *points;
+
+  PrimitiveInfo
+    *primitive_info;
 
   register PrimitiveInfo
     *p;
@@ -5889,6 +5861,7 @@ static void TraceBezier(PrimitiveInfo *primitive_info,
   /*
     Allocate coefficients.
   */
+  primitive_info=(*mvg_info->primitive_info)+mvg_info->offset;
   quantum=number_coordinates;
   for (i=0; i < (ssize_t) number_coordinates; i++)
   {
@@ -5905,6 +5878,8 @@ static void TraceBezier(PrimitiveInfo *primitive_info,
   quantum=(size_t) MagickMin((double) quantum/number_coordinates,
     (double) BezierQuantum);
   control_points=quantum*number_coordinates;
+  if (CheckPrimitiveExtent(mvg_info,control_points+1) != MagickFalse)
+    primitive_info=(*mvg_info->primitive_info)+mvg_info->offset;
   coefficients=(double *) AcquireQuantumMemory((size_t)
     number_coordinates,sizeof(*coefficients));
   points=(PointInfo *) AcquireQuantumMemory((size_t) control_points,
@@ -5956,7 +5931,7 @@ static void TraceBezier(PrimitiveInfo *primitive_info,
   coefficients=(double *) RelinquishMagickMemory(coefficients);
 }
 
-static void TraceCircle(PrimitiveInfo *primitive_info,const PointInfo start,
+static void TraceCircle(MVGInfo *mvg_info,const PointInfo start,
   const PointInfo end)
 {
   double
@@ -5975,10 +5950,10 @@ static void TraceCircle(PrimitiveInfo *primitive_info,const PointInfo start,
   offset.y=(double) radius;
   degrees.x=0.0;
   degrees.y=360.0;
-  TraceEllipse(primitive_info,start,offset,degrees);
+  TraceEllipse(mvg_info,start,offset,degrees);
 }
 
-static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo center,
+static void TraceEllipse(MVGInfo *mvg_info,const PointInfo center,
   const PointInfo radii,const PointInfo arc)
 {
   double
@@ -5991,15 +5966,22 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo center,
     angle,
     point;
 
+  PrimitiveInfo
+    *primitive_info;
+
   register PrimitiveInfo
     *p;
 
   register ssize_t
     i;
 
+  size_t
+    extent;
+
   /*
     Ellipses are just short segmented polys.
   */
+  primitive_info=(*mvg_info->primitive_info)+mvg_info->offset;
   primitive_info->coordinates=0;
   if ((fabs(radii.x) < DrawEpsilon) || (fabs(radii.y) < DrawEpsilon))
     return;
@@ -6012,6 +5994,9 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo center,
   while (y < arc.x)
     y+=360.0;
   angle.y=DegreesToRadians(y);
+  extent=(size_t) ceil((angle.y-angle.x)/step)+1;
+  if (CheckPrimitiveExtent(mvg_info,extent) != MagickFalse)
+    primitive_info=(*mvg_info->primitive_info)+mvg_info->offset;
   for (p=primitive_info; angle.x < angle.y; angle.x+=step)
   {
     point.x=cos(fmod(angle.x,DegreesToRadians(360.0)))*radii.x+center.x;
@@ -6055,7 +6040,7 @@ static void TraceLine(PrimitiveInfo *primitive_info,const PointInfo start,
   primitive_info->closed_subpath=MagickFalse;
 }
 
-static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
+static size_t TracePath(MVGInfo *mvg_info,const char *path,
   ExceptionInfo *exception)
 {
   char
@@ -6082,6 +6067,9 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
     point = {0.0, 0.0},
     start = {0.0, 0.0};
 
+  PrimitiveInfo
+    *primitive_info;
+
   PrimitiveType
     primitive_type;
 
@@ -6095,6 +6083,11 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
     number_coordinates,
     z_count;
 
+  ssize_t
+    subpath_offset;
+
+  subpath_offset=mvg_info->offset;
+  primitive_info=(*mvg_info->primitive_info)+mvg_info->offset;
   status=MagickTrue;
   attribute=0;
   number_coordinates=0;
@@ -6111,6 +6104,9 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
       break;
     last_attribute=attribute;
     attribute=(int) (*p++);
+    if (((size_t) (mvg_info->offset+4096) > *mvg_info->extent) &&
+        (CheckPrimitiveExtent(mvg_info,4096) != MagickFalse))
+      q=(*mvg_info->primitive_info)+mvg_info->offset;
     switch (attribute)
     {
       case 'a':
@@ -6171,7 +6167,9 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
             ThrowPointExpectedException(token,exception);
           end.x=(double) (attribute == (int) 'A' ? x : point.x+x);
           end.y=(double) (attribute == (int) 'A' ? y : point.y+y);
-          TraceArcPath(q,point,end,arc,angle,large_arc,sweep);
+          TraceArcPath(mvg_info,point,end,arc,angle,large_arc,sweep);
+          q=(*mvg_info->primitive_info)+mvg_info->offset;
+          mvg_info->offset+=q->coordinates;
           q+=q->coordinates;
           point=end;
           while (isspace((int) ((unsigned char) *p)) != 0)
@@ -6210,7 +6208,9 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
           }
           for (i=0; i < 4; i++)
             (q+i)->point=points[i];
-          TraceBezier(q,4);
+          TraceBezier(mvg_info,4);
+          q=(*mvg_info->primitive_info)+mvg_info->offset;
+          mvg_info->offset+=q->coordinates;
           q+=q->coordinates;
           point=end;
           while (isspace((int) ((unsigned char) *p)) != 0)
@@ -6233,6 +6233,7 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
             ThrowPointExpectedException(token,exception);
           point.x=(double) (attribute == (int) 'H' ? x: point.x+x);
           TracePoint(q,point);
+          mvg_info->offset+=q->coordinates;
           q+=q->coordinates;
           while (isspace((int) ((unsigned char) *p)) != 0)
             p++;
@@ -6264,6 +6265,7 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
           point.x=(double) (attribute == (int) 'L' ? x : point.x+x);
           point.y=(double) (attribute == (int) 'L' ? y : point.y+y);
           TracePoint(q,point);
+          mvg_info->offset+=q->coordinates;
           q+=q->coordinates;
           while (isspace((int) ((unsigned char) *p)) != 0)
             p++;
@@ -6305,6 +6307,7 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
             start=point;
           i++;
           TracePoint(q,point);
+          mvg_info->offset+=q->coordinates;
           q+=q->coordinates;
           while (isspace((int) ((unsigned char) *p)) != 0)
             p++;
@@ -6344,7 +6347,9 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
           }
           for (i=0; i < 3; i++)
             (q+i)->point=points[i];
-          TraceBezier(q,3);
+          TraceBezier(mvg_info,3);
+          q=(*mvg_info->primitive_info)+mvg_info->offset;
+          mvg_info->offset+=q->coordinates;
           q+=q->coordinates;
           point=end;
           while (isspace((int) ((unsigned char) *p)) != 0)
@@ -6392,7 +6397,9 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
             }
           for (i=0; i < 4; i++)
             (q+i)->point=points[i];
-          TraceBezier(q,4);
+          TraceBezier(mvg_info,4);
+          q=(*mvg_info->primitive_info)+mvg_info->offset;
+          mvg_info->offset+=q->coordinates;
           q+=q->coordinates;
           point=end;
           last_attribute=attribute;
@@ -6441,7 +6448,9 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
             }
           for (i=0; i < 3; i++)
             (q+i)->point=points[i];
-          TraceBezier(q,3);
+          TraceBezier(mvg_info,3);
+          q=(*mvg_info->primitive_info)+mvg_info->offset;
+          mvg_info->offset+=q->coordinates;
           q+=q->coordinates;
           point=end;
           last_attribute=attribute;
@@ -6468,6 +6477,7 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
             ThrowPointExpectedException(token,exception);
           point.y=(double) (attribute == (int) 'V' ? y : point.y+y);
           TracePoint(q,point);
+          mvg_info->offset+=q->coordinates;
           q+=q->coordinates;
           while (isspace((int) ((unsigned char) *p)) != 0)
             p++;
@@ -6484,11 +6494,13 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
         */
         point=start;
         TracePoint(q,point);
+        mvg_info->offset+=q->coordinates;
         q+=q->coordinates;
         primitive_info->coordinates=(size_t) (q-primitive_info);
         primitive_info->closed_subpath=MagickTrue;
         number_coordinates+=primitive_info->coordinates;
         primitive_info=q;
+        subpath_offset=mvg_info->offset;
         z_count++;
         break;
       }
@@ -6501,6 +6513,7 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path,
   }
   if (status == MagickFalse)
     return(0);
+  primitive_info=(*mvg_info->primitive_info)+subpath_offset;
   primitive_info->coordinates=(size_t) (q-primitive_info);
   number_coordinates+=primitive_info->coordinates;
   for (i=0; i < (ssize_t) number_coordinates; i++)
@@ -6556,13 +6569,16 @@ static void TraceRectangle(PrimitiveInfo *primitive_info,const PointInfo start,
   }
 }
 
-static void TraceRoundRectangle(PrimitiveInfo *primitive_info,
-  const PointInfo start,const PointInfo end,PointInfo arc)
+static void TraceRoundRectangle(MVGInfo *mvg_info,const PointInfo start,
+  const PointInfo end,PointInfo arc)
 {
   PointInfo
     degrees,
-    offset,
-    point;
+    point,
+    segment;
+
+  PrimitiveInfo
+    *primitive_info;
 
   register PrimitiveInfo
     *p;
@@ -6570,44 +6586,54 @@ static void TraceRoundRectangle(PrimitiveInfo *primitive_info,
   register ssize_t
     i;
 
-  offset.x=fabs(end.x-start.x);
-  offset.y=fabs(end.y-start.y);
-  if ((offset.x < DrawEpsilon) || (offset.y < DrawEpsilon))
+  ssize_t
+    offset;
+
+  offset=mvg_info->offset;
+  segment.x=fabs(end.x-start.x);
+  segment.y=fabs(end.y-start.y);
+  if ((segment.x < DrawEpsilon) || (segment.y < DrawEpsilon))
     {
-      primitive_info->coordinates=0;
+      (*mvg_info->primitive_info+mvg_info->offset)->coordinates=0;
       return;
     }
-  p=primitive_info;
-  if (arc.x > (0.5*offset.x))
-    arc.x=0.5*offset.x;
-  if (arc.y > (0.5*offset.y))
-    arc.y=0.5*offset.y;
-  point.x=start.x+offset.x-arc.x;
+  if (arc.x > (0.5*segment.x))
+    arc.x=0.5*segment.x;
+  if (arc.y > (0.5*segment.y))
+    arc.y=0.5*segment.y;
+  point.x=start.x+segment.x-arc.x;
   point.y=start.y+arc.y;
   degrees.x=270.0;
   degrees.y=360.0;
-  TraceEllipse(p,point,arc,degrees);
-  p+=p->coordinates;
-  point.x=start.x+offset.x-arc.x;
-  point.y=start.y+offset.y-arc.y;
+  TraceEllipse(mvg_info,point,arc,degrees);
+  p=(*mvg_info->primitive_info)+mvg_info->offset;
+  mvg_info->offset+=p->coordinates;
+  point.x=start.x+segment.x-arc.x;
+  point.y=start.y+segment.y-arc.y;
   degrees.x=0.0;
   degrees.y=90.0;
-  TraceEllipse(p,point,arc,degrees);
-  p+=p->coordinates;
+  TraceEllipse(mvg_info,point,arc,degrees);
+  p=(*mvg_info->primitive_info)+mvg_info->offset;
+  mvg_info->offset+=p->coordinates;
   point.x=start.x+arc.x;
-  point.y=start.y+offset.y-arc.y;
+  point.y=start.y+segment.y-arc.y;
   degrees.x=90.0;
   degrees.y=180.0;
-  TraceEllipse(p,point,arc,degrees);
-  p+=p->coordinates;
+  TraceEllipse(mvg_info,point,arc,degrees);
+  p=(*mvg_info->primitive_info)+mvg_info->offset;
+  mvg_info->offset+=p->coordinates;
   point.x=start.x+arc.x;
   point.y=start.y+arc.y;
   degrees.x=180.0;
   degrees.y=270.0;
-  TraceEllipse(p,point,arc,degrees);
+  TraceEllipse(mvg_info,point,arc,degrees);
+  p=(*mvg_info->primitive_info)+mvg_info->offset;
+  mvg_info->offset+=p->coordinates;
+  p=(*mvg_info->primitive_info)+mvg_info->offset;
+  TracePoint(p,(*mvg_info->primitive_info+offset)->point);
   p+=p->coordinates;
-  TracePoint(p,primitive_info->point);
-  p+=p->coordinates;
+  mvg_info->offset=offset;
+  primitive_info=(*mvg_info->primitive_info)+offset;
   primitive_info->coordinates=(size_t) (p-primitive_info);
   primitive_info->closed_subpath=MagickTrue;
   for (i=0; i < (ssize_t) primitive_info->coordinates; i++)
