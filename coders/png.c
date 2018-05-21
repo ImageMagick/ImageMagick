@@ -1880,7 +1880,6 @@ Magick_png_read_raw_profile(png_struct *ping,Image *image,
   return MagickTrue;
 }
 
-#if defined(PNG_READ_eXIf_SUPPORTED)
 static int PNGSetExifProfile(Image *image,png_size_t size,png_byte *data,
   ExceptionInfo *exception)
 {
@@ -1943,6 +1942,7 @@ static int PNGSetExifProfile(Image *image,png_size_t size,png_byte *data,
   return(1);
 }
 
+#if defined(PNG_READ_eXIf_SUPPORTED)
 static void read_eXIf_chunk(Image *image,png_struct *ping,png_info *info,
   ExceptionInfo *exception)
 {
