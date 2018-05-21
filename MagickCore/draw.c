@@ -6299,11 +6299,13 @@ static size_t TracePath(MVGInfo *mvg_info,const char *path,
         /*
           Move to.
         */
-        if (q != primitive_info)
+        if (mvg_info->offset != subpath_offset)
           {
+            primitive_info=(*mvg_info->primitive_info)+offset;
             primitive_info->coordinates=(size_t) (q-primitive_info);
             number_coordinates+=primitive_info->coordinates;
             primitive_info=q;
+            subpath_offset=mvg_info->offset;
           }
         i=0;
         do
