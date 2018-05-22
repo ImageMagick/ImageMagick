@@ -110,6 +110,8 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
   *read_info->magick='\0';
+  if (read_info->size != (char *) NULL)
+    read_info->size=DestroyString(read_info->size);
   tile_image=ReadImage(read_info,exception);
   read_info=DestroyImageInfo(read_info);
   if (tile_image == (Image *) NULL)
