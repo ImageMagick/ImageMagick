@@ -1898,8 +1898,9 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
       (void) WriteBlobMSBShort(image,(unsigned short) x_resolution);
       (void) WriteBlobMSBShort(image,0x0000);
       (void) WriteBlobMSBShort(image,(unsigned short) y_resolution);
-      (void) WriteBlobMSBLong(image,0x00000000U);
-      (void) WriteBlobMSBLong(image,0x87AC0001U);
+      (void) WriteBlobMSBShort(image,0x0000);
+      (void) WriteBlobMSBLong(image,length);
+      (void) WriteBlobMSBShort(image,0x0001);
       (void) WriteBlobMSBLong(image,0x0B466F74U);
       (void) WriteBlobMSBLong(image,0x6F202D20U);
       (void) WriteBlobMSBLong(image,0x4A504547U);
