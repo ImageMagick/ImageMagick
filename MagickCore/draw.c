@@ -6569,12 +6569,6 @@ static void TraceRectangle(PrimitiveInfo *primitive_info,const PointInfo start,
   register ssize_t
     i;
 
-  if ((fabs(start.x-end.x) < DrawEpsilon) ||
-      (fabs(start.y-end.y) < DrawEpsilon))
-    {
-      primitive_info->coordinates=0;
-      return;
-    }
   p=primitive_info;
   TracePoint(p,start);
   p+=p->coordinates;
