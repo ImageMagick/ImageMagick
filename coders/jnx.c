@@ -309,6 +309,7 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       offset=SeekBlob(image,restore_offset,SEEK_SET);
       if (tile_image == (Image *) NULL)
         continue;
+      tile_image->depth=8;
       (void) CopyMagickString(tile_image->magick,image->magick,
         MagickPathExtent);
       (void) FormatImageProperty(tile_image,"jnx:northeast","%.20g,%.20g",
