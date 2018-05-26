@@ -32,6 +32,7 @@ static inline void GetFillColor(const DrawInfo *draw_info,const ssize_t x,
   if (draw_info->fill_pattern == (Image *) NULL)
     {
       *fill=draw_info->fill;
+      fill->alpha*=QuantumScale*draw_info->fill_alpha;
       return;
     }
   {
@@ -51,6 +52,7 @@ static inline void GetStrokeColor(const DrawInfo *draw_info,const ssize_t x,
   if (draw_info->stroke_pattern == (Image *) NULL)
     {
       *stroke=draw_info->stroke;
+      stroke->alpha*=QuantumScale*draw_info->stroke_alpha;
       return;
     }
   {

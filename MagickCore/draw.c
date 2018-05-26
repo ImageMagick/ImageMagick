@@ -2787,12 +2787,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               (void) DrawPatternPath(image,draw_info,token,
                 &graphic_context[n]->fill_pattern,exception);
             else
-              {
-                status&=QueryColorCompliance(token,AllCompliance,
-                  &graphic_context[n]->fill,exception);
-                if (graphic_context[n]->fill_alpha != OpaqueAlpha)
-                  graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
-              }
+              status&=QueryColorCompliance(token,AllCompliance,
+                &graphic_context[n]->fill,exception);
             break;
           }
         if (LocaleCompare("fill-opacity",keyword) == 0)
@@ -2808,8 +2804,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               StringToDouble(token,&next_token),0.0),1.0);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
-            graphic_context[n]->fill_alpha=(MagickRealType) (QuantumRange-
-              QuantumRange*(1.0-opacity));
+            if (fabs(opacity) >= DrawEpsilon)
+              graphic_context[n]->fill_alpha*=opacity;
             break;
           }
         if (LocaleCompare("fill-rule",keyword) == 0)
@@ -3026,21 +3022,22 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           }
         if (LocaleCompare("opacity",keyword) == 0)
           {
+            double
+              opacity;
+
             GetNextToken(q,&q,extent,token);
             if (graphic_context[n]->clip_path != MagickFalse)
               break;
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->alpha=(Quantum) (QuantumRange*(1.0-
-              (QuantumScale*graphic_context[n]->alpha*(1.0-factor*
-              StringToDouble(token,&next_token)))));
-            graphic_context[n]->fill_alpha=QuantumRange*(1.0-(QuantumScale*
-              graphic_context[n]->fill_alpha*(1.0-factor*StringToDouble(token,
-              &next_token))));
-            graphic_context[n]->stroke_alpha=QuantumRange*(1.0-(QuantumScale*
-              graphic_context[n]->stroke_alpha*(1.0-factor*StringToDouble(token,
-              &next_token))));
+            opacity=MagickMin(MagickMax(factor*
+              StringToDouble(token,&next_token),0.0),1.0);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
+            if (fabs(opacity) >= DrawEpsilon)
+              {
+                graphic_context[n]->fill_alpha*=opacity;
+                graphic_context[n]->stroke_alpha*=opacity;
+              }
             break;
           }
         status=MagickFalse;
@@ -3437,13 +3434,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               (void) DrawPatternPath(image,draw_info,token,
                 &graphic_context[n]->stroke_pattern,exception);
             else
-              {
-                status&=QueryColorCompliance(token,AllCompliance,
-                  &graphic_context[n]->stroke,exception);
-                if (graphic_context[n]->stroke_alpha != OpaqueAlpha)
-                  graphic_context[n]->stroke.alpha=
-                    graphic_context[n]->stroke_alpha;
-              }
+              status&=QueryColorCompliance(token,AllCompliance,
+                &graphic_context[n]->stroke,exception);
             break;
           }
         if (LocaleCompare("stroke-antialias",keyword) == 0)
@@ -3566,8 +3558,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               StringToDouble(token,&next_token),0.0),1.0);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
-            graphic_context[n]->stroke_alpha=(MagickRealType) (QuantumRange-
-              QuantumRange*(1.0-opacity));
+            if (fabs(opacity) >= DrawEpsilon)
+              graphic_context[n]->stroke_alpha*=opacity;
             break;
           }
         if (LocaleCompare("stroke-width",keyword) == 0)
