@@ -723,7 +723,7 @@ MagickPrivate cl_kernel AcquireOpenCLKernel(MagickCLDevice device,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AutoSelectOpenCLDevices() determines the best device based on the 
+%  AutoSelectOpenCLDevices() determines the best device based on the
 %  information from the micro-benchmark.
 %
 %  The format of the AutoSelectOpenCLDevices method is:
@@ -1072,7 +1072,7 @@ static double RunOpenCLBenchmark(MagickBooleanType is_cpu)
     resizedImage=ResizeImage(unsharpedImage,640,480,LanczosFilter,
       exception);
 
-    /* 
+    /*
       We need this to get a proper performance benchmark, the operations
       are executed asynchronous.
     */
@@ -2319,7 +2319,7 @@ static void LoadOpenCLDevices(MagickCLEnv clEnv)
     if (platforms[i] == (cl_platform_id) NULL)
       continue;
 
-    status=clEnv->library->clGetDeviceIDs(platforms[i],CL_DEVICE_TYPE_CPU | 
+    status=clEnv->library->clGetDeviceIDs(platforms[i],CL_DEVICE_TYPE_CPU |
       CL_DEVICE_TYPE_GPU,(cl_uint) clEnv->number_devices,devices,&number_devices);
     if (status != CL_SUCCESS)
       continue;
@@ -2891,12 +2891,12 @@ static void CL_API_CALL DestroyMagickCLCacheInfoAndPixels(
   {
     cl_int
       event_status;
-  
+
     cl_uint
       status;
 
     status=openCL_library->clGetEventInfo(info->events[i],
-      CL_EVENT_COMMAND_EXECUTION_STATUS,sizeof(event_status),&event_status, 
+      CL_EVENT_COMMAND_EXECUTION_STATUS,sizeof(event_status),&event_status,
       NULL);
     if ((status == CL_SUCCESS) && (event_status != CL_COMPLETE))
       {
@@ -3000,7 +3000,8 @@ static MagickCLEnv RelinquishMagickCLEnv(MagickCLEnv clEnv)
         i;
 
       for (i=0; i < clEnv->number_contexts; i++)
-         (void) openCL_library->clReleaseContext(clEnv->contexts[i]);
+        if (clEnv->contexts[i])
+          (void) openCL_library->clReleaseContext(clEnv->contexts[i]);
       clEnv->contexts=(cl_context *) RelinquishMagickMemory(clEnv->contexts);
     }
   return((MagickCLEnv) RelinquishMagickMemory(clEnv));
