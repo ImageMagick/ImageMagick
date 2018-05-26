@@ -1,403 +1,49 @@
-Download & Unpack
-  
-  Building ImageMagick source for Windows requires a modern version of Microsoft
-  Visual Studio IDE. Users have reported success with the Borland C++ compiler
-  as well. If you don't have a compiler you can still install a self-installing
-  binary release.
-  
-  Download ImageMagick-windows.zip from ftp.imagemagick.org or its mirrors
-  and verify the distribution against its message digest.
-  
-  You can unpack the distribution with WinZip or type the following from any
-  MS-DOS Command Prompt window:
-  
-    $magick> unzip ImageMagick-windows.zip
-  
-  Now that you have the ImageMagick Windows source distribution unpacked,
-  let's configure it.
-  
-Configure
-  
-  These instructions are specific to building ImageMagick with the Visual
-  Studio under Windows XP, Win2K, or Windows 98. ImageMagick does not include
-  any workspace (DSW) or project files (DSP) except for those included with
-  third party libraries. Instead, there is a configure program that must be
-  built and run which creates the Visual Studio workspaces for ImageMagick. The
-  Visual Studio system provides four different types of runtime environments
-  that must match across all application, library, and dynamic-library (DLL)
-  code that is built. The configure program creates a set of build files that
-  are consistent for a specific runtime selection listed here:
-  
-     1. Dynamic Multi-threaded DLL runtimes (VisualDynamicMT).
-     2. Static Single-threaded runtimes (VisualStaticST).
-     3. Static Multi-threaded runtimes (VisualStaticMT).
-     4. Static Multi-threaded DLL runtimes (VisualStaticMTDLL).
-  
-  In addition to these runtimes, the VisualMagick build environment allows
-  you to select whether to include the X11 libraries in the build or not. X11
-  DLLs and headers are provided with the VisualMagick build environment. Most
-  Windows users are probably not interested in using X11, so you might prefer
-  to build without X11 support. Since the animate, display, and import program
-  depends on the X11 delegate libraries, these programs will no work if you
-  choose not to include X11 support.
-  
-  This leads to five different possible build options. The default binary
-  distribution is built using the Dynamic Multi-threaded DLL (VisualDynamicMT)
-  option with the X11 libraries included. This results in an X11 compatible
-  build using all DLL's for everything and multi-threaded support (the only
-  option for DLL's).
-  
-  To create a workspace for your requirements, simply go to the
-  VisualMagick\configure folder and open the configure.dsw workspace (for
-  Visual Studio 6) or configure.sln (for Visual Studio 7 or 8). Set the build
-  configuration to Release.
-  
-  Build and execute the configure program and follow the on-screen
-  instructions. You should not change any of the defaults unless you have a
-  specific reason to do so.
-  
-  The configure program has a button entitled:
-  
-    Edit "magick_config.h"
-  
-  Click on this button to bring up magick-config.h in Windows Notepad. Review
-  and optionally change any preprocessor defines in ImageMagick's
-  magick_config.h file to suit your needs. This file is copied to
-  magick\magick_config.h. You may safely open magick\magick_config.h, modify
-  it, and recompile without re-running the configure program. In fact, using
-  Notepad to edit the copied file may be preferable since it preserves the
-  original magick_config.h file.
-  
-  Key user defines in magick_config.h include:
-  
-    MAGICKCORE_QUANTUM_DEPTH (default 16)
-      Specify the depth of the pixel component depth (8, 16, or 32). A value of
-      8 uses half the memory than 16 and may run 30% faster, but provides 256
-      times less color resolution than a value of 16. We recommend a quantum
-      depth of 16 because 16-bit images are becoming more prevalent on the
-      Internet.
-  
-    MAGICKCORE_INSTALLED_SUPPORT (default undefined)
-      Define to build a ImageMagick which uses registry settings or embedded
-      paths to locate installed components (coder modules and configuration
-      files). The default is to look for all files in the same directory as
-      the executable. You will wand to define this value if you intend on
-      installing ImageMagick on your system.
-  
-    ProvideDllMain (default defined)
-      Define to include a DllMain() function ensures that the ImageMagick
-      DLL is properly initialized without participation from dependent
-      applications. This avoids the requirement to invoke IntializeMagick()
-      from dependent applications is only useful for DLL builds.
-  
-  ImageMagick is now configured and ready to build.
-  
-  The default build is WIN32. For 64-bit, open a newly created static solution
-  and enter Configuration Manager. Add a x64 configuration, copying the
-  configuration from WIn32. Be sure that it adds the configuration to all the
-  projects. Now compile.
-  
-Build
-  
-  After creating your build environment, proceed to open the DSW (or SLN)
-  workspace in the VisualMagick folder. In the DSW file choose the All project
-  to make it the active project. Set the build configuration to the desired one
-  (Debug, or Release) and clean and build:
-  
-     1. Right click on the All project and select Set As Active Project
-     2. Select "Build=>Clean Solution"
-     3. Select "Build=>Build Solution"
-  
-  The clean step is necessary in order to make sure that all of the target
-  support libraries are updated with any patches needed to get them to compile
-  properly under Visual Studio.
-  
-  After a successful build, all of the required files that are needed to run
-  any of the command line tools are located in the VisualMagick\bin folder. This
-  includes EXE, DLL libraries, and ImageMagick configuration files. You should
-  be able to test the build directly from this directory without having to
-  move anything to any of the global SYSTEM or SYSTEM32 areas in the operating
-  system installation.
-  
-  The Visual Studio distribution of ImageMagick comes with the Magick++
-  C++ wrapper by default. This add-on layer has a large number of demo
-  and test files that can be found in ImageMagick\Magick++\demo, and
-  ImageMagick\Magick++\tests. There are also a variety of tests that use the
-  straight C API as well in ImageMagick\tests.
-  
-  All of these programs are not configured to be built in the default workspace
-  created by the configure program. You can cause all of these demos and test
-  programs to be built by checking the box in configure that says:
-  
-    Include all demo and test programs
-  
-  In addition, there is another related checkbox (checked by default) that
-  causes all generated project files to be created standalone so that they
-  can be copied to other areas of you system.
-  
-    This the checkbox:
-  
-  Generate all utility projects with full paths rather then relative paths.
-  
-  Visual Studio uses a concept of dependencies that tell it what other
-  components need to be build when a particular project is being build. This
-  mechanism is also used to ensure that components link properly. In my normal
-  development environment, I want to be able to make changes and debug the
-  system as a whole, so I like and NEED to use dependencies. However, most end
-  users don't want to work this way.
-  
-  Instead they really just want to build the package and then get down to
-  business working on their application. The solution is to make all the utility
-  projects (UTIL_xxxx_yy_exe.dsp) use full absolute paths to all the things they
-  need. This way the projects stand on their own and can actually be copied
-  and used as templates to get a particular custom application compiling with
-  little effort.
-  
-  With this feature enabled, you should be able to nab a copy of
-  
-    VisualMagick\utilities\UTIL_convert_xxx_exe.dsp (for C) or
-    VisualMagick\Magick++\demo\UTIL_demo_xxx_exe.dsp (for C++)
-  
-  and pop it into Notepad, modify it (carefully) to your needs and be on your
-  way to happy compiling and linking.
-  
-  You can feel free to pick any of the standard utilities, tests, or demo
-  programs as the basis for a new program by copying the project and the source
-  and hacking away.
-  
-  The choice of what to use as a starting point is very easy.
-  
-  For straight C API command line applications use something from:
-  
-    ImageMagick\tests or
-    ImageMagick\utilities (source code) or
-    ImageMagick\VisualMagick\tests or
-    ImageMagick\Visualmagick\utilities (project - DSP)
-  
-  For C++ and Magick++ command line applications use something from:
-  
-    ImageMagick\Magick++\tests or ImageMagick\Magick++\demo (source code) or
-    ImageMagick\VisualMagick\Magick++\tests or
-    ImageMagick\VisualMagick\Magick++\demo (project - DSP)
-  
-  For C++ and Magick++ and MFC windows applications use:
-  
-    ImageMagick\contrib\win32\MFC\NtMagick (source code) or
-   ImageMagick\VisualMagick\contrib\win32\MFC\NtMagick (project - DSP)
-  
-  The ImageMagick distribution is very modular. The default configuration is
-  there to get you rolling, but you need to make some serious choices when
-  you wish to change things around.
-  
-  The default options are all targeted at having all the components in one place
-  (e.g. the bin directory of the VisualMagick build tree). These components
-  may be copied to another folder (such as to another computer).
-  
-  The folder containing the executables and DLLs should contain the following
-  files:
-  
-     1. magic.xml
-     2. delegates.xml
-     3. modules.xml
-     4. colors.xml
-  
-  among others.
-  
-  The bin folder should contains all EXE's and DLL's as well as the very
-  important modules.xml file.
-  
-  With this default setup, you can use any of the command line tools and run
-  scripts as normal. You can actually get by quite nicely this way by doing
-  something like pushd e:\xxx\yyy\bin in any scripts you write to execute out
-  of this directory.
-  
-  By default the core of ImageMagick on Win32 always looks in the place were
-  the exe program is run from in order to find all of the files as well as
-  the DLL's it needs.
-  
-  ENVIRONMENT VARIABLES
-  
-  You can use the System control panel to allow you to add and delete what
-  is in any of the environment variables. You can even have user specific
-  environment variables if you wish.
-  
-  PATH
-  
-  This environmental variable sets the default list of places were Windows
-  looks for EXE's and DLL's. Windows CMD shell seems to look in the current
-  directory first no matter what, which may make it unnecessary to update the
-  PATH. If you wish to run any of utilities from another location then you
-  must add the path to your bin directory in. For instance, to do this for
-  the default build environment like I do, you might add:
-  
-    C:\ImageMagick\VisualMagick\bin
-    MAGICK_HOME
-  
-  If all you do is modify the PATH variable, the first problem you will run into
-  is that ImageMagick may not be able to find any of its modules. Modules are
-  all the IM_MOD*.DLL files you see in the distribution. There is one of these
-  for each and every file format that ImageMagick supports. This environment
-  variable tells the system were to look for these DLL's. The compiled in
-  default is execution path - which says - look in the same place that the
-  application is running in. If you are running from somewhere other then bin
-  - this will no longer work and you must use this variable. If you elect to
-  leave the modules in the same place as the EXE's (a good idea) then you can
-  simply set this to the same place as you did the PATH variable. In my case:
-  
-    C:\ImageMagick\coders
-  
-  This also the place were ImageMagick expects to find the colors.xml,
-  delegates.xml, magic.xml, modules.xml, and type.xml files.
-  
-  One cool thing about the modules build of ImageMagick is that you can now
-  leave out file formats and lighten you load. If all you ever need is GIF and
-  JPEG, then simply drop all the other DLL's into the local trash can and get
-  on with your life.
-  
-  Always keep the XC format, since ImageMagick uses it internally.
-  
-  You can elect to changes these things the good old hard-coded way. This
-  define is applicable in magick-config.h:
-  
-    #define MagickConfigurePath "C:\\ImageMagick\\"
-  
-  To view any image in a Microsoft window, type
-  
-    $magick> convert image.ext win:
-  
-  Make sure Ghostscript is installed, otherwise, you will be unable to convert
-  or view a Postscript document, and Postscript standard fonts will not be
-  available.
-  
-  You may use any standard web browser (e.g. Internet Explorer) to browse the
-  ImageMagick documentation.
-  
-  The Win2K executables will work under Windows 98.
-  
-  ImageMagick is now configured and built. You can optionally install it on
-  your system as discussed below.
-  
-  If you are looking to install the ImageMagick COM+ object, see Installing
-  the ImageMagickObject COM+ Component.
+This document describes the requirements and instructions to build ImageMagick
+for Windows on your own machine.
 
-Install
-  
-  You can run ImageMagick command line utilities directly from the
-  VisualMagick\bin folder, however, in most cases you may want the convenience
-  of an installer script. ImageMagick provides Inno Setup scripts for this
-  purpose. Note, you must define MAGICKCORE_INSTALLED_SUPPORT at configure
-  time to utilize the installer scripts.
-  
-  To get started building a self-installing ImageMagick executable, go to
-  VisualMagick\installer folder and click on a script that matches your build
-  environment. Press F9 to build and install ImageMagick. The default location
-  is C:Program Files\ImageMagick-7.?.?\Q?. The exact folder name depends
-  on the ImageMagick version and quantum depth. Once installed, ImageMagick
-  command line utilities and libraries are available to the MS Command Prompt,
-  web scripts, or to meet your development needs.
-  
-Create a Self-Installing Binary Distribution
-  
-  Prerequisites
-  
-     1. Download and install Inno Setup 5.
-     2. Download and install ActiveState ActivePerl @
-        http://www.activestate.com/activeperl/downloads/.
-  
-  Run the Configure Wizard
-  
-     1. Double-click on VisualMagick/configure/configure.sln to build the
-        configure wizard.
-     2. Select Rebuild All and launch the configure wizard.
-     3. Uncheck Use X11 Stubs and check Build demo and test programs.
-     4. Click on Edit magick_config.h and define MAGICKCORE_INSTALLED_SUPPORT.
-     5. Complete the configure wizard screens to create the ImageMagick Visual
-        C++ workspace.
-  
-  Build ImageMagick
-  
-     1. Double-click on VisualMagick/VisualDynamicMT.sln to launch the
-        ImageMagick Visual workspace.
-     2. Set the active configuration to Win32 Release.
-     3. Select Rebuild All to build the ImageMagick binary distribution.
-  
-  Build ImageMagickObject
-  
-     1. Launch the MS-DOS Command Prompt application and move to the
-        contrib\win32\ATL7\ImageMagickObject folder.
-     2. Build ImageMagickObject with these commands:
-  
-          $magick> BuildImageMagickObject clean
-          $magick> BuildImageMagickObject release
-  
-  Build PerlMagick
-  
-     1. Launch the MS-DOS Command Prompt application and move to the PerlMagick
-        folder.
-     2. Build PerlMagick with these commands:
-  
-          $magick> perl Makefile.nt
-          $magick> nmake release
-  
-  Create the Self-installing ImageMagick Binary Distribution
-  
-     1. Double-click on VisualMagick/installer/im-dll-16.iss to launch the
-        Inno Setup 5 wizard.
-     2. Select File->Compile.
-  
-  Install the Binary Distribution
-  
-     1. Double-click on VisualMagick/bin/ImageMagick-7.0.0-0-Q16-windows-dll.exe
-        to launch the ImageMagick binary distribution.
-     2. Complete the installer screens to install ImageMagick on your system.
-  
-  Test the Binary Distribution
-  
-     1. Launch the MS-DOS Command Prompt application and move to the PerlMagick
-        folder and type
-  
-          $magick> nmake test
-  
-     2. Move to the VisualMagick/tests folder and type
-  
-          $magick> validate
-  
-     3. Move to the VisualMagick/Magick++/tests folder and type
-  
-          $magick> run_tests.bat
-  
-     4. Move to the VisualMagick/Magick++/demo folder and type
-  
-          $magick> run_demos.bat
-  
-  If all the tests pass without complaint, the ImageMagick self-install binary
-  distribution is ready for use.
-  
-Dealing with Unexpected Problems
-  
-  Chances are the download, configure, build, and install of ImageMagick went
-  flawlessly as it is intended, however, certain systems and environments may
-  cause one or more steps to fail. We discuss a few problems we've run across
-  and how to take corrective action to ensure you have a working release
-  of ImageMagick.
-  
-  If the compiler generates an error or if it quits unexpectedly, go to the
-  Visual Studio web site and look for Visual Studio service packs. Chances
-  are, after you download and install all the Visual Studio service packs,
-  ImageMagick will compile and build as expected.
-  
-Building Your Custom Project
-  
-  The Windows binary distribution includes a number of demo projects that
-  you can use as a template for your own custom project. For example,
-  start with the Button project, generally located in the c:/Program
-  Files/ImageMagick-7.0.0-0/Magick++_demos folder. If not, be sure to select
-  Configuration Properties->C/C++->Preprocessor and set these definitions:
-  
-    NDEBUG
-    WIN32
-    _CONSOLE
-    _VISUALC_
-    NeedFunctionPrototypes
-    _DLL
-    _MAGICKMOD_
+Requirements
+
+  o Visual Studio 2013 (or newer)
+  o Git for Windows
+  o AMD APP SDK (optional
+  for OpenCL support)
+
+Install Visual Studio dependencies
+
+To build ImageMagick with Visual Studio the following components should
+be installed:
+
+  o Desktop development with C++ (workload)
+  o Visual C++ ATL for x86 and x64
+  o Visual C++ MFC for x86 and x64
+  o Windows XP support for C++ (optional if the output needs to run on Windows
+    XP)
+
+Naming of these components might differ between version of Visual Studio. The
+example above use the Visual Studio 2017 names.
+
+Clone the dependencies
+
+The ImageMagick library is build with a number of third party libraries. Run
+CloneRepositories.cmd to clone these libraries and the ImageMagick library.
+
+Build configure.exe
+
+One of the folders that was created in the previous step is called VisualMagick
+and this folder contains a folder called configure. This folder contains a
+solution configure.sln. Open this solution with Visual Studio and start a
+Release build of the project. This will create a file called configure.exe in
+the folder. Running this program will start a Wizard that allows configuration
+of ImageMagick and its individual components.
+
+Build ImageMagick
+
+Depending on which options where chosen when running configure.exe one of
+the following solutions will be created in the VisualMagick folder:
+
+  o VisualDynamicMT.sln (Dynamic Multi-threaded DLL runtimes)
+  o VisualStaticMTD.sln (Static Multi-threaded DLL runtimes)
+  o VisualStaticMT.sln (Static Multi-threaded runtimes)
+
+Open the solution to start building ImageMagick. The binaries will be created
+in the VisualMagick\bin folder.
