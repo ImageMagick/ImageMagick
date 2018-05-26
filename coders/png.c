@@ -10191,27 +10191,20 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
              "  Selecting PNG colortype:");
 
-          ping_color_type=(png_byte) ((matte != MagickFalse)?
-            PNG_COLOR_TYPE_RGB_ALPHA:PNG_COLOR_TYPE_RGB);
-
           if (image_info->type == TrueColorType)
             {
               ping_color_type=(png_byte) PNG_COLOR_TYPE_RGB;
               image_matte=MagickFalse;
             }
-
-          if (image_info->type == TrueColorAlphaType)
+          else if (image_info->type == TrueColorAlphaType)
             {
               ping_color_type=(png_byte) PNG_COLOR_TYPE_RGB_ALPHA;
               image_matte=MagickTrue;
             }
-
-          if (image_info->type == PaletteType ||
-              image_info->type == PaletteAlphaType)
+          else if (image_info->type == PaletteType ||
+                   image_info->type == PaletteAlphaType)
             ping_color_type=(png_byte) PNG_COLOR_TYPE_PALETTE;
-
-          if (mng_info->write_png_colortype == 0 &&
-             image_info->type == UndefinedType)
+          else
             {
               if (ping_have_color == MagickFalse)
                 {
