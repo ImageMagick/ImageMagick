@@ -5769,6 +5769,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
 
             if (length && (length < 769))
               {
+                /* Read global PLTE.  */
+
                 if (mng_info->global_plte == (png_colorp) NULL)
                   mng_info->global_plte=(png_colorp) AcquireQuantumMemory(256,
                     sizeof(*mng_info->global_plte));
@@ -5777,7 +5779,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                   {
                     mng_info->global_plte_length=0;
                     chunk=(unsigned char *) RelinquishMagickMemory(chunk);
-                    mng_info=MngInfoFreeStruct(mng_info);
                     ThrowReaderException(ResourceLimitError,
                       "MemoryAllocationFailed");
                   }
