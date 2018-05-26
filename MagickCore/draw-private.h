@@ -32,7 +32,8 @@ static inline void GetFillColor(const DrawInfo *draw_info,const ssize_t x,
   if (draw_info->fill_pattern == (Image *) NULL)
     {
       *fill=draw_info->fill;
-      fill->alpha*=QuantumScale*draw_info->fill_alpha;
+      if (fabs(draw_info->fill_alpha-TransparentAlpha) >= MagickEpsilon)
+        fill->alpha*=QuantumScale*draw_info->fill_alpha;
       return;
     }
   {
@@ -42,7 +43,8 @@ static inline void GetFillColor(const DrawInfo *draw_info,const ssize_t x,
     pattern=draw_info->fill_pattern;
     (void) GetOneVirtualPixelInfo(pattern,TileVirtualPixelMethod,x+
       pattern->tile_offset.x,y+pattern->tile_offset.y,fill,exception);
-    fill->alpha*=QuantumScale*draw_info->fill_alpha;
+    if (fabs(draw_info->fill_alpha-TransparentAlpha) >= MagickEpsilon)
+      fill->alpha*=QuantumScale*draw_info->fill_alpha;
   }
 }
 
@@ -52,7 +54,8 @@ static inline void GetStrokeColor(const DrawInfo *draw_info,const ssize_t x,
   if (draw_info->stroke_pattern == (Image *) NULL)
     {
       *stroke=draw_info->stroke;
-      stroke->alpha*=QuantumScale*draw_info->stroke_alpha;
+      if (fabs(draw_info->stroke_alpha-TransparentAlpha) >= MagickEpsilon)
+        stroke->alpha*=QuantumScale*draw_info->stroke_alpha;
       return;
     }
   {
@@ -62,7 +65,8 @@ static inline void GetStrokeColor(const DrawInfo *draw_info,const ssize_t x,
     pattern=draw_info->stroke_pattern;
     (void) GetOneVirtualPixelInfo(pattern,TileVirtualPixelMethod,x+
       pattern->tile_offset.x,y+pattern->tile_offset.y,stroke,exception);
-    stroke->alpha*=QuantumScale*draw_info->stroke_alpha;
+    if (fabs(draw_info->stroke_alpha-TransparentAlpha) >= MagickEpsilon)
+      stroke->alpha*=QuantumScale*draw_info->stroke_alpha;
   }
 }
 
