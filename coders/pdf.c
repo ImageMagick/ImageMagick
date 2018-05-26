@@ -1418,7 +1418,7 @@ RestoreMSCWarning
   (void) WriteBlobString(image,"/Type /Catalog");
   option=GetImageOption(image_info,"pdf:page-direction");
   if ((option != (const char *) NULL) &&
-      (LocaleCompare(option,"right-to-left") != MagickFalse))
+      (LocaleCompare(option,"right-to-left") == 0))
     (void) WriteBlobString(image,"/ViewerPreferences<</PageDirection/R2L>>\n");
   (void) WriteBlobString(image,"\n");
   (void) WriteBlobString(image,">>\n");
