@@ -97,7 +97,9 @@ Miscellaneous Options:
 
 By default, the image format of `file' is determined by its magic number.  To specify a particular image format, precede the filename with an image format name and a colon (i.e. ps:image) or specify the image type as the filename suffix (i.e. image.ps).  Specify 'file' as '-' for standard input or output.
 
-The compare program returns 2 on error otherwise 0 if the images are similar or 1 if they are dissimilar as defined by the metric and fuzz.  The normalized cross correlation error metric is an exception. For this metric, 1 is interpreted as two identical images.
+Two images are considered similar if their difference according to the specified metric and fuzz value is 0, with the exception of the normalized cross correlation metric (NCC), where two images are considered similar when their normalized cross correlation is 1. The default metric is NCC.
+
+The compare program returns 2 on error, 0 if the images are similar, or a value between 0 and 1 if they are not similar.
 .SH SEE ALSO
 ImageMagick(1)
 
