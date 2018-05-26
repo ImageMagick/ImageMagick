@@ -3000,7 +3000,7 @@ static MagickCLEnv RelinquishMagickCLEnv(MagickCLEnv clEnv)
         i;
 
       for (i=0; i < clEnv->number_contexts; i++)
-        if (clEnv->contexts[i])
+        if (clEnv->contexts[i] != (cl_context) NULL)
           (void) openCL_library->clReleaseContext(clEnv->contexts[i]);
       clEnv->contexts=(cl_context *) RelinquishMagickMemory(clEnv->contexts);
     }
