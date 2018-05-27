@@ -2787,8 +2787,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               (void) DrawPatternPath(image,draw_info,token,
                 &graphic_context[n]->fill_pattern,exception);
             else
-              status&=QueryColorCompliance(token,AllCompliance,
-                &graphic_context[n]->fill,exception);
+              {
+                status&=QueryColorCompliance(token,AllCompliance,
+                  &graphic_context[n]->fill,exception);
+                graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
+              }
             break;
           }
         if (LocaleCompare("fill-opacity",keyword) == 0)
@@ -2804,8 +2807,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               StringToDouble(token,&next_token),0.0),1.0);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
-            if (fabs(opacity) >= DrawEpsilon)
-              graphic_context[n]->fill_alpha*=opacity;
+            graphic_context[n]->fill_alpha*=opacity;
             break;
           }
         if (LocaleCompare("fill-rule",keyword) == 0)
@@ -3434,8 +3436,12 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               (void) DrawPatternPath(image,draw_info,token,
                 &graphic_context[n]->stroke_pattern,exception);
             else
-              status&=QueryColorCompliance(token,AllCompliance,
-                &graphic_context[n]->stroke,exception);
+              {
+                status&=QueryColorCompliance(token,AllCompliance,
+                  &graphic_context[n]->stroke,exception);
+                graphic_context[n]->stroke.alpha=
+                  graphic_context[n]->stroke_alpha;
+              }
             break;
           }
         if (LocaleCompare("stroke-antialias",keyword) == 0)
@@ -3558,8 +3564,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               StringToDouble(token,&next_token),0.0),1.0);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
-            if (fabs(opacity) >= DrawEpsilon)
-              graphic_context[n]->stroke_alpha*=opacity;
+            graphic_context[n]->stroke_alpha*=opacity;
             break;
           }
         if (LocaleCompare("stroke-width",keyword) == 0)
@@ -6602,12 +6607,14 @@ static void TraceRectangle(PrimitiveInfo *primitive_info,const PointInfo start,
   TracePoint(p,start);
   p+=p->coordinates;
   point.x=start.x;
-  point.y=end.y;
+  point.y=end.y-1.0;
   TracePoint(p,point);
   p+=p->coordinates;
-  TracePoint(p,end);
+  point.x=end.x-1.0;
+  point.y=end.y-1.0;
+  TracePoint(p,point);
   p+=p->coordinates;
-  point.x=end.x;
+  point.x=end.x-1.0;
   point.y=start.y;
   TracePoint(p,point);
   p+=p->coordinates;
