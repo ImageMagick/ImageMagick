@@ -2787,8 +2787,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               (void) DrawPatternPath(image,draw_info,token,
                 &graphic_context[n]->fill_pattern,exception);
             else
-              status&=QueryColorCompliance(token,AllCompliance,
-                &graphic_context[n]->fill,exception);
+              {
+                status&=QueryColorCompliance(token,AllCompliance,
+                  &graphic_context[n]->fill,exception);
+                graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
+              }
             break;
           }
         if (LocaleCompare("fill-opacity",keyword) == 0)
@@ -2805,6 +2808,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             graphic_context[n]->fill_alpha*=opacity;
+            graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
             break;
           }
         if (LocaleCompare("fill-rule",keyword) == 0)
@@ -3035,7 +3039,10 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             if (fabs(opacity) >= DrawEpsilon)
               {
                 graphic_context[n]->fill_alpha*=opacity;
+                graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
                 graphic_context[n]->stroke_alpha*=opacity;
+                graphic_context[n]->stroke.alpha=
+                  graphic_context[n]->stroke_alpha;
               }
             break;
           }
@@ -3236,9 +3243,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               }
             if (LocaleCompare("graphic-context",token) == 0)
               {
-                graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
-                graphic_context[n]->stroke.alpha=
-                  graphic_context[n]->stroke_alpha;
                 n++;
                 graphic_context=(DrawInfo **) ResizeQuantumMemory(
                   graphic_context,(size_t) (n+1),sizeof(*graphic_context));
@@ -3436,8 +3440,12 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               (void) DrawPatternPath(image,draw_info,token,
                 &graphic_context[n]->stroke_pattern,exception);
             else
-              status&=QueryColorCompliance(token,AllCompliance,
-                &graphic_context[n]->stroke,exception);
+              {
+                status&=QueryColorCompliance(token,AllCompliance,
+                  &graphic_context[n]->stroke,exception);
+                graphic_context[n]->stroke.alpha=
+                  graphic_context[n]->stroke_alpha;
+               }
             break;
           }
         if (LocaleCompare("stroke-antialias",keyword) == 0)
@@ -3561,6 +3569,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             graphic_context[n]->stroke_alpha*=opacity;
+            graphic_context[n]->stroke.alpha=graphic_context[n]->stroke_alpha;
             break;
           }
         if (LocaleCompare("stroke-width",keyword) == 0)
@@ -3717,8 +3726,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
     }
     if (status == MagickFalse)
       break;
-    graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
-    graphic_context[n]->stroke.alpha=graphic_context[n]->stroke_alpha;
     if ((fabs(affine.sx-1.0) >= DrawEpsilon) ||
         (fabs(affine.rx) >= DrawEpsilon) || (fabs(affine.ry) >= DrawEpsilon) ||
         (fabs(affine.sy-1.0) >= DrawEpsilon) ||
