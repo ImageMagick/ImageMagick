@@ -2606,7 +2606,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 /*
                   Inject class elements in stream.
                 */
-                offset=p-primitive;
+                offset=(ssize_t) (p-primitive);
                 elements=AcquireString(primitive);
                 elements[offset]='\0';
                 (void) ConcatenateString(&elements,node);
@@ -3036,14 +3036,10 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               StringToDouble(token,&next_token),0.0),1.0);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
-            if (fabs(opacity) >= DrawEpsilon)
-              {
-                graphic_context[n]->fill_alpha*=opacity;
-                graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
-                graphic_context[n]->stroke_alpha*=opacity;
-                graphic_context[n]->stroke.alpha=
-                  graphic_context[n]->stroke_alpha;
-              }
+            graphic_context[n]->fill_alpha*=opacity;
+            graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
+            graphic_context[n]->stroke_alpha*=opacity;
+            graphic_context[n]->stroke.alpha=graphic_context[n]->stroke_alpha;
             break;
           }
         status=MagickFalse;
