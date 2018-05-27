@@ -3426,7 +3426,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     bits_per_sample,
     compress_tag,
     endian,
-    photometric;
+    photometric,
+    predictor;
 
   unsigned char
     *pixels;
@@ -3768,6 +3769,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       if ((image_info->interlace == PlaneInterlace) ||
           (image_info->interlace == PartitionInterlace))
         (void) TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_SEPARATE);
+    predictor=0;
     switch (compress_tag)
     {
       case COMPRESSION_JPEG:
@@ -3830,7 +3832,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         if (((photometric == PHOTOMETRIC_RGB) ||
              (photometric == PHOTOMETRIC_MINISBLACK)) &&
             ((bits_per_sample == 8) || (bits_per_sample == 16)))
-          (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,PREDICTOR_HORIZONTAL);
+          predictor=PREDICTOR_HORIZONTAL;
         (void) TIFFSetField(tiff,TIFFTAG_ZIPQUALITY,(long) (
           image_info->quality == UndefinedCompressionQuality ? 7 :
           MagickMin((ssize_t) image_info->quality/10,9)));
@@ -3852,7 +3854,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         if (((photometric == PHOTOMETRIC_RGB) ||
              (photometric == PHOTOMETRIC_MINISBLACK)) &&
             ((bits_per_sample == 8) || (bits_per_sample == 16)))
-          (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,PREDICTOR_HORIZONTAL);
+          predictor=PREDICTOR_HORIZONTAL;
         (void) TIFFSetField(tiff,TIFFTAG_LZMAPRESET,(long) (
           image_info->quality == UndefinedCompressionQuality ? 7 :
           MagickMin((ssize_t) image_info->quality/10,9)));
@@ -3866,12 +3868,17 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         if (((photometric == PHOTOMETRIC_RGB) ||
              (photometric == PHOTOMETRIC_MINISBLACK)) &&
             ((bits_per_sample == 8) || (bits_per_sample == 16)))
-          (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,PREDICTOR_HORIZONTAL);
+          predictor=PREDICTOR_HORIZONTAL;
         break;
       }
       default:
         break;
     }
+    option=GetImageOption(image_info,"tiff:predictor");
+    if (option != (const char * ) NULL)
+      predictor=(size_t) strtol(option,(char **) NULL,10);
+    if (predictor != 0)
+      (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,predictor);
     if ((image->resolution.x != 0.0) && (image->resolution.y != 0.0))
       {
         unsigned short
