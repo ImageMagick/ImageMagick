@@ -3899,8 +3899,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         alpha=bounds.x2-bounds.x1;
         beta=bounds.y2-bounds.y1;
         radius=hypot(alpha,beta);
-        coordinates=(MagickSizeType) (2*(ceil(MagickPI*radius))+
-          6*BezierQuantum+360);
+        coordinates=(MagickSizeType) (2*(ceil(MagickPI*radius))+6*
+          BezierQuantum+360);
         break;
       }
       default:
@@ -4023,8 +4023,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             status=MagickFalse;
             break;
           }
-        TraceEllipse(&mvg_info,primitive_info[j].point,primitive_info[j+1].point,
-          primitive_info[j+2].point);
+        TraceEllipse(&mvg_info,primitive_info[j].point,
+          primitive_info[j+1].point,primitive_info[j+2].point);
         i=(ssize_t) (j+primitive_info[j].coordinates);
         break;
       }
@@ -4035,7 +4035,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             status=MagickFalse;
             break;
           }
-        TraceCircle(&mvg_info,primitive_info[j].point,primitive_info[j+1].point);
+        TraceCircle(&mvg_info,primitive_info[j].point,
+          primitive_info[j+1].point);
         i=(ssize_t) (j+primitive_info[j].coordinates);
         break;
       }
@@ -6591,7 +6592,7 @@ static void TraceRectangle(PrimitiveInfo *primitive_info,const PointInfo start,
   register ssize_t
     i;
 
-  if ((fabs(start.x-end.x) < DrawEpsilon) || 
+  if ((fabs(start.x-end.x) < DrawEpsilon) ||
       (fabs(start.y-end.y) < DrawEpsilon))
     {
       primitive_info->coordinates=0;
