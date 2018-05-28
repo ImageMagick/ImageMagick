@@ -2626,7 +2626,8 @@ static void SVGEndElement(void *context,const xmlChar *name)
 
               text=EscapeString(svg_info->text,'\'');
               (void) FormatLocaleFile(svg_info->file,"text %g,%g \"%s\"\n",
-                svg_info->bounds.x-svg_info->center.x,svg_info->bounds.y-svg_info->center.y,text);
+                svg_info->bounds.x-svg_info->center.x,svg_info->bounds.y-
+                svg_info->center.y,text);
               text=DestroyString(text);
               draw_info=CloneDrawInfo(svg_info->image_info,(DrawInfo *) NULL);
               draw_info->pointsize=svg_info->pointsize;
