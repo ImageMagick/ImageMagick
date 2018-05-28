@@ -2479,7 +2479,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
         }
       if (LocaleCompare((const char *) name,"path") == 0)
         {
-          (void) FormatLocaleFile(svg_info->file,"class \"polygon\"\n");
+          (void) FormatLocaleFile(svg_info->file,"class \"path\"\n");
           (void) FormatLocaleFile(svg_info->file,"path \"%s\"\n",
             svg_info->vertices);
           (void) FormatLocaleFile(svg_info->file,"pop graphic-context\n");
