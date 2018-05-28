@@ -2035,10 +2035,39 @@ MagickExport Image *LiquidRescaleImage(const Image *image,
 #endif
 
 
+inline void CopyPixel(const Quantum *src, size_t src_off, Quantum *dst, size_t dst_off, size_t channels)
+{
+  register ssize_t
+    i;
+
+  for (i = 0; i < channels; i++)
+    dst[channels*dst_off+i] = src[src_off*channels+i];
+}
+
+inline int IntensitiesEqual(MagickRealType intensity1, MagickRealType intensity2)
+{
+  return (fabs(intensity1 - intensity2)) < MagickEpsilon;
+}
+
+void Eagle2X(const Image *src_image, const Quantum *neighbourhood, Quantum *result, size_t channels)
+{
+  register ssize_t
+    i;
+
+  MagickRealType
+    intensity[9];
+
+  for (i=0; i < 9; i++)
+    intensity[i]=GetPixelIntensity(src_image,neighbourhood+i*channels);
+  
+  for (i=0; i < 4; i++)
+    CopyPixel(neighbourhood,4,result,i,channels);
+}
+
 void Scale2x(const Image *src_image, const Quantum *neighbourhood, Quantum *result, size_t channels)
 {
   register ssize_t
-    i, j;
+    i;
 
   MagickRealType
     intensity[9];
@@ -2046,42 +2075,33 @@ void Scale2x(const Image *src_image, const Quantum *neighbourhood, Quantum *resu
   for (i=0; i < 9; i++)
     intensity[i]=GetPixelIntensity(src_image,neighbourhood+i*channels);
 
-  if ((fabs(intensity[1]-intensity[7]) < MagickEpsilon) ||
-      (fabs(intensity[3]-intensity[5]) < MagickEpsilon))
+  if (IntensitiesEqual(intensity[1],intensity[7]) ||
+      IntensitiesEqual(intensity[3],intensity[5]))
     {
-      for (j=0; j < 4; j++)
-        for (i=0; i < (ssize_t) channels; i++)
-          result[j*channels+i]=neighbourhood[4*channels+i];
+      for (i=0; i < 4; i++)
+        CopyPixel(neighbourhood,4,result,i,channels);
     }
   else
     {
-      if (fabs(intensity[1]-intensity[3]) < MagickEpsilon)
-        for (i=0; i < (ssize_t) channels; i++)
-          result[i]=neighbourhood[3*channels+i];
+      if (IntensitiesEqual(intensity[1],intensity[3]))
+        CopyPixel(neighbourhood,3,result,0,channels);
       else
-        for (i=0; i < (ssize_t) channels; i++)
-          result[i]=neighbourhood[4*channels+i];
+        CopyPixel(neighbourhood,4,result,0,channels);
 
-      if (fabs(intensity[1]-intensity[5]) < MagickEpsilon)
-        for (i=0; i < (ssize_t) channels; i++)
-          result[channels+i]=neighbourhood[5*channels+i];
+      if (IntensitiesEqual(intensity[1],intensity[5]))
+        CopyPixel(neighbourhood,5,result,1,channels);
       else
-        for (i=0; i < (ssize_t) channels; i++)
-          result[channels+i]=neighbourhood[4*channels+i];
+        CopyPixel(neighbourhood,4,result,1,channels);
 
-      if (fabs(intensity[3]-intensity[7]) < MagickEpsilon)
-        for (i=0; i < (ssize_t) channels; i++)
-          result[2*channels+i]=neighbourhood[3*channels+i];
+      if (IntensitiesEqual(intensity[3],intensity[7]))
+        CopyPixel(neighbourhood,3,result,2,channels);
       else
-        for (i=0; i < (ssize_t) channels; i++)
-          result[2*channels+i]=neighbourhood[4*channels+i];
+        CopyPixel(neighbourhood,4,result,2,channels);
 
-      if (fabs(intensity[5]-intensity[7]) < MagickEpsilon)
-        for (i=0; i < (ssize_t) channels; i++)
-          result[3*channels+i]=neighbourhood[5*channels+i];
+      if (IntensitiesEqual(intensity[5],intensity[7]))
+        CopyPixel(neighbourhood,5,result,3,channels);
       else
-        for (i=0; i < (ssize_t) channels; i++)
-          result[3*channels+i]=neighbourhood[4*channels+i];
+        CopyPixel(neighbourhood,4,result,3,channels);
     }
 }
 
@@ -2196,6 +2216,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
       channels = GetPixelChannels(image);
 
       Scale2x(image,p,r,channels);
+      //Eagle2X(image,p,r,channels);
 
       for (i=0; i < (ssize_t) channels * 2; i++)
         q[i]=r[i];
