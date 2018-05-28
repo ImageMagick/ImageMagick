@@ -2035,13 +2035,54 @@ MagickExport Image *LiquidRescaleImage(const Image *image,
 #endif
 
 
-void Scale2x(const Quantum *neighbourhood, Quantum *result, size_t channels)
+void Scale2x(const Image *src_image, const Quantum *neighbourhood, Quantum *result, size_t channels)
 {
   register ssize_t
-    i;
+    i, j;
 
-  for (i=0; i < (ssize_t) channels * 4; i++)
-    result[i] = neighbourhood[4*channels+i];
+  MagickRealType
+    intensity[9];
+
+  for (i=0; i < 9; i++)
+    intensity[i]=GetPixelIntensity(src_image,neighbourhood+i*channels);
+
+  if ((fabs(intensity[1]-intensity[7]) < MagickEpsilon) ||
+      (fabs(intensity[3]-intensity[5]) < MagickEpsilon))
+    {
+      for (j=0; j < 4; j++)
+        for (i=0; i < (ssize_t) channels; i++)
+          result[j*channels+i]=neighbourhood[4*channels+i];
+    }
+  else
+    {
+      if (fabs(intensity[1]-intensity[3]) < MagickEpsilon)
+        for (i=0; i < (ssize_t) channels; i++)
+          result[i]=neighbourhood[3*channels+i];
+      else
+        for (i=0; i < (ssize_t) channels; i++)
+          result[i]=neighbourhood[4*channels+i];
+
+      if (fabs(intensity[1]-intensity[5]) < MagickEpsilon)
+        for (i=0; i < (ssize_t) channels; i++)
+          result[channels+i]=neighbourhood[5*channels+i];
+      else
+        for (i=0; i < (ssize_t) channels; i++)
+          result[channels+i]=neighbourhood[4*channels+i];
+
+      if (fabs(intensity[3]-intensity[7]) < MagickEpsilon)
+        for (i=0; i < (ssize_t) channels; i++)
+          result[2*channels+i]=neighbourhood[3*channels+i];
+      else
+        for (i=0; i < (ssize_t) channels; i++)
+          result[2*channels+i]=neighbourhood[4*channels+i];
+
+      if (fabs(intensity[5]-intensity[7]) < MagickEpsilon)
+        for (i=0; i < (ssize_t) channels; i++)
+          result[3*channels+i]=neighbourhood[5*channels+i];
+      else
+        for (i=0; i < (ssize_t) channels; i++)
+          result[3*channels+i]=neighbourhood[4*channels+i];
+    }
 }
 
 /*
@@ -2154,13 +2195,13 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
       
       channels = GetPixelChannels(image);
 
-      Scale2x(p,r,channels);
+      Scale2x(image,p,r,channels);
 
       for (i=0; i < (ssize_t) channels * 2; i++)
         q[i]=r[i];
 
       for (i=0; i < (ssize_t) channels * 2; i++)
-        q[channels * (magnify_image->columns-2) + i]=r[2*channels+i];
+        q[channels * (magnify_image->columns) + i]=r[2*channels+i];
 
       q+=magnification*GetPixelChannels(magnify_image);
     }
