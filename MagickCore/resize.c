@@ -2062,6 +2062,22 @@ void Eagle2X(const Image *src_image, const Quantum *neighbourhood, Quantum *resu
   
   for (i=0; i < 4; i++)
     CopyPixel(neighbourhood,4,result,i,channels);
+
+  if (IntensitiesEqual(intensity[0],intensity[1]) &&
+      IntensitiesEqual(intensity[1],intensity[3]))
+    CopyPixel(neighbourhood,0,result,0,channels);
+
+  if (IntensitiesEqual(intensity[1],intensity[2]) &&
+      IntensitiesEqual(intensity[2],intensity[5]))
+    CopyPixel(neighbourhood,2,result,1,channels);
+
+  if (IntensitiesEqual(intensity[3],intensity[6]) &&
+      IntensitiesEqual(intensity[6],intensity[7]))
+    CopyPixel(neighbourhood,6,result,2,channels);
+
+  if (IntensitiesEqual(intensity[5],intensity[8]) &&
+      IntensitiesEqual(intensity[8],intensity[7]))
+    CopyPixel(neighbourhood,8,result,3,channels);
 }
 
 void Scale2x(const Image *src_image, const Quantum *neighbourhood, Quantum *result, size_t channels)
@@ -2215,8 +2231,8 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
       
       channels = GetPixelChannels(image);
 
-      Scale2x(image,p,r,channels);
-      //Eagle2X(image,p,r,channels);
+//      Scale2x(image,p,r,channels);
+      Eagle2X(image,p,r,channels);
 
       for (i=0; i < (ssize_t) channels * 2; i++)
         q[i]=r[i];
