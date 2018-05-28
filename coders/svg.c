@@ -2516,10 +2516,15 @@ static void SVGEndElement(void *context,const xmlChar *name)
           if ((svg_info->radius.x == 0.0) && (svg_info->radius.y == 0.0))
             {
               (void) FormatLocaleFile(svg_info->file,"class \"rect\"\n");
-              (void) FormatLocaleFile(svg_info->file,"rectangle %g,%g %g,%g\n",
-                svg_info->bounds.x,svg_info->bounds.y,
-                svg_info->bounds.x+svg_info->bounds.width,
-                svg_info->bounds.y+svg_info->bounds.height);
+              if ((fabs(svg_info->bounds.width-1.0) < MagickEpsilon) &&
+                  (fabs(svg_info->bounds.height-1.0) < MagickEpsilon))
+                (void) FormatLocaleFile(svg_info->file,"point %g,%g\n",
+                  svg_info->bounds.x,svg_info->bounds.y);
+              else
+                (void) FormatLocaleFile(svg_info->file,
+                  "rectangle %g,%g %g,%g\n",svg_info->bounds.x,
+                  svg_info->bounds.y,svg_info->bounds.x+svg_info->bounds.width,
+                  svg_info->bounds.y+svg_info->bounds.height);
               (void) FormatLocaleFile(svg_info->file,"pop graphic-context\n");
               break;
             }

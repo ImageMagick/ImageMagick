@@ -6625,14 +6625,12 @@ static void TraceRectangle(PrimitiveInfo *primitive_info,const PointInfo start,
   TracePoint(p,start);
   p+=p->coordinates;
   point.x=start.x;
-  point.y=end.y-1.0;
+  point.y=end.y;
   TracePoint(p,point);
   p+=p->coordinates;
-  point.x=end.x-1.0;
-  point.y=end.y-1.0;
-  TracePoint(p,point);
+  TracePoint(p,end);
   p+=p->coordinates;
-  point.x=end.x-1.0;
+  point.x=end.x;
   point.y=start.y;
   TracePoint(p,point);
   p+=p->coordinates;

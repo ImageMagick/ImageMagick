@@ -4254,7 +4254,10 @@ WandExport void DrawRectangle(DrawingWand *wand,const double x1,const double y1,
   assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) MVGPrintf(wand,"rectangle %.20g %.20g %.20g %.20g\n",x1,y1,x2,y2);
+  if ((fabs(x2-x1) < MagickEpsilon) && (fabs(y2-y1) < MagickEpsilon))
+    (void) MVGPrintf(wand,"point %.20g %.20g\n",x1,y1);
+  else
+   (void) MVGPrintf(wand,"rectangle %.20g %.20g %.20g %.20g\n",x1,y1,x2,y2);
 }
 
 /*
