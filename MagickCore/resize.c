@@ -2160,7 +2160,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
         q[i]=r[i];
 
       for (i=0; i < (ssize_t) channels * 2; i++)
-        q[channels * (magnify_image->columns-1) + i]=r[2+i];
+        q[channels * (magnify_image->columns-2) + i]=r[2*channels+i];
 
       q+=magnification*GetPixelChannels(magnify_image);
     }
