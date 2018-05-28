@@ -2082,8 +2082,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
                         affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
                         affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
                         affine.sy=cos(DegreesToRadians(fmod(angle,360.0)));
-                        affine.tx=x;
-                        affine.ty=y;
+                        affine.tx=0.0;
+                        affine.ty=0.0;
                         svg_info->center.x=x;
                         svg_info->center.y=y;
                         break;
