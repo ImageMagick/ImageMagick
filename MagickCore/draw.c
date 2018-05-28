@@ -3130,6 +3130,16 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 /*
                   Class context.
                 */
+                for (p=q; *q != '\0'; )
+                {
+                  GetNextToken(q,&q,extent,token);
+                  if (LocaleCompare(token,"pop") != 0)
+                    continue;
+                  GetNextToken(q,(const char **) NULL,extent,token);
+                  if (LocaleCompare(token,"class") != 0)
+                    continue;
+                  break;
+                }
                 GetNextToken(q,&q,extent,token);
                 break;
               }
