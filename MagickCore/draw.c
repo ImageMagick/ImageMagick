@@ -2052,7 +2052,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
               {
                 j=i;
                 i--;
-                alpha=(offset-gradient->stops[i].offset)/
+                alpha=100.0*(offset-gradient->stops[i].offset)/
                   (gradient->stops[j].offset-gradient->stops[i].offset);
                 CompositePixelInfoBlend(&gradient->stops[i].color,1.0-alpha,
                   &gradient->stops[j].color,alpha,&composite);
@@ -3410,9 +3410,10 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             number_stops++;
             if (number_stops == 1)
               stops=(StopInfo *) AcquireQuantumMemory(2,sizeof(*stops));
-            else if (number_stops > 2)
-              stops=(StopInfo *) ResizeQuantumMemory(stops,number_stops,
-                sizeof(*stops));
+            else
+              if (number_stops > 2)
+                stops=(StopInfo *) ResizeQuantumMemory(stops,number_stops,
+                  sizeof(*stops));
             if (stops == (StopInfo *) NULL)
               {
                 (void) ThrowMagickException(exception,GetMagickModule(),
