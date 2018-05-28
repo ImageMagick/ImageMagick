@@ -2573,7 +2573,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
             keyword=(char *) tokens[j];
             value=(char *) tokens[j+1];
             (void) FormatLocaleFile(svg_info->file,"push class \"%s\"\n",
-              keyword);
+              *keyword == '.' ? keyword+1 : keyword);
             SVGProcessStyleElement(context,name,value);
             (void) FormatLocaleFile(svg_info->file,"pop class\n");
           }
