@@ -2123,6 +2123,58 @@ void Scale2X(const Image *src_image, const Quantum *neighbourhood, Quantum *resu
     }
 }
 
+void Epx2X(const Image *src_image, const Quantum *neighbourhood, Quantum *result, size_t channels)
+{
+  #define HelperCond(a,b,c,d,e,f,g) (\
+    PixelsEqual(neighbourhood,a,neighbourhood,b,channels) && ( \
+      PixelsEqual(neighbourhood,c,neighbourhood,d,channels) || \
+      PixelsEqual(neighbourhood,c,neighbourhood,e,channels) || \
+      PixelsEqual(neighbourhood,a,neighbourhood,f,channels) || \
+      PixelsEqual(neighbourhood,b,neighbourhood,g,channels) \
+      )\
+    )
+
+  for (unsigned char i=0; i < 4; i++)
+    CopyPixel(neighbourhood,4,result,i,channels);
+
+  if (
+    !PixelsEqual(neighbourhood,3,neighbourhood,5,channels) && !PixelsEqual(neighbourhood,1,neighbourhood,7,channels) &&
+    (
+      PixelsEqual(neighbourhood,4,neighbourhood,3,channels) ||
+      PixelsEqual(neighbourhood,4,neighbourhood,7,channels) ||
+      PixelsEqual(neighbourhood,4,neighbourhood,5,channels) ||
+      PixelsEqual(neighbourhood,4,neighbourhood,1,channels) ||
+      (
+        (
+          !PixelsEqual(neighbourhood,0,neighbourhood,8,channels) ||
+           PixelsEqual(neighbourhood,4,neighbourhood,6,channels) ||
+           PixelsEqual(neighbourhood,3,neighbourhood,2,channels)
+        ) &&
+        (
+          !PixelsEqual(neighbourhood,6,neighbourhood,2,channels) ||
+           PixelsEqual(neighbourhood,4,neighbourhood,0,channels) ||
+           PixelsEqual(neighbourhood,4,neighbourhood,8,channels)
+        )
+      )
+    )
+  )
+    {
+      if (HelperCond(1,3,4,0,8,2,6))
+        Mix2Pixels(neighbourhood,1,3,result,0,channels);
+
+      if (HelperCond(5,1,4,2,6,8,0))
+        Mix2Pixels(neighbourhood,5,1,result,1,channels);
+
+      if (HelperCond(3,7,4,6,2,0,8))
+        Mix2Pixels(neighbourhood,3,7,result,2,channels);
+
+      if (HelperCond(7,5,4,8,0,6,2))
+        Mix2Pixels(neighbourhood,7,5,result,3,channels);
+    }
+
+  #undef HelperCond
+}
+
 void Eagle3X(const Image *src_image, const Quantum *neighbourhood, Quantum *result, size_t channels)
 {
   int corner_tl =
@@ -2352,6 +2404,13 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     {
       alg_function = Eagle3XB;
       magnification = 3;
+    }
+  else if (LocaleCompare(algorithm,"epx") == 0 ||
+    LocaleCompare(algorithm,"epx2") == 0 ||
+    LocaleCompare(algorithm,"epx2x") == 0)
+    {
+      alg_function = Epx2X;
+      magnification = 2;
     }
   else
     {
