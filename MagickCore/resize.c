@@ -2080,7 +2080,7 @@ void Eagle2X(const Image *src_image, const Quantum *neighbourhood, Quantum *resu
     CopyPixel(neighbourhood,8,result,3,channels);
 }
 
-void Scale2x(const Image *src_image, const Quantum *neighbourhood, Quantum *result, size_t channels)
+void Scale2X(const Image *src_image, const Quantum *neighbourhood, Quantum *result, size_t channels)
 {
   register ssize_t
     i;
@@ -2170,9 +2170,28 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     algorithm;
 
   unsigned char
-    magnification = 2;
+    magnification;
+
+  void
+    (*alg_function)(const Image *, const Quantum *, Quantum *, size_t) = NULL;
 
   algorithm = GetImageOption(image->image_info,"magnify:alg");
+
+  if (algorithm == (char *) NULL)
+    {
+      alg_function = Scale2X;
+      magnification = 2;
+    }
+  else if (LocaleCompare(algorithm,"eagle2x") == 0)
+    {
+      alg_function = Eagle2X;
+      magnification = 2;
+    }
+  else
+    {
+      alg_function = Scale2X;
+      magnification = 2;
+    } 
 
   /*
     Initialize magnified image attributes.
@@ -2237,7 +2256,8 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
       channels = GetPixelChannels(image);
 
 //      Scale2x(image,p,r,channels);
-      Eagle2X(image,p,r,channels);
+//      Eagle2X(image,p,r,channels);
+        alg_function(image,p,r,channels);
 
       for (i=0; i < (ssize_t) channels * 2; i++)
         q[i]=r[i];
