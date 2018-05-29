@@ -2044,6 +2044,15 @@ void CopyPixel(const Quantum *src, size_t src_off, Quantum *dst, size_t dst_off,
     dst[channels*dst_off+i] = src[src_off*channels+i];
 }
 
+void Mix2Pixels(const Quantum *src, size_t src_off1, size_t src_off2, Quantum *dst, size_t dst_off, size_t channels)
+{
+  register ssize_t
+    i;
+
+  for (i = 0; i < channels; i++)
+    dst[channels*dst_off+i] = (src[src_off1*channels+i] + src[src_off2*channels+i]) / 2;
+}
+
 int IntensitiesEqual(MagickRealType intensity1, MagickRealType intensity2)
 {
   return (fabs(intensity1 - intensity2)) < MagickEpsilon;
@@ -2119,6 +2128,54 @@ void Scale2X(const Image *src_image, const Quantum *neighbourhood, Quantum *resu
       else
         CopyPixel(neighbourhood,4,result,3,channels);
     }
+}
+
+void Eagle3X(const Image *src_image, const Quantum *neighbourhood, Quantum *result, size_t channels)
+{
+  register ssize_t
+    i;
+
+  MagickRealType
+    intensity[9];
+
+  for (i=0; i < 9; i++)
+    intensity[i]=GetPixelIntensity(src_image,neighbourhood+i*channels);
+
+  int corner_tl = IntensitiesEqual(intensity[0],intensity[1]) && IntensitiesEqual(intensity[0],intensity[3]);
+  int corner_tr = IntensitiesEqual(intensity[1],intensity[2]) && IntensitiesEqual(intensity[2],intensity[5]);
+  int corner_bl = IntensitiesEqual(intensity[3],intensity[6]) && IntensitiesEqual(intensity[6],intensity[7]);
+  int corner_br = IntensitiesEqual(intensity[5],intensity[7]) && IntensitiesEqual(intensity[7],intensity[8]);
+
+  CopyPixel(neighbourhood,corner_tl ? 0 : 4,result,0,channels);
+
+  if (corner_tl && corner_tr)
+    Mix2Pixels(neighbourhood,0,2,result,1,channels);
+  else
+    CopyPixel(neighbourhood,4,result,1,channels); 
+
+  CopyPixel(neighbourhood,corner_tr ? 1 : 4,result,2,channels);
+
+  if (corner_tl && corner_bl)
+    Mix2Pixels(neighbourhood,0,6,result,3,channels);
+  else
+    CopyPixel(neighbourhood,4,result,3,channels); 
+
+  CopyPixel(neighbourhood,4,result,4,channels);
+
+  if (corner_tr && corner_br)
+    Mix2Pixels(neighbourhood,2,8,result,5,channels);
+  else
+    CopyPixel(neighbourhood,4,result,5,channels); 
+
+  CopyPixel(neighbourhood,corner_bl ? 3 : 4,result,6,channels);
+
+  if (corner_bl && corner_br)
+    Mix2Pixels(neighbourhood,6,8,result,7,channels);
+  else
+    CopyPixel(neighbourhood,4,result,7,channels); 
+
+  CopyPixel(neighbourhood,corner_br ? 5 : 4,result,8,channels);
+
 }
 
 void Scale3X(const Image *src_image, const Quantum *neighbourhood, Quantum *result, size_t channels)
@@ -2258,14 +2315,22 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
       magnification = 2;
     }
   else if (LocaleCompare(algorithm,"eagle2x") == 0 ||
+    LocaleCompare(algorithm,"eagle2") == 0 ||
     LocaleCompare(algorithm,"eagle") == 0)
     {
       alg_function = Eagle2X;
       magnification = 2;
     }
-  else if (LocaleCompare(algorithm,"scale3x") == 0)
+  else if (LocaleCompare(algorithm,"scale3x") == 0 ||
+    LocaleCompare(algorithm,"scale3") == 0)
     {
       alg_function = Scale3X;
+      magnification = 3;
+    }
+  else if (LocaleCompare(algorithm,"eagle3x") == 0 ||
+    LocaleCompare(algorithm,"eagle3") == 0)
+    {
+      alg_function = Eagle3X;
       magnification = 3;
     }
   else
