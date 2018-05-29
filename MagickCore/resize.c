@@ -2132,12 +2132,64 @@ void Scale3X(const Image *src_image, const Quantum *neighbourhood, Quantum *resu
   for (i=0; i < 9; i++)
     intensity[i]=GetPixelIntensity(src_image,neighbourhood+i*channels);
 
-/*  if (!IntensitiesEqual(intensity[1],intensity[7]) &&
-      !IntensitiesEqual(intensity[3],intensity1[5]))
+  if (!IntensitiesEqual(intensity[1],intensity[7]) &&
+      !IntensitiesEqual(intensity[3],intensity[5]))
     {
-      
+      if (IntensitiesEqual(intensity[3],intensity[1]))
+        CopyPixel(neighbourhood,3,result,0,channels);
+      else
+        CopyPixel(neighbourhood,4,result,0,channels);
+
+      if (
+        ( IntensitiesEqual(intensity[3],intensity[1]) && !IntensitiesEqual(intensity[4],intensity[2]) ) ||
+        ( IntensitiesEqual(intensity[5],intensity[1]) && !IntensitiesEqual(intensity[4],intensity[0]) )
+        )
+        CopyPixel(neighbourhood,1,result,1,channels);
+      else
+        CopyPixel(neighbourhood,4,result,1,channels);
+
+      if (IntensitiesEqual(intensity[5],intensity[1]))
+        CopyPixel(neighbourhood,5,result,2,channels);
+      else
+        CopyPixel(neighbourhood,4,result,2,channels);
+
+      if (
+        ( IntensitiesEqual(intensity[3],intensity[1]) && !IntensitiesEqual(intensity[4],intensity[6]) ) ||
+        ( IntensitiesEqual(intensity[3],intensity[7]) && !IntensitiesEqual(intensity[4],intensity[0]) )
+        )
+        CopyPixel(neighbourhood,3,result,3,channels);
+      else
+        CopyPixel(neighbourhood,4,result,3,channels);
+
+      CopyPixel(neighbourhood,4,result,4,channels);
+
+      if (
+        ( IntensitiesEqual(intensity[5],intensity[1]) && !IntensitiesEqual(intensity[4],intensity[8]) ) ||
+        ( IntensitiesEqual(intensity[5],intensity[7]) && !IntensitiesEqual(intensity[4],intensity[2]) )
+        )
+        CopyPixel(neighbourhood,5,result,5,channels);
+      else      
+        CopyPixel(neighbourhood,4,result,5,channels);
+
+      if (IntensitiesEqual(intensity[3],intensity[7]))
+        CopyPixel(neighbourhood,3,result,6,channels);
+      else 
+        CopyPixel(neighbourhood,4,result,6,channels);
+
+      if (
+        ( IntensitiesEqual(intensity[3],intensity[7]) && !IntensitiesEqual(intensity[4],intensity[8]) ) ||
+        ( IntensitiesEqual(intensity[5],intensity[7]) && !IntensitiesEqual(intensity[4],intensity[6]) )
+        )
+        CopyPixel(neighbourhood,7,result,7,channels);
+      else      
+        CopyPixel(neighbourhood,4,result,7,channels);
+
+      if (IntensitiesEqual(intensity[5],intensity[7]))
+        CopyPixel(neighbourhood,5,result,8,channels);
+      else 
+        CopyPixel(neighbourhood,4,result,8,channels);
     }
-  else */
+  else
     {
       for (i=0; i<9; i++)
         CopyPixel(neighbourhood,4,result,i,channels);
@@ -2205,7 +2257,8 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
       alg_function = Scale2X;
       magnification = 2;
     }
-  else if (LocaleCompare(algorithm,"eagle2x") == 0)
+  else if (LocaleCompare(algorithm,"eagle2x") == 0 ||
+    LocaleCompare(algorithm,"eagle") == 0)
     {
       alg_function = Eagle2X;
       magnification = 2;
