@@ -2170,7 +2170,35 @@ void Eagle3X(const Image *src_image, const Quantum *neighbourhood, Quantum *resu
     CopyPixel(neighbourhood,4,result,7,channels); 
 
   CopyPixel(neighbourhood,corner_br ? 5 : 4,result,8,channels);
+}
 
+void Eagle3XB(const Image *src_image, const Quantum *neighbourhood, Quantum *result, size_t channels)
+{
+  int corner_tl =
+    PixelsEqual(neighbourhood,0,neighbourhood,1,channels) &&
+    PixelsEqual(neighbourhood,0,neighbourhood,3,channels);
+
+  int corner_tr =
+    PixelsEqual(neighbourhood,1,neighbourhood,2,channels) &&
+    PixelsEqual(neighbourhood,2,neighbourhood,5,channels);
+
+  int corner_bl =
+    PixelsEqual(neighbourhood,3,neighbourhood,6,channels) &&
+    PixelsEqual(neighbourhood,6,neighbourhood,7,channels);
+
+  int corner_br =
+    PixelsEqual(neighbourhood,5,neighbourhood,7,channels) &&
+    PixelsEqual(neighbourhood,7,neighbourhood,8,channels);
+
+  CopyPixel(neighbourhood,corner_tl ? 0 : 4,result,0,channels);
+  CopyPixel(neighbourhood,4,result,1,channels); 
+  CopyPixel(neighbourhood,corner_tr ? 1 : 4,result,2,channels);
+  CopyPixel(neighbourhood,4,result,3,channels); 
+  CopyPixel(neighbourhood,4,result,4,channels);
+  CopyPixel(neighbourhood,4,result,5,channels); 
+  CopyPixel(neighbourhood,corner_bl ? 3 : 4,result,6,channels);
+  CopyPixel(neighbourhood,4,result,7,channels); 
+  CopyPixel(neighbourhood,corner_br ? 5 : 4,result,8,channels);
 }
 
 void Scale3X(const Image *src_image, const Quantum *neighbourhood, Quantum *result, size_t channels)
@@ -2317,6 +2345,12 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     LocaleCompare(algorithm,"eagle3") == 0)
     {
       alg_function = Eagle3X;
+      magnification = 3;
+    }
+  else if (LocaleCompare(algorithm,"eagle3xb") == 0 ||
+    LocaleCompare(algorithm,"eagle3b") == 0)
+    {
+      alg_function = Eagle3XB;
       magnification = 3;
     }
   else
