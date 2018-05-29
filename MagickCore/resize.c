@@ -2273,8 +2273,8 @@ void Hq2X(const Image *src_image, const Quantum *neighbourhood, Quantum *result,
 
   Hq2XHelper(hq2x_table[Hq2XPatternToNumber(pattern1)],neighbourhood,result,0,channels,4,0,1,3,5,7);
   Hq2XHelper(hq2x_table[Hq2XPatternToNumber(pattern2)],neighbourhood,result,1,channels,4,2,5,1,7,3);
-  Hq2XHelper(hq2x_table[Hq2XPatternToNumber(pattern3)],neighbourhood,result,2,channels,4,8,7,5,3,1);
-  Hq2XHelper(hq2x_table[Hq2XPatternToNumber(pattern4)],neighbourhood,result,3,channels,4,6,3,7,1,5);
+  Hq2XHelper(hq2x_table[Hq2XPatternToNumber(pattern3)],neighbourhood,result,3,channels,4,8,7,5,3,1);
+  Hq2XHelper(hq2x_table[Hq2XPatternToNumber(pattern4)],neighbourhood,result,2,channels,4,6,3,7,1,5);
 
   #undef Rotated
 }
