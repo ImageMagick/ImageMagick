@@ -2121,6 +2121,29 @@ void Scale2X(const Image *src_image, const Quantum *neighbourhood, Quantum *resu
     }
 }
 
+void Scale3X(const Image *src_image, const Quantum *neighbourhood, Quantum *result, size_t channels)
+{
+  register ssize_t
+    i;
+
+  MagickRealType
+    intensity[9];
+
+  for (i=0; i < 9; i++)
+    intensity[i]=GetPixelIntensity(src_image,neighbourhood+i*channels);
+
+/*  if (!IntensitiesEqual(intensity[1],intensity[7]) &&
+      !IntensitiesEqual(intensity[3],intensity1[5]))
+    {
+      
+    }
+  else */
+    {
+      for (i=0; i<9; i++)
+        CopyPixel(neighbourhood,4,result,i,channels);
+    }
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2187,6 +2210,11 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
       alg_function = Eagle2X;
       magnification = 2;
     }
+  else if (LocaleCompare(algorithm,"scale3x") == 0)
+    {
+      alg_function = Scale3X;
+      magnification = 3;
+    }
   else
     {
       alg_function = Scale2X;
@@ -2249,21 +2277,17 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
         channels;
 
       register ssize_t
-        i;
+        i, j;
 
       p=GetCacheViewVirtualPixels(image_view,x-1,y-1,3,3,exception);
       
       channels = GetPixelChannels(image);
 
-//      Scale2x(image,p,r,channels);
-//      Eagle2X(image,p,r,channels);
-        alg_function(image,p,r,channels);
+      alg_function(image,p,r,channels);
 
-      for (i=0; i < (ssize_t) channels * 2; i++)
-        q[i]=r[i];
-
-      for (i=0; i < (ssize_t) channels * 2; i++)
-        q[channels * (magnify_image->columns) + i]=r[2*channels+i];
+      for (j=0; j < magnification; j++)
+        for (i=0; i < (ssize_t) channels * magnification; i++)
+          q[j * channels * magnify_image->columns + i]=r[j * magnification * channels + i];
 
       q+=magnification*GetPixelChannels(magnify_image);
     }
