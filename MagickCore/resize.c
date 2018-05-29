@@ -2053,77 +2053,70 @@ void Mix2Pixels(const Quantum *src, size_t src_off1, size_t src_off2, Quantum *d
     dst[channels*dst_off+i] = (src[src_off1*channels+i] + src[src_off2*channels+i]) / 2;
 }
 
-int IntensitiesEqual(MagickRealType intensity1, MagickRealType intensity2)
+int PixelsEqual(const Quantum *src1, size_t off1, const Quantum *src2, size_t off2, size_t channels)
 {
-  return (fabs(intensity1 - intensity2)) < MagickEpsilon;
+  register ssize_t
+    i;
+
+  off1 *= channels;
+  off2 *= channels;
+
+  for (i=0; i < channels; i++)
+    if (src1[off1 + i] != src2[off2 + i])
+      return 0;
+
+  return 1;
 }
 
 void Eagle2X(const Image *src_image, const Quantum *neighbourhood, Quantum *result, size_t channels)
 {
-  register ssize_t
-    i;
-
-  MagickRealType
-    intensity[9];
-
-  for (i=0; i < 9; i++)
-    intensity[i]=GetPixelIntensity(src_image,neighbourhood+i*channels);
-  
-  for (i=0; i < 4; i++)
+  for (unsigned char i=0; i < 4; i++)
     CopyPixel(neighbourhood,4,result,i,channels);
 
-  if (IntensitiesEqual(intensity[0],intensity[1]) &&
-      IntensitiesEqual(intensity[1],intensity[3]))
+  if (PixelsEqual(neighbourhood,0,neighbourhood,1,channels) &&
+      PixelsEqual(neighbourhood,1,neighbourhood,3,channels))
     CopyPixel(neighbourhood,0,result,0,channels);
 
-  if (IntensitiesEqual(intensity[1],intensity[2]) &&
-      IntensitiesEqual(intensity[2],intensity[5]))
+  if (PixelsEqual(neighbourhood,1,neighbourhood,2,channels) &&
+      PixelsEqual(neighbourhood,2,neighbourhood,5,channels))
     CopyPixel(neighbourhood,2,result,1,channels);
 
-  if (IntensitiesEqual(intensity[3],intensity[6]) &&
-      IntensitiesEqual(intensity[6],intensity[7]))
+  if (PixelsEqual(neighbourhood,3,neighbourhood,6,channels) &&
+      PixelsEqual(neighbourhood,6,neighbourhood,7,channels))
     CopyPixel(neighbourhood,6,result,2,channels);
 
-  if (IntensitiesEqual(intensity[5],intensity[8]) &&
-      IntensitiesEqual(intensity[8],intensity[7]))
+  if (PixelsEqual(neighbourhood,5,neighbourhood,8,channels) &&
+      PixelsEqual(neighbourhood,8,neighbourhood,7,channels))
     CopyPixel(neighbourhood,8,result,3,channels);
+
 }
 
 void Scale2X(const Image *src_image, const Quantum *neighbourhood, Quantum *result, size_t channels)
 {
-  register ssize_t
-    i;
-
-  MagickRealType
-    intensity[9];
-
-  for (i=0; i < 9; i++)
-    intensity[i]=GetPixelIntensity(src_image,neighbourhood+i*channels);
-
-  if (IntensitiesEqual(intensity[1],intensity[7]) ||
-      IntensitiesEqual(intensity[3],intensity[5]))
+  if (PixelsEqual(neighbourhood,1,neighbourhood,7,channels) ||
+      PixelsEqual(neighbourhood,3,neighbourhood,5,channels))
     {
-      for (i=0; i < 4; i++)
+      for (unsigned char i=0; i < 4; i++)
         CopyPixel(neighbourhood,4,result,i,channels);
     }
   else
     {
-      if (IntensitiesEqual(intensity[1],intensity[3]))
+      if (PixelsEqual(neighbourhood,1,neighbourhood,3,channels))
         CopyPixel(neighbourhood,3,result,0,channels);
       else
         CopyPixel(neighbourhood,4,result,0,channels);
 
-      if (IntensitiesEqual(intensity[1],intensity[5]))
+      if (PixelsEqual(neighbourhood,1,neighbourhood,5,channels))
         CopyPixel(neighbourhood,5,result,1,channels);
       else
         CopyPixel(neighbourhood,4,result,1,channels);
 
-      if (IntensitiesEqual(intensity[3],intensity[7]))
+      if (PixelsEqual(neighbourhood,3,neighbourhood,7,channels))
         CopyPixel(neighbourhood,3,result,2,channels);
       else
         CopyPixel(neighbourhood,4,result,2,channels);
 
-      if (IntensitiesEqual(intensity[5],intensity[7]))
+      if (PixelsEqual(neighbourhood,5,neighbourhood,7,channels))
         CopyPixel(neighbourhood,5,result,3,channels);
       else
         CopyPixel(neighbourhood,4,result,3,channels);
@@ -2132,19 +2125,21 @@ void Scale2X(const Image *src_image, const Quantum *neighbourhood, Quantum *resu
 
 void Eagle3X(const Image *src_image, const Quantum *neighbourhood, Quantum *result, size_t channels)
 {
-  register ssize_t
-    i;
+  int corner_tl =
+    PixelsEqual(neighbourhood,0,neighbourhood,1,channels) &&
+    PixelsEqual(neighbourhood,0,neighbourhood,3,channels);
 
-  MagickRealType
-    intensity[9];
+  int corner_tr =
+    PixelsEqual(neighbourhood,1,neighbourhood,2,channels) &&
+    PixelsEqual(neighbourhood,2,neighbourhood,5,channels);
 
-  for (i=0; i < 9; i++)
-    intensity[i]=GetPixelIntensity(src_image,neighbourhood+i*channels);
+  int corner_bl =
+    PixelsEqual(neighbourhood,3,neighbourhood,6,channels) &&
+    PixelsEqual(neighbourhood,6,neighbourhood,7,channels);
 
-  int corner_tl = IntensitiesEqual(intensity[0],intensity[1]) && IntensitiesEqual(intensity[0],intensity[3]);
-  int corner_tr = IntensitiesEqual(intensity[1],intensity[2]) && IntensitiesEqual(intensity[2],intensity[5]);
-  int corner_bl = IntensitiesEqual(intensity[3],intensity[6]) && IntensitiesEqual(intensity[6],intensity[7]);
-  int corner_br = IntensitiesEqual(intensity[5],intensity[7]) && IntensitiesEqual(intensity[7],intensity[8]);
+  int corner_br =
+    PixelsEqual(neighbourhood,5,neighbourhood,7,channels) &&
+    PixelsEqual(neighbourhood,7,neighbourhood,8,channels);
 
   CopyPixel(neighbourhood,corner_tl ? 0 : 4,result,0,channels);
 
@@ -2180,39 +2175,30 @@ void Eagle3X(const Image *src_image, const Quantum *neighbourhood, Quantum *resu
 
 void Scale3X(const Image *src_image, const Quantum *neighbourhood, Quantum *result, size_t channels)
 {
-  register ssize_t
-    i;
-
-  MagickRealType
-    intensity[9];
-
-  for (i=0; i < 9; i++)
-    intensity[i]=GetPixelIntensity(src_image,neighbourhood+i*channels);
-
-  if (!IntensitiesEqual(intensity[1],intensity[7]) &&
-      !IntensitiesEqual(intensity[3],intensity[5]))
+  if (!PixelsEqual(neighbourhood,1,neighbourhood,7,channels) &&
+      !PixelsEqual(neighbourhood,3,neighbourhood,5,channels))
     {
-      if (IntensitiesEqual(intensity[3],intensity[1]))
+      if (PixelsEqual(neighbourhood,3,neighbourhood,1,channels))
         CopyPixel(neighbourhood,3,result,0,channels);
       else
         CopyPixel(neighbourhood,4,result,0,channels);
 
       if (
-        ( IntensitiesEqual(intensity[3],intensity[1]) && !IntensitiesEqual(intensity[4],intensity[2]) ) ||
-        ( IntensitiesEqual(intensity[5],intensity[1]) && !IntensitiesEqual(intensity[4],intensity[0]) )
+        ( PixelsEqual(neighbourhood,3,neighbourhood,1,channels) && !PixelsEqual(neighbourhood,4,neighbourhood,2,channels) ) ||
+        ( PixelsEqual(neighbourhood,5,neighbourhood,1,channels) && !PixelsEqual(neighbourhood,4,neighbourhood,0,channels) )
         )
         CopyPixel(neighbourhood,1,result,1,channels);
       else
         CopyPixel(neighbourhood,4,result,1,channels);
 
-      if (IntensitiesEqual(intensity[5],intensity[1]))
+      if (PixelsEqual(neighbourhood,5,neighbourhood,1,channels))
         CopyPixel(neighbourhood,5,result,2,channels);
       else
         CopyPixel(neighbourhood,4,result,2,channels);
 
       if (
-        ( IntensitiesEqual(intensity[3],intensity[1]) && !IntensitiesEqual(intensity[4],intensity[6]) ) ||
-        ( IntensitiesEqual(intensity[3],intensity[7]) && !IntensitiesEqual(intensity[4],intensity[0]) )
+        ( PixelsEqual(neighbourhood,3,neighbourhood,1,channels) && !PixelsEqual(neighbourhood,4,neighbourhood,6,channels) ) ||
+        ( PixelsEqual(neighbourhood,3,neighbourhood,7,channels) && !PixelsEqual(neighbourhood,4,neighbourhood,0,channels) )
         )
         CopyPixel(neighbourhood,3,result,3,channels);
       else
@@ -2221,34 +2207,34 @@ void Scale3X(const Image *src_image, const Quantum *neighbourhood, Quantum *resu
       CopyPixel(neighbourhood,4,result,4,channels);
 
       if (
-        ( IntensitiesEqual(intensity[5],intensity[1]) && !IntensitiesEqual(intensity[4],intensity[8]) ) ||
-        ( IntensitiesEqual(intensity[5],intensity[7]) && !IntensitiesEqual(intensity[4],intensity[2]) )
+        ( PixelsEqual(neighbourhood,5,neighbourhood,1,channels) && !PixelsEqual(neighbourhood,4,neighbourhood,8,channels) ) ||
+        ( PixelsEqual(neighbourhood,5,neighbourhood,7,channels) && !PixelsEqual(neighbourhood,4,neighbourhood,2,channels) )
         )
         CopyPixel(neighbourhood,5,result,5,channels);
       else      
         CopyPixel(neighbourhood,4,result,5,channels);
 
-      if (IntensitiesEqual(intensity[3],intensity[7]))
+      if (PixelsEqual(neighbourhood,3,neighbourhood,7,channels))
         CopyPixel(neighbourhood,3,result,6,channels);
       else 
         CopyPixel(neighbourhood,4,result,6,channels);
 
       if (
-        ( IntensitiesEqual(intensity[3],intensity[7]) && !IntensitiesEqual(intensity[4],intensity[8]) ) ||
-        ( IntensitiesEqual(intensity[5],intensity[7]) && !IntensitiesEqual(intensity[4],intensity[6]) )
+        ( PixelsEqual(neighbourhood,3,neighbourhood,7,channels) && !PixelsEqual(neighbourhood,4,neighbourhood,8,channels) ) ||
+        ( PixelsEqual(neighbourhood,5,neighbourhood,7,channels) && !PixelsEqual(neighbourhood,4,neighbourhood,6,channels) )
         )
         CopyPixel(neighbourhood,7,result,7,channels);
       else      
         CopyPixel(neighbourhood,4,result,7,channels);
 
-      if (IntensitiesEqual(intensity[5],intensity[7]))
+      if (PixelsEqual(neighbourhood,5,neighbourhood,7,channels))
         CopyPixel(neighbourhood,5,result,8,channels);
       else 
         CopyPixel(neighbourhood,4,result,8,channels);
     }
   else
     {
-      for (i=0; i<9; i++)
+      for (unsigned char i=0; i<9; i++)
         CopyPixel(neighbourhood,4,result,i,channels);
     }
 }
