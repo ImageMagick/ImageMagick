@@ -2166,8 +2166,13 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   ssize_t
     y;
 
+  const char *
+    algorithm;
+
   unsigned char
     magnification = 2;
+
+  algorithm = GetImageOption(image->image_info,"magnify:alg");
 
   /*
     Initialize magnified image attributes.
