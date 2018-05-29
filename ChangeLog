@@ -1,3 +1,9 @@
+2018-05-29  7.0.7-37 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.7-37, GIT revision 14393:61d7e8b17:20180529.
+
+2018-05-29  7.0.7-37  <quetzlzacatenango@image...>
+  * Properly initialize SVG color style.
+
 2018-05-28  7.0.7-36 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.7-36, GIT revision 14390:3a6bd703f:20180528.
 
