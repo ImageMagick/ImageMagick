@@ -2035,7 +2035,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,
 #endif
 
 
-inline void CopyPixel(const Quantum *src, size_t src_off, Quantum *dst, size_t dst_off, size_t channels)
+void CopyPixel(const Quantum *src, size_t src_off, Quantum *dst, size_t dst_off, size_t channels)
 {
   register ssize_t
     i;
@@ -2044,7 +2044,7 @@ inline void CopyPixel(const Quantum *src, size_t src_off, Quantum *dst, size_t d
     dst[channels*dst_off+i] = src[src_off*channels+i];
 }
 
-inline int IntensitiesEqual(MagickRealType intensity1, MagickRealType intensity2)
+int IntensitiesEqual(MagickRealType intensity1, MagickRealType intensity2)
 {
   return (fabs(intensity1 - intensity2)) < MagickEpsilon;
 }
@@ -2198,7 +2198,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   void
     (*alg_function)(const Image *, const Quantum *, Quantum *, size_t) = NULL;
 
-  algorithm = GetImageOption(image->image_info,"magnify:alg");
+  algorithm = GetImageOption(image->image_info,"magnify:method");
 
   if (algorithm == (char *) NULL)
     {
