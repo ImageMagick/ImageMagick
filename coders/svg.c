@@ -678,6 +678,8 @@ static void SVGProcessStyleElement(void *context,const xmlChar *name,
     (void) FormatLocaleFile(svg_info->file,"font-size %g\n",
       svg_info->pointsize);
   }
+  color=AcquireString("none");
+  units=AcquireString("userSpaceOnUse");
   for (i=0; i < (ssize_t) (number_tokens-1); i+=2)
   {
     keyword=(char *) tokens[i];
@@ -912,6 +914,10 @@ static void SVGProcessStyleElement(void *context,const xmlChar *name,
         break;
     }
   }
+  if (units != (char *) NULL)
+    units=DestroyString(units);
+  if (color != (char *) NULL)
+    color=DestroyString(color);
   for (i=0; tokens[i] != (char *) NULL; i++)
     tokens[i]=DestroyString(tokens[i]);
   tokens=(char **) RelinquishMagickMemory(tokens);
@@ -2314,7 +2320,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
     }
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  )");
-  units=DestroyString(units);
+  if (units != (char *) NULL)
+    units=DestroyString(units);
   if (color != (char *) NULL)
     color=DestroyString(color);
 }
