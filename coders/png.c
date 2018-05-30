@@ -4251,7 +4251,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
   */
   count=ReadBlob(image,8,(unsigned char *) magic_number);
 
-  if (count < 8 || memcmp(magic_number,"\211PNG\r\n\032\n",8) != 0)
+  if ((count < 8) || (memcmp(magic_number,"\211PNG\r\n\032\n",8) != 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
   /*
@@ -5219,7 +5219,7 @@ static Image *ReadJNGImage(const ImageInfo *image_info,
 
   count=(size_t) ReadBlob(image,8,(unsigned char *) magic_number);
 
-  if (count < 8 || memcmp(magic_number,"\213JNG\r\n\032\n",8) != 0)
+  if ((count < 8) || (memcmp(magic_number,"\213JNG\r\n\032\n",8) != 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
   /*
@@ -5378,7 +5378,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
 
       /* Verify MNG signature.  */
       count=(size_t) ReadBlob(image,8,(unsigned char *) magic_number);
-      if (memcmp(magic_number,"\212MNG\r\n\032\n",8) != 0)
+      if ((count < 8) || (memcmp(magic_number,"\212MNG\r\n\032\n",8) != 0))
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
       /* Initialize some nonzero members of the MngInfo structure.  */
