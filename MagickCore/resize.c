@@ -2338,7 +2338,7 @@ void Scale2X(const Image *src_image,const Quantum *neighbourhood,
     }
 }
 
-void Epx2X(const Image *src_image,const Quantum *neighbourhood,Quantum *result,
+void Epbx2X(const Image *src_image,const Quantum *neighbourhood,Quantum *result,
   size_t channels)
 {
   #define HelperCond(a,b,c,d,e,f,g) (\
@@ -2649,11 +2649,11 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
       alg_function = Eagle3XB;
       magnification = 3;
     }
-  else if (LocaleCompare(algorithm,"epx") == 0 ||
-    LocaleCompare(algorithm,"epx2") == 0 ||
-    LocaleCompare(algorithm,"epx2x") == 0)
+  else if (LocaleCompare(algorithm,"epbx") == 0 ||
+    LocaleCompare(algorithm,"epbx2") == 0 ||
+    LocaleCompare(algorithm,"epbx2x") == 0)
     {
-      alg_function = Epx2X;
+      alg_function = Epbx2X;
       magnification = 2;
     }
   else if (LocaleCompare(algorithm,"hqx") == 0 ||
