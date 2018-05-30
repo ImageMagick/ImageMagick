@@ -2727,6 +2727,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     *magnify_view;
 
   Image
+    *source_image,
     *magnify_image;
 
   MagickBooleanType
@@ -2746,7 +2747,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     neighbourhood;
 
   void
-    (*alg_function)(const Image *, const Quantum *, Quantum *, size_t) = NULL;
+    (*alg_function)(const Image *,const Quantum *,Quantum *,size_t) = NULL;
 
   algorithm = GetImageOption(image->image_info,"magnify:method");
 
@@ -2831,8 +2832,23 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  magnify_image=CloneImage(image,magnification*image->columns,
-    magnification*image->rows,MagickTrue,exception);
+  /*
+    Make a working copy of the source image and convert it to RGB colorspace.
+  */
+  source_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  OffsetInfo offset;
+  offset.x = 0;
+  offset.y = 0;
+  RectangleInfo rectangle;
+  rectangle.x = 0;
+  rectangle.y = 0;
+  rectangle.width = image->columns;
+  rectangle.height = image->rows;
+  CopyImagePixels(source_image,image,&rectangle,&offset,exception);
+  SetImageColorspace(source_image,RGBColorspace,exception);
+
+  magnify_image=CloneImage(source_image,magnification*source_image->columns,
+    magnification*source_image->rows,MagickTrue,exception);
   if (magnify_image == (Image *) NULL)
     return((Image *) NULL);
   /*
@@ -2840,13 +2856,13 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image,exception);
+  image_view=AcquireVirtualCacheView(source_image,exception);
   magnify_view=AcquireAuthenticCacheView(magnify_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    magick_number_threads(image,magnify_image,image->rows,1)
+    magick_number_threads(source_image,magnify_image,source_image->rows,1)
 #endif
-  for (y=0; y < (ssize_t) image->rows; y++)
+  for (y=0; y < (ssize_t) source_image->rows; y++)
   {
     register Quantum
       *magick_restrict q;
@@ -2869,7 +2885,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     /*
       Magnify this row of pixels.
     */
-    for (x=0; x < (ssize_t) image->columns; x++)
+    for (x=0; x < (ssize_t) source_image->columns; x++)
     {
       register const Quantum
         *magick_restrict p;
@@ -2883,9 +2899,9 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
       p=GetCacheViewVirtualPixels(image_view,x-neighbourhood/2,
         y-neighbourhood/2,neighbourhood,neighbourhood,exception);
       
-      channels = GetPixelChannels(image);
+      channels = GetPixelChannels(source_image);
 
-      alg_function(image,p,r,channels);
+      alg_function(source_image,p,r,channels);
 
       for (j=0; j < magnification; j++)
         for (i=0; i < (ssize_t) channels * magnification; i++)
@@ -2913,7 +2929,10 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   magnify_view=DestroyCacheView(magnify_view);
   image_view=DestroyCacheView(image_view);
   if (status == MagickFalse)
+  {
     magnify_image=DestroyImage(magnify_image);
+    source_image=DestroyImage(source_image);
+  }
   return(magnify_image);
 }
 
