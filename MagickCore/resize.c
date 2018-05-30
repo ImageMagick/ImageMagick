@@ -2352,7 +2352,7 @@ void Xbr2X(const Image *src_image,const Quantum *neighbourhood,
 
   if (
     w_12_18 + w_12_6 + w_8_14 + w_8_2 + (4 * w_7_13) <
-    w_13_17 + w_13_9 + w_11_7 + w_7_3 + (4 * w_12_16)
+    w_13_17 + w_13_9 + w_11_7 + w_7_3 + (4 * w_12_8)
   )
     Mix2Pixels(neighbourhood,w_12_7 <= w_12_13 ? 7 : 13,12,result,1,channels);    
   else
