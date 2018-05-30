@@ -2305,6 +2305,76 @@ void Hq2X(const Image *src_image,const Quantum *neighbourhood,Quantum *result,
   #undef Rotated
 }
 
+void Xbr2X(const Image *src_image,const Quantum *neighbourhood,
+  Quantum *result,size_t channels)
+{
+  #define WeightVar(M,N) const int w_##M##_##N = \
+    PixelsEqual(neighbourhood,M,neighbourhood,N,channels) ? 0 : 1;
+
+  WeightVar(12,11)
+  WeightVar(12,7)
+  WeightVar(12,13)
+  WeightVar(12,17)
+  WeightVar(12,16)
+  WeightVar(12,8)
+  WeightVar(6,10)
+  WeightVar(6,2)
+  WeightVar(11,7)
+  WeightVar(11,17)
+  WeightVar(11,5)
+  WeightVar(7,13)
+  WeightVar(7,1)
+  WeightVar(12,6)
+  WeightVar(12,18)
+  WeightVar(8,14)
+  WeightVar(8,2)
+  WeightVar(13,17)
+  WeightVar(13,9)
+  WeightVar(7,3)
+  WeightVar(16,10)
+  WeightVar(16,22)
+  WeightVar(17,21)
+  WeightVar(11,15)
+  WeightVar(18,14)
+  WeightVar(18,22)
+  WeightVar(17,23)
+  WeightVar(17,19)
+
+  #undef WeightVar
+  
+  if (
+    w_12_16 + w_12_8 + w_6_10 + w_6_2 + (4 * w_11_7) <
+    w_11_17 + w_11_5 + w_7_13 + w_7_1 + (4 * w_12_6)
+  )
+    Mix2Pixels(neighbourhood,w_12_11 <= w_12_7 ? 11 : 7,12,result,0,channels);    
+  else
+    CopyPixel(neighbourhood,12,result,0,channels);
+
+  if (
+    w_12_18 + w_12_6 + w_8_14 + w_8_2 + (4 * w_7_13) <
+    w_13_17 + w_13_9 + w_11_7 + w_7_3 + (4 * w_12_16)
+  )
+    Mix2Pixels(neighbourhood,w_12_7 <= w_12_13 ? 7 : 13,12,result,1,channels);    
+  else
+    CopyPixel(neighbourhood,12,result,1,channels);
+
+  if (
+    w_12_6 + w_12_18 + w_16_10 + w_16_22 + (4 * w_11_17) <
+    w_11_7 + w_11_15 + w_13_17 + w_17_21 + (4 * w_12_16)
+  )
+    Mix2Pixels(neighbourhood,w_12_11 <= w_12_17 ? 11 : 17,12,result,2,channels);    
+  else
+    CopyPixel(neighbourhood,12,result,2,channels);
+
+  if (
+    w_12_8 + w_12_16 + w_18_14 + w_18_22 + (4 * w_13_17) <
+    w_11_17 + w_17_23 + w_17_19 + w_7_13 + (4 * w_12_18)
+  )
+    Mix2Pixels(neighbourhood,w_12_13 <= w_12_17 ? 13 : 17,12,result,3,channels);    
+  else
+    CopyPixel(neighbourhood,12,result,3,channels);
+}
+
 void Scale2X(const Image *src_image,const Quantum *neighbourhood,
   Quantum *result,size_t channels)
 {
@@ -2612,7 +2682,8 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     algorithm;
 
   unsigned char
-    magnification;
+    magnification,
+    neighbourhood;
 
   void
     (*alg_function)(const Image *, const Quantum *, Quantum *, size_t) = NULL;
@@ -2620,9 +2691,15 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   algorithm = GetImageOption(image->image_info,"magnify:method");
 
   if (algorithm == (char *) NULL)
+    algorithm = "scale2x";
+  
+  if (LocaleCompare(algorithm,"scale2x") == 0 ||
+    LocaleCompare(algorithm,"epx") == 0 ||
+    LocaleCompare(algorithm,"scale2") == 0)
     {
       alg_function = Scale2X;
       magnification = 2;
+      neighbourhood = 3;
     }
   else if (LocaleCompare(algorithm,"eagle2x") == 0 ||
     LocaleCompare(algorithm,"eagle2") == 0 ||
@@ -2630,24 +2707,28 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     {
       alg_function = Eagle2X;
       magnification = 2;
+      neighbourhood = 3;
     }
   else if (LocaleCompare(algorithm,"scale3x") == 0 ||
     LocaleCompare(algorithm,"scale3") == 0)
     {
       alg_function = Scale3X;
       magnification = 3;
+      neighbourhood = 3;
     }
   else if (LocaleCompare(algorithm,"eagle3x") == 0 ||
     LocaleCompare(algorithm,"eagle3") == 0)
     {
       alg_function = Eagle3X;
       magnification = 3;
+      neighbourhood = 3;
     }
   else if (LocaleCompare(algorithm,"eagle3xb") == 0 ||
     LocaleCompare(algorithm,"eagle3b") == 0)
     {
       alg_function = Eagle3XB;
       magnification = 3;
+      neighbourhood = 3;
     }
   else if (LocaleCompare(algorithm,"epbx") == 0 ||
     LocaleCompare(algorithm,"epbx2") == 0 ||
@@ -2655,18 +2736,23 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     {
       alg_function = Epbx2X;
       magnification = 2;
+      neighbourhood = 3;
     }
   else if (LocaleCompare(algorithm,"hqx") == 0 ||
     LocaleCompare(algorithm,"hq2x") == 0)
     {
       alg_function = Hq2X;
       magnification = 2;
+      neighbourhood = 3;
     }
-  else
+  else if (LocaleCompare(algorithm,"xbr") == 0 ||
+    LocaleCompare(algorithm,"xbr2") == 0 ||
+    LocaleCompare(algorithm,"xbr2x") == 0)
     {
-      alg_function = Scale2X;
+      alg_function = Xbr2X;
       magnification = 2;
-    } 
+      neighbourhood = 5;
+    }
 
   /*
     Initialize magnified image attributes.
@@ -2726,7 +2812,8 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
       register ssize_t
         i, j;
 
-      p=GetCacheViewVirtualPixels(image_view,x-1,y-1,3,3,exception);
+      p=GetCacheViewVirtualPixels(image_view,x-neighbourhood/2,
+        y-neighbourhood/2,neighbourhood,neighbourhood,exception);
       
       channels = GetPixelChannels(image);
 
