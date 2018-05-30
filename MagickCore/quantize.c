@@ -3319,10 +3319,10 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
   if (image->type != GrayscaleType)
     (void) TransformImageColorspace(image,GRAYColorspace,exception);
   if (image->storage_class == PseudoClass)
-    colormap_index=(ssize_t *) AcquireQuantumMemory(image->colors,
+    colormap_index=(ssize_t *) AcquireQuantumMemory(image->colors+1,
       sizeof(*colormap_index));
   else
-    colormap_index=(ssize_t *) AcquireQuantumMemory(MaxColormapSize,
+    colormap_index=(ssize_t *) AcquireQuantumMemory(MaxColormapSize+1,
       sizeof(*colormap_index));
   if (colormap_index == (ssize_t *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
