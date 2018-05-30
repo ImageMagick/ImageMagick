@@ -415,29 +415,56 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 extern "C" {
 #endif
 
-static int CompareEdges(const void *x,const void *y)
+static int CompareEdges(const void *p_edge,const void *q_edge)
 {
-  register const EdgeInfo
+  double
+    delta;
+
+  register const PointInfo
     *p,
     *q;
 
   /*
-    Compare two edges.
+    Edge sorting for right-handed coordinate system.
   */
-  p=(const EdgeInfo *) x;
-  q=(const EdgeInfo *) y;
-  if ((p->points[0].y-DrawEpsilon) > q->points[0].y)
-    return(1);
-  if ((p->points[0].y+DrawEpsilon) < q->points[0].y)
+  p=((const EdgeInfo *) p_edge)->points;
+  q=((const EdgeInfo *) q_edge)->points;
+  delta=p[0].y-q[0].y;
+  if (delta < 0.0)
     return(-1);
-  if ((p->points[0].x-DrawEpsilon) > q->points[0].x)
+  if (delta > 0.0)
     return(1);
-  if ((p->points[0].x+DrawEpsilon) < q->points[0].x)
+  delta=p[0].x-q[0].x;
+  if (delta < 0.0)
     return(-1);
-  if (((p->points[1].x-p->points[0].x)*(q->points[1].y-q->points[0].y)-
-       (p->points[1].y-p->points[0].y)*(q->points[1].x-q->points[0].x)) > 0.0)
+  if (delta > 0.0)
     return(1);
-  return(-1);
+  delta=(p[1].x-p[0].x)*(q[1].y-q[0].y)-(p[1].y-p[0].y)*(q[1].x-q[0].x);
+  if (delta < 0.0)
+    return(-1);
+  if (delta > 0.0)
+    return(1);
+  delta=p[0].y-q[0].y;
+  if (delta < 0.0)
+    return(-1);
+  if (delta > 0.0)
+    return(1);
+  delta=p[0].x-q[0].x;
+  if (delta < 0.0)
+    return(-1);
+  if (delta > 0.0)
+    return(1);
+  delta=p[1].y-q[1].y;
+  if (delta < 0.0)
+    return(-1);
+  if (delta > 0.0)
+    return(1);
+  delta=p[1].x-q[1].x;
+  if (delta < 0.0)
+    return(-1);
+  if (delta > 0.0)
+    return(1);
+  return(0);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
