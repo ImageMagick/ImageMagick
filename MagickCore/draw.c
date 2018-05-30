@@ -417,8 +417,17 @@ extern "C" {
 
 static int CompareEdges(const void *p_edge,const void *q_edge)
 {
-  double
-    delta;
+#define DrawCompareEdge(p,q) \
+{ \
+  double \
+    delta; \
+ \
+  delta=(p)-(q); \
+  if (delta < 0.0) \
+    return(-1); \
+  if (delta > 0.0) \
+    return(1); \
+}
 
   register const PointInfo
     *p,
@@ -429,41 +438,12 @@ static int CompareEdges(const void *p_edge,const void *q_edge)
   */
   p=((const EdgeInfo *) p_edge)->points;
   q=((const EdgeInfo *) q_edge)->points;
-  delta=p[0].y-q[0].y;
-  if (delta < 0.0)
-    return(-1);
-  if (delta > 0.0)
-    return(1);
-  delta=p[0].x-q[0].x;
-  if (delta < 0.0)
-    return(-1);
-  if (delta > 0.0)
-    return(1);
-  delta=(p[1].x-p[0].x)*(q[1].y-q[0].y)-(p[1].y-p[0].y)*(q[1].x-q[0].x);
-  if (delta < 0.0)
-    return(-1);
-  if (delta > 0.0)
-    return(1);
-  delta=p[0].y-q[0].y;
-  if (delta < 0.0)
-    return(-1);
-  if (delta > 0.0)
-    return(1);
-  delta=p[0].x-q[0].x;
-  if (delta < 0.0)
-    return(-1);
-  if (delta > 0.0)
-    return(1);
-  delta=p[1].y-q[1].y;
-  if (delta < 0.0)
-    return(-1);
-  if (delta > 0.0)
-    return(1);
-  delta=p[1].x-q[1].x;
-  if (delta < 0.0)
-    return(-1);
-  if (delta > 0.0)
-    return(1);
+  DrawCompareEdge(p[0].y,q[0].y);
+  DrawCompareEdge(p[0].x,q[0].x);
+  DrawCompareEdge((p[1].x-p[0].x)*(q[1].y-q[0].y),(p[1].y-p[0].y)*
+    (q[1].x-q[0].x));
+  DrawCompareEdge(p[1].y,q[1].y);
+  DrawCompareEdge(p[1].x,q[1].x);
   return(0);
 }
 
