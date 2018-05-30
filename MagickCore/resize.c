@@ -2235,7 +2235,7 @@ break;
   #undef caseB
 }
 
-unsigned int Hq2XPatternToNumber(int *pattern)
+unsigned int Hq2XPatternToNumber(const int *pattern)
 {
   unsigned int
     result=0,
@@ -2274,7 +2274,7 @@ void Hq2X(const Image *src_image,const Quantum *neighbourhood,Quantum *result,
 
   #define Rotated(p) p[2], p[4], p[7], p[1], p[6], p[0], p[3], p[5]
 
-  int pattern1[] = 
+  const int pattern1[] = 
   {
     !PixelsEqual(neighbourhood,4,neighbourhood,8,channels),
     !PixelsEqual(neighbourhood,4,neighbourhood,7,channels),
@@ -2286,9 +2286,9 @@ void Hq2X(const Image *src_image,const Quantum *neighbourhood,Quantum *result,
     !PixelsEqual(neighbourhood,4,neighbourhood,0,channels)
   };
 
-  int pattern2[] = { Rotated(pattern1) };
-  int pattern3[] = { Rotated(pattern2) };
-  int pattern4[] = { Rotated(pattern3) };
+  const int pattern2[] = { Rotated(pattern1) };
+  const int pattern3[] = { Rotated(pattern2) };
+  const int pattern4[] = { Rotated(pattern3) };
 
   Hq2XHelper(Hq2XTable[Hq2XPatternToNumber(pattern1)],neighbourhood,result,0,
     channels,4,0,1,3,5,7);
@@ -2395,19 +2395,19 @@ void Epx2X(const Image *src_image,const Quantum *neighbourhood,Quantum *result,
 void Eagle3X(const Image *src_image,const Quantum *neighbourhood,
   Quantum *result,size_t channels)
 {
-  int corner_tl =
+  const int corner_tl =
     PixelsEqual(neighbourhood,0,neighbourhood,1,channels) &&
     PixelsEqual(neighbourhood,0,neighbourhood,3,channels);
 
-  int corner_tr =
+  const int corner_tr =
     PixelsEqual(neighbourhood,1,neighbourhood,2,channels) &&
     PixelsEqual(neighbourhood,2,neighbourhood,5,channels);
 
-  int corner_bl =
+  const int corner_bl =
     PixelsEqual(neighbourhood,3,neighbourhood,6,channels) &&
     PixelsEqual(neighbourhood,6,neighbourhood,7,channels);
 
-  int corner_br =
+  const int corner_br =
     PixelsEqual(neighbourhood,5,neighbourhood,7,channels) &&
     PixelsEqual(neighbourhood,7,neighbourhood,8,channels);
 
@@ -2445,19 +2445,19 @@ void Eagle3X(const Image *src_image,const Quantum *neighbourhood,
 void Eagle3XB(const Image *src_image,const Quantum *neighbourhood,
   Quantum *result,size_t channels)
 {
-  int corner_tl =
+  const int corner_tl =
     PixelsEqual(neighbourhood,0,neighbourhood,1,channels) &&
     PixelsEqual(neighbourhood,0,neighbourhood,3,channels);
 
-  int corner_tr =
+  const int corner_tr =
     PixelsEqual(neighbourhood,1,neighbourhood,2,channels) &&
     PixelsEqual(neighbourhood,2,neighbourhood,5,channels);
 
-  int corner_bl =
+  const int corner_bl =
     PixelsEqual(neighbourhood,3,neighbourhood,6,channels) &&
     PixelsEqual(neighbourhood,6,neighbourhood,7,channels);
 
-  int corner_br =
+  const int corner_br =
     PixelsEqual(neighbourhood,5,neighbourhood,7,channels) &&
     PixelsEqual(neighbourhood,7,neighbourhood,8,channels);
 
