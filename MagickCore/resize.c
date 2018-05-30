@@ -2305,6 +2305,66 @@ void Hq2X(const Image *src_image,const Quantum *neighbourhood,Quantum *result,
   #undef Rotated
 }
 
+void Fish2X(const Image *src_image,const Quantum *neighbourhood,
+  Quantum *result,size_t channels)
+{
+  MagickFloatType intensities[9];
+
+  for (unsigned int i = 0; i < 9; i++)
+    intensities[i] = GetPixelIntensity(src_image,neighbourhood + i*channels);
+
+  CopyPixel(neighbourhood,0,result,0,channels);
+  CopyPixel(neighbourhood,intensities[0] > intensities[1] ? 0 : 1,result,1,channels);
+  CopyPixel(neighbourhood,intensities[0] > intensities[3] ? 0 : 3,result,2,channels);
+
+  const int ae = PixelsEqual(neighbourhood,0,neighbourhood,4,channels);
+  const int bd = PixelsEqual(neighbourhood,1,neighbourhood,3,channels);
+  const int ab = PixelsEqual(neighbourhood,0,neighbourhood,1,channels);
+  const int de = PixelsEqual(neighbourhood,3,neighbourhood,4,channels);
+  const int ad = PixelsEqual(neighbourhood,0,neighbourhood,3,channels);
+  const int be = PixelsEqual(neighbourhood,1,neighbourhood,4,channels);
+
+#define Corner(A,B,C,D)\
+if (intensities[B] > intensities[A])\
+  MixPixels(neighbourhood,(size_t[3]){B,C,D},3,result,3,channels);\
+else\
+  MixPixels(neighbourhood,(size_t[3]){A,B,C},3,result,3,channels);
+
+#define Line(A,B,C,D)\
+if (intensities[C] > intensities[A])\
+  Mix2Pixels(neighbourhood,C,D,result,3,channels);\
+else\
+  Mix2Pixels(neighbourhood,A,B,result,3,channels);\
+
+  if (ae && bd && ab)
+    CopyPixel(neighbourhood,0,result,3,channels);
+  else if (ad && de && !ab)
+    Corner(1,0,4,3)
+  else if (be && de && !ab)
+    Corner(0,1,3,4)
+  else if (ad && ab && !be)
+    Corner(4,3,1,0)
+  else if (ab && be && !ad)
+    Corner(3,0,4,1)
+  else if (ae && (!bd || intensities[1] > intensities[0]))
+    Mix2Pixels(neighbourhood,0,4,result,3,channels);
+  else if (bd && (!ae || intensities[0] > intensities[1]))
+    Mix2Pixels(neighbourhood,1,3,result,3,channels);
+  else if (ab)
+    Line(0,1,3,4)
+  else if (de)
+    Line(3,4,0,1)
+  else if (ad)
+    Line(0,3,1,4)
+  else if (be)
+    Line(1,4,0,3)
+  else
+    MixPixels(neighbourhood,(size_t[4]){0,1,3,4},4,result,3,channels);
+
+#undef Corner
+#undef Line
+}
+
 void Xbr2X(const Image *src_image,const Quantum *neighbourhood,
   Quantum *result,size_t channels)
 {
@@ -2742,6 +2802,14 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     LocaleCompare(algorithm,"hq2x") == 0)
     {
       alg_function = Hq2X;
+      magnification = 2;
+      neighbourhood = 3;
+    }
+  else if (LocaleCompare(algorithm,"fish") == 0 ||
+    LocaleCompare(algorithm,"fish2") == 0 ||
+    LocaleCompare(algorithm,"fish2x") == 0)
+    {
+      alg_function = Fish2X;
       magnification = 2;
       neighbourhood = 3;
     }
