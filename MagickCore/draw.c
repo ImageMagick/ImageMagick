@@ -419,13 +419,9 @@ static int CompareEdges(const void *p_edge,const void *q_edge)
 {
 #define DrawCompareEdge(p,q) \
 { \
-  double \
-    delta; \
- \
-  delta=(p)-(q); \
-  if (delta < 0.0) \
+  if (((p)-(q)) < 0.0) \
     return(-1); \
-  if (delta > 0.0) \
+  if (((p)-(q)) > 0.0) \
     return(1); \
 }
 

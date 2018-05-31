@@ -1,3 +1,9 @@
+2018-05-30  7.0.7-37  <quetzlzacatenango@image...>
+  * Heap buffer overflow fix (reference
+    https://github.com/ImageMagick/ImageMagick/issues/1156).
+  * Boundary issues with -gamma option when HDRI is enabled (reference
+    https://github.com/ImageMagick/ImageMagick/issues/1151).
+
 2018-05-29  7.0.7-37 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.7-37, GIT revision 14393:61d7e8b17:20180529.
 

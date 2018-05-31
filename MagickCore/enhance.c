@@ -1813,7 +1813,6 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
       /*
         Gamma-correct colormap.
       */
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         image->colormap[i].red=(double) gamma_map[ScaleQuantumToMap(
           ClampToQuantum(image->colormap[i].red))];
@@ -1826,20 +1825,6 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
       if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
         image->colormap[i].alpha=(double) gamma_map[ScaleQuantumToMap(
           ClampToQuantum(image->colormap[i].alpha))];
-#else
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].red=QuantumRange*gamma_pow(QuantumScale*
-          image->colormap[i].red,1.0/gamma);
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].green=QuantumRange*gamma_pow(QuantumScale*
-          image->colormap[i].green,1.0/gamma);
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].blue=QuantumRange*gamma_pow(QuantumScale*
-          image->colormap[i].blue,1.0/gamma);
-      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].alpha=QuantumRange*gamma_pow(QuantumScale*
-          image->colormap[i].alpha,1.0/gamma);
-#endif
     }
   /*
     Gamma-correct image.
@@ -1878,11 +1863,7 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
-        q[j]=gamma_map[ScaleQuantumToMap(q[j])];
-#else
-        q[j]=QuantumRange*gamma_pow(QuantumScale*q[j],1.0/gamma);
-#endif
+        q[j]=gamma_map[ScaleQuantumToMap(ClampToQuantum(q[j]))];
       }
       q+=GetPixelChannels(image);
     }
