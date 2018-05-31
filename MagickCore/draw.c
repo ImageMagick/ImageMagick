@@ -415,7 +415,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 extern "C" {
 #endif
 
-static int CompareEdges(const void *p_edge,const void *q_edge)
+static int DrawCompareEdges(const void *p_edge,const void *q_edge)
 {
 #define DrawCompareEdge(p,q) \
 { \
@@ -697,7 +697,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
     }
   polygon_info->number_edges=edge;
   qsort(polygon_info->edges,(size_t) polygon_info->number_edges,
-    sizeof(*polygon_info->edges),CompareEdges);
+    sizeof(*polygon_info->edges),DrawCompareEdges);
   if (IsEventLogging() != MagickFalse)
     LogPolygonInfo(polygon_info);
   return(polygon_info);
