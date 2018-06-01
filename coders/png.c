@@ -5439,23 +5439,18 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
            "  Reading MNG chunk type %c%c%c%c, length: %.20g",
            type[0],type[1],type[2],type[3],(double) length);
 
-        if (length > PNG_UINT_31_MAX)
+        if ((length > PNG_UINT_31_MAX) || (length > GetBlobSize(image)) ||
+            (count < 4))
           {
-            status=MagickFalse;
-            break;
+            mng_info=MngInfoFreeStruct(mng_info);
+            ThrowReaderException(CorruptImageError,"CorruptImage");
           }
-
-        if (count == 0)
-          ThrowReaderException(CorruptImageError,"CorruptImage");
 
         p=NULL;
         chunk=(unsigned char *) NULL;
 
         if (length != 0)
           {
-            if (length > GetBlobSize(image))
-              ThrowReaderException(CorruptImageError,
-                "InsufficientImageDataInFile");
             chunk=(unsigned char *) AcquireQuantumMemory(length,sizeof(*chunk));
 
             if (chunk == (unsigned char *) NULL)
