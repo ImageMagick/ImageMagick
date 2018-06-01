@@ -4970,13 +4970,15 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
     {
       assert(color_image == (Image *) NULL);
       assert(alpha_image == (Image *) NULL);
+      if (color_image != (Image *) NULL)
+        color_image=DestroyImageList(color_image);
       return(DestroyImageList(image));
     }
 
   if (color_image == (Image *) NULL)
     {
       assert(alpha_image == (Image *) NULL);
-      return(DestroyImageList(image));
+      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     }
 
   (void) SeekBlob(color_image,0,SEEK_SET);
