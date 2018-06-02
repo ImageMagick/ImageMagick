@@ -396,8 +396,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 %
 %  The format of the ConvertPathToPolygon method is:
 %
-%      PolygonInfo *ConvertPathToPolygon(const DrawInfo *draw_info,
-%        const PathInfo *path_info)
+%      PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
 %
 %  A description of each parameter follows:
 %
@@ -1312,18 +1311,18 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
 static inline double SaneStrokeWidth(const Image *image,
   const DrawInfo *draw_info)
 {
-  return((double) MagickMin(draw_info->stroke_width,
+  return(MagickMin((double) draw_info->stroke_width,
     (2.0*sqrt(2.0)+DrawEpsilon)*MagickMax(image->columns,image->rows)));
 }
 
 static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
   const PolygonInfo *polygon_info,ExceptionInfo *exception)
 {
-  DrawInfo
-    *clone_info;
-
   double
     mid;
+
+  DrawInfo
+    *clone_info;
 
   PointInfo
     end,
@@ -1397,10 +1396,10 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
       for (i=0; i < (ssize_t) polygon_info->number_edges; i++)
       {
         if (polygon_info->edges[i].direction != 0)
-          (void) QueryColorCompliance("red",AllCompliance,&clone_info->stroke,
+          (void) QueryColorCompliance("#f00",AllCompliance,&clone_info->stroke,
             exception);
         else
-          (void) QueryColorCompliance("green",AllCompliance,&clone_info->stroke,
+          (void) QueryColorCompliance("#0f0",AllCompliance,&clone_info->stroke,
             exception);
         start.x=(double) (polygon_info->edges[i].bounds.x1-mid);
         start.y=(double) (polygon_info->edges[i].bounds.y1-mid);
@@ -1414,7 +1413,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
         (void) DrawPrimitive(image,clone_info,primitive_info,exception);
       }
     }
-  (void) QueryColorCompliance("blue",AllCompliance,&clone_info->stroke,
+  (void) QueryColorCompliance("#00f",AllCompliance,&clone_info->stroke,
     exception);
   start.x=(double) (bounds.x1-mid);
   start.y=(double) (bounds.y1-mid);
@@ -1699,9 +1698,6 @@ static Image *DrawCompositeMask(Image *image,const DrawInfo *draw_info,
 static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
   const PrimitiveInfo *primitive_info,Image *image,ExceptionInfo *exception)
 {
-  DrawInfo
-    *clone_info;
-
   double
     length,
     maximum_length,
@@ -1709,18 +1705,21 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
     scale,
     total_length;
 
+  DrawInfo
+    *clone_info;
+
   MagickStatusType
     status;
 
   PrimitiveInfo
     *dash_polygon;
 
-  register ssize_t
-    i;
-
   register double
     dx,
     dy;
+
+  register ssize_t
+    i;
 
   size_t
     number_vertices;
