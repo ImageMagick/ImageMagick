@@ -2054,7 +2054,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
               {
                 j=i;
                 i--;
-                alpha=100.0*(offset-gradient->stops[i].offset)/
+                alpha=(offset-gradient->stops[i].offset)/
                   (gradient->stops[j].offset-gradient->stops[i].offset);
                 CompositePixelInfoBlend(&gradient->stops[i].color,1.0-alpha,
                   &gradient->stops[j].color,alpha,&composite);
@@ -3436,7 +3436,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               exception);
             stops[number_stops-1].color=stop_color;
             GetNextToken(q,&q,extent,token);
-            stops[number_stops-1].offset=StringToDouble(token,&next_token);
+            factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
+            stops[number_stops-1].offset=factor*StringToDouble(token,
+              &next_token);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             break;
