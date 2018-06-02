@@ -79,6 +79,7 @@
 #include "MagickCore/resample.h"
 #include "MagickCore/resample-private.h"
 #include "MagickCore/resource_.h"
+#include "MagickCore/splay-tree.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
@@ -182,9 +183,6 @@ typedef struct _PathInfo
 /*
   Forward declarations.
 */
-static char
-  *GetNodeByURL(const char *,const char *);
-
 static Image
   *DrawClippingMask(Image *,const DrawInfo *,const char *,const char *,
     ExceptionInfo *);
@@ -2234,86 +2232,93 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
   return(MagickTrue);
 }
 
-static char *GetNodeByURL(const char *primitive,const char *url)
+static SplayTreeInfo *GetMVGMacros(const char *primitive)
 {
   char
-    *node;
+    *token;
 
   const char
-    *q,
-    *start;
+    *q;
 
   register const char
     *p;
 
   size_t
-    extent,
-    length;
+    extent;
 
-  ssize_t
-    n;
+  SplayTreeInfo
+    *macros;
 
   /*
-    Find and return node by ID.
+    Scan graphic primitives for definitions and classes.
   */
   if (primitive == (const char *) NULL)
-    return((char *) NULL);
-  node=AcquireString(primitive);
-  extent=strlen(node)+MagickPathExtent;
-  length=0;
-  n=0;
-  start=(const char *) NULL;
+    return((SplayTreeInfo *) NULL);
+  macros=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
+    RelinquishMagickMemory);
+  token=AcquireString(primitive);
+  extent=strlen(token)+MagickPathExtent;
   p=(const char *) NULL;
-  for (q=primitive; (*q != '\0') && (length == 0); )
+  for (q=primitive; *q != '\0'; )
   {
-    p=q;
-    GetNextToken(q,&q,extent,node);
-    if (*node == '\0')
+    GetNextToken(q,&q,extent,token);
+    if (*token == '\0')
       break;
-    if (*node == '#')
+    if (*token == '#')
       {
         /*
-          Comment.
+          Skip comment.
         */
         while ((*q != '\n') && (*q != '\0'))
           q++;
         continue;
       }
-    if (LocaleCompare("pop",node) == 0)
+    p=q-strlen(token)-1;
+    if (LocaleCompare("push",token) == 0)
       {
-        GetNextToken(q,&q,extent,node);
-        if ((n == 0) && (start != (const char *) NULL))
-          {
-            /*
-              End of node by ID.
-            */
-            length=(size_t) (p-start+1);
-            break;
-          }
-        n--;
-      }
-    if (LocaleCompare("push",node) == 0)
-      {
-        GetNextToken(q,&q,extent,node);
-        n++;
+        GetNextToken(q,&q,extent,token);
         if (*q == '"')
           {
-            GetNextToken(q,&q,extent,node);
-            if (LocaleCompare(url,node) == 0)
-              {
-                /*
-                  Start of node by ID.
-                */
-                n=0;
-                start=q;
-              }
+            char
+              name[MagickPathExtent];
+
+            const char
+              *r;
+
+            ssize_t
+             n;
+
+            GetNextToken(q,&q,extent,token);
+            (void) CopyMagickString(name,token,MagickPathExtent);
+            n=0;
+            for (r=q; *q != '\0'; )
+            {
+              GetNextToken(r,&r,extent,token);
+              if (LocaleCompare(token,"pop") == 0)
+                n--;
+              if (LocaleCompare(token,"push") == 0)
+                n++;
+              if (n < 0)
+                {
+                  char
+                    *macro;
+
+                  /*
+                    Extract definition or class.
+                  */
+                  GetNextToken(r,&r,extent,token);
+                  macro=AcquireString(p);
+                  macro[r-p]='\0';
+                  (void) AddValueToSplayTree(macros,ConstantString(name),
+                    ConstantString(macro));
+                  macro=DestroyString(macro);
+                  break;
+                }
+            }
           }
       }
   }
-  if (start == (const char *) NULL)
-    return(DestroyString(node));
-  (void) CopyMagickString(node,start,length);
-  return(node);
+  return(macros);
 }
 
 static inline MagickBooleanType IsPoint(const char *point)
@@ -2397,6 +2402,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
     extent,
     number_points,
     number_stops;
+
+  SplayTreeInfo
+    *macros;
 
   ssize_t
     defsDepth,
@@ -2482,6 +2490,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
   extent=strlen(token)+MagickPathExtent;
   defsDepth=0;
   symbolDepth=0;
+  macros=GetMVGMacros(primitive);
   status=MagickTrue;
   for (q=primitive; *q != '\0'; )
   {
@@ -2585,8 +2594,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       {
         if (LocaleCompare("class",keyword) == 0)
           {
-            char
-              *node;
+            const char
+              *macro;
 
             GetNextToken(q,&q,extent,token);
             if (*token == '\0')
@@ -2594,8 +2603,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 status=MagickFalse;
                 break;
               }
-            node=GetNodeByURL(primitive,token);
-            if (node != (char *) NULL)
+            macro=(const char *) GetValueFromSplayTree(macros,token);
+            if (macro != (const char *) NULL)
               {
                 char
                   *elements;
@@ -2609,8 +2618,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 offset=(ssize_t) (p-primitive);
                 elements=AcquireString(primitive);
                 elements[offset]='\0';
-                (void) ConcatenateString(&elements,node);
-                node=DestroyString(node);
+                (void) ConcatenateString(&elements,macro);
                 (void) ConcatenateString(&elements,"\n");
                 (void) ConcatenateString(&elements,q);
                 primitive=DestroyString(primitive);
@@ -2621,7 +2629,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           }
         if (LocaleCompare("clip-path",keyword) == 0)
           {
-            char
+            const char
               *clip_path;
 
             /*
@@ -2634,8 +2642,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 break;
               }
             (void) CloneString(&graphic_context[n]->clip_mask,token);
-            clip_path=GetNodeByURL(primitive,graphic_context[n]->clip_mask);
-            if (clip_path != (char *) NULL)
+            clip_path=(const char *) GetValueFromSplayTree(macros,
+              graphic_context[n]->clip_mask);
+            if (clip_path != (const char *) NULL)
               {
                 if (graphic_context[n]->clipping_mask != (Image *) NULL)
                   graphic_context[n]->clipping_mask=
@@ -2643,7 +2652,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 graphic_context[n]->clipping_mask=DrawClippingMask(image,
                   graphic_context[n],graphic_context[n]->clip_mask,clip_path,
                   exception);
-                clip_path=DestroyString(clip_path);
                 if (draw_info->compliance != SVGCompliance)
                   (void) DrawClipPath(image,graphic_context[n],
                     graphic_context[n]->clip_mask,exception);
@@ -2993,14 +3001,14 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       {
         if (LocaleCompare("mask",keyword) == 0)
           {
-            char
+            const char
               *mask_path;
 
             /*
               Take a node from within the MVG document, and duplicate it here.
             */
             GetNextToken(q,&q,extent,token);
-            mask_path=GetNodeByURL(primitive,token);
+            mask_path=(const char *) GetValueFromSplayTree(macros,token);
             if (mask_path != (char *) NULL)
               {
                 if (graphic_context[n]->composite_mask != (Image *) NULL)
@@ -3008,7 +3016,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                     DestroyImage(graphic_context[n]->composite_mask);
                 graphic_context[n]->composite_mask=DrawCompositeMask(image,
                   graphic_context[n],token,mask_path,exception);
-                mask_path=DestroyString(mask_path);
                 if (draw_info->compliance != SVGCompliance)
                   status=SetImageMask(image,CompositePixelMask,
                     graphic_context[n]->composite_mask,exception);
@@ -3146,17 +3153,16 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             if (LocaleCompare("clip-path",token) == 0)
               {
                 char
-                  *clip_path,
                   name[MaxTextExtent];
+
+                const char
+                  *clip_path;
 
                 GetNextToken(q,&q,extent,token);
                 (void) FormatLocaleString(name,MaxTextExtent,"%s",token);
-                clip_path=GetNodeByURL(primitive,name);
+                clip_path=(const char *) GetValueFromSplayTree(macros,name);
                 if (clip_path != (char *) NULL)
-                  {
-                    (void) SetImageArtifact(image,name,clip_path);
-                    clip_path=DestroyString(clip_path);
-                  }
+                  (void) SetImageArtifact(image,name,clip_path);
                 break;
               }
             if (LocaleCompare("defs",token) == 0)
@@ -3674,22 +3680,21 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       {
         if (LocaleCompare("use",keyword) == 0)
           {
-            char
-              *node;
+            const char
+              *macro;
 
             /*
-              Get a node from the MVG document, and "use" it here.
+              Get a macro from the MVG document, and "use" it here.
             */
             GetNextToken(q,&q,extent,token);
-            node=GetNodeByURL(primitive,token);
-            if (node != (char *) NULL)
+            macro=(const char *) GetValueFromSplayTree(macros,token);
+            if (macro != (char *) NULL)
               {
                 DrawInfo
                   *clone_info;
 
                 clone_info=CloneDrawInfo((ImageInfo *) NULL,graphic_context[n]);
-                (void) CloneString(&clone_info->primitive,node);
-                node=DestroyString(node);
+                (void) CloneString(&clone_info->primitive,macro);
                 status=DrawImage(image,clone_info,exception);
                 clone_info=DestroyDrawInfo(clone_info);
               }
@@ -4214,6 +4219,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
   /*
     Relinquish resources.
   */
+  macros=DestroySplayTree(macros);
   token=DestroyString(token);
   if (primitive_info != (PrimitiveInfo *) NULL)
     primitive_info=(PrimitiveInfo *) RelinquishMagickMemory(primitive_info);

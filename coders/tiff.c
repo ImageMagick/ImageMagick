@@ -1811,7 +1811,7 @@ RestoreMSCWarning
           register Quantum
             *magick_restrict q;
 
-         tiff_status=TIFFReadPixels(tiff,0,y,(char *) tiff_pixels);
+          tiff_status=TIFFReadPixels(tiff,0,y,(char *) tiff_pixels);
           if (tiff_status == -1)
             break;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
