@@ -5441,10 +5441,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
 
         if ((length > PNG_UINT_31_MAX) || (length > GetBlobSize(image)) ||
             (count < 4))
-          {
-            mng_info=MngInfoFreeStruct(mng_info);
-            ThrowReaderException(CorruptImageError,"CorruptImage");
-          }
+          ThrowReaderException(CorruptImageError,"CorruptImage");
 
         p=NULL;
         chunk=(unsigned char *) NULL;
