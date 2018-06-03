@@ -2240,9 +2240,6 @@ static SplayTreeInfo *GetMVGMacros(const char *primitive)
   const char
     *q;
 
-  register const char
-    *p;
-
   size_t
     extent;
 
@@ -2258,7 +2255,6 @@ static SplayTreeInfo *GetMVGMacros(const char *primitive)
     RelinquishMagickMemory);
   token=AcquireString(primitive);
   extent=strlen(token)+MagickPathExtent;
-  p=(const char *) NULL;
   for (q=primitive; *q != '\0'; )
   {
     GetNextToken(q,&q,extent,token);
@@ -2273,9 +2269,12 @@ static SplayTreeInfo *GetMVGMacros(const char *primitive)
           q++;
         continue;
       }
-    p=q-strlen(token)-1;
     if (LocaleCompare("push",token) == 0)
       {
+        register const char
+          *sentinel;
+
+        sentinel=q-strlen(token)-1;
         GetNextToken(q,&q,extent,token);
         if (*q == '"')
           {
@@ -2283,17 +2282,20 @@ static SplayTreeInfo *GetMVGMacros(const char *primitive)
               name[MagickPathExtent];
 
             const char
-              *r;
+              *p;
 
             ssize_t
              n;
 
+            /*
+              Named macro (e.g. push graphic-context "wheel").
+            */
             GetNextToken(q,&q,extent,token);
             (void) CopyMagickString(name,token,MagickPathExtent);
             n=0;
-            for (r=q; *q != '\0'; )
+            for (p=q; *q != '\0'; )
             {
-              GetNextToken(r,&r,extent,token);
+              GetNextToken(p,&p,extent,token);
               if (LocaleCompare(token,"pop") == 0)
                 n--;
               if (LocaleCompare(token,"push") == 0)
@@ -2304,11 +2306,11 @@ static SplayTreeInfo *GetMVGMacros(const char *primitive)
                     *macro;
 
                   /*
-                    Extract definition or class.
+                    Extract macro.
                   */
-                  GetNextToken(r,&r,extent,token);
-                  macro=AcquireString(p);
-                  macro[r-p]='\0';
+                  GetNextToken(p,&p,extent,token);
+                  macro=AcquireString(sentinel);
+                  macro[p-sentinel]='\0';
                   (void) AddValueToSplayTree(macros,ConstantString(name),
                     ConstantString(macro));
                   macro=DestroyString(macro);
@@ -2596,7 +2598,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (LocaleCompare("class",keyword) == 0)
           {
             const char
-              *macro;
+              *mvg_class;
 
             GetNextToken(q,&q,extent,token);
             if (*token == '\0')
@@ -2604,8 +2606,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 status=MagickFalse;
                 break;
               }
-            macro=(const char *) GetValueFromSplayTree(macros,token);
-            if (macro != (const char *) NULL)
+            mvg_class=(const char *) GetValueFromSplayTree(macros,token);
+            if (mvg_class != (const char *) NULL)
               {
                 char
                   *elements;
@@ -2619,7 +2621,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 offset=(ssize_t) (p-primitive);
                 elements=AcquireString(primitive);
                 elements[offset]='\0';
-                (void) ConcatenateString(&elements,macro);
+                (void) ConcatenateString(&elements,mvg_class);
                 (void) ConcatenateString(&elements,"\n");
                 (void) ConcatenateString(&elements,q);
                 primitive=DestroyString(primitive);
@@ -2643,16 +2645,14 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 break;
               }
             (void) CloneString(&graphic_context[n]->clip_mask,token);
-            clip_path=(const char *) GetValueFromSplayTree(macros,
-              graphic_context[n]->clip_mask);
+            clip_path=(const char *) GetValueFromSplayTree(macros,token);
             if (clip_path != (const char *) NULL)
               {
                 if (graphic_context[n]->clipping_mask != (Image *) NULL)
                   graphic_context[n]->clipping_mask=
                     DestroyImage(graphic_context[n]->clipping_mask);
                 graphic_context[n]->clipping_mask=DrawClippingMask(image,
-                  graphic_context[n],graphic_context[n]->clip_mask,clip_path,
-                  exception);
+                  graphic_context[n],token,clip_path,exception);
                 if (draw_info->compliance != SVGCompliance)
                   (void) DrawClipPath(image,graphic_context[n],
                     graphic_context[n]->clip_mask,exception);
@@ -3682,20 +3682,20 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (LocaleCompare("use",keyword) == 0)
           {
             const char
-              *macro;
+              *use;
 
             /*
               Get a macro from the MVG document, and "use" it here.
             */
             GetNextToken(q,&q,extent,token);
-            macro=(const char *) GetValueFromSplayTree(macros,token);
-            if (macro != (char *) NULL)
+            use=(const char *) GetValueFromSplayTree(macros,token);
+            if (use != (char *) NULL)
               {
                 DrawInfo
                   *clone_info;
 
                 clone_info=CloneDrawInfo((ImageInfo *) NULL,graphic_context[n]);
-                (void) CloneString(&clone_info->primitive,macro);
+                (void) CloneString(&clone_info->primitive,use);
                 status=DrawImage(image,clone_info,exception);
                 clone_info=DestroyDrawInfo(clone_info);
               }
