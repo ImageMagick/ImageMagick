@@ -5245,7 +5245,10 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
         }
       clone_info=DestroyImageInfo(clone_info);
       if (composite_image == (Image *) NULL)
-        break;
+        {
+          status=0;
+          break;
+        }
       (void) SetImageProgressMonitor(composite_image,(MagickProgressMonitor)
         NULL,(void *) NULL);
       x1=(ssize_t) ceil(primitive_info[1].point.x-0.5);
