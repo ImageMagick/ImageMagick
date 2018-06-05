@@ -3026,7 +3026,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     explicit_file,
     explicit_retry,
-    sequence,
     use_explicit;
 
   MagickOffsetType
@@ -3123,12 +3122,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   graymap=(int *) NULL;
   height=0;
   number_scenes=1;
-  sequence=MagickFalse;
   use_explicit=MagickFalse;
   explicit_retry = MagickFalse;
   width=0;
-  for (group=0; (group != 0x7FE0) || (element != 0x0010) ||
-                (sequence != MagickFalse); )
+  for (group=0; (group != 0x7FE0) || (element != 0x0010) ; )
   {
     /*
       Read a group.
@@ -3205,19 +3202,21 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     length=1;
     if (datum != 0)
       {
-        if ((strncmp(implicit_vr,"SS",2) == 0) ||
+        if ((strncmp(implicit_vr,"OW",2) == 0) ||
+            (strncmp(implicit_vr,"SS",2) == 0) ||
             (strncmp(implicit_vr,"US",2) == 0))
           quantum=2;
-        else
-          if ((strncmp(implicit_vr,"UL",2) == 0) ||
+        else 
+          if ((strncmp(implicit_vr,"FL",2) == 0) ||
+              (strncmp(implicit_vr,"OF",2) == 0) ||
               (strncmp(implicit_vr,"SL",2) == 0) ||
-              (strncmp(implicit_vr,"FL",2) == 0))
+              (strncmp(implicit_vr,"UL",2) == 0))
             quantum=4;
-          else
-            if (strncmp(implicit_vr,"FD",2) != 0)
-              quantum=1;
-            else
+          else 
+            if (strncmp(implicit_vr,"FD",2) == 0)
               quantum=8;
+            else
+              quantum=1;
         if (datum != ~0)
           length=(size_t) datum/quantum;
         else
@@ -3247,7 +3246,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) FormatLocaleFile(stdout," %s",dicom_info[i].description);
         (void) FormatLocaleFile(stdout,": ");
       }
-    if ((sequence == MagickFalse) && (group == 0x7FE0) && (element == 0x0010))
+    if ((group == 0x7FE0) && (element == 0x0010))
       {
         if (image_info->verbose != MagickFalse)
           (void) FormatLocaleFile(stdout,"\n");
@@ -3298,20 +3297,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
               data[length*quantum]='\0';
             }
-          else
-            if ((unsigned int) datum == 0xFFFFFFFFU)
-              {
-                sequence=MagickTrue;
-                continue;
-              }
     if ((((unsigned int) group << 16) | element) == 0xFFFEE0DD)
-      {
-        if (data != (unsigned char *) NULL)
-          data=(unsigned char *) RelinquishMagickMemory(data);
-        sequence=MagickFalse;
-        continue;
-      }
-    if (sequence != MagickFalse)
       {
         if (data != (unsigned char *) NULL)
           data=(unsigned char *) RelinquishMagickMemory(data);
