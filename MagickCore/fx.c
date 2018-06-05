@@ -1125,7 +1125,8 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
       if (option >= 0)
         {
           channel=(PixelChannel) option;
-          channel_mask=SetPixelChannelMask(image,(ChannelType) (1 << channel));
+          channel_mask=SetPixelChannelMask(image,(ChannelType)
+            (1UL << channel));
         }
     }
   (void) FormatLocaleString(key,MagickPathExtent,"%p.%.20g.%s",(void *) image,
