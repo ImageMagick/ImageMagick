@@ -433,7 +433,8 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     {
       case ExtractChannelOp:
       {
-        channel_mask=(ChannelType) (channel_mask | (1 << destination_channel));
+        channel_mask=(ChannelType) (channel_mask |
+          (1UL << destination_channel));
         destination_channel=(PixelChannel) (destination_channel+1);
         break;
       }
@@ -858,7 +859,8 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
     PixelTrait traits = GetPixelChannelTraits(image,channel);
     if ((traits == UndefinedPixelTrait) || ((traits & UpdatePixelTrait) == 0))
       continue;
-    separate_image=SeparateImage(image,(ChannelType) (1 << channel),exception);
+    separate_image=SeparateImage(image,(ChannelType) (1UL << channel),
+      exception);
     if (separate_image != (Image *) NULL)
       AppendImageToList(&images,separate_image);
   }

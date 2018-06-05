@@ -935,7 +935,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
     PixelTrait traits = GetPixelChannelTraits(image,channel);
     if ((traits & UpdatePixelTrait) == 0)
       continue;
-    channel_mask=SetImageChannelMask(image,(ChannelType) (1 << i));
+    channel_mask=SetImageChannelMask(image,(ChannelType) (1UL << i));
     status&=GetImageRange(image,&min,&max,exception);
     min+=black;
     max-=white;
