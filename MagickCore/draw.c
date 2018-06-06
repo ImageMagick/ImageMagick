@@ -1741,7 +1741,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
   clone_info->miterlimit=0;
   dash_polygon[0]=primitive_info[0];
   scale=ExpandAffine(&draw_info->affine);
-  length=scale*(draw_info->dash_pattern[0]-0.5);
+  length=scale*draw_info->dash_pattern[0];
   offset=fabs(draw_info->dash_offset) >= DrawEpsilon ?
     scale*draw_info->dash_offset : 0.0;
   j=1;
@@ -1754,7 +1754,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
       {
         offset-=length;
         n++;
-        length=scale*(draw_info->dash_pattern[n]+0.5);
+        length=scale*draw_info->dash_pattern[n];
         continue;
       }
     if (offset < length)
@@ -1781,7 +1781,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
         n++;
         if (fabs(draw_info->dash_pattern[n]) < DrawEpsilon)
           n=0;
-        length=scale*(draw_info->dash_pattern[n]+(n == 0 ? -0.5 : 0.5));
+        length=scale*draw_info->dash_pattern[n];
       }
     for (total_length=0.0; (length >= 0.0) && (maximum_length >= (total_length+length)); )
     {
@@ -1797,7 +1797,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
         }
       else
         {
-          if ((j+1) > (ssize_t) (2*number_vertices))
+          if ((j+1) > (ssize_t) number_vertices)
             break;
           dash_polygon[j]=primitive_info[i-1];
           dash_polygon[j].point.x=(double) (primitive_info[i-1].point.x+dx*
@@ -1813,7 +1813,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
       n++;
       if (fabs(draw_info->dash_pattern[n]) < DrawEpsilon)
         n=0;
-      length=scale*(draw_info->dash_pattern[n]+(n == 0 ? -0.5 : 0.5));
+      length=scale*draw_info->dash_pattern[n];
     }
     length-=(maximum_length-total_length);
     if ((n & 0x01) != 0)
@@ -1822,7 +1822,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
     dash_polygon[j].coordinates=1;
     j++;
   }
-  if ((total_length <= maximum_length) && ((n & 0x01) == 0) && (j > 1))
+  if ((total_length < maximum_length) && ((n & 0x01) == 0) && (j > 1))
     {
       dash_polygon[j]=primitive_info[i-1];
       dash_polygon[j].point.x+=DrawEpsilon;
