@@ -132,10 +132,11 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
   if ((image->columns % 2) != 0)
     image->columns++;
-  (void) CopyMagickString(image->filename,image_info->filename,MagickPathExtent);
+  (void) CopyMagickString(image->filename,image_info->filename,
+    MagickPathExtent);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
-    return((Image *) NULL);
+    return(DestroyImage(image));
   if (DiscardBlobBytes(image,image->offset) == MagickFalse)
     ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
