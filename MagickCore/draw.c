@@ -6222,7 +6222,7 @@ static size_t TracePath(MVGInfo *mvg_info,const char *path,
           GetNextToken(p,&p,MagickPathExtent,token);
           if (*token == ',')
             GetNextToken(p,&p,MagickPathExtent,token);
-          sweep=fabs(StringToDouble(token&next_token)) < DrawEpsilon ?
+          sweep=fabs(StringToDouble(token,&next_token)) < DrawEpsilon ?
             MagickFalse : MagickTrue;
           if (token == next_token)
             ThrowPointExpectedException(token,exception);
