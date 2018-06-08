@@ -92,7 +92,7 @@
 */
 #define BezierQuantum  200
 #define DrawEpsilon  (1.0e-10)
-#define MaxBezierCoordinates  2097152
+#define MaxBezierCoordinates  262144
 #define ThrowPointExpectedException(token,exception) \
 { \
   (void) ThrowMagickException(exception,GetMagickModule(),DrawError, \
@@ -1774,8 +1774,6 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
     dx=primitive_info[i].point.x-primitive_info[i-1].point.x;
     dy=primitive_info[i].point.y-primitive_info[i-1].point.y;
     maximum_length=hypot(dx,dy);
-    if (maximum_length > MaxBezierCoordinates)
-      break;
     if (fabs(length) < DrawEpsilon)
       {
         n++;
@@ -3939,7 +3937,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
     if (coordinates > MaxBezierCoordinates)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitError,"MemoryAllocationFailed","`%s'",token);
+          DrawError,"TooManyBezierCoordinates","`%s'",token);
         status=MagickFalse;
       }
     if (status == MagickFalse)
