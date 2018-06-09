@@ -98,20 +98,20 @@ typedef struct
   char identific[124];
   unsigned short Version;
   char EndianIndicator[2];
-  unsigned long DataType;
+  unsigned int DataType;
   unsigned int ObjectSize;
-  unsigned long unknown1;
-  unsigned long unknown2;
+  unsigned int unknown1;
+  unsigned int unknown2;
 
   unsigned short unknown5;
   unsigned char StructureFlag;
   unsigned char StructureClass;
-  unsigned long unknown3;
-  unsigned long unknown4;
-  unsigned long DimFlag;
+  unsigned int unknown3;
+  unsigned int unknown4;
+  unsigned int DimFlag;
 
-  unsigned long SizeX;
-  unsigned long SizeY;
+  unsigned int SizeX;
+  unsigned int SizeY;
   unsigned short Flag1;
   unsigned short NameFlag;
 }
@@ -1183,7 +1183,7 @@ RestoreMSCWarning
     image->colors = GetQuantumRange(image->depth);
     if (image->columns == 0 || image->rows == 0)
       goto MATLAB_KO;
-    if((unsigned long)ldblk*MATLAB_HDR.SizeY > MATLAB_HDR.ObjectSize)
+    if((unsigned int)ldblk*MATLAB_HDR.SizeY > MATLAB_HDR.ObjectSize)
       goto MATLAB_KO;
     /* Image is gray when no complex flag is set and 2D Matrix */
     if ((MATLAB_HDR.DimFlag == 8) &&

@@ -1792,7 +1792,7 @@ Magick_png_read_raw_profile(png_struct *ping,Image *image,
   StringInfo
     *profile;
 
-  const unsigned char
+  static const unsigned char
     unhex[103]={0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,
                  0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,
                  0,0,0,0,0,0,0,0,0,1, 2,3,4,5,6,7,8,9,0,0,

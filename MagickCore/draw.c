@@ -2218,7 +2218,6 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
   extent=(size_t) mvg_info->offset+pad+4096;
   if (extent <= *mvg_info->extent)
     return(MagickTrue);
-  primitive_info=(*mvg_info->primitive_info);
   primitive_info=AcquireQuantumMemory(extent,sizeof(*primitive_info));
   if (primitive_info == (PrimitiveInfo *) NULL)
     {
@@ -6588,6 +6587,7 @@ static size_t TracePath(MVGInfo *mvg_info,const char *path,
         TracePoint(q,point);
         mvg_info->offset+=q->coordinates;
         q+=q->coordinates;
+        primitive_info=(*mvg_info->primitive_info)+subpath_offset;
         primitive_info->coordinates=(size_t) (q-primitive_info);
         primitive_info->closed_subpath=MagickTrue;
         number_coordinates+=primitive_info->coordinates;

@@ -792,7 +792,11 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
     goto FINISH;
 
   /* Copy postscript to temporary file */
-  (void) SeekBlob(image,PS_Offset,SEEK_SET);
+  if (SeekBlob(image,PS_Offset,SEEK_SET) != PS_Offset)
+    {
+      DestroyImageInfo(clone_info);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
   count=ReadBlob(image, 2*MagickPathExtent, magick);
   if (count < 1)
     {
@@ -800,7 +804,11 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     }
 
-  (void) SeekBlob(image,PS_Offset,SEEK_SET);
+  if (SeekBlob(image,PS_Offset,SEEK_SET) != PS_Offset)
+    {
+      DestroyImageInfo(clone_info);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
   while (PS_Size-- > 0)
   {
     c=ReadBlobByte(image);
@@ -1092,7 +1100,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
     case 1:     /* WPG level 1 */
       while(!EOFBlob(image)) /* object parser loop */
         {
-          (void) SeekBlob(image,Header.DataOffset,SEEK_SET);
+          if (SeekBlob(image,Header.DataOffset,SEEK_SET) != Header.DataOffset)
+            break;
           if(EOFBlob(image))
             break;
 
@@ -1324,8 +1333,9 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
       StartWPG.PosSizePrecision = 0;
       while(!EOFBlob(image)) /* object parser loop */
         {
-          (void) SeekBlob(image,Header.DataOffset,SEEK_SET);
-          if(EOFBlob(image))
+          if (SeekBlob(image,Header.DataOffset,SEEK_SET) != Header.DataOffset)
+            break;
+          if (EOFBlob(image))
             break;
 
           Rec2.Class=(i=ReadBlobByte(image));
