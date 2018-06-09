@@ -967,7 +967,7 @@ MATLAB_KO:
     if(EOFBlob(image)) break;
     if((MagickSizeType) (MATLAB_HDR.ObjectSize+filepos) > GetBlobSize(image))
       goto MATLAB_KO;
-    filepos += MATLAB_HDR.ObjectSize + 4 + 4;
+    filepos += (MagickOffsetType) MATLAB_HDR.ObjectSize + 4 + 4;
 
     if (clone_info != (ImageInfo *) NULL)
       clone_info=DestroyImageInfo(clone_info);
@@ -1092,7 +1092,7 @@ MATLAB_KO:
     {
       case 0:
         size = ReadBlobXXXLong(image2);  /* Object name string size */
-        size = 4 * (ssize_t) ((size + 3 + 1) / 4);
+        size = 4 * (((size_t) size + 3 + 1) / 4);
         (void) SeekBlob(image2, size, SEEK_CUR);
         break;
       case 1:
