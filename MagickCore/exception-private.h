@@ -48,8 +48,8 @@ extern "C" {
   fatal_message=DestroyString(fatal_message); \
   CatchException(fatal_exception); \
   (void) DestroyExceptionInfo(fatal_exception); \
-  MagickCoreTerminus(); \
   AsynchronousResourceComponentTerminus(); \
+  MagickCoreTerminus(); \
   _exit((int) (severity-FatalErrorException)+1); \
 }
 #define ThrowFileException(exception,severity,tag,context) \
