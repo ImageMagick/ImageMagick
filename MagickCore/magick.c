@@ -1580,7 +1580,6 @@ MagickExport void MagickCoreTerminus(void)
   ModuleComponentTerminus();
 #endif
   CoderComponentTerminus();
-  AsynchronousResourceComponentTerminus();
   ResourceComponentTerminus();
   CacheComponentTerminus();
   PolicyComponentTerminus();
