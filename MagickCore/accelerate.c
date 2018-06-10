@@ -238,7 +238,7 @@ static Image *cloneImage(const Image* image,ExceptionInfo *exception)
       ((image->channel_mask & GreenChannel) != 0) &&
       ((image->channel_mask & BlueChannel) != 0) &&
       ((image->channel_mask & AlphaChannel) != 0))
-    clone=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+    clone=CloneImage(image,0,0,MagickTrue,exception);
   else
     {
       clone=CloneImage(image,0,0,MagickTrue,exception);
@@ -1592,7 +1592,7 @@ static Image *ComputeConvolveImage(const Image* image,MagickCLEnv clEnv,
     goto cleanup;
   }
 
-  filteredImage = CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  filteredImage = CloneImage(image,0,0,MagickTrue,exception);
   assert(filteredImage != NULL);
   if (SetImageStorageClass(filteredImage,DirectClass,exception) != MagickTrue)
   {
@@ -1958,7 +1958,7 @@ static Image *ComputeDespeckleImage(const Image *image,MagickCLEnv clEnv,
     }
   }
 
-  filteredImage = CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  filteredImage = CloneImage(image,0,0,MagickTrue,exception);
   assert(filteredImage != NULL);
   if (SetImageStorageClass(filteredImage,DirectClass,exception) != MagickTrue)
   {
@@ -3068,7 +3068,7 @@ static Image *ComputeLocalContrastImage(const Image *image,MagickCLEnv clEnv,
 
   /* create output */
   {
-    filteredImage = CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+    filteredImage = CloneImage(image,0,0,MagickTrue,exception);
     assert(filteredImage != NULL);
     if (SetImageStorageClass(filteredImage,DirectClass,exception) != MagickTrue)
     {
@@ -5075,7 +5075,7 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,MagickCLEnv clEnv,
   if (strcmp("Intel(R) HD Graphics",device->name) == 0)
     goto cleanup;
   queue=AcquireOpenCLCommandQueue(device);
-  filteredImage=CloneImage(image,image->columns,image->rows,MagickTrue,
+  filteredImage=CloneImage(image,0,0,MagickTrue,
     exception);
   if (filteredImage == (Image *) NULL)
     goto cleanup;

@@ -2174,7 +2174,7 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  mean_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  mean_image=CloneImage(image,0,0,MagickTrue,exception);
   if (mean_image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(mean_image,DirectClass,exception) == MagickFalse)

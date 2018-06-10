@@ -451,8 +451,7 @@ static MagickBooleanType ApplyPSDOpacityMask(Image *image,const Image *mask,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  applying opacity mask");
-  complete_mask=CloneImage(image,image->columns,image->rows,MagickTrue,
-    exception);
+  complete_mask=CloneImage(image,0,0,MagickTrue,exception);
   if (complete_mask == (Image *) NULL)
     return(MagickFalse);
   complete_mask->alpha_trait=BlendPixelTrait;

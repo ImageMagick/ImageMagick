@@ -179,7 +179,7 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
         "ImageSequenceRequired","`%s'",images->filename);
       return((Image *) NULL);
     }
-  image=CloneImage(images,images->columns,images->rows,MagickTrue,exception);
+  image=CloneImage(images,0,0,MagickTrue,exception);
   if (image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
@@ -190,7 +190,7 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
   image->depth=32UL;
   complex_images=NewImageList();
   AppendImageToList(&complex_images,image);
-  image=CloneImage(images,images->columns,images->rows,MagickTrue,exception);
+  image=CloneImage(images,0,0,MagickTrue,exception);
   if (image == (Image *) NULL)
     {
       complex_images=DestroyImageList(complex_images);

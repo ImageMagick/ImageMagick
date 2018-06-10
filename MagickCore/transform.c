@@ -442,7 +442,7 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
       i;
 
     assert(images != (Image *) NULL);
-    cmyk_image=CloneImage(images,images->columns,images->rows,MagickTrue,
+    cmyk_image=CloneImage(images,0,0,MagickTrue,
       exception);
     if (cmyk_image == (Image *) NULL)
       break;
@@ -1194,7 +1194,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  flip_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  flip_image=CloneImage(image,0,0,MagickTrue,exception);
   if (flip_image == (Image *) NULL)
     return((Image *) NULL);
   /*
@@ -1328,7 +1328,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  flop_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  flop_image=CloneImage(image,0,0,MagickTrue,exception);
   if (flop_image == (Image *) NULL)
     return((Image *) NULL);
   /*
@@ -1538,7 +1538,7 @@ MagickExport Image *RollImage(const Image *image,const ssize_t x_offset,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  roll_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  roll_image=CloneImage(image,0,0,MagickTrue,exception);
   if (roll_image == (Image *) NULL)
     return((Image *) NULL);
   offset.x=x_offset;

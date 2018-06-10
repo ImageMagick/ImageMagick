@@ -729,7 +729,7 @@ MagickExport Image *SeparateImage(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  separate_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+  separate_image=CloneImage(image,0,0,MagickTrue,
     exception);
   if (separate_image == (Image *) NULL)
     return((Image *) NULL);

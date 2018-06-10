@@ -185,7 +185,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   assert(exception->signature == MagickCoreSignature);
   if (objects != (CCObjectInfo **) NULL)
     *objects=(CCObjectInfo *) NULL;
-  component_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+  component_image=CloneImage(image,0,0,MagickTrue,
     exception);
   if (component_image == (Image *) NULL)
     return((Image *) NULL);

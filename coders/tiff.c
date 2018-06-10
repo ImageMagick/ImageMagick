@@ -1190,7 +1190,7 @@ static void TIFFReadPhotoshopLayers(Image* image,const ImageInfo *image_info,
   custom_stream=TIFFAcquireCustomStreamForReading(&photoshop_profile,exception);
   if (custom_stream == (CustomStreamInfo *) NULL)
     return;
-  layers=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  layers=CloneImage(image,0,0,MagickTrue,exception);
   if (layers == (Image *) NULL)
     {
       custom_stream=DestroyCustomStreamInfo(custom_stream);

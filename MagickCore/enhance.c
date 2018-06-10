@@ -1348,7 +1348,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  enhance_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+  enhance_image=CloneImage(image,0,0,MagickTrue,
     exception);
   if (enhance_image == (Image *) NULL)
     return((Image *) NULL);
