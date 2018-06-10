@@ -2216,17 +2216,17 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
   if (extent <= *mvg_info->extent)
     return(MagickTrue);
   *mvg_info->primitive_info=ResizeQuantumMemory(*mvg_info->primitive_info,
-    extent,sizeof(*mvg_info->primitive_info));
+    extent,sizeof(**mvg_info->primitive_info));
   *mvg_info->extent=extent;
   if (*mvg_info->primitive_info != (PrimitiveInfo *) NULL)
     return(MagickTrue);
   /*
-    Reallocation failed, allocate 1 point to facilitate unwinding.
+    Reallocation failed, allocate a primitive to facilitate unwinding.
   */
   (void) ThrowMagickException(mvg_info->exception,GetMagickModule(),
     ResourceLimitError,"MemoryAllocationFailed","`%s'","");
   *mvg_info->primitive_info=AcquireCriticalMemory(
-    sizeof(*mvg_info->primitive_info));
+    sizeof(**mvg_info->primitive_info));
   *mvg_info->extent=1;
   mvg_info->offset=0;
   return(MagickFalse);
