@@ -3153,7 +3153,8 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
         (void) ConcatenateString(&message,format);
         for (u=0; u < (ssize_t) width; u++)
         {
-          (void) FormatLocaleString(format,MagickPathExtent,"%+f ",(double) *k++);
+          (void) FormatLocaleString(format,MagickPathExtent,"%+f ",(double)
+            *k++);
           (void) ConcatenateString(&message,format);
         }
         (void) LogMagickEvent(TransformEvent,GetMagickModule(),"%s",message);
