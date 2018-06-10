@@ -2367,6 +2367,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
   double
     angle,
     coordinates,
+    cursor,
     factor,
     primitive_extent;
 
@@ -2491,6 +2492,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
     }
   token=AcquireString(primitive);
   extent=strlen(token)+MagickPathExtent;
+  cursor=0.0;
   defsDepth=0;
   symbolDepth=0;
   macros=GetMVGMacros(primitive);
@@ -2559,6 +2561,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             affine.ty=StringToDouble(token,&next_token);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
+            cursor=0.0;
             break;
           }
         if (LocaleCompare("alpha",keyword) == 0)
@@ -3613,6 +3616,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (LocaleCompare("text",keyword) == 0)
           {
             primitive_type=TextPrimitive;
+            affine.tx+=cursor;
             break;
           }
         if (LocaleCompare("text-align",keyword) == 0)
@@ -3652,11 +3656,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               MagickTrue : MagickFalse;
             break;
           }
-        if (LocaleCompare("text-span",keyword) == 0)
-          {
-            primitive_type=TextPrimitive;
-            break;
-          }
         if (LocaleCompare("text-undercolor",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
@@ -3676,6 +3675,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             affine.ty=StringToDouble(token,&next_token);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
+            cursor=0.0;
             break;
           }
         status=MagickFalse;
@@ -4145,6 +4145,12 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       }
       case TextPrimitive:
       {
+        DrawInfo
+          *clone_info;
+
+        TypeMetric
+          metrics;
+
         if (primitive_info[j].coordinates != 1)
           {
             status=MagickFalse;
@@ -4153,6 +4159,18 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (*token != ',')
           GetNextToken(q,&q,extent,token);
         (void) CloneString(&primitive_info[j].text,token);
+        /*
+          Compute text cursor offset.
+        */
+        clone_info=CloneDrawInfo((ImageInfo *) NULL,graphic_context[n]);
+        if (clone_info->density != (char *) NULL)
+          clone_info->density=DestroyString(clone_info->density);
+        clone_info->render=MagickFalse;
+        clone_info->text=AcquireString(token);
+        (void) ConcatenateString(&clone_info->text," ");
+        status&=GetTypeMetrics(image,clone_info,&metrics,exception);
+        clone_info=DestroyDrawInfo(clone_info);
+        cursor+=metrics.width;
         break;
       }
       case ImagePrimitive:
@@ -4212,9 +4230,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         status&=DrawPrimitive(image,graphic_context[n],primitive_info,
           exception);
       }
-    if (primitive_info->text != (char *) NULL)
-      primitive_info->text=(char *) RelinquishMagickMemory(
-        primitive_info->text);
     proceed=SetImageProgress(image,RenderImageTag,q-primitive,(MagickSizeType)
       primitive_extent);
     if (proceed == MagickFalse)
@@ -4230,7 +4245,13 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
   macros=DestroySplayTree(macros);
   token=DestroyString(token);
   if (primitive_info != (PrimitiveInfo *) NULL)
-    primitive_info=(PrimitiveInfo *) RelinquishMagickMemory(primitive_info);
+    {
+      for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
+        if (primitive_info[i].text != (char *) NULL)
+          primitive_info[i].text=(char *) RelinquishMagickMemory(
+            primitive_info[i].text);
+      primitive_info=(PrimitiveInfo *) RelinquishMagickMemory(primitive_info);
+    }
   primitive=DestroyString(primitive);
   if (stops != (StopInfo *) NULL)
     stops=(StopInfo *) RelinquishMagickMemory(stops);
