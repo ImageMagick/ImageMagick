@@ -883,8 +883,7 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
       (void) memcpy(clone_image->colormap,image->colormap,length*
         sizeof(*clone_image->colormap));
     }
-  if (((columns == image->columns) && (rows == image->rows)) ||
-      ((columns == 0) || (rows == 0)))
+  if ((columns == 0) || (rows == 0))
     {
       if (image->montage != (char *) NULL)
         (void) CloneString(&clone_image->montage,image->montage);

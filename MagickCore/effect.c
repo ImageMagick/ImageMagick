@@ -171,7 +171,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  blur_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  blur_image=CloneImage(image,0,0,MagickTrue,exception);
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
   if (fabs(sigma) < MagickEpsilon)
@@ -491,7 +491,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  sharp_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  sharp_image=CloneImage(image,0,0,MagickTrue,exception);
   if (sharp_image == (Image *) NULL)
     return((Image *) NULL);
   if (fabs(sigma) < MagickEpsilon)
@@ -1473,8 +1473,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
   gaussian_image=BlurImage(image,radius,sigma,exception);
   if (gaussian_image == (Image *) NULL)
     return((Image *) NULL);
-  kuwahara_image=CloneImage(image,image->columns,image->rows,MagickTrue,
-    exception);
+  kuwahara_image=CloneImage(image,0,0,MagickTrue,exception);
   if (kuwahara_image == (Image *) NULL)
     {
       gaussian_image=DestroyImage(gaussian_image);
@@ -2075,7 +2074,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
       return(blur_image);
     }
 #endif
-  blur_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  blur_image=CloneImage(image,0,0,MagickTrue,exception);
   if (blur_image == (Image *) NULL)
     {
       kernel=(MagickRealType *) RelinquishAlignedMemory(kernel);
@@ -2839,7 +2838,7 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
   if (blur_image != (Image *) NULL)
     return(blur_image);
 #endif
-  blur_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  blur_image=CloneImage(image,0,0,MagickTrue,exception);
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(blur_image,DirectClass,exception) == MagickFalse)
@@ -3161,7 +3160,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
       }
       message=DestroyString(message);
     }
-  blur_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  blur_image=CloneImage(image,0,0,MagickTrue,exception);
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(blur_image,DirectClass,exception) == MagickFalse)
@@ -3438,7 +3437,7 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   linear_image=CloneImage(image,0,0,MagickTrue,exception);
-  shade_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  shade_image=CloneImage(image,0,0,MagickTrue,exception);
   if ((linear_image == (Image *) NULL) || (shade_image == (Image *) NULL))
     {
       if (linear_image != (Image *) NULL)
@@ -3792,8 +3791,7 @@ MagickExport Image *SpreadImage(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  spread_image=CloneImage(image,image->columns,image->rows,MagickTrue,
-    exception);
+  spread_image=CloneImage(image,0,0,MagickTrue,exception);
   if (spread_image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(spread_image,DirectClass,exception) == MagickFalse)
