@@ -2298,6 +2298,17 @@ static SplayTreeInfo *GetMVGMacros(const char *primitive)
             for (p=q; *q != '\0'; )
             {
               GetNextToken(p,&p,extent,token);
+              if (*token == '\0')
+                break;
+              if (*token == '#')
+                {
+                  /*
+                    Skip comment.
+                  */
+                  while ((*p != '\n') && (*p != '\0'))
+                    p++;
+                  continue;
+                }
               if (LocaleCompare(token,"pop") == 0)
                 n--;
               if (LocaleCompare(token,"push") == 0)
