@@ -585,6 +585,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         if (object[i].census != 0)
           continue;
         component_image->alpha_trait=BlendPixelTrait;
+        component_image->colormap[i].alpha_trait=BlendPixelTrait;
         component_image->colormap[i].alpha=(MagickRealType) TransparentAlpha;
       }
     }
@@ -614,6 +615,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         for ( ; first != (last+step); first+=step)
         {
           component_image->alpha_trait=BlendPixelTrait;
+          component_image->colormap[first].alpha_trait=BlendPixelTrait;
           component_image->colormap[first].alpha=(MagickRealType)
             TransparentAlpha;
         }
