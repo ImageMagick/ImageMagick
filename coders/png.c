@@ -6127,7 +6127,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
           {
             /* Read DISC or SEEK.  */
 
-            if ((length == 0) || !memcmp(type,mng_SEEK,4))
+            if ((length == 0) || (length % 2) || !memcmp(type,mng_SEEK,4))
               {
                 for (i=1; i < MNG_MAX_OBJECTS; i++)
                   MngInfoDiscardObject(mng_info,i);
