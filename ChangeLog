@@ -1,3 +1,7 @@
+2018-06-13  7.0.8-1  <quetzlzacatenango@image...>
+  * PNG: set storage class to DirectClass if alpha enabled (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=34121).
+
 2018-06-12  7.0.8-0 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-0, GIT revision 14459:d7c892d5a:20180612.
 

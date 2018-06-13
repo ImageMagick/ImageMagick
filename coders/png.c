@@ -4036,6 +4036,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
         (png_get_valid(ping,ping_info,PNG_INFO_tRNS))) ?
         BlendPixelTrait : UndefinedPixelTrait;
+    if (image->alpha_trait == BlendPixelTrait)
+      (void) SetImageStorageClass(image,DirectClass,exception);
 
 #if 0  /* I'm not sure what's wrong here but it does not work. */
     if (image->alpha_trait != UndefinedPixelTrait)
