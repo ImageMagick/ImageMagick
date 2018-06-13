@@ -4248,7 +4248,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
 
   if (status == MagickFalse)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile");
+    return(DestroyImageList(image));
 
   /*
     Verify PNG signature.
@@ -5217,7 +5217,7 @@ static Image *ReadJNGImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
 
   if (status == MagickFalse)
-    return((Image *) NULL);
+    return(DestroyImageList(image));
 
   if (LocaleCompare(image_info->magick,"JNG") != 0)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
@@ -7730,7 +7730,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
 
   if (status == MagickFalse)
-    return((Image *) NULL);
+    return(DestroyImageList(image));
 
   /* Allocate a MngInfo structure.  */
 
