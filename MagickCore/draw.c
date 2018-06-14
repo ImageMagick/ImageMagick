@@ -3878,7 +3878,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
     {
       case RectanglePrimitive:
       {
-        coordinates*=5;
+        coordinates*=5.0;
         break;
       }
       case RoundRectanglePrimitive:
@@ -3891,21 +3891,21 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         alpha=bounds.x2-bounds.x1;
         beta=bounds.y2-bounds.y1;
         radius=hypot((double) alpha,(double) beta);
-        coordinates*=5;
-        coordinates+=2*((size_t) ceil((double) MagickPI*radius))+6*
-          BezierQuantum+360;
+        coordinates*=5.0;
+        coordinates+=2.0*((size_t) ceil((double) MagickPI*radius))+6.0*
+          BezierQuantum+360.0;
         break;
       }
       case BezierPrimitive:
       {
-        if (primitive_info[j].coordinates > 107)
+        coordinates=(double) (BezierQuantum*primitive_info[j].coordinates);
+        if (primitive_info[j].coordinates > (107*BezierQuantum))
           {
             (void) ThrowMagickException(exception,GetMagickModule(),DrawError,
               "TooManyBezierCoordinates","`%s'",token);
             status=MagickFalse;
             break;
           }
-        coordinates=(double) (BezierQuantum*primitive_info[j].coordinates);
         break;
       }
       case PathPrimitive:
@@ -3915,7 +3915,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           *t;
 
         GetNextToken(q,&q,extent,token);
-        coordinates=1;
+        coordinates=1.0;
         t=token;
         for (s=token; *s != '\0'; s=t)
         {
@@ -3933,7 +3933,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         }
         for (s=token; *s != '\0'; s++)
           if (strspn(s,"AaCcQqSsTt") != 0)
-            coordinates+=(20*BezierQuantum)+360;
+            coordinates+=(20.0*BezierQuantum)+360.0;
         break;
       }
       case CirclePrimitive:
@@ -3948,7 +3948,13 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         alpha=bounds.x2-bounds.x1;
         beta=bounds.y2-bounds.y1;
         radius=hypot(alpha,beta);
-        coordinates=2.0*(ceil(MagickPI*radius))+6*BezierQuantum+360.0;
+        coordinates=2.0*(ceil(MagickPI*radius))+6.0*BezierQuantum+360.0;
+        if (coordinates > (107*BezierQuantum))
+          {
+            (void) ThrowMagickException(exception,GetMagickModule(),DrawError,
+              "TooManyBezierCoordinates","`%s'",token);
+            status=MagickFalse;
+          }
         break;
       }
       default:
@@ -3962,7 +3968,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       }
     if (status == MagickFalse)
       break;
-    if (((MagickSizeType) (i+coordinates)) >= number_points)
+    if (((size_t) (i+coordinates)) >= number_points)
       {
         /*
           Resize based on speculative points required by primitive.
