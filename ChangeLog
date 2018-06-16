@@ -1,4 +1,11 @@
-2018-06-13  7.0.8-1  <quetzlzacatenango@image...>
+2018-06-16  7.0.8-1 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-1, GIT revision 14468:94cb08785:20180616.
+
+2018-06-16  7.0.8-1 Cristy  <quetzlzacatenango@image...>
+  * Fixed numerous use of uninitialized values, integer overflow, memory
+    exceeded, and timeouts (credit to OSS Fuzz).
+  * Fixed an issue with stroke and label: (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=34142).
   * PNG: set storage class to DirectClass if alpha enabled (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=34121).
 
