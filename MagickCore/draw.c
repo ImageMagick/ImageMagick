@@ -3354,7 +3354,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                   name);
                 (void) FormatLocaleString(geometry,MagickPathExtent,
                   "%.20gx%.20g%+.20g%+.20g",(double)bounds.width,(double)
-                  bounds.height,(double)bounds.x,(double) bounds.y);
+                  bounds.height,(double) bounds.x,(double) bounds.y);
                 (void) SetImageArtifact(image,key,geometry);
                 GetNextToken(q,&q,extent,token);
                 break;
@@ -5409,15 +5409,22 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           ((draw_info->stroke.alpha != (Quantum) TransparentAlpha) ||
            (draw_info->stroke_pattern != (Image *) NULL)))
         {
+          double
+            x,
+            y;
+
           MagickBooleanType
             closed_path;
 
           /*
             Draw strokes while respecting line cap/join attributes.
           */
-          for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++) ;
           closed_path=primitive_info[0].closed_subpath;
           i=(ssize_t) primitive_info[0].coordinates;
+          x=fabs(primitive_info[i-1].point.x-primitive_info[0].point.x);
+          y=fabs(primitive_info[i-1].point.y-primitive_info[0].point.y);
+          if ((x < DrawEpsilon) && (y < DrawEpsilon))
+            closed_path=MagickTrue;
           if ((((draw_info->linecap == RoundCap) ||
                 (closed_path != MagickFalse)) &&
                (draw_info->linejoin == RoundJoin)) ||
@@ -6138,7 +6145,7 @@ static void TraceEllipse(MVGInfo *mvg_info,const PointInfo center,
     primitive_info[primitive_info->coordinates-1].point.x);
   y=fabs(primitive_info[0].point.y-
     primitive_info[primitive_info->coordinates-1].point.y);
-  if ((x <= DrawEpsilon) && (y <= DrawEpsilon))
+  if ((x < DrawEpsilon) && (y < DrawEpsilon))
     primitive_info->closed_subpath=MagickTrue;
   for (i=0; i < (ssize_t) primitive_info->coordinates; i++)
   {
