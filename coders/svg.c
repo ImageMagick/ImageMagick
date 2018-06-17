@@ -549,6 +549,57 @@ static void SVGElementDeclaration(void *context,const xmlChar *name,int type,
         name,(xmlElementTypeVal) type,content);
 }
 
+static void SVGStripString(char *message)
+{
+  register char
+    *p,
+    *q;
+
+  size_t
+    length;
+
+  assert(message != (char *) NULL);
+  if (*message == '\0')
+    return;
+  /*
+    Remove comment.
+  */
+  for (p=message; *p != '\0'; p++)
+  {
+    if ((*p == '/') && (*(p+1) == '*'))
+      {
+        for (q=p; *q != '\0'; q++)
+          if ((*q == '*') && (*(q+1) == '/'))
+            break;
+        (void) memcpy(p,q+2,strlen(message)-(q-p));
+        p=message;
+      }
+  }
+  /*
+    Remove whitespace.
+  */
+  length=strlen(message);
+  p=message;
+  while (isspace((int) ((unsigned char) *p)) != 0)
+    p++;
+  if ((*p == '\'') || (*p == '"'))
+    p++;
+  q=message+length-1;
+  while ((isspace((int) ((unsigned char) *q)) != 0) && (q > p))
+    q--;
+  if (q > p)
+    if ((*q == '\'') || (*q == '"'))
+      q--;
+  (void) memmove(message,p,(size_t) (q-p+1));
+  message[q-p+1]='\0';
+  /*
+    Convert newlines to a space.
+  */
+  for (p=message; *p != '\0'; p++)
+    if (*p == '\n')
+      *p=' ';
+}
+
 static char **SVGKeyValuePairs(void *context,const int key_sentinel,
   const int value_sentinel,const char *text,size_t *number_tokens)
 {
@@ -602,13 +653,13 @@ static char **SVGKeyValuePairs(void *context,const int key_sentinel,
       }
     tokens[i]=AcquireString(p);
     (void) CopyMagickString(tokens[i],p,(size_t) (q-p+1));
-    StripString(tokens[i]);
+    SVGStripString(tokens[i]);
     i++;
     p=q+1;
   }
   tokens[i]=AcquireString(p);
   (void) CopyMagickString(tokens[i],p,(size_t) (q-p+1));
-  StripString(tokens[i++]);
+  SVGStripString(tokens[i++]);
   tokens[i]=(char *) NULL;
   *number_tokens=(size_t) i;
   return(tokens);
@@ -2687,7 +2738,7 @@ static void SVGCharacters(void *context,const xmlChar *c,int length)
   for (i=0; i < (ssize_t) length; i++)
     *p++=c[i];
   *p='\0';
-  StripString(text);
+  SVGStripString(text);
   if (svg_info->text == (char *) NULL)
     svg_info->text=text;
   else
