@@ -43,7 +43,8 @@ typedef enum
   NormalStyle,
   ItalicStyle,
   ObliqueStyle,
-  AnyStyle
+  AnyStyle,
+  BoldStyle
 } StyleType;
 
 typedef struct _TypeInfo

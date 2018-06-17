@@ -809,6 +809,21 @@ static void SVGProcessStyleElement(void *context,const xmlChar *name,
               value);
             break;
           }
+        if (LocaleCompare(keyword,"font") == 0)
+          {
+            char
+              family[MagickPathExtent],
+              size[MagickPathExtent],
+              style[MagickPathExtent];
+
+            if (sscanf(value,"%2048s %2048s %2048s",style,size,family) != 3)
+              break;
+            (void) FormatLocaleFile(svg_info->file,"font-style \"%s\"\n",style);
+            (void) FormatLocaleFile(svg_info->file,"font-size \"%s\"\n",size);
+            (void) FormatLocaleFile(svg_info->file,"font-family \"%s\"\n",
+              family);
+            break;
+          }
         if (LocaleCompare(keyword,"font-family") == 0)
           {
             (void) FormatLocaleFile(svg_info->file,"font-family \"%s\"\n",

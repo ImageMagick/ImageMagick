@@ -1992,6 +1992,7 @@ static const OptionInfo
   {
     { "Undefined", UndefinedStyle, UndefinedOptionFlag, MagickTrue },
     { "Any", AnyStyle, UndefinedOptionFlag, MagickFalse },
+    { "Bold", BoldStyle, UndefinedOptionFlag, MagickFalse },
     { "Italic", ItalicStyle, UndefinedOptionFlag, MagickFalse },
     { "Normal", NormalStyle, UndefinedOptionFlag, MagickFalse },
     { "Oblique", ObliqueStyle, UndefinedOptionFlag, MagickFalse },
