@@ -3710,7 +3710,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             */
             GetNextToken(q,&q,extent,token);
             use=(const char *) GetValueFromSplayTree(macros,token);
-            if (use != (char *) NULL)
+            if (use != (const char *) NULL)
               {
                 DrawInfo
                   *clone_info;
