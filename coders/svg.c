@@ -2671,6 +2671,8 @@ static void SVGEndElement(void *context,const xmlChar *name)
               (void) FormatLocaleFile(svg_info->file,"text 0,0 \"%s\"\n",text);
               text=DestroyString(text);
               *svg_info->text='\0';
+              svg_info->center.x=0.0;
+              svg_info->center.y=0.0;
             }
           (void) FormatLocaleFile(svg_info->file,"pop graphic-context\n");
           break;
