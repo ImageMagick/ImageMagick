@@ -1,3 +1,9 @@
+2018-06-18  7.0.8-2 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-2, GIT revision 14476:cda11d81d:20180618.
+
+2018-06-18  7.0.8-2 Cristy  <quetzlzacatenango@image...>
+  * More robust SVG text handling.
+
 2018-06-16  7.0.8-1 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-1, GIT revision 14468:94cb08785:20180616.
 
