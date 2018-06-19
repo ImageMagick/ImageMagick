@@ -2426,12 +2426,31 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #endif
 
 #ifdef PNG_SET_USER_LIMITS_SUPPORTED
-  /* Reject images with too many rows or columns */
-  png_set_user_limits(ping,
-    (png_uint_32) MagickMin(0x7fffffffL,
-        GetMagickResourceLimit(WidthResource)),
-    (png_uint_32) MagickMin(0x7fffffffL,
-        GetMagickResourceLimit(HeightResource)));
+  {
+    const char
+      *option;
+
+    /* Reject images with too many rows or columns */
+    png_set_user_limits(ping,(png_uint_32) MagickMin(PNG_UINT_31_MAX,
+      GetMagickResourceLimit(WidthResource)),(png_uint_32)
+      MagickMin(PNG_UINT_31_MAX,GetMagickResourceLimit(HeightResource)));
+
+#if (PNG_LIBPNG_VER >= 10400)
+    option=GetImageOption(image_info,"png:chunk-cache-max");
+    if (option != (const char *) NULL)
+      png_set_chunk_cache_max(ping,(png_uint_32) MagickMin(PNG_UINT_32_MAX,
+        StringToLong(option)));
+    else
+      png_set_chunk_cache_max(ping,32767);
+#endif
+
+#if (PNG_LIBPNG_VER >= 10401)
+    option=GetImageOption(image_info,"png:chunk-malloc-max");
+    if (option != (const char *) NULL)
+      png_set_chunk_malloc_max(ping,(png_alloc_size_t) MagickMin(PNG_SIZE_MAX,
+        StringToLong(option)));
+#endif
+  }
 #endif /* PNG_SET_USER_LIMITS_SUPPORTED */
 
   /*
@@ -2520,15 +2539,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      (int)sizeof(unused_chunks)/5);
   /* Callback for other unknown chunks */
   png_set_read_user_chunk_fn(ping, image, read_user_chunk_callback);
-#endif
-
-#ifdef PNG_SET_USER_LIMITS_SUPPORTED
-#  if (PNG_LIBPNG_VER >= 10400)
-    /* Limit the size of the chunk storage cache used for sPLT, text,
-     * and unknown chunks.
-     */
-    png_set_chunk_cache_max(ping, 32767);
-#  endif
 #endif
 
 #ifdef PNG_READ_CHECK_FOR_INVALID_INDEX_SUPPORTED
