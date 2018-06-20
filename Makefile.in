@@ -2814,6 +2814,7 @@ WEBP_CFLAGS = @WEBP_CFLAGS@
 WEBP_LIBS = @WEBP_LIBS@
 WMF_CFLAGS = @WMF_CFLAGS@
 WMF_LIBS = @WMF_LIBS@
+WS2_32_LIBS = @WS2_32_LIBS@
 WWWDecodeDelegate = @WWWDecodeDelegate@
 WebPDecodeDelegate = @WebPDecodeDelegate@
 WebPEncodeDelegate = @WebPEncodeDelegate@

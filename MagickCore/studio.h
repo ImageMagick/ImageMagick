@@ -121,11 +121,11 @@ extern "C" {
 #endif
 #if defined(MAGICKCORE_THREAD_SUPPORT)
 # include <pthread.h>
-#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
+#endif
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <windows.h>
-#pragma comment (lib, "ws2_32.lib")
 #endif
 #if defined(MAGICKCORE_HAVE_SYS_SYSLIMITS_H)
 # include <sys/syslimits.h>
