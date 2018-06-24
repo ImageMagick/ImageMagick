@@ -1594,13 +1594,24 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"dx") == 0)
             {
-              svg_info->bounds.x+=GetUserSpaceCoordinateValue(svg_info,1,value);
+              double
+                dx;
+
+              dx=GetUserSpaceCoordinateValue(svg_info,1,value);
+              svg_info->bounds.x+=dx;
+              if (LocaleCompare((char *) name,"text") == 0)
+                (void) FormatLocaleFile(svg_info->file,"translate %g,0.0\n",dx);
               break;
             }
           if (LocaleCompare(keyword,"dy") == 0)
             {
-              svg_info->bounds.y+=
-                GetUserSpaceCoordinateValue(svg_info,-1,value);
+              double
+                dy;
+
+              dy=GetUserSpaceCoordinateValue(svg_info,-1,value);
+              svg_info->bounds.y+=dy;
+              if (LocaleCompare((char *) name,"text") == 0)
+                (void) FormatLocaleFile(svg_info->file,"translate 0.0,%g\n",dy);
               break;
             }
           break;
@@ -2132,22 +2143,20 @@ static void SVGStartElement(void *context,const xmlChar *name,
                         p=(const char *) value;
                         GetNextToken(p,&p,MagickPathExtent,token);
                         angle=StringToDouble(value,(char **) NULL);
-                        GetNextToken(p,&p,MagickPathExtent,token);
-                        if (*token == ',')
-                          GetNextToken(p,&p,MagickPathExtent,token);
-                        x=StringToDouble(token,&next_token);
-                        GetNextToken(p,&p,MagickPathExtent,token);
-                        if (*token == ',')
-                          GetNextToken(p,&p,MagickPathExtent,token);
-                        y=StringToDouble(token,&next_token);
                         affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
                         affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
                         affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
                         affine.sy=cos(DegreesToRadians(fmod(angle,360.0)));
-                        affine.tx=0.0;
-                        affine.ty=0.0;
-                        svg_info->center.x=x;
-                        svg_info->center.y=y;
+                        GetNextToken(p,&p,MagickPathExtent,token);
+                        if (*token == ',')
+                          GetNextToken(p,&p,MagickPathExtent,token);
+                        x=StringToDouble(token,&next_token)-svg_info->bounds.x;
+                        GetNextToken(p,&p,MagickPathExtent,token);
+                        if (*token == ',')
+                          GetNextToken(p,&p,MagickPathExtent,token);
+                        y=StringToDouble(token,&next_token)-svg_info->bounds.y;
+                        affine.tx=svg_info->bounds.x+x*cos(angle)-y*sin(angle);
+                        affine.ty=svg_info->bounds.y+x*sin(angle)+y*cos(angle);
                         break;
                       }
                     break;
