@@ -1,4 +1,7 @@
 2018-06-24  7.0.8-3 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-3, GIT revision 14489:c63c504e8:20180624.
+
+2018-06-24  7.0.8-3 Cristy  <quetzlzacatenango@image...>
   * Apply translate component of SVG transform rotate.
 
 2018-06-18  7.0.8-2 Cristy  <quetzlzacatenango@image...>
