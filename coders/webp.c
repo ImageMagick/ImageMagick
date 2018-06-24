@@ -393,8 +393,8 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       webp_flags = 0;
 
     WebPData
-     content = { stream, length },
-     chunk ={ 0 };
+     chunk,
+     content = { stream, length };
 
     WebPMux
       *mux;
@@ -403,6 +403,7 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       Extract any profiles.
     */
     mux=WebPMuxCreate(&content,0);
+    (void) memset(&chunk,0,sizeof(chunk));
     WebPMuxGetFeatures(mux,&webp_flags);
     if (webp_flags & ICCP_FLAG)
       {
@@ -857,23 +858,23 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
       Set image profiles (if any).
     */
     mux_error=WEBP_MUX_OK;
-    chunk.size=0;
+    (void) memset(&chunk,0,sizeof(chunk));
     mux=WebPMuxNew();
-    profile=GetImageProfile(image,"ICC");    
+    profile=GetImageProfile(image,"ICC");
     if ((profile != (StringInfo *) NULL) && (mux_error == WEBP_MUX_OK))
       {
         chunk.bytes=GetStringInfoDatum(profile);
         chunk.size=GetStringInfoLength(profile);
         mux_error=WebPMuxSetChunk(mux,"ICCP",&chunk,0);
       }
-    profile=GetImageProfile(image,"EXIF");    
+    profile=GetImageProfile(image,"EXIF");
     if ((profile != (StringInfo *) NULL) && (mux_error == WEBP_MUX_OK))
       {
         chunk.bytes=GetStringInfoDatum(profile);
         chunk.size=GetStringInfoLength(profile);
         mux_error=WebPMuxSetChunk(mux,"EXIF",&chunk,0);
       }
-    profile=GetImageProfile(image,"XMP");    
+    profile=GetImageProfile(image,"XMP");
     if ((profile != (StringInfo *) NULL) && (mux_error == WEBP_MUX_OK))
       {
         chunk.bytes=GetStringInfoDatum(profile);
