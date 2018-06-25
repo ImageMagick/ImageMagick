@@ -1677,29 +1677,45 @@ static MagickBooleanType GetICCProperty(const Image *image,const char *property,
         char
           info[MagickPathExtent];
 
-        int
-          status;
+        unsigned int
+          extent;
 
         (void) memset(info,0,sizeof(info));
-        status=cmsGetProfileInfoASCII(icc_profile,cmsInfoDescription,"en","US",
-          info,MagickPathExtent);
-        if (status != 0)
-          (void) SetImageProperty((Image *) image,"icc:description",info,
-            exception);
-        status=cmsGetProfileInfoASCII(icc_profile,cmsInfoManufacturer,"en","US",
-          info,MagickPathExtent);
-        if (status != 0)
-          (void) SetImageProperty((Image *) image,"icc:manufacturer",info,
-            exception);
-        status=cmsGetProfileInfoASCII(icc_profile,cmsInfoModel,"en","US",
-          info,MagickPathExtent);
-        if (status != 0)
-          (void) SetImageProperty((Image *) image,"icc:model",info,exception);
-        status=cmsGetProfileInfoASCII(icc_profile,cmsInfoCopyright,"en","US",
-          info,MagickPathExtent);
-        if (status != 0)
-          (void) SetImageProperty((Image *) image,"icc:copyright",info,
-            exception);
+        extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoDescription,"en","US",
+          NULL,0);
+        if (extent != 0)
+          {
+            extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoDescription,"en",
+              "US",info,MagickMin(MagickPathExtent-1,extent));
+            (void) SetImageProperty((Image *) image,"icc:description",info,
+              exception);
+         }
+        extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoManufacturer,"en","US",
+          NULL,0);
+        if (extent != 0)
+          {
+            extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoManufacturer,"en",
+              "US",info,MagickMin(MagickPathExtent-1,extent));
+            (void) SetImageProperty((Image *) image,"icc:manufacturer",info,
+              exception);
+          }
+        extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoModel,"en","US",
+          NULL,0);
+        if (extent != 0)
+          {
+            extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoModel,"en","US",
+              info,MagickMin(MagickPathExtent-1,extent));
+            (void) SetImageProperty((Image *) image,"icc:model",info,exception);
+          }
+        extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoCopyright,"en","US",
+          NULL,0);
+        if (extent != 0)
+          {
+            extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoCopyright,"en",
+              "US",info,MagickMin(MagickPathExtent-1,extent));
+            (void) SetImageProperty((Image *) image,"icc:copyright",info,
+              exception);
+          }
 #endif
         (void) cmsCloseProfile(icc_profile);
       }
