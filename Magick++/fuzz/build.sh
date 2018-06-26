@@ -7,7 +7,7 @@ make -j$(nproc) CFLAGS="$CFLAGS -fPIC"
 make install
 popd
 
-# build xz
+# Build xz
 pushd "$SRC/xz"
 ./autogen.sh
 ./configure --disable-xz --disable-xzdec --disable-lzmadec --disable-lzmainfo --disable-lzma-links --disable-scripts --disable-doc --disable-shared --with-pic=yes --prefix="$WORK"
@@ -15,6 +15,7 @@ make -j$(nproc)
 make install
 popd
 
+# Build png
 pushd "$SRC/libpng"
 cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DPNG_SHARED=off
 make -j$(nproc)
@@ -47,7 +48,7 @@ popd
 # build libraw
 pushd "$SRC/libraw"
 autoreconf -fiv
-./configure --prefix="$WORK" --disable-shared --with-pic=yes --disable-examples PKG_CONFIG_PATH="$WORK/lib/pkgconfig" CFLAGS="$CFLAGS -DLIBRAW_USE_CALLOC_INSTEAD_OF_MALLOC=on"
+./configure --prefix="$WORK" --disable-shared --with-pic=yes --disable-examples PKG_CONFIG_PATH="$WORK/lib/pkgconfig" CXXFLAGS="$CXXFLAGS -DLIBRAW_USE_CALLOC_INSTEAD_OF_MALLOC=on"
 make -j$(nproc)
 make install
 popd
