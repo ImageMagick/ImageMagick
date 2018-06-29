@@ -4555,7 +4555,7 @@ MAGICK_PATCHLEVEL_VERSION=4
 
 MAGICK_VERSION=7.0.8-4
 
-MAGICK_GIT_REVISION=14491:5e87ab2c3:20180625
+MAGICK_GIT_REVISION=14496:807744497:20180629
 
 
 # Substitute library versioning
@@ -9483,93 +9483,6 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_c_compiler_vendor" >&5
 $as_echo "$ax_cv_c_compiler_vendor" >&6; }
 
-AX_COMPILER_FLAGS
-# The AX_CFLAGS_WARN_ALL macro doesn't currently work for sunpro
-# compiler.
-if test "$ax_cv_c_compiler_vendor" != "sun"; then
-  ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking CFLAGS for maximum warnings" >&5
-$as_echo_n "checking CFLAGS for maximum warnings... " >&6; }
-if ${ac_cv_cflags_warn_all+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_cv_cflags_warn_all="no, unknown"
-ac_save_CFLAGS="$CFLAGS"
-for ac_arg in "-warn all  % -warn all"      "-pedantic  % -Wall"          "-xstrconst % -v"             "-std1      % -verbose -w0 -warnprotos"    "-qlanglvl=ansi % -qsrcmsg -qinfo=all:noppt:noppc:noobs:nocnd"    "-ansi -ansiE % -fullwarn"    "+ESlit     % +w1"            "-Xc        % -pvctl,fullmsg"    "-h conform % -h msglevel 2"    #
-do CFLAGS="$ac_save_CFLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
-   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  ac_cv_cflags_warn_all=`echo $ac_arg | sed -e 's,.*% *,,'` ; break
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-done
-CFLAGS="$ac_save_CFLAGS"
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_cflags_warn_all" >&5
-$as_echo "$ac_cv_cflags_warn_all" >&6; }
-
-
-case ".$ac_cv_cflags_warn_all" in
-     .ok|.ok,*)  ;;
-   .|.no|.no,*)  ;;
-   *)
-if ${CFLAGS+:} false; then :
-
-  case " $CFLAGS " in #(
-  *" $ac_cv_cflags_warn_all "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS already contains \$ac_cv_cflags_warn_all"; } >&5
-  (: CFLAGS already contains $ac_cv_cflags_warn_all) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; } ;; #(
-  *) :
-
-     as_fn_append CFLAGS " $ac_cv_cflags_warn_all"
-     { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
-  (: CFLAGS="$CFLAGS") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-     ;;
-esac
-
-else
-
-  CFLAGS=$ac_cv_cflags_warn_all
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
-  (: CFLAGS="$CFLAGS") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-
-fi
- ;;
-esac
-
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-fi
 
 if test "x$GCC" = "xyes"; then
   CFLAGS="$CFLAGS -fexceptions"

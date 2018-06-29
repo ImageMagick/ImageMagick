@@ -306,12 +306,6 @@ AC_CANONICAL_HOST
 AC_CHECK_SIZEOF([size_t])
 
 AX_COMPILER_VENDOR
-AX_COMPILER_FLAGS
-# The AX_CFLAGS_WARN_ALL macro doesn't currently work for sunpro
-# compiler.
-if test "$ax_cv_c_compiler_vendor" != "sun"; then
-  AX_CFLAGS_WARN_ALL
-fi
 
 if test "x$GCC" = "xyes"; then
   CFLAGS="$CFLAGS -fexceptions"

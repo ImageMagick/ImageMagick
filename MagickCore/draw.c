@@ -3029,7 +3029,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             */
             GetNextToken(q,&q,extent,token);
             mask_path=(const char *) GetValueFromSplayTree(macros,token);
-            if (mask_path != (char *) NULL)
+            if (mask_path != (const char *) NULL)
               {
                 if (graphic_context[n]->composite_mask != (Image *) NULL)
                   graphic_context[n]->composite_mask=
@@ -3181,7 +3181,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 GetNextToken(q,&q,extent,token);
                 (void) FormatLocaleString(name,MaxTextExtent,"%s",token);
                 clip_path=(const char *) GetValueFromSplayTree(macros,name);
-                if (clip_path != (char *) NULL)
+                if (clip_path != (const char *) NULL)
                   (void) SetImageArtifact(image,name,clip_path);
                 break;
               }
@@ -3356,7 +3356,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 (void) FormatLocaleString(key,MagickPathExtent,"%s-geometry",
                   name);
                 (void) FormatLocaleString(geometry,MagickPathExtent,
-                  "%.20gx%.20g%+.20g%+.20g",(double)bounds.width,(double)
+                  "%.20gx%.20g%+.20g%+.20g",(double) bounds.width,(double)
                   bounds.height,(double) bounds.x,(double) bounds.y);
                 (void) SetImageArtifact(image,key,geometry);
                 GetNextToken(q,&q,extent,token);
@@ -4273,8 +4273,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if ((primitive_info[i].primitive == TextPrimitive) ||
             (primitive_info[i].primitive == ImagePrimitive))
           if (primitive_info[i].text != (char *) NULL)
-            primitive_info[i].text=(char *) RelinquishMagickMemory(
-              primitive_info[i].text);
+            primitive_info[i].text=DestroyString(primitive_info[i].text);
       primitive_info=(PrimitiveInfo *) RelinquishMagickMemory(primitive_info);
     }
   primitive=DestroyString(primitive);
@@ -6285,6 +6284,8 @@ static size_t TracePath(MVGInfo *mvg_info,const char *path,
           if (*token == ',')
             GetNextToken(p,&p,MagickPathExtent,token);
           sweep=StringToLong(token) != 0 ? MagickTrue : MagickFalse;
+          if (*token == ',')
+            GetNextToken(p,&p,MagickPathExtent,token);
           GetNextToken(p,&p,MagickPathExtent,token);
           if (*token == ',')
             GetNextToken(p,&p,MagickPathExtent,token);
