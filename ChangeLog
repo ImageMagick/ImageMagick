@@ -1,3 +1,6 @@
+2018-06-28  7.0.8-3 Cristy  <quetzlzacatenango@image...>
+  * Small tweaks to compile under Cygwin.
+
 2018-06-24  7.0.8-3 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-3, GIT revision 14489:c63c504e8:20180624.
 

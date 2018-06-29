@@ -40,7 +40,7 @@
 /*
   Include declarations.
 */
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 #include <windows.h>
@@ -128,7 +128,7 @@ MagickExport MagickBooleanType GetMagickSeekableStream(
     MagickTrue);
 }
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -286,7 +286,7 @@ MagickExport void *CropImageToHBITMAP(Image *image,
 }
 #endif
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
