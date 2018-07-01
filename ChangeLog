@@ -1,7 +1,11 @@
-2018-06-28  7.0.8-3 Cristy  <quetzlzacatenango@image...>
+2018-07-01  7.0.8-4 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-4, GIT revision 14501:19ce13c07:20180701.
+
+2018-06-28  7.0.8-4 Cristy  <quetzlzacatenango@image...>
   * Small tweaks to compile under Cygwin.
   * Fixed numerous use of uninitialized values, integer overflow, memory
     exceeded, and timeouts (credit to OSS Fuzz).
+  * Support %B property, the image file size without any decorations.
 
 2018-06-24  7.0.8-3 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-3, GIT revision 14489:c63c504e8:20180624.
