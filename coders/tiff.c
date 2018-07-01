@@ -1250,6 +1250,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     tiff_status;
 
   MagickBooleanType
+    more_frames,
     status;
 
   MagickSizeType
@@ -1356,6 +1357,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           }
       }
   }
+  more_frames=MagickTrue;
   do
   {
 DisableMSCWarning(4127)
@@ -2232,8 +2234,8 @@ RestoreMSCWarning
     if (image_info->number_scenes != 0)
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
-    status=TIFFReadDirectory(tiff) != 0 ? MagickTrue : MagickFalse;
-    if (status != MagickFalse)
+    more_frames=TIFFReadDirectory(tiff) != 0 ? MagickTrue : MagickFalse;
+    if (more_frames != MagickFalse)
       {
         /*
           Allocate next image structure.
@@ -2241,8 +2243,8 @@ RestoreMSCWarning
         AcquireNextImage(image_info,image,exception);
         if (GetNextImageInList(image) == (Image *) NULL)
           {
-            image=DestroyImageList(image);
-            return((Image *) NULL);
+            status=MagickFalse;
+            break;
           }
         image=SyncNextImageInList(image);
         status=SetImageProgress(image,LoadImagesTag,image->scene-1,
@@ -2250,18 +2252,14 @@ RestoreMSCWarning
         if (status == MagickFalse)
           break;
       }
-  } while (status != MagickFalse);
+  } while ((status != MagickFalse) && (more_frames != MagickFalse));
   TIFFClose(tiff);
   TIFFReadPhotoshopLayers(image,image_info,exception);
-  if (image_info->number_scenes != 0)
-    {
-      if (image_info->scene >= GetImageListLength(image))
-        {
-          /* Subimage was not found in the Photoshop layer */
-          image=DestroyImageList(image);
-          return((Image *)NULL);
-        }
-    }
+  if ((image_info->number_scenes != 0) &&
+      (image_info->scene >= GetImageListLength(image)))
+    status=MagickFalse;
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 #endif

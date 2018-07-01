@@ -782,6 +782,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       }
   } while ((count != 0) && (viff_info.identifier == 0xab));
   (void) CloseBlob(image);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 

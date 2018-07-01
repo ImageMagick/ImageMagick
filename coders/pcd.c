@@ -722,8 +722,8 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             AcquireNextImage(image_info,image,exception);
             if (GetNextImageInList(image) == (Image *) NULL)
               {
-                image=DestroyImageList(image);
-                return((Image *) NULL);
+                status=MagickFalse;
+                break;
               }
             image=SyncNextImageInList(image);
           }
@@ -739,8 +739,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       chroma2=(unsigned char *) RelinquishMagickMemory(chroma2);
       chroma1=(unsigned char *) RelinquishMagickMemory(chroma1);
       luma=(unsigned char *) RelinquishMagickMemory(luma);
-      image=GetFirstImageInList(image);
-      return(OverviewImage(image_info,image,exception));
+      if (status == MagickFalse)
+        return(DestroyImageList(image));
+      return(OverviewImage(image_info,GetFirstImageInList(image),exception));
     }
   /*
     Read interleaved image.

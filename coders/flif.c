@@ -196,10 +196,8 @@ static Image *ReadFLIFImage(const ImageInfo *image_info,
         AcquireNextImage(image_info,image,exception);
         if (GetNextImageInList(image) == (Image *) NULL)
           {
-            image=DestroyImageList(image);
-            flif_destroy_decoder(flifdec);
-            pixels=(unsigned short *) RelinquishMagickMemory(pixels);
-            return((Image *) NULL);
+            status=MagickFalse;
+            break;
           }
         image=SyncNextImageInList(image);
       }
@@ -238,6 +236,8 @@ static Image *ReadFLIFImage(const ImageInfo *image_info,
   }
   flif_destroy_decoder(flifdec);
   pixels=(unsigned short *) RelinquishMagickMemory(pixels);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(image);
 }
 #endif

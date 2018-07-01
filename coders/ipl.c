@@ -403,16 +403,17 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
                  image->filename);
       break;
     }
-   if(t_count < ipl_info.z * ipl_info.time){
+   if (t_count < ipl_info.z * ipl_info.time)
+     {
       /*
        Proceed to next image.
        */
       AcquireNextImage(image_info,image,exception);
       if (GetNextImageInList(image) == (Image *) NULL)
-      {
-        image=DestroyImageList(image);
-        return((Image *) NULL);
-      }
+        {
+          status=MagickFalse;
+          break;
+        }
       image=SyncNextImageInList(image); 
       status=SetImageProgress(image,LoadImagesTag,TellBlob(image),
         GetBlobSize(image));
@@ -421,6 +422,8 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   } while (t_count < ipl_info.z*ipl_info.time);
   CloseBlob(image);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 

@@ -271,7 +271,8 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
   AppendImageFormat("map",filename);
   GetPathComponent(filename,BasePath,basename);
   (void) CopyMagickString(mapname,basename,MagickPathExtent);
-  (void) CopyMagickString(image->filename,image_info->filename,MagickPathExtent);
+  (void) CopyMagickString(image->filename,image_info->filename,
+    MagickPathExtent);
   (void) CopyMagickString(filename,image->filename,MagickPathExtent);
   write_info=CloneImageInfo(image_info);
   *write_info->magick='\0';
