@@ -2366,6 +2366,7 @@ MagickExport const char *GetImageProperty(const Image *image,
 %    %y   y resolution (density)
 %    %z   image depth (as read in unless modified, image save depth)
 %    %A   image transparency channel enabled (true/false)
+%    %B   file size of image in bytes
 %    %C   image compression type
 %    %D   image GIF dispose method
 %    %G   original image size (%wx%h; before any resizes)
@@ -2641,6 +2642,16 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
       WarnNoImageReturn("\"%%%c\"",letter);
       string=CommandOptionToMnemonic(MagickPixelTraitOptions,(ssize_t)
         image->alpha_trait);
+      break;
+    }
+    case 'B':  /* image size read in - in bytes */
+    {
+      WarnNoImageReturn("\"%%%c\"",letter);
+      (void) FormatMagickSize(image->extent,MagickFalse,"",MagickPathExtent,
+        value);
+      if (image->extent == 0)
+        (void) FormatMagickSize(GetBlobSize(image),MagickFalse,"",
+          MagickPathExtent,value);
       break;
     }
     case 'C': /* Image compression method.  */
