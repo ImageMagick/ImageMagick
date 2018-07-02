@@ -3920,7 +3920,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           greenmap=(int *) RelinquishMagickMemory(greenmap);
         if (redmap != (int *) NULL)
           redmap=(int *) RelinquishMagickMemory(redmap);
-        image=DestroyImage(image);
+        image=DestroyImageList(image);
         return(GetFirstImageInList(images));
       }
     if (info.depth != (1UL*MAGICKCORE_QUANTUM_DEPTH))
