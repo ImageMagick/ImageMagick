@@ -2647,11 +2647,11 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     case 'B':  /* image size read in - in bytes */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
-      (void) FormatMagickSize(image->extent,MagickFalse,"",MagickPathExtent,
-        value);
+      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+        image->extent);
       if (image->extent == 0)
-        (void) FormatMagickSize(GetBlobSize(image),MagickFalse,"",
-          MagickPathExtent,value);
+        (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+          GetBlobSize(image));
       break;
     }
     case 'C': /* Image compression method.  */
