@@ -321,8 +321,8 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
     AcquireNextImage(image_info,image,exception);
     if (GetNextImageInList(image) == (Image *) NULL)
       {
-        image=DestroyImageList(image);
-        return((Image *) NULL);
+        status=MagickFalse;
+        break;
       }
     image->next->columns=image->columns;
     image->next->rows=image->rows;
@@ -349,6 +349,8 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
     texture=DestroyImage(texture);
   draw_info=DestroyDrawInfo(draw_info);
   (void) CloseBlob(image);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 
