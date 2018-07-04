@@ -14321,8 +14321,8 @@ void
 SetPixels(ref,...)
   Image::Magick::@MAGICK_ABI_SUFFIX@ ref = NO_INIT
   ALIAS:
-    setpixel = 1
-    setPixel = 2
+    setpixels = 1
+    setPixels = 2
   PPCODE:
   {
     AV

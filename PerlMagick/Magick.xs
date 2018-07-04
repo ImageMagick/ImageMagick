@@ -14197,6 +14197,262 @@ SetPixel(ref,...)
 #                                                                             #
 #                                                                             #
 #                                                                             #
+#   S e t P i x e l s                                                         #
+#                                                                             #
+#                                                                             #
+#                                                                             #
+###############################################################################
+#
+#
+void
+SetPixels(ref,...)
+  Image::Magick ref=NO_INIT
+  ALIAS:
+    setpixels = 1
+    setPixels = 2
+  PPCODE:
+  {
+    AV
+      *av;
+
+    char
+      *attribute;
+
+    ChannelType
+      channel,
+      channel_mask;
+
+    ExceptionInfo
+      *exception;
+
+    Image
+      *image;
+
+    RectangleInfo
+      region;
+
+    register ssize_t
+      i;
+
+    register Quantum
+      *q;
+
+    struct PackageInfo
+      *info;
+
+    SV
+      *perl_exception,
+      *reference;  /* reference is the SV* of ref=SvIV(reference) */
+
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
+    exception=AcquireExceptionInfo();
+    perl_exception=newSVpv("",0);
+    reference=SvRV(ST(0));
+    av=(AV *) reference;
+    info=GetPackageInfo(aTHX_ (void *) av,(struct PackageInfo *) NULL,
+      exception);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL,exception);
+    if (image == (Image *) NULL)
+      {
+        ThrowPerlException(exception,OptionError,"NoImagesDefined",
+          PackageName);
+        goto PerlException;
+      }
+    av=(AV *) NULL;
+    region.x=0;
+    region.y=0;
+    region.width=image->columns;
+    region.height=1;
+    if (items == 1)
+      (void) ParseAbsoluteGeometry(SvPV(ST(1),na),&region);
+    channel=DefaultChannels;
+    for (i=2; i < items; i+=2)
+    {
+      attribute=(char *) SvPV(ST(i-1),na);
+      switch (*attribute)
+      {
+        case 'C':
+        case 'c':
+        {
+          if (LocaleCompare(attribute,"channel") == 0)
+            {
+              ssize_t
+                option;
+
+              option=ParseChannelOption(SvPV(ST(i),na));
+              if (option < 0)
+                {
+                  ThrowPerlException(exception,OptionError,"UnrecognizedType",
+                    SvPV(ST(i),na));
+                  return;
+                }
+              channel=(ChannelType) option;
+              break;
+            }
+          if (LocaleCompare(attribute,"color") == 0)
+            {
+              if (SvTYPE(ST(i)) != SVt_RV)
+                {
+                  char
+                    message[MagickPathExtent];
+
+                  (void) FormatLocaleString(message,MagickPathExtent,
+                    "invalid %.60s value",attribute);
+                  ThrowPerlException(exception,OptionError,message,
+                    SvPV(ST(i),na));
+                }
+              av=(AV *) SvRV(ST(i));
+              break;
+            }
+          ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
+            attribute);
+          break;
+        }
+        case 'g':
+        case 'G':
+        {
+          if (LocaleCompare(attribute,"geometry") == 0)
+            {
+              (void) ParseAbsoluteGeometry(SvPV(ST(i),na),&region);
+              break;
+            }
+          ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
+            attribute);
+          break;
+        }
+        case 'h':
+        case 'H':
+        {
+          if (LocaleCompare(attribute,"height") == 0)
+            {
+              region.height=SvIV(ST(i));
+              break;
+            }
+          ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
+            attribute);
+          break;
+        }
+        case 'w':
+        case 'W':
+        {
+          if (LocaleCompare(attribute,"width") == 0)
+            {
+              region.width=SvIV(ST(i));
+              break;
+            }
+          ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
+            attribute);
+          break;
+        }
+        case 'x':
+        case 'X':
+        {
+          if (LocaleCompare(attribute,"x") == 0)
+            {
+              region.x=SvIV(ST(i));
+              break;
+            }
+          ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
+            attribute);
+          break;
+        }
+        case 'y':
+        case 'Y':
+        {
+          if (LocaleCompare(attribute,"y") == 0)
+            {
+              region.y=SvIV(ST(i));
+              break;
+            }
+          ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
+            attribute);
+          break;
+        }
+        default:
+        {
+          ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
+            attribute);
+          break;
+        }
+      }
+    }
+    (void) SetImageStorageClass(image,DirectClass,exception);
+    channel_mask=SetImageChannelMask(image,channel);
+    q=GetAuthenticPixels(image,region.x,region.y,region.width,region.height,
+      exception);
+    if ((q == (Quantum *) NULL) || (av == (AV *) NULL) ||
+        (SvTYPE(av) != SVt_PVAV))
+      PUSHs(&sv_undef);
+    else
+      {
+        double
+          scale;
+
+        register ssize_t
+          i,
+          n,
+          number_pixels;
+
+        i=0;
+        n=0;
+        scale=(double) QuantumRange;
+        number_pixels=region.width*region.height;
+        while ((n < number_pixels) && (i < av_len(av)))
+        {
+          if (((GetPixelRedTraits(image) & UpdatePixelTrait) != 0) &&
+              (i <= av_len(av)))
+            {
+              SetPixelRed(image,ClampToQuantum(scale*SvNV(*(
+                av_fetch(av,i,0)))),q);
+              i++;
+            }
+          if (((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0) &&
+              (i <= av_len(av)))
+            {
+              SetPixelGreen(image,ClampToQuantum(scale*SvNV(*(
+                av_fetch(av,i,0)))),q);
+              i++;
+            }
+          if (((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0) &&
+              (i <= av_len(av)))
+            {
+              SetPixelBlue(image,ClampToQuantum(scale*SvNV(*(
+                av_fetch(av,i,0)))),q);
+              i++;
+            }
+          if ((((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
+              (image->colorspace == CMYKColorspace)) && (i <= av_len(av)))
+            {
+             SetPixelBlack(image,ClampToQuantum(scale*
+                SvNV(*(av_fetch(av,i,0)))),q);
+              i++;
+            }
+          if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
+              (i <= av_len(av)))
+            {
+              SetPixelAlpha(image,ClampToQuantum(scale*
+                SvNV(*(av_fetch(av,i,0)))),q);
+              i++;
+            }
+         	n++;
+         	q+=image->number_channels;
+        }
+        (void) SyncAuthenticPixels(image,exception);
+      }
+    (void) SetImageChannelMask(image,channel_mask);
+
+  PerlException:
+    InheritPerlException(exception,perl_exception);
+    exception=DestroyExceptionInfo(exception);
+    SvREFCNT_dec(perl_exception);
+  }
+
+#
+###############################################################################
+#                                                                             #
+#                                                                             #
+#                                                                             #
 #   S m u s h                                                                 #
 #                                                                             #
 #                                                                             #
