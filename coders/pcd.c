@@ -283,6 +283,9 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
           }
           default:
           {
+            for (i=0; i < (image->columns > 1536 ? 3 : 1); i++)
+              pcd_table[i]=(PCDTable *) RelinquishMagickMemory(pcd_table[i]);
+            buffer=(unsigned char *) RelinquishMagickMemory(buffer);
             ThrowBinaryException(CorruptImageError,"CorruptImage",
               image->filename);
           }
