@@ -1221,8 +1221,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             switch (image->depth)
             {
               default:
+              {
                 colormap=(unsigned char *) RelinquishMagickMemory(colormap);
                 ThrowMIFFException(CorruptImageError,"ImageDepthNotSupported");
+                break;
+              }
               case 8:
               {
                 unsigned char
