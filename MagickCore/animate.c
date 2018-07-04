@@ -433,10 +433,13 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       status=ExpandFilenames(&number_files,&filelist);
       if ((status == MagickFalse) || (number_files == 0))
         {
+          for (i=0; i < number_files; i++)
+            filelist[i]=DestroyString(filelist[i]);
+          filelist=(char **) RelinquishMagickMemory(filelist);
           if (number_files == 0)
             {
               ThrowXWindowException(ImageError,"NoImagesWereLoaded",filenames);
-             return((Image *) NULL);
+              return((Image *) NULL);
             }
           ThrowXWindowException(ResourceLimitError,"MemoryAllocationFailed",
             filenames);
