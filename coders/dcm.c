@@ -3228,13 +3228,13 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (strncmp(implicit_vr,"SS",2) == 0) ||
               (strncmp(implicit_vr,"US",2) == 0))
             quantum=2;
-          else 
+          else
             if ((strncmp(implicit_vr,"FL",2) == 0) ||
                 (strncmp(implicit_vr,"OF",2) == 0) ||
                 (strncmp(implicit_vr,"SL",2) == 0) ||
                 (strncmp(implicit_vr,"UL",2) == 0))
               quantum=4;
-            else 
+            else
               if (strncmp(implicit_vr,"FD",2) == 0)
                 quantum=8;
               else
@@ -3880,7 +3880,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   "UnexpectedEndOfFile",image->filename);
                 break;
               }
-            (void) fputc(c,file);
+            if (fputc(c,file) != c)
+              break;
           }
           (void) fclose(file);
           if (c == EOF)
@@ -3934,7 +3935,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         length=(size_t) (GetQuantumRange(info.depth)+1);
         if (length > (size_t) GetBlobSize(image))
           ThrowDCMException(CorruptImageError,"InsufficientImageDataInFile");
-        if (info.scale != (Quantum *) NULL) 
+        if (info.scale != (Quantum *) NULL)
           info.scale=(Quantum *) RelinquishMagickMemory(info.scale);
         info.scale=(Quantum *) AcquireQuantumMemory(MagickMax(length,256),
           sizeof(*info.scale));
