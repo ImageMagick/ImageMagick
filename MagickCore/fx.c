@@ -1607,6 +1607,17 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
         return(FxChannelStatistics(fx_info,image,channel,symbol,exception));
       break;
     }
+    case 'E':
+    case 'e':
+    {
+      if (LocaleCompare(symbol,"extent") == 0)
+        {
+          if (image->extent != 0)
+            return(image->extent);
+          return(GetBlobSize(image));
+        }
+      break;
+    }
     case 'G':
     case 'g':
     {
@@ -1661,13 +1672,6 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
           (LocaleCompare(symbol,"image.skewness") == 0) ||
           (LocaleCompare(symbol,"image.standard_deviation") == 0))
         return(FxChannelStatistics(fx_info,image,channel,symbol+6,exception));
-      if (LocaleCompare(symbol,"image.extent") == 0)
-        {
-          if (image->extent != 0)
-            return(image->extent);
-          else
-            return(GetBlobSize(fx_info->images));
-        }
       if (LocaleCompare(symbol,"image.resolution.x") == 0)
         return(image->resolution.x);
       if (LocaleCompare(symbol,"image.resolution.y") == 0)
