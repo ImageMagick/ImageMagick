@@ -4560,7 +4560,11 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
         chunk=(unsigned char *) AcquireQuantumMemory(length,sizeof(*chunk));
 
         if (chunk == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+          {
+            DestroyJNG(NULL,&color_image,&color_image_info,
+              &alpha_image,&alpha_image_info);
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+          }
 
         for (i=0; i < (ssize_t) length; i++)
         {
@@ -4587,13 +4591,12 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             jng_width=(png_uint_32)mng_get_long(p);
             jng_height=(png_uint_32)mng_get_long(&p[4]);
             if ((jng_width == 0) || (jng_height == 0))
-            {
-              DestroyJNG(chunk,&color_image,&color_image_info,
-                &alpha_image,&alpha_image_info);
-
-              ThrowReaderException(CorruptImageError,
-                "NegativeOrZeroImageSize");
-            }
+              {
+                DestroyJNG(chunk,&color_image,&color_image_info,
+                  &alpha_image,&alpha_image_info);
+                ThrowReaderException(CorruptImageError,
+                  "NegativeOrZeroImageSize");
+              }
             jng_color_type=p[8];
             jng_image_sample_depth=p[9];
             jng_image_compression_method=p[10];
