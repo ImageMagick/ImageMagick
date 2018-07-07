@@ -4186,7 +4186,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           Compute text cursor offset.
         */
         clone_info=CloneDrawInfo((ImageInfo *) NULL,graphic_context[n]);
-        primitive_info->point.x+=cursor;
+        if ((fabs(primitive_info->point.x) < MagickEpsilon) &&
+            (fabs(primitive_info->point.y) < MagickEpsilon))
+          primitive_info->point.x+=cursor;
         (void) FormatLocaleString(geometry,MagickPathExtent,"%+f%+f",
           primitive_info->point.x,primitive_info->point.y);
         clone_info->render=MagickFalse;
