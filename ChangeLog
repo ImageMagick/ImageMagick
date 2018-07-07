@@ -1,3 +1,6 @@
+2018-07-06  7.0.8-6 Cristy  <quetzlzacatenango@image...>
+  * Improve SVG support for tspan element.
+
 2018-07-04  7.0.8-5 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-5, GIT revision 14514:bba545bbb:20180704.
 

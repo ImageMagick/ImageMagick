@@ -2508,9 +2508,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
     }
   token=AcquireString(primitive);
   extent=strlen(token)+MagickPathExtent;
-  cursor=0.0;
   defsDepth=0;
   symbolDepth=0;
+  cursor=0.0;
   macros=GetMVGMacros(primitive);
   status=MagickTrue;
   for (q=primitive; *q != '\0'; )
@@ -2577,7 +2577,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             affine.ty=StringToDouble(token,&next_token);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
-            cursor=0.0;
             break;
           }
         if (LocaleCompare("alpha",keyword) == 0)
@@ -3632,7 +3631,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (LocaleCompare("text",keyword) == 0)
           {
             primitive_type=TextPrimitive;
-            /* affine.tx+=cursor; */
             break;
           }
         if (LocaleCompare("text-align",keyword) == 0)
@@ -4167,6 +4165,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       }
       case TextPrimitive:
       {
+        char
+          geometry[MagickPathExtent];
+
         DrawInfo
           *clone_info;
 
@@ -4185,8 +4186,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           Compute text cursor offset.
         */
         clone_info=CloneDrawInfo((ImageInfo *) NULL,graphic_context[n]);
-        if (clone_info->density != (char *) NULL)
-          clone_info->density=DestroyString(clone_info->density);
+        primitive_info->point.x+=cursor;
+        (void) FormatLocaleString(geometry,MagickPathExtent,"%+f%+f",
+          primitive_info->point.x,primitive_info->point.y);
         clone_info->render=MagickFalse;
         clone_info->text=AcquireString(token);
         (void) ConcatenateString(&clone_info->text," ");

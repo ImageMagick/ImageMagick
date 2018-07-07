@@ -818,7 +818,12 @@ static void SVGProcessStyleElement(void *context,const xmlChar *name,
 
             if (sscanf(value,"%2048s %2048s %2048s",style,size,family) != 3)
               break;
-            (void) FormatLocaleFile(svg_info->file,"font-style \"%s\"\n",style);
+            if (GetUserSpaceCoordinateValue(svg_info,0,style) == 0)
+              (void) FormatLocaleFile(svg_info->file,"font-style \"%s\"\n",
+                style);
+            else
+              if (sscanf(value,"%2048s %2048s",size,family) != 2)
+                break;
             (void) FormatLocaleFile(svg_info->file,"font-size \"%s\"\n",size);
             (void) FormatLocaleFile(svg_info->file,"font-family \"%s\"\n",
               family);
@@ -1462,6 +1467,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
       if (LocaleCompare((const char *) name,"text") == 0)
         {
           PushGraphicContext(id);
+          (void) FormatLocaleFile(svg_info->file,"class \"text\"\n");
           (void) FormatLocaleFile(svg_info->file,"translate %g,%g\n",
             svg_info->bounds.x,svg_info->bounds.y);
           svg_info->center.x=svg_info->bounds.x;
@@ -2675,7 +2681,6 @@ static void SVGEndElement(void *context,const xmlChar *name)
               char
                 *text;
 
-              (void) FormatLocaleFile(svg_info->file,"class \"text\"\n");
               text=EscapeString(svg_info->text,'\'');
               (void) FormatLocaleFile(svg_info->file,"text 0,0 \"%s\"\n",text);
               text=DestroyString(text);
@@ -2693,6 +2698,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
               char
                 *text;
 
+              (void) FormatLocaleFile(svg_info->file,"class \"tspan\"\n");
               text=EscapeString(svg_info->text,'\'');
               (void) FormatLocaleFile(svg_info->file,"text %g,%g \"%s\"\n",
                 svg_info->bounds.x-svg_info->center.x,svg_info->bounds.y-
@@ -3510,8 +3516,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=(Image *) NULL;
       read_info=CloneImageInfo(image_info);
       SetImageInfoBlob(read_info,(void *) NULL,0);
-      if (read_info->density != (char *) NULL)
-        read_info->density=DestroyString(read_info->density);
       (void) FormatLocaleString(read_info->filename,MagickPathExtent,"mvg:%s",
         filename);
       image=ReadImage(read_info,exception);
