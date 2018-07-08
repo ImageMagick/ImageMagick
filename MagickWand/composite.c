@@ -70,6 +70,7 @@ typedef struct _CompositeOptions
     offset;
 
   MagickBooleanType
+    clip_to_self,
     stereo,
     tile;
 } CompositeOptions;
@@ -197,7 +198,8 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
               for (y=0; y < (ssize_t) (*image)->rows; y+=(ssize_t) composite_image->rows)
                 for (x=0; x < (ssize_t) (*image)->columns; x+=(ssize_t) columns)
                   status&=CompositeImage(*image,composite_image,
-                    composite_options->compose,MagickTrue,x,y,exception);
+                    composite_options->compose,composite_options->clip_to_self,
+                      x,y,exception);
             }
           else
             {
@@ -219,8 +221,8 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
                 Digitally composite image.
               */
               status&=CompositeImage(*image,composite_image,
-                composite_options->compose,MagickTrue,geometry.x,geometry.y,
-                exception);
+                composite_options->compose,composite_options->clip_to_self,
+                geometry.x,geometry.y,exception);
             }
       (void) SetPixelChannelMask(composite_image,channel_mask);
     }
@@ -370,11 +372,21 @@ static MagickBooleanType CompositeUsage(void)
   return(MagickFalse);
 }
 
-static void GetCompositeOptions(CompositeOptions *composite_options)
+static void GetCompositeOptions(const ImageInfo *image_info,
+  CompositeOptions *composite_options)
 {
+  const char
+    *value;
+
   (void) memset(composite_options,0,sizeof(*composite_options));
   composite_options->channel=DefaultChannels;
   composite_options->compose=OverCompositeOp;
+  value=GetImageOption(image_info,"compose:clip-to-self");
+  if (value != (const char *) NULL)
+    composite_options->clip_to_self=IsStringTrue(value);
+  value=GetImageOption(image_info,"compose:outside-overlay");
+  if (value != (const char *) NULL)
+    composite_options->clip_to_self=IsStringFalse(value);  /* deprecated */
 }
 
 static void RelinquishCompositeOptions(CompositeOptions *composite_options)
@@ -468,7 +480,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
     }
   if (argc < 4)
     return(CompositeUsage());
-  GetCompositeOptions(&composite_options);
+  GetCompositeOptions(image_info,&composite_options);
   filename=(char *) NULL;
   format="%w,%h,%m";
   j=1;

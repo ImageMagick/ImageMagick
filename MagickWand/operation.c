@@ -3881,17 +3881,13 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
               MagickFalse,value);
 
           /* Get "clip-to-self" expert setting (false is normal) */
+          clip_to_self=MagickFalse;
           value=GetImageOption(_image_info,"compose:clip-to-self");
-          if (value == (const char *) NULL)
-            clip_to_self=MagickTrue;
-          else
-            clip_to_self=IsStringTrue(GetImageOption(_image_info,
-              "compose:clip-to-self")); /* if this is true */
+          if (value != (const char *) NULL)
+            clip_to_self=IsStringTrue(value);
           value=GetImageOption(_image_info,"compose:outside-overlay");
-          if (value != (const char *) NULL) {   /* or this false */
-            /* FUTURE: depreciate warning for "compose:outside-overlay"*/
-            clip_to_self=IsStringFalse(value);
-          }
+          if (value != (const char *) NULL)
+            clip_to_self=IsStringFalse(value);  /* deprecated */
 
           new_images=RemoveFirstImageFromList(&_images);
           source_image=RemoveFirstImageFromList(&_images);
