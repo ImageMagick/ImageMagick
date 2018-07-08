@@ -228,7 +228,8 @@ static MagickBooleanType IsSVG(const unsigned char *magick,const size_t length)
     return(MagickTrue);
   return(MagickFalse);
 }
-
+
+
 #if defined(MAGICKCORE_XML_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -3287,22 +3288,24 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->rows=gdk_pixbuf_get_height(pixel_buffer);
 #endif
         image->alpha_trait=BlendPixelTrait;
-        status=SetImageExtent(image,image->columns,image->rows,exception);
-        if (status == MagickFalse)
-          {
-#if !defined(MAGICKCORE_CAIRO_DELEGATE)
-            g_object_unref(G_OBJECT(pixel_buffer));
-#endif
-            g_object_unref(svg_handle);
-            ThrowReaderException(MissingDelegateError,
-              "NoDecodeDelegateForThisImageFormat");
-          }
         if (image_info->ping == MagickFalse)
           {
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
             size_t
               stride;
+#endif
 
+            status=SetImageExtent(image,image->columns,image->rows,exception);
+            if (status == MagickFalse)
+              {
+#if !defined(MAGICKCORE_CAIRO_DELEGATE)
+                g_object_unref(G_OBJECT(pixel_buffer));
+#endif
+                g_object_unref(svg_handle);
+                ThrowReaderException(MissingDelegateError,
+                  "NoDecodeDelegateForThisImageFormat");
+              }
+#if defined(MAGICKCORE_CAIRO_DELEGATE)
             stride=4*image->columns;
 #if defined(MAGICKCORE_PANGOCAIRO_DELEGATE)
             stride=(size_t) cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32,
