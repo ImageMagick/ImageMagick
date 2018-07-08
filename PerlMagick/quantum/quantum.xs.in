@@ -301,7 +301,7 @@ static struct
       {"color", StringReference}, {"mask", ImageReference},
       {"channel", MagickChannelOptions},
       {"interpolate", MagickInterpolateOptions}, {"args", StringReference},
-      {"blend", StringReference}, {"crop-to-self", MagickBooleanOptions} } },
+      {"blend", StringReference}, {"clip-to-self", MagickBooleanOptions} } },
     { "Contrast", { {"sharpen", MagickBooleanOptions} } },
     { "CycleColormap", { {"display", IntegerReference} } },
     { "Draw", { {"primitive", MagickPrimitiveOptions},
@@ -8738,7 +8738,7 @@ Mogrify(ref,...)
           if (attribute_flag[14] != 0)   /* "blend=>"  depreciated */
             (void) SetImageArtifact(composite_image,"compose:args",
               argument_list[14].string_reference);
-          clip_to_self=MagickTrue;
+          clip_to_self=MagickFalse;
           if (attribute_flag[15] != 0)
             clip_to_self=(MagickBooleanType)
               argument_list[15].integer_reference;
@@ -8766,21 +8766,15 @@ Mogrify(ref,...)
               /*
                 Tile the composite image.
               */
-             if (attribute_flag[8] != 0)   /* "tile=>" */
-               (void) SetImageArtifact(rotate_image,"compose:outside-overlay",
-                 "false");
-             else
-               (void) SetImageArtifact(composite_image,
-                 "compose:outside-overlay","false");
              for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) composite_image->rows)
                 for (x=0; x < (ssize_t) image->columns; x+=(ssize_t) composite_image->columns)
                 {
                   if (attribute_flag[8] != 0) /* rotate */
                     (void) CompositeImage(image,rotate_image,compose,
-                      MagickTrue,x,y,exception);
+                      clip_to_self,x,y,exception);
                   else
                     (void) CompositeImage(image,composite_image,compose,
-                      MagickTrue,x,y,exception);
+                      clip_to_self,x,y,exception);
                 }
               if (attribute_flag[8] != 0) /* rotate */
                 rotate_image=DestroyImage(rotate_image);
@@ -8815,7 +8809,7 @@ Mogrify(ref,...)
                     exception);
                   (void) CompositeImage(composite_image,
                     argument_list[10].image_reference,CopyGreenCompositeOp,
-                    MagickTrue,0,0,exception);
+                    clip_to_self,0,0,exception);
                 }
               else
                 {
