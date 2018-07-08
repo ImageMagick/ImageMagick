@@ -22,7 +22,6 @@
   <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link href="../www/command-line-processing.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
@@ -32,9 +31,9 @@
 <body>
   <header>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="../index.html"><img class="d-block" id="logo" name="ImageMagick" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
-    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
@@ -58,7 +57,7 @@
         <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server//">Community</a>
+        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="https://www.imagemagick.org/script/search.php">
@@ -76,9 +75,10 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
+
   </div>
   </header>
-  <main role="main" class="container">
+  <main class="container">
     <div class="magick-template">
 <div class="magick-header">
 <p class="text-center"><a href="command-line-processing.html#anatomy">The Anatomy of the Command-line</a> • <a href="command-line-processing.html#input">Input Filename</a> • <a href="command-line-processing.html#option">Command-line Options</a> • <a href="command-line-processing.html#output">Output Filename</a></p>
@@ -121,11 +121,10 @@
   -draw 'roundrectangle 140, 5, 180, 85  20,40' +tile -fill none \
   -draw 'roundrectangle 264, 5, 304, 85 20,40' -strokewidth 2 \
   -draw 'roundrectangle 16, 5, 304, 85 20,40' \( +clone -background snow4 \
-  -shadow 80x3+3+3 \) +swap -background none -layers merge \( +size -font Helvetica \
-  -pointsize 90 -strokewidth 1 -fill red label:'50 %' -trim +repage \( +clone \
-  -background firebrick3 -shadow 80x3+3+3 \) +swap -background none -layers merge \) \
-  -insert 0 -gravity center -append -background white -gravity center -extent 320x200 \
-  cylinder_shaded.png</code></pre>
+  -shadow 80x3+3+3 \) +swap -background none -layers merge \( +size -pointsize 90 \
+  -strokewidth 1 -fill red label:'50 %' -trim +repage \( +clone -background firebrick3 \
+  -shadow 80x3+3+3 \) +swap -background none -layers merge \) -insert 0 -gravity center \
+  -append -background white -gravity center -extent 320x200 cylinder_shaded.png</code></pre>
 
 <p>In the next sections we dissect the anatomy of the ImageMagick command-line.  Hopefully, after carefully reading and better understanding how the command-line works, you should be able to accomplish complex image-processing tasks without resorting to the sometimes daunting <a href="develop.html">program interfaces</a>.</p>
 
@@ -365,8 +364,7 @@ any command-line <a href="command-line-options.html">option</a> not listed as a
 <a href="command-line-processing.html#setting">image setting</a> or
 <a href="command-line-processing.html#sequence">image sequence operator</a>.  Unlike an
 image setting, which persists until the command-line terminates,
-an operator is applied to an image and forgotten.  The image operators
-include:</p>
+an operator is applied to the current image set and forgotten.  The image operators include:</p>
 
 <ul>
 <a href="command-line-options.html#annotate">&#x2011;annotate</a>  • <a href="command-line-options.html#black-threshold">&#x2011;black&#x2011;threshold</a>  • <a href="command-line-options.html#blur">&#x2011;blur</a>  • <a href="command-line-options.html#border">&#x2011;border</a>  • <a href="command-line-options.html#charcoal">&#x2011;charcoal</a>  • <a href="command-line-options.html#chop">&#x2011;chop</a>  • <a href="command-line-options.html#clip">&#x2011;clip</a>  • <a href="command-line-options.html#clip-path">&#x2011;clip&#x2011;path</a>  • <a href="command-line-options.html#clip-mask">&#x2011;clip&#x2011;mask</a>  • <a href="command-line-options.html#colors">&#x2011;colors</a>  • <a href="command-line-options.html#colorize">&#x2011;colorize</a>  • <a href="command-line-options.html#colorspace">&#x2011;colorspace</a>  • <a href="command-line-options.html#compose">&#x2011;compose</a>  • <a href="command-line-options.html#contrast">&#x2011;contrast</a>  • <a href="command-line-options.html#convolve">&#x2011;convolve</a>  • <a href="command-line-options.html#crop">&#x2011;crop</a>  • <a href="command-line-options.html#cycle">&#x2011;cycle</a>  • <a href="command-line-options.html#despeckle">&#x2011;despeckle</a>  • <a href="command-line-options.html#draw">&#x2011;draw</a>  • <a href="command-line-options.html#edge">&#x2011;edge</a>  • <a href="command-line-options.html#emboss">&#x2011;emboss</a>  • <a href="command-line-options.html#enhance">&#x2011;enhance</a>  • <a href="command-line-options.html#equalize">&#x2011;equalize</a>  • <a href="command-line-options.html#evaluate">&#x2011;evaluate</a>  • <a href="command-line-options.html#extent">&#x2011;extent</a>  • <a href="command-line-options.html#flip">&#x2011;flip</a>  • <a href="command-line-options.html#flop">&#x2011;flop</a>  • <a href="command-line-options.html#floodfill">&#x2011;floodfill</a>  • <a href="command-line-options.html#frame">&#x2011;frame</a>  • <a href="command-line-options.html#gamma">&#x2011;gamma</a>  • <a href="command-line-options.html#gaussian-blur">&#x2011;gaussian&#x2011;blur</a>  • <a href="command-line-options.html#grayscale">&#x2011;grayscale</a>  • <a href="command-line-options.html#implode">&#x2011;implode</a>  • <a href="command-line-options.html#lat">&#x2011;lat</a>  • <a href="command-line-options.html#level">&#x2011;level</a>  • <a href="command-line-options.html#map">&#x2011;map</a>  • <a href="command-line-options.html#median">&#x2011;median</a>  • <a href="command-line-options.html#modulate">&#x2011;modulate</a>  • <a href="command-line-options.html#monochrome">&#x2011;monochrome</a>  • <a href="command-line-options.html#negate">&#x2011;negate</a>  • <a href="command-line-options.html#noise">&#x2011;noise</a>  • <a href="command-line-options.html#normalize">&#x2011;normalize</a>  • <a href="command-line-options.html#opaque">&#x2011;opaque</a>  • <a href="command-line-options.html#ordered-dither">&#x2011;ordered&#x2011;dither</a>  • <a href="command-line-options.html#paint">&#x2011;paint</a>  • <a href="command-line-options.html#posterize">&#x2011;posterize</a>  • <a href="command-line-options.html#raise">&#x2011;raise</a>  • <a href="command-line-options.html#profile">&#x2011;profile</a>  • <a href="command-line-options.html#radial-blur">&#x2011;radial&#x2011;blur</a>  • <a href="command-line-options.html#raise">&#x2011;raise</a>  • <a href="command-line-options.html#random-threshold">&#x2011;random&#x2011;threshold</a>  • <a href="command-line-options.html#resample">&#x2011;resample</a>  • <a href="command-line-options.html#resize">&#x2011;resize</a>  • <a href="command-line-options.html#roll">&#x2011;roll</a>  • <a href="command-line-options.html#rotate">&#x2011;rotate</a>  • <a href="command-line-options.html#sample">&#x2011;sample</a>  • <a href="command-line-options.html#scale">&#x2011;scale</a>  • <a href="command-line-options.html#sepia-tone">&#x2011;sepia&#x2011;tone</a>  • <a href="command-line-options.html#segment">&#x2011;segment</a>  • <a href="command-line-options.html#shade">&#x2011;shade</a>  • <a href="command-line-options.html#shadow">&#x2011;shadow</a>  • <a href="command-line-options.html#sharpen">&#x2011;sharpen</a>  • <a href="command-line-options.html#shave">&#x2011;shave</a>  • <a href="command-line-options.html#shear">&#x2011;shear</a>  • <a href="command-line-options.html#sigmoidal-contrast">&#x2011;sigmoidal&#x2011;contrast</a>  • <a href="command-line-options.html#solarize">&#x2011;solarize</a>  • <a href="command-line-options.html#splice">&#x2011;splice</a>  • <a href="command-line-options.html#spread">&#x2011;spread</a>  • <a href="command-line-options.html#strip">&#x2011;strip</a>  • <a href="command-line-options.html#swirl">&#x2011;swirl</a>  • <a href="command-line-options.html#threshold">&#x2011;threshold</a>  • <a href="command-line-options.html#transparent">&#x2011;transparent</a>  • <a href="command-line-options.html#thumbnail">&#x2011;thumbnail</a>  • <a href="command-line-options.html#tint">&#x2011;tint</a>  • <a href="command-line-options.html#transform">&#x2011;transform</a>  • <a href="command-line-options.html#trim">&#x2011;trim</a>  • <a href="command-line-options.html#unsharp">&#x2011;unsharp</a>  • <a href="command-line-options.html#version">&#x2011;version</a>  • <a href="command-line-options.html#wave">&#x2011;wave</a>  • <a href="command-line-options.html#white-point">&#x2011;white&#x2011;point</a>  • <a href="command-line-options.html#white-threshold">&#x2011;white&#x2011;threshold</a> </ul>
@@ -374,6 +372,13 @@ include:</p>
 <p>In this example, <var>-negate</var> negates the wand image but not the wizard:</p>
 
 <pre class="highlight"><code>magick wand.png -negate wizard.png images.png</code></pre>
+
+<p>Note that an image operator will be applied to each images in an image
+sequence. For example, if you use <a href="command-line-options.html#resize">&#x2011;resize</a> option to resize a
+GIF image, each frames will be resized to the given size. However, some frames
+may be smaller than the whole image and resizing all the frames into the same
+size may result in an unexpected output. In such a case,
+<a href="command-line-options.html#coalesce">&#x2011;coalesce</a> should be used to prepare those frames.</p>
 
 <h4 class="magick-header"><a class="anchor" id="channel"></a>Image Channel Operator</h4>
 <p>Operate directly on image channels:</p>
@@ -625,11 +630,11 @@ image-2.jpg</pre>
     <a href="links.html">Related</a> •
      <a href="sitemap.html">Sitemap</a>
        
-    <a href="command-line-processing.html#"><img class="d-inline" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+    <a href="command-line-processing.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
        
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="support.html">Donate</a> •
-    <a href="../www/https://www.imagemagick.org/script/contact.php">Contact Us</a>
+    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a>
     <br/>
         <small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
@@ -639,4 +644,4 @@ image-2.jpg</pre>
   <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 18th February 2018 12:54 -->
+<!-- Magick Cache 8th July 2018 08:34 -->

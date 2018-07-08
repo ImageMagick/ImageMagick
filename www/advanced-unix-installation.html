@@ -22,7 +22,6 @@
   <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link href="advanced-unix-installation.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
@@ -32,9 +31,9 @@
 <body>
   <header>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="../"><img class="d-block" id="logo" name="ImageMagick" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
-    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+    <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
@@ -58,7 +57,7 @@
         <a class="nav-link" href="../www/develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server//">Community</a>
+        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="https://www.imagemagick.org/script/search.php">
@@ -76,9 +75,10 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
+
   </div>
   </header>
-  <main role="main" class="container">
+  <main class="container">
     <div class="magick-template">
 <div class="magick-header">
 <p class="text-center"><a href="advanced-unix-installation.html#download">Download &amp; Unpack</a> • <a href="advanced-unix-installation.html#configure">Configure</a>  • <a href="advanced-unix-installation.html#build">Build</a> • <a href="advanced-unix-installation.html#install">Install</a> • <a href="advanced-unix-installation.html#linux">Linux-specific Build Instructions</a> • <a href="advanced-unix-installation.html#macosx">Mac OS X-specific Build Instructions</a> • <a href="advanced-unix-installation.html#mingw">MinGW-specific Build Instructions</a> • <a href="advanced-unix-installation.html#problems">Dealing with Unexpected Problems</a></p>
@@ -101,7 +101,7 @@
 
 <p>The configure script looks at your environment and decides what it can cobble together to get ImageMagick compiled and installed on your system.  This includes finding a compiler, where your compiler header files are located (e.g. stdlib.h), and if any delegate libraries are available for ImageMagick to use (e.g. JPEG, PNG, TIFF, etc.).  If you are willing to accept configure's default options, and build from within the source directory, you can simply type:</p>
 
-<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.7-22</span><span class='crtout'></span><span class="crtprompt">$ </span><span class='crtin'>./configure</span></pre>
+<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.8-5</span><span class='crtout'></span><span class="crtprompt">$ </span><span class='crtin'>./configure</span></pre>
 <p>Watch the configure script output to verify that it finds everything that
  you think it should.  Pay particular attention to the last lines of the script output.  For example, here is a recent report from our system:</p>
 
@@ -443,7 +443,7 @@ Options used to compile and link:
 <p>While <code>configure</code> is designed to ease installation of ImageMagick, it often discovers problems that would otherwise be encountered later when compiling ImageMagick. The configure script tests for headers and libraries by executing the compiler (CC) with the specified compilation flags (CFLAGS), pre-processor flags (CPPFLAGS), and linker flags (LDFLAGS). Any errors are logged to the file <code>config.log</code>. If configure fails to discover a header or library please review this log file to determine why, however, please be aware that *errors in the <code>config.log</code> are normal* because configure works by trying something and seeing if it fails. An error in <code>config.log</code> is only a problem if the test should have passed on your system.</p>
 
 <p>Common causes of configure failures are: 1) a delegate header is not in the header include path (CPPFLAGS -I option); 2) a delegate library is not in the linker search/run path (LDFLAGS -L/-R option); 3) a delegate library is missing a function (old version?); or 4) compilation environment is faulty.</p>
-<p>If all reasonable corrective actions have been tried and the problem appears be due to a flaw in the configure script, please send a bug report to the <a href="https://www.imagemagick.org/discourse-server///viewforum.html?f=3">ImageMagick Defect Support Forum</a>. All bug reports should contain the operating system type (as reported by <code>uname -a</code>) and the compiler/compiler-version. A copy of the configure script output and/or the relevant portion of  <code>config.log</code> file may be valuable in order to find the problem.  If you post portions of <code>config.log</code>, please also send a script of the configure output and a description of what you expected to see (and why) so the failure you are observing can be identified and resolved.</p>
+<p>If all reasonable corrective actions have been tried and the problem appears be due to a flaw in the configure script, please send a bug report to the <a href="https://www.imagemagick.org/discourse-server//viewforum.html?f=3">ImageMagick Defect Support Forum</a>. All bug reports should contain the operating system type (as reported by <code>uname -a</code>) and the compiler/compiler-version. A copy of the configure script output and/or the relevant portion of  <code>config.log</code> file may be valuable in order to find the problem.  If you post portions of <code>config.log</code>, please also send a script of the configure output and a description of what you expected to see (and why) so the failure you are observing can be identified and resolved.</p>
 
 <p>ImageMagick is now configured and ready to build</p>
 
@@ -520,7 +520,7 @@ identify logo.gif
 
 <p>After the build you, locate the RPMS folder and install the ImageMagick binary RPM distribution:</p>
 
-<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>rpm -ivh ImageMagick-7.0.7-?.*.rpm</span></pre>
+<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>rpm -ivh ImageMagick-7.0.8-?.*.rpm</span></pre>
 <h2 class="magick-post-title"><a class="anchor" id="macosx"></a>Mac OS X-specific Build instructions</h2>
 
 <p>Perform these steps as an administrator or with the <tt>sudo</tt> command:</p>
@@ -545,7 +545,7 @@ sudo port -v install graphviz +gs +wmf +jbig +jpeg2 +lcms
 
 	  <p><a href="../www/download.html">Download</a> the ImageMagick source distribution and verify the distribution against its <a href="https://www.imagemagick.org/download/digest.rdf">message digest</a>.</p>
 	  <p>Unpack and change into the top-level ImageMagick directory:</p>
-		<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>tar xvzf ImageMagick-7.0.7-22.tar.gz</span><span class='crtout'></span><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.7-22</span></pre>	  <p>Configure ImageMagick:</p>
+		<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>tar xvzf ImageMagick-7.0.8-5.tar.gz</span><span class='crtout'></span><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.8-5</span></pre>	  <p>Configure ImageMagick:</p>
 <pre class="highlight"><code>./configure --prefix=/opt --with-quantum-depth=16 \
   --disable-dependency-tracking --with-x=yes \
   --x-includes=/usr/X11R6/include --x-libraries=/usr/X11R6/lib/ \
@@ -572,7 +572,7 @@ sudo port -v install graphviz +gs +wmf +jbig +jpeg2 +lcms
 
 <p>Although you can download and install delegate libraries yourself, many are already available in the <a href="http://gnuwin32.sourceforge.net/">GnuWin32</a> distribution.  Download and install whichever delegate libraries you require such as JPEG, PNG, TIFF, etc.  Make sure you specify the development headers when you install a package.  Next type,</p>
 
-<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>tar jxvf ImageMagick-7.0.7-?.tar.bz2</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.7-22</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>./configure --without-perl</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>make</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>sudo make install</span></pre>
+<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>tar jxvf ImageMagick-7.0.8-?.tar.bz2</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.8-5</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>./configure --without-perl</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>make</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>sudo make install</span></pre>
 <h2 class="magick-post-title"><a class="anchor" id="problems"></a>Dealing with Unexpected Problems</h2>
 
 <p>Chances are the download, configure, build, and install of ImageMagick went flawlessly as it is intended, however, certain systems and environments may cause one or more steps to fail.  We discuss a few problems we've run across and how to take corrective action to ensure you have a working release of ImageMagick</p>
@@ -625,11 +625,11 @@ no encode delegate for this image format
     <a href="../www/links.html">Related</a> •
      <a href="../www/sitemap.html">Sitemap</a>
        
-    <a href="advanced-unix-installation.html#"><img class="d-inline" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+    <a href="advanced-unix-installation.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
        
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="../www/support.html">Donate</a> •
-    <a href="../www/../www/https://www.imagemagick.org/script/contact.php">Contact Us</a>
+    <a href="../www/https://www.imagemagick.org/script/contact.php">Contact Us</a>
     <br/>
         <small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
@@ -639,4 +639,3 @@ no encode delegate for this image format
   <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 18th February 2018 15:14 -->

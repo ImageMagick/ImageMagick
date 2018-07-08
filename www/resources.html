@@ -22,7 +22,6 @@
   <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link href="../www/resources.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
@@ -32,9 +31,9 @@
 <body>
   <header>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="../index.html"><img class="d-block" id="logo" name="ImageMagick" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
-    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
@@ -58,7 +57,7 @@
         <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server//">Community</a>
+        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="https://www.imagemagick.org/script/search.php">
@@ -76,9 +75,10 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
+
   </div>
   </header>
-  <main role="main" class="container">
+  <main class="container">
     <div class="magick-template">
 <div class="magick-header">
 <p class="text-center"><a href="resources.html#configure">Configuration Files</a> • <a href="resources.html#modules">Modules</a> • <a href="resources.html#fonts">Fonts</a> • <a href="resources.html#environment">Environment Variables</a></p>
@@ -214,7 +214,7 @@ $PREFIX/config
 $USERPROFILE/.config/ImageMagick
 &lt;<var>client path</var>&gt;</code></pre>
 
-<p>Above, $PREFIX is the default install path, typically <code>c:\\Program Files\\ImageMagick-7.0.7</code>.</p>
+<p>Above, $PREFIX is the default install path, typically <code>c:\\Program Files\\ImageMagick-7.0.8</code>.</p>
 
 <p>For an uninstalled Windows installation, the configuration load order is:</p>
 
@@ -231,31 +231,31 @@ $USERPROFILE/.config/ImageMagick
 <h4>Coders</h4>
 <p>An image coder (i.e. encoder / decoder) is responsible for registering, optionally classifying, optionally reading, optionally writing, and unregistering one image format (e.g. PNG, GIF, JPEG, etc.).  ImageMagick searches for coders in the following order and it uses the first match found:</p>
 
-<pre class="highlight"><code>$MAGICK_HOME/lib/ImageMagick-7.0.7/modules-Q16/coders
-&lt;<var>client path</var>&gt;/../lib/ImageMagick-7.0.7/modules-Q16/coders
-$MAGICK_HOME/lib/ImageMagick-7.0.7/modules-Q16/coders
-$MAGICK_HOME/share/ImageMagick-7.0.7/modules-Q16/coders
+<pre class="highlight"><code>$MAGICK_HOME/lib/ImageMagick-7.0.8/modules-Q16/coders
+&lt;<var>client path</var>&gt;/../lib/ImageMagick-7.0.8/modules-Q16/coders
+$MAGICK_HOME/lib/ImageMagick-7.0.8/modules-Q16/coders
+$MAGICK_HOME/share/ImageMagick-7.0.8/modules-Q16/coders
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
-&lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.7/modules-Q16/coders</code></pre>
+&lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.8/modules-Q16/coders</code></pre>
 
 <h4>Filters</h4>
 <p>ImageMagick provides a convenient mechanism for adding your own custom image processing algorithms.  ImageMagick searches for filters in the following order and it uses the first match found:</p>
-<pre class="highlight"><code>$MAGICK_HOME/lib/ImageMagick-7.0.7/modules-Q16/filters
-&lt;<var>client path</var>&gt;/../lib/ImageMagick-7.0.7/modules-Q16/filters
-$MAGICK_HOME/lib/ImageMagick-7.0.7/modules-Q16/filters
-$MAGICK_HOME/share/ImageMagick-7.0.7/modules-Q16/filters
+<pre class="highlight"><code>$MAGICK_HOME/lib/ImageMagick-7.0.8/modules-Q16/filters
+&lt;<var>client path</var>&gt;/../lib/ImageMagick-7.0.8/modules-Q16/filters
+$MAGICK_HOME/lib/ImageMagick-7.0.8/modules-Q16/filters
+$MAGICK_HOME/share/ImageMagick-7.0.8/modules-Q16/filters
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
-&lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.7/modules-Q16/filters</code></pre>
+&lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.8/modules-Q16/filters</code></pre>
 
 <h2 class="magick-post-title"><a class="anchor" id="fonts"></a>Fonts</h2>
 
 <p>ImageMagick is able to load raw TrueType and Postscript font files.  It searches for the font configuration file, <a href="resources.html#type.xml">type.xml</a>, in the following order, and loads them if found:</p>
 
 <pre class="highlight"><code>$MAGICK_CONFIGURE_PATH
-$MAGICK_HOME/etc/ImageMagick/-7.0.7
-$MAGICK_HOME/share/ImageMagick-7.0.7
+$MAGICK_HOME/etc/ImageMagick/-7.0.8
+$MAGICK_HOME/share/ImageMagick-7.0.8
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
 &lt;<var>client path</var>&gt;/etc/ImageMagick
@@ -380,11 +380,11 @@ $MAGICK_FONT_PATH</code></pre>
     <a href="links.html">Related</a> •
      <a href="sitemap.html">Sitemap</a>
        
-    <a href="resources.html#"><img class="d-inline" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+    <a href="resources.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
        
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="support.html">Donate</a> •
-    <a href="../www/https://www.imagemagick.org/script/contact.php">Contact Us</a>
+    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a>
     <br/>
         <small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
@@ -394,4 +394,4 @@ $MAGICK_FONT_PATH</code></pre>
   <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 18th February 2018 12:52 -->
+<!-- Magick Cache 8th July 2018 08:35 -->

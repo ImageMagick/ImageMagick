@@ -22,7 +22,6 @@
   <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link href="../www/fx.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
@@ -32,9 +31,9 @@
 <body>
   <header>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="../index.html"><img class="d-block" id="logo" name="ImageMagick" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
-    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
@@ -58,7 +57,7 @@
         <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server//">Community</a>
+        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="https://www.imagemagick.org/script/search.php">
@@ -76,9 +75,10 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
+
   </div>
   </header>
-  <main role="main" class="container">
+  <main class="container">
     <div class="magick-template">
 <div class="magick-header">
 <p class="text-center"><a href="fx.html#fx">The Fx Special Effects Image Operator</a> • <a href="fx.html#anatomy">The Anatomy of an Fx Expression</a></p>
@@ -139,10 +139,10 @@
 
 <p>This FX expression adds random noise to an image:</p>
 
-<pre class="highlight"><code>convert photo.jpg -fx \'iso=32; rone=rand(); rtwo=rand(); \
+<pre class="highlight"><code>convert photo.jpg -fx 'iso=32; rone=rand(); rtwo=rand(); \
   myn=sqrt(-2*ln(rone))*cos(2*Pi*rtwo); myntwo=sqrt(-2*ln(rtwo))* \
-  cos(2*Pi*rone); pnoise=sqrt(p)*myn*sqrt(iso)* \ 
-  channel(4.28,3.86,6.68,0)/255; max(0,p+pnoise)\' noisy.png
+  cos(2*Pi*rone); pnoise=sqrt(p)*myn*sqrt(iso)* \
+  channel(4.28,3.86,6.68,0)/255; max(0,p+pnoise)' noisy.png
 </code></pre>
 
 <p>See <a href="../Usage/transform/index.html#fx">Using FX, The Special Effects Image Operator</a> for more examples.</p>
@@ -218,6 +218,7 @@
      <li><code>resolution.y</code>=> y resolution</li>
 
      <li><code>depth</code>=> image depth</li>
+     <li><code>extent</code>=> image extent</li>
      <li><code>minima</code>=> image minima</li>
      <li><code>maxima</code>=> image maxima</li>
      <li><code>mean</code>=> image mean</li>
@@ -226,8 +227,9 @@
      <li><code>skewness</code>=> image skewness (add a channel specifier to compute a statistic for that channel, e.g. depth.r)</li></dl></dd>
   <dt class="col-md-4"> iterators:</dt>
     <dd class="col-md-8"> while()</dd>
+  <dt class="col-md-4"> image attributes:</dt>
+  	<dd class="col-md-8"> image.depth, image.kurtosis, image.maxima, image.minima, image.resolution.x, image.resolution.y, image.skewness, image.standard_deviation</dd>
 </dl>
-
 
 <h3>The Fx Expression</h3>
 
@@ -322,8 +324,8 @@
 <dt class="col-md-4"> <code>tanh(</code><var>x</var><code>)</code></dt><dd class="col-md-8"> hyperbolic tangent function</dd>
 <dt class="col-md-4"> <code>trunc(</code><var>x</var><code>)</code></dt><dd class="col-md-8"> round to integer, towards zero</dd>
 <dt class="col-md-4"> <code>while(</code><var>condition</var>,<var>expression</var><code>)</code></dt><dd class="col-md-8"> iterate while the condition is not equal to 0</dd>
+<dt class="col-md-4"> <code>image.depth, image.kurtosis, image.maxima, image.minima, image.resolution.x, image.resolution.y, image.skewness, image.standard_deviation</code></dt><dd class="col-md-8"> image attributes</dd>
 </dl>
-<br/>
 <p>The expression semantics include these rules:</p>
 
 <ul>
@@ -422,11 +424,11 @@ Red channel of NW corner of image #1 is 0.184588
     <a href="links.html">Related</a> •
      <a href="sitemap.html">Sitemap</a>
        
-    <a href="fx.html#"><img class="d-inline" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+    <a href="fx.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
        
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="support.html">Donate</a> •
-    <a href="../www/https://www.imagemagick.org/script/contact.php">Contact Us</a>
+    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a>
     <br/>
         <small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
@@ -436,4 +438,4 @@ Red channel of NW corner of image #1 is 0.184588
   <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 18th February 2018 13:16 -->
+<!-- Magick Cache 8th July 2018 08:35 -->
