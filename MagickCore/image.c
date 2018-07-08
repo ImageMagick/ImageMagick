@@ -1459,16 +1459,19 @@ MagickExport Image *GetImageMask(const Image *image,const PixelMask type,
     {
       if ((image->channels & ReadMaskChannel) == 0)
         return((Image *) NULL);
+      break;
     }
     case WritePixelMask:
     {
       if ((image->channels & WriteMaskChannel) == 0)
         return((Image *) NULL);
+      break;
     }
     default:
     {
       if ((image->channels & CompositeMaskChannel) == 0)
         return((Image *) NULL);
+      break;
     }
   }
   mask_image=AcquireImage((ImageInfo *) NULL,exception);
