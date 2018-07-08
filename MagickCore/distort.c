@@ -1490,7 +1490,7 @@ MagickExport Image *DistortResizeImage(const Image *image,
     return((Image *) NULL);
   /* Do not short-circuit this resize if final image size is unchanged */
 
-  (void) memset(distort_args,0,12*sizeof(double));
+  (void) memset(distort_args,0,sizeof(distort_args));
   distort_args[4]=(double) image->columns;
   distort_args[6]=(double) columns;
   distort_args[9]=(double) image->rows;
@@ -1499,7 +1499,7 @@ MagickExport Image *DistortResizeImage(const Image *image,
   vp_save=GetImageVirtualPixelMethod(image);
 
   tmp_image=CloneImage(image,0,0,MagickTrue,exception);
-  if ( tmp_image == (Image *) NULL )
+  if (tmp_image == (Image *) NULL)
     return((Image *) NULL);
   (void) SetImageVirtualPixelMethod(tmp_image,TransparentVirtualPixelMethod,
     exception);
@@ -1514,7 +1514,7 @@ MagickExport Image *DistortResizeImage(const Image *image,
         MagickTrue,exception),
 
       tmp_image=DestroyImage(tmp_image);
-      if ( resize_image == (Image *) NULL )
+      if (resize_image == (Image *) NULL)
         return((Image *) NULL);
 
       (void) SetImageAlphaChannel(resize_image,DeactivateAlphaChannel,
@@ -1542,13 +1542,14 @@ MagickExport Image *DistortResizeImage(const Image *image,
 
       /* distort the actual image containing alpha + VP alpha */
       tmp_image=CloneImage(image,0,0,MagickTrue,exception);
-      if ( tmp_image == (Image *) NULL )
+      if (tmp_image == (Image *) NULL)
         return((Image *) NULL);
-      (void) SetImageVirtualPixelMethod(tmp_image,TransparentVirtualPixelMethod,        exception);
+      (void) SetImageVirtualPixelMethod(tmp_image,
+        TransparentVirtualPixelMethod,exception);
       resize_image=DistortImage(tmp_image,AffineDistortion,12,distort_args,
         MagickTrue,exception),
       tmp_image=DestroyImage(tmp_image);
-      if ( resize_image == (Image *) NULL)
+      if (resize_image == (Image *) NULL)
         {
           resize_alpha=DestroyImage(resize_alpha);
           return((Image *) NULL);
