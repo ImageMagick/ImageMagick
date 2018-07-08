@@ -3990,8 +3990,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     for (scene=0; scene < (ssize_t) number_scenes; scene++)
     {
-      if (image_info->ping != MagickFalse)
-        break;
       image->columns=(size_t) width;
       image->rows=(size_t) height;
       image->depth=info.depth;
