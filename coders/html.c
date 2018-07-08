@@ -96,7 +96,7 @@ static MagickBooleanType IsHTML(const unsigned char *magick,const size_t length)
 {
   if (length < 5)
     return(MagickFalse);
-  if (LocaleNCompare((char *) magick,"<html",5) == 0)
+  if (LocaleNCompare((char *) magick+1,"html",5) == 0)
     return(MagickTrue);
   return(MagickFalse);
 }
