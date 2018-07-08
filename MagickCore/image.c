@@ -1453,6 +1453,24 @@ MagickExport Image *GetImageMask(const Image *image,const PixelMask type,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickCoreSignature);
+  switch (type)
+  {
+    case ReadPixelMask:
+    {
+      if ((image->channels & ReadMaskChannel) == 0)
+        return((Image *) NULL);
+    }
+    case WritePixelMask:
+    {
+      if ((image->channels & WriteMaskChannel) == 0)
+        return((Image *) NULL);
+    }
+    default:
+    {
+      if ((image->channels & CompositeMaskChannel) == 0)
+        return((Image *) NULL);
+    }
+  }
   mask_image=AcquireImage((ImageInfo *) NULL,exception);
   status=SetImageExtent(mask_image,image->columns,image->rows,exception);
   if (status == MagickFalse)
