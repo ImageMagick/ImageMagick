@@ -205,13 +205,11 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
               /*
                 Tile the composite image.
               */
-              (void) SetImageArtifact(*image,"compose:outside-overlay","false");
               columns=composite_image->columns;
               for (y=0; y < (ssize_t) (*image)->rows; y+=(ssize_t) composite_image->rows)
                 for (x=0; x < (ssize_t) (*image)->columns; x+=(ssize_t) columns)
                   status&=CompositeImage(*image,composite_image,
-                    composite_options->compose,composite_options->clip_to_self,
-                      x,y,exception);
+                    composite_options->compose,MagickTrue,x,y,exception);
             }
           else
             {
