@@ -49,7 +49,8 @@ testCompositeCompare('gradient:white-black',q/size=>"70x46"/,
 #
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
-  'input.miff', q//, q/, gravity=>'Center', compose=>'Clear'/,
+  'input.miff', q//,
+  q/, gravity=>'Center', 'clip-to-self'=>True, compose=>'Clear'/,
   'reference/composite/Clear.miff', 0.00001, 0.009);
 
 #
