@@ -48,6 +48,7 @@
 #include "MagickWand/MagickWand.h"
 #include "MagickWand/magick-wand-private.h"
 #include "MagickWand/mogrify-private.h"
+#include "MagickCore/composite-private.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/string-private.h"
@@ -7926,7 +7927,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 MagickComposeOptions,MagickFalse,value);
 
             /* Get "clip-to-self" expert setting (false is normal) */
-            clip_to_self=MagickFalse;
+            clip_to_self=GetCompositeClipToSelf(compose);
             value=GetImageOption(mogrify_info,"compose:clip-to-self");
             if (value != (const char *) NULL)
               clip_to_self=IsStringTrue(value);

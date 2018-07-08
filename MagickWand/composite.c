@@ -112,6 +112,9 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
   Image *composite_image,CompositeOptions *composite_options,
   ExceptionInfo *exception)
 {
+  const char
+    *value;
+
   MagickStatusType
     status;
 
@@ -124,6 +127,14 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
   assert(exception != (ExceptionInfo *) NULL);
   (void) image_info;
   status=MagickTrue;
+  composite_options->clip_to_self=GetCompositeClipToSelf(
+    composite_options->compose);
+  value=GetImageOption(image_info,"compose:clip-to-self");
+  if (value != (const char *) NULL)
+    composite_options->clip_to_self=IsStringTrue(value);
+  value=GetImageOption(image_info,"compose:outside-overlay");
+  if (value != (const char *) NULL)
+    composite_options->clip_to_self=IsStringFalse(value);  /* deprecated */
   if (composite_image != (Image *) NULL)
     {
       ChannelType
@@ -375,18 +386,9 @@ static MagickBooleanType CompositeUsage(void)
 static void GetCompositeOptions(const ImageInfo *image_info,
   CompositeOptions *composite_options)
 {
-  const char
-    *value;
-
   (void) memset(composite_options,0,sizeof(*composite_options));
   composite_options->channel=DefaultChannels;
   composite_options->compose=OverCompositeOp;
-  value=GetImageOption(image_info,"compose:clip-to-self");
-  if (value != (const char *) NULL)
-    composite_options->clip_to_self=IsStringTrue(value);
-  value=GetImageOption(image_info,"compose:outside-overlay");
-  if (value != (const char *) NULL)
-    composite_options->clip_to_self=IsStringFalse(value);  /* deprecated */
 }
 
 static void RelinquishCompositeOptions(CompositeOptions *composite_options)

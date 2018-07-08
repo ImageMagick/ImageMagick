@@ -8737,7 +8737,28 @@ Mogrify(ref,...)
           if (attribute_flag[14] != 0)   /* "blend=>"  depreciated */
             (void) SetImageArtifact(composite_image,"compose:args",
               argument_list[14].string_reference);
-          clip_to_self=MagickFalse;
+          clip_to_self=MagickTrue;
+          switch (compose)
+          {
+            case ClearCompositeOp:
+            case SrcCompositeOp:
+            case InCompositeOp:
+            case SrcInCompositeOp:
+            case OutCompositeOp:
+            case SrcOutCompositeOp:
+            case DstInCompositeOp:
+            case DstAtopCompositeOp:
+            case CopyOpacityCompositeOp:
+            case ChangeMaskCompositeOp:
+            case DissolveCompositeOp:
+            case BlendCompositeOp:
+            {
+              clip_toself=MagickFalse;
+              break;
+            }
+            default:
+              break;
+          }
           if (attribute_flag[15] != 0)
             clip_to_self=(MagickBooleanType)
               argument_list[15].integer_reference;

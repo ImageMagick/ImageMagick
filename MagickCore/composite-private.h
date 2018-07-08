@@ -186,6 +186,33 @@ static inline void CompositePixelInfoBlend(const PixelInfo *p,
     composite);
 }
 
+static inline MagickBooleanType GetCompositeClipToSelf(
+  const CompositeOperator compose)
+{
+  switch (compose)
+  {
+    case ClearCompositeOp:
+    case SrcCompositeOp:
+    case InCompositeOp:
+    case SrcInCompositeOp:
+    case OutCompositeOp:
+    case SrcOutCompositeOp:
+    case DstInCompositeOp:
+    case DstAtopCompositeOp:
+    case CopyAlphaCompositeOp:
+    case ChangeMaskCompositeOp:
+    case DissolveCompositeOp:
+    case BlendCompositeOp:
+    {
+      return(MagickFalse);
+      break;
+    }
+    default:
+      break;
+  }
+  return(MagickTrue);
+}
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
