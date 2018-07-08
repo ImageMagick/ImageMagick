@@ -8748,12 +8748,12 @@ Mogrify(ref,...)
             case SrcOutCompositeOp:
             case DstInCompositeOp:
             case DstAtopCompositeOp:
-            case CopyOpacityCompositeOp:
+            case CopyAlphaCompositeOp:
             case ChangeMaskCompositeOp:
             case DissolveCompositeOp:
             case BlendCompositeOp:
             {
-              clip_toself=MagickFalse;
+              clip_to_self=MagickFalse;
               break;
             }
             default:
