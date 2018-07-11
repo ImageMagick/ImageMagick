@@ -2957,7 +2957,6 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("profile",option+1) == 0)
         {
-          /* Note: arguments do not have percent escapes expanded */
           const char
             *name;
 
@@ -2970,6 +2969,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           ImageInfo
             *profile_info;
 
+          /* Note: arguments do not have percent escapes expanded */
           if (IfPlusOp)
             { /* Remove a profile from the _image.  */
               (void) ProfileImage(_image,arg1,(const unsigned char *)
@@ -2994,6 +2994,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
               profile=FileToStringInfo(profile_info->filename,~0UL,_exception);
               if (profile != (StringInfo *) NULL)
                 {
+                  (void) SetImageInfo(profile_info,0,_exception);
                   (void) ProfileImage(_image,profile_info->magick,
                     GetStringInfoDatum(profile),(size_t)
                     GetStringInfoLength(profile),_exception);

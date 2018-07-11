@@ -2458,6 +2458,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                   exception);
                 if (file_data != (StringInfo *) NULL)
                   {
+                    (void) SetImageInfo(profile_info,0,exception);
                     (void) ProfileImage(*image,profile_info->magick,
                       GetStringInfoDatum(file_data),
                       GetStringInfoLength(file_data),exception);
