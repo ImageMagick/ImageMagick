@@ -1000,6 +1000,11 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     flag,
     *global_colormap;
 
+  const char
+    *value;
+  size_t
+    frames_limit;
+
   /*
     Open image file.
   */
@@ -1046,9 +1051,21 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (count != (ssize_t) (3*global_colors))
         ThrowGIFException(CorruptImageError,"InsufficientImageDataInFile");
     }
+
+  /*
+   * "gif:frames-limit" define upper limit for number of images
+  */
+  value=GetImageOption(image_info,"gif:frames-limit");
+  if (value != NULL) {
+    frames_limit=StringToInteger(value);
+  } else {
+    frames_limit=0; // unlimit
+  }
+
   duration=0;
   opacity=(-1);
   image_count=0;
+
   for ( ; ; )
   {
     count=ReadBlob(image,1,&c);
@@ -1056,6 +1073,13 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     if (c == (unsigned char) ';')
       break;  /* terminator */
+
+    if (frames_limit > 0) {
+      if (frames_limit <= image_count) {
+        break;  /* terminate */
+      }
+    }
+
     if (c == (unsigned char) '!')
       {
         /*
