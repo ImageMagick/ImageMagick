@@ -4274,6 +4274,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     greenmap=(int *) RelinquishMagickMemory(greenmap);
   if (redmap != (int *) NULL)
     redmap=(int *) RelinquishMagickMemory(redmap);
+  if (image == (Image *) NULL)
+    return(image);
   (void) CloseBlob(image);
   if (status == MagickFalse)
     return(DestroyImageList(image));
