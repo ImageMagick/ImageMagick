@@ -483,6 +483,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 
   size_t
     compress_extent,
+    extent,
     length,
     packet_size;
 
@@ -1432,6 +1433,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
       if (q == (Quantum *) NULL)
         break;
+      extent=0;
       switch (image->compression)
       {
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
@@ -1470,7 +1472,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             if (code == BZ_STREAM_END)
               break;
           } while (bzip_info.avail_out != 0);
-          (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+          extent=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
           break;
         }
@@ -1509,7 +1511,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             if (code == LZMA_STREAM_END)
               break;
           } while (lzma_info.avail_out != 0);
-          (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+          extent=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
           break;
         }
@@ -1551,7 +1553,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             if (code == Z_STREAM_END)
               break;
           } while (zip_info.avail_out != 0);
-          (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+          extent=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
           break;
         }
@@ -1582,6 +1584,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
             q+=GetPixelChannels(image);
           }
+          extent=(size_t) x;
           break;
         }
         default:
@@ -1589,11 +1592,13 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           count=ReadBlob(image,packet_size*image->columns,pixels);
           if (count != (ssize_t) (packet_size*image->columns))
             ThrowMIFFException(CorruptImageError,"UnableToReadImageData");
-          (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+          extent=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
           break;
         }
       }
+      if (extent < image->columns)
+        break;
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;
     }
