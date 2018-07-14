@@ -201,8 +201,6 @@ static inline MagickBooleanType GetCompositeClipToSelf(
     case DstAtopCompositeOp:
     case CopyAlphaCompositeOp:
     case ChangeMaskCompositeOp:
-    case DissolveCompositeOp:
-    case BlendCompositeOp:
     {
       return(MagickFalse);
       break;
