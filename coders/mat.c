@@ -1085,7 +1085,7 @@ MATLAB_KO:
         MATLAB_HDR.StructureClass != mxINT64_CLASS &&
         MATLAB_HDR.StructureClass != mxUINT64_CLASS)    /* uint64 + uint64 3D */
       {
-        if (image2 != (Image*) NULL)
+        if ((image2 != (Image*) NULL) && (image2 != image))
           {
             CloseBlob(image2);
             DeleteImageFromList(&image2);

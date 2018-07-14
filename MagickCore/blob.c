@@ -609,9 +609,8 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(image->blob != (BlobInfo *) NULL);
   blob_info=image->blob;
-  if (blob_info->type == UndefinedStream)
+  if ((blob_info == (BlobInfo *) NULL) || (blob_info->type == UndefinedStream))
     return(MagickTrue);
   status=SyncBlob(image);
   switch (blob_info->type)
