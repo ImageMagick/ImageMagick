@@ -3128,6 +3128,7 @@ static MagickBooleanType TIFFWritePhotoshopLayers(Image* image,
   layers=AcquireStringInfo(profile.quantum);
   if (layers == (StringInfo *) NULL)
     {
+      base_image=DestroyImage(base_image);
       clone_info=DestroyImageInfo(clone_info);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
@@ -3137,6 +3138,7 @@ static MagickBooleanType TIFFWritePhotoshopLayers(Image* image,
   custom_stream=TIFFAcquireCustomStreamForWriting(&profile,exception);
   if (custom_stream == (CustomStreamInfo *) NULL)
     {
+      base_image=DestroyImage(base_image);
       clone_info=DestroyImageInfo(clone_info);
       layers=DestroyStringInfo(layers);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
@@ -3145,6 +3147,7 @@ static MagickBooleanType TIFFWritePhotoshopLayers(Image* image,
   blob=CloneBlobInfo((BlobInfo *) NULL);
   if (blob == (BlobInfo *) NULL)
     {
+      base_image=DestroyImage(base_image);
       clone_info=DestroyImageInfo(clone_info);
       layers=DestroyStringInfo(layers);
       custom_stream=DestroyCustomStreamInfo(custom_stream);
