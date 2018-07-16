@@ -568,17 +568,21 @@ static void SVGStripString(char *message)
   /*
     Remove comment.
   */
+  q=message;
   for (p=message; *p != '\0'; p++)
   {
     if ((*p == '/') && (*(p+1) == '*'))
       {
-        for (q=p; *q != '\0'; q++)
-          if ((*q == '*') && (*(q+1) == '/'))
+        for ( ; *p != '\0'; p++)
+          if ((*p == '*') && (*(p+1) == '/'))
             break;
-        (void) memcpy(p,q+2,strlen(message)-(q-p));
-        p=message;
+        if (*p == '\0')
+          break;
+        p+=2;
       }
+    *q++=(*p);
   }
+  *q='\0';
   /*
     Remove whitespace.
   */
