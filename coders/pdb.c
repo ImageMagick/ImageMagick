@@ -875,7 +875,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
         scanline=(unsigned char *) RelinquishMagickMemory(scanline);
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  (void) ResetMagickMemory(buffer,0,512*sizeof(*buffer));
+  (void) memset(buffer,0,512*sizeof(*buffer));
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
   /*

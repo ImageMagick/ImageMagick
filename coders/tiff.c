@@ -1773,7 +1773,7 @@ RestoreMSCWarning
     tiff_pixels=(unsigned char *) AcquireMagickMemory(number_pixels);
     if (tiff_pixels == (unsigned char *) NULL)
       ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-    (void) ResetMagickMemory(tiff_pixels,0,number_pixels);
+    (void) memset(tiff_pixels,0,number_pixels);
     switch (method)
     {
       case ReadSingleSampleMethod:
