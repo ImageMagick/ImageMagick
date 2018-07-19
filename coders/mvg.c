@@ -211,13 +211,20 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     draw_info->primitive=FileToString(image->filename,~0UL,exception);
   else
     {
-      draw_info->primitive=(char *) AcquireMagickMemory(GetBlobSize(image)+1);
-      if (draw_info->primitive != (char *) NULL)
+      MagickSizeType
+        length;
+
+      length=GetBlobSize(image);
+      if (length == (MagickSizeType) ((size_t) length))
         {
-          memcpy(draw_info->primitive,GetBlobStreamData(image),
-            GetBlobSize(image));
-          draw_info->primitive[GetBlobSize(image)]='\0';
-        }
+          draw_info->primitive=(char *) AcquireMagickMemory((size_t) length+1);
+          if (draw_info->primitive != (char *) NULL)
+            {
+              memcpy(draw_info->primitive,GetBlobStreamData(image),(size_t)
+                length);
+              draw_info->primitive[length]='\0';
+            }
+         }
      }
   if (draw_info->primitive == (char *) NULL)
     {
