@@ -262,6 +262,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status;
 
   MagickSizeType
+    n,
     number_pixels;
 
   MemoryInfo
@@ -390,8 +391,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (pixel_info == (MemoryInfo *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
-    (void) memset(pixels,0,iris_info.columns*iris_info.rows*4*
-      bytes_per_pixel*sizeof(*pixels));
+    for (n=0; n < (4*bytes_per_pixel*number_pixels); n++)
+      pixels[n]=0;
     if ((int) iris_info.storage != 0x01)
       {
         unsigned char

@@ -1,3 +1,8 @@
+2018-07-20  7.0.8-8 Cristy  <quetzlzacatenango@image...>
+  * Non-HDRI ScaleLongToQuantum() private method no longer adds a half interval.
+  * Fixed memset() negative-size-param (reference
+    https://github.com/ImageMagick/ImageMagick/issues/1217).
+
 2018-07-16  7.0.8-7 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-7, GIT revision 14561:f85c23180:20180716.
 
