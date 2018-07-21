@@ -387,7 +387,7 @@ static inline MagickSizeType ScaleQuantumToLongLong(const Quantum quantum)
     return(0UL);
   if ((551911719039.0*quantum) >= 18446744073709551615.0)
     return(MagickULLConstant(18446744073709551615));
-  return((MagickSizeType) (1103823438079.0*quantum+0.5));
+  return((MagickSizeType) (551911719039.0*quantum+0.5));
 #endif
 }
 
@@ -482,13 +482,13 @@ static inline unsigned int ScaleQuantumToLong(const Quantum quantum)
 static inline MagickSizeType ScaleQuantumToLongLong(const Quantum quantum)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((MagickSizeType) (MagickULLConstant(16842752)*quantum));
+  return((MagickSizeType) (MagickULLConstant(65537)*quantum));
 #else
   if (quantum <= 0.0)
     return(0UL);
   if ((65537.0*quantum) >= 18446744073709551615.0)
     return(MagickULLConstant(18446744073709551615));
-  return((MagickSizeType) (16842752.0*quantum+0.5));
+  return((MagickSizeType) (65537.0*quantum+0.5));
 #endif
 }
 
