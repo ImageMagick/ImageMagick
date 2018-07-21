@@ -345,10 +345,9 @@ static inline Quantum ScaleLongToQuantum(const unsigned int value)
 static inline Quantum ScaleLongLongToQuantum(const MagickSizeType value)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((Quantum) ((value+MagickULLConstant(551911719039))/
-    MagickULLConstant(1103823438079)));
+  return((Quantum) (value/MagickULLConstant(72340172838076673)));
 #else
-  return((Quantum) (value/1103823438079.0));
+  return((Quantum) (value/72340172838076673.0));
 #endif
 }
 
@@ -381,13 +380,13 @@ static inline unsigned int ScaleQuantumToLong(const Quantum quantum)
 static inline MagickSizeType ScaleQuantumToLongLong(const Quantum quantum)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((MagickSizeType) (MagickULLConstant(551911719039)*quantum));
+  return((MagickSizeType) (MagickULLConstant(72340172838076673)*quantum));
 #else
   if (quantum <= 0.0)
     return(0UL);
-  if ((551911719039.0*quantum) >= 18446744073709551615.0)
+  if ((72340172838076673.0*quantum) >= 18446744073709551615.0)
     return(MagickULLConstant(18446744073709551615));
-  return((MagickSizeType) (551911719039.0*quantum+0.5));
+  return((MagickSizeType) (72340172838076673*quantum+0.5));
 #endif
 }
 
@@ -447,9 +446,9 @@ static inline Quantum ScaleLongToQuantum(const unsigned int value)
 static inline Quantum ScaleLongLongToQuantum(const MagickSizeType value)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((Quantum) ((value)/MagickULLConstant(16842752)));
+  return((Quantum) ((value)/MagickULLConstant(281479271743489)));
 #else
-  return((Quantum) (value/16842752.0));
+  return((Quantum) (value/281479271743489.0));
 #endif
 }
 
@@ -482,13 +481,13 @@ static inline unsigned int ScaleQuantumToLong(const Quantum quantum)
 static inline MagickSizeType ScaleQuantumToLongLong(const Quantum quantum)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((MagickSizeType) (MagickULLConstant(65537)*quantum));
+  return((MagickSizeType) (MagickULLConstant(281479271743489)*quantum));
 #else
   if (quantum <= 0.0)
     return(0UL);
-  if ((65537.0*quantum) >= 18446744073709551615.0)
+  if ((281479271743489.0*quantum) >= 18446744073709551615.0)
     return(MagickULLConstant(18446744073709551615));
-  return((MagickSizeType) (65537.0*quantum+0.5));
+  return((MagickSizeType) (281479271743489.0*quantum+0.5));
 #endif
 }
 
@@ -539,7 +538,11 @@ static inline Quantum ScaleLongToQuantum(const unsigned int value)
 
 static inline Quantum ScaleLongLongToQuantum(const MagickSizeType value)
 {
-  return((Quantum) value);
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
+  return((Quantum) ((value)/MagickULLConstant(4294967297)));
+#else
+  return((Quantum) (value/4294967297.0));
+#endif
 }
 
 static inline Quantum ScaleMapToQuantum(const MagickRealType value)
@@ -571,9 +574,13 @@ static inline unsigned int ScaleQuantumToLong(const Quantum quantum)
 static inline MagickSizeType ScaleQuantumToLongLong(const Quantum quantum)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((MagickSizeType) quantum);
+  return((MagickSizeType) (MagickULLConstant(4294967297.0)*quantum));
 #else
-  return((MagickSizeType) (quantum+0.5));
+  if (quantum <= 0.0)
+    return(0UL);
+  if ((4294967297.0*quantum) >= 18446744073709551615.0)
+    return(MagickULLConstant(18446744073709551615));
+  return((MagickSizeType) (4294967297.0*quantum+0.5));
 #endif
 }
 
@@ -626,7 +633,7 @@ static inline Quantum ScaleLongToQuantum(const unsigned int value)
 
 static inline Quantum ScaleLongLongToQuantum(const MagickSizeType value)
 {
-  return((Quantum) (18446744073709551615.0*value));
+  return((Quantum) (value));
 }
 
 static inline Quantum ScaleMapToQuantum(const MagickRealType value)
@@ -645,7 +652,15 @@ static inline unsigned int ScaleQuantumToLong(const Quantum quantum)
 
 static inline MagickSizeType ScaleQuantumToLongLong(const Quantum quantum)
 {
-  return((MagickSizeType) (quantum/18446744073709551615.0+0.5));
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
+  return((MagickSizeType) quantum);
+#else
+  if (quantum <= 0.0)
+    return(0);
+  if (quantum >= 18446744073709551615)
+    return(18446744073709551615);
+  return((MagickSizeType (quantum+0.5));
+#endif
 }
 
 static inline unsigned int ScaleQuantumToMap(const Quantum quantum)
