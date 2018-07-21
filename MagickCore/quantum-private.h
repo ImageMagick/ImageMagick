@@ -574,7 +574,7 @@ static inline unsigned int ScaleQuantumToLong(const Quantum quantum)
 static inline MagickSizeType ScaleQuantumToLongLong(const Quantum quantum)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((MagickSizeType) (MagickULLConstant(4294967297.0)*quantum));
+  return((MagickSizeType) (MagickULLConstant(4294967297)*quantum));
 #else
   if (quantum <= 0.0)
     return(0UL);
