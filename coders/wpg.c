@@ -794,18 +794,21 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   /* Copy postscript to temporary file */
   if (SeekBlob(image,PS_Offset,SEEK_SET) != PS_Offset)
     {
+      (void) fclose(ps_file);
       DestroyImageInfo(clone_info);
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     }
   count=ReadBlob(image, 2*MagickPathExtent, magick);
   if (count < 1)
     {
+      (void) fclose(ps_file);
       DestroyImageInfo(clone_info);
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     }
 
   if (SeekBlob(image,PS_Offset,SEEK_SET) != PS_Offset)
     {
+      (void) fclose(ps_file);
       DestroyImageInfo(clone_info);
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     }
@@ -813,7 +816,11 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   {
     c=ReadBlobByte(image);
     if (c == EOF)
-      break;
+      {      
+        (void) fclose(ps_file);
+        DestroyImageInfo(clone_info);
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      }
     (void) fputc(c,ps_file);
   }
   (void) fclose(ps_file);
