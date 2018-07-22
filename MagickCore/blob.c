@@ -1577,7 +1577,7 @@ MagickExport MagickBooleanType FileToImage(Image *image,const char *filename,
     file;
 
   MagickBooleanType
-    *status;
+    status;
 
   size_t
     length,
