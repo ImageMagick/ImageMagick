@@ -2664,8 +2664,6 @@ static void SVGEndElement(void *context,const xmlChar *name)
             SVGProcessStyleElement(context,name,value);
             (void) FormatLocaleFile(svg_info->file,"pop class\n");
           }
-          (void) FormatLocaleFile(svg_info->file,"push class \"\"\n");
-          (void) FormatLocaleFile(svg_info->file,"pop class\n");
           break;
         }
       if (LocaleCompare((const char *) name,"svg") == 0)
