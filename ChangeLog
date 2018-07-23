@@ -1,5 +1,5 @@
 2018-07-23  7.0.8-8 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.8-8, GIT revision 14579:712c8bc4b:20180722.
+  * Release ImageMagick version 7.0.8-8, GIT revision 14583:300fdbcfd:20180723.
 
 2018-07-20  7.0.8-8 Cristy  <quetzlzacatenango@image...>
   * Non-HDRI ScaleLongToQuantum() private method no longer adds a half interval.
