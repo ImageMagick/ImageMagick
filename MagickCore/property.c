@@ -2591,7 +2591,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
 #else
       WarnNoImageReturn("\"%%%c\"",letter);
       (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
-         image->scene);
+        image->scene);
 #endif
       break;
     }
@@ -2847,6 +2847,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         }
       if (LocaleCompare("bit-depth",property) == 0)
         {
+          WarnNoImageReturn("\"%%[%s]\"",property);
           (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
             GetImageDepth(image,exception));
           break;
@@ -2969,6 +2970,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         }
       if (LocaleCompare("interlace",property) == 0)
         {
+          WarnNoImageReturn("\"%%[%s]\"",property);
           string=CommandOptionToMnemonic(MagickInterlaceOptions,(ssize_t)
             image->interlace);
           break;
@@ -3086,6 +3088,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           cmsHPROFILE
             icc_profile;
 
+          WarnNoImageReturn("\"%%[%s]\"",property);
           profile=GetImageProfile(image,property+8);
           if (profile == (StringInfo *) NULL)
             break;
@@ -3108,6 +3111,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           const char
             *name;
 
+          WarnNoImageReturn("\"%%[%s]\"",property);
           ResetImageProfileIterator(image);
           name=GetNextImageProfile(image);
           if (name != (char *) NULL)
