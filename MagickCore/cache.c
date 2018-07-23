@@ -5046,11 +5046,12 @@ static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
 
       x=nexus_info->region.x+(ssize_t) nexus_info->region.width-1;
       y=nexus_info->region.y+(ssize_t) nexus_info->region.height-1;
-      if (((nexus_info->region.x >= 0) && (x < (ssize_t) cache_info->columns) &&
-           (nexus_info->region.y >= 0) && (y < (ssize_t) cache_info->rows)) &&
-          ((nexus_info->region.height == 1UL) || ((nexus_info->region.x == 0) &&
-           ((nexus_info->region.width == cache_info->columns) ||
-            ((nexus_info->region.width % cache_info->columns) == 0)))))
+      if (((nexus_info->region.x >= 0) && (nexus_info->region.y >= 0) &&
+           (y < (ssize_t) cache_info->rows)) &&
+          (((nexus_info->region.x == 0) &&
+            (nexus_info->region.width == cache_info->columns)) ||
+           ((nexus_info->region.height == 1) &&
+            (x < (ssize_t) cache_info->columns))))
         {
           MagickOffsetType
             offset;
