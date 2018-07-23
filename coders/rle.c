@@ -274,7 +274,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
       number_planes++;
     number_pixels=(MagickSizeType) image->columns*image->rows;
     if ((GetBlobSize(image) == 0) || ((((MagickSizeType) number_pixels*
-         number_planes*bits_per_pixel/8)/GetBlobSize(image)) > 254.0))
+         number_planes*bits_per_pixel/8)/GetBlobSize(image)) > 254))
       ThrowRLEException(CorruptImageError,"InsufficientImageDataInFile")
     if (((MagickSizeType) number_colormaps*map_length) > GetBlobSize(image))
       ThrowRLEException(CorruptImageError,"InsufficientImageDataInFile")
