@@ -673,7 +673,8 @@ static inline void CheckEventLogging()
 
       ResetLinkedListIterator(log_cache);
       p=(LogInfo *) GetNextValueInLinkedList(log_cache);
-      event_logging=p->event_mask != NoEvents ? MagickTrue: MagickFalse;
+      event_logging=(p != (LogInfo *) NULL) && (p->event_mask != NoEvents) ?
+        MagickTrue: MagickFalse;
     }
 }
 
