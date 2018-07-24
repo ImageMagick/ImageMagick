@@ -351,7 +351,10 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       c=XBMInteger(image,hex_digits);
       if (c < 0)
-        break;
+        {
+          data=(unsigned char *) RelinquishMagickMemory(data);
+          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+        }
       *p++=(unsigned char) c;
       if ((padding == 0) || (((i+2) % bytes_per_line) != 0))
         *p++=(unsigned char) (c >> 8);
@@ -361,7 +364,10 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       c=XBMInteger(image,hex_digits);
       if (c < 0)
-        break;
+        {
+          data=(unsigned char *) RelinquishMagickMemory(data);
+          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+        }
       *p++=(unsigned char) c;
     }
   if (EOFBlob(image) != MagickFalse)
