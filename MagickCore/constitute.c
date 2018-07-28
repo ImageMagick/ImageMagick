@@ -139,6 +139,9 @@ MagickExport Image *ConstituteImage(const size_t columns,const size_t rows,
   MagickBooleanType
     status;
 
+  register ssize_t
+    i;
+
   /*
     Allocate image structure.
   */
@@ -150,14 +153,53 @@ MagickExport Image *ConstituteImage(const size_t columns,const size_t rows,
   image=AcquireImage((ImageInfo *) NULL,exception);
   if (image == (Image *) NULL)
     return((Image *) NULL);
-  if ((columns == 0) || (rows == 0))
-    ThrowImageException(OptionError,"NonZeroWidthAndHeightRequired");
-  image->columns=columns;
-  image->rows=rows;
-  (void) SetImageBackgroundColor(image,exception);
+  for (i=0; i < (ssize_t) strlen(map); i++)
+  {
+    switch (map[i])
+    {
+      case 'a':
+      case 'A':
+      case 'O':
+      case 'o':
+      {
+        image->alpha_trait=BlendPixelTrait;
+        break;
+      }
+      case 'C':
+      case 'c':
+      case 'm':
+      case 'M':
+      case 'Y':
+      case 'y':
+      case 'K':
+      case 'k':
+      {
+        image->colorspace=CMYKColorspace;
+        break;
+      }
+      case 'I':
+      case 'i':
+      {
+        image->colorspace=GRAYColorspace;
+        break;
+      }
+      default:
+      {
+        if (strlen(map) == 1)
+          image->colorspace=GRAYColorspace;
+        break;
+      }
+    }
+  }
+  status=SetImageExtent(image,columns,rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
+  status=ResetImagePixels(image,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   status=ImportImagePixels(image,0,0,columns,rows,map,storage,pixels,exception);
   if (status == MagickFalse)
-   image=DestroyImage(image);
+    image=DestroyImage(image);
   return(image);
 }
 
