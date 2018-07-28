@@ -157,7 +157,7 @@ MagickExport Image *ConstituteImage(const size_t columns,const size_t rows,
   (void) SetImageBackgroundColor(image,exception);
   status=ImportImagePixels(image,0,0,columns,rows,map,storage,pixels,exception);
   if (status == MagickFalse)
-     image=DestroyImage(image);
+   image=DestroyImage(image);
   return(image);
 }
 
