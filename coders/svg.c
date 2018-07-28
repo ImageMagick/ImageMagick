@@ -2164,13 +2164,17 @@ static void SVGStartElement(void *context,const xmlChar *name,
                         GetNextToken(p,&p,MagickPathExtent,token);
                         if (*token == ',')
                           GetNextToken(p,&p,MagickPathExtent,token);
-                        x=StringToDouble(token,&next_token)-svg_info->bounds.x;
+                        x=StringToDouble(token,&next_token);
                         GetNextToken(p,&p,MagickPathExtent,token);
                         if (*token == ',')
                           GetNextToken(p,&p,MagickPathExtent,token);
-                        y=StringToDouble(token,&next_token)-svg_info->bounds.y;
-                        affine.tx=svg_info->bounds.x+x*cos(angle)-y*sin(angle);
-                        affine.ty=svg_info->bounds.y+x*sin(angle)+y*cos(angle);
+                        y=StringToDouble(token,&next_token);
+                        affine.tx=svg_info->bounds.x+x*
+                          cos(DegreesToRadians(fmod(angle,360.0)))+y*
+                          sin(DegreesToRadians(fmod(angle,360.0)));
+                        affine.ty=svg_info->bounds.y+x*
+                          sin(DegreesToRadians(fmod(angle,360.0)))-y*
+                          cos(DegreesToRadians(fmod(angle,360.0)));
                         break;
                       }
                     break;
@@ -3024,7 +3028,6 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
 */
 static char
   SVGDensityGeometry[] = "72.0x72.0";
-
 
 static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
