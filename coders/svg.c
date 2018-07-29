@@ -869,6 +869,16 @@ static void SVGProcessStyleElement(void *context,const xmlChar *name,
           }
         break;
       }
+      case 'M':
+      case 'm':
+      {
+        if (LocaleCompare(keyword,"mask") == 0)
+          {
+            (void) FormatLocaleFile(svg_info->file,"mask \"%s\"\n",value);
+            break;
+          }
+        break;
+      }
       case 'O':
       case 'o':
       {

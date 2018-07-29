@@ -1162,7 +1162,7 @@ static MagickBooleanType ReadPSDChannelRLE(Image *image,const PSDInfo *psd_info,
     if ((MagickOffsetType) length < sizes[y])
       length=(size_t) sizes[y];
 
-  if (length > (row_size+512)) // arbitrary number
+  if (length > (row_size+512)) /* arbitrary number */
     {
       pixels=(unsigned char *) RelinquishMagickMemory(pixels);
       ThrowBinaryException(ResourceLimitError,"InvalidLength",image->filename);
@@ -1304,10 +1304,12 @@ static MagickBooleanType ReadPSDChannelZip(Image *image,const size_t channels,
               p[2]+=p[0]+((p[1]+p[3]) >> 8);
               p[3]+=p[1];
             }
-          // else if (packet_size == 4)
-          //   {
-          //     TODO: Figure out what to do there.
-          //   }
+          /*
+          else if (packet_size == 4)
+             {
+               TODO: Figure out what to do there.
+             }
+          */
           else
             *(p+1)+=*p;
           p+=packet_size;
