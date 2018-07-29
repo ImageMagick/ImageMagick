@@ -1001,11 +1001,11 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
-  //exception=(&image->exception);
+  /* exception=(&image->exception); */
 
   /*
-   * initialize opencl env
-   */
+    Initialize opencl environment.
+  */
   device = RequestOpenCLDevice(clEnv);
   queue = AcquireOpenCLCommandQueue(device);
 
@@ -3136,7 +3136,7 @@ static Image *ComputeLocalContrastImage(const Image *image,MagickCLEnv clEnv,
     {
       imageColumns = (unsigned int) image->columns;
       imageRows = (unsigned int) image->rows;
-      iRadius = (cl_int) (image->rows > image->columns ? image->rows : image->columns) * 0.002f * fabs(radius); // Normalized radius, 100% gives blur radius of 20% of the largest dimension
+      iRadius = (cl_int) (image->rows > image->columns ? image->rows : image->columns) * 0.002f * fabs(radius); /* Normalized radius, 100% gives blur radius of 20% of the largest dimension */
 
       passes = (((1.0f * imageRows) * imageColumns * iRadius) + 3999999999) / 4000000000.0f;
       passes = (passes < 1) ? 1: passes;
@@ -3620,9 +3620,11 @@ static Image* ComputeMotionBlurImage(const Image *image,MagickCLEnv clEnv,
     goto cleanup;
   }
 
-  // If the host pointer is aligned to the size of CLPixelPacket,
-  // then use the host buffer directly from the GPU; otherwise,
-  // create a buffer on the GPU and copy the data over
+  /*
+    If the host pointer is aligned to the size of CLPixelPacket, then use
+    the host buffer directly from the GPU; otherwise, create a buffer on
+    the GPU and copy the data over
+  */
   if (ALIGNED(inputPixels,CLPixelPacket))
   {
     mem_flags = CL_MEM_READ_ONLY|CL_MEM_USE_HOST_PTR;
@@ -3631,7 +3633,9 @@ static Image* ComputeMotionBlurImage(const Image *image,MagickCLEnv clEnv,
   {
     mem_flags = CL_MEM_READ_ONLY|CL_MEM_COPY_HOST_PTR;
   }
-  // create a CL buffer from image pixel buffer
+  /*
+    create a CL buffer from image pixel buffer
+  */
   length = image->columns * image->rows;
   imageBuffer = clEnv->library->clCreateBuffer(device->context, mem_flags,
     length * sizeof(CLPixelPacket), (void*)inputPixels, &clStatus);
@@ -3671,7 +3675,9 @@ static Image* ComputeMotionBlurImage(const Image *image,MagickCLEnv clEnv,
     mem_flags = CL_MEM_WRITE_ONLY;
     hostPtr = NULL;
   }
-  // create a CL buffer from image pixel buffer
+  /*
+    Create a CL buffer from image pixel buffer.
+  */
   length = image->columns * image->rows;
   filteredImageBuffer = clEnv->library->clCreateBuffer(device->context, mem_flags,
     length * sizeof(CLPixelPacket), hostPtr, &clStatus);
@@ -3748,7 +3754,9 @@ static Image* ComputeMotionBlurImage(const Image *image,MagickCLEnv clEnv,
   }
 
 
- // get the OpenCL kernel
+  /*
+    Get the OpenCL kernel
+  */
   motionBlurKernel = AcquireOpenCLKernel(device,"MotionBlur");
   if (motionBlurKernel == NULL)
   {
@@ -3757,7 +3765,9 @@ static Image* ComputeMotionBlurImage(const Image *image,MagickCLEnv clEnv,
     goto cleanup;
   }
 
-  // set the kernel arguments
+  /*
+    Set the kernel arguments.
+  */
   i = 0;
   clStatus=clEnv->library->clSetKernelArg(motionBlurKernel,i++,sizeof(cl_mem),
     (void *)&imageBuffer);
@@ -3793,7 +3803,9 @@ static Image* ComputeMotionBlurImage(const Image *image,MagickCLEnv clEnv,
     goto cleanup;
   }
 
-  // launch the kernel
+  /*
+    Launch the kernel.
+  */
   local_work_size[0] = 16;
   local_work_size[1] = 16;
   global_work_size[0] = (size_t)padGlobalWorkgroupSizeToLocalWorkgroupSize(

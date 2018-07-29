@@ -5211,7 +5211,9 @@ WandExport void CLIOption(MagickCLI *cli_wand,const char *option,...)
 
     if ( (option_type & SettingOptionFlags) != 0 ) {
       CLISettingOptionInfo(cli_wand, option, arg1, arg2);
-      // FUTURE: Sync Specific Settings into Image Properities (not global)
+      /*
+        FUTURE: Sync Specific Settings into Image Properities (not global)
+      */
     }
 
     /* Operators that do not need images - read, write, stack, clone */

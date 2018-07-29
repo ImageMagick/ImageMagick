@@ -2950,7 +2950,7 @@ static void WriteDDSInfo(Image *image, const size_t pixelFormat,
   if (pixelFormat == DDPF_FOURCC)
     {
       (void) WriteBlobLSBLong(image,(unsigned int) compression);
-      for(i=0;i < 5;i++) // bitcount / masks
+      for(i=0;i < 5;i++)  /* bitcount / masks */
         (void) WriteBlobLSBLong(image,0x00);
     }
   else
@@ -2975,7 +2975,7 @@ static void WriteDDSInfo(Image *image, const size_t pixelFormat,
     }
   
   (void) WriteBlobLSBLong(image,caps);
-  for(i=0;i < 4;i++) // ddscaps2 + reserved region
+  for(i=0;i < 4;i++)   /* ddscaps2 + reserved region */
     (void) WriteBlobLSBLong(image,0x00);
 }
 

@@ -292,7 +292,7 @@ static void InitPSDInfo(const Image *image, PSDInfo *info)
   info->mode=10;
   info->channels=1U;
   if (image->storage_class == PseudoClass)
-    info->mode=2; // indexed mode
+    info->mode=2; /* indexed mode */
   else
     {
       info->channels=(unsigned short) image->number_channels;

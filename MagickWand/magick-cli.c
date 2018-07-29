@@ -827,7 +827,7 @@ Magick_Command_Cleanup:
       char
         *text;
   
-      format="%w,%h,%m";   // Get this from image_info Option splaytree
+      format="%w,%h,%m";  /* Get this from image_info Option splaytree */
       text=InterpretImageProperties(image_info,cli_wand->wand.images,format,
         exception);
       if (text == (char *) NULL)

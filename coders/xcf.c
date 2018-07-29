@@ -735,8 +735,8 @@ static MagickBooleanType load_hierarchy(Image *image,XCFDocInfo *inDocInfo,
     offset,
     junk;
 
-  (void) ReadBlobMSBLong(image); // width
-  (void) ReadBlobMSBLong(image); // height
+  (void) ReadBlobMSBLong(image); /* width */
+  (void) ReadBlobMSBLong(image); /* height */
   inDocInfo->bytes_per_pixel=ReadBlobMSBLong(image);
 
   /* load in the levels...we make sure that the number of levels

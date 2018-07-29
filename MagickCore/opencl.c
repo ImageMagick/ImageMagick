@@ -2723,8 +2723,8 @@ MagickPrivate MagickBooleanType RecordProfileData(MagickCLDevice device,
       name=DestroyString(name);
       return(MagickTrue);
     }
-  start/=1000; // usecs
-  end/=1000;   // usecs
+  start/=1000; /* usecs */
+  end/=1000;   
   elapsed=end-start;
   LockSemaphoreInfo(device->lock);
   i=0;

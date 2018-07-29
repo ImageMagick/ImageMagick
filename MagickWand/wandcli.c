@@ -241,8 +241,10 @@ WandExport MagickBooleanType CLICatchException(MagickCLI *cli_wand,
   if (cli_wand->wand.debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
 
-  // FUTURE: '-regard_warning' should make this more sensitive.
-  // Note pipelined options may like more control over this level
+  /*
+    FUTURE: '-regard_warning' should make this more sensitive.
+    Note pipelined options may like more control over this level
+  */
 
   status=cli_wand->wand.exception->severity > ErrorException ? MagickTrue :
     MagickFalse;
