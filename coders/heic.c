@@ -59,6 +59,7 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/montage.h"
 #include "MagickCore/transform.h"
+#include "MagickCore/distort.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/memory-private.h"
 #include "MagickCore/option.h"
@@ -84,6 +85,8 @@
 static MagickBooleanType
   WriteHEICImage(const ImageInfo *,Image *,ExceptionInfo *);
 #endif
+
+static Image *CompensateOrientation(Image *image, ExceptionInfo *exception);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -164,6 +167,9 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
 
   void
     *file_data;
+
+  const char
+    *option;
 
   /*
     Open image file.
@@ -299,7 +305,57 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   heif_image_release(heif_image);
   heif_image_handle_release(image_handle);
   heif_context_free(heif_context);
+
+  /*
+    There is a discrepancy between EXIF data and the actual orientation of
+    image pixels. ReadImage processes "exif:Orientation" expecting pixels to be
+    oriented accordingly. However, in HEIF the pixels are NOT rotated.
+   */
+  option=GetImageOption(image_info,"heic:preserve-orientation");
+  if (IsStringTrue(option) == MagickTrue)
+    image = CompensateOrientation(image, exception);
+  else
+    SetImageProperty(image, "exif:Orientation", "1", exception);
+
   return(GetFirstImageInList(image));
+}
+
+/* An inverse of AutoOrientImage */
+static Image *CompensateOrientation(Image *image, ExceptionInfo *exception)
+{
+  const char
+    *value;
+
+  value=GetImageProperty(image,"exif:Orientation",exception);
+  if (value == NULL)
+  {
+    return image;
+  }
+
+  switch((OrientationType) StringToLong(value))
+  {
+    case UndefinedOrientation:
+    case TopLeftOrientation:
+      default:
+        return image;
+
+    case TopRightOrientation:
+      return FlipImage(image,exception);
+
+    case BottomRightOrientation:
+        return RotateImage(image,180.0,exception);
+
+    case BottomLeftOrientation:
+      return FlopImage(image,exception);
+    case LeftTopOrientation:
+      return TransverseImage(image,exception);
+    case RightTopOrientation:
+      return RotateImage(image,270.0,exception);
+    case RightBottomOrientation:
+      return TransposeImage(image,exception);
+    case LeftBottomOrientation:
+      return RotateImage(image,90.0,exception);
+    }
 }
 #endif
 
