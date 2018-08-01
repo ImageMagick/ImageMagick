@@ -795,22 +795,25 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   if (SeekBlob(image,PS_Offset,SEEK_SET) != PS_Offset)
     {
       (void) fclose(ps_file);
-      DestroyImageInfo(clone_info);
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      ThrowException(exception,CorruptImageError,"ImproperImageHeader",
+        image->filename);
+      goto FINISH_UNL;
     }
   count=ReadBlob(image, 2*MagickPathExtent, magick);
   if (count < 1)
     {
       (void) fclose(ps_file);
-      DestroyImageInfo(clone_info);
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      ThrowException(exception,CorruptImageError,"ImproperImageHeader",
+        image->filename);
+      goto FINISH_UNL;
     }
 
   if (SeekBlob(image,PS_Offset,SEEK_SET) != PS_Offset)
     {
       (void) fclose(ps_file);
-      DestroyImageInfo(clone_info);
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      ThrowException(exception,CorruptImageError,"ImproperImageHeader",
+        image->filename);
+      goto FINISH_UNL;
     }
   while (PS_Size-- > 0)
   {
@@ -818,8 +821,9 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
     if (c == EOF)
       {      
         (void) fclose(ps_file);
-        DestroyImageInfo(clone_info);
-        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+        ThrowException(exception,CorruptImageError,"ImproperImageHeader",
+          image->filename);
+        goto FINISH_UNL;
       }
     (void) fputc(c,ps_file);
   }
@@ -831,12 +835,13 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   /*     printf("Detected:%s  \n",magic_info->name); */
   if(exception->severity != UndefinedException) goto FINISH_UNL;
   if(magic_info->name == (char *) NULL) goto FINISH_UNL;
-  if (LocaleCompare(magic_info->name,"WPG") == 0)
-    goto FINISH_UNL;
-
   (void) strncpy(clone_info->magick,magic_info->name,MagickPathExtent-1);
-  if (LocaleCompare(image_info->magick,clone_info->magick) == 0)
-    (void) strcpy(clone_info->magick,"PS");
+  if (LocaleCompare(clone_info->magick,"PFB") != 0)
+    {      
+      ThrowException(exception,CorruptImageError,"ImproperImageHeader",
+        image->filename);
+      goto FINISH_UNL;
+    }
 
     /* Read nested image */
   /*FormatString(clone_info->filename,"%s:%s",magic_info->name,postscript_file);*/
