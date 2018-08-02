@@ -148,6 +148,9 @@ typedef struct _MVGInfo
   ssize_t
     offset;
 
+  PointInfo
+    point;
+
   ExceptionInfo
     *exception;
 } MVGInfo;
@@ -4169,9 +4172,17 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           Compute text cursor offset.
         */
         clone_info=CloneDrawInfo((ImageInfo *) NULL,graphic_context[n]);
-        if ((fabs(primitive_info->point.x) < MagickEpsilon) &&
-            (fabs(primitive_info->point.y) < MagickEpsilon))
-          primitive_info->point.x+=cursor;
+        if ((fabs(mvg_info.point.x-primitive_info->point.x) < MagickEpsilon) &&
+            (fabs(mvg_info.point.y-primitive_info->point.y) < MagickEpsilon))
+          {
+            mvg_info.point=primitive_info->point;
+            primitive_info->point.x+=cursor;
+          }
+        else
+          {
+            mvg_info.point=primitive_info->point;
+            cursor=0.0;
+          }
         (void) FormatLocaleString(geometry,MagickPathExtent,"%+f%+f",
           primitive_info->point.x,primitive_info->point.y);
         clone_info->render=MagickFalse;
