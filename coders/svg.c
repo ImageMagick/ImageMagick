@@ -1491,6 +1491,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
           (void) FormatLocaleFile(svg_info->file,"class \"text\"\n");
           (void) FormatLocaleFile(svg_info->file,"translate %g,%g\n",
             svg_info->bounds.x,svg_info->bounds.y);
+          if (*svg_info->text != '\0')
+            StripString(svg_info->text);
           svg_info->center.x=svg_info->bounds.x;
           svg_info->center.y=svg_info->bounds.y;
           svg_info->bounds.x=0.0;
