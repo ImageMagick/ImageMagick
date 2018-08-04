@@ -17,6 +17,7 @@
 %                                 October 1996                                %
 %                                                                             %
 %                                                                             %
+%                                                                             %
 %  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
@@ -1613,8 +1614,8 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
       if (LocaleCompare(symbol,"extent") == 0)
         {
           if (image->extent != 0)
-            return(image->extent);
-          return(GetBlobSize(image));
+            return((double) image->extent);
+          return((double) GetBlobSize(image));
         }
       break;
     }
@@ -3278,7 +3279,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
     *interpolate_view;
 
   Image
-    *canvas,
+    *canvas_image,
     *implode_image;
 
   MagickBooleanType
@@ -3306,22 +3307,22 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  canvas=CloneImage(image,0,0,MagickTrue,exception);
-  if (canvas == (Image *) NULL)
+  canvas_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (canvas_image == (Image *) NULL)
     return((Image *) NULL);
-  if ((canvas->alpha_trait == UndefinedPixelTrait) &&
-      (canvas->background_color.alpha != OpaqueAlpha))
-    (void) SetImageAlphaChannel(canvas,OpaqueAlphaChannel,exception);
-  implode_image=CloneImage(canvas,canvas->columns,canvas->rows,MagickTrue,
-    exception);
+  if ((canvas_image->alpha_trait == UndefinedPixelTrait) &&
+      (canvas_image->background_color.alpha != OpaqueAlpha))
+    (void) SetImageAlphaChannel(canvas_image,OpaqueAlphaChannel,exception);
+  implode_image=CloneImage(canvas_image,canvas_image->columns,
+    canvas_image->rows,MagickTrue,exception);
   if (implode_image == (Image *) NULL)
     {
-      canvas=DestroyImage(canvas);
+      canvas_image=DestroyImage(canvas_image);
       return((Image *) NULL);
     }
   if (SetImageStorageClass(implode_image,DirectClass,exception) == MagickFalse)
     {
-      canvas=DestroyImage(canvas);
+      canvas_image=DestroyImage(canvas_image);
       implode_image=DestroyImage(implode_image);
       return((Image *) NULL);
     }
@@ -3330,15 +3331,15 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
   */
   scale.x=1.0;
   scale.y=1.0;
-  center.x=0.5*canvas->columns;
-  center.y=0.5*canvas->rows;
+  center.x=0.5*canvas_image->columns;
+  center.y=0.5*canvas_image->rows;
   radius=center.x;
-  if (canvas->columns > canvas->rows)
-    scale.y=(double) canvas->columns/(double) canvas->rows;
+  if (canvas_image->columns > canvas_image->rows)
+    scale.y=(double) canvas_image->columns/(double) canvas_image->rows;
   else
-    if (canvas->columns < canvas->rows)
+    if (canvas_image->columns < canvas_image->rows)
       {
-        scale.x=(double) canvas->rows/(double) canvas->columns;
+        scale.x=(double) canvas_image->rows/(double) canvas_image->columns;
         radius=center.y;
       }
   /*
@@ -3346,14 +3347,14 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
   */
   status=MagickTrue;
   progress=0;
-  canvas_view=AcquireVirtualCacheView(canvas,exception);
-  interpolate_view=AcquireVirtualCacheView(canvas,exception);
+  canvas_view=AcquireVirtualCacheView(canvas_image,exception);
+  interpolate_view=AcquireVirtualCacheView(canvas_image,exception);
   implode_view=AcquireAuthenticCacheView(implode_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    magick_number_threads(canvas,implode_image,canvas->rows,1)
+    magick_number_threads(canvas_image,implode_image,canvas_image->rows,1)
 #endif
-  for (y=0; y < (ssize_t) canvas->rows; y++)
+  for (y=0; y < (ssize_t) canvas_image->rows; y++)
   {
     double
       distance;
@@ -3372,7 +3373,8 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(canvas_view,0,y,canvas->columns,1,exception);
+    p=GetCacheViewVirtualPixels(canvas_view,0,y,canvas_image->columns,1,
+      exception);
     q=QueueCacheViewAuthenticPixels(implode_view,0,y,implode_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
@@ -3381,7 +3383,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
         continue;
       }
     delta.y=scale.y*(double) (y-center.y);
-    for (x=0; x < (ssize_t) canvas->columns; x++)
+    for (x=0; x < (ssize_t) canvas_image->columns; x++)
     {
       register ssize_t
         i;
@@ -3391,11 +3393,12 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
       */
       delta.x=scale.x*(double) (x-center.x);
       distance=delta.x*delta.x+delta.y*delta.y;
-      if (distance >= (radius*radius))
-        for (i=0; i < (ssize_t) GetPixelChannels(canvas); i++)
+      if ((distance >= (radius*radius)) ||
+          (GetPixelWriteMask(canvas_image,p) > (QuantumRange/2)))
+        for (i=0; i < (ssize_t) GetPixelChannels(canvas_image); i++)
         {
-          PixelChannel channel = GetPixelChannelChannel(canvas,i);
-          PixelTrait traits = GetPixelChannelTraits(canvas,channel);
+          PixelChannel channel = GetPixelChannelChannel(canvas_image,i);
+          PixelTrait traits = GetPixelChannelTraits(canvas_image,channel);
           PixelTrait implode_traits = GetPixelChannelTraits(implode_image,
             channel);
           if ((traits == UndefinedPixelTrait) ||
@@ -3414,18 +3417,18 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
           factor=1.0;
           if (distance > 0.0)
             factor=pow(sin(MagickPI*sqrt((double) distance)/radius/2),-amount);
-          status=InterpolatePixelChannels(canvas,interpolate_view,implode_image,
-            method,(double) (factor*delta.x/scale.x+center.x),(double) (factor*
-            delta.y/scale.y+center.y),q,exception);
+          status=InterpolatePixelChannels(canvas_image,interpolate_view,
+            implode_image,method,(double) (factor*delta.x/scale.x+center.x),
+            (double) (factor*delta.y/scale.y+center.y),q,exception);
           if (status == MagickFalse)
             break;
         }
-      p+=GetPixelChannels(canvas);
+      p+=GetPixelChannels(canvas_image);
       q+=GetPixelChannels(implode_image);
     }
     if (SyncCacheViewAuthenticPixels(implode_view,exception) == MagickFalse)
       status=MagickFalse;
-    if (canvas->progress_monitor != (MagickProgressMonitor) NULL)
+    if (canvas_image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType
           proceed;
@@ -3433,8 +3436,8 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp critical (MagickCore_ImplodeImage)
 #endif
-        proceed=SetImageProgress(canvas,ImplodeImageTag,progress++,
-          canvas->rows);
+        proceed=SetImageProgress(canvas_image,ImplodeImageTag,progress++,
+          canvas_image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -3442,7 +3445,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
   implode_view=DestroyCacheView(implode_view);
   interpolate_view=DestroyCacheView(interpolate_view);
   canvas_view=DestroyCacheView(canvas_view);
-  canvas=DestroyImage(canvas);
+  canvas_image=DestroyImage(canvas_image);
   if (status == MagickFalse)
     implode_image=DestroyImage(implode_image);
   return(implode_image);
@@ -5113,8 +5116,11 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
     *interpolate_view,
     *swirl_view;
 
+  double
+    radius;
+
   Image
-    *canvas,
+    *canvas_image,
     *swirl_image;
 
   MagickBooleanType
@@ -5122,9 +5128,6 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
 
   MagickOffsetType
     progress;
-
-  double
-    radius;
 
   PointInfo
     center,
@@ -5142,52 +5145,52 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  canvas=CloneImage(image,0,0,MagickTrue,exception);
-  if (canvas == (Image *) NULL)
+  canvas_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (canvas_image == (Image *) NULL)
     return((Image *) NULL);
-  if ((canvas->alpha_trait == UndefinedPixelTrait) &&
-      (canvas->background_color.alpha != OpaqueAlpha))
-    (void) SetImageAlphaChannel(canvas,OpaqueAlphaChannel,exception);
-  swirl_image=CloneImage(canvas,canvas->columns,canvas->rows,MagickTrue,
-    exception);
+  if ((canvas_image->alpha_trait == UndefinedPixelTrait) &&
+      (canvas_image->background_color.alpha != OpaqueAlpha))
+    (void) SetImageAlphaChannel(canvas_image,OpaqueAlphaChannel,exception);
+  swirl_image=CloneImage(canvas_image,canvas_image->columns,canvas_image->rows,
+    MagickTrue,exception);
   if (swirl_image == (Image *) NULL)
     {
-      canvas=DestroyImage(canvas);
+      canvas_image=DestroyImage(canvas_image);
       return((Image *) NULL);
     }
   if (SetImageStorageClass(swirl_image,DirectClass,exception) == MagickFalse)
     {
-      canvas=DestroyImage(canvas);
+      canvas_image=DestroyImage(canvas_image);
       swirl_image=DestroyImage(swirl_image);
       return((Image *) NULL);
     }
   /*
     Compute scaling factor.
   */
-  center.x=(double) canvas->columns/2.0;
-  center.y=(double) canvas->rows/2.0;
+  center.x=(double) canvas_image->columns/2.0;
+  center.y=(double) canvas_image->rows/2.0;
   radius=MagickMax(center.x,center.y);
   scale.x=1.0;
   scale.y=1.0;
-  if (canvas->columns > canvas->rows)
-    scale.y=(double) canvas->columns/(double) canvas->rows;
+  if (canvas_image->columns > canvas_image->rows)
+    scale.y=(double) canvas_image->columns/(double) canvas_image->rows;
   else
-    if (canvas->columns < canvas->rows)
-      scale.x=(double) canvas->rows/(double) canvas->columns;
+    if (canvas_image->columns < canvas_image->rows)
+      scale.x=(double) canvas_image->rows/(double) canvas_image->columns;
   degrees=(double) DegreesToRadians(degrees);
   /*
     Swirl image.
   */
   status=MagickTrue;
   progress=0;
-  canvas_view=AcquireVirtualCacheView(canvas,exception);
+  canvas_view=AcquireVirtualCacheView(canvas_image,exception);
   interpolate_view=AcquireVirtualCacheView(image,exception);
   swirl_view=AcquireAuthenticCacheView(swirl_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    magick_number_threads(canvas,swirl_image,canvas->rows,1)
+    magick_number_threads(canvas_image,swirl_image,canvas_image->rows,1)
 #endif
-  for (y=0; y < (ssize_t) canvas->rows; y++)
+  for (y=0; y < (ssize_t) canvas_image->rows; y++)
   {
     double
       distance;
@@ -5206,7 +5209,8 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(canvas_view,0,y,canvas->columns,1,exception);
+    p=GetCacheViewVirtualPixels(canvas_view,0,y,canvas_image->columns,1,
+      exception);
     q=QueueCacheViewAuthenticPixels(swirl_view,0,y,swirl_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
@@ -5215,22 +5219,23 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
         continue;
       }
     delta.y=scale.y*(double) (y-center.y);
-    for (x=0; x < (ssize_t) canvas->columns; x++)
+    for (x=0; x < (ssize_t) canvas_image->columns; x++)
     {
       /*
         Determine if the pixel is within an ellipse.
       */
       delta.x=scale.x*(double) (x-center.x);
       distance=delta.x*delta.x+delta.y*delta.y;
-      if (distance >= (radius*radius))
+      if ((distance >= (radius*radius)) ||
+          (GetPixelWriteMask(canvas_image,p) > (QuantumRange/2)))
         {
           register ssize_t
             i;
 
-          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+          for (i=0; i < (ssize_t) GetPixelChannels(canvas_image); i++)
           {
-            PixelChannel channel = GetPixelChannelChannel(canvas,i);
-            PixelTrait traits = GetPixelChannelTraits(canvas,channel);
+            PixelChannel channel = GetPixelChannelChannel(canvas_image,i);
+            PixelTrait traits = GetPixelChannelTraits(canvas_image,channel);
             PixelTrait swirl_traits = GetPixelChannelTraits(swirl_image,
               channel);
             if ((traits == UndefinedPixelTrait) ||
@@ -5252,18 +5257,19 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
           factor=1.0-sqrt((double) distance)/radius;
           sine=sin((double) (degrees*factor*factor));
           cosine=cos((double) (degrees*factor*factor));
-          status=InterpolatePixelChannels(canvas,interpolate_view,swirl_image,
-            method,((cosine*delta.x-sine*delta.y)/scale.x+center.x),(double)
-            ((sine*delta.x+cosine*delta.y)/scale.y+center.y),q,exception);
+          status=InterpolatePixelChannels(canvas_image,interpolate_view,
+            swirl_image,method,((cosine*delta.x-sine*delta.y)/scale.x+center.x),
+              (double) ((sine*delta.x+cosine*delta.y)/scale.y+center.y),q,
+              exception);
           if (status == MagickFalse)
             break;
         }
-      p+=GetPixelChannels(canvas);
+      p+=GetPixelChannels(canvas_image);
       q+=GetPixelChannels(swirl_image);
     }
     if (SyncCacheViewAuthenticPixels(swirl_view,exception) == MagickFalse)
       status=MagickFalse;
-    if (canvas->progress_monitor != (MagickProgressMonitor) NULL)
+    if (canvas_image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType
           proceed;
@@ -5271,7 +5277,8 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp critical (MagickCore_SwirlImage)
 #endif
-        proceed=SetImageProgress(canvas,SwirlImageTag,progress++,canvas->rows);
+        proceed=SetImageProgress(canvas_image,SwirlImageTag,progress++,
+          canvas_image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -5279,7 +5286,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
   swirl_view=DestroyCacheView(swirl_view);
   interpolate_view=DestroyCacheView(interpolate_view);
   canvas_view=DestroyCacheView(canvas_view);
-  canvas=DestroyImage(canvas);
+  canvas_image=DestroyImage(canvas_image);
   if (status == MagickFalse)
     swirl_image=DestroyImage(swirl_image);
   return(swirl_image);
@@ -5621,11 +5628,11 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
 #define WaveImageTag  "Wave/Image"
 
   CacheView
-    *canvas_view,
+    *canvas_image_view,
     *wave_view;
 
   Image
-    *canvas,
+    *canvas_image,
     *wave_image;
 
   MagickBooleanType
@@ -5652,22 +5659,22 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  canvas=CloneImage(image,0,0,MagickTrue,exception);
-  if (canvas == (Image *) NULL)
+  canvas_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (canvas_image == (Image *) NULL)
     return((Image *) NULL);
-  if ((canvas->alpha_trait == UndefinedPixelTrait) &&
-      (canvas->background_color.alpha != OpaqueAlpha))
-    (void) SetImageAlpha(canvas,OpaqueAlpha,exception);
-  wave_image=CloneImage(canvas,canvas->columns,(size_t) (canvas->rows+2.0*
+  if ((canvas_image->alpha_trait == UndefinedPixelTrait) &&
+      (canvas_image->background_color.alpha != OpaqueAlpha))
+    (void) SetImageAlpha(canvas_image,OpaqueAlpha,exception);
+  wave_image=CloneImage(canvas_image,canvas_image->columns,(size_t) (canvas_image->rows+2.0*
     fabs(amplitude)),MagickTrue,exception);
   if (wave_image == (Image *) NULL)
     {
-      canvas=DestroyImage(canvas);
+      canvas_image=DestroyImage(canvas_image);
       return((Image *) NULL);
     }
   if (SetImageStorageClass(wave_image,DirectClass,exception) == MagickFalse)
     {
-      canvas=DestroyImage(canvas);
+      canvas_image=DestroyImage(canvas_image);
       wave_image=DestroyImage(wave_image);
       return((Image *) NULL);
     }
@@ -5678,7 +5685,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     sizeof(*sine_map));
   if (sine_map == (double *) NULL)
     {
-      canvas=DestroyImage(canvas);
+      canvas_image=DestroyImage(canvas_image);
       wave_image=DestroyImage(wave_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
@@ -5690,16 +5697,19 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   */
   status=MagickTrue;
   progress=0;
-  canvas_view=AcquireVirtualCacheView(canvas,exception);
+  canvas_image_view=AcquireVirtualCacheView(canvas_image,exception);
   wave_view=AcquireAuthenticCacheView(wave_image,exception);
-  (void) SetCacheViewVirtualPixelMethod(canvas_view,
+  (void) SetCacheViewVirtualPixelMethod(canvas_image_view,
     BackgroundVirtualPixelMethod);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    magick_number_threads(canvas,wave_image,wave_image->rows,1)
+    magick_number_threads(canvas_image,wave_image,wave_image->rows,1)
 #endif
   for (y=0; y < (ssize_t) wave_image->rows; y++)
   {
+    register const Quantum
+      *magick_restrict p;
+
     register Quantum
       *magick_restrict q;
 
@@ -5708,19 +5718,42 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
 
     if (status == MagickFalse)
       continue;
+    p=GetCacheViewVirtualPixels(canvas_image_view,0,y,canvas_image->columns,1,
+      exception);
     q=QueueCacheViewAuthenticPixels(wave_view,0,y,wave_image->columns,1,
       exception);
-    if (q == (Quantum *) NULL)
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
       }
     for (x=0; x < (ssize_t) wave_image->columns; x++)
     {
-      status=InterpolatePixelChannels(canvas,canvas_view,wave_image,method,
-        (double) x,(double) (y-sine_map[x]),q,exception);
-      if (status == MagickFalse)
-        break;
+      if (GetPixelWriteMask(image,p) > (QuantumRange/2))
+        {
+          register ssize_t
+            i;
+
+          for (i=0; i < (ssize_t) GetPixelChannels(canvas_image); i++)
+          {
+            PixelChannel channel = GetPixelChannelChannel(canvas_image,i);
+            PixelTrait traits = GetPixelChannelTraits(canvas_image,channel);
+            PixelTrait wave_traits = GetPixelChannelTraits(wave_image,
+              channel);
+            if ((traits == UndefinedPixelTrait) ||
+                (wave_traits == UndefinedPixelTrait))
+              continue;
+            SetPixelChannel(wave_image,channel,p[i],q);
+          }
+        }
+      else
+        {
+          status=InterpolatePixelChannels(canvas_image,canvas_image_view,
+            wave_image,method,(double) x,(double) (y-sine_map[x]),q,exception);
+          if (status == MagickFalse)
+            break;
+        }
+      p+=GetPixelChannels(canvas_image);
       q+=GetPixelChannels(wave_image);
     }
     if (SyncCacheViewAuthenticPixels(wave_view,exception) == MagickFalse)
@@ -5733,14 +5766,14 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp critical (MagickCore_WaveImage)
 #endif
-        proceed=SetImageProgress(canvas,WaveImageTag,progress++,canvas->rows);
+        proceed=SetImageProgress(canvas_image,WaveImageTag,progress++,canvas_image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
   wave_view=DestroyCacheView(wave_view);
-  canvas_view=DestroyCacheView(canvas_view);
-  canvas=DestroyImage(canvas);
+  canvas_image_view=DestroyCacheView(canvas_image_view);
+  canvas_image=DestroyImage(canvas_image);
   sine_map=(double *) RelinquishMagickMemory(sine_map);
   if (status == MagickFalse)
     wave_image=DestroyImage(wave_image);
