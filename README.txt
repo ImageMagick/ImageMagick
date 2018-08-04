@@ -29,13 +29,15 @@ Introduction to ImageMagick
   that includes memory error and thread data race detection to prevent
   security vulnerabilities.
 
-  ImageMagick is available from
-  https://www.imagemagick.org/script/download.php.  It runs on Linux, Windows,
-  Mac Os X, iOS, Android OS, and others.
+  The current release is the ImageMagick 7.0.8-* series. It runs on Linux,
+  Windows, Mac Os X, iOS, Android OS, and others.
 
   The authoritative ImageMagick web site is https://www.imagemagick.org. The
   authoritative source code repository is https://github.com/ImageMagick. We
   maintain a source code mirror at https://gitlab.com/ImageMagick.
+
+  We continue to maintain the legacy release of ImageMagick, version 6,
+  at https://legacy.imagemagick.org.
 
 
 Features and Capabilities
@@ -96,10 +98,42 @@ Features and Capabilities
       * ImageMagick on the iPhone: convert, edit, or compose images on your
         iPhone or iPad.
   
-  Examples of ImageMagick Usage shows how to use ImageMagick from the
-  command-line to accomplish any of these tasks and much more. Also,
-  see Fred's ImageMagick Scripts: a plethora of command-line scripts that
-  perform geometric transforms, blurs, sharpens, edging, noise removal,
+  Examples of ImageMagick Usage * https://www.imagemagick.org/Usage/
+  shows how to use ImageMagick from the command-line to accomplish any
+  of these tasks and much more. Also, see Fred's ImageMagick Scripts @
+  http://www.fmwconcepts.com/imagemagick/: a plethora of command-line scripts
+  that perform geometric transforms, blurs, sharpens, edging, noise removal,
   and color manipulations. With Magick.NET, use ImageMagick without having
   to install ImageMagick on your server or desktop.
 
+
+News
+
+  Now that ImageMagick version 7 is released, we continue
+  to maintain the legacy release of ImageMagick, version 6, at
+  https://legacy.imagemagick.org. Learn how ImageMagick version 7 differs
+  from previous versions with our porting guide.
+
+  ImageMagick best practices strongly encourages you to configure a security
+  policy that suits your local environment.
+
+  As an analog to linear (RGB) and non-linear (sRGB) color colorspaces, as
+  of ImageMagick 7.0.7-17, we introduce the LinearGray colorspace. Gray is
+  non-linear grayscale and LinearGray is linear (e.g. -colorspace linear-gray).
+
+  Want more performance from ImageMagick? Try these options:
+
+    Add more memory to your system, see the pixel cache; Add more cores to
+    your system, see threads of execution support; push large images to a
+    solid-state drive, see large image support.
+
+  If these options are prohibitive, you can reduce the quality of the image
+  results. The default build is Q16 HDRI. If you disable HDRI, you use
+  half the memory and instead of predominately floating point operations,
+  you use the typically more efficient integer operations. The tradeoff
+  is reduced precision and you cannot process out of range pixel values
+  (e.g. negative). If you build the Q8 non-HDRI version of ImageMagick,
+  you again reduce the memory requirements in half-- and once again there
+  is a tradeoff, even less precision and no out of range pixel values. For
+  a Q8 non-HDRI build of ImageMagick, use these configure script options:
+  --with-quantum-depth=8 --disable-hdri.

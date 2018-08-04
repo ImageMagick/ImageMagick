@@ -4,7 +4,7 @@ ImageMagick
 <p align="center">
 <img align="center" src="https://www.imagemagick.org/image/wizard.png" alt="ImageMagick logo" width="265"/>
 
-[ImageMagick®](https://www.imagemagick.org/) is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of [formats](https://www.imagemagick.org/script/formats.php) (over 200) including PNG, JPEG, GIF, HEIC, TIFF, DPX, EXR, WebP, Postscript, PDF, and SVG.  Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.
+Use [ImageMagick®](https://www.imagemagick.org/) o create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, GIF, HEIC, TIFF, DPX, EXR, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.
 
 
 | Version | *nix | Windows |
@@ -22,9 +22,11 @@ ImageMagick is free software delivered as a ready-to-run binary distribution or 
 
 The ImageMagick development process ensures a stable API and ABI. Before each ImageMagick release, we perform a comprehensive security assessment that includes memory error and thread data race detection to prevent security vulnerabilities.
 
-ImageMagick is available from https://www.imagemagick.org/script/download.php. It runs on Linux, Windows, Mac Os X, iOS, Android OS, and others.
+The current release is the ImageMagick 7.0.8 series. It runs on Linux, Windows, Mac Os X, iOS, Android OS, and others.
 
 The authoritative ImageMagick web site is https://www.imagemagick.org. The authoritative source code repository is https://github.com/ImageMagick. We maintain a source code mirror at https://gitlab.com/ImageMagick.
+
+We continue to maintain the legacy release of ImageMagick, version 6, at https://legacy.imagemagick.org.
 
 #### Features and Capabilities
 
@@ -36,7 +38,6 @@ Here are just a few examples of what ImageMagick can do:
 * [Draw](https://www.imagemagick.org/Usage/draw/): add shapes or text to an image.
 * [Decorate](https://www.imagemagick.org/Usage/crop/): add a border or frame to an image.
 * [Special effects](https://www.imagemagick.org/Usage/blur/): blur, sharpen, threshold, or tint an image.
-* [Animation](https://www.imagemagick.org/Usage/anim_basics/): create a GIF animation sequence from a group of images.
 * [Text & comments](https://www.imagemagick.org/Usage/text/): insert descriptive or artistic text in an image.
 * [Image gradients](https://www.imagemagick.org/script/gradient.php): create a gradual blend of one color whose shape is horizontal, vertical, circular, or ellipical.
 * [Image identification](https://www.imagemagick.org/script/identify.php): describe the format and attributes of an image.
@@ -68,3 +69,13 @@ Here are just a few examples of what ImageMagick can do:
 Now that ImageMagick [version 7](https://www.imagemagick.org) is released, we continue to maintain the legacy release of ImageMagick, [version 6](https://legacy.imagemagick.org). Learn how ImageMagick version 7 differs from previous versions with our [porting guide](https://www.imagemagick.org/script/porting.php).
 
 ImageMagick best practices **strongly** encourages you to configure a [security policy](https://www.imagemagick.org/script/security-policy.php) that suits your local environment.
+
+As an analog to linear (RGB) and non-linear (sRGB) color colorspaces, as of ImageMagick 7.0.7-17, we introduce the LinearGray colorspace. Gray is non-linear grayscale and LinearGray is linear (e.g. -colorspace linear-gray).
+
+Want more performance from ImageMagick? Try these options:
+
+ * Add more memory to your system, see the pixel cache;
+ * Add more cores to your system, see threads of execution support;
+ * push large images to a solid-state drive, see large image support.
+
+If these options are prohibitive, you can reduce the quality of the image results. The default build is Q16 HDRI. If you disable HDRI, you use half the memory and instead of predominately floating point operations, you use the typically more efficient integer operations. The tradeoff is reduced precision and you cannot process out of range pixel values (e.g. negative). If you build the Q8 non-HDRI version of ImageMagick, you again reduce the memory requirements in half-- and once again there is a tradeoff, even less precision and no out of range pixel values. For a Q8 non-HDRI build of ImageMagick, use these configure script options: --with-quantum-depth=8 --disable-hdri.
