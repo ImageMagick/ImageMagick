@@ -417,7 +417,7 @@ WandExport char *MagickQueryConfigureOption(const char *option)
   if (configure_info == (const ConfigureInfo **) NULL)
     return((char *) NULL);
   value=(char *) NULL;
-  if (number_options > 0)
+  if (number_options != 0)
     value=AcquireString(configure_info[0]->value);
   configure_info=(const ConfigureInfo **)
     RelinquishMagickMemory((void *) configure_info);
