@@ -1,5 +1,5 @@
 2018-08-06  7.0.8-9 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.8-9, GIT revision 14616:9b220db2c:20180805.
+  * Release ImageMagick version 7.0.8-9, GIT revision 14618:a3663c3dc:20180805.
 
 2018-07-24  7.0.8-9 Cristy  <quetzlzacatenango@image...>
   * XBM coder leaves the hex image data uninitialized if hex value of the
