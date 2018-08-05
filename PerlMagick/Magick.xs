@@ -558,7 +558,7 @@ static struct
     { "CopyPixels", { {"image", ImageReference}, {"geometry", StringReference},
       {"width", IntegerReference}, {"height", IntegerReference},
       {"x", IntegerReference}, {"y", IntegerReference},
-      {"gravity", MagickGravityOptions}, {"offset", StringReference}, 
+      {"gravity", MagickGravityOptions}, {"offset", StringReference},
       {"dx", IntegerReference}, {"dy", IntegerReference} } },
     { "Color", { {"color", StringReference} } },
     { "WaveletDenoise", {  {"geometry", StringReference},
@@ -566,6 +566,10 @@ static struct
       {"channel", MagickChannelOptions} } },
     { "Colorspace", { {"colorspace", MagickColorspaceOptions} } },
     { "AutoThreshold", { {"method", MagickAutoThresholdOptions} } },
+    { "RangeThreshold", { {"geometry", StringReference},
+      {"low-soft", RealReference}, {"high-soft", RealReference},
+      {"low-hard", RealReference}, {"high-hard", RealReference},
+      {"channel", MagickChannelOptions} } },
   };
 
 static SplayTreeInfo
@@ -7634,6 +7638,8 @@ Mogrify(ref,...)
     ColorspaceImage    = 292
     AutoThreshold      = 293
     AutoThresholdImage = 294
+    RangeThreshold     = 295
+    RangeThresholdImage= 296
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -11436,6 +11442,36 @@ Mogrify(ref,...)
           if (attribute_flag[0] != 0)
             method=(AutoThresholdMethod) argument_list[0].integer_reference;
           (void) AutoThresholdImage(image,method,exception);
+          break;
+        }
+        case 148:  /* RangeThreshold */
+        {
+          if (attribute_flag[0] != 0)
+            {
+              flags=ParseGeometry(argument_list[0].string_reference,
+                &geometry_info);
+              if ((flags & SigmaValue) == 0)
+                geometry_info.sigma=geometry_info.rho;
+              if ((flags & XiValue) == 0)
+                geometry_info.xi=geometry_info.sigma;
+              if ((flags & PsiValue) == 0)
+                geometry_info.psi=geometry_info.xi;
+            }
+          if (attribute_flag[1] != 0)
+            geometry_info.rho=argument_list[1].real_reference;
+          if (attribute_flag[2] != 0)
+            geometry_info.sigma=argument_list[2].real_reference;
+          if (attribute_flag[3] != 0)
+            geometry_info.xi=argument_list[3].real_reference;
+          if (attribute_flag[4] != 0)
+            geometry_info.psi=argument_list[4].real_reference;
+          if (attribute_flag[5] != 0)
+            channel=(ChannelType) argument_list[5].integer_reference;
+          channel_mask=SetImageChannelMask(image,channel);
+          image=RangeThresholdImage(image,geometry_info.rho,geometry_info.sigma,
+            geometry_info.xi,geometry_info.psi,exception);
+          if (image != (Image *) NULL)
+            (void) SetImageChannelMask(image,channel_mask);
           break;
         }
       }
