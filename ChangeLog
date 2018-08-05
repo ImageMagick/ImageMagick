@@ -1,6 +1,10 @@
+2018-08-06  7.0.8-9 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-9, GIT revision 14583:300fdbcfd:20180723.
+
 2018-07-24  7.0.8-9 Cristy  <quetzlzacatenango@image...>
   * XBM coder leaves the hex image data uninitialized if hex value of the
     pixel is negative.
+  * More improvements to SVG text handling.
 
 2018-07-23  7.0.8-8 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-8, GIT revision 14583:300fdbcfd:20180723.
