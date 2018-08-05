@@ -203,7 +203,7 @@ static void InsertComplexDoubleRow(Image *image,double *p,int y,double MinVal,
       if (f + GetPixelRed(image,q) > QuantumRange)
         SetPixelRed(image,QuantumRange,q);
       else
-        SetPixelRed(image,GetPixelRed(image,q)+(int) f,q);
+        SetPixelRed(image,GetPixelRed(image,q)+ClampToQuantum(f),q);
       f = GetPixelGreen(image,q)-f/2.0;      
       if (f <= 0.0)
         {
@@ -212,8 +212,8 @@ static void InsertComplexDoubleRow(Image *image,double *p,int y,double MinVal,
         }
       else
         {
-          SetPixelBlue(image,f,q);
-          SetPixelGreen(image,f,q);
+          SetPixelBlue(image,ClampToQuantum(f),q);
+          SetPixelGreen(image,ClampToQuantum(f),q);
         }
     }
     if (*p < 0)
