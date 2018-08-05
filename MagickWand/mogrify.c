@@ -2566,7 +2566,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 geometry_info.xi*=(double) (0.01*QuantumRange);
                 geometry_info.psi*=(double) (0.01*QuantumRange);
               }
-            (void) RandomThresholdImage(*image,geometry_info.rho,
+            (void) RangeThresholdImage(*image,geometry_info.rho,
               geometry_info.sigma,geometry_info.xi,geometry_info.psi,exception);
             break;
           }

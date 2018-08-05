@@ -3052,27 +3052,28 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             _exception);
           break;
         }
-      if (LocaleCompare("random-threshold",option+1) == 0)
+      if (LocaleCompare("range-threshold",option+1) == 0)
         {
           /*
             Range threshold image.
           */
-          (void) SyncImageSettings(mogrify_info,*image,exception);
-          flags=ParseGeometry(argv[i+1],&geometry_info);
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=geometry_info.rho;
           if ((flags & XiValue) == 0)
             geometry_info.xi=geometry_info.sigma;
           if ((flags & PsiValue) == 0)
             geometry_info.psi=geometry_info.xi;
-          if (strchr(argv[i+1],'%') != (char *) NULL)
+          if (strchr(argv1,'%') != (char *) NULL)
             {
               geometry_info.rho*=(double) (0.01*QuantumRange);
               geometry_info.sigma*=(double) (0.01*QuantumRange);
               geometry_info.xi*=(double) (0.01*QuantumRange);
               geometry_info.psi*=(double) (0.01*QuantumRange);
             }
-          (void) RandomThresholdImage(*image,geometry_info.rho,
+          (void) RangeThresholdImage(_image,geometry_info.rho,
             geometry_info.sigma,geometry_info.xi,geometry_info.psi,exception);
           break;
         }
