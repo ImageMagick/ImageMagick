@@ -11470,8 +11470,8 @@ Mogrify(ref,...)
           if (attribute_flag[5] != 0)
             channel=(ChannelType) argument_list[5].integer_reference;
           channel_mask=SetImageChannelMask(image,channel);
-          image=RangeThresholdImage(image,geometry_info.rho,geometry_info.sigma,
-            geometry_info.xi,geometry_info.psi,exception);
+          (void) RangeThresholdImage(image,geometry_info.rho,
+            geometry_info.sigma,geometry_info.xi,geometry_info.psi,exception);
           if (image != (Image *) NULL)
             (void) SetImageChannelMask(image,channel_mask);
           break;
