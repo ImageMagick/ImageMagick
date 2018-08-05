@@ -3066,7 +3066,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.xi=geometry_info.sigma;
           if ((flags & PsiValue) == 0)
             geometry_info.psi=geometry_info.xi;
-          if (strchr(argv1,'%') != (char *) NULL)
+          if (strchr(arg1,'%') != (char *) NULL)
             {
               geometry_info.rho*=(double) (0.01*QuantumRange);
               geometry_info.sigma*=(double) (0.01*QuantumRange);
