@@ -50,6 +50,8 @@ extern MagickExport MagickBooleanType
   OrderedDitherImage(Image *,const char *,ExceptionInfo *),
   PerceptibleImage(Image *,const double,ExceptionInfo *),
   RandomThresholdImage(Image *,const double,const double,ExceptionInfo *),
+  RangeThresholdImage(Image *,const double,const double,const double,
+    const double,ExceptionInfo *),
   WhiteThresholdImage(Image *,const char *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

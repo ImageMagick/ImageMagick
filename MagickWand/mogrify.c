@@ -2523,7 +2523,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
         if (LocaleCompare("random-threshold",option+1) == 0)
           {
             /*
-              Threshold image.
+              Random threshold image.
             */
             double
               min_threshold,
@@ -2544,6 +2544,30 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               }
             (void) RandomThresholdImage(*image,min_threshold,max_threshold,
               exception);
+            break;
+          }
+        if (LocaleCompare("range-threshold",option+1) == 0)
+          {
+            /*
+              Range threshold image.
+            */
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            flags=ParseGeometry(argv[i+1],&geometry_info);
+            if ((flags & SigmaValue) == 0)
+              geometry_info.sigma=geometry_info.rho;
+            if ((flags & XiValue) == 0)
+              geometry_info.xi=geometry_info.sigma;
+            if ((flags & PsiValue) == 0)
+              geometry_info.psi=geometry_info.xi;
+            if (strchr(argv[i+1],'%') != (char *) NULL)
+              {
+                geometry_info.rho*=(double) (0.01*QuantumRange);
+                geometry_info.sigma*=(double) (0.01*QuantumRange);
+                geometry_info.xi*=(double) (0.01*QuantumRange);
+                geometry_info.psi*=(double) (0.01*QuantumRange);
+              }
+            (void) RandomThresholdImage(*image,geometry_info.rho,
+              geometry_info.sigma,geometry_info.xi,geometry_info.psi,exception);
             break;
           }
         if (LocaleCompare("read-mask",option+1) == 0)
@@ -3540,6 +3564,8 @@ static MagickBooleanType MogrifyUsage(void)
       "-raise value         lighten/darken image edges to create a 3-D effect",
       "-random-threshold low,high",
       "                     random threshold the image",
+      "-range-threshold values",
+      "                     combine hard and soft thresholding",
       "-region geometry     apply options to a portion of the image",
       "-render              render vector graphics",
       "-repage geometry     size and location of an image canvas",
@@ -5758,6 +5784,17 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         if (LocaleCompare("random-threshold",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("range-threshold",option+1) == 0)
           {
             if (*option == '+')
               break;

@@ -2123,6 +2123,150 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     R a n g e T h r e s h o l d I m a g e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  RangeThresholdImage() applies soft and hard thresholding.
+%
+%  The format of the RangeThresholdImage method is:
+%
+%      MagickBooleanType RangeThresholdImage(Image *image,
+%        const double low_soft,const double high_soft,const double low_hard,
+%        const double high_hard,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o low_soft: Define the minimum threshold value.
+%
+%    o high_soft: Define the maximum threshold value.
+%
+%    o low_hard: Define the minimum threshold value.
+%
+%    o high_soft: Define the maximum threshold value.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickBooleanType RangeThresholdImage(Image *image,
+  const double low_soft,const double high_soft,const double low_hard,
+  const double high_hard,ExceptionInfo *exception)
+{
+#define ThresholdImageTag  "Threshold/Image"
+
+  CacheView
+    *image_view;
+
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+    return(MagickFalse);
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
+  /*
+    Range threshold image.
+  */
+  status=MagickTrue;
+  progress=0;
+  image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(progress,status) \
+    magick_number_threads(image,image,image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register ssize_t
+      x;
+
+    register Quantum
+      *magick_restrict q;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      double
+        pixel;
+
+      register ssize_t
+        i;
+
+      pixel=GetPixelIntensity(image,q);
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel channel = GetPixelChannelChannel(image,i);
+        PixelTrait traits = GetPixelChannelTraits(image,channel);
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        if (image->channel_mask != DefaultChannels)
+          pixel=(double) q[i];
+        if (pixel < low_soft)
+          q[i]=0;
+        else
+          if ((pixel >= low_soft) && (pixel < high_soft))
+            q[i]=ClampToQuantum(PerceptibleReciprocal(high_soft-low_soft)*
+              (pixel-low_soft));
+          else
+            if ((pixel >= high_soft) && (pixel <= low_hard))
+              q[i]=QuantumRange;
+            else
+              if ((pixel > low_hard) && (pixel <= high_hard))
+                q[i]=ClampToQuantum(PerceptibleReciprocal(high_hard-low_hard)*
+                  (high_hard-pixel));
+              else
+                if (pixel > high_hard)
+                  q[i]=0;
+                else
+                  q[i]=0;
+      }
+      q+=GetPixelChannels(image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (MagickCore_RangeThresholdImage)
+#endif
+        proceed=SetImageProgress(image,ThresholdImageTag,progress++,
+          image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  image_view=DestroyCacheView(image_view);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %     W h i t e T h r e s h o l d I m a g e                                   %
 %                                                                             %
 %                                                                             %

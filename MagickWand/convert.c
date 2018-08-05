@@ -275,6 +275,8 @@ static MagickBooleanType ConvertUsage(void)
       "-raise value         lighten/darken image edges to create a 3-D effect",
       "-random-threshold low,high",
       "                     random threshold the image",
+      "-range-threshold values",
+      "                     combine hard and soft thresholding",
       "-region geometry     apply options to a portion of the image",
       "-render              render vector graphics",
       "-resample geometry   change the resolution of an image",
@@ -2522,6 +2524,17 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         if (LocaleCompare("random-threshold",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("range-threshold",option+1) == 0)
           {
             if (*option == '+')
               break;
