@@ -620,10 +620,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,Image *image
     if (status == MagickFalse)
       break;
     if (GetNextImageInList(image) == (Image *) NULL)
-      {
-        status=MagickFalse;
         break;
-      }
     image=SyncNextImageInList(image);
     status=SetImageProgress(image,SaveImagesTag,scene,
       GetImageListLength(image));
