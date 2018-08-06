@@ -2225,15 +2225,15 @@ MagickExport MagickBooleanType RangeThresholdImage(Image *image,
           q[i]=0;
         else
           if ((pixel >= low_soft) && (pixel < high_soft))
-            q[i]=ClampToQuantum(PerceptibleReciprocal(high_soft-low_soft)*
-              (pixel-low_soft));
+            q[i]=ClampToQuantum(QuantumRange*
+              PerceptibleReciprocal(high_soft-low_soft)*(pixel-low_soft));
           else
             if ((pixel >= high_soft) && (pixel <= low_hard))
               q[i]=QuantumRange;
             else
               if ((pixel > low_hard) && (pixel <= high_hard))
-                q[i]=ClampToQuantum(PerceptibleReciprocal(high_hard-low_hard)*
-                  (high_hard-pixel));
+                q[i]=ClampToQuantum(QuantumRange*
+                  PerceptibleReciprocal(high_hard-low_hard)*(high_hard-pixel));
               else
                 if (pixel > high_hard)
                   q[i]=0;
