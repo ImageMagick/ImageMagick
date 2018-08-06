@@ -3394,7 +3394,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
       delta.x=scale.x*(double) (x-center.x);
       distance=delta.x*delta.x+delta.y*delta.y;
       if ((distance >= (radius*radius)) ||
-          (GetPixelWriteMask(canvas_image,p) > (QuantumRange/2)))
+          (GetPixelWriteMask(canvas_image,p) <= (QuantumRange/2)))
         for (i=0; i < (ssize_t) GetPixelChannels(canvas_image); i++)
         {
           PixelChannel channel = GetPixelChannelChannel(canvas_image,i);
@@ -5227,7 +5227,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
       delta.x=scale.x*(double) (x-center.x);
       distance=delta.x*delta.x+delta.y*delta.y;
       if ((distance >= (radius*radius)) ||
-          (GetPixelWriteMask(canvas_image,p) > (QuantumRange/2)))
+          (GetPixelWriteMask(canvas_image,p) <= (QuantumRange/2)))
         {
           register ssize_t
             i;
@@ -5729,7 +5729,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
       }
     for (x=0; x < (ssize_t) wave_image->columns; x++)
     {
-      if (GetPixelWriteMask(image,p) > (QuantumRange/2))
+      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
         {
           register ssize_t
             i;
