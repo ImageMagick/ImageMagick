@@ -3278,6 +3278,9 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
     *implode_view,
     *interpolate_view;
 
+  double
+    radius;
+
   Image
     *canvas_image,
     *implode_image;
@@ -3287,9 +3290,6 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 
   MagickOffsetType
     progress;
-
-  double
-    radius;
 
   PointInfo
     center,
@@ -3393,8 +3393,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
       */
       delta.x=scale.x*(double) (x-center.x);
       distance=delta.x*delta.x+delta.y*delta.y;
-      if ((distance >= (radius*radius)) ||
-          (GetPixelWriteMask(canvas_image,p) <= (QuantumRange/2)))
+      if (distance >= (radius*radius))
         for (i=0; i < (ssize_t) GetPixelChannels(canvas_image); i++)
         {
           PixelChannel channel = GetPixelChannelChannel(canvas_image,i);
@@ -5226,8 +5225,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
       */
       delta.x=scale.x*(double) (x-center.x);
       distance=delta.x*delta.x+delta.y*delta.y;
-      if ((distance >= (radius*radius)) ||
-          (GetPixelWriteMask(canvas_image,p) <= (QuantumRange/2)))
+      if (distance >= (radius*radius))
         {
           register ssize_t
             i;
@@ -5259,8 +5257,8 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
           cosine=cos((double) (degrees*factor*factor));
           status=InterpolatePixelChannels(canvas_image,interpolate_view,
             swirl_image,method,((cosine*delta.x-sine*delta.y)/scale.x+center.x),
-              (double) ((sine*delta.x+cosine*delta.y)/scale.y+center.y),q,
-              exception);
+            (double) ((sine*delta.x+cosine*delta.y)/scale.y+center.y),q,
+            exception);
           if (status == MagickFalse)
             break;
         }
@@ -5665,8 +5663,8 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   if ((canvas_image->alpha_trait == UndefinedPixelTrait) &&
       (canvas_image->background_color.alpha != OpaqueAlpha))
     (void) SetImageAlpha(canvas_image,OpaqueAlpha,exception);
-  wave_image=CloneImage(canvas_image,canvas_image->columns,(size_t) (canvas_image->rows+2.0*
-    fabs(amplitude)),MagickTrue,exception);
+  wave_image=CloneImage(canvas_image,canvas_image->columns,(size_t)
+    (canvas_image->rows+2.0*fabs(amplitude)),MagickTrue,exception);
   if (wave_image == (Image *) NULL)
     {
       canvas_image=DestroyImage(canvas_image);
@@ -5729,30 +5727,10 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
       }
     for (x=0; x < (ssize_t) wave_image->columns; x++)
     {
-      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
-        {
-          register ssize_t
-            i;
-
-          for (i=0; i < (ssize_t) GetPixelChannels(canvas_image); i++)
-          {
-            PixelChannel channel = GetPixelChannelChannel(canvas_image,i);
-            PixelTrait traits = GetPixelChannelTraits(canvas_image,channel);
-            PixelTrait wave_traits = GetPixelChannelTraits(wave_image,
-              channel);
-            if ((traits == UndefinedPixelTrait) ||
-                (wave_traits == UndefinedPixelTrait))
-              continue;
-            SetPixelChannel(wave_image,channel,p[i],q);
-          }
-        }
-      else
-        {
-          status=InterpolatePixelChannels(canvas_image,canvas_image_view,
-            wave_image,method,(double) x,(double) (y-sine_map[x]),q,exception);
-          if (status == MagickFalse)
-            break;
-        }
+      status=InterpolatePixelChannels(canvas_image,canvas_image_view,
+        wave_image,method,(double) x,(double) (y-sine_map[x]),q,exception);
+      if (status == MagickFalse)
+        break;
       p+=GetPixelChannels(canvas_image);
       q+=GetPixelChannels(wave_image);
     }
