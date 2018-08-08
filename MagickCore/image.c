@@ -2749,9 +2749,6 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
         }
       else
         {
-          register size_t
-            n;
-
           size_t
             first,
             last;
@@ -2760,8 +2757,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
           image_info->scene=StringToUnsignedLong(image_info->scenes);
           image_info->number_scenes=image_info->scene;
           p=image_info->scenes;
-          q=(char *) image_info->scenes;
-          for (n=0; *q != '\0'; p++, n++)
+          for (q=(char *) image_info->scenes; *q != '\0'; p++)
           {
             while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == ','))
               p++;
@@ -2780,8 +2776,6 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
             p=q;
           }
           image_info->number_scenes-=image_info->scene-1;
-          if ((image_info->number_scenes == 1) && (n > 1))
-            image_info->number_scenes++;  /* e.g. [0,0,0] */
         }
     }
   *component='\0';
