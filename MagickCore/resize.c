@@ -3670,6 +3670,7 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
 #define SampleFactor  5
 
   char
+    filename[MagickPathExtent],
     *url,
     value[MagickPathExtent];
 
@@ -3738,7 +3739,8 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
     (void) FormatLocaleString(value,MagickPathExtent,"file://%s",
       image->magick_filename);
   (void) SetImageProperty(thumbnail_image,"Thumb::URI",value,exception);
-  (void) CopyMagickString(value,image->magick_filename,MagickPathExtent);
+  GetPathComponent(image->magick_filename,TailPath,filename);
+  (void) CopyMagickString(value,filename,MagickPathExtent);
   if ( GetPathAttributes(image->filename,&attributes) != MagickFalse )
     {
       (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
