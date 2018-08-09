@@ -213,16 +213,16 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
     *clone_images,
     *image;
 
-  long
-    first,
-    last,
-    step;
-
   register ssize_t
     i;
 
   size_t
     length;
+
+  ssize_t
+    first,
+    last,
+    step;
 
   assert(images != (const Image *) NULL);
   assert(images->signature == MagickCoreSignature);
@@ -238,19 +238,20 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
   {
     while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == ','))
       p++;
-    first=strtol(p,&p,10);
+    first=(ssize_t) strtol(p,&p,10);
     if (first < 0)
-      first+=(long) length;
+      first+=(ssize_t) length;
     last=first;
     while (isspace((int) ((unsigned char) *p)) != 0)
       p++;
     if (*p == '-')
       {
-        last=strtol(p+1,&p,10);
+        last=(ssize_t) strtol(p+1,&p,10);
         if (last < 0)
-          last+=(long) length;
+          last+=(ssize_t) length;
       }
-    for (step=first > last ? -1 : 1; first != (last+step); first+=step)
+    step=(ssize_t) (first > last ? -1 : 1);
+    for ( ; first != (last+step); first+=step)
     {
       i=0;
       for (next=images; next != (Image *) NULL; next=GetNextImageInList(next))
