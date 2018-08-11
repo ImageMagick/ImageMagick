@@ -241,6 +241,9 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
     first=(ssize_t) strtol(p,&p,10);
     if (first < 0)
       first+=(ssize_t) length;
+    else
+      if (first > (ssize_t) length)
+        first=(ssize_t) length;
     last=first;
     while (isspace((int) ((unsigned char) *p)) != 0)
       p++;
@@ -249,6 +252,9 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
         last=(ssize_t) strtol(p+1,&p,10);
         if (last < 0)
           last+=(ssize_t) length;
+        else
+          if (last > (ssize_t) length)
+            last=(ssize_t) length;
       }
     step=(ssize_t) (first > last ? -1 : 1);
     for ( ; first != (last+step); first+=step)
