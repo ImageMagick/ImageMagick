@@ -1529,6 +1529,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 break;
               }
               case AtopCompositeOp:
+              case MultiplyCompositeOp:
               case CopyBlackCompositeOp:
               case CopyBlueCompositeOp:
               case CopyCyanCompositeOp:
@@ -1621,11 +1622,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               case ModulateCompositeOp:
               {
                 pixel=QuantumRange*Da;
-                break;
-              }
-              case MultiplyCompositeOp:
-              {
-                pixel=QuantumRange*Sa*Da;
                 break;
               }
               default:
