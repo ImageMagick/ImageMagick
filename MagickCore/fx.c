@@ -3313,8 +3313,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
   if ((canvas_image->alpha_trait == UndefinedPixelTrait) &&
       (canvas_image->background_color.alpha != OpaqueAlpha))
     (void) SetImageAlphaChannel(canvas_image,OpaqueAlphaChannel,exception);
-  implode_image=CloneImage(canvas_image,canvas_image->columns,
-    canvas_image->rows,MagickTrue,exception);
+  implode_image=CloneImage(canvas_image,0,0,MagickTrue,exception);
   if (implode_image == (Image *) NULL)
     {
       canvas_image=DestroyImage(canvas_image);
@@ -5150,8 +5149,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
   if ((canvas_image->alpha_trait == UndefinedPixelTrait) &&
       (canvas_image->background_color.alpha != OpaqueAlpha))
     (void) SetImageAlphaChannel(canvas_image,OpaqueAlphaChannel,exception);
-  swirl_image=CloneImage(canvas_image,canvas_image->columns,canvas_image->rows,
-    MagickTrue,exception);
+  swirl_image=CloneImage(canvas_image,0,0,MagickTrue,exception);
   if (swirl_image == (Image *) NULL)
     {
       canvas_image=DestroyImage(canvas_image);
