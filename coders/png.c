@@ -2897,7 +2897,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          png_set_sRGB(ping,ping_info,
             Magick_RenderingIntent_to_PNG_RenderingIntent
             (image->rendering_intent));
-         file_gamma=1.000f/2.200f;
+         file_gamma=0.45455f;
          ping_found_sRGB=MagickTrue;
          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
            "    Setting sRGB as if in input");
@@ -4889,7 +4889,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
           {
             image->rendering_intent=
               Magick_RenderingIntent_from_PNG_RenderingIntent(p[0]);
-            image->gamma=1.000f/2.200f;
+            image->gamma=0.45455f;
             image->chromaticity.red_primary.x=0.6400f;
             image->chromaticity.red_primary.y=0.3300f;
             image->chromaticity.green_primary.x=0.3000f;
