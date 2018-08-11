@@ -1390,15 +1390,17 @@ MagickExport void *FileToBlob(const char *filename,const size_t extent,
         "NotAuthorized","`%s'",filename);
       return(NULL);
     }
-  status=GetPathAttributes(filename,&attributes);
-  if ((status == MagickFalse) || (S_ISDIR(attributes.st_mode) != 0))
-    {
-      ThrowFileException(exception,BlobError,"UnableToReadBlob",filename);
-      return(NULL);
-    }
   file=fileno(stdin);
   if (LocaleCompare(filename,"-") != 0)
-    file=open_utf8(filename,O_RDONLY | O_BINARY,0);
+    {
+      status=GetPathAttributes(filename,&attributes);
+      if ((status == MagickFalse) || (S_ISDIR(attributes.st_mode) != 0))
+        {
+          ThrowFileException(exception,BlobError,"UnableToReadBlob",filename);
+          return(NULL);
+        }
+      file=open_utf8(filename,O_RDONLY | O_BINARY,0);
+    }
   if (file == -1)
     {
       ThrowFileException(exception,BlobError,"UnableToOpenFile",filename);
