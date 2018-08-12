@@ -204,8 +204,7 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
     raw_info->lens.makernotes.LensFeatures_suf,exception);
   (void) FormatLocaleString(property,MagickPathExtent,
     "%0.1f-%0.1fmm f/%0.1f-%0.1f",raw_info->lens.makernotes.MinFocal,
-    raw_info->lens.makernotes.MaxFocal,
-    raw_info->lens.makernotes.MaxAp4MinFocal,
+    raw_info->lens.makernotes.MaxFocal,raw_info->lens.makernotes.MaxAp4MinFocal,
     raw_info->lens.makernotes.MaxAp4MaxFocal);
   (void) SetImageProperty(image,"dng:lens",property,exception);
   (void) FormatLocaleString(property,MagickPathExtent,"%0.2f",
@@ -302,9 +301,8 @@ static Image *InvokeDNGDelegate(const ImageInfo *image_info,Image *image,
                 *next;
 
               if (image->properties == (void *) NULL)
-                ((Image *) image)->properties=NewSplayTree(
-                  CompareSplayTreeString,RelinquishMagickMemory,
-                  RelinquishMagickMemory);
+                image->properties=NewSplayTree(CompareSplayTreeString,
+                  RelinquishMagickMemory,RelinquishMagickMemory);
               next=GetXMLTreeChild(ufraw,(const char *) NULL);
               while (next != (XMLTreeInfo *) NULL)
               {
@@ -321,8 +319,7 @@ static Image *InvokeDNGDelegate(const ImageInfo *image_info,Image *image,
                     (LocaleCompare(tag,"OutputType") != 0) &&
                     (strlen(content) != 0))
                   (void) AddValueToSplayTree((SplayTreeInfo *)
-                    ((Image *) image)->properties,ConstantString(property),
-                    content);
+                    image->properties,ConstantString(property),content);
                 next=GetXMLTreeSibling(next);
               }
               ufraw=DestroyXMLTree(ufraw);
