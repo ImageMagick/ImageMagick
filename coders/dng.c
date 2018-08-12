@@ -233,6 +233,108 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
 }
 #endif
 
+static Image *InvokeDNGDelegate(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
+{
+  ExceptionInfo
+    *sans_exception;
+
+  ImageInfo
+    *read_info;
+
+  /*
+    Convert DNG to PPM with delegate.
+  */
+  (void) DestroyImageList(image);
+  InitializeDcrawOpenCL(exception);
+  image=AcquireImage(image_info,exception);
+  read_info=CloneImageInfo(image_info);
+  SetImageInfoBlob(read_info,(void *) NULL,0);
+  (void) InvokeDelegate(read_info,image,"dng:decode",(char *) NULL,exception);
+  image=DestroyImage(image);
+  (void) FormatLocaleString(read_info->filename,MagickPathExtent,"%s.png",
+    read_info->unique);
+  sans_exception=AcquireExceptionInfo();
+  image=ReadImage(read_info,sans_exception);
+  sans_exception=DestroyExceptionInfo(sans_exception);
+  if (image == (Image *) NULL)
+    {
+      (void) FormatLocaleString(read_info->filename,MagickPathExtent,"%s.ppm",
+        read_info->unique);
+      image=ReadImage(read_info,exception);
+    }
+  (void) RelinquishUniqueFileResource(read_info->filename);
+  if (image != (Image *) NULL)
+    {
+      char
+        filename[MagickPathExtent],
+        *xml;
+
+      ExceptionInfo
+        *sans;
+
+      (void) CopyMagickString(image->magick,read_info->magick,
+        MagickPathExtent);
+      (void) FormatLocaleString(filename,MagickPathExtent,"%s.ufraw",
+        read_info->unique);
+      sans=AcquireExceptionInfo();
+      xml=FileToString(filename,MagickPathExtent,sans);
+      (void) RelinquishUniqueFileResource(filename);
+      if (xml != (char *) NULL)
+        {
+          XMLTreeInfo
+            *ufraw;
+
+          /*
+            Inject.
+          */
+          ufraw=NewXMLTree(xml,sans);
+          if (ufraw != (XMLTreeInfo *) NULL)
+            {
+              char
+                *content,
+                property[MagickPathExtent];
+
+              const char
+                *tag;
+
+              XMLTreeInfo
+                *next;
+
+              if (image->properties == (void *) NULL)
+                ((Image *) image)->properties=NewSplayTree(
+                  CompareSplayTreeString,RelinquishMagickMemory,
+                  RelinquishMagickMemory);
+              next=GetXMLTreeChild(ufraw,(const char *) NULL);
+              while (next != (XMLTreeInfo *) NULL)
+              {
+                tag=GetXMLTreeTag(next);
+                if (tag == (char *) NULL)
+                  tag="unknown";
+                (void) FormatLocaleString(property,MagickPathExtent,"dng:%s",
+                  tag);
+                content=ConstantString(GetXMLTreeContent(next));
+                StripString(content);
+                if ((LocaleCompare(tag,"log") != 0) &&
+                    (LocaleCompare(tag,"InputFilename") != 0) &&
+                    (LocaleCompare(tag,"OutputFilename") != 0) &&
+                    (LocaleCompare(tag,"OutputType") != 0) &&
+                    (strlen(content) != 0))
+                  (void) AddValueToSplayTree((SplayTreeInfo *)
+                    ((Image *) image)->properties,ConstantString(property),
+                    content);
+                next=GetXMLTreeSibling(next);
+              }
+              ufraw=DestroyXMLTree(ufraw);
+            }
+          xml=DestroyString(xml);
+        }
+      sans=DestroyExceptionInfo(sans);
+    }
+  read_info=DestroyImageInfo(read_info);
+  return(image);
+}
+
 static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
@@ -259,6 +361,8 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   (void) CloseBlob(image);
+  if (LocaleCompare(image_info->magick,"DCRAW") == 0)
+    return(InvokeDNGDelegate(image_info,image,exception));
 #if defined(MAGICKCORE_RAW_R_DELEGATE)
   {
     int
@@ -426,105 +530,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     return(image);
   }
 #else
-  {
-    ExceptionInfo
-      *sans_exception;
-
-    ImageInfo
-      *read_info;
-
-    /*
-      Convert DNG to PPM with delegate.
-    */
-    (void) DestroyImageList(image);
-    InitializeDcrawOpenCL(exception);
-    image=AcquireImage(image_info,exception);
-    read_info=CloneImageInfo(image_info);
-    SetImageInfoBlob(read_info,(void *) NULL,0);
-    (void) InvokeDelegate(read_info,image,"dng:decode",(char *) NULL,exception);
-    image=DestroyImage(image);
-    (void) FormatLocaleString(read_info->filename,MagickPathExtent,"%s.png",
-      read_info->unique);
-    sans_exception=AcquireExceptionInfo();
-    image=ReadImage(read_info,sans_exception);
-    sans_exception=DestroyExceptionInfo(sans_exception);
-    if (image == (Image *) NULL)
-      {
-        (void) FormatLocaleString(read_info->filename,MagickPathExtent,"%s.ppm",
-          read_info->unique);
-        image=ReadImage(read_info,exception);
-      }
-    (void) RelinquishUniqueFileResource(read_info->filename);
-    if (image != (Image *) NULL)
-      {
-        char
-          filename[MagickPathExtent],
-          *xml;
-
-        ExceptionInfo
-          *sans;
-
-        (void) CopyMagickString(image->magick,read_info->magick,
-          MagickPathExtent);
-        (void) FormatLocaleString(filename,MagickPathExtent,"%s.ufraw",
-          read_info->unique);
-        sans=AcquireExceptionInfo();
-        xml=FileToString(filename,MagickPathExtent,sans);
-        (void) RelinquishUniqueFileResource(filename);
-        if (xml != (char *) NULL)
-          {
-            XMLTreeInfo
-              *ufraw;
-
-            /*
-              Inject.
-            */
-            ufraw=NewXMLTree(xml,sans);
-            if (ufraw != (XMLTreeInfo *) NULL)
-              {
-                char
-                  *content,
-                  property[MagickPathExtent];
-
-                const char
-                  *tag;
-
-                XMLTreeInfo
-                  *next;
-
-                if (image->properties == (void *) NULL)
-                  ((Image *) image)->properties=NewSplayTree(
-                    CompareSplayTreeString,RelinquishMagickMemory,
-                    RelinquishMagickMemory);
-                next=GetXMLTreeChild(ufraw,(const char *) NULL);
-                while (next != (XMLTreeInfo *) NULL)
-                {
-                  tag=GetXMLTreeTag(next);
-                  if (tag == (char *) NULL)
-                    tag="unknown";
-                  (void) FormatLocaleString(property,MagickPathExtent,"dng:%s",
-                    tag);
-                  content=ConstantString(GetXMLTreeContent(next));
-                  StripString(content);
-                  if ((LocaleCompare(tag,"log") != 0) &&
-                      (LocaleCompare(tag,"InputFilename") != 0) &&
-                      (LocaleCompare(tag,"OutputFilename") != 0) &&
-                      (LocaleCompare(tag,"OutputType") != 0) &&
-                      (strlen(content) != 0))
-                    (void) AddValueToSplayTree((SplayTreeInfo *)
-                      ((Image *) image)->properties,ConstantString(property),
-                      content);
-                  next=GetXMLTreeSibling(next);
-                }
-                ufraw=DestroyXMLTree(ufraw);
-              }
-            xml=DestroyString(xml);
-          }
-        sans=DestroyExceptionInfo(sans);
-      }
-    read_info=DestroyImageInfo(read_info);
-    return(image);
-  }
+  return(InvokeDNGDelegate(image_info,image,exception));
 #endif
 }
 
@@ -587,6 +593,12 @@ ModuleExport size_t RegisterDNGImage(void)
   entry->format_type=ExplicitFormatType;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("DNG","DCR","Kodak Digital Camera Raw Image File");
+  entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->flags^=CoderBlobSupportFlag;
+  entry->format_type=ExplicitFormatType;
+  (void) RegisterMagickInfo(entry);
+  entry=AcquireMagickInfo("DNG","DCRAW","Raw Photo Decoder (dcraw)");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
   entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderBlobSupportFlag;
