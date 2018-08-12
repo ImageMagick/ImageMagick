@@ -375,7 +375,6 @@ ModuleExport size_t RegisterHEICImage(void)
   entry->mime_type=ConstantString("image/x-heic");
   entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
-  entry->flags^=CoderDecoderThreadSupportFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
