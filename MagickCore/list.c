@@ -1457,7 +1457,9 @@ MagickExport Image *SyncNextImageInList(const Image *images)
       DestroyBlob(images->next);
       images->next->blob=ReferenceBlob(images->blob);
     }
-  images->next->compression=images->compression;
-  images->next->endian=images->endian;
+  if (images->next->compression == UndefinedCompression)
+    images->next->compression=images->compression;
+  if (images->next->endian == UndefinedEndian)
+    images->next->endian=images->endian;
   return(images->next);
 }
