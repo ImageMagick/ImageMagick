@@ -1,6 +1,7 @@
 2018-09-12  7.0.8-10 Dirk Lemstra <dirk@lem.....org>
   * Added dcraw coder (dcraw:img.cr2) that can be used to force the use of the
     dcraw delegate when libraw is the default raw delegate.
+  * Restored thread support for the HEIC coder.
 
 2018-08-08  7.0.8-10 Cristy  <quetzlzacatenango@image...>
   * ThumbnailImage function no longer reveals sensitive information (reference
