@@ -1273,7 +1273,8 @@ MagickExport void GetPathComponent(const char *path,PathType type,
   if (*p != '\0')
     p=component+strlen(component)-1;
   if ((*p == ']') && (strchr(component,'[') != (char *) NULL) &&
-      (IsPathAccessible(path) == MagickFalse))
+      (IsPathAccessible(path) == MagickFalse) &&
+      (strstr(component,"][") == (char *) NULL))
     {
       /*
         Look for scene specification (e.g. img0001.pcd[4]).
