@@ -147,7 +147,6 @@ static void InitializeDcrawOpenCL(ExceptionInfo *exception)
   }
 }
 #else
-#if !defined(MAGICKCORE_RAW_R_DELEGATE)
 static void InitializeDcrawOpenCL(ExceptionInfo *magick_unused(exception))
 {
   magick_unreferenced(exception);
@@ -155,7 +154,6 @@ static void InitializeDcrawOpenCL(ExceptionInfo *magick_unused(exception))
   (void) SetEnvironmentVariable("DCR_CL_DISABLED","1");
 #endif
 }
-#endif
 #endif
 
 #if defined(MAGICKCORE_RAW_R_DELEGATE)
