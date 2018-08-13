@@ -1,3 +1,6 @@
+2018-08-13  7.0.8-10 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-10, GIT revision 14646:48fba3256:20180813
+
 2018-08-12  7.0.8-10 Dirk Lemstra <dirk@lem.....org>
   * Added dcraw coder (dcraw:img.cr2) that can be used to force the use of the
     dcraw delegate when libraw is the default raw delegate.
