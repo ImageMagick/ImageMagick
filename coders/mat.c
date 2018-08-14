@@ -1117,7 +1117,9 @@ MATLAB_KO:
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "MATLAB_HDR.CellType: %.20g",(double) CellType);
 
-    (void) ReadBlob(image2, 4, (unsigned char *) &size);     /* data size */
+    /* data size */
+    if (ReadBlob(image2, 4, (unsigned char *) &size) != 4)
+      goto MATLAB_KO;
 
     NEXT_FRAME:
     switch (CellType)
