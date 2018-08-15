@@ -3565,7 +3565,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-random-threshold low,high",
       "                     random threshold the image",
       "-range-threshold values",
-      "                     combine hard and soft thresholding",
+      "                     perform either hard or soft thresholding within some range of values in an image",
       "-region geometry     apply options to a portion of the image",
       "-render              render vector graphics",
       "-repage geometry     size and location of an image canvas",
