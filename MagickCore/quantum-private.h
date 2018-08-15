@@ -659,7 +659,7 @@ static inline MagickSizeType ScaleQuantumToLongLong(const Quantum quantum)
     return(0);
   if (quantum >= 18446744073709551615)
     return(18446744073709551615);
-  return((MagickSizeType (quantum+0.5));
+  return((MagickSizeType) (quantum+0.5));
 #endif
 }
 
