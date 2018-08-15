@@ -2134,27 +2134,27 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
 %  The format of the RangeThresholdImage method is:
 %
 %      MagickBooleanType RangeThresholdImage(Image *image,
-%        const double low_soft,const double high_soft,const double low_hard,
-%        const double high_hard,ExceptionInfo *exception)
+%        const double low_black,const double low_white,const double high_white,
+%        const double high_black,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o low_soft: Define the minimum threshold value.
+%    o low_black: Define the minimum threshold value.
 %
-%    o high_soft: Define the maximum threshold value.
+%    o low_white: Define the maximum threshold value.
 %
-%    o low_hard: Define the minimum threshold value.
+%    o high_white: Define the minimum threshold value.
 %
-%    o high_soft: Define the maximum threshold value.
+%    o low_white: Define the maximum threshold value.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport MagickBooleanType RangeThresholdImage(Image *image,
-  const double low_soft,const double high_soft,const double low_hard,
-  const double high_hard,ExceptionInfo *exception)
+  const double low_black,const double low_white,const double high_white,
+  const double high_black,ExceptionInfo *exception)
 {
 #define ThresholdImageTag  "Threshold/Image"
 
@@ -2221,21 +2221,21 @@ MagickExport MagickBooleanType RangeThresholdImage(Image *image,
           continue;
         if (image->channel_mask != DefaultChannels)
           pixel=(double) q[i];
-        if (pixel < low_soft)
+        if (pixel < low_black)
           q[i]=0;
         else
-          if ((pixel >= low_soft) && (pixel < high_soft))
+          if ((pixel >= low_black) && (pixel < low_white))
             q[i]=ClampToQuantum(QuantumRange*
-              PerceptibleReciprocal(high_soft-low_soft)*(pixel-low_soft));
+              PerceptibleReciprocal(low_white-low_black)*(pixel-low_black));
           else
-            if ((pixel >= high_soft) && (pixel <= low_hard))
+            if ((pixel >= low_white) && (pixel <= high_white))
               q[i]=QuantumRange;
             else
-              if ((pixel > low_hard) && (pixel <= high_hard))
-                q[i]=ClampToQuantum(QuantumRange*
-                  PerceptibleReciprocal(high_hard-low_hard)*(high_hard-pixel));
+              if ((pixel > high_white) && (pixel <= high_black))
+                q[i]=ClampToQuantum(QuantumRange*PerceptibleReciprocal(
+                  high_black-high_white)*(high_black-pixel));
               else
-                if (pixel > high_hard)
+                if (pixel > high_black)
                   q[i]=0;
                 else
                   q[i]=0;
