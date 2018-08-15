@@ -567,8 +567,8 @@ static struct
     { "Colorspace", { {"colorspace", MagickColorspaceOptions} } },
     { "AutoThreshold", { {"method", MagickAutoThresholdOptions} } },
     { "RangeThreshold", { {"geometry", StringReference},
-      {"low-soft", RealReference}, {"high-soft", RealReference},
-      {"low-hard", RealReference}, {"high-hard", RealReference},
+      {"low-black", RealReference}, {"low-white", RealReference},
+      {"high-white", RealReference}, {"high-black", RealReference},
       {"channel", MagickChannelOptions} } },
   };
 
