@@ -17,7 +17,7 @@
   * XBM coder leaves the hex image data uninitialized if hex value of the
     pixel is negative.
   * More improvements to SVG text handling.
-  * New -range threshold option that combines hard and soft thresholding.
+  * New -range-threshold option that combines hard and soft thresholding.
 
 2018-07-23  7.0.8-8 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-8, GIT revision 14583:300fdbcfd:20180723.
