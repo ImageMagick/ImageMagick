@@ -179,8 +179,8 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
 %
 %  The numbers start at 0 for the first image in the list, while negative
 %  numbers refer to images starting counting from the end of the range. Images
-%  may be refered to multiple times to clone them multiple times. Images
-%  refered beyond the available number of images in list are ignored.
+%  may be referred to multiple times to clone them multiple times. Images
+%  referred beyond the available number of images in list are ignored.
 %
 %  Images referenced may be reversed, and results in a clone of those images
 %  also being made with a reversed order.
@@ -256,6 +256,8 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
           if (last > (ssize_t) length)
             last=(ssize_t) length;
       }
+    first=MagickMin(MagickMax(first,0),length);
+    last=MagickMin(MagickMax(last,0),length);
     step=(ssize_t) (first > last ? -1 : 1);
     for ( ; first != (last+step); first+=step)
     {
@@ -324,8 +326,8 @@ MagickExport void DeleteImageFromList(Image **images)
 %  comma separated list of image numbers or ranges.
 %
 %  The numbers start at 0 for the first image, while negative numbers refer to
-%  images starting counting from the end of the range. Images may be refered to
-%  multiple times without problems. Image refered beyond the available number
+%  images starting counting from the end of the range. Images may be referred to
+%  multiple times without problems. Image referred beyond the available number
 %  of images in list are ignored.
 %
 %  If the referenced images are in the reverse order, that range will be
@@ -477,8 +479,8 @@ MagickExport Image *DestroyImageList(Image *images)
 %  using a count and a comma separated list of image numbers or ranges.
 %
 %  The numbers start at 0 for the first image, while negative numbers refer to
-%  images starting counting from the end of the range. Images may be refered to
-%  multiple times without problems. Image refered beyond the available number
+%  images starting counting from the end of the range. Images may be referred to
+%  multiple times without problems. Image referred beyond the available number
 %  of images in list are ignored.
 %
 %  The format of the DuplicateImages method is:
