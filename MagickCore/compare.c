@@ -1454,21 +1454,18 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
         *magick_restrict reference,
         *magick_restrict target;
 
-      register double
+      register MagickRealType
         *k;
 
       ssize_t
         v;
 
       (void) memset(x_pixel_mu,0,sizeof(x_pixel_mu));
-      (void) memset(x_pixel_sigma_squared,0,
-        sizeof(x_pixel_sigma_squared));
+      (void) memset(x_pixel_sigma_squared,0,sizeof(x_pixel_sigma_squared));
       (void) memset(xy_sigma,0,sizeof(xy_sigma));
-      (void) memset(x_pixel_sigma_squared,0,
-        sizeof(y_pixel_sigma_squared));
+      (void) memset(x_pixel_sigma_squared,0,sizeof(y_pixel_sigma_squared));
       (void) memset(y_pixel_mu,0,sizeof(y_pixel_mu));
-      (void) memset(y_pixel_sigma_squared,0,
-        sizeof(y_pixel_sigma_squared));
+      (void) memset(y_pixel_sigma_squared,0,sizeof(y_pixel_sigma_squared));
       k=kernel_info->values;
       reference=p;
       target=q;
