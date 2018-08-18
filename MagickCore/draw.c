@@ -5291,7 +5291,8 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
         composite_geometry[MagickPathExtent];
 
       Image
-        *composite_image;
+        *composite_image,
+        *composite_images;
 
       ImageInfo
         *clone_info;
@@ -5307,20 +5308,22 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
         break;
       clone_info=AcquireImageInfo();
       if (LocaleNCompare(primitive_info->text,"data:",5) == 0)
-        composite_image=ReadInlineImage(clone_info,primitive_info->text,
+        composite_images=ReadInlineImage(clone_info,primitive_info->text,
           exception);
       else
         {
           (void) CopyMagickString(clone_info->filename,primitive_info->text,
             MagickPathExtent);
-          composite_image=ReadImage(clone_info,exception);
+          composite_images=ReadImage(clone_info,exception);
         }
       clone_info=DestroyImageInfo(clone_info);
-      if (composite_image == (Image *) NULL)
+      if (composite_images == (Image *) NULL)
         {
           status=0;
           break;
         }
+      composite_image=RemoveFirstImageFromList(&composite_images);
+      composite_images=DestroyImageList(composite_images);
       (void) SetImageProgressMonitor(composite_image,(MagickProgressMonitor)
         NULL,(void *) NULL);
       x1=(ssize_t) ceil(primitive_info[1].point.x-0.5);
