@@ -365,8 +365,8 @@ static MagickBooleanType WritePGXImage(const ImageInfo *image_info,Image *image,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
-  (void) FormatLocaleString(buffer,MagickPathExtent,"PG ML + %ld %lu %lu\n",
-    image->depth,image->columns,image->rows);
+  (void) FormatLocaleString(buffer,MagickPathExtent,"PG ML + %g %g %g\n",
+    (double) image->depth,(double) image->columns,(double) image->rows);
   (void) WriteBlob(image,strlen(buffer),(unsigned char *) buffer);
   (void) TransformImageColorspace(image,sRGBColorspace,exception);
   quantum_info=AcquireQuantumInfo(image_info,image);
