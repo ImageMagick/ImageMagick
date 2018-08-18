@@ -5683,9 +5683,6 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
     }
     case BlobStream:
     {
-      register unsigned char
-        *q;
-
       if ((blob_info->offset+(MagickOffsetType) length) >=
           (MagickOffsetType) blob_info->extent)
         {
