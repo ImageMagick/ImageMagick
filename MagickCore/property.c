@@ -3106,6 +3106,20 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             }
       }
 #endif
+      if (LocaleCompare("printsize.x",property) == 0)
+        {
+          WarnNoImageReturn("\"%%[%s]\"",property);
+          (void) FormatLocaleString(value,MagickPathExtent,"%.*g",
+            GetMagickPrecision(),image->colors/image->resolution.x);
+          break;
+        }
+      if (LocaleCompare("printsize.y",property) == 0)
+        {
+          WarnNoImageReturn("\"%%[%s]\"",property);
+          (void) FormatLocaleString(value,MagickPathExtent,"%.*g",
+            GetMagickPrecision(),image->rows/image->resolution.y);
+          break;
+        }
       if (LocaleCompare("profiles",property) == 0)
         {
           const char
