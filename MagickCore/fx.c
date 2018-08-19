@@ -1766,6 +1766,10 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
         return((double) image->page.x);
       if (LocaleCompare(symbol,"page.y") == 0)
         return((double) image->page.y);
+      if (LocaleCompare(symbol,"printsize.x") == 0)
+        return(image->columns/image->resolution.x);
+      if (LocaleCompare(symbol,"printsize.y") == 0)
+        return(image->rows/image->resolution.y);
       break;
     }
     case 'Q':
