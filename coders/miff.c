@@ -161,6 +161,7 @@ static MagickBooleanType IsMIFF(const unsigned char *magick,const size_t length)
 %
 */
 
+#if defined(MAGICKCORE_BZLIB_DELEGATE) || defined(MAGICKCORE_LZMA_DELEGATE) || defined(MAGICKCORE_ZLIB_DELEGATE)
 static void *AcquireCompressionMemory(void *context,const size_t items,
   const size_t size)
 {
@@ -175,6 +176,7 @@ static void *AcquireCompressionMemory(void *context,const size_t items,
     return((void *) NULL);
   return(AcquireMagickMemory(extent));
 }
+#endif
 
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
 static void *AcquireBZIPMemory(void *context,int items,int size)
