@@ -3879,7 +3879,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     }
     option=GetImageOption(image_info,"tiff:predictor");
     if (option != (const char * ) NULL)
-      predictor=(size_t) strtol(option,(char **) NULL,10);
+      predictor=(uint16) strtol(option,(char **) NULL,10);
     if (predictor != 0)
       (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,predictor);
     if ((image->resolution.x != 0.0) && (image->resolution.y != 0.0))
