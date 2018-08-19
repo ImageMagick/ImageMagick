@@ -559,7 +559,7 @@ extern "C" {
 #define GetVirtualMetacontentFromNexus  PrependMagickMethod(GetVirtualMetacontentFromNexus)
 #define GetVirtualMetacontent  PrependMagickMethod(GetVirtualMetacontent)
 #define GetVirtualPixelQueue  PrependMagickMethod(GetVirtualPixelQueue)
-#define GetVirtualPixelsFromNexus  PrependMagickMethod(GetVirtualPixelsFromNexus)
+#define GetVirtualPixelCacheNexus  PrependMagickMethod(GetVirtualPixelCacheNexus)
 #define GetVirtualPixelsNexus  PrependMagickMethod(GetVirtualPixelsNexus)
 #define GetVirtualPixels  PrependMagickMethod(GetVirtualPixels)
 #define GetXMLTreeAttribute  PrependMagickMethod(GetXMLTreeAttribute)

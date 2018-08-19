@@ -661,7 +661,7 @@ MagickExport const Quantum *GetCacheViewVirtualPixels(
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickCoreSignature);
   assert(id < (int) cache_view->number_threads);
-  pixels=GetVirtualPixelsFromNexus(cache_view->image,
+  pixels=GetVirtualPixelCacheNexus(cache_view->image,
     cache_view->virtual_pixel_method,x,y,columns,rows,
     cache_view->nexus_info[id],exception);
   return(pixels);
@@ -787,7 +787,7 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualPixel(
   assert(cache_view->signature == MagickCoreSignature);
   assert(id < (int) cache_view->number_threads);
   (void) memset(pixel,0,MaxPixelChannels*sizeof(*pixel));
-  p=GetVirtualPixelsFromNexus(cache_view->image,
+  p=GetVirtualPixelCacheNexus(cache_view->image,
     cache_view->virtual_pixel_method,x,y,1,1,cache_view->nexus_info[id],
     exception);
   if (p == (const Quantum *) NULL)
@@ -857,7 +857,7 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualPixelInfo(
   assert(cache_view->signature == MagickCoreSignature);
   assert(id < (int) cache_view->number_threads);
   GetPixelInfo(cache_view->image,pixel);
-  p=GetVirtualPixelsFromNexus(cache_view->image,
+  p=GetVirtualPixelCacheNexus(cache_view->image,
     cache_view->virtual_pixel_method,x,y,1,1,cache_view->nexus_info[id],
     exception);
   if (p == (const Quantum *) NULL)
@@ -919,7 +919,7 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualMethodPixel(
   assert(cache_view->signature == MagickCoreSignature);
   assert(id < (int) cache_view->number_threads);
   (void) memset(pixel,0,MaxPixelChannels*sizeof(*pixel));
-  p=GetVirtualPixelsFromNexus(cache_view->image,virtual_pixel_method,x,y,1,1,
+  p=GetVirtualPixelCacheNexus(cache_view->image,virtual_pixel_method,x,y,1,1,
     cache_view->nexus_info[id],exception);
   if (p == (const Quantum *) NULL)
     {

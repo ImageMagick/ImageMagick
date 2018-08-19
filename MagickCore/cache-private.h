@@ -241,7 +241,7 @@ extern MagickPrivate ColorspaceType
   GetPixelCacheColorspace(const Cache);
 
 extern MagickPrivate const Quantum
-  *GetVirtualPixelsFromNexus(const Image *,const VirtualPixelMethod,
+  *GetVirtualPixelCacheNexus(const Image *,const VirtualPixelMethod,
     const ssize_t,const ssize_t,const size_t,const size_t,NexusInfo *,
     ExceptionInfo *) magick_hot_spot,
   *GetVirtualPixelsNexus(const Cache,NexusInfo *magick_restrict);

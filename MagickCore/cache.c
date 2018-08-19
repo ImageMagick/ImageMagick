@@ -136,8 +136,8 @@ static Quantum
   *QueueAuthenticPixelsCache(Image *,const ssize_t,const ssize_t,const size_t,
     const size_t,ExceptionInfo *),
   *SetPixelCacheNexusPixels(const CacheInfo *,const MapMode,
-    const RectangleInfo *,const MagickBooleanType,NexusInfo *,
-    ExceptionInfo *) magick_hot_spot;
+    const RectangleInfo *,const MagickBooleanType,NexusInfo *,ExceptionInfo *)
+    magick_hot_spot;
 
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 static void
@@ -665,7 +665,11 @@ static MagickBooleanType ClonePixelCacheRepository(
   if (cache_info->type == PingCache)
     return(MagickTrue);
   length=cache_info->number_channels*sizeof(*cache_info->channel_map);
-  if ((cache_info->columns == clone_info->columns) &&
+  if ((cache_info->storage_class == clone_info->storage_class) &&
+      (cache_info->colorspace == clone_info->colorspace) &&
+      (cache_info->alpha_trait == clone_info->alpha_trait) &&
+      (cache_info->channels == clone_info->channels) &&
+      (cache_info->columns == clone_info->columns) &&
       (cache_info->rows == clone_info->rows) &&
       (cache_info->number_channels == clone_info->number_channels) &&
       (memcmp(cache_info->channel_map,clone_info->channel_map,length) == 0) &&
@@ -1737,8 +1741,12 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
           else
             {
               if (clone != MagickFalse)
-                status=ClonePixelCacheRepository(clone_info,cache_info,
-                  exception);
+                {
+                  if (cache_info->file != -1)
+                    (void) ClosePixelCacheOnDisk(cache_info);
+                  status=ClonePixelCacheRepository(clone_info,cache_info,
+                    exception);
+                }
               if (status == MagickFalse)
                 clone_info=(CacheInfo *) DestroyPixelCache(clone_info);
               else
@@ -1997,7 +2005,7 @@ MagickExport MagickBooleanType GetOneVirtualPixel(const Image *image,
     return(cache_info->methods.get_one_virtual_pixel_from_handler(image,
       GetPixelCacheVirtualMethod(image),x,y,pixel,exception));
   assert(id < (int) cache_info->number_threads);
-  p=GetVirtualPixelsFromNexus(image,GetPixelCacheVirtualMethod(image),x,y,
+  p=GetVirtualPixelCacheNexus(image,GetPixelCacheVirtualMethod(image),x,y,
     1UL,1UL,cache_info->nexus_info[id],exception);
   return(CopyPixel(image,p,pixel));
 }
@@ -2056,7 +2064,7 @@ static MagickBooleanType GetOneVirtualPixelFromCache(const Image *image,
   assert(cache_info->signature == MagickCoreSignature);
   assert(id < (int) cache_info->number_threads);
   (void) memset(pixel,0,MaxPixelChannels*sizeof(*pixel));
-  p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,x,y,1UL,1UL,
+  p=GetVirtualPixelCacheNexus(image,virtual_pixel_method,x,y,1UL,1UL,
     cache_info->nexus_info[id],exception);
   return(CopyPixel(image,p,pixel));
 }
@@ -2115,7 +2123,7 @@ MagickExport MagickBooleanType GetOneVirtualPixelInfo(const Image *image,
   assert(cache_info->signature == MagickCoreSignature);
   assert(id < (int) cache_info->number_threads);
   GetPixelInfo(image,pixel);
-  p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,x,y,1UL,1UL,
+  p=GetVirtualPixelCacheNexus(image,virtual_pixel_method,x,y,1UL,1UL,
     cache_info->nexus_info[id],exception);
   if (p == (const Quantum *) NULL)
     return(MagickFalse);
@@ -2586,19 +2594,19 @@ MagickExport const void *GetVirtualMetacontent(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t V i r t u a l P i x e l s F r o m N e x u s                         %
++   G e t V i r t u a l P i x e l C a c h e N e x u s                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetVirtualPixelsFromNexus() gets virtual pixels from the in-memory or disk
+%  GetVirtualPixelCacheNexus() gets virtual pixels from the in-memory or disk
 %  pixel cache as defined by the geometry parameters.   A pointer to the pixels
 %  is returned if the pixels are transferred, otherwise a NULL is returned.
 %
-%  The format of the GetVirtualPixelsFromNexus() method is:
+%  The format of the GetVirtualPixelCacheNexus() method is:
 %
-%      Quantum *GetVirtualPixelsFromNexus(const Image *image,
+%      Quantum *GetVirtualPixelCacheNexus(const Image *image,
 %        const VirtualPixelMethod method,const ssize_t x,const ssize_t y,
 %        const size_t columns,const size_t rows,NexusInfo *nexus_info,
 %        ExceptionInfo *exception)
@@ -2706,7 +2714,7 @@ static inline MagickModulo VirtualPixelModulo(const ssize_t offset,
   return(modulo);
 }
 
-MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
+MagickPrivate const Quantum *GetVirtualPixelCacheNexus(const Image *image,
   const VirtualPixelMethod virtual_pixel_method,const ssize_t x,const ssize_t y,
   const size_t columns,const size_t rows,NexusInfo *nexus_info,
   ExceptionInfo *exception)
@@ -2772,7 +2780,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
   region.height=rows;
   pixels=SetPixelCacheNexusPixels(cache_info,ReadMode,&region,
     ((image->channels & WriteMaskChannel) != 0) ||
-    ((image->channels & CompositeMaskChannel) != 0) ?  MagickTrue : MagickFalse,
+    ((image->channels & CompositeMaskChannel) != 0) ? MagickTrue : MagickFalse,
     nexus_info,exception);
   if (pixels == (Quantum *) NULL)
     return((const Quantum *) NULL);
@@ -2927,7 +2935,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
             case EdgeVirtualPixelMethod:
             default:
             {
-              p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,
+              p=GetVirtualPixelCacheNexus(image,virtual_pixel_method,
                 EdgeX(x_offset,cache_info->columns),
                 EdgeY(y_offset,cache_info->rows),1UL,1UL,*virtual_nexus,
                 exception);
@@ -2938,7 +2946,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
             {
               if (cache_info->random_info == (RandomInfo *) NULL)
                 cache_info->random_info=AcquireRandomInfo();
-              p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,
+              p=GetVirtualPixelCacheNexus(image,virtual_pixel_method,
                 RandomX(cache_info->random_info,cache_info->columns),
                 RandomY(cache_info->random_info,cache_info->rows),1UL,1UL,
                 *virtual_nexus,exception);
@@ -2947,7 +2955,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
             }
             case DitherVirtualPixelMethod:
             {
-              p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,
+              p=GetVirtualPixelCacheNexus(image,virtual_pixel_method,
                 DitherX(x_offset,cache_info->columns),
                 DitherY(y_offset,cache_info->rows),1UL,1UL,*virtual_nexus,
                 exception);
@@ -2958,7 +2966,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
             {
               x_modulo=VirtualPixelModulo(x_offset,cache_info->columns);
               y_modulo=VirtualPixelModulo(y_offset,cache_info->rows);
-              p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,
+              p=GetVirtualPixelCacheNexus(image,virtual_pixel_method,
                 x_modulo.remainder,y_modulo.remainder,1UL,1UL,*virtual_nexus,
                 exception);
               r=GetVirtualMetacontentFromNexus(cache_info,*virtual_nexus);
@@ -2974,7 +2982,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
               if ((y_modulo.quotient & 0x01) == 1L)
                 y_modulo.remainder=(ssize_t) cache_info->rows-
                   y_modulo.remainder-1L;
-              p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,
+              p=GetVirtualPixelCacheNexus(image,virtual_pixel_method,
                 x_modulo.remainder,y_modulo.remainder,1UL,1UL,*virtual_nexus,
                 exception);
               r=GetVirtualMetacontentFromNexus(cache_info,*virtual_nexus);
@@ -2983,7 +2991,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
             case HorizontalTileEdgeVirtualPixelMethod:
             {
               x_modulo=VirtualPixelModulo(x_offset,cache_info->columns);
-              p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,
+              p=GetVirtualPixelCacheNexus(image,virtual_pixel_method,
                 x_modulo.remainder,EdgeY(y_offset,cache_info->rows),1UL,1UL,
                 *virtual_nexus,exception);
               r=GetVirtualMetacontentFromNexus(cache_info,*virtual_nexus);
@@ -2992,7 +3000,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
             case VerticalTileEdgeVirtualPixelMethod:
             {
               y_modulo=VirtualPixelModulo(y_offset,cache_info->rows);
-              p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,
+              p=GetVirtualPixelCacheNexus(image,virtual_pixel_method,
                 EdgeX(x_offset,cache_info->columns),y_modulo.remainder,1UL,1UL,
                 *virtual_nexus,exception);
               r=GetVirtualMetacontentFromNexus(cache_info,*virtual_nexus);
@@ -3019,7 +3027,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
                   r=virtual_metacontent;
                   break;
                 }
-              p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,
+              p=GetVirtualPixelCacheNexus(image,virtual_pixel_method,
                 x_modulo.remainder,y_modulo.remainder,1UL,1UL,*virtual_nexus,
                 exception);
               r=GetVirtualMetacontentFromNexus(cache_info,*virtual_nexus);
@@ -3035,7 +3043,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
                 }
               x_modulo=VirtualPixelModulo(x_offset,cache_info->columns);
               y_modulo=VirtualPixelModulo(y_offset,cache_info->rows);
-              p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,
+              p=GetVirtualPixelCacheNexus(image,virtual_pixel_method,
                 x_modulo.remainder,y_modulo.remainder,1UL,1UL,*virtual_nexus,
                 exception);
               r=GetVirtualMetacontentFromNexus(cache_info,*virtual_nexus);
@@ -3051,7 +3059,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
                 }
               x_modulo=VirtualPixelModulo(x_offset,cache_info->columns);
               y_modulo=VirtualPixelModulo(y_offset,cache_info->rows);
-              p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,
+              p=GetVirtualPixelCacheNexus(image,virtual_pixel_method,
                 x_modulo.remainder,y_modulo.remainder,1UL,1UL,*virtual_nexus,
                 exception);
               r=GetVirtualMetacontentFromNexus(cache_info,*virtual_nexus);
@@ -3073,7 +3081,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
       /*
         Transfer a run of pixels.
       */
-      p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,x_offset,y_offset,
+      p=GetVirtualPixelCacheNexus(image,virtual_pixel_method,x_offset,y_offset,
         (size_t) length,1UL,*virtual_nexus,exception);
       if (p == (const Quantum *) NULL)
         break;
@@ -3153,7 +3161,7 @@ static const Quantum *GetVirtualPixelCache(const Image *image,
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickCoreSignature);
   assert(id < (int) cache_info->number_threads);
-  p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,x,y,columns,rows,
+  p=GetVirtualPixelCacheNexus(image,virtual_pixel_method,x,y,columns,rows,
     cache_info->nexus_info[id],exception);
   return(p);
 }
@@ -3272,7 +3280,7 @@ MagickExport const Quantum *GetVirtualPixels(const Image *image,
     return(cache_info->methods.get_virtual_pixel_handler(image,
       GetPixelCacheVirtualMethod(image),x,y,columns,rows,exception));
   assert(id < (int) cache_info->number_threads);
-  p=GetVirtualPixelsFromNexus(image,GetPixelCacheVirtualMethod(image),x,y,
+  p=GetVirtualPixelCacheNexus(image,GetPixelCacheVirtualMethod(image),x,y,
     columns,rows,cache_info->nexus_info[id],exception);
   return(p);
 }
@@ -4177,7 +4185,7 @@ MagickPrivate Quantum *QueueAuthenticPixelCacheNexus(Image *image,
   region.height=rows;
   pixels=SetPixelCacheNexusPixels(cache_info,WriteMode,&region,
     ((image->channels & WriteMaskChannel) != 0) ||
-    ((image->channels & CompositeMaskChannel) != 0) ?  MagickTrue : MagickFalse,
+    ((image->channels & CompositeMaskChannel) != 0) ? MagickTrue : MagickFalse,
     nexus_info,exception);
   return(pixels);
 }
