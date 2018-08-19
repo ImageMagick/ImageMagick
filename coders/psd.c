@@ -456,8 +456,8 @@ static MagickBooleanType ApplyPSDOpacityMask(Image *image,const Image *mask,
     return(MagickFalse);
   complete_mask->alpha_trait=BlendPixelTrait;
   GetPixelInfo(complete_mask,&color);
-  color.red=background;
-  SetImageColor(complete_mask,&color,exception);
+  color.red=(MagickRealType) background;
+  (void) SetImageColor(complete_mask,&color,exception);
   status=CompositeImage(complete_mask,mask,OverCompositeOp,MagickTrue,
     mask->page.x-image->page.x,mask->page.y-image->page.y,exception);
   if (status == MagickFalse)
@@ -496,7 +496,7 @@ static MagickBooleanType ApplyPSDOpacityMask(Image *image,const Image *mask,
         alpha,
         intensity;
 
-      alpha=GetPixelAlpha(image,q);
+      alpha=(MagickRealType) GetPixelAlpha(image,q);
       intensity=GetPixelIntensity(complete_mask,p);
       if (revert == MagickFalse)
         SetPixelAlpha(image,ClampToQuantum(intensity*(QuantumScale*alpha)),q);
@@ -530,7 +530,7 @@ static void PreservePSDOpacityMask(Image *image,LayerInfo* layer_info,
   random_info=AcquireRandomInfo();
   key_info=GetRandomKey(random_info,2+1);
   key=(char *) GetStringInfoDatum(key_info);
-  key[8]=layer_info->mask.background;
+  key[8]=(char ) layer_info->mask.background;
   key[9]='\0';
   layer_info->mask.image->page.x+=layer_info->page.x;
   layer_info->mask.image->page.y+=layer_info->page.y;
@@ -759,6 +759,9 @@ static StringInfo *ParseImageResourceBlocks(Image *image,
   const unsigned char
     *p;
 
+  ssize_t
+    offset;
+
   StringInfo
     *profile;
 
@@ -766,7 +769,7 @@ static StringInfo *ParseImageResourceBlocks(Image *image,
     name_length;
 
   unsigned int
-    count;
+    value;
 
   unsigned short
     id,
@@ -789,8 +792,9 @@ static StringInfo *ParseImageResourceBlocks(Image *image,
     p+=name_length;
     if (p > (blocks+length-4))
       break;
-    p=PushLongPixel(MSBEndian,p,&count);
-    if (((p+count) < blocks) || ((p+count) > (blocks+length)))
+    p=PushLongPixel(MSBEndian,p,&value);
+    offset=(ssize_t) value;
+    if (((p+offset) < blocks) || ((p+offset) > (blocks+length)))
       break;
     switch (id)
     {
@@ -805,7 +809,7 @@ static StringInfo *ParseImageResourceBlocks(Image *image,
         /*
           Resolution info.
         */
-        if (count < 16)
+        if (offset < 16)
           break;
         p=PushShortPixel(MSBEndian,p,&resolution);
         image->resolution.x=(double) resolution;
@@ -828,18 +832,18 @@ static StringInfo *ParseImageResourceBlocks(Image *image,
       }
       case 0x0421:
       {
-        if ((count > 4) && (*(p+4) == 0))
+        if ((offset > 4) && (*(p+4) == 0))
           *has_merged_image=MagickFalse;
-        p+=count;
+        p+=offset;
         break;
       }
       default:
       {
-        p+=count;
+        p+=offset;
         break;
       }
     }
-    if ((count & 0x01) != 0)
+    if ((offset & 0x01) != 0)
       p++;
   }
   return(profile);
@@ -932,7 +936,7 @@ static inline void SetPSDPixel(Image *image,const size_t channels,
             SetPixelIndex(image,ScaleQuantumToShort(pixel),q);
         }
       color=image->colormap+(ssize_t) ConstrainColormapIndex(image,
-        GetPixelIndex(image,q),exception);
+        (ssize_t) GetPixelIndex(image,q),exception);
       if ((type == 0) && (channels > 1))
         return;
       else
@@ -987,7 +991,7 @@ static inline void SetPSDPixel(Image *image,const size_t channels,
 }
 
 static MagickBooleanType ReadPSDChannelPixels(Image *image,
-  const size_t channels,const size_t row,const ssize_t type,
+  const size_t channels,const ssize_t row,const ssize_t type,
   const unsigned char *pixels,ExceptionInfo *exception)
 {
   Quantum
@@ -1038,13 +1042,15 @@ static MagickBooleanType ReadPSDChannelPixels(Image *image,
     else
       {
         ssize_t
-          bit,
+          bit;
+
+        ssize_t
           number_bits;
 
-        number_bits=image->columns-x;
+        number_bits=(ssize_t) image->columns-x;
         if (number_bits > 8)
           number_bits=8;
-        for (bit = 0; bit < number_bits; bit++)
+        for (bit = 0; bit < (ssize_t) number_bits; bit++)
         {
           SetPSDPixel(image,channels,type,packet_size,(((unsigned char) pixel)
             & (0x01 << (7-bit))) != 0 ? 0 : QuantumRange,q,exception);
@@ -1066,10 +1072,10 @@ static MagickBooleanType ReadPSDChannelRaw(Image *image,const size_t channels,
     status;
 
   size_t
-    count,
     row_size;
 
   ssize_t
+    count,
     y;
 
   unsigned char
@@ -1091,7 +1097,7 @@ static MagickBooleanType ReadPSDChannelRaw(Image *image,const size_t channels,
     status=MagickFalse;
 
     count=ReadBlob(image,row_size,pixels);
-    if (count != row_size)
+    if (count != (ssize_t) row_size)
       {
         status=MagickFalse;
         break;
@@ -1368,14 +1374,15 @@ static MagickBooleanType ReadPSDChannel(Image *image,
           (layer_info->mask.flags > 2) || ((layer_info->mask.flags & 0x02) &&
            (IsStringTrue(option) == MagickFalse)))
         {
-          SeekBlob(image,layer_info->channel_info[channel].size-2,SEEK_CUR);
+          (void) SeekBlob(image,(MagickOffsetType)
+            layer_info->channel_info[channel].size-2,SEEK_CUR);
           return(MagickTrue);
         }
       mask=CloneImage(image,layer_info->mask.page.width,
         layer_info->mask.page.height,MagickFalse,exception);
       if (mask != (Image *) NULL)
         {
-          SetImageType(mask,GrayscaleType,exception);
+          (void) SetImageType(mask,GrayscaleType,exception);
           channel_image=mask;
         }
     }
@@ -1386,7 +1393,7 @@ static MagickBooleanType ReadPSDChannel(Image *image,
   {
     case Raw:
       status=ReadPSDChannelRaw(channel_image,psd_info->channels,
-        layer_info->channel_info[channel].type,exception);
+        (ssize_t) layer_info->channel_info[channel].type,exception);
       break;
     case RLE:
       {
@@ -1398,7 +1405,7 @@ static MagickBooleanType ReadPSDChannel(Image *image,
           ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
             image->filename);
         status=ReadPSDChannelRLE(channel_image,psd_info,
-          layer_info->channel_info[channel].type,sizes,exception);
+          (ssize_t) layer_info->channel_info[channel].type,sizes,exception);
         sizes=(MagickOffsetType *) RelinquishMagickMemory(sizes);
       }
       break;
@@ -1406,7 +1413,7 @@ static MagickBooleanType ReadPSDChannel(Image *image,
     case ZipWithoutPrediction:
 #ifdef MAGICKCORE_ZLIB_DELEGATE
       status=ReadPSDChannelZip(channel_image,layer_info->channels,
-        layer_info->channel_info[channel].type,compression,
+        (ssize_t) layer_info->channel_info[channel].type,compression,
         layer_info->channel_info[channel].size-2,exception);
 #else
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -1420,11 +1427,12 @@ static MagickBooleanType ReadPSDChannel(Image *image,
       break;
   }
 
-  SeekBlob(image,offset+layer_info->channel_info[channel].size-2,SEEK_SET);
+  (void) SeekBlob(image,offset+layer_info->channel_info[channel].size-2,
+    SEEK_SET);
   if (status == MagickFalse)
     {
       if (mask != (Image *) NULL)
-        DestroyImage(mask);
+        (void) DestroyImage(mask);
       ThrowBinaryException(CoderError,"UnableToDecompressImage",
         image->filename);
     }
@@ -1497,8 +1505,8 @@ static MagickBooleanType ReadPSDLayer(Image *image,const ImageInfo *image_info,
     if (layer_info->channel_info[j].type == -1)
       layer_info->image->alpha_trait=BlendPixelTrait;
 
-    status=ReadPSDChannel(layer_info->image,image_info,psd_info,layer_info,j,
-      compression,exception);
+    status=ReadPSDChannel(layer_info->image,image_info,psd_info,layer_info,
+      (size_t) j,compression,exception);
 
     if (status == MagickFalse)
       break;
@@ -1551,7 +1559,7 @@ static MagickBooleanType CheckPSDChannels(const PSDInfo *psd_info,
     channel_type|=(GreenChannel | BlueChannel);
   if (psd_info->min_channels >= 4)
     channel_type|=BlackChannel;
-  for (i=0; i < layer_info->channels; i++)
+  for (i=0; i < (ssize_t) layer_info->channels; i++)
   {
     short
       type;
@@ -1614,7 +1622,7 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
       (void) ReadBlobLong(image);
       count=ReadBlob(image,4,(unsigned char *) type);
       if (count == 4)
-        ReversePSDString(image,type,count);
+        ReversePSDString(image,type,(size_t) count);
       if ((count != 4) || (LocaleNCompare(type,"8BIM",4) != 0))
         return(MagickTrue);
       else
@@ -1633,7 +1641,7 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
   if (size != 0)
     {
       layer_info=(LayerInfo *) NULL;
-      number_layers=(short) ReadBlobShort(image);
+      number_layers=(ssize_t) ReadBlobShort(image);
 
       if (number_layers < 0)
         {
@@ -1684,10 +1692,10 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
         if (image->debug != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  reading layer #%.20g",(double) i+1);
-        layer_info[i].page.y=ReadBlobSignedLong(image);
-        layer_info[i].page.x=ReadBlobSignedLong(image);
-        y=ReadBlobSignedLong(image);
-        x=ReadBlobSignedLong(image);
+        layer_info[i].page.y=(ssize_t) ReadBlobSignedLong(image);
+        layer_info[i].page.x=(ssize_t) ReadBlobSignedLong(image);
+        y=(ssize_t) ReadBlobSignedLong(image);
+        x=(ssize_t) ReadBlobSignedLong(image);
         layer_info[i].page.width=(size_t) (x-layer_info[i].page.x);
         layer_info[i].page.height=(size_t) (y-layer_info[i].page.y);
         layer_info[i].channels=ReadBlobShort(image);
@@ -1777,12 +1785,12 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
                 /*
                   Layer mask info.
                 */
-                layer_info[i].mask.page.y=ReadBlobSignedLong(image);
-                layer_info[i].mask.page.x=ReadBlobSignedLong(image);
-                layer_info[i].mask.page.height=(size_t) (ReadBlobSignedLong(image)-
-                  layer_info[i].mask.page.y);
-                layer_info[i].mask.page.width=(size_t) (ReadBlobSignedLong(image)-
-                  layer_info[i].mask.page.x);
+                layer_info[i].mask.page.y=(ssize_t) ReadBlobSignedLong(image);
+                layer_info[i].mask.page.x=(ssize_t) ReadBlobSignedLong(image);
+                layer_info[i].mask.page.height=(size_t)
+                  (ReadBlobSignedLong(image)-layer_info[i].mask.page.y);
+                layer_info[i].mask.page.width=(size_t) (
+                  ReadBlobSignedLong(image)-layer_info[i].mask.page.x);
                 layer_info[i].mask.background=(unsigned char) ReadBlobByte(
                   image);
                 layer_info[i].mask.flags=(unsigned char) ReadBlobByte(image);
@@ -1911,7 +1919,7 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
           {
             if (layer_info[i].image == (Image *) NULL)
               {
-                for (j=0; j < layer_info[i].channels; j++)
+                for (j=0; j < (ssize_t) layer_info[i].channels; j++)
                 {
                   if (DiscardBlobBytes(image,(MagickSizeType)
                       layer_info[i].channel_info[j].size) == MagickFalse)
@@ -1933,8 +1941,8 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
             if (status == MagickFalse)
               break;
 
-            status=SetImageProgress(image,LoadImagesTag,i,(MagickSizeType)
-              number_layers);
+            status=SetImageProgress(image,LoadImagesTag,(MagickOffsetType) i,
+              (MagickSizeType) number_layers);
             if (status == MagickFalse)
               break;
           }
@@ -2043,7 +2051,8 @@ static MagickBooleanType ReadPSDMergedImage(const ImageInfo *image_info,
       status=ReadPSDChannelRaw(image,psd_info->channels,type,exception);
 
     if (status != MagickFalse)
-      status=SetImageProgress(image,LoadImagesTag,i,psd_info->channels);
+      status=SetImageProgress(image,LoadImagesTag,(MagickOffsetType) i,
+        psd_info->channels);
 
     if (status == MagickFalse)
       break;
@@ -2160,21 +2169,21 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     return(DestroyImageList(image));
   psd_info.min_channels=3;
   if (psd_info.mode == LabMode)
-    SetImageColorspace(image,LabColorspace,exception);
+    (void) SetImageColorspace(image,LabColorspace,exception);
   if (psd_info.mode == CMYKMode)
     {
       psd_info.min_channels=4;
-      SetImageColorspace(image,CMYKColorspace,exception);
+      (void) SetImageColorspace(image,CMYKColorspace,exception);
       if (psd_info.channels > 4)
-        SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
+        (void) SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
     }
   else if ((psd_info.mode == BitmapMode) || (psd_info.mode == GrayscaleMode) ||
            (psd_info.mode == DuotoneMode))
     {
       if (psd_info.depth != 32)
         {
-          status=AcquireImageColormap(image,psd_info.depth < 16 ? 256 : 65536,
-            exception);
+          status=AcquireImageColormap(image,(size_t) (psd_info.depth < 16 ?
+            256 : 65536),exception);
           if (status == MagickFalse)
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           if (image->debug != MagickFalse)
@@ -2182,13 +2191,13 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               "  Image colormap allocated");
         }
       psd_info.min_channels=1;
-      SetImageColorspace(image,GRAYColorspace,exception);
+      (void) SetImageColorspace(image,GRAYColorspace,exception);
       if (psd_info.channels > 1)
-        SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
+        (void) SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
     }
   else
     if (psd_info.channels > 3)
-      SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
+      (void) SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
   if (psd_info.channels < psd_info.min_channels)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   /*
@@ -2218,20 +2227,20 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           /*
             Read PSD raster colormap.
           */
-          number_colors=length/3;
+          number_colors=(size_t) length/3;
           if (number_colors > 65536)
             ThrowReaderException(CorruptImageError,"ImproperImageHeader");
           if (AcquireImageColormap(image,number_colors,exception) == MagickFalse)
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           for (i=0; i < (ssize_t) image->colors; i++)
-            image->colormap[i].red=ScaleCharToQuantum((unsigned char)
-              ReadBlobByte(image));
+            image->colormap[i].red=(MagickRealType) ScaleCharToQuantum(
+              (unsigned char) ReadBlobByte(image));
           for (i=0; i < (ssize_t) image->colors; i++)
-            image->colormap[i].green=ScaleCharToQuantum((unsigned char)
-              ReadBlobByte(image));
+            image->colormap[i].green=(MagickRealType) ScaleCharToQuantum(
+              (unsigned char) ReadBlobByte(image));
           for (i=0; i < (ssize_t) image->colors; i++)
-            image->colormap[i].blue=ScaleCharToQuantum((unsigned char)
-              ReadBlobByte(image));
+            image->colormap[i].blue=(MagickRealType) ScaleCharToQuantum(
+              (unsigned char) ReadBlobByte(image));
           image->alpha_trait=UndefinedPixelTrait;
         }
     }
@@ -2309,7 +2318,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
          Skip the rest of the layer and mask information.
       */
-      SeekBlob(image,offset+length,SEEK_SET);
+      (void) SeekBlob(image,offset+length,SEEK_SET);
     }
   /*
     If we are only "pinging" the image, then we're done - so return.
@@ -2340,7 +2349,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((has_merged_image == MagickFalse) && (imageListLength == 1) &&
       (length != 0))
     {
-      SeekBlob(image,offset,SEEK_SET);
+      (void) SeekBlob(image,offset,SEEK_SET);
       status=ReadPSDLayersInternal(image,image_info,&psd_info,MagickFalse,
         exception);
       if (status != MagickTrue)
@@ -2363,7 +2372,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             profile=DestroyStringInfo(profile);
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         }
-      image->background_color.alpha=TransparentAlpha;
+      image->background_color.alpha=(MagickRealType) TransparentAlpha;
       image->background_color.alpha_trait=BlendPixelTrait;
       (void) SetImageBackgroundColor(image,exception);
       merged=MergeImageLayers(image,FlattenLayer,exception);
@@ -2486,21 +2495,21 @@ static inline ssize_t SetPSDOffset(const PSDInfo *psd_info,Image *image,
 }
 
 static inline ssize_t WritePSDOffset(const PSDInfo *psd_info,Image *image,
-  const MagickSizeType size,const MagickSizeType offset)
+  const MagickSizeType size,const MagickOffsetType offset)
 {
-  MagickSizeType
+  MagickOffsetType
     current_offset;
 
   ssize_t
     result;
 
   current_offset=TellBlob(image);
-  SeekBlob(image,offset,SEEK_SET);
+  (void) SeekBlob(image,offset,SEEK_SET);
   if (psd_info->version == 1)
     result=WriteBlobMSBShort(image,(unsigned short) size);
   else
     result=WriteBlobMSBLong(image,(unsigned int) size);
-  SeekBlob(image,current_offset,SEEK_SET);
+  (void) SeekBlob(image,current_offset,SEEK_SET);
   return(result);
 }
 
@@ -2513,18 +2522,18 @@ static inline ssize_t SetPSDSize(const PSDInfo *psd_info,Image *image,
 }
 
 static inline ssize_t WritePSDSize(const PSDInfo *psd_info,Image *image,
-  const MagickSizeType size,const MagickSizeType offset)
+  const MagickSizeType size,const MagickOffsetType offset)
 {
-  MagickSizeType
+  MagickOffsetType
     current_offset;
 
   ssize_t
     result;
 
   current_offset=TellBlob(image);
-  SeekBlob(image,offset,SEEK_SET);
-  result=SetPSDSize(psd_info, image, size);
-  SeekBlob(image,current_offset,SEEK_SET);
+  (void) SeekBlob(image,offset,SEEK_SET);
+  result=SetPSDSize(psd_info,image,size);
+  (void) SeekBlob(image,current_offset,SEEK_SET);
   return(result);
 }
 
@@ -2652,17 +2661,17 @@ static size_t WriteCompressionStart(const PSDInfo *psd_info,Image *image,
 
   if (compression == RLECompression)
     {
-      length=WriteBlobShort(image,RLE);
+      length=(size_t) WriteBlobShort(image,RLE);
       for (i=0; i < channels; i++)
         for (y=0; y < (ssize_t) next_image->rows; y++)
           length+=SetPSDOffset(psd_info,image,0);
     }
 #ifdef MAGICKCORE_ZLIB_DELEGATE
   else if (compression == ZipCompression)
-    length=WriteBlobShort(image,ZipWithoutPrediction);
+    length=(size_t) WriteBlobShort(image,ZipWithoutPrediction);
 #endif
   else
-    length=WriteBlobShort(image,Raw);
+    length=(size_t) WriteBlobShort(image,Raw);
   return(length);
 }
 
@@ -2672,9 +2681,6 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
   MagickOffsetType size_offset,const MagickBooleanType separate,
   const CompressionType compression,ExceptionInfo *exception)
 {
-  int
-    y;
-
   MagickBooleanType
     monochrome;
 
@@ -2690,6 +2696,9 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
   size_t
     count,
     length;
+
+  ssize_t
+    y;
 
   unsigned char
     *pixels;
@@ -2859,13 +2868,14 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
       if (next_image->storage_class != PseudoClass)
         {
           if (IsImageGray(next_image) == MagickFalse)
-            channels=next_image->colorspace == CMYKColorspace ? 4 : 3;
+            channels=(size_t) (next_image->colorspace == CMYKColorspace ? 4 :
+              3);
           if (next_image->alpha_trait != UndefinedPixelTrait)
             channels++;
         }
       rows_offset=TellBlob(image)+2;
       count+=WriteCompressionStart(psd_info,image,next_image,compression,
-        channels);
+        (ssize_t) channels);
       offset_length=(next_image->rows*(psd_info->version == 1 ? 2 : 4));
     }
   size_offset+=2;
@@ -3051,7 +3061,7 @@ static inline size_t WriteChannelSize(const PSDInfo *psd_info,Image *image,
   size_t
     count;
 
-  count=(size_t) WriteBlobShort(image,channel);
+  count=(size_t) WriteBlobShort(image,(const unsigned short) channel);
   count+=SetPSDSize(psd_info,image,0);
   return(count);
 }
@@ -3225,10 +3235,10 @@ static const StringInfo *GetAdditionalInformation(const ImageInfo *image_info,
   {
     /* skip over signature */
     p+=4;
-    key[0]=(*p++);
-    key[1]=(*p++);
-    key[2]=(*p++);
-    key[3]=(*p++);
+    key[0]=(char) (*p++);
+    key[1]=(char) (*p++);
+    key[2]=(char) (*p++);
+    key[3]=(char) (*p++);
     key[4]='\0';
     size=(unsigned int) (*p++) << 24;
     size|=(unsigned int) (*p++) << 16;
@@ -3261,7 +3271,7 @@ static const StringInfo *GetAdditionalInformation(const ImageInfo *image_info,
   if (length == 0)
     return(DestroyStringInfo(profile));
   SetStringInfoLength(profile,(const size_t) length);
-  SetImageProfile(image,"psd:additional-info",info,exception);
+  (void) SetImageProfile(image,"psd:additional-info",info,exception);
   return(profile);
 }
 
@@ -3306,7 +3316,7 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
     base_image=image;
   size=0;
   size_offset=TellBlob(image);
-  SetPSDSize(psd_info,image,0);
+  (void) SetPSDSize(psd_info,image,0);
   layer_count=0;
   for (next_image=base_image; next_image != NULL; )
   {
@@ -3340,7 +3350,7 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
     if (property != (const char *) NULL)
       {
         mask=(Image *) GetImageRegistry(ImageRegistryType,property,exception);
-        default_color=strlen(property) == 9 ? 255 : 0;
+        default_color=(unsigned char) (strlen(property) == 9 ? 255 : 0);
       }
     size+=WriteBlobSignedLong(image,(signed int) next_image->page.y);
     size+=WriteBlobSignedLong(image,(signed int) next_image->page.x);
@@ -3348,10 +3358,11 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
       next_image->rows));
     size+=WriteBlobSignedLong(image,(signed int) (next_image->page.x+
       next_image->columns));
-    channels=1U;
+    channels=1;
     if ((next_image->storage_class != PseudoClass) &&
         (IsImageGray(next_image) == MagickFalse))
-      channels=next_image->colorspace == CMYKColorspace ? 4U : 3U;
+      channels=(unsigned short) (next_image->colorspace == CMYKColorspace ? 4 :
+        3);
     total_channels=channels;
     if (next_image->alpha_trait != UndefinedPixelTrait)
       total_channels++;
@@ -3380,8 +3391,8 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
     else
       size+=WriteBlobByte(image,255);
     size+=WriteBlobByte(image,0);
-    size+=WriteBlobByte(image,next_image->compose==NoCompositeOp ?
-      1 << 0x02 : 1); /* layer properties - visible, etc. */
+    size+=WriteBlobByte(image,(const unsigned char)
+      (next_image->compose == NoCompositeOp ? 1 << 0x02 : 1)); /* layer properties - visible, etc. */
     size+=WriteBlobByte(image,0);
     info=GetAdditionalInformation(image_info,next_image,exception);
     property=(const char *) GetImageProperty(next_image,"label",exception);
@@ -3410,14 +3421,15 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
         mask->page.y+=image->page.y;
         mask->page.x+=image->page.x;
         size+=WriteBlobLong(image,20);
-        size+=WriteBlobSignedLong(image,mask->page.y);
-        size+=WriteBlobSignedLong(image,mask->page.x);
-        size+=WriteBlobSignedLong(image,(const signed int) mask->rows+
-          mask->page.y);
-        size+=WriteBlobSignedLong(image,(const signed int) mask->columns+
-          mask->page.x);
+        size+=WriteBlobSignedLong(image,(const signed int) mask->page.y);
+        size+=WriteBlobSignedLong(image,(const signed int) mask->page.x);
+        size+=WriteBlobSignedLong(image,(const signed int) (mask->rows+
+          mask->page.y));
+        size+=WriteBlobSignedLong(image,(const signed int) (mask->columns+
+          mask->page.x));
         size+=WriteBlobByte(image,default_color);
-        size+=WriteBlobByte(image,mask->compose == NoCompositeOp ? 2 : 0);
+        size+=WriteBlobByte(image,(const unsigned char)
+          (mask->compose == NoCompositeOp ? 2 : 0));
         size+=WriteBlobMSBShort(image,0);
       }
     size+=WriteBlobLong(image,0);
@@ -3464,7 +3476,7 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
   {
     property=GetImageArtifact(next_image,"psd:opacity-mask");
     if (property != (const char *) NULL)
-      DeleteImageRegistry(property);
+      (void) DeleteImageRegistry(property);
     next_image=GetNextImageInList(next_image);
   }
 
@@ -3601,16 +3613,18 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
       */
       (void) WriteBlobMSBLong(image,768);
       for (i=0; i < (ssize_t) image->colors; i++)
-        (void) WriteBlobByte(image,ScaleQuantumToChar(image->colormap[i].red));
+        (void) WriteBlobByte(image,ScaleQuantumToChar(ClampToQuantum(
+          image->colormap[i].red)));
       for ( ; i < 256; i++)
         (void) WriteBlobByte(image,0);
       for (i=0; i < (ssize_t) image->colors; i++)
-        (void) WriteBlobByte(image,ScaleQuantumToChar(
-          image->colormap[i].green));
+        (void) WriteBlobByte(image,ScaleQuantumToChar(ClampToQuantum(
+          image->colormap[i].green)));
       for ( ; i < 256; i++)
         (void) WriteBlobByte(image,0);
       for (i=0; i < (ssize_t) image->colors; i++)
-        (void) WriteBlobByte(image,ScaleQuantumToChar(image->colormap[i].blue));
+        (void) WriteBlobByte(image,ScaleQuantumToChar(ClampToQuantum(
+          image->colormap[i].blue)));
       for ( ; i < 256; i++)
         (void) WriteBlobByte(image,0);
     }
@@ -3647,8 +3661,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
         icc_profile));
       (void) WriteBlob(image,GetStringInfoLength(icc_profile),
         GetStringInfoDatum(icc_profile));
-      if ((MagickOffsetType) GetStringInfoLength(icc_profile) !=
-          PSDQuantum(GetStringInfoLength(icc_profile)))
+      if ((ssize_t) GetStringInfoLength(icc_profile) != PSDQuantum(GetStringInfoLength(icc_profile)))
         (void) WriteBlobByte(image,0);
     }
   if (status != MagickFalse)
@@ -3660,7 +3673,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
         size;
 
       size_offset=TellBlob(image);
-      SetPSDSize(&psd_info,image,0);
+      (void) SetPSDSize(&psd_info,image,0);
       status=WritePSDLayersInternal(image,image_info,&psd_info,&size,
         exception);
       size_offset+=WritePSDSize(&psd_info,image,size+
