@@ -8961,7 +8961,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
      transparent[260];
 
    register const Quantum
-     *s;
+     *r;
 
    register Quantum
      *q;
@@ -9033,60 +9033,60 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
      for (y=0; y < (ssize_t) image->rows; y++)
      {
-       s=GetVirtualPixels(image,0,y,image->columns,1,exception);
+       r=GetVirtualPixels(image,0,y,image->columns,1,exception);
 
-       if (s == (Quantum *) NULL)
+       if (r == (const Quantum *) NULL)
          break;
 
        for (x=0; x < (ssize_t) image->columns; x++)
        {
            if (image->alpha_trait == UndefinedPixelTrait ||
-              GetPixelAlpha(image,s) == OpaqueAlpha)
+              GetPixelAlpha(image,r) == OpaqueAlpha)
              {
                if (number_opaque < 259)
                  {
                    if (number_opaque == 0)
                      {
-                       GetPixelInfoPixel(image,s,opaque);
+                       GetPixelInfoPixel(image,r,opaque);
                        opaque[0].alpha=OpaqueAlpha;
                        number_opaque=1;
                      }
 
                    for (i=0; i< (ssize_t) number_opaque; i++)
                      {
-                       if (IsColorEqual(image,s,opaque+i))
+                       if (IsColorEqual(image,r,opaque+i))
                          break;
                      }
 
                    if (i ==  (ssize_t) number_opaque && number_opaque < 259)
                      {
                        number_opaque++;
-                       GetPixelInfoPixel(image,s,opaque+i);
+                       GetPixelInfoPixel(image,r,opaque+i);
                        opaque[i].alpha=OpaqueAlpha;
                      }
                  }
              }
-           else if (GetPixelAlpha(image,s) == TransparentAlpha)
+           else if (GetPixelAlpha(image,r) == TransparentAlpha)
              {
                if (number_transparent < 259)
                  {
                    if (number_transparent == 0)
                      {
-                       GetPixelInfoPixel(image,s,transparent);
+                       GetPixelInfoPixel(image,r,transparent);
                        ping_trans_color.red=(unsigned short)
-                         GetPixelRed(image,s);
+                         GetPixelRed(image,r);
                        ping_trans_color.green=(unsigned short)
-                         GetPixelGreen(image,s);
+                         GetPixelGreen(image,r);
                        ping_trans_color.blue=(unsigned short)
-                         GetPixelBlue(image,s);
+                         GetPixelBlue(image,r);
                        ping_trans_color.gray=(unsigned short)
-                         GetPixelGray(image,s);
+                         GetPixelGray(image,r);
                        number_transparent = 1;
                      }
 
                    for (i=0; i< (ssize_t) number_transparent; i++)
                      {
-                       if (IsColorEqual(image,s,transparent+i))
+                       if (IsColorEqual(image,r,transparent+i))
                          break;
                      }
 
@@ -9094,7 +9094,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                        number_transparent < 259)
                      {
                        number_transparent++;
-                       GetPixelInfoPixel(image,s,transparent+i);
+                       GetPixelInfoPixel(image,r,transparent+i);
                      }
                  }
              }
@@ -9104,14 +9104,14 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                  {
                    if (number_semitransparent == 0)
                      {
-                       GetPixelInfoPixel(image,s,semitransparent);
+                       GetPixelInfoPixel(image,r,semitransparent);
                        number_semitransparent = 1;
                      }
 
                    for (i=0; i< (ssize_t) number_semitransparent; i++)
                      {
-                       if (IsColorEqual(image,s,semitransparent+i)
-                           && GetPixelAlpha(image,s) ==
+                       if (IsColorEqual(image,r,semitransparent+i)
+                           && GetPixelAlpha(image,r) ==
                            semitransparent[i].alpha)
                          break;
                      }
@@ -9120,11 +9120,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                        number_semitransparent < 259)
                      {
                        number_semitransparent++;
-                       GetPixelInfoPixel(image,s,semitransparent+i);
+                       GetPixelInfoPixel(image,r,semitransparent+i);
                      }
                  }
              }
-           s+=GetPixelChannels(image);
+           r+=GetPixelChannels(image);
         }
      }
 
@@ -9204,17 +9204,17 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                if (q == (Quantum *) NULL)
                  break;
 
-               s=q;
+               r=q;
                for (x=0; x < (ssize_t) image->columns; x++)
                {
-                 if (GetPixelRed(image,s) != GetPixelGreen(image,s) ||
-                     GetPixelRed(image,s) != GetPixelBlue(image,s))
+                 if (GetPixelRed(image,r) != GetPixelGreen(image,r) ||
+                     GetPixelRed(image,r) != GetPixelBlue(image,r))
                    {
                       ping_have_color=MagickTrue;
                       ping_have_non_bw=MagickTrue;
                       break;
                    }
-                 s+=GetPixelChannels(image);
+                 r+=GetPixelChannels(image);
                }
 
                if (ping_have_color != MagickFalse)
@@ -9226,16 +9226,16 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                if (ping_have_non_bw == MagickFalse)
                  {
-                   s=q;
+                   r=q;
                    for (x=0; x < (ssize_t) image->columns; x++)
                    {
-                     if (GetPixelRed(image,s) != 0 &&
-                         GetPixelRed(image,s) != QuantumRange)
+                     if (GetPixelRed(image,r) != 0 &&
+                         GetPixelRed(image,r) != QuantumRange)
                        {
                          ping_have_non_bw=MagickTrue;
                          break;
                        }
-                     s+=GetPixelChannels(image);
+                     r+=GetPixelChannels(image);
                    }
                }
              }
