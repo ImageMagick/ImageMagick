@@ -5531,8 +5531,10 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
   register const unsigned char
     *p;
 
+#if defined(MAGICKCORE_ZLIB_DELEGATE) || defined(MAGICKCORE_BZLIB_DELEGATE)
   register unsigned char
     *q;
+#endif
 
   ssize_t
     count;
@@ -5699,8 +5701,10 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
               return(0);
             }
         }
+#if defined(MAGICKCORE_ZLIB_DELEGATE) || defined(MAGICKCORE_BZLIB_DELEGATE)
       q=blob_info->data+blob_info->offset;
       (void) memcpy(q,p,length);
+#endif
       blob_info->offset+=length;
       if (blob_info->offset >= (MagickOffsetType) blob_info->length)
         blob_info->length=(size_t) blob_info->offset;
