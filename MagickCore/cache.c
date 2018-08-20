@@ -610,6 +610,9 @@ static MagickBooleanType ClonePixelCacheOnDisk(
   if ((OpenPixelCacheOnDisk(cache_info,ReadMode) == MagickFalse) ||
       (OpenPixelCacheOnDisk(clone_info,IOMode) == MagickFalse))
     return(MagickFalse);
+  if ((lseek(cache_info->file,0,SEEK_SET) < 0) ||
+      (lseek(clone_info->file,0,SEEK_SET) < 0))
+    return(MagickFalse);
   quantum=(size_t) MagickMaxBufferExtent;
   if ((fstat(cache_info->file,&file_stats) == 0) && (file_stats.st_size > 0))
     quantum=(size_t) MagickMin(file_stats.st_size,MagickMaxBufferExtent);
@@ -1741,12 +1744,8 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
           else
             {
               if (clone != MagickFalse)
-                {
-                  if (cache_info->file != -1)
-                    (void) ClosePixelCacheOnDisk(cache_info);
-                  status=ClonePixelCacheRepository(clone_info,cache_info,
-                    exception);
-                }
+                status=ClonePixelCacheRepository(clone_info,cache_info,
+                  exception);
               if (status == MagickFalse)
                 clone_info=(CacheInfo *) DestroyPixelCache(clone_info);
               else
