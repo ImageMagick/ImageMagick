@@ -619,8 +619,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       "notify the developers",image->magick,exception->severity);
   if (IsBlobTemporary(image) != MagickFalse)
     (void) RelinquishUniqueFileResource(read_info->filename);
-  if ((GetNextImageInList(image) != (Image *) NULL) &&
-      (IsSceneGeometry(read_info->scenes,MagickFalse) != MagickFalse))
+  if ((IsSceneGeometry(read_info->scenes,MagickFalse) != MagickFalse) &&
+      ((GetNextImageInList(image) != (Image *) NULL) ||
+       ((read_info->scenes != (char *) NULL) &&
+        (strchr(read_info->scenes,',') != (char *) NULL))))
     {
       Image
         *clones;
