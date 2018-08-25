@@ -504,62 +504,35 @@ MagickExport MagickBooleanType GlobExpression(const char *expression,
       }
       case '{':
       {
-        pattern+=GetUTFOctets(pattern);
+        char
+          *target;
+
+        register char
+          *p;
+
+        target=AcquireString(pattern);
+        p=target;
         while ((GetUTFCode(pattern) != '}') && (GetUTFCode(pattern) != 0))
         {
-          p=expression;
-          match=MagickTrue;
-          while ((GetUTFCode(p) != 0) && (GetUTFCode(pattern) != 0) &&
-                 (GetUTFCode(pattern) != ',') && (GetUTFCode(pattern) != '}') &&
-                 (match != MagickFalse))
-          {
-            if (GetUTFCode(pattern) == '\\')
+          *p++=(*pattern++);
+          if ((GetUTFCode(pattern) == ',') || (GetUTFCode(pattern) == '}'))
+            {
+              *p='\0';
+              match=GlobExpression(expression,target,case_insensitive);
+              if (match != MagickFalse)
+                {
+                  expression+=strlen(target);
+                  break;
+                }
+              p=target;
               pattern+=GetUTFOctets(pattern);
-            match=(GetUTFCode(pattern) == GetUTFCode(p)) ? MagickTrue :
-              MagickFalse;
-            p+=GetUTFOctets(p);
-            pattern+=GetUTFOctets(pattern);
-          }
-          if (GetUTFCode(pattern) == 0)
-            {
-              match=MagickFalse;
-              done=MagickTrue;
-              break;
             }
-          if (match != MagickFalse)
-            {
-              expression=p;
-              while ((GetUTFCode(pattern) != '}') &&
-                     (GetUTFCode(pattern) != 0))
-              {
-                pattern+=GetUTFOctets(pattern);
-                if (GetUTFCode(pattern) == '\\')
-                  {
-                    pattern+=GetUTFOctets(pattern);
-                    if (GetUTFCode(pattern) == '}')
-                      pattern+=GetUTFOctets(pattern);
-                  }
-              }
-            }
-          else
-            {
-              while ((GetUTFCode(pattern) != '}') &&
-                     (GetUTFCode(pattern) != ',') &&
-                     (GetUTFCode(pattern) != 0))
-              {
-                pattern+=GetUTFOctets(pattern);
-                if (GetUTFCode(pattern) == '\\')
-                  {
-                    pattern+=GetUTFOctets(pattern);
-                    if ((GetUTFCode(pattern) == '}') ||
-                        (GetUTFCode(pattern) == ','))
-                      pattern+=GetUTFOctets(pattern);
-                  }
-              }
-            }
-          if (GetUTFCode(pattern) != 0)
-            pattern+=GetUTFOctets(pattern);
         }
+        while ((GetUTFCode(pattern) != '}') && (GetUTFCode(pattern) != 0))
+          pattern+=GetUTFOctets(pattern);
+        if (GetUTFCode(pattern) != 0)
+          pattern+=GetUTFOctets(pattern);
+        target=DestroyString(target);
         break;
       }
       case '\\':
