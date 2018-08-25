@@ -959,6 +959,14 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
   if ((*images)->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       (*images)->filename);
+  rights=ReadPolicyRights;
+  if (IsRightsAuthorized(FilterPolicyDomain,rights,tag) == MagickFalse)
+    {
+      errno=EPERM;
+      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
+        "NotAuthorized","`%s'",tag);
+      return(MagickFalse);
+    }
 #if !defined(MAGICKCORE_BUILD_MODULES)
   {
     MagickBooleanType
@@ -969,14 +977,6 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
       return(status);
   }
 #endif
-  rights=ReadPolicyRights;
-  if (IsRightsAuthorized(FilterPolicyDomain,rights,tag) == MagickFalse)
-    {
-      errno=EPERM;
-      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-        "NotAuthorized","`%s'",tag);
-      return(MagickFalse);
-    }
   TagToFilterModuleName(tag,name);
   status=GetMagickModulePath(name,MagickImageFilterModule,path,exception);
   if (status == MagickFalse)
@@ -1234,6 +1234,9 @@ MagickPrivate MagickBooleanType OpenModule(const char *module,
   ModuleInfo
     *module_info;
 
+  PolicyRights
+    rights;
+
   register const CoderInfo
     *p;
 
@@ -1247,6 +1250,14 @@ MagickPrivate MagickBooleanType OpenModule(const char *module,
   module_info=(ModuleInfo *) GetModuleInfo(module,exception);
   if (module_info != (ModuleInfo *) NULL)
     return(MagickTrue);
+  rights=ReadPolicyRights;
+  if (IsRightsAuthorized(ModulePolicyDomain,rights,tag) == MagickFalse)
+    {
+      errno=EPERM;
+      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
+        "NotAuthorized","`%s'",tag);
+      return(MagickFalse);
+    }
   (void) CopyMagickString(module_name,module,MagickPathExtent);
   p=GetCoderInfo(module,exception);
   if (p != (CoderInfo *) NULL)

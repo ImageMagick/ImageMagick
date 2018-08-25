@@ -1254,6 +1254,7 @@ MagickExport MagickBooleanType SetMagickSecurityPolicyValue(
     case CoderPolicyDomain:
     case DelegatePolicyDomain:
     case FilterPolicyDomain:
+    case ModulePolicyDomain:
     case PathPolicyDomain:
     default:
       break;

@@ -34,7 +34,8 @@ typedef enum
   PathPolicyDomain,
   ResourcePolicyDomain,
   SystemPolicyDomain,
-  CachePolicyDomain
+  CachePolicyDomain,
+  ModulePolicyDomain
 } PolicyDomain;
 
 typedef enum

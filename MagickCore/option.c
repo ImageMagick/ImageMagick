@@ -1834,6 +1834,7 @@ static const OptionInfo
     { "Coder", CoderPolicyDomain, UndefinedOptionFlag, MagickFalse },
     { "Delegate", DelegatePolicyDomain, UndefinedOptionFlag, MagickFalse },
     { "Filter", FilterPolicyDomain, UndefinedOptionFlag, MagickFalse },
+    { "Module", ModulePolicyDomain, UndefinedOptionFlag, MagickFalse },
     { "Path", PathPolicyDomain, UndefinedOptionFlag, MagickFalse },
     { "Resource", ResourcePolicyDomain, UndefinedOptionFlag, MagickFalse },
     { "System", SystemPolicyDomain, UndefinedOptionFlag, MagickFalse },
