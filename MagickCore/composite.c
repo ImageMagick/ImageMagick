@@ -1513,10 +1513,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 
         PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
-        PixelTrait source_traits=GetPixelChannelTraits(source_image,channel);
+        PixelTrait source_traits = GetPixelChannelTraits(source_image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        if (channel == AlphaPixelChannel)
+        if ((channel == AlphaPixelChannel) &&
+            ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0))
           {
             /*
               Set alpha channel.
