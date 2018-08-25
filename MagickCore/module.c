@@ -1251,11 +1251,11 @@ MagickPrivate MagickBooleanType OpenModule(const char *module,
   if (module_info != (ModuleInfo *) NULL)
     return(MagickTrue);
   rights=ReadPolicyRights;
-  if (IsRightsAuthorized(ModulePolicyDomain,rights,tag) == MagickFalse)
+  if (IsRightsAuthorized(ModulePolicyDomain,rights,module) == MagickFalse)
     {
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-        "NotAuthorized","`%s'",tag);
+        "NotAuthorized","`%s'",module);
       return(MagickFalse);
     }
   (void) CopyMagickString(module_name,module,MagickPathExtent);
