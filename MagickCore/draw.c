@@ -4724,7 +4724,14 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
     return(MagickFalse);
 DisableMSCWarning(4127)
   if (0)
-    status=DrawBoundingRectangles(image,draw_info,polygon_info[0],exception);
+    {
+      status=DrawBoundingRectangles(image,draw_info,polygon_info[0],exception);
+      if (status == MagickFalse)
+        {
+          polygon_info=DestroyPolygonThreadSet(polygon_info);
+          return(status);
+        }
+    }
 RestoreMSCWarning
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"    begin draw-polygon");
