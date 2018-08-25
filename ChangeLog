@@ -1,6 +1,7 @@
 2018-08-15  7.0.8-11 Cristy  <quetzlzacatenango@image...>
   * Fixed numerous use of uninitialized values, integer overflow, memory
     exceeded, and timeouts (credit to OSS Fuzz).
+  * Add support for "module" security policy.
 
 2018-08-13  7.0.8-10 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-10, GIT revision 14646:48fba3256:20180813
