@@ -1293,8 +1293,9 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
 %
 %  The format of the DrawBoundingRectangles method is:
 %
-%      void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
-%        PolygonInfo *polygon_info,ExceptionInfo *exception)
+%      MagickBooleanType DrawBoundingRectangles(Image *image,
+%        const DrawInfo *draw_info,PolygonInfo *polygon_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1315,14 +1316,18 @@ static inline double SaneStrokeWidth(const Image *image,
     (2.0*sqrt(2.0)+MagickEpsilon)*MagickMax(image->columns,image->rows)));
 }
 
-static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
-  const PolygonInfo *polygon_info,ExceptionInfo *exception)
+static MagickBooleanType DrawBoundingRectangles(Image *image,
+  const DrawInfo *draw_info,const PolygonInfo *polygon_info,
+  ExceptionInfo *exception)
 {
   double
     mid;
 
   DrawInfo
     *clone_info;
+
+  MagickBooleanType
+    status;
 
   PointInfo
     end,
@@ -1343,8 +1348,13 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
 
   (void) memset(primitive_info,0,sizeof(primitive_info));
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  (void) QueryColorCompliance("#000F",AllCompliance,&clone_info->fill,
+  status=QueryColorCompliance("#000F",AllCompliance,&clone_info->fill,
     exception);
+  if (status == MagickFalse)
+    {
+      clone_info=DestroyDrawInfo(clone_info);
+      return(status);
+    }
   resolution.x=96.0;
   resolution.y=96.0;
   if (clone_info->density != (char *) NULL)
@@ -1396,11 +1406,13 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
       for (i=0; i < (ssize_t) polygon_info->number_edges; i++)
       {
         if (polygon_info->edges[i].direction != 0)
-          (void) QueryColorCompliance("#f00",AllCompliance,&clone_info->stroke,
+          status=QueryColorCompliance("#f00",AllCompliance,&clone_info->stroke,
             exception);
         else
-          (void) QueryColorCompliance("#0f0",AllCompliance,&clone_info->stroke,
+          status=QueryColorCompliance("#0f0",AllCompliance,&clone_info->stroke,
             exception);
+        if (status == MagickFalse)
+          break;
         start.x=(double) (polygon_info->edges[i].bounds.x1-mid);
         start.y=(double) (polygon_info->edges[i].bounds.y1-mid);
         end.x=(double) (polygon_info->edges[i].bounds.x2+mid);
@@ -1410,11 +1422,23 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
         primitive_info[0].method=ReplaceMethod;
         coordinates=(ssize_t) primitive_info[0].coordinates;
         primitive_info[coordinates].primitive=UndefinedPrimitive;
-        (void) DrawPrimitive(image,clone_info,primitive_info,exception);
+        status=DrawPrimitive(image,clone_info,primitive_info,exception);
+        if (status == MagickFalse)
+          break;
       }
+      if (i < (ssize_t) polygon_info->number_edges)
+        {
+          clone_info=DestroyDrawInfo(clone_info);
+          return(status);
+        }
     }
-  (void) QueryColorCompliance("#00f",AllCompliance,&clone_info->stroke,
+  status=QueryColorCompliance("#00f",AllCompliance,&clone_info->stroke,
     exception);
+  if (status == MagickFalse)
+    {
+      clone_info=DestroyDrawInfo(clone_info);
+      return(status);
+    }
   start.x=(double) (bounds.x1-mid);
   start.y=(double) (bounds.y1-mid);
   end.x=(double) (bounds.x2+mid);
@@ -1424,8 +1448,9 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
   primitive_info[0].method=ReplaceMethod;
   coordinates=(ssize_t) primitive_info[0].coordinates;
   primitive_info[coordinates].primitive=UndefinedPrimitive;
-  (void) DrawPrimitive(image,clone_info,primitive_info,exception);
+  status=DrawPrimitive(image,clone_info,primitive_info,exception);
   clone_info=DestroyDrawInfo(clone_info);
+  return(status);
 }
 
 /*
@@ -4699,7 +4724,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
     return(MagickFalse);
 DisableMSCWarning(4127)
   if (0)
-    DrawBoundingRectangles(image,draw_info,polygon_info[0],exception);
+    status=DrawBoundingRectangles(image,draw_info,polygon_info[0],exception);
 RestoreMSCWarning
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"    begin draw-polygon");
