@@ -79,6 +79,28 @@
 #include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
+
+static MagickBooleanType IsCoderAuthorized(const MagickInfo *magick_info,
+  const PolicyRights rights,const char *filename,ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status;
+
+  PolicyDomain
+    domain;
+
+  if (magick_info == (MagickInfo *) NULL)
+    return(MagickTrue);
+  domain=CoderPolicyDomain;
+  status=IsRightsAuthorized(domain,rights,magick_info->module);
+  if (status == MagickFalse)
+    {
+      errno=EPERM;
+      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
+        "NotAuthorized","`%s'",filename);
+    }
+  return(status);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -456,19 +478,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   sans_exception=DestroyExceptionInfo(sans_exception);
   if (magick_info != (const MagickInfo *) NULL)
     {
-      PolicyDomain
-        domain;
-
-      PolicyRights
-        rights;
-
-      domain=CoderPolicyDomain;
-      rights=ReadPolicyRights;
-      if (IsRightsAuthorized(domain,rights,magick_info->module) == MagickFalse)
+      if (IsCoderAuthorized(magick_info,ReadPolicyRights,read_info->filename,
+           exception) == MagickFalse)
         {
-          errno=EPERM;
-          (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-            "NotAuthorized","`%s'",read_info->filename);
           read_info=DestroyImageInfo(read_info);
           return((Image *) NULL);
         }
@@ -532,6 +544,12 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           (void) CopyMagickString(read_info->filename,filename,
             MagickPathExtent);
           magick_info=GetMagickInfo(read_info->magick,exception);
+          if (IsCoderAuthorized(magick_info,ReadPolicyRights,
+                read_info->filename,exception) == MagickFalse)
+            {
+              read_info=DestroyImageInfo(read_info);
+              return((Image *) NULL);
+            }
           decoder=GetImageDecoder(magick_info);
         }
     }
@@ -595,9 +613,15 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           read_info=DestroyImageInfo(read_info);
           return((Image *) NULL);
         }
+      if (IsCoderAuthorized(magick_info,ReadPolicyRights,
+            read_info->filename,exception) == MagickFalse)
+        {
+          read_info=DestroyImageInfo(read_info);
+          return((Image *) NULL);
+        }
       if (GetMagickDecoderThreadSupport(magick_info) == MagickFalse)
         LockSemaphoreInfo(magick_info->semaphore);
-      image=(Image *) (decoder)(read_info,exception);
+      image=decoder(read_info,exception);
       if (GetMagickDecoderThreadSupport(magick_info) == MagickFalse)
         UnlockSemaphoreInfo(magick_info->semaphore);
     }
@@ -1077,19 +1101,11 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
   sans_exception=DestroyExceptionInfo(sans_exception);
   if (magick_info != (const MagickInfo *) NULL)
     {
-      PolicyDomain
-        domain;
-
-      PolicyRights
-        rights;
-
-      domain=CoderPolicyDomain;
-      rights=WritePolicyRights;
-      if (IsRightsAuthorized(domain,rights,magick_info->module) == MagickFalse)
+      if (IsCoderAuthorized(magick_info,WritePolicyRights,filename,
+           exception) == MagickFalse)
         {
           write_info=DestroyImageInfo(write_info);
-          errno=EPERM;
-          ThrowBinaryException(PolicyError,"NotAuthorized",filename);
+          return(MagickFalse);
         }
       if (GetMagickEndianSupport(magick_info) == MagickFalse)
         image->endian=UndefinedEndian;
@@ -1223,6 +1239,11 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
                   "`%s'",write_info->magick);
             }
           if (encoder != (EncodeImageHandler *) NULL)
+            status=IsCoderAuthorized(magick_info,WritePolicyRights,filename,
+              exception);
+          else
+            status=MagickFalse;
+          if (status != MagickFalse)
             {
               /*
                 Call appropriate image writer based on image type.
