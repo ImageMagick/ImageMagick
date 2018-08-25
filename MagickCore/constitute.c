@@ -398,6 +398,21 @@ MagickExport Image *PingImages(ImageInfo *image_info,const char *filename,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static MagickBooleanType IsCoderAuthorized(const char *module,const char *coder,
+  const PolicyRights rights,ExceptionInfo *exception)
+{
+  if ((IsRightsAuthorized(ModulePolicyDomain,rights,module) == MagickFalse) ||
+      (IsRightsAuthorized(CoderPolicyDomain,rights,coder) == MagickFalse))
+    {
+      errno=EPERM;
+      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
+        "NotAuthorized","`%s:%s'",module,coder);
+      return(MagickFalse);
+    }
+  return(MagickTrue);
+}
+
 MagickExport Image *ReadImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {

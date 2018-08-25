@@ -22,29 +22,11 @@
 extern "C" {
 #endif
 
-#include <errno.h>
-#include "MagickCore/exception-private.h"
-#include "MagickCore/policy.h"
-
 extern MagickPrivate MagickBooleanType
   CoderComponentGenesis(void);
 
 extern MagickPrivate void
   CoderComponentTerminus(void);
-
-static inline MagickBooleanType IsCoderAuthorized(const char *module,
-  const char *coder,const PolicyRights rights,ExceptionInfo *exception)
-{
-  if ((IsRightsAuthorized(ModulePolicyDomain,rights,module) == MagickFalse) ||
-      (IsRightsAuthorized(CoderPolicyDomain,rights,coder) == MagickFalse))
-    {
-      errno=EPERM;
-      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-        "NotAuthorized","`%s:%s'",module,coder);
-      return(MagickFalse);
-    }
-  return(MagickTrue);
-}
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
