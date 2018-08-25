@@ -69,7 +69,7 @@
   <!-- <policy domain="resource" name="throttle" value="0"/> -->
   <!-- <policy domain="resource" name="time" value="3600"/> -->
   <!-- <policy domain="coder" rights="none" pattern="MVG" /> -->
-  <!-- <policy domain="module" rights="none" pattern="{ps,pdf,xps}" /> -->
+  <!-- <policy domain="module" rights="none" pattern="{PS,PDF,XPS}" /> -->
   <!-- <policy domain="delegate" rights="none" pattern="HTTPS" /> -->
   <!-- <policy domain="path" rights="none" pattern="@*" /> -->
   <!-- <policy domain="cache" name="memory-map" value="anonymous"/> -->
