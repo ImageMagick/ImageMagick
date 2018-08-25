@@ -471,7 +471,7 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
   {
     int
       status;
-    
+
     status=LocaleNCompare(PageSizes[i].name,page_geometry,PageSizes[i].extent);
     if (status == 0)
       {
@@ -1306,7 +1306,7 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
 %
 %  ParseMetaGeometry() is similar to GetGeometry() except the returned
 %  geometry is modified as determined by the meta characters:  %, !, <, >, @,
-%  ~, and ^ in relation to image resizing.
+%  :, and ^ in relation to image resizing.
 %
 %  Final image dimensions are adjusted so as to preserve the aspect ratio as
 %  much as possible, while generating a integer (pixel) size, and fitting the
@@ -1318,7 +1318,7 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
 %     <   only enlarge images smaller that geometry
 %     >   only shrink images larger than geometry
 %     @   fit image to contain at most this many pixels
-%     ~   width and height denotes an aspect ratio
+%     :   width and height denotes an aspect ratio
 %     ^   contain the given geometry given, (minimal dimensions given)
 %
 %  The format of the ParseMetaGeometry method is:
