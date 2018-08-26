@@ -1624,6 +1624,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=QuantumRange*Da;
                 break;
               }
+              case MultiplyCompositeOp:
+              {
+                pixel=QuantumRange*Sa*Da;
+                break;
+              }
               default:
               {
                 pixel=QuantumRange*alpha;
