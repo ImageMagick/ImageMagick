@@ -1517,7 +1517,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         if (traits == UndefinedPixelTrait)
           continue;
         if ((channel == AlphaPixelChannel) &&
-            ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0))
+            ((traits & UpdatePixelTrait) != 0))
           {
             /*
               Set alpha channel.
