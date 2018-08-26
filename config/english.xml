@@ -466,9 +466,6 @@
         <message name="VectorGraphicsNestedTooDeeply">
           vector graphics nested too deeply
         </message>
-        <message name="VectorGraphicsNestedTooDeeply">
-          trop d'imbrication de vector graphiques
-        </message>
       </error>
     </draw>
     <file>
