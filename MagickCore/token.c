@@ -513,6 +513,7 @@ MagickExport MagickBooleanType GlobExpression(const char *expression,
 
         target=AcquireString(pattern);
         p=target;
+        pattern++;
         while ((GetUTFCode(pattern) != '}') && (GetUTFCode(pattern) != 0))
         {
           *p++=(*pattern++);
