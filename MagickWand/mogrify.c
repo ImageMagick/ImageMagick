@@ -1615,10 +1615,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             */
             (void) SyncImageSettings(mogrify_info,*image,exception);
             (void) ParsePageGeometry(*image,argv[i+1],&geometry,exception);
-            (void) GetOneVirtualPixelInfo(*image,TileVirtualPixelMethod,
-              geometry.x,geometry.y,&target,exception);
-            (void) QueryColorCompliance(argv[i+2],AllCompliance,
-              &draw_info->fill,exception);
+            (void) QueryColorCompliance(argv[i+2],AllCompliance,&target,
+              exception);
             (void) FloodfillPaintImage(*image,draw_info,&target,geometry.x,
               geometry.y,*option == '-' ? MagickFalse : MagickTrue,exception);
             break;

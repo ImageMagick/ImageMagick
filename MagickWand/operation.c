@@ -2327,10 +2327,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (IsGeometry(arg1) == MagickFalse)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) ParsePageGeometry(_image,arg1,&geometry,_exception);
-          (void) GetOneVirtualPixelInfo(_image,TileVirtualPixelMethod,
-            geometry.x,geometry.y,&target,exception);
-          (void) QueryColorCompliance(arg2,AllCompliance,&_draw_info->fill,
-            _exception);
+          (void) QueryColorCompliance(arg2,AllCompliance,&target,_exception);
           (void) FloodfillPaintImage(_image,_draw_info,&target,geometry.x,
             geometry.y,IsPlusOp,_exception);
           break;
