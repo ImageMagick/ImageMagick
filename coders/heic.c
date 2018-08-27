@@ -228,16 +228,23 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
             "InsufficientImageDataInFile");
         }
       exif_buffer=AcquireMagickMemory(exif_size);
-      error=heif_image_handle_get_metadata(image_handle,exif_id,exif_buffer);
-      if (error.code == 0)
+      if (exif_buffer != NULL)
         {
-          StringInfo
-            *profile;
+          error=heif_image_handle_get_metadata(image_handle,
+            exif_id,exif_buffer);
+          if (error.code == 0)
+            {
+              StringInfo
+                *profile;
 
-          profile=BlobToStringInfo(exif_buffer,exif_size);
-          SetImageProfile(image,"exif",profile,exception);
-          profile=DestroyStringInfo(profile);
-      }
+              profile=BlobToStringInfo(exif_buffer,exif_size);
+              if (profile != (StringInfo*) NULL)
+                {
+                  SetImageProfile(image,"exif",profile,exception);
+                  profile=DestroyStringInfo(profile);
+                }
+            }
+        }
       exif_buffer=RelinquishMagickMemory(exif_buffer);
   }
   /*
