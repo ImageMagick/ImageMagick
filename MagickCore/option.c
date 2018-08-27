@@ -2441,6 +2441,8 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
   ssize_t
     option_types;
 
+  if ((options == (const char *) NULL) || (*options == '\0'))
+    return(-1);
   option_info=GetOptionInfo(option);
   if (option_info == (const OptionInfo *) NULL)
     return(UndefinedOptionFlag);
@@ -2469,7 +2471,7 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
       if (LocaleCompare(token,option_info[i].mnemonic) == 0)
         break;
     command_info=option_info+i;
-    if ((command_info->mnemonic == (const char *) NULL) &&
+    if ((command_info->mnemonic == (const char *) NULL) && (*token != '\0') &&
         ((strchr(token+1,'-') != (char *) NULL) ||
          (strchr(token+1,'_') != (char *) NULL)))
       {
