@@ -2485,7 +2485,7 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
         command_info=option_info+i;
       }
     if (command_info->mnemonic == (const char *) NULL)
-      return(-1);
+      return(UndefinedOptionFlag);
     if (negate != MagickFalse)
       option_types=option_types &~ command_info->flags;
     else
