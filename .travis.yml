@@ -20,6 +20,8 @@ script: |
   set -x
   export OMP_NUM_THREADS=1
   export CFLAGS="-Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable"
+  export CXXFLAGS=$CFLAGS
+  if [ "$CC" == clang ] ; then export CXX=clang++ ; fi
   ./configure --disable-openmp --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
   make
   make install DESTDIR=$(readlink -f appdir)
