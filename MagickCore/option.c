@@ -2442,7 +2442,7 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
     option_types;
 
   if ((options == (const char *) NULL) || (*options == '\0'))
-    return(-1);
+    return(UndefinedOptionFlag);
   option_info=GetOptionInfo(option);
   if (option_info == (const OptionInfo *) NULL)
     return(UndefinedOptionFlag);
