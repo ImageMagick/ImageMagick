@@ -9264,7 +9264,9 @@ $as_echo "$ax_cv_gcc_archflag" >&6; }
 if test "x$ax_cv_gcc_archflag" = xunknown; then
   :
 else
+
   CFLAGS="$CFLAGS $ax_cv_gcc_archflag"
+  CXXFLAGS="$CXXFLAGS $ax_cv_gcc_archflag"
 fi
 
 
