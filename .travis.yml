@@ -54,7 +54,7 @@ matrix:
       export OMP_NUM_THREADS=1
       export CFLAGS="-Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable"
       ./configure --disable-openmp --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
-      make
+      make -j6
       make install DESTDIR=$(readlink -f appdir)
 
     after_success:
