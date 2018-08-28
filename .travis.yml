@@ -7,13 +7,17 @@ compiler:
   - clang
   - gcc
 
-before_script:
-  - sudo add-apt-repository -y ppa:as-bahanta/raqm
-  - sudo add-apt-repository ppa:dns/gnu -y
-  - sudo apt-key update -q
-  - sudo apt-get update -q
-  - sudo apt-get install --only-upgrade autoconf
-  - sudo apt-get install -y libraqm-dev libfreetype6-dev libharfbuzz-dev libfribidi-dev
+addons:
+  apt:
+    update: true
+    sources:
+      - sourceline: 'ppa:as-bahanta/raqm'
+      - sourceline: 'ppa:dns/gnu'
+    packages:
+      - libraqm-dev
+      - libfreetype6-dev
+      - libharfbuzz-dev
+      - libfribidi-dev
 
 script: |
   set -e
