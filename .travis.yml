@@ -19,6 +19,33 @@ addons:
       - libharfbuzz-dev
       - libfribidi-dev
 
+matrix:
+  include:
+    os: linux-ppc64le
+    sudo: false
+    compiler: gcc-8
+    addons:
+      apt:
+        update: true
+        sources:
+          - ubuntu-toolchain-r-test
+        packages:
+          - libfreetype6-dev
+          - libharfbuzz-dev
+          - libfribidi-dev
+          - gcc-8
+    script: |
+      set -e
+      set -x
+      export OMP_NUM_THREADS=1
+      export CFLAGS="-Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable"
+      ./configure --disable-openmp --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
+      make
+      make install DESTDIR=$(readlink -f appdir)
+
+    after_success:
+      - true
+
 script: |
   set -e
   set -x
