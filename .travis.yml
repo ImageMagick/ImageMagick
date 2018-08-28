@@ -34,9 +34,23 @@ matrix:
           - libharfbuzz-dev
           - libfribidi-dev
           - gcc-8
+          - g++-8
+          - ocl-icd-opencl-dev
+          - liblcms2-dev
+          - libautotrace-dev
+          - librsvg2-dev
+          - libfftw3-dev
+          - libopenjp2-7-dev
+          - libpango1.0-dev
+          - libraw-dev
+          - libwebp-dev
+          - libltdl-dev
+          - libimage-magick-perl
+
     script: |
       set -e
       set -x
+      export CXX=${CC/cc/++}
       export OMP_NUM_THREADS=1
       export CFLAGS="-Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable"
       ./configure --disable-openmp --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
