@@ -552,7 +552,8 @@ static void MSLPushImage(MSLInfo *msl_info,Image *image)
   ssize_t
     n;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (image != (Image *) NULL)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(msl_info != (MSLInfo *) NULL);
   msl_info->n++;
   n=msl_info->n;

@@ -3961,9 +3961,9 @@ MagickExport MagickBooleanType PlasmaImage(Image *image,
   RandomInfo
     *random_info;
 
+  assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
@@ -5006,7 +5006,6 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
   assert(right_image->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  assert(right_image != (const Image *) NULL);
   image=left_image;
   if ((left_image->columns != right_image->columns) ||
       (left_image->rows != right_image->rows))

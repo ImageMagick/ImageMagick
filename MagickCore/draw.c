@@ -876,9 +876,9 @@ static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info)
 */
 MagickExport DrawInfo *DestroyDrawInfo(DrawInfo *draw_info)
 {
+  assert(draw_info != (DrawInfo *) NULL);
   if (draw_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  assert(draw_info != (DrawInfo *) NULL);
   assert(draw_info->signature == MagickCoreSignature);
   if (draw_info->primitive != (char *) NULL)
     draw_info->primitive=DestroyString(draw_info->primitive);
