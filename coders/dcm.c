@@ -3854,7 +3854,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             ReadBlobLSBShort(image);
           length=(size_t) ReadBlobLSBLong(image);
           if (length > (size_t) GetBlobSize(image))
-            ThrowDCMException(CorruptImageError,"InsufficientImageDataInFile");
+            {
+              read_info=DestroyImageInfo(read_info);
+              ThrowDCMException(CorruptImageError,
+                "InsufficientImageDataInFile");
+            }
           if (tag == 0xFFFEE0DD)
             break; /* sequence delimiter tag */
           if (tag != 0xFFFEE000)
