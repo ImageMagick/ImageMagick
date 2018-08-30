@@ -163,9 +163,9 @@ MagickExport MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
 */
 MagickExport MontageInfo *DestroyMontageInfo(MontageInfo *montage_info)
 {
+  assert(montage_info != (MontageInfo *) NULL);
   if (montage_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  assert(montage_info != (MontageInfo *) NULL);
   assert(montage_info->signature == MagickCoreSignature);
   if (montage_info->geometry != (char *) NULL)
     montage_info->geometry=(char *)
@@ -411,10 +411,10 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   assert(exception->signature == MagickCoreSignature);
   number_images=GetImageListLength(images);
   master_list=ImageListToArray(images,exception);
-  image_list=master_list;
-  image=image_list[0];
   if (master_list == (Image **) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+  image_list=master_list;
+  image=image_list[0];
   thumbnail=NewImageList();
   for (i=0; i < (ssize_t) number_images; i++)
   {

@@ -1789,11 +1789,8 @@ MagickPrivate DIR *NTOpenDirectory(const char *path)
         MagickPathExtent-wcslen(file_specification)-1) == (wchar_t*) NULL)
     return((DIR *) NULL);
   entry=(DIR *) AcquireCriticalMemory(sizeof(DIR));
-  if (entry != (DIR *) NULL)
-    {
-      entry->firsttime=TRUE;
-      entry->hSearch=FindFirstFileW(file_specification,&entry->Win32FindData);
-    }
+  entry->firsttime=TRUE;
+  entry->hSearch=FindFirstFileW(file_specification,&entry->Win32FindData);
   if (entry->hSearch == INVALID_HANDLE_VALUE)
     {
       if(wcsncat(file_specification,L"*.*",
