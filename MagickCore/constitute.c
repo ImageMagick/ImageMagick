@@ -792,12 +792,15 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     profile=GetImageProfile(next,"iptc");
     if (profile == (const StringInfo *) NULL)
       profile=GetImageProfile(next,"8bim");
-    (void) FormatMagickTime((time_t) GetBlobProperties(next)->st_mtime,
-      MagickPathExtent,timestamp);
-    (void) SetImageProperty(next,"date:modify",timestamp,exception);
-    (void) FormatMagickTime((time_t) GetBlobProperties(next)->st_ctime,
-      MagickPathExtent,timestamp);
-    (void) SetImageProperty(next,"date:create",timestamp,exception);
+    if (getenv("SOURCE_DATE_EPOCH") == (const char *) NULL)
+      {
+        (void) FormatMagickTime((time_t) GetBlobProperties(next)->st_mtime,
+          MagickPathExtent,timestamp);
+        (void) SetImageProperty(next,"date:modify",timestamp,exception);
+        (void) FormatMagickTime((time_t) GetBlobProperties(next)->st_ctime,
+          MagickPathExtent,timestamp);
+        (void) SetImageProperty(next,"date:create",timestamp,exception);
+      }
     option=GetImageOption(image_info,"delay");
     if (option != (const char *) NULL)
       {
