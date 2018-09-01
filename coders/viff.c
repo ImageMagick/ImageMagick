@@ -327,6 +327,13 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       (void) ReadBlobByte(image);
     if (EOFBlob(image) != MagickFalse)
       ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+    number_pixels=(MagickSizeType) viff_info.columns*viff_info.rows;
+    if (number_pixels > GetBlobSize(image))
+      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+    if (number_pixels != (size_t) number_pixels)
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    if (number_pixels == 0)
+      ThrowReaderException(CoderError,"ImageColumnOrRowSizeIsNotSupported");
     image->columns=viff_info.rows;
     image->rows=viff_info.columns;
     image->depth=viff_info.x_bits_per_pixel <= 8 ? 8UL :
@@ -340,11 +347,6 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     /*
       Verify that we can read this VIFF image.
     */
-    number_pixels=(MagickSizeType) viff_info.columns*viff_info.rows;
-    if (number_pixels != (size_t) number_pixels)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    if (number_pixels == 0)
-      ThrowReaderException(CoderError,"ImageColumnOrRowSizeIsNotSupported");
     if ((viff_info.number_data_bands < 1) || (viff_info.number_data_bands > 4))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if ((viff_info.data_storage_type != VFF_TYP_BIT) &&
