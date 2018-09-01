@@ -849,6 +849,8 @@ static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info)
   path_info[n].point.y=0.0;
   if (IsEventLogging() != MagickFalse)
     LogPathInfo(path_info);
+  path_info=(PathInfo *) ResizeQuantumMemory(path_info,(size_t) (n+1),
+    sizeof(*path_info));
   return(path_info);
 }
 
