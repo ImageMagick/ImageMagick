@@ -946,7 +946,7 @@ coders_scr_la_LIBADD       = $(MAGICKCORE_LIBS)
 coders_svg_la_SOURCES      = coders/svg.c
 coders_svg_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS) $(RSVG_CFLAGS) $(CAIRO_SVG_CFLAGS)
 coders_svg_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_svg_la_LIBADD       = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) $(AUTOTRACE_LIBS) $(RSVG_LIBS) $(XML_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
+coders_svg_la_LIBADD       = $(MAGICKCORE_LIBS) $(AUTOTRACE_LIBS) $(RSVG_LIBS) $(XML_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
 
 # TGA coder module
 coders_tga_la_SOURCES      = coders/tga.c
