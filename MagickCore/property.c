@@ -2868,6 +2868,13 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             (void) ConcatenateMagickString(value,"a",MagickPathExtent);
           break;
         }
+      if (LocaleCompare("colors",property) == 0)
+        {
+          image->colors=GetNumberColors(image,(FILE *) NULL,exception);
+          (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
+            image->colors);
+          break;
+        }
       if (LocaleCompare("colorspace",property) == 0)
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
