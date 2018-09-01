@@ -23,7 +23,6 @@ extern "C" {
 #endif
 
 #if defined(__BORLANDC__) && defined(_DLL)
-#  pragma message("BCBMagick lib DLL export interface")
 #  define _MAGICKDLL_
 #  define _MAGICKLIB_
 #  define MAGICKCORE_MODULES_SUPPORT
@@ -31,72 +30,52 @@ extern "C" {
 #endif
 
 #if defined(MAGICKWAND_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
-# define WandPrivate
-# if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
-#  define _MAGICKDLL_
-# endif
-# if defined(_MAGICKDLL_)
-#  if defined(_VISUALC_)
-#   pragma warning( disable: 4273 )  /* Disable the dll linkage warnings */
+#  define WandPrivate
+#  if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
+#    define _MAGICKDLL_
 #  endif
-#  if !defined(_MAGICKLIB_)
-#   if defined(__clang__) || defined(__GNUC__)
-#    define WandExport __attribute__ ((dllimport))
-#   else
-#    define WandExport __declspec(dllimport)
-#   endif
-#   if defined(_VISUALC_)
-#    pragma message( "MagickCore lib DLL import interface" )
-#   endif
+#  if defined(_MAGICKDLL_)
+#    if defined(_VISUALC_)
+#      pragma warning( disable: 4273 )  /* Disable the dll linkage warnings */
+#    endif
+#    if !defined(_MAGICKLIB_)
+#      if defined(__clang__) || defined(__GNUC__)
+#        define WandExport __attribute__ ((dllimport))
+#      else
+#        define WandExport __declspec(dllimport)
+#      endif
+#    else
+#      if defined(__clang__) || defined(__GNUC__)
+#        define WandExport __attribute__ ((dllexport))
+#      else
+#        define WandExport __declspec(dllexport)
+#      endif
+#    endif
 #  else
-#   if defined(__clang__) || defined(__GNUC__)
-#    define WandExport __attribute__ ((dllexport))
-#   else
-#    define WandExport __declspec(dllexport)
-#   endif
-#   if defined(_VISUALC_)
-#    pragma message( "MagickCore lib DLL export interface" )
-#   endif
+#    define WandExport
 #  endif
-# else
-#  define WandExport
 #  if defined(_VISUALC_)
-#   pragma message( "MagickCore lib static interface" )
+#    pragma warning(disable : 4018)
+#    pragma warning(disable : 4068)
+#    pragma warning(disable : 4244)
+#    pragma warning(disable : 4142)
+#    pragma warning(disable : 4800)
+#    pragma warning(disable : 4786)
+#    pragma warning(disable : 4996)
 #  endif
-# endif
-
-# if defined(_DLL) && !defined(_LIB)
-#  if defined(_VISUALC_)
-#   pragma message( "MagickCore module DLL export interface" )
-#  endif
-# else
-#  if defined(_VISUALC_)
-#   pragma message( "MagickCore module static interface" )
-#  endif
-
-# endif
-# if defined(_VISUALC_)
-#  pragma warning(disable : 4018)
-#  pragma warning(disable : 4068)
-#  pragma warning(disable : 4244)
-#  pragma warning(disable : 4142)
-#  pragma warning(disable : 4800)
-#  pragma warning(disable : 4786)
-#  pragma warning(disable : 4996)
-# endif
 #else
-# if defined(__clang__) || (__GNUC__ >= 4)
-#  define WandExport __attribute__ ((visibility ("default")))
-#  define WandPrivate  __attribute__ ((visibility ("hidden")))
-# else
-#   define WandExport
-#   define WandPrivate
-# endif
+#  if defined(__clang__) || (__GNUC__ >= 4)
+#    define WandExport __attribute__ ((visibility ("default")))
+#    define WandPrivate  __attribute__ ((visibility ("hidden")))
+#  else
+#    define WandExport
+#    define WandPrivate
+#  endif
 #endif
 
 #define MagickWandSignature  0xabacadabUL
 #if !defined(MagickPathExtent)
-# define MagickPathExtent  4096
+#  define MagickPathExtent  4096
 #endif
 
 #if defined(MAGICKCORE_HAVE___ATTRIBUTE__)
