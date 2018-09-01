@@ -4257,8 +4257,6 @@ static MagickBooleanType RenderMVGContent(Image *image,
       }
     }
     mvg_info.offset=i;
-    if (primitive_info == (PrimitiveInfo *) NULL)
-      break;
     if ((image->debug != MagickFalse) && (q > p))
       (void) LogMagickEvent(DrawEvent,GetMagickModule(),"  %.*s",(int) (q-p-1),
         p);
