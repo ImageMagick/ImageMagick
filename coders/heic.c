@@ -86,8 +86,6 @@ static MagickBooleanType
   WriteHEICImage(const ImageInfo *,Image *,ExceptionInfo *);
 #endif
 
-static Image *CompensateOrientation(Image *image, ExceptionInfo *exception);
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -122,6 +120,55 @@ static MagickBooleanType IsHeifSuccess(struct heif_error *error,Image *image,
     return(MagickTrue);
 
   ThrowBinaryException(CorruptImageError,error->message,image->filename);
+}
+
+/* An inverse of AutoOrientImage */
+static Image *CompensateOrientation(Image *image, ExceptionInfo *exception)
+{
+  const char
+    *value;
+
+  value=GetImageProperty(image,"exif:Orientation",exception);
+  if (value == NULL)
+  {
+    return image;
+  }
+
+  Image
+    *new_image = image;
+
+  switch((OrientationType) StringToLong(value))
+  {
+    case UndefinedOrientation:
+    case TopLeftOrientation:
+    default:
+      return image;
+
+    case TopRightOrientation:
+      new_image = FlipImage(image,exception);
+      break;
+    case BottomRightOrientation:
+      new_image = RotateImage(image,180.0,exception);
+      break;
+    case BottomLeftOrientation:
+      new_image = FlopImage(image,exception);
+      break;
+    case LeftTopOrientation:
+      new_image = TransverseImage(image,exception);
+      break;
+    case RightTopOrientation:
+      new_image = RotateImage(image,270.0,exception);
+      break;
+    case RightBottomOrientation:
+      new_image = TransposeImage(image,exception);
+      break;
+    case LeftBottomOrientation:
+      new_image = RotateImage(image,90.0,exception);
+      break;
+    }
+
+    DestroyImageList(image);
+    return new_image;
 }
 
 static Image *ReadHEICImage(const ImageInfo *image_info,
@@ -310,6 +357,9 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
     There is a discrepancy between EXIF data and the actual orientation of
     image pixels. ReadImage processes "exif:Orientation" expecting pixels to be
     oriented accordingly. However, in HEIF the pixels are NOT rotated.
+
+    There are two solutions to this problem: either reset the EXIF Orientation tag
+    so it matches the orientation of pixels, or rotate the pixels to match EXIF data.
    */
   option=GetImageOption(image_info,"heic:preserve-orientation");
   if (IsStringTrue(option) == MagickTrue)
@@ -318,44 +368,6 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
     SetImageProperty(image, "exif:Orientation", "1", exception);
 
   return(GetFirstImageInList(image));
-}
-
-/* An inverse of AutoOrientImage */
-static Image *CompensateOrientation(Image *image, ExceptionInfo *exception)
-{
-  const char
-    *value;
-
-  value=GetImageProperty(image,"exif:Orientation",exception);
-  if (value == NULL)
-  {
-    return image;
-  }
-
-  switch((OrientationType) StringToLong(value))
-  {
-    case UndefinedOrientation:
-    case TopLeftOrientation:
-      default:
-        return image;
-
-    case TopRightOrientation:
-      return FlipImage(image,exception);
-
-    case BottomRightOrientation:
-        return RotateImage(image,180.0,exception);
-
-    case BottomLeftOrientation:
-      return FlopImage(image,exception);
-    case LeftTopOrientation:
-      return TransverseImage(image,exception);
-    case RightTopOrientation:
-      return RotateImage(image,270.0,exception);
-    case RightBottomOrientation:
-      return TransposeImage(image,exception);
-    case LeftBottomOrientation:
-      return RotateImage(image,90.0,exception);
-    }
 }
 #endif
 
