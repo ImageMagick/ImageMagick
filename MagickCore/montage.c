@@ -411,10 +411,10 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   assert(exception->signature == MagickCoreSignature);
   number_images=GetImageListLength(images);
   master_list=ImageListToArray(images,exception);
-  image_list=master_list;
-  image=image_list[0];
   if (master_list == (Image **) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+  image_list=master_list;
+  image=image_list[0];
   thumbnail=NewImageList();
   for (i=0; i < (ssize_t) number_images; i++)
   {
