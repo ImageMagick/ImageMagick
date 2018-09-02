@@ -20,9 +20,8 @@ script: |
   set -x
   export OMP_NUM_THREADS=1
   export CFLAGS="-Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable"
-  ./configure --disable-openmp --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
-  make
-  make install DESTDIR=$(readlink -f appdir)
+  ./configure --disable-openmp --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr  > build.log 2>&1 || (cat build.log && exit 1)
+  make all install DESTDIR=$(readlink -f appdir) > build.log 2>&1 || (cat build.log && exit 1)
   # Build the fuzzers
   ./.travis/build_fuzzers.sh
   # Generate AppImage
