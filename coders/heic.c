@@ -59,6 +59,7 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/montage.h"
 #include "MagickCore/transform.h"
+#include "MagickCore/distort.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/memory-private.h"
 #include "MagickCore/option.h"
@@ -121,6 +122,55 @@ static MagickBooleanType IsHeifSuccess(struct heif_error *error,Image *image,
   ThrowBinaryException(CorruptImageError,error->message,image->filename);
 }
 
+/* An inverse of AutoOrientImage */
+static Image *CompensateOrientation(Image *image, ExceptionInfo *exception)
+{
+  const char
+    *value;
+
+  value=GetImageProperty(image,"exif:Orientation",exception);
+  if (value == NULL)
+  {
+    return image;
+  }
+
+  Image
+    *new_image = image;
+
+  switch((OrientationType) StringToLong(value))
+  {
+    case UndefinedOrientation:
+    case TopLeftOrientation:
+    default:
+      return image;
+
+    case TopRightOrientation:
+      new_image = FlipImage(image,exception);
+      break;
+    case BottomRightOrientation:
+      new_image = RotateImage(image,180.0,exception);
+      break;
+    case BottomLeftOrientation:
+      new_image = FlopImage(image,exception);
+      break;
+    case LeftTopOrientation:
+      new_image = TransverseImage(image,exception);
+      break;
+    case RightTopOrientation:
+      new_image = RotateImage(image,270.0,exception);
+      break;
+    case RightBottomOrientation:
+      new_image = TransposeImage(image,exception);
+      break;
+    case LeftBottomOrientation:
+      new_image = RotateImage(image,90.0,exception);
+      break;
+    }
+
+    DestroyImageList(image);
+    return new_image;
+}
+
 static Image *ReadHEICImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -164,6 +214,9 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
 
   void
     *file_data;
+
+  const char
+    *option;
 
   /*
     Open image file.
@@ -306,6 +359,21 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   heif_image_release(heif_image);
   heif_image_handle_release(image_handle);
   heif_context_free(heif_context);
+
+  /*
+    There is a discrepancy between EXIF data and the actual orientation of
+    image pixels. ReadImage processes "exif:Orientation" expecting pixels to be
+    oriented accordingly. However, in HEIF the pixels are NOT rotated.
+
+    There are two solutions to this problem: either reset the EXIF Orientation tag
+    so it matches the orientation of pixels, or rotate the pixels to match EXIF data.
+   */
+  option=GetImageOption(image_info,"heic:preserve-orientation");
+  if (IsStringTrue(option) == MagickTrue)
+    image = CompensateOrientation(image, exception);
+  else
+    SetImageProperty(image, "exif:Orientation", "1", exception);
+
   return(GetFirstImageInList(image));
 }
 #endif
