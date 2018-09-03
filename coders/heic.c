@@ -128,47 +128,47 @@ static Image *CompensateOrientation(Image *image, ExceptionInfo *exception)
   const char
     *value;
 
+  Image
+    *new_image;
+
   value=GetImageProperty(image,"exif:Orientation",exception);
   if (value == NULL)
   {
     return image;
   }
 
-  Image
-    *new_image = image;
-
   switch((OrientationType) StringToLong(value))
   {
     case UndefinedOrientation:
     case TopLeftOrientation:
     default:
-      return image;
+      return(image);
 
     case TopRightOrientation:
-      new_image = FlipImage(image,exception);
+      new_image=FlipImage(image,exception);
       break;
     case BottomRightOrientation:
-      new_image = RotateImage(image,180.0,exception);
+      new_image=RotateImage(image,180.0,exception);
       break;
     case BottomLeftOrientation:
-      new_image = FlopImage(image,exception);
+      new_image=FlopImage(image,exception);
       break;
     case LeftTopOrientation:
-      new_image = TransverseImage(image,exception);
+      new_image=TransverseImage(image,exception);
       break;
     case RightTopOrientation:
-      new_image = RotateImage(image,270.0,exception);
+      new_image=RotateImage(image,270.0,exception);
       break;
     case RightBottomOrientation:
-      new_image = TransposeImage(image,exception);
+      new_image=TransposeImage(image,exception);
       break;
     case LeftBottomOrientation:
-      new_image = RotateImage(image,90.0,exception);
+      new_image=RotateImage(image,90.0,exception);
       break;
-    }
+  }
 
-    DestroyImageList(image);
-    return new_image;
+  image=DestroyImageList(image);
+  return(new_image);
 }
 
 static Image *ReadHEICImage(const ImageInfo *image_info,
@@ -365,14 +365,15 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
     image pixels. ReadImage processes "exif:Orientation" expecting pixels to be
     oriented accordingly. However, in HEIF the pixels are NOT rotated.
 
-    There are two solutions to this problem: either reset the EXIF Orientation tag
-    so it matches the orientation of pixels, or rotate the pixels to match EXIF data.
+    There are two solutions to this problem: either reset the EXIF Orientation
+    tag so it matches the orientation of pixels, or rotate the pixels to match
+    EXIF data.
    */
   option=GetImageOption(image_info,"heic:preserve-orientation");
   if (IsStringTrue(option) == MagickTrue)
-    image = CompensateOrientation(image, exception);
+    image=CompensateOrientation(image,exception);
   else
-    SetImageProperty(image, "exif:Orientation", "1", exception);
+    SetImageProperty(image,"exif:Orientation","1",exception);
 
   return(GetFirstImageInList(image));
 }
