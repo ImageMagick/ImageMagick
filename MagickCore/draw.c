@@ -2244,7 +2244,7 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
   if (~extent >= pad)
     {
       extent+=4096;
-      if (~extent >= 4096)
+      if ((~extent >= 4096) && (extent <= GetMaxMemoryRequest()))
         {
           if (extent <= *mvg_info->extent)
             return(MagickTrue);
@@ -2263,6 +2263,9 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
   */
   (void) ThrowMagickException(mvg_info->exception,GetMagickModule(),
     ResourceLimitError,"MemoryAllocationFailed","`%s'","");
+  if (*mvg_info->primitive_info != (PrimitiveInfo *) NULL)
+    *mvg_info->primitive_info=(PrimitiveInfo *) 
+      RelinquishMagickMemory(*mvg_info->primitive_info);
   *mvg_info->primitive_info=AcquireCriticalMemory(4*
     sizeof(**mvg_info->primitive_info));
   (void) memset(*mvg_info->primitive_info,0,sizeof(**mvg_info->primitive_info));
