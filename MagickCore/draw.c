@@ -2235,22 +2235,23 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
   const size_t pad)
 {
   size_t
-    extent;
+    extent,
+    quantum;
 
   /*
     Check if there is enough storage for drawing pimitives.
   */
   extent=(size_t) mvg_info->offset+pad;
+  quantum=sizeof(**mvg_info->primitive_info);
   if (~extent >= pad)
     {
       extent+=4096;
-      if ((~extent >= 4096) && (extent <= GetMaxMemoryRequest()))
+      if ((~extent >= 4096) && ((extent*quantum) < GetMaxMemoryRequest()))
         {
           if (extent <= *mvg_info->extent)
             return(MagickTrue);
           *mvg_info->primitive_info=ResizeQuantumMemory(
-            *mvg_info->primitive_info,extent,
-            sizeof(**mvg_info->primitive_info));
+            *mvg_info->primitive_info,extent,quantum);
           if (*mvg_info->primitive_info != (PrimitiveInfo *) NULL)
             {
               *mvg_info->extent=extent;
@@ -2266,9 +2267,8 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
   if (*mvg_info->primitive_info != (PrimitiveInfo *) NULL)
     *mvg_info->primitive_info=(PrimitiveInfo *) 
       RelinquishMagickMemory(*mvg_info->primitive_info);
-  *mvg_info->primitive_info=AcquireCriticalMemory(4*
-    sizeof(**mvg_info->primitive_info));
-  (void) memset(*mvg_info->primitive_info,0,sizeof(**mvg_info->primitive_info));
+  *mvg_info->primitive_info=AcquireCriticalMemory(4*quantum);
+  (void) memset(*mvg_info->primitive_info,0,4*quantum);
   *mvg_info->extent=1;
   return(MagickFalse);
 }
