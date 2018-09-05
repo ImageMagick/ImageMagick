@@ -2709,7 +2709,7 @@ static inline MagickModulo VirtualPixelModulo(const ssize_t offset,
   if (offset < 0L)
     modulo.quotient--;
   modulo.remainder=(ssize_t) (offset-(MagickOffsetType) modulo.quotient*
-    (ssize_t) extent);
+    (MagickOffsetType) extent);
   return(modulo);
 }
 
