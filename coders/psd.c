@@ -1639,7 +1639,7 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
   if (size != 0)
     {
       layer_info=(LayerInfo *) NULL;
-      number_layers=(ssize_t) ReadBlobShort(image);
+      number_layers=(ssize_t) ReadBlobSignedShort(image);
 
       if (number_layers < 0)
         {
