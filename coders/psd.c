@@ -769,7 +769,7 @@ static StringInfo *ParseImageResourceBlocks(Image *image,
     name_length;
 
   unsigned int
-    value;
+    count;
 
   unsigned short
     id,
@@ -792,8 +792,8 @@ static StringInfo *ParseImageResourceBlocks(Image *image,
     p+=name_length;
     if (p > (blocks+length-4))
       break;
-    p=PushLongPixel(MSBEndian,p,&value);
-    offset=(ssize_t) value;
+    p=PushLongPixel(MSBEndian,p,&count);
+    offset=(ssize_t) count;
     if (((p+offset) < blocks) || ((p+offset) > (blocks+length)))
       break;
     switch (id)
@@ -1042,9 +1042,7 @@ static MagickBooleanType ReadPSDChannelPixels(Image *image,
     else
       {
         ssize_t
-          bit;
-
-        ssize_t
+          bit,
           number_bits;
 
         number_bits=(ssize_t) image->columns-x;
