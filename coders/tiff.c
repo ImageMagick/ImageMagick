@@ -2646,7 +2646,6 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
   (void) SetImageType(image,BilevelType,exception);
   write_info->compression=Group4Compression;
   write_info->type=BilevelType;
-  (void) SetImageOption(write_info,"quantum:polarity","min-is-white");
   status=WriteTIFFImage(write_info,huffman_image,exception);
   (void) fflush(file);
   write_info=DestroyImageInfo(write_info);
@@ -3540,11 +3539,17 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       case FaxCompression:
       {
         compress_tag=COMPRESSION_CCITTFAX3;
+        option=GetImageOption(image_info,"quantum:polarity");
+        if (option == (const char *) NULL)
+          SetQuantumMinIsWhite(quantum_info,MagickTrue);
         break;
       }
       case Group4Compression:
       {
         compress_tag=COMPRESSION_CCITTFAX4;
+        option=GetImageOption(image_info,"quantum:polarity");
+        if (option == (const char *) NULL)
+          SetQuantumMinIsWhite(quantum_info,MagickTrue);
         break;
       }
 #if defined(COMPRESSION_JBIG)
@@ -3696,19 +3701,16 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           }
       }
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&endian);
-    if ((compress_tag == COMPRESSION_CCITTFAX3) &&
-        (photometric != PHOTOMETRIC_MINISWHITE))
+    if ((compress_tag == COMPRESSION_CCITTFAX3) ||
+        (compress_tag == COMPRESSION_CCITTFAX4))
       {
-        compress_tag=COMPRESSION_NONE;
-        endian=FILLORDER_MSB2LSB;
+         if ((photometric != PHOTOMETRIC_MINISWHITE) &&
+             (photometric != PHOTOMETRIC_MINISBLACK))
+          {
+            compress_tag=COMPRESSION_NONE;
+            endian=FILLORDER_MSB2LSB;
+          }
       }
-    else
-      if ((compress_tag == COMPRESSION_CCITTFAX4) &&
-         (photometric != PHOTOMETRIC_MINISWHITE))
-       {
-         compress_tag=COMPRESSION_NONE;
-         endian=FILLORDER_MSB2LSB;
-       }
     option=GetImageOption(image_info,"tiff:fill-order");
     if (option != (const char *) NULL)
       {
