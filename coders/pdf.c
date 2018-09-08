@@ -269,14 +269,14 @@ static MagickBooleanType InvokePDFDelegate(const MagickBooleanType verbose,
       SetArgsStart(command,args_start);
       if (status == -101) /* quit */
         (void) FormatLocaleString(message,MagickPathExtent,
-          "[ghostscript library %.2f]%s: %s",(double)revision.revision/100.0,
+          "[ghostscript library %.2f]%s: %s",(double) revision.revision/100.0,
           args_start,errors);
       else
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
             DelegateError,"PDFDelegateFailed",
-            "`[ghostscript library %.2f]%s': %s",
-            (double)revision.revision/100.0,args_start,errors);
+            "`[ghostscript library %.2f]%s': %s",(double) revision.revision/
+            100.0,args_start,errors);
           if (errors != (char *) NULL)
             errors=DestroyString(errors);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
