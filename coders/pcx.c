@@ -335,6 +335,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pcx_info.bottom=ReadBlobLSBShort(image);
     pcx_info.horizontal_resolution=ReadBlobLSBShort(image);
     pcx_info.vertical_resolution=ReadBlobLSBShort(image);
+    if (EOFBlob(image) != MagickFalse)
+      ThrowPCXException(CorruptImageError,"UnexpectedEndOfFile");
     /*
       Read PCX raster colormap.
     */
@@ -354,6 +356,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
+    if ((MagickOffsetType) (image->columns*image->rows/255) > GetBlobSize(image))
+      ThrowPCXException(CorruptImageError,"InsufficientImageDataInFile");
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
       ThrowPCXException(exception->severity,exception->reason);
