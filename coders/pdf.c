@@ -256,7 +256,7 @@ static MagickBooleanType InvokePDFDelegate(const MagickBooleanType verbose,
   (void) (ghost_info->set_stdio)(interpreter,(int (MagickDLLCall *)(void *,
     char *,int)) NULL,PDFDelegateMessage,PDFDelegateMessage);
   status=(ghost_info->init_with_args)(interpreter,argc-1,argv+1);
-  if (status == 0)
+  if ((status == 0) || (status == -100))
     status=(ghost_info->run_string)(interpreter,"systemdict /start get exec\n",
       0,&code);
   (ghost_info->exit)(interpreter);
