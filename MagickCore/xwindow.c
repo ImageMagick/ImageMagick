@@ -3374,9 +3374,6 @@ MagickExport XrmDatabase XGetResourceDatabase(Display *display,
   /*
     Combine application database.
   */
-  /*
-    Get basename of client.
-  */
   p=client_name+(strlen(client_name)-1);
   while ((p > client_name) && (*p != '/'))
     p--;
