@@ -1391,6 +1391,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(MagickFalse);
     }
+  (void) memset(quantum_map,0,length*sizeof(*quantum_map));
   for (i=0; i < (ssize_t) length; i++)
   {
     switch (stream_info->map[i])
