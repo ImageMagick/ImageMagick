@@ -142,7 +142,7 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
     register ssize_t
       x;
 
-    RGBTRIPLE
+    RGBQUAD
       *p;
 
     ssize_t
@@ -184,7 +184,7 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
       bmi.bmiHeader.biWidth=(LONG) screen->columns;
       bmi.bmiHeader.biHeight=(-1)*(LONG) screen->rows;
       bmi.bmiHeader.biPlanes=1;
-      bmi.bmiHeader.biBitCount=24;
+      bmi.bmiHeader.biBitCount=32;
       bmi.bmiHeader.biCompression=BI_RGB;
       bitmap=CreateDIBSection(hDC,&bmi,DIB_RGB_COLORS,(void **) &p,NULL,0);
       if (bitmap == (HBITMAP) NULL)
@@ -212,9 +212,9 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
           break;
         for (x=0; x < (ssize_t) screen->columns; x++)
         {
-          SetPixelRed(image,ScaleCharToQuantum(p->rgbtRed),q);
-          SetPixelGreen(image,ScaleCharToQuantum(p->rgbtGreen),q);
-          SetPixelBlue(image,ScaleCharToQuantum(p->rgbtBlue),q);
+          SetPixelRed(image,ScaleCharToQuantum(p->rgbRed),q);
+          SetPixelGreen(image,ScaleCharToQuantum(p->rgbGreen),q);
+          SetPixelBlue(image,ScaleCharToQuantum(p->rgbBlue),q);
           SetPixelAlpha(image,OpaqueAlpha,q);
           p++;
           q+=GetPixelChannels(image);
