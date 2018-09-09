@@ -157,6 +157,7 @@ static Image *ReadDOTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read SVG graph.
   */
+  (void) CopyMagickString(read_info->magick,"SVG",MaxTextExtent);
   image=ReadImage(read_info,exception);
   (void) RelinquishUniqueFileResource(read_info->filename);
   read_info=DestroyImageInfo(read_info);
