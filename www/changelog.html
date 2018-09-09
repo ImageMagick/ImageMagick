@@ -6,11 +6,11 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"  />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"  />
+  <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no"  />
   <title>Changelog @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves." />
-  <meta name="application-url" content="https://www.imagemagick.org" />
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations." />
+  <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="changelog, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
   <meta name="rating" content="GENERAL" />
@@ -23,7 +23,7 @@
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="../www/changelog.html" rel="canonical" />
+  <link href="changelog.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
   <link href="assets/magick.css" rel="stylesheet" />
@@ -31,7 +31,7 @@
 <body>
   <header>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -42,32 +42,32 @@
         <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="download.html">Download</a>
+        <a class="nav-link" href="../www/download.html">Download</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="command-line-tools.html">Tools</a>
+        <a class="nav-link" href="../www/command-line-tools.html">Tools</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="command-line-processing.html">Command-line</a>
+        <a class="nav-link" href="../www/command-line-processing.html">Command-line</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="resources.html">Resources</a>
+        <a class="nav-link" href="../www/resources.html">Resources</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="develop.html">Develop</a>
+        <a class="nav-link" href="../www/develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="https://www.imagemagick.org/script/search.php">
+    <form class="form-inline my-2 my-lg-0" action="https://imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
     </form>
     </div>
   </nav>
   <div class="container">
-   <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+   <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -80,7 +80,39 @@
   </header>
   <main class="container">
     <div class="magick-template">
-<div class="magick-header"><dl><dt>2018-07-04  7.0.8-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<div class="magick-header"><dl><dt>2018-08-28  7.0.8-11 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.8-11, GIT revision 14729:798fbdb5b:20180828</li>
+<dt>2018-08-15  7.0.8-11 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fixed numerous use of uninitialized values, integer overflow, memory    exceeded, and timeouts (credit to OSS Fuzz).</li>
+  <li> Add support for "module" security policy.</li>
+<dt>2018-08-13  7.0.8-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.8-10, GIT revision 14646:48fba3256:20180813</li>
+<dt>2018-08-12  7.0.8-10 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
+  <li> Added dcraw coder (dcraw:img.cr2) that can be used to force the use of the    dcraw delegate when libraw is the default raw delegate.</li>
+  <li> Restored thread support for the HEIC coder.</li>
+<dt>2018-08-08  7.0.8-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> ThumbnailImage function no longer reveals sensitive information (reference    https://github.com/ImageMagick/ImageMagick/issues/1243).</li>
+<dt>2018-08-06  7.0.8-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.8-9, GIT revision 14618:a3663c3dc:20180805.</li>
+<dt>2018-07-24  7.0.8-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> XBM coder leaves the hex image data uninitialized if hex value of the    pixel is negative.</li>
+  <li> More improvements to SVG text handling.</li>
+  <li> New -range-threshold option that combines hard and soft thresholding.</li>
+<dt>2018-07-23  7.0.8-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.8-8, GIT revision 14583:300fdbcfd:20180723.</li>
+<dt>2018-07-20  7.0.8-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Non-HDRI ScaleLongToQuantum() private method no longer adds a half interval.</li>
+  <li> Fixed memset() negative-size-param (reference    https://github.com/ImageMagick/ImageMagick/issues/1217).</li>
+<dt>2018-07-16  7.0.8-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.8-7, GIT revision 14561:f85c23180:20180716.</li>
+<dt>2018-07-15  7.0.8-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fixed numerous use of uninitialized values, integer overflow, memory    exceeded, and timeouts (credit to OSS Fuzz).</li>
+<dt>2018-07-08  7.0.8-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.8-6, GIT revision 14541:db940ccd2:20180708.</li>
+<dt>2018-07-06  7.0.8-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Improve SVG support for tspan element.</li>
+  <li> Add support for -fx image.extent.</li>
+<dt>2018-07-04  7.0.8-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.8-5, GIT revision 14514:bba545bbb:20180704.</li>
 <dt>2018-07-04  7.0.8-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Fixed a few potential memory leaks    https://github.com/ImageMagick/ImageMagick/issues).</li>
@@ -102,8 +134,8 @@
   <li> Release ImageMagick version 7.0.8-1, GIT revision 14468:94cb08785:20180616.</li>
 <dt>2018-06-16  7.0.8-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Fixed numerous use of uninitialized values, integer overflow, memory    exceeded, and timeouts (credit to OSS Fuzz).</li>
-  <li> Fixed an issue with stroke and label: (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=34142).</li>
-  <li> PNG: set storage class to DirectClass if alpha enabled (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=34121).</li>
+  <li> Fixed an issue with stroke and label: (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=34142).</li>
+  <li> PNG: set storage class to DirectClass if alpha enabled (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=34121).</li>
 <dt>2018-06-12  7.0.8-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.8-0, GIT revision 14459:d7c892d5a:20180612.</li>
 <dt>2018-06-11  7.0.8-0  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -204,7 +236,7 @@
 <dt>2017-12-26  7.0.7-18 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.7-18, GIT revision 22096:ad4bdeb40:20171228.</li>
 <dt>2017-12-28  7.0.7-18 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Fix error reading from pipe under Windows (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=33288).</li>
+  <li> Fix error reading from pipe under Windows (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=33288).</li>
 <dt>2017-12-26  7.0.7-17 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.7-17, GIT revision 22093:9caea323b:20171227.</li>
 <dt>2017-12-26  7.0.7-17 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -218,7 +250,7 @@
 <dt>2017-12-16  7.0.7-15 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.7-15, GIT revision 21924:30cb31746:20171216.</li>
 <dt>2017-12-08  7.0.7-15 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Overall standard deviation is the average of each pixel channel (reference    https://www.imagemagick.org/discourse-server//viewforum.html?f=3).</li>
+  <li> Overall standard deviation is the average of each pixel channel (reference    https://imagemagick.org/discourse-server//viewforum.html?f=3).</li>
   <li> Update to the latest ImageMagick documentation.</li>
 <dt>2017-12-05  7.0.7-14 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.7-14, GIT revision 21855:dc73b2aba:20171205.</li>
@@ -232,7 +264,7 @@
 <dt>2017-11-29  7.0.7-12 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.7-12, GIT revision 21814:5ef2c5a67:20171129.</li>
 <dt>2017-11-12  7.0.7-12 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> The -tint option no longer munges the alpha channel (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=1&amp;t=33070).</li>
+  <li> The -tint option no longer munges the alpha channel (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=1&amp;t=33070).</li>
   <li> Don't delete in-memory blob when reading an image (reference    https://github.com/ImageMagick/ImageMagick/issues/886).</li>
   <li> Support HDRI color profile management.</li>
 <dt>2017-11-11  7.0.7-11 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -250,7 +282,7 @@
 <dt>2017-10-15  7.0.7-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.7-8, GIT revision 21507:63ffc9878:20171015.</li>
 <dt>2017-10-08  7.0.7-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Return expected results for a percent 0 -chop option argument (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=32806).</li>
+  <li> Return expected results for a percent 0 -chop option argument (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=32806).</li>
   <li> Tweaks to OpenMP support within ImageMagick.</li>
 <dt>2017-10-07  7.0.7-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.7-7, GIT revision 21432:29003eeed:20171007.</li>
@@ -266,7 +298,7 @@
   <li> Fixed numerous memory leaks (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
   <li> Support URW-base35 fonts.</li>
 <dt>2017-09-26  7.0.7-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
-  <li> Removed "ping_preserve_iCCP=MagickTrue;" statement that was inadvertently    added to coders/png.c (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=32771).</li>
+  <li> Removed "ping_preserve_iCCP=MagickTrue;" statement that was inadvertently    added to coders/png.c (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=32771).</li>
 <dt>2017-09-23  7.0.7-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.7-4, GIT revision 21265:bdbc14590:20170923.</li>
 <dt>2017-09-23  7.0.7-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -307,15 +339,15 @@
   <li> Release ImageMagick version 7.0.6-8, GIT revision 20838:e2eb79427:20170818.</li>
 <dt>2017-08-14  7.0.6-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Fixed numerous memory leaks (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
-  <li> Support CubicSpline resize filter.  Define the lobes with the    -define filter:lobes={2,3,4} (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=2&amp;t=32506).</li>
+  <li> Support CubicSpline resize filter.  Define the lobes with the    -define filter:lobes={2,3,4} (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=2&amp;t=32506).</li>
   <li> Prevent assertion failure when creating PDF thumbnail (reference    https://github.com/ImageMagick/ImageMagick/issues/674).</li>
 <dt>2017-08-12  7.0.6-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.6-7, GIT revision 20799:0db4d8a16:20170812.</li>
 <dt>2017-08-12  7.0.6-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Improve EPS aliasing (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=32497).</li>
+  <li> Improve EPS aliasing (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=32497).</li>
 <dt>2017-08-11  7.0.6-7 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
   <li> Added a new option called 'dds:fast-mipmaps' (reference    https://github.com/ImageMagick/ImageMagick/issues/558)</li>
-  <li> The mipmaps of a dds image can now be created from a list of images with    -define dds:mipmaps=fromlist (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=2&amp;t=30236).</li>
+  <li> The mipmaps of a dds image can now be created from a list of images with    -define dds:mipmaps=fromlist (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=2&amp;t=30236).</li>
 <dt>2017-08-10  7.0.6-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.6-6, GIT revision 20775:061d0fa25:20170810.</li>
 <dt>2017-08-10  7.0.6-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -323,17 +355,17 @@
 <dt>2017-08-10  7.0.6-6 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> tests/validate.c: Show the reason for failures in the test logs,    if available.</li>
 <dt>2017-08-03  7.0.6-6 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
-  <li> Put UTC time in the PNG tIME chunk instead of local time (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=32447).</li>
+  <li> Put UTC time in the PNG tIME chunk instead of local time (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=32447).</li>
 <dt>2017-08-02  7.0.6-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.6-5, GIT revision 20715:26b28d50a:20170802.</li>
 <dt>2017-08-01  7.0.6-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Fixed numerous memory leaks (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
 <dt>2017-07-29  7.0.6-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
-  <li> Properly set image-&gt;colorspace in the PNG decoder (previously    it was setting image-&gt;gamma, but only setting image-&gt;colorspace    for grayscale and gray-alpha images.  Reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=32418).</li>
+  <li> Properly set image-&gt;colorspace in the PNG decoder (previously    it was setting image-&gt;gamma, but only setting image-&gt;colorspace    for grayscale and gray-alpha images.  Reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=32418).</li>
   <li> Fix improper use of NULL in the JNG decoder (CVE-2017-11750, Reference    https://github.com/ImageMagick/ImageMagick/issues/632).</li>
   <li> Added "-define png:ignore-crc" option to PNG decoder. When you know    your image has no CRC or ADLER32 errors, this can speed up decoding.    It is also helpful in debugging bug reports from "fuzzers".</li>
 <dt>2017-07-29  7.0.6-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Off by one error for gradient coder (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=32416),    https://github.com/ImageMagick/ImageMagick/issues/612).</li>
+  <li> Off by one error for gradient coder (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=32416),    https://github.com/ImageMagick/ImageMagick/issues/612).</li>
 <dt>2017-07-28  7.0.6-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.6-4, GIT revision 20657:4e81160d6:20170728.</li>
 <dt>2017-07-24  7.0.6-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -386,14 +418,14 @@
 <dt>2017-06-01  7.0.5-10 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Removed experimental PNG zxIF chunk support; the proposal is dead.</li>
 <dt>2017-06-01  7.0.5-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Fix choppy bitmap font rendering (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=32071).</li>
-  <li> The +opaque option is not longer a noop (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=32081).</li>
+  <li> Fix choppy bitmap font rendering (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=32071).</li>
+  <li> The +opaque option is not longer a noop (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=32081).</li>
   <li> Add support  for 'hex:' property.</li>
 <dt>2017-05-28  7.0.5-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.5-9, GIT revision 20113:8b67333:20170528.</li>
 <dt>2017-05-28  7.0.5-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Transient error validating the JPEG-2000 image format (reference    https://github.com/ImageMagick/ImageMagick/issues/501).</li>
-  <li> Properly allocate DCM image colormap (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=32063).</li>
+  <li> Properly allocate DCM image colormap (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=32063).</li>
 <dt>2017-05-26  7.0.5-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.5-8, GIT revision 20099:870a016:20170526.</li>
 <dt>2017-05-23  7.0.5-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -402,45 +434,45 @@
 <dt>2017-05-19  7.0.5-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.5-6, GIT revision 20078:7ce2d38:20170519.</li>
 <dt>2017-05-15  7.0.5-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Support various image operators for the compare utility (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=2&amp;t=31938).</li>
+  <li> Support various image operators for the compare utility (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=2&amp;t=31938).</li>
  2017-05-12  7.0.5-6 Cristy  &lt;quetzlzacatenango@image...&gt;</li>
   <li> Release ImageMagick version 7.0.5-6, GIT revision 20039:9371904:20170512.</li>
 <dt>2017-05-10  7.0.5-6 John Cupitt &lt;jcupitt@gmail.com&gt;</dt>
   <li> Revise DICOM window and rescale handling (reference     https://github.com/ImageMagick/ImageMagick/pull/484)</li>
 <dt>2017-05-06  7.0.5-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Restore the -alpha Shape option (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31879).</li>
+  <li> Restore the -alpha Shape option (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31879).</li>
   <li> Fix transient PDF bug (reference    https://github.com/ImageMagick/ImageMagick/issues/463).</li>
-  <li> The +opaque option now works on all channels (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31862).</li>
-  <li> Ensure backwards compatibility for the -combine option (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31855).</li>
+  <li> The +opaque option now works on all channels (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31862).</li>
+  <li> Ensure backwards compatibility for the -combine option (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31855).</li>
   <li> Check for EOF conditions for RLE image format.</li>
-  <li> Reset histogram page geometry (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31920).</li>
+  <li> Reset histogram page geometry (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31920).</li>
 <dt>2017-04-24  7.0.5-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.5-5, GIT revision 19915:12eec43:20170424.</li>
 <dt>2017-03-26  7.0.5-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Minimize buffer copies to improve OpenCL performance.</li>
-  <li> Morphology thinning is no longer a no-op (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31650).</li>
-  <li> Patch two PCD writer problems, corrupt output and dark pixels (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=3164).</li>
+  <li> Morphology thinning is no longer a no-op (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31650).</li>
+  <li> Patch two PCD writer problems, corrupt output and dark pixels (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=3164).</li>
   <li> Support ICC based PDF's (reference    https://github.com/ImageMagick/ImageMagick/issues/417).</li>
-  <li> Fix improper EPS clip path rendering (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31722).</li>
+  <li> Fix improper EPS clip path rendering (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31722).</li>
 <dt>2017-03-24  7.0.5-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.5-4, GIT revision 19754:350fff3:20170324.</li>
 <dt>2017-03-21  7.0.5-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Respect -loop option for animate -window (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31619).</li>
+  <li> Respect -loop option for animate -window (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31619).</li>
 <dt>2017-03-17  7.0.5-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.5-3, GIT revision 19741:070c3fb:20170317.</li>
 <dt>2017-03-14  7.0.5-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Support namespaces for the security policy.</li>
-  <li> Support the -authenticate option for PDF (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31530).</li>
+  <li> Support the -authenticate option for PDF (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31530).</li>
 <dt>2017-03-11  7.0.5-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.5-2, GIT revision 19696:da91a7c:20170311.</li>
 <dt>2017-03-06  7.0.5-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Respect throttle policy (reference    https://github.com/ImageMagick/ImageMagick/issues/393).</li>
-  <li> Return proper minima / maxima (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31377).</li>
+  <li> Return proper minima / maxima (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31377).</li>
 <dt>2017-03-03  7.0.5-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.5-1, GIT revision 19662:b7f455a:20170303.</li>
 <dt>2017-02-21  7.0.5-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Fix Spurious memory allocation message (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31438).</li>
-  <li> Identical images should return inf for PSNR (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31487).</li>
+  <li> Fix Spurious memory allocation message (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31438).</li>
+  <li> Identical images should return inf for PSNR (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31487).</li>
 <dt>2017-02-20  7.0.5-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.5-0, GIT revision 19616:505fea9:20170220.</li>
 <dt>2017-02-20  7.0.5-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -461,11 +493,11 @@
 <dt>2017-02-13  7.0.4-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.4-8, GIT revision 19574:7642384:20170213.</li>
 <dt>2017-02-09  7.0.4-8 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
-  <li> Fixed memory leak when creating nested exceptions in Magick++ (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=23&amp;p=142634)</li>
+  <li> Fixed memory leak when creating nested exceptions in Magick++ (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=23&amp;p=142634)</li>
 <dt>2017-02-09  7.0.4-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Unbreak build without JPEG support (reference    https://github.com/ImageMagick/ImageMagick/pull/373).</li>
   <li> Document behavior change in the security policy (thanks to yoya @    https://blog.awm.jp/2017/02/09/imagemagick-en/).</li>
-  <li> Return unbiased standard deviation for image statistics (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31377).</li>
+  <li> Return unbiased standard deviation for image statistics (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31377).</li>
   <li> Don't set update trait on alpha channel (private e-mail concerning    -levels-colors option).</li>
 <dt>2017-02-04  7.0.4-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.4-7, GIT revision 19513:5783e57:20170204.</li>
@@ -477,9 +509,9 @@
   <li> Release ImageMagick version 7.0.4-6, GIT revision 19442:4747de9:20170127.</li>
 <dt>2017-01-27  7.0.4-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Uninitialized data in MAT image format (reference    https://github.com/ImageMagick/ImageMagick/issues/362).</li>
-  <li> Properly auto-fit caption (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=30887).</li>
-  <li> Correction to composite Over operator (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31282).</li>
-  <li> Respect gravity option (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31284).</li>
+  <li> Properly auto-fit caption (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=30887).</li>
+  <li> Correction to composite Over operator (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31282).</li>
+  <li> Respect gravity option (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31284).</li>
 <dt>2017-01-22  7.0.4-6 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Renamed read_vpag_chunk_callback() function to png_user_chunk_callback()    in coders/png.c</li>
   <li> Implemented a private PNG caNv (canvas) chunk for remembering the    original dimensions and offsets when an image is cropped.  Previously    we used the oFFs and vpAg chunks for this purpose, but this had potential    conflicts with other applications that also use the oFFs chunk.</li>
@@ -489,18 +521,18 @@
 <dt>2017-01-21  7.0.4-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.4-5, GIT revision 19381:7ae396f:20170121.</li>
 <dt>2017-01-18  7.0.4-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Don't set background for transparent tiled images (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31210).</li>
+  <li> Don't set background for transparent tiled images (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31210).</li>
 <dt>2017-01-14  7.0.4-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.4-4, GIT revision 19361:a12953c:20170114.</li>
 <dt>2017-01-14  7.0.4-4 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
   <li> Added support for RGB555, RGB565, ARGB4444 and ARGB1555 to the    BMP encoder (reference    https://github.com/ImageMagick/ImageMagick/issues/344).</li>
 <dt>2017-01-10  7.0.4-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Recognize XML policy closing tags (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31182).</li>
+  <li> Recognize XML policy closing tags (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31182).</li>
   <li> Fix memory leak in the MPC format.</li>
 <dt>2017-01-07  7.0.4-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.4-3, GIT revision 19329:930ca78:20170107.</li>
 <dt>2017-01-04  7.0.4-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Increase memory allocation for TIFF pixels (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31161).</li>
+  <li> Increase memory allocation for TIFF pixels (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31161).</li>
 <dt>2017-01-03  7.0.4-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.4-2, GIT revision 19318:8766311:20170103.</li>
 <dt>2017-01-02  7.0.4-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -513,16 +545,16 @@
 <dt>2016-12-18  7.0.4-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.4-0, GIT revision 19221:d5e8abc:20161218.</li>
 <dt>2016-12-14  7.0.4-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Do not close path for linejoins of round (reference   https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31039).</li>
+  <li> Do not close path for linejoins of round (reference   https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31039).</li>
 <dt>2016-12-10  7.0.3-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.3-10, GIT revision 19191:338f088:20161210.</li>
 <dt>2016-12-07  7.0.3-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Set colorspace to sRGB if -append has non-homogenous colorspaces (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=29105).</li>
-  <li> Respect connected-components:area-threshold define (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31006). </li>
-  <li> Enable alpha channel if background color is non-opaque (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31016).</li>
-  <li> Return correct offset for negative index for -fx option (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31019).</li>
-  <li> Fixed improper scaling of certain FITS images (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31028).</li>
-  <li> Properly center text label (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31027).</li>
+  <li> Set colorspace to sRGB if -append has non-homogenous colorspaces (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=29105).</li>
+  <li> Respect connected-components:area-threshold define (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31006). </li>
+  <li> Enable alpha channel if background color is non-opaque (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31016).</li>
+  <li> Return correct offset for negative index for -fx option (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31019).</li>
+  <li> Fixed improper scaling of certain FITS images (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31028).</li>
+  <li> Properly center text label (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=31027).</li>
 <dt>2016-12-05  7.0.3-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.3-9, GIT revision 19139:6fed3f1:20161205.</li>
 <dt>2016-11-26  7.0.3-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -534,11 +566,11 @@
   <li> Release ImageMagick version 7.0.3-8, GIT revision 19067:5aceded:20161125.</li>
 <dt>2016-11-18  7.0.3-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Support the phash:colorspaces and phash:normalize options.</li>
-  <li> If a convenient line break is not found, force it for caption: (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=30887).</li>
-  <li> Set alpha member of draw structure to OpaqueAlpha (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=30894).</li>
-  <li> Off by 1 error when computing the standard deviation (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=2&amp;t=30866).</li>
+  <li> If a convenient line break is not found, force it for caption: (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=30887).</li>
+  <li> Set alpha member of draw structure to OpaqueAlpha (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=30894).</li>
+  <li> Off by 1 error when computing the standard deviation (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=2&amp;t=30866).</li>
   <li> Apply Debian patches, (reference    https://github.com/ImageMagick/ImageMagick/issues/304).</li>
-  <li> Permit EPT images with just a TIFF or EPS image, not both (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=30921).</li>
+  <li> Permit EPT images with just a TIFF or EPS image, not both (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=30921).</li>
   <li> The -clone option no longer leaks memory.</li>
   <li> Render to clip mask rather than image for clip-path MVG graphics primitive.</li>
 <dt>2016-11-15  7.0.3-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -549,9 +581,9 @@
   <li> Release ImageMagick version 7.0.3-6, GIT revision 19001:4cff747:20161108.</li>
 <dt>2016-11-01  7.0.3-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Off by one memory allocation (reference    https://github.com/ImageMagick/ImageMagick/issues/296).</li>
-  <li> The -extent option now matches the results of IMv6 (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=1&amp;t=30779).</li>
-  <li> Prevent fault in MSL interpreter (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=30797).</li>
-  <li> Mask composite produces proper results for the convert utility (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=29675).    </li>
+  <li> The -extent option now matches the results of IMv6 (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=1&amp;t=30779).</li>
+  <li> Prevent fault in MSL interpreter (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=30797).</li>
+  <li> Mask composite produces proper results for the convert utility (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=29675).    </li>
 <dt>2016-10-10  7.0.3-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.3-5, GIT revision 18975:a8174a2:20161030.</li>
 <dt>2016-10-16  7.0.3-5 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
@@ -569,13 +601,13 @@
 <dt>2016-10-02  7.0.3-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.3-2, GIT revision 18887:6b27c5b:20161002.</li>
 <dt>2016-09-27  7.0.3-2 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
-  <li> Fixed incorrect RLE decoding when reading an SGI image (reference     https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=30514)</li>
+  <li> Fixed incorrect RLE decoding when reading an SGI image (reference     https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=30514)</li>
 <dt>2016-09-20  7.0.3-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.3-1, GIT revision 18851:ad91ea8:20160920.</li>
 <dt>2016-09-16  7.0.3-1 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
   <li> Added layer RLE compression to the PSD encoder.</li>
   <li> Added define 'psd:preserve-opacity-mask' to preserve the opacity mask    in a PSD file.</li>
-  <li> Fixed issue where the display window was used instead of the data window    when reading EXR files (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;p=137849).</li>
+  <li> Fixed issue where the display window was used instead of the data window    when reading EXR files (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;p=137849).</li>
 <dt>2016-09-05  7.0.3-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.3-0, GIT revision 18786:10aa64c:20160905.</li>
 <dt>2016-08-29  7.0.3-0 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
@@ -588,27 +620,27 @@
 <dt>2016-08-15  7.0.2-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Prevent buffer overflow in BMP &amp; SGI coders (bug report from    pwchen&amp;rayzhong of tencent).</li>
   <li> Prevent buffer overflow and other problems in SIXEL, PDB, MAP, TIFF and    CALS coders (bug report from Donghai Zhu).</li>
-  <li> The -stream option now increments the pixel pointer properly (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=30327).</li>
+  <li> The -stream option now increments the pixel pointer properly (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=30327).</li>
 <dt>2016-08-14  7.0.2-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.2-9, GIT revision 18707:2c02f09:20160814.</li>
 <dt>2016-08-14  7.0.2-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Fix compile error in opencl.c (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=30289).</li>
+  <li> Fix compile error in opencl.c (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=30289).</li>
   <li> Eliminate compiler warning.</li>
 <dt>2016-08-14  7.0.2-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.2-8, GIT revision 18698:74b1d5d:20160814.</li>
 <dt>2016-08-07  7.0.2-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Prevent spurious removal of MPC cache files (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=30256).</li>
+  <li> Prevent spurious removal of MPC cache files (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=30256).</li>
   <li> Note alpha channel when combining 4 or more images (reference    https://github.com/ImageMagick/ImageMagick/issues/250).</li>
 <dt>2016-08-06  7.0.2-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.2-7, GIT revision 10980:ecc03a2:20160806.</li>
 <dt>2016-08-01  7.0.2-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Evaluate lazy pixel cache morphology to prevent buffer overflow (bug report    from Ibrahim M. El-Sayed).</li>
   <li> Prevent buffer overflow (bug report from Max Thrane).</li>
-  <li> Prevent memory use after free (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=30245).</li>
+  <li> Prevent memory use after free (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=30245).</li>
 <dt>2016-07-30  7.0.2-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.2-6, GIT revision 18651:df24175:20160729.</li>
 <dt>2016-07-29  7.0.2-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Support -region option (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=1&amp;t=29692).</li>
+  <li> Support -region option (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=1&amp;t=29692).</li>
 <dt>2016-07-21  7.0.2-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.2-5, GIT revision 18627:2b5ddbd:20160721.</li>
 <dt>2016-07-13  7.0.2-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -635,7 +667,7 @@
 <dt>2016-06-17  7.0.2-1 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
   <li> Added support for GROUP4 compression to the FAX coder.</li>
 <dt>2016-06-12  7.0.2-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Distort no longer converts grayscale image to sRGB (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=1&amp;t=29895).</li>
+  <li> Distort no longer converts grayscale image to sRGB (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=1&amp;t=29895).</li>
   <li> Don't return a zero bounding box for QueryMultilineFontMetrics() (reference    https://github.com/ImageMagick/ImageMagick/issues/222).</li>
 <dt>2016-06-12  7.0.2-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.2-0, GIT revision 10884:f0e15e8:20160612.</li>
@@ -653,7 +685,7 @@
 <dt>2016-06-02  7.0.1-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Fix small memory leak (patch provided by Андрей Черный).</li>
   <li> Coder path traversal is not authorized (bug report provided by    Masaaki Chida).</li>
-  <li> Turn off alpha channel for the compare difference image (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=29828).</li>
+  <li> Turn off alpha channel for the compare difference image (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=29828).</li>
 <dt>2016-05-31  7.0.1-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.1-8, GIT revision 18334:97775b5:20160531.</li>
 <dt>2016-05-31  7.0.1-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -662,9 +694,9 @@
 <dt>2016-05-30  7.0.1-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.1-7, GIT revision 18321:5511ef5:20160530.</li>
 <dt>2016-05-25  7.0.1-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Security improvements to TEXT coder broke it (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=29754).</li>
-  <li> Fix stroke offset problem for -annotate (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=29626).</li>
-  <li> Don't interpret -fx option arguments (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=29774);</li>
+  <li> Security improvements to TEXT coder broke it (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=29754).</li>
+  <li> Fix stroke offset problem for -annotate (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=29626).</li>
+  <li> Don't interpret -fx option arguments (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=29774);</li>
   <li> Add additional checks to DCM reader to prevent data-driven faults (bug    report from Hanno Böck).</li>
 <dt>2016-05-21  7.0.1-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.1-6, GIT revision 18241:d4f277c:20160521.</li>
@@ -673,7 +705,7 @@
 <dt>2016-05-18  7.0.1-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.1-5, GIT revision 10789:f7c2e89:20160518,</li>
 <dt>2016-05-18  7.0.1-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Process channels independently for -channel -equalize (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=29708).</li>
+  <li> Process channels independently for -channel -equalize (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=29708).</li>
   <li> Fix pixel cache on disk regression (reference    https://github.com/ImageMagick/ImageMagick/issues/202).</li>
 <dt>2016-05-15  7.0.1-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.1-4, GIT revision 10778:52dae14:20160516.</li>
@@ -699,7 +731,7 @@
   <li> New version 7.0.1-1, GIT revision 10723:9fc8a0c:20160503.</li>
 <dt>2016-05-03  7.0.1-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Sanitize input filename for http / https delegates (improved patch).</li>
-  <li> Fix for possible security vulnerabilities (reference    https://www.imagemagick.org/discourse-server//viewtopic.html?f=4&amp;t=29588).</li>
+  <li> Fix for possible security vulnerabilities (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=4&amp;t=29588).</li>
 <dt>2016-04-30  7.0.1-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> New version 7.0.1-0, GIT revision 10716:b527bce:20160430.</li>
 <dt>2016-01-30  7.0.0-0 	Fahad-Alsaidi &amp; ShamsaHamed</dt>
@@ -725,16 +757,16 @@
 </li></dl></div>    </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
-    <p><a href="security-policy.html">Security</a> •
-    <a href="architecture.html">Architecture</a> •
-    <a href="links.html">Related</a> •
-     <a href="sitemap.html">Sitemap</a>
+    <p><a href="../www/security-policy.html">Security</a> •
+    <a href="../www/architecture.html">Architecture</a> •
+    <a href="../www/links.html">Related</a> •
+     <a href="../www/sitemap.html">Sitemap</a>
        
     <a href="changelog.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
        
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="support.html">Donate</a> •
-    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a>
+    <a href="../www/support.html">Donate</a> •
+    <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a>
     <br/>
         <small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
@@ -744,4 +776,3 @@
   <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 8th July 2018 08:33 -->

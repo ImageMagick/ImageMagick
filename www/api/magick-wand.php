@@ -5,32 +5,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-    <title>ImageMagick: MagickWand, C API for ImageMagick: Wand Methods</title>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-  <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
-  <meta name="application-url" content="http://www.imagemagick.org"/>
-  <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="magickwc, api, for, imagemagick:, wmethods, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
-  <meta name="rating" content="GENERAL"/>
-  <meta name="robots" content="INDEX, FOLLOW"/>
-  <meta name="generator" content="ImageMagick Studio LLC"/>
-  <meta name="author" content="ImageMagick Studio LLC"/>
-  <meta name="revisit-after" content="2 DAYS"/>
-  <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2016 ImageMagick Studio LLC"/>
-  <meta name="distribution" content="Global"/>
-  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
-  <link rel="icon" href="../image/wand.png"/>
-  <link rel="shortcut icon" href="../image/wand.ico"/>
-  <link rel="stylesheet" href="../css/magick.php"/>
+  <meta charset="utf-8" >
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" >
+  <title>MagickWand, C API: Wand Methods @ ImageMagick</title>
+  <meta name="application-name" content="ImageMagick">
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations.">
+  <meta name="application-url" content="https://www.imagemagick.org">
+  <meta name="generator" content="PHP">
+  <meta name="keywords" content="magickwc, api:, wmethods, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
+  <meta name="rating" content="GENERAL">
+  <meta name="robots" content="INDEX, FOLLOW">
+  <meta name="generator" content="ImageMagick Studio LLC">
+  <meta name="author" content="ImageMagick Studio LLC">
+  <meta name="revisit-after" content="2 DAYS">
+  <meta name="resource-type" content="document">
+  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC">
+  <meta name="distribution" content="Global">
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
+  <link href="https://www.imagemagick.org/api/magick-wand.php" rel="canonical">
+  <link href="https://imagemagick.org/image/wand.png" rel="icon">
+  <link href="https://imagemagick.org/image/wand.ico" rel="shortcut icon">
+  <link href="https://imagemagick.org/assets/magick-css.php" rel="stylesheet">
 </head>
 <body>
-<div class="main">
-<div class="magick-masthead">
+  <header>
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="https://imagemagick.org/"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="https://imagemagick.org/image/wand.ico"/></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/index.php">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/script/download.php">Download</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/script/command-line-tools.php">Tools</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/script/command-line-processing.php">Command-line</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/script/resources.php">Resources</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/script/develop.php">Develop</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0" action="../script/search.php">
+      <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
+    </form>
+    </div>
+  </nav>
   <div class="container">
-    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+   <script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -38,23 +75,15 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.php">Home</a>
-      <a class="magick-nav-item " href="../script/binary-releases.php">Download</a>
-      <a class="magick-nav-item " href="../script/command-line-tools.php">Tools</a>
-      <a class="magick-nav-item " href="../script/command-line-options.php">Options</a>
-      <a class="magick-nav-item " href="../script/resources.php">Resources</a>
-      <a class="magick-nav-item " href="../script/api.php">Develop</a>
-      <a class="magick-nav-item " href="../script/search.php">Search</a>
-      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
-    </nav>
+
   </div>
-</div>
-<div class="container">
+  </header>
+  <main class="container">
+    <div class="magick-template">
 <div class="magick-header">
 <p class="text-center"><a href="magick-wand.php#ClearMagickWand">ClearMagickWand</a> &bull; <a href="magick-wand.php#CloneMagickWand">CloneMagickWand</a> &bull; <a href="magick-wand.php#DestroyMagickWand">DestroyMagickWand</a> &bull; <a href="magick-wand.php#IsMagickWand">IsMagickWand</a> &bull; <a href="magick-wand.php#MagickClearException">MagickClearException</a> &bull; <a href="magick-wand.php#MagickGetException">MagickGetException</a> &bull; <a href="magick-wand.php#MagickGetExceptionType">MagickGetExceptionType</a> &bull; <a href="magick-wand.php#MagickGetIteratorIndex">MagickGetIteratorIndex</a> &bull; <a href="magick-wand.php#MagickQueryConfigureOption">MagickQueryConfigureOption</a> &bull; <a href="magick-wand.php#MagickQueryConfigureOptions">MagickQueryConfigureOptions</a> &bull; <a href="magick-wand.php#MagickQueryFontMetrics">MagickQueryFontMetrics</a> &bull; <a href="magick-wand.php#MagickQueryMultilineFontMetrics">MagickQueryMultilineFontMetrics</a> &bull; <a href="magick-wand.php#MagickQueryFonts">MagickQueryFonts</a> &bull; <a href="magick-wand.php#MagickQueryFormats">MagickQueryFormats</a> &bull; <a href="magick-wand.php#MagickRelinquishMemory">MagickRelinquishMemory</a> &bull; <a href="magick-wand.php#MagickResetIterator">MagickResetIterator</a> &bull; <a href="magick-wand.php#MagickSetFirstIterator">MagickSetFirstIterator</a> &bull; <a href="magick-wand.php#MagickSetIteratorIndex">MagickSetIteratorIndex</a> &bull; <a href="magick-wand.php#MagickSetLastIterator">MagickSetLastIterator</a> &bull; <a href="magick-wand.php#MagickWandGenesis">MagickWandGenesis</a> &bull; <a href="magick-wand.php#MagickWandTerminus">MagickWandTerminus</a> &bull; <a href="magick-wand.php#NewMagickWand">NewMagickWand</a> &bull; <a href="magick-wand.php#NewMagickWandFromImage">NewMagickWandFromImage</a> &bull; <a href="magick-wand.php#IsMagickWandInstantiated">IsMagickWandInstantiated</a></p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="ClearMagickWand">ClearMagickWand</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="ClearMagickWand">ClearMagickWand</a></h2>
 
 <p>ClearMagickWand() clears resources associated with the wand, leaving the wand blank, and ready to be used for a new set of images.</p>
 
@@ -76,7 +105,7 @@ void ClearMagickWand(MagickWand *wand)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="CloneMagickWand">CloneMagickWand</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="CloneMagickWand">CloneMagickWand</a></h2>
 
 <p>CloneMagickWand() makes an exact copy of the specified wand.</p>
 
@@ -98,7 +127,7 @@ MagickWand *CloneMagickWand(const MagickWand *wand)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="DestroyMagickWand">DestroyMagickWand</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="DestroyMagickWand">DestroyMagickWand</a></h2>
 
 <p>DestroyMagickWand() deallocates memory associated with an MagickWand.</p>
 
@@ -120,7 +149,7 @@ MagickWand *DestroyMagickWand(MagickWand *wand)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="IsMagickWand">IsMagickWand</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="IsMagickWand">IsMagickWand</a></h2>
 
 <p>IsMagickWand() returns MagickTrue if the wand is verified as a magick wand.</p>
 
@@ -142,7 +171,7 @@ MagickBooleanType IsMagickWand(const MagickWand *wand)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickClearException">MagickClearException</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickClearException">MagickClearException</a></h2>
 
 <p>MagickClearException() clears any exceptions associated with the wand.</p>
 
@@ -164,7 +193,7 @@ MagickBooleanType MagickClearException(MagickWand *wand)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickGetException">MagickGetException</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickGetException">MagickGetException</a></h2>
 
 <p>MagickGetException() returns the severity, reason, and description of any error that occurs when using other methods in this API.</p>
 
@@ -190,7 +219,7 @@ char *MagickGetException(const MagickWand *wand,ExceptionType *severity)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickGetExceptionType">MagickGetExceptionType</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickGetExceptionType">MagickGetExceptionType</a></h2>
 
 <p>MagickGetExceptionType() returns the exception type associated with the wand.  If no exception has occurred, UndefinedExceptionType is returned.</p>
 
@@ -212,7 +241,7 @@ ExceptionType MagickGetExceptionType(const MagickWand *wand)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickGetIteratorIndex">MagickGetIteratorIndex</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickGetIteratorIndex">MagickGetIteratorIndex</a></h2>
 
 <p>MagickGetIteratorIndex() returns the position of the iterator in the image list.</p>
 
@@ -234,7 +263,7 @@ ssize_t MagickGetIteratorIndex(MagickWand *wand)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickQueryConfigureOption">MagickQueryConfigureOption</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickQueryConfigureOption">MagickQueryConfigureOption</a></h2>
 
 <p>MagickQueryConfigureOption() returns the value associated with the specified configure option.</p>
 
@@ -256,7 +285,7 @@ char *MagickQueryConfigureOption(const char *option)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickQueryConfigureOptions">MagickQueryConfigureOptions</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickQueryConfigureOptions">MagickQueryConfigureOptions</a></h2>
 
 <p>MagickQueryConfigureOptions() returns any configure options that match the specified pattern (e.g.  "*" for all).  Options include NAME, VERSION, LIB_VERSION, etc.</p>
 
@@ -285,7 +314,7 @@ char **MagickQueryConfigureOptions(const char *pattern,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickQueryFontMetrics">MagickQueryFontMetrics</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickQueryFontMetrics">MagickQueryFontMetrics</a></h2>
 
 <p>MagickQueryFontMetrics() returns a 13 element array representing the following font metrics:</p>
 
@@ -334,7 +363,7 @@ double *MagickQueryFontMetrics(MagickWand *wand,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickQueryMultilineFontMetrics">MagickQueryMultilineFontMetrics</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickQueryMultilineFontMetrics">MagickQueryMultilineFontMetrics</a></h2>
 
 <p>MagickQueryMultilineFontMetrics() returns a 13 element array representing the following font metrics:</p>
 
@@ -385,7 +414,7 @@ double *MagickQueryMultilineFontMetrics(MagickWand *wand,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickQueryFonts">MagickQueryFonts</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickQueryFonts">MagickQueryFonts</a></h2>
 
 <p>MagickQueryFonts() returns any font that match the specified pattern (e.g. "*" for all).</p>
 
@@ -413,7 +442,7 @@ char **MagickQueryFonts(const char *pattern,size_t *number_fonts)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickQueryFormats">MagickQueryFormats</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickQueryFormats">MagickQueryFormats</a></h2>
 
 <p>MagickQueryFormats() returns any image formats that match the specified pattern (e.g.  "*" for all).</p>
 
@@ -439,7 +468,7 @@ char **MagickQueryFormats(const char *pattern,size_t *number_formats)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickRelinquishMemory">MagickRelinquishMemory</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickRelinquishMemory">MagickRelinquishMemory</a></h2>
 
 <p>MagickRelinquishMemory() relinquishes memory resources returned by such methods as MagickIdentifyImage(), MagickGetException(), etc.</p>
 
@@ -461,7 +490,7 @@ void *MagickRelinquishMemory(void *resource)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickResetIterator">MagickResetIterator</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickResetIterator">MagickResetIterator</a></h2>
 
 <p>MagickResetIterator() resets the wand iterator.</p>
 
@@ -489,7 +518,7 @@ void MagickResetIterator(MagickWand *wand)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickSetFirstIterator">MagickSetFirstIterator</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickSetFirstIterator">MagickSetFirstIterator</a></h2>
 
 <p>MagickSetFirstIterator() sets the wand iterator to the first image.</p>
 
@@ -517,7 +546,7 @@ void MagickSetFirstIterator(MagickWand *wand)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickSetIteratorIndex">MagickSetIteratorIndex</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickSetIteratorIndex">MagickSetIteratorIndex</a></h2>
 
 <p>MagickSetIteratorIndex() set the iterator to the given position in the image list specified with the index parameter.  A zero index will set the first image as current, and so on.  Negative indexes can be used to specify an image relative to the end of the images in the wand, with -1 being the last image in the wand.</p>
 
@@ -550,7 +579,7 @@ MagickBooleanType MagickSetIteratorIndex(MagickWand *wand,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickSetLastIterator">MagickSetLastIterator</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickSetLastIterator">MagickSetLastIterator</a></h2>
 
 <p>MagickSetLastIterator() sets the wand iterator to the last image.</p>
 
@@ -576,7 +605,7 @@ void MagickSetLastIterator(MagickWand *wand)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickWandGenesis">MagickWandGenesis</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickWandGenesis">MagickWandGenesis</a></h2>
 
 <p>MagickWandGenesis() initializes the MagickWand environment.</p>
 
@@ -586,7 +615,7 @@ void MagickSetLastIterator(MagickWand *wand)
 void MagickWandGenesis(void)
 </pre>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickWandTerminus">MagickWandTerminus</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="MagickWandTerminus">MagickWandTerminus</a></h2>
 
 <p>MagickWandTerminus() terminates the MagickWand environment.</p>
 
@@ -596,7 +625,7 @@ void MagickWandGenesis(void)
 void MagickWandTerminus(void)
 </pre>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="NewMagickWand">NewMagickWand</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="NewMagickWand">NewMagickWand</a></h2>
 
 <p>NewMagickWand() returns a wand required for all other methods in the API. A fatal exception is thrown if there is not enough memory to allocate the wand.   Use DestroyMagickWand() to dispose of the wand when it is no longer needed.</p>
 
@@ -606,7 +635,7 @@ void MagickWandTerminus(void)
 MagickWand *NewMagickWand(void)
 </pre>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="NewMagickWandFromImage">NewMagickWandFromImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="NewMagickWandFromImage">NewMagickWandFromImage</a></h2>
 
 <p>NewMagickWandFromImage() returns a wand with an image.</p>
 
@@ -628,7 +657,7 @@ MagickWand *NewMagickWandFromImage(const Image *image)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="IsMagickWandInstantiated">IsMagickWandInstantiated</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/magick-wand_8c.html" id="IsMagickWandInstantiated">IsMagickWandInstantiated</a></h2>
 
 <p>IsMagickWandInstantiated() returns MagickTrue if the ImageMagick environment is currently instantiated--  that is, MagickWandGenesis() has been called but MagickWandTerminus() has not.</p>
 
@@ -639,21 +668,26 @@ MagickBooleanType IsMagickWandInstantiated(void)
 </pre>
 
 </div>
+    </div>
+  </main><!-- /.container -->
   <footer class="magick-footer">
-    <p><a href="../script/support.php">Donate</a> •
-     <a href="../script/sitemap.php">Sitemap</a> •
-    <a href="../script/links.php">Related</a> •
-    <a href="../script/architecture.php">Architecture</a>
-</p>
-    <p><a href="magick-wand.php#">Back to top</a> •
-    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="../script/contact.php">Contact Us</a></p>
-        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
+    <p><a href="https://imagemagick.org/script/security-policy.php">Security</a> •
+    <a href="https://imagemagick.org/script/architecture.php">Architecture</a> •
+    <a href="https://imagemagick.org/script/links.php">Related</a> •
+     <a href="https://imagemagick.org/script/sitemap.php">Sitemap</a>
+    &nbsp; &nbsp;
+    <a href="magick-wand.php#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="https://imagemagick.org/image/wand.ico"/></a>
+    &nbsp; &nbsp;
+    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="https://imagemagick.org/script/support.php">Donate</a> •
+    <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
+    <br/>
+        <small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
-</div><!-- /.container -->
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="http://nextgen.imagemagick.org/js/magick.php"></script>
-</div>
+  <!-- Javascript assets -->
+  <script src="https://imagemagick.org/assets/magick-js.php" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="https://imagemagick.org/assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
+<!-- Magick Cache 7th September 2018 05:43 -->

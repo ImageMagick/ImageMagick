@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"  />
   <title>MagickCore, C API: Read or List Image formats @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves." />
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations." />
   <meta name="application-url" content="https://www.imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="magickcore, c, api:, read, or, list, image, formats, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
@@ -22,19 +22,18 @@
   <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="magick.html" rel="canonical" />
+  <link href="https://www.imagemagick.org/api/magick.html" rel="canonical" />
   <link href="../../images/wand.png" rel="icon" />
   <link href="../../images/wand.ico" rel="shortcut icon" />
-  <link href="assets/magick.css" rel="stylesheet" />
+  <link href="../assets/magick.css" rel="stylesheet" />
 </head>
 <body>
   <header>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="../../"><img class="d-block" id="logo" name="ImageMagick" alt="ImageMagick" width="32" height="32" src="../../images/wand.ico"/></a>
-    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+    <a class="navbar-brand" href="../../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../../images/wand.ico"/></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
@@ -58,10 +57,10 @@
         <a class="nav-link" href="../../www/develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="../https://www.imagemagick.org/discourse-server//">Community</a>
+        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="../../https://www.imagemagick.org/script/search.php">
+    <form class="form-inline my-2 my-lg-0" action="https://imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
     </form>
@@ -76,14 +75,15 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
+
   </div>
   </header>
-  <main role="main" class="container">
+  <main class="container">
     <div class="magick-template">
 <div class="magick-header">
 <p class="text-center"><a href="magick.html#AcquireMagickInfo">AcquireMagickInfo</a> &#8226; <a href="magick.html#GetMagickPrecision">GetMagickPrecision</a> &#8226; <a href="magick.html#IsMagickCoreInstantiated">IsMagickCoreInstantiated</a> &#8226; <a href="magick.html#MagickCoreGenesis">MagickCoreGenesis</a> &#8226; <a href="magick.html#MagickCoreTerminus">MagickCoreTerminus</a> &#8226; <a href="magick.html#SetMagickPrecision">SetMagickPrecision</a></p>
 
-<h2><a href="../../api/MagickCore/magick_8c.html" id="AcquireMagickInfo">AcquireMagickInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="AcquireMagickInfo">AcquireMagickInfo</a></h2>
 
 <p>AcquireMagickInfo() allocates a MagickInfo structure and initializes the members to default values.</p>
 
@@ -113,7 +113,7 @@ MagickInfo *AcquireMagickInfo(const char *module, const char *name,)
 
 <dd>  </dd>
 </dl>
-<h2><a href="../../api/MagickCore/magick_8c.html" id="GetMagickPrecision">GetMagickPrecision</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="GetMagickPrecision">GetMagickPrecision</a></h2>
 
 <p>GetMagickPrecision() returns the maximum number of significant digits to be printed.</p>
 
@@ -123,7 +123,7 @@ MagickInfo *AcquireMagickInfo(const char *module, const char *name,)
 int GetMagickPrecision(void)
 </pre>
 
-<h2><a href="../../api/MagickCore/magick_8c.html" id="IsMagickCoreInstantiated">IsMagickCoreInstantiated</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="IsMagickCoreInstantiated">IsMagickCoreInstantiated</a></h2>
 
 <p>IsMagickCoreInstantiated() returns MagickTrue if the ImageMagick environment is currently instantiated:  MagickCoreGenesis() has been called but MagickDestroy() has not.</p>
 
@@ -133,7 +133,7 @@ int GetMagickPrecision(void)
 MagickBooleanType IsMagickCoreInstantiated(void)
 </pre>
 
-<h2><a href="../../api/MagickCore/magick_8c.html" id="MagickCoreGenesis">MagickCoreGenesis</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="MagickCoreGenesis">MagickCoreGenesis</a></h2>
 
 <p>MagickCoreGenesis() initializes the MagickCore environment.</p>
 
@@ -160,7 +160,7 @@ MagickCoreGenesis(const char *path,
 
 <dd>  </dd>
 </dl>
-<h2><a href="../../api/MagickCore/magick_8c.html" id="MagickCoreTerminus">MagickCoreTerminus</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="MagickCoreTerminus">MagickCoreTerminus</a></h2>
 
 <p>MagickCoreTerminus() destroys the MagickCore environment.</p>
 
@@ -170,7 +170,7 @@ MagickCoreGenesis(const char *path,
 MagickCoreTerminus(void)
 </pre>
 
-<h2><a href="../../api/MagickCore/magick_8c.html" id="SetMagickPrecision">SetMagickPrecision</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="SetMagickPrecision">SetMagickPrecision</a></h2>
 
 <p>SetMagickPrecision() sets the maximum number of significant digits to be printed.</p>
 
@@ -205,7 +205,7 @@ int SetMagickPrecision(const int precision)
     <a href="../../www/links.html">Related</a> •
      <a href="../../www/sitemap.html">Sitemap</a>
        
-    <a href="magick.html#"><img class="d-inline" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../../images/wand.ico"/></a>
+    <a href="magick.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../../images/wand.ico"/></a>
        
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="../../www/support.html">Donate</a> •
@@ -215,8 +215,8 @@ int SetMagickPrecision(const int precision)
   </footer>
 
   <!-- Javascript assets -->
-  <script src="assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
+  <script src="../assets/magick.js" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="../assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 14th February 2018 10:37 -->
+<!-- Magick Cache 3rd September 2018 14:40 -->

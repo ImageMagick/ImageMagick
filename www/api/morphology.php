@@ -5,32 +5,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-    <title>ImageMagick: MagickCore, C API for ImageMagick: Morphological Erosions, Dilations, Openings, and Closings</title>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-  <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
-  <meta name="application-url" content="http://www.imagemagick.org"/>
-  <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, morphological, erosions, dilations, openings, closings, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
-  <meta name="rating" content="GENERAL"/>
-  <meta name="robots" content="INDEX, FOLLOW"/>
-  <meta name="generator" content="ImageMagick Studio LLC"/>
-  <meta name="author" content="ImageMagick Studio LLC"/>
-  <meta name="revisit-after" content="2 DAYS"/>
-  <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2016 ImageMagick Studio LLC"/>
-  <meta name="distribution" content="Global"/>
-  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
-  <link rel="icon" href="../image/wand.png"/>
-  <link rel="shortcut icon" href="../image/wand.ico"/>
-  <link rel="stylesheet" href="../css/magick.php"/>
+  <meta charset="utf-8" >
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" >
+  <title>MagickCore, C API: Morphological Erosions, Dilations, Openings, and Closings @ ImageMagick</title>
+  <meta name="application-name" content="ImageMagick">
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations.">
+  <meta name="application-url" content="https://www.imagemagick.org">
+  <meta name="generator" content="PHP">
+  <meta name="keywords" content="magickcore, c, api:, morphological, erosions, dilations, openings, closings, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
+  <meta name="rating" content="GENERAL">
+  <meta name="robots" content="INDEX, FOLLOW">
+  <meta name="generator" content="ImageMagick Studio LLC">
+  <meta name="author" content="ImageMagick Studio LLC">
+  <meta name="revisit-after" content="2 DAYS">
+  <meta name="resource-type" content="document">
+  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC">
+  <meta name="distribution" content="Global">
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
+  <link href="https://www.imagemagick.org/api/morphology.php" rel="canonical">
+  <link href="https://imagemagick.org/image/wand.png" rel="icon">
+  <link href="https://imagemagick.org/image/wand.ico" rel="shortcut icon">
+  <link href="https://imagemagick.org/assets/magick-css.php" rel="stylesheet">
 </head>
 <body>
-<div class="main">
-<div class="magick-masthead">
+  <header>
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="https://imagemagick.org/"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="https://imagemagick.org/image/wand.ico"/></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/index.php">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/script/download.php">Download</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/script/command-line-tools.php">Tools</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/script/command-line-processing.php">Command-line</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/script/resources.php">Resources</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/script/develop.php">Develop</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0" action="../script/search.php">
+      <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
+    </form>
+    </div>
+  </nav>
   <div class="container">
-    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+   <script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -38,23 +75,15 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.php">Home</a>
-      <a class="magick-nav-item " href="../script/binary-releases.php">Download</a>
-      <a class="magick-nav-item " href="../script/command-line-tools.php">Tools</a>
-      <a class="magick-nav-item " href="../script/command-line-options.php">Options</a>
-      <a class="magick-nav-item " href="../script/resources.php">Resources</a>
-      <a class="magick-nav-item " href="../script/api.php">Develop</a>
-      <a class="magick-nav-item " href="../script/search.php">Search</a>
-      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
-    </nav>
+
   </div>
-</div>
-<div class="container">
+  </header>
+  <main class="container">
+    <div class="magick-template">
 <div class="magick-header">
 <p class="text-center"><a href="morphology.php#AcquireKernelInfo">AcquireKernelInfo</a> &bull; <a href="morphology.php#AcquireKernelBuiltIn">AcquireKernelBuiltIn</a> &bull; <a href="morphology.php#CloneKernelInfo">CloneKernelInfo</a> &bull; <a href="morphology.php#DestroyKernelInfo">DestroyKernelInfo</a> &bull; <a href="morphology.php#MorphologyApply">MorphologyApply</a> &bull; <a href="morphology.php#This is almost identical to the MorphologyPrimative">This is almost identical to the MorphologyPrimative</a> &bull; <a href="morphology.php#MorphologyImage">MorphologyImage</a> &bull; <a href="morphology.php#ScaleGeometryKernelInfo">ScaleGeometryKernelInfo</a> &bull; <a href="morphology.php#ScaleKernelInfo">ScaleKernelInfo</a> &bull; <a href="morphology.php#ShowKernelInfo">ShowKernelInfo</a> &bull; <a href="morphology.php#UnityAddKernelInfo">UnityAddKernelInfo</a> &bull; <a href="morphology.php#ZeroKernelNans">ZeroKernelNans</a></p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/morphology_8c.html" id="AcquireKernelInfo">AcquireKernelInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="AcquireKernelInfo">AcquireKernelInfo</a></h2>
 
 <p>AcquireKernelInfo() takes the given string (generally supplied by the user) and converts it into a Morphology/Convolution Kernel.  This allows users to specify a kernel from a number of pre-defined kernels, or to fully specify their own kernel for a specific Convolution or Morphology Operation.</p>
 
@@ -102,7 +131,7 @@ KernelInfo *AcquireKernelInfo(const char *kernel_string)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/morphology_8c.html" id="AcquireKernelBuiltIn">AcquireKernelBuiltIn</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="AcquireKernelBuiltIn">AcquireKernelBuiltIn</a></h2>
 
 <p>AcquireKernelBuiltIn() returned one of the 'named' built-in types of kernels used for special purposes such as gaussian blurring, skeleton pruning, and edge distance determination.</p>
 
@@ -275,7 +304,7 @@ KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/morphology_8c.html" id="CloneKernelInfo">CloneKernelInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="CloneKernelInfo">CloneKernelInfo</a></h2>
 
 <p>CloneKernelInfo() creates a new clone of the given Kernel List so that its can be modified without effecting the original.  The cloned kernel should be destroyed using DestoryKernelInfo() when no longer needed.</p>
 
@@ -297,7 +326,7 @@ KernelInfo *CloneKernelInfo(const KernelInfo *kernel)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/morphology_8c.html" id="DestroyKernelInfo">DestroyKernelInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="DestroyKernelInfo">DestroyKernelInfo</a></h2>
 
 <p>DestroyKernelInfo() frees the memory used by a Convolution/Morphology kernel.</p>
 
@@ -319,7 +348,7 @@ KernelInfo *DestroyKernelInfo(KernelInfo *kernel)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/morphology_8c.html" id="MorphologyApply">MorphologyApply</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="MorphologyApply">MorphologyApply</a></h2>
 
 <p>MorphologyApply() applies a morphological method, multiple times using a list of multiple kernels.  This is the method that should be called by other 'operators' that internally use morphology operations as part of their processing.</p>
 
@@ -378,22 +407,22 @@ Image *MorphologyApply(const Image *image,MorphologyMethod method,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/morphology_8c.html" id="This_is almost identical to the MorphologyPrimative">This is almost identical to the MorphologyPrimative</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="This_is almost identical to the MorphologyPrimative">This is almost identical to the MorphologyPrimative</a></h2>
 
 <p>This is almost identical to the MorphologyPrimative() function above, but applies the primitive directly to the actual image using two passes, once in each direction, with the results of the previous (and current) row being re-used.</p>
 
 <p>That is after each row is 'Sync'ed' into the image, the next row makes use of those values as part of the calculation of the next row.  It repeats, but going in the oppisite (bottom-up) direction.</p>
 
 <p>Because of this 're-use of results' this function can not make use of multi- threaded, parellel processing. </p>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/morphology_8c.html" id="MorphologyImage">MorphologyImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="MorphologyImage">MorphologyImage</a></h2>
 
 <p>MorphologyImage() applies a user supplied kernel to the image according to the given mophology method.</p>
 
 <p>This function applies any and all user defined settings before calling the above internal function MorphologyApply().</p>
 
-<p>User defined settings include... * Output Bias for Convolution and correlation ("-define convolve:bias=??") * Kernel Scale/normalize settings            ("-define convolve:scale=??") This can also includes the addition of a scaled unity kernel. * Show Kernel being applied            ("-define morphology:showkernel=1")</p>
+<p>User defined settings include... * Output Bias for Convolution and correlation ("-define convolve:bias=??") * Kernel Scale/normalize settings            ("-define convolve:scale=??") This can also includes the addition of a scaled unity kernel. * Show Kernel being applied            ("-define morphology:showKernel=1")</p>
 
-<p>Other operators that do not want user supplied options interfering, especially "convolve:bias" and "morphology:showkernel" should use MorphologyApply() directly.</p>
+<p>Other operators that do not want user supplied options interfering, especially "convolve:bias" and "morphology:showKernel" should use MorphologyApply() directly.</p>
 
 <p>The format of the MorphologyImage method is:</p>
 
@@ -430,7 +459,7 @@ Image *MorphologyImage(const Image *image,MorphologyMethod method,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/morphology_8c.html" id="ScaleGeometryKernelInfo">ScaleGeometryKernelInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="ScaleGeometryKernelInfo">ScaleGeometryKernelInfo</a></h2>
 
 <p>ScaleGeometryKernelInfo() takes a geometry argument string, typically provided as a  "-set option:convolve:scale {geometry}" user setting, and modifies the kernel according to the parsed arguments of that setting.</p>
 
@@ -461,7 +490,7 @@ void ScaleGeometryKernelInfo(KernelInfo *kernel,
 
 <p></dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/morphology_8c.html" id="ScaleKernelInfo">ScaleKernelInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="ScaleKernelInfo">ScaleKernelInfo</a></h2>
 
 <p>ScaleKernelInfo() scales the given kernel list by the given amount, with or without normalization of the sum of the kernel values (as per given flags).</p>
 
@@ -515,9 +544,9 @@ void ScaleKernelInfo(KernelInfo *kernel, const double scaling_factor,
 
 <p></dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/morphology_8c.html" id="ShowKernelInfo">ShowKernelInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="ShowKernelInfo">ShowKernelInfo</a></h2>
 
-<p>ShowKernelInfo() outputs the details of the given kernel defination to standard error, generally due to a users 'morphology:showkernel' option request.</p>
+<p>ShowKernelInfo() outputs the details of the given kernel defination to standard error, generally due to a users 'morphology:showKernel' option request.</p>
 
 <p>The format of the ShowKernel method is:</p>
 
@@ -537,7 +566,7 @@ void ShowKernelInfo(const KernelInfo *kernel)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/morphology_8c.html" id="UnityAddKernelInfo">UnityAddKernelInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="UnityAddKernelInfo">UnityAddKernelInfo</a></h2>
 
 <p>UnityAddKernelInfo() Adds a given amount of the 'Unity' Convolution Kernel to the given pre-scaled and normalized Kernel.  This in effect adds that amount of the original image into the resulting convolution kernel.  This value is usually provided by the user as a percentage value in the 'convolve:scale' setting.</p>
 
@@ -567,7 +596,7 @@ void UnityAdditionKernelInfo(KernelInfo *kernel, const double scale )
 
 <p></dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/morphology_8c.html" id="ZeroKernelNans">ZeroKernelNans</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="ZeroKernelNans">ZeroKernelNans</a></h2>
 
 <p>ZeroKernelNans() replaces any special 'nan' value that may be present in the kernel with a zero value.  This is typically done when the kernel will be used in special hardware (GPU) convolution processors, to simply matters.</p>
 
@@ -590,21 +619,26 @@ void ZeroKernelNans (KernelInfo *kernel)
 <dd>  </dd>
 </dl>
 </div>
+    </div>
+  </main><!-- /.container -->
   <footer class="magick-footer">
-    <p><a href="../script/support.php">Donate</a> •
-     <a href="../script/sitemap.php">Sitemap</a> •
-    <a href="../script/links.php">Related</a> •
-    <a href="../script/architecture.php">Architecture</a>
-</p>
-    <p><a href="morphology.php#">Back to top</a> •
-    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="../script/contact.php">Contact Us</a></p>
-        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
+    <p><a href="https://imagemagick.org/script/security-policy.php">Security</a> •
+    <a href="https://imagemagick.org/script/architecture.php">Architecture</a> •
+    <a href="https://imagemagick.org/script/links.php">Related</a> •
+     <a href="https://imagemagick.org/script/sitemap.php">Sitemap</a>
+    &nbsp; &nbsp;
+    <a href="morphology.php#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="https://imagemagick.org/image/wand.ico"/></a>
+    &nbsp; &nbsp;
+    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="https://imagemagick.org/script/support.php">Donate</a> •
+    <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
+    <br/>
+        <small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
-</div><!-- /.container -->
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="http://nextgen.imagemagick.org/js/magick.php"></script>
-</div>
+  <!-- Javascript assets -->
+  <script src="https://imagemagick.org/assets/magick-js.php" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="https://imagemagick.org/assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
+<!-- Magick Cache 7th September 2018 16:58 -->

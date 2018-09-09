@@ -5,32 +5,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-    <title>ImageMagick: MagickCore, C API for ImageMagick: Add an Effect</title>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-  <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
-  <meta name="application-url" content="http://www.imagemagick.org"/>
-  <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, add, an, effect, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
-  <meta name="rating" content="GENERAL"/>
-  <meta name="robots" content="INDEX, FOLLOW"/>
-  <meta name="generator" content="ImageMagick Studio LLC"/>
-  <meta name="author" content="ImageMagick Studio LLC"/>
-  <meta name="revisit-after" content="2 DAYS"/>
-  <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2016 ImageMagick Studio LLC"/>
-  <meta name="distribution" content="Global"/>
-  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
-  <link rel="icon" href="../image/wand.png"/>
-  <link rel="shortcut icon" href="../image/wand.ico"/>
-  <link rel="stylesheet" href="../css/magick.php"/>
+  <meta charset="utf-8" >
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" >
+  <title>MagickCore, C API: Add an Effect @ ImageMagick</title>
+  <meta name="application-name" content="ImageMagick">
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations.">
+  <meta name="application-url" content="https://www.imagemagick.org">
+  <meta name="generator" content="PHP">
+  <meta name="keywords" content="magickcore, c, api:, add, an, effect, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
+  <meta name="rating" content="GENERAL">
+  <meta name="robots" content="INDEX, FOLLOW">
+  <meta name="generator" content="ImageMagick Studio LLC">
+  <meta name="author" content="ImageMagick Studio LLC">
+  <meta name="revisit-after" content="2 DAYS">
+  <meta name="resource-type" content="document">
+  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC">
+  <meta name="distribution" content="Global">
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
+  <link href="https://www.imagemagick.org/api/effect.php" rel="canonical">
+  <link href="https://imagemagick.org/image/wand.png" rel="icon">
+  <link href="https://imagemagick.org/image/wand.ico" rel="shortcut icon">
+  <link href="https://imagemagick.org/assets/magick-css.php" rel="stylesheet">
 </head>
 <body>
-<div class="main">
-<div class="magick-masthead">
+  <header>
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="https://imagemagick.org/"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="https://imagemagick.org/image/wand.ico"/></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/index.php">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/script/download.php">Download</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/script/command-line-tools.php">Tools</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/script/command-line-processing.php">Command-line</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/script/resources.php">Resources</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/script/develop.php">Develop</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0" action="../script/search.php">
+      <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
+    </form>
+    </div>
+  </nav>
   <div class="container">
-    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+   <script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -38,23 +75,15 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.php">Home</a>
-      <a class="magick-nav-item " href="../script/binary-releases.php">Download</a>
-      <a class="magick-nav-item " href="../script/command-line-tools.php">Tools</a>
-      <a class="magick-nav-item " href="../script/command-line-options.php">Options</a>
-      <a class="magick-nav-item " href="../script/resources.php">Resources</a>
-      <a class="magick-nav-item " href="../script/api.php">Develop</a>
-      <a class="magick-nav-item " href="../script/search.php">Search</a>
-      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
-    </nav>
-  </div>
-</div>
-<div class="container">
-<div class="magick-header">
-<p class="text-center"><a href="effect.php#AdaptiveBlurImage">AdaptiveBlurImage</a> &bull; <a href="effect.php#AdaptiveSharpenImage">AdaptiveSharpenImage</a> &bull; <a href="effect.php#BlurImage">BlurImage</a> &bull; <a href="effect.php#ConvolveImage">ConvolveImage</a> &bull; <a href="effect.php#DespeckleImage">DespeckleImage</a> &bull; <a href="effect.php#EdgeImage">EdgeImage</a> &bull; <a href="effect.php#EmbossImage">EmbossImage</a> &bull; <a href="effect.php#GaussianBlurImage">GaussianBlurImage</a> &bull; <a href="effect.php#KuwaharaImage">KuwaharaImage</a> &bull; <a href="effect.php#MotionBlurImage">MotionBlurImage</a> &bull; <a href="effect.php#PreviewImage">PreviewImage</a> &bull; <a href="effect.php#RotationalBlurImage">RotationalBlurImage</a> &bull; <a href="effect.php#SelectiveBlurImage">SelectiveBlurImage</a> &bull; <a href="effect.php#ShadeImage">ShadeImage</a> &bull; <a href="effect.php#SharpenImage">SharpenImage</a> &bull; <a href="effect.php#SpreadImage">SpreadImage</a> &bull; <a href="effect.php#UnsharpMaskImage">UnsharpMaskImage</a></p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/effect_8c.html" id="AdaptiveBlurImage">AdaptiveBlurImage</a></h2>
+  </div>
+  </header>
+  <main class="container">
+    <div class="magick-template">
+<div class="magick-header">
+<p class="text-center"><a href="effect.php#AdaptiveBlurImage">AdaptiveBlurImage</a> &bull; <a href="effect.php#AdaptiveSharpenImage">AdaptiveSharpenImage</a> &bull; <a href="effect.php#BlurImage">BlurImage</a> &bull; <a href="effect.php#ConvolveImage">ConvolveImage</a> &bull; <a href="effect.php#DespeckleImage">DespeckleImage</a> &bull; <a href="effect.php#EdgeImage">EdgeImage</a> &bull; <a href="effect.php#EmbossImage">EmbossImage</a> &bull; <a href="effect.php#GaussianBlurImage">GaussianBlurImage</a> &bull; <a href="effect.php#KuwaharaImage">KuwaharaImage</a> &bull; <a href="effect.php#LocalContrastImage">LocalContrastImage</a> &bull; <a href="effect.php#MotionBlurImage">MotionBlurImage</a> &bull; <a href="effect.php#PreviewImage">PreviewImage</a> &bull; <a href="effect.php#RotationalBlurImage">RotationalBlurImage</a> &bull; <a href="effect.php#SelectiveBlurImage">SelectiveBlurImage</a> &bull; <a href="effect.php#ShadeImage">ShadeImage</a> &bull; <a href="effect.php#SharpenImage">SharpenImage</a> &bull; <a href="effect.php#SpreadImage">SpreadImage</a> &bull; <a href="effect.php#UnsharpMaskImage">UnsharpMaskImage</a></p>
+
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="AdaptiveBlurImage">AdaptiveBlurImage</a></h2>
 
 <p>AdaptiveBlurImage() adaptively blurs the image by blurring less intensely near image edges and more intensely far from edges.  We blur the image with a Gaussian operator of the given radius and standard deviation (sigma).  For reasonable results, radius should be larger than sigma.  Use a radius of 0 and AdaptiveBlurImage() selects a suitable radius for you.</p>
 
@@ -89,7 +118,7 @@ Image *AdaptiveBlurImage(const Image *image,const double radius,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/effect_8c.html" id="AdaptiveSharpenImage">AdaptiveSharpenImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="AdaptiveSharpenImage">AdaptiveSharpenImage</a></h2>
 
 <p>AdaptiveSharpenImage() adaptively sharpens the image by sharpening more intensely near image edges and less intensely far from edges. We sharpen the image with a Gaussian operator of the given radius and standard deviation (sigma).  For reasonable results, radius should be larger than sigma.  Use a radius of 0 and AdaptiveSharpenImage() selects a suitable radius for you.</p>
 
@@ -124,7 +153,7 @@ Image *AdaptiveSharpenImage(const Image *image,const double radius,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/effect_8c.html" id="BlurImage">BlurImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="BlurImage">BlurImage</a></h2>
 
 <p>BlurImage() blurs an image.  We convolve the image with a Gaussian operator of the given radius and standard deviation (sigma).  For reasonable results, the radius should be larger than sigma.  Use a radius of 0 and BlurImage() selects a suitable radius for you.</p>
 
@@ -159,7 +188,7 @@ Image *BlurImage(const Image *image,const double radius,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/effect_8c.html" id="ConvolveImage">ConvolveImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="ConvolveImage">ConvolveImage</a></h2>
 
 <p>ConvolveImage() applies a custom convolution kernel to the image.</p>
 
@@ -190,9 +219,9 @@ Image *ConvolveImage(const Image *image,const KernelInfo *kernel,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/effect_8c.html" id="DespeckleImage">DespeckleImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="DespeckleImage">DespeckleImage</a></h2>
 
-<p>DespeckleImage() reduces the speckle noise in an image while perserving the edges of the original image.  A speckle removing filter uses a complementary   hulling technique (raising pixels that are darker than their surrounding neighbors, then complementarily lowering pixels that are brighter than their surrounding neighbors) to reduce the speckle index of that image (reference Crimmins speckle removal).</p>
+<p>DespeckleImage() reduces the speckle noise in an image while perserving the edges of the original image.  A speckle removing filter uses a complementary hulling technique (raising pixels that are darker than their surrounding neighbors, then complementarily lowering pixels that are brighter than their surrounding neighbors) to reduce the speckle index of that image (reference Crimmins speckle removal).</p>
 
 <p>The format of the DespeckleImage method is:</p>
 
@@ -216,7 +245,7 @@ Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/effect_8c.html" id="EdgeImage">EdgeImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="EdgeImage">EdgeImage</a></h2>
 
 <p>EdgeImage() finds edges in an image.  Radius defines the radius of the convolution filter.  Use a radius of 0 and EdgeImage() selects a suitable radius for you.</p>
 
@@ -247,7 +276,7 @@ Image *EdgeImage(const Image *image,const double radius,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/effect_8c.html" id="EmbossImage">EmbossImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="EmbossImage">EmbossImage</a></h2>
 
 <p>EmbossImage() returns a grayscale image with a three-dimensional effect. We convolve the image with a Gaussian operator of the given radius and standard deviation (sigma).  For reasonable results, radius should be larger than sigma.  Use a radius of 0 and Emboss() selects a suitable radius for you.</p>
 
@@ -282,7 +311,7 @@ Image *EmbossImage(const Image *image,const double radius,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/effect_8c.html" id="GaussianBlurImage">GaussianBlurImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="GaussianBlurImage">GaussianBlurImage</a></h2>
 
 <p>GaussianBlurImage() blurs an image.  We convolve the image with a Gaussian operator of the given radius and standard deviation (sigma). For reasonable results, the radius should be larger than sigma.  Use a radius of 0 and GaussianBlurImage() selects a suitable radius for you</p>
 
@@ -317,7 +346,7 @@ Image *GaussianBlurImage(const Image *image,onst double radius,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/effect_8c.html" id="KuwaharaImage">KuwaharaImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="KuwaharaImage">KuwaharaImage</a></h2>
 
 <p>KuwaharaImage() is an edge preserving noise reduction filter.</p>
 
@@ -352,7 +381,42 @@ Image *KuwaharaImage(const Image *image,const double radius,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/effect_8c.html" id="MotionBlurImage">MotionBlurImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="LocalContrastImage">LocalContrastImage</a></h2>
+
+<p>LocalContrastImage() attempts to increase the appearance of large-scale light-dark transitions. Local contrast enhancement works similarly to sharpening with an unsharp mask, however the mask is instead created using an image with a greater blur distance.</p>
+
+<p>The format of the LocalContrastImage method is:</p>
+
+<pre class="text">
+Image *LocalContrastImage(const Image *image, const double radius,
+  const double strength,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>radius</dt>
+<dd>the radius of the Gaussian blur, in percentage with 100 resulting in a blur radius of 20 of largest dimension. </dd>
+
+<dd> </dd>
+<dt>strength</dt>
+<dd>the strength of the blur mask in percentage. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="MotionBlurImage">MotionBlurImage</a></h2>
 
 <p>MotionBlurImage() simulates motion blur.  We convolve the image with a Gaussian operator of the given radius and standard deviation (sigma). For reasonable results, radius should be larger than sigma.  Use a radius of 0 and MotionBlurImage() selects a suitable radius for you. Angle gives the angle of the blurring motion.</p>
 
@@ -393,7 +457,7 @@ const double sigma,const double angle,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/effect_8c.html" id="PreviewImage">PreviewImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="PreviewImage">PreviewImage</a></h2>
 
 <p>PreviewImage() tiles 9 thumbnails of the specified image with an image processing operation applied with varying parameters.  This may be helpful pin-pointing an appropriate parameter for a particular image processing operation.</p>
 
@@ -424,7 +488,7 @@ Image *PreviewImages(const Image *image,const PreviewType preview,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/effect_8c.html" id="RotationalBlurImage">RotationalBlurImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="RotationalBlurImage">RotationalBlurImage</a></h2>
 
 <p>RotationalBlurImage() applies a radial blur to the image.</p>
 
@@ -461,7 +525,7 @@ ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/effect_8c.html" id="SelectiveBlurImage">SelectiveBlurImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="SelectiveBlurImage">SelectiveBlurImage</a></h2>
 
 <p>SelectiveBlurImage() selectively blur pixels within a contrast threshold. It is similar to the unsharpen mask that sharpens everything with contrast above a certain threshold.</p>
 
@@ -500,7 +564,7 @@ Image *SelectiveBlurImage(const Image *image,const double radius,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/effect_8c.html" id="ShadeImage">ShadeImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="ShadeImage">ShadeImage</a></h2>
 
 <p>ShadeImage() shines a distant light on an image to create a three-dimensional effect. You control the positioning of the light with azimuth and elevation; azimuth is measured in degrees off the x axis and elevation is measured in pixels above the Z axis.</p>
 
@@ -535,7 +599,7 @@ Image *ShadeImage(const Image *image,const MagickBooleanType gray,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/effect_8c.html" id="SharpenImage">SharpenImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="SharpenImage">SharpenImage</a></h2>
 
 <p>SharpenImage() sharpens the image.  We convolve the image with a Gaussian operator of the given radius and standard deviation (sigma).  For reasonable results, radius should be larger than sigma.  Use a radius of 0 and SharpenImage() selects a suitable radius for you.</p>
 
@@ -572,7 +636,7 @@ const double sigma,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/effect_8c.html" id="SpreadImage">SpreadImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="SpreadImage">SpreadImage</a></h2>
 
 <p>SpreadImage() is a special effects method that randomly displaces each pixel in a square area defined by the radius parameter.</p>
 
@@ -608,7 +672,7 @@ Image *SpreadImage(const Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/effect_8c.html" id="UnsharpMaskImage">UnsharpMaskImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="UnsharpMaskImage">UnsharpMaskImage</a></h2>
 
 <p>UnsharpMaskImage() sharpens one or more image channels.  We convolve the image with a Gaussian operator of the given radius and standard deviation (sigma).  For reasonable results, radius should be larger than sigma.  Use a radius of 0 and UnsharpMaskImage() selects a suitable radius for you.</p>
 
@@ -653,21 +717,26 @@ ExceptionInfo *exception)
 <dd>  </dd>
 </dl>
 </div>
+    </div>
+  </main><!-- /.container -->
   <footer class="magick-footer">
-    <p><a href="../script/support.php">Donate</a> •
-     <a href="../script/sitemap.php">Sitemap</a> •
-    <a href="../script/links.php">Related</a> •
-    <a href="../script/architecture.php">Architecture</a>
-</p>
-    <p><a href="effect.php#">Back to top</a> •
-    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="../script/contact.php">Contact Us</a></p>
-        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
+    <p><a href="https://imagemagick.org/script/security-policy.php">Security</a> •
+    <a href="https://imagemagick.org/script/architecture.php">Architecture</a> •
+    <a href="https://imagemagick.org/script/links.php">Related</a> •
+     <a href="https://imagemagick.org/script/sitemap.php">Sitemap</a>
+    &nbsp; &nbsp;
+    <a href="effect.php#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="https://imagemagick.org/image/wand.ico"/></a>
+    &nbsp; &nbsp;
+    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="https://imagemagick.org/script/support.php">Donate</a> •
+    <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
+    <br/>
+        <small>© 1999-2018 ImageMagick Studio LLC</small></p>
   </footer>
-</div><!-- /.container -->
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="http://nextgen.imagemagick.org/js/magick.php"></script>
-</div>
+  <!-- Javascript assets -->
+  <script src="https://imagemagick.org/assets/magick-js.php" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="https://imagemagick.org/assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
+<!-- Magick Cache 2nd September 2018 11:26 -->
