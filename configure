@@ -593,7 +593,7 @@ PACKAGE_TARNAME='ImageMagick'
 PACKAGE_VERSION='7.0.8-12'
 PACKAGE_STRING='ImageMagick 7.0.8-12'
 PACKAGE_BUGREPORT='https://github.com/ImageMagick/ImageMagick/issues'
-PACKAGE_URL='https://www.imagemagick.org'
+PACKAGE_URL='https://imagemagick.org'
 
 ac_unique_file="MagickCore/MagickCore.h"
 # Factoring default headers for most tests.
@@ -2141,7 +2141,7 @@ Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
 
 Report bugs to <https://github.com/ImageMagick/ImageMagick/issues>.
-ImageMagick home page: <https://www.imagemagick.org>.
+ImageMagick home page: <https://imagemagick.org>.
 _ACEOF
 ac_status=$?
 fi
@@ -37693,7 +37693,7 @@ Configuration commands:
 $config_commands
 
 Report bugs to <https://github.com/ImageMagick/ImageMagick/issues>.
-ImageMagick home page: <https://www.imagemagick.org>."
+ImageMagick home page: <https://imagemagick.org>."
 
 _ACEOF
 cat >>$CONFIG_STATUS <<_ACEOF || ac_write_fail=1
