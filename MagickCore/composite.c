@@ -1629,6 +1629,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=QuantumRange*Sa*Da;
                 break;
               }
+              case StereoCompositeOp:
+              {
+                pixel=QuantumRange*(Sa+Da)/2;
+                break;
+              }
               default:
               {
                 pixel=QuantumRange*alpha;
@@ -2257,7 +2262,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case StereoCompositeOp:
           {
-            if (channel == RedPixelChannel)
+            if ((channel == GreenPixelChannel) || (channel == BluePixelChannel))
               pixel=(MagickRealType) GetPixelRed(source_image,p);
             break;
           }
