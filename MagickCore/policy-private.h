@@ -5,7 +5,7 @@
   You may not use this file except in compliance with the License.
   obtain a copy of the License at
   
-    https://www.imagemagick.org/script/license.php
+    https://imagemagick.org/script/license.php
   
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,7 +25,7 @@ extern "C" {
 #if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
 /*
   Zero configuration security policy.  Discussion @
-  https://www.imagemagick.org/script/security-policy.php.
+  https://imagemagick.org/script/security-policy.php.
 */
 static const char
   *ZeroConfigurationPolicy = \
