@@ -2262,7 +2262,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case StereoCompositeOp:
           {
-            if ((channel == GreenPixelChannel) || (channel == BluePixelChannel))
+            if (channel == RedPixelChannel)
               pixel=(MagickRealType) GetPixelRed(source_image,p);
             break;
           }
