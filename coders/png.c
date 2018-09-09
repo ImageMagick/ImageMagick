@@ -3406,6 +3406,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       "    Reading PNG IDAT chunk(s)");
 
   status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status != MagickFalse)
+    status=ResetImagePixels(image,exception);
   if (status == MagickFalse)
     {
       png_destroy_read_struct(&ping,&ping_info,&end_info);
@@ -3598,7 +3600,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         if (pass < num_passes-1)
           continue;
 
-        q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+        q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
 
         if (q == (Quantum *) NULL)
           break;
@@ -3707,7 +3709,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           break;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetPixelIndex(image,*r++,q);
+          SetPixelRed(image,ClampToQuantum(image->colormap[(int) *r].red),q);
+          SetPixelGreen(image,ClampToQuantum(image->colormap[(int) *r].green),
+            q);
+          SetPixelBlue(image,ClampToQuantum(image->colormap[(int) *r].blue),q);
+          SetPixelIndex(image,*r,q);
+          r++;
           q+=GetPixelChannels(image);
         }
 
@@ -3753,17 +3760,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       }
   }
   quantum_info=DestroyQuantumInfo(quantum_info);
-
-  if (image->storage_class == PseudoClass)
-    {
-      PixelTrait
-        alpha_trait;
-
-      alpha_trait=image->alpha_trait;
-      image->alpha_trait=UndefinedPixelTrait;
-      (void) SyncImage(image,exception);
-      image->alpha_trait=alpha_trait;
-    }
 
   png_read_end(ping,end_info);
 
