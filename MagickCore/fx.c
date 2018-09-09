@@ -5048,11 +5048,11 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
       break;
     for (x=0; x < (ssize_t) stereo_image->columns; x++)
     {
-      SetPixelRed(image,GetPixelRed(left_image,p),r);
-      SetPixelGreen(image,GetPixelGreen(right_image,q),r);
-      SetPixelBlue(image,GetPixelBlue(right_image,q),r);
+      SetPixelRed(stereo_image,GetPixelRed(left_image,p),r);
+      SetPixelGreen(stereo_image,GetPixelGreen(right_image,q),r);
+      SetPixelBlue(stereo_image,GetPixelBlue(right_image,q),r);
       if ((GetPixelAlphaTraits(stereo_image) & CopyPixelTrait) != 0)
-        SetPixelAlpha(image,(GetPixelAlpha(left_image,p)+
+        SetPixelAlpha(stereo_image,(GetPixelAlpha(left_image,p)+
           GetPixelAlpha(right_image,q))/2,r);
       p+=GetPixelChannels(left_image);
       q+=GetPixelChannels(right_image);
