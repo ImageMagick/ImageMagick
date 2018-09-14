@@ -908,7 +908,6 @@ MagickExport size_t GetMaxMemoryRequest(void)
       char
         *value;
 
-      max_memory_request=(size_t) MagickULLConstant(~0);
       value=GetPolicyValue("system:max-memory-request");
       if (value != (char *) NULL)
         {
@@ -918,6 +917,8 @@ MagickExport size_t GetMaxMemoryRequest(void)
           max_memory_request=StringToSizeType(value,100.0);
           value=DestroyString(value);
         }
+      else
+        max_memory_request=(size_t) MagickULLConstant(~0);
     }
   return(max_memory_request);
 }
