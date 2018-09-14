@@ -90,11 +90,13 @@ extern WandExport LineJoin
 
 extern WandExport MagickBooleanType
   DrawClearException(DrawingWand *),
-  DrawComposite(DrawingWand *,const CompositeOperator,const double,const double,
-    const double,const double,MagickWand *),
+  DrawComposite(DrawingWand *,const CompositeOperator,const double,
+    const double,const double,const double,MagickWand *),
   DrawGetFontResolution(const DrawingWand *,double *,double *),
   DrawGetStrokeAntialias(const DrawingWand *),
   DrawGetTextAntialias(const DrawingWand *),
+  DrawGetTypeMetrics(const DrawingWand *,const char *,MagickBooleanType,
+    TypeMetric *),
   DrawPopPattern(DrawingWand *),
   DrawPushPattern(DrawingWand *,const char *,const double,const double,
     const double,const double),
