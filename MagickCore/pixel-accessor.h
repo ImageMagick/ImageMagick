@@ -419,7 +419,7 @@ static inline void GetPixelInfoPixel(const Image *magick_restrict image,
           if (image->channel_map[IndexPixelChannel].traits != UndefinedPixelTrait)
             pixel_info->index=(MagickRealType)
           pixel[image->channel_map[IndexPixelChannel].offset];
-      }
+        }
     }
 }
 
