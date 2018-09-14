@@ -68,6 +68,7 @@
 #include "MagickCore/log.h"
 #include "MagickCore/MagickCore.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
@@ -2449,6 +2450,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     if (option != (const char *) NULL)
       png_set_chunk_malloc_max(ping,(png_alloc_size_t) MagickMin(PNG_SIZE_MAX,
         StringToLong(option)));
+    else
+      png_set_chunk_malloc_max(ping,(png_alloc_size_t) GetMaxMemoryRequest());
 #endif
   }
 #endif /* PNG_SET_USER_LIMITS_SUPPORTED */
