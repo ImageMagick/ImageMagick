@@ -2377,9 +2377,9 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
     }
 #if defined(C_ARITH_CODING_SUPPORTED)
   option=GetImageOption(image_info,"jpeg:arithmetic-coding");
-  if (option != (const char *) NULL)
+  if (IsStringTrue(option) != MagickFalse)
     {
-      jpeg_info.arith_code=IsStringTrue(option) != MagickFalse ? TRUE : FALSE;
+      jpeg_info.arith_code=TRUE;
       jpeg_info.optimize_coding=FALSE; // Not supported.
     }
 #endif
