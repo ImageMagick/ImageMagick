@@ -1572,8 +1572,12 @@ ModuleExport size_t RegisterJPEGImage(void)
     *entry;
 
   *version='\0';
-#if defined(JPEG_LIB_VERSION)
-  (void) FormatLocaleString(version,MagickPathExtent,"%d",JPEG_LIB_VERSION);
+#if defined(LIBJPEG_TURBO_VERSION)
+  (void) CopyMagickString(version,"libjpeg-turbo " MagickStringify(
+    LIBJPEG_TURBO_VERSION),MagickPathExtent);
+#elif defined(JPEG_LIB_VERSION)
+  (void) FormatLocaleString(version,MagickPathExtent,"libjpeg %d",
+    JPEG_LIB_VERSION);
 #endif
   entry=AcquireMagickInfo("JPEG","JPE",JPEGDescription);
 #if (JPEG_LIB_VERSION < 80) && !defined(LIBJPEG_TURBO_VERSION)
