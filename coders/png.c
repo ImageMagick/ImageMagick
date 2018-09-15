@@ -9030,6 +9030,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
      number_semitransparent = 0;
      number_transparent = 0;
 
+     (void) SetImageDepth(image,image->depth,exception);
      for (y=0; y < (ssize_t) image->rows; y++)
      {
        r=GetVirtualPixels(image,0,y,image->columns,1,exception);
