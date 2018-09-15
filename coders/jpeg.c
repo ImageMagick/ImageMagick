@@ -1564,6 +1564,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 ModuleExport size_t RegisterJPEGImage(void)
 {
 #define JPEGDescription "Joint Photographic Experts Group JFIF format"
+#define JPEGStringify(macro_or_string)  JPEGStringifyArg(macro_or_string)
+#define JPEGStringifyArg(contents)  #contents
 
   char
     version[MagickPathExtent];
@@ -1573,7 +1575,7 @@ ModuleExport size_t RegisterJPEGImage(void)
 
   *version='\0';
 #if defined(LIBJPEG_TURBO_VERSION)
-  (void) CopyMagickString(version,"libjpeg-turbo " MagickStringify(
+  (void) CopyMagickString(version,"libjpeg-turbo " JPEGStringify(
     LIBJPEG_TURBO_VERSION),MagickPathExtent);
 #elif defined(JPEG_LIB_VERSION)
   (void) FormatLocaleString(version,MagickPathExtent,"libjpeg %d",
