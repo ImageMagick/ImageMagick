@@ -323,8 +323,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
 
           atDepth=MagickTrue;
           range=GetQuantumRange(current_depth[id]);
-          if ((atDepth != MagickFalse) &&
-              (GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+          if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
             if (IsPixelAtDepth(ClampToQuantum(image->colormap[i].red),range) == MagickFalse)
               atDepth=MagickFalse;
           if ((atDepth != MagickFalse) &&
