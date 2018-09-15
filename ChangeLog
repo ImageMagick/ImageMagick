@@ -1,6 +1,10 @@
 2018-09-09  7.0.8-12 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-12, GIT revision 14729:798fbdb5b:20180828
 
+2018-09-15  7.0.8-12 Dirk Lemstra <dirk@lem.....org>
+  * Added support for arithmetic coding to the jpeg encoder:
+    -define jpeg:arithmetic-coding=true.
+
 2018-09-08  7.0.8-12 Cristy  <quetzlzacatenango@image...>
   * Fixed numerous use of uninitialized values, integer overflow, memory
     exceeded, and timeouts (credit to OSS Fuzz).

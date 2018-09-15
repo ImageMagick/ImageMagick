@@ -1337,6 +1337,10 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
     jpeg_info.out_color_space);
   (void) SetImageProperty(image,"jpeg:colorspace",value,exception);
+#if defined(D_ARITH_CODING_SUPPORTED)
+  if (jpeg_info.arith_code == TRUE)
+    (void) SetImageProperty(image,"jpeg:coding","arithmetic",exception);
+#endif
   if (image_info->ping != MagickFalse)
     {
       jpeg_destroy_decompress(&jpeg_info);
@@ -2371,6 +2375,14 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           jpeg_info.optimize_coding=status == MagickFalse ? FALSE : TRUE;
         }
     }
+#if defined(C_ARITH_CODING_SUPPORTED)
+  option=GetImageOption(image_info,"jpeg:arithmetic-coding");
+  if (option != (const char *) NULL)
+    {
+      jpeg_info.arith_code=IsStringTrue(option) != MagickFalse ? TRUE : FALSE;
+      jpeg_info.optimize_coding=FALSE; // Not supported.
+    }
+#endif
 #if (JPEG_LIB_VERSION >= 61) && defined(C_PROGRESSIVE_SUPPORTED)
   if ((LocaleCompare(image_info->magick,"PJPEG") == 0) ||
       (image_info->interlace != NoInterlace))
