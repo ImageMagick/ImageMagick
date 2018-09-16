@@ -2228,9 +2228,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
                         affine.tx=svg_info->bounds.x+x*
                           cos(DegreesToRadians(fmod(angle,360.0)))+y*
                           sin(DegreesToRadians(fmod(angle,360.0)));
-                        affine.ty=svg_info->bounds.y+x*
-                          sin(DegreesToRadians(fmod(angle,360.0)))-y*
+                        affine.ty=svg_info->bounds.y-x*
+                          sin(DegreesToRadians(fmod(angle,360.0)))+y*
                           cos(DegreesToRadians(fmod(angle,360.0)));
+                        affine.tx-=x/2.0;
+                        affine.ty-=y/2.0;
                         break;
                       }
                     break;
