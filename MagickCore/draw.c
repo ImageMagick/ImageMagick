@@ -2265,8 +2265,8 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
   (void) ThrowMagickException(mvg_info->exception,GetMagickModule(),
     ResourceLimitError,"MemoryAllocationFailed","`%s'","");
   if (*mvg_info->primitive_info != (PrimitiveInfo *) NULL)
-    *mvg_info->primitive_info=(PrimitiveInfo *) 
-      RelinquishMagickMemory(*mvg_info->primitive_info);
+    *mvg_info->primitive_info=(PrimitiveInfo *) RelinquishMagickMemory(
+      *mvg_info->primitive_info);
   *mvg_info->primitive_info=AcquireCriticalMemory(4*quantum);
   (void) memset(*mvg_info->primitive_info,0,4*quantum);
   *mvg_info->extent=1;
@@ -6168,6 +6168,7 @@ static MagickBooleanType TraceEllipse(MVGInfo *mvg_info,const PointInfo center,
   const PointInfo radii,const PointInfo arc)
 {
   double
+    coordinates,
     delta,
     step,
     x,
@@ -6199,13 +6200,20 @@ static MagickBooleanType TraceEllipse(MVGInfo *mvg_info,const PointInfo center,
   delta=2.0*PerceptibleReciprocal(MagickMax(radii.x,radii.y));
   step=MagickPI/8.0;
   if ((delta >= 0.0) && (delta < (MagickPI/8.0)))
-    step=MagickPI/(4.0*(MagickPI*PerceptibleReciprocal(delta)/2.0));
+    step=MagickPI/4.0/(MagickPI*PerceptibleReciprocal(delta)/2.0);
   angle.x=DegreesToRadians(arc.x);
   y=arc.y;
   while (y < arc.x)
     y+=360.0;
   angle.y=DegreesToRadians(y);
-  extent=(size_t) ceil((angle.y-angle.x)/step)+1;
+  coordinates=ceil((angle.y-angle.x)/step+1.0);
+  extent=(size_t) coordinates;
+  if ((double) extent < coordinates)
+    {
+      (void) ThrowMagickException(mvg_info->exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'","");
+      return(MagickFalse);
+    }
   if (CheckPrimitiveExtent(mvg_info,extent) == MagickFalse)
     return(MagickFalse);
   primitive_info=(*mvg_info->primitive_info)+mvg_info->offset;
