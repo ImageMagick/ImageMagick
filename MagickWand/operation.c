@@ -4358,7 +4358,8 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
             count;
 
           /* convert argument string into an array of doubles */
-          args = StringToArrayOfDoubles(arg1,&count,_exception);
+          if (arg1 != NULL)
+            args = StringToArrayOfDoubles(arg1,&count,_exception);
           if (args == (double *) NULL )
             CLIWandExceptArgBreak(OptionError,"InvalidNumberList",option,arg1);
           new_images=PolynomialImage(_images,(size_t) (count >> 1),args,
