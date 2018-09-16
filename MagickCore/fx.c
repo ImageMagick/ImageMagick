@@ -4057,9 +4057,6 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
       DrawInfo
         *annotate_info;
 
-      ImageInfo
-        *image_info;
-
       MagickBooleanType
         status;
 
@@ -4075,33 +4072,34 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
       caption_image=CloneImage(image,image->columns,1,MagickTrue,exception);
       if (caption_image == (Image *) NULL)
         return((Image *) NULL);
-      image_info=AcquireImageInfo();
       annotate_info=CloneDrawInfo((const ImageInfo *) NULL,draw_info);
-      text=InterpretImageProperties(image_info,(Image *) image,caption,
+      text=InterpretImageProperties((ImageInfo *) NULL,(Image *) image,caption,
         exception);
-      image_info=DestroyImageInfo(image_info);
-      (void) CloneString(&annotate_info->text,text);
-      count=FormatMagickCaption(caption_image,annotate_info,MagickTrue,&metrics,
-        &text,exception);
-      status=SetImageExtent(caption_image,image->columns,(size_t) ((count+1)*
-        (metrics.ascent-metrics.descent)+0.5),exception);
-      if (status == MagickFalse)
-        caption_image=DestroyImage(caption_image);
-      else
+      if (text != (char *) NULL)
         {
-          caption_image->background_color=image->border_color;
-          (void) SetImageBackgroundColor(caption_image,exception);
           (void) CloneString(&annotate_info->text,text);
-          (void) FormatLocaleString(geometry,MagickPathExtent,"+0+%.20g",
-            metrics.ascent);
-          if (annotate_info->gravity == UndefinedGravity)
-            (void) CloneString(&annotate_info->geometry,AcquireString(
-              geometry));
-          (void) AnnotateImage(caption_image,annotate_info,exception);
-          height+=caption_image->rows;
+          count=FormatMagickCaption(caption_image,annotate_info,MagickTrue,
+            &metrics,&text,exception);
+          status=SetImageExtent(caption_image,image->columns,(size_t)
+            ((count+1)*(metrics.ascent-metrics.descent)+0.5),exception);
+          if (status == MagickFalse)
+            caption_image=DestroyImage(caption_image);
+          else
+            {
+              caption_image->background_color=image->border_color;
+              (void) SetImageBackgroundColor(caption_image,exception);
+              (void) CloneString(&annotate_info->text,text);
+              (void) FormatLocaleString(geometry,MagickPathExtent,"+0+%.20g",
+                metrics.ascent);
+              if (annotate_info->gravity == UndefinedGravity)
+                (void) CloneString(&annotate_info->geometry,AcquireString(
+                  geometry));
+              (void) AnnotateImage(caption_image,annotate_info,exception);
+              height+=caption_image->rows;
+            }
+          text=DestroyString(text);
         }
       annotate_info=DestroyDrawInfo(annotate_info);
-      text=DestroyString(text);
     }
   picture_image=CloneImage(image,image->columns+2*quantum,height,MagickTrue,
     exception);
