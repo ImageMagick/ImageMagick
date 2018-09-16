@@ -2235,6 +2235,8 @@ MagickExport double *StringToArrayOfDoubles(const char *string,ssize_t *count,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   *count=0;
+  if (string == (char *) NULL)
+    return((double *) NULL);  /* no value found */
   i=0;
   p=string;
   while (*p != '\0')
