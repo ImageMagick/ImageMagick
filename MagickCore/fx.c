@@ -4051,20 +4051,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
   if (caption != (const char *) NULL)
     {
       char
-        geometry[MagickPathExtent],
         *text;
-
-      DrawInfo
-        *annotate_info;
-
-      MagickBooleanType
-        status;
-
-      ssize_t
-        count;
-
-      TypeMetric
-        metrics;
 
       /*
         Generate caption image.
@@ -4072,11 +4059,26 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
       caption_image=CloneImage(image,image->columns,1,MagickTrue,exception);
       if (caption_image == (Image *) NULL)
         return((Image *) NULL);
-      annotate_info=CloneDrawInfo((const ImageInfo *) NULL,draw_info);
       text=InterpretImageProperties((ImageInfo *) NULL,(Image *) image,caption,
         exception);
       if (text != (char *) NULL)
         {
+          char
+            geometry[MagickPathExtent];
+
+          DrawInfo
+            *annotate_info;
+
+          MagickBooleanType
+            status;
+
+          ssize_t
+            count;
+
+          TypeMetric
+            metrics;
+
+          annotate_info=CloneDrawInfo((const ImageInfo *) NULL,draw_info);
           (void) CloneString(&annotate_info->text,text);
           count=FormatMagickCaption(caption_image,annotate_info,MagickTrue,
             &metrics,&text,exception);
@@ -4097,9 +4099,9 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
               (void) AnnotateImage(caption_image,annotate_info,exception);
               height+=caption_image->rows;
             }
+          annotate_info=DestroyDrawInfo(annotate_info);
           text=DestroyString(text);
         }
-      annotate_info=DestroyDrawInfo(annotate_info);
     }
   picture_image=CloneImage(image,image->columns+2*quantum,height,MagickTrue,
     exception);
