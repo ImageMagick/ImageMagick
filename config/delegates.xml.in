@@ -68,7 +68,7 @@
   <delegate decode="doc" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
   <delegate decode="docx" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
   <delegate decode="dng:decode" command="&quot;@DNGDecodeDelegate@&quot; --silent --create-id=also --out-type=png --out-depth=16 &quot;--output=%u.png&quot; &quot;%i&quot;"/>
-  <delegate decode="dot" command='&quot;@GVCDecodeDelegate@&quot; -Tsvg &quot;%i&quot; -o &quot;%o&quot;' />
+  <delegate decode="dot" command="&quot;@GVCDecodeDelegate@&quot; -Tsvg &quot;%i&quot; -o &quot;%o&quot;" />
   <delegate decode="dvi" command="&quot;@DVIDecodeDelegate@&quot; -sstdout=%%stderr -o &quot;%o&quot; &quot;%i&quot;"/>
   <delegate decode="dxf" command="&quot;@UniconvertorDelegate@&quot; &quot;%i&quot; &quot;%o.svg&quot;; @MVDelegate@ &quot;%o.svg&quot; &quot;%o&quot;"/>
   <delegate decode="edit" stealth="True" command="&quot;@EditorDelegate@&quot; -title &quot;Edit Image Comment&quot; -e vi &quot;%o&quot;"/>
@@ -98,7 +98,7 @@
   <delegate decode="bmp" encode="wdp" command="@MVDelegate@ &quot;%i&quot; &quot;%i.bmp&quot;; &quot;@JXREncodeDelegate@&quot; -i &quot;%i.bmp&quot; -o &quot;%o.jxr&quot;; @MVDelegate@ &quot;%i.bmp&quot; &quot;%i&quot;; @MVDelegate@ &quot;%o.jxr&quot; &quot;%o&quot;"/>
   <delegate decode="ppt" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
   <delegate decode="pptx" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
-  <delegate decode="ps" encode="prt" command='&quot;@LPRDelegate@&quot; &quot;%i&quot;'/>
+  <delegate decode="ps" encode="prt" command="&quot;@LPRDelegate@&quot; &quot;%i&quot;"/>
   <delegate decode="ps:alpha" stealth="True" command="&quot;@PSDelegate@&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@GSAlphaDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
   <delegate decode="ps:cmyk" stealth="True" command="&quot;@PSDelegate@&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@GSCMYKDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
   <delegate decode="ps:color" stealth="True" command="&quot;@PSDelegate@&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@GSColorDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
