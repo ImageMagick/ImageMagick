@@ -2719,7 +2719,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "    Reading PNG iCCP chunk.");
 
-          profile=BlobToStringInfo(info,profile_length);
+          profile=BlobToStringInfo(info,(const size_t) profile_length);
 
           if (profile == (StringInfo *) NULL)
           {
@@ -2736,26 +2736,25 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
 
                  png_uint_32
-                   length,
                    profile_crc=0;
 
                  unsigned char
                    *data;
 
-                 length=(png_uint_32) GetStringInfoLength(profile);
+                 profile_length=(png_uint_32) GetStringInfoLength(profile);
 
                  for (icheck=0; sRGB_info[icheck].len > 0; icheck++)
                  {
-                   if (length == sRGB_info[icheck].len)
+                   if (profile_length == sRGB_info[icheck].len)
                    {
                      if (got_crc == 0)
                      {
                        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                          "    Got a %lu-byte ICC profile (potentially sRGB)",
-                         (unsigned long) length);
+                         (unsigned long) profile_length);
 
                        data=GetStringInfoDatum(profile);
-                       profile_crc=crc32(0,data,length);
+                       profile_crc=crc32(0,data,profile_length);
 
                        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                            "      with crc=%8x",(unsigned int) profile_crc);
@@ -2782,7 +2781,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                  {
                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "    Got %lu-byte ICC profile not recognized as sRGB",
-                        (unsigned long) length);
+                        (unsigned long) profile_length);
                     (void) SetImageProfile(image,"icc",profile,exception);
                  }
             }
@@ -8366,10 +8365,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     *image_info;
 
   char
+    *name,
     s[2];
 
   const char
-    *name,
     *property,
     *value;
 
@@ -8620,14 +8619,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
    */
    if (ping_exclude_sRGB == MagickFalse && ping_preserve_iCCP == MagickFalse)
    {
-      char
-        *name;
-
-      const StringInfo
-        *profile;
-
       ResetImageProfileIterator(image);
-      for (name=GetNextImageProfile(image); name != (const char *) NULL; )
+      for (name=GetNextImageProfile(image); name != (char *) NULL; )
       {
         profile=GetImageProfile(image,name);
 
@@ -11012,7 +11005,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
        (ping_exclude_iCCP == MagickFalse || ping_exclude_zCCP == MagickFalse))
     {
       ResetImageProfileIterator(image);
-      for (name=GetNextImageProfile(image); name != (const char *) NULL; )
+      for (name=GetNextImageProfile(image); name != (char *) NULL; )
       {
         profile=GetImageProfile(image,name);
 
@@ -11761,18 +11754,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   /* write eXIf profile */
   if (ping_have_eXIf != MagickFalse && ping_exclude_eXIf == MagickFalse)
     {
-      char
-        *name;
-
       ResetImageProfileIterator(image);
 
-      for (name=GetNextImageProfile(image); name != (const char *) NULL; )
+      for (name=GetNextImageProfile(image); name != (char *) NULL; )
       {
         if (LocaleCompare(name,"exif") == 0)
           {
-            const StringInfo
-              *profile;
-
             profile=GetImageProfile(image,name);
 
             if (profile != (StringInfo *) NULL)
