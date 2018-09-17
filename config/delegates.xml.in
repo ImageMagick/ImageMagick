@@ -104,7 +104,7 @@
   <delegate decode="ps:color" stealth="True" command="&quot;@PSDelegate@&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@GSColorDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
   <delegate decode="ps" encode="eps" mode="bi" command="&quot;@PSDelegate@&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@GSEPSDevice@&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
   <delegate decode="ps" encode="pdf" mode="bi" command="&quot;@PSDelegate@&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@GSPDFDevice@&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
-  <delegate decode="ps" encode="print" mode="encode" command="lpr &quot;%i&quot;"/>
+  <delegate decode="ps" encode="print" mode="encode" command="@LPRDelegateDefault@ &quot;%i&quot;"/>
   <delegate decode="ps:mono" stealth="True" command="&quot;@PSDelegate@&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@GSMonoDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
   <delegate decode="shtml" command="&quot;@HTMLDecodeDelegate@&quot; -U -o &quot;%o&quot; &quot;%i&quot;"/>
   <delegate decode="sid" command="&quot;@MrSIDDecodeDelegate@&quot; -if sid -i &quot;%i&quot; -of tif -o &quot;%o&quot; &gt; &quot;%u&quot;"/>
