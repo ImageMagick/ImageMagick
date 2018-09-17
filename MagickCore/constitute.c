@@ -491,9 +491,6 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   if ((magick_info != (const MagickInfo *) NULL) &&
       (GetMagickDecoderSeekableStream(magick_info) != MagickFalse))
     {
-      MagickBooleanType
-        status;
-
       image=AcquireImage(read_info,exception);
       (void) CopyMagickString(image->filename,read_info->filename,
         MagickPathExtent);
@@ -553,9 +550,6 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     }
   else
     {
-      MagickBooleanType
-        status;
-
       delegate_info=GetDelegateInfo(read_info->magick,(char *) NULL,exception);
       if (delegate_info == (const DelegateInfo *) NULL)
         {
