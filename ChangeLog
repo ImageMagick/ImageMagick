@@ -1,5 +1,5 @@
 2018-09-16  7.0.8-12 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.8-12, GIT revision 14810:8f613ec25:20180916.
+  * Release ImageMagick version 7.0.8-12, GIT revision 14810:8f613ec25:20180916
 
 2018-09-15  7.0.8-12 Dirk Lemstra <dirk@lem.....org>
   * Added support for arithmetic coding to the jpeg encoder:
