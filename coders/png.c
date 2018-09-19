@@ -8906,9 +8906,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   if (mng_info->write_png_colortype < 7)
   {
-    MagickBooleanType
-      taint;
-
   /* BUILD_PALETTE
    *
    * Normally we run this just once, but in the case of writing PNG8
@@ -8920,13 +8917,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
    * transparent and opaque instances.
    */
 
-  taint=image->taint;
-  (void) SetImageDepth(image,image->depth,exception);
-  image->taint=taint;
   tried_332 = MagickFalse;
   tried_333 = MagickFalse;
   tried_444 = MagickFalse;
 
+  image->depth=GetImageDepth(image,exception);
   for (j=0; j<6; j++)
   {
     /*
