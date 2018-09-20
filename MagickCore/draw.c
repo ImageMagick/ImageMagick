@@ -91,6 +91,7 @@
   Define declarations.
 */
 #define BezierQuantum  200
+#define PrimitiveExtentPad  128
 #define MaxBezierCoordinates  4194304
 #define ThrowPointExpectedException(token,exception) \
 { \
@@ -2234,29 +2235,28 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
 static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
   const size_t pad)
 {
+  double
+    extent;
+
   size_t
-    extent,
     quantum;
 
   /*
     Check if there is enough storage for drawing pimitives.
   */
-  extent=(size_t) mvg_info->offset+pad;
+  extent=(double) mvg_info->offset+pad+PrimitiveExtentPad;
   quantum=sizeof(**mvg_info->primitive_info);
-  if (~extent >= pad)
+  if (((extent*quantum) < (double) SSIZE_MAX) &&
+      ((extent*quantum) < (double) GetMaxMemoryRequest()))
     {
-      extent+=4096;
-      if ((~extent >= 4096) && ((extent*quantum) < GetMaxMemoryRequest()))
+      if (extent <= (double) *mvg_info->extent)
+        return(MagickTrue);
+      *mvg_info->primitive_info=ResizeQuantumMemory(*mvg_info->primitive_info,
+        (size_t) extent,quantum);
+      if (*mvg_info->primitive_info != (PrimitiveInfo *) NULL)
         {
-          if (extent <= *mvg_info->extent)
-            return(MagickTrue);
-          *mvg_info->primitive_info=ResizeQuantumMemory(
-            *mvg_info->primitive_info,extent,quantum);
-          if (*mvg_info->primitive_info != (PrimitiveInfo *) NULL)
-            {
-              *mvg_info->extent=extent;
-              return(MagickTrue);
-            }
+          *mvg_info->extent=(size_t) extent;
+          return(MagickTrue);
         }
     }
   /*
@@ -2267,8 +2267,8 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
   if (*mvg_info->primitive_info != (PrimitiveInfo *) NULL)
     *mvg_info->primitive_info=(PrimitiveInfo *) RelinquishMagickMemory(
       *mvg_info->primitive_info);
-  *mvg_info->primitive_info=AcquireCriticalMemory(4*quantum);
-  (void) memset(*mvg_info->primitive_info,0,4*quantum);
+  *mvg_info->primitive_info=AcquireCriticalMemory(PrimitiveExtentPad*quantum);
+  (void) memset(*mvg_info->primitive_info,0,PrimitiveExtentPad*quantum);
   *mvg_info->extent=1;
   return(MagickFalse);
 }
@@ -2513,7 +2513,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
-  number_points=4096;
+  number_points=PrimitiveExtentPad;
   primitive_info=(PrimitiveInfo *) AcquireQuantumMemory((size_t) number_points,
     sizeof(*primitive_info));
   if (primitive_info == (PrimitiveInfo *) NULL)
@@ -4043,7 +4043,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
         mvg_info.offset=i;
         status&=CheckPrimitiveExtent(&mvg_info,number_points);
       }
-    status&=CheckPrimitiveExtent(&mvg_info,4096);
+    status&=CheckPrimitiveExtent(&mvg_info,PrimitiveExtentPad);
     if (status == MagickFalse)
       break;
     mvg_info.offset=j;
@@ -6205,7 +6205,8 @@ static MagickBooleanType TraceEllipse(MVGInfo *mvg_info,const PointInfo center,
     y+=360.0;
   angle.y=DegreesToRadians(y);
   coordinates=ceil((angle.y-angle.x)/step+1.0);
-  if (coordinates > (double) SSIZE_MAX)
+  if ((coordinates > (double) SSIZE_MAX) ||
+      (coordinates > (double) GetMaxMemoryRequest()))
     {
       (void) ThrowMagickException(mvg_info->exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'","");
@@ -6456,7 +6457,7 @@ static size_t TracePath(MVGInfo *mvg_info,const char *path,
           if (token == next_token)
             ThrowPointExpectedException(token,exception);
           point.x=(double) (attribute == (int) 'H' ? x: point.x+x);
-          if (CheckPrimitiveExtent(mvg_info,4096) == MagickFalse)
+          if (CheckPrimitiveExtent(mvg_info,PrimitiveExtentPad) == MagickFalse)
             return(0);
           q=(*mvg_info->primitive_info)+mvg_info->offset;
           if (TracePoint(q,point) == MagickFalse)
@@ -6492,7 +6493,7 @@ static size_t TracePath(MVGInfo *mvg_info,const char *path,
             ThrowPointExpectedException(token,exception);
           point.x=(double) (attribute == (int) 'L' ? x : point.x+x);
           point.y=(double) (attribute == (int) 'L' ? y : point.y+y);
-          if (CheckPrimitiveExtent(mvg_info,4096) == MagickFalse)
+          if (CheckPrimitiveExtent(mvg_info,PrimitiveExtentPad) == MagickFalse)
             return(0);
           q=(*mvg_info->primitive_info)+mvg_info->offset;
           if (TracePoint(q,point) == MagickFalse)
@@ -6540,7 +6541,7 @@ static size_t TracePath(MVGInfo *mvg_info,const char *path,
           if (i == 0)
             start=point;
           i++;
-          if (CheckPrimitiveExtent(mvg_info,4096) == MagickFalse)
+          if (CheckPrimitiveExtent(mvg_info,PrimitiveExtentPad) == MagickFalse)
             return(0);
           q=(*mvg_info->primitive_info)+mvg_info->offset;
           if (TracePoint(q,point) == MagickFalse)
@@ -6717,7 +6718,7 @@ static size_t TracePath(MVGInfo *mvg_info,const char *path,
           if (token == next_token)
             ThrowPointExpectedException(token,exception);
           point.y=(double) (attribute == (int) 'V' ? y : point.y+y);
-          if (CheckPrimitiveExtent(mvg_info,4096) == MagickFalse)
+          if (CheckPrimitiveExtent(mvg_info,PrimitiveExtentPad) == MagickFalse)
             return(0);
           q=(*mvg_info->primitive_info)+mvg_info->offset;
           if (TracePoint(q,point) == MagickFalse)
@@ -6738,7 +6739,7 @@ static size_t TracePath(MVGInfo *mvg_info,const char *path,
           Close path.
         */
         point=start;
-        if (CheckPrimitiveExtent(mvg_info,4096) == MagickFalse)
+        if (CheckPrimitiveExtent(mvg_info,PrimitiveExtentPad) == MagickFalse)
           return(0);
         q=(*mvg_info->primitive_info)+mvg_info->offset;
         if (TracePoint(q,point) == MagickFalse)
@@ -6889,7 +6890,7 @@ static MagickBooleanType TraceRoundRectangle(MVGInfo *mvg_info,
     return(MagickFalse);
   p=(*mvg_info->primitive_info)+mvg_info->offset;
   mvg_info->offset+=p->coordinates;
-  if (CheckPrimitiveExtent(mvg_info,4096) == MagickFalse)
+  if (CheckPrimitiveExtent(mvg_info,PrimitiveExtentPad) == MagickFalse)
     return(MagickFalse);
   p=(*mvg_info->primitive_info)+mvg_info->offset;
   if (TracePoint(p,(*mvg_info->primitive_info+offset)->point) == MagickFalse)
