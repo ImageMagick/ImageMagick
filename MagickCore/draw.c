@@ -6188,9 +6188,6 @@ static MagickBooleanType TraceEllipse(MVGInfo *mvg_info,const PointInfo center,
   register ssize_t
     i;
 
-  size_t
-    extent;
-
   /*
     Ellipses are just short segmented polys.
   */
@@ -6208,14 +6205,13 @@ static MagickBooleanType TraceEllipse(MVGInfo *mvg_info,const PointInfo center,
     y+=360.0;
   angle.y=DegreesToRadians(y);
   coordinates=ceil((angle.y-angle.x)/step+1.0);
-  extent=(size_t) coordinates;
-  if ((double) extent < coordinates)
+  if (coordinates > (double) SSIZE_MAX)
     {
       (void) ThrowMagickException(mvg_info->exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'","");
       return(MagickFalse);
     }
-  if (CheckPrimitiveExtent(mvg_info,extent) == MagickFalse)
+  if (CheckPrimitiveExtent(mvg_info,(size_t) coordinates) == MagickFalse)
     return(MagickFalse);
   primitive_info=(*mvg_info->primitive_info)+mvg_info->offset;
   for (p=primitive_info; angle.x < angle.y; angle.x+=step)
