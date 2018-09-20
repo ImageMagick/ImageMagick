@@ -429,7 +429,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       image->compression=NoCompression;
       count=(ssize_t) ReadBlob(image,packets*image->rows,pixels);
-      if (count != (packets*image->rows))
+      if (count != (ssize_t) (packets*image->rows))
         {
           pixels=(unsigned char *) RelinquishMagickMemory(pixels);
           ThrowReaderException(CorruptImageError,"RLEDecoderError");
