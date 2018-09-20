@@ -3712,7 +3712,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           break;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          int index=ConstrainColormapIndex(image,(ssize_t) *r,exception);
+          ssize_t index=ConstrainColormapIndex(image,(ssize_t) *r,exception);
           SetPixelRed(image,ClampToQuantum(image->colormap[index].red),q);
           SetPixelGreen(image,ClampToQuantum(image->colormap[index].green),q);
           SetPixelBlue(image,ClampToQuantum(image->colormap[index].blue),q);
