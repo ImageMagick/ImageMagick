@@ -1485,7 +1485,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   if (elapsed_time > MagickEpsilon)
     {
       (void) FormatMagickSize((MagickSizeType) ((double) image->columns*
-        image->rows/elapsed_time+0.5),MagickFalse,"B",MagickPathExtent,format);
+        image->rows/elapsed_time+0.5),MagickFalse,"P",MagickPathExtent,format);
       (void) FormatLocaleFile(file,"  Pixels per second: %s\n",format);
     }
   (void) FormatLocaleFile(file,"  User time: %0.3fu\n",user_time);
