@@ -53,6 +53,7 @@
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
 #include "MagickCore/colormap.h"
+#include "MagickCore/colormap-private.h"
 #include "MagickCore/colorspace.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
@@ -3711,11 +3712,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           break;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetPixelRed(image,ClampToQuantum(image->colormap[(int) *r].red),q);
-          SetPixelGreen(image,ClampToQuantum(image->colormap[(int) *r].green),
-            q);
-          SetPixelBlue(image,ClampToQuantum(image->colormap[(int) *r].blue),q);
-          SetPixelIndex(image,*r,q);
+          int index=ConstrainColormapIndex(image,(ssize_t) *r,exception);
+          SetPixelRed(image,ClampToQuantum(image->colormap[index].red),q);
+          SetPixelGreen(image,ClampToQuantum(image->colormap[index].green),q);
+          SetPixelBlue(image,ClampToQuantum(image->colormap[index].blue),q);
+          SetPixelIndex(image,index,q);
           r++;
           q+=GetPixelChannels(image);
         }
@@ -8221,7 +8222,7 @@ static inline MagickBooleanType IsColorEqual(const Image *image,
     blue,
     green,
     red;
-  
+
   red=(MagickRealType) GetPixelRed(image,p);
   green=(MagickRealType) GetPixelGreen(image,p);
   blue=(MagickRealType) GetPixelBlue(image,p);
