@@ -1678,8 +1678,7 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
           ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
             image->filename);
         }
-      (void) memset(layer_info,0,(size_t) number_layers*
-        sizeof(*layer_info));
+      (void) memset(layer_info,0,(size_t) number_layers*sizeof(*layer_info));
 
       for (i=0; i < number_layers; i++)
       {

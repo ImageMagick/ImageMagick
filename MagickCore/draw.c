@@ -2094,7 +2094,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
             {
               offset=GetStopColorOffset(gradient,x,y);
               if (gradient->type != RadialGradient)
-								offset*=PerceptibleReciprocal(length);
+                offset*=PerceptibleReciprocal(length);
             }
           if (offset < 0.0)
             offset=(-offset);
@@ -2144,7 +2144,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
                     repeat=fmod(offset,length);
                   antialias=(repeat < length) && ((repeat+1.0) > length) ?
                     MagickTrue : MagickFalse;
-								  offset=PerceptibleReciprocal(length)*repeat;
+                  offset=PerceptibleReciprocal(length)*repeat;
                 }
               else
                 {
