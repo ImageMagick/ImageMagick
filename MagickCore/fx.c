@@ -3132,6 +3132,7 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
     y;
 
   assert(image != (Image *) NULL);
+  assert(expression != (char *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
