@@ -2415,7 +2415,7 @@ MagickPrivate MagickBooleanType InitializeOpenCL(MagickCLEnv clEnv,
   for (i=0; i < (ssize_t) clEnv->number_devices; i++)
   {
     if (strncmp(clEnv->devices[i]->platform_name,"NVIDIA",6) == 0)
-        clEnv->enabled=MagickFalse;
+      clEnv->devices[i]->enabled=MagickFalse;
   }
   UnlockSemaphoreInfo(clEnv->lock);
   return(HasOpenCLDevices(clEnv,exception));
