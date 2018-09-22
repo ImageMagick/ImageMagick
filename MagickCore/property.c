@@ -2870,6 +2870,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         }
       if (LocaleCompare("colors",property) == 0)
         {
+          WarnNoImageReturn("\"%%[%s]\"",property);
           image->colors=GetNumberColors(image,(FILE *) NULL,exception);
           (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
             image->colors);
