@@ -142,8 +142,7 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static Image *ReadTGAImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
