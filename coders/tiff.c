@@ -90,10 +90,10 @@
 #include "MagickCore/utility.h"
 #if defined(MAGICKCORE_TIFF_DELEGATE)
 # if defined(MAGICKCORE_HAVE_TIFFCONF_H)
-#  include "tiffconf.h"
+#  include <tiffconf.h>
 # endif
-# include "tiff.h"
-# include "tiffio.h"
+# include <tiff.h>
+# include <tiffio.h>
 # if !defined(COMPRESSION_ADOBE_DEFLATE)
 #  define COMPRESSION_ADOBE_DEFLATE  8
 # endif
