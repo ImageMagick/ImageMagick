@@ -300,7 +300,7 @@ Magick::Color::PixelType Magick::Color::pixelType() const
 
 void Magick::Color::isValid(bool valid_)
 {
-  if ((valid_ && isValid()) || (!valid_ && !isValid()))
+  if (bool(valid_) == bool(isValid()))
     return;
 
   if (!_pixelOwn)
