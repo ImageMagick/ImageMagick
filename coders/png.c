@@ -2062,8 +2062,8 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
 
       image->page.width=(size_t)mng_get_long(chunk->data);
       image->page.height=(size_t)mng_get_long(&chunk->data[4]);
-      image->page.x=(size_t)mng_get_long(&chunk->data[8]);
-      image->page.y=(size_t)mng_get_long(&chunk->data[12]);
+      image->page.x=(ssize_t)mng_get_long(&chunk->data[8]);
+      image->page.y=(ssize_t)mng_get_long(&chunk->data[12]);
 
       return(1);
     }
