@@ -270,7 +270,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
           one=1;
           image->colors=one << tga_info.bits_per_pixel;
-          if (image->colors > GetBlobSize(image))
+          if ((MagickSizeType) image->colors > GetBlobSize(image))
             ThrowReaderException(CorruptImageError,
               "InsufficientImageDataInFile");
           if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
