@@ -307,16 +307,28 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
   if (tga_info.attributes & (1UL << 4))
     {
       if (tga_info.attributes & (1UL << 5))
-        SetImageArtifact(image,"tga:image-origin","TopRight");
+        {
+          image->orientation=TopRightOrientation;
+          SetImageArtifact(image,"tga:image-origin","TopRight");
+        }
       else
-        SetImageArtifact(image,"tga:image-origin","BottomRight");
+        {
+          image->orientation=BottomRightOrientation;
+          SetImageArtifact(image,"tga:image-origin","BottomRight");
+        }
     }
   else
     {
       if (tga_info.attributes & (1UL << 5))
-        SetImageArtifact(image,"tga:image-origin","TopLeft");
+        {
+          image->orientation=TopLeftOrientation;
+          SetImageArtifact(image,"tga:image-origin","TopLeft");
+        }
       else
-        SetImageArtifact(image,"tga:image-origin","BottomLeft");
+        {
+          image->orientation=BottomLeftOrientation;
+          SetImageArtifact(image,"tga:image-origin","BottomLeft");
+        }
     }
   if (image_info->ping != MagickFalse)
     {
@@ -725,8 +737,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
     compression;
 
   const char
-    *comment,
-    *value;
+    *comment;
 
   const double
     midpoint = QuantumRange/2.0;
@@ -841,19 +852,12 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
         else
           tga_info.colormap_size=24;
       }
-  value=GetImageArtifact(image,"tga:image-origin");
-  if (value != (const char *) NULL)
-    {
-      OrientationType
-        origin;
-
-      origin=(OrientationType) ParseCommandOption(MagickOrientationOptions,
-        MagickFalse,value);
-      if (origin == BottomRightOrientation || origin == TopRightOrientation)
-        tga_info.attributes|=(1UL << 4);
-      if (origin == TopLeftOrientation || origin == TopRightOrientation)
-        tga_info.attributes|=(1UL << 5);
-    }
+  if ((image->orientation == BottomRightOrientation) ||
+      (image->orientation == TopRightOrientation))
+    tga_info.attributes|=(1UL << 4);
+  if ((image->orientation == TopLeftOrientation) ||
+      (image->orientation == TopRightOrientation))
+    tga_info.attributes|=(1UL << 5);
   /*
     Write TGA header.
   */
