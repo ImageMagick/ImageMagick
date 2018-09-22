@@ -307,28 +307,16 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
   if (tga_info.attributes & (1UL << 4))
     {
       if (tga_info.attributes & (1UL << 5))
-        {
-          image->orientation=TopRightOrientation;
-          SetImageArtifact(image,"tga:image-origin","TopRight");
-        }
+        image->orientation=TopRightOrientation;
       else
-        {
-          image->orientation=BottomRightOrientation;
-          SetImageArtifact(image,"tga:image-origin","BottomRight");
-        }
+        image->orientation=BottomRightOrientation;
     }
   else
     {
       if (tga_info.attributes & (1UL << 5))
-        {
-          image->orientation=TopLeftOrientation;
-          SetImageArtifact(image,"tga:image-origin","TopLeft");
-        }
+        image->orientation=TopLeftOrientation;
       else
-        {
-          image->orientation=BottomLeftOrientation;
-          SetImageArtifact(image,"tga:image-origin","BottomLeft");
-        }
+        image->orientation=BottomLeftOrientation;
     }
   if (image_info->ping != MagickFalse)
     {
