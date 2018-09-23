@@ -2255,6 +2255,8 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
         (size_t) extent,quantum);
       if (*mvg_info->primitive_info != (PrimitiveInfo *) NULL)
         {
+          (void) memset(*mvg_info->primitive_info+*mvg_info->extent,0,
+            (extent-(*mvg_info->extent))*quantum);
           *mvg_info->extent=(size_t) extent;
           return(MagickTrue);
         }
