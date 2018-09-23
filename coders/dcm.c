@@ -2875,7 +2875,7 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
           else
             if ((info->bits_allocated != 12) || (info->significant_bits != 12))
               {
-                if (info->signed_data)
+                if (info->signed_data != 0)
                   pixel_value=ReadDCMSignedShort(stream_info,image);
                 else
                   pixel_value=(int) ReadDCMShort(stream_info,image);
@@ -2885,8 +2885,12 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
             else
               {
                 if ((i & 0x01) != 0)
-                  pixel_value=(ReadDCMByte(stream_info,image) << 8) |
-                    byte;
+                  { 
+                    pixel_value=byte;
+                    byte=ReadDCMByte(stream_info,image);
+                    if (byte >= 0)  
+                      pixel_value|=(byte << 8);
+                  }
                 else
                   {
                     pixel_value=ReadDCMSignedShort(stream_info,image);
