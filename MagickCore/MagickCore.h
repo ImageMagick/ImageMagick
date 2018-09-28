@@ -47,9 +47,6 @@ extern "C" {
 #  undef inline
 # endif
 #endif
-#if __cplusplus > 199711L
-#define register
-#endif
 
 #define MAGICKCORE_CHECK_VERSION(major,minor,micro) \
   ((MAGICKCORE_MAJOR_VERSION > (major)) || \
