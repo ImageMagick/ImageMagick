@@ -637,7 +637,7 @@ static inline void SetPixelb(const Image *magick_restrict image,
 static inline void SetPixelBackgoundColor(const Image *magick_restrict image,
   Quantum *magick_restrict pixel)
 {
-  register ssize_t
+  ssize_t
     i;
 
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
