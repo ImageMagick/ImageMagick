@@ -194,17 +194,32 @@ static int stringnicmp(const char *p,const char *q,size_t n)
   return(toupper((int) *p)-toupper((int) *q));
 }
 
-static size_t convertHTMLcodes(char *s, const size_t len)
+static size_t convertHTMLcodes(char *s)
 {
   int
     value;
 
-  if ((len == 0) || (s == (char*) NULL) || (*s=='\0'))
+  register size_t
+    i;
+
+  size_t
+    length;
+
+  length=0;
+  for (i=0; (i < 7U) && (s[i] != '\0'); i++)
+    if (s[i] == ';')
+      {
+        length=i+1;
+        break;
+      }
+  if ((length == 0) || (s == (char *) NULL) || (*s == '\0'))
     return(0);
-  if ((len > 3) && (s[1] == '#') && (strchr(s,';') != (char *) NULL) &&
-      (sscanf(s,"&#%d;",&value) == 1))
+  if ((length > 3) && (s[1] == '#') && (sscanf(s,"&#%d;",&value) == 1))
     {
-      size_t o = 3;
+      size_t
+        o;
+
+      o=3;
       while (s[o] != ';')
       {
         o++;
@@ -216,25 +231,23 @@ static size_t convertHTMLcodes(char *s, const size_t len)
       *s=value;
       return(o);
     }
-  else
-    {
-      int
-        i,
-        codes;
+  {
+    int
+      codes;
 
-      codes=sizeof(html_codes)/sizeof(html_code);
-      for (i=0; i < codes; i++)
-      {
-        if (html_codes[i].len <= (ssize_t) len)
-          if (stringnicmp(s, html_codes[i].code,(size_t) (html_codes[i].len)) == 0)
-            {
-              (void) memmove(s+1,s+html_codes[i].len,
-                strlen(s+html_codes[i].len)+1);
-              *s=html_codes[i].val;
-              return(html_codes[i].len-1);
-            }
-      }
+    codes=sizeof(html_codes)/sizeof(html_code);
+    for (i=0; i < codes; i++)
+    {
+      if (html_codes[i].len <= length)
+        if (stringnicmp(s,html_codes[i].code,(size_t) (html_codes[i].len)) == 0)
+          {
+            (void) memmove(s+1,s+html_codes[i].len,strlen(s+html_codes[i].len)+
+              1);
+            *s=html_codes[i].val;
+            return(html_codes[i].len-1);
+          }
     }
+  }
   return(0);
 }
 
@@ -406,7 +419,7 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
                   char
                     *s = &token[next-1];
 
-                  codes_length=convertHTMLcodes(s, strlen(s));
+                  codes_length=convertHTMLcodes(s);
                   if ((ssize_t) codes_length > len)
                     len=0;
                   else
@@ -718,7 +731,7 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
                   char
                     *s = &token[next-1];
 
-                  codes_length=convertHTMLcodes(s, strlen(s));
+                  codes_length=convertHTMLcodes(s);
                   if ((ssize_t) codes_length > len)
                     len=0;
                   else
