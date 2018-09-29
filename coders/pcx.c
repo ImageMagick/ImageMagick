@@ -356,7 +356,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
-    if ((MagickOffsetType) (image->columns*image->rows/255) > GetBlobSize(image))
+    if ((MagickSizeType) (image->columns*image->rows/255) > GetBlobSize(image))
       ThrowPCXException(CorruptImageError,"InsufficientImageDataInFile");
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)

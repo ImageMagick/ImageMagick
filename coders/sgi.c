@@ -373,7 +373,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
-    if ((MagickOffsetType) (image->columns*image->rows/255) > GetBlobSize(image))
+    if ((MagickSizeType) (image->columns*image->rows/255) > GetBlobSize(image))
       ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status != MagickFalse)
@@ -416,7 +416,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (y=0; y < (ssize_t) iris_info.rows; y++)
           {
             count=ReadBlob(image,bytes_per_pixel*iris_info.columns,scanline);
-            if (count != (bytes_per_pixel*iris_info.columns))
+            if (count != (ssize_t) (bytes_per_pixel*iris_info.columns))
               break;
             if (bytes_per_pixel == 2)
               for (x=0; x < (ssize_t) iris_info.columns; x++)
@@ -517,7 +517,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 count=ReadBlob(image,(size_t) runlength[y+z*iris_info.rows],
                   packets);
-                if (count != runlength[y+z*iris_info.rows])
+                if (count != (ssize_t) runlength[y+z*iris_info.rows])
                   break;
                 offset+=(ssize_t) runlength[y+z*iris_info.rows];
                 status=SGIDecode(bytes_per_pixel,(ssize_t)
@@ -557,7 +557,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 count=ReadBlob(image,(size_t) runlength[y+z*iris_info.rows],
                   packets);
-                if (count != runlength[y+z*iris_info.rows])
+                if (count != (ssize_t) runlength[y+z*iris_info.rows])
                   break;
                 offset+=(ssize_t) runlength[y+z*iris_info.rows];
                 status=SGIDecode(bytes_per_pixel,(ssize_t)

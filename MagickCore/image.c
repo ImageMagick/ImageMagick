@@ -3199,17 +3199,40 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
     {
       switch (type)
       {
-        case ReadPixelMask: image->channels&=(~ReadMaskChannel); break;
-        case WritePixelMask: image->channels&=(~WriteMaskChannel); break;
-        default: image->channels&=(~CompositeMaskChannel); break;
+        case ReadPixelMask:
+        {
+          image->channels=(ChannelType) (image->channels & ~ReadMaskChannel);
+          break;
+        }
+        case WritePixelMask:
+        {
+          image->channels=(ChannelType) (image->channels & ~WriteMaskChannel);
+        }
+        default:
+        {
+          image->channels=(ChannelType) (image->channels & ~CompositeMaskChannel);
+          break;
+        }
       }
       return(SyncImagePixelCache(image,exception));
     }
   switch (type)
   {
-    case ReadPixelMask: image->channels|=ReadMaskChannel; break;
-    case WritePixelMask: image->channels|=WriteMaskChannel; break;
-    default: image->channels|=CompositeMaskChannel; break;
+    case ReadPixelMask:
+    {
+      image->channels=(ChannelType) (image->channels | ~ReadMaskChannel);
+      break;
+    }
+    case WritePixelMask:
+    {
+      image->channels=(ChannelType) (image->channels | ~WriteMaskChannel);
+      break;
+    }
+    default:
+    {
+      image->channels=(ChannelType) (image->channels | ~CompositeMaskChannel);
+      break;
+    }
   }
   if (SyncImagePixelCache(image,exception) == MagickFalse)
     return(MagickFalse);
@@ -3332,17 +3355,41 @@ MagickExport MagickBooleanType SetImageRegionMask(Image *image,
     {
       switch (type)
       {
-        case ReadPixelMask: image->channels&=(~ReadMaskChannel); break;
-        case WritePixelMask: image->channels&=(~WriteMaskChannel); break;
-        default: image->channels&=(~CompositeMaskChannel); break;
+        case ReadPixelMask:
+        {
+          image->channels=(ChannelType) (image->channels & ~ReadMaskChannel);
+          break;
+        }
+        case WritePixelMask:
+        {
+          image->channels=(ChannelType) (image->channels & ~WriteMaskChannel);
+          break;
+        }
+        default:
+        {
+          image->channels=(ChannelType) (image->channels & ~CompositeMaskChannel);
+          break;
+        }
       }
       return(SyncImagePixelCache(image,exception));
     }
   switch (type)
   {
-    case ReadPixelMask: image->channels|=ReadMaskChannel; break;
-    case WritePixelMask: image->channels|=WriteMaskChannel; break;
-    default: image->channels|=CompositeMaskChannel; break;
+    case ReadPixelMask:
+    {
+      image->channels=(ChannelType) (image->channels | ReadMaskChannel);
+      break;
+    }
+    case WritePixelMask:
+    {
+      image->channels=(ChannelType) (image->channels | WriteMaskChannel);
+      break;
+    }
+    default:
+    {
+      image->channels=(ChannelType) (image->channels | CompositeMaskChannel);
+      break;
+    }
   }
   if (SyncImagePixelCache(image,exception) == MagickFalse)
     return(MagickFalse);

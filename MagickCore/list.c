@@ -257,8 +257,8 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
           if (last > (ssize_t) length)
             last=(ssize_t) length;
       }
-    first=MagickMin(MagickMax(first,0),length);
-    last=MagickMin(MagickMax(last,0),length);
+    first=MagickMin(MagickMax(first,0),(ssize_t) length);
+    last=MagickMin(MagickMax(last,0),(ssize_t) length);
     step=(ssize_t) (first > last ? -1 : 1);
     for ( ; first != (last+step); first+=step)
     {

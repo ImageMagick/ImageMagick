@@ -1451,7 +1451,7 @@ RestoreMSCWarning
       if (value != (const char *) NULL)
         (void) CopyMagickString(create_date,value,MagickPathExtent);
       (void) FormatMagickTime(time((time_t *) NULL),MagickPathExtent,timestamp);
-      url=MagickAuthoritativeURL;
+      url=(char *) MagickAuthoritativeURL;
       escape=EscapeParenthesis(basename);
       i=FormatLocaleString(xmp_profile,MagickPathExtent,XMPProfile,
         XMPProfileMagick,modify_date,create_date,timestamp,url,escape,url);
@@ -2979,7 +2979,7 @@ RestoreMSCWarning
   (void) WriteBlobString(image,buffer);
   (void) FormatLocaleString(buffer,MagickPathExtent,"/ModDate (%s)\n",date);
   (void) WriteBlobString(image,buffer);
-  url=MagickAuthoritativeURL;
+  url=(char *) MagickAuthoritativeURL;
   escape=EscapeParenthesis(url);
   (void) FormatLocaleString(buffer,MagickPathExtent,"/Producer (%s)\n",escape);
   escape=DestroyString(escape);

@@ -382,7 +382,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (next == (char *) NULL)
       break;
     length=MagickMin((size_t) width,MagickPathExtent-1);
-    if (CopyXPMColor(key,p,length) != length)
+    if (CopyXPMColor(key,p,length) != (ssize_t) length)
       break;
     status=AddValueToSplayTree(xpm_colors,ConstantString(key),(void *) j);
     /*

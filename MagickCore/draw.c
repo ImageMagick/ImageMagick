@@ -1420,7 +1420,8 @@ static MagickBooleanType DrawBoundingRectangles(Image *image,
         end.x=(double) (polygon_info->edges[i].bounds.x2+mid);
         end.y=(double) (polygon_info->edges[i].bounds.y2+mid);
         primitive_info[0].primitive=RectanglePrimitive;
-        status&=TraceRectangle(primitive_info,start,end);
+        if (TraceRectangle(primitive_info,start,end) == MagickFalse)
+          status=MagickFalse;
         primitive_info[0].method=ReplaceMethod;
         coordinates=(ssize_t) primitive_info[0].coordinates;
         primitive_info[coordinates].primitive=UndefinedPrimitive;
@@ -1446,7 +1447,8 @@ static MagickBooleanType DrawBoundingRectangles(Image *image,
   end.x=(double) (bounds.x2+mid);
   end.y=(double) (bounds.y2+mid);
   primitive_info[0].primitive=RectanglePrimitive;
-  status&=TraceRectangle(primitive_info,start,end);
+  if (TraceRectangle(primitive_info,start,end) == MagickFalse)
+    status=MagickFalse;
   primitive_info[0].method=ReplaceMethod;
   coordinates=(ssize_t) primitive_info[0].coordinates;
   primitive_info[coordinates].primitive=UndefinedPrimitive;
@@ -2251,8 +2253,8 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
     {
       if (extent <= (double) *mvg_info->extent)
         return(MagickTrue);
-      *mvg_info->primitive_info=ResizeQuantumMemory(*mvg_info->primitive_info,
-        (size_t) extent,quantum);
+      *mvg_info->primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(
+        *mvg_info->primitive_info,(size_t) extent,quantum);
       if (*mvg_info->primitive_info != (PrimitiveInfo *) NULL)
         {
           (void) memset(*mvg_info->primitive_info+*mvg_info->extent,0,
@@ -2269,7 +2271,8 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
   if (*mvg_info->primitive_info != (PrimitiveInfo *) NULL)
     *mvg_info->primitive_info=(PrimitiveInfo *) RelinquishMagickMemory(
       *mvg_info->primitive_info);
-  *mvg_info->primitive_info=AcquireCriticalMemory(PrimitiveExtentPad*quantum);
+  *mvg_info->primitive_info=(PrimitiveInfo *) AcquireCriticalMemory(
+    PrimitiveExtentPad*quantum);
   (void) memset(*mvg_info->primitive_info,0,PrimitiveExtentPad*quantum);
   *mvg_info->extent=1;
   return(MagickFalse);
@@ -2489,7 +2492,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
     {
       status=SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       if (status == MagickFalse)
-        return(status);
+        return(status != 0 ? MagickTrue : MagickFalse);
     }
   primitive=(char *) NULL;
   if (*draw_info->primitive != '@')
@@ -6024,7 +6027,8 @@ static MagickBooleanType TraceArcPath(MVGInfo *mvg_info,const PointInfo start,
       points[2].y);
     if (i == (ssize_t) (arc_segments-1))
       (p+3)->point=end;
-    status&=TraceBezier(mvg_info,4);
+    if (TraceBezier(mvg_info,4) == MagickFalse)
+      status=MagickFalse;
     p=(*mvg_info->primitive_info)+mvg_info->offset;
     mvg_info->offset+=p->coordinates;
     p+=p->coordinates;
@@ -6963,7 +6967,7 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
   const DrawInfo *draw_info,const PrimitiveInfo *primitive_info)
 {
 #define CheckPathExtent(pad) \
-  if ((q+(pad)) >= (ssize_t) max_strokes) \
+  if ((ssize_t) (q+(pad)) >= (ssize_t) max_strokes) \
     { \
       if (~max_strokes < (pad)) \
         { \

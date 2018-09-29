@@ -317,7 +317,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (comment == (char *) NULL)
               ThrowRLEException(ResourceLimitError,"MemoryAllocationFailed");
             count=ReadBlob(image,length-1,(unsigned char *) comment);
-            if (count != (length-1))
+            if (count != (ssize_t) (length-1))
               {
                 comment=DestroyString(comment);
                 ThrowRLEException(CorruptImageError,"UnexpectedEndOfFile");

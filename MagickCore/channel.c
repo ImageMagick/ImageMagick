@@ -378,17 +378,20 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             }
             case CompositeMaskPixelChannel:
             {
-              destination_image->channels|=CompositeMaskChannel;
+              destination_image->channels=(ChannelType)
+                (destination_image->channels | CompositeMaskChannel);
               break;
             }
             case ReadMaskPixelChannel:
             {
-              destination_image->channels|=ReadMaskChannel;
+              destination_image->channels=(ChannelType)
+                (destination_image->channels | ReadMaskChannel);
               break;
             }
             case WriteMaskPixelChannel:
             {
-              destination_image->channels|=WriteMaskChannel;
+              destination_image->channels=(ChannelType)
+                (destination_image->channels | WriteMaskChannel);
               break;
             }
             case MetaPixelChannel:

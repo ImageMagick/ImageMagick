@@ -231,22 +231,15 @@ static size_t convertHTMLcodes(char *s)
       *s=value;
       return(o);
     }
+  for (i=0; i < (ssize_t) (sizeof(html_codes)/sizeof(html_code)); i++)
   {
-    int
-      codes;
-
-    codes=sizeof(html_codes)/sizeof(html_code);
-    for (i=0; i < codes; i++)
-    {
-      if (html_codes[i].len <= length)
-        if (stringnicmp(s,html_codes[i].code,(size_t) (html_codes[i].len)) == 0)
-          {
-            (void) memmove(s+1,s+html_codes[i].len,strlen(s+html_codes[i].len)+
-              1);
-            *s=html_codes[i].val;
-            return(html_codes[i].len-1);
-          }
-    }
+    if (html_codes[i].len <= (ssize_t) length)
+      if (stringnicmp(s,html_codes[i].code,(size_t) (html_codes[i].len)) == 0)
+        {
+          (void) memmove(s+1,s+html_codes[i].len,strlen(s+html_codes[i].len)+1);
+          *s=html_codes[i].val;
+          return(html_codes[i].len-1);
+        }
   }
   return(0);
 }
@@ -2241,7 +2234,7 @@ static int format8BIM(Image *ifile, Image *ofile)
       }
     }
     count=(ssize_t) ReadBlobMSBSignedLong(ifile);
-    if ((count < 0) || (count > GetBlobSize(ifile)))
+    if ((count < 0) || (count > (ssize_t) GetBlobSize(ifile)))
       {
         PString=(unsigned char *) RelinquishMagickMemory(PString);
         return -1;

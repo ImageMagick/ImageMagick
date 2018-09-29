@@ -1214,7 +1214,8 @@ MagickExport int EOFBlob(const Image *image)
     case ZipStream:
     {
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
-      blob_info->eof=gzeof(blob_info->file_info.gzfile);
+      blob_info->eof=gzeof(blob_info->file_info.gzfile) != 0 ? MagickTrue :
+        MagickFalse;
 #endif
       break;
     }
