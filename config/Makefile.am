@@ -67,6 +67,7 @@ CONFIG_EXTRA_DIST = \
 	config/quantization-table.xml \
 	config/sRGB.icm \
 	config/thresholds.xml \
+	config/Translation.md \
 	config/type-apple.xml.in \
 	config/type-dejavu.xml.in \
 	config/type-ghostscript.xml.in \
