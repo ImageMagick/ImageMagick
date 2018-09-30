@@ -2551,7 +2551,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   if (value != (char *) NULL)
     colorspace=StringToInteger(value);
   sampling_factor=(const char *) NULL;
-  if (colorspace == jpeg_info.in_color_space)
+  if ((J_COLOR_SPACE) colorspace == jpeg_info.in_color_space)
     {
       value=GetImageOption(image_info,"jpeg:sampling-factor");
       if (value == (char *) NULL)

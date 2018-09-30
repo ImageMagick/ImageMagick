@@ -4637,9 +4637,9 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
         chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
-        if (jng_width > 65535 || jng_height > 65535 ||
-             (long) jng_width > GetMagickResourceLimit(WidthResource) ||
-             (long) jng_height > GetMagickResourceLimit(HeightResource))
+        if ((jng_width > 65535) || (jng_height > 65535) ||
+            (MagickSizeType) jng_width > GetMagickResourceLimit(WidthResource) ||
+            (MagickSizeType) jng_height > GetMagickResourceLimit(HeightResource))
           {
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                "    JNG width or height too large: (%lu x %lu)",
