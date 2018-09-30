@@ -2880,11 +2880,21 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         minimum=(double) QuantumRange;
         switch (method)
         {
-          case ConvolveMorphology: pixel=bias; break;
+          case ConvolveMorphology:
+          {
+            pixel=bias;
+            break;
+          }
           case DilateMorphology:
           case ErodeIntensityMorphology:
           {
             pixel=0.0;
+            break;
+          }
+          case HitAndMissMorphology:
+          case ErodeMorphology:
+          {
+            pixel=QuantumRange;
             break;
           }
           default:

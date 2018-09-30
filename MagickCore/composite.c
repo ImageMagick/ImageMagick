@@ -1415,7 +1415,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         case ColorBurnCompositeOp:
         case ColorDodgeCompositeOp:
         case DarkenCompositeOp:
-        case DifferenceCompositeOp:
         case DivideDstCompositeOp:
         case DivideSrcCompositeOp:
         case ExclusionCompositeOp:
@@ -1467,6 +1466,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           alpha=Da*(1.0-Sa);
           break;
         }
+        case DifferenceCompositeOp:
         case OutCompositeOp:
         case SrcOutCompositeOp:
         {
