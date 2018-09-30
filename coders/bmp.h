@@ -16,6 +16,14 @@
 
 #include "coders/coders-private.h"
 
+#define MagickBMPHeaders \
+  MagickCoderHeader("BMP", 0, "BA") \
+  MagickCoderHeader("BMP", 0, "BM") \
+  MagickCoderHeader("BMP", 0, "CI") \
+  MagickCoderHeader("BMP", 0, "CP") \
+  MagickCoderHeader("BMP", 0, "IC") \
+  MagickCoderHeader("BMP", 0, "IP")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

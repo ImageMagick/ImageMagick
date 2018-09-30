@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickEPTHeaders \
+  MagickCoderHeader("EPT", 0, "\305\320\323\306")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

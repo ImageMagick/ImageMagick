@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickSUNHeaders \
+  MagickCoderHeader("SUN", 0, "\131\246\152\225")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

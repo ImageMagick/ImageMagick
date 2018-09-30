@@ -16,6 +16,9 @@
 #ifndef MAGICK_CODERS_PRIVATE_H
 #define MAGICK_CODERS_PRIVATE_H
 
+#define MagickCoderHeader(coder,offset,magic)  { coder, offset, \
+  (const unsigned char *) (magic), sizeof(magic)-1 },
+
 #define MagickCoderExports(coder) \
 extern ModuleExport size_t \
   Register ## coder ## Image(void); \

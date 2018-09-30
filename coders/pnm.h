@@ -16,6 +16,17 @@
 
 #include "coders/coders-private.h"
 
+#define MagickPNMHeaders \
+  MagickCoderHeader("PBM", 0, "P1") \
+  MagickCoderHeader("PGM", 0, "P2") \
+  MagickCoderHeader("PPM", 0, "P3") \
+  MagickCoderHeader("PBM", 0, "P4") \
+  MagickCoderHeader("PGM", 0, "P5") \
+  MagickCoderHeader("PPM", 0, "P6") \
+  MagickCoderHeader("PAM", 0, "P7") \
+  MagickCoderHeader("PFM", 0, "PF") \
+  MagickCoderHeader("PFM", 0, "Pf")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

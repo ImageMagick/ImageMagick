@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickSFWHeaders \
+  MagickCoderHeader("SFW", 0, "SFW94")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickVIFFHeaders \
+  MagickCoderHeader("VIFF", 0, "\253\001")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

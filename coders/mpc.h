@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickMPCHeaders \
+  MagickCoderHeader("MPC", 0, "id=MagickCache")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

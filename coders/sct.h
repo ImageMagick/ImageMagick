@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickSCTHeaders \
+  MagickCoderHeader("SCT", 0, "CT")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

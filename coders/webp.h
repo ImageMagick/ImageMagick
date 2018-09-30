@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickWEBPHeaders \
+  MagickCoderHeader("WEBP", 8, "WEBP")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

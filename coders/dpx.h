@@ -16,6 +16,10 @@
 
 #include "coders/coders-private.h"
 
+#define MagickDPXHeaders \
+  MagickCoderHeader("DPX", 0, "SDPX") \
+  MagickCoderHeader("DPX", 0, "XPDS")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

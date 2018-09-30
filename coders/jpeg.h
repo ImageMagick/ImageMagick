@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickJPEGHeaders \
+  MagickCoderHeader("JPEG", 0, "\377\330\377")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

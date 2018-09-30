@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickDIBHeaders \
+  MagickCoderHeader("DIB", 0, "\050\000")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

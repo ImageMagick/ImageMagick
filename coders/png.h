@@ -16,6 +16,11 @@
 
 #include "coders/coders-private.h"
 
+#define MagickPNGHeaders \
+  MagickCoderHeader("PNG", 0, "\211PNG\r\n\032\n") \
+  MagickCoderHeader("JNG", 0, "\213JNG\r\n\032\n") \
+  MagickCoderHeader("MNG", 0, "\212MNG\r\n\032\n")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

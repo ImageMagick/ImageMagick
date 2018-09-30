@@ -16,6 +16,11 @@
 
 #include "coders/coders-private.h"
 
+#define MagickPSHeaders \
+  MagickCoderHeader("PS", 0, "%!") \
+  MagickCoderHeader("PS", 0, "\004%!") \
+  MagickCoderHeader("PS", 0, "\305\320\323\306")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

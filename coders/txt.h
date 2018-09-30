@@ -16,6 +16,10 @@
 
 #include "coders/coders-private.h"
 
+#define MagickTXTID  "# ImageMagick pixel enumeration:"
+#define MagickTXTHeaders \
+  MagickCoderHeader("TXT", 0, MagickTXTID)
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

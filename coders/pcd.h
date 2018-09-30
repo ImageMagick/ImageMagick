@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickPCDHeaders \
+  MagickCoderHeader("PCD", 2048, "PCD_")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

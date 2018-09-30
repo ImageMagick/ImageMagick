@@ -16,6 +16,10 @@
 
 #include "coders/coders-private.h"
 
+#define MagickMPEGHeaders \
+  MagickCoderHeader("MPEG", 0, "\000\000\001\263") \
+  MagickCoderHeader("MPEG", 0, "RIFF")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

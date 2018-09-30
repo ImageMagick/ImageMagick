@@ -16,6 +16,11 @@
 
 #include "coders/coders-private.h"
 
+#define MagickEMFHeaders \
+  MagickCoderHeader("EMF", 40, "\040\105\115\106\000\000\001\000") \
+  MagickCoderHeader("WMF", 0, "\327\315\306\232") \
+  MagickCoderHeader("WMF", 0, "\001\000\011\000")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

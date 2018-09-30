@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickPDBHeaders \
+  MagickCoderHeader("PDB", 60, "vIMGView")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

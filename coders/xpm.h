@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickXPMHeaders \
+  MagickCoderHeader("XPM", 1, "* XPM *")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickIPLHeaders \
+  MagickCoderHeader("IPL", 0, "data")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

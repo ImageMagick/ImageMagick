@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickPWPHeaders \
+  MagickCoderHeader("PWP", 0, "SFW95")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

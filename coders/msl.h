@@ -16,6 +16,8 @@
 
 #include "coders/coders-private.h"
 
+#define MagickMSLHeaders
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

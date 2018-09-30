@@ -16,6 +16,10 @@
 
 #include "coders/coders-private.h"
 
+#define MagickVIPSHeaders \
+  MagickCoderHeader("VIPS", 0, "\010\362\246\266") \
+  MagickCoderHeader("VIPS", 0, "\266\246\362\010")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

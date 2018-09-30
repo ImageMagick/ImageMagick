@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickPDFHeaders \
+  MagickCoderHeader("PDF", 0, "%PDF-")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

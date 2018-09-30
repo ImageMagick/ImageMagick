@@ -16,6 +16,10 @@
 
 #include "coders/coders-private.h"
 
+#define MagickPSDHeaders \
+  MagickCoderHeader("PSB", 0, "8BPB") \
+  MagickCoderHeader("PSD", 0, "8BPS")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

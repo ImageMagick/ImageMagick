@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickFAXHeaders \
+  MagickCoderHeader("FAX", 0, "DFAX")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

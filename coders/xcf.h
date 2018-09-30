@@ -16,6 +16,10 @@
 
 #include "coders/coders-private.h"
 
+#define MagickXCFHeaders \
+  MagickCoderHeader("XCF", 0, "gimp xcf")
+
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

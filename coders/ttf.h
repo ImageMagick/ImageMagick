@@ -16,6 +16,11 @@
 
 #include "coders/coders-private.h"
 
+#define MagickTTFHeaders \
+  MagickCoderHeader("TTF", 0, "\000\001\000\000\000") \
+  MagickCoderHeader("PFA", 0, "%!PS-AdobeFont-1.0") \
+  MagickCoderHeader("PFB", 6, "%!PS-AdobeFont-1.0")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

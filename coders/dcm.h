@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickDCMHeaders \
+  MagickCoderHeader("DCM", 128, "DICM")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

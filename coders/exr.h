@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickEXRHeaders \
+  MagickCoderHeader("EXR", 0, "\166\057\061\001")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

@@ -16,6 +16,11 @@
 
 #include "coders/coders-private.h"
 
+#define MagickJP2Headers \
+  MagickCoderHeader("JP2", 0, "\x00\x00\x00\x0c\x6a\x50\x20\x20\x0d\x0a\x87\x0a") \
+  MagickCoderHeader("JPC", 0, "\x0d\x0a\x87\x0a") \
+  MagickCoderHeader("J2K", 0, "\xff\x4f\xff\x51")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

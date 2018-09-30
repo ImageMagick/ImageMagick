@@ -16,6 +16,11 @@
 
 #include "coders/coders-private.h"
 
+#define MagickVICARHeaders \
+  MagickCoderHeader("VICAR", 0, "LBLSIZE") \
+  MagickCoderHeader("VICAR", 0, "NJPL1I") \
+  MagickCoderHeader("VICAR", 0, "PDS_VERSION_ID")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

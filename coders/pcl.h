@@ -16,6 +16,10 @@
 
 #include "coders/coders-private.h"
 
+#define MagickPCLHeaders \
+  MagickCoderHeader("PCL", 0, "\033E\033")
+
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

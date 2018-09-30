@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickWPGHeaders \
+  MagickCoderHeader("WPG", 0, "\377WPC")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

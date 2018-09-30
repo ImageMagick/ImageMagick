@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickDOTHeaders \
+  MagickCoderHeader("DOT", 0, "digraph")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

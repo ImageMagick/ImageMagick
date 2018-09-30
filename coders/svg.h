@@ -16,6 +16,12 @@
 
 #include "coders/coders-private.h"
 
+#define MagickSVGHeaders \
+  MagickCoderHeader("SVG", 1, "?XML") \
+  MagickCoderHeader("SVG", 1, "?xml") \
+  MagickCoderHeader("SVG", 1, "SVG") \
+  MagickCoderHeader("SVG", 1, "svg")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

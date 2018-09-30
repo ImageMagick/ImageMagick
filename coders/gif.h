@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickGIFHeaders \
+  MagickCoderHeader("GIF", 0, "GIF8")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

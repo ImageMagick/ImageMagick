@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickDDSHeaders \
+  MagickCoderHeader("DDS", 0, "DDS ")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

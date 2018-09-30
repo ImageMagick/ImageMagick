@@ -16,6 +16,10 @@
 
 #include "coders/coders-private.h"
 
+#define MagickHDRHeaders \
+  MagickCoderHeader("HDR", 0, "#?RADIANCE") \
+  MagickCoderHeader("HDR", 0, "#?RGBE")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

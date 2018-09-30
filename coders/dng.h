@@ -16,6 +16,12 @@
 
 #include "coders/coders-private.h"
 
+#define MagickDNGHeaders \
+  MagickCoderHeader("CRW", 0, "II\x1a\x00\x00\x00HEAPCCDR") \
+  MagickCoderHeader("ORF", 0, "IIRO\x08\x00\x00\x00") \
+  MagickCoderHeader("MRW", 0, "\x00MRM") \
+  MagickCoderHeader("RAF", 0, "FUJIFILMCCD-RAW ")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

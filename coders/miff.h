@@ -16,6 +16,10 @@
 
 #include "coders/coders-private.h"
 
+#define MagickMIFFHeaders \
+  MagickCoderHeader("MIFF", 0, "Id=ImageMagick") \
+  MagickCoderHeader("MIFF", 0, "id=ImageMagick")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

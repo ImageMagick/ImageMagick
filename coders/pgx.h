@@ -16,6 +16,11 @@
 
 #include "coders/coders-private.h"
 
+#define MagickPGXHeaders \
+  MagickCoderHeader("PGX", 0, "\050\107\020\115\046") \
+  MagickCoderHeader("PGX", 0, "PG ML") \
+  MagickCoderHeader("PGX", 0, "PG LM")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

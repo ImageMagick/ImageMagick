@@ -16,6 +16,8 @@
 
 #include "coders/coders-private.h"
 
+#define MagickJSONHeaders
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

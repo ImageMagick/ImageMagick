@@ -16,6 +16,9 @@
 
 #include "coders/coders-private.h"
 
+#define MagickSGIHeaders \
+  MagickCoderHeader("SGI", 0, "\001\332")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

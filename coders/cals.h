@@ -16,6 +16,12 @@
 
 #include "coders/coders-private.h"
 
+#define MagickCALSHeaders \
+  MagickCoderHeader("CALS", 0, "srcdocid:") \
+  MagickCoderHeader("CALS", 8, "rorient:") \
+  MagickCoderHeader("CALS", 9, "rorient:") \
+  MagickCoderHeader("CALS", 21, "version: MIL-STD-1840")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

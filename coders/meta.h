@@ -16,6 +16,14 @@
 
 #include "coders/coders-private.h"
 
+#define MagickMETAHeaders \
+  MagickCoderHeader("8BIMWTEXT", 0, "8\000B\000I\000M\000#") \
+  MagickCoderHeader("8BIMTEXT", 0, "8BIM#") \
+  MagickCoderHeader("8BIM", 0, "8BIM") \
+  MagickCoderHeader("IPTCWTEXT", 0, "\062\000#\000\060\000=\000\042\000&\000#\000\060\000;\000&\000#\000\062\000;\000\042\000") \
+  MagickCoderHeader("IPTCTEXT", 0, "2#0=\042&#0;&#2;\042") \
+  MagickCoderHeader("IPTC", 0, "\034\002")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

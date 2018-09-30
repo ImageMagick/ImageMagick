@@ -16,6 +16,10 @@
 
 #include "coders/coders-private.h"
 
+#define MagickFITSHeaders \
+  MagickCoderHeader("FITS", 0, "IT0") \
+  MagickCoderHeader("FITS", 0, "SIMPLE")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
