@@ -3645,8 +3645,7 @@ RestoreMSCWarning
             p--;      /* back up one */
             continue;
           }
-        string=GetMagickPropertyLetter(property_info,property_image,*p,
-          exception);
+        string=GetMagickPropertyLetter(property_info,image,*p,exception);
         if (string != (char *) NULL)
           {
             AppendString2Text(string);
