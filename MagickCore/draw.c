@@ -1589,17 +1589,25 @@ static Image *DrawClippingMask(Image *image,const DrawInfo *draw_info,
   clone_info->clip_path=MagickTrue;
   status=RenderMVGContent(clip_mask,clone_info,1,exception);
   clone_info=DestroyDrawInfo(clone_info);
-  separate_mask=SeparateImage(clip_mask,AlphaChannel,exception);
-  if (separate_mask != (Image *) NULL)
+  if (status != MagickFalse)
     {
-      clip_mask=DestroyImage(clip_mask);
-      clip_mask=separate_mask;
-      status=NegateImage(clip_mask,MagickFalse,exception);
-      if (status == MagickFalse)
-        clip_mask=DestroyImage(clip_mask);
+      status=SetImageMask(clip_mask,CompositePixelMask,(Image *) NULL,
+        exception);
+      if (status != MagickFalse)
+        {
+          separate_mask=SeparateImage(clip_mask,AlphaChannel,exception);
+          if (separate_mask != (Image *) NULL)
+            {
+              clip_mask=DestroyImage(clip_mask);
+              clip_mask=separate_mask;
+              status=NegateImage(clip_mask,MagickFalse,exception);
+            }
+        }
     }
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"end clip-path");
+  if (status == MagickFalse)
+    clip_mask=DestroyImage(clip_mask);
   return(clip_mask);
 }
 
@@ -1679,17 +1687,25 @@ static Image *DrawCompositeMask(Image *image,const DrawInfo *draw_info,
   clone_info->alpha=OpaqueAlpha;
   status=RenderMVGContent(composite_mask,clone_info,1,exception);
   clone_info=DestroyDrawInfo(clone_info);
-  separate_mask=SeparateImage(composite_mask,AlphaChannel,exception);
-  if (separate_mask != (Image *) NULL)
+  if (status != MagickFalse)
     {
-      composite_mask=DestroyImage(composite_mask);
-      composite_mask=separate_mask;
-      status=NegateImage(composite_mask,MagickFalse,exception);
-      if (status == MagickFalse)
-        composite_mask=DestroyImage(composite_mask);
+      status=SetImageMask(composite_mask,CompositePixelMask,(Image *) NULL,
+        exception);
+      if (status != MagickFalse)
+        {
+          separate_mask=SeparateImage(composite_mask,AlphaChannel,exception);
+          if (separate_mask != (Image *) NULL)
+            {
+              composite_mask=DestroyImage(composite_mask);
+              composite_mask=separate_mask;
+              status=NegateImage(composite_mask,MagickFalse,exception);
+            }
+        }
     }
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"end mask-path");
+  if (status == MagickFalse)
+    composite_mask=DestroyImage(composite_mask);
   return(composite_mask);
 }
 
