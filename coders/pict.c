@@ -1783,7 +1783,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
     bytes_per_line*=image->alpha_trait != UndefinedPixelTrait ? 4 : 3;
   buffer=(unsigned char *) AcquireQuantumMemory(PictInfoSize,sizeof(*buffer));
   packed_scanline=(unsigned char *) AcquireQuantumMemory((size_t)
-   (row_bytes+MaxCount),sizeof(*packed_scanline));
+   (row_bytes+2*MaxCount),sizeof(*packed_scanline));
   scanline=(unsigned char *) AcquireQuantumMemory(row_bytes,sizeof(*scanline));
   if ((buffer == (unsigned char *) NULL) ||
       (packed_scanline == (unsigned char *) NULL) ||
@@ -1799,7 +1799,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     }
   (void) memset(scanline,0,row_bytes);
-  (void) memset(packed_scanline,0,(size_t) (row_bytes+MaxCount));
+  (void) memset(packed_scanline,0,(size_t) (row_bytes+2*MaxCount));
   /*
     Write header, header size, size bounding box, version, and reserved.
   */
