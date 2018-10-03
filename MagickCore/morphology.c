@@ -3984,7 +3984,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
             (void) FormatLocaleFile(stderr,
               "\n%s: Difference of Dilate and Erode",CommandOptionToMnemonic(
               MagickMorphologyOptions, method) );
-          (void) CompositeImage(curr_image,save_image,DifferenceCompositeOp,
+          (void) CompositeImage(curr_image,save_image,OutCompositeOp,
             MagickTrue,0,0,exception);
           save_image = DestroyImage(save_image); /* finished with save image */
           break;
