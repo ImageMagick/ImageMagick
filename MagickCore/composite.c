@@ -1613,6 +1613,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                   Da*GetPixelIntensity(image,q) ? Sa : Da;
                 break;
               }
+              case DifferenceCompositeOp:
+              {
+                pixel=QuantumRange*fabs(Sa-Da);
+                break;
+              }
               case LightenIntensityCompositeOp:
               {
                 pixel=Sa*GetPixelIntensity(source_image,p) >
