@@ -70,7 +70,7 @@
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-#include "jbig.h"
+#include <jbig.h>
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
