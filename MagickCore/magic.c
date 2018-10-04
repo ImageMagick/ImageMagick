@@ -82,6 +82,30 @@ typedef struct _MagicMapInfo
   const size_t
     length;
 } MagicMapInfo;
+
+struct _MagicInfo
+{
+  char
+    *path,
+    *name,
+    *target;
+
+  unsigned char
+    *magic;
+
+  size_t
+    length;
+
+  MagickOffsetType
+    offset;
+
+  MagickBooleanType
+    exempt,
+    stealth;
+
+  size_t
+    signature;
+};
 
 /*
   Static declarations.

@@ -23,28 +23,7 @@ extern "C" {
 #endif
 
 typedef struct _MagicInfo
-{
-  char
-    *path,
-    *name,
-    *target;
-
-  unsigned char
-    *magic;
-
-  size_t
-    length;
-
-  MagickOffsetType
-    offset;
-
-  MagickBooleanType
-    exempt,
-    stealth;
-
-  size_t
-    signature;
-} MagicInfo;
+  MagicInfo;
 
 extern MagickExport char
   **GetMagicList(const char *,size_t *,ExceptionInfo *);
