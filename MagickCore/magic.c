@@ -64,7 +64,6 @@
 /*
   Define declarations.
 */
-#define MagicPattern(magic)  (const unsigned char *) (magic), sizeof(magic)-1
 #define AddMagickCoder(coder) Magick ## coder ## Headers
 
 /*
@@ -116,10 +115,10 @@ static const MagicMapInfo
   MagicMap[] =
   {
     #include "coders/coders-list.h"
-    { "CGM", 0, MagicPattern("BEGMF") },
-    { "FIG", 0, MagicPattern("#FIG") },
-    { "HPGL", 0, MagicPattern("IN;") },
-    { "ILBM", 8, MagicPattern("ILBM") }, 
+    MagickCoderHeader("CGM", 0, "BEGMF")
+    MagickCoderHeader("FIG", 0, "#FIG")
+    MagickCoderHeader("HPGL", 0, "IN;")
+    MagickCoderHeader("ILBM", 8, "ILBM")
   };
 
 static LinkedListInfo
