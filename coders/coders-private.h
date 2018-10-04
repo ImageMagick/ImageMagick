@@ -12,28 +12,14 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-
-  MagickCore static coder registration methods.
 */
-#ifndef MAGICKCORE_STATIC_H
-#define MAGICKCORE_STATIC_H
+#ifndef MAGICK_CODERS_PRIVATE_H
+#define MAGICK_CODERS_PRIVATE_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-extern MagickExport MagickBooleanType
-  InvokeStaticImageFilter(const char *,Image **,const int,const char **,
-    ExceptionInfo *),
-  RegisterStaticModule(const char *,ExceptionInfo *exception),
-  UnregisterStaticModule(const char *);
-
-extern MagickExport void
-  RegisterStaticModules(void),
-  UnregisterStaticModules(void);
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
+#define MagickCoderExports(coder) \
+extern ModuleExport size_t \
+  Register ## coder ## Image(void); \
+extern ModuleExport void \
+  Unregister ## coder ## Image(void);
 
 #endif
