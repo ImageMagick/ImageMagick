@@ -207,9 +207,11 @@ static const MagicMapInfo
  };
 
 static LinkedListInfo
+  *magic_cache = (LinkedListInfo *) NULL,
   *magic_list = (LinkedListInfo *) NULL;
 
 static SemaphoreInfo
+  *magic_cache_semaphore = (SemaphoreInfo *) NULL,
   *magic_list_semaphore = (SemaphoreInfo *) NULL;
 
 /*
@@ -335,6 +337,20 @@ static LinkedListInfo *AcquireMagicList(ExceptionInfo *exception)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+static MagickBooleanType IsMagicCacheInstantiated()
+{
+  if (magic_cache == (LinkedListInfo *) NULL)
+    {
+      if (magic_cache_semaphore == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&magic_cache_semaphore);
+      LockSemaphoreInfo(magic_cache_semaphore);
+      if (magic_cache == (LinkedListInfo *) NULL)
+        magic_cache=NewLinkedList(0);
+      UnlockSemaphoreInfo(magic_cache_semaphore);
+    }
+  return(magic_cache != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
+}
+
 MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   const size_t length,ExceptionInfo *exception)
 {
@@ -344,6 +360,27 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   assert(exception != (ExceptionInfo *) NULL);
   if (IsMagicListInstantiated(exception) == MagickFalse)
     return((const MagicInfo *) NULL);
+  if (IsMagicCacheInstantiated() == MagickFalse)
+    return((const MagicInfo *) NULL);
+  /*
+    Search for cached entries.
+  */
+  if (magic != (const unsigned char *) NULL)
+    {
+      LockSemaphoreInfo(magic_cache_semaphore);
+      ResetLinkedListIterator(magic_cache);
+      p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+      while (p != (const MagicInfo *) NULL)
+      {
+        if (((size_t) (p->offset+p->length) <= length) &&
+            (memcmp(magic+p->offset,p->magic,p->length) == 0))
+          break;
+        p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+      }
+      UnlockSemaphoreInfo(magic_cache_semaphore);
+      if (p != (const MagicInfo *) NULL)
+        return(p);
+    }
   /*
     Search for magic tag.
   */
@@ -363,10 +400,14 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
       break;
     p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   }
-  if (p != (const MagicInfo *) NULL)
-    (void) InsertValueInLinkedList(magic_list,0,
-      RemoveElementByValueFromLinkedList(magic_list,p));
   UnlockSemaphoreInfo(magic_list_semaphore);
+  if (p != (const MagicInfo *) NULL)
+    {
+      LockSemaphoreInfo(magic_cache_semaphore);
+      InsertValueInSortedLinkedList(magic_cache,CompareMagickInfoSize,
+        NULL,p);
+      UnlockSemaphoreInfo(magic_cache_semaphore);
+    }
   return(p);
 }
 
