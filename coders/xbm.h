@@ -19,6 +19,8 @@
 #define MagickXBMHeaders \
   MagickCoderHeader("XBM", 0, "#define")
 
+#define MagickXBMAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

@@ -18,6 +18,9 @@
 
 #define MagickGRADIENTHeaders
 
+#define MagickGRADIENTAliases \
+  MagickCoderAlias("GRADIENT", "RADIAL-GRADIENT")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

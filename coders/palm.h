@@ -18,6 +18,8 @@
 
 #define MagickPALMHeaders
 
+#define MagickPALMAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

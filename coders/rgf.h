@@ -18,6 +18,8 @@
 
 #define MagickRGFHeaders
 
+#define MagickRGFAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

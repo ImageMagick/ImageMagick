@@ -22,6 +22,12 @@
   MagickCoderHeader("TIFF64", 0, "\115\115\000\053\000\010\000\000") \
   MagickCoderHeader("TIFF64", 0, "\111\111\053\000\010\000\000\000")
 
+#define MagickTIFFAliases \
+  MagickCoderAlias("TIFF", "GROUP4") \
+  MagickCoderAlias("TIFF", "PTIF") \
+  MagickCoderAlias("TIFF", "TIF") \
+  MagickCoderAlias("TIFF", "TIFF64")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

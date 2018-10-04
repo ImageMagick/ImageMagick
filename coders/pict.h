@@ -18,6 +18,9 @@
 
 #define MagickPICTHeaders
 
+#define MagickPICTAliases \
+  MagickCoderAlias("PICT", "PCT")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

@@ -19,6 +19,11 @@
 #define MagickPDFHeaders \
   MagickCoderHeader("PDF", 0, "%PDF-")
 
+#define MagickPDFAliases \
+  MagickCoderAlias("PDF", "AI") \
+  MagickCoderAlias("PDF", "EPDF") \
+  MagickCoderAlias("PDF", "PDFA")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

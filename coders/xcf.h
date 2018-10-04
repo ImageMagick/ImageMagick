@@ -20,6 +20,8 @@
   MagickCoderHeader("XCF", 0, "gimp xcf")
 
 
+#define MagickXCFAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

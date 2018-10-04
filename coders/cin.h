@@ -19,6 +19,8 @@
 #define MagickCINHeaders \
   MagickCoderHeader("CIN", 0, "\200\052\137\327")
 
+#define MagickCINAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

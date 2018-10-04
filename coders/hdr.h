@@ -20,6 +20,8 @@
   MagickCoderHeader("HDR", 0, "#?RADIANCE") \
   MagickCoderHeader("HDR", 0, "#?RGBE")
 
+#define MagickHDRAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

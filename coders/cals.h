@@ -22,6 +22,9 @@
   MagickCoderHeader("CALS", 9, "rorient:") \
   MagickCoderHeader("CALS", 21, "version: MIL-STD-1840")
 
+#define MagickCALSAliases \
+  MagickCoderAlias("CALS", "CAL")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

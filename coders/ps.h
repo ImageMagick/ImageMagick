@@ -21,6 +21,12 @@
   MagickCoderHeader("PS", 0, "\004%!") \
   MagickCoderHeader("PS", 0, "\305\320\323\306")
 
+#define MagickPSAliases \
+  MagickCoderAlias("PS", "EPI") \
+  MagickCoderAlias("PS", "EPS") \
+  MagickCoderAlias("PS", "EPSF") \
+  MagickCoderAlias("PS", "EPSI")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

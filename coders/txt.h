@@ -20,6 +20,10 @@
 #define MagickTXTHeaders \
   MagickCoderHeader("TXT", 0, MagickTXTID)
 
+#define MagickTXTAliases \
+  MagickCoderAlias("TXT", "SPARSE-COLOR") \
+  MagickCoderAlias("TXT", "TEXT")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

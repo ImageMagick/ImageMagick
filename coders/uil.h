@@ -18,6 +18,8 @@
 
 #define MagickUILHeaders
 
+#define MagickUILAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

@@ -18,6 +18,9 @@
 
 #define MagickUYVYHeaders
 
+#define MagickUYVYAliases \
+  MagickCoderAlias("UYVY", "PAL")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

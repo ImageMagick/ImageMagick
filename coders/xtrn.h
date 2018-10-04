@@ -18,6 +18,9 @@
 
 #define MagickXTRNHeaders
 
+#define MagickXTRNAliases \
+  MagickCoderAlias("XTRN", "XTRNARRAY")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

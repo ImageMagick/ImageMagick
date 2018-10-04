@@ -21,6 +21,13 @@
   MagickCoderHeader("PFA", 0, "%!PS-AdobeFont-1.0") \
   MagickCoderHeader("PFB", 6, "%!PS-AdobeFont-1.0")
 
+#define MagickTTFAliases \
+  MagickCoderAlias("TTF", "DFONT") \
+  MagickCoderAlias("TTF", "PFA") \
+  MagickCoderAlias("TTF", "PFB") \
+  MagickCoderAlias("TTF", "OTF") \
+  MagickCoderAlias("TTF", "TTC")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

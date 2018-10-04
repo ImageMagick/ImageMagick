@@ -18,6 +18,8 @@
 
 #define MagickHISTOGRAMHeaders
 
+#define MagickHISTOGRAMAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

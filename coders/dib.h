@@ -19,6 +19,9 @@
 #define MagickDIBHeaders \
   MagickCoderHeader("DIB", 0, "\050\000")
 
+#define MagickDIBAliases \
+  MagickCoderAlias("DIB", "ICODIB")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

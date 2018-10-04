@@ -18,6 +18,8 @@
 
 #define MagickCAPTIONHeaders
 
+#define MagickCAPTIONAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

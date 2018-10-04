@@ -18,6 +18,8 @@
 
 #define MagickFPXHeaders
 
+#define MagickFPXAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

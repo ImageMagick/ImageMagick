@@ -18,6 +18,9 @@
 
 #define MagickYCBCRHeaders
 
+#define MagickYCBCRAliases \
+  MagickCoderAlias("YCbCr", "YCbCrA")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

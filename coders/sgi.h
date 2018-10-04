@@ -19,6 +19,8 @@
 #define MagickSGIHeaders \
   MagickCoderHeader("SGI", 0, "\001\332")
 
+#define MagickSGIAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

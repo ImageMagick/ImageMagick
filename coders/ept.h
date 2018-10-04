@@ -19,6 +19,10 @@
 #define MagickEPTHeaders \
   MagickCoderHeader("EPT", 0, "\305\320\323\306")
 
+#define MagickEPTAliases \
+  MagickCoderAlias("EPT", "EPT2") \
+  MagickCoderAlias("EPT", "EPT3")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

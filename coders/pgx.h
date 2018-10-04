@@ -21,6 +21,8 @@
   MagickCoderHeader("PGX", 0, "PG ML") \
   MagickCoderHeader("PGX", 0, "PG LM")
 
+#define MagickPGXAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

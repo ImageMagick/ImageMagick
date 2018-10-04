@@ -19,6 +19,9 @@
 #define MagickDOTHeaders \
   MagickCoderHeader("DOT", 0, "digraph")
 
+#define MagickDOTAliases \
+  MagickCoderAlias("DOT", "GV")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

@@ -19,6 +19,8 @@
 #define MagickSCTHeaders \
   MagickCoderHeader("SCT", 0, "CT")
 
+#define MagickSCTAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

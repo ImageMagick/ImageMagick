@@ -18,6 +18,13 @@
 
 #define MagickBRAILLEHeaders
 
+#define MagickBRAILLEAliases \
+  MagickCoderAlias("BRAILLE", "BRF") \
+  MagickCoderAlias("BRAILLE", "UBRL") \
+  MagickCoderAlias("BRAILLE", "UBRL6") \
+  MagickCoderAlias("BRAILLE", "ISOBRL") \
+  MagickCoderAlias("BRAILLE", "ISOBRL6")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

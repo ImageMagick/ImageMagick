@@ -18,6 +18,8 @@
 
 #define MagickTIMHeaders
 
+#define MagickTIMAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

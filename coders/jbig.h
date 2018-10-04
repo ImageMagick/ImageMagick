@@ -18,6 +18,10 @@
 
 #define MagickJBIGHeaders
 
+#define MagickJBIGAliases \
+  MagickCoderAlias("JBIG", "BIE") \
+  MagickCoderAlias("JBIG", "JBG")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

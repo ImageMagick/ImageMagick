@@ -18,6 +18,8 @@
 
 #define MagickSCREENSHOTHeaders
 
+#define MagickSCREENSHOTAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

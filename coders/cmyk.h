@@ -18,6 +18,9 @@
 
 #define MagickCMYKHeaders
 
+#define MagickCMYKAliases \
+  MagickCoderAlias("CMYK", "CMYKA")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

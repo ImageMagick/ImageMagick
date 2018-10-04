@@ -27,6 +27,13 @@
   MagickCoderHeader("PFM", 0, "PF") \
   MagickCoderHeader("PFM", 0, "Pf")
 
+#define MagickPNMAliases \
+  MagickCoderAlias("PNM", "PAM") \
+  MagickCoderAlias("PNM", "PBM") \
+  MagickCoderAlias("PNM", "PFM") \
+  MagickCoderAlias("PNM", "PGM") \
+  MagickCoderAlias("PNM", "PPM")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

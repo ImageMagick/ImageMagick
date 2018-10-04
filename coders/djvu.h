@@ -19,6 +19,8 @@
 #define MagickDJVUHeaders \
   MagickCoderHeader("DJVU", 0, "AT&TFORM")
 
+#define MagickDJVUAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

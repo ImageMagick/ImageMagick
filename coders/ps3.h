@@ -18,6 +18,9 @@
 
 #define MagickPS3Headers
 
+#define MagickPS3Aliases \
+  MagickCoderAlias("PS3", "EPS3")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

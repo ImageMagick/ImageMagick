@@ -19,6 +19,8 @@
 #define MagickWEBPHeaders \
   MagickCoderHeader("WEBP", 8, "WEBP")
 
+#define MagickWEBPAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

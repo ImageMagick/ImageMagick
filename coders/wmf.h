@@ -18,6 +18,8 @@
 
 #define MagickWMFHeaders
 
+#define MagickWMFAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

@@ -18,6 +18,9 @@
 
 #define MagickSIXELHeaders
 
+#define MagickSIXELAliases \
+  MagickCoderAlias("SIXEL", "SIX")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

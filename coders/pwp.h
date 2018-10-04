@@ -19,6 +19,8 @@
 #define MagickPWPHeaders \
   MagickCoderHeader("PWP", 0, "SFW95")
 
+#define MagickPWPAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

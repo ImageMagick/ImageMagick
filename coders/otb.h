@@ -18,6 +18,8 @@
 
 #define MagickOTBHeaders
 
+#define MagickOTBAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

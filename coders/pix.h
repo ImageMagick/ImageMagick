@@ -18,6 +18,8 @@
 
 #define MagickPIXHeaders
 
+#define MagickPIXAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

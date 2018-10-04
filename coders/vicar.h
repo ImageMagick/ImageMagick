@@ -21,6 +21,8 @@
   MagickCoderHeader("VICAR", 0, "NJPL1I") \
   MagickCoderHeader("VICAR", 0, "PDS_VERSION_ID")
 
+#define MagickVICARAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

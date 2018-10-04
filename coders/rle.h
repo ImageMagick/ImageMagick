@@ -19,6 +19,8 @@
 #define MagickRLEHeaders \
   MagickCoderHeader("RLE", 0, "\122\314")
 
+#define MagickRLEAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

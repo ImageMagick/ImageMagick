@@ -19,6 +19,8 @@
 #define MagickDDSHeaders \
   MagickCoderHeader("DDS", 0, "DDS ")
 
+#define MagickDDSAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

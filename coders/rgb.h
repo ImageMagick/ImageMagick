@@ -18,6 +18,10 @@
 
 #define MagickRGBHeaders
 
+#define MagickRGBAliases \
+  MagickCoderAlias("RGB", "RGBA") \
+  MagickCoderAlias("RGB", "RGBO")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

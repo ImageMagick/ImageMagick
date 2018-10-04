@@ -22,6 +22,31 @@
   MagickCoderHeader("MRW", 0, "\x00MRM") \
   MagickCoderHeader("RAF", 0, "FUJIFILMCCD-RAW ")
 
+#define MagickDNGAliases \
+  MagickCoderAlias("DNG", "3FR") \
+  MagickCoderAlias("DNG", "ARW") \
+  MagickCoderAlias("DNG", "CR2") \
+  MagickCoderAlias("DNG", "CRW") \
+  MagickCoderAlias("DNG", "DCR") \
+  MagickCoderAlias("DNG", "DCRAW") \
+  MagickCoderAlias("DNG", "ERF") \
+  MagickCoderAlias("DNG", "IIQ") \
+  MagickCoderAlias("DNG", "KDC") \
+  MagickCoderAlias("DNG", "K25") \
+  MagickCoderAlias("DNG", "MEF") \
+  MagickCoderAlias("DNG", "MRW") \
+  MagickCoderAlias("DNG", "NEF") \
+  MagickCoderAlias("DNG", "NRW") \
+  MagickCoderAlias("DNG", "ORF") \
+  MagickCoderAlias("DNG", "PEF") \
+  MagickCoderAlias("DNG", "RAF") \
+  MagickCoderAlias("DNG", "RAW") \
+  MagickCoderAlias("DNG", "RMF") \
+  MagickCoderAlias("DNG", "RW2") \
+  MagickCoderAlias("DNG", "SRF") \
+  MagickCoderAlias("DNG", "SR2") \
+  MagickCoderAlias("DNG", "X3F")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

@@ -18,6 +18,8 @@
 
 #define MagickMACHeaders
 
+#define MagickMACAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

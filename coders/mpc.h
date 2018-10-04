@@ -19,6 +19,9 @@
 #define MagickMPCHeaders \
   MagickCoderHeader("MPC", 0, "id=MagickCache")
 
+#define MagickMPCAliases \
+  MagickCoderAlias("MPC", "CACHE")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

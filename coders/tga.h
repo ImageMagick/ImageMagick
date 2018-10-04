@@ -18,6 +18,11 @@
 
 #define MagickTGAHeaders
 
+#define MagickTGAAliases \
+  MagickCoderAlias("TGA", "ICB") \
+  MagickCoderAlias("TGA", "VDA") \
+  MagickCoderAlias("TGA", "VST")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

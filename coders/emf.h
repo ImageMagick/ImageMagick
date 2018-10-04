@@ -21,6 +21,9 @@
   MagickCoderHeader("WMF", 0, "\327\315\306\232") \
   MagickCoderHeader("WMF", 0, "\001\000\011\000")
 
+#define MagickEMFAliases \
+  MagickCoderAlias("EMF", "WMF")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

@@ -18,6 +18,8 @@
 
 #define MagickXPSHeaders
 
+#define MagickXPSAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

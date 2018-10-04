@@ -19,6 +19,8 @@
 #define MagickPESHeaders \
   MagickCoderHeader("PES", 0, "#PES")
 
+#define MagickPESAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

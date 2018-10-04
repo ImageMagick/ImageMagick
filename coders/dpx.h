@@ -20,6 +20,8 @@
   MagickCoderHeader("DPX", 0, "SDPX") \
   MagickCoderHeader("DPX", 0, "XPDS")
 
+#define MagickDPXAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

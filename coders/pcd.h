@@ -19,6 +19,9 @@
 #define MagickPCDHeaders \
   MagickCoderHeader("PCD", 2048, "PCD_")
 
+#define MagickPCDAliases \
+  MagickCoderAlias("PCD", "PCDS")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

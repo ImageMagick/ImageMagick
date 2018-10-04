@@ -18,6 +18,8 @@
 
 #define MagickNULLHeaders
 
+#define MagickNULLAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

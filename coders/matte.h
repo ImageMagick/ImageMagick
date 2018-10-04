@@ -18,6 +18,8 @@
 
 #define MagickMATTEHeaders
 
+#define MagickMATTEAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

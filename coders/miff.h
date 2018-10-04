@@ -20,6 +20,8 @@
   MagickCoderHeader("MIFF", 0, "Id=ImageMagick") \
   MagickCoderHeader("MIFF", 0, "id=ImageMagick")
 
+#define MagickMIFFAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

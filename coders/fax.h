@@ -19,6 +19,10 @@
 #define MagickFAXHeaders \
   MagickCoderHeader("FAX", 0, "DFAX")
 
+#define MagickFAXAliases \
+  MagickCoderAlias("FAX", "G3") \
+  MagickCoderAlias("FAX", "G4")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

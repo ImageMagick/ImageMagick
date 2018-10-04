@@ -19,6 +19,9 @@
 #define MagickGIFHeaders \
   MagickCoderHeader("GIF", 0, "GIF8")
 
+#define MagickGIFAliases \
+  MagickCoderAlias("GIF", "GIF87")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

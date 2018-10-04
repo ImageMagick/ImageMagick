@@ -19,6 +19,8 @@
 #define MagickDCMHeaders \
   MagickCoderHeader("DCM", 128, "DICM")
 
+#define MagickDCMAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

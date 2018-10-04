@@ -21,6 +21,16 @@
   MagickCoderHeader("JNG", 0, "\213JNG\r\n\032\n") \
   MagickCoderHeader("MNG", 0, "\212MNG\r\n\032\n")
 
+#define MagickPNGAliases \
+  MagickCoderAlias("PNG", "MNG") \
+  MagickCoderAlias("PNG", "PNG8") \
+  MagickCoderAlias("PNG", "PNG24") \
+  MagickCoderAlias("PNG", "PNG32") \
+  MagickCoderAlias("PNG", "PNG48") \
+  MagickCoderAlias("PNG", "PNG64") \
+  MagickCoderAlias("PNG", "PNG00") \
+  MagickCoderAlias("PNG", "JNG")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

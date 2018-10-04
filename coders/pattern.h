@@ -18,6 +18,8 @@
 
 #define MagickPATTERNHeaders
 
+#define MagickPATTERNAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

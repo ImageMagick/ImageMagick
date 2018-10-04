@@ -24,6 +24,10 @@
   MagickCoderHeader("BMP", 0, "IC") \
   MagickCoderHeader("BMP", 0, "IP")
 
+#define MagickBMPAliases \
+  MagickCoderAlias("BMP", "BMP2") \
+  MagickCoderAlias("BMP", "BMP3")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

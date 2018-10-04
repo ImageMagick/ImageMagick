@@ -24,6 +24,20 @@
   MagickCoderHeader("IPTCTEXT", 0, "2#0=\042&#0;&#2;\042") \
   MagickCoderHeader("IPTC", 0, "\034\002")
 
+#define MagickMETAAliases \
+  MagickCoderAlias("META", "8BIM") \
+  MagickCoderAlias("META", "8BIMTEXT") \
+  MagickCoderAlias("META", "8BIMWTEXT") \
+  MagickCoderAlias("META", "APP1") \
+  MagickCoderAlias("META", "APP1JPEG") \
+  MagickCoderAlias("META", "EXIF") \
+  MagickCoderAlias("META", "XMP") \
+  MagickCoderAlias("META", "ICM") \
+  MagickCoderAlias("META", "ICC") \
+  MagickCoderAlias("META", "IPTC") \
+  MagickCoderAlias("META", "IPTCTEXT") \
+  MagickCoderAlias("META", "IPTCWTEXT")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

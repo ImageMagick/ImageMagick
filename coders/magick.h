@@ -18,6 +18,14 @@
 
 #define MagickMAGICKHeaders
 
+#define MagickMAGICKAliases \
+  MagickCoderAlias("MAGICK", "GRANITE") \
+  MagickCoderAlias("MAGICK", "H") \
+  MagickCoderAlias("MAGICK", "LOGO") \
+  MagickCoderAlias("MAGICK", "NETSCAPE") \
+  MagickCoderAlias("MAGICK", "ROSE") \
+  MagickCoderAlias("MAGICK", "WIZARD")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

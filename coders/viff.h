@@ -19,6 +19,9 @@
 #define MagickVIFFHeaders \
   MagickCoderHeader("VIFF", 0, "\253\001")
 
+#define MagickVIFFAliases \
+  MagickCoderAlias("VIFF", "XV")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

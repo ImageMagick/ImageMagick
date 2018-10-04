@@ -20,6 +20,8 @@
   MagickCoderHeader("PCL", 0, "\033E\033")
 
 
+#define MagickPCLAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

@@ -19,6 +19,8 @@
 #define MagickIPLHeaders \
   MagickCoderHeader("IPL", 0, "data")
 
+#define MagickIPLAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

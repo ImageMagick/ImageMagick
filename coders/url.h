@@ -18,6 +18,12 @@
 
 #define MagickURLHeaders
 
+#define MagickURLAliases \
+  MagickCoderAlias("URL", "HTTP") \
+  MagickCoderAlias("URL", "HTTPS") \
+  MagickCoderAlias("URL", "FTP") \
+  MagickCoderAlias("URL", "FILE")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

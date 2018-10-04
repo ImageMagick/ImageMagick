@@ -21,6 +21,9 @@
   MagickCoderHeader("PCX", 0, "\012\005") \
   MagickCoderHeader("DCX", 0, "\261\150\336\72")
 
+#define MagickPCXAliases \
+  MagickCoderAlias("PCX", "DCX")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

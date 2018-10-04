@@ -18,6 +18,8 @@
 
 #define MagickDPSHeaders
 
+#define MagickDPSAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

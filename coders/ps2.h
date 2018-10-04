@@ -18,6 +18,9 @@
 
 #define MagickPS2Headers
 
+#define MagickPS2Aliases \
+  MagickCoderAlias("PS2", "EPS2")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

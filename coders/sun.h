@@ -19,6 +19,9 @@
 #define MagickSUNHeaders \
   MagickCoderHeader("SUN", 0, "\131\246\152\225")
 
+#define MagickSUNAliases \
+  MagickCoderAlias("SUN", "RAS")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

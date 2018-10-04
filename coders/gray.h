@@ -18,6 +18,9 @@
 
 #define MagickGRAYHeaders
 
+#define MagickGRAYAliases \
+  MagickCoderAlias("GRAY", "GRAYA")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

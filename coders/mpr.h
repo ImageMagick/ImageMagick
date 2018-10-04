@@ -18,6 +18,9 @@
 
 #define MagickMPRHeaders
 
+#define MagickMPRAliases \
+  MagickCoderAlias("MPR", "MPRI")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

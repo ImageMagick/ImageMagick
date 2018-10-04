@@ -21,6 +21,13 @@
   MagickCoderHeader("JPC", 0, "\x0d\x0a\x87\x0a") \
   MagickCoderHeader("J2K", 0, "\xff\x4f\xff\x51")
 
+#define MagickJP2Aliases \
+  MagickCoderAlias("JP2", "J2C") \
+  MagickCoderAlias("JP2", "J2K") \
+  MagickCoderAlias("JP2", "JPM") \
+  MagickCoderAlias("JP2", "JPT") \
+  MagickCoderAlias("JP2", "JPC")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

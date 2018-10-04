@@ -18,6 +18,8 @@
 
 #define MagickCLIPBOARDHeaders
 
+#define MagickCLIPBOARDAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

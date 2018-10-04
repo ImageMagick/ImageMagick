@@ -19,6 +19,8 @@
 #define MagickEXRHeaders \
   MagickCoderHeader("EXR", 0, "\166\057\061\001")
 
+#define MagickEXRAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

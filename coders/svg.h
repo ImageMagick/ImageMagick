@@ -22,6 +22,10 @@
   MagickCoderHeader("SVG", 1, "SVG") \
   MagickCoderHeader("SVG", 1, "svg")
 
+#define MagickSVGAliases \
+  MagickCoderAlias("SVG", "SVGZ") \
+  MagickCoderAlias("SVG", "MSVG")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

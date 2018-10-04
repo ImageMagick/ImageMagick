@@ -19,6 +19,10 @@
 #define MagickXPMHeaders \
   MagickCoderHeader("XPM", 1, "* XPM *")
 
+#define MagickXPMAliases \
+  MagickCoderAlias("XPM", "PICON") \
+  MagickCoderAlias("XPM", "PM")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

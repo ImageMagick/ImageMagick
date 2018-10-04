@@ -19,6 +19,8 @@
 #define MagickMATHeaders \
   MagickCoderHeader("MAT", 0, "MATLAB 5.0 MAT-file,")
 
+#define MagickMATAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

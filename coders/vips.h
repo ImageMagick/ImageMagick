@@ -20,6 +20,8 @@
   MagickCoderHeader("VIPS", 0, "\010\362\246\266") \
   MagickCoderHeader("VIPS", 0, "\266\246\362\010")
 
+#define MagickVIPSAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

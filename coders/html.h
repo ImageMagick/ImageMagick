@@ -18,6 +18,10 @@
 
 #define MagickHTMLHeaders
 
+#define MagickHTMLAliases \
+  MagickCoderAlias("HTML", "HTM") \
+  MagickCoderAlias("HTML", "SHTML")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

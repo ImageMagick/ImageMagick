@@ -19,6 +19,12 @@
 #define MagickJPEGHeaders \
   MagickCoderHeader("JPEG", 0, "\377\330\377")
 
+#define MagickJPEGAliases \
+  MagickCoderAlias("JPEG", "JPE") \
+  MagickCoderAlias("JPEG", "JPG") \
+  MagickCoderAlias("JPEG", "JPS") \
+  MagickCoderAlias("JPEG", "PJPEG")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

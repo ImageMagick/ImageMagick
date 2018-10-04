@@ -19,6 +19,8 @@
 #define MagickWPGHeaders \
   MagickCoderHeader("WPG", 0, "\377WPC")
 
+#define MagickWPGAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

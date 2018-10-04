@@ -18,6 +18,8 @@
 
 #define MagickSTEGANOHeaders
 
+#define MagickSTEGANOAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

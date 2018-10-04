@@ -19,6 +19,8 @@
 #define MagickPDBHeaders \
   MagickCoderHeader("PDB", 60, "vIMGView")
 
+#define MagickPDBAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

@@ -18,6 +18,10 @@
 
 #define MagickICONHeaders
 
+#define MagickICONAliases \
+  MagickCoderAlias("ICON", "CUR") \
+  MagickCoderAlias("ICON", "ICO")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

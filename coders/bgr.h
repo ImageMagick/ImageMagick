@@ -18,6 +18,10 @@
 
 #define MagickBGRHeaders
 
+#define MagickBGRAliases \
+  MagickCoderAlias("BGR", "BGRA") \
+  MagickCoderAlias("BGR", "BGRO")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

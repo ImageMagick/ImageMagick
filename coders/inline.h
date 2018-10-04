@@ -18,6 +18,9 @@
 
 #define MagickINLINEHeaders
 
+#define MagickINLINEAliases \
+  MagickCoderAlias("DATA", "INLINE")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

@@ -18,6 +18,17 @@
 
 #define MagickRAWHeaders
 
+#define MagickRAWAliases \
+  MagickCoderAlias("RAW", "R") \
+  MagickCoderAlias("RAW", "C") \
+  MagickCoderAlias("RAW", "G") \
+  MagickCoderAlias("RAW", "M") \
+  MagickCoderAlias("RAW", "B") \
+  MagickCoderAlias("RAW", "Y") \
+  MagickCoderAlias("RAW", "A") \
+  MagickCoderAlias("RAW", "O") \
+  MagickCoderAlias("RAW", "K")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

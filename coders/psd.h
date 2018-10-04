@@ -20,6 +20,9 @@
   MagickCoderHeader("PSB", 0, "8BPB") \
   MagickCoderHeader("PSD", 0, "8BPS")
 
+#define MagickPSDAliases \
+  MagickCoderAlias("PSD", "PSB")
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
