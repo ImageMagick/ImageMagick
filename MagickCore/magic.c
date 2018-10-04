@@ -207,35 +207,34 @@ static const MagicMapInfo
  };
 
 static LinkedListInfo
-  *magic_cache = (LinkedListInfo *) NULL;
+  *magic_list = (LinkedListInfo *) NULL;
 
 static SemaphoreInfo
-  *magic_semaphore = (SemaphoreInfo *) NULL;
+  *magic_list_semaphore = (SemaphoreInfo *) NULL;
 
 /*
   Forward declarations.
 */
 static MagickBooleanType
-  IsMagicCacheInstantiated(ExceptionInfo *);
+  IsMagicListInstantiated(ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  A c q u i r e M a g i c L i s t s                                          %
+%  A c q u i r e M a g i c L i s t                                            %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireMagicCache() caches one or more magic configurations which provides a
+%  AcquireMagicList() caches one or more magic configurations which provides a
 %  mapping between magic attributes and a magic name.
 %
-%  The format of the AcquireMagicCache method is:
+%  The format of the AcquireMagicList method is:
 %
-%      LinkedListInfo *AcquireMagicCache(const char *filename,
-%        ExceptionInfo *exception)
+%      LinkedListInfo *AcquireMagicList(ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -257,10 +256,10 @@ static int CompareMagickInfoSize(const void *a,const void *b)
   return((int) (mb->length-ma->length));
 }
 
-static LinkedListInfo *AcquireMagicCache(ExceptionInfo *exception)
+static LinkedListInfo *AcquireMagicList(ExceptionInfo *exception)
 {
   LinkedListInfo
-    *cache;
+    *list;
 
   MagickStatusType
     status;
@@ -268,7 +267,7 @@ static LinkedListInfo *AcquireMagicCache(ExceptionInfo *exception)
   register ssize_t
     i;
 
-  cache=NewLinkedList(0);
+  list=NewLinkedList(0);
   status=MagickTrue;
   /*
     Load built-in magic map.
@@ -298,13 +297,13 @@ static LinkedListInfo *AcquireMagicCache(ExceptionInfo *exception)
     magic_info->length=p->length;
     magic_info->exempt=MagickTrue;
     magic_info->signature=MagickCoreSignature;
-    status&=InsertValueInSortedLinkedList(cache,CompareMagickInfoSize,
+    status&=InsertValueInSortedLinkedList(list,CompareMagickInfoSize,
       NULL,magic_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",magic_info->name);
   }
-  return(cache);
+  return(list);
 }
 
 /*
@@ -343,17 +342,17 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if (IsMagicCacheInstantiated(exception) == MagickFalse)
+  if (IsMagicListInstantiated(exception) == MagickFalse)
     return((const MagicInfo *) NULL);
   /*
     Search for magic tag.
   */
-  LockSemaphoreInfo(magic_semaphore);
-  ResetLinkedListIterator(magic_cache);
-  p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+  LockSemaphoreInfo(magic_list_semaphore);
+  ResetLinkedListIterator(magic_list);
+  p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   if (magic == (const unsigned char *) NULL)
     {
-      UnlockSemaphoreInfo(magic_semaphore);
+      UnlockSemaphoreInfo(magic_list_semaphore);
       return(p);
     }
   while (p != (const MagicInfo *) NULL)
@@ -362,12 +361,12 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
     if (((size_t) (p->offset+p->length) <= length) &&
         (memcmp(magic+p->offset,p->magic,p->length) == 0))
       break;
-    p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+    p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   }
   if (p != (const MagicInfo *) NULL)
-    (void) InsertValueInLinkedList(magic_cache,0,
-      RemoveElementByValueFromLinkedList(magic_cache,p));
-  UnlockSemaphoreInfo(magic_semaphore);
+    (void) InsertValueInLinkedList(magic_list,0,
+      RemoveElementByValueFromLinkedList(magic_list,p));
+  UnlockSemaphoreInfo(magic_list_semaphore);
   return(p);
 }
 
@@ -407,21 +406,21 @@ MagickExport size_t GetMagicPatternExtent(ExceptionInfo *exception)
     size=0;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if ((size != 0) || (IsMagicCacheInstantiated(exception) == MagickFalse))
+  if ((size != 0) || (IsMagicListInstantiated(exception) == MagickFalse))
     return(size);
-  LockSemaphoreInfo(magic_semaphore);
-  ResetLinkedListIterator(magic_cache);
+  LockSemaphoreInfo(magic_list_semaphore);
+  ResetLinkedListIterator(magic_list);
   max=0;
-  p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+  p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   while (p != (const MagicInfo *) NULL)
   {
     magickSize=(size_t) (p->offset+p->length);
     if (magickSize > max)
       max=magickSize;
-    p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+    p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   }
   size=max;
-  UnlockSemaphoreInfo(magic_semaphore);
+  UnlockSemaphoreInfo(magic_list_semaphore);
   return(size);
 }
 
@@ -498,23 +497,23 @@ MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
   if (p == (const MagicInfo *) NULL)
     return((const MagicInfo **) NULL);
   aliases=(const MagicInfo **) AcquireQuantumMemory((size_t)
-    GetNumberOfElementsInLinkedList(magic_cache)+1UL,sizeof(*aliases));
+    GetNumberOfElementsInLinkedList(magic_list)+1UL,sizeof(*aliases));
   if (aliases == (const MagicInfo **) NULL)
     return((const MagicInfo **) NULL);
   /*
     Generate magic list.
   */
-  LockSemaphoreInfo(magic_semaphore);
-  ResetLinkedListIterator(magic_cache);
-  p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+  LockSemaphoreInfo(magic_list_semaphore);
+  ResetLinkedListIterator(magic_list);
+  p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   for (i=0; p != (const MagicInfo *) NULL; )
   {
     if ((p->stealth == MagickFalse) &&
         (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse))
       aliases[i++]=p;
-    p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+    p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   }
-  UnlockSemaphoreInfo(magic_semaphore);
+  UnlockSemaphoreInfo(magic_list_semaphore);
   qsort((void *) aliases,(size_t) i,sizeof(*aliases),MagicInfoCompare);
   aliases[i]=(MagicInfo *) NULL;
   *number_aliases=(size_t) i;
@@ -593,20 +592,20 @@ MagickExport char **GetMagicList(const char *pattern,size_t *number_aliases,
   if (p == (const MagicInfo *) NULL)
     return((char **) NULL);
   aliases=(char **) AcquireQuantumMemory((size_t)
-    GetNumberOfElementsInLinkedList(magic_cache)+1UL,sizeof(*aliases));
+    GetNumberOfElementsInLinkedList(magic_list)+1UL,sizeof(*aliases));
   if (aliases == (char **) NULL)
     return((char **) NULL);
-  LockSemaphoreInfo(magic_semaphore);
-  ResetLinkedListIterator(magic_cache);
-  p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+  LockSemaphoreInfo(magic_list_semaphore);
+  ResetLinkedListIterator(magic_list);
+  p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   for (i=0; p != (const MagicInfo *) NULL; )
   {
     if ((p->stealth == MagickFalse) &&
         (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse))
       aliases[i++]=ConstantString(p->name);
-    p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+    p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   }
-  UnlockSemaphoreInfo(magic_semaphore);
+  UnlockSemaphoreInfo(magic_list_semaphore);
   qsort((void *) aliases,(size_t) i,sizeof(*aliases),MagicCompare);
   aliases[i]=(char *) NULL;
   *number_aliases=(size_t) i;
@@ -648,36 +647,36 @@ MagickExport const char *GetMagicName(const MagicInfo *magic_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I s M a g i c C a c h e I n s t a n t i a t e d                           %
++   I s M a g i c L i s t I n s t a n t i a t e d                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsMagicCacheInstantiated() determines if the magic list is instantiated.
+%  IsMagicListInstantiated() determines if the magic list is instantiated.
 %  If not, it instantiates the list and returns it.
 %
-%  The format of the IsMagicInstantiated method is:
+%  The format of the IsMagicListInstantiated method is:
 %
-%      MagickBooleanType IsMagicCacheInstantiated(ExceptionInfo *exception)
+%      MagickBooleanType IsMagicListInstantiated(ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType IsMagicCacheInstantiated(ExceptionInfo *exception)
+static MagickBooleanType IsMagicListInstantiated(ExceptionInfo *exception)
 {
-  if (magic_cache == (LinkedListInfo *) NULL)
+  if (magic_list == (LinkedListInfo *) NULL)
     {
-      if (magic_semaphore == (SemaphoreInfo *) NULL)
-        ActivateSemaphoreInfo(&magic_semaphore);
-      LockSemaphoreInfo(magic_semaphore);
-      if (magic_cache == (LinkedListInfo *) NULL)
-        magic_cache=AcquireMagicCache(exception);
-      UnlockSemaphoreInfo(magic_semaphore);
+      if (magic_list_semaphore == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&magic_list_semaphore);
+      LockSemaphoreInfo(magic_list_semaphore);
+      if (magic_list == (LinkedListInfo *) NULL)
+        magic_list=AcquireMagicList(exception);
+      UnlockSemaphoreInfo(magic_list_semaphore);
     }
-  return(magic_cache != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
+  return(magic_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -783,8 +782,8 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
 */
 MagickPrivate MagickBooleanType MagicComponentGenesis(void)
 {
-  if (magic_semaphore == (SemaphoreInfo *) NULL)
-    magic_semaphore=AcquireSemaphoreInfo();
+  if (magic_list_semaphore == (SemaphoreInfo *) NULL)
+    magic_list_semaphore=AcquireSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -830,11 +829,11 @@ static void *DestroyMagicElement(void *magic_info)
 
 MagickPrivate void MagicComponentTerminus(void)
 {
-  if (magic_semaphore == (SemaphoreInfo *) NULL)
-    ActivateSemaphoreInfo(&magic_semaphore);
-  LockSemaphoreInfo(magic_semaphore);
-  if (magic_cache != (LinkedListInfo *) NULL)
-    magic_cache=DestroyLinkedList(magic_cache,DestroyMagicElement);
-  UnlockSemaphoreInfo(magic_semaphore);
-  RelinquishSemaphoreInfo(&magic_semaphore);
+  if (magic_list_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&magic_list_semaphore);
+  LockSemaphoreInfo(magic_list_semaphore);
+  if (magic_list != (LinkedListInfo *) NULL)
+    magic_list=DestroyLinkedList(magic_list,DestroyMagicElement);
+  UnlockSemaphoreInfo(magic_list_semaphore);
+  RelinquishSemaphoreInfo(&magic_list_semaphore);
 }
