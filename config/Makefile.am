@@ -32,7 +32,6 @@ configsharearch_DATA = \
 # (share/ImageMagick-version)
 configlibdir =  $(CONFIGURE_PATH)
 configlib_DATA = \
-	config/coder.xml \
 	config/colors.xml \
 	config/delegates.xml \
 	config/log.xml \
@@ -49,7 +48,6 @@ configlib_DATA = \
 
 CONFIG_EXTRA_DIST = \
 	config/cmyk.icm \
-	config/coder.xml \
 	config/colors.xml \
 	config/config.h.in \
 	config/delegates.xml.in \

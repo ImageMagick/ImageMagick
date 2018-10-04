@@ -1,5 +1,6 @@
 2018-10-04  7.0.8-13 Dirk Lemstra <dirk@lem.....org>
   * Adding coder headers with magic.xml will no longer be supported.
+  * Adding coder aliases with coder.xml will no longer be supported.
 
 2018-09-16  7.0.8-12 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-12, GIT revision 14843:cb5cf1959:20180923

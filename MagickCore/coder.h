@@ -28,11 +28,11 @@ typedef struct _CoderInfo
     *path,
     *magick,
     *name;
-                                                                                
+
   MagickBooleanType
     exempt,
     stealth;
-                                                                                
+
   size_t
     signature;
 } CoderInfo;
