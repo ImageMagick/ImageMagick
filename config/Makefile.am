@@ -36,7 +36,6 @@ configlib_DATA = \
 	config/colors.xml \
 	config/delegates.xml \
 	config/log.xml \
-	config/magic.xml \
 	config/mime.xml \
 	config/policy.xml \
 	config/quantization-table.xml \
@@ -62,7 +61,6 @@ CONFIG_EXTRA_DIST = \
 	config/locale.md \
 	config/locale.xml \
 	config/log.xml \
-	config/magic.xml \
 	config/mime.xml \
 	config/policy.xml \
 	config/quantization-table.xml \

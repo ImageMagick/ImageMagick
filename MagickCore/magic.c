@@ -63,7 +63,6 @@
 /*
   Define declarations.
 */
-#define MagicFilename  "magic.xml"
 #define MagicPattern(magic)  (const unsigned char *) (magic), sizeof(magic)-1
 
 /*
@@ -217,9 +216,7 @@ static SemaphoreInfo
   Forward declarations.
 */
 static MagickBooleanType
-  IsMagicCacheInstantiated(ExceptionInfo *),
-  LoadMagicCache(LinkedListInfo *,const char *,const char *,const size_t,
-    ExceptionInfo *);
+  IsMagicCacheInstantiated(ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -260,8 +257,7 @@ static int CompareMagickInfoSize(const void *a,const void *b)
   return((int) (mb->length-ma->length));
 }
 
-static LinkedListInfo *AcquireMagicCache(const char *filename,
-  ExceptionInfo *exception)
+static LinkedListInfo *AcquireMagicCache(ExceptionInfo *exception)
 {
   LinkedListInfo
     *cache;
@@ -272,35 +268,8 @@ static LinkedListInfo *AcquireMagicCache(const char *filename,
   register ssize_t
     i;
 
-  /*
-    Load external magic map.
-  */
   cache=NewLinkedList(0);
   status=MagickTrue;
-#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
-  {
-    char
-      path[MagickPathExtent];
-
-    const StringInfo
-      *option;
-
-    LinkedListInfo
-      *options;
-
-    *path='\0';
-    options=GetConfigureOptions(filename,exception);
-    option=(const StringInfo *) GetNextValueInLinkedList(options);
-    while (option != (const StringInfo *) NULL)
-    {
-      (void) CopyMagickString(path,GetStringInfoPath(option),MagickPathExtent);
-      status&=LoadMagicCache(cache,(const char *)
-        GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
-      option=(const StringInfo *) GetNextValueInLinkedList(options);
-    }
-    options=DestroyConfigureOptions(options);
-  }
-#endif
   /*
     Load built-in magic map.
   */
@@ -705,7 +674,7 @@ static MagickBooleanType IsMagicCacheInstantiated(ExceptionInfo *exception)
         ActivateSemaphoreInfo(&magic_semaphore);
       LockSemaphoreInfo(magic_semaphore);
       if (magic_cache == (LinkedListInfo *) NULL)
-        magic_cache=AcquireMagicCache(MagicFilename,exception);
+        magic_cache=AcquireMagicCache(exception);
       UnlockSemaphoreInfo(magic_semaphore);
     }
   return(magic_cache != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
@@ -792,267 +761,6 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
   (void) fflush(file);
   magic_info=(const MagicInfo **) RelinquishMagickMemory((void *) magic_info);
   return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   L o a d M a g i c C a c h e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  LoadMagicCache() loads the magic configurations which provides a mapping
-%  between magic attributes and a magic name.
-%
-%  The format of the LoadMagicCache method is:
-%
-%      MagickBooleanType LoadMagicCache(LinkedListInfo *cache,const char *xml,
-%        const char *filename,const size_t depth,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o xml: The magic list in XML format.
-%
-%    o filename: The magic list filename.
-%
-%    o depth: depth of <include /> statements.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-static MagickBooleanType LoadMagicCache(LinkedListInfo *cache,const char *xml,
-  const char *filename,const size_t depth,ExceptionInfo *exception)
-{
-  char
-    keyword[MagickPathExtent],
-    *token;
-
-  const char
-    *q;
-
-  MagicInfo
-    *magic_info;
-
-  MagickStatusType
-    status;
-
-  size_t
-    extent;
-
-  /*
-    Load the magic map file.
-  */
-  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-    "Loading magic configure file \"%s\" ...",filename);
-  if (xml == (char *) NULL)
-    return(MagickFalse);
-  status=MagickTrue;
-  magic_info=(MagicInfo *) NULL;
-  token=AcquireString(xml);
-  extent=strlen(token)+MagickPathExtent;
-  for (q=(char *) xml; *q != '\0'; )
-  {
-    /*
-      Interpret XML.
-    */
-    GetNextToken(q,&q,extent,token);
-    if (*token == '\0')
-      break;
-    (void) CopyMagickString(keyword,token,MagickPathExtent);
-    if (LocaleNCompare(keyword,"<!DOCTYPE",9) == 0)
-      {
-        /*
-          Doctype element.
-        */
-        while ((LocaleNCompare(q,"]>",2) != 0) && (*q != '\0'))
-          GetNextToken(q,&q,extent,token);
-        continue;
-      }
-    if (LocaleNCompare(keyword,"<!--",4) == 0)
-      {
-        /*
-          Comment element.
-        */
-        while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
-          GetNextToken(q,&q,extent,token);
-        continue;
-      }
-    if (LocaleCompare(keyword,"<include") == 0)
-      {
-        /*
-          Include element.
-        */
-        while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
-        {
-          (void) CopyMagickString(keyword,token,MagickPathExtent);
-          GetNextToken(q,&q,extent,token);
-          if (*token != '=')
-            continue;
-          GetNextToken(q,&q,extent,token);
-          if (LocaleCompare(keyword,"file") == 0)
-            {
-              if (depth > MagickMaxRecursionDepth)
-                (void) ThrowMagickException(exception,GetMagickModule(),
-                  ConfigureError,"IncludeElementNestedTooDeeply","`%s'",token);
-              else
-                {
-                  char
-                    path[MagickPathExtent],
-                    *file_xml;
-
-                  GetPathComponent(filename,HeadPath,path);
-                  if (*path != '\0')
-                    (void) ConcatenateMagickString(path,DirectorySeparator,
-                      MagickPathExtent);
-                  if (*token == *DirectorySeparator)
-                    (void) CopyMagickString(path,token,MagickPathExtent);
-                  else
-                    (void) ConcatenateMagickString(path,token,MagickPathExtent);
-                  file_xml=FileToXML(path,~0UL);
-                  if (xml != (char *) NULL)
-                    {
-                      status&=LoadMagicCache(cache,file_xml,path,depth+1,
-                        exception);
-                      file_xml=DestroyString(file_xml);
-                    }
-                }
-            }
-        }
-        continue;
-      }
-    if (LocaleCompare(keyword,"<magic") == 0)
-      {
-        /*
-          Magic element.
-        */
-        magic_info=(MagicInfo *) AcquireCriticalMemory(sizeof(*magic_info));
-        (void) memset(magic_info,0,sizeof(*magic_info));
-        magic_info->path=ConstantString(filename);
-        magic_info->exempt=MagickFalse;
-        magic_info->signature=MagickCoreSignature;
-        continue;
-      }
-    if (magic_info == (MagicInfo *) NULL)
-      continue;
-    if ((LocaleCompare(keyword,"/>") == 0) ||
-        (LocaleCompare(keyword,"</policy>") == 0))
-      {
-        status=InsertValueInSortedLinkedList(cache,CompareMagickInfoSize,
-          NULL,magic_info);
-        if (status == MagickFalse)
-          (void) ThrowMagickException(exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","`%s'",
-            magic_info->name);
-        magic_info=(MagicInfo *) NULL;
-        continue;
-      }
-    GetNextToken(q,(const char **) NULL,extent,token);
-    if (*token != '=')
-      continue;
-    GetNextToken(q,&q,extent,token);
-    GetNextToken(q,&q,extent,token);
-    switch (*keyword)
-    {
-      case 'N':
-      case 'n':
-      {
-        if (LocaleCompare((char *) keyword,"name") == 0)
-          {
-            magic_info->name=ConstantString(token);
-            break;
-          }
-        break;
-      }
-      case 'O':
-      case 'o':
-      {
-        if (LocaleCompare((char *) keyword,"offset") == 0)
-          {
-            magic_info->offset=(MagickOffsetType) StringToLong(token);
-            break;
-          }
-        break;
-      }
-      case 'S':
-      case 's':
-      {
-        if (LocaleCompare((char *) keyword,"stealth") == 0)
-          {
-            magic_info->stealth=IsStringTrue(token);
-            break;
-          }
-        break;
-      }
-      case 'T':
-      case 't':
-      {
-        if (LocaleCompare((char *) keyword,"target") == 0)
-          {
-            char
-              *p;
-
-            register unsigned char
-              *r;
-
-            size_t
-              length;
-
-            length=strlen(token);
-            magic_info->target=ConstantString(token);
-            magic_info->magic=(unsigned char *) ConstantString(token);
-            r=magic_info->magic;
-            for (p=magic_info->target; *p != '\0'; )
-            {
-              if (*p == '\\')
-                {
-                  p++;
-                  if (isdigit((int) ((unsigned char) *p)) != 0)
-                    {
-                      char
-                        *end;
-
-                      *r++=(unsigned char) strtol(p,&end,8);
-                      p+=(end-p);
-                      magic_info->length++;
-                      continue;
-                    }
-                  switch (*p)
-                  {
-                    case 'b': *r='\b'; break;
-                    case 'f': *r='\f'; break;
-                    case 'n': *r='\n'; break;
-                    case 'r': *r='\r'; break;
-                    case 't': *r='\t'; break;
-                    case 'v': *r='\v'; break;
-                    case 'a': *r='a'; break;
-                    case '?': *r='\?'; break;
-                    default: *r=(unsigned char) (*p); break;
-                  }
-                  p++;
-                  r++;
-                  magic_info->length++;
-                  continue;
-                }
-              else
-                if (LocaleNCompare(p,"&amp;",5) == 0)
-                  (void) CopyMagickString(p+1,p+5,length-magic_info->length);
-              *r++=(unsigned char) (*p++);
-              magic_info->length++;
-            }
-            break;
-          }
-        break;
-      }
-      default:
-        break;
-    }
-  }
-  token=(char *) RelinquishMagickMemory(token);
-  return(status != 0 ? MagickTrue : MagickFalse);
 }
 
 /*

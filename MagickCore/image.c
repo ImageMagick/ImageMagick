@@ -2998,7 +2998,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
       (void) CloseBlob(image);
       image=DestroyImage(image);
       /*
-        Check magic.xml configuration file.
+        Check magic cache.
       */
       sans_exception=AcquireExceptionInfo();
       magic_info=GetMagicInfo(magick,(size_t) count,sans_exception);

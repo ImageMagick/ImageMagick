@@ -212,7 +212,6 @@ $composite:==$'f$environment("default")'composite
 $write sys$output "..symbol COMPOSITE defined."
 $SkipComposite:
 $set def [-]
-$copy [.config]magic.xml sys$login:magic.xml
 $copy [.config]colors.xml sys$login:colors.xml
 $copy [.config]log.xml sys$login:log.xml
 $copy [.www.source]delegates.xml sys$login:delegates.xml

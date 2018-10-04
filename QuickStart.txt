@@ -62,7 +62,7 @@ Unix/Linux/Darwin/Mac OS X/Cygwin/MinGW Install:
     Configuration Files
 
       ImageMagick depends on a number of external configuration files which
-      include colors.xml, delegates.xml, magic.xml, coder.xml, and others.
+      include colors.xml, delegates.xml, coder.xml, and others.
       ImageMagick searches for configuration files in the following order, and
       loads them if found:
 
