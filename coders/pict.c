@@ -444,7 +444,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
     bytes_per_line=width;
   row_bytes=(size_t) (image->columns | 0x8000);
   if (image->storage_class == DirectClass)
-    row_bytes=(size_t) (4*(image->columns | 0x8000));
+    row_bytes=(size_t) ((4*image->columns) | 0x8000);
   /*
     Allocate pixel and scanline buffer.
   */
@@ -1778,7 +1778,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
   /*
     Allocate memory.
   */
-  bytes_per_line=image->columns | 0x8000;
+  bytes_per_line=image->columns;
   if (storage_class == DirectClass)
     bytes_per_line*=image->alpha_trait != UndefinedPixelTrait ? 4 : 3;
   buffer=(unsigned char *) AcquireQuantumMemory(PictInfoSize,sizeof(*buffer));
@@ -1799,7 +1799,8 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     }
   (void) memset(scanline,0,row_bytes);
-  (void) memset(packed_scanline,0,(size_t) (row_bytes+2*MaxCount));
+  (void) memset(packed_scanline,0,(size_t) (row_bytes+2*MaxCount)*
+    sizeof(*packed_scanline));
   /*
     Write header, header size, size bounding box, version, and reserved.
   */
