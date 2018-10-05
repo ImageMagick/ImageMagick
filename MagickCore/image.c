@@ -3220,17 +3220,17 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
   {
     case ReadPixelMask:
     {
-      image->channels=(ChannelType) (image->channels | ~ReadMaskChannel);
+      image->channels=(ChannelType) (image->channels | ReadMaskChannel);
       break;
     }
     case WritePixelMask:
     {
-      image->channels=(ChannelType) (image->channels | ~WriteMaskChannel);
+      image->channels=(ChannelType) (image->channels | WriteMaskChannel);
       break;
     }
     default:
     {
-      image->channels=(ChannelType) (image->channels | ~CompositeMaskChannel);
+      image->channels=(ChannelType) (image->channels | CompositeMaskChannel);
       break;
     }
   }
