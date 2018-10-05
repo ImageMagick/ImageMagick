@@ -19,7 +19,7 @@
 #define MagickCoderHeader(coder,offset,magic)  { coder, offset, \
   (const unsigned char *) (magic), sizeof(magic)-1 },
 
-#define MagickCoderAlias(coder,alias)  { coder, alias },
+#define MagickCoderAlias(coder,alias)  { alias, coder },
 
 #define MagickCoderExports(coder) \
 extern ModuleExport size_t \
