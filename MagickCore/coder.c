@@ -48,7 +48,6 @@
 #include "MagickCore/draw.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
-#include "MagickCore/linked-list.h"
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/memory-private.h"
@@ -59,8 +58,6 @@
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
-#include "MagickCore/xml-tree.h"
-#include "MagickCore/xml-tree-private.h"
 #include "coders/coders.h"
 
 /*
@@ -85,7 +82,7 @@ static const CoderMapInfo
   CoderMap[] =
   {
     #include "coders/coders-list.h"
- };
+  };
 
 static SemaphoreInfo
   *coder_semaphore = (SemaphoreInfo *) NULL;
