@@ -49,7 +49,9 @@
   #include "coders/djvu.h"
 #endif
 #include "coders/dng.h"
+#if defined(MAGICKCORE_GVC_DELEGATE)
 #include "coders/dot.h"
+#endif
 #if defined(MAGICKCORE_DPS_DELEGATE)
   #include "coders/dps.h"
 #endif

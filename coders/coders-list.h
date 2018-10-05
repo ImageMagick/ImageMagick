@@ -38,7 +38,9 @@ AddMagickCoder(DIB)
   AddMagickCoder(DJVU)
 #endif
 AddMagickCoder(DNG)
-AddMagickCoder(DOT)
+#if defined(MAGICKCORE_GVC_DELEGATE)
+  AddMagickCoder(DOT)
+#endif
 #if defined(MAGICKCORE_DPS_DELEGATE)
   AddMagickCoder(DPS)
 #endif
