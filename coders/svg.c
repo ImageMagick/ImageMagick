@@ -575,10 +575,12 @@ static void SVGStripString(const MagickBooleanType trim,char *message)
       {
         for ( ; *p != '\0'; p++)
           if ((*p == '*') && (*(p+1) == '/'))
-            break;
+            {
+              p+=2;
+              break;
+            }
         if (*p == '\0')
           break;
-        p+=2;
       }
     *q++=(*p);
   }
