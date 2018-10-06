@@ -1093,11 +1093,11 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
       {  0x84e3, "exif:IT8RasterPadding" },
       {  0x84e5, "exif:IT8ColorTable" },
       {  0x8649, "exif:ImageResourceInformation" },
-      {  0x8769, "exif:ExifOffset" }, //Documentation specs as "Exif IFD Pointer"?
+      {  0x8769, "exif:ExifOffset" },  /* specs as "Exif IFD Pointer"? */
       {  0x8773, "exif:InterColorProfile" },
       {  0x8822, "exif:ExposureProgram" },
       {  0x8824, "exif:SpectralSensitivity" },
-      {  0x8825, "exif:GPSInfo" }, //Documentation specs as "GPSInfo IFD Pointer"?
+      {  0x8825, "exif:GPSInfo" }, /* specs as "GPSInfo IFD Pointer"? */
       {  0x8827, "exif:PhotographicSensitivity" },
       {  0x8828, "exif:OECF" },
       {  0x8829, "exif:Interlace" },      
