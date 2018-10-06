@@ -17,12 +17,6 @@
 #include "coders/coders-private.h"
 
 /*
-  Macro definitions.
-*/
-#define MagickStringify(macro_or_string)  MagickStringifyArg(macro_or_string)
-#define MagickStringifyArg(contents)  #contents
-
-/*
   Include declarations.
 */
 #include "coders/aai.h"

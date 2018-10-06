@@ -55,7 +55,7 @@
 /*
   Define declarations.
 */
-#define AddMagickCoder(coder)  { MagickStringify(coder), MagickFalse, \
+#define AddMagickCoder(coder)  { #coder, MagickFalse, \
   Register ## coder ## Image, Unregister ## coder ## Image },
 
 
