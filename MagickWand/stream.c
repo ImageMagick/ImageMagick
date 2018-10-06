@@ -563,7 +563,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             status=MogrifyImageInfo(image_info,(int) (i-j+1),(const char **)
               argv+j,exception);
             DestroyStream();
-            return(status == 0 ? MagickTrue : MagickFalse);
+            return(status == 0 ? MagickFalse : MagickTrue);
           }
         if (LocaleCompare("log",option+1) == 0)
           {
