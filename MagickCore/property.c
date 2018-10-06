@@ -1230,7 +1230,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
       { 0x1001e, "exif:GPSDifferential" },
       { 0x1001f, "exif:GPSHPositioningError" },
       { 0x00000, (const char *) NULL }
-    };
+    };  /* http://www.cipa.jp/std/documents/e/DC-008-Translation-2016-E.pdf */
 
   const StringInfo
     *profile;
