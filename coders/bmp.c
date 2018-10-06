@@ -595,8 +595,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Verify BMP identifier.
     */
-    if (bmp_info.ba_offset == 0)
-      start_position=TellBlob(image)-2;
+    start_position=TellBlob(image)-2;
     bmp_info.ba_offset=0;
     while (LocaleNCompare((char *) magick,"BA",2) == 0)
     {
