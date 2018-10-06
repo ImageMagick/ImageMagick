@@ -58,7 +58,6 @@ UTILITIES_CONFIGURE = \
 	utilities/montage.1.in \
 	utilities/stream.1.in
 
-
 UTILITIES_EXTRA_DIST = \
 	$(UTILITIES_MANS) \
 	$(UTILITIES_TESTS)

@@ -54,7 +54,9 @@ include_HEADERS =
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = \
-	$(MAGICKCORE_NOINST_HDRS)
+	$(MAGICKCORE_NOINST_HDRS) \
+	$(MAGICKWAND_NOINST_HDRS) \
+	$(CODERS_NOINST_HDRS)
 
 if WIN32_NATIVE_BUILD
 SRCDIR='$(shell @WinPathScript@ $(srcdir)/)'
