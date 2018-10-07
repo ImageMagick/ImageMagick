@@ -451,7 +451,8 @@ static char **DestroyXMLTreeAttributes(char **attributes)
     /*
       Destroy attribute tag and value.
     */
-    attributes[i]=DestroyString(attributes[i]);
+    if (attributes[i] != (char *) NULL)
+      attributes[i]=DestroyString(attributes[i]);
     if (attributes[i+1] != (char *) NULL)
       attributes[i+1]=DestroyString(attributes[i+1]);
   }
@@ -526,7 +527,8 @@ static void DestroyXMLTreeRoot(XMLTreeInfo *xml_info)
       attributes[0]=DestroyString(attributes[0]);
     for (j=1; attributes[j] != (char *) NULL; j+=3)
     {
-      attributes[j]=DestroyString(attributes[j]);
+      if (attributes[j] != (char *) NULL)
+        attributes[j]=DestroyString(attributes[j]);
       if (attributes[j+1] != (char *) NULL)
         attributes[j+1]=DestroyString(attributes[j+1]);
       if (attributes[j+2] != (char *) NULL)

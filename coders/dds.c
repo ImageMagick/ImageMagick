@@ -1175,13 +1175,16 @@ static void CompressClusterFit(const size_t count,
               #pragma omp critical (DDS_CompressClusterFit)
 #endif
               {
-                VectorCopy43(a,start);
-                VectorCopy43(b,end);
-                bestError = error;
-                besti = i;
-                bestj = j;
-                bestk = k;
-                bestIteration = iterationIndex;
+                if (error < bestError)
+                  {
+                    VectorCopy43(a,start);
+                    VectorCopy43(b,end);
+                    bestError = error;
+                    besti = i;
+                    bestj = j;
+                    bestk = k;
+                    bestIteration = iterationIndex;
+                  }
               }
             }
 
