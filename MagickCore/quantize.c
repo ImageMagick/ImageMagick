@@ -3384,17 +3384,14 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
               #pragma omp critical (MagickCore_SetGrayscaleImage)
 #endif
-              if (colormap_index[intensity] < 0)
-                {
-                  colormap_index[intensity]=(ssize_t) image->colors;
-                  image->colormap[image->colors].red=(double)
-                    GetPixelRed(image,q);
-                  image->colormap[image->colors].green=(double)
-                    GetPixelGreen(image,q);
-                  image->colormap[image->colors].blue=(double)
-                    GetPixelBlue(image,q);
-                  image->colors++;
-               }
+              colormap_index[intensity]=(ssize_t) image->colors;
+              image->colormap[image->colors].red=(double)
+                GetPixelRed(image,q);
+              image->colormap[image->colors].green=(double)
+                GetPixelGreen(image,q);
+              image->colormap[image->colors].blue=(double)
+                GetPixelBlue(image,q);
+              image->colors++;
             }
           SetPixelIndex(image,(Quantum) colormap_index[intensity],q);
           q+=GetPixelChannels(image);

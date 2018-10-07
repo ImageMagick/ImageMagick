@@ -141,8 +141,7 @@ MagickExport double GetImageTotalInkDensity(Image *image,
         #pragma omp critical (MagickCore_GetImageTotalInkDensity)
 #endif
         {
-          if (density > total_ink_density)
-            total_ink_density=density;
+          total_ink_density=density;
         }
       p+=GetPixelChannels(image);
     }
