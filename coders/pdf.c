@@ -273,10 +273,9 @@ static MagickBooleanType InvokePDFDelegate(const MagickBooleanType verbose,
           args_start,errors);
       else
         {
-          (void) ThrowMagickException(exception,GetMagickModule(),
-            DelegateError,"PDFDelegateFailed",
-            "`[ghostscript library %.2f]%s': %s",(double) revision.revision/
-            100.0,args_start,errors);
+          (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
+            "PDFDelegateFailed","`[ghostscript library %.2f]%s': %s",(double)
+            revision.revision/100.0,args_start,errors);
           if (errors != (char *) NULL)
             errors=DestroyString(errors);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
