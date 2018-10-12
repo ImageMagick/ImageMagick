@@ -1706,14 +1706,17 @@ RestoreMSCWarning
             image->alpha_trait=BlendPixelTrait;
             if (sample_info[i] == EXTRASAMPLE_ASSOCALPHA)
               {
-                SetQuantumAlphaType(quantum_info,DisassociatedQuantumAlpha);
+                SetQuantumAlphaType(quantum_info,AssociatedQuantumAlpha);
                 (void) SetImageProperty(image,"tiff:alpha","associated",
                   exception);
               }
             else
               if (sample_info[i] == EXTRASAMPLE_UNASSALPHA)
-                (void) SetImageProperty(image,"tiff:alpha","unassociated",
-                  exception);
+                {
+                  SetQuantumAlphaType(quantum_info,DisassociatedQuantumAlpha);
+                  (void) SetImageProperty(image,"tiff:alpha","unassociated",
+                    exception);
+                }
           }
       }
     if (image->alpha_trait != UndefinedPixelTrait)
