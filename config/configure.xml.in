@@ -46,5 +46,5 @@
   <configure name="TARGET_OS" value="@MAGICK_TARGET_OS@"/>
   <configure name="TARGET_VENDOR" value="@MAGICK_TARGET_VENDOR@"/>
   <configure name="VERSION" value="@PACKAGE_VERSION@"/>
-  <configure name="WEBSITE" value="http://www.imagemagick.org"/>
+  <configure name="WEBSITE" value="https://imagemagick.org"/>
 </configuremap>

@@ -91,7 +91,7 @@ static const char
     "<delegatemap>"
     "  <delegate decode=\"bpg\" command=\"&quot;bpgdec&quot; -b 16 -o &quot;%o.png&quot; &quot;%i&quot;; mv &quot;%o.png&quot; &quot;%o&quot;\"/>"
     "  <delegate decode=\"png\" encode=\"bpg\" command=\"&quot;bpgenc&quot; -b 12 -o &quot;%o&quot; &quot;%i&quot;\"/>"
-    "  <delegate decode=\"browse\" stealth=\"True\" spawn=\"True\" command=\"&quot;xdg-open&quot; http://www.imagemagick.org/; rm &quot;%i&quot;\"/>"
+    "  <delegate decode=\"browse\" stealth=\"True\" spawn=\"True\" command=\"&quot;xdg-open&quot; https://imagemagick.org/; rm &quot;%i&quot;\"/>"
     "  <delegate decode=\"cdr\" command=\"&quot;uniconvertor&quot; &quot;%i&quot; &quot;%o.svg&quot;; mv &quot;%o.svg&quot; &quot;%o&quot;\"/>"
     "  <delegate decode=\"cgm\" command=\"&quot;uniconvertor&quot; &quot;%i&quot; &quot;%o.svg&quot;; mv &quot;%o.svg&quot; &quot;%o&quot;\"/>"
     "  <delegate decode=\"https\" command=\"&quot;curl&quot; -s -k -L -o &quot;%o&quot; &quot;https:%M&quot;\"/>"
