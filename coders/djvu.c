@@ -819,7 +819,7 @@ static Image *ReadDJVUImage(const ImageInfo *image_info,
   ddjvu_cache_set_size(lc->context, 1); /* right? */
   use_cache = 0;
   /* document: here we don't have a filename, but, for the sake of generality, a FILE* ! */
-  url="http://www.imagemagick.org/fake.djvu";
+  url="https://imagemagick.org/fake.djvu";
   lc->document = ddjvu_document_create(lc->context, url, use_cache); /* don't cache */
   ddjvu_document_set_user_data(lc->document, lc);
 
