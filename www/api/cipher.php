@@ -10,7 +10,7 @@
   <title>MagickCore, C API: Convert to and from Cipher Pixels @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick">
   <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations.">
-  <meta name="application-url" content="https://www.imagemagick.org">
+  <meta name="application-url" content="https://imagemagick.org">
   <meta name="generator" content="PHP">
   <meta name="keywords" content="magickcore, c, api:, convert, to, from, cipher, pixels, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
   <meta name="rating" content="GENERAL">
@@ -23,7 +23,7 @@
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
-  <link href="https://www.imagemagick.org/api/cipher.php" rel="canonical">
+  <link href="https://imagemagick.org/api/cipher.php" rel="canonical">
   <link href="https://imagemagick.org/image/wand.png" rel="icon">
   <link href="https://imagemagick.org/image/wand.ico" rel="shortcut icon">
   <link href="https://imagemagick.org/assets/magick-css.php" rel="stylesheet">
@@ -57,7 +57,7 @@
         <a class="nav-link" href="https://imagemagick.org/script/develop.php">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="../script/search.php">
@@ -83,7 +83,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="cipher.php#AcquireAESInfo">AcquireAESInfo</a> &bull; <a href="cipher.php#DestroyAESInfo">DestroyAESInfo</a> &bull; <a href="cipher.php#EncipherAESBlock">EncipherAESBlock</a> &bull; <a href="cipher.php#PasskeyDecipherImage">PasskeyDecipherImage</a> &bull; <a href="cipher.php#PasskeyEncipherImage">PasskeyEncipherImage</a> &bull; <a href="cipher.php#SetAESKey">SetAESKey</a> &bull; <a href="cipher.php#PasskeyDecipherImage">PasskeyDecipherImage</a> &bull; <a href="cipher.php#PasskeyEncipherImage">PasskeyEncipherImage</a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cipher_8c.html" id="AcquireAESInfo">AcquireAESInfo</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/cipher_8c.html" id="AcquireAESInfo">AcquireAESInfo</a></h2>
 
 <p>AcquireAESInfo() allocate the AESInfo structure.</p>
 
@@ -93,7 +93,7 @@
 AESInfo *AcquireAESInfo(void)
 </pre>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cipher_8c.html" id="DestroyAESInfo">DestroyAESInfo</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/cipher_8c.html" id="DestroyAESInfo">DestroyAESInfo</a></h2>
 
 <p>DestroyAESInfo() zeros memory associated with the AESInfo structure.</p>
 
@@ -115,7 +115,7 @@ AESInfo *DestroyAESInfo(AESInfo *aes_info)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cipher_8c.html" id="EncipherAESBlock">EncipherAESBlock</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/cipher_8c.html" id="EncipherAESBlock">EncipherAESBlock</a></h2>
 
 <p>EncipherAESBlock() enciphers a single block of plaintext to produce a block of ciphertext.</p>
 
@@ -146,7 +146,7 @@ void EncipherAES(AESInfo *aes_info,const unsigned char *plaintext,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cipher_8c.html" id="PasskeyDecipherImage">PasskeyDecipherImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/cipher_8c.html" id="PasskeyDecipherImage">PasskeyDecipherImage</a></h2>
 
 <p>PasskeyDecipherImage() converts cipher pixels to plain pixels.</p>
 
@@ -183,7 +183,7 @@ MagickBooleanType DecipherImage(Image *image,const char *passphrase,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cipher_8c.html" id="PasskeyEncipherImage">PasskeyEncipherImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/cipher_8c.html" id="PasskeyEncipherImage">PasskeyEncipherImage</a></h2>
 
 <p>PasskeyEncipherImage() converts pixels to cipher-pixels.</p>
 
@@ -220,7 +220,7 @@ MagickBooleanType EncipherImage(Image *image,const char *passphrase,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cipher_8c.html" id="SetAESKey">SetAESKey</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/cipher_8c.html" id="SetAESKey">SetAESKey</a></h2>
 
 <p>SetAESKey() sets the key for the AES cipher.  The key length is specified in bits.  Valid values are 128, 192, or 256 requiring a key buffer length in bytes of 16, 24, and 32 respectively.</p>
 
@@ -246,7 +246,7 @@ SetAESKey(AESInfo *aes_info,const StringInfo *key)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cipher_8c.html" id="PasskeyDecipherImage">PasskeyDecipherImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/cipher_8c.html" id="PasskeyDecipherImage">PasskeyDecipherImage</a></h2>
 
 <p>PasskeyDecipherImage() converts cipher pixels to plain pixels.</p>
 
@@ -283,7 +283,7 @@ MagickBooleanType DecipherImage(Image *image,const char *passphrase,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cipher_8c.html" id="PasskeyEncipherImage">PasskeyEncipherImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/cipher_8c.html" id="PasskeyEncipherImage">PasskeyEncipherImage</a></h2>
 
 <p>PasskeyEncipherImage() converts pixels to cipher-pixels.</p>
 

@@ -10,7 +10,7 @@
   <title>MagickCore, C API: Read or Write Binary Large OBjects @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick">
   <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations.">
-  <meta name="application-url" content="https://www.imagemagick.org">
+  <meta name="application-url" content="https://imagemagick.org">
   <meta name="generator" content="PHP">
   <meta name="keywords" content="magickcore, c, api:, read, or, write, binary, large, objects, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
   <meta name="rating" content="GENERAL">
@@ -23,7 +23,7 @@
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
-  <link href="https://www.imagemagick.org/api/blob.php" rel="canonical">
+  <link href="https://imagemagick.org/api/blob.php" rel="canonical">
   <link href="https://imagemagick.org/image/wand.png" rel="icon">
   <link href="https://imagemagick.org/image/wand.ico" rel="shortcut icon">
   <link href="https://imagemagick.org/assets/magick-css.php" rel="stylesheet">
@@ -57,7 +57,7 @@
         <a class="nav-link" href="https://imagemagick.org/script/develop.php">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="../script/search.php">
@@ -83,7 +83,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="blob.php#BlobToImage">BlobToImage</a> &bull; <a href="blob.php#CustomStreamToImage">CustomStreamToImage</a> &bull; <a href="blob.php#FileToBlob">FileToBlob</a> &bull; <a href="blob.php#FileToImage">FileToImage</a> &bull; <a href="blob.php#GetBlobProperties">GetBlobProperties</a> &bull; <a href="blob.php#ImageToBlob">ImageToBlob</a> &bull; <a href="blob.php#ImageToFile">ImageToFile</a> &bull; <a href="blob.php#ImagesToBlob">ImagesToBlob</a> &bull; <a href="blob.php#InjectImageBlob">InjectImageBlob</a> &bull; <a href="blob.php#IsBlobExempt">IsBlobExempt</a> &bull; <a href="blob.php#IsBlobSeekable">IsBlobSeekable</a> &bull; <a href="blob.php#IsBlobTemporary">IsBlobTemporary</a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob_8c.html" id="BlobToImage">BlobToImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/blob_8c.html" id="BlobToImage">BlobToImage</a></h2>
 
 <p>BlobToImage() implements direct to memory image formats.  It returns the blob as an image.</p>
 
@@ -118,7 +118,7 @@ Image *BlobToImage(const ImageInfo *image_info,const void *blob,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob_8c.html" id="CustomStreamToImage">CustomStreamToImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/blob_8c.html" id="CustomStreamToImage">CustomStreamToImage</a></h2>
 
 <p>CustomStreamToImage() is the equivalent of ReadImage(), but reads the formatted "file" from the suplied method rather than to an actual file.</p>
 
@@ -145,7 +145,7 @@ Image *CustomStreamToImage(const ImageInfo *image_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob_8c.html" id="FileToBlob">FileToBlob</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/blob_8c.html" id="FileToBlob">FileToBlob</a></h2>
 
 <p>FileToBlob() returns the contents of a file as a buffer terminated with the '\0' character.  The length of the buffer (not including the extra terminating '\0' character) is returned via the 'length' parameter.  Free the buffer with RelinquishMagickMemory().</p>
 
@@ -184,7 +184,7 @@ void *FileToBlob(const char *filename,const size_t extent,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob_8c.html" id="FileToImage">FileToImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/blob_8c.html" id="FileToImage">FileToImage</a></h2>
 
 <p>FileToImage() write the contents of a file to an image.</p>
 
@@ -210,7 +210,7 @@ MagickBooleanType FileToImage(Image *,const char *filename)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob_8c.html" id="GetBlobProperties">GetBlobProperties</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/blob_8c.html" id="GetBlobProperties">GetBlobProperties</a></h2>
 
 <p>GetBlobProperties() returns information about an image blob.</p>
 
@@ -232,7 +232,7 @@ const struct stat *GetBlobProperties(const Image *image)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob_8c.html" id="ImageToBlob">ImageToBlob</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/blob_8c.html" id="ImageToBlob">ImageToBlob</a></h2>
 
 <p>ImageToBlob() implements direct to memory image formats.  It returns the image as a formatted blob and its length.  The magick member of the Image structure determines the format of the returned blob (GIF, JPEG, PNG, etc.).  This method is the equivalent of WriteImage(), but writes the formatted "file" to a memory buffer rather than to an actual file.</p>
 
@@ -267,7 +267,7 @@ void *ImageToBlob(const ImageInfo *image_info,Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob_8c.html" id="ImageToFile">ImageToFile</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/blob_8c.html" id="ImageToFile">ImageToFile</a></h2>
 
 <p>ImageToFile() writes an image to a file.  It returns MagickFalse if an error occurs otherwise MagickTrue.</p>
 
@@ -298,7 +298,7 @@ void *ImageToBlob(const ImageInfo *image_info,Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob_8c.html" id="ImagesToBlob">ImagesToBlob</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/blob_8c.html" id="ImagesToBlob">ImagesToBlob</a></h2>
 
 <p>ImagesToBlob() implements direct to memory image formats.  It returns the image sequence as a blob and its length.  The magick member of the ImageInfo structure determines the format of the returned blob (GIF, JPEG,  PNG, etc.)</p>
 
@@ -335,7 +335,7 @@ void *ImagesToBlob(const ImageInfo *image_info,Image *images,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob_8c.html" id="InjectImageBlob">InjectImageBlob</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/blob_8c.html" id="InjectImageBlob">InjectImageBlob</a></h2>
 
 <p>InjectImageBlob() injects the image with a copy of itself in the specified format (e.g. inject JPEG into a PDF image).</p>
 
@@ -375,7 +375,7 @@ MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob_8c.html" id="IsBlobExempt">IsBlobExempt</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/blob_8c.html" id="IsBlobExempt">IsBlobExempt</a></h2>
 
 <p>IsBlobExempt() returns true if the blob is exempt.</p>
 
@@ -397,7 +397,7 @@ MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob_8c.html" id="IsBlobSeekable">IsBlobSeekable</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/blob_8c.html" id="IsBlobSeekable">IsBlobSeekable</a></h2>
 
 <p>IsBlobSeekable() returns true if the blob is seekable.</p>
 
@@ -419,7 +419,7 @@ MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob_8c.html" id="IsBlobTemporary">IsBlobTemporary</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/blob_8c.html" id="IsBlobTemporary">IsBlobTemporary</a></h2>
 
 <p>IsBlobTemporary() returns true if the blob is temporary.</p>
 

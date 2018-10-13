@@ -271,7 +271,7 @@ namespace Magick
     std::string format(void) const;
 
     // Formats the specified expression
-    // More info here: http://www.imagemagick.org/script/escape.php
+    // More info here: https://imagemagick.org/script/escape.php
     std::string formatExpression(const std::string expression);
 
     // Gamma level of the image

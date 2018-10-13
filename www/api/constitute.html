@@ -10,7 +10,7 @@
   <title>MagickCore, C API: Constitute an Image @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick" />
   <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations." />
-  <meta name="application-url" content="https://www.imagemagick.org" />
+  <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="magickcore, c, api:, constitute, an, image, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
   <meta name="rating" content="GENERAL" />
@@ -23,7 +23,7 @@
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="https://www.imagemagick.org/api//constitute.html" rel="canonical" />
+  <link href="https://imagemagick.org/api//constitute.html" rel="canonical" />
   <link href="../../images/wand.png" rel="icon" />
   <link href="../../images/wand.ico" rel="shortcut icon" />
   <link href="../assets/magick.css" rel="stylesheet" />
@@ -57,7 +57,7 @@
         <a class="nav-link" href="../../www/develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="https://imagemagick.org/script/search.php">
@@ -83,7 +83,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="constitute.html#ConstituteImage">ConstituteImage</a> &#8226; <a href="constitute.html#PingImage">PingImage</a> &#8226; <a href="constitute.html#PingImages">PingImages</a> &#8226; <a href="constitute.html#ReadImage">ReadImage</a> &#8226; <a href="constitute.html#ReadImages">ReadImages</a> &#8226; <a href="constitute.html#WriteImage">WriteImage</a> &#8226; <a href="constitute.html#WriteImages">WriteImages</a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute_8c.html" id="ConstituteImage">ConstituteImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/constitute_8c.html" id="ConstituteImage">ConstituteImage</a></h2>
 
 <p>ConstituteImage() returns an image from the pixel data you supply. The pixel data must be in scanline order top-to-bottom.  The data can be char, short int, int, float, or double.  Float and double require the pixels to be normalized [0..1], otherwise [0..QuantumRange].  For example, to create a 640x480 image from unsigned red-green-blue character data, use:</p>
 
@@ -131,7 +131,7 @@ Image *ConstituteImage(const size_t columns,const size_t rows,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute_8c.html" id="PingImage">PingImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/constitute_8c.html" id="PingImage">PingImage</a></h2>
 
 <p>PingImage() returns all the properties of an image or image sequence except for the pixels.  It is much faster and consumes far less memory than ReadImage().  On failure, a NULL image is returned and exception describes the reason for the failure.</p>
 
@@ -157,7 +157,7 @@ Image *PingImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute_8c.html" id="PingImages">PingImages</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/constitute_8c.html" id="PingImages">PingImages</a></h2>
 
 <p>PingImages() pings one or more images and returns them as an image list.</p>
 
@@ -188,7 +188,7 @@ Image *PingImages(ImageInfo *image_info,const char *filename,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute_8c.html" id="ReadImage">ReadImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/constitute_8c.html" id="ReadImage">ReadImage</a></h2>
 
 <p>ReadImage() reads an image or image sequence from a file or file handle. The method returns a NULL if there is a memory shortage or if the image cannot be read.  On failure, a NULL image is returned and exception describes the reason for the failure.</p>
 
@@ -214,7 +214,7 @@ Image *ReadImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute_8c.html" id="ReadImages">ReadImages</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/constitute_8c.html" id="ReadImages">ReadImages</a></h2>
 
 <p>ReadImages() reads one or more images and returns them as an image list.</p>
 
@@ -245,7 +245,7 @@ Image *ReadImages(ImageInfo *image_info,const char *filename,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute_8c.html" id="WriteImage">WriteImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/constitute_8c.html" id="WriteImage">WriteImage</a></h2>
 
 <p>WriteImage() writes an image or an image sequence to a file or file handle. If writing to a file is on disk, the name is defined by the filename member of the image structure.  WriteImage() returns MagickFalse is there is a memory shortage or if the image cannot be written.  Check the exception member of image to determine the cause for any failure.</p>
 
@@ -276,7 +276,7 @@ MagickBooleanType WriteImage(const ImageInfo *image_info,Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute_8c.html" id="WriteImages">WriteImages</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/constitute_8c.html" id="WriteImages">WriteImages</a></h2>
 
 <p>WriteImages() writes an image sequence into one or more files.  While WriteImage() can write an image sequence, it is limited to writing the sequence into a single file using a format which supports multiple frames.   WriteImages(), however, does not have this limitation, instead it generates multiple output files if necessary (or when requested).  When ImageInfo's adjoin flag is set to MagickFalse, the file name is expected to include a printf-style formatting string for the frame number (e.g. "image02d.png").</p>
 

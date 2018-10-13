@@ -10,7 +10,7 @@
   <title>MagickCore, C API: Dealing with Image Layers @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick">
   <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations.">
-  <meta name="application-url" content="https://www.imagemagick.org">
+  <meta name="application-url" content="https://imagemagick.org">
   <meta name="generator" content="PHP">
   <meta name="keywords" content="magickcore, c, api:, dealing, with, image, layers, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
   <meta name="rating" content="GENERAL">
@@ -23,7 +23,7 @@
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
-  <link href="https://www.imagemagick.org/api/layer.php" rel="canonical">
+  <link href="https://imagemagick.org/api/layer.php" rel="canonical">
   <link href="https://imagemagick.org/image/wand.png" rel="icon">
   <link href="https://imagemagick.org/image/wand.ico" rel="shortcut icon">
   <link href="https://imagemagick.org/assets/magick-css.php" rel="stylesheet">
@@ -57,7 +57,7 @@
         <a class="nav-link" href="https://imagemagick.org/script/develop.php">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="../script/search.php">
@@ -83,7 +83,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="layer.php#CoalesceImages">CoalesceImages</a> &bull; <a href="layer.php#DisposeImages">DisposeImages</a> &bull; <a href="layer.php#CompareImagesLayers">CompareImagesLayers</a> &bull; <a href="layer.php#OptimizeImageLayers">OptimizeImageLayers</a> &bull; <a href="layer.php#OptimizeImagePlusLayers">OptimizeImagePlusLayers</a> &bull; <a href="layer.php#OptimizeImageTransparency">OptimizeImageTransparency</a> &bull; <a href="layer.php#RemoveDuplicateLayers">RemoveDuplicateLayers</a> &bull; <a href="layer.php#RemoveZeroDelayLayers">RemoveZeroDelayLayers</a> &bull; <a href="layer.php#CompositeLayers">CompositeLayers</a> &bull; <a href="layer.php#MergeImageLayers">MergeImageLayers</a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="CoalesceImages">CoalesceImages</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/layer_8c.html" id="CoalesceImages">CoalesceImages</a></h2>
 
 <p>CoalesceImages() composites a set of images while respecting any page offsets and disposal methods.  GIF, MIFF, and MNG animation sequences typically start with an image background and each subsequent image varies in size and offset.  A new image sequence is returned with all images the same size as the first images virtual canvas and composited with the next image in the sequence.</p>
 
@@ -109,7 +109,7 @@ Image *CoalesceImages(Image *image,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="DisposeImages">DisposeImages</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/layer_8c.html" id="DisposeImages">DisposeImages</a></h2>
 
 <p>DisposeImages() returns the coalesced frames of a GIF animation as it would appear after the GIF dispose method of that frame has been applied.  That is it returned the appearance of each frame before the next is overlaid.</p>
 
@@ -135,7 +135,7 @@ Image *DisposeImages(Image *image,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="CompareImagesLayers">CompareImagesLayers</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/layer_8c.html" id="CompareImagesLayers">CompareImagesLayers</a></h2>
 
 <p>CompareImagesLayers() compares each image with the next in a sequence and returns the minimum bounding region of all the pixel differences (of the LayerMethod specified) it discovers.</p>
 
@@ -170,7 +170,7 @@ Image *CompareImagesLayers(const Image *images,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="OptimizeImageLayers">OptimizeImageLayers</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/layer_8c.html" id="OptimizeImageLayers">OptimizeImageLayers</a></h2>
 
 <p>OptimizeImageLayers() compares each image the GIF disposed forms of the previous image in the sequence.  From this it attempts to select the smallest cropped image to replace each frame, while preserving the results of the GIF animation.</p>
 
@@ -197,7 +197,7 @@ Image *OptimizeImageLayers(const Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="OptimizeImagePlusLayers">OptimizeImagePlusLayers</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/layer_8c.html" id="OptimizeImagePlusLayers">OptimizeImagePlusLayers</a></h2>
 
 <p>OptimizeImagePlusLayers() is exactly as OptimizeImageLayers(), but may also add or even remove extra frames in the animation, if it improves the total number of pixels in the resulting GIF animation.</p>
 
@@ -224,7 +224,7 @@ Image *OptimizePlusImageLayers(const Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="OptimizeImageTransparency">OptimizeImageTransparency</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/layer_8c.html" id="OptimizeImageTransparency">OptimizeImageTransparency</a></h2>
 
 <p>OptimizeImageTransparency() takes a frame optimized GIF animation, and compares the overlayed pixels against the disposal image resulting from all the previous frames in the animation.  Any pixel that does not change the disposal image (and thus does not effect the outcome of an overlay) is made transparent.</p>
 
@@ -252,7 +252,7 @@ void OptimizeImageTransperency(Image *image,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="RemoveDuplicateLayers">RemoveDuplicateLayers</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/layer_8c.html" id="RemoveDuplicateLayers">RemoveDuplicateLayers</a></h2>
 
 <p>RemoveDuplicateLayers() removes any image that is exactly the same as the next image in the given image list.  Image size and virtual canvas offset must also match, though not the virtual canvas size itself.</p>
 
@@ -280,7 +280,7 @@ void RemoveDuplicateLayers(Image **image, ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="RemoveZeroDelayLayers">RemoveZeroDelayLayers</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/layer_8c.html" id="RemoveZeroDelayLayers">RemoveZeroDelayLayers</a></h2>
 
 <p>RemoveZeroDelayLayers() removes any image that as a zero delay time. Such images generally represent intermediate or partial updates in GIF animations used for file optimization.  They are not ment to be displayed to users of the animation.  Viewable images in an animation should have a time delay of 3 or more centi-seconds (hundredths of a second).</p>
 
@@ -312,7 +312,7 @@ void RemoveZeroDelayLayers(Image **image, ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="CompositeLayers">CompositeLayers</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/layer_8c.html" id="CompositeLayers">CompositeLayers</a></h2>
 
 <p>CompositeLayers() compose the source image sequence over the destination image sequence, starting with the current image in both lists.</p>
 
@@ -359,7 +359,7 @@ ExceptionInfo *exception);
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="MergeImageLayers">MergeImageLayers</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/layer_8c.html" id="MergeImageLayers">MergeImageLayers</a></h2>
 
 <p>MergeImageLayers() composes all the image layers from the current given image onward to produce a single image of the merged layers.</p>
 

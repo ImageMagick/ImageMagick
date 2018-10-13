@@ -10,7 +10,7 @@
   <title>MagickCore, C API: Draw on an Image @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick">
   <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations.">
-  <meta name="application-url" content="https://www.imagemagick.org">
+  <meta name="application-url" content="https://imagemagick.org">
   <meta name="generator" content="PHP">
   <meta name="keywords" content="magickcore, c, api:, draw, on, an, image, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
   <meta name="rating" content="GENERAL">
@@ -23,7 +23,7 @@
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
-  <link href="https://www.imagemagick.org/api/draw.php" rel="canonical">
+  <link href="https://imagemagick.org/api/draw.php" rel="canonical">
   <link href="https://imagemagick.org/image/wand.png" rel="icon">
   <link href="https://imagemagick.org/image/wand.ico" rel="shortcut icon">
   <link href="https://imagemagick.org/assets/magick-css.php" rel="stylesheet">
@@ -57,7 +57,7 @@
         <a class="nav-link" href="https://imagemagick.org/script/develop.php">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="../script/search.php">
@@ -83,7 +83,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="draw.php#AcquireDrawInfo">AcquireDrawInfo</a> &bull; <a href="draw.php#CloneDrawInfo">CloneDrawInfo</a> &bull; <a href="draw.php#DestroyDrawInfo">DestroyDrawInfo</a> &bull; <a href="draw.php#DrawAffineImage">DrawAffineImage</a> &bull; <a href="draw.php#DrawClipPath">DrawClipPath</a> &bull; <a href="draw.php#DrawClippingMask">DrawClippingMask</a> &bull; <a href="draw.php#DrawCompositeMask">DrawCompositeMask</a> &bull; <a href="draw.php#DrawGradientImage">DrawGradientImage</a> &bull; <a href="draw.php#DrawImage">DrawImage</a> &bull; <a href="draw.php#DrawPatternPath">DrawPatternPath</a> &bull; <a href="draw.php#DrawPrimitive">DrawPrimitive</a> &bull; <a href="draw.php#GetAffineMatrix">GetAffineMatrix</a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="AcquireDrawInfo">AcquireDrawInfo</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/draw_8c.html" id="AcquireDrawInfo">AcquireDrawInfo</a></h2>
 
 <p>AcquireDrawInfo() returns a DrawInfo structure properly initialized.</p>
 
@@ -93,7 +93,7 @@
 DrawInfo *AcquireDrawInfo(void)
 </pre>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="CloneDrawInfo">CloneDrawInfo</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/draw_8c.html" id="CloneDrawInfo">CloneDrawInfo</a></h2>
 
 <p>CloneDrawInfo() makes a copy of the given draw_info structure.  If NULL is specified, a new DrawInfo structure is created initialized to default values.</p>
 
@@ -120,7 +120,7 @@ DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="DestroyDrawInfo">DestroyDrawInfo</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/draw_8c.html" id="DestroyDrawInfo">DestroyDrawInfo</a></h2>
 
 <p>DestroyDrawInfo() deallocates memory associated with an DrawInfo structure.</p>
 
@@ -142,7 +142,7 @@ DrawInfo *DestroyDrawInfo(DrawInfo *draw_info)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawAffineImage">DrawAffineImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/draw_8c.html" id="DrawAffineImage">DrawAffineImage</a></h2>
 
 <p>DrawAffineImage() composites the source over the destination image as dictated by the affine transform.</p>
 
@@ -177,7 +177,7 @@ MagickBooleanType DrawAffineImage(Image *image,const Image *source,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawClipPath">DrawClipPath</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/draw_8c.html" id="DrawClipPath">DrawClipPath</a></h2>
 
 <p>DrawClipPath() draws the clip path on the image mask.</p>
 
@@ -212,7 +212,7 @@ MagickBooleanType DrawClipPath(Image *image,const DrawInfo *draw_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawClippingMask">DrawClippingMask</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/draw_8c.html" id="DrawClippingMask">DrawClippingMask</a></h2>
 
 <p>DrawClippingMask() draws the clip path and returns it as an image clipping mask.</p>
 
@@ -251,7 +251,7 @@ Image *DrawClippingMask(Image *image,const DrawInfo *draw_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawCompositeMask">DrawCompositeMask</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/draw_8c.html" id="DrawCompositeMask">DrawCompositeMask</a></h2>
 
 <p>DrawCompositeMask() draws the mask path and returns it as an image mask.</p>
 
@@ -290,7 +290,7 @@ Image *DrawCompositeMask(Image *image,const DrawInfo *draw_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawGradientImage">DrawGradientImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/draw_8c.html" id="DrawGradientImage">DrawGradientImage</a></h2>
 
 <p>DrawGradientImage() draws a linear gradient on the image.</p>
 
@@ -321,7 +321,7 @@ MagickBooleanType DrawGradientImage(Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawImage">DrawImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/draw_8c.html" id="DrawImage">DrawImage</a></h2>
 
 <p>DrawImage() draws a graphic primitive on your image.  The primitive may be represented as a string or filename.  Precede the filename with an "at" sign (@) and the contents of the file are drawn on the image.  You can affect how text is drawn by setting one or more members of the draw info structure.</p>
 
@@ -352,7 +352,7 @@ MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawPatternPath">DrawPatternPath</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/draw_8c.html" id="DrawPatternPath">DrawPatternPath</a></h2>
 
 <p>DrawPatternPath() draws a pattern.</p>
 
@@ -391,7 +391,7 @@ MagickBooleanType DrawPatternPath(Image *image,const DrawInfo *draw_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawPrimitive">DrawPrimitive</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/draw_8c.html" id="DrawPrimitive">DrawPrimitive</a></h2>
 
 <p>DrawPrimitive() draws a primitive (line, rectangle, ellipse) on the image.</p>
 
@@ -426,7 +426,7 @@ MagickBooleanType DrawPrimitive(Image *image,const DrawInfo *draw_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="GetAffineMatrix">GetAffineMatrix</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/draw_8c.html" id="GetAffineMatrix">GetAffineMatrix</a></h2>
 
 <p>GetAffineMatrix() returns an AffineMatrix initialized to the identity matrix.</p>
 

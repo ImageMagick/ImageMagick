@@ -10,7 +10,7 @@
   <title>MagickCore, C API: Reduce the Number of Unique Colors in an Image @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick">
   <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations.">
-  <meta name="application-url" content="https://www.imagemagick.org">
+  <meta name="application-url" content="https://imagemagick.org">
   <meta name="generator" content="PHP">
   <meta name="keywords" content="magickcore, c, api:, reduce, the, number, of, unique, colors, in, an, image, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
   <meta name="rating" content="GENERAL">
@@ -23,7 +23,7 @@
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
-  <link href="https://www.imagemagick.org/api/quantize.php" rel="canonical">
+  <link href="https://imagemagick.org/api/quantize.php" rel="canonical">
   <link href="https://imagemagick.org/image/wand.png" rel="icon">
   <link href="https://imagemagick.org/image/wand.ico" rel="shortcut icon">
   <link href="https://imagemagick.org/assets/magick-css.php" rel="stylesheet">
@@ -57,7 +57,7 @@
         <a class="nav-link" href="https://imagemagick.org/script/develop.php">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="../script/search.php">
@@ -83,7 +83,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="quantize.php#QuantizeImage">QuantizeImage</a> &bull; <a href="quantize.php#AcquireQuantizeInfo">AcquireQuantizeInfo</a> &bull; <a href="quantize.php#CloneQuantizeInfo">CloneQuantizeInfo</a> &bull; <a href="quantize.php#CompressImageColormap">CompressImageColormap</a> &bull; <a href="quantize.php#DestroyQuantizeInfo">DestroyQuantizeInfo</a> &bull; <a href="quantize.php#GetImageQuantizeError">GetImageQuantizeError</a> &bull; <a href="quantize.php#GetQuantizeInfo">GetQuantizeInfo</a> &bull; <a href="quantize.php#PosterizeImage">PosterizeImage</a> &bull; <a href="quantize.php#QuantizeImage">QuantizeImage</a> &bull; <a href="quantize.php#QuantizeImages">QuantizeImages</a> &bull; <a href="quantize.php#RemapImage">RemapImage</a> &bull; <a href="quantize.php#RemapImages">RemapImages</a> &bull; <a href="quantize.php#SetGrayscaleImage">SetGrayscaleImage</a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="QuantizeImage">QuantizeImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/quantize_8c.html" id="QuantizeImage">QuantizeImage</a></h2>
 
 <p>QuantizeImage() takes a standard RGB or monochrome images and quantizes them down to some fixed number of colors.</p>
 
@@ -144,7 +144,7 @@
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="AcquireQuantizeInfo">AcquireQuantizeInfo</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/quantize_8c.html" id="AcquireQuantizeInfo">AcquireQuantizeInfo</a></h2>
 
 <p>AcquireQuantizeInfo() allocates the QuantizeInfo structure.</p>
 
@@ -166,7 +166,7 @@ QuantizeInfo *AcquireQuantizeInfo(const ImageInfo *image_info)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="CloneQuantizeInfo">CloneQuantizeInfo</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/quantize_8c.html" id="CloneQuantizeInfo">CloneQuantizeInfo</a></h2>
 
 <p>CloneQuantizeInfo() makes a duplicate of the given quantize info structure, or if quantize info is NULL, a new one.</p>
 
@@ -192,7 +192,7 @@ QuantizeInfo *CloneQuantizeInfo(const QuantizeInfo *quantize_info)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="CompressImageColormap">CompressImageColormap</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/quantize_8c.html" id="CompressImageColormap">CompressImageColormap</a></h2>
 
 <p>CompressImageColormap() compresses an image colormap by removing any duplicate or unused color entries.</p>
 
@@ -219,7 +219,7 @@ MagickBooleanType CompressImageColormap(Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="DestroyQuantizeInfo">DestroyQuantizeInfo</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/quantize_8c.html" id="DestroyQuantizeInfo">DestroyQuantizeInfo</a></h2>
 
 <p>DestroyQuantizeInfo() deallocates memory associated with an QuantizeInfo structure.</p>
 
@@ -241,7 +241,7 @@ QuantizeInfo *DestroyQuantizeInfo(QuantizeInfo *quantize_info)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="GetImageQuantizeError">GetImageQuantizeError</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/quantize_8c.html" id="GetImageQuantizeError">GetImageQuantizeError</a></h2>
 
 <p>GetImageQuantizeError() measures the difference between the original and quantized images.  This difference is the total quantization error. The error is computed by summing over all pixels in an image the distance squared in RGB space between each reference pixel value and its quantized value.  These values are computed:</p>
 
@@ -271,7 +271,7 @@ MagickBooleanType GetImageQuantizeError(Image *image,
 <dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="GetQuantizeInfo">GetQuantizeInfo</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/quantize_8c.html" id="GetQuantizeInfo">GetQuantizeInfo</a></h2>
 
 <p>GetQuantizeInfo() initializes the QuantizeInfo structure.</p>
 
@@ -293,7 +293,7 @@ GetQuantizeInfo(QuantizeInfo *quantize_info)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="PosterizeImage">PosterizeImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/quantize_8c.html" id="PosterizeImage">PosterizeImage</a></h2>
 
 <p>PosterizeImage() reduces the image to a limited number of colors for a "poster" effect.</p>
 
@@ -328,7 +328,7 @@ MagickBooleanType PosterizeImage(Image *image,const size_t levels,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="QuantizeImage">QuantizeImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/quantize_8c.html" id="QuantizeImage">QuantizeImage</a></h2>
 
 <p>QuantizeImage() analyzes the colors within a reference image and chooses a fixed number of colors to represent the image.  The goal of the algorithm is to minimize the color difference between the input and output image while minimizing the processing time.</p>
 
@@ -359,7 +359,7 @@ MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="QuantizeImages">QuantizeImages</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/quantize_8c.html" id="QuantizeImages">QuantizeImages</a></h2>
 
 <p>QuantizeImages() analyzes the colors within a set of reference images and chooses a fixed number of colors to represent the set.  The goal of the algorithm is to minimize the color difference between the input and output images while minimizing the processing time.</p>
 
@@ -390,7 +390,7 @@ MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="RemapImage">RemapImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/quantize_8c.html" id="RemapImage">RemapImage</a></h2>
 
 <p>RemapImage() replaces the colors of an image with the closest of the colors from the reference image.</p>
 
@@ -425,7 +425,7 @@ MagickBooleanType RemapImage(const QuantizeInfo *quantize_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="RemapImages">RemapImages</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/quantize_8c.html" id="RemapImages">RemapImages</a></h2>
 
 <p>RemapImages() replaces the colors of a sequence of images with the closest color from a reference image.</p>
 
@@ -460,7 +460,7 @@ MagickBooleanType RemapImages(const QuantizeInfo *quantize_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="SetGrayscaleImage">SetGrayscaleImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/quantize_8c.html" id="SetGrayscaleImage">SetGrayscaleImage</a></h2>
 
 <p>SetGrayscaleImage() converts an image to a PseudoClass grayscale image.</p>
 

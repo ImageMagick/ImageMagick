@@ -10,7 +10,7 @@
   <title>MagickCore, C API: Resize an Image @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick">
   <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations.">
-  <meta name="application-url" content="https://www.imagemagick.org">
+  <meta name="application-url" content="https://imagemagick.org">
   <meta name="generator" content="PHP">
   <meta name="keywords" content="magickcore, c, api:, resize, an, image, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
   <meta name="rating" content="GENERAL">
@@ -23,7 +23,7 @@
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
-  <link href="https://www.imagemagick.org/api/resize.php" rel="canonical">
+  <link href="https://imagemagick.org/api/resize.php" rel="canonical">
   <link href="https://imagemagick.org/image/wand.png" rel="icon">
   <link href="https://imagemagick.org/image/wand.ico" rel="shortcut icon">
   <link href="https://imagemagick.org/assets/magick-css.php" rel="stylesheet">
@@ -57,7 +57,7 @@
         <a class="nav-link" href="https://imagemagick.org/script/develop.php">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="../script/search.php">
@@ -83,7 +83,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="resize.php#AdaptiveResizeImage">AdaptiveResizeImage</a> &bull; <a href="resize.php#InterpolativeResizeImage">InterpolativeResizeImage</a> &bull; <a href="resize.php#LiquidRescaleImage">LiquidRescaleImage</a> &bull; <a href="resize.php#MagnifyImage">MagnifyImage</a> &bull; <a href="resize.php#MinifyImage">MinifyImage</a> &bull; <a href="resize.php#ResampleImage">ResampleImage</a> &bull; <a href="resize.php#ResizeImage">ResizeImage</a> &bull; <a href="resize.php#SampleImage">SampleImage</a> &bull; <a href="resize.php#ScaleImage">ScaleImage</a> &bull; <a href="resize.php#ThumbnailImage">ThumbnailImage</a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/resize_8c.html" id="AdaptiveResizeImage">AdaptiveResizeImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/resize_8c.html" id="AdaptiveResizeImage">AdaptiveResizeImage</a></h2>
 
 <p>AdaptiveResizeImage() adaptively resize image with pixel resampling.</p>
 
@@ -120,7 +120,7 @@ Image *AdaptiveResizeImage(const Image *image,const size_t columns,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/resize_8c.html" id="InterpolativeResizeImage">InterpolativeResizeImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/resize_8c.html" id="InterpolativeResizeImage">InterpolativeResizeImage</a></h2>
 
 <p>InterpolativeResizeImage() resizes an image using the specified interpolation method.</p>
 
@@ -160,7 +160,7 @@ Image *InterpolativeResizeImage(const Image *image,const size_t columns,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/resize_8c.html" id="LiquidRescaleImage">LiquidRescaleImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/resize_8c.html" id="LiquidRescaleImage">LiquidRescaleImage</a></h2>
 
 <p>LiquidRescaleImage() rescales image with seam carving.</p>
 
@@ -204,7 +204,7 @@ Image *LiquidRescaleImage(const Image *image,const size_t columns,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/resize_8c.html" id="MagnifyImage">MagnifyImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/resize_8c.html" id="MagnifyImage">MagnifyImage</a></h2>
 
 <p>MagnifyImage() doubles the size of the image with a pixel art scaling algorithm.</p>
 
@@ -230,7 +230,7 @@ Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/resize_8c.html" id="MinifyImage">MinifyImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/resize_8c.html" id="MinifyImage">MinifyImage</a></h2>
 
 <p>MinifyImage() is a convenience method that scales an image proportionally to half its size.</p>
 
@@ -256,7 +256,7 @@ Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/resize_8c.html" id="ResampleImage">ResampleImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/resize_8c.html" id="ResampleImage">ResampleImage</a></h2>
 
 <p>ResampleImage() resize image in terms of its pixel size, so that when displayed at the given resolution it will be the same size in terms of real world units as the original image at the original resolution.</p>
 
@@ -296,7 +296,7 @@ Image *ResampleImage(Image *image,const double x_resolution,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/resize_8c.html" id="ResizeImage">ResizeImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/resize_8c.html" id="ResizeImage">ResizeImage</a></h2>
 
 <p>ResizeImage() scales an image to the desired dimensions, using the given filter (see AcquireFilterInfo()).</p>
 
@@ -339,7 +339,7 @@ Image *ResizeImage(Image *image,const size_t columns,const size_t rows,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/resize_8c.html" id="SampleImage">SampleImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/resize_8c.html" id="SampleImage">SampleImage</a></h2>
 
 <p>SampleImage() scales an image to the desired dimensions with pixel sampling.  Unlike other scaling methods, this method does not introduce any additional color into the scaled image.</p>
 
@@ -374,7 +374,7 @@ Image *SampleImage(const Image *image,const size_t columns,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/resize_8c.html" id="ScaleImage">ScaleImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/resize_8c.html" id="ScaleImage">ScaleImage</a></h2>
 
 <p>ScaleImage() changes the size of an image to the given dimensions.</p>
 
@@ -409,7 +409,7 @@ Image *ScaleImage(const Image *image,const size_t columns,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/resize_8c.html" id="ThumbnailImage">ThumbnailImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/resize_8c.html" id="ThumbnailImage">ThumbnailImage</a></h2>
 
 <p>ThumbnailImage() changes the size of an image to the given dimensions and removes any associated profiles.  The goal is to produce small low cost thumbnail images suited for display on the Web.</p>
 

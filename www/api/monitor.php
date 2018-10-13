@@ -10,7 +10,7 @@
   <title>MagickCore, C API: Monitor the Progress of an Image Operation @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick">
   <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations.">
-  <meta name="application-url" content="https://www.imagemagick.org">
+  <meta name="application-url" content="https://imagemagick.org">
   <meta name="generator" content="PHP">
   <meta name="keywords" content="magickcore, c, api:, monitor, the, progress, of, an, image, operation, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
   <meta name="rating" content="GENERAL">
@@ -23,7 +23,7 @@
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
-  <link href="https://www.imagemagick.org/api/monitor.php" rel="canonical">
+  <link href="https://imagemagick.org/api/monitor.php" rel="canonical">
   <link href="https://imagemagick.org/image/wand.png" rel="icon">
   <link href="https://imagemagick.org/image/wand.ico" rel="shortcut icon">
   <link href="https://imagemagick.org/assets/magick-css.php" rel="stylesheet">
@@ -57,7 +57,7 @@
         <a class="nav-link" href="https://imagemagick.org/script/develop.php">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="../script/search.php">
@@ -83,7 +83,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="monitor.php#SetImageProgressMonitor">SetImageProgressMonitor</a> &bull; <a href="monitor.php#SetImageInfoProgressMonitor">SetImageInfoProgressMonitor</a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/monitor_8c.html" id="SetImageProgressMonitor">SetImageProgressMonitor</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/monitor_8c.html" id="SetImageProgressMonitor">SetImageProgressMonitor</a></h2>
 
 <p>SetImageProgressMonitor() sets the image progress monitor to the specified method and returns the previous progress monitor if any.  The progress monitor method looks like this:</p>
 
@@ -122,7 +122,7 @@ MagickProgressMonitor SetImageProgressMonitor(Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/monitor_8c.html" id="SetImageInfoProgressMonitor">SetImageInfoProgressMonitor</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/monitor_8c.html" id="SetImageInfoProgressMonitor">SetImageInfoProgressMonitor</a></h2>
 
 <p>SetImageInfoProgressMonitor() sets the image_info progress monitor to the specified method and returns the previous progress monitor if any.  The progress monitor method looks like this:</p>
 

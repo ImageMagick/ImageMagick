@@ -10,7 +10,7 @@
   <title>MagickCore, C API: Image Histograms @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick">
   <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations.">
-  <meta name="application-url" content="https://www.imagemagick.org">
+  <meta name="application-url" content="https://imagemagick.org">
   <meta name="generator" content="PHP">
   <meta name="keywords" content="magickcore, c, api:, image, histograms, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
   <meta name="rating" content="GENERAL">
@@ -23,7 +23,7 @@
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
-  <link href="https://www.imagemagick.org/api/histogram.php" rel="canonical">
+  <link href="https://imagemagick.org/api/histogram.php" rel="canonical">
   <link href="https://imagemagick.org/image/wand.png" rel="icon">
   <link href="https://imagemagick.org/image/wand.ico" rel="shortcut icon">
   <link href="https://imagemagick.org/assets/magick-css.php" rel="stylesheet">
@@ -57,7 +57,7 @@
         <a class="nav-link" href="https://imagemagick.org/script/develop.php">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="../script/search.php">
@@ -83,7 +83,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="histogram.php#GetImageHistogram">GetImageHistogram</a> &bull; <a href="histogram.php#IdentifyPaletteImage">IdentifyPaletteImage</a> &bull; <a href="histogram.php#IsHistogramImage">IsHistogramImage</a> &bull; <a href="histogram.php#IsPaletteImage">IsPaletteImage</a> &bull; <a href="histogram.php#MinMaxStretchImage">MinMaxStretchImage</a> &bull; <a href="histogram.php#GetNumberColors">GetNumberColors</a> &bull; <a href="histogram.php#UniqueImageColors">UniqueImageColors</a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram_8c.html" id="GetImageHistogram">GetImageHistogram</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/histogram_8c.html" id="GetImageHistogram">GetImageHistogram</a></h2>
 
 <p>GetImageHistogram() returns the unique colors in an image.</p>
 
@@ -105,7 +105,7 @@ size_t GetImageHistogram(const Image *image,
 <dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram_8c.html" id="IdentifyPaletteImage">IdentifyPaletteImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/histogram_8c.html" id="IdentifyPaletteImage">IdentifyPaletteImage</a></h2>
 
 <p>IdentifyPaletteImage() returns MagickTrue if the image has 256 unique colors or less.</p>
 
@@ -124,7 +124,7 @@ MagickBooleanType IdentifyPaletteImage(const Image *image,
 <dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram_8c.html" id="IsHistogramImage">IsHistogramImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/histogram_8c.html" id="IsHistogramImage">IsHistogramImage</a></h2>
 
 <p>IsHistogramImage() returns MagickTrue if the image has 1024 unique colors or less.</p>
 
@@ -143,7 +143,7 @@ MagickBooleanType IsHistogramImage(const Image *image,
 <dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram_8c.html" id="IsPaletteImage">IsPaletteImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/histogram_8c.html" id="IsPaletteImage">IsPaletteImage</a></h2>
 
 <p>IsPaletteImage() returns MagickTrue if the image is PseudoClass and has 256 unique colors or less.</p>
 
@@ -158,7 +158,7 @@ MagickBooleanType IsPaletteImage(const Image *image)
 <dt>image</dt>
 <p>the image.</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram_8c.html" id="MinMaxStretchImage">MinMaxStretchImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/histogram_8c.html" id="MinMaxStretchImage">MinMaxStretchImage</a></h2>
 
 <p>MinMaxStretchImage() uses the exact minimum and maximum values found in each of the channels given, as the BlackPoint and WhitePoint to linearly stretch the colors (and histogram) of the image.  The stretch points are also moved further inward by the adjustment values given.</p>
 
@@ -201,7 +201,7 @@ MagickBooleanType MinMaxStretchImage(Image *image,const double black,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram_8c.html" id="GetNumberColors">GetNumberColors</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/histogram_8c.html" id="GetNumberColors">GetNumberColors</a></h2>
 
 <p>GetNumberColors() returns the number of unique colors in an image.</p>
 
@@ -223,7 +223,7 @@ size_t GetNumberColors(const Image *image,FILE *file,
 <dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram_8c.html" id="UniqueImageColors">UniqueImageColors</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/histogram_8c.html" id="UniqueImageColors">UniqueImageColors</a></h2>
 
 <p>UniqueImageColors() returns the unique colors of an image.</p>
 

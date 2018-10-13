@@ -46,5 +46,5 @@
   <configure name="TARGET_OS" value="linux-gnu"/>
   <configure name="TARGET_VENDOR" value="pc"/>
   <configure name="VERSION" value="7.0.7"/>
-  <configure name="WEBSITE" value="http://www.imagemagick.org"/>
+  <configure name="WEBSITE" value="https://imagemagick.org"/>
 </configuremap>

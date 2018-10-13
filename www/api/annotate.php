@@ -10,7 +10,7 @@
   <title>MagickCore, C API: Annotate an Image @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick">
   <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations.">
-  <meta name="application-url" content="https://www.imagemagick.org">
+  <meta name="application-url" content="https://imagemagick.org">
   <meta name="generator" content="PHP">
   <meta name="keywords" content="magickcore, c, api:, annotate, an, image, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
   <meta name="rating" content="GENERAL">
@@ -23,7 +23,7 @@
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
-  <link href="https://www.imagemagick.org/api/annotate.php" rel="canonical">
+  <link href="https://imagemagick.org/api/annotate.php" rel="canonical">
   <link href="https://imagemagick.org/image/wand.png" rel="icon">
   <link href="https://imagemagick.org/image/wand.ico" rel="shortcut icon">
   <link href="https://imagemagick.org/assets/magick-css.php" rel="stylesheet">
@@ -57,7 +57,7 @@
         <a class="nav-link" href="https://imagemagick.org/script/develop.php">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="../script/search.php">
@@ -83,7 +83,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="annotate.php#AnnotateImage">AnnotateImage</a> &bull; <a href="annotate.php#FormatMagickCaption">FormatMagickCaption</a> &bull; <a href="annotate.php#GetMultilineTypeMetrics">GetMultilineTypeMetrics</a> &bull; <a href="annotate.php#GetTypeMetrics">GetTypeMetrics</a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/annotate_8c.html" id="AnnotateImage">AnnotateImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/annotate_8c.html" id="AnnotateImage">AnnotateImage</a></h2>
 
 <p>AnnotateImage() annotates an image with text.  Optionally you can include any of the following bits of information about the image by embedding the appropriate special characters:</p>
 
@@ -164,7 +164,7 @@ MagickBooleanType AnnotateImage(Image *image,DrawInfo *draw_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/annotate_8c.html" id="FormatMagickCaption">FormatMagickCaption</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/annotate_8c.html" id="FormatMagickCaption">FormatMagickCaption</a></h2>
 
 <p>FormatMagickCaption() formats a caption so that it fits within the image width.  It returns the number of lines in the formatted caption.</p>
 
@@ -196,7 +196,7 @@ ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
 <dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/annotate_8c.html" id="GetMultilineTypeMetrics">GetMultilineTypeMetrics</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/annotate_8c.html" id="GetMultilineTypeMetrics">GetMultilineTypeMetrics</a></h2>
 
 <p>GetMultilineTypeMetrics() returns the following information for the specified font and text:</p>
 
@@ -251,7 +251,7 @@ MagickBooleanType GetMultilineTypeMetrics(Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/annotate_8c.html" id="GetTypeMetrics">GetTypeMetrics</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/annotate_8c.html" id="GetTypeMetrics">GetTypeMetrics</a></h2>
 
 <p>GetTypeMetrics() returns the following information for the specified font and text:</p>
 

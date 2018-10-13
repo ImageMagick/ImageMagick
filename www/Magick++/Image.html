@@ -22,8 +22,8 @@ Methods</a> </li>
 Access</a> </li>
 </ul>
 <p>Image is the primary object in Magick++ and represents
-a single image frame (see <a href="http://www.imagemagick.org/Magick++/ImageDesign.html">design</a> ). The
-<a href="http://www.imagemagick.org/Magick++/STL.html">STL interface</a> <b>must</b> be used to operate on
+a single image frame (see <a href="https://imagemagick.org/Magick++/ImageDesign.html">design</a> ). The
+<a href="https://imagemagick.org/Magick++/STL.html">STL interface</a> <b>must</b> be used to operate on
 image sequences or images (e.g. of format GIF, TIFF, MIFF, Postscript,
 &amp; MNG) which are comprized of multiple image frames. Individual
 frames of a multi-frame image may be requested by adding array-style
@@ -31,7 +31,7 @@ notation to the end of the file name (e.g. "animation.gif[3]" retrieves
 the fourth frame of a GIF animation.&#160; Various image manipulation
 operations may be applied to the image. Attributes may be set on the
 image to influence the operation of the manipulation operations. The <a
- href="http://www.imagemagick.org/Magick++/Pixels.html"> Pixels</a> class provides low-level access to
+ href="https://imagemagick.org/Magick++/Pixels.html"> Pixels</a> class provides low-level access to
 image
 pixels. As a convenience, including <tt><font color="#663366">&lt;Magick++.h&gt;</font></tt>
 is sufficient in order to use the complete Magick++ API. The Magick++
@@ -159,7 +159,7 @@ While encoded images (e.g. JPEG) are most often written-to and
 read-from a disk file, encoded images may also reside in memory.
 Encoded
 images in memory are known as BLOBs (Binary Large OBjects) and may be
-represented using the <a href="http://www.imagemagick.org/Magick++/Blob.html">Blob</a> class. The encoded
+represented using the <a href="https://imagemagick.org/Magick++/Blob.html">Blob</a> class. The encoded
 image may be initially placed in memory by reading it directly from a
 file, reading the image from a database, memory-mapped from a disk
 file, or could be written to memory by Magick++. Once the encoded image
@@ -218,7 +218,7 @@ image.read( blob);
 </center>
 Image may be constructed in a number of ways. It may be constructed
 from a file, a URL, or an encoded image (e.g. JPEG) contained in an
-in-memory <a href="http://www.imagemagick.org/Magick++/Blob.html"> BLOB</a> . The available Image
+in-memory <a href="https://imagemagick.org/Magick++/Blob.html"> BLOB</a> . The available Image
 constructors are shown in the following table: <br />
 &#160; <br />
 &#160;
@@ -240,15 +240,15 @@ to select a specific scene from a multi-frame image.</font></td>
     </tr>
     <tr>
       <td><font size="-1">const Geometry &amp;size_, const <a
- href="http://www.imagemagick.org/Magick++/Color.html"> Color</a> &amp;color_</font></td>
+ href="https://imagemagick.org/Magick++/Color.html"> Color</a> &amp;color_</font></td>
       <td><font size="-1">Construct a blank image canvas of specified
 size and color</font></td>
     </tr>
     <tr>
       <td><a name="constructor_blob"></a> <font size="-1">const <a
- href="http://www.imagemagick.org/Magick++/Blob.html">Blob</a> &amp;blob_</font></td>
+ href="https://imagemagick.org/Magick++/Blob.html">Blob</a> &amp;blob_</font></td>
       <td rowspan="5"><font size="-1">Construct Image by reading from
-encoded image data contained in an in-memory <a href="http://www.imagemagick.org/Magick++/Blob.html">BLOB</a>
+encoded image data contained in an in-memory <a href="https://imagemagick.org/Magick++/Blob.html">BLOB</a>
 . Depending on the constructor arguments, the Blob <a href="Image.html#size">size</a>
 , <a href="Image.html#depth">depth</a> , <a href="Image.html#magick">magick</a> (format)
 may
@@ -261,22 +261,22 @@ When a format can't be automagically detected, the format (<a
  href="Image.html#magick">magick</a> ) must be specified.</font></td>
     </tr>
     <tr>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Blob.html">Blob</a>
-&amp;blob_, const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a> &amp;size_</font></td>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Blob.html">Blob</a>
+&amp;blob_, const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a> &amp;size_</font></td>
     </tr>
     <tr>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Blob.html">Blob</a>
-&amp;blob_, const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a> &amp;size,
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Blob.html">Blob</a>
+&amp;blob_, const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a> &amp;size,
 size_t depth</font></td>
     </tr>
     <tr>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Blob.html">Blob</a>
-&amp;blob_, const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a> &amp;size,
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Blob.html">Blob</a>
+&amp;blob_, const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a> &amp;size,
 size_t depth_, const string &amp;magick_</font></td>
     </tr>
     <tr>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Blob.html">Blob</a>
-&amp;blob_, const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a> &amp;size,
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Blob.html">Blob</a>
+&amp;blob_, const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a> &amp;size,
 const
 string &amp;magick_</font></td>
     </tr>
@@ -284,7 +284,7 @@ string &amp;magick_</font></td>
       <td><font size="-1">const size_t width_,&#160;</font> <br />
       <font size="-1">const size_t height_,</font> <br />
       <font size="-1">std::string map_,</font> <br />
-      <font size="-1">const <a href="http://www.imagemagick.org/Magick++/Enumerations.html#StorageType">
+      <font size="-1">const <a href="https://imagemagick.org/Magick++/Enumerations.html#StorageType">
 StorageType</a> type_,</font> <br />
       <font size="-1">const void *pixels_</font></td>
       <td><font size="-1">Construct a new Image based on an array of
@@ -316,7 +316,7 @@ order of the pixels in the supplied pixel array.</font></td>
           </tr>
           <tr>
             <td><font size="-1">type_</font></td>
-            <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#StorageType">Pixel
+            <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#StorageType">Pixel
 storage type</a> (CharPixel, ShortPixel, IntegerPixel, FloatPixel, or
 DoublePixel)</font></td>
           </tr>
@@ -341,7 +341,7 @@ Methods</h3>
 image-list) manipulation operations provided by the ImageMagick
 library. If you
 must process a multi-image file (such as an animation), the <a
- href="http://www.imagemagick.org/Magick++/STL.html"> STL interface</a> , which provides a multi-image
+ href="https://imagemagick.org/Magick++/STL.html"> STL interface</a> , which provides a multi-image
 abstraction on top of <i>Image</i>, must be used.
 <p>Image manipulation methods are very easy to use.&#160; For example: </p>
 <pre class="code">
@@ -385,7 +385,7 @@ compute the threshold.</font><br />
       <td style="text-align: center;">
       <center><a name="addNoise"></a> <font size="-1">addNoise</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#NoiseType">NoiseType</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#NoiseType">NoiseType</a>
 noiseType_</font></td>
       <td><font size="-1">Add noise to image with specified noise type.</font></td>
     </tr>
@@ -419,13 +419,13 @@ specified affine (or free transform) matrix.<br />
       <center><a name="annotate"></a> <font size="-1">annotate</font></center>
       </td>
       <td><font size="-1">const std::string &amp;text_, const <a
- href="http://www.imagemagick.org/Magick++/Geometry.html"> Geometry</a> &amp;location_</font></td>
+ href="https://imagemagick.org/Magick++/Geometry.html"> Geometry</a> &amp;location_</font></td>
       <td><font size="-1">Annotate using specified text, and placement
 location</font></td>
     </tr>
     <tr>
-      <td><font size="-1">string text_, const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
-&amp;boundingArea_, <a href="http://www.imagemagick.org/Magick++/Enumerations.html#GravityType">GravityType</a>
+      <td><font size="-1">string text_, const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
+&amp;boundingArea_, <a href="https://imagemagick.org/Magick++/Enumerations.html#GravityType">GravityType</a>
 gravity_</font></td>
       <td><font size="-1">Annotate using specified text, bounding area,
 and placement gravity. If <i>boundingArea_</i> is invalid, then
@@ -433,8 +433,8 @@ bounding area is entire image.</font></td>
     </tr>
     <tr>
       <td><font size="-1">const std::string &amp;text_, const <a
- href="http://www.imagemagick.org/Magick++/Geometry.html"> Geometry</a> &amp;boundingArea_, <a
- href="http://www.imagemagick.org/Magick++/Enumerations.html#GravityType">GravityType</a> gravity_, double
+ href="https://imagemagick.org/Magick++/Geometry.html"> Geometry</a> &amp;boundingArea_, <a
+ href="https://imagemagick.org/Magick++/Enumerations.html#GravityType">GravityType</a> gravity_, double
 degrees_,&#160;</font></td>
       <td><font size="-1">Annotate with text using specified text,
 bounding area, placement gravity, and rotation. If <i>boundingArea_</i>
@@ -442,7 +442,7 @@ is invalid, then bounding area is entire image.</font></td>
     </tr>
     <tr>
       <td><font size="-1">const std::string &amp;text_, <a
- href="http://www.imagemagick.org/Magick++/Enumerations.html#GravityType"> GravityType</a> gravity_</font></td>
+ href="https://imagemagick.org/Magick++/Enumerations.html#GravityType"> GravityType</a> gravity_</font></td>
       <td><font size="-1">Annotate with text (bounding area is entire
 image) and placement gravity.</font></td>
     </tr>
@@ -477,7 +477,7 @@ deviation of the Laplacian, in pixels.</font></td>
       <td style="text-align: center;">
       <center><a name="border"></a> <font size="-1">border</font></center>
       </td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
 &amp;geometry_ = "6x6+0+0"</font></td>
       <td><font size="-1">Border image (add border to image).&#160; The
 color of the border is specified by the <i>borderColor</i> attribute.</font></td>
@@ -493,7 +493,7 @@ color of the border is specified by the <i>borderColor</i> attribute.</font></td
       <td style="text-align: center;">
       <center><a name="channel"></a> <font size="-1">channel</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#ChannelType">ChannelType</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#ChannelType">ChannelType</a>
 layer_</font></td>
       <td><font size="-1">Extract channel from image. Use this option
 to extract a particular channel from&#160; the image.&#160; <i>MatteChannel</i>
@@ -515,7 +515,7 @@ parameter specifies the standard deviation of the Laplacian, in pixels.</font></
       <td style="text-align: center;">
       <center><a name="chop"></a> <font size="-1">chop</font></center>
       </td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
 &amp;geometry_</font></td>
       <td><font size="-1">Chop image (remove vertical or horizontal
 subregion of image)</font></td>
@@ -547,7 +547,7 @@ image).&#160; By default, each image is commented with its file name.
 Use&#160; this&#160; method to&#160; assign a specific comment to the
 image.&#160; Optionally you can include the image filename, type,
 width, height, or other&#160; image&#160; attributes by embedding <a
- href="http://www.imagemagick.org/Magick++/FormatCharacters.html">special format characters.</a> </font></td>
+ href="https://imagemagick.org/Magick++/FormatCharacters.html">special format characters.</a> </font></td>
     </tr>
     <tr>
       <td style="text-align: center;" valign="middle"><font size="-1"><a
@@ -571,7 +571,7 @@ matte differ from the current image.</font><br />
       </td>
       <td><font size="-1">const <a href="Image.html">Image</a>
 &amp;compositeImage_, ssize_t xOffset_, ssize_t yOffset_, <a
- href="http://www.imagemagick.org/Magick++/Enumerations.html#CompositeOperator"> CompositeOperator</a>
+ href="https://imagemagick.org/Magick++/Enumerations.html#CompositeOperator"> CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
       <td><font size="-1">Compose an image onto the current image at
 offset specified by <i>xOffset_</i>, <i>yOffset_ </i>using the
@@ -579,8 +579,8 @@ composition algorithm specified by <i>compose_</i>.&#160;</font></td>
     </tr>
     <tr>
       <td><font size="-1">const <a href="Image.html">Image</a>
-&amp;compositeImage_, const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
-&amp;offset_, <a href="http://www.imagemagick.org/Magick++/Enumerations.html#CompositeOperator">CompositeOperator</a>
+&amp;compositeImage_, const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
+&amp;offset_, <a href="https://imagemagick.org/Magick++/Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
       <td><font size="-1">Compose an image onto the current image at
 offset specified by <i>offset_</i> using the composition algorithm
@@ -588,8 +588,8 @@ specified by <i>compose_</i> .&#160;</font></td>
     </tr>
     <tr>
       <td><font size="-1">const <a href="Image.html">Image</a>
-&amp;compositeImage_, <a href="http://www.imagemagick.org/Magick++/Enumerations.html#GravityType">GravityType</a>
-gravity_, <a href="http://www.imagemagick.org/Magick++/Enumerations.html#CompositeOperator">CompositeOperator</a>
+&amp;compositeImage_, <a href="https://imagemagick.org/Magick++/Enumerations.html#GravityType">GravityType</a>
+gravity_, <a href="https://imagemagick.org/Magick++/Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
       <td><font size="-1">Compose an image onto the current image with
 placement specified by <i>gravity_ </i>using the composition
@@ -619,7 +619,7 @@ kernel to apply.</font></td>
       <td style="text-align: center;">
       <center><a name="crop"></a> <font size="-1">crop</font></center>
       </td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
 &amp;geometry_</font></td>
       <td><font size="-1">Crop image (subregion of original image)</font></td>
     </tr>
@@ -660,12 +660,12 @@ distortion to the image.</font></td>
       <td style="text-align: center;" rowspan="2">
       <center><a name="draw"></a> <font size="-1">draw</font></center>
       </td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Drawable.html">Drawable</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Drawable.html">Drawable</a>
 &amp;drawable_</font></td>
       <td><font size="-1">Draw shape or text on image.</font></td>
     </tr>
     <tr>
-      <td><font size="-1">const std::list&lt;<a href="http://www.imagemagick.org/Magick++/Drawable.html">Drawable</a>
+      <td><font size="-1">const std::list&lt;<a href="https://imagemagick.org/Magick++/Drawable.html">Drawable</a>
 &gt; &amp;drawable_</font></td>
       <td><font size="-1">Draw shapes or text on image using a set of
 Drawable objects contained in an STL list. Use of this method improves
@@ -717,22 +717,22 @@ background color.</font></td>
     <tr>
       <td style="text-align: center;" rowspan="4">
       <center><a name="extent"></a> <font size="-1">extent</font></center></td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Geometry.html"> Geometry</a> &amp;geometry_</font></td>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Geometry.html"> Geometry</a> &amp;geometry_</font></td>
       <td rowspan="2"><font size="-1">extends the image as defined by the geometry, gravity, and image background color.</font></td>
     </tr>
     <tr>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
-&amp;geometry_, const <a href="http://www.imagemagick.org/Magick++/Color.html">Color</a> &amp;backgroundColor_</font></td>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
+&amp;geometry_, const <a href="https://imagemagick.org/Magick++/Color.html">Color</a> &amp;backgroundColor_</font></td>
     </tr>
     <tr>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Geometry.html"> Geometry</a> &amp;geometry_, const <a href="http://www.imagemagick.org/Magick++/Enumerations.html#GravityType">GravityType</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Geometry.html"> Geometry</a> &amp;geometry_, const <a href="https://imagemagick.org/Magick++/Enumerations.html#GravityType">GravityType</a>
 &amp;gravity_</font></td>
       <td rowspan="2"><font size="-1">extends the image as defined by the geometry, gravity, and image background color.</font></td>
     </tr>
     <tr>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
-&amp;geometry_, const <a href="http://www.imagemagick.org/Magick++/Color.html">Color</a> &amp;backgroundColor_,
-const <a href="http://www.imagemagick.org/Magick++/Enumerations.html#GravityType">GravityType</a> &amp;gravity_</font></td>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
+&amp;geometry_, const <a href="https://imagemagick.org/Magick++/Color.html">Color</a> &amp;backgroundColor_,
+const <a href="https://imagemagick.org/Magick++/Enumerations.html#GravityType">GravityType</a> &amp;gravity_</font></td>
     </tr>
     <tr>
       <td style="text-align: center;">
@@ -749,28 +749,28 @@ vertical direction)</font></td>
       <font size="-1">Color</font></center>
       </td>
       <td><font size="-1">ssize_t x_, ssize_t y_, const <a
- href="http://www.imagemagick.org/Magick++/Color.html"> Color</a> &amp;fillColor_</font></td>
+ href="https://imagemagick.org/Magick++/Color.html"> Color</a> &amp;fillColor_</font></td>
       <td rowspan="2"><font size="-1">Flood-fill color across pixels
 that match the color of the target pixel and are neighbors of the
 target pixel. Uses current fuzz setting when determining color match.</font></td>
     </tr>
     <tr>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
-&amp;point_, const <a href="http://www.imagemagick.org/Magick++/Color.html">Color</a> &amp;fillColor_</font></td>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
+&amp;point_, const <a href="https://imagemagick.org/Magick++/Color.html">Color</a> &amp;fillColor_</font></td>
     </tr>
     <tr>
       <td><font size="-1">ssize_t x_, ssize_t y_, const <a
- href="http://www.imagemagick.org/Magick++/Color.html"> Color</a> &amp;fillColor_, const <a
- href="http://www.imagemagick.org/Magick++/Color.html">Color</a>
+ href="https://imagemagick.org/Magick++/Color.html"> Color</a> &amp;fillColor_, const <a
+ href="https://imagemagick.org/Magick++/Color.html">Color</a>
 &amp;borderColor_</font></td>
       <td rowspan="2"><font size="-1">Flood-fill color across pixels
 starting at target-pixel and stopping at pixels matching specified
 border color. Uses current fuzz setting when determining color match.</font></td>
     </tr>
     <tr>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
-&amp;point_, const <a href="http://www.imagemagick.org/Magick++/Color.html">Color</a> &amp;fillColor_,
-const <a href="http://www.imagemagick.org/Magick++/Color.html">Color</a> &amp;borderColor_</font></td>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
+&amp;point_, const <a href="https://imagemagick.org/Magick++/Color.html">Color</a> &amp;fillColor_,
+const <a href="https://imagemagick.org/Magick++/Color.html">Color</a> &amp;borderColor_</font></td>
     </tr>
     <tr>
       <td style="text-align: center;"><a name="floodFillOpacity"></a> <font
@@ -794,19 +794,19 @@ that match the color of the target pixel and are neighbors of the
 target pixel. Uses current fuzz setting when determining color match.</font></td>
     </tr>
     <tr>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
 &amp;point_, const Image &amp;texture_</font></td>
     </tr>
     <tr>
       <td><font size="-1">ssize_t x_, ssize_t y_, const Image
-&amp;texture_, const <a href="http://www.imagemagick.org/Magick++/Color.html">Color</a> &amp;borderColor_</font></td>
+&amp;texture_, const <a href="https://imagemagick.org/Magick++/Color.html">Color</a> &amp;borderColor_</font></td>
       <td rowspan="2"><font size="-1">Flood-fill texture across pixels
 starting at target-pixel and stopping at pixels matching specified
 border color. Uses current fuzz setting when determining color match.</font></td>
     </tr>
     <tr>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
-&amp;point_, const Image &amp;texture_, const <a href="http://www.imagemagick.org/Magick++/Color.html">
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
+&amp;point_, const Image &amp;texture_, const <a href="https://imagemagick.org/Magick++/Color.html">
 Color</a>
 &amp;borderColor_</font></td>
     </tr>
@@ -822,7 +822,7 @@ horizontal direction)</font></td>
       <td style="text-align: center;" rowspan="2">
       <center><a name="frame"></a> <font size="-1">frame</font></center>
       </td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
 &amp;geometry_ = "25x25+6+6"</font></td>
       <td rowspan="2"><font size="-1">Add decorative frame around image</font></td>
     </tr>
@@ -910,7 +910,7 @@ specified by 'sigma_'.</font></td>
       <td><font size="-1">Assign a label to an image. Use this option
 to&#160; assign&#160; a&#160; specific label to the image. Optionally
 you can include the image filename, type, width, height, or scene
-number in the label by embedding&#160; <a href="http://www.imagemagick.org/Magick++/FormatCharacters.html">
+number in the label by embedding&#160; <a href="https://imagemagick.org/Magick++/FormatCharacters.html">
 special format characters.</a> If the first character of string is @,
 the
 image label is read from a file titled by the remaining characters in
@@ -984,10 +984,10 @@ with this option.</font></td>
       <td style="text-align: center;">
       <center><a name="matteFloodfill"></a> <font size="-1">matteFloodfill</font></center>
       </td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Color.html">Color</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Color.html">Color</a>
 &amp;target_, const unsigned int&#160; opacity_, const ssize_t x_, const
 ssize_t
-y_, <a href="http://www.imagemagick.org/Magick++/Enumerations.html#PaintMethod">PaintMethod</a> method_</font></td>
+y_, <a href="https://imagemagick.org/Magick++/Enumerations.html#PaintMethod">PaintMethod</a> method_</font></td>
       <td><font size="-1">Floodfill designated area with a replacement
 opacity value.</font></td>
     </tr>
@@ -1002,7 +1002,7 @@ component with the median color in a circular neighborhood</font></td>
       <td style="text-align: center;">
       <center><a name="mergeLayers"></a> <font size="-1">mergeLayers</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#LayerMethod">LayerMethod</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#LayerMethod">LayerMethod</a>
 noiseType_</font></td>
       <td><font size="-1">handle multiple images forming a set of image layers or animation frames.</font></td>
     </tr>
@@ -1094,8 +1094,8 @@ respectively.</font></td>
       <td style="text-align: center;">
       <center><a name="opaque"></a> <font size="-1">opaque</font></center>
       </td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Color.html">Color</a>
-&amp;opaqueColor_, const <a href="http://www.imagemagick.org/Magick++/Color.html">Color</a> &amp;penColor_</font></td>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Color.html">Color</a>
+&amp;opaqueColor_, const <a href="https://imagemagick.org/Magick++/Color.html">Color</a> &amp;penColor_</font></td>
       <td><font size="-1">Change color of pixels matching opaqueColor_
 to specified penColor_.</font></td>
     </tr>
@@ -1143,7 +1143,7 @@ measureError_ to true in order to calculate error attributes.</font></td>
       <td style="text-align: center;">
       <center><a name="raise"></a> <font size="-1">raise</font></center>
       </td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
 &amp;geometry_ = "6x6+0+0",&#160; bool raisedFlag_ =&#160; false</font></td>
       <td><font size="-1">Raise image (lighten or darken the edges of
 an image to give a 3-D raised or lowered effect)</font></td>
@@ -1156,7 +1156,7 @@ an image to give a 3-D raised or lowered effect)</font></td>
       <td><font size="-1">Read image into current object</font></td>
     </tr>
     <tr>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
 &amp;size_, const std::string &amp;imageSpec_</font></td>
       <td><font size="-1">Read image of specified size into current
 object. This form is useful for images that do not specifiy their size
@@ -1166,9 +1166,9 @@ library to return an image which is the next resolution greater or
 equal to the specified size. This may result in memory and time savings.</font></td>
     </tr>
     <tr>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Blob.html">Blob</a> &amp;blob_</font></td>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Blob.html">Blob</a> &amp;blob_</font></td>
       <td rowspan="5"><font size="-1">Read encoded image of specified
-size from an in-memory <a href="http://www.imagemagick.org/Magick++/Blob.html">BLOB</a> into current
+size from an in-memory <a href="https://imagemagick.org/Magick++/Blob.html">BLOB</a> into current
 object. Depending on the method arguments, the Blob size, depth, and
 format may also be specified. Some image formats require that size be
 specified. The default ImageMagick uses for depth depends on its
@@ -1179,22 +1179,22 @@ When
 a format can't be automagically detected, the format must be specified.</font></td>
     </tr>
     <tr>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Blob.html">Blob</a>
-&amp;blob_, const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a> &amp;size_</font></td>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Blob.html">Blob</a>
+&amp;blob_, const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a> &amp;size_</font></td>
     </tr>
     <tr>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Blob.html">Blob</a>
-&amp;blob_, const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a> &amp;size_,
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Blob.html">Blob</a>
+&amp;blob_, const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a> &amp;size_,
 size_t depth_</font></td>
     </tr>
     <tr>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Blob.html">Blob</a>
-&amp;blob_, const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a> &amp;size_,
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Blob.html">Blob</a>
+&amp;blob_, const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a> &amp;size_,
 size_t depth_, const string &amp;magick_&#160;</font></td>
     </tr>
     <tr>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Blob.html">Blob</a>
-&amp;blob_, const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a> &amp;size_,
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Blob.html">Blob</a>
+&amp;blob_, const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a> &amp;size_,
 const
 string &amp;magick_</font></td>
     </tr>
@@ -1300,7 +1300,7 @@ number of degrees.</font></td>
       <td style="text-align: center;">
       <center><a name="sample"></a> <font size="-1">sample</font></center>
       </td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
 &amp;geometry_&#160;</font></td>
       <td><font size="-1">Resize image by using pixel sampling algorithm</font></td>
     </tr>
@@ -1308,7 +1308,7 @@ number of degrees.</font></td>
       <td style="text-align: center;">
       <center><a name="scale"></a> <font size="-1">scale</font></center>
       </td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
 &amp;geometry_</font></td>
       <td><font size="-1">Resize image by using simple ratio algorithm</font></td>
     </tr>
@@ -1415,7 +1415,7 @@ exposing a photographic film to light during the development process)</font></td
       <td style="text-align: center;">
       <center><a name="splice"></a> <font size="-1">splice</font></center>
       </td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
 &amp;geometry_</font></td>
       <td><font size="-1">splice the background color into the image</font></td>
     </tr>
@@ -1484,21 +1484,21 @@ background color.</font></td>
       <td style="text-align: center;" rowspan="2">
       <center><a name="transform"></a> <font size="-1">transform</font></center>
       </td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
 &amp;imageGeometry_</font></td>
       <td rowspan="2"><font size="-1">Transform image based on image
 and crop geometries. Crop geometry is optional.</font></td>
     </tr>
     <tr>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
-&amp;imageGeometry_, const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
+&amp;imageGeometry_, const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
 &amp;cropGeometry_&#160;</font></td>
     </tr>
     <tr>
       <td style="text-align: center;">
       <center><a name="transparent"></a> <font size="-1">transparent</font></center>
       </td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Color.html">Color</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Color.html">Color</a>
 &amp;color_</font></td>
       <td><font size="-1">Add matte image to image, setting pixels
 matching color to transparent.</font></td>
@@ -1569,9 +1569,9 @@ original image will be quantized to fewer colors. Use a copy of the
 original if this is a problem.</font></td>
     </tr>
     <tr>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Blob.html">Blob</a> *blob_</font></td>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Blob.html">Blob</a> *blob_</font></td>
       <td rowspan="3"><font size="-1">Write image to a in-memory <a
- href="http://www.imagemagick.org/Magick++/Blob.html"> BLOB</a> stored in <i>blob_</i>. The <i>magick</i>_
+ href="https://imagemagick.org/Magick++/Blob.html"> BLOB</a> stored in <i>blob_</i>. The <i>magick</i>_
 parameter specifies the image format to write (defaults to <a
  href="Image.html#magick">magick</a> ). The depth_ parameter species the image
 depth (defaults to <a href="Image.html#depth"> depth</a> ).</font> <br />
@@ -1582,11 +1582,11 @@ original image will be quantized to fewer colors. Use a copy of the
 original if this is a problem.</font></td>
     </tr>
     <tr>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Blob.html">Blob</a> *blob_,
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Blob.html">Blob</a> *blob_,
 std::string &amp;magick_</font></td>
     </tr>
     <tr>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Blob.html">Blob</a> *blob_,
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Blob.html">Blob</a> *blob_,
 std::string &amp;magick_, size_t depth_</font></td>
     </tr>
     <tr>
@@ -1651,7 +1651,7 @@ values and type_ parameters.</font></td>
       <td style="text-align: center;">
       <center><a name="resize"></a> <font size="-1">resize</font></center>
       </td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
 &amp;geometry_</font></td>
       <td><font size="-1">Resize image to specified size.</font></td>
     </tr>
@@ -1767,9 +1767,9 @@ similar to "EXIF:DateTime".</small><br />
       <br />
       <font size="-1">Color</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Color.html">Color</a> </font></td>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Color.html">Color</a> </font></td>
       <td><font size="-1">void</font></td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Color.html">Color</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Color.html">Color</a>
 &amp;color_</font></td>
       <td><font size="-1">Image background color</font></td>
     </tr>
@@ -1816,9 +1816,9 @@ texture. Does not modify image pixels.</font></td>
       <td>
       <center><a name="borderColor"></a> <font size="-1">borderColor</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Color.html">Color</a> </font></td>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Color.html">Color</a> </font></td>
       <td><font size="-1">void</font></td>
-      <td><font size="-1">&#160;const <a href="http://www.imagemagick.org/Magick++/Color.html">Color</a>
+      <td><font size="-1">&#160;const <a href="https://imagemagick.org/Magick++/Color.html">Color</a>
 &amp;color_</font></td>
       <td><font size="-1">Image border color</font></td>
     </tr>
@@ -1836,9 +1836,9 @@ crop(Geometry(0,0)).</font></td>
       <td>
       <center><a name="boxColor"></a> <font size="-1">boxColor</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Color.html">Color</a> </font></td>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Color.html">Color</a> </font></td>
       <td><font size="-1">void</font></td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Color.html">Color</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Color.html">Color</a>
 &amp;boxColor_</font></td>
       <td><font size="-1">Base color that annotation text is rendered
 on.</font></td>
@@ -1933,10 +1933,10 @@ y=0.329)</font></td>
       <td>
       <center><a name="classType"></a> <font size="-1">classType</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#ClassType">ClassType</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#ClassType">ClassType</a>
       </font></td>
       <td><font size="-1">void</font></td>
-      <td><font size="-1">&#160;<a href="http://www.imagemagick.org/Magick++/Enumerations.html#ClassType">ClassType</a>
+      <td><font size="-1">&#160;<a href="https://imagemagick.org/Magick++/Enumerations.html#ClassType">ClassType</a>
 class_</font></td>
       <td><font size="-1">Image storage class.&#160; Note that
 conversion from a DirectClass image to a PseudoClass image may result
@@ -1972,10 +1972,10 @@ are close to the target color in RGB space.</font></td>
       <td>
       <center><a name="colorMap"></a> <font size="-1">colorMap</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Color.html">Color</a> </font></td>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Color.html">Color</a> </font></td>
       <td><font size="-1">size_t index_</font></td>
       <td><font size="-1">size_t index_, const <a
- href="http://www.imagemagick.org/Magick++/Color.html"> Color</a> &amp;color_</font></td>
+ href="https://imagemagick.org/Magick++/Color.html"> Color</a> &amp;color_</font></td>
       <td><font size="-1">Color at colormap index.</font></td>
     </tr>
     <tr>
@@ -2003,10 +2003,10 @@ ensure that the image colormap indexes reference valid colormap entries.</font><
       <td>
       <center><a name="colorSpace"></a> <font size="-1">colorSpace</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#ColorspaceType">ColorspaceType</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#ColorspaceType">ColorspaceType</a>
 colorSpace_</font></td>
       <td><font size="-1">void</font></td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#ColorspaceType">ColorspaceType</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#ColorspaceType">ColorspaceType</a>
 colorSpace_</font></td>
       <td><font size="-1">The colorspace (e.g. CMYK) used to represent
 the image pixel colors. Image pixels are always stored as RGB(A) except
@@ -2034,11 +2034,11 @@ for the case of CMY(K).</font></td>
       <td>
       <center><a name="compose"></a> <font size="-1">compose</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#CompositeOperator">CompositeOperator</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#CompositeOperator">CompositeOperator</a>
       </font></td>
       <td><small><font size="-1"><small>void</small></font></small></td>
       <td><small><font size="-1"><small><a
- href="http://www.imagemagick.org/Magick++/Enumerations.html#CompositeOperator">CompositeOperator</a>
+ href="https://imagemagick.org/Magick++/Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_</small></font></small></td>
       <td><font size="-1">Composition operator to be used when
 composition is implicitly used (such as for image flattening).</font></td>
@@ -2049,11 +2049,11 @@ composition is implicitly used (such as for image flattening).</font></td>
       <br />
       <font size="-1">Type</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#CompressionType">CompressionType</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#CompressionType">CompressionType</a>
       </font></td>
       <td><small><font size="-1"><small>void</small></font></small></td>
       <td><small><font size="-1"><small><a
- href="http://www.imagemagick.org/Magick++/Enumerations.html#CompressionType">CompressionType</a>
+ href="https://imagemagick.org/Magick++/Enumerations.html#CompressionType">CompressionType</a>
 compressType_</small></font></small></td>
       <td><font size="-1">Image compresion type. The default is the
 compression type of the specified image file.</font></td>
@@ -2119,10 +2119,10 @@ exists.<br />
       <td>
       <center><a name="density"></a> <font size="-1">density</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a> &#160;
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a> &#160;
 (default 72x72)</font></td>
       <td><font size="-1">void</font></td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
 &amp;density_</font></td>
       <td><font size="-1">Vertical and horizontal resolution in pixels
 of the image. This option specifies an image density when decoding a
@@ -2144,10 +2144,10 @@ ImageMagick is compiled with.</font></td>
       <td>
       <center><a name="endian"></a> <font size="-1">endian</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#EndianType">EndianType</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#EndianType">EndianType</a>
       </font></td>
       <td><font size="-1">void</font></td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#EndianType">EndianType</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#EndianType">EndianType</a>
 endian_</font></td>
       <td><font size="-1">Specify (or obtain) endian option for formats
 which support it.</font></td>
@@ -2211,7 +2211,7 @@ objects.</font></td>
       <td>
       <center><a name="fillRule"></a> <font size="-1">fillRule</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#FillRule">FillRule</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#FillRule">FillRule</a>
       </font></td>
       <td><font size="-1">void</font></td>
       <td><font size="-1">const Magick::FillRule &amp;fillRule_</font></td>
@@ -2221,10 +2221,10 @@ objects.</font></td>
       <td>
       <center><a name="filterType"></a> <font size="-1">filterType</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#FilterTypes">FilterTypes</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#FilterTypes">FilterTypes</a>
       </font></td>
       <td><font size="-1">void</font></td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#FilterTypes">FilterTypes</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#FilterTypes">FilterTypes</a>
 filterType_</font></td>
       <td><font size="-1">Filter to use when resizing image. The
 reduction filter employed has a sigificant effect on the time required
@@ -2258,9 +2258,9 @@ server. To use a TrueType font, precede the TrueType filename with an
       <td>
       <center><a name="fontTypeMetrics"></a> <font size="-1">fontTypeMetrics</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/TypeMetric.html">TypeMetric</a> </font></td>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/TypeMetric.html">TypeMetric</a> </font></td>
       <td><font size="-1">const std::string &amp;text_, <a
- href="http://www.imagemagick.org/Magick++/TypeMetric.html"> TypeMetric</a> *metrics</font></td>
+ href="https://imagemagick.org/Magick++/TypeMetric.html"> TypeMetric</a> *metrics</font></td>
       <td bgcolor="#666666"><font size="-1">&#160;</font></td>
       <td><font size="-1">Update metrics with font type metrics using
 specified <i>text</i>, and current <a href="Image.html#font">font</a> and <a
@@ -2292,7 +2292,7 @@ color&#160; difference.</font></td>
       <td>
       <center><a name="geometry"></a> <font size="-1">geometry</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a> </font></td>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a> </font></td>
       <td><font size="-1">void</font></td>
       <td bgcolor="#666666"><font size="-1">&#160;</font></td>
       <td><font size="-1">Preferred size of the image when encoding.</font></td>
@@ -2319,12 +2319,12 @@ disposed of) when creating a GIF animation.</font></td>
       <td>
       <center><a name="iccColorProfile"></a> <font size="-1">iccColorProfile</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Blob.html">Blob</a> </font></td>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Blob.html">Blob</a> </font></td>
       <td><font size="-1">void</font></td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Blob.html">Blob</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Blob.html">Blob</a>
 &amp;colorProfile_</font></td>
       <td><font size="-1">ICC color profile. Supplied via a <a
- href="http://www.imagemagick.org/Magick++/Blob.html"> Blob</a> since Magick++/ and ImageMagick do not
+ href="https://imagemagick.org/Magick++/Blob.html"> Blob</a> since Magick++/ and ImageMagick do not
 currently support formating this data structure directly.&#160;
 Specifications are available from the <a href="http://www.color.org/">
 International Color Consortium</a> for the format of ICC color profiles.</font></td>
@@ -2335,10 +2335,10 @@ International Color Consortium</a> for the format of ICC color profiles.</font><
       <br />
       <font size="-1">Type</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#InterlaceType">InterlaceType</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#InterlaceType">InterlaceType</a>
       </font></td>
       <td><font size="-1">void</font></td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#InterlaceType">InterlaceType</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#InterlaceType">InterlaceType</a>
 interlace_</font></td>
       <td><font size="-1">The type of interlacing scheme (default <i>NoInterlace</i>
 ). This option is used to specify the type of&#160; interlacing
@@ -2355,12 +2355,12 @@ image.</font></td>
       <td>
       <center><a name="iptcProfile"></a> <font size="-1">iptcProfile</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Blob.html">Blob</a> </font></td>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Blob.html">Blob</a> </font></td>
       <td><font size="-1">void</font></td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Blob.html">Blob</a> &amp;
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Blob.html">Blob</a> &amp;
 iptcProfile_</font></td>
       <td><font size="-1">IPTC profile. Supplied via a <a
- href="http://www.imagemagick.org/Magick++/Blob.html"> Blob</a> since Magick++ and ImageMagick do not
+ href="https://imagemagick.org/Magick++/Blob.html"> Blob</a> since Magick++ and ImageMagick do not
 currently&#160; support formating this data structure directly.
 Specifications are available from the <a href="http://www.iptc.org/">
 International Press Telecommunications Council</a> for IPTC profiles.</font></td>
@@ -2398,9 +2398,9 @@ an opaque one.</font></td>
       <td>
       <center><a name="matteColor"></a> <font size="-1">matteColor</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Color.html">Color</a> </font></td>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Color.html">Color</a> </font></td>
       <td><font size="-1">void</font></td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Color.html">Color</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Color.html">Color</a>
 &amp;matteColor_</font></td>
       <td><font size="-1">Image matte (frame) color</font></td>
     </tr>
@@ -2455,7 +2455,7 @@ using this method.<br />
       <br />
       <font size="-1">Geometry</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a> </font></td>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a> </font></td>
       <td><font size="-1">void</font></td>
       <td bgcolor="#666666"><font size="-1">&#160;</font></td>
       <td><font size="-1">Tile size and offset within an image montage.
@@ -2492,11 +2492,11 @@ is set to true and the image has just been quantized.</font></td>
  name="orientation"></a>orientation<br />
       </small></td>
       <td style="vertical-align: middle;"><small><a
- href="http://www.imagemagick.org/Magick++/Enumerations.html#OrientationType">OrientationType</a></small></td>
+ href="https://imagemagick.org/Magick++/Enumerations.html#OrientationType">OrientationType</a></small></td>
       <td style="vertical-align: top;"><small>void</small><br />
       </td>
       <td style="vertical-align: middle;"><small><a
- href="http://www.imagemagick.org/Magick++/Enumerations.html#OrientationType">OrientationType</a>
+ href="https://imagemagick.org/Magick++/Enumerations.html#OrientationType">OrientationType</a>
 orientation_</small></td>
       <td style="vertical-align: top;"><small>Image orientation.
 &#160;Supported by some file formats such as DPX and TIFF. Useful for
@@ -2527,11 +2527,11 @@ turning the right way up.<br />
       <td>
       <center><a name="page"></a> <font size="-1">page</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Geometry.html#PostscriptPageSize">Geometry</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Geometry.html#PostscriptPageSize">Geometry</a>
       </font></td>
       <td><font size="-1">void</font></td>
       <td><font size="-1">const <a
- href="http://www.imagemagick.org/Magick++/Geometry.html#PostscriptPageSize"> Geometry</a> &amp;pageSize_</font></td>
+ href="https://imagemagick.org/Magick++/Geometry.html#PostscriptPageSize"> Geometry</a> &amp;pageSize_</font></td>
       <td><font size="-1">Preferred size and location of an image
 canvas.</font>
       <p><font size="-1">Use this option to specify the dimensions
@@ -2546,10 +2546,10 @@ image (such as for a scene in an animation)</font></p>
       <td>
       <center><a name="pixelColor"></a> <font size="-1">pixelColor</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Color.html">Color</a> </font></td>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Color.html">Color</a> </font></td>
       <td><font size="-1">ssize_t x_, ssize_t y_</font></td>
       <td><font size="-1">ssize_t x_, ssize_t y_, const <a
- href="http://www.imagemagick.org/Magick++/Color.html"> Color</a> &amp;color_</font></td>
+ href="https://imagemagick.org/Magick++/Color.html"> Color</a> &amp;color_</font></td>
       <td><font size="-1">Get/set pixel color at location x &amp; y.</font></td>
     </tr>
     <tr>
@@ -2557,7 +2557,7 @@ image (such as for a scene in an animation)</font></p>
       <div style="text-align:center"><a name="profile"></a> <small>profile</small><br />
       </div>
       </td>
-      <td valign="top"><a href="http://www.imagemagick.org/Magick++/Blob.html"><small> Blob</small><small><br />
+      <td valign="top"><a href="https://imagemagick.org/Magick++/Blob.html"><small> Blob</small><small><br />
       </small></a> </td>
       <td valign="top"><small>const std::string name_</small><small><br />
       </small></td>
@@ -2598,10 +2598,10 @@ option will have any duplicate or unused colors removed.</font></td>
       <br />
       <font size="-1">ColorSpace</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#ColorspaceType">ColorspaceType</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#ColorspaceType">ColorspaceType</a>
       </font></td>
       <td><font size="-1">void</font></td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#ColorspaceType">ColorspaceType</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#ColorspaceType">ColorspaceType</a>
 colorSpace_</font></td>
       <td><font size="-1">Colorspace to quantize colors in (default
 RGB). Empirical evidence suggests that distances in color spaces such
@@ -2648,10 +2648,10 @@ may be used to manually adjust the tree depth.</font></td>
       <br />
       <font size="-1">Intent</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#RenderingIntent">RenderingIntent</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#RenderingIntent">RenderingIntent</a>
       </font></td>
       <td><font size="-1">void</font></td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#RenderingIntent">RenderingIntent</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#RenderingIntent">RenderingIntent</a>
 render_</font></td>
       <td><font size="-1">The type of rendering intent</font></td>
     </tr>
@@ -2661,10 +2661,10 @@ render_</font></td>
       <br />
       <font size="-1">Units</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#ResolutionType">ResolutionType</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#ResolutionType">ResolutionType</a>
       </font></td>
       <td><font size="-1">void</font></td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#ResolutionType">ResolutionType</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#ResolutionType">ResolutionType</a>
 units_</font></td>
       <td><font size="-1">Units of image resolution</font></td>
     </tr>
@@ -2700,9 +2700,9 @@ force re-computation of signature.</font></td>
       <td>
       <center><a name="size"></a> <font size="-1">size</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a> </font></td>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a> </font></td>
       <td><font size="-1">void</font></td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Geometry.html">Geometry</a>
 &amp;geometry_</font></td>
       <td><font size="-1">Width and height of a raw image (an image
 which does not support width and height information).&#160; Size may
@@ -2877,11 +2877,11 @@ designed to support Unicode.</small><br />
       <td>
       <center><a name="type"></a> <font size="-1">type</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#ImageType">ImageType</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#ImageType">ImageType</a>
       </font></td>
       <td><font size="-1">void</font></td>
       <td bgcolor="#ffffff"><font size="-1"><a
- href="http://www.imagemagick.org/Magick++/Enumerations.html#ImageType"> ImageType</a> </font></td>
+ href="https://imagemagick.org/Magick++/Enumerations.html#ImageType"> ImageType</a> </font></td>
       <td><font size="-1">Image type.</font></td>
     </tr>
     <tr>
@@ -2906,11 +2906,11 @@ designed to support Unicode.</small><br />
       <td>
       <center><a name="virtualPixelMethod"></a> <font size="-1">virtualPixelMethod</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#VirtualPixelMethod">VirtualPixelMethod</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#VirtualPixelMethod">VirtualPixelMethod</a>
       </font></td>
       <td><small><font size="-1"><small>void</small></font></small></td>
       <td><small><font size="-1"><small><a
- href="http://www.imagemagick.org/Magick++/Enumerations.html#VirtualPixelMethod">VirtualPixelMethod</a>
+ href="https://imagemagick.org/Magick++/Enumerations.html#VirtualPixelMethod">VirtualPixelMethod</a>
 virtualPixelMethod_</small></font></small></td>
       <td><font size="-1">Image virtual pixel method.</font></td>
     </tr>
@@ -2947,7 +2947,7 @@ or to capture image from</font></td>
 <center>
 <h3> <a name="Raw Image Pixel Access"></a> Low-Level Image Pixel Access</h3>
 </center>
-Image pixels (of type <i><a href="http://www.imagemagick.org/Magick++/PixelPacket.html">PixelPacket</a> </i>)
+Image pixels (of type <i><a href="https://imagemagick.org/Magick++/PixelPacket.html">PixelPacket</a> </i>)
 may be accessed directly via the <i>Image Pixel Cache</i> .&#160; The
 image pixel cache is a rectangular window into the actual image pixels
 (which may be in memory, memory-mapped from a disk file, or entirely on
@@ -2955,12 +2955,12 @@ disk). Two interfaces exist to access the <i>Image Pixel Cache.</i>
 The
 interface described here (part of the <i>Image</i> class) supports
 only
-one view at a time. See the <i><a href="http://www.imagemagick.org/Magick++/Pixels.html">Pixels</a> </i>
+one view at a time. See the <i><a href="https://imagemagick.org/Magick++/Pixels.html">Pixels</a> </i>
 class for a more abstract interface which supports simultaneous pixel
 views (up to the number of rows). As an analogy, the interface
 described
-here relates to the <i><a href="http://www.imagemagick.org/Magick++/Pixels.html">Pixels</a> </i> class as
-stdio's gets() relates to fgets(). The <i><a href="http://www.imagemagick.org/Magick++/Pixels.html"> Pixels</a>
+here relates to the <i><a href="https://imagemagick.org/Magick++/Pixels.html">Pixels</a> </i> class as
+stdio's gets() relates to fgets(). The <i><a href="https://imagemagick.org/Magick++/Pixels.html"> Pixels</a>
 </i>class provides the more general form of the interface.
 <p>Obtain existing image pixels via <i>getPixels()</i>. Create a new
 pixel region using <i>setPixels().</i></p>
@@ -2985,7 +2985,7 @@ representation according to the format specified by <i>QuantumTypes</i>.</p>
 may be accessed, addressed, and updated, as shown in the following
 example:</p>
 <pre class="code">
-<img class="icon" src="http://www.imagemagick.org/Magick++/Cache.png" name="Graphic1" width="254" border="0" alt="cache" />
+<img class="icon" src="https://imagemagick.org/Magick++/Cache.png" name="Graphic1" width="254" border="0" alt="cache" />
 Image image("cow.png"); 
 // Ensure that there are no other references to this image.
 image.modifyImage();
@@ -3026,7 +3026,7 @@ image.write("horse.png");
       <td>
       <center><a name="getConstPixels"></a> <font size="-1">getConstPixels</font></center>
       </td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/PixelPacket.html">PixelPacket</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/PixelPacket.html">PixelPacket</a>
 *</font></td>
       <td><font size="-1">const ssize_t x_, const ssize_t y_, const size_t
 columns_, const size_t rows_</font></td>
@@ -3081,7 +3081,7 @@ images, the indexes are used to contain the alpha channel.</font></td>
       <td>
       <center><a name="getPixels"></a> <font size="-1">getPixels</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/PixelPacket.html">PixelPacket</a> *</font></td>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/PixelPacket.html">PixelPacket</a> *</font></td>
       <td><font size="-1">const ssize_t x_, const ssize_t y_, const size_t
 columns_, const size_t rows_</font></td>
       <td><font size="-1">Transfers pixels from the image to the pixel
@@ -3096,7 +3096,7 @@ user.</font><font size="-1"></font></td>
       <td>
       <center><a name="setPixels"></a> <font size="-1">setPixels</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/PixelPacket.html">PixelPacket</a> *</font></td>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/PixelPacket.html">PixelPacket</a> *</font></td>
       <td><font size="-1">const ssize_t x_, const ssize_t y_, const size_t
 columns_, const size_t rows_</font></td>
       <td><font size="-1">Allocates a pixel cache region to store image
@@ -3119,7 +3119,7 @@ should never be deallocated by the user.</font></td>
       <center><a name="readPixels"></a> <font size="-1">readPixels</font></center>
       </td>
       <td><font size="-1">void</font></td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#QuantumTypes">QuantumTypes</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#QuantumTypes">QuantumTypes</a>
 quantum_, unsigned char *source_,</font></td>
       <td><font size="-1">Transfers one or more pixel components from a
 buffer or file into the image pixel cache of an image. ReadPixels is
@@ -3131,7 +3131,7 @@ corresponds to the region set by a preceding setPixels call.</font></td>
       <center><a name="writePixels"></a> <font size="-1">writePixels</font></center>
       </td>
       <td><font size="-1">void</font></td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Enumerations.html#QuantumTypes">QuantumTypes</a>
+      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#QuantumTypes">QuantumTypes</a>
 quantum_, unsigned char *destination_</font></td>
       <td><font size="-1">Transfers one or more pixel components from
 the image pixel cache to a buffer or file. WritePixels is typically

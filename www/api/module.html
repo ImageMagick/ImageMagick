@@ -10,7 +10,7 @@
   <title>MagickCore, C API: Loadable Modules @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick" />
   <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations." />
-  <meta name="application-url" content="https://www.imagemagick.org" />
+  <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="magickcore, c, api:, loadable, modules, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
   <meta name="rating" content="GENERAL" />
@@ -23,7 +23,7 @@
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="https://www.imagemagick.org/api/module.html" rel="canonical" />
+  <link href="https://imagemagick.org/api/module.html" rel="canonical" />
   <link href="../../images/wand.png" rel="icon" />
   <link href="../../images/wand.ico" rel="shortcut icon" />
   <link href="../assets/magick.css" rel="stylesheet" />
@@ -57,7 +57,7 @@
         <a class="nav-link" href="../../www/develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="https://imagemagick.org/script/search.php">
@@ -83,7 +83,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="module.html#AcquireModuleInfo">AcquireModuleInfo</a> &#8226; <a href="module.html#DestroyModuleList">DestroyModuleList</a> &#8226; <a href="module.html#GetModuleInfo">GetModuleInfo</a> &#8226; <a href="module.html#GetModuleInfoList">GetModuleInfoList</a> &#8226; <a href="module.html#GetModuleList">GetModuleList</a> &#8226; <a href="module.html#GetMagickModulePath">GetMagickModulePath</a> &#8226; <a href="module.html#IsModuleTreeInstantiated">IsModuleTreeInstantiated</a> &#8226; <a href="module.html#InvokeDynamicImageFilter">InvokeDynamicImageFilter</a> &#8226; <a href="module.html#ListModuleInfo">ListModuleInfo</a> &#8226; <a href="module.html#OpenModule">OpenModule</a> &#8226; <a href="module.html#OpenModules">OpenModules</a> &#8226; <a href="module.html#RegisterModule">RegisterModule</a> &#8226; <a href="module.html#TagToCoderModuleName">TagToCoderModuleName</a> &#8226; <a href="module.html#TagToFilterModuleName">TagToFilterModuleName</a> &#8226; <a href="module.html#TagToModuleName">TagToModuleName</a> &#8226; <a href="module.html#UnregisterModule">UnregisterModule</a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="AcquireModuleInfo">AcquireModuleInfo</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/module_8c.html" id="AcquireModuleInfo">AcquireModuleInfo</a></h2>
 
 <p>AcquireModuleInfo() allocates the ModuleInfo structure.</p>
 
@@ -109,7 +109,7 @@ ModuleInfo *AcquireModuleInfo(const char *path,const char *tag)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="DestroyModuleList">DestroyModuleList</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/module_8c.html" id="DestroyModuleList">DestroyModuleList</a></h2>
 
 <p>DestroyModuleList() unregisters any previously loaded modules and exits the module loaded environment.</p>
 
@@ -119,7 +119,7 @@ ModuleInfo *AcquireModuleInfo(const char *path,const char *tag)
 void DestroyModuleList(void)
 </pre>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="GetModuleInfo">GetModuleInfo</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/module_8c.html" id="GetModuleInfo">GetModuleInfo</a></h2>
 
 <p>GetModuleInfo() returns a pointer to a ModuleInfo structure that matches the specified tag.  If tag is NULL, the head of the module list is returned. If no modules are loaded, or the requested module is not found, NULL is returned.</p>
 
@@ -145,7 +145,7 @@ ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="GetModuleInfoList">GetModuleInfoList</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/module_8c.html" id="GetModuleInfoList">GetModuleInfoList</a></h2>
 
 <p>GetModuleInfoList() returns any modules that match the specified pattern.</p>
 
@@ -176,7 +176,7 @@ const ModuleInfo **GetModuleInfoList(const char *pattern,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="GetModuleList">GetModuleList</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/module_8c.html" id="GetModuleList">GetModuleList</a></h2>
 
 <p>GetModuleList() returns any image format modules that match the specified pattern.</p>
 
@@ -211,7 +211,7 @@ char **GetModuleList(const char *pattern,const MagickModuleType type,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="GetMagickModulePath">GetMagickModulePath</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/module_8c.html" id="GetMagickModulePath">GetMagickModulePath</a></h2>
 
 <p>GetMagickModulePath() finds a module with the specified module type and filename.</p>
 
@@ -246,7 +246,7 @@ MagickBooleanType GetMagickModulePath(const char *filename,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="IsModuleTreeInstantiated">IsModuleTreeInstantiated</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/module_8c.html" id="IsModuleTreeInstantiated">IsModuleTreeInstantiated</a></h2>
 
 <p>IsModuleTreeInstantiated() determines if the module tree is instantiated. If not, it instantiates the tree and returns it.</p>
 
@@ -256,7 +256,7 @@ MagickBooleanType GetMagickModulePath(const char *filename,
 IsModuleTreeInstantiated()
 </pre>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="InvokeDynamicImageFilter">InvokeDynamicImageFilter</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/module_8c.html" id="InvokeDynamicImageFilter">InvokeDynamicImageFilter</a></h2>
 
 <p>InvokeDynamicImageFilter() invokes a dynamic image filter.</p>
 
@@ -295,7 +295,7 @@ MagickBooleanType InvokeDynamicImageFilter(const char *tag,Image **image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="ListModuleInfo">ListModuleInfo</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/module_8c.html" id="ListModuleInfo">ListModuleInfo</a></h2>
 
 <p>ListModuleInfo() lists the module info to a file.</p>
 
@@ -313,7 +313,7 @@ MagickBooleanType ListModuleInfo(FILE *file,ExceptionInfo *exception)
 <dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="OpenModule">OpenModule</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/module_8c.html" id="OpenModule">OpenModule</a></h2>
 
 <p>OpenModule() loads a module, and invokes its registration module.  It returns MagickTrue on success, and MagickFalse if there is an error.</p>
 
@@ -339,7 +339,7 @@ MagickBooleanType OpenModule(const char *module,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="OpenModules">OpenModules</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/module_8c.html" id="OpenModules">OpenModules</a></h2>
 
 <p>OpenModules() loads all available modules.</p>
 
@@ -361,7 +361,7 @@ MagickBooleanType OpenModules(ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="RegisterModule">RegisterModule</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/module_8c.html" id="RegisterModule">RegisterModule</a></h2>
 
 <p>RegisterModule() adds an entry to the module list.  It returns a pointer to the registered entry on success.</p>
 
@@ -392,7 +392,7 @@ ModuleInfo *RegisterModule(const ModuleInfo *module_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="TagToCoderModuleName">TagToCoderModuleName</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/module_8c.html" id="TagToCoderModuleName">TagToCoderModuleName</a></h2>
 
 <p>TagToCoderModuleName() munges a module tag and obtains the filename of the corresponding module.</p>
 
@@ -418,7 +418,7 @@ char *TagToCoderModuleName(const char *tag,char *name)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="TagToFilterModuleName">TagToFilterModuleName</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/module_8c.html" id="TagToFilterModuleName">TagToFilterModuleName</a></h2>
 
 <p>TagToFilterModuleName() munges a module tag and returns the filename of the corresponding filter module.</p>
 
@@ -444,7 +444,7 @@ void TagToFilterModuleName(const char *tag,char name)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="TagToModuleName">TagToModuleName</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/module_8c.html" id="TagToModuleName">TagToModuleName</a></h2>
 
 <p>TagToModuleName() munges the module tag name and returns an upper-case tag name as the input string, and a user-provided format.</p>
 
@@ -474,7 +474,7 @@ TagToModuleName(const char *tag,const char *format,char *module)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="UnregisterModule">UnregisterModule</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/module_8c.html" id="UnregisterModule">UnregisterModule</a></h2>
 
 <p>UnregisterModule() unloads a module, and invokes its de-registration module. Returns MagickTrue on success, and MagickFalse if there is an error.</p>
 

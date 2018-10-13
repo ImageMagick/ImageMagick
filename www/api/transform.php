@@ -10,7 +10,7 @@
   <title>MagickCore, C API: Transform an Image @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick">
   <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations.">
-  <meta name="application-url" content="https://www.imagemagick.org">
+  <meta name="application-url" content="https://imagemagick.org">
   <meta name="generator" content="PHP">
   <meta name="keywords" content="magickcore, c, api:, transform, an, image, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
   <meta name="rating" content="GENERAL">
@@ -23,7 +23,7 @@
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
-  <link href="https://www.imagemagick.org/api/transform.php" rel="canonical">
+  <link href="https://imagemagick.org/api/transform.php" rel="canonical">
   <link href="https://imagemagick.org/image/wand.png" rel="icon">
   <link href="https://imagemagick.org/image/wand.ico" rel="shortcut icon">
   <link href="https://imagemagick.org/assets/magick-css.php" rel="stylesheet">
@@ -57,7 +57,7 @@
         <a class="nav-link" href="https://imagemagick.org/script/develop.php">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="../script/search.php">
@@ -83,7 +83,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="transform.php#AutoOrientImage">AutoOrientImage</a> &bull; <a href="transform.php#ChopImage">ChopImage</a> &bull; <a href="transform.php#CropImage">CropImage</a> &bull; <a href="transform.php#CropImageToTiles">CropImageToTiles</a> &bull; <a href="transform.php#ExcerptImage">ExcerptImage</a> &bull; <a href="transform.php#ExtentImage">ExtentImage</a> &bull; <a href="transform.php#FlipImage">FlipImage</a> &bull; <a href="transform.php#FlopImage">FlopImage</a> &bull; <a href="transform.php#RollImage">RollImage</a> &bull; <a href="transform.php#ShaveImage">ShaveImage</a> &bull; <a href="transform.php#SpliceImage">SpliceImage</a> &bull; <a href="transform.php#TransformImage">TransformImage</a> &bull; <a href="transform.php#TransposeImage">TransposeImage</a> &bull; <a href="transform.php#TransverseImage">TransverseImage</a> &bull; <a href="transform.php#TrimImage">TrimImage</a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="AutoOrientImage">AutoOrientImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/transform_8c.html" id="AutoOrientImage">AutoOrientImage</a></h2>
 
 <p>AutoOrientImage() adjusts an image so that its orientation is suitable for viewing (i.e. top-left orientation).</p>
 
@@ -114,7 +114,7 @@ Image *AutoOrientImage(const Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="ChopImage">ChopImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/transform_8c.html" id="ChopImage">ChopImage</a></h2>
 
 <p>ChopImage() removes a region of an image and collapses the image to occupy the removed portion.</p>
 
@@ -145,7 +145,7 @@ Image *ChopImage(const Image *image,const RectangleInfo *chop_info)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="CropImage">CropImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/transform_8c.html" id="CropImage">CropImage</a></h2>
 
 <p>CropImage() extracts a region of the image starting at the offset defined by geometry.  Region must be fully defined, and no special handling of geometry flags is performed.</p>
 
@@ -176,7 +176,7 @@ Image *CropImage(const Image *image,const RectangleInfo *geometry,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="CropImageToTiles">CropImageToTiles</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/transform_8c.html" id="CropImageToTiles">CropImageToTiles</a></h2>
 
 <p>CropImageToTiles() crops a single image, into a possible list of tiles. This may include a single sub-region of the image.  This basically applies all the normal geometry flags for Crop.</p>
 
@@ -202,7 +202,7 @@ Image *CropImage(const Image *image,const RectangleInfo *geometry,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="ExcerptImage">ExcerptImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/transform_8c.html" id="ExcerptImage">ExcerptImage</a></h2>
 
 <p>ExcerptImage() returns a excerpt of the image as defined by the geometry.</p>
 
@@ -233,7 +233,7 @@ Image *ExcerptImage(const Image *image,const RectangleInfo *geometry,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="ExtentImage">ExtentImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/transform_8c.html" id="ExtentImage">ExtentImage</a></h2>
 
 <p>ExtentImage() extends the image as defined by the geometry, gravity, and image background color.  Set the (x,y) offset of the geometry to move the original image relative to the extended image.</p>
 
@@ -264,7 +264,7 @@ Image *ExtentImage(const Image *image,const RectangleInfo *geometry,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="FlipImage">FlipImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/transform_8c.html" id="FlipImage">FlipImage</a></h2>
 
 <p>FlipImage() creates a vertical mirror image by reflecting the pixels around the central x-axis.</p>
 
@@ -290,7 +290,7 @@ Image *FlipImage(const Image *image,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="FlopImage">FlopImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/transform_8c.html" id="FlopImage">FlopImage</a></h2>
 
 <p>FlopImage() creates a horizontal mirror image by reflecting the pixels around the central y-axis.</p>
 
@@ -316,7 +316,7 @@ Image *FlopImage(const Image *image,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="RollImage">RollImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/transform_8c.html" id="RollImage">RollImage</a></h2>
 
 <p>RollImage() offsets an image as defined by x_offset and y_offset.</p>
 
@@ -351,7 +351,7 @@ Image *RollImage(const Image *image,const ssize_t x_offset,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="ShaveImage">ShaveImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/transform_8c.html" id="ShaveImage">ShaveImage</a></h2>
 
 <p>ShaveImage() shaves pixels from the image edges.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p>
 
@@ -386,7 +386,7 @@ Image *ShaveImage(const Image *image,const RectangleInfo *shave_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="SpliceImage">SpliceImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/transform_8c.html" id="SpliceImage">SpliceImage</a></h2>
 
 <p>SpliceImage() splices a solid color into the image as defined by the geometry.</p>
 
@@ -417,7 +417,7 @@ Image *SpliceImage(const Image *image,const RectangleInfo *geometry,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="TransformImage">TransformImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/transform_8c.html" id="TransformImage">TransformImage</a></h2>
 
 <p>TransformImage() is a convenience method that behaves like ResizeImage() or CropImage() but accepts scaling and/or cropping information as a region geometry specification.  If the operation fails, the original image handle is left as is.</p>
 
@@ -460,7 +460,7 @@ MagickBooleanType TransformImage(Image **image,const char *crop_geometry,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="TransposeImage">TransposeImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/transform_8c.html" id="TransposeImage">TransposeImage</a></h2>
 
 <p>TransposeImage() creates a horizontal mirror image by reflecting the pixels around the central y-axis while rotating them by 90 degrees.</p>
 
@@ -486,7 +486,7 @@ Image *TransposeImage(const Image *image,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="TransverseImage">TransverseImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/transform_8c.html" id="TransverseImage">TransverseImage</a></h2>
 
 <p>TransverseImage() creates a vertical mirror image by reflecting the pixels around the central x-axis while rotating them by 270 degrees.</p>
 
@@ -512,7 +512,7 @@ Image *TransverseImage(const Image *image,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="TrimImage">TrimImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/transform_8c.html" id="TrimImage">TrimImage</a></h2>
 
 <p>TrimImage() trims pixels from the image edges.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p>
 

@@ -101,7 +101,7 @@ sub AutodetectWin32gcc {
 # Please check the following prerequisites:
 #
 # 1) You need to have installed ImageMagick Windows binaries from
-#    http://www.imagemagick.org/script/binary-releases.php#windows
+#    https://imagemagick.org/script/binary-releases.php#windows
 #
 # 2) We only support dynamic (DLL) ImageMagick binaries
 #    note: it is not possible to mix 32/64-bit binaries of perl and ImageMagick

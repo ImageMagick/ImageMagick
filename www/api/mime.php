@@ -10,7 +10,7 @@
   <title>MagickCore, C API: Mime Methods @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick">
   <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations.">
-  <meta name="application-url" content="https://www.imagemagick.org">
+  <meta name="application-url" content="https://imagemagick.org">
   <meta name="generator" content="PHP">
   <meta name="keywords" content="magickcore, c, api:, mime, methods, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
   <meta name="rating" content="GENERAL">
@@ -23,7 +23,7 @@
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
-  <link href="https://www.imagemagick.org/api/mime.php" rel="canonical">
+  <link href="https://imagemagick.org/api/mime.php" rel="canonical">
   <link href="https://imagemagick.org/image/wand.png" rel="icon">
   <link href="https://imagemagick.org/image/wand.ico" rel="shortcut icon">
   <link href="https://imagemagick.org/assets/magick-css.php" rel="stylesheet">
@@ -57,7 +57,7 @@
         <a class="nav-link" href="https://imagemagick.org/script/develop.php">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="../script/search.php">
@@ -83,7 +83,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="mime.php#AcquireMimeCache">AcquireMimeCache</a> &bull; <a href="mime.php#GetMimeInfoList">GetMimeInfoList</a> &bull; <a href="mime.php#GetMimeList">GetMimeList</a> &bull; <a href="mime.php#GetMimeDescription">GetMimeDescription</a> &bull; <a href="mime.php#GetMimeType">GetMimeType</a> &bull; <a href="mime.php#ListMimeInfo">ListMimeInfo</a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/mime_8c.html" id="AcquireMimeCache">AcquireMimeCache</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/mime_8c.html" id="AcquireMimeCache">AcquireMimeCache</a></h2>
 
 <p>AcquireMimeCache() caches one or more magic configurations which provides a mapping between magic attributes and a magic name.</p>
 
@@ -110,7 +110,7 @@ LinkedListInfo *AcquireMimeCache(const char *filename,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/mime_8c.html" id="GetMimeInfoList">GetMimeInfoList</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/mime_8c.html" id="GetMimeInfoList">GetMimeInfoList</a></h2>
 
 <p>GetMimeInfoList() returns any image aliases that match the specified pattern.</p>
 
@@ -141,7 +141,7 @@ const MimeInfo **GetMimeInfoList(const char *pattern,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/mime_8c.html" id="GetMimeList">GetMimeList</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/mime_8c.html" id="GetMimeList">GetMimeList</a></h2>
 
 <p>GetMimeList() returns any image format alias that matches the specified pattern.</p>
 
@@ -172,7 +172,7 @@ char **GetMimeList(const char *pattern,size_t *number_aliases,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/mime_8c.html" id="GetMimeDescription">GetMimeDescription</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/mime_8c.html" id="GetMimeDescription">GetMimeDescription</a></h2>
 
 <p>GetMimeDescription() returns the mime type description.</p>
 
@@ -194,7 +194,7 @@ const char *GetMimeDescription(const MimeInfo *mime_info)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/mime_8c.html" id="GetMimeType">GetMimeType</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/mime_8c.html" id="GetMimeType">GetMimeType</a></h2>
 
 <p>GetMimeType() returns the mime type.</p>
 
@@ -216,7 +216,7 @@ const char *GetMimeType(const MimeInfo *mime_info)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/mime_8c.html" id="ListMimeInfo">ListMimeInfo</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/mime_8c.html" id="ListMimeInfo">ListMimeInfo</a></h2>
 
 <p>ListMimeInfo() lists the magic info to a file.</p>
 
