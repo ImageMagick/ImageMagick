@@ -983,7 +983,11 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
       }
     length=(((size_t) image->columns*pcx_info.bits_per_pixel+7)/8);
     if (length > 65535UL)
-      ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
+      {
+        if (page_table != (MagickOffsetType *) NULL)
+          page_table=(MagickOffsetType *) RelinquishMagickMemory(page_table);
+        ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
+      }
     pcx_info.bytes_per_line=(unsigned short) length;
     pcx_info.palette_info=1;
     pcx_info.colormap_signature=0x0c;
