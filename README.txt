@@ -33,7 +33,7 @@ Introduction to ImageMagick
   The current release is the ImageMagick 7.0.8-* series. It runs on Linux,
   Windows, Mac Os X, iOS, Android OS, and others.
 
-  The authoritative ImageMagick web site is https://www.imagemagick.org. The
+  The authoritative ImageMagick web site is https://imagemagick.org. The
   authoritative source code repository is https://github.com/ImageMagick. We
   maintain a source code mirror at https://gitlab.com/ImageMagick.
 
@@ -99,7 +99,7 @@ Features and Capabilities
       * ImageMagick on the iPhone: convert, edit, or compose images on your
         iPhone or iPad.
   
-  Examples of ImageMagick Usage * https://www.imagemagick.org/Usage/
+  Examples of ImageMagick Usage * https://imagemagick.org/Usage/
   shows how to use ImageMagick from the command-line to accomplish any
   of these tasks and much more. Also, see Fred's ImageMagick Scripts @
   http://www.fmwconcepts.com/imagemagick/: a plethora of command-line scripts
