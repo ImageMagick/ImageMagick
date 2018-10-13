@@ -36,6 +36,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+% Photoshop spec @ https://www.adobe.com/devnet-apps/photoshop/fileformatashtml
 %
 */
 
