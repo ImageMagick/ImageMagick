@@ -500,6 +500,7 @@ namespace Magick
   // Compression algorithms
   using MagickCore::CompressionType;
   using MagickCore::UndefinedCompression;
+  using MagickCore::NoCompression;
   using MagickCore::B44ACompression;
   using MagickCore::B44Compression;
   using MagickCore::BZipCompression;
@@ -515,12 +516,13 @@ namespace Magick
   using MagickCore::LosslessJPEGCompression;
   using MagickCore::LZMACompression;
   using MagickCore::LZWCompression;
-  using MagickCore::NoCompression;
   using MagickCore::PizCompression;
   using MagickCore::Pxr24Compression;
   using MagickCore::RLECompression;
+  using MagickCore::WebPCompression;
   using MagickCore::ZipCompression;
   using MagickCore::ZipSCompression;
+  using MagickCore::ZstdCompression;
 
   // Decoration types
   using MagickCore::DecorationType;

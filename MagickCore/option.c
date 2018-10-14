@@ -1241,9 +1241,10 @@ static const OptionInfo
     { "Pxr24", Pxr24Compression, UndefinedOptionFlag, MagickFalse },
     { "RLE", RLECompression, UndefinedOptionFlag, MagickFalse },
     { "RunlengthEncoded", RLECompression, UndefinedOptionFlag, MagickFalse },
+    { "WebP", WebPCompression, UndefinedOptionFlag, MagickFalse },
     { "ZipS", ZipSCompression, UndefinedOptionFlag, MagickFalse },
     { "Zip", ZipCompression, UndefinedOptionFlag, MagickFalse },
-    { "ZSTD", ZstdCompression, UndefinedOptionFlag, MagickFalse },
+    { "Zstd", ZstdCompression, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedCompression, UndefinedOptionFlag, MagickFalse }
   },
   DataTypeOptions[] =
