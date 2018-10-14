@@ -1220,8 +1220,8 @@ static const OptionInfo
   CompressOptions[] =
   {
     { "Undefined", UndefinedCompression, UndefinedOptionFlag, MagickTrue },
-    { "B44", B44Compression, UndefinedOptionFlag, MagickFalse },
     { "B44A", B44ACompression, UndefinedOptionFlag, MagickFalse },
+    { "B44", B44Compression, UndefinedOptionFlag, MagickFalse },
     { "BZip", BZipCompression, UndefinedOptionFlag, MagickFalse },
     { "DXT1", DXT1Compression, UndefinedOptionFlag, MagickFalse },
     { "DXT3", DXT3Compression, UndefinedOptionFlag, MagickFalse },
@@ -1230,19 +1230,20 @@ static const OptionInfo
     { "Group4", Group4Compression, UndefinedOptionFlag, MagickFalse },
     { "JBIG1", JBIG1Compression, UndefinedOptionFlag, MagickFalse },
     { "JBIG2", JBIG2Compression, UndefinedOptionFlag, MagickFalse },
-    { "JPEG", JPEGCompression, UndefinedOptionFlag, MagickFalse },
     { "JPEG2000", JPEG2000Compression, UndefinedOptionFlag, MagickFalse },
-    { "Lossless", LosslessJPEGCompression, UndefinedOptionFlag, MagickFalse },
+    { "JPEG", JPEGCompression, UndefinedOptionFlag, MagickFalse },
     { "LosslessJPEG", LosslessJPEGCompression, UndefinedOptionFlag, MagickFalse },
+    { "Lossless", LosslessJPEGCompression, UndefinedOptionFlag, MagickFalse },
     { "LZMA", LZMACompression, UndefinedOptionFlag, MagickFalse },
     { "LZW", LZWCompression, UndefinedOptionFlag, MagickFalse },
     { "None", NoCompression, UndefinedOptionFlag, MagickFalse },
     { "Piz", PizCompression, UndefinedOptionFlag, MagickFalse },
     { "Pxr24", Pxr24Compression, UndefinedOptionFlag, MagickFalse },
     { "RLE", RLECompression, UndefinedOptionFlag, MagickFalse },
-    { "Zip", ZipCompression, UndefinedOptionFlag, MagickFalse },
     { "RunlengthEncoded", RLECompression, UndefinedOptionFlag, MagickFalse },
     { "ZipS", ZipSCompression, UndefinedOptionFlag, MagickFalse },
+    { "Zip", ZipCompression, UndefinedOptionFlag, MagickFalse },
+    { "ZSTD", ZstdCompression, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedCompression, UndefinedOptionFlag, MagickFalse }
   },
   DataTypeOptions[] =

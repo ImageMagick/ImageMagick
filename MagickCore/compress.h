@@ -45,7 +45,8 @@ typedef enum
   Pxr24Compression,
   RLECompression,
   ZipCompression,
-  ZipSCompression
+  ZipSCompression,
+  ZstdCompression
 } CompressionType;
 
 typedef struct _Ascii85Info

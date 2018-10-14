@@ -1686,6 +1686,41 @@ AC_SUBST(ZLIB_LIBS)
 
 dnl ===========================================================================
 
+#
+# Check for ZSTD
+#
+AC_ARG_WITH([zstd],
+    [AC_HELP_STRING([--without-zstd],
+                    [disable ZSTD support])],
+    [with_zstd=$withval],
+    [with_zstd='yes'])
+
+if test "$with_zstd" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-zstd=$with_zstd "
+fi
+
+have_zstd='no'
+ZSTD_CFLAGS=""
+ZSTD_LIBS=""
+ZSTD_PKG=""
+if test "x$with_zstd" = "xyes"; then
+  AC_MSG_RESULT([-------------------------------------------------------------])
+  PKG_CHECK_MODULES(LIBZSTD,[libzstd >= 1.0.0], have_zstd=yes, have_zstd=no)
+  AC_MSG_RESULT([])
+fi
+
+if test "$have_zstd" = 'yes'; then
+  AC_DEFINE(ZSTD_DELEGATE,1,Define if you have ZSTD library)
+  CFLAGS="$ZSTD_CFLAGS $CFLAGS"
+  LIBS="$ZSTD_LIBS $LIBS"
+fi
+
+AM_CONDITIONAL(ZSTD_DELEGATE, test "$have_zstd" = 'yes')
+AC_SUBST(ZSTD_CFLAGS)
+AC_SUBST(ZSTD_LIBS)
+
+dnl ===========================================================================
+
 # whether modules are built or not.
 with_ltdl='yes'
 have_ltdl='no'
@@ -3830,6 +3865,9 @@ fi
 if test "$have_zlib"   = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES zlib"
 fi
+if test "$have_zstd"   = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES zstd"
+fi
 
 # Remove extraneous spaces from output variables (asthetic)
 MAGICK_DELEGATES=`echo $MAGICK_DELEGATES | sed -e 's/  */ /g'`
@@ -3879,9 +3917,9 @@ fi
 #
 
 if test "$build_modules" != 'no'; then
-    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
@@ -4052,6 +4090,7 @@ matches your expectations.
   X11               --with-x=$with_x			$have_x
   XML               --with-xml=$with_xml		$have_xml
   ZLIB              --with-zlib=$with_zlib		$have_zlib
+  ZSTD              --with-zstd=$with_zstd		$have_zstd
 
   Delegate Program Configuration:
   GhostPCL          None				$PCLDelegate ($PCLVersion)

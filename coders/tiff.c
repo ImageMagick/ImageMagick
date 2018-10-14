@@ -106,6 +106,9 @@
 # if !defined(TIFFTAG_OPIIMAGEID)
 #  define TIFFTAG_OPIIMAGEID  32781
 # endif
+# if defined(COMPRESSION_ZSTD) && defined(MAGICKCORE_ZSTD_DELEGATE)
+#   include <zstd.h>
+# endif
 #include "psd-private.h"
 
 /*
@@ -1580,6 +1583,9 @@ RestoreMSCWarning
       case COMPRESSION_LZW: image->compression=LZWCompression; break;
       case COMPRESSION_DEFLATE: image->compression=ZipCompression; break;
       case COMPRESSION_ADOBE_DEFLATE: image->compression=ZipCompression; break;
+#if defined(COMPRESSION_ZSTD)
+      case COMPRESSION_ZSTD: image->compression=ZstdCompression; break;
+#endif
       default: image->compression=RLECompression; break;
     }
     quantum_info=(QuantumInfo *) NULL;
@@ -1768,7 +1774,7 @@ RestoreMSCWarning
       ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
     if (((MagickSizeType) TIFFScanlineSize(tiff)) > GetBlobSize(image))
       ThrowTIFFException(CorruptImageError,"InsufficientImageDataInFile");
-    number_pixels=MagickMax(TIFFScanlineSize(tiff),MagickMax((ssize_t) 
+    number_pixels=MagickMax(TIFFScanlineSize(tiff),MagickMax((ssize_t)
       image->columns*samples_per_pixel*pow(2.0,ceil(log(bits_per_sample)/
       log(2.0))),image->columns*rows_per_strip)*sizeof(uint32));
     tiff_pixels=(unsigned char *) AcquireMagickMemory(number_pixels);
@@ -3589,6 +3595,13 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         compress_tag=COMPRESSION_ADOBE_DEFLATE;
         break;
       }
+#if defined(COMPRESSION_ZSTD)
+      case ZstdCompression:
+      {
+        compress_tag=COMPRESSION_ZSTD;
+        break;
+      }
+#endif
       case NoCompression:
       default:
       {
@@ -3627,6 +3640,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
 #endif
 #if defined(ZIP_SUPPORT)
         case COMPRESSION_ADOBE_DEFLATE:
+#endif
+#if defined(ZSTD_SUPPORT)
+        case COMPRESSION_ZSTD:
 #endif
         case COMPRESSION_NONE:
           break;
@@ -3789,8 +3805,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       case COMPRESSION_JPEG:
       {
 #if defined(JPEG_SUPPORT)
-
-
         if (image_info->quality != UndefinedCompressionQuality)
           (void) TIFFSetField(tiff,TIFFTAG_JPEGQUALITY,image_info->quality);
         (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,JPEGCOLORMODE_RAW);
@@ -3885,6 +3899,20 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           predictor=PREDICTOR_HORIZONTAL;
         break;
       }
+#if defined(ZSTD_SUPPORT) && defined(COMPRESSION_ZSTD)
+      case COMPRESSION_ZSTD:
+      {
+        (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,
+          &bits_per_sample);
+        if (((photometric == PHOTOMETRIC_RGB) ||
+             (photometric == PHOTOMETRIC_MINISBLACK)) &&
+            ((bits_per_sample == 8) || (bits_per_sample == 16)))
+          predictor=PREDICTOR_HORIZONTAL;
+        (void) TIFFSetField(tiff,TIFFTAG_ZSTD_LEVEL,22*image_info->quality/
+          100.0);
+        break;
+      }
+#endif
       default:
         break;
     }
