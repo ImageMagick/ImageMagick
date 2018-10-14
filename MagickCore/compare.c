@@ -1239,7 +1239,7 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
     if (fabs(distortion[i]) < MagickEpsilon)
       distortion[i]=INFINITY;
     else
-      distortion[i]=20.0*MagickLog10(1.0/sqrt(distortion[i]));
+      distortion[i]=10.0*MagickLog10(1.0)-10.0*MagickLog10(distortion[i]);
   return(status);
 }
 
