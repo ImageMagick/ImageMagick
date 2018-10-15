@@ -2898,7 +2898,7 @@ static void CL_API_CALL DestroyMagickCLCacheInfoAndPixels(
     status=openCL_library->clGetEventInfo(info->events[i],
       CL_EVENT_COMMAND_EXECUTION_STATUS,sizeof(event_status),&event_status,
       NULL);
-    if ((status == CL_SUCCESS) && (event_status != CL_COMPLETE))
+    if ((status == CL_SUCCESS) && (event_status > CL_COMPLETE))
       {
         openCL_library->clSetEventCallback(info->events[i],CL_COMPLETE,
           &DestroyMagickCLCacheInfoAndPixels,info);
