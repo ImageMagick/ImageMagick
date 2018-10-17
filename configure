@@ -4569,7 +4569,7 @@ MAGICK_PATCHLEVEL_VERSION=13
 
 MAGICK_VERSION=7.0.8-13
 
-MAGICK_GIT_REVISION=14923:08170e637:20181014
+MAGICK_GIT_REVISION=14926:ce5e37743:20181017
 
 
 # Substitute library versioning
@@ -39991,7 +39991,7 @@ matches your expectations.
   PERL              --with-perl=$with_perl		$have_perl
   PNG               --with-png=$with_png		$have_png
   RAQM              --with-raqm=$with_raqm		$have_raqm
-  RAW               --with-raw=$with_raw 	   $have_raw
+  RAW               --with-raw=$with_raw 	   	$have_raw
   RSVG              --with-rsvg=$with_rsvg		$have_rsvg
   TIFF              --with-tiff=$with_tiff		$have_tiff
   WEBP              --with-webp=$with_webp		$have_webp
@@ -40083,7 +40083,7 @@ matches your expectations.
   PERL              --with-perl=$with_perl		$have_perl
   PNG               --with-png=$with_png		$have_png
   RAQM              --with-raqm=$with_raqm		$have_raqm
-  RAW               --with-raw=$with_raw 	   $have_raw
+  RAW               --with-raw=$with_raw 	   	$have_raw
   RSVG              --with-rsvg=$with_rsvg		$have_rsvg
   TIFF              --with-tiff=$with_tiff		$have_tiff
   WEBP              --with-webp=$with_webp		$have_webp
