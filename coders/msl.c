@@ -8344,6 +8344,9 @@ static MagickBooleanType WriteMSLImage(const ImageInfo *image_info,Image *image,
   Image
     *msl_image;
 
+  MagickBooleanType
+    status;
+
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
@@ -8351,6 +8354,8 @@ static MagickBooleanType WriteMSLImage(const ImageInfo *image_info,Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   msl_image=CloneImage(image,0,0,MagickTrue,exception);
-  return(ProcessMSLScript(image_info,&msl_image,exception));
+  status=ProcessMSLScript(image_info,&msl_image,exception);
+  msl_image=DestroyImageList(msl_image);
+  return(status);
 }
 #endif
