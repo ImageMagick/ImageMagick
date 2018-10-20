@@ -790,4 +790,11 @@ MagickPrivate void MagicComponentTerminus(void)
     magic_list=DestroyLinkedList(magic_list,DestroyMagicElement);
   UnlockSemaphoreInfo(magic_list_semaphore);
   RelinquishSemaphoreInfo(&magic_list_semaphore);
+  if (magic_cache_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&magic_cache_semaphore);
+  LockSemaphoreInfo(magic_cache_semaphore);
+  if (magic_cache != (LinkedListInfo *) NULL)
+    magic_cache=DestroyLinkedList(magic_cache,(void *(*)(void *)) NULL);
+  UnlockSemaphoreInfo(magic_cache_semaphore);
+  RelinquishSemaphoreInfo(&magic_cache_semaphore);
 }
