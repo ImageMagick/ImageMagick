@@ -110,6 +110,8 @@ typedef MagickDoubleType Quantum;
 #define MagickEpsilon  (1.0e-12)
 #define MagickMaximumValue  1.79769313486231570E+308
 #define MagickMinimumValue   2.22507385850720140E-308
+#define MagickStringify(macro_or_string)  MagickStringifyArg(macro_or_string)
+#define MagickStringifyArg(contents)  #contents
 #define QuantumScale  ((double) 1.0/(double) QuantumRange)
 
 /*
