@@ -167,7 +167,20 @@ static int CompareMagickInfoSize(const void *a,const void *b)
   ma=(MagicInfo *) a;
   mb=(MagicInfo *) b;
   if (ma->offset != mb->offset)
-    return((int) (ma->offset-mb->offset));
+    {
+      MagickOffsetType
+        max_offset;
+
+      /*
+        When the offset is near the start we first search a bit further
+        in the stream.
+      */
+      max_offset=ma->offset > mb->offset ? ma->offset : mb->offset;
+      if (max_offset <= 10)
+        return((int) (mb->offset-ma->offset));
+      else
+        return((int) (ma->offset-mb->offset));
+    }
   return((int) (mb->length-ma->length));
 }
 
