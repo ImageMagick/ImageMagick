@@ -1096,7 +1096,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (count == 0)
                 break;
               buffer[count]='\0';
-              if ((count+offset+MagickPathExtent) >= extent)
+              if ((count+offset+MagickPathExtent) >= (ssize_t) extent)
                 {
                   extent<<=1;
                   comments=(char *) ResizeQuantumMemory(comments,extent+
@@ -1107,6 +1107,9 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
               (void) CopyMagickMemory(&comments[offset],(char *) buffer,extent-
                 offset);
+            }
+            (void) SetImageProperty(meta_image,"comment",comments,exception);
+            comments=DestroyString(comments);
             break;
           }
           case 0xff:
@@ -1722,8 +1725,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
           0));
         (void) WriteBlobByte(image,(unsigned char) 0x00);
         value=GetImageProperty(image,"comment",exception);
-        if ((LocaleCompare(write_info->magick,"GIF87") != 0) &&
-            (value != (const char *) NULL))
+        if (value != (const char *) NULL)
           {
             register const char
               *p;
