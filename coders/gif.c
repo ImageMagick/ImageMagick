@@ -1085,22 +1085,28 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               *comments;
 
             size_t
-              length;
+              extent,
+              offset;
 
-            /*
-              Read comment extension.
-            */
             comments=AcquireString((char *) NULL);
-            for (length=0; ; length+=count)
+            extent=MagickPathExtent;
+            for (offset=0; ; offset+=count)
             {
-              count=(ssize_t) ReadBlobBlock(image,buffer);
+              count=ReadBlobBlock(image,buffer);
               if (count == 0)
                 break;
               buffer[count]='\0';
-              (void) ConcatenateString(&comments,(const char *) buffer);
-            }
-            (void) SetImageProperty(meta_image,"comment",comments,exception);
-            comments=DestroyString(comments);
+              if ((count+offset+MagickPathExtent) >= extent)
+                {
+                  extent<<=1;
+                  comments=(char *) ResizeQuantumMemory(comments,extent+
+                    MagickPathExtent,sizeof(*comments));
+                  if (comments == (char *) NULL)
+                    ThrowGIFException(ResourceLimitError,
+                      "MemoryAllocationFailed");
+                }
+              (void) CopyMagickMemory(&comments[offset],(char *) buffer,extent-
+                offset);
             break;
           }
           case 0xff:
