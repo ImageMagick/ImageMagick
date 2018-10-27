@@ -1983,40 +1983,41 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
       lookup = "p{ xx-page.x-.5, yy-page.y-.5 }"; /* simplify lookup */
     }
 
-    switch (method) {
+    switch (method)
+    {
       case AffineDistortion:
       {
-        double *inverse;
+        double
+          *inverse;
 
-        inverse = (double *) AcquireQuantumMemory(6,sizeof(*inverse));
-        if (inverse == (double *) NULL) {
-          coeff = (double *) RelinquishMagickMemory(coeff);
-          (void) ThrowMagickException(exception,GetMagickModule(),
-                  ResourceLimitError,"MemoryAllocationFailed",
-                  "%s", "DistortImages");
-          return((Image *) NULL);
-        }
+        inverse=(double *) AcquireQuantumMemory(6,sizeof(*inverse));
+        if (inverse == (double *) NULL)
+          {
+            coeff=(double *) RelinquishMagickMemory(coeff);
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              ResourceLimitError,"MemoryAllocationFailed","%s","DistortImages");
+            return((Image *) NULL);
+          }
         InvertAffineCoefficients(coeff, inverse);
         CoefficientsToAffineArgs(inverse);
         (void) FormatLocaleFile(stderr, "Affine Projection:\n");
-        (void) FormatLocaleFile(stderr, "  -distort AffineProjection \\\n      '");
+        (void) FormatLocaleFile(stderr,
+          "  -distort AffineProjection \\\n      '");
         for (i=0; i < 5; i++)
           (void) FormatLocaleFile(stderr, "%lf,", inverse[i]);
         (void) FormatLocaleFile(stderr, "%lf'\n", inverse[5]);
-        inverse = (double *) RelinquishMagickMemory(inverse);
-
+        inverse=(double *) RelinquishMagickMemory(inverse);
         (void) FormatLocaleFile(stderr, "Affine Distort, FX Equivelent:\n");
         (void) FormatLocaleFile(stderr, "%s", image_gen);
-        (void) FormatLocaleFile(stderr, "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
-        (void) FormatLocaleFile(stderr, "       xx=%+lf*ii %+lf*jj %+lf;\n",
-            coeff[0], coeff[1], coeff[2]);
-        (void) FormatLocaleFile(stderr, "       yy=%+lf*ii %+lf*jj %+lf;\n",
-            coeff[3], coeff[4], coeff[5]);
-        (void) FormatLocaleFile(stderr, "       %s' \\\n", lookup);
-
+        (void) FormatLocaleFile(stderr,
+          "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
+        (void) FormatLocaleFile(stderr,"       xx=%+lf*ii %+lf*jj %+lf;\n",
+          coeff[0],coeff[1],coeff[2]);
+        (void) FormatLocaleFile(stderr,"       yy=%+lf*ii %+lf*jj %+lf;\n",
+          coeff[3],coeff[4],coeff[5]);
+        (void) FormatLocaleFile(stderr,"       %s' \\\n",lookup);
         break;
       }
-
       case PerspectiveDistortion:
       {
         double *inverse;
