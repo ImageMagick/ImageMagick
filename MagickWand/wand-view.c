@@ -372,9 +372,6 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickWand_DuplexTransferWandViewIterator)
-#endif
         proceed=SetImageProgress(source_image,source->description,progress++,
           source->extent.height);
         if (proceed == MagickFalse)
@@ -579,9 +576,6 @@ WandExport MagickBooleanType GetWandViewIterator(WandView *source,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickWand_GetWandViewIterator)
-#endif
         proceed=SetImageProgress(source_image,source->description,progress++,
           source->extent.height);
         if (proceed == MagickFalse)
@@ -989,9 +983,6 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickWand_SetWandViewIterator)
-#endif
         proceed=SetImageProgress(destination_image,destination->description,
           progress++,destination->extent.height);
         if (proceed == MagickFalse)
@@ -1151,9 +1142,6 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickWand_TransferWandViewIterator)
-#endif
         proceed=SetImageProgress(source_image,source->description,progress++,
           source->extent.height);
         if (proceed == MagickFalse)
@@ -1284,9 +1272,6 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickWand_UpdateWandViewIterator)
-#endif
         proceed=SetImageProgress(source_image,source->description,progress++,
           source->extent.height);
         if (proceed == MagickFalse)

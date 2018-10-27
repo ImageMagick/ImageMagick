@@ -294,9 +294,6 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_DuplexTransferImageViewIterator)
-#endif
         proceed=SetImageProgress(source_image,source->description,progress++,
           source->extent.height);
         if (proceed == MagickFalse)
@@ -581,9 +578,6 @@ MagickExport MagickBooleanType GetImageViewIterator(ImageView *source,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_GetImageViewIterator)
-#endif
         proceed=SetImageProgress(source_image,source->description,progress++,
           source->extent.height);
         if (proceed == MagickFalse)
@@ -931,9 +925,6 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_SetImageViewIterator)
-#endif
         proceed=SetImageProgress(destination_image,destination->description,
           progress++,destination->extent.height);
         if (proceed == MagickFalse)
@@ -1070,9 +1061,6 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_TransferImageViewIterator)
-#endif
         proceed=SetImageProgress(source_image,source->description,progress++,
           source->extent.height);
         if (proceed == MagickFalse)
@@ -1187,9 +1175,6 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_UpdateImageViewIterator)
-#endif
         proceed=SetImageProgress(source_image,source->description,progress++,
           source->extent.height);
         if (proceed == MagickFalse)

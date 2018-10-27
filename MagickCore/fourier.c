@@ -332,9 +332,6 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_ComplexImages)
-#endif
         proceed=SetImageProgress(images,ComplexImageTag,progress++,
           images->rows);
         if (proceed == MagickFalse)

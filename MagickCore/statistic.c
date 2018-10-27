@@ -597,9 +597,6 @@ MagickExport Image *EvaluateImages(const Image *images,
             MagickBooleanType
               proceed;
 
-#if   defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp critical (MagickCore_EvaluateImages)
-#endif
             proceed=SetImageProgress(images,EvaluateImageTag,progress++,
               image->rows);
             if (proceed == MagickFalse)
@@ -749,9 +746,6 @@ MagickExport Image *EvaluateImages(const Image *images,
             MagickBooleanType
               proceed;
 
-#if   defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp critical (MagickCore_EvaluateImages)
-#endif
             proceed=SetImageProgress(images,EvaluateImageTag,progress++,
               image->rows);
             if (proceed == MagickFalse)
@@ -858,9 +852,6 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_EvaluateImage)
-#endif
         proceed=SetImageProgress(image,EvaluateImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -1082,9 +1073,6 @@ MagickExport MagickBooleanType FunctionImage(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_FunctionImage)
-#endif
         proceed=SetImageProgress(image,FunctionImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -2324,9 +2312,6 @@ MagickExport Image *PolynomialImage(const Image *images,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_PolynomialImages)
-#endif
         proceed=SetImageProgress(images,PolynomialImageTag,progress++,
           image->rows);
         if (proceed == MagickFalse)
@@ -3030,9 +3015,6 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_StatisticImage)
-#endif
         proceed=SetImageProgress(image,StatisticImageTag,progress++,
           image->rows);
         if (proceed == MagickFalse)

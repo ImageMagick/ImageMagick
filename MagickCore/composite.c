@@ -511,9 +511,6 @@ static MagickBooleanType CompositeOverImage(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_CompositeImage)
-#endif
         proceed=SetImageProgress(image,CompositeImageTag,progress++,
           image->rows);
         if (proceed == MagickFalse)
@@ -678,11 +675,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             MagickBooleanType
               proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp critical (MagickCore_CompositeImage)
-#endif
-            proceed=SetImageProgress(image,CompositeImageTag,
-              (MagickOffsetType) y,image->rows);
+            proceed=SetImageProgress(image,CompositeImageTag,(MagickOffsetType)
+              y,image->rows);
             if (proceed == MagickFalse)
               status=MagickFalse;
           }
@@ -754,11 +748,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             MagickBooleanType
               proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp critical (MagickCore_CompositeImage)
-#endif
-            proceed=SetImageProgress(image,CompositeImageTag,
-              (MagickOffsetType) y,image->rows);
+            proceed=SetImageProgress(image,CompositeImageTag,(MagickOffsetType)
+              y,image->rows);
             if (proceed == MagickFalse)
               status=MagickFalse;
           }
@@ -2335,9 +2326,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_CompositeImage)
-#endif
         proceed=SetImageProgress(image,CompositeImageTag,progress++,
           image->rows);
         if (proceed == MagickFalse)

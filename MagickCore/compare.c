@@ -2277,9 +2277,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_SimilarityImage)
-#endif
         proceed=SetImageProgress(image,SimilarityImageTag,progress++,
           image->rows);
         if (proceed == MagickFalse)

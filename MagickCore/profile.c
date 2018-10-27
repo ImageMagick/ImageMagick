@@ -1232,9 +1232,6 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                   MagickBooleanType
                     proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-                  #pragma omp critical (MagickCore_ProfileImage)
-#endif
                   proceed=SetImageProgress(image,ProfileImageTag,progress++,
                     image->rows);
                   if (proceed == MagickFalse)

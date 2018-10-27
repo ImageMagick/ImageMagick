@@ -26,6 +26,10 @@ typedef MagickBooleanType
   (*MagickProgressMonitor)(const char *,const MagickOffsetType,
     const MagickSizeType,void *);
 
+MagickExport MagickBooleanType
+  SetImageProgress(const Image *,const char *,const MagickOffsetType,
+    const MagickSizeType);
+
 MagickExport MagickProgressMonitor
   SetImageProgressMonitor(Image *,const MagickProgressMonitor,void *),
   SetImageInfoProgressMonitor(ImageInfo *,const MagickProgressMonitor,void *);

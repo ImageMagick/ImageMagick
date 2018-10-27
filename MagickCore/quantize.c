@@ -631,9 +631,6 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
             MagickBooleanType
               proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp critical (MagickCore_AssignImageColors)
-#endif
             proceed=SetImageProgress(image,AssignImageTag,(MagickOffsetType) y,
               image->rows);
             if (proceed == MagickFalse)
@@ -2453,9 +2450,6 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_PosterizeImage)
-#endif
         proceed=SetImageProgress(image,PosterizeImageTag,progress++,
           image->rows);
         if (proceed == MagickFalse)

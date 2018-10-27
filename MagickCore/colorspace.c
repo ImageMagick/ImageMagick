@@ -1052,9 +1052,6 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             MagickBooleanType
               proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp critical (MagickCore_sRGBTransformImage)
-#endif
             proceed=SetImageProgress(image,sRGBTransformImageTag,progress++,
               image->rows);
             if (proceed == MagickFalse)
@@ -2534,9 +2531,6 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             MagickBooleanType
               proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp critical (MagickCore_TransformsRGBImage)
-#endif
             proceed=SetImageProgress(image,TransformsRGBImageTag,progress++,
               image->rows);
             if (proceed == MagickFalse)

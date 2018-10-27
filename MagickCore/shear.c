@@ -854,9 +854,6 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
             MagickBooleanType
               proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp critical (MagickCore_IntegralRotateImage)
-#endif
             proceed=SetImageProgress(image,RotateImageTag,progress+=tile_height,
               image->rows);
             if (proceed == MagickFalse)
@@ -935,9 +932,6 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
             MagickBooleanType
               proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp critical (MagickCore_IntegralRotateImage)
-#endif
             proceed=SetImageProgress(image,RotateImageTag,progress++,
               image->rows);
             if (proceed == MagickFalse)
@@ -1289,9 +1283,6 @@ static MagickBooleanType XShearImage(Image *image,const double degrees,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_XShearImage)
-#endif
         proceed=SetImageProgress(image,XShearImageTag,progress++,height);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -1507,9 +1498,6 @@ static MagickBooleanType YShearImage(Image *image,const double degrees,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_YShearImage)
-#endif
         proceed=SetImageProgress(image,YShearImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;

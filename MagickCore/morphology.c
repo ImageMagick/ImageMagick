@@ -2773,9 +2773,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             MagickBooleanType
               proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp critical (MagickCore_MorphologyPrimitive)
-#endif
             proceed=SetImageProgress(image,MorphologyTag,progress++,
               image->rows);
             if (proceed == MagickFalse)
@@ -3202,9 +3199,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_MorphologyPrimitive)
-#endif
         proceed=SetImageProgress(image,MorphologyTag,progress++,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
