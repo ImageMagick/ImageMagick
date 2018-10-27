@@ -1219,18 +1219,18 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
         (void) FormatLocaleFile(stdout,"# window-support = %.*g\n",
           GetMagickPrecision(),(double) resize_filter->window_support);
         (void) FormatLocaleFile(stdout,"# scale-blur = %.*g\n",
-          GetMagickPrecision(),(double)resize_filter->blur);
+          GetMagickPrecision(),(double) resize_filter->blur);
         if ((filter_type == GaussianFilter) || (window_type == GaussianFilter))
           (void) FormatLocaleFile(stdout,"# gaussian-sigma = %.*g\n",
-            GetMagickPrecision(),(double)resize_filter->coefficient[0]);
+            GetMagickPrecision(),(double) resize_filter->coefficient[0]);
         if ( filter_type == KaiserFilter || window_type == KaiserFilter )
           (void) FormatLocaleFile(stdout,"# kaiser-beta = %.*g\n",
-            GetMagickPrecision(),(double)resize_filter->coefficient[0]);
+            GetMagickPrecision(),(double) resize_filter->coefficient[0]);
         (void) FormatLocaleFile(stdout,"# practical-support = %.*g\n",
-          GetMagickPrecision(), (double)support);
-        if ( filter_type == CubicFilter || window_type == CubicFilter )
+          GetMagickPrecision(), (double) support);
+        if ((filter_type == CubicFilter) || (window_type == CubicFilter))
           (void) FormatLocaleFile(stdout,"# B,C = %.*g,%.*g\n",
-            GetMagickPrecision(),(double)B, GetMagickPrecision(),(double)C);
+            GetMagickPrecision(),(double) B,GetMagickPrecision(),(double) C);
         (void) FormatLocaleFile(stdout,"\n");
         /*
           Output values of resulting filter graph -- for graphing filter result.
