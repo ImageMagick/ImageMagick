@@ -1105,7 +1105,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     ThrowGIFException(ResourceLimitError,
                       "MemoryAllocationFailed");
                 }
-              (void) CopyMagickMemory(&comments[offset],(char *) buffer,extent-
+              (void) CopyMagickString(&comments[offset],(char *) buffer,extent-
                 offset);
             }
             (void) SetImageProperty(meta_image,"comment",comments,exception);
