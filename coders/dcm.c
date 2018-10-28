@@ -3199,10 +3199,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Assume explicit type.
           */
           quantum=2;
-          if ((strncmp(explicit_vr,"OB",2) == 0) ||
-              (strncmp(explicit_vr,"UN",2) == 0) ||
-              (strncmp(explicit_vr,"OW",2) == 0) ||
-              (strncmp(explicit_vr,"SQ",2) == 0))
+          if ((strcmp(explicit_vr,"OB") == 0) ||
+              (strcmp(explicit_vr,"OW") == 0) ||
+              (strcmp(explicit_vr,"OF") == 0) ||
+              (strcmp(explicit_vr,"SQ") == 0) ||
+              (strcmp(explicit_vr,"UN") == 0) ||
+              (strcmp(explicit_vr,"UT") == 0))
             {
               (void) ReadBlobLSBShort(image);
               quantum=4;
