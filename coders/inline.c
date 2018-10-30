@@ -209,7 +209,7 @@ ModuleExport size_t RegisterINLINEImage(void)
   MagickInfo
     *entry;
 
-  entry=AcquireMagickInfo("DATA","INLINE","Base64-encoded inline images");
+  entry=AcquireMagickInfo("INLINE","DATA","Base64-encoded inline images");
   entry->decoder=(DecodeImageHandler *) ReadINLINEImage;
   entry->encoder=(EncodeImageHandler *) WriteINLINEImage;
   entry->format_type=ImplicitFormatType;
