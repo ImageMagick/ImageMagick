@@ -544,14 +544,14 @@ MagickExport MagickBooleanType ListCoderInfo(FILE *file,
       {
         if (coder_info[i]->path != (char *) NULL)
           (void) FormatLocaleFile(file,"\nPath: %s\n\n",coder_info[i]->path);
-        (void) FormatLocaleFile(file,"Magick      Coder\n");
+        (void) FormatLocaleFile(file,"Magick          Coder\n");
         (void) FormatLocaleFile(file,
           "-------------------------------------------------"
           "------------------------------\n");
       }
     path=coder_info[i]->path;
     (void) FormatLocaleFile(file,"%s",coder_info[i]->magick);
-    for (j=(ssize_t) strlen(coder_info[i]->magick); j <= 11; j++)
+    for (j=(ssize_t) strlen(coder_info[i]->magick); j <= 15; j++)
       (void) FormatLocaleFile(file," ");
     if (coder_info[i]->name != (char *) NULL)
       (void) FormatLocaleFile(file,"%s",coder_info[i]->name);
