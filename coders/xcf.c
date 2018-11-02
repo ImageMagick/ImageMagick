@@ -112,6 +112,7 @@ typedef enum
 typedef struct
 {
   size_t
+    version,
     width,
     height,
     image_type,
@@ -326,6 +327,14 @@ static char *ReadBlobStringWithLongSize(Image *image,char *string,size_t max,
     (void) ThrowMagickException(exception,GetMagickModule(),
       CorruptImageError,"ImproperImageHeader","`%s'",image->filename);
   return(string);
+}
+
+static MagickOffsetType ReadBlobPointer(Image *image, XCFDocInfo *inDocInfo)
+{
+  if (inDocInfo->version >= 4)
+    return ReadBlobMSBLongLong(image);
+  else
+    return ReadBlobMSBLong(image);
 }
 
 static MagickBooleanType load_tile(Image *image,Image *tile_image,
@@ -627,7 +636,7 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
     Read in the first tile offset.  If it is '0', then this tile level is empty
     and we can simply return.
   */
-  offset=(MagickOffsetType) ReadBlobMSBLong(image);
+  offset=ReadBlobPointer(image,inDocInfo);
   if (offset == 0)
     return(MagickTrue);
   /*
@@ -647,7 +656,7 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
     saved_pos=TellBlob(image);
     /* read in the offset of the next tile so we can calculate the amount
        of data needed for this tile*/
-    offset2=(MagickOffsetType) ReadBlobMSBLong(image);
+    offset2=ReadBlobPointer(image,inDocInfo);
     if ((MagickSizeType) offset2 >= inDocInfo->file_size)
       ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
         image->filename);
@@ -720,7 +729,7 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
        */
       offset=SeekBlob(image, saved_pos, SEEK_SET);
       /* read in the offset of the next tile */
-      offset=(MagickOffsetType) ReadBlobMSBLong(image);
+      offset=ReadBlobPointer(image,inDocInfo);
     }
   if (offset != 0)
     ThrowBinaryException(CorruptImageError,"CorruptImage",image->filename)
@@ -743,7 +752,7 @@ static MagickBooleanType load_hierarchy(Image *image,XCFDocInfo *inDocInfo,
    *  calculated when the TileManager was created is the same
    *  as the number of levels found in the file.
    */
-  offset=(MagickOffsetType) ReadBlobMSBLong(image);  /* top level */
+  offset=ReadBlobPointer(image,inDocInfo);  /* top level */
   if ((MagickSizeType) offset >= GetBlobSize(image))
     ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
       image->filename);
@@ -961,8 +970,8 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
     }
 
   /* read the hierarchy and layer mask offsets */
-  hierarchy_offset = ReadBlobMSBLong(image);
-  layer_mask_offset = ReadBlobMSBLong(image);
+  hierarchy_offset = ReadBlobPointer(image,inDocInfo);
+  layer_mask_offset = ReadBlobPointer(image,inDocInfo);
 
   /* read in the hierarchy */
   offset=SeekBlob(image, (MagickOffsetType) hierarchy_offset, SEEK_SET);
@@ -1056,6 +1065,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   size_t
     image_type,
+    precision,
     length;
 
   ssize_t
@@ -1086,11 +1096,18 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (LocaleNCompare((char *) magick,"gimp xcf",8) != 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   (void) memset(&doc_info,0,sizeof(XCFDocInfo));
+  doc_info.version=strtoul(magick+10, NULL, 10);
   doc_info.width=ReadBlobMSBLong(image);
   doc_info.height=ReadBlobMSBLong(image);
   if ((doc_info.width > 262144) || (doc_info.height > 262144))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   doc_info.image_type=ReadBlobMSBLong(image);
+  if (doc_info.version >= 4)
+    precision=ReadBlobMSBLong(image);
+  else
+    precision=150;
+  if (precision != 150)
+    ThrowReaderException(CoderError,"ColorPrecisionNotSupported");
   /*
     Initialize image attributes.
   */
@@ -1315,7 +1332,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       do
       {
-        ssize_t offset = ReadBlobMSBSignedLong(image);
+        MagickOffsetType offset = ReadBlobPointer(image,&doc_info);
         if (offset == 0)
           foundAllLayers=MagickTrue;
         else
@@ -1350,7 +1367,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         saved_pos;
 
       /* read in the offset of the next layer */
-      offset=(MagickOffsetType) ReadBlobMSBLong(image);
+      offset=ReadBlobPointer(image,&doc_info);
       /* if the offset is 0 then we are at the end
       *  of the layer list.
       */
