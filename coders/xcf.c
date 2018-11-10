@@ -228,7 +228,50 @@ typedef enum
   GIMP_DIVIDE_MODE,
   GIMP_DODGE_MODE,
   GIMP_BURN_MODE,
-  GIMP_HARDLIGHT_MODE
+  GIMP_HARDLIGHT_MODE,
+  GIMP_SOFTLIGHT_MODE,
+  GIMP_GRAIN_EXTRACT_MODE,
+  GIMP_GRAIN_MERGE_MODE,
+  GIMP_COLOR_ERASE_MODE,
+  GIMP_210_OVERLAY_MODE,
+  GIMP_210_HUE_LCH_MODE,
+  GIMP_210_CHROMA_LCH_MODE,
+  GIMP_210_COLOR_LCH_MODE,
+  GIMP_210_LIGHTNESS_LCH_MODE,
+  GIMP_210_NORMAL_MODE,
+  GIMP_210_BEHIND_MODE,
+  GIMP_210_MULTIPLY_MODE,
+  GIMP_210_SCREEN_MODE,
+  GIMP_210_DIFFERENCE_MODE,
+  GIMP_210_ADDITION_MODE,
+  GIMP_210_SUBTRACT_MODE,
+  GIMP_210_DARKEN_ONLY_MODE,
+  GIMP_210_LIGHTEN_ONLY_MODE,
+  GIMP_210_HUE_MODE,
+  GIMP_210_SATURATION_MODE,
+  GIMP_210_COLOR_MODE,
+  GIMP_210_VALUE_MODE,
+  GIMP_210_DIVIDE_MODE,
+  GIMP_210_DODGE_MODE,
+  GIMP_210_BURN_MODE,
+  GIMP_210_HARDLIGHT_MODE,
+  GIMP_210_SOFTLIGHT_MODE,
+  GIMP_210_GRAIN_EXTRACT_MODE,
+  GIMP_210_GRAIN_MERGE_MODE,
+  GIMP_210_VIVID_LIGHT_MODE,
+  GIMP_210_PIN_LIGHT_MODE,
+  GIMP_210_LINEAR_LIGHT_MODE,
+  GIMP_210_HARD_MIX_MODE,
+  GIMP_210_EXCLUSION_MODE,
+  GIMP_210_LINEAR_BURN_MODE,
+  GIMP_210_LUMA_DARKEN_ONLY_MODE,
+  GIMP_210_LUMA_LIGHTEN_ONLY_MODE,
+  GIMP_210_LUMINANCE_MODE,
+  GIMP_210_COLOR_ERASE_MODE,
+  GIMP_210_ERASE_MODE,
+  GIMP_210_MERGE_MODE,
+  GIMP_210_SPLIT_MODE,
+  GIMP_210_PASS_THROUGH_MODE
 } GimpLayerModeEffects;
 
 /*
@@ -241,22 +284,40 @@ static CompositeOperator GIMPBlendModeToCompositeOperator(
   switch ( blendMode )
   {
     case GIMP_NORMAL_MODE:       return(OverCompositeOp);
+    case GIMP_210_NORMAL_MODE:   return(OverCompositeOp);
     case GIMP_DISSOLVE_MODE:     return(DissolveCompositeOp);
     case GIMP_MULTIPLY_MODE:     return(MultiplyCompositeOp);
+    case GIMP_210_MULTIPLY_MODE: return(MultiplyCompositeOp);
     case GIMP_SCREEN_MODE:       return(ScreenCompositeOp);
+    case GIMP_210_SCREEN_MODE:   return(ScreenCompositeOp);
     case GIMP_OVERLAY_MODE:      return(OverlayCompositeOp);
+    case GIMP_210_OVERLAY_MODE:  return(OverlayCompositeOp);
     case GIMP_DIFFERENCE_MODE:   return(DifferenceCompositeOp);
+    case GIMP_210_DIFFERENCE_MODE: return(DifferenceCompositeOp);
     case GIMP_ADDITION_MODE:     return(ModulusAddCompositeOp);
+    case GIMP_210_ADDITION_MODE: return(ModulusAddCompositeOp);
     case GIMP_SUBTRACT_MODE:     return(ModulusSubtractCompositeOp);
+    case GIMP_210_SUBTRACT_MODE: return(ModulusSubtractCompositeOp);
     case GIMP_DARKEN_ONLY_MODE:  return(DarkenCompositeOp);
+    case GIMP_210_DARKEN_ONLY_MODE: return(DarkenCompositeOp);
+    case GIMP_210_LUMA_DARKEN_ONLY_MODE: return(DarkenCompositeOp);
     case GIMP_LIGHTEN_ONLY_MODE: return(LightenCompositeOp);
+    case GIMP_210_LIGHTEN_ONLY_MODE: return(LightenCompositeOp);
+    case GIMP_210_LUMA_LIGHTEN_ONLY_MODE: return(LightenCompositeOp);
     case GIMP_HUE_MODE:          return(HueCompositeOp);
+    case GIMP_210_HUE_MODE:      return(HueCompositeOp);
     case GIMP_SATURATION_MODE:   return(SaturateCompositeOp);
+    case GIMP_210_SATURATION_MODE: return(SaturateCompositeOp);
     case GIMP_COLOR_MODE:        return(ColorizeCompositeOp);
+    case GIMP_210_COLOR_MODE:    return(ColorizeCompositeOp);
     case GIMP_DODGE_MODE:        return(ColorDodgeCompositeOp);
+    case GIMP_210_DODGE_MODE:    return(ColorDodgeCompositeOp);
     case GIMP_BURN_MODE:         return(ColorBurnCompositeOp);
+    case GIMP_210_BURN_MODE:     return(ColorBurnCompositeOp);
     case GIMP_HARDLIGHT_MODE:    return(HardLightCompositeOp);
+    case GIMP_210_HARDLIGHT_MODE: return(HardLightCompositeOp);
     case GIMP_DIVIDE_MODE:       return(DivideDstCompositeOp);
+    case GIMP_210_DIVIDE_MODE:   return(DivideDstCompositeOp);
     /* these are the ones we don't support...yet */
     case GIMP_BEHIND_MODE:       return(OverCompositeOp);
     case GIMP_VALUE_MODE:        return(OverCompositeOp);
