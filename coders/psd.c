@@ -2378,8 +2378,16 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if (profile != (StringInfo *) NULL)
     {
-      (void) SetImageProfile(image,GetStringInfoName(profile),profile,
-        exception);
+      Image
+        *next;
+
+      next=image;
+      while (next != (Image *) NULL)
+      {
+        (void) SetImageProfile(next,GetStringInfoName(profile),profile,
+          exception);
+        next=next->next;
+      }
       profile=DestroyStringInfo(profile);
     }
   (void) CloseBlob(image);
