@@ -27,11 +27,11 @@ extern MagickExport Image
   *CloneImages(const Image *,const char *,ExceptionInfo *),
   *DestroyImageList(Image *),
   *DuplicateImages(Image *,const size_t,const char *,ExceptionInfo *),
-  *GetFirstImageInList(const Image *),
-  *GetImageFromList(const Image *,const ssize_t),
-  *GetLastImageInList(const Image *),
-  *GetNextImageInList(const Image *),
-  *GetPreviousImageInList(const Image *),
+  *GetFirstImageInList(const Image *) magick_attribute((__pure__)),
+  *GetImageFromList(const Image *,const ssize_t) magick_attribute((__pure__)),
+  *GetLastImageInList(const Image *) magick_attribute((__pure__)),
+  *GetNextImageInList(const Image *) magick_attribute((__pure__)),
+  *GetPreviousImageInList(const Image *) magick_attribute((__pure__)),
   **ImageListToArray(const Image *,ExceptionInfo *),
   *NewImageList(void),
   *RemoveImageFromList(Image **),
@@ -42,10 +42,10 @@ extern MagickExport Image
   *SyncNextImageInList(const Image *);
 
 extern MagickExport size_t
-  GetImageListLength(const Image *);
+  GetImageListLength(const Image *) magick_attribute((__pure__));
 
 extern MagickExport ssize_t
-  GetImageIndexInList(const Image *);
+  GetImageIndexInList(const Image *) magick_attribute((__pure__));
 
 extern MagickExport void
   AppendImageToList(Image **,const Image *),

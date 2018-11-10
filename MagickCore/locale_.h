@@ -52,8 +52,9 @@ extern MagickExport double
   InterpretLocaleValue(const char *magick_restrict,char **magick_restrict);
 
 extern MagickExport int
-  LocaleCompare(const char *,const char *),
-  LocaleNCompare(const char *,const char *,const size_t);
+  LocaleCompare(const char *,const char *) magick_attribute((__pure__)),
+  LocaleNCompare(const char *,const char *,const size_t)
+    magick_attribute((__pure__));
 
 extern MagickExport LinkedListInfo
   *DestroyLocaleOptions(LinkedListInfo *),

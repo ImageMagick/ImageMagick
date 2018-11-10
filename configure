@@ -1993,7 +1993,7 @@ Optional Packages:
   --includearch-dir=DIR   ARCH specific include directory
   --sharearch-dir=DIR     ARCH specific config directory
   --with-pkgconfigdir=DIR Path to the pkgconfig directory [LIBDIR/pkgconfig]
-  --without-threads       disable threads support
+  --without-threads       disable POSIX threads API support
   --with-pic[=PKGS]       try to use only PIC/non-PIC objects [default=use
                           both]
   --with-aix-soname=aix|svr4|both
@@ -4570,7 +4570,7 @@ MAGICK_PATCHLEVEL_VERSION=15
 
 MAGICK_VERSION=7.0.8-15
 
-MAGICK_GIT_REVISION=14963:5c91a54d9:20181031
+MAGICK_GIT_REVISION=14965:3a037126f:20181110
 
 
 # Substitute library versioning
@@ -9784,9 +9784,7 @@ fi
 
 
 #
-# Enable support for threads
-#
-# Find Posix threads library
+# Enable support for POSIX thread APIs
 #
 
 # Check whether --with-threads was given.
@@ -10446,7 +10444,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
         DEF_THREAD="$PTHREAD_CFLAGS"
         CFLAGS="$CFLAGS $DEF_THREAD"
         CXXFLAGS="$CXXFLAGS $DEF_THREAD"
-	THREAD_LIBS="$PTHREAD_LIBS"
+        THREAD_LIBS="$PTHREAD_LIBS"
         if test "$CC" != "$PTHREAD_CC"; then
             { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Replacing compiler $CC with compiler $PTHREAD_CC to support pthreads." >&5
 $as_echo "$as_me: WARNING: Replacing compiler $CC with compiler $PTHREAD_CC to support pthreads." >&2;}

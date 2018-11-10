@@ -46,7 +46,7 @@ extern MagickExport MagickBooleanType
   IsPathAccessible(const char *);
 
 extern MagickExport size_t
-  MultilineCensus(const char *);
+  MultilineCensus(const char *) magick_attribute((__pure__));
 
 extern MagickExport unsigned char
   *Base64Decode(const char *, size_t *);

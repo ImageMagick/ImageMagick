@@ -29,7 +29,7 @@ extern "C" {
 #define MaxMultibyteCodes  6
 
 extern MagickPrivate MagickBooleanType
-  IsGlob(const char *);
+  IsGlob(const char *) magick_attribute((__pure__));
 
 typedef struct
 {

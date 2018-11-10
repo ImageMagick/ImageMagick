@@ -180,6 +180,9 @@ static void *AcquireCompressionMemory(void *context,const size_t items,
 
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
 static void *AcquireBZIPMemory(void *context,int items,int size)
+  magick_attribute((__malloc__));
+
+static void *AcquireBZIPMemory(void *context,int items,int size)
 {
   return(AcquireCompressionMemory(context,(size_t) items,(size_t) size));
 }
@@ -187,12 +190,18 @@ static void *AcquireBZIPMemory(void *context,int items,int size)
 
 #if defined(MAGICKCORE_LZMA_DELEGATE)
 static void *AcquireLZMAMemory(void *context,size_t items,size_t size)
+  magick_attribute((__malloc__));
+
+static void *AcquireLZMAMemory(void *context,size_t items,size_t size)
 {
   return(AcquireCompressionMemory(context,items,size));
 }
 #endif
 
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
+static voidpf AcquireZIPMemory(voidpf context,unsigned int items,
+  unsigned int size) magick_attribute((__malloc__));
+
 static voidpf AcquireZIPMemory(voidpf context,unsigned int items,
   unsigned int size)
 {

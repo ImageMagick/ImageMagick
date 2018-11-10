@@ -7625,6 +7625,9 @@ static void MSLComment(void *context,const xmlChar *value)
 }
 
 static void MSLWarning(void *context,const char *format,...)
+  magick_attribute((__format__ (__printf__,2,3)));
+
+static void MSLWarning(void *context,const char *format,...)
 {
   char
     *message,
@@ -7655,6 +7658,9 @@ static void MSLWarning(void *context,const char *format,...)
   message=DestroyString(message);
   va_end(operands);
 }
+
+static void MSLError(void *context,const char *format,...)
+  magick_attribute((__format__ (__printf__,2,3)));
 
 static void MSLError(void *context,const char *format,...)
 {

@@ -23,7 +23,8 @@ extern "C" {
 #endif
 
 extern WandExport void
-  CLIOption(MagickCLI *,const char *,...);
+  CLIOption(MagickCLI *,const char *,...)
+    magick_attribute((__format__ (__printf__,2,0)));
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
