@@ -173,6 +173,9 @@ static char *NextXPMLine(char *p)
   return(p);
 }
 
+static char *ParseXPMColor(char *,MagickBooleanType)
+  magick_attribute((__pure__));
+
 static char *ParseXPMColor(char *color,MagickBooleanType search_start)
 {
 #define NumberTargets  6

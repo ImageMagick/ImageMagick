@@ -230,8 +230,9 @@ extern MagickExport MagickBooleanType
     const PixelInterpolateMethod,const double,const double,PixelInfo *,
     ExceptionInfo *),
   IsFuzzyEquivalencePixel(const Image *,const Quantum *,const Image *,
-    const Quantum *),
-  IsFuzzyEquivalencePixelInfo(const PixelInfo *,const PixelInfo *),
+    const Quantum *) magick_attribute((__pure__)),
+  IsFuzzyEquivalencePixelInfo(const PixelInfo *,const PixelInfo *)
+    magick_attribute((__pure__)),
   SetPixelMetaChannels(Image *,const size_t,ExceptionInfo *);
 
 extern MagickExport MagickRealType

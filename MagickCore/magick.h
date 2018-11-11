@@ -104,10 +104,10 @@ extern MagickExport const char
   *GetMagickMimeType(const MagickInfo *);
 
 extern MagickExport DecodeImageHandler
-  *GetImageDecoder(const MagickInfo *);
+  *GetImageDecoder(const MagickInfo *) magick_attribute((__pure__));
 
 extern MagickExport EncodeImageHandler
-  *GetImageEncoder(const MagickInfo *);
+  *GetImageEncoder(const MagickInfo *) magick_attribute((__pure__));
 
 extern MagickExport int
   GetMagickPrecision(void),
@@ -115,17 +115,21 @@ extern MagickExport int
 
 extern MagickExport MagickBooleanType
   GetImageMagick(const unsigned char *,const size_t,char *),
-  GetMagickAdjoin(const MagickInfo *),
-  GetMagickBlobSupport(const MagickInfo *),
-  GetMagickDecoderSeekableStream(const MagickInfo *),
-  GetMagickDecoderThreadSupport(const MagickInfo *),
-  GetMagickEncoderSeekableStream(const MagickInfo *),
-  GetMagickEncoderThreadSupport(const MagickInfo *),
-  GetMagickEndianSupport(const MagickInfo *),
-  GetMagickRawSupport(const MagickInfo *),
-  GetMagickStealth(const MagickInfo *),
-  GetMagickUseExtension(const MagickInfo *),
-  IsMagickCoreInstantiated(void),
+  GetMagickAdjoin(const MagickInfo *) magick_attribute((__pure__)),
+  GetMagickBlobSupport(const MagickInfo *) magick_attribute((__pure__)),
+  GetMagickDecoderSeekableStream(const MagickInfo *)
+    magick_attribute((__pure__)),
+  GetMagickDecoderThreadSupport(const MagickInfo *)
+    magick_attribute((__pure__)),
+  GetMagickEncoderSeekableStream(const MagickInfo *)
+     magick_attribute((__pure__)),
+  GetMagickEncoderThreadSupport(const MagickInfo *)
+    magick_attribute((__pure__)),
+  GetMagickEndianSupport(const MagickInfo *) magick_attribute((__pure__)),
+  GetMagickRawSupport(const MagickInfo *) magick_attribute((__pure__)),
+  GetMagickStealth(const MagickInfo *) magick_attribute((__pure__)),
+  GetMagickUseExtension(const MagickInfo *) magick_attribute((__pure__)),
+  IsMagickCoreInstantiated(void) magick_attribute((__pure__)),
   RegisterMagickInfo(MagickInfo *),
   UnregisterMagickInfo(const char *);
 

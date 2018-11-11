@@ -55,13 +55,13 @@ extern MagickExport CacheView
   *DestroyCacheView(CacheView *);
 
 extern MagickExport ClassType
-  GetCacheViewStorageClass(const CacheView *);
+  GetCacheViewStorageClass(const CacheView *) magick_attribute((__pure__));
 
 extern MagickExport ColorspaceType
-  GetCacheViewColorspace(const CacheView *);
+  GetCacheViewColorspace(const CacheView *) magick_attribute((__pure__));
 
 extern MagickExport const Image
-  *GetCacheViewImage(const CacheView *);
+  *GetCacheViewImage(const CacheView *) magick_attribute((__pure__));
 
 extern MagickExport const Quantum
   *GetCacheViewVirtualPixels(const CacheView *,const ssize_t,const ssize_t,
@@ -69,7 +69,8 @@ extern MagickExport const Quantum
   *GetCacheViewVirtualPixelQueue(const CacheView *) magick_hot_spot;
 
 extern MagickExport const void
-  *GetCacheViewVirtualMetacontent(const CacheView *);
+  *GetCacheViewVirtualMetacontent(const CacheView *)
+    magick_attribute((__pure__));
 
 extern MagickExport MagickBooleanType
   GetOneCacheViewAuthenticPixel(const CacheView *,const ssize_t,const ssize_t,
@@ -87,7 +88,7 @@ extern MagickExport MagickBooleanType
     magick_hot_spot;
 
 extern MagickExport MagickSizeType
-  GetCacheViewExtent(const CacheView *);
+  GetCacheViewExtent(const CacheView *) magick_attribute((__pure__));
 
 extern MagickExport Quantum
   *GetCacheViewAuthenticPixelQueue(CacheView *) magick_hot_spot,

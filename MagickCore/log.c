@@ -220,13 +220,13 @@ static SemaphoreInfo
   Forward declarations.
 */
 static LogHandlerType
-  ParseLogHandlers(const char *);
+  ParseLogHandlers(const char *) magick_attribute((__pure__));
 
 static LogInfo
   *GetLogInfo(const char *,ExceptionInfo *);
 
 static MagickBooleanType
-  IsLogCacheInstantiated(ExceptionInfo *),
+  IsLogCacheInstantiated(ExceptionInfo *) magick_attribute((__pure__)),
   LoadLogCache(LinkedListInfo *,const char *,const char *,const size_t,
     ExceptionInfo *);
 

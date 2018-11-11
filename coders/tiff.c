@@ -635,6 +635,9 @@ static int TIFFCloseBlob(thandle_t image)
   return(0);
 }
 
+static void TIFFErrors(const char *,const char *,va_list)
+  magick_attribute((__format__ (__printf__,2,0)));
+
 static void TIFFErrors(const char *module,const char *format,va_list error)
 {
   char
@@ -979,6 +982,9 @@ static void TIFFUnmapBlob(thandle_t image,tdata_t base,toff_t size)
   (void) base;
   (void) size;
 }
+
+static void TIFFWarnings(const char *,const char *,va_list)
+  magick_attribute((__format__ (__printf__,2,0)));
 
 static void TIFFWarnings(const char *module,const char *format,va_list warning)
 {
