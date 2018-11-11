@@ -111,6 +111,10 @@ static const ResizeWeightingFunctionType supportedResizeWeighting[] =
 */
 static MagickBooleanType checkAccelerateCondition(const Image* image)
 {
+  /* only direct class images are supported */
+  if (image->storage_class != DirectClass)
+    return(MagickFalse);
+
   /* check if the image's colorspace is supported */
   if (image->colorspace != RGBColorspace &&
       image->colorspace != sRGBColorspace &&
