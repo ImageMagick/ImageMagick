@@ -1283,7 +1283,11 @@ static MagickBooleanType XShearImage(Image *image,const double degrees,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,XShearImageTag,progress++,height);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,XShearImageTag,progress,height);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -1498,7 +1502,11 @@ static MagickBooleanType YShearImage(Image *image,const double degrees,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,YShearImageTag,progress++,image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,YShearImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }

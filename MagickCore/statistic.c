@@ -597,7 +597,11 @@ MagickExport Image *EvaluateImages(const Image *images,
             MagickBooleanType
               proceed;
 
-            proceed=SetImageProgress(images,EvaluateImageTag,progress++,
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+            #pragma omp atomic
+#endif
+            progress++;
+            proceed=SetImageProgress(images,EvaluateImageTag,progress,
               image->rows);
             if (proceed == MagickFalse)
               status=MagickFalse;
@@ -746,7 +750,11 @@ MagickExport Image *EvaluateImages(const Image *images,
             MagickBooleanType
               proceed;
 
-            proceed=SetImageProgress(images,EvaluateImageTag,progress++,
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+            #pragma omp atomic
+#endif
+            progress++;
+            proceed=SetImageProgress(images,EvaluateImageTag,progress,
               image->rows);
             if (proceed == MagickFalse)
               status=MagickFalse;
@@ -852,7 +860,11 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,EvaluateImageTag,progress++,image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,EvaluateImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -1073,7 +1085,11 @@ MagickExport MagickBooleanType FunctionImage(Image *image,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,FunctionImageTag,progress++,image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,FunctionImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -2312,7 +2328,11 @@ MagickExport Image *PolynomialImage(const Image *images,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(images,PolynomialImageTag,progress++,
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(images,PolynomialImageTag,progress,
           image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -3015,8 +3035,11 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,StatisticImageTag,progress++,
-          image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,StatisticImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }

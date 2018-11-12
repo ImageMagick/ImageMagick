@@ -2450,8 +2450,11 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,PosterizeImageTag,progress++,
-          image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,PosterizeImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }

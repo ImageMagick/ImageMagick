@@ -390,7 +390,11 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,AdaptiveBlurImageTag,progress++,
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,AdaptiveBlurImageTag,progress,
           image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -707,7 +711,11 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,AdaptiveSharpenImageTag,progress++,
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,AdaptiveSharpenImageTag,progress,
           image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -1617,7 +1625,11 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,KuwaharaImageTag,progress++,image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,KuwaharaImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -2196,7 +2208,11 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,BlurImageTag,progress++,image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,BlurImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -3004,7 +3020,11 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,BlurImageTag,progress++,image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,BlurImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -3336,7 +3356,11 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,SelectiveBlurImageTag,progress++,
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,SelectiveBlurImageTag,progress,
           image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -3573,7 +3597,11 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,ShadeImageTag,progress++,image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,ShadeImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -3833,7 +3861,11 @@ MagickExport Image *SpreadImage(const Image *image,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,SpreadImageTag,progress++,image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,SpreadImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -4002,7 +4034,11 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,SharpenImageTag,progress++,image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,SharpenImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }

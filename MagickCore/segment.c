@@ -405,8 +405,11 @@ static MagickBooleanType Classify(Image *image,short **extrema,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,SegmentImageTag,progress++,2*
-          image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,SegmentImageTag,progress,2*image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -643,8 +646,11 @@ static MagickBooleanType Classify(Image *image,short **extrema,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,SegmentImageTag,progress++,2*
-          image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,SegmentImageTag,progress,2*image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }

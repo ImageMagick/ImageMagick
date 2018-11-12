@@ -1385,7 +1385,11 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
       break;
     if (number_images != 1)
       {
-        proceed=SetImageProgress(p,WriteImageTag,progress++,number_images);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(p,WriteImageTag,progress,number_images);
         if (proceed == MagickFalse)
           break;
       }

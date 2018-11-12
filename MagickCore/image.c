@@ -1138,7 +1138,11 @@ MagickExport MagickBooleanType CopyImagePixels(Image *image,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,CopyImageTag,progress++,image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,CopyImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }

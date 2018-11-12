@@ -454,7 +454,11 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,FrameImageTag,progress++,image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,FrameImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -720,7 +724,11 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,RaiseImageTag,progress++,image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,RaiseImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -781,7 +789,11 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,RaiseImageTag,progress++,image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,RaiseImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -853,7 +865,11 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,RaiseImageTag,progress++,image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,RaiseImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }

@@ -1072,7 +1072,11 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,SimilarityImageTag,progress++,rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,SimilarityImageTag,progress,rows);
         if (proceed == MagickFalse)
           {
             status=MagickFalse;
@@ -2277,8 +2281,11 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,SimilarityImageTag,progress++,
-          image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,SimilarityImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }

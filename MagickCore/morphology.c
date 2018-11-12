@@ -2773,8 +2773,11 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             MagickBooleanType
               proceed;
 
-            proceed=SetImageProgress(image,MorphologyTag,progress++,
-              image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+            #pragma omp atomic
+#endif
+            progress++;
+            proceed=SetImageProgress(image,MorphologyTag,progress,image->rows);
             if (proceed == MagickFalse)
               status=MagickFalse;
           }
@@ -3199,7 +3202,11 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,MorphologyTag,progress++,image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,MorphologyTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -3430,7 +3437,11 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,MorphologyTag,progress++,2*image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,MorphologyTag,progress,2*image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -3590,7 +3601,11 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,MorphologyTag,progress++,2*image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,MorphologyTag,progress,2*image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }

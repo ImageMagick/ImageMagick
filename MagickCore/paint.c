@@ -846,7 +846,11 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(linear_image,OilPaintImageTag,progress++,
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(linear_image,OilPaintImageTag,progress,
           linear_image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -997,7 +1001,11 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,OpaquePaintImageTag,progress++,
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,OpaquePaintImageTag,progress,
           image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -1121,7 +1129,11 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,TransparentPaintImageTag,progress++,
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,TransparentPaintImageTag,progress,
           image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -1252,7 +1264,11 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,TransparentPaintImageTag,progress++,
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,TransparentPaintImageTag,progress,
           image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
