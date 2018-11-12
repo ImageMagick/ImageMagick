@@ -779,7 +779,7 @@ static char *GetMagickPropertyLetter(ImageInfo *image_info,Image *image,
     {
       WarnNoImageReturn("\"%%%c\"",letter);
       (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
-        (100-(image->quality == 0 ? 92 : image->quality))/2);
+        (100-(image->quality == 0 ? 42 : image->quality))/2);
       break;
     }
     case 'Q': /* image compression quality */
