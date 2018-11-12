@@ -1188,6 +1188,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     precision=ReadBlobMSBLong(image);
   else
     precision=150;
+  if (doc_info.version == 4 && precision == 0)
+    precision = 150;
   if (precision != 150)
     ThrowReaderException(CoderError,"ColorPrecisionNotSupported");
   /*
