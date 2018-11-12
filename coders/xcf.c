@@ -407,12 +407,12 @@ static char *ReadBlobStringWithLongSize(Image *image,char *string,size_t max,
   return(string);
 }
 
-static MagickOffsetType ReadBlobPointer(Image *image, XCFDocInfo *inDocInfo)
+static MagickOffsetType GetXCFOffset(Image *image, XCFDocInfo *inDocInfo)
 {
   if (inDocInfo->version >= 4)
-    return ReadBlobMSBLongLong(image);
+    return (MagickOffsetType)ReadBlobMSBLongLong(image);
   else
-    return ReadBlobMSBLong(image);
+    return (MagickOffsetType)ReadBlobMSBLong(image);
 }
 
 static MagickBooleanType load_tile(Image *image,Image *tile_image,
@@ -714,7 +714,7 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
     Read in the first tile offset.  If it is '0', then this tile level is empty
     and we can simply return.
   */
-  offset=ReadBlobPointer(image,inDocInfo);
+  offset=GetXCFOffset(image,inDocInfo);
   if (offset == 0)
     return(MagickTrue);
   /*
@@ -734,7 +734,7 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
     saved_pos=TellBlob(image);
     /* read in the offset of the next tile so we can calculate the amount
        of data needed for this tile*/
-    offset2=ReadBlobPointer(image,inDocInfo);
+    offset2=GetXCFOffset(image,inDocInfo);
     if ((MagickSizeType) offset2 >= inDocInfo->file_size)
       ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
         image->filename);
@@ -807,7 +807,7 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
        */
       offset=SeekBlob(image, saved_pos, SEEK_SET);
       /* read in the offset of the next tile */
-      offset=ReadBlobPointer(image,inDocInfo);
+      offset=GetXCFOffset(image,inDocInfo);
     }
   if (offset != 0)
     ThrowBinaryException(CorruptImageError,"CorruptImage",image->filename)
@@ -830,7 +830,7 @@ static MagickBooleanType load_hierarchy(Image *image,XCFDocInfo *inDocInfo,
    *  calculated when the TileManager was created is the same
    *  as the number of levels found in the file.
    */
-  offset=ReadBlobPointer(image,inDocInfo);  /* top level */
+  offset=GetXCFOffset(image,inDocInfo);  /* top level */
   if ((MagickSizeType) offset >= GetBlobSize(image))
     ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
       image->filename);
@@ -886,7 +886,7 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
   unsigned int
     foundPropEnd = 0;
 
-  size_t
+  MagickOffsetType
     hierarchy_offset,
     layer_mask_offset;
 
@@ -1048,12 +1048,12 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
     }
 
   /* read the hierarchy and layer mask offsets */
-  hierarchy_offset = ReadBlobPointer(image,inDocInfo);
-  layer_mask_offset = ReadBlobPointer(image,inDocInfo);
+  hierarchy_offset = GetXCFOffset(image,inDocInfo);
+  layer_mask_offset = GetXCFOffset(image,inDocInfo);
 
   /* read in the hierarchy */
-  offset=SeekBlob(image, (MagickOffsetType) hierarchy_offset, SEEK_SET);
-  if (offset != (MagickOffsetType) hierarchy_offset)
+  offset=SeekBlob(image, hierarchy_offset, SEEK_SET);
+  if (offset != hierarchy_offset)
     (void) ThrowMagickException(exception,GetMagickModule(),
       CorruptImageError,"InvalidImageHeader","`%s'",image->filename);
   if (load_hierarchy (image, inDocInfo, outLayer, exception) == 0)
@@ -1410,7 +1410,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       do
       {
-        MagickOffsetType offset = ReadBlobPointer(image,&doc_info);
+        MagickOffsetType offset = GetXCFOffset(image,&doc_info);
         if (offset == 0)
           foundAllLayers=MagickTrue;
         else
@@ -1445,7 +1445,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         saved_pos;
 
       /* read in the offset of the next layer */
-      offset=ReadBlobPointer(image,&doc_info);
+      offset=GetXCFOffset(image,&doc_info);
       /* if the offset is 0 then we are at the end
       *  of the layer list.
       */
