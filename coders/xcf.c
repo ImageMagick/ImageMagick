@@ -1414,7 +1414,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       do
       {
-        MagickOffsetType offset = GetXCFOffset(image,&doc_info);
+        offset=GetXCFOffset(image,&doc_info);
         if (offset == 0)
           foundAllLayers=MagickTrue;
         else
@@ -1445,7 +1445,6 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         layer_ok;
 
       MagickOffsetType
-        offset,
         saved_pos;
 
       /* read in the offset of the next layer */
