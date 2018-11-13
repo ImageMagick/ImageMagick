@@ -60,6 +60,7 @@
 #include "MagickCore/resource_.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/module.h"
 
 /*
@@ -410,9 +411,9 @@ static char *ReadBlobStringWithLongSize(Image *image,char *string,size_t max,
 static MagickOffsetType GetXCFOffset(Image *image, XCFDocInfo *inDocInfo)
 {
   if (inDocInfo->version >= 4)
-    return (MagickOffsetType)ReadBlobMSBLongLong(image);
+    return (MagickOffsetType) ReadBlobMSBLongLong(image);
   else
-    return (MagickOffsetType)ReadBlobMSBLong(image);
+    return (MagickOffsetType) ReadBlobMSBLong(image);
 }
 
 static MagickBooleanType load_tile(Image *image,Image *tile_image,
@@ -1124,8 +1125,7 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
 static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
-    magick[10],
-    version[4];
+    magick[14];
 
   Image
     *image;
@@ -1175,21 +1175,21 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (LocaleNCompare((char *) magick,"gimp xcf",8) != 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   (void) memset(&doc_info,0,sizeof(XCFDocInfo));
-  count=ReadBlob(image,sizeof(version),(unsigned char *) version);
-  if (count != sizeof(version))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  doc_info.version=strtoul(version, NULL, 10);
+  doc_info.version=StringToUnsignedLong(magick+10);
   doc_info.width=ReadBlobMSBLong(image);
   doc_info.height=ReadBlobMSBLong(image);
   if ((doc_info.width > 262144) || (doc_info.height > 262144))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   doc_info.image_type=ReadBlobMSBLong(image);
-  if (doc_info.version >= 4)
+  if (doc_info.version >= 4) {
     precision=ReadBlobMSBLong(image);
-  else
+    if (precision == 0) {
+      precision = 150;
+    }
+  }
+  else {
     precision=150;
-  if (doc_info.version == 4 && precision == 0)
-    precision = 150;
+  }
   if (precision != 150)
     ThrowReaderException(CoderError,"ColorPrecisionNotSupported");
   /*
