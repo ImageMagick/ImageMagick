@@ -1181,17 +1181,15 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((doc_info.width > 262144) || (doc_info.height > 262144))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   doc_info.image_type=ReadBlobMSBLong(image);
-  if (doc_info.version >= 4) {
-    precision=ReadBlobMSBLong(image);
-    if (precision == 0) {
-      precision = 150;
+  precision=150;
+  if (doc_info.version >= 4)
+    {
+      precision=ReadBlobMSBLong(image);
+      if (precision == 0)
+        precision=150;
+      if (precision != 150)
+        ThrowReaderException(CoderError,"DataStorageTypeIsNotSupported");
     }
-  }
-  else {
-    precision=150;
-  }
-  if (precision != 150)
-    ThrowReaderException(CoderError,"ColorPrecisionNotSupported");
   /*
     Initialize image attributes.
   */
