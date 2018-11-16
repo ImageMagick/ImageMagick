@@ -11377,9 +11377,19 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
        ping_have_non_bw == MagickFalse)
     {
       /* Palette, Bilevel, or Opaque Monochrome */
+      QuantumType
+        quantum_type;
+
       register const Quantum
         *p;
 
+      quantum_type=RedQuantum;
+      if (mng_info->IsPalette)
+        {
+          quantum_type=GrayQuantum;
+          if (mng_info->write_png_colortype-1 == PNG_COLOR_TYPE_PALETTE)
+            quantum_type=IndexQuantum;
+        }
       SetQuantumDepth(image,quantum_info,8);
       for (pass=0; pass < num_passes; pass++)
       {
@@ -11397,27 +11407,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           if (p == (const Quantum *) NULL)
             break;
 
-          if (mng_info->IsPalette)
-            {
-              (void) ExportQuantumPixels(image,(CacheView *) NULL,
-                quantum_info,GrayQuantum,ping_pixels,exception);
-              if (mng_info->write_png_colortype-1 == PNG_COLOR_TYPE_PALETTE &&
-                  mng_info->write_png_depth &&
-                  mng_info->write_png_depth != old_bit_depth)
-                {
-                  /* Undo pixel scaling */
-                  for (i=0; i < (ssize_t) image->columns; i++)
-                     *(ping_pixels+i)=(unsigned char) (*(ping_pixels+i)
-                     >> (8-old_bit_depth));
-                }
-            }
-
-          else
-            {
-              (void) ExportQuantumPixels(image,(CacheView *) NULL,
-                quantum_info,RedQuantum,ping_pixels,exception);
-            }
-
+          (void) ExportQuantumPixels(image,(CacheView *) NULL,
+            quantum_info,quantum_type,ping_pixels,exception);
           if (mng_info->write_png_colortype-1 != PNG_COLOR_TYPE_PALETTE)
             for (i=0; i < (ssize_t) image->columns; i++)
                *(ping_pixels+i)=(unsigned char) ((*(ping_pixels+i) > 127) ?
