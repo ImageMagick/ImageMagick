@@ -1585,7 +1585,7 @@ static Image *DrawClippingMask(Image *image,const DrawInfo *draw_info,
   clone_info->stroke_width=0.0;
   clone_info->alpha=OpaqueAlpha;
   clone_info->clip_path=MagickTrue;
-  status=RenderMVGContent(clip_mask,clone_info,1,exception);
+  status=RenderMVGContent(clip_mask,clone_info,0,exception);
   clone_info=DestroyDrawInfo(clone_info);
   separate_mask=SeparateImage(clip_mask,AlphaChannel,exception);
   if (separate_mask != (Image *) NULL)
@@ -1675,7 +1675,7 @@ static Image *DrawCompositeMask(Image *image,const DrawInfo *draw_info,
     exception);
   clone_info->stroke_width=0.0;
   clone_info->alpha=OpaqueAlpha;
-  status=RenderMVGContent(composite_mask,clone_info,1,exception);
+  status=RenderMVGContent(composite_mask,clone_info,0,exception);
   clone_info=DestroyDrawInfo(clone_info);
   separate_mask=SeparateImage(composite_mask,AlphaChannel,exception);
   if (separate_mask != (Image *) NULL)
@@ -2276,6 +2276,7 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
 static SplayTreeInfo *GetMVGMacros(const char *primitive)
 {
   char
+   *macro,
     *token;
 
   const char
@@ -2294,6 +2295,7 @@ static SplayTreeInfo *GetMVGMacros(const char *primitive)
     return((SplayTreeInfo *) NULL);
   macros=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
     RelinquishMagickMemory);
+  macro=AcquireString(primitive);
   token=AcquireString(primitive);
   extent=strlen(token)+MagickPathExtent;
   for (q=primitive; *q != '\0'; )
@@ -2317,7 +2319,7 @@ static SplayTreeInfo *GetMVGMacros(const char *primitive)
               *p;
 
             ssize_t
-             n;
+              n;
 
             /*
               Named macro (e.g. push graphic-context "wheel").
@@ -2341,18 +2343,13 @@ static SplayTreeInfo *GetMVGMacros(const char *primitive)
                 n++;
               if ((n == 0) && (end > start))
                 {
-                  char
-                    *macro;
-
                   /*
                     Extract macro.
                   */
                   GetNextToken(p,&p,extent,token);
-                  macro=AcquireString(start);
-                  macro[end-start]='\0';
+                  (void) CopyMagickString(macro,start,end-start);
                   (void) AddValueToSplayTree(macros,ConstantString(name),
                     ConstantString(macro));
-                  macro=DestroyString(macro);
                   break;
                 }
             }
@@ -2360,6 +2357,7 @@ static SplayTreeInfo *GetMVGMacros(const char *primitive)
       }
   }
   token=DestroyString(token);
+  macro=DestroyString(macro);
   return(macros);
 }
 
@@ -4358,7 +4356,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
 MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
   ExceptionInfo *exception)
 {
-  return(RenderMVGContent(image,draw_info,1,exception));
+  return(RenderMVGContent(image,draw_info,0,exception));
 }
 
 /*
@@ -4448,7 +4446,7 @@ MagickExport MagickBooleanType DrawPatternPath(Image *image,
     clone_info->gradient.type=(GradientType) ParseCommandOption(
       MagickGradientOptions,MagickFalse,type);
   (void) CloneString(&clone_info->primitive,path);
-  status=RenderMVGContent(*pattern,clone_info,1,exception);
+  status=RenderMVGContent(*pattern,clone_info,0,exception);
   clone_info=DestroyDrawInfo(clone_info);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"end pattern-path");
