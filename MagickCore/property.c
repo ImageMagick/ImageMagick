@@ -1100,7 +1100,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
       {  0x8825, "exif:GPSInfo" }, /* specs as "GPSInfo IFD Pointer"? */
       {  0x8827, "exif:PhotographicSensitivity" },
       {  0x8828, "exif:OECF" },
-      {  0x8829, "exif:Interlace" },      
+      {  0x8829, "exif:Interlace" },
       {  0x882a, "exif:TimeZoneOffset" },
       {  0x882b, "exif:SelfTimerMode" },
       {  0x8830, "exif:SensitivityType" },
@@ -1133,7 +1133,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
       {  0x9214, "exif:SubjectArea" },
       {  0x9290, "exif:SubSecTime" },
       {  0x9291, "exif:SubSecTimeOriginal" },
-      {  0x9292, "exif:SubSecTimeDigitized" },    
+      {  0x9292, "exif:SubSecTimeDigitized" },
       {  0x9211, "exif:ImageNumber" },
       {  0x9212, "exif:SecurityClassification" },
       {  0x9213, "exif:ImageHistory" },
@@ -1144,18 +1144,18 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
       {  0x9286, "exif:UserComment" },
       {  0x9290, "exif:SubSecTime" },
       {  0x9291, "exif:SubSecTimeOriginal" },
-      {  0x9292, "exif:SubSecTimeDigitized" },    
+      {  0x9292, "exif:SubSecTimeDigitized" },
       {  0x9400, "exif:Temperature" },
       {  0x9401, "exif:Humidity" },
       {  0x9402, "exif:Pressure" },
       {  0x9403, "exif:WaterDepth" },
       {  0x9404, "exif:Acceleration" },
-      {  0x9405, "exif:CameraElevationAngle" },    
+      {  0x9405, "exif:CameraElevationAngle" },
       {  0x9C9b, "exif:WinXP-Title" },
       {  0x9C9c, "exif:WinXP-Comments" },
       {  0x9C9d, "exif:WinXP-Author" },
       {  0x9C9e, "exif:WinXP-Keywords" },
-      {  0x9C9f, "exif:WinXP-Subject" },      
+      {  0x9C9f, "exif:WinXP-Subject" },
       {  0xa000, "exif:FlashPixVersion" },
       {  0xa001, "exif:ColorSpace" },
       {  0xa002, "exif:PixelXDimension" },
@@ -3767,8 +3767,8 @@ RestoreMSCWarning
             FX - value calculator.
           */
           fx_info=AcquireFxInfo(property_image,pattern+3,exception);
-          status=FxEvaluateChannelExpression(fx_info,IntensityPixelChannel,0,0,
-            &value,exception);
+          status=FxEvaluateChannelExpression(fx_info,DefaultChannels,0,0,&value,
+            exception);
           fx_info=DestroyFxInfo(fx_info);
           if (status != MagickFalse)
             {
