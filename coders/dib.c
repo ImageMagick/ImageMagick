@@ -665,6 +665,8 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     dib_info.bits_per_pixel<<=1;
   bytes_per_line=4*((image->columns*dib_info.bits_per_pixel+31)/32);
   length=bytes_per_line*image->rows;
+  if ((MagickSizeType) length > (256*GetBlobSize(image)))
+    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   pixel_info=AcquireVirtualMemory(image->rows,MagickMax(bytes_per_line,
     image->columns+256UL)*sizeof(*pixels));
   if (pixel_info == (MemoryInfo *) NULL)
