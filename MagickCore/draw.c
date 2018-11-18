@@ -2276,7 +2276,7 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
 static SplayTreeInfo *GetMVGMacros(const char *primitive)
 {
   char
-   *macro,
+    *macro,
     *token;
 
   const char
