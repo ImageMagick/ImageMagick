@@ -367,8 +367,8 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         png[13]=(unsigned char) (icon_info.planes >> 8);
         png[14]=(unsigned char) icon_info.bits_per_pixel;
         png[15]=(unsigned char) (icon_info.bits_per_pixel >> 8);
-        count=ReadBlob(image,length,png+16);
-        if (count != (ssize_t) length)
+        count=ReadBlob(image,length-16,png+16);
+        if (count != (ssize_t) (length-16))
           {
             png=(unsigned char *) RelinquishMagickMemory(png);
             ThrowReaderException(CorruptImageError,
