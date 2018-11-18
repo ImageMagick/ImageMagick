@@ -82,10 +82,10 @@ extern MagickExport const char
   *GetMagickFeatures(void) magick_attribute((__const__)),
   *GetMagickLicense(void) magick_attribute((__const__)),
   *GetMagickPackageName(void) magick_attribute((__const__)),
-  *GetMagickQuantumDepth(size_t *) magick_attribute((__const__)),
-  *GetMagickQuantumRange(size_t *) magick_attribute((__const__)),
+  *GetMagickQuantumDepth(size_t *),
+  *GetMagickQuantumRange(size_t *),
   *GetMagickReleaseDate(void) magick_attribute((__const__)),
-  *GetMagickVersion(size_t *) magick_attribute((__const__));
+  *GetMagickVersion(size_t *);
 
 extern MagickExport void
   ListMagickVersion(FILE *);
