@@ -33,7 +33,7 @@ extern MagickExport Image
   *GetNextImageInList(const Image *) magick_attribute((__pure__)),
   *GetPreviousImageInList(const Image *) magick_attribute((__pure__)),
   **ImageListToArray(const Image *,ExceptionInfo *),
-  *NewImageList(void),
+  *NewImageList(void) magick_attribute((__const__)),
   *RemoveImageFromList(Image **),
   *RemoveLastImageFromList(Image **),
   *RemoveFirstImageFromList(Image **),

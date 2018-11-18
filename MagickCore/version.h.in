@@ -77,15 +77,15 @@ extern MagickExport char
   *GetMagickHomeURL(void);
 
 extern MagickExport const char
-  *GetMagickCopyright(void),
-  *GetMagickDelegates(void),
-  *GetMagickFeatures(void),
-  *GetMagickLicense(void),
-  *GetMagickPackageName(void),
-  *GetMagickQuantumDepth(size_t *),
-  *GetMagickQuantumRange(size_t *),
-  *GetMagickReleaseDate(void),
-  *GetMagickVersion(size_t *);
+  *GetMagickCopyright(void) magick_attribute((__const__)),
+  *GetMagickDelegates(void) magick_attribute((__const__)),
+  *GetMagickFeatures(void) magick_attribute((__const__)),
+  *GetMagickLicense(void) magick_attribute((__const__)),
+  *GetMagickPackageName(void) magick_attribute((__const__)),
+  *GetMagickQuantumDepth(size_t *) magick_attribute((__const__)),
+  *GetMagickQuantumRange(size_t *) magick_attribute((__const__)),
+  *GetMagickReleaseDate(void) magick_attribute((__const__)),
+  *GetMagickVersion(size_t *) magick_attribute((__const__));
 
 extern MagickExport void
   ListMagickVersion(FILE *);
