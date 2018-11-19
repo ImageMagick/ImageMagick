@@ -1059,6 +1059,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     value[MagickPathExtent];
 
   const char
+    *dct_method,
     *option;
 
   ErrorManager
@@ -1262,32 +1263,32 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   if (option != (const char *) NULL)
     jpeg_info.do_block_smoothing=IsStringTrue(option) != MagickFalse ? TRUE :
       FALSE;
-  option=GetImageOption(image_info,"jpeg:dct-method");
-  if (option != (const char *) NULL)
-    switch (*option)
+  dct_method=GetImageOption(image_info,"jpeg:dct-method");
+  if (dct_method != (const char *) NULL)
+    switch (*dct_method)
     {
       case 'D':
       case 'd':
       {
-        if (LocaleCompare(option,"default") == 0)
+        if (LocaleCompare(dct_method,"default") == 0)
           jpeg_info.dct_method=JDCT_DEFAULT;
         break;
       }
       case 'F':
       case 'f':
       {
-        if (LocaleCompare(option,"fastest") == 0)
+        if (LocaleCompare(dct_method,"fastest") == 0)
           jpeg_info.dct_method=JDCT_FASTEST;
-        if (LocaleCompare(option,"float") == 0)
+        if (LocaleCompare(dct_method,"float") == 0)
           jpeg_info.dct_method=JDCT_FLOAT;
         break;
       }
       case 'I':
       case 'i':
       {
-        if (LocaleCompare(option,"ifast") == 0)
+        if (LocaleCompare(dct_method,"ifast") == 0)
           jpeg_info.dct_method=JDCT_IFAST;
-        if (LocaleCompare(option,"islow") == 0)
+        if (LocaleCompare(dct_method,"islow") == 0)
           jpeg_info.dct_method=JDCT_ISLOW;
         break;
       }
@@ -1376,6 +1377,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
+  if ((dct_method == (const char *) NULL) && (image->quality > 0) &&
+      (image->quality <= 90))
+    jpeg_info.dct_method=JDCT_IFAST;
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     {
@@ -2196,6 +2200,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
   const char
+    *dct_method,
     *option,
     *sampling_factor,
     *value;
@@ -2351,33 +2356,32 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       if (image->units == PixelsPerCentimeterResolution)
         jpeg_info.density_unit=(UINT8) 2;
     }
-  jpeg_info.dct_method=JDCT_FLOAT;
-  option=GetImageOption(image_info,"jpeg:dct-method");
-  if (option != (const char *) NULL)
-    switch (*option)
+  dct_method=GetImageOption(image_info,"jpeg:dct-method");
+  if (dct_method != (const char *) NULL)
+    switch (*dct_method)
     {
       case 'D':
       case 'd':
       {
-        if (LocaleCompare(option,"default") == 0)
+        if (LocaleCompare(dct_method,"default") == 0)
           jpeg_info.dct_method=JDCT_DEFAULT;
         break;
       }
       case 'F':
       case 'f':
       {
-        if (LocaleCompare(option,"fastest") == 0)
+        if (LocaleCompare(dct_method,"fastest") == 0)
           jpeg_info.dct_method=JDCT_FASTEST;
-        if (LocaleCompare(option,"float") == 0)
+        if (LocaleCompare(dct_method,"float") == 0)
           jpeg_info.dct_method=JDCT_FLOAT;
         break;
       }
       case 'I':
       case 'i':
       {
-        if (LocaleCompare(option,"ifast") == 0)
+        if (LocaleCompare(dct_method,"ifast") == 0)
           jpeg_info.dct_method=JDCT_IFAST;
-        if (LocaleCompare(option,"islow") == 0)
+        if (LocaleCompare(dct_method,"islow") == 0)
           jpeg_info.dct_method=JDCT_ISLOW;
         break;
       }
@@ -2519,6 +2523,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       extent_info=DestroyImageInfo(extent_info);
     }
   jpeg_set_quality(&jpeg_info,quality,TRUE);
+  if ((dct_method == (const char *) NULL) && (quality <= 90))
+    jpeg_info.dct_method=JDCT_IFAST;
 #if (JPEG_LIB_VERSION >= 70)
   option=GetImageOption(image_info,"quality");
   if (option != (const char *) NULL)
