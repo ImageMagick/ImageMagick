@@ -647,10 +647,11 @@ static void TIFFErrors(const char *module,const char *format,va_list error)
     *exception;
 
 #if defined(MAGICKCORE_HAVE_VSNPRINTF)
-  (void) vsnprintf(message,MagickPathExtent,format,error);
+  (void) vsnprintf(message,MagickPathExtent-2,format,error);
 #else
   (void) vsprintf(message,format,error);
 #endif
+  message[MaxTextExtent-2]='\0';
   (void) ConcatenateMagickString(message,".",MagickPathExtent);
   exception=(ExceptionInfo *) GetMagickThreadValue(tiff_exception);
   if (exception != (ExceptionInfo *) NULL)
@@ -995,10 +996,11 @@ static void TIFFWarnings(const char *module,const char *format,va_list warning)
     *exception;
 
 #if defined(MAGICKCORE_HAVE_VSNPRINTF)
-  (void) vsnprintf(message,MagickPathExtent,format,warning);
+  (void) vsnprintf(message,MagickPathExtent-2,format,warning);
 #else
   (void) vsprintf(message,format,warning);
 #endif
+  message[MaxTextExtent-2]='\0';
   (void) ConcatenateMagickString(message,".",MagickPathExtent);
   exception=(ExceptionInfo *) GetMagickThreadValue(tiff_exception);
   if (exception != (ExceptionInfo *) NULL)
