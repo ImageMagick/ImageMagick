@@ -1,3 +1,7 @@
+2018-11-21  7.0.8-15 Cristy  <quetzlzacatenango@image...>
+  * added support for the -clahe option: contrast limited adaptive histogram
+    equalization
+
 2018-11-13  7.0.8-15 Dirk Lemstra <dirk@lem.....org>
   * Added support for GIMP 2.10 files (reference
     https://github.com/ImageMagick/ImageMagick/pull/1381).

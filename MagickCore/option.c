@@ -612,6 +612,8 @@ static const OptionInfo
     { "-charcoal", 1L, SimpleOperatorFlag, MagickFalse },
     { "+chop", 1L, DeprecateOptionFlag, MagickTrue },
     { "-chop", 1L, SimpleOperatorFlag, MagickFalse },
+    { "+clahe", 1L, DeprecateOptionFlag, MagickTrue },
+    { "-clahe", 1L, SimpleOperatorFlag, MagickFalse },
     { "+clamp", 0L, DeprecateOptionFlag, MagickTrue },
     { "-clamp", 0L, SimpleOperatorFlag, MagickFalse },
     { "-clip", 0L, SimpleOperatorFlag, MagickFalse },

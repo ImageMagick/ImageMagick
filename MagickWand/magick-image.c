@@ -1254,6 +1254,60 @@ WandExport MagickBooleanType MagickChopImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k C L A H E I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickCLAHEImage() selects an individual threshold for each pixel
+%  based on the range of intensity values in its local neighborhood.  This
+%  allows for thresholding of an image whose global intensity histogram
+%  doesn't contain distinctive peaks.
+%
+%  The format of the CLAHEImage method is:
+%
+%      MagickBooleanType MagickCLAHEImage(MagickWand *wand,const size_t width,
+%        const size_t height,const double bias,const double sans)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o width: the width of the local neighborhood.
+%
+%    o height: the height of the local neighborhood.
+%
+%    o offset: the mean bias.
+%
+%    o sans: not used.
+%
+*/
+WandExport MagickBooleanType MagickCLAHEImage(MagickWand *wand,
+  const size_t width,const size_t height,const double bias,const double sans)
+{
+  Image
+    *threshold_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  threshold_image=CLAHEImage(wand->images,width,height,bias,sans,
+    wand->exception);
+  if (threshold_image == (Image *) NULL)
+    return(MagickFalse);
+  ReplaceImageInList(&wand->images,threshold_image);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k C l a m p I m a g e                                           %
 %                                                                             %
 %                                                                             %

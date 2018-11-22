@@ -1080,6 +1080,18 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             mogrify_image=ChopImage(*image,&geometry,exception);
             break;
           }
+        if (LocaleCompare("clahe",option+1) == 0)
+          {
+            /*
+              Contrast limited adaptive histogram equalization.
+            */
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            flags=ParseGeometry(argv[i+1],&geometry_info);
+            mogrify_image=CLAHEImage(*image,(size_t) geometry_info.rho,
+              (size_t) geometry_info.sigma,(double) geometry_info.xi,
+              geometry_info.psi,exception);
+            break;
+          }
         if (LocaleCompare("clip",option+1) == 0)
           {
             (void) SyncImageSettings(mogrify_info,*image,exception);
@@ -3473,6 +3485,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-channel mask        set the image channel mask",
       "-charcoal geometry   simulate a charcoal drawing",
       "-chop geometry       remove pixels from the image interior",
+      "-clahe geometry      contrast limited adaptive histogram equalization",
       "-clamp               keep pixel values in range (0-QuantumRange)",
       "-clip                clip along the first path from the 8BIM profile",
       "-clip-mask filename  associate a clip mask with the image",
@@ -4323,6 +4336,17 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         if (LocaleCompare("chop",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("clahe",option+1) == 0)
           {
             if (*option == '+')
               break;

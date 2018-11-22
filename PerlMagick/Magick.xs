@@ -412,7 +412,8 @@ static struct
       {"background", StringReference} } },
     { "Difference", { {"image", ImageReference}, {"fuzz", StringReference} } },
     { "AdaptiveThreshold", { {"geometry", StringReference},
-      {"width", IntegerReference}, {"height", IntegerReference} } },
+      {"width", IntegerReference}, {"height", IntegerReference},
+      {"bias", RealReference} } },
     { "Resample", { {"density", StringReference}, {"x", RealReference},
       {"y", RealReference}, {"filter", MagickFilterOptions},
       {"support", RealReference } } },
@@ -570,6 +571,9 @@ static struct
       {"low-black", RealReference}, {"low-white", RealReference},
       {"high-white", RealReference}, {"high-black", RealReference},
       {"channel", MagickChannelOptions} } },
+    { "CLAHE", { {"geometry", StringReference},
+      {"width", IntegerReference}, {"height", IntegerReference},
+      {"bias", RealReference}, {"sans", RealReference} } },
   };
 
 static SplayTreeInfo
@@ -7640,6 +7644,8 @@ Mogrify(ref,...)
     AutoThresholdImage = 294
     RangeThreshold     = 295
     RangeThresholdImage= 296
+    CLAHE              = 297
+    CLAHEImage         = 298
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -11469,6 +11475,28 @@ Mogrify(ref,...)
             geometry_info.sigma,geometry_info.xi,geometry_info.psi,exception);
           if (image != (Image *) NULL)
             (void) SetImageChannelMask(image,channel_mask);
+          break;
+        }
+        case 149:  /* CLAHE */
+        {
+          if (attribute_flag[0] != 0)
+            {
+              flags=ParseGeometry(argument_list[0].string_reference,
+                &geometry_info);
+              if ((flags & PercentValue) != 0)
+                geometry_info.xi=QuantumRange*geometry_info.xi/100.0;
+            }
+          if (attribute_flag[1] != 0)
+            geometry_info.rho=argument_list[1].integer_reference;
+          if (attribute_flag[2] != 0)
+            geometry_info.sigma=argument_list[2].integer_reference;
+          if (attribute_flag[3] != 0)
+            geometry_info.xi=argument_list[3].integer_reference;;
+          if (attribute_flag[4] != 0)
+            geometry_info.psi=argument_list[4].integer_reference;;
+          image=CLAHEImage(image,(size_t) geometry_info.rho,
+            (size_t) geometry_info.sigma,geometry_info.xi,geometry_info.psi,
+            exception);
           break;
         }
       }

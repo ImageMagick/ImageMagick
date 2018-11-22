@@ -1966,6 +1966,16 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           new_image=ChopImage(_image,&geometry,_exception);
           break;
         }
+      if (LocaleCompare("clahe",option+1) == 0)
+        {
+          flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          new_image=CLAHEImage(_image,(size_t) geometry_info.rho,
+            (size_t) geometry_info.sigma,geometry_info.xi,geometry_info.xi,
+            _exception);
+          break;
+        }
       if (LocaleCompare("clamp",option+1) == 0)
         {
           (void) ClampImage(_image,_exception);
@@ -1976,7 +1986,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (IfNormalOp)
             (void) ClipImage(_image,_exception);
           else /* "+mask" remove the write mask */
-            (void) SetImageMask(_image,WritePixelMask,(Image *) NULL,_exception);
+            (void) SetImageMask(_image,WritePixelMask,(Image *) NULL,
+              _exception);
           break;
         }
       if (LocaleCompare("clip-mask",option+1) == 0)
