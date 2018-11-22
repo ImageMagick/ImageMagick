@@ -1286,8 +1286,8 @@ WandExport MagickBooleanType MagickChopImage(MagickWand *wand,
 WandExport MagickBooleanType MagickCLAHEImage(MagickWand *wand,
   const size_t width,const size_t height,const double bias,const double sans)
 {
-  Image
-    *threshold_image;
+  MagickBooleanType
+    status;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
@@ -1295,12 +1295,8 @@ WandExport MagickBooleanType MagickCLAHEImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  threshold_image=CLAHEImage(wand->images,width,height,bias,sans,
-    wand->exception);
-  if (threshold_image == (Image *) NULL)
-    return(MagickFalse);
-  ReplaceImageInList(&wand->images,threshold_image);
-  return(MagickTrue);
+  status=CLAHEImage(wand->images,width,height,bias,sans,wand->exception);
+  return(status);
 }
 
 /*
