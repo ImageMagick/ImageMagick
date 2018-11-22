@@ -9088,8 +9088,7 @@ Mogrify(ref,...)
             draw_info->pointsize=argument_list[16].real_reference;
           if (attribute_flag[17] != 0)
             {
-              draw_info->stroke_antialias=argument_list[17].integer_reference != 0
-                ? MagickTrue : MagickFalse;
+              draw_info->stroke_antialias=argument_list[17].integer_reference != 0 ? MagickTrue : MagickFalse;
               draw_info->text_antialias=draw_info->stroke_antialias;
             }
           if (attribute_flag[18] != 0)
@@ -9148,7 +9147,7 @@ Mogrify(ref,...)
           if (attribute_flag[32] != 0)
             draw_info->direction=(DirectionType)
               argument_list[32].integer_reference;
-          DrawImage(image,draw_info,exception);
+          (void) DrawImage(image,draw_info,exception);
           draw_info=DestroyDrawInfo(draw_info);
           break;
         }
@@ -9157,7 +9156,7 @@ Mogrify(ref,...)
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
           channel_mask=SetImageChannelMask(image,channel);
-          EqualizeImage(image,exception);
+          (void) EqualizeImage(image,exception);
           (void) SetImageChannelMask(image,channel_mask);
           break;
         }
@@ -11494,9 +11493,8 @@ Mogrify(ref,...)
             geometry_info.xi=argument_list[3].integer_reference;;
           if (attribute_flag[4] != 0)
             geometry_info.psi=argument_list[4].integer_reference;;
-          image=CLAHEImage(image,(size_t) geometry_info.rho,
-            (size_t) geometry_info.sigma,geometry_info.xi,geometry_info.psi,
-            exception);
+          (void) CLAHEImage(image,(size_t) geometry_info.rho,(size_t)
+            geometry_info.sigma,geometry_info.xi,geometry_info.psi,exception);
           break;
         }
       }

@@ -28,6 +28,8 @@ extern MagickExport MagickBooleanType
   AutoGammaImage(Image *,ExceptionInfo *),
   AutoLevelImage(Image *,ExceptionInfo *),
   BrightnessContrastImage(Image *,const double,const double,ExceptionInfo *),
+  CLAHEImage(Image *,const size_t,const size_t,const double,const double,
+    ExceptionInfo *),
   ClutImage(Image *,const Image *,const PixelInterpolateMethod,ExceptionInfo *),
   ColorDecisionListImage(Image *,const char *,ExceptionInfo *),
   ContrastImage(Image *,const MagickBooleanType,ExceptionInfo *),
