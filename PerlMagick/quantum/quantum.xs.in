@@ -572,8 +572,8 @@ static struct
       {"high-white", RealReference}, {"high-black", RealReference},
       {"channel", MagickChannelOptions} } },
     { "CLAHE", { {"geometry", StringReference},
-      {"width", IntegerReference}, {"height", IntegerReference},
-      {"bias", RealReference}, {"sans", RealReference} } },
+      {"x-tiles", IntegerReference}, {"y-tiles", IntegerReference},
+      {"number-bins", RealReference}, {"clip-limit", RealReference} } },
   };
 
 static SplayTreeInfo
@@ -11498,9 +11498,10 @@ Mogrify(ref,...)
           if (attribute_flag[3] != 0)
             geometry_info.xi=argument_list[3].integer_reference;;
           if (attribute_flag[4] != 0)
-            geometry_info.psi=argument_list[4].integer_reference;;
+            geometry_info.psi=argument_list[4].real_reference;;
           (void) CLAHEImage(image,(size_t) geometry_info.rho,(size_t)
-            geometry_info.sigma,geometry_info.xi,geometry.psi,exception);
+            (size_t) geometry_info.sigma,geometry_info.xi,geometry_info.psi,
+            exception);
           break;
         }
       }
