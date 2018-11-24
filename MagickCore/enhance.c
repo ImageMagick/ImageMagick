@@ -538,7 +538,7 @@ static MagickBooleanType CLAHE(const size_t width,const size_t height,
         histogram);
       ClipCLAHEHistogram((double) limit,number_bins,histogram);
       MapCLAHEHistogram(min_intensity,max_intensity,number_bins,number_pixels,
-       histogram);
+        histogram);
       p+=tile_width;
     }
     p+=(tile_height-1)*width;
