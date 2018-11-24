@@ -1088,7 +1088,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image,exception);
             flags=ParseGeometry(argv[i+1],&geometry_info);
             (void) CLAHEImage(*image,(size_t) geometry_info.rho,(size_t)
-              geometry_info.sigma,(size_t) geometry_info.xi,(size_t)
+              geometry_info.sigma,(size_t) geometry_info.xi,(double)
               geometry_info.psi,exception);
             break;
           }

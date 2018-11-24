@@ -288,7 +288,7 @@ MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
 %
 */
 MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
-  const size_t height,const size_t bias,const size_t sans,
+  const size_t height,const size_t bias,const double sans,
   ExceptionInfo *exception)
 {
 #define CLAHEImageTag  "CLAHE/Image"
