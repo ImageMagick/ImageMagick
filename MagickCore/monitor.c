@@ -44,6 +44,7 @@
 #include "MagickCore/image.h"
 #include "MagickCore/log.h"
 #include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
 
 /*
   Static declarations.

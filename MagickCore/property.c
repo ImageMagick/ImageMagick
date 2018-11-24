@@ -3767,8 +3767,8 @@ RestoreMSCWarning
             FX - value calculator.
           */
           fx_info=AcquireFxInfo(property_image,pattern+3,exception);
-          status=FxEvaluateChannelExpression(fx_info,DefaultChannels,0,0,&value,
-            exception);
+          status=FxEvaluateChannelExpression(fx_info,CompositePixelChannel,0,0,
+            &value,exception);
           fx_info=DestroyFxInfo(fx_info);
           if (status != MagickFalse)
             {

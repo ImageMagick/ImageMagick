@@ -602,7 +602,7 @@ static MagickBooleanType CLAHE(const size_t width,const size_t height,
     }
     p+=width*(tile.height-1);
   }
-  buffer=RelinquishMagickMemory(buffer);
+  buffer=(size_t *) RelinquishMagickMemory(buffer);
   return(MagickTrue);
 }
 
