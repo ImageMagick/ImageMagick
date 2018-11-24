@@ -471,7 +471,6 @@ static void MapCLAHEHistogram(const unsigned short min_intensity,
   }
 }
 
-
 static MagickBooleanType CLAHE(const size_t width,const size_t height,
   const unsigned short min_intensity,const unsigned short max_intensity,
   const size_t x_tiles,const size_t y_tiles,const size_t number_bins,
