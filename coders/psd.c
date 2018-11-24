@@ -2172,8 +2172,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       psd_info.min_channels=4;
       (void) SetImageColorspace(image,CMYKColorspace,exception);
-      if (psd_info.channels > 4)
-        (void) SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
     }
   else if ((psd_info.mode == BitmapMode) || (psd_info.mode == GrayscaleMode) ||
            (psd_info.mode == DuotoneMode))
@@ -2190,12 +2188,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       psd_info.min_channels=1;
       (void) SetImageColorspace(image,GRAYColorspace,exception);
-      if (psd_info.channels > 1)
-        (void) SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
     }
-  else
-    if (psd_info.channels > 3)
-      (void) SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
   if (psd_info.channels < psd_info.min_channels)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   /*
