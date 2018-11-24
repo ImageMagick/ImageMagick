@@ -646,7 +646,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,Image *image
                 p));
               p+=GetPixelChannels(image);
 
-              if (x+1 < (lont) image->columns)
+              if (x+1 < (long) image->columns)
                 {
                   p_y[y*stride_y + x+1]=ScaleQuantumToChar(GetPixelRed(image,
                     p));

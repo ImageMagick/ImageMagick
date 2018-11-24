@@ -612,6 +612,12 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t x_tiles,
 {
 #define CLAHEImageTag  "CLAHE/Image"
 
+  CacheView
+    *image_view;
+
+  ColorspaceType
+    colorspace;
+
   MagickBooleanType
     status;
 
@@ -624,14 +630,12 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t x_tiles,
   OffsetInfo
     tile;
 
-  register ssize_t
-    i;
-
   ssize_t
     y;
 
   size_t
     height,
+    n,
     width;
 
   unsigned short
@@ -644,7 +648,8 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t x_tiles,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+  colorspace=image->colorspace;
+  if (TransformImageColorspace(image,LabColorspace,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   tile.x=(ssize_t) (x_tiles < 2 ? 2 : x_tiles >= MaxCLAHETiles ?
@@ -658,83 +663,29 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t x_tiles,
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   pixels=(unsigned short *) GetVirtualMemoryBlob(pixel_cache);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status) \
-    magick_number_threads(image,image,GetPixelChannels(image),1)
-#endif
-  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  image_view=AcquireVirtualCacheView(image,exception);
+  n=0;
+  for (y=0; y < (ssize_t) height; y++)
   {
-    CacheView
-      *image_view;
+    register const Quantum
+      *magick_restrict p;
 
     register ssize_t
       x;
 
-    size_t
-      n;
-
-    PixelChannel channel = GetPixelChannelChannel(image,i);
-    PixelTrait traits = GetPixelChannelTraits(image,channel);
-    if ((traits & UpdatePixelTrait) == 0)
-      continue;
     if (status == MagickFalse)
       continue;
-    image_view=AcquireVirtualCacheView(image,exception);
-    n=0;
-    for (y=0; y < (ssize_t) height; y++)
-    {
-      register const Quantum
-        *magick_restrict p;
-
-      if (status == MagickFalse)
-        continue;
-      p=GetCacheViewVirtualPixels(image_view,0,y,width,1,exception);
-      if (p == (const Quantum *) NULL)
-        {
-          status=MagickFalse;
-          continue;
-        }
-      for (x=0; x < (ssize_t) image->columns; x++)
+    p=GetCacheViewVirtualPixels(image_view,0,y,width,1,exception);
+    if (p == (const Quantum *) NULL)
       {
-        pixels[n++]=ScaleQuantumToShort(p[i]);
-        p+=GetPixelChannels(image);
-      }
-    }
-    image_view=DestroyCacheView(image_view);
-    if (status == MagickFalse)
-      continue;
-    status=CLAHE(width,height,0,65535,(size_t) tile.x,(size_t) tile.y,
-      number_bins == 0 ? (size_t) 128 : number_bins,clip_limit,pixels);
-    if (status == MagickFalse)
-      {
-        (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
-        continue;
-      }
-    image_view=AcquireAuthenticCacheView(image,exception);
-    n=0;
-    for (y=0; y < (ssize_t) image->rows; y++)
-    {
-      register Quantum
-        *magick_restrict q;
-
-      if (status == MagickFalse)
-        continue;
-      q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-      if (q == (Quantum *) NULL)
-        {
-          status=MagickFalse;
-          continue;
-        }
-      for (x=0; x < (ssize_t) image->columns; x++)
-      {
-        q[i]=ScaleShortToQuantum(pixels[n++]);
-        q+=GetPixelChannels(image);
-      }
-      if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
         status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      pixels[n++]=ScaleQuantumToShort(p[0]);
+      p+=GetPixelChannels(image);
     }
-    image_view=DestroyCacheView(image_view);
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType
@@ -744,14 +695,61 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t x_tiles,
         #pragma omp atomic
 #endif
         progress++;
-        proceed=SetImageProgress(image,CLAHEImageTag,progress,
+        proceed=SetImageProgress(image,CLAHEImageTag,progress,2*
           GetPixelChannels(image));
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
+  image_view=DestroyCacheView(image_view);
+  status=CLAHE(width,height,0,65535,(size_t) tile.x,(size_t) tile.y,
+    number_bins == 0 ? (size_t) 128 : number_bins,clip_limit,pixels);
+  if (status == MagickFalse)
+    (void) ThrowMagickException(exception,GetMagickModule(),
+      ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+  image_view=AcquireAuthenticCacheView(image,exception);
+  n=0;
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register Quantum
+      *magick_restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      q[0]=ScaleShortToQuantum(pixels[n++]);
+      q+=GetPixelChannels(image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,CLAHEImageTag,progress,2*
+          GetPixelChannels(image));
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  image_view=DestroyCacheView(image_view);
   pixel_cache=RelinquishVirtualMemory(pixel_cache);
-  return(status);
+  return(TransformImageColorspace(image,colorspace,exception));
 }
 
 /*
