@@ -1952,7 +1952,9 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
   status=MagickTrue;
   for (i=0; i < number_layers; i++)
   {
-    if (layer_info[i].image == (Image *) NULL)
+    if ((layer_info[i].image == (Image *) NULL) ||
+        ((image_info->number_scenes != 0) && ((i < image_info->scene-1) ||
+         (i >= image_info->scene+image_info->number_scenes-1))))
       {
         for (j=0; j < (ssize_t) layer_info[i].channels; j++)
         {
