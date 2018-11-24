@@ -2136,7 +2136,8 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
       {
         if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
           {
-            PixelChannel channel = GetPixelChannelChannel(image,RedPixelChannel);
+            PixelChannel channel = GetPixelChannelChannel(image,
+              RedPixelChannel);
             if (black[channel] != white[channel])
               image->colormap[j].red=equalize_map[GetPixelChannels(image)*
                 ScaleQuantumToMap(ClampToQuantum(image->colormap[j].red))+
@@ -2153,7 +2154,8 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
           }
         if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
           {
-            PixelChannel channel = GetPixelChannelChannel(image,BluePixelChannel);
+            PixelChannel channel = GetPixelChannelChannel(image,
+              BluePixelChannel);
             if (black[channel] != white[channel])
               image->colormap[j].blue=equalize_map[GetPixelChannels(image)*
                 ScaleQuantumToMap(ClampToQuantum(image->colormap[j].blue))+
