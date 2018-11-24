@@ -59,6 +59,7 @@
 #include "MagickCore/magick-private.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/module.h"
+#include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__MINGW32__)
 #define WIN32_LEAN_AND_MEAN
