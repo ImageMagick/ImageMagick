@@ -1944,42 +1944,43 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
         layer_info[i].info=DestroyStringInfo(layer_info[i].info);
       }
   }
-
-  status=MagickTrue;
-  if (image_info->ping == MagickFalse)
+  if (image_info->ping != MagickFalse)
     {
-      for (i=0; i < number_layers; i++)
-      {
-        if (layer_info[i].image == (Image *) NULL)
-          {
-            for (j=0; j < (ssize_t) layer_info[i].channels; j++)
-            {
-              if (DiscardBlobBytes(image,(MagickSizeType)
-                  layer_info[i].channel_info[j].size) == MagickFalse)
-                {
-                  layer_info=DestroyLayerInfo(layer_info,number_layers);
-                  ThrowBinaryException(CorruptImageError,
-                    "UnexpectedEndOfFile",image->filename);
-                }
-            }
-            continue;
-          }
-
-        if (image->debug != MagickFalse)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  reading data for layer %.20g",(double) i);
-
-        status=ReadPSDLayer(image,image_info,psd_info,&layer_info[i],
-          exception);
-        if (status == MagickFalse)
-          break;
-
-        status=SetImageProgress(image,LoadImagesTag,(MagickOffsetType) i,
-          (MagickSizeType) number_layers);
-        if (status == MagickFalse)
-          break;
-      }
+      AttachPSDLayers(image,layer_info,number_layers);
+      return(MagickTrue);
     }
+  status=MagickTrue;
+  for (i=0; i < number_layers; i++)
+  {
+    if (layer_info[i].image == (Image *) NULL)
+      {
+        for (j=0; j < (ssize_t) layer_info[i].channels; j++)
+        {
+          if (DiscardBlobBytes(image,(MagickSizeType)
+              layer_info[i].channel_info[j].size) == MagickFalse)
+            {
+              layer_info=DestroyLayerInfo(layer_info,number_layers);
+              ThrowBinaryException(CorruptImageError,
+                "UnexpectedEndOfFile",image->filename);
+            }
+        }
+        continue;
+      }
+
+    if (image->debug != MagickFalse)
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "  reading data for layer %.20g",(double) i);
+
+    status=ReadPSDLayer(image,image_info,psd_info,&layer_info[i],
+      exception);
+    if (status == MagickFalse)
+      break;
+
+    status=SetImageProgress(image,LoadImagesTag,(MagickOffsetType) i,
+      (MagickSizeType) number_layers);
+    if (status == MagickFalse)
+      break;
+  }
 
   if (status != MagickFalse)
     AttachPSDLayers(image,layer_info,number_layers);
