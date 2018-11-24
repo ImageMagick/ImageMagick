@@ -1622,6 +1622,18 @@ static void AttachPSDLayers(Image *image,LayerInfo *layer_info,
   layer_info=(LayerInfo *) RelinquishMagickMemory(layer_info);
 }
 
+static inline MagickBooleanType PSDSkipImage(const ImageInfo *image_info,
+  const size_t index)
+{
+  if (image_info->number_scenes == 0)
+    return(MagickFalse);
+  if (index < image_info->scene)
+    return(MagickTrue);
+  if (index > image_info->scene+image_info->number_scenes-1)
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
 static MagickBooleanType ReadPSDLayersInternal(Image *image,
   const ImageInfo *image_info,const PSDInfo *psd_info,
   const MagickBooleanType skip_layers,ExceptionInfo *exception)
@@ -1953,8 +1965,7 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
   for (i=0; i < number_layers; i++)
   {
     if ((layer_info[i].image == (Image *) NULL) ||
-        ((image_info->number_scenes != 0) && ((i < image_info->scene-1) ||
-         (i >= image_info->scene+image_info->number_scenes-1))))
+        (PSDSkipImage(image_info,i) != MagickFalse))
       {
         for (j=0; j < (ssize_t) layer_info[i].channels; j++)
         {
@@ -2387,11 +2398,13 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Image
         *next;
 
+      i=0;
       next=image;
       while (next != (Image *) NULL)
       {
-        (void) SetImageProfile(next,GetStringInfoName(profile),profile,
-          exception);
+        if (PSDSkipImage(image_info,i++) == MagickFalse)
+          (void) SetImageProfile(next,GetStringInfoName(profile),profile,
+            exception);
         next=next->next;
       }
       profile=DestroyStringInfo(profile);
