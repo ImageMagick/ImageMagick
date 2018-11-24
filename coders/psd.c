@@ -2024,6 +2024,8 @@ static MagickBooleanType ReadPSDMergedImage(const ImageInfo *image_info,
   register ssize_t
     i;
 
+  if ((image_info->number_scenes != 0) && (image_info->scene != 0))
+    return(MagickTrue);
   compression=(PSDCompressionType) ReadBlobMSBShort(image);
   image->compression=ConvertPSDCompression(compression);
 
