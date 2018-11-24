@@ -11494,8 +11494,8 @@ Mogrify(ref,...)
           if (attribute_flag[4] != 0)
             geometry_info.psi=argument_list[4].real_reference;
           (void) CLAHEImage(image,(size_t) geometry_info.rho,(size_t)
-            (size_t) geometry_info.sigma,geometry_info.xi,geometry_info.psi,
-            exception);
+            (size_t) geometry_info.sigma,geometry_info.xi,(size_t)
+            geometry_info.psi,exception);
           break;
         }
       }
