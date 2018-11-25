@@ -61,7 +61,7 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
-^L
+
 /*
   Forward declarations.
 */
