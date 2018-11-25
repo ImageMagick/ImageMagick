@@ -29,6 +29,7 @@ AddMagickCoder(CIP)
 #endif
 AddMagickCoder(CLIP)
 AddMagickCoder(CMYK)
+AddMagickCoder(CUBE)
 AddMagickCoder(CUT)
 AddMagickCoder(DCM)
 AddMagickCoder(DDS)

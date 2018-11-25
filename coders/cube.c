@@ -33,6 +33,8 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+% See Cube LUT specification 1.0 @
+% https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf
 %
 */
 
@@ -55,18 +57,14 @@
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
-
-/*
-  Forward declarations.
-*/
-static MagickBooleanType
-  WriteCUBEImage(const ImageInfo *,Image *,ExceptionInfo *);
+#include "MagickCore/token.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -98,18 +96,30 @@ static MagickBooleanType
 static Image *ReadCUBEImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+  char
+    *cube_buffer,
+   token[MagickPathExtent],
+   value[MagickPathExtent];
+
   Image
     *image;
 
   MagickBooleanType
     status;
 
+  register char
+    *p;
+
   size_t
-    cube_size,
-    level;
+    length;
 
   ssize_t
-    y;
+    blue_rows,
+    green_columns,
+    red_columns;
+
+  ssize_t
+    blue;
 
   /*
     Create CUBE color lookup table image.
@@ -122,22 +132,61 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   image=AcquireImage(image_info,exception);
-  level=0;
-  if (*image_info->filename != '\0')
-    level=StringToUnsignedLong(image_info->filename);
-  if (level < 2)
-    level=8;
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    {
+      image=DestroyImageList(image);
+      return((Image *) NULL);
+    }
+  length=MagickPathExtent;
+  cube_buffer=(char *) AcquireQuantumMemory((size_t) length,
+    sizeof(*cube_buffer));
+  if (cube_buffer == (char *) NULL)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  red_columns=0;
+  green_columns=0;
+  blue_rows=0;
+  *cube_buffer='\0';
+  p=cube_buffer;
+  while (ReadBlobString(image,p) != (char *) NULL)
+  {
+    const char
+      *q;
+
+    if ((*p == '#') && ((p == cube_buffer) || (*(p-1) == '\n')))
+      continue;
+    q=p;
+    GetNextToken(q,&q,MagickPathExtent,token);
+    GetNextToken(q,&q,MagickPathExtent,value);
+    if (LocaleCompare(token,"LUT_1D_SIZE") == 0)
+      {
+        red_columns=(ssize_t) StringToLong(value);
+        green_columns=1;
+        blue_rows=1;
+      }
+    if (LocaleCompare(token,"LUT_3D_SIZE") == 0)
+      {
+        red_columns=(ssize_t) StringToLong(value);
+        green_columns=red_columns;
+        blue_rows=red_columns;
+      }
+    if (LocaleCompare(token,"TITLE ") == 0)
+      (void) SetImageProperty(image,"title",value,exception);
+    if (('+' < *p) && (*p < ':'))
+      break;
+  }
   status=MagickTrue;
-  cube_size=level*level;
-  image->columns=(size_t) (level*cube_size);
-  image->rows=(size_t) (level*cube_size);
+  image->columns=(size_t) (red_columns*green_columns);
+  image->rows=(size_t) (blue_rows);
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
-    return(DestroyImageList(image));
-  for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) level)
+    {
+      cube_buffer=DestroyString(cube_buffer);
+      return(DestroyImageList(image));
+    }
+  for (blue=0; blue < blue_rows; blue++)
   {
     ssize_t
-      blue,
       green,
       red;
 
@@ -146,28 +195,38 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
 
     if (status == MagickFalse)
       continue;
-    q=QueueAuthenticPixels(image,0,y,image->columns,(size_t) level,exception);
+    q=QueueAuthenticPixels(image,0,blue,(size_t) red_columns*green_columns,1,
+      exception);
     if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
       }
-    blue=y/(ssize_t) level;
-    for (green=0; green < (ssize_t) cube_size; green++)
+    for (green=0; green < green_columns; green++)
     {
-      for (red=0; red < (ssize_t) cube_size; red++)
+      for (red=0; red < red_columns; red++)
       {
-        SetPixelRed(image,ClampToQuantum(QuantumRange*red/(cube_size-1.0)),q);
-        SetPixelGreen(image,ClampToQuantum(QuantumRange*green/(cube_size-1.0)),
+        char
+          *p;
+
+        p=cube_buffer;
+        SetPixelRed(image,ClampToQuantum(QuantumRange*StringToDouble(p,&p)),
           q);
-        SetPixelBlue(image,ClampToQuantum(QuantumRange*blue/(cube_size-1.0)),q);
+        SetPixelGreen(image,ClampToQuantum(QuantumRange*StringToDouble(p,&p)),
+          q);
+        SetPixelBlue(image,ClampToQuantum(QuantumRange*StringToDouble(p,&p)),
+          q);
         SetPixelAlpha(image,OpaqueAlpha,q);
         q+=GetPixelChannels(image);
+        while (ReadBlobString(image,cube_buffer) != (char *) NULL)
+          if (('+' < *cube_buffer) && (*cube_buffer < ':'))
+            break;
       }
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       status=MagickFalse;
   }
+  cube_buffer=DestroyString(cube_buffer);
   return(GetFirstImageInList(image));
 }
 
@@ -200,9 +259,8 @@ ModuleExport size_t RegisterCUBEImage(void)
     *entry;
 
   entry=AcquireMagickInfo("CUBE","CUBE",
-    "Identity Cube color lookup table image");
+    "Cube color lookup table image");
   entry->decoder=(DecodeImageHandler *) ReadCUBEImage;
-  entry->encoder=(EncodeImageHandler *) WriteCUBEImage;
   entry->flags^=CoderAdjoinFlag;
   entry->format_type=ImplicitFormatType;
   entry->flags|=CoderRawSupportFlag;
@@ -233,45 +291,4 @@ ModuleExport size_t RegisterCUBEImage(void)
 ModuleExport void UnregisterCUBEImage(void)
 {
   (void) UnregisterMagickInfo("CUBE");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   W r i t e C U B E I m a g e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  WriteCUBEImage an image in the Cube coloe lookup table image format.
-%
-%  The format of the WriteCUBEImage method is:
-%
-%      MagickBooleanType WriteCUBEImage(const ImageInfo *image_info,
-%        Image *image,ExceptionInfo *exception)
-%
-%  A description of each parameter follows.
-%
-%    o image_info: the image info.
-%
-%    o image:  The image.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-static MagickBooleanType WriteCUBEImage(const ImageInfo *image_info,
-  Image *image,ExceptionInfo *exception)
-{
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickCoreSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickCoreSignature);
-  assert(exception != (ExceptionInfo *) NULL);
-  (void) exception;
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  return(MagickTrue);
 }
