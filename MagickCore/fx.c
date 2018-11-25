@@ -1482,9 +1482,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
           alpha=(double) (QuantumScale*pixel.alpha);
           return(alpha);
         }
-        case IndexPixelChannel:
-          return(0.0);
-        case IntensityPixelChannel:
+        case CompositePixelChannel:
         {
           Quantum
             quantum_pixel[MaxPixelChannels];
@@ -1492,6 +1490,8 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
           SetPixelViaPixelInfo(image,&pixel,quantum_pixel);
           return(QuantumScale*GetPixelIntensity(image,quantum_pixel));
         }
+        case IndexPixelChannel:
+          return(0.0);
         default:
           break;
       }
