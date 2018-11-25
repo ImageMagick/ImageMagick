@@ -75,7 +75,16 @@
 #include "lcms2.h"
 #endif
 #endif
-
+#if defined(MAGICKCORE_XML_DELEGATE)
+#  if defined(MAGICKCORE_WINDOWS_SUPPORT)
+#    if !defined(__MINGW32__)
+#      include <win32config.h>
+#    endif
+#  endif
+#  include <libxml/parser.h>
+#  include <libxml/tree.h>
+#endif
+
 /*
   Definitions
 */
@@ -1693,6 +1702,29 @@ static void GetProfilesFromResourceBlock(Image *image,
   }
 }
 
+static MagickBooleanType ValidateXMPProfile(const StringInfo *profile)
+{
+#if defined(MAGICKCORE_XML_DELEGATE)
+  {
+    xmlDocPtr
+      document;
+    
+    /*
+      Parse XML profile.
+    */
+    document=xmlReadMemory((const char *) GetStringInfoDatum(profile),(int)
+      GetStringInfoLength(profile),"xmp.xml",NULL,XML_PARSE_NOERROR |
+      XML_PARSE_NOWARNING);
+    if (document == (xmlDocPtr) NULL)
+      return(MagickFalse);
+    xmlFreeDoc(document);
+    return(MagickTrue);
+  }
+#else
+  return(MagickTrue);
+#endif
+}
+
 static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
   const StringInfo *profile,const MagickBooleanType recursive,
   ExceptionInfo *exception)
@@ -1708,6 +1740,13 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if ((LocaleCompare(name,"xmp") == 0) &&
+      (ValidateXMPProfile(profile) == MagickFalse))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
+        "CorruptImageProfile","`%s'",name);
+      return(MagickFalse);
+    }
   if (image->profiles == (SplayTreeInfo *) NULL)
     image->profiles=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
       DestroyProfile);
