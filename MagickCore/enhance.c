@@ -629,13 +629,13 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t x_tiles,
   OffsetInfo
     tile;
 
-  ssize_t
-    y;
-
   size_t
     height,
     n,
     width;
+
+  ssize_t
+    y;
 
   unsigned short
     *pixels;
@@ -651,16 +651,20 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t x_tiles,
   if (TransformImageColorspace(image,LabColorspace,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
-  tile.x=(ssize_t) (x_tiles < 2 ? 2 : x_tiles >= MaxCLAHETiles ?
-    MaxCLAHETiles-1 : x_tiles);
-  tile.y=(ssize_t) (y_tiles < 2 ? 2 : y_tiles >= MaxCLAHETiles ?
-    MaxCLAHETiles-1 : y_tiles);
+  tile.x=(ssize_t) (x_tiles < 2 ? 2 : x_tiles >= MaxCLAHETiles ? MaxCLAHETiles-
+    1 : x_tiles);
+  tile.y=(ssize_t) (y_tiles < 2 ? 2 : y_tiles >= MaxCLAHETiles ? MaxCLAHETiles-
+    1 : y_tiles);
   width=((image->columns+tile.x/2)/tile.x)*tile.x;
   height=((image->rows+tile.y/2)/tile.y)*tile.y;
   pixel_cache=AcquireVirtualMemory(width,height*sizeof(*pixels));
   if (pixel_cache == (MemoryInfo *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
+    {
+      if (TransformImageColorspace(image,colorspace,exception) == MagickFalse)
+        return(MagickFalse);
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        image->filename);
+    }
   pixels=(unsigned short *) GetVirtualMemoryBlob(pixel_cache);
   image_view=AcquireVirtualCacheView(image,exception);
   n=0;
