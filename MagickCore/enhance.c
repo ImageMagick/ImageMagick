@@ -702,7 +702,8 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t x_tiles,
   }
   image_view=DestroyCacheView(image_view);
   status=CLAHE(width,height,0,65535,(size_t) tile.x,(size_t) tile.y,
-    number_bins == 0 ? (size_t) 128 : number_bins,clip_limit,pixels);
+    number_bins == 0 ? (size_t) 128 : MagickMin(number_bins,256),clip_limit,
+    pixels);
   if (status == MagickFalse)
     (void) ThrowMagickException(exception,GetMagickModule(),
       ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
@@ -2371,7 +2372,8 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[j]=gamma_map[ScaleQuantumToMap(ClampToQuantum(q[j]))];
+        q[j]=gamma_map[ScaleQuantumToMap(ClampToQuantum((MagickRealType)
+          q[j]))];
       }
       q+=GetPixelChannels(image);
     }
