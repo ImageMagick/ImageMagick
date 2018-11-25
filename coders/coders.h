@@ -34,6 +34,7 @@
 #endif
 #include "coders/clip.h"
 #include "coders/cmyk.h"
+#include "coders/cube.h"
 #include "coders/cut.h"
 #include "coders/dcm.h"
 #include "coders/dds.h"

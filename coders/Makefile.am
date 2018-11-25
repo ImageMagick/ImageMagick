@@ -109,6 +109,7 @@ MAGICKCORE_CODER_SRCS = \
 	coders/cip.c \
 	coders/clip.c \
 	coders/cmyk.c \
+	coders/cube.c \
 	coders/cut.c \
 	coders/dcm.c \
 	coders/dds.c \
@@ -241,6 +242,7 @@ CODERS_NOINST_HDRS = \
 	coders/coders.h \
 	coders/coders-list.h \
 	coders/coders-private.h \
+	coders/cube.h \
 	coders/cut.h \
 	coders/dcm.h \
 	coders/dds.h \
@@ -372,6 +374,7 @@ coders_LTLIBRARIES = \
 	coders/cip.la \
 	coders/clip.la \
 	coders/cmyk.la \
+	coders/cube.la \
 	coders/cut.la \
 	coders/dcm.la \
 	coders/dds.la \
@@ -565,6 +568,12 @@ coders_cmyk_la_SOURCES     = coders/cmyk.c
 coders_cmyk_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
 coders_cmyk_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 coders_cmyk_la_LIBADD      = $(MAGICKCORE_LIBS)
+
+# CUBE coder module
+coders_cube_la_SOURCES     = coders/cube.c
+coders_cube_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
+coders_cube_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+coders_cube_la_LIBADD      = $(MAGICKCORE_LIBS) $(GOMP_LIBS)
 
 # CUT coder module
 coders_cut_la_SOURCES      = coders/cut.c
