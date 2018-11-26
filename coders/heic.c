@@ -290,7 +290,15 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
               StringInfo
                 *profile;
 
-              profile=BlobToStringInfo(exif_buffer,exif_size);
+              //Refering to JpegEncoder::Encode in libheif's encoder_jpeg.cc
+              //https://github.com/strukturag/libheif/blob/master/examples/encoder_jpeg.cc
+              //in the call to jpeg_write_marker, we need to manually remove
+              //the first 4 bytes returned by heif_image_handle_get_metadata
+              //JFIF APP1 marker should point to the EXIF magic number
+              //0x45 0x78 0x69 0x66/"Exif"
+              //If this is not done, some EXIF reader can't read the EXIF metadata
+              profile=BlobToStringInfo(exif_buffer+4,exif_size-4);
+              
               if (profile != (StringInfo*) NULL)
                 {
                   SetImageProfile(image,"exif",profile,exception);
