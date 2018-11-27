@@ -71,7 +71,7 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d H A L D I m a g e                                                 %
+%   R e a d C U B E I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -161,12 +161,16 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
     if (LocaleCompare(token,"LUT_1D_SIZE") == 0)
       {
         red_columns=(ssize_t) StringToLong(value);
+        if (red_columns > 65535)
+          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         green_columns=1;
         blue_rows=1;
       }
     if (LocaleCompare(token,"LUT_3D_SIZE") == 0)
       {
         red_columns=(ssize_t) StringToLong(value);
+        if (red_columns > 256)
+          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         green_columns=red_columns;
         blue_rows=red_columns;
       }
