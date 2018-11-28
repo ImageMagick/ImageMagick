@@ -1431,8 +1431,8 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
         format;
 
       ssize_t
-        number_bytes,
-        components;
+        components,
+        number_bytes;
 
       q=(unsigned char *) (directory+(12*entry)+2);
       if (q > (exif+length-12))
