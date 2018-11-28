@@ -408,7 +408,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pcx_packets=(size_t) pcx_packets*pcx_info.planes;
     if ((size_t) (pcx_info.bits_per_pixel*pcx_info.planes*image->columns) > (pcx_packets*8U))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    if ((MagickSizeType) (pcx_packets/12) > GetBlobSize(image))
+    if ((MagickSizeType) (pcx_packets/13) > GetBlobSize(image))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     scanline=(unsigned char *) AcquireQuantumMemory(MagickMax(image->columns,
       pcx_info.bytes_per_line),MagickMax(pcx_info.planes,8)*sizeof(*scanline));
