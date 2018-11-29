@@ -652,8 +652,8 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t x_tiles,
     1 : x_tiles);
   tile.y=(ssize_t) (y_tiles < 2 ? 2 : y_tiles >= MaxCLAHETiles ? MaxCLAHETiles-
     1 : y_tiles);
-  width=((image->columns+tile.x/2+1)/tile.x)*tile.x;
-  height=((image->rows+tile.y/2+1)/tile.y)*tile.y;
+  width=((image->columns+tile.x-1)/tile.x)*tile.x;
+  height=((image->rows+tile.y-1)/tile.y)*tile.y;
   pixel_cache=AcquireVirtualMemory(width,height*sizeof(*pixels));
   if (pixel_cache == (MemoryInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
@@ -683,7 +683,7 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t x_tiles,
         status=MagickFalse;
         continue;
       }
-    for (x=0; x < (ssize_t) image->columns; x++)
+    for (x=0; x < (ssize_t) width; x++)
     {
       pixels[n++]=ScaleQuantumToShort(p[0]);
       p+=GetPixelChannels(image);
@@ -733,6 +733,7 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t x_tiles,
       q[0]=ScaleShortToQuantum(pixels[n++]);
       q+=GetPixelChannels(image);
     }
+    n+=(width-image->columns);
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
