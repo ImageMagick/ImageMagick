@@ -652,8 +652,8 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t x_tiles,
     1 : x_tiles);
   tile.y=(ssize_t) (y_tiles < 2 ? 2 : y_tiles >= MaxCLAHETiles ? MaxCLAHETiles-
     1 : y_tiles);
-  width=((image->columns+tile.x/2)/tile.x)*tile.x;
-  height=((image->rows+tile.y/2)/tile.y)*tile.y;
+  width=((image->columns+tile.x/2+1)/tile.x)*tile.x;
+  height=((image->rows+tile.y/2+1)/tile.y)*tile.y;
   pixel_cache=AcquireVirtualMemory(width,height*sizeof(*pixels));
   if (pixel_cache == (MemoryInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
