@@ -1608,7 +1608,10 @@ static void AttachPSDLayers(Image *image,LayerInfo *layer_info,
       }
   }
   if (number_layers == 0)
-    return;
+    {
+      layer_info=(LayerInfo *) RelinquishMagickMemory(layer_info);
+      return;
+    }
   for (i=0; i < number_layers; i++)
   {
     if (i > 0)
