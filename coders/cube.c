@@ -162,7 +162,10 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
       {
         red_columns=(ssize_t) StringToLong(value);
         if (red_columns > 65535)
-          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          {
+            cube_buffer=DestroyString(cube_buffer);
+            ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          }
         green_columns=1;
         blue_rows=1;
       }
@@ -170,7 +173,10 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
       {
         red_columns=(ssize_t) StringToLong(value);
         if (red_columns > 256)
-          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          {
+            cube_buffer=DestroyString(cube_buffer);
+            ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          }
         green_columns=red_columns;
         blue_rows=red_columns;
       }
