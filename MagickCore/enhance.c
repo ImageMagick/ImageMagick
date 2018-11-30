@@ -659,7 +659,8 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t x_tiles,
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   colorspace=image->colorspace;
-  if (TransformImageColorspace(image,LabColorspace,exception) == MagickFalse)
+  if ((GetPixelChannels(image) >= 3) &&
+      (TransformImageColorspace(image,LabColorspace,exception) == MagickFalse))
     {
       pixel_cache=RelinquishVirtualMemory(pixel_cache);
       return(MagickFalse);
@@ -753,7 +754,8 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t x_tiles,
   }
   image_view=DestroyCacheView(image_view);
   pixel_cache=RelinquishVirtualMemory(pixel_cache);
-  if (TransformImageColorspace(image,colorspace,exception) == MagickFalse)
+  if ((GetPixelChannels(image) >= 3) &&
+      (TransformImageColorspace(image,colorspace,exception) == MagickFalse))
     status=MagickFalse;
   return(status);
 }
