@@ -286,7 +286,7 @@ MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
 %    o number_bins: number of bins for histogram ("dynamic range").
 %
 %    o clip_limit: contrast limit for localised changes in contrast. A limit
-%      than 1 results in standard non-contrast limited AHE.
+%      less than 1 results in standard non-contrast limited AHE.
 %
 %    o exception: return any errors or warnings in this structure.
 %
