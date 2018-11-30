@@ -624,7 +624,7 @@ static void TransformSignature(SignatureInfo *signature_info)
   ssize_t
     j;
 
-  static unsigned int
+  static const unsigned int
     K[64] =
     {
       0x428a2f98U, 0x71374491U, 0xb5c0fbcfU, 0xe9b5dba5U, 0x3956c25bU,
