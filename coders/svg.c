@@ -102,6 +102,11 @@
 #endif
 
 /*
+  Define declarations.
+*/
+#define DefaultSVGDensity  96.0
+
+/*
   Typedef declarations.
 */
 typedef struct _BoundingBox
@@ -332,17 +337,17 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,int type,
     }
   GetNextToken(p,&p,MagickPathExtent,token);
   if (LocaleNCompare(token,"cm",2) == 0)
-    return(90.0*svg_info->scale[0]/2.54*value);
+    return(DefaultSVGDensity*svg_info->scale[0]/2.54*value);
   if (LocaleNCompare(token,"em",2) == 0)
     return(svg_info->pointsize*value);
   if (LocaleNCompare(token,"ex",2) == 0)
     return(svg_info->pointsize*value/2.0);
   if (LocaleNCompare(token,"in",2) == 0)
-    return(90.0*svg_info->scale[0]*value);
+    return(DefaultSVGDensity*svg_info->scale[0]*value);
   if (LocaleNCompare(token,"mm",2) == 0)
-    return(90.0*svg_info->scale[0]/25.4*value);
+    return(DefaultSVGDensity*svg_info->scale[0]/25.4*value);
   if (LocaleNCompare(token,"pc",2) == 0)
-    return(90.0*svg_info->scale[0]/6.0*value);
+    return(DefaultSVGDensity*svg_info->scale[0]/6.0*value);
   if (LocaleNCompare(token,"pt",2) == 0)
     return(svg_info->scale[0]*value);
   if (LocaleNCompare(token,"px",2) == 0)
@@ -3094,7 +3099,7 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
   Static declarations.
 */
 static char
-  SVGDensityGeometry[] = "90.0x90.0";
+  SVGDensityGeometry[] = "96.0x96.0";
 
 static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
@@ -3334,8 +3339,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (ssize_t *) NULL,&image->columns,&image->rows);
             if ((image->columns != 0) || (image->rows != 0))
               {
-                image->resolution.x=90.0*image->columns/dimension_info.width;
-                image->resolution.y=90.0*image->rows/dimension_info.height;
+                image->resolution.x=DefaultSVGDensity*image->columns/dimension_info.width;
+                image->resolution.y=DefaultSVGDensity*image->rows/dimension_info.height;
                 if (fabs(image->resolution.x) < MagickEpsilon)
                   image->resolution.x=image->resolution.y;
                 else
@@ -3349,8 +3354,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         if (apply_density != MagickFalse)
           {
-            image->columns=image->resolution.x*dimension_info.width/90.0;
-            image->rows=image->resolution.y*dimension_info.height/90.0;
+            image->columns=image->resolution.x*dimension_info.width/DefaultSVGDensity;
+            image->rows=image->resolution.y*dimension_info.height/DefaultSVGDensity;
           }
         else
           {
@@ -3417,8 +3422,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             cairo_paint(cairo_image);
             cairo_set_operator(cairo_image,CAIRO_OPERATOR_OVER);
             if (apply_density != MagickFalse)
-              cairo_scale(cairo_image,image->resolution.x/90.0,
-                image->resolution.y/90.0);
+              cairo_scale(cairo_image,image->resolution.x/DefaultSVGDensity,
+                image->resolution.y/DefaultSVGDensity);
             rsvg_handle_render_cairo(svg_handle,cairo_image);
             cairo_destroy(cairo_image);
             cairo_surface_destroy(cairo_surface);
