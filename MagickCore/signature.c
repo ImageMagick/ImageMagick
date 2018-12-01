@@ -587,33 +587,16 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
 %    o signature_info: the address of a structure of type SignatureInfo.
 %
 */
-
-static inline unsigned int Ch(unsigned int x,unsigned int y,unsigned int z)
-{
-  return((x & y) ^ (~x & z));
-}
-
-static inline unsigned int Maj(unsigned int x,unsigned int y,unsigned int z)
-{
-  return((x & y) ^ (x & z) ^ (y & z));
-}
-
-static inline unsigned int Trunc32(unsigned int x)
-{
-  return((unsigned int) (x & 0xffffffffU));
-}
-
-static unsigned int RotateRight(unsigned int x,unsigned int n)
-{
-  return(Trunc32((x >> n) | (x << (32-n))));
-}
-
 static void TransformSignature(SignatureInfo *signature_info)
 {
+#define Ch(x,y,z)  (((x) & (y)) ^ (~(x) & (z)))
+#define Maj(x,y,z)  (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
+#define RotateRight(x,n)  (Trunc32(((x) >> n) | ((x) << (32-n))))
 #define Sigma0(x)  (RotateRight(x,7) ^ RotateRight(x,18) ^ Trunc32((x) >> 3))
 #define Sigma1(x)  (RotateRight(x,17) ^ RotateRight(x,19) ^ Trunc32((x) >> 10))
 #define Suma0(x)  (RotateRight(x,2) ^ RotateRight(x,13) ^ RotateRight(x,22))
 #define Suma1(x)  (RotateRight(x,6) ^ RotateRight(x,11) ^ RotateRight(x,25))
+#define Trunc32(x)  ((unsigned int) ((x) & 0xffffffffU))
 
   register ssize_t
     i;
