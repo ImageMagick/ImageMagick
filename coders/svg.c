@@ -3339,8 +3339,10 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (ssize_t *) NULL,&image->columns,&image->rows);
             if ((image->columns != 0) || (image->rows != 0))
               {
-                image->resolution.x=DefaultSVGDensity*image->columns/dimension_info.width;
-                image->resolution.y=DefaultSVGDensity*image->rows/dimension_info.height;
+                image->resolution.x=DefaultSVGDensity*image->columns/
+                  dimension_info.width;
+                image->resolution.y=DefaultSVGDensity*image->rows/
+                  dimension_info.height;
                 if (fabs(image->resolution.x) < MagickEpsilon)
                   image->resolution.x=image->resolution.y;
                 else
@@ -3354,8 +3356,10 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         if (apply_density != MagickFalse)
           {
-            image->columns=image->resolution.x*dimension_info.width/DefaultSVGDensity;
-            image->rows=image->resolution.y*dimension_info.height/DefaultSVGDensity;
+            image->columns=image->resolution.x*dimension_info.width/
+              DefaultSVGDensity;
+            image->rows=image->resolution.y*dimension_info.height/
+              DefaultSVGDensity;
           }
         else
           {
