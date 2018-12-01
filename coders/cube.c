@@ -161,7 +161,7 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
     if (LocaleCompare(token,"LUT_1D_SIZE") == 0)
       {
         red_columns=(ssize_t) StringToLong(value);
-        if (red_columns > 65535)
+        if ((red_columns < 0) || (red_columns > 65535))
           {
             cube_buffer=DestroyString(cube_buffer);
             ThrowReaderException(CorruptImageError,"ImproperImageHeader");
@@ -172,7 +172,7 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
     if (LocaleCompare(token,"LUT_3D_SIZE") == 0)
       {
         red_columns=(ssize_t) StringToLong(value);
-        if (red_columns > 256)
+        if ((red_columns < 0) || (red_columns > 256))
           {
             cube_buffer=DestroyString(cube_buffer);
             ThrowReaderException(CorruptImageError,"ImproperImageHeader");
