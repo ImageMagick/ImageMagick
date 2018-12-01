@@ -1202,6 +1202,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
+  if (status != MagickFalse)
+    status=ResetImagePixels(image,exception);
   if (image_type == GIMP_INDEXED)
     ThrowReaderException(CoderError,"ColormapTypeNotSupported");
   if (image_type == GIMP_RGB)
@@ -1409,8 +1411,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       XCFLayerInfo
         *layer_info;
 
-      /* 
-        the read pointer
+      /*
+        The read pointer.
       */
       do
       {
