@@ -307,7 +307,7 @@ static void ClipCLAHEHistogram(const double clip_limit,const size_t number_bins,
     step;
 
   ssize_t
-    delta;
+    excess;
 
   /*
     Compute total number of excess pixels.
@@ -315,23 +315,23 @@ static void ClipCLAHEHistogram(const double clip_limit,const size_t number_bins,
   cumulative_excess=0;
   for (i=0; i < (ssize_t) number_bins; i++)
   {
-    delta=(ssize_t) histogram[i]-(ssize_t) clip_limit;
-    if (delta > 0)
-      cumulative_excess+=delta;
+    excess=(ssize_t) histogram[i]-(ssize_t) clip_limit;
+    if (excess > 0)
+      cumulative_excess+=excess;
   }
   /*
     Clip histogram and redistribute excess pixels across all bins.
   */
   step=cumulative_excess/number_bins;
-  delta=(ssize_t) (clip_limit-step);
+  excess=(ssize_t) (clip_limit-step);
   for (i=0; i < (ssize_t) number_bins; i++)
   {
     if ((double) histogram[i] > clip_limit)
       histogram[i]=(size_t) clip_limit;
     else
-      if ((ssize_t) histogram[i] > delta)
+      if ((ssize_t) histogram[i] > excess)
         {
-          cumulative_excess-=histogram[i]-delta;
+          cumulative_excess-=histogram[i]-excess;
           histogram[i]=(size_t) clip_limit;
         }
       else
@@ -595,10 +595,10 @@ static MagickBooleanType CLAHE(const size_t width,const size_t height,
             offset.x=tile.x;
           }
       InterpolateCLAHE(width,
-        tiles+(number_bins*(tile.y*x_tiles+tile.x)),     /* Q12 */
-        tiles+(number_bins*(tile.y*x_tiles+offset.x)),   /* Q22 */
-        tiles+(number_bins*(offset.y*x_tiles+tile.x)),   /* Q11 */
-        tiles+(number_bins*(offset.y*x_tiles+offset.x)), /* Q21 */
+        tiles+(number_bins*(tile.y*x_tiles+tile.x)),  /* Q12 */
+        tiles+(number_bins*(tile.y*x_tiles+offset.x)),  /* Q22 */
+        tiles+(number_bins*(offset.y*x_tiles+tile.x)),  /* Q11 */
+        tiles+(number_bins*(offset.y*x_tiles+offset.x)),  /* Q21 */
         tile.width,tile.height,lut,p);
       p+=tile.width;
     }
