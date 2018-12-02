@@ -594,11 +594,12 @@ static MagickBooleanType CLAHE(const size_t width,const size_t height,
             tile.x=(ssize_t) x_tiles-1;
             offset.x=tile.x;
           }
-      InterpolateCLAHE(width,tiles+(number_bins*(tile.y*x_tiles+tile.x)),
-        tiles+(number_bins*(tile.y*x_tiles+offset.x)),
-        tiles+(number_bins*(offset.y*x_tiles+tile.x)),
-        tiles+(number_bins*(offset.y*x_tiles+offset.x)),tile.width,tile.height,
-        lut,p);
+      InterpolateCLAHE(width,
+        tiles+(number_bins*(tile.y*x_tiles+tile.x)),     /* Q12 */
+        tiles+(number_bins*(tile.y*x_tiles+offset.x)),   /* Q22 */
+        tiles+(number_bins*(offset.y*x_tiles+tile.x)),   /* Q11 */
+        tiles+(number_bins*(offset.y*x_tiles+offset.x)), /* Q21 */
+        tile.width,tile.height,lut,p);
       p+=tile.width;
     }
     p+=width*(tile.height-1);
