@@ -520,10 +520,10 @@ static MagickBooleanType CLAHE(const size_t width,const size_t height,
       if (limit < 1UL)
         limit=1UL;
     }
-  GenerateCLAHELut(min_intensity,max_intensity,number_bins,lut);
   /*
     Generate greylevel mappings for each tile.
   */
+  GenerateCLAHELut(min_intensity,max_intensity,number_bins,lut);
   p=pixels;
   for (y=0; y < (ssize_t) y_tiles; y++)
   {
