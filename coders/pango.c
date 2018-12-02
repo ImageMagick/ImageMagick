@@ -72,6 +72,11 @@
 #include <pango/pango-features.h>
 #endif
 
+/*
+  Define declarations.
+*/
+#define DefaultSVGDensity  96.0
+
 #if defined(MAGICKCORE_PANGOCAIRO_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -202,7 +207,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   */
   fontmap=pango_cairo_font_map_new();
   pango_cairo_font_map_set_resolution(PANGO_CAIRO_FONT_MAP(fontmap),
-    image->resolution.x == 0.0 ? 90.0 : image->resolution.x);
+    image->resolution.x == 0.0 ? DefaultSVGDensity : image->resolution.x);
   font_options=cairo_font_options_create();
   option=GetImageOption(image_info,"pango:hinting");
   if (option != (const char *) NULL)
@@ -302,8 +307,8 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   option=GetImageOption(image_info,"pango:indent");
   if (option != (const char *) NULL)
     pango_layout_set_indent(layout,(int) ((StringToLong(option)*
-      (image->resolution.x == 0.0 ? 90.0 : image->resolution.x)*PANGO_SCALE+36)/
-      90.0+0.5));
+      (image->resolution.x == 0.0 ? DefaultSVGDensity : image->resolution.x)*
+      PANGO_SCALE+DefaultSVGDensity/2)/DefaultSVGDensity+0.5));
   switch (draw_info->align)
   {
     case CenterAlign: align=PANGO_ALIGN_CENTER; break;
@@ -360,8 +365,8 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     {
       image->columns-=2*page.x;
       pango_layout_set_width(layout,(int) ((PANGO_SCALE*image->columns*
-        (image->resolution.x == 0.0 ? 90.0 : image->resolution.x)+45.0)/90.0+
-        0.5));
+        (image->resolution.x == 0.0 ? DefaultSVGDensity : image->resolution.x)+
+        DefaultSVGDensity/2)/DefaultSVGDensity+0.5));
     }
   if (image->rows == 0)
     {
@@ -372,8 +377,8 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     {
       image->rows-=2*page.y;
       pango_layout_set_height(layout,(int) ((PANGO_SCALE*image->rows*
-        (image->resolution.y == 0.0 ? 90.0 : image->resolution.y)+45.0)/90.0+
-        0.5));
+        (image->resolution.y == 0.0 ? DefaultSVGDensity : image->resolution.y)+
+        DefaultSVGDensity/2)/DefaultSVGDensity+0.5));
     }
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
