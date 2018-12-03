@@ -6,8 +6,8 @@
   * Release ImageMagick version 7.0.8-15, GIT revision 15059:2fb22e07b:20181201
 
 2018-11-21  7.0.8-15 Cristy  <quetzlzacatenango@image...>
-  * added support for the -clahe option: contrast limited adaptive histogram
-    equalization
+  * Added support for the -clahe option: contrast limited adaptive histogram
+    equalization.
 
 2018-11-13  7.0.8-15 Dirk Lemstra <dirk@lem.....org>
   * Added support for GIMP 2.10 files (reference
