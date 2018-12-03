@@ -2706,7 +2706,7 @@ static inline MagickModulo VirtualPixelModulo(const ssize_t offset,
     normal default truncated modulo division.
   */
   modulo.quotient=offset/(ssize_t) extent;
-  if (offset < 0L)
+  if ((offset < 0L) && (modulo.quotient != INT64_MIN))
     modulo.quotient--;
   modulo.remainder=(ssize_t) (offset-(double) modulo.quotient*extent);
   return(modulo);
