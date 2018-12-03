@@ -17,7 +17,7 @@
 %                              January 1993                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -1233,31 +1233,6 @@ MagickExport void GetPathComponent(const char *path,PathType type,
       return;
     }
   (void) CopyMagickString(component,path,MagickPathExtent);
-  subimage_length=0;
-  subimage_offset=0;
-  if (type != SubcanonicalPath)
-    {
-      p=component+strlen(component)-1;
-      q=strrchr(component,'[');
-      if ((strlen(component) > 2) && (*p == ']') && (q != (char *) NULL) &&
-          ((q == component) || (*(q-1) != ']')) &&
-          (IsPathAccessible(path) == MagickFalse))
-        {
-          /*
-            Look for scene specification (e.g. img0001.pcd[4]).
-          */
-          *p='\0';
-          if ((IsSceneGeometry(q+1,MagickFalse) == MagickFalse) &&
-              (IsGeometry(q+1) == MagickFalse))
-            *p=']';
-          else
-            {
-              subimage_length=(size_t) (p-q);
-              subimage_offset=magick_length+1+(size_t) (q-component);
-              *q='\0';
-            }
-        }
-    }
   magick_length=0;
 #if defined(__OS2__)
   if (path[1] != ":")
@@ -1273,8 +1248,8 @@ MagickExport void GetPathComponent(const char *path,PathType type,
         if (*p == '\0')
           break;
       }
-    if ((p != component) && (*p == ':') && (IsPathDirectory(component) < 0) &&
-        (IsPathAccessible(component) == MagickFalse))
+    if ((p != component) && (*p == ':') && (IsPathDirectory(path) < 0) &&
+        (IsPathAccessible(path) == MagickFalse))
       {
         /*
           Look for image format specification (e.g. ps3:image).
@@ -1292,6 +1267,28 @@ MagickExport void GetPathComponent(const char *path,PathType type,
         break;
       }
   }
+  subimage_length=0;
+  subimage_offset=0;
+  p=component+strlen(component)-1;
+  q=strrchr(component,'[');
+  if ((strlen(component) > 2) && (*p == ']') && (q != (char *) NULL) &&
+      ((q == component) || (*(q-1) != ']')) &&
+      (IsPathAccessible(path) == MagickFalse))
+    {
+      /*
+        Look for scene specification (e.g. img0001.pcd[4]).
+      */
+      *p='\0';
+      if ((IsSceneGeometry(q+1,MagickFalse) == MagickFalse) &&
+          (IsGeometry(q+1) == MagickFalse))
+        *p=']';
+      else
+        {
+          subimage_length=(size_t) (p-q);
+          subimage_offset=magick_length+1+(size_t) (q-component);
+          *q='\0';
+        }
+    }
   p=component;
   if (*p != '\0')
     for (p=component+strlen(component)-1; p > component; p--)
@@ -1368,7 +1365,6 @@ MagickExport void GetPathComponent(const char *path,PathType type,
         *component = '\0';
       break;
     }
-    case SubcanonicalPath:
     case CanonicalPath:
     case UndefinedPath:
       break;

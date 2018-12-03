@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -2883,10 +2883,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
     {
       (void) CopyMagickString(magic,image_info->magick,MagickPathExtent);
       magick_info=GetMagickInfo(magic,sans_exception);
-      if (frames != 0)
-        GetPathComponent(image_info->filename,SubcanonicalPath,component);
-      else
-        GetPathComponent(image_info->filename,CanonicalPath,component);
+      GetPathComponent(image_info->filename,CanonicalPath,component);
       (void) CopyMagickString(image_info->filename,component,MagickPathExtent);
     }
   else
