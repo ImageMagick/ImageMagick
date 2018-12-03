@@ -1235,24 +1235,27 @@ MagickExport void GetPathComponent(const char *path,PathType type,
   (void) CopyMagickString(component,path,MagickPathExtent);
   subimage_length=0;
   subimage_offset=0;
-  p=component+strlen(component)-1;
-  q=strrchr(component,'[');
-  if ((strlen(component) > 2) && (*p == ']') && (q != (char *) NULL) &&
-      ((q == component) || (*(q-1) != ']')) &&
-      (IsPathAccessible(path) == MagickFalse))
+  if (type != SubcanonicalPath)
     {
-      /*
-        Look for scene specification (e.g. img0001.pcd[4]).
-      */
-      *p='\0';
-      if ((IsSceneGeometry(q+1,MagickFalse) == MagickFalse) &&
-          (IsGeometry(q+1) == MagickFalse))
-        *p=']';
-      else
+      p=component+strlen(component)-1;
+      q=strrchr(component,'[');
+      if ((strlen(component) > 2) && (*p == ']') && (q != (char *) NULL) &&
+          ((q == component) || (*(q-1) != ']')) &&
+          (IsPathAccessible(path) == MagickFalse))
         {
-          subimage_length=(size_t) (p-q);
-          subimage_offset=magick_length+1+(size_t) (q-component);
-          *q='\0';
+          /*
+            Look for scene specification (e.g. img0001.pcd[4]).
+          */
+          *p='\0';
+          if ((IsSceneGeometry(q+1,MagickFalse) == MagickFalse) &&
+              (IsGeometry(q+1) == MagickFalse))
+            *p=']';
+          else
+            {
+              subimage_length=(size_t) (p-q);
+              subimage_offset=magick_length+1+(size_t) (q-component);
+              *q='\0';
+            }
         }
     }
   magick_length=0;
@@ -1365,6 +1368,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
         *component = '\0';
       break;
     }
+    case SubcanonicalPath:
     case CanonicalPath:
     case UndefinedPath:
       break;
