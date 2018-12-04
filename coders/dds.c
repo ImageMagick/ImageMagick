@@ -1962,8 +1962,9 @@ static MagickBooleanType ReadMipmaps(const ImageInfo *image_info,Image *image,
       for (i = 1; (i < (ssize_t) dds_info->mipmapcount) && w && h; i++)
       {
         AcquireNextImage(image_info,image,exception);
-        if (GetNextImageInList(image) == (Image *) NULL)
+        if (image->next == (Image *) NULL)
           return(MagickFalse);
+        image->next->alpha_trait=image->alpha_trait;
         image=SyncNextImageInList(image);
         status=SetImageExtent(image,w,h,exception);
         if (status == MagickFalse)
