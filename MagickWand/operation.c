@@ -1239,11 +1239,11 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
     {
       if (LocaleCompare("quality",option+1) == 0)
         {
-          if (IsGeometry(arg1) == MagickFalse)
+          if (IfSetOption && (IsGeometry(arg1) == MagickFalse))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           _image_info->quality= IfSetOption ? StringToUnsignedLong(arg1)
                                             : UNDEFINED_COMPRESSION_QUALITY;
-          (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
+          (void) SetImageOption(_image_info,option+1,ArgOption("0"));
           break;
         }
       if (LocaleCompare("quantize",option+1) == 0)
