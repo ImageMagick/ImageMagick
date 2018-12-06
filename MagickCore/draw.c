@@ -2348,7 +2348,7 @@ static SplayTreeInfo *GetMVGMacros(const char *primitive)
                     Extract macro.
                   */
                   GetNextToken(p,&p,extent,token);
-                  (void) CopyMagickString(macro,start,end-start);
+                  (void) CopyMagickString(macro,start,(size_t) (end-start));
                   (void) AddValueToSplayTree(macros,ConstantString(name),
                     ConstantString(macro));
                   break;
@@ -2870,8 +2870,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
             if (graphic_context[n]->fill.alpha != TransparentAlpha)
               graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
             else
-              graphic_context[n]->fill.alpha=ClampToQuantum(QuantumRange*
-                opacity);
+              graphic_context[n]->fill.alpha=(MagickRealType)
+                ClampToQuantum(QuantumRange*opacity);
             break;
           }
         if (LocaleCompare("fill-rule",keyword) == 0)
@@ -3658,8 +3658,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
             if (graphic_context[n]->stroke.alpha != TransparentAlpha)
               graphic_context[n]->stroke.alpha=graphic_context[n]->stroke_alpha;
             else
-              graphic_context[n]->stroke.alpha=ClampToQuantum(QuantumRange*
-                opacity);
+              graphic_context[n]->stroke.alpha=(MagickRealType)
+                ClampToQuantum(QuantumRange*opacity);
             break;
           }
         if (LocaleCompare("stroke-width",keyword) == 0)
