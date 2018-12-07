@@ -660,7 +660,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bmp_info.x_pixels=ReadBlobLSBLong(image);
         bmp_info.y_pixels=ReadBlobLSBLong(image);
         bmp_info.number_colors=ReadBlobLSBLong(image);
-        if (bmp_info.number_colors > GetBlobSize(image))
+        if ((MagickSizeType) bmp_info.number_colors > GetBlobSize(image))
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         bmp_info.colors_important=ReadBlobLSBLong(image);
         if (image->debug != MagickFalse)
@@ -1444,13 +1444,12 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->number_scenes != 0)
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
+    offset=(MagickOffsetType) bmp_info.ba_offset;
+    if (offset != 0)
+      if ((offset < TellBlob(image)) ||
+          (SeekBlob(image,offset,SEEK_SET) != offset))
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     *magick='\0';
-    if (bmp_info.ba_offset != 0)
-      {
-        offset=SeekBlob(image,(MagickOffsetType) bmp_info.ba_offset,SEEK_SET);
-        if (offset < 0)
-          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-      }
     count=ReadBlob(image,2,magick);
     if ((count == 2) && (IsBMP(magick,2) != MagickFalse))
       {
