@@ -1969,6 +1969,8 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
   Image
     *image;
 
+  PNGErrorInfo
+    *error_info;
 
   /* The unknown chunk structure contains the chunk data:
      png_byte name[5];
@@ -1993,9 +1995,6 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
       chunk-> name[3] == 102)
     {
       /* process eXIf or exIf chunk */
-
-      PNGErrorInfo
-        *error_info;
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         " recognized eXIf chunk");
@@ -2065,6 +2064,19 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
       image->page.height=(size_t) mng_get_long(&chunk->data[4]);
       image->page.x=(ssize_t) ((int) mng_get_long(&chunk->data[8]));
       image->page.y=(ssize_t) ((int) mng_get_long(&chunk->data[12]));
+
+      return(1);
+    }
+
+  /* acTL */
+  if ((chunk->name[0]  == 97) && (chunk->name[1]  == 99) &&
+      (chunk->name[2]  == 84) && (chunk->name[3]  == 76))
+    {
+      image=(Image *) png_get_user_chunk_ptr(ping);
+      error_info=(PNGErrorInfo *) png_get_error_ptr(ping);
+
+      (void) SetImageProperty(image,"png:acTL","chunk was found",
+        error_info->exception);
 
       return(1);
     }
