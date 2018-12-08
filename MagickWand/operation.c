@@ -1971,8 +1971,12 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & (RhoValue|SigmaValue)) == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          if ((flags & PercentValue) != 0)
-            geometry_info.psi=(double) 65536.0*geometry_info.psi/100.0;
+           if ((flags & XiValue) == 0)
+             geometry_info.xi=128.0;
+           if ((flags & PercentValue) != 0)
+             geometry_info.psi=(double) ((PerceptibleReciprocal(
+               geometry_info.xi)*(geometry_info.rho*geometry_info.sigma))*
+               (1.0+65535.0*geometry_info.psi/100.0));
           (void) CLAHEImage(_image,(size_t) geometry_info.rho,(size_t)
             geometry_info.sigma,geometry_info.xi,geometry_info.psi,_exception);
           break;

@@ -11488,8 +11488,12 @@ Mogrify(ref,...)
             {
               flags=ParseGeometry(argument_list[0].string_reference,
                 &geometry_info);
+              if ((flags & XiValue) == 0)
+                geometry_info.xi=128.0;
               if ((flags & PercentValue) != 0)
-                geometry_info.xi=QuantumRange*geometry_info.xi/100.0;
+                geometry_info.psi=(double) ((PerceptibleReciprocal(
+                  geometry_info.xi)*(geometry_info.rho*geometry_info.sigma))*
+                  (1.0+65535.0*geometry_info.psi/100.0));
             }
           if (attribute_flag[1] != 0)
             geometry_info.rho=argument_list[1].integer_reference;
