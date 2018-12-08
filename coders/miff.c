@@ -2104,7 +2104,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
           }
       }
     else
-      if (image->depth < 16)    
+      if (image->depth < 16)
         (void) DeleteImageProperty(image,"quantum:format");
     compression=UndefinedCompression;
     if (image_info->compression != UndefinedCompression)
