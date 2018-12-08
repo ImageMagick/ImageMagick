@@ -2969,6 +2969,7 @@ RestoreMSCWarning
           utf16=(wchar_t *) RelinquishMagickMemory(utf16);
         }
     }
+  (void) WriteBlobString(image,buffer);
   seconds=time((time_t *) NULL);
 #if defined(MAGICKCORE_HAVE_LOCALTIME_R)
   (void) localtime_r(&seconds,&local_time);
