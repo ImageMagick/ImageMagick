@@ -1409,14 +1409,18 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       if (LocaleCompare(encoding,"GB2312") == 0)
         encoding_type=FT_ENCODING_PRC;
 #endif
+#if defined(FT_ENCODING_JOHAB)
       if (LocaleCompare(encoding,"Johab") == 0)
         encoding_type=FT_ENCODING_JOHAB;
+#endif
 #if defined(FT_ENCODING_ADOBE_LATIN_1)
       if (LocaleCompare(encoding,"Latin-1") == 0)
         encoding_type=FT_ENCODING_ADOBE_LATIN_1;
 #endif
+#if defined(FT_ENCODING_ADOBE_LATIN_2)
       if (LocaleCompare(encoding,"Latin-2") == 0)
         encoding_type=FT_ENCODING_OLD_LATIN_2;
+#endif
       if (LocaleCompare(encoding,"None") == 0)
         encoding_type=FT_ENCODING_NONE;
       if (LocaleCompare(encoding,"SJIScode") == 0)
