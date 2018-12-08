@@ -1389,42 +1389,44 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   if ((draw_info->metrics != (char *) NULL) &&
       (IsPathAccessible(draw_info->metrics) != MagickFalse))
     (void) FT_Attach_File(face,draw_info->metrics);
-  encoding_type=ft_encoding_unicode;
+  encoding_type=FT_ENCODING_UNICODE;
   ft_status=FT_Select_Charmap(face,encoding_type);
   if ((ft_status != 0) && (face->num_charmaps != 0))
     ft_status=FT_Set_Charmap(face,face->charmaps[0]);
   if (encoding != (const char *) NULL)
     {
       if (LocaleCompare(encoding,"AdobeCustom") == 0)
-        encoding_type=ft_encoding_adobe_custom;
+        encoding_type=FT_ENCODING_ADOBE_CUSTOM;
       if (LocaleCompare(encoding,"AdobeExpert") == 0)
-        encoding_type=ft_encoding_adobe_expert;
+        encoding_type=FT_ENCODING_ADOBE_EXPERT;
       if (LocaleCompare(encoding,"AdobeStandard") == 0)
-        encoding_type=ft_encoding_adobe_standard;
+        encoding_type=FT_ENCODING_ADOBE_STANDARD;
       if (LocaleCompare(encoding,"AppleRoman") == 0)
-        encoding_type=ft_encoding_apple_roman;
+        encoding_type=FT_ENCODING_APPLE_ROMAN;
       if (LocaleCompare(encoding,"BIG5") == 0)
-        encoding_type=ft_encoding_big5;
+        encoding_type=FT_ENCODING_BIG5;
+#if defined(FT_ENCODING_PRC)
       if (LocaleCompare(encoding,"GB2312") == 0)
-        encoding_type=ft_encoding_gb2312;
+        encoding_type=FT_ENCODING_PRC;
+#endif
       if (LocaleCompare(encoding,"Johab") == 0)
-        encoding_type=ft_encoding_johab;
-#if defined(ft_encoding_latin_1)
+        encoding_type=FT_ENCODING_JOHAB;
+#if defined(FT_ENCODING_ADOBE_LATIN_1)
       if (LocaleCompare(encoding,"Latin-1") == 0)
-        encoding_type=ft_encoding_latin_1;
+        encoding_type=FT_ENCODING_ADOBE_LATIN_1;
 #endif
       if (LocaleCompare(encoding,"Latin-2") == 0)
-        encoding_type=ft_encoding_latin_2;
+        encoding_type=FT_ENCODING_OLD_LATIN_2;
       if (LocaleCompare(encoding,"None") == 0)
-        encoding_type=ft_encoding_none;
+        encoding_type=FT_ENCODING_NONE;
       if (LocaleCompare(encoding,"SJIScode") == 0)
-        encoding_type=ft_encoding_sjis;
+        encoding_type=FT_ENCODING_SJIS;
       if (LocaleCompare(encoding,"Symbol") == 0)
-        encoding_type=ft_encoding_symbol;
+        encoding_type=FT_ENCODING_MS_SYMBOL;
       if (LocaleCompare(encoding,"Unicode") == 0)
-        encoding_type=ft_encoding_unicode;
+        encoding_type=FT_ENCODING_UNICODE;
       if (LocaleCompare(encoding,"Wansung") == 0)
-        encoding_type=ft_encoding_wansung;
+        encoding_type=FT_ENCODING_WANSUNG;
       ft_status=FT_Select_Charmap(face,encoding_type);
       if (ft_status != 0)
         {
