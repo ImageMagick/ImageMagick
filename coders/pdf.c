@@ -1342,9 +1342,6 @@ RestoreMSCWarning
   unsigned char
     *pixels;
 
-  wchar_t
-    *utf16;
-
   /*
     Open output image file.
   */
@@ -2953,16 +2950,24 @@ RestoreMSCWarning
     object);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<<\n");
-  utf16=ConvertUTF8ToUTF16((unsigned char *) basename,&length);
-  if (utf16 != (wchar_t *) NULL)
+  if (LocaleCompare(image_info->magick,"PDFA") == 0)
+    (void) FormatLocaleString(buffer,MagickPathExtent,"/Title (%s)\n",
+      EscapeParenthesis(basename));
+  else
     {
-      (void) FormatLocaleString(buffer,MagickPathExtent,"/Title (\xfe\xff");
-      (void) WriteBlobString(image,buffer);
-      for (i=0; i < (ssize_t) length; i++)
-        (void) WriteBlobMSBShort(image,(unsigned short) utf16[i]);
-      (void) FormatLocaleString(buffer,MagickPathExtent,")\n");
-      (void) WriteBlobString(image,buffer);
-      utf16=(wchar_t *) RelinquishMagickMemory(utf16);
+      wchar_t
+        *utf16;
+
+      utf16=ConvertUTF8ToUTF16((unsigned char *) basename,&length);
+      if (utf16 != (wchar_t *) NULL)
+        {
+          (void) FormatLocaleString(buffer,MagickPathExtent,"/Title (\xfe\xff");
+          (void) WriteBlobString(image,buffer);
+          for (i=0; i < (ssize_t) length; i++)
+            (void) WriteBlobMSBShort(image,(unsigned short) utf16[i]);
+          (void) FormatLocaleString(buffer,MagickPathExtent,")\n");
+          utf16=(wchar_t *) RelinquishMagickMemory(utf16);
+        }
     }
   seconds=time((time_t *) NULL);
 #if defined(MAGICKCORE_HAVE_LOCALTIME_R)
