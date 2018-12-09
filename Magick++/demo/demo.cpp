@@ -82,6 +82,8 @@ int main( int /*argc*/, char ** argv)
       example.label( "Annotate" );
       example.density( "72x72" );
       example.fontPointsize( 18 );
+      if (getenv("MAGICK_FONT") != 0)
+        example.font(string(getenv("MAGICK_FONT")));
       example.strokeColor( Color() );
       example.fillColor( "gold" );
       example.annotate( "Magick++", "+0+20", NorthGravity );

@@ -143,6 +143,8 @@ int main( int /*argc*/, char ** argv)
     //
     // Draw text.
     //
+    if (getenv("MAGICK_FONT") != 0)
+      drawList.push_back(DrawableFont(string(getenv("MAGICK_FONT"))));
     drawList.push_back(DrawableFillColor("green"));
     drawList.push_back(DrawableStrokeColor(Color())); // unset color
     drawList.push_back(DrawablePointSize(24));
