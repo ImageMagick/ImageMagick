@@ -292,10 +292,11 @@ MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
 %
 */
 
+
 static void ClipCLAHEHistogram(const double clip_limit,const size_t number_bins,
   size_t *histogram)
 {
-#define NumberCLAHEGrays  (65536)
+#define NumberCLAHEGrays  (4096)
 #define MaxCLAHETiles  (16)
 
   register ssize_t
@@ -563,17 +564,23 @@ static MagickBooleanType CLAHE(const size_t width,const size_t height,
     tile.height=tile_height;
     tile.y=y-1;
     offset.y=tile.y+1;
-    if (y == 0)  /* top row */
+    if (y == 0)
       {
+        /*
+          Top row.
+        */
         tile.height=tile_height >> 1;
         tile.y=0;
         offset.y=0;
       }
     else
-      if (y == (ssize_t) y_tiles)  /* bottom row */
+      if (y == (ssize_t) y_tiles)
         {
-          tile.height=tile_height >> 1;
-          tile.y=(ssize_t) y_tiles-1;
+          /*
+            Bottom row.
+          */
+          tile.height=(tile_height+1) >> 1;
+          tile.y=y_tiles-1;
           offset.y=tile.y;
         }
     for (x=0; x <= (ssize_t) x_tiles; x++)
@@ -581,24 +588,30 @@ static MagickBooleanType CLAHE(const size_t width,const size_t height,
       tile.width=tile_width;
       tile.x=x-1;
       offset.x=tile.x+1;
-      if (x == 0)  /* left column */
+      if (x == 0)
         {
+          /*
+            Left column.
+          */
           tile.width=tile_width >> 1;
           tile.x=0;
           offset.x=0;
         }
       else
-        if (x == (ssize_t) x_tiles)  /* right column */
+        if (x == (ssize_t) x_tiles)
           {
-            tile.width=tile_width >> 1;
-            tile.x=(ssize_t) x_tiles-1;
+            /*
+              Right column.
+            */
+            tile.width=(tile_width+1) >> 1;
+            tile.x=x_tiles-1;
             offset.x=tile.x;
           }
       InterpolateCLAHE(width,
-        tiles+(number_bins*(tile.y*x_tiles+tile.x)),  /* Q12 */
-        tiles+(number_bins*(tile.y*x_tiles+offset.x)),  /* Q22 */
-        tiles+(number_bins*(offset.y*x_tiles+tile.x)),  /* Q11 */
-        tiles+(number_bins*(offset.y*x_tiles+offset.x)),  /* Q21 */
+        tiles+(number_bins*(tile.y*x_tiles+tile.x)),     /* Q12 */
+        tiles+(number_bins*(tile.y*x_tiles+offset.x)),   /* Q22 */
+        tiles+(number_bins*(offset.y*x_tiles+tile.x)),   /* Q11 */
+        tiles+(number_bins*(offset.y*x_tiles+offset.x)), /* Q21 */
         tile.width,tile.height,lut,p);
       p+=tile.width;
     }
@@ -651,10 +664,10 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t x_tiles,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=MagickTrue;
-  tile.x=(ssize_t) (x_tiles < 2 ? 2 : x_tiles >= MaxCLAHETiles ? MaxCLAHETiles-
-    1 : x_tiles);
-  tile.y=(ssize_t) (y_tiles < 2 ? 2 : y_tiles >= MaxCLAHETiles ? MaxCLAHETiles-
-    1 : y_tiles);
+  tile.x=(ssize_t) (x_tiles < 2 ? 2 : x_tiles >= MaxCLAHETiles ?
+    MaxCLAHETiles-1 : x_tiles);
+  tile.y=(ssize_t) (y_tiles < 2 ? 2 : y_tiles >= MaxCLAHETiles ?
+    MaxCLAHETiles-1 : y_tiles);
   width=((image->columns+tile.x-1)/tile.x)*tile.x;
   height=((image->rows+tile.y-1)/tile.y)*tile.y;
   pixel_cache=AcquireVirtualMemory(width,height*sizeof(*pixels));
@@ -688,7 +701,7 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t x_tiles,
       }
     for (x=0; x < (ssize_t) width; x++)
     {
-      pixels[n++]=ScaleQuantumToShort(p[0]);
+      pixels[n++]=ScaleQuantumToShort(p[0]/16);
       p+=GetPixelChannels(image);
     }
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
@@ -707,9 +720,9 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t x_tiles,
       }
   }
   image_view=DestroyCacheView(image_view);
-  status=CLAHE(width,height,0,65535,(size_t) tile.x,(size_t) tile.y,
-    number_bins == 0 ? (size_t) 128 : MagickMin(number_bins,256),clip_limit,
-    pixels);
+  status=CLAHE(width,height,0,NumberCLAHEGrays-1,(size_t) tile.x,(size_t)
+    tile.y,number_bins == 0 ? (size_t) 128 : MagickMin(number_bins,256),
+    clip_limit,pixels);
   if (status == MagickFalse)
     (void) ThrowMagickException(exception,GetMagickModule(),
       ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
@@ -733,7 +746,7 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t x_tiles,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      q[0]=ScaleShortToQuantum(pixels[n++]);
+      q[0]=ScaleShortToQuantum(16*pixels[n++]);
       q+=GetPixelChannels(image);
     }
     n+=(width-image->columns);
