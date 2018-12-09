@@ -237,6 +237,9 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
   length=GetImageListLength(images);
   for (p=(char *) scenes; *p != '\0';)
   {
+    MagickBooleanType
+      match;
+
     while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == ','))
       p++;
     first=(ssize_t) strtol(p,&p,10);
@@ -257,15 +260,10 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
           if (last > (ssize_t) length)
             last=(ssize_t) length;
       }
-    first=MagickMin(MagickMax(first,0),(ssize_t) length);
-    last=MagickMin(MagickMax(last,0),(ssize_t) length);
+    match=MagickFalse;
     step=(ssize_t) (first > last ? -1 : 1);
     for ( ; first != (last+step); first+=step)
     {
-      size_t
-        clone_length;
-
-      clone_length=GetImageListLength(clone_images);
       i=0;
       for (next=images; next != (Image *) NULL; next=GetNextImageInList(next))
       {
@@ -275,10 +273,11 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
             if (image == (Image *) NULL)
               break;
             AppendImageToList(&clone_images,image);
+            match=MagickTrue;
           }
         i++;
       }
-      if (clone_length == GetImageListLength(clone_images))
+      if (match == MagickFalse)
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
           "InvalidImageIndex","`%s'",images->filename);
     }
