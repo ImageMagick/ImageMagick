@@ -682,6 +682,7 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t x_tiles,
     }
   pixels=(unsigned short *) GetVirtualMemoryBlob(pixel_cache);
   image_view=AcquireVirtualCacheView(image,exception);
+  progress=0;
   n=0;
   for (y=0; y < (ssize_t) height; y++)
   {
