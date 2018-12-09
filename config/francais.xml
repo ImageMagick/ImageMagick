@@ -610,7 +610,7 @@
         <message name="CompositeImageRequired">
           image composite requise
         </message>
-        <message name="CurlyBrasesNestedTooDeeply">
+        <message name="CurlyBracesNestedTooDeeply">
           trop d'imbrication de curly braces
         </message>
         <message name="DepreciatedOptionNoCode">

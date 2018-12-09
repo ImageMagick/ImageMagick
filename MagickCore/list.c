@@ -262,6 +262,10 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
     step=(ssize_t) (first > last ? -1 : 1);
     for ( ; first != (last+step); first+=step)
     {
+      size_t
+        clone_length;
+
+      clone_length=GetImageListLength(clone_images);
       i=0;
       for (next=images; next != (Image *) NULL; next=GetNextImageInList(next))
       {
@@ -274,6 +278,9 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
           }
         i++;
       }
+      if (clone_length == GetImageListLength(clone_images))
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+          "InvalidImageIndex","`%s'",images->filename);
     }
   }
   return(GetFirstImageInList(clone_images));
