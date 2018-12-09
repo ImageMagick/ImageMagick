@@ -525,6 +525,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   opj_destroy_codec(jp2_codec);
   opj_image_destroy(jp2_image);
   (void) CloseBlob(image);
+  if ((image_info->number_scenes != 0) && (image_info->scene != 0))
+    AppendImageToList(&image,CloneImageList(image,exception));
   return(GetFirstImageInList(image));
 }
 #endif
