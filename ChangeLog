@@ -1,8 +1,10 @@
+2018-12-10  7.0.8-16 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-16, GIT revision 15109:9a9af88de:20181210.
+
 2018-12-02  7.0.8-16 Cristy  <quetzlzacatenango@image...>
   * Add support for -clahe clip limit with percentages (e.g. -clahe 2x2+128+3%)
   * Check for modulo underflow.
   * Change SVG default DPI to 96 from 90 to meet recommendation of SVG2 & CSS.
-
 
 2018-12-01  7.0.8-15 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-15, GIT revision 15059:2fb22e07b:20181201
