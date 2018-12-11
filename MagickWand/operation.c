@@ -1968,11 +1968,11 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("clahe",option+1) == 0)
         {
-          flags=ParseGeometry(arg1,&geometry_info);
-          if ((flags & (RhoValue|SigmaValue)) == 0)
+          if (IsGeometry(arg1) == MagickFalse)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          (void) CLAHEImage(_image,(size_t) geometry_info.rho,(size_t)
-            geometry_info.sigma,geometry_info.xi,geometry_info.psi,_exception);
+          (void) ParseRegionGeometry(_image,arg1,&geometry,_exception);
+          (void) CLAHEImage(_image,geometry.width,geometry.height,
+            (size_t) geometry.x,(double) geometry.y,_exception);
           break;
         }
       if (LocaleCompare("clamp",option+1) == 0)

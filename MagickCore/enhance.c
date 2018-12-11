@@ -271,17 +271,19 @@ MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
 %
 %  The format of the CLAHEImage method is:
 %
-%      MagickBooleanType CLAHEImage(Image *image,const size_t x_tiles,
-%        const size_t y_tiles,const size_t number_bins,const double clip_limit,
-%        ExceptionInfo *exception)
+%      MagickBooleanType CLAHEImage(Image *image,const size_t tile_width,
+%        const size_t tile_height,const size_t number_bins,
+%        const double clip_limit,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o x_tiles: number of tile divisions to use in horizontal direction.
+%    o tile_width: the width of the tile divisions to use in horizontal
+%      direction.
 %
-%    o y_tiles: number of tile divisions to use in vertical direction.
+%    o tile_height: the height of the tile divisions to use in vertical
+%      direction.
 %
 %    o number_bins: number of bins for histogram ("dynamic range").
 %
@@ -291,7 +293,6 @@ MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
 
 static void ClipCLAHEHistogram(const double clip_limit,const size_t number_bins,
   size_t *histogram)
@@ -621,8 +622,8 @@ static MagickBooleanType CLAHE(const size_t width,const size_t height,
   return(MagickTrue);
 }
 
-MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t x_tiles,
-  const size_t y_tiles,const size_t number_bins,const double clip_limit,
+MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t tile_width,
+  const size_t tile_height,const size_t number_bins,const double clip_limit,
   ExceptionInfo *exception)
 {
 #define CLAHEImageTag  "CLAHE/Image"
@@ -664,10 +665,12 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t x_tiles,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=MagickTrue;
-  tile.x=(ssize_t) (x_tiles < 2 ? 2 : x_tiles >= MaxCLAHETiles ?
-    MaxCLAHETiles-1 : x_tiles);
-  tile.y=(ssize_t) (y_tiles < 2 ? 2 : y_tiles >= MaxCLAHETiles ?
-    MaxCLAHETiles-1 : y_tiles);
+  tile.x=(ssize_t) (PerceptibleReciprocal(tile_width)*image->columns);
+  tile.y=(ssize_t) (PerceptibleReciprocal(tile_height)*image->rows);
+  tile.x=(ssize_t) (tile.x < 2 ? 2 : tile.x >= MaxCLAHETiles ? MaxCLAHETiles-1 :
+    tile.x);
+  tile.y=(ssize_t) (tile.y < 2 ? 2 : tile.y >= MaxCLAHETiles ? MaxCLAHETiles-1 :
+    tile.y);
   width=((image->columns+tile.x-1)/tile.x)*tile.x;
   height=((image->rows+tile.y-1)/tile.y)*tile.y;
   pixel_cache=AcquireVirtualMemory(width,height*sizeof(*pixels));

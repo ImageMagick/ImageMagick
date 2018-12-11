@@ -571,9 +571,9 @@ static struct
       {"low-black", RealReference}, {"low-white", RealReference},
       {"high-white", RealReference}, {"high-black", RealReference},
       {"channel", MagickChannelOptions} } },
-    { "CLAHE", { {"geometry", StringReference},
-      {"x-tiles", IntegerReference}, {"y-tiles", IntegerReference},
-      {"number-bins", RealReference}, {"clip-limit", RealReference} } },
+    { "CLAHE", { {"geometry", StringReference}, {"width", IntegerReference},
+      {"height", IntegerReference}, {"number-bins", IntegerReference},
+      {"clip-limit", IntegerReference} } },
   };
 
 static SplayTreeInfo
@@ -11485,19 +11485,18 @@ Mogrify(ref,...)
         case 149:  /* CLAHE */
         {
           if (attribute_flag[0] != 0)
-            flags=ParseGeometry(argument_list[0].string_reference,
-              &geometry_info);
+            flags=ParseRegionGeometry(image,argument_list[0].string_reference,
+              &geometry,exception);
           if (attribute_flag[1] != 0)
-            geometry_info.rho=argument_list[1].integer_reference;
+            geometry.width=argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
-            geometry_info.sigma=argument_list[2].integer_reference;
+            geometry.height=argument_list[2].integer_reference;
           if (attribute_flag[3] != 0)
-            geometry_info.xi=argument_list[3].integer_reference;;
+            geometry.x=argument_list[3].integer_reference;;
           if (attribute_flag[4] != 0)
-            geometry_info.psi=argument_list[4].real_reference;;
-          (void) CLAHEImage(image,(size_t) geometry_info.rho,(size_t)
-            (size_t) geometry_info.sigma,geometry_info.xi,(double)
-            geometry_info.psi,exception);
+            geometry.y=argument_list[4].integer_reference;;
+          (void) CLAHEImage(image,geometry.width,geometry.height,
+            (size_t) geometry_info.x,(double) geometry_info.y,exception);
           break;
         }
       }
