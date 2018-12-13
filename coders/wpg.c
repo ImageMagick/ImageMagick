@@ -306,7 +306,6 @@ static MagickBooleanType InsertRow(Image *image,unsigned char *p,ssize_t y,
               SetPixelIndex(image,index,q);
               if (index < image->colors)
                 SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
-              SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
               q+=GetPixelChannels(image);
             }
             p++;
