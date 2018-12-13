@@ -665,10 +665,10 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t tile_width,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=MagickTrue;
-  tile.x=(ssize_t) (PerceptibleReciprocal(tile_width)*image->columns);
-  tile.y=(ssize_t) (PerceptibleReciprocal(tile_height)*image->rows);
+  tile.x=(ssize_t) (image->columns/(tile_width == 0 ? 1 : tile_width));
   tile.x=(ssize_t) (tile.x < 2 ? 2 : tile.x >= MaxCLAHETiles ? MaxCLAHETiles-1 :
     tile.x);
+  tile.y=(ssize_t) (image->rows/(tile_height == 0 ? 1 : tile_height));
   tile.y=(ssize_t) (tile.y < 2 ? 2 : tile.y >= MaxCLAHETiles ? MaxCLAHETiles-1 :
     tile.y);
   width=((image->columns+tile.x-1)/tile.x)*tile.x;

@@ -859,6 +859,8 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
       if (origin == TopLeftOrientation || origin == TopRightOrientation)
         tga_info.attributes|=(1UL << 5);
     }
+  if ((image->columns > 65535) || (image->rows > 65535))
+    ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
   /*
     Write TGA header.
   */
