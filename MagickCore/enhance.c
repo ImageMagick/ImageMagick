@@ -435,7 +435,7 @@ static void InterpolateCLAHE(const RectangleInfo *clahe_info,const size_t *Q12,
   }
 }
 
-static void GenerateCLAHELut(const IntervalInfo *intensity_info,
+static void GenerateCLAHELut(const IntervalInfo *range_info,
   const size_t number_bins,unsigned short *lut)
 {
   ssize_t
@@ -447,13 +447,12 @@ static void GenerateCLAHELut(const IntervalInfo *intensity_info,
   /*
     Scale input image [intensity min,max] to [0,number_bins-1].
   */
-  delta=(unsigned short) ((intensity_info->max-intensity_info->min)/
-    number_bins+1);
-  for (i=(ssize_t) intensity_info->min; i <= (ssize_t) intensity_info->max; i++)
-    lut[i]=(unsigned short) ((i-intensity_info->min)/delta);
+  delta=(unsigned short) ((range_info->max-range_info->min)/number_bins+1);
+  for (i=(ssize_t) range_info->min; i <= (ssize_t) range_info->max; i++)
+    lut[i]=(unsigned short) ((i-range_info->min)/delta);
 }
 
-static void MapCLAHEHistogram(const IntervalInfo *intensity_info,
+static void MapCLAHEHistogram(const IntervalInfo *range_info,
   const size_t number_bins,const size_t number_pixels,size_t *histogram)
 {
   double
@@ -466,19 +465,19 @@ static void MapCLAHEHistogram(const IntervalInfo *intensity_info,
   /*
     Rescale histogram to range [min-intensity .. max-intensity].
   */
-  scale=(double) (intensity_info->max-intensity_info->min)/number_pixels;
+  scale=(double) (range_info->max-range_info->min)/number_pixels;
   sum=0.0;
   for (i=0; i < (ssize_t) number_bins; i++)
   {
     sum+=histogram[i];
-    histogram[i]=(size_t) (intensity_info->min+scale*sum);
-    if (histogram[i] > intensity_info->max)
-      histogram[i]=intensity_info->max;
+    histogram[i]=(size_t) (range_info->min+scale*sum);
+    if (histogram[i] > range_info->max)
+      histogram[i]=range_info->max;
   }
 }
 
 static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
-  const IntervalInfo *intensity_info,const size_t number_bins,
+  const IntervalInfo *range_info,const size_t number_bins,
   const double clip_limit,unsigned short *pixels)
 {
   MemoryInfo
@@ -507,8 +506,8 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
   assert((clahe_info->height % clahe_info->y) == 0);
   assert(clahe_info->x < MaxCLAHETiles);
   assert(clahe_info->y < MaxCLAHETiles);
-  assert(intensity_info->max < NumberCLAHEGrays);
-  assert(intensity_info->min < intensity_info->max);
+  assert(range_info->max < NumberCLAHEGrays);
+  assert(range_info->min < range_info->max);
   assert((clahe_info->x >= 2) || (clahe_info->y >= 2));
   assert(number_bins != 0);
   if (clip_limit == 1.0)
@@ -531,7 +530,7 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
   /*
     Generate greylevel mappings for each tile.
   */
-  GenerateCLAHELut(intensity_info,number_bins,lut);
+  GenerateCLAHELut(range_info,number_bins,lut);
   p=pixels;
   for (y=0; y < (ssize_t) clahe_info->y; y++)
   {
@@ -546,8 +545,8 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
       histogram=tiles+(number_bins*(y*clahe_info->x+x));
       GenerateCLAHEHistogram(clahe_info,&tile_info,number_bins,lut,p,histogram);
       ClipCLAHEHistogram((double) limit,number_bins,histogram);
-      MapCLAHEHistogram(intensity_info,number_bins,tile_info.width*
-        tile_info.height,histogram);
+      MapCLAHEHistogram(range_info,number_bins,tile_info.width*tile_info.height,
+        histogram);
       p+=tile_info.width;
     }
     p+=clahe_info->width*(tile_info.height-1);
@@ -640,7 +639,7 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
     colorspace;
 
   IntervalInfo
-    intensity_info;
+    range_info;
 
   MagickBooleanType
     status;
@@ -685,8 +684,8 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
       clahe_info.y=MaxCLAHETiles;
   clahe_info.width=((image->columns+clahe_info.x-1)/clahe_info.x)*clahe_info.x;
   clahe_info.height=((image->rows+clahe_info.y-1)/clahe_info.y)*clahe_info.y;
-  intensity_info.min=0;
-  intensity_info.max=NumberCLAHEGrays-1;
+  range_info.min=0;
+  range_info.max=NumberCLAHEGrays-1;
   pixel_cache=AcquireVirtualMemory(clahe_info.width,clahe_info.height*
     sizeof(*pixels));
   if (pixel_cache == (MemoryInfo *) NULL)
@@ -739,7 +738,7 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
       }
   }
   image_view=DestroyCacheView(image_view);
-  status=CLAHE(&clahe_info,&intensity_info,number_bins == 0 ? (size_t) 128 :
+  status=CLAHE(&clahe_info,&range_info,number_bins == 0 ? (size_t) 128 :
     MagickMin(number_bins,256),clip_limit,pixels);
   if (status == MagickFalse)
     (void) ThrowMagickException(exception,GetMagickModule(),
