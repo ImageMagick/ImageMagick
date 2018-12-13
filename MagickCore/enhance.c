@@ -292,12 +292,12 @@ MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
 %
 */
 
-typedef struct _IntervalInfo
+typedef struct _RangeInfo
 {
   unsigned short
     min,
     max;
-} IntervalInfo;
+} RangeInfo;
 
 static void ClipCLAHEHistogram(const double clip_limit,const size_t number_bins,
   size_t *histogram)
@@ -435,7 +435,7 @@ static void InterpolateCLAHE(const RectangleInfo *clahe_info,const size_t *Q12,
   }
 }
 
-static void GenerateCLAHELut(const IntervalInfo *range_info,
+static void GenerateCLAHELut(const RangeInfo *range_info,
   const size_t number_bins,unsigned short *lut)
 {
   ssize_t
@@ -452,7 +452,7 @@ static void GenerateCLAHELut(const IntervalInfo *range_info,
     lut[i]=(unsigned short) ((i-range_info->min)/delta);
 }
 
-static void MapCLAHEHistogram(const IntervalInfo *range_info,
+static void MapCLAHEHistogram(const RangeInfo *range_info,
   const size_t number_bins,const size_t number_pixels,size_t *histogram)
 {
   double
@@ -477,7 +477,7 @@ static void MapCLAHEHistogram(const IntervalInfo *range_info,
 }
 
 static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
-  const IntervalInfo *range_info,const size_t number_bins,
+  const RangeInfo *range_info,const size_t number_bins,
   const double clip_limit,unsigned short *pixels)
 {
   MemoryInfo
@@ -638,7 +638,7 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
   ColorspaceType
     colorspace;
 
-  IntervalInfo
+  RangeInfo
     range_info;
 
   MagickBooleanType
