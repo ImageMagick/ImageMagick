@@ -18,13 +18,13 @@
 %                                 June 2007                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -1983,113 +1983,132 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
       lookup = "p{ xx-page.x-.5, yy-page.y-.5 }"; /* simplify lookup */
     }
 
-    switch (method) {
+    switch (method)
+    {
       case AffineDistortion:
       {
-        double *inverse;
+        double
+          *inverse;
 
-        inverse = (double *) AcquireQuantumMemory(6,sizeof(*inverse));
-        if (inverse == (double *) NULL) {
-          coeff = (double *) RelinquishMagickMemory(coeff);
-          (void) ThrowMagickException(exception,GetMagickModule(),
-                  ResourceLimitError,"MemoryAllocationFailed",
-                  "%s", "DistortImages");
-          return((Image *) NULL);
-        }
+        inverse=(double *) AcquireQuantumMemory(6,sizeof(*inverse));
+        if (inverse == (double *) NULL)
+          {
+            coeff=(double *) RelinquishMagickMemory(coeff);
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              ResourceLimitError,"MemoryAllocationFailed","%s","DistortImages");
+            return((Image *) NULL);
+          }
         InvertAffineCoefficients(coeff, inverse);
         CoefficientsToAffineArgs(inverse);
         (void) FormatLocaleFile(stderr, "Affine Projection:\n");
-        (void) FormatLocaleFile(stderr, "  -distort AffineProjection \\\n      '");
+        (void) FormatLocaleFile(stderr,
+          "  -distort AffineProjection \\\n      '");
         for (i=0; i < 5; i++)
           (void) FormatLocaleFile(stderr, "%lf,", inverse[i]);
         (void) FormatLocaleFile(stderr, "%lf'\n", inverse[5]);
-        inverse = (double *) RelinquishMagickMemory(inverse);
-
+        inverse=(double *) RelinquishMagickMemory(inverse);
         (void) FormatLocaleFile(stderr, "Affine Distort, FX Equivelent:\n");
         (void) FormatLocaleFile(stderr, "%s", image_gen);
-        (void) FormatLocaleFile(stderr, "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
-        (void) FormatLocaleFile(stderr, "       xx=%+lf*ii %+lf*jj %+lf;\n",
-            coeff[0], coeff[1], coeff[2]);
-        (void) FormatLocaleFile(stderr, "       yy=%+lf*ii %+lf*jj %+lf;\n",
-            coeff[3], coeff[4], coeff[5]);
-        (void) FormatLocaleFile(stderr, "       %s' \\\n", lookup);
-
+        (void) FormatLocaleFile(stderr,
+          "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
+        (void) FormatLocaleFile(stderr,"       xx=%+lf*ii %+lf*jj %+lf;\n",
+          coeff[0],coeff[1],coeff[2]);
+        (void) FormatLocaleFile(stderr,"       yy=%+lf*ii %+lf*jj %+lf;\n",
+          coeff[3],coeff[4],coeff[5]);
+        (void) FormatLocaleFile(stderr,"       %s' \\\n",lookup);
         break;
       }
-
       case PerspectiveDistortion:
       {
-        double *inverse;
+        double
+          *inverse;
 
-        inverse = (double *) AcquireQuantumMemory(8,sizeof(*inverse));
-        if (inverse == (double *) NULL) {
-          coeff = (double *) RelinquishMagickMemory(coeff);
-          (void) ThrowMagickException(exception,GetMagickModule(),
-                  ResourceLimitError,"MemoryAllocationFailed",
-                  "%s", "DistortCoefficients");
-          return((Image *) NULL);
-        }
+        inverse=(double *) AcquireQuantumMemory(8,sizeof(*inverse));
+        if (inverse == (double *) NULL)
+          {
+            coeff=(double *) RelinquishMagickMemory(coeff);
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              ResourceLimitError,"MemoryAllocationFailed","%s",
+              "DistortCoefficients");
+            return((Image *) NULL);
+          }
         InvertPerspectiveCoefficients(coeff, inverse);
-        (void) FormatLocaleFile(stderr, "Perspective Projection:\n");
-        (void) FormatLocaleFile(stderr, "  -distort PerspectiveProjection \\\n      '");
-        for (i=0; i<4; i++)
-          (void) FormatLocaleFile(stderr, "%lf, ", inverse[i]);
+        (void) FormatLocaleFile(stderr,"Perspective Projection:\n");
+        (void) FormatLocaleFile(stderr,
+          "  -distort PerspectiveProjection \\\n      '");
+        for (i=0; i < 4; i++)
+          (void) FormatLocaleFile(stderr, "%.*g, ",GetMagickPrecision(),
+            inverse[i]);
         (void) FormatLocaleFile(stderr, "\n       ");
-        for (; i<7; i++)
-          (void) FormatLocaleFile(stderr, "%lf, ", inverse[i]);
-        (void) FormatLocaleFile(stderr, "%lf'\n", inverse[7]);
-        inverse = (double *) RelinquishMagickMemory(inverse);
-
-        (void) FormatLocaleFile(stderr, "Perspective Distort, FX Equivelent:\n");
-        (void) FormatLocaleFile(stderr, "%s", image_gen);
-        (void) FormatLocaleFile(stderr, "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
-        (void) FormatLocaleFile(stderr, "       rr=%+lf*ii %+lf*jj + 1;\n",
-            coeff[6], coeff[7]);
-        (void) FormatLocaleFile(stderr, "       xx=(%+lf*ii %+lf*jj %+lf)/rr;\n",
-            coeff[0], coeff[1], coeff[2]);
-        (void) FormatLocaleFile(stderr, "       yy=(%+lf*ii %+lf*jj %+lf)/rr;\n",
-            coeff[3], coeff[4], coeff[5]);
-        (void) FormatLocaleFile(stderr, "       rr%s0 ? %s : blue' \\\n",
-            coeff[8] < 0 ? "<" : ">", lookup);
+        for ( ; i < 7; i++)
+          (void) FormatLocaleFile(stderr, "%.*g, ",GetMagickPrecision(),
+            inverse[i]);
+        (void) FormatLocaleFile(stderr, "%.*g'\n",GetMagickPrecision(),
+          inverse[7]);
+        inverse=(double *) RelinquishMagickMemory(inverse);
+        (void) FormatLocaleFile(stderr,"Perspective Distort, FX Equivelent:\n");
+        (void) FormatLocaleFile(stderr,"%.1024s",image_gen);
+        (void) FormatLocaleFile(stderr,
+          "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
+        (void) FormatLocaleFile(stderr,"       rr=%+.*g*ii %+.*g*jj + 1;\n",
+          GetMagickPrecision(),coeff[6],GetMagickPrecision(),coeff[7]);
+        (void) FormatLocaleFile(stderr,
+          "       xx=(%+.*g*ii %+.*g*jj %+.*g)/rr;\n",
+          GetMagickPrecision(),coeff[0],GetMagickPrecision(),coeff[1],
+          GetMagickPrecision(),coeff[2]);
+        (void) FormatLocaleFile(stderr,
+          "       yy=(%+.*g*ii %+.*g*jj %+.*g)/rr;\n",
+          GetMagickPrecision(),coeff[3],GetMagickPrecision(),coeff[4],
+          GetMagickPrecision(),coeff[5]);
+        (void) FormatLocaleFile(stderr,"       rr%s0 ? %s : blue' \\\n",
+          coeff[8] < 0.0 ? "<" : ">", lookup);
         break;
       }
-
       case BilinearForwardDistortion:
-        (void) FormatLocaleFile(stderr, "BilinearForward Mapping Equations:\n");
-        (void) FormatLocaleFile(stderr, "%s", image_gen);
-        (void) FormatLocaleFile(stderr, "    i = %+lf*x %+lf*y %+lf*x*y %+lf;\n",
-            coeff[0], coeff[1], coeff[2], coeff[3]);
-        (void) FormatLocaleFile(stderr, "    j = %+lf*x %+lf*y %+lf*x*y %+lf;\n",
-            coeff[4], coeff[5], coeff[6], coeff[7]);
+      {
+        (void) FormatLocaleFile(stderr,"BilinearForward Mapping Equations:\n");
+        (void) FormatLocaleFile(stderr,"%s", image_gen);
+        (void) FormatLocaleFile(stderr,"    i = %+lf*x %+lf*y %+lf*x*y %+lf;\n",
+          coeff[0],coeff[1],coeff[2],coeff[3]);
+        (void) FormatLocaleFile(stderr,"    j = %+lf*x %+lf*y %+lf*x*y %+lf;\n",
+          coeff[4],coeff[5],coeff[6],coeff[7]);
 #if 0
         /* for debugging */
         (void) FormatLocaleFile(stderr, "   c8 = %+lf  c9 = 2*a = %+lf;\n",
             coeff[8], coeff[9]);
 #endif
-        (void) FormatLocaleFile(stderr, "BilinearForward Distort, FX Equivelent:\n");
-        (void) FormatLocaleFile(stderr, "%s", image_gen);
-        (void) FormatLocaleFile(stderr, "  -fx 'ii=i+page.x%+lf; jj=j+page.y%+lf;\n",
-            0.5-coeff[3], 0.5-coeff[7]);
-        (void) FormatLocaleFile(stderr, "       bb=%lf*ii %+lf*jj %+lf;\n",
-            coeff[6], -coeff[2], coeff[8]);
+        (void) FormatLocaleFile(stderr,
+          "BilinearForward Distort, FX Equivelent:\n");
+        (void) FormatLocaleFile(stderr,"%s", image_gen);
+        (void) FormatLocaleFile(stderr,
+          "  -fx 'ii=i+page.x%+lf; jj=j+page.y%+lf;\n",0.5-coeff[3],0.5-
+          coeff[7]);
+        (void) FormatLocaleFile(stderr,"       bb=%lf*ii %+lf*jj %+lf;\n",
+          coeff[6], -coeff[2], coeff[8]);
         /* Handle Special degenerate (non-quadratic) or trapezoidal case */
-        if ( coeff[9] != 0 ) {
-          (void) FormatLocaleFile(stderr, "       rt=bb*bb %+lf*(%lf*ii%+lf*jj);\n",
-              -2*coeff[9],  coeff[4], -coeff[0]);
-          (void) FormatLocaleFile(stderr, "       yy=( -bb + sqrt(rt) ) / %lf;\n",
-               coeff[9]);
-        } else
-          (void) FormatLocaleFile(stderr, "       yy=(%lf*ii%+lf*jj)/bb;\n",
-                -coeff[4], coeff[0]);
-        (void) FormatLocaleFile(stderr, "       xx=(ii %+lf*yy)/(%lf %+lf*yy);\n",
-             -coeff[1], coeff[0], coeff[2]);
-        if ( coeff[9] != 0 )
-          (void) FormatLocaleFile(stderr, "       (rt < 0 ) ? red : %s'\n", lookup);
+        if (coeff[9] != 0)
+          {
+            (void) FormatLocaleFile(stderr,
+              "       rt=bb*bb %+lf*(%lf*ii%+lf*jj);\n",-2*coeff[9],coeff[4],
+              -coeff[0]);
+          (void) FormatLocaleFile(stderr,
+            "       yy=( -bb + sqrt(rt) ) / %lf;\n",coeff[9]);
+          }
         else
-          (void) FormatLocaleFile(stderr, "       %s' \\\n", lookup);
+          (void) FormatLocaleFile(stderr,"       yy=(%lf*ii%+lf*jj)/bb;\n",
+            -coeff[4],coeff[0]);
+        (void) FormatLocaleFile(stderr,
+          "       xx=(ii %+lf*yy)/(%lf %+lf*yy);\n",-coeff[1],coeff[0],
+          coeff[2]);
+        if ( coeff[9] != 0 )
+          (void) FormatLocaleFile(stderr,"       (rt < 0 ) ? red : %s'\n",
+            lookup);
+        else
+          (void) FormatLocaleFile(stderr,"       %s' \\\n", lookup);
         break;
-
+      }
       case BilinearReverseDistortion:
+      {
 #if 0
         (void) FormatLocaleFile(stderr, "Polynomial Projection Distort:\n");
         (void) FormatLocaleFile(stderr, "  -distort PolynomialProjection \\\n");
@@ -2098,156 +2117,185 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
         (void) FormatLocaleFile(stderr, "            %lf, %lf, %lf, %lf'\n",
             coeff[7], coeff[4], coeff[5], coeff[6]);
 #endif
-        (void) FormatLocaleFile(stderr, "BilinearReverse Distort, FX Equivelent:\n");
-        (void) FormatLocaleFile(stderr, "%s", image_gen);
-        (void) FormatLocaleFile(stderr, "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
-        (void) FormatLocaleFile(stderr, "       xx=%+lf*ii %+lf*jj %+lf*ii*jj %+lf;\n",
-            coeff[0], coeff[1], coeff[2], coeff[3]);
-        (void) FormatLocaleFile(stderr, "       yy=%+lf*ii %+lf*jj %+lf*ii*jj %+lf;\n",
-            coeff[4], coeff[5], coeff[6], coeff[7]);
-        (void) FormatLocaleFile(stderr, "       %s' \\\n", lookup);
+        (void) FormatLocaleFile(stderr,
+          "BilinearReverse Distort, FX Equivelent:\n");
+        (void) FormatLocaleFile(stderr,"%s", image_gen);
+        (void) FormatLocaleFile(stderr,
+          "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
+        (void) FormatLocaleFile(stderr,
+          "       xx=%+lf*ii %+lf*jj %+lf*ii*jj %+lf;\n",coeff[0],coeff[1],
+          coeff[2], coeff[3]);
+        (void) FormatLocaleFile(stderr,
+           "       yy=%+lf*ii %+lf*jj %+lf*ii*jj %+lf;\n",coeff[4],coeff[5],
+           coeff[6], coeff[7]);
+        (void) FormatLocaleFile(stderr,"       %s' \\\n", lookup);
         break;
-
+      }
       case PolynomialDistortion:
       {
         size_t nterms = (size_t) coeff[1];
-        (void) FormatLocaleFile(stderr, "Polynomial (order %lg, terms %lu), FX Equivelent\n",
-          coeff[0],(unsigned long) nterms);
-        (void) FormatLocaleFile(stderr, "%s", image_gen);
-        (void) FormatLocaleFile(stderr, "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
+        (void) FormatLocaleFile(stderr,
+          "Polynomial (order %lg, terms %lu), FX Equivelent\n",coeff[0],
+          (unsigned long) nterms);
+        (void) FormatLocaleFile(stderr,"%s", image_gen);
+        (void) FormatLocaleFile(stderr,
+          "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
         (void) FormatLocaleFile(stderr, "       xx =");
-        for (i=0; i<(ssize_t) nterms; i++) {
-          if ( i != 0 && i%4 == 0 ) (void) FormatLocaleFile(stderr, "\n         ");
-          (void) FormatLocaleFile(stderr, " %+lf%s", coeff[2+i],
-               poly_basis_str(i));
+        for (i=0; i < (ssize_t) nterms; i++)
+        {
+          if ((i != 0) && (i%4 == 0))
+            (void) FormatLocaleFile(stderr, "\n         ");
+          (void) FormatLocaleFile(stderr," %+lf%s",coeff[2+i],
+            poly_basis_str(i));
         }
-        (void) FormatLocaleFile(stderr, ";\n       yy =");
-        for (i=0; i<(ssize_t) nterms; i++) {
-          if ( i != 0 && i%4 == 0 ) (void) FormatLocaleFile(stderr, "\n         ");
-          (void) FormatLocaleFile(stderr, " %+lf%s", coeff[2+i+nterms],
-               poly_basis_str(i));
+        (void) FormatLocaleFile(stderr,";\n       yy =");
+        for (i=0; i < (ssize_t) nterms; i++)
+        {
+          if ((i != 0) && (i%4 == 0))
+            (void) FormatLocaleFile(stderr,"\n         ");
+          (void) FormatLocaleFile(stderr," %+lf%s",coeff[2+i+nterms],
+            poly_basis_str(i));
         }
-        (void) FormatLocaleFile(stderr, ";\n       %s' \\\n", lookup);
+        (void) FormatLocaleFile(stderr,";\n       %s' \\\n", lookup);
         break;
       }
       case ArcDistortion:
       {
-        (void) FormatLocaleFile(stderr, "Arc Distort, Internal Coefficients:\n");
-        for ( i=0; i<5; i++ )
-          (void) FormatLocaleFile(stderr, "  c%.20g = %+lf\n", (double) i, coeff[i]);
-        (void) FormatLocaleFile(stderr, "Arc Distort, FX Equivelent:\n");
-        (void) FormatLocaleFile(stderr, "%s", image_gen);
-        (void) FormatLocaleFile(stderr, "  -fx 'ii=i+page.x; jj=j+page.y;\n");
-        (void) FormatLocaleFile(stderr, "       xx=(atan2(jj,ii)%+lf)/(2*pi);\n",
-                                  -coeff[0]);
-        (void) FormatLocaleFile(stderr, "       xx=xx-round(xx);\n");
-        (void) FormatLocaleFile(stderr, "       xx=xx*%lf %+lf;\n",
-                            coeff[1], coeff[4]);
-        (void) FormatLocaleFile(stderr, "       yy=(%lf - hypot(ii,jj)) * %lf;\n",
-                            coeff[2], coeff[3]);
-        (void) FormatLocaleFile(stderr, "       v.p{xx-.5,yy-.5}' \\\n");
+        (void) FormatLocaleFile(stderr,"Arc Distort, Internal Coefficients:\n");
+        for (i=0; i < 5; i++)
+          (void) FormatLocaleFile(stderr,
+            "  c%.20g = %+lf\n",(double) i,coeff[i]);
+        (void) FormatLocaleFile(stderr,"Arc Distort, FX Equivelent:\n");
+        (void) FormatLocaleFile(stderr,"%s", image_gen);
+        (void) FormatLocaleFile(stderr,"  -fx 'ii=i+page.x; jj=j+page.y;\n");
+        (void) FormatLocaleFile(stderr,"       xx=(atan2(jj,ii)%+lf)/(2*pi);\n",
+          -coeff[0]);
+        (void) FormatLocaleFile(stderr,"       xx=xx-round(xx);\n");
+        (void) FormatLocaleFile(stderr,"       xx=xx*%lf %+lf;\n",coeff[1],
+          coeff[4]);
+        (void) FormatLocaleFile(stderr,
+          "       yy=(%lf - hypot(ii,jj)) * %lf;\n",coeff[2],coeff[3]);
+        (void) FormatLocaleFile(stderr,"       v.p{xx-.5,yy-.5}' \\\n");
         break;
       }
       case PolarDistortion:
       {
-        (void) FormatLocaleFile(stderr, "Polar Distort, Internal Coefficents\n");
-        for ( i=0; i<8; i++ )
-          (void) FormatLocaleFile(stderr, "  c%.20g = %+lf\n", (double) i, coeff[i]);
-        (void) FormatLocaleFile(stderr, "Polar Distort, FX Equivelent:\n");
-        (void) FormatLocaleFile(stderr, "%s", image_gen);
-        (void) FormatLocaleFile(stderr, "  -fx 'ii=i+page.x%+lf; jj=j+page.y%+lf;\n",
-                         -coeff[2], -coeff[3]);
-        (void) FormatLocaleFile(stderr, "       xx=(atan2(ii,jj)%+lf)/(2*pi);\n",
-                         -(coeff[4]+coeff[5])/2 );
-        (void) FormatLocaleFile(stderr, "       xx=xx-round(xx);\n");
-        (void) FormatLocaleFile(stderr, "       xx=xx*2*pi*%lf + v.w/2;\n",
-                         coeff[6] );
-        (void) FormatLocaleFile(stderr, "       yy=(hypot(ii,jj)%+lf)*%lf;\n",
-                         -coeff[1], coeff[7] );
-        (void) FormatLocaleFile(stderr, "       v.p{xx-.5,yy-.5}' \\\n");
+        (void) FormatLocaleFile(stderr,"Polar Distort, Internal Coefficents\n");
+        for (i=0; i < 8; i++)
+          (void) FormatLocaleFile(stderr,"  c%.20g = %+lf\n",(double) i,
+            coeff[i]);
+        (void) FormatLocaleFile(stderr,"Polar Distort, FX Equivelent:\n");
+        (void) FormatLocaleFile(stderr,"%s", image_gen);
+        (void) FormatLocaleFile(stderr,
+          "  -fx 'ii=i+page.x%+lf; jj=j+page.y%+lf;\n",-coeff[2],-coeff[3]);
+        (void) FormatLocaleFile(stderr,"       xx=(atan2(ii,jj)%+lf)/(2*pi);\n",
+          -(coeff[4]+coeff[5])/2 );
+        (void) FormatLocaleFile(stderr,"       xx=xx-round(xx);\n");
+        (void) FormatLocaleFile(stderr,"       xx=xx*2*pi*%lf + v.w/2;\n",
+          coeff[6] );
+        (void) FormatLocaleFile(stderr,"       yy=(hypot(ii,jj)%+lf)*%lf;\n",
+          -coeff[1],coeff[7] );
+        (void) FormatLocaleFile(stderr,"       v.p{xx-.5,yy-.5}' \\\n");
         break;
       }
       case DePolarDistortion:
       {
-        (void) FormatLocaleFile(stderr, "DePolar Distort, Internal Coefficents\n");
-        for ( i=0; i<8; i++ )
-          (void) FormatLocaleFile(stderr, "  c%.20g = %+lf\n", (double) i, coeff[i]);
-        (void) FormatLocaleFile(stderr, "DePolar Distort, FX Equivelent:\n");
-        (void) FormatLocaleFile(stderr, "%s", image_gen);
-        (void) FormatLocaleFile(stderr, "  -fx 'aa=(i+.5)*%lf %+lf;\n", coeff[6], +coeff[4] );
-        (void) FormatLocaleFile(stderr, "       rr=(j+.5)*%lf %+lf;\n", coeff[7], +coeff[1] );
-        (void) FormatLocaleFile(stderr, "       xx=rr*sin(aa) %+lf;\n", coeff[2] );
-        (void) FormatLocaleFile(stderr, "       yy=rr*cos(aa) %+lf;\n", coeff[3] );
-        (void) FormatLocaleFile(stderr, "       v.p{xx-.5,yy-.5}' \\\n");
+        (void) FormatLocaleFile(stderr,
+          "DePolar Distort, Internal Coefficents\n");
+        for (i=0; i < 8; i++)
+          (void) FormatLocaleFile(stderr,"  c%.20g = %+lf\n",(double) i,
+            coeff[i]);
+        (void) FormatLocaleFile(stderr,"DePolar Distort, FX Equivelent:\n");
+        (void) FormatLocaleFile(stderr,"%s", image_gen);
+        (void) FormatLocaleFile(stderr,"  -fx 'aa=(i+.5)*%lf %+lf;\n",
+          coeff[6],+coeff[4]);
+        (void) FormatLocaleFile(stderr,"       rr=(j+.5)*%lf %+lf;\n",
+          coeff[7],+coeff[1]);
+        (void) FormatLocaleFile(stderr,"       xx=rr*sin(aa) %+lf;\n",
+          coeff[2]);
+        (void) FormatLocaleFile(stderr,"       yy=rr*cos(aa) %+lf;\n",
+          coeff[3]);
+        (void) FormatLocaleFile(stderr,"       v.p{xx-.5,yy-.5}' \\\n");
         break;
       }
       case Cylinder2PlaneDistortion:
       {
-        (void) FormatLocaleFile(stderr, "Cylinder to Plane Distort, Internal Coefficents\n");
-        (void) FormatLocaleFile(stderr, "  cylinder_radius = %+lf\n", coeff[1]);
-        (void) FormatLocaleFile(stderr, "Cylinder to Plane Distort, FX Equivelent:\n");
+        (void) FormatLocaleFile(stderr,
+          "Cylinder to Plane Distort, Internal Coefficents\n");
+        (void) FormatLocaleFile(stderr,"  cylinder_radius = %+lf\n",coeff[1]);
+        (void) FormatLocaleFile(stderr,
+          "Cylinder to Plane Distort, FX Equivelent:\n");
         (void) FormatLocaleFile(stderr, "%s", image_gen);
-        (void) FormatLocaleFile(stderr, "  -fx 'ii=i+page.x%+lf+0.5; jj=j+page.y%+lf+0.5;\n",
-                         -coeff[4], -coeff[5]);
-        (void) FormatLocaleFile(stderr, "       aa=atan(ii/%+lf);\n", coeff[1] );
-        (void) FormatLocaleFile(stderr, "       xx=%lf*aa%+lf;\n",
-                         coeff[1], coeff[2] );
-        (void) FormatLocaleFile(stderr, "       yy=jj*cos(aa)%+lf;\n", coeff[3] );
-        (void) FormatLocaleFile(stderr, "       %s' \\\n", lookup);
+        (void) FormatLocaleFile(stderr,
+          "  -fx 'ii=i+page.x%+lf+0.5; jj=j+page.y%+lf+0.5;\n",-coeff[4],
+          -coeff[5]);
+        (void) FormatLocaleFile(stderr,"       aa=atan(ii/%+lf);\n",coeff[1]);
+        (void) FormatLocaleFile(stderr,"       xx=%lf*aa%+lf;\n",
+          coeff[1],coeff[2]);
+        (void) FormatLocaleFile(stderr,"       yy=jj*cos(aa)%+lf;\n",coeff[3]);
+        (void) FormatLocaleFile(stderr,"       %s' \\\n", lookup);
         break;
       }
       case Plane2CylinderDistortion:
       {
-        (void) FormatLocaleFile(stderr, "Plane to Cylinder Distort, Internal Coefficents\n");
-        (void) FormatLocaleFile(stderr, "  cylinder_radius = %+lf\n", coeff[1]);
-        (void) FormatLocaleFile(stderr, "Plane to Cylinder Distort, FX Equivelent:\n");
-        (void) FormatLocaleFile(stderr, "%s", image_gen);
-        (void) FormatLocaleFile(stderr, "  -fx 'ii=i+page.x%+lf+0.5; jj=j+page.y%+lf+0.5;\n",
-                         -coeff[4], -coeff[5]);
-        (void) FormatLocaleFile(stderr, "       ii=ii/%+lf;\n", coeff[1] );
-        (void) FormatLocaleFile(stderr, "       xx=%lf*tan(ii)%+lf;\n",
-                         coeff[1], coeff[2] );
-        (void) FormatLocaleFile(stderr, "       yy=jj/cos(ii)%+lf;\n",
-                         coeff[3] );
-        (void) FormatLocaleFile(stderr, "       %s' \\\n", lookup);
+        (void) FormatLocaleFile(stderr,
+          "Plane to Cylinder Distort, Internal Coefficents\n");
+        (void) FormatLocaleFile(stderr,"  cylinder_radius = %+lf\n",coeff[1]);
+        (void) FormatLocaleFile(stderr,
+          "Plane to Cylinder Distort, FX Equivelent:\n");
+        (void) FormatLocaleFile(stderr,"%s", image_gen);
+        (void) FormatLocaleFile(stderr,
+          "  -fx 'ii=i+page.x%+lf+0.5; jj=j+page.y%+lf+0.5;\n",-coeff[4],
+          -coeff[5]);
+        (void) FormatLocaleFile(stderr,"       ii=ii/%+lf;\n",coeff[1]);
+        (void) FormatLocaleFile(stderr,"       xx=%lf*tan(ii)%+lf;\n",coeff[1],
+          coeff[2] );
+        (void) FormatLocaleFile(stderr,"       yy=jj/cos(ii)%+lf;\n",coeff[3]);
+        (void) FormatLocaleFile(stderr,"       %s' \\\n", lookup);
         break;
       }
       case BarrelDistortion:
       case BarrelInverseDistortion:
-      { double xc,yc;
-        /* NOTE: This does the barrel roll in pixel coords not image coords
-        ** The internal distortion must do it in image coordinates,
-        ** so that is what the center coeff (8,9) is given in.
+      {
+        double
+          xc,
+          yc;
+
+        /*
+          NOTE: This does the barrel roll in pixel coords not image coords
+          The internal distortion must do it in image coordinates,
+          so that is what the center coeff (8,9) is given in.
         */
-        xc = ((double)image->columns-1.0)/2.0 + image->page.x;
-        yc = ((double)image->rows-1.0)/2.0    + image->page.y;
+        xc=((double)image->columns-1.0)/2.0+image->page.x;
+        yc=((double)image->rows-1.0)/2.0+image->page.y;
         (void) FormatLocaleFile(stderr, "Barrel%s Distort, FX Equivelent:\n",
-             method == BarrelDistortion ? "" : "Inv");
+          method == BarrelDistortion ? "" : "Inv");
         (void) FormatLocaleFile(stderr, "%s", image_gen);
         if ( fabs(coeff[8]-xc-0.5) < 0.1 && fabs(coeff[9]-yc-0.5) < 0.1 )
-          (void) FormatLocaleFile(stderr, "  -fx 'xc=(w-1)/2;  yc=(h-1)/2;\n");
+          (void) FormatLocaleFile(stderr,"  -fx 'xc=(w-1)/2;  yc=(h-1)/2;\n");
         else
-          (void) FormatLocaleFile(stderr, "  -fx 'xc=%lf;  yc=%lf;\n",
-               coeff[8]-0.5, coeff[9]-0.5);
+          (void) FormatLocaleFile(stderr,"  -fx 'xc=%lf;  yc=%lf;\n",coeff[8]-
+            0.5,coeff[9]-0.5);
         (void) FormatLocaleFile(stderr,
-             "       ii=i-xc;  jj=j-yc;  rr=hypot(ii,jj);\n");
-        (void) FormatLocaleFile(stderr, "       ii=ii%s(%lf*rr*rr*rr %+lf*rr*rr %+lf*rr %+lf);\n",
-             method == BarrelDistortion ? "*" : "/",
-             coeff[0],coeff[1],coeff[2],coeff[3]);
-        (void) FormatLocaleFile(stderr, "       jj=jj%s(%lf*rr*rr*rr %+lf*rr*rr %+lf*rr %+lf);\n",
-             method == BarrelDistortion ? "*" : "/",
-             coeff[4],coeff[5],coeff[6],coeff[7]);
-        (void) FormatLocaleFile(stderr, "       v.p{fx*ii+xc,fy*jj+yc}' \\\n");
+          "       ii=i-xc;  jj=j-yc;  rr=hypot(ii,jj);\n");
+        (void) FormatLocaleFile(stderr,
+          "       ii=ii%s(%lf*rr*rr*rr %+lf*rr*rr %+lf*rr %+lf);\n",
+          method == BarrelDistortion ? "*" : "/",coeff[0],coeff[1],coeff[2],
+          coeff[3]);
+        (void) FormatLocaleFile(stderr,
+          "       jj=jj%s(%lf*rr*rr*rr %+lf*rr*rr %+lf*rr %+lf);\n",
+          method == BarrelDistortion ? "*" : "/",coeff[4],coeff[5],coeff[6],
+          coeff[7]);
+        (void) FormatLocaleFile(stderr,"       v.p{fx*ii+xc,fy*jj+yc}' \\\n");
       }
       default:
         break;
     }
   }
-
-  /* The user provided a 'scale' expert option will scale the
-     output image size, by the factor given allowing for super-sampling
-     of the distorted image space.  Any scaling factors must naturally
-     be halved as a result.
+  /*
+    The user provided a 'scale' expert option will scale the output image size,
+    by the factor given allowing for super-sampling of the distorted image
+    space.  Any scaling factors must naturally be halved as a result.
   */
   { const char *artifact;
     artifact=GetImageArtifact(image,"distort:scale");
@@ -2742,10 +2790,10 @@ if ( d.x == 0.5 && d.y == 0.5 ) {
             proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-          #pragma omp critical (MagickCore_DistortImage)
+          #pragma omp atomic
 #endif
-          proceed=SetImageProgress(image,DistortImageTag,progress++,
-            image->rows);
+          progress++;
+          proceed=SetImageProgress(image,DistortImageTag,progress,image->rows);
           if (proceed == MagickFalse)
             status=MagickFalse;
         }
@@ -3271,9 +3319,10 @@ MagickExport Image *SparseColorImage(const Image *image,
             proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-          #pragma omp critical (MagickCore_SparseColorImage)
+          #pragma omp atomic
 #endif
-          proceed=SetImageProgress(image,SparseColorTag,progress++,image->rows);
+          progress++;
+          proceed=SetImageProgress(image,SparseColorTag,progress,image->rows);
           if (proceed == MagickFalse)
             status=MagickFalse;
         }

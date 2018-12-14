@@ -17,13 +17,13 @@
 %                                 July 1999                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -1214,7 +1214,8 @@ MagickExport int EOFBlob(const Image *image)
     case ZipStream:
     {
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
-      blob_info->eof=gzeof(blob_info->file_info.gzfile);
+      blob_info->eof=gzeof(blob_info->file_info.gzfile) != 0 ? MagickTrue :
+        MagickFalse;
 #endif
       break;
     }
@@ -1739,7 +1740,7 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
   blob_info->type=UndefinedStream;
   blob_info->quantum=(size_t) MagickMaxBlobExtent;
   blob_info->properties.st_mtime=time((time_t *) NULL);
-  blob_info->properties.st_ctime=time((time_t *) NULL);
+  blob_info->properties.st_ctime=blob_info->properties.st_mtime;
   blob_info->debug=IsEventLogging();
   blob_info->reference_count=1;
   blob_info->semaphore=AcquireSemaphoreInfo();

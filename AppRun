@@ -7,7 +7,7 @@
 
 HERE="$(dirname "$(readlink -f "${0}")")"
 
-export MAGICK_HOME="$HERE/usr:$MAGICK_HOME" # http://www.imagemagick.org/QuickStart.txt
+export MAGICK_HOME="$HERE/usr:$MAGICK_HOME" # https://imagemagick.org/QuickStart.txt
 export MAGICK_CONFIGURE_PATH=$(readlink -f "$HERE/usr/lib/ImageMagick-7.0.7/config-Q16"):$(readlink -f "$HERE/usr/lib/ImageMagick-7.0.7/config-Q16HDRI"):$(readlink -f "$HERE/usr/share/ImageMagick-7"):$(readlink -f "$HERE/usr/etc/ImageMagick-7"):$MAGICK_CONFIGURE_PATH #Wildcards don't work
 
 export LD_LIBRARY_PATH=$(readlink -f "$HERE/usr/lib"):$LD_LIBRARY_PATH

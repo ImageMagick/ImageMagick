@@ -1,10 +1,10 @@
-#  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization
+#  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
 #
 #  You may not use this file except in compliance with the License.  You may
 #  obtain a copy of the License at
 #
-#    http://www.imagemagick.org/script/license.php
+#    https://imagemagick.org/script/license.php
 #
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
@@ -32,11 +32,9 @@ configsharearch_DATA = \
 # (share/ImageMagick-version)
 configlibdir =  $(CONFIGURE_PATH)
 configlib_DATA = \
-	config/coder.xml \
 	config/colors.xml \
 	config/delegates.xml \
 	config/log.xml \
-	config/magic.xml \
 	config/mime.xml \
 	config/policy.xml \
 	config/quantization-table.xml \
@@ -50,7 +48,6 @@ configlib_DATA = \
 
 CONFIG_EXTRA_DIST = \
 	config/cmyk.icm \
-	config/coder.xml \
 	config/colors.xml \
 	config/config.h.in \
 	config/delegates.xml.in \
@@ -59,9 +56,9 @@ CONFIG_EXTRA_DIST = \
 	config/ImageMagick.rc \
 	config/ImageMagick.rdf.in \
 	config/lndir.sh \
+	config/locale.md \
 	config/locale.xml \
 	config/log.xml \
-	config/magic.xml \
 	config/mime.xml \
 	config/policy.xml \
 	config/quantization-table.xml \

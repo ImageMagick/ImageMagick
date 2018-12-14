@@ -17,13 +17,13 @@
 %                               September 2011                                %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -1239,11 +1239,11 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
     {
       if (LocaleCompare("quality",option+1) == 0)
         {
-          if (IsGeometry(arg1) == MagickFalse)
+          if (IfSetOption && (IsGeometry(arg1) == MagickFalse))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           _image_info->quality= IfSetOption ? StringToUnsignedLong(arg1)
                                             : UNDEFINED_COMPRESSION_QUALITY;
-          (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
+          (void) SetImageOption(_image_info,option+1,ArgOption("0"));
           break;
         }
       if (LocaleCompare("quantize",option+1) == 0)
@@ -1966,6 +1966,15 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           new_image=ChopImage(_image,&geometry,_exception);
           break;
         }
+      if (LocaleCompare("clahe",option+1) == 0)
+        {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          (void) ParseRegionGeometry(_image,arg1,&geometry,_exception);
+          (void) CLAHEImage(_image,geometry.width,geometry.height,
+            (size_t) geometry.x,(double) geometry.y,_exception);
+          break;
+        }
       if (LocaleCompare("clamp",option+1) == 0)
         {
           (void) ClampImage(_image,_exception);
@@ -1976,7 +1985,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (IfNormalOp)
             (void) ClipImage(_image,_exception);
           else /* "+mask" remove the write mask */
-            (void) SetImageMask(_image,WritePixelMask,(Image *) NULL,_exception);
+            (void) SetImageMask(_image,WritePixelMask,(Image *) NULL,
+              _exception);
           break;
         }
       if (LocaleCompare("clip-mask",option+1) == 0)

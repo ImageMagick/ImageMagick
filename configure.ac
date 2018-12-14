@@ -1,10 +1,10 @@
-#  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization
+#  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
 #
 #  You may not use this file except in compliance with the License.  You may
 #  obtain a copy of the License at
 #
-#    https://www.imagemagick.org/script/license.php
+#    https://imagemagick.org/script/license.php
 #
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,7 +27,7 @@ AC_PREREQ(2.69)
 m4_define([magick_major_version], [7])
 m4_define([magick_minor_version], [0])
 m4_define([magick_micro_version], [8])
-m4_define([magick_patchlevel_version], [11])
+m4_define([magick_patchlevel_version], [17])
 m4_define([magick_version],
           [magick_major_version.magick_minor_version.magick_micro_version-magick_patchlevel_version])
 m4_define([magick_git_revision], esyscmd([sh -c "(gitversion.sh .) | awk '{ print \$1 }' | tr -d '\n'"]))
@@ -40,7 +40,7 @@ AC_INIT([ImageMagick],
         [magick_version],
         [https://github.com/ImageMagick/ImageMagick/issues],
         [magick_tar_name],
-        [https://www.imagemagick.org])
+        [https://imagemagick.org])
 AC_CONFIG_SRCDIR([MagickCore/MagickCore.h])
 AC_CONFIG_AUX_DIR([config])
 AC_REQUIRE_AUX_FILE([tap-driver.sh])
@@ -469,12 +469,10 @@ AC_ARG_WITH([pkgconfigdir], AS_HELP_STRING([--with-pkgconfigdir=DIR],
 AC_SUBST([pkgconfigdir])
 
 #
-# Enable support for threads
-#
-# Find Posix threads library
+# Enable support for POSIX thread APIs
 #
 AC_ARG_WITH([threads],
-    [AC_HELP_STRING([--without-threads], [disable threads support])],
+    [AC_HELP_STRING([--without-threads], [disable POSIX threads API support])],
     [with_threads=$withval],
     [with_threads='yes'])
 
@@ -487,7 +485,7 @@ if test "$with_threads" != 'no'; then
         DEF_THREAD="$PTHREAD_CFLAGS"
         CFLAGS="$CFLAGS $DEF_THREAD"
         CXXFLAGS="$CXXFLAGS $DEF_THREAD"
-	THREAD_LIBS="$PTHREAD_LIBS"
+        THREAD_LIBS="$PTHREAD_LIBS"
         if test "$CC" != "$PTHREAD_CC"; then
             AC_MSG_WARN([Replacing compiler $CC with compiler $PTHREAD_CC to support pthreads.])
             CC="$PTHREAD_CC"
@@ -1683,6 +1681,41 @@ fi
 AM_CONDITIONAL(ZLIB_DELEGATE, test "$have_zlib" = 'yes')
 AC_SUBST(ZLIB_CFLAGS)
 AC_SUBST(ZLIB_LIBS)
+
+dnl ===========================================================================
+
+#
+# Check for ZSTD
+#
+AC_ARG_WITH([zstd],
+    [AC_HELP_STRING([--without-zstd],
+                    [disable ZSTD support])],
+    [with_zstd=$withval],
+    [with_zstd='yes'])
+
+if test "$with_zstd" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-zstd=$with_zstd "
+fi
+
+have_zstd='no'
+ZSTD_CFLAGS=""
+ZSTD_LIBS=""
+ZSTD_PKG=""
+if test "x$with_zstd" = "xyes"; then
+  AC_MSG_RESULT([-------------------------------------------------------------])
+  PKG_CHECK_MODULES(LIBZSTD,[libzstd >= 1.0.0], have_zstd=yes, have_zstd=no)
+  AC_MSG_RESULT([])
+fi
+
+if test "$have_zstd" = 'yes'; then
+  AC_DEFINE(ZSTD_DELEGATE,1,Define if you have ZSTD library)
+  CFLAGS="$ZSTD_CFLAGS $CFLAGS"
+  LIBS="$ZSTD_LIBS $LIBS"
+fi
+
+AM_CONDITIONAL(ZSTD_DELEGATE, test "$have_zstd" = 'yes')
+AC_SUBST(ZSTD_CFLAGS)
+AC_SUBST(ZSTD_LIBS)
 
 dnl ===========================================================================
 
@@ -3355,7 +3388,7 @@ windows_font_dir=''
 if test "${with_windows_font_dir}" != 'default'; then
   windows_font_dir="${with_windows_font_dir}/"
 else
-  for font_dir in '/usr/X11R6/lib/X11/fonts/truetype/' '/usr/X11R7/lib/X11/fonts/truetype/' '/usr/share/fonts/msttcore/'; do
+  for font_dir in '/usr/X11R6/lib/X11/fonts/truetype/' '/usr/X11R7/lib/X11/fonts/truetype/' '/usr/share/fonts/msttcore/' '/usr/share/fonts/microsoft/'; do
     if test -f "${font_dir}arial.ttf"; then
       windows_font_dir="${font_dir}"
       break 1
@@ -3830,6 +3863,9 @@ fi
 if test "$have_zlib"   = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES zlib"
 fi
+if test "$have_zstd"   = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES zstd"
+fi
 
 # Remove extraneous spaces from output variables (asthetic)
 MAGICK_DELEGATES=`echo $MAGICK_DELEGATES | sed -e 's/  */ /g'`
@@ -3879,11 +3915,13 @@ fi
 #
 
 if test "$build_modules" != 'no'; then
-    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 fi
+MAGICK_EXTRA_DEP_LIBS="$GOMP_LIBS"
 AC_SUBST(MAGICK_DEP_LIBS)
+AC_SUBST(MAGICK_EXTRA_DEP_LIBS)
 
 # Pass only user-provided LIBS as "global" libraries
 LIBS=$USER_LIBS
@@ -3900,7 +3938,7 @@ MAGICK_CXXFLAGS="$CXXFLAGS"
 MAGICK_CPPFLAGS=`echo $MAGICK_CPPFLAGS | sed -e 's/  */ /g'`
 MAGICK_PCFLAGS=`echo $MAGICK_PCFLAGS | sed -e 's/  */ /g'`
 MAGICK_LDFLAGS="-L$LIB_DIR $LDFLAGS"
-MAGICK_LIBS="$MAGICK_DEP_LIBS"
+MAGICK_LIBS="$MAGICK_DEP_LIBS $MAGICK_EXTRA_DEP_LIBS"
 
 AC_SUBST(MAGICK_CFLAGS)
 AC_SUBST(MAGICK_CXXFLAGS)
@@ -4044,7 +4082,7 @@ matches your expectations.
   PERL              --with-perl=$with_perl		$have_perl
   PNG               --with-png=$with_png		$have_png
   RAQM              --with-raqm=$with_raqm		$have_raqm
-  RAW               --with-raw=$with_raw 	   $have_raw
+  RAW               --with-raw=$with_raw 	   	$have_raw
   RSVG              --with-rsvg=$with_rsvg		$have_rsvg
   TIFF              --with-tiff=$with_tiff		$have_tiff
   WEBP              --with-webp=$with_webp		$have_webp
@@ -4052,6 +4090,7 @@ matches your expectations.
   X11               --with-x=$with_x			$have_x
   XML               --with-xml=$with_xml		$have_xml
   ZLIB              --with-zlib=$with_zlib		$have_zlib
+  ZSTD              --with-zstd=$with_zstd		$have_zstd
 
   Delegate Program Configuration:
   GhostPCL          None				$PCLDelegate ($PCLVersion)
@@ -4081,7 +4120,7 @@ matches your expectations.
     PCFLAGS         = $PCFLAGS
     DEFS            = $DEFS
     LDFLAGS         = $LDFLAGS
-    LIBS            = $LIBS
+    LIBS            = $MAGICK_DEP_LIBS
     CXX             = $CXX
     CXXFLAGS        = $CXXFLAGS
     FEATURES        = $MAGICK_FEATURES

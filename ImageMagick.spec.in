@@ -7,9 +7,9 @@ Version:        %{VERSION}
 Release:        %{Patchlevel}
 Summary:        Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images.
 Group:          Applications/Multimedia
-License:        https://www.imagemagick.org/script/license.php
-Url:            https://www.imagemagick.org/
-Source0:        https://www.imagemagick.org/download/%{name}/%{name}-%{VERSION}-%{Patchlevel}.tar.bz2
+License:        https://imagemagick.org/script/license.php
+Url:            https://imagemagick.org/
+Source0:        https://imagemagick.org/download/%{name}/%{name}-%{VERSION}-%{Patchlevel}.tar.bz2
 
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 
@@ -37,7 +37,7 @@ ImageMagick is free software delivered as a ready-to-run binary distribution or 
 
 The ImageMagick development process ensures a stable API and ABI. Before each ImageMagick release, we perform a comprehensive security assessment that includes memory error and thread data race detection to prevent security vulnerabilities.
 
-The authoritative ImageMagick web site is https://www.imagemagick.org. The authoritative source code repository is http://git.imagemagick.org/repos/ImageMagick. We maintain a source code mirror at GitHub.
+The authoritative ImageMagick web site is https://imagemagick.org. The authoritative source code repository is http://git.imagemagick.org/repos/ImageMagick. We maintain a source code mirror at GitHub.
 
 %package devel
 Summary: Library links and header files for ImageMagick application development
@@ -83,7 +83,7 @@ Group: Documentation
 ImageMagick documentation, this package contains usage (for the
 commandline tools) and API (for the libraries) documentation in HTML format.
 Note this documentation can also be found on the ImageMagick website:
-https://www.imagemagick.org/.
+https://imagemagick.org/.
 
 
 %package perl

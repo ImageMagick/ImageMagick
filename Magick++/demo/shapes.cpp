@@ -84,6 +84,8 @@ int main( int /*argc*/, char ** argv)
     //
     image.strokeColor(Color());
     image.fillColor( "red" );
+    if (getenv("MAGICK_FONT") != 0)
+      image.font(string(getenv("MAGICK_FONT")));
     image.fontPointsize( 18 );
     image.annotate( "Hello world!", "+150+20" );
 

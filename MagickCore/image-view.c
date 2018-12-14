@@ -22,13 +22,13 @@
 %                                March 2003                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -293,11 +293,12 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
       {
         MagickBooleanType
           proceed;
-
+ 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_DuplexTransferImageViewIterator)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(source_image,source->description,progress++,
+        progress++;
+        proceed=SetImageProgress(source_image,source->description,progress,
           source->extent.height);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -582,9 +583,10 @@ MagickExport MagickBooleanType GetImageViewIterator(ImageView *source,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_GetImageViewIterator)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(source_image,source->description,progress++,
+        progress++;
+        proceed=SetImageProgress(source_image,source->description,progress,
           source->extent.height);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -932,10 +934,11 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_SetImageViewIterator)
+        #pragma omp atomic
 #endif
+        progress++;
         proceed=SetImageProgress(destination_image,destination->description,
-          progress++,destination->extent.height);
+          progress,destination->extent.height);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -1071,9 +1074,10 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_TransferImageViewIterator)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(source_image,source->description,progress++,
+        progress++;
+        proceed=SetImageProgress(source_image,source->description,progress,
           source->extent.height);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -1188,9 +1192,10 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_UpdateImageViewIterator)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(source_image,source->description,progress++,
+        progress++;
+        proceed=SetImageProgress(source_image,source->description,progress,
           source->extent.height);
         if (proceed == MagickFalse)
           status=MagickFalse;

@@ -23,7 +23,7 @@
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -105,6 +105,7 @@
 #define IPTC_MARKER  (JPEG_APP0+13)
 #define XML_MARKER  (JPEG_APP0+1)
 #define MaxBufferExtent  16384
+#define MaxJPEGScans  1024
 
 /*
   Typedef declarations.
@@ -331,6 +332,29 @@ static void JPEGErrorHandler(j_common_ptr jpeg_info)
   else
     (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
       (char *) message,"`%s'",image->filename);
+  longjmp(error_manager->error_recovery,1);
+}
+
+static void JPEGProgressHandler(j_common_ptr jpeg_info)
+{
+  ErrorManager
+    *error_manager;
+
+  ExceptionInfo
+    *exception;
+
+  Image
+    *image;
+
+  error_manager=(ErrorManager *) jpeg_info->client_data;
+  image=error_manager->image;
+  exception=error_manager->exception;
+  if (jpeg_info->is_decompressor == 0)
+    return;
+  if (((j_decompress_ptr) jpeg_info)->input_scan_number < MaxJPEGScans)
+    return;
+  (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+    "too many scans","`%s'",image->filename);
   longjmp(error_manager->error_recovery,1);
 }
 
@@ -1035,6 +1059,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     value[MagickPathExtent];
 
   const char
+    *dct_method,
     *option;
 
   ErrorManager
@@ -1070,6 +1095,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 
   struct jpeg_error_mgr
     jpeg_error;
+
+  struct jpeg_progress_mgr
+    jpeg_progress;
 
   register JSAMPLE
     *p;
@@ -1110,6 +1138,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   (void) memset(&error_manager,0,sizeof(error_manager));
   (void) memset(&jpeg_info,0,sizeof(jpeg_info));
   (void) memset(&jpeg_error,0,sizeof(jpeg_error));
+  (void) memset(&jpeg_progress,0,sizeof(jpeg_progress));
   jpeg_info.err=jpeg_std_error(&jpeg_error);
   jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGWarningHandler;
   jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
@@ -1131,6 +1160,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   jpeg_create_decompress(&jpeg_info);
   if (GetMaxMemoryRequest() != ~0UL)
     jpeg_info.mem->max_memory_to_use=(long) GetMaxMemoryRequest();
+  jpeg_progress.progress_monitor=(void (*)(j_common_ptr)) JPEGProgressHandler;
+  jpeg_info.progress=(&jpeg_progress);
   JPEGSourceManager(&jpeg_info,image);
   jpeg_set_marker_processor(&jpeg_info,JPEG_COM,ReadComment);
   option=GetImageOption(image_info,"profile:skip");
@@ -1232,33 +1263,32 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   if (option != (const char *) NULL)
     jpeg_info.do_block_smoothing=IsStringTrue(option) != MagickFalse ? TRUE :
       FALSE;
-  jpeg_info.dct_method=JDCT_FLOAT;
-  option=GetImageOption(image_info,"jpeg:dct-method");
-  if (option != (const char *) NULL)
-    switch (*option)
+  dct_method=GetImageOption(image_info,"jpeg:dct-method");
+  if (dct_method != (const char *) NULL)
+    switch (*dct_method)
     {
       case 'D':
       case 'd':
       {
-        if (LocaleCompare(option,"default") == 0)
+        if (LocaleCompare(dct_method,"default") == 0)
           jpeg_info.dct_method=JDCT_DEFAULT;
         break;
       }
       case 'F':
       case 'f':
       {
-        if (LocaleCompare(option,"fastest") == 0)
+        if (LocaleCompare(dct_method,"fastest") == 0)
           jpeg_info.dct_method=JDCT_FASTEST;
-        if (LocaleCompare(option,"float") == 0)
+        if (LocaleCompare(dct_method,"float") == 0)
           jpeg_info.dct_method=JDCT_FLOAT;
         break;
       }
       case 'I':
       case 'i':
       {
-        if (LocaleCompare(option,"ifast") == 0)
+        if (LocaleCompare(dct_method,"ifast") == 0)
           jpeg_info.dct_method=JDCT_IFAST;
-        if (LocaleCompare(option,"islow") == 0)
+        if (LocaleCompare(dct_method,"islow") == 0)
           jpeg_info.dct_method=JDCT_ISLOW;
         break;
       }
@@ -1337,12 +1367,19 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
     jpeg_info.out_color_space);
   (void) SetImageProperty(image,"jpeg:colorspace",value,exception);
+#if defined(D_ARITH_CODING_SUPPORTED)
+  if (jpeg_info.arith_code == TRUE)
+    (void) SetImageProperty(image,"jpeg:coding","arithmetic",exception);
+#endif
   if (image_info->ping != MagickFalse)
     {
       jpeg_destroy_decompress(&jpeg_info);
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
+  if ((dct_method == (const char *) NULL) && (image->quality > 0) &&
+      (image->quality <= 90))
+    jpeg_info.dct_method=JDCT_IFAST;
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     {
@@ -1564,6 +1601,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 ModuleExport size_t RegisterJPEGImage(void)
 {
 #define JPEGDescription "Joint Photographic Experts Group JFIF format"
+#define JPEGStringify(macro_or_string)  JPEGStringifyArg(macro_or_string)
+#define JPEGStringifyArg(contents)  #contents
 
   char
     version[MagickPathExtent];
@@ -1572,8 +1611,12 @@ ModuleExport size_t RegisterJPEGImage(void)
     *entry;
 
   *version='\0';
-#if defined(JPEG_LIB_VERSION)
-  (void) FormatLocaleString(version,MagickPathExtent,"%d",JPEG_LIB_VERSION);
+#if defined(LIBJPEG_TURBO_VERSION)
+  (void) CopyMagickString(version,"libjpeg-turbo " JPEGStringify(
+    LIBJPEG_TURBO_VERSION),MagickPathExtent);
+#elif defined(JPEG_LIB_VERSION)
+  (void) FormatLocaleString(version,MagickPathExtent,"libjpeg %d",
+    JPEG_LIB_VERSION);
 #endif
   entry=AcquireMagickInfo("JPEG","JPE",JPEGDescription);
 #if (JPEG_LIB_VERSION < 80) && !defined(LIBJPEG_TURBO_VERSION)
@@ -2157,6 +2200,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
   const char
+    *dct_method,
     *option,
     *sampling_factor,
     *value;
@@ -2312,33 +2356,32 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       if (image->units == PixelsPerCentimeterResolution)
         jpeg_info.density_unit=(UINT8) 2;
     }
-  jpeg_info.dct_method=JDCT_FLOAT;
-  option=GetImageOption(image_info,"jpeg:dct-method");
-  if (option != (const char *) NULL)
-    switch (*option)
+  dct_method=GetImageOption(image_info,"jpeg:dct-method");
+  if (dct_method != (const char *) NULL)
+    switch (*dct_method)
     {
       case 'D':
       case 'd':
       {
-        if (LocaleCompare(option,"default") == 0)
+        if (LocaleCompare(dct_method,"default") == 0)
           jpeg_info.dct_method=JDCT_DEFAULT;
         break;
       }
       case 'F':
       case 'f':
       {
-        if (LocaleCompare(option,"fastest") == 0)
+        if (LocaleCompare(dct_method,"fastest") == 0)
           jpeg_info.dct_method=JDCT_FASTEST;
-        if (LocaleCompare(option,"float") == 0)
+        if (LocaleCompare(dct_method,"float") == 0)
           jpeg_info.dct_method=JDCT_FLOAT;
         break;
       }
       case 'I':
       case 'i':
       {
-        if (LocaleCompare(option,"ifast") == 0)
+        if (LocaleCompare(dct_method,"ifast") == 0)
           jpeg_info.dct_method=JDCT_IFAST;
-        if (LocaleCompare(option,"islow") == 0)
+        if (LocaleCompare(dct_method,"islow") == 0)
           jpeg_info.dct_method=JDCT_ISLOW;
         break;
       }
@@ -2365,6 +2408,14 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           jpeg_info.optimize_coding=status == MagickFalse ? FALSE : TRUE;
         }
     }
+#if defined(C_ARITH_CODING_SUPPORTED)
+  option=GetImageOption(image_info,"jpeg:arithmetic-coding");
+  if (IsStringTrue(option) != MagickFalse)
+    {
+      jpeg_info.arith_code=TRUE;
+      jpeg_info.optimize_coding=FALSE; // Not supported.
+    }
+#endif
 #if (JPEG_LIB_VERSION >= 61) && defined(C_PROGRESSIVE_SUPPORTED)
   if ((LocaleCompare(image_info->magick,"PJPEG") == 0) ||
       (image_info->interlace != NoInterlace))
@@ -2472,6 +2523,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       extent_info=DestroyImageInfo(extent_info);
     }
   jpeg_set_quality(&jpeg_info,quality,TRUE);
+  if ((dct_method == (const char *) NULL) && (quality <= 90))
+    jpeg_info.dct_method=JDCT_IFAST;
 #if (JPEG_LIB_VERSION >= 70)
   option=GetImageOption(image_info,"quality");
   if (option != (const char *) NULL)
@@ -2503,7 +2556,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   if (value != (char *) NULL)
     colorspace=StringToInteger(value);
   sampling_factor=(const char *) NULL;
-  if (colorspace == jpeg_info.in_color_space)
+  if ((J_COLOR_SPACE) colorspace == jpeg_info.in_color_space)
     {
       value=GetImageOption(image_info,"jpeg:sampling-factor");
       if (value == (char *) NULL)

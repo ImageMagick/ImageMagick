@@ -17,13 +17,13 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -555,10 +555,10 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_CannyEdgeImage)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(image,CannyEdgeImageTag,progress++,
-          image->rows);
+        progress++;
+        proceed=SetImageProgress(image,CannyEdgeImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -1946,10 +1946,10 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_CannyEdgeImage)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(image,CannyEdgeImageTag,progress++,
-          image->rows);
+        progress++;
+        proceed=SetImageProgress(image,CannyEdgeImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -1976,6 +1976,10 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
     status=MagickFalse;
   (void) FormatLocaleString(message,MagickPathExtent,
     "viewbox 0 0 %.20g %.20g\n",(double) image->columns,(double) image->rows);
+  if (write(file,message,strlen(message)) != (ssize_t) strlen(message))
+    status=MagickFalse;
+  (void) FormatLocaleString(message,MagickPathExtent,
+    "# x1,y1 x2,y2 # count angle distance\n");
   if (write(file,message,strlen(message)) != (ssize_t) strlen(message))
     status=MagickFalse;
   line_count=image->columns > image->rows ? image->columns/4 : image->rows/4;
@@ -2059,7 +2063,8 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
                 cos(DegreesToRadians((double) x))+(image->columns/2.0);
             }
           (void) FormatLocaleString(message,MagickPathExtent,
-            "line %g,%g %g,%g  # %g\n",line.x1,line.y1,line.x2,line.y2,maxima);
+            "line %g,%g %g,%g  # %g %g %g\n",line.x1,line.y1,line.x2,line.y2,
+            maxima,(double) x,(double) y);
           if (write(file,message,strlen(message)) != (ssize_t) strlen(message))
             status=MagickFalse;
         }
@@ -2317,10 +2322,10 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_MeanShiftImage)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(image,MeanShiftImageTag,progress++,
-          image->rows);
+        progress++;
+        proceed=SetImageProgress(image,MeanShiftImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }

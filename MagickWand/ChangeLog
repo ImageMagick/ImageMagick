@@ -57,11 +57,11 @@
 
 2008-01-10  6.3.7-10 Cristy  <quetzlzacatenango@image...>
   * Inherit image exception *before* destroying the cloned image (reference
-    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=10415).
+    http://imagemagick.org/discourse-server/viewtopic.php?f=3&t=10415).
 
 2007-11-27  6.3.7-2 Cristy  <quetzlzacatenango@image...>
   * Fix memory leak in MagickSetImageProfile() (reference
-    https://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=10197).
+    https://imagemagick.org/discourse-server/viewtopic.php?f=1&t=10197).
 
 2007-11-06  6.3.6-10 Cristy  <quetzlzacatenango@image...>
   * New MagickSetImageAlphaChannel() method to activate, deactivate, reset, or
@@ -69,7 +69,7 @@
 
 2007-10-27  6.3.6-4 Cristy  <quetzlzacatenango@image...>
   * Added get/set font and pointsize methods to magick-property.c (reference
-    http://www.imagemagick.org/discourse-server/viewtopic.php?f=6&t=9997).
+    http://imagemagick.org/discourse-server/viewtopic.php?f=6&t=9997).
 
 2007-09-10  6.3.5-9 Cristy  <quetzlzacatenango@image...>
   * Added MagickGetImageProperties(), MagickGetImageOptions(), and
@@ -81,7 +81,7 @@
 2007-07-16  6.3.5-2 Cristy  <quetzlzacatenango@image...>
   * Add MagickGetType() method.
   * Fix MagickAddImage() relative to the iterator offset (reference
-    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=9218).
+    http://imagemagick.org/discourse-server/viewtopic.php?f=3&t=9218).
 
 2007-05-23  6.3.4-5 Cristy  <quetzlzacatenango@image...>
   * * Add MagickPaintFloodfillImage() method.

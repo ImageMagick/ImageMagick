@@ -110,7 +110,7 @@ Magick::ChannelMoments::ChannelMoments(const PixelChannel channel_,
     _ellipseEccentricity(channelMoments_->ellipse_eccentricity),
     _ellipseIntensity(channelMoments_->ellipse_intensity)
 {
-  register ssize_t
+  ssize_t
     i;
 
   for (i=0; i<8; i++)
@@ -138,7 +138,7 @@ Magick::ChannelPerceptualHash::ChannelPerceptualHash(
     _srgbHuPhash(7),
     _hclpHuPhash(7)
 {
-  register ssize_t
+  ssize_t
     i;
 
   if (hash_.length() != 70)
@@ -174,7 +174,7 @@ Magick::ChannelPerceptualHash::operator std::string() const
   std::string
     hash;
 
-  register ssize_t
+  ssize_t
     i;
 
   if (!isValid())
@@ -229,7 +229,7 @@ double Magick::ChannelPerceptualHash::sumSquaredDifferences(
   double
     ssd;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssd=0.0;
@@ -266,7 +266,7 @@ Magick::ChannelPerceptualHash::ChannelPerceptualHash(
     _srgbHuPhash(7),
     _hclpHuPhash(7)
 {
-  register ssize_t
+  ssize_t
     i;
 
   for (i=0; i<7; i++)
@@ -455,7 +455,7 @@ Magick::ImageMoments::ImageMoments(const Image &image_)
   channel_moments=GetImageMoments(image_.constImage(),exceptionInfo);
   if (channel_moments != (MagickCore::ChannelMoments *) NULL)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) GetPixelChannels(image_.constImage()); i++)
@@ -551,7 +551,7 @@ double Magick::ImagePerceptualHash::sumSquaredDifferences(
   double
     ssd;
 
-  register ssize_t
+  ssize_t
     i;
 
   if (!isValid())
@@ -637,7 +637,7 @@ Magick::ImageStatistics::ImageStatistics(const Image &image_)
   channel_statistics=GetImageStatistics(image_.constImage(),exceptionInfo);
   if (channel_statistics != (MagickCore::ChannelStatistics *) NULL)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) GetPixelChannels(image_.constImage()); i++)

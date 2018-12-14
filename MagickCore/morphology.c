@@ -17,13 +17,13 @@
 %                               January 2010                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -2774,10 +2774,10 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
               proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp critical (MagickCore_MorphologyPrimitive)
+            #pragma omp atomic
 #endif
-            proceed=SetImageProgress(image,MorphologyTag,progress++,
-              image->rows);
+            progress++;
+            proceed=SetImageProgress(image,MorphologyTag,progress,image->rows);
             if (proceed == MagickFalse)
               status=MagickFalse;
           }
@@ -2880,11 +2880,21 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         minimum=(double) QuantumRange;
         switch (method)
         {
-          case ConvolveMorphology: pixel=bias; break;
+          case ConvolveMorphology:
+          {
+            pixel=bias;
+            break;
+          }
           case DilateMorphology:
           case ErodeIntensityMorphology:
           {
             pixel=0.0;
+            break;
+          }
+          case HitAndMissMorphology:
+          case ErodeMorphology:
+          {
+            pixel=QuantumRange;
             break;
           }
           default:
@@ -3193,9 +3203,10 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_MorphologyPrimitive)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(image,MorphologyTag,progress++,image->rows);
+        progress++;
+        proceed=SetImageProgress(image,MorphologyTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -3426,7 +3437,11 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,MorphologyTag,progress++,2*image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,MorphologyTag,progress,2*image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -3586,7 +3601,11 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,MorphologyTag,progress++,2*image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,MorphologyTag,progress,2*image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }

@@ -17,13 +17,13 @@
 %                              July 1992                                      %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -631,9 +631,6 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
             MagickBooleanType
               proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp critical (MagickCore_AssignImageColors)
-#endif
             proceed=SetImageProgress(image,AssignImageTag,(MagickOffsetType) y,
               image->rows);
             if (proceed == MagickFalse)
@@ -2454,10 +2451,10 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_PosterizeImage)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(image,PosterizeImageTag,progress++,
-          image->rows);
+        progress++;
+        proceed=SetImageProgress(image,PosterizeImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }

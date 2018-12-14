@@ -17,13 +17,13 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -161,6 +161,7 @@ static MagickBooleanType IsMIFF(const unsigned char *magick,const size_t length)
 %
 */
 
+#if defined(MAGICKCORE_BZLIB_DELEGATE) || defined(MAGICKCORE_LZMA_DELEGATE) || defined(MAGICKCORE_ZLIB_DELEGATE)
 static void *AcquireCompressionMemory(void *context,const size_t items,
   const size_t size)
 {
@@ -175,8 +176,11 @@ static void *AcquireCompressionMemory(void *context,const size_t items,
     return((void *) NULL);
   return(AcquireMagickMemory(extent));
 }
+#endif
 
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
+static void *AcquireBZIPMemory(void *,int,int) magick_attribute((__malloc__));
+
 static void *AcquireBZIPMemory(void *context,int items,int size)
 {
   return(AcquireCompressionMemory(context,(size_t) items,(size_t) size));
@@ -184,6 +188,9 @@ static void *AcquireBZIPMemory(void *context,int items,int size)
 #endif
 
 #if defined(MAGICKCORE_LZMA_DELEGATE)
+static void *AcquireLZMAMemory(void *,size_t,size_t)
+  magick_attribute((__malloc__));
+
 static void *AcquireLZMAMemory(void *context,size_t items,size_t size)
 {
   return(AcquireCompressionMemory(context,items,size));
@@ -191,6 +198,9 @@ static void *AcquireLZMAMemory(void *context,size_t items,size_t size)
 #endif
 
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
+static voidpf AcquireZIPMemory(voidpf,unsigned int,unsigned int)
+   magick_attribute((__malloc__));
+
 static voidpf AcquireZIPMemory(voidpf context,unsigned int items,
   unsigned int size)
 {
@@ -2094,7 +2104,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
           }
       }
     else
-      if (image->depth < 16)    
+      if (image->depth < 16)
         (void) DeleteImageProperty(image,"quantum:format");
     compression=UndefinedCompression;
     if (image_info->compression != UndefinedCompression)

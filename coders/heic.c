@@ -22,10 +22,13 @@
 %                                                                             %
 %                      Copyright 2017-2018 YANDEX LLC.                        %
 %                                                                             %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
+%  dedicated to making software imaging solutions freely available.           %
+%                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -59,6 +62,7 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/montage.h"
 #include "MagickCore/transform.h"
+#include "MagickCore/distort.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/memory-private.h"
 #include "MagickCore/option.h"
@@ -121,6 +125,55 @@ static MagickBooleanType IsHeifSuccess(struct heif_error *error,Image *image,
   ThrowBinaryException(CorruptImageError,error->message,image->filename);
 }
 
+/* An inverse of AutoOrientImage */
+static Image *CompensateOrientation(Image *image, ExceptionInfo *exception)
+{
+  const char
+    *value;
+
+  Image
+    *new_image;
+
+  value=GetImageProperty(image,"exif:Orientation",exception);
+  if (value == NULL)
+  {
+    return image;
+  }
+
+  switch((OrientationType) StringToLong(value))
+  {
+    case UndefinedOrientation:
+    case TopLeftOrientation:
+    default:
+      return(image);
+
+    case TopRightOrientation:
+      new_image=FlipImage(image,exception);
+      break;
+    case BottomRightOrientation:
+      new_image=RotateImage(image,180.0,exception);
+      break;
+    case BottomLeftOrientation:
+      new_image=FlopImage(image,exception);
+      break;
+    case LeftTopOrientation:
+      new_image=TransverseImage(image,exception);
+      break;
+    case RightTopOrientation:
+      new_image=RotateImage(image,270.0,exception);
+      break;
+    case RightBottomOrientation:
+      new_image=TransposeImage(image,exception);
+      break;
+    case LeftBottomOrientation:
+      new_image=RotateImage(image,90.0,exception);
+      break;
+  }
+
+  image=DestroyImageList(image);
+  return(new_image);
+}
+
 static Image *ReadHEICImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -164,6 +217,9 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
 
   void
     *file_data;
+
+  const char
+    *option;
 
   /*
     Open image file.
@@ -216,7 +272,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
       size_t
         exif_size;
 
-      void
+      unsigned char
         *exif_buffer;
 
       exif_size=heif_image_handle_get_metadata_size(image_handle,exif_id);
@@ -227,8 +283,8 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
           ThrowReaderException(CorruptImageError,
             "InsufficientImageDataInFile");
         }
-      exif_buffer=AcquireMagickMemory(exif_size);
-      if (exif_buffer != NULL)
+      exif_buffer=(unsigned char *) AcquireMagickMemory(exif_size);
+      if (exif_buffer !=(unsigned char *) NULL)
         {
           error=heif_image_handle_get_metadata(image_handle,
             exif_id,exif_buffer);
@@ -237,7 +293,11 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
               StringInfo
                 *profile;
 
-              profile=BlobToStringInfo(exif_buffer,exif_size);
+              // The first 4 byte should be skipped since they indicate the
+              // offset to the start of the TIFF header of the Exif data.
+              profile=(StringInfo*) NULL;
+              if (exif_size > 8)
+                profile=BlobToStringInfo(exif_buffer+4,exif_size-4);
               if (profile != (StringInfo*) NULL)
                 {
                   SetImageProfile(image,"exif",profile,exception);
@@ -306,6 +366,22 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   heif_image_release(heif_image);
   heif_image_handle_release(image_handle);
   heif_context_free(heif_context);
+
+  /*
+    There is a discrepancy between EXIF data and the actual orientation of
+    image pixels. ReadImage processes "exif:Orientation" expecting pixels to be
+    oriented accordingly. However, in HEIF the pixels are NOT rotated.
+
+    There are two solutions to this problem: either reset the EXIF Orientation
+    tag so it matches the orientation of pixels, or rotate the pixels to match
+    EXIF data.
+   */
+  option=GetImageOption(image_info,"heic:preserve-orientation");
+  if (IsStringTrue(option) == MagickTrue)
+    image=CompensateOrientation(image,exception);
+  else
+    SetImageProperty(image,"exif:Orientation","1",exception);
+
   return(GetFirstImageInList(image));
 }
 #endif
@@ -339,7 +415,13 @@ static MagickBooleanType IsHEIC(const unsigned char *magick,const size_t length)
 {
   if (length < 12)
     return(MagickFalse);
+  if (LocaleNCompare((const char *) magick+4,"ftyp",4) != 0)
+  return(MagickFalse);
   if (LocaleNCompare((const char *) magick+8,"heic",4) == 0)
+    return(MagickTrue);
+  if (LocaleNCompare((const char *) magick+8,"heix",4) == 0)
+    return(MagickTrue);
+  if (LocaleNCompare((const char *) magick+8,"mif1",4) == 0)
     return(MagickTrue);
   return(MagickFalse);
 }
@@ -571,7 +653,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,Image *image
                 p));
               p+=GetPixelChannels(image);
 
-              if (x+1 < image->columns)
+              if (x+1 < (long) image->columns)
                 {
                   p_y[y*stride_y + x+1]=ScaleQuantumToChar(GetPixelRed(image,
                     p));

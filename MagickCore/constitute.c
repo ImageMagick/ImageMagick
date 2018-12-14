@@ -17,13 +17,13 @@
 %                               October 1998                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -491,9 +491,6 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   if ((magick_info != (const MagickInfo *) NULL) &&
       (GetMagickDecoderSeekableStream(magick_info) != MagickFalse))
     {
-      MagickBooleanType
-        status;
-
       image=AcquireImage(read_info,exception);
       (void) CopyMagickString(image->filename,read_info->filename,
         MagickPathExtent);
@@ -553,9 +550,6 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     }
   else
     {
-      MagickBooleanType
-        status;
-
       delegate_info=GetDelegateInfo(read_info->magick,(char *) NULL,exception);
       if (delegate_info == (const DelegateInfo *) NULL)
         {
@@ -633,10 +627,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       "notify the developers",image->magick,exception->severity);
   if (IsBlobTemporary(image) != MagickFalse)
     (void) RelinquishUniqueFileResource(read_info->filename);
-  if ((IsSceneGeometry(read_info->scenes,MagickFalse) != MagickFalse) &&
-      ((GetNextImageInList(image) != (Image *) NULL) ||
-       ((read_info->scenes != (char *) NULL) &&
-        (strchr(read_info->scenes,',') != (char *) NULL))))
+  if (IsSceneGeometry(read_info->scenes,MagickFalse) != MagickFalse)
     {
       Image
         *clones;
@@ -1068,10 +1059,10 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
   */
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
+  assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
-  assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
   sans_exception=AcquireExceptionInfo();
@@ -1391,7 +1382,11 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
       break;
     if (number_images != 1)
       {
-        proceed=SetImageProgress(p,WriteImageTag,progress++,number_images);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(p,WriteImageTag,progress,number_images);
         if (proceed == MagickFalse)
           break;
       }

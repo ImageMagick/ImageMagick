@@ -17,13 +17,13 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -1219,18 +1219,18 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
         (void) FormatLocaleFile(stdout,"# window-support = %.*g\n",
           GetMagickPrecision(),(double) resize_filter->window_support);
         (void) FormatLocaleFile(stdout,"# scale-blur = %.*g\n",
-          GetMagickPrecision(),(double)resize_filter->blur);
+          GetMagickPrecision(),(double) resize_filter->blur);
         if ((filter_type == GaussianFilter) || (window_type == GaussianFilter))
           (void) FormatLocaleFile(stdout,"# gaussian-sigma = %.*g\n",
-            GetMagickPrecision(),(double)resize_filter->coefficient[0]);
+            GetMagickPrecision(),(double) resize_filter->coefficient[0]);
         if ( filter_type == KaiserFilter || window_type == KaiserFilter )
           (void) FormatLocaleFile(stdout,"# kaiser-beta = %.*g\n",
-            GetMagickPrecision(),(double)resize_filter->coefficient[0]);
+            GetMagickPrecision(),(double) resize_filter->coefficient[0]);
         (void) FormatLocaleFile(stdout,"# practical-support = %.*g\n",
-          GetMagickPrecision(), (double)support);
-        if ( filter_type == CubicFilter || window_type == CubicFilter )
+          GetMagickPrecision(), (double) support);
+        if ((filter_type == CubicFilter) || (window_type == CubicFilter))
           (void) FormatLocaleFile(stdout,"# B,C = %.*g,%.*g\n",
-            GetMagickPrecision(),(double)B, GetMagickPrecision(),(double)C);
+            GetMagickPrecision(),(double) B,GetMagickPrecision(),(double) C);
         (void) FormatLocaleFile(stdout,"\n");
         /*
           Output values of resulting filter graph -- for graphing filter result.
@@ -1813,9 +1813,10 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_InterpolativeResizeImage)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(image,InterpolativeResizeImageTag,progress++,
+        progress++;
+        proceed=SetImageProgress(image,InterpolativeResizeImageTag,progress,
           image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -2211,9 +2212,10 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_MagnifyImage)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(image,MagnifyImageTag,progress++,image->rows);
+        progress++;
+        proceed=SetImageProgress(image,MagnifyImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -2424,9 +2426,11 @@ static ContributionInfo **AcquireContributionThreadSet(const size_t count)
   return(contribution);
 }
 
-static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
-  const Image *image,Image *resize_image,const double x_factor,
-  const MagickSizeType span,MagickOffsetType *offset,ExceptionInfo *exception)
+static MagickBooleanType HorizontalFilter(
+  const ResizeFilter *magick_restrict resize_filter,
+  const Image *magick_restrict image,Image *magick_restrict resize_image,
+  const double x_factor,const MagickSizeType span,
+  MagickOffsetType *magick_restrict progress,ExceptionInfo *exception)
 {
 #define ResizeImageTag  "Resize/Image"
 
@@ -2478,7 +2482,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   image_view=AcquireVirtualCacheView(image,exception);
   resize_view=AcquireAuthenticCacheView(resize_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status) \
+  #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(image,resize_image,resize_image->columns,1)
 #endif
   for (x=0; x < (ssize_t) resize_image->columns; x++)
@@ -2628,9 +2632,10 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_HorizontalFilter)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(image,ResizeImageTag,(*offset)++,span);
+        (*progress)++;
+        proceed=SetImageProgress(image,ResizeImageTag,*progress,span);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -2641,9 +2646,11 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   return(status);
 }
 
-static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
-  const Image *image,Image *resize_image,const double y_factor,
-  const MagickSizeType span,MagickOffsetType *offset,ExceptionInfo *exception)
+static MagickBooleanType VerticalFilter(
+  const ResizeFilter *magick_restrict resize_filter,
+  const Image *magick_restrict image,Image *magick_restrict resize_image,
+  const double y_factor,const MagickSizeType span,
+  MagickOffsetType *magick_restrict progress,ExceptionInfo *exception)
 {
   CacheView
     *image_view,
@@ -2693,7 +2700,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
   image_view=AcquireVirtualCacheView(image,exception);
   resize_view=AcquireAuthenticCacheView(resize_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status) \
+  #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(image,resize_image,resize_image->rows,1)
 #endif
   for (y=0; y < (ssize_t) resize_image->rows; y++)
@@ -2841,9 +2848,10 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_VerticalFilter)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(image,ResizeImageTag,(*offset)++,span);
+        (*progress)++;
+        proceed=SetImageProgress(image,ResizeImageTag,*progress,span);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -3159,9 +3167,6 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_SampleImage)
-#endif
         proceed=SetImageProgress(image,SampleImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;

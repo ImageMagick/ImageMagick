@@ -17,13 +17,13 @@
 %                                March 2000                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -293,7 +293,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
       e=((1.0/(1.0/((serial/(serial+parallel))+(1.0-(serial/(serial+parallel)))/
         (double) n)))-(1.0/(double) n))/(1.0-1.0/(double) n);
     (void) FormatLocaleFile(stderr,
-      "Performance[%.20g]: %.20gi %0.3fips %0.3fe %0.3fu %lu:%02lu.%03lu\n",
+      "Performance[%.20g]: %.20gi %0.3fips %0.6fe %0.6fu %lu:%02lu.%03lu\n",
       (double) n,(double) iterations,(double) iterations/parallel,e,user_time,
       (unsigned long) (parallel/60.0),(unsigned long) floor(fmod(parallel,
       60.0)),(unsigned long) (1000.0*(parallel-floor(parallel))+0.5));
@@ -1078,6 +1078,17 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image,exception);
             (void) ParseGravityGeometry(*image,argv[i+1],&geometry,exception);
             mogrify_image=ChopImage(*image,&geometry,exception);
+            break;
+          }
+        if (LocaleCompare("clahe",option+1) == 0)
+          {
+            /*
+              Contrast limited adaptive histogram equalization.
+            */
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            (void) ParseRegionGeometry(*image,argv[i+1],&geometry,exception);
+            (void) CLAHEImage(*image,geometry.width,geometry.height,
+              (size_t) geometry.x,(double) geometry.y,exception);
             break;
           }
         if (LocaleCompare("clip",option+1) == 0)
@@ -3473,6 +3484,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-channel mask        set the image channel mask",
       "-charcoal geometry   simulate a charcoal drawing",
       "-chop geometry       remove pixels from the image interior",
+      "-clahe geometry      contrast limited adaptive histogram equalization",
       "-clamp               keep pixel values in range (0-QuantumRange)",
       "-clip                clip along the first path from the 8BIM profile",
       "-clip-mask filename  associate a clip mask with the image",
@@ -4323,6 +4335,17 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         if (LocaleCompare("chop",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("clahe",option+1) == 0)
           {
             if (*option == '+')
               break;
@@ -5353,7 +5376,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"UnrecognizedListType",argv[i]);
             status=MogrifyImageInfo(image_info,(int) (i-j+1),(const char **)
               argv+j,exception);
-            return(status == 0 ? MagickTrue : MagickFalse);
+            return(status == 0 ? MagickFalse : MagickTrue);
           }
         if (LocaleCompare("log",option+1) == 0)
           {

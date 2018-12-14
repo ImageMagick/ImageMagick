@@ -1,11 +1,11 @@
 /*
-  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
   obtain a copy of the License at
   
-    https://www.imagemagick.org/script/license.php
+    https://imagemagick.org/script/license.php
   
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,24 +18,15 @@
 #ifndef MAGICKCORE_MONITOR_PRIVATE_H
 #define MAGICKCORE_MONITOR_PRIVATE_H
 
-#include "MagickCore/image.h"
-
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
-static inline MagickBooleanType SetImageProgress(const Image *image,
-  const char *tag,const MagickOffsetType offset,const MagickSizeType extent)
-{
-  char
-    message[MagickPathExtent];
+extern MagickPrivate MagickBooleanType
+  MonitorComponentGenesis(void);
 
-  if (image->progress_monitor == (MagickProgressMonitor) NULL)
-    return(MagickTrue);
-  (void) FormatLocaleString(message,MagickPathExtent,"%s/%s",tag,
-    image->filename);
-  return(image->progress_monitor(message,offset,extent,image->client_data));
-}
+extern MagickPrivate void
+  MonitorComponentTerminus(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -9,14 +9,14 @@
 #define Magick_Include_header
 
 #if !defined(_MAGICK_CONFIG_H)
-# define _MAGICK_CONFIG_H
-# if !defined(vms) && !defined(macintosh)
-#  include "MagickCore/magick-config.h"
-# else
-#  include "magick-config.h"
-# endif
-# undef inline // Remove possible definition from config.h
-# undef class
+#  define _MAGICK_CONFIG_H
+#  if !defined(vms) && !defined(macintosh)
+#    include "MagickCore/magick-config.h"
+#  else
+#    include "magick-config.h"
+#  endif
+#  undef inline // Remove possible definition from config.h
+#  undef class
 #endif
 
 // Needed for stdio FILE
@@ -28,7 +28,7 @@
 #include <sys/types.h>
 
 #if defined(__BORLANDC__)
-# include <vcl.h> /* Borland C++ Builder 4.0 requirement */
+#  include <vcl.h> /* Borland C++ Builder 4.0 requirement */
 #endif // defined(__BORLANDC__)
 
 //
@@ -51,7 +51,7 @@ namespace MagickCore
 // Borland C++Builder and MinGW builds.
 //
 #if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__)
-# define MagickCplusPlusDLLSupported
+#  define MagickCplusPlusDLLSupported
 #endif
 #if defined(MagickCplusPlusDLLSupported)
 #  if defined(_MT) && defined(_DLL) && !defined(_LIB) && !defined(STATIC_MAGICK)
@@ -75,39 +75,27 @@ namespace MagickCore
 #    endif
 #    if !defined(MAGICKCORE_IMPLEMENTATION)
 #      if defined(__GNUC__)
-#       define MagickPPExport __attribute__ ((dllimport))
+#        define MagickPPExport __attribute__ ((dllimport))
 #      else
-#       define MagickPPExport __declspec(dllimport)
+#        define MagickPPExport __declspec(dllimport)
 #      endif
 #      define MagickPPPrivate extern __declspec(dllimport)
-#      if defined(_VISUALC_)
-#        pragma message( "Magick++ lib DLL import" )
-#      endif
 #    else
 #      if defined(__BORLANDC__) || defined(__MINGW32__)
 #        define MagickPPExport __declspec(dllexport)
 #        define MagickPPPrivate __declspec(dllexport)
-#        if defined(__BORLANDC__)
-#          pragma message( "BCBMagick++ lib DLL export" )
-#        endif
 #      else
 #        if defined(__GNUC__)
-#         define MagickPPExport __attribute__ ((dllexport))
+#          define MagickPPExport __attribute__ ((dllexport))
 #        else
-#         define MagickPPExport __declspec(dllexport)
+#          define MagickPPExport __declspec(dllexport)
 #        endif
 #        define MagickPPPrivate extern __declspec(dllexport)
-#      endif
-#      if defined(_VISUALC_)
-#        pragma message( "Magick++ lib DLL export" )
 #      endif
 #    endif
 #  else
 #    define MagickPPExport
 #    define MagickPPPrivate
-#    if defined(_VISUALC_)
-#      pragma message( "Magick++ lib static interface" )
-#    endif
 #    if defined(_MSC_VER) && defined(STATIC_MAGICK) && !defined(NOAUTOLINK_MAGICK)
 #      if defined(_DEBUG)
 #        if defined(MAGICKCORE_BZLIB_DELEGATE)
@@ -267,13 +255,13 @@ namespace MagickCore
 #    endif
 #  endif
 #else
-# if __GNUC__ >= 4
-#  define MagickPPExport __attribute__ ((visibility ("default")))
-#  define MagickPPPrivate  __attribute__ ((visibility ("hidden")))
-# else
-#   define MagickPPExport
-#   define MagickPPPrivate
-# endif
+#  if __GNUC__ >= 4
+#    define MagickPPExport __attribute__ ((visibility ("default")))
+#    define MagickPPPrivate  __attribute__ ((visibility ("hidden")))
+#  else
+#    define MagickPPExport
+#    define MagickPPPrivate
+#  endif
 #endif
 
 #if (defined(WIN32) || defined(WIN64)) && defined(_VISUALC_)
@@ -512,6 +500,7 @@ namespace Magick
   // Compression algorithms
   using MagickCore::CompressionType;
   using MagickCore::UndefinedCompression;
+  using MagickCore::NoCompression;
   using MagickCore::B44ACompression;
   using MagickCore::B44Compression;
   using MagickCore::BZipCompression;
@@ -527,12 +516,13 @@ namespace Magick
   using MagickCore::LosslessJPEGCompression;
   using MagickCore::LZMACompression;
   using MagickCore::LZWCompression;
-  using MagickCore::NoCompression;
   using MagickCore::PizCompression;
   using MagickCore::Pxr24Compression;
   using MagickCore::RLECompression;
+  using MagickCore::WebPCompression;
   using MagickCore::ZipCompression;
   using MagickCore::ZipSCompression;
+  using MagickCore::ZstdCompression;
 
   // Decoration types
   using MagickCore::DecorationType;

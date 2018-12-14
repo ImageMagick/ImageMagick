@@ -17,13 +17,13 @@
 %                                 July 2003                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -148,9 +148,35 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static ConfigureInfo *NewConfigureKey(const char *path,const char *name,
+  const char *value)
+{
+  ConfigureInfo
+    *configure_info;
+
+  configure_info=(ConfigureInfo *) AcquireMagickMemory(sizeof(*configure_info));
+  if (configure_info == (ConfigureInfo *) NULL)
+    return((ConfigureInfo *) NULL);
+  (void) memset(configure_info,0,sizeof(*configure_info));
+  configure_info->path=(char *) path;
+  configure_info->name=(char *) name;
+  configure_info->value=(char *) value;
+  configure_info->exempt=MagickTrue;
+  configure_info->signature=MagickCoreSignature;
+  return(configure_info);
+}
+
 static LinkedListInfo *AcquireConfigureCache(const char *filename,
   ExceptionInfo *exception)
 {
+  char
+    head_path[MagickPathExtent],
+    path[MagickPathExtent];
+
+  ConfigureInfo
+    *configure_info;
+
   LinkedListInfo
     *cache;
 
@@ -189,33 +215,32 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
   */
   for (i=0; i < (ssize_t) (sizeof(ConfigureMap)/sizeof(*ConfigureMap)); i++)
   {
-    ConfigureInfo
-      *configure_info;
-
     register const ConfigureMapInfo
       *p;
 
     p=ConfigureMap+i;
-    configure_info=(ConfigureInfo *) AcquireMagickMemory(
-      sizeof(*configure_info));
+    configure_info=NewConfigureKey("[built-in]",p->name,p->value);
     if (configure_info == (ConfigureInfo *) NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),
           ResourceLimitError,"MemoryAllocationFailed","`%s'",p->name);
         continue;
       }
-    (void) memset(configure_info,0,sizeof(*configure_info));
-    configure_info->path=(char *) "[built-in]";
-    configure_info->name=(char *) p->name;
-    configure_info->value=(char *) p->value;
-    configure_info->exempt=MagickTrue;
-    configure_info->signature=MagickCoreSignature;
     status&=AppendValueToLinkedList(cache,configure_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",
         configure_info->name);
   }
+  /*
+    Load runtime configuration.
+  */
+  (void) AcquireUniqueFilename(path);
+  GetPathComponent(path,HeadPath,head_path);
+  configure_info=NewConfigureKey("[built-in]","MAGICK_TEMPORARY_PATH",
+    head_path);
+  if (configure_info != (ConfigureInfo *) NULL)
+    status&=AppendValueToLinkedList(cache,configure_info);
   return(cache);
 }
 
@@ -1088,7 +1113,7 @@ MagickExport MagickBooleanType ListConfigureInfo(FILE *file,
         if (configure_info[i]->path != (char *) NULL)
           (void) FormatLocaleFile(file,"\nPath: %s\n\n",
             configure_info[i]->path);
-        (void) FormatLocaleFile(file,"Name           Value\n");
+        (void) FormatLocaleFile(file,"Name                  Value\n");
         (void) FormatLocaleFile(file,
           "-------------------------------------------------"
           "------------------------------\n");
@@ -1098,7 +1123,7 @@ MagickExport MagickBooleanType ListConfigureInfo(FILE *file,
     if (configure_info[i]->name != (char *) NULL)
       name=configure_info[i]->name;
     (void) FormatLocaleFile(file,"%s",name);
-    for (j=(ssize_t) strlen(name); j <= 13; j++)
+    for (j=(ssize_t) strlen(name); j <= 20; j++)
       (void) FormatLocaleFile(file," ");
     (void) FormatLocaleFile(file," ");
     value="unknown";

@@ -7,7 +7,7 @@ conjure \- interprets and executes scripts written in the Magick Scripting Langu
 .SH OVERVIEW
 The \fBconjure\fP program is a member of the ImageMagick(1) suite of tools.  Use it to process a Magick Scripting Language (MSL) script. The Magick scripting language (MSL) will primarily benefit those that want to accomplish custom image processing tasks but do not wish to program, or those that do not have access to a Perl interpreter or a compiler.
 
-For more information about the conjure command, point your browser to file://@DOCUMENTATION_PATH@/www/conjure.html or http://www.imagemagick.org/script/conjure.php.
+For more information about the conjure command, point your browser to file://@DOCUMENTATION_PATH@/www/conjure.html or http://imagemagick.org/script/conjure.php.
 .SH DESCRIPTION
 Image Settings:
   \-monitor             monitor progress
@@ -31,4 +31,4 @@ ImageMagick(1)
 
 .SH COPYRIGHT
 
-\fBCopyright (C) 1999-2018 ImageMagick Studio LLC. Additional copyrights and licenses apply to this software, see file://@DOCUMENTATION_PATH@/www/license.html or http://www.imagemagick.org/script/license.php\fP
+\fBCopyright (C) 1999-2019 ImageMagick Studio LLC. Additional copyrights and licenses apply to this software, see file://@DOCUMENTATION_PATH@/www/license.html or http://imagemagick.org/script/license.php\fP

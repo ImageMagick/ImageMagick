@@ -17,13 +17,13 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -2875,7 +2875,7 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
           else
             if ((info->bits_allocated != 12) || (info->significant_bits != 12))
               {
-                if (info->signed_data)
+                if (info->signed_data != 0)
                   pixel_value=ReadDCMSignedShort(stream_info,image);
                 else
                   pixel_value=(int) ReadDCMShort(stream_info,image);
@@ -2885,8 +2885,12 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
             else
               {
                 if ((i & 0x01) != 0)
-                  pixel_value=(ReadDCMByte(stream_info,image) << 8) |
-                    byte;
+                  { 
+                    pixel_value=byte;
+                    byte=ReadDCMByte(stream_info,image);
+                    if (byte >= 0)  
+                      pixel_value|=(byte << 8);
+                  }
                 else
                   {
                     pixel_value=ReadDCMSignedShort(stream_info,image);
@@ -3195,10 +3199,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Assume explicit type.
           */
           quantum=2;
-          if ((strncmp(explicit_vr,"OB",2) == 0) ||
-              (strncmp(explicit_vr,"UN",2) == 0) ||
-              (strncmp(explicit_vr,"OW",2) == 0) ||
-              (strncmp(explicit_vr,"SQ",2) == 0))
+          if ((strcmp(explicit_vr,"OB") == 0) ||
+              (strcmp(explicit_vr,"OW") == 0) ||
+              (strcmp(explicit_vr,"OF") == 0) ||
+              (strcmp(explicit_vr,"SQ") == 0) ||
+              (strcmp(explicit_vr,"UN") == 0) ||
+              (strcmp(explicit_vr,"UT") == 0))
             {
               (void) ReadBlobLSBShort(image);
               quantum=4;
@@ -3854,7 +3860,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             ReadBlobLSBShort(image);
           length=(size_t) ReadBlobLSBLong(image);
           if (length > (size_t) GetBlobSize(image))
-            ThrowDCMException(CorruptImageError,"InsufficientImageDataInFile");
+            {
+              read_info=DestroyImageInfo(read_info);
+              ThrowDCMException(CorruptImageError,
+                "InsufficientImageDataInFile");
+            }
           if (tag == 0xFFFEE0DD)
             break; /* sequence delimiter tag */
           if (tag != 0xFFFEE000)
@@ -3939,11 +3949,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowDCMException(CorruptImageError,"InsufficientImageDataInFile");
         if (info.scale != (Quantum *) NULL)
           info.scale=(Quantum *) RelinquishMagickMemory(info.scale);
-        info.scale=(Quantum *) AcquireQuantumMemory(MagickMax(length,256),
+        info.scale=(Quantum *) AcquireQuantumMemory(MagickMax(length,MaxMap)+1,
           sizeof(*info.scale));
         if (info.scale == (Quantum *) NULL)
           ThrowDCMException(ResourceLimitError,"MemoryAllocationFailed");
-        (void) memset(info.scale,0,MagickMax(length,256)*
+        (void) memset(info.scale,0,(MagickMax(length,MaxMap)+1)*
           sizeof(*info.scale));
         range=GetQuantumRange(info.depth);
         for (i=0; i <= (ssize_t) GetQuantumRange(info.depth); i++)

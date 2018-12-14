@@ -17,13 +17,13 @@
 %                                 July 1998                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -847,9 +847,10 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_OilPaintImage)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(linear_image,OilPaintImageTag,progress++,
+        progress++;
+        proceed=SetImageProgress(linear_image,OilPaintImageTag,progress,
           linear_image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -1001,9 +1002,10 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_OpaquePaintImage)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(image,OpaquePaintImageTag,progress++,
+        progress++;
+        proceed=SetImageProgress(image,OpaquePaintImageTag,progress,
           image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -1128,9 +1130,10 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_TransparentPaintImage)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(image,TransparentPaintImageTag,progress++,
+        progress++;
+        proceed=SetImageProgress(image,TransparentPaintImageTag,progress,
           image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -1262,9 +1265,10 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_TransparentPaintImageChroma)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(image,TransparentPaintImageTag,progress++,
+        progress++;
+        proceed=SetImageProgress(image,TransparentPaintImageTag,progress,
           image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;

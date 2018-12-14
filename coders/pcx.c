@@ -17,13 +17,13 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -335,6 +335,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pcx_info.bottom=ReadBlobLSBShort(image);
     pcx_info.horizontal_resolution=ReadBlobLSBShort(image);
     pcx_info.vertical_resolution=ReadBlobLSBShort(image);
+    if (EOFBlob(image) != MagickFalse)
+      ThrowPCXException(CorruptImageError,"UnexpectedEndOfFile");
     /*
       Read PCX raster colormap.
     */
@@ -354,6 +356,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
+    if ((MagickSizeType) (image->columns*image->rows/255) > GetBlobSize(image))
+      ThrowPCXException(CorruptImageError,"InsufficientImageDataInFile");
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
       ThrowPCXException(exception->severity,exception->reason);
@@ -402,10 +406,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (HeapOverflowSanityCheck(pcx_packets, (size_t) pcx_info.planes) != MagickFalse)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     pcx_packets=(size_t) pcx_packets*pcx_info.planes;
-    if ((size_t) (pcx_info.bits_per_pixel*pcx_info.planes*image->columns) >
-        (pcx_packets*8U))
+    if ((size_t) (pcx_info.bits_per_pixel*pcx_info.planes*image->columns) > (pcx_packets*8U))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    if ((MagickSizeType) (pcx_packets/10) > GetBlobSize(image))
+    if ((MagickSizeType) (pcx_packets/32+128) > GetBlobSize(image))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     scanline=(unsigned char *) AcquireQuantumMemory(MagickMax(image->columns,
       pcx_info.bytes_per_line),MagickMax(pcx_info.planes,8)*sizeof(*scanline));
@@ -980,7 +983,11 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
       }
     length=(((size_t) image->columns*pcx_info.bits_per_pixel+7)/8);
     if (length > 65535UL)
-      ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
+      {
+        if (page_table != (MagickOffsetType *) NULL)
+          page_table=(MagickOffsetType *) RelinquishMagickMemory(page_table);
+        ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
+      }
     pcx_info.bytes_per_line=(unsigned short) length;
     pcx_info.palette_info=1;
     pcx_info.colormap_signature=0x0c;

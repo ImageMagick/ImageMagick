@@ -17,13 +17,13 @@
 %                                 March 2000                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -2415,7 +2415,7 @@ MagickPrivate MagickBooleanType InitializeOpenCL(MagickCLEnv clEnv,
   for (i=0; i < (ssize_t) clEnv->number_devices; i++)
   {
     if (strncmp(clEnv->devices[i]->platform_name,"NVIDIA",6) == 0)
-        clEnv->enabled=MagickFalse;
+      clEnv->devices[i]->enabled=MagickFalse;
   }
   UnlockSemaphoreInfo(clEnv->lock);
   return(HasOpenCLDevices(clEnv,exception));
@@ -2898,7 +2898,7 @@ static void CL_API_CALL DestroyMagickCLCacheInfoAndPixels(
     status=openCL_library->clGetEventInfo(info->events[i],
       CL_EVENT_COMMAND_EXECUTION_STATUS,sizeof(event_status),&event_status,
       NULL);
-    if ((status == CL_SUCCESS) && (event_status != CL_COMPLETE))
+    if ((status == CL_SUCCESS) && (event_status > CL_COMPLETE))
       {
         openCL_library->clSetEventCallback(info->events[i],CL_COMPLETE,
           &DestroyMagickCLCacheInfoAndPixels,info);

@@ -67,6 +67,8 @@ int main( int /*argc*/, char ** argv)
     // Add some text
     button.fillColor( textColor );
     button.fontPointsize( fontPointSize );
+    if (getenv("MAGICK_FONT") != 0)
+      button.font(string(getenv("MAGICK_FONT")));
     button.annotate( text, CenterGravity );
 
     // Add a decorative frame

@@ -17,13 +17,13 @@
 %                                 March 2000                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -612,6 +612,8 @@ static const OptionInfo
     { "-charcoal", 1L, SimpleOperatorFlag, MagickFalse },
     { "+chop", 1L, DeprecateOptionFlag, MagickTrue },
     { "-chop", 1L, SimpleOperatorFlag, MagickFalse },
+    { "+clahe", 1L, DeprecateOptionFlag, MagickTrue },
+    { "-clahe", 1L, SimpleOperatorFlag, MagickFalse },
     { "+clamp", 0L, DeprecateOptionFlag, MagickTrue },
     { "-clamp", 0L, SimpleOperatorFlag, MagickFalse },
     { "-clip", 0L, SimpleOperatorFlag, MagickFalse },
@@ -1220,8 +1222,8 @@ static const OptionInfo
   CompressOptions[] =
   {
     { "Undefined", UndefinedCompression, UndefinedOptionFlag, MagickTrue },
-    { "B44", B44Compression, UndefinedOptionFlag, MagickFalse },
     { "B44A", B44ACompression, UndefinedOptionFlag, MagickFalse },
+    { "B44", B44Compression, UndefinedOptionFlag, MagickFalse },
     { "BZip", BZipCompression, UndefinedOptionFlag, MagickFalse },
     { "DXT1", DXT1Compression, UndefinedOptionFlag, MagickFalse },
     { "DXT3", DXT3Compression, UndefinedOptionFlag, MagickFalse },
@@ -1230,19 +1232,21 @@ static const OptionInfo
     { "Group4", Group4Compression, UndefinedOptionFlag, MagickFalse },
     { "JBIG1", JBIG1Compression, UndefinedOptionFlag, MagickFalse },
     { "JBIG2", JBIG2Compression, UndefinedOptionFlag, MagickFalse },
-    { "JPEG", JPEGCompression, UndefinedOptionFlag, MagickFalse },
     { "JPEG2000", JPEG2000Compression, UndefinedOptionFlag, MagickFalse },
-    { "Lossless", LosslessJPEGCompression, UndefinedOptionFlag, MagickFalse },
+    { "JPEG", JPEGCompression, UndefinedOptionFlag, MagickFalse },
     { "LosslessJPEG", LosslessJPEGCompression, UndefinedOptionFlag, MagickFalse },
+    { "Lossless", LosslessJPEGCompression, UndefinedOptionFlag, MagickFalse },
     { "LZMA", LZMACompression, UndefinedOptionFlag, MagickFalse },
     { "LZW", LZWCompression, UndefinedOptionFlag, MagickFalse },
     { "None", NoCompression, UndefinedOptionFlag, MagickFalse },
     { "Piz", PizCompression, UndefinedOptionFlag, MagickFalse },
     { "Pxr24", Pxr24Compression, UndefinedOptionFlag, MagickFalse },
     { "RLE", RLECompression, UndefinedOptionFlag, MagickFalse },
-    { "Zip", ZipCompression, UndefinedOptionFlag, MagickFalse },
     { "RunlengthEncoded", RLECompression, UndefinedOptionFlag, MagickFalse },
+    { "WebP", WebPCompression, UndefinedOptionFlag, MagickFalse },
     { "ZipS", ZipSCompression, UndefinedOptionFlag, MagickFalse },
+    { "Zip", ZipCompression, UndefinedOptionFlag, MagickFalse },
+    { "Zstd", ZstdCompression, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedCompression, UndefinedOptionFlag, MagickFalse }
   },
   DataTypeOptions[] =

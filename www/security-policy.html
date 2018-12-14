@@ -6,11 +6,11 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"  />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"  />
+  <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no"  />
   <title>Security Policy @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves." />
-  <meta name="application-url" content="https://www.imagemagick.org" />
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations." />
+  <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="security, policy, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
   <meta name="rating" content="GENERAL" />
@@ -22,7 +22,6 @@
   <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link href="../www/security-policy.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
@@ -32,9 +31,9 @@
 <body>
   <header>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="../index.html"><img class="d-block" id="logo" name="ImageMagick" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
-    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
@@ -58,10 +57,10 @@
         <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://www.imagemagick.org/discourse-server//">Community</a>
+        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="https://www.imagemagick.org/script/search.php">
+    <form class="form-inline my-2 my-lg-0" action="https://imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
     </form>
@@ -76,15 +75,16 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
+
   </div>
   </header>
-  <main role="main" class="container">
+  <main class="container">
     <div class="magick-template">
 <div class="magick-header">
 <p class="text-center"><a href="security-policy.html#policy">Security Policy </a> • <a href="security-policy.html#synchronize">Pixel Cache Synchronize Policy</a> • <a href="security-policy.html#zero-configuration">Zero Configuration Security Policy</a> • <a href="security-policy.html#other">Other Security Considerations</a></p>
 
 
-<p class="lead magick-description">ImageMagick best practices strongly encourages you to configure a security <a href="https://www.imagemagick.org/source/policy.xml">policy.xml</a> that suits your local environment.  The policy is open by default.  This affords maximum utility for ImageMagick installations that run in a sandboxed environment, perhaps in a Docker instance, or behind a firewall where security risks are greatly diminished as opposed to a public website.</p>
+<p class="lead magick-description">ImageMagick best practices strongly encourages you to configure a security <a href="https://imagemagick.org/source/policy.xml">policy.xml</a> that suits your local environment.  The policy is open by default.  This affords maximum utility for ImageMagick installations that run in a sandboxed environment, perhaps in a Docker instance, or behind a firewall where security risks are greatly diminished as opposed to a public website.</p>
 
 <p>Security is a trade-off between a secure environment and convenience. If you want ImageMagick to be optimally secure, you could, for example, limit ImageMagick to only read or write web safe images (e.g. GIF, JPEG, PNG).   However, ImageMagick provides for a more secure option by adjusting the security policy per the requirements of your local environment or organizational policies. The security policy covers areas such as memory, which paths to read or write, how many images are permitted in an image sequence, how long a workflow can run, how much disk the image pixels can consume, a secret passphrase for remote connections, which coders are permitted or denied, and others. These policies should provide robust coverage to not only secure your environment per your requirements but also ensure ImageMagick remains a good citizen (e.g. prevent thrashing with large images) in your local environment.</p>
 
@@ -106,12 +106,20 @@
   &lt;policy domain="system" name="precision" value="6"/>
   &lt;policy domain="cache" name="shared-secret" stealth="true" value="replace with your secret phrase"/>
   &lt;policy domain="coder" rights="none" pattern="MVG" />
+  &lt;policy domain="coder" rights="none" pattern="EPS" />
+  &lt;policy domain="coder" rights="none" pattern="PS" />
+  &lt;policy domain="coder" rights="none" pattern="PS2" />
+  &lt;policy domain="coder" rights="none" pattern="PS3" />
+  &lt;policy domain="coder" rights="none" pattern="PDF" />
+  &lt;policy domain="coder" rights="none" pattern="XPS" />
   &lt;policy domain="filter" rights="none" pattern="*" />
   &lt;policy domain="delegate" rights="none" pattern="HTTPS" />  <!--  prevent 'curl' program from reading HTTPS URL's -->
   &lt;policy domain="path" rights="none" pattern="@*"/>  <!-- indirect reads not permitted -->
 &lt;/policymap></code></pre>
 
 <p>Since we process multiple simultaneous sessions, we do not want any one session consuming all the available memory. With this policy, large images are cached to disk. If the image is too large and exceeds the pixel cache disk limit, the program exits. In addition, we place a time limit to prevent any run-away processing tasks. If any one image has a width or height that exceeds 8192 pixels or if an image sequence exceeds 128 frames, an exception is thrown and processing stops. As of ImageMagick 7.0.1-8 and 6.9.4-6, you can prevent the use of any delegate or all delegates (set the pattern to "*"). Note, prior to these releases, use a domain of <code>coder</code> to prevent delegate usage (e.g. <code>domain="coder" rights="none" pattern="HTTPS"</code>). We prevent users from executing any image filters.  The policy also prevents indirect reads. If you want to, for example, read text from a file (e.g. <code>caption:@myCaption.txt</code>), you'll need to disable the <code>path</code> policy.</p>
+
+<p>Policy patterns are <em>case sensitive</em>.  To get expected behavior, coders and modules must be upper-case (e.g. "EPS" not "eps").</p>
 
 <p>Here is what you can expect when you restrict the HTTPS coder, for example:</p>
 
@@ -125,6 +133,9 @@ convert: no images defined `wizard.jpg'</pre>
 <pre class="highlight"><code>&lt;policy domain="delegate" rights="none" pattern="*" />
 &lt;policy domain="coder" rights="none" pattern="*" />
 &lt;policy domain="coder" rights="read | write" pattern="{GIF,JPEG,PNG,WEBP}" /></code></pre>
+
+<p>Here we disable just a few Postscript related formats:</p>
+<pre class="highlight"><code>&lt;policy domain="coder" rights="none" pattern="{EPS,PS2,PS3,PS,PDF,XPS}" /></code></pre>
 
 <p>As of ImageMagick 7.0.7-0, you can allocate the pixel cache and some internal buffers with anonymous memory mapping rather than from heap.  As a consequence, the pixels are initialized to zero.  You can also securely delete any temporary files for increased security.  The value is the number of times to shred (replace its content with random data) before deleting a temporary file.  For example,</p>
 <pre class="highlight"><code>&lt;policy domain="system" name="memory-map" value="anonymous"/>
@@ -188,6 +199,9 @@ Path: [built-in]
 
 <p>As of ImageMagick 7.0.6-0, you can programmatically set the ImageMagick security policy with SetMagickSecurityPolicy() (MagickCore) or MagickSetSecurityPolicy() (MagickWand).</p>
 
+<p>As of ImageMagick version 7.0.8-11, you can set a module security policy.  For example, to prevent Postscript or PDF interpretation, use:</p>
+<pre class="highlight"><code>&lt;policy domain="module" rights="none" pattern="{ps,pdf,xps}/></code></pre>
+
 <p>For additional details about resource limits and the policy configuration file, read <a href="resources.html">Resources</a> and <a href="architecture.html">Architecture</a>.</p>
 
 <h2 class="magick-post-title"><a class="anchor" id="synchronize"></a>Pixel Cache Synchronize Policy</h2>
@@ -213,7 +227,7 @@ Path: [built-in]
 <h2 class="magick-post-title"><a class="anchor" id="other"></a>Other Security Considerations</h2>
 
 <p>If you spot a security flaw in ImageMagick, post your concern as an issue to
-<a href="https://github.com/ImageMagick/ImageMagick/issues">GitHub</a>.  Be sure to include how to reproduce the security flaw and a link to any images needed to reproduce the flaw.  Alternatively, <a href="../www/https://www.imagemagick.org/script/contact.php">contact us</a> and select Security Issue as the issue.</p>
+<a href="https://github.com/ImageMagick/ImageMagick/issues">GitHub</a>.  Be sure to include how to reproduce the security flaw and a link to any images needed to reproduce the flaw.  Alternatively, <a href="https://imagemagick.org/script/contact.php">contact us</a> and select Security Issue as the issue.</p>
 
 <p>In addition to the security policy, you can make ImageMagick safer by ...</p>
 <ul>
@@ -233,13 +247,13 @@ Path: [built-in]
     <a href="links.html">Related</a> •
      <a href="sitemap.html">Sitemap</a>
        
-    <a href="security-policy.html#"><img class="d-inline" id="logo" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+    <a href="security-policy.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
        
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="support.html">Donate</a> •
-    <a href="../www/https://www.imagemagick.org/script/contact.php">Contact Us</a>
+    <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
     <br/>
-        <small>© 1999-2018 ImageMagick Studio LLC</small></p>
+        <small>© 1999-2019 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
@@ -247,4 +261,4 @@ Path: [built-in]
   <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 18th February 2018 13:31 -->
+<!-- Magick Cache 9th September 2018 10:16 -->

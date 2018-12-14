@@ -17,13 +17,13 @@
 %                                 July 2003                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -1439,10 +1439,12 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *cache,const char *xml,
 */
 MagickExport int LocaleCompare(const char *p,const char *q)
 {
-  if ((p == (char *) NULL) && (q == (char *) NULL))
-    return(0);
   if (p == (char *) NULL)
-    return(-1);
+    {
+      if (q == (char *) NULL)
+        return(0);
+      return(-1);
+    }
   if (q == (char *) NULL)
     return(1);
 #if defined(MAGICKCORE_HAVE_STRCASECMP)
@@ -1539,10 +1541,12 @@ MagickExport void LocaleLower(char *string)
 */
 MagickExport int LocaleNCompare(const char *p,const char *q,const size_t length)
 {
-  if ((p == (char *) NULL) && (q == (char *) NULL))
-    return(0);
   if (p == (char *) NULL)
-    return(-1);
+    {
+      if (q == (char *) NULL)
+        return(0);
+      return(-1);
+    }
   if (q == (char *) NULL)
     return(1);
 #if defined(MAGICKCORE_HAVE_STRNCASECMP)

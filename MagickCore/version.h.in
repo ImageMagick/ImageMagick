@@ -1,11 +1,11 @@
 /*
-  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
   obtain a copy of the License at
   
-    http://www.imagemagick.org/script/license.php
+    http://imagemagick.org/script/license.php
   
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,7 +26,7 @@ extern "C" {
   Define declarations.
 */
 #define MagickPackageName "@PACKAGE_NAME@"
-#define MagickCopyright  "© 1999-2018 ImageMagick Studio LLC"
+#define MagickCopyright  "© 1999-2019 ImageMagick Studio LLC"
 #define MagickLibVersion  @PACKAGE_LIB_VERSION@
 #define MagickLibVersionText  "@MAGICK_LIB_VERSION_TEXT@"
 #define MagickLibVersionNumber  @MAGICK_LIB_VERSION_NUMBER@
@@ -49,8 +49,8 @@ extern "C" {
 #define MagickppLibMinInterface  @MAGICKPP_LIBRARY_CURRENT_MIN@
 #define MagickReleaseDate  "@PACKAGE_RELEASE_DATE@"
 #define MagickAuthoritativeLicense  \
-  "https://www.imagemagick.org/script/license.php"
-#define MagickAuthoritativeURL  "https://www.imagemagick.org"
+  "https://imagemagick.org/script/license.php"
+#define MagickAuthoritativeURL  "https://imagemagick.org"
 #define MagickHomeURL  "file://@DOCUMENTATION_PATH@/index.html"
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define MagickQuantumDepth  "Q8"
@@ -77,14 +77,14 @@ extern MagickExport char
   *GetMagickHomeURL(void);
 
 extern MagickExport const char
-  *GetMagickCopyright(void),
-  *GetMagickDelegates(void),
-  *GetMagickFeatures(void),
-  *GetMagickLicense(void),
-  *GetMagickPackageName(void),
+  *GetMagickCopyright(void) magick_attribute((__const__)),
+  *GetMagickDelegates(void) magick_attribute((__const__)),
+  *GetMagickFeatures(void) magick_attribute((__const__)),
+  *GetMagickLicense(void) magick_attribute((__const__)),
+  *GetMagickPackageName(void) magick_attribute((__const__)),
   *GetMagickQuantumDepth(size_t *),
   *GetMagickQuantumRange(size_t *),
-  *GetMagickReleaseDate(void),
+  *GetMagickReleaseDate(void) magick_attribute((__const__)),
   *GetMagickVersion(size_t *);
 
 extern MagickExport void

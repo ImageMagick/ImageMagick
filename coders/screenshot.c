@@ -17,13 +17,13 @@
 %                                 April 2014                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -142,7 +142,7 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
     register ssize_t
       x;
 
-    RGBTRIPLE
+    RGBQUAD
       *p;
 
     ssize_t
@@ -184,7 +184,7 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
       bmi.bmiHeader.biWidth=(LONG) screen->columns;
       bmi.bmiHeader.biHeight=(-1)*(LONG) screen->rows;
       bmi.bmiHeader.biPlanes=1;
-      bmi.bmiHeader.biBitCount=24;
+      bmi.bmiHeader.biBitCount=32;
       bmi.bmiHeader.biCompression=BI_RGB;
       bitmap=CreateDIBSection(hDC,&bmi,DIB_RGB_COLORS,(void **) &p,NULL,0);
       if (bitmap == (HBITMAP) NULL)
@@ -212,9 +212,9 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
           break;
         for (x=0; x < (ssize_t) screen->columns; x++)
         {
-          SetPixelRed(image,ScaleCharToQuantum(p->rgbtRed),q);
-          SetPixelGreen(image,ScaleCharToQuantum(p->rgbtGreen),q);
-          SetPixelBlue(image,ScaleCharToQuantum(p->rgbtBlue),q);
+          SetPixelRed(image,ScaleCharToQuantum(p->rgbRed),q);
+          SetPixelGreen(image,ScaleCharToQuantum(p->rgbGreen),q);
+          SetPixelBlue(image,ScaleCharToQuantum(p->rgbBlue),q);
           SetPixelAlpha(image,OpaqueAlpha,q);
           p++;
           q+=GetPixelChannels(image);

@@ -17,13 +17,13 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -1139,9 +1139,10 @@ MagickExport MagickBooleanType CopyImagePixels(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_CopyImage)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(image,CopyImageTag,progress++,image->rows);
+        progress++;
+        proceed=SetImageProgress(image,CopyImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -2882,7 +2883,10 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
     {
       (void) CopyMagickString(magic,image_info->magick,MagickPathExtent);
       magick_info=GetMagickInfo(magic,sans_exception);
-      GetPathComponent(image_info->filename,CanonicalPath,component);
+      if (frames == 0)
+        GetPathComponent(image_info->filename,CanonicalPath,component);
+      else
+        GetPathComponent(image_info->filename,SubcanonicalPath,component);
       (void) CopyMagickString(image_info->filename,component,MagickPathExtent);
     }
   else
@@ -2998,7 +3002,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
       (void) CloseBlob(image);
       image=DestroyImage(image);
       /*
-        Check magic.xml configuration file.
+        Check magic cache.
       */
       sans_exception=AcquireExceptionInfo();
       magic_info=GetMagicInfo(magick,(size_t) count,sans_exception);
@@ -3199,17 +3203,40 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
     {
       switch (type)
       {
-        case ReadPixelMask: image->channels&=(~ReadMaskChannel); break;
-        case WritePixelMask: image->channels&=(~WriteMaskChannel); break;
-        default: image->channels&=(~CompositeMaskChannel); break;
+        case ReadPixelMask:
+        {
+          image->channels=(ChannelType) (image->channels & ~ReadMaskChannel);
+          break;
+        }
+        case WritePixelMask:
+        {
+          image->channels=(ChannelType) (image->channels & ~WriteMaskChannel);
+        }
+        default:
+        {
+          image->channels=(ChannelType) (image->channels & ~CompositeMaskChannel);
+          break;
+        }
       }
       return(SyncImagePixelCache(image,exception));
     }
   switch (type)
   {
-    case ReadPixelMask: image->channels|=ReadMaskChannel; break;
-    case WritePixelMask: image->channels|=WriteMaskChannel; break;
-    default: image->channels|=CompositeMaskChannel; break;
+    case ReadPixelMask:
+    {
+      image->channels=(ChannelType) (image->channels | ReadMaskChannel);
+      break;
+    }
+    case WritePixelMask:
+    {
+      image->channels=(ChannelType) (image->channels | WriteMaskChannel);
+      break;
+    }
+    default:
+    {
+      image->channels=(ChannelType) (image->channels | CompositeMaskChannel);
+      break;
+    }
   }
   if (SyncImagePixelCache(image,exception) == MagickFalse)
     return(MagickFalse);
@@ -3332,17 +3359,41 @@ MagickExport MagickBooleanType SetImageRegionMask(Image *image,
     {
       switch (type)
       {
-        case ReadPixelMask: image->channels&=(~ReadMaskChannel); break;
-        case WritePixelMask: image->channels&=(~WriteMaskChannel); break;
-        default: image->channels&=(~CompositeMaskChannel); break;
+        case ReadPixelMask:
+        {
+          image->channels=(ChannelType) (image->channels & ~ReadMaskChannel);
+          break;
+        }
+        case WritePixelMask:
+        {
+          image->channels=(ChannelType) (image->channels & ~WriteMaskChannel);
+          break;
+        }
+        default:
+        {
+          image->channels=(ChannelType) (image->channels & ~CompositeMaskChannel);
+          break;
+        }
       }
       return(SyncImagePixelCache(image,exception));
     }
   switch (type)
   {
-    case ReadPixelMask: image->channels|=ReadMaskChannel; break;
-    case WritePixelMask: image->channels|=WriteMaskChannel; break;
-    default: image->channels|=CompositeMaskChannel; break;
+    case ReadPixelMask:
+    {
+      image->channels=(ChannelType) (image->channels | ReadMaskChannel);
+      break;
+    }
+    case WritePixelMask:
+    {
+      image->channels=(ChannelType) (image->channels | WriteMaskChannel);
+      break;
+    }
+    default:
+    {
+      image->channels=(ChannelType) (image->channels | CompositeMaskChannel);
+      break;
+    }
   }
   if (SyncImagePixelCache(image,exception) == MagickFalse)
     return(MagickFalse);

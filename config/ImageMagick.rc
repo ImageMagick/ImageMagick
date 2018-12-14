@@ -49,17 +49,15 @@ END
 //
 /////////////////////////////////////////////////////////////////////////////
 
-CODER.XML      IMAGEMAGICK DISCARDABLE "..\\bin\\coder.xml"
-COLORS.XML     IMAGEMAGICK DISCARDABLE "..\\bin\\colors.xml"
-CONFIGURE.XML     IMAGEMAGICK DISCARDABLE "..\\bin\\configure.xml"
-DELEGATES.XML  IMAGEMAGICK DISCARDABLE "..\\bin\\delegates.xml"
-ENGLISH.XML    IMAGEMAGICK DISCARDABLE "..\\bin\\english.xml"
-LOCALE.XML     IMAGEMAGICK DISCARDABLE "..\\bin\\locale.xml"
-LOG.XML        IMAGEMAGICK DISCARDABLE "..\\bin\\log.xml"
-MAGIC.XML      IMAGEMAGICK DISCARDABLE "..\\bin\\magic.xml"
-THRESHOLDS.XML  IMAGEMAGICK DISCARDABLE "..\\bin\\thresholds.xml"
-TYPE.XML       IMAGEMAGICK DISCARDABLE "..\\bin\\type.xml"
-TYPE-GHOSTSCRIPT.XML  IMAGEMAGICK DISCARDABLE "..\\bin\\type-ghostscript.xml"
+COLORS.XML           IMAGEMAGICK DISCARDABLE "..\\bin\\colors.xml"
+CONFIGURE.XML        IMAGEMAGICK DISCARDABLE "..\\bin\\configure.xml"
+DELEGATES.XML        IMAGEMAGICK DISCARDABLE "..\\bin\\delegates.xml"
+ENGLISH.XML          IMAGEMAGICK DISCARDABLE "..\\bin\\english.xml"
+LOCALE.XML           IMAGEMAGICK DISCARDABLE "..\\bin\\locale.xml"
+LOG.XML              IMAGEMAGICK DISCARDABLE "..\\bin\\log.xml"
+THRESHOLDS.XML       IMAGEMAGICK DISCARDABLE "..\\bin\\thresholds.xml"
+TYPE.XML             IMAGEMAGICK DISCARDABLE "..\\bin\\type.xml"
+TYPE-GHOSTSCRIPT.XML IMAGEMAGICK DISCARDABLE "..\\bin\\type-ghostscript.xml"
 
 
 /////////////////////////////////////////////////////////////////////////////

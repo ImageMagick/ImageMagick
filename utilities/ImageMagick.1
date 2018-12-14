@@ -6,9 +6,21 @@ ImageMagick \- is a free software suite for the creation, modification and displ
 \fBmagick-script\fP \fIscript-file\fP [\fIscript-arguments\fP]...
 .SH OVERVIEW
 
-ImageMagick\[rg], is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and B\\['e]zier curves.
+Use ImageMagick\[rg] to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, GIF, HEIC, TIFF, DPX, EXR, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and B\\['e]zier curves.
 
-ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.
+The functionality of ImageMagick is typically utilized from the command-line or you can use the features from programs written in your favorite language. Choose from these interfaces: G2F (Ada), MagickCore (C), MagickWand (C), ChMagick (Ch), ImageMagickObject (COM+), Magick++ (C++), JMagick (Java), JuliaIO (Julia), L-Magick (Lisp), Lua (LuaJIT), NMagick (Neko/haXe), Magick.NET (.NET), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), IMagick (PHP), PythonMagick (Python), magick (R), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images dynamically and automagically.
+
+ImageMagick utilizes multiple computational threads to increase performance and can read, process, or write mega-, giga-, or tera-pixel image sizes.
+
+ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you may use, copy, modify, and distribute in both open and proprietary applications. It is distributed under a derived Apache 2.0 license.
+
+The ImageMagick development process ensures a stable API and ABI. Before each ImageMagick release, we perform a comprehensive security assessment that includes memory error, thread data race detection, and continuous fuzzing to help prevent security vulnerabilities.
+
+The current release is ImageMagick 7.0.8-11. It runs on Linux, Windows, Mac Os X, iOS, Android OS, and others.
+
+The authoritative ImageMagick web site is https://imagemagick.org. The authoritative source code repository is https://github.com/ImageMagick. We maintain a source code mirror at https://gitlab.com/ImageMagick.
+
+We continue to maintain the legacy release of ImageMagick, version 6, at https://legacy.imagemagick.org.
 
 The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically.
 
@@ -86,9 +98,9 @@ saves any visible window on an X server and outputs it as an image file. You can
 
 interprets and executes scripts written in the Magick Scripting Language (MSL).
 .PP
-For more information about the ImageMagick, point your browser to file:///usr/local/share/doc/ImageMagick-7/index.html or http://www.imagemagick.org/.
+For more information about the ImageMagick, point your browser to file:///usr/local/share/doc/ImageMagick-7/index.html or http://imagemagick.org/.
 .SH SEE ALSO
 convert(1), compare(1), composite(1), conjure(1), identify(1), import(1), magick(1), magick-script(1), montage(1), display(1), animate(1), import(1), Magick++-config(1), MagickCore-config(1), MagickWand-config(1)
 
 .SH COPYRIGHT
-\fBCopyright (C) 1999-2018 ImageMagick Studio LLC. Additional copyrights and licenses apply to this software, see file:///usr/local/share/doc/ImageMagick-7/www/license.html or http://www.imagemagick.org/script/license.php\fP
+\fBCopyright (C) 1999-2019 ImageMagick Studio LLC. Additional copyrights and licenses apply to this software, see file:///usr/local/share/doc/ImageMagick-7/www/license.html or http://imagemagick.org/script/license.php\fP

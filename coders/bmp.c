@@ -18,13 +18,13 @@
 %                               December 2001                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -595,8 +595,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Verify BMP identifier.
     */
-    if (bmp_info.ba_offset == 0)
-      start_position=TellBlob(image)-2;
+    start_position=TellBlob(image)-2;
     bmp_info.ba_offset=0;
     while (LocaleNCompare((char *) magick,"BA",2) == 0)
     {
@@ -661,7 +660,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bmp_info.x_pixels=ReadBlobLSBLong(image);
         bmp_info.y_pixels=ReadBlobLSBLong(image);
         bmp_info.number_colors=ReadBlobLSBLong(image);
-        if (bmp_info.number_colors > GetBlobSize(image))
+        if ((MagickSizeType) bmp_info.number_colors > GetBlobSize(image))
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         bmp_info.colors_important=ReadBlobLSBLong(image);
         if (image->debug != MagickFalse)
@@ -955,11 +954,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       bmp_info.bits_per_pixel<<=1;
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     length=(size_t) bytes_per_line*image->rows;
-    if (((MagickSizeType) length/8) > GetBlobSize(image))
-      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     if ((bmp_info.compression == BI_RGB) ||
         (bmp_info.compression == BI_BITFIELDS))
       {
+        if ((MagickSizeType) length > GetBlobSize(image))
+          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         pixel_info=AcquireVirtualMemory(image->rows,
           MagickMax(bytes_per_line,image->columns+256UL)*sizeof(*pixels));
         if (pixel_info == (MemoryInfo *) NULL)
@@ -1445,13 +1444,12 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->number_scenes != 0)
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
+    offset=(MagickOffsetType) bmp_info.ba_offset;
+    if (offset != 0)
+      if ((offset < TellBlob(image)) ||
+          (SeekBlob(image,offset,SEEK_SET) != offset))
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     *magick='\0';
-    if (bmp_info.ba_offset != 0)
-      {
-        offset=SeekBlob(image,(MagickOffsetType) bmp_info.ba_offset,SEEK_SET);
-        if (offset < 0)
-          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-      }
     count=ReadBlob(image,2,magick);
     if ((count == 2) && (IsBMP(magick,2) != MagickFalse))
       {

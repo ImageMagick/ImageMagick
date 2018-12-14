@@ -1,11 +1,11 @@
 /*
-  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
   obtain a copy of the License at
   
-    https://www.imagemagick.org/script/license.php
+    https://imagemagick.org/script/license.php
   
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,16 +31,16 @@ extern WandExport char
   *PixelGetException(const PixelWand *,ExceptionType *);
 
 extern WandExport double
-  PixelGetAlpha(const PixelWand *),
-  PixelGetBlack(const PixelWand *),
-  PixelGetBlue(const PixelWand *),
-  PixelGetCyan(const PixelWand *),
-  PixelGetFuzz(const PixelWand *),
-  PixelGetGreen(const PixelWand *),
-  PixelGetMagenta(const PixelWand *),
-  PixelGetAlpha(const PixelWand *),
-  PixelGetRed(const PixelWand *),
-  PixelGetYellow(const PixelWand *);
+  PixelGetAlpha(const PixelWand *) magick_attribute((__pure__)),
+  PixelGetBlack(const PixelWand *) magick_attribute((__pure__)),
+  PixelGetBlue(const PixelWand *) magick_attribute((__pure__)),
+  PixelGetCyan(const PixelWand *) magick_attribute((__pure__)),
+  PixelGetFuzz(const PixelWand *) magick_attribute((__pure__)),
+  PixelGetGreen(const PixelWand *) magick_attribute((__pure__)),
+  PixelGetMagenta(const PixelWand *) magick_attribute((__pure__)),
+  PixelGetAlpha(const PixelWand *) magick_attribute((__pure__)),
+  PixelGetRed(const PixelWand *) magick_attribute((__pure__)),
+  PixelGetYellow(const PixelWand *) magick_attribute((__pure__));
 
 extern WandExport ExceptionType
   PixelGetExceptionType(const PixelWand *);
@@ -63,19 +63,19 @@ extern WandExport PixelWand
   **NewPixelWands(const size_t);
 
 extern WandExport Quantum
-  PixelGetAlphaQuantum(const PixelWand *),
-  PixelGetBlackQuantum(const PixelWand *),
-  PixelGetBlueQuantum(const PixelWand *),
-  PixelGetCyanQuantum(const PixelWand *),
-  PixelGetGreenQuantum(const PixelWand *),
-  PixelGetIndex(const PixelWand *),
-  PixelGetMagentaQuantum(const PixelWand *),
-  PixelGetAlphaQuantum(const PixelWand *),
-  PixelGetRedQuantum(const PixelWand *),
-  PixelGetYellowQuantum(const PixelWand *);
+  PixelGetAlphaQuantum(const PixelWand *) magick_attribute((__pure__)),
+  PixelGetBlackQuantum(const PixelWand *) magick_attribute((__pure__)),
+  PixelGetBlueQuantum(const PixelWand *) magick_attribute((__pure__)),
+  PixelGetCyanQuantum(const PixelWand *) magick_attribute((__pure__)),
+  PixelGetGreenQuantum(const PixelWand *) magick_attribute((__pure__)),
+  PixelGetIndex(const PixelWand *) magick_attribute((__pure__)),
+  PixelGetMagentaQuantum(const PixelWand *) magick_attribute((__pure__)),
+  PixelGetAlphaQuantum(const PixelWand *) magick_attribute((__pure__)),
+  PixelGetRedQuantum(const PixelWand *) magick_attribute((__pure__)),
+  PixelGetYellowQuantum(const PixelWand *) magick_attribute((__pure__));
 
 extern WandExport size_t
-  PixelGetColorCount(const PixelWand *);
+  PixelGetColorCount(const PixelWand *) magick_attribute((__pure__));
 
 extern WandExport void
   ClearPixelWand(PixelWand *),

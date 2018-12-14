@@ -1,11 +1,11 @@
 /*
-  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
   obtain a copy of the License at
   
-    https://www.imagemagick.org/script/license.php
+    https://imagemagick.org/script/license.php
   
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
@@ -52,7 +52,7 @@ extern MagickExport CustomStreamInfo
   *DestroyCustomStreamInfo(CustomStreamInfo *);
 
 extern MagickExport FILE
-  *GetBlobFileHandle(const Image *);
+  *GetBlobFileHandle(const Image *) magick_attribute((__pure__));
 
 extern MagickExport Image
   *BlobToImage(const ImageInfo *,const void *,const size_t,ExceptionInfo *),
@@ -62,22 +62,22 @@ extern MagickExport Image
 extern MagickExport MagickBooleanType
   BlobToFile(char *,const void *,const size_t,ExceptionInfo *),
   FileToImage(Image *,const char *,ExceptionInfo *),
-  GetBlobError(const Image *),
+  GetBlobError(const Image *) magick_attribute((__pure__)),
   ImageToFile(Image *,char *,ExceptionInfo *),
   InjectImageBlob(const ImageInfo *,Image *,Image *,const char *,
     ExceptionInfo *),
-  IsBlobExempt(const Image *),
-  IsBlobSeekable(const Image *),
-  IsBlobTemporary(const Image *);
+  IsBlobExempt(const Image *) magick_attribute((__pure__)),
+  IsBlobSeekable(const Image *) magick_attribute((__pure__)),
+  IsBlobTemporary(const Image *) magick_attribute((__pure__));
 
 extern MagickExport MagickSizeType
   GetBlobSize(const Image *);
 
 extern MagickExport StreamHandler
-  GetBlobStreamHandler(const Image *);
+  GetBlobStreamHandler(const Image *) magick_attribute((__pure__));
 
 extern MagickExport void
-  *GetBlobStreamData(const Image *),
+  *GetBlobStreamData(const Image *) magick_attribute((__pure__)),
   DestroyBlob(Image *),
   DuplicateBlob(Image *,const Image *),
   *FileToBlob(const char *,const size_t,size_t *,ExceptionInfo *),

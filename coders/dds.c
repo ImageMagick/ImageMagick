@@ -19,13 +19,13 @@
 %                              September 2013                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -1962,8 +1962,9 @@ static MagickBooleanType ReadMipmaps(const ImageInfo *image_info,Image *image,
       for (i = 1; (i < (ssize_t) dds_info->mipmapcount) && w && h; i++)
       {
         AcquireNextImage(image_info,image,exception);
-        if (GetNextImageInList(image) == (Image *) NULL)
+        if (image->next == (Image *) NULL)
           return(MagickFalse);
+        image->next->alpha_trait=image->alpha_trait;
         image=SyncNextImageInList(image);
         status=SetImageExtent(image,w,h,exception);
         if (status == MagickFalse)

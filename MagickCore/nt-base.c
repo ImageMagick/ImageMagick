@@ -17,13 +17,13 @@
 %                                December 1996                                %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -620,9 +620,25 @@ MagickPrivate double NTElapsedTime(void)
       filetime64;
   } elapsed_time;
 
+  LARGE_INTEGER
+    performance_count;
+
+  static LARGE_INTEGER
+    frequency = { 0 };
+
   SYSTEMTIME
     system_time;
 
+  if (frequency.QuadPart == 0)
+    {
+      if (QueryPerformanceFrequency(&frequency) == 0)
+        frequency.QuadPart=1;
+    }
+  if (frequency.QuadPart > 1)
+    {
+      QueryPerformanceCounter(&performance_count);
+      return((double) performance_count.QuadPart/frequency.QuadPart);
+    }
   GetSystemTime(&system_time);
   SystemTimeToFileTime(&system_time,&elapsed_time.filetime);
   return((double) 1.0e-7*elapsed_time.filetime64);
@@ -1789,11 +1805,8 @@ MagickPrivate DIR *NTOpenDirectory(const char *path)
         MagickPathExtent-wcslen(file_specification)-1) == (wchar_t*) NULL)
     return((DIR *) NULL);
   entry=(DIR *) AcquireCriticalMemory(sizeof(DIR));
-  if (entry != (DIR *) NULL)
-    {
-      entry->firsttime=TRUE;
-      entry->hSearch=FindFirstFileW(file_specification,&entry->Win32FindData);
-    }
+  entry->firsttime=TRUE;
+  entry->hSearch=FindFirstFileW(file_specification,&entry->Win32FindData);
   if (entry->hSearch == INVALID_HANDLE_VALUE)
     {
       if(wcsncat(file_specification,L"*.*",
@@ -2453,10 +2466,8 @@ MagickPrivate int NTSystemCommand(const char *command,char *output)
   CloseHandle(process_info.hProcess);
   CloseHandle(process_info.hThread);
   if (read_output != (HANDLE) NULL)
-    if (PeekNamedPipe(read_output,(LPVOID) NULL,0,(LPDWORD) NULL,&size,
-          (LPDWORD) NULL))
-      if ((size > 0) && (ReadFile(read_output,output,MagickPathExtent-1,
-          &bytes_read,NULL))) 
+    if (PeekNamedPipe(read_output,(LPVOID) NULL,0,(LPDWORD) NULL,&size,(LPDWORD) NULL))
+      if ((size > 0) && (ReadFile(read_output,output,MagickPathExtent-1,&bytes_read,NULL)))
         output[bytes_read]='\0';
   CleanupOutputHandles;
   return((int) child_status);
@@ -2799,10 +2810,14 @@ MagickPrivate void NTWindowsGenesis(void)
         debug;
 
       debug=_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
-      debug|=_CRTDBG_CHECK_ALWAYS_DF | _CRTDBG_DELAY_FREE_MEM_DF |
-        _CRTDBG_LEAK_CHECK_DF;
+      //debug |= _CRTDBG_CHECK_ALWAYS_DF;
+      debug |= _CRTDBG_DELAY_FREE_MEM_DF;
+      debug |= _CRTDBG_LEAK_CHECK_DF;
       (void) _CrtSetDbgFlag(debug);
-      _ASSERTE(_CrtCheckMemory());
+
+      //_ASSERTE(_CrtCheckMemory());
+
+      //_CrtSetBreakAlloc(42);
     }
 #endif
 #if defined(MAGICKCORE_INSTALLED_SUPPORT)

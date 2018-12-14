@@ -5,32 +5,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-    <title>ImageMagick: MagickCore, C API for ImageMagick: Image Methods</title>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-  <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
-  <meta name="application-url" content="http://www.imagemagick.org"/>
-  <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, image, methods, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
-  <meta name="rating" content="GENERAL"/>
-  <meta name="robots" content="INDEX, FOLLOW"/>
-  <meta name="generator" content="ImageMagick Studio LLC"/>
-  <meta name="author" content="ImageMagick Studio LLC"/>
-  <meta name="revisit-after" content="2 DAYS"/>
-  <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2016 ImageMagick Studio LLC"/>
-  <meta name="distribution" content="Global"/>
-  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
-  <link rel="icon" href="../image/wand.png"/>
-  <link rel="shortcut icon" href="../image/wand.ico"/>
-  <link rel="stylesheet" href="../css/magick.php"/>
+  <meta charset="utf-8" >
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" >
+  <title>MagickCore, C API: Image Methods @ ImageMagick</title>
+  <meta name="application-name" content="ImageMagick">
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations.">
+  <meta name="application-url" content="https://imagemagick.org">
+  <meta name="generator" content="PHP">
+  <meta name="keywords" content="magickcore, c, api:, image, methods, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
+  <meta name="rating" content="GENERAL">
+  <meta name="robots" content="INDEX, FOLLOW">
+  <meta name="generator" content="ImageMagick Studio LLC">
+  <meta name="author" content="ImageMagick Studio LLC">
+  <meta name="revisit-after" content="2 DAYS">
+  <meta name="resource-type" content="document">
+  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC">
+  <meta name="distribution" content="Global">
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
+  <link href="https://imagemagick.org/api/image.php" rel="canonical">
+  <link href="https://imagemagick.org/image/wand.png" rel="icon">
+  <link href="https://imagemagick.org/image/wand.ico" rel="shortcut icon">
+  <link href="https://imagemagick.org/assets/magick-css.php" rel="stylesheet">
 </head>
 <body>
-<div class="main">
-<div class="magick-masthead">
+  <header>
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="https://imagemagick.org/"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="https://imagemagick.org/image/wand.ico"/></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/index.php">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/script/download.php">Download</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/script/command-line-tools.php">Tools</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/script/command-line-processing.php">Command-line</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/script/resources.php">Resources</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="https://imagemagick.org/script/develop.php">Develop</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0" action="../script/search.php">
+      <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
+    </form>
+    </div>
+  </nav>
   <div class="container">
-    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+   <script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -38,23 +75,15 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.php">Home</a>
-      <a class="magick-nav-item " href="../script/binary-releases.php">Download</a>
-      <a class="magick-nav-item " href="../script/command-line-tools.php">Tools</a>
-      <a class="magick-nav-item " href="../script/command-line-options.php">Options</a>
-      <a class="magick-nav-item " href="../script/resources.php">Resources</a>
-      <a class="magick-nav-item " href="../script/api.php">Develop</a>
-      <a class="magick-nav-item " href="../script/search.php">Search</a>
-      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
-    </nav>
-  </div>
-</div>
-<div class="container">
-<div class="magick-header">
-<p class="text-center"><a href="image.php#AcquireImage">AcquireImage</a> &bull; <a href="image.php#AcquireImageInfo">AcquireImageInfo</a> &bull; <a href="image.php#AcquireNextImage">AcquireNextImage</a> &bull; <a href="image.php#AppendImages">AppendImages</a> &bull; <a href="image.php#CatchImageException">CatchImageException</a> &bull; <a href="image.php#ClipImagePath">ClipImagePath</a> &bull; <a href="image.php#CloneImage">CloneImage</a> &bull; <a href="image.php#CloneImageInfo">CloneImageInfo</a> &bull; <a href="image.php#CopyImagePixels">CopyImagePixels</a> &bull; <a href="image.php#DestroyImage">DestroyImage</a> &bull; <a href="image.php#DestroyImageInfo">DestroyImageInfo</a> &bull; <a href="image.php#GetImageInfo">GetImageInfo</a> &bull; <a href="image.php#GetImageInfoFile">GetImageInfoFile</a> &bull; <a href="image.php#GetImageMask">GetImageMask</a> &bull; <a href="image.php#GetImageVirtualPixelMethod">GetImageVirtualPixelMethod</a> &bull; <a href="image.php#InterpretImageFilename">InterpretImageFilename</a> &bull; <a href="image.php#IsHighDynamicRangeImage">IsHighDynamicRangeImage</a> &bull; <a href="image.php#IsImageObject">IsImageObject</a> &bull; <a href="image.php#IsTaintImage">IsTaintImage</a> &bull; <a href="image.php#ModifyImage">ModifyImage</a> &bull; <a href="image.php#NewMagickImage">NewMagickImage</a> &bull; <a href="image.php#ReferenceImage">ReferenceImage</a> &bull; <a href="image.php#ResetImagePage">ResetImagePage</a> &bull; <a href="image.php#SetImageBackgroundColor">SetImageBackgroundColor</a> &bull; <a href="image.php#SetImageChannelMask">SetImageChannelMask</a> &bull; <a href="image.php#SetImageColor">SetImageColor</a> &bull; <a href="image.php#SetImageStorageClass">SetImageStorageClass</a> &bull; <a href="image.php#SetImageExtent">SetImageExtent</a> &bull; <a href="image.php#SetImageInfoBlob">SetImageInfoBlob</a> &bull; <a href="image.php#SetImageInfoFile">SetImageInfoFile</a> &bull; <a href="image.php#SetImageMask">SetImageMask</a> &bull; <a href="image.php#SetImageAlpha">SetImageAlpha</a> &bull; <a href="image.php#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod</a> &bull; <a href="image.php#SmushImages">SmushImages</a> &bull; <a href="image.php#StripImage">StripImage</a> &bull; <a href="image.php#SyncImageSettings">SyncImageSettings</a></p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="AcquireImage">AcquireImage</a></h2>
+  </div>
+  </header>
+  <main class="container">
+    <div class="magick-template">
+<div class="magick-header">
+<p class="text-center"><a href="image.php#AcquireImage">AcquireImage</a> &bull; <a href="image.php#AcquireImageInfo">AcquireImageInfo</a> &bull; <a href="image.php#AcquireNextImage">AcquireNextImage</a> &bull; <a href="image.php#AppendImages">AppendImages</a> &bull; <a href="image.php#CatchImageException">CatchImageException</a> &bull; <a href="image.php#ClipImagePath">ClipImagePath</a> &bull; <a href="image.php#CloneImage">CloneImage</a> &bull; <a href="image.php#CloneImageInfo">CloneImageInfo</a> &bull; <a href="image.php#CopyImagePixels">CopyImagePixels</a> &bull; <a href="image.php#DestroyImage">DestroyImage</a> &bull; <a href="image.php#DestroyImageInfo">DestroyImageInfo</a> &bull; <a href="image.php#GetImageInfo">GetImageInfo</a> &bull; <a href="image.php#GetImageInfoFile">GetImageInfoFile</a> &bull; <a href="image.php#GetImageMask">GetImageMask</a> &bull; <a href="image.php#GetImageVirtualPixelMethod">GetImageVirtualPixelMethod</a> &bull; <a href="image.php#InterpretImageFilename">InterpretImageFilename</a> &bull; <a href="image.php#IsHighDynamicRangeImage">IsHighDynamicRangeImage</a> &bull; <a href="image.php#IsImageObject">IsImageObject</a> &bull; <a href="image.php#IsTaintImage">IsTaintImage</a> &bull; <a href="image.php#ModifyImage">ModifyImage</a> &bull; <a href="image.php#NewMagickImage">NewMagickImage</a> &bull; <a href="image.php#ReferenceImage">ReferenceImage</a> &bull; <a href="image.php#ResetImagePage">ResetImagePage</a> &bull; <a href="image.php#ResetImagePixels">ResetImagePixels</a> &bull; <a href="image.php#SetImageAlpha">SetImageAlpha</a> &bull; <a href="image.php#SetImageBackgroundColor">SetImageBackgroundColor</a> &bull; <a href="image.php#SetImageChannelMask">SetImageChannelMask</a> &bull; <a href="image.php#SetImageColor">SetImageColor</a> &bull; <a href="image.php#SetImageStorageClass">SetImageStorageClass</a> &bull; <a href="image.php#SetImageExtent">SetImageExtent</a> &bull; <a href="image.php#SetImageInfoBlob">SetImageInfoBlob</a> &bull; <a href="image.php#SetImageInfoCustomStream">SetImageInfoCustomStream</a> &bull; <a href="image.php#SetImageInfoFile">SetImageInfoFile</a> &bull; <a href="image.php#SetImageMask">SetImageMask</a> &bull; <a href="image.php#SetImageRegionMask">SetImageRegionMask</a> &bull; <a href="image.php#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod</a> &bull; <a href="image.php#SmushImages">SmushImages</a> &bull; <a href="image.php#StripImage">StripImage</a> &bull; <a href="image.php#SyncImageSettings">SyncImageSettings</a></p>
+
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="AcquireImage">AcquireImage</a></h2>
 
 <p>AcquireImage() returns a pointer to an image structure initialized to default values.</p>
 
@@ -80,7 +109,7 @@ Image *AcquireImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="AcquireImageInfo">AcquireImageInfo</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="AcquireImageInfo">AcquireImageInfo</a></h2>
 
 <p>AcquireImageInfo() allocates the ImageInfo structure.</p>
 
@@ -90,7 +119,7 @@ Image *AcquireImage(const ImageInfo *image_info,ExceptionInfo *exception)
 ImageInfo *AcquireImageInfo(void)
 </pre>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="AcquireNextImage">AcquireNextImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="AcquireNextImage">AcquireNextImage</a></h2>
 
 <p>AcquireNextImage() initializes the next image in a sequence to default values.  The next member of image points to the newly allocated image.  If there is a memory shortage, next is assigned NULL.</p>
 
@@ -121,7 +150,7 @@ void AcquireNextImage(const ImageInfo *image_info,Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="AppendImages">AppendImages</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="AppendImages">AppendImages</a></h2>
 
 <p>AppendImages() takes all images from the current image pointer to the end of the image list and appends them to each other top-to-bottom if the stack parameter is true, otherwise left-to-right.</p>
 
@@ -154,7 +183,7 @@ Image *AppendImages(const Image *images,const MagickBooleanType stack,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="CatchImageException">CatchImageException</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="CatchImageException">CatchImageException</a></h2>
 
 <p>CatchImageException() returns if no exceptions are found in the image sequence, otherwise it determines the most severe exception and reports it as a warning or error depending on the severity.</p>
 
@@ -176,7 +205,7 @@ ExceptionType CatchImageException(Image *image)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="ClipImagePath">ClipImagePath</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="ClipImagePath">ClipImagePath</a></h2>
 
 <p>ClipImagePath() sets the image clip mask based any clipping path information if it exists.</p>
 
@@ -211,7 +240,7 @@ MagickBooleanType ClipImagePath(Image *image,const char *pathname,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="CloneImage">CloneImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="CloneImage">CloneImage</a></h2>
 
 <p>CloneImage() copies an image and returns the copy as a new image object.</p>
 
@@ -253,7 +282,7 @@ Image *CloneImage(const Image *image,const size_t columns,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="CloneImageInfo">CloneImageInfo</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="CloneImageInfo">CloneImageInfo</a></h2>
 
 <p>CloneImageInfo() makes a copy of the given image info structure.  If NULL is specified, a new image info structure is created initialized to default values.</p>
 
@@ -275,7 +304,7 @@ ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="CopyImagePixels">CopyImagePixels</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="CopyImagePixels">CopyImagePixels</a></h2>
 
 <p>CopyImagePixels() copies pixels from the source image as defined by the geometry the destination image at the specified offset.</p>
 
@@ -315,7 +344,7 @@ MagickBooleanType CopyImagePixels(Image *image,const Image *source_image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="DestroyImage">DestroyImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="DestroyImage">DestroyImage</a></h2>
 
 <p>DestroyImage() dereferences an image, deallocating memory associated with the image if the reference count becomes zero.</p>
 
@@ -337,7 +366,7 @@ Image *DestroyImage(Image *image)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="DestroyImageInfo">DestroyImageInfo</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="DestroyImageInfo">DestroyImageInfo</a></h2>
 
 <p>DestroyImageInfo() deallocates memory associated with an ImageInfo structure.</p>
 
@@ -359,7 +388,7 @@ ImageInfo *DestroyImageInfo(ImageInfo *image_info)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="GetImageInfo">GetImageInfo</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="GetImageInfo">GetImageInfo</a></h2>
 
 <p>GetImageInfo() initializes image_info to default values.</p>
 
@@ -381,7 +410,7 @@ void GetImageInfo(ImageInfo *image_info)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="GetImageInfoFile">GetImageInfoFile</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="GetImageInfoFile">GetImageInfoFile</a></h2>
 
 <p>GetImageInfoFile() returns the image info file member.</p>
 
@@ -403,14 +432,15 @@ FILE *GetImageInfoFile(const ImageInfo *image_info)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="GetImageMask">GetImageMask</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="GetImageMask">GetImageMask</a></h2>
 
 <p>GetImageMask() returns the mask associated with the image.</p>
 
 <p>The format of the GetImageMask method is:</p>
 
 <pre class="text">
-Image *GetImageMask(const Image *image,ExceptionInfo *exception)
+Image *GetImageMask(const Image *image,const PixelMask type,
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -423,9 +453,13 @@ Image *GetImageMask(const Image *image,ExceptionInfo *exception)
 <dt>image</dt>
 <dd>the image. </dd>
 
+<dd> </dd>
+<dt>type</dt>
+<dd>the mask type, ReadPixelMask or WritePixelMask. </dd>
+
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="GetImageVirtualPixelMethod">GetImageVirtualPixelMethod</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="GetImageVirtualPixelMethod">GetImageVirtualPixelMethod</a></h2>
 
 <p>GetImageVirtualPixelMethod() gets the "virtual pixels" method for the image.  A virtual pixel is any pixel access that is outside the boundaries of the image cache.</p>
 
@@ -447,7 +481,7 @@ VirtualPixelMethod GetImageVirtualPixelMethod(const Image *image)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="InterpretImageFilename">InterpretImageFilename</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="InterpretImageFilename">InterpretImageFilename</a></h2>
 
 <p>InterpretImageFilename() interprets embedded characters in an image filename. The filename length is returned.</p>
 
@@ -478,7 +512,7 @@ size_t InterpretImageFilename(const ImageInfo *image_info,Image *image,
 <dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="IsHighDynamicRangeImage">IsHighDynamicRangeImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="IsHighDynamicRangeImage">IsHighDynamicRangeImage</a></h2>
 
 <p>IsHighDynamicRangeImage() returns MagickTrue if any pixel component is non-integer or exceeds the bounds of the quantum depth (e.g. for Q16 0..65535.</p>
 
@@ -505,7 +539,7 @@ MagickBooleanType IsHighDynamicRangeImage(const Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="IsImageObject">IsImageObject</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="IsImageObject">IsImageObject</a></h2>
 
 <p>IsImageObject() returns MagickTrue if the image sequence contains a valid set of image objects.</p>
 
@@ -527,7 +561,7 @@ MagickBooleanType IsImageObject(const Image *image)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="IsTaintImage">IsTaintImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="IsTaintImage">IsTaintImage</a></h2>
 
 <p>IsTaintImage() returns MagickTrue any pixel in the image has been altered since it was first constituted.</p>
 
@@ -549,7 +583,7 @@ MagickBooleanType IsTaintImage(const Image *image)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="ModifyImage">ModifyImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="ModifyImage">ModifyImage</a></h2>
 
 <p>ModifyImage() ensures that there is only a single reference to the image to be modified, updating the provided image pointer to point to a clone of the original image if necessary.</p>
 
@@ -575,7 +609,7 @@ MagickBooleanType ModifyImage(Image *image,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="NewMagickImage">NewMagickImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="NewMagickImage">NewMagickImage</a></h2>
 
 <p>NewMagickImage() creates a blank image canvas of the specified size and background color.</p>
 
@@ -615,7 +649,7 @@ Image *NewMagickImage(const ImageInfo *image_info,const size_t width,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="ReferenceImage">ReferenceImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="ReferenceImage">ReferenceImage</a></h2>
 
 <p>ReferenceImage() increments the reference count associated with an image returning a pointer to the image.</p>
 
@@ -637,7 +671,7 @@ Image *ReferenceImage(Image *image)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="ResetImagePage">ResetImagePage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="ResetImagePage">ResetImagePage</a></h2>
 
 <p>ResetImagePage() resets the image page canvas and position.</p>
 
@@ -663,7 +697,65 @@ MagickBooleanType ResetImagePage(Image *image,const char *page)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="SetImageBackgroundColor">SetImageBackgroundColor</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="ResetImagePixels">ResetImagePixels</a></h2>
+
+<p>ResetImagePixels() reset the image pixels, that is, all the pixel components are zereod.</p>
+
+<p>The format of the SetImage method is:</p>
+
+<pre class="text">
+MagickBooleanType ResetImagePixels(Image *image,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="SetImageAlpha">SetImageAlpha</a></h2>
+
+<p>SetImageAlpha() sets the alpha levels of the image.</p>
+
+<p>The format of the SetImageAlpha method is:</p>
+
+<pre class="text">
+MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>alpha</dt>
+<dd>the level of transparency: 0 is fully transparent and QuantumRange is fully opaque. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="SetImageBackgroundColor">SetImageBackgroundColor</a></h2>
 
 <p>SetImageBackgroundColor() initializes the image pixels to the image background color.  The background color is defined by the background_color member of the image structure.</p>
 
@@ -690,7 +782,7 @@ MagickBooleanType SetImageBackgroundColor(Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="SetImageChannelMask">SetImageChannelMask</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="SetImageChannelMask">SetImageChannelMask</a></h2>
 
 <p>SetImageChannelMask() sets the image channel mask from the specified channel mask.</p>
 
@@ -717,7 +809,7 @@ ChannelType SetImageChannelMask(Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="SetImageColor">SetImageColor</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="SetImageColor">SetImageColor</a></h2>
 
 <p>SetImageColor() set the entire image canvas to the specified color.</p>
 
@@ -748,7 +840,7 @@ MagickBooleanType SetImageColor(Image *image,const PixelInfo *color,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="SetImageStorageClass">SetImageStorageClass</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="SetImageStorageClass">SetImageStorageClass</a></h2>
 
 <p>SetImageStorageClass() sets the image class: DirectClass for true color images or PseudoClass for colormapped images.</p>
 
@@ -779,7 +871,7 @@ MagickBooleanType SetImageStorageClass(Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="SetImageExtent">SetImageExtent</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="SetImageExtent">SetImageExtent</a></h2>
 
 <p>SetImageExtent() sets the image size (i.e. columns &amp; rows).</p>
 
@@ -814,7 +906,7 @@ MagickBooleanType SetImageExtent(Image *image,const size_t columns,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="SetImageInfoBlob">SetImageInfoBlob</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="SetImageInfoBlob">SetImageInfoBlob</a></h2>
 
 <p>SetImageInfoBlob() sets the image info blob member.</p>
 
@@ -845,7 +937,34 @@ void SetImageInfoBlob(ImageInfo *image_info,const void *blob,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="SetImageInfoFile">SetImageInfoFile</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="SetImageInfoCustomStream">SetImageInfoCustomStream</a></h2>
+
+<p>SetImageInfoCustomStream() sets the image info custom stream handlers.</p>
+
+<p>The format of the SetImageInfoCustomStream method is:</p>
+
+<pre class="text">
+void SetImageInfoCustomStream(ImageInfo *image_info,
+  CustomStreamInfo *custom_stream)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image_info</dt>
+<dd>the image info. </dd>
+
+<dd> </dd>
+<dt>custom_stream</dt>
+<dd>your custom stream methods. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="SetImageInfoFile">SetImageInfoFile</a></h2>
 
 <p>SetImageInfoFile() sets the image info file member.</p>
 
@@ -871,7 +990,7 @@ void SetImageInfoFile(ImageInfo *image_info,FILE *file)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="SetImageMask">SetImageMask</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="SetImageMask">SetImageMask</a></h2>
 
 <p>SetImageMask() associates a mask with the image.  The mask must be the same dimensions as the image.</p>
 
@@ -906,15 +1025,15 @@ MagickBooleanType SetImageMask(Image *image,const PixelMask type,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="SetImageAlpha">SetImageAlpha</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="SetImageRegionMask">SetImageRegionMask</a></h2>
 
-<p>SetImageAlpha() sets the alpha levels of the image.</p>
+<p>SetImageRegionMask() associates a mask with the image as defined by the specified region.</p>
 
-<p>The format of the SetImageAlpha method is:</p>
+<p>The format of the SetImageRegionMask method is:</p>
 
 <pre class="text">
-MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
-  ExceptionInfo *exception)
+MagickBooleanType SetImageRegionMask(Image *image,const PixelMask type,
+  const RectangleInfo *region,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -928,12 +1047,20 @@ MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
 <dd>the image. </dd>
 
 <dd> </dd>
-<dt>Alpha</dt>
-<dd>the level of transparency: 0 is fully opaque and QuantumRange is fully transparent. </dd>
+<dt>type</dt>
+<dd>the mask type, ReadPixelMask or WritePixelMask. </dd>
+
+<dd> </dd>
+<dt>geometry</dt>
+<dd>the mask region. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="SetImageVirtualPixelMethod">SetImageVirtualPixelMethod</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="SetImageVirtualPixelMethod">SetImageVirtualPixelMethod</a></h2>
 
 <p>SetImageVirtualPixelMethod() sets the "virtual pixels" method for the image and returns the previous setting.  A virtual pixel is any pixel access that is outside the boundaries of the image cache.</p>
 
@@ -964,7 +1091,7 @@ VirtualPixelMethod SetImageVirtualPixelMethod(Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="SmushImages">SmushImages</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="SmushImages">SmushImages</a></h2>
 
 <p>SmushImages() takes all images from the current image pointer to the end of the image list and smushes them to each other top-to-bottom if the stack parameter is true, otherwise left-to-right.</p>
 
@@ -1001,7 +1128,7 @@ Image *SmushImages(const Image *images,const MagickBooleanType stack,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="StripImage">StripImage</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="StripImage">StripImage</a></h2>
 
 <p>StripImage() strips an image of all profiles and comments.</p>
 
@@ -1027,7 +1154,7 @@ MagickBooleanType StripImage(Image *image,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="SyncImageSettings">SyncImageSettings</a></h2>
+<h2><a href="https://imagemagick.org/api/MagickCore/image_8c.html" id="SyncImageSettings">SyncImageSettings</a></h2>
 
 <p>SyncImageSettings() syncs any image_info global options into per-image attributes.</p>
 
@@ -1063,21 +1190,26 @@ MagickBooleanType SyncImagesSettings(const ImageInfo *image_info,
 <dd>  </dd>
 </dl>
 </div>
+    </div>
+  </main><!-- /.container -->
   <footer class="magick-footer">
-    <p><a href="../script/support.php">Donate</a> •
-     <a href="../script/sitemap.php">Sitemap</a> •
-    <a href="../script/links.php">Related</a> •
-    <a href="../script/architecture.php">Architecture</a>
-</p>
-    <p><a href="image.php#">Back to top</a> •
-    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="../script/contact.php">Contact Us</a></p>
-        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
+    <p><a href="https://imagemagick.org/script/security-policy.php">Security</a> •
+    <a href="https://imagemagick.org/script/architecture.php">Architecture</a> •
+    <a href="https://imagemagick.org/script/links.php">Related</a> •
+     <a href="https://imagemagick.org/script/sitemap.php">Sitemap</a>
+    &nbsp; &nbsp;
+    <a href="image.php#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="https://imagemagick.org/image/wand.ico"/></a>
+    &nbsp; &nbsp;
+    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="https://imagemagick.org/script/support.php">Donate</a> •
+    <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
+    <br/>
+        <small>© 1999-2019 ImageMagick Studio LLC</small></p>
   </footer>
-</div><!-- /.container -->
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="http://nextgen.imagemagick.org/js/magick.php"></script>
-</div>
+  <!-- Javascript assets -->
+  <script src="https://imagemagick.org/assets/magick-js.php" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="https://imagemagick.org/assets/jquery.min.js"><\/script>')</script>
 </body>
 </html>
+<!-- Magick Cache 3rd September 2018 14:25 -->

@@ -1,7 +1,7 @@
 This file documents how to use the binary distribution packages built by
 ImageMagick Studio LLC, and found in the ImageMagick 'binaries' subdirectory
 of ImageMagick ftp sites.  Those who want to build ImageMagick from source
-code should refer to https://www.imagemagick.org/script/install-source.php.
+code should refer to https://imagemagick.org/script/install-source.php.
 
 Unix/Linux/Darwin/Mac OS X/Cygwin/MinGW Install:
 
@@ -62,7 +62,7 @@ Unix/Linux/Darwin/Mac OS X/Cygwin/MinGW Install:
     Configuration Files
 
       ImageMagick depends on a number of external configuration files which
-      include colors.xml, delegates.xml, magic.xml, coder.xml, and others.
+      include colors.xml, delegates.xml, and others.
       ImageMagick searches for configuration files in the following order, and
       loads them if found:
 

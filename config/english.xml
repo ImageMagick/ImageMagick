@@ -613,7 +613,7 @@
         <message name="CompositeImageRequired">
           composite image required
         </message>
-        <message name="CurlyBrasesNestedTooDeeply">
+        <message name="CurlyBracesNestedTooDeeply">
           curly braces nested too deeply
         </message>
         <message name="DeprecatedOptionNoCode">
@@ -1001,7 +1001,7 @@
     <policy>
       <error>
         <message name="NotAuthorized">
-          not authorized
+          attempt to perform an operation not allowed by the security policy
         </message>
       </error>
     </policy>

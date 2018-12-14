@@ -23,13 +23,13 @@
 %                                March 2002                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -172,9 +172,9 @@ static int MVGPrintf(DrawingWand *wand,const char *format,...)
   size_t
     extent;
 
+  assert(wand != (DrawingWand *) NULL);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",format);
-  assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == MagickWandSignature);
   extent=20UL*MagickPathExtent;
   if (wand->mvg == (char *) NULL)
@@ -2434,6 +2434,81 @@ WandExport double DrawGetTextInterwordSpacing(DrawingWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D r a w G e t T y p e M e t r i c s                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetTypeMetrics() returns the following information for the specified
+%  font and text:
+%
+%    character width
+%    character height
+%    ascender
+%    descender
+%    text width
+%    text height
+%    maximum horizontal advance
+%    bounds: x1
+%    bounds: y1
+%    bounds: x2
+%    bounds: y2
+%    origin: x
+%    origin: y
+%    underline position
+%    underline thickness
+%
+%  The format of the DrawGetTypeMetrics method is:
+%
+%      MagickBooleanType DrawGetTypeMetrics(const DrawingWand *wand,
+%        const char *text,MagickBooleanType ignore_newlines,
+$        TypeMetric *metrics)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the drawing wand.
+%
+%    o text: text to draw.
+%
+%    o metrics: Return the font metrics in this structure.
+%
+%    o ignore_newlines: indicates whether newlines should be ignored.
+%
+%    o metrics: Return the font metrics in this structure.
+%
+*/
+WandExport MagickBooleanType DrawGetTypeMetrics(const DrawingWand *wand,
+  const char *text,MagickBooleanType ignore_newlines,TypeMetric *metrics)
+{
+  DrawInfo
+    *draw_info;
+
+  MagickBooleanType
+    status;
+
+  assert(wand != (const DrawingWand *) NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  draw_info=PeekDrawingWand(wand);
+  if (draw_info == (DrawInfo *) NULL)
+    return(MagickFalse);
+  (void) CloneString(&draw_info->text,text);
+  if (ignore_newlines != MagickFalse)
+    status=GetTypeMetrics(wand->image,draw_info,metrics,wand->exception);
+  else
+    status=GetMultilineTypeMetrics(wand->image,draw_info,metrics,
+      wand->exception);
+  draw_info=DestroyDrawInfo(draw_info);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D r a w G e t V e c t o r G r a p h i c s                                 %
 %                                                                             %
 %                                                                             %
@@ -4535,9 +4610,9 @@ WandExport void DrawSetBorderColor(DrawingWand *wand,
 WandExport MagickBooleanType DrawSetClipPath(DrawingWand *wand,
   const char *clip_mask)
 {
+  assert(wand != (DrawingWand *) NULL);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",clip_mask);
-  assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == MagickWandSignature);
   assert(clip_mask != (const char *) NULL);
   if ((CurrentContext->clip_mask == (const char *) NULL) ||
@@ -4677,9 +4752,9 @@ WandExport void DrawSetClipUnits(DrawingWand *wand,
 WandExport MagickBooleanType DrawSetDensity(DrawingWand *wand,
   const char *density)
 {
+  assert(wand != (DrawingWand *) NULL);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",density);
-  assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == MagickWandSignature);
   assert(density != (const char *) NULL);
   if ((CurrentContext->density == (const char *) NULL) ||

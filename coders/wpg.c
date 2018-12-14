@@ -16,13 +16,13 @@
 %                                 June 2000                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -306,7 +306,6 @@ static MagickBooleanType InsertRow(Image *image,unsigned char *p,ssize_t y,
               SetPixelIndex(image,index,q);
               if (index < image->colors)
                 SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
-              SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
               q+=GetPixelChannels(image);
             }
             p++;
@@ -834,8 +833,8 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   if(magic_info == (const MagicInfo *) NULL) goto FINISH_UNL;
   /*     printf("Detected:%s  \n",magic_info->name); */
   if(exception->severity != UndefinedException) goto FINISH_UNL;
-  if(magic_info->name == (char *) NULL) goto FINISH_UNL;
-  (void) strncpy(clone_info->magick,magic_info->name,MagickPathExtent-1);
+  (void) strncpy(clone_info->magick,GetMagicName(magic_info),
+    MagickPathExtent-1);
   if (LocaleCompare(clone_info->magick,"PFB") != 0)
     {      
       ThrowException(exception,CorruptImageError,"ImproperImageHeader",

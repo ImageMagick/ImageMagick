@@ -17,13 +17,13 @@
 %                                 May 2001                                    %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -48,7 +48,6 @@
 #include "MagickCore/draw.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
-#include "MagickCore/linked-list.h"
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/memory-private.h"
@@ -59,13 +58,12 @@
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
-#include "MagickCore/xml-tree.h"
-#include "MagickCore/xml-tree-private.h"
+#include "coders/coders.h"
 
 /*
   Define declarations.
 */
-#define MagickCoderFilename  "coder.xml"
+#define AddMagickCoder(coder) Magick ## coder ## Aliases
 
 /*
   Typedef declarations.
@@ -83,182 +81,8 @@ typedef struct _CoderMapInfo
 static const CoderMapInfo
   CoderMap[] =
   {
-    { "3FR", "DNG" },
-    { "3GP", "MPEG" },
-    { "3G2", "MPEG" },
-    { "8BIMTEXT", "META" },
-    { "8BIMWTEXT", "META" },
-    { "AFM", "TTF" },
-    { "A", "RAW" },
-    { "AI", "PDF" },
-    { "APP1JPEG", "META" },
-    { "APP1", "META" },
-    { "ARW", "DNG" },
-    { "AVI", "MPEG" },
-    { "BIE", "JBIG" },
-    { "BMP2", "BMP" },
-    { "BMP3", "BMP" },
-    { "B", "RAW" },
-    { "BRF", "BRAILLE" },
-    { "BGRA", "BGR" },
-    { "BGRO", "BGR" },
-    { "CMYKA", "CMYK" },
-    { "C", "RAW" },
-    { "CAL", "CALS" },
-    { "CANVAS", "XC" },
-    { "CMYKA", "CMYK" },
-    { "CR2", "DNG" },
-    { "CRW", "DNG" },
-    { "CUR", "ICON" },
-    { "DATA", "INLINE" },
-    { "DCR", "DNG" },
-    { "DCX", "PCX" },
-    { "DFONT", "TTF" },
-    { "DXT1", "DDS" },
-    { "DXT5", "DDS" },
-    { "EPDF", "PDF" },
-    { "EPI", "PS" },
-    { "EPS2", "PS2" },
-    { "EPS3", "PS3" },
-    { "EPSF", "PS" },
-    { "EPSI", "PS" },
-    { "EPS", "PS" },
-    { "EPT2", "EPT" },
-    { "EPT3", "EPT" },
-    { "ERF", "DNG" },
-    { "EXIF", "META" },
-    { "FILE", "URL" },
-    { "FRACTAL", "PLASMA" },
-    { "FTP", "URL" },
-    { "FTS", "FITS" },
-    { "G3", "FAX" },
-    { "G4", "FAX" },
-    { "GIF87", "GIF" },
-    { "G", "RAW" },
-    { "GRANITE", "MAGICK" },
-    { "GRAYA", "GRAY" },
-    { "GROUP4", "TIFF" },
-    { "GV", "DOT" },
-    { "HTM", "HTML" },
-    { "ICB", "TGA" },
-    { "ICO", "ICON" },
-    { "ICODIB", "DIB" },
-    { "IIQ", "DNG" },
-    { "K25", "DNG" },
-    { "KDC", "DNG" },
-    { "H", "MAGICK" },
-    { "HTM", "HTML" },
-    { "HTTP", "URL" },
-    { "HTTPS", "URL" },
-    { "ICB", "TGA" },
-    { "ICC", "META" },
-    { "ICM", "META" },
-    { "ICO", "ICON" },
-    { "IMPLICIT", "***" },
-    { "IPTC", "META" },
-    { "IPTCTEXT", "META" },
-    { "IPTCWTEXT", "META" },
-    { "ISOBRL", "BRAILLE" },
-    { "ISOBRL6", "BRAILLE" },
-    { "JBG", "JBIG" },
-    { "JNG", "PNG" },
-    { "JPC", "JP2" },
-    { "JPT", "JP2" },
-    { "JPM", "JP2" },
-    { "J2C", "JP2" },
-    { "J2K", "JP2" },
-    { "JNG", "PNG" },
-    { "JPE", "JPEG" },
-    { "JPG", "JPEG" },
-    { "JPM", "JP2" },
-    { "JPS", "JPEG" },
-    { "JPT", "JP2" },
-    { "JPX", "JP2" },
-    { "K", "RAW" },
-    { "K25", "DNG" },
-    { "KDC", "DNG" },
-    { "LOGO", "MAGICK" },
-    { "M", "RAW" },
-    { "M2V", "MPEG" },
-    { "M4V", "MPEG" },
-    { "MEF", "DNG" },
-    { "MKV", "MPEG" },
-    { "MNG", "PNG" },
-    { "MOV", "MPEG" },
-    { "MP4", "MPEG" },
-    { "MPG", "MPEG" },
-    { "MPRI", "MPR" },
-    { "MEF", "DNG" },
-    { "MRW", "DNG" },
-    { "MSVG", "SVG" },
-    { "NEF", "DNG" },
-    { "NETSCAPE", "MAGICK" },
-    { "NRW", "DNG" },
-    { "O", "RAW" },
-    { "ORF", "DNG" },
-    { "OTF", "TTF" },
-    { "P7", "PNM" },
-    { "PAL", "UYVY" },
-    { "PAM", "PNM" },
-    { "PBM", "PNM" },
-    { "PCDS", "PCD" },
-    { "PCT", "PICT" },
-    { "PDFA", "PDF" },
-    { "PEF", "DNG" },
-    { "PEF", "DNG" },
-    { "PFA", "TTF" },
-    { "PFB", "TTF" },
-    { "PFM", "PNM" },
-    { "PGM", "PNM" },
-    { "PICON", "XPM" },
-    { "PJPEG", "JPEG" },
-    { "PM", "XPM" },
-    { "PNG00", "PNG" },
-    { "PNG24", "PNG" },
-    { "PNG32", "PNG" },
-    { "PNG48", "PNG" },
-    { "PNG64", "PNG" },
-    { "PNG8", "PNG" },
-    { "PPM", "PNM" },
-    { "PSB", "PSD" },
-    { "PTIF", "TIFF" },
-    { "R", "RAW" },
-    { "RADIAL-GRADIENT", "GRADIENT" },
-    { "RAF", "DNG" },
-    { "RAS", "SUN" },
-    { "RAW", "DNG" },
-    { "RGBA", "RGB" },
-    { "RGBO", "RGB" },
-    { "RMF", "DNG" },
-    { "ROSE", "MAGICK" },
-    { "RW2", "DNG" },
-    { "SHTML", "HTML" },
-    { "SIX", "SIXEL" },
-    { "SPARSE-COLOR", "TXT" },
-    { "SR2", "DNG" },
-    { "SRF", "DNG" },
-    { "SVGZ", "SVG" },
-    { "TEXT", "TXT" },
-    { "TIFF64", "TIFF" },
-    { "TIF", "TIFF" },
-    { "TTC", "TTF" },
-    { "UBRL", "BRAILLE" },
-    { "UBRL6", "BRAILLE" },
-    { "VDA", "TGA" },
-    { "VST", "TGA" },
-    { "WIZARD", "MAGICK" },
-#if defined(MAGICKCORE_WINGDI32_DELEGATE)
-    { "WMF", "EMF" },
-#endif
-    { "WMV", "MPEG" },
-    { "WMZ", "WMF" },
-    { "X3f", "DNG" },
-    { "XMP", "META" },
-    { "XTRNARRAY", "XTRN" },
-    { "XV", "VIFF" },
-    { "Y", "RAW" },
-    { "YCbCrA", "YCbCr" }
- };
+    #include "coders/coders-list.h"
+  };
 
 static SemaphoreInfo
   *coder_semaphore = (SemaphoreInfo *) NULL;
@@ -270,9 +94,7 @@ static SplayTreeInfo
   Forward declarations.
 */
 static MagickBooleanType
-  IsCoderTreeInstantiated(ExceptionInfo *),
-  LoadCoderCache(SplayTreeInfo *,const char *,const char *,const size_t,
-    ExceptionInfo *);
+  IsCoderTreeInstantiated(ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -319,8 +141,7 @@ static void *DestroyCoderNode(void *coder_info)
   return(RelinquishMagickMemory(p));
 }
 
-static SplayTreeInfo *AcquireCoderCache(const char *filename,
-  ExceptionInfo *exception)
+static SplayTreeInfo *AcquireCoderCache(ExceptionInfo *exception)
 {
   MagickStatusType
     status;
@@ -332,33 +153,11 @@ static SplayTreeInfo *AcquireCoderCache(const char *filename,
     *cache;
 
   /*
-    Load external coder map.
+    Load built-in coder map.
   */
   cache=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
     DestroyCoderNode);
   status=MagickTrue;
-#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
-  {
-    const StringInfo
-      *option;
-
-    LinkedListInfo
-      *options;
-
-    options=GetConfigureOptions(filename,exception);
-    option=(const StringInfo *) GetNextValueInLinkedList(options);
-    while (option != (const StringInfo *) NULL)
-    {
-      status&=LoadCoderCache(cache,(const char *) GetStringInfoDatum(option),
-        GetStringInfoPath(option),0,exception);
-      option=(const StringInfo *) GetNextValueInLinkedList(options);
-    }
-    options=DestroyConfigureOptions(options);
-  }
-#endif
-  /*
-    Load built-in coder map.
-  */
   for (i=0; i < (ssize_t) (sizeof(CoderMap)/sizeof(*CoderMap)); i++)
   {
     CoderInfo
@@ -682,7 +481,7 @@ static MagickBooleanType IsCoderTreeInstantiated(ExceptionInfo *exception)
         ActivateSemaphoreInfo(&coder_semaphore);
       LockSemaphoreInfo(coder_semaphore);
       if (coder_cache == (SplayTreeInfo *) NULL)
-        coder_cache=AcquireCoderCache(MagickCoderFilename,exception);
+        coder_cache=AcquireCoderCache(exception);
       UnlockSemaphoreInfo(coder_semaphore);
     }
   return(coder_cache != (SplayTreeInfo *) NULL ? MagickTrue : MagickFalse);
@@ -745,14 +544,14 @@ MagickExport MagickBooleanType ListCoderInfo(FILE *file,
       {
         if (coder_info[i]->path != (char *) NULL)
           (void) FormatLocaleFile(file,"\nPath: %s\n\n",coder_info[i]->path);
-        (void) FormatLocaleFile(file,"Magick      Coder\n");
+        (void) FormatLocaleFile(file,"Magick          Coder\n");
         (void) FormatLocaleFile(file,
           "-------------------------------------------------"
           "------------------------------\n");
       }
     path=coder_info[i]->path;
     (void) FormatLocaleFile(file,"%s",coder_info[i]->magick);
-    for (j=(ssize_t) strlen(coder_info[i]->magick); j <= 11; j++)
+    for (j=(ssize_t) strlen(coder_info[i]->magick); j <= 15; j++)
       (void) FormatLocaleFile(file," ");
     if (coder_info[i]->name != (char *) NULL)
       (void) FormatLocaleFile(file,"%s",coder_info[i]->name);
@@ -761,205 +560,4 @@ MagickExport MagickBooleanType ListCoderInfo(FILE *file,
   coder_info=(const CoderInfo **) RelinquishMagickMemory((void *) coder_info);
   (void) fflush(file);
   return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   L o a d C o d e r C a c h e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  LoadCoderCache() loads the coder configurations which provides a
-%  mapping between coder attributes and a coder name.
-%
-%  The format of the LoadCoderCache coder is:
-%
-%      MagickBooleanType LoadCoderCache(SplayTreeInfo *cache,const char *xml,
-%        const char *filename,const size_t depth,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o xml:  The coder list in XML format.
-%
-%    o filename:  The coder list filename.
-%
-%    o depth: depth of <include /> statements.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-static MagickBooleanType LoadCoderCache(SplayTreeInfo *cache,const char *xml,
-  const char *filename,const size_t depth,ExceptionInfo *exception)
-{
-  char
-    keyword[MagickPathExtent],
-    *token;
-
-  const char
-    *q;
-
-  CoderInfo
-    *coder_info;
-
-  MagickStatusType
-    status;
-
-  size_t
-    extent;
-
-  /*
-    Load the coder map file.
-  */
-  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-    "Loading coder configuration file \"%s\" ...",filename);
-  if (xml == (const char *) NULL)
-    return(MagickFalse);
-  status=MagickTrue;
-  coder_info=(CoderInfo *) NULL;
-  token=AcquireString(xml);
-  extent=strlen(token)+MagickPathExtent;
-  for (q=(char *) xml; *q != '\0'; )
-  {
-    /*
-      Interpret XML.
-    */
-    GetNextToken(q,&q,extent,token);
-    if (*token == '\0')
-      break;
-    (void) CopyMagickString(keyword,token,MagickPathExtent);
-    if (LocaleNCompare(keyword,"<!DOCTYPE",9) == 0)
-      {
-        /*
-          Doctype element.
-        */
-        while ((LocaleNCompare(q,"]>",2) != 0) && (*q != '\0'))
-          GetNextToken(q,&q,extent,token);
-        continue;
-      }
-    if (LocaleNCompare(keyword,"<!--",4) == 0)
-      {
-        /*
-          Comment element.
-        */
-        while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
-          GetNextToken(q,&q,extent,token);
-        continue;
-      }
-    if (LocaleCompare(keyword,"<include") == 0)
-      {
-        /*
-          Include element.
-        */
-        while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
-        {
-          (void) CopyMagickString(keyword,token,MagickPathExtent);
-          GetNextToken(q,&q,extent,token);
-          if (*token != '=')
-            continue;
-          GetNextToken(q,&q,extent,token);
-          if (LocaleCompare(keyword,"file") == 0)
-            {
-              if (depth > MagickMaxRecursionDepth)
-                (void) ThrowMagickException(exception,GetMagickModule(),
-                  ConfigureError,"IncludeNodeNestedTooDeeply","`%s'",token);
-              else
-                {
-                  char
-                    path[MagickPathExtent],
-                    *file_xml;
-
-                  GetPathComponent(filename,HeadPath,path);
-                  if (*path != '\0')
-                    (void) ConcatenateMagickString(path,DirectorySeparator,
-                      MagickPathExtent);
-                  if (*token == *DirectorySeparator)
-                    (void) CopyMagickString(path,token,MagickPathExtent);
-                  else
-                    (void) ConcatenateMagickString(path,token,MagickPathExtent);
-                  file_xml=FileToXML(path,~0UL);
-                  if (file_xml != (char *) NULL)
-                    {
-                      status&=LoadCoderCache(cache,file_xml,path,depth+1,
-                        exception);
-                      file_xml=DestroyString(file_xml);
-                    }
-                }
-            }
-        }
-        continue;
-      }
-    if (LocaleCompare(keyword,"<coder") == 0)
-      {
-        /*
-          Coder element.
-        */
-        coder_info=(CoderInfo *) AcquireCriticalMemory(sizeof(*coder_info));
-        (void) memset(coder_info,0,sizeof(*coder_info));
-        coder_info->path=ConstantString(filename);
-        coder_info->exempt=MagickFalse;
-        coder_info->signature=MagickCoreSignature;
-        continue;
-      }
-    if (coder_info == (CoderInfo *) NULL)
-      continue;
-    if ((LocaleCompare(keyword,"/>") == 0) ||
-        (LocaleCompare(keyword,"</policy>") == 0))
-      {
-        status=AddValueToSplayTree(cache,ConstantString(coder_info->magick),
-          coder_info);
-        if (status == MagickFalse)
-          (void) ThrowMagickException(exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","`%s'",
-            coder_info->magick);
-        coder_info=(CoderInfo *) NULL;
-        continue;
-      }
-    GetNextToken(q,(const char **) NULL,extent,token);
-    if (*token != '=')
-      continue;
-    GetNextToken(q,&q,extent,token);
-    GetNextToken(q,&q,extent,token);
-    switch (*keyword)
-    {
-      case 'M':
-      case 'm':
-      {
-        if (LocaleCompare((char *) keyword,"magick") == 0)
-          {
-            coder_info->magick=ConstantString(token);
-            break;
-          }
-        break;
-      }
-      case 'N':
-      case 'n':
-      {
-        if (LocaleCompare((char *) keyword,"name") == 0)
-          {
-            coder_info->name=ConstantString(token);
-            break;
-          }
-        break;
-      }
-      case 'S':
-      case 's':
-      {
-        if (LocaleCompare((char *) keyword,"stealth") == 0)
-          {
-            coder_info->stealth=IsStringTrue(token);
-            break;
-          }
-        break;
-      }
-      default:
-        break;
-    }
-  }
-  token=(char *) RelinquishMagickMemory(token);
-  return(status != 0 ? MagickTrue : MagickFalse);
 }

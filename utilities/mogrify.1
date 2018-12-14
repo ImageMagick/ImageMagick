@@ -7,7 +7,7 @@ mogrify \- resize an image, blur, crop, despeckle, dither, draw on, flip, join, 
 .SH OVERVIEW
 The \fBmogrify\fP program is a member of the ImageMagick(1) suite of tools.  Use it to resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more. This tool is similar to convert(1) except the original image file is overwritten with any changes you request.
 
-For more information about the mogrify command, point your browser to file:///usr/local/share/doc/ImageMagick-7/www/mogrify.html or http://www.imagemagick.org/script/mogrify.php.
+For more information about the mogrify command, point your browser to file:///usr/local/share/doc/ImageMagick-7/www/mogrify.html or http://imagemagick.org/script/mogrify.php.
 .SH DESCRIPTION
 Image Settings:
   \-adjoin              join images into a single multi-image file
@@ -139,6 +139,7 @@ Image Operators:
   \-channel mask        set the image channel mask
   \-charcoal radius     simulate a charcoal drawing
   \-chop geometry       remove pixels from the image interior
+  \-clahe geometry      contrast limited adaptive histogram equalization 
   \-clamp               keep pixel values in range (0-QuantumRange)
   \-clip                clip along the first path from the 8BIM profile
   \-clip-mask filename  associate a clip mask with the image
@@ -324,4 +325,4 @@ ImageMagick(1)
 
 .SH COPYRIGHT
 
-\fBCopyright (C) 1999-2018 ImageMagick Studio LLC. Additional copyrights and licenses apply to this software, see file:///usr/local/share/doc/ImageMagick-7/www/license.html or http://www.imagemagick.org/script/license.php\fP
+\fBCopyright (C) 1999-2019 ImageMagick Studio LLC. Additional copyrights and licenses apply to this software, see file:///usr/local/share/doc/ImageMagick-7/www/license.html or http://imagemagick.org/script/license.php\fP

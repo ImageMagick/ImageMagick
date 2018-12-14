@@ -17,13 +17,13 @@
 %                                October 2002                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -236,7 +236,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
     }
   }
   image_view=DestroyCacheView(image_view);
-  if ((bounds.width == 0) && (bounds.height == 0))
+  if ((bounds.width == 0) || (bounds.height == 0))
     (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
       "GeometryDoesNotContainImage","`%s'",image->filename);
   else
@@ -323,8 +323,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
 
           atDepth=MagickTrue;
           range=GetQuantumRange(current_depth[id]);
-          if ((atDepth != MagickFalse) &&
-              (GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+          if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
             if (IsPixelAtDepth(ClampToQuantum(image->colormap[i].red),range) == MagickFalse)
               atDepth=MagickFalse;
           if ((atDepth != MagickFalse) &&

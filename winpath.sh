@@ -1,10 +1,10 @@
 #!/bin/sh
-# Copyright (C) 1999-2018 ImageMagick Studio LLC
+# Copyright (C) 1999-2019 ImageMagick Studio LLC
 # Copyright (C) 2003 - 2008 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # LICENSE. You should have received a copy of LICENSE with this
-# package; otherwise see https://www.imagemagick.org/script/license.php.
+# package; otherwise see https://imagemagick.org/script/license.php.
 #
 # Convert the specified POSIX path to a Windows path under MinGW and Cygwin
 # The optional second parameter specifies the level of backslash escaping

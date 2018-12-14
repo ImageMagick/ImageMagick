@@ -19,13 +19,13 @@
 %                               December 2001                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -552,7 +552,8 @@ static void MSLPushImage(MSLInfo *msl_info,Image *image)
   ssize_t
     n;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (image != (Image *) NULL)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(msl_info != (MSLInfo *) NULL);
   msl_info->n++;
   n=msl_info->n;
@@ -7624,6 +7625,9 @@ static void MSLComment(void *context,const xmlChar *value)
 }
 
 static void MSLWarning(void *context,const char *format,...)
+  magick_attribute((__format__ (__printf__,2,3)));
+
+static void MSLWarning(void *context,const char *format,...)
 {
   char
     *message,
@@ -7654,6 +7658,9 @@ static void MSLWarning(void *context,const char *format,...)
   message=DestroyString(message);
   va_end(operands);
 }
+
+static void MSLError(void *context,const char *format,...)
+  magick_attribute((__format__ (__printf__,2,3)));
 
 static void MSLError(void *context,const char *format,...)
 {
@@ -8343,6 +8350,9 @@ static MagickBooleanType WriteMSLImage(const ImageInfo *image_info,Image *image,
   Image
     *msl_image;
 
+  MagickBooleanType
+    status;
+
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
@@ -8350,6 +8360,8 @@ static MagickBooleanType WriteMSLImage(const ImageInfo *image_info,Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   msl_image=CloneImage(image,0,0,MagickTrue,exception);
-  return(ProcessMSLScript(image_info,&msl_image,exception));
+  status=ProcessMSLScript(image_info,&msl_image,exception);
+  msl_image=DestroyImageList(msl_image);
+  return(status);
 }
 #endif

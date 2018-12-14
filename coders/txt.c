@@ -17,13 +17,13 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -67,6 +67,7 @@
 #include "MagickCore/statistic.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
+#include "coders/txt.h"
 
 /*
   Forward declarations.
@@ -101,8 +102,6 @@ static MagickBooleanType
 */
 static MagickBooleanType IsTXT(const unsigned char *magick,const size_t length)
 {
-#define MagickID  "# ImageMagick pixel enumeration:"
-
   char
     colorspace[MagickPathExtent];
 
@@ -116,7 +115,8 @@ static MagickBooleanType IsTXT(const unsigned char *magick,const size_t length)
 
   if (length < 40)
     return(MagickFalse);
-  if (LocaleNCompare((const char *) magick,MagickID,strlen(MagickID)) != 0)
+  if (LocaleNCompare((const char *) magick,MagickTXTID,
+        strlen(MagickTXTID)) != 0)
     return(MagickFalse);
   count=(ssize_t) sscanf((const char *) magick+32,"%lu,%lu,%lu,%32s",&columns,
     &rows,&depth,colorspace);
@@ -439,7 +439,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   (void) memset(text,0,sizeof(text));
   (void) ReadBlobString(image,text);
-  if (LocaleNCompare((char *) text,MagickID,strlen(MagickID)) != 0)
+  if (LocaleNCompare((char *) text,MagickTXTID,strlen(MagickTXTID)) != 0)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   x_offset=(-1.0);
   y_offset=(-1.0);
@@ -589,7 +589,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     *text='\0';
     (void) ReadBlobString(image,text);
-    if (LocaleNCompare((char *) text,MagickID,strlen(MagickID)) == 0)
+    if (LocaleNCompare((char *) text,MagickTXTID,strlen(MagickTXTID)) == 0)
       {
         /*
           Allocate next image structure.
@@ -606,7 +606,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (status == MagickFalse)
           break;
       }
-  } while (LocaleNCompare((char *) text,MagickID,strlen(MagickID)) == 0);
+  } while (LocaleNCompare((char *) text,MagickTXTID,strlen(MagickTXTID)) == 0);
   (void) CloseBlob(image);
   if (status == MagickFalse)
     return(DestroyImageList(image));

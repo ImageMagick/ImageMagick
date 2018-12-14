@@ -414,13 +414,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->ping != MagickFalse) goto Finish;
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
-    {
-      if (palette != NULL) 
-        palette=DestroyImage(palette); 
-      if (clone_info != NULL) 
-        clone_info=DestroyImageInfo(clone_info); 
-      return(DestroyImageList(image));
-    }
+    return(DestroyImageList(image));
 
   /* ----- Do something with palette ----- */
   if ((clone_info=CloneImageInfo(image_info)) == NULL) goto NoPalette;

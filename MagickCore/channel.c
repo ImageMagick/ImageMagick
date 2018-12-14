@@ -17,13 +17,13 @@
 %                               December 2003                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -378,17 +378,20 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             }
             case CompositeMaskPixelChannel:
             {
-              destination_image->channels|=CompositeMaskChannel;
+              destination_image->channels=(ChannelType)
+                (destination_image->channels | CompositeMaskChannel);
               break;
             }
             case ReadMaskPixelChannel:
             {
-              destination_image->channels|=ReadMaskChannel;
+              destination_image->channels=(ChannelType)
+                (destination_image->channels | ReadMaskChannel);
               break;
             }
             case WriteMaskPixelChannel:
             {
-              destination_image->channels|=WriteMaskChannel;
+              destination_image->channels=(ChannelType)
+                (destination_image->channels | WriteMaskChannel);
               break;
             }
             case MetaPixelChannel:
@@ -625,7 +628,11 @@ MagickExport Image *CombineImages(const Image *image,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,CombineImageTag,progress++,
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,CombineImageTag,progress,
           combine_image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -798,9 +805,10 @@ MagickExport Image *SeparateImage(const Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_SeparateImage)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(image,SeparateImageTag,progress++,image->rows);
+        progress++;
+        proceed=SetImageProgress(image,SeparateImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }

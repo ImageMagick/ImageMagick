@@ -4,7 +4,7 @@
   <Project>
     <name>ImageMagick</name>
     <shortdesc xml:lang="en">ImageMagick: convert, edit, or compose images.</shortdesc>
-    <homepage rdf:resource="https://www.imagemagick.org/"/>
+    <homepage rdf:resource="https://imagemagick.org/"/>
     <created>@PACKAGE_RELEASE_DATE@</created>
 
     <description xml:lang="en">
@@ -40,11 +40,11 @@ Introduction to ImageMagick
   security vulnerabilities.
 
   ImageMagick is available from
-  https://www.imagemagick.org/script/download.php.  It runs on Linux, Windows,
+  https://imagemagick.org/script/download.php.  It runs on Linux, Windows,
   Mac Os X, iOS, Android OS, and others.
 
   The authoritative ImageMagick web site is
-  https://www.imagemagick.org. The authoritative source code repository is
+  https://imagemagick.org. The authoritative source code repository is
   https://git.imagemagick.org/repos/ImageMagick/.
 
 
@@ -117,7 +117,7 @@ Features and Capabilities
     <maintainer>
       <foaf:Person>
         <foaf:name>ImageMagick Studio LLC</foaf:name>
-        <foaf:homepage rdf:resource="https://www.imagemagick.org/"/>
+        <foaf:homepage rdf:resource="https://imagemagick.org/"/>
       </foaf:Person>
     </maintainer>
 
@@ -130,11 +130,11 @@ Features and Capabilities
       </Version>
     </release>
 
-    <download-page rdf:resource="https://www.imagemagick.org/script/download.php"/>
+    <download-page rdf:resource="https://imagemagick.org/script/download.php"/>
     <download-mirror rdf:resource="https://sourceforge.net/projects/imagemagick/"/>
 
     <!-- Licensing details -->
-    <license rdf:resource="https://www.imagemagick.org/script/license.php"/>
+    <license rdf:resource="https://imagemagick.org/script/license.php"/>
 
     <!-- source repository -->
     <repository>
@@ -153,7 +153,7 @@ Features and Capabilities
     <foaf:maker>
       <foaf:Person>
         <foaf:name>ImageMagick Studio LLC</foaf:name>
-        <foaf:homepage rdf:resource="https://www.imagemagick.org/"/>
+        <foaf:homepage rdf:resource="https://imagemagick.org/"/>
       </foaf:Person>
     </foaf:maker>
   </rdf:Description>

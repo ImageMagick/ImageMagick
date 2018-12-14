@@ -42,8 +42,7 @@ Magick::Exception::Exception(const Magick::Exception& original_)
 
 Magick::Exception::~Exception() throw()
 {
-  if (_nested != (Exception *) NULL)
-    delete _nested;
+  delete _nested;
 }
 
 Magick::Exception& Magick::Exception::operator=(

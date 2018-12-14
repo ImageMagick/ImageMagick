@@ -17,13 +17,13 @@
 %                               November 2001                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -60,6 +60,7 @@
 #include "MagickCore/resource_.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/module.h"
 
 /*
@@ -112,6 +113,7 @@ typedef enum
 typedef struct
 {
   size_t
+    version,
     width,
     height,
     image_type,
@@ -209,26 +211,69 @@ static MagickBooleanType IsXCF(const unsigned char *magick,const size_t length)
 
 typedef enum
 {
-  GIMP_NORMAL_MODE,
-  GIMP_DISSOLVE_MODE,
-  GIMP_BEHIND_MODE,
-  GIMP_MULTIPLY_MODE,
-  GIMP_SCREEN_MODE,
-  GIMP_OVERLAY_MODE,
-  GIMP_DIFFERENCE_MODE,
-  GIMP_ADDITION_MODE,
-  GIMP_SUBTRACT_MODE,
-  GIMP_DARKEN_ONLY_MODE,
-  GIMP_LIGHTEN_ONLY_MODE,
-  GIMP_HUE_MODE,
-  GIMP_SATURATION_MODE,
-  GIMP_COLOR_MODE,
-  GIMP_VALUE_MODE,
-  GIMP_DIVIDE_MODE,
-  GIMP_DODGE_MODE,
-  GIMP_BURN_MODE,
-  GIMP_HARDLIGHT_MODE
-} GimpLayerModeEffects;
+  GIMP_LAYER_MODE_NORMAL_LEGACY,
+  GIMP_LAYER_MODE_DISSOLVE,
+  GIMP_LAYER_MODE_BEHIND_LEGACY,
+  GIMP_LAYER_MODE_MULTIPLY_LEGACY,
+  GIMP_LAYER_MODE_SCREEN_LEGACY,
+  GIMP_LAYER_MODE_OVERLAY_LEGACY,
+  GIMP_LAYER_MODE_DIFFERENCE_LEGACY,
+  GIMP_LAYER_MODE_ADDITION_LEGACY,
+  GIMP_LAYER_MODE_SUBTRACT_LEGACY,
+  GIMP_LAYER_MODE_DARKEN_ONLY_LEGACY,
+  GIMP_LAYER_MODE_LIGHTEN_ONLY_LEGACY,
+  GIMP_LAYER_MODE_HSV_HUE_LEGACY,
+  GIMP_LAYER_MODE_HSV_SATURATION_LEGACY,
+  GIMP_LAYER_MODE_HSL_COLOR_LEGACY,
+  GIMP_LAYER_MODE_HSV_VALUE_LEGACY,
+  GIMP_LAYER_MODE_DIVIDE_LEGACY,
+  GIMP_LAYER_MODE_DODGE_LEGACY,
+  GIMP_LAYER_MODE_BURN_LEGACY,
+  GIMP_LAYER_MODE_HARDLIGHT_LEGACY,
+  GIMP_LAYER_MODE_SOFTLIGHT_LEGACY,
+  GIMP_LAYER_MODE_GRAIN_EXTRACT_LEGACY,
+  GIMP_LAYER_MODE_GRAIN_MERGE_LEGACY,
+  GIMP_LAYER_MODE_COLOR_ERASE_LEGACY,
+  GIMP_LAYER_MODE_OVERLAY,
+  GIMP_LAYER_MODE_LCH_HUE,
+  GIMP_LAYER_MODE_LCH_CHROMA,
+  GIMP_LAYER_MODE_LCH_COLOR,
+  GIMP_LAYER_MODE_LCH_LIGHTNESS,
+  GIMP_LAYER_MODE_NORMAL,
+  GIMP_LAYER_MODE_BEHIND,
+  GIMP_LAYER_MODE_MULTIPLY,
+  GIMP_LAYER_MODE_SCREEN,
+  GIMP_LAYER_MODE_DIFFERENCE,
+  GIMP_LAYER_MODE_ADDITION,
+  GIMP_LAYER_MODE_SUBTRACT,
+  GIMP_LAYER_MODE_DARKEN_ONLY,
+  GIMP_LAYER_MODE_LIGHTEN_ONLY,
+  GIMP_LAYER_MODE_HSV_HUE,
+  GIMP_LAYER_MODE_HSV_SATURATION,
+  GIMP_LAYER_MODE_HSL_COLOR,
+  GIMP_LAYER_MODE_HSV_VALUE,
+  GIMP_LAYER_MODE_DIVIDE,
+  GIMP_LAYER_MODE_DODGE,
+  GIMP_LAYER_MODE_BURN,
+  GIMP_LAYER_MODE_HARDLIGHT,
+  GIMP_LAYER_MODE_SOFTLIGHT,
+  GIMP_LAYER_MODE_GRAIN_EXTRACT,
+  GIMP_LAYER_MODE_GRAIN_MERGE,
+  GIMP_LAYER_MODE_VIVID_LIGHT,
+  GIMP_LAYER_MODE_PIN_LIGHT,
+  GIMP_LAYER_MODE_LINEAR_LIGHT,
+  GIMP_LAYER_MODE_HARD_MIX,
+  GIMP_LAYER_MODE_EXCLUSION,
+  GIMP_LAYER_MODE_LINEAR_BURN,
+  GIMP_LAYER_MODE_LUMA_DARKEN_ONLY,
+  GIMP_LAYER_MODE_LUMA_LIGHTEN_ONLY,
+  GIMP_LAYER_MODE_LUMINANCE,
+  GIMP_LAYER_MODE_COLOR_ERASE,
+  GIMP_LAYER_MODE_ERASE,
+  GIMP_LAYER_MODE_MERGE,
+  GIMP_LAYER_MODE_SPLIT,
+  GIMP_LAYER_MODE_PASS_THROUGH,
+} GimpLayerMode;
 
 /*
   Simple utility routine to convert between PSD blending modes and
@@ -239,27 +284,62 @@ static CompositeOperator GIMPBlendModeToCompositeOperator(
 {
   switch ( blendMode )
   {
-    case GIMP_NORMAL_MODE:       return(OverCompositeOp);
-    case GIMP_DISSOLVE_MODE:     return(DissolveCompositeOp);
-    case GIMP_MULTIPLY_MODE:     return(MultiplyCompositeOp);
-    case GIMP_SCREEN_MODE:       return(ScreenCompositeOp);
-    case GIMP_OVERLAY_MODE:      return(OverlayCompositeOp);
-    case GIMP_DIFFERENCE_MODE:   return(DifferenceCompositeOp);
-    case GIMP_ADDITION_MODE:     return(ModulusAddCompositeOp);
-    case GIMP_SUBTRACT_MODE:     return(ModulusSubtractCompositeOp);
-    case GIMP_DARKEN_ONLY_MODE:  return(DarkenCompositeOp);
-    case GIMP_LIGHTEN_ONLY_MODE: return(LightenCompositeOp);
-    case GIMP_HUE_MODE:          return(HueCompositeOp);
-    case GIMP_SATURATION_MODE:   return(SaturateCompositeOp);
-    case GIMP_COLOR_MODE:        return(ColorizeCompositeOp);
-    case GIMP_DODGE_MODE:        return(ColorDodgeCompositeOp);
-    case GIMP_BURN_MODE:         return(ColorBurnCompositeOp);
-    case GIMP_HARDLIGHT_MODE:    return(HardLightCompositeOp);
-    case GIMP_DIVIDE_MODE:       return(DivideDstCompositeOp);
+    case GIMP_LAYER_MODE_NORMAL_LEGACY:
+    case GIMP_LAYER_MODE_NORMAL:
+      return(OverCompositeOp);
+    case GIMP_LAYER_MODE_DISSOLVE:
+      return(DissolveCompositeOp);
+    case GIMP_LAYER_MODE_MULTIPLY_LEGACY:
+    case GIMP_LAYER_MODE_MULTIPLY:
+      return(MultiplyCompositeOp);
+    case GIMP_LAYER_MODE_SCREEN_LEGACY:
+    case GIMP_LAYER_MODE_SCREEN:
+      return(ScreenCompositeOp);
+    case GIMP_LAYER_MODE_OVERLAY_LEGACY:
+    case GIMP_LAYER_MODE_OVERLAY:
+      return(OverlayCompositeOp);
+    case GIMP_LAYER_MODE_DIFFERENCE_LEGACY:
+    case GIMP_LAYER_MODE_DIFFERENCE:
+      return(DifferenceCompositeOp);
+    case GIMP_LAYER_MODE_ADDITION_LEGACY:
+    case GIMP_LAYER_MODE_ADDITION:
+      return(ModulusAddCompositeOp);
+    case GIMP_LAYER_MODE_SUBTRACT_LEGACY:
+    case GIMP_LAYER_MODE_SUBTRACT:
+      return(ModulusSubtractCompositeOp);
+    case GIMP_LAYER_MODE_DARKEN_ONLY_LEGACY:
+    case GIMP_LAYER_MODE_DARKEN_ONLY:
+    case GIMP_LAYER_MODE_LUMA_DARKEN_ONLY:
+      return(DarkenCompositeOp);
+    case GIMP_LAYER_MODE_LIGHTEN_ONLY_LEGACY:
+    case GIMP_LAYER_MODE_LIGHTEN_ONLY:
+      return(LightenCompositeOp);
+    case GIMP_LAYER_MODE_LUMA_LIGHTEN_ONLY:
+      return(LightenCompositeOp);
+    case GIMP_LAYER_MODE_HSV_HUE_LEGACY:
+    case GIMP_LAYER_MODE_HSV_HUE:
+      return(HueCompositeOp);
+    case GIMP_LAYER_MODE_HSV_SATURATION_LEGACY:
+    case GIMP_LAYER_MODE_HSV_SATURATION:
+      return(SaturateCompositeOp);
+    case GIMP_LAYER_MODE_HSL_COLOR_LEGACY:
+    case GIMP_LAYER_MODE_HSL_COLOR:
+      return(ColorizeCompositeOp);
+    case GIMP_LAYER_MODE_DODGE_LEGACY:
+    case GIMP_LAYER_MODE_DODGE:
+      return(ColorDodgeCompositeOp);
+    case GIMP_LAYER_MODE_BURN_LEGACY:
+    case GIMP_LAYER_MODE_BURN:
+      return(ColorBurnCompositeOp);
+    case GIMP_LAYER_MODE_HARDLIGHT_LEGACY:
+    case GIMP_LAYER_MODE_HARDLIGHT:
+      return(HardLightCompositeOp);
+    case GIMP_LAYER_MODE_DIVIDE_LEGACY:
+    case GIMP_LAYER_MODE_DIVIDE:
+      return(DivideDstCompositeOp);
     /* these are the ones we don't support...yet */
-    case GIMP_BEHIND_MODE:       return(OverCompositeOp);
-    case GIMP_VALUE_MODE:        return(OverCompositeOp);
-    default:                     return(OverCompositeOp);
+    default:
+      return(OverCompositeOp);
   }
 }
 
@@ -326,6 +406,14 @@ static char *ReadBlobStringWithLongSize(Image *image,char *string,size_t max,
     (void) ThrowMagickException(exception,GetMagickModule(),
       CorruptImageError,"ImproperImageHeader","`%s'",image->filename);
   return(string);
+}
+
+static MagickOffsetType GetXCFOffset(Image *image, XCFDocInfo *inDocInfo)
+{
+  if (inDocInfo->version >= 4)
+    return (MagickOffsetType) ReadBlobMSBLongLong(image);
+  else
+    return (MagickOffsetType) ReadBlobMSBLong(image);
 }
 
 static MagickBooleanType load_tile(Image *image,Image *tile_image,
@@ -627,7 +715,7 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
     Read in the first tile offset.  If it is '0', then this tile level is empty
     and we can simply return.
   */
-  offset=(MagickOffsetType) ReadBlobMSBLong(image);
+  offset=GetXCFOffset(image,inDocInfo);
   if (offset == 0)
     return(MagickTrue);
   /*
@@ -647,7 +735,7 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
     saved_pos=TellBlob(image);
     /* read in the offset of the next tile so we can calculate the amount
        of data needed for this tile*/
-    offset2=(MagickOffsetType) ReadBlobMSBLong(image);
+    offset2=GetXCFOffset(image,inDocInfo);
     if ((MagickSizeType) offset2 >= inDocInfo->file_size)
       ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
         image->filename);
@@ -720,7 +808,7 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
        */
       offset=SeekBlob(image, saved_pos, SEEK_SET);
       /* read in the offset of the next tile */
-      offset=(MagickOffsetType) ReadBlobMSBLong(image);
+      offset=GetXCFOffset(image,inDocInfo);
     }
   if (offset != 0)
     ThrowBinaryException(CorruptImageError,"CorruptImage",image->filename)
@@ -743,7 +831,7 @@ static MagickBooleanType load_hierarchy(Image *image,XCFDocInfo *inDocInfo,
    *  calculated when the TileManager was created is the same
    *  as the number of levels found in the file.
    */
-  offset=(MagickOffsetType) ReadBlobMSBLong(image);  /* top level */
+  offset=GetXCFOffset(image,inDocInfo);  /* top level */
   if ((MagickSizeType) offset >= GetBlobSize(image))
     ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
       image->filename);
@@ -799,7 +887,7 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
   unsigned int
     foundPropEnd = 0;
 
-  size_t
+  MagickOffsetType
     hierarchy_offset,
     layer_mask_offset;
 
@@ -961,12 +1049,12 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
     }
 
   /* read the hierarchy and layer mask offsets */
-  hierarchy_offset = ReadBlobMSBLong(image);
-  layer_mask_offset = ReadBlobMSBLong(image);
+  hierarchy_offset = GetXCFOffset(image,inDocInfo);
+  layer_mask_offset = GetXCFOffset(image,inDocInfo);
 
   /* read in the hierarchy */
-  offset=SeekBlob(image, (MagickOffsetType) hierarchy_offset, SEEK_SET);
-  if (offset != (MagickOffsetType) hierarchy_offset)
+  offset=SeekBlob(image, hierarchy_offset, SEEK_SET);
+  if (offset != hierarchy_offset)
     (void) ThrowMagickException(exception,GetMagickModule(),
       CorruptImageError,"InvalidImageHeader","`%s'",image->filename);
   if (load_hierarchy (image, inDocInfo, outLayer, exception) == 0)
@@ -1056,6 +1144,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   size_t
     image_type,
+    precision,
     length;
 
   ssize_t
@@ -1081,16 +1170,26 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  count=ReadBlob(image,14,(unsigned char *) magick);
-  if ((count != 14) ||
+  count=ReadBlob(image,sizeof(magick),(unsigned char *) magick);
+  if ((count != sizeof(magick)) ||
       (LocaleNCompare((char *) magick,"gimp xcf",8) != 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   (void) memset(&doc_info,0,sizeof(XCFDocInfo));
+  doc_info.version=StringToUnsignedLong(magick+10);
   doc_info.width=ReadBlobMSBLong(image);
   doc_info.height=ReadBlobMSBLong(image);
   if ((doc_info.width > 262144) || (doc_info.height > 262144))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   doc_info.image_type=ReadBlobMSBLong(image);
+  precision=150;
+  if (doc_info.version >= 4)
+    {
+      precision=ReadBlobMSBLong(image);
+      if (precision == 0)
+        precision=150;
+      if (precision != 150)
+        ThrowReaderException(CoderError,"DataStorageTypeIsNotSupported");
+    }
   /*
     Initialize image attributes.
   */
@@ -1103,6 +1202,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
+  if (status != MagickFalse)
+    status=ResetImagePixels(image,exception);
   if (image_type == GIMP_INDEXED)
     ThrowReaderException(CoderError,"ColormapTypeNotSupported");
   if (image_type == GIMP_RGB)
@@ -1310,12 +1411,12 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       XCFLayerInfo
         *layer_info;
 
-      /* 
-        the read pointer
+      /*
+        The read pointer.
       */
       do
       {
-        ssize_t offset = ReadBlobMSBSignedLong(image);
+        offset=GetXCFOffset(image,&doc_info);
         if (offset == 0)
           foundAllLayers=MagickTrue;
         else
@@ -1346,11 +1447,10 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         layer_ok;
 
       MagickOffsetType
-        offset,
         saved_pos;
 
       /* read in the offset of the next layer */
-      offset=(MagickOffsetType) ReadBlobMSBLong(image);
+      offset=GetXCFOffset(image,&doc_info);
       /* if the offset is 0 then we are at the end
       *  of the layer list.
       */

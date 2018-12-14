@@ -1,11 +1,11 @@
 /*
-  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
 
   You may not use this file except in compliance with the License.
   obtain a copy of the License at
 
-    https://www.imagemagick.org/script/license.php
+    https://imagemagick.org/script/license.php
 
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,7 +23,6 @@ extern "C" {
 #endif
 
 #if defined(__BORLANDC__) && defined(_DLL)
-#  pragma message("BCBMagick lib DLL export interface")
 #  define _MAGICKDLL_
 #  define _MAGICKLIB_
 #  define MAGICKCORE_MODULES_SUPPORT
@@ -31,81 +30,64 @@ extern "C" {
 #endif
 
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
-# define MagickPrivate
-# if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
-#  define _MAGICKDLL_
-# endif
-# if defined(_MAGICKDLL_)
-#  if defined(_VISUALC_)
-#   pragma warning( disable: 4273 )  /* Disable the dll linkage warnings */
+#  define MagickPrivate
+#  if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
+#    define _MAGICKDLL_
 #  endif
-#  if !defined(_MAGICKLIB_)
-#   if defined(__clang__) || defined(__GNUC__)
-#    define MagickExport __attribute__ ((dllimport))
-#   else
-#    define MagickExport __declspec(dllimport)
-#   endif
-#   if defined(_VISUALC_)
-#    pragma message( "MagickCore lib DLL import interface" )
-#   endif
+#  if defined(_MAGICKDLL_)
+#    if defined(_VISUALC_)
+#      pragma warning( disable: 4273 )  /* Disable the dll linkage warnings */
+#    endif
+#    if !defined(_MAGICKLIB_)
+#      if defined(__clang__) || defined(__GNUC__)
+#        define MagickExport __attribute__ ((dllimport))
+#      else
+#        define MagickExport __declspec(dllimport)
+#      endif
+#    else
+#      if defined(__clang__) || defined(__GNUC__)
+#        define MagickExport __attribute__ ((dllexport))
+#      else
+#        define MagickExport __declspec(dllexport)
+#      endif
+#    endif
 #  else
-#   if defined(__clang__) || defined(__GNUC__)
-#    define MagickExport __attribute__ ((dllexport))
-#   else
-#    define MagickExport __declspec(dllexport)
-#   endif
-#   if defined(_VISUALC_)
-#    pragma message( "MagickCore lib DLL export interface" )
-#   endif
+#    define MagickExport
 #  endif
-# else
-#  define MagickExport
+#  if defined(_DLL) && !defined(_LIB)
+#    if defined(__clang__) || defined(__GNUC__)
+#      define ModuleExport __attribute__ ((dllexport))
+#    else
+#      define ModuleExport __declspec(dllexport)
+#    endif
+#  else
+#    define ModuleExport
+#  endif
 #  if defined(_VISUALC_)
-#   pragma message( "MagickCore lib static interface" )
+#    pragma warning(disable : 4018)
+#    pragma warning(disable : 4068)
+#    pragma warning(disable : 4244)
+#    pragma warning(disable : 4142)
+#    pragma warning(disable : 4800)
+#    pragma warning(disable : 4786)
+#    pragma warning(disable : 4996)
 #  endif
-# endif
-
-# if defined(_DLL) && !defined(_LIB)
-#   if defined(__clang__) || defined(__GNUC__)
-#    define ModuleExport __attribute__ ((dllexport))
-#   else
-#    define ModuleExport __declspec(dllexport)
-#   endif
-#  if defined(_VISUALC_)
-#   pragma message( "MagickCore module DLL export interface" )
-#  endif
-# else
-#  define ModuleExport
-#  if defined(_VISUALC_)
-#   pragma message( "MagickCore module static interface" )
-#  endif
-
-# endif
-# if defined(_VISUALC_)
-#  pragma warning(disable : 4018)
-#  pragma warning(disable : 4068)
-#  pragma warning(disable : 4244)
-#  pragma warning(disable : 4142)
-#  pragma warning(disable : 4800)
-#  pragma warning(disable : 4786)
-#  pragma warning(disable : 4996)
-# endif
 #else
-# if defined(__clang__) || (__GNUC__ >= 4)
-#  define MagickExport __attribute__ ((visibility ("default")))
-#  define MagickPrivate  __attribute__ ((visibility ("hidden")))
-# else
-#   define MagickExport
-#   define MagickPrivate
-# endif
-# define ModuleExport  MagickExport
+#  if defined(__clang__) || (__GNUC__ >= 4)
+#    define MagickExport __attribute__ ((visibility ("default")))
+#    define MagickPrivate  __attribute__ ((visibility ("hidden")))
+#  else
+#    define MagickExport
+#    define MagickPrivate
+#  endif
+#  define ModuleExport  MagickExport
 #endif
 
 #define MagickCoreSignature  0xabacadabUL
 #if !defined(MagickPathExtent)
-# define MagickPathExtent  4096  /* always >= 4096 */
+#  define MagickPathExtent  4096  /* always >= 4096 */
 #endif
-# define MaxTextExtent  MagickPathExtent
+#define MaxTextExtent  MagickPathExtent
 
 #if defined(MAGICKCORE_HAVE___ATTRIBUTE__)
 #  define magick_aligned(x,y)  x __attribute__((aligned(y)))

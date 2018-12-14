@@ -18,13 +18,13 @@
 %                                March 2000                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -100,6 +100,11 @@
 #include "librsvg/librsvg-features.h"
 #endif
 #endif
+
+/*
+  Define declarations.
+*/
+#define DefaultSVGDensity  96.0
 
 /*
   Typedef declarations.
@@ -332,17 +337,17 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,int type,
     }
   GetNextToken(p,&p,MagickPathExtent,token);
   if (LocaleNCompare(token,"cm",2) == 0)
-    return(72.0*svg_info->scale[0]/2.54*value);
+    return(DefaultSVGDensity*svg_info->scale[0]/2.54*value);
   if (LocaleNCompare(token,"em",2) == 0)
     return(svg_info->pointsize*value);
   if (LocaleNCompare(token,"ex",2) == 0)
     return(svg_info->pointsize*value/2.0);
   if (LocaleNCompare(token,"in",2) == 0)
-    return(72.0*svg_info->scale[0]*value);
+    return(DefaultSVGDensity*svg_info->scale[0]*value);
   if (LocaleNCompare(token,"mm",2) == 0)
-    return(72.0*svg_info->scale[0]/25.4*value);
+    return(DefaultSVGDensity*svg_info->scale[0]/25.4*value);
   if (LocaleNCompare(token,"pc",2) == 0)
-    return(72.0*svg_info->scale[0]/6.0*value);
+    return(DefaultSVGDensity*svg_info->scale[0]/6.0*value);
   if (LocaleNCompare(token,"pt",2) == 0)
     return(svg_info->scale[0]*value);
   if (LocaleNCompare(token,"px",2) == 0)
@@ -575,10 +580,12 @@ static void SVGStripString(const MagickBooleanType trim,char *message)
       {
         for ( ; *p != '\0'; p++)
           if ((*p == '*') && (*(p+1) == '/'))
-            break;
+            {
+              p+=2;
+              break;
+            }
         if (*p == '\0')
           break;
-        p+=2;
       }
     *q++=(*p);
   }
@@ -2228,9 +2235,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
                         affine.tx=svg_info->bounds.x+x*
                           cos(DegreesToRadians(fmod(angle,360.0)))+y*
                           sin(DegreesToRadians(fmod(angle,360.0)));
-                        affine.ty=svg_info->bounds.y+x*
-                          sin(DegreesToRadians(fmod(angle,360.0)))-y*
+                        affine.ty=svg_info->bounds.y-x*
+                          sin(DegreesToRadians(fmod(angle,360.0)))+y*
                           cos(DegreesToRadians(fmod(angle,360.0)));
+                        affine.tx-=x/2.0;
+                        affine.ty-=y/2.0;
                         break;
                       }
                     break;
@@ -2919,6 +2928,9 @@ static void SVGComment(void *context,const xmlChar *value)
   (void) ConcatenateString(&svg_info->comment,(const char *) value);
 }
 
+static void SVGWarning(void *,const char *,...)
+  magick_attribute((__format__ (__printf__,2,3)));
+
 static void SVGWarning(void *context,const char *format,...)
 {
   char
@@ -2950,6 +2962,9 @@ static void SVGWarning(void *context,const char *format,...)
   message=DestroyString(message);
   va_end(operands);
 }
+
+static void SVGError(void *,const char *,...)
+  magick_attribute((__format__ (__printf__,2,3)));
 
 static void SVGError(void *context,const char *format,...)
 {
@@ -3084,7 +3099,7 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
   Static declarations.
 */
 static char
-  SVGDensityGeometry[] = "72.0x72.0";
+  SVGDensityGeometry[] = "96.0x96.0";
 
 static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
@@ -3324,8 +3339,10 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (ssize_t *) NULL,&image->columns,&image->rows);
             if ((image->columns != 0) || (image->rows != 0))
               {
-                image->resolution.x=72.0*image->columns/dimension_info.width;
-                image->resolution.y=72.0*image->rows/dimension_info.height;
+                image->resolution.x=DefaultSVGDensity*image->columns/
+                  dimension_info.width;
+                image->resolution.y=DefaultSVGDensity*image->rows/
+                  dimension_info.height;
                 if (fabs(image->resolution.x) < MagickEpsilon)
                   image->resolution.x=image->resolution.y;
                 else
@@ -3339,8 +3356,10 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         if (apply_density != MagickFalse)
           {
-            image->columns=image->resolution.x*dimension_info.width/72.0;
-            image->rows=image->resolution.y*dimension_info.height/72.0;
+            image->columns=image->resolution.x*dimension_info.width/
+              DefaultSVGDensity;
+            image->rows=image->resolution.y*dimension_info.height/
+              DefaultSVGDensity;
           }
         else
           {
@@ -3407,8 +3426,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             cairo_paint(cairo_image);
             cairo_set_operator(cairo_image,CAIRO_OPERATOR_OVER);
             if (apply_density != MagickFalse)
-              cairo_scale(cairo_image,image->resolution.x/72.0,
-                image->resolution.y/72.0);
+              cairo_scale(cairo_image,image->resolution.x/DefaultSVGDensity,
+                image->resolution.y/DefaultSVGDensity);
             rsvg_handle_render_cairo(svg_handle,cairo_image);
             cairo_destroy(cairo_image);
             cairo_surface_destroy(cairo_surface);

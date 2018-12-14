@@ -17,13 +17,13 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -145,7 +145,7 @@ static int CompareXPMColor(const void *target,const void *source)
   const char
     *p,
     *q;
- 
+
   p=(const char *) target;
   q=(const char *) source;
   return(strcmp(p,q));
@@ -172,6 +172,9 @@ static char *NextXPMLine(char *p)
     p++;
   return(p);
 }
+
+static char *ParseXPMColor(char *,MagickBooleanType)
+  magick_attribute((__pure__));
 
 static char *ParseXPMColor(char *color,MagickBooleanType search_start)
 {
@@ -382,7 +385,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (next == (char *) NULL)
       break;
     length=MagickMin((size_t) width,MagickPathExtent-1);
-    if (CopyXPMColor(key,p,length) != length)
+    if (CopyXPMColor(key,p,length) != (ssize_t) length)
       break;
     status=AddValueToSplayTree(xpm_colors,ConstantString(key),(void *) j);
     /*
@@ -398,11 +401,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q++;
         if ((next-q) < 0)
           break;
-        if (next != (char *) NULL)
-          (void) CopyXPMColor(target,q,MagickMin((size_t) (next-q),
+        (void) CopyXPMColor(target,q,MagickMin((size_t) (next-q),
             MagickPathExtent-1));
-        else
-          (void) CopyMagickString(target,q,MagickPathExtent);
         q=ParseXPMColor(target,MagickFalse);
         if (q != (char *) NULL)
           *q='\0';
@@ -756,6 +756,10 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
         picon->colormap,(size_t) colors,sizeof(*picon->colormap));
       if (picon->colormap == (PixelInfo *) NULL)
         ThrowWriterException(ResourceLimitError,"MemoryAllocationError");
+      picon->colormap[colors-1].red=0;
+      picon->colormap[colors-1].green=0;
+      picon->colormap[colors-1].blue=0;
+      picon->colormap[colors-1].alpha=TransparentAlpha;
       for (y=0; y < (ssize_t) picon->rows; y++)
       {
         q=GetAuthenticPixels(picon,0,y,picon->columns,1,exception);

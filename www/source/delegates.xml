@@ -61,7 +61,7 @@
   <delegate decode="bpg" command="&quot;bpgdec&quot; -b 16 -o &quot;%o.png&quot; &quot;%i&quot;; /usr/bin/mv &quot;%o.png&quot; &quot;%o&quot;"/>
   <delegate decode="png" encode="bpg" command="&quot;bpgenc&quot; -b 12 -o &quot;%o&quot; &quot;%i&quot;"/>
   <delegate decode="blender" command="&quot;blender&quot; -b &quot;%i&quot; -F PNG -o &quot;%o&quot;&quot;\n&quot;magick&quot; convert -concatenate &quot;%o*.png&quot; &quot;%o&quot;"/>
-  <delegate decode="browse" stealth="True" spawn="True" command="&quot;xdg-open&quot; http://www.imagemagick.org/; /usr/bin/rm &quot;%i&quot;"/>
+  <delegate decode="browse" stealth="True" spawn="True" command="&quot;xdg-open&quot; https://imagemagick.org/; /usr/bin/rm &quot;%i&quot;"/>
   <delegate decode="cdr" command="&quot;uniconvertor&quot; &quot;%i&quot; &quot;%o.svg&quot;; /usr/bin/mv &quot;%o.svg&quot; &quot;%o&quot;"/>
   <delegate decode="cgm" command="&quot;uniconvertor&quot; &quot;%i&quot; &quot;%o.svg&quot;; /usr/bin/mv &quot;%o.svg&quot; &quot;%o&quot;"/>
   <delegate decode="https" command="&quot;curl&quot; -s -k -L -o &quot;%o&quot; &quot;https:%M&quot;"/>
@@ -92,7 +92,7 @@
   <delegate decode="pcl:mono" stealth="True" command="&quot;pcl6&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pbmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
   <delegate decode="pdf" encode="eps" mode="bi" command="&quot;gs&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 -sPDFPassword=&quot;%a&quot; &quot;-sDEVICE=eps2write&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
   <delegate decode="pdf" encode="ps" mode="bi" command="&quot;gs&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=ps2write&quot; -sPDFPassword=&quot;%a&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
-  <delegate decode="png" encode="webp" command="&quot;cwebp&quot; -quiet %Q &quot;%i&quot; -o &quot;%o&quot;"/>
+  <delegate decode="png" encode="webp" command="&quot;cwebp&quot; -quiet -q %Q &quot;%i&quot; -o &quot;%o&quot;"/>
   <delegate decode="pnm" encode="ilbm" mode="encode" command="&quot;ppmtoilbm&quot; -24if &quot;%i&quot; &gt; &quot;%o&quot;"/>
   <delegate decode="bmp" encode="jxr" command="/usr/bin/mv &quot;%i&quot; &quot;%i.bmp&quot;; &quot;JxrEncApp&quot; -i &quot;%i.bmp&quot; -o &quot;%o.jxr&quot;; /usr/bin/mv &quot;%i.bmp&quot; &quot;%i&quot;; /usr/bin/mv &quot;%o.jxr&quot; &quot;%o&quot;"/>
   <delegate decode="bmp" encode="wdp" command="/usr/bin/mv &quot;%i&quot; &quot;%i.bmp&quot;; &quot;JxrEncApp&quot; -i &quot;%i.bmp&quot; -o &quot;%o.jxr&quot;; /usr/bin/mv &quot;%i.bmp&quot; &quot;%i&quot;; /usr/bin/mv &quot;%o.jxr&quot; &quot;%o&quot;"/>

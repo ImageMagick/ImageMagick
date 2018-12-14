@@ -1,11 +1,11 @@
 /*
-  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
   obtain a copy of the License at
   
-    https://www.imagemagick.org/script/license.php
+    https://imagemagick.org/script/license.php
   
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,6 +28,10 @@ extern MagickExport MagickBooleanType
   RegisterStaticModule(const char *,ExceptionInfo *exception),
   UnregisterStaticModule(const char *);
 
+extern MagickExport void
+  RegisterStaticModules(void),
+  UnregisterStaticModules(void);
+
 extern ModuleExport size_t
   RegisterAAIImage(void),
   RegisterARTImage(void),
@@ -44,6 +48,7 @@ extern ModuleExport size_t
   RegisterCLIPImage(void),
   RegisterCLIPBOARDImage(void),
   RegisterCMYKImage(void),
+  RegisterCUBEImage(void),
   RegisterCUTImage(void),
   RegisterDCMImage(void),
   RegisterDCXImage(void),
@@ -207,6 +212,7 @@ extern ModuleExport void
   UnregisterCLIPImage(void),
   UnregisterCLIPBOARDImage(void),
   UnregisterCMYKImage(void),
+  UnregisterCUBEImage(void),
   UnregisterCUTImage(void),
   UnregisterDCMImage(void),
   UnregisterDCXImage(void),
@@ -354,10 +360,6 @@ extern ModuleExport void
   UnregisterXWDImage(void),
   UnregisterYCBCRImage(void),
   UnregisterYUVImage(void);
-
-extern MagickExport void
-  RegisterStaticModules(void),
-  UnregisterStaticModules(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

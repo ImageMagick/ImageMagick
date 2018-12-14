@@ -23,13 +23,13 @@
 %                                 August 2003                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -1247,6 +1247,56 @@ WandExport MagickBooleanType MagickChopImage(MagickWand *wand,
     return(MagickFalse);
   ReplaceImageInList(&wand->images,chop_image);
   return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k C L A H E I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickCLAHEImage() selects an individual threshold for each pixel
+%  based on the range of intensity values in its local neighborhood.  This
+%  allows for thresholding of an image whose global intensity histogram
+%  doesn't contain distinctive peaks.
+%
+%  The format of the CLAHEImage method is:
+%
+%      MagickBooleanType MagickCLAHEImage(MagickWand *wand,const size_t width,
+%        const size_t height,const double bias,const double sans)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o width: the width of the local neighborhood.
+%
+%    o height: the height of the local neighborhood.
+%
+%    o offset: the mean bias.
+%
+%    o sans: not used.
+%
+*/
+WandExport MagickBooleanType MagickCLAHEImage(MagickWand *wand,
+  const size_t width,const size_t height,const double bias,const double sans)
+{
+  MagickBooleanType
+    status;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  status=CLAHEImage(wand->images,width,height,bias,sans,wand->exception);
+  return(status);
 }
 
 /*

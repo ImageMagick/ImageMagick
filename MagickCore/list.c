@@ -17,13 +17,13 @@
 %                               December 2002                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -237,6 +237,9 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
   length=GetImageListLength(images);
   for (p=(char *) scenes; *p != '\0';)
   {
+    MagickBooleanType
+      match;
+
     while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == ','))
       p++;
     first=(ssize_t) strtol(p,&p,10);
@@ -257,8 +260,7 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
           if (last > (ssize_t) length)
             last=(ssize_t) length;
       }
-    first=MagickMin(MagickMax(first,0),length);
-    last=MagickMin(MagickMax(last,0),length);
+    match=MagickFalse;
     step=(ssize_t) (first > last ? -1 : 1);
     for ( ; first != (last+step); first+=step)
     {
@@ -271,9 +273,13 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
             if (image == (Image *) NULL)
               break;
             AppendImageToList(&clone_images,image);
+            match=MagickTrue;
           }
         i++;
       }
+      if (match == MagickFalse)
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+          "InvalidImageIndex","`%s'",images->filename);
     }
   }
   return(GetFirstImageInList(clone_images));

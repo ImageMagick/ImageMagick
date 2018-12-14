@@ -15,13 +15,13 @@
 %                              December 1998                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -144,10 +144,6 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
     area=0.0;
     status=MagickTrue;
     image_view=AcquireVirtualCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp parallel for schedule(static) shared(status) \
-      magick_number_threads(image,image,image->rows,1)
-#endif
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       register const Quantum

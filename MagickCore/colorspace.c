@@ -17,13 +17,13 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -1053,9 +1053,10 @@ static MagickBooleanType sRGBTransformImage(Image *image,
               proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp critical (MagickCore_sRGBTransformImage)
+            #pragma omp atomic
 #endif
-            proceed=SetImageProgress(image,sRGBTransformImageTag,progress++,
+            progress++;
+            proceed=SetImageProgress(image,sRGBTransformImageTag,progress,
               image->rows);
             if (proceed == MagickFalse)
               status=MagickFalse;
@@ -1336,10 +1337,6 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
     return(SetImageColorspace(image,colorspace,exception));
   (void) DeleteImageProfile(image,"icc");
   (void) DeleteImageProfile(image,"icm");
-  if (colorspace == LinearGRAYColorspace)
-    return(GrayscaleImage(image,Rec709LuminancePixelIntensityMethod,exception));
-  if (colorspace == GRAYColorspace)
-    return(GrayscaleImage(image,Rec709LumaPixelIntensityMethod,exception));
   if (colorspace == UndefinedColorspace)
     return(SetImageColorspace(image,colorspace,exception));
   /*
@@ -2535,9 +2532,10 @@ static MagickBooleanType TransformsRGBImage(Image *image,
               proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp critical (MagickCore_TransformsRGBImage)
+            #pragma omp atomic
 #endif
-            proceed=SetImageProgress(image,TransformsRGBImageTag,progress++,
+            progress++;
+            proceed=SetImageProgress(image,TransformsRGBImageTag,progress,
               image->rows);
             if (proceed == MagickFalse)
               status=MagickFalse;

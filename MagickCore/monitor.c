@@ -17,13 +17,13 @@
 %                               December 1995                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -44,6 +44,115 @@
 #include "MagickCore/image.h"
 #include "MagickCore/log.h"
 #include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
+
+/*
+  Static declarations.
+*/
+static SemaphoreInfo
+  *monitor_semaphore = (SemaphoreInfo *) NULL;
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   M o n i t o r C o m p o n e n t G e n e s i s                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MonitorComponentGenesis() instantiates the monitor component.
+%
+%  The format of the MonitorComponentGenesis method is:
+%
+%      MagickBooleanMonitor MonitorComponentGenesis(void)
+%
+*/
+MagickPrivate MagickBooleanType MonitorComponentGenesis(void)
+{
+  if (monitor_semaphore == (SemaphoreInfo *) NULL)
+    monitor_semaphore=AcquireSemaphoreInfo();
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   M o n i t o r C o m p o n e n t T e r m i n u s                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MonitorComponentTerminus() destroy monitor component.
+%
+%  The format of the MonitorComponentTerminus method is:
+%
+%      void MonitorComponentTerminus(void)
+%
+*/
+MagickPrivate void MonitorComponentTerminus(void)
+{
+  if (monitor_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&monitor_semaphore);
+  LockSemaphoreInfo(monitor_semaphore);
+  UnlockSemaphoreInfo(monitor_semaphore);
+  RelinquishSemaphoreInfo(&monitor_semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t I m a g e P r o g r e s s                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetImageProgress() returns the progress of an image processing operation.
+%
+%  The format of the SetImageProgress method is:
+%
+%    MagickBooleanType SetImageProgress(const char *text,
+%      const MagickOffsetType offset,const MagickSizeType extent)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o text: description of the image processing operation.
+%
+%    o offset: the offset relative to the extent parameter.
+%
+%    o extent: the extent of the progress.
+%
+*/
+MagickExport MagickBooleanType SetImageProgress(const Image *image,
+  const char *tag,const MagickOffsetType offset,const MagickSizeType extent)
+{
+  char
+    message[MagickPathExtent];
+
+  MagickBooleanType
+    status;
+
+  if (image->progress_monitor == (MagickProgressMonitor) NULL)
+    return(MagickTrue);
+  (void) FormatLocaleString(message,MagickPathExtent,"%s/%s",tag,
+    image->filename);
+  if (monitor_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&monitor_semaphore);
+  LockSemaphoreInfo(monitor_semaphore);
+  status=image->progress_monitor(message,offset,extent,image->client_data);
+  UnlockSemaphoreInfo(monitor_semaphore);
+  return(status);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

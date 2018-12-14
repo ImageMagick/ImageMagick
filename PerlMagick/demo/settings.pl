@@ -4,7 +4,7 @@
 #
 # Extracted from PerlMagick Discussion forums..
 # Gravity center, caption and wrapped text
-#   http://www.imagemagick.org/discourse-server/viewtopic.php?f=7&t=17282
+#   https://imagemagick.org/discourse-server/viewtopic.php?f=7&t=17282
 #
 use strict;
 use warnings;

@@ -17,13 +17,13 @@
 %                                 July 2000                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -57,14 +57,12 @@
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
-#include "MagickCore/xml-tree.h"
-#include "MagickCore/xml-tree-private.h"
+#include "coders/coders.h"
 
 /*
   Define declarations.
 */
-#define MagicFilename  "magic.xml"
-#define MagicPattern(magic)  (const unsigned char *) (magic), sizeof(magic)-1
+#define AddMagickCoder(coder) Magick ## coder ## Headers
 
 /*
   Typedef declarations.
@@ -83,6 +81,30 @@ typedef struct _MagicMapInfo
   const size_t
     length;
 } MagicMapInfo;
+
+struct _MagicInfo
+{
+  char
+    *path,
+    *name,
+    *target;
+
+  unsigned char
+    *magic;
+
+  size_t
+    length;
+
+  MagickOffsetType
+    offset;
+
+  MagickBooleanType
+    exempt,
+    stealth;
+
+  size_t
+    signature;
+};
 
 /*
   Static declarations.
@@ -90,155 +112,44 @@ typedef struct _MagicMapInfo
 static const MagicMapInfo
   MagicMap[] =
   {
-    { "8BIMWTEXT", 0, MagicPattern("8\000B\000I\000M\000#") },
-    { "8BIMTEXT", 0, MagicPattern("8BIM#") },
-    { "8BIM", 0, MagicPattern("8BIM") },
-    { "BMP", 0, MagicPattern("BA") },
-    { "BMP", 0, MagicPattern("BM") },
-    { "BMP", 0, MagicPattern("CI") },
-    { "BMP", 0, MagicPattern("CP") },
-    { "BMP", 0, MagicPattern("IC") },
-    { "PICT", 0, MagicPattern("PICT") },
-    { "BMP", 0, MagicPattern("PI") },
-    { "CALS", 21, MagicPattern("version: MIL-STD-1840") },
-    { "CALS", 0, MagicPattern("srcdocid:") },
-    { "CALS", 9, MagicPattern("srcdocid:") },
-    { "CALS", 8, MagicPattern("rorient:") },
-    { "CGM", 0, MagicPattern("BEGMF") },
-    { "CIN", 0, MagicPattern("\200\052\137\327") },
-    { "CRW", 0, MagicPattern("II\x1a\x00\x00\x00HEAPCCDR") },
-    { "DCM", 128, MagicPattern("DICM") },
-    { "DCX", 0, MagicPattern("\261\150\336\72") },
-    { "DIB", 0, MagicPattern("\050\000") },
-    { "DDS", 0, MagicPattern("DDS ") },
-    { "DJVU", 0, MagicPattern("AT&TFORM") },
-    { "DOT", 0, MagicPattern("digraph") },
-    { "DPX", 0, MagicPattern("SDPX") },
-    { "DPX", 0, MagicPattern("XPDS") },
-    { "EMF", 40, MagicPattern("\040\105\115\106\000\000\001\000") },
-    { "EPT", 0, MagicPattern("\305\320\323\306") },
-    { "EXR", 0, MagicPattern("\166\057\061\001") },
-    { "FAX", 0, MagicPattern("DFAX") },
-    { "FIG", 0, MagicPattern("#FIG") },
-    { "FITS", 0, MagicPattern("IT0") },
-    { "FITS", 0, MagicPattern("SIMPLE") },
-    { "FLIF", 0, MagicPattern("FLIF") },
-    { "GIF", 0, MagicPattern("GIF8") },
-    { "GPLT", 0, MagicPattern("#!/usr/local/bin/gnuplot") },
-    { "HDF", 1, MagicPattern("HDF") },
-    { "HDR", 0, MagicPattern("#?RADIANCE") },
-    { "HDR", 0, MagicPattern("#?RGBE") },
-    { "HEIC", 8, MagicPattern("heic") },
-    { "HPGL", 0, MagicPattern("IN;") },
-    { "HTML", 1, MagicPattern("HTML") },
-    { "HTML", 1, MagicPattern("html") },
-    { "ILBM", 8, MagicPattern("ILBM") },
-    { "IPTCWTEXT", 0, MagicPattern("\062\000#\000\060\000=\000\042\000&\000#\000\060\000;\000&\000#\000\062\000;\000\042\000") },
-    { "IPTCTEXT", 0, MagicPattern("2#0=\042&#0;&#2;\042") },
-    { "IPTC", 0, MagicPattern("\034\002") },
-    { "JNG", 0, MagicPattern("\213JNG\r\n\032\n") },
-    { "JPEG", 0, MagicPattern("\377\330\377") },
-    { "J2K", 0, MagicPattern("\xff\x4f\xff\x51") },
-    { "JPC", 0, MagicPattern("\x0d\x0a\x87\x0a") },
-    { "JP2", 0, MagicPattern("\x00\x00\x00\x0c\x6a\x50\x20\x20\x0d\x0a\x87\x0a") },
-    { "MAT", 0, MagicPattern("MATLAB 5.0 MAT-file,") },
-    { "MIFF", 0, MagicPattern("Id=ImageMagick") },
-    { "MIFF", 0, MagicPattern("id=ImageMagick") },
-    { "MNG", 0, MagicPattern("\212MNG\r\n\032\n") },
-    { "MPC", 0, MagicPattern("id=MagickCache") },
-    { "MPEG", 0, MagicPattern("\000\000\001\263") },
-    { "MRW", 0, MagicPattern("\x00MRM") },
-    { "ORF", 0, MagicPattern("IIRO\x08\x00\x00\x00") },
-    { "PCD", 2048, MagicPattern("PCD_") },
-    { "PCL", 0, MagicPattern("\033E\033") },
-    { "PCX", 0, MagicPattern("\012\002") },
-    { "PCX", 0, MagicPattern("\012\005") },
-    { "PDB", 60, MagicPattern("vIMGView") },
-    { "PDF", 0, MagicPattern("%PDF-") },
-    { "PES", 0, MagicPattern("#PES") },
-    { "PFA", 0, MagicPattern("%!PS-AdobeFont-1.0") },
-    { "PFB", 6, MagicPattern("%!PS-AdobeFont-1.0") },
-    { "PGX", 0, MagicPattern("\050\107\020\115\046") },
-    { "PICT", 522, MagicPattern("\000\021\002\377\014\000") },
-    { "PNG", 0, MagicPattern("\211PNG\r\n\032\n") },
-    { "PBM", 0, MagicPattern("P1") },
-    { "PGM", 0, MagicPattern("P2") },
-    { "PPM", 0, MagicPattern("P3") },
-    { "PBM", 0, MagicPattern("P4") },
-    { "PGM", 0, MagicPattern("P5") },
-    { "PPM", 0, MagicPattern("P6") },
-    { "PAM", 0, MagicPattern("P7") },
-    { "PFM", 0, MagicPattern("PF") },
-    { "PFM", 0, MagicPattern("Pf") },
-    { "PGX", 0, MagicPattern("PG ML") },
-    { "PGX", 0, MagicPattern("PG LM") },
-    { "PS", 0, MagicPattern("%!") },
-    { "PS", 0, MagicPattern("\004%!") },
-    { "PS", 0, MagicPattern("\305\320\323\306") },
-    { "PSB", 0, MagicPattern("8BPB") },
-    { "PSD", 0, MagicPattern("8BPS") },
-    { "PWP", 0, MagicPattern("SFW95") },
-    { "RAF", 0, MagicPattern("FUJIFILMCCD-RAW ") },
-    { "RLE", 0, MagicPattern("\122\314") },
-    { "SCT", 0, MagicPattern("CT") },
-    { "SFW", 0, MagicPattern("SFW94") },
-    { "SGI", 0, MagicPattern("\001\332") },
-    { "SUN", 0, MagicPattern("\131\246\152\225") },
-    { "SVG", 1, MagicPattern("?XML") },
-    { "SVG", 1, MagicPattern("?xml") },
-    { "SVG", 1, MagicPattern("SVG") },
-    { "SVG", 1, MagicPattern("svg") },
-    { "TIFF", 0, MagicPattern("\115\115\000\052") },
-    { "TIFF", 0, MagicPattern("\111\111\052\000") },
-    { "TIFF64", 0, MagicPattern("\115\115\000\053\000\010\000\000") },
-    { "TIFF64", 0, MagicPattern("\111\111\053\000\010\000\000\000") },
-    { "TTF", 0, MagicPattern("\000\001\000\000\000") },
-    { "TXT", 0, MagicPattern("# ImageMagick pixel enumeration:") },
-    { "VICAR", 0, MagicPattern("LBLSIZE") },
-    { "VICAR", 0, MagicPattern("NJPL1I") },
-    { "VIFF", 0, MagicPattern("\253\001") },
-    { "WEBP", 8, MagicPattern("WEBP") },
-    { "WMF", 0, MagicPattern("\327\315\306\232") },
-    { "WMF", 0, MagicPattern("\001\000\011\000") },
-    { "WPG", 0, MagicPattern("\377WPC") },
-    { "XBM", 0, MagicPattern("#define") },
-    { "XCF", 0, MagicPattern("gimp xcf") },
-    { "XEF", 0, MagicPattern("FOVb") },
-    { "XPM", 1, MagicPattern("* XPM *") }
- };
+    #include "coders/coders-list.h"
+    MagickCoderHeader("CGM", 0, "BEGMF")
+    MagickCoderHeader("FIG", 0, "#FIG")
+    MagickCoderHeader("HPGL", 0, "IN;")
+    MagickCoderHeader("ILBM", 8, "ILBM")
+  };
 
 static LinkedListInfo
-  *magic_cache = (LinkedListInfo *) NULL;
+  *magic_cache = (LinkedListInfo *) NULL,
+  *magic_list = (LinkedListInfo *) NULL;
 
 static SemaphoreInfo
-  *magic_semaphore = (SemaphoreInfo *) NULL;
+  *magic_cache_semaphore = (SemaphoreInfo *) NULL,
+  *magic_list_semaphore = (SemaphoreInfo *) NULL;
 
 /*
   Forward declarations.
 */
 static MagickBooleanType
-  IsMagicCacheInstantiated(ExceptionInfo *),
-  LoadMagicCache(LinkedListInfo *,const char *,const char *,const size_t,
-    ExceptionInfo *);
+  IsMagicListInstantiated(ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  A c q u i r e M a g i c L i s t s                                          %
+%  A c q u i r e M a g i c L i s t                                            %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireMagicCache() caches one or more magic configurations which provides a
+%  AcquireMagicList() caches one or more magic configurations which provides a
 %  mapping between magic attributes and a magic name.
 %
-%  The format of the AcquireMagicCache method is:
+%  The format of the AcquireMagicList method is:
 %
-%      LinkedListInfo *AcquireMagicCache(const char *filename,
-%        ExceptionInfo *exception)
+%      LinkedListInfo *AcquireMagicList(ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -256,15 +167,27 @@ static int CompareMagickInfoSize(const void *a,const void *b)
   ma=(MagicInfo *) a;
   mb=(MagicInfo *) b;
   if (ma->offset != mb->offset)
-    return((int) (ma->offset-mb->offset));
+    {
+      MagickOffsetType
+        max_offset;
+
+      /*
+        When the offset is near the start we first search a bit further
+        in the stream.
+      */
+      max_offset=ma->offset > mb->offset ? ma->offset : mb->offset;
+      if (max_offset <= 10)
+        return((int) (mb->offset-ma->offset));
+      else
+        return((int) (ma->offset-mb->offset));
+    }
   return((int) (mb->length-ma->length));
 }
 
-static LinkedListInfo *AcquireMagicCache(const char *filename,
-  ExceptionInfo *exception)
+static LinkedListInfo *AcquireMagicList(ExceptionInfo *exception)
 {
   LinkedListInfo
-    *cache;
+    *list;
 
   MagickStatusType
     status;
@@ -272,35 +195,8 @@ static LinkedListInfo *AcquireMagicCache(const char *filename,
   register ssize_t
     i;
 
-  /*
-    Load external magic map.
-  */
-  cache=NewLinkedList(0);
+  list=NewLinkedList(0);
   status=MagickTrue;
-#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
-  {
-    char
-      path[MagickPathExtent];
-
-    const StringInfo
-      *option;
-
-    LinkedListInfo
-      *options;
-
-    *path='\0';
-    options=GetConfigureOptions(filename,exception);
-    option=(const StringInfo *) GetNextValueInLinkedList(options);
-    while (option != (const StringInfo *) NULL)
-    {
-      (void) CopyMagickString(path,GetStringInfoPath(option),MagickPathExtent);
-      status&=LoadMagicCache(cache,(const char *)
-        GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
-      option=(const StringInfo *) GetNextValueInLinkedList(options);
-    }
-    options=DestroyConfigureOptions(options);
-  }
-#endif
   /*
     Load built-in magic map.
   */
@@ -329,13 +225,13 @@ static LinkedListInfo *AcquireMagicCache(const char *filename,
     magic_info->length=p->length;
     magic_info->exempt=MagickTrue;
     magic_info->signature=MagickCoreSignature;
-    status&=InsertValueInSortedLinkedList(cache,CompareMagickInfoSize,
+    status&=InsertValueInSortedLinkedList(list,CompareMagickInfoSize,
       NULL,magic_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",magic_info->name);
   }
-  return(cache);
+  return(list);
 }
 
 /*
@@ -367,6 +263,20 @@ static LinkedListInfo *AcquireMagicCache(const char *filename,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+static MagickBooleanType IsMagicCacheInstantiated()
+{
+  if (magic_cache == (LinkedListInfo *) NULL)
+    {
+      if (magic_cache_semaphore == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&magic_cache_semaphore);
+      LockSemaphoreInfo(magic_cache_semaphore);
+      if (magic_cache == (LinkedListInfo *) NULL)
+        magic_cache=NewLinkedList(0);
+      UnlockSemaphoreInfo(magic_cache_semaphore);
+    }
+  return(magic_cache != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
+}
+
 MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   const size_t length,ExceptionInfo *exception)
 {
@@ -374,17 +284,38 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if (IsMagicCacheInstantiated(exception) == MagickFalse)
+  if (IsMagicListInstantiated(exception) == MagickFalse)
     return((const MagicInfo *) NULL);
+  if (IsMagicCacheInstantiated() == MagickFalse)
+    return((const MagicInfo *) NULL);
+  /*
+    Search for cached entries.
+  */
+  if (magic != (const unsigned char *) NULL)
+    {
+      LockSemaphoreInfo(magic_cache_semaphore);
+      ResetLinkedListIterator(magic_cache);
+      p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+      while (p != (const MagicInfo *) NULL)
+      {
+        if (((size_t) (p->offset+p->length) <= length) &&
+            (memcmp(magic+p->offset,p->magic,p->length) == 0))
+          break;
+        p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+      }
+      UnlockSemaphoreInfo(magic_cache_semaphore);
+      if (p != (const MagicInfo *) NULL)
+        return(p);
+    }
   /*
     Search for magic tag.
   */
-  LockSemaphoreInfo(magic_semaphore);
-  ResetLinkedListIterator(magic_cache);
-  p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+  LockSemaphoreInfo(magic_list_semaphore);
+  ResetLinkedListIterator(magic_list);
+  p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   if (magic == (const unsigned char *) NULL)
     {
-      UnlockSemaphoreInfo(magic_semaphore);
+      UnlockSemaphoreInfo(magic_list_semaphore);
       return(p);
     }
   while (p != (const MagicInfo *) NULL)
@@ -393,12 +324,16 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
     if (((size_t) (p->offset+p->length) <= length) &&
         (memcmp(magic+p->offset,p->magic,p->length) == 0))
       break;
-    p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+    p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   }
+  UnlockSemaphoreInfo(magic_list_semaphore);
   if (p != (const MagicInfo *) NULL)
-    (void) InsertValueInLinkedList(magic_cache,0,
-      RemoveElementByValueFromLinkedList(magic_cache,p));
-  UnlockSemaphoreInfo(magic_semaphore);
+    {
+      LockSemaphoreInfo(magic_cache_semaphore);
+      InsertValueInSortedLinkedList(magic_cache,CompareMagickInfoSize,
+        NULL,p);
+      UnlockSemaphoreInfo(magic_cache_semaphore);
+    }
   return(p);
 }
 
@@ -438,21 +373,21 @@ MagickExport size_t GetMagicPatternExtent(ExceptionInfo *exception)
     size=0;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if ((size != 0) || (IsMagicCacheInstantiated(exception) == MagickFalse))
+  if ((size != 0) || (IsMagicListInstantiated(exception) == MagickFalse))
     return(size);
-  LockSemaphoreInfo(magic_semaphore);
-  ResetLinkedListIterator(magic_cache);
+  LockSemaphoreInfo(magic_list_semaphore);
+  ResetLinkedListIterator(magic_list);
   max=0;
-  p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+  p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   while (p != (const MagicInfo *) NULL)
   {
     magickSize=(size_t) (p->offset+p->length);
     if (magickSize > max)
       max=magickSize;
-    p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+    p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   }
   size=max;
-  UnlockSemaphoreInfo(magic_semaphore);
+  UnlockSemaphoreInfo(magic_list_semaphore);
   return(size);
 }
 
@@ -529,23 +464,23 @@ MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
   if (p == (const MagicInfo *) NULL)
     return((const MagicInfo **) NULL);
   aliases=(const MagicInfo **) AcquireQuantumMemory((size_t)
-    GetNumberOfElementsInLinkedList(magic_cache)+1UL,sizeof(*aliases));
+    GetNumberOfElementsInLinkedList(magic_list)+1UL,sizeof(*aliases));
   if (aliases == (const MagicInfo **) NULL)
     return((const MagicInfo **) NULL);
   /*
     Generate magic list.
   */
-  LockSemaphoreInfo(magic_semaphore);
-  ResetLinkedListIterator(magic_cache);
-  p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+  LockSemaphoreInfo(magic_list_semaphore);
+  ResetLinkedListIterator(magic_list);
+  p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   for (i=0; p != (const MagicInfo *) NULL; )
   {
     if ((p->stealth == MagickFalse) &&
         (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse))
       aliases[i++]=p;
-    p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+    p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   }
-  UnlockSemaphoreInfo(magic_semaphore);
+  UnlockSemaphoreInfo(magic_list_semaphore);
   qsort((void *) aliases,(size_t) i,sizeof(*aliases),MagicInfoCompare);
   aliases[i]=(MagicInfo *) NULL;
   *number_aliases=(size_t) i;
@@ -624,20 +559,20 @@ MagickExport char **GetMagicList(const char *pattern,size_t *number_aliases,
   if (p == (const MagicInfo *) NULL)
     return((char **) NULL);
   aliases=(char **) AcquireQuantumMemory((size_t)
-    GetNumberOfElementsInLinkedList(magic_cache)+1UL,sizeof(*aliases));
+    GetNumberOfElementsInLinkedList(magic_list)+1UL,sizeof(*aliases));
   if (aliases == (char **) NULL)
     return((char **) NULL);
-  LockSemaphoreInfo(magic_semaphore);
-  ResetLinkedListIterator(magic_cache);
-  p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+  LockSemaphoreInfo(magic_list_semaphore);
+  ResetLinkedListIterator(magic_list);
+  p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   for (i=0; p != (const MagicInfo *) NULL; )
   {
     if ((p->stealth == MagickFalse) &&
         (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse))
       aliases[i++]=ConstantString(p->name);
-    p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+    p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   }
-  UnlockSemaphoreInfo(magic_semaphore);
+  UnlockSemaphoreInfo(magic_list_semaphore);
   qsort((void *) aliases,(size_t) i,sizeof(*aliases),MagicCompare);
   aliases[i]=(char *) NULL;
   *number_aliases=(size_t) i;
@@ -679,36 +614,36 @@ MagickExport const char *GetMagicName(const MagicInfo *magic_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I s M a g i c C a c h e I n s t a n t i a t e d                           %
++   I s M a g i c L i s t I n s t a n t i a t e d                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsMagicCacheInstantiated() determines if the magic list is instantiated.
+%  IsMagicListInstantiated() determines if the magic list is instantiated.
 %  If not, it instantiates the list and returns it.
 %
-%  The format of the IsMagicInstantiated method is:
+%  The format of the IsMagicListInstantiated method is:
 %
-%      MagickBooleanType IsMagicCacheInstantiated(ExceptionInfo *exception)
+%      MagickBooleanType IsMagicListInstantiated(ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType IsMagicCacheInstantiated(ExceptionInfo *exception)
+static MagickBooleanType IsMagicListInstantiated(ExceptionInfo *exception)
 {
-  if (magic_cache == (LinkedListInfo *) NULL)
+  if (magic_list == (LinkedListInfo *) NULL)
     {
-      if (magic_semaphore == (SemaphoreInfo *) NULL)
-        ActivateSemaphoreInfo(&magic_semaphore);
-      LockSemaphoreInfo(magic_semaphore);
-      if (magic_cache == (LinkedListInfo *) NULL)
-        magic_cache=AcquireMagicCache(MagicFilename,exception);
-      UnlockSemaphoreInfo(magic_semaphore);
+      if (magic_list_semaphore == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&magic_list_semaphore);
+      LockSemaphoreInfo(magic_list_semaphore);
+      if (magic_list == (LinkedListInfo *) NULL)
+        magic_list=AcquireMagicList(exception);
+      UnlockSemaphoreInfo(magic_list_semaphore);
     }
-  return(magic_cache != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
+  return(magic_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -799,267 +734,6 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   L o a d M a g i c C a c h e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  LoadMagicCache() loads the magic configurations which provides a mapping
-%  between magic attributes and a magic name.
-%
-%  The format of the LoadMagicCache method is:
-%
-%      MagickBooleanType LoadMagicCache(LinkedListInfo *cache,const char *xml,
-%        const char *filename,const size_t depth,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o xml: The magic list in XML format.
-%
-%    o filename: The magic list filename.
-%
-%    o depth: depth of <include /> statements.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-static MagickBooleanType LoadMagicCache(LinkedListInfo *cache,const char *xml,
-  const char *filename,const size_t depth,ExceptionInfo *exception)
-{
-  char
-    keyword[MagickPathExtent],
-    *token;
-
-  const char
-    *q;
-
-  MagicInfo
-    *magic_info;
-
-  MagickStatusType
-    status;
-
-  size_t
-    extent;
-
-  /*
-    Load the magic map file.
-  */
-  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-    "Loading magic configure file \"%s\" ...",filename);
-  if (xml == (char *) NULL)
-    return(MagickFalse);
-  status=MagickTrue;
-  magic_info=(MagicInfo *) NULL;
-  token=AcquireString(xml);
-  extent=strlen(token)+MagickPathExtent;
-  for (q=(char *) xml; *q != '\0'; )
-  {
-    /*
-      Interpret XML.
-    */
-    GetNextToken(q,&q,extent,token);
-    if (*token == '\0')
-      break;
-    (void) CopyMagickString(keyword,token,MagickPathExtent);
-    if (LocaleNCompare(keyword,"<!DOCTYPE",9) == 0)
-      {
-        /*
-          Doctype element.
-        */
-        while ((LocaleNCompare(q,"]>",2) != 0) && (*q != '\0'))
-          GetNextToken(q,&q,extent,token);
-        continue;
-      }
-    if (LocaleNCompare(keyword,"<!--",4) == 0)
-      {
-        /*
-          Comment element.
-        */
-        while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
-          GetNextToken(q,&q,extent,token);
-        continue;
-      }
-    if (LocaleCompare(keyword,"<include") == 0)
-      {
-        /*
-          Include element.
-        */
-        while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
-        {
-          (void) CopyMagickString(keyword,token,MagickPathExtent);
-          GetNextToken(q,&q,extent,token);
-          if (*token != '=')
-            continue;
-          GetNextToken(q,&q,extent,token);
-          if (LocaleCompare(keyword,"file") == 0)
-            {
-              if (depth > MagickMaxRecursionDepth)
-                (void) ThrowMagickException(exception,GetMagickModule(),
-                  ConfigureError,"IncludeElementNestedTooDeeply","`%s'",token);
-              else
-                {
-                  char
-                    path[MagickPathExtent],
-                    *file_xml;
-
-                  GetPathComponent(filename,HeadPath,path);
-                  if (*path != '\0')
-                    (void) ConcatenateMagickString(path,DirectorySeparator,
-                      MagickPathExtent);
-                  if (*token == *DirectorySeparator)
-                    (void) CopyMagickString(path,token,MagickPathExtent);
-                  else
-                    (void) ConcatenateMagickString(path,token,MagickPathExtent);
-                  file_xml=FileToXML(path,~0UL);
-                  if (xml != (char *) NULL)
-                    {
-                      status&=LoadMagicCache(cache,file_xml,path,depth+1,
-                        exception);
-                      file_xml=DestroyString(file_xml);
-                    }
-                }
-            }
-        }
-        continue;
-      }
-    if (LocaleCompare(keyword,"<magic") == 0)
-      {
-        /*
-          Magic element.
-        */
-        magic_info=(MagicInfo *) AcquireCriticalMemory(sizeof(*magic_info));
-        (void) memset(magic_info,0,sizeof(*magic_info));
-        magic_info->path=ConstantString(filename);
-        magic_info->exempt=MagickFalse;
-        magic_info->signature=MagickCoreSignature;
-        continue;
-      }
-    if (magic_info == (MagicInfo *) NULL)
-      continue;
-    if ((LocaleCompare(keyword,"/>") == 0) ||
-        (LocaleCompare(keyword,"</policy>") == 0))
-      {
-        status=InsertValueInSortedLinkedList(cache,CompareMagickInfoSize,
-          NULL,magic_info);
-        if (status == MagickFalse)
-          (void) ThrowMagickException(exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","`%s'",
-            magic_info->name);
-        magic_info=(MagicInfo *) NULL;
-        continue;
-      }
-    GetNextToken(q,(const char **) NULL,extent,token);
-    if (*token != '=')
-      continue;
-    GetNextToken(q,&q,extent,token);
-    GetNextToken(q,&q,extent,token);
-    switch (*keyword)
-    {
-      case 'N':
-      case 'n':
-      {
-        if (LocaleCompare((char *) keyword,"name") == 0)
-          {
-            magic_info->name=ConstantString(token);
-            break;
-          }
-        break;
-      }
-      case 'O':
-      case 'o':
-      {
-        if (LocaleCompare((char *) keyword,"offset") == 0)
-          {
-            magic_info->offset=(MagickOffsetType) StringToLong(token);
-            break;
-          }
-        break;
-      }
-      case 'S':
-      case 's':
-      {
-        if (LocaleCompare((char *) keyword,"stealth") == 0)
-          {
-            magic_info->stealth=IsStringTrue(token);
-            break;
-          }
-        break;
-      }
-      case 'T':
-      case 't':
-      {
-        if (LocaleCompare((char *) keyword,"target") == 0)
-          {
-            char
-              *p;
-
-            register unsigned char
-              *r;
-
-            size_t
-              length;
-
-            length=strlen(token);
-            magic_info->target=ConstantString(token);
-            magic_info->magic=(unsigned char *) ConstantString(token);
-            r=magic_info->magic;
-            for (p=magic_info->target; *p != '\0'; )
-            {
-              if (*p == '\\')
-                {
-                  p++;
-                  if (isdigit((int) ((unsigned char) *p)) != 0)
-                    {
-                      char
-                        *end;
-
-                      *r++=(unsigned char) strtol(p,&end,8);
-                      p+=(end-p);
-                      magic_info->length++;
-                      continue;
-                    }
-                  switch (*p)
-                  {
-                    case 'b': *r='\b'; break;
-                    case 'f': *r='\f'; break;
-                    case 'n': *r='\n'; break;
-                    case 'r': *r='\r'; break;
-                    case 't': *r='\t'; break;
-                    case 'v': *r='\v'; break;
-                    case 'a': *r='a'; break;
-                    case '?': *r='\?'; break;
-                    default: *r=(unsigned char) (*p); break;
-                  }
-                  p++;
-                  r++;
-                  magic_info->length++;
-                  continue;
-                }
-              else
-                if (LocaleNCompare(p,"&amp;",5) == 0)
-                  (void) CopyMagickString(p+1,p+5,length-magic_info->length);
-              *r++=(unsigned char) (*p++);
-              magic_info->length++;
-            }
-            break;
-          }
-        break;
-      }
-      default:
-        break;
-    }
-  }
-  token=(char *) RelinquishMagickMemory(token);
-  return(status != 0 ? MagickTrue : MagickFalse);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   M a g i c C o m p o n e n t G e n e s i s                                 %
 %                                                                             %
 %                                                                             %
@@ -1075,8 +749,8 @@ static MagickBooleanType LoadMagicCache(LinkedListInfo *cache,const char *xml,
 */
 MagickPrivate MagickBooleanType MagicComponentGenesis(void)
 {
-  if (magic_semaphore == (SemaphoreInfo *) NULL)
-    magic_semaphore=AcquireSemaphoreInfo();
+  if (magic_list_semaphore == (SemaphoreInfo *) NULL)
+    magic_list_semaphore=AcquireSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -1122,11 +796,18 @@ static void *DestroyMagicElement(void *magic_info)
 
 MagickPrivate void MagicComponentTerminus(void)
 {
-  if (magic_semaphore == (SemaphoreInfo *) NULL)
-    ActivateSemaphoreInfo(&magic_semaphore);
-  LockSemaphoreInfo(magic_semaphore);
+  if (magic_list_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&magic_list_semaphore);
+  LockSemaphoreInfo(magic_list_semaphore);
+  if (magic_list != (LinkedListInfo *) NULL)
+    magic_list=DestroyLinkedList(magic_list,DestroyMagicElement);
+  UnlockSemaphoreInfo(magic_list_semaphore);
+  RelinquishSemaphoreInfo(&magic_list_semaphore);
+  if (magic_cache_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&magic_cache_semaphore);
+  LockSemaphoreInfo(magic_cache_semaphore);
   if (magic_cache != (LinkedListInfo *) NULL)
-    magic_cache=DestroyLinkedList(magic_cache,DestroyMagicElement);
-  UnlockSemaphoreInfo(magic_semaphore);
-  RelinquishSemaphoreInfo(&magic_semaphore);
+    magic_cache=DestroyLinkedList(magic_cache,(void *(*)(void *)) NULL);
+  UnlockSemaphoreInfo(magic_cache_semaphore);
+  RelinquishSemaphoreInfo(&magic_cache_semaphore);
 }

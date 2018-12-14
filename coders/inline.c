@@ -17,13 +17,13 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -209,7 +209,7 @@ ModuleExport size_t RegisterINLINEImage(void)
   MagickInfo
     *entry;
 
-  entry=AcquireMagickInfo("DATA","INLINE","Base64-encoded inline images");
+  entry=AcquireMagickInfo("INLINE","DATA","Base64-encoded inline images");
   entry->decoder=(DecodeImageHandler *) ReadINLINEImage;
   entry->encoder=(EncodeImageHandler *) WriteINLINEImage;
   entry->format_type=ImplicitFormatType;

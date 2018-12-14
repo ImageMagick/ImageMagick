@@ -17,13 +17,13 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -590,6 +590,8 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     UndefinedPixelTrait;
   if ((dib_info.number_colors > 256) || (dib_info.colors_important > 256))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  if ((dib_info.image_size != 0U) && (dib_info.image_size > GetBlobSize(image)))
+    ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
   if ((dib_info.number_colors != 0) || (dib_info.bits_per_pixel < 16))
     {
       size_t
@@ -663,6 +665,8 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     dib_info.bits_per_pixel<<=1;
   bytes_per_line=4*((image->columns*dib_info.bits_per_pixel+31)/32);
   length=bytes_per_line*image->rows;
+  if ((MagickSizeType) length > (256*GetBlobSize(image)))
+    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   pixel_info=AcquireVirtualMemory(image->rows,MagickMax(bytes_per_line,
     image->columns+256UL)*sizeof(*pixels));
   if (pixel_info == (MemoryInfo *) NULL)
@@ -1016,6 +1020,7 @@ ModuleExport size_t RegisterDIBImage(void)
   entry->magick=(IsImageFormatHandler *) IsDIB;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderStealthFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("DIB","ICODIB",
     "Microsoft Windows 3.X Packed Device-Independent Bitmap");
@@ -1023,6 +1028,7 @@ ModuleExport size_t RegisterDIBImage(void)
   entry->magick=(IsImageFormatHandler *) IsDIB;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderStealthFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

@@ -1,0 +1,18 @@
+name: $(Date:yyyyMMdd.HHmm)
+
+jobs:
+- job: CheckTests
+  pool:
+    vmImage: Ubuntu 16.04
+  steps:
+  - bash: ./check-tests.sh
+    workingDirectory: build
+    displayName: 'Check if tests should run'
+    name: checkTests
+- job: MagickNET
+  dependsOn: CheckTests
+  condition: and(succeeded(), eq(dependencies.CheckTests.outputs['checkTests.RunTests'], 'true'))
+  pool:
+    vmImage: Ubuntu 16.04
+  steps:
+  - template: build/test-magick-net.yml

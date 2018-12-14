@@ -300,7 +300,7 @@ Magick::Color::PixelType Magick::Color::pixelType() const
 
 void Magick::Color::isValid(bool valid_)
 {
-  if ((valid_ && isValid()) || (!valid_ && !isValid()))
+  if (bool(valid_) == bool(isValid()))
     return;
 
   if (!_pixelOwn)
@@ -546,7 +546,7 @@ Magick::ColorCMYK::ColorCMYK(PixelInfo *rep_,PixelType pixelType_)
 }
 
 Magick::ColorGray::ColorGray(void)
-  : Color()
+  : Color(RGBPixel)
 {
 }
 
@@ -590,7 +590,7 @@ Magick::ColorGray::ColorGray(PixelInfo *rep_,PixelType pixelType_)
 }
 
 Magick::ColorHSL::ColorHSL(void)
-  : Color()
+  : Color(RGBPixel)
 {
 }
 
@@ -601,7 +601,7 @@ Magick::ColorHSL::ColorHSL(const Magick::Color &color_)
 
 Magick::ColorHSL::ColorHSL(const double hue_,const double saturation_,
   const double lightness_)
-  : Color()
+  : Color(RGBPixel)
 {
   double
     blue,
@@ -737,7 +737,7 @@ double Magick::ColorHSL::saturation(void) const
 }
 
 Magick::ColorMono::ColorMono(void)
-  : Color()
+  : Color(RGBPixel)
 {
 }
 
@@ -780,7 +780,7 @@ Magick::ColorMono::ColorMono(PixelInfo *rep_,PixelType pixelType_)
 }
 
 Magick::ColorRGB::ColorRGB(void)
-  : Color()
+  : Color(RGBPixel)
 {
 }
 
@@ -859,7 +859,7 @@ Magick::ColorRGB::ColorRGB(PixelInfo *rep_,PixelType pixelType_)
 }
 
 Magick::ColorYUV::ColorYUV(void)
-  : Color()
+  : Color(RGBPixel)
 {
 }
 
@@ -869,7 +869,7 @@ Magick::ColorYUV::ColorYUV(const Magick::Color &color_)
 }
 
 Magick::ColorYUV::ColorYUV(const double y_,const double u_,const double v_)
-  : Color()
+  : Color(RGBPixel)
 {
   convert(y_, u_, v_);
 }

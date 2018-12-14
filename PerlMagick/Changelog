@@ -1,6 +1,6 @@
 2014-11-05  7.03 Cristy  <quetzlzacatenango@image...>
   * Add support for $image->Colorspace() (reference
-    https://www.imagemagick.org/discourse-server/viewtopic.php?f=7&t=30980).
+    https://imagemagick.org/discourse-server/viewtopic.php?f=7&t=30980).
 
 2011-08-01  7.00 Cristy  <quetzlzacatenango@image...>
   * New version 7.00.

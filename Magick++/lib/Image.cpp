@@ -311,8 +311,7 @@ void Magick::Image::alpha(const bool alphaFlag_)
   // the image already has a matte channel but a matte channel is not
   // desired, then set the matte channel to opaque.
   GetPPException;
-  if ((alphaFlag_ && !constImage()->alpha_trait) ||
-      (constImage()->alpha_trait && !alphaFlag_))
+  if (bool(alphaFlag_) != bool(constImage()->alpha_trait))
     SetImageAlpha(image(),OpaqueAlpha,exceptionInfo);
   ThrowImageException;
 

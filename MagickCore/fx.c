@@ -18,13 +18,13 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -388,10 +388,10 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_AddNoiseImage)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(image,AddNoiseImageTag,progress++,
-          image->rows);
+        progress++;
+        proceed=SetImageProgress(image,AddNoiseImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -544,10 +544,10 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_BlueShiftImage)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(image,BlueShiftImageTag,progress++,
-          image->rows);
+        progress++;
+        proceed=SetImageProgress(image,BlueShiftImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -788,9 +788,10 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_ColorizeImage)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(image,ColorizeImageTag,progress++,
+        progress++;
+        proceed=SetImageProgress(image,ColorizeImageTag,progress,
           colorize_image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -1009,9 +1010,10 @@ MagickExport Image *ColorMatrixImage(const Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_ColorMatrixImage)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(image,ColorMatrixImageTag,progress++,
+        progress++;
+        proceed=SetImageProgress(image,ColorMatrixImageTag,progress,
           image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -1480,9 +1482,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
           alpha=(double) (QuantumScale*pixel.alpha);
           return(alpha);
         }
-        case IndexPixelChannel:
-          return(0.0);
-        case IntensityPixelChannel:
+        case CompositePixelChannel:
         {
           Quantum
             quantum_pixel[MaxPixelChannels];
@@ -1490,6 +1490,8 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
           SetPixelViaPixelInfo(image,&pixel,quantum_pixel);
           return(QuantumScale*GetPixelIntensity(image,quantum_pixel));
         }
+        case IndexPixelChannel:
+          return(0.0);
         default:
           break;
       }
@@ -3135,6 +3137,8 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (expression == (const char *) NULL)
+    return(CloneImage(image,0,0,MagickTrue,exception));
   fx_info=AcquireFxThreadSet(image,expression,exception);
   if (fx_info == (FxInfo **) NULL)
     return((Image *) NULL);
@@ -3221,9 +3225,10 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_FxImage)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(image,FxImageTag,progress++,image->rows);
+        progress++;
+        proceed=SetImageProgress(image,FxImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -3436,9 +3441,10 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_ImplodeImage)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(canvas_image,ImplodeImageTag,progress++,
+        progress++;
+        proceed=SetImageProgress(canvas_image,ImplodeImageTag,progress,
           canvas_image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -3670,9 +3676,6 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_MorphImages)
-#endif
         proceed=SetImageProgress(image,MorphImageTag,scene,
           GetImageListLength(image));
         if (proceed == MagickFalse)
@@ -3961,9 +3964,9 @@ MagickExport MagickBooleanType PlasmaImage(Image *image,
   RandomInfo
     *random_info;
 
+  assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
@@ -4051,23 +4054,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
   if (caption != (const char *) NULL)
     {
       char
-        geometry[MagickPathExtent],
         *text;
-
-      DrawInfo
-        *annotate_info;
-
-      ImageInfo
-        *image_info;
-
-      MagickBooleanType
-        status;
-
-      ssize_t
-        count;
-
-      TypeMetric
-        metrics;
 
       /*
         Generate caption image.
@@ -4075,33 +4062,49 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
       caption_image=CloneImage(image,image->columns,1,MagickTrue,exception);
       if (caption_image == (Image *) NULL)
         return((Image *) NULL);
-      image_info=AcquireImageInfo();
-      annotate_info=CloneDrawInfo((const ImageInfo *) NULL,draw_info);
-      text=InterpretImageProperties(image_info,(Image *) image,caption,
+      text=InterpretImageProperties((ImageInfo *) NULL,(Image *) image,caption,
         exception);
-      image_info=DestroyImageInfo(image_info);
-      (void) CloneString(&annotate_info->text,text);
-      count=FormatMagickCaption(caption_image,annotate_info,MagickTrue,&metrics,
-        &text,exception);
-      status=SetImageExtent(caption_image,image->columns,(size_t) ((count+1)*
-        (metrics.ascent-metrics.descent)+0.5),exception);
-      if (status == MagickFalse)
-        caption_image=DestroyImage(caption_image);
-      else
+      if (text != (char *) NULL)
         {
-          caption_image->background_color=image->border_color;
-          (void) SetImageBackgroundColor(caption_image,exception);
+          char
+            geometry[MagickPathExtent];
+
+          DrawInfo
+            *annotate_info;
+
+          MagickBooleanType
+            status;
+
+          ssize_t
+            count;
+
+          TypeMetric
+            metrics;
+
+          annotate_info=CloneDrawInfo((const ImageInfo *) NULL,draw_info);
           (void) CloneString(&annotate_info->text,text);
-          (void) FormatLocaleString(geometry,MagickPathExtent,"+0+%.20g",
-            metrics.ascent);
-          if (annotate_info->gravity == UndefinedGravity)
-            (void) CloneString(&annotate_info->geometry,AcquireString(
-              geometry));
-          (void) AnnotateImage(caption_image,annotate_info,exception);
-          height+=caption_image->rows;
+          count=FormatMagickCaption(caption_image,annotate_info,MagickTrue,
+            &metrics,&text,exception);
+          status=SetImageExtent(caption_image,image->columns,(size_t)
+            ((count+1)*(metrics.ascent-metrics.descent)+0.5),exception);
+          if (status == MagickFalse)
+            caption_image=DestroyImage(caption_image);
+          else
+            {
+              caption_image->background_color=image->border_color;
+              (void) SetImageBackgroundColor(caption_image,exception);
+              (void) CloneString(&annotate_info->text,text);
+              (void) FormatLocaleString(geometry,MagickPathExtent,"+0+%.20g",
+                metrics.ascent);
+              if (annotate_info->gravity == UndefinedGravity)
+                (void) CloneString(&annotate_info->geometry,AcquireString(
+                  geometry));
+              (void) AnnotateImage(caption_image,annotate_info,exception);
+              height+=caption_image->rows;
+            }
+          annotate_info=DestroyDrawInfo(annotate_info);
+          text=DestroyString(text);
         }
-      annotate_info=DestroyDrawInfo(annotate_info);
-      text=DestroyString(text);
     }
   picture_image=CloneImage(image,image->columns+2*quantum,height,MagickTrue,
     exception);
@@ -4306,10 +4309,10 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_SepiaToneImage)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(image,SepiaToneImageTag,progress++,
-          image->rows);
+        progress++;
+        proceed=SetImageProgress(image,SepiaToneImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -4752,9 +4755,10 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_SolarizeImage)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(image,SolarizeImageTag,progress++,image->rows);
+        progress++;
+        proceed=SetImageProgress(image,SolarizeImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -5006,7 +5010,6 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
   assert(right_image->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  assert(right_image != (const Image *) NULL);
   image=left_image;
   if ((left_image->columns != right_image->columns) ||
       (left_image->rows != right_image->rows))
@@ -5049,11 +5052,11 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
       break;
     for (x=0; x < (ssize_t) stereo_image->columns; x++)
     {
-      SetPixelRed(image,GetPixelRed(left_image,p),r);
-      SetPixelGreen(image,GetPixelGreen(right_image,q),r);
-      SetPixelBlue(image,GetPixelBlue(right_image,q),r);
+      SetPixelRed(stereo_image,GetPixelRed(left_image,p),r);
+      SetPixelGreen(stereo_image,GetPixelGreen(right_image,q),r);
+      SetPixelBlue(stereo_image,GetPixelBlue(right_image,q),r);
       if ((GetPixelAlphaTraits(stereo_image) & CopyPixelTrait) != 0)
-        SetPixelAlpha(image,(GetPixelAlpha(left_image,p)+
+        SetPixelAlpha(stereo_image,(GetPixelAlpha(left_image,p)+
           GetPixelAlpha(right_image,q))/2,r);
       p+=GetPixelChannels(left_image);
       q+=GetPixelChannels(right_image);
@@ -5275,9 +5278,10 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_SwirlImage)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(canvas_image,SwirlImageTag,progress++,
+        progress++;
+        proceed=SetImageProgress(canvas_image,SwirlImageTag,progress,
           canvas_image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -5473,9 +5477,10 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_TintImage)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(image,TintImageTag,progress++,image->rows);
+        progress++;
+        proceed=SetImageProgress(image,TintImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -5744,9 +5749,11 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_WaveImage)
+        #pragma omp atomic
 #endif
-        proceed=SetImageProgress(canvas_image,WaveImageTag,progress++,canvas_image->rows);
+        progress++;
+        proceed=SetImageProgress(canvas_image,WaveImageTag,progress,
+          canvas_image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }

@@ -262,10 +262,10 @@ A:visited { color: #800080 }
 <table border="0" cellpadding="0" cellspacing="0" summary="Masthead" width="100%">
 <tbody>
 <tr>
-<td bgcolor="#003399" width="25%" height="118" background="../../images/background.gif"><a href="http://www.imagemagick.org/"><img src="../../images/script.gif" width="278" height="118" border="0" alt="" /></a></td>
+<td bgcolor="#003399" width="25%" height="118" background="../../images/background.gif"><a href="https://imagemagick.org/"><img src="../../images/script.gif" width="278" height="118" border="0" alt="" /></a></td>
 <td bgcolor="#003399" width="60%" height="118" background="../../images/background.gif"><a href="http://www.networkeleven.com/direct.php?magick_all"><img src="../../images/promote.png" border="0" width="186" height="52" vspace="29" alt="Powered by NetworkEleven" /></a></td>
 <td bgcolor="#003399" width="114" height="118" align="right"><img src="../../images/sprite.png" width="114" height="118" alt="" /></td>
-<td bgcolor="#003399" width="114" height="118" align="right"><a href="http://www.imagemagick.net"><img src="../../images/logo.png" width="114" height="118" border="0" alt="ImageMagick logo" /></a></td>
+<td bgcolor="#003399" width="114" height="118" align="right"><a href="https://imagemagick.net"><img src="../../images/logo.png" width="114" height="118" border="0" alt="ImageMagick logo" /></a></td>
 </tr></tbody></table>
 <table align="left" border="0" cellpadding="2" cellspacing="2" summary="Navigation buttons" width="20%">
 <tr>

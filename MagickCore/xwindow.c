@@ -17,13 +17,13 @@
 %                                  July 1992                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -3374,17 +3374,11 @@ MagickExport XrmDatabase XGetResourceDatabase(Display *display,
   /*
     Combine application database.
   */
-  if (client_name != (char *) NULL)
-    {
-      /*
-        Get basename of client.
-      */
-      p=client_name+(strlen(client_name)-1);
-      while ((p > client_name) && (*p != '/'))
-        p--;
-      if (*p == '/')
-        client_name=p+1;
-    }
+  p=client_name+(strlen(client_name)-1);
+  while ((p > client_name) && (*p != '/'))
+    p--;
+  if (*p == '/')
+    client_name=p+1;
   c=(int) (*client_name);
   if ((c >= XK_a) && (c <= XK_z))
     c-=(XK_a-XK_A);

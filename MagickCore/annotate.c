@@ -17,13 +17,13 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -592,7 +592,6 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
   ExceptionInfo *exception)
 {
   MagickBooleanType
-    digit,
     status;
 
   register char
@@ -609,18 +608,17 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
   ssize_t
     n;
 
-  digit=MagickFalse;
   q=draw_info->text;
   s=(char *) NULL;
-  width=0;
   for (p=(*caption); GetUTFCode(p) != 0; p+=GetUTFOctets(p))
   {
-    if ((digit == MagickFalse) && (IsUTFSpace(GetUTFCode(p)) != MagickFalse))
+    if (IsUTFSpace(GetUTFCode(p)) != MagickFalse)
       s=p;
-    digit=((GetUTFCode(p) >= 0x0030) && (GetUTFCode(p) <= 0x0039)) ?
-      MagickTrue : MagickFalse;
     if (GetUTFCode(p) == '\n')
-      q=draw_info->text;
+      {
+        q=draw_info->text;
+        continue;
+      }
     for (i=0; i < (ssize_t) GetUTFOctets(p); i++)
       *q++=(*(p+i));
     *q='\0';
@@ -628,9 +626,9 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     if (status == MagickFalse)
       break;
     width=(size_t) floor(metrics->width+draw_info->stroke_width+0.5);
-    if ((width <= image->columns) || (s == (char *) NULL))
+    if (width <= image->columns)
       continue;
-    if ((s != (char *) NULL) && (GetUTFOctets(s) == 1))
+    if (s != (char *) NULL)
       {
         *s='\n';
         p=s;
@@ -638,67 +636,16 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     else
       if (split != MagickFalse)
         {
-          char
-            *target;
-
           /*
             No convenient line breaks-- insert newline.
           */
-          target=AcquireString(*caption);
           n=p-(*caption);
-          CopyMagickString(target,*caption,n+1);
-          ConcatenateMagickString(target,"\n",strlen(*caption)+1);
-          ConcatenateMagickString(target,p,strlen(*caption)+2);
-          (void) DestroyString(*caption);
-          *caption=target;
-          p=(*caption)+n;
-        }
-    q=draw_info->text;
-    s=(char *) NULL;
-  }
-  if (width > image->columns)
-    {
-      char
-        *text;
-
-      /*
-        No convenient break point, force one.
-      */
-      text=AcquireString(draw_info->text);
-      q=draw_info->text;
-      s=(char *) NULL;
-      for (p=(*caption); GetUTFCode(p) != 0; p+=GetUTFOctets(p))
-      {
-        if (IsUTFSpace(GetUTFCode(p)) != MagickFalse)
-          s=p;
-        if (GetUTFCode(p) == '\n')
-          q=draw_info->text;
-        for (i=0; i < (ssize_t) GetUTFOctets(p); i++)
-          *q++=(*(p+i));
-        *q='\0';
-        status=GetTypeMetrics(image,draw_info,metrics,exception);
-        if (status == MagickFalse)
-          break;
-        width=(size_t) floor(metrics->width+draw_info->stroke_width+0.5);
-        if ((width <= image->columns) || (strcmp(text,draw_info->text) == 0))
-          continue;
-        (void) strcpy(text,draw_info->text);
-        if ((s != (char *) NULL) && (GetUTFOctets(s) == 1))
-          {
-            *s='\n';
-            p=s;
-          }
-        else
-          if ((s != (char *) NULL) || (split != MagickFalse))
+          if ((n > 0) && ((*caption)[n-1] != '\n'))
             {
               char
                 *target;
 
-              /*
-                No convenient line breaks-- insert newline.
-              */
               target=AcquireString(*caption);
-              n=p-(*caption);
               CopyMagickString(target,*caption,n+1);
               ConcatenateMagickString(target,"\n",strlen(*caption)+1);
               ConcatenateMagickString(target,p,strlen(*caption)+2);
@@ -706,11 +653,10 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
               *caption=target;
               p=(*caption)+n;
             }
-        q=draw_info->text;
-        s=(char *) NULL;
-      }
-      text=DestroyString(text);
-    }
+        }
+    q=draw_info->text;
+    s=(char *) NULL;
+  }
   n=0;
   for (p=(*caption); GetUTFCode(p) != 0; p+=GetUTFOctets(p))
     if (GetUTFCode(p) == '\n')
@@ -1443,42 +1389,48 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   if ((draw_info->metrics != (char *) NULL) &&
       (IsPathAccessible(draw_info->metrics) != MagickFalse))
     (void) FT_Attach_File(face,draw_info->metrics);
-  encoding_type=ft_encoding_unicode;
+  encoding_type=FT_ENCODING_UNICODE;
   ft_status=FT_Select_Charmap(face,encoding_type);
   if ((ft_status != 0) && (face->num_charmaps != 0))
     ft_status=FT_Set_Charmap(face,face->charmaps[0]);
   if (encoding != (const char *) NULL)
     {
       if (LocaleCompare(encoding,"AdobeCustom") == 0)
-        encoding_type=ft_encoding_adobe_custom;
+        encoding_type=FT_ENCODING_ADOBE_CUSTOM;
       if (LocaleCompare(encoding,"AdobeExpert") == 0)
-        encoding_type=ft_encoding_adobe_expert;
+        encoding_type=FT_ENCODING_ADOBE_EXPERT;
       if (LocaleCompare(encoding,"AdobeStandard") == 0)
-        encoding_type=ft_encoding_adobe_standard;
+        encoding_type=FT_ENCODING_ADOBE_STANDARD;
       if (LocaleCompare(encoding,"AppleRoman") == 0)
-        encoding_type=ft_encoding_apple_roman;
+        encoding_type=FT_ENCODING_APPLE_ROMAN;
       if (LocaleCompare(encoding,"BIG5") == 0)
-        encoding_type=ft_encoding_big5;
+        encoding_type=FT_ENCODING_BIG5;
+#if defined(FT_ENCODING_PRC)
       if (LocaleCompare(encoding,"GB2312") == 0)
-        encoding_type=ft_encoding_gb2312;
-      if (LocaleCompare(encoding,"Johab") == 0)
-        encoding_type=ft_encoding_johab;
-#if defined(ft_encoding_latin_1)
-      if (LocaleCompare(encoding,"Latin-1") == 0)
-        encoding_type=ft_encoding_latin_1;
+        encoding_type=FT_ENCODING_PRC;
 #endif
+#if defined(FT_ENCODING_JOHAB)
+      if (LocaleCompare(encoding,"Johab") == 0)
+        encoding_type=FT_ENCODING_JOHAB;
+#endif
+#if defined(FT_ENCODING_ADOBE_LATIN_1)
+      if (LocaleCompare(encoding,"Latin-1") == 0)
+        encoding_type=FT_ENCODING_ADOBE_LATIN_1;
+#endif
+#if defined(FT_ENCODING_ADOBE_LATIN_2)
       if (LocaleCompare(encoding,"Latin-2") == 0)
-        encoding_type=ft_encoding_latin_2;
+        encoding_type=FT_ENCODING_OLD_LATIN_2;
+#endif
       if (LocaleCompare(encoding,"None") == 0)
-        encoding_type=ft_encoding_none;
+        encoding_type=FT_ENCODING_NONE;
       if (LocaleCompare(encoding,"SJIScode") == 0)
-        encoding_type=ft_encoding_sjis;
+        encoding_type=FT_ENCODING_SJIS;
       if (LocaleCompare(encoding,"Symbol") == 0)
-        encoding_type=ft_encoding_symbol;
+        encoding_type=FT_ENCODING_MS_SYMBOL;
       if (LocaleCompare(encoding,"Unicode") == 0)
-        encoding_type=ft_encoding_unicode;
+        encoding_type=FT_ENCODING_UNICODE;
       if (LocaleCompare(encoding,"Wansung") == 0)
-        encoding_type=ft_encoding_wansung;
+        encoding_type=FT_ENCODING_WANSUNG;
       ft_status=FT_Select_Charmap(face,encoding_type);
       if (ft_status != 0)
         {
@@ -1613,6 +1565,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   code=0;
   for (i=0; i < (ssize_t) length; i++)
   {
+    FT_Outline
+      outline;
+
     /*
       Render UTF-8 sequence.
     */
@@ -1630,8 +1585,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     ft_status=FT_Get_Glyph(face->glyph,&glyph.image);
     if (ft_status != 0)
       continue;
-    ft_status=FT_Outline_Get_BBox(&((FT_OutlineGlyph) glyph.image)->outline,
-      &bounds);
+    outline=((FT_OutlineGlyph) glyph.image)->outline;
+    ft_status=FT_Outline_Get_BBox(&outline,&bounds);
     if (ft_status != 0)
       continue;
     if ((p == draw_info->text) || (bounds.xMin < metrics->bounds.x1))
@@ -1655,8 +1610,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         */
         annotate_info->affine.tx=glyph.origin.x/64.0;
         annotate_info->affine.ty=(-glyph.origin.y/64.0);
-        (void) FT_Outline_Decompose(&((FT_OutlineGlyph) glyph.image)->outline,
-          &OutlineMethods,annotate_info);
+        if ((outline.n_contours > 0) && (outline.n_points > 0))
+          ft_status=FT_Outline_Decompose(&outline,&OutlineMethods,
+            annotate_info);
       }
     FT_Vector_Transform(&glyph.origin,&affine);
     (void) FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);

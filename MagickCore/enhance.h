@@ -1,12 +1,12 @@
 /*
-  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
-  
+
   You may not use this file except in compliance with the License.
   obtain a copy of the License at
-  
-    https://www.imagemagick.org/script/license.php
-  
+
+    https://imagemagick.org/script/license.php
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,6 +28,8 @@ extern MagickExport MagickBooleanType
   AutoGammaImage(Image *,ExceptionInfo *),
   AutoLevelImage(Image *,ExceptionInfo *),
   BrightnessContrastImage(Image *,const double,const double,ExceptionInfo *),
+  CLAHEImage(Image *,const size_t,const size_t,const size_t,const double,
+    ExceptionInfo *),
   ClutImage(Image *,const Image *,const PixelInterpolateMethod,ExceptionInfo *),
   ColorDecisionListImage(Image *,const char *,ExceptionInfo *),
   ContrastImage(Image *,const MagickBooleanType,ExceptionInfo *),

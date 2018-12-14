@@ -1,11 +1,11 @@
 /*
-  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
   obtain a copy of the License at
   
-    https://www.imagemagick.org/script/license.php
+    https://imagemagick.org/script/license.php
   
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,13 +27,13 @@ extern MagickExport Image
   *CloneImages(const Image *,const char *,ExceptionInfo *),
   *DestroyImageList(Image *),
   *DuplicateImages(Image *,const size_t,const char *,ExceptionInfo *),
-  *GetFirstImageInList(const Image *),
-  *GetImageFromList(const Image *,const ssize_t),
-  *GetLastImageInList(const Image *),
-  *GetNextImageInList(const Image *),
-  *GetPreviousImageInList(const Image *),
+  *GetFirstImageInList(const Image *) magick_attribute((__pure__)),
+  *GetImageFromList(const Image *,const ssize_t) magick_attribute((__pure__)),
+  *GetLastImageInList(const Image *) magick_attribute((__pure__)),
+  *GetNextImageInList(const Image *) magick_attribute((__pure__)),
+  *GetPreviousImageInList(const Image *) magick_attribute((__pure__)),
   **ImageListToArray(const Image *,ExceptionInfo *),
-  *NewImageList(void),
+  *NewImageList(void) magick_attribute((__const__)),
   *RemoveImageFromList(Image **),
   *RemoveLastImageFromList(Image **),
   *RemoveFirstImageFromList(Image **),
@@ -42,10 +42,10 @@ extern MagickExport Image
   *SyncNextImageInList(const Image *);
 
 extern MagickExport size_t
-  GetImageListLength(const Image *);
+  GetImageListLength(const Image *) magick_attribute((__pure__));
 
 extern MagickExport ssize_t
-  GetImageIndexInList(const Image *);
+  GetImageIndexInList(const Image *) magick_attribute((__pure__));
 
 extern MagickExport void
   AppendImageToList(Image **,const Image *),

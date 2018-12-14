@@ -17,13 +17,13 @@
 %                                 July 1999                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -2706,10 +2706,9 @@ static inline MagickModulo VirtualPixelModulo(const ssize_t offset,
     normal default truncated modulo division.
   */
   modulo.quotient=offset/(ssize_t) extent;
-  if (offset < 0L)
+  if ((offset < 0L) && (modulo.quotient != INT64_MIN))
     modulo.quotient--;
-  modulo.remainder=(ssize_t) (offset-(MagickOffsetType) modulo.quotient*
-    (ssize_t) extent);
+  modulo.remainder=(ssize_t) (offset-(double) modulo.quotient*extent);
   return(modulo);
 }
 

@@ -17,13 +17,13 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2018 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2019 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://www.imagemagick.org/script/license.php                           %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -142,8 +142,7 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static Image *ReadTGAImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -271,7 +270,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
 
           one=1;
           image->colors=one << tga_info.bits_per_pixel;
-          if (image->colors > GetBlobSize(image))
+          if ((MagickSizeType) image->colors > GetBlobSize(image))
             ThrowReaderException(CorruptImageError,
               "InsufficientImageDataInFile");
           if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
@@ -307,16 +306,16 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
   if (tga_info.attributes & (1UL << 4))
     {
       if (tga_info.attributes & (1UL << 5))
-        SetImageArtifact(image,"tga:image-origin","TopRight");
+        image->orientation=TopRightOrientation;
       else
-        SetImageArtifact(image,"tga:image-origin","BottomRight");
+        image->orientation=BottomRightOrientation;
     }
   else
     {
       if (tga_info.attributes & (1UL << 5))
-        SetImageArtifact(image,"tga:image-origin","TopLeft");
+        image->orientation=TopLeftOrientation;
       else
-        SetImageArtifact(image,"tga:image-origin","BottomLeft");
+        image->orientation=BottomLeftOrientation;
     }
   if (image_info->ping != MagickFalse)
     {
@@ -841,7 +840,13 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
         else
           tga_info.colormap_size=24;
       }
-  value=GetImageArtifact(image,"tga:image-origin");
+  if ((image->orientation == BottomRightOrientation) ||
+      (image->orientation == TopRightOrientation))
+    tga_info.attributes|=(1UL << 4);
+  if ((image->orientation == TopLeftOrientation) ||
+      (image->orientation == TopRightOrientation))
+    tga_info.attributes|=(1UL << 5);
+  value=GetImageArtifact(image,"tga:image-origin");  /* deprecated */
   if (value != (const char *) NULL)
     {
       OrientationType
@@ -854,6 +859,8 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
       if (origin == TopLeftOrientation || origin == TopRightOrientation)
         tga_info.attributes|=(1UL << 5);
     }
+  if ((image->columns > 65535) || (image->rows > 65535))
+    ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
   /*
     Write TGA header.
   */
