@@ -477,8 +477,8 @@ static void MapCLAHEHistogram(const RangeInfo *range_info,
 }
 
 static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
-  const RangeInfo *range_info,const size_t number_bins,
-  const double clip_limit,unsigned short *pixels)
+  const RangeInfo *range_info,const size_t number_bins,const double clip_limit,
+  unsigned short *pixels)
 {
   MemoryInfo
     *tile_cache;
@@ -638,9 +638,6 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
   ColorspaceType
     colorspace;
 
-  RangeInfo
-    range_info;
-
   MagickBooleanType
     status;
 
@@ -649,6 +646,9 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
 
   MemoryInfo
     *pixel_cache;
+
+  RangeInfo
+    range_info;
 
   RectangleInfo
     clahe_info;
