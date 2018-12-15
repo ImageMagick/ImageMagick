@@ -781,7 +781,8 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
         }
     }
   previous_profile=GetImageProfile(image,name);
-  if (previous_profile != (const StringInfo *) NULL)
+  if ((previous_profile != (const StringInfo *) NULL) &&
+      (CompareStringInfo(previous_profile,profile) != 0))
     {
       size_t
         profile_length;
