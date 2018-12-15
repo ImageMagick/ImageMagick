@@ -175,6 +175,12 @@ typedef struct _QuantizationTable
 } QuantizationTable;
 
 /*
+  Const declarations.
+*/
+static const char
+  *xmp_namespace = "http://ns.adobe.com/xap/1.0/ ";
+
+/*
   Forward declarations.
 */
 #if defined(MAGICKCORE_JPEG_DELEGATE)
@@ -664,7 +670,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
     *p++=(unsigned char) c;
   }
   error_manager->profile=NULL;
-  iptc_profile=(StringInfo *) GetImageProfile(image,"8bim");
+  iptc_profile=(StringInfo *) GetImageProfile(image,"iptc");
   if (iptc_profile != (StringInfo *) NULL)
     {
       ConcatenateStringInfo(iptc_profile,profile);
@@ -672,7 +678,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
     }
   else
     {
-      status=SetImageProfile(image,"8bim",profile,exception);
+      status=SetImageProfile(image,"iptc",profile,exception);
       profile=DestroyStringInfo(profile);
       if (status == MagickFalse)
         {
@@ -760,7 +766,8 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
       p=GetStringInfoDatum(profile);
       if ((length > 4) && (LocaleNCompare((char *) p,"exif",4) == 0))
         (void) CopyMagickString(name,"exif",MagickPathExtent);
-      if ((length > 5) && (LocaleNCompare((char *) p,"http:",5) == 0))
+      if ((length > strlen(xmp_namespace)) &&
+          (LocaleNCompare((char *) p,xmp_namespace,strlen(xmp_namespace)) == 0))
         {
           ssize_t
             j;
@@ -2040,6 +2047,17 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image,
   for (name=GetNextImageProfile(image); name != (const char *) NULL; )
   {
     profile=GetImageProfile(image,name);
+    length=GetStringInfoLength(profile);
+    if (LocaleNCompare(name,"APP",3) == 0)
+      {
+        int
+          id;
+
+        id=JPEG_APP0+StringToInteger(name+3);
+        for (i=0; i < (ssize_t) length; i+=65533L)
+           jpeg_write_marker(jpeg_info,id,GetStringInfoDatum(profile)+i,
+             MagickMin(length-i,65533));
+      }
     if (LocaleCompare(name,"EXIF") == 0)
       {
         length=GetStringInfoLength(profile);
@@ -2116,7 +2134,7 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image,
         /*
           Add namespace to XMP profile.
         */
-        xmp_profile=StringToStringInfo("http://ns.adobe.com/xap/1.0/ ");
+        xmp_profile=StringToStringInfo(xmp_namespace);
         if (xmp_profile != (StringInfo *) NULL)
           {
             if (profile != (StringInfo *) NULL)
