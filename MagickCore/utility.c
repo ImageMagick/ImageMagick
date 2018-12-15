@@ -1363,10 +1363,8 @@ MagickExport void GetPathComponent(const char *path,PathType type,
     case SubimagePath:
     {
       *component='\0';
-      if ((subimage_length != 0) &&
-          (magick_length+subimage_offset) < strlen(path))
-        (void) CopyMagickString(component,path+magick_length+subimage_offset,
-          subimage_length);
+      if ((subimage_length != 0) && (magick_length < subimage_offset))
+        (void) CopyMagickString(component,path+subimage_offset,subimage_length);
       break;
     }
     case SubcanonicalPath:
