@@ -1,3 +1,6 @@
+2018-12-15  7.0.8-17 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-17, GIT revision 15125:5cd88c5a1:20181215
+
 2018-12-02  7.0.8-16 Cristy  <quetzlzacatenango@image...>
   * Support -clahe clip limit with percentages (e.g. -clahe 50x50%+128+3).
 
