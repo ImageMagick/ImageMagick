@@ -768,7 +768,7 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
       p=GetStringInfoDatum(profile);
       if ((length > 4) && (LocaleNCompare((char *) p,"exif",4) == 0))
         (void) CopyMagickString(name,"exif",MagickPathExtent);
-      if ((length > XmpNamespaceExtent) &&
+      else if ((length > XmpNamespaceExtent) &&
           (LocaleNCompare((char *) p,xmp_namespace,XmpNamespaceExtent-1) == 0))
         {
           ssize_t
