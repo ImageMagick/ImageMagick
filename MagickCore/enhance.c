@@ -504,8 +504,8 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
   */
   assert((clahe_info->width % clahe_info->x) == 0);
   assert((clahe_info->height % clahe_info->y) == 0);
-  assert(clahe_info->x < MaxCLAHETiles);
-  assert(clahe_info->y < MaxCLAHETiles);
+  assert(clahe_info->x <= MaxCLAHETiles);
+  assert(clahe_info->y <= MaxCLAHETiles);
   assert(range_info->max < NumberCLAHEGrays);
   assert(range_info->min < range_info->max);
   assert((clahe_info->x >= 2) || (clahe_info->y >= 2));
@@ -674,13 +674,13 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
   if (clahe_info.x < 2)
     clahe_info.x=2;
   else
-    if (clahe_info.x >= MaxCLAHETiles)
+    if (clahe_info.x > MaxCLAHETiles)
       clahe_info.x=MaxCLAHETiles;
   clahe_info.y=(ssize_t) (image->rows/(height == 0 ? 1 : height));
   if (clahe_info.y < 2)
     clahe_info.y=2;
   else
-    if (clahe_info.y >= MaxCLAHETiles)
+    if (clahe_info.y > MaxCLAHETiles)
       clahe_info.y=MaxCLAHETiles;
   clahe_info.width=((image->columns+clahe_info.x-1)/clahe_info.x)*clahe_info.x;
   clahe_info.height=((image->rows+clahe_info.y-1)/clahe_info.y)*clahe_info.y;
