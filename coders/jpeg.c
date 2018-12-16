@@ -179,7 +179,8 @@ typedef struct _QuantizationTable
 */
 static const char
   *xmp_namespace = "http://ns.adobe.com/xap/1.0/ ";
-
+
+
 /*
   Forward declarations.
 */
@@ -670,7 +671,8 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
     *p++=(unsigned char) c;
   }
   error_manager->profile=NULL;
-  iptc_profile=(StringInfo *) GetImageProfile(image,"iptc");
+  /* The IPTC profile is actually an 8bi*/
+  iptc_profile=(StringInfo *) GetImageProfile(image,"8bim");
   if (iptc_profile != (StringInfo *) NULL)
     {
       ConcatenateStringInfo(iptc_profile,profile);
@@ -678,7 +680,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
     }
   else
     {
-      status=SetImageProfile(image,"iptc",profile,exception);
+      status=SetImageProfile(image,"8bim",profile,exception);
       profile=DestroyStringInfo(profile);
       if (status == MagickFalse)
         {
