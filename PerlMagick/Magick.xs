@@ -11489,8 +11489,8 @@ Mogrify(ref,...)
             geometry.x=argument_list[3].integer_reference;;
           if (attribute_flag[4] != 0)
             geometry.y=argument_list[4].integer_reference;
-          (void) CLAHEImage(image,geometry.width,geometry_info.height,
-            (size_t) geometry_info.x,(double) geometry_info.y,exception);
+          (void) CLAHEImage(image,geometry.width,geometry.height,geometry.x,
+            (double) geometry.y,exception);
           break;
         }
       }
