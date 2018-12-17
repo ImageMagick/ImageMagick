@@ -4260,7 +4260,7 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
         q+=GetPixelChannels(image);
       }
     }
-  if (quantum_info->alpha_type == DisassociatedQuantumAlpha)
+  if (quantum_info->alpha_type == AssociatedQuantumAlpha)
     {
       double
         gamma,
