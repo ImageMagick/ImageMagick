@@ -957,6 +957,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
 #if defined(LCMSHDRI)
             source_scale=1.0;
 #endif
+            source_colorspace=sRGBColorspace;
             source_channels=3;
             switch (cmsGetColorSpace(source_profile))
             {
@@ -1034,7 +1035,6 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                 ThrowProfileException(ImageError,
                   "ColorspaceColorProfileMismatch",name);
             }
-            (void) source_colorspace;
             signature=cmsGetPCS(source_profile);
             if (target_profile != (cmsHPROFILE) NULL)
               signature=cmsGetColorSpace(target_profile);
