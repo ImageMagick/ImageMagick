@@ -830,6 +830,26 @@ size_t Magick::ReadOptions::depth(void) const
   return(_imageInfo->depth);
 }
 
+void Magick::ReadOptions::ping(const bool flag_)
+{
+  _imageInfo->ping=(MagickBooleanType) flag_;
+}
+
+bool Magick::ReadOptions::ping(void) const
+{
+   return(static_cast<bool>(_imageInfo->ping));
+}
+
+void Magick::ReadOptions::quiet(const bool quiet_)
+{
+  _quiet=quiet_;
+}
+
+bool Magick::ReadOptions::quiet(void) const
+{
+   return(_quiet);
+}
+
 void Magick::ReadOptions::size(const Geometry &geometry_)
 {
   _imageInfo->size=(char *) RelinquishMagickMemory(_imageInfo->size);
@@ -844,16 +864,6 @@ Magick::Geometry Magick::ReadOptions::size(void) const
     return(Geometry(_imageInfo->size));
 
   return(Geometry());
-}
-
-void Magick::ReadOptions::quiet(const bool quiet_)
-{
-  _quiet=quiet_;
-}
-
-bool Magick::ReadOptions::quiet(void) const
-{
-   return(_quiet);
 }
 
 MagickCore::ImageInfo *Magick::ReadOptions::imageInfo(void)
