@@ -25,9 +25,9 @@ extern "C" {
 #include "MagickCore/exception-private.h"
 
 #if defined(__powerpc__)
-#  define CACHE_LINE_SIZE  128
+#  define CACHE_LINE_SIZE  (16*sizeof(void *))
 #else
-#  define CACHE_LINE_SIZE  64
+#  define CACHE_LINE_SIZE  (8*sizeof(void *))
 #endif
 
 #define CacheAlign(size)  ((size) < CACHE_LINE_SIZE ? CACHE_LINE_SIZE : (size))
