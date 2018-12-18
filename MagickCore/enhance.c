@@ -303,7 +303,7 @@ static void ClipCLAHEHistogram(const double clip_limit,const size_t number_bins,
   size_t *histogram)
 {
 #define NumberCLAHEGrays  (65536)
-#define MaxCLAHETiles  (16)
+#define MaxCLAHETiles  (256)
 
   register ssize_t
     i;
