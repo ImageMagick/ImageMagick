@@ -2653,7 +2653,7 @@ namespace Magick
   void pingImages(Container *sequence_,const std::string &imageSpec_,
     ReadOptions &options)
   {
-    options.ping=true;
+    options.ping(true);
     readImages(sequence_,imageSpec_,options);
   }
 
@@ -2667,7 +2667,7 @@ namespace Magick
   template<class Container>
   void pingImages(Container *sequence_,const Blob &blob_,ReadOptions &options)
   {
-    options.ping=true;
+    options.ping(true);
     readImages(sequence_,blob_,options);
   }
 
