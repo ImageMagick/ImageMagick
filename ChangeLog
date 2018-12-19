@@ -1,3 +1,9 @@
+2018-12-18  7.0.8-18 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-18, GIT revision 15146:b5eccd295:20181218
+
+2018-12-18  7.0.8-18 Cristy  <quetzlzacatenango@image...>
+  * Fixed Magick++ compile error on Mac OS X.
+
 2018-12-17  7.0.8-17 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-17, GIT revision 15142:32f2d195e:20181217
 
