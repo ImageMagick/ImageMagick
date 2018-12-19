@@ -839,6 +839,7 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   GetTimerInfo(&clone_image->timer);
   if (image->ascii85 != (void *) NULL)
     Ascii85Initialize(clone_image);
+  clone_image->extent=image->extent;
   clone_image->magick_columns=image->magick_columns;
   clone_image->magick_rows=image->magick_rows;
   clone_image->type=image->type;

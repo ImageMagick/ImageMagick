@@ -1474,8 +1474,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     }
   (void) FormatLocaleFile(file,"  Tainted: %s\n",CommandOptionToMnemonic(
     MagickBooleanOptions,(ssize_t) image->taint));
-  (void) FormatMagickSize(GetBlobSize(image),MagickTrue,"B",MagickPathExtent,
-    format);
+  (void) FormatMagickSize(image->extent,MagickTrue,"B",MagickPathExtent,format);
   (void) FormatLocaleFile(file,"  Filesize: %s\n",format);
   (void) FormatMagickSize((MagickSizeType) image->columns*image->rows,
     MagickFalse,"P",MagickPathExtent,format);
