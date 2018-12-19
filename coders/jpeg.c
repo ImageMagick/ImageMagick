@@ -671,7 +671,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
     *p++=(unsigned char) c;
   }
   error_manager->profile=NULL;
-  /* The IPTC profile is actually an 8bi*/
+  /* The IPTC profile is actually an 8bim */
   iptc_profile=(StringInfo *) GetImageProfile(image,"8bim");
   if (iptc_profile != (StringInfo *) NULL)
     {
