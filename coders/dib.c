@@ -590,9 +590,11 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     UndefinedPixelTrait;
   if ((dib_info.number_colors > 256) || (dib_info.colors_important > 256))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  if ((dib_info.number_colors != 0) && (dib_info.bits_per_pixel > 8))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if ((dib_info.image_size != 0U) && (dib_info.image_size > GetBlobSize(image)))
     ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
-  if ((dib_info.number_colors != 0) || (dib_info.bits_per_pixel < 16))
+  if ((dib_info.number_colors != 0) || (dib_info.bits_per_pixel < 8))
     {
       size_t
         one;

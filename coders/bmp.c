@@ -1844,8 +1844,8 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
     /*
       Convert MIFF to BMP raster pixels.
     */
-    pixel_info=AcquireVirtualMemory(image->rows,
-      MagickMax(bytes_per_line,image->columns+256UL)*sizeof(*pixels));
+    pixel_info=AcquireVirtualMemory(image->rows,MagickMax(bytes_per_line,
+      image->columns+256UL)*sizeof(*pixels));
     if (pixel_info == (MemoryInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);

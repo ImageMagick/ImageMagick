@@ -174,7 +174,7 @@ static int PNMComment(Image *image,CommentInfo *comment_info,
         p=comment_info->comment+strlen(comment_info->comment);
       }
     c=ReadBlobByte(image);
-    if ((c != EOF) && (c != (int) '\n') && (c != (int) '\r'))
+    if (c != EOF)
       {
         *p=(char) c;
         *(p+1)='\0';
