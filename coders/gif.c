@@ -1271,7 +1271,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ((size_t) (flag & 0x07)+1);
     image->colors=local_colors;
     if (opacity >= (ssize_t) image->colors)
-      image->colors=(size_t) (opacity+1);
+      opacity=(-1);
     image->ticks_per_second=100;
     image->alpha_trait=opacity >= 0 ? BlendPixelTrait : UndefinedPixelTrait;
     if ((image->columns == 0) || (image->rows == 0))
