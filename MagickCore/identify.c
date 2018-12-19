@@ -663,10 +663,10 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           (image->error.mean_error_per_pixel+0.5),
           image->error.normalized_mean_error,
           image->error.normalized_maximum_error);
-      if (GetBlobSize(image) != 0)
+      if (image->extent != 0)
         {
-          (void) FormatMagickSize(GetBlobSize(image),MagickTrue,"B",
-            MagickPathExtent,format);
+          (void) FormatMagickSize(image->extent,MagickTrue,"B",MagickPathExtent,
+            format);
           (void) FormatLocaleFile(file,"%s ",format);
         }
       (void) FormatLocaleFile(file,"%0.3fu %lu:%02lu.%03lu",user_time,
