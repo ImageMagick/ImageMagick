@@ -873,15 +873,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->colorspace=YCCColorspace;
   if (LocaleCompare(image_info->magick,"PCDS") == 0)
     (void) SetImageColorspace(image,sRGBColorspace,exception);
-  if ((image_info->number_scenes != 0) && (image_info->scene != 0))
-    {
+  if (image_info->scene != 0)
+    for (i=0; i < (ssize_t) image_info->scene; i++)
       AppendImageToList(&image,CloneImage(image,0,0,MagickTrue,exception));
-      AppendImageToList(&image,CloneImage(image,0,0,MagickTrue,exception));
-      AppendImageToList(&image,CloneImage(image,0,0,MagickTrue,exception));
-      AppendImageToList(&image,CloneImage(image,0,0,MagickTrue,exception));
-      AppendImageToList(&image,CloneImage(image,0,0,MagickTrue,exception));
-      AppendImageToList(&image,CloneImage(image,0,0,MagickTrue,exception));
-    }
   return(GetFirstImageInList(image));
 }
 

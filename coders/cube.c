@@ -96,10 +96,24 @@
 static Image *ReadCUBEImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+#define MapHALD(level,b,g,r)  ((ssize_t) ((b)*(level)*(level)+(g)*(level)+(r)))
+
+  typedef struct _CubePixel
+  {
+    float
+      r,
+      g,
+      b;
+  } CubePixel;
+
   char
-    *cube_buffer,
-   token[MagickPathExtent],
-   value[MagickPathExtent];
+    *buffer,
+    token[MagickPathExtent],
+    value[MagickPathExtent];
+
+  CubePixel
+    *cube,
+    *hald;
 
   Image
     *image;
@@ -107,19 +121,21 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
+  MemoryInfo
+    *cube_info,
+    *hald_info;
+
   register char
     *p;
 
   size_t
-    length;
+    cube_level,
+    hald_level;
 
   ssize_t
-    blue_rows,
-    green_columns,
-    red_columns;
-
-  ssize_t
-    blue;
+    b,
+    i,
+    n;
 
   /*
     Create CUBE color lookup table image.
@@ -138,105 +154,188 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  length=MagickPathExtent;
-  cube_buffer=(char *) AcquireQuantumMemory((size_t) length,
-    sizeof(*cube_buffer));
-  if (cube_buffer == (char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  red_columns=0;
-  green_columns=0;
-  blue_rows=0;
-  *cube_buffer='\0';
-  p=cube_buffer;
+  buffer=AcquireString("");
+  cube_level=0;
+  cube_info=(MemoryInfo *) NULL;
+  cube=(CubePixel *) NULL;
+  n=0;
+  *buffer='\0';
+  p=buffer;
   while (ReadBlobString(image,p) != (char *) NULL)
   {
     const char
       *q;
 
-    if ((*p == '#') && ((p == cube_buffer) || (*(p-1) == '\n')))
-      continue;
     q=p;
     GetNextToken(q,&q,MagickPathExtent,token);
+    if ((*token == '#') || (*token == '\0'))
+      continue;
     GetNextToken(q,&q,MagickPathExtent,value);
-    if (LocaleCompare(token,"LUT_1D_SIZE") == 0)
+    if ((LocaleCompare(token,"LUT_1D_SIZE") == 0) ||
+        (LocaleCompare(token,"LUT_3D_SIZE") == 0))
       {
-        red_columns=(ssize_t) StringToLong(value);
-        if ((red_columns < 0) || (red_columns > 65535))
-          {
-            cube_buffer=DestroyString(cube_buffer);
-            ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-          }
-        green_columns=1;
-        blue_rows=1;
+        cube_level=(size_t) StringToLong(value);
+        if ((cube_level < 2) || (cube_level > 65536))
+          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+        if (cube_info != (MemoryInfo *) NULL)
+          cube_info=RelinquishVirtualMemory(cube_info);
+        cube_info=AcquireVirtualMemory(cube_level*cube_level,cube_level*
+          sizeof(*cube));
+        if (cube_info == (MemoryInfo *) NULL)
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        cube=(CubePixel *) GetVirtualMemoryBlob(cube_info);
+        (void) memset(cube,0,cube_level*cube_level*cube_level*sizeof(*cube));
       }
-    if (LocaleCompare(token,"LUT_3D_SIZE") == 0)
-      {
-        red_columns=(ssize_t) StringToLong(value);
-        if ((red_columns < 0) || (red_columns > 256))
+    else
+      if (LocaleCompare(token,"TITLE ") == 0)
+        (void) SetImageProperty(image,"title",value,exception);
+      else
+        if (cube_level != 0)
           {
-            cube_buffer=DestroyString(cube_buffer);
-            ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+            char
+              *q;
+
+            q=buffer;
+            cube[n].r=StringToDouble(q,&q);
+            cube[n].g=StringToDouble(q,&q);
+            cube[n].b=StringToDouble(q,&q);
+            n++;
           }
-        green_columns=red_columns;
-        blue_rows=red_columns;
-      }
-    if (LocaleCompare(token,"TITLE ") == 0)
-      (void) SetImageProperty(image,"title",value,exception);
-    if (('+' < *p) && (*p < ':'))
-      break;
+        else
+          if (('+' < *buffer) && (*buffer < ':'))
+            break;
   }
+  buffer=DestroyString(buffer);
+  if (cube_level == 0)
+    {
+      cube_info=RelinquishVirtualMemory(cube_info);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
+  /*
+    Create HALD image, interopolate from CUBE LUT.
+  */
+  hald_level=image_info->scene;
+  if ((hald_level < 2) || (hald_level > 256))
+    hald_level=8;
+  hald_info=AcquireVirtualMemory(hald_level*hald_level*hald_level,
+    hald_level*hald_level*hald_level*sizeof(*hald));
+  if (hald_info == (MemoryInfo *) NULL)
+    {
+      cube_info=RelinquishVirtualMemory(cube_info);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  hald=(CubePixel *) GetVirtualMemoryBlob(hald_info);
+  (void) memset(hald,0,hald_level*hald_level*hald_level*sizeof(*hald));
+  n=0;
+  for (b=0; b < (ssize_t) (hald_level*hald_level); b++)
+  {
+    register ssize_t
+      g;
+
+    for (g=0; g < (ssize_t) (hald_level*hald_level); g++)
+    {
+      register ssize_t
+        r;
+
+      for (r=0; r < (ssize_t) (hald_level*hald_level); r++)
+      {
+        CubePixel
+          index,
+          next,
+          offset,
+          scale;
+
+        offset.r=(PerceptibleReciprocal((double) (hald_level*hald_level)-1.0)*
+          r)*(cube_level-1.0);
+        index.r=floor(offset.r);
+        scale.r=offset.r-index.r;
+        next.r=index.r+1;
+        if ((size_t) index.r == (cube_level-1))
+          next.r=index.r;
+        offset.g=(PerceptibleReciprocal(((double) hald_level*hald_level)-1.0)*
+          g)*(cube_level-1.0);
+        index.g=floor(offset.g);
+        scale.g=offset.g-index.g;
+        next.g=index.g+1;
+        if ((size_t) index.g == (cube_level-1))
+          next.g=index.g;
+        offset.b=(PerceptibleReciprocal(((double) hald_level*hald_level)-1.0)*
+          b)*(cube_level-1.0);
+        index.b=floor(offset.b);
+        scale.b=offset.b-index.b;
+        next.b=index.b+1;
+        if ((size_t) index.b == (cube_level-1))
+          next.b=index.b;
+        hald[n].r=cube[MapHALD(cube_level,index.b,index.g,index.r)].r+scale.r*(
+          cube[MapHALD(cube_level,index.b,index.g,next.r)].r-
+          cube[MapHALD(cube_level,index.b,index.g,index.r)].r);
+        hald[n].g=cube[MapHALD(cube_level,index.b,index.g,index.r)].g+scale.g*(
+          cube[MapHALD(cube_level,index.b,next.g,index.r)].g-
+          cube[MapHALD(cube_level,index.b,index.g,index.r)].g);
+        hald[n].b=cube[MapHALD(cube_level,index.b,index.g,index.r)].b+scale.b*(
+          cube[MapHALD(cube_level,next.b,index.g,index.r)].b-
+          cube[MapHALD(cube_level,index.b,index.g,index.r)].b);
+        n++;
+      }
+    }
+  }
+  cube_info=RelinquishVirtualMemory(cube_info);
+  /*
+    Write HALD image.
+  */
   status=MagickTrue;
-  image->columns=(size_t) (red_columns*green_columns);
-  image->rows=(size_t) (blue_rows);
+  image->columns=(size_t) (hald_level*hald_level*hald_level);
+  image->rows=(size_t) (hald_level*hald_level*hald_level);
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     {
-      cube_buffer=DestroyString(cube_buffer);
+      hald_info=RelinquishVirtualMemory(hald_info);
       return(DestroyImageList(image));
     }
-  for (blue=0; blue < blue_rows; blue++)
+  n=0;
+  for (b=0; b < (ssize_t) (hald_level*hald_level); b++)
   {
-    ssize_t
-      green,
-      red;
-
-    register Quantum
-      *magick_restrict q;
+    register ssize_t
+      g;
 
     if (status == MagickFalse)
       continue;
-    q=QueueAuthenticPixels(image,0,blue,(size_t) red_columns*green_columns,1,
-      exception);
-    if (q == (Quantum *) NULL)
-      {
-        status=MagickFalse;
-        continue;
-      }
-    for (green=0; green < green_columns; green++)
+    for (g=0; g < (ssize_t) (hald_level*hald_level); g++)
     {
-      for (red=0; red < red_columns; red++)
-      {
-        char
-          *p;
+      register ssize_t
+        r;
 
-        p=cube_buffer;
-        SetPixelRed(image,ClampToQuantum(QuantumRange*StringToDouble(p,&p)),
-          q);
-        SetPixelGreen(image,ClampToQuantum(QuantumRange*StringToDouble(p,&p)),
-          q);
-        SetPixelBlue(image,ClampToQuantum(QuantumRange*StringToDouble(p,&p)),
-          q);
+      for (r=0; r < (ssize_t) (hald_level*hald_level); r++)
+      {
+        register Quantum
+          *magick_restrict q;
+
+        ssize_t
+          x,
+          y;
+
+        x=(g % hald_level)*(hald_level*hald_level)+r;
+        y=(b*hald_level)+((g/hald_level) % (hald_level*hald_level));
+        q=QueueAuthenticPixels(image,x,y,1,1,exception);
+        if (q == (Quantum *) NULL)
+          {
+            status=MagickFalse;
+            continue;
+          }
+        SetPixelRed(image,ClampToQuantum(QuantumRange*hald[n].r),q);
+        SetPixelGreen(image,ClampToQuantum(QuantumRange*hald[n].g),q);
+        SetPixelBlue(image,ClampToQuantum(QuantumRange*hald[n].b),q);
         SetPixelAlpha(image,OpaqueAlpha,q);
-        q+=GetPixelChannels(image);
-        while (ReadBlobString(image,cube_buffer) != (char *) NULL)
-          if (('+' < *cube_buffer) && (*cube_buffer < ':'))
-            break;
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          status=MagickFalse;
+        n++;
       }
     }
-    if (SyncAuthenticPixels(image,exception) == MagickFalse)
-      status=MagickFalse;
   }
-  cube_buffer=DestroyString(cube_buffer);
+  hald_info=RelinquishVirtualMemory(hald_info);
+  if (image_info->scene != 0)
+    for (i=0; i < (ssize_t) image_info->scene; i++)
+      AppendImageToList(&image,CloneImage(image,0,0,MagickTrue,exception));
   return(GetFirstImageInList(image));
 }
 
