@@ -138,7 +138,7 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
     n;
 
   /*
-    Create CUBE color lookup table image.
+    Read CUBE color lookup table.
   */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
@@ -154,11 +154,11 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  buffer=AcquireString("");
   cube_level=0;
   cube_info=(MemoryInfo *) NULL;
   cube=(CubePixel *) NULL;
   n=0;
+  buffer=AcquireString("");
   *buffer='\0';
   p=buffer;
   while (ReadBlobString(image,p) != (char *) NULL)
@@ -170,10 +170,10 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
     GetNextToken(q,&q,MagickPathExtent,token);
     if ((*token == '#') || (*token == '\0'))
       continue;
-    GetNextToken(q,&q,MagickPathExtent,value);
     if ((LocaleCompare(token,"LUT_1D_SIZE") == 0) ||
         (LocaleCompare(token,"LUT_3D_SIZE") == 0))
       {
+        GetNextToken(q,&q,MagickPathExtent,value);
         cube_level=(size_t) StringToLong(value);
         if ((cube_level < 2) || (cube_level > 65536))
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
@@ -188,7 +188,10 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
       }
     else
       if (LocaleCompare(token,"TITLE ") == 0)
-        (void) SetImageProperty(image,"title",value,exception);
+        {
+          GetNextToken(q,&q,MagickPathExtent,value);
+          (void) SetImageProperty(image,"title",value,exception);
+        }
       else
         if (cube_level != 0)
           {
@@ -225,7 +228,6 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
   hald=(CubePixel *) GetVirtualMemoryBlob(hald_info);
-  (void) memset(hald,0,hald_level*hald_level*hald_level*sizeof(*hald));
   n=0;
   for (b=0; b < (ssize_t) (hald_level*hald_level); b++)
   {
@@ -302,37 +304,38 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
       continue;
     for (g=0; g < (ssize_t) (hald_level*hald_level); g++)
     {
+      register Quantum
+        *magick_restrict q;
+
       register ssize_t
         r;
 
+      if (status == MagickFalse)
+        continue;
+      q=QueueAuthenticPixels(image,(g % hald_level)*(hald_level*hald_level),
+        (b*hald_level)+((g/hald_level) % (hald_level*hald_level)),hald_level*
+        hald_level,1,exception);
+      if (q == (Quantum *) NULL)
+        {
+          status=MagickFalse;
+          continue;
+        }
       for (r=0; r < (ssize_t) (hald_level*hald_level); r++)
       {
-        register Quantum
-          *magick_restrict q;
-
-        ssize_t
-          x,
-          y;
-
-        x=(g % hald_level)*(hald_level*hald_level)+r;
-        y=(b*hald_level)+((g/hald_level) % (hald_level*hald_level));
-        q=QueueAuthenticPixels(image,x,y,1,1,exception);
-        if (q == (Quantum *) NULL)
-          {
-            status=MagickFalse;
-            continue;
-          }
         SetPixelRed(image,ClampToQuantum(QuantumRange*hald[n].r),q);
         SetPixelGreen(image,ClampToQuantum(QuantumRange*hald[n].g),q);
         SetPixelBlue(image,ClampToQuantum(QuantumRange*hald[n].b),q);
-        SetPixelAlpha(image,OpaqueAlpha,q);
-        if (SyncAuthenticPixels(image,exception) == MagickFalse)
-          status=MagickFalse;
+        q+=GetPixelChannels(image);
         n++;
       }
+      if (SyncAuthenticPixels(image,exception) == MagickFalse)
+        status=MagickFalse;
     }
   }
   hald_info=RelinquishVirtualMemory(hald_info);
+  (void) CloseBlob(image);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   if (image_info->scene != 0)
     for (i=0; i < (ssize_t) image_info->scene; i++)
       AppendImageToList(&image,CloneImage(image,0,0,MagickTrue,exception));

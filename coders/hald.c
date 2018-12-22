@@ -165,6 +165,9 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       status=MagickFalse;
   }
+  (void) CloseBlob(image);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   if (image_info->scene != 0)
     for (i=0; i < (ssize_t) image_info->scene; i++)
       AppendImageToList(&image,CloneImage(image,0,0,MagickTrue,exception));
