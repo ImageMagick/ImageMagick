@@ -1683,7 +1683,8 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
       reference_image->depth=reference_types[j].depth;
       reference_image->compression=reference_formats[i].compression;
       length=8192;
-      blob=ImageToBlob(image_info,reference_image,&length,exception);
+      blob=(unsigned char *) ImageToBlob(image_info,reference_image,&length,
+        exception);
       if ((blob == (unsigned char *) NULL) ||
           (exception->severity >= ErrorException))
         {
