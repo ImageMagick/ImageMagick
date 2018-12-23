@@ -303,7 +303,6 @@ static void ClipCLAHEHistogram(const double clip_limit,const size_t number_bins,
   size_t *histogram)
 {
 #define NumberCLAHEGrays  (65536)
-#define MaxCLAHETiles  (256)
 
   register ssize_t
     i;
@@ -477,14 +476,11 @@ static void MapCLAHEHistogram(const RangeInfo *range_info,
 }
 
 static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
-  const RangeInfo *range_info,const size_t number_bins,const double clip_limit,
-  unsigned short *pixels)
+  const RectangleInfo *tile_info,const RangeInfo *range_info,
+  const size_t number_bins,const double clip_limit,unsigned short *pixels)
 {
   MemoryInfo
     *tile_cache;
-
-  RectangleInfo
-    tile_info;
 
   register unsigned short
     *p;
@@ -502,14 +498,6 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
   /*
     Constrast limited adapted histogram equalization.
   */
-  assert((clahe_info->width % clahe_info->x) == 0);
-  assert((clahe_info->height % clahe_info->y) == 0);
-  assert(clahe_info->x <= MaxCLAHETiles);
-  assert(clahe_info->y <= MaxCLAHETiles);
-  assert(range_info->max < NumberCLAHEGrays);
-  assert(range_info->min < range_info->max);
-  assert((clahe_info->x >= 2) || (clahe_info->y >= 2));
-  assert(number_bins != 0);
   if (clip_limit == 1.0)
     return(MagickTrue);
   tile_cache=AcquireVirtualMemory((size_t) clahe_info->x*clahe_info->y,
@@ -517,16 +505,9 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
   if (tile_cache == (MemoryInfo *) NULL)
     return(MagickFalse);
   tiles=(size_t *) GetVirtualMemoryBlob(tile_cache);
-  tile_info.width=clahe_info->width/clahe_info->x;
-  tile_info.height=clahe_info->height/clahe_info->y;
-  limit=1UL << 14;  /* default to do not clip (AHE) */
-  if (clip_limit > 0.0)
-    {
-      limit=(size_t) (clip_limit*(tile_info.width*tile_info.height)/
-        number_bins);
-      if (limit < 1UL)
-        limit=1UL;
-    }
+  limit=(size_t) (clip_limit*(tile_info->width*tile_info->height)/number_bins);
+  if (limit < 1UL)
+    limit=1UL;
   /*
     Generate greylevel mappings for each tile.
   */
@@ -543,13 +524,13 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
         *histogram;
 
       histogram=tiles+(number_bins*(y*clahe_info->x+x));
-      GenerateCLAHEHistogram(clahe_info,&tile_info,number_bins,lut,p,histogram);
+      GenerateCLAHEHistogram(clahe_info,tile_info,number_bins,lut,p,histogram);
       ClipCLAHEHistogram((double) limit,number_bins,histogram);
-      MapCLAHEHistogram(range_info,number_bins,tile_info.width*tile_info.height,
-        histogram);
-      p+=tile_info.width;
+      MapCLAHEHistogram(range_info,number_bins,tile_info->width*
+        tile_info->height,histogram);
+      p+=tile_info->width;
     }
-    p+=clahe_info->width*(tile_info.height-1);
+    p+=clahe_info->width*(tile_info->height-1);
   }
   /*
     Interpolate greylevel mappings to get CLAHE image.
@@ -566,7 +547,7 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
     register ssize_t
       x;
 
-    tile.height=tile_info.height;
+    tile.height=tile_info->height;
     tile.y=y-1;
     offset.y=tile.y+1;
     if (y == 0)
@@ -574,7 +555,7 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
         /*
           Top row.
         */
-        tile.height=tile_info.height >> 1;
+        tile.height=tile_info->height >> 1;
         tile.y=0;
         offset.y=0;
       }
@@ -584,13 +565,13 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
           /*
             Bottom row.
           */
-          tile.height=(tile_info.height+1) >> 1;
+          tile.height=(tile_info->height+1) >> 1;
           tile.y=clahe_info->y-1;
           offset.y=tile.y;
         }
     for (x=0; x <= (ssize_t) clahe_info->x; x++)
     {
-      tile.width=tile_info.width;
+      tile.width=tile_info->width;
       tile.x=x-1;
       offset.x=tile.x+1;
       if (x == 0)
@@ -598,7 +579,7 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
           /*
             Left column.
           */
-          tile.width=tile_info.width >> 1;
+          tile.width=tile_info->width >> 1;
           tile.x=0;
           offset.x=0;
         }
@@ -608,7 +589,7 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
             /*
               Right column.
             */
-            tile.width=(tile_info.width+1) >> 1;
+            tile.width=(tile_info->width+1) >> 1;
             tile.x=clahe_info->x-1;
             offset.x=tile.x;
           }
@@ -651,7 +632,8 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
     range_info;
 
   RectangleInfo
-    clahe_info;
+    clahe_info,
+    tile_info;
 
   size_t
     n;
@@ -663,43 +645,44 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
     *pixels;
 
   /*
-    Allocate and initialize histogram arrays.
+    Configure CLAHE parameters.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=MagickTrue;
-  clahe_info.x=(ssize_t) (image->columns/(width == 0 ? 1 : width));
-  if (clahe_info.x < 2)
-    clahe_info.x=2;
-  else
-    if (clahe_info.x > MaxCLAHETiles)
-      clahe_info.x=MaxCLAHETiles;
-  clahe_info.y=(ssize_t) (image->rows/(height == 0 ? 1 : height));
-  if (clahe_info.y < 2)
-    clahe_info.y=2;
-  else
-    if (clahe_info.y > MaxCLAHETiles)
-      clahe_info.y=MaxCLAHETiles;
-  clahe_info.width=((image->columns+clahe_info.x-1)/clahe_info.x)*clahe_info.x;
-  clahe_info.height=((image->rows+clahe_info.y-1)/clahe_info.y)*clahe_info.y;
   range_info.min=0;
   range_info.max=NumberCLAHEGrays-1;
+  tile_info.width=width;
+  if (tile_info.width == 0)
+    tile_info.width=image->columns >> 3;
+  tile_info.height=height;
+  if (tile_info.height == 0)
+    tile_info.height=image->rows >> 3;
+  tile_info.x=(ssize_t) tile_info.width-(image->columns % tile_info.width);
+  tile_info.y=(ssize_t) tile_info.height-(image->rows % tile_info.height);
+  clahe_info.width=image->columns+tile_info.x;
+  clahe_info.height=image->rows+tile_info.y;
+  clahe_info.x=(ssize_t) clahe_info.width/tile_info.width;
+  clahe_info.y=(ssize_t) clahe_info.height/tile_info.height;
   pixel_cache=AcquireVirtualMemory(clahe_info.width,clahe_info.height*
     sizeof(*pixels));
   if (pixel_cache == (MemoryInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
+  pixels=(unsigned short *) GetVirtualMemoryBlob(pixel_cache);
   colorspace=image->colorspace;
   if (TransformImageColorspace(image,LabColorspace,exception) == MagickFalse)
     {
       pixel_cache=RelinquishVirtualMemory(pixel_cache);
       return(MagickFalse);
     }
-  pixels=(unsigned short *) GetVirtualMemoryBlob(pixel_cache);
+  /*
+    Initialize CLAHE pixels.
+  */
   image_view=AcquireVirtualCacheView(image,exception);
   progress=0;
+  status=MagickTrue;
   n=0;
   for (y=0; y < (ssize_t) clahe_info.height; y++)
   {
@@ -711,7 +694,8 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,0,y,clahe_info.width,1,exception);
+    p=GetCacheViewVirtualPixels(image_view,-(tile_info.x >> 1),y-
+      (tile_info.y >> 1),clahe_info.width,1,exception);
     if (p == (const Quantum *) NULL)
       {
         status=MagickFalse;
@@ -738,13 +722,16 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
       }
   }
   image_view=DestroyCacheView(image_view);
-  status=CLAHE(&clahe_info,&range_info,number_bins == 0 ? (size_t) 128 :
-    MagickMin(number_bins,256),clip_limit,pixels);
+  status=CLAHE(&clahe_info,&tile_info,&range_info,number_bins == 0 ?
+    (size_t) 128 : MagickMin(number_bins,256),clip_limit,pixels);
   if (status == MagickFalse)
     (void) ThrowMagickException(exception,GetMagickModule(),
       ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+  /*
+    Push CLAHE pixels to CLAHE image.
+  */
   image_view=AcquireAuthenticCacheView(image,exception);
-  n=0;
+  n=clahe_info.width*(tile_info.y >> 1);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
@@ -761,12 +748,13 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
         status=MagickFalse;
         continue;
       }
+    n+=tile_info.x >> 1;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       q[0]=ScaleShortToQuantum(pixels[n++]);
       q+=GetPixelChannels(image);
     }
-    n+=(clahe_info.width-image->columns);
+    n+=(clahe_info.width-image->columns-(tile_info.x >> 1));
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
