@@ -176,11 +176,17 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
         GetNextToken(q,&q,MagickPathExtent,value);
         cube_level=(size_t) StringToLong(value);
         if ((cube_level < 2) || (cube_level > 65536))
-          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          {
+            buffer=DestroyString(buffer);
+            ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          }
         cube_info=AcquireVirtualMemory(cube_level*cube_level,cube_level*
           sizeof(*cube));
         if (cube_info == (MemoryInfo *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+          {
+            buffer=DestroyString(buffer);
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+          }
         cube=(CubePixel *) GetVirtualMemoryBlob(cube_info);
         (void) memset(cube,0,cube_level*cube_level*cube_level*sizeof(*cube));
       }
