@@ -1,3 +1,10 @@
+2018-12-23  7.0.8-20 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-20, GIT revision 15170:8e8222e87:20181223
+
+2018-12-23  7.0.8-20 Cristy  <quetzlzacatenango@image...>
+  * Cube image format returns a HALD image.
+  * CLAHE tiles overlapped are now centered relative to the image.
+
 2018-12-19  7.0.8-19 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-19, GIT revision 15153:e74ed77f5:20181219
 
