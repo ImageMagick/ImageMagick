@@ -2885,10 +2885,10 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
             else
               {
                 if ((i & 0x01) != 0)
-                  { 
+                  {
                     pixel_value=byte;
                     byte=ReadDCMByte(stream_info,image);
-                    if (byte >= 0)  
+                    if (byte >= 0)
                       pixel_value|=(byte << 8);
                   }
                 else
