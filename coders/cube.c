@@ -175,7 +175,9 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
           cube_info=RelinquishVirtualMemory(cube_info);
         GetNextToken(q,&q,MagickPathExtent,value);
         cube_level=(size_t) StringToLong(value);
-        if ((cube_level < 2) || (cube_level > 65536))
+        if (LocaleCompare(token,"LUT_1D_SIZE") == 0)
+          cube_level=(size_t) ceil(pow((double) cube_level,1.0/3.0));
+        if ((cube_level < 2) || (cube_level > 256))
           {
             buffer=DestroyString(buffer);
             ThrowReaderException(CorruptImageError,"ImproperImageHeader");
@@ -207,6 +209,8 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
             cube[n].g=StringToDouble(q,&q);
             cube[n].b=StringToDouble(q,&q);
             n++;
+            if (n >= (cube_level*cube_level*cube_level))
+              break;
           }
         else
           if (('+' < *buffer) && (*buffer < ':'))
