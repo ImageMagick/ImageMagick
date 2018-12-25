@@ -190,7 +190,9 @@ MagickPrivate Cache AcquirePixelCache(const size_t number_threads)
   char
     *value;
 
-  cache_info=(CacheInfo *) AcquireCriticalMemory(sizeof(*cache_info));
+  cache_info=(CacheInfo *) AcquireAlignedMemory(1,sizeof(*cache_info));
+  if (cache_info == (CacheInfo *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) memset(cache_info,0,sizeof(*cache_info));
   cache_info->type=UndefinedCache;
   cache_info->mode=IOMode;
@@ -1068,7 +1070,7 @@ MagickPrivate Cache DestroyPixelCache(Cache cache)
   if (cache_info->semaphore != (SemaphoreInfo *) NULL)
     RelinquishSemaphoreInfo(&cache_info->semaphore);
   cache_info->signature=(~MagickCoreSignature);
-  cache_info=(CacheInfo *) RelinquishMagickMemory(cache_info);
+  cache_info=(CacheInfo *) RelinquishAlignedMemory(cache_info);
   cache=(Cache) NULL;
   return(cache);
 }

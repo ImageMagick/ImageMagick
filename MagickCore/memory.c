@@ -258,7 +258,7 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
   size=count*quantum;
   alignment=CACHE_LINE_SIZE;
   extent=AlignedExtent(size,alignment);
-  if ((size == 0) || (extent < size))
+  if ((size == 0) || (alignment < sizeof(void *)) || (extent < size))
     return((void *) NULL);
 #if defined(MAGICKCORE_HAVE_POSIX_MEMALIGN)
   if (posix_memalign(&memory,alignment,extent) != 0)
