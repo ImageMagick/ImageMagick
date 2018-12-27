@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no"  />
   <title>Changelog @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations." />
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, or convert bitmap images. You can resize your image, crop it, change its shades and colors, add captions, among other operations." />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="changelog, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
@@ -80,7 +80,46 @@
   </header>
   <main class="container">
     <div class="magick-template">
-<div class="magick-header"><dl><dt>2018-08-28  7.0.8-11 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<div class="magick-header"><dl><dt>2018-12-23  7.0.8-20 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.8-20, GIT revision 15170:8e8222e87:20181223</li>
+<dt>2018-12-23  7.0.8-20 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Cube image format returns a HALD image.</li>
+  <li> CLAHE tiles overlapped are now centered relative to the image.</li>
+<dt>2018-12-19  7.0.8-19 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.8-19, GIT revision 15153:e74ed77f5:20181219</li>
+<dt>2018-12-18  7.0.8-18 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.8-18, GIT revision 15146:b5eccd295:20181218</li>
+<dt>2018-12-18  7.0.8-18 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fixed Magick++ compile error on Mac OS X.</li>
+<dt>2018-12-17  7.0.8-17 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.8-17, GIT revision 15142:32f2d195e:20181217</li>
+<dt>2018-12-02  7.0.8-16 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Support -clahe clip limit with percentages (e.g. -clahe 50x50%+128+3).</li>
+<dt>2018-12-10  7.0.8-16 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.8-16, GIT revision 15109:9a9af88de:20181210.</li>
+<dt>2018-12-02  7.0.8-16 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Check for modulo underflow.</li>
+  <li> Change SVG default DPI to 96 from 90 to meet recommendation of SVG2 &amp; CSS.</li>
+<dt>2018-12-01  7.0.8-15 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.8-15, GIT revision 15059:2fb22e07b:20181201</li>
+<dt>2018-11-21  7.0.8-15 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Added support for the -clahe option: contrast limited adaptive histogram    equalization.</li>
+<dt>2018-11-13  7.0.8-15 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
+  <li> Added support for GIMP 2.10 files (reference    https://github.com/ImageMagick/ImageMagick/pull/1381).</li>
+<dt>2018-10-23  7.0.8-14 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.8-14, GIT revision 14943:1a0da3dd0:20181023</li>
+<dt>2018-10-21  7.0.8-13 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.8-13, GIT revision 14936:d3ec5abe2:20181021.</li>
+<dt>2018-10-04  7.0.8-13 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
+  <li> Adding coder headers with magic.xml will no longer be supported.</li>
+  <li> Adding coder aliases with coder.xml will no longer be supported.</li>
+<dt>2018-09-16  7.0.8-12 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.8-12, GIT revision 14843:cb5cf1959:20180923</li>
+<dt>2018-09-15  7.0.8-12 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
+  <li> Added support for arithmetic coding to the jpeg encoder:    -define jpeg:arithmetic-coding=true.</li>
+<dt>2018-09-08  7.0.8-12 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fixed numerous use of uninitialized values, integer overflow, memory    exceeded, and timeouts (credit to OSS Fuzz).</li>
+<dt>2018-08-28  7.0.8-11 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.8-11, GIT revision 14729:798fbdb5b:20180828</li>
 <dt>2018-08-15  7.0.8-11 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Fixed numerous use of uninitialized values, integer overflow, memory    exceeded, and timeouts (credit to OSS Fuzz).</li>
@@ -768,11 +807,12 @@
     <a href="../www/support.html">Donate</a> •
     <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a>
     <br/>
-        <small>© 1999-2019 ImageMagick Studio LLC</small></p>
+    <small>© 1999-2019 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
   <script src="assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
+<!-- Magick Cache 27th December 2018 08:04 -->

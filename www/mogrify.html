@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no"  />
   <title>Command-line Tools: Mogrify @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations." />
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, or convert bitmap images. You can resize your image, crop it, change its shades and colors, add captions, among other operations." />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="command-line, tools:, mogrify, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
@@ -85,7 +85,7 @@
 
 <p class="lead magick-description">Use the <code>mogrify</code> program to resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.   This tool is similar to <a href="convert.html">convert</a> except that the original image file is <em>overwritten</em> (unless you change the file suffix with the <a href="command-line-options.html#format">-format</a> option) with any changes you request.  See <a href="command-line-processing.html">Command Line Processing</a> for advice on how to structure your <code>mogrify</code> command or see below for sample usages of the command.</p>
 
-<h2 class="magick-post-title"><a class="anchor" id="usage"></a>Example Usage</h2>
+<h2><a class="anchor" id="usage"></a>Example Usage</h2>
 
 <p>We list a few examples of the <code>mogrify</code> command here to illustrate its usefulness and ease of use.  To get started, let's reduce the size of our
 rose:</p>
@@ -118,7 +118,7 @@ rose:</p>
 
 <p>You can find additional examples of using <code>mogrify</code> in <a href="http://www.ibm.com/developerworks/library/l-graf/?ca=dnt-428">Graphics from the Command Line</a>.  Further discussion is available in  <a href="http://www.ibm.com/developerworks/library/l-graf2/?ca=dgr-lnxw15GraphicsLine">More Graphics from the Command Line</a> and <a href="../Usage/">Examples of ImageMagick Usage</a>.</p>
 
-<h2 class="magick-post-title"><a class="anchor" id="options"></a>Option Summary</h2>
+<h2><a class="anchor" id="options"></a>Option Summary</h2>
 
 <p>The <code>mogrify</code> command recognizes these options.  Click on an option to get more details about how that option works.</p>
 
@@ -283,6 +283,11 @@ transparent, extract, background, or shape the alpha channel</td>
   <tr>
     <td><a href="command-line-options.html#clip">-clip</a></td>
     <td>clip along the first path from the 8BIM profile</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.html#clahe">-clahe <var>geometry</var></a></td>
+    <td>contrast limited adaptive histogram equalization</td>
   </tr>
 
   <tr>
@@ -631,7 +636,7 @@ transparent, extract, background, or shape the alpha channel</td>
   </tr>
 
   <tr>
-    <td><a href="command-line-options.html#intensity">-grayscale <var>method</var></a></td>
+    <td><a href="command-line-options.html#grayscale">-grayscale <var>method</var></a></td>
     <td>convert image to grayscale</td>
   </tr>
 
@@ -1328,12 +1333,12 @@ transparent, extract, background, or shape the alpha channel</td>
     <a href="support.html">Donate</a> •
     <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
     <br/>
-        <small>© 1999-2019 ImageMagick Studio LLC</small></p>
+    <small>© 1999-2019 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
   <script src="assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 9th September 2018 10:16 -->
+<!-- Magick Cache 27th December 2018 08:39 -->

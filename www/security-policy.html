@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no"  />
   <title>Security Policy @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations." />
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, or convert bitmap images. You can resize your image, crop it, change its shades and colors, add captions, among other operations." />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="security, policy, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
@@ -124,7 +124,7 @@
 <p>Here is what you can expect when you restrict the HTTPS coder, for example:</p>
 
 <pre class="highlight">-> convert ../images/wizard.png wizard.jpg
-convert: not authorized `HTTPS'
+convert: attempt to perform an operation not allowed by the security policy `HTTPS'
 convert: unable to open file: No such file or directory
 convert: no images defined `wizard.jpg'</pre>
 
@@ -204,7 +204,7 @@ Path: [built-in]
 
 <p>For additional details about resource limits and the policy configuration file, read <a href="resources.html">Resources</a> and <a href="architecture.html">Architecture</a>.</p>
 
-<h2 class="magick-post-title"><a class="anchor" id="synchronize"></a>Pixel Cache Synchronize Policy</h2>
+<h2><a class="anchor" id="synchronize"></a>Pixel Cache Synchronize Policy</h2>
 
 <p>When writing image pixels to disk, ImageMagick firsts preallocates the disk file, which is much faster than fully populating the file with zeros.  To further increase performance, we memory-map the file on disk.  With memory-mapping, we get an increase in performance (up to 5x), however, there remains a possibility that as the disk file is populated, it may run out of free space.  The OS then throws a SIGBUS signal which prevents ImageMagick from continuing.  To prevent a SIGBUS, use this security policy:
 
@@ -214,7 +214,7 @@ Path: [built-in]
 
 <p>Set to True to ensure all image data is fully flushed and synchronized to disk. There is a performance penalty, however, the benefits include ensuring a valid image file in the event of a system crash and early reporting if there is not enough disk space for the image pixel cache.</p>
 
-<h2 class="magick-post-title"><a class="anchor" id="zero-configuration"></a>Zero Configuration Security Policy</h2>
+<h2><a class="anchor" id="zero-configuration"></a>Zero Configuration Security Policy</h2>
 
 <p>A zero configuration build of ImageMagick does not permit external configuration files.  To define your security policy, you must instead edit the <code>MagickCore/policy-private.h</code> source module, add your policy statements, and then build the ImageMagick distribution.  Here is an example zero configuration security policy:</p>
 
@@ -224,7 +224,7 @@ Path: [built-in]
   &lt;policy domain=\"coder\" rights=\"none\" pattern=\"MVG\"/> \
 &lt;/policymap>";</code></pre>
 
-<h2 class="magick-post-title"><a class="anchor" id="other"></a>Other Security Considerations</h2>
+<h2><a class="anchor" id="other"></a>Other Security Considerations</h2>
 
 <p>If you spot a security flaw in ImageMagick, post your concern as an issue to
 <a href="https://github.com/ImageMagick/ImageMagick/issues">GitHub</a>.  Be sure to include how to reproduce the security flaw and a link to any images needed to reproduce the flaw.  Alternatively, <a href="https://imagemagick.org/script/contact.php">contact us</a> and select Security Issue as the issue.</p>
@@ -253,12 +253,12 @@ Path: [built-in]
     <a href="support.html">Donate</a> •
     <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
     <br/>
-        <small>© 1999-2019 ImageMagick Studio LLC</small></p>
+    <small>© 1999-2019 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
   <script src="assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 9th September 2018 10:16 -->
+<!-- Magick Cache 27th December 2018 10:23 -->

@@ -6,10 +6,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" >
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" >
+  <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no" >
   <title>MagickCore, C API: Compare an Image to a Reconstructed Image @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick">
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations.">
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, or convert bitmap images. You can resize your image, crop it, change its shades and colors, add captions, among other operations.">
   <meta name="application-url" content="https://imagemagick.org">
   <meta name="generator" content="PHP">
   <meta name="keywords" content="magickcore, c, api:, compare, an, image, to, a, reconstructed, image, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
@@ -23,7 +23,7 @@
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
-  <link href="https://imagemagick.org/api/compare.php" rel="canonical">
+  <link href="compare.php" rel="canonical">
   <link href="https://imagemagick.org/image/wand.png" rel="icon">
   <link href="https://imagemagick.org/image/wand.ico" rel="shortcut icon">
   <link href="https://imagemagick.org/assets/magick-css.php" rel="stylesheet">
@@ -57,7 +57,7 @@
         <a class="nav-link" href="https://imagemagick.org/script/develop.php">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="../discourse-server">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="../script/search.php">
@@ -83,7 +83,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="compare.php#CompareImagesCommand">CompareImagesCommand</a></p>
 
-<h2><a href="https://imagemagick.org/api/MagickWand/compare_8c.html" id="CompareImagesCommand">CompareImagesCommand</a></h2>
+<h2><a href="http://imagemagick.org/api/MagickWand/compare_8c.html" id="CompareImagesCommand">CompareImagesCommand</a></h2>
 
 <p>CompareImagesCommand() compares two images and returns the difference between them as a distortion metric and as a new image visually annotating their differences.</p>
 
@@ -137,12 +137,12 @@ MagickBooleanType CompareImagesCommand(ImageInfo *image_info,int argc,
     <a href="https://imagemagick.org/script/support.php">Donate</a> •
     <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
     <br/>
-        <small>© 1999-2019 ImageMagick Studio LLC</small></p>
+    <small>© 1999-2019 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
   <script src="https://imagemagick.org/assets/magick-js.php" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="https://imagemagick.org/assets/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 5th September 2018 23:34 -->
+<!-- Magick Cache 20th December 2018 10:58 -->

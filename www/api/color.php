@@ -6,10 +6,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" >
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" >
+  <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no" >
   <title>MagickCore, C API: Count the Colors in an Image @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick">
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations.">
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, or convert bitmap images. You can resize your image, crop it, change its shades and colors, add captions, among other operations.">
   <meta name="application-url" content="https://imagemagick.org">
   <meta name="generator" content="PHP">
   <meta name="keywords" content="magickcore, c, api:, count, the, colors, in, an, image, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
@@ -23,7 +23,7 @@
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
-  <link href="https://imagemagick.org/api/color.php" rel="canonical">
+  <link href="color.php" rel="canonical">
   <link href="https://imagemagick.org/image/wand.png" rel="icon">
   <link href="https://imagemagick.org/image/wand.ico" rel="shortcut icon">
   <link href="https://imagemagick.org/assets/magick-css.php" rel="stylesheet">
@@ -57,7 +57,7 @@
         <a class="nav-link" href="https://imagemagick.org/script/develop.php">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="../discourse-server">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="../script/search.php">
@@ -83,7 +83,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="color.php#AcquireColorCache">AcquireColorCache</a> &bull; <a href="color.php#GetColorInfoList">GetColorInfoList</a> &bull; <a href="color.php#GetColorList">GetColorList</a> &bull; <a href="color.php#ListColorInfo">ListColorInfo</a> &bull; <a href="color.php#QueryColorname">QueryColorname</a></p>
 
-<h2><a href="https://imagemagick.org/api/MagickCore/color_8c.html" id="AcquireColorCache">AcquireColorCache</a></h2>
+<h2><a href="http://imagemagick.org/api/MagickCore/color_8c.html" id="AcquireColorCache">AcquireColorCache</a></h2>
 
 <p>AcquireColorCache() caches one or more color configurations which provides a mapping between color attributes and a color name.</p>
 
@@ -110,7 +110,7 @@ LinkedListInfo *AcquireColorCache(const char *filename,
 
 <dd>  </dd>
 </dl>
-<h2><a href="https://imagemagick.org/api/MagickCore/color_8c.html" id="GetColorInfoList">GetColorInfoList</a></h2>
+<h2><a href="http://imagemagick.org/api/MagickCore/color_8c.html" id="GetColorInfoList">GetColorInfoList</a></h2>
 
 <p>GetColorInfoList() returns any colors that match the specified pattern.</p>
 
@@ -141,7 +141,7 @@ const ColorInfo **GetColorInfoList(const char *pattern,
 
 <dd>  </dd>
 </dl>
-<h2><a href="https://imagemagick.org/api/MagickCore/color_8c.html" id="GetColorList">GetColorList</a></h2>
+<h2><a href="http://imagemagick.org/api/MagickCore/color_8c.html" id="GetColorList">GetColorList</a></h2>
 
 <p>GetColorList() returns any colors that match the specified pattern.</p>
 
@@ -172,7 +172,7 @@ char **GetColorList(const char *pattern,size_t *number_colors,
 
 <dd>  </dd>
 </dl>
-<h2><a href="https://imagemagick.org/api/MagickCore/color_8c.html" id="ListColorInfo">ListColorInfo</a></h2>
+<h2><a href="http://imagemagick.org/api/MagickCore/color_8c.html" id="ListColorInfo">ListColorInfo</a></h2>
 
 <p>ListColorInfo() lists color names to the specified file.  Color names are a convenience.  Rather than defining a color by its red, green, and blue intensities just use a color name such as white, blue, or yellow.</p>
 
@@ -190,7 +190,7 @@ MagickBooleanType ListColorInfo(FILE *file,ExceptionInfo *exception)
 <dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>
 
-<h2><a href="https://imagemagick.org/api/MagickCore/color_8c.html" id="QueryColorname">QueryColorname</a></h2>
+<h2><a href="http://imagemagick.org/api/MagickCore/color_8c.html" id="QueryColorname">QueryColorname</a></h2>
 
 <p>QueryColorname() returns a named color for the given color intensity. If an exact match is not found, a hex value is returned instead.  For example an intensity of rgb:(0,0,0) returns black whereas rgb:(223,223,223) returns #dfdfdf.</p>
 
@@ -236,12 +236,12 @@ MagickBooleanType QueryColorname(const Image *image,
     <a href="https://imagemagick.org/script/support.php">Donate</a> •
     <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
     <br/>
-        <small>© 1999-2019 ImageMagick Studio LLC</small></p>
+    <small>© 1999-2019 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
   <script src="https://imagemagick.org/assets/magick-js.php" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="https://imagemagick.org/assets/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 3rd September 2018 13:45 -->
+<!-- Magick Cache 23rd December 2018 04:18 -->

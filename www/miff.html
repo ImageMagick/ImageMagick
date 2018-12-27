@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no"  />
   <title>Magick Image File Format @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations." />
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, or convert bitmap images. You can resize your image, crop it, change its shades and colors, add captions, among other operations." />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="magick, image, file, format, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
@@ -85,7 +85,7 @@
 
 <p class="lead magick-description">The Magick Image File Format (MIFF) is ImageMagick's own platform-independent format for storing bitmap images.  It has an advantage over other image formats in that it stores all metadata known to ImageMagick (e.g. image color profiles, comments, author, copyright, etc.), whereas, other formats may only support a small portion of available metadata or none at all.  A MIFF image file consist of two sections.  The first section is a header composed of keys describing the image in text form.  The next section is the binary image data.  We discuss these sections in detail below.</p>
 
-<h2 class="magick-post-title"><a class="anchor" id="miff-header"></a>MIFF Header</h2>
+<h2><a class="anchor" id="miff-header"></a>MIFF Header</h2>
 
 
 <p>The MIFF header is composed entirely of ISO-8859-1 characters.  The fields in the header are key and value combination in the <var>key = value</var> format, with each key and value separated by an equal sign (<code>=</code>).  Each <var>key = value</var> combination is delimited by at least one control or whitespace character.  Comments may appear in the header section and are always delimited by braces.  The MIFF header always ends with a colon (<code>:</code>) character, followed by a <var>ctrl-Z</var> character.  It is also common to proceed the colon with a <var>formfeed</var> and a <var>newline</var> character.  The <var>formfeed</var> prevents the listing of binary data when using the <code>more</code> Unix program, whereas, the <var>ctrl-Z</var> has the same effect with the <code>type</code> command on the Windows command line.</p>
@@ -223,7 +223,7 @@ class=PseudoClass  colors=256  matte=False
 columns=1280  rows=1024  depth=8
 compression=RLE
 colorspace=RGB
-copyright={© 1999-2019 ImageMagick Studio LLC}
+copyright={© 1999-2018 ImageMagick Studio LLC}
 &#8942;
 </code></pre>
 
@@ -235,7 +235,7 @@ copyright={© 1999-2019 ImageMagick Studio LLC}
 
 <p>The header is separated from the image data by a <code>:</code> character immediately followed by a <var>newline</var>.</p>
 
-<h2 class="magick-post-title"><a class="anchor" id="binary"></a>MIFF Binary Data</h2>
+<h2><a class="anchor" id="binary"></a>MIFF Binary Data</h2>
 
 <p>Next comes the binary image data itself.  How the image data is formatted depends upon the class of the image as specified (or not specified) by the value of the class key in the header.</p>
 
@@ -263,12 +263,12 @@ or fewer colors in the image, each byte of image data contains an index value. I
     <a href="support.html">Donate</a> •
     <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
     <br/>
-        <small>© 1999-2019 ImageMagick Studio LLC</small></p>
+    <small>© 1999-2019 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
   <script src="assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 9th September 2018 10:16 -->
+<!-- Magick Cache 27th December 2018 10:28 -->

@@ -6,10 +6,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" >
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" >
+  <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no" >
   <title>MagickCore, C API: Image Distortions @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick">
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations.">
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, or convert bitmap images. You can resize your image, crop it, change its shades and colors, add captions, among other operations.">
   <meta name="application-url" content="https://imagemagick.org">
   <meta name="generator" content="PHP">
   <meta name="keywords" content="magickcore, c, api:, image, distortions, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
@@ -23,7 +23,7 @@
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
-  <link href="https://imagemagick.org/api/distort.php" rel="canonical">
+  <link href="distort.php" rel="canonical">
   <link href="https://imagemagick.org/image/wand.png" rel="icon">
   <link href="https://imagemagick.org/image/wand.ico" rel="shortcut icon">
   <link href="https://imagemagick.org/assets/magick-css.php" rel="stylesheet">
@@ -57,7 +57,7 @@
         <a class="nav-link" href="https://imagemagick.org/script/develop.php">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="../discourse-server">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="../script/search.php">
@@ -83,7 +83,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="distort.php#AffineTransformImage">AffineTransformImage</a> &bull; <a href="distort.php#DistortImage">DistortImage</a> &bull; <a href="distort.php#RotateImage">RotateImage</a> &bull; <a href="distort.php#SparseColorImage">SparseColorImage</a></p>
 
-<h2><a href="https://imagemagick.org/api/MagickCore/distort_8c.html" id="AffineTransformImage">AffineTransformImage</a></h2>
+<h2><a href="http://imagemagick.org/api/MagickCore/distort_8c.html" id="AffineTransformImage">AffineTransformImage</a></h2>
 
 <p>AffineTransformImage() transforms an image as dictated by the affine matrix. It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p>
 
@@ -114,7 +114,7 @@ Image *AffineTransformImage(const Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="https://imagemagick.org/api/MagickCore/distort_8c.html" id="DistortImage">DistortImage</a></h2>
+<h2><a href="http://imagemagick.org/api/MagickCore/distort_8c.html" id="DistortImage">DistortImage</a></h2>
 
 <p>DistortImage() distorts an image using various distortion methods, by mapping color lookups of the source image to a new destination image usally of the same size as the source image, unless 'bestfit' is set to true.</p>
 
@@ -182,7 +182,7 @@ Image *DistortImage(const Image *image,const DistortMethod method,
 
 <dd>  </dd>
 </dl>
-<h2><a href="https://imagemagick.org/api/MagickCore/distort_8c.html" id="RotateImage">RotateImage</a></h2>
+<h2><a href="http://imagemagick.org/api/MagickCore/distort_8c.html" id="RotateImage">RotateImage</a></h2>
 
 <p>RotateImage() creates a new image that is a rotated copy of an existing one.  Positive angles rotate counter-clockwise (right-hand rule), while negative angles rotate clockwise.  Rotated images are usually larger than the originals and have 'empty' triangular corners.  X axis.  Empty triangles left over from shearing the image are filled with the background color defined by member 'background_color' of the image.  RotateImage allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p>
 
@@ -204,7 +204,7 @@ Image *RotateImage(const Image *image,const double degrees,
 <dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>
 
-<h2><a href="https://imagemagick.org/api/MagickCore/distort_8c.html" id="SparseColorImage">SparseColorImage</a></h2>
+<h2><a href="http://imagemagick.org/api/MagickCore/distort_8c.html" id="SparseColorImage">SparseColorImage</a></h2>
 
 <p>SparseColorImage(), given a set of coordinates, interpolates the colors found at those coordinates, across the whole image, using various methods.</p>
 
@@ -261,12 +261,12 @@ Image *SparseColorImage(const Image *image,
     <a href="https://imagemagick.org/script/support.php">Donate</a> •
     <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
     <br/>
-        <small>© 1999-2019 ImageMagick Studio LLC</small></p>
+    <small>© 1999-2019 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
   <script src="https://imagemagick.org/assets/magick-js.php" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="https://imagemagick.org/assets/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 8th September 2018 09:08 -->
+<!-- Magick Cache 20th December 2018 20:41 -->

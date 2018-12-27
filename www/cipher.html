@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no"  />
   <title>Encipher or Decipher an Image @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations." />
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, or convert bitmap images. You can resize your image, crop it, change its shades and colors, add captions, among other operations." />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="encipher, or, decipher, an, image, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
@@ -87,7 +87,7 @@
 
 <p>You could use an <a href="http://www.wizards-toolkit.org/www/encipher.html">enciphering</a> utility to scramble your image but they typically scramble the entire file making it unrecognizable as an image format.  With ImageMagick, only the pixels are scrambled.  The scrambled image continues to be recognized as an image and will even display in your web page.  However, the content appears as gibberish, nothing like the original content.</p>
 
-<h2 class="magick-post-title"><a class="anchor" id="encipher"></a>Encipher an Image</h2>
+<h2><a class="anchor" id="encipher"></a>Encipher an Image</h2>
 
 <p>Use the <a href="../www/command-line-options.html#encipher">-encipher</a> option to scramble your image so that it is unrecognizable.  The option requires a filename that contains your passphrase.  In this example we scramble an image and save it in the PNG format:</p>
 
@@ -99,14 +99,14 @@
 <pre class="highlight"><code>convert rose.jpg -encipher smiley.gif rose.png
 </code></pre>
 
-<h2 class="magick-post-title"><a class="anchor" id="decipher"></a>Decipher an Image</h2>
+<h2><a class="anchor" id="decipher"></a>Decipher an Image</h2>
 
 <p>Use the <a href="../www/command-line-options.html#decipher">-decipher</a> option to unscramble your image so that it is recognizable once again.  The option requires a filename that contains your passphrase.  In this example we unscramble an image and save it in the JPEG format:</p>
 
 <pre class="highlight"><code>convert rose.png -decipher passphrase.txt rose.jpg
 </code></pre>
 
-<h2 class="magick-post-title"><a class="anchor" id="caveats"></a>Encipher and Decipher Caveats</h2>
+<h2><a class="anchor" id="caveats"></a>Encipher and Decipher Caveats</h2>
 
 <p>Some formats do not support enciphered pixels-- the JPEG or GIF format, for
 example.  To ensure your image format is supported, encipher a test image and
@@ -156,12 +156,12 @@ Examples <a href="../Usage/transform/#encipher"
     <a href="../www/support.html">Donate</a> •
     <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a>
     <br/>
-        <small>© 1999-2019 ImageMagick Studio LLC</small></p>
+    <small>© 1999-2019 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
   <script src="assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 9th September 2018 10:14 -->
+<!-- Magick Cache 27th December 2018 09:38 -->

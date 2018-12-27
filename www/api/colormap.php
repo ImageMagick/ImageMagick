@@ -6,10 +6,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" >
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" >
+  <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no" >
   <title>MagickCore, C API: Colormap Methods @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick">
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations.">
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, or convert bitmap images. You can resize your image, crop it, change its shades and colors, add captions, among other operations.">
   <meta name="application-url" content="https://imagemagick.org">
   <meta name="generator" content="PHP">
   <meta name="keywords" content="magickcore, c, api:, colormap, methods, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
@@ -23,15 +23,15 @@
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
-  <link href="https://imagemagick.org/api/colormap.php" rel="canonical">
-  <link href="https://imagemagick.org/image/wand.png" rel="icon">
-  <link href="https://imagemagick.org/image/wand.ico" rel="shortcut icon">
-  <link href="https://imagemagick.org/assets/magick-css.php" rel="stylesheet">
+  <link href="../www/api/colormap.php" rel="canonical">
+  <link href="../www/image/wand.png" rel="icon">
+  <link href="../www/image/wand.ico" rel="shortcut icon">
+  <link href="../www/assets/magick-css.php" rel="stylesheet">
 </head>
 <body>
   <header>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="https://imagemagick.org/"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="https://imagemagick.org/image/wand.ico"/></a>
+    <a class="navbar-brand" href="https://imagemagick.org/"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../www/image/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -39,28 +39,28 @@
     <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
-        <a class="nav-link" href="https://imagemagick.org/index.php">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="../www/index.php">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="https://imagemagick.org/script/download.php">Download</a>
+        <a class="nav-link" href="../www/script/download.php">Download</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="https://imagemagick.org/script/command-line-tools.php">Tools</a>
+        <a class="nav-link" href="../www/script/command-line-tools.php">Tools</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="https://imagemagick.org/script/command-line-processing.php">Command-line</a>
+        <a class="nav-link" href="../www/script/command-line-processing.php">Command-line</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="https://imagemagick.org/script/resources.php">Resources</a>
+        <a class="nav-link" href="../www/script/resources.php">Resources</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="https://imagemagick.org/script/develop.php">Develop</a>
+        <a class="nav-link" href="../www/script/develop.php">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="../discourse-server">Community</a>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="../script/search.php">
+    <form class="form-inline my-2 my-lg-0" action="https://imagemagick.org/www/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
     </form>
@@ -83,7 +83,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="colormap.php#AcquireImageColormap">AcquireImageColormap</a> &bull; <a href="colormap.php#CycleColormap">CycleColormap</a></p>
 
-<h2><a href="https://imagemagick.org/api/MagickCore/colormap_8c.html" id="AcquireImageColormap">AcquireImageColormap</a></h2>
+<h2><a href="http://imagemagick.org/api/MagickCore/colormap_8c.html" id="AcquireImageColormap">AcquireImageColormap</a></h2>
 
 <p>AcquireImageColormap() allocates an image colormap and initializes it to a linear gray colorspace.  If the image already has a colormap, it is replaced.  AcquireImageColormap() returns MagickTrue if successful, otherwise MagickFalse if there is not enough memory.</p>
 
@@ -114,7 +114,7 @@ MagickBooleanType AcquireImageColormap(Image *image,const size_t colors,
 
 <dd>  </dd>
 </dl>
-<h2><a href="https://imagemagick.org/api/MagickCore/colormap_8c.html" id="CycleColormap">CycleColormap</a></h2>
+<h2><a href="http://imagemagick.org/api/MagickCore/colormap_8c.html" id="CycleColormap">CycleColormap</a></h2>
 
 <p>CycleColormap() displaces an image's colormap by a given number of positions.  If you cycle the colormap a number of times you can produce a psychodelic effect.</p>
 
@@ -151,23 +151,23 @@ MagickBooleanType CycleColormapImage(Image *image,const ssize_t displace,
     </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
-    <p><a href="https://imagemagick.org/script/security-policy.php">Security</a> •
-    <a href="https://imagemagick.org/script/architecture.php">Architecture</a> •
-    <a href="https://imagemagick.org/script/links.php">Related</a> •
-     <a href="https://imagemagick.org/script/sitemap.php">Sitemap</a>
+    <p><a href="../www/script/security-policy.php">Security</a> •
+    <a href="../www/script/architecture.php">Architecture</a> •
+    <a href="../www/script/links.php">Related</a> •
+     <a href="../www/script/sitemap.php">Sitemap</a>
     &nbsp; &nbsp;
-    <a href="colormap.php#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="https://imagemagick.org/image/wand.ico"/></a>
+    <a href="colormap.php#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../www/image/wand.ico"/></a>
     &nbsp; &nbsp;
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="https://imagemagick.org/script/support.php">Donate</a> •
-    <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
+    <a href="../www/script/support.php">Donate</a> •
+    <a href="../www/script/contact.php">Contact Us</a>
     <br/>
-        <small>© 1999-2019 ImageMagick Studio LLC</small></p>
+    <small>© 1999-2019 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
-  <script src="https://imagemagick.org/assets/magick-js.php" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="https://imagemagick.org/assets/jquery.min.js"><\/script>')</script>
+  <script src="../www/assets/magick-js.php" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 2nd September 2018 21:26 -->
+<!-- Magick Cache 21st December 2018 22:03 -->

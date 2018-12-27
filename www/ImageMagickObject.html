@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no"  />
   <title>Install the ImageMagickObject COM+ Component @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, convert bitmap images. With ImageMagick you can resize your image, crop it, change its shades and colors, add captions, among other operations." />
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, or convert bitmap images. You can resize your image, crop it, change its shades and colors, add captions, among other operations." />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="install, the, imagemagickobject, com+, component, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
@@ -105,7 +105,7 @@
 
 <p>MagickCMD is a C++ sample, but it also serves as a replacement for all the other command line utilities in most applications. Instead of using <code>convert xxxx yyyy</code> you can use <code>MagickCMD convert xxxx yyyy</code> instead. MagickCMD calls the COM object to accomplish the designated task.  This small tight combination replaces the entire usual binary distribution in just a few mebibytes.</p>
 
-<h2 class="magick-post-title"><a class="anchor" id="build"></a>Build ImageMagickObject From Source</h2>
+<h2><a class="anchor" id="build"></a>Build ImageMagickObject From Source</h2>
 
 <p>The source code for ImageMagickObject is available from the ImageMagick <a href="http://git.imagemagick.org/repos/ImageMagick">GIT</a> repository, or as part of the <a href="install-source.html#windows">Windows source</a> distribution. Once the source code has been retrieved and extracted, the source for ImageMagickObject is the directory <code>ImageMagick\contrib\win32\ATL7ImageMagickObject</code>, however, ImageMagick itself must be built using the static-multithread (VisualStaticMT) build configuration.  Building ImageMagickObject requires Microsoft Visual C++ 7.0 as delivered with Microsoft's Visual Studio .NET package. See the <a href="install-source.html#windows">Windows compilation instructions</a> to get ImageMagick itself built before building the ImageMagick COM+ component.</p>
 
@@ -144,11 +144,11 @@ BuildImageMagickObject release
     <a href="../www/support.html">Donate</a> •
     <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a>
     <br/>
-        <small>© 1999-2019 ImageMagick Studio LLC</small></p>
+    <small>© 1999-2019 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
   <script src="assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="assets/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
