@@ -243,6 +243,7 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
 {
 #define AlignedExtent(size,alignment) \
   (((size)+((alignment)-1)) & ~((alignment)-1))
+#define AlignedPowerOf2(x)  ((((x) - 1) & (x)) == 0)
 
   size_t
     alignment,
@@ -270,6 +271,17 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
     void
       *p;
 
+    if ((alignment == 0) || (alignment % sizeof(void *) != 0) ||
+        (AlignedPowerOf2(alignment/sizeof(void *)) == 0))
+      {
+        errno=EINVAL;
+        return((void *) NULL);
+      }
+    if (size > (SIZE_MAX-alignment-sizeof(void *)-1))
+      {
+        errno=ENOMEM;
+        return((void *) NULL);
+      }
     extent=(size+alignment-1)+sizeof(void *);
     if (extent > size)
       {
