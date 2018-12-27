@@ -1,5 +1,5 @@
 2018-12-27  7.0.8-21 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.8-21, GIT revision 15170:8e8222e87:20181223
+  * Release ImageMagick version 7.0.8-21, GIT revision 15179:114be1716:20181227
 
 2018-12-27  7.0.8-21 Cristy  <quetzlzacatenango@image...>
   * Check to ensure SeekBlob() offset can be represented in an off_t.
