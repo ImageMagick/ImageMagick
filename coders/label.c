@@ -138,9 +138,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       ThrowReaderException(ImageError,"WidthOrHeightExceedsLimit");
     }
   draw_info->text=ConstantString(label);
-  metrics.width=0.0;
-  metrics.height=0.0;
-  metrics.ascent=0.0;
+  (void) memset(&metrics,0,sizeof(metrics));
   status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
   if ((image->columns == 0) && (image->rows == 0))
     {

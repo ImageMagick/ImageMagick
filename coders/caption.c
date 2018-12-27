@@ -169,6 +169,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       MagickFalse,gravity);
   split=MagickFalse;
   status=MagickTrue;
+  (void) memset(&metrics,0,sizeof(metrics));
   if (image->columns == 0)
     {
       text=AcquireString(caption);
