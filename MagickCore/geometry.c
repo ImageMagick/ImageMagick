@@ -1132,15 +1132,43 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
         geometry_info->sigma=2.0;
     }
   if (((flags & SigmaValue) == 0) && ((flags & XiValue) != 0) &&
-      ((flags & PsiValue) == 0))
+      ((flags & XiNegative) != 0))
     {
-      /*
-        Support negative height values (e.g. 30x-20).
-      */
-      geometry_info->sigma=geometry_info->xi;
-      geometry_info->xi=0.0;
-      flags|=SigmaValue;
-      flags&=(~XiValue);
+      if ((flags & PsiValue) == 0)
+        {
+          /*
+            Support negative height values (e.g. 30x-20).
+          */
+          geometry_info->sigma=geometry_info->xi;
+          geometry_info->xi=0.0;
+          flags|=SigmaValue;
+          flags&=(~XiValue);
+        }
+      else
+        if ((flags & ChiValue) == 0)
+          {
+            /*
+              Support negative height values (e.g. 30x-20+10).
+            */
+            geometry_info->sigma=geometry_info->xi;
+            geometry_info->xi=geometry_info->psi;
+            flags|=SigmaValue;
+            flags|=XiValue;
+            flags&=(~PsiValue);
+          }
+        else
+          {
+            /*
+              Support negative height values (e.g. 30x-20+10+10).
+            */
+            geometry_info->sigma=geometry_info->xi;
+            geometry_info->xi=geometry_info->psi;
+            geometry_info->psi=geometry_info->chi;
+            flags|=SigmaValue;
+            flags|=XiValue;
+            flags|=PsiValue;
+            flags&=(~ChiValue);
+          }
     }
   if ((flags & PercentValue) != 0)
     {

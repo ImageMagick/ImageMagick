@@ -4997,12 +4997,15 @@ static inline MagickBooleanType AcquireCacheNexusPixels(
 static inline void PrefetchPixelCacheNexusPixels(const NexusInfo *nexus_info,
   const MapMode mode)
 {
+  if (nexus_info->length < CACHE_LINE_SIZE)
+    return;
   if (mode == ReadMode)
     {
-      MagickCachePrefetch((unsigned char *) nexus_info->pixels,0,1);
+      MagickCachePrefetch((unsigned char *) nexus_info->pixels+CACHE_LINE_SIZE,
+        0,1);
       return;
     }
-  MagickCachePrefetch((unsigned char *) nexus_info->pixels,1,1);
+  MagickCachePrefetch((unsigned char *) nexus_info->pixels+CACHE_LINE_SIZE,1,1);
 }
 
 static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
@@ -5021,6 +5024,7 @@ static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
   assert(cache_info->signature == MagickCoreSignature);
   if (cache_info->type == UndefinedCache)
     return((Quantum *) NULL);
+  (void) memset(&nexus_info->region,0,sizeof(nexus_info->region));
   if (((cache_info->type == MemoryCache) || (cache_info->type == MapCache)) &&
       (buffered == MagickFalse))
     {
@@ -5062,26 +5066,17 @@ static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
     cache_info->number_channels*sizeof(*nexus_info->pixels);
   if (cache_info->metacontent_extent != 0)
     length+=number_pixels*cache_info->metacontent_extent;
+  status=MagickTrue;
   if (nexus_info->cache == (Quantum *) NULL)
-    {
-      status=AcquireCacheNexusPixels(cache_info,length,nexus_info,exception);
-      if (status == MagickFalse)
-        {
-          (void) memset(&nexus_info->region,0,sizeof(nexus_info->region));
-          return((Quantum *) NULL);
-        }
-    }
+    status=AcquireCacheNexusPixels(cache_info,length,nexus_info,exception);
   else
     if (nexus_info->length < length)
       {
         RelinquishCacheNexusPixels(nexus_info);
         status=AcquireCacheNexusPixels(cache_info,length,nexus_info,exception);
-        if (status == MagickFalse)
-          {
-            (void) memset(&nexus_info->region,0,sizeof(nexus_info->region));
-            return((Quantum *) NULL);
-          }
       }
+  if (status == MagickFalse)
+    return((Quantum *) NULL);
   nexus_info->pixels=nexus_info->cache;
   nexus_info->metacontent=(void *) NULL;
   if (cache_info->metacontent_extent != 0)
