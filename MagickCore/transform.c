@@ -892,8 +892,6 @@ MagickExport Image *CropImageToTiles(const Image *image,
         {
           crop_image->page.width=geometry.width;
           crop_image->page.height=geometry.height;
-          crop_image->page.x-=geometry.x;
-          crop_image->page.y-=geometry.y;
         }
       return(crop_image);
     }
