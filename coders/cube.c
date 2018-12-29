@@ -204,7 +204,7 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
             char
               *q;
 
-            if (n >= (cube_level*cube_level*cube_level))
+            if (n >= (ssize_t) (cube_level*cube_level*cube_level))
               break;
             q=buffer;
             cube[n].r=StringToDouble(q,&q);

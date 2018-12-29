@@ -4076,7 +4076,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           if (parse < 0)
             CLIWandExceptArgBreak(OptionError,"UnrecognizedEvaluateOperator",
               option,arg1);
-          new_images=EvaluateImages(_images,(MagickEvaluateOperator)parse,
+          new_images=EvaluateImages(_images,(MagickEvaluateOperator) parse,
             _exception);
           break;
         }
