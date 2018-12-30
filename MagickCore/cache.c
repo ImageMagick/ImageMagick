@@ -5025,6 +5025,8 @@ static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
   if (cache_info->type == UndefinedCache)
     return((Quantum *) NULL);
   (void) memset(&nexus_info->region,0,sizeof(nexus_info->region));
+  if ((region->width == 0) || (region->height == 0))
+    return((Quantum *) NULL);
   if (((cache_info->type == MemoryCache) || (cache_info->type == MapCache)) &&
       (buffered == MagickFalse))
     {

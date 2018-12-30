@@ -1,3 +1,6 @@
+2018-12-30  7.0.8-22 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-22, GIT revision 15189:842164090:20181230
+
 2018-12-29  7.0.8-22 Cristy  <quetzlzacatenango@image...>
   * Support negative rotations in a geometry (e.g. -10x-10+10+10).
   * Return expected canvas offset after a crop with gravity.
