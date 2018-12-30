@@ -348,8 +348,7 @@ ModuleExport size_t RegisterCUBEImage(void)
   MagickInfo
     *entry;
 
-  entry=AcquireMagickInfo("CUBE","CUBE",
-    "Cube color lookup table image");
+  entry=AcquireMagickInfo("CUBE","CUBE","Cube LUT");
   entry->decoder=(DecodeImageHandler *) ReadCUBEImage;
   entry->flags^=CoderAdjoinFlag;
   entry->format_type=ImplicitFormatType;
