@@ -1096,7 +1096,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (count == 0)
                 break;
               buffer[count]='\0';
-              if ((ssize_t) (count+offset+MagickPathExtent) >= (ssize_t) extent)
+              if (((ssize_t) count+offset+MagickPathExtent) >= (ssize_t) extent)
                 {
                   extent<<=1;
                   comments=(char *) ResizeQuantumMemory(comments,extent+
