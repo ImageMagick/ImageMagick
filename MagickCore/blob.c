@@ -2867,13 +2867,13 @@ MagickExport MagickBooleanType IsBlobSeekable(const Image *image)
     case ZipStream:
     {
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
-      int
-        status;
+      MagickOffsetType
+        offset;
 
       if (blob_info->file_info.gzfile == (gzFile) NULL)
         return(MagickFalse);
-      status=gzseek(blob_info->file_info.gzfile,0,SEEK_CUR);
-      return(status == -1 ? MagickFalse : MagickTrue);
+      offset=gzseek(blob_info->file_info.gzfile,0,SEEK_CUR);
+      return(offset < 0 ? MagickFalse : MagickTrue);
 #else
       break;
 #endif
@@ -3001,12 +3001,11 @@ MagickExport void *MapBlob(int file,const MapMode mode,
     }
   }
 #if !defined(MAGICKCORE_HAVE_HUGEPAGES) || !defined(MAP_HUGETLB)
-  map=mmap((char *) NULL,length,protection,flags,file,(off_t) offset);
+  map=mmap((char *) NULL,length,protection,flags,file,offset);
 #else
-  map=mmap((char *) NULL,length,protection,flags | MAP_HUGETLB,file,(off_t)
-    offset);
+  map=mmap((char *) NULL,length,protection,flags | MAP_HUGETLB,file,offset);
   if (map == MAP_FAILED)
-    map=mmap((char *) NULL,length,protection,flags,file,(off_t) offset);
+    map=mmap((char *) NULL,length,protection,flags,file,offset);
 #endif
   if (map == MAP_FAILED)
     return(NULL);
@@ -4895,7 +4894,7 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
     case ZipStream:
     {
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
-      if (gzseek(blob_info->file_info.gzfile,(off_t) offset,whence) < 0)
+      if (gzseek(blob_info->file_info.gzfile,offset,whence) < 0)
         return(-1);
 #endif
       blob_info->offset=TellBlob(image);
