@@ -3574,7 +3574,7 @@ static inline MagickOffsetType WritePixelCacheRegion(
       SSIZE_MAX));
 #else
     count=pwrite(cache_info->file,buffer+i,(size_t) MagickMin(length-i,(size_t)
-      SSIZE_MAX),(off_t) (offset+i));
+      SSIZE_MAX),offset+i);
 #endif
     if (count <= 0)
       {
@@ -4388,7 +4388,7 @@ static inline MagickOffsetType ReadPixelCacheRegion(
       SSIZE_MAX));
 #else
     count=pread(cache_info->file,buffer+i,(size_t) MagickMin(length-i,(size_t)
-      SSIZE_MAX),(off_t) (offset+i));
+      SSIZE_MAX),offset+i);
 #endif
     if (count <= 0)
       {
@@ -5438,8 +5438,7 @@ MagickExport MagickBooleanType SyncAuthenticPixels(Image *image,
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickCoreSignature);
-  if (cache_info->methods.sync_authentic_pixels_handler !=
-       (SyncAuthenticPixelsHandler) NULL)
+  if (cache_info->methods.sync_authentic_pixels_handler != (SyncAuthenticPixelsHandler) NULL)
     {
       status=cache_info->methods.sync_authentic_pixels_handler(image,
         exception);
