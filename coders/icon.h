@@ -16,7 +16,9 @@
 
 #include "coders/coders-private.h"
 
-#define MagickICONHeaders
+#define MagickICONHeaders \
+  MagickCoderHeader("ICO", 0, "\000\000\001\000") \
+  MagickCoderHeader("CUR", 0, "\000\000\002\000")
 
 #define MagickICONAliases \
   MagickCoderAlias("ICON", "CUR") \
