@@ -1,3 +1,9 @@
+2019-01-01  7.0.8-23 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-22, GIT revision 15199:ba07f7d07:20190101
+
+2019-01-01  7.0.8-23 Cristy  <quetzlzacatenango@image...>
+  * CacheInfo destructor must be aligned in DestroyPixelStream().
+
 2018-12-30  7.0.8-22 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-22, GIT revision 15189:842164090:20181230
 
