@@ -241,7 +241,7 @@ static void DestroyPixelStream(Image *image)
     RelinquishSemaphoreInfo(&cache_info->file_semaphore);
   if (cache_info->semaphore != (SemaphoreInfo *) NULL)
     RelinquishSemaphoreInfo(&cache_info->semaphore);
-  cache_info=(CacheInfo *) RelinquishMagickMemory(cache_info);
+  cache_info=(CacheInfo *) RelinquishAlignedMemory(cache_info);
 }
 
 /*
