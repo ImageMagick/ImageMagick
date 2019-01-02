@@ -29,8 +29,8 @@ double Magick::TypeMetric::ascent(void) const
 
 Magick::Geometry Magick::TypeMetric::bounds(void) const
 {
-  return(Geometry((size_t) _typeMetric.bounds.x2-_typeMetric.bounds.x1,
-    (size_t) _typeMetric.bounds.y2-_typeMetric.bounds.y1,(ssize_t)
+  return(Geometry((size_t) (_typeMetric.bounds.x2-_typeMetric.bounds.x1),
+    (size_t) (_typeMetric.bounds.y2-_typeMetric.bounds.y1),(ssize_t)
     _typeMetric.bounds.x1,(ssize_t) _typeMetric.bounds.y1));
 }
 
