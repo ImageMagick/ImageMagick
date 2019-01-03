@@ -162,7 +162,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
     *image_handle;
 
   struct heif_decoding_options
-    *decode_options=NULL;
+    *decode_options;
 
   uint8_t
     *p_y,
@@ -173,7 +173,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
     *file_data;
 
   const char
-    *preserve_orientation_option;
+    *option;
 
   /*
     Open image file.
@@ -285,16 +285,18 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
     Copy HEIF image into ImageMagick data structures
   */
   (void) SetImageColorspace(image,YCbCrColorspace,exception);
-  preserve_orientation_option=GetImageOption(image_info,"heic:preserve-orientation");
-
-  if (IsStringTrue(preserve_orientation_option) == MagickTrue) {
-	  decode_options=heif_decoding_options_alloc();
-	  decode_options->ignore_transformations=1;
-  }
-
+  decode_options=(struct heif_decoding_options *) NULL;
+  option=GetImageOption(image_info,"heic:preserve-orientation");
+  if (IsStringTrue(option) == MagickTrue)
+    {
+      decode_options=heif_decoding_options_alloc();
+      decode_options->ignore_transformations=1;
+    }
+  else
+    SetImageProperty(image,"exif:Orientation","1",exception);
   error=heif_decode_image(image_handle,&heif_image,heif_colorspace_YCbCr,
-    heif_chroma_420, decode_options);
-  if (decode_options != NULL)
+    heif_chroma_420,decode_options);
+  if (decode_options != (struct heif_decoding_options *) NULL)
     heif_decoding_options_free(decode_options);
   if (IsHeifSuccess(&error,image,exception) == MagickFalse)
     {
@@ -329,10 +331,6 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   heif_image_release(heif_image);
   heif_image_handle_release(image_handle);
   heif_context_free(heif_context);
-
-  if (IsStringTrue(preserve_orientation_option) == MagickFalse)
-    SetImageProperty(image,"exif:Orientation","1",exception);
-
   return(GetFirstImageInList(image));
 }
 #endif
