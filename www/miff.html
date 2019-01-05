@@ -85,7 +85,7 @@
 
 <p class="lead magick-description">The Magick Image File Format (MIFF) is ImageMagick's own platform-independent format for storing bitmap images.  It has an advantage over other image formats in that it stores all metadata known to ImageMagick (e.g. image color profiles, comments, author, copyright, etc.), whereas, other formats may only support a small portion of available metadata or none at all.  A MIFF image file consist of two sections.  The first section is a header composed of keys describing the image in text form.  The next section is the binary image data.  We discuss these sections in detail below.</p>
 
-<h1><a class="anchor" id="miff-header"></a>MIFF Header</h1>
+<h2><a class="anchor" id="miff-header"></a>MIFF Header</h2>
 
 
 <p>The MIFF header is composed entirely of ISO-8859-1 characters.  The fields in the header are key and value combination in the <var>key = value</var> format, with each key and value separated by an equal sign (<code>=</code>).  Each <var>key = value</var> combination is delimited by at least one control or whitespace character.  Comments may appear in the header section and are always delimited by braces.  The MIFF header always ends with a colon (<code>:</code>) character, followed by a <var>ctrl-Z</var> character.  It is also common to proceed the colon with a <var>formfeed</var> and a <var>newline</var> character.  The <var>formfeed</var> prevents the listing of binary data when using the <code>more</code> Unix program, whereas, the <var>ctrl-Z</var> has the same effect with the <code>type</code> command on the Windows command line.</p>
@@ -235,7 +235,7 @@ copyright={© 1999-2018 ImageMagick Studio LLC}
 
 <p>The header is separated from the image data by a <code>:</code> character immediately followed by a <var>newline</var>.</p>
 
-<h1><a class="anchor" id="binary"></a>MIFF Binary Data</h1>
+<h2><a class="anchor" id="binary"></a>MIFF Binary Data</h2>
 
 <p>Next comes the binary image data itself.  How the image data is formatted depends upon the class of the image as specified (or not specified) by the value of the class key in the header.</p>
 

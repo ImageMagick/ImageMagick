@@ -204,7 +204,7 @@ Path: [built-in]
 
 <p>For additional details about resource limits and the policy configuration file, read <a href="resources.html">Resources</a> and <a href="architecture.html">Architecture</a>.</p>
 
-<h1><a class="anchor" id="synchronize"></a>Pixel Cache Synchronize Policy</h1>
+<h2><a class="anchor" id="synchronize"></a>Pixel Cache Synchronize Policy</h2>
 
 <p>When writing image pixels to disk, ImageMagick firsts preallocates the disk file, which is much faster than fully populating the file with zeros.  To further increase performance, we memory-map the file on disk.  With memory-mapping, we get an increase in performance (up to 5x), however, there remains a possibility that as the disk file is populated, it may run out of free space.  The OS then throws a SIGBUS signal which prevents ImageMagick from continuing.  To prevent a SIGBUS, use this security policy:
 
@@ -214,7 +214,7 @@ Path: [built-in]
 
 <p>Set to True to ensure all image data is fully flushed and synchronized to disk. There is a performance penalty, however, the benefits include ensuring a valid image file in the event of a system crash and early reporting if there is not enough disk space for the image pixel cache.</p>
 
-<h1><a class="anchor" id="zero-configuration"></a>Zero Configuration Security Policy</h1>
+<h2><a class="anchor" id="zero-configuration"></a>Zero Configuration Security Policy</h2>
 
 <p>A zero configuration build of ImageMagick does not permit external configuration files.  To define your security policy, you must instead edit the <code>MagickCore/policy-private.h</code> source module, add your policy statements, and then build the ImageMagick distribution.  Here is an example zero configuration security policy:</p>
 
@@ -224,7 +224,7 @@ Path: [built-in]
   &lt;policy domain=\"coder\" rights=\"none\" pattern=\"MVG\"/> \
 &lt;/policymap>";</code></pre>
 
-<h1><a class="anchor" id="other"></a>Other Security Considerations</h1>
+<h2><a class="anchor" id="other"></a>Other Security Considerations</h2>
 
 <p>If you spot a security flaw in ImageMagick, post your concern as an issue to
 <a href="https://github.com/ImageMagick/ImageMagick/issues">GitHub</a>.  Be sure to include how to reproduce the security flaw and a link to any images needed to reproduce the flaw.  Alternatively, <a href="https://imagemagick.org/script/contact.php">contact us</a> and select Security Issue as the issue.</p>

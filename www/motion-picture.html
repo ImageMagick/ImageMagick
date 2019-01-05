@@ -95,7 +95,7 @@
 
 <p>The header can contain Film and/or Television specific data related to a production. For example the television header can contain a SMPTE time code so that shots exported as a DPX sequence from a production's edit can be easily replaced once any effects have been added. The film header holds information about the reel of film the frames originated from and various camera settings that were used while filming.  All these details usually stay with the images as they are passed between post-production companies.</p>
 
-<h1><a class="anchor" id="log"></a>Log Format</h1>
+<h2><a class="anchor" id="log"></a>Log Format</h2>
 
 <p>The color values for each pixel are often stored logarithmically (particularly if the sequence is destined to be transferred back on to film) which more naturally reflects the density of how color information is stored in the emulsion on the original film. When viewed without alteration logarithmic files appear to have very low contrast (leftmost image), and so require a 'look up table' to translate the logarithmic image to something that resembles what you might see if the image was transferred back to film and projected in a cinema (rightmost image). Apart from making the image linear (like most typical computer images) and adjusting the gamma level this table sets where the black and white point lies.</p>
 
@@ -113,7 +113,7 @@
   <a href="../images/bluebells_darker.jpg"><img src="../images/bluebells_darker.jpg" width="384" height="288" class="image-slices" alt="bluebells-darker" /></a>
 </ul>
 
-<h1><a class="anchor" id="properties"></a>DPX Properties</h1>
+<h2><a class="anchor" id="properties"></a>DPX Properties</h2>
 
 <p>ImageMagick supports these DPX properties:</p>
 
@@ -182,7 +182,7 @@ dpx:user.data
 <pre class="highlight"><code>convert bluebells.dpx -define dpx:television.time.code=10:00:02:15 bluebells-001.dpx
 </code></pre>
 
-<h1><a class="anchor" id="settings"></a>DPX Settings</h1>
+<h2><a class="anchor" id="settings"></a>DPX Settings</h2>
 
 <p>Use <a href="command-line-options.html#set">-set</a> to specify the image or film gamma or black and white points.  For example use:
 </p>

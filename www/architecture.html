@@ -85,7 +85,7 @@
 
 <p class="lead magick-description">The citizens of Oz were quite content with their benefactor, the all-powerful Wizard.  They accepted his wisdom and benevolence without ever questioning the who, why, and where of his power.  Like the citizens of Oz, if you feel comfortable that ImageMagick can help you convert, edit, or compose your images without knowing what goes on behind the curtain, feel free to skip this section.  However, if you want to know more about the software and algorithms behind ImageMagick, read on.  To fully benefit from this discussion, you should be comfortable with image nomenclature and be familiar with computer programming.</p>
 
-<h1><a class="anchor" id="overview"></a>Architecture Overview</h1>
+<h2><a class="anchor" id="overview"></a>Architecture Overview</h2>
 
 <p>An image typically consists of a rectangular region of pixels and metadata.  To convert, edit, or compose an image in an efficient manner, we need convenient access to any pixel anywhere within the region (and sometimes outside the region).  And in the case of an image sequence, we need access to any pixel of any region of any image in the sequence.  However, there are hundreds of image formats such JPEG, TIFF, PNG, GIF, etc., that makes it difficult to access pixels on demand.  Within these formats we find differences in:</p>
 
@@ -126,7 +126,7 @@
 
 <p>ImageMagick consists of nearly a half million lines of C code and optionally depends on several million lines of code in dependent libraries (e.g. JPEG, PNG, TIFF libraries).  Given that, one might expect a huge architecture document.  However, a great majority of image processing is simply accessing pixels and its metadata and our simple, elegant, and efficient implementation makes this easy for the ImageMagick developer.  We discuss the implementation of the pixel cache and getting and setting image properties and profiles in the next few sections. Next, we discuss using ImageMagick within a <a href="architecture.html#threads">thread</a> of execution.  In the final sections, we discuss <a href="architecture.html#coders">image coders</a> to read or write a particular image format followed by a few words on creating a <a href="architecture.html#filters">filter</a> to access or update pixels based on your custom requirements.</p>
 
-<h1><a class="anchor" id="cache"></a>The Pixel Cache</h1>
+<h2><a class="anchor" id="cache"></a>The Pixel Cache</h2>
 
 <p>The ImageMagick pixel cache is a repository for image pixels with up to 32 channels.  The channels are stored contiguously at the depth specified when ImageMagick was built.  The channel depths are 8 bits-per-pixel component for the Q8 version of ImageMagick, 16 bits-per-pixel component for the Q16 version, and 32 bits-per-pixel component for the Q32 version.  By default pixel components are 32-bit floating-bit <a href="high-dynamic-range.html">high dynamic-range</a> quantities. The channels can hold any value but typically contain red, green, blue, and alpha intensities or cyan, magenta, yellow, black and alpha intensities.  A channel might contain the colormap indexes for colormapped images or the black channel for CMYK images.  The pixel cache storage may be heap memory, disk-backed memory mapped, or on disk.  The pixel cache is reference-counted.  Only the cache properties are copied when the cache is cloned.  The cache pixels are subsequently copied only when you signal your intention to update any of the pixels.</p>
 
@@ -435,7 +435,7 @@ convert image.mpc -crop 100x100+200+0 +repage 3.png
 
 <p>MPC is ideal for web sites.  It reduces the overhead of reading and writing an image.  We use it exclusively at our <a href="../MagickStudio/scripts/MagickStudio.cgi">online image studio</a>.</p>
 
-<h1><a class="anchor" id="stream"></a>Streaming Pixels</h1>
+<h2><a class="anchor" id="stream"></a>Streaming Pixels</h2>
 
 <p>ImageMagick provides for streaming pixels as they are read from or written to an image.  This has several advantages over the pixel cache.  The time and resources consumed by the pixel cache scale with the area of an image, whereas the pixel stream resources scale with the width of an image.  The disadvantage is the pixels must be consumed as they are streamed so there is no persistence.</p>
 
@@ -466,7 +466,7 @@ image=ReadStream(image_info,&amp;StreamPixels,exception);
 
 <p>We also provide a lightweight tool, <a href="../www/stream.html">stream</a>, to stream one or more pixel components of the image or portion of the image to your choice of storage formats.  It writes the pixel components as they are read from the input image a row at a time making <a href="../www/stream.html">stream</a> desirable when working with large images or when you require raw pixel components.  A majority of the image formats stream pixels (red, green, and blue) from left to right and top to bottom.  However, a few formats do not support this common ordering (e.g. the PSD format).</p>
 
-<h1><a class="anchor" id="properties"></a>Image Properties and Profiles</h1>
+<h2><a class="anchor" id="properties"></a>Image Properties and Profiles</h2>
 
 <p>Images have metadata associated with them in the form of properties (e.g. width, height, description, etc.) and profiles (e.g. EXIF, IPTC, color management).  ImageMagick provides convenient methods to get, set, or update image properties and get, set, update, or apply profiles.  Some of the more popular image properties are associated with the Image structure in the MagickCore API.  For example:</p>
 <pre class="highlight"><code>(void) printf("image width: %lu, height: %lu\n",image-&gt;columns,image-&gt;rows);
@@ -497,7 +497,7 @@ if (profile != (StringInfo *) NULL)
   (void) PrintStringInfo(stdout,"EXIF",profile);
 </code></pre>
 
-<h1><a class="anchor" id="tera-pixel"></a>Large Image Support</h1>
+<h2><a class="anchor" id="tera-pixel"></a>Large Image Support</h2>
 <p>ImageMagick can read, process, or write mega-, giga-, or tera-pixel image sizes.  An image width or height can range from 1 to 2 giga-pixels on a 32 bit OS and up to 9 exa-pixels on a 64-bit OS.  Note, that some image formats have restrictions on image size.  For example, Photoshop images are limited to 300,000 pixels for width or height.  Here we resize an image to a quarter million pixels square:</p>
 <pre class="highlight"><code>convert logo: -resize 250000x250000 logo.miff
 </code></pre>
@@ -530,7 +530,7 @@ convert -limit memory 2mb -limit map 2mb -limit disk 2gb \
 </code></pre>
 <p>Due to network latency, expect a substantial slow-down in processing your workflow.</p>
 
-<h1><a class="anchor" id="threads"></a>Threads of Execution</h1>
+<h2><a class="anchor" id="threads"></a>Threads of Execution</h2>
 
 <p>Many of ImageMagick's internal algorithms are threaded to take advantage of speed-ups offered by the multicore processor chips. However, you are welcome to use ImageMagick algorithms in your threads of execution with the exception of the MagickCore's GetVirtualPixels(), GetAuthenticPixels(), QueueAuthenticPixels(), or SyncAuthenticPixels() pixel cache methods.  These methods are intended for one thread of execution only with the exception of an OpenMP parallel section.  To access the pixel cache with more than one thread of execution, use a cache view.  We do this for the <a href="api/composite.html#CompositeImage">CompositeImage()</a> method, for example.  Suppose we want to composite a single source image over a different destination image in each thread of execution.  If we use GetVirtualPixels(), the results are unpredictable because multiple threads would likely be asking for different areas of the pixel cache simultaneously.  Instead we use GetCacheViewVirtualPixels() which creates a unique view for each thread of execution ensuring our program behaves properly regardless of how many threads are invoked.  The other program interfaces, such as the <a href="../www/magick-wand.html">MagickWand API</a>, are completely thread safe so there are no special precautions for threads of execution.</p>
 
@@ -675,7 +675,7 @@ Performance[12]: 10i 4.525ips 0.799e 18.320u 0:02.210
 <p>The sweet spot for this example is 6 threads. This makes sense since there are 6 physical cores.  The other 6 are hyperthreads. It appears that sharpening does not benefit from hyperthreading.</p>
 <p>In certain cases, it might be optimal to set the number of threads to 1 or to disable OpenMP completely with the <a href="resources.html#environment">MAGICK_THREAD_LIMIT</a> environment variable, <a href="command-line-options.html#limit">-limit</a> command line option,  or the  <a href="resources.html#configure">policy.xml</a> configuration file.</p>
 
-<h1><a class="anchor" id="distributed"></a>Heterogeneous Distributed Processing</h1>
+<h2><a class="anchor" id="distributed"></a>Heterogeneous Distributed Processing</h2>
 <p>ImageMagick includes support for heterogeneous distributed processing with the <a href="http://en.wikipedia.org/wiki/OpenCL">OpenCL</a> framework.  OpenCL kernels within ImageMagick permit image processing algorithms to execute across heterogeneous platforms consisting of CPUs, GPUs, and other processors.  Depending on your platform, speed-ups can be an order of magnitude faster than the traditional single CPU.</p>
 
 <p>First verify that your version of ImageMagick includes support for the OpenCL feature:</p>
@@ -753,7 +753,7 @@ __kernel void Convolve(const __global CLPixelType *source,__constant float *filt
 
 <p>Note, that under Windows, you might have an issue with TDR (Timeout Detection and Recovery of GPUs). Its purpose is to detect runaway tasks hanging the GPU by using an execution time threshold.  For some older low-end GPUs running the OpenCL filters in ImageMagick, longer execution times might trigger the TDR mechanism and pre-empt the GPU image filter.  When this happens, ImageMagick automatically falls back to the CPU code path and returns the expected results.  To avoid pre-emption, increase the <a href="http://msdn.microsoft.com/en-us/library/windows/hardware/gg487368.aspx">TdrDelay</a> registry key.</p>
 
-<h1><a class="anchor" id="coders"></a>Custom Image Coders</h1>
+<h2><a class="anchor" id="coders"></a>Custom Image Coders</h2>
 
 <p>An image coder (i.e. encoder / decoder) is responsible for registering, optionally classifying, optionally reading, optionally writing, and unregistering one image format (e.g.  PNG, GIF, JPEG, etc.).  Registering an image coder alerts ImageMagick a particular format is available to read or write.  While unregistering tells ImageMagick the format is no longer available.  The classifying method looks at the first few bytes of an image and determines if the image is in the expected format.  The reader sets the image size, colorspace, and other properties and loads the pixel cache with the pixels.  The reader returns a single image or an image sequence (if the format supports multiple images per file), or if an error occurs, an exception and a null image.  The writer does the reverse.  It takes the image properties and unloads the pixel cache and writes them as required by the image format.</p>
 
@@ -1185,7 +1185,7 @@ display logo.mgk
 
 <p>We provide the <a href="https://imagemagick.org/download/kits/">Magick Coder Kit</a> to help you get started writing your own custom coder.</p>
 
-<h1><a class="anchor" id="filters"></a>Custom Image Filters</h1>
+<h2><a class="anchor" id="filters"></a>Custom Image Filters</h2>
 
 <p>ImageMagick provides a convenient mechanism for adding your own custom image processing algorithms.  We call these image filters and they are invoked from the command line with the <a href="command-line-options.html#process">-process</a> option or from the MagickCore API method <a href="api/module.html#ExecuteModuleProcess">ExecuteModuleProcess()</a>.</p>
 
