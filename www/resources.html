@@ -19,7 +19,7 @@
   <meta name="author" content="ImageMagick Studio LLC" />
   <meta name="revisit-after" content="2 DAYS" />
   <meta name="resource-type" content="document" />
-  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC" />
+  <meta name="copyright" content="Copyright (c) 1999-2019 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
@@ -30,13 +30,13 @@
 </head>
 <body>
   <header>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
+    <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
         <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
@@ -85,7 +85,7 @@
 
 <p class="lead magick-description">ImageMagick depends on a number of external resources including configuration files, loadable modules, fonts, and environment variables.</p>
 
-<h2><a class="anchor" id="configure"></a>Configuration Files</h2>
+<h1><a class="anchor" id="configure"></a>Configuration Files</h1>
 
 <p>ImageMagick depends on a number of external configuration files detailed here:</p>
 
@@ -221,7 +221,7 @@ $USERPROFILE/.config/ImageMagick
 
 <p>If a configuration file cannot not be found, ImageMagick relies on built-in default values.</p>
 
-<h2><a class="anchor" id="modules"></a>Modules</h2>
+<h1><a class="anchor" id="modules"></a>Modules</h1>
 
 <h5>Coders</h5>
 <p>An image coder (i.e. encoder / decoder) is responsible for registering, optionally classifying, optionally reading, optionally writing, and unregistering one image format (e.g. PNG, GIF, JPEG, etc.).  ImageMagick searches for coders in the following order and it uses the first match found:</p>
@@ -244,7 +244,7 @@ $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
 &lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.8/modules-Q16/filters</code></pre>
 
-<h2><a class="anchor" id="fonts"></a>Fonts</h2>
+<h1><a class="anchor" id="fonts"></a>Fonts</h1>
 
 <p>ImageMagick is able to load raw TrueType and Postscript font files.  It searches for the font configuration file, <a href="resources.html#type.xml">type.xml</a>, in the following order, and loads them if found:</p>
 
@@ -256,7 +256,7 @@ $HOME/.config/ImageMagick
 &lt;<var>client path</var>&gt;/etc/ImageMagick
 $MAGICK_FONT_PATH</code></pre>
 
-<h2><a class="anchor" id="environment"></a>Environment Variables</h2>
+<h1><a class="anchor" id="environment"></a>Environment Variables</h1>
 
 <p>Environment variables recognized by ImageMagick include:</p>
 
@@ -389,4 +389,4 @@ $MAGICK_FONT_PATH</code></pre>
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 27th December 2018 09:21 -->
+<!-- Magick Cache 5th January 2019 11:42 -->

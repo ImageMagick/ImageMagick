@@ -19,7 +19,7 @@
   <meta name="author" content="ImageMagick Studio LLC" />
   <meta name="revisit-after" content="2 DAYS" />
   <meta name="resource-type" content="document" />
-  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC" />
+  <meta name="copyright" content="Copyright (c) 1999-2019 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
@@ -30,16 +30,16 @@
 </head>
 <body>
   <header>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
+    <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
-        <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="api/quantize.html">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item ">
         <a class="nav-link" href="../www/download.html">Download</a>
@@ -84,14 +84,14 @@
 
 <p class="lead magick-description">This document describes the requirements and instructions to build ImageMagick for Windows on your own machine.</p>
 
-<h2>Requirements</h2>
+<h1>Requirements</h1>
 <ul>
 <li>Visual Studio 2013 (or newer)</li>
 <li>Git for Windows</li>
 <li>AMD APP SDK (optional for OpenCL support)</li>
 </ul>
 
-<h2>Install Visual Studio dependencies</h2>
+<h1>Install Visual Studio dependencies</h1>
 <p>To build ImageMagick with Visual Studio the following components should be installed:</p:
 
 <ul>
@@ -103,13 +103,13 @@
 
 <p>Naming of these components might differ between version of Visual Studio. The example above use the Visual Studio 2017 names.</p>
 
-<h2>Clone the dependencies</h2>
+<h1>Clone the dependencies</h1>
 <p>The ImageMagick library is build with a number of third party libraries. Run <code>CloneRepositories.cmd</code> to clone these libraries and the ImageMagick library.</p>
 
-<h2>Build configure.exe</h2>
+<h1>Build configure.exe</h1>
 <p>One of the folders that was created in the previous step is called <code>VisualMagick</code> and this folder contains a folder called <code>configure</code>. This folder contains a solution <code>configure.sln</code>. Open this solution with Visual Studio and start a Release build of the project. This will create a file called <code>configure.exe</code> in the folder. Running this program will start a Wizard that allows configuration of ImageMagick and its individual components.</p>
 
-<h2>Build ImageMagick</h2>
+<h1>Build ImageMagick</h1>
 <p>Depending on which options where chosen when running <code>configure.exe</code> one of the following solutions will be created in the <code>VisualMagick</code> folder:</p>
 
 <ul>
@@ -142,4 +142,3 @@
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 27th December 2018 10:13 -->

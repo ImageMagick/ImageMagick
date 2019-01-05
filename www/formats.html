@@ -19,7 +19,7 @@
   <meta name="author" content="ImageMagick Studio LLC" />
   <meta name="revisit-after" content="2 DAYS" />
   <meta name="resource-type" content="document" />
-  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC" />
+  <meta name="copyright" content="Copyright (c) 1999-2019 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
@@ -30,13 +30,13 @@
 </head>
 <body>
   <header>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
+    <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
         <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
@@ -92,7 +92,7 @@
 
 <p>On some platforms, ImageMagick automagically processes these extensions: .gz for Zip compression, .Z for Unix compression, .bz2 for block compression, and .pgp for PGP encryption. For example, a PNM image called image.pnm.gz is automagically uncompressed.</p>
 
-<h2><a class="anchor" id="colorspace"></a>A Word about Colorspaces</h2>
+<h1><a class="anchor" id="colorspace"></a>A Word about Colorspaces</h1>
  <p>A majority of the image formats assume an sRGB
 colorspace (e.g. JPEG, PNG, etc.).  A few support only linear RGB (e.g. EXR,
 DPX, CIN, HDR) or only linear GRAY (e.g. PGM).  A few formats support CMYK.
@@ -143,7 +143,7 @@ example,</p>
 <pre class="highlight"><code>  convert lab.tif -colorspace RGB -resize 50% -colorspace Lab resize.jpg
 </code></pre>
 
-<h2><a class="anchor" id="supported"></a>Supported Image Formats</h2>
+<h1><a class="anchor" id="supported"></a>Supported Image Formats</h1>
 
 <p>ImageMagick supports reading over 100 major file formats (not
 including sub-formats). The following table provides a summary of
@@ -1272,7 +1272,7 @@ the supported image formats.</p>
 </table>
 </div>
 
-<h2><a class="anchor" id="pseudo"></a>Pseudo-image Formats</h2>
+<h1><a class="anchor" id="pseudo"></a>Pseudo-image Formats</h1>
 
 <p>ImageMagick supports a number of image format specifications which refer to images prepared via an algorithm, or input/output targets. The following table lists these pseudo-image formats:</p>
 
@@ -1505,7 +1505,7 @@ the supported image formats.</p>
 </table>
 </div>
 
-<h2><a class="anchor" id="builtin-images"></a>Built-in Images</h2>
+<h1><a class="anchor" id="builtin-images"></a>Built-in Images</h1>
 
 <p>ImageMagick includes a number of built-in (embedded) images which may be referenced as if they were an image file. The <code>magick:</code> format tag may be used via the syntax <code>magick:</code><var>name</var> to request an embedded image (e.g. <code>magick:logo</code>). For backwards compatibility, the image specifications <code>GRANITE:</code>, <code>LOGO:</code>, <code>NETSCAPE:</code>, and <code>ROSE:</code> may also be used to request images with those names.</p>
 
@@ -1555,7 +1555,7 @@ the supported image formats.</p>
 
 </table></div>
 
-<h2><a class="anchor" id="builtin-patterns"></a>Built-in Patterns</h2>
+<h1><a class="anchor" id="builtin-patterns"></a>Built-in Patterns</h1>
 
 <p>ImageMagick includes a number of built-in (embedded) patterns which may be referenced as if they were an image file. The <code>pattern:</code> format tag may be used via the syntax <code>pattern:</code><var>name</var> to request an embedded pattern (e.g. <code>pattern:checkerboard</code>). The pattern size is controlled with the <a href="command-line-options.html#size">-size</a> command line option.</p>
 
@@ -1947,7 +1947,7 @@ the supported image formats.</p>
   </tr>
 </table></div>
 
-<h2><a class="anchor" id="embedded"></a>Embedded Image Profiles</h2>
+<h1><a class="anchor" id="embedded"></a>Embedded Image Profiles</h1>
 
 <p>ImageMagick provides a number of format identifiers which are used to add, remove, and save embedded profiles for images which can support embedded profiles. Image types which may contain embedded profiles are TIFF, JPEG, and PDF.</p>
 
@@ -2036,4 +2036,4 @@ the supported image formats.</p>
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 27th December 2018 09:32 -->
+<!-- Magick Cache 5th January 2019 11:42 -->

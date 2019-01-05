@@ -19,7 +19,7 @@
   <meta name="author" content="ImageMagick Studio LLC" />
   <meta name="revisit-after" content="2 DAYS" />
   <meta name="resource-type" content="document" />
-  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC" />
+  <meta name="copyright" content="Copyright (c) 1999-2019 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
@@ -30,16 +30,16 @@
 </head>
 <body>
   <header>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
+    <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
-        <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="api/quantize.html">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item ">
         <a class="nav-link" href="../www/download.html">Download</a>
@@ -85,7 +85,7 @@
 
 <p  class="lead magick-description">It's possible you don't want to concern yourself with advanced installation under Unix or Linux systems.  If so, you also have the option of installing a pre-compiled <a href="../www/download.html#unix">binary release</a>  or if you still want to install from source without all the fuss see the simple <a href="install-source.html#unix">Install From Source</a> instructions.  However, if you want to customize the configuration and installation of ImageMagick under Unix or Linux systems, lets begin.</p>
 
-<h2><a class="anchor" id="download"></a>Download &amp; Unpack</h2>
+<h1><a class="anchor" id="download"></a>Download &amp; Unpack</h1>
 
 <p>ImageMagick builds on a variety of Unix and Unix-like operating systems including Linux, Solaris, FreeBSD, Mac OS X, and others.  A compiler is required and fortunately almost all modern Unix systems have one.  Download <a href="https://imagemagick.org/download/ImageMagick.tar.gz">ImageMagick.tar.gz</a> from <a href="../download">ftp.imagemagick.org</a> or its <a href="../www/download.html">mirrors</a> and verify the distribution against its <a href="https://imagemagick.org/download/digest.rdf">message digest</a>.</p>
 
@@ -97,11 +97,11 @@
 <p>Now that you have the ImageMagick Unix/Linux source distribution unpacked, let's configure it.</p>
 
 
-<h2><a class="anchor" id="configure"></a>Configure</h2>
+<h1><a class="anchor" id="configure"></a>Configure</h1>
 
 <p>The configure script looks at your environment and decides what it can cobble together to get ImageMagick compiled and installed on your system.  This includes finding a compiler, where your compiler header files are located (e.g. stdlib.h), and if any delegate libraries are available for ImageMagick to use (e.g. JPEG, PNG, TIFF, etc.).  If you are willing to accept configure's default options, and build from within the source directory, you can simply type:</p>
 
-<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.8-20</span><span class='crtout'></span><span class="crtprompt">$ </span><span class='crtin'>./configure</span></pre>
+<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.8-23</span><span class='crtout'></span><span class="crtprompt">$ </span><span class='crtin'>./configure</span></pre>
 <p>Watch the configure script output to verify that it finds everything that
  you think it should.  Pay particular attention to the last lines of the script output.  For example, here is a recent report from our system:</p>
 
@@ -447,7 +447,7 @@ Options used to compile and link:
 
 <p>ImageMagick is now configured and ready to build</p>
 
-<h2><a class="anchor" id="build"></a>Build</h2>
+<h1><a class="anchor" id="build"></a>Build</h1>
 
 <p>Once ImageMagick is configured, these standard build targets are available from the generated <code>make</code> files:</p>
 
@@ -473,7 +473,7 @@ Options used to compile and link:
 
 <p>Once built, you can optionally install ImageMagick on your system as discussed below.</p>
 
-<h2><a class="anchor" id="install"></a>Install</h2>
+<h1><a class="anchor" id="install"></a>Install</h1>
 
 <p>Now that ImageMagick is configured and built, type:</p>
 
@@ -509,7 +509,7 @@ identify logo.gif
 
 <p>Ghostscript is a prerequisite, otherwise the EPS, PS, and PDF tests will fail.  Note that due to differences between the developer's environment and your own it is possible that a few tests may fail even though the results are ok. Differences between the developer's environment environment and your own may include the compiler, the CPU type, and the library versions used. The ImageMagick developers use the current release of all dependent libraries.</p>
 
-<h2><a class="anchor" id="linux"></a>Linux-specific Build instructions</h2>
+<h1><a class="anchor" id="linux"></a>Linux-specific Build instructions</h1>
 
 <p>Download <a href="https://imagemagick.org/download/linux/SRPMS/ImageMagick.src.rpm">ImageMagick.src.rpm</a> from <a href="../download">ftp.imagemagick.org</a> or its <a href="../www/download.html">mirrors</a> and verify the distribution against its <a href="https://imagemagick.org/download/linux/SRPMS/digest.rdf">message digest</a>.</p>
 
@@ -521,7 +521,7 @@ identify logo.gif
 <p>After the build you, locate the RPMS folder and install the ImageMagick binary RPM distribution:</p>
 
 <pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>rpm -ivh ImageMagick-7.0.8-?.*.rpm</span></pre>
-<h2><a class="anchor" id="macosx"></a>Mac OS X-specific Build instructions</h2>
+<h1><a class="anchor" id="macosx"></a>Mac OS X-specific Build instructions</h1>
 
 <p>Perform these steps as an administrator or with the <tt>sudo</tt> command:</p>
 
@@ -545,7 +545,7 @@ sudo port -v install graphviz +gs +wmf +jbig +jpeg2 +lcms
 
 	  <p><a href="../www/download.html">Download</a> the ImageMagick source distribution and verify the distribution against its <a href="https://imagemagick.org/download/digest.rdf">message digest</a>.</p>
 	  <p>Unpack and change into the top-level ImageMagick directory:</p>
-		<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>tar xvzf ImageMagick-7.0.8-20.tar.gz</span><span class='crtout'></span><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.8-20</span></pre>	  <p>Configure ImageMagick:</p>
+		<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>tar xvzf ImageMagick-7.0.8-23.tar.gz</span><span class='crtout'></span><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.8-23</span></pre>	  <p>Configure ImageMagick:</p>
 <pre class="highlight"><code>./configure --prefix=/opt --with-quantum-depth=16 \
   --disable-dependency-tracking --with-x=yes \
   --x-includes=/usr/X11R6/include --x-libraries=/usr/X11R6/lib/ \
@@ -568,12 +568,12 @@ sudo port -v install graphviz +gs +wmf +jbig +jpeg2 +lcms
 <pre class="highlight"><code>display -display :0
 </code></pre>
 
-<h2><a class="anchor" id="mingw"></a>MinGW-specific Build instructions</h2>
+<h1><a class="anchor" id="mingw"></a>MinGW-specific Build instructions</h1>
 
 <p>Although you can download and install delegate libraries yourself, many are already available in the <a href="http://gnuwin32.sourceforge.net/">GnuWin32</a> distribution.  Download and install whichever delegate libraries you require such as JPEG, PNG, TIFF, etc.  Make sure you specify the development headers when you install a package.  Next type,</p>
 
-<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>tar jxvf ImageMagick-7.0.8-?.tar.bz2</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.8-20</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>./configure --without-perl</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>make</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>sudo make install</span></pre>
-<h2><a class="anchor" id="problems"></a>Dealing with Unexpected Problems</h2>
+<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>tar jxvf ImageMagick-7.0.8-?.tar.bz2</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.8-23</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>./configure --without-perl</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>make</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>sudo make install</span></pre>
+<h1><a class="anchor" id="problems"></a>Dealing with Unexpected Problems</h1>
 
 <p>Chances are the download, configure, build, and install of ImageMagick went flawlessly as it is intended, however, certain systems and environments may cause one or more steps to fail.  We discuss a few problems we've run across and how to take corrective action to ensure you have a working release of ImageMagick</p>
 

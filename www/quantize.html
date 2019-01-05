@@ -19,7 +19,7 @@
   <meta name="author" content="ImageMagick Studio LLC" />
   <meta name="revisit-after" content="2 DAYS" />
   <meta name="resource-type" content="document" />
-  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC" />
+  <meta name="copyright" content="Copyright (c) 1999-2019 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
@@ -30,16 +30,16 @@
 </head>
 <body>
   <header>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
+    <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
-        <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="api/quantize.html">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item ">
         <a class="nav-link" href="../www/download.html">Download</a>
@@ -85,7 +85,7 @@
 
 <p class="lead magick-description">This document describes how ImageMagick performs color reduction on an image. To fully understand what follows, you should have a knowledge of basic imaging techniques and the tree data structure and terminology.</p>
 
-<h2><a class="anchor" id="describe"></a>Algorithm Description</h2>
+<h1><a class="anchor" id="describe"></a>Algorithm Description</h1>
 
 <p>For purposes of color allocation, an image is a set of <var>n</var> pixels, where each pixel is a point in RGB space. RGB space is a 3-dimensional vector space, and each pixel, <var>p(i)</var>, is defined by an ordered triple of red, green, and blue coordinates, (<var>r(i)</var>, <var>g(i)</var>, <var>b(i)</var>).</p>
 
@@ -177,7 +177,7 @@ while number of nodes with (n2 &gt; 0) &gt; required maximum number of colors
 
 <p>Empirical evidence suggests that the distances in color spaces such as YUV, or YIQ correspond to perceptual color differences more closely than do distances in RGB space.  These color spaces may give better results when color reducing an image. Here the algorithm is as described except each pixel is a point in the alternate color space. For convenience, the color components are normalized to the range 0 to a maximum value, <var>Cmax</var>. The color reduction can then proceed as described.</p>
 
-<h2><a class="anchor" id="measure"></a>Measuring Color Reduction Error</h2>
+<h1><a class="anchor" id="measure"></a>Measuring Color Reduction Error</h1>
 
 <p>Depending on the image, the color reduction error may be obvious or invisible. Images with high spatial frequencies (such as hair or grass) will show error much less than pictures with large smoothly shaded areas (such as faces). This because the high-frequency contour edges introduced by the color reduction process are masked by the high frequencies in the image.</p>
 
@@ -226,4 +226,3 @@ while number of nodes with (n2 &gt; 0) &gt; required maximum number of colors
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 27th December 2018 07:54 -->

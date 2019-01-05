@@ -19,7 +19,7 @@
   <meta name="author" content="ImageMagick Studio LLC" />
   <meta name="revisit-after" content="2 DAYS" />
   <meta name="resource-type" content="document" />
-  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC" />
+  <meta name="copyright" content="Copyright (c) 1999-2019 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
@@ -30,16 +30,16 @@
 </head>
 <body>
   <header>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
+    <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
-        <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="api/quantize.html">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item ">
         <a class="nav-link" href="../www/download.html">Download</a>
@@ -90,7 +90,7 @@
 
 <p>You can try PerlMagick from your Web browser at the <a href="../MagickStudio/scripts/MagickStudio.cgi">ImageMagick Studio</a>. Or, you can see <a href="examples.html">examples</a> of select PerlMagick functions.</p>
 
-<h2><a class="anchor" id="installation"></a>Installation</h2>
+<h1><a class="anchor" id="installation"></a>Installation</h1>
 
 <p><b>UNIX</b></p>
 
@@ -156,7 +156,7 @@ make
 
 <p>You are now ready to utilize the PerlMagick methods from within your Perl scripts.</p>
 
-<h2><a class="anchor" id="overview"></a>Overview</h2>
+<h1><a class="anchor" id="overview"></a>Overview</h1>
 
 <p>Any script that wants to use PerlMagick methods must first define the methods within its namespace and instantiate an image object. Do this with:</p>
 
@@ -201,7 +201,7 @@ $image = Image::Magick::Q16-&gt;new;
 <pre class="highlight"><code>$ENV{PATH}' . "='/../bin:/usr/bin:/usr/local/bin';
 </code></pre>
 
-<h2><a class="anchor" id="example"></a>Example Script</h2>
+<h1><a class="anchor" id="example"></a>Example Script</h1>
 
 <p>Here is an example script to get you started:</p>
 
@@ -280,7 +280,7 @@ push(@$q, @$p);  # push the images from object p onto object q
 $p-&gt;Convolve([1, 2, 1, 2, 4, 2, 1, 2, 1]);   # 3x3 Gaussian kernel
 </code></pre>
 
-  <h2><a class="anchor" id="read"></a>Read or Write an Image</h2>
+  <h1><a class="anchor" id="read"></a>Read or Write an Image</h1>
 
 <p>Use the methods listed below to either read, write, or display an image or image sequence:</p>
 
@@ -369,7 +369,7 @@ close(IMAGE);
 
 <p>You can optionally add <i>Image</i> to any method name. For example, ReadImage() is an alias for method Read().</p>
 
-<h2><a class="anchor" id="manipulate"></a>Manipulate an Image</h2>
+<h1><a class="anchor" id="manipulate"></a>Manipulate an Image</h1>
 
 <p>Once you create an image with, for example, method ReadImage() you may want to operate on it. Below is a list of all the image manipulations methods available to you with PerlMagick.  There are <a href="examples.html">examples</a> of select PerlMagick methods. Here is an example call to an image manipulation method:</p>
 
@@ -1324,7 +1324,7 @@ rectangle 60, 60 300, 300
 
 <p>Most of the attributes listed above have an analog in <a href="../www/convert.html">convert</a>. See the documentation for a more detailed description of these attributes.</p>
 
-<h2><a class="anchor" id="set-attribute"></a>Set an Image Attribute</h2>
+<h1><a class="anchor" id="set-attribute"></a>Set an Image Attribute</h1>
 
 <p>Use method Set() to set an image attribute. For example,</p>
 
@@ -1737,7 +1737,7 @@ can use the integers 1 and 0.</p>
 <p>Most of the attributes listed above have an analog in
 <a href="../www/convert.html">convert</a>. See the documentation for a more detailed description of these attributes.</p>
 
-<h2><a class="anchor" id="get-attribute"></a>Get an Image Attribute</h2>
+<h1><a class="anchor" id="get-attribute"></a>Get an Image Attribute</h1>
 
 <p>Use method Get() to get an image attribute. For example,</p>
 
@@ -2009,7 +2009,7 @@ $width = $image-&gt;[3]-&gt;Get('columns');
 <p>Most of the attributes listed above have an analog in
 <a href="../www/convert.html">convert</a>. See the documentation for a more detailed description of these attributes.</p>
 
-<h2><a class="anchor" id="compare"></a>Compare an Image to its Reconstruction</h2>
+<h1><a class="anchor" id="compare"></a>Compare an Image to its Reconstruction</h1>
 
 <p>Mathematically and visually annotate the difference between an image and its reconstruction with the Compare() method.  The method supports these parameters:</p>
 
@@ -2064,7 +2064,7 @@ $difference->Display();
 
 <p>In addition to the reported root mean squared error of around 0.024, a difference image is displayed so you can visually identify the difference between the images.</p>
 
-<h2><a class="anchor" id="montage"></a>Create an Image Montage</h2>
+<h1><a class="anchor" id="montage"></a>Create an Image Montage</h1>
 
 <p>Use method Montage() to create a composite image by combining several separate images. The images are tiled on the composite image with the name of the image optionally appearing just below the individual tile. For example,</p>
 
@@ -2194,7 +2194,7 @@ South, SouthEast</td>
 
 <p>Most of the attributes listed above have an analog in <a href="../www/montage.html">montage</a>. See the documentation for a more detailed description of these attributes.</p>
 
-<h2><a class="anchor" id="blobs"></a>Working with Blobs</h2>
+<h1><a class="anchor" id="blobs"></a>Working with Blobs</h1>
 
 <p>A blob contains data that directly represent a particular image
 format in memory instead of on disk. PerlMagick supports
@@ -2242,7 +2242,7 @@ $image=Image::Magick-&gt;new(magick=&gt;'jpg');
 $image-&gt;BlobToImage(@blob);
 </code></pre>
 
-<h2><a class="anchor" id="direct-access"></a>Direct-access to Image Pixels</h2>
+<h1><a class="anchor" id="direct-access"></a>Direct-access to Image Pixels</h1>
 
 <p>Use these methods to obtain direct access to the image pixels:</p>
 
@@ -2288,7 +2288,7 @@ $image-&gt;BlobToImage(@blob);
 </tbody>
 </table>
 
-<h2><a class="anchor" id="miscellaneous"></a>Miscellaneous Methods</h2>
+<h1><a class="anchor" id="miscellaneous"></a>Miscellaneous Methods</h1>
 
 <p>The Append() method append a set of images. For example,</p>
 
@@ -2466,7 +2466,7 @@ $weight = ($image-&gt;QueryFont('Helvetica'))[5];
 
 <p>You can optionally add <i>Image</i> to any method name above. For example, PingImage() is an alias for method Ping().</p>
 
-<h2><a class="anchor" id="exceptions"></a>Handling Exceptions</h2>
+<h1><a class="anchor" id="exceptions"></a>Handling Exceptions</h1>
 
 <p>All PerlMagick methods return an undefined string context upon success. If any problems occur, the error is returned as a string with an embedded numeric status code. A status code less than 400 is a warning. This means that the operation did not complete but was recoverable to some degree. A numeric code greater or equal to 400 is an error and indicates the operation failed completely. Here is how exceptions are returned for the different methods:</p>
 
@@ -2509,7 +2509,7 @@ $x =~ /(\d+)/;
 die "unable to continue" if ($1 == ResourceLimitError);
 </code></pre>
 
-<h2><a class="anchor" id="constants"></a>Constants</h2>
+<h1><a class="anchor" id="constants"></a>Constants</h1>
 
 <p>PerlMagick includes these constants:</p>
 
@@ -2585,4 +2585,3 @@ XServerWarning
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 27th December 2018 09:54 -->

@@ -19,7 +19,7 @@
   <meta name="author" content="ImageMagick Studio LLC" />
   <meta name="revisit-after" content="2 DAYS" />
   <meta name="resource-type" content="document" />
-  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC" />
+  <meta name="copyright" content="Copyright (c) 1999-2019 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
@@ -30,16 +30,16 @@
 </head>
 <body>
   <header>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
+    <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
-        <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="api/quantize.html">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item ">
         <a class="nav-link" href="../www/download.html">Download</a>
@@ -104,10 +104,10 @@ options, and more global use of 'image properties' (more commonly known as
 
 <p>Now that ImageMagick version 7 is released, we continue to support and enhance version 6 for a minimum of 10 years.</p>
 
-<h2><a class="anchor" id="hdri"></a>High Dynamic Range Imaging</h2>
+<h1><a class="anchor" id="hdri"></a>High Dynamic Range Imaging</h1>
 <p>ImageMagick version 7 enables <a href="../www/high-dynamic-range.html">high dynamic range imaging</a> (HDRI) by default.  HDRI accurately represents the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.  In addition, image processing results are more accurate.  The disadvantage is it requires more memory and may result in slower processing times.  If you see differences in the results of your version 6 command-line with version 7, it is likely due to HDRI.  You may need to add <code>-clamp</code> to your command-line to constrain pixels to the 0 .. QuantumRange range, or disable HDRI when you build ImageMagick version 7.  To disable HDRI (recommended for smart phone builds such as iOS or production sites where performance is a premium), simply add <code>--disable-hdri</code> to the configure script command line when building ImageMagick.</p>
 
-<h2><a class="anchor" id="channels"></a>Pixel Channels</h2>
+<h1><a class="anchor" id="channels"></a>Pixel Channels</h1>
 <p>A pixel is comprised of one or more color values, or <var>channels</var> (e.g. red pixel channel).</p>
 <p>Prior versions of ImageMagick (4-6), support 4 to 5 pixel channels (RGBA or CMYKA).  The first 4 channels are accessed with the PixelPacket data structure.   The structure includes 4 members of type Quantum (typically 16-bits) of red, green, blue, and opacity.  The black channel or colormap indexes are supported by a separate method and structure, IndexPacket.  As an example, here is a code snippet from ImageMagick version 6 that negates the color components (but not the alpha component) of the image pixels:</p>
 
@@ -291,9 +291,9 @@ GetAuthenticMetacontent()
 GetCacheViewAuthenticMetacontent()
 GetCacheViewVirtualMetacontent()</code></pre>
 
-<h2><a class="anchor" id="alpha"></a>Alpha</h2>
+<h1><a class="anchor" id="alpha"></a>Alpha</h1>
 <p>We support alpha now, previously opacity.  With alpha, a value of <kbd>0</kbd> means that the pixel does not have any coverage information and is transparent; i.e. there was no color contribution from any geometry because the geometry did not overlap this pixel. A value of <code>QuantumRange</code> means that the pixel is opaque because the geometry completely overlapped the pixel. As a consequence, in version 7, the PixelInfo structure member alpha has replaced the previous opacity member.  Another consequence is the alpha part of a sRGB value in hexadecimal notation is now reversed (e.g. #0000 is fully transparent).</p>
-<h2><a class="anchor" id="colorspace"></a>Colorspace</h2>
+<h1><a class="anchor" id="colorspace"></a>Colorspace</h1>
 <p>The <code>Rec601Luma</code> and <code>Rec709Luma</code> colorspaces are no longer supported.  Instead, specify the <code>gray</code> colorspace and choose from these intensity options:</p>
 <pre class="highlight"><code>Rec601Luma
 Rec601Luminance
@@ -302,10 +302,10 @@ Rec709Luminance</code></pre>
 <p>For example,</p>
 <pre class="highlight"><code>convert myImage.png -intensity Rec709Luminance -colorspace gray myImage.jpg</code></pre>
 
-<h2><a class="anchor" id="grayscale"></a>Grayscale</h2>
+<h1><a class="anchor" id="grayscale"></a>Grayscale</h1>
 <p>Previously, grayscale images were Rec601Luminance and consumed 4 channels: red, green, blue, and alpha.  With version 7, grayscale consumes only 1 channel requiring far less resources as a result.</p>
 
-<h2><a class="anchor" id="mask"></a>Masks</h2>
+<h1><a class="anchor" id="mask"></a>Masks</h1>
 <p>Version 7 supports masks for most image operators.  White pixels in a read mask ignores corresponding pixel in an image whereas white pixels in a write mask protects the corresponding pixel in the image.  From the command-line, you can associate a mask with an image with the <code>-read-mask</code> and <code>-write-mask</code> options.  This polarity is matches the masks in version 6 of ImageMagick for ease of porting your workflow.  For convenience, we continue to support the <code>-mask</code> option in version 7 to match the behavior of version 6.</p>
 <p>In this example, we compute the distortion of a masked reconstructed image:</p>
 <pre class="highlight"><code>compare -metric rmse -read-mask hat_mask.png hat.png wizard.png difference.png</code></pre>
@@ -317,7 +317,7 @@ Rec709Luminance</code></pre>
 convert -density 300 -colorspace srgb image.eps -alpha transparent -clip -alpha opaque +clip -resize 1000x1000 -strip image.png
 </pre>
 
-<h2><a class="anchor" id="core"></a>MagickCore API</h2>
+<h1><a class="anchor" id="core"></a>MagickCore API</h1>
 <p>Here are a list of changes to the MagickCore API:</p>
 <ul>
 <li>Almost all image processing algorithms are now channel aware.</li>
@@ -331,14 +331,14 @@ convert -density 300 -colorspace srgb image.eps -alpha transparent -clip -alpha 
 <li>The ChannelMoments structure member <code>I</code> is now <code>invariant</code>.  <code>I</code> conflicts with the <code>complex.h</code> header.</li>
 <li>We added a length parameter to FormatMagickSize() to permit variable length buffers.</li>
 </ul>
-<h2><a class="anchor" id="core"></a>MagickWand API</h2>
+<h1><a class="anchor" id="core"></a>MagickWand API</h1>
 <p>Here are a list of changes to the MagickWand API:</p>
 <ul>
 <li>Almost all image processing algorithms are now channel aware.</li>
 <li>The DrawMatte() method is now called DrawAlpha().</li>
 <li>The MagickSetImageBias() and MagickSetImageClipMask() methods are no longer supported.</li>
 </ul>
-<h2><a class="anchor" id="core"></a>Magick++ API</h2>
+<h1><a class="anchor" id="core"></a>Magick++ API</h1>
 <p>Here are a list of changes to the Magick++ API:</p>
 <ul>
 <li>Almost all image processing algorithms are now channel aware.</li>
@@ -347,12 +347,12 @@ convert -density 300 -colorspace srgb image.eps -alpha transparent -clip -alpha 
 </code></pre>
 </li>
 </ul>
-<h2><a class="anchor" id="headers"></a>Header Files</h2>
+<h1><a class="anchor" id="headers"></a>Header Files</h1>
 <p>Prior versions of ImageMagick (4-6) reference the ImageMagick header files as <code>magick/</code> and <code>wand/</code>.  ImageMagick 7 instead uses <code>MagickCore/</code> and <code>MagickWand/</code> respectively.  For example,</p>
 <pre class="highlight"><code><code>#include &lt;MagickCore/MagickCore.h>
 #include &lt;MagickWand/MagickWand.h></code></code></pre>
 
-<h2><a class="anchor" id="deprecate"></a>Deprecated Features Removed</h2>
+<h1><a class="anchor" id="deprecate"></a>Deprecated Features Removed</h1>
 <p>All deprecated features from ImageMagick version 6 are removed in version 7.  These include the <code>Magick-config</code> and <code>Wand-config</code> configuration utilities.  Instead use:</p>
 
 <pre class="highlight"><code>MagickCore-config
@@ -364,7 +364,7 @@ MagickWand-config</code></pre>
 <p>The Bessel filter was removed as it is an alias for Jinc.  Use -filter Jinc instead.</p>
 
 
-<h2><a class="anchor" id="cli"></a>Shell API or Command-line Interface</h2>
+<h1><a class="anchor" id="cli"></a>Shell API or Command-line Interface</h1>
 
 <p>As mentioned the primary focus of the changes to the Shell API or Command
 Line Interface is the abstraction so that not only can <var>options</var> be
@@ -604,7 +604,7 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
 <dt class="col-md-4">-passphrase</dt>
 <dd class="col-md-8">old option, unknown meaning</dd>
 </dl>
-<h2><a class="anchor" id="summary"></a>Version 7 Change Summary</h2>
+<h1><a class="anchor" id="summary"></a>Version 7 Change Summary</h1>
 <p>Changes from ImageMagick version 6 to version 7 are summarized here:</p>
 <h5>High Dynamic Range Imaging</h5>
 <ul>
@@ -671,4 +671,3 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 27th December 2018 09:18 -->

@@ -19,7 +19,7 @@
   <meta name="author" content="ImageMagick Studio LLC" />
   <meta name="revisit-after" content="2 DAYS" />
   <meta name="resource-type" content="document" />
-  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC" />
+  <meta name="copyright" content="Copyright (c) 1999-2019 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
@@ -30,13 +30,13 @@
 </head>
 <body>
   <header>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
+    <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
         <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
@@ -1028,10 +1028,10 @@ sides of the image.  </p>
 href="command-line-options.html#splice">-splice</a> that was given the same <var>geometry</var> and <a href="command-line-options.html#gravity">-gravity</a> settings. </p>
 
 <div style="margin: auto;">
-  <h3><a class="anchor" id="clahe"></a>-clahe <var>x-tiles</var><br />-clahe <var>width</var>x<var>height</var>+<var>number-bins</var>+<var>clip-limit</var></h3>
+  <h3><a class="anchor" id="clahe"></a>-clahe <var>width</var>x<var>height</var>{%}{+}<var>number-bins</var>{+}<var>clip-limit</var>{!}</h3>
 </div>
 
-<p class="magick-description">contrast limited adaptive histogram equalization. The image is divided into tiles of <var>width</var> and <var>height</var> pixels.  <var>number-bins</var> is the number of histogram bins per tile (min 2, max 256).  <var>clip-limit</var> is the contrast limit for localised changes in contrast. A clip-limit of 2 to 3 is a good starting place (e.g. -clahe 50x50%+128+3).</p>
+<p class="magick-description">contrast limited adaptive histogram equalization. The image is divided into tiles of <var>width</var> and <var>height</var> pixels.  The tile size should be larger than the size of features to be preserved and respects the aspect ratio of the image.  Add <code>!</code> to force an exact tile width and height. <var>number-bins</var> is the number of histogram bins per tile (min 2, max 65536).  The number of histogram bins should be smaller than the number of pixels in a single tile. <var>clip-limit</var> is the contrast limit for localised changes in contrast. A clip-limit of 2 to 3 is a good starting place (e.g. -clahe 50x50%+128+3).  Very large values will let the histogram equalization do whatever it wants to do, that is result in maximal local contrast. The value 1 will result in the original image.  Note if number of bins and the clip-limit are ommitted, they default to 128 and no clipping respectively.</p>
 
 
 <div style="margin: auto;">
@@ -7783,9 +7783,9 @@ single pixel transparent 'missed' image is returned, in the same way as when a
 </div>
 
 <p class="magick-description">the image type.</p> <p>Choose from: <code>Bilevel</code>,
-<code>Grayscale</code>, <code>GrayscaleMatte</code>, <code>Palette</code>,
-<code>PaletteMatte</code>, <code>TrueColor</code>, <code>TrueColorMatte</code>,
-<code>ColorSeparation</code>, or <code>ColorSeparationMatte</code>.</p>
+<code>Grayscale</code>, <code>GrayscaleAlpha</code>, <code>Palette</code>,
+<code>PaletteAlpha</code>, <code>TrueColor</code>, <code>TrueColorAlpha</code>,
+<code>ColorSeparation</code>, or <code>ColorSeparationAlpha</code>.</p>
 
 <p>Normally, when a format supports different subformats such as grayscale and
 truecolor, the encoder will try to choose an efficient subformat. The <a
@@ -7796,7 +7796,7 @@ only gray pixels are present, use.</p>
 <pre class="highlight"><code>convert bird.png -type TrueColor bird.jpg
 </code></pre>
 
-<p>Similarly, use <a href="command-line-options.html#type">-type TrueColorMatte</a> to force the
+<p>Similarly, use <a href="command-line-options.html#type">-type TrueColorAlpha</a> to force the
 encoder to write an alpha channel even though the image is opaque, if the
 output format supports transparency.</p>
 
@@ -8109,4 +8109,4 @@ but with strict boolean masking. </p>
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 27th December 2018 09:33 -->
+<!-- Magick Cache 5th January 2019 11:43 -->

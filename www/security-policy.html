@@ -19,7 +19,7 @@
   <meta name="author" content="ImageMagick Studio LLC" />
   <meta name="revisit-after" content="2 DAYS" />
   <meta name="resource-type" content="document" />
-  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC" />
+  <meta name="copyright" content="Copyright (c) 1999-2019 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
@@ -30,13 +30,13 @@
 </head>
 <body>
   <header>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
+    <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
         <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
@@ -204,7 +204,7 @@ Path: [built-in]
 
 <p>For additional details about resource limits and the policy configuration file, read <a href="resources.html">Resources</a> and <a href="architecture.html">Architecture</a>.</p>
 
-<h2><a class="anchor" id="synchronize"></a>Pixel Cache Synchronize Policy</h2>
+<h1><a class="anchor" id="synchronize"></a>Pixel Cache Synchronize Policy</h1>
 
 <p>When writing image pixels to disk, ImageMagick firsts preallocates the disk file, which is much faster than fully populating the file with zeros.  To further increase performance, we memory-map the file on disk.  With memory-mapping, we get an increase in performance (up to 5x), however, there remains a possibility that as the disk file is populated, it may run out of free space.  The OS then throws a SIGBUS signal which prevents ImageMagick from continuing.  To prevent a SIGBUS, use this security policy:
 
@@ -214,7 +214,7 @@ Path: [built-in]
 
 <p>Set to True to ensure all image data is fully flushed and synchronized to disk. There is a performance penalty, however, the benefits include ensuring a valid image file in the event of a system crash and early reporting if there is not enough disk space for the image pixel cache.</p>
 
-<h2><a class="anchor" id="zero-configuration"></a>Zero Configuration Security Policy</h2>
+<h1><a class="anchor" id="zero-configuration"></a>Zero Configuration Security Policy</h1>
 
 <p>A zero configuration build of ImageMagick does not permit external configuration files.  To define your security policy, you must instead edit the <code>MagickCore/policy-private.h</code> source module, add your policy statements, and then build the ImageMagick distribution.  Here is an example zero configuration security policy:</p>
 
@@ -224,7 +224,7 @@ Path: [built-in]
   &lt;policy domain=\"coder\" rights=\"none\" pattern=\"MVG\"/> \
 &lt;/policymap>";</code></pre>
 
-<h2><a class="anchor" id="other"></a>Other Security Considerations</h2>
+<h1><a class="anchor" id="other"></a>Other Security Considerations</h1>
 
 <p>If you spot a security flaw in ImageMagick, post your concern as an issue to
 <a href="https://github.com/ImageMagick/ImageMagick/issues">GitHub</a>.  Be sure to include how to reproduce the security flaw and a link to any images needed to reproduce the flaw.  Alternatively, <a href="https://imagemagick.org/script/contact.php">contact us</a> and select Security Issue as the issue.</p>
@@ -261,4 +261,4 @@ Path: [built-in]
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 27th December 2018 10:23 -->
+<!-- Magick Cache 5th January 2019 11:42 -->

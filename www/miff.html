@@ -19,7 +19,7 @@
   <meta name="author" content="ImageMagick Studio LLC" />
   <meta name="revisit-after" content="2 DAYS" />
   <meta name="resource-type" content="document" />
-  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC" />
+  <meta name="copyright" content="Copyright (c) 1999-2019 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
@@ -30,13 +30,13 @@
 </head>
 <body>
   <header>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
+    <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
         <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
@@ -85,7 +85,7 @@
 
 <p class="lead magick-description">The Magick Image File Format (MIFF) is ImageMagick's own platform-independent format for storing bitmap images.  It has an advantage over other image formats in that it stores all metadata known to ImageMagick (e.g. image color profiles, comments, author, copyright, etc.), whereas, other formats may only support a small portion of available metadata or none at all.  A MIFF image file consist of two sections.  The first section is a header composed of keys describing the image in text form.  The next section is the binary image data.  We discuss these sections in detail below.</p>
 
-<h2><a class="anchor" id="miff-header"></a>MIFF Header</h2>
+<h1><a class="anchor" id="miff-header"></a>MIFF Header</h1>
 
 
 <p>The MIFF header is composed entirely of ISO-8859-1 characters.  The fields in the header are key and value combination in the <var>key = value</var> format, with each key and value separated by an equal sign (<code>=</code>).  Each <var>key = value</var> combination is delimited by at least one control or whitespace character.  Comments may appear in the header section and are always delimited by braces.  The MIFF header always ends with a colon (<code>:</code>) character, followed by a <var>ctrl-Z</var> character.  It is also common to proceed the colon with a <var>formfeed</var> and a <var>newline</var> character.  The <var>formfeed</var> prevents the listing of binary data when using the <code>more</code> Unix program, whereas, the <var>ctrl-Z</var> has the same effect with the <code>type</code> command on the Windows command line.</p>
@@ -235,7 +235,7 @@ copyright={© 1999-2018 ImageMagick Studio LLC}
 
 <p>The header is separated from the image data by a <code>:</code> character immediately followed by a <var>newline</var>.</p>
 
-<h2><a class="anchor" id="binary"></a>MIFF Binary Data</h2>
+<h1><a class="anchor" id="binary"></a>MIFF Binary Data</h1>
 
 <p>Next comes the binary image data itself.  How the image data is formatted depends upon the class of the image as specified (or not specified) by the value of the class key in the header.</p>
 
@@ -271,4 +271,4 @@ or fewer colors in the image, each byte of image data contains an index value. I
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 27th December 2018 10:28 -->
+<!-- Magick Cache 5th January 2019 11:43 -->

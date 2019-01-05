@@ -19,7 +19,7 @@
   <meta name="author" content="ImageMagick Studio LLC" />
   <meta name="revisit-after" content="2 DAYS" />
   <meta name="resource-type" content="document" />
-  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC" />
+  <meta name="copyright" content="Copyright (c) 1999-2019 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
@@ -30,13 +30,13 @@
 </head>
 <body>
   <header>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="navbar-collapse collapse" id="navbarsExampleDefault" style="">
+    <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
         <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
@@ -130,7 +130,7 @@
 
 <p>See <a href="../Usage/">Examples of ImageMagick Usage</a> for additional help when using ImageMagick from the command-line.</p>
 
-<h2><a class="anchor" id="anatomy"></a>The Anatomy of the Command-line</h2>
+<h1><a class="anchor" id="anatomy"></a>The Anatomy of the Command-line</h1>
 <p>The ImageMagick command-line consists of</p>
 
 <ol>
@@ -151,7 +151,7 @@
 
 <p>You can find a detailed explanation of each of the constituent parts of the command-line in the sections that follow.</p>
 
-<h2><a class="anchor" id="input"></a>Input Filename</h2>
+<h1><a class="anchor" id="input"></a>Input Filename</h1>
 
 <p>ImageMagick extends the concept of an input filename to include:</p>
 <ul>
@@ -328,7 +328,7 @@ image-5.jpg</pre>
 
 <pre class="highlight"><code>magick logo: gif:- | display -define stream:buffer-size=0 gif:-</code></pre>
 
-<h2><a class="anchor" id="option"></a>Command-line Options</h2>
+<h1><a class="anchor" id="option"></a>Command-line Options</h1>
 
 <p>You can direct the behavior of ImageMagick utilities with these command-line <a href="command-line-options.html">options</a>.  The behavior of an option falls into one of these categories:</p>
 
@@ -567,7 +567,7 @@ above.</p>
 
 <p>The arguments to these operators are indexes into the image sequence by number, starting with zero, for the first image, and so on. However if you give a negative index, the images are indexed from the end (last image added). That is, an index of -1 is the last image in the current image sequence, -2 gives the second-to-last, and so on.</p>
 
-<h2><a class="anchor" id="output"></a>Output Filename</h2>
+<h1><a class="anchor" id="output"></a>Output Filename</h1>
 
 <p>ImageMagick extends the concept of an output filename to include:</p>
 
@@ -644,4 +644,4 @@ image-2.jpg</pre>
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 27th December 2018 08:37 -->
+<!-- Magick Cache 5th January 2019 11:41 -->
