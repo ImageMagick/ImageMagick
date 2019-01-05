@@ -343,7 +343,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
         ThrowFatalException(ResourceLimitFatalError,
           "UnableToAllocateDashPattern");
       (void) memcpy(clone_info->dash_pattern,draw_info->dash_pattern,(size_t)
-        (x+4)*sizeof(*clone_info->dash_pattern));
+        (x+1)*sizeof(*clone_info->dash_pattern));
     }
   clone_info->gradient=draw_info->gradient;
   if (draw_info->gradient.stops != (StopInfo *) NULL)

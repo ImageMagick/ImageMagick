@@ -3569,6 +3569,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       svg_info->parser=xmlCreatePushParserCtxt(sax_handler,svg_info,(char *)
         message,n,image->filename);
+      (void) xmlCtxtUseOptions(svg_info->parser,XML_PARSE_HUGE);
       while ((n=ReadBlob(image,MagickPathExtent-1,message)) != 0)
       {
         message[n]='\0';
