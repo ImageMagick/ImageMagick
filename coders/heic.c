@@ -297,7 +297,12 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   error=heif_decode_image(image_handle,&heif_image,heif_colorspace_YCbCr,
     heif_chroma_420,decode_options);
   if (decode_options != (struct heif_decoding_options *) NULL)
-    heif_decoding_options_free(decode_options);
+    {
+      /* Correct the width and height of the image */
+      image->columns=(size_t) heif_image_get_width(heif_image,heif_channel_Y);
+      image->rows=(size_t) heif_image_get_height(heif_image,heif_channel_Y);
+      heif_decoding_options_free(decode_options);
+    }
   if (IsHeifSuccess(&error,image,exception) == MagickFalse)
     {
       heif_image_handle_release(image_handle);
