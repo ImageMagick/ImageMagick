@@ -3497,6 +3497,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     TIFFUnmapBlob);
   if (tiff == (TIFF *) NULL)
     return(MagickFalse);
+  (void) DeleteImageProfile(image,"tiff:37724");
   scene=0;
   debug=IsEventLogging();
   (void) debug;
