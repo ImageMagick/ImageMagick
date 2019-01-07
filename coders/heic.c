@@ -261,12 +261,6 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
         }
       exif_buffer=RelinquishMagickMemory(exif_buffer);
   }
-  /*
-    Set image size
-   */
-  image->depth=8;
-  image->columns=(size_t) heif_image_handle_get_width(image_handle);
-  image->rows=(size_t) heif_image_handle_get_height(image_handle);
   if (image_info->ping != MagickFalse)
     {
       image->colorspace=YCbCrColorspace;
@@ -274,17 +268,9 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
       heif_context_free(heif_context);
       return(GetFirstImageInList(image));
     }
-  status=SetImageExtent(image,image->columns,image->rows,exception);
-  if (status == MagickFalse)
-    {
-      heif_image_handle_release(image_handle);
-      heif_context_free(heif_context);
-      return(DestroyImageList(image));
-    }
   /*
     Copy HEIF image into ImageMagick data structures
   */
-  (void) SetImageColorspace(image,YCbCrColorspace,exception);
   decode_options=(struct heif_decoding_options *) NULL;
   option=GetImageOption(image_info,"heic:preserve-orientation");
   if (IsStringTrue(option) == MagickTrue)
@@ -304,6 +290,17 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
       heif_context_free(heif_context);
       return(DestroyImageList(image));
     }
+  image->depth=8;
+  image->columns=(size_t) heif_image_get_width(heif_image,heif_channel_Y);
+  image->rows=(size_t) heif_image_get_height(heif_image,heif_channel_Y);
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    {
+      heif_image_handle_release(image_handle);
+      heif_context_free(heif_context);
+      return(DestroyImageList(image));
+    }
+  (void) SetImageColorspace(image,YCbCrColorspace,exception);
   p_y=heif_image_get_plane(heif_image,heif_channel_Y,&stride_y);
   p_cb=heif_image_get_plane(heif_image,heif_channel_Cb,&stride_cb);
   p_cr=heif_image_get_plane(heif_image,heif_channel_Cr,&stride_cr);
