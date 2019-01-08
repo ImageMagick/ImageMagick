@@ -449,6 +449,8 @@ static MagickBooleanType ApplyPSDOpacityMask(Image *image,const Image *mask,
   ssize_t
     y;
 
+  if (image->alpha_trait == UndefinedPixelTrait)
+    return(MagickTrue);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  applying opacity mask");
@@ -466,7 +468,7 @@ static MagickBooleanType ApplyPSDOpacityMask(Image *image,const Image *mask,
       complete_mask=DestroyImage(complete_mask);
       return(status);
     }
-  image->alpha_trait=BlendPixelTrait;
+
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 #pragma omp parallel for schedule(static) shared(status) \
   magick_number_threads(image,image,image->rows,1)
