@@ -1086,9 +1086,10 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Contrast limited adaptive histogram equalization.
             */
             (void) SyncImageSettings(mogrify_info,*image,exception);
-            (void) ParseRegionGeometry(*image,argv[i+1],&geometry,exception);
+            flags=ParseRegionGeometry(*image,argv[i+1],&geometry,exception);
+            flags=ParseGeometry(argv[i+1],&geometry_info);
             (void) CLAHEImage(*image,geometry.width,geometry.height,
-              (size_t) geometry.x,(double) geometry.y,exception);
+              (size_t) geometry.x,geometry_info.psi,exception);
             break;
           }
         if (LocaleCompare("clip",option+1) == 0)
