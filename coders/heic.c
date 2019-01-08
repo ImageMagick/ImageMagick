@@ -301,9 +301,11 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
       /* Correct the width and height of the image */
       image->columns=(size_t) heif_image_get_width(heif_image,heif_channel_Y);
       image->rows=(size_t) heif_image_get_height(heif_image,heif_channel_Y);
+      status=SetImageExtent(image,image->columns,image->rows,exception);
       heif_decoding_options_free(decode_options);
     }
-  if (IsHeifSuccess(&error,image,exception) == MagickFalse)
+  if ((IsHeifSuccess(&error,image,exception) == MagickFalse) ||
+      (status == MagickFalse))
     {
       heif_image_handle_release(image_handle);
       heif_context_free(heif_context);
