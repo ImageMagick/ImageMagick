@@ -1866,8 +1866,8 @@ MagickExport void CompositeLayers(Image *destination,
 %
 %  The format of the MergeImageLayers is:
 %
-%      Image *MergeImageLayers(const Image *image,
-%        const LayerMethod method, ExceptionInfo *exception)
+%      Image *MergeImageLayers(Image *image,const LayerMethod method,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
