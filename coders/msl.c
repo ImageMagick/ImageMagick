@@ -98,7 +98,6 @@
 #      include <win32config.h>
 #    endif
 #  endif
-#  include <libxml/parser.h>
 #  include <libxml/xmlmemory.h>
 #  include <libxml/parserInternals.h>
 #  include <libxml/xmlerror.h>
@@ -8311,9 +8310,6 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
 ModuleExport void UnregisterMSLImage(void)
 {
   (void) UnregisterMagickInfo("MSL");
-#if defined(MAGICKCORE_XML_DELEGATE)
-  xmlCleanupParser();
-#endif
 }
 
 #if defined(MAGICKCORE_XML_DELEGATE)
