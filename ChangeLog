@@ -1,3 +1,7 @@
+2019-01-08  7.0.8-24 Cristy  <quetzlzacatenango@image...>
+  * Support -clahe option real clip limit (reference
+    https://imagemagick.org/discourse-server/viewtopic.php?f=2&t=35292).
+
 2019-01-01  7.0.8-23 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-23, GIT revision 15199:ba07f7d07:20190101
 
