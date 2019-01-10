@@ -21,6 +21,6 @@
 
 - Please submit an pull request in our [website repository](https://github.com/ImageMagick/Website) instead.
 
-If you cannot help us by writing code then take a look at the other ways you could [help](https://www.imagemagick.org/script/support.php) the ImageMagick team.
+If you cannot help us by writing code then take a look at the other ways you could [help](https://imagemagick.org/script/support.php) the ImageMagick team.
 
 \- The Wizards
