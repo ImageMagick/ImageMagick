@@ -15,7 +15,7 @@
 
 #### **Do you intend to add a new feature?**
 
-- Join the ImageMagick community on the [discourse server](https://www.imagemagick.org/discourse-server/), suggest your change there and start writing code.
+- Join the ImageMagick community on the [discourse server](https://imagemagick.org/discourse-server/), suggest your change there and start writing code.
 
 #### **Do you want to change something in the `www` folder?**
 
