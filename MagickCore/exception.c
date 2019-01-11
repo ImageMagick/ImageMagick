@@ -933,8 +933,17 @@ MagickExport MagickBooleanType ThrowException(ExceptionInfo *exception,
   exceptions=(LinkedListInfo *) exception->exceptions;
   if (GetNumberOfElementsInLinkedList(exceptions) > MaxExceptionList)
     {
-      UnlockSemaphoreInfo(exception->semaphore);
-      return(MagickTrue);
+      if (severity < ErrorException)
+        {
+          UnlockSemaphoreInfo(exception->semaphore);
+          return(MagickTrue);
+        }
+      p=(ExceptionInfo *) GetLastValueInLinkedList(exceptions);
+      if (p->severity >= ErrorException)
+        {
+          UnlockSemaphoreInfo(exception->semaphore);
+          return(MagickTrue);
+        }
     }
   p=(ExceptionInfo *) GetLastValueInLinkedList(exceptions);
   if ((p != (ExceptionInfo *) NULL) && (p->severity == severity) &&
