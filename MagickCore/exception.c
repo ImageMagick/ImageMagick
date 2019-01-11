@@ -966,8 +966,9 @@ MagickExport MagickBooleanType ThrowException(ExceptionInfo *exception,
     }
   UnlockSemaphoreInfo(exception->semaphore);
   if (GetNumberOfElementsInLinkedList(exceptions) == MaxExceptionList)
-    (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
-      "TooManyExceptions","(exception processing is suspended)");
+    (void) ThrowMagickException(exception,GetMagickModule(),
+      ResourceLimitWarning,"TooManyExceptions",
+      "(exception processing is suspended)");
   return(MagickTrue);
 }
 
