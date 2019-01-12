@@ -1,5 +1,5 @@
 2019-01-12  7.0.8-24 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.8-24, GIT revision 15231:35908e358:20190112
+  * Release ImageMagick version 7.0.8-24, GIT revision 15233:db129ba64:20190112
 
 2019-01-08  7.0.8-24 Cristy  <quetzlzacatenango@image...>
   * Support -clahe option real clip limit (reference
