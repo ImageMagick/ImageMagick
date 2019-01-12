@@ -547,29 +547,21 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
   BlobInfo
     *clone_info;
 
+  SemaphoreInfo
+    *semaphore;
+
   clone_info=(BlobInfo *) AcquireCriticalMemory(sizeof(*clone_info));
   GetBlobInfo(clone_info);
   if (blob_info == (BlobInfo *) NULL)
     return(clone_info);
-  clone_info->length=blob_info->length;
-  clone_info->extent=blob_info->extent;
-  clone_info->synchronize=blob_info->synchronize;
-  clone_info->quantum=blob_info->quantum;
-  clone_info->mapped=blob_info->mapped;
-  clone_info->eof=blob_info->eof;
-  clone_info->offset=blob_info->offset;
-  clone_info->size=blob_info->size;
-  clone_info->exempt=blob_info->exempt;
-  clone_info->status=blob_info->status;
-  clone_info->temporary=blob_info->temporary;
-  clone_info->type=blob_info->type;
-  clone_info->file_info.file=blob_info->file_info.file;
-  clone_info->properties=blob_info->properties;
-  clone_info->stream=blob_info->stream;
-  clone_info->custom_stream=blob_info->custom_stream;
-  clone_info->data=blob_info->data;
-  clone_info->debug=IsEventLogging();
+  semaphore=clone_info->semaphore;
+  (void) memcpy(clone_info,blob_info,sizeof(*clone_info));
+  if (blob_info->mapped != MagickFalse)
+    (void) AcquireMagickResource(MapResource,blob_info->length);
+  clone_info->semaphore=semaphore;
+  LockSemaphoreInfo(clone_info->semaphore);
   clone_info->reference_count=1;
+  UnlockSemaphoreInfo(clone_info->semaphore);
   return(clone_info);
 }
 
@@ -919,7 +911,10 @@ MagickExport void DestroyBlob(Image *image)
     destroy=MagickTrue;
   UnlockSemaphoreInfo(blob_info->semaphore);
   if (destroy == MagickFalse)
-    return;
+    {
+      image->blob=(BlobInfo *) NULL;
+      return;
+    }
   (void) CloseBlob(image);
   if (blob_info->mapped != MagickFalse)
     {
@@ -999,7 +994,6 @@ MagickExport void *DetachBlob(BlobInfo *blob_info)
   if (blob_info->mapped != MagickFalse)
     {
       (void) UnmapBlob(blob_info->data,blob_info->length);
-      blob_info->data=(unsigned char *) NULL;
       RelinquishMagickResource(MapResource,blob_info->length);
     }
   blob_info->mapped=MagickFalse;
