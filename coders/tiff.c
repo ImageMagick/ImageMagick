@@ -1387,6 +1387,12 @@ RestoreMSCWarning
         TIFFClose(tiff);
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       }
+    if (((sample_format != SAMPLEFORMAT_IEEEFP) || (bits_per_sample == 64)) &&
+        ((bits_per_sample <= 0) || (bits_per_sample > 32)))
+      {
+        TIFFClose(tiff);
+        ThrowReaderException(CorruptImageError,"UnsupportedBitsPerPixel");
+      }
     if (sample_format == SAMPLEFORMAT_IEEEFP)
       (void) SetImageProperty(image,"quantum:format","floating-point",
         exception);

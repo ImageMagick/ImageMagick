@@ -324,14 +324,14 @@
           <message name="UnrecognizedAlphaChannelOption">
             unrecognized alpha channel option
           </message>
-          <message name="UnrecognizedBitsPerPixel">
-            unrecognized bits per pixel
-          </message>
           <message name="UnrecognizedImageCompression">
             unrecognized compression
           </message>
           <message name="UnrecognizedNumberOfColors">
             unrecognized number of colors
+          </message>
+          <message name="UnsupportedBitsPerPixel">
+            unsupported bits per pixel
           </message>
         </error>
         <fatalerror>

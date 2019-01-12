@@ -559,16 +559,16 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((dib_info.bits_per_pixel != 1) && (dib_info.bits_per_pixel != 4) &&
       (dib_info.bits_per_pixel != 8) && (dib_info.bits_per_pixel != 16) &&
       (dib_info.bits_per_pixel != 24) && (dib_info.bits_per_pixel != 32))
-    ThrowReaderException(CorruptImageError,"UnrecognizedBitsPerPixel");
+    ThrowReaderException(CorruptImageError,"UnsupportedBitsPerPixel");
   if ((dib_info.bits_per_pixel < 16) &&
       (dib_info.number_colors > (unsigned int) (1UL << dib_info.bits_per_pixel)))
     ThrowReaderException(CorruptImageError,"UnrecognizedNumberOfColors");
   if ((dib_info.compression == 1) && (dib_info.bits_per_pixel != 8))
-    ThrowReaderException(CorruptImageError,"UnrecognizedBitsPerPixel");
+    ThrowReaderException(CorruptImageError,"UnsupportedBitsPerPixel");
   if ((dib_info.compression == 2) && (dib_info.bits_per_pixel != 4))
-    ThrowReaderException(CorruptImageError,"UnrecognizedBitsPerPixel");
+    ThrowReaderException(CorruptImageError,"UnsupportedBitsPerPixel");
   if ((dib_info.compression == 3) && (dib_info.bits_per_pixel < 16))
-    ThrowReaderException(CorruptImageError,"UnrecognizedBitsPerPixel");
+    ThrowReaderException(CorruptImageError,"UnsupportedBitsPerPixel");
   switch (dib_info.compression)
   {
     case BI_RGB:
