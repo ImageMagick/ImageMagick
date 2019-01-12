@@ -1225,8 +1225,6 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
     kernel_info->values[i]=(-1.0);
   kernel_info->values[i/2]=(double) kernel_info->width*kernel_info->height-1.0;
   edge_image=ConvolveImage(image,kernel_info,exception);
-  if (edge_image != (Image *) NULL)
-    (void) ClampImage(edge_image,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(edge_image);
 }
@@ -3413,6 +3411,8 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
 MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
   const double azimuth,const double elevation,ExceptionInfo *exception)
 {
+#define GetShadeIntensity(image,pixel) \
+  ClampPixel(GetPixelIntensity((image),(pixel)))
 #define ShadeImageTag  "Shade/Image"
 
   CacheView
@@ -3528,19 +3528,19 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
       center=pre+(linear_image->columns+2)*GetPixelChannels(linear_image);
       post=center+(linear_image->columns+2)*GetPixelChannels(linear_image);
       normal.x=(double) (
-        GetPixelIntensity(linear_image,pre-GetPixelChannels(linear_image))+
-        GetPixelIntensity(linear_image,center-GetPixelChannels(linear_image))+
-        GetPixelIntensity(linear_image,post-GetPixelChannels(linear_image))-
-        GetPixelIntensity(linear_image,pre+GetPixelChannels(linear_image))-
-        GetPixelIntensity(linear_image,center+GetPixelChannels(linear_image))-
-        GetPixelIntensity(linear_image,post+GetPixelChannels(linear_image)));
+        GetShadeIntensity(linear_image,pre-GetPixelChannels(linear_image))+
+        GetShadeIntensity(linear_image,center-GetPixelChannels(linear_image))+
+        GetShadeIntensity(linear_image,post-GetPixelChannels(linear_image))-
+        GetShadeIntensity(linear_image,pre+GetPixelChannels(linear_image))-
+        GetShadeIntensity(linear_image,center+GetPixelChannels(linear_image))-
+        GetShadeIntensity(linear_image,post+GetPixelChannels(linear_image)));
       normal.y=(double) (
-        GetPixelIntensity(linear_image,post-GetPixelChannels(linear_image))+
-        GetPixelIntensity(linear_image,post)+
-        GetPixelIntensity(linear_image,post+GetPixelChannels(linear_image))-
-        GetPixelIntensity(linear_image,pre-GetPixelChannels(linear_image))-
-        GetPixelIntensity(linear_image,pre)-
-        GetPixelIntensity(linear_image,pre+GetPixelChannels(linear_image)));
+        GetShadeIntensity(linear_image,post-GetPixelChannels(linear_image))+
+        GetShadeIntensity(linear_image,post)+
+        GetShadeIntensity(linear_image,post+GetPixelChannels(linear_image))-
+        GetShadeIntensity(linear_image,pre-GetPixelChannels(linear_image))-
+        GetShadeIntensity(linear_image,pre)-
+        GetShadeIntensity(linear_image,pre+GetPixelChannels(linear_image)));
       if ((fabs(normal.x) <= MagickEpsilon) &&
           (fabs(normal.y) <= MagickEpsilon))
         shade=light.z;

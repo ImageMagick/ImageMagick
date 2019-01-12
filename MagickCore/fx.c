@@ -595,7 +595,6 @@ MagickExport Image *CharcoalImage(const Image *image,const double radius,
 {
   Image
     *charcoal_image,
-    *clone_image,
     *edge_image;
 
   assert(image != (Image *) NULL);
@@ -604,11 +603,7 @@ MagickExport Image *CharcoalImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  clone_image=CloneImage(image,0,0,MagickTrue,exception);
-  if (clone_image == (Image *) NULL)
-    return((Image *) NULL);
-  edge_image=EdgeImage(clone_image,radius,exception);
-  clone_image=DestroyImage(clone_image);
+  edge_image=EdgeImage(image,radius,exception);
   if (edge_image == (Image *) NULL)
     return((Image *) NULL);
   charcoal_image=BlurImage(edge_image,radius,sigma,exception);
