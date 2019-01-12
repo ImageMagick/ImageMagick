@@ -15,12 +15,12 @@
 
 #### **Do you intend to add a new feature?**
 
-- Join the ImageMagick community on the [discourse server](https://www.imagemagick.org/discourse-server/), suggest your change there and start writing code.
+- Join the ImageMagick community on the [discourse server](https://imagemagick.org/discourse-server/), suggest your change there and start writing code.
 
 #### **Do you want to change something in the `www` folder?**
 
 - Please submit an pull request in our [website repository](https://github.com/ImageMagick/Website) instead.
 
-If you cannot help us by writing code then take a look at the other ways you could [help](https://www.imagemagick.org/script/support.php) the ImageMagick team.
+If you cannot help us by writing code then take a look at the other ways you could [help](https://imagemagick.org/script/support.php) the ImageMagick team.
 
 \- The Wizards
