@@ -2137,7 +2137,9 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
                 utf8=DestroyString(utf8);
                 return(&root->root);
               }
-            if ((ignore_depth == 0) && (IsSkipTag(tag) == MagickFalse))
+            if ((ignore_depth != 0) || (IsSkipTag(tag) != MagickFalse))
+              (void) DestroyXMLTreeAttributes(attributes);
+            else
               {
                 ParseOpenTag(root,tag,attributes);
                 (void) ParseCloseTag(root,tag,exception);
