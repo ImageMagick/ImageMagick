@@ -1131,8 +1131,8 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       if (((flags & XiValue) != 0) && (geometry_info->xi == 0.0))
         geometry_info->sigma=2.0;
     }
-  if (((flags & SigmaValue) == 0) && ((flags & XiValue) != 0) &&
-      ((flags & XiNegative) != 0))
+  if (((flags & RhoValue) != 0) && ((flags & SigmaValue) == 0) && 
+      ((flags & XiValue) != 0) && ((flags & XiNegative) != 0))
     {
       if ((flags & PsiValue) == 0)
         {
