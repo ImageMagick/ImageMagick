@@ -1225,6 +1225,8 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
     kernel_info->values[i]=(-1.0);
   kernel_info->values[i/2]=(double) kernel_info->width*kernel_info->height-1.0;
   edge_image=ConvolveImage(image,kernel_info,exception);
+  if (edge_image != (Image *) NULL)
+    (void) ClampImage(edge_image,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(edge_image);
 }
