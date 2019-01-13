@@ -56,6 +56,7 @@
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
+#include "MagickCore/version.h"
 #include "MagickCore/xml-tree.h"
 #include "MagickCore/xml-tree-private.h"
 
@@ -63,29 +64,6 @@
   Define declarations.
 */
 #define ConfigureFilename  "configure.xml"
-
-#ifdef _OPENMP
-#define MAGICKCORE_FEATURE_OPENMP_STR "OpenMP "
-#else
-#define MAGICKCORE_FEATURE_OPENMP_STR ""
-#endif
-#ifdef _OPENCL
-#define MAGICKCORE_FEATURE_OPENCL_STR "OpenCL "
-#else
-#define MAGICKCORE_FEATURE_OPENCL_STR ""
-#endif
-#ifdef MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
-#define MAGICKCORE_FEATURE_ZERO_CONFIGURATION_STR "Zero-Configuration "
-#else
-#define MAGICKCORE_FEATURE_ZERO_CONFIGURATION_STR ""
-#endif
-#ifdef HDRI_SUPPORT
-#define MAGICKCORE_FEATURE_HDRI_STR "HDRI"
-#else
-#define MAGICKCORE_FEATURE_HDRI_STR ""
-#endif
-
-#define MAGICKCORE_FEATURES_STR MAGICKCORE_FEATURE_OPENMP_STR MAGICKCORE_FEATURE_OPENCL_STR MAGICKCORE_FEATURE_ZERO_CONFIGURATION_STR MAGICKCORE_FEATURE_HDRI_STR
 
 /*
   Typedef declarations.
@@ -100,13 +78,6 @@ typedef struct _ConfigureMapInfo
 /*
   Static declarations.
 */
-static const ConfigureMapInfo
-  ConfigureMap[] =
-  {
-    { "NAME", "ImageMagick" },
-    { "QuantumDepth", MAGICKCORE_STRING_XQUOTE(MAGICKCORE_QUANTUM_DEPTH) } ,
-    { "FEATURES", MAGICKCORE_FEATURES_STR }
-  };
 
 static LinkedListInfo
   *configure_cache = (LinkedListInfo *) NULL;
@@ -149,22 +120,22 @@ static MagickBooleanType
 %
 */
 
-static ConfigureInfo *NewConfigureKey(const char *path,const char *name,
-  const char *value)
+static inline void AddConfigureKey(LinkedListInfo *cache,const char *path,
+  const char *name,const char *value)
 {
   ConfigureInfo
     *configure_info;
 
   configure_info=(ConfigureInfo *) AcquireMagickMemory(sizeof(*configure_info));
   if (configure_info == (ConfigureInfo *) NULL)
-    return((ConfigureInfo *) NULL);
+    return;
   (void) memset(configure_info,0,sizeof(*configure_info));
   configure_info->path=(char *) path;
   configure_info->name=(char *) name;
   configure_info->value=(char *) value;
   configure_info->exempt=MagickTrue;
   configure_info->signature=MagickCoreSignature;
-  return(configure_info);
+  (void) AppendValueToLinkedList(cache,configure_info);
 }
 
 static LinkedListInfo *AcquireConfigureCache(const char *filename,
@@ -210,36 +181,19 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
   }
 #endif
   /*
-    Load built-in configure map.
+    Load built-in configure.
   */
-  for (i=0; i < (ssize_t) (sizeof(ConfigureMap)/sizeof(*ConfigureMap)); i++)
-  {
-    register const ConfigureMapInfo
-      *p;
-
-    p=ConfigureMap+i;
-    configure_info=NewConfigureKey("[built-in]",p->name,p->value);
-    if (configure_info == (ConfigureInfo *) NULL)
-      {
-        (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitError,"MemoryAllocationFailed","`%s'",p->name);
-        continue;
-      }
-    status=AppendValueToLinkedList(cache,configure_info);
-    if (status == MagickFalse)
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",
-        configure_info->name);
-  }
+  AddConfigureKey(cache,"[built-in]","NAME","ImageMagick");
   /*
     Load runtime configuration.
   */
+  AddConfigureKey(cache,"[built-in]","QuantumDepth",GetMagickQuantumDepth(
+    (size_t *)NULL));
+  AddConfigureKey(cache,"[built-in]","FEATURES",GetMagickFeatures());
+  AddConfigureKey(cache,"[built-in]","DELEGATES",GetMagickDelegates());
   (void) AcquireUniqueFilename(path);
   GetPathComponent(path,HeadPath,head_path);
-  configure_info=NewConfigureKey("[built-in]","MAGICK_TEMPORARY_PATH",
-    head_path);
-  if (configure_info != (ConfigureInfo *) NULL)
-    (void) AppendValueToLinkedList(cache,configure_info);
+  AddConfigureKey(cache,"[built-in]","MAGICK_TEMPORARY_PATH",head_path);
   return(cache);
 }
 
