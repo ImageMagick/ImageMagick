@@ -145,17 +145,8 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
     head_path[MagickPathExtent],
     path[MagickPathExtent];
 
-  ConfigureInfo
-    *configure_info;
-
   LinkedListInfo
     *cache;
-
-  MagickBooleanType
-    status;
-
-  register ssize_t
-    i;
 
   /*
     Load external configure map.
@@ -169,12 +160,17 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
     LinkedListInfo
       *options;
 
+    MagickBooleanType
+      status;
+
     options=GetConfigureOptions(filename,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
     while (option != (const StringInfo *) NULL)
     {
-      (void) LoadConfigureCache(cache,(const char *)
+      status=LoadConfigureCache(cache,(const char *)
         GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
+      if (status == MagickTrue)
+        break;
       option=(const StringInfo *) GetNextValueInLinkedList(options);
     }
     options=DestroyConfigureOptions(options);
