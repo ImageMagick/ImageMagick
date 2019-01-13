@@ -180,7 +180,7 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
   LinkedListInfo
     *cache;
 
-  MagickStatusType
+  MagickBooleanType
     status;
 
   register ssize_t
@@ -190,7 +190,6 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
     Load external configure map.
   */
   cache=NewLinkedList(0);
-  status=MagickTrue;
 #if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   {
     const StringInfo
@@ -203,7 +202,7 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
     option=(const StringInfo *) GetNextValueInLinkedList(options);
     while (option != (const StringInfo *) NULL)
     {
-      status&=LoadConfigureCache(cache,(const char *)
+      (void) LoadConfigureCache(cache,(const char *)
         GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
       option=(const StringInfo *) GetNextValueInLinkedList(options);
     }
@@ -226,7 +225,7 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
           ResourceLimitError,"MemoryAllocationFailed","`%s'",p->name);
         continue;
       }
-    status&=AppendValueToLinkedList(cache,configure_info);
+    status=AppendValueToLinkedList(cache,configure_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",
@@ -240,7 +239,7 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
   configure_info=NewConfigureKey("[built-in]","MAGICK_TEMPORARY_PATH",
     head_path);
   if (configure_info != (ConfigureInfo *) NULL)
-    status&=AppendValueToLinkedList(cache,configure_info);
+    (void) AppendValueToLinkedList(cache,configure_info);
   return(cache);
 }
 
