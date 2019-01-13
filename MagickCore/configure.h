@@ -30,11 +30,11 @@ typedef struct _ConfigureInfo
     *path,
     *name,
     *value;
-                                                                                
+
   MagickBooleanType
     exempt,
     stealth;
-                                                                                
+
   size_t
     signature;
 } ConfigureInfo;
