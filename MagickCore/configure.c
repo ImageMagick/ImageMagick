@@ -119,9 +119,8 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
 static inline void AddConfigureKey(LinkedListInfo *cache,const char *path,
-  const char *name,const char *value)
+  const char *name,const char *value,MagickBooleanType exempt)
 {
   ConfigureInfo
     *configure_info;
@@ -130,10 +129,19 @@ static inline void AddConfigureKey(LinkedListInfo *cache,const char *path,
   if (configure_info == (ConfigureInfo *) NULL)
     return;
   (void) memset(configure_info,0,sizeof(*configure_info));
-  configure_info->path=(char *) path;
-  configure_info->name=(char *) name;
-  configure_info->value=(char *) value;
-  configure_info->exempt=MagickTrue;
+  if (exempt == MagickTrue)
+    {
+      configure_info->path=(char *) path;
+      configure_info->name=(char *) name;
+      configure_info->value=(char *) value;
+    }
+  else
+    {
+      configure_info->path=ConstantString(path);
+      configure_info->name=ConstantString(name);
+      configure_info->value=ConstantString(value);
+    }
+  configure_info->exempt=exempt;
   configure_info->signature=MagickCoreSignature;
   (void) AppendValueToLinkedList(cache,configure_info);
 }
@@ -179,17 +187,20 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
   /*
     Load built-in configure.
   */
-  AddConfigureKey(cache,"[built-in]","NAME","ImageMagick");
+  AddConfigureKey(cache,"[built-in]","NAME","ImageMagick",MagickTrue);
   /*
     Load runtime configuration.
   */
   AddConfigureKey(cache,"[built-in]","QuantumDepth",GetMagickQuantumDepth(
-    (size_t *)NULL));
-  AddConfigureKey(cache,"[built-in]","FEATURES",GetMagickFeatures());
-  AddConfigureKey(cache,"[built-in]","DELEGATES",GetMagickDelegates());
+    (size_t *)NULL),MagickTrue);
+  AddConfigureKey(cache,"[built-in]","FEATURES",GetMagickFeatures(),
+    MagickTrue);
+  AddConfigureKey(cache,"[built-in]","DELEGATES",GetMagickDelegates(),
+    MagickTrue);
   (void) AcquireUniqueFilename(path);
   GetPathComponent(path,HeadPath,head_path);
-  AddConfigureKey(cache,"[built-in]","MAGICK_TEMPORARY_PATH",head_path);
+  AddConfigureKey(cache,"[built-in]","MAGICK_TEMPORARY_PATH",head_path,
+    MagickFalse);
   return(cache);
 }
 
