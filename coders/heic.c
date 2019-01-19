@@ -90,6 +90,13 @@ static MagickBooleanType
 #endif
 
 /*
+  Const declarations.
+*/
+static const char *xmp_namespace = "http://ns.adobe.com/xap/1.0/ ";
+#define XmpNamespaceExtent 28
+#define ICC_PROFILE  "ICC_PROFILE"
+
+/*x
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -448,6 +455,162 @@ ModuleExport void UnregisterHEICImage(void)
   (void) UnregisterMagickInfo("HEIC");
 }
 
+static void WriteICCProfile(struct heif_context* ctx, struct heif_image* heif_image, Image *image, ExceptionInfo *exception)
+{
+  const char
+    *name;
+
+  const StringInfo
+    *profile;
+
+  MagickBooleanType
+    iptc;
+
+  register ssize_t
+    i;
+
+  size_t
+    length,
+    tag_length;
+
+  StringInfo
+    *custom_profile;
+
+  struct heif_error error;
+
+  /*
+    Save image profile as a APP marker.
+  */
+  iptc=MagickFalse;
+  custom_profile=AcquireStringInfo(65535L);
+  ResetImageProfileIterator(image);
+  for (name=GetNextImageProfile(image); name != (const char *) NULL; )
+  {
+    profile=GetImageProfile(image,name);
+    length=GetStringInfoLength(profile);
+
+    if (LocaleCompare(name,"ICC") == 0)
+      {
+        register unsigned char
+          *p;
+
+        tag_length=strlen(ICC_PROFILE);
+        p=GetStringInfoDatum(custom_profile);
+        (void) memcpy(p,ICC_PROFILE,tag_length);
+        p[tag_length]='\0';
+        for (i=0; i < (ssize_t) GetStringInfoLength(profile); i+=65519L)
+        {
+          length=MagickMin(GetStringInfoLength(profile)-i,65519L);
+          p[12]=(unsigned char) ((i/65519L)+1);
+          p[13]=(unsigned char) (GetStringInfoLength(profile)/65519L+1);
+          (void) memcpy(p+tag_length+3,GetStringInfoDatum(profile)+i,
+            length);
+          error = heif_image_set_raw_color_profile(heif_image,
+                                                   "prof",
+                                                   (void*)GetStringInfoDatum(custom_profile),
+                                                   (length+tag_length+3));
+          if (error.code != 0) {
+            fprintf(stderr, "Could not write icc profile: %s\n", error.message);
+          }
+        }
+      }
+
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "%s profile: %.20g bytes",name,(double) GetStringInfoLength(profile));
+    name=GetNextImageProfile(image);
+  }
+  custom_profile=DestroyStringInfo(custom_profile);
+}
+
+static void WriteProfile(struct heif_context* ctx, Image *image, ExceptionInfo *exception)
+{
+  const char
+    *name;
+
+  const StringInfo
+    *profile;
+
+  MagickBooleanType
+    iptc;
+
+  register ssize_t
+    i;
+
+  size_t
+    length;
+
+  StringInfo
+    *custom_profile;
+
+  struct heif_error error;
+
+  /*Get image handle*/
+  struct heif_image_handle* image_handle = (struct heif_image_handle *) NULL;
+  error=heif_context_get_primary_image_handle(ctx,&image_handle);
+
+  if (error.code != 0) {
+    fprintf(stderr, "Could not get primary image image handle: %s\n", error.message);
+    return;
+  }
+
+  /*
+    Save image profile as a APP marker.
+  */
+  iptc=MagickFalse;
+  custom_profile=AcquireStringInfo(65535L);
+  ResetImageProfileIterator(image);
+  for (name=GetNextImageProfile(image); name != (const char *) NULL; )
+  {
+    profile=GetImageProfile(image,name);
+    length=GetStringInfoLength(profile);
+
+    if (LocaleCompare(name,"EXIF") == 0)
+      {
+        length=GetStringInfoLength(profile);
+        if (length > 65533L)
+          {
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              CoderWarning,"ExifProfileSizeExceedsLimit","`%s'",
+              image->filename);
+            length=65533L;
+          }
+          error = heif_context_add_exif_metadata(ctx, image_handle, (void*) GetStringInfoDatum(profile), length);
+          if (error.code != 0) {
+            fprintf(stderr, "Could not write exif metadata: %s\n", error.message);
+          }
+      }
+
+    if (LocaleCompare(name,"XMP") == 0)
+      {
+        StringInfo
+          *xmp_profile;
+
+        xmp_profile=StringToStringInfo(xmp_namespace);
+        if (xmp_profile != (StringInfo *) NULL)
+          {
+            if (profile != (StringInfo *) NULL)
+              ConcatenateStringInfo(xmp_profile,profile);
+            GetStringInfoDatum(xmp_profile)[XmpNamespaceExtent]='\0';
+            for (i=0; i < (ssize_t) GetStringInfoLength(xmp_profile); i+=65533L)
+            {
+              length=MagickMin(GetStringInfoLength(xmp_profile)-i,65533L);
+              error = heif_context_add_XMP_metadata(ctx, image_handle, (void*) GetStringInfoDatum(xmp_profile)+i, length);
+              if (error.code != 0) {
+                fprintf(stderr, "Could not write XMP metadata: %s\n", error.message);
+              }
+            }
+            xmp_profile=DestroyStringInfo(xmp_profile);
+          }
+      }
+
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "%s profile: %.20g bytes",name,(double) GetStringInfoLength(profile));
+    name=GetNextImageProfile(image);
+  }
+  custom_profile=DestroyStringInfo(custom_profile);
+  heif_image_handle_release(image_handle);
+}
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -659,6 +822,10 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,Image *image
       break;
     writer.writer_api_version=1;
     writer.write=heif_write_func;
+
+  	if (image->profiles != (void *) NULL)
+    	WriteProfile(heif_context, image, exception);
+
     error=heif_context_write(heif_context,&writer,image);
     status=IsHeifSuccess(&error,image,exception);
     if (status == MagickFalse)
