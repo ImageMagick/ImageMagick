@@ -260,6 +260,12 @@ extern "C" {
 #if !defined(tempnam)
 #  define tempnam  _tempnam_s
 #endif
+#if !defined(tolower_l)
+#define tolower_l  _tolower_l
+#endif
+#if !defined(toupper_l)
+#define toupper_l  _toupper_l
+#endif
 #if !defined(umask)
 #  define umask  _umask
 #endif
