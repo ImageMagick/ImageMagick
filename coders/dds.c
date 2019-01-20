@@ -2868,7 +2868,11 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
         }
     }
 
-  WriteDDSInfo(image,pixelFormat,compression,mipmaps);
+  option=GetImageOption(image_info,"dds:raw");
+  if (IsStringTrue(option) == MagickFalse)
+    WriteDDSInfo(image,pixelFormat,compression,mipmaps);
+  else
+    mipmaps=0;
 
   WriteImageData(image,pixelFormat,compression,clusterFit,weightByAlpha,
     exception);
