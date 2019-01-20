@@ -486,7 +486,8 @@ ModuleExport void UnregisterHEICImage(void)
 %
 */
 #if defined(MAGICKCORE_HEIC_DELEGATE) && !defined(MAGICKCORE_WINDOWS_SUPPORT)
-static void WriteProfile(struct heif_context* ctx, Image *image, ExceptionInfo *exception)
+static void WriteProfile(struct heif_context* ctx,Image *image,
+  ExceptionInfo *exception)
 {
   const char
     *name;
@@ -506,16 +507,17 @@ static void WriteProfile(struct heif_context* ctx, Image *image, ExceptionInfo *
   StringInfo
     *custom_profile;
 
-  struct heif_error error;
+  struct heif_error
+    error;
+
+  struct heif_image_handle
+    *image_handle;
 
   /*Get image handle*/
-  struct heif_image_handle* image_handle = (struct heif_image_handle *) NULL;
+  image_handle=(struct heif_image_handle *) NULL;
   error=heif_context_get_primary_image_handle(ctx,&image_handle);
-
-  if (error.code != 0) {
-    fprintf(stderr, "Could not get primary image image handle: %s\n", error.message);
+  if (error.code != 0)
     return;
-  }
 
   /*
     Save image profile as a APP marker.
@@ -538,10 +540,8 @@ static void WriteProfile(struct heif_context* ctx, Image *image, ExceptionInfo *
               image->filename);
             length=65533L;
           }
-          error = heif_context_add_exif_metadata(ctx, image_handle, (void*) GetStringInfoDatum(profile), length);
-          if (error.code != 0) {
-            fprintf(stderr, "Could not write exif metadata: %s\n", error.message);
-          }
+          (void) heif_context_add_exif_metadata(ctx,image_handle,
+            (void*) GetStringInfoDatum(profile),length);
       }
 
     if (LocaleCompare(name,"XMP") == 0)
@@ -558,17 +558,17 @@ static void WriteProfile(struct heif_context* ctx, Image *image, ExceptionInfo *
             for (i=0; i < (ssize_t) GetStringInfoLength(xmp_profile); i+=65533L)
             {
               length=MagickMin(GetStringInfoLength(xmp_profile)-i,65533L);
-              error = heif_context_add_XMP_metadata(ctx, image_handle, (void*) GetStringInfoDatum(xmp_profile)+i, length);
-              if (error.code != 0) {
-                fprintf(stderr, "Could not write XMP metadata: %s\n", error.message);
-              }
+              error=heif_context_add_XMP_metadata(ctx,image_handle,
+                (void*) (GetStringInfoDatum(xmp_profile)+i),length);
+              if (error.code != 0)
+                break;
             }
             xmp_profile=DestroyStringInfo(xmp_profile);
           }
       }
-
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "%s profile: %.20g bytes",name,(double) GetStringInfoLength(profile));
+    if (image->debug != MagickFalse)
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "%s profile: %.20g bytes",name,(double) GetStringInfoLength(profile));
     name=GetNextImageProfile(image);
   }
   custom_profile=DestroyStringInfo(custom_profile);
