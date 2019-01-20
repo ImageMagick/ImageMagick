@@ -84,17 +84,21 @@
 
 #if defined(MAGICKCORE_HEIC_DELEGATE)
 
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT)
-static MagickBooleanType
-  WriteHEICImage(const ImageInfo *,Image *,ExceptionInfo *);
-#endif
-
 /*
   Const declarations.
 */
 static const char *xmp_namespace = "http://ns.adobe.com/xap/1.0/ ";
 #define XmpNamespaceExtent 28
+
+/*
+  Forward declarations.
+*/
 
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT)
+static MagickBooleanType
+  WriteHEICImage(const ImageInfo *,Image *,ExceptionInfo *);
+#endif
+
 /*x
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
