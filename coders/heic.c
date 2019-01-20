@@ -94,7 +94,6 @@ static MagickBooleanType
 */
 static const char *xmp_namespace = "http://ns.adobe.com/xap/1.0/ ";
 #define XmpNamespaceExtent 28
-#define ICC_PROFILE  "ICC_PROFILE"
 
 /*x
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -453,73 +452,6 @@ ModuleExport size_t RegisterHEICImage(void)
 ModuleExport void UnregisterHEICImage(void)
 {
   (void) UnregisterMagickInfo("HEIC");
-}
-
-static void WriteICCProfile(struct heif_context* ctx, struct heif_image* heif_image, Image *image, ExceptionInfo *exception)
-{
-  const char
-    *name;
-
-  const StringInfo
-    *profile;
-
-  MagickBooleanType
-    iptc;
-
-  register ssize_t
-    i;
-
-  size_t
-    length,
-    tag_length;
-
-  StringInfo
-    *custom_profile;
-
-  struct heif_error error;
-
-  /*
-    Save image profile as a APP marker.
-  */
-  iptc=MagickFalse;
-  custom_profile=AcquireStringInfo(65535L);
-  ResetImageProfileIterator(image);
-  for (name=GetNextImageProfile(image); name != (const char *) NULL; )
-  {
-    profile=GetImageProfile(image,name);
-    length=GetStringInfoLength(profile);
-
-    if (LocaleCompare(name,"ICC") == 0)
-      {
-        register unsigned char
-          *p;
-
-        tag_length=strlen(ICC_PROFILE);
-        p=GetStringInfoDatum(custom_profile);
-        (void) memcpy(p,ICC_PROFILE,tag_length);
-        p[tag_length]='\0';
-        for (i=0; i < (ssize_t) GetStringInfoLength(profile); i+=65519L)
-        {
-          length=MagickMin(GetStringInfoLength(profile)-i,65519L);
-          p[12]=(unsigned char) ((i/65519L)+1);
-          p[13]=(unsigned char) (GetStringInfoLength(profile)/65519L+1);
-          (void) memcpy(p+tag_length+3,GetStringInfoDatum(profile)+i,
-            length);
-          error = heif_image_set_raw_color_profile(heif_image,
-                                                   "prof",
-                                                   (void*)GetStringInfoDatum(custom_profile),
-                                                   (length+tag_length+3));
-          if (error.code != 0) {
-            fprintf(stderr, "Could not write icc profile: %s\n", error.message);
-          }
-        }
-      }
-
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "%s profile: %.20g bytes",name,(double) GetStringInfoLength(profile));
-    name=GetNextImageProfile(image);
-  }
-  custom_profile=DestroyStringInfo(custom_profile);
 }
 
 static void WriteProfile(struct heif_context* ctx, Image *image, ExceptionInfo *exception)
