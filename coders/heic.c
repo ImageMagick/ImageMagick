@@ -458,6 +458,34 @@ ModuleExport void UnregisterHEICImage(void)
   (void) UnregisterMagickInfo("HEIC");
 }
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e H E I C I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteHEICImage() writes an HEIF image using the libheif library.
+%
+%  The format of the WriteHEICImage method is:
+%
+%      MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
+%        Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o image_info: the image info.
+%
+%    o image:  The image.
+%
+%    o exception:  return any errors or warnings in this structure.
+%
+*/
+#if defined(MAGICKCORE_HEIC_DELEGATE) && !defined(MAGICKCORE_WINDOWS_SUPPORT)
 static void WriteProfile(struct heif_context* ctx, Image *image, ExceptionInfo *exception)
 {
   const char
@@ -547,35 +575,6 @@ static void WriteProfile(struct heif_context* ctx, Image *image, ExceptionInfo *
   heif_image_handle_release(image_handle);
 }
 
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   W r i t e H E I C I m a g e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  WriteHEICImage() writes an HEIF image using the libheif library.
-%
-%  The format of the WriteHEICImage method is:
-%
-%      MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
-%        Image *image)
-%
-%  A description of each parameter follows.
-%
-%    o image_info: the image info.
-%
-%    o image:  The image.
-%
-%    o exception:  return any errors or warnings in this structure.
-%
-*/
-#if defined(MAGICKCORE_HEIC_DELEGATE) && !defined(MAGICKCORE_WINDOWS_SUPPORT)
 static struct heif_error heif_write_func(struct heif_context *ctx,const void* data,
   size_t size,void* userdata)
 {
