@@ -1901,6 +1901,7 @@ RestoreMSCWarning
             status=InjectImageBlob(image_info,image,image,"jpeg",exception);
             if (status == MagickFalse)
               {
+                xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
                 (void) CloseBlob(image);
                 return(MagickFalse);
               }
@@ -1911,6 +1912,7 @@ RestoreMSCWarning
             status=InjectImageBlob(image_info,image,image,"jp2",exception);
             if (status == MagickFalse)
               {
+                xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
                 (void) CloseBlob(image);
                 return(MagickFalse);
               }
@@ -1964,6 +1966,7 @@ RestoreMSCWarning
             pixel_info=RelinquishVirtualMemory(pixel_info);
             if (status == MagickFalse)
               {
+                xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
                 (void) CloseBlob(image);
                 return(MagickFalse);
               }
@@ -2010,6 +2013,7 @@ RestoreMSCWarning
             status=InjectImageBlob(image_info,image,image,"jpeg",exception);
             if (status == MagickFalse)
               {
+                xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
                 (void) CloseBlob(image);
                 return(MagickFalse);
               }
@@ -2020,6 +2024,7 @@ RestoreMSCWarning
             status=InjectImageBlob(image_info,image,image,"jp2",exception);
             if (status == MagickFalse)
               {
+                xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
                 (void) CloseBlob(image);
                 return(MagickFalse);
               }
@@ -2038,10 +2043,7 @@ RestoreMSCWarning
             length*=image->colorspace == CMYKColorspace ? 4UL : 3UL;
             pixel_info=AcquireVirtualMemory(length,sizeof(*pixels));
             if (pixel_info == (MemoryInfo *) NULL)
-              {
-                xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
-                ThrowPDFException(ResourceLimitError,"MemoryAllocationFailed");
-              }
+              ThrowPDFException(ResourceLimitError,"MemoryAllocationFailed");
             pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
             /*
               Dump runoffset encoded pixels.
@@ -2081,6 +2083,7 @@ RestoreMSCWarning
             pixel_info=RelinquishVirtualMemory(pixel_info);
             if (status == MagickFalse)
               {
+                xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
                 (void) CloseBlob(image);
                 return(MagickFalse);
               }
@@ -2138,11 +2141,7 @@ RestoreMSCWarning
               length=(size_t) number_pixels;
               pixel_info=AcquireVirtualMemory(length,sizeof(*pixels));
               if (pixel_info == (MemoryInfo *) NULL)
-                {
-                  xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
-                  ThrowPDFException(ResourceLimitError,
-                    "MemoryAllocationFailed");
-                }
+                ThrowPDFException(ResourceLimitError,"MemoryAllocationFailed");
               pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
               /*
                 Dump Runlength encoded pixels.
@@ -2178,6 +2177,7 @@ RestoreMSCWarning
               pixel_info=RelinquishVirtualMemory(pixel_info);
               if (status == MagickFalse)
                 {
+                  xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
                   (void) CloseBlob(image);
                   return(MagickFalse);
                 }
@@ -2426,6 +2426,7 @@ RestoreMSCWarning
               exception);
             if (status == MagickFalse)
               {
+                xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
                 (void) CloseBlob(image);
                 return(MagickFalse);
               }
@@ -2436,6 +2437,7 @@ RestoreMSCWarning
             status=InjectImageBlob(image_info,image,tile_image,"jp2",exception);
             if (status == MagickFalse)
               {
+                xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
                 (void) CloseBlob(image);
                 return(MagickFalse);
               }
@@ -2487,6 +2489,7 @@ RestoreMSCWarning
             pixel_info=RelinquishVirtualMemory(pixel_info);
             if (status == MagickFalse)
               {
+                xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
                 (void) CloseBlob(image);
                 return(MagickFalse);
               }
@@ -2528,6 +2531,7 @@ RestoreMSCWarning
               exception);
             if (status == MagickFalse)
               {
+                xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
                 (void) CloseBlob(image);
                 return(MagickFalse);
               }
@@ -2538,6 +2542,7 @@ RestoreMSCWarning
             status=InjectImageBlob(image_info,image,tile_image,"jp2",exception);
             if (status == MagickFalse)
               {
+                xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
                 (void) CloseBlob(image);
                 return(MagickFalse);
               }
@@ -2593,6 +2598,7 @@ RestoreMSCWarning
             pixel_info=RelinquishVirtualMemory(pixel_info);
             if (status == MagickFalse)
               {
+                xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
                 (void) CloseBlob(image);
                 return(MagickFalse);
               }
@@ -2681,6 +2687,7 @@ RestoreMSCWarning
               pixel_info=RelinquishVirtualMemory(pixel_info);
               if (status == MagickFalse)
                 {
+                  xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
                   (void) CloseBlob(image);
                   return(MagickFalse);
                 }
@@ -2893,6 +2900,7 @@ RestoreMSCWarning
             pixel_info=RelinquishVirtualMemory(pixel_info);
             if (status == MagickFalse)
               {
+                xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
                 (void) CloseBlob(image);
                 return(MagickFalse);
               }
