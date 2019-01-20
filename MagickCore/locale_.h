@@ -53,8 +53,10 @@ extern MagickExport double
 
 extern MagickExport int
   LocaleCompare(const char *,const char *) magick_attribute((__pure__)),
+  LocaleLowercase(const int),
   LocaleNCompare(const char *,const char *,const size_t)
-    magick_attribute((__pure__));
+    magick_attribute((__pure__)),
+  LocaleUppercase(const int);
 
 extern MagickExport LinkedListInfo
   *DestroyLocaleOptions(LinkedListInfo *),

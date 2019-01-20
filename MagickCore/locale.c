@@ -1499,7 +1499,40 @@ MagickExport void LocaleLower(char *string)
 
   assert(string != (char *) NULL);
   for (q=string; *q != '\0'; q++)
-    *q=(char) tolower((int) *q);
+    *q=(char) LocaleLowercase((int) *q);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   L o c a l e L o w e r c a s e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  LocaleLowercase() convert to uppercase.
+%
+%  The format of the LocaleLowercase method is:
+%
+%      void LocaleLowercase(const int c)
+%
+%  A description of each parameter follows:
+%
+%    o If c is a uppercase letter, return its lowercase equivalent.
+%
+*/
+MagickExport int LocaleLowercase(const int c)
+{
+  locale_t
+    locale;
+
+  locale=AcquireCLocale();
+  if (locale == (locale_t) NULL)
+    return(tolower(c));
+  return(tolower_l(c,locale));
 }
 
 /*
@@ -1606,7 +1639,40 @@ MagickExport void LocaleUpper(char *string)
 
   assert(string != (char *) NULL);
   for (q=string; *q != '\0'; q++)
-    *q=(char) toupper((int) *q);
+    *q=(char) LocaleUppercase((int) *q);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   L o c a l e U p p e r c a s e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  LocaleUppercase() convert to uppercase.
+%
+%  The format of the LocaleUppercase method is:
+%
+%      void LocaleUppercase(const int c)
+%
+%  A description of each parameter follows:
+%
+%    o If c is a lowercase letter, return its uppercase equivalent.
+%
+*/
+MagickExport int LocaleUppercase(const int c)
+{
+  locale_t
+    locale;
+
+  locale=AcquireCLocale();
+  if (locale == (locale_t) NULL)
+    return(toupper(c));
+  return(toupper_l(c,locale));
 }
 
 /*

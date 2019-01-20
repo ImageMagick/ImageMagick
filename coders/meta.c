@@ -179,10 +179,10 @@ static int stringnicmp(const char *p,const char *q,size_t n)
       break;
     i=(*p);
     if (islower(i))
-      i=toupper(i);
+      i=LocaleUppercase(i);
     j=(*q);
     if (islower(j))
-      j=toupper(j);
+      j=LocaleUppercase(j);
     if (i != j)
       break;
     n--;
@@ -191,7 +191,7 @@ static int stringnicmp(const char *p,const char *q,size_t n)
     p++;
     q++;
   }
-  return(toupper((int) *p)-toupper((int) *q));
+  return(LocaleUppercase((int) *p)-LocaleUppercase((int) *q));
 }
 
 static size_t convertHTMLcodes(char *s)

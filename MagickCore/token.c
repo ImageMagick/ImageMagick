@@ -541,8 +541,7 @@ MagickExport MagickBooleanType GlobExpression(const char *expression,
       {
         if (case_insensitive != MagickFalse)
           {
-            if (tolower((int) GetUTFCode(expression)) !=
-                tolower((int) GetUTFCode(pattern)))
+            if (LocaleLowercase((int) GetUTFCode(expression)) != LocaleLowercase((int) GetUTFCode(pattern)))
               {
                 done=MagickTrue;
                 break;
@@ -815,12 +814,12 @@ static void StoreToken(TokenInfo *token_info,char *string,
   {
     case 1:
     {
-      string[i]=(char) toupper(c);
+      string[i]=(char) LocaleUppercase(c);
       break;
     }
     case 2:
     {
-      string[i]=(char) tolower(c);
+      string[i]=(char) LocaleLowercase(c);
       break;
     }
     default:

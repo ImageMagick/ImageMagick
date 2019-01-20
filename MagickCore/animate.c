@@ -1575,7 +1575,8 @@ MagickExport Image *XAnimateImages(Display *display,
     resource_info,&windows->context);
   (void) CloneString(&class_hints->res_name,resource_info->client_name);
   (void) CloneString(&class_hints->res_class,resource_info->client_name);
-  class_hints->res_class[0]=(char) toupper((int) class_hints->res_class[0]);
+  class_hints->res_class[0]=(char) LocaleUppercase((int)
+    class_hints->res_class[0]);
   manager_hints->flags=InputHint | StateHint;
   manager_hints->input=MagickFalse;
   manager_hints->initial_state=WithdrawnState;
