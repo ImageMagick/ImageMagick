@@ -2782,6 +2782,8 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
       if (deflateInit(&stream,level) != Z_OK)
         {
           quantum_info=DestroyQuantumInfo(quantum_info);
+          compressed_pixels=(unsigned char *) RelinquishMagickMemory(
+            compressed_pixels);
           return(0);
         }
     }
