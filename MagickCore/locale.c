@@ -1513,7 +1513,7 @@ MagickExport void LocaleLower(char *string)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  LocaleLowercase() convert to uppercase.
+%  LocaleLowercase() convert to lowercase.
 %
 %  The format of the LocaleLowercase method is:
 %
