@@ -1526,13 +1526,9 @@ MagickExport void LocaleLower(char *string)
 */
 MagickExport int LocaleLowercase(const int c)
 {
-  locale_t
-    locale;
-
-  locale=AcquireCLocale();
-  if (locale == (locale_t) NULL)
+  if (c_locale == (locale_t) NULL)
     return(tolower(c));
-  return(tolower_l(c,locale));
+  return(tolower_l(c,c_locale));
 }
 
 /*
@@ -1666,13 +1662,9 @@ MagickExport void LocaleUpper(char *string)
 */
 MagickExport int LocaleUppercase(const int c)
 {
-  locale_t
-    locale;
-
-  locale=AcquireCLocale();
-  if (locale == (locale_t) NULL)
+  if (c_locale == (locale_t) NULL)
     return(toupper(c));
-  return(toupper_l(c,locale));
+  return(toupper_l(c,c_locale));
 }
 
 /*
