@@ -36,13 +36,12 @@
 %
 */
 
-#ifdef __VMS
-#define JPEG_SUPPORT 1
-#endif
-
 /*
   Include declarations.
 */
+#ifdef __VMS
+#define JPEG_SUPPORT 1
+#endif
 #include "MagickCore/studio.h"
 #include "MagickCore/artifact.h"
 #include "MagickCore/attribute.h"
@@ -284,13 +283,12 @@ static MagickOffsetType TIFFTellCustomStream(void *user_data)
   return(profile->offset);
 }
 
-static void InitPSDInfo(const Image *image, PSDInfo *info)
+static void InitPSDInfo(const Image *image,PSDInfo *info)
 {
   info->version=1;
   info->columns=image->columns;
   info->rows=image->rows;
-  /* Setting the mode to a value that won't change the colorspace */
-  info->mode=10;
+  info->mode=10; /* Set the mode to a value that won't change the colorspace */
   info->channels=1U;
   info->min_channels=1U;
   if (image->storage_class == PseudoClass)
@@ -378,7 +376,7 @@ static MagickBooleanType IsTIFF(const unsigned char *magick,const size_t length)
 %
 */
 
-static inline size_t WriteLSBLong(FILE *file,const size_t value)
+static inline size_t WriteLSBLong(FILE *file,const unsigned int value)
 {
   unsigned char
     buffer[4];
@@ -458,21 +456,21 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
   length=fwrite("\006\001\003\000\001\000\000\000\000\000\000\000",1,12,file);
   length=fwrite("\021\001\003\000\001\000\000\000",1,8,file);
   strip_offset=10+(12*14)+4+8;
-  length=WriteLSBLong(file,(size_t) strip_offset);
+  length=WriteLSBLong(file,(unsigned int) strip_offset);
   length=fwrite("\022\001\003\000\001\000\000\000",1,8,file);
-  length=WriteLSBLong(file,(size_t) image_info->orientation);
+  length=WriteLSBLong(file,(unsigned int) image_info->orientation);
   length=fwrite("\025\001\003\000\001\000\000\000\001\000\000\000",1,12,file);
   length=fwrite("\026\001\004\000\001\000\000\000",1,8,file);
   length=WriteLSBLong(file,image->rows);
   length=fwrite("\027\001\004\000\001\000\000\000\000\000\000\000",1,12,file);
   offset=(ssize_t) ftell(file)-4;
   length=fwrite("\032\001\005\000\001\000\000\000",1,8,file);
-  length=WriteLSBLong(file,(size_t) (strip_offset-8));
+  length=WriteLSBLong(file,(unsigned int) (strip_offset-8));
   length=fwrite("\033\001\005\000\001\000\000\000",1,8,file);
-  length=WriteLSBLong(file,(size_t) (strip_offset-8));
+  length=WriteLSBLong(file,(unsigned int) (strip_offset-8));
   length=fwrite("\050\001\003\000\001\000\000\000\002\000\000\000",1,12,file);
   length=fwrite("\000\000\000\000",1,4,file);
-  length=WriteLSBLong(file,(long) image->resolution.x);
+  length=WriteLSBLong(file,(unsigned int) image->resolution.x);
   length=WriteLSBLong(file,1);
   status=MagickTrue;
   for (length=0; (c=ReadBlobByte(image)) != EOF; length++)
