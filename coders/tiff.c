@@ -1137,7 +1137,7 @@ static CustomStreamInfo *TIFFAcquireCustomStreamForReading(
   return(custom_stream);
 }
 
-static void TIFFReadPhotoshopLayers(Image* image,const ImageInfo *image_info,
+static void TIFFReadPhotoshopLayers(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
   const char
@@ -1151,6 +1151,9 @@ static void TIFFReadPhotoshopLayers(Image* image,const ImageInfo *image_info,
 
   Image
     *layers;
+
+  ImageInfo
+    *clone_info;
 
   PhotoshopProfile
     photoshop_profile;
@@ -1205,7 +1208,10 @@ static void TIFFReadPhotoshopLayers(Image* image,const ImageInfo *image_info,
   AttachCustomStream(layers->blob,custom_stream);
   SeekBlob(layers,(MagickOffsetType) i,SEEK_SET);
   InitPSDInfo(layers,&info);
-  (void) ReadPSDLayers(layers,image_info,&info,exception);
+  clone_info=CloneImageInfo(image_info);
+  clone_info->number_scenes=0;
+  (void) ReadPSDLayers(layers,clone_info,&info,exception);
+  clone_info=DestroyImageInfo(clone_info);
   DeleteImageFromList(&layers);
   if (layers != (Image *) NULL)
     {
@@ -2274,7 +2280,7 @@ RestoreMSCWarning
       }
   } while ((status != MagickFalse) && (more_frames != MagickFalse));
   TIFFClose(tiff);
-  TIFFReadPhotoshopLayers(image,image_info,exception);
+  TIFFReadPhotoshopLayers(image_info,image,exception);
   if ((image_info->number_scenes != 0) &&
       (image_info->scene >= GetImageListLength(image)))
     status=MagickFalse;
