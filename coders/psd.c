@@ -1747,6 +1747,12 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
     left=(ssize_t) ReadBlobSignedLong(image);
     bottom=(ssize_t) ReadBlobSignedLong(image);
     right=(ssize_t) ReadBlobSignedLong(image);
+    if ((right < left) || (bottom < top))
+      {
+        layer_info=DestroyLayerInfo(layer_info,number_layers);
+        ThrowBinaryException(CorruptImageError,"ImproperImageHeader",
+          image->filename);
+      }
     layer_info[i].page.y=top;
     layer_info[i].page.x=left;
     layer_info[i].page.width=(size_t) (right-left);
