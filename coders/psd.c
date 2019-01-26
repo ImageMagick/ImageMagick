@@ -1735,18 +1735,22 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
   for (i=0; i < number_layers; i++)
   {
     ssize_t
-      x,
-      y;
+      top,
+      left,
+      bottom,
+      right;
 
     if (image->debug != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  reading layer #%.20g",(double) i+1);
-    layer_info[i].page.y=(ssize_t) ReadBlobSignedLong(image);
-    layer_info[i].page.x=(ssize_t) ReadBlobSignedLong(image);
-    y=(ssize_t) ReadBlobSignedLong(image);
-    x=(ssize_t) ReadBlobSignedLong(image);
-    layer_info[i].page.width=(size_t) (x-layer_info[i].page.x);
-    layer_info[i].page.height=(size_t) (y-layer_info[i].page.y);
+    top=(ssize_t) ReadBlobSignedLong(image);
+    left=(ssize_t) ReadBlobSignedLong(image);
+    bottom=(ssize_t) ReadBlobSignedLong(image);
+    right=(ssize_t) ReadBlobSignedLong(image);
+    layer_info[i].page.y=top;
+    layer_info[i].page.x=left;
+    layer_info[i].page.width=(size_t) (right-left);
+    layer_info[i].page.height=(size_t) (bottom-top);
     layer_info[i].channels=ReadBlobShort(image);
     if (layer_info[i].channels > MaxPSDChannels)
       {
