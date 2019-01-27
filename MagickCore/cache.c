@@ -3625,7 +3625,8 @@ static MagickBooleanType SetPixelCacheExtent(Image *image,MagickSizeType length)
         return(MagickFalse);
 #if defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
       if (cache_info->synchronize != MagickFalse)
-        (void) posix_fallocate(cache_info->file,offset+1,extent-offset);
+        if (posix_fallocate(cache_info->file,offset+1,extent-offset) != 0)
+          return(MagickFalse);
 #endif
     }
   offset=(MagickOffsetType) lseek(cache_info->file,0,SEEK_SET);

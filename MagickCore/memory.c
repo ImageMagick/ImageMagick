@@ -650,7 +650,12 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
               if ((offset == (MagickOffsetType) (extent-1)) &&
                   (write(file,"",1) == 1))
                 {
+#if !defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
                   memory_info->blob=MapBlob(file,IOMode,0,extent);
+#else
+                  if (posix_fallocate(file,0,extent) == 0)
+                    memory_info->blob=MapBlob(file,IOMode,0,extent);
+#endif
                   if (memory_info->blob != NULL)
                     memory_info->type=MapVirtualMemory;
                   else
