@@ -4613,9 +4613,13 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
   blur_image=DestroyImage(blur_image);
   if (dodge_image == (Image *) NULL)
     return((Image *) NULL);
-  (void) NormalizeImage(dodge_image,exception);
-  (void) NegateImage(dodge_image,MagickFalse,exception);
-  (void) TransformImage(&dodge_image,(char *) NULL,"50%",exception);
+  status=ClampImage(dodge_image,exception);
+  if (status != MagickFalse)
+    status=NormalizeImage(dodge_image,exception);
+  if (status != MagickFalse)
+    status=NegateImage(dodge_image,MagickFalse,exception);
+  if (status != MagickFalse)
+    status=TransformImage(&dodge_image,(char *) NULL,"50%",exception);
   sketch_image=CloneImage(image,0,0,MagickTrue,exception);
   if (sketch_image == (Image *) NULL)
     {
