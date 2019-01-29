@@ -287,10 +287,8 @@ static SplayTreeInfo *AcquireLocaleSplayTree(const char *filename,
 */
 static void DestroyCLocale(void)
 {
-#if defined(MAGICKCORE_HAVE_NEWLOCALE)
   if (c_locale != (locale_t) NULL)
     freelocale(c_locale);
-#endif
   c_locale=(locale_t) NULL;
 }
 #endif
