@@ -290,9 +290,6 @@ static void DestroyCLocale(void)
 #if defined(MAGICKCORE_HAVE_NEWLOCALE)
   if (c_locale != (locale_t) NULL)
     freelocale(c_locale);
-#elif defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__MINGW32__)
-  if (c_locale != (locale_t) NULL)
-    _free_locale(c_locale);
 #endif
   c_locale=(locale_t) NULL;
 }
@@ -1526,9 +1523,11 @@ MagickExport void LocaleLower(char *string)
 */
 MagickExport int LocaleLowercase(const int c)
 {
-  if (c_locale == (locale_t) NULL)
-    return(tolower(c));
-  return(tolower_l(c,c_locale));
+#if defined(MAGICKCORE_LOCALE_SUPPORT)
+  if (c_locale != (locale_t) NULL)
+    return(tolower_l(c,c_locale));
+#endif
+  return(tolower(c));
 }
 
 /*
@@ -1662,9 +1661,11 @@ MagickExport void LocaleUpper(char *string)
 */
 MagickExport int LocaleUppercase(const int c)
 {
-  if (c_locale == (locale_t) NULL)
-    return(toupper(c));
-  return(toupper_l(c,c_locale));
+#if defined(MAGICKCORE_LOCALE_SUPPORT)
+  if (c_locale != (locale_t) NULL)
+    return(toupper_l(c,c_locale));
+#endif
+  return(toupper(c));
 }
 
 /*
