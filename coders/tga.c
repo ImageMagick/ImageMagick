@@ -724,8 +724,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
     compression;
 
   const char
-    *comment,
-    *value;
+    *comment;
 
   const double
     midpoint = QuantumRange/2.0;
@@ -846,19 +845,6 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
   if ((image->orientation == TopLeftOrientation) ||
       (image->orientation == TopRightOrientation))
     tga_info.attributes|=(1UL << 5);
-  value=GetImageArtifact(image,"tga:image-origin");  /* deprecated */
-  if (value != (const char *) NULL)
-    {
-      OrientationType
-        origin;
-
-      origin=(OrientationType) ParseCommandOption(MagickOrientationOptions,
-        MagickFalse,value);
-      if (origin == BottomRightOrientation || origin == TopRightOrientation)
-        tga_info.attributes|=(1UL << 4);
-      if (origin == TopLeftOrientation || origin == TopRightOrientation)
-        tga_info.attributes|=(1UL << 5);
-    }
   if ((image->columns > 65535) || (image->rows > 65535))
     ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
   /*
