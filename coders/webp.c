@@ -730,6 +730,11 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   if (value != (char *) NULL)
     configure.thread_level=StringToInteger(value);
 #endif
+#if WEBP_DECODER_ABI_VERSION >= 0x020e
+  value=GetImageOption(image_info,"webp:use-sharp-yuv");
+  if (value != (char *) NULL)
+    configure.use_sharp_yuv=StringToInteger(value);
+#endif
   if (WebPValidateConfig(&configure) == 0)
     ThrowWriterException(ResourceLimitError,"UnableToEncodeImageFile");
   /*
