@@ -1629,6 +1629,11 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
     *bmp_data,
     *pixels;
 
+  MagickOffsetType
+    profile_data,
+    profile_size,
+    profile_size_pad;
+
   /*
     Open output image file.
   */
@@ -2190,6 +2195,17 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "   Number_colors=%u",bmp_info.number_colors);
       }
+    profile_data=0;
+    profile_size=0;
+    profile_size_pad=0;
+    if (profile) {
+      profile_data=(MagickOffsetType) bmp_info.file_size-14;  /* from head of BMP info header */
+      profile_size=(MagickOffsetType) GetStringInfoLength(profile);
+      if (profile_size%4) {
+        profile_size_pad=4-(profile_size%4);
+      }
+      bmp_info.file_size+=profile_size+profile_size_pad;
+    }
     (void) WriteBlob(image,2,(unsigned char *) "BM");
     (void) WriteBlobLSBLong(image,bmp_info.file_size);
     (void) WriteBlobLSBLong(image,bmp_info.ba_offset);  /* always 0 */
@@ -2232,7 +2248,11 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
         (void) WriteBlobLSBLong(image,bmp_info.green_mask);
         (void) WriteBlobLSBLong(image,bmp_info.blue_mask);
         (void) WriteBlobLSBLong(image,bmp_info.alpha_mask);
-        (void) WriteBlobLSBLong(image,0x73524742U);  /* sRGB */
+        if (profile) {
+          (void) WriteBlobLSBLong(image,0x4D424544U);  /* PROFILE_EMBEDDED */
+        } else {
+          (void) WriteBlobLSBLong(image,0x73524742U);  /* sRGB */
+        }
         (void) WriteBlobLSBLong(image,(unsigned int)
           (image->chromaticity.red_primary.x*0x40000000));
         (void) WriteBlobLSBLong(image,(unsigned int)
@@ -2295,8 +2315,9 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
               }
             }
             (void) WriteBlobLSBLong(image,(unsigned int) intent);
-            (void) WriteBlobLSBLong(image,0x00);  /* dummy profile data */
-            (void) WriteBlobLSBLong(image,0x00);  /* dummy profile length */
+            (void) WriteBlobLSBLong(image,(unsigned int) profile_data);
+            (void) WriteBlobLSBLong(image,(unsigned int)
+              (profile_size+profile_size_pad));
             (void) WriteBlobLSBLong(image,0x00);  /* reserved */
           }
       }
@@ -2347,6 +2368,15 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  Pixels:  %u bytes",bmp_info.image_size);
     (void) WriteBlob(image,(size_t) bmp_info.image_size,pixels);
+    if (profile) {
+      if (image->debug != MagickFalse)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "  Profile:  %g bytes",(double) profile_size+profile_size_pad);
+      (void) WriteBlob(image,(size_t) profile_size,GetStringInfoDatum(profile));
+      if (profile_size_pad) {  /* padding for 4 bytes multiple */
+        (void) WriteBlob(image,(size_t) profile_size_pad,"\0\0\0");
+      }
+    }
     pixel_info=RelinquishVirtualMemory(pixel_info);
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
