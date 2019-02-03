@@ -1,3 +1,7 @@
+2019-02-02  7.0.8-26 Cristy  <quetzlzacatenango@image...>
+  * Fixed a number of issues (reference
+    https://github.com/ImageMagick/ImageMagick/issues).
+
 2019-01-27  7.0.8-25 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-25, GIT revision 15279:7da783a5b:20190127
 
