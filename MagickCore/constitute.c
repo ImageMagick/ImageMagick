@@ -627,17 +627,13 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       "notify the developers",image->magick,exception->severity);
   if (IsBlobTemporary(image) != MagickFalse)
     (void) RelinquishUniqueFileResource(read_info->filename);
-  if ((IsSceneGeometry(read_info->scenes,MagickFalse) != MagickFalse) &&
-      (read_info->number_scenes == 0))
+  if (IsSceneGeometry(read_info->scenes,MagickFalse) != MagickFalse)
     {
       Image
         *clones;
 
       clones=CloneImages(image,read_info->scenes,exception);
-      if (clones == (Image *) NULL)
-        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "SubimageSpecificationReturnsNoImages","`%s'",read_info->filename);
-      else
+      if (clones != (Image *) NULL)
         {
           image=DestroyImageList(image);
           image=GetFirstImageInList(clones);
