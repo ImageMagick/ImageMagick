@@ -641,7 +641,11 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       if (n != 2)
         {
           clones=CloneImages(image,read_info->scenes,exception);
-          if (clones != (Image *) NULL)
+          if (clones == (Image *) NULL)
+            (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+              "SubimageSpecificationReturnsNoImages","`%s'",
+              read_info->filename);
+          else
             {
               image=DestroyImageList(image);
               image=GetFirstImageInList(clones);
