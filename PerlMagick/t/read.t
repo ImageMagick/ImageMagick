@@ -45,7 +45,7 @@ testReadCompare('input.dib', 'reference/read/input_dib.miff', q//, 0.0, 0.0);
 
 print("Flexible Image Transport System ...\n");
 ++$test;
-testReadCompare('input.fits', 'reference/read/input_fits.miff', q//, 0.06, 0.6);
+testReadCompare('input.fits', 'reference/read/input_fits.miff', q//, 0.17, 0.7);
 
 print("CompuServe graphics interchange format ...\n");
 ++$test;
