@@ -3957,7 +3957,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
                 (void) FormatLocaleString(key,MagickPathExtent,"%s",
                   text[i].key);
-                if (LocaleCompare(key,"version") != (char *) NULL)
+                if (LocaleCompare(key,"version") == 0)
                   (void) FormatLocaleString(key,MagickPathExtent,"png:%s",
                     text[i].key);
                 (void) SetImageProperty(image,key,value,exception);
