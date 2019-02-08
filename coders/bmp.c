@@ -557,6 +557,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offset_bits,
     red;
 
+  MagickOffsetType
+    profile_data,
+    profile_size;
+
   /*
     Open image file.
   */
@@ -619,6 +623,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image->debug != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  BMP size: %u",
         bmp_info.size);
+    profile_data = 0;
+    profile_size = 0;
     if (bmp_info.size == 12)
       {
         /*
@@ -817,8 +823,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               }
             }
-            (void) ReadBlobLSBLong(image);  /* Profile data */
-            (void) ReadBlobLSBLong(image);  /* Profile size */
+            profile_data=(MagickOffsetType)ReadBlobLSBLong(image);
+            profile_size=(MagickOffsetType)ReadBlobLSBLong(image);
             (void) ReadBlobLSBLong(image);  /* Reserved byte */
           }
       }
@@ -1437,6 +1443,46 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             ReplaceImageInList(&image, flipped_image);
             image=flipped_image;
           }
+      }
+    /*
+      Read embeded ICC profile
+     */
+    if ((bmp_info.colorspace == 0x4D424544U) &&  /* PROFILE_EMBEDDED */
+        (profile_data > 0) && (profile_size > 0))
+      {
+        StringInfo
+          *profile;
+
+        unsigned char
+          *datum;
+
+        offset=start_position+14+profile_data;
+        if ((offset < TellBlob(image)) ||
+            (SeekBlob(image,offset,SEEK_SET) != offset) ||
+            (GetBlobSize(image) < (MagickSizeType) (offset+profile_size)))
+          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+        profile=AcquireStringInfo(profile_size);
+        if (profile == (StringInfo *) NULL)
+          ThrowReaderException(CorruptImageError,"MemoryAllocationFailed");
+        datum=GetStringInfoDatum(profile);
+        if (ReadBlob(image,profile_size,datum) == profile_size)
+          {
+            MagickOffsetType
+              profile_size_orig;
+
+            /* trimming padded bytes */
+            profile_size_orig=(MagickOffsetType) datum[0] << 24;
+            profile_size_orig|=(MagickOffsetType) datum[1] << 16;
+            profile_size_orig|=(MagickOffsetType) datum[2] << 8;
+            profile_size_orig|=(MagickOffsetType) datum[3];
+            if (profile_size_orig < profile_size)
+                SetStringInfoLength(profile, profile_size_orig);
+            if (image->debug != MagickFalse)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                    "Profile: ICC, %u bytes",(unsigned int) profile_size_orig);
+            (void)SetImageProfile(image,"icc",profile,exception);
+          }
+        profile=DestroyStringInfo(profile);
       }
     /*
       Proceed to next image.
