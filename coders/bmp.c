@@ -520,6 +520,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   MagickOffsetType
     offset,
+    profile_data,
+    profile_size,
     start_position;
 
   MemoryInfo
@@ -556,10 +558,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     green,
     offset_bits,
     red;
-
-  MagickOffsetType
-    profile_data,
-    profile_size;
 
   /*
     Open image file.
