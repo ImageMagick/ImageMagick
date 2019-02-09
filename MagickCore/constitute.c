@@ -638,7 +638,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         *clones;
 
       n=sscanf(read_info->scenes,"%d-%d",&first_scene,&last_scene);
-      if (n != 2)
+      if (n == 2)
         {
           clones=CloneImages(image,read_info->scenes,exception);
           if (clones == (Image *) NULL)
