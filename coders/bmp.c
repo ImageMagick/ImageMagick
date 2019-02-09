@@ -621,8 +621,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image->debug != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  BMP size: %u",
         bmp_info.size);
-    profile_data = 0;
-    profile_size = 0;
+    profile_data=0;
+    profile_size=0;
     if (bmp_info.size == 12)
       {
         /*
@@ -1010,8 +1010,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           If we find a non zero value we asume the program that wrote the file
           wants to use the alpha channel.
         */
-        if ((image->alpha_trait == UndefinedPixelTrait) && (bmp_info.size == 40) &&
-            (bmp_info.bits_per_pixel == 32))
+        if ((image->alpha_trait == UndefinedPixelTrait) &&
+            (bmp_info.size == 40) && (bmp_info.bits_per_pixel == 32))
           {
             bytes_per_line=4*(image->columns);
             for (y=(ssize_t) image->rows-1; y >= 0; y--)
@@ -1444,9 +1444,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     /*
       Read embeded ICC profile
-     */
-    if ((bmp_info.colorspace == 0x4D424544L) &&  /* PROFILE_EMBEDDED */
-        (profile_data > 0) && (profile_size > 0))
+    */
+    if ((bmp_info.colorspace == 0x4D424544L) && (profile_data > 0) &&
+        (profile_size > 0))
       {
         StringInfo
           *profile;
