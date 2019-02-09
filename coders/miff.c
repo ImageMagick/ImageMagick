@@ -1116,11 +1116,12 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     /*
       Verify that required image information is defined.
     */
-    if ((LocaleCompare(id,"ImageMagick") != 0) || (image->depth > 64) ||
+    if ((LocaleCompare(id,"ImageMagick") != 0) ||
         (image->storage_class == UndefinedClass) ||
         (image->compression == UndefinedCompression) ||
         (image->colorspace == UndefinedColorspace) ||
-        (image->columns == 0) || (image->rows == 0))
+        (image->columns == 0) || (image->rows == 0) ||
+        (image->depth == 0) || (image->depth > 64))
       {
         if (profiles != (LinkedListInfo *) NULL)
           profiles=DestroyLinkedList(profiles,RelinquishMagickMemory);
@@ -1333,6 +1334,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     compress_extent=MagickMax(MagickMax(BZipMaxExtent(packet_size*
       image->columns),LZMAMaxExtent(packet_size*image->columns)),
       ZipMaxExtent(packet_size*image->columns));
+    if (compress_extent < (packet_size*image->columns))
+      ThrowMIFFException(ResourceLimitError,"MemoryAllocationFailed");
     compress_pixels=(unsigned char *) AcquireQuantumMemory(compress_extent,
       sizeof(*compress_pixels));
     if (compress_pixels == (unsigned char *) NULL)
@@ -2623,7 +2626,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
               code;
 
             lzma_info.next_out=compress_pixels;
-            lzma_info.avail_out=packet_size*image->columns;
+            lzma_info.avail_out=LZMAMaxExtent(packet_size*image->columns);
             code=lzma_code(&lzma_info,LZMA_RUN);
             if (code != LZMA_OK)
               status=MagickFalse;
