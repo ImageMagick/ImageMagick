@@ -1480,7 +1480,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (image->debug != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "Profile: ICC, %u bytes",(unsigned int) profile_size_orig);
-            (void)SetImageProfile(image,"icc",profile,exception);
+            (void) SetImageProfile(image,"icc",profile,exception);
           }
         profile=DestroyStringInfo(profile);
       }
