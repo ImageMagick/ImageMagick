@@ -1159,7 +1159,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               if (WPG_Palette.StartIndex > WPG_Palette.NumOfEntries)
                 ThrowReaderException(CorruptImageError,"InvalidColormapIndex");
               image->colors=WPG_Palette.NumOfEntries;
-              if (!AcquireImageColormap(image,image->colors,exception))
+              if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
                 goto NoMemory;
               for (i=WPG_Palette.StartIndex;
                    i < (int)WPG_Palette.NumOfEntries; i++)
@@ -1245,9 +1245,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                 {
                   if (bpp < 24)
                     if ( (image->colors < (one << bpp)) && (bpp != 24) )
-                      image->colormap=(PixelInfo *) ResizeQuantumMemory(
-                        image->colormap,(size_t) (one << bpp),
-                        sizeof(*image->colormap));
+                      if (AcquireImageColormap(image,one << bpp,exception) == MagickFalse)
+                        goto NoMemory;
                 }
 
               if ((bpp == 1) && (image->colors > 1))
