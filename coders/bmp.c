@@ -1447,7 +1447,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read embeded ICC profile
      */
-    if ((bmp_info.colorspace == 0x4D424544U) &&  /* PROFILE_EMBEDDED */
+    if ((bmp_info.colorspace == 0x4D424544L) &&  /* PROFILE_EMBEDDED */
         (profile_data > 0) && (profile_size > 0))
       {
         StringInfo
@@ -1461,25 +1461,27 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (SeekBlob(image,offset,SEEK_SET) != offset) ||
             (GetBlobSize(image) < (MagickSizeType) (offset+profile_size)))
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-        profile=AcquireStringInfo(profile_size);
+        profile=AcquireStringInfo((size_t) profile_size);
         if (profile == (StringInfo *) NULL)
           ThrowReaderException(CorruptImageError,"MemoryAllocationFailed");
         datum=GetStringInfoDatum(profile);
-        if (ReadBlob(image,profile_size,datum) == profile_size)
+        if (ReadBlob(image,(size_t) profile_size,datum) == (ssize_t) profile_size)
           {
             MagickOffsetType
               profile_size_orig;
 
-            /* trimming padded bytes */
+            /*
+             Trimming padded bytes.
+            */
             profile_size_orig=(MagickOffsetType) datum[0] << 24;
             profile_size_orig|=(MagickOffsetType) datum[1] << 16;
             profile_size_orig|=(MagickOffsetType) datum[2] << 8;
             profile_size_orig|=(MagickOffsetType) datum[3];
             if (profile_size_orig < profile_size)
-                SetStringInfoLength(profile, profile_size_orig);
+              SetStringInfoLength(profile,(size_t) profile_size_orig);
             if (image->debug != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                    "Profile: ICC, %u bytes",(unsigned int) profile_size_orig);
+                "Profile: ICC, %u bytes",(unsigned int) profile_size_orig);
             (void)SetImageProfile(image,"icc",profile,exception);
           }
         profile=DestroyStringInfo(profile);
