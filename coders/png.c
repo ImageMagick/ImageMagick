@@ -6093,8 +6093,11 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                 image->background_color=mng_background_color;
                 image->alpha_trait=UndefinedPixelTrait;
                 image->delay=0;
-                (void) SetImageBackgroundColor(image,exception);
-
+                if (SetImageBackgroundColor(image,exception) == MagickFalse)
+                  {
+                    chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+                    return(DestroyImageList(image));
+                  }
                 if (logging != MagickFalse)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "  Insert backgd layer, L=%.20g, R=%.20g T=%.20g, B=%.20g",
