@@ -325,7 +325,7 @@ static MagickBooleanType
 %
 */
 
-static const unsigned char *ExpandBuffer(const unsigned char *restrict pixels,
+static const unsigned char *ExpandBuffer(const unsigned char *magick_restrict pixels,
   const unsigned int bits_per_pixel,MagickSizeType *bytes_per_line)
 {
   register const unsigned char
