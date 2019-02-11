@@ -1101,6 +1101,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
   image->columns = 1;
   image->rows = 1;
   image->colors = 0;
+  image->storage_class=DirectClass;
   (void) ResetImagePixels(image,exception);
   bpp=0;
   BitmapHeader2.RotAngle=0;
@@ -1244,9 +1245,28 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               else
                 {
                   if (bpp < 24)
-                    if ( (image->colors < (one << bpp)) && (bpp != 24) )
+                  if ( (image->colors < (one << bpp)) && (bpp != 24) )
+                    {
+                      PixelInfo
+                        *colormap;
+
+                      size_t
+                        colors;
+
+                      colormap=image->colormap;
+                      colors=image->colors;
+                      image->colormap=(PixelInfo *) NULL;
                       if (AcquireImageColormap(image,one << bpp,exception) == MagickFalse)
-                        goto NoMemory;
+                        {
+                          colormap=(PixelInfo *)
+                            RelinquishMagickMemory(colormap);
+                          goto NoMemory;
+                        }
+                      (void) memcpy(image->colormap,colormap,colors*
+                        sizeof(*image->colormap));
+                      colormap=(PixelInfo *)
+                        RelinquishMagickMemory(colormap);
+                    }
                 }
 
               if ((bpp == 1) && (image->colors > 1))
