@@ -678,12 +678,12 @@ static void SVGStripString(const MagickBooleanType trim,char *message)
     *q++=(*p);
   }
   *q='\0';
-  if (trim != MagickFalse)
+  length=strlen(message);
+  if ((trim != MagickFalse) && (length != 0))
     {
       /*
         Remove whitespace.
       */
-      length=strlen(message);
       p=message;
       while (isspace((int) ((unsigned char) *p)) != 0)
         p++;
