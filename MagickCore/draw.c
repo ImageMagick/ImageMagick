@@ -2500,7 +2500,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
   if (primitive == (char *) NULL)
     return(MagickFalse);
   primitive_extent=(double) strlen(primitive);
-  (void) SetImageArtifact(image,"MVG",primitive);
+  (void) SetImageArtifact(image,"mvg:vector-graphics",primitive);
   n=0;
   number_stops=0;
   stops=(StopInfo *) NULL;

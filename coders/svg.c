@@ -4136,7 +4136,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
       (void) CloseBlob(image);
       return(MagickTrue);
     }
-  value=GetImageArtifact(image,"MVG");
+  value=GetImageArtifact(image,"mvg:vector-graphics");
   if (value == (char *) NULL)
     return(TraceSVGImage(image,exception));
   /*
