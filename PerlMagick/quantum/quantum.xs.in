@@ -75,7 +75,7 @@ extern "C" {
 #define DegreesToRadians(x)  (MagickPI*(x)/180.0)
 #define EndOf(array)  (&array[NumberOf(array)])
 #define MagickPI  3.14159265358979323846264338327950288419716939937510
-#define MaxArguments  33
+#define MaxArguments  34
 #ifndef na
 #define na  PL_na
 #endif
@@ -288,7 +288,8 @@ static struct
       {"tile", ImageReference}, {"kerning", RealReference},
       {"interline-spacing", RealReference},
       {"interword-spacing", RealReference},
-      {"direction", MagickDirectionOptions} } },
+      {"direction", MagickDirectionOptions},
+      {"decorate", MagickDecorateOptions} } },
     { "ColorFloodfill", { {"geometry", StringReference},
       {"x", IntegerReference}, {"y", IntegerReference},
       {"fill", StringReference}, {"bordercolor", StringReference},
@@ -8609,6 +8610,9 @@ Mogrify(ref,...)
           if (attribute_flag[32] != 0)
             draw_info->direction=(DirectionType)
               argument_list[32].integer_reference;
+          if (attribute_flag[33] != 0)
+            draw_info->decorate=(DecorationType)
+              argument_list[33].integer_reference;
           (void) AnnotateImage(image,draw_info,exception);
           draw_info=DestroyDrawInfo(draw_info);
           break;
