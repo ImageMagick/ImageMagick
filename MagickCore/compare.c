@@ -430,6 +430,13 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
       register ssize_t
         i;
 
+      if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
+          (GetPixelReadMask(reconstruct_image,q) <= (QuantumRange/2)))
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(reconstruct_image);
+          continue;
+        }
       difference=MagickFalse;
       distance=0.0;
       Sa=QuantumScale*GetPixelAlpha(image,p);
