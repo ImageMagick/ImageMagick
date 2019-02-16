@@ -1988,6 +1988,11 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       register ssize_t
         i;
 
+      if (GetPixelReadMask(image,p) <= (QuantumRange/2))
+        {
+          p+=GetPixelChannels(image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
