@@ -4979,10 +4979,10 @@ RestoreMSCWarning
 
 static inline double ConstrainCoordinate(double x)
 {
-  if (x < LONG_MIN)
-    return(LONG_MIN);
-  if (x > LONG_MAX)
-    return(LONG_MAX);
+  if (x < -SSIZE_MAX)
+    return(-SSIZE_MAX);
+  if (x > SSIZE_MAX)
+    return(SSIZE_MAX);
   return(x);
 }
 
