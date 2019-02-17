@@ -1579,6 +1579,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     glyph.origin=origin;
     glyph.origin.x+=(FT_Pos) grapheme[i].x_offset;
     glyph.origin.y+=(FT_Pos) grapheme[i].y_offset;
+    glyph.image=0;
     ft_status=FT_Load_Glyph(face,glyph.id,flags);
     if (ft_status != 0)
       continue;
@@ -1766,8 +1767,11 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     metrics->origin.y=(double) origin.y;
     if (metrics->origin.x > metrics->width)
       metrics->width=metrics->origin.x;
-    if (last_glyph.id != 0)
-      FT_Done_Glyph(last_glyph.image);
+    if (last_glyph.image != 0)
+      {
+        FT_Done_Glyph(last_glyph.image);
+        last_glyph.image=0;
+      }
     last_glyph=glyph;
     code=GetUTFCode(p+grapheme[i].cluster);
   }
@@ -1775,8 +1779,11 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     grapheme=(GraphemeInfo *) RelinquishMagickMemory(grapheme);
   if (utf8 != (unsigned char *) NULL)
     utf8=(unsigned char *) RelinquishMagickMemory(utf8);
-  if (last_glyph.id != 0)
-    FT_Done_Glyph(last_glyph.image);
+  if (glyph.image != 0)
+    {
+      FT_Done_Glyph(glyph.image);
+      glyph.image=0;
+    }
   /*
     Determine font metrics.
   */
