@@ -1809,6 +1809,8 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
       break;
     if (fabs(length) < MagickEpsilon)
       {
+        if (fabs(draw_info->dash_pattern[n]) >= MagickEpsilon)
+          n++;
         if (fabs(draw_info->dash_pattern[n]) < MagickEpsilon)
           n=0;
         length=scale*draw_info->dash_pattern[n];
@@ -1840,7 +1842,8 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
           dash_polygon[j].primitive=UndefinedPrimitive;
           status&=DrawStrokePolygon(image,clone_info,dash_polygon,exception);
         }
-      n++;
+      if (fabs(draw_info->dash_pattern[n]) >= MagickEpsilon)
+        n++;
       if (fabs(draw_info->dash_pattern[n]) < MagickEpsilon)
         n=0;
       length=scale*draw_info->dash_pattern[n];
