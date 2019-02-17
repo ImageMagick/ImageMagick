@@ -38,7 +38,7 @@ pango,fftw, TIFF or rsvg etc. you can find the necessary switches by running:
 
 then find the options you need and apply them like this:
 
-    brew reinstall imagemagick --with-jp2 --with-librsvg --with-quantum-depth-16 --with-pango
+    brew reinstall imagemagick --with-jp2 --with-quantum-depth-16 --with-pango
  
 If you have any problems with "homebrew", simply run:
 
