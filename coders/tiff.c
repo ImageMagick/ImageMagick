@@ -715,9 +715,6 @@ static void TIFFGetProperties(TIFF *tiff,Image *image,ExceptionInfo *exception)
     length,
     type;
 
-  unsigned long
-    *tietz;
-
   if ((TIFFGetField(tiff,TIFFTAG_ARTIST,&text) == 1) &&
       (text != (char *) NULL))
     (void) SetImageProperty(image,"tiff:artist",text,exception);
@@ -791,12 +788,6 @@ static void TIFFGetProperties(TIFF *tiff,Image *image,ExceptionInfo *exception)
       }
       default:
         break;
-    }
-  if ((TIFFGetField(tiff,37706,&length,&tietz) == 1) &&
-      (tietz != (unsigned long *) NULL))
-    {
-      (void) FormatLocaleString(message,MagickPathExtent,"%lu",tietz[0]);
-      (void) SetImageProperty(image,"tiff:tietz_offset",message,exception);
     }
 }
 
