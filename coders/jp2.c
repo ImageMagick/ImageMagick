@@ -378,7 +378,10 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     if (image->ping == MagickFalse)
       {
-        jp2_status=opj_decode(jp2_codec,jp2_stream,jp2_image);
+        jp2_status=opj_set_decode_area(jp2_codec,jp2_image,0,0,
+          jp2_image->comps[0].w-1,jp2_image->comps[0].h-1);
+        if (jp2_status != 0)
+          jp2_status=opj_decode(jp2_codec,jp2_stream,jp2_image);
         if (jp2_status != 0)
           jp2_status=opj_end_decompress(jp2_codec,jp2_stream);
       }
