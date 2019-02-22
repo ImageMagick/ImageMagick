@@ -179,6 +179,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   size_t
     depth,
+    extent,
     length;
 
   ssize_t
@@ -809,20 +810,21 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Image directory.
         */
-        length=MagickPathExtent;
+        extent=MagickPathExtent;
         image->directory=AcquireString((char *) NULL);
         p=image->directory;
+        length=0;
         do
         {
           *p='\0';
-          if ((strlen(image->directory)+MagickPathExtent) >= length)
+          if ((length+MagickPathExtent) >= extent)
             {
               /*
                 Allocate more memory for the image directory.
               */
-              length<<=1;
+              extent<<=1;
               image->directory=(char *) ResizeQuantumMemory(image->directory,
-                length+MagickPathExtent,sizeof(*image->directory));
+                extent+MagickPathExtent,sizeof(*image->directory));
               if (image->directory == (char *) NULL)
                 {
                   if (profiles != (LinkedListInfo *) NULL)
@@ -830,12 +832,13 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   ThrowReaderException(CorruptImageError,
                     "UnableToReadImageData");
                 }
-              p=image->directory+strlen(image->directory);
+              p=image->directory+length;
             }
           c=ReadBlobByte(image);
           if (c == EOF)
             break;
           *p++=(char) c;
+          length++;
         } while (c != (int) '\0');
       }
     if (profiles != (LinkedListInfo *) NULL)
