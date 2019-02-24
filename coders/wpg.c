@@ -1262,8 +1262,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                             RelinquishMagickMemory(colormap);
                           goto NoMemory;
                         }
-                      (void) memcpy(image->colormap,colormap,colors*
-                        sizeof(*image->colormap));
+                      (void) memcpy(image->colormap,colormap,MagickMin(
+                        image->colors,colors)*sizeof(*image->colormap));
                       colormap=(PixelInfo *)
                         RelinquishMagickMemory(colormap);
                     }
