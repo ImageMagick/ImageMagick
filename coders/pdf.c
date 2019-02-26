@@ -919,6 +919,7 @@ ModuleExport size_t RegisterPDFImage(void)
   entry=AcquireMagickInfo("PDF","AI","Adobe Illustrator CS2");
   entry->decoder=(DecodeImageHandler *) ReadPDFImage;
   entry->encoder=(EncodeImageHandler *) WritePDFImage;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderBlobSupportFlag;
   entry->mime_type=ConstantString("application/pdf");
@@ -927,6 +928,7 @@ ModuleExport size_t RegisterPDFImage(void)
     "Encapsulated Portable Document Format");
   entry->decoder=(DecodeImageHandler *) ReadPDFImage;
   entry->encoder=(EncodeImageHandler *) WritePDFImage;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderBlobSupportFlag;
   entry->mime_type=ConstantString("application/pdf");
@@ -935,6 +937,7 @@ ModuleExport size_t RegisterPDFImage(void)
   entry->decoder=(DecodeImageHandler *) ReadPDFImage;
   entry->encoder=(EncodeImageHandler *) WritePDFImage;
   entry->magick=(IsImageFormatHandler *) IsPDF;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderBlobSupportFlag;
   entry->mime_type=ConstantString("application/pdf");
   (void) RegisterMagickInfo(entry);
@@ -942,6 +945,7 @@ ModuleExport size_t RegisterPDFImage(void)
   entry->decoder=(DecodeImageHandler *) ReadPDFImage;
   entry->encoder=(EncodeImageHandler *) WritePDFImage;
   entry->magick=(IsImageFormatHandler *) IsPDF;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderBlobSupportFlag;
   entry->mime_type=ConstantString("application/pdf");
   (void) RegisterMagickInfo(entry);
