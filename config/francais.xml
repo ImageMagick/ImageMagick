@@ -551,6 +551,9 @@
         <message name="AssociateProfile">
           associate profile with image, a source and destination color profile required for transform
         </message>
+        <message name="UnableToTransformColorspace">
+          impossible de colorimétrique la transformation
+        </message>
       </warning>
     </image>
     <missing>
