@@ -133,33 +133,47 @@ typedef struct _EdgeInfo
     bottom;
 } EdgeInfo;
 
+static RectangleInfo EdgeGravityGeometry(const Image *image,
+  const GravityType gravity,const char *geometry)
+{
+  RectangleInfo
+    edge_info,
+    gravity_info;
+
+  /*
+    Adjust geometry according to gravity setting.
+  */
+  SetGeometry(image,&edge_info);
+  (void) ParseAbsoluteGeometry(geometry,&edge_info);
+  gravity_info=edge_info;
+  GravityAdjustGeometry(image->columns,image->rows,gravity,&gravity_info);
+  edge_info.x=gravity_info.x;
+  edge_info.y=gravity_info.y;
+  return(edge_info);
+}
+
 static double GetEdgeBlendFactor(const Image *image,const CacheView *image_view,
   const GravityType gravity,const size_t width,const size_t height,
   const ssize_t x_offset,const ssize_t y_offset,ExceptionInfo *exception)
 {
-#define GetBackgroundPixel(x,y,background) \
-{ \
-  p=GetCacheViewVirtualPixels(image_view,(ssize_t) (x),(ssize_t) (y),1,1, \
-    exception); \
-  GetPixelInfoPixel(image,p,(background)); \
-}
-
   CacheView
-    *crop_view;
+    *edge_view;
 
   char
-    crop_geometry[MagickPathExtent];
+    geometry[MagickPathExtent];
 
   double
     factor;
 
   Image
-    *clone_image,
-    *crop_image;
+    *edge_image;
 
   PixelInfo
     background,
     pixel;
+
+  RectangleInfo
+    edge_geometry;
 
   register const Quantum
     *p;
@@ -176,59 +190,59 @@ static double GetEdgeBlendFactor(const Image *image,const CacheView *image_view,
     case NorthGravity:
     default:
     {
-      GetBackgroundPixel(0,0,&background);
+      p=GetCacheViewVirtualPixels(image_view,0,0,1,1,exception);
       break;
     }
     case NorthEastGravity:
     case EastGravity:
     {
-      GetBackgroundPixel(image->columns-1,0,&background);
+      p=GetCacheViewVirtualPixels(image_view,(ssize_t) image->columns-1,0,1,1,
+        exception);
       break;
     }
     case SouthEastGravity:
     case SouthGravity:
     {
-      GetBackgroundPixel(image->columns-1,image->rows-1,&background);
+      p=GetCacheViewVirtualPixels(image_view,(ssize_t) image->columns-1,
+        (ssize_t) image->rows-1,1,1,exception);
       break;
     }
     case SouthWestGravity:
     case WestGravity:
     {
-      GetBackgroundPixel(0,image->rows-1,&background);
+      p=GetCacheViewVirtualPixels(image_view,0,(ssize_t) image->rows-1,1,1,
+        exception);
       break;
     }
   }
-  clone_image=CloneImage(image,0,0,MagickTrue,exception);
-  if (clone_image == (Image *) NULL)
-    return(0.0);
-  clone_image->gravity=gravity;
-  (void) FormatLocaleString(crop_geometry,MagickPathExtent,"%gx%g%+g%+g",
-    (double) width,(double) height,(double) x_offset,(double) y_offset);
-  crop_image=CropImageToTiles(clone_image,crop_geometry,exception);
-  clone_image=DestroyImage(clone_image);
-  if (crop_image == (Image *) NULL)
+  GetPixelInfoPixel(image,p,&background);
+  (void) FormatLocaleString(geometry,MagickPathExtent,"%gx%g%+g%+g",(double)
+    width,(double) height,(double) x_offset,(double) y_offset);
+  edge_geometry=EdgeGravityGeometry(image,gravity,geometry);
+  edge_image=CropImage(image,&edge_geometry,exception);
+  if (edge_image == (Image *) NULL)
     return(0.0);
   factor=0.0;
-  crop_view=AcquireVirtualCacheView(crop_image,exception);
-  for (y=0; y < (ssize_t) crop_image->rows; y++)
+  edge_view=AcquireVirtualCacheView(edge_image,exception);
+  for (y=0; y < (ssize_t) edge_image->rows; y++)
   {
     register ssize_t
       x;
 
-    p=GetCacheViewVirtualPixels(crop_view,0,y,crop_image->columns,1,exception);
+    p=GetCacheViewVirtualPixels(edge_view,0,y,edge_image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
-    for (x=0; x < (ssize_t) crop_image->columns; x++)
+    for (x=0; x < (ssize_t) edge_image->columns; x++)
     {
-      GetPixelInfoPixel(crop_image,p,&pixel);
+      GetPixelInfoPixel(edge_image,p,&pixel);
       if (IsFuzzyEquivalencePixelInfo(&pixel,&background) == MagickFalse)
         factor++;
-      p+=GetPixelChannels(crop_image);
+      p+=GetPixelChannels(edge_image);
     }
   }
-  crop_view=DestroyCacheView(crop_view);
-  factor/=((double) crop_image->columns*crop_image->rows);
-  crop_image=DestroyImage(crop_image);
+  factor/=((double) edge_image->columns*edge_image->rows);
+  edge_view=DestroyCacheView(edge_view);
+  edge_image=DestroyImage(edge_image);
   return(factor);
 }
 
