@@ -89,6 +89,7 @@
 #include "MagickCore/segment.h"
 #include "MagickCore/splay-tree.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/threshold.h"
 #include "MagickCore/transform.h"
@@ -122,127 +123,245 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+typedef struct _EdgeInfo
+{
+  double
+    left,
+    right,
+    top,
+    bottom;
+} EdgeInfo;
+
+static double GetEdgeBlendFactor(const Image *image,const CacheView *image_view,
+  const GravityType gravity,const size_t width,const size_t height,
+  const ssize_t x_offset,const ssize_t y_offset,ExceptionInfo *exception)
+{
+#define GetBackgroundPixel(x,y,background) \
+{ \
+  p=GetCacheViewVirtualPixels(image_view,(ssize_t) (x),(ssize_t) (y),1,1, \
+    exception); \
+  GetPixelInfoPixel(image,p,(background)); \
+}
+
+  CacheView
+    *crop_view;
+
+  char
+    crop_geometry[MagickPathExtent];
+
+  double
+    factor;
+
+  Image
+    *clone_image,
+    *crop_image;
+
+  PixelInfo
+    background,
+    pixel;
+
+  register const Quantum
+    *p;
+
+  ssize_t
+    y;
+
+  /*
+    Determine the percent of image background for this edge.
+  */
+  switch (gravity)
+  {
+    case NorthWestGravity:
+    case NorthGravity:
+    default:
+    {
+      GetBackgroundPixel(0,0,&background);
+      break;
+    }
+    case NorthEastGravity:
+    case EastGravity:
+    {
+      GetBackgroundPixel(image->columns-1,0,&background);
+      break;
+    }
+    case SouthEastGravity:
+    case SouthGravity:
+    {
+      GetBackgroundPixel(image->columns-1,image->rows-1,&background);
+      break;
+    }
+    case SouthWestGravity:
+    case WestGravity:
+    {
+      GetBackgroundPixel(0,image->rows-1,&background);
+      break;
+    }
+  }
+  clone_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (clone_image == (Image *) NULL)
+    return(0.0);
+  clone_image->gravity=gravity;
+  (void) FormatLocaleString(crop_geometry,MagickPathExtent,"%gx%g%+g%+g",
+    (double) width,(double) height,(double) x_offset,(double) y_offset);
+  crop_image=CropImageToTiles(clone_image,crop_geometry,exception);
+  clone_image=DestroyImage(clone_image);
+  if (crop_image == (Image *) NULL)
+    return(0.0);
+  factor=0.0;
+  crop_view=AcquireVirtualCacheView(crop_image,exception);
+  for (y=0; y < (ssize_t) crop_image->rows; y++)
+  {
+    register ssize_t
+      x;
+
+    p=GetCacheViewVirtualPixels(crop_view,0,y,crop_image->columns,1,exception);
+    if (p == (const Quantum *) NULL)
+      break;
+    for (x=0; x < (ssize_t) crop_image->columns; x++)
+    {
+      GetPixelInfoPixel(crop_image,p,&pixel);
+      if (IsFuzzyEquivalencePixelInfo(&pixel,&background) == MagickFalse)
+        factor++;
+      p+=GetPixelChannels(crop_image);
+    }
+  }
+  crop_view=DestroyCacheView(crop_view);
+  factor/=((double) crop_image->columns*crop_image->rows);
+  crop_image=DestroyImage(crop_image);
+  return(factor);
+}
+
+static inline double GetMinBlendFactor(const EdgeInfo *edge)
+{
+  double
+    factor;
+
+  factor=MagickMin(MagickMin(MagickMin(edge->left,edge->right),edge->top),
+    edge->bottom);
+  return(factor);
+}
+
 MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   ExceptionInfo *exception)
 {
   CacheView
     *image_view;
 
-  MagickBooleanType
-    status;
+  const char
+    *artifact;
 
-  PixelInfo
-    target[3],
-    zero;
+  double
+    blend_factor,
+    threshold;
+
+  EdgeInfo
+    count,
+    edge;
 
   RectangleInfo
     bounds;
 
-  register const Quantum
-    *r;
+  size_t
+    height,
+    width;
 
-  ssize_t
-    y;
-
+  /*
+    Get the image bounding box.
+  */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  bounds.width=0;
-  bounds.height=0;
-  bounds.x=(ssize_t) image->columns;
-  bounds.y=(ssize_t) image->rows;
-  GetPixelInfo(image,&target[0]);
+  SetGeometry(image,&bounds);
+  memset(&count,0,sizeof(count));
   image_view=AcquireVirtualCacheView(image,exception);
-  r=GetCacheViewVirtualPixels(image_view,0,0,1,1,exception);
-  if (r == (const Quantum *) NULL)
-    {
-      image_view=DestroyCacheView(image_view);
-      return(bounds);
-    }
-  GetPixelInfoPixel(image,r,&target[0]);
-  GetPixelInfo(image,&target[1]);
-  r=GetCacheViewVirtualPixels(image_view,(ssize_t) image->columns-1,0,1,1,
+  edge.left=GetEdgeBlendFactor(image,image_view,WestGravity,1,0,0,0,exception);
+  edge.right=GetEdgeBlendFactor(image,image_view,EastGravity,1,0,0,0,exception);
+  edge.top=GetEdgeBlendFactor(image,image_view,NorthGravity,0,1,0,0,exception);
+  edge.bottom=GetEdgeBlendFactor(image,image_view,SouthGravity,0,1,0,0,
     exception);
-  if (r != (const Quantum *) NULL)
-    GetPixelInfoPixel(image,r,&target[1]);
-  GetPixelInfo(image,&target[2]);
-  r=GetCacheViewVirtualPixels(image_view,0,(ssize_t) image->rows-1,1,1,
-    exception);
-  if (r != (const Quantum *) NULL)
-    GetPixelInfoPixel(image,r,&target[2]);
-  status=MagickTrue;
-  GetPixelInfo(image,&zero);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(image,image,image->rows,1)
-#endif
-  for (y=0; y < (ssize_t) image->rows; y++)
+  threshold=1.0;
+  artifact=GetImageArtifact(image,"trim:blend");
+  if (artifact != (const char *) NULL)
+    threshold=StringToDouble(artifact,(char **) NULL)/100.0;
+  threshold=MagickMin(MagickMax(1.0-threshold,MagickEpsilon),1.0);
+  blend_factor=GetMinBlendFactor(&edge);
+  for ( ; blend_factor < threshold; blend_factor=GetMinBlendFactor(&edge))
   {
-    PixelInfo
-      pixel;
-
-    RectangleInfo
-      bounding_box;
-
-    register const Quantum
-      *magick_restrict p;
-
-    register ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-#  pragma omp critical (MagickCore_GetImageBoundingBox)
-#endif
-    bounding_box=bounds;
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    if (p == (const Quantum *) NULL)
+    if (((count.left-count.right) >= (double) image->columns) ||
+        ((count.top-count.bottom) >= (double) image->rows))
+      break;
+    width=image->columns-count.left-count.right;
+    height=image->rows-count.top-count.bottom;
+    if (fabs(edge.left-blend_factor) < MagickEpsilon)
       {
-        status=MagickFalse;
+        /*
+          Trim left edge.
+        */
+        count.left++;
+        width=image->columns-count.left-count.right;
+        edge.left=GetEdgeBlendFactor(image,image_view,NorthWestGravity,1,height,
+          (ssize_t) count.left,(ssize_t) count.top,exception);
+        edge.top=GetEdgeBlendFactor(image,image_view,NorthWestGravity,width,1,
+          (ssize_t) count.left,(ssize_t) count.top,exception);
+        edge.bottom=GetEdgeBlendFactor(image,image_view,SouthWestGravity,width,
+          1,(ssize_t) count.left,(ssize_t) count.bottom,exception);
         continue;
       }
-    pixel=zero;
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      GetPixelInfoPixel(image,p,&pixel);
-      if ((x < bounding_box.x) &&
-          (IsFuzzyEquivalencePixelInfo(&pixel,&target[0]) == MagickFalse))
-        bounding_box.x=x;
-      if ((x > (ssize_t) bounding_box.width) &&
-          (IsFuzzyEquivalencePixelInfo(&pixel,&target[1]) == MagickFalse))
-        bounding_box.width=(size_t) x;
-      if ((y < bounding_box.y) &&
-          (IsFuzzyEquivalencePixelInfo(&pixel,&target[0]) == MagickFalse))
-        bounding_box.y=y;
-      if ((y > (ssize_t) bounding_box.height) &&
-          (IsFuzzyEquivalencePixelInfo(&pixel,&target[2]) == MagickFalse))
-        bounding_box.height=(size_t) y;
-      p+=GetPixelChannels(image);
-    }
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-#  pragma omp critical (MagickCore_GetImageBoundingBox)
-#endif
-    {
-      if (bounding_box.x < bounds.x)
-        bounds.x=bounding_box.x;
-      if (bounding_box.y < bounds.y)
-        bounds.y=bounding_box.y;
-      if (bounding_box.width > bounds.width)
-        bounds.width=bounding_box.width;
-      if (bounding_box.height > bounds.height)
-        bounds.height=bounding_box.height;
-    }
+    if (fabs(edge.right-blend_factor) < MagickEpsilon)
+      {
+        /*
+          Trim right edge.
+        */
+        count.right++;
+        width=image->columns-count.left-count.right;
+        edge.right=GetEdgeBlendFactor(image,image_view,NorthEastGravity,1,
+          height,(ssize_t) count.right,(ssize_t) count.top,exception);
+        edge.top=GetEdgeBlendFactor(image,image_view,NorthWestGravity,width,1,
+          (ssize_t) count.left,(ssize_t) count.top,exception);
+        edge.bottom=GetEdgeBlendFactor(image,image_view,SouthWestGravity,width,
+          1,(ssize_t) count.left,(ssize_t) count.bottom,exception);
+        continue;
+      }
+    if (fabs(edge.top-blend_factor) < MagickEpsilon)
+      {
+        /*
+          Trim top edge.
+        */
+        count.top++;
+        height=image->rows-count.top-count.bottom;
+        edge.left=GetEdgeBlendFactor(image,image_view,NorthWestGravity,1,height,
+          (ssize_t) count.left,(ssize_t) count.top,exception);
+        edge.right=GetEdgeBlendFactor(image,image_view,NorthEastGravity,1,
+          height,(ssize_t) count.right,(ssize_t) count.top,exception);
+        edge.top=GetEdgeBlendFactor(image,image_view,NorthWestGravity,width,1,
+          (ssize_t) count.left,(ssize_t) count.top,exception);
+        continue;
+      }
+    if (fabs(edge.bottom-blend_factor) < MagickEpsilon)
+      {
+        /*
+          Trim bottom edge.
+        */
+        count.bottom++;
+        height=image->rows-count.top-count.bottom;
+        edge.left=GetEdgeBlendFactor(image,image_view,NorthWestGravity,1,height,
+          (ssize_t) count.left,(ssize_t) count.top,exception);
+        edge.right=GetEdgeBlendFactor(image,image_view,NorthEastGravity,1,
+          height,(ssize_t) count.right,(ssize_t) count.top,exception);
+        edge.bottom=GetEdgeBlendFactor(image,image_view,SouthWestGravity,width,
+          1,(ssize_t) count.left,(ssize_t) count.bottom,exception);
+        continue;
+      }
   }
   image_view=DestroyCacheView(image_view);
-  if ((bounds.width == 0) || (bounds.height == 0))
-    (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
-      "GeometryDoesNotContainImage","`%s'",image->filename);
-  else
+  if (blend_factor >= threshold)
     {
-      bounds.width-=(bounds.x-1);
-      bounds.height-=(bounds.y-1);
+      bounds.width=image->columns-(count.left+count.right);
+      bounds.height=image->rows-(count.top+count.bottom);
+      bounds.x=(ssize_t) count.left;
+      bounds.y=(ssize_t) count.top;
     }
   return(bounds);
 }
