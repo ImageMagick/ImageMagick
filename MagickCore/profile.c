@@ -147,6 +147,9 @@ typedef struct _CMSExceptionInfo
 
   ExceptionInfo
     *exception;
+
+  size_t
+    signature;
 } CMSExceptionInfo;
 
 /*
@@ -473,6 +476,8 @@ static void CMSExceptionHandler(cmsContext context,cmsUInt32Number severity,
 
   cms_exception=(CMSExceptionInfo *) context;
   if (cms_exception == (CMSExceptionInfo *) NULL)
+    return;
+  if (cms_exception->signature != MagickCoreSignature)
     return;
   exception=cms_exception->exception;
   if (exception == (ExceptionInfo *) NULL)
@@ -887,6 +892,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
         cmsSetLogErrorHandler(CMSExceptionHandler);
         cms_exception.image=image;
         cms_exception.exception=exception;
+        cms_exception.signature=MagickCoreSignature;
         (void) cms_exception;
         source_profile=cmsOpenProfileFromMemTHR((cmsContext) &cms_exception,
           GetStringInfoDatum(profile),(cmsUInt32Number)
