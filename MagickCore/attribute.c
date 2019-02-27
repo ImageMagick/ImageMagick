@@ -133,8 +133,8 @@ typedef struct _EdgeInfo
     bottom;
 } EdgeInfo;
 
-static RectangleInfo EdgeGravityGeometry(const Image *image,
-  const GravityType gravity,const RectangleInfo *edge_geometry)
+static void EdgeGravityGeometry(const Image *image,
+  const GravityType gravity,RectangleInfo *edge_geometry)
 {
   RectangleInfo
     gravity_geometry;
@@ -143,10 +143,9 @@ static RectangleInfo EdgeGravityGeometry(const Image *image,
     Adjust geometry according to gravity setting.
   */
   gravity_geometry=(*edge_geometry);
-  GravityAdjustGeometry(image->columns,image->rows,gravity,&gravity_geometry);
-  gravity_geometry.width=edge_geometry->width;
-  gravity_geometry.height=edge_geometry->height;
-  return(gravity_geometry);
+  GravityAdjustGeometry(image->columns,image->rows,gravity,edge_geometry);
+  edge_geometry->width=gravity_geometry.width;
+  edge_geometry->height=gravity_geometry.height;
 }
 
 static double GetEdgeBlendFactor(const Image *image,const CacheView *image_view,
@@ -214,7 +213,7 @@ static double GetEdgeBlendFactor(const Image *image,const CacheView *image_view,
   edge_geometry.height=height;
   edge_geometry.x=x_offset;
   edge_geometry.y=y_offset;
-  edge_geometry=EdgeGravityGeometry(image,gravity,&edge_geometry);
+  EdgeGravityGeometry(image,gravity,&edge_geometry);
   edge_image=CropImage(image,&edge_geometry,exception);
   if (edge_image == (Image *) NULL)
     return(0.0);
