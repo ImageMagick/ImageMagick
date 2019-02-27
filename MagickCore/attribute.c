@@ -276,10 +276,6 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   RectangleInfo
     bounds;
 
-  size_t
-    height,
-    width;
-
   /*
     Get the image bounding box.
   */
@@ -303,24 +299,21 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   blend_factor=GetMinBlendFactor(&edge);
   for ( ; blend_factor < threshold; blend_factor=GetMinBlendFactor(&edge))
   {
-    if (((count.left-count.right) >= (double) image->columns) ||
-        ((count.top-count.bottom) >= (double) image->rows))
+    if ((width == 0) || (height == 0))
       break;
-    width=image->columns-count.left-count.right;
-    height=image->rows-count.top-count.bottom;
     if (fabs(edge.left-blend_factor) < MagickEpsilon)
       {
         /*
           Trim left edge.
         */
         count.left++;
-        width--;
-        edge.left=GetEdgeBlendFactor(image,image_view,NorthWestGravity,1,height,
-          (ssize_t) count.left,(ssize_t) count.top,exception);
-        edge.top=GetEdgeBlendFactor(image,image_view,NorthWestGravity,width,1,
-          (ssize_t) count.left,(ssize_t) count.top,exception);
-        edge.bottom=GetEdgeBlendFactor(image,image_view,SouthWestGravity,width,
-          1,(ssize_t) count.left,(ssize_t) count.bottom,exception);
+        bounds.width--;
+        edge.left=GetEdgeBlendFactor(image,image_view,NorthWestGravity,
+          1,bounds.height,(ssize_t) count.left,(ssize_t) count.top,exception);
+        edge.top=GetEdgeBlendFactor(image,image_view,NorthWestGravity,
+          bounds.width,1,(ssize_t) count.left,(ssize_t) count.top,exception);
+        edge.bottom=GetEdgeBlendFactor(image,image_view,SouthWestGravity,
+          bounds.width,1,(ssize_t) count.left,(ssize_t) count.bottom,exception);
         continue;
       }
     if (fabs(edge.right-blend_factor) < MagickEpsilon)
@@ -329,13 +322,13 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
           Trim right edge.
         */
         count.right++;
-        width--;
-        edge.right=GetEdgeBlendFactor(image,image_view,NorthEastGravity,1,
-          height,(ssize_t) count.right,(ssize_t) count.top,exception);
-        edge.top=GetEdgeBlendFactor(image,image_view,NorthWestGravity,width,1,
-          (ssize_t) count.left,(ssize_t) count.top,exception);
-        edge.bottom=GetEdgeBlendFactor(image,image_view,SouthWestGravity,width,
-          1,(ssize_t) count.left,(ssize_t) count.bottom,exception);
+        bounds.width--;
+        edge.right=GetEdgeBlendFactor(image,image_view,NorthEastGravity,
+          1,bounds.height,(ssize_t) count.right,(ssize_t) count.top,exception);
+        edge.top=GetEdgeBlendFactor(image,image_view,NorthWestGravity,
+          bounds.width,1,(ssize_t) count.left,(ssize_t) count.top,exception);
+        edge.bottom=GetEdgeBlendFactor(image,image_view,SouthWestGravity,
+          bounds.width,1,(ssize_t) count.left,(ssize_t) count.bottom,exception);
         continue;
       }
     if (fabs(edge.top-blend_factor) < MagickEpsilon)
@@ -344,13 +337,13 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
           Trim top edge.
         */
         count.top++;
-        height--;
-        edge.left=GetEdgeBlendFactor(image,image_view,NorthWestGravity,1,height,
-          (ssize_t) count.left,(ssize_t) count.top,exception);
-        edge.right=GetEdgeBlendFactor(image,image_view,NorthEastGravity,1,
-          height,(ssize_t) count.right,(ssize_t) count.top,exception);
-        edge.top=GetEdgeBlendFactor(image,image_view,NorthWestGravity,width,1,
-          (ssize_t) count.left,(ssize_t) count.top,exception);
+        bounds.height--;
+        edge.left=GetEdgeBlendFactor(image,image_view,NorthWestGravity,
+          1,bounds.height,(ssize_t) count.left,(ssize_t) count.top,exception);
+        edge.right=GetEdgeBlendFactor(image,image_view,NorthEastGravity,
+          1,bounds.height,(ssize_t) count.right,(ssize_t) count.top,exception);
+        edge.top=GetEdgeBlendFactor(image,image_view,NorthWestGravity,
+          bounds.width,1,(ssize_t) count.left,(ssize_t) count.top,exception);
         continue;
       }
     if (fabs(edge.bottom-blend_factor) < MagickEpsilon)
@@ -359,24 +352,21 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
           Trim bottom edge.
         */
         count.bottom++;
-        height--;
-        edge.left=GetEdgeBlendFactor(image,image_view,NorthWestGravity,1,height,
-          (ssize_t) count.left,(ssize_t) count.top,exception);
-        edge.right=GetEdgeBlendFactor(image,image_view,NorthEastGravity,1,
-          height,(ssize_t) count.right,(ssize_t) count.top,exception);
-        edge.bottom=GetEdgeBlendFactor(image,image_view,SouthWestGravity,width,
-          1,(ssize_t) count.left,(ssize_t) count.bottom,exception);
+        bounds.height--;
+        edge.left=GetEdgeBlendFactor(image,image_view,NorthWestGravity,
+          1,bounds.height,(ssize_t) count.left,(ssize_t) count.top,exception);
+        edge.right=GetEdgeBlendFactor(image,image_view,NorthEastGravity,
+          1,bounds.height,(ssize_t) count.right,(ssize_t) count.top,exception);
+        edge.bottom=GetEdgeBlendFactor(image,image_view,SouthWestGravity,
+          bounds.width,1,(ssize_t) count.left,(ssize_t) count.bottom,exception);
         continue;
       }
   }
   image_view=DestroyCacheView(image_view);
-  if (blend_factor >= threshold)
-    {
-      bounds.width=image->columns-(count.left+count.right);
-      bounds.height=image->rows-(count.top+count.bottom);
-      bounds.x=(ssize_t) count.left;
-      bounds.y=(ssize_t) count.top;
-    }
+  bounds.x=(ssize_t) count.left;
+  bounds.y=(ssize_t) count.top;
+  if (blend_factor < threshold)
+    SetGeometry(image,&bounds);
   return(bounds);
 }
 
