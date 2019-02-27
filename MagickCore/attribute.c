@@ -133,8 +133,8 @@ typedef struct _EdgeInfo
     bottom;
 } EdgeInfo;
 
-static void EdgeGravityGeometry(const Image *image,
-  const GravityType gravity,RectangleInfo *edge_geometry)
+static void EdgeGravityGeometry(const Image *image,const GravityType gravity,
+  RectangleInfo *edge_geometry)
 {
   RectangleInfo
     gravity_geometry;
