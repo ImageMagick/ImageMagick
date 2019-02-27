@@ -299,7 +299,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   blend_factor=GetMinBlendFactor(&edge);
   for ( ; blend_factor < threshold; blend_factor=GetMinBlendFactor(&edge))
   {
-    if ((width == 0) || (height == 0))
+    if ((bounds.width == 0) || (bounds.height == 0))
       break;
     if (fabs(edge.left-blend_factor) < MagickEpsilon)
       {
