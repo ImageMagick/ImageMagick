@@ -134,7 +134,8 @@ typedef struct _EdgeInfo
 } EdgeInfo;
 
 static RectangleInfo EdgeGravityGeometry(const Image *image,
-  const GravityType gravity,const char *geometry)
+  const GravityType gravity,const size_t width,const size_t height,
+  const ssize_t x,const ssize_t y)
 {
   RectangleInfo
     edge_info,
@@ -143,8 +144,10 @@ static RectangleInfo EdgeGravityGeometry(const Image *image,
   /*
     Adjust geometry according to gravity setting.
   */
-  SetGeometry(image,&edge_info);
-  (void) ParseAbsoluteGeometry(geometry,&edge_info);
+  edge_info.width=width;
+  edge_info.height=height;
+  edge_info.x=x;
+  edge_info.y=y;
   gravity_info=edge_info;
   GravityAdjustGeometry(image->columns,image->rows,gravity,&gravity_info);
   edge_info.x=gravity_info.x;
@@ -158,9 +161,6 @@ static double GetEdgeBlendFactor(const Image *image,const CacheView *image_view,
 {
   CacheView
     *edge_view;
-
-  char
-    geometry[MagickPathExtent];
 
   double
     factor;
@@ -216,9 +216,8 @@ static double GetEdgeBlendFactor(const Image *image,const CacheView *image_view,
     }
   }
   GetPixelInfoPixel(image,p,&background);
-  (void) FormatLocaleString(geometry,MagickPathExtent,"%gx%g%+g%+g",(double)
-    width,(double) height,(double) x_offset,(double) y_offset);
-  edge_geometry=EdgeGravityGeometry(image,gravity,geometry);
+  edge_geometry=EdgeGravityGeometry(image,gravity,width,height,x_offset,
+    y_offset);
   edge_image=CropImage(image,&edge_geometry,exception);
   if (edge_image == (Image *) NULL)
     return(0.0);
