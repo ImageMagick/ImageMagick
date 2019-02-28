@@ -345,7 +345,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   image_view=DestroyCacheView(image_view);
   bounds.x=(ssize_t) count.left;
   bounds.y=(ssize_t) count.top;
-  if (blend_factor < threshold)
+  if ((bounds.width == 0) || (bounds.height == 0))
     SetGeometry(image,&bounds);
   return(bounds);
 }
