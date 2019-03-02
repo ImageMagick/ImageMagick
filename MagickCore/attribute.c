@@ -133,9 +133,10 @@ typedef struct _EdgeInfo
     bottom;
 } EdgeInfo;
 
-static double GetEdgeBlendFactor(const Image *image,const CacheView *image_view,
-  const GravityType gravity,const size_t width,const size_t height,
-  const ssize_t x_offset,const ssize_t y_offset,ExceptionInfo *exception)
+static double GetEdgeBackgroundFactor(const Image *image,
+  const CacheView *image_view,const GravityType gravity,const size_t width,
+  const size_t height,const ssize_t x_offset,const ssize_t y_offset,
+  ExceptionInfo *exception)
 {
   CacheView
     *edge_view;
@@ -226,7 +227,7 @@ static double GetEdgeBlendFactor(const Image *image,const CacheView *image_view,
   return(factor);
 }
 
-static inline double GetMinBlendFactor(const EdgeInfo *edge)
+static inline double GetMinEdgeBackgroundFactor(const EdgeInfo *edge)
 {
   double
     factor;
@@ -246,8 +247,8 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
     *artifact;
 
   double
-    blend_factor,
-    threshold;
+    background_factor,
+    percent_background;
 
   EdgeInfo
     count,
@@ -266,78 +267,83 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   SetGeometry(image,&bounds);
   memset(&count,0,sizeof(count));
   image_view=AcquireVirtualCacheView(image,exception);
-  edge.left=GetEdgeBlendFactor(image,image_view,WestGravity,1,0,0,0,exception);
-  edge.right=GetEdgeBlendFactor(image,image_view,EastGravity,1,0,0,0,exception);
-  edge.top=GetEdgeBlendFactor(image,image_view,NorthGravity,0,1,0,0,exception);
-  edge.bottom=GetEdgeBlendFactor(image,image_view,SouthGravity,0,1,0,0,
+  edge.left=GetEdgeBackgroundFactor(image,image_view,WestGravity,1,0,0,0,
     exception);
-  threshold=1.0;
-  artifact=GetImageArtifact(image,"trim:blend");
+  edge.right=GetEdgeBackgroundFactor(image,image_view,EastGravity,1,0,0,0,
+    exception);
+  edge.top=GetEdgeBackgroundFactor(image,image_view,NorthGravity,0,1,0,0,
+    exception);
+  edge.bottom=GetEdgeBackgroundFactor(image,image_view,SouthGravity,0,1,0,0,
+    exception);
+  percent_background=1.0;
+  artifact=GetImageArtifact(image,"trim:percent-background");
   if (artifact != (const char *) NULL)
-    threshold=StringToDouble(artifact,(char **) NULL)/100.0;
-  threshold=MagickMin(MagickMax(1.0-threshold,MagickEpsilon),1.0);
-  blend_factor=GetMinBlendFactor(&edge);
-  for ( ; blend_factor < threshold; blend_factor=GetMinBlendFactor(&edge))
+    percent_background=StringToDouble(artifact,(char **) NULL)/100.0;
+  percent_background=MagickMin(MagickMax(1.0-percent_background,MagickEpsilon),
+    1.0);
+  background_factor=GetMinEdgeBackgroundFactor(&edge);
+  for ( ; background_factor < percent_background;
+          background_factor=GetMinEdgeBackgroundFactor(&edge))
   {
     if ((bounds.width == 0) || (bounds.height == 0))
       break;
-    if (fabs(edge.left-blend_factor) < MagickEpsilon)
+    if (fabs(edge.left-background_factor) < MagickEpsilon)
       {
         /*
           Trim left edge.
         */
         count.left++;
         bounds.width--;
-        edge.left=GetEdgeBlendFactor(image,image_view,NorthWestGravity,
+        edge.left=GetEdgeBackgroundFactor(image,image_view,NorthWestGravity,
           1,bounds.height,(ssize_t) count.left,(ssize_t) count.top,exception);
-        edge.top=GetEdgeBlendFactor(image,image_view,NorthWestGravity,
+        edge.top=GetEdgeBackgroundFactor(image,image_view,NorthWestGravity,
           bounds.width,1,(ssize_t) count.left,(ssize_t) count.top,exception);
-        edge.bottom=GetEdgeBlendFactor(image,image_view,SouthWestGravity,
+        edge.bottom=GetEdgeBackgroundFactor(image,image_view,SouthWestGravity,
           bounds.width,1,(ssize_t) count.left,(ssize_t) count.bottom,exception);
         continue;
       }
-    if (fabs(edge.right-blend_factor) < MagickEpsilon)
+    if (fabs(edge.right-background_factor) < MagickEpsilon)
       {
         /*
           Trim right edge.
         */
         count.right++;
         bounds.width--;
-        edge.right=GetEdgeBlendFactor(image,image_view,NorthEastGravity,
+        edge.right=GetEdgeBackgroundFactor(image,image_view,NorthEastGravity,
           1,bounds.height,(ssize_t) count.right,(ssize_t) count.top,exception);
-        edge.top=GetEdgeBlendFactor(image,image_view,NorthWestGravity,
+        edge.top=GetEdgeBackgroundFactor(image,image_view,NorthWestGravity,
           bounds.width,1,(ssize_t) count.left,(ssize_t) count.top,exception);
-        edge.bottom=GetEdgeBlendFactor(image,image_view,SouthWestGravity,
+        edge.bottom=GetEdgeBackgroundFactor(image,image_view,SouthWestGravity,
           bounds.width,1,(ssize_t) count.left,(ssize_t) count.bottom,exception);
         continue;
       }
-    if (fabs(edge.top-blend_factor) < MagickEpsilon)
+    if (fabs(edge.top-background_factor) < MagickEpsilon)
       {
         /*
           Trim top edge.
         */
         count.top++;
         bounds.height--;
-        edge.left=GetEdgeBlendFactor(image,image_view,NorthWestGravity,
+        edge.left=GetEdgeBackgroundFactor(image,image_view,NorthWestGravity,
           1,bounds.height,(ssize_t) count.left,(ssize_t) count.top,exception);
-        edge.right=GetEdgeBlendFactor(image,image_view,NorthEastGravity,
+        edge.right=GetEdgeBackgroundFactor(image,image_view,NorthEastGravity,
           1,bounds.height,(ssize_t) count.right,(ssize_t) count.top,exception);
-        edge.top=GetEdgeBlendFactor(image,image_view,NorthWestGravity,
+        edge.top=GetEdgeBackgroundFactor(image,image_view,NorthWestGravity,
           bounds.width,1,(ssize_t) count.left,(ssize_t) count.top,exception);
         continue;
       }
-    if (fabs(edge.bottom-blend_factor) < MagickEpsilon)
+    if (fabs(edge.bottom-background_factor) < MagickEpsilon)
       {
         /*
           Trim bottom edge.
         */
         count.bottom++;
         bounds.height--;
-        edge.left=GetEdgeBlendFactor(image,image_view,NorthWestGravity,
+        edge.left=GetEdgeBackgroundFactor(image,image_view,NorthWestGravity,
           1,bounds.height,(ssize_t) count.left,(ssize_t) count.top,exception);
-        edge.right=GetEdgeBlendFactor(image,image_view,NorthEastGravity,
+        edge.right=GetEdgeBackgroundFactor(image,image_view,NorthEastGravity,
           1,bounds.height,(ssize_t) count.right,(ssize_t) count.top,exception);
-        edge.bottom=GetEdgeBlendFactor(image,image_view,SouthWestGravity,
+        edge.bottom=GetEdgeBackgroundFactor(image,image_view,SouthWestGravity,
           bounds.width,1,(ssize_t) count.left,(ssize_t) count.bottom,exception);
         continue;
       }
