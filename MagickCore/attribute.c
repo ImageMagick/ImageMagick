@@ -358,11 +358,8 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   bounds.x=(ssize_t) vertex.left;
   bounds.y=(ssize_t) vertex.top;
   if ((bounds.width == 0) || (bounds.height == 0))
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
-        "GeometryDoesNotContainImage","`%s'",image->filename);
-      SetGeometry(image,&bounds);
-    }
+    (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
+      "GeometryDoesNotContainImage","`%s'",image->filename);
   return(bounds);
 }
 
