@@ -1,9 +1,9 @@
 2019-03-03  7.0.8-30 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.8-30, GIT revision ...
+  * Release ImageMagick version 7.0.8-30, GIT revision 15375:a79202b42:20190303
 
 2019-03-03  7.0.8-30 Cristy  <quetzlzacatenango@image...>
   * Support define to remove additional background from an image during a
-    trim, e.g. -define trim:percent-background=0% -trim.
+    trim, e.g. -fuzz 5% -define trim:percent-background=0% -trim.
 
 2019-02-28  7.0.8-29 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-29, GIT revision 15368:5d8ed9f56:20190228
