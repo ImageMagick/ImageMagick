@@ -4970,7 +4970,7 @@ static inline MagickBooleanType AcquireCacheNexusPixels(
   if (length != (MagickSizeType) ((size_t) length))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        ResourceLimitError,"PixelCacheAllocationFailed","`%s'",
         cache_info->filename);
       return(MagickFalse);
     }
@@ -4992,7 +4992,7 @@ static inline MagickBooleanType AcquireCacheNexusPixels(
   if (nexus_info->cache == (Quantum *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        ResourceLimitError,"PixelCacheAllocationFailed","`%s'",
         cache_info->filename);
       return(MagickFalse);
     }
@@ -5032,7 +5032,12 @@ static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
     return((Quantum *) NULL);
   (void) memset(&nexus_info->region,0,sizeof(nexus_info->region));
   if ((region->width == 0) || (region->height == 0))
-    return((Quantum *) NULL);
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
+        "NoPixelsDefinedInCache","`%s'",cache_info->filename);
+      return((Quantum *) NULL);
+    }
+  assert(nexus_info->signature == MagickCoreSignature);
   if (((cache_info->type == MemoryCache) || (cache_info->type == MapCache)) &&
       (buffered == MagickFalse))
     {
@@ -5069,6 +5074,15 @@ static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
   /*
     Pixels are stored in a staging region until they are synced to the cache.
   */
+  if (((region->x != (ssize_t) nexus_info->region.width) ||
+       (region->y != (ssize_t) nexus_info->region.height)) &&
+      ((AcquireMagickResource(WidthResource,region->width) == MagickFalse) ||
+       (AcquireMagickResource(HeightResource,region->height) == MagickFalse)))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
+        "WidthOrHeightExceedsLimit","`%s'",cache_info->filename);
+      return((Quantum *) NULL);
+    }
   number_pixels=(MagickSizeType) region->width*region->height;
   length=MagickMax(number_pixels,cache_info->columns)*
     cache_info->number_channels*sizeof(*nexus_info->pixels);
