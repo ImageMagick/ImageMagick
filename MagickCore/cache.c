@@ -4968,7 +4968,12 @@ static inline MagickBooleanType AcquireCacheNexusPixels(
   NexusInfo *nexus_info,ExceptionInfo *exception)
 {
   if (length != (MagickSizeType) ((size_t) length))
-    return(MagickFalse);
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        cache_info->filename);
+      return(MagickFalse);
+    }
   nexus_info->length=0;
   nexus_info->mapped=MagickFalse;
   if (cache_anonymous_memory <= 0)
