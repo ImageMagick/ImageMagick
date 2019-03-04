@@ -1,4 +1,7 @@
 2019-03-04  7.0.8-31 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-31, GIT revision 15381:3122a669d:20190304
+
+2019-03-04  7.0.8-31 Cristy  <quetzlzacatenango@image...>
   * -trim is no longer sensitive to the image virtual canvas.
 
 2019-03-03  7.0.8-30 Cristy  <quetzlzacatenango@image...>
