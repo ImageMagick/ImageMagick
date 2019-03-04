@@ -241,7 +241,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   ExceptionInfo *exception)
 {
   CacheView
-    *image_view;
+    *edge_view;
 
   const char
     *artifact;
@@ -254,6 +254,9 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
     edge,
     vertex;
 
+  Image
+    *edge_image;
+
   RectangleInfo
     bounds;
 
@@ -265,18 +268,22 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   SetGeometry(image,&bounds);
+  edge_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (edge_image == (Image *) NULL)
+    return(bounds);
+  (void) ParseAbsoluteGeometry("0x0+0+0",&edge_image->page);
   memset(&vertex,0,sizeof(vertex));
-  image_view=AcquireVirtualCacheView(image,exception);
-  edge.left=GetEdgeBackgroundFactor(image,image_view,WestGravity,1,0,0,0,
-    exception);
-  edge.right=GetEdgeBackgroundFactor(image,image_view,EastGravity,1,0,0,0,
-    exception);
-  edge.top=GetEdgeBackgroundFactor(image,image_view,NorthGravity,0,1,0,0,
-    exception);
-  edge.bottom=GetEdgeBackgroundFactor(image,image_view,SouthGravity,0,1,0,0,
-    exception);
+  edge_view=AcquireVirtualCacheView(edge_image,exception);
+  edge.left=GetEdgeBackgroundFactor(edge_image,edge_view,WestGravity,
+    1,0,0,0,exception);
+  edge.right=GetEdgeBackgroundFactor(edge_image,edge_view,EastGravity,
+    1,0,0,0,exception);
+  edge.top=GetEdgeBackgroundFactor(edge_image,edge_view,NorthGravity,
+    0,1,0,0,exception);
+  edge.bottom=GetEdgeBackgroundFactor(edge_image,edge_view,SouthGravity,
+    0,1,0,0,exception);
   percent_background=1.0;
-  artifact=GetImageArtifact(image,"trim:percent-background");
+  artifact=GetImageArtifact(edge_image,"trim:percent-background");
   if (artifact != (const char *) NULL)
     percent_background=StringToDouble(artifact,(char **) NULL)/100.0;
   percent_background=MagickMin(MagickMax(1.0-percent_background,MagickEpsilon),
@@ -294,13 +301,15 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
         */
         vertex.left++;
         bounds.width--;
-        edge.left=GetEdgeBackgroundFactor(image,image_view,NorthWestGravity,
-          1,bounds.height,(ssize_t) vertex.left,(ssize_t) vertex.top,exception);
-        edge.top=GetEdgeBackgroundFactor(image,image_view,NorthWestGravity,
-          bounds.width,1,(ssize_t) vertex.left,(ssize_t) vertex.top,exception);
-        edge.bottom=GetEdgeBackgroundFactor(image,image_view,SouthWestGravity,
-          bounds.width,1,(ssize_t) vertex.left,(ssize_t) vertex.bottom,
-          exception);
+        edge.left=GetEdgeBackgroundFactor(edge_image,edge_view,
+          NorthWestGravity,1,bounds.height,(ssize_t) vertex.left,(ssize_t)
+          vertex.top,exception);
+        edge.top=GetEdgeBackgroundFactor(edge_image,edge_view,
+          NorthWestGravity,bounds.width,1,(ssize_t) vertex.left,(ssize_t)
+          vertex.top,exception);
+        edge.bottom=GetEdgeBackgroundFactor(edge_image,edge_view,
+          SouthWestGravity,bounds.width,1,(ssize_t) vertex.left,(ssize_t)
+          vertex.bottom,exception);
         continue;
       }
     if (fabs(edge.right-background_factor) < MagickEpsilon)
@@ -310,14 +319,15 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
         */
         vertex.right++;
         bounds.width--;
-        edge.right=GetEdgeBackgroundFactor(image,image_view,NorthEastGravity,
-          1,bounds.height,(ssize_t) vertex.right,(ssize_t) vertex.top,
-          exception);
-        edge.top=GetEdgeBackgroundFactor(image,image_view,NorthWestGravity,
-          bounds.width,1,(ssize_t) vertex.left,(ssize_t) vertex.top,exception);
-        edge.bottom=GetEdgeBackgroundFactor(image,image_view,SouthWestGravity,
-          bounds.width,1,(ssize_t) vertex.left,(ssize_t) vertex.bottom,
-          exception);
+        edge.right=GetEdgeBackgroundFactor(edge_image,edge_view,
+          NorthEastGravity,1,bounds.height,(ssize_t) vertex.right,(ssize_t)
+          vertex.top,exception);
+        edge.top=GetEdgeBackgroundFactor(edge_image,edge_view,
+          NorthWestGravity,bounds.width,1,(ssize_t) vertex.left,(ssize_t)
+          vertex.top,exception);
+        edge.bottom=GetEdgeBackgroundFactor(edge_image,edge_view,
+          SouthWestGravity,bounds.width,1,(ssize_t) vertex.left,(ssize_t)
+          vertex.bottom,exception);
         continue;
       }
     if (fabs(edge.top-background_factor) < MagickEpsilon)
@@ -327,13 +337,15 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
         */
         vertex.top++;
         bounds.height--;
-        edge.left=GetEdgeBackgroundFactor(image,image_view,NorthWestGravity,
-          1,bounds.height,(ssize_t) vertex.left,(ssize_t) vertex.top,exception);
-        edge.right=GetEdgeBackgroundFactor(image,image_view,NorthEastGravity,
-          1,bounds.height,(ssize_t) vertex.right,(ssize_t) vertex.top,
-          exception);
-        edge.top=GetEdgeBackgroundFactor(image,image_view,NorthWestGravity,
-          bounds.width,1,(ssize_t) vertex.left,(ssize_t) vertex.top,exception);
+        edge.left=GetEdgeBackgroundFactor(edge_image,edge_view,
+          NorthWestGravity,1,bounds.height,(ssize_t) vertex.left,(ssize_t)
+          vertex.top,exception);
+        edge.right=GetEdgeBackgroundFactor(edge_image,edge_view,
+          NorthEastGravity,1,bounds.height,(ssize_t) vertex.right,(ssize_t)
+          vertex.top,exception);
+        edge.top=GetEdgeBackgroundFactor(edge_image,edge_view,
+          NorthWestGravity,bounds.width,1,(ssize_t) vertex.left,(ssize_t)
+          vertex.top,exception);
         continue;
       }
     if (fabs(edge.bottom-background_factor) < MagickEpsilon)
@@ -343,18 +355,20 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
         */
         vertex.bottom++;
         bounds.height--;
-        edge.left=GetEdgeBackgroundFactor(image,image_view,NorthWestGravity,
-          1,bounds.height,(ssize_t) vertex.left,(ssize_t) vertex.top,exception);
-        edge.right=GetEdgeBackgroundFactor(image,image_view,NorthEastGravity,
-          1,bounds.height,(ssize_t) vertex.right,(ssize_t) vertex.top,
-          exception);
-        edge.bottom=GetEdgeBackgroundFactor(image,image_view,SouthWestGravity,
-          bounds.width,1,(ssize_t) vertex.left,(ssize_t) vertex.bottom,
-          exception);
+        edge.left=GetEdgeBackgroundFactor(edge_image,edge_view,
+          NorthWestGravity,1,bounds.height,(ssize_t) vertex.left,(ssize_t)
+          vertex.top,exception);
+        edge.right=GetEdgeBackgroundFactor(edge_image,edge_view,
+          NorthEastGravity,1,bounds.height,(ssize_t) vertex.right,(ssize_t)
+          vertex.top,exception);
+        edge.bottom=GetEdgeBackgroundFactor(edge_image,edge_view,
+          SouthWestGravity,bounds.width,1,(ssize_t) vertex.left,(ssize_t)
+          vertex.bottom,exception);
         continue;
       }
   }
-  image_view=DestroyCacheView(image_view);
+  edge_view=DestroyCacheView(edge_view);
+  edge_image=DestroyImage(edge_image);
   bounds.x=(ssize_t) vertex.left;
   bounds.y=(ssize_t) vertex.top;
   if ((bounds.width == 0) || (bounds.height == 0))
