@@ -1,3 +1,10 @@
+2019-03-05  7.0.8-32 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-32, GIT revision ...
+
+2019-03-05  7.0.8-32 Cristy  <quetzlzacatenango@image...>
+  * Fix out-of-boundary LocaleLowerCase() @
+    https://github.com/ImageMagick/ImageMagick/issues/1495
+
 2019-03-04  7.0.8-31 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-31, GIT revision 15381:3122a669d:20190304
 
