@@ -1521,7 +1521,7 @@ MagickExport void LocaleLower(char *string)
 */
 MagickExport int LocaleLowercase(const int c)
 {
-  if (c < 0)
+  if (c == EOF)
     return(c);
 #if defined(MAGICKCORE_LOCALE_SUPPORT)
   if (c_locale != (locale_t) NULL)
@@ -1661,7 +1661,7 @@ MagickExport void LocaleUpper(char *string)
 */
 MagickExport int LocaleUppercase(const int c)
 {
-  if (c < 0)
+  if (c == EOF)
     return(c);
 #if defined(MAGICKCORE_LOCALE_SUPPORT)
   if (c_locale != (locale_t) NULL)
