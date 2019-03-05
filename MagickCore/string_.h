@@ -86,6 +86,9 @@ extern MagickExport ssize_t
     const size_t,char *),
   FormatMagickTime(const time_t,const size_t,char *);
 
+extern MagickExport time_t
+  CurrentTime();
+
 extern MagickExport StringInfo
   *AcquireStringInfo(const size_t),
   *BlobToStringInfo(const void *,const size_t),
@@ -109,7 +112,8 @@ extern MagickExport void
   SetStringInfoLength(StringInfo *,const size_t),
   SetStringInfoName(StringInfo *,const char *),
   SetStringInfoPath(StringInfo *,const char *),
-  StripString(char *);
+  StripString(char *),
+  LocalOrGMTime(time_t *,struct tm *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

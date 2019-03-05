@@ -1600,12 +1600,8 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image,
     return(MagickFalse);
   image->depth=8;
 
-  current_time=time((time_t *) NULL);
-#if defined(MAGICKCORE_HAVE_LOCALTIME_R)
-  (void) localtime_r(&current_time,&local_time);
-#else
-  (void) memcpy(&local_time,localtime(&current_time),sizeof(local_time));
-#endif
+  current_time=CurrentTime();
+  (void) LocalOrGMTime(&current_time,&local_time);
   (void) memset(MATLAB_HDR,' ',MagickMin(sizeof(MATLAB_HDR),124));
   FormatLocaleString(MATLAB_HDR,sizeof(MATLAB_HDR),
     "MATLAB 5.0 MAT-file, Platform: %s, Created on: %s %s %2d %2d:%2d:%2d %d",

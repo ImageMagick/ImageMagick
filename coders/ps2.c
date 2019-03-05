@@ -569,7 +569,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
         (void) FormatLocaleString(buffer,MagickPathExtent,"%%%%Title: (%s)\n",
           image->filename);
         (void) WriteBlobString(image,buffer);
-        timer=time((time_t *) NULL);
+        timer=CurrentTime();
         (void) FormatMagickTime(timer,MagickPathExtent,date);
         (void) FormatLocaleString(buffer,MagickPathExtent,
           "%%%%CreationDate: (%s)\n",date);

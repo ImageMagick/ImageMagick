@@ -990,14 +990,14 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
       sizeof(cin.file.filename));
   offset+=WriteBlob(image,sizeof(cin.file.filename),(unsigned char *)
     cin.file.filename);
-  seconds=time((time_t *) NULL);
-#if defined(MAGICKCORE_HAVE_LOCALTIME_R)
-  (void) localtime_r(&seconds,&local_time);
-#else
-  (void) memcpy(&local_time,localtime(&seconds),sizeof(local_time));
-#endif
+  seconds=CurrentTime();
+  (void) LocalOrGMTime(&seconds,&local_time);
   (void) memset(timestamp,0,sizeof(timestamp));
-  (void) strftime(timestamp,MagickPathExtent,"%Y:%m:%d:%H:%M:%S%Z",&local_time);
+  if(getenv("SOURCE_DATE_EPOCH")) {
+    (void) strftime(timestamp,MaxTextExtent,"%Y:%m:%d:%H:%M:%SUTC",&local_time);
+  } else {
+    (void) strftime(timestamp,MaxTextExtent,"%Y:%m:%d:%H:%M:%S%Z",&local_time);
+  }
   (void) memset(cin.file.create_date,0,sizeof(cin.file.create_date));
   (void) CopyMagickString(cin.file.create_date,timestamp,11);
   offset+=WriteBlob(image,sizeof(cin.file.create_date),(unsigned char *)
@@ -1093,9 +1093,6 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
       sizeof(cin.origination.filename));
   offset+=WriteBlob(image,sizeof(cin.origination.filename),(unsigned char *)
     cin.origination.filename);
-  seconds=time((time_t *) NULL);
-  (void) memset(timestamp,0,sizeof(timestamp));
-  (void) strftime(timestamp,MagickPathExtent,"%Y:%m:%d:%H:%M:%S%Z",&local_time);
   (void) memset(cin.origination.create_date,0,
     sizeof(cin.origination.create_date));
   (void) CopyMagickString(cin.origination.create_date,timestamp,11);

@@ -1450,7 +1450,7 @@ RestoreMSCWarning
       value=GetImageProperty(image,"date:create",exception);
       if (value != (const char *) NULL)
         (void) CopyMagickString(create_date,value,MagickPathExtent);
-      (void) FormatMagickTime(time((time_t *) NULL),MagickPathExtent,timestamp);
+      (void) FormatMagickTime(CurrentTime(),MagickPathExtent,timestamp);
       url=(char *) MagickAuthoritativeURL;
       escape=EscapeParenthesis(basename);
       i=FormatLocaleString(xmp_profile,MagickPathExtent,XMPProfile,
@@ -2982,12 +2982,8 @@ RestoreMSCWarning
         }
     }
   (void) WriteBlobString(image,buffer);
-  seconds=time((time_t *) NULL);
-#if defined(MAGICKCORE_HAVE_LOCALTIME_R)
-  (void) localtime_r(&seconds,&local_time);
-#else
-  (void) memcpy(&local_time,localtime(&seconds),sizeof(local_time));
-#endif
+  seconds=CurrentTime();
+  (void) LocalOrGMTime(&seconds,&local_time);
   (void) FormatLocaleString(date,MagickPathExtent,"D:%04d%02d%02d%02d%02d%02d",
     local_time.tm_year+1900,local_time.tm_mon+1,local_time.tm_mday,
     local_time.tm_hour,local_time.tm_min,local_time.tm_sec);
