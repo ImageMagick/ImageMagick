@@ -1381,9 +1381,6 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   if (jpeg_info.arith_code == TRUE)
     (void) SetImageProperty(image,"jpeg:coding","arithmetic",exception);
 #endif
-  if ((dct_method == (const char *) NULL) && (image->quality > 0) &&
-      (image->quality <= 90))
-    jpeg_info.dct_method=JDCT_IFAST;
   if (image_info->ping != MagickFalse)
     {
       jpeg_destroy_decompress(&jpeg_info);
