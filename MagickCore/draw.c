@@ -2278,6 +2278,17 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
   return(MagickFalse);
 }
 
+MagickExport int MVGMacroCompare(const void *target,const void *source)
+{
+  const char
+    *p,
+    *q;
+
+  p=(const char *) target;
+  q=(const char *) source;
+  return(strcmp(p,q));
+}
+
 static SplayTreeInfo *GetMVGMacros(const char *primitive)
 {
   char
@@ -2298,7 +2309,7 @@ static SplayTreeInfo *GetMVGMacros(const char *primitive)
   */
   if (primitive == (const char *) NULL)
     return((SplayTreeInfo *) NULL);
-  macros=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
+  macros=NewSplayTree(MVGMacroCompare,RelinquishMagickMemory,
     RelinquishMagickMemory);
   macro=AcquireString(primitive);
   token=AcquireString(primitive);
