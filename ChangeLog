@@ -1,3 +1,7 @@
+2019-03-06  7.0.8-33 Cristy  <quetzlzacatenango@image...>
+  * Fix SVG conversion infinite loop (reference
+    https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=35591).
+
 2019-03-05  7.0.8-32 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-32, GIT revision 15386:58d9c4692:20190305
 

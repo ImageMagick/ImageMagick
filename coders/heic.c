@@ -269,7 +269,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
                 }
             }
         }
-      exif_buffer=RelinquishMagickMemory(exif_buffer);
+      exif_buffer=(unsigned char *) RelinquishMagickMemory(exif_buffer);
   }
   /*
     Set image size
@@ -589,7 +589,7 @@ static struct heif_error heif_write_func(struct heif_context *ctx,const void* da
 
   (void) ctx;
   image=(Image*) userdata;
-  (void) WriteBlob(image,size,data);
+  (void) WriteBlob(image,size,(const unsigned char *) data);
   error_ok.code=heif_error_Ok;
   error_ok.subcode=heif_suberror_Unspecified;
   error_ok.message="ok";
@@ -710,7 +710,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,Image *image
                 p));
               p+=GetPixelChannels(image);
 
-              if (x+1 < (long) image->columns)
+              if ((x+1) < (ssize_t) image->columns)
                 {
                   p_y[y*stride_y + x+1]=ScaleQuantumToChar(GetPixelRed(image,
                     p));
