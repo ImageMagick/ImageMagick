@@ -1308,7 +1308,8 @@ ImportQuantumPixelsFailed:
       }
     } while(z-- >= 2);
 ExitLoop:
-
+    if (i != (long) MATLAB_HDR.SizeY)
+      goto END_OF_READING;
 
     /* Read complex part of numbers here */
     if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
@@ -1325,6 +1326,8 @@ ExitLoop:
         for (i = 0; i < (ssize_t) MATLAB_HDR.SizeY; i++)
         {
           ReadBlobDoublesXXX(image2, ldblk, (double *)BImgBuff);
+          if (EOFBlob(image) != MagickFalse)
+            break;
           InsertComplexDoubleRow(image, (double *)BImgBuff, i, MinVal, MaxVal,
             exception);
         }
@@ -1333,6 +1336,8 @@ ExitLoop:
         for (i = 0; i < (ssize_t) MATLAB_HDR.SizeY; i++)
         {
           ReadBlobFloatsXXX(image2, ldblk, (float *)BImgBuff);
+          if (EOFBlob(image) != MagickFalse)
+            break;
           InsertComplexFloatRow(image,(float *)BImgBuff,i,MinVal,MaxVal,
             exception);
         }
@@ -1420,10 +1425,10 @@ done_reading:
       clone_info=DestroyImageInfo(clone_info);
   }
 
+END_OF_READING:
   RelinquishMagickMemory(BImgBuff);
   if (quantum_info != (QuantumInfo *) NULL)
     quantum_info=DestroyQuantumInfo(quantum_info);
-END_OF_READING:
   CloseBlob(image);
 
 
