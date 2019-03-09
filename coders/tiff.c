@@ -712,7 +712,6 @@ static void TIFFGetProperties(TIFF *tiff,Image *image,ExceptionInfo *exception)
 
   uint32
     count,
-    length,
     type;
 
   if ((TIFFGetField(tiff,TIFFTAG_ARTIST,&text) == 1) &&
