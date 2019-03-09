@@ -2263,7 +2263,7 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
             i;
 
           *mvg_info->extent=(size_t) extent;
-          for (i=mvg_info->offset; i < (ssize_t) extent; i++)
+          for (i=mvg_info->offset+1; i < (ssize_t) extent; i++)
             (*mvg_info->primitive_info)[i].primitive=UndefinedPrimitive;
           return(MagickTrue);
         }
