@@ -1,5 +1,5 @@
 2019-03-08  7.0.8-33 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.8-33, GIT revision 15395:97ef43e8f:20190309
+  * Release ImageMagick version 7.0.8-33, GIT revision 15397:d38f3f044:20190309
 
 2019-03-06  7.0.8-33 Cristy  <quetzlzacatenango@image...>
   * Fix SVG conversion infinite loop (reference
