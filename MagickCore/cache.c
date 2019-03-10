@@ -135,9 +135,9 @@ static Quantum
     const size_t,ExceptionInfo *),
   *QueueAuthenticPixelsCache(Image *,const ssize_t,const ssize_t,const size_t,
     const size_t,ExceptionInfo *),
-  *SetPixelCacheNexusPixels(const CacheInfo *,const MapMode,
-    const RectangleInfo *,const MagickBooleanType,NexusInfo *,ExceptionInfo *)
-    magick_hot_spot;
+  *SetPixelCacheNexusPixels(const CacheInfo *,const MapMode,const ssize_t,
+    const ssize_t,const size_t,const size_t,const MagickBooleanType,
+    NexusInfo *,ExceptionInfo *) magick_hot_spot;
 
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 static void
@@ -726,9 +726,6 @@ static MagickBooleanType ClonePixelCacheRepository(
     Quantum
       *pixels;
 
-    RectangleInfo
-      region;
-
     register ssize_t
       x;
 
@@ -736,20 +733,15 @@ static MagickBooleanType ClonePixelCacheRepository(
       continue;
     if (y >= (ssize_t) clone_info->rows)
       continue;
-    region.width=cache_info->columns;
-    region.height=1;
-    region.x=0;
-    region.y=y;
-    pixels=SetPixelCacheNexusPixels(cache_info,ReadMode,&region,MagickFalse,
-      cache_nexus[id],exception);
+    pixels=SetPixelCacheNexusPixels(cache_info,ReadMode,0,y,
+      cache_info->columns,1,MagickFalse,cache_nexus[id],exception);
     if (pixels == (Quantum *) NULL)
       continue;
     status=ReadPixelCachePixels(cache_info,cache_nexus[id],exception);
     if (status == MagickFalse)
       continue;
-    region.width=clone_info->columns;
-    pixels=SetPixelCacheNexusPixels(clone_info,WriteMode,&region,MagickFalse,
-      clone_nexus[id],exception);
+    pixels=SetPixelCacheNexusPixels(clone_info,WriteMode,0,y,
+      clone_info->columns,1,MagickFalse,clone_nexus[id],exception);
     if (pixels == (Quantum *) NULL)
       continue;
     (void) memset(clone_nexus[id]->pixels,0,(size_t) clone_nexus[id]->length);
@@ -815,27 +807,19 @@ static MagickBooleanType ClonePixelCacheRepository(
         Quantum
           *pixels;
 
-        RectangleInfo
-          region;
-
         if (status == MagickFalse)
           continue;
         if (y >= (ssize_t) clone_info->rows)
           continue;
-        region.width=cache_info->columns;
-        region.height=1;
-        region.x=0;
-        region.y=y;
-        pixels=SetPixelCacheNexusPixels(cache_info,ReadMode,&region,MagickFalse,
-          cache_nexus[id],exception);
+        pixels=SetPixelCacheNexusPixels(cache_info,ReadMode,0,y,
+          cache_info->columns,1,MagickFalse,cache_nexus[id],exception);
         if (pixels == (Quantum *) NULL)
           continue;
         status=ReadPixelCacheMetacontent(cache_info,cache_nexus[id],exception);
         if (status == MagickFalse)
           continue;
-        region.width=clone_info->columns;
-        pixels=SetPixelCacheNexusPixels(clone_info,WriteMode,&region,
-          MagickFalse,clone_nexus[id],exception);
+        pixels=SetPixelCacheNexusPixels(clone_info,WriteMode,0,y,
+          clone_info->columns,1,MagickFalse,clone_nexus[id],exception);
         if (pixels == (Quantum *) NULL)
           continue;
         if ((clone_nexus[id]->metacontent != (void *) NULL) &&
@@ -2736,9 +2720,6 @@ MagickPrivate const Quantum *GetVirtualPixelCacheNexus(const Image *image,
     *magick_restrict pixels,
     virtual_pixel[MaxPixelChannels];
 
-  RectangleInfo
-    region;
-
   register const Quantum
     *magick_restrict p;
 
@@ -2774,11 +2755,7 @@ MagickPrivate const Quantum *GetVirtualPixelCacheNexus(const Image *image,
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
   CopyOpenCLBuffer(cache_info);
 #endif
-  region.x=x;
-  region.y=y;
-  region.width=columns;
-  region.height=rows;
-  pixels=SetPixelCacheNexusPixels(cache_info,ReadMode,&region,
+  pixels=SetPixelCacheNexusPixels(cache_info,ReadMode,x,y,columns,rows,
     ((image->channels & WriteMaskChannel) != 0) ||
     ((image->channels & CompositeMaskChannel) != 0) ? MagickTrue : MagickFalse,
     nexus_info,exception);
@@ -4154,9 +4131,6 @@ MagickPrivate Quantum *QueueAuthenticPixelCacheNexus(Image *image,
   Quantum
     *magick_restrict pixels;
 
-  RectangleInfo
-    region;
-
   /*
     Validate pixel cache geometry.
   */
@@ -4185,11 +4159,7 @@ MagickPrivate Quantum *QueueAuthenticPixelCacheNexus(Image *image,
   /*
     Return pixel cache.
   */
-  region.x=x;
-  region.y=y;
-  region.width=columns;
-  region.height=rows;
-  pixels=SetPixelCacheNexusPixels(cache_info,WriteMode,&region,
+  pixels=SetPixelCacheNexusPixels(cache_info,WriteMode,x,y,columns,rows,
     ((image->channels & WriteMaskChannel) != 0) ||
     ((image->channels & CompositeMaskChannel) != 0) ? MagickTrue : MagickFalse,
     nexus_info,exception);
@@ -4944,9 +4914,9 @@ MagickPrivate void SetPixelCacheMethods(Cache cache,CacheMethods *cache_methods)
 %  The format of the SetPixelCacheNexusPixels() method is:
 %
 %      Quantum SetPixelCacheNexusPixels(const CacheInfo *cache_info,
-%        const MapMode mode,const RectangleInfo *region,
-%        const MagickBooleanType buffered,NexusInfo *nexus_info,
-%        ExceptionInfo *exception)
+%        const MapMode mode,const ssize_t x,const ssize_t y,const size_t width,
+%        const size_t height,const MagickBooleanType buffered,
+%        NexusInfo *nexus_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -4954,8 +4924,7 @@ MagickPrivate void SetPixelCacheMethods(Cache cache,CacheMethods *cache_methods)
 %
 %    o mode: ReadMode, WriteMode, or IOMode.
 %
-%    o region: A pointer to the RectangleInfo structure that defines the
-%      region of this particular cache nexus.
+%    o x,y,width,height: define the region of this particular cache nexus.
 %
 %    o buffered: if true, nexus pixels are buffered.
 %
@@ -5017,8 +4986,8 @@ static inline void PrefetchPixelCacheNexusPixels(const NexusInfo *nexus_info,
 }
 
 static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
-  const MapMode mode,const RectangleInfo *region,
-  const MagickBooleanType buffered,NexusInfo *nexus_info,
+  const MapMode mode,const ssize_t x,const ssize_t y,const size_t width,
+  const size_t height,const MagickBooleanType buffered,NexusInfo *nexus_info,
   ExceptionInfo *exception)
 {
   MagickBooleanType
@@ -5033,7 +5002,7 @@ static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
   if (cache_info->type == UndefinedCache)
     return((Quantum *) NULL);
   (void) memset(&nexus_info->region,0,sizeof(nexus_info->region));
-  if ((region->width == 0) || (region->height == 0))
+  if ((width == 0) || (height == 0))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "NoPixelsDefinedInCache","`%s'",cache_info->filename);
@@ -5043,16 +5012,10 @@ static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
   if (((cache_info->type == MemoryCache) || (cache_info->type == MapCache)) &&
       (buffered == MagickFalse))
     {
-      ssize_t
-        x,
-        y;
-
-      x=(ssize_t) region->width+region->x-1;
-      y=(ssize_t) region->height+region->y-1;
-      if (((region->x >= 0) &&
-           (region->y >= 0) && (y < (ssize_t) cache_info->rows)) &&
-          (((region->x == 0) && (region->width == cache_info->columns)) ||
-           ((region->height == 1) && (x < (ssize_t) cache_info->columns))))
+      if (((x >= 0) && (y >= 0) &&
+          (((ssize_t) height+y-1) < (ssize_t) cache_info->rows)) &&
+          (((x == 0) && (width == cache_info->columns)) || ((height == 1) &&
+          (((ssize_t) width+x-1) < (ssize_t) cache_info->columns))))
         {
           MagickOffsetType
             offset;
@@ -5060,14 +5023,17 @@ static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
           /*
             Pixels are accessed directly from memory.
           */
-          offset=(MagickOffsetType) region->y*cache_info->columns+region->x;
+          offset=(MagickOffsetType) y*cache_info->columns+x;
           nexus_info->pixels=cache_info->pixels+cache_info->number_channels*
             offset;
           nexus_info->metacontent=(void *) NULL;
           if (cache_info->metacontent_extent != 0)
             nexus_info->metacontent=(unsigned char *) cache_info->metacontent+
               offset*cache_info->metacontent_extent;
-          nexus_info->region=(*region);
+          nexus_info->region.width=width;
+          nexus_info->region.height=height;
+          nexus_info->region.x=x;
+          nexus_info->region.y=y;
           nexus_info->authentic_pixel_cache=MagickTrue;
           PrefetchPixelCacheNexusPixels(nexus_info,mode);
           return(nexus_info->pixels);
@@ -5076,14 +5042,14 @@ static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
   /*
     Pixels are stored in a staging region until they are synced to the cache.
   */
-  if (((MagickSizeType) region->width > cache_info->width_limit) ||
-      ((MagickSizeType) region->height > cache_info->height_limit))
+  if (((MagickSizeType) width > cache_info->width_limit) ||
+      ((MagickSizeType) height > cache_info->height_limit))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
         "WidthOrHeightExceedsLimit","`%s'",cache_info->filename);
       return((Quantum *) NULL);
     }
-  number_pixels=(MagickSizeType) region->width*region->height;
+  number_pixels=(MagickSizeType) width*height;
   length=MagickMax(number_pixels,cache_info->columns)*
     cache_info->number_channels*sizeof(*nexus_info->pixels);
   if (cache_info->metacontent_extent != 0)
@@ -5104,7 +5070,10 @@ static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
   if (cache_info->metacontent_extent != 0)
     nexus_info->metacontent=(void *) (nexus_info->pixels+
       cache_info->number_channels*number_pixels);
-  nexus_info->region=(*region);
+  nexus_info->region.width=width;
+  nexus_info->region.height=height;
+  nexus_info->region.x=x;
+  nexus_info->region.y=y;
   nexus_info->authentic_pixel_cache=cache_info->type == PingCache ?
     MagickTrue : MagickFalse;
   PrefetchPixelCacheNexusPixels(nexus_info,mode);
