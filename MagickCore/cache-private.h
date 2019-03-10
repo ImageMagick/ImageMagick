@@ -226,6 +226,10 @@ typedef struct _CacheInfo
 
   MagickBooleanType
     composite_mask;
+
+  MagickSizeType
+    width_limit,
+    height_limit;
 } CacheInfo;
 
 extern MagickPrivate Cache

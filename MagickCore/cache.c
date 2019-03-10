@@ -222,6 +222,8 @@ MagickPrivate Cache AcquirePixelCache(const size_t number_threads)
       cache_info->synchronize=IsStringTrue(value);
       value=DestroyString(value);
     }
+  cache_info->width_limit=GetMagickResourceLimit(WidthResource);
+  cache_info->height_limit=GetMagickResourceLimit(HeightResource);
   cache_info->semaphore=AcquireSemaphoreInfo();
   cache_info->reference_count=1;
   cache_info->file_semaphore=AcquireSemaphoreInfo();
@@ -3694,8 +3696,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     ThrowBinaryException(CacheError,"NoPixelsDefinedInCache",image->filename);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickCoreSignature);
-  if ((AcquireMagickResource(WidthResource,image->columns) == MagickFalse) ||
-      (AcquireMagickResource(HeightResource,image->rows) == MagickFalse))
+  if (((MagickSizeType) image->columns > cache_info->width_limit) ||
+      ((MagickSizeType) image->rows > cache_info->height_limit))
     ThrowBinaryException(ImageError,"WidthOrHeightExceedsLimit",
       image->filename);
   length=GetImageListLength(image);
@@ -5074,10 +5076,8 @@ static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
   /*
     Pixels are stored in a staging region until they are synced to the cache.
   */
-  if (((region->x != (ssize_t) nexus_info->region.width) ||
-       (region->y != (ssize_t) nexus_info->region.height)) &&
-      ((AcquireMagickResource(WidthResource,region->width) == MagickFalse) ||
-       (AcquireMagickResource(HeightResource,region->height) == MagickFalse)))
+  if (((MagickSizeType) region->width > cache_info->width_limit) ||
+      ((MagickSizeType) region->height > cache_info->height_limit))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
         "WidthOrHeightExceedsLimit","`%s'",cache_info->filename);
