@@ -851,14 +851,14 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
     MagickFormatExtent,height_limit);
   (void) FormatMagickSize(resource_info.area_limit,MagickFalse,"P",
     MagickFormatExtent,area_limit);
-  (void) FormatMagickSize(resource_info.memory_limit,MagickTrue,"B",
-    MagickFormatExtent,memory_limit);
-  (void) FormatMagickSize(resource_info.map_limit,MagickTrue,"B",
-    MagickFormatExtent,map_limit);
   (void) CopyMagickString(list_length_limit,"unlimited",MagickFormatExtent);
   if (resource_info.list_length_limit != MagickResourceInfinity)
     (void) FormatMagickSize(resource_info.list_length_limit,MagickTrue,"B",
       MagickFormatExtent,list_length_limit);
+  (void) FormatMagickSize(resource_info.memory_limit,MagickTrue,"B",
+    MagickFormatExtent,memory_limit);
+  (void) FormatMagickSize(resource_info.map_limit,MagickTrue,"B",
+    MagickFormatExtent,map_limit);
   (void) CopyMagickString(disk_limit,"unlimited",MagickFormatExtent);
   if (resource_info.disk_limit != MagickResourceInfinity)
     (void) FormatMagickSize(resource_info.disk_limit,MagickTrue,"B",
