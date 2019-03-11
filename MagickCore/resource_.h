@@ -38,7 +38,7 @@ typedef enum
   ListLengthResource
 } ResourceType;
 
-#define MagickResourceInfinity  MagickULLConstant(~0)
+#define MagickResourceInfinity  (MagickULLConstant(~0) >> 1)
 
 extern MagickExport int
   AcquireUniqueFileResource(char *);

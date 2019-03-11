@@ -203,6 +203,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
   if (request < 0)
     return(MagickFalse);
   limit=0;
+  current=0;
   bi=MagickFalse;
   status=MagickFalse;
   if (resource_semaphore[type] == (SemaphoreInfo *) NULL)
@@ -831,6 +832,7 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
     area_limit[MagickFormatExtent],
     disk_limit[MagickFormatExtent],
     height_limit[MagickFormatExtent],
+    list_length_limit[MagickFormatExtent],
     map_limit[MagickFormatExtent],
     memory_limit[MagickFormatExtent],
     time_limit[MagickFormatExtent],
@@ -853,6 +855,10 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
     MagickFormatExtent,memory_limit);
   (void) FormatMagickSize(resource_info.map_limit,MagickTrue,"B",
     MagickFormatExtent,map_limit);
+  (void) CopyMagickString(list_length_limit,"unlimited",MagickFormatExtent);
+  if (resource_info.list_length_limit != MagickResourceInfinity)
+    (void) FormatMagickSize(resource_info.list_length_limit,MagickTrue,"B",
+      MagickFormatExtent,list_length_limit);
   (void) CopyMagickString(disk_limit,"unlimited",MagickFormatExtent);
   if (resource_info.disk_limit != MagickResourceInfinity)
     (void) FormatMagickSize(resource_info.disk_limit,MagickTrue,"B",
@@ -864,9 +870,8 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
   (void) FormatLocaleFile(file,"Resource limits:\n");
   (void) FormatLocaleFile(file,"  Width: %s\n",width_limit);
   (void) FormatLocaleFile(file,"  Height: %s\n",height_limit);
-  (void) FormatLocaleFile(file,"  List length: %.20g\n",(double)
-    ((MagickOffsetType) resource_info.list_length_limit));
   (void) FormatLocaleFile(file,"  Area: %s\n",area_limit);
+  (void) FormatLocaleFile(file,"  List length: %s\n",list_length_limit);
   (void) FormatLocaleFile(file,"  Memory: %s\n",memory_limit);
   (void) FormatLocaleFile(file,"  Map: %s\n",map_limit);
   (void) FormatLocaleFile(file,"  Disk: %s\n",disk_limit);
@@ -931,6 +936,7 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
   }
   bi=MagickFalse;
   limit=0;
+  current=0;
   if (resource_semaphore[type] == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&resource_semaphore[type]);
   LockSemaphoreInfo(resource_semaphore[type]);
