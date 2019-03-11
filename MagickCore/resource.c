@@ -206,9 +206,21 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
   current=0;
   bi=MagickFalse;
   status=MagickFalse;
-  if (resource_semaphore[type] == (SemaphoreInfo *) NULL)
-    ActivateSemaphoreInfo(&resource_semaphore[type]);
-  LockSemaphoreInfo(resource_semaphore[type]);
+  switch (type)
+  {
+    case DiskResource:
+    case FileResource:
+    case MapResource:
+    case MemoryResource:
+    case TimeResource:
+    {
+      if (resource_semaphore[type] == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&resource_semaphore[type]);
+      LockSemaphoreInfo(resource_semaphore[type]);
+      break;
+    }
+    default: ;
+  }
   switch (type)
   {
     case AreaResource:
@@ -330,7 +342,19 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
       break;
     }
   }
-  UnlockSemaphoreInfo(resource_semaphore[type]);
+  switch (type)
+  {
+    case DiskResource:
+    case FileResource:
+    case MapResource:
+    case MemoryResource:
+    case TimeResource:
+    {
+      UnlockSemaphoreInfo(resource_semaphore[type]);
+      break;
+    }
+    default: ;
+  }
   if ((limit == MagickResourceInfinity) || (size < limit))
     status=MagickTrue;
   if (IsEventLogging() != MagickFalse)
@@ -638,9 +662,21 @@ MagickExport MagickSizeType GetMagickResource(const ResourceType type)
     resource;
 
   resource=0;
-  if (resource_semaphore[type] == (SemaphoreInfo *) NULL)
-    ActivateSemaphoreInfo(&resource_semaphore[type]);
-  LockSemaphoreInfo(resource_semaphore[type]);
+  switch (type)
+  {
+    case DiskResource:
+    case FileResource:
+    case MapResource:
+    case MemoryResource:
+    case TimeResource:
+    {
+      if (resource_semaphore[type] == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&resource_semaphore[type]);
+      LockSemaphoreInfo(resource_semaphore[type]);
+      break;
+    }
+    default: ;
+  }
   switch (type)
   {
     case AreaResource:
@@ -701,7 +737,19 @@ MagickExport MagickSizeType GetMagickResource(const ResourceType type)
     default:
       break;
   }
-  UnlockSemaphoreInfo(resource_semaphore[type]);
+  switch (type)
+  {
+    case DiskResource:
+    case FileResource:
+    case MapResource:
+    case MemoryResource:
+    case TimeResource:
+    {
+      UnlockSemaphoreInfo(resource_semaphore[type]);
+      break;
+    }
+    default: ;
+  }
   return(resource);
 }
 
@@ -922,24 +970,24 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
     current,
     limit;
 
-  switch (type)
-  {
-    case AreaResource:
-    case HeightResource:
-    case ListLengthResource:
-    case ThreadResource:
-    case ThrottleResource:
-    case WidthResource:
-      return;
-    default:
-      break;
-  }
   bi=MagickFalse;
   limit=0;
   current=0;
-  if (resource_semaphore[type] == (SemaphoreInfo *) NULL)
-    ActivateSemaphoreInfo(&resource_semaphore[type]);
-  LockSemaphoreInfo(resource_semaphore[type]);
+  switch (type)
+  {
+    case DiskResource:
+    case FileResource:
+    case MapResource:
+    case MemoryResource:
+    case TimeResource:
+    {
+      if (resource_semaphore[type] == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&resource_semaphore[type]);
+      LockSemaphoreInfo(resource_semaphore[type]);
+      break;
+    }
+    default: ;
+  }
   switch (type)
   {
     case DiskResource:
@@ -992,7 +1040,19 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
       break;
     }
   }
-  UnlockSemaphoreInfo(resource_semaphore[type]);
+  switch (type)
+  {
+    case DiskResource:
+    case FileResource:
+    case MapResource:
+    case MemoryResource:
+    case TimeResource:
+    {
+      UnlockSemaphoreInfo(resource_semaphore[type]);
+      break;
+    }
+    default: ;
+  }
   if (IsEventLogging() != MagickFalse)
     {
       char
