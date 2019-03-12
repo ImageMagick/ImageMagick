@@ -1329,6 +1329,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
+  if (exception->severity > ErrorException)
+    {
+      TIFFClose(tiff);
+      image=DestroyImageList(image);
+      return (Image *) NULL;
+    }
   if (image_info->number_scenes != 0)
     {
       /*
