@@ -91,7 +91,7 @@
   Define declarations.
 */
 #define BezierQuantum  200
-#define PrimitiveExtentPad  128
+#define PrimitiveExtentPad  2048
 #define MaxBezierCoordinates  4194304
 #define ThrowPointExpectedException(token,exception) \
 { \
