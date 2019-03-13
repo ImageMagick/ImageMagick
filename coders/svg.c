@@ -1622,7 +1622,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
               char
                 *text;
 
-              text=EscapeString(svg_info->text,'\'');
+              text=EscapeString(svg_info->text,'\"');
               (void) FormatLocaleFile(svg_info->file,"text %g,%g \"%s\"\n",
                 svg_info->bounds.x-svg_info->center.x,svg_info->bounds.y-
                 svg_info->center.y,text);
@@ -2847,7 +2847,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
                 *text;
 
               SVGStripString(MagickTrue,svg_info->text);
-              text=EscapeString(svg_info->text,'\'');
+              text=EscapeString(svg_info->text,'\"');
               (void) FormatLocaleFile(svg_info->file,"text 0,0 \"%s\"\n",text);
               text=DestroyString(text);
               *svg_info->text='\0';
@@ -2865,7 +2865,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
                 *text;
 
               (void) FormatLocaleFile(svg_info->file,"class \"tspan\"\n");
-              text=EscapeString(svg_info->text,'\'');
+              text=EscapeString(svg_info->text,'\"');
               (void) FormatLocaleFile(svg_info->file,"text %g,%g \"%s\"\n",
                 svg_info->bounds.x-svg_info->center.x,svg_info->bounds.y-
                 svg_info->center.y,text);
