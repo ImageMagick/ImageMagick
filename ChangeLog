@@ -1,3 +1,6 @@
+2019-03-15  7.0.8-34 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-34, GIT revision 15413:860af935d:20190315
+
 2019-03-11  7.0.8-34 Cristy  <quetzlzacatenango@image...>
   * Associate one lock with each resource.
   * Report exception if opening TIFF did not work out.
