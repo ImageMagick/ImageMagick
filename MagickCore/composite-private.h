@@ -119,8 +119,8 @@ static inline void CompositePixelOver(const Image *image,const PixelInfo *p,
   }
 }
 
-static inline void CompositePixelInfoOver(const PixelInfo *p,
-  const double alpha,const PixelInfo *q,const double beta,PixelInfo *composite)
+static inline void CompositePixelInfoOver(const PixelInfo *p,const double alpha,
+  const PixelInfo *q,const double beta,PixelInfo *composite)
 {
   double
     Da,

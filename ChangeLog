@@ -1,3 +1,7 @@
+2019-03-16  7.0.8-35 Cristy  <quetzlzacatenango@image...>
+  * -draw image DstOver is now responsive to the composite operator (reference
+    https://imagemagick.org/discourse-server/viewtopic.php?f=1&t=35650).
+
 2019-03-15  7.0.8-34 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-34, GIT revision 15413:860af935d:20190315
 
