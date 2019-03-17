@@ -2895,11 +2895,6 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           (void) OrderedDitherImage(_image,arg1,_exception);
           break;
         }
-      if (LocaleCompare("otsu-threshold",option+1) == 0)
-        {
-          (void) OTSUThresholdImage(_image,_exception);
-          break;
-        }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'p':

@@ -2336,12 +2336,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) OrderedDitherImage(*image,argv[i+1],exception);
             break;
           }
-        if (LocaleCompare("otsu-threshold",option+1) == 0)
-          {
-            (void) SyncImageSettings(mogrify_info,*image,exception);
-            (void) OTSUThresholdImage(*image,exception);
-            break;
-          }
         break;
       }
       case 'p':
@@ -5629,8 +5623,6 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
                 argv[i]);
             break;
           }
-        if (LocaleCompare("otsu-threshold",option+1) == 0)
-          break;
         ThrowMogrifyException(OptionError,"UnrecognizedOption",option)
       }
       case 'p':
