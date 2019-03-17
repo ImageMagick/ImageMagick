@@ -208,6 +208,7 @@ extern WandExport MagickBooleanType
     const double,const MagickBooleanType),
   MagickOptimizeImageTransparency(MagickWand *),
   MagickOrderedDitherImage(MagickWand *,const char *),
+  MagickOTSUThresholdImage(MagickWand *),
   MagickTransparentPaintImage(MagickWand *,const PixelWand *,
     const double,const double,const MagickBooleanType invert),
   MagickPingImage(MagickWand *,const char *),

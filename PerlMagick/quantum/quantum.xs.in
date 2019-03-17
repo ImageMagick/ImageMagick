@@ -575,6 +575,7 @@ static struct
     { "CLAHE", { {"geometry", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference}, {"number-bins", IntegerReference},
       {"clip-limit", RealReference} } },
+    { "OTSUThreshold", { {"channel", MagickChannelOptions} } },
   };
 
 static SplayTreeInfo
@@ -7646,6 +7647,8 @@ Mogrify(ref,...)
     RangeThresholdImage= 296
     CLAHE              = 297
     CLAHEImage         = 298
+    OTSUThreshold      = 299
+    OTSUThresholdImage = 300
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -11505,6 +11508,16 @@ Mogrify(ref,...)
             geometry_info.psi=argument_list[4].real_reference;
           (void) CLAHEImage(image,geometry.width,geometry.height,geometry.x,
             geometry_info.psi,exception);
+          break;
+        }
+        case 150:  /* OTSUThreshold */
+        {
+          if (attribute_flag[0] != 0)
+            channel=(ChannelType) argument_list[0].integer_reference;
+          channel_mask=SetImageChannelMask(image,channel);
+          (void) OTSUThresholdImage(image,exception);
+          if (image != (Image *) NULL)
+            (void) SetImageChannelMask(image,channel_mask);
           break;
         }
       }

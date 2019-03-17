@@ -7559,6 +7559,42 @@ WandExport MagickBooleanType MagickOrderedDitherImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k O T S U T h r e s h o l d I m a g e                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickOTSUThresholdImage() automatically performs clustering-based image
+%  thresholding. The algorithm calculates the optimum threshold separates into
+%  two classes so that their combined spread (intra-class variance) is minimal,
+%  and their inter-class variance is maximal.
+%
+%  The format of the MagickOTSUThresholdImage method is:
+%
+%      MagickBooleanType MagickOTSUThresholdImage(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+*/
+WandExport MagickBooleanType MagickOTSUThresholdImage(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  return(OTSUThresholdImage(wand->images,wand->exception));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k P i n g I m a g e                                             %
 %                                                                             %
 %                                                                             %
