@@ -137,7 +137,7 @@ static Quantum
     const size_t,ExceptionInfo *),
   *SetPixelCacheNexusPixels(const CacheInfo *,const MapMode,const ssize_t,
     const ssize_t,const size_t,const size_t,const MagickBooleanType,
-    NexusInfo *,ExceptionInfo *) magick_hot_spot;
+    NexusInfo *magick_restrict,ExceptionInfo *) magick_hot_spot;
 
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 static void
@@ -4916,7 +4916,7 @@ MagickPrivate void SetPixelCacheMethods(Cache cache,CacheMethods *cache_methods)
 %      Quantum SetPixelCacheNexusPixels(const CacheInfo *cache_info,
 %        const MapMode mode,const ssize_t x,const ssize_t y,const size_t width,
 %        const size_t height,const MagickBooleanType buffered,
-%        NexusInfo *nexus_info,ExceptionInfo *exception)
+%        NexusInfo *magick_restrict nexus_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -4936,7 +4936,7 @@ MagickPrivate void SetPixelCacheMethods(Cache cache,CacheMethods *cache_methods)
 
 static inline MagickBooleanType AcquireCacheNexusPixels(
   const CacheInfo *magick_restrict cache_info,const MagickSizeType length,
-  NexusInfo *nexus_info,ExceptionInfo *exception)
+  NexusInfo *magick_restrict nexus_info,ExceptionInfo *exception)
 {
   if (length != (MagickSizeType) ((size_t) length))
     {
