@@ -135,9 +135,10 @@ static Quantum
     const size_t,ExceptionInfo *),
   *QueueAuthenticPixelsCache(Image *,const ssize_t,const ssize_t,const size_t,
     const size_t,ExceptionInfo *),
-  *SetPixelCacheNexusPixels(const CacheInfo *,const MapMode,const ssize_t,
-    const ssize_t,const size_t,const size_t,const MagickBooleanType,
-    NexusInfo *magick_restrict,ExceptionInfo *) magick_hot_spot;
+  *SetPixelCacheNexusPixels(const CacheInfo *magick_restrict,const MapMode,
+    const ssize_t,const ssize_t,const size_t,const size_t,
+    const MagickBooleanType,NexusInfo *magick_restrict,ExceptionInfo *)
+    magick_hot_spot;
 
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 static void
@@ -4913,10 +4914,10 @@ MagickPrivate void SetPixelCacheMethods(Cache cache,CacheMethods *cache_methods)
 %
 %  The format of the SetPixelCacheNexusPixels() method is:
 %
-%      Quantum SetPixelCacheNexusPixels(const CacheInfo *cache_info,
-%        const MapMode mode,const ssize_t x,const ssize_t y,const size_t width,
-%        const size_t height,const MagickBooleanType buffered,
-%        NexusInfo *magick_restrict nexus_info,ExceptionInfo *exception)
+%      Quantum SetPixelCacheNexusPixels(
+%        const CacheInfo *magick_restrict cache_info,const MapMode mode,
+%        const ssize_t x,const ssize_t y,const size_t width,const size_t height,
+%        const MagickBooleanType buffered,NexusInfo *magick_restrict nexus_info,$        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -4985,9 +4986,10 @@ static inline void PrefetchPixelCacheNexusPixels(const NexusInfo *nexus_info,
   MagickCachePrefetch((unsigned char *) nexus_info->pixels+CACHE_LINE_SIZE,1,1);
 }
 
-static Quantum *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
-  const MapMode mode,const ssize_t x,const ssize_t y,const size_t width,
-  const size_t height,const MagickBooleanType buffered,NexusInfo *nexus_info,
+static Quantum *SetPixelCacheNexusPixels(
+  const CacheInfo *magick_restrict cache_info,const MapMode mode,
+  const ssize_t x,const ssize_t y,const size_t width,const size_t height,
+  const MagickBooleanType buffered,NexusInfo *nexus_info,
   ExceptionInfo *exception)
 {
   MagickBooleanType
