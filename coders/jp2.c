@@ -346,7 +346,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       opj_destroy_codec(jp2_codec);
       ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
     }
-  jp2_status=1;
+  jp2_status=OPJ_TRUE;
   if (image->ping == MagickFalse)
     {
       if ((image->columns != 0) && (image->rows != 0))
@@ -360,7 +360,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       else
         jp2_status=opj_set_decode_area(jp2_codec,jp2_image,0,0,
           jp2_image->comps[0].w-1,jp2_image->comps[0].h-1);
-      if (jp2_status == 0)
+      if (jp2_status == OPJ_FALSE)
         {
           opj_stream_destroy(jp2_stream);
           opj_destroy_codec(jp2_codec);
@@ -382,12 +382,11 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     if (image->ping == MagickFalse)
       {
-        if (jp2_status != 0)
-          jp2_status=opj_decode(jp2_codec,jp2_stream,jp2_image);
-        if (jp2_status != 0)
+        jp2_status=opj_decode(jp2_codec,jp2_stream,jp2_image);
+        if (jp2_status != OPJ_FALSE)
           jp2_status=opj_end_decompress(jp2_codec,jp2_stream);
       }
-  if (jp2_status == 0)
+  if (jp2_status == OPJ_FALSE)
     {
       opj_stream_destroy(jp2_stream);
       opj_destroy_codec(jp2_codec);
