@@ -2014,13 +2014,16 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
   pixels=(unsigned char *) GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    size_t
+      length;
+
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
-    (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+    length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
       quantum_type,pixels,exception);
     count=WriteBlob(image,extent,pixels);
-    if (count != (ssize_t) extent)
+    if (count != (ssize_t) length)
       break;
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);
@@ -2028,6 +2031,8 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
       break;
   }
   quantum_info=DestroyQuantumInfo(quantum_info);
+  if (y < (ssize_t) image->rows)
+    ThrowWriterException(CorruptImageError,"UnableToWriteImageData");
   (void) CloseBlob(image);
   return(status);
 }
