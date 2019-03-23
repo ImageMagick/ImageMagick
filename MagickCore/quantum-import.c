@@ -160,8 +160,9 @@ static inline const unsigned char *PushDoublePixel(QuantumInfo *quantum_info,
   return(pixels);
 }
 
-static inline const unsigned char *PushQuantumFloatPixel(QuantumInfo *quantum_info,
-  const unsigned char *magick_restrict pixels,float *pixel)
+static inline const unsigned char *PushQuantumFloatPixel(
+  QuantumInfo *quantum_info,const unsigned char *magick_restrict pixels,
+  float *pixel)
 {
   float
     *p;

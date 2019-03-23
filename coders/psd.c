@@ -312,7 +312,8 @@ static MagickBooleanType CorrectPSDAlphaBlend(const ImageInfo *image_info,
   ssize_t
     y;
 
-  if (image->alpha_trait != BlendPixelTrait || image->colorspace != sRGBColorspace)
+  if ((image->alpha_trait != BlendPixelTrait) ||
+      (image->colorspace != sRGBColorspace))
     return(MagickTrue);
   option=GetImageOption(image_info,"psd:alpha-unblend");
   if (IsStringFalse(option) != MagickFalse)
@@ -334,10 +335,10 @@ static MagickBooleanType CorrectPSDAlphaBlend(const ImageInfo *image_info,
       continue;
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
-    {
-      status=MagickFalse;
-      continue;
-    }
+      {
+        status=MagickFalse;
+        continue;
+      }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       double
@@ -533,7 +534,7 @@ static void PreservePSDOpacityMask(Image *image,LayerInfo* layer_info,
   random_info=AcquireRandomInfo();
   key_info=GetRandomKey(random_info,2+1);
   key=(char *) GetStringInfoDatum(key_info);
-  key[8]=(char ) layer_info->mask.background;
+  key[8]=(char) layer_info->mask.background;
   key[9]='\0';
   layer_info->mask.image->page.x+=layer_info->page.x;
   layer_info->mask.image->page.y+=layer_info->page.y;
@@ -1021,22 +1022,23 @@ static MagickBooleanType ReadPSDChannelPixels(Image *image,
   {
     if (packet_size == 1)
       pixel=ScaleCharToQuantum(*p++);
-    else if (packet_size == 2)
-      {
-        unsigned short
-          nibble;
-
-        p=PushShortPixel(MSBEndian,p,&nibble);
-        pixel=ScaleShortToQuantum(nibble);
-      }
     else
-      {
-        MagickFloatType
-          nibble;
+      if (packet_size == 2)
+        {
+          unsigned short
+            nibble;
 
-        p=PushFloatPixel(MSBEndian,p,&nibble);
-        pixel=ClampToQuantum((MagickRealType)QuantumRange*nibble);
-      }
+          p=PushShortPixel(MSBEndian,p,&nibble);
+          pixel=ScaleShortToQuantum(nibble);
+        }
+      else
+        {
+          MagickFloatType
+            nibble;
+
+          p=PushFloatPixel(MSBEndian,p,&nibble);
+          pixel=ClampToQuantum((MagickRealType) (QuantumRange*nibble));
+        }
     if (image->depth > 1)
       {
         SetPSDPixel(image,channels,type,packet_size,pixel,q,exception);
