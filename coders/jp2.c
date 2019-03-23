@@ -347,15 +347,19 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
     }
   jp2_status=1;
-  if ((image->columns != 0) && (image->rows != 0))
+  if (image->ping == MagickFalse)
     {
-      /*
-        Extract an area from the image.
-      */
-      jp2_status=opj_set_decode_area(jp2_codec,jp2_image,
-        (OPJ_INT32) image->extract_info.x,(OPJ_INT32) image->extract_info.y,
-        (OPJ_INT32) (image->extract_info.x+(ssize_t) image->columns),
-        (OPJ_INT32) (image->extract_info.y+(ssize_t) image->rows));
+      if ((image->columns != 0) && (image->rows != 0))
+        /*
+          Extract an area from the image.
+        */
+        jp2_status=opj_set_decode_area(jp2_codec,jp2_image,
+          (OPJ_INT32) image->extract_info.x,(OPJ_INT32) image->extract_info.y,
+          (OPJ_INT32) (image->extract_info.x+(ssize_t) image->columns),
+          (OPJ_INT32) (image->extract_info.y+(ssize_t) image->rows));
+      else
+        jp2_status=opj_set_decode_area(jp2_codec,jp2_image,0,0,
+          jp2_image->comps[0].w-1,jp2_image->comps[0].h-1);
       if (jp2_status == 0)
         {
           opj_stream_destroy(jp2_stream);
@@ -378,8 +382,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     if (image->ping == MagickFalse)
       {
-        jp2_status=opj_set_decode_area(jp2_codec,jp2_image,0,0,
-          jp2_image->comps[0].w-1,jp2_image->comps[0].h-1);
         if (jp2_status != 0)
           jp2_status=opj_decode(jp2_codec,jp2_stream,jp2_image);
         if (jp2_status != 0)
