@@ -862,6 +862,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
       /*
         Set tile size.
       */
+      (void) memset(&geometry,0,sizeof(geometry));
       flags=ParseAbsoluteGeometry(image_info->extract,&geometry);
       parameters.cp_tdx=(int) geometry.width;
       parameters.cp_tdy=(int) geometry.width;
