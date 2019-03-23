@@ -24,6 +24,7 @@
   MagickCoderAlias("MPEG", "3GP") \
   MagickCoderAlias("MPEG", "3G2") \
   MagickCoderAlias("MPEG", "AVI") \
+  MagickCoderAlias("MPEG", "FLV") \
   MagickCoderAlias("MPEG", "MKV") \
   MagickCoderAlias("MPEG", "MOV") \
   MagickCoderAlias("MPEG", "MPG") \
