@@ -359,7 +359,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           (OPJ_INT32) (image->extract_info.y+(ssize_t) image->rows));
       else
         jp2_status=opj_set_decode_area(jp2_codec,jp2_image,0,0,
-          jp2_image->comps[0].w-1,jp2_image->comps[0].h-1);
+          jp2_image->comps[0].w,jp2_image->comps[0].h);
       if (jp2_status == OPJ_FALSE)
         {
           opj_stream_destroy(jp2_stream);
