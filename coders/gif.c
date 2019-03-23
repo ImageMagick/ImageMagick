@@ -1028,6 +1028,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   meta_image=AcquireImage(image_info,exception);  /* metadata container */
   meta_image->page.width=ReadBlobLSBShort(image);
   meta_image->page.height=ReadBlobLSBShort(image);
+  meta_image->iterations=1;
   flag=(unsigned char) ReadBlobByte(image);
   profiles=(LinkedListInfo *) NULL;
   background=(unsigned char) ReadBlobByte(image);
