@@ -1596,7 +1596,7 @@ static Image *DrawClippingMask(Image *image,const DrawInfo *draw_info,
       clip_mask=separate_mask;
       status=NegateImage(clip_mask,MagickFalse,exception);
       if (status == MagickFalse)
-￼       clip_mask=DestroyImage(clip_mask);
+        clip_mask=DestroyImage(clip_mask);
     }
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"end clip-path");
