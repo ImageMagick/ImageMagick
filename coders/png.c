@@ -2845,7 +2845,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
      if (png_get_gAMA(ping,ping_info,&file_gamma))
        {
-         image->gamma=(float) file_gamma;
+         image->gamma=file_gamma;
          if (logging != MagickFalse)
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
              "    Reading PNG gAMA chunk: gamma: %f",file_gamma);
