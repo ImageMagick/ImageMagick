@@ -174,7 +174,10 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
-    return((Image *) NULL);
+    {
+      image=DestroyImageList(image);
+      return((Image *) NULL);
+    }
   /*
     Get user defaults from X resource database.
   */

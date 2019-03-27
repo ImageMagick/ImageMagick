@@ -309,6 +309,11 @@ MagickExport void DestroyXResources(void)
         (void) XFreePixmap(windows->display,magick_windows[i]->shadow_stipple);
         magick_windows[i]->shadow_stipple=(Pixmap) NULL;
       }
+    if (magick_windows[i]->matte_image != (XImage *) NULL)
+      {
+        XDestroyImage(magick_windows[i]->matte_image);
+        magick_windows[i]->matte_image=(XImage *) NULL;
+      }
     if (magick_windows[i]->ximage != (XImage *) NULL)
       {
         XDestroyImage(magick_windows[i]->ximage);
