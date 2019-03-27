@@ -2417,12 +2417,13 @@ static MagickBooleanType SameKernelInfo(const KernelInfo *kernel1,
   return MagickTrue;
 }
 
-static void ExpandRotateKernelInfo(KernelInfo *kernel, const double angle)
+static void ExpandRotateKernelInfo(KernelInfo *kernel,const double angle)
 {
   KernelInfo
     *clone_info,
     *last;
 
+  clone_info=(KernelInfo *) NULL;
   last=kernel;
 DisableMSCWarning(4127)
   while (1) {
