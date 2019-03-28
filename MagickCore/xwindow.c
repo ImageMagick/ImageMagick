@@ -5069,6 +5069,7 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
                   image=DestroyImage(image);
                   image=crop_image;
                 }
+              clone_image=DestroyImage(clone_image);
             }
         }
       status=XGetWMName(display,target,&window_name);
