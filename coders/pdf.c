@@ -2973,11 +2973,35 @@ RestoreMSCWarning
       utf16=ConvertUTF8ToUTF16((unsigned char *) basename,&length);
       if (utf16 != (wchar_t *) NULL)
         {
-          (void) FormatLocaleString(buffer,MagickPathExtent,"/Title (\xfe\xff");
+          unsigned char
+            hex_digits[16];
+
+          hex_digits[0]='0';
+          hex_digits[1]='1';
+          hex_digits[2]='2';
+          hex_digits[3]='3';
+          hex_digits[4]='4';
+          hex_digits[5]='5';
+          hex_digits[6]='6';
+          hex_digits[7]='7';
+          hex_digits[8]='8';
+          hex_digits[9]='9';
+          hex_digits[10]='A';
+          hex_digits[11]='B';
+          hex_digits[12]='C';
+          hex_digits[13]='D';
+          hex_digits[14]='E';
+          hex_digits[15]='F';
+          (void) FormatLocaleString(buffer,MagickPathExtent,"/Title <FEFF");
           (void) WriteBlobString(image,buffer);
           for (i=0; i < (ssize_t) length; i++)
-            (void) WriteBlobMSBShort(image,(unsigned short) utf16[i]);
-          (void) FormatLocaleString(buffer,MagickPathExtent,")\n");
+          {
+            (void) WriteBlobByte(image,'0');
+            (void) WriteBlobByte(image,'0');
+            (void) WriteBlobByte(image,hex_digits[(utf16[i] >> 4) & 0x0f]);
+            (void) WriteBlobByte(image,hex_digits[utf16[i] & 0x0f]);
+          }
+          (void) FormatLocaleString(buffer,MagickPathExtent,">\n");
           utf16=(wchar_t *) RelinquishMagickMemory(utf16);
         }
     }
