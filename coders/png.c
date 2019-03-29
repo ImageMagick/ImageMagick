@@ -4334,7 +4334,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
     }
 
   if ((IssRGBColorspace(image->colorspace) != MagickFalse) &&
-      ((image->gamma < .45) || (image->gamma > .46)) &&
+      (image->gamma > .75) &&
            !(image->chromaticity.red_primary.x>0.6399f &&
            image->chromaticity.red_primary.x<0.6401f &&
            image->chromaticity.red_primary.y>0.3299f &&
