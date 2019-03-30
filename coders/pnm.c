@@ -448,7 +448,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         comment_info.comment=DestroyString(comment_info.comment); \
         return(DestroyImageList(image));
       }
-    (void) SetImageBackgroundColor(image,exception);
+    (void) ResetImagePixels(image,exception);
     /*
       Convert PNM pixels to runextent-encoded MIFF packets.
     */
