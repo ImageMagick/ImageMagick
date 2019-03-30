@@ -2022,8 +2022,10 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
       break;
     length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
       quantum_type,pixels,exception);
+    if (length == 0)
+      break;
     count=WriteBlob(image,extent,pixels);
-    if (count != (ssize_t) length)
+    if (count != (ssize_t) extent)
       break;
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);
