@@ -3551,6 +3551,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) CloneString(&svg_info->size,image_info->size);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"begin SAX");
+  xmlInitParser();
   (void) xmlSubstituteEntitiesDefault(1);
   (void) memset(&sax_modules,0,sizeof(sax_modules));
   sax_modules.internalSubset=SVGInternalSubset;
@@ -3737,9 +3738,6 @@ ModuleExport size_t RegisterSVGImage(void)
 #if defined(MAGICKCORE_RSVG_DELEGATE)
 #if !GLIB_CHECK_VERSION(2,35,0)
   g_type_init();
-#endif
-#if defined(MAGICKCORE_XML_DELEGATE)
-  xmlInitParser();
 #endif
   (void) FormatLocaleString(version,MagickPathExtent,"RSVG %d.%d.%d",
     LIBRSVG_MAJOR_VERSION,LIBRSVG_MINOR_VERSION,LIBRSVG_MICRO_VERSION);

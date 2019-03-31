@@ -7862,6 +7862,7 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   *msl_info.image=msl_image;
   if (*image != (Image *) NULL)
     MSLPushImage(&msl_info,*image);
+  xmlInitParser();
   (void) xmlSubstituteEntitiesDefault(1);
   (void) memset(&sax_modules,0,sizeof(sax_modules));
   sax_modules.internalSubset=MSLInternalSubset;
@@ -7987,9 +7988,6 @@ ModuleExport size_t RegisterMSLImage(void)
   MagickInfo
     *entry;
 
-#if defined(MAGICKCORE_XML_DELEGATE)
-  xmlInitParser();
-#endif
   entry=AcquireMagickInfo("MSL","MSL","Magick Scripting Language");
 #if defined(MAGICKCORE_XML_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadMSLImage;
