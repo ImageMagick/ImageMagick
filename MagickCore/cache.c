@@ -263,19 +263,20 @@ MagickPrivate NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
   register ssize_t
     i;
 
-  nexus_info=(NexusInfo **) MagickAssumeAligned(AcquireAlignedMemory(
-    number_threads+1,sizeof(*nexus_info)));
+  nexus_info=(NexusInfo **) MagickAssumeAligned(AcquireAlignedMemory(2*
+    number_threads,sizeof(*nexus_info)));
   if (nexus_info == (NexusInfo **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  nexus_info[0]=(NexusInfo *) AcquireQuantumMemory(number_threads+1,
+  nexus_info[0]=(NexusInfo *) AcquireQuantumMemory(2*number_threads,
     sizeof(**nexus_info));
   if (nexus_info[0] == (NexusInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) memset(nexus_info[0],0,(number_threads+1)*sizeof(**nexus_info));
-  for (i=0; i <= (ssize_t) number_threads; i++)
+  (void) memset(nexus_info[0],0,2*number_threads*sizeof(**nexus_info));
+  for (i=0; i < (ssize_t) (2*number_threads); i++)
   {
     nexus_info[i]=(&nexus_info[0][i]);
-    nexus_info[i]->pixel_nexus=(&nexus_info[0][number_threads]);
+    if (i < (ssize_t) number_threads)
+      nexus_info[i]->pixel_nexus=(&nexus_info[0][number_threads+i]);
     nexus_info[i]->signature=MagickCoreSignature;
   }
   return(nexus_info);
@@ -1103,7 +1104,7 @@ MagickPrivate NexusInfo **DestroyPixelCacheNexus(NexusInfo **nexus_info,
     i;
 
   assert(nexus_info != (NexusInfo **) NULL);
-  for (i=0; i <= (ssize_t) number_threads; i++)
+  for (i=0; i < (ssize_t) (2*number_threads); i++)
   {
     if (nexus_info[i]->cache != (Quantum *) NULL)
       RelinquishCacheNexusPixels(nexus_info[i]);
