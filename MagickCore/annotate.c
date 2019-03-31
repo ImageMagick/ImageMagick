@@ -1711,8 +1711,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
             if (transparent_fill == MagickFalse)
               {
                 GetPixelInfo(image,&fill_color);
-                GetFillColor(draw_info,x_offset,y_offset,&fill_color,
-                  exception);
+                GetFillColor(draw_info,x_offset,y_offset,&fill_color,exception);
                 fill_opacity=fill_opacity*fill_color.alpha;
                 CompositePixelOver(image,&fill_color,fill_opacity,q,
                   GetPixelAlpha(image,q),q);
