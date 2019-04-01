@@ -5048,8 +5048,8 @@ static Quantum *SetPixelCacheNexusPixels(
       return((Quantum *) NULL);
     }
   number_pixels=(MagickSizeType) width*height;
-  length=MagickMax(number_pixels,cache_info->columns)*
-    cache_info->number_channels*sizeof(*nexus_info->pixels);
+  length=MagickMax(number_pixels,MagickMax(cache_info->columns,
+    cache_info->rows))*cache_info->number_channels*sizeof(*nexus_info->pixels);
   if (cache_info->metacontent_extent != 0)
     length+=number_pixels*cache_info->metacontent_extent;
   status=MagickTrue;
