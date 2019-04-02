@@ -61,12 +61,17 @@ wandcli.c
 wand-view.c
 )
 
-ADD_LIBRARY(magickwand STATIC ${MAGICKWAND_BASE_SRCS})
+IF(MAGICK_BUILD_STATIC)
+  ADD_LIBRARY(magickwand STATIC ${MAGICKWAND_BASE_SRCS})
+ELSE()
+  ADD_LIBRARY(magickwand SHARED ${MAGICKWAND_BASE_SRCS})
+ENDIF()
+
 TARGET_INCLUDE_DIRECTORIES(magickwand PUBLIC ${IMAGEMAGICK_BASE_PATH})
 TARGET_INCLUDE_DIRECTORIES(magickwand PRIVATE  ${IMAGEMAGICK_DELEGATES_INCLUDE_DIRS})
-# Set the MAGICKCORE_QUANTUM_DEPTH to 16, this also avoids build being unsuccessful on MSVC by using of preprocessor #warning
 # Seems that this must always be set MAGICKCORE_HDRI_ENABLE now or it will give preprocessor compile error
-# Seems we need to define _LIB if we want to build statically
+# Set _MAGICKLIB_ since this is a library project
 # Set the MAGICKCORE_SHAREARCH_BASEDIRNAME to "config", not sure if I should add it to the <config.h>
 # Set LZMA_API_STATIC because we are using a static lzma library
-TARGET_COMPILE_DEFINITIONS(magickwand PRIVATE -DMAGICKCORE_QUANTUM_DEPTH=16 -DMAGICKCORE_HDRI_ENABLE -D_LIB -DMAGICKCORE_SHAREARCH_BASEDIRNAME=\"config\" -DLZMA_API_STATIC)
+TARGET_COMPILE_DEFINITIONS(magickwand PRIVATE -DMAGICKCORE_QUANTUM_DEPTH=${MAGICKCORE_QUANTUM_DEPTH} -D${MAGICK_BUILD_DEFINE} -DMAGICKCORE_HDRI_ENABLE -D_MAGICKLIB_ -DMAGICKCORE_SHAREARCH_BASEDIRNAME=\"config\" -DLZMA_API_STATIC)
+TARGET_LINK_LIBRARIES(magickwand PUBLIC magickcore)
