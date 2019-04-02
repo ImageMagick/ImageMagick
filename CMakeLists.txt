@@ -1491,7 +1491,15 @@ ENDIF()
 # Fetch some needed values from version.sh and fill the correspondent variables
 FILE(READ ${CMAKE_CURRENT_SOURCE_DIR}/version.sh CONTENT_VERSION_SH)
 
-#TODO build the PACKAGE_RELEASE_DATE from last changelog
+# Read the file ChangeLog to fetch the last date of changes
+FILE(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/ChangeLog CONTENT_CHANGELOG)
+# Get only the first line which should have a date
+LIST(GET CONTENT_CHANGELOG 0 CONTENT_CHANGELOG_FIRST_LINE)
+# Try to find the date in the format yyyy-mm-dd
+STRING(REGEX MATCH "([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])" FOUND_LAST_CHANGE_DATE ${CONTENT_CHANGELOG_FIRST_LINE})
+IF(FOUND_LAST_CHANGE_DATE)
+  SET(PACKAGE_RELEASE_DATE ${CMAKE_MATCH_1})
+ENDIF()
 
 # Try to find `PACKAGE_NAME'
 STRING(REGEX MATCH "\nPACKAGE_NAME=['|\"]([A-Za-z0-9]+)['|\"]\n" FOUND_PACKAGE_NAME ${CONTENT_VERSION_SH})
