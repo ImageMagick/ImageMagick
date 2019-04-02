@@ -187,7 +187,7 @@ MagickExport TimerInfo *DestroyTimerInfo(TimerInfo *timer_info)
 */
 static double ElapsedTime(void)
 {
-#if defined(HAVE_CLOCK_GETTIME)
+#if defined(MAGICKCORE_HAVE_CLOCK_GETTIME)
 #define NANOSECONDS_PER_SECOND  1000000000.0
 #if defined(CLOCK_HIGHRES)
 #  define CLOCK_ID CLOCK_HIGHRES
