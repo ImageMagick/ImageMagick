@@ -1459,6 +1459,18 @@ ELSE()
   SET(volatile "")
 ENDIF()
 
+# Give user the choice for MAGICKCORE_QUANTUM_DEPTH bits
+SET(MAGICKCORE_QUANTUM_DEPTH "16" CACHE STRING "Number of bits in a pixel Quantum")
+SET_PROPERTY(CACHE MAGICKCORE_QUANTUM_DEPTH PROPERTY STRINGS "8;16;32;64")
+
+# Give user the choice for MAGICK_STATIC_BUILD bits
+OPTION(MAGICK_BUILD_STATIC "Build Image Magick statically" OFF)
+IF(MAGICK_BUILD_STATIC)
+  SET(MAGICK_BUILD_DEFINE "_LIB")
+ELSE()
+  SET(MAGICK_BUILD_DEFINE "_DLL")
+ENDIF()
+
 # Fetch some needed values from version.sh and fill the correspondent variables
 FILE(READ ${CMAKE_CURRENT_SOURCE_DIR}/version.sh CONTENT_VERSION_SH)
 
@@ -1554,9 +1566,17 @@ FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/MagickCore/magick-baseconfig.h "${CONTENT
 # Set ImageMagick base dir to be used inside sub-projects
 SET(IMAGEMAGICK_BASE_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
-# Build delegates include directories
+# Set coders andd filters path
+SET(CODERS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/coders)
+SET(FILTERS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/filters)
+
+# Build delegates include directories and libraries to link
 # Let's fill a variable with the include dirs for the available delegates
 SET(IMAGEMAGICK_DELEGATES_INCLUDE_DIRS "")
+# Let's fill a variable with the libraries to link for the available delegates
+SET(IMAGEMAGICK_DELEGATES_LIBRARIES_LINK "")
+#TODO add remaining libraries for the below delegates
+#TODO add libraries and include dirs for other delegates
 IF(BZLIB_DELEGATE)
   list(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${BZIP2_INCLUDE_DIR})
 ENDIF()
@@ -1575,16 +1595,24 @@ ENDIF()
 IF(TIFF_DELEGATE)
   list(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${TIFF_INCLUDE_DIR})
 ENDIF()
+IF(X11_DELEGATE)
+  list(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${X11_DELEGATE})
+  list(APPEND IMAGEMAGICK_DELEGATES_LIBRARIES_LINK ${X11_LIBRARIES})
+ENDIF()
 IF(ZLIB_DELEGATE)
   list(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${ZLIB_INCLUDE_DIRS})
+ENDIF()
+
+#Although this is not a delegate we can add the pthread library dependency here
+IF(THREAD_SUPPORT)
+  list(APPEND IMAGEMAGICK_DELEGATES_LIBRARIES_LINK ${CMAKE_THREAD_LIBS_INIT})
 ENDIF()
 
 # Add the subdirectories to be compiled
 ADD_SUBDIRECTORY("MagickCore")
 ADD_SUBDIRECTORY("MagickWand")
-ADD_SUBDIRECTORY("coders")
-ADD_SUBDIRECTORY("filters")
 ADD_SUBDIRECTORY("Magick++")
+ADD_SUBDIRECTORY("utilities")
 
 
 
