@@ -45,10 +45,14 @@ lib/Thread.cpp
 lib/TypeMetric.cpp 
 )
 
-ADD_LIBRARY(magick++ STATIC ${MAGICKXX_BASE_SRCS})
-TARGET_INCLUDE_DIRECTORIES(magick++ PUBLIC ${IMAGEMAGICK_BASE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+IF(MAGICK_BUILD_STATIC)
+  ADD_LIBRARY(magick++ STATIC ${MAGICKXX_BASE_SRCS})
+ELSE()
+  ADD_LIBRARY(magick++ SHARED ${MAGICKXX_BASE_SRCS})
+ENDIF()
 
-# Set the MAGICKCORE_QUANTUM_DEPTH to 16, this also avoids build being unsuccessful on MSVC by using of preprocessor #warning
+TARGET_INCLUDE_DIRECTORIES(magick++ PUBLIC ${IMAGEMAGICK_BASE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 # Seems that this must always be set MAGICKCORE_HDRI_ENABLE now or it will give preprocessor compile error
-# Seems we need to define _LIB if we want to build statically
-TARGET_COMPILE_DEFINITIONS(magick++ PRIVATE -DMAGICKCORE_QUANTUM_DEPTH=16 -DMAGICKCORE_HDRI_ENABLE -D_LIB)
+# Set _MAGICKLIB_ since this is a library project
+TARGET_COMPILE_DEFINITIONS(magick++ PRIVATE -DMAGICKCORE_QUANTUM_DEPTH=${MAGICKCORE_QUANTUM_DEPTH} -D${MAGICK_BUILD_DEFINE} -DMAGICKCORE_HDRI_ENABLE -D_MAGICKLIB_)
+TARGET_LINK_LIBRARIES(magick++ PUBLIC magickwand)

@@ -1,6 +1,6 @@
 PROJECT(MagickCore C)
 
-IF(WINDOWS)
+IF(WIN32)
   SET(MAGICKCORE_PLATFORM_SRCS
   #headers
   nt-base.h
@@ -11,8 +11,6 @@ IF(WINDOWS)
   nt-feature.c
   )
 ENDIF()
-
-#TODO when X11 is available need to include other files for certain
 
 SET(MAGICKCORE_BASE_SRCS
 #headers
@@ -252,13 +250,329 @@ nt-feature.c
 nt-base.c
 )
 
-ADD_LIBRARY(magickcore STATIC ${MAGICKCORE_BASE_SRCS} ${MAGICKCORE_PLATFORM_SRCS})
+SET(MAGICKCORE_FILTERS_SRCS
+#sources
+${FILTERS_PATH}/analyze.c
+)
+
+SET(MAGICKCORE_CODERS_SRCS
+#headers
+${CODERS_PATH}/aai.h 
+${CODERS_PATH}/art.h 
+${CODERS_PATH}/avs.h 
+${CODERS_PATH}/bgr.h 
+${CODERS_PATH}/bmp.h 
+${CODERS_PATH}/braille.h 
+${CODERS_PATH}/cals.h 
+${CODERS_PATH}/caption.h 
+${CODERS_PATH}/cin.h 
+${CODERS_PATH}/cip.h 
+${CODERS_PATH}/clipboard.h 
+${CODERS_PATH}/clip.h 
+${CODERS_PATH}/cmyk.h 
+${CODERS_PATH}/coders.h 
+${CODERS_PATH}/coders-list.h 
+${CODERS_PATH}/coders-private.h 
+${CODERS_PATH}/cube.h 
+${CODERS_PATH}/cut.h 
+${CODERS_PATH}/dcm.h 
+${CODERS_PATH}/dds.h 
+${CODERS_PATH}/debug.h 
+${CODERS_PATH}/dib.h 
+${CODERS_PATH}/djvu.h 
+${CODERS_PATH}/dng.h 
+${CODERS_PATH}/dot.h 
+${CODERS_PATH}/dps.h 
+${CODERS_PATH}/dpx.h 
+${CODERS_PATH}/emf.h 
+${CODERS_PATH}/ept.h 
+${CODERS_PATH}/exr.h 
+${CODERS_PATH}/fax.h 
+${CODERS_PATH}/fits.h 
+${CODERS_PATH}/flif.h 
+${CODERS_PATH}/fpx.h 
+${CODERS_PATH}/gif.h 
+${CODERS_PATH}/gradient.h 
+${CODERS_PATH}/gray.h 
+${CODERS_PATH}/hald.h 
+${CODERS_PATH}/hdr.h 
+${CODERS_PATH}/heic.h 
+${CODERS_PATH}/histogram.h 
+${CODERS_PATH}/hrz.h 
+${CODERS_PATH}/html.h 
+${CODERS_PATH}/icon.h 
+${CODERS_PATH}/info.h 
+${CODERS_PATH}/inline.h 
+${CODERS_PATH}/ipl.h 
+${CODERS_PATH}/jbig.h 
+${CODERS_PATH}/jnx.h 
+${CODERS_PATH}/jp2.h 
+${CODERS_PATH}/jpeg.h 
+${CODERS_PATH}/json.h 
+${CODERS_PATH}/label.h 
+${CODERS_PATH}/mac.h 
+${CODERS_PATH}/magick.h 
+${CODERS_PATH}/map.h 
+${CODERS_PATH}/mask.h 
+${CODERS_PATH}/mat.h 
+${CODERS_PATH}/matte.h 
+${CODERS_PATH}/meta.h 
+${CODERS_PATH}/miff.h 
+${CODERS_PATH}/mono.h 
+${CODERS_PATH}/mpc.h 
+${CODERS_PATH}/mpeg.h 
+${CODERS_PATH}/mpr.h 
+${CODERS_PATH}/msl.h 
+${CODERS_PATH}/mtv.h 
+${CODERS_PATH}/mvg.h 
+${CODERS_PATH}/null.h 
+${CODERS_PATH}/otb.h 
+${CODERS_PATH}/palm.h 
+${CODERS_PATH}/pango.h 
+${CODERS_PATH}/pattern.h 
+${CODERS_PATH}/pcd.h 
+${CODERS_PATH}/pcl.h 
+${CODERS_PATH}/pcx.h 
+${CODERS_PATH}/pdb.h 
+${CODERS_PATH}/pdf.h 
+${CODERS_PATH}/pes.h 
+${CODERS_PATH}/pgx.h 
+${CODERS_PATH}/pict.h 
+${CODERS_PATH}/pix.h 
+${CODERS_PATH}/plasma.h 
+${CODERS_PATH}/png.h 
+${CODERS_PATH}/pnm.h 
+${CODERS_PATH}/ps2.h 
+${CODERS_PATH}/ps3.h 
+${CODERS_PATH}/psd.h 
+${CODERS_PATH}/psd-private.h 
+${CODERS_PATH}/ps.h 
+${CODERS_PATH}/pwp.h 
+${CODERS_PATH}/raw.h 
+${CODERS_PATH}/rgb.h 
+${CODERS_PATH}/rgf.h 
+${CODERS_PATH}/rla.h 
+${CODERS_PATH}/rle.h 
+${CODERS_PATH}/screenshot.h 
+${CODERS_PATH}/scr.h 
+${CODERS_PATH}/sct.h 
+${CODERS_PATH}/sfw.h 
+${CODERS_PATH}/sgi.h 
+${CODERS_PATH}/sixel.h 
+${CODERS_PATH}/stegano.h 
+${CODERS_PATH}/sun.h 
+${CODERS_PATH}/svg.h 
+${CODERS_PATH}/tga.h 
+${CODERS_PATH}/thumbnail.h 
+${CODERS_PATH}/tiff.h 
+${CODERS_PATH}/tile.h 
+${CODERS_PATH}/tim.h 
+${CODERS_PATH}/ttf.h 
+${CODERS_PATH}/txt.h 
+${CODERS_PATH}/uil.h 
+${CODERS_PATH}/url.h 
+${CODERS_PATH}/uyvy.h 
+${CODERS_PATH}/vicar.h 
+${CODERS_PATH}/vid.h 
+${CODERS_PATH}/viff.h 
+${CODERS_PATH}/vips.h 
+${CODERS_PATH}/wbmp.h 
+${CODERS_PATH}/webp.h 
+${CODERS_PATH}/wmf.h 
+${CODERS_PATH}/wpg.h 
+${CODERS_PATH}/xbm.h 
+${CODERS_PATH}/xcf.h 
+${CODERS_PATH}/xc.h 
+${CODERS_PATH}/x.h 
+${CODERS_PATH}/xpm.h 
+${CODERS_PATH}/xps.h 
+${CODERS_PATH}/xtrn.h 
+${CODERS_PATH}/xwd.h 
+${CODERS_PATH}/ycbcr.h 
+${CODERS_PATH}/yuv.h 
+
+#sources
+${CODERS_PATH}/aai.c 
+${CODERS_PATH}/art.c 
+${CODERS_PATH}/avs.c 
+${CODERS_PATH}/bgr.c 
+${CODERS_PATH}/bmp.c 
+${CODERS_PATH}/braille.c 
+${CODERS_PATH}/cals.c 
+${CODERS_PATH}/caption.c 
+${CODERS_PATH}/cin.c 
+${CODERS_PATH}/cip.c 
+${CODERS_PATH}/clip.c 
+${CODERS_PATH}/cmyk.c 
+${CODERS_PATH}/cube.c 
+${CODERS_PATH}/cut.c 
+${CODERS_PATH}/dcm.c 
+${CODERS_PATH}/dds.c 
+${CODERS_PATH}/debug.c 
+${CODERS_PATH}/dib.c 
+${CODERS_PATH}/dng.c 
+${CODERS_PATH}/dot.c 
+${CODERS_PATH}/dpx.c 
+${CODERS_PATH}/ept.c 
+${CODERS_PATH}/fax.c 
+${CODERS_PATH}/fits.c 
+${CODERS_PATH}/gif.c 
+${CODERS_PATH}/gradient.c 
+${CODERS_PATH}/gray.c 
+${CODERS_PATH}/hald.c 
+${CODERS_PATH}/hdr.c 
+${CODERS_PATH}/histogram.c 
+${CODERS_PATH}/hrz.c 
+${CODERS_PATH}/html.c 
+${CODERS_PATH}/icon.c 
+${CODERS_PATH}/info.c 
+${CODERS_PATH}/inline.c 
+${CODERS_PATH}/ipl.c 
+${CODERS_PATH}/jnx.c 
+${CODERS_PATH}/json.c 
+${CODERS_PATH}/label.c 
+${CODERS_PATH}/mac.c 
+${CODERS_PATH}/magick.c 
+${CODERS_PATH}/map.c 
+${CODERS_PATH}/mask.c 
+${CODERS_PATH}/mat.c 
+${CODERS_PATH}/matte.c 
+${CODERS_PATH}/meta.c 
+${CODERS_PATH}/miff.c 
+${CODERS_PATH}/mono.c 
+${CODERS_PATH}/mpc.c 
+${CODERS_PATH}/mpeg.c 
+${CODERS_PATH}/mpr.c 
+${CODERS_PATH}/msl.c 
+${CODERS_PATH}/mtv.c 
+${CODERS_PATH}/mvg.c 
+${CODERS_PATH}/null.c 
+${CODERS_PATH}/otb.c 
+${CODERS_PATH}/palm.c 
+${CODERS_PATH}/pango.c 
+${CODERS_PATH}/pattern.c 
+${CODERS_PATH}/pcd.c 
+${CODERS_PATH}/pcl.c 
+${CODERS_PATH}/pcx.c 
+${CODERS_PATH}/pdb.c 
+${CODERS_PATH}/pdf.c 
+${CODERS_PATH}/pes.c 
+${CODERS_PATH}/pgx.c 
+${CODERS_PATH}/pict.c 
+${CODERS_PATH}/pix.c 
+${CODERS_PATH}/plasma.c 
+${CODERS_PATH}/pnm.c 
+${CODERS_PATH}/ps.c 
+${CODERS_PATH}/ps2.c 
+${CODERS_PATH}/ps3.c 
+${CODERS_PATH}/psd.c 
+${CODERS_PATH}/psd-private.h 
+${CODERS_PATH}/pwp.c 
+${CODERS_PATH}/raw.c 
+${CODERS_PATH}/rgb.c 
+${CODERS_PATH}/rgf.c 
+${CODERS_PATH}/rla.c 
+${CODERS_PATH}/rle.c 
+${CODERS_PATH}/scr.c 
+${CODERS_PATH}/screenshot.c 
+${CODERS_PATH}/sct.c 
+${CODERS_PATH}/sfw.c 
+${CODERS_PATH}/sgi.c 
+${CODERS_PATH}/sixel.c 
+${CODERS_PATH}/stegano.c 
+${CODERS_PATH}/sun.c 
+${CODERS_PATH}/svg.c 
+${CODERS_PATH}/tga.c 
+${CODERS_PATH}/thumbnail.c 
+${CODERS_PATH}/tile.c 
+${CODERS_PATH}/tim.c 
+${CODERS_PATH}/ttf.c 
+${CODERS_PATH}/txt.c 
+${CODERS_PATH}/uil.c 
+${CODERS_PATH}/url.c 
+${CODERS_PATH}/uyvy.c 
+${CODERS_PATH}/vicar.c 
+${CODERS_PATH}/vid.c 
+${CODERS_PATH}/viff.c 
+${CODERS_PATH}/vips.c 
+${CODERS_PATH}/wbmp.c 
+${CODERS_PATH}/wpg.c 
+${CODERS_PATH}/xbm.c 
+${CODERS_PATH}/xc.c 
+${CODERS_PATH}/xcf.c 
+${CODERS_PATH}/xpm.c 
+${CODERS_PATH}/xps.c 
+${CODERS_PATH}/xtrn.c 
+${CODERS_PATH}/ycbcr.c 
+${CODERS_PATH}/yuv.c
+)
+
+# Let's fill a variable with the code for the available delegates
+SET(MAGICKCORE_CODERS_DELEGATES_SRCS "")
+IF(DPS_DELEGATE)
+  list(APPEND MAGICKCORE_CODERS_DELEGATES_SRCS ${CODERS_PATH}/dps.c)
+ENDIF()
+IF(DJVU_DELEGATE)
+  list(APPEND MAGICKCORE_CODERS_DELEGATES_SRCS ${CODERS_PATH}/djvu.c)
+ENDIF()
+IF(OPENEXR_DELEGATE)
+  list(APPEND MAGICKCORE_CODERS_DELEGATES_SRCS ${CODERS_PATH}/exr.c)
+ENDIF()
+IF(FLIF_DELEGATE)
+  list(APPEND MAGICKCORE_CODERS_DELEGATES_SRCS ${CODERS_PATH}/flif.c)
+ENDIF()
+IF(FPX_DELEGATE)
+  list(APPEND MAGICKCORE_CODERS_DELEGATES_SRCS ${CODERS_PATH}/fpx.c)
+ENDIF()
+IF(HEIC_DELEGATE)
+  list(APPEND MAGICKCORE_CODERS_DELEGATES_SRCS ${CODERS_PATH}/heic.c)
+ENDIF()
+IF(JBIG_DELEGATE)
+  list(APPEND MAGICKCORE_CODERS_DELEGATES_SRCS ${CODERS_PATH}/jbig.c)
+ENDIF()
+IF(JPEG_DELEGATE)
+  list(APPEND MAGICKCORE_CODERS_DELEGATES_SRCS ${CODERS_PATH}/jpeg.c)
+ENDIF()
+IF(LIBOPENJP2_DELEGATE)
+  list(APPEND MAGICKCORE_CODERS_DELEGATES_SRCS ${CODERS_PATH}/jp2.c)
+ENDIF()
+IF(PNG_DELEGATE)
+  list(APPEND MAGICKCORE_CODERS_DELEGATES_SRCS ${CODERS_PATH}/png.c)
+ENDIF()
+IF(TIFF_DELEGATE)
+  list(APPEND MAGICKCORE_CODERS_DELEGATES_SRCS ${CODERS_PATH}/tiff.c)
+ENDIF()
+IF(WEBP_DELEGATE)
+  list(APPEND MAGICKCORE_CODERS_DELEGATES_SRCS ${CODERS_PATH}/webp.c)
+ENDIF()
+IF(WINGDI32_DELEGATE)
+  list(APPEND MAGICKCORE_CODERS_DELEGATES_SRCS ${CODERS_PATH}/clipboard.c ${CODERS_PATH}/emf.c)
+  # Seems that emf.c uses namespaces so we need to compile as c++
+  SET_SOURCE_FILES_PROPERTIES(${CODERS_PATH}/emf.c PROPERTIES LANGUAGE CXX)
+ENDIF()
+IF(WMF_DELEGATE)
+  list(APPEND MAGICKCORE_CODERS_DELEGATES_SRCS ${CODERS_PATH}/wmf.c)
+ENDIF()
+IF(X11_DELEGATE)
+  list(APPEND MAGICKCORE_CODERS_DELEGATES_SRCS ${CODERS_PATH}/x.c ${CODERS_PATH}/xwd.c)
+ENDIF()
+
+IF(MAGICK_BUILD_STATIC)
+  ADD_LIBRARY(magickcore STATIC ${MAGICKCORE_BASE_SRCS} ${MAGICKCORE_PLATFORM_SRCS} ${MAGICKCORE_FILTERS_SRCS} ${MAGICKCORE_CODERS_SRCS} ${MAGICKCORE_CODERS_DELEGATES_SRCS})
+ELSE()
+  ADD_LIBRARY(magickcore SHARED ${MAGICKCORE_BASE_SRCS} ${MAGICKCORE_PLATFORM_SRCS} ${MAGICKCORE_FILTERS_SRCS} ${MAGICKCORE_CODERS_SRCS} ${MAGICKCORE_CODERS_DELEGATES_SRCS})
+ENDIF()
+
 TARGET_INCLUDE_DIRECTORIES(magickcore PUBLIC ${IMAGEMAGICK_BASE_PATH})
 TARGET_INCLUDE_DIRECTORIES(magickcore PRIVATE  ${IMAGEMAGICK_DELEGATES_INCLUDE_DIRS})
-# Set the MAGICKCORE_QUANTUM_DEPTH to 16, this also avoids build being unsuccessful on MSVC by using of preprocessor #warning
+TARGET_LINK_LIBRARIES(magickcore PUBLIC ${IMAGEMAGICK_DELEGATES_LIBRARIES_LINK})
+#TODO should we make a test to see if we need to link -lm ??
+IF(UNIX)
+  TARGET_LINK_LIBRARIES(magickcore PUBLIC -lm)
+ENDIF()
 # Seems that this must always be set MAGICKCORE_HDRI_ENABLE now or it will give preprocessor compile error
-# Seems we need to define _LIB if we want to build statically
+# Set _MAGICKLIB_ since this is a library project
 # Set the MAGICKCORE_SHAREARCH_BASEDIRNAME to "config", not sure if I should add it to the <config.h>
 # Set LZMA_API_STATIC because we are using a static lzma library
-TARGET_COMPILE_DEFINITIONS(magickcore PRIVATE -DMAGICKCORE_QUANTUM_DEPTH=16 -DMAGICKCORE_HDRI_ENABLE -D_LIB -DMAGICKCORE_SHAREARCH_BASEDIRNAME=\"config\" -DLZMA_API_STATIC)
+TARGET_COMPILE_DEFINITIONS(magickcore PRIVATE -DMAGICKCORE_QUANTUM_DEPTH=${MAGICKCORE_QUANTUM_DEPTH} -D${MAGICK_BUILD_DEFINE} -DMAGICKCORE_HDRI_ENABLE -D_MAGICKLIB_ -DMAGICKCORE_SHAREARCH_BASEDIRNAME=\"config\" -DLZMA_API_STATIC)
 
