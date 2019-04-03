@@ -5404,6 +5404,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
       }
       case 'm':
       {
+        if (LocaleCompare("magnify",option+1) == 0)
+          break;
         if (LocaleCompare("map",option+1) == 0)
           {
             global_colormap=(*option == '+') ? MagickTrue : MagickFalse;
