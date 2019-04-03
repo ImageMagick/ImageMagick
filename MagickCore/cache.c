@@ -275,6 +275,7 @@ MagickPrivate NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
   for (i=0; i < (ssize_t) (2*number_threads); i++)
   {
     nexus_info[i]=(*nexus_info+i);
+    nexus_info[i]->pixel_nexus=(*nexus_info+i);
     if (i < (ssize_t) number_threads)
       nexus_info[i]->pixel_nexus=(*nexus_info+number_threads+i);
     nexus_info[i]->signature=MagickCoreSignature;
