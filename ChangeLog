@@ -1,3 +1,10 @@
+2019-04-03  7.0.8-37 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-37, GIT revision 15470:477216fd7:20190403
+
+2019-04-03  7.0.8-37 Cristy  <quetzlzacatenango@image...>
+  * Fixed -virtual-pixel option (reference
+    https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=35789).
+
 2019-03-31  7.0.8-36 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-36, GIT revision 15464:3a928224d:20190331
 
