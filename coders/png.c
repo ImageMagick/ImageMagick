@@ -3790,7 +3790,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     {
       png_destroy_read_struct(&ping,&ping_info,&end_info);
       pixel_info=RelinquishVirtualMemory(pixel_info);
-      image->colors=2;
+      if (AcquireImageColormap(image,2,exception) == MagickFalse)
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       (void) SetImageBackgroundColor(image,exception);
 #ifdef IMPNG_SETJMP_NOT_THREAD_SAFE
       UnlockSemaphoreInfo(ping_semaphore);
