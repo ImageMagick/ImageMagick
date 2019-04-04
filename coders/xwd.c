@@ -237,7 +237,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"FileFormatVersionMismatch");
   if (header.header_size < sz_XWDheader)
     ThrowReaderException(CorruptImageError,"CorruptImage");
-  switch (header.visual_class) {
+  switch (header.visual_class)
+  {
     case StaticGray:
     case GrayScale:
     case StaticColor:
@@ -247,8 +248,9 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     default:
       ThrowReaderException(CorruptImageError,"CorruptImage");
-    }
-  switch (header.pixmap_format) {
+  }
+  switch (header.pixmap_format)
+  {
     case XYBitmap:
     case XYPixmap:
     case ZPixmap:
