@@ -98,7 +98,7 @@ if(APPLE)
 	SET(AC_APPLE_UNIVERSAL_BUILD TRUE)
 endif()
 
-# Compile without AUTOTRACE dependency
+# TODO Compile without AUTOTRACE dependency
 SET(AUTOTRACE_DELEGATE FALSE)
 
 # Don't compile coders and filters as modules
@@ -108,7 +108,7 @@ SET(BUILD_MODULES FALSE)
 FIND_PACKAGE(BZip2)
 SET(BZLIB_DELEGATE ${BZIP2_FOUND})
 
-# Compile without CAIRO dependency
+# TODO Compile without CAIRO dependency
 SET(CAIRO_DELEGATE FALSE)
 
 # Permit enciphering and deciphering image pixels
@@ -135,44 +135,44 @@ SET(CONFIGURE_PATH "")
 # TODO should this be the path used????
 SET(CONFIGURE_RELATIVE_PATH "\"ImageMagick-7\"")
 
-# Compile without DJVU dependency
+# TODO Compile without DJVU dependency
 SET(DJVU_DELEGATE FALSE)
 
 # I think this is used if we wanted to install, since we only want a static library
 SET(DOCUMENTATION_PATH "")
 
-# Compile without Display Postscript dependency
+# TODO Compile without Display Postscript dependency
 SET(DPS_DELEGATE FALSE)
 
-# We will start a new project so it's better to not include deprecated methods
-SET(EXCLUDE_DEPRECATED TRUE)
+# Give user the option to compile with deprecated methods
+OPTION(EXCLUDE_DEPRECATED "Exclude deprecated methods" ON)
 
-# I think this is used if we wanted to install, since we only want a static library
+# TODO I think this is used if we wanted to install, since we only want a static library
 SET(EXECUTABLE_PATH "")
 
-# Compile without FFTW dependency
+# TODO Compile without FFTW dependency
 SET(FFTW_DELEGATE FALSE)
 
-# Not really sure what's this for
+# TODO Not really sure what's this for
 SET(FILTER_DIRNAME "")
 
-# Compile without FLIF dependency
+# TODO Compile without FLIF dependency
 SET(FLIF_DELEGATE FALSE)
 
-# Compile without FONTCONFIG dependency
+# TODO Compile without FONTCONFIG dependency
 SET(FONTCONFIG_DELEGATE FALSE)
 
-# Compile without FlashPIX dependency
+# TODO Compile without FlashPIX dependency
 SET(FPX_DELEGATE FALSE)
 
 # Check for FreeType 
 FIND_PACKAGE(Freetype)
 SET(FREETYPE_DELEGATE ${FREETYPE_FOUND})
 
-# Compile without Ghostscript dependency
+# TODO Compile without Ghostscript dependency
 SET(GS_DELEGATE FALSE)
 
-# Compile without GVC dependency
+# TODO Compile without GVC dependency
 SET(GVC_DELEGATE FALSE)
 
 # Check if `acosh' exists
@@ -928,17 +928,17 @@ SET(INCLUDE_PATH "")
 # Not really sure what's this for
 SET(INSTALLED_SUPPORT "")
 
-# Compile without JBIG dependency
+# TODO Compile without JBIG dependency
 SET(JBIG_DELEGATE FALSE)
 
 # Check for JPEG 
 FIND_PACKAGE(JPEG)
 SET(JPEG_DELEGATE ${JPEG_FOUND})
 
-# Compile without LCMS dependency
+# TODO Compile without LCMS dependency
 SET(LCMS_DELEGATE FALSE)
 
-# Compile without OPENJP2 dependency
+# TODO Compile without OPENJP2 dependency
 SET(LIBOPENJP2_DELEGATE FALSE)
 
 # TODO should this be the path used????
@@ -947,19 +947,19 @@ SET(LIBRARY_PATH "\"ImageMagick-7\"")
 # TODO should this be the path used????
 SET(LIBRARY_RELATIVE_PATH "\"ImageMagick-7\"")
 
-# I think this is used if we wanted to install, since we only want a static library
+# TODO I think this is used if we wanted to install, since we only want a static library
 SET(LIB_BIN_BASEDIRNAME "")
 
-# Compile without LQR dependency
+# TODO Compile without LQR dependency
 SET(LQR FALSE)
 
-# Compile without libltdl dependency
+# TODO Compile without libltdl dependency
 SET(LTDL_DELEGATE FALSE)
 
-# We are not compiling against LTDL
+# TODO We are not compiling against LTDL
 SET(LTDL_MODULE_EXT "")
 
-# I think this is used if we wanted to install, since we only want a static library
+# TODO I think this is used if we wanted to install, since we only want a static library
 SET(LT_OBJDIR "")
 
 # Check for LibLZMA 
@@ -987,10 +987,10 @@ SET(MAGICK_TARGET_OS "")
 #TODO what should go on the vendor???
 SET(MAGICK_TARGET_VENDOR "")
 
-# I think this is used if we wanted to install, since we only want a static library
+# TODO I think this is used if we wanted to install, since we only want a static library
 SET(MODULES_BASEDIRNAME "")
 
-# I think this is used if we wanted to install, since we only want a static library
+# TODO I think this is used if we wanted to install, since we only want a static library
 SET(MODULES_DIRNAME "")
 
 # TODO if a namespace should be better define it here
@@ -1002,38 +1002,39 @@ SET(NAMESPACE_PREFIX_TAG "")
 # TODO Not sure why this isn't an ifdef inside the code, so it would check if it was on Debug or Release
 SET(NDEBUG 1)
 
-# Compile without OPENEXR dependency
+# TODO Compile without OPENEXR dependency
 SET(OPENEXR_DELEGATE FALSE)
 
-# I think this is used if we wanted to install, since we only want a static library
+# TODO I think this is used if we wanted to install, since we only want a static library
 SET(PACKAGE "")
 
-# I think this is used if we wanted to install, since we only want a static library
+# TODO I think this is used if we wanted to install, since we only want a static library
 SET(PACKAGE_BUGREPORT "")
 
-# Will be correctly filled near the end of file
+# TODO Will be correctly filled near the end of file
 SET(PACKAGE_NAME "")
 
-# I think this is used if we wanted to install, since we only want a static library
+# TODO I think this is used if we wanted to install, since we only want a static library
 SET(PACKAGE_STRING "")
 
-# I think this is used if we wanted to install, since we only want a static library
+# TODO I think this is used if we wanted to install, since we only want a static library
 SET(PACKAGE_TARNAME "")
 
-# I think this is used if we wanted to install, since we only want a static library
+# TODO I think this is used if we wanted to install, since we only want a static library
 SET(PACKAGE_URL "")
 
-# I think this is used if we wanted to install, since we only want a static library
+# TODO I think this is used if we wanted to install, since we only want a static library
 SET(PACKAGE_VERSION "")
 
-# Compile without PANGOCAIRO dependency
+# TODO Compile without PANGOCAIRO dependency
 SET(PANGOCAIRO_DELEGATE FALSE)
 
-# Compile without PANGO dependency
+# TODO Compile without PANGO dependency
 SET(PANGO_DELEGATE FALSE)
 
 # Set if pipe (|) is enabled on filenames 
 # TODO Add linux and mac os X
+# TODO maybe this would be better with a test somehow
 IF(WIN32)
   SET(PIPES_SUPPORT FALSE)
 ENDIF()
@@ -1045,16 +1046,16 @@ SET(PNG_DELEGATE ${PNG_FOUND})
 # TODO Not sure what to do here
 SET(PTHREAD_CREATE_JOINABLE "")
 
-# We will not limit the cache
+# TODO Maybe this should be an option
 SET(PixelCacheThreshold "")
 
-# TODO Not sure what to do here
+# TODO Not sure what value to give here
 SET(QUANTUM_DEPTH_OBSOLETE_IN_H 16)
 
-# Compile without RAQM dependency
+# TODO Compile without RAQM dependency
 SET(RAQM_DELEGATE FALSE)
 
-# Compile without LIBRAW dependency
+# TODO Compile without LIBRAW dependency
 SET(RAW_R_DELEGATE FALSE)
 
 # Check return type of signal handlers
@@ -1078,7 +1079,7 @@ ELSE(SIGNAL_RETURN_TYPE_IS_VOID)
   SET(RETSIGTYPE int)
 ENDIF(SIGNAL_RETURN_TYPE_IS_VOID)
 
-# Compile without RSVG dependency
+# TODO Compile without RSVG dependency
 SET(RSVG_DELEGATE FALSE)
 
 #TODO These seems to be obsolet but should we check them ????
@@ -1086,13 +1087,13 @@ SET(SELECT_TYPE_ARG1 "")
 SET(SELECT_TYPE_ARG234 "")
 SET(SELECT_TYPE_ARG5 "")
 
-# I think this is used if we wanted to install, since we only want a static library
+# TODO I think this is used if we wanted to install, since we only want a static library
 SET(SHAREARCH_BASEDIRNAME "")
 
-# I think this is used if we wanted to install, since we only want a static library
+# TODO I think this is used if we wanted to install, since we only want a static library
 SET(SHAREARCH_DIRNAME "")
 
-# I think this is used if we wanted to install, since we only want a static library
+# TODO I think this is used if we wanted to install, since we only want a static library
 SET(SHARE_PATH "")
 
 # TODO should this be the path used????
@@ -1226,10 +1227,10 @@ SET(_TANDEM_SOURCE FALSE)
 # TODO Define the version
 SET(VERSION "")
 
-# Compile without WEBPMUX dependency
+# TODO Compile without WEBPMUX dependency
 SET(WEBPMUX_DELEGATE FALSE)
 
-# Compile without WEBP dependency
+# TODO Compile without WEBP dependency
 SET(WEBP_DELEGATE FALSE)
 
 # TODO Should we check if gdi32 exists if windows ????
@@ -1239,7 +1240,7 @@ ENDIF()
 
 OPTION(WITH_DMALLOC "Use dmalloc for memory profiling" OFF)
 
-# Compile without WMF dependency
+# TODO Compile without WMF dependency
 SET(WMF_DELEGATE FALSE)
 
 # Check if system is Big Endian
@@ -1252,23 +1253,23 @@ SET(X11_CONFIGURE_PATH "")
 # FIND_PACKAGE(X11) was already called above
 SET(X11_DELEGATE ${X11_FOUND})
 
-# Compile without XML dependency
+# TODO Compile without XML dependency, which XML lib is?
 SET(XML_DELEGATE FALSE)
 
-# Our product does not use GUI
+# TODO should this be an option ??
 SET(X_DISPLAY_MISSING 1)
 
-#TODO Should we try this ????
+# TODO Should we try this ???? also option??
 SET(ZERO_CONFIGURATION_SUPPORT TRUE)
 
 # Check for ZLIB
 FIND_PACKAGE(ZLIB)
 SET(ZLIB_DELEGATE ${ZLIB_FOUND})
 
-# Compile without ZSTD dependency
+# TODO Compile without ZSTD dependency
 SET(ZSTD_DELEGATE FALSE)
 
-#TODO does this suffice?
+# TODO does this suffice?
 IF(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR MINGW)
   SET(_FILE_OFFSET_BITS 64)
   SET(_LARGEFILE_SOURCE 1)
@@ -1520,6 +1521,12 @@ IF(FOUND_PACKAGE_VERSION)
   SET(MAGICKPP_LIB_VERSION_TEXT ${CMAKE_MATCH_1})
 ENDIF()
 
+# Try parse just the major version number from MAGICK_LIB_VERSION_TEXT
+STRING(REGEX MATCH "([0-9])\\..*" FOUND_VERSION_MAJOR ${MAGICK_LIB_VERSION_TEXT})
+IF(FOUND_VERSION_MAJOR)
+  SET(MAGICK_VERSION_MAJOR ${CMAKE_MATCH_1})
+ENDIF()
+
 # Try to find `MAGICK_LIBRARY_CURRENT', `MAGICK_LIBRARY_REVISION' and `MAGICK_LIBRARY_AGE'
 STRING(REGEX MATCH "\nMAGICK_LIBRARY_CURRENT=([0-9]+)\nMAGICK_LIBRARY_REVISION=([0-9]+)\nMAGICK_LIBRARY_AGE=([0-9]+)\n" FOUND_MAGICK_LIB_VERSION_NUMBER ${CONTENT_VERSION_SH})
 IF(FOUND_MAGICK_LIB_VERSION_NUMBER)
@@ -1545,22 +1552,22 @@ ENDIF()
 # Set the version.h file path to be autogenerated
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/MagickCore/version.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/MagickCore/version.h)
 
+IF(${MAGICKCORE_QUANTUM_DEPTH} EQUAL 8)
+  SET(MagickQuantumDepth "Q8")
+ELSEIF(${MAGICKCORE_QUANTUM_DEPTH} EQUAL 16)
+  SET(MagickQuantumDepth "Q16")
+ELSEIF(${MAGICKCORE_QUANTUM_DEPTH} EQUAL 32)
+  SET(MagickQuantumDepth "Q32")
+ELSEIF(${MAGICKCORE_QUANTUM_DEPTH} EQUAL 64)
+  SET(MagickQuantumDepth "Q64")
+ELSE()
+  SET(MagickQuantumDepth "Q?")
+ENDIF()
+
 # rc files are only used on Windows binaries
 IF(WIN32)
   SET(MagickLibVersionNumber ${MAGICK_LIB_VERSION_NUMBER})
   SET(MagickLibVersionText \"${MAGICK_LIB_VERSION_TEXT}\")
-  
-  IF(${MAGICKCORE_QUANTUM_DEPTH} EQUAL 8)
-    SET(MagickQuantumDepth "Q8")
-  ELSEIF(${MAGICKCORE_QUANTUM_DEPTH} EQUAL 16)
-    SET(MagickQuantumDepth "Q16")
-  ELSEIF(${MAGICKCORE_QUANTUM_DEPTH} EQUAL 32)
-    SET(MagickQuantumDepth "Q32")
-  ELSEIF(${MAGICKCORE_QUANTUM_DEPTH} EQUAL 64)
-    SET(MagickQuantumDepth "Q64")
-  ELSE()
-    SET(MagickQuantumDepth "Q?")
-  ENDIF()
   
   IF(${CMAKE_SIZEOF_VOID_P} EQUAL 4)
     SET(MagickPlatform "x86")
@@ -1651,38 +1658,57 @@ SET(FILTERS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/filters)
 SET(IMAGEMAGICK_DELEGATES_INCLUDE_DIRS "")
 # Let's fill a variable with the libraries to link for the available delegates
 SET(IMAGEMAGICK_DELEGATES_LIBRARIES_LINK "")
-#TODO add remaining libraries for the below delegates
+# Let's fill a variable with the libraries compiler definitions for the available delegates
+SET(IMAGEMAGICK_DELEGATES_COMPILER_DEFINITIONS "")
 #TODO add libraries and include dirs for other delegates
 IF(BZLIB_DELEGATE)
-  list(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${BZIP2_INCLUDE_DIR})
+  LIST(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${BZIP2_INCLUDE_DIR})
+  LIST(APPEND IMAGEMAGICK_DELEGATES_LIBRARIES_LINK ${BZIP2_LIBRARIES})
 ENDIF()
 IF(FREETYPE_DELEGATE)
-  list(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${FREETYPE_INCLUDE_DIRS})
+  LIST(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${FREETYPE_INCLUDE_DIRS})
+  LIST(APPEND IMAGEMAGICK_DELEGATES_LIBRARIES_LINK ${FREETYPE_LIBRARIES})
 ENDIF()
 IF(JPEG_DELEGATE)
-  list(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${JPEG_INCLUDE_DIR})
+  LIST(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${JPEG_INCLUDE_DIR})
+  LIST(APPEND IMAGEMAGICK_DELEGATES_LIBRARIES_LINK ${JPEG_LIBRARIES})
 ENDIF()
 IF(LZMA_DELEGATE)
-  list(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${LIBLZMA_INCLUDE_DIRS})
+  LIST(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${LIBLZMA_INCLUDE_DIRS})
+  LIST(APPEND IMAGEMAGICK_DELEGATES_LIBRARIES_LINK ${LIBLZMA_LIBRARIES})
 ENDIF()
 IF(PNG_DELEGATE)
-  list(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${PNG_INCLUDE_DIRS})
+  LIST(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${PNG_INCLUDE_DIRS})
+  LIST(APPEND IMAGEMAGICK_DELEGATES_LIBRARIES_LINK ${PNG_LIBRARIES})
+  LIST(APPEND IMAGEMAGICK_DELEGATES_COMPILER_DEFINITIONS ${PNG_DEFINITIONS})
 ENDIF()
 IF(TIFF_DELEGATE)
-  list(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${TIFF_INCLUDE_DIR})
+  LIST(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${TIFF_INCLUDE_DIRS})
+  LIST(APPEND IMAGEMAGICK_DELEGATES_LIBRARIES_LINK ${TIFF_LIBRARIES})
 ENDIF()
 IF(X11_DELEGATE)
-  list(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${X11_DELEGATE})
-  list(APPEND IMAGEMAGICK_DELEGATES_LIBRARIES_LINK ${X11_LIBRARIES})
+  LIST(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${X11_DELEGATE})
+  LIST(APPEND IMAGEMAGICK_DELEGATES_LIBRARIES_LINK ${X11_LIBRARIES})
 ENDIF()
 IF(ZLIB_DELEGATE)
-  list(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${ZLIB_INCLUDE_DIRS})
+  LIST(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${ZLIB_INCLUDE_DIRS})
+  LIST(APPEND IMAGEMAGICK_DELEGATES_LIBRARIES_LINK ${ZLIB_LIBRARIES})
+  OPTION(LZMA_API_STATIC "Use lib LZMA as static?" OFF)
+  IF(LZMA_API_STATIC)
+    LIST(APPEND IMAGEMAGICK_DELEGATES_COMPILER_DEFINITIONS "-DLZMA_API_STATIC")
+  ENDIF()
 ENDIF()
 
 #Although this is not a delegate we can add the pthread library dependency here
 IF(THREAD_SUPPORT)
   list(APPEND IMAGEMAGICK_DELEGATES_LIBRARIES_LINK ${CMAKE_THREAD_LIBS_INIT})
 ENDIF()
+
+# Set the binaries name
+SET(MAGICKCORE_BINARY_NAME "MagickCore-${MAGICK_VERSION_MAJOR}.${MagickQuantumDepth}")
+SET(MAGICKWAND_BINARY_NAME "MagickWand-${MAGICK_VERSION_MAJOR}.${MagickQuantumDepth}")
+SET(MAGICKXX_BINARY_NAME "Magick++-${MAGICK_VERSION_MAJOR}.${MagickQuantumDepth}")
+SET(MAGICK_BINARY_NAME "Magick-${MAGICK_VERSION_MAJOR}.${MagickQuantumDepth}")
 
 # Add the subdirectories to be compiled
 ADD_SUBDIRECTORY("MagickCore")
