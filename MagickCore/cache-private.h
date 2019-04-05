@@ -126,7 +126,7 @@ typedef struct _NexusInfo
     signature;
 
   struct _NexusInfo
-    *pixel_nexus;
+    *virtual_nexus;
 } NexusInfo;
 
 typedef struct _CacheInfo
