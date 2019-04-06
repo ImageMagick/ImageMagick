@@ -197,7 +197,7 @@ static MagickBooleanType InvokePDFDelegate(const MagickBooleanType verbose,
     *ghost_info;
 
   gs_main_instance
-    *interpreter;
+    *interpreter = NULL;
 
   gsapi_revision_t
     revision;
