@@ -232,6 +232,7 @@ static MagickBooleanType InvokePostscriptDelegate(
       SetArgsStart(command,args_start);
       (void) fputs(args_start,stdout);
     }
+  interpreter=(gs_main_instance *) NULL;
   errors=(char *) NULL;
   status=(ghost_info->new_instance)(&interpreter,(void *) &errors);
   if (status < 0)
