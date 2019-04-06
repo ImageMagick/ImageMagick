@@ -2682,21 +2682,13 @@ static inline MagickModulo VirtualPixelModulo(const ssize_t offset,
   MagickModulo
     modulo;
 
-  /*
-    Compute the remainder of dividing offset by extent.  It returns not only
-    the quotient (tile the offset falls in) but also the positive remainer
-    within that tile such that 0 <= remainder < extent.  This method is
-    essentially a ldiv() using a floored modulo division rather than the
-    normal default truncated modulo division.
-  */
-  modulo.quotient=offset/(ssize_t) extent;
-  if ((offset < 0L) && (modulo.quotient > (ssize_t) (-SSIZE_MAX)))
-    modulo.quotient--;
-  modulo.remainder=(ssize_t) (offset-(double) modulo.quotient*extent);
-  if ((offset < 0L) && (modulo.quotient > (ssize_t) (-SSIZE_MAX)))
-    modulo.quotient--;
-  if (modulo.remainder == (ssize_t) extent)
-    modulo.remainder--;
+  modulo.quotient=offset/((ssize_t) extent);
+  modulo.remainder=offset % ((ssize_t) extent);
+  if ((modulo.remainder != 0) && ((offset ^ ((ssize_t) extent)) < 0))
+    {
+      modulo.quotient-=1;
+      modulo.remainder+=((ssize_t) extent);
+    }
   return(modulo);
 }
 
