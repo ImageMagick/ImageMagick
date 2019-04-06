@@ -1,3 +1,13 @@
+2019-04-07  7.0.8-39 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-39, GIT revision 15489:6120f8bc1:20190406
+
+2019-04-06  7.0.8-39 Cristy  <quetzlzacatenango@image...>
+  * The -layers option compared pixels inocorrectly as opacity rather than
+    alpha.
+  * The -preview raise option now returns expected results.
+  * Initialise ghostscript instances with NULL (reference
+    https://github.com/ImageMagick/ImageMagick/pull/1538).
+
 2019-04-06  7.0.8-38 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-38, GIT revision 15483:23edcef04:20190406
 
