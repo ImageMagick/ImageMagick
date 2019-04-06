@@ -2592,17 +2592,20 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       }
       case RaisePreview:
       {
+        RectangleInfo
+          raise;
+
         preview_image=CloneImage(thumbnail,0,0,MagickTrue,exception);
         if (preview_image == (Image *) NULL)
           break;
-        geometry.width=(size_t) (2*i+2);
-        geometry.height=(size_t) (2*i+2);
-        geometry.x=(i-1)/2;
-        geometry.y=(i-1)/2;
-        (void) RaiseImage(preview_image,&geometry,MagickTrue,exception);
+        raise.width=(size_t) (2*i+2);
+        raise.height=(size_t) (2*i+2);
+        raise.x=(i-1)/2;
+        raise.y=(i-1)/2;
+        (void) RaiseImage(preview_image,&raise,MagickTrue,exception);
         (void) FormatLocaleString(label,MagickPathExtent,
-          "raise %.20gx%.20g%+.20g%+.20g",(double) geometry.width,(double)
-          geometry.height,(double) geometry.x,(double) geometry.y);
+          "raise %.20gx%.20g%+.20g%+.20g",(double) raise.width,(double)
+          raise.height,(double) raise.x,(double) raise.y);
         break;
       }
       case SegmentPreview:
