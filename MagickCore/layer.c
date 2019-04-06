@@ -538,14 +538,14 @@ static MagickBooleanType ComparePixels(const LayerMethod method,
     Pixel goes from opaque to transprency.
   */
   if (method == CompareClearLayer)
-    return((MagickBooleanType) ( (o1 <= ((double) QuantumRange/2.0)) &&
-      (o2 > ((double) QuantumRange/2.0)) ) );
+    return((MagickBooleanType) ( (o1 >= ((double) QuantumRange/2.0)) &&
+      (o2 < ((double) QuantumRange/2.0)) ) );
   /*
     Overlay would change first pixel by second.
   */
   if (method == CompareOverlayLayer)
     {
-      if (o2 > ((double) QuantumRange/2.0))
+      if (o2 < ((double) QuantumRange/2.0))
         return MagickFalse;
       return((MagickBooleanType) (IsFuzzyEquivalencePixelInfo(p,q) == MagickFalse));
     }
