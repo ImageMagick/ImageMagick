@@ -1224,8 +1224,8 @@ static int NTLocateGhostscript(DWORD flags,int *root_index,
   return(status);
 }
 
-static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,
-  char *value,const size_t length)
+static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
+  const size_t length)
 {
   char
     buffer[MagickPathExtent],
@@ -1235,16 +1235,16 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,
     extent;
 
   static const char
-    *product_family=(const char *) NULL;
+    *product_family = (const char *) NULL;
 
   static BOOL
-    is_64_bit_version=FALSE;
+    is_64_bit_version = FALSE;
 
   static int
-    flags=0,
-    major_version=0,
-    minor_version=0,
-    root_index=0;
+    flags = 0,
+    major_version = 0,
+    minor_version = 0,
+    root_index = 0;
 
   /*
     Get a string from the installed Ghostscript.
@@ -1315,8 +1315,7 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,
   (void) FormatLocaleString(buffer,MagickPathExtent,"SOFTWARE\\%s\\%d.%02d",
     product_family,major_version,minor_version);
   extent=(int) length;
-  if (NTGetRegistryValue(registry_roots[root_index].hkey,buffer,flags,name,
-    value,&extent) == 0)
+  if (NTGetRegistryValue(registry_roots[root_index].hkey,buffer,flags,name,value,&extent) == 0)
     {
       (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
         "registry: \"%s\\%s\\%s\"=\"%s\"",registry_roots[root_index].name,
@@ -1338,7 +1337,6 @@ MagickPrivate int NTGhostscriptDLL(char *path,int length)
   if ((*dll == '\0') &&
       (NTGhostscriptGetString("GS_DLL",&is_64_bit_version,dll,sizeof(dll)) == FALSE))
     return(FALSE);
-
 #if defined(_WIN64)
   if (!is_64_bit_version)
     return(FALSE);
@@ -1460,7 +1458,7 @@ MagickPrivate int NTGhostscriptEXE(char *path,int length)
 %
 %  The format of the NTGhostscriptFonts method is:
 %
-%      int NTGhostscriptFonts(char *path, int length)
+%      int NTGhostscriptFonts(char *path,int length)
 %
 %  A description of each parameter follows:
 %

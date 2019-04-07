@@ -40,6 +40,7 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
+#include "MagickCore/attribute.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache.h"
@@ -236,7 +237,15 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (header.file_version != XWD_FILE_VERSION)
     ThrowReaderException(CorruptImageError,"FileFormatVersionMismatch");
   if (header.header_size < sz_XWDheader)
-    ThrowReaderException(CorruptImageError,"CorruptImage");
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  if ((header.bits_per_pixel == 0) || (header.bits_per_pixel > 32))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  if (((header.bitmap_pad % 8) != 0) || (header.bitmap_pad > 32))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  if (header.bitmap_unit > 32)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  if (header.ncolors > 256)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   switch (header.visual_class)
   {
     case StaticGray:
@@ -247,7 +256,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     case DirectColor:
       break;
     default:
-      ThrowReaderException(CorruptImageError,"CorruptImage");
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   }
   switch (header.pixmap_format)
   {
@@ -256,9 +265,9 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     case ZPixmap:
       break;
     default:
-      ThrowReaderException(CorruptImageError,"CorruptImage");
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   }
-  length=(size_t) header.header_size-sz_XWDheader;
+  length=(size_t) (header.header_size-sz_XWDheader);
   comment=(char *) AcquireQuantumMemory(length+1,sizeof(*comment));
   if (comment == (char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -479,16 +488,16 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               pixel=XGetPixel(ximage,(int) x,(int) y);
-              index=ConstrainColormapIndex(image,(pixel >> red_shift) &
-                red_mask,exception);
+              index=(Quantum) ConstrainColormapIndex(image,(ssize_t) (pixel >>
+                red_shift) & red_mask,exception);
               SetPixelRed(image,ScaleShortToQuantum(
                 colors[(ssize_t) index].red),q);
-              index=ConstrainColormapIndex(image,(pixel >> green_shift) &
-                green_mask,exception);
+              index=(Quantum) ConstrainColormapIndex(image,(ssize_t) (pixel >>
+                green_shift) & green_mask,exception);
               SetPixelGreen(image,ScaleShortToQuantum(
                 colors[(ssize_t) index].green),q);
-              index=ConstrainColormapIndex(image,(pixel >> blue_shift) &
-                blue_mask,exception);
+              index=(Quantum) ConstrainColormapIndex(image,(ssize_t) (pixel >>
+                blue_shift) & blue_mask,exception);
               SetPixelBlue(image,ScaleShortToQuantum(
                 colors[(ssize_t) index].blue),q);
               q+=GetPixelChannels(image);
@@ -562,8 +571,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            index=ConstrainColormapIndex(image,XGetPixel(ximage,(int) x,
-              (int) y),exception);
+            index=(Quantum) ConstrainColormapIndex(image,(ssize_t)
+              XGetPixel(ximage,(int) x,(int) y),exception);
             SetPixelIndex(image,index,q);
             SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
             q+=GetPixelChannels(image);
@@ -710,6 +719,7 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image,
     scanline_pad;
 
   ssize_t
+    count,
     y;
 
   unsigned char
@@ -735,6 +745,11 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
+  if ((image->columns != (CARD32) image->columns) ||
+      (image->rows != (CARD32) image->rows))
+    ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
+  if ((image->storage_class == PseudoClass) && (image->colors > 256))
+    (void) SetImageType(image,TrueColorType,exception);
   (void) TransformImageColorspace(image,sRGBColorspace,exception);
   /*
     Initialize XWD file header.
@@ -822,8 +837,8 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image,
           {
             MSBOrderLong((unsigned char *) &colors[i].pixel,
               sizeof(colors[i].pixel));
-            MSBOrderShort((unsigned char *) &colors[i].red,
-              3*sizeof(colors[i].red));
+            MSBOrderShort((unsigned char *) &colors[i].red,3*
+              sizeof(colors[i].red));
           }
       }
       for (i=0; i < (ssize_t) image->colors; i++)
@@ -833,7 +848,9 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image,
         color.green=colors[i].green;
         color.blue=colors[i].blue;
         color.flags=(CARD8) colors[i].flags;
-        (void) WriteBlob(image,sz_XWDColor,(unsigned char *) &color);
+        count=WriteBlob(image,sz_XWDColor,(unsigned char *) &color);
+        if (count != (ssize_t) sz_XWDColor)
+          break;
       }
       colors=(XColor *) RelinquishMagickMemory(colors);
     }
@@ -875,7 +892,10 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image,
       }
     for (x=0; x < (ssize_t) scanline_pad; x++)
       *q++='\0';
-    (void) WriteBlob(image,(size_t) (q-pixels),pixels);
+    length=(size_t) (q-pixels);
+    count=WriteBlob(image,length,pixels);
+    if (count != (ssize_t) length)
+      break;
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);
     if (status == MagickFalse)
@@ -883,6 +903,6 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image,
   }
   pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   (void) CloseBlob(image);
-  return(MagickTrue);
+  return(y < (ssize_t) image->rows ? MagickFalse :  MagickTrue);
 }
 #endif
