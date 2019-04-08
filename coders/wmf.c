@@ -2733,7 +2733,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
 
   /* Obtain (or guess) metafile units */
-  if ((API)->File->placeable)
+  if ((API)->File->placeable && (API)->File->pmh->Inch)
     units_per_inch=(API)->File->pmh->Inch;
   else if ( (wmf_width*wmf_height) < 1024*1024)
     units_per_inch=POINTS_PER_INCH;  /* MM_TEXT */
@@ -2758,7 +2758,12 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   bounding_width  = bbox.BR.x - bbox.TL.x;
   bounding_height = bbox.BR.y - bbox.TL.y;
-
+  if ((bounding_width == 0) || (bounding_height == 0))
+    {
+      ipa_device_close(API);
+      (void) wmf_api_destroy(API);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
   ddata->scale_x = image_width/bounding_width;
   ddata->translate_x = 0-bbox.TL.x;
   ddata->rotate = 0;
