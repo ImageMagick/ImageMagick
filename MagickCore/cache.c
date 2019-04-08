@@ -3404,8 +3404,8 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
   if (cache_info == (Cache) NULL)
     return(MagickFalse);
   p=GetAuthenticPixelCacheNexus(image,nexus_info->region.x,nexus_info->region.y,
-    nexus_info->region.width,nexus_info->region.height,nexus_info->virtual_nexus,
-    exception);
+    nexus_info->region.width,nexus_info->region.height,
+    nexus_info->virtual_nexus,exception);
   q=nexus_info->pixels;
   number_pixels=(MagickSizeType) nexus_info->region.width*
     nexus_info->region.height;
