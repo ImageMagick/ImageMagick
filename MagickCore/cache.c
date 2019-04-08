@@ -470,9 +470,7 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
     p+=GetPixelChannels(image);
     q+=GetPixelChannels(image);
   }
-  if (n < (ssize_t) number_pixels)
-    return(MagickFalse);
-  return(MagickTrue);
+  return(n < (ssize_t) number_pixels ? MagickFalse : MagickTrue);
 }
 
 /*
