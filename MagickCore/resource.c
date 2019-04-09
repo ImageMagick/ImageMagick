@@ -228,6 +228,8 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
       bi=MagickTrue;
       resource_info.area=request;
       limit=resource_info.area_limit;
+      if ((limit == MagickResourceInfinity) || (size < limit))
+        status=MagickTrue;
       break;
     }
     case DiskResource:
@@ -264,17 +266,16 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
       bi=MagickTrue;
       resource_info.height=request;
       limit=resource_info.height_limit;
+      if ((limit == MagickResourceInfinity) || (size < limit))
+        status=MagickTrue;
       break;
     }
     case ListLengthResource:
     {
       resource_info.list_length=request;
       limit=resource_info.list_length_limit;
-      break;
-    }
-    case ThreadResource:
-    {
-      limit=resource_info.thread_limit;
+      if ((limit == MagickResourceInfinity) || (size < limit))
+        status=MagickTrue;
       break;
     }
     case MapResource:
@@ -309,9 +310,20 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
       current=resource_info.memory;
       break;
     }
+    case ThreadResource:
+    {
+      limit=resource_info.thread_limit;
+      if ((limit == MagickResourceInfinity) ||
+          (resource_info.thread < (MagickOffsetType) limit))
+        status=MagickTrue;
+      break;
+    }
     case ThrottleResource:
     {
       limit=resource_info.throttle_limit;
+      if ((limit == MagickResourceInfinity) ||
+          (resource_info.throttle < (MagickOffsetType) limit))
+        status=MagickTrue;
       break;
     }
     case TimeResource:
@@ -334,6 +346,8 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
       bi=MagickTrue;
       resource_info.width=request;
       limit=resource_info.width_limit;
+      if ((limit == MagickResourceInfinity) || (size < limit))
+        status=MagickTrue;
       break;
     }
     default:
@@ -355,8 +369,6 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     }
     default: ;
   }
-  if ((limit == MagickResourceInfinity) || (size < limit))
-    status=MagickTrue;
   if (IsEventLogging() != MagickFalse)
     {
       char
