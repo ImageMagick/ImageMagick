@@ -1392,7 +1392,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
           buff=DestroyImage(buff);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
-      (void) SetImageProfile(image,"IPTC",profile,exception);
+      (void) SetImageProfile(image,"iptc",profile,exception);
       profile=DestroyStringInfo(profile);
       blob=DetachBlob(buff->blob);
       blob=(unsigned char *) RelinquishMagickMemory(blob);
