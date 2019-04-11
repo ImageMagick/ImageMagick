@@ -1637,10 +1637,8 @@ static inline MagickBooleanType PSDSkipImage(const ImageInfo *image_info,
     return(MagickFalse);
   if (index < image_info->scene)
     return(MagickTrue);
-  /*
   if (index > image_info->scene+image_info->number_scenes-1)
     return(MagickTrue);
-  */
   return(MagickFalse);
 }
 
@@ -1665,6 +1663,7 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
 
   ssize_t
     count,
+    index,
     j,
     number_layers;
 
@@ -1982,10 +1981,11 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
       return(MagickTrue);
     }
   status=MagickTrue;
+  index=0;
   for (i=0; i < number_layers; i++)
   {
     if ((layer_info[i].image == (Image *) NULL) ||
-        (PSDSkipImage(image_info,i) != MagickFalse))
+        (PSDSkipImage(image_info,++index) != MagickFalse))
       {
         for (j=0; j < (ssize_t) layer_info[i].channels; j++)
         {
