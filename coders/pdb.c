@@ -809,6 +809,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
   } else {
     bits_per_pixel=4;
   }
+  image->depth=bits_per_pixel;
   (void) memset(&pdb_info,0,sizeof(pdb_info));
   (void) memset(&pdb_image,0,sizeof(pdb_image));
   GetPathComponent(image_info->filename,TailPath,filename);
