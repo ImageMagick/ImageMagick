@@ -809,7 +809,6 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
   } else {
     bits_per_pixel=4;
   }
-  image->depth=bits_per_pixel;
   (void) memset(&pdb_info,0,sizeof(pdb_info));
   (void) memset(&pdb_image,0,sizeof(pdb_image));
   GetPathComponent(image_info->filename,TailPath,filename);
@@ -862,7 +861,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
     pdb_image.width=(short) (16*(image->columns/16+1));
   pdb_image.height=(short) image->rows;
   packets=((bits_per_pixel*image->columns+7)/8);
-  packet_size=(size_t) (image->depth > 8 ? 2 : 1);
+  packet_size=(size_t) (bits_per_pixel > 8 ? 2 : 1);
   runlength=(unsigned char *) AcquireQuantumMemory(9UL*packets,
     image->rows*sizeof(*runlength));
   buffer=(unsigned char *) AcquireQuantumMemory(512,sizeof(*buffer));
@@ -897,7 +896,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
         scanline=(unsigned char *) RelinquishMagickMemory(scanline);
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  status=SetQuantumDepth(image,quantum_info,image->depth > 8 ? 16 : 8);
+  status=SetQuantumDepth(image,quantum_info,bits_per_pixel > 8 ? 16 : 8);
   bits=8/(int) bits_per_pixel-1;  /* start at most significant bits */
   literal=0;
   repeat=0;
