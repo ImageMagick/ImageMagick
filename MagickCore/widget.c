@@ -1369,7 +1369,8 @@ static int XScreenEvent(Display *display,XEvent *event,char *data)
       if (event->xexpose.window == windows->command.id)
         if (event->xexpose.count == 0)
           {
-            (void) XCommandWidget(display,windows,(const char **) NULL,event);
+            (void) XCommandWidget(display,windows,(const char *const *) NULL,
+              event);
             break;
           }
       break;
@@ -2778,7 +2779,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
 %  The format of the XCommandWidget method is:
 %
 %      int XCommandWidget(Display *display,XWindows *windows,
-%        const char **selections,XEvent *event)
+%        const char *const *selections,XEvent *event)
 %
 %  A description of each parameter follows:
 %
@@ -2797,7 +2798,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
 %
 */
 MagickPrivate int XCommandWidget(Display *display,XWindows *windows,
-  const char **selections,XEvent *event)
+  const char *const *selections,XEvent *event)
 {
 #define tile_width 112
 #define tile_height 70
@@ -6725,7 +6726,7 @@ MagickPrivate void XInfoWidget(Display *display,XWindows *windows,
 %  The format of the XListBrowserWidget method is:
 %
 %      void XListBrowserWidget(Display *display,XWindows *windows,
-%        XWindowInfo *window_info,const char **list,const char *action,
+%        XWindowInfo *window_info,const char *const *list,const char *action,
 %        const char *query,char *reply)
 %
 %  A description of each parameter follows:
@@ -6746,7 +6747,7 @@ MagickPrivate void XInfoWidget(Display *display,XWindows *windows,
 %
 */
 MagickPrivate void XListBrowserWidget(Display *display,XWindows *windows,
-  XWindowInfo *window_info,const char **list,const char *action,
+  XWindowInfo *window_info,const char *const *list,const char *action,
   const char *query,char *reply)
 {
 #define CancelButtonText  "Cancel"
@@ -7636,7 +7637,7 @@ MagickPrivate void XListBrowserWidget(Display *display,XWindows *windows,
 %  The format of the XMenuWidget method is:
 %
 %      int XMenuWidget(Display *display,XWindows *windows,const char *title,
-%        const char **selections,char *item)
+%        const char *const *selections,char *item)
 %
 %  A description of each parameter follows:
 %
@@ -7658,7 +7659,7 @@ MagickPrivate void XListBrowserWidget(Display *display,XWindows *windows,
 %
 */
 MagickPrivate int XMenuWidget(Display *display,XWindows *windows,
-  const char *title,const char **selections,char *item)
+  const char *title,const char *const *selections,char *item)
 {
   Cursor
     cursor;
@@ -8895,7 +8896,7 @@ MagickPrivate void XProgressMonitorWidget(Display *display,XWindows *windows,
     Update image windows if there is a pending expose event.
   */
   while (XCheckTypedWindowEvent(display,windows->command.id,Expose,&event))
-    (void) XCommandWidget(display,windows,(const char **) NULL,&event);
+    (void) XCommandWidget(display,windows,(const char *const *) NULL,&event);
   while (XCheckTypedWindowEvent(display,windows->image.id,Expose,&event))
     XRefreshWindow(display,&windows->image,&event);
   while (XCheckTypedWindowEvent(display,windows->info.id,Expose,&event))
@@ -8936,7 +8937,7 @@ MagickPrivate void XProgressMonitorWidget(Display *display,XWindows *windows,
 %
 %      void XTextViewWidget(Display *display,const XResourceInfo *resource_info,
 %        XWindows *windows,const MagickBooleanType mono,const char *title,
-%        const char **textlist)
+%        const char *const *textlist)
 %
 %  A description of each parameter follows:
 %
@@ -8957,7 +8958,7 @@ MagickPrivate void XProgressMonitorWidget(Display *display,XWindows *windows,
 */
 MagickPrivate void XTextViewWidget(Display *display,
   const XResourceInfo *resource_info,XWindows *windows,
-  const MagickBooleanType mono,const char *title,const char **textlist)
+  const MagickBooleanType mono,const char *title,const char *const *textlist)
 {
 #define DismissButtonText  "Dismiss"
 

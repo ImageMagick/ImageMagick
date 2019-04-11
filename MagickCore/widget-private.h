@@ -26,10 +26,10 @@ extern "C" {
 
 #if defined(MAGICKCORE_X11_DELEGATE)
 extern MagickPrivate int
-  XCommandWidget(Display *,XWindows *,const char **,XEvent *),
+  XCommandWidget(Display *,XWindows *,const char *const *,XEvent *),
   XConfirmWidget(Display *,XWindows *,const char *,const char *),
   XDialogWidget(Display *,XWindows *,const char *,const char *,char *),
-  XMenuWidget(Display *,XWindows *,const char *,const char **,char *);
+  XMenuWidget(Display *,XWindows *,const char *,const char *const *,char *);
 
 extern MagickPrivate MagickBooleanType
   XPreferencesWidget(Display *,XResourceInfo *,XWindows *);
@@ -40,13 +40,13 @@ extern MagickPrivate void
   XFileBrowserWidget(Display *,XWindows *,const char *,char *),
   XFontBrowserWidget(Display *,XWindows *,const char *,char *),
   XInfoWidget(Display *,XWindows *,const char *),
-  XListBrowserWidget(Display *,XWindows *,XWindowInfo *,const char **,
+  XListBrowserWidget(Display *,XWindows *,XWindowInfo *,const char *const *,
     const char *,const char *,char *),
   XNoticeWidget(Display *,XWindows *,const char *,const char *),
   XProgressMonitorWidget(Display *,XWindows *,const char *,
     const MagickOffsetType,const MagickSizeType),
   XTextViewWidget(Display *,const XResourceInfo *,XWindows *,
-    const MagickBooleanType,const char *,const char **);
+    const MagickBooleanType,const char *,const char *const *);
 
 #endif
 

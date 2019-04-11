@@ -91,7 +91,7 @@
   Static declarations.
 */
 static const char
-  *AnimateHelp[]=
+  *const AnimateHelp[] =
   {
     "BUTTONS",
     "",
@@ -162,7 +162,7 @@ static const char
   Constant declarations.
 */
 static const char
-  *PageSizes[]=
+  *const PageSizes[] =
   {
     "Letter",
     "Tabloid",
@@ -1215,7 +1215,7 @@ MagickExport Image *XAnimateImages(Display *display,
 #define MagickTitle  "Commands"
 
   static const char
-    *CommandMenu[]=
+    *const CommandMenu[]=
     {
       "Animate",
       "Speed",
@@ -1225,7 +1225,7 @@ MagickExport Image *XAnimateImages(Display *display,
       "Quit",
       (char *) NULL
     },
-    *AnimateMenu[]=
+    *const AnimateMenu[]=
     {
       "Open...",
       "Play",
@@ -1235,19 +1235,19 @@ MagickExport Image *XAnimateImages(Display *display,
       "Save...",
       (char *) NULL
     },
-    *SpeedMenu[]=
+    *const SpeedMenu[]=
     {
       "Faster",
       "Slower",
       (char *) NULL
     },
-    *DirectionMenu[]=
+    *const DirectionMenu[]=
     {
       "Forward",
       "Reverse",
       (char *) NULL
     },
-    *HelpMenu[]=
+    *const HelpMenu[]=
     {
       "Overview",
       "Browse Documentation",
