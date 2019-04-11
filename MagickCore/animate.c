@@ -1256,7 +1256,7 @@ MagickExport Image *XAnimateImages(Display *display,
     };
 
   static const char
-    **Menus[MagickMenus]=
+    *const *Menus[MagickMenus]=
     {
       AnimateMenu,
       SpeedMenu,
