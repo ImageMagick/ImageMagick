@@ -203,19 +203,19 @@ static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
   unsigned char
     *group4;
 
-  status=MagickTrue;
-  write_info=CloneImageInfo(image_info);
-  (void) CopyMagickString(write_info->filename,"GROUP4:",MagickPathExtent);
-  (void) CopyMagickString(write_info->magick,"GROUP4",MagickPathExtent);
   group4_image=CloneImage(inject_image,0,0,MagickTrue,exception);
   if (group4_image == (Image *) NULL)
     return(MagickFalse);
+  write_info=CloneImageInfo(image_info);
+  (void) CopyMagickString(write_info->filename,"GROUP4:",MagickPathExtent);
+  (void) CopyMagickString(write_info->magick,"GROUP4",MagickPathExtent);
   group4=(unsigned char *) ImageToBlob(write_info,group4_image,&length,
     exception);
+  write_info=DestroyImageInfo(write_info);
   group4_image=DestroyImage(group4_image);
   if (group4 == (unsigned char *) NULL)
     return(MagickFalse);
-  write_info=DestroyImageInfo(write_info);
+  status=MagickTrue;
   if (WriteBlob(image,length,group4) != (ssize_t) length)
     status=MagickFalse;
   group4=(unsigned char *) RelinquishMagickMemory(group4);
@@ -516,8 +516,8 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
       }
     if (image->units == PixelsPerCentimeterResolution)
       {
-        resolution.x=(size_t) (100.0*2.54*resolution.x+0.5)/100.0;
-        resolution.y=(size_t) (100.0*2.54*resolution.y+0.5)/100.0;
+        resolution.x=(double) (100.0*2.54*resolution.x+0.5)/100.0;
+        resolution.y=(double) (100.0*2.54*resolution.y+0.5)/100.0;
       }
     SetGeometry(image,&geometry);
     (void) FormatLocaleString(page_geometry,MagickPathExtent,"%.20gx%.20g",
