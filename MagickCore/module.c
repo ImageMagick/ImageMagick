@@ -781,11 +781,13 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
 
     home=GetEnvironmentValue("XDG_CONFIG_HOME");
     if (home == (char *) NULL)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__MINGW32__)
       home=GetEnvironmentValue("LOCALAPPDATA");
     if (home == (char *) NULL)
       home=GetEnvironmentValue("APPDATA");
     if (home == (char *) NULL)
       home=GetEnvironmentValue("USERPROFILE");
+#endif
     if (home != (char *) NULL)
       {
         /*
