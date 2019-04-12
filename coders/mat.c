@@ -1693,7 +1693,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image,
       ssize_t
         y;
 
-      for (y=0; y < (ssize_t)image->columns; y++)
+      for (y=0; y < (ssize_t) image->columns; y++)
       {
         size_t
           length;
@@ -1705,7 +1705,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image,
           z2qtype[z],pixels,exception);
         if (length != image->columns)
           break;
-        if (WriteBlob(image,image->rows,pixels) != image->rows)
+        if (WriteBlob(image,image->rows,pixels) != (ssize_t) image->rows)
           break;
       }
       if (y < (ssize_t) image->columns)
