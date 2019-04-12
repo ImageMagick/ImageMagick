@@ -666,7 +666,8 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
       break;
     case FileStream:
     {
-      status=fclose(blob_info->file_info.file);
+      if (fileno(blob_info->file_info.file) != -1)
+        status=fclose(blob_info->file_info.file);
       break;
     }
     case PipeStream:
