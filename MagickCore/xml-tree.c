@@ -2058,8 +2058,8 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
                 attributes=(char **) AcquireQuantumMemory(4,
                   sizeof(*attributes));
               else
-                attributes=(char **) ResizeQuantumMemory(attributes,
-                  (size_t) (l+4),sizeof(*attributes));
+                attributes=(char **) ResizeQuantumMemory(attributes,(size_t)
+                  (l+4),sizeof(*attributes));
               if (attributes == (char **) NULL)
                 {
                   (void) ThrowMagickException(exception,GetMagickModule(),
