@@ -6497,6 +6497,55 @@ WandExport MagickBooleanType MagickLevelImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k L e v e l i z e I m a g e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickLevelizeImage() applies the reversed MagickLevelImage(). It compresses
+%  the full range of color values, so that they lie between the given black and
+%  white points.  Gamma is applied before the values are mapped.  It can be
+%  used to de-contrast a greyscale image to the exact levels specified.
+%
+%  The format of the MagickLevelizeImage method is:
+%
+%      MagickBooleanType MagickLevelizeImage(MagickWand *wand,
+%        const double black_point, const double white_point,const double gamma)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o black_point: The level to map zero (black) to.
+%
+%    o white_point: The level to map QuantumRange (white) to.
+%
+%    o gamma: adjust gamma by this factor before mapping values.
+%
+*/
+WandExport MagickBooleanType MagickLevelizeImage(MagickWand *wand,
+  const double black_point,const double gamma,const double white_point)
+{
+  MagickBooleanType
+    status;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  status=LevelizeImage(wand->images,black_point,white_point,gamma,
+    wand->exception);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k L i n e a r S t r e t c h I m a g e                           %
 %                                                                             %
 %                                                                             %
