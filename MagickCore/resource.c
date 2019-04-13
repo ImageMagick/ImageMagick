@@ -1411,6 +1411,8 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
       else
         resource_info.height_limit=MagickMin(limit,StringToMagickSizeType(
           value,100.0));
+      resource_info.height_limit=MagickMin(resource_info.height_limit,
+        SSIZE_MAX);
       break;
     }
     case ListLengthResource:
@@ -1487,6 +1489,8 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
       else
         resource_info.width_limit=MagickMin(limit,StringToMagickSizeType(value,
           100.0));
+      resource_info.width_limit=MagickMin(resource_info.width_limit,
+        SSIZE_MAX);
       break;
     }
     default:
