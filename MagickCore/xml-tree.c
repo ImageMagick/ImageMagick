@@ -1494,8 +1494,7 @@ static char *ParseEntities(char *xml,char **entities,int state)
                           sizeof(*extent_xml));
                         if (extent_xml != (char *) NULL)
                           {
-                            memset(extent_xml,0,extent*
-                              sizeof(*extent_xml));
+                            memset(extent_xml,0,extent*sizeof(*extent_xml));
                             (void) CopyMagickString(extent_xml,p,extent*
                               sizeof(*extent_xml));
                           }

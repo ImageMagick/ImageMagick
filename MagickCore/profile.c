@@ -1705,28 +1705,51 @@ static void GetProfilesFromResourceBlock(Image *image,
   }
 }
 
+#if defined(MAGICKCORE_XML_DELEGATE)
 static MagickBooleanType ValidateXMPProfile(const StringInfo *profile)
 {
-#if defined(MAGICKCORE_XML_DELEGATE)
-  {
-    xmlDocPtr
-      document;
-    
-    /*
-      Parse XML profile.
-    */
-    document=xmlReadMemory((const char *) GetStringInfoDatum(profile),(int)
-      GetStringInfoLength(profile),"xmp.xml",NULL,XML_PARSE_NOERROR |
-      XML_PARSE_NOWARNING);
-    if (document == (xmlDocPtr) NULL)
-      return(MagickFalse);
-    xmlFreeDoc(document);
-    return(MagickTrue);
-  }
-#else
+  xmlDocPtr
+    document;
+
+  /*
+    Parse XML profile.
+  */
+  document=xmlReadMemory((const char *) GetStringInfoDatum(profile),(int)
+    GetStringInfoLength(profile),"xmp.xml",NULL,XML_PARSE_NOERROR |
+    XML_PARSE_NOWARNING);
+  if (document == (xmlDocPtr) NULL)
+    return(MagickFalse);
+  xmlFreeDoc(document);
   return(MagickTrue);
-#endif
 }
+#else
+static unsigned char *FindNeedleInHaystack(unsigned char *haystack,
+  const char *needle)
+{
+  size_t
+    length;
+
+  unsigned char
+    *c;
+
+  length=strlen(needle);
+  for (c=haystack; *c != '\0'; c++)
+    if (LocaleNCompare((const char *) c,needle,length) == 0)
+      return(c);
+  return((unsigned char *) NULL);
+}
+
+static MagickBooleanType ValidateXMPProfile(const StringInfo *profile)
+{
+  unsigned char
+    *p;
+
+  p=FindNeedleInHaystack(GetStringInfoDatum(profile),"x:xmpmeta");
+  if (p == (unsigned char *) NULL)
+    p=FindNeedleInHaystack(GetStringInfoDatum(profile),"rdf:RDF");
+  return(p == (unsigned char *) NULL ? MagickFalse : MagickTrue);
+}
+#endif
 
 static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
   const StringInfo *profile,const MagickBooleanType recursive,
