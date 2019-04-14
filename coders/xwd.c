@@ -238,38 +238,88 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"FileFormatVersionMismatch");
   if (header.header_size < sz_XWDheader)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  if ((header.bits_per_pixel == 0) || (header.bits_per_pixel > 32))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  if ((header.bitmap_bit_order != MSBFirst) &&
-      (header.bitmap_bit_order != LSBFirst))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  if (((header.bitmap_pad % 8) != 0) || (header.bitmap_pad > 32))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  if (header.bitmap_unit > 32)
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  if (header.ncolors > 256)
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   switch (header.visual_class)
   {
     case StaticGray:
     case GrayScale:
+    {
+      if (header.bits_per_pixel != 1)
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      break;
+    }
     case StaticColor:
     case PseudoColor:
+    {
+      if ((header.bits_per_pixel < 1) || (header.bits_per_pixel > 15) ||
+          (header.colormap_entries == 0))
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      break;
+    }
     case TrueColor:
     case DirectColor:
+    {
+      if ((header.bits_per_pixel != 16) && (header.bits_per_pixel != 24) &&
+          (header.bits_per_pixel != 32))
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       break;
+    }
     default:
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   }
   switch (header.pixmap_format)
   {
     case XYBitmap:
+    {
+      if (header.pixmap_depth != 1)
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      break;
+    }
     case XYPixmap:
     case ZPixmap:
+    {
+      if ((header.pixmap_depth < 1) || (header.pixmap_depth > 32))
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      switch (header.bitmap_pad)
+      {
+        case 8:
+        case 16:
+        case 32:
+          break;
+        default:
+          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      }
+      break;
+    }
+    default:
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  }
+  switch (header.bitmap_unit)
+  {
+    case 8:
+    case 16:
+    case 32:
       break;
     default:
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   }
+  switch (header.byte_order)
+  {
+    case LSBFirst:
+    case MSBFirst:
+      break;
+    default:
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  }
+  switch (header.bitmap_bit_order)
+  {
+    case LSBFirst:
+    case MSBFirst:
+      break;
+    default:
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  }
+  if (((header.bitmap_pad % 8) != 0) || (header.bitmap_pad > 32))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   length=(size_t) (header.header_size-sz_XWDheader);
   comment=(char *) AcquireQuantumMemory(length+1,sizeof(*comment));
   if (comment == (char *) NULL)
