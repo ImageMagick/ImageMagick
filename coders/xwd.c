@@ -240,6 +240,9 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if ((header.bits_per_pixel == 0) || (header.bits_per_pixel > 32))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  if ((header.bitmap_bit_order != MSBFirst) &&
+      (header.bitmap_bit_order != LSBFirst))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if (((header.bitmap_pad % 8) != 0) || (header.bitmap_pad > 32))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if (header.bitmap_unit > 32)
