@@ -259,36 +259,10 @@ MagickExport ssize_t FormatMagickTime(const time_t time,const size_t length,
     count;
 
   struct tm
-    gm_time,
-    local_time;
+    gm_time;
 
   assert(timestamp != (char *) NULL);
-  (void) memset(&local_time,0,sizeof(local_time));
-  (void) memset(&gm_time,0,sizeof(gm_time));
-#if defined(MAGICKCORE_HAVE_LOCALTIME_R)
-  (void) localtime_r(&time,&local_time);
-#else
-  {
-    struct tm
-      *my_time;
-
-    my_time=localtime(&time);
-    if (my_time != (struct tm *) NULL)
-      (void) memcpy(&local_time,my_time,sizeof(local_time));
-  }
-#endif
-#if defined(MAGICKCORE_HAVE_GMTIME_R)
-  (void) gmtime_r(&time,&gm_time);
-#else
-  {
-    struct tm
-      *my_time;
-
-    my_time=gmtime(&time);
-    if (my_time != (struct tm *) NULL)
-      (void) memcpy(&gm_time,my_time,sizeof(gm_time));
-  }
-#endif
+  GetUTCTime(&time,&gm_time);
   count=FormatLocaleString(timestamp,length,
     "%04d-%02d-%02dT%02d:%02d:%02d%+03d:00",gm_time.tm_year+1900,
     gm_time.tm_mon+1,gm_time.tm_mday,gm_time.tm_hour,gm_time.tm_min,

@@ -6,6 +6,8 @@
     https://imagemagick.org/discourse-server/viewforum.php?f=3).
   * Fixed a number of issues (reference
     https://github.com/ImageMagick/ImageMagick/issues).
+  * Honor SOURCE_DATE_EPOCH environment variable (reference
+    https://github.com/ImageMagick/ImageMagick/pull/1496/).
 
 2019-04-07  7.0.8-39 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-39, GIT revision 15489:6120f8bc1:20190406
