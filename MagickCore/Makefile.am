@@ -212,6 +212,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/pixel-private.h \
 	MagickCore/policy.c \
 	MagickCore/policy.h \
+	MagickCore/policy-private.h \
 	MagickCore/prepress.c \
 	MagickCore/prepress.h \
 	MagickCore/property.c \
@@ -268,6 +269,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/thread-private.h \
 	MagickCore/timer.c \
 	MagickCore/timer.h \
+ 	MagickCore/timer-private.h \
 	MagickCore/token.c \
 	MagickCore/token.h \
 	MagickCore/token-private.h \
@@ -467,6 +469,7 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/string-private.h \
 	MagickCore/thread_.h \
 	MagickCore/thread-private.h \
+ 	MagickCore/timer-private.h \
 	MagickCore/token-private.h \
 	MagickCore/transform-private.h \
  	MagickCore/type-private.h \

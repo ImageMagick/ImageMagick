@@ -57,6 +57,9 @@ extern MagickExport double
 extern MagickExport MagickBooleanType
   ContinueTimer(TimerInfo *);
 
+extern MagickExport ssize_t
+  FormatMagickTime(const time_t,const size_t,char *);
+
 extern MagickExport TimerInfo
   *AcquireTimerInfo(void),
   *DestroyTimerInfo(TimerInfo *);

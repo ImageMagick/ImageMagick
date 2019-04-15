@@ -76,6 +76,7 @@
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
+#include "MagickCore/timer-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
@@ -1451,7 +1452,7 @@ RestoreMSCWarning
       value=GetImageProperty(image,"date:create",exception);
       if (value != (const char *) NULL)
         (void) CopyMagickString(create_date,value,MagickPathExtent);
-      (void) FormatMagickTime(time((time_t *) NULL),MagickPathExtent,timestamp);
+      (void) FormatMagickTime(GetMagickTime(),MagickPathExtent,timestamp);
       url=(char *) MagickAuthoritativeURL;
       escape=EscapeParenthesis(basename);
       i=FormatLocaleString(xmp_profile,MagickPathExtent,XMPProfile,
@@ -3007,7 +3008,7 @@ RestoreMSCWarning
         }
     }
   (void) WriteBlobString(image,buffer);
-  seconds=time((time_t *) NULL);
+  seconds=GetMagickTime();
 #if defined(MAGICKCORE_HAVE_LOCALTIME_R)
   (void) localtime_r(&seconds,&local_time);
 #else

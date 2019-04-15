@@ -480,7 +480,8 @@ am__MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURC
 	MagickCore/option-private.h MagickCore/paint.c \
 	MagickCore/paint.h MagickCore/pixel.c MagickCore/pixel.h \
 	MagickCore/pixel-accessor.h MagickCore/pixel-private.h \
-	MagickCore/policy.c MagickCore/policy.h MagickCore/prepress.c \
+	MagickCore/policy.c MagickCore/policy.h \
+	MagickCore/policy-private.h MagickCore/prepress.c \
 	MagickCore/prepress.h MagickCore/property.c \
 	MagickCore/property.h MagickCore/profile.c \
 	MagickCore/profile.h MagickCore/profile-private.h \
@@ -506,7 +507,8 @@ am__MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURC
 	MagickCore/string_.h MagickCore/string-private.h \
 	MagickCore/studio.h MagickCore/thread.c MagickCore/thread_.h \
 	MagickCore/thread-private.h MagickCore/timer.c \
-	MagickCore/timer.h MagickCore/token.c MagickCore/token.h \
+	MagickCore/timer.h MagickCore/timer-private.h \
+	MagickCore/token.c MagickCore/token.h \
 	MagickCore/token-private.h MagickCore/transform.c \
 	MagickCore/transform.h MagickCore/threshold.c \
 	MagickCore/threshold.h MagickCore/type.c MagickCore/type.h \
@@ -4910,6 +4912,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/pixel-private.h \
 	MagickCore/policy.c \
 	MagickCore/policy.h \
+	MagickCore/policy-private.h \
 	MagickCore/prepress.c \
 	MagickCore/prepress.h \
 	MagickCore/property.c \
@@ -4966,6 +4969,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/thread-private.h \
 	MagickCore/timer.c \
 	MagickCore/timer.h \
+ 	MagickCore/timer-private.h \
 	MagickCore/token.c \
 	MagickCore/token.h \
 	MagickCore/token-private.h \
@@ -5160,6 +5164,7 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/string-private.h \
 	MagickCore/thread_.h \
 	MagickCore/thread-private.h \
+ 	MagickCore/timer-private.h \
 	MagickCore/token-private.h \
 	MagickCore/transform-private.h \
  	MagickCore/type-private.h \

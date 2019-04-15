@@ -49,6 +49,7 @@
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/timer-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/token-private.h"
 #include "MagickCore/utility.h"
@@ -8188,11 +8189,11 @@ MagickPrivate void XNoticeWidget(Display *display,XWindows *windows,
   /*
     Respond to X events.
   */
-  timer=time((time_t *) NULL)+Timeout;
+  timer=GetMagickTime()+Timeout;
   state=UpdateConfigurationState;
   do
   {
-    if (time((time_t *) NULL) > timer)
+    if (GetMagickTime() > timer)
       break;
     if (state & UpdateConfigurationState)
       {

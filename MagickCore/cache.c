@@ -70,6 +70,7 @@
 #include "MagickCore/splay-tree.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
+#include "MagickCore/timer-private.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
@@ -1681,10 +1682,10 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
         Set the expire time in seconds.
       */
       cache_timelimit=GetMagickResourceLimit(TimeResource);
-      cache_epoch=time((time_t *) NULL);
+      cache_epoch=GetMagickTime();
     }
   if ((cache_timelimit != MagickResourceInfinity) &&
-      ((MagickSizeType) (time((time_t *) NULL)-cache_epoch) >= cache_timelimit))
+      ((MagickSizeType) (GetMagickTime()-cache_epoch) >= cache_timelimit))
     {
 #if defined(ECANCELED)
       errno=ECANCELED;

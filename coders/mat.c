@@ -74,6 +74,7 @@
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
+#include "MagickCore/timer-private.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/utility-private.h"
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
@@ -1605,7 +1606,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image,
     return(MagickFalse);
   image->depth=8;
 
-  current_time=time((time_t *) NULL);
+  current_time=GetMagickTime();
 #if defined(MAGICKCORE_HAVE_LOCALTIME_R)
   (void) localtime_r(&current_time,&local_time);
 #else

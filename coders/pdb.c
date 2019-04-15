@@ -64,6 +64,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/pixel-accessor.h"
@@ -72,7 +73,7 @@
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "MagickCore/timer-private.h"
 #include "MagickCore/utility.h"
 
 /*
@@ -815,7 +816,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
   (void) CopyMagickString(pdb_info.name,filename,sizeof(pdb_info.name));
   pdb_info.attributes=0;
   pdb_info.version=0;
-  pdb_info.create_time=time((time_t *) NULL);
+  pdb_info.create_time=GetMagickTime();
   pdb_info.modify_time=pdb_info.create_time;
   pdb_info.archive_time=0;
   pdb_info.modify_number=0;

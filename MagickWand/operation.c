@@ -61,6 +61,7 @@
 #include "MagickCore/pixel-private.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
+#include "MagickCore/timer-private.h"
 
 /*
   Constant declaration.
@@ -1334,7 +1335,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           SetRandomSecretKey(
                IfSetOption ? (unsigned long) StringToUnsignedLong(arg1)
-                           : (unsigned long) time((time_t *) NULL) );
+                           : (unsigned long) GetMagickTime() );
           break;
         }
       if (LocaleCompare("size",option+1) == 0)

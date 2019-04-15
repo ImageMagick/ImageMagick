@@ -53,6 +53,7 @@
 #include "MagickCore/signature.h"
 #include "MagickCore/signature-private.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/timer-private.h"
 /*
   Define declarations.
 */
@@ -138,7 +139,7 @@ MagickPrivate SignatureInfo *AcquireSignatureInfo(void)
   lsb_first=1;
   signature_info->lsb_first=(int) (*(char *) &lsb_first) == 1 ? MagickTrue :
     MagickFalse;
-  signature_info->timestamp=(ssize_t) time((time_t *) NULL);
+  signature_info->timestamp=(ssize_t) GetMagickTime();
   signature_info->signature=MagickCoreSignature;
   InitializeSignature(signature_info);
   return(signature_info);

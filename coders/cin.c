@@ -59,6 +59,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
@@ -69,7 +70,7 @@
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
-#include "MagickCore/module.h"
+#include "MagickCore/timer-private.h"
 
 /*
   Typedef declaration.
@@ -990,7 +991,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
       sizeof(cin.file.filename));
   offset+=WriteBlob(image,sizeof(cin.file.filename),(unsigned char *)
     cin.file.filename);
-  seconds=time((time_t *) NULL);
+  seconds=GetMagickTime();
 #if defined(MAGICKCORE_HAVE_LOCALTIME_R)
   (void) localtime_r(&seconds,&local_time);
 #else
@@ -1093,7 +1094,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
       sizeof(cin.origination.filename));
   offset+=WriteBlob(image,sizeof(cin.origination.filename),(unsigned char *)
     cin.origination.filename);
-  seconds=time((time_t *) NULL);
+  seconds=GetMagickTime();
   (void) memset(timestamp,0,sizeof(timestamp));
   (void) strftime(timestamp,MagickPathExtent,"%Y:%m:%d:%H:%M:%S%Z",&local_time);
   (void) memset(cin.origination.create_date,0,

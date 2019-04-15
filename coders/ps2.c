@@ -57,6 +57,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/monitor-private.h"
@@ -67,7 +68,7 @@
 #include "MagickCore/resource_.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "MagickCore/timer-private.h"
 #include "MagickCore/utility.h"
 
 /*
@@ -569,7 +570,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
         (void) FormatLocaleString(buffer,MagickPathExtent,"%%%%Title: (%s)\n",
           image->filename);
         (void) WriteBlobString(image,buffer);
-        timer=time((time_t *) NULL);
+        timer=GetMagickTime();
         (void) FormatMagickTime(timer,MagickPathExtent,date);
         (void) FormatLocaleString(buffer,MagickPathExtent,
           "%%%%CreationDate: (%s)\n",date);
