@@ -815,7 +815,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
   (void) CopyMagickString(pdb_info.name,filename,sizeof(pdb_info.name));
   pdb_info.attributes=0;
   pdb_info.version=0;
-  pdb_info.create_time=time(NULL);
+  pdb_info.create_time=time((time_t *) NULL);
   pdb_info.modify_time=pdb_info.create_time;
   pdb_info.archive_time=0;
   pdb_info.modify_number=0;
