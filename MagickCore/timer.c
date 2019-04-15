@@ -342,7 +342,7 @@ MagickExport double GetElapsedTime(TimerInfo *time_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t M a g i c k T i m e                                                 %
++   G e t M a g i c k T i m e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %

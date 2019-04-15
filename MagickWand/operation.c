@@ -1335,7 +1335,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           SetRandomSecretKey(
                IfSetOption ? (unsigned long) StringToUnsignedLong(arg1)
-                           : (unsigned long) GetMagickTime() );
+                           : (unsigned long) time((time_t *) NULL));
           break;
         }
       if (LocaleCompare("size",option+1) == 0)
