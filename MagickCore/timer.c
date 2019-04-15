@@ -262,9 +262,6 @@ MagickExport ssize_t FormatMagickTime(const time_t time,const size_t length,
     gm_time,
     local_time;
 
-  time_t
-    timezone;
-
   assert(timestamp != (char *) NULL);
   (void) memset(&local_time,0,sizeof(local_time));
   (void) memset(&gm_time,0,sizeof(gm_time));
@@ -292,14 +289,10 @@ MagickExport ssize_t FormatMagickTime(const time_t time,const size_t length,
       (void) memcpy(&gm_time,my_time,sizeof(gm_time));
   }
 #endif
-  timezone=(time_t) ((local_time.tm_min-gm_time.tm_min)/60+
-    local_time.tm_hour-gm_time.tm_hour+24*((local_time.tm_year-
-    gm_time.tm_year) != 0 ? (local_time.tm_year-gm_time.tm_year) :
-    (local_time.tm_yday-gm_time.tm_yday)));
   count=FormatLocaleString(timestamp,length,
-    "%04d-%02d-%02dT%02d:%02d:%02d%+03ld:00",local_time.tm_year+1900,
-    local_time.tm_mon+1,local_time.tm_mday,local_time.tm_hour,
-    local_time.tm_min,local_time.tm_sec,(long) timezone);
+    "%04d-%02d-%02dT%02d:%02d:%02d%+03d:00",gm_time.tm_year+1900,
+    gm_time.tm_mon+1,gm_time.tm_mday,gm_time.tm_hour,gm_time.tm_min,
+    gm_time.tm_sec,0);
   return(count);
 }
 
