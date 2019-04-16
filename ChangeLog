@@ -8,6 +8,7 @@
     https://github.com/ImageMagick/ImageMagick/issues).
   * Honor SOURCE_DATE_EPOCH environment variable (reference
     https://github.com/ImageMagick/ImageMagick/pull/1496/).
+  * Standardize on UTC time for any image format timestamp.
 
 2019-04-07  7.0.8-39 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-39, GIT revision 15489:6120f8bc1:20190406
