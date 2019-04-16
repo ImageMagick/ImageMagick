@@ -54,7 +54,7 @@ static inline void GetLocalTime(const time_t *timep,struct tm *result)
 #endif
 }
 
-extern MagickPrivate time_t
+extern MagickExport time_t
   GetMagickTime(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)

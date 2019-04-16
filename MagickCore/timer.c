@@ -323,7 +323,7 @@ MagickExport double GetElapsedTime(TimerInfo *time_info)
 %      time_t GetElapsedTime(void)
 %
 */
-MagickPrivate time_t GetMagickTime(void)
+MagickExport time_t GetMagickTime(void)
 {
   char
     *source_date_epoch = getenv("SOURCE_DATE_EPOCH");
