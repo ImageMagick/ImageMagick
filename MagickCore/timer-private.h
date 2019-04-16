@@ -33,7 +33,7 @@ static inline void GetUTCTime(const time_t *timep,struct tm *result)
 
     my_time=gmtime(timep);
     if (my_time != (struct tm *) NULL)
-      (void) memcpy(result,my_time,sizeof(gm_time));
+      (void) memcpy(result,my_time,sizeof(*my_time));
   }
 #endif
 }
@@ -49,7 +49,7 @@ static inline void GetLocalTime(const time_t *timep,struct tm *result)
 
     my_time=localtime(timep);
     if (my_time != (struct tm *) NULL)
-      (void) memcpy(result,my_time,sizeof(gm_time));
+      (void) memcpy(result,my_time,sizeof(*my_time));
   }
 #endif
 }
