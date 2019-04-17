@@ -838,6 +838,45 @@ WandExport MagickBooleanType MagickAutoOrientImage(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k A u t o T h r e s h o l d I m a g e                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickAutoThresholdImage() automatically performs image thresholding
+%  dependent on which method you specify.
+%
+%  The format of the AutoThresholdImage method is:
+%
+%      MagickBooleanType MagickAutoThresholdImage(MagickWand *wand,
+%        const AutoThresholdMethod method)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o method: choose from KapurThresholdMethod, OTSUThresholdMethod, or
+%      TriangleThresholdMethod.
+%
+*/
+WandExport MagickBooleanType MagickAutoThresholdImage(MagickWand *wand,
+  const AutoThresholdMethod method)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  return(AutoThresholdImage(wand->images,method,wand->exception));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k B l a c k T h r e s h o l d I m a g e                         %
 %                                                                             %
 %                                                                             %
@@ -866,9 +905,6 @@ WandExport MagickBooleanType MagickBlackThresholdImage(MagickWand *wand,
   char
     thresholds[MagickPathExtent];
 
-  MagickBooleanType
-    status;
-
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
@@ -879,8 +915,7 @@ WandExport MagickBooleanType MagickBlackThresholdImage(MagickWand *wand,
     QuantumFormat "," QuantumFormat "," QuantumFormat "," QuantumFormat,
     PixelGetRedQuantum(threshold),PixelGetGreenQuantum(threshold),
     PixelGetBlueQuantum(threshold),PixelGetAlphaQuantum(threshold));
-  status=BlackThresholdImage(wand->images,thresholds,wand->exception);
-  return(status);
+  return(BlackThresholdImage(wand->images,thresholds,wand->exception));
 }
 
 /*
@@ -1084,6 +1119,60 @@ WandExport MagickBooleanType MagickBrightnessContrastImage(
   status=BrightnessContrastImage(wand->images,brightness,contrast,
     wand->exception);
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k C a n n y E d g e I m a g e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickCannyEdgeImage() uses a multi-stage algorithm to detect a wide range of
+%  edges in images.
+%
+%  The format of the MagickCannyEdgeImage method is:
+%
+%      MagickBooleanType MagickCannyEdgeImage(MagickWand *wand,
+%        const double radius,const double sigma,const double lower_percent,
+%        const double upper_percent)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o radius: the radius of the gaussian smoothing filter.
+%
+%    o sigma: the sigma of the gaussian smoothing filter.
+%
+%    o lower_percent: percentage of edge pixels in the lower threshold.
+%
+%    o upper_percent: percentage of edge pixels in the upper threshold.
+%
+*/
+WandExport MagickBooleanType MagickCannyEdgeImage(MagickWand *wand,
+  const double radius,const double sigma,const double lower_percent,
+  const double upper_percent)
+{
+  Image
+    *edge_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  edge_image=CannyEdgeImage(wand->images,radius,sigma,lower_percent,
+    upper_percent,wand->exception);
+  if (edge_image == (Image *) NULL)
+    return(MagickFalse);
+  ReplaceImageInList(&wand->images,edge_image);
+  return(MagickTrue);
 }
 
 /*
@@ -1874,6 +1963,52 @@ WandExport MagickWand *MagickCompareImages(MagickWand *wand,
   if (compare_image == (Image *) NULL)
     return((MagickWand *) NULL);
   return(CloneMagickWandFromImages(wand,compare_image));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k C o m p l e x I m a g e s                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickComplexImages() performs complex mathematics on an image sequence.
+%
+%  The format of the MagickComplexImages method is:
+%
+%      MagickWand *MagickComplexImages(MagickWand *wand,
+%        const ComplexOperator op)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o op: A complex operator. Choose from AddComplexOperator,
+%      ConjugateComplexOperator,DivideComplexOperator,
+%      MagnitudePhaseComplexOperator,MultiplyComplexOperator,
+%      RealImaginaryComplexOperator, SubtractComplexOperator.
+%
+*/
+WandExport MagickWand *MagickComplexImages(MagickWand *wand,
+  const ComplexOperator op)
+{
+  Image
+    *complex_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    return((MagickWand *) NULL);
+  complex_image=ComplexImages(wand->images,op,wand->exception);
+  if (complex_image == (Image *) NULL)
+    return((MagickWand *) NULL);
+  return(CloneMagickWandFromImages(wand,complex_image));
 }
 
 /*

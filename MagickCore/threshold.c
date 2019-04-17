@@ -366,9 +366,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AutoThresholdImage() automatically selects a threshold and replaces each
-%  pixel in the image with a black pixel if the image intentsity is less than
-%  the selected threshold otherwise white.
+%  AutoThresholdImage()  automatically performs image thresholding
+%  dependent on which method you specify.
 %
 %  The format of the AutoThresholdImage method is:
 %

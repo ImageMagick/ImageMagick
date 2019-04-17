@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-static inline void GetUTCTime(const time_t *timep,struct tm *result)
+static inline void GetMagickUTCtime(const time_t *timep,struct tm *result)
 {
 #if defined(MAGICKCORE_HAVE_GMTIME_R)
   (void) gmtime_r(timep,result);
@@ -38,7 +38,7 @@ static inline void GetUTCTime(const time_t *timep,struct tm *result)
 #endif
 }
 
-static inline void GetLocalTime(const time_t *timep,struct tm *result)
+static inline void GetMagickLocaltime(const time_t *timep,struct tm *result)
 {
 #if defined(MAGICKCORE_HAVE_GMTIME_R)
   (void) localtime_r(timep,result);
