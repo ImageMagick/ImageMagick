@@ -251,7 +251,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     case PseudoColor:
     {
       if ((header.bits_per_pixel < 1) || (header.bits_per_pixel > 15) ||
-          (header.colormap_entries == 0))
+          (header.ncolors == 0))
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       break;
     }
@@ -318,6 +318,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     default:
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   }
+  if (header.ncolors > 65535)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if (((header.bitmap_pad % 8) != 0) || (header.bitmap_pad > 32))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   length=(size_t) (header.header_size-sz_XWDheader);
