@@ -6747,9 +6747,6 @@ WandExport MagickBooleanType MagickLabelImage(MagickWand *wand,
 %
 %      MagickBooleanType MagickLevelImage(MagickWand *wand,
 %        const double black_point,const double gamma,const double white_point)
-%      MagickBooleanType MagickLevelImage(MagickWand *wand,
-%        const ChannelType channel,const double black_point,const double gamma,
-%        const double white_point)
 %
 %  A description of each parameter follows:
 %
