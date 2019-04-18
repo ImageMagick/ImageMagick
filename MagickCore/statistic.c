@@ -2168,7 +2168,6 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
 MagickExport Image *PolynomialImage(const Image *images,
   const size_t number_terms,const double *terms,ExceptionInfo *exception)
 {
