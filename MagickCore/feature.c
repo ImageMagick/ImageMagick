@@ -1643,25 +1643,35 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
           /*
             Maximum Correlation Coefficient.
           */
-          Q[z][y].direction[i].red+=cooccurrence[z][x].direction[i].red*
-            cooccurrence[y][x].direction[i].red/density_x[z].direction[i].red/
-            density_y[x].direction[i].red;
-          Q[z][y].direction[i].green+=cooccurrence[z][x].direction[i].green*
-            cooccurrence[y][x].direction[i].green/
-            density_x[z].direction[i].green/density_y[x].direction[i].red;
-          Q[z][y].direction[i].blue+=cooccurrence[z][x].direction[i].blue*
-            cooccurrence[y][x].direction[i].blue/density_x[z].direction[i].blue/
-            density_y[x].direction[i].blue;
+          if ((fabs(density_x[z].direction[i].red) > MagickEpsilon) &&
+              (fabs(density_y[x].direction[i].red) > MagickEpsilon))
+            Q[z][y].direction[i].red+=cooccurrence[z][x].direction[i].red*
+              cooccurrence[y][x].direction[i].red/density_x[z].direction[i].red/
+              density_y[x].direction[i].red;
+          if ((fabs(density_x[z].direction[i].green) > MagickEpsilon) &&
+              (fabs(density_y[x].direction[i].red) > MagickEpsilon))
+            Q[z][y].direction[i].green+=cooccurrence[z][x].direction[i].green*
+              cooccurrence[y][x].direction[i].green/
+              density_x[z].direction[i].green/density_y[x].direction[i].red;
+          if ((fabs(density_x[z].direction[i].blue) > MagickEpsilon) &&
+              (fabs(density_y[x].direction[i].blue) > MagickEpsilon))
+            Q[z][y].direction[i].blue+=cooccurrence[z][x].direction[i].blue*
+              cooccurrence[y][x].direction[i].blue/
+              density_x[z].direction[i].blue/density_y[x].direction[i].blue;
           if (image->colorspace == CMYKColorspace)
-            Q[z][y].direction[i].black+=cooccurrence[z][x].direction[i].black*
-              cooccurrence[y][x].direction[i].black/
-              density_x[z].direction[i].black/density_y[x].direction[i].black;
+            if ((fabs(density_x[z].direction[i].black) > MagickEpsilon) &&
+                (fabs(density_y[x].direction[i].black) > MagickEpsilon))
+              Q[z][y].direction[i].black+=cooccurrence[z][x].direction[i].black*
+                cooccurrence[y][x].direction[i].black/
+                density_x[z].direction[i].black/density_y[x].direction[i].black;
           if (image->alpha_trait != UndefinedPixelTrait)
-            Q[z][y].direction[i].alpha+=
-              cooccurrence[z][x].direction[i].alpha*
-              cooccurrence[y][x].direction[i].alpha/
-              density_x[z].direction[i].alpha/
-              density_y[x].direction[i].alpha;
+            if ((fabs(density_x[z].direction[i].alpha) > MagickEpsilon) &&
+                (fabs(density_y[x].direction[i].alpha) > MagickEpsilon))
+              Q[z][y].direction[i].alpha+=
+                cooccurrence[z][x].direction[i].alpha*
+                cooccurrence[y][x].direction[i].alpha/
+                density_x[z].direction[i].alpha/
+                density_y[x].direction[i].alpha;
         }
       }
       channel_features[RedPixelChannel].contrast[i]+=z*z*
