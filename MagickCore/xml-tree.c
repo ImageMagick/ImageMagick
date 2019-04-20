@@ -1403,6 +1403,8 @@ static char *ParseEntities(char *xml,char **entities,int state)
       if (*xml == '\n')
         (void) memmove(xml,xml+1,strlen(xml));
     }
+  if (*xml == '\0')
+    return(ConstantString(xml));
   for (xml=p; ; )
   {
     while ((*xml != '\0') && (*xml != '&') && ((*xml != '%') ||
