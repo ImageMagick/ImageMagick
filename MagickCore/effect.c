@@ -895,7 +895,7 @@ static void Hull(const Image *image,const ssize_t x_offset,
   assert(g != (Quantum *) NULL);
   p=f+(columns+2);
   q=g+(columns+2);
-  r=p+(y_offset*(columns+2)+x_offset);
+  r=p+(y_offset*((ssize_t) columns+2)+x_offset);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) \
     magick_number_threads(image,image,rows,1)
@@ -931,8 +931,8 @@ static void Hull(const Image *image,const ssize_t x_offset,
   }
   p=f+(columns+2);
   q=g+(columns+2);
-  r=q+(y_offset*(columns+2)+x_offset);
-  s=q-(y_offset*(columns+2)+x_offset);
+  r=q+(y_offset*((ssize_t) columns+2)+x_offset);
+  s=q-(y_offset*((ssize_t) columns+2)+x_offset);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) \
     magick_number_threads(image,image,rows,1)

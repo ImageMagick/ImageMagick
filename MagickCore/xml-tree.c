@@ -1403,8 +1403,6 @@ static char *ParseEntities(char *xml,char **entities,int state)
       if (*xml == '\n')
         (void) memmove(xml,xml+1,strlen(xml));
     }
-  if (*xml == '\0')
-    return(ConstantString(xml));
   for (xml=p; ; )
   {
     while ((*xml != '\0') && (*xml != '&') && ((*xml != '%') ||
@@ -1486,13 +1484,16 @@ static char *ParseEntities(char *xml,char **entities,int state)
                     offset=(ssize_t) (xml-p);
                     extent=(size_t) (offset+length+strlen(entity));
                     if (p != q)
-                      p=(char *) ResizeQuantumMemory(p,extent,sizeof(*p));
+                      {
+                        p=(char *) ResizeQuantumMemory(p,extent+1,sizeof(*p));
+                        p[extent]='\0';
+                      }
                     else
                       {
                         char
                           *extent_xml;
 
-                        extent_xml=(char *) AcquireQuantumMemory(extent,
+                        extent_xml=(char *) AcquireQuantumMemory(extent+1,
                           sizeof(*extent_xml));
                         if (extent_xml != (char *) NULL)
                           {
