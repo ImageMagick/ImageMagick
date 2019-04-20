@@ -240,11 +240,6 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if (header.xoffset >= header.pixmap_width)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  if (((header.pixmap_depth | header.pixmap_format | header.xoffset | 
-        header.pixmap_width | header.pixmap_height | header.bitmap_pad | 
-        header.bytes_per_line | header.byte_order | header.bitmap_unit | 
-        header.bitmap_bit_order | header.bits_per_pixel) >> 31) != 0)
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   switch (header.visual_class)
   {
     case StaticGray:
