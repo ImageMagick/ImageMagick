@@ -1340,7 +1340,7 @@ RestoreMSCWarning
     y;
 
   struct tm
-    local_time;
+    utc_time;
 
   time_t
     seconds;
@@ -3009,10 +3009,10 @@ RestoreMSCWarning
     }
   (void) WriteBlobString(image,buffer);
   seconds=GetMagickTime();
-  GetMagickUTCtime(&seconds,&local_time);
+  GetMagickUTCtime(&seconds,&utc_time);
   (void) FormatLocaleString(date,MagickPathExtent,"D:%04d%02d%02d%02d%02d%02d",
-    local_time.tm_year+1900,local_time.tm_mon+1,local_time.tm_mday,
-    local_time.tm_hour,local_time.tm_min,local_time.tm_sec);
+    utc_time.tm_year+1900,utc_time.tm_mon+1,utc_time.tm_mday,
+    utc_time.tm_hour,utc_time.tm_min,utc_time.tm_sec);
   (void) FormatLocaleString(buffer,MagickPathExtent,"/CreationDate (%s)\n",
     date);
   (void) WriteBlobString(image,buffer);

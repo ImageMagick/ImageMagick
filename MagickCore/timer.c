@@ -259,14 +259,14 @@ MagickExport ssize_t FormatMagickTime(const time_t time,const size_t length,
     count;
 
   struct tm
-    gm_time;
+    utc_time;
 
   assert(timestamp != (char *) NULL);
-  GetMagickUTCtime(&time,&gm_time);
+  GetMagickUTCtime(&time,&utc_time);
   count=FormatLocaleString(timestamp,length,
-    "%04d-%02d-%02dT%02d:%02d:%02d%+03d:00",gm_time.tm_year+1900,
-    gm_time.tm_mon+1,gm_time.tm_mday,gm_time.tm_hour,gm_time.tm_min,
-    gm_time.tm_sec,0);
+    "%04d-%02d-%02dT%02d:%02d:%02d%+03d:00",utc_time.tm_year+1900,
+    utc_time.tm_mon+1,utc_time.tm_mday,utc_time.tm_hour,utc_time.tm_min,
+    utc_time.tm_sec,0);
   return(count);
 }
 

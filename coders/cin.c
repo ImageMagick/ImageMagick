@@ -933,7 +933,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
     y;
 
   struct tm
-    local_time;
+    utc_time;
 
   time_t
     seconds;
@@ -992,9 +992,9 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
   offset+=WriteBlob(image,sizeof(cin.file.filename),(unsigned char *)
     cin.file.filename);
   seconds=GetMagickTime();
-  GetMagickUTCtime(&seconds,&local_time);
+  GetMagickUTCtime(&seconds,&utc_time);
   (void) memset(timestamp,0,sizeof(timestamp));
-  (void) strftime(timestamp,MaxTextExtent,"%Y:%m:%d:%H:%M:%SUTC",&local_time);
+  (void) strftime(timestamp,MaxTextExtent,"%Y:%m:%d:%H:%M:%SUTC",&utc_time);
   (void) memset(cin.file.create_date,0,sizeof(cin.file.create_date));
   (void) CopyMagickString(cin.file.create_date,timestamp,11);
   offset+=WriteBlob(image,sizeof(cin.file.create_date),(unsigned char *)
@@ -1091,7 +1091,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
   offset+=WriteBlob(image,sizeof(cin.origination.filename),(unsigned char *)
     cin.origination.filename);
   (void) memset(timestamp,0,sizeof(timestamp));
-  (void) strftime(timestamp,MaxTextExtent,"%Y:%m:%d:%H:%M:%SUTC",&local_time);
+  (void) strftime(timestamp,MaxTextExtent,"%Y:%m:%d:%H:%M:%SUTC",&utc_time);
   (void) memset(cin.origination.create_date,0,
     sizeof(cin.origination.create_date));
   (void) CopyMagickString(cin.origination.create_date,timestamp,11);
