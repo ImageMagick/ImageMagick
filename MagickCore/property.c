@@ -918,10 +918,10 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
       tag;
 
     const char
-      *description;
+      description[35];
   } TagInfo;
 
-  static TagInfo
+  static const TagInfo
     EXIFTag[] =
     {
       {  0x001, "exif:InteroperabilityIndex" },
@@ -1220,7 +1220,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
       { 0x1001d, "exif:GPSDateStamp" },
       { 0x1001e, "exif:GPSDifferential" },
       { 0x1001f, "exif:GPSHPositioningError" },
-      { 0x00000, (const char *) NULL }
+      { 0x00000, "" }
     };  /* http://www.cipa.jp/std/documents/e/DC-008-Translation-2016-E.pdf */
 
   const StringInfo
