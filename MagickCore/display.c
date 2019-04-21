@@ -123,7 +123,7 @@ static const unsigned char
   };
 
 static const char
-  *const PageSizes[] =
+  *PageSizes[] =
   {
     "Letter",
     "Tabloid",
@@ -146,1194 +146,1180 @@ static const char
   Help widget declarations.
 */
 static const char
-  *const ImageAnnotateHelp[] =
+  ImageAnnotateHelp[] =
   {
-    "In annotate mode, the Command widget has these options:",
-    "",
-    "    Font Name",
-    "      fixed",
-    "      variable",
-    "      5x8",
-    "      6x10",
-    "      7x13bold",
-    "      8x13bold",
-    "      9x15bold",
-    "      10x20",
-    "      12x24",
-    "      Browser...",
-    "    Font Color",
-    "      black",
-    "      blue",
-    "      cyan",
-    "      green",
-    "      gray",
-    "      red",
-    "      magenta",
-    "      yellow",
-    "      white",
-    "      transparent",
-    "      Browser...",
-    "    Font Color",
-    "      black",
-    "      blue",
-    "      cyan",
-    "      green",
-    "      gray",
-    "      red",
-    "      magenta",
-    "      yellow",
-    "      white",
-    "      transparent",
-    "      Browser...",
-    "    Rotate Text",
-    "      -90",
-    "      -45",
-    "      -30",
-    "      0",
-    "      30",
-    "      45",
-    "      90",
-    "      180",
-    "      Dialog...",
-    "    Help",
-    "    Dismiss",
-    "",
-    "Choose a font name from the Font Name sub-menu.  Additional",
-    "font names can be specified with the font browser.  You can",
-    "change the menu names by setting the X resources font1",
-    "through font9.",
-    "",
-    "Choose a font color from the Font Color sub-menu.",
-    "Additional font colors can be specified with the color",
-    "browser.  You can change the menu colors by setting the X",
-    "resources pen1 through pen9.",
-    "",
-    "If you select the color browser and press Grab, you can",
-    "choose the font color by moving the pointer to the desired",
-    "color on the screen and press any button.",
-    "",
-    "If you choose to rotate the text, choose Rotate Text from the",
-    "menu and select an angle.  Typically you will only want to",
-    "rotate one line of text at a time.  Depending on the angle you",
-    "choose, subsequent lines may end up overwriting each other.",
-    "",
-    "Choosing a font and its color is optional.  The default font",
-    "is fixed and the default color is black.  However, you must",
-    "choose a location to begin entering text and press button 1.",
-    "An underscore character will appear at the location of the",
-    "pointer.  The cursor changes to a pencil to indicate you are",
-    "in text mode.  To exit immediately, press Dismiss.",
-    "",
-    "In text mode, any key presses will display the character at",
-    "the location of the underscore and advance the underscore",
-    "cursor.  Enter your text and once completed press Apply to",
-    "finish your image annotation.  To correct errors press BACK",
-    "SPACE.  To delete an entire line of text, press DELETE.  Any",
-    "text that exceeds the boundaries of the image window is",
-    "automagically continued onto the next line.",
-    "",
-    "The actual color you request for the font is saved in the",
-    "image.  However, the color that appears in your image window",
-    "may be different.  For example, on a monochrome screen the",
-    "text will appear black or white even if you choose the color",
-    "red as the font color.  However, the image saved to a file",
-    "with -write is written with red lettering.  To assure the",
-    "correct color text in the final image, any PseudoClass image",
-    "is promoted to DirectClass (see miff(5)).  To force a",
-    "PseudoClass image to remain PseudoClass, use -colors.",
-    (char *) NULL,
+    "In annotate mode, the Command widget has these options:\n"
+    "\n"
+    "    Font Name\n"
+    "      fixed\n"
+    "      variable\n"
+    "      5x8\n"
+    "      6x10\n"
+    "      7x13bold\n"
+    "      8x13bold\n"
+    "      9x15bold\n"
+    "      10x20\n"
+    "      12x24\n"
+    "      Browser...\n"
+    "    Font Color\n"
+    "      black\n"
+    "      blue\n"
+    "      cyan\n"
+    "      green\n"
+    "      gray\n"
+    "      red\n"
+    "      magenta\n"
+    "      yellow\n"
+    "      white\n"
+    "      transparent\n"
+    "      Browser...\n"
+    "    Font Color\n"
+    "      black\n"
+    "      blue\n"
+    "      cyan\n"
+    "      green\n"
+    "      gray\n"
+    "      red\n"
+    "      magenta\n"
+    "      yellow\n"
+    "      white\n"
+    "      transparent\n"
+    "      Browser...\n"
+    "    Rotate Text\n"
+    "      -90\n"
+    "      -45\n"
+    "      -30\n"
+    "      0\n"
+    "      30\n"
+    "      45\n"
+    "      90\n"
+    "      180\n"
+    "      Dialog...\n"
+    "    Help\n"
+    "    Dismiss\n"
+    "\n"
+    "Choose a font name from the Font Name sub-menu.  Additional\n"
+    "font names can be specified with the font browser.  You can\n"
+    "change the menu names by setting the X resources font1\n"
+    "through font9.\n"
+    "\n"
+    "Choose a font color from the Font Color sub-menu.\n"
+    "Additional font colors can be specified with the color\n"
+    "browser.  You can change the menu colors by setting the X\n"
+    "resources pen1 through pen9.\n"
+    "\n"
+    "If you select the color browser and press Grab, you can\n"
+    "choose the font color by moving the pointer to the desired\n"
+    "color on the screen and press any button.\n"
+    "\n"
+    "If you choose to rotate the text, choose Rotate Text from the\n"
+    "menu and select an angle.  Typically you will only want to\n"
+    "rotate one line of text at a time.  Depending on the angle you\n"
+    "choose, subsequent lines may end up overwriting each other.\n"
+    "\n"
+    "Choosing a font and its color is optional.  The default font\n"
+    "is fixed and the default color is black.  However, you must\n"
+    "choose a location to begin entering text and press button 1.\n"
+    "An underscore character will appear at the location of the\n"
+    "pointer.  The cursor changes to a pencil to indicate you are\n"
+    "in text mode.  To exit immediately, press Dismiss.\n"
+    "\n"
+    "In text mode, any key presses will display the character at\n"
+    "the location of the underscore and advance the underscore\n"
+    "cursor.  Enter your text and once completed press Apply to\n"
+    "finish your image annotation.  To correct errors press BACK\n"
+    "SPACE.  To delete an entire line of text, press DELETE.  Any\n"
+    "text that exceeds the boundaries of the image window is\n"
+    "automagically continued onto the next line.\n"
+    "\n"
+    "The actual color you request for the font is saved in the\n"
+    "image.  However, the color that appears in your image window\n"
+    "may be different.  For example, on a monochrome screen the\n"
+    "text will appear black or white even if you choose the color\n"
+    "red as the font color.  However, the image saved to a file\n"
+    "with -write is written with red lettering.  To assure the\n"
+    "correct color text in the final image, any PseudoClass image\n"
+    "is promoted to DirectClass (see miff(5)).  To force a\n"
+    "PseudoClass image to remain PseudoClass, use -colors.\n"
   },
-  *const ImageChopHelp[] =
+  ImageChopHelp[] =
   {
-    "In chop mode, the Command widget has these options:",
-    "",
-    "    Direction",
-    "      horizontal",
-    "      vertical",
-    "    Help",
-    "    Dismiss",
-    "",
-    "If the you choose the horizontal direction (this the",
-    "default), the area of the image between the two horizontal",
-    "endpoints of the chop line is removed.  Otherwise, the area",
-    "of the image between the two vertical endpoints of the chop",
-    "line is removed.",
-    "",
-    "Select a location within the image window to begin your chop,",
-    "press and hold any button.  Next, move the pointer to",
-    "another location in the image.  As you move a line will",
-    "connect the initial location and the pointer.  When you",
-    "release the button, the area within the image to chop is",
-    "determined by which direction you choose from the Command",
-    "widget.",
-    "",
-    "To cancel the image chopping, move the pointer back to the",
-    "starting point of the line and release the button.",
-    (char *) NULL,
+    "In chop mode, the Command widget has these options:\n"
+    "\n"
+    "    Direction\n"
+    "      horizontal\n"
+    "      vertical\n"
+    "    Help\n"
+    "    Dismiss\n"
+    "\n"
+    "If the you choose the horizontal direction (this the\n"
+    "default), the area of the image between the two horizontal\n"
+    "endpoints of the chop line is removed.  Otherwise, the area\n"
+    "of the image between the two vertical endpoints of the chop\n"
+    "line is removed.\n"
+    "\n"
+    "Select a location within the image window to begin your chop,\n"
+    "press and hold any button.  Next, move the pointer to\n"
+    "another location in the image.  As you move a line will\n"
+    "connect the initial location and the pointer.  When you\n"
+    "release the button, the area within the image to chop is\n"
+    "determined by which direction you choose from the Command\n"
+    "widget.\n"
+    "\n"
+    "To cancel the image chopping, move the pointer back to the\n"
+    "starting point of the line and release the button.\n"
   },
-  *const ImageColorEditHelp[] =
+  ImageColorEditHelp[] =
   {
-    "In color edit mode, the Command widget has these options:",
-    "",
-    "    Method",
-    "      point",
-    "      replace",
-    "      floodfill",
-    "      filltoborder",
-    "      reset",
-    "    Pixel Color",
-    "      black",
-    "      blue",
-    "      cyan",
-    "      green",
-    "      gray",
-    "      red",
-    "      magenta",
-    "      yellow",
-    "      white",
-    "      Browser...",
-    "    Border Color",
-    "      black",
-    "      blue",
-    "      cyan",
-    "      green",
-    "      gray",
-    "      red",
-    "      magenta",
-    "      yellow",
-    "      white",
-    "      Browser...",
-    "    Fuzz",
-    "      0%",
-    "      2%",
-    "      5%",
-    "      10%",
-    "      15%",
-    "      Dialog...",
-    "    Undo",
-    "    Help",
-    "    Dismiss",
-    "",
-    "Choose a color editing method from the Method sub-menu",
-    "of the Command widget.  The point method recolors any pixel",
-    "selected with the pointer until the button is released.  The",
-    "replace method recolors any pixel that matches the color of",
-    "the pixel you select with a button press.  Floodfill recolors",
-    "any pixel that matches the color of the pixel you select with",
-    "a button press and is a neighbor.  Whereas filltoborder recolors",
-    "any neighbor pixel that is not the border color.  Finally reset",
-    "changes the entire image to the designated color.",
-    "",
-    "Next, choose a pixel color from the Pixel Color sub-menu.",
-    "Additional pixel colors can be specified with the color",
-    "browser.  You can change the menu colors by setting the X",
-    "resources pen1 through pen9.",
-    "",
-    "Now press button 1 to select a pixel within the image window",
-    "to change its color.  Additional pixels may be recolored as",
-    "prescribed by the method you choose.",
-    "",
-    "If the Magnify widget is mapped, it can be helpful in positioning",
-    "your pointer within the image (refer to button 2).",
-    "",
-    "The actual color you request for the pixels is saved in the",
-    "image.  However, the color that appears in your image window",
-    "may be different.  For example, on a monochrome screen the",
-    "pixel will appear black or white even if you choose the",
-    "color red as the pixel color.  However, the image saved to a",
-    "file with -write is written with red pixels.  To assure the",
-    "correct color text in the final image, any PseudoClass image",
-    "is promoted to DirectClass (see miff(5)).  To force a",
-    "PseudoClass image to remain PseudoClass, use -colors.",
-    (char *) NULL,
+    "In color edit mode, the Command widget has these options:\n"
+    "\n"
+    "    Method\n"
+    "      point\n"
+    "      replace\n"
+    "      floodfill\n"
+    "      filltoborder\n"
+    "      reset\n"
+    "    Pixel Color\n"
+    "      black\n"
+    "      blue\n"
+    "      cyan\n"
+    "      green\n"
+    "      gray\n"
+    "      red\n"
+    "      magenta\n"
+    "      yellow\n"
+    "      white\n"
+    "      Browser...\n"
+    "    Border Color\n"
+    "      black\n"
+    "      blue\n"
+    "      cyan\n"
+    "      green\n"
+    "      gray\n"
+    "      red\n"
+    "      magenta\n"
+    "      yellow\n"
+    "      white\n"
+    "      Browser...\n"
+    "    Fuzz\n"
+    "      0%\n"
+    "      2%\n"
+    "      5%\n"
+    "      10%\n"
+    "      15%\n"
+    "      Dialog...\n"
+    "    Undo\n"
+    "    Help\n"
+    "    Dismiss\n"
+    "\n"
+    "Choose a color editing method from the Method sub-menu\n"
+    "of the Command widget.  The point method recolors any pixel\n"
+    "selected with the pointer until the button is released.  The\n"
+    "replace method recolors any pixel that matches the color of\n"
+    "the pixel you select with a button press.  Floodfill recolors\n"
+    "any pixel that matches the color of the pixel you select with\n"
+    "a button press and is a neighbor.  Whereas filltoborder recolors\n"
+    "any neighbor pixel that is not the border color.  Finally reset\n"
+    "changes the entire image to the designated color.\n"
+    "\n"
+    "Next, choose a pixel color from the Pixel Color sub-menu.\n"
+    "Additional pixel colors can be specified with the color\n"
+    "browser.  You can change the menu colors by setting the X\n"
+    "resources pen1 through pen9.\n"
+    "\n"
+    "Now press button 1 to select a pixel within the image window\n"
+    "to change its color.  Additional pixels may be recolored as\n"
+    "prescribed by the method you choose.\n"
+    "\n"
+    "If the Magnify widget is mapped, it can be helpful in positioning\n"
+    "your pointer within the image (refer to button 2).\n"
+    "\n"
+    "The actual color you request for the pixels is saved in the\n"
+    "image.  However, the color that appears in your image window\n"
+    "may be different.  For example, on a monochrome screen the\n"
+    "pixel will appear black or white even if you choose the\n"
+    "color red as the pixel color.  However, the image saved to a\n"
+    "file with -write is written with red pixels.  To assure the\n"
+    "correct color text in the final image, any PseudoClass image\n"
+    "is promoted to DirectClass (see miff(5)).  To force a\n"
+    "PseudoClass image to remain PseudoClass, use -colors.\n"
   },
-  *const ImageCompositeHelp[] =
+  ImageCompositeHelp[] =
   {
-    "First a widget window is displayed requesting you to enter an",
-    "image name. Press Composite, Grab or type a file name.",
-    "Press Cancel if you choose not to create a composite image.",
-    "When you choose Grab, move the pointer to the desired window",
-    "and press any button.",
-    "",
-    "If the Composite image does not have any matte information,",
-    "you are informed and the file browser is displayed again.",
-    "Enter the name of a mask image.  The image is typically",
-    "grayscale and the same size as the composite image.  If the",
-    "image is not grayscale, it is converted to grayscale and the",
-    "resulting intensities are used as matte information.",
-    "",
-    "A small window appears showing the location of the cursor in",
-    "the image window. You are now in composite mode.  To exit",
-    "immediately, press Dismiss.  In composite mode, the Command",
-    "widget has these options:",
-    "",
-    "    Operators",
-    "      Over",
-    "      In",
-    "      Out",
-    "      Atop",
-    "      Xor",
-    "      Plus",
-    "      Minus",
-    "      Add",
-    "      Subtract",
-    "      Difference",
-    "      Multiply",
-    "      Bumpmap",
-    "      Copy",
-    "      CopyRed",
-    "      CopyGreen",
-    "      CopyBlue",
-    "      CopyOpacity",
-    "      Clear",
-    "    Dissolve",
-    "    Displace",
-    "    Help",
-    "    Dismiss",
-    "",
-    "Choose a composite operation from the Operators sub-menu of",
-    "the Command widget.  How each operator behaves is described",
-    "below.  Image window is the image currently displayed on",
-    "your X server and image is the image obtained with the File",
-    "Browser widget.",
-    "",
-    "Over     The result is the union of the two image shapes,",
-    "         with image obscuring image window in the region of",
-    "         overlap.",
-    "",
-    "In       The result is simply image cut by the shape of",
-    "         image window.  None of the image data of image",
-    "         window is in the result.",
-    "",
-    "Out      The resulting image is image with the shape of",
-    "         image window cut out.",
-    "",
-    "Atop     The result is the same shape as image image window,",
-    "         with image obscuring image window where the image",
-    "         shapes overlap.  Note this differs from over",
-    "         because the portion of image outside image window's",
-    "         shape does not appear in the result.",
-    "",
-    "Xor      The result is the image data from both image and",
-    "         image window that is outside the overlap region.",
-    "         The overlap region is blank.",
-    "",
-    "Plus     The result is just the sum of the image data.",
-    "         Output values are cropped to QuantumRange (no overflow).",
-    "",
-    "Minus    The result of image - image window, with underflow",
-    "         cropped to zero.",
-    "",
-    "Add      The result of image + image window, with overflow",
-    "         wrapping around (mod 256).",
-    "",
-    "Subtract The result of image - image window, with underflow",
-    "         wrapping around (mod 256).  The add and subtract",
-    "         operators can be used to perform reversible",
-    "         transformations.",
-    "",
-    "Difference",
-    "         The result of abs(image - image window).  This",
-    "         useful for comparing two very similar images.",
-    "",
-    "Multiply",
-    "         The result of image * image window.  This",
-    "         useful for the creation of drop-shadows.",
-    "",
-    "Bumpmap  The result of surface normals from image * image",
-    "         window.",
-    "",
-    "Copy     The resulting image is image window replaced with",
-    "         image.  Here the matte information is ignored.",
-    "",
-    "CopyRed  The red layer of the image window is replace with",
-    "         the red layer of the image.  The other layers are",
-    "         untouched.",
-    "",
-    "CopyGreen",
-    "         The green layer of the image window is replace with",
-    "         the green layer of the image.  The other layers are",
-    "         untouched.",
-    "",
-    "CopyBlue The blue layer of the image window is replace with",
-    "         the blue layer of the image.  The other layers are",
-    "         untouched.",
-    "",
-    "CopyOpacity",
-    "         The matte layer of the image window is replace with",
-    "         the matte layer of the image.  The other layers are",
-    "         untouched.",
-    "",
-    "The image compositor requires a matte, or alpha channel in",
-    "the image for some operations.  This extra channel usually",
-    "defines a mask which represents a sort of a cookie-cutter",
-    "for the image.  This the case when matte is opaque (full",
-    "coverage) for pixels inside the shape, zero outside, and",
-    "between 0 and QuantumRange on the boundary.  If image does not",
-    "have a matte channel, it is initialized with 0 for any pixel",
-    "matching in color to pixel location (0,0), otherwise QuantumRange.",
-    "",
-    "If you choose Dissolve, the composite operator becomes Over.  The",
-    "image matte channel percent transparency is initialized to factor.",
-    "The image window is initialized to (100-factor). Where factor is the",
-    "value you specify in the Dialog widget.",
-    "",
-    "Displace shifts the image pixels as defined by a displacement",
-    "map.  With this option, image is used as a displacement map.",
-    "Black, within the displacement map, is a maximum positive",
-    "displacement.  White is a maximum negative displacement and",
-    "middle gray is neutral.  The displacement is scaled to determine",
-    "the pixel shift.  By default, the displacement applies in both the",
-    "horizontal and vertical directions.  However, if you specify a mask,",
-    "image is the horizontal X displacement and mask the vertical Y",
-    "displacement.",
-    "",
-    "Note that matte information for image window is not retained",
-    "for colormapped X server visuals (e.g. StaticColor,",
-    "StaticColor, GrayScale, PseudoColor).  Correct compositing",
-    "behavior may require a TrueColor or DirectColor visual or a",
-    "Standard Colormap.",
-    "",
-    "Choosing a composite operator is optional.  The default",
-    "operator is replace.  However, you must choose a location to",
-    "composite your image and press button 1.  Press and hold the",
-    "button before releasing and an outline of the image will",
-    "appear to help you identify your location.",
-    "",
-    "The actual colors of the composite image is saved.  However,",
-    "the color that appears in image window may be different.",
-    "For example, on a monochrome screen image window will appear",
-    "black or white even though your composited image may have",
-    "many colors.  If the image is saved to a file it is written",
-    "with the correct colors.  To assure the correct colors are",
-    "saved in the final image, any PseudoClass image is promoted",
-    "to DirectClass (see miff(5)).  To force a PseudoClass image",
-    "to remain PseudoClass, use -colors.",
-    (char *) NULL,
+    "First a widget window is displayed requesting you to enter an\n"
+    "image name. Press Composite, Grab or type a file name.\n"
+    "Press Cancel if you choose not to create a composite image.\n"
+    "When you choose Grab, move the pointer to the desired window\n"
+    "and press any button.\n"
+    "\n"
+    "If the Composite image does not have any matte information,\n"
+    "you are informed and the file browser is displayed again.\n"
+    "Enter the name of a mask image.  The image is typically\n"
+    "grayscale and the same size as the composite image.  If the\n"
+    "image is not grayscale, it is converted to grayscale and the\n"
+    "resulting intensities are used as matte information.\n"
+    "\n"
+    "A small window appears showing the location of the cursor in\n"
+    "the image window. You are now in composite mode.  To exit\n"
+    "immediately, press Dismiss.  In composite mode, the Command\n"
+    "widget has these options:\n"
+    "\n"
+    "    Operators\n"
+    "      Over\n"
+    "      In\n"
+    "      Out\n"
+    "      Atop\n"
+    "      Xor\n"
+    "      Plus\n"
+    "      Minus\n"
+    "      Add\n"
+    "      Subtract\n"
+    "      Difference\n"
+    "      Multiply\n"
+    "      Bumpmap\n"
+    "      Copy\n"
+    "      CopyRed\n"
+    "      CopyGreen\n"
+    "      CopyBlue\n"
+    "      CopyOpacity\n"
+    "      Clear\n"
+    "    Dissolve\n"
+    "    Displace\n"
+    "    Help\n"
+    "    Dismiss\n"
+    "\n"
+    "Choose a composite operation from the Operators sub-menu of\n"
+    "the Command widget.  How each operator behaves is described\n"
+    "below.  Image window is the image currently displayed on\n"
+    "your X server and image is the image obtained with the File\n"
+    "Browser widget.\n"
+    "\n"
+    "Over     The result is the union of the two image shapes,\n"
+    "         with image obscuring image window in the region of\n"
+    "         overlap.\n"
+    "\n"
+    "In       The result is simply image cut by the shape of\n"
+    "         image window.  None of the image data of image\n"
+    "         window is in the result.\n"
+    "\n"
+    "Out      The resulting image is image with the shape of\n"
+    "         image window cut out.\n"
+    "\n"
+    "Atop     The result is the same shape as image image window,\n"
+    "         with image obscuring image window where the image\n"
+    "         shapes overlap.  Note this differs from over\n"
+    "         because the portion of image outside image window's\n"
+    "         shape does not appear in the result.\n"
+    "\n"
+    "Xor      The result is the image data from both image and\n"
+    "         image window that is outside the overlap region.\n"
+    "         The overlap region is blank.\n"
+    "\n"
+    "Plus     The result is just the sum of the image data.\n"
+    "         Output values are cropped to QuantumRange (no overflow).\n"
+    "\n"
+    "Minus    The result of image - image window, with underflow\n"
+    "         cropped to zero.\n"
+    "\n"
+    "Add      The result of image + image window, with overflow\n"
+    "         wrapping around (mod 256).\n"
+    "\n"
+    "Subtract The result of image - image window, with underflow\n"
+    "         wrapping around (mod 256).  The add and subtract\n"
+    "         operators can be used to perform reversible\n"
+    "         transformations.\n"
+    "\n"
+    "Difference\n"
+    "         The result of abs(image - image window).  This\n"
+    "         useful for comparing two very similar images.\n"
+    "\n"
+    "Multiply\n"
+    "         The result of image * image window.  This\n"
+    "         useful for the creation of drop-shadows.\n"
+    "\n"
+    "Bumpmap  The result of surface normals from image * image\n"
+    "         window.\n"
+    "\n"
+    "Copy     The resulting image is image window replaced with\n"
+    "         image.  Here the matte information is ignored.\n"
+    "\n"
+    "CopyRed  The red layer of the image window is replace with\n"
+    "         the red layer of the image.  The other layers are\n"
+    "         untouched.\n"
+    "\n"
+    "CopyGreen\n"
+    "         The green layer of the image window is replace with\n"
+    "         the green layer of the image.  The other layers are\n"
+    "         untouched.\n"
+    "\n"
+    "CopyBlue The blue layer of the image window is replace with\n"
+    "         the blue layer of the image.  The other layers are\n"
+    "         untouched.\n"
+    "\n"
+    "CopyOpacity\n"
+    "         The matte layer of the image window is replace with\n"
+    "         the matte layer of the image.  The other layers are\n"
+    "         untouched.\n"
+    "\n"
+    "The image compositor requires a matte, or alpha channel in\n"
+    "the image for some operations.  This extra channel usually\n"
+    "defines a mask which represents a sort of a cookie-cutter\n"
+    "for the image.  This the case when matte is opaque (full\n"
+    "coverage) for pixels inside the shape, zero outside, and\n"
+    "between 0 and QuantumRange on the boundary.  If image does not\n"
+    "have a matte channel, it is initialized with 0 for any pixel\n"
+    "matching in color to pixel location (0,0), otherwise QuantumRange.\n"
+    "\n"
+    "If you choose Dissolve, the composite operator becomes Over.  The\n"
+    "image matte channel percent transparency is initialized to factor.\n"
+    "The image window is initialized to (100-factor). Where factor is the\n"
+    "value you specify in the Dialog widget.\n"
+    "\n"
+    "Displace shifts the image pixels as defined by a displacement\n"
+    "map.  With this option, image is used as a displacement map.\n"
+    "Black, within the displacement map, is a maximum positive\n"
+    "displacement.  White is a maximum negative displacement and\n"
+    "middle gray is neutral.  The displacement is scaled to determine\n"
+    "the pixel shift.  By default, the displacement applies in both the\n"
+    "horizontal and vertical directions.  However, if you specify a mask,\n"
+    "image is the horizontal X displacement and mask the vertical Y\n"
+    "displacement.\n"
+    "\n"
+    "Note that matte information for image window is not retained\n"
+    "for colormapped X server visuals (e.g. StaticColor,\n"
+    "StaticColor, GrayScale, PseudoColor).  Correct compositing\n"
+    "behavior may require a TrueColor or DirectColor visual or a\n"
+    "Standard Colormap.\n"
+    "\n"
+    "Choosing a composite operator is optional.  The default\n"
+    "operator is replace.  However, you must choose a location to\n"
+    "composite your image and press button 1.  Press and hold the\n"
+    "button before releasing and an outline of the image will\n"
+    "appear to help you identify your location.\n"
+    "\n"
+    "The actual colors of the composite image is saved.  However,\n"
+    "the color that appears in image window may be different.\n"
+    "For example, on a monochrome screen image window will appear\n"
+    "black or white even though your composited image may have\n"
+    "many colors.  If the image is saved to a file it is written\n"
+    "with the correct colors.  To assure the correct colors are\n"
+    "saved in the final image, any PseudoClass image is promoted\n"
+    "to DirectClass (see miff(5)).  To force a PseudoClass image\n"
+    "to remain PseudoClass, use -colors.\n"
   },
-  *const ImageCutHelp[] =
+  ImageCutHelp[] =
   {
-    "In cut mode, the Command widget has these options:",
-    "",
-    "    Help",
-    "    Dismiss",
-    "",
-    "To define a cut region, press button 1 and drag.  The",
-    "cut region is defined by a highlighted rectangle that",
-    "expands or contracts as it follows the pointer.  Once you",
-    "are satisfied with the cut region, release the button.",
-    "You are now in rectify mode.  In rectify mode, the Command",
-    "widget has these options:",
-    "",
-    "    Cut",
-    "    Help",
-    "    Dismiss",
-    "",
-    "You can make adjustments by moving the pointer to one of the",
-    "cut rectangle corners, pressing a button, and dragging.",
-    "Finally, press Cut to commit your copy region.  To",
-    "exit without cutting the image, press Dismiss.",
-    (char *) NULL,
+    "In cut mode, the Command widget has these options:\n"
+    "\n"
+    "    Help\n"
+    "    Dismiss\n"
+    "\n"
+    "To define a cut region, press button 1 and drag.  The\n"
+    "cut region is defined by a highlighted rectangle that\n"
+    "expands or contracts as it follows the pointer.  Once you\n"
+    "are satisfied with the cut region, release the button.\n"
+    "You are now in rectify mode.  In rectify mode, the Command\n"
+    "widget has these options:\n"
+    "\n"
+    "    Cut\n"
+    "    Help\n"
+    "    Dismiss\n"
+    "\n"
+    "You can make adjustments by moving the pointer to one of the\n"
+    "cut rectangle corners, pressing a button, and dragging.\n"
+    "Finally, press Cut to commit your copy region.  To\n"
+    "exit without cutting the image, press Dismiss.\n"
   },
-  *const ImageCopyHelp[] =
+  ImageCopyHelp[] =
   {
-    "In copy mode, the Command widget has these options:",
-    "",
-    "    Help",
-    "    Dismiss",
-    "",
-    "To define a copy region, press button 1 and drag.  The",
-    "copy region is defined by a highlighted rectangle that",
-    "expands or contracts as it follows the pointer.  Once you",
-    "are satisfied with the copy region, release the button.",
-    "You are now in rectify mode.  In rectify mode, the Command",
-    "widget has these options:",
-    "",
-    "    Copy",
-    "    Help",
-    "    Dismiss",
-    "",
-    "You can make adjustments by moving the pointer to one of the",
-    "copy rectangle corners, pressing a button, and dragging.",
-    "Finally, press Copy to commit your copy region.  To",
-    "exit without copying the image, press Dismiss.",
-    (char *) NULL,
+    "In copy mode, the Command widget has these options:\n"
+    "\n"
+    "    Help\n"
+    "    Dismiss\n"
+    "\n"
+    "To define a copy region, press button 1 and drag.  The\n"
+    "copy region is defined by a highlighted rectangle that\n"
+    "expands or contracts as it follows the pointer.  Once you\n"
+    "are satisfied with the copy region, release the button.\n"
+    "You are now in rectify mode.  In rectify mode, the Command\n"
+    "widget has these options:\n"
+    "\n"
+    "    Copy\n"
+    "    Help\n"
+    "    Dismiss\n"
+    "\n"
+    "You can make adjustments by moving the pointer to one of the\n"
+    "copy rectangle corners, pressing a button, and dragging.\n"
+    "Finally, press Copy to commit your copy region.  To\n"
+    "exit without copying the image, press Dismiss.\n"
   },
-  *const ImageCropHelp[] =
+  ImageCropHelp[] =
   {
-    "In crop mode, the Command widget has these options:",
-    "",
-    "    Help",
-    "    Dismiss",
-    "",
-    "To define a cropping region, press button 1 and drag.  The",
-    "cropping region is defined by a highlighted rectangle that",
-    "expands or contracts as it follows the pointer.  Once you",
-    "are satisfied with the cropping region, release the button.",
-    "You are now in rectify mode.  In rectify mode, the Command",
-    "widget has these options:",
-    "",
-    "    Crop",
-    "    Help",
-    "    Dismiss",
-    "",
-    "You can make adjustments by moving the pointer to one of the",
-    "cropping rectangle corners, pressing a button, and dragging.",
-    "Finally, press Crop to commit your cropping region.  To",
-    "exit without cropping the image, press Dismiss.",
-    (char *) NULL,
+    "In crop mode, the Command widget has these options:\n"
+    "\n"
+    "    Help\n"
+    "    Dismiss\n"
+    "\n"
+    "To define a cropping region, press button 1 and drag.  The\n"
+    "cropping region is defined by a highlighted rectangle that\n"
+    "expands or contracts as it follows the pointer.  Once you\n"
+    "are satisfied with the cropping region, release the button.\n"
+    "You are now in rectify mode.  In rectify mode, the Command\n"
+    "widget has these options:\n"
+    "\n"
+    "    Crop\n"
+    "    Help\n"
+    "    Dismiss\n"
+    "\n"
+    "You can make adjustments by moving the pointer to one of the\n"
+    "cropping rectangle corners, pressing a button, and dragging.\n"
+    "Finally, press Crop to commit your cropping region.  To\n"
+    "exit without cropping the image, press Dismiss.\n"
   },
-  *const ImageDrawHelp[] =
+  ImageDrawHelp[] =
   {
-    "The cursor changes to a crosshair to indicate you are in",
-    "draw mode.  To exit immediately, press Dismiss.  In draw mode,",
-    "the Command widget has these options:",
-    "",
-    "    Element",
-    "      point",
-    "      line",
-    "      rectangle",
-    "      fill rectangle",
-    "      circle",
-    "      fill circle",
-    "      ellipse",
-    "      fill ellipse",
-    "      polygon",
-    "      fill polygon",
-    "    Color",
-    "      black",
-    "      blue",
-    "      cyan",
-    "      green",
-    "      gray",
-    "      red",
-    "      magenta",
-    "      yellow",
-    "      white",
-    "      transparent",
-    "      Browser...",
-    "    Stipple",
-    "      Brick",
-    "      Diagonal",
-    "      Scales",
-    "      Vertical",
-    "      Wavy",
-    "      Translucent",
-    "      Opaque",
-    "      Open...",
-    "    Width",
-    "      1",
-    "      2",
-    "      4",
-    "      8",
-    "      16",
-    "      Dialog...",
-    "    Undo",
-    "    Help",
-    "    Dismiss",
-    "",
-    "Choose a drawing primitive from the Element sub-menu.",
-    "",
-    "Choose a color from the Color sub-menu.  Additional",
-    "colors can be specified with the color browser.",
-    "",
-    "If you choose the color browser and press Grab, you can",
-    "select the color by moving the pointer to the desired",
-    "color on the screen and press any button.  The transparent",
-    "color updates the image matte channel and is useful for",
-    "image compositing.",
-    "",
-    "Choose a stipple, if appropriate, from the Stipple sub-menu.",
-    "Additional stipples can be specified with the file browser.",
-    "Stipples obtained from the file browser must be on disk in the",
-    "X11 bitmap format.",
-    "",
-    "Choose a width, if appropriate, from the Width sub-menu.  To",
-    "choose a specific width select the Dialog widget.",
-    "",
-    "Choose a point in the Image window and press button 1 and",
-    "hold.  Next, move the pointer to another location in the",
-    "image.  As you move, a line connects the initial location and",
-    "the pointer.  When you release the button, the image is",
-    "updated with the primitive you just drew.  For polygons, the",
-    "image is updated when you press and release the button without",
-    "moving the pointer.",
-    "",
-    "To cancel image drawing, move the pointer back to the",
-    "starting point of the line and release the button.",
-    (char *) NULL,
+    "The cursor changes to a crosshair to indicate you are in\n"
+    "draw mode.  To exit immediately, press Dismiss.  In draw mode,\n"
+    "the Command widget has these options:\n"
+    "\n"
+    "    Element\n"
+    "      point\n"
+    "      line\n"
+    "      rectangle\n"
+    "      fill rectangle\n"
+    "      circle\n"
+    "      fill circle\n"
+    "      ellipse\n"
+    "      fill ellipse\n"
+    "      polygon\n"
+    "      fill polygon\n"
+    "    Color\n"
+    "      black\n"
+    "      blue\n"
+    "      cyan\n"
+    "      green\n"
+    "      gray\n"
+    "      red\n"
+    "      magenta\n"
+    "      yellow\n"
+    "      white\n"
+    "      transparent\n"
+    "      Browser...\n"
+    "    Stipple\n"
+    "      Brick\n"
+    "      Diagonal\n"
+    "      Scales\n"
+    "      Vertical\n"
+    "      Wavy\n"
+    "      Translucent\n"
+    "      Opaque\n"
+    "      Open...\n"
+    "    Width\n"
+    "      1\n"
+    "      2\n"
+    "      4\n"
+    "      8\n"
+    "      16\n"
+    "      Dialog...\n"
+    "    Undo\n"
+    "    Help\n"
+    "    Dismiss\n"
+    "\n"
+    "Choose a drawing primitive from the Element sub-menu.\n"
+    "\n"
+    "Choose a color from the Color sub-menu.  Additional\n"
+    "colors can be specified with the color browser.\n"
+    "\n"
+    "If you choose the color browser and press Grab, you can\n"
+    "select the color by moving the pointer to the desired\n"
+    "color on the screen and press any button.  The transparent\n"
+    "color updates the image matte channel and is useful for\n"
+    "image compositing.\n"
+    "\n"
+    "Choose a stipple, if appropriate, from the Stipple sub-menu.\n"
+    "Additional stipples can be specified with the file browser.\n"
+    "Stipples obtained from the file browser must be on disk in the\n"
+    "X11 bitmap format.\n"
+    "\n"
+    "Choose a width, if appropriate, from the Width sub-menu.  To\n"
+    "choose a specific width select the Dialog widget.\n"
+    "\n"
+    "Choose a point in the Image window and press button 1 and\n"
+    "hold.  Next, move the pointer to another location in the\n"
+    "image.  As you move, a line connects the initial location and\n"
+    "the pointer.  When you release the button, the image is\n"
+    "updated with the primitive you just drew.  For polygons, the\n"
+    "image is updated when you press and release the button without\n"
+    "moving the pointer.\n"
+    "\n"
+    "To cancel image drawing, move the pointer back to the\n"
+    "starting point of the line and release the button.\n"
   },
-  *const DisplayHelp[] =
+  DisplayHelp[] =
   {
-    "BUTTONS",
-    "  The effects of each button press is described below.  Three",
-    "  buttons are required.  If you have a two button mouse,",
-    "  button 1 and 3 are returned.  Press ALT and button 3 to",
-    "  simulate button 2.",
-    "",
-    "  1    Press this button to map or unmap the Command widget.",
-    "",
-    "  2    Press and drag to define a region of the image to",
-    "       magnify.",
-    "",
-    "  3    Press and drag to choose from a select set of commands.",
-    "       This button behaves differently if the image being",
-    "       displayed is a visual image directory.  Here, choose a",
-    "       particular tile of the directory and press this button and",
-    "       drag to select a command from a pop-up menu.  Choose from",
-    "       these menu items:",
-    "",
-    "           Open",
-    "           Next",
-    "           Former",
-    "           Delete",
-    "           Update",
-    "",
-    "       If you choose Open, the image represented by the tile is",
-    "       displayed.  To return to the visual image directory, choose",
-    "       Next from the Command widget.  Next and Former moves to the",
-    "       next or former image respectively.  Choose Delete to delete",
-    "       a particular image tile.  Finally, choose Update to",
-    "       synchronize all the image tiles with their respective",
-    "       images.",
-    "",
-    "COMMAND WIDGET",
-    "  The Command widget lists a number of sub-menus and commands.",
-    "  They are",
-    "",
-    "      File",
-    "        Open...",
-    "        Next",
-    "        Former",
-    "        Select...",
-    "        Save...",
-    "        Print...",
-    "        Delete...",
-    "        New...",
-    "        Visual Directory...",
-    "        Quit",
-    "      Edit",
-    "        Undo",
-    "        Redo",
-    "        Cut",
-    "        Copy",
-    "        Paste",
-    "      View",
-    "        Half Size",
-    "        Original Size",
-    "        Double Size",
-    "        Resize...",
-    "        Apply",
-    "        Refresh",
-    "        Restore",
-    "      Transform",
-    "        Crop",
-    "        Chop",
-    "        Flop",
-    "        Flip",
-    "        Rotate Right",
-    "        Rotate Left",
-    "        Rotate...",
-    "        Shear...",
-    "        Roll...",
-    "        Trim Edges",
-    "      Enhance",
-    "        Brightness...",
-    "        Saturation...",
-    "        Hue...",
-    "        Gamma...",
-    "        Sharpen...",
-    "        Dull",
-    "        Contrast Stretch...",
-    "        Sigmoidal Contrast...",
-    "        Normalize",
-    "        Equalize",
-    "        Negate",
-    "        Grayscale",
-    "        Map...",
-    "        Quantize...",
-    "      Effects",
-    "        Despeckle",
-    "        Emboss",
-    "        Reduce Noise",
-    "        Add Noise",
-    "        Sharpen...",
-    "        Blur...",
-    "        Threshold...",
-    "        Edge Detect...",
-    "        Spread...",
-    "        Shade...",
-    "        Painting...",
-    "        Segment...",
-    "      F/X",
-    "        Solarize...",
-    "        Sepia Tone...",
-    "        Swirl...",
-    "        Implode...",
-    "        Vignette...",
-    "        Wave...",
-    "        Oil Painting...",
-    "        Charcoal Drawing...",
-    "      Image Edit",
-    "        Annotate...",
-    "        Draw...",
-    "        Color...",
-    "        Matte...",
-    "        Composite...",
-    "        Add Border...",
-    "        Add Frame...",
-    "        Comment...",
-    "        Launch...",
-    "        Region of Interest...",
-    "      Miscellany",
-    "        Image Info",
-    "        Zoom Image",
-    "        Show Preview...",
-    "        Show Histogram",
-    "        Show Matte",
-    "        Background...",
-    "        Slide Show",
-    "        Preferences...",
-    "      Help",
-    "        Overview",
-    "        Browse Documentation",
-    "        About Display",
-    "",
-    "  Menu items with a indented triangle have a sub-menu.  They",
-    "  are represented above as the indented items.  To access a",
-    "  sub-menu item, move the pointer to the appropriate menu and",
-    "  press a button and drag.  When you find the desired sub-menu",
-    "  item, release the button and the command is executed.  Move",
-    "  the pointer away from the sub-menu if you decide not to",
-    "  execute a particular command.",
-    "",
-    "KEYBOARD ACCELERATORS",
-    "  Accelerators are one or two key presses that effect a",
-    "  particular command.  The keyboard accelerators that",
-    "  display(1) understands is:",
-    "",
-    "  Ctl+O     Press to open an image from a file.",
-    "",
-    "  space     Press to display the next image.",
-    "",
-    "            If the image is a multi-paged document such as a Postscript",
-    "            document, you can skip ahead several pages by preceding",
-    "            this command with a number.  For example to display the",
-    "            third page beyond the current page, press 3<space>.",
-    "",
-    "  backspace Press to display the former image.",
-    "",
-    "            If the image is a multi-paged document such as a Postscript",
-    "            document, you can skip behind several pages by preceding",
-    "            this command with a number.  For example to display the",
-    "            third page preceding the current page, press 3<backspace>.",
-    "",
-    "  Ctl+S     Press to write the image to a file.",
-    "",
-    "  Ctl+P     Press to print the image to a Postscript printer.",
-    "",
-    "  Ctl+D     Press to delete an image file.",
-    "",
-    "  Ctl+N     Press to create a blank canvas.",
-    "",
-    "  Ctl+Q     Press to discard all images and exit program.",
-    "",
-    "  Ctl+Z     Press to undo last image transformation.",
-    "",
-    "  Ctl+R     Press to redo last image transformation.",
-    "",
-    "  Ctl+X     Press to cut a region of the image.",
-    "",
-    "  Ctl+C     Press to copy a region of the image.",
-    "",
-    "  Ctl+V     Press to paste a region to the image.",
-    "",
-    "  <         Press to half the image size.",
-    "",
-    "  -         Press to return to the original image size.",
-    "",
-    "  >         Press to double the image size.",
-    "",
-    "  %         Press to resize the image to a width and height you",
-    "            specify.",
-    "",
+    "BUTTONS\n"
+    "  The effects of each button press is described below.  Three\n"
+    "  buttons are required.  If you have a two button mouse,\n"
+    "  button 1 and 3 are returned.  Press ALT and button 3 to\n"
+    "  simulate button 2.\n"
+    "\n"
+    "  1    Press this button to map or unmap the Command widget.\n"
+    "\n"
+    "  2    Press and drag to define a region of the image to\n"
+    "       magnify.\n"
+    "\n"
+    "  3    Press and drag to choose from a select set of commands.\n"
+    "       This button behaves differently if the image being\n"
+    "       displayed is a visual image directory.  Here, choose a\n"
+    "       particular tile of the directory and press this button and\n"
+    "       drag to select a command from a pop-up menu.  Choose from\n"
+    "       these menu items:\n"
+    "\n"
+    "           Open\n"
+    "           Next\n"
+    "           Former\n"
+    "           Delete\n"
+    "           Update\n"
+    "\n"
+    "       If you choose Open, the image represented by the tile is\n"
+    "       displayed.  To return to the visual image directory, choose\n"
+    "       Next from the Command widget.  Next and Former moves to the\n"
+    "       next or former image respectively.  Choose Delete to delete\n"
+    "       a particular image tile.  Finally, choose Update to\n"
+    "       synchronize all the image tiles with their respective\n"
+    "       images.\n"
+    "\n"
+    "COMMAND WIDGET\n"
+    "  The Command widget lists a number of sub-menus and commands.\n"
+    "  They are\n"
+    "\n"
+    "      File\n"
+    "        Open...\n"
+    "        Next\n"
+    "        Former\n"
+    "        Select...\n"
+    "        Save...\n"
+    "        Print...\n"
+    "        Delete...\n"
+    "        New...\n"
+    "        Visual Directory...\n"
+    "        Quit\n"
+    "      Edit\n"
+    "        Undo\n"
+    "        Redo\n"
+    "        Cut\n"
+    "        Copy\n"
+    "        Paste\n"
+    "      View\n"
+    "        Half Size\n"
+    "        Original Size\n"
+    "        Double Size\n"
+    "        Resize...\n"
+    "        Apply\n"
+    "        Refresh\n"
+    "        Restore\n"
+    "      Transform\n"
+    "        Crop\n"
+    "        Chop\n"
+    "        Flop\n"
+    "        Flip\n"
+    "        Rotate Right\n"
+    "        Rotate Left\n"
+    "        Rotate...\n"
+    "        Shear...\n"
+    "        Roll...\n"
+    "        Trim Edges\n"
+    "      Enhance\n"
+    "        Brightness...\n"
+    "        Saturation...\n"
+    "        Hue...\n"
+    "        Gamma...\n"
+    "        Sharpen...\n"
+    "        Dull\n"
+    "        Contrast Stretch...\n"
+    "        Sigmoidal Contrast...\n"
+    "        Normalize\n"
+    "        Equalize\n"
+    "        Negate\n"
+    "        Grayscale\n"
+    "        Map...\n"
+    "        Quantize...\n"
+    "      Effects\n"
+    "        Despeckle\n"
+    "        Emboss\n"
+    "        Reduce Noise\n"
+    "        Add Noise\n"
+    "        Sharpen...\n"
+    "        Blur...\n"
+    "        Threshold...\n"
+    "        Edge Detect...\n"
+    "        Spread...\n"
+    "        Shade...\n"
+    "        Painting...\n"
+    "        Segment...\n"
+    "      F/X\n"
+    "        Solarize...\n"
+    "        Sepia Tone...\n"
+    "        Swirl...\n"
+    "        Implode...\n"
+    "        Vignette...\n"
+    "        Wave...\n"
+    "        Oil Painting...\n"
+    "        Charcoal Drawing...\n"
+    "      Image Edit\n"
+    "        Annotate...\n"
+    "        Draw...\n"
+    "        Color...\n"
+    "        Matte...\n"
+    "        Composite...\n"
+    "        Add Border...\n"
+    "        Add Frame...\n"
+    "        Comment...\n"
+    "        Launch...\n"
+    "        Region of Interest...\n"
+    "      Miscellany\n"
+    "        Image Info\n"
+    "        Zoom Image\n"
+    "        Show Preview...\n"
+    "        Show Histogram\n"
+    "        Show Matte\n"
+    "        Background...\n"
+    "        Slide Show\n"
+    "        Preferences...\n"
+    "      Help\n"
+    "        Overview\n"
+    "        Browse Documentation\n"
+    "        About Display\n"
+    "\n"
+    "  Menu items with a indented triangle have a sub-menu.  They\n"
+    "  are represented above as the indented items.  To access a\n"
+    "  sub-menu item, move the pointer to the appropriate menu and\n"
+    "  press a button and drag.  When you find the desired sub-menu\n"
+    "  item, release the button and the command is executed.  Move\n"
+    "  the pointer away from the sub-menu if you decide not to\n"
+    "  execute a particular command.\n"
+    "\n"
+    "KEYBOARD ACCELERATORS\n"
+    "  Accelerators are one or two key presses that effect a\n"
+    "  particular command.  The keyboard accelerators that\n"
+    "  display(1) understands is:\n"
+    "\n"
+    "  Ctl+O     Press to open an image from a file.\n"
+    "\n"
+    "  space     Press to display the next image.\n"
+    "\n"
+    "            If the image is a multi-paged document such as a Postscript\n"
+    "            document, you can skip ahead several pages by preceding\n"
+    "            this command with a number.  For example to display the\n"
+    "            third page beyond the current page, press 3<space>.\n"
+    "\n"
+    "  backspace Press to display the former image.\n"
+    "\n"
+    "            If the image is a multi-paged document such as a Postscript\n"
+    "            document, you can skip behind several pages by preceding\n"
+    "            this command with a number.  For example to display the\n"
+    "            third page preceding the current page, press 3<backspace>.\n"
+    "\n"
+    "  Ctl+S     Press to write the image to a file.\n"
+    "\n"
+    "  Ctl+P     Press to print the image to a Postscript printer.\n"
+    "\n"
+    "  Ctl+D     Press to delete an image file.\n"
+    "\n"
+    "  Ctl+N     Press to create a blank canvas.\n"
+    "\n"
+    "  Ctl+Q     Press to discard all images and exit program.\n"
+    "\n"
+    "  Ctl+Z     Press to undo last image transformation.\n"
+    "\n"
+    "  Ctl+R     Press to redo last image transformation.\n"
+    "\n"
+    "  Ctl+X     Press to cut a region of the image.\n"
+    "\n"
+    "  Ctl+C     Press to copy a region of the image.\n"
+    "\n"
+    "  Ctl+V     Press to paste a region to the image.\n"
+    "\n"
+    "  <         Press to half the image size.\n"
+    "\n"
+    "  -         Press to return to the original image size.\n"
+    "\n"
+    "  >         Press to double the image size.\n"
+    "\n"
+    "  %         Press to resize the image to a width and height you\n"
+    "            specify.\n"
+    "\n"
     "Cmd-A       Press to make any image transformations permanent."
-    "",
-    "            By default, any image size transformations are applied",
-    "            to the original image to create the image displayed on",
-    "            the X server.  However, the transformations are not",
-    "            permanent (i.e. the original image does not change",
-    "            size only the X image does).  For example, if you",
-    "            press > the X image will appear to double in size,",
-    "            but the original image will in fact remain the same size.",
-    "            To force the original image to double in size, press >",
-    "            followed by Cmd-A.",
-    "",
-    "  @         Press to refresh the image window.",
-    "",
-    "  C         Press to cut out a rectangular region of the image.",
-    "",
-    "  [         Press to chop the image.",
-    "",
-    "  H         Press to flop image in the horizontal direction.",
-    "",
-    "  V         Press to flip image in the vertical direction.",
-    "",
-    "  /         Press to rotate the image 90 degrees clockwise.",
-    "",
-    " \\         Press to rotate the image 90 degrees counter-clockwise.",
-    "",
-    "  *         Press to rotate the image the number of degrees you",
-    "            specify.",
-    "",
-    "  S         Press to shear the image the number of degrees you",
-    "            specify.",
-    "",
-    "  R         Press to roll the image.",
-    "",
-    "  T         Press to trim the image edges.",
-    "",
-    "  Shft-H    Press to vary the image hue.",
-    "",
-    "  Shft-S    Press to vary the color saturation.",
-    "",
-    "  Shft-L    Press to vary the color brightness.",
-    "",
-    "  Shft-G    Press to gamma correct the image.",
-    "",
-    "  Shft-C    Press to sharpen the image contrast.",
-    "",
-    "  Shft-Z    Press to dull the image contrast.",
-    "",
-    "  =         Press to perform histogram equalization on the image.",
-    "",
-    "  Shft-N    Press to perform histogram normalization on the image.",
-    "",
-    "  Shft-~    Press to negate the colors of the image.",
-    "",
-    "  .         Press to convert the image colors to gray.",
-    "",
-    "  Shft-#    Press to set the maximum number of unique colors in the",
-    "            image.",
-    "",
-    "  F2        Press to reduce the speckles in an image.",
-    "",
-    "  F3        Press to eliminate peak noise from an image.",
-    "",
-    "  F4        Press to add noise to an image.",
-    "",
-    "  F5        Press to sharpen an image.",
-    "",
-    "  F6        Press to delete an image file.",
-    "",
-    "  F7        Press to threshold the image.",
-    "",
-    "  F8        Press to detect edges within an image.",
-    "",
-    "  F9        Press to emboss an image.",
-    "",
-    "  F10       Press to displace pixels by a random amount.",
-    "",
-    "  F11       Press to negate all pixels above the threshold level.",
-    "",
-    "  F12       Press to shade the image using a distant light source.",
-    "",
-    "  F13       Press to lighten or darken image edges to create a 3-D effect.",
-    "",
-    "  F14       Press to segment the image by color.",
-    "",
-    "  Meta-S    Press to swirl image pixels about the center.",
-    "",
-    "  Meta-I    Press to implode image pixels about the center.",
-    "",
-    "  Meta-W    Press to alter an image along a sine wave.",
-    "",
-    "  Meta-P    Press to simulate an oil painting.",
-    "",
-    "  Meta-C    Press to simulate a charcoal drawing.",
-    "",
-    "  Alt-A     Press to annotate the image with text.",
-    "",
-    "  Alt-D     Press to draw on an image.",
-    "",
-    "  Alt-P     Press to edit an image pixel color.",
-    "",
-    "  Alt-M     Press to edit the image matte information.",
-    "",
-    "  Alt-V     Press to composite the image with another.",
-    "",
-    "  Alt-B     Press to add a border to the image.",
-    "",
-    "  Alt-F     Press to add an ornamental border to the image.",
-    "",
-    "  Alt-Shft-!",
-    "            Press to add an image comment.",
-    "",
-    "  Ctl-A     Press to apply image processing techniques to a region",
-    "            of interest.",
-    "",
-    "  Shft-?    Press to display information about the image.",
-    "",
-    "  Shft-+    Press to map the zoom image window.",
-    "",
-    "  Shft-P    Press to preview an image enhancement, effect, or f/x.",
-    "",
-    "  F1        Press to display helpful information about display(1).",
-    "",
-    "  Find      Press to browse documentation about ImageMagick.",
-    "",
-    "  1-9       Press to change the level of magnification.",
-    "",
-    "  Use the arrow keys to move the image one pixel up, down,",
-    "  left, or right within the magnify window.  Be sure to first",
-    "  map the magnify window by pressing button 2.",
-    "",
-    "  Press ALT and one of the arrow keys to trim off one pixel",
-    "  from any side of the image.",
-    (char *) NULL,
+    "\n"
+    "            By default, any image size transformations are applied\n"
+    "            to the original image to create the image displayed on\n"
+    "            the X server.  However, the transformations are not\n"
+    "            permanent (i.e. the original image does not change\n"
+    "            size only the X image does).  For example, if you\n"
+    "            press > the X image will appear to double in size,\n"
+    "            but the original image will in fact remain the same size.\n"
+    "            To force the original image to double in size, press >\n"
+    "            followed by Cmd-A.\n"
+    "\n"
+    "  @         Press to refresh the image window.\n"
+    "\n"
+    "  C         Press to cut out a rectangular region of the image.\n"
+    "\n"
+    "  [         Press to chop the image.\n"
+    "\n"
+    "  H         Press to flop image in the horizontal direction.\n"
+    "\n"
+    "  V         Press to flip image in the vertical direction.\n"
+    "\n"
+    "  /         Press to rotate the image 90 degrees clockwise.\n"
+    "\n"
+    " \\         Press to rotate the image 90 degrees counter-clockwise.\n"
+    "\n"
+    "  *         Press to rotate the image the number of degrees you\n"
+    "            specify.\n"
+    "\n"
+    "  S         Press to shear the image the number of degrees you\n"
+    "            specify.\n"
+    "\n"
+    "  R         Press to roll the image.\n"
+    "\n"
+    "  T         Press to trim the image edges.\n"
+    "\n"
+    "  Shft-H    Press to vary the image hue.\n"
+    "\n"
+    "  Shft-S    Press to vary the color saturation.\n"
+    "\n"
+    "  Shft-L    Press to vary the color brightness.\n"
+    "\n"
+    "  Shft-G    Press to gamma correct the image.\n"
+    "\n"
+    "  Shft-C    Press to sharpen the image contrast.\n"
+    "\n"
+    "  Shft-Z    Press to dull the image contrast.\n"
+    "\n"
+    "  =         Press to perform histogram equalization on the image.\n"
+    "\n"
+    "  Shft-N    Press to perform histogram normalization on the image.\n"
+    "\n"
+    "  Shft-~    Press to negate the colors of the image.\n"
+    "\n"
+    "  .         Press to convert the image colors to gray.\n"
+    "\n"
+    "  Shft-#    Press to set the maximum number of unique colors in the\n"
+    "            image.\n"
+    "\n"
+    "  F2        Press to reduce the speckles in an image.\n"
+    "\n"
+    "  F3        Press to eliminate peak noise from an image.\n"
+    "\n"
+    "  F4        Press to add noise to an image.\n"
+    "\n"
+    "  F5        Press to sharpen an image.\n"
+    "\n"
+    "  F6        Press to delete an image file.\n"
+    "\n"
+    "  F7        Press to threshold the image.\n"
+    "\n"
+    "  F8        Press to detect edges within an image.\n"
+    "\n"
+    "  F9        Press to emboss an image.\n"
+    "\n"
+    "  F10       Press to displace pixels by a random amount.\n"
+    "\n"
+    "  F11       Press to negate all pixels above the threshold level.\n"
+    "\n"
+    "  F12       Press to shade the image using a distant light source.\n"
+    "\n"
+    "  F13       Press to lighten or darken image edges to create a 3-D effect.\n"
+    "\n"
+    "  F14       Press to segment the image by color.\n"
+    "\n"
+    "  Meta-S    Press to swirl image pixels about the center.\n"
+    "\n"
+    "  Meta-I    Press to implode image pixels about the center.\n"
+    "\n"
+    "  Meta-W    Press to alter an image along a sine wave.\n"
+    "\n"
+    "  Meta-P    Press to simulate an oil painting.\n"
+    "\n"
+    "  Meta-C    Press to simulate a charcoal drawing.\n"
+    "\n"
+    "  Alt-A     Press to annotate the image with text.\n"
+    "\n"
+    "  Alt-D     Press to draw on an image.\n"
+    "\n"
+    "  Alt-P     Press to edit an image pixel color.\n"
+    "\n"
+    "  Alt-M     Press to edit the image matte information.\n"
+    "\n"
+    "  Alt-V     Press to composite the image with another.\n"
+    "\n"
+    "  Alt-B     Press to add a border to the image.\n"
+    "\n"
+    "  Alt-F     Press to add an ornamental border to the image.\n"
+    "\n"
+    "  Alt-Shft-!\n"
+    "            Press to add an image comment.\n"
+    "\n"
+    "  Ctl-A     Press to apply image processing techniques to a region\n"
+    "            of interest.\n"
+    "\n"
+    "  Shft-?    Press to display information about the image.\n"
+    "\n"
+    "  Shft-+    Press to map the zoom image window.\n"
+    "\n"
+    "  Shft-P    Press to preview an image enhancement, effect, or f/x.\n"
+    "\n"
+    "  F1        Press to display helpful information about display(1).\n"
+    "\n"
+    "  Find      Press to browse documentation about ImageMagick.\n"
+    "\n"
+    "  1-9       Press to change the level of magnification.\n"
+    "\n"
+    "  Use the arrow keys to move the image one pixel up, down,\n"
+    "  left, or right within the magnify window.  Be sure to first\n"
+    "  map the magnify window by pressing button 2.\n"
+    "\n"
+    "  Press ALT and one of the arrow keys to trim off one pixel\n"
+    "  from any side of the image.\n"
   },
-  *const ImageMatteEditHelp[] =
+  ImageMatteEditHelp[] =
   {
-    "Matte information within an image is useful for some",
-    "operations such as image compositing (See IMAGE",
-    "COMPOSITING).  This extra channel usually defines a mask",
-    "which represents a sort of a cookie-cutter for the image.",
-    "This the case when matte is opaque (full coverage) for",
-    "pixels inside the shape, zero outside, and between 0 and",
-    "QuantumRange on the boundary.",
-    "",
-    "A small window appears showing the location of the cursor in",
-    "the image window. You are now in matte edit mode.  To exit",
-    "immediately, press Dismiss.  In matte edit mode, the Command",
-    "widget has these options:",
-    "",
-    "    Method",
-    "      point",
-    "      replace",
-    "      floodfill",
-    "      filltoborder",
-    "      reset",
-    "    Border Color",
-    "      black",
-    "      blue",
-    "      cyan",
-    "      green",
-    "      gray",
-    "      red",
-    "      magenta",
-    "      yellow",
-    "      white",
-    "      Browser...",
-    "    Fuzz",
-    "      0%",
-    "      2%",
-    "      5%",
-    "      10%",
-    "      15%",
-    "      Dialog...",
-    "    Matte",
-    "      Opaque",
-    "      Transparent",
-    "      Dialog...",
-    "    Undo",
-    "    Help",
-    "    Dismiss",
-    "",
-    "Choose a matte editing method from the Method sub-menu of",
-    "the Command widget.  The point method changes the matte value",
-    "of any pixel selected with the pointer until the button is",
-    "is released.  The replace method changes the matte value of",
-    "any pixel that matches the color of the pixel you select with",
-    "a button press.  Floodfill changes the matte value of any pixel",
-    "that matches the color of the pixel you select with a button",
-    "press and is a neighbor.  Whereas filltoborder changes the matte",
-    "value any neighbor pixel that is not the border color.  Finally",
-    "reset changes the entire image to the designated matte value.",
-    "",
-    "Choose Matte Value and pick Opaque or Transarent.  For other values",
-    "select the Dialog entry.  Here a dialog appears requesting a matte",
-    "value.  The value you select is assigned as the opacity value of the",
-    "selected pixel or pixels.",
-    "",
-    "Now, press any button to select a pixel within the image",
-    "window to change its matte value.",
-    "",
-    "If the Magnify widget is mapped, it can be helpful in positioning",
-    "your pointer within the image (refer to button 2).",
-    "",
-    "Matte information is only valid in a DirectClass image.",
-    "Therefore, any PseudoClass image is promoted to DirectClass",
-    "(see miff(5)).  Note that matte information for PseudoClass",
-    "is not retained for colormapped X server visuals (e.g.",
-    "StaticColor, StaticColor, GrayScale, PseudoColor) unless you",
-    "immediately save your image to a file (refer to Write).",
-    "Correct matte editing behavior may require a TrueColor or",
-    "DirectColor visual or a Standard Colormap.",
-    (char *) NULL,
+    "Matte information within an image is useful for some\n"
+    "operations such as image compositing (See IMAGE\n"
+    "COMPOSITING).  This extra channel usually defines a mask\n"
+    "which represents a sort of a cookie-cutter for the image.\n"
+    "This the case when matte is opaque (full coverage) for\n"
+    "pixels inside the shape, zero outside, and between 0 and\n"
+    "QuantumRange on the boundary.\n"
+    "\n"
+    "A small window appears showing the location of the cursor in\n"
+    "the image window. You are now in matte edit mode.  To exit\n"
+    "immediately, press Dismiss.  In matte edit mode, the Command\n"
+    "widget has these options:\n"
+    "\n"
+    "    Method\n"
+    "      point\n"
+    "      replace\n"
+    "      floodfill\n"
+    "      filltoborder\n"
+    "      reset\n"
+    "    Border Color\n"
+    "      black\n"
+    "      blue\n"
+    "      cyan\n"
+    "      green\n"
+    "      gray\n"
+    "      red\n"
+    "      magenta\n"
+    "      yellow\n"
+    "      white\n"
+    "      Browser...\n"
+    "    Fuzz\n"
+    "      0%\n"
+    "      2%\n"
+    "      5%\n"
+    "      10%\n"
+    "      15%\n"
+    "      Dialog...\n"
+    "    Matte\n"
+    "      Opaque\n"
+    "      Transparent\n"
+    "      Dialog...\n"
+    "    Undo\n"
+    "    Help\n"
+    "    Dismiss\n"
+    "\n"
+    "Choose a matte editing method from the Method sub-menu of\n"
+    "the Command widget.  The point method changes the matte value\n"
+    "of any pixel selected with the pointer until the button is\n"
+    "is released.  The replace method changes the matte value of\n"
+    "any pixel that matches the color of the pixel you select with\n"
+    "a button press.  Floodfill changes the matte value of any pixel\n"
+    "that matches the color of the pixel you select with a button\n"
+    "press and is a neighbor.  Whereas filltoborder changes the matte\n"
+    "value any neighbor pixel that is not the border color.  Finally\n"
+    "reset changes the entire image to the designated matte value.\n"
+    "\n"
+    "Choose Matte Value and pick Opaque or Transarent.  For other values\n"
+    "select the Dialog entry.  Here a dialog appears requesting a matte\n"
+    "value.  The value you select is assigned as the opacity value of the\n"
+    "selected pixel or pixels.\n"
+    "\n"
+    "Now, press any button to select a pixel within the image\n"
+    "window to change its matte value.\n"
+    "\n"
+    "If the Magnify widget is mapped, it can be helpful in positioning\n"
+    "your pointer within the image (refer to button 2).\n"
+    "\n"
+    "Matte information is only valid in a DirectClass image.\n"
+    "Therefore, any PseudoClass image is promoted to DirectClass\n"
+    "(see miff(5)).  Note that matte information for PseudoClass\n"
+    "is not retained for colormapped X server visuals (e.g.\n"
+    "StaticColor, StaticColor, GrayScale, PseudoColor) unless you\n"
+    "immediately save your image to a file (refer to Write).\n"
+    "Correct matte editing behavior may require a TrueColor or\n"
+    "DirectColor visual or a Standard Colormap.\n"
   },
-  *const ImagePanHelp[] =
+  ImagePanHelp[] =
   {
-    "When an image exceeds the width or height of the X server",
-    "screen, display maps a small panning icon.  The rectangle",
-    "within the panning icon shows the area that is currently",
-    "displayed in the image window.  To pan about the image,",
-    "press any button and drag the pointer within the panning",
-    "icon.  The pan rectangle moves with the pointer and the",
-    "image window is updated to reflect the location of the",
-    "rectangle within the panning icon.  When you have selected",
-    "the area of the image you wish to view, release the button.",
-    "",
-    "Use the arrow keys to pan the image one pixel up, down,",
-    "left, or right within the image window.",
-    "",
-    "The panning icon is withdrawn if the image becomes smaller",
-    "than the dimensions of the X server screen.",
-    (char *) NULL,
+    "When an image exceeds the width or height of the X server\n"
+    "screen, display maps a small panning icon.  The rectangle\n"
+    "within the panning icon shows the area that is currently\n"
+    "displayed in the image window.  To pan about the image,\n"
+    "press any button and drag the pointer within the panning\n"
+    "icon.  The pan rectangle moves with the pointer and the\n"
+    "image window is updated to reflect the location of the\n"
+    "rectangle within the panning icon.  When you have selected\n"
+    "the area of the image you wish to view, release the button.\n"
+    "\n"
+    "Use the arrow keys to pan the image one pixel up, down,\n"
+    "left, or right within the image window.\n"
+    "\n"
+    "The panning icon is withdrawn if the image becomes smaller\n"
+    "than the dimensions of the X server screen.\n"
   },
-  *const ImagePasteHelp[] =
+  ImagePasteHelp[] =
   {
-    "A small window appears showing the location of the cursor in",
-    "the image window. You are now in paste mode.  To exit",
-    "immediately, press Dismiss.  In paste mode, the Command",
-    "widget has these options:",
-    "",
-    "    Operators",
-    "      over",
-    "      in",
-    "      out",
-    "      atop",
-    "      xor",
-    "      plus",
-    "      minus",
-    "      add",
-    "      subtract",
-    "      difference",
-    "      replace",
-    "    Help",
-    "    Dismiss",
-    "",
-    "Choose a composite operation from the Operators sub-menu of",
-    "the Command widget.  How each operator behaves is described",
-    "below.  Image window is the image currently displayed on",
-    "your X server and image is the image obtained with the File",
-    "Browser widget.",
-    "",
-    "Over     The result is the union of the two image shapes,",
-    "         with image obscuring image window in the region of",
-    "         overlap.",
-    "",
-    "In       The result is simply image cut by the shape of",
-    "         image window.  None of the image data of image",
-    "         window is in the result.",
-    "",
-    "Out      The resulting image is image with the shape of",
-    "         image window cut out.",
-    "",
-    "Atop     The result is the same shape as image image window,",
-    "         with image obscuring image window where the image",
-    "         shapes overlap.  Note this differs from over",
-    "         because the portion of image outside image window's",
-    "         shape does not appear in the result.",
-    "",
-    "Xor      The result is the image data from both image and",
-    "         image window that is outside the overlap region.",
-    "         The overlap region is blank.",
-    "",
-    "Plus     The result is just the sum of the image data.",
-    "         Output values are cropped to QuantumRange (no overflow).",
-    "         This operation is independent of the matte",
-    "         channels.",
-    "",
-    "Minus    The result of image - image window, with underflow",
-    "         cropped to zero.",
-    "",
-    "Add      The result of image + image window, with overflow",
-    "         wrapping around (mod 256).",
-    "",
-    "Subtract The result of image - image window, with underflow",
-    "         wrapping around (mod 256).  The add and subtract",
-    "         operators can be used to perform reversible",
-    "         transformations.",
-    "",
-    "Difference",
-    "         The result of abs(image - image window).  This",
-    "         useful for comparing two very similar images.",
-    "",
-    "Copy     The resulting image is image window replaced with",
-    "         image.  Here the matte information is ignored.",
-    "",
-    "CopyRed  The red layer of the image window is replace with",
-    "         the red layer of the image.  The other layers are",
-    "         untouched.",
-    "",
-    "CopyGreen",
-    "         The green layer of the image window is replace with",
-    "         the green layer of the image.  The other layers are",
-    "         untouched.",
-    "",
-    "CopyBlue The blue layer of the image window is replace with",
-    "         the blue layer of the image.  The other layers are",
-    "         untouched.",
-    "",
-    "CopyOpacity",
-    "         The matte layer of the image window is replace with",
-    "         the matte layer of the image.  The other layers are",
-    "         untouched.",
-    "",
-    "The image compositor requires a matte, or alpha channel in",
-    "the image for some operations.  This extra channel usually",
-    "defines a mask which represents a sort of a cookie-cutter",
-    "for the image.  This the case when matte is opaque (full",
-    "coverage) for pixels inside the shape, zero outside, and",
-    "between 0 and QuantumRange on the boundary.  If image does not",
-    "have a matte channel, it is initialized with 0 for any pixel",
-    "matching in color to pixel location (0,0), otherwise QuantumRange.",
-    "",
-    "Note that matte information for image window is not retained",
-    "for colormapped X server visuals (e.g. StaticColor,",
-    "StaticColor, GrayScale, PseudoColor).  Correct compositing",
-    "behavior may require a TrueColor or DirectColor visual or a",
-    "Standard Colormap.",
-    "",
-    "Choosing a composite operator is optional.  The default",
-    "operator is replace.  However, you must choose a location to",
-    "paste your image and press button 1.  Press and hold the",
-    "button before releasing and an outline of the image will",
-    "appear to help you identify your location.",
-    "",
-    "The actual colors of the pasted image is saved.  However,",
-    "the color that appears in image window may be different.",
-    "For example, on a monochrome screen image window will appear",
-    "black or white even though your pasted image may have",
-    "many colors.  If the image is saved to a file it is written",
-    "with the correct colors.  To assure the correct colors are",
-    "saved in the final image, any PseudoClass image is promoted",
-    "to DirectClass (see miff(5)).  To force a PseudoClass image",
-    "to remain PseudoClass, use -colors.",
-    (char *) NULL,
+    "A small window appears showing the location of the cursor in\n"
+    "the image window. You are now in paste mode.  To exit\n"
+    "immediately, press Dismiss.  In paste mode, the Command\n"
+    "widget has these options:\n"
+    "\n"
+    "    Operators\n"
+    "      over\n"
+    "      in\n"
+    "      out\n"
+    "      atop\n"
+    "      xor\n"
+    "      plus\n"
+    "      minus\n"
+    "      add\n"
+    "      subtract\n"
+    "      difference\n"
+    "      replace\n"
+    "    Help\n"
+    "    Dismiss\n"
+    "\n"
+    "Choose a composite operation from the Operators sub-menu of\n"
+    "the Command widget.  How each operator behaves is described\n"
+    "below.  Image window is the image currently displayed on\n"
+    "your X server and image is the image obtained with the File\n"
+    "Browser widget.\n"
+    "\n"
+    "Over     The result is the union of the two image shapes,\n"
+    "         with image obscuring image window in the region of\n"
+    "         overlap.\n"
+    "\n"
+    "In       The result is simply image cut by the shape of\n"
+    "         image window.  None of the image data of image\n"
+    "         window is in the result.\n"
+    "\n"
+    "Out      The resulting image is image with the shape of\n"
+    "         image window cut out.\n"
+    "\n"
+    "Atop     The result is the same shape as image image window,\n"
+    "         with image obscuring image window where the image\n"
+    "         shapes overlap.  Note this differs from over\n"
+    "         because the portion of image outside image window's\n"
+    "         shape does not appear in the result.\n"
+    "\n"
+    "Xor      The result is the image data from both image and\n"
+    "         image window that is outside the overlap region.\n"
+    "         The overlap region is blank.\n"
+    "\n"
+    "Plus     The result is just the sum of the image data.\n"
+    "         Output values are cropped to QuantumRange (no overflow).\n"
+    "         This operation is independent of the matte\n"
+    "         channels.\n"
+    "\n"
+    "Minus    The result of image - image window, with underflow\n"
+    "         cropped to zero.\n"
+    "\n"
+    "Add      The result of image + image window, with overflow\n"
+    "         wrapping around (mod 256).\n"
+    "\n"
+    "Subtract The result of image - image window, with underflow\n"
+    "         wrapping around (mod 256).  The add and subtract\n"
+    "         operators can be used to perform reversible\n"
+    "         transformations.\n"
+    "\n"
+    "Difference\n"
+    "         The result of abs(image - image window).  This\n"
+    "         useful for comparing two very similar images.\n"
+    "\n"
+    "Copy     The resulting image is image window replaced with\n"
+    "         image.  Here the matte information is ignored.\n"
+    "\n"
+    "CopyRed  The red layer of the image window is replace with\n"
+    "         the red layer of the image.  The other layers are\n"
+    "         untouched.\n"
+    "\n"
+    "CopyGreen\n"
+    "         The green layer of the image window is replace with\n"
+    "         the green layer of the image.  The other layers are\n"
+    "         untouched.\n"
+    "\n"
+    "CopyBlue The blue layer of the image window is replace with\n"
+    "         the blue layer of the image.  The other layers are\n"
+    "         untouched.\n"
+    "\n"
+    "CopyOpacity\n"
+    "         The matte layer of the image window is replace with\n"
+    "         the matte layer of the image.  The other layers are\n"
+    "         untouched.\n"
+    "\n"
+    "The image compositor requires a matte, or alpha channel in\n"
+    "the image for some operations.  This extra channel usually\n"
+    "defines a mask which represents a sort of a cookie-cutter\n"
+    "for the image.  This the case when matte is opaque (full\n"
+    "coverage) for pixels inside the shape, zero outside, and\n"
+    "between 0 and QuantumRange on the boundary.  If image does not\n"
+    "have a matte channel, it is initialized with 0 for any pixel\n"
+    "matching in color to pixel location (0,0), otherwise QuantumRange.\n"
+    "\n"
+    "Note that matte information for image window is not retained\n"
+    "for colormapped X server visuals (e.g. StaticColor,\n"
+    "StaticColor, GrayScale, PseudoColor).  Correct compositing\n"
+    "behavior may require a TrueColor or DirectColor visual or a\n"
+    "Standard Colormap.\n"
+    "\n"
+    "Choosing a composite operator is optional.  The default\n"
+    "operator is replace.  However, you must choose a location to\n"
+    "paste your image and press button 1.  Press and hold the\n"
+    "button before releasing and an outline of the image will\n"
+    "appear to help you identify your location.\n"
+    "\n"
+    "The actual colors of the pasted image is saved.  However,\n"
+    "the color that appears in image window may be different.\n"
+    "For example, on a monochrome screen image window will appear\n"
+    "black or white even though your pasted image may have\n"
+    "many colors.  If the image is saved to a file it is written\n"
+    "with the correct colors.  To assure the correct colors are\n"
+    "saved in the final image, any PseudoClass image is promoted\n"
+    "to DirectClass (see miff(5)).  To force a PseudoClass image\n"
+    "to remain PseudoClass, use -colors.\n"
   },
-  *const ImageROIHelp[] =
+  ImageROIHelp[] =
   {
-    "In region of interest mode, the Command widget has these",
-    "options:",
-    "",
-    "    Help",
-    "    Dismiss",
-    "",
-    "To define a region of interest, press button 1 and drag.",
-    "The region of interest is defined by a highlighted rectangle",
-    "that expands or contracts as it follows the pointer.  Once",
-    "you are satisfied with the region of interest, release the",
-    "button.  You are now in apply mode.  In apply mode the",
-    "Command widget has these options:",
-    "",
-    "      File",
-    "        Save...",
-    "        Print...",
-    "      Edit",
-    "        Undo",
-    "        Redo",
-    "      Transform",
-    "        Flop",
-    "        Flip",
-    "        Rotate Right",
-    "        Rotate Left",
-    "      Enhance",
-    "        Hue...",
-    "        Saturation...",
-    "        Brightness...",
-    "        Gamma...",
-    "        Spiff",
-    "        Dull",
-    "        Contrast Stretch",
-    "        Sigmoidal Contrast...",
-    "        Normalize",
-    "        Equalize",
-    "        Negate",
-    "        Grayscale",
-    "        Map...",
-    "        Quantize...",
-    "      Effects",
-    "        Despeckle",
-    "        Emboss",
-    "        Reduce Noise",
-    "        Sharpen...",
-    "        Blur...",
-    "        Threshold...",
-    "        Edge Detect...",
-    "        Spread...",
-    "        Shade...",
-    "        Raise...",
-    "        Segment...",
-    "      F/X",
-    "        Solarize...",
-    "        Sepia Tone...",
-    "        Swirl...",
-    "        Implode...",
-    "        Vignette...",
-    "        Wave...",
-    "        Oil Painting...",
-    "        Charcoal Drawing...",
-    "      Miscellany",
-    "        Image Info",
-    "        Zoom Image",
-    "        Show Preview...",
-    "        Show Histogram",
-    "        Show Matte",
-    "      Help",
-    "      Dismiss",
-    "",
-    "You can make adjustments to the region of interest by moving",
-    "the pointer to one of the rectangle corners, pressing a",
-    "button, and dragging.  Finally, choose an image processing",
-    "technique from the Command widget.  You can choose more than",
-    "one image processing technique to apply to an area.",
-    "Alternatively, you can move the region of interest before",
-    "applying another image processing technique.  To exit, press",
-    "Dismiss.",
-    (char *) NULL,
+    "In region of interest mode, the Command widget has these\n"
+    "options:\n"
+    "\n"
+    "    Help\n"
+    "    Dismiss\n"
+    "\n"
+    "To define a region of interest, press button 1 and drag.\n"
+    "The region of interest is defined by a highlighted rectangle\n"
+    "that expands or contracts as it follows the pointer.  Once\n"
+    "you are satisfied with the region of interest, release the\n"
+    "button.  You are now in apply mode.  In apply mode the\n"
+    "Command widget has these options:\n"
+    "\n"
+    "      File\n"
+    "        Save...\n"
+    "        Print...\n"
+    "      Edit\n"
+    "        Undo\n"
+    "        Redo\n"
+    "      Transform\n"
+    "        Flop\n"
+    "        Flip\n"
+    "        Rotate Right\n"
+    "        Rotate Left\n"
+    "      Enhance\n"
+    "        Hue...\n"
+    "        Saturation...\n"
+    "        Brightness...\n"
+    "        Gamma...\n"
+    "        Spiff\n"
+    "        Dull\n"
+    "        Contrast Stretch\n"
+    "        Sigmoidal Contrast...\n"
+    "        Normalize\n"
+    "        Equalize\n"
+    "        Negate\n"
+    "        Grayscale\n"
+    "        Map...\n"
+    "        Quantize...\n"
+    "      Effects\n"
+    "        Despeckle\n"
+    "        Emboss\n"
+    "        Reduce Noise\n"
+    "        Sharpen...\n"
+    "        Blur...\n"
+    "        Threshold...\n"
+    "        Edge Detect...\n"
+    "        Spread...\n"
+    "        Shade...\n"
+    "        Raise...\n"
+    "        Segment...\n"
+    "      F/X\n"
+    "        Solarize...\n"
+    "        Sepia Tone...\n"
+    "        Swirl...\n"
+    "        Implode...\n"
+    "        Vignette...\n"
+    "        Wave...\n"
+    "        Oil Painting...\n"
+    "        Charcoal Drawing...\n"
+    "      Miscellany\n"
+    "        Image Info\n"
+    "        Zoom Image\n"
+    "        Show Preview...\n"
+    "        Show Histogram\n"
+    "        Show Matte\n"
+    "      Help\n"
+    "      Dismiss\n"
+    "\n"
+    "You can make adjustments to the region of interest by moving\n"
+    "the pointer to one of the rectangle corners, pressing a\n"
+    "button, and dragging.  Finally, choose an image processing\n"
+    "technique from the Command widget.  You can choose more than\n"
+    "one image processing technique to apply to an area.\n"
+    "Alternatively, you can move the region of interest before\n"
+    "applying another image processing technique.  To exit, press\n"
+    "Dismiss.\n"
   },
-  *const ImageRotateHelp[] =
+  ImageRotateHelp[] =
   {
-    "In rotate mode, the Command widget has these options:",
-    "",
-    "    Pixel Color",
-    "      black",
-    "      blue",
-    "      cyan",
-    "      green",
-    "      gray",
-    "      red",
-    "      magenta",
-    "      yellow",
-    "      white",
-    "      Browser...",
-    "    Direction",
-    "      horizontal",
-    "      vertical",
-    "    Help",
-    "    Dismiss",
-    "",
-    "Choose a background color from the Pixel Color sub-menu.",
-    "Additional background colors can be specified with the color",
-    "browser.  You can change the menu colors by setting the X",
-    "resources pen1 through pen9.",
-    "",
-    "If you choose the color browser and press Grab, you can",
-    "select the background color by moving the pointer to the",
-    "desired color on the screen and press any button.",
-    "",
-    "Choose a point in the image window and press this button and",
-    "hold.  Next, move the pointer to another location in the",
-    "image.  As you move a line connects the initial location and",
-    "the pointer.  When you release the button, the degree of",
-    "image rotation is determined by the slope of the line you",
-    "just drew.  The slope is relative to the direction you",
-    "choose from the Direction sub-menu of the Command widget.",
-    "",
-    "To cancel the image rotation, move the pointer back to the",
-    "starting point of the line and release the button.",
-    (char *) NULL,
+    "In rotate mode, the Command widget has these options:\n"
+    "\n"
+    "    Pixel Color\n"
+    "      black\n"
+    "      blue\n"
+    "      cyan\n"
+    "      green\n"
+    "      gray\n"
+    "      red\n"
+    "      magenta\n"
+    "      yellow\n"
+    "      white\n"
+    "      Browser...\n"
+    "    Direction\n"
+    "      horizontal\n"
+    "      vertical\n"
+    "    Help\n"
+    "    Dismiss\n"
+    "\n"
+    "Choose a background color from the Pixel Color sub-menu.\n"
+    "Additional background colors can be specified with the color\n"
+    "browser.  You can change the menu colors by setting the X\n"
+    "resources pen1 through pen9.\n"
+    "\n"
+    "If you choose the color browser and press Grab, you can\n"
+    "select the background color by moving the pointer to the\n"
+    "desired color on the screen and press any button.\n"
+    "\n"
+    "Choose a point in the image window and press this button and\n"
+    "hold.  Next, move the pointer to another location in the\n"
+    "image.  As you move a line connects the initial location and\n"
+    "the pointer.  When you release the button, the degree of\n"
+    "image rotation is determined by the slope of the line you\n"
+    "just drew.  The slope is relative to the direction you\n"
+    "choose from the Direction sub-menu of the Command widget.\n"
+    "\n"
+    "To cancel the image rotation, move the pointer back to the\n"
+    "starting point of the line and release the button.\n"
   };
 
 /*
@@ -2096,7 +2082,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
               angle[MagickPathExtent] = "30.0";
 
             static const char
-              *const RotateMenu[] =
+              *RotateMenu[] =
               {
                 "-90",
                 "-45",
@@ -2131,7 +2117,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
           }
           case AnnotateHelpCommand:
           {
-            XTextViewWidget(display,resource_info,windows,MagickFalse,
+            XTextViewHelp(display,resource_info,windows,MagickFalse,
               "Help Viewer - Image Annotation",ImageAnnotateHelp);
             break;
           }
@@ -2193,7 +2179,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
           case XK_F1:
           case XK_Help:
           {
-            XTextViewWidget(display,resource_info,windows,MagickFalse,
+            XTextViewHelp(display,resource_info,windows,MagickFalse,
               "Help Viewer - Image Annotation",ImageAnnotateHelp);
             break;
           }
@@ -2329,7 +2315,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
         {
           case TextHelpCommand:
           {
-            XTextViewWidget(display,resource_info,windows,MagickFalse,
+            XTextViewHelp(display,resource_info,windows,MagickFalse,
               "Help Viewer - Image Annotation",ImageAnnotateHelp);
             (void) XCheckDefineCursor(display,windows->image.id,cursor);
             break;
@@ -2861,7 +2847,7 @@ static MagickBooleanType XChopImage(Display *display,
   ExceptionInfo *exception)
 {
   static const char
-    *const ChopMenu[] =
+    *ChopMenu[] =
     {
       "Direction",
       "Help",
@@ -2964,7 +2950,7 @@ static MagickBooleanType XChopImage(Display *display,
               command[MagickPathExtent];
 
             static const char
-              *const Directions[] =
+              *Directions[] =
               {
                 "horizontal",
                 "vertical",
@@ -2981,7 +2967,7 @@ static MagickBooleanType XChopImage(Display *display,
           }
           case ChopHelpCommand:
           {
-            XTextViewWidget(display,resource_info,windows,MagickFalse,
+            XTextViewHelp(display,resource_info,windows,MagickFalse,
               "Help Viewer - Image Chop",ImageChopHelp);
             break;
           }
@@ -3053,7 +3039,7 @@ static MagickBooleanType XChopImage(Display *display,
           {
             (void) XSetFunction(display,windows->image.highlight_context,
               GXcopy);
-            XTextViewWidget(display,resource_info,windows,MagickFalse,
+            XTextViewHelp(display,resource_info,windows,MagickFalse,
               "Help Viewer - Image Chop",ImageChopHelp);
             (void) XSetFunction(display,windows->image.highlight_context,
               GXinvert);
@@ -3286,7 +3272,7 @@ static MagickBooleanType XColorEditImage(Display *display,
   ExceptionInfo *exception)
 {
   static const char
-    *const ColorEditMenu[] =
+    *ColorEditMenu[] =
     {
       "Method",
       "Pixel Color",
@@ -3516,7 +3502,7 @@ static MagickBooleanType XColorEditImage(Display *display,
               fuzz[MagickPathExtent];
 
             static const char
-              *const FuzzMenu[] =
+              *FuzzMenu[] =
               {
                 "0%",
                 "2%",
@@ -3559,7 +3545,7 @@ static MagickBooleanType XColorEditImage(Display *display,
           case ColorEditHelpCommand:
           default:
           {
-            XTextViewWidget(display,resource_info,windows,MagickFalse,
+            XTextViewHelp(display,resource_info,windows,MagickFalse,
               "Help Viewer - Image Annotation",ImageColorEditHelp);
             break;
           }
@@ -3650,7 +3636,7 @@ static MagickBooleanType XColorEditImage(Display *display,
           case XK_F1:
           case XK_Help:
           {
-            XTextViewWidget(display,resource_info,windows,MagickFalse,
+            XTextViewHelp(display,resource_info,windows,MagickFalse,
               "Help Viewer - Image Annotation",ImageColorEditHelp);
             break;
           }
@@ -3913,7 +3899,7 @@ static MagickBooleanType XCompositeImage(Display *display,
     filename[MagickPathExtent] = "\0";
 
   static const char
-    *const CompositeMenu[] =
+    *CompositeMenu[] =
     {
       "Operators",
       "Dissolve",
@@ -4102,7 +4088,7 @@ static MagickBooleanType XCompositeImage(Display *display,
           {
             (void) XSetFunction(display,windows->image.highlight_context,
               GXcopy);
-            XTextViewWidget(display,resource_info,windows,MagickFalse,
+            XTextViewHelp(display,resource_info,windows,MagickFalse,
               "Help Viewer - Image Composite",ImageCompositeHelp);
             (void) XSetFunction(display,windows->image.highlight_context,
               GXinvert);
@@ -4207,7 +4193,7 @@ static MagickBooleanType XCompositeImage(Display *display,
           {
             (void) XSetFunction(display,windows->image.highlight_context,
               GXcopy);
-            XTextViewWidget(display,resource_info,windows,MagickFalse,
+            XTextViewHelp(display,resource_info,windows,MagickFalse,
               "Help Viewer - Image Composite",ImageCompositeHelp);
             (void) XSetFunction(display,windows->image.highlight_context,
               GXinvert);
@@ -4574,7 +4560,7 @@ static MagickBooleanType XCropImage(Display *display,
   const ClipboardMode mode,ExceptionInfo *exception)
 {
   static const char
-    *const CropModeMenu[] =
+    *CropModeMenu[] =
     {
       "Help",
       "Dismiss",
@@ -4712,19 +4698,19 @@ static MagickBooleanType XCropImage(Display *display,
             {
               case CopyMode:
               {
-                XTextViewWidget(display,resource_info,windows,MagickFalse,
+                XTextViewHelp(display,resource_info,windows,MagickFalse,
                   "Help Viewer - Image Copy",ImageCopyHelp);
                 break;
               }
               case CropMode:
               {
-                XTextViewWidget(display,resource_info,windows,MagickFalse,
+                XTextViewHelp(display,resource_info,windows,MagickFalse,
                   "Help Viewer - Image Crop",ImageCropHelp);
                 break;
               }
               case CutMode:
               {
-                XTextViewWidget(display,resource_info,windows,MagickFalse,
+                XTextViewHelp(display,resource_info,windows,MagickFalse,
                   "Help Viewer - Image Cut",ImageCutHelp);
                 break;
               }
@@ -4794,19 +4780,19 @@ static MagickBooleanType XCropImage(Display *display,
             {
               case CopyMode:
               {
-                XTextViewWidget(display,resource_info,windows,MagickFalse,
+                XTextViewHelp(display,resource_info,windows,MagickFalse,
                   "Help Viewer - Image Copy",ImageCopyHelp);
                 break;
               }
               case CropMode:
               {
-                XTextViewWidget(display,resource_info,windows,MagickFalse,
+                XTextViewHelp(display,resource_info,windows,MagickFalse,
                   "Help Viewer - Image Crop",ImageCropHelp);
                 break;
               }
               case CutMode:
               {
-                XTextViewWidget(display,resource_info,windows,MagickFalse,
+                XTextViewHelp(display,resource_info,windows,MagickFalse,
                   "Help Viewer - Image Cut",ImageCutHelp);
                 break;
               }
@@ -5020,19 +5006,19 @@ static MagickBooleanType XCropImage(Display *display,
                 {
                   case CopyMode:
                   {
-                    XTextViewWidget(display,resource_info,windows,MagickFalse,
+                    XTextViewHelp(display,resource_info,windows,MagickFalse,
                       "Help Viewer - Image Copy",ImageCopyHelp);
                     break;
                   }
                   case CropMode:
                   {
-                    XTextViewWidget(display,resource_info,windows,MagickFalse,
+                    XTextViewHelp(display,resource_info,windows,MagickFalse,
                       "Help Viewer - Image Crop",ImageCropHelp);
                     break;
                   }
                   case CutMode:
                   {
-                    XTextViewWidget(display,resource_info,windows,MagickFalse,
+                    XTextViewHelp(display,resource_info,windows,MagickFalse,
                       "Help Viewer - Image Cut",ImageCutHelp);
                     break;
                   }
@@ -5194,19 +5180,19 @@ static MagickBooleanType XCropImage(Display *display,
               {
                 case CopyMode:
                 {
-                  XTextViewWidget(display,resource_info,windows,MagickFalse,
+                  XTextViewHelp(display,resource_info,windows,MagickFalse,
                     "Help Viewer - Image Copy",ImageCopyHelp);
                   break;
                 }
                 case CropMode:
                 {
-                  XTextViewWidget(display,resource_info,windows,MagickFalse,
+                  XTextViewHelp(display,resource_info,windows,MagickFalse,
                     "Help Viewer - Image Cropg",ImageCropHelp);
                   break;
                 }
                 case CutMode:
                 {
-                  XTextViewWidget(display,resource_info,windows,MagickFalse,
+                  XTextViewHelp(display,resource_info,windows,MagickFalse,
                     "Help Viewer - Image Cutg",ImageCutHelp);
                   break;
                 }
@@ -5410,7 +5396,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
   ExceptionInfo *exception)
 {
   static const char
-    *const DrawMenu[] =
+    *DrawMenu[] =
     {
       "Element",
       "Color",
@@ -5557,7 +5543,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
             case DrawElementCommand:
             {
               static const char
-                *const Elements[] =
+                *Elements[] =
                 {
                   "point",
                   "line",
@@ -5766,7 +5752,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
                 width[MagickPathExtent] = "0";
 
               static const char
-                *const WidthsMenu[] =
+                *WidthsMenu[] =
                 {
                   "1",
                   "2",
@@ -5805,7 +5791,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
             }
             case DrawHelpCommand:
             {
-              XTextViewWidget(display,resource_info,windows,MagickFalse,
+              XTextViewHelp(display,resource_info,windows,MagickFalse,
                 "Help Viewer - Image Rotation",ImageDrawHelp);
               (void) XCheckDefineCursor(display,windows->image.id,cursor);
               break;
@@ -5872,7 +5858,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
             case XK_F1:
             case XK_Help:
             {
-              XTextViewWidget(display,resource_info,windows,MagickFalse,
+              XTextViewHelp(display,resource_info,windows,MagickFalse,
                 "Help Viewer - Image Rotation",ImageDrawHelp);
               break;
             }
@@ -9249,7 +9235,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         User requested help.
       */
-      XTextViewWidget(display,resource_info,windows,MagickFalse,
+      XTextViewHelp(display,resource_info,windows,MagickFalse,
         "Help Viewer - Display",DisplayHelp);
       break;
     }
@@ -9668,7 +9654,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
     matte[MagickPathExtent] = "0";
 
   static const char
-    *const MatteEditMenu[] =
+    *MatteEditMenu[] =
     {
       "Method",
       "Border Color",
@@ -9846,7 +9832,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
               fuzz[MagickPathExtent];
 
             static const char
-              *const FuzzMenu[] =
+              *FuzzMenu[] =
               {
                 "0%",
                 "2%",
@@ -9886,7 +9872,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
               message[MagickPathExtent];
 
             static const char
-              *const MatteMenu[] =
+              *MatteMenu[] =
               {
                 "Opaque",
                 "Transparent",
@@ -9926,7 +9912,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
           }
           case MatteEditHelpCommand:
           {
-            XTextViewWidget(display,resource_info,windows,MagickFalse,
+            XTextViewHelp(display,resource_info,windows,MagickFalse,
               "Help Viewer - Matte Edit",ImageMatteEditHelp);
             break;
           }
@@ -10022,7 +10008,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
           case XK_F1:
           case XK_Help:
           {
-            XTextViewWidget(display,resource_info,windows,MagickFalse,
+            XTextViewHelp(display,resource_info,windows,MagickFalse,
               "Help Viewer - Matte Edit",ImageMatteEditHelp);
             break;
           }
@@ -10615,7 +10601,7 @@ static MagickBooleanType XPasteImage(Display *display,
   ExceptionInfo *exception)
 {
   static const char
-    *const PasteMenu[] =
+    *PasteMenu[] =
     {
       "Operator",
       "Help",
@@ -10751,7 +10737,7 @@ static MagickBooleanType XPasteImage(Display *display,
           }
           case PasteHelpCommand:
           {
-            XTextViewWidget(display,resource_info,windows,MagickFalse,
+            XTextViewHelp(display,resource_info,windows,MagickFalse,
               "Help Viewer - Image Composite",ImagePasteHelp);
             break;
           }
@@ -10863,7 +10849,7 @@ static MagickBooleanType XPasteImage(Display *display,
           {
             (void) XSetFunction(display,windows->image.highlight_context,
               GXcopy);
-            XTextViewWidget(display,resource_info,windows,MagickFalse,
+            XTextViewHelp(display,resource_info,windows,MagickFalse,
               "Help Viewer - Image Composite",ImagePasteHelp);
             (void) XSetFunction(display,windows->image.highlight_context,
               GXinvert);
@@ -11077,13 +11063,13 @@ static MagickBooleanType XROIImage(Display *display,
 #define ApplyMenus  7
 
   static const char
-    *const ROIMenu[] =
+    *ROIMenu[] =
     {
       "Help",
       "Dismiss",
       (char *) NULL
     },
-    *const ApplyMenu[] =
+    *ApplyMenu[] =
     {
       "File",
       "Edit",
@@ -11096,19 +11082,19 @@ static MagickBooleanType XROIImage(Display *display,
       "Dismiss",
       (char *) NULL
     },
-    *const FileMenu[] =
+    *FileMenu[] =
     {
       "Save...",
       "Print...",
       (char *) NULL
     },
-    *const EditMenu[] =
+    *EditMenu[] =
     {
       "Undo",
       "Redo",
       (char *) NULL
     },
-    *const TransformMenu[] =
+    *TransformMenu[] =
     {
       "Flop",
       "Flip",
@@ -11116,7 +11102,7 @@ static MagickBooleanType XROIImage(Display *display,
       "Rotate Left",
       (char *) NULL
     },
-    *const EnhanceMenu[] =
+    *EnhanceMenu[] =
     {
       "Hue...",
       "Saturation...",
@@ -11134,7 +11120,7 @@ static MagickBooleanType XROIImage(Display *display,
       "Quantize...",
       (char *) NULL
     },
-    *const EffectsMenu[] =
+    *EffectsMenu[] =
     {
       "Despeckle",
       "Emboss",
@@ -11150,7 +11136,7 @@ static MagickBooleanType XROIImage(Display *display,
       "Segment...",
       (char *) NULL
     },
-    *const FXMenu[] =
+    *FXMenu[] =
     {
       "Solarize...",
       "Sepia Tone...",
@@ -11162,7 +11148,7 @@ static MagickBooleanType XROIImage(Display *display,
       "Charcoal Draw...",
       (char *) NULL
     },
-    *const MiscellanyMenu[] =
+    *MiscellanyMenu[] =
     {
       "Image Info",
       "Zoom Image",
@@ -11173,7 +11159,7 @@ static MagickBooleanType XROIImage(Display *display,
     };
 
   static const char
-    *const *Menus[ApplyMenus] =
+    **Menus[ApplyMenus] =
     {
       FileMenu,
       EditMenu,
@@ -11370,7 +11356,7 @@ static MagickBooleanType XROIImage(Display *display,
         {
           case ROIHelpCommand:
           {
-            XTextViewWidget(display,resource_info,windows,MagickFalse,
+            XTextViewHelp(display,resource_info,windows,MagickFalse,
               "Help Viewer - Region of Interest",ImageROIHelp);
             break;
           }
@@ -11436,7 +11422,7 @@ static MagickBooleanType XROIImage(Display *display,
           case XK_F1:
           case XK_Help:
           {
-            XTextViewWidget(display,resource_info,windows,MagickFalse,
+            XTextViewHelp(display,resource_info,windows,MagickFalse,
               "Help Viewer - Region of Interest",ImageROIHelp);
             break;
           }
@@ -11732,7 +11718,7 @@ static MagickBooleanType XROIImage(Display *display,
             {
               (void) XSetFunction(display,windows->image.highlight_context,
                 GXcopy);
-              XTextViewWidget(display,resource_info,windows,MagickFalse,
+              XTextViewHelp(display,resource_info,windows,MagickFalse,
                 "Help Viewer - Region of Interest",ImageROIHelp);
               (void) XSetFunction(display,windows->image.highlight_context,
                 GXinvert);
@@ -11893,7 +11879,7 @@ static MagickBooleanType XROIImage(Display *display,
             {
               (void) XSetFunction(display,windows->image.highlight_context,
                 GXcopy);
-              XTextViewWidget(display,resource_info,windows,MagickFalse,
+              XTextViewHelp(display,resource_info,windows,MagickFalse,
                 "Help Viewer - Region of Interest",ImageROIHelp);
               (void) XSetFunction(display,windows->image.highlight_context,
                 GXinvert);
@@ -12028,7 +12014,7 @@ static MagickBooleanType XRotateImage(Display *display,
   ExceptionInfo *exception)
 {
   static const char
-    *const RotateMenu[] =
+    *RotateMenu[] =
     {
       "Pixel Color",
       "Direction",
@@ -12187,7 +12173,7 @@ static MagickBooleanType XRotateImage(Display *display,
               case RotateDirectionCommand:
               {
                 static const char
-                  *const Directions[] =
+                  *Directions[] =
                   {
                     "horizontal",
                     "vertical",
@@ -12205,7 +12191,7 @@ static MagickBooleanType XRotateImage(Display *display,
               }
               case RotateHelpCommand:
               {
-                XTextViewWidget(display,resource_info,windows,MagickFalse,
+                XTextViewHelp(display,resource_info,windows,MagickFalse,
                   "Help Viewer - Image Rotation",ImageRotateHelp);
                 break;
               }
@@ -12279,7 +12265,7 @@ static MagickBooleanType XRotateImage(Display *display,
               {
                 (void) XSetFunction(display,windows->image.highlight_context,
                   GXcopy);
-                XTextViewWidget(display,resource_info,windows,MagickFalse,
+                XTextViewHelp(display,resource_info,windows,MagickFalse,
                   "Help Viewer - Image Rotation",ImageRotateHelp);
                 (void) XSetFunction(display,windows->image.highlight_context,
                   GXinvert);
@@ -13067,7 +13053,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
   XWindows *windows,Image *image,XEvent *event,ExceptionInfo *exception)
 {
   static const char
-    *const VerbMenu[] =
+    *VerbMenu[] =
     {
       "Load",
       "Next",
@@ -14088,7 +14074,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
 #define MagickTitle  "Commands"
 
   static const char
-    *const CommandMenu[] =
+    *CommandMenu[] =
     {
       "File",
       "Edit",
@@ -15307,7 +15293,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
               factor;
 
             static const char
-              *const MagnifyMenu[] =
+              *MagnifyMenu[] =
               {
                 "2",
                 "4",
@@ -15818,7 +15804,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 windows->pan.screen);
             else
               if ((key_symbol == XK_F1) || (key_symbol == XK_Help))
-                XTextViewWidget(display,resource_info,windows,MagickFalse,
+                XTextViewHelp(display,resource_info,windows,MagickFalse,
                   "Help Viewer - Image Pan",ImagePanHelp);
               else
                 XTranslateImage(display,windows,*image,key_symbol);

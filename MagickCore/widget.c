@@ -8938,7 +8938,7 @@ MagickPrivate void XProgressMonitorWidget(Display *display,XWindows *windows,
 %
 %      void XTextViewWidget(Display *display,const XResourceInfo *resource_info,
 %        XWindows *windows,const MagickBooleanType mono,const char *title,
-%        const char *const *textlist)
+%        const char **textlist)
 %
 %  A description of each parameter follows:
 %
@@ -8959,7 +8959,7 @@ MagickPrivate void XProgressMonitorWidget(Display *display,XWindows *windows,
 */
 MagickPrivate void XTextViewWidget(Display *display,
   const XResourceInfo *resource_info,XWindows *windows,
-  const MagickBooleanType mono,const char *title,const char *const *textlist)
+  const MagickBooleanType mono,const char *title,const char **textlist)
 {
 #define DismissButtonText  "Dismiss"
 
