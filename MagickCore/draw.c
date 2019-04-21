@@ -3142,11 +3142,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             graphic_context[n]->fill_alpha*=opacity;
-            if (graphic_context[n]->fill_alpha != OpaqueAlpha)
-              graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
             graphic_context[n]->stroke_alpha*=opacity;
-            if (graphic_context[n]->stroke_alpha != OpaqueAlpha)
-              graphic_context[n]->stroke.alpha=graphic_context[n]->stroke_alpha;
             break;
           }
         status=MagickFalse;
