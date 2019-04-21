@@ -133,61 +133,6 @@ typedef struct _EdgeInfo
     bottom;
 } EdgeInfo;
 
-static void EdgeGeometry(const size_t width,const size_t height,
-  const GravityType gravity,RectangleInfo *region)
-{
-  if (region->height == 0)
-    region->height=height;
-  if (region->width == 0)
-    region->width=width;
-  switch (gravity)
-  {
-    case NorthEastGravity:
-    case EastGravity:
-    case SouthEastGravity:
-    {
-      region->x=(ssize_t) (width-region->width);
-      break;
-    }
-    case NorthGravity:
-    case SouthGravity:
-    case CenterGravity:
-    {
-      region->x+=(ssize_t) (width/2-region->width/2);
-      break;
-    }
-    case ForgetGravity:
-    case NorthWestGravity:
-    case WestGravity:
-    case SouthWestGravity:
-    default:
-      break;
-  }
-  switch (gravity)
-  {
-    case SouthWestGravity:
-    case SouthGravity:
-    case SouthEastGravity:
-    {
-      region->y=(ssize_t) (height-region->height);
-      break;
-    }
-    case EastGravity:
-    case WestGravity:
-    case CenterGravity:
-    {
-      region->y+=(ssize_t) (height/2-region->height/2);
-      break;
-    }
-    case ForgetGravity:
-    case NorthWestGravity:
-    case NorthGravity:
-    case NorthEastGravity:
-    default:
-      break;
-  }
-}
-
 static double GetEdgeBackgroundFactor(const Image *image,
   const CacheView *image_view,const GravityType gravity,const size_t width,
   const size_t height,const ssize_t x_offset,const ssize_t y_offset,
@@ -254,7 +199,7 @@ static double GetEdgeBackgroundFactor(const Image *image,
   edge_geometry.height=height;
   edge_geometry.x=x_offset;
   edge_geometry.y=y_offset;
-  EdgeGeometry(image->columns,image->rows,gravity,&edge_geometry);
+  GravityAdjustGeometry(image->columns,image->rows,gravity,&edge_geometry);
   edge_image=CropImage(image,&edge_geometry,exception);
   if (edge_image == (Image *) NULL)
     return(0.0);
