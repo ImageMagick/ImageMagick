@@ -101,7 +101,7 @@ typedef struct _ColormapInfo
   Static declarations.
 */
 static const ColormapInfo
-  ColorMap[] =
+  Colormap[] =
   {
     { "none", 0, 0, 0, 0, SVGCompliance | XPMCompliance },
     { "black", 0, 0, 0, 1, SVGCompliance | X11Compliance | XPMCompliance },
@@ -865,7 +865,7 @@ static LinkedListInfo *AcquireColorCache(const char *filename,
   /*
     Load built-in color map.
   */
-  for (i=0; i < (ssize_t) (sizeof(ColorMap)/sizeof(*ColorMap)); i++)
+  for (i=0; i < (ssize_t) (sizeof(Colormap)/sizeof(*Colormap)); i++)
   {
     ColorInfo
       *color_info;
@@ -873,7 +873,7 @@ static LinkedListInfo *AcquireColorCache(const char *filename,
     register const ColormapInfo
       *p;
 
-    p=ColorMap+i;
+    p=Colormap+i;
     color_info=(ColorInfo *) AcquireMagickMemory(sizeof(*color_info));
     if (color_info == (ColorInfo *) NULL)
       {
