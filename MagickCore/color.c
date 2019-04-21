@@ -80,10 +80,10 @@
 /*
   Typedef declarations.
 */
-typedef struct _ColorMapInfo
+typedef struct _ColormapInfo
 {
   const char
-    *name;
+    name[21];
 
   const unsigned char
     red,
@@ -95,12 +95,12 @@ typedef struct _ColorMapInfo
 
   const ssize_t
     compliance;
-} ColorMapInfo;
+} ColormapInfo;
 
 /*
   Static declarations.
 */
-static const ColorMapInfo
+static const ColormapInfo
   ColorMap[] =
   {
     { "none", 0, 0, 0, 0, SVGCompliance | XPMCompliance },
@@ -870,7 +870,7 @@ static LinkedListInfo *AcquireColorCache(const char *filename,
     ColorInfo
       *color_info;
 
-    register const ColorMapInfo
+    register const ColormapInfo
       *p;
 
     p=ColorMap+i;
