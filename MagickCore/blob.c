@@ -996,6 +996,7 @@ MagickExport void *DetachBlob(BlobInfo *blob_info)
   if (blob_info->mapped != MagickFalse)
     {
       (void) UnmapBlob(blob_info->data,blob_info->length);
+      blob_info->data=NULL;
       RelinquishMagickResource(MapResource,blob_info->length);
     }
   blob_info->mapped=MagickFalse;
