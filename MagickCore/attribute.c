@@ -308,7 +308,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
           NorthWestGravity,bounds.width,1,(ssize_t) vertex.left,(ssize_t)
           vertex.top,exception);
         edge.bottom=GetEdgeBackgroundFactor(edge_image,edge_view,
-          SouthWestGravity,bounds.width,1,(ssize_t) vertex.left,-(ssize_t)
+          SouthWestGravity,bounds.width,1,(ssize_t) vertex.left,(ssize_t)
           vertex.bottom,exception);
         continue;
       }
@@ -320,13 +320,13 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
         vertex.right++;
         bounds.width--;
         edge.right=GetEdgeBackgroundFactor(edge_image,edge_view,
-          NorthEastGravity,1,bounds.height,-(ssize_t) vertex.right,(ssize_t)
+          NorthEastGravity,1,bounds.height,(ssize_t) vertex.right,(ssize_t)
           vertex.top,exception);
         edge.top=GetEdgeBackgroundFactor(edge_image,edge_view,
           NorthWestGravity,bounds.width,1,(ssize_t) vertex.left,(ssize_t)
           vertex.top,exception);
         edge.bottom=GetEdgeBackgroundFactor(edge_image,edge_view,
-          SouthWestGravity,bounds.width,1,(ssize_t) vertex.left,-(ssize_t)
+          SouthWestGravity,bounds.width,1,(ssize_t) vertex.left,(ssize_t)
           vertex.bottom,exception);
         continue;
       }
@@ -341,7 +341,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
           NorthWestGravity,1,bounds.height,(ssize_t) vertex.left,(ssize_t)
           vertex.top,exception);
         edge.right=GetEdgeBackgroundFactor(edge_image,edge_view,
-          NorthEastGravity,1,bounds.height,-(ssize_t) vertex.right,(ssize_t)
+          NorthEastGravity,1,bounds.height,(ssize_t) vertex.right,(ssize_t)
           vertex.top,exception);
         edge.top=GetEdgeBackgroundFactor(edge_image,edge_view,
           NorthWestGravity,bounds.width,1,(ssize_t) vertex.left,(ssize_t)
@@ -359,10 +359,10 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
           NorthWestGravity,1,bounds.height,(ssize_t) vertex.left,(ssize_t)
           vertex.top,exception);
         edge.right=GetEdgeBackgroundFactor(edge_image,edge_view,
-          NorthEastGravity,1,bounds.height,-(ssize_t) vertex.right,(ssize_t)
+          NorthEastGravity,1,bounds.height,(ssize_t) vertex.right,(ssize_t)
           vertex.top,exception);
         edge.bottom=GetEdgeBackgroundFactor(edge_image,edge_view,
-          SouthWestGravity,bounds.width,1,(ssize_t) vertex.left,-(ssize_t)
+          SouthWestGravity,bounds.width,1,(ssize_t) vertex.left,(ssize_t)
           vertex.bottom,exception);
         continue;
       }
