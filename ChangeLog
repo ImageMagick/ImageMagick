@@ -1,7 +1,7 @@
 2019-04-29  7.0.8-42 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-42, GIT revision 15540:c78993d13:20190420
 
-2019-04-20  7.0.8-40 Cristy  <quetzlzacatenango@image...>
+2019-04-20  7.0.8-42 Cristy  <quetzlzacatenango@image...>
   * Fixed a number of issues (reference
     https://imagemagick.org/discourse-server/viewforum.php?f=3).
   * Fixed a number of issues (reference
@@ -10,7 +10,7 @@
 2019-04-19  7.0.8-41 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-41, GIT revision 15540:c78993d13:20190420
 
-2019-04-10  7.0.8-40 Cristy  <quetzlzacatenango@image...>
+2019-04-13  7.0.8-41 Cristy  <quetzlzacatenango@image...>
   * Fixed a number of issues (reference
     https://imagemagick.org/discourse-server/viewforum.php?f=3).
   * Fixed a number of issues (reference
@@ -24,6 +24,16 @@
     MagickLevelImageColors(), MagickMeanShiftImage(), MagickPolynomialImage(),
     MagickRangeThresholdImage(), MagickSetSeed(), MagickWaveletDenoiseImage()
     methods to MagickWand API.
+
+2019-04-12  7.0.8-40 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-40, GIT revision 15510:7e503e231:20190412
+
+2019-04-10  7.0.8-40 Cristy  <quetzlzacatenango@image...>
+  * Fixed a number of issues (reference
+    https://imagemagick.org/discourse-server/viewforum.php?f=3).
+  * Fixed a number of issues (reference
+    https://github.com/ImageMagick/ImageMagick/issues).
+
 
 2019-04-07  7.0.8-39 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-39, GIT revision 15489:6120f8bc1:20190406
@@ -608,7 +618,7 @@
   * Stop potential leaks in the JNG decoder (reference:
     https://github.com/ImageMagick/ImageMagick/issues/760).
   * Maximum valid hour is 23, not 24, in the PNG tIME chunk, and maximum
-    valid minute is 59, not 60.  
+    valid minute is 59, not 60.
 
 2017-09-12  7.0.7-2 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.7-2, GIT revision 21089:4e46ad9dd:20170912.
@@ -850,7 +860,7 @@
   * Release ImageMagick version 7.0.5-6, GIT revision 20039:9371904:20170512.
 
 2017-05-10  7.0.5-6 John Cupitt <jcupitt@gmail.com>
-  * Revise DICOM window and rescale handling (reference 
+  * Revise DICOM window and rescale handling (reference
     https://github.com/ImageMagick/ImageMagick/pull/484)
 
 2017-05-06  7.0.5-6 Cristy  <quetzlzacatenango@image...>
@@ -1057,7 +1067,7 @@
   * Set colorspace to sRGB if -append has non-homogenous colorspaces (reference
     https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=29105).
   * Respect connected-components:area-threshold define (reference
-    https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=31006). 
+    https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=31006).
   * Enable alpha channel if background color is non-opaque (reference
     https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=31016).
   * Return correct offset for negative index for -fx option (reference
@@ -1114,7 +1124,6 @@
     https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=30797).
   * Mask composite produces proper results for the convert utility (reference
     https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=29675).
-    
 
 2016-10-10  7.0.3-5 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.3-5, GIT revision 18975:a8174a2:20161030.
@@ -1143,7 +1152,7 @@
   * Release ImageMagick version 7.0.3-2, GIT revision 18887:6b27c5b:20161002.
 
 2016-09-27  7.0.3-2 Dirk Lemstra <dirk@lem.....org>
-  * Fixed incorrect RLE decoding when reading an SGI image (reference 
+  * Fixed incorrect RLE decoding when reading an SGI image (reference
     https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=30514)
 
 2016-09-20  7.0.3-1 Cristy  <quetzlzacatenango@image...>
@@ -1244,7 +1253,7 @@
 2016-06-23  7.0.2-2 Cristy  <quetzlzacatenango@image...>
   * Correct for numerical instability (reference
     https://github.com/ImageMagick/ImageMagick/issues/218).
-			 
+
 2016-06-21  7.0.2-1 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.2-1, GIT revision 18479:931319b:20160622.
 
