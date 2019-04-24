@@ -533,13 +533,14 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
       else
         if ((image->gravity != UndefinedGravity) &&
             (LocaleCompare(image_info->magick,"PS") == 0))
-          (void) CopyMagickString(page_geometry,PSPageGeometry,MagickPathExtent);
+          (void) CopyMagickString(page_geometry,PSPageGeometry,
+            MagickPathExtent);
     (void) ConcatenateMagickString(page_geometry,">",MagickPathExtent);
     (void) ParseMetaGeometry(page_geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
-    scale.x=(double) (geometry.width*delta.x)/resolution.x;
+    scale.x=PerceptibleReciprocal(resolution.x)*geometry.width*delta.x;
     geometry.width=(size_t) floor(scale.x+0.5);
-    scale.y=(double) (geometry.height*delta.y)/resolution.y;
+    scale.y=PerceptibleReciprocal(resolution.y)*geometry.height*delta.y;
     geometry.height=(size_t) floor(scale.y+0.5);
     (void) ParseAbsoluteGeometry(page_geometry,&media_info);
     (void) ParseGravityGeometry(image,page_geometry,&page_info,exception);

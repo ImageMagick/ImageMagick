@@ -128,16 +128,16 @@ static int MagickDLLCall PostscriptDelegateMessage(void *handle,
   offset=0;
   messages=(char **) handle;
   if (*messages == (char *) NULL)
-    *messages=(char *) AcquireQuantumMemory(length+1,sizeof(char *));
+    *messages=(char *) AcquireQuantumMemory((size_t) length+1,sizeof(char *));
   else
     {
-      offset=strlen(*messages);
-      *messages=(char *) ResizeQuantumMemory(*messages,offset+length+1,
+      offset=(ssize_t) strlen(*messages);
+      *messages=(char *) ResizeQuantumMemory(*messages,(size_t) offset+length+1,
         sizeof(char *));
     }
   if (*messages == (char *) NULL)
     return(0);
-  (void) memcpy(*messages+offset,message,length);
+  (void) memcpy(*messages+offset,message,(size_t) length);
   (*messages)[length+offset] ='\0';
   return(length);
 }
@@ -224,7 +224,7 @@ static MagickBooleanType InvokePostscriptDelegate(
 #endif
   if (ghost_info == (GhostInfo *) NULL)
     ExecuteGhostscriptCommand(command,status);
-  if ((ghost_info->revision)(&revision,sizeof(revision)) != 0)
+  if ((ghost_info->revision)(&revision,(int) sizeof(revision)) != 0)
     revision.revision=0;
   if (verbose != MagickFalse)
     {
@@ -713,9 +713,9 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (i ==  (ssize_t) priority)
         continue;
     hires_bounds=bounds;
-    priority=(size_t) i;
+    priority=i;
   }
-  if ((fabs(hires_bounds.x2-hires_bounds.x1) >= MagickEpsilon) && 
+  if ((fabs(hires_bounds.x2-hires_bounds.x1) >= MagickEpsilon) &&
       (fabs(hires_bounds.y2-hires_bounds.y1) >= MagickEpsilon))
     {
       /*
@@ -1634,13 +1634,14 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
       else
         if ((image->gravity != UndefinedGravity) &&
             (LocaleCompare(image_info->magick,"PS") == 0))
-          (void) CopyMagickString(page_geometry,PSPageGeometry,MagickPathExtent);
+          (void) CopyMagickString(page_geometry,PSPageGeometry,
+            MagickPathExtent);
     (void) ConcatenateMagickString(page_geometry,">",MagickPathExtent);
     (void) ParseMetaGeometry(page_geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
-    scale.x=(double) (geometry.width*delta.x)/resolution.x;
+    scale.x=PerceptibleReciprocal(resolution.x)*geometry.width*delta.x;
     geometry.width=(size_t) floor(scale.x+0.5);
-    scale.y=(double) (geometry.height*delta.y)/resolution.y;
+    scale.y=PerceptibleReciprocal(resolution.y)*geometry.height*delta.y;
     geometry.height=(size_t) floor(scale.y+0.5);
     (void) ParseAbsoluteGeometry(page_geometry,&media_info);
     (void) ParseGravityGeometry(image,page_geometry,&page_info,exception);
@@ -1914,7 +1915,7 @@ RestoreMSCWarning
       }
     (void) memset(&pixel,0,sizeof(pixel));
     pixel.alpha=(MagickRealType) TransparentAlpha;
-    index=0;
+    index=(Quantum) 0;
     x=0;
     if ((image_info->type != TrueColorType) &&
         (SetImageGray(image,exception) != MagickFalse))
