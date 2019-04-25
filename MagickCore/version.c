@@ -179,6 +179,9 @@ MagickExport const char *GetMagickDelegates(void)
     defined(MAGICKCORE_WINDOWS_SUPPORT)
   "ps "
 #endif
+#if defined(MAGICKCORE_RAQM_DELEGATE)
+  "raqm "
+#endif
 #if defined(MAGICKCORE_RAW_R_DELEGATE)
   "raw "
 #endif
