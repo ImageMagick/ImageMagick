@@ -251,24 +251,25 @@ MagickExport const char *GetMagickFeatures(void)
   "OpenCL "
 #endif
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-#if _OPENMP == 199810
-  "OpenMP(1.0)"
-#elif _OPENMP == 200203
-  "OpenMP(2.0)"
-#elif _OPENMP == 200505
-  "OpenMP(2.5)"
-#elif _OPENMP == 200805
-  "OpenMP(3.0)"
-#elif _OPENMP == 201107
-  "OpenMP(3.1)"
-#elif _OPENMP == 201307
-  "OpenMP(4.0)"
-#elif _OPENMP == 201511
-  "OpenMP(4.5)"
-#elif _OPENMP == 201811
-  "OpenMP(5.0)"
-#else
   "OpenMP"
+#if _OPENMP == 199810
+  "(1.0) "
+#elif _OPENMP == 200203
+  "(2.0) "
+#elif _OPENMP == 200505
+  "(2.5) "
+#elif _OPENMP == 200805
+  "(3.0) "
+#elif _OPENMP == 201107
+  "(3.1) "
+#elif _OPENMP == 201307
+  "(4.0) "
+#elif _OPENMP == 201511
+  "(4.5) "
+#elif _OPENMP == 201811
+  "(5.0) "
+#else
+  " "
 #endif
 #endif
 #if defined(ZERO_CONFIGURATION_SUPPORT)
