@@ -4307,6 +4307,8 @@ RestoreMSCWarning
     if (image->colorspace == LabColorspace)
       DecodeLabImage(image,exception);
     DestroyTIFFInfo(&tiff_info);
+    if (exception->severity > ErrorException)
+      break;
 DisableMSCWarning(4127)
     if (0 && (image_info->verbose != MagickFalse))
 RestoreMSCWarning
@@ -4320,6 +4322,6 @@ RestoreMSCWarning
       break;
   } while (adjoin != MagickFalse);
   TIFFClose(tiff);
-  return(MagickTrue);
+  return(exception->severity > ErrorException ? MagickFalse : MagickTrue);
 }
 #endif
