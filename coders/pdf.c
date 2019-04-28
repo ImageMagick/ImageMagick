@@ -1184,19 +1184,19 @@ static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
   unsigned char
     *group4;
 
+  group4_image=CloneImage(inject_image,0,0,MagickTrue,exception);
+  if (group4_image == (Image *) NULL)
+    return(MagickFalse);
   status=MagickTrue;
   write_info=CloneImageInfo(image_info);
   (void) CopyMagickString(write_info->filename,"GROUP4:",MagickPathExtent);
   (void) CopyMagickString(write_info->magick,"GROUP4",MagickPathExtent);
-  group4_image=CloneImage(inject_image,0,0,MagickTrue,exception);
-  if (group4_image == (Image *) NULL)
-    return(MagickFalse);
   group4=(unsigned char *) ImageToBlob(write_info,group4_image,&length,
     exception);
   group4_image=DestroyImage(group4_image);
+  write_info=DestroyImageInfo(write_info);
   if (group4 == (unsigned char *) NULL)
     return(MagickFalse);
-  write_info=DestroyImageInfo(write_info);
   if (WriteBlob(image,length,group4) != (ssize_t) length)
     status=MagickFalse;
   group4=(unsigned char *) RelinquishMagickMemory(group4);
