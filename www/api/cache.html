@@ -7,12 +7,12 @@
 <head>
   <meta charset="utf-8"  />
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no"  />
-  <title>Convert, Edit, Or Compose Bitmap Images @ ImageMagick</title>
+  <title>MagickCore, C API: Get or Set Image Pixels @ ImageMagick</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, or convert bitmap images. You can resize your image, crop it, change its shades and colors, add captions, among other operations." />
+  <meta name="description" content="ImageMagick® creates, edits, composes, and converts bitmap images. Resize an image, crop it, change its shades and colors, add captions, and more." />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
-  <meta name="keywords" content="convert, edit, or, compose, bitmap, images, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
+  <meta name="keywords" content="magickcore, c, api:, get, or, set, image, pixels, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
   <meta name="rating" content="GENERAL" />
   <meta name="robots" content="INDEX, FOLLOW" />
   <meta name="generator" content="ImageMagick Studio LLC" />
@@ -22,39 +22,45 @@
   <meta name="copyright" content="Copyright (c) 1999-2019 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
+  <meta property='og:url' content='../../' />
+  <meta property='og:title' content='ImageMagick' />
+  <meta property='og:image' content='../../images/logo.png' />
+  <meta property='og:type' content='website' />
+  <meta property='og:site_name' content='ImageMagick' />
+  <meta property='og:description' content="Convert, Edit, or Compose Bitmap Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="quantize.html" rel="canonical" />
-  <link href="../../images/wand.png" rel="icon" />
-  <link href="../../images/wand.ico" rel="shortcut icon" />
-  <link href="../assets/magick.css" rel="stylesheet" />
+  <link href="cache.html" rel="canonical" />
+  <link href="../images/wand.png" rel="icon" />
+  <link href="../images/wand.ico" rel="shortcut icon" />
+  <link href="assets/magick.css" rel="stylesheet" />
 </head>
 <body>
   <header>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="../../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../../images/wand.ico"/></a>
+    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="quantize.html">Home <span class="sr-only">(current)</span></a>
+      <li class="nav-item ">
+        <a class="nav-link" href="montage.html">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../../www/download.html">Download</a>
+        <a class="nav-link" href="../www/download.html">Download</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../../www/command-line-tools.html">Tools</a>
+        <a class="nav-link" href="../www/command-line-tools.html">Tools</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../../www/command-line-processing.html">Command-line</a>
+        <a class="nav-link" href="../www/command-line-processing.html">Command-line</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../../www/resources.html">Resources</a>
+        <a class="nav-link" href="../www/resources.html">Resources</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../../www/develop.html">Develop</a>
+        <a class="nav-link" href="../www/develop.html">Develop</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
@@ -81,199 +87,451 @@
   <main class="container">
     <div class="magick-template">
 <div class="magick-header">
-<p class="text-center"><a href="quantize.html#features">Features and Capabilities</a> • <a href="quantize.html#news">News</a> • <a href="quantize.html#community">Community</a></p>
+<p class="text-center"><a href="cache.html#AcquirePixelCacheNexus">AcquirePixelCacheNexus</a> &#8226; <a href="cache.html#AcquirePixelCachePixels">AcquirePixelCachePixels</a> &#8226; <a href="cache.html#GetAuthenticMetacontent">GetAuthenticMetacontent</a> &#8226; <a href="cache.html#GetAuthenticPixelQueue">GetAuthenticPixelQueue</a> &#8226; <a href="cache.html#GetAuthenticPixels">GetAuthenticPixels</a> &#8226; <a href="cache.html#GetOneAuthenticPixel">GetOneAuthenticPixel</a> &#8226; <a href="cache.html#GetOneVirtualPixel">GetOneVirtualPixel</a> &#8226; <a href="cache.html#GetOneVirtualPixelInfo">GetOneVirtualPixelInfo</a> &#8226; <a href="cache.html#GetVirtualMetacontent">GetVirtualMetacontent</a> &#8226; <a href="cache.html#GetVirtualPixelQueue">GetVirtualPixelQueue</a> &#8226; <a href="cache.html#GetVirtualPixels">GetVirtualPixels</a> &#8226; <a href="cache.html#QueueAuthenticPixels">QueueAuthenticPixels</a> &#8226; <a href="cache.html#SetPixelCacheVirtualMethod">SetPixelCacheVirtualMethod</a> &#8226; <a href="cache.html#SyncAuthenticPixels">SyncAuthenticPixels</a></p>
 
-<p class="lead magick-description"><a href="../../images/wizard.png" title="And Now a Touch of Magick"><img class="img-fluid magick-icon" id="logo" alt="And Now a Touch of Magick" width="265" height="352" src="../../images/wizard.jpg" /></a> 
-Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&amp;entry=78333969">&#174;</a></sup> to create, edit, compose, or convert bitmap images.  It can read and write images in a variety of <a href="../../www/formats.html">formats</a> (over 200) including PNG, JPEG, GIF, HEIC, TIFF, <a href="../../www/motion-picture.html">DPX</a>, <a href="../../www/high-dynamic-range.html">EXR</a>, WebP, Postscript, PDF, and SVG.  Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.</p>
+<h2><a href="../../api/MagickCore/cache_8c.html" id="AcquirePixelCacheNexus">AcquirePixelCacheNexus</a></h2>
 
-<p>The functionality of ImageMagick is typically utilized from the <a href="../../www/command-line-processing.html">command-line</a> or you can use the features from programs written in your favorite language. Choose from these interfaces: <a href="../../www/develop.html#ada">G2F</a> (Ada), <a href="../../www/develop.html#c">MagickCore</a> (C), <a href="../../www/develop.html#c">MagickWand</a> (C), <a href="../../www/develop.html#ch">ChMagick</a> (Ch), <a href="../../www/develop.html#com_">ImageMagickObject</a> (COM+), <a href="../../www/develop.html#c__">Magick++</a> (C++), <a href="../../www/develop.html#java">JMagick</a> (Java), <a href="../../www/develop.html#julia">JuliaIO</a> (Julia), <a href="../../www/develop.html#lisp">L-Magick</a> (Lisp), <a href="../../www/develop.html#lua">Lua</a> (LuaJIT), <a href="../../www/develop.html#neko">NMagick</a> (Neko/haXe), <a href="../../www/develop.html#dot-net">Magick.NET</a> (.NET), <a href="../../www/develop.html#pascal">PascalMagick</a> (Pascal),  <a href="../../www/develop.html#perl">PerlMagick</a> (Perl), <a href="../../www/develop.html#php">MagickWand for PHP</a> (PHP),  <a href="../../www/develop.html#php">IMagick</a> (PHP), <a href="../../www/develop.html#python">PythonMagick</a> (Python), <a href="../../www/develop.html#r">magick</a> (R), <a href="../../www/develop.html#ruby">RMagick</a> (Ruby), or <a href="../../www/develop.html#tcl">TclMagick</a> (Tcl/TK). With a language interface, use ImageMagick to modify or create images dynamically and <var>automagically</var>.</p>
-<p>ImageMagick utilizes multiple computational threads to increase performance and can read, process, or write mega-, giga-, or tera-pixel image sizes.</p>
-<p>ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you may use, copy, modify, and distribute in both open and proprietary applications. It is distributed under a derived Apache 2.0 <a href="../www/license.html">license</a>.</p>
+<p>AcquirePixelCacheNexus() allocates the NexusInfo structure.</p>
 
-<p>The ImageMagick development process ensures a stable API and <a href="https://abi-laboratory.pro/tracker/timeline/imagemagick/">ABI</a>. Before each ImageMagick release, we perform a comprehensive security assessment that includes <a href="https://github.com/google/sanitizers/wiki/AddressSanitizer">memory error</a>, <a href="https://github.com/google/sanitizers/wiki/ThreadSanitizer">thread data race</a> detection, and continuous <a href="https://github.com/google/oss-fuzz">fuzzing</a> to help prevent security vulnerabilities.</p>
+<p>The format of the AcquirePixelCacheNexus method is:</p>
 
-<p>The current release is ImageMagick <a href="../../www/download.html">7.0.8-23</a>.  It runs on <a href="../../www/download.html#unix">Linux</a>, <a href="../../www/download.html#windows">Windows</a>, <a href="../../www/download.html#macosx">Mac Os X</a>, <a href="../../www/download.html#iOS">iOS</a>, Android OS, and others.</p>
+<pre class="text">
+NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
+</pre>
 
-<p>The authoritative ImageMagick web site is <a href="../../">https://imagemagick.org</a>. The authoritative source code repository is <a href="https://github.com/ImageMagick">https://github.com/ImageMagick</a>.  We maintain a source code mirror at <a href="https://gitlab.com/ImageMagick">https://gitlab.com/ImageMagick</a>.</p>
+<p>A description of each parameter follows:</p>
 
-<p>We continue to maintain the legacy release of ImageMagick, version 6, at <a href="https://legacy.imagemagick.org/">https://legacy.imagemagick.org</a>.</p>
+<dd>
+</dd>
 
-<h1><a class="anchor" id="features"></a>Features and Capabilities</h1>
-<p>Here are just a few <a href="../www/examples.html">examples</a> of what ImageMagick can do for you:</p>
-<div class="table-responsive">
-<table class="table table-sm table-striped">
-  <tr>
-    <td><a href="../../Usage/anim_basics/">Animation</a></td>
-    <td>create a GIF animation sequence from a group of images.</td>
-  </tr>
-  <tr>
-    <td><a href="../www/color-management.html">Color management</a></td>
-    <td>accurate color management with color profiles or in lieu of-- built-in gamma compression or expansion as demanded by the colorspace.</td>
-  </tr>
-  <tr>
-    <td><a href="../../www/command-line-processing.html">Command-line processing</a></td>
-    <td>utilize ImageMagick from the command-line.</td>
-  </tr>
-  <tr>
-    <td><a href="https://en.wikipedia.org/wiki/Complex_text_layout">Complex text layout</a></td>
-    <td>bidirectional text support and shaping.</td>
-  </tr>
-  <tr>
-    <td><a href="../www/composite.html">Composite</a></td>
-    <td>overlap one image over another.</td>
-  </tr>
-  <tr>
-    <td><a href="../www/connected-components.html">Connected component labeling</a></td>
-    <td>uniquely label connected regions in an image.</td>
-  </tr>
-  <tr>
-    <td><a href="../../Usage/crop/">Decorate</a></td>
-    <td>add a border or frame to an image.</td>
-  </tr>
-  <tr>
-    <td><a href="../../Usage/transform/#vision">Delineate image features</a></td>
-    <td><a href="../https://imagemagick.org/discourse-server//viewtopic.html?f=4&amp;t=25405">Canny edge detection</a>, <a href="../https://imagemagick.org/discourse-server//viewtopic.html?f=4&amp;t=25476">Hough lines</a>.</td>
-  </tr>
-  <tr>
-    <td><a href="../../Usage/fourier/">Discrete Fourier transform</a></td>
-    <td>implements the forward and inverse <a href="https://en.wikipedia.org/wiki/Discrete_Fourier_transform">DFT</a>.</td>
-  </tr>
-  <tr>
-    <td><a href="../www/distribute-pixel-cache.html">Distributed pixel cache</a></td>
-    <td>offload intermediate pixel storage to one or more remote servers.</td>
-  </tr>
-  <tr>
-    <td><a href="../../Usage/draw/">Draw</a></td>
-    <td>add shapes or text to an image.</td>
-  </tr>
-  <tr>
-    <td><a href="../www/cipher.html">Encipher or decipher an image</a></td>
-    <td>convert ordinary images into unintelligible gibberish and back again.</td>
-  </tr>
-  <tr>
-    <td><a href="../../www/convert.html">Format conversion</a></td>
-    <td>convert an image from one <a href="../../www/formats.html">format </a> to another (e.g. PNG to JPEG).</td>
-  </tr>
-  <tr>
-    <td><a href="../../Usage/distorts/">Generalized pixel distortion</a></td>
-    <td>correct for, or induce image distortions including perspective.</td>
-  </tr>
-  <tr>
-    <td><a href="../../www/architecture.html#distributed">Heterogeneous distributed processing</a></td>
-    <td>certain algorithms are <a href="../www/opencl.html">OpenCL</a>-enabled to take advantage of speed-ups offered by executing in concert across heterogeneous platforms consisting of CPUs, GPUs, and other processors.</td>
-  </tr>
-  <tr>
-    <td><a href="../../www/high-dynamic-range.html">High dynamic-range images</a></td>
-    <td>accurately represent the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.</td>
-  </tr>
-  <tr>
-    <td><a href="../www/fx.html">Image calculator</a></td>
-    <td>apply a mathematical expression to an image or image channels.</td>
-  </tr>
-  <tr>
-    <td><a href="../../www/gradient.html">Image gradients</a></td>
-    <td>create a gradual blend of two colors whose shape is horizontal, vertical, circular, or elliptical.</td>
-  </tr>
-  <tr>
-    <td><a href="../www/identify.html">Image identification</a></td>
-    <td>describe the format and attributes of an image.</td>
-  </tr>
-  <tr>
-    <td><a href="../../www/download.html#iOS">ImageMagick on the iPhone</a></td>
-    <td>convert, edit, or compose images on your <a href="https://www.apple.com/ios/">iOS</a> device such as the iPhone or iPad.</td>
-  </tr>
-  <tr>
-    <td><a href="../../www/architecture.html#tera-pixel">Large image support</a></td>
-    <td>read, process, or write mega-, giga-, or tera-pixel image sizes.</td>
-  </tr>
-  <tr>
-    <td><a href="../../www/montage.html">Montage</a></td>
-    <td>juxtapose image thumbnails on an image canvas.</td>
-  </tr>
-  <tr>
-    <td><a href="../../Usage/morphology/">Morphology of shapes</a></td>
-    <td>extract features, describe shapes, and recognize patterns in images.</td>
-  </tr>
-  <tr>
-    <td><a href="../../www/motion-picture.html">Motion picture support</a></td>
-    <td>read and write the common image formats used in digital film work.</td>
-  </tr>
-  <tr>
-    <td><a href="../../Usage/transform/#vision">Noise and color reduction</a></td>
-    <td><a href="../https://imagemagick.org/discourse-server//viewtopic.html?f=4&amp;t=26480">Kuwahara Filter</a>, <a href="../https://imagemagick.org/discourse-server//viewtopic.html?f=4&amp;t=25504">mean-shift</a>.</td>
-  </tr>
-  <tr>
-    <td><a href="http://www.fmwconcepts.com/misc_tests/perceptual_hash_test_results_510/index.html">Perceptual hash</a></td>
-    <td>map visually identical images to the same or similar hash-- useful in image retrieval, authentication, indexing, or copy detection as well as digital watermarking.</td>
-  </tr>
-  <tr>
-    <td><a href="../../Usage/blur/">Special effects</a></td>
-    <td>blur, sharpen, threshold, or tint an image.</td>
-  </tr>
-  <tr>
-    <td><a href="../../Usage/text/">Text &amp; comments</a></td>
-    <td>insert descriptive or artistic text in an image.</td>
-  </tr>
-  <tr>
-    <td><a href="../../www/architecture.html#threads">Threads of execution support</a></td>
-    <td>ImageMagick is thread safe and most internal algorithms execute in <a href="../www/openmp.html">parallel</a> to take advantage of speed-ups offered by multicore processor chips.</td>
-  </tr>
-  <tr>
-    <td><a href="../../Usage/resize/">Transform</a></td>
-    <td>resize, rotate, deskew, crop, flip or trim an image.</td>
-  </tr>
-  <tr>
-    <td><a href="../../Usage/masking/">Transparency</a></td>
-    <td>render portions of an image invisible.</td>
-  </tr>
-  <tr>
-    <td><a href="../../www/architecture.html#virtual-pixels">Virtual pixel support</a></td>
-    <td>convenient access to pixels outside the image boundaries.</td>
-  </tr>
-</table>
-</div>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>number_threads</dt>
+<dd>the number of nexus threads. </dd>
 
-<p><a href="../../Usage/">Examples of ImageMagick Usage</a> shows how to use ImageMagick from the <a href="../../www/command-line-processing.html">command-line</a> to accomplish any of these tasks and much more. Also, see <a href="http://www.fmwconcepts.com/imagemagick/">Fred's ImageMagick Scripts</a>:  a plethora of command-line scripts that perform geometric transforms, blurs, sharpens, edging, noise removal, and color manipulations. With <a href="https://github.com/dlemstra/Magick.NET">Magick.NET</a>, use ImageMagick without having to install ImageMagick on your server or desktop.</p>
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickCore/cache_8c.html" id="AcquirePixelCachePixels">AcquirePixelCachePixels</a></h2>
 
-<h1><a class="anchor" id="news"></a>News</h1>
+<p>AcquirePixelCachePixels() returns the pixels associated with the specified image.</p>
 
-<p>Now that ImageMagick version 7 is released, we continue to maintain the legacy release of ImageMagick, version 6, at <a href="https://legacy.imagemagick.org/">https://legacy.imagemagick.org</a>.  Learn how ImageMagick version 7 differs from previous versions with our <a href="../www/porting.html">porting guide</a>.</p>
+<p>The format of the AcquirePixelCachePixels() method is:</p>
 
-<p>ImageMagick best practices <strong>strongly</strong> encourages you to configure a <a href="../../www/security-policy.html">security policy</a> that suits your local environment.</p>
+<pre class="text">
+void *AcquirePixelCachePixels(const Image *image,size_t *length,
+  ExceptionInfo *exception)
+</pre>
 
-<p>As an analog to linear (RGB) and non-linear (sRGB) color colorspaces, as of ImageMagick 7.0.7-17, we introduce the LinearGray colorspace.  Gray is non-linear grayscale and LinearGray is linear (e.g. -colorspace linear-gray).</p>
+<p>A description of each parameter follows:</p>
 
-<p>Want more performance from ImageMagick?  Try these options:</p>
+<dd>
+</dd>
 
-<ul>
-<li>Add more memory to your system, see <a href="../../www/architecture.html#cache">the pixel cache</a>;</li>
-<li>Add more cores to your system, see <a href="../../www/architecture.html#threads">threads of execution support</a>;</li>
-<li>push large images to a solid-state drive, see <a href="../../www/architecture.html#tera-pixel">large image support</a>.</li>
-</ul>
-<p>If these options are prohibitive, you can reduce the quality of the image results.  The default build is Q16 HDRI.  If you disable <a href="../../www/high-dynamic-range.html">HDRI</a>, you use half the memory and instead of predominately floating point operations, you use the typically more efficient integer operations.  The tradeoff is reduced precision and you cannot process out of range pixel values (e.g. negative).  If you build the Q8 non-HDRI  version of ImageMagick, you again reduce the memory requirements in half-- and once again there is a tradeoff, even less precision and no out of range pixel values.  For a Q8 non-HDRI build of ImageMagick, use these <code>configure</code> script options: <code>--with-quantum-depth=8 --disable-hdri</code>.</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
 
-<h1><a class="anchor" id="community"></a>Community</h1>
-<p>To join the ImageMagick community, try the <a target="_blank" href="https://imagemagick.org/discourse-server/">discourse server</a>.  You can review questions or comments (with informed responses) posed by ImageMagick users or ask your own questions. If you want to contribute image processing algorithms, other enhancements, or bug fixes, open an <a href="https://github.com/ImageMagick/ImageMagick/issues">issue</a>. </p>
+<dd> </dd>
+<dt>length</dt>
+<dd>the pixel cache length. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickCore/cache_8c.html" id="GetAuthenticMetacontent">GetAuthenticMetacontent</a></h2>
+
+<p>GetAuthenticMetacontent() returns the authentic metacontent corresponding with the last call to QueueAuthenticPixels() or GetVirtualPixels().  NULL is returned if the associated pixels are not available.</p>
+
+<p>The format of the GetAuthenticMetacontent() method is:</p>
+
+<pre class="text">
+void *GetAuthenticMetacontent(const Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickCore/cache_8c.html" id="GetAuthenticPixelQueue">GetAuthenticPixelQueue</a></h2>
+
+<p>GetAuthenticPixelQueue() returns the authentic pixels associated corresponding with the last call to QueueAuthenticPixels() or GetAuthenticPixels().</p>
+
+<p>The format of the GetAuthenticPixelQueue() method is:</p>
+
+<pre class="text">
+Quantum *GetAuthenticPixelQueue(const Image image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickCore/cache_8c.html" id="GetAuthenticPixels">GetAuthenticPixels</a></h2>
+
+<p>GetAuthenticPixels() obtains a pixel region for read/write access. If the region is successfully accessed, a pointer to a Quantum array representing the region is returned, otherwise NULL is returned.</p>
+
+<p>The returned pointer may point to a temporary working copy of the pixels or it may point to the original pixels in memory. Performance is maximized if the selected region is part of one row, or one or more full rows, since then there is opportunity to access the pixels in-place (without a copy) if the image is in memory, or in a memory-mapped file. The returned pointer must *never* be deallocated by the user.</p>
+
+<p>Pixels accessed via the returned pointer represent a simple array of type Quantum.  If the image has corresponding metacontent,call GetAuthenticMetacontent() after invoking GetAuthenticPixels() to obtain the meta-content corresponding to the region.  Once the Quantum array has been updated, the changes must be saved back to the underlying image using SyncAuthenticPixels() or they may be lost.</p>
+
+<p>The format of the GetAuthenticPixels() method is:</p>
+
+<pre class="text">
+Quantum *GetAuthenticPixels(Image *image,const ssize_t x,
+  const ssize_t y,const size_t columns,const size_t rows,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>x,y,columns,rows</dt>
+<dd> These values define the perimeter of a region of pixels. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickCore/cache_8c.html" id="GetOneAuthenticPixel">GetOneAuthenticPixel</a></h2>
+
+<p>GetOneAuthenticPixel() returns a single pixel at the specified (x,y) location.  The image background color is returned if an error occurs.</p>
+
+<p>The format of the GetOneAuthenticPixel() method is:</p>
+
+<pre class="text">
+MagickBooleanType GetOneAuthenticPixel(const Image image,const ssize_t x,
+  const ssize_t y,Quantum *pixel,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>x,y</dt>
+<dd> These values define the location of the pixel to return. </dd>
+
+<dd> </dd>
+<dt>pixel</dt>
+<dd>return a pixel at the specified (x,y) location. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickCore/cache_8c.html" id="GetOneVirtualPixel">GetOneVirtualPixel</a></h2>
+
+<p>GetOneVirtualPixel() returns a single virtual pixel at the specified (x,y) location.  The image background color is returned if an error occurs. If you plan to modify the pixel, use GetOneAuthenticPixel() instead.</p>
+
+<p>The format of the GetOneVirtualPixel() method is:</p>
+
+<pre class="text">
+MagickBooleanType GetOneVirtualPixel(const Image image,const ssize_t x,
+  const ssize_t y,Quantum *pixel,ExceptionInfo exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>x,y</dt>
+<dd> These values define the location of the pixel to return. </dd>
+
+<dd> </dd>
+<dt>pixel</dt>
+<dd>return a pixel at the specified (x,y) location. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickCore/cache_8c.html" id="GetOneVirtualPixelInfo">GetOneVirtualPixelInfo</a></h2>
+
+<p>GetOneVirtualPixelInfo() returns a single pixel at the specified (x,y) location.  The image background color is returned if an error occurs.  If you plan to modify the pixel, use GetOneAuthenticPixel() instead.</p>
+
+<p>The format of the GetOneVirtualPixelInfo() method is:</p>
+
+<pre class="text">
+MagickBooleanType GetOneVirtualPixelInfo(const Image image,
+  const VirtualPixelMethod virtual_pixel_method,const ssize_t x,
+  const ssize_t y,PixelInfo *pixel,ExceptionInfo exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>virtual_pixel_method</dt>
+<dd>the virtual pixel method. </dd>
+
+<dd> </dd>
+<dt>x,y</dt>
+<dd> these values define the location of the pixel to return. </dd>
+
+<dd> </dd>
+<dt>pixel</dt>
+<dd>return a pixel at the specified (x,y) location. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickCore/cache_8c.html" id="GetVirtualMetacontent">GetVirtualMetacontent</a></h2>
+
+<p>GetVirtualMetacontent() returns the virtual metacontent corresponding with the last call to QueueAuthenticPixels() or GetVirtualPixels().  NULL is returned if the meta-content are not available.</p>
+
+<p>The format of the GetVirtualMetacontent() method is:</p>
+
+<pre class="text">
+const void *GetVirtualMetacontent(const Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickCore/cache_8c.html" id="GetVirtualPixelQueue">GetVirtualPixelQueue</a></h2>
+
+<p>GetVirtualPixelQueue() returns the virtual pixels associated corresponding with the last call to QueueAuthenticPixels() or GetVirtualPixels().</p>
+
+<p>The format of the GetVirtualPixelQueue() method is:</p>
+
+<pre class="text">
+const Quantum *GetVirtualPixelQueue(const Image image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickCore/cache_8c.html" id="GetVirtualPixels">GetVirtualPixels</a></h2>
+
+<p>GetVirtualPixels() returns an immutable pixel region. If the region is successfully accessed, a pointer to it is returned, otherwise NULL is returned.  The returned pointer may point to a temporary working copy of the pixels or it may point to the original pixels in memory. Performance is maximized if the selected region is part of one row, or one or more full rows, since there is opportunity to access the pixels in-place (without a copy) if the image is in memory, or in a memory-mapped file.  The returned pointer must *never* be deallocated by the user.</p>
+
+<p>Pixels accessed via the returned pointer represent a simple array of type Quantum.  If the image type is CMYK or the storage class is PseudoClass, call GetAuthenticMetacontent() after invoking GetAuthenticPixels() to access the meta-content (of type void) corresponding to the the region.</p>
+
+<p>If you plan to modify the pixels, use GetAuthenticPixels() instead.</p>
+
+<p>Note, the GetVirtualPixels() and GetAuthenticPixels() methods are not thread- safe.  In a threaded environment, use GetCacheViewVirtualPixels() or GetCacheViewAuthenticPixels() instead.</p>
+
+<p>The format of the GetVirtualPixels() method is:</p>
+
+<pre class="text">
+const Quantum *GetVirtualPixels(const Image *image,const ssize_t x,
+  const ssize_t y,const size_t columns,const size_t rows,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>x,y,columns,rows</dt>
+<dd> These values define the perimeter of a region of pixels. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickCore/cache_8c.html" id="QueueAuthenticPixels">QueueAuthenticPixels</a></h2>
+
+<p>QueueAuthenticPixels() queues a mutable pixel region.  If the region is successfully initialized a pointer to a Quantum array representing the region is returned, otherwise NULL is returned.  The returned pointer may point to a temporary working buffer for the pixels or it may point to the final location of the pixels in memory.</p>
+
+<p>Write-only access means that any existing pixel values corresponding to the region are ignored.  This is useful if the initial image is being created from scratch, or if the existing pixel values are to be completely replaced without need to refer to their pre-existing values. The application is free to read and write the pixel buffer returned by QueueAuthenticPixels() any way it pleases. QueueAuthenticPixels() does not initialize the pixel array values. Initializing pixel array values is the application's responsibility.</p>
+
+<p>Performance is maximized if the selected region is part of one row, or one or more full rows, since then there is opportunity to access the pixels in-place (without a copy) if the image is in memory, or in a memory-mapped file. The returned pointer must *never* be deallocated by the user.</p>
+
+<p>Pixels accessed via the returned pointer represent a simple array of type Quantum. If the image type is CMYK or the storage class is PseudoClass, call GetAuthenticMetacontent() after invoking GetAuthenticPixels() to obtain the meta-content (of type void) corresponding to the region. Once the Quantum (and/or Quantum) array has been updated, the changes must be saved back to the underlying image using SyncAuthenticPixels() or they may be lost.</p>
+
+<p>The format of the QueueAuthenticPixels() method is:</p>
+
+<pre class="text">
+Quantum *QueueAuthenticPixels(Image *image,const ssize_t x,
+  const ssize_t y,const size_t columns,const size_t rows,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>x,y,columns,rows</dt>
+<dd> These values define the perimeter of a region of pixels. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickCore/cache_8c.html" id="SetPixelCacheVirtualMethod">SetPixelCacheVirtualMethod</a></h2>
+
+<p>SetPixelCacheVirtualMethod() sets the "virtual pixels" method for the pixel cache and returns the previous setting.  A virtual pixel is any pixel access that is outside the boundaries of the image cache.</p>
+
+<p>The format of the SetPixelCacheVirtualMethod() method is:</p>
+
+<pre class="text">
+VirtualPixelMethod SetPixelCacheVirtualMethod(Image *image,
+  const VirtualPixelMethod virtual_pixel_method,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>virtual_pixel_method</dt>
+<dd>choose the type of virtual pixel. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="../../api/MagickCore/cache_8c.html" id="SyncAuthenticPixels">SyncAuthenticPixels</a></h2>
+
+<p>SyncAuthenticPixels() saves the image pixels to the in-memory or disk cache. The method returns MagickTrue if the pixel region is flushed, otherwise MagickFalse.</p>
+
+<p>The format of the SyncAuthenticPixels() method is:</p>
+
+<pre class="text">
+MagickBooleanType SyncAuthenticPixels(Image *image,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
 </div>
     </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
-    <p><a href="../../www/security-policy.html">Security</a> •
-    <a href="../../www/architecture.html">Architecture</a> •
-    <a href="../../www/links.html">Related</a> •
-     <a href="../../www/sitemap.html">Sitemap</a>
-       
-    <a href="quantize.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../../images/wand.ico"/></a>
-       
+    <p><a href="../www/security-policy.html">Security</a> •
+    <a href="../www/architecture.html">Architecture</a>
+     
+    <a href="cache.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+     
+    <a href="../www/links.html">Related</a> •
+     <a href="../www/sitemap.html">Sitemap</a>
+    <br/>
+    <a href="../www/support.html">Donate</a> •
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="../../www/support.html">Donate</a> •
-    <a href="../../www/contact.html">Contact Us</a>
+    <a href="../www/contact.html">Contact Us</a> 
     <br/>
     <small>© 1999-2019 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
-  <script src="../assets/magick.js" crossorigin="anonymous"></script>
+  <script src="assets/magick.js" crossorigin="anonymous"></script>
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
+<!-- Magick Cache 24th April 2019 08:55 -->

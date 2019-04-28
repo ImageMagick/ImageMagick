@@ -7,9 +7,9 @@
 <head>
   <meta charset="utf-8"  />
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no"  />
-  <title>Convert, Edit, Or Compose Bitmap Images @ ImageMagick</title>
+  <title>ImageMagick - Convert, Edit, or Compose Bitmap Images</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, or convert bitmap images. You can resize your image, crop it, change its shades and colors, add captions, among other operations." />
+  <meta name="description" content="ImageMagick® creates, edits, composes, and converts bitmap images. Resize an image, crop it, change its shades and colors, add captions, and more." />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="convert, edit, or, compose, bitmap, images, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
@@ -22,8 +22,14 @@
   <meta name="copyright" content="Copyright (c) 1999-2019 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
+  <meta property='og:url' content='./' />
+  <meta property='og:title' content='ImageMagick' />
+  <meta property='og:image' content='./images/logo.png' />
+  <meta property='og:type' content='website' />
+  <meta property='og:site_name' content='ImageMagick' />
+  <meta property='og:description' content="Convert, Edit, or Compose Bitmap Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="api/quantize.html" rel="canonical" />
+  <link href="www/index.html" rel="canonical" />
   <link href="images/wand.png" rel="icon" />
   <link href="images/wand.ico" rel="shortcut icon" />
   <link href="www/assets/magick.css" rel="stylesheet" />
@@ -38,7 +44,7 @@
 
     <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
+      <li class="nav-item ">
         <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item ">
@@ -60,14 +66,14 @@
         <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="./www/https://imagemagick.org/script/search.php">
+    <form class="form-inline my-2 my-lg-0" action="www/https://imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
     </form>
     </div>
   </nav>
   <div class="container">
-   <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+   <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -86,20 +92,16 @@
 <p class="lead magick-description"><a href="images/wizard.png" title="And Now a Touch of Magick"><img class="img-fluid magick-icon" id="logo" alt="And Now a Touch of Magick" width="265" height="352" src="images/wizard.jpg" /></a> 
 Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&amp;entry=78333969">&#174;</a></sup> to create, edit, compose, or convert bitmap images.  It can read and write images in a variety of <a href="www/formats.html">formats</a> (over 200) including PNG, JPEG, GIF, HEIC, TIFF, <a href="www/motion-picture.html">DPX</a>, <a href="www/high-dynamic-range.html">EXR</a>, WebP, Postscript, PDF, and SVG.  Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.</p>
 
-<p>The functionality of ImageMagick is typically utilized from the <a href="www/command-line-processing.html">command-line</a> or you can use the features from programs written in your favorite language. Choose from these interfaces: <a href="www/develop.html#ada">G2F</a> (Ada), <a href="www/develop.html#c">MagickCore</a> (C), <a href="www/develop.html#c">MagickWand</a> (C), <a href="www/develop.html#ch">ChMagick</a> (Ch), <a href="www/develop.html#com_">ImageMagickObject</a> (COM+), <a href="www/develop.html#c__">Magick++</a> (C++), <a href="www/develop.html#java">JMagick</a> (Java), <a href="www/develop.html#julia">JuliaIO</a> (Julia), <a href="www/develop.html#lisp">L-Magick</a> (Lisp), <a href="www/develop.html#lua">Lua</a> (LuaJIT), <a href="www/develop.html#neko">NMagick</a> (Neko/haXe), <a href="www/develop.html#dot-net">Magick.NET</a> (.NET), <a href="www/develop.html#pascal">PascalMagick</a> (Pascal),  <a href="www/develop.html#perl">PerlMagick</a> (Perl), <a href="www/develop.html#php">MagickWand for PHP</a> (PHP),  <a href="www/develop.html#php">IMagick</a> (PHP), <a href="www/develop.html#python">PythonMagick</a> (Python), <a href="www/develop.html#r">magick</a> (R), <a href="www/develop.html#ruby">RMagick</a> (Ruby), or <a href="www/develop.html#tcl">TclMagick</a> (Tcl/TK). With a language interface, use ImageMagick to modify or create images dynamically and <var>automagically</var>.</p>
-<p>ImageMagick utilizes multiple computational threads to increase performance and can read, process, or write mega-, giga-, or tera-pixel image sizes.</p>
 <p>ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you may use, copy, modify, and distribute in both open and proprietary applications. It is distributed under a derived Apache 2.0 <a href="www/license.html">license</a>.</p>
 
-<p>The ImageMagick development process ensures a stable API and <a href="https://abi-laboratory.pro/tracker/timeline/imagemagick/">ABI</a>. Before each ImageMagick release, we perform a comprehensive security assessment that includes <a href="https://github.com/google/sanitizers/wiki/AddressSanitizer">memory error</a>, <a href="https://github.com/google/sanitizers/wiki/ThreadSanitizer">thread data race</a> detection, and continuous <a href="https://github.com/google/oss-fuzz">fuzzing</a> to help prevent security vulnerabilities.</p>
+<p>ImageMagick utilizes multiple computational threads to increase performance and can read, process, or write mega-, giga-, or tera-pixel image sizes.</p>
 
-<p>The current release is ImageMagick <a href="www/download.html">7.0.8-23</a>.  It runs on <a href="www/download.html#unix">Linux</a>, <a href="www/download.html#windows">Windows</a>, <a href="www/download.html#macosx">Mac Os X</a>, <a href="www/download.html#iOS">iOS</a>, Android OS, and others.</p>
+<p>The current release is ImageMagick <a href="www/download.html">7.0.8-42</a>.  It runs on <a href="www/download.html#unix">Linux</a>, <a href="www/download.html#windows">Windows</a>, <a href="www/download.html#macosx">Mac Os X</a>, <a href="www/download.html#iOS">iOS</a>, Android OS, and others.</p>
 
-<p>The authoritative ImageMagick web site is <a href="./">https://imagemagick.org</a>. The authoritative source code repository is <a href="https://github.com/ImageMagick">https://github.com/ImageMagick</a>.  We maintain a source code mirror at <a href="https://gitlab.com/ImageMagick">https://gitlab.com/ImageMagick</a>.</p>
-
-<p>We continue to maintain the legacy release of ImageMagick, version 6, at <a href="https://legacy.imagemagick.org/">https://legacy.imagemagick.org</a>.</p>
+<p>The authoritative ImageMagick web site is <a href="index.html">https://imagemagick.org</a>. The authoritative source code repository is <a href="https://github.com/ImageMagick" target="_blank">https://github.com/ImageMagick</a>.  We maintain a source code mirror at <a href="https://gitlab.com/ImageMagick" target="_blank">https://gitlab.com/ImageMagick</a>.  We continue to maintain the legacy release of ImageMagick, version 6, at <a href="https://legacy.imagemagick.org/">https://legacy.imagemagick.org</a>.</p>
 
 <h2><a class="anchor" id="features"></a>Features and Capabilities</h2>
-<p>Here are just a few <a href="./www/examples.html">examples</a> of what ImageMagick can do for you:</p>
+<p>Here are just a few <a href="www/examples.html">examples</a> of what ImageMagick can do for you:</p>
 <div class="table-responsive">
 <table class="table table-sm table-striped">
   <tr>
@@ -107,7 +109,7 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
     <td>create a GIF animation sequence from a group of images.</td>
   </tr>
   <tr>
-    <td><a href="./www/color-management.html">Color management</a></td>
+    <td><a href="www/color-management.html">Color management</a></td>
     <td>accurate color management with color profiles or in lieu of-- built-in gamma compression or expansion as demanded by the colorspace.</td>
   </tr>
   <tr>
@@ -119,11 +121,11 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
     <td>bidirectional text support and shaping.</td>
   </tr>
   <tr>
-    <td><a href="./www/composite.html">Composite</a></td>
+    <td><a href="www/composite.html">Composite</a></td>
     <td>overlap one image over another.</td>
   </tr>
   <tr>
-    <td><a href="./www/connected-components.html">Connected component labeling</a></td>
+    <td><a href="www/connected-components.html">Connected component labeling</a></td>
     <td>uniquely label connected regions in an image.</td>
   </tr>
   <tr>
@@ -139,7 +141,7 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
     <td>implements the forward and inverse <a href="https://en.wikipedia.org/wiki/Discrete_Fourier_transform">DFT</a>.</td>
   </tr>
   <tr>
-    <td><a href="./www/distribute-pixel-cache.html">Distributed pixel cache</a></td>
+    <td><a href="www/distribute-pixel-cache.html">Distributed pixel cache</a></td>
     <td>offload intermediate pixel storage to one or more remote servers.</td>
   </tr>
   <tr>
@@ -147,7 +149,7 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
     <td>add shapes or text to an image.</td>
   </tr>
   <tr>
-    <td><a href="./www/cipher.html">Encipher or decipher an image</a></td>
+    <td><a href="www/cipher.html">Encipher or decipher an image</a></td>
     <td>convert ordinary images into unintelligible gibberish and back again.</td>
   </tr>
   <tr>
@@ -160,14 +162,18 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
   </tr>
   <tr>
     <td><a href="www/architecture.html#distributed">Heterogeneous distributed processing</a></td>
-    <td>certain algorithms are <a href="./www/opencl.html">OpenCL</a>-enabled to take advantage of speed-ups offered by executing in concert across heterogeneous platforms consisting of CPUs, GPUs, and other processors.</td>
+    <td>certain algorithms are <a href="www/opencl.html">OpenCL</a>-enabled to take advantage of speed-ups offered by executing in concert across heterogeneous platforms consisting of CPUs, GPUs, and other processors.</td>
   </tr>
   <tr>
     <td><a href="www/high-dynamic-range.html">High dynamic-range images</a></td>
     <td>accurately represent the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.</td>
   </tr>
   <tr>
-    <td><a href="./www/fx.html">Image calculator</a></td>
+    <td><a href="www/clahe.html">Histogram Equalization</a></td>
+    <td>Use adaptive histogram equalization to improve contrast in images.</td>
+  </tr>
+  <tr>
+    <td><a href="www/fx.html">Image calculator</a></td>
     <td>apply a mathematical expression to an image or image channels.</td>
   </tr>
   <tr>
@@ -175,7 +181,7 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
     <td>create a gradual blend of two colors whose shape is horizontal, vertical, circular, or elliptical.</td>
   </tr>
   <tr>
-    <td><a href="./www/identify.html">Image identification</a></td>
+    <td><a href="www/identify.html">Image identification</a></td>
     <td>describe the format and attributes of an image.</td>
   </tr>
   <tr>
@@ -216,7 +222,7 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
   </tr>
   <tr>
     <td><a href="www/architecture.html#threads">Threads of execution support</a></td>
-    <td>ImageMagick is thread safe and most internal algorithms execute in <a href="./www/openmp.html">parallel</a> to take advantage of speed-ups offered by multicore processor chips.</td>
+    <td>ImageMagick is thread safe and most internal algorithms execute in <a href="www/openmp.html">parallel</a> to take advantage of speed-ups offered by multicore processor chips.</td>
   </tr>
   <tr>
     <td><a href="./Usage/resize/">Transform</a></td>
@@ -233,13 +239,15 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
 </table>
 </div>
 
-<p><a href="./Usage/">Examples of ImageMagick Usage</a> shows how to use ImageMagick from the <a href="www/command-line-processing.html">command-line</a> to accomplish any of these tasks and much more. Also, see <a href="http://www.fmwconcepts.com/imagemagick/">Fred's ImageMagick Scripts</a>:  a plethora of command-line scripts that perform geometric transforms, blurs, sharpens, edging, noise removal, and color manipulations. With <a href="https://github.com/dlemstra/Magick.NET">Magick.NET</a>, use ImageMagick without having to install ImageMagick on your server or desktop.</p>
+<p><a href="./Usage/" target="_blank">Examples of ImageMagick Usage</a> shows how to use ImageMagick from the <a href="www/command-line-processing.html">command-line</a> to accomplish any of these tasks and much more. Also, see <a href="http://www.fmwconcepts.com/imagemagick/" target="_blank">Fred's ImageMagick Scripts</a>:  a plethora of command-line scripts that perform geometric transforms, blurs, sharpens, edging, noise removal, and color manipulations. With <a href="https://github.com/dlemstra/Magick.NET">Magick.NET</a>, use ImageMagick without having to install ImageMagick on your server or desktop.</p>
 
 <h2><a class="anchor" id="news"></a>News</h2>
 
-<p>Now that ImageMagick version 7 is released, we continue to maintain the legacy release of ImageMagick, version 6, at <a href="https://legacy.imagemagick.org/">https://legacy.imagemagick.org</a>.  Learn how ImageMagick version 7 differs from previous versions with our <a href="./www/porting.html">porting guide</a>.</p>
+<p>Now that ImageMagick version 7 is released, we continue to maintain the legacy release of ImageMagick, version 6, at <a href="https://legacy.imagemagick.org/">https://legacy.imagemagick.org</a>.  Learn how ImageMagick version 7 differs from previous versions with our <a href="www/porting.html">porting guide</a>.</p>
 
 <p>ImageMagick best practices <strong>strongly</strong> encourages you to configure a <a href="www/security-policy.html">security policy</a> that suits your local environment.</p>
+
+<p>The ImageMagick development process ensures a stable API and <a href="https://abi-laboratory.pro/tracker/timeline/imagemagick/">ABI</a>. Before each ImageMagick release, we perform a comprehensive security assessment that includes <a href="https://github.com/google/sanitizers/wiki/AddressSanitizer">memory error</a>, <a href="https://github.com/google/sanitizers/wiki/ThreadSanitizer">thread data race</a> detection, and continuous <a href="https://github.com/google/oss-fuzz">fuzzing</a> to help prevent security vulnerabilities.</p>
 
 <p>As an analog to linear (RGB) and non-linear (sRGB) color colorspaces, as of ImageMagick 7.0.7-17, we introduce the LinearGray colorspace.  Gray is non-linear grayscale and LinearGray is linear (e.g. -colorspace linear-gray).</p>
 
@@ -259,15 +267,16 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
   </main><!-- /.container -->
   <footer class="magick-footer">
     <p><a href="www/security-policy.html">Security</a> •
-    <a href="www/architecture.html">Architecture</a> •
+    <a href="www/architecture.html">Architecture</a>
+     
+    <a href="index.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="images/wand.ico"/></a>
+     
     <a href="www/links.html">Related</a> •
      <a href="www/sitemap.html">Sitemap</a>
-       
-    <a href="index.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="images/wand.ico"/></a>
-       
-    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <br/>
     <a href="www/support.html">Donate</a> •
-    <a href="www/https://imagemagick.org/script/contact.php">Contact Us</a>
+    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="www/https://imagemagick.org/script/contact.php">Contact Us</a> 
     <br/>
     <small>© 1999-2019 ImageMagick Studio LLC</small></p>
   </footer>
@@ -277,3 +286,4 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
+<!-- Magick Cache 27th April 2019 17:05 -->

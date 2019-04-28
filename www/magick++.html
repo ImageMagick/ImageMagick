@@ -7,9 +7,9 @@
 <head>
   <meta charset="utf-8"  />
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no"  />
-  <title>Magick++, C++ API @ ImageMagick</title>
+  <title>ImageMagick - Magick++, C++ API</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, or convert bitmap images. You can resize your image, crop it, change its shades and colors, add captions, among other operations." />
+  <meta name="description" content="ImageMagick® creates, edits, composes, and converts bitmap images. Resize an image, crop it, change its shades and colors, add captions, and more." />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="magick++, c++, api, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
@@ -22,6 +22,12 @@
   <meta name="copyright" content="Copyright (c) 1999-2019 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
+  <meta property='og:url' content='../' />
+  <meta property='og:title' content='ImageMagick' />
+  <meta property='og:image' content='../images/logo.png' />
+  <meta property='og:type' content='website' />
+  <meta property='og:site_name' content='ImageMagick' />
+  <meta property='og:description' content="Convert, Edit, or Compose Bitmap Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link href="magick++.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
@@ -31,7 +37,7 @@
 <body>
   <header>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -39,22 +45,22 @@
     <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
-        <a class="nav-link" href="api/quantize.html">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/download.html">Download</a>
+        <a class="nav-link" href="download.html">Download</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/command-line-tools.html">Tools</a>
+        <a class="nav-link" href="command-line-tools.html">Tools</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/command-line-processing.html">Command-line</a>
+        <a class="nav-link" href="command-line-processing.html">Command-line</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/resources.html">Resources</a>
+        <a class="nav-link" href="resources.html">Resources</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/develop.html">Develop</a>
+        <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
@@ -84,7 +90,7 @@
 <p class="text-center"><a href="magick++.html#documentation">Documentation</a> • <a href="magick++.html#get">Obtaining Magick++</a> • <a href="magick++.html#install">Installation</a> • <a href="magick++.html#bugs">Reporting Bugs</a></p>
 
 <a class="anchor" id="intro"></a>
-<p class="lead magick-description"><a href="api/Magick++/index.html">Magick++ API</a> is the object-oriented C++ API to the <a href="../">ImageMagick</a> image-processing library.</p>
+<p class="lead magick-description"><a href="api/Magick++/index.html">Magick++ API</a> is the object-oriented C++ API to the <a href="../index.html">ImageMagick</a> image-processing library.</p>
 <p>Magick++ supports an object model which is inspired by <a href="perl-magick.html">PerlMagick</a>.
 Images support implicit reference counting so that copy constructors
 and assignment incur almost no cost. The cost of actually copying an
@@ -111,8 +117,8 @@ provided for all Magick++ classes, class methods, and template
 functions which comprise the API.  See a <a href="../Magick++/tutorial/Magick++_tutorial.pdf">  Gentle Introduction to Magick++</a> for an introductory tutorial to Magick++.  We include the <a href="../Magick++/tutorial/Magick++_tutorial.odt" >source</a> if you want to correct, enhance, or expand the tutorial.</p>
 <h2>Obtaining Magick++</h2>
 <a class="anchor" id="get"></a>
-<p>Magick++ is included as part of <a href="api/quantize.html">ImageMagick</a>
-source releases and may be retrieved via <a href="../www/download.html">HTTP</a>
+<p>Magick++ is included as part of <a href="api/montage.html">ImageMagick</a>
+source releases and may be retrieved via <a href="download.html">HTTP</a>
 or <a href="https://github.com/ImageMagick/ImageMagick/tree/master/Magick%2B%2B">GitHub</a>.
 </p>
 <h2>Installation</h2>
@@ -192,16 +198,17 @@ int main(int argc,char **argv)
     </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
-    <p><a href="../www/security-policy.html">Security</a> •
-    <a href="../www/architecture.html">Architecture</a> •
-    <a href="../www/links.html">Related</a> •
-     <a href="../www/sitemap.html">Sitemap</a>
-       
+    <p><a href="security-policy.html">Security</a> •
+    <a href="architecture.html">Architecture</a>
+     
     <a href="magick++.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
-       
+     
+    <a href="links.html">Related</a> •
+     <a href="sitemap.html">Sitemap</a>
+    <br/>
+    <a href="support.html">Donate</a> •
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="../www/support.html">Donate</a> •
-    <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a>
+    <a href="https://imagemagick.org/script/contact.php">Contact Us</a> 
     <br/>
     <small>© 1999-2019 ImageMagick Studio LLC</small></p>
   </footer>
@@ -211,3 +218,4 @@ int main(int argc,char **argv)
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
+<!-- Magick Cache 27th April 2019 19:03 -->

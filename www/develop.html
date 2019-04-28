@@ -7,9 +7,9 @@
 <head>
   <meta charset="utf-8"  />
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no"  />
-  <title>Develop @ ImageMagick</title>
+  <title>ImageMagick - Develop</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, or convert bitmap images. You can resize your image, crop it, change its shades and colors, add captions, among other operations." />
+  <meta name="description" content="ImageMagick® creates, edits, composes, and converts bitmap images. Resize an image, crop it, change its shades and colors, add captions, and more." />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="develop, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
@@ -22,8 +22,14 @@
   <meta name="copyright" content="Copyright (c) 1999-2019 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
+  <meta property='og:url' content='../' />
+  <meta property='og:title' content='ImageMagick' />
+  <meta property='og:image' content='../images/logo.png' />
+  <meta property='og:type' content='website' />
+  <meta property='og:site_name' content='ImageMagick' />
+  <meta property='og:description' content="Convert, Edit, or Compose Bitmap Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="../www/develop.html" rel="canonical" />
+  <link href="develop.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
   <link href="assets/magick.css" rel="stylesheet" />
@@ -67,7 +73,7 @@
     </div>
   </nav>
   <div class="container">
-   <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+   <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -82,12 +88,13 @@
     <div class="magick-template">
 <div class="magick-header">
 
-<p class="lead magick-description">ImageMagick includes a number of ready-made interfaces. This makes it possible to modify or create images automagically and dynamically utilizing your favorite development platform.</p>
+<p class="lead magick-description">The functionality of ImageMagick is typically utilized from the <a href="command-line-processing.html">command-line</a> or you can use the features from programs written in your favorite language. Choose from these interfaces: <a href="develop.html#ada">G2F</a> (Ada), <a href="develop.html#c">MagickCore</a> (C), <a href="develop.html#c">MagickWand</a> (C), <a href="develop.html#ch">ChMagick</a> (Ch), <a href="develop.html#com_">ImageMagickObject</a> (COM+), <a href="develop.html#c__">Magick++</a> (C++), <a href="develop.html#java">JMagick</a> (Java), <a href="develop.html#javascript">WASM-ImageMagick</a> (Javawww/Typescript), <a href="develop.html#julia">JuliaIO</a> (Julia), <a href="develop.html#lisp">L-Magick</a> (Lisp), <a href="develop.html#lua">Lua</a> (LuaJIT), <a href="develop.html#neko">NMagick</a> (Neko/haXe), <a href="develop.html#dot-net">Magick.NET</a> (.NET), <a href="develop.html#pascal">PascalMagick</a> (Pascal),  <a href="develop.html#perl">PerlMagick</a> (Perl), <a href="develop.html#php">MagickWand for PHP</a> (PHP),  <a href="develop.html#php">IMagick</a> (PHP), <a href="develop.html#python">PythonMagick</a> (Python), <a href="develop.html#r">magick</a> (R), <a href="develop.html#ruby">RMagick</a> (Ruby), or <a href="develop.html#tcl">TclMagick</a> (Tcl/TK). With a language interface, use ImageMagick to modify or create images dynamically and <var>automagically</var>.</p>
+<p>Choose from these language interfaces:</p>
 
 <dl class="row">
   <dt class="col-md-4"><a class="anchor" id="c"></a>C</dt>
 
-<dd class="col-md-8">Use <a href="../www/magick-wand.html">MagickWand</a> to convert, compose, and edit images from the C language.  There is also the low-level <a href="../www/magick-core.html">MagickCore</a> library for wizard-level developers.</dd>
+<dd class="col-md-8">Use <a href="magick-wand.html">MagickWand</a> to convert, compose, and edit images from the C language.  There is also the low-level <a href="magick-core.html">MagickCore</a> library for wizard-level developers.</dd>
 
   <dt class="col-md-4"><a class="anchor" id="ch"></a>Ch</dt>
 
@@ -95,11 +102,11 @@
 
   <dt class="col-md-4"><a class="anchor" id="com_"></a>COM+</dt>
 
-<dd class="col-md-8">Use <a href="../www/ImageMagickObject.html">ImageMagickObject</a> to convert, compose, and edit images from a Windows COM+ compatible component.</dd>
+<dd class="col-md-8">Use <a href="ImageMagickObject.html">ImageMagickObject</a> to convert, compose, and edit images from a Windows COM+ compatible component.</dd>
 
   <dt class="col-md-4"><a class="anchor" id="c__"></a>C++</dt>
 
-<dd class="col-md-8"><a href="../www/magick++.html">Magick++</a> provides an object-oriented C++ interface to ImageMagick.  See <a href="../Magick++/tutorial/Magick++_tutorial.pdf">A Gentle Introduction to Magick++</a> for an introductory tutorial to Magick++.  We include the <a href="../Magick++/tutorial/Magick++_tutorial.odt">source</a> if you want to correct, enhance, or expand the tutorial.</dd>
+<dd class="col-md-8"><a href="magick++.html">Magick++</a> provides an object-oriented C++ interface to ImageMagick.  See <a href="../Magick++/tutorial/Magick++_tutorial.pdf">A Gentle Introduction to Magick++</a> for an introductory tutorial to Magick++.  We include the <a href="../Magick++/tutorial/Magick++_tutorial.odt">source</a> if you want to correct, enhance, or expand the tutorial.</dd>
 
   <dt class="col-md-4"><a class="anchor" id="go"></a>GO</dt>
   <dd class="col-md-8"><a href="https://github.com/gographics/imagick">GoImagick</a> is a set of Go bindings to ImageMagick's MagickWand and MagickCore C APIs.</dd>
@@ -107,6 +114,10 @@
   <dt class="col-md-4"><a class="anchor" id="java"></a>Java</dt>
 
 <dd class="col-md-8"><a href="http://www.jmagick.org">JMagick</a> provides an object-oriented Java interface to ImageMagick.  <a href="http://im4java.sourceforge.net">Im4java</a> is a pure-java interface to the ImageMagick command-line.</dd>
+
+<dt class="col-md-4"><a class="anchor" id="javascript"></a>Javawww/TypeScript</dt>
+
+<dd class="col-md-8"><a href="https://github.com/KnicKnic/WASM-ImageMagick">WASM-ImageMagick</a> Webassembly compiliation of ImageMagick that allows serverless clientside bindings for Typescript and Javascript. Works in Progressive Web Apps.</dd>
 
   <dt class="col-md-4"><a class="anchor" id="julia"></a>Julia</dt>
 
@@ -143,7 +154,7 @@
 
   <dt class="col-md-4"><a class="anchor" id="perl"></a>Perl</dt>
 
-<dd class="col-md-8">Use <a href="../www/perl-magick.html">PerlMagick</a> to convert, compose, and edit images from the Perl language.</dd>
+<dd class="col-md-8">Use <a href="perl-magick.html">PerlMagick</a> to convert, compose, and edit images from the Perl language.</dd>
 
   <dt class="col-md-4"><a class="anchor" id="php"></a>PHP</dt>
 
@@ -177,10 +188,10 @@
 
   <dt class="col-md-4"><a class="anchor" id="ruby"></a>Ruby</dt>
 
-<dd class="col-md-8"><a href="https://rmagick.github.io/">RMagick</a> is an interface between the Ruby programming language and the <a href="../www/magick-core.html">MagickCore</a> image processing libraries.  Get started with RMagick by perusing the <a href="https://rmagick.github.io/">documentation</a>.</dd>
+<dd class="col-md-8"><a href="https://rmagick.github.io/">RMagick</a> is an interface between the Ruby programming language and the <a href="magick-core.html">MagickCore</a> image processing libraries.  Get started with RMagick by perusing the <a href="https://rmagick.github.io/">documentation</a>.</dd>
   <dt class="col-md-4"><a class="anchor" id="php"></a> </dt>
 
-<dd class="col-md-8"><a href="http://magickwand.rubyforge.org/">MagickWand for Ruby</a> is an interface between the Ruby programming language and the <a href="../www/magick-wand.html">MagickWand</a> image processing libraries.  Get started with MagickWand for PHP by perusing the <a href="http://magickwand.rubyforge.org/">documentation</a>.</dd>
+<dd class="col-md-8"><a href="http://magickwand.rubyforge.org/">MagickWand for Ruby</a> is an interface between the Ruby programming language and the <a href="magick-wand.html">MagickWand</a> image processing libraries.  Get started with MagickWand for PHP by perusing the <a href="http://magickwand.rubyforge.org/">documentation</a>.</dd>
 
   <dt class="col-md-4"><a class="anchor" id="php"></a> </dt>
 <dd class="col-md-8"><a href="https://github.com/minimagick">MiniMagick</a> is a Ruby wrapper for ImageMagick command line. MiniMagick gives you convenient access to all the command line options ImageMagick supports.</dd>
@@ -205,15 +216,16 @@
   </main><!-- /.container -->
   <footer class="magick-footer">
     <p><a href="security-policy.html">Security</a> •
-    <a href="architecture.html">Architecture</a> •
+    <a href="architecture.html">Architecture</a>
+     
+    <a href="develop.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+     
     <a href="links.html">Related</a> •
      <a href="sitemap.html">Sitemap</a>
-       
-    <a href="develop.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
-       
-    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <br/>
     <a href="support.html">Donate</a> •
-    <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
+    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="https://imagemagick.org/script/contact.php">Contact Us</a> 
     <br/>
     <small>© 1999-2019 ImageMagick Studio LLC</small></p>
   </footer>
@@ -223,4 +235,4 @@
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 5th January 2019 11:42 -->
+<!-- Magick Cache 27th April 2019 18:02 -->

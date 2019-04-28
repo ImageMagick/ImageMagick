@@ -7,9 +7,9 @@
 <head>
   <meta charset="utf-8"  />
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no"  />
-  <title>Architecture @ ImageMagick</title>
+  <title>ImageMagick - Architecture</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, or convert bitmap images. You can resize your image, crop it, change its shades and colors, add captions, among other operations." />
+  <meta name="description" content="ImageMagick® creates, edits, composes, and converts bitmap images. Resize an image, crop it, change its shades and colors, add captions, and more." />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="architecture, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
@@ -22,8 +22,14 @@
   <meta name="copyright" content="Copyright (c) 1999-2019 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
+  <meta property='og:url' content='../' />
+  <meta property='og:title' content='ImageMagick' />
+  <meta property='og:image' content='../images/logo.png' />
+  <meta property='og:type' content='website' />
+  <meta property='og:site_name' content='ImageMagick' />
+  <meta property='og:description' content="Convert, Edit, or Compose Bitmap Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="../www/architecture.html" rel="canonical" />
+  <link href="architecture.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
   <link href="assets/magick.css" rel="stylesheet" />
@@ -67,7 +73,7 @@
     </div>
   </nav>
   <div class="container">
-   <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+   <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -156,11 +162,11 @@ if (image == (Image *) NULL)
 </code></pre></dd>
 </dl>
 
-<p>In our discussion of the pixel cache, we use the <a href="../www/magick-core.html">MagickCore API</a> to illustrate our points, however, the principles are the same for other program interfaces to ImageMagick.</p>
+<p>In our discussion of the pixel cache, we use the <a href="magick-core.html">MagickCore API</a> to illustrate our points, however, the principles are the same for other program interfaces to ImageMagick.</p>
 
-<p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to 8-bit gray image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="command-line-options.html#version">&#x2011;version</a> option: </p>
+<p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to 8-bit gray image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="../www/command-line-options.html#version">&#x2011;version</a> option: </p>
 
-<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>identify -version</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>Version: ImageMagick 7.0.8-23 2018-12-25 Q16 https://imagemagick.org</span></pre>
+<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>identify -version</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>Version: ImageMagick 7.0.8-42 2019-03-04 Q16 https://imagemagick.org</span></pre>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 
 <h3><a class="anchor" id="authentic-pixels"></a>Access the Pixel Cache</h3>
@@ -173,7 +179,7 @@ if (image == (Image *) NULL)
   <li><a href="api/cache.html#SyncAuthenticPixels">SyncAuthenticPixels()</a>: update the pixel cache with any modified pixels</li>
 </ul>
 
-<p>Here is a typical <a href="../www/magick-core.html">MagickCore</a> code snippet for manipulating pixels in the pixel cache.  In our example, we copy pixels from the input image to the output image and decrease the intensity by 10%:</p>
+<p>Here is a typical <a href="magick-core.html">MagickCore</a> code snippet for manipulating pixels in the pixel cache.  In our example, we copy pixels from the input image to the output image and decrease the intensity by 10%:</p>
 
 <pre class="pre-scrollable"><code>const Quantum
   *p;
@@ -240,7 +246,7 @@ if (y &lt; (ssize_t) source-&gt;rows)
 <h3><a class="anchor" id="virtual-pixels"></a>Virtual Pixels</h3>
 
 <p>There are a plethora of image processing algorithms that require a neighborhood of pixels about a pixel of interest.  The algorithm typically includes a caveat concerning how to handle pixels around the image boundaries, known as edge pixels.  With virtual pixels, you do not need to concern yourself about special edge processing other than choosing  which virtual pixel method is most appropriate for your algorithm.</p>
- <p>Access to the virtual pixels are controlled by the <a href="api/cache.html#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod()</a> method from the MagickCore API or the <a href="command-line-options.html#virtual-pixel">&#x2011;virtual&#x2011;pixel</a> option from the command line.  The methods include:</p>
+ <p>Access to the virtual pixels are controlled by the <a href="api/cache.html#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod()</a> method from the MagickCore API or the <a href="../www/command-line-options.html#virtual-pixel">&#x2011;virtual&#x2011;pixel</a> option from the command line.  The methods include:</p>
 
 <dl class="row">
 <dt class="col-md-4">background</dt>
@@ -318,7 +324,7 @@ Resource limits:
   Time: unlimited
 </pre>
 
-<p>You can set these limits either as a <a href="security-policy.html">security policy</a> (see <a href="https://imagemagick.org/source/policy.xml">policy.xml</a>), with an <a href="resources.html#environment">environment variable</a>, with the <a href="command-line-options.html#limit">-limit</a> command line option, or with the <a href="api/resource.html#SetMagickResourceLimit">SetMagickResourceLimit()</a> MagickCore API method. As an example, our online web interface to ImageMagick, <a href="../MagickStudio/scripts/MagickStudio.cgi">ImageMagick Studio</a>, includes these policy limits to help prevent a denial-of-service:</p>
+<p>You can set these limits either as a <a href="security-policy.html">security policy</a> (see <a href="https://imagemagick.org/source/policy.xml">policy.xml</a>), with an <a href="resources.html#environment">environment variable</a>, with the <a href="../www/command-line-options.html#limit">-limit</a> command line option, or with the <a href="api/resource.html#SetMagickResourceLimit">SetMagickResourceLimit()</a> MagickCore API method. As an example, our online web interface to ImageMagick, <a href="../MagickStudio/scripts/MagickStudio.cgi">ImageMagick Studio</a>, includes these policy limits to help prevent a denial-of-service:</p>
 <pre class="highlight"><code>&lt;policymap>
   &lt;policy domain="resource" name="temporary-path" value="/tmp"/>
   &lt;policy domain="resource" name="memory" value="256MiB"/>
@@ -341,7 +347,7 @@ Resource limits:
 
 <p>Note, the cache limits are global to each invocation of ImageMagick, meaning if you create several images, the combined resource requirements are compared to the limit to determine the pixel cache storage disposition.</p>
 
-<p>To determine which type and how much resources are consumed by the pixel cache, add the <a href="command-line-options.html#debug">-debug cache</a> option to the command-line:</p>
+<p>To determine which type and how much resources are consumed by the pixel cache, add the <a href="../www/command-line-options.html#debug">-debug cache</a> option to the command-line:</p>
 <pre class="highlight">-> convert -debug cache logo: -sharpen 3x2 null:
 2016-12-17T13:33:42-05:00 0:00.000 0.000u 7.0.0 Cache convert: cache.c/DestroyPixelCache/1275/Cache
   destroy 
@@ -464,7 +470,7 @@ image_info->client_data=(void *) MyData;
 image=ReadStream(image_info,&amp;StreamPixels,exception);
 </code></pre>
 
-<p>We also provide a lightweight tool, <a href="../www/stream.html">stream</a>, to stream one or more pixel components of the image or portion of the image to your choice of storage formats.  It writes the pixel components as they are read from the input image a row at a time making <a href="../www/stream.html">stream</a> desirable when working with large images or when you require raw pixel components.  A majority of the image formats stream pixels (red, green, and blue) from left to right and top to bottom.  However, a few formats do not support this common ordering (e.g. the PSD format).</p>
+<p>We also provide a lightweight tool, <a href="stream.html">stream</a>, to stream one or more pixel components of the image or portion of the image to your choice of storage formats.  It writes the pixel components as they are read from the input image a row at a time making <a href="stream.html">stream</a> desirable when working with large images or when you require raw pixel components.  A majority of the image formats stream pixels (red, green, and blue) from left to right and top to bottom.  However, a few formats do not support this common ordering (e.g. the PSD format).</p>
 
 <h2><a class="anchor" id="properties"></a>Image Properties and Profiles</h2>
 
@@ -498,7 +504,7 @@ if (profile != (StringInfo *) NULL)
 </code></pre>
 
 <h2><a class="anchor" id="tera-pixel"></a>Large Image Support</h2>
-<p>ImageMagick can read, process, or write mega-, giga-, or tera-pixel image sizes.  An image width or height can range from 1 to 2 giga-pixels on a 32 bit OS and up to 9 exa-pixels on a 64-bit OS.  Note, that some image formats have restrictions on image size.  For example, Photoshop images are limited to 300,000 pixels for width or height.  Here we resize an image to a quarter million pixels square:</p>
+<p>ImageMagick can read, process, or write mega-, giga-, or tera-pixel image sizes.  An image width or height can range from 1 to 2 giga-pixels on a 32 bit OS (up to 2147483647 rows/columns) and up to 9 exa-pixels on a 64-bit OS (up to 9223372036854775807 rows/columns).  Note, that some image formats have restrictions on image size.  For example, Photoshop images are limited to 300,000 pixels for width or height.  Here we resize an image to a quarter million pixels square:</p>
 <pre class="highlight"><code>convert logo: -resize 250000x250000 logo.miff
 </code></pre>
 
@@ -532,9 +538,9 @@ convert -limit memory 2mb -limit map 2mb -limit disk 2gb \
 
 <h2><a class="anchor" id="threads"></a>Threads of Execution</h2>
 
-<p>Many of ImageMagick's internal algorithms are threaded to take advantage of speed-ups offered by the multicore processor chips. However, you are welcome to use ImageMagick algorithms in your threads of execution with the exception of the MagickCore's GetVirtualPixels(), GetAuthenticPixels(), QueueAuthenticPixels(), or SyncAuthenticPixels() pixel cache methods.  These methods are intended for one thread of execution only with the exception of an OpenMP parallel section.  To access the pixel cache with more than one thread of execution, use a cache view.  We do this for the <a href="api/composite.html#CompositeImage">CompositeImage()</a> method, for example.  Suppose we want to composite a single source image over a different destination image in each thread of execution.  If we use GetVirtualPixels(), the results are unpredictable because multiple threads would likely be asking for different areas of the pixel cache simultaneously.  Instead we use GetCacheViewVirtualPixels() which creates a unique view for each thread of execution ensuring our program behaves properly regardless of how many threads are invoked.  The other program interfaces, such as the <a href="../www/magick-wand.html">MagickWand API</a>, are completely thread safe so there are no special precautions for threads of execution.</p>
+<p>Many of ImageMagick's internal algorithms are threaded to take advantage of speed-ups offered by the multicore processor chips. However, you are welcome to use ImageMagick algorithms in your threads of execution with the exception of the MagickCore's GetVirtualPixels(), GetAuthenticPixels(), QueueAuthenticPixels(), or SyncAuthenticPixels() pixel cache methods.  These methods are intended for one thread of execution only with the exception of an OpenMP parallel section.  To access the pixel cache with more than one thread of execution, use a cache view.  We do this for the <a href="api/composite.html#CompositeImage">CompositeImage()</a> method, for example.  Suppose we want to composite a single source image over a different destination image in each thread of execution.  If we use GetVirtualPixels(), the results are unpredictable because multiple threads would likely be asking for different areas of the pixel cache simultaneously.  Instead we use GetCacheViewVirtualPixels() which creates a unique view for each thread of execution ensuring our program behaves properly regardless of how many threads are invoked.  The other program interfaces, such as the <a href="magick-wand.html">MagickWand API</a>, are completely thread safe so there are no special precautions for threads of execution.</p>
 
-<p>Here is an MagickCore code snippet that takes advantage of threads of execution with the <a href="../www/openmp.html">OpenMP</a> programming paradigm:</p>
+<p>Here is an MagickCore code snippet that takes advantage of threads of execution with the <a href="openmp.html">OpenMP</a> programming paradigm:</p>
 <pre class="pre-scrollable"><code>CacheView
   *image_view;
 
@@ -644,7 +650,7 @@ void ConvertBMPToImage(const BITMAPINFOHEADER *bmp_info,
 
 <p>If you call the ImageMagick API from your OpenMP-enabled application and you intend to dynamically increase the number of threads available in subsequent parallel regions, be sure to perform the increase <var>before</var> you call the API otherwise ImageMagick may fault.</p>
 
-<p><a href="api/wand-view.html">MagickWand</a> supports wand views.  A view iterates over the entire, or portion, of the image in parallel and for each row of pixels, it invokes a callback method you provide.  This limits most of your parallel programming activity to just that one module.  There are similar methods in <a href="api/image-view.html">MagickCore</a>.  For an example, see the same sigmoidal contrast algorithm implemented in both <a href="../www/magick-wand.html#wand-view">MagickWand</a> and <a href="../www/magick-core.html#image-view">MagickCore</a>.</p>
+<p><a href="api/wand-view.html">MagickWand</a> supports wand views.  A view iterates over the entire, or portion, of the image in parallel and for each row of pixels, it invokes a callback method you provide.  This limits most of your parallel programming activity to just that one module.  There are similar methods in <a href="api/image-view.html">MagickCore</a>.  For an example, see the same sigmoidal contrast algorithm implemented in both <a href="magick-wand.html#wand-view">MagickWand</a> and <a href="magick-core.html#image-view">MagickCore</a>.</p>
 
 <p>In most circumstances, the default number of threads is set to the number of processor cores on your system for optimal performance.  However, if your system is hyperthreaded or if you are running on a virtual host and only a subset of the processors are available to your server instance, you might get an increase in performance by setting the thread <a href="resources.html#configure">policy</a> or the <a href="resources.html#environment">MAGICK_THREAD_LIMIT</a> environment variable.  For example, your virtual host has 8 processors but only 2 are assigned to your server instance.  The default of 8 threads can cause severe performance problems.  One solution is to limit the number of threads to the available processors in your <a href="https://imagemagick.org/source/policy.xml">policy.xml</a> configuration file:</p>
 <pre class="highlight"><code>&lt;policy domain="resource" name="thread" value="2"/>
@@ -673,14 +679,14 @@ Performance[11]: 10i 4.348ips 0.793e 16.500u 0:02.300
 Performance[12]: 10i 4.525ips 0.799e 18.320u 0:02.210
 </pre>
 <p>The sweet spot for this example is 6 threads. This makes sense since there are 6 physical cores.  The other 6 are hyperthreads. It appears that sharpening does not benefit from hyperthreading.</p>
-<p>In certain cases, it might be optimal to set the number of threads to 1 or to disable OpenMP completely with the <a href="resources.html#environment">MAGICK_THREAD_LIMIT</a> environment variable, <a href="command-line-options.html#limit">-limit</a> command line option,  or the  <a href="resources.html#configure">policy.xml</a> configuration file.</p>
+<p>In certain cases, it might be optimal to set the number of threads to 1 or to disable OpenMP completely with the <a href="resources.html#environment">MAGICK_THREAD_LIMIT</a> environment variable, <a href="../www/command-line-options.html#limit">-limit</a> command line option,  or the  <a href="resources.html#configure">policy.xml</a> configuration file.</p>
 
 <h2><a class="anchor" id="distributed"></a>Heterogeneous Distributed Processing</h2>
 <p>ImageMagick includes support for heterogeneous distributed processing with the <a href="http://en.wikipedia.org/wiki/OpenCL">OpenCL</a> framework.  OpenCL kernels within ImageMagick permit image processing algorithms to execute across heterogeneous platforms consisting of CPUs, GPUs, and other processors.  Depending on your platform, speed-ups can be an order of magnitude faster than the traditional single CPU.</p>
 
 <p>First verify that your version of ImageMagick includes support for the OpenCL feature:</p>
 <pre class="highlight"><code>identify -version
-Features: DPC Cipher Modules OpenCL OpenMP
+Features: DPC Cipher Modules OpenCL OpenMP(4.5)
 </code></pre>
 
 <p>If so, run this command to realize a significant speed-up for image convolution:</p>
@@ -1187,7 +1193,7 @@ display logo.mgk
 
 <h2><a class="anchor" id="filters"></a>Custom Image Filters</h2>
 
-<p>ImageMagick provides a convenient mechanism for adding your own custom image processing algorithms.  We call these image filters and they are invoked from the command line with the <a href="command-line-options.html#process">-process</a> option or from the MagickCore API method <a href="api/module.html#ExecuteModuleProcess">ExecuteModuleProcess()</a>.</p>
+<p>ImageMagick provides a convenient mechanism for adding your own custom image processing algorithms.  We call these image filters and they are invoked from the command line with the <a href="../www/command-line-options.html#process">-process</a> option or from the MagickCore API method <a href="api/module.html#ExecuteModuleProcess">ExecuteModuleProcess()</a>.</p>
 
 <p>Here is a listing of a sample <a href="https://imagemagick.org/source/analyze.c">custom image filter</a>.  It computes a few statistics such as the pixel brightness and saturation mean and standard-deviation.</p>
 <pre class="pre-scrollable"><code>#include &lt;stdio.h>
@@ -1460,15 +1466,16 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
   </main><!-- /.container -->
   <footer class="magick-footer">
     <p><a href="security-policy.html">Security</a> •
-    <a href="architecture.html">Architecture</a> •
+    <a href="architecture.html">Architecture</a>
+     
+    <a href="architecture.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+     
     <a href="links.html">Related</a> •
      <a href="sitemap.html">Sitemap</a>
-       
-    <a href="architecture.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
-       
-    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <br/>
     <a href="support.html">Donate</a> •
-    <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
+    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="https://imagemagick.org/script/contact.php">Contact Us</a> 
     <br/>
     <small>© 1999-2019 ImageMagick Studio LLC</small></p>
   </footer>
@@ -1478,4 +1485,4 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 5th January 2019 11:42 -->
+<!-- Magick Cache 27th April 2019 19:38 -->

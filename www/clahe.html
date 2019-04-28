@@ -1,7 +1,144 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="utf-8"  />
+  <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no"  />
+  <title>ImageMagick - Contrast Limited Adaptive Histogram Equalization</title>
+  <meta name="application-name" content="ImageMagick" />
+  <meta name="description" content="ImageMagick® creates, edits, composes, and converts bitmap images. Resize an image, crop it, change its shades and colors, add captions, and more." />
+  <meta name="application-url" content="https://imagemagick.org" />
+  <meta name="generator" content="PHP" />
+  <meta name="keywords" content="contrast, limited, adaptive, histogram, equalization, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
+  <meta name="rating" content="GENERAL" />
+  <meta name="robots" content="INDEX, FOLLOW" />
+  <meta name="generator" content="ImageMagick Studio LLC" />
+  <meta name="author" content="ImageMagick Studio LLC" />
+  <meta name="revisit-after" content="2 DAYS" />
+  <meta name="resource-type" content="document" />
+  <meta name="copyright" content="Copyright (c) 1999-2019 ImageMagick Studio LLC" />
+  <meta name="distribution" content="Global" />
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
+  <meta property='og:url' content='../' />
+  <meta property='og:title' content='ImageMagick' />
+  <meta property='og:image' content='../images/logo.png' />
+  <meta property='og:type' content='website' />
+  <meta property='og:site_name' content='ImageMagick' />
+  <meta property='og:description' content="Convert, Edit, or Compose Bitmap Images" />
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
+  <link href="clahe.html" rel="canonical" />
+  <link href="../images/wand.png" rel="icon" />
+  <link href="../images/wand.ico" rel="shortcut icon" />
+  <link href="assets/magick.css" rel="stylesheet" />
 </head>
 <body>
+  <header>
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="navbar-collapse collapse" id="navbarsMagick" style="">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item ">
+        <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="download.html">Download</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="command-line-tools.html">Tools</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="command-line-processing.html">Command-line</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="resources.html">Resources</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="develop.html">Develop</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0" action="https://imagemagick.org/script/search.php">
+      <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
+    </form>
+    </div>
+  </nav>
+  <div class="container">
+   <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+  </div>
+  </header>
+  <main class="container">
+    <div class="magick-template">
+<div class="magick-header">
+<p class="lead magick-description">Use Adaptive histogram equalization (AHE) to improve contrast in images.  Ordinary histogram equalization computes a global equalization whereas an adaptive method computes several histograms, each corresponding to a distinct section of the image, and uses them to redistribute the lightness values of the image.  It is suitable for improving the local contrast and enhancing the definitions of edges in each region of an image.  A variant of adaptive histogram equalization, contrast limited adaptive histogram equalization (CLAHE) limits AHE's tendency to overamplify noise in relatively homogeneous regions of an image.</p>
+<p>CLAHE is supported as of ImageMagick 7.0.8-24 with the <a href="../www/command-line-options.html#clahe">-clahe</a> option:</p>
+<ul>
+<h6><a class="anchor" id="clahe"></a>-clahe <var>width</var>x<var>height</var>{%}{+}<var>number-bins</var>{+}<var>clip-limit</var>{!}</h6>
+</ul>
+<p> The image is divided into tiles of <var>width</var> and <var>height</var> pixels.  Append <code>%</code> to define the width and height as percentages of the image's dimensions. The tile size should be larger than the size of features to be preserved and respects the aspect ratio of the image.  Add <code>!</code> to force an exact tile width and height. <var>number-bins</var> is the number of histogram bins per tile (min 2, max 65536).  The number of histogram bins should be smaller than the number of pixels in a single tile. <var>clip-limit</var> is the contrast limit for localized changes in contrast. A clip-limit of 2 to 3 is a good starting place (e.g. -clahe 50x50%+128+3).  Very large values will let the histogram equalization do whatever it wants to do, that is result in maximal local contrast. The value 1 will result in the original image.  Note, if the number of bins and the clip-limit are omitted, they default to 128 and no clipping respectively.</p>
+<p>To visualize the benefits of CLAHE, we have a low contrast image of mountains:</p>
+<p>
+<ul>
+  <a href="../images/mountains.jpg"><img src="../images/mountains.jpg" width="500" height="333" alt="label" /></a>
+</ul>
+<p>We can improve the image with global histogram equalization:</p>
+<ul>
+  <a href="../images/mountains.jpg"><img src="../images/mountains-equalize.jpg" width="500" height="333" alt="label" /></a>
+</ul>
+<p>We can further improve the image with the contrast limited adaptive histogram equalization image processing technique:</p>
+<ul>
+  <a href="../images/mountains.jpg"><img src="../images/mountains-clahe.jpg" width="500" height="333" alt="label" /></a>
+</ul>
+<p>The latter image was produced with this command:</p>
+<pre class="highlight">
+magick mountains.jpg -clahe 25x25%+128+3 mountains-clahe.jpg
+</pre>
+<p>The <code>25x25%</code> argument divides the image into 16 tiles to perform local contrast enhancement.  The image dimensions are <code>1500x1000</code> so the tiles are exactly <code>375x250</code> pixels each.  Rather than a percentage, you can specify the tile dimensions directly with <code>375x250</code>.</p>
+<p>For tile sizes that do not divide evenly into the image dimensions, CLAHE utilizes virtual pixels, as such the results can vary slightly based on your chosen virtual pixel method.  For example,</p>
+<pre class="highlight">
+magick mountains.jpg -virtual-pixel mirror -clahe 300x300+128+3! mountains-clahe.jpg
+</pre>
+<p>Notice the <code>!</code>.  That forces the tile size to exactly 300x300 pixels, whereas without the <code>!</code>, the tile size respects the aspect ratio of the image and results in tile dimensions of <code>300x200</code>.</p>
+ 
+</div>
+    </div>
+  </main><!-- /.container -->
+  <footer class="magick-footer">
+    <p><a href="security-policy.html">Security</a> •
+    <a href="architecture.html">Architecture</a>
+     
+    <a href="clahe.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+     
+    <a href="links.html">Related</a> •
+     <a href="sitemap.html">Sitemap</a>
+    <br/>
+    <a href="support.html">Donate</a> •
+    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="https://imagemagick.org/script/contact.php">Contact Us</a> 
+    <br/>
+    <small>© 1999-2019 ImageMagick Studio LLC</small></p>
+  </footer>
+
+  <!-- Javascript assets -->
+  <script src="assets/magick.js" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
+<!-- Magick Cache 27th April 2019 19:41 -->
