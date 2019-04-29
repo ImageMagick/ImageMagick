@@ -8180,8 +8180,11 @@ Magick_png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
    unsigned char
      hex[16]={'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
 
-   if (LocaleNCompare((char *) profile_type+1, "ng-chunk-",9) == 0)
-      return;
+   if (length > 1)
+     {
+       if (LocaleNCompare((char *) profile_type+1, "ng-chunk-",9) == 0)
+          return;
+     }
 
    if (image_info->verbose)
      {
