@@ -1277,8 +1277,14 @@ RestoreMSCWarning
           {
             if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
               "  MAT cannot read scanrow %u from a file.", (unsigned)(MATLAB_HDR.SizeY-i-1));
+           if ((image != image2) && (image2 != (Image *) NULL))
+              image2=DestroyImage(image2);
+            if (clone_info != (ImageInfo *) NULL)
+              clone_info=DestroyImageInfo(clone_info);
+            if (quantum_info != (QuantumInfo *) NULL)
+              quantum_info=DestroyQuantumInfo(quantum_info);
+            BImgBuff=RelinquishMagickMemory(BImgBuff);
             ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
-            goto ExitLoop;
           }
         if((CellType==miINT8 || CellType==miUINT8) && (MATLAB_HDR.StructureFlag & FLAG_LOGICAL))
         {
