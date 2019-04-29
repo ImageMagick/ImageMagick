@@ -3061,7 +3061,7 @@ MagickPrivate const Quantum *GetVirtualPixelCacheNexus(const Image *image,
       q+=cache_info->number_channels*length;
       if ((r != (void *) NULL) && (s != (const void *) NULL))
         {
-          (void) memcpy(s,r,(size_t) length*sizeof(*r));
+          (void) memcpy(s,r,(size_t) length);
           s+=length*cache_info->metacontent_extent;
         }
     }
