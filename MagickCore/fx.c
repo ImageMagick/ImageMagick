@@ -2371,8 +2371,9 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
         }
         case ',':
         {
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
+          if (fabs(alpha) > MagickEpsilon)
+            *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
+              exception);
           FxReturn(alpha);
         }
         case ';':
