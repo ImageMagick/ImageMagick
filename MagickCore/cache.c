@@ -4047,7 +4047,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
       return(MagickFalse);
     }
   clone_info=(CacheInfo *) ClonePixelCache(cache_info);
-  clone_info->type=MapCache;
+  clone_info->type=DiskCache;
   (void) CopyMagickString(clone_info->cache_filename,filename,MagickPathExtent);
   clone_info->file=(-1);
   clone_info->storage_class=cache_info->storage_class;
