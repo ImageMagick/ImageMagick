@@ -4029,12 +4029,12 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
           "attach persistent cache");
       (void) CopyMagickString(cache_info->cache_filename,filename,
         MagickPathExtent);
-      cache_info->type=DiskCache;
+      cache_info->type=MapCache;
       cache_info->offset=(*offset);
       if (OpenPixelCache(image,ReadMode,exception) == MagickFalse)
         return(MagickFalse);
       *offset+=cache_info->length+page_size-(cache_info->length % page_size);
-      return(SyncImagePixelCache(image,exception));
+      return(MagickTrue);
     }
   /*
     Clone persistent pixel cache.
@@ -4047,7 +4047,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
       return(MagickFalse);
     }
   clone_info=(CacheInfo *) ClonePixelCache(cache_info);
-  clone_info->type=DiskCache;
+  clone_info->type=MapCache;
   (void) CopyMagickString(clone_info->cache_filename,filename,MagickPathExtent);
   clone_info->file=(-1);
   clone_info->storage_class=cache_info->storage_class;
