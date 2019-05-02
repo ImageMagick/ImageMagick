@@ -3715,7 +3715,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     cache_info->metacontent_extent);
   if ((status != MagickFalse) &&
       (length == (MagickSizeType) ((size_t) length)) &&
-      ((cache_info->type == UndefinedCache) || (cache_info->type == MemoryCache)))
+      ((cache_info->type == UndefinedCache) ||
+       (cache_info->type == MemoryCache)))
     {
       status=AcquireMagickResource(MemoryResource,cache_info->length);
       if (status != MagickFalse)
