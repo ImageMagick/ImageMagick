@@ -3771,7 +3771,13 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
                     message);
                 }
-              return(status == 0 ? MagickFalse : MagickTrue);
+              cache_info->storage_class=image->storage_class;
+              if (status == 0)
+                {
+                  cache_info->type=UndefinedCache;
+                  return(MagickFalse);
+                }
+              return(MagickTrue);
             }
         }
     }
@@ -3832,7 +3838,12 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
                     message);
                 }
-              return(status == 0 ? MagickFalse : MagickTrue);
+              if (status == 0)
+                {
+                  cache_info->type=UndefinedCache;
+                  return(MagickFalse);
+                }
+              return(MagickTrue);
             }
         }
       cache_info->type=UndefinedCache;
@@ -3858,6 +3869,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     }
   if (OpenPixelCacheOnDisk(cache_info,mode) == MagickFalse)
     {
+      cache_info->type=UndefinedCache;
       ThrowFileException(exception,CacheError,"UnableToOpenPixelCache",
         image->filename);
       return(MagickFalse);
@@ -3866,6 +3878,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     cache_info->length);
   if (status == MagickFalse)
     {
+      cache_info->type=UndefinedCache;
       ThrowFileException(exception,CacheError,"UnableToExtendCache",
         image->filename);
       return(MagickFalse);
@@ -3930,7 +3943,12 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                     (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
                       message);
                   }
-                return(status == 0 ? MagickFalse : MagickTrue);
+                if (status == 0)
+                  {
+                    cache_info->type=UndefinedCache;
+                    return(MagickFalse);
+                  }
+                return(MagickTrue);
               }
         }
     }
@@ -3953,7 +3971,12 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
         cache_info->number_channels,format);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",message);
     }
-  return(status == 0 ? MagickFalse : MagickTrue);
+  if (status == 0)
+    {
+      cache_info->type=UndefinedCache;
+      return(MagickFalse);
+    }
+  return(MagickTrue);
 }
 
 /*
