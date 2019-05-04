@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/usr/bin/sh
 # depcomp - compile a program generating dependencies as side-effects
 
 scriptversion=2018-03-07.03; # UTC

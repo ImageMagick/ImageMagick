@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/usr/bin/sh
 # Copyright (C) 2011-2018 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify

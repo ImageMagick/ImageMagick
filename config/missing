@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/usr/bin/sh
 # Common wrapper for a few potentially missing GNU programs.
 
 scriptversion=2018-03-07.03; # UTC

@@ -1,8 +1,8 @@
-#! /bin/sh
+#!/usr/bin/sh
 # Attempt to guess a canonical system name.
 #   Copyright 1992-2018 Free Software Foundation, Inc.
 
-timestamp='2018-03-08'
+timestamp='2018-08-29'
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -84,8 +84,6 @@ if test $# != 0; then
   exit 1
 fi
 
-trap 'exit 1' 1 2 15
-
 # CC_FOR_BUILD -- compiler used by this script. Note that the use of a
 # compiler to aid in system detection is discouraged as it requires
 # temporary files to be created and, as you can see below, it is a
@@ -96,34 +94,39 @@ trap 'exit 1' 1 2 15
 
 # Portable tmp directory creation inspired by the Autoconf team.
 
-set_cc_for_build='
-trap "exitcode=\$?; (rm -f \$tmpfiles 2>/dev/null; rmdir \$tmp 2>/dev/null) && exit \$exitcode" 0 ;
-trap "rm -f \$tmpfiles 2>/dev/null; rmdir \$tmp 2>/dev/null; exit 1" 1 2 13 15 ;
-: ${TMPDIR=/tmp} ;
- { tmp=`(umask 077 && mktemp -d "$TMPDIR/cgXXXXXX") 2>/dev/null` && test -n "$tmp" && test -d "$tmp" ; } ||
- { test -n "$RANDOM" && tmp=$TMPDIR/cg$$-$RANDOM && (umask 077 && mkdir $tmp) ; } ||
- { tmp=$TMPDIR/cg-$$ && (umask 077 && mkdir $tmp) && echo "Warning: creating insecure temp directory" >&2 ; } ||
- { echo "$me: cannot create a temporary directory in $TMPDIR" >&2 ; exit 1 ; } ;
-dummy=$tmp/dummy ;
-tmpfiles="$dummy.c $dummy.o $dummy.rel $dummy" ;
-case $CC_FOR_BUILD,$HOST_CC,$CC in
- ,,)    echo "int x;" > "$dummy.c" ;
-	for c in cc gcc c89 c99 ; do
-	  if ($c -c -o "$dummy.o" "$dummy.c") >/dev/null 2>&1 ; then
-	     CC_FOR_BUILD="$c"; break ;
-	  fi ;
-	done ;
-	if test x"$CC_FOR_BUILD" = x ; then
-	  CC_FOR_BUILD=no_compiler_found ;
-	fi
-	;;
- ,,*)   CC_FOR_BUILD=$CC ;;
- ,*,*)  CC_FOR_BUILD=$HOST_CC ;;
-esac ; set_cc_for_build= ;'
+tmp=
+# shellcheck disable=SC2172
+trap 'test -z "$tmp" || rm -fr "$tmp"' 1 2 13 15
+trap 'exitcode=$?; test -z "$tmp" || rm -fr "$tmp"; exit $exitcode' 0
+
+set_cc_for_build() {
+    : "${TMPDIR=/tmp}"
+    # shellcheck disable=SC2039
+    { tmp=`(umask 077 && mktemp -d "$TMPDIR/cgXXXXXX") 2>/dev/null` && test -n "$tmp" && test -d "$tmp" ; } ||
+	{ test -n "$RANDOM" && tmp=$TMPDIR/cg$$-$RANDOM && (umask 077 && mkdir "$tmp" 2>/dev/null) ; } ||
+	{ tmp=$TMPDIR/cg-$$ && (umask 077 && mkdir "$tmp" 2>/dev/null) && echo "Warning: creating insecure temp directory" >&2 ; } ||
+	{ echo "$me: cannot create a temporary directory in $TMPDIR" >&2 ; exit 1 ; }
+    dummy=$tmp/dummy
+    case ${CC_FOR_BUILD-},${HOST_CC-},${CC-} in
+	,,)    echo "int x;" > "$dummy.c"
+	       for driver in cc gcc c89 c99 ; do
+		   if ($driver -c -o "$dummy.o" "$dummy.c") >/dev/null 2>&1 ; then
+		       CC_FOR_BUILD="$driver"
+		       break
+		   fi
+	       done
+	       if test x"$CC_FOR_BUILD" = x ; then
+		   CC_FOR_BUILD=no_compiler_found
+	       fi
+	       ;;
+	,,*)   CC_FOR_BUILD=$CC ;;
+	,*,*)  CC_FOR_BUILD=$HOST_CC ;;
+    esac
+}
 
 # This is needed to find uname on a Pyramid OSx when run in the BSD universe.
 # (ghazi@noc.rutgers.edu 1994-08-24)
-if (test -f /.attbin/uname) >/dev/null 2>&1 ; then
+if test -f /.attbin/uname ; then
 	PATH=$PATH:/.attbin ; export PATH
 fi
 
@@ -138,7 +141,7 @@ Linux|GNU|GNU/*)
 	# We could probably try harder.
 	LIBC=gnu
 
-	eval "$set_cc_for_build"
+	set_cc_for_build
 	cat <<-EOF > "$dummy.c"
 	#include <features.h>
 	#if defined(__UCLIBC__)
@@ -199,7 +202,7 @@ case "$UNAME_MACHINE:$UNAME_SYSTEM:$UNAME_RELEASE:$UNAME_VERSION" in
 		os=netbsdelf
 		;;
 	    arm*|i386|m68k|ns32k|sh3*|sparc|vax)
-		eval "$set_cc_for_build"
+		set_cc_for_build
 		if echo __ELF__ | $CC_FOR_BUILD -E - 2>/dev/null \
 			| grep -q __ELF__
 		then
@@ -237,7 +240,7 @@ case "$UNAME_MACHINE:$UNAME_SYSTEM:$UNAME_RELEASE:$UNAME_VERSION" in
 	# Since CPU_TYPE-MANUFACTURER-KERNEL-OPERATING_SYSTEM:
 	# contains redundant information, the shorter form:
 	# CPU_TYPE-MANUFACTURER-OPERATING_SYSTEM is used.
-	echo "$machine-${os}${release}${abi}"
+	echo "$machine-${os}${release}${abi-}"
 	exit ;;
     *:Bitrig:*:*)
 	UNAME_MACHINE_ARCH=`arch | sed 's/Bitrig.//'`
@@ -389,20 +392,15 @@ case "$UNAME_MACHINE:$UNAME_SYSTEM:$UNAME_RELEASE:$UNAME_VERSION" in
 	echo i386-pc-auroraux"$UNAME_RELEASE"
 	exit ;;
     i86pc:SunOS:5.*:* | i86xen:SunOS:5.*:*)
-	eval "$set_cc_for_build"
-	SUN_ARCH=i386
-	# If there is a compiler, see if it is configured for 64-bit objects.
-	# Note that the Sun cc does not turn __LP64__ into 1 like gcc does.
-	# This test works for both compilers.
-	if [ "$CC_FOR_BUILD" != no_compiler_found ]; then
-	    if (echo '#ifdef __amd64'; echo IS_64BIT_ARCH; echo '#endif') | \
-		(CCOPTS="" $CC_FOR_BUILD -E - 2>/dev/null) | \
-		grep IS_64BIT_ARCH >/dev/null
-	    then
-		SUN_ARCH=x86_64
-	    fi
-	fi
-	echo "$SUN_ARCH"-pc-solaris2"`echo "$UNAME_RELEASE"|sed -e 's/[^.]*//'`"
+	UNAME_REL="`echo "$UNAME_RELEASE" | sed -e 's/[^.]*//'`"
+	case `isainfo -b` in
+	    32)
+		echo i386-pc-solaris2"$UNAME_REL"
+		;;
+	    64)
+		echo x86_64-pc-solaris2"$UNAME_REL"
+		;;
+	esac
 	exit ;;
     sun4*:SunOS:6*:*)
 	# According to config.sub, this is the proper way to canonicalize
@@ -482,7 +480,7 @@ case "$UNAME_MACHINE:$UNAME_SYSTEM:$UNAME_RELEASE:$UNAME_VERSION" in
 	echo clipper-intergraph-clix"$UNAME_RELEASE"
 	exit ;;
     mips:*:*:UMIPS | mips:*:*:RISCos)
-	eval "$set_cc_for_build"
+	set_cc_for_build
 	sed 's/^	//' << EOF > "$dummy.c"
 #ifdef __cplusplus
 #include <stdio.h>  /* for printf() prototype */
@@ -579,7 +577,7 @@ EOF
 	exit ;;
     *:AIX:2:3)
 	if grep bos325 /usr/include/stdio.h >/dev/null 2>&1; then
-		eval "$set_cc_for_build"
+		set_cc_for_build
 		sed 's/^		//' << EOF > "$dummy.c"
 		#include <sys/systemcfg.h>
 
@@ -660,7 +658,7 @@ EOF
 		    esac
 		fi
 		if [ "$HP_ARCH" = "" ]; then
-		    eval "$set_cc_for_build"
+		    set_cc_for_build
 		    sed 's/^		//' << EOF > "$dummy.c"
 
 		#define _HPUX_SOURCE
@@ -700,7 +698,7 @@ EOF
 	esac
 	if [ "$HP_ARCH" = hppa2.0w ]
 	then
-	    eval "$set_cc_for_build"
+	    set_cc_for_build
 
 	    # hppa2.0w-hp-hpux* has a 64-bit kernel and a compiler generating
 	    # 32-bit code.  hppa64-hp-hpux* has the same kernel and a compiler
@@ -726,7 +724,7 @@ EOF
 	echo ia64-hp-hpux"$HPUX_REV"
 	exit ;;
     3050*:HI-UX:*:*)
-	eval "$set_cc_for_build"
+	set_cc_for_build
 	sed 's/^	//' << EOF > "$dummy.c"
 	#include <unistd.h>
 	int
@@ -840,6 +838,17 @@ EOF
     *:BSD/OS:*:*)
 	echo "$UNAME_MACHINE"-unknown-bsdi"$UNAME_RELEASE"
 	exit ;;
+    arm:FreeBSD:*:*)
+	UNAME_PROCESSOR=`uname -p`
+	set_cc_for_build
+	if echo __ARM_PCS_VFP | $CC_FOR_BUILD -E - 2>/dev/null \
+	    | grep -q __ARM_PCS_VFP
+	then
+	    echo "${UNAME_PROCESSOR}"-unknown-freebsd"`echo ${UNAME_RELEASE}|sed -e 's/[-(].*//'`"-gnueabi
+	else
+	    echo "${UNAME_PROCESSOR}"-unknown-freebsd"`echo ${UNAME_RELEASE}|sed -e 's/[-(].*//'`"-gnueabihf
+	fi
+	exit ;;
     *:FreeBSD:*:*)
 	UNAME_PROCESSOR=`/usr/bin/uname -p`
 	case "$UNAME_PROCESSOR" in
@@ -894,8 +903,8 @@ EOF
 	# other systems with GNU libc and userland
 	echo "$UNAME_MACHINE-unknown-`echo "$UNAME_SYSTEM" | sed 's,^[^/]*/,,' | tr "[:upper:]" "[:lower:]"``echo "$UNAME_RELEASE"|sed -e 's/[-(].*//'`-$LIBC"
 	exit ;;
-    i*86:Minix:*:*)
-	echo "$UNAME_MACHINE"-pc-minix
+    *:Minix:*:*)
+	echo "$UNAME_MACHINE"-unknown-minix
 	exit ;;
     aarch64:Linux:*:*)
 	echo "$UNAME_MACHINE"-unknown-linux-"$LIBC"
@@ -922,7 +931,7 @@ EOF
 	echo "$UNAME_MACHINE"-unknown-linux-"$LIBC"
 	exit ;;
     arm*:Linux:*:*)
-	eval "$set_cc_for_build"
+	set_cc_for_build
 	if echo __ARM_EABI__ | $CC_FOR_BUILD -E - 2>/dev/null \
 	    | grep -q __ARM_EABI__
 	then
@@ -971,7 +980,7 @@ EOF
 	echo "$UNAME_MACHINE"-unknown-linux-"$LIBC"
 	exit ;;
     mips:Linux:*:* | mips64:Linux:*:*)
-	eval "$set_cc_for_build"
+	set_cc_for_build
 	sed 's/^	//' << EOF > "$dummy.c"
 	#undef CPU
 	#undef ${UNAME_MACHINE}
@@ -1285,7 +1294,7 @@ EOF
 	exit ;;
     *:Darwin:*:*)
 	UNAME_PROCESSOR=`uname -p` || UNAME_PROCESSOR=unknown
-	eval "$set_cc_for_build"
+	set_cc_for_build
 	if test "$UNAME_PROCESSOR" = unknown ; then
 	    UNAME_PROCESSOR=powerpc
 	fi
@@ -1358,6 +1367,7 @@ EOF
 	# "uname -m" is not consistent, so use $cputype instead. 386
 	# is converted to i386 for consistency with other x86
 	# operating systems.
+	# shellcheck disable=SC2154
 	if test "$cputype" = 386; then
 	    UNAME_MACHINE=i386
 	else
