@@ -237,7 +237,7 @@ static inline double GetMinEdgeBackgroundFactor(const EdgeInfo *edge)
   return(factor);
 }
 
-static RectangleInfo GetEdgeBoundingBox(const Image *image,
+static RectangleInfo GetFuzzBoundingBox(const Image *image,
   ExceptionInfo *exception)
 {
   CacheView
@@ -408,7 +408,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   artifact=GetImageArtifact(image,"trim:percent-background");
   if (artifact != (const char *) NULL)
-    return(GetEdgeBoundingBox(image,exception));
+    return(GetFuzzBoundingBox(image,exception));
   bounds.width=0;
   bounds.height=0;
   bounds.x=(ssize_t) image->columns;
