@@ -222,7 +222,8 @@ static LinkedListInfo *AcquirePolicyCache(const char *filename,
     if (policy_info == (PolicyInfo *) NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitError,"MemoryAllocationFailed","`%s'",p->name);
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",
+          p->name == (char *) NULL ? "" : p->name);
         continue;
       }
     (void) memset(policy_info,0,sizeof(*policy_info));
