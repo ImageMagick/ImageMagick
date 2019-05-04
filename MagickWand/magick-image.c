@@ -5526,7 +5526,7 @@ WandExport MagickBooleanType MagickGetImagePage(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetImagePixelColor() returns the color of the specified pixel.
+%  MagickGetImagePixelColor() gets the color of the specified pixel.
 %
 %  The format of the MagickGetImagePixelColor method is:
 %
@@ -10791,6 +10791,60 @@ WandExport MagickBooleanType MagickSetImagePage(MagickWand *wand,
   wand->images->page.height=height;
   wand->images->page.x=x;
   wand->images->page.y=y;
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e P i x e l C o l o r                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImagePixelColor() sets the color of the specified pixel.
+%
+%  The format of the MagickSetImagePixelColor method is:
+%
+%      MagickBooleanType MagickSetImagePixelColor(MagickWand *wand,
+%        const ssize_t x,const ssize_t y,const PixelWand *color)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o x,y: the pixel offset into the image.
+%
+%    o color: Return the colormap color in this wand.
+%
+*/
+WandExport MagickBooleanType MagickSetImagePixelColor(MagickWand *wand,
+  const ssize_t x,const ssize_t y,const PixelWand *color)
+{
+  register Quantum
+    *q;
+
+  CacheView
+    *image_view;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  image_view=AcquireAuthenticCacheView(wand->images,wand->exception);
+  q=GetCacheViewAuthenticPixels(image_view,x,y,1,1,wand->exception);
+  if (q == (Quantum *) NULL)
+    {
+      image_view=DestroyCacheView(image_view);
+      return(MagickFalse);
+    }
+  PixelGetQuantumPixel(wand->images,color,q);
+  image_view=DestroyCacheView(image_view);
   return(MagickTrue);
 }
 

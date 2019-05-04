@@ -289,6 +289,8 @@ extern WandExport MagickBooleanType
   MagickSetImageOrientation(MagickWand *,const OrientationType),
   MagickSetImagePage(MagickWand *,const size_t,const size_t,const ssize_t,
     const ssize_t),
+  MagickSetImagePixelColor(MagickWand *,const ssize_t,const ssize_t,
+    const PixelWand *),
   MagickSetImageRedPrimary(MagickWand *,const double,const double,
     const double),
   MagickSetImageRenderingIntent(MagickWand *,const RenderingIntent),
