@@ -190,6 +190,7 @@ MAGICKCORE_CODER_SRCS = \
 	coders/thumbnail.c \
 	coders/tile.c \
 	coders/tim.c \
+	coders/tim2.c \
 	coders/ttf.c \
 	coders/txt.c \
 	coders/uil.c \
@@ -336,6 +337,7 @@ CODERS_NOINST_HDRS = \
 	coders/tiff.h \
 	coders/tile.h \
 	coders/tim.h \
+	coders/tim2.h \
 	coders/ttf.h \
 	coders/txt.h \
 	coders/uil.h \
@@ -453,6 +455,7 @@ coders_LTLIBRARIES = \
 	coders/thumbnail.la \
 	coders/tile.la \
 	coders/tim.la \
+	coders/tim2.la \
 	coders/ttf.la \
 	coders/txt.la \
 	coders/uil.la \
@@ -1120,6 +1123,12 @@ coders_tim_la_SOURCES      = coders/tim.c
 coders_tim_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_tim_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_tim_la_LIBADD       = $(MAGICKCORE_LIBS)
+
+# TIM2 coder module
+coders_tim2_la_SOURCES      = coders/tim2.c
+coders_tim2_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
+coders_tim2_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+coders_tim2_la_LIBADD       = $(MAGICKCORE_LIBS)
 
 # TTF coder module
 coders_ttf_la_SOURCES      = coders/ttf.c

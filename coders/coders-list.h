@@ -150,6 +150,7 @@ AddMagickCoder(THUMBNAIL)
 #endif
 AddMagickCoder(TILE)
 AddMagickCoder(TIM)
+AddMagickCoder(TIM2)
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
   AddMagickCoder(TTF)
 #endif
