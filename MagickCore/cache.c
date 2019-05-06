@@ -702,8 +702,8 @@ static MagickBooleanType ClonePixelCacheRepository(
   /*
     Mismatched pixel cache morphology.
   */
-  cache_nexus=AcquirePixelCacheNexus(MaxCacheThreads);
-  clone_nexus=AcquirePixelCacheNexus(MaxCacheThreads);
+  cache_nexus=AcquirePixelCacheNexus(cache_info->number_threads);
+  clone_nexus=AcquirePixelCacheNexus(cache_info->number_threads);
   length=cache_info->number_channels*sizeof(*cache_info->channel_map);
   optimize=(cache_info->number_channels == clone_info->number_channels) &&
     (memcmp(cache_info->channel_map,clone_info->channel_map,length) == 0) ?
@@ -826,8 +826,8 @@ static MagickBooleanType ClonePixelCacheRepository(
         status=WritePixelCacheMetacontent(clone_info,clone_nexus[id],exception);
       }
     }
-  cache_nexus=DestroyPixelCacheNexus(cache_nexus,MaxCacheThreads);
-  clone_nexus=DestroyPixelCacheNexus(clone_nexus,MaxCacheThreads);
+  cache_nexus=DestroyPixelCacheNexus(cache_nexus,cache_info->number_threads);
+  clone_nexus=DestroyPixelCacheNexus(clone_nexus,cache_info->number_threads);
   if (cache_info->debug != MagickFalse)
     {
       char
