@@ -1731,6 +1731,8 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
         if ((isalpha((int) ((unsigned char) *n)) == 0) && (*n != '_'))
           break;
         xml=n+strcspn(n,XMLWhitespace);
+        if (*xml == '\0')
+          break;
         *xml=';';
         v=xml+strspn(xml+1,XMLWhitespace)+1;
         q=(*v);
