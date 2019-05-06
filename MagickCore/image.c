@@ -4207,6 +4207,15 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
             break;
         }
       image->units=units;
+      option=GetImageOption(image_info,"density");
+      if (option != (const char *) NULL)
+        {
+          flags=ParseGeometry(option,&geometry_info);
+          image->resolution.x=geometry_info.rho;
+          image->resolution.y=geometry_info.sigma;
+          if ((flags & SigmaValue) == 0)
+            image->resolution.y=image->resolution.x;
+        }
     }
   option=GetImageOption(image_info,"virtual-pixel");
   if (option != (const char *) NULL)
