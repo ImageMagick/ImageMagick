@@ -61,8 +61,7 @@
 
 /*
  Typedef declarations
- */
-
+*/
 typedef struct _TIM2FileHeader
 {
   uint32_t
@@ -98,8 +97,10 @@ typedef struct _TIM2ImageHeader
     GsRegs,
     GsTexClut;
 } TIM2ImageHeader;
-
-
+
+/*
+  Static functions
+*/
 static inline TIM2ImageHeader ReadTIM2ImageHeader(Image *image)
 {
   TIM2ImageHeader
@@ -172,7 +173,7 @@ static inline void deshufflePalette(Image *image,ExceptionInfo *exception){
   RelinquishMagickMemory(oldColormap);
 
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -216,8 +217,8 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
     str_read;
 
   /*
-    Open image file.
-  */
+   *  Open image file.
+   */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
 
@@ -248,7 +249,7 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
   tim2_file_header.image_count=ReadBlobLSBShort(image);
   ReadBlobStream(image,8,&(tim2_file_header.reserved),&str_read);
 
-   /*
+  /*
    * Process each image. Only one image supported for now
    */
   if(tim2_file_header.image_count!=1)
@@ -276,6 +277,9 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
      * ### Process Image Header ###
      */
 
+    if(tim2_image_header.mipmap_count!=1)
+      ThrowReaderException(CoderError,"NumberOfImagesIsNotSupported");
+
     image->columns=tim2_image_header.width;
     image->rows=tim2_image_header.height;
 
@@ -286,7 +290,10 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
       {
         case 0: csm=1;break;
         case 1: csm=2;break;
-        default:csm=1;break;
+        default:
+          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          break;
+
       }
 
       if(csm!=1)
@@ -298,7 +305,9 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
         case 1: clut_depth=16;break;
         case 2: clut_depth=24;break;
         case 3: clut_depth=32;break;
-        default:clut_depth=32;break;
+        default:
+          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          break;
       }
     }
 
@@ -310,7 +319,9 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
       case 3: bits_per_pixel=32;break;
       case 4: bits_per_pixel=4;break;// Implies CLUT
       case 5: bits_per_pixel=8;break;// Implies CLUT
-      default:bits_per_pixel=8;break;
+      default:
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+        break;
     }
 
     image->depth=has_clut?clut_depth:bits_per_pixel;
@@ -630,27 +641,6 @@ if(image->previous == (Image *) NULL) \
     if (image_info->number_scenes != 0)
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
-    /*
-    tim_info.id=ReadBlobLSBLong(image);
-    if (tim_info.id == 0x00000010)
-    {
-      
-        Allocate next image structure.
-      
-      AcquireNextImage(image_info,image,exception);
-      if (GetNextImageInList(image) == (Image *) NULL)
-      {
-        status=MagickFalse;
-        break;
-      }
-      image=SyncNextImageInList(image);
-      status=SetImageProgress(image,LoadImagesTag,TellBlob(image),
-        GetBlobSize(image));
-      if (status == MagickFalse)
-        break;
-    }
-    */
-    
   }
   
   (void) CloseBlob(image);
