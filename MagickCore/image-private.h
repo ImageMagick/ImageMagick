@@ -63,11 +63,6 @@ static inline double RadiansToDegrees(const double radians)
   return((double) (180.0*radians/MagickPI));
 }
 
-static inline unsigned char ScaleColor4to8(const unsigned int color)
-{
-  return((unsigned char) (((color) << 4) | ((color) >> 0)));
-}
-
 static inline unsigned char ScaleColor5to8(const unsigned int color)
 {
   return((unsigned char) (((color) << 3) | ((color) >> 2)));
@@ -76,11 +71,6 @@ static inline unsigned char ScaleColor5to8(const unsigned int color)
 static inline unsigned char ScaleColor6to8(const unsigned int color)
 {
   return((unsigned char) (((color) << 2) | ((color) >> 4)));
-}
-
-static inline unsigned int ScaleColor8to4(const unsigned char color)
-{
-  return((unsigned int) (((color) & ~0x0F) >> 4));
 }
 
 static inline unsigned int ScaleColor8to5(const unsigned char color)
