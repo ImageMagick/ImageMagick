@@ -44,6 +44,7 @@
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache.h"
 #include "MagickCore/colormap.h"
+#include "MagickCore/channel.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image.h"
@@ -97,6 +98,21 @@ typedef struct _TIM2ImageHeader
     GsRegs,
     GsTexClut;
 } TIM2ImageHeader;
+
+enum CSM {
+  CSM1=0,
+  CSM2=1,
+};
+
+enum ColorEncoding{
+  RGBA32=0,
+  RGB24=1,
+  RGBA16=2,
+};
+enum IndexEncoding{
+  IDTEX8=3,
+  IDTEX4=4,
+};
 
 /*
   Static functions
@@ -128,25 +144,28 @@ static inline TIM2ImageHeader ReadTIM2ImageHeader(Image *image)
   return tim2_image_header;
 }
 
-static inline Quantum GetChannelValue16(uint16_t word,uint8_t channel){
-  return ScaleCharToQuantum(ScaleColor5to8(word>>channel*5 & 0x1F));
-}
-static inline Quantum GetChannelAlpha16(uint16_t word){
-  return ScaleCharToQuantum((word>>3*5&0x1F)==0?0:0xFF);
-}
-
-static inline Quantum GetChannelValue24(uint32_t word,uint8_t channel){
-  return ScaleCharToQuantum(ScaleColor6to8(word>> channel*6 & 0x3F));
-}
-static inline Quantum GetChannelAlpha24(uint32_t word){
-  return ScaleCharToQuantum((word>>3*6&0x3F)==0?0:0xFF);
+static inline Quantum GetChannelValue(uint32_t word,uint8_t channel, enum ColorEncoding ce){
+  switch(ce)
+  {
+    case RGBA16:
+      return ScaleCharToQuantum(ScaleColor5to8(word>>channel*5 & ~(~0x0<<5)));
+    case RGB24:
+    case RGBA32:
+      return ScaleCharToQuantum(word>>channel*8 & ~(~0x0<<8));
+  }
+  return -1;
 }
 
-static inline Quantum GetChannelValue32(uint32_t word,uint8_t channel){
-  return ScaleCharToQuantum((word>> channel*8) & 0xFF);
-}
-static inline Quantum GetChannelAlpha32(uint32_t word){
-  return ScaleCharToQuantum((word>>3*8&0xFF)==0?0:0xFF);
+static inline Quantum GetAlpha(uint32_t word, enum ColorEncoding ce){
+  switch(ce)
+  {
+    case RGBA16:
+      return ScaleCharToQuantum((word>>3*5&0x1F)==0?0:0xFF);
+    case RGBA32:
+      return ScaleCharToQuantum(word>>3*8&0xFF);
+    default:
+      return 0xFF;
+  }
 }
 
 static inline void deshufflePalette(Image *image,ExceptionInfo *exception){
@@ -261,8 +280,8 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
     TIM2ImageHeader
       tim2_image_header;
 
+    enum CSM csm;
     char
-      csm=0,
       clut_depth=0,
       has_clut=0,
       bits_per_pixel=0;
@@ -285,19 +304,7 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
 
     has_clut=tim2_image_header.clut_type!=0;
     if(has_clut){
-      //CSM: CLUT Storage Mode
-      switch ((int) tim2_image_header.clut_type>>4)//High 4 bits
-      {
-        case 0: csm=1;break;
-        case 1: csm=2;break;
-        default:
-          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-          break;
-
-      }
-
-      if(csm!=1)
-        ThrowReaderException(CoderError,"DataStorageTypeIsNotSupported");
+      
 
       // CLUT bits per color
       switch((int) tim2_image_header.clut_type&0x0F)//Low 4 bits
@@ -325,7 +332,6 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
     }
 
     image->depth=has_clut?clut_depth:bits_per_pixel;
-
 
     {
       /*
@@ -373,13 +379,6 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
 
       if(has_clut)
       {
-
-#define SetPixelAllChannels(image,word,q,bits) \
-SetPixelRed  (image,GetChannelValue##bits(word,0),q); \
-SetPixelGreen(image,GetChannelValue##bits(word,1),q); \
-SetPixelBlue (image,GetChannelValue##bits(word,2),q); \
-SetPixelAlpha(image,GetChannelAlpha##bits(word)  ,q);
-
 #define SyncNewPixels(image,exception,y) \
 if(SyncAuthenticPixels(image,exception) == MagickFalse) break; \
 if(image->previous == (Image *) NULL) \
@@ -443,11 +442,17 @@ if(image->previous == (Image *) NULL) \
       }
       else //has_clut==false
       {
+
+#define SetPixelAllChannels(image,word,q,enc) \
+SetPixelRed  (image,GetChannelValue(word,0,enc),q); \
+SetPixelGreen(image,GetChannelValue(word,1,enc),q); \
+SetPixelBlue (image,GetChannelValue(word,2,enc),q);
+
+        uint32_t word;
         switch (bits_per_pixel)
         {
           case 16:
           {
-            uint16_t word;
             for (y=0; y<(ssize_t) image->rows; y++)
             {
               p=tim2_image_data+y*bytes_per_line;
@@ -456,10 +461,11 @@ if(image->previous == (Image *) NULL) \
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                word = ((uint16_t)* p   )<<0*8 |
-                       ((uint16_t)*(p+1))<<1*8;
+                word = ((uint32_t)* p   )<<0*8 |
+                       ((uint32_t)*(p+1))<<1*8;
 
-                SetPixelAllChannels(image,word,q,16);
+                SetPixelAllChannels(image,word,q,RGBA16);
+                SetPixelAlpha(image,GetAlpha(word,RGBA16),q);
                 q+=GetPixelChannels(image);
                 p+=sizeof(uint16_t);
               }
@@ -470,7 +476,6 @@ if(image->previous == (Image *) NULL) \
 
           case 24:
           {
-            uint32_t word;
             for (y = 0; y<(ssize_t) image->rows; y++)
             {
               p=tim2_image_data+y*bytes_per_line;
@@ -483,7 +488,7 @@ if(image->previous == (Image *) NULL) \
                        (uint32_t)(*(p+1))<<1*8 |
                        (uint32_t)(*(p+2))<<2*8;
 
-                SetPixelAllChannels(image,word,q,24);
+                SetPixelAllChannels(image,word,q,RGB24);
                 q+=GetPixelChannels(image);
                 p+=3;
               }
@@ -494,7 +499,6 @@ if(image->previous == (Image *) NULL) \
 
           case 32:
           {  
-            uint32_t word;
             for (y = 0; y<(ssize_t) image->rows; y++)
             {
               p=tim2_image_data+y*bytes_per_line;
@@ -508,7 +512,8 @@ if(image->previous == (Image *) NULL) \
                        ((uint32_t)*(p+2))<<2*8 |
                        ((uint32_t)*(p+3))<<3*8;
 
-                SetPixelAllChannels(image,word,q,32);
+                SetPixelAllChannels(image,word,q,RGBA32);
+                SetPixelAlpha(image,GetAlpha(word,RGBA32),q);
                 q+=GetPixelChannels(image);
                 p+=4;
               }
@@ -542,7 +547,6 @@ if(image->previous == (Image *) NULL) \
         *tim2_clut_data;
       register unsigned char
         *p;
-      uint8_t linear_palette;
 
       tim2_clut_data=(unsigned char *) AcquireMagickMemory(tim2_image_header.clut_size);
       if (tim2_clut_data == (unsigned char *) NULL)
@@ -560,20 +564,21 @@ if(image->previous == (Image *) NULL) \
        */
 
      
+      {
+      uint32_t word;
       p=tim2_clut_data;
       switch(clut_depth)
       {
         case 16:
         {
-          uint16_t word;
           for (i=0;i<(ssize_t)image->colors;i++){
             word = ((uint16_t)* p   )<<0*8 |
                    ((uint16_t)*(p+1))<<1*8;
 
-            image->colormap[i].red  =GetChannelValue16(word,0);
-            image->colormap[i].green=GetChannelValue16(word,1);
-            image->colormap[i].blue =GetChannelValue16(word,2);
-            image->colormap[i].alpha=GetChannelAlpha16(word);
+            image->colormap[i].red  =GetChannelValue(word,0,RGBA16);
+            image->colormap[i].green=GetChannelValue(word,1,RGBA16);
+            image->colormap[i].blue =GetChannelValue(word,2,RGBA16);
+            image->colormap[i].alpha=GetAlpha(word,16);
             p+=2;
           }
           break;
@@ -581,16 +586,14 @@ if(image->previous == (Image *) NULL) \
 
         case 24:
         {
-          uint32_t word;
           for (i=0;i<(ssize_t)image->colors;i++){
             word = ((uint32_t)* p   )<<0*8 |
                    ((uint32_t)*(p+1))<<1*8 |
                    ((uint32_t)*(p+2))<<2*8;
 
-            image->colormap[i].red  =GetChannelValue24(word,0);
-            image->colormap[i].green=GetChannelValue24(word,1);
-            image->colormap[i].blue =GetChannelValue24(word,2);
-            image->colormap[i].alpha=GetChannelAlpha24(word);
+            image->colormap[i].red  =GetChannelValue(word,0,RGB24);
+            image->colormap[i].green=GetChannelValue(word,1,RGB24);
+            image->colormap[i].blue =GetChannelValue(word,2,RGB24);
             p+=3;
           }
           break;
@@ -598,27 +601,35 @@ if(image->previous == (Image *) NULL) \
 
         case 32:
         {
-          uint32_t word;
           for (i=0;i<(ssize_t)image->colors;i++){
             word = ((uint32_t)* p   )<<0*8 |
                    ((uint32_t)*(p+1))<<1*8 |
                    ((uint32_t)*(p+2))<<2*8 |
                    ((uint32_t)*(p+3))<<3*8;
            
-            image->colormap[i].red  =GetChannelValue32(word,0);
-            image->colormap[i].green=GetChannelValue32(word,1);
-            image->colormap[i].blue =GetChannelValue32(word,2);
-            image->colormap[i].alpha=GetChannelAlpha32(word);
+            image->colormap[i].red  =GetChannelValue(word,0,RGBA32);
+            image->colormap[i].green=GetChannelValue(word,1,RGBA32);
+            image->colormap[i].blue =GetChannelValue(word,2,RGBA32);
+            image->colormap[i].alpha=GetAlpha(word,RGBA32);
             p+=4;
           }
           break;
         }
       }
+      }
       tim2_clut_data=(unsigned char *) RelinquishMagickMemory(tim2_clut_data);
 
+      //CSM: CLUT Storage Mode
+      switch ((int) tim2_image_header.clut_type>>4)//High 4 bits
+      {
+        case 0: csm=CSM1;break;
+        case 1: csm=CSM2;break;
+        default:
+          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          break;
+      }
 
-      linear_palette = (tim2_image_header.clut_type&0x80) != 0;
-      if(!linear_palette){
+      if(csm==CSM1){
         deshufflePalette(image,exception);
       }
     }
