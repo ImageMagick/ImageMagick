@@ -266,6 +266,8 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
           SetPixelViaPixelInfo(image,&image->background_color,q);
           q+=GetPixelChannels(image);
         }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
         continue;
       }
     memset(scanline,0,columns*sizeof(*scanline));
