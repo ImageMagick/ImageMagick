@@ -41,9 +41,7 @@ int main( int /*argc*/, char ** argv)
     // Horizontal
     appendImages( &appended, imageList.begin(), imageList.end() );
     // appended.display();
-    if (( appended.signature() != "3a90bb0bb8f69f6788ab99e9e25598a0d6c5cdbbb797f77ad68011e0a8b1689d" ) &&
-        ( appended.signature() != "493106ee32cdeab9e386fe50aafede73c23c1150af564a4ad71ca1deccc1fa10" ) &&
-        ( appended.signature() != "b98c42c55fc4e661cb3684154256809c03c0c6b53da2738b6ce8066e1b6ddef0" ))
+    if ( appended.signature() != "f48dd74b57ed277c9c62da1a65788186a910b8f2faa47851fcf1f4572640ed9c" )
       {
 	++failures;
 	cout << "Line: " << __LINE__
@@ -55,9 +53,7 @@ int main( int /*argc*/, char ** argv)
 
     // Vertical
     appendImages( &appended, imageList.begin(), imageList.end(), true );
-    if (( appended.signature() != "a22fbe9ca8e3dc3b34f137d175d51841daf56d231bedd8b18ad55415af558265" ) &&
-        ( appended.signature() != "11b97ba6ac1664aa1c2faed4c86195472ae9cce2ed75402d975bb4ffcf1de751" ) &&
-        ( appended.signature() != "cae4815eeb3cb689e73b94d897a9957d3414d1d4f513e8b5e52579b05d164bfe" ))
+    if ( appended.signature() != "9cfe22dacae97e4e0fe1c12567a5d7e111f4680ec65a40da16281928cf4ba6be" )
       {
 	++failures;
 	cout << "Line: " << __LINE__
