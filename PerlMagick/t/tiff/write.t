@@ -21,7 +21,7 @@ print("PseudoColor image (4 bits/sample) ...\n");
 testReadWrite( 'input_16.tiff',
   'output_16.tiff',
   q//,
-  '58a82998d620aba54b86ab8dca7cbfeb726f3e86842369d5a0292a8522e95dab');
+  '0de2dcbf667c69ae6735d1a701b4038c1eeea25cc86981a496bb26fc82541835');
 
 #
 # 2) Test 8-bit pseudocolor image
@@ -31,8 +31,7 @@ print("PseudoColor image (8 bits/sample) ...\n");
 testReadWrite( 'input_256.tiff',
   'output_256.tiff',
   q//,
-  'ec6408aba63b43dfc594b4bd766e43457754bb2382a02c170e3d085366e9a6f4',
-  '59c97ab49c16b8664f1362242548399ad9e902b96959db98540ec820484380b1');
+  'b2644ac928730aa1d28e754aeb17b4731b57daea28c9fb89b1b50623e87215b5');
 
 #
 # 3) Test 4-bit pseudocolor + matte channel image
@@ -42,7 +41,7 @@ print("PseudoColor image (4 bits/sample + matte channel) ...\n");
 testReadWrite( 'input_16_matte.tiff',
   'output_16_matte.tiff',
   q//,
-  '58a82998d620aba54b86ab8dca7cbfeb726f3e86842369d5a0292a8522e95dab' );
+  '0de2dcbf667c69ae6735d1a701b4038c1eeea25cc86981a496bb26fc82541835' );
 
 #
 # 4) Test 8-bit pseudocolor + matte channel image
@@ -52,8 +51,7 @@ print("PseudoColor image (8 bits/sample + matte channel) ...\n");
 testReadWrite( 'input_256_matte.tiff',
   'output_256_matte.tiff',
   q//,
-  '824af58cdd8a8accffee3dab1ed9d28b34a8b183d3e5f5f13caeaab03bcadd13',
-  '64b8429356cf9ea2b717faaa28a85b0f7ca174ea1a72063c1d4b2270084e4881' );
+  'c8e5089f89ed3b7d067222e187ccd95da0a586f3a7f669876188fe8bfa04e6d9' );
 
 #
 # 5) Test truecolor image
@@ -63,7 +61,7 @@ print("TrueColor image (8 bits/sample) ...\n");
 testReadWrite( 'input_truecolor.tiff',
   'output_truecolor.tiff',
   q/quality=>55/,
-  '2c5f5bcc5168543b807bf50476e472cd38e8d1a7d2c68df91e25ae7cd001166a' );
+  'f72b63be472e5e730ee2635463c6643d11057d251709ffe1f2027f69b57449df' );
 
 #
 # 6) Test monochrome image
@@ -73,7 +71,7 @@ print("Gray image (1 bit per sample) ...\n");
 testReadWrite(  'input_mono.tiff',
   'output_mono.tiff',
   q//,
-  'dedb5873a990158f0e5abdebda8c8dfb32de0be16b2b191fcb476b754e000a7b' );
+  '71e1a6be223e307b1dbf732860792b15adba662b7a7ef284daf7f982f874ccf1' );
 
 #
 # 7) Test gray 4 bit image
@@ -83,7 +81,7 @@ print("Gray image (4 bits per sample) ...\n");
 testReadWrite(  'input_gray_4bit.tiff',
   'output_gray_4bit.tiff',
   q//,
-  '3d58e49ad202f2b171214f7a0e8ebdc2ac2c7e45b68a2249502f9339ca7efc6e' );
+  'e55c01b0d28b0a19431ba27203db7cb6ada189c9519d4466c44a764aad5e185a' );
 
 #
 # 8) Test gray 8 bit image
@@ -93,7 +91,7 @@ print("Gray image (8 bits per sample) ...\n");
 testReadWrite(  'input_gray_8bit.tiff',
   'output_gray_8bit.tiff',
   q//,
-  '76f4dd783661899ede132a87a7c68132462d0a60efe92906388c3aca1fb76130' );
+  'b51e862fcc24d439870da413c664dfefc36cea1260d807b3208d6f091566263c' );
 
 #
 # 9) Test gray 4 bit image (with matte channel)
@@ -103,7 +101,7 @@ print("Gray image (4 bits per sample + matte channel) ...\n");
 testReadWrite(  'input_gray_4bit_matte.tiff',
   'output_gray_4bit_matte.tiff',
   q//,
-  '817ebd9cb521eca754aa3add8100be1b7865dc54510b830d67a57c254832d3d5' );
+  'aa1ccb94820722df3dbb8a84410b6e8f6d5a3e393e5b2204923a16182e0958b9' );
 
 #
 # 10) Test gray 8 bit image (with matte channel)
@@ -113,4 +111,4 @@ print("Gray image (8 bits per sample + matte channel) ...\n");
 testReadWrite(  'input_gray_8bit_matte.tiff',
   'output_gray_8bit_matte.tiff',
   q//,
-  '30206f5082b53a8f81d1b0e5dfec94b3513b15ee3fe87fb646a7fd5bf9c94c04' );
+  '6002e57537cd54733551f8c4269e8104f2b14f8fcc58a07eda61f5911eb11c80' );
