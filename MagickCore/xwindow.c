@@ -5896,7 +5896,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   canvas=image;
   if ((window->immutable == MagickFalse) &&
-      (image->storage_class == DirectClass) && (image->alpha_trait != UndefinedPixelTrait))
+      (image->storage_class == DirectClass) &&
+      (image->alpha_trait != UndefinedPixelTrait))
     {
       char
         size[MagickPathExtent];
@@ -8528,7 +8529,8 @@ MagickPrivate void XMakeWindow(Display *display,Window parent,char **argv,
       window_info->shape=MagickFalse;
 #endif
     }
-  if (window_info->shared_memory)
+  window_info->shape=MagickFalse;  /* Fedora 30 has a broken shape extention */
+  if (window_info->shared_memory != MagickFalse)
     {
 #if defined(MAGICKCORE_HAVE_SHARED_MEMORY)
       /*
