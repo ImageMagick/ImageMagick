@@ -178,7 +178,7 @@ typedef struct _QuantizationTable
   Const declarations.
 */
 static const char
-  *xmp_namespace = "http://ns.adobe.com/xap/1.0/ ";
+  xmp_namespace[] = "http://ns.adobe.com/xap/1.0/ ";
 #define XmpNamespaceExtent 28
 
 /*

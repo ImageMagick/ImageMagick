@@ -155,7 +155,7 @@ static void TranslateSFWMarker(unsigned char *marker)
 
 static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  static unsigned char
+  static const unsigned char
     HuffmanTable[] =
     {
       0xFF, 0xC4, 0x01, 0xA2, 0x00, 0x00, 0x01, 0x05, 0x01, 0x01, 0x01,
