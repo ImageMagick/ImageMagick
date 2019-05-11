@@ -232,7 +232,7 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
         case 16:
         {
           pixel->index=(MagickRealType) ConstrainColormapIndex(image,(ssize_t)
-            ((*p << 8) | *(p+1)),exception);
+            (((size_t) *p << 8) | (size_t) *(p+1)),exception);
           p+=2;
           break;
         }
@@ -291,7 +291,7 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
           (void) ThrowMagickException(exception,GetMagickModule(),
             CorruptImageError,"ImageDepthNotSupported","`%s'",image->filename);
       }
-      *length=(size_t) (*p++)+1;
+      *length=((size_t) *p++)+1;
       return;
     }
   switch (image->depth)
