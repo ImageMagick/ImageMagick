@@ -12,8 +12,8 @@
 %                                                                             %
 %                          Read PSX TIM2 Image Format                         %
 %                                                                             %
-%                              Software Design                                %
-%                                Ramiro Balado                                %
+%                               Software Design                               %
+%                             Ramiro Balado Ordax                             %
 %                                   May 2019                                  %
 %                                                                             %
 %                                                                             %
@@ -148,7 +148,8 @@ static inline Quantum GetChannelValue(uint32_t word,uint8_t channel, enum ColorE
   switch(ce)
   {
     case RGBA16:
-      return ScaleCharToQuantum(ScaleColor5to8(word>>channel*5 & ~(~0x0<<5)));
+      // Documentation specifies padding with zeros for converting from 5 to 8 bits.
+      return ScaleCharToQuantum((word>>channel*5 & ~(~0x0<<5))<<3);
     case RGB24:
     case RGBA32:
       return ScaleCharToQuantum(word>>channel*8 & ~(~0x0<<8));
@@ -162,7 +163,10 @@ static inline Quantum GetAlpha(uint32_t word, enum ColorEncoding ce){
     case RGBA16:
       return ScaleCharToQuantum((word>>3*5&0x1F)==0?0:0xFF);
     case RGBA32:
-      return ScaleCharToQuantum(word>>3*8&0xFF);
+#ifndef MIN
+#define MIN(a,b) ((a)<(b)? a:b)
+#endif
+      return ScaleCharToQuantum(MIN((word>>3*8&0xFF)<<1,0xFF));
     default:
       return 0xFF;
   }
@@ -242,8 +246,7 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
   assert(image_info->signature == MagickCoreSignature);
 
   if (image_info->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image_info->filename);
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   image=AcquireImage(image_info,exception);
@@ -286,7 +289,6 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
       has_clut=0,
       bits_per_pixel=0;
 
-
     /*
      * #### Read Image Header ####
      */
@@ -305,7 +307,6 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
     has_clut=tim2_image_header.clut_type!=0;
     if(has_clut){
       
-
       // CLUT bits per color
       switch((int) tim2_image_header.clut_type&0x0F)//Low 4 bits
       {
@@ -332,6 +333,11 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
     }
 
     image->depth=has_clut?clut_depth:bits_per_pixel;
+    if(image->depth==16 || image->depth==32)
+      SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
+    else
+      SetImageAlphaChannel(image,DeactivateAlphaChannel,exception);
+
 
     {
       /*
