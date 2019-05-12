@@ -918,7 +918,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
       tag;
 
     const char
-      description[35];
+      description[36];
   } TagInfo;
 
   static const TagInfo

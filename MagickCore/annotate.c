@@ -1077,7 +1077,7 @@ static size_t ComplexTextLayout(const Image *image,const DrawInfo *draw_info,
   raqm_glyph_t
     *glyphs;
 
-  register size_t
+  register ssize_t
     i;
 
   size_t
@@ -1161,12 +1161,11 @@ cleanup:
   ssize_t
     last_glyph;
 
-  magick_unreferenced(image);
-  magick_unreferenced(exception);
-
   /*
     Simple layout for bi-directional text (right-to-left or left-to-right).
   */
+  magick_unreferenced(image);
+  magick_unreferenced(exception);
   *grapheme=(GraphemeInfo *) AcquireQuantumMemory(length+1,sizeof(**grapheme));
   if (*grapheme == (GraphemeInfo *) NULL)
     return(0);

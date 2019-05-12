@@ -962,10 +962,10 @@ MATLAB_KO:
     }
 
   filepos = TellBlob(image);
-  while(filepos < GetBlobSize(image) && !EOFBlob(image)) /* object parser loop */
+  while(filepos < (MagickOffsetType) GetBlobSize(image) && !EOFBlob(image)) /* object parser loop */
   {
     Frames = 1;
-    if(filepos > GetBlobSize(image) || filepos < 0)
+    if(filepos > (MagickOffsetType) GetBlobSize(image) || filepos < 0)
       break;
     if(SeekBlob(image,filepos,SEEK_SET) != filepos) break;
     /* printf("pos=%X\n",TellBlob(image)); */
@@ -1283,7 +1283,7 @@ RestoreMSCWarning
               clone_info=DestroyImageInfo(clone_info);
             if (quantum_info != (QuantumInfo *) NULL)
               quantum_info=DestroyQuantumInfo(quantum_info);
-            BImgBuff=RelinquishMagickMemory(BImgBuff);
+            BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
             ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
           }
         if((CellType==miINT8 || CellType==miUINT8) && (MATLAB_HDR.StructureFlag & FLAG_LOGICAL))
