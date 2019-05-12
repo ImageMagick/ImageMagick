@@ -93,153 +93,131 @@
 
 static MagickBooleanType DisplayUsage(void)
 {
-  const char
-    **p;
-
   static const char
-    *buttons[]=
-    {
-      "1    press to map or unmap the Command widget",
-      "2    press and drag to magnify a region of an image",
-      "3    press to load an image from a visual image directory",
-      (char *) NULL
-    },
-    *miscellaneous[]=
-    {
-      "-debug events        display copious debugging information",
-      "-help                print program options",
-      "-list type           print a list of supported option arguments",
-      "-log format          format of debugging information",
-      "-version             print version information",
-      (char *) NULL
-    },
-    *operators[]=
-    {
-      "-auto-orient         automagically orient image",
-      "-border geometry     surround image with a border of color",
-      "-clip                clip along the first path from the 8BIM profile",
-      "-clip-path id        clip along a named path from the 8BIM profile",
-      "-colors value        preferred number of colors in the image",
-      "-contrast            enhance or reduce the image contrast",
-      "-crop geometry       preferred size and location of the cropped image",
-      "-decipher filename   convert cipher pixels to plain pixels",
-      "-deskew threshold    straighten an image",
-      "-despeckle           reduce the speckles within an image",
-      "-edge factor         apply a filter to detect edges in the image",
-      "-enhance             apply a digital filter to enhance a noisy image",
-      "-equalize            perform histogram equalization to an image",
-      "-extract geometry    extract area from image",
-      "-flip                flip image in the vertical direction",
-      "-flop                flop image in the horizontal direction",
-      "-frame geometry      surround image with an ornamental border",
-      "-fuzz distance       colors within this distance are considered equal",
-      "-gamma value         level of gamma correction",
-      "-monochrome          transform image to black and white",
-      "-negate              replace every pixel with its complementary color",
-      "-normalize           transform image to span the full range of colors",
-      "-raise value         lighten/darken image edges to create a 3-D effect",
-      "-resample geometry   change the resolution of an image",
-      "-resize geometry     resize the image",
-      "-roll geometry       roll an image vertically or horizontally",
-      "-rotate degrees      apply Paeth rotation to the image",
-      "-sample geometry     scale image with pixel sampling",
-      "-segment value       segment an image",
-      "-sharpen geometry    sharpen the image",
-      "-strip               strip image of all profiles and comments",
-      "-threshold value     threshold the image",
-      "-thumbnail geometry  create a thumbnail of the image",
-      "-trim                trim image edges",
-      (char *) NULL
-    },
-    *settings[]=
-    {
-      "-alpha option        on, activate, off, deactivate, set, opaque, copy",
-      "                     transparent, extract, background, or shape",
-      "-antialias           remove pixel-aliasing",
-      "-authenticate password",
-      "                     decipher image with this password",
-      "-backdrop            display image centered on a backdrop",
-      "-channel type        apply option to select image channels",
-      "-colormap type       Shared or Private",
-      "-colorspace type     alternate image colorspace",
-      "-comment string      annotate image with comment",
-      "-compress type       type of pixel compression when writing the image",
-      "-define format:option",
-      "                     define one or more image format options",
-      "-delay value         display the next image after pausing",
-      "-density geometry    horizontal and vertical density of the image",
-      "-depth value         image depth",
-      "-display server      display image to this X server",
-      "-dispose method      layer disposal method",
-      "-dither method       apply error diffusion to image",
-      "-endian type         endianness (MSB or LSB) of the image",
-      "-filter type         use this filter when resizing an image",
-      "-format string     output formatted image characteristics",
-      "-geometry geometry   preferred size and location of the Image window",
-      "-gravity type        horizontal and vertical backdrop placement",
-      "-identify            identify the format and characteristics of the image",
-      "-immutable           displayed image cannot be modified",
-      "-interlace type      type of image interlacing scheme",
-      "-interpolate method  pixel color interpolation method",
-      "-label string        assign a label to an image",
-      "-limit type value    pixel cache resource limit",
-      "-loop iterations     loop images then exit",
-      "-map type            display image using this Standard Colormap",
-      "-matte               store matte channel if the image has one",
-      "-monitor             monitor progress",
-      "-nostdin             do not try to open stdin",
-      "-page geometry       size and location of an image canvas",
-      "-profile filename    add, delete, or apply an image profile",
-      "-quality value       JPEG/MIFF/PNG compression level",
-      "-quantize colorspace reduce colors in this colorspace",
-      "-quiet               suppress all warning messages",
-      "-regard-warnings     pay attention to warning messages",
-      "-remote command      execute a command in an remote display process",
-      "-repage geometry     size and location of an image canvas (operator)",
-      "-respect-parentheses settings remain in effect until parenthesis boundary",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
-      "-scenes range        image scene range",
-      "-seed value          seed a new sequence of pseudo-random numbers",
-      "-set property value  set an image property",
-      "-size geometry       width and height of image",
-      "-support factor      resize support: > 1.0 is blurry, < 1.0 is sharp",
-      "-texture filename    name of texture to tile onto the image background",
-      "-transparent-color color",
-      "                     transparent color",
-      "-treedepth value     color tree depth",
-      "-update seconds      detect when image file is modified and redisplay",
-      "-verbose             print detailed information about the image",
-      "-visual type         display image using this visual type",
-      "-virtual-pixel method",
-      "                     virtual pixel access method",
-      "-window id           display image to background of this window",
-      "-window-group id     exit program when this window id is destroyed",
-      "-write filename      write image to a file",
-      (char *) NULL
-    },
-    *sequence_operators[]=
-    {
-      "-coalesce            merge a sequence of images",
-      "-flatten             flatten a sequence of images",
-      (char *) NULL
-    };
+    buttons[] =
+      "  1    press to map or unmap the Command widget\n"
+      "  2    press and drag to magnify a region of an image\n"
+      "  3    press to load an image from a visual image directory",
+    miscellaneous[] =
+      "  -debug events        display copious debugging information\n"
+      "  -help                print program options\n"
+      "  -list type           print a list of supported option arguments\n"
+      "  -log format          format of debugging information\n"
+      "  -version             print version information",
+    operators[] =
+      "  -auto-orient         automagically orient image\n"
+      "  -border geometry     surround image with a border of color\n"
+      "  -clip                clip along the first path from the 8BIM profile\n"
+      "  -clip-path id        clip along a named path from the 8BIM profile\n"
+      "  -colors value        preferred number of colors in the image\n"
+      "  -contrast            enhance or reduce the image contrast\n"
+      "  -crop geometry       preferred size and location of the cropped image\n"
+      "  -decipher filename   convert cipher pixels to plain pixels\n"
+      "  -deskew threshold    straighten an image\n"
+      "  -despeckle           reduce the speckles within an image\n"
+      "  -edge factor         apply a filter to detect edges in the image\n"
+      "  -enhance             apply a digital filter to enhance a noisy image\n"
+      "  -equalize            perform histogram equalization to an image\n"
+      "  -extract geometry    extract area from image\n"
+      "  -flip                flip image in the vertical direction\n"
+      "  -flop                flop image in the horizontal direction\n"
+      "  -frame geometry      surround image with an ornamental border\n"
+      "  -fuzz distance       colors within this distance are considered equal\n"
+      "  -gamma value         level of gamma correction\n"
+      "  -monochrome          transform image to black and white\n"
+      "  -negate              replace every pixel with its complementary color\n"
+      "  -normalize           transform image to span the full range of colors\n"
+      "  -raise value         lighten/darken image edges to create a 3-D effect\n"
+      "  -resample geometry   change the resolution of an image\n"
+      "  -resize geometry     resize the image\n"
+      "  -roll geometry       roll an image vertically or horizontally\n"
+      "  -rotate degrees      apply Paeth rotation to the image\n"
+      "  -sample geometry     scale image with pixel sampling\n"
+      "  -segment value       segment an image\n"
+      "  -sharpen geometry    sharpen the image\n"
+      "  -strip               strip image of all profiles and comments\n"
+      "  -threshold value     threshold the image\n"
+      "  -thumbnail geometry  create a thumbnail of the image\n"
+      "  -trim                trim image edges",
+    settings[] =
+      "  -alpha option        on, activate, off, deactivate, set, opaque, copy\n"
+      "                       transparent, extract, background, or shape\n"
+      "  -antialias           remove pixel-aliasing\n"
+      "  -authenticate password\n"
+      "                       decipher image with this password\n"
+      "  -backdrop            display image centered on a backdrop\n"
+      "  -channel type        apply option to select image channels\n"
+      "  -colormap type       Shared or Private\n"
+      "  -colorspace type     alternate image colorspace\n"
+      "  -comment string      annotate image with comment\n"
+      "  -compress type       type of pixel compression when writing the image\n"
+      "  -define format:option\n"
+      "                       define one or more image format options\n"
+      "  -delay value         display the next image after pausing\n"
+      "  -density geometry    horizontal and vertical density of the image\n"
+      "  -depth value         image depth\n"
+      "  -display server      display image to this X server\n"
+      "  -dispose method      layer disposal method\n"
+      "  -dither method       apply error diffusion to image\n"
+      "  -endian type         endianness (MSB or LSB) of the image\n"
+      "  -filter type         use this filter when resizing an image\n"
+      "  -format string     output formatted image characteristics\n"
+      "  -geometry geometry   preferred size and location of the Image window\n"
+      "  -gravity type        horizontal and vertical backdrop placement\n"
+      "  -identify            identify the format and characteristics of the image\n"
+      "  -immutable           displayed image cannot be modified\n"
+      "  -interlace type      type of image interlacing scheme\n"
+      "  -interpolate method  pixel color interpolation method\n"
+      "  -label string        assign a label to an image\n"
+      "  -limit type value    pixel cache resource limit\n"
+      "  -loop iterations     loop images then exit\n"
+      "  -map type            display image using this Standard Colormap\n"
+      "  -matte               store matte channel if the image has one\n"
+      "  -monitor             monitor progress\n"
+      "  -nostdin             do not try to open stdin\n"
+      "  -page geometry       size and location of an image canvas\n"
+      "  -profile filename    add, delete, or apply an image profile\n"
+      "  -quality value       JPEG/MIFF/PNG compression level\n"
+      "  -quantize colorspace reduce colors in this colorspace\n"
+      "  -quiet               suppress all warning messages\n"
+      "  -regard-warnings     pay attention to warning messages\n"
+      "  -remote command      execute a command in an remote display process\n"
+      "  -repage geometry     size and location of an image canvas (operator)\n"
+      "  -respect-parentheses settings remain in effect until parenthesis boundary\n"
+      "  -sampling-factor geometry\n"
+      "                       horizontal and vertical sampling factor\n"
+      "  -scenes range        image scene range\n"
+      "  -seed value          seed a new sequence of pseudo-random numbers\n"
+      "  -set property value  set an image property\n"
+      "  -size geometry       width and height of image\n"
+      "  -support factor      resize support: > 1.0 is blurry, < 1.0 is sharp\n"
+      "  -texture filename    name of texture to tile onto the image background\n"
+      "  -transparent-color color\n"
+      "                       transparent color\n"
+      "  -treedepth value     color tree depth\n"
+      "  -update seconds      detect when image file is modified and redisplay\n"
+      "  -verbose             print detailed information about the image\n"
+      "  -visual type         display image using this visual type\n"
+      "  -virtual-pixel method\n"
+      "                       virtual pixel access method\n"
+      "  -window id           display image to background of this window\n"
+      "  -window-group id     exit program when this window id is destroyed\n"
+      "  -write filename      write image to a file",
+    sequence_operators[] =
+      "  -coalesce            merge a sequence of images\n"
+      "  -flatten             flatten a sequence of images";
 
   ListMagickVersion(stdout);
   (void) printf("Usage: %s [options ...] file [ [options ...] file ...]\n",
     GetClientName());
   (void) printf("\nImage Settings:\n");
-  for (p=settings; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(settings);
   (void) printf("\nImage Operators:\n");
-  for (p=operators; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(operators);
   (void) printf("\nImage Sequence Operators:\n");
-  for (p=sequence_operators; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(sequence_operators);
   (void) printf("\nMiscellaneous Options:\n");
-  for (p=miscellaneous; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(miscellaneous);
   (void) printf(
     "\nIn addition to those listed above, you can specify these standard X\n");
   (void) printf(
@@ -257,8 +235,7 @@ static MagickBooleanType DisplayUsage(void)
     "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
   (void) printf("'-' for standard input or output.\n");
   (void) printf("\nButtons: \n");
-  for (p=buttons; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(buttons);
   return(MagickFalse);
 }
 

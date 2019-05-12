@@ -89,38 +89,27 @@
 
 static MagickBooleanType ConjureUsage(void)
 {
-  const char
-    **p;
-
   static const char
-    *miscellaneous[]=
-    {
-      "-debug events        display copious debugging information",
-      "-help                print program options",
-      "-list type           print a list of supported option arguments",
-      "-log format          format of debugging information",
-      "-version             print version information",
-      (char *) NULL
-    },
-    *settings[]=
-    {
-      "-monitor             monitor progress",
-      "-quiet               suppress all warning messages",
-      "-regard-warnings     pay attention to warning messages",
-      "-seed value          seed a new sequence of pseudo-random numbers",
-      "-verbose             print detailed information about the image",
-      (char *) NULL
-    };
+    miscellaneous[] =
+      "  -debug events        display copious debugging information\n"
+      "  -help                print program options\n"
+      "  -list type           print a list of supported option arguments\n"
+      "  -log format          format of debugging information\n"
+      "  -version             print version information",
+    settings[] =
+      "  -monitor             monitor progress\n"
+      "  -quiet               suppress all warning messages\n"
+      "  -regard-warnings     pay attention to warning messages\n"
+      "  -seed value          seed a new sequence of pseudo-random numbers\n"
+      "  -verbose             print detailed information about the image";
 
   ListMagickVersion(stdout);
   (void) printf("Usage: %s [options ...] file [ [options ...] file ...]\n",
     GetClientName());
   (void) printf("\nImage Settings:\n");
-  for (p=settings; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(settings);
   (void) printf("\nMiscellaneous Options:\n");
-  for (p=miscellaneous; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(miscellaneous);
   (void) printf("\nIn addition, define any key value pairs required by "
     "your script.  For\nexample,\n\n");
   (void) printf("    conjure -size 100x100 -color blue -foo bar script.msl\n");

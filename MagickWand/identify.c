@@ -92,86 +92,71 @@
 
 static MagickBooleanType IdentifyUsage(void)
 {
-  const char
-    **p;
-
   static const char
-    *miscellaneous[]=
-    {
-      "-debug events        display copious debugging information",
-      "-help                print program options",
-      "-list type           print a list of supported option arguments",
-      "-log format          format of debugging information",
-      "-version             print version information",
-      (char *) NULL
-    },
-    *operators[]=
-    {
-      "-channel mask        set the image channel mask",
-      "-grayscale method    convert image to grayscale",
-      "-negate              replace every pixel with its complementary color ",
-      (char *) NULL
-    },
-    *settings[]=
-    {
-      "-alpha option        on, activate, off, deactivate, set, opaque, copy",
-      "                     transparent, extract, background, or shape",
-      "-antialias           remove pixel-aliasing",
-      "-authenticate password",
-      "                     decipher image with this password",
-      "-clip                clip along the first path from the 8BIM profile",
-      "-clip-mask filename  associate a clip mask with the image",
-      "-clip-path id        clip along a named path from the 8BIM profile",
-      "-colorspace type     alternate image colorspace",
-      "-crop geometry       cut out a rectangular region of the image",
-      "-define format:option",
-      "                     define one or more image format options",
-      "-density geometry    horizontal and vertical density of the image",
-      "-depth value         image depth",
-      "-endian type         endianness (MSB or LSB) of the image",
-      "-extract geometry    extract area from image",
-      "-features distance   analyze image features (e.g. contrast, correlation)",
-      "-format \"string\"     output formatted image characteristics",
-      "-fuzz distance       colors within this distance are considered equal",
-      "-gamma value         of gamma correction",
-      "-interlace type      type of image interlacing scheme",
-      "-interpolate method  pixel color interpolation method",
-      "-limit type value    pixel cache resource limit",
-      "-matte               store matte channel if the image has one",
-      "-moments             report image moments",
-      "-monitor             monitor progress",
-      "-ping                efficiently determine image attributes",
-      "-precision value     maximum number of significant digits to print",
-      "-quiet               suppress all warning messages",
-      "-read-mask filename  associate a read mask with the image",
-      "-regard-warnings     pay attention to warning messages",
-      "-respect-parentheses settings remain in effect until parenthesis boundary",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
-      "-seed value          seed a new sequence of pseudo-random numbers",
-      "-set attribute value set an image attribute",
-      "-size geometry       width and height of image",
-      "-strip               strip image of all profiles and comments",
-      "-unique              display the number of unique colors in the image",
-      "-units type          the units of image resolution",
-      "-verbose             print detailed information about the image",
-      "-virtual-pixel method",
-      "                     virtual pixel access method",
-      (char *) NULL
-    };
+    miscellaneous[] =
+      "  -debug events        display copious debugging information\n"
+      "  -help                print program options\n"
+      "  -list type           print a list of supported option arguments\n"
+      "  -log format          format of debugging information\n"
+      "  -version             print version information",
+    operators[] =
+      "  -channel mask        set the image channel mask\n"
+      "  -grayscale method    convert image to grayscale\n"
+      "  -negate              replace every pixel with its complementary color",
+    settings[] =
+      "  -alpha option        on, activate, off, deactivate, set, opaque, copy\n"
+      "                       transparent, extract, background, or shape\n"
+      "  -antialias           remove pixel-aliasing\n"
+      "  -authenticate password\n"
+      "                       decipher image with this password\n"
+      "  -clip                clip along the first path from the 8BIM profile\n"
+      "  -clip-mask filename  associate a clip mask with the image\n"
+      "  -clip-path id        clip along a named path from the 8BIM profile\n"
+      "  -colorspace type     alternate image colorspace\n"
+      "  -crop geometry       cut out a rectangular region of the image\n"
+      "  -define format:option\n"
+      "                       define one or more image format options\n"
+      "  -density geometry    horizontal and vertical density of the image\n"
+      "  -depth value         image depth\n"
+      "  -endian type         endianness (MSB or LSB) of the image\n"
+      "  -extract geometry    extract area from image\n"
+      "  -features distance   analyze image features (e.g. contrast, correlation)\n"
+      "  -format \"string\"     output formatted image characteristics\n"
+      "  -fuzz distance       colors within this distance are considered equal\n"
+      "  -gamma value         of gamma correction\n"
+      "  -interlace type      type of image interlacing scheme\n"
+      "  -interpolate method  pixel color interpolation method\n"
+      "  -limit type value    pixel cache resource limit\n"
+      "  -matte               store matte channel if the image has one\n"
+      "  -moments             report image moments\n"
+      "  -monitor             monitor progress\n"
+      "  -ping                efficiently determine image attributes\n"
+      "  -precision value     maximum number of significant digits to print\n"
+      "  -quiet               suppress all warning messages\n"
+      "  -read-mask filename  associate a read mask with the image\n"
+      "  -regard-warnings     pay attention to warning messages\n"
+      "  -respect-parentheses settings remain in effect until parenthesis boundary\n"
+      "  -sampling-factor geometry\n"
+      "                       horizontal and vertical sampling factor\n"
+      "  -seed value          seed a new sequence of pseudo-random numbers\n"
+      "  -set attribute value set an image attribute\n"
+      "  -size geometry       width and height of image\n"
+      "  -strip               strip image of all profiles and comments\n"
+      "  -unique              display the number of unique colors in the image\n"
+      "  -units type          the units of image resolution\n"
+      "  -verbose             print detailed information about the image\n"
+      "  -virtual-pixel method\n"
+      "                       virtual pixel access method";
 
   ListMagickVersion(stdout);
   (void) printf("Usage: %s [options ...] file [ [options ...] "
     "file ... ]\n",GetClientName());
   (void) printf("\nImage Settings:\n");
-  for (p=settings; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(settings);
   (void) printf("\nImage Operators:\n");
-  for (p=operators; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(operators);
   (void) printf("\nMiscellaneous Options:\n");
-  for (p=miscellaneous; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(miscellaneous);
   (void) printf(
     "\nBy default, the image format of 'file' is determined by its magic\n");
   (void) printf(

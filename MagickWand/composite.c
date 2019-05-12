@@ -241,135 +241,115 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
 
 static MagickBooleanType CompositeUsage(void)
 {
-  const char
-    **p;
-
   static const char
-    *miscellaneous[]=
-    {
-      "-debug events        display copious debugging information",
-      "-help                print program options",
-      "-list type           print a list of supported option arguments",
-      "-log format          format of debugging information",
-      "-version             print version information",
-      (char *) NULL
-    },
-    *operators[]=
-    {
-      "-blend geometry      blend images",
-      "-border geometry     surround image with a border of color",
-      "-bordercolor color   border color",
-      "-channel mask        set the image channel mask",
-      "-colors value        preferred number of colors in the image",
-      "-decipher filename    convert cipher pixels to plain pixels",
-      "-displace geometry   shift lookup according to a relative displacement map",
-      "-dissolve value      dissolve the two images a given percent",
-      "-distort geometry    shift lookup according to a absolute distortion map",
-      "-encipher filename   convert plain pixels to cipher pixels",
-      "-extract geometry    extract area from image",
-      "-geometry geometry   location of the composite image",
-      "-identify            identify the format and characteristics of the image",
-      "-monochrome          transform image to black and white",
-      "-negate              replace every pixel with its complementary color ",
-      "-profile filename    add ICM or IPTC information profile to image",
-      "-quantize colorspace reduce colors in this colorspace",
-      "-repage geometry     size and location of an image canvas (operator)",
-      "-rotate degrees      apply Paeth rotation to the image",
-      "-resize geometry     resize the image",
-      "-sharpen geometry    sharpen the image",
-      "-shave geometry      shave pixels from the image edges",
-      "-stegano offset      hide watermark within an image",
-      "-stereo geometry     combine two image to create a stereo anaglyph",
-      "-strip               strip image of all profiles and comments",
-      "-thumbnail geometry  create a thumbnail of the image",
-      "-transform           affine transform image",
-      "-type type           image type",
-      "-unsharp geometry    sharpen the image",
-      "-watermark geometry  percent brightness and saturation of a watermark",
-      "-write filename      write images to this file",
-      (char *) NULL
-    },
-    *settings[]=
-    {
-      "-affine matrix       affine transform matrix",
-      "-alpha option        on, activate, off, deactivate, set, opaque, copy",
-      "                     transparent, extract, background, or shape",
-      "-authenticate password",
-      "                     decipher image with this password",
-      "-blue-primary point  chromaticity blue primary point",
-      "-colorspace type     alternate image colorspace",
-      "-comment string      annotate image with comment",
-      "-compose operator    composite operator",
-      "-compress type       type of pixel compression when writing the image",
-      "-define format:option",
-      "                     define one or more image format options",
-      "-depth value         image depth",
-      "-density geometry    horizontal and vertical density of the image",
-      "-display server      get image or font from this X server",
-      "-dispose method      layer disposal method",
-      "-dither method       apply error diffusion to image",
-      "-encoding type       text encoding type",
-      "-endian type         endianness (MSB or LSB) of the image",
-      "-filter type         use this filter when resizing an image",
-      "-font name           render text with this font",
-      "-format \"string\"     output formatted image characteristics",
-      "-gravity type        which direction to gravitate towards",
-      "-green-primary point chromaticity green primary point",
-      "-interlace type      type of image interlacing scheme",
-      "-interpolate method  pixel color interpolation method",
-      "-label string        assign a label to an image",
-      "-limit type value    pixel cache resource limit",
-      "-matte               store matte channel if the image has one",
-      "-monitor             monitor progress",
-      "-page geometry       size and location of an image canvas (setting)",
-      "-pointsize value     font point size",
-      "-quality value       JPEG/MIFF/PNG compression level",
-      "-quiet               suppress all warning messages",
-      "-red-primary point   chromaticity red primary point",
-      "-regard-warnings     pay attention to warning messages",
-      "-respect-parentheses settings remain in effect until parenthesis boundary",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
-      "-scene value         image scene number",
-      "-seed value          seed a new sequence of pseudo-random numbers",
-      "-size geometry       width and height of image",
-      "-support factor      resize support: > 1.0 is blurry, < 1.0 is sharp",
-      "-synchronize         synchronize image to storage device",
-      "-taint               declare the image as modified",
-      "-transparent-color color",
-      "                     transparent color",
-      "-treedepth value     color tree depth",
-      "-tile                repeat composite operation across and down image",
-      "-units type          the units of image resolution",
-      "-verbose             print detailed information about the image",
-      "-virtual-pixel method",
-      "                     virtual pixel access method",
-      "-white-point point   chromaticity white point",
-      (char *) NULL
-    },
-    *stack_operators[]=
-    {
-      "-swap indexes        swap two images in the image sequence",
-      (char *) NULL
-    };
-
+    miscellaneous[] =
+      "  -debug events        display copious debugging information\n"
+      "  -help                print program options\n"
+      "  -list type           print a list of supported option arguments\n"
+      "  -log format          format of debugging information\n"
+      "  -version             print version information",
+    operators[] =
+      "  -blend geometry      blend images\n"
+      "  -border geometry     surround image with a border of color\n"
+      "  -bordercolor color   border color\n"
+      "  -channel mask        set the image channel mask\n"
+      "  -colors value        preferred number of colors in the image\n"
+      "  -decipher filename    convert cipher pixels to plain pixels\n"
+      "  -displace geometry   shift lookup according to a relative displacement map\n"
+      "  -dissolve value      dissolve the two images a given percent\n"
+      "  -distort geometry    shift lookup according to a absolute distortion map\n"
+      "  -encipher filename   convert plain pixels to cipher pixels\n"
+      "  -extract geometry    extract area from image\n"
+      "  -geometry geometry   location of the composite image\n"
+      "  -identify            identify the format and characteristics of the image\n"
+      "  -monochrome          transform image to black and white\n"
+      "  -negate              replace every pixel with its complementary color \n"
+      "  -profile filename    add ICM or IPTC information profile to image\n"
+      "  -quantize colorspace reduce colors in this colorspace\n"
+      "  -repage geometry     size and location of an image canvas (operator)\n"
+      "  -rotate degrees      apply Paeth rotation to the image\n"
+      "  -resize geometry     resize the image\n"
+      "  -sharpen geometry    sharpen the image\n"
+      "  -shave geometry      shave pixels from the image edges\n"
+      "  -stegano offset      hide watermark within an image\n"
+      "  -stereo geometry     combine two image to create a stereo anaglyph\n"
+      "  -strip               strip image of all profiles and comments\n"
+      "  -thumbnail geometry  create a thumbnail of the image\n"
+      "  -transform           affine transform image\n"
+      "  -type type           image type\n"
+      "  -unsharp geometry    sharpen the image\n"
+      "  -watermark geometry  percent brightness and saturation of a watermark\n"
+      "  -write filename      write images to this file",
+    settings[] =
+      "  -affine matrix       affine transform matrix\n"
+      "  -alpha option        on, activate, off, deactivate, set, opaque, copy\n"
+      "                       transparent, extract, background, or shape\n"
+      "  -authenticate password\n"
+      "                       decipher image with this password\n"
+      "  -blue-primary point  chromaticity blue primary point\n"
+      "  -colorspace type     alternate image colorspace\n"
+      "  -comment string      annotate image with comment\n"
+      "  -compose operator    composite operator\n"
+      "  -compress type       type of pixel compression when writing the image\n"
+      "  -define format:option\n"
+      "                       define one or more image format options\n"
+      "  -depth value         image depth\n"
+      "  -density geometry    horizontal and vertical density of the image\n"
+      "  -display server      get image or font from this X server\n"
+      "  -dispose method      layer disposal method\n"
+      "  -dither method       apply error diffusion to image\n"
+      "  -encoding type       text encoding type\n"
+      "  -endian type         endianness (MSB or LSB) of the image\n"
+      "  -filter type         use this filter when resizing an image\n"
+      "  -font name           render text with this font\n"
+      "  -format \"string\"     output formatted image characteristics\n"
+      "  -gravity type        which direction to gravitate towards\n"
+      "  -green-primary point chromaticity green primary point\n"
+      "  -interlace type      type of image interlacing scheme\n"
+      "  -interpolate method  pixel color interpolation method\n"
+      "  -label string        assign a label to an image\n"
+      "  -limit type value    pixel cache resource limit\n"
+      "  -matte               store matte channel if the image has one\n"
+      "  -monitor             monitor progress\n"
+      "  -page geometry       size and location of an image canvas (setting)\n"
+      "  -pointsize value     font point size\n"
+      "  -quality value       JPEG/MIFF/PNG compression level\n"
+      "  -quiet               suppress all warning messages\n"
+      "  -red-primary point   chromaticity red primary point\n"
+      "  -regard-warnings     pay attention to warning messages\n"
+      "  -respect-parentheses settings remain in effect until parenthesis boundary\n"
+      "  -sampling-factor geometry\n"
+      "                       horizontal and vertical sampling factor\n"
+      "  -scene value         image scene number\n"
+      "  -seed value          seed a new sequence of pseudo-random numbers\n"
+      "  -size geometry       width and height of image\n"
+      "  -support factor      resize support: > 1.0 is blurry, < 1.0 is sharp\n"
+      "  -synchronize         synchronize image to storage device\n"
+      "  -taint               declare the image as modified\n"
+      "  -transparent-color color\n"
+      "                       transparent color\n"
+      "  -treedepth value     color tree depth\n"
+      "  -tile                repeat composite operation across and down image\n"
+      "  -units type          the units of image resolution\n"
+      "  -verbose             print detailed information about the image\n"
+      "  -virtual-pixel method\n"
+      "                       virtual pixel access method\n"
+      "  -white-point point   chromaticity white point",
+    stack_operators[] =
+      "  -swap indexes        swap two images in the image sequence";
 
   ListMagickVersion(stdout);
   (void) printf("Usage: %s [options ...] image [options ...] composite\n"
     "  [ [options ...] mask ] [options ...] composite\n",
     GetClientName());
   (void) printf("\nImage Settings:\n");
-  for (p=settings; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(settings);
   (void) printf("\nImage Operators:\n");
-  for (p=operators; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(operators);
   (void) printf("\nImage Stack Operators:\n");
-  for (p=stack_operators; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(stack_operators);
   (void) printf("\nMiscellaneous Options:\n");
-  for (p=miscellaneous; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(miscellaneous);
   (void) printf(
     "\nBy default, the image format of 'file' is determined by its magic\n");
   (void) printf(

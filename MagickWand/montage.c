@@ -83,165 +83,142 @@
 
 static MagickBooleanType MontageUsage(void)
 {
-  const char
-    **p;
-
   static const char
-    *miscellaneous[]=
-    {
-      "-debug events        display copious debugging information",
-      "-help                print program options",
-      "-list type           print a list of supported option arguments",
-      "-log format          format of debugging information",
-      "-version             print version information",
-      (char *) NULL
-    },
-    *operators[]=
-    {
-      "-adaptive-sharpen geometry",
-      "                     adaptively sharpen pixels; increase effect near edges",
-      "-annotate geometry text",
-      "                     annotate the image with text",
-      "-auto-orient         automagically orient image",
-      "-blur geometry      reduce image noise and reduce detail levels",
-      "-border geometry     surround image with a border of color",
-      "-channel mask        set the image channel mask",
-      "-crop geometry       preferred size and location of the cropped image",
-      "-extent geometry     set the image size",
-      "-flatten             flatten a sequence of images",
-      "-flip                flip image in the vertical direction",
-      "-flop                flop image in the horizontal direction",
-      "-frame geometry      surround image with an ornamental border",
-      "-monochrome          transform image to black and white",
-      "-polaroid angle      simulate a Polaroid picture",
-      "-repage geometry     size and location of an image canvas (operator)",
-      "-resize geometry     resize the image",
-      "-rotate degrees      apply Paeth rotation to the image",
-      "-scale geometry      scale the image",
-      "-strip               strip image of all profiles and comments",
-      "-transform           affine transform image",
-      "-transpose           flip image vertically and rotate 90 degrees",
-      "-transparent color   make this color transparent within the image",
-      "-type type           image type",
-      "-unsharp geometry    sharpen the image",
-      (char *) NULL
-    },
-    *settings[]=
-    {
-      "-adjoin              join images into a single multi-image file",
-      "-affine matrix       affine transform matrix",
-      "-alpha option        on, activate, off, deactivate, set, opaque, copy",
-      "                     transparent, extract, background, or shape",
-      "-authenticate password",
-      "                     decipher image with this password",
-      "-blue-primary point  chromaticity blue primary point",
-      "-bordercolor color   border color",
-      "-caption string      assign a caption to an image",
-      "-colors value        preferred number of colors in the image",
-      "-colorspace type     alternate image colorsapce",
-      "-comment string      annotate image with comment",
-      "-compose operator    composite operator",
-      "-compress type       type of pixel compression when writing the image",
-      "-define format:option",
-      "                     define one or more image format options",
-      "-density geometry    horizontal and vertical density of the image",
-      "-depth value         image depth",
-      "-display server      query font from this X server",
-      "-dispose method      layer disposal method",
-      "-dither method       apply error diffusion to image",
-      "-draw string         annotate the image with a graphic primitive",
-      "-encoding type       text encoding type",
-      "-endian type         endianness (MSB or LSB) of the image",
-      "-extract geometry    extract area from image",
-      "-fill color          color to use when filling a graphic primitive",
-      "-filter type         use this filter when resizing an image",
-      "-font name           render text with this font",
-      "-format \"string\"     output formatted image characteristics",
-      "-gamma value         level of gamma correction",
-      "-geometry geometry   preferred tile and border sizes",
-      "-gravity direction   which direction to gravitate towards",
-      "-green-primary point chromaticity green primary point",
-      "-identify            identify the format and characteristics of the image",
-      "-interlace type      type of image interlacing scheme",
-      "-interpolate method  pixel color interpolation method",
-      "-kerning value       set the space between two letters",
-      "-label string        assign a label to an image",
-      "-limit type value    pixel cache resource limit",
-      "-matte               store matte channel if the image has one",
-      "-mattecolor color    frame color",
-      "-mode type           framing style",
-      "-monitor             monitor progress",
-      "-page geometry       size and location of an image canvas (setting)",
-      "-pointsize value     font point size",
-      "-profile filename    add, delete, or apply an image profile",
-      "-quality value       JPEG/MIFF/PNG compression level",
-      "-quantize colorspace reduce colors in this colorspace",
-      "-quiet               suppress all warning messages",
-      "-red-primary point   chromaticity red primary point",
-      "-regard-warnings     pay attention to warning messages",
-      "-respect-parentheses settings remain in effect until parenthesis boundary",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
-      "-scenes range        image scene range",
-      "-seed value          seed a new sequence of pseudo-random numbers",
-      "-set attribute value set an image attribute",
-      "-shadow              add a shadow beneath a tile to simulate depth",
-      "-size geometry       width and height of image",
-      "-stroke color        color to use when stroking a graphic primitive",
-      "-support factor      resize support: > 1.0 is blurry, < 1.0 is sharp",
-      "-synchronize         synchronize image to storage device",
-      "-taint               declare the image as modified",
-      "-texture filename    name of texture to tile onto the image background",
-      "-thumbnail geometry  create a thumbnail of the image",
-      "-tile geometry       number of tiles per row and column",
-      "-title string        decorate the montage image with a title",
-      "-transparent-color color",
-      "                     transparent color",
-      "-treedepth value     color tree depth",
-      "-trim                trim image edges",
-      "-units type          the units of image resolution",
-      "-verbose             print detailed information about the image",
-      "-virtual-pixel method",
-      "                     virtual pixel access method",
-      "-white-point point   chromaticity white point",
-      (char *) NULL
-    },
-    *sequence_operators[]=
-    {
-      "-coalesce            merge a sequence of images",
-      "-composite           composite image",
-      (char *) NULL
-    },
-    *stack_operators[]=
-    {
-      "-clone indexes       clone an image",
-      "-delete indexes      delete the image from the image sequence",
-      "-duplicate count,indexes",
-      "                     duplicate an image one or more times",
-      "-insert index        insert last image into the image sequence",
-      "-reverse             reverse image sequence",
-      "-swap indexes        swap two images in the image sequence",
-      (char *) NULL
-    };
+    miscellaneous[] =
+      "  -debug events        display copious debugging information\n"
+      "  -help                print program options\n"
+      "  -list type           print a list of supported option arguments\n"
+      "  -log format          format of debugging information\n"
+      "  -version             print version information",
+    operators[] =
+      "  -adaptive-sharpen geometry\n"
+      "                       adaptively sharpen pixels; increase effect near edges\n"
+      "  -annotate geometry text\n"
+      "                       annotate the image with text\n"
+      "  -auto-orient         automagically orient image\n"
+      "  -blur geometry      reduce image noise and reduce detail levels\n"
+      "  -border geometry     surround image with a border of color\n"
+      "  -channel mask        set the image channel mask\n"
+      "  -crop geometry       preferred size and location of the cropped image\n"
+      "  -extent geometry     set the image size\n"
+      "  -flatten             flatten a sequence of images\n"
+      "  -flip                flip image in the vertical direction\n"
+      "  -flop                flop image in the horizontal direction\n"
+      "  -frame geometry      surround image with an ornamental border\n"
+      "  -monochrome          transform image to black and white\n"
+      "  -polaroid angle      simulate a Polaroid picture\n"
+      "  -repage geometry     size and location of an image canvas (operator)\n"
+      "  -resize geometry     resize the image\n"
+      "  -rotate degrees      apply Paeth rotation to the image\n"
+      "  -scale geometry      scale the image\n"
+      "  -strip               strip image of all profiles and comments\n"
+      "  -transform           affine transform image\n"
+      "  -transpose           flip image vertically and rotate 90 degrees\n"
+      "  -transparent color   make this color transparent within the image\n"
+      "  -type type           image type\n"
+      "  -unsharp geometry    sharpen the image",
+    settings[] =
+      "  -adjoin              join images into a single multi-image file\n"
+      "  -affine matrix       affine transform matrix\n"
+      "  -alpha option        on, activate, off, deactivate, set, opaque, copy\n"
+      "                       transparent, extract, background, or shape\n"
+      "  -authenticate password\n"
+      "                       decipher image with this password\n"
+      "  -blue-primary point  chromaticity blue primary point\n"
+      "  -bordercolor color   border color\n"
+      "  -caption string      assign a caption to an image\n"
+      "  -colors value        preferred number of colors in the image\n"
+      "  -colorspace type     alternate image colorsapce\n"
+      "  -comment string      annotate image with comment\n"
+      "  -compose operator    composite operator\n"
+      "  -compress type       type of pixel compression when writing the image\n"
+      "  -define format:option\n"
+      "                       define one or more image format options\n"
+      "  -density geometry    horizontal and vertical density of the image\n"
+      "  -depth value         image depth\n"
+      "  -display server      query font from this X server\n"
+      "  -dispose method      layer disposal method\n"
+      "  -dither method       apply error diffusion to image\n"
+      "  -draw string         annotate the image with a graphic primitive\n"
+      "  -encoding type       text encoding type\n"
+      "  -endian type         endianness (MSB or LSB) of the image\n"
+      "  -extract geometry    extract area from image\n"
+      "  -fill color          color to use when filling a graphic primitive\n"
+      "  -filter type         use this filter when resizing an image\n"
+      "  -font name           render text with this font\n"
+      "  -format \"string\"     output formatted image characteristics\n"
+      "  -gamma value         level of gamma correction\n"
+      "  -geometry geometry   preferred tile and border sizes\n"
+      "  -gravity direction   which direction to gravitate towards\n"
+      "  -green-primary point chromaticity green primary point\n"
+      "  -identify            identify the format and characteristics of the image\n"
+      "  -interlace type      type of image interlacing scheme\n"
+      "  -interpolate method  pixel color interpolation method\n"
+      "  -kerning value       set the space between two letters\n"
+      "  -label string        assign a label to an image\n"
+      "  -limit type value    pixel cache resource limit\n"
+      "  -matte               store matte channel if the image has one\n"
+      "  -mattecolor color    frame color\n"
+      "  -mode type           framing style\n"
+      "  -monitor             monitor progress\n"
+      "  -page geometry       size and location of an image canvas (setting)\n"
+      "  -pointsize value     font point size\n"
+      "  -profile filename    add, delete, or apply an image profile\n"
+      "  -quality value       JPEG/MIFF/PNG compression level\n"
+      "  -quantize colorspace reduce colors in this colorspace\n"
+      "  -quiet               suppress all warning messages\n"
+      "  -red-primary point   chromaticity red primary point\n"
+      "  -regard-warnings     pay attention to warning messages\n"
+      "  -respect-parentheses settings remain in effect until parenthesis boundary\n"
+      "  -sampling-factor geometry\n"
+      "                       horizontal and vertical sampling factor\n"
+      "  -scenes range        image scene range\n"
+      "  -seed value          seed a new sequence of pseudo-random numbers\n"
+      "  -set attribute value set an image attribute\n"
+      "  -shadow              add a shadow beneath a tile to simulate depth\n"
+      "  -size geometry       width and height of image\n"
+      "  -stroke color        color to use when stroking a graphic primitive\n"
+      "  -support factor      resize support: > 1.0 is blurry, < 1.0 is sharp\n"
+      "  -synchronize         synchronize image to storage device\n"
+      "  -taint               declare the image as modified\n"
+      "  -texture filename    name of texture to tile onto the image background\n"
+      "  -thumbnail geometry  create a thumbnail of the image\n"
+      "  -tile geometry       number of tiles per row and column\n"
+      "  -title string        decorate the montage image with a title\n"
+      "  -transparent-color color\n"
+      "                       transparent color\n"
+      "  -treedepth value     color tree depth\n"
+      "  -trim                trim image edges\n"
+      "  -units type          the units of image resolution\n"
+      "  -verbose             print detailed information about the image\n"
+      "  -virtual-pixel method\n"
+      "                       virtual pixel access method\n"
+      "  -white-point point   chromaticity white point",
+    sequence_operators[] =
+      "  -coalesce            merge a sequence of images\n"
+      "  -composite           composite image",
+    stack_operators[] =
+      "  -clone indexes       clone an image\n"
+      "  -delete indexes      delete the image from the image sequence\n"
+      "  -duplicate count,indexes\n"
+      "                       duplicate an image one or more times\n"
+      "  -insert index        insert last image into the image sequence\n"
+      "  -reverse             reverse image sequence\n"
+      "  -swap indexes        swap two images in the image sequence";
 
   ListMagickVersion(stdout);
   (void) printf("Usage: %s [options ...] file [ [options ...] file ...] file\n",
     GetClientName());
   (void) printf("\nImage Settings:\n");
-  for (p=settings; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(settings);
   (void) printf("\nImage Operators:\n");
-  for (p=operators; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(operators);
   (void) printf("\nImage Sequence Operators:\n");
-  for (p=sequence_operators; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(sequence_operators);
   (void) printf("\nImage Stack Operators:\n");
-  for (p=stack_operators; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(stack_operators);
   (void) printf("\nMiscellaneous Options:\n");
-  for (p=miscellaneous; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(miscellaneous);
   (void) printf(
     "\nIn addition to those listed above, you can specify these standard X\n");
   (void) printf(

@@ -93,112 +93,97 @@
 
 static MagickBooleanType ImportUsage(void)
 {
-  const char
-    **p;
-
   static const char
-    *miscellaneous[]=
-    {
-      "-debug events        display copious debugging information",
-      "-help                print program options",
-      "-list type           print a list of supported option arguments",
-      "-log format          format of debugging information",
-      "-version             print version information",
-      (char *) NULL
-    },
-    *operators[]=
-    {
-      "-annotate geometry text",
-      "                     annotate the image with text",
-      "-colors value        preferred number of colors in the image",
-      "-crop geometry       preferred size and location of the cropped image",
-      "-encipher filename   convert plain pixels to cipher pixels",
-      "-geometry geometry   preferred size or location of the image",
-      "-help                print program options",
-      "-monochrome          transform image to black and white",
-      "-negate              replace every pixel with its complementary color ",
-      "-quantize colorspace reduce colors in this colorspace",
-      "-resize geometry     resize the image",
-      "-rotate degrees      apply Paeth rotation to the image",
-      "-strip               strip image of all profiles and comments",
-      "-thumbnail geometry  create a thumbnail of the image",
-      "-transparent color   make this color transparent within the image",
-      "-trim                trim image edges",
-      "-type type           image type",
-      (char *) NULL
-    },
-    *settings[]=
-    {
-      "-adjoin              join images into a single multi-image file",
-      "-border              include window border in the output image",
-      "-channel type        apply option to select image channels",
-      "-colorspace type     alternate image colorspace",
-      "-comment string      annotate image with comment",
-      "-compress type       type of pixel compression when writing the image",
-      "-define format:option",
-      "                     define one or more image format options",
-      "-density geometry    horizontal and vertical density of the image",
-      "-depth value         image depth",
-      "-descend             obtain image by descending window hierarchy",
-      "-display server      X server to contact",
-      "-dispose method      layer disposal method",
-      "-dither method       apply error diffusion to image",
-      "-delay value         display the next image after pausing",
-      "-encipher filename   convert plain pixels to cipher pixels",
-      "-endian type         endianness (MSB or LSB) of the image",
-      "-encoding type       text encoding type",
-      "-filter type         use this filter when resizing an image",
-      "-format \"string\"     output formatted image characteristics",
-      "-frame               include window manager frame",
-      "-gravity direction   which direction to gravitate towards",
-      "-identify            identify the format and characteristics of the image",
-      "-interlace type      None, Line, Plane, or Partition",
-      "-interpolate method  pixel color interpolation method",
-      "-label string        assign a label to an image",
-      "-limit type value    Area, Disk, Map, or Memory resource limit",
-      "-monitor             monitor progress",
-      "-page geometry       size and location of an image canvas",
-      "-pause seconds       seconds delay between snapshots",
-      "-pointsize value     font point size",
-      "-quality value       JPEG/MIFF/PNG compression level",
-      "-quiet               suppress all warning messages",
-      "-regard-warnings     pay attention to warning messages",
-      "-repage geometry     size and location of an image canvas",
-      "-respect-parentheses settings remain in effect until parenthesis boundary",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
-      "-scene value         image scene number",
-      "-screen              select image from root window",
-      "-seed value          seed a new sequence of pseudo-random numbers",
-      "-set property value  set an image property",
-      "-silent              operate silently, i.e. don't ring any bells ",
-      "-snaps value         number of screen snapshots",
-      "-support factor      resize support: > 1.0 is blurry, < 1.0 is sharp",
-      "-synchronize         synchronize image to storage device",
-      "-taint               declare the image as modified",
-      "-transparent-color color",
-      "                     transparent color",
-      "-treedepth value     color tree depth",
-      "-verbose             print detailed information about the image",
-      "-virtual-pixel method",
-      "                     Constant, Edge, Mirror, or Tile",
-      "-window id           select window with this id or name",
-      "                     root selects whole screen",
-      (char *) NULL
-    };
+    miscellaneous[] =
+      "  -debug events        display copious debugging information\n"
+      "  -help                print program options\n"
+      "  -list type           print a list of supported option arguments\n"
+      "  -log format          format of debugging information\n"
+      "  -version             print version information",
+    operators[] =
+      "  -annotate geometry text\n"
+      "                       annotate the image with text\n"
+      "  -colors value        preferred number of colors in the image\n"
+      "  -crop geometry       preferred size and location of the cropped image\n"
+      "  -encipher filename   convert plain pixels to cipher pixels\n"
+      "  -geometry geometry   preferred size or location of the image\n"
+      "  -help                print program options\n"
+      "  -monochrome          transform image to black and white\n"
+      "  -negate              replace every pixel with its complementary color \n"
+      "  -quantize colorspace reduce colors in this colorspace\n"
+      "  -resize geometry     resize the image\n"
+      "  -rotate degrees      apply Paeth rotation to the image\n"
+      "  -strip               strip image of all profiles and comments\n"
+      "  -thumbnail geometry  create a thumbnail of the image\n"
+      "  -transparent color   make this color transparent within the image\n"
+      "  -trim                trim image edges\n"
+      "  -type type           image type",
+    settings[] =
+      "  -adjoin              join images into a single multi-image file\n"
+      "  -border              include window border in the output image\n"
+      "  -channel type        apply option to select image channels\n"
+      "  -colorspace type     alternate image colorspace\n"
+      "  -comment string      annotate image with comment\n"
+      "  -compress type       type of pixel compression when writing the image\n"
+      "  -define format:option\n"
+      "                       define one or more image format options\n"
+      "  -density geometry    horizontal and vertical density of the image\n"
+      "  -depth value         image depth\n"
+      "  -descend             obtain image by descending window hierarchy\n"
+      "  -display server      X server to contact\n"
+      "  -dispose method      layer disposal method\n"
+      "  -dither method       apply error diffusion to image\n"
+      "  -delay value         display the next image after pausing\n"
+      "  -encipher filename   convert plain pixels to cipher pixels\n"
+      "  -endian type         endianness (MSB or LSB) of the image\n"
+      "  -encoding type       text encoding type\n"
+      "  -filter type         use this filter when resizing an image\n"
+      "  -format \"string\"     output formatted image characteristics\n"
+      "  -frame               include window manager frame\n"
+      "  -gravity direction   which direction to gravitate towards\n"
+      "  -identify            identify the format and characteristics of the image\n"
+      "  -interlace type      None, Line, Plane, or Partition\n"
+      "  -interpolate method  pixel color interpolation method\n"
+      "  -label string        assign a label to an image\n"
+      "  -limit type value    Area, Disk, Map, or Memory resource limit\n"
+      "  -monitor             monitor progress\n"
+      "  -page geometry       size and location of an image canvas\n"
+      "  -pause seconds       seconds delay between snapshots\n"
+      "  -pointsize value     font point size\n"
+      "  -quality value       JPEG/MIFF/PNG compression level\n"
+      "  -quiet               suppress all warning messages\n"
+      "  -regard-warnings     pay attention to warning messages\n"
+      "  -repage geometry     size and location of an image canvas\n"
+      "  -respect-parentheses settings remain in effect until parenthesis boundary\n"
+      "  -sampling-factor geometry\n"
+      "                       horizontal and vertical sampling factor\n"
+      "  -scene value         image scene number\n"
+      "  -screen              select image from root window\n"
+      "  -seed value          seed a new sequence of pseudo-random numbers\n"
+      "  -set property value  set an image property\n"
+      "  -silent              operate silently, i.e. don't ring any bells \n"
+      "  -snaps value         number of screen snapshots\n"
+      "  -support factor      resize support: > 1.0 is blurry, < 1.0 is sharp\n"
+      "  -synchronize         synchronize image to storage device\n"
+      "  -taint               declare the image as modified\n"
+      "  -transparent-color color\n"
+      "                       transparent color\n"
+      "  -treedepth value     color tree depth\n"
+      "  -verbose             print detailed information about the image\n"
+      "  -virtual-pixel method\n"
+      "                       Constant, Edge, Mirror, or Tile\n"
+      "  -window id           select window with this id or name\n"
+      "                       root selects whole screen";
 
   ListMagickVersion(stdout);
   (void) printf("Usage: %s [options ...] [ file ]\n",
     GetClientName());
   (void) printf("\nImage Settings:\n");
-  for (p=settings; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(settings);
   (void) printf("\nImage Operators:\n");
-  for (p=operators; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(operators);
   (void) printf("\nMiscellaneous Options:\n");
-  for (p=miscellaneous; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(miscellaneous);
   (void) printf(
   "\nBy default, 'file' is written in the MIFF image format.  To\n");
   (void) printf(

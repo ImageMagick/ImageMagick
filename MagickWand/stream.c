@@ -86,66 +86,55 @@
 
 static MagickBooleanType StreamUsage(void)
 {
-  const char
-    **p;
-
   static const char
-    *miscellaneous[]=
-    {
-      "-channel mask        set the image channel mask",
-      "-debug events        display copious debugging information",
-      "-help                print program options",
-      "-list type           print a list of supported option arguments",
-      "-log format          format of debugging information",
-      "-version             print version information",
-      (char *) NULL
-    },
-    *settings[]=
-    {
-      "-authenticate password",
-      "                     decipher image with this password",
-      "-colorspace type     alternate image colorspace",
-      "-compress type       type of pixel compression when writing the image",
-      "-define format:option",
-      "                     define one or more image format options",
-      "-density geometry    horizontal and vertical density of the image",
-      "-depth value         image depth",
-      "-extract geometry    extract area from image",
-      "-identify            identify the format and characteristics of the image",
-      "-interlace type      type of image interlacing scheme",
-      "-interpolate method  pixel color interpolation method",
-      "-limit type value    pixel cache resource limit",
-      "-map components      one or more pixel components",
-      "-monitor             monitor progress",
-      "-quantize colorspace reduce colors in this colorspace",
-      "-quiet               suppress all warning messages",
-      "-regard-warnings     pay attention to warning messages",
-      "-respect-parentheses settings remain in effect until parenthesis boundary",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
-      "-seed value          seed a new sequence of pseudo-random numbers",
-      "-set attribute value set an image attribute",
-      "-size geometry       width and height of image",
-      "-storage-type type   pixel storage type",
-      "-synchronize         synchronize image to storage device",
-      "-taint               declare the image as modified",
-      "-transparent-color color",
-      "                     transparent color",
-      "-verbose             print detailed information about the image",
-      "-virtual-pixel method",
-      "                     virtual pixel access method",
-      (char *) NULL
-    };
+    miscellaneous[] =
+      "  -channel mask        set the image channel mask\n"
+      "  -debug events        display copious debugging information\n"
+      "  -help                print program options\n"
+      "  -list type           print a list of supported option arguments\n"
+      "  -log format          format of debugging information\n"
+      "  -version             print version information",
+    settings[] =
+      "  -authenticate password\n"
+      "                       decipher image with this password\n"
+      "  -colorspace type     alternate image colorspace\n"
+      "  -compress type       type of pixel compression when writing the image\n"
+      "  -define format:option\n"
+      "                       define one or more image format options\n"
+      "  -density geometry    horizontal and vertical density of the image\n"
+      "  -depth value         image depth\n"
+      "  -extract geometry    extract area from image\n"
+      "  -identify            identify the format and characteristics of the image\n"
+      "  -interlace type      type of image interlacing scheme\n"
+      "  -interpolate method  pixel color interpolation method\n"
+      "  -limit type value    pixel cache resource limit\n"
+      "  -map components      one or more pixel components\n"
+      "  -monitor             monitor progress\n"
+      "  -quantize colorspace reduce colors in this colorspace\n"
+      "  -quiet               suppress all warning messages\n"
+      "  -regard-warnings     pay attention to warning messages\n"
+      "  -respect-parentheses settings remain in effect until parenthesis boundary\n"
+      "  -sampling-factor geometry\n"
+      "                       horizontal and vertical sampling factor\n"
+      "  -seed value          seed a new sequence of pseudo-random numbers\n"
+      "  -set attribute value set an image attribute\n"
+      "  -size geometry       width and height of image\n"
+      "  -storage-type type   pixel storage type\n"
+      "  -synchronize         synchronize image to storage device\n"
+      "  -taint               declare the image as modified\n"
+      "  -transparent-color color\n"
+      "                       transparent color\n"
+      "  -verbose             print detailed information about the image\n"
+      "  -virtual-pixel method\n"
+      "                       virtual pixel access method";
 
   ListMagickVersion(stdout);
   (void) printf("Usage: %s [options ...] input-image raw-image\n",
     GetClientName());
   (void) printf("\nImage Settings:\n");
-  for (p=settings; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(settings);
   (void) printf("\nMiscellaneous Options:\n");
-  for (p=miscellaneous; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(miscellaneous);
   (void) printf(
     "\nBy default, the image format of 'file' is determined by its magic\n");
   (void) printf(

@@ -92,118 +92,96 @@
 
 static MagickBooleanType AnimateUsage(void)
 {
-  const char
-    **p;
-
   static const char
-    *buttons[]=
-    {
-      "Press any button to map or unmap the Command widget",
-      (char *) NULL
-    },
-    *miscellaneous[]=
-    {
-      "-debug events        display copious debugging information",
-      "-help                print program options",
-      "-list type           print a list of supported option arguments",
-      "-log format          format of debugging information",
-      "-version             print version information",
-      (char *) NULL
-    },
-    *operators[]=
-    {
-      "-channel mask        set the image channel mask",
-      "-colors value        preferred number of colors in the image",
-      "-crop geometry       preferred size and location of the cropped image",
-      "-extract geometry    extract area from image",
-      "-monochrome          transform image to black and white",
-      "-resample geometry   change the resolution of an image",
-      "-resize geometry     resize the image",
-      "-rotate degrees      apply Paeth rotation to the image",
-      "-strip               strip image of all profiles and comments",
-      "-thumbnail geometry  create a thumbnail of the image",
-      "-trim                trim image edges",
-      (char *) NULL
-    },
-    *settings[]=
-    {
-      "-alpha option        on, activate, off, deactivate, set, opaque, copy",
-      "                     transparent, extract, background, or shape",
-      "-authenticate password",
-      "                     decipher image with this password",
-      "-backdrop            display image centered on a backdrop",
-      "-colormap type       Shared or Private",
-      "-colorspace type     alternate image colorspace",
-      "-decipher filename   convert cipher pixels to plain pixels",
-      "-define format:option",
-      "                     define one or more image format options",
-      "-delay value         display the next image after pausing",
-      "-density geometry    horizontal and vertical density of the image",
-      "-depth value         image depth",
-      "-display server      display image to this X server",
-      "-dispose method      layer disposal method",
-      "-dither method       apply error diffusion to image",
-      "-filter type         use this filter when resizing an image",
-      "-format \"string\"     output formatted image characteristics",
-      "-gamma value         level of gamma correction",
-      "-geometry geometry   preferred size and location of the Image window",
-      "-gravity type        horizontal and vertical backdrop placement",
-      "-identify            identify the format and characteristics of the image",
-      "-immutable           displayed image cannot be modified",
-      "-interlace type      type of image interlacing scheme",
-      "-interpolate method  pixel color interpolation method",
-      "-limit type value    pixel cache resource limit",
-      "-loop iterations     loop images then exit",
-      "-matte               store matte channel if the image has one",
-      "-map type            display image using this Standard Colormap",
-      "-monitor             monitor progress",
-      "-pause               seconds to pause before reanimating",
-      "-page geometry       size and location of an image canvas (setting)",
-      "-quantize colorspace reduce colors in this colorspace",
-      "-quiet               suppress all warning messages",
-      "-regard-warnings     pay attention to warning messages",
-      "-remote command      execute a command in an remote display process",
-      "-repage geometry     size and location of an image canvas (operator)",
-      "-respect-parentheses settings remain in effect until parenthesis boundary",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
-      "-scenes range        image scene range",
-      "-seed value          seed a new sequence of pseudo-random numbers",
-      "-set attribute value set an image attribute",
-      "-size geometry       width and height of image",
-      "-support factor      resize support: > 1.0 is blurry, < 1.0 is sharp",
-      "-transparent-color color",
-      "                     transparent color",
-      "-treedepth value     color tree depth",
-      "-verbose             print detailed information about the image",
-      "-visual type         display image using this visual type",
-      "-virtual-pixel method",
-      "                     virtual pixel access method",
-      "-window id           display image to background of this window",
-      (char *) NULL
-    },
-    *sequence_operators[]=
-    {
-      "-coalesce            merge a sequence of images",
-      "-flatten             flatten a sequence of images",
-      (char *) NULL
-    };
+    buttons[] =
+      "  Press any button to map or unmap the Command widget",
+    miscellaneous[] =
+      "  -debug events        display copious debugging information\n"
+      "  -help                print program options\n"
+      "  -list type           print a list of supported option arguments\n"
+      "  -log format          format of debugging information\n"
+      "  -version             print version information",
+    operators[] =
+      "  -channel mask        set the image channel mask\n"
+      "  -colors value        preferred number of colors in the image\n"
+      "  -crop geometry       preferred size and location of the cropped image\n"
+      "  -extract geometry    extract area from image\n"
+      "  -monochrome          transform image to black and white\n"
+      "  -resample geometry   change the resolution of an image\n"
+      "  -resize geometry     resize the image\n"
+      "  -rotate degrees      apply Paeth rotation to the image\n"
+      "  -strip               strip image of all profiles and comments\n"
+      "  -thumbnail geometry  create a thumbnail of the image\n"
+      "  -trim                trim image edges",
+    settings[] =
+      "  -alpha option        on, activate, off, deactivate, set, opaque, copy\n"
+      "                       transparent, extract, background, or shape\n"
+      "  -authenticate password\n"
+      "                       decipher image with this password\n"
+      "  -backdrop            display image centered on a backdrop\n"
+      "  -colormap type       Shared or Private\n"
+      "  -colorspace type     alternate image colorspace\n"
+      "  -decipher filename   convert cipher pixels to plain pixels\n"
+      "  -define format:option\n"
+      "                       define one or more image format options\n"
+      "  -delay value         display the next image after pausing\n"
+      "  -density geometry    horizontal and vertical density of the image\n"
+      "  -depth value         image depth\n"
+      "  -display server      display image to this X server\n"
+      "  -dispose method      layer disposal method\n"
+      "  -dither method       apply error diffusion to image\n"
+      "  -filter type         use this filter when resizing an image\n"
+      "  -format \"string\"     output formatted image characteristics\n"
+      "  -gamma value         level of gamma correction\n"
+      "  -geometry geometry   preferred size and location of the Image window\n"
+      "  -gravity type        horizontal and vertical backdrop placement\n"
+      "  -identify            identify the format and characteristics of the image\n"
+      "  -immutable           displayed image cannot be modified\n"
+      "  -interlace type      type of image interlacing scheme\n"
+      "  -interpolate method  pixel color interpolation method\n"
+      "  -limit type value    pixel cache resource limit\n"
+      "  -loop iterations     loop images then exit\n"
+      "  -matte               store matte channel if the image has one\n"
+      "  -map type            display image using this Standard Colormap\n"
+      "  -monitor             monitor progress\n"
+      "  -pause               seconds to pause before reanimating\n"
+      "  -page geometry       size and location of an image canvas (setting)\n"
+      "  -quantize colorspace reduce colors in this colorspace\n"
+      "  -quiet               suppress all warning messages\n"
+      "  -regard-warnings     pay attention to warning messages\n"
+      "  -remote command      execute a command in an remote display process\n"
+      "  -repage geometry     size and location of an image canvas (operator)\n"
+      "  -respect-parentheses settings remain in effect until parenthesis boundary\n"
+      "  -sampling-factor geometry\n"
+      "                       horizontal and vertical sampling factor\n"
+      "  -scenes range        image scene range\n"
+      "  -seed value          seed a new sequence of pseudo-random numbers\n"
+      "  -set attribute value set an image attribute\n"
+      "  -size geometry       width and height of image\n"
+      "  -support factor      resize support: > 1.0 is blurry, < 1.0 is sharp\n"
+      "  -transparent-color color\n"
+      "                       transparent color\n"
+      "  -treedepth value     color tree depth\n"
+      "  -verbose             print detailed information about the image\n"
+      "  -visual type         display image using this visual type\n"
+      "  -virtual-pixel method\n"
+      "                       virtual pixel access method\n"
+      "  -window id           display image to background of this window",
+    sequence_operators[] =
+      "  -coalesce            merge a sequence of images\n"
+      "  -flatten             flatten a sequence of images";
 
   ListMagickVersion(stdout);
   (void) printf("Usage: %s [options ...] file [ [options ...] file ...]\n",
     GetClientName());
   (void) printf("\nImage Settings:\n");
-  for (p=settings; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(settings);
   (void) printf("\nImage Operators:\n");
-  for (p=operators; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(operators);
   (void) printf("\nImage Sequence Operators:\n");
-  for (p=sequence_operators; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(sequence_operators);
   (void) printf("\nMiscellaneous Options:\n");
-  for (p=miscellaneous; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(miscellaneous);
   (void) printf(
     "\nIn addition to those listed above, you can specify these standard X\n");
   (void) printf(
@@ -221,8 +199,7 @@ static MagickBooleanType AnimateUsage(void)
     "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
   (void) printf("'-' for standard input or output.\n");
   (void) printf("\nButtons: \n");
-  for (p=buttons; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+  (void) puts(buttons);
   return(MagickFalse);
 }
 
