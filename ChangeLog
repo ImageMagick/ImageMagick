@@ -1,5 +1,5 @@
 2019-05-12  7.0.8-45 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.8-45, GIT revision 15631:892ba02da:20190512
+  * Release ImageMagick version 7.0.8-45, GIT revision 15634:784105bcb:20190512
 
 2019-05-06  7.0.8-45 Cristy  <quetzlzacatenango@image...>
   * Fix image signatures to ensure they are Q-depth invariant (reference
