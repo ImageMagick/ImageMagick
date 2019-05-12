@@ -67,8 +67,10 @@ typedef struct _TIM2FileHeader
 {
   uint32_t
     magic_num;
+  uint8_t
+    format_vers,
+    format_type;
   uint16_t
-    format_type,
     image_count;
   char
     reserved[8];
@@ -172,29 +174,25 @@ static inline Quantum GetAlpha(uint32_t word, enum ColorEncoding ce){
   }
 }
 
-static inline void deshufflePalette(Image *image,ExceptionInfo *exception){
+static inline void deshufflePalette(Image *image,PixelInfo* oldColormap){
   const uint8_t
-    parts=image->colors/32,//Parts per CLUT
-    blocks=4,//Blocks per part
+    pages=image->colors/32,//Pages per CLUT
+    blocks=4,//Blocks per page
     colors=8;//Colors per block
   size_t
     i=0;
 
-  PixelInfo *oldColormap=(PixelInfo *)AcquireQuantumMemory((size_t)(image->colors)+1,sizeof(*image->colormap));
   (void) memcpy(oldColormap,image->colormap,(size_t)image->colors*sizeof(*oldColormap));
 
   /*
-   * Swap the 2nd and 3rd block in each part
+   * Swap the 2nd and 3rd block in each page
    */
-  for(int part=0; part<parts; part++){
+  for(int page=0; page<pages; page++){
     memcpy(&(image->colormap[i+1*colors]),&(oldColormap[i+2*colors]),colors*sizeof(PixelInfo));
     memcpy(&(image->colormap[i+2*colors]),&(oldColormap[i+1*colors]),colors*sizeof(PixelInfo));
 
     i+=blocks*colors;
   }
-
-  RelinquishMagickMemory(oldColormap);
-
 }
 
 /*
@@ -240,7 +238,7 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
     str_read;
 
   /*
-   *  Open image file.
+   * Open image file.
    */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
@@ -258,7 +256,7 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
     }
  
   /*
-   *  Verify TIM2 magic number.
+   * Verify TIM2 magic number.
    */
   tim2_file_header.magic_num=ReadBlobMSBLong(image);
   if (tim2_file_header.magic_num != 0x54494D32) /*"TIM2"*/
@@ -267,9 +265,25 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
   /*
    * #### Read File Header ####
    */
-  tim2_file_header.format_type=ReadBlobLSBShort(image);
+  tim2_file_header.format_vers=ReadBlobByte(image);
+  if(tim2_file_header.format_vers!=0x04)
+    ThrowReaderException(CoderError,"ImageTypeNotSupported");
+
+  tim2_file_header.format_type=ReadBlobByte(image);
+  if(tim2_file_header.format_type!=0x00&&tim2_file_header.format_type!=0x01)
+    ThrowReaderException(CoderError,"ImageTypeNotSupported");
+
   tim2_file_header.image_count=ReadBlobLSBShort(image);
+
   ReadBlobStream(image,8,&(tim2_file_header.reserved),&str_read);
+
+
+  switch(tim2_file_header.format_type){
+    case 0x00:
+      SeekBlob(image,16,SEEK_SET);break;
+    case 0x01:
+      SeekBlob(image,128,SEEK_SET);break;
+  }
 
   /*
    * Process each image. Only one image supported for now
@@ -279,11 +293,13 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
 
   for(int i=0;i<tim2_file_header.image_count;++i)
   {
-
     TIM2ImageHeader
       tim2_image_header;
 
+    MagickOffsetType ImgDataOffset=TellBlob(image);
+
     enum CSM csm;
+
     char
       clut_depth=0,
       has_clut=0,
@@ -337,6 +353,9 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
       SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
     else
       SetImageAlphaChannel(image,DeactivateAlphaChannel,exception);
+
+    SeekBlob(image,ImgDataOffset,SEEK_SET);
+    SeekBlob(image,tim2_image_header.header_size,SEEK_CUR);
 
 
     {
@@ -536,10 +555,7 @@ SetPixelBlue (image,GetChannelValue(word,2,enc),q);
         }
       }
 
-
-
       tim2_image_data=(unsigned char *) RelinquishMagickMemory(tim2_image_data);
-
     }
 
     if (has_clut)
@@ -636,7 +652,12 @@ SetPixelBlue (image,GetChannelValue(word,2,enc),q);
       }
 
       if(csm==CSM1){
-        deshufflePalette(image,exception);
+        PixelInfo *oldColormap=(PixelInfo *)AcquireQuantumMemory((size_t)(image->colors)+1,sizeof(*image->colormap));
+        if (oldColormap == (PixelInfo *) NULL)
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+
+        deshufflePalette(image,oldColormap);
+        RelinquishMagickMemory(oldColormap);
       }
     }
 
