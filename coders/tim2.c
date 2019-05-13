@@ -155,8 +155,9 @@ static inline Quantum GetChannelValue(uint32_t word,uint8_t channel, enum ColorE
     case RGB24:
     case RGBA32:
       return ScaleCharToQuantum(word>>channel*8 & ~(~0x0<<8));
+    default:
+      return -1;
   }
-  return -1;
 }
 
 static inline Quantum GetAlpha(uint32_t word, enum ColorEncoding ce){
@@ -278,7 +279,11 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
   ReadBlobStream(image,8,&(tim2_file_header.reserved),&str_read);
 
 
-  switch(tim2_file_header.format_type){
+  /*
+   * Jump to first image header
+   */
+  switch(tim2_file_header.format_type)
+  {
     case 0x00:
       SeekBlob(image,16,SEEK_SET);break;
     case 0x01:
@@ -428,7 +433,7 @@ if(image->previous == (Image *) NULL) \
               p=tim2_image_data+y*bytes_per_line;
               for (x=0; x < ((ssize_t) image->columns-1); x+=2)
               {
-                SetPixelIndex(image,(*p) & 0x0F,q);
+                SetPixelIndex(image,(*p >> 0) & 0x0F,q);
                 q+=GetPixelChannels(image);
                 SetPixelIndex(image,(*p >> 4) & 0x0F,q);
                 p++;
@@ -584,11 +589,13 @@ SetPixelBlue (image,GetChannelValue(word,2,enc),q);
       /*
        * ### Process CLUT Data ###
        */
-
-     
       {
       uint32_t word;
       p=tim2_clut_data;
+#define AssignAllChannels(image,word,enc) \
+image->colormap[i].red  =GetChannelValue(word,0,enc);\
+image->colormap[i].green=GetChannelValue(word,1,enc);\
+image->colormap[i].blue =GetChannelValue(word,2,enc);
       switch(clut_depth)
       {
         case 16:
@@ -597,9 +604,7 @@ SetPixelBlue (image,GetChannelValue(word,2,enc),q);
             word = ((uint16_t)* p   )<<0*8 |
                    ((uint16_t)*(p+1))<<1*8;
 
-            image->colormap[i].red  =GetChannelValue(word,0,RGBA16);
-            image->colormap[i].green=GetChannelValue(word,1,RGBA16);
-            image->colormap[i].blue =GetChannelValue(word,2,RGBA16);
+            AssignAllChannels(image,word,RGBA16);
             image->colormap[i].alpha=GetAlpha(word,16);
             p+=2;
           }
@@ -613,9 +618,7 @@ SetPixelBlue (image,GetChannelValue(word,2,enc),q);
                    ((uint32_t)*(p+1))<<1*8 |
                    ((uint32_t)*(p+2))<<2*8;
 
-            image->colormap[i].red  =GetChannelValue(word,0,RGB24);
-            image->colormap[i].green=GetChannelValue(word,1,RGB24);
-            image->colormap[i].blue =GetChannelValue(word,2,RGB24);
+            AssignAllChannels(image,word,RGB24);
             p+=3;
           }
           break;
@@ -629,9 +632,7 @@ SetPixelBlue (image,GetChannelValue(word,2,enc),q);
                    ((uint32_t)*(p+2))<<2*8 |
                    ((uint32_t)*(p+3))<<3*8;
            
-            image->colormap[i].red  =GetChannelValue(word,0,RGBA32);
-            image->colormap[i].green=GetChannelValue(word,1,RGBA32);
-            image->colormap[i].blue =GetChannelValue(word,2,RGBA32);
+            AssignAllChannels(image,word,RGBA32);
             image->colormap[i].alpha=GetAlpha(word,RGBA32);
             p+=4;
           }
