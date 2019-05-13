@@ -55,6 +55,7 @@ CONFIG_EXTRA_DIST = \
 	config/francais.xml \
 	config/ImageMagick.rc \
 	config/ImageMagick.rdf.in \
+	config/install-sh \
 	config/lndir.sh \
 	config/locale.md \
 	config/locale.xml \
