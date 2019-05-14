@@ -47,7 +47,7 @@ print( "8-bit indexed-color PNG ...\n" );
 testReadWrite( 'input_256.png',
   'output_256.png',
   q/quality=>54/,
-  '5798b9623e5922d3f6c0e87ae76ccc5a69568258e557613f20934f2de6ee2d35' );
+  'e3930ba2c0d7813f21e9ac16b058c10904470853dc6a59f9f3b3f1f47da7dc2c' );
 #
 # 5) Test truecolor image
 #
@@ -56,7 +56,7 @@ print( "24-bit Truecolor PNG ...\n" );
 testReadWrite( 'input_truecolor.png',
   'output_truecolor.png',
   q/quality=>55/,
-  'eb9adaa26f3cda80273f436ddb92805da2cb88dd032d24380cd48cf05432a326' );
+  '7d40e88aa651fd6234780c61a6cef9f34ae8f579975240cf5d33c86217a348c9' );
 #
 # 6) Test Multiple-image Network Graphics
 #
@@ -65,4 +65,4 @@ print( "MNG with 24-bit Truecolor PNGs ...\n" );
 testReadWrite( 'input.mng',
   'output.mng',
   q/quality=>55/,
-  '65c0eacf6e060b9fb8467eaa0f74e2dcc3ef72d06577f06a506bd0546b01fb61' );
+  '0cd7b340ab0c0bceac4e95a4248b12987446a9d2df07bcb6e7e7ecd4ddc44b13' );

@@ -51,7 +51,7 @@ testRead( 'input_256.tiff',
 ++$test;
 print("PseudoColor (256 color + matte channel) ...\n");
 testRead( 'input_256_matte.tiff',
-	'c8e5089f89ed3b7d067222e187ccd95da0a586f3a7f669876188fe8bfa04e6d9' );
+	'24fc9ae8a8c00a01ba44a4f902230ca1a5841e283a5ec35e81815c194a344954' );
 
 #
 # 6) Test reading PseudoColor using contiguous planar packing
@@ -75,7 +75,7 @@ testRead( 'input_256_planar_separate.tiff',
 ++$test;
 print("TrueColor (8-bit) image ...\n");
 testRead( 'input_truecolor.tiff',
-  'f72b63be472e5e730ee2635463c6643d11057d251709ffe1f2027f69b57449df' );
+  'ab90f892242d254e4c50dee17a7c8981bc7d46c9534bbb838cf5653c287886c8' );
 
 #
 # 9) Test Reading TrueColor (16-bit)
@@ -83,7 +83,7 @@ testRead( 'input_truecolor.tiff',
 ++$test;
 print("TrueColor (16-bit) image ...\n");
 testRead( 'input_truecolor_16.tiff',
-  '81def436d1dea0ee118164ff4f017c62ad7a5a37bf97a820244a4e2c86c338ab' );
+  '562a32f51f620139402c1cc2336fb03f655da47dedf9fdbccfd4d23df55dd3b6' );
 
 #
 # 10) Test Reading 8-bit TrueColor Tiled (32x32 tiles)
@@ -91,7 +91,7 @@ testRead( 'input_truecolor_16.tiff',
 ++$test;
 print("TrueColor (8-bit) tiled image, 32x32 tiles ...\n");
 testRead( 'input_truecolor_tiled32x32.tiff',
-  'f72b63be472e5e730ee2635463c6643d11057d251709ffe1f2027f69b57449df' );
+  'ab90f892242d254e4c50dee17a7c8981bc7d46c9534bbb838cf5653c287886c8' );
 
 #
 # 11) Test Reading 8-bit TrueColor Tiled (8 rows per strip)
@@ -99,7 +99,7 @@ testRead( 'input_truecolor_tiled32x32.tiff',
 ++$test;
 print("TrueColor (8-bit) stripped, image, 8 rows per strip ...\n");
 testRead( 'input_truecolor_stripped.tiff',
-  'f72b63be472e5e730ee2635463c6643d11057d251709ffe1f2027f69b57449df' );
+  'ab90f892242d254e4c50dee17a7c8981bc7d46c9534bbb838cf5653c287886c8' );
 
 #
 # 12) Test Reading Grayscale 4-bit
@@ -115,7 +115,7 @@ testRead( 'input_gray_4bit.tiff',
 ++$test;
 print("Grayscale (8-bit) ...\n");
 testRead( 'input_gray_8bit.tiff',
-  'b51e862fcc24d439870da413c664dfefc36cea1260d807b3208d6f091566263c');
+  'cdeea215166c095ef42557d63da3d037d16f4e7884e94b7db21e18e241d84f86');
 
 #
 # 14) Test Reading Grayscale 8-bit + matte
@@ -123,7 +123,7 @@ testRead( 'input_gray_8bit.tiff',
 ++$test;
 print("Grayscale (8-bit + matte) ...\n");
 testRead( 'input_gray_8bit_matte.tiff',
-  '6002e57537cd54733551f8c4269e8104f2b14f8fcc58a07eda61f5911eb11c80' );
+  'fd4bf0cae6a978c301452178ae645a08cbd115659296a3fcfd5e07421bbaeb19' );
 
 #
 # 15) Test Reading Grayscale 12-bit
@@ -139,4 +139,4 @@ testRead( 'input_gray_12bit.tiff',
 ++$test;
 print("Grayscale (16-bit) ...\n");
 testRead( 'input_gray_16bit.tiff',
-  '9acab3f8b02e461149decd6dbb99d4b91be81a129e5f4cafc229e2f393173819');
+  '0cde228a8b2385f005fce6e3f027195a140971d2db9d122e0530e9e1fa75ea81');

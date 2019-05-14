@@ -29,7 +29,7 @@ chdir 't' || die 'Cd failed';
 #
 testMontage( q//,
   q/background=>'#696e7e'/,
-  '6f8304c88f6dae4ade2a09fb7b4562cf2c09978cb30b025afaf9bd5805a4e75e');
+  'ad77fef2815f06678757ba79d14f752cfb639f078b32b54122714e25ede2bc5e');
 
 #
 # 2) Test Center gravity
@@ -38,7 +38,7 @@ testMontage( q//,
 ++$test;
 testMontage( q//,
   q/background=>'#696e7e',  geometry=>'90x80+5+5>', gravity=>'Center'/,
-  '4fa94e68dc41fa0fda3469e6b8ebc4c07be6ef656405a1ea8f9ed8b00aa07552');
+  '030de7b70860f11a66d7081df97a96d311641fc69f48aafdbde27da53ac61277');
 
 #
 # 3) Test NorthWest gravity
@@ -47,7 +47,7 @@ testMontage( q//,
 ++$test;
 testMontage( q//,
   q/background=>'#696e7e',  geometry=>'90x80+5+5>', gravity=>'NorthWest'/,
-  '24adcfa00f2c69d10fda815c9572bd7f621adb93a58a9c3c85657060929da4d0');
+  'd139d942510d9ca5762799acad940b7539e56f9610ab57a26e22c18fe35a01b5');
 
 #
 # 4) Test North gravity
@@ -56,7 +56,7 @@ testMontage( q//,
 ++$test;
 testMontage( q//,
   q/background=>'#696e7e',  geometry=>'90x80+5+5>', gravity=>'North'/,
-  '70bb1be5bad21d5dd545ffe62eeb90052a037fcc1613aaa3f3b3c4d4c6138e8a');
+  '5f02d04d24bfbeb2dc82a056cf595ec8ef1601a0e68aaae541c116cc7c627916');
 
 #
 # 5) Test NorthEast gravity
@@ -65,7 +65,7 @@ testMontage( q//,
 ++$test;
 testMontage( q//,
   q/background=>'#696e7e',  geometry=>'90x80+5+5>', gravity=>'NorthEast'/,
-  '116668aedcc616527dabac2c07ea597d5cc26e3aaf33db14d8ce796892bc1f1c');
+  'd1e9ee7a612ef19b360c923795a0f0c7bc819983475adf6787e39ee8167f75f1');
 
 #
 # 6) Test West gravity
@@ -74,7 +74,7 @@ testMontage( q//,
 ++$test;
 testMontage( q//,
   q/background=>'#696e7e',  geometry=>'90x80+5+5>', gravity=>'West'/,
-  'abb3104224d07ba50235e750c8009b231a0e6aaa596fb2ec3703b2061a59abc3');
+  '084e12bf9e3325140d8df2fb52ac481aff408bb3ed1940d379c14d1e07b58599');
 
 #
 # 7) Test East gravity
@@ -83,7 +83,7 @@ testMontage( q//,
 ++$test;
 testMontage( q//,
   q/background=>'#696e7e',  geometry=>'90x80+5+5>', gravity=>'East'/,
-  '8723423ac9151136571b6e8f053fc60b09a8ec18d94e4fbc29c492de032c9a7d');
+  'ff8cee733142654135e8baebaf5e036eaf5de1d419476c0d0a8bee9c88370066');
 
 #
 # 8) Test SouthWest gravity
@@ -92,7 +92,7 @@ testMontage( q//,
 ++$test;
 testMontage( q//,
   q/background=>'#696e7e',  geometry=>'90x80+5+5>', gravity=>'SouthWest'/,
-  'abc713cef6d9923859854c164b83ed7b92f6c15ae6924207bb8a38063395650b');
+  'e7109f6f3291cb0d576a79cb70e7b3db6dde851f1cfc6e5d63fbbf96100264bb');
 
 #
 # 9) Test South gravity
@@ -101,7 +101,7 @@ testMontage( q//,
 ++$test;
 testMontage( q//,
   q/background=>'#696e7e',  geometry=>'90x80+5+5>', gravity=>'South'/,
-  '9992d5631703aa64d4fb87c71881df39aeff1cc821320d0a43f00897e7cd6a17');
+  '287fc09873957d91ef2a29cf09c7d20a477aaab2104c3ba9fd6046ea0ee633de');
 
 #
 # 10) Test SouthEast gravity
@@ -110,7 +110,7 @@ testMontage( q//,
 ++$test;
 testMontage( q//,
   q/background=>'#696e7e',  geometry=>'90x80+5+5>', gravity=>'SouthEast'/,
-  'ae4322daebfbd3fe448afffe33aa599be518eaebb3515793e1efe6dc33939383');
+  '7f2745dfeb6b94f059e521601cd41cda2d548b7fff5eabd4781b102c2581c4f4');
 
 #
 # 11) Test Framed Montage
@@ -122,7 +122,7 @@ testMontage( q//,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80+3+3>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
-  '40835871b13232243ba4d2bcb244d06958556a24a9624e793f5c4c291d64f322');
+  'd65a3fcf9119a59414d52b6b11c0d131579341dbae03e4f18776dc8a01da2931');
 
 #
 # 12) Test Framed Montage with drop-shadows
@@ -131,7 +131,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', shadow=>'True',background=>'gray'/,
-  '865d005eba6dc7714081e8817c6aea95d37160e4cbd2b373d8143f614080d05e');
+  'ff43a8c5dd980438c10436a71b47afc538ae3839ba57251768fa07add1229d8a');
 
 #
 # 13) Test Framed Montage with drop-shadows and background texture
@@ -140,7 +140,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', shadow=>'True', texture=>'granite:'/,
-  '46b31cd9a5bc072131eb4683edf600d38bcbf389ab6a3eb1fe565b557b80dadb');
+  '0de019cb1e17fb9d3e60e6ae3931c6d384859613c3fc930cfef46720cae8237e');
 
 #
 # 14) Test Un-bordered, Un-framed Montage
@@ -149,7 +149,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q//,
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80+6+6>', mode=>'Unframe',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
-  'b9df49be9b056ed8fd4c4eb7621aa073df65740e4aaebc038c294cb3731f334f');
+  '1ac572b14256896360176430b0e571dd53bfa083214a0ef35069b7a4a1e56b2d');
 
 #
 # 15) Test Bordered, Un-framed Montage (mode=>'Unframe')
@@ -158,7 +158,7 @@ testMontage( q//,
 testMontage( q/bordercolor=>'red'/, 
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80+6+6>', mode=>'Unframe',
   borderwidth=>'5', gravity=>'Center', background=>'gray'/,
-  '9d7d0f1886ef8d48f680567163d3a4583897d114c7abbb9da6a98f96fb629ebb');
+  '08ce60c0e00ab7415c181a3fefcf2cb7e42d81aa4c630559d11073a4bcb95cad');
 
 #
 # 16) Test Bordered, Un-framed Montage (mode=>'UnFrame')
@@ -167,7 +167,7 @@ testMontage( q/bordercolor=>'red'/,
 testMontage( q/bordercolor=>'red'/, 
   q/ tile=>'4x4', geometry=>'90x80+6+6>', mode=>'UnFrame',
   borderwidth=>'5', gravity=>'Center', background=>'gray'/,
-  '9d7d0f1886ef8d48f680567163d3a4583897d114c7abbb9da6a98f96fb629ebb');
+  '08ce60c0e00ab7415c181a3fefcf2cb7e42d81aa4c630559d11073a4bcb95cad');
 
 #
 # 17) Test Un-bordered, Un-framed Montage with 16x1 tile
@@ -176,7 +176,7 @@ testMontage( q/bordercolor=>'red'/,
 testMontage( q//,
   q/background=>'#696e7e',  tile=>'16x1', geometry=>'90x80+0+0>', mode=>'Unframe',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
-  '9f6f0c7ff76283b0f8747c1e12bd810bda0c47ab8cf78a4ae584556a64c88213');
+  '6de83e358b3b0939d0a0cb196514de31f4ded673f867e155b63f03c7e04e8170');
 
 #
 # 18) Test concatenated thumbnail Montage (concatenated via special Concatenate mode)
@@ -185,7 +185,7 @@ testMontage( q//,
 ++$test;
 testMontage( q//,
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80>', mode=>'Concatenate'/,
-  'dfede51035a4ce942e3ba9909f85eb497c134a60bb8363afded0ae81f73f0e46');
+  '8d857590f8f13bd4a893bbee811c3e801a97a6f6a98e8735b97c6812f1e35b11');
 #
 # 19) Test concatenated thumbnail Montage (concatentated by setting params to zero)
 #     Thumbnails should be compacted tightly together in a grid
@@ -194,4 +194,4 @@ testMontage( q//,
 testMontage( q//, 
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'+0+0', mode=>'Unframe', shadow=>'False',
   borderwidth=>'0', background=>'gray'/,
-  'dfede51035a4ce942e3ba9909f85eb497c134a60bb8363afded0ae81f73f0e46');
+  '8d857590f8f13bd4a893bbee811c3e801a97a6f6a98e8735b97c6812f1e35b11');
