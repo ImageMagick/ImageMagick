@@ -141,17 +141,15 @@ static MagickBooleanType IsMETA(const unsigned char *magick,const size_t length)
 %
 */
 
-typedef struct _html_code
+static const struct
 {
-  const short int
+  const unsigned char
     len;
 
   const char
-    *code,
+    code[7],
     val;
-} html_code;
-
-static const html_code html_codes[] = {
+} html_codes[] = {
 #ifdef HANDLE_GT_LT
   { 4,"&lt;",'<' },
   { 4,"&gt;",'>' },
@@ -231,7 +229,7 @@ static size_t convertHTMLcodes(char *s)
       *s=value;
       return(o);
     }
-  for (i=0; i < (ssize_t) (sizeof(html_codes)/sizeof(html_code)); i++)
+  for (i=0; i < (ssize_t) (sizeof(html_codes)/sizeof(html_codes[0])); i++)
   {
     if (html_codes[i].len <= (ssize_t) length)
       if (stringnicmp(s,html_codes[i].code,(size_t) (html_codes[i].len)) == 0)
@@ -1911,7 +1909,7 @@ static int formatIPTC(Image *ifile, Image *ofile)
 
   int
     i,
-    tagcount = (int) (sizeof(tags) / sizeof(tag_spec));
+    tagcount = (int) (sizeof(tags) / sizeof(tags[0]));
 
   int
     c;
@@ -2051,7 +2049,7 @@ static int formatIPTCfromBuffer(Image *ofile, char *s, ssize_t len)
 
   int
     i,
-    tagcount = (int) (sizeof(tags) / sizeof(tag_spec));
+    tagcount = (int) (sizeof(tags) / sizeof(tags[0]));
 
   int
     c;
