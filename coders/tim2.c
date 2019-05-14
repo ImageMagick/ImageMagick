@@ -106,12 +106,12 @@ enum CSM {
   CSM2=1,
 };
 
-enum ColorEncoding{
+enum TIM2ColorEncoding{
   RGBA32=0,
   RGB24=1,
   RGBA16=2,
 };
-enum IndexEncoding{
+enum TIM2IndexEncoding{
   IDTEX8=3,
   IDTEX4=4,
 };
@@ -146,7 +146,7 @@ static inline TIM2ImageHeader ReadTIM2ImageHeader(Image *image)
   return tim2_image_header;
 }
 
-static inline Quantum GetChannelValue(uint32_t word,uint8_t channel, enum ColorEncoding ce){
+static inline Quantum GetChannelValue(uint32_t word,uint8_t channel, enum TIM2ColorEncoding ce){
   switch(ce)
   {
     case RGBA16:
@@ -160,7 +160,7 @@ static inline Quantum GetChannelValue(uint32_t word,uint8_t channel, enum ColorE
   }
 }
 
-static inline Quantum GetAlpha(uint32_t word, enum ColorEncoding ce){
+static inline Quantum GetAlpha(uint32_t word, enum TIM2ColorEncoding ce){
   switch(ce)
   {
     case RGBA16:
@@ -169,6 +169,7 @@ static inline Quantum GetAlpha(uint32_t word, enum ColorEncoding ce){
 #ifndef MIN
 #define MIN(a,b) ((a)<(b)? a:b)
 #endif
+      // 0x80 -> 1.0 alpha
       return ScaleCharToQuantum(MIN((word>>3*8&0xFF)<<1,0xFF));
     default:
       return 0xFF;
