@@ -169,7 +169,7 @@ static inline Quantum GetAlpha(uint32_t word, enum TIM2ColorEncoding ce){
 #ifndef MIN
 #define MIN(a,b) ((a)<(b)? a:b)
 #endif
-      // 0x80 -> 1.0 alpha
+      // 0x80 -> 1.0 alpha. Multiply by 2 and clamp to 0xFF
       return ScaleCharToQuantum(MIN((word>>3*8&0xFF)<<1,0xFF));
     default:
       return 0xFF;
@@ -223,7 +223,7 @@ static inline void deshufflePalette(Image *image,PixelInfo* oldColormap){
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadTIM2Image(const ImageInfo *image_info, ExceptionInfo *exception)
 {
   TIM2FileHeader
     tim2_file_header;
@@ -272,11 +272,7 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
     ThrowReaderException(CoderError,"ImageTypeNotSupported");
 
   tim2_file_header.format_type=ReadBlobByte(image);
-  if(tim2_file_header.format_type!=0x00&&tim2_file_header.format_type!=0x01)
-    ThrowReaderException(CoderError,"ImageTypeNotSupported");
-
   tim2_file_header.image_count=ReadBlobLSBShort(image);
-
   ReadBlobStream(image,8,&(tim2_file_header.reserved),&str_read);
 
 
@@ -289,6 +285,8 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
       SeekBlob(image,16,SEEK_SET);break;
     case 0x01:
       SeekBlob(image,128,SEEK_SET);break;
+    default:
+      ThrowReaderException(CoderError,"ImageTypeNotSupported");
   }
 
   /*
