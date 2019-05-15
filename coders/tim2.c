@@ -358,7 +358,7 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
     if(image->depth==16 || image->depth==32)
       SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
     else
-      SetImageAlphaChannel(image,DeactivateAlphaChannel,exception);
+      SetImageAlphaChannel(image,OffAlphaChannel,exception);
 
     SeekBlob(image,ImgDataOffset,SEEK_SET);
     SeekBlob(image,tim2_image_header.header_size,SEEK_CUR);
