@@ -1176,15 +1176,15 @@ ModuleExport void UnregisterPSImage(void)
 %
 */
 
-static inline unsigned char *PopHexPixel(const char *const *hex_digits,
+static inline unsigned char *PopHexPixel(const char hex_digits[][3],
   const size_t pixel,unsigned char *pixels)
 {
   register const char
     *hex;
 
   hex=hex_digits[pixel];
-  *pixels++=(unsigned char) (*hex++);
-  *pixels++=(unsigned char) (*hex);
+  *pixels++=(unsigned char) (*hex++ & 0xff);
+  *pixels++=(unsigned char) (*hex & 0xff);
   return(pixels);
 }
 
@@ -1210,7 +1210,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
 }
 
   static const char
-    *const hex_digits[] =
+    hex_digits[][3] =
     {
       "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0A", "0B",
       "0C", "0D", "0E", "0F", "10", "11", "12", "13", "14", "15", "16", "17",
@@ -1233,263 +1233,257 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
       "D8", "D9", "DA", "DB", "DC", "DD", "DE", "DF", "E0", "E1", "E2", "E3",
       "E4", "E5", "E6", "E7", "E8", "E9", "EA", "EB", "EC", "ED", "EE", "EF",
       "F0", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "FA", "FB",
-      "FC", "FD", "FE", "FF",  (const char *) NULL
+      "FC", "FD", "FE", "FF"
     },
-    *const PostscriptProlog[]=
-    {
-      "%%BeginProlog",
-      "%",
-      "% Display a color image.  The image is displayed in color on",
-      "% Postscript viewers or printers that support color, otherwise",
-      "% it is displayed as grayscale.",
-      "%",
-      "/DirectClassPacket",
-      "{",
-      "  %",
-      "  % Get a DirectClass packet.",
-      "  %",
-      "  % Parameters:",
-      "  %   red.",
-      "  %   green.",
-      "  %   blue.",
-      "  %   length: number of pixels minus one of this color (optional).",
-      "  %",
-      "  currentfile color_packet readhexstring pop pop",
-      "  compression 0 eq",
-      "  {",
-      "    /number_pixels 3 def",
-      "  }",
-      "  {",
-      "    currentfile byte readhexstring pop 0 get",
-      "    /number_pixels exch 1 add 3 mul def",
-      "  } ifelse",
-      "  0 3 number_pixels 1 sub",
-      "  {",
-      "    pixels exch color_packet putinterval",
-      "  } for",
-      "  pixels 0 number_pixels getinterval",
-      "} bind def",
-      "",
-      "/DirectClassImage",
-      "{",
-      "  %",
-      "  % Display a DirectClass image.",
-      "  %",
-      "  systemdict /colorimage known",
-      "  {",
-      "    columns rows 8",
-      "    [",
-      "      columns 0 0",
-      "      rows neg 0 rows",
-      "    ]",
-      "    { DirectClassPacket } false 3 colorimage",
-      "  }",
-      "  {",
-      "    %",
-      "    % No colorimage operator;  convert to grayscale.",
-      "    %",
-      "    columns rows 8",
-      "    [",
-      "      columns 0 0",
-      "      rows neg 0 rows",
-      "    ]",
-      "    { GrayDirectClassPacket } image",
-      "  } ifelse",
-      "} bind def",
-      "",
-      "/GrayDirectClassPacket",
-      "{",
-      "  %",
-      "  % Get a DirectClass packet;  convert to grayscale.",
-      "  %",
-      "  % Parameters:",
-      "  %   red",
-      "  %   green",
-      "  %   blue",
-      "  %   length: number of pixels minus one of this color (optional).",
-      "  %",
-      "  currentfile color_packet readhexstring pop pop",
-      "  color_packet 0 get 0.299 mul",
-      "  color_packet 1 get 0.587 mul add",
-      "  color_packet 2 get 0.114 mul add",
-      "  cvi",
-      "  /gray_packet exch def",
-      "  compression 0 eq",
-      "  {",
-      "    /number_pixels 1 def",
-      "  }",
-      "  {",
-      "    currentfile byte readhexstring pop 0 get",
-      "    /number_pixels exch 1 add def",
-      "  } ifelse",
-      "  0 1 number_pixels 1 sub",
-      "  {",
-      "    pixels exch gray_packet put",
-      "  } for",
-      "  pixels 0 number_pixels getinterval",
-      "} bind def",
-      "",
-      "/GrayPseudoClassPacket",
-      "{",
-      "  %",
-      "  % Get a PseudoClass packet;  convert to grayscale.",
-      "  %",
-      "  % Parameters:",
-      "  %   index: index into the colormap.",
-      "  %   length: number of pixels minus one of this color (optional).",
-      "  %",
-      "  currentfile byte readhexstring pop 0 get",
-      "  /offset exch 3 mul def",
-      "  /color_packet colormap offset 3 getinterval def",
-      "  color_packet 0 get 0.299 mul",
-      "  color_packet 1 get 0.587 mul add",
-      "  color_packet 2 get 0.114 mul add",
-      "  cvi",
-      "  /gray_packet exch def",
-      "  compression 0 eq",
-      "  {",
-      "    /number_pixels 1 def",
-      "  }",
-      "  {",
-      "    currentfile byte readhexstring pop 0 get",
-      "    /number_pixels exch 1 add def",
-      "  } ifelse",
-      "  0 1 number_pixels 1 sub",
-      "  {",
-      "    pixels exch gray_packet put",
-      "  } for",
-      "  pixels 0 number_pixels getinterval",
-      "} bind def",
-      "",
-      "/PseudoClassPacket",
-      "{",
-      "  %",
-      "  % Get a PseudoClass packet.",
-      "  %",
-      "  % Parameters:",
-      "  %   index: index into the colormap.",
-      "  %   length: number of pixels minus one of this color (optional).",
-      "  %",
-      "  currentfile byte readhexstring pop 0 get",
-      "  /offset exch 3 mul def",
-      "  /color_packet colormap offset 3 getinterval def",
-      "  compression 0 eq",
-      "  {",
-      "    /number_pixels 3 def",
-      "  }",
-      "  {",
-      "    currentfile byte readhexstring pop 0 get",
-      "    /number_pixels exch 1 add 3 mul def",
-      "  } ifelse",
-      "  0 3 number_pixels 1 sub",
-      "  {",
-      "    pixels exch color_packet putinterval",
-      "  } for",
-      "  pixels 0 number_pixels getinterval",
-      "} bind def",
-      "",
-      "/PseudoClassImage",
-      "{",
-      "  %",
-      "  % Display a PseudoClass image.",
-      "  %",
-      "  % Parameters:",
-      "  %   class: 0-PseudoClass or 1-Grayscale.",
-      "  %",
-      "  currentfile buffer readline pop",
-      "  token pop /class exch def pop",
-      "  class 0 gt",
-      "  {",
-      "    currentfile buffer readline pop",
-      "    token pop /depth exch def pop",
-      "    /grays columns 8 add depth sub depth mul 8 idiv string def",
-      "    columns rows depth",
-      "    [",
-      "      columns 0 0",
-      "      rows neg 0 rows",
-      "    ]",
-      "    { currentfile grays readhexstring pop } image",
-      "  }",
-      "  {",
-      "    %",
-      "    % Parameters:",
-      "    %   colors: number of colors in the colormap.",
-      "    %   colormap: red, green, blue color packets.",
-      "    %",
-      "    currentfile buffer readline pop",
-      "    token pop /colors exch def pop",
-      "    /colors colors 3 mul def",
-      "    /colormap colors string def",
-      "    currentfile colormap readhexstring pop pop",
-      "    systemdict /colorimage known",
-      "    {",
-      "      columns rows 8",
-      "      [",
-      "        columns 0 0",
-      "        rows neg 0 rows",
-      "      ]",
-      "      { PseudoClassPacket } false 3 colorimage",
-      "    }",
-      "    {",
-      "      %",
-      "      % No colorimage operator;  convert to grayscale.",
-      "      %",
-      "      columns rows 8",
-      "      [",
-      "        columns 0 0",
-      "        rows neg 0 rows",
-      "      ]",
-      "      { GrayPseudoClassPacket } image",
-      "    } ifelse",
-      "  } ifelse",
-      "} bind def",
-      "",
-      "/DisplayImage",
-      "{",
-      "  %",
-      "  % Display a DirectClass or PseudoClass image.",
-      "  %",
-      "  % Parameters:",
-      "  %   x & y translation.",
-      "  %   x & y scale.",
-      "  %   label pointsize.",
-      "  %   image label.",
-      "  %   image columns & rows.",
-      "  %   class: 0-DirectClass or 1-PseudoClass.",
-      "  %   compression: 0-none or 1-RunlengthEncoded.",
-      "  %   hex color packets.",
-      "  %",
-      "  gsave",
-      "  /buffer 512 string def",
-      "  /byte 1 string def",
-      "  /color_packet 3 string def",
-      "  /pixels 768 string def",
-      "",
-      "  currentfile buffer readline pop",
-      "  token pop /x exch def",
-      "  token pop /y exch def pop",
-      "  x y translate",
-      "  currentfile buffer readline pop",
-      "  token pop /x exch def",
-      "  token pop /y exch def pop",
-      "  currentfile buffer readline pop",
-      "  token pop /pointsize exch def pop",
-      (const char *) NULL
-    },
-    *const PostscriptEpilog[]=
-    {
-      "  x y scale",
-      "  currentfile buffer readline pop",
-      "  token pop /columns exch def",
-      "  token pop /rows exch def pop",
-      "  currentfile buffer readline pop",
-      "  token pop /class exch def pop",
-      "  currentfile buffer readline pop",
-      "  token pop /compression exch def pop",
-      "  class 0 gt { PseudoClassImage } { DirectClassImage } ifelse",
-      "  grestore",
-      (const char *) NULL
-    };
+    PostscriptProlog[] =
+      "%%BeginProlog\n"
+      "%\n"
+      "% Display a color image.  The image is displayed in color on\n"
+      "% Postscript viewers or printers that support color, otherwise\n"
+      "% it is displayed as grayscale.\n"
+      "%\n"
+      "/DirectClassPacket\n"
+      "{\n"
+      "  %\n"
+      "  % Get a DirectClass packet.\n"
+      "  %\n"
+      "  % Parameters:\n"
+      "  %   red.\n"
+      "  %   green.\n"
+      "  %   blue.\n"
+      "  %   length: number of pixels minus one of this color (optional).\n"
+      "  %\n"
+      "  currentfile color_packet readhexstring pop pop\n"
+      "  compression 0 eq\n"
+      "  {\n"
+      "    /number_pixels 3 def\n"
+      "  }\n"
+      "  {\n"
+      "    currentfile byte readhexstring pop 0 get\n"
+      "    /number_pixels exch 1 add 3 mul def\n"
+      "  } ifelse\n"
+      "  0 3 number_pixels 1 sub\n"
+      "  {\n"
+      "    pixels exch color_packet putinterval\n"
+      "  } for\n"
+      "  pixels 0 number_pixels getinterval\n"
+      "} bind def\n"
+      "\n"
+      "/DirectClassImage\n"
+      "{\n"
+      "  %\n"
+      "  % Display a DirectClass image.\n"
+      "  %\n"
+      "  systemdict /colorimage known\n"
+      "  {\n"
+      "    columns rows 8\n"
+      "    [\n"
+      "      columns 0 0\n"
+      "      rows neg 0 rows\n"
+      "    ]\n"
+      "    { DirectClassPacket } false 3 colorimage\n"
+      "  }\n"
+      "  {\n"
+      "    %\n"
+      "    % No colorimage operator;  convert to grayscale.\n"
+      "    %\n"
+      "    columns rows 8\n"
+      "    [\n"
+      "      columns 0 0\n"
+      "      rows neg 0 rows\n"
+      "    ]\n"
+      "    { GrayDirectClassPacket } image\n"
+      "  } ifelse\n"
+      "} bind def\n"
+      "\n"
+      "/GrayDirectClassPacket\n"
+      "{\n"
+      "  %\n"
+      "  % Get a DirectClass packet;  convert to grayscale.\n"
+      "  %\n"
+      "  % Parameters:\n"
+      "  %   red\n"
+      "  %   green\n"
+      "  %   blue\n"
+      "  %   length: number of pixels minus one of this color (optional).\n"
+      "  %\n"
+      "  currentfile color_packet readhexstring pop pop\n"
+      "  color_packet 0 get 0.299 mul\n"
+      "  color_packet 1 get 0.587 mul add\n"
+      "  color_packet 2 get 0.114 mul add\n"
+      "  cvi\n"
+      "  /gray_packet exch def\n"
+      "  compression 0 eq\n"
+      "  {\n"
+      "    /number_pixels 1 def\n"
+      "  }\n"
+      "  {\n"
+      "    currentfile byte readhexstring pop 0 get\n"
+      "    /number_pixels exch 1 add def\n"
+      "  } ifelse\n"
+      "  0 1 number_pixels 1 sub\n"
+      "  {\n"
+      "    pixels exch gray_packet put\n"
+      "  } for\n"
+      "  pixels 0 number_pixels getinterval\n"
+      "} bind def\n"
+      "\n"
+      "/GrayPseudoClassPacket\n"
+      "{\n"
+      "  %\n"
+      "  % Get a PseudoClass packet;  convert to grayscale.\n"
+      "  %\n"
+      "  % Parameters:\n"
+      "  %   index: index into the colormap.\n"
+      "  %   length: number of pixels minus one of this color (optional).\n"
+      "  %\n"
+      "  currentfile byte readhexstring pop 0 get\n"
+      "  /offset exch 3 mul def\n"
+      "  /color_packet colormap offset 3 getinterval def\n"
+      "  color_packet 0 get 0.299 mul\n"
+      "  color_packet 1 get 0.587 mul add\n"
+      "  color_packet 2 get 0.114 mul add\n"
+      "  cvi\n"
+      "  /gray_packet exch def\n"
+      "  compression 0 eq\n"
+      "  {\n"
+      "    /number_pixels 1 def\n"
+      "  }\n"
+      "  {\n"
+      "    currentfile byte readhexstring pop 0 get\n"
+      "    /number_pixels exch 1 add def\n"
+      "  } ifelse\n"
+      "  0 1 number_pixels 1 sub\n"
+      "  {\n"
+      "    pixels exch gray_packet put\n"
+      "  } for\n"
+      "  pixels 0 number_pixels getinterval\n"
+      "} bind def\n"
+      "\n"
+      "/PseudoClassPacket\n"
+      "{\n"
+      "  %\n"
+      "  % Get a PseudoClass packet.\n"
+      "  %\n"
+      "  % Parameters:\n"
+      "  %   index: index into the colormap.\n"
+      "  %   length: number of pixels minus one of this color (optional).\n"
+      "  %\n"
+      "  currentfile byte readhexstring pop 0 get\n"
+      "  /offset exch 3 mul def\n"
+      "  /color_packet colormap offset 3 getinterval def\n"
+      "  compression 0 eq\n"
+      "  {\n"
+      "    /number_pixels 3 def\n"
+      "  }\n"
+      "  {\n"
+      "    currentfile byte readhexstring pop 0 get\n"
+      "    /number_pixels exch 1 add 3 mul def\n"
+      "  } ifelse\n"
+      "  0 3 number_pixels 1 sub\n"
+      "  {\n"
+      "    pixels exch color_packet putinterval\n"
+      "  } for\n"
+      "  pixels 0 number_pixels getinterval\n"
+      "} bind def\n"
+      "\n"
+      "/PseudoClassImage\n"
+      "{\n"
+      "  %\n"
+      "  % Display a PseudoClass image.\n"
+      "  %\n"
+      "  % Parameters:\n"
+      "  %   class: 0-PseudoClass or 1-Grayscale.\n"
+      "  %\n"
+      "  currentfile buffer readline pop\n"
+      "  token pop /class exch def pop\n"
+      "  class 0 gt\n"
+      "  {\n"
+      "    currentfile buffer readline pop\n"
+      "    token pop /depth exch def pop\n"
+      "    /grays columns 8 add depth sub depth mul 8 idiv string def\n"
+      "    columns rows depth\n"
+      "    [\n"
+      "      columns 0 0\n"
+      "      rows neg 0 rows\n"
+      "    ]\n"
+      "    { currentfile grays readhexstring pop } image\n"
+      "  }\n"
+      "  {\n"
+      "    %\n"
+      "    % Parameters:\n"
+      "    %   colors: number of colors in the colormap.\n"
+      "    %   colormap: red, green, blue color packets.\n"
+      "    %\n"
+      "    currentfile buffer readline pop\n"
+      "    token pop /colors exch def pop\n"
+      "    /colors colors 3 mul def\n"
+      "    /colormap colors string def\n"
+      "    currentfile colormap readhexstring pop pop\n"
+      "    systemdict /colorimage known\n"
+      "    {\n"
+      "      columns rows 8\n"
+      "      [\n"
+      "        columns 0 0\n"
+      "        rows neg 0 rows\n"
+      "      ]\n"
+      "      { PseudoClassPacket } false 3 colorimage\n"
+      "    }\n"
+      "    {\n"
+      "      %\n"
+      "      % No colorimage operator;  convert to grayscale.\n"
+      "      %\n"
+      "      columns rows 8\n"
+      "      [\n"
+      "        columns 0 0\n"
+      "        rows neg 0 rows\n"
+      "      ]\n"
+      "      { GrayPseudoClassPacket } image\n"
+      "    } ifelse\n"
+      "  } ifelse\n"
+      "} bind def\n"
+      "\n"
+      "/DisplayImage\n"
+      "{\n"
+      "  %\n"
+      "  % Display a DirectClass or PseudoClass image.\n"
+      "  %\n"
+      "  % Parameters:\n"
+      "  %   x & y translation.\n"
+      "  %   x & y scale.\n"
+      "  %   label pointsize.\n"
+      "  %   image label.\n"
+      "  %   image columns & rows.\n"
+      "  %   class: 0-DirectClass or 1-PseudoClass.\n"
+      "  %   compression: 0-none or 1-RunlengthEncoded.\n"
+      "  %   hex color packets.\n"
+      "  %\n"
+      "  gsave\n"
+      "  /buffer 512 string def\n"
+      "  /byte 1 string def\n"
+      "  /color_packet 3 string def\n"
+      "  /pixels 768 string def\n"
+      "\n"
+      "  currentfile buffer readline pop\n"
+      "  token pop /x exch def\n"
+      "  token pop /y exch def pop\n"
+      "  x y translate\n"
+      "  currentfile buffer readline pop\n"
+      "  token pop /x exch def\n"
+      "  token pop /y exch def pop\n"
+      "  currentfile buffer readline pop\n"
+      "  token pop /pointsize exch def pop\n",
+    PostscriptEpilog[] =
+      "  x y scale\n"
+      "  currentfile buffer readline pop\n"
+      "  token pop /columns exch def\n"
+      "  token pop /rows exch def pop\n"
+      "  currentfile buffer readline pop\n"
+      "  token pop /class exch def pop\n"
+      "  currentfile buffer readline pop\n"
+      "  token pop /compression exch def pop\n"
+      "  class 0 gt { PseudoClassImage } { DirectClassImage } ifelse\n"
+      "  grestore\n";
 
   char
     buffer[MagickPathExtent],
@@ -1501,7 +1495,6 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
     compression;
 
   const char
-    *const *s,
     *value;
 
   const StringInfo
@@ -1840,11 +1833,8 @@ RestoreMSCWarning
         /*
           Output Postscript commands.
         */
-        for (s=PostscriptProlog; *s != (char *) NULL; s++)
-        {
-          (void) FormatLocaleString(buffer,MagickPathExtent,"%s\n",*s);
-          (void) WriteBlobString(image,buffer);
-        }
+        (void) WriteBlob(image,sizeof(PostscriptProlog)-1,
+          (const unsigned char *) PostscriptProlog);
         value=GetImageProperty(image,"label",exception);
         if (value != (const char *) NULL)
           {
@@ -1860,11 +1850,8 @@ RestoreMSCWarning
               (void) WriteBlobString(image,buffer);
             }
           }
-        for (s=PostscriptEpilog; *s != (char *) NULL; s++)
-        {
-          (void) FormatLocaleString(buffer,MagickPathExtent,"%s\n",*s);
-          (void) WriteBlobString(image,buffer);
-        }
+        (void) WriteBlob(image,sizeof(PostscriptEpilog)-1,
+          (const unsigned char *) PostscriptEpilog);
         if (LocaleCompare(image_info->magick,"PS") == 0)
           (void) WriteBlobString(image,"  showpage\n");
         (void) WriteBlobString(image,"} bind def\n");
