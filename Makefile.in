@@ -13023,7 +13023,7 @@ uninstall-man: uninstall-man1
 .PRECIOUS: Makefile
 
 install-exec-local-utilities:
-	$(MKDIR_P) $(DESTDIR)$(bindir)
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
 	cd $(DESTDIR)$(bindir) ; \
 	magick=`echo "magick" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
 	for name in $(MAGICK_UTILITIES) ; \
@@ -13224,7 +13224,7 @@ libtool: $(LIBTOOL_DEPS)
 html-local:
 # copy static file
 	for dir in $(DOCDIRSMANUAL) ; do \
-		$(MKDIR_P) $(top_builddir)/$$dir ;\
+		$(mkinstalldirs) $(top_builddir)/$$dir ;\
 		for file in $$dir/*.* ; do \
 			if ! test -f $(top_builddir)/$$file; then \
 				cp -p -f $(top_srcdir)/$$file $(top_builddir)/$$dir ; \
@@ -13236,7 +13236,7 @@ html-local:
 	    rm -rf $$dir || true; \
 	done;
 # make doxygen doc
-	$(MKDIR_P) $(top_builddir)/www/api
+	$(mkinstalldirs) $(top_builddir)/www/api
 	cd config && doxygen MagickCore.dox
 	cd config && doxygen MagickWand.dox
 	cd config && doxygen Magick++.dox
@@ -13263,9 +13263,9 @@ $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 @RPM_DELEGATE_TRUE@.PHONY: rpm
 @RPM_DELEGATE_TRUE@rpm:	dist
 @RPM_DELEGATE_TRUE@	rm -rf $(RPMDIR)
-@RPM_DELEGATE_TRUE@	$(MKDIR_P) $(RPMDIR)
-@RPM_DELEGATE_TRUE@	$(MKDIR_P) $(RPMDIR)/BUILD
-@RPM_DELEGATE_TRUE@	$(MKDIR_P) $(RPMDIR)/RPMS
+@RPM_DELEGATE_TRUE@	$(mkinstalldirs) $(RPMDIR)
+@RPM_DELEGATE_TRUE@	$(mkinstalldirs) $(RPMDIR)/BUILD
+@RPM_DELEGATE_TRUE@	$(mkinstalldirs) $(RPMDIR)/RPMS
 @RPM_DELEGATE_TRUE@	$(RPM) --define="_sourcedir `pwd`" --define="_rpmdir `pwd`/$(RPMDIR)/RPMS" --define="_builddir `pwd`/$(RPMDIR)/BUILD" --nodeps -bb ImageMagick.spec
 @RPM_DELEGATE_TRUE@	@echo ==============================================================
 @RPM_DELEGATE_TRUE@	@echo $(DIST_ARCHIVE_RPM) is ready for distribution.

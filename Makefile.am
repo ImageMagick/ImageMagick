@@ -298,7 +298,7 @@ libtool: $(LIBTOOL_DEPS)
 html-local:
 # copy static file
 	for dir in $(DOCDIRSMANUAL) ; do \
-		$(MKDIR_P) $(top_builddir)/$$dir ;\
+		$(mkinstalldirs) $(top_builddir)/$$dir ;\
 		for file in $$dir/*.* ; do \
 			if ! test -f $(top_builddir)/$$file; then \
 				cp -p -f $(top_srcdir)/$$file $(top_builddir)/$$dir ; \
@@ -310,7 +310,7 @@ html-local:
 	    rm -rf $$dir || true; \
 	done;
 # make doxygen doc
-	$(MKDIR_P) $(top_builddir)/www/api
+	$(mkinstalldirs) $(top_builddir)/www/api
 	cd config && doxygen MagickCore.dox
 	cd config && doxygen MagickWand.dox
 	cd config && doxygen Magick++.dox
@@ -372,9 +372,9 @@ DIST_ARCHIVE_RPM= \
 .PHONY: rpm
 rpm:	dist
 	rm -rf $(RPMDIR)
-	$(MKDIR_P) $(RPMDIR)
-	$(MKDIR_P) $(RPMDIR)/BUILD
-	$(MKDIR_P) $(RPMDIR)/RPMS
+	$(mkinstalldirs) $(RPMDIR)
+	$(mkinstalldirs) $(RPMDIR)/BUILD
+	$(mkinstalldirs) $(RPMDIR)/RPMS
 	$(RPM) --define="_sourcedir `pwd`" --define="_rpmdir `pwd`/$(RPMDIR)/RPMS" --define="_builddir `pwd`/$(RPMDIR)/BUILD" --nodeps -bb ImageMagick.spec
 	@echo ==============================================================
 	@echo $(DIST_ARCHIVE_RPM) is ready for distribution.
