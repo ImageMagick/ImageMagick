@@ -78,7 +78,7 @@ endif
 
 UTILITIES_INSTALL_EXEC_LOCAL_TARGETS=install-exec-local-utilities
 install-exec-local-utilities:
-	$(mkdir_p) $(DESTDIR)$(bindir)
+	$(MKDIR_P) $(DESTDIR)$(bindir)
 	cd $(DESTDIR)$(bindir) ; \
 	magick=`echo "magick" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
 	for name in $(MAGICK_UTILITIES) ; \

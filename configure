@@ -4570,7 +4570,7 @@ MAGICK_PATCHLEVEL_VERSION=46
 
 MAGICK_VERSION=7.0.8-46
 
-MAGICK_GIT_REVISION=15640:c06681502:20190515
+MAGICK_GIT_REVISION=15643:63a72f120:20190516
 
 
 # Substitute library versioning
@@ -8760,6 +8760,7 @@ fi
 
   test -n "$AWK" && break
 done
+
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking if malloc debugging is wanted" >&5
 $as_echo_n "checking if malloc debugging is wanted... " >&6; }
