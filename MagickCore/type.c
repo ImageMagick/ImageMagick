@@ -109,7 +109,7 @@
   Declare type map.
 */
 static const char
-  *TypeMap = (const char *)
+  TypeMap[] =
     "<?xml version=\"1.0\"?>"
     "<typemap>"
     "  <type stealth=\"True\" name=\"fixed\" family=\"helvetica\"/>"
@@ -327,8 +327,8 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   typedef struct _Fontmap
   {
     const char
-      *name,
-      *substitute;
+      name[17],
+      substitute[10];
   } Fontmap;
 
   const TypeInfo
@@ -352,8 +352,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
       { "news gothic", "helvetica" },
       { "system", "courier" },
       { "terminal", "courier" },
-      { "wingdings", "symbol" },
-      { NULL, NULL }
+      { "wingdings", "symbol" }
     };
 
   size_t
@@ -475,7 +474,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   /*
     Check for table-based substitution match.
   */
-  for (i=0; fontmap[i].name != (char *) NULL; i++)
+  for (i=0; i < (sizeof(fontmap)/sizeof(fontmap[0])); i++)
   {
     if (family == (const char *) NULL)
       {

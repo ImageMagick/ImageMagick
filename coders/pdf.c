@@ -2965,8 +2965,12 @@ RestoreMSCWarning
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<<\n");
   if (LocaleCompare(image_info->magick,"PDFA") == 0)
-    (void) FormatLocaleString(buffer,MagickPathExtent,"/Title (%s)\n",
-      EscapeParenthesis(basename));
+    {
+      escape=EscapeParenthesis(basename);
+      (void) FormatLocaleString(buffer,MagickPathExtent,"/Title (%s)\n",
+        escape);
+      escape=DestroyString(escape);
+    }
   else
     {
       wchar_t

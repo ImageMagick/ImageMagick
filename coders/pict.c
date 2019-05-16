@@ -325,8 +325,9 @@ static MagickBooleanType
 %
 */
 
-static const unsigned char *ExpandBuffer(const unsigned char *magick_restrict pixels,
-  const unsigned int bits_per_pixel,MagickSizeType *bytes_per_line)
+static const unsigned char *UnpackScanline(
+  const unsigned char *magick_restrict pixels,const unsigned int bits_per_pixel,
+  unsigned char *scanline,MagickSizeType *bytes_per_line)
 {
   register const unsigned char
     *p;
@@ -336,9 +337,6 @@ static const unsigned char *ExpandBuffer(const unsigned char *magick_restrict pi
 
   register unsigned char
     *q;
-
-  static unsigned char
-    scanline[8*256];
 
   p=pixels;
   q=scanline;
@@ -427,7 +425,8 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
 
   unsigned char
     *pixels,
-    *scanline;
+    *scanline,
+    unpack_buffer[8*256];
 
   /*
     Determine pixel buffer size.
@@ -482,7 +481,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
             status=MagickFalse;
             break;
           }
-        p=ExpandBuffer(scanline,bits_per_pixel,&number_pixels);
+        p=UnpackScanline(scanline,bits_per_pixel,unpack_buffer,&number_pixels);
         if ((q+number_pixels) > (pixels+(*extent)))
           {
             status=MagickFalse;
@@ -521,7 +520,8 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
         {
           length=(size_t) ((scanline[j] & 0xff)+1);
           number_pixels=length*bytes_per_pixel;
-          p=ExpandBuffer(scanline+j+1,bits_per_pixel,&number_pixels);
+          p=UnpackScanline(scanline+j+1,bits_per_pixel,unpack_buffer,
+            &number_pixels);
           if ((q-pixels+number_pixels) <= *extent)
             (void) memcpy(q,p,(size_t) number_pixels);
           q+=number_pixels;
@@ -531,7 +531,8 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
         {
           length=(size_t) (((scanline[j] ^ 0xff) & 0xff)+2);
           number_pixels=bytes_per_pixel;
-          p=ExpandBuffer(scanline+j+1,bits_per_pixel,&number_pixels);
+          p=UnpackScanline(scanline+j+1,bits_per_pixel,unpack_buffer,
+            &number_pixels);
           for (i=0; i < (ssize_t) length; i++)
           {
             if ((q-pixels+number_pixels) <= *extent)
