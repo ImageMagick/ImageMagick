@@ -4109,7 +4109,6 @@ fi
     # removed, or if the value is a relative name.
     MKDIR_P="$ac_install_sh -d"
   fi
-  MKDIR_P="$ac_cv_path_mkdir -p"
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $MKDIR_P" >&5
 $as_echo "$MKDIR_P" >&6; }
@@ -4571,7 +4570,7 @@ MAGICK_PATCHLEVEL_VERSION=46
 
 MAGICK_VERSION=7.0.8-46
 
-MAGICK_GIT_REVISION=15647:e7b99c369:20190516
+MAGICK_GIT_REVISION=15648:470655aa9:20190517
 
 
 # Substitute library versioning

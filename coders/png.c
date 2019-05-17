@@ -7854,18 +7854,18 @@ ModuleExport size_t RegisterPNGImage(void)
     *entry;
 
   static const char
-    *PNGNote=
+    PNGNote[] =
     {
       "See http://www.libpng.org/ for details about the PNG format."
     },
 
-    *JNGNote=
+    JNGNote[] =
     {
       "See http://www.libpng.org/pub/mng/ for details about the JNG\n"
       "format."
     },
 
-    *MNGNote=
+    MNGNote[] =
     {
       "See http://www.libpng.org/pub/mng/ for details about the MNG\n"
       "format."
