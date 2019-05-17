@@ -91,7 +91,7 @@
   Const declarations.
 */
 static const char
-  *xmp_namespace = "http://ns.adobe.com/xap/1.0/ ";
+  xmp_namespace[] = "http://ns.adobe.com/xap/1.0/ ";
 
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT)
 /*
