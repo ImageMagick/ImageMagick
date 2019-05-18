@@ -1,8 +1,9 @@
 2019-05-14  7.0.8-46 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.8-46, GIT revision 15...
+  * Release ImageMagick version 7.0.8-46, GIT revision 15652:de499f5d0:20190518
 
 2019-05-14  7.0.8-46 Cristy  <quetzlzacatenango@image...>
   * PerlMagick unit tests pass again.
+  * Builds under MacOS X and FreeBSD works again.
 
 2019-05-12  7.0.8-45 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-45, GIT revision 15634:784105bcb:20190512
