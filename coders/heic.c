@@ -142,6 +142,9 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   const char
     *option;
 
+  const StringInfo
+    *profile;
+
   heif_item_id
     exif_id;
 
@@ -394,6 +397,9 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   heif_image_release(heif_image);
   heif_image_handle_release(image_handle);
   heif_context_free(heif_context);
+  profile=GetImageProfile(image,"icc");
+  if (profile != (const StringInfo *) NULL)
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   return(GetFirstImageInList(image));
 }
 #endif
