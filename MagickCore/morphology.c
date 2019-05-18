@@ -3055,8 +3055,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                   {
                     if (*k > 0.7)
                       {
-                        if ((double) pixels[i] < pixel)
-                          pixel=(double) pixels[i];
+                        if ((double) pixels[i] < minimum)
+                          minimum=(double) pixels[i];
                       }
                     else
                       if (*k < 0.3)
@@ -3071,9 +3071,10 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
               }
               pixels+=(image->columns-1)*GetPixelChannels(image);
             }
-            pixel-=maximum;
-            if (pixel < 0.0)
-              pixel=0.0;
+            minimum-=maximum;
+            if (minimum < 0.0)
+              minimum=0.0;
+            pixel=minimum;
             if (method ==  ThinningMorphology)
               pixel=(double) p[center+i]-pixel;
             else
