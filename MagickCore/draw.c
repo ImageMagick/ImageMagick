@@ -6853,12 +6853,6 @@ static MagickBooleanType TraceRectangle(PrimitiveInfo *primitive_info,
   register ssize_t
     i;
 
-  if ((fabs(start.x-end.x) < MagickEpsilon) ||
-      (fabs(start.y-end.y) < MagickEpsilon))
-    {
-      primitive_info->coordinates=0;
-      return(MagickTrue);
-    }
   p=primitive_info;
   if (TracePoint(p,start) == MagickFalse)
     return(MagickFalse);
