@@ -212,22 +212,24 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (LocaleCompare(image_info->magick, "UBRL") == 0)
+  if (LocaleCompare(image_info->magick,"UBRL") == 0)
     unicode=1;
-  else if (LocaleCompare(image_info->magick, "UBRL6") == 0)
+  else if (LocaleCompare(image_info->magick,"UBRL6") == 0)
     {
       unicode=1;
       cell_height=3;
     }
-  else if (LocaleCompare(image_info->magick, "ISOBRL") == 0)
-    iso_11548_1=1;
-  else if (LocaleCompare(image_info->magick, "ISOBRL6") == 0)
-    {
-      iso_11548_1=1;
-      cell_height=3;
-    }
   else
-    cell_height=3;
+    if (LocaleCompare(image_info->magick,"ISOBRL") == 0)
+      iso_11548_1=1;
+    else
+      if (LocaleCompare(image_info->magick,"ISOBRL6") == 0)
+        {
+          iso_11548_1=1;
+          cell_height=3;
+        }
+      else
+        cell_height=3;
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
@@ -240,50 +242,54 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
       value=GetImageProperty(image,"label",exception);
       if (value != (const char *) NULL)
         {
-          (void) FormatLocaleString(buffer,MagickPathExtent,"Title: %s\n", value);
+          (void) FormatLocaleString(buffer,MagickPathExtent,"Title: %s\n",
+            value);
           (void) WriteBlobString(image,buffer);
         }
       if (image->page.x != 0)
         {
-          (void) FormatLocaleString(buffer,MagickPathExtent,"X: %.20g\n",(double) 
-            image->page.x);
+          (void) FormatLocaleString(buffer,MagickPathExtent,"X: %.20g\n",
+            (double) image->page.x);
           (void) WriteBlobString(image,buffer);
         }
       if (image->page.y != 0)
         {
-          (void) FormatLocaleString(buffer,MagickPathExtent,"Y: %.20g\n",(double) 
-            image->page.y);
+          (void) FormatLocaleString(buffer,MagickPathExtent,"Y: %.20g\n",
+            (double) image->page.y);
           (void) WriteBlobString(image,buffer);
         }
-      (void) FormatLocaleString(buffer,MagickPathExtent,"Width: %.20g\n",(double)
-        (image->columns+(image->columns % 2)));
+      (void) FormatLocaleString(buffer,MagickPathExtent,"Width: %.20g\n",
+        (double) (image->columns+(image->columns % 2)));
       (void) WriteBlobString(image,buffer);
-      (void) FormatLocaleString(buffer,MagickPathExtent,"Height: %.20g\n",(double)
-        image->rows);
+      (void) FormatLocaleString(buffer,MagickPathExtent,"Height: %.20g\n",
+        (double) image->rows);
       (void) WriteBlobString(image,buffer);
       (void) WriteBlobString(image,"\n");
     }
   (void) SetImageType(image,BilevelType,exception);
-  polarity = 0;
-  if (image->storage_class == PseudoClass) {
-    polarity=(Quantum) (GetPixelInfoIntensity(image,&image->colormap[0]) >=
-      (QuantumRange/2.0));
-    if (image->colors == 2)
+  polarity=0;
+  if (image->storage_class == PseudoClass)
+    {
       polarity=(Quantum) (GetPixelInfoIntensity(image,&image->colormap[0]) >=
-        GetPixelInfoIntensity(image,&image->colormap[1]));
-  }
+        (QuantumRange/2.0));
+      if (image->colors == 2)
+        polarity=(Quantum) (GetPixelInfoIntensity(image,&image->colormap[0]) >=
+          GetPixelInfoIntensity(image,&image->colormap[1]));
+    }
   for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) cell_height)
   {
     if ((y+cell_height) > image->rows)
-      cell_height = (size_t) (image->rows-y);
-
+      cell_height=(size_t) (image->rows-y);
     p=GetVirtualPixels(image,0,y,image->columns,cell_height,exception);
     if (p == (const Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x+=2)
     {
-      unsigned char cell = 0;
-      int two_columns = x+1 < (ssize_t) image->columns;
+      int
+        two_columns = x+1 < (ssize_t) image->columns;
+
+      unsigned char
+        cell = 0;
 
       do
       {
@@ -301,53 +307,60 @@ RestoreMSCWarning
           do_cell(1,0,3);
         if (cell_height < 2)
           break;
-
         do_cell(0,1,1);
         if (two_columns)
           do_cell(1,1,4);
         if (cell_height < 3)
           break;
-
         do_cell(0,2,2);
         if (two_columns)
           do_cell(1,2,5);
         if (cell_height < 4)
           break;
-
         do_cell(0,3,6);
         if (two_columns)
           do_cell(1,3,7);
 DisableMSCWarning(4127)
-      } while(0);
+      } while (0);
 RestoreMSCWarning
-
-      if (unicode)
+      if (unicode != 0)
         {
-          unsigned char utf8[3];
-          /* Unicode text */
-          utf8[0] = (unsigned char) (0xe0|((0x28>>4)&0x0f));
-          utf8[1] = 0x80|((0x28<<2)&0x3f)|(cell>>6);
-          utf8[2] = 0x80|(cell&0x3f);
+          unsigned char
+            utf8[3];
+
+          /*
+            Unicode text.
+          */
+          utf8[0]=(unsigned char) (0xe0|((0x28 >> 4) & 0x0f));
+          utf8[1]=0x80|((0x28<<2) & 0x3f)|(cell >> 6);
+          utf8[2]=0x80|(cell & 0x3f);
           (void) WriteBlob(image,3,utf8);
         }
       else if (iso_11548_1)
         {
-          /* ISO/TR 11548-1 binary */
+          /*
+            ISO/TR 11548-1 binary.
+          */
           (void) WriteBlobByte(image,cell);
         }
       else
         {
-          /* BRF */
-          static const unsigned char iso_to_brf[64] = {
-            ' ', 'A', '1', 'B', '\'', 'K', '2', 'L',
-            '@', 'C', 'I', 'F', '/', 'M', 'S', 'P',
-            '"', 'E', '3', 'H', '9', 'O', '6', 'R',
-            '^', 'D', 'J', 'G', '>', 'N', 'T', 'Q',
-            ',', '*', '5', '<', '-', 'U', '8', 'V',
-            '.', '%', '[', '$', '+', 'X', '!', '&',
-            ';', ':', '4', '\\', '0', 'Z', '7', '(',
-            '_', '?', 'W', ']', '#', 'Y', ')', '='
-          };
+          static const unsigned char
+            iso_to_brf[64] =
+            {
+              ' ', 'A', '1', 'B', '\'', 'K', '2', 'L',
+              '@', 'C', 'I', 'F', '/', 'M', 'S', 'P',
+              '"', 'E', '3', 'H', '9', 'O', '6', 'R',
+              '^', 'D', 'J', 'G', '>', 'N', 'T', 'Q',
+              ',', '*', '5', '<', '-', 'U', '8', 'V',
+              '.', '%', '[', '$', '+', 'X', '!', '&',
+              ';', ':', '4', '\\', '0', 'Z', '7', '(',
+              '_', '?', 'W', ']', '#', 'Y', ')', '='
+            };
+
+          /*
+            BRF.
+          */
           (void) WriteBlobByte(image,iso_to_brf[cell]);
         }
     }
