@@ -2192,25 +2192,13 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
         {
           *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
             exception);
-          if (*beta == 0.0)
-            {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"DivideByZero","`%s'",expression);
-              FxReturn(0.0);
-            }
-          FxReturn(alpha/(*beta));
+          FxReturn(PerceptibleReciprocal(*beta)*alpha);
         }
         case '%':
         {
           *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
             exception);
           *beta=fabs(floor((*beta)+0.5));
-          if (*beta == 0.0)
-            {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"DivideByZero","`%s'",expression);
-              FxReturn(0.0);
-            }
           FxReturn(fmod(alpha,*beta));
         }
         case '+':
