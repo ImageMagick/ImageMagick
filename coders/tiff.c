@@ -1788,7 +1788,7 @@ RestoreMSCWarning
     if (TIFFIsTiled(tiff) != MagickFalse)
       {
         method=ReadRGBATileMethod;
-        if (bits_per_sample > 16)
+        if (samples_per_pixel == 1)
           method=ReadTileMethod;
       }
     quantum_info->endian=LSBEndian;
