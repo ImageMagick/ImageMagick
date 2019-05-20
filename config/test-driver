@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#! /bin/sh
 # test-driver - basic testsuite driver script.
 
 scriptversion=2018-03-07.03; # UTC
