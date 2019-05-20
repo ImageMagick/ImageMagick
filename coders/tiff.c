@@ -2122,6 +2122,7 @@ RestoreMSCWarning
           sizeof(uint32),sizeof(*tile_pixels));
         if (tile_pixels == (unsigned char *) NULL)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
+        (void) memset(tile_pixels,0,TIFFTileSize(tiff)*sizeof(*tile_pixels));
         for (y=0; y < (ssize_t) image->rows; y+=rows)
         {
           register ssize_t
@@ -2478,8 +2479,10 @@ static void TIFFIgnoreTags(TIFF *tiff)
   ignore=(TIFFFieldInfo *) AcquireQuantumMemory(count,sizeof(*ignore));
   if (ignore == (TIFFFieldInfo *) NULL)
     return;
-  /* This also sets field_bit to 0 (FIELD_IGNORE) */
-  memset(ignore,0,count*sizeof(*ignore));
+  /*
+    This also sets field_bit to 0 (FIELD_IGNORE).
+  */
+  (void) memset(ignore,0,count*sizeof(*ignore));
   while (*p != '\0')
   {
     while ((isspace((int) ((unsigned char) *p)) != 0))
