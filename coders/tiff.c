@@ -1388,7 +1388,7 @@ RestoreMSCWarning
         TIFFClose(tiff);
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       }
-    if (((sample_format != SAMPLEFORMAT_IEEEFP) || (bits_per_sample == 64)) &&
+    if (((sample_format != SAMPLEFORMAT_IEEEFP) || (bits_per_sample != 64)) &&
         ((bits_per_sample <= 0) || (bits_per_sample > 32)))
       {
         TIFFClose(tiff);
