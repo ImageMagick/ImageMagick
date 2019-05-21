@@ -2145,13 +2145,13 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
 %
 %    o image: the image.
 %
-%    o low_black: Define the minimum threshold value.
+%    o low_black: Define the minimum black threshold value.
 %
-%    o low_white: Define the minimum threshold value.
+%    o low_white: Define the minimum white threshold value.
 %
-%    o high_white: Define the maximum threshold value.
+%    o high_white: Define the maximum white threshold value.
 %
-%    o high_black: Define the maximum threshold value.
+%    o high_black: Define the maximum black threshold value.
 %
 %    o exception: return any errors or warnings in this structure.
 %
