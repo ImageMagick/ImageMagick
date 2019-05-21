@@ -2217,22 +2217,26 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       psd_info.min_channels=4;
       (void) SetImageColorspace(image,CMYKColorspace,exception);
     }
-  else if ((psd_info.mode == BitmapMode) || (psd_info.mode == GrayscaleMode) ||
-           (psd_info.mode == DuotoneMode))
-    {
-      if (psd_info.depth != 32)
-        {
-          status=AcquireImageColormap(image,(size_t) (psd_info.depth < 16 ?
-            256 : 65536),exception);
-          if (status == MagickFalse)
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-          if (image->debug != MagickFalse)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "  Image colormap allocated");
-        }
-      psd_info.min_channels=1;
-      (void) SetImageColorspace(image,GRAYColorspace,exception);
-    }
+  else
+    if ((psd_info.mode == BitmapMode) || (psd_info.mode == GrayscaleMode) ||
+        (psd_info.mode == DuotoneMode))
+      {
+        if (psd_info.depth != 32)
+          {
+            status=AcquireImageColormap(image,(size_t) (psd_info.depth < 16 ?
+              256 : 65536),exception);
+            if (status == MagickFalse)
+              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+            if (image->debug != MagickFalse)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "  Image colormap allocated");
+          }
+        psd_info.min_channels=1;
+        (void) SetImageColorspace(image,GRAYColorspace,exception);
+      }
+    else
+      if (psd_info.mode == IndexedMode)
+        psd_info.min_channels=1;
   if (psd_info.channels < psd_info.min_channels)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   /*
