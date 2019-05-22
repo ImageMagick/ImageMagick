@@ -121,26 +121,6 @@ static const unsigned char
   {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
   };
-
-static const char
-  *PageSizes[] =
-  {
-    "Letter",
-    "Tabloid",
-    "Ledger",
-    "Legal",
-    "Statement",
-    "Executive",
-    "A3",
-    "A4",
-    "A5",
-    "B4",
-    "B5",
-    "Folio",
-    "Quarto",
-    "10x14",
-    (char *) NULL
-  };
 
 /*
   Help widget declarations.
@@ -1793,8 +1773,8 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
   XResourceInfo *resource_info,XWindows *windows,Image *image,
   ExceptionInfo *exception)
 {
-  static const char
-    *AnnotateMenu[] =
+  const char
+    *const AnnotateMenu[] =
     {
       "Font Name",
       "Font Color",
@@ -1804,7 +1784,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
       "Dismiss",
       (char *) NULL
     },
-    *TextMenu[] =
+    *const TextMenu[] =
     {
       "Help",
       "Apply",
@@ -2078,11 +2058,8 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
             int
               entry;
 
-            static char
-              angle[MagickPathExtent] = "30.0";
-
-            static const char
-              *RotateMenu[] =
+            const char
+              *const RotateMenu[] =
               {
                 "-90",
                 "-45",
@@ -2095,6 +2072,9 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
                 "Dialog...",
                 (char *) NULL,
               };
+
+            static char
+              angle[MagickPathExtent] = "30.0";
 
             /*
               Select a command from the pop-up menu.
@@ -2846,8 +2826,8 @@ static MagickBooleanType XChopImage(Display *display,
   XResourceInfo *resource_info,XWindows *windows,Image **image,
   ExceptionInfo *exception)
 {
-  static const char
-    *ChopMenu[] =
+  const char
+    *const ChopMenu[] =
     {
       "Direction",
       "Help",
@@ -2949,8 +2929,8 @@ static MagickBooleanType XChopImage(Display *display,
             char
               command[MagickPathExtent];
 
-            static const char
-              *Directions[] =
+            const char
+              *const Directions[] =
               {
                 "horizontal",
                 "vertical",
@@ -3271,8 +3251,8 @@ static MagickBooleanType XColorEditImage(Display *display,
   XResourceInfo *resource_info,XWindows *windows,Image **image,
   ExceptionInfo *exception)
 {
-  static const char
-    *ColorEditMenu[] =
+  const char
+    *const ColorEditMenu[] =
     {
       "Method",
       "Pixel Color",
@@ -3498,11 +3478,8 @@ static MagickBooleanType XColorEditImage(Display *display,
           }
           case ColorEditFuzzCommand:
           {
-            static char
-              fuzz[MagickPathExtent];
-
-            static const char
-              *FuzzMenu[] =
+            const char
+              *const FuzzMenu[] =
               {
                 "0%",
                 "2%",
@@ -3512,6 +3489,9 @@ static MagickBooleanType XColorEditImage(Display *display,
                 "Dialog...",
                 (char *) NULL,
               };
+
+            static char
+              fuzz[MagickPathExtent];
 
             /*
               Select a command from the pop-up menu.
@@ -3894,12 +3874,8 @@ static MagickBooleanType XCompositeImage(Display *display,
   XResourceInfo *resource_info,XWindows *windows,Image *image,
   ExceptionInfo *exception)
 {
-  static char
-    displacement_geometry[MagickPathExtent] = "30x30",
-    filename[MagickPathExtent] = "\0";
-
-  static const char
-    *CompositeMenu[] =
+  const char
+    *const CompositeMenu[] =
     {
       "Operators",
       "Dissolve",
@@ -3908,6 +3884,10 @@ static MagickBooleanType XCompositeImage(Display *display,
       "Dismiss",
       (char *) NULL
     };
+
+  static char
+    displacement_geometry[MagickPathExtent] = "30x30",
+    filename[MagickPathExtent] = "\0";
 
   static CompositeOperator
     compose = CopyCompositeOp;
@@ -4559,8 +4539,8 @@ static MagickBooleanType XCropImage(Display *display,
   XResourceInfo *resource_info,XWindows *windows,Image *image,
   const ClipboardMode mode,ExceptionInfo *exception)
 {
-  static const char
-    *CropModeMenu[] =
+  const char
+    *const CropModeMenu[] =
     {
       "Help",
       "Dismiss",
@@ -5395,8 +5375,8 @@ static MagickBooleanType XDrawEditImage(Display *display,
   XResourceInfo *resource_info,XWindows *windows,Image **image,
   ExceptionInfo *exception)
 {
-  static const char
-    *DrawMenu[] =
+  const char
+    *const DrawMenu[] =
     {
       "Element",
       "Color",
@@ -5542,8 +5522,8 @@ static MagickBooleanType XDrawEditImage(Display *display,
           {
             case DrawElementCommand:
             {
-              static const char
-                *Elements[] =
+              const char
+                *const Elements[] =
                 {
                   "point",
                   "line",
@@ -5628,19 +5608,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
             }
             case DrawStippleCommand:
             {
-              Image
-                *stipple_image;
-
-              ImageInfo
-                *image_info;
-
-              int
-                status;
-
-              static char
-                filename[MagickPathExtent] = "\0";
-
-              static const char
+              const char
                 *StipplesMenu[] =
                 {
                   "Brick",
@@ -5653,6 +5621,18 @@ static MagickBooleanType XDrawEditImage(Display *display,
                   (char *) NULL,
                   (char *) NULL,
                 };
+
+              Image
+                *stipple_image;
+
+              ImageInfo
+                *image_info;
+
+              int
+                status;
+
+              static char
+                filename[MagickPathExtent] = "\0";
 
               /*
                 Select a command from the pop-up menu.
@@ -5748,11 +5728,8 @@ static MagickBooleanType XDrawEditImage(Display *display,
             }
             case DrawWidthCommand:
             {
-              static char
-                width[MagickPathExtent] = "0";
-
-              static const char
-                *WidthsMenu[] =
+              const char
+                *const WidthsMenu[] =
                 {
                   "1",
                   "2",
@@ -5762,6 +5739,9 @@ static MagickBooleanType XDrawEditImage(Display *display,
                   "Dialog...",
                   (char *) NULL,
                 };
+
+              static char
+                width[MagickPathExtent] = "0";
 
               /*
                 Select a command from the pop-up menu.
@@ -9650,11 +9630,8 @@ static MagickBooleanType XMatteEditImage(Display *display,
   XResourceInfo *resource_info,XWindows *windows,Image **image,
   ExceptionInfo *exception)
 {
-  static char
-    matte[MagickPathExtent] = "0";
-
-  static const char
-    *MatteEditMenu[] =
+  const char
+    *const MatteEditMenu[] =
     {
       "Method",
       "Border Color",
@@ -9665,6 +9642,9 @@ static MagickBooleanType XMatteEditImage(Display *display,
       "Dismiss",
       (char *) NULL
     };
+
+  static char
+    matte[MagickPathExtent] = "0";
 
   static const ModeType
     MatteEditCommands[] =
@@ -9828,11 +9808,8 @@ static MagickBooleanType XMatteEditImage(Display *display,
           }
           case MatteEditFuzzCommand:
           {
-            static char
-              fuzz[MagickPathExtent];
-
-            static const char
-              *FuzzMenu[] =
+            const char
+              *const FuzzMenu[] =
               {
                 "0%",
                 "2%",
@@ -9842,6 +9819,9 @@ static MagickBooleanType XMatteEditImage(Display *display,
                 "Dialog...",
                 (char *) NULL,
               };
+
+            static char
+              fuzz[MagickPathExtent];
 
             /*
               Select a command from the pop-up menu.
@@ -9868,17 +9848,17 @@ static MagickBooleanType XMatteEditImage(Display *display,
           }
           case MatteEditValueCommand:
           {
-            static char
-              message[MagickPathExtent];
-
-            static const char
-              *MatteMenu[] =
+            const char
+              *const MatteMenu[] =
               {
                 "Opaque",
                 "Transparent",
                 "Dialog...",
                 (char *) NULL,
               };
+
+            static char
+              message[MagickPathExtent];
 
             /*
               Select a command from the pop-up menu.
@@ -10600,8 +10580,8 @@ static MagickBooleanType XPasteImage(Display *display,
   XResourceInfo *resource_info,XWindows *windows,Image *image,
   ExceptionInfo *exception)
 {
-  static const char
-    *PasteMenu[] =
+  const char
+    *const PasteMenu[] =
     {
       "Operator",
       "Help",
@@ -10976,6 +10956,26 @@ static MagickBooleanType XPrintImage(Display *display,
     filename[MagickPathExtent],
     geometry[MagickPathExtent];
 
+  const char
+    *const PageSizes[] =
+    {
+      "Letter",
+      "Tabloid",
+      "Ledger",
+      "Legal",
+      "Statement",
+      "Executive",
+      "A3",
+      "A4",
+      "A5",
+      "B4",
+      "B5",
+      "Folio",
+      "Quarto",
+      "10x14",
+      (char *) NULL
+    };
+
   Image
     *print_image;
 
@@ -11062,14 +11062,14 @@ static MagickBooleanType XROIImage(Display *display,
 {
 #define ApplyMenus  7
 
-  static const char
-    *ROIMenu[] =
+  const char
+    *const ROIMenu[] =
     {
       "Help",
       "Dismiss",
       (char *) NULL
     },
-    *ApplyMenu[] =
+    *const ApplyMenu[] =
     {
       "File",
       "Edit",
@@ -11082,19 +11082,19 @@ static MagickBooleanType XROIImage(Display *display,
       "Dismiss",
       (char *) NULL
     },
-    *FileMenu[] =
+    *const FileMenu[] =
     {
       "Save...",
       "Print...",
       (char *) NULL
     },
-    *EditMenu[] =
+    *const EditMenu[] =
     {
       "Undo",
       "Redo",
       (char *) NULL
     },
-    *TransformMenu[] =
+    *const TransformMenu[] =
     {
       "Flop",
       "Flip",
@@ -11102,7 +11102,7 @@ static MagickBooleanType XROIImage(Display *display,
       "Rotate Left",
       (char *) NULL
     },
-    *EnhanceMenu[] =
+    *const EnhanceMenu[] =
     {
       "Hue...",
       "Saturation...",
@@ -11120,7 +11120,7 @@ static MagickBooleanType XROIImage(Display *display,
       "Quantize...",
       (char *) NULL
     },
-    *EffectsMenu[] =
+    *const EffectsMenu[] =
     {
       "Despeckle",
       "Emboss",
@@ -11136,7 +11136,7 @@ static MagickBooleanType XROIImage(Display *display,
       "Segment...",
       (char *) NULL
     },
-    *FXMenu[] =
+    *const FXMenu[] =
     {
       "Solarize...",
       "Sepia Tone...",
@@ -11148,7 +11148,7 @@ static MagickBooleanType XROIImage(Display *display,
       "Charcoal Draw...",
       (char *) NULL
     },
-    *MiscellanyMenu[] =
+    *const MiscellanyMenu[] =
     {
       "Image Info",
       "Zoom Image",
@@ -11158,8 +11158,8 @@ static MagickBooleanType XROIImage(Display *display,
       (char *) NULL
     };
 
-  static const char
-    **Menus[ApplyMenus] =
+  const char
+    *const *Menus[ApplyMenus] =
     {
       FileMenu,
       EditMenu,
@@ -12013,8 +12013,8 @@ static MagickBooleanType XRotateImage(Display *display,
   XResourceInfo *resource_info,XWindows *windows,double degrees,Image **image,
   ExceptionInfo *exception)
 {
-  static const char
-    *RotateMenu[] =
+  const char
+    *const RotateMenu[] =
     {
       "Pixel Color",
       "Direction",
@@ -12172,7 +12172,7 @@ static MagickBooleanType XRotateImage(Display *display,
               }
               case RotateDirectionCommand:
               {
-                static const char
+                const char
                   *Directions[] =
                   {
                     "horizontal",
@@ -12609,6 +12609,26 @@ static MagickBooleanType XSaveImage(Display *display,
     {
       char
         geometry[MagickPathExtent];
+
+      const char
+        *const PageSizes[] =
+        {
+          "Letter",
+          "Tabloid",
+          "Ledger",
+          "Legal",
+          "Statement",
+          "Executive",
+          "A3",
+          "A4",
+          "A5",
+          "B4",
+          "B5",
+          "Folio",
+          "Quarto",
+          "10x14",
+          (char *) NULL
+        };
 
       /*
         Request page geometry from user.
@@ -13052,8 +13072,8 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
 static Image *XTileImage(Display *display,XResourceInfo *resource_info,
   XWindows *windows,Image *image,XEvent *event,ExceptionInfo *exception)
 {
-  static const char
-    *VerbMenu[] =
+  const char
+    *const VerbMenu[] =
     {
       "Load",
       "Next",
@@ -14073,8 +14093,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
 #define MagickMenus  10
 #define MagickTitle  "Commands"
 
-  static const char
-    *CommandMenu[] =
+  const char
+    *const CommandMenu[] =
     {
       "File",
       "Edit",
@@ -14088,7 +14108,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       "Help",
       (char *) NULL
     },
-    *FileMenu[] =
+    *const FileMenu[] =
     {
       "Open...",
       "Next",
@@ -14102,7 +14122,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       "Quit",
       (char *) NULL
     },
-    *EditMenu[] =
+    *const EditMenu[] =
     {
       "Undo",
       "Redo",
@@ -14111,7 +14131,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       "Paste",
       (char *) NULL
     },
-    *ViewMenu[] =
+    *const ViewMenu[] =
     {
       "Half Size",
       "Original Size",
@@ -14122,7 +14142,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       "Restore",
       (char *) NULL
     },
-    *TransformMenu[] =
+    *const TransformMenu[] =
     {
       "Crop",
       "Chop",
@@ -14136,7 +14156,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       "Trim Edges",
       (char *) NULL
     },
-    *EnhanceMenu[] =
+    *const EnhanceMenu[] =
     {
       "Hue...",
       "Saturation...",
@@ -14154,7 +14174,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       "Quantize...",
       (char *) NULL
     },
-    *EffectsMenu[] =
+    *const EffectsMenu[] =
     {
       "Despeckle",
       "Emboss",
@@ -14170,7 +14190,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       "Segment...",
       (char *) NULL
     },
-    *FXMenu[] =
+    *const FXMenu[] =
     {
       "Solarize...",
       "Sepia Tone...",
@@ -14182,7 +14202,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       "Charcoal Draw...",
       (char *) NULL
     },
-    *ImageEditMenu[] =
+    *const ImageEditMenu[] =
     {
       "Annotate...",
       "Draw...",
@@ -14196,7 +14216,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       "Region of Interest...",
       (char *) NULL
     },
-    *MiscellanyMenu[] =
+    *const MiscellanyMenu[] =
     {
       "Image Info",
       "Zoom Image",
@@ -14208,14 +14228,14 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       "Preferences...",
       (char *) NULL
     },
-    *HelpMenu[] =
+    *const HelpMenu[] =
     {
       "Overview",
       "Browse Documentation",
       "About Display",
       (char *) NULL
     },
-    *ShortCutsMenu[] =
+    *const ShortCutsMenu[] =
     {
       "Next",
       "Former",
@@ -14228,7 +14248,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       "Quit",
       (char *) NULL
     },
-    *VirtualMenu[] =
+    *const VirtualMenu[] =
     {
       "Image Info",
       "Print",
@@ -14237,8 +14257,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       (char *) NULL
     };
 
-  static const char
-    **Menus[MagickMenus] =
+  const char
+    *const *Menus[MagickMenus] =
     {
       FileMenu,
       EditMenu,
@@ -14950,8 +14970,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     resource_info->client_name);
   windows->magnify.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
-  (void) FormatLocaleString(windows->magnify.name,MagickPathExtent,"Magnify %uX",
-    resource_info->magnify);
+  (void) FormatLocaleString(windows->magnify.name,MagickPathExtent,
+    "Magnify %uX",resource_info->magnify);
   if (windows->magnify.cursor != (Cursor) NULL)
     (void) XFreeCursor(display,windows->magnify.cursor);
   windows->magnify.cursor=XMakeCursor(display,windows->image.id,
@@ -15289,11 +15309,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           }
         if (event.xbutton.window == windows->magnify.id)
           {
-            int
-              factor;
-
-            static const char
-              *MagnifyMenu[] =
+            const char
+              *const MagnifyMenu[] =
               {
                 "2",
                 "4",
@@ -15305,6 +15322,9 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 "3",
                 (char *) NULL,
               };
+
+            int
+              factor;
 
             static KeySym
               MagnifyCommands[] =
