@@ -118,9 +118,9 @@ typedef struct
 }
 MATHeader;
 
-static const char *MonthsTab[12]={"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
-static const char *DayOfWTab[7]={"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
-static const char *OsDesc=
+static const char MonthsTab[12][4] = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+static const char DayOfWTab[7][4] = {"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
+static const char OsDesc[] =
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
     "PCWIN";
 #else
