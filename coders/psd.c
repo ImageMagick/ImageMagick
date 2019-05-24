@@ -1093,6 +1093,7 @@ static MagickBooleanType ReadPSDChannelRaw(Image *image,const size_t channels,
   if (pixels == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
+  (void) memset(pixels,0,row_size*sizeof(*pixels));
 
   status=MagickTrue;
   for (y=0; y < (ssize_t) image->rows; y++)
