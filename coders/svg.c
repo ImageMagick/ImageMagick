@@ -1376,9 +1376,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"x") == 0)
             {
-              if (LocaleCompare((char *) name,"tspan") != 0)
-                svg_info->bounds.x=GetUserSpaceCoordinateValue(svg_info,1,
-                  value)-svg_info->center.x;
+              svg_info->bounds.x=GetUserSpaceCoordinateValue(svg_info,1,value)-
+                svg_info->center.x;
               break;
             }
           if (LocaleCompare(keyword,"x1") == 0)
@@ -1400,9 +1399,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"y") == 0)
             {
-              if (LocaleCompare((char *) name,"tspan") != 0)
-                svg_info->bounds.y=GetUserSpaceCoordinateValue(svg_info,-1,
-                  value)-svg_info->center.y;
+              svg_info->bounds.y=GetUserSpaceCoordinateValue(svg_info,-1,value)-
+                svg_info->center.y;
               break;
             }
           if (LocaleCompare(keyword,"y1") == 0)
@@ -1622,6 +1620,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
               char
                 *text;
 
+              SVGStripString(MagickTrue,svg_info->text);
               text=EscapeString(svg_info->text,'\"');
               (void) FormatLocaleFile(svg_info->file,"text %g,%g \"%s\"\n",
                 svg_info->bounds.x-svg_info->center.x,svg_info->bounds.y-
@@ -2326,8 +2325,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
                         affine.ty=svg_info->bounds.y-x*
                           sin(DegreesToRadians(fmod(angle,360.0)))+y*
                           cos(DegreesToRadians(fmod(angle,360.0)));
-                        affine.tx-=x/2.0;
-                        affine.ty-=y/2.0;
+                        affine.tx-=x;
+                        affine.ty-=y;
                         break;
                       }
                     break;

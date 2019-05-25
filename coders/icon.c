@@ -953,8 +953,10 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   next=(images != (Image *) NULL) ? images : image;
   do
   {
-    (void) WriteBlobByte(image,icon_file.directory[scene].width);
-    (void) WriteBlobByte(image,icon_file.directory[scene].height);
+   (void) WriteBlobByte(image,icon_file.directory[scene].width == 256 ? 
+      0 : icon_file.directory[scene].width);
+    (void) WriteBlobByte(image,icon_file.directory[scene].height == 256 ?
+      0 : icon_file.directory[scene].height);
     (void) WriteBlobByte(image,icon_file.directory[scene].colors);
     (void) WriteBlobByte(image,icon_file.directory[scene].reserved);
     (void) WriteBlobLSBShort(image,icon_file.directory[scene].planes);
