@@ -1,5 +1,5 @@
 2019-05-26  7.0.8-47 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.8-47, GIT revision 15...
+  * Release ImageMagick version 7.0.8-47, GIT revision 15681:5cffc6cbb:20190526
 
 2019-05-19  7.0.8-47 Cristy  <quetzlzacatenango@image...>
   * Support 16 and 32 bit tiled float TIFF images.
