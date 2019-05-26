@@ -169,7 +169,7 @@ typedef struct _SVGInfo
 
   BoundingBox
     bounds,
-    center,
+    text_offset,
     view_box;
 
   PointInfo
@@ -1376,8 +1376,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"x") == 0)
             {
-              svg_info->bounds.x=GetUserSpaceCoordinateValue(svg_info,1,value)-
-                svg_info->center.x;
+              svg_info->bounds.x=GetUserSpaceCoordinateValue(svg_info,1,value);
               break;
             }
           if (LocaleCompare(keyword,"x1") == 0)
@@ -1399,8 +1398,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"y") == 0)
             {
-              svg_info->bounds.y=GetUserSpaceCoordinateValue(svg_info,-1,value)-
-                svg_info->center.y;
+              svg_info->bounds.y=GetUserSpaceCoordinateValue(svg_info,-1,value);
               break;
             }
           if (LocaleCompare(keyword,"y1") == 0)
@@ -1603,10 +1601,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           PushGraphicContext(id);
           (void) FormatLocaleFile(svg_info->file,"class \"text\"\n");
-          (void) FormatLocaleFile(svg_info->file,"translate %g,%g\n",
-            svg_info->bounds.x,svg_info->bounds.y);
-          svg_info->center.x=svg_info->bounds.x;
-          svg_info->center.y=svg_info->bounds.y;
+          svg_info->text_offset.x=svg_info->bounds.x;
+          svg_info->text_offset.y=svg_info->bounds.y;
           svg_info->bounds.x=0.0;
           svg_info->bounds.y=0.0;
           svg_info->bounds.width=0.0;
@@ -1623,8 +1619,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
               SVGStripString(MagickTrue,svg_info->text);
               text=EscapeString(svg_info->text,'\"');
               (void) FormatLocaleFile(svg_info->file,"text %g,%g \"%s\"\n",
-                svg_info->bounds.x-svg_info->center.x,svg_info->bounds.y-
-                svg_info->center.y,text);
+                svg_info->text_offset.x,svg_info->text_offset.y,text);
               text=DestroyString(text);
               *svg_info->text='\0';
             }
@@ -1741,6 +1736,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
 
               dx=GetUserSpaceCoordinateValue(svg_info,1,value);
               svg_info->bounds.x+=dx;
+              svg_info->text_offset.x+=dx;
               if (LocaleCompare((char *) name,"text") == 0)
                 (void) FormatLocaleFile(svg_info->file,"translate %g,0.0\n",dx);
               break;
@@ -1752,6 +1748,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
 
               dy=GetUserSpaceCoordinateValue(svg_info,-1,value);
               svg_info->bounds.y+=dy;
+              svg_info->text_offset.y+=dy;
               if (LocaleCompare((char *) name,"text") == 0)
                 (void) FormatLocaleFile(svg_info->file,"translate 0.0,%g\n",dy);
               break;
@@ -2850,11 +2847,10 @@ static void SVGEndElement(void *context,const xmlChar *name)
 
               SVGStripString(MagickTrue,svg_info->text);
               text=EscapeString(svg_info->text,'\"');
-              (void) FormatLocaleFile(svg_info->file,"text 0,0 \"%s\"\n",text);
+              (void) FormatLocaleFile(svg_info->file,"text %g,%g \"%s\"\n",
+                svg_info->text_offset.x,svg_info->text_offset.y,text);
               text=DestroyString(text);
               *svg_info->text='\0';
-              svg_info->center.x=0.0;
-              svg_info->center.y=0.0;
             }
           (void) FormatLocaleFile(svg_info->file,"pop graphic-context\n");
           break;
@@ -2869,8 +2865,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
               (void) FormatLocaleFile(svg_info->file,"class \"tspan\"\n");
               text=EscapeString(svg_info->text,'\"');
               (void) FormatLocaleFile(svg_info->file,"text %g,%g \"%s\"\n",
-                svg_info->bounds.x-svg_info->center.x,svg_info->bounds.y-
-                svg_info->center.y,text);
+                svg_info->bounds.x,svg_info->bounds.y,text);
               text=DestroyString(text);
               *svg_info->text='\0';
             }
@@ -5067,7 +5062,8 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
         primitive_info[i].coordinates=0;
         primitive_info[j].coordinates++;
         i++;
-        (void) CopyMagickString(message,"  <polygon points=\"",MagickPathExtent);
+        (void) CopyMagickString(message,"  <polygon points=\"",
+          MagickPathExtent);
         (void) WriteBlobString(image,message);
         length=strlen(message);
         for ( ; j < i; j++)
