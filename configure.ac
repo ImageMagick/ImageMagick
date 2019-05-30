@@ -1182,10 +1182,10 @@ AC_TRY_COMPILE([],
    [{ const char *func = __FUNCTION__; return(func != 0 ? 0 : 1); }],
    AC_MSG_RESULT([yes])
    AC_DEFINE(__func__, __FUNCTION__,
-     [Define to appropriate substitue if compiler does not have __func__]),
+     [Define to appropriate substitute if compiler does not have __func__]),
    AC_MSG_RESULT([no])
    AC_DEFINE(__func__, __FILE__,
-     [Define to appropriate substitue if compiler does not have __func__])))
+     [Define to appropriate substitute if compiler does not have __func__])))
 
 ########
 #
