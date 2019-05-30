@@ -123,7 +123,7 @@ MagickExport ExceptionInfo *AcquireExceptionInfo(void)
   return(exception);
 }
 
-/*l
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
