@@ -1033,6 +1033,7 @@ static char *TranslateEvent(const char *module,const char *function,
         %e   event
         %f   function
         %g   generation
+        %i   thread id
         %l   line
         %m   module
         %n   log name
@@ -1095,6 +1096,11 @@ static char *TranslateEvent(const char *module,const char *function,
           }
         q+=FormatLocaleString(q,extent,"%.20g",(double) (log_info->generation %
           log_info->generations));
+        break;
+      }
+      case 'i':
+      {
+        q += FormatLocaleString(q, extent, "%.20g", (double) GetMagickThreadSignature());
         break;
       }
       case 'l':
