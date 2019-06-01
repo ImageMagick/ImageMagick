@@ -1,3 +1,10 @@
+2019-06-01  7.0.8-48 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-48, GIT revision 15
+
+2019-06-01  7.0.8-48 Cristy  <quetzlzacatenango@image...>
+  * Fix transient convolution bug (reference
+    https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=36119).
+
 2019-05-26  7.0.8-47 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-47, GIT revision 15681:5cffc6cbb:20190526
 

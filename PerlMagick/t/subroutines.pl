@@ -969,19 +969,6 @@ sub testMontage {
       $ref_32 = $ref_16;
     }
 
-  if (Image::Magick->new()->QuantumDepth == 32)
-    {
-      $ref_signature=$ref_32;
-    }
-  elsif (Image::Magick->new()->QuantumDepth == 16)
-    {
-      $ref_signature=$ref_16;
-    }
-  else
-    {
-      $ref_signature=$ref_8;
-    }
-
   # Create image for image list
   $images=Image::Magick->new;
 
@@ -1037,10 +1024,10 @@ sub testMontage {
     # $montage->Display();
     $signature=$montage->GetAttribute('signature');
     if ( defined( $signature ) ) {
-      if ( $signature ne $ref_signature ) {
+      if ( $signature ne $ref_8 && $signature ne $ref_16 && $signature ne $ref_32 ) {
         print "ReadImage()\n";
         print "Test $test, signatures do not match.\n";
-      	print "     Expected: $ref_signature\n";
+      	print "     Expected: $ref_8\n";
       	print "     Computed: $signature\n";
         print "     Depth:    ", Image::Magick->new()->QuantumDepth, "\n";
         $status = $montage->Write("test_${test}_out.miff");
