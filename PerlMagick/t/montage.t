@@ -142,7 +142,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', shadow=>'True', texture=>'granite:'/,
-  '0de019cb1e17fb9d3e60e6ae3931c6d384859613c3fc930cfef46720cae8237',
+  '0de019cb1e17fb9d3e60e6ae3931c6d384859613c3fc930cfef46720cae8237e',
   '4774caea304139483a3f50a8b94690c7503ccbea89c0ae698e8bb8996d0cfda8');
 
 #
