@@ -13301,7 +13301,8 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
   p=(char *) blob;
   for (i=0; i < (ssize_t) length ; i++)
   {
-    (void) FormatLocaleString(buffer,MagickPathExtent,"0x%02X, ",*p & 0xff);
+    (void) FormatLocaleString(buffer,MagickPathExtent,"0x%02X%s",*p & 0xff,
+      (i+1) < (ssize_t) length ? ", " : "");
     (void) WriteBlobString(image,buffer);
     if (((i+1) % 12) == 0)
       {

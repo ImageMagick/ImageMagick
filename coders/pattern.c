@@ -841,21 +841,18 @@ static const unsigned char
     0x10, 0x20, 0x40, 0x80, 0x40, 0x20, 0x10, 0x08, 0x10, 0x20, 0x40, 0x80
   };
 
-typedef struct _PatternInfo
+static const struct
 {
   char
-    name[MagickPathExtent],
-    magick[MagickPathExtent];
+    name[21],
+    magick[4];
 
   const void
     *blob;
 
   size_t
     extent;
-} PatternInfo;
-
-static const PatternInfo
-  PatternImageList[] =
+} PatternImageList[] =
   {
     { "BRICKS", "PBM", BricksImage, sizeof(BricksImage) },
     { "CHECKERBOARD", "GIF", CheckerboardImage, sizeof(CheckerboardImage) },
@@ -903,19 +900,14 @@ static const PatternInfo
     { "RIGHT30", "PBM", Right30Image, sizeof(Right30Image) },
     { "RIGHT45", "PBM", Right45Image, sizeof(Right45Image) },
     { "RIGHTSHINGLE", "PBM", RightShingleImage, sizeof(RightShingleImage) },
-    { "SMALLFISHSCALES", "PBM", SmallFishScalesImage,
-      sizeof(SmallFishScalesImage) },
+    { "SMALLFISHSCALES", "PBM", SmallFishScalesImage, sizeof(SmallFishScalesImage) },
     { "VERTICAL", "PBM", VerticalImage, sizeof(VerticalImage) },
     { "VERTICAL2", "PBM", Vertical2Image, sizeof(Vertical2Image) },
     { "VERTICAL3", "PBM", Vertical3Image, sizeof(Vertical3Image) },
-    { "VERTICALBRICKS", "PBM", VerticalBricksImage,
-      sizeof(VerticalBricksImage) },
-    { "VERTICALLEFTSHINGLE", "PBM", VerticalLeftShingleImage,
-      sizeof(VerticalLeftShingleImage) },
-    { "VERTICALRIGHTSHINGLE", "PBM", VerticalRightShingleImage,
-      sizeof(VerticalRightShingleImage) },
-    { "VERTICALSAW", "PBM", VerticalSawImage, sizeof(VerticalSawImage) },
-    { "", "", (const void *) NULL, 0 }
+    { "VERTICALBRICKS", "PBM", VerticalBricksImage, sizeof(VerticalBricksImage) },
+    { "VERTICALLEFTSHINGLE", "PBM", VerticalLeftShingleImage, sizeof(VerticalLeftShingleImage) },
+    { "VERTICALRIGHTSHINGLE", "PBM", VerticalRightShingleImage, sizeof(VerticalRightShingleImage) },
+    { "VERTICALSAW", "PBM", VerticalSawImage, sizeof(VerticalSawImage) }
   };
 
 /*
@@ -967,7 +959,7 @@ static Image *ReadPATTERNImage(const ImageInfo *image_info,
   image=(Image *) NULL;
   blob=(const void *) NULL;
   extent=0;
-  for (i=0; PatternImageList[i].blob != (const void *) NULL; i++)
+  for (i=0; i < (ssize_t) (sizeof(PatternImageList)/sizeof(PatternImageList[0])); i++)
     if (LocaleCompare(blob_info->filename,PatternImageList[i].name) == 0)
       {
         (void) CopyMagickString(blob_info->magick,PatternImageList[i].magick,
