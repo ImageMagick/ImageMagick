@@ -2731,7 +2731,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             pixel=bias;
             gamma=0.0;
             count=0;
-            if ((image->alpha_trait & BlendPixelTrait) == 0)
+            if (((image->alpha_trait & BlendPixelTrait) == 0) ||
+                ((morphology_traits & BlendPixelTrait) == 0))
               for (v=0; v < (ssize_t) kernel->height; v++)
               {
                 if (!IsNaN(*k))
@@ -2930,7 +2931,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                  http://www.cs.umd.edu/~djacobs/CMSC426/Convolution.pdf
             */
             k=(&kernel->values[kernel->width*kernel->height-1]);
-            if ((image->alpha_trait & BlendPixelTrait) == 0)
+            if (((image->alpha_trait & BlendPixelTrait) == 0) ||
+                ((morphology_traits & BlendPixelTrait) == 0))
               {
                 /*
                   No alpha blending.
