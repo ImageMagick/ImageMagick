@@ -449,9 +449,9 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
     ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
   length=fwrite("\376\000\003\000\001\000\000\000\000\000\000\000",1,12,file);
   length=fwrite("\000\001\004\000\001\000\000\000",1,8,file);
-  length=WriteLSBLong(file,image->columns);
+  length=WriteLSBLong(file,(unsigned int) image->columns);
   length=fwrite("\001\001\004\000\001\000\000\000",1,8,file);
-  length=WriteLSBLong(file,image->rows);
+  length=WriteLSBLong(file,(unsigned int) image->rows);
   length=fwrite("\002\001\003\000\001\000\000\000\001\000\000\000",1,12,file);
   length=fwrite("\003\001\003\000\001\000\000\000\004\000\000\000",1,12,file);
   length=fwrite("\006\001\003\000\001\000\000\000\000\000\000\000",1,12,file);
@@ -462,7 +462,7 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
   length=WriteLSBLong(file,(unsigned int) image_info->orientation);
   length=fwrite("\025\001\003\000\001\000\000\000\001\000\000\000",1,12,file);
   length=fwrite("\026\001\004\000\001\000\000\000",1,8,file);
-  length=WriteLSBLong(file,image->rows);
+  length=WriteLSBLong(file,(unsigned int) image->rows);
   length=fwrite("\027\001\004\000\001\000\000\000\000\000\000\000",1,12,file);
   offset=(ssize_t) ftell(file)-4;
   length=fwrite("\032\001\005\000\001\000\000\000",1,8,file);
