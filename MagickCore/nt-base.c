@@ -1722,6 +1722,7 @@ MagickExport MagickBooleanType NTLongPathsEnabled()
         &registry_key);
       if (status != ERROR_SUCCESS)
       {
+        RegCloseKey(registry_key);
         long_paths_enabled=0;
         return(MagickFalse);
       }
@@ -1730,11 +1731,13 @@ MagickExport MagickBooleanType NTLongPathsEnabled()
         NULL);
       if ((status != ERROR_SUCCESS) || (type != REG_DWORD))
       {
+        RegCloseKey(registry_key);
         long_paths_enabled=0;
         return(MagickFalse);
       }
       status=RegQueryValueExA(registry_key,"LongPathsEnabled",0,&type,&value,
         &size);
+      RegCloseKey(registry_key);
       if (status != ERROR_SUCCESS)
       {
         long_paths_enabled=0;
