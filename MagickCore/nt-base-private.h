@@ -147,6 +147,9 @@ extern MagickPrivate MagickBooleanType
   NTGetModulePath(const char *,char *),
   NTReportEvent(const char *,const MagickBooleanType);
 
+extern MagickExport MagickBooleanType
+  NTLongPathsEnabled();
+
 extern MagickPrivate struct dirent
   *NTReadDirectory(DIR *);
 

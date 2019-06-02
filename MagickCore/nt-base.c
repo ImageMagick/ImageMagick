@@ -120,7 +120,9 @@ static SemaphoreInfo
 static WSADATA
   *wsaData = (WSADATA*) NULL;
 
-
+static size_t
+  long_paths_enabled = 2;
+
 struct
 {
   const HKEY
@@ -1678,6 +1680,69 @@ MagickPrivate void NTInitializeWinsock(MagickBooleanType use_lock)
     }
   if (use_lock)
     UnlockSemaphoreInfo(winsock_semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   N T L o n g P a t h s E n a b l e d                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  NTLongPathsEnabled() returns a boolean indicating whether long paths are
+$  enabled.
+%
+%  The format of the NTLongPathsEnabled method is:
+%
+%      MagickBooleanType NTLongPathsEnabled()
+%
+*/
+MagickExport MagickBooleanType NTLongPathsEnabled()
+{
+  if (long_paths_enabled == 2)
+    {
+      DWORD
+        size,
+        type,
+        value;
+
+      HKEY
+        registry_key;
+
+      LONG
+        status;
+
+      registry_key=(HKEY) INVALID_HANDLE_VALUE;
+      status=RegOpenKeyExA(HKEY_LOCAL_MACHINE,
+        "SYSTEM\\CurrentControlSet\\Control\\FileSystem",0,KEY_READ,
+        &registry_key);
+      if (status != ERROR_SUCCESS)
+      {
+        long_paths_enabled=0;
+        return(MagickFalse);
+      }
+      value=(PVOID) NULL;
+      status=RegQueryValueExA(registry_key,"LongPathsEnabled",0,&type,NULL,
+        NULL);
+      if ((status != ERROR_SUCCESS) || (type != REG_DWORD))
+      {
+        long_paths_enabled=0;
+        return(MagickFalse);
+      }
+      status=RegQueryValueExA(registry_key,"LongPathsEnabled",0,&type,&value,
+        &size);
+      if (status != ERROR_SUCCESS)
+      {
+        long_paths_enabled=0;
+        return(MagickFalse);
+      }
+      long_paths_enabled=(size_t)value;
+    }
+  return(long_paths_enabled == 1 ? MagickTrue : MagickFalse);
 }
 
 /*
