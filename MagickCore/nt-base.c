@@ -119,7 +119,8 @@ static SemaphoreInfo
 
 static WSADATA
   *wsaData = (WSADATA*) NULL;
-
+
+
 struct
 {
   const HKEY
@@ -2571,6 +2572,7 @@ MagickPrivate ssize_t NTSystemConfiguration(int name)
 */
 MagickPrivate ssize_t NTTellDirectory(DIR *entry)
 {
+  magick_unreferenced(entry);
   assert(entry != (DIR *) NULL);
   return(0);
 }
