@@ -955,7 +955,7 @@ LosslessReduceDepthOK(Image *image,ExceptionInfo *exception)
 }
 #endif /* MAGICKCORE_QUANTUM_DEPTH >= 16 */
 
-static const char* PngColorTypeToString(const unsigned int color_type)
+static const char *PngColorTypeToString(const unsigned int color_type)
 {
   const char
     *result = "Unknown";

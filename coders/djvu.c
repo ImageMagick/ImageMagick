@@ -186,8 +186,7 @@ pump_data_until_message(LoadContext *lc,Image *image) /* ddjvu_context_t *contex
 #define DEBUG 0
 
 #if DEBUG
-static const char*
-message_tag_name(ddjvu_message_tag_t tag)
+static const char *message_tag_name(ddjvu_message_tag_t tag)
 {
    static char* names[] =
       {

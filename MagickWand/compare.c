@@ -688,7 +688,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
             gravity=ParseCommandOption(MagickGravityOptions,MagickFalse,
-              argv[i]); 
+              argv[i]);
             if (gravity < 0)
               ThrowCompareException(OptionError,"UnrecognizedGravityType",
                 argv[i]);
