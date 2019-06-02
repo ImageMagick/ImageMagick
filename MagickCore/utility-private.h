@@ -68,7 +68,7 @@ static inline wchar_t *create_wchar_path(const char *utf8)
     *wideChar;
 
   count=MultiByteToWideChar(CP_UTF8,0,utf8,-1,NULL,0);
-  if (count > MAX_PATH)
+  if ((count > MAX_PATH) && (NTLongPathsEnabled() == MagickFalse))
     {
       char
         buffer[MagickPathExtent];
