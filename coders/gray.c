@@ -717,7 +717,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e g i s t e r G R A Y I m a g e                                           %
+%   R e g i s t e r G R A Y I m a g e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
