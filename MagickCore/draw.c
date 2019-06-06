@@ -2513,7 +2513,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
     primitive=AcquireString(draw_info->primitive);
   else
     if ((strlen(draw_info->primitive) > 1) &&
-        (*(draw_info->primitive+1) != '-'))
+        (*(draw_info->primitive+1) != '-') && (depth == 1))
       primitive=FileToString(draw_info->primitive+1,~0UL,exception);
   if (primitive == (char *) NULL)
     return(MagickFalse);
