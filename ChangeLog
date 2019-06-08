@@ -1,5 +1,5 @@
-2019-07-01  7.0.8-49 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.8-49, GIT revision 15...
+2019-06-08  7.0.8-49 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-49, GIT revision 15708:6d7e1db:20190608
 
 2019-06-03  7.0.8-49 Cristy  <quetzlzacatenango@image...>
   * Add support for RGB565 image format (reference
