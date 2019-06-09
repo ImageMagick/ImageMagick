@@ -1271,7 +1271,7 @@ ModuleExport size_t RegisterRGBImage(void)
   entry->flags|=CoderEndianSupportFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("RGB","RGB565",
-    "Raw red, green, blue, and opacity samples in 565 format");
+    "Raw red, green, blue samples in 565 format");
   entry->decoder=(DecodeImageHandler *) ReadRGB565Image;
   entry->flags|=CoderRawSupportFlag;
   entry->flags|=CoderEndianSupportFlag;
