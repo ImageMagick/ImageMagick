@@ -288,6 +288,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     (void) SetImageColorspace(image,sRGBColorspace,exception);
   status=MagickTrue;
+  (void) memset(&metrics,0,sizeof(metrics));
   for (i=0; textlist[i] != (char *) NULL; i++)
   {
     /*
@@ -296,7 +297,8 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
     annotate_info->affine.tx=geometry_info.xi-image->page.x;
     annotate_info->affine.ty=geometry_info.psi-image->page.y;
     (void) CloneString(&annotate->text,textlist[i]);
-    (void) GetTypeMetrics(image,annotate,&metrics,exception);
+    if ((metrics.width == 0) || (annotate->gravity != NorthWestGravity))
+      (void) GetTypeMetrics(image,annotate,&metrics,exception);
     height=(ssize_t) (metrics.ascent-metrics.descent+
       draw_info->interline_spacing+0.5);
     switch (annotate->gravity)
