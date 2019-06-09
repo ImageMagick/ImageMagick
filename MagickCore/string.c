@@ -2298,7 +2298,7 @@ MagickExport char *StringToken(const char *delimiters,char **string)
 */
 MagickExport char **StringToList(const char *text)
 {
-  return(StringToStrings(text, (size_t *) NULL));
+  return(StringToStrings(text,(size_t *) NULL));
 }
 
 /*
