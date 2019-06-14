@@ -670,6 +670,7 @@ ModuleExport void UnregisterHEICImage(void)
 */
 
 #if defined(MAGICKCORE_HEIC_DELEGATE) && !defined(MAGICKCORE_WINDOWS_SUPPORT)
+#if LIBHEIF_NUMERIC_VERSION >= 0x01030000
 static void WriteProfile(struct heif_context *context,Image *image,
   ExceptionInfo *exception)
 {
@@ -753,6 +754,7 @@ static void WriteProfile(struct heif_context *context,Image *image,
   custom_profile=DestroyStringInfo(custom_profile);
   heif_image_handle_release(image_handle);
 }
+#endif
 
 static struct heif_error heif_write_func(struct heif_context *context,
   const void* data,size_t size,void* userdata)
@@ -941,8 +943,10 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
       break;
     writer.writer_api_version=1;
     writer.write=heif_write_func;
+#if LIBHEIF_NUMERIC_VERSION >= 0x01030000
     if (image->profiles != (void *) NULL)
       WriteProfile(heif_context, image, exception);
+#endif
     error=heif_context_write(heif_context,&writer,image);
     status=IsHeifSuccess(&error,image,exception);
     if (status == MagickFalse)
