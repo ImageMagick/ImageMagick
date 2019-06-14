@@ -447,17 +447,18 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
     Decode HEIF file
   */
   heif_context=heif_context_alloc();
-  error=heif_context_read_from_memory(heif_context,file_data,length,NULL);
-  file_data=RelinquishMagickMemory(file_data);
+  error=heif_context_read_from_memory_without_copy(heif_context,file_data,length,NULL);
   if (IsHeifSuccess(&error,image,exception) == MagickFalse)
     {
       heif_context_free(heif_context);
+      file_data=RelinquishMagickMemory(file_data);
       return(DestroyImageList(image));
     }
   error=heif_context_get_primary_image_ID(heif_context,&primary_image_id);
   if (IsHeifSuccess(&error,image,exception) == MagickFalse)
     {
       heif_context_free(heif_context);
+      file_data=RelinquishMagickMemory(file_data);
       return(DestroyImageList(image));
     }
   status=ReadHEICImageByID(image_info,image,heif_context,primary_image_id,
@@ -504,6 +505,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   if (image_ids != (heif_item_id *) NULL)
     (void) RelinquishMagickMemory(image_ids);
   heif_context_free(heif_context);
+  file_data=RelinquishMagickMemory(file_data);
   if (status == MagickFalse)
     return(DestroyImageList(image));
   /*
