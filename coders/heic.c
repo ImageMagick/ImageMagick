@@ -941,8 +941,8 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
       break;
     writer.writer_api_version=1;
     writer.write=heif_write_func;
-  	if (image->profiles != (void *) NULL)
-    	WriteProfile(heif_context, image, exception);
+    if (image->profiles != (void *) NULL)
+      WriteProfile(heif_context, image, exception);
     error=heif_context_write(heif_context,&writer,image);
     status=IsHeifSuccess(&error,image,exception);
     if (status == MagickFalse)
