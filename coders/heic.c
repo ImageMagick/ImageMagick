@@ -240,15 +240,26 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
   return(MagickTrue);
 }
 
+static inline MagickBooleanType HEICSkipImage(const ImageInfo *image_info,
+  Image *image)
+{
+  if (image_info->number_scenes == 0)
+    return(MagickFalse);
+  if (image->scene == 0)
+    return(MagickFalse);
+  if (image->scene < image_info->scene)
+    return(MagickTrue);
+  if (image->scene > image_info->scene+image_info->number_scenes-1)
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
 static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
   Image *image,struct heif_context *heif_context,heif_item_id image_id,
   ExceptionInfo *exception)
 {
   const char
     *option;
-
-  const StringInfo
-    *profile;
 
   int
     stride_y,
@@ -300,9 +311,11 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
   if (image_info->ping != MagickFalse)
     {
       image->colorspace=YCbCrColorspace;
-      profile=GetImageProfile(image,"icc");
-      if (profile != (const StringInfo *) NULL)
-        image->colorspace=sRGBColorspace;
+      heif_image_handle_release(image_handle);
+      return(MagickTrue);
+    }
+  if (HEICSkipImage(image_info,image) != MagickFalse)
+    {
       heif_image_handle_release(image_handle);
       return(MagickTrue);
     }
@@ -373,16 +386,17 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
   }
   heif_image_release(heif_image);
   heif_image_handle_release(image_handle);
-  profile=GetImageProfile(image,"icc");
-  if (profile != (const StringInfo *) NULL)
-    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   return(MagickTrue);
 }
 
 static Image *ReadHEICImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+  const StringInfo
+    *profile;
+
   heif_item_id
+    *image_ids,
     primary_image_id;
 
   Image
@@ -392,6 +406,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
     status;
 
   size_t
+    count,
     length;
 
   struct heif_context
@@ -447,10 +462,74 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
     }
   status=ReadHEICImageByID(image_info,image,heif_context,primary_image_id,
     exception);
+  image_ids=(heif_item_id *) NULL;
+  count=(size_t) heif_context_get_number_of_top_level_images(heif_context);
+  if ((status != MagickFalse) && (count > 1))
+    {
+      register size_t
+        i;
+
+      image_ids=(heif_item_id *) AcquireQuantumMemory((size_t) count,
+        sizeof(*image_ids));
+      if (image_ids == (heif_item_id *) NULL)
+        {
+          heif_context_free(heif_context);
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        }
+      (void) heif_context_get_list_of_top_level_image_IDs(heif_context,
+        image_ids,count);
+      for (i=0; i < count; i++)
+      {
+        if (image_ids[i] == primary_image_id)
+          continue;
+        /*
+          Allocate next image structure.
+        */
+        AcquireNextImage(image_info,image,exception);
+        if (GetNextImageInList(image) == (Image *) NULL)
+          {
+            status=MagickFalse;
+            break;
+          }
+        image=SyncNextImageInList(image);
+        status=ReadHEICImageByID(image_info,image,heif_context,image_ids[i],
+          exception);
+        if (status == MagickFalse)
+          break;
+        if (image_info->number_scenes != 0)
+          if (image->scene >= (image_info->scene+image_info->number_scenes-1))
+            break;
+      }
+    }
+  if (image_ids != (heif_item_id *) NULL)
+    (void) RelinquishMagickMemory(image_ids);
   heif_context_free(heif_context);
   if (status == MagickFalse)
     return(DestroyImageList(image));
-  return(GetFirstImageInList(image));
+  /*
+    Change image colorspace if it contains a color profile.
+  */
+  image=GetFirstImageInList(image);
+  profile=GetImageProfile(image,"icc");
+  if (profile != (const StringInfo *) NULL)
+    {
+      Image
+        *next;
+
+      next=image;
+      while (next != (Image *) NULL)
+      {
+        if (HEICSkipImage(image_info,next) != MagickFalse)
+          {
+            if (image_info->ping == MagickFalse)
+              (void) TransformImageColorspace(next,sRGBColorspace,exception);
+            else
+              next->colorspace=sRGBColorspace;
+          }
+        next=GetNextImageInList(next);
+      }
+    }
+  return(image);
 }
 #endif
 
@@ -534,7 +613,6 @@ ModuleExport size_t RegisterHEICImage(void)
   entry->version=ConstantString(LIBHEIF_VERSION);
 #endif
   entry->flags|=CoderDecoderSeekableStreamFlag;
-  entry->flags^=CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

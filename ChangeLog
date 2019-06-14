@@ -1,3 +1,6 @@
+2019-06-14  7.0.8-50 Dirk Lemstra <dirk@lem.....org>
+  * Added support for reading all images from a HEIC image.
+
 2019-06-08  7.0.8-49 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-49, GIT revision 15708:6d7e1db:20190608
 
