@@ -447,7 +447,8 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
     Decode HEIF file
   */
   heif_context=heif_context_alloc();
-  error=heif_context_read_from_memory_without_copy(heif_context,file_data,length,NULL);
+  error=heif_context_read_from_memory_without_copy(heif_context,file_data,
+    length,NULL);
   if (IsHeifSuccess(&error,image,exception) == MagickFalse)
     {
       heif_context_free(heif_context);
