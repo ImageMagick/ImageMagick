@@ -930,8 +930,6 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Handle ICO mask.
       */
-      image->storage_class=DirectClass;
-      image->alpha_trait=BlendPixelTrait;
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         register ssize_t
@@ -947,15 +945,23 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           c=ReadBlobByte(image);
           for (bit=0; bit < 8; bit++)
+          {
+            if (c & (0x80 >> bit))
+              image->alpha_trait=BlendPixelTrait;
             SetPixelAlpha(image,c & (0x80 >> bit) ? TransparentAlpha :
               OpaqueAlpha,q+x*GetPixelChannels(image)+bit);
+          }
         }
         if ((image->columns % 8) != 0)
           {
             c=ReadBlobByte(image);
             for (bit=0; bit < (ssize_t) (image->columns % 8); bit++)
+            {
+              if (c & (0x80 >> bit))
+                image->alpha_trait=BlendPixelTrait;
               SetPixelAlpha(image,c & (0x80 >> bit) ? TransparentAlpha :
                 OpaqueAlpha,q+x*GetPixelChannels(image)+bit);
+            }
           }
         if (image->columns % 32)
           for (x=0; x < (ssize_t) ((32-(image->columns % 32))/8); x++)
