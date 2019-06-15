@@ -1077,7 +1077,7 @@
 # undef __CHAR_UNSIGNED__
 #endif
 
-/* Define to appropriate substitue if compiler does not have __func__ */
+/* Define to appropriate substitute if compiler does not have __func__ */
 #undef __func__
 
 /* Define to empty if `const' does not conform to ANSI C. */
