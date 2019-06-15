@@ -1,9 +1,9 @@
-#!/usr/bin/sh
+#! /bin/sh
 # depcomp - compile a program generating dependencies as side-effects
 
-scriptversion=2013-05-30.07; # UTC
+scriptversion=2018-03-07.03; # UTC
 
-# Copyright (C) 1999-2015 Free Software Foundation, Inc.
+# Copyright (C) 1999-2018 Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@ scriptversion=2013-05-30.07; # UTC
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # As a special exception to the GNU General Public License, if you
 # distribute this file as part of a program that contains a
@@ -249,6 +249,41 @@ hp)
   # looking at the text of this script.  This case will never be run,
   # since it is checked for above.
   exit 1
+  ;;
+
+sgi)
+  if test "$libtool" = yes; then
+    "$@" "-Wp,-MDupdate,$tmpdepfile"
+  else
+    "$@" -MDupdate "$tmpdepfile"
+  fi
+  stat=$?
+  if test $stat -ne 0; then
+    rm -f "$tmpdepfile"
+    exit $stat
+  fi
+  rm -f "$depfile"
+
+  if test -f "$tmpdepfile"; then  # yes, the sourcefile depend on other files
+    echo "$object : \\" > "$depfile"
+    # Clip off the initial element (the dependent).  Don't try to be
+    # clever and replace this with sed code, as IRIX sed won't handle
+    # lines with more than a fixed number of characters (4096 in
+    # IRIX 6.2 sed, 8192 in IRIX 6.5).  We also remove comment lines;
+    # the IRIX cc adds comments like '#:fec' to the end of the
+    # dependency line.
+    tr ' ' "$nl" < "$tmpdepfile" \
+      | sed -e 's/^.*\.o://' -e 's/#.*$//' -e '/^$/ d' \
+      | tr "$nl" ' ' >> "$depfile"
+    echo >> "$depfile"
+    # The second pass generates a dummy entry for each header file.
+    tr ' ' "$nl" < "$tmpdepfile" \
+      | sed -e 's/^.*\.o://' -e 's/#.*$//' -e '/^$/ d' -e 's/$/:/' \
+      >> "$depfile"
+  else
+    make_dummy_depfile
+  fi
+  rm -f "$tmpdepfile"
   ;;
 
 xlc)
@@ -748,9 +783,9 @@ exit 0
 # Local Variables:
 # mode: shell-script
 # sh-indentation: 2
-# eval: (add-hook 'write-file-hooks 'time-stamp)
+# eval: (add-hook 'before-save-hook 'time-stamp)
 # time-stamp-start: "scriptversion="
 # time-stamp-format: "%:y-%02m-%02d.%02H"
-# time-stamp-time-zone: "UTC"
+# time-stamp-time-zone: "UTC0"
 # time-stamp-end: "; # UTC"
 # End:
