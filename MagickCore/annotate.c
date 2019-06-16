@@ -274,7 +274,11 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
       number_lines++;
   textlist=AcquireQuantumMemory(number_lines+1,sizeof(*textlist));
   if (textlist == (char **) NULL)
-    return(MagickFalse);
+    {
+      annotate_info=DestroyDrawInfo(annotate_info);
+      annotate=DestroyDrawInfo(annotate);
+      return(MagickFalse);
+    }
   p=text;
   for (i=0; i < number_lines; i++)
   {
@@ -303,7 +307,12 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
       (void) ParseGeometry(annotate_info->geometry,&geometry_info);
     }
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-    return(MagickFalse);
+    {
+      annotate_info=DestroyDrawInfo(annotate_info);
+      annotate=DestroyDrawInfo(annotate);
+      textlist=(char **) RelinquishMagickMemory(textlist);
+      return(MagickFalse);
+    }
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     (void) SetImageColorspace(image,sRGBColorspace,exception);
   status=MagickTrue;
