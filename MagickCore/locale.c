@@ -66,7 +66,7 @@
 /*
   Define declarations.
 */
-#if defined(MAGICKCORE_HAVE_NEWLOCALE) || defined(MAGICKCORE_WINDOWS_SUPPORT)
+#if (defined(MAGICKCORE_HAVE_NEWLOCALE) || defined(MAGICKCORE_WINDOWS_SUPPORT)) && !defined(__MINGW32__)
 #  define MAGICKCORE_LOCALE_SUPPORT
 #endif
 #define LocaleFilename  "locale.xml"
