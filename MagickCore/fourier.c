@@ -245,10 +245,14 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
 
     if (status == MagickFalse)
       continue;
-    Ar=GetCacheViewVirtualPixels(Ar_view,0,y,Ar_image->columns,1,exception);
-    Ai=GetCacheViewVirtualPixels(Ai_view,0,y,Ai_image->columns,1,exception);
-    Br=GetCacheViewVirtualPixels(Br_view,0,y,Br_image->columns,1,exception);
-    Bi=GetCacheViewVirtualPixels(Bi_view,0,y,Bi_image->columns,1,exception);
+    Ar=GetCacheViewVirtualPixels(Ar_view,0,y,
+      MagickMax(Ar_image->columns,Cr_image->columns),1,exception);
+    Ai=GetCacheViewVirtualPixels(Ai_view,0,y,
+      MagickMax(Ai_image->columns,Ci_image->columns),1,exception);
+    Br=GetCacheViewVirtualPixels(Br_view,0,y,
+      MagickMax(Br_image->columns,Cr_image->columns),1,exception);
+    Bi=GetCacheViewVirtualPixels(Bi_view,0,y,
+      MagickMax(Bi_image->columns,Ci_image->columns),1,exception);
     Cr=QueueCacheViewAuthenticPixels(Cr_view,0,y,Cr_image->columns,1,exception);
     Ci=QueueCacheViewAuthenticPixels(Ci_view,0,y,Ci_image->columns,1,exception);
     if ((Ar == (const Quantum *) NULL) || (Ai == (const Quantum *) NULL) || 
