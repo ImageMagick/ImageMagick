@@ -5528,6 +5528,7 @@ MagickPrivate MagickBooleanType XMakeImage(Display *display,
       segment_info[1].shmaddr=(char *) NULL;
       ximage=XShmCreateImage(display,window->visual,(unsigned int) depth,format,
         (char *) NULL,&segment_info[1],width,height);
+      length=0;
       if (ximage == (XImage *) NULL)
         window->shared_memory=MagickFalse;
       else
