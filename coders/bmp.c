@@ -1694,6 +1694,9 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
+  if (((image->columns << 3) != (int) (image->columns << 3)) ||
+      ((image->rows << 3) != (int) (image->rows << 3)))
+    ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
   type=4;
   if (LocaleCompare(image_info->magick,"BMP2") == 0)
     type=2;
