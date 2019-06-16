@@ -6,6 +6,10 @@
     https://github.com/ImageMagick/ImageMagick/issues/1391).
  * Heap-buffer-overflow in MagickCore/fourier.c (reference
    https://github.com/ImageMagick/ImageMagick/issues/1588).
+  * Fixed a number of issues (reference
+    https://imagemagick.org/discourse-server/viewforum.php?f=3).
+  * Fixed a number of issues (reference
+    https://github.com/ImageMagick/ImageMagick/issues).
 
 2019-06-08  7.0.8-49 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-49, GIT revision 15708:6d7e1db:20190608

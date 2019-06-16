@@ -2125,7 +2125,8 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image,
             custom_profile),(unsigned int) (length+tag_length+roundup));
         }
       }
-    if (LocaleCompare(name,"XMP") == 0)
+   if ((LocaleCompare(name,"XMP") == 0) &&
+       (GetStringInfoLength(profile) <= 65502))
       {
         StringInfo
           *xmp_profile;
