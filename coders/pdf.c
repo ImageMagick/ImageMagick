@@ -380,7 +380,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define DeviceCMYK  "DeviceCMYK"
 #define EndXMPPacket  "<?xpacket end="
 #define MediaBox  "MediaBox"
-#define RenderPostscriptText  "Rendering Postscript...  "
 #define PDFRotate  "Rotate"
 #define SpotColor  "Separation"
 #define TrimBox  "TrimBox"
