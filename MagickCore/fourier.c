@@ -164,6 +164,9 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
   MagickOffsetType
     progress;
 
+  size_t
+    number_channels;
+
   ssize_t
     y;
 
@@ -216,6 +219,10 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
     }
   Cr_image=complex_images;
   Ci_image=complex_images->next;
+  number_channels=MagickMin(MagickMin(MagickMin(
+    Ar_image->number_channels,Ai_image->number_channels),MagickMin(
+    Br_image->number_channels,Bi_image->number_channels)),MagickMin(
+    Cr_image->number_channels,Ci_image->number_channels));
   Ar_view=AcquireVirtualCacheView(Ar_image,exception);
   Ai_view=AcquireVirtualCacheView(Ai_image,exception);
   Br_view=AcquireVirtualCacheView(Br_image,exception);
@@ -263,7 +270,7 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) GetPixelChannels(Cr_image); i++)
+      for (i=0; i < (ssize_t) number_channels; i++)
       {
         switch (op)
         {
