@@ -673,13 +673,15 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
       /*
         Probe hash table.
       */
+      next_pixel=MagickFalse;
+      displacement=1;
       index=(Quantum) ((size_t) GetPixelIndex(image,p) & 0xff);
       p+=GetPixelChannels(image);
       k=(ssize_t) (((size_t) index << (MaxGIFBits-8))+waiting_code);
       if (k >= MaxHashTable)
         k-=MaxHashTable;
-      next_pixel=MagickFalse;
-      displacement=1;
+      if (k < 0)
+        continue;
       if (hash_code[k] > 0)
         {
           if ((hash_prefix[k] == waiting_code) &&
