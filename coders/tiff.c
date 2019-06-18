@@ -258,6 +258,12 @@ static MagickOffsetType TIFFSeekCustomStream(const MagickOffsetType offset,
     }
     case SEEK_CUR:
     {
+      if (((offset > 0) && (profile->offset > (SSIZE_MAX-offset))) ||
+          ((offset < 0) && (profile->offset < (-SSIZE_MAX-offset))))
+        {
+          errno=EOVERFLOW;
+          return(-1);
+        }
       if ((profile->offset+offset) < 0)
         return(-1);
       profile->offset+=offset;
