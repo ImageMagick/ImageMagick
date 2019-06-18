@@ -3868,7 +3868,10 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           reconstruct_image=RemoveFirstImageFromList(&_images);
           /* FUTURE - produce Exception, rather than silent fail */
           if (reconstruct_image == (Image *) NULL)
-            break;
+            { 
+              image=DestroyImage(image);
+              break;
+            }
           metric=UndefinedErrorMetric;
           option=GetImageOption(_image_info,"metric");
           if (option != (const char *) NULL)
