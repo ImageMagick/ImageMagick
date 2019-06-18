@@ -1506,7 +1506,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (GetNextImageInList(image) == (Image *) NULL)
           {
             status=MagickFalse;
-            return((Image *) NULL);
+            break;
           }
         image=SyncNextImageInList(image);
         status=SetImageProgress(image,LoadImagesTag,TellBlob(image),
