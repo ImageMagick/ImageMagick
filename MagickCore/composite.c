@@ -654,18 +654,19 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               q+=GetPixelChannels(image);
               continue;
             }
-          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+          for (i=0; i < (ssize_t) GetPixelChannels(source_image); i++)
           {
-            PixelChannel channel = GetPixelChannelChannel(image,i);
-            PixelTrait traits = GetPixelChannelTraits(image,channel);
-            PixelTrait source_traits=GetPixelChannelTraits(source_image,
+            PixelChannel channel = GetPixelChannelChannel(source_image,i);
+            PixelTrait source_traits = GetPixelChannelTraits(source_image,
               channel);
-            if (traits == UndefinedPixelTrait)
+            PixelTrait traits = GetPixelChannelTraits(image,channel);
+            if (source_traits == UndefinedPixelTrait)
               continue;
-            if (source_traits != UndefinedPixelTrait)
+            if (traits != UndefinedPixelTrait)
               SetPixelChannel(image,channel,p[i],q);
-            else if (channel == AlphaPixelChannel)
-              SetPixelChannel(image,channel,OpaqueAlpha,q);
+            else
+              if (channel == AlphaPixelChannel)
+                SetPixelChannel(image,channel,OpaqueAlpha,q);
           }
           p+=GetPixelChannels(source_image);
           q+=GetPixelChannels(image);
