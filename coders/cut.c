@@ -552,6 +552,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   BImgBuff=(unsigned char *) AcquireQuantumMemory((size_t) ldblk,
     sizeof(*BImgBuff));  /*Ldblk was set in the check phase*/
   if(BImgBuff==NULL) goto NoMemory;
+  (void) memset(BImgBuff,0,(size_t) ldblk*sizeof(*BImgBuff));
 
   offset=SeekBlob(image,6 /*sizeof(Header)*/,SEEK_SET);
   if (offset < 0)
