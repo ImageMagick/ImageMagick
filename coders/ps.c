@@ -744,6 +744,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
             "InvalidGeometry","`%s'",option);
+          page_geometry=DestroyString(page_geometry);
           image=DestroyImage(image);
           return((Image *) NULL);
         }
