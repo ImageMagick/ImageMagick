@@ -3090,12 +3090,10 @@ static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,
       uint32
         rows_per_strip;
 
+      rows_per_strip=0;  /* use default */
       option=GetImageOption(image_info,"tiff:rows-per-strip");
       if (option != (const char *) NULL)
         rows_per_strip=(size_t) strtol(option,(char **) NULL,10);
-      else
-        if (TIFFGetField(tiff,TIFFTAG_IMAGELENGTH,&rows_per_strip) == 0)
-          rows_per_strip=0;  /* use default */
       rows_per_strip=TIFFDefaultStripSize(tiff,rows_per_strip);
       (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,rows_per_strip);
       return(MagickTrue);
