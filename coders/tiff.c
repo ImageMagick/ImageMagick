@@ -2636,7 +2636,6 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->flags|=CoderEndianSupportFlag;
   entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags|=CoderEncoderSeekableStreamFlag;
-  entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderUseExtensionFlag;
   if (*version != '\0')
     entry->version=ConstantString(version);
