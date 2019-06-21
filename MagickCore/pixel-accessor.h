@@ -111,7 +111,7 @@ static inline PixelTrait GetPixelCbTraits(const Image *magick_restrict image)
 static inline Quantum GetPixelChannel(const Image *magick_restrict image,
   const PixelChannel channel,const Quantum *magick_restrict pixel)
 {
-  if (image->channel_map[channel].traits == UndefinedPixelTrait)
+  if (image->channel_map[image->channel_map[channel].offset].traits == UndefinedPixelTrait)
     return((Quantum) 0);
   return(pixel[image->channel_map[channel].offset]);
 }
