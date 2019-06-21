@@ -1109,7 +1109,7 @@ static void XEditText(Display *display,XWidgetInfo *text_info,
         {
           text_info->cursor--;
           (void) memmove(text_info->cursor,text_info->cursor+1,
-            MagickPathExtent);
+            strlen(text_info->cursor+1)+1);
           text_info->highlight=MagickFalse;
           break;
         }
