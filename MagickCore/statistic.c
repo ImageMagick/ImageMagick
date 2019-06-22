@@ -137,13 +137,19 @@ typedef struct _PixelChannels
     channel[CompositePixelChannel];
 } PixelChannels;
 
-static PixelChannels **DestroyPixelThreadSet(PixelChannels **pixels)
+static PixelChannels **DestroyPixelThreadSet(const Image *images,
+  PixelChannels **pixels)
 {
   register ssize_t
     i;
 
+  size_t
+    rows;
+
   assert(pixels != (PixelChannels **) NULL);
-  for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
+  rows=MagickMax(GetImageListLength(images),
+    (size_t) GetMagickResourceLimit(ThreadResource));
+  for (i=0; i < (ssize_t) rows; i++)
     if (pixels[i] != (PixelChannels *) NULL)
       pixels[i]=(PixelChannels *) RelinquishMagickMemory(pixels[i]);
   pixels=(PixelChannels **) RelinquishMagickMemory(pixels);
@@ -170,6 +176,7 @@ static PixelChannels **AcquirePixelThreadSet(const Image *images)
   pixels=(PixelChannels **) AcquireQuantumMemory(rows,sizeof(*pixels));
   if (pixels == (PixelChannels **) NULL)
     return((PixelChannels **) NULL);
+  (void) memset(pixels,0,rows*sizeof(*pixels));
   columns=MaxPixelChannels;
   for (next=images; next != (Image *) NULL; next=next->next)
     columns=MagickMax(next->columns,columns);
@@ -180,7 +187,7 @@ static PixelChannels **AcquirePixelThreadSet(const Image *images)
 
     pixels[i]=(PixelChannels *) AcquireQuantumMemory(columns,sizeof(**pixels));
     if (pixels[i] == (PixelChannels *) NULL)
-      return(DestroyPixelThreadSet(pixels));
+      return(DestroyPixelThreadSet(images,pixels));
     for (j=0; j < (ssize_t) columns; j++)
     {
       register ssize_t
@@ -767,7 +774,7 @@ MagickExport Image *EvaluateImages(const Image *images,
       }
     }
   evaluate_view=DestroyCacheView(evaluate_view);
-  evaluate_pixels=DestroyPixelThreadSet(evaluate_pixels);
+  evaluate_pixels=DestroyPixelThreadSet(images,evaluate_pixels);
   random_info=DestroyRandomInfoThreadSet(random_info);
   if (status == MagickFalse)
     image=DestroyImage(image);
@@ -2348,7 +2355,7 @@ MagickExport Image *PolynomialImage(const Image *images,
       }
   }
   polynomial_view=DestroyCacheView(polynomial_view);
-  polynomial_pixels=DestroyPixelThreadSet(polynomial_pixels);
+  polynomial_pixels=DestroyPixelThreadSet(images,polynomial_pixels);
   if (status == MagickFalse)
     image=DestroyImage(image);
   return(image);
