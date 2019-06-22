@@ -1666,7 +1666,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
       (void) ConcatenateString(&(*metadata),text);
       text=DestroyString(text);
     }
-  images=DestroyImage(images);
+  images=DestroyImageList(images);
   RelinquishCompositeOptions(&composite_options);
   DestroyComposite();
   return(status != 0 ? MagickTrue : MagickFalse);
