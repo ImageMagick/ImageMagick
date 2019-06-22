@@ -177,7 +177,7 @@ static PixelChannels **AcquirePixelThreadSet(const Image *images)
   if (pixels == (PixelChannels **) NULL)
     return((PixelChannels **) NULL);
   (void) memset(pixels,0,rows*sizeof(*pixels));
-  columns=MaxPixelChannels;
+  columns=MagickMax(GetImageListLength(images),MaxPixelChannels);
   for (next=images; next != (Image *) NULL; next=next->next)
     columns=MagickMax(next->columns,columns);
   for (i=0; i < (ssize_t) rows; i++)
