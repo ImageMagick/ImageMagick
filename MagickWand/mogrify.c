@@ -7909,7 +7909,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             if (difference_image == (Image *) NULL)
               break;
             if (*images != (Image *) NULL)
-              *images=DestroyImage(*images);
+              *images=DestroyImageList(*images);
             *images=difference_image;
             break;
           }
@@ -8031,7 +8031,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                       CopyAlphaCompositeOp,MagickTrue,0,0,exception);
                     status&=CompositeImage(clone_image,new_images,
                       OverCompositeOp,clip_to_self,0,0,exception);
-                    new_images=DestroyImage(new_images);
+                    new_images=DestroyImageList(new_images);
                     new_images=clone_image;
                   }
                 mask_image=DestroyImage(mask_image);
@@ -8039,7 +8039,6 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             source_image=DestroyImage(source_image);
             *images=DestroyImageList(*images);
             *images=new_images;
-
             break;
           }
         if (LocaleCompare("copy",option+1) == 0)
@@ -8264,7 +8263,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             if (fourier_image == (Image *) NULL)
               break;
             if (*images != (Image *) NULL)
-              *images=DestroyImage(*images);
+              *images=DestroyImageList(*images);
             *images=fourier_image;
             break;
           }
