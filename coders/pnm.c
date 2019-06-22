@@ -1824,14 +1824,14 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                 count=(ssize_t) FormatLocaleString(buffer,MagickPathExtent,
                   "%u ",ScaleQuantumToLong(index));
             extent=(size_t) count;
-            (void) strncpy((char *) q,buffer,extent);
-            q+=extent;
-            if ((q-pixels+extent+2) >= sizeof(pixels))
+            if ((q-pixels+extent+1) >= sizeof(pixels))
               {
                 *q++='\n';
                 (void) WriteBlob(image,q-pixels,pixels);
                 q=pixels;
               }
+            (void) strncpy((char *) q,buffer,extent);
+            q+=extent;
             p+=GetPixelChannels(image);
           }
           *q++='\n';
@@ -1899,14 +1899,14 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                   ScaleQuantumToLong(GetPixelGreen(image,p)),
                   ScaleQuantumToLong(GetPixelBlue(image,p)));
             extent=(size_t) count;
-            (void) strncpy((char *) q,buffer,extent);
-            q+=extent;
             if ((q-pixels+extent+2) >= sizeof(pixels))
               {
                 *q++='\n';
                 (void) WriteBlob(image,q-pixels,pixels);
                 q=pixels;
               }
+            (void) strncpy((char *) q,buffer,extent);
+            q+=extent;
             p+=GetPixelChannels(image);
           }
           *q++='\n';
