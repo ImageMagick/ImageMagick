@@ -1826,7 +1826,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
             extent=(size_t) count;
             (void) strncpy((char *) q,buffer,extent);
             q+=extent;
-            if ((q-pixels+extent+1) >= sizeof(pixels))
+            if ((q-pixels+extent+2) >= sizeof(pixels))
               {
                 *q++='\n';
                 (void) WriteBlob(image,q-pixels,pixels);
@@ -1901,7 +1901,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
             extent=(size_t) count;
             (void) strncpy((char *) q,buffer,extent);
             q+=extent;
-            if ((q-pixels+extent+1) >= sizeof(pixels))
+            if ((q-pixels+extent+2) >= sizeof(pixels))
               {
                 *q++='\n';
                 (void) WriteBlob(image,q-pixels,pixels);
