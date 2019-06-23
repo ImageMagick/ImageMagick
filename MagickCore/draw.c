@@ -2562,6 +2562,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
   cursor=0.0;
   macros=GetMVGMacros(primitive);
   status=MagickTrue;
+  status=QueryColorCompliance(token,AllCompliance,&stops[0].color,exception);
   for (q=primitive; *q != '\0'; )
   {
     /*
@@ -2583,6 +2584,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
     primitive_type=UndefinedPrimitive;
     current=graphic_context[n]->affine;
     GetAffineMatrix(&affine);
+    (void) memset(token,0,primitive_extent+1);
     switch (*keyword)
     {
       case ';':
