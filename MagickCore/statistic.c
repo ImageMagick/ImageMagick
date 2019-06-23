@@ -582,15 +582,15 @@ MagickExport Image *EvaluateImages(const Image *images,
             for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
             {
               PixelChannel channel = GetPixelChannelChannel(image,i);
-              PixelTrait evaluate_traits=GetPixelChannelTraits(image,channel);
               PixelTrait traits = GetPixelChannelTraits(next,channel);
+              PixelTrait evaluate_traits = GetPixelChannelTraits(image,channel);
               if ((traits == UndefinedPixelTrait) ||
                   (evaluate_traits == UndefinedPixelTrait))
                 continue;
               if ((traits & UpdatePixelTrait) == 0)
                 continue;
               evaluate_pixel[j].channel[i]=ApplyEvaluateOperator(
-                random_info[id],GetPixelChannel(image,channel,p),op,
+                random_info[id],GetPixelChannel(next,channel,p),op,
                 evaluate_pixel[j].channel[i]);
             }
             image_view=DestroyCacheView(image_view);
@@ -687,14 +687,14 @@ MagickExport Image *EvaluateImages(const Image *images,
             {
               PixelChannel channel = GetPixelChannelChannel(image,i);
               PixelTrait traits = GetPixelChannelTraits(next,channel);
-              PixelTrait evaluate_traits=GetPixelChannelTraits(image,channel);
+              PixelTrait evaluate_traits = GetPixelChannelTraits(image,channel);
               if ((traits == UndefinedPixelTrait) ||
                   (evaluate_traits == UndefinedPixelTrait))
                 continue;
               if ((traits & UpdatePixelTrait) == 0)
                 continue;
               evaluate_pixel[x].channel[i]=ApplyEvaluateOperator(
-                random_info[id],GetPixelChannel(image,channel,p),j == 0 ?
+                random_info[id],GetPixelChannel(next,channel,p),j == 0 ?
                 AddEvaluateOperator : op,evaluate_pixel[x].channel[i]);
             }
             p+=GetPixelChannels(next);
