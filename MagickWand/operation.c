@@ -4171,7 +4171,10 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
             {
                index_image=GetImageFromList(_images,index-1);
                if (index_image == (Image *) NULL)
-                 CLIWandExceptArgBreak(OptionError,"NoSuchImage",option,arg1);
+                 {
+                   insert_image=DestroyImage(insert_image);
+                   CLIWandExceptArgBreak(OptionError,"NoSuchImage",option,arg1);
+                 }
               InsertImageInList(&index_image,insert_image);
             }
           _images=GetFirstImageInList(index_image);
