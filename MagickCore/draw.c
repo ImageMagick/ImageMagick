@@ -2562,7 +2562,6 @@ static MagickBooleanType RenderMVGContent(Image *image,
   cursor=0.0;
   macros=GetMVGMacros(primitive);
   status=MagickTrue;
-  status=QueryColorCompliance(token,AllCompliance,&stops[0].color,exception);
   for (q=primitive; *q != '\0'; )
   {
     /*
