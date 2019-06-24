@@ -14724,29 +14724,30 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
 
       title=InterpretImageProperties(resource_info->image_info,display_image,
         resource_info->title,exception);
-      (void) CopyMagickString(windows->image.name,title,MagickPathExtent);
-      (void) CopyMagickString(windows->image.icon_name,title,MagickPathExtent);
+      (void) CloneString(&windows->image.name,title);
+      (void) CloneString(&windows->image.icon_name,title);
       title=DestroyString(title);
     }
   else
     {
       char
-        filename[MagickPathExtent];
+        filename[MagickPathExtent],
+        window_name[MagickPathExtent];
 
       /*
         Window name is the base of the filename.
       */
       GetPathComponent(display_image->magick_filename,TailPath,filename);
       if (display_image->scene == 0)
-        (void) FormatLocaleString(windows->image.name,MagickPathExtent,
-          "%s: %s",MagickPackageName,filename);
+        (void) FormatLocaleString(window_name,MagickPathExtent,"%s: %s",
+          MagickPackageName,filename);
       else
-        (void) FormatLocaleString(windows->image.name,MagickPathExtent,
+        (void) FormatLocaleString(window_name,MagickPathExtent,
           "%s: %s[scene: %.20g frames: %.20g]",MagickPackageName,filename,
           (double) display_image->scene,(double) GetImageListLength(
           display_image));
-      (void) CopyMagickString(windows->image.icon_name,filename,
-        MagickPathExtent);
+      (void) CloneString(&windows->image.name,window_name);
+      (void) CloneString(&windows->image.icon_name,filename);
     }
   if (resource_info->immutable)
     windows->image.immutable=MagickTrue;
