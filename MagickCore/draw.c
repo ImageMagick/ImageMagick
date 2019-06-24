@@ -2583,7 +2583,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
     primitive_type=UndefinedPrimitive;
     current=graphic_context[n]->affine;
     GetAffineMatrix(&affine);
-    (void) memset(token,0,primitive_extent+1);
+    *token='\0';
     switch (*keyword)
     {
       case ';':
