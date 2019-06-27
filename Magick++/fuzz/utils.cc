@@ -9,6 +9,10 @@
 class FuzzingInitializer {
 public:
   FuzzingInitializer() {
+
+    // Disable SIMD in jpeg turbo.
+    (void) putenv(const_cast<char *>("JSIMD_FORCENONE=1"));
+
     Magick::InitializeMagick((const char *) NULL);
     Magick::SecurityPolicy::maxMemoryRequest(256000000);
     Magick::ResourceLimits::memory(1000000000);
