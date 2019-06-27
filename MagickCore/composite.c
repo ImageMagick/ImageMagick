@@ -611,6 +611,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         break;
       if ((y_offset+(ssize_t) source_image->rows) > (ssize_t) image->rows)
         break;
+      if ((source_image->alpha_trait == UndefinedPixelTrait) &&
+          (image->alpha_trait != UndefinedPixelTrait))
+        (void) SetImageAlphaChannel(source_image,OpaqueAlphaChannel,exception);
       status=MagickTrue;
       source_view=AcquireVirtualCacheView(source_image,exception);
       image_view=AcquireAuthenticCacheView(image,exception);
@@ -660,13 +663,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             PixelTrait source_traits = GetPixelChannelTraits(source_image,
               channel);
             PixelTrait traits = GetPixelChannelTraits(image,channel);
-            if (traits == UndefinedPixelTrait)
+            if ((source_traits == UndefinedPixelTrait) ||
+                (traits == UndefinedPixelTrait))
               continue;
-            if (source_traits != UndefinedPixelTrait)
-              SetPixelChannel(image,channel,p[i],q);
-            else
-              if (channel == AlphaPixelChannel)
-                SetPixelChannel(image,channel,OpaqueAlpha,q);
+            SetPixelChannel(image,channel,p[i],q);
           }
           p+=GetPixelChannels(source_image);
           q+=GetPixelChannels(image);
