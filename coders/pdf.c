@@ -434,7 +434,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     delta;
 
   RectangleInfo
-    bounding_box,
     page;
 
   register char
@@ -517,7 +516,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   trimbox=IsStringTrue(GetImageOption(image_info,"pdf:use-trimbox"));
   count=0;
   spotcolor=0;
-  (void) memset(&bounding_box,0,sizeof(bounding_box));
   (void) memset(&bounds,0,sizeof(bounds));
   (void) memset(&hires_bounds,0,sizeof(hires_bounds));
   (void) memset(command,0,sizeof(command));
