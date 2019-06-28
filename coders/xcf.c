@@ -716,6 +716,9 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
     and we can simply return.
   */
   offset=GetXCFOffset(image,inDocInfo);
+  if (EOFBlob(image) != MagickFalse)
+    ThrowBinaryException(CorruptImageError,"UnexpectedEndOfFile",
+      image->filename);
   if (offset == 0)
     return(MagickTrue);
   /*
