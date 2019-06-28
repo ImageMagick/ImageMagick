@@ -1429,7 +1429,6 @@ RestoreMSCWarning
         create_date[MagickPathExtent],
         modify_date[MagickPathExtent],
         timestamp[MagickPathExtent],
-        *url,
         xmp_profile[MagickPathExtent];
 
       /*
