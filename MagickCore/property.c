@@ -1642,7 +1642,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
                 directory_stack[level].offset=tag_offset2;
                 directory_stack[level].entry=0;
                 level++;
-                if ((directory+2+(12*number_entries)) > (exif+length))
+                if ((directory+2+(12*number_entries)+4) > (exif+length))
                   break;
                 tag_offset1=(ssize_t) ReadPropertySignedLong(endian,directory+
                   2+(12*number_entries));
