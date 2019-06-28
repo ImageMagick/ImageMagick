@@ -1169,15 +1169,15 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   MagickTrue : MagickFalse;
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "    Reading GIF application extension");
-                info=(unsigned char *) AcquireQuantumMemory(255UL,
-                  sizeof(*info));
+                reserved_length=255;
+                info=(unsigned char *) AcquireQuantumMemory((size_t)
+                  reserved_length,sizeof(*info));
                 if (info == (unsigned char *) NULL)
                   ThrowGIFException(ResourceLimitError,
                     "MemoryAllocationFailed");
-                reserved_length=255;
                 for (info_length=0; ; )
                 {
-                  block_length=(int) ReadBlobBlock(image,&info[info_length]);
+                  block_length=(int) ReadBlobBlock(image,info+info_length);
                   if (block_length == 0)
                     break;
                   info_length+=block_length;
