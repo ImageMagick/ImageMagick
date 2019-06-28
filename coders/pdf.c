@@ -429,7 +429,7 @@ static char *MovePDFBuffer(PDFBuffer *buffer)
   ssize_t
     i;
 
-  i=1; // Skip first to avoid reload of buffer;
+  i=1; /* Skip first to avoid reload of buffer; */
   while ((ssize_t)buffer->offset != buffer->count)
     buffer->data[i++] = buffer->data[buffer->offset++];
   buffer->count=ReadBlob(buffer->image,sizeof(buffer->data)-i,
