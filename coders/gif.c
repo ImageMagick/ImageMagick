@@ -1174,7 +1174,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (info == (unsigned char *) NULL)
                   ThrowGIFException(ResourceLimitError,
                     "MemoryAllocationFailed");
-                (void) memset(info,0,255UL*sizeof(*info));
                 reserved_length=255;
                 for (info_length=0; ; )
                 {
