@@ -1,10 +1,17 @@
+2019-06-25  7.0.8-51 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-51, GIT revision 15778:4a60519:20190623
+
+2019-06-24  7.0.8-51 Cristy  <quetzlzacatenango@image...>
+  * Clone rather than copy X window name/icon.
+  * Optimize PDF reader.
+
 2019-06-23  7.0.8-50 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-50, GIT revision 15778:4a60519:20190623
 
 2019-06-14  7.0.8-50 Dirk Lemstra <dirk@lem.....org>
- * Added support for reading all images from a HEIC image (reference
+  * Added support for reading all images from a HEIC image (reference
     https://github.com/ImageMagick/ImageMagick/issues/1391).
- * Heap-buffer-overflow in MagickCore/fourier.c (reference
+  * Heap-buffer-overflow in MagickCore/fourier.c (reference
    https://github.com/ImageMagick/ImageMagick/issues/1588).
   * Fixed a number of issues (reference
     https://imagemagick.org/discourse-server/viewforum.php?f=3).
