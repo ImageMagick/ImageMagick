@@ -82,15 +82,14 @@ static inline MagickSizeType StringToMagickSizeType(const char *string,
   return((MagickSizeType) value);
 }
 
-static inline size_t StringToSizeType(const char *string,
-  const double interval)
+static inline size_t StringToSizeType(const char *string,const double interval)
 {
   double
     value;
 
   value=SiPrefixToDoubleInterval(string,interval);
   if (value >= (double) MagickULLConstant(~0))
-    return((size_t) MagickULLConstant(~0));
+    return(~0UL);
   return((size_t) value);
 }
 
