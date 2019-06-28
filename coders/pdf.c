@@ -870,7 +870,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImage(image);
       return((Image *) NULL);
     }
-  write(file," ",1);
+  (void) write(file," ",1);
   file=close(file)-1;
   /*
     Render Postscript with the Ghostscript delegate.
