@@ -429,6 +429,7 @@ static void ReadPDFInfo(const ImageInfo *image_info,Image *image,PDFInfo *info,
   (void) memset(info,0,sizeof(*info));
   info->cmyk=image_info->colorspace == CMYKColorspace ? MagickTrue : MagickFalse;
   info->cropbox=IsStringTrue(GetImageOption(image_info,"pdf:use-cropbox"));
+  info->trimbox=IsStringTrue(GetImageOption(image_info,"pdf:use-trimbox"));
 
   spotcolor=0;
   (void) memset(buffer,0,sizeof(buffer));
