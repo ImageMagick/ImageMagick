@@ -4936,7 +4936,8 @@ MagickPrivate void SetPixelCacheMethods(Cache cache,CacheMethods *cache_methods)
 %      Quantum SetPixelCacheNexusPixels(
 %        const CacheInfo *magick_restrict cache_info,const MapMode mode,
 %        const ssize_t x,const ssize_t y,const size_t width,const size_t height,
-%        const MagickBooleanType buffered,NexusInfo *magick_restrict nexus_info,$        ExceptionInfo *exception)
+%        const MagickBooleanType buffered,NexusInfo *magick_restrict nexus_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
