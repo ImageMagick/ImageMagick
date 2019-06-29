@@ -1444,6 +1444,8 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
       format=(size_t) ReadPropertyUnsignedShort(endian,q+2);
       if (format >= (sizeof(tag_bytes)/sizeof(*tag_bytes)))
         break;
+      if (format == 0)
+        break;  /* corrupt EXIF */
       components=(ssize_t) ReadPropertySignedLong(endian,q+4);
       if (components < 0)
         break;  /* corrupt EXIF */
