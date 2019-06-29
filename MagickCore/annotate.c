@@ -239,6 +239,9 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
   MagickBooleanType
     status;
 
+  PixelInfo
+    pixel;
+
   PointInfo
     offset;
 
@@ -496,7 +499,11 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
     annotate_info->affine.tx=offset.x;
     annotate_info->affine.ty=offset.y;
 
-    (void) QueryColorname(image,&annotate_info->fill,AllCompliance,color,exception);
+    pixel=annotate_info->fill;
+    if (annotate_info->stroke.alpha != TransparentAlpha)
+      pixel = annotate_info->stroke;
+
+    (void) QueryColorname(image,&pixel,AllCompliance,color,exception);
     (void) FormatLocaleString(primitive,MagickPathExtent,"stroke %s "
       "stroke-width %g "
       "line 0,0 %g,0",color,(double) metrics.underline_thickness,(double) metrics.width);
