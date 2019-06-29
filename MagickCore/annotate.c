@@ -224,6 +224,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
 {
   char
     *p,
+    color[MagickPathExtent],
     primitive[MagickPathExtent],
     *text,
     **textlist;
@@ -237,6 +238,9 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
 
   MagickBooleanType
     status;
+
+  PixelInfo
+    pixel;
 
   PointInfo
     offset;
@@ -494,8 +498,19 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
       }
     annotate_info->affine.tx=offset.x;
     annotate_info->affine.ty=offset.y;
-    (void) FormatLocaleString(primitive,MagickPathExtent,"stroke-width %g "
-      "line 0,0 %g,0",metrics.underline_thickness,metrics.width);
+
+    pixel=annotate_info->fill;
+    if (annotate_info->stroke.alpha != TransparentAlpha)
+      pixel = annotate_info->stroke;
+
+    (void) QueryColorname(image,&pixel,AllCompliance,color,exception);
+    (void) FormatLocaleString(primitive,MagickPathExtent,"stroke %s "
+      "stroke-width %g "
+      "line 0,0 %g,0",color,(double) metrics.underline_thickness,(double) metrics.width);
+
+    /*
+      Annotate image with text.
+    */
     if (annotate->decorate == OverlineDecoration)
       {
         annotate_info->affine.ty-=(draw_info->affine.sy*(metrics.ascent+
@@ -503,27 +518,24 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
         (void) CloneString(&annotate_info->primitive,primitive);
         (void) DrawImage(image,annotate_info,exception);
       }
-    else
-      if (annotate->decorate == UnderlineDecoration)
-        {
-          annotate_info->affine.ty-=(draw_info->affine.sy*
-            metrics.underline_position);
-          (void) CloneString(&annotate_info->primitive,primitive);
-          (void) DrawImage(image,annotate_info,exception);
-        }
-    /*
-      Annotate image with text.
-    */
-    status=RenderType(image,annotate,&offset,&metrics,exception);
-    if (status == MagickFalse)
-      break;
-    if (annotate->decorate == LineThroughDecoration)
+    else if (annotate->decorate == UnderlineDecoration)
       {
-        annotate_info->affine.ty-=(draw_info->affine.sy*(height+
-          metrics.underline_position+metrics.descent)/2.0);
+        annotate_info->affine.ty-=(draw_info->affine.sy*
+          metrics.underline_position);
         (void) CloneString(&annotate_info->primitive,primitive);
         (void) DrawImage(image,annotate_info,exception);
       }
+    else if (annotate->decorate == LineThroughDecoration)
+      {
+        annotate_info->affine.ty-=(draw_info->affine.sy*(height+
+          metrics.underline_position+metrics.descent*2)/2.0);
+        (void) CloneString(&annotate_info->primitive,primitive);
+        (void) DrawImage(image,annotate_info,exception);
+      }
+
+    status=RenderType(image,annotate,&offset,&metrics,exception);
+    if (status == MagickFalse)
+      break;
   }
   /*
     Relinquish resources.
@@ -1464,8 +1476,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   metrics->bounds.y1=metrics->descent;
   metrics->bounds.x2=metrics->ascent+metrics->descent;
   metrics->bounds.y2=metrics->ascent+metrics->descent;
-  metrics->underline_position=face->underline_position/64.0;
-  metrics->underline_thickness=face->underline_thickness/64.0;
+  metrics->underline_position=face->underline_position*(metrics->pixels_per_em.x/face->units_per_EM);
+  metrics->underline_thickness=face->underline_thickness*(metrics->pixels_per_em.x/face->units_per_EM);
+
   if ((draw_info->text == (char *) NULL) || (*draw_info->text == '\0'))
     {
       (void) FT_Done_Face(face);
