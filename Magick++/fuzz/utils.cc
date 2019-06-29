@@ -14,6 +14,8 @@ public:
     (void) putenv(const_cast<char *>("JSIMD_FORCENONE=1"));
 
     Magick::InitializeMagick((const char *) NULL);
+    Magick::SecurityPolicy::anonymousCacheMemoryMap();
+    Magick::SecurityPolicy::anonymousSystemMemoryMap();
     Magick::SecurityPolicy::maxMemoryRequest(256000000);
     Magick::ResourceLimits::memory(1000000000);
     Magick::ResourceLimits::map(500000000);
