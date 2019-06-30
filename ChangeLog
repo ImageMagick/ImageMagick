@@ -1,5 +1,5 @@
-2019-06-25  7.0.8-51 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.8-51, GIT revision 15778:4a60519:20190623
+2019-06-30  7.0.8-51 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-51, GIT revision 15812:51f11c4:20190630.
 
 2019-06-24  7.0.8-51 Cristy  <quetzlzacatenango@image...>
   * Clone rather than copy X window name/icon.
