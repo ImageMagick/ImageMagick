@@ -1064,6 +1064,8 @@ static char *TranslateEvent(const char *module,const char *function,
         continue;
       }
     p++;
+    if (*p == '\0')
+      break;
     switch (*p)
     {
       case 'c':
@@ -1222,6 +1224,8 @@ static char *TranslateFilename(const LogInfo *log_info)
         continue;
       }
     p++;
+    if (*p == '\0')
+      break;
     switch (*p)
     {
       case '\0':
