@@ -2935,7 +2935,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
     case 'W':
     case 'w':
     {
-      if (LocaleNCompare(expression,"while",5) == 0)
+      if (LocaleNCompare(expression,"while(",6) == 0)
         {
           do
           {
