@@ -519,6 +519,9 @@
         <message name="ImageListRequired">
           une liste d'images est requise
         </message>
+        <message name="ImageSequenceRequired">
+          une séquence d'images est requise
+        </message>
         <message name="ImageSizeDiffers">
           différences dans la taille de l'image
         </message>
@@ -630,6 +633,9 @@
         </message>
         <message name="GeometryDoesNotContainImage">
           image non incluse dans la géométrie
+        </message>
+        <message name="ImageSequenceRequired">
+          une séquence d'images est requise
         </message>
         <message name="InterpretPropertyFailure">
           l'échec d'interpréter s'échappe de propriété d'image
