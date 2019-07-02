@@ -430,8 +430,8 @@ static char *MovePDFBuffer(PDFBuffer *buffer)
     i;
 
   i=1; /* Skip first to avoid reload of buffer; */
-  while ((ssize_t)buffer->offset != buffer->count)
-    buffer->data[i++] = buffer->data[buffer->offset++];
+  while ((ssize_t)buffer->offset < buffer->count)
+    buffer->data[i++]=buffer->data[buffer->offset++];
   buffer->count=ReadBlob(buffer->image,sizeof(buffer->data)-i,
     buffer->data+i);
   buffer->count+=i;
@@ -441,14 +441,15 @@ static char *MovePDFBuffer(PDFBuffer *buffer)
 
 static inline void CheckRemainingPDFBuffer(PDFBuffer *buffer,size_t length)
 {
-  if (buffer->offset + length > sizeof(buffer->data))
-    (void)MovePDFBuffer(buffer);
+  if (buffer->offset+length > sizeof(buffer->data))
+    (void) MovePDFBuffer(buffer);
 }
 
 static inline void SkipPDFBytes(PDFBuffer *buffer,size_t count)
 {
   CheckRemainingPDFBuffer(buffer,count);
-  buffer->offset+=count;
+  if (buffer->offset+count < buffer->count)
+    buffer->offset+=count;
 }
 
 static inline MagickBooleanType ComparePDFBuffer(const char *p,
