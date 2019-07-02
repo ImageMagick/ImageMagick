@@ -189,7 +189,7 @@ static const ExifInfo
     { EXIFTAG_FOCALPLANEXRESOLUTION, TIFF_RATIONAL, 0, "exif:FocalPlaneXResolution" },
     { EXIFTAG_FOCALPLANEYRESOLUTION, TIFF_RATIONAL, 0, "exif:FocalPlaneYResolution" },
     { EXIFTAG_FOCALPLANERESOLUTIONUNIT, TIFF_SHORT, 0, "exif:FocalPlaneResolutionUnit" },
-    { EXIFTAG_SUBJECTLOCATION, TIFF_SHORT, 0, "exif:SubjectLocation" },
+    { EXIFTAG_SUBJECTLOCATION, TIFF_SHORT, 2, "exif:SubjectLocation" },
     { EXIFTAG_EXPOSUREINDEX, TIFF_RATIONAL, 0, "exif:ExposureIndex" },
     { EXIFTAG_SENSINGMETHOD, TIFF_SHORT, 0, "exif:SensingMethod" },
     { EXIFTAG_FILESOURCE, TIFF_NOTYPE, 0, "exif:FileSource" },
@@ -859,6 +859,16 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
             if (TIFFGetField(tiff,exif_info[i].tag,&shorty,sans) == 1)
               (void) FormatLocaleString(value,MagickPathExtent,"%d",shorty);
           }
+        else if (exif_info[i].variable_length == 2)
+        {
+          uint16
+            *shorty;
+ 
+          shorty=0;
+          if ((TIFFGetField(tiff,exif_info[i].tag,&shorty,sans) == 1) &&
+              (shorty != (uint16 *) NULL))
+            (void) FormatLocaleString(value,MagickPathExtent,"%d",*shorty);
+        }
         else
           {
             int
