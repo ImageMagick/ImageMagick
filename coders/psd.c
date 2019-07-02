@@ -2917,7 +2917,8 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
   channels=1;
   if (separate == MagickFalse)
     {
-      if (next_image->storage_class != PseudoClass)
+      if ((next_image->storage_class != PseudoClass) ||
+          (IsImageGray(next_image) != MagickFalse))
         {
           if (IsImageGray(next_image) == MagickFalse)
             channels=(size_t) (next_image->colorspace == CMYKColorspace ? 4 :
