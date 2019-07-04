@@ -144,12 +144,12 @@ static MagickBooleanType IsEXR(const unsigned char *magick,const size_t length)
 */
 static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+  const ImfHeader
+    *hdr_info;
+
   ExrWindow
     data_window,
     display_window;
-
-  const ImfHeader
-    *hdr_info;
 
   Image
     *image;
