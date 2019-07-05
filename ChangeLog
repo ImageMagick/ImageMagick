@@ -1,5 +1,5 @@
-2019-07-01  7.0.8-52 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.8-52, GIT revision 15812:51f11c4:20190630.
+2019-07-05  7.0.8-52 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-52, GIT revision 15825:ea47310:20190705.
 
 2019-07-01  7.0.8-52 Cristy  <quetzlzacatenango@image...>
   * Eliminate buffer overflow in TranslateEvent() (reference
