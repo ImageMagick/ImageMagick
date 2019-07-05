@@ -1,3 +1,10 @@
+2019-07-05  7.0.8-53 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-53, GIT revision 15828:f5d59c0:20190705.
+
+2019-07-05  7.0.8-53 Cristy  <quetzlzacatenango@image...>
+   * Fix -fx parsing issue (reference
+     https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=36314).
+
 2019-07-05  7.0.8-52 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-52, GIT revision 15825:ea47310:20190705.
 
