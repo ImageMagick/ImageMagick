@@ -441,11 +441,11 @@ static inline void CheckRemainingPDFBuffer(PDFBuffer *buffer,size_t length)
     (void) MovePDFBuffer(buffer);
 }
 
-static inline void SkipPDFBytes(PDFBuffer *buffer,size_t count)
+static inline void SkipPDFBytes(PDFBuffer *buffer,size_t length)
 {
-  CheckRemainingPDFBuffer(buffer,count);
-  if ((buffer->offset+count) < buffer->count)
-    buffer->offset+=count;
+  CheckRemainingPDFBuffer(buffer,length);
+  if ((buffer->offset+length) < buffer->count)
+    buffer->offset+=length;
 }
 
 static inline MagickBooleanType ComparePDFBuffer(const char *p,

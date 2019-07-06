@@ -45,7 +45,7 @@ typedef enum
   ExceptionEvent = 0x00100,   /* Log Errors and Warnings immediately */
   ImageEvent = 0x00200,
   LocaleEvent = 0x00400,
-  ModuleEvent = 0x00800,      /* Loding of coder and filter modules */
+  ModuleEvent = 0x00800,      /* Log coder and filter modules */
   PixelEvent = 0x01000,
   PolicyEvent = 0x02000,
   ResourceEvent = 0x04000,
