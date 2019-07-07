@@ -485,7 +485,7 @@ static void ReadPDFXMPProfile(PDFInfo *pdf_info,PDFBuffer *buffer)
     return;
   if (ComparePDFBuffer(BeginXMPPacket,buffer,strlen(BeginXMPPacket)) == MagickFalse)
     return;
-  length=MagickPathExtent;
+  length=8192;
   pdf_info->profile=AcquireStringInfo(length);
   found_end=MagickFalse;
   p=(char *) GetStringInfoDatum(pdf_info->profile);
@@ -495,7 +495,7 @@ static void ReadPDFXMPProfile(PDFInfo *pdf_info,PDFBuffer *buffer)
   {
     if (count == (ssize_t) length)
       {
-        length+=MagickPathExtent;
+        length+=length;
         SetStringInfoLength(pdf_info->profile,length);
         p=(char *) GetStringInfoDatum(pdf_info->profile)+count;
       }
