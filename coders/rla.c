@@ -293,7 +293,6 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read image data.
   */
-  x=0;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     offset=SeekBlob(image,scanlines[image->rows-y-1],SEEK_SET);
@@ -302,6 +301,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         scanlines=(MagickOffsetType *) RelinquishMagickMemory(scanlines);
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       }
+    x=0;
     for (channel=0; channel < (int) rla_info.number_channels; channel++)
     {
       length=ReadBlobMSBSignedShort(image);
@@ -318,8 +318,8 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             while (runlength < 0)
             {
-              q=GetAuthenticPixels(image,(ssize_t) (x % image->columns),
-                (ssize_t) (y % image->rows),1,1,exception);
+              q=GetAuthenticPixels(image,(ssize_t) (x % image->columns),y,1,1,
+                exception);
               if (q == (Quantum *) NULL)
                 break;
               byte=(unsigned char) ReadBlobByte(image);
@@ -360,8 +360,8 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         runlength++;
         do
         {
-          q=GetAuthenticPixels(image,(ssize_t) (x % image->columns),
-            (ssize_t) (y % image->rows),1,1,exception);
+          q=GetAuthenticPixels(image,(ssize_t) (x % image->columns),y,1,1,
+            exception);
           if (q == (Quantum *) NULL)
             break;
           switch (channel)
@@ -396,6 +396,11 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         while (runlength > 0);
       }
     }
+    if ((x/(ssize_t) rla_info.number_channels) > (ssize_t) image->columns)
+      {
+        scanlines=(MagickOffsetType *) RelinquishMagickMemory(scanlines);
+        ThrowReaderException(CorruptImageError,"CorruptImage");
+      }
     if (EOFBlob(image) != MagickFalse)
       break;
     status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
