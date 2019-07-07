@@ -495,7 +495,7 @@ static void ReadPDFXMPProfile(PDFInfo *pdf_info,PDFBuffer *buffer)
   {
     if (count == (ssize_t) length)
       {
-        length+=length;
+        length<<=1;
         SetStringInfoLength(pdf_info->profile,length);
         p=(char *) GetStringInfoDatum(pdf_info->profile)+count;
       }
