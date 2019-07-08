@@ -359,7 +359,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         length=icon_file.directory[i].size;
         if ((length < 16) || (~length < 16))
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-        png=(unsigned char *) AcquireQuantumMemory(length+16,sizeof(*png));
+        png=(unsigned char *) AcquireQuantumMemory(length,sizeof(*png));
         if (png == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         (void) memcpy(png,"\211PNG\r\n\032\n\000\000\000\015",12);
@@ -376,7 +376,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
           }
         read_info=CloneImageInfo(image_info);
         (void) CopyMagickString(read_info->magick,"PNG",MagickPathExtent);
-        icon_image=BlobToImage(read_info,png,length+16,exception);
+        icon_image=BlobToImage(read_info,png,length,exception);
         read_info=DestroyImageInfo(read_info);
         png=(unsigned char *) RelinquishMagickMemory(png);
         if (icon_image == (Image *) NULL)
