@@ -160,7 +160,6 @@ static StringInfo
 %      RandomInfo *AcquireRandomInfo(void)
 %
 */
-
 MagickExport RandomInfo *AcquireRandomInfo(void)
 {
   const StringInfo
@@ -381,10 +380,10 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
   SetStringInfoDatum(chaos,(unsigned char *) &tid);
   ConcatenateStringInfo(entropy,chaos);
 #if defined(MAGICKCORE_HAVE_SYSCONF) && defined(_SC_PHYS_PAGES)
-  { 
+  {
     ssize_t
       pages;
-    
+
     pages=(ssize_t) sysconf(_SC_PHYS_PAGES);
     SetStringInfoLength(chaos,sizeof(pages));
     SetStringInfoDatum(chaos,(unsigned char *) &pages);
