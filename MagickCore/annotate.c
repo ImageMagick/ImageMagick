@@ -526,19 +526,17 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
         (void) DrawImage(image,annotate_info,exception);
         break;
       }
-      case LineThroughDecoration:
-      {
-        annotate_info->affine.ty-=(draw_info->affine.sy*(height+
-          metrics.underline_position+metrics.descent*2)/2.0);
-        (void) CloneString(&annotate_info->primitive,primitive);
-        (void) DrawImage(image,annotate_info,exception);
-      }
-      default:
-        break;
     }
     status=RenderType(image,annotate,&offset,&metrics,exception);
     if (status == MagickFalse)
       break;
+
+    if (annotate->decorate == LineThroughDecoration) {
+        annotate_info->affine.ty-=(draw_info->affine.sy*(height+
+          metrics.underline_position+metrics.descent*2)/2.0);
+        (void) CloneString(&annotate_info->primitive,primitive);
+        (void) DrawImage(image,annotate_info,exception);
+    }
   }
   /*
     Relinquish resources.
