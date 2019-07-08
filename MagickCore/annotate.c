@@ -1765,10 +1765,10 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     metrics->origin.y=(double) origin.y;
     if (metrics->origin.x > metrics->width)
       metrics->width=metrics->origin.x;
-    if (last_glyph.image != 0)
+    if (last_glyph.image != (FT_Glyph) NULL)
       {
         FT_Done_Glyph(last_glyph.image);
-        last_glyph.image=0;
+        last_glyph.image=(FT_Glyph) NULL;
       }
     last_glyph=glyph;
     code=GetUTFCode(p+grapheme[i].cluster);
@@ -1777,10 +1777,10 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     grapheme=(GraphemeInfo *) RelinquishMagickMemory(grapheme);
   if (utf8 != (unsigned char *) NULL)
     utf8=(unsigned char *) RelinquishMagickMemory(utf8);
-  if (glyph.image != 0)
+  if (last_glyph.image != (FT_Glyph) NULL)
     {
-      FT_Done_Glyph(glyph.image);
-      glyph.image=0;
+      FT_Done_Glyph(last_glyph.image);
+      last_glyph.image=(FT_Glyph) NULL;
     }
   /*
     Determine font metrics.
