@@ -2301,7 +2301,7 @@ RestoreMSCWarning
       default:
       {
         MemoryInfo
-          *pixel_info = (MemoryInfo * ) NULL;
+          *generic_info = (MemoryInfo * ) NULL;
 
         register uint32
           *p;
@@ -2316,10 +2316,10 @@ RestoreMSCWarning
         if (HeapOverflowSanityCheck(image->rows,sizeof(*pixels)) != MagickFalse)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         number_pixels=(MagickSizeType) image->columns*image->rows;
-        pixel_info=AcquireVirtualMemory(number_pixels,sizeof(uint32));
-        if (pixel_info == (MemoryInfo *) NULL)
+        generic_info=AcquireVirtualMemory(number_pixels,sizeof(uint32));
+        if (generic_info == (MemoryInfo *) NULL)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-        pixels=(uint32 *) GetVirtualMemoryBlob(pixel_info);
+        pixels=(uint32 *) GetVirtualMemoryBlob(generic_info);
         (void) TIFFReadRGBAImage(tiff,(uint32) image->columns,(uint32)
           image->rows,(uint32 *) pixels,0);
         /*
@@ -2362,7 +2362,7 @@ RestoreMSCWarning
                 break;
             }
         }
-        pixel_info=RelinquishVirtualMemory(pixel_info);
+        generic_info=RelinquishVirtualMemory(generic_info);
         break;
       }
     }
