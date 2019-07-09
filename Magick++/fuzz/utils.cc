@@ -21,7 +21,7 @@ public:
     Magick::ResourceLimits::map(500000000);
     Magick::ResourceLimits::width(FUZZ_MAX_SIZE);
     Magick::ResourceLimits::height(FUZZ_MAX_SIZE);
-    Magick::ResourceLimits::listLength(32);
+    Magick::ResourceLimits::listLength(16);
   }
 };
 
