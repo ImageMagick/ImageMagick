@@ -526,6 +526,8 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
         (void) DrawImage(image,annotate_info,exception);
         break;
       }
+      default:
+        break;
     }
     status=RenderType(image,annotate,&offset,&metrics,exception);
     if (status == MagickFalse)
