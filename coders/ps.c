@@ -199,7 +199,6 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define Pages  "Pages:"
 #define PhotoshopProfile  "BeginPhotoshop:"
 #define PostscriptLevel  "!PS-"
-#define RenderPostscriptText  "  Rendering Postscript...  "
 #define SpotColor  "+ "
 
   char
