@@ -82,6 +82,7 @@
 #include "MagickCore/utility.h"
 #include "MagickCore/module.h"
 #include "byte-buffer-private.h"
+#include "ghostscript-private.h"
 
 /*
   Define declarations.
@@ -117,202 +118,6 @@ typedef struct _PDFInfo
 */
 static MagickBooleanType
   WritePDFImage(const ImageInfo *,Image *,ExceptionInfo *);
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I n v o k e P D F D e l e g a t e                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  InvokePDFDelegate() executes the PDF interpreter with the specified command.
-%
-%  The format of the InvokePDFDelegate method is:
-%
-%      MagickBooleanType InvokePDFDelegate(const MagickBooleanType verbose,
-%        const char *command,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o verbose: A value other than zero displays the command prior to
-%      executing it.
-%
-%    o command: the address of a character string containing the command to
-%      execute.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-#if defined(MAGICKCORE_GS_DELEGATE) || defined(MAGICKCORE_WINDOWS_SUPPORT)
-static int MagickDLLCall PDFDelegateMessage(void *handle,const char *message,
-  int length)
-{
-  char
-    **messages;
-
-  ssize_t
-    offset;
-
-  offset=0;
-  messages=(char **) handle;
-  if (*messages == (char *) NULL)
-    *messages=(char *) AcquireQuantumMemory(length+1,sizeof(char *));
-  else
-    {
-      offset=strlen(*messages);
-      *messages=(char *) ResizeQuantumMemory(*messages,offset+length+1,
-        sizeof(char *));
-    }
-  if (*messages == (char *) NULL)
-    return(0);
-  (void) memcpy(*messages+offset,message,length);
-  (*messages)[length+offset] ='\0';
-  return(length);
-}
-#endif
-
-static MagickBooleanType InvokePDFDelegate(const MagickBooleanType verbose,
-  const char *command,char *message,ExceptionInfo *exception)
-{
-  int
-    status;
-
-#define ExecuteGhostscriptCommand(command,status) \
-{ \
-  status=ExternalDelegateCommand(MagickFalse,verbose,command,message, \
-    exception); \
-  if (status == 0) \
-    return(MagickTrue); \
-  if (status < 0) \
-    return(MagickFalse); \
-  (void) ThrowMagickException(exception,GetMagickModule(),DelegateError, \
-    "FailedToExecuteCommand","`%s' (%d)",command,status); \
-  return(MagickFalse); \
-}
-
-#if defined(MAGICKCORE_GS_DELEGATE) || defined(MAGICKCORE_WINDOWS_SUPPORT)
-#define SetArgsStart(command,args_start) \
-  if (args_start == (const char *) NULL) \
-    { \
-      if (*command != '"') \
-        args_start=strchr(command,' '); \
-      else \
-        { \
-          args_start=strchr(command+1,'"'); \
-          if (args_start != (const char *) NULL) \
-            args_start++; \
-        } \
-    }
-
-  char
-    **argv,
-    *errors;
-
-  const char
-    *args_start = (const char *) NULL;
-
-  const GhostInfo
-    *ghost_info;
-
-  gs_main_instance
-    *interpreter;
-
-  gsapi_revision_t
-    revision;
-
-  int
-    argc,
-    code;
-
-  register ssize_t
-    i;
-
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
-  ghost_info=NTGhostscriptDLLVectors();
-#else
-  GhostInfo
-    ghost_info_struct;
-
-  ghost_info=(&ghost_info_struct);
-  (void) memset(&ghost_info_struct,0,sizeof(ghost_info_struct));
-  ghost_info_struct.delete_instance=(void (*)(gs_main_instance *))
-    gsapi_delete_instance;
-  ghost_info_struct.exit=(int (*)(gs_main_instance *)) gsapi_exit;
-  ghost_info_struct.new_instance=(int (*)(gs_main_instance **,void *))
-    gsapi_new_instance;
-  ghost_info_struct.init_with_args=(int (*)(gs_main_instance *,int,char **))
-    gsapi_init_with_args;
-  ghost_info_struct.run_string=(int (*)(gs_main_instance *,const char *,int,
-    int *)) gsapi_run_string;
-  ghost_info_struct.set_stdio=(int (*)(gs_main_instance *,int (*)(void *,char *,
-    int),int (*)(void *,const char *,int),int (*)(void *, const char *, int)))
-    gsapi_set_stdio;
-  ghost_info_struct.revision=(int (*)(gsapi_revision_t *,int)) gsapi_revision;
-#endif
-  if (ghost_info == (GhostInfo *) NULL)
-    ExecuteGhostscriptCommand(command,status);
-  if ((ghost_info->revision)(&revision,sizeof(revision)) != 0)
-    revision.revision=0;
-  if (verbose != MagickFalse)
-    {
-      (void) fprintf(stdout,"[ghostscript library %.2f]",(double)
-        revision.revision/100.0);
-      SetArgsStart(command,args_start);
-      (void) fputs(args_start,stdout);
-    }
-  interpreter=(gs_main_instance *) NULL;
-  errors=(char *) NULL;
-  status=(ghost_info->new_instance)(&interpreter,(void *) &errors);
-  if (status < 0)
-    ExecuteGhostscriptCommand(command,status);
-  code=0;
-  argv=StringToArgv(command,&argc);
-  if (argv == (char **) NULL)
-    {
-      (ghost_info->delete_instance)(interpreter);
-      return(MagickFalse);
-    }
-  (void) (ghost_info->set_stdio)(interpreter,(int (MagickDLLCall *)(void *,
-    char *,int)) NULL,PDFDelegateMessage,PDFDelegateMessage);
-  status=(ghost_info->init_with_args)(interpreter,argc-1,argv+1);
-  if (status == 0)
-    status=(ghost_info->run_string)(interpreter,"systemdict /start get exec\n",
-      0,&code);
-  (ghost_info->exit)(interpreter);
-  (ghost_info->delete_instance)(interpreter);
-  for (i=0; i < (ssize_t) argc; i++)
-    argv[i]=DestroyString(argv[i]);
-  argv=(char **) RelinquishMagickMemory(argv);
-  if (status != 0)
-    {
-      SetArgsStart(command,args_start);
-      if (status == -101) /* quit */
-        (void) FormatLocaleString(message,MagickPathExtent,
-          "[ghostscript library %.2f]%s: %s",(double) revision.revision/100.0,
-          args_start,errors);
-      else
-        {
-          (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
-            "PDFDelegateFailed","`[ghostscript library %.2f]%s': %s",(double)
-            revision.revision/100.0,args_start,errors);
-          if (errors != (char *) NULL)
-            errors=DestroyString(errors);
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Ghostscript returns status %d, exit code %d",status,code);
-          return(MagickFalse);
-        }
-    }
-  if (errors != (char *) NULL)
-    errors=DestroyString(errors);
-  return(MagickTrue);
-#else
-  ExecuteGhostscriptCommand(command,status);
-#endif
-}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -374,23 +179,6 @@ static MagickBooleanType IsPDF(const unsigned char *magick,const size_t offset)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static MagickBooleanType IsPDFRendered(const char *path)
-{
-  MagickBooleanType
-    status;
-
-  struct stat
-    attributes;
-
-  if ((path == (const char *) NULL) || (*path == '\0'))
-    return(MagickFalse);
-  status=GetPathAttributes(path,&attributes);
-  if ((status != MagickFalse) && S_ISREG(attributes.st_mode) &&
-      (attributes.st_size > 0))
-    return(MagickTrue);
-  return(MagickFalse);
-}
 
 static void ReadPDFXMPProfile(PDFInfo *pdf_info,ByteBuffer *buffer)
 {
@@ -878,7 +666,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   options=DestroyString(options);
   density=DestroyString(density);
   *message='\0';
-  status=InvokePDFDelegate(read_info->verbose,command,message,exception);
+  status=InvokeGhostscriptDelegate(read_info->verbose,command,message,
+    exception);
   (void) RelinquishUniqueFileResource(postscript_filename);
   (void) RelinquishUniqueFileResource(input_filename);
   pdf_image=(Image *) NULL;
@@ -887,7 +676,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       (void) InterpretImageFilename(image_info,image,filename,(int) i,
         read_info->filename,exception);
-      if (IsPDFRendered(read_info->filename) == MagickFalse)
+      if (IsGhostscriptRendered(read_info->filename) == MagickFalse)
         break;
       (void) RelinquishUniqueFileResource(read_info->filename);
     }
@@ -896,7 +685,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       (void) InterpretImageFilename(image_info,image,filename,(int) i,
         read_info->filename,exception);
-      if (IsPDFRendered(read_info->filename) == MagickFalse)
+      if (IsGhostscriptRendered(read_info->filename) == MagickFalse)
         break;
       read_info->blob=NULL;
       read_info->length=0;
