@@ -300,7 +300,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((count != 1) || (format != 'P'))
       ThrowPNMException(CorruptImageError,"ImproperImageHeader");
     max_value=1;
-    quantum_type=RGBQuantum;
+    quantum_type=UndefinedQuantum;
     quantum_scale=1.0;
     format=(char) ReadBlobByte(image);
     if (format != '7')
@@ -386,7 +386,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image->rows=StringToUnsignedLong(value);
           if (LocaleCompare(keyword,"maxval") == 0)
             max_value=StringToUnsignedLong(value);
-          if (LocaleCompare(keyword,"TUPLTYPE") == 0)
+          if ((quantum_type == UndefinedQuantum) &&
+              (LocaleCompare(keyword,"TUPLTYPE") == 0))
             {
               if (LocaleCompare(value,"BLACKANDWHITE") == 0)
                 {
@@ -431,6 +432,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image->columns=StringToUnsignedLong(value);
         }
       }
+    if (quantum_type == UndefinedQuantum)
+      quantum_type=RGBQuantum;
     if ((image->columns == 0) || (image->rows == 0))
       ThrowPNMException(CorruptImageError,"NegativeOrZeroImageSize");
     if ((max_value == 0) || (max_value > 4294967295UL))
