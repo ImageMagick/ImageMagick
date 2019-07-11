@@ -6784,6 +6784,62 @@ WandExport MagickBooleanType MagickLevelImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k L e v e l I m a g e C o l o r s                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickLevelImageColors() maps the given color to "black" and "white" values,
+%  linearly spreading out the colors, and level values on a channel by channel
+%  bases, as per LevelImage().  The given colors allows you to specify
+%  different level ranges for each of the color channels separately.
+%
+%  The format of the MagickLevelImageColors method is:
+%
+%      MagickBooleanType MagickLevelImageColors(MagickWand *wand,
+%        const PixelWand *black_color,const PixelWand *white_color,
+%        const MagickBooleanType invert)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o black_color: the black color.
+%
+%    o white_color: the white color.
+%
+%    o invert: if true map the colors (levelize), rather than from (level)
+%
+*/
+WandExport MagickBooleanType MagickLevelImageColors(MagickWand *wand,
+  const PixelWand *black_color,const PixelWand *white_color,
+  const MagickBooleanType invert)
+{
+  MagickBooleanType
+    status;
+
+  PixelInfo
+    black,
+    white;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  PixelGetMagickColor(black_color,&black);
+  PixelGetMagickColor(white_color,&white);
+  status=LevelImageColors(wand->images,&black,&white,invert,wand->exception);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k L e v e l i z e I m a g e                                     %
 %                                                                             %
 %                                                                             %
