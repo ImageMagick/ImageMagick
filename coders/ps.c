@@ -77,6 +77,7 @@
 #include "MagickCore/token.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
+#include "byte-buffer-private.h"
 #include "ghostscript-private.h"
 
 /*
@@ -170,7 +171,7 @@ static MagickBooleanType IsPS(const unsigned char *magick,const size_t length)
 %
 */
 
-static inline int ProfileInteger(Image *image,short int *hex_digits)
+static inline int ProfileInteger(ByteBuffer *buffer,short int *hex_digits)
 {
   int
     c,
@@ -184,7 +185,7 @@ static inline int ProfileInteger(Image *image,short int *hex_digits)
   value=0;
   for (i=0; i < 2; )
   {
-    c=ReadBlobByte(image);
+    c=ReadByteBuffer(buffer);
     if ((c == EOF) || ((c == '%') && (l == '%')))
       {
         value=(-1);
@@ -219,11 +220,9 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
 #define PageMedia  "PageMedia:"
 #define ICCProfile "BeginICCProfile:"
 #define PhotoshopProfile  "BeginPhotoshop:"
-#define BeginXMPPacket  "<?xpacket begin="
-#define EndXMPPacket  "<?xpacket end="
 
-  char
-    command[MagickPathExtent];
+  ByteBuffer
+    buffer;
 
   int
     c;
@@ -288,68 +287,76 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
   priority=0;
   spotcolor=0;
   skip=MagickFalse;
-  p=command;
-  for (c=ReadBlobByte(image); c != EOF; c=ReadBlobByte(image))
+  (void) memset(&buffer,0,sizeof(buffer));
+  buffer.image=image;
+  for (c=ReadByteBuffer(&buffer); c != EOF; c=ReadByteBuffer(&buffer))
   {
+    if (c == '<')
+      ReadGhostScriptXMPProfile(&buffer,&ps_info->xmp_profile);
     /*
       Note document structuring comments.
     */
-    *p++=(char) c;
-    if ((strchr("\n\r%",c) == (char *) NULL) &&
-        ((size_t) (p-command) < (MagickPathExtent-1)))
+    if (strchr("\n\r%",c) == (char *) NULL)
       continue;
-    *p='\0';
-    p=command;
     /*
       Skip %%BeginDocument thru %%EndDocument.
     */
-    if (LocaleNCompare(BeginDocument,command,strlen(BeginDocument)) == 0)
+    if (CompareByteBuffer(BeginDocument,&buffer,strlen(BeginDocument)) != MagickFalse)
       skip=MagickTrue;
-    if (LocaleNCompare(EndDocument,command,strlen(EndDocument)) == 0)
+    if (CompareByteBuffer(EndDocument,&buffer,strlen(EndDocument)) != MagickFalse)
       skip=MagickFalse;
     if (skip != MagickFalse)
       continue;
-    if (LocaleNCompare(PostscriptLevel,command,strlen(PostscriptLevel)) == 0)
-      (void) SetImageProperty(image,"ps:Level",command+4,exception);
-    if (LocaleNCompare(ImageData,command,strlen(ImageData)) == 0)
-      (void) sscanf(command,ImageData " %lu %lu",&ps_info->columns,
-        &ps_info->rows);
+    if (CompareByteBuffer(PostscriptLevel,&buffer,strlen(PostscriptLevel)) != MagickFalse)
+      {
+        p=GetByteBufferDatum(&buffer)+4;
+        (void) SetImageProperty(image,"ps:Level",p,exception);
+      }
+    if (CompareByteBuffer(ImageData,&buffer,strlen(ImageData)) != MagickFalse)
+      {
+        p=GetByteBufferDatum(&buffer);
+        (void) sscanf(p,ImageData " %lu %lu",&ps_info->columns,&ps_info->rows);
+      }
     /*
       Is this a CMYK document?
     */
     length=strlen(DocumentProcessColors);
-    if (LocaleNCompare(DocumentProcessColors,command,length) == 0)
+    if (CompareByteBuffer(DocumentProcessColors,&buffer,length) != MagickFalse)
       {
-        if ((GlobExpression(command,"*Cyan*",MagickTrue) != MagickFalse) ||
-            (GlobExpression(command,"*Magenta*",MagickTrue) != MagickFalse) ||
-            (GlobExpression(command,"*Yellow*",MagickTrue) != MagickFalse))
+        p=GetByteBufferDatum(&buffer);
+        if ((GlobExpression(p,"*Cyan*",MagickTrue) != MagickFalse) ||
+            (GlobExpression(p,"*Magenta*",MagickTrue) != MagickFalse) ||
+            (GlobExpression(p,"*Yellow*",MagickTrue) != MagickFalse))
           ps_info->cmyk=MagickTrue;
       }
-    if (LocaleNCompare(CMYKCustomColor,command,strlen(CMYKCustomColor)) == 0)
+    if (CompareByteBuffer(CMYKCustomColor,&buffer,strlen(CMYKCustomColor)) != MagickFalse)
       ps_info->cmyk=MagickTrue;
-    if (LocaleNCompare(CMYKProcessColor,command,strlen(CMYKProcessColor)) == 0)
+    if (CompareByteBuffer(CMYKProcessColor,&buffer,strlen(CMYKProcessColor)) != MagickFalse)
       ps_info->cmyk=MagickTrue;
     length=strlen(DocumentCustomColors);
-    if ((LocaleNCompare(DocumentCustomColors,command,length) == 0) ||
-        (LocaleNCompare(CMYKCustomColor,command,strlen(CMYKCustomColor)) == 0) ||
-        (LocaleNCompare(SpotColor,command,strlen(SpotColor)) == 0))
+    if ((CompareByteBuffer(DocumentCustomColors,&buffer,length) != MagickFalse) ||
+        (CompareByteBuffer(CMYKCustomColor,&buffer,strlen(CMYKCustomColor)) != MagickFalse) ||
+        (CompareByteBuffer(SpotColor,&buffer,strlen(SpotColor)) != MagickFalse))
       {
         char
+          name[MagickPathExtent],
           property[MagickPathExtent],
           *value;
-
-        register char
-          *q;
 
         /*
           Note spot names.
         */
         (void) FormatLocaleString(property,MagickPathExtent,
-          "ps:SpotColor-%.20g",(double) (spotcolor++));
-        for (q=command; *q != '\0'; q++)
-          if (isspace((int) (unsigned char) *q) != 0)
+          "pdf:SpotColor-%.20g",(double) spotcolor++);
+        i=0;
+        for (c=ReadByteBuffer(&buffer); c != EOF; c=ReadByteBuffer(&buffer))
+        {
+          if ((isspace(c) != 0) || ((i+1) == MagickPathExtent))
             break;
-        value=ConstantString(q);
+          name[i++]=(char) c;
+        }
+        name[i]='\0';
+        value=ConstantString(name);
         (void) SubstituteString(&value,"(","");
         (void) SubstituteString(&value,")","");
         (void) StripString(value);
@@ -358,7 +365,8 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
         value=DestroyString(value);
         continue;
       }
-    if (LocaleNCompare(ICCProfile,command,strlen(ICCProfile)) == 0)
+    if ((ps_info->icc_profile == (StringInfo *) NULL) &&
+        (CompareByteBuffer(ICCProfile,&buffer,strlen(ICCProfile)) != MagickFalse))
       {
         unsigned char
           *datum;
@@ -368,7 +376,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
         */
         ps_info->icc_profile=AcquireStringInfo(MagickPathExtent);
         datum=GetStringInfoDatum(ps_info->icc_profile);
-        for (i=0; (c=ProfileInteger(image,hex_digits)) != EOF; i++)
+        for (i=0; (c=ProfileInteger(&buffer,hex_digits)) != EOF; i++)
         {
           if (i >= (ssize_t) GetStringInfoLength(ps_info->icc_profile))
             {
@@ -380,7 +388,8 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
         SetStringInfoLength(ps_info->icc_profile,(size_t) i+1);
         continue;
       }
-    if (LocaleNCompare(PhotoshopProfile,command,strlen(PhotoshopProfile)) == 0)
+    if ((ps_info->photoshop_profile == (StringInfo *) NULL) &&
+        (CompareByteBuffer(PhotoshopProfile,&buffer,strlen(PhotoshopProfile)) != MagickFalse))
       {
         unsigned char
           *q;
@@ -388,43 +397,22 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
         /*
           Read Photoshop profile.
         */
-        count=(ssize_t) sscanf(command,PhotoshopProfile " %lu",&extent);
+        p=GetByteBufferDatum(&buffer);
+        count=(ssize_t) sscanf(p,PhotoshopProfile " %lu",&extent);
         if (count != 1)
           continue;
-        length=extent;
-        if ((MagickSizeType) length > GetBlobSize(image))
+        if ((MagickSizeType) extent > GetBlobSize(image))
           continue;
-        ps_info->photoshop_profile=BlobToStringInfo((const void *) NULL,length);
-        if (ps_info->photoshop_profile != (StringInfo *) NULL)
-          {
-            q=GetStringInfoDatum(ps_info->photoshop_profile);
-            for (i=0; i < (ssize_t) length; i++)
-              *q++=(unsigned char) ProfileInteger(image,hex_digits);
-          }
-        continue;
-      }
-    if (LocaleNCompare(BeginXMPPacket,command,strlen(BeginXMPPacket)) == 0)
-      {
-        /*
-          Read XMP profile.
-        */
-        p=command;
-        ps_info->xmp_profile=StringToStringInfo(command);
-        for (i=(ssize_t) GetStringInfoLength(ps_info->xmp_profile)-1; c != EOF; i++)
+        ps_info->photoshop_profile=AcquireStringInfo((size_t) extent);
+        q=GetStringInfoDatum(ps_info->photoshop_profile);
+        while (extent > 0)
         {
-          SetStringInfoLength(ps_info->xmp_profile,(size_t) (i+1));
-          c=ReadBlobByte(image);
-          GetStringInfoDatum(ps_info->xmp_profile)[i]=(unsigned char) c;
-          *p++=(char) c;
-          if ((strchr("\n\r%",c) == (char *) NULL) &&
-              ((size_t) (p-command) < (MagickPathExtent-1)))
-            continue;
-          *p='\0';
-          p=command;
-          if (LocaleNCompare(EndXMPPacket,command,strlen(EndXMPPacket)) == 0)
+          c=ProfileInteger(&buffer,hex_digits);
+          if (c == EOF)
             break;
+          *q++=(unsigned char) c;
+          extent-=2;
         }
-        SetStringInfoLength(ps_info->xmp_profile,(size_t) i);
         continue;
       }
     if (image_info->page != (char *) NULL)
@@ -434,33 +422,38 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
     */
     count=0;
     i=0;
-    if (LocaleNCompare(BoundingBox,command,strlen(BoundingBox)) == 0)
+    if (CompareByteBuffer(BoundingBox,&buffer,strlen(BoundingBox)) != MagickFalse)
       {
-        count=(ssize_t) sscanf(command,BoundingBox " %lf %lf %lf %lf",
+        p=GetByteBufferDatum(&buffer);
+        count=(ssize_t) sscanf(p,BoundingBox " %lf %lf %lf %lf",
           &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
         i=2;
       }
-    if (LocaleNCompare(DocumentMedia,command,strlen(DocumentMedia)) == 0)
+    if (CompareByteBuffer(DocumentMedia,&buffer,strlen(DocumentMedia)) != MagickFalse)
       {
-        count=(ssize_t) sscanf(command,DocumentMedia " %lf %lf %lf %lf",
+        p=GetByteBufferDatum(&buffer);
+        count=(ssize_t) sscanf(p,DocumentMedia " %lf %lf %lf %lf",
           &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
         i=1;
       }
-    if (LocaleNCompare(HiResBoundingBox,command,strlen(HiResBoundingBox)) == 0)
+    if (CompareByteBuffer(HiResBoundingBox,&buffer,strlen(HiResBoundingBox)) != MagickFalse)
       {
-        count=(ssize_t) sscanf(command,HiResBoundingBox " %lf %lf %lf %lf",
+        p=GetByteBufferDatum(&buffer);
+        count=(ssize_t) sscanf(p,HiResBoundingBox " %lf %lf %lf %lf",
           &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
         i=3;
       }
-    if (LocaleNCompare(PageBoundingBox,command,strlen(PageBoundingBox)) == 0)
+    if (CompareByteBuffer(PageBoundingBox,&buffer,strlen(PageBoundingBox)) != MagickFalse)
       {
-        count=(ssize_t) sscanf(command,PageBoundingBox " %lf %lf %lf %lf",
+        p=GetByteBufferDatum(&buffer);
+        count=(ssize_t) sscanf(p,PageBoundingBox " %lf %lf %lf %lf",
           &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
         i=1;
       }
-    if (LocaleNCompare(PageMedia,command,strlen(PageMedia)) == 0)
+    if (CompareByteBuffer(PageMedia,&buffer,strlen(PageMedia)) == 0)
       {
-        count=(ssize_t) sscanf(command,PageMedia " %lf %lf %lf %lf",
+        p=GetByteBufferDatum(&buffer);
+        count=(ssize_t) sscanf(p,PageMedia " %lf %lf %lf %lf",
           &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
         i=1;
       }

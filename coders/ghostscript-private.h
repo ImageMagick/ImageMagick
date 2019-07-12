@@ -204,4 +204,55 @@ static MagickBooleanType IsGhostscriptRendered(const char *path)
   return(MagickFalse);
 }
 
+static void ReadGhostScriptXMPProfile(ByteBuffer *buffer,StringInfo **profile)
+{
+#define BeginXMPPacket  "?xpacket begin="
+#define EndXMPPacket  "<?xpacket end="
+
+  int
+    c;
+
+  MagickBooleanType
+    found_end;
+
+  register char
+    *p;
+
+  size_t
+    length;
+
+  ssize_t
+    count;
+
+  if (*profile != (StringInfo *) NULL)
+    return;
+  if (CompareByteBuffer(BeginXMPPacket,buffer,strlen(BeginXMPPacket)) == MagickFalse)
+    return;
+  length=8192;
+  *profile=AcquireStringInfo(length);
+  found_end=MagickFalse;
+  p=(char *) GetStringInfoDatum(*profile);
+  *p++='<';
+  count=1;
+  for (c=ReadByteBuffer(buffer); c != EOF; c=ReadByteBuffer(buffer))
+  {
+    if (count == (ssize_t) length)
+      {
+        length<<=1;
+        SetStringInfoLength(*profile,length);
+        p=(char *) GetStringInfoDatum(*profile)+count;
+      }
+    count++;
+    *p++=(char) c;
+    if (found_end == MagickFalse)
+      found_end=CompareByteBuffer(EndXMPPacket,buffer,strlen(EndXMPPacket));
+    else
+      {
+        if (c == (int) '>')
+          break;
+      }
+  }
+  SetStringInfoLength(*profile,(size_t) count);
+}
+
 #endif
