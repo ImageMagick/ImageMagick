@@ -1314,12 +1314,14 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   FT_Open_Args
     args;
 
+  FT_UInt
+    last_glyph_id;
+
   FT_Vector
     origin;
 
   GlyphInfo
-    glyph,
-    last_glyph;
+    glyph;
 
   GraphemeInfo
     *grapheme;
@@ -1516,9 +1518,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   if ((value != (const char *) NULL) && (LocaleCompare(value,"off") == 0))
     flags|=FT_LOAD_NO_HINTING;
   glyph.id=0;
-  glyph.image=NULL;
-  last_glyph.id=0;
-  last_glyph.image=NULL;
+  glyph.image=(FT_Glyph) NULL;
+  last_glyph_id=0;
   origin.x=0;
   origin.y=0;
   affine.xx=65536L;
@@ -1573,12 +1574,16 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     glyph.id=(FT_UInt) grapheme[i].index;
     if (glyph.id == 0)
       glyph.id=FT_Get_Char_Index(face,' ');
-    if ((glyph.id != 0) && (last_glyph.id != 0))
+    if ((glyph.id != 0) && (last_glyph_id != 0))
       origin.x+=(FT_Pos) (64.0*draw_info->kerning);
     glyph.origin=origin;
     glyph.origin.x+=(FT_Pos) grapheme[i].x_offset;
     glyph.origin.y+=(FT_Pos) grapheme[i].y_offset;
-    glyph.image=0;
+    if (glyph.image != (FT_Glyph) NULL)
+      {
+        FT_Done_Glyph(glyph.image);
+        glyph.image=(FT_Glyph) NULL;
+      }
     ft_status=FT_Load_Glyph(face,glyph.id,flags);
     if (ft_status != 0)
       continue;
@@ -1616,6 +1621,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       }
     FT_Vector_Transform(&glyph.origin,&affine);
     (void) FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
+    FT_Done_Glyph(glyph.image);
+    glyph.image=(FT_Glyph) NULL;
     ft_status=FT_Glyph_To_Bitmap(&glyph.image,ft_render_mode_normal,
       (FT_Vector *) NULL,MagickTrue);
     if (ft_status != 0)
@@ -1765,22 +1772,17 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     metrics->origin.y=(double) origin.y;
     if (metrics->origin.x > metrics->width)
       metrics->width=metrics->origin.x;
-    if (last_glyph.image != (FT_Glyph) NULL)
-      {
-        FT_Done_Glyph(last_glyph.image);
-        last_glyph.image=(FT_Glyph) NULL;
-      }
-    last_glyph=glyph;
+    last_glyph_id=glyph.id;
     code=GetUTFCode(p+grapheme[i].cluster);
   }
   if (grapheme != (GraphemeInfo *) NULL)
     grapheme=(GraphemeInfo *) RelinquishMagickMemory(grapheme);
   if (utf8 != (unsigned char *) NULL)
     utf8=(unsigned char *) RelinquishMagickMemory(utf8);
-  if (last_glyph.image != (FT_Glyph) NULL)
+  if (glyph.image != (FT_Glyph) NULL)
     {
-      FT_Done_Glyph(last_glyph.image);
-      last_glyph.image=(FT_Glyph) NULL;
+      FT_Done_Glyph(glyph.image);
+      glyph.image=(FT_Glyph) NULL;
     }
   /*
     Determine font metrics.
