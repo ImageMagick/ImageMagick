@@ -232,6 +232,7 @@ CODERS_NOINST_HDRS = \
 	coders/bgr.h \
 	coders/bmp.h \
 	coders/braille.h \
+	coders/byte-buffer-private.h \
 	coders/cals.h \
 	coders/caption.h \
 	coders/cin.h \
@@ -260,6 +261,7 @@ CODERS_NOINST_HDRS = \
 	coders/fits.h \
 	coders/flif.h \
 	coders/fpx.h \
+	coders/ghostscript-private.h \
 	coders/gif.h \
 	coders/gradient.h \
 	coders/gray.h \
