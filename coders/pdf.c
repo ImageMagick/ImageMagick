@@ -180,57 +180,6 @@ static MagickBooleanType IsPDF(const unsigned char *magick,const size_t offset)
 %
 */
 
-static void ReadPDFXMPProfile(PDFInfo *pdf_info,ByteBuffer *buffer)
-{
-#define BeginXMPPacket  "?xpacket begin="
-#define EndXMPPacket  "<?xpacket end="
-
-  int
-    c;
-
-  MagickBooleanType
-    found_end;
-
-  register char
-    *p;
-
-  size_t
-    length;
-
-  ssize_t
-    count;
-
-  if (pdf_info->profile != (StringInfo *) NULL)
-    return;
-  if (CompareByteBuffer(BeginXMPPacket,buffer,strlen(BeginXMPPacket)) == MagickFalse)
-    return;
-  length=8192;
-  pdf_info->profile=AcquireStringInfo(length);
-  found_end=MagickFalse;
-  p=(char *) GetStringInfoDatum(pdf_info->profile);
-  *p++='<';
-  count=1;
-  for (c=ReadByteBuffer(buffer); c != EOF; c=ReadByteBuffer(buffer))
-  {
-    if (count == (ssize_t) length)
-      {
-        length<<=1;
-        SetStringInfoLength(pdf_info->profile,length);
-        p=(char *) GetStringInfoDatum(pdf_info->profile)+count;
-      }
-    count++;
-    *p++=(char) c;
-    if (found_end == MagickFalse)
-      found_end=CompareByteBuffer(EndXMPPacket,buffer,strlen(EndXMPPacket));
-    else
-      {
-        if (c == (int) '>')
-          break;
-      }
-  }
-  SetStringInfoLength(pdf_info->profile,(size_t) count);
-}
-
 static void ReadPDFInfo(const ImageInfo *image_info,Image *image,
   PDFInfo *pdf_info,ExceptionInfo *exception)
 {
@@ -299,7 +248,7 @@ static void ReadPDFInfo(const ImageInfo *image_info,Image *image,
       }
       case '<':
       {
-        ReadPDFXMPProfile(pdf_info,&buffer);
+        ReadGhostScriptXMPProfile(&buffer,&pdf_info->profile);
         continue;
       }
       case '/':
