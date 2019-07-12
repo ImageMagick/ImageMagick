@@ -292,7 +292,10 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
   for (c=ReadByteBuffer(&buffer); c != EOF; c=ReadByteBuffer(&buffer))
   {
     if (c == '<')
-      ReadGhostScriptXMPProfile(&buffer,&ps_info->xmp_profile);
+      {
+        ReadGhostScriptXMPProfile(&buffer,&ps_info->xmp_profile);
+        continue;
+      }
     /*
       Note document structuring comments.
     */
