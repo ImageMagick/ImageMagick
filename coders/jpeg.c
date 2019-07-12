@@ -277,7 +277,11 @@ static boolean FillInputBuffer(j_decompress_ptr cinfo)
 static int GetCharacter(j_decompress_ptr jpeg_info)
 {
   if (jpeg_info->src->bytes_in_buffer == 0)
-    (void) (*jpeg_info->src->fill_input_buffer)(jpeg_info);
+    {
+      (void) (*jpeg_info->src->fill_input_buffer)(jpeg_info);
+      if (jpeg_info->err->msg_code == JWRN_JPEG_EOF)
+        return EOF;
+    }
   jpeg_info->src->bytes_in_buffer--;
   return((int) GETJOCTET(*jpeg_info->src->next_input_byte++));
 }
@@ -455,7 +459,7 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   */
   error_manager->profile=comment;
   p=GetStringInfoDatum(comment);
-  for (i=0; i < (ssize_t) GetStringInfoLength(comment); i++)
+  for (i=0; i < (ssize_t) length; i++)
   {
     int
       c;
@@ -467,6 +471,14 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   }
   *p='\0';
   error_manager->profile=NULL;
+  if (i != (ssize_t) length)
+    {
+      comment=DestroyStringInfo(comment);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        CorruptImageError,"InsufficientImageDataInFile","`%s'",
+        image->filename);
+      return(FALSE);
+    }
   p=GetStringInfoDatum(comment);
   (void) SetImageProperty(image,"comment",(const char *) p,exception);
   comment=DestroyStringInfo(comment);
@@ -543,7 +555,7 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
     }
   error_manager->profile=profile;
   p=GetStringInfoDatum(profile);
-  for (i=(ssize_t) GetStringInfoLength(profile)-1; i >= 0; i--)
+  for (i=0; i < (ssize_t) length; i++)
   {
     int
       c;
@@ -553,6 +565,14 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
       break;
     *p++=(unsigned char) c;
   }
+  if (i != (ssize_t) length)
+    {
+      profile=DestroyStringInfo(profile);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        CorruptImageError,"InsufficientImageDataInFile","`%s'",
+        image->filename);
+      return(FALSE);
+    }
   error_manager->profile=NULL;
   icc_profile=(StringInfo *) GetImageProfile(image,"icc");
   if (icc_profile != (StringInfo *) NULL)
@@ -660,7 +680,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
     }
   error_manager->profile=profile;
   p=GetStringInfoDatum(profile);
-  for (i=0;  i < (ssize_t) GetStringInfoLength(profile); i++)
+  for (i=0; i < (ssize_t) length; i++)
   {
     int
       c;
@@ -671,6 +691,14 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
     *p++=(unsigned char) c;
   }
   error_manager->profile=NULL;
+  if (i != (ssize_t) length)
+    {
+      profile=DestroyStringInfo(profile);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        CorruptImageError,"InsufficientImageDataInFile","`%s'",
+        image->filename);
+      return(FALSE);
+    }
   /* The IPTC profile is actually an 8bim */
   iptc_profile=(StringInfo *) GetImageProfile(image,"8bim");
   if (iptc_profile != (StringInfo *) NULL)
@@ -752,7 +780,7 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
     }
   error_manager->profile=profile;
   p=GetStringInfoDatum(profile);
-  for (i=0; i < (ssize_t) GetStringInfoLength(profile); i++)
+  for (i=0; i < (ssize_t) length; i++)
   {
     int
       c;
@@ -763,6 +791,14 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
     *p++=(unsigned char) c;
   }
   error_manager->profile=NULL;
+  if (i != (ssize_t) length)
+    {
+      profile=DestroyStringInfo(profile);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        CorruptImageError,"InsufficientImageDataInFile","`%s'",
+        image->filename);
+      return(FALSE);
+    }
   if (marker == 1)
     {
       p=GetStringInfoDatum(profile);
