@@ -347,6 +347,7 @@ static const struct ReferenceFormats
     { "TIFF64", UndefinedCompression, 0.0 },
     { "TILE", UndefinedCompression, 0.0 },
     { "TIM", UndefinedCompression, 0.0 },
+    { "TIM2", UndefinedCompression, 0.0 },
     { "TTC", UndefinedCompression, 0.0 },
     { "TTF", UndefinedCompression, 0.0 },
     { "TXT", UndefinedCompression, 0.0 },

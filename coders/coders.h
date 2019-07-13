@@ -153,6 +153,7 @@
 #endif
 #include "coders/tile.h"
 #include "coders/tim.h"
+#include "coders/tim2.h"
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
   #include "coders/ttf.h"
 #endif
