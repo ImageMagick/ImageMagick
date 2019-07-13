@@ -5,6 +5,8 @@
    * resolve division by zero  (reference
      https://github.com/ImageMagick/ImageMagick/issues/1629).
    * introducing MagickLevelImageColors() MagickWand method.
+  * Transient problem with text placement with gravity (reference
+    https://github.com/ImageMagick/ImageMagick/issues/1633).
 
 2019-07-05  7.0.8-53 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-53, GIT revision 15828:f5d59c0:20190705.
