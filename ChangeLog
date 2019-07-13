@@ -1,5 +1,5 @@
-2019-07-08  7.0.8-54 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.8-54, GIT revision 15...
+2019-07-13  7.0.8-54 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-54, GIT revision 15874:66bed36:20190713.
 
 2019-07-08  7.0.8-54 Cristy  <quetzlzacatenango@image...>
    * resolve division by zero  (reference
@@ -7,6 +7,8 @@
    * introducing MagickLevelImageColors() MagickWand method.
   * Transient problem with text placement with gravity (reference
     https://github.com/ImageMagick/ImageMagick/issues/1633).
+  * Support TIM2 image format (reference
+    https://github.com/ImageMagick/ImageMagick/pull/1571).
 
 2019-07-05  7.0.8-53 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-53, GIT revision 15828:f5d59c0:20190705.
