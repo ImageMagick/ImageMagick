@@ -150,7 +150,7 @@ static inline Quantum GetChannelValue(uint32_t word,uint8_t channel, enum TIM2Co
   switch(ce)
   {
     case RGBA16:
-      // Documentation specifies padding with zeros for converting from 5 to 8 bits.
+      /* Documentation specifies padding with zeros for converting from 5 to 8 bits. */
       return ScaleCharToQuantum((word>>channel*5 & ~(~0x0<<5))<<3);
     case RGB24:
     case RGBA32:
@@ -169,7 +169,7 @@ static inline Quantum GetAlpha(uint32_t word, enum TIM2ColorEncoding ce){
 #ifndef MIN
 #define MIN(a,b) ((a)<(b)? a:b)
 #endif
-      // 0x80 -> 1.0 alpha. Multiply by 2 and clamp to 0xFF
+      /* 0x80 -> 1.0 alpha. Multiply by 2 and clamp to 0xFF */
       return ScaleCharToQuantum(MIN((word>>3*8&0xFF)<<1,0xFF));
     default:
       return 0xFF;
@@ -178,9 +178,9 @@ static inline Quantum GetAlpha(uint32_t word, enum TIM2ColorEncoding ce){
 
 static inline void deshufflePalette(Image *image,PixelInfo* oldColormap){
   const uint8_t
-    pages=image->colors/32,//Pages per CLUT
-    blocks=4,//Blocks per page
-    colors=8;//Colors per block
+    pages=image->colors/32,  /* Pages per CLUT */
+    blocks=4,  /* Blocks per page */
+    colors=8;  /* Colors per block */
   size_t
     i=0;
 
@@ -261,7 +261,7 @@ static Image *ReadTIM2Image(const ImageInfo *image_info, ExceptionInfo *exceptio
    * Verify TIM2 magic number.
    */
   tim2_file_header.magic_num=ReadBlobMSBLong(image);
-  if (tim2_file_header.magic_num != 0x54494D32) /*"TIM2"*/
+  if (tim2_file_header.magic_num != 0x54494D32) /* "TIM2" */
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
   /*
@@ -327,8 +327,8 @@ static Image *ReadTIM2Image(const ImageInfo *image_info, ExceptionInfo *exceptio
     has_clut=tim2_image_header.clut_type!=0;
     if(has_clut){
       
-      // CLUT bits per color
-      switch((int) tim2_image_header.clut_type&0x0F)//Low 4 bits
+      /* CLUT bits per color */
+      switch((int) tim2_image_header.clut_type&0x0F)  /* Low 4 bits */
       {
         case 1: clut_depth=16;break;
         case 2: clut_depth=24;break;
@@ -339,14 +339,14 @@ static Image *ReadTIM2Image(const ImageInfo *image_info, ExceptionInfo *exceptio
       }
     }
 
-    // Bits per pixel.
+    /* Bits per pixel. */
     switch ((int) tim2_image_header.bpp_type)
     {
       case 1: bits_per_pixel=16;break;
       case 2: bits_per_pixel=24;break;
       case 3: bits_per_pixel=32;break;
-      case 4: bits_per_pixel=4;break;// Implies CLUT
-      case 5: bits_per_pixel=8;break;// Implies CLUT
+      case 4: bits_per_pixel=4;break;  /* Implies CLUT */
+      case 5: bits_per_pixel=8;break;  /* Implies CLUT */
       default:
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         break;
@@ -469,7 +469,7 @@ if(image->previous == (Image *) NULL) \
           }
         }
       }
-      else //has_clut==false
+      else  /* has_clut==false */
       {
 
 #define SetPixelAllChannels(image,word,q,enc) \
@@ -641,8 +641,8 @@ image->colormap[i].blue =GetChannelValue(word,2,enc);
       }
       tim2_clut_data=(unsigned char *) RelinquishMagickMemory(tim2_clut_data);
 
-      //CSM: CLUT Storage Mode
-      switch ((int) tim2_image_header.clut_type>>4)//High 4 bits
+      /* CSM: CLUT Storage Mode */
+      switch ((int) tim2_image_header.clut_type>>4)  /* High 4 bits */
       {
         case 0: csm=CSM1;break;
         case 1: csm=CSM2;break;
