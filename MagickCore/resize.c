@@ -2056,7 +2056,7 @@ void MixPixels(const Quantum *src,size_t *src_offs,size_t src_offs_size,
 
   register ssize_t
     i, j;
-  
+ 
   for (i = 0; i < channels; i++)
   {
     sum = 0;
@@ -2871,7 +2871,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     register ssize_t
       x;
 
-    Quantum r[128]; // to hold result pixels
+    Quantum r[128]; /* to hold result pixels */
 
     if (status == MagickFalse)
       continue;
@@ -2899,7 +2899,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
 
       p=GetCacheViewVirtualPixels(image_view,x-neighbourhood/2,
         y-neighbourhood/2,neighbourhood,neighbourhood,exception);
-      
+
       channels = GetPixelChannels(source_image);
 
       alg_function(source_image,p,r,channels);
