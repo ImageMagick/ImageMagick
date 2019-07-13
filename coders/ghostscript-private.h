@@ -204,7 +204,8 @@ static MagickBooleanType IsGhostscriptRendered(const char *path)
   return(MagickFalse);
 }
 
-static void ReadGhostScriptXMPProfile(ByteBuffer *buffer,StringInfo **profile)
+static void ReadGhostScriptXMPProfile(MagickByteBuffer *buffer,
+  StringInfo **profile)
 {
 #define BeginXMPPacket  "?xpacket begin="
 #define EndXMPPacket  "<?xpacket end="
@@ -213,7 +214,8 @@ static void ReadGhostScriptXMPProfile(ByteBuffer *buffer,StringInfo **profile)
     c;
 
   MagickBooleanType
-    found_end;
+    found_end,
+    status;
 
   register char
     *p;
@@ -226,7 +228,8 @@ static void ReadGhostScriptXMPProfile(ByteBuffer *buffer,StringInfo **profile)
 
   if (*profile != (StringInfo *) NULL)
     return;
-  if (CompareByteBuffer(BeginXMPPacket,buffer,strlen(BeginXMPPacket)) == MagickFalse)
+  status=CompareMagickByteBuffer(buffer,BeginXMPPacket,strlen(BeginXMPPacket));
+  if (status == MagickFalse)
     return;
   length=8192;
   *profile=AcquireStringInfo(length);
@@ -234,7 +237,7 @@ static void ReadGhostScriptXMPProfile(ByteBuffer *buffer,StringInfo **profile)
   p=(char *) GetStringInfoDatum(*profile);
   *p++='<';
   count=1;
-  for (c=ReadByteBuffer(buffer); c != EOF; c=ReadByteBuffer(buffer))
+  for (c=ReadMagickByteBuffer(buffer); c != EOF; c=ReadMagickByteBuffer(buffer))
   {
     if (count == (ssize_t) length)
       {
@@ -245,7 +248,8 @@ static void ReadGhostScriptXMPProfile(ByteBuffer *buffer,StringInfo **profile)
     count++;
     *p++=(char) c;
     if (found_end == MagickFalse)
-      found_end=CompareByteBuffer(EndXMPPacket,buffer,strlen(EndXMPPacket));
+      found_end=CompareMagickByteBuffer(buffer,EndXMPPacket,
+        strlen(EndXMPPacket));
     else
       {
         if (c == (int) '>')

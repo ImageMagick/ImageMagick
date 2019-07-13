@@ -232,7 +232,7 @@ CODERS_NOINST_HDRS = \
 	coders/bgr.h \
 	coders/bmp.h \
 	coders/braille.h \
-	coders/byte-buffer-private.h \
+	coders/bytebuffer-private.h \
 	coders/cals.h \
 	coders/caption.h \
 	coders/cin.h \

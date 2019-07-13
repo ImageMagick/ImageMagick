@@ -16,7 +16,7 @@
 #ifndef MAGICK_BYTE_BUFFER_PRIVATE_H
 #define MAGICK_BYTE_BUFFER_PRIVATE_H
 
-typedef struct _ByteBuffer
+typedef struct _MagickByteBuffer
 {
   Image
     *image;
@@ -27,9 +27,9 @@ typedef struct _ByteBuffer
 
   unsigned char
     data[8192];
-} ByteBuffer;
+} MagickByteBuffer;
 
-static int ReadByteBuffer(ByteBuffer *buffer)
+static inline int ReadMagickByteBuffer(MagickByteBuffer *buffer)
 {
   if ((buffer->offset == buffer->count) && (buffer->offset > 0))
     {
@@ -46,12 +46,12 @@ static int ReadByteBuffer(ByteBuffer *buffer)
   return(buffer->data[buffer->offset++]);
 }
 
-static char *GetByteBufferDatum(ByteBuffer *buffer)
+static inline char *GetMagickByteBufferDatum(MagickByteBuffer *buffer)
 {
   ssize_t
     i;
 
-  i=1; /* Skip first to avoid reload of buffer; */
+  i=1;  /* Skip first to avoid reload of buffer */
   while (buffer->offset < buffer->count)
     buffer->data[i++]=buffer->data[buffer->offset++];
   buffer->count=ReadBlob(buffer->image,sizeof(buffer->data)-i,buffer->data+i);
@@ -60,30 +60,32 @@ static char *GetByteBufferDatum(ByteBuffer *buffer)
   return((char *) buffer->data+1);
 }
 
-static inline void CheckRemainingByteBuffer(ByteBuffer *buffer,size_t length)
+static void CheckMagickByteBuffer(MagickByteBuffer *buffer,
+  const size_t length)
 {
   if ((buffer->offset+length) > (ssize_t) sizeof(buffer->data))
-    (void) GetByteBufferDatum(buffer);
+    (void) GetMagickByteBufferDatum(buffer);
 }
 
-static inline void SkipByteBuffer(ByteBuffer *buffer,size_t length)
-{
-  CheckRemainingByteBuffer(buffer,length);
-  if ((buffer->offset+length) < buffer->count)
-    buffer->offset+=length;
-}
-
-static MagickBooleanType CompareByteBuffer(const char *p,ByteBuffer *buffer,
-  const size_t length)
+static MagickBooleanType CompareMagickByteBuffer(MagickByteBuffer *buffer,
+  const char *p,const size_t length)
 {
   const char
     *q;
 
-  CheckRemainingByteBuffer(buffer,length);
+  CheckMagickByteBuffer(buffer,length);
   q=(const char *) buffer->data+buffer->offset;
   if (LocaleNCompare(p,q,length) != 0)
     return(MagickFalse);
   return(MagickTrue);
+}
+
+static inline void SkipMagickByteBuffer(MagickByteBuffer *buffer,
+  const size_t length)
+{
+  CheckMagickByteBuffer(buffer,length);
+  if ((buffer->offset+length) < buffer->count)
+    buffer->offset+=length;
 }
 
 #endif
