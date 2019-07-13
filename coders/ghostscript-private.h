@@ -16,6 +16,8 @@
 #ifndef MAGICK_GHOSTSCRIPT_BUFFER_PRIVATE_H
 #define MAGICK_GHOSTSCRIPT_BUFFER_PRIVATE_H
 
+#include "coders/bytebuffer-private.h"
+
 #if defined(MAGICKCORE_GS_DELEGATE) || defined(MAGICKCORE_WINDOWS_SUPPORT)
 static int MagickDLLCall GhostscriptDelegateMessage(void *handle,
   const char *message,int length)
