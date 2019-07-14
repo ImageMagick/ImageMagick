@@ -160,6 +160,7 @@ static int PNMComment(Image *image,CommentInfo *comment_info,
   /*
     Read comment.
   */
+  (void) exception;
   p=comment_info->comment+strlen(comment_info->comment);
   for (c='#'; (c != EOF) && (c != (int) '\n') && (c != (int) '\r'); p++)
   {

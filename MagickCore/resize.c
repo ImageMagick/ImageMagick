@@ -2071,7 +2071,7 @@ static inline void CopyPixels(const Quantum *source,const ssize_t source_offset,
     destination[channels*destination_offset+i]=source[source_offset*channels+i];
 }
 
-static inline void MixPixels(const Quantum *source,ssize_t *source_offset,
+static inline void MixPixels(const Quantum *source,const ssize_t *source_offset,
   const size_t source_size,Quantum *destination,
   const ssize_t destination_offset,const size_t channels)
 {
@@ -2097,7 +2097,7 @@ static inline void Mix2Pixels(const Quantum *source,
   const ssize_t source_offset1,const ssize_t source_offset2,
   Quantum *destination,const ssize_t destination_offset,const size_t channels)
 {
-  ssize_t
+  const ssize_t
     offsets[2] = { source_offset1, source_offset2 };
 
   MixPixels(source,offsets,2,destination,destination_offset,channels);
@@ -2123,6 +2123,7 @@ static inline void Eagle2X(const Image *source,const Quantum *pixels,
   ssize_t
     i;
 
+  (void) source;
   for (i=0; i < 4; i++)
     CopyPixels(pixels,4,result,i,channels);
   if (PixelsEqual(pixels,0,pixels,1,channels) &&
@@ -2147,7 +2148,7 @@ static void Hq2XHelper(const unsigned int rule,const Quantum *source,
 #define caseA(N,A,B,C,D) \
   case N: \
   { \
-    ssize_t \
+    const ssize_t \
       offsets[4] = { A, B, C, D }; \
  \
     MixPixels(source,offsets,4,destination,destination_offset,channels);\
@@ -2156,7 +2157,7 @@ static void Hq2XHelper(const unsigned int rule,const Quantum *source,
 #define caseB(N,A,B,C,D,E,F,G,H) \
   case N: \
   { \
-    ssize_t \
+    const ssize_t \
       offsets[8] = { A, B, C, D, E, F, G, H }; \
  \
     MixPixels(source,offsets,8,destination,destination_offset,channels);\
@@ -2182,7 +2183,7 @@ static void Hq2XHelper(const unsigned int rule,const Quantum *source,
     caseB(10,e,e,d,d,d,b,b,b)
     case 11:
     {
-      ssize_t
+      const ssize_t
         offsets[16] = { e, e, e, e, e, e, e, e, e, e, e, e, e, e, d, b };
 
       MixPixels(source,offsets,16,destination,destination_offset,channels);
@@ -2192,7 +2193,7 @@ static void Hq2XHelper(const unsigned int rule,const Quantum *source,
     {
       if (PixelsEqual(source,b,source,d,channels))
         {
-          ssize_t
+          const ssize_t
             offsets[4] = { e, e, d, b };
 
           MixPixels(source,offsets,4,destination,destination_offset,channels);
@@ -2205,7 +2206,7 @@ static void Hq2XHelper(const unsigned int rule,const Quantum *source,
     {
       if (PixelsEqual(source,b,source,d,channels))
         {
-          ssize_t
+          const ssize_t
             offsets[8] = { e, e, d, d, d, b, b, b };
 
           MixPixels(source,offsets,8,destination,destination_offset,channels);
@@ -2218,7 +2219,7 @@ static void Hq2XHelper(const unsigned int rule,const Quantum *source,
     {
       if (PixelsEqual(source,b,source,d,channels))
         {
-          ssize_t
+          const ssize_t
             offsets[16] = { e, e, e, e, e, e, e, e, e, e, e, e, e, e, d, b };
 
           MixPixels(source,offsets,16,destination,destination_offset,channels);
@@ -2229,12 +2230,12 @@ static void Hq2XHelper(const unsigned int rule,const Quantum *source,
     }
     case 15:
     {
-      ssize_t
+      const ssize_t
         offsets[4] = { e, e, e, a };
 
       if (PixelsEqual(source,b,source,d,channels))
         {
-          ssize_t
+          const ssize_t
             offsets[4] = { e, e, d, b };
 
           MixPixels(source,offsets,4,destination,destination_offset,channels);
@@ -2245,12 +2246,12 @@ static void Hq2XHelper(const unsigned int rule,const Quantum *source,
     }
     case 16:
     {
-      ssize_t
+      const ssize_t
         offsets[4] = { e, e, e, a };
 
       if (PixelsEqual(source,b,source,d,channels))
         {
-          ssize_t
+          const ssize_t
             offsets[8] = { e, e, e, e, e, e, d, b };
 
           MixPixels(source,offsets,8,destination,destination_offset,channels);
@@ -2261,12 +2262,12 @@ static void Hq2XHelper(const unsigned int rule,const Quantum *source,
     }
     case 17:
     {
-      ssize_t
+      const ssize_t
         offsets[4] = { e, e, e, a };
 
       if (PixelsEqual(source,b,source,d,channels))
         {
-          ssize_t
+          const ssize_t
             offsets[8] = { e, e, d, d, d, b, b, b };
 
           MixPixels(source,offsets,8,destination,destination_offset,channels);
@@ -2277,12 +2278,12 @@ static void Hq2XHelper(const unsigned int rule,const Quantum *source,
     }
     case 18:
     {
-      ssize_t
+      const ssize_t
         offsets[4] = { e, e, e, d };
 
       if (PixelsEqual(source,b,source,f,channels))
         {
-          ssize_t
+          const ssize_t
             offsets[8] = { e, e, e, e, e, b, b, d };
 
           MixPixels(source,offsets,8,destination,destination_offset,channels);
@@ -2293,12 +2294,12 @@ static void Hq2XHelper(const unsigned int rule,const Quantum *source,
     }
     default:
     {
-      ssize_t
+      const ssize_t
         offsets[4] = { e, e, e, b };
 
       if (PixelsEqual(source,d,source,h,channels))
         {
-          ssize_t
+          const ssize_t
             offsets[8] = { e, e, e, e, e, d, d, b };
           MixPixels(source,offsets,8,destination,destination_offset,channels);
           break;
