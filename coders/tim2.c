@@ -151,31 +151,26 @@ typedef enum
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static inline TIM2ImageHeader ReadTIM2ImageHeader(Image *image)
+static inline void ReadTIM2ImageHeader(Image *image,TIM2ImageHeader *header)
 {
-  TIM2ImageHeader
-    image_header;
+  header->total_size=ReadBlobLSBLong(image);
+  header->clut_size=ReadBlobLSBLong(image);
+  header->image_size=ReadBlobLSBLong(image);
+  header->header_size=ReadBlobLSBShort(image);
 
-  image_header.total_size=ReadBlobLSBLong(image);
-  image_header.clut_size=ReadBlobLSBLong(image);
-  image_header.image_size=ReadBlobLSBLong(image);
-  image_header.header_size=ReadBlobLSBShort(image);
+  header->clut_color_count=ReadBlobLSBShort(image);
+  header->img_format=(unsigned char) ReadBlobByte(image);
+  header->mipmap_count=(unsigned char) ReadBlobByte(image);
+  header->clut_type=(unsigned char) ReadBlobByte(image);
+  header->bpp_type=(unsigned char) ReadBlobByte(image);
 
-  image_header.clut_color_count=ReadBlobLSBShort(image);
-  image_header.img_format=(unsigned char) ReadBlobByte(image);
-  image_header.mipmap_count=(unsigned char) ReadBlobByte(image);
-  image_header.clut_type=(unsigned char) ReadBlobByte(image);
-  image_header.bpp_type=(unsigned char) ReadBlobByte(image);
+  header->width=ReadBlobLSBShort(image);
+  header->height=ReadBlobLSBShort(image);
 
-  image_header.width=ReadBlobLSBShort(image);
-  image_header.height=ReadBlobLSBShort(image);
-
-  image_header.GsTex0=ReadBlobMSBLongLong(image);
-  image_header.GsTex1=ReadBlobMSBLongLong(image);
-  image_header.GsRegs=ReadBlobMSBLong(image);
-  image_header.GsTexClut=ReadBlobMSBLong(image);
-
-  return image_header;
+  header->GsTex0=ReadBlobMSBLongLong(image);
+  header->GsTex1=ReadBlobMSBLongLong(image);
+  header->GsRegs=ReadBlobMSBLong(image);
+  header->GsTexClut=ReadBlobMSBLong(image);
 }
 
 static inline Quantum GetChannelValue(unsigned int word,unsigned char channel,
@@ -711,7 +706,7 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
     TIM2ImageHeader
       image_header;
 
-    image_header=ReadTIM2ImageHeader(image);
+    ReadTIM2ImageHeader(image,&image_header);
     if (image_header.mipmap_count != 1)
       ThrowReaderException(CoderError,"NumberOfImagesIsNotSupported");
     if (image_header.header_size < 48)
