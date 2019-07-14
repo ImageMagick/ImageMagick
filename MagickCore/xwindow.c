@@ -9944,6 +9944,7 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
   assert(ximage_info != (XImportInfo *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  (void) ximage_info;
   (void) exception;
   return((Image *) NULL);
 }

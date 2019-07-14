@@ -5009,7 +5009,7 @@ static inline void PrefetchPixelCacheNexusPixels(const NexusInfo *nexus_info,
 static Quantum *SetPixelCacheNexusPixels(
   const CacheInfo *magick_restrict cache_info,const MapMode mode,
   const ssize_t x,const ssize_t y,const size_t width,const size_t height,
-  const MagickBooleanType buffered,NexusInfo *nexus_info,
+  const MagickBooleanType buffered,NexusInfo *magick_restrict nexus_info,
   ExceptionInfo *exception)
 {
   MagickBooleanType

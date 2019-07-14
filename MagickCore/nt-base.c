@@ -1725,29 +1725,29 @@ MagickExport MagickBooleanType NTLongPathsEnabled()
         "SYSTEM\\CurrentControlSet\\Control\\FileSystem",0,KEY_READ,
         &registry_key);
       if (status != ERROR_SUCCESS)
-      {
-        RegCloseKey(registry_key);
-        long_paths_enabled=0;
-        return(MagickFalse);
-      }
-      value=(PVOID) NULL;
+        {
+          RegCloseKey(registry_key);
+          long_paths_enabled=0;
+          return(MagickFalse);
+        }
+      value=0;
       status=RegQueryValueExA(registry_key,"LongPathsEnabled",0,&type,NULL,
         NULL);
       if ((status != ERROR_SUCCESS) || (type != REG_DWORD))
-      {
-        RegCloseKey(registry_key);
-        long_paths_enabled=0;
-        return(MagickFalse);
-      }
+        {
+          RegCloseKey(registry_key);
+          long_paths_enabled=0;
+          return(MagickFalse);
+        }
       status=RegQueryValueExA(registry_key,"LongPathsEnabled",0,&type,&value,
         &size);
       RegCloseKey(registry_key);
       if (status != ERROR_SUCCESS)
-      {
-        long_paths_enabled=0;
-        return(MagickFalse);
-      }
-      long_paths_enabled=(size_t)value;
+        {
+          long_paths_enabled=0;
+          return(MagickFalse);
+        }
+      long_paths_enabled=(size_t) value;
     }
   return(long_paths_enabled == 1 ? MagickTrue : MagickFalse);
 }

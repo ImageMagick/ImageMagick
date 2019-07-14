@@ -366,7 +366,7 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
   typedef struct _PageInfo
   {
     const char
-      name[11];
+      name[12];
 
     size_t
       extent;
