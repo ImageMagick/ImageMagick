@@ -501,7 +501,7 @@ ssize_t TotalSize = 0;
     (void) remove_utf8(clone_info->filename);
   }
 
-  cache_block = AcquireQuantumMemory((size_t)(*Size < 16384) ? *Size: 16384,sizeof(unsigned char *));
+  cache_block = AcquireQuantumMemory((size_t)(*Size < MagickMinBufferExtent) ? *Size: MagickMinBufferExtent,sizeof(unsigned char *));
   if(cache_block==NULL) return NULL;
   decompress_block = AcquireQuantumMemory((size_t)(4096),sizeof(unsigned char *));
   if(decompress_block==NULL)
@@ -542,7 +542,7 @@ ssize_t TotalSize = 0;
   zip_info.total_out = 0;
   while(*Size>0 && !EOFBlob(orig))
   {
-    magick_size = ReadBlob(orig, (*Size < 16384) ? *Size : 16384, (unsigned char *) cache_block);
+    magick_size = ReadBlob(orig, (*Size < MagickMinBufferExtent) ? *Size : MagickMinBufferExtent, (unsigned char *) cache_block);
     if (magick_size == 0)
       break;
     zip_info.next_in = (Bytef *) cache_block;

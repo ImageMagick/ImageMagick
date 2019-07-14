@@ -104,7 +104,6 @@
 #define ICC_PROFILE  "ICC_PROFILE"
 #define IPTC_MARKER  (JPEG_APP0+13)
 #define XML_MARKER  (JPEG_APP0+1)
-#define MaxBufferExtent  16384
 #define MaxJPEGScans  1024
 
 /*
@@ -259,7 +258,7 @@ static boolean FillInputBuffer(j_decompress_ptr cinfo)
 
   source=(SourceManager *) cinfo->src;
   source->manager.bytes_in_buffer=(size_t) ReadBlob(source->image,
-    MaxBufferExtent,source->buffer);
+    MagickMinBufferExtent,source->buffer);
   if (source->manager.bytes_in_buffer == 0)
     {
       if (source->start_of_blob != FALSE)
@@ -887,7 +886,7 @@ static void JPEGSourceManager(j_decompress_ptr cinfo,Image *image)
     ((j_common_ptr) cinfo,JPOOL_IMAGE,sizeof(SourceManager));
   source=(SourceManager *) cinfo->src;
   source->buffer=(JOCTET *) (*cinfo->mem->alloc_small)
-    ((j_common_ptr) cinfo,JPOOL_IMAGE,MaxBufferExtent*sizeof(JOCTET));
+    ((j_common_ptr) cinfo,JPOOL_IMAGE,MagickMinBufferExtent*sizeof(JOCTET));
   source=(SourceManager *) cinfo->src;
   source->manager.init_source=InitializeSource;
   source->manager.fill_input_buffer=FillInputBuffer;
@@ -1819,8 +1818,8 @@ static boolean EmptyOutputBuffer(j_compress_ptr cinfo)
 
   destination=(DestinationManager *) cinfo->dest;
   destination->manager.free_in_buffer=(size_t) WriteBlob(destination->image,
-    MaxBufferExtent,destination->buffer);
-  if (destination->manager.free_in_buffer != MaxBufferExtent)
+    MagickMinBufferExtent,destination->buffer);
+  if (destination->manager.free_in_buffer != MagickMinBufferExtent)
     ERREXIT(cinfo,JERR_FILE_WRITE);
   destination->manager.next_output_byte=destination->buffer;
   return(TRUE);
@@ -2027,9 +2026,9 @@ static void InitializeDestination(j_compress_ptr cinfo)
 
   destination=(DestinationManager *) cinfo->dest;
   destination->buffer=(JOCTET *) (*cinfo->mem->alloc_small)
-    ((j_common_ptr) cinfo,JPOOL_IMAGE,MaxBufferExtent*sizeof(JOCTET));
+    ((j_common_ptr) cinfo,JPOOL_IMAGE,MagickMinBufferExtent*sizeof(JOCTET));
   destination->manager.next_output_byte=destination->buffer;
-  destination->manager.free_in_buffer=MaxBufferExtent;
+  destination->manager.free_in_buffer=MagickMinBufferExtent;
 }
 
 static void TerminateDestination(j_compress_ptr cinfo)
@@ -2038,15 +2037,15 @@ static void TerminateDestination(j_compress_ptr cinfo)
     *destination;
 
   destination=(DestinationManager *) cinfo->dest;
-  if ((MaxBufferExtent-(int) destination->manager.free_in_buffer) > 0)
+  if ((MagickMinBufferExtent-(int) destination->manager.free_in_buffer) > 0)
     {
       ssize_t
         count;
 
-      count=WriteBlob(destination->image,MaxBufferExtent-
+      count=WriteBlob(destination->image,MagickMinBufferExtent-
         destination->manager.free_in_buffer,destination->buffer);
       if (count != (ssize_t)
-          (MaxBufferExtent-destination->manager.free_in_buffer))
+          (MagickMinBufferExtent-destination->manager.free_in_buffer))
         ERREXIT(cinfo,JERR_FILE_WRITE);
     }
 }

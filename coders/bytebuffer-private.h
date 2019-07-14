@@ -16,6 +16,8 @@
 #ifndef MAGICK_BYTE_BUFFER_PRIVATE_H
 #define MAGICK_BYTE_BUFFER_PRIVATE_H
 
+#include "MagickCore/blob.h"
+
 typedef struct _MagickByteBuffer
 {
   Image
@@ -26,7 +28,7 @@ typedef struct _MagickByteBuffer
     count;
 
   unsigned char
-    data[8192];
+    data[MagickMinBufferExtent];
 } MagickByteBuffer;
 
 static inline int ReadMagickByteBuffer(MagickByteBuffer *buffer)

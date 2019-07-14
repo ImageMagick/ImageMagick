@@ -1105,7 +1105,7 @@ MagickExport MagickBooleanType DiscardBlobBytes(Image *image,
     count;
 
   unsigned char
-    buffer[16384];
+    buffer[MagickMinBufferExtent];
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
@@ -3163,7 +3163,7 @@ static inline MagickBooleanType SetStreamBuffering(const ImageInfo *image_info,
   size_t
     size;
 
-  size=16384;
+  size=MagickMinBufferExtent;
   option=GetImageOption(image_info,"stream:buffer-size");
   if (option != (const char *) NULL)
     size=StringToUnsignedLong(option);

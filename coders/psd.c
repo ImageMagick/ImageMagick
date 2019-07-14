@@ -2755,8 +2755,6 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
 
 #ifdef MAGICKCORE_ZLIB_DELEGATE
 
-#define CHUNK 16384
-
   int
     flush,
     level;
@@ -2787,8 +2785,8 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
 #ifdef MAGICKCORE_ZLIB_DELEGATE
   if (compression == ZipCompression)
     {
-      compressed_pixels=(unsigned char *) AcquireQuantumMemory(CHUNK,
-        sizeof(*compressed_pixels));
+      compressed_pixels=(unsigned char *) AcquireQuantumMemory(
+        MagickMinBufferExtent,sizeof(*compressed_pixels));
       if (compressed_pixels == (unsigned char *) NULL)
         {
           quantum_info=DestroyQuantumInfo(quantum_info);
@@ -2833,11 +2831,11 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
         if (y == (ssize_t) next_image->rows-1)
           flush=Z_FINISH;
         do {
-            stream.avail_out=(uInt) CHUNK;
+            stream.avail_out=(uInt) MagickMinBufferExtent;
             stream.next_out=(Bytef *) compressed_pixels;
             if (deflate(&stream,flush) == Z_STREAM_ERROR)
               break;
-            length=(size_t) CHUNK-stream.avail_out;
+            length=(size_t) MagickMinBufferExtent-stream.avail_out;
             if (length > 0)
               count+=WriteBlob(image,length,compressed_pixels);
         } while (stream.avail_out == 0);
