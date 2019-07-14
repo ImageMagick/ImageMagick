@@ -757,6 +757,20 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
     if (image_info->number_scenes != 0)
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
+    /*
+      Allocate next image structure.
+    */
+    AcquireNextImage(image_info,image,exception);
+    if (GetNextImageInList(image) == (Image *) NULL)
+      {
+        status=MagickFalse;
+        break;
+      }
+    image=SyncNextImageInList(image);
+    status=SetImageProgress(image,LoadImagesTag,image->scene-1,
+      image->scene);
+    if (status == MagickFalse)
+      break;
   }
   (void) CloseBlob(image);
   if (status == MagickFalse)
