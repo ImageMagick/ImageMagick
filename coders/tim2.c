@@ -185,12 +185,12 @@ static inline Quantum GetChannelValue(unsigned int word,unsigned char channel,
   {
     case RGBA16:
       /* Documentation specifies padding with zeros for converting from 5 to 8 bits. */
-      return(ScaleCharToQuantum((word>>channel*5 & ~(~0x0<<5))<<3));
+      return ScaleCharToQuantum((word>>channel*5 & ~(~0x0<<5))<<3);
     case RGB24:
     case RGBA32:
-      return(ScaleCharToQuantum(word>>channel*8 & ~(~0x0<<8)));
+      return ScaleCharToQuantum(word>>channel*8 & ~(~0x0<<8));
     default:
-      return((Quantum) -1);
+      return -1;
   }
 }
 
@@ -199,12 +199,12 @@ static inline Quantum GetAlpha(unsigned int word,TIM2ColorEncoding ce)
   switch(ce)
   {
     case RGBA16:
-      return(ScaleCharToQuantum((word>>3*5&0x1F)==0?0:0xFF));
+      return ScaleCharToQuantum((word>>3*5&0x1F)==0?0:0xFF);
     case RGBA32:
       /* 0x80 -> 1.0 alpha. Multiply by 2 and clamp to 0xFF */
-      return(ScaleCharToQuantum(MagickMin((word>>3*8&0xFF)<<1,0xFF)));
+      return ScaleCharToQuantum(MagickMin((word>>3*8&0xFF)<<1,0xFF));
     default:
-      return((Quantum) 0xFF);
+      return 0xFF;
   }
 }
 
@@ -238,8 +238,374 @@ static inline void deshufflePalette(Image *image,PixelInfo* oldColormap)
   }
 }
 
-static Image *ReadTIM2Image(const ImageInfo *image_info,
+static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
+  Image *image,TIM2ImageHeader *header,char clut_depth,char bits_per_pixel,
   ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status;
+
+  register ssize_t
+    x;
+
+  register Quantum
+    *q;
+
+  register unsigned char
+    *p;
+
+  size_t
+    bits_per_line,
+    bytes_per_line;
+
+  ssize_t
+    count,
+    y;
+
+  unsigned char
+    *tim2_image_data;
+
+  unsigned int
+    word;
+
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(MagickFalse);
+  /*
+   * User data
+   */
+  count=header->header_size-48;
+  while (count > 0)
+  {
+    if (ReadBlobByte(image) == EOF)
+      return(MagickFalse);
+    count--;
+  }
+  /*
+   * Image data
+   */
+  tim2_image_data=(unsigned char*) AcquireMagickMemory(
+    header->image_size);
+  if (tim2_image_data == (unsigned char *) NULL)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image_info->filename);
+  count=ReadBlob(image,header->image_size,tim2_image_data);
+  if ( count != (ssize_t) header->image_size)
+    {
+      tim2_image_data=(unsigned char *) RelinquishMagickMemory(tim2_image_data);
+      ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
+        image_info->filename);
+    }
+  /*
+    * ### Process Image Data ###
+    */
+  p=tim2_image_data;
+  bits_per_line=image->columns*bits_per_pixel;
+  bytes_per_line=bits_per_line/8 + ((bits_per_line%8==0) ? 0 : 1);
+
+  if (clut_depth != 0)
+    {
+      image->colors=header->clut_color_count;
+      if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
+        {
+          tim2_image_data=(unsigned char *) RelinquishMagickMemory(
+            tim2_image_data);
+          ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+            image_info->filename);
+        }
+      switch (bits_per_pixel)
+      {
+        case 4:
+        {
+          for (y=0; y<(ssize_t) image->rows; y++)
+          {
+            q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+            if (q == (Quantum *) NULL)
+              break;
+            p=tim2_image_data+y*bytes_per_line;
+            for (x=0; x < ((ssize_t) image->columns-1); x+=2)
+            {
+              SetPixelIndex(image,(*p >> 0) & 0x0F,q);
+              q+=GetPixelChannels(image);
+              SetPixelIndex(image,(*p >> 4) & 0x0F,q);
+              p++;
+              q+=GetPixelChannels(image);
+            }
+            if ((image->columns % 2) != 0)
+              {
+                SetPixelIndex(image,(*p >> 4) & 0x0F,q);
+                p++;
+                q+=GetPixelChannels(image);
+              }
+            if (SyncAuthenticPixels(image,exception) == MagickFalse)
+              break;
+            if (image->previous == (Image *) NULL)
+              {
+                status=SetImageProgress(image,LoadImageTag,
+                  (MagickOffsetType) y,image->rows);
+                if (status == MagickFalse)
+                  break;
+              }
+          }
+          break;
+        }
+        case 8:
+        {
+          for (y=0;y<(ssize_t) image->rows; y++)
+          {
+            q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+            if (q == (Quantum *) NULL)
+              break;
+            p=tim2_image_data+y*bytes_per_line;
+            for (x=0; x < (ssize_t) image->columns; x++)
+            {
+              SetPixelIndex(image,*p,q);
+              p++;
+              q+=GetPixelChannels(image);
+            }
+            if (SyncAuthenticPixels(image,exception) == MagickFalse)
+              break;
+            if (image->previous == (Image *) NULL)
+              {
+                status=SetImageProgress(image,LoadImageTag,
+                  (MagickOffsetType) y,image->rows);
+                if (status == MagickFalse)
+                  break;
+              }
+          }
+          break;
+        }
+        default:
+        {
+          tim2_image_data=(unsigned char *) RelinquishMagickMemory(tim2_image_data);
+          ThrowBinaryException(CorruptImageError,"ImproperImageHeader",
+            image_info->filename);
+        }
+      }
+    }
+  else  /* has_clut==false */
+    {
+      switch (bits_per_pixel)
+      {
+        case 16:
+        {
+          for (y=0; y<(ssize_t) image->rows; y++)
+          {
+            p=tim2_image_data+y*bytes_per_line;
+            q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+            if (q == (Quantum *) NULL)
+              break;
+            for (x=0; x < (ssize_t) image->columns; x++)
+            {
+              word = ((unsigned int)* p   )<<0*8 |
+                      ((unsigned int)*(p+1))<<1*8;
+
+              SetPixelRed(image,GetChannelValue(word,0,RGBA16),q);
+              SetPixelGreen(image,GetChannelValue(word,1,RGBA16),q);
+              SetPixelBlue(image,GetChannelValue(word,2,RGBA16),q);
+              SetPixelAlpha(image,GetAlpha(word,RGBA16),q);
+              q+=GetPixelChannels(image);
+              p+=sizeof(unsigned short);
+            }
+            if (SyncAuthenticPixels(image,exception) == MagickFalse)
+              break;
+            if (image->previous == (Image *) NULL)
+              {
+                status=SetImageProgress(image,LoadImageTag,
+                  (MagickOffsetType) y,image->rows);
+                if (status == MagickFalse)
+                  break;
+              }
+          }
+          break;
+        }
+        case 24:
+        {
+          for (y = 0; y<(ssize_t) image->rows; y++)
+          {
+            p=tim2_image_data+y*bytes_per_line;
+            q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+            if (q == (Quantum *) NULL)
+              break;
+            for (x=0; x < (ssize_t) image->columns; x++)
+            {
+              word = (unsigned int)(* p   )<<0*8 |
+                      (unsigned int)(*(p+1))<<1*8 |
+                      (unsigned int)(*(p+2))<<2*8;
+
+              SetPixelRed(image,GetChannelValue(word,0,RGB24),q);
+              SetPixelGreen(image,GetChannelValue(word,1,RGB24),q);
+              SetPixelBlue(image,GetChannelValue(word,2,RGB24),q);
+              q+=GetPixelChannels(image);
+              p+=3;
+            }
+            if (SyncAuthenticPixels(image,exception) == MagickFalse)
+              break;
+            if (image->previous == (Image *) NULL)
+              {
+                status=SetImageProgress(image,LoadImageTag,
+                  (MagickOffsetType) y,image->rows);
+                if (status == MagickFalse)
+                  break;
+              }
+          }
+          break;
+        }
+        case 32:
+        {  
+          for (y = 0; y<(ssize_t) image->rows; y++)
+          {
+            p=tim2_image_data+y*bytes_per_line;
+            q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+            if (q == (Quantum *) NULL)
+              break;
+            for (x=0; x < (ssize_t) image->columns; x++)
+            {
+              word = ((unsigned int)* p   )<<0*8 |
+                      ((unsigned int)*(p+1))<<1*8 |
+                      ((unsigned int)*(p+2))<<2*8 |
+                      ((unsigned int)*(p+3))<<3*8;
+
+              SetPixelRed(image,GetChannelValue(word,0,RGBA32),q);
+              SetPixelGreen(image,GetChannelValue(word,1,RGBA32),q);
+              SetPixelBlue(image,GetChannelValue(word,2,RGBA32),q);
+              SetPixelAlpha(image,GetAlpha(word,RGBA32),q);
+              q+=GetPixelChannels(image);
+              p+=4;
+            }
+            if (SyncAuthenticPixels(image,exception) == MagickFalse)
+              break;
+            if (image->previous == (Image *) NULL)
+              {
+                status=SetImageProgress(image,LoadImageTag,
+                  (MagickOffsetType) y,image->rows);
+                if (status == MagickFalse)
+                  break;
+              }
+          }
+          break;
+        }
+        default:
+        {
+          tim2_image_data=(unsigned char *) RelinquishMagickMemory(tim2_image_data);
+          ThrowBinaryException(CorruptImageError,"ImproperImageHeader",
+            image_info->filename);
+        }
+      }
+    }
+  tim2_image_data=(unsigned char *) RelinquishMagickMemory(tim2_image_data);
+  if ((status != MagickFalse) && (clut_depth != 0))
+  {
+    CSM
+      csm;
+
+    register ssize_t
+      i;
+
+    unsigned char
+      *tim2_clut_data;
+
+    /*
+      * ### Read CLUT Data ###
+      */
+    tim2_clut_data=(unsigned char *) AcquireMagickMemory(header->clut_size);
+    if (tim2_clut_data == (unsigned char *) NULL)
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        image_info->filename);
+    count=ReadBlob(image,header->clut_size,tim2_clut_data);
+    if (count != (ssize_t) (header->clut_size))
+      {
+        tim2_clut_data=(unsigned char *) RelinquishMagickMemory(tim2_clut_data);
+        ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
+          image_info->filename);
+      }
+    /*
+      * ### Process CLUT Data ###
+      */
+    p=tim2_clut_data;
+    switch(clut_depth)
+    {
+      case 16:
+      {
+        for (i=0; i < (ssize_t) image->colors; i++)
+        {
+          word = ((unsigned short)* p   )<<0*8 |
+                  ((unsigned short)*(p+1))<<1*8;
+
+          image->colormap[i].red  =GetChannelValue(word,0,RGBA16);
+          image->colormap[i].green=GetChannelValue(word,1,RGBA16);
+          image->colormap[i].blue =GetChannelValue(word,2,RGBA16);
+          image->colormap[i].alpha=GetAlpha(word,16);
+          p+=2;
+        }
+        break;
+      }
+      case 24:
+      {
+        for (i=0; i < (ssize_t) image->colors; i++)
+        {
+          word = ((unsigned int)* p   )<<0*8 |
+                  ((unsigned int)*(p+1))<<1*8 |
+                  ((unsigned int)*(p+2))<<2*8;
+
+          image->colormap[i].red  =GetChannelValue(word,0,RGB24);
+          image->colormap[i].green=GetChannelValue(word,1,RGB24);
+          image->colormap[i].blue =GetChannelValue(word,2,RGB24);
+          p+=3;
+        }
+        break;
+      }
+      case 32:
+      {
+        for (i=0; i < (ssize_t) image->colors; i++)
+        {
+          word = ((unsigned int)* p   )<<0*8 |
+                  ((unsigned int)*(p+1))<<1*8 |
+                  ((unsigned int)*(p+2))<<2*8 |
+                  ((unsigned int)*(p+3))<<3*8;
+
+          image->colormap[i].red  =GetChannelValue(word,0,RGBA32);
+          image->colormap[i].green=GetChannelValue(word,1,RGBA32);
+          image->colormap[i].blue =GetChannelValue(word,2,RGBA32);
+          image->colormap[i].alpha=GetAlpha(word,RGBA32);
+          p+=4;
+        }
+        break;
+      }
+    }
+    tim2_clut_data=(unsigned char *) RelinquishMagickMemory(tim2_clut_data);
+    /* CSM: CLUT Storage Mode */
+    switch ((int) header->clut_type>>4)  /* High 4 bits */
+    {
+      case 0:
+        csm=CSM1;
+        break;
+      case 1:
+        csm=CSM2;
+        break;
+      default:
+        ThrowBinaryException(CorruptImageError,"ImproperImageHeader",
+          image_info->filename);
+        break;
+    }
+    if (csm==CSM1)
+      {
+        PixelInfo
+          *oldColormap;
+
+        oldColormap=(PixelInfo *) AcquireQuantumMemory((size_t)(image->colors)+1,
+          sizeof(*image->colormap));
+        if (oldColormap == (PixelInfo *) NULL)
+          ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+            image_info->filename);
+        deshufflePalette(image,oldColormap);
+        RelinquishMagickMemory(oldColormap);
+      }
+  }
+  return(status);
+}
+
+static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -309,32 +675,25 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,
   for (int i=0; i < tim2_file_header.image_count; ++i)
   {
     char
-      clut_depth=0,
-      bits_per_pixel=0;
-
-    CSM
-      csm;
-
-    MagickBooleanType
-      has_clut;
-
-    MagickOffsetType
-      offset;
+      clut_depth,
+      bits_per_pixel;
 
     TIM2ImageHeader
       tim2_image_header;
 
-    unsigned int
-      word;
-
-    offset=TellBlob(image);
     tim2_image_header=ReadTIM2ImageHeader(image);
     if (tim2_image_header.mipmap_count != 1)
       ThrowReaderException(CoderError,"NumberOfImagesIsNotSupported");
+    if (tim2_image_header.header_size < 48)
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    if ((MagickSizeType) tim2_image_header.image_size > GetBlobSize(image))
+      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+    if ((MagickSizeType) tim2_image_header.clut_size > GetBlobSize(image))
+      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     image->columns=tim2_image_header.width;
     image->rows=tim2_image_header.height;
-    has_clut=tim2_image_header.clut_type !=0 ? MagickTrue : MagickFalse;
-    if (has_clut != MagickFalse)
+    clut_depth=0;
+    if (tim2_image_header.clut_type !=0)
       {
         switch((int) tim2_image_header.clut_type&0x0F)  /* Low 4 bits */
         {
@@ -373,334 +732,16 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         break;
     }
-    image->depth=(has_clut != MagickFalse) ? clut_depth : bits_per_pixel;
+    image->depth=(clut_depth != 0) ? clut_depth : bits_per_pixel;
     if ((image->depth == 16) || (image->depth == 32))
       image->alpha_trait=BlendPixelTrait;
-    status=SetImageExtent(image,image->columns,image->rows,exception);
-    if (status == MagickFalse)
-      return(DestroyImageList(image));
-    SeekBlob(image,offset,SEEK_SET);
-    SeekBlob(image,tim2_image_header.header_size,SEEK_CUR);
-    {
-      /*
-       * ### Read Image Data ###
-       */
-      register ssize_t
-        x;
-
-      register Quantum
-        *q;
-
-      register unsigned char
-        *p;
-
-      size_t
-        bits_per_line,
-        bytes_per_line,
-        y;
-
-      unsigned char
-        *tim2_image_data;
-
-      tim2_image_data=(unsigned char*) AcquireMagickMemory(tim2_image_header.image_size);
-      if (tim2_image_data == (unsigned char *) NULL)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      count=ReadBlob(image,tim2_image_header.image_size,tim2_image_data);
-      if ( count != (ssize_t) tim2_image_header.image_size)
-        {
-          tim2_image_data=(unsigned char *) RelinquishMagickMemory(tim2_image_data);
-          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-        }
-
-      /*
-       * ### Process Image Data ###
-       */
-      p=tim2_image_data;
-      bits_per_line=image->columns*bits_per_pixel;
-      bytes_per_line=bits_per_line/8 + ((bits_per_line%8==0) ? 0 : 1);
-
-      if (has_clut != MagickFalse)
+    if (image->ping != MagickFalse)
       {
-        image->colors=tim2_image_header.clut_color_count;
-        if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-
-        switch (bits_per_pixel)
-        {
-          case 4:
-          {
-            for (y=0; y<(ssize_t) image->rows; y++)
-            {
-              q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-              if (q == (Quantum *) NULL)
-                break;
-              p=tim2_image_data+y*bytes_per_line;
-              for (x=0; x < ((ssize_t) image->columns-1); x+=2)
-              {
-                SetPixelIndex(image,(*p >> 0) & 0x0F,q);
-                q+=GetPixelChannels(image);
-                SetPixelIndex(image,(*p >> 4) & 0x0F,q);
-                p++;
-                q+=GetPixelChannels(image);
-              }
-              if ((image->columns % 2) != 0)
-                {
-                  SetPixelIndex(image,(*p >> 4) & 0x0F,q);
-                  p++;
-                  q+=GetPixelChannels(image);
-                }
-              if (SyncAuthenticPixels(image,exception) == MagickFalse)
-                break;
-              if (image->previous == (Image *) NULL)
-                {
-                  status=SetImageProgress(image,LoadImageTag,
-                    (MagickOffsetType) y,image->rows);
-                  if (status == MagickFalse)
-                    break;
-                }
-            }
-            break;
-          }
-
-          case 8:
-          {
-            for (y=0;y<(ssize_t) image->rows; y++)
-            {
-              q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-              if (q == (Quantum *) NULL)
-                break;
-              p=tim2_image_data+y*bytes_per_line;
-              for (x=0; x < (ssize_t) image->columns; x++)
-              {
-                SetPixelIndex(image,*p,q);
-                p++;
-                q+=GetPixelChannels(image);
-              }
-              if (SyncAuthenticPixels(image,exception) == MagickFalse)
-                break;
-              if (image->previous == (Image *) NULL)
-                {
-                  status=SetImageProgress(image,LoadImageTag,
-                    (MagickOffsetType) y,image->rows);
-                  if (status == MagickFalse)
-                    break;
-                }
-            }
-            break;
-          }
-        }
-      }
-      else  /* has_clut==false */
-      {
-        switch (bits_per_pixel)
-        {
-          case 16:
-          {
-            for (y=0; y<(ssize_t) image->rows; y++)
-            {
-              p=tim2_image_data+y*bytes_per_line;
-              q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-              if (q == (Quantum *) NULL)
-                break;
-              for (x=0; x < (ssize_t) image->columns; x++)
-              {
-                word = ((unsigned int)* p   )<<0*8 |
-                       ((unsigned int)*(p+1))<<1*8;
-
-                SetPixelRed(image,GetChannelValue(word,0,RGBA16),q);
-                SetPixelGreen(image,GetChannelValue(word,1,RGBA16),q);
-                SetPixelBlue(image,GetChannelValue(word,2,RGBA16),q);
-                SetPixelAlpha(image,GetAlpha(word,RGBA16),q);
-                q+=GetPixelChannels(image);
-                p+=sizeof(unsigned short);
-              }
-              if (SyncAuthenticPixels(image,exception) == MagickFalse)
-                break;
-              if (image->previous == (Image *) NULL)
-                {
-                  status=SetImageProgress(image,LoadImageTag,
-                    (MagickOffsetType) y,image->rows);
-                  if (status == MagickFalse)
-                    break;
-                }
-            }
-            break;
-          }
-          case 24:
-          {
-            for (y = 0; y<(ssize_t) image->rows; y++)
-            {
-              p=tim2_image_data+y*bytes_per_line;
-              q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-              if (q == (Quantum *) NULL)
-                break;
-              for (x=0; x < (ssize_t) image->columns; x++)
-              {
-                word = (unsigned int)(* p   )<<0*8 |
-                       (unsigned int)(*(p+1))<<1*8 |
-                       (unsigned int)(*(p+2))<<2*8;
-
-                SetPixelRed(image,GetChannelValue(word,0,RGB24),q);
-                SetPixelGreen(image,GetChannelValue(word,1,RGB24),q);
-                SetPixelBlue(image,GetChannelValue(word,2,RGB24),q);
-                q+=GetPixelChannels(image);
-                p+=3;
-              }
-              if (SyncAuthenticPixels(image,exception) == MagickFalse)
-                break;
-              if (image->previous == (Image *) NULL)
-                {
-                  status=SetImageProgress(image,LoadImageTag,
-                    (MagickOffsetType) y,image->rows);
-                  if (status == MagickFalse)
-                    break;
-                }
-            }
-            break;
-          }
-          case 32:
-          {  
-            for (y = 0; y<(ssize_t) image->rows; y++)
-            {
-              p=tim2_image_data+y*bytes_per_line;
-              q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-              if (q == (Quantum *) NULL)
-                break;
-              for (x=0; x < (ssize_t) image->columns; x++)
-              {
-                word = ((unsigned int)* p   )<<0*8 |
-                       ((unsigned int)*(p+1))<<1*8 |
-                       ((unsigned int)*(p+2))<<2*8 |
-                       ((unsigned int)*(p+3))<<3*8;
-
-                SetPixelRed(image,GetChannelValue(word,0,RGBA32),q);
-                SetPixelGreen(image,GetChannelValue(word,1,RGBA32),q);
-                SetPixelBlue(image,GetChannelValue(word,2,RGBA32),q);
-                SetPixelAlpha(image,GetAlpha(word,RGBA32),q);
-                q+=GetPixelChannels(image);
-                p+=4;
-              }
-              if (SyncAuthenticPixels(image,exception) == MagickFalse)
-                break;
-              if (image->previous == (Image *) NULL)
-                {
-                  status=SetImageProgress(image,LoadImageTag,
-                    (MagickOffsetType) y,image->rows);
-                  if (status == MagickFalse)
-                    break;
-                }
-            }
-            break;
-          }
-          default:
-          {
-            tim2_image_data=(unsigned char *) RelinquishMagickMemory(tim2_image_data);
-            ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-          }
-        }
-      }
-
-      tim2_image_data=(unsigned char *) RelinquishMagickMemory(tim2_image_data);
-    }
-
-    if (has_clut != MagickFalse)
-    {
-      register unsigned char
-        *p;
-
-      unsigned char
-        *tim2_clut_data;
-
-      /*
-       * ### Read CLUT Data ###
-       */
-      tim2_clut_data=(unsigned char *) AcquireMagickMemory(tim2_image_header.clut_size);
-      if (tim2_clut_data == (unsigned char *) NULL)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      count=ReadBlob(image,tim2_image_header.clut_size,tim2_clut_data);
-      if (count != (ssize_t) (tim2_image_header.clut_size))
-        {
-          tim2_clut_data=(unsigned char *) RelinquishMagickMemory(tim2_clut_data);
-          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-        }
-      /*
-       * ### Process CLUT Data ###
-       */
-      p=tim2_clut_data;
-      switch(clut_depth)
-      {
-        case 16:
-        {
-          for (i=0;i<(ssize_t)image->colors;i++){
-            word = ((unsigned short)* p   )<<0*8 |
-                   ((unsigned short)*(p+1))<<1*8;
-
-            image->colormap[i].red  =GetChannelValue(word,0,RGBA16);
-            image->colormap[i].green=GetChannelValue(word,1,RGBA16);
-            image->colormap[i].blue =GetChannelValue(word,2,RGBA16);
-            image->colormap[i].alpha=GetAlpha(word,16);
-            p+=2;
-          }
-          break;
-        }
-        case 24:
-        {
-          for (i=0;i<(ssize_t)image->colors;i++){
-            word = ((unsigned int)* p   )<<0*8 |
-                   ((unsigned int)*(p+1))<<1*8 |
-                   ((unsigned int)*(p+2))<<2*8;
-
-            image->colormap[i].red  =GetChannelValue(word,0,RGB24);
-            image->colormap[i].green=GetChannelValue(word,1,RGB24);
-            image->colormap[i].blue =GetChannelValue(word,2,RGB24);
-            p+=3;
-          }
-          break;
-        }
-        case 32:
-        {
-          for (i=0;i<(ssize_t)image->colors;i++){
-            word = ((unsigned int)* p   )<<0*8 |
-                   ((unsigned int)*(p+1))<<1*8 |
-                   ((unsigned int)*(p+2))<<2*8 |
-                   ((unsigned int)*(p+3))<<3*8;
-
-            image->colormap[i].red  =GetChannelValue(word,0,RGBA32);
-            image->colormap[i].green=GetChannelValue(word,1,RGBA32);
-            image->colormap[i].blue =GetChannelValue(word,2,RGBA32);
-            image->colormap[i].alpha=GetAlpha(word,RGBA32);
-            p+=4;
-          }
-          break;
-        }
-      }
-      tim2_clut_data=(unsigned char *) RelinquishMagickMemory(tim2_clut_data);
-      /* CSM: CLUT Storage Mode */
-      switch ((int) tim2_image_header.clut_type>>4)  /* High 4 bits */
-      {
-        case 0:
-          csm=CSM1;
-          break;
-        case 1:
-          csm=CSM2;
-          break;
-        default:
-          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+        status=ReadTIM2ImageData(image_info,image,&tim2_image_header,clut_depth,
+          bits_per_pixel,exception);
+        if (status==MagickFalse)
           break;
       }
-      if (csm==CSM1)
-        {
-          PixelInfo
-            *oldColormap;
-
-          oldColormap=(PixelInfo *) AcquireQuantumMemory((size_t)(image->colors)+1,
-            sizeof(*image->colormap));
-          if (oldColormap == (PixelInfo *) NULL)
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-          deshufflePalette(image,oldColormap);
-          RelinquishMagickMemory(oldColormap);
-        }
-    }
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
