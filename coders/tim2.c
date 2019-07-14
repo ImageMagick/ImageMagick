@@ -555,9 +555,9 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
           word = ((unsigned short)* p   )<<0*8 |
                   ((unsigned short)*(p+1))<<1*8;
 
-          image->colormap[i].red  =GetChannelValue(word,0,RGBA16);
+          image->colormap[i].red=GetChannelValue(word,0,RGBA16);
           image->colormap[i].green=GetChannelValue(word,1,RGBA16);
-          image->colormap[i].blue =GetChannelValue(word,2,RGBA16);
+          image->colormap[i].blue=GetChannelValue(word,2,RGBA16);
           image->colormap[i].alpha=GetAlpha(word,16);
           p+=2;
         }
@@ -571,9 +571,9 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
                   ((unsigned int)*(p+1))<<1*8 |
                   ((unsigned int)*(p+2))<<2*8;
 
-          image->colormap[i].red  =GetChannelValue(word,0,RGB24);
+          image->colormap[i].red=GetChannelValue(word,0,RGB24);
           image->colormap[i].green=GetChannelValue(word,1,RGB24);
-          image->colormap[i].blue =GetChannelValue(word,2,RGB24);
+          image->colormap[i].blue=GetChannelValue(word,2,RGB24);
           p+=3;
         }
         break;
@@ -587,9 +587,9 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
                   ((unsigned int)*(p+2))<<2*8 |
                   ((unsigned int)*(p+3))<<3*8;
 
-          image->colormap[i].red  =GetChannelValue(word,0,RGBA32);
+          image->colormap[i].red=GetChannelValue(word,0,RGBA32);
           image->colormap[i].green=GetChannelValue(word,1,RGBA32);
-          image->colormap[i].blue =GetChannelValue(word,2,RGBA32);
+          image->colormap[i].blue=GetChannelValue(word,2,RGBA32);
           image->colormap[i].alpha=GetAlpha(word,RGBA32);
           p+=4;
         }
