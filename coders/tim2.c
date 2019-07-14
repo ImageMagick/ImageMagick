@@ -274,7 +274,7 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
     y;
 
   unsigned char
-    *tim2_image_data;
+    *row_data;
 
   unsigned int
     word;
@@ -291,32 +291,18 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
   /*
    * Image data
    */
-  tim2_image_data=(unsigned char*) AcquireMagickMemory(
-    header->image_size);
-  if (tim2_image_data == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image_info->filename);
-  count=ReadBlob(image,header->image_size,tim2_image_data);
-  if ( count != (ssize_t) header->image_size)
-    {
-      tim2_image_data=(unsigned char *) RelinquishMagickMemory(tim2_image_data);
-      ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
-        image_info->filename);
-    }
-  /*
-    * ### Process Image Data ###
-    */
-  p=tim2_image_data;
   bits_per_line=image->columns*bits_per_pixel;
   bytes_per_line=bits_per_line/8 + ((bits_per_line%8==0) ? 0 : 1);
-
+  row_data=(unsigned char*) AcquireMagickMemory(bytes_per_line);
+  if (row_data == (unsigned char *) NULL)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image_info->filename);
   if (clut_depth != 0)
     {
       image->colors=header->clut_color_count;
       if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
         {
-          tim2_image_data=(unsigned char *) RelinquishMagickMemory(
-            tim2_image_data);
+          row_data=(unsigned char *) RelinquishMagickMemory(row_data);
           ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
             image_info->filename);
         }
@@ -329,7 +315,14 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
             q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
             if (q == (Quantum *) NULL)
               break;
-            p=tim2_image_data+y*bytes_per_line;
+            count=ReadBlob(image,bytes_per_line,row_data);
+            if (count != (ssize_t) bytes_per_line)
+              {
+                row_data=(unsigned char *) RelinquishMagickMemory(row_data);
+                ThrowBinaryException(CorruptImageError,
+                  "InsufficientImageDataInFile",image_info->filename);
+              }
+            p=row_data;
             for (x=0; x < ((ssize_t) image->columns-1); x+=2)
             {
               SetPixelIndex(image,(*p >> 0) & 0x0F,q);
@@ -363,7 +356,14 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
             q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
             if (q == (Quantum *) NULL)
               break;
-            p=tim2_image_data+y*bytes_per_line;
+            count=ReadBlob(image,bytes_per_line,row_data);
+            if (count != (ssize_t) bytes_per_line)
+              {
+                row_data=(unsigned char *) RelinquishMagickMemory(row_data);
+                ThrowBinaryException(CorruptImageError,
+                  "InsufficientImageDataInFile",image_info->filename);
+              }
+            p=row_data;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               SetPixelIndex(image,*p,q);
@@ -384,7 +384,7 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
         }
         default:
         {
-          tim2_image_data=(unsigned char *) RelinquishMagickMemory(tim2_image_data);
+          row_data=(unsigned char *) RelinquishMagickMemory(row_data);
           ThrowBinaryException(CorruptImageError,"ImproperImageHeader",
             image_info->filename);
         }
@@ -398,10 +398,17 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
         {
           for (y=0; y<(ssize_t) image->rows; y++)
           {
-            p=tim2_image_data+y*bytes_per_line;
             q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
             if (q == (Quantum *) NULL)
               break;
+            count=ReadBlob(image,bytes_per_line,row_data);
+            if (count != (ssize_t) bytes_per_line)
+              {
+                row_data=(unsigned char *) RelinquishMagickMemory(row_data);
+                ThrowBinaryException(CorruptImageError,
+                  "InsufficientImageDataInFile",image_info->filename);
+              }
+            p=row_data;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               word = ((unsigned int)* p   )<<0*8 |
@@ -430,10 +437,17 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
         {
           for (y = 0; y<(ssize_t) image->rows; y++)
           {
-            p=tim2_image_data+y*bytes_per_line;
             q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
             if (q == (Quantum *) NULL)
               break;
+            count=ReadBlob(image,bytes_per_line,row_data);
+            if (count != (ssize_t) bytes_per_line)
+              {
+                row_data=(unsigned char *) RelinquishMagickMemory(row_data);
+                ThrowBinaryException(CorruptImageError,
+                  "InsufficientImageDataInFile",image_info->filename);
+              }
+            p=row_data;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               word = (unsigned int)(* p   )<<0*8 |
@@ -462,10 +476,17 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
         {  
           for (y = 0; y<(ssize_t) image->rows; y++)
           {
-            p=tim2_image_data+y*bytes_per_line;
             q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
             if (q == (Quantum *) NULL)
               break;
+            count=ReadBlob(image,bytes_per_line,row_data);
+            if (count != (ssize_t) bytes_per_line)
+              {
+                row_data=(unsigned char *) RelinquishMagickMemory(row_data);
+                ThrowBinaryException(CorruptImageError,
+                  "InsufficientImageDataInFile",image_info->filename);
+              }
+            p=row_data;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               word = ((unsigned int)* p   )<<0*8 |
@@ -494,13 +515,13 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
         }
         default:
         {
-          tim2_image_data=(unsigned char *) RelinquishMagickMemory(tim2_image_data);
+          row_data=(unsigned char *) RelinquishMagickMemory(row_data);
           ThrowBinaryException(CorruptImageError,"ImproperImageHeader",
             image_info->filename);
         }
       }
     }
-  tim2_image_data=(unsigned char *) RelinquishMagickMemory(tim2_image_data);
+  row_data=(unsigned char *) RelinquishMagickMemory(row_data);
   if ((status != MagickFalse) && (clut_depth != 0))
   {
     CSM
