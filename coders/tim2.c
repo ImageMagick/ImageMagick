@@ -154,28 +154,28 @@ typedef enum
 static inline TIM2ImageHeader ReadTIM2ImageHeader(Image *image)
 {
   TIM2ImageHeader
-    tim2_image_header;
+    image_header;
 
-  tim2_image_header.total_size=ReadBlobLSBLong(image);
-  tim2_image_header.clut_size=ReadBlobLSBLong(image);
-  tim2_image_header.image_size=ReadBlobLSBLong(image);
-  tim2_image_header.header_size=ReadBlobLSBShort(image);
+  image_header.total_size=ReadBlobLSBLong(image);
+  image_header.clut_size=ReadBlobLSBLong(image);
+  image_header.image_size=ReadBlobLSBLong(image);
+  image_header.header_size=ReadBlobLSBShort(image);
 
-  tim2_image_header.clut_color_count=ReadBlobLSBShort(image);
-  tim2_image_header.img_format=(unsigned char) ReadBlobByte(image);
-  tim2_image_header.mipmap_count=(unsigned char) ReadBlobByte(image);
-  tim2_image_header.clut_type=(unsigned char) ReadBlobByte(image);
-  tim2_image_header.bpp_type=(unsigned char) ReadBlobByte(image);
+  image_header.clut_color_count=ReadBlobLSBShort(image);
+  image_header.img_format=(unsigned char) ReadBlobByte(image);
+  image_header.mipmap_count=(unsigned char) ReadBlobByte(image);
+  image_header.clut_type=(unsigned char) ReadBlobByte(image);
+  image_header.bpp_type=(unsigned char) ReadBlobByte(image);
 
-  tim2_image_header.width=ReadBlobLSBShort(image);
-  tim2_image_header.height=ReadBlobLSBShort(image);
+  image_header.width=ReadBlobLSBShort(image);
+  image_header.height=ReadBlobLSBShort(image);
 
-  tim2_image_header.GsTex0=ReadBlobMSBLongLong(image);
-  tim2_image_header.GsTex1=ReadBlobMSBLongLong(image);
-  tim2_image_header.GsRegs=ReadBlobMSBLong(image);
-  tim2_image_header.GsTexClut=ReadBlobMSBLong(image);
+  image_header.GsTex0=ReadBlobMSBLongLong(image);
+  image_header.GsTex1=ReadBlobMSBLongLong(image);
+  image_header.GsRegs=ReadBlobMSBLong(image);
+  image_header.GsTexClut=ReadBlobMSBLong(image);
 
-  return tim2_image_header;
+  return image_header;
 }
 
 static inline Quantum GetChannelValue(unsigned int word,unsigned char channel,
@@ -531,26 +531,26 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
       i;
 
     unsigned char
-      *tim2_clut_data;
+      *clut_data;
 
     /*
       * ### Read CLUT Data ###
       */
-    tim2_clut_data=(unsigned char *) AcquireMagickMemory(header->clut_size);
-    if (tim2_clut_data == (unsigned char *) NULL)
+    clut_data=(unsigned char *) AcquireMagickMemory(header->clut_size);
+    if (clut_data == (unsigned char *) NULL)
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image_info->filename);
-    count=ReadBlob(image,header->clut_size,tim2_clut_data);
+    count=ReadBlob(image,header->clut_size,clut_data);
     if (count != (ssize_t) (header->clut_size))
       {
-        tim2_clut_data=(unsigned char *) RelinquishMagickMemory(tim2_clut_data);
+        clut_data=(unsigned char *) RelinquishMagickMemory(clut_data);
         ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
           image_info->filename);
       }
     /*
       * ### Process CLUT Data ###
       */
-    p=tim2_clut_data;
+    p=clut_data;
     switch(clut_depth)
     {
       case 16:
@@ -601,7 +601,7 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
         break;
       }
     }
-    tim2_clut_data=(unsigned char *) RelinquishMagickMemory(tim2_clut_data);
+    clut_data=(unsigned char *) RelinquishMagickMemory(clut_data);
     /* CSM: CLUT Storage Mode */
     switch ((int) header->clut_type>>4)  /* High 4 bits */
     {
