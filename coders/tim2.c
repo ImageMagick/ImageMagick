@@ -101,20 +101,24 @@ typedef struct _TIM2ImageHeader
     GsTexClut;
 } TIM2ImageHeader;
 
-enum CSM {
+typedef enum
+{
   CSM1=0,
   CSM2=1,
-};
+} CSM;
 
-enum TIM2ColorEncoding{
+typedef enum
+{
   RGBA32=0,
   RGB24=1,
   RGBA16=2,
-};
-enum TIM2IndexEncoding{
+} TIM2ColorEncoding;
+
+typedef enum
+{
   IDTEX8=3,
   IDTEX4=4,
-};
+} TIM2IndexEncoding;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -171,7 +175,7 @@ static inline TIM2ImageHeader ReadTIM2ImageHeader(Image *image)
   return tim2_image_header;
 }
 
-static inline Quantum GetChannelValue(unsigned int word,unsigned char channel, enum TIM2ColorEncoding ce){
+static inline Quantum GetChannelValue(unsigned int word,unsigned char channel,TIM2ColorEncoding ce){
   switch(ce)
   {
     case RGBA16:
@@ -185,7 +189,7 @@ static inline Quantum GetChannelValue(unsigned int word,unsigned char channel, e
   }
 }
 
-static inline Quantum GetAlpha(unsigned int word, enum TIM2ColorEncoding ce){
+static inline Quantum GetAlpha(unsigned int word, TIM2ColorEncoding ce){
   switch(ce)
   {
     case RGBA16:
@@ -301,7 +305,7 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,
 
     MagickOffsetType ImgDataOffset=TellBlob(image);
 
-    enum CSM csm;
+    CSM csm;
 
     char
       clut_depth=0,
