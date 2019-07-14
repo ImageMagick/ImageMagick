@@ -238,6 +238,17 @@ static inline void deshufflePalette(Image *image,PixelInfo* oldColormap)
   }
 }
 
+static MagickBooleanType SkipTIM2Bytes(Image *image,size_t count)
+{
+  while (count > 0)
+  {
+    if (ReadBlobByte(image) == EOF)
+      return(MagickFalse);
+    count--;
+  }
+  return(MagickTrue);
+}
+
 static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
   Image *image,TIM2ImageHeader *header,char clut_depth,char bits_per_pixel,
   ExceptionInfo *exception)
@@ -274,13 +285,9 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
   /*
    * User data
    */
-  count=header->header_size-48;
-  while (count > 0)
-  {
-    if (ReadBlobByte(image) == EOF)
-      return(MagickFalse);
-    count--;
-  }
+  status=SkipTIM2Bytes(image,header->header_size-48);
+  if (status == MagickFalse)
+    return(MagickFalse);
   /*
    * Image data
    */
@@ -659,10 +666,12 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
   switch(file_header.format_type)
   {
     case 0x00:
-      SeekBlob(image,16,SEEK_SET);
+      if (SkipTIM2Bytes(image,16) == MagickFalse)
+        ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
       break;
     case 0x01:
-      SeekBlob(image,128,SEEK_SET);
+      if (SkipTIM2Bytes(image,128) == MagickFalse)
+        ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
       break;
     default:
       ThrowReaderException(CoderError,"ImageTypeNotSupported");
