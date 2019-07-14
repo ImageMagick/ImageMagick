@@ -65,12 +65,12 @@
 */
 typedef struct _TIM2FileHeader
 {
-  uint32_t
+  unsigned int
     magic_num;
-  uint8_t
+  unsigned char
     format_vers,
     format_type;
-  uint16_t
+  unsigned short
     image_count;
   char
     reserved[8];
@@ -78,25 +78,25 @@ typedef struct _TIM2FileHeader
 
 typedef struct _TIM2ImageHeader
 {
-  uint32_t
+  unsigned int
     total_size,
     clut_size,
     image_size;
-  uint16_t
+  unsigned short
     header_size,
     clut_color_count;
-  uint8_t
+  unsigned char
     img_format,
     mipmap_count,
     clut_type,
     bpp_type;
-  uint16_t
+  unsigned short
     width,
     height;
-  uint64_t
+  MagickSizeType
     GsTex0,
     GsTex1;
-  uint32_t
+  unsigned int
     GsRegs,
     GsTexClut;
 } TIM2ImageHeader;
@@ -117,8 +117,33 @@ enum TIM2IndexEncoding{
 };
 
 /*
-  Static functions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  R e a d T I M 2 I m a g e                                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReadTIM2Image() reads a PS2 TIM image file and returns it.  It
+%  allocates the memory necessary for the new Image structure and returns a
+%  pointer to the new image.
+%
+%  The format of the ReadTIM2Image method is:
+%
+%      Image *ReadTIM2Image(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: the image info.
+%
+%    o exception: return any errors or warnings in this structure.
+%
 */
+
 static inline TIM2ImageHeader ReadTIM2ImageHeader(Image *image)
 {
   TIM2ImageHeader
@@ -130,10 +155,10 @@ static inline TIM2ImageHeader ReadTIM2ImageHeader(Image *image)
   tim2_image_header.header_size=ReadBlobLSBShort(image);
 
   tim2_image_header.clut_color_count=ReadBlobLSBShort(image);
-  tim2_image_header.img_format  =ReadBlobByte(image);
-  tim2_image_header.mipmap_count=ReadBlobByte(image);
-  tim2_image_header.clut_type   =ReadBlobByte(image);
-  tim2_image_header.bpp_type    =ReadBlobByte(image);
+  tim2_image_header.img_format  =(unsigned char) ReadBlobByte(image);
+  tim2_image_header.mipmap_count=(unsigned char) ReadBlobByte(image);
+  tim2_image_header.clut_type   =(unsigned char) ReadBlobByte(image);
+  tim2_image_header.bpp_type    =(unsigned char) ReadBlobByte(image);
 
   tim2_image_header.width =ReadBlobLSBShort(image);
   tim2_image_header.height=ReadBlobLSBShort(image);
@@ -146,7 +171,7 @@ static inline TIM2ImageHeader ReadTIM2ImageHeader(Image *image)
   return tim2_image_header;
 }
 
-static inline Quantum GetChannelValue(uint32_t word,uint8_t channel, enum TIM2ColorEncoding ce){
+static inline Quantum GetChannelValue(unsigned int word,unsigned char channel, enum TIM2ColorEncoding ce){
   switch(ce)
   {
     case RGBA16:
@@ -156,15 +181,15 @@ static inline Quantum GetChannelValue(uint32_t word,uint8_t channel, enum TIM2Co
     case RGBA32:
       return ScaleCharToQuantum(word>>channel*8 & ~(~0x0<<8));
     default:
-      return -1;
+      return (Quantum) -1;
   }
 }
 
-static inline Quantum GetAlpha(uint32_t word, enum TIM2ColorEncoding ce){
+static inline Quantum GetAlpha(unsigned int word, enum TIM2ColorEncoding ce){
   switch(ce)
   {
     case RGBA16:
-      return ScaleCharToQuantum((word>>3*5&0x1F)==0?0:0xFF);
+      return ScaleCharToQuantum((unsigned char) ((word>>3*5&0x1F)==0?0:0xFF));
     case RGBA32:
 #ifndef MIN
 #define MIN(a,b) ((a)<(b)? a:b)
@@ -172,13 +197,13 @@ static inline Quantum GetAlpha(uint32_t word, enum TIM2ColorEncoding ce){
       /* 0x80 -> 1.0 alpha. Multiply by 2 and clamp to 0xFF */
       return ScaleCharToQuantum(MIN((word>>3*8&0xFF)<<1,0xFF));
     default:
-      return 0xFF;
+      return (Quantum) 0xFF;
   }
 }
 
 static inline void deshufflePalette(Image *image,PixelInfo* oldColormap){
-  const uint8_t
-    pages=image->colors/32,  /* Pages per CLUT */
+  const unsigned char
+    pages=(unsigned char) (image->colors/32),  /* Pages per CLUT */
     blocks=4,  /* Blocks per page */
     colors=8;  /* Colors per block */
   size_t
@@ -196,48 +221,22 @@ static inline void deshufflePalette(Image *image,PixelInfo* oldColormap){
     i+=blocks*colors;
   }
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%  R e a d T I M 2 I m a g e                                                  %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ReadTIM2Image() reads a PS2 TIM image file and returns it.  It
-%  allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.
-%
-%  The format of the ReadTIM2Image method is:
-%
-%      Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image_info: the image info.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-static Image *ReadTIM2Image(const ImageInfo *image_info, ExceptionInfo *exception)
-{
-  TIM2FileHeader
-    tim2_file_header;
 
+static Image *ReadTIM2Image(const ImageInfo *image_info,
+  ExceptionInfo *exception)
+{
   Image
     *image;
 
   MagickBooleanType
     status;
 
-
   ssize_t
     count,
     str_read;
+
+  TIM2FileHeader
+    tim2_file_header;
 
   /*
    * Open image file.
@@ -246,7 +245,8 @@ static Image *ReadTIM2Image(const ImageInfo *image_info, ExceptionInfo *exceptio
   assert(image_info->signature == MagickCoreSignature);
 
   if (image_info->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image_info->filename);
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   image=AcquireImage(image_info,exception);
@@ -274,7 +274,6 @@ static Image *ReadTIM2Image(const ImageInfo *image_info, ExceptionInfo *exceptio
   tim2_file_header.format_type=ReadBlobByte(image);
   tim2_file_header.image_count=ReadBlobLSBShort(image);
   ReadBlobStream(image,8,&(tim2_file_header.reserved),&str_read);
-
 
   /*
    * Jump to first image header
@@ -477,7 +476,7 @@ SetPixelRed  (image,GetChannelValue(word,0,enc),q); \
 SetPixelGreen(image,GetChannelValue(word,1,enc),q); \
 SetPixelBlue (image,GetChannelValue(word,2,enc),q);
 
-        uint32_t word;
+        unsigned int word;
         switch (bits_per_pixel)
         {
           case 16:
@@ -490,13 +489,13 @@ SetPixelBlue (image,GetChannelValue(word,2,enc),q);
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                word = ((uint32_t)* p   )<<0*8 |
-                       ((uint32_t)*(p+1))<<1*8;
+                word = ((unsigned int)* p   )<<0*8 |
+                       ((unsigned int)*(p+1))<<1*8;
 
                 SetPixelAllChannels(image,word,q,RGBA16);
                 SetPixelAlpha(image,GetAlpha(word,RGBA16),q);
                 q+=GetPixelChannels(image);
-                p+=sizeof(uint16_t);
+                p+=sizeof(unsigned short);
               }
               SyncNewPixels(image,exception,y);
             }
@@ -513,9 +512,9 @@ SetPixelBlue (image,GetChannelValue(word,2,enc),q);
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                word = (uint32_t)(* p   )<<0*8 |
-                       (uint32_t)(*(p+1))<<1*8 |
-                       (uint32_t)(*(p+2))<<2*8;
+                word = (unsigned int)(* p   )<<0*8 |
+                       (unsigned int)(*(p+1))<<1*8 |
+                       (unsigned int)(*(p+2))<<2*8;
 
                 SetPixelAllChannels(image,word,q,RGB24);
                 q+=GetPixelChannels(image);
@@ -536,10 +535,10 @@ SetPixelBlue (image,GetChannelValue(word,2,enc),q);
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                word = ((uint32_t)* p   )<<0*8 |
-                       ((uint32_t)*(p+1))<<1*8 |
-                       ((uint32_t)*(p+2))<<2*8 |
-                       ((uint32_t)*(p+3))<<3*8;
+                word = ((unsigned int)* p   )<<0*8 |
+                       ((unsigned int)*(p+1))<<1*8 |
+                       ((unsigned int)*(p+2))<<2*8 |
+                       ((unsigned int)*(p+3))<<3*8;
 
                 SetPixelAllChannels(image,word,q,RGBA32);
                 SetPixelAlpha(image,GetAlpha(word,RGBA32),q);
@@ -589,7 +588,7 @@ SetPixelBlue (image,GetChannelValue(word,2,enc),q);
        * ### Process CLUT Data ###
        */
       {
-      uint32_t word;
+      unsigned int word;
       p=tim2_clut_data;
 #define AssignAllChannels(image,word,enc) \
 image->colormap[i].red  =GetChannelValue(word,0,enc);\
@@ -600,8 +599,8 @@ image->colormap[i].blue =GetChannelValue(word,2,enc);
         case 16:
         {
           for (i=0;i<(ssize_t)image->colors;i++){
-            word = ((uint16_t)* p   )<<0*8 |
-                   ((uint16_t)*(p+1))<<1*8;
+            word = ((unsigned short)* p   )<<0*8 |
+                   ((unsigned short)*(p+1))<<1*8;
 
             AssignAllChannels(image,word,RGBA16);
             image->colormap[i].alpha=GetAlpha(word,16);
@@ -613,9 +612,9 @@ image->colormap[i].blue =GetChannelValue(word,2,enc);
         case 24:
         {
           for (i=0;i<(ssize_t)image->colors;i++){
-            word = ((uint32_t)* p   )<<0*8 |
-                   ((uint32_t)*(p+1))<<1*8 |
-                   ((uint32_t)*(p+2))<<2*8;
+            word = ((unsigned int)* p   )<<0*8 |
+                   ((unsigned int)*(p+1))<<1*8 |
+                   ((unsigned int)*(p+2))<<2*8;
 
             AssignAllChannels(image,word,RGB24);
             p+=3;
@@ -626,10 +625,10 @@ image->colormap[i].blue =GetChannelValue(word,2,enc);
         case 32:
         {
           for (i=0;i<(ssize_t)image->colors;i++){
-            word = ((uint32_t)* p   )<<0*8 |
-                   ((uint32_t)*(p+1))<<1*8 |
-                   ((uint32_t)*(p+2))<<2*8 |
-                   ((uint32_t)*(p+3))<<3*8;
+            word = ((unsigned int)* p   )<<0*8 |
+                   ((unsigned int)*(p+1))<<1*8 |
+                   ((unsigned int)*(p+2))<<2*8 |
+                   ((unsigned int)*(p+3))<<3*8;
            
             AssignAllChannels(image,word,RGBA32);
             image->colormap[i].alpha=GetAlpha(word,RGBA32);
