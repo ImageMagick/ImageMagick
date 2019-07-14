@@ -81,8 +81,8 @@
 #include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/module.h"
-#include "bytebuffer-private.h"
-#include "ghostscript-private.h"
+#include "coders/bytebuffer-private.h"
+#include "coders/ghostscript-private.h"
 
 /*
   Define declarations.
