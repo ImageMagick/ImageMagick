@@ -618,7 +618,7 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
     str_read;
 
   TIM2FileHeader
-    tim2_file_header;
+    file_header;
 
   /*
    * Open image file.
@@ -641,22 +641,22 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
   /*
    * Verify TIM2 magic number.
    */
-  tim2_file_header.magic_num=ReadBlobMSBLong(image);
-  if (tim2_file_header.magic_num != 0x54494D32) /* "TIM2" */
+  file_header.magic_num=ReadBlobMSBLong(image);
+  if (file_header.magic_num != 0x54494D32) /* "TIM2" */
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   /*
    * #### Read File Header ####
    */
-  tim2_file_header.format_vers=ReadBlobByte(image);
-  if (tim2_file_header.format_vers != 0x04)
+  file_header.format_vers=ReadBlobByte(image);
+  if (file_header.format_vers != 0x04)
     ThrowReaderException(CoderError,"ImageTypeNotSupported");
-  tim2_file_header.format_type=ReadBlobByte(image);
-  tim2_file_header.image_count=ReadBlobLSBShort(image);
-  ReadBlobStream(image,8,&(tim2_file_header.reserved),&str_read);
+  file_header.format_type=ReadBlobByte(image);
+  file_header.image_count=ReadBlobLSBShort(image);
+  ReadBlobStream(image,8,&(file_header.reserved),&str_read);
   /*
    * Jump to first image header
    */
-  switch(tim2_file_header.format_type)
+  switch(file_header.format_type)
   {
     case 0x00:
       SeekBlob(image,16,SEEK_SET);
@@ -670,32 +670,32 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
   /*
    * Process each image. Only one image supported for now
    */
-  if (tim2_file_header.image_count != 1)
+  if (file_header.image_count != 1)
     ThrowReaderException(CoderError,"NumberOfImagesIsNotSupported");
-  for (int i=0; i < tim2_file_header.image_count; ++i)
+  for (int i=0; i < file_header.image_count; ++i)
   {
     char
       clut_depth,
       bits_per_pixel;
 
     TIM2ImageHeader
-      tim2_image_header;
+      image_header;
 
-    tim2_image_header=ReadTIM2ImageHeader(image);
-    if (tim2_image_header.mipmap_count != 1)
+    image_header=ReadTIM2ImageHeader(image);
+    if (image_header.mipmap_count != 1)
       ThrowReaderException(CoderError,"NumberOfImagesIsNotSupported");
-    if (tim2_image_header.header_size < 48)
+    if (image_header.header_size < 48)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    if ((MagickSizeType) tim2_image_header.image_size > GetBlobSize(image))
+    if ((MagickSizeType) image_header.image_size > GetBlobSize(image))
       ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-    if ((MagickSizeType) tim2_image_header.clut_size > GetBlobSize(image))
+    if ((MagickSizeType) image_header.clut_size > GetBlobSize(image))
       ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-    image->columns=tim2_image_header.width;
-    image->rows=tim2_image_header.height;
+    image->columns=image_header.width;
+    image->rows=image_header.height;
     clut_depth=0;
-    if (tim2_image_header.clut_type !=0)
+    if (image_header.clut_type !=0)
       {
-        switch((int) tim2_image_header.clut_type&0x0F)  /* Low 4 bits */
+        switch((int) image_header.clut_type&0x0F)  /* Low 4 bits */
         {
           case 1:
             clut_depth=16;
@@ -711,7 +711,7 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
             break;
         }
       }
-    switch ((int) tim2_image_header.bpp_type)
+    switch ((int) image_header.bpp_type)
     {
       case 1:
         bits_per_pixel=16;
@@ -737,7 +737,7 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
       image->alpha_trait=BlendPixelTrait;
     if (image->ping != MagickFalse)
       {
-        status=ReadTIM2ImageData(image_info,image,&tim2_image_header,clut_depth,
+        status=ReadTIM2ImageData(image_info,image,&image_header,clut_depth,
           bits_per_pixel,exception);
         if (status==MagickFalse)
           break;
