@@ -3273,7 +3273,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
     ThrowConvertException(OptionError,"NoImagesDefined",argv[argc-1]);
   if (IsCommandOption(argv[argc-1]))
     ThrowConvertException(OptionError,"MissingAnImageFilename",argv[argc-1]);
-  if (LocaleCompare(" ",argv[argc-1])==0) /* common line continuation error */
+  if (LocaleCompare(" ",argv[argc-1]) == 0)  /* common line continuation error */
     ThrowConvertException(OptionError,"MissingAnImageFilename",argv[argc-1]);
   status&=WriteImages(image_info,image,argv[argc-1],exception);
   if (metadata != (char **) NULL)
