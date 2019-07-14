@@ -98,118 +98,254 @@ MAGICK_CODER_CPPFLAGS = \
 
 MAGICKCORE_CODER_SRCS = \
 	coders/aai.c \
+	coders/aai.h \
 	coders/art.c \
+	coders/art.h \
 	coders/avs.c \
+	coders/avs.h \
 	coders/bgr.c \
+	coders/bgr.h \
 	coders/bmp.c \
+	coders/bmp.h \
 	coders/braille.c \
+	coders/braille.h \
+	coders/bytebuffer-private.h \
 	coders/cals.c \
+	coders/cals.h \
 	coders/caption.c \
+	coders/caption.h \
 	coders/cin.c \
+	coders/cin.h \
 	coders/cip.c \
+	coders/cip.h \
+	coders/clipboard.h \
 	coders/clip.c \
+	coders/clip.h \
 	coders/cmyk.c \
+	coders/cmyk.h \
+	coders/coders.h \
+	coders/coders-list.h \
+	coders/coders-private.h \
 	coders/cube.c \
+	coders/cube.h \
 	coders/cut.c \
+	coders/cut.h \
 	coders/dcm.c \
+	coders/dcm.h \
 	coders/dds.c \
+	coders/dds.h \
 	coders/debug.c \
+	coders/debug.h \
 	coders/dib.c \
+	coders/dib.h \
+	coders/djvu.h \
 	coders/dng.c \
+	coders/dng.h \
 	coders/dot.c \
+	coders/dot.h \
+	coders/dps.h \
 	coders/dpx.c \
+	coders/dpx.h \
+	coders/emf.h \
+	coders/ept.h \
+	coders/exr.h \
 	coders/fax.c \
+	coders/fax.h \
 	coders/fits.c \
+	coders/fits.h \
+	coders/flif.h \
+	coders/fpx.h \
+	coders/ghostscript-private.h \
 	coders/gif.c \
+	coders/gif.h \
 	coders/gradient.c \
+	coders/gradient.h \
 	coders/gray.c \
+	coders/gray.h \
 	coders/hald.c \
+	coders/hald.h \
 	coders/hdr.c \
+	coders/hdr.h \
+	coders/heic.h \
 	coders/histogram.c \
+	coders/histogram.h \
 	coders/hrz.c \
+	coders/hrz.h \
 	coders/html.c \
+	coders/html.h \
 	coders/icon.c \
+	coders/icon.h \
 	coders/info.c \
+	coders/info.h \
 	coders/inline.c \
+	coders/inline.h \
 	coders/ipl.c \
+	coders/ipl.h \
+	coders/jbig.h \
 	coders/jnx.c \
+	coders/jnx.h \
+	coders/jp2.h \
+	coders/jpeg.h \
 	coders/json.c \
+	coders/json.h \
 	coders/label.c \
+	coders/label.h \
 	coders/mac.c \
+	coders/mac.h \
 	coders/magick.c \
+	coders/magick.h \
 	coders/map.c \
+	coders/map.h \
 	coders/mask.c \
+	coders/mask.h \
 	coders/mat.c \
+	coders/mat.h \
 	coders/matte.c \
+	coders/matte.h \
 	coders/meta.c \
+	coders/meta.h \
 	coders/miff.c \
+	coders/miff.h \
 	coders/mono.c \
+	coders/mono.h \
 	coders/mpc.c \
+	coders/mpc.h \
 	coders/mpeg.c \
+	coders/mpeg.h \
 	coders/mpr.c \
+	coders/mpr.h \
 	coders/msl.c \
+	coders/msl.h \
 	coders/mtv.c \
+	coders/mtv.h \
 	coders/mvg.c \
+	coders/mvg.h \
 	coders/null.c \
+	coders/null.h \
 	coders/otb.c \
+	coders/otb.h \
 	coders/palm.c \
+	coders/palm.h \
 	coders/pango.c \
+	coders/pango.h \
 	coders/pattern.c \
+	coders/pattern.h \
 	coders/pcd.c \
+	coders/pcd.h \
 	coders/pcl.c \
+	coders/pcl.h \
 	coders/pcx.c \
+	coders/pcx.h \
 	coders/pdb.c \
+	coders/pdb.h \
 	coders/pdf.c \
+	coders/pdf.h \
 	coders/pes.c \
+	coders/pes.h \
 	coders/pgx.c \
+	coders/pgx.h \
 	coders/pict.c \
+	coders/pict.h \
 	coders/pix.c \
+	coders/pix.h \
 	coders/plasma.c \
+	coders/plasma.h \
+	coders/png.h \
 	coders/pnm.c \
-	coders/ps.c \
+	coders/pnm.h \
 	coders/ps2.c \
+	coders/ps2.h \
 	coders/ps3.c \
+	coders/ps3.h \
+	coders/ps.c \
 	coders/psd.c \
+	coders/psd.h \
 	coders/psd-private.h \
+	coders/psd-private.h \
+	coders/ps.h \
 	coders/pwp.c \
+	coders/pwp.h \
 	coders/raw.c \
+	coders/raw.h \
 	coders/rgb.c \
+	coders/rgb.h \
 	coders/rgf.c \
+	coders/rgf.h \
 	coders/rla.c \
+	coders/rla.h \
 	coders/rle.c \
+	coders/rle.h \
 	coders/scr.c \
 	coders/screenshot.c \
+	coders/screenshot.h \
+	coders/scr.h \
 	coders/sct.c \
+	coders/sct.h \
 	coders/sfw.c \
+	coders/sfw.h \
 	coders/sgi.c \
+	coders/sgi.h \
 	coders/sixel.c \
+	coders/sixel.h \
 	coders/stegano.c \
+	coders/stegano.h \
 	coders/sun.c \
+	coders/sun.h \
 	coders/svg.c \
+	coders/svg.h \
 	coders/tga.c \
+	coders/tga.h \
 	coders/thumbnail.c \
+	coders/thumbnail.h \
+	coders/tiff.h \
 	coders/tile.c \
-	coders/tim.c \
+	coders/tile.h \
 	coders/tim2.c \
+	coders/tim2.h \
+	coders/tim.c \
+	coders/tim.h \
 	coders/ttf.c \
+	coders/ttf.h \
 	coders/txt.c \
+	coders/txt.h \
 	coders/uil.c \
+	coders/uil.h \
 	coders/url.c \
+	coders/url.h \
 	coders/uyvy.c \
+	coders/uyvy.h \
 	coders/vicar.c \
+	coders/vicar.h \
 	coders/vid.c \
+	coders/vid.h \
 	coders/viff.c \
+	coders/viff.h \
 	coders/vips.c \
+	coders/vips.h \
 	coders/wbmp.c \
+	coders/wbmp.h \
+	coders/webp.h \
+	coders/wmf.h \
 	coders/wpg.c \
+	coders/wpg.h \
 	coders/xbm.c \
+	coders/xbm.h \
 	coders/xc.c \
 	coders/xcf.c \
+	coders/xcf.h \
+	coders/xc.h \
+	coders/x.h \
 	coders/xpm.c \
+	coders/xpm.h \
 	coders/xps.c \
+	coders/xps.h \
 	coders/xtrn.c \
+	coders/xtrn.h \
+	coders/xwd.h \
 	coders/ycbcr.c \
+	coders/ycbcr.h \
 	coders/yuv.c \
+	coders/yuv.h \
 	$(MAGICKCORE_DPS_SRCS) \
 	$(MAGICKCORE_DJVU_SRCS) \
 	$(MAGICKCORE_EXR_SRCS) \
@@ -362,7 +498,7 @@ CODERS_NOINST_HDRS = \
 	coders/xtrn.h \
 	coders/xwd.h \
 	coders/ycbcr.h \
-	coders/yuv.h 
+	coders/yuv.h
 
 if WITH_MODULES
 coders_LTLIBRARIES = \
