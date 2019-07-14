@@ -113,12 +113,6 @@ typedef enum
   RGB24=1,
   RGBA16=2,
 } TIM2ColorEncoding;
-
-typedef enum
-{
-  IDTEX8=3,
-  IDTEX4=4,
-} TIM2IndexEncoding;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
