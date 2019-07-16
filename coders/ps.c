@@ -411,7 +411,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
         */
         p=GetMagickByteBufferDatum(&buffer);
         count=(ssize_t) sscanf(p,PhotoshopProfile " %lu",&extent);
-        if (count != 1)
+        if ((count != 1) || (extent == 0))
           continue;
         if ((MagickSizeType) extent > GetBlobSize(image))
           continue;
