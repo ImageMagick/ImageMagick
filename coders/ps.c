@@ -363,7 +363,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
         i=0;
         for (c=ReadMagickByteBuffer(&buffer); c != EOF; c=ReadMagickByteBuffer(&buffer))
         {
-          if ((isspace(c) != 0) || ((i+1) == MagickPathExtent))
+          if ((isspace(c) != 0) || ((i+1) == sizeof(name)))
             break;
           name[i++]=(char) c;
         }
