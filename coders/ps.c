@@ -417,7 +417,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
           continue;
         ps_info->photoshop_profile=AcquireStringInfo((size_t) extent);
         q=GetStringInfoDatum(ps_info->photoshop_profile);
-        while (extent > 0)
+        while (extent > 1)
         {
           c=ProfileInteger(&buffer,hex_digits);
           if (c == EOF)
