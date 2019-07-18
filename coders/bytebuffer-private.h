@@ -42,7 +42,8 @@ static inline int ReadMagickByteBuffer(MagickByteBuffer *buffer)
     }
   if ((buffer->offset == 0) && (buffer->count == 0))
     {
-      buffer->count=ReadBlob(buffer->image,sizeof(buffer->data)-1,buffer->data);
+      buffer->count=ReadBlob(buffer->image,sizeof(buffer->data)-1,
+        buffer->data);
       if (buffer->count < 1)
         return(EOF);
     }
@@ -55,14 +56,17 @@ static inline char *GetMagickByteBufferDatum(MagickByteBuffer *buffer)
     count,
     i;
 
-  i=0;
-  while (buffer->offset < buffer->count)
-    buffer->data[i++]=buffer->data[buffer->offset++];
-  count=ReadBlob(buffer->image,sizeof(buffer->data)-1-i,buffer->data+i);
-  buffer->count=i;
-  if (count > 0)
-    buffer->count+=count;
-  buffer->offset=0;
+  if (buffer->offset != 0)
+    {
+      i=0;
+      while (buffer->offset < buffer->count)
+        buffer->data[i++]=buffer->data[buffer->offset++];
+      count=ReadBlob(buffer->image,sizeof(buffer->data)-1-i,buffer->data+i);
+      buffer->count=i;
+      if (count > 0)
+        buffer->count+=count;
+      buffer->offset=0;
+    }
   return((char *) buffer->data);
 }
 
