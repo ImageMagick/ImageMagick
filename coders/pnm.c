@@ -604,6 +604,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         quantum_info=AcquireQuantumInfo(image_info,image);
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowPNMException(ResourceLimitError,"MemoryAllocationFailed");
+        SetQuantumMinIsWhite(quantum_info,MagickTrue);
         extent=GetQuantumExtent(image,quantum_info,quantum_type);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
