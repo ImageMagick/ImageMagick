@@ -306,11 +306,6 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
         continue;
     }
     /*
-      Note document structuring comments.
-    */
-    if (strchr("\n\r%",c) == (char *) NULL)
-      continue;
-    /*
       Skip %%BeginDocument thru %%EndDocument.
     */
     if (CompareMagickByteBuffer(&buffer,BeginDocument,strlen(BeginDocument)) != MagickFalse)
