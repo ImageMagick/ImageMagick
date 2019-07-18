@@ -52,13 +52,16 @@ static inline int ReadMagickByteBuffer(MagickByteBuffer *buffer)
 static inline char *GetMagickByteBufferDatum(MagickByteBuffer *buffer)
 {
   ssize_t
+    count,
     i;
 
   i=0;
   while (buffer->offset < buffer->count)
     buffer->data[i++]=buffer->data[buffer->offset++];
-  buffer->count=ReadBlob(buffer->image,sizeof(buffer->data)-i,buffer->data+i);
-  buffer->count+=i;
+  count=ReadBlob(buffer->image,sizeof(buffer->data)-i,buffer->data+i);
+  buffer->count=i;
+  if (count > 0)
+    buffer->count+=count;
   buffer->offset=0;
   return((char *) buffer->data);
 }
