@@ -222,7 +222,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
 #define PhotoshopProfile  "BeginPhotoshop:"
 
   char
-    version[128];
+    version[MagickPathExtent];
 
   int
     c;
