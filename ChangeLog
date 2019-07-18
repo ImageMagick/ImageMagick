@@ -1,9 +1,11 @@
 2019-07-18  7.0.8-55 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.8-55, GIT revision 15...
+  * Release ImageMagick version 7.0.8-55, GIT revision 15921:c89585e:20190718.
 
 2019-07-18  7.0.8-55 Cristy  <quetzlzacatenango@image...>
   * Heap-buffer overflow (reference
     https://github.com/ImageMagick/ImageMagick/issues/1641
+  * PerlMagick test suite passes again (reference
+    https://github.com/ImageMagick/ImageMagick/issues/1640) 
 
 2019-07-16  7.0.8-54 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-54, GIT revision 15916:e868e22:20190716.
