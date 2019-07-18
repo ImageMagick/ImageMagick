@@ -426,7 +426,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
           *q++=(unsigned char) c;
           extent-=2;
         }
-        SetStringInfoLength(ps_info->icc_profile,length);
+        SetStringInfoLength(ps_info->photoshop_profile,length);
         continue;
       }
     if (image_info->page != (char *) NULL)
