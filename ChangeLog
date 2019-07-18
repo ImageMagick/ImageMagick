@@ -1,16 +1,23 @@
+2019-07-18  7.0.8-55 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-55, GIT revision 15...
+
+2019-07-18  7.0.8-55 Cristy  <quetzlzacatenango@image...>
+  * Heap-buffer overflow (reference
+    https://github.com/ImageMagick/ImageMagick/issues/1641
+
 2019-07-16  7.0.8-54 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-54, GIT revision 15916:e868e22:20190716.
 
 2019-07-08  7.0.8-54 Cristy  <quetzlzacatenango@image...>
-   * resolve division by zero  (reference
+  * resolve division by zero  (reference
      https://github.com/ImageMagick/ImageMagick/issues/1629).
-   * introducing MagickLevelImageColors() MagickWand method.
+  * introducing MagickLevelImageColors() MagickWand method.
   * Transient problem with text placement with gravity (reference
     https://github.com/ImageMagick/ImageMagick/issues/1633).
   * Support TIM2 image format (reference
     https://github.com/ImageMagick/ImageMagick/pull/1571).
   * For -magnify option, specify an alternative scaling method with -define
-	  magnify:method=method, choose from these methods: eagle2X, eagle3X,
+    magnify:method=method, choose from these methods: eagle2X, eagle3X,
     eagle3XB, epb2X, fish2X, hq2X,  scale2X (default), scale3X, xbr2X.
 
 2019-07-05  7.0.8-53 Cristy  <quetzlzacatenango@image...>
@@ -1488,7 +1495,7 @@
 2016-04-30  7.0.1-0 Cristy  <quetzlzacatenango@image...>
   * New version 7.0.1-0, GIT revision 10716:b527bce:20160430.
 
-2016-01-30  7.0.0-0 	Fahad-Alsaidi & ShamsaHamed
+2016-01-30  7.0.0-0 Fahad-Alsaidi & ShamsaHamed
   * Add support for languages that require complex text layout (reference
     https://github.com/ImageMagick/ImageMagick/pull/88).
 

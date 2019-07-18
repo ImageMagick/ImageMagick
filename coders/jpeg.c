@@ -564,6 +564,7 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
       break;
     *p++=(unsigned char) c;
   }
+  error_manager->profile=NULL;
   if (i != (ssize_t) length)
     {
       profile=DestroyStringInfo(profile);
@@ -572,7 +573,6 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
         image->filename);
       return(FALSE);
     }
-  error_manager->profile=NULL;
   icc_profile=(StringInfo *) GetImageProfile(image,"icc");
   if (icc_profile != (StringInfo *) NULL)
     {
@@ -698,7 +698,9 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
         image->filename);
       return(FALSE);
     }
-  /* The IPTC profile is actually an 8bim */
+  /*
+    The IPTC profile is actually an 8bim.
+  */
   iptc_profile=(StringInfo *) GetImageProfile(image,"8bim");
   if (iptc_profile != (StringInfo *) NULL)
     {
