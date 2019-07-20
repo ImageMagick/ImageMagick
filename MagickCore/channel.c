@@ -1259,17 +1259,50 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     }
     case ShapeAlphaChannel:
     {
+      PixelInfo
+        background;
+
       /*
-        Set alpha channel by shape.
+        Remove transparency.
       */
+      ConformPixelInfo(image,&image->background_color,&background,exception);
+      background.alpha_trait=BlendPixelTrait;
+      image->alpha_trait=BlendPixelTrait;
       status=SetImageStorageClass(image,DirectClass,exception);
       if (status == MagickFalse)
         break;
-      image->alpha_trait=UpdatePixelTrait;
-      (void) SetImageMask(image,WritePixelMask,image,exception);
-      (void) LevelImageColors(image,&image->background_color,
-        &image->background_color,MagickTrue,exception);
-      (void) SetImageMask(image,WritePixelMask,(Image *) NULL,exception);
+      image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static) shared(status) \
+        magick_number_threads(image,image,image->rows,1)
+#endif
+      for (y=0; y < (ssize_t) image->rows; y++)
+      {
+        register Quantum
+          *magick_restrict q;
+
+        register ssize_t
+          x;
+
+        if (status == MagickFalse)
+          continue;
+        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
+          exception);
+        if (q == (Quantum *) NULL)
+          {
+            status=MagickFalse;
+            continue;
+          }
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          background.alpha=GetPixelIntensity(image,q);
+          SetPixelViaPixelInfo(image,&background,q);
+          q+=GetPixelChannels(image);
+        }
+        if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+          status=MagickFalse;
+      }
+      image_view=DestroyCacheView(image_view);
       break;
     }
     case TransparentAlphaChannel:

@@ -1,3 +1,10 @@
+2019-07-20  7.0.8-56 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-56, GIT revision 15...
+
+2019-07-20  7.0.8-56 Cristy  <quetzlzacatenango@image...>
+  * Unexpected -alpha shape results (reference
+    https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=36396).
+
 2019-07-18  7.0.8-55 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-55, GIT revision 15930:ac09240:20190718.
 
