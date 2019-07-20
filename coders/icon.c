@@ -1139,7 +1139,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
                     bit=0;
                     byte=0;
                   }
-                p+=GetPixelChannels(image);
+                p+=GetPixelChannels(next);
               }
               if (bit != 0)
                 *q++=(unsigned char) (byte << (8-bit));
@@ -1180,7 +1180,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
                     nibble=0;
                     byte=0;
                   }
-                p+=GetPixelChannels(image);
+                p+=GetPixelChannels(next);
               }
               if (nibble != 0)
                 *q++=(unsigned char) (byte << 4);
@@ -1207,7 +1207,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
               for (x=0; x < (ssize_t) next->columns; x++)
               {
                 *q++=(unsigned char) GetPixelIndex(next,p);
-                p+=GetPixelChannels(image);
+                p+=GetPixelChannels(next);
               }
               if (next->previous == (Image *) NULL)
                 {
