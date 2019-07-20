@@ -1045,8 +1045,6 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
               Colormapped ICON raster.
             */
             icon_info.bits_per_pixel=8;
-            if (next->colors <= 256)
-              icon_info.bits_per_pixel=8;
             if (next->colors <= 16)
               icon_info.bits_per_pixel=4;
             if (next->colors <= 2)
