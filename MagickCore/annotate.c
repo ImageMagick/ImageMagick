@@ -1315,6 +1315,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     args;
 
   FT_UInt
+    first_glyph_id,
     last_glyph_id;
 
   FT_Vector
@@ -1485,7 +1486,10 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     (metrics->pixels_per_em.x/face->units_per_EM);
   metrics->underline_thickness=face->underline_thickness*
     (metrics->pixels_per_em.x/face->units_per_EM);
-  if ((draw_info->text == (char *) NULL) || (*draw_info->text == '\0'))
+  first_glyph_id=0;
+  FT_Get_First_Char(face,&first_glyph_id);
+  if ((draw_info->text == (char *) NULL) || (*draw_info->text == '\0') ||
+      (first_glyph_id == 0))
     {
       (void) FT_Done_Face(face);
       (void) FT_Done_FreeType(library);
