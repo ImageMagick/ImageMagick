@@ -253,7 +253,6 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
     hex_digits[256];
 
   unsigned long
-    extent,
     spotcolor;
 
   (void) memset(&bounds,0,sizeof(bounds));
@@ -286,7 +285,6 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
   hex_digits[(int) 'D']=13;
   hex_digits[(int) 'E']=14;
   hex_digits[(int) 'F']=15;
-  extent=0;
   priority=0;
   *version='\0';
   spotcolor=0;
@@ -412,10 +410,14 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
         unsigned char
           *q;
 
+        unsigned long
+          extent;
+
         /*
           Read Photoshop profile.
         */
         p=GetMagickByteBufferDatum(&buffer);
+        extent=0;
         count=(ssize_t) sscanf(p,PhotoshopProfile " %lu",&extent);
         if ((count != 1) || (extent == 0))
           continue;
