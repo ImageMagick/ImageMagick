@@ -430,7 +430,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
           if (c == EOF)
             break;
           *q++=(unsigned char) c;
-          extent-=2;
+          extent-=MagickMin(extent,2);
         }
         SetStringInfoLength(ps_info->photoshop_profile,length);
         continue;
