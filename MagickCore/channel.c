@@ -1262,7 +1262,6 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       /*
         Remove transparency.
       */
-      ConformPixelInfo(image,&image->background_color,&background,exception);
       background.alpha_trait=BlendPixelTrait;
       image->alpha_trait=BlendPixelTrait;
       status=SetImageStorageClass(image,DirectClass,exception);
@@ -1275,6 +1274,9 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
+        PixelInfo
+          background;
+
         register Quantum
           *magick_restrict q;
 
@@ -1290,11 +1292,9 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
             status=MagickFalse;
             continue;
           }
+        ConformPixelInfo(image,&image->background_color,&background,exception);
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          PixelInfo
-            background;
-
           background.alpha=GetPixelIntensity(image,q);
           SetPixelViaPixelInfo(image,&background,q);
           q+=GetPixelChannels(image);
