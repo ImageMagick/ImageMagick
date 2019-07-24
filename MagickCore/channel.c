@@ -1259,9 +1259,6 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     }
     case ShapeAlphaChannel:
     {
-      PixelInfo
-        background;
-
       /*
         Remove transparency.
       */
@@ -1295,6 +1292,9 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           }
         for (x=0; x < (ssize_t) image->columns; x++)
         {
+          PixelInfo
+            background;
+
           background.alpha=GetPixelIntensity(image,q);
           SetPixelViaPixelInfo(image,&background,q);
           q+=GetPixelChannels(image);
