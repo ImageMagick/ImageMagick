@@ -1616,7 +1616,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
               char
                 *text;
 
-              SVGStripString(MagickTrue,svg_info->text);
               text=EscapeString(svg_info->text,'\"');
               (void) FormatLocaleFile(svg_info->file,"text %g,%g \"%s\"\n",
                 svg_info->text_offset.x,svg_info->text_offset.y,text);
