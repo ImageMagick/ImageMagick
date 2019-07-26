@@ -6,6 +6,8 @@
     https://github.com/ImageMagick/ImageMagick/issues/1644).
   * The -alpha shape option nondeteministic under OpenMP (reference
     https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=36396).
+  * Correction to the ModulusAdd and ModulusSubtract composite op (reference
+    https://imagemagick.org/discourse-server/viewtopic.php?f=2&t=36413).
 
 2019-07-20  7.0.8-56 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-56, GIT revision 15936:2ac4147:20190720.
