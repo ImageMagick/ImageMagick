@@ -1,5 +1,5 @@
-2019-07-22  7.0.8-57 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.8-57, GIT revision 15...
+2019-07-26  7.0.8-57 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-57, GIT revision 15948:8fba4a3:20190726.
 
 2019-07-22  7.0.8-57 Cristy  <quetzlzacatenango@image...>
   * Heap-buffer-overflow in Postscript coder (reference
