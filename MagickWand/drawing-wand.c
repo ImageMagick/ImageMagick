@@ -6463,14 +6463,14 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
                 *p;
 
               p=q;
-              GetNextToken(p,&p,MagickPathExtent,token);
+              (void) GetNextToken(p,&p,MagickPathExtent,token);
               if (*token == ',')
-                GetNextToken(p,&p,MagickPathExtent,token);
+                (void) GetNextToken(p,&p,MagickPathExtent,token);
               for (x=0; IsPoint(token) != MagickFalse; x++)
               {
-                GetNextToken(p,&p,MagickPathExtent,token);
+                (void) GetNextToken(p,&p,MagickPathExtent,token);
                 if (*token == ',')
-                  GetNextToken(p,&p,MagickPathExtent,token);
+                  (void) GetNextToken(p,&p,MagickPathExtent,token);
               }
               CurrentContext->dash_pattern=(double *) AcquireQuantumMemory(
                 (size_t) (2UL*x)+1UL,sizeof(*CurrentContext->dash_pattern));
@@ -6479,9 +6479,9 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
                   "MemoryAllocationFailed",wand->name);
               for (j=0; j < x; j++)
               {
-                GetNextToken(q,&q,MagickPathExtent,token);
+                (void) GetNextToken(q,&q,MagickPathExtent,token);
                 if (*token == ',')
-                  GetNextToken(q,&q,MagickPathExtent,token);
+                  (void) GetNextToken(q,&q,MagickPathExtent,token);
                 CurrentContext->dash_pattern[j]=StringToDouble(token,
                   (char **) NULL);
               }

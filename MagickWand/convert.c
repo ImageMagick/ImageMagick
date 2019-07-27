@@ -2223,7 +2223,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowConvertException(OptionError,"MissingArgument",option);
-            GetNextToken(argv[i],(const char **) NULL,MagickPathExtent,token);
+            (void) GetNextToken(argv[i],(const char **) NULL,MagickPathExtent,token);
             op=ParseCommandOption(MagickMorphologyOptions,MagickFalse,token);
             if (op < 0)
               ThrowConvertException(OptionError,"UnrecognizedMorphologyMethod",

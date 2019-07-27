@@ -165,7 +165,7 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
       *q;
 
     q=p;
-    GetNextToken(q,&q,MagickPathExtent,token);
+    (void) GetNextToken(q,&q,MagickPathExtent,token);
     if ((*token == '#') || (*token == '\0'))
       continue;
     if ((LocaleCompare(token,"LUT_1D_SIZE") == 0) ||
@@ -173,7 +173,7 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
       {
         if (cube_info != (MemoryInfo *) NULL)
           cube_info=RelinquishVirtualMemory(cube_info);
-        GetNextToken(q,&q,MagickPathExtent,value);
+        (void) GetNextToken(q,&q,MagickPathExtent,value);
         cube_level=(size_t) StringToLong(value);
         if (LocaleCompare(token,"LUT_1D_SIZE") == 0)
           cube_level=(size_t) ceil(pow((double) cube_level,1.0/3.0));
@@ -195,7 +195,7 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
     else
       if (LocaleCompare(token,"TITLE ") == 0)
         {
-          GetNextToken(q,&q,MagickPathExtent,value);
+          (void) GetNextToken(q,&q,MagickPathExtent,value);
           (void) SetImageProperty(image,"title",value,exception);
         }
       else

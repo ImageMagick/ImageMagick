@@ -36,12 +36,12 @@ extern MagickExport MagickBooleanType
   GlobExpression(const char *,const char *,const MagickBooleanType)
     magick_attribute((__pure__));
 
+extern MagickExport size_t
+  GetNextToken(const char *,const char **,const size_t,char *);
+
 extern MagickExport TokenInfo
   *AcquireTokenInfo(void),
   *DestroyTokenInfo(TokenInfo *);
-
-extern MagickExport void
-  GetNextToken(const char *,const char **,const size_t,char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

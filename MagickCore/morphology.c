@@ -298,9 +298,9 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
         p++;  /* ignore "'" chars for convolve filter usage - Cristy */
       for (i=0; p < end; i++)
       {
-        GetNextToken(p,&p,MagickPathExtent,token);
+        (void) GetNextToken(p,&p,MagickPathExtent,token);
         if (*token == ',')
-          GetNextToken(p,&p,MagickPathExtent,token);
+          (void) GetNextToken(p,&p,MagickPathExtent,token);
       }
       /* set the size of the kernel - old sized square */
       kernel->width = kernel->height= (size_t) sqrt((double) i+1.0);
@@ -320,9 +320,9 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
   kernel->negative_range = kernel->positive_range = 0.0;
   for (i=0; (i < (ssize_t) (kernel->width*kernel->height)) && (p < end); i++)
   {
-    GetNextToken(p,&p,MagickPathExtent,token);
+    (void) GetNextToken(p,&p,MagickPathExtent,token);
     if (*token == ',')
-      GetNextToken(p,&p,MagickPathExtent,token);
+      (void) GetNextToken(p,&p,MagickPathExtent,token);
     if (    LocaleCompare("nan",token) == 0
         || LocaleCompare("-",token) == 0 ) {
       kernel->values[i] = nan; /* this value is not part of neighbourhood */
@@ -338,7 +338,7 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
   }
 
   /* sanity check -- no more values in kernel definition */
-  GetNextToken(p,&p,MagickPathExtent,token);
+  (void) GetNextToken(p,&p,MagickPathExtent,token);
   if ( *token != '\0' && *token != ';' && *token != '\'' )
     return(DestroyKernelInfo(kernel));
 
@@ -393,7 +393,7 @@ static KernelInfo *ParseKernelName(const char *kernel_string,
     type;
 
   /* Parse special 'named' kernel */
-  GetNextToken(kernel_string,&p,MagickPathExtent,token);
+  (void) GetNextToken(kernel_string,&p,MagickPathExtent,token);
   type=ParseCommandOption(MagickKernelOptions,MagickFalse,token);
   if ( type < 0 || type == UserDefinedKernel )
     return((KernelInfo *) NULL);  /* not a valid named kernel */

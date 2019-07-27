@@ -1736,14 +1736,14 @@ MagickExport MagickBooleanType OrderedDitherImage(Image *image,
   p=strchr((char *) threshold_map,',');
   if ((p != (char *) NULL) && (isdigit((int) ((unsigned char) *(++p))) != 0))
     {
-      GetNextToken(p,&p,MagickPathExtent,token);
+      (void) GetNextToken(p,&p,MagickPathExtent,token);
       for (i=0; (i < MaxPixelChannels); i++)
         levels[i]=StringToDouble(token,(char **) NULL);
       for (i=0; (*p != '\0') && (i < MaxPixelChannels); i++)
       {
-        GetNextToken(p,&p,MagickPathExtent,token);
+        (void) GetNextToken(p,&p,MagickPathExtent,token);
         if (*token == ',')
-          GetNextToken(p,&p,MagickPathExtent,token);
+          (void) GetNextToken(p,&p,MagickPathExtent,token);
         levels[i]=StringToDouble(token,(char **) NULL);
       }
     }
