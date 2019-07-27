@@ -626,7 +626,6 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
     status;
 
   ssize_t
-    count,
     str_read;
 
   TIM2FileHeader
