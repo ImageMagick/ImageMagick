@@ -233,7 +233,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
         } while (isalnum(c) || (c == '_'));
         *p='\0';
         value_expected=MagickFalse;
-        while ((isspace((int) ((unsigned char) c)) != 0) || (c == '='))
+        while ((isspace(c) != 0) || (c == '='))
         {
           if (c == '=')
             value_expected=MagickTrue;
@@ -267,7 +267,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
         if (LocaleCompare(keyword,"NL") == 0)
           image->rows=StringToUnsignedLong(value);
       }
-    while (isspace((int) ((unsigned char) c)) != 0)
+    while (isspace(c) != 0)
     {
       c=ReadBlobByte(image);
       count++;
