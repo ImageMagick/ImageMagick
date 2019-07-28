@@ -1,8 +1,8 @@
 2019-07-27  7.0.8-58 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-58, GIT revision 15...
 
-2019-07-22  7.0.8-57 Cristy  <quetzlzacatenango@image...>
-  * Improve GetNextToken() performance
+2019-07-27  7.0.8-58 Cristy  <quetzlzacatenango@image...>
+  * Improve GetNextToken() performance.
 
 2019-07-26  7.0.8-57 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-57, GIT revision 15948:8fba4a3:20190726.
