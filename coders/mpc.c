@@ -292,7 +292,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             } while (c != EOF);
             *p='\0';
             p=options;
-            while (isspace((int) ((unsigned char) c)) != 0)
+            while (isspace(c) != 0)
               c=ReadBlobByte(image);
             if (c == (int) '=')
               {
@@ -324,7 +324,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         }
                     }
                   if (*options != '{')
-                    if (isspace((int) ((unsigned char) c)) != 0)
+                    if (isspace(c) != 0)
                       break;
                 }
                 if (options == (char *) NULL)
@@ -775,7 +775,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         else
           c=ReadBlobByte(image);
-      while (isspace((int) ((unsigned char) c)) != 0)
+      while (isspace(c) != 0)
         c=ReadBlobByte(image);
     }
     options=DestroyString(options);
