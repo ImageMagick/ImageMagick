@@ -345,7 +345,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         for (c=ReadBlobByte(image); c != EOF; c=ReadBlobByte(image))
         {
-          while (isspace((int) ((unsigned char) c)) != 0)
+          while (isspace(c) != 0)
             c=ReadBlobByte(image);
           if (c == '#')
             {
@@ -354,7 +354,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               */
               c=PNMComment(image,&comment_info,exception);
               c=ReadBlobByte(image);
-              while (isspace((int) ((unsigned char) c)) != 0)
+              while (isspace(c) != 0)
                 c=ReadBlobByte(image);
             }
           p=keyword;
@@ -367,7 +367,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           *p='\0';
           if (LocaleCompare(keyword,"endhdr") == 0)
             break;
-          while (isspace((int) ((unsigned char) c)) != 0)
+          while (isspace(c) != 0)
             c=ReadBlobByte(image);
           p=value;
           while (isalnum(c) || (c == '_'))
