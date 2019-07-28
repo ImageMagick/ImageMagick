@@ -3179,9 +3179,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Check for "explicitness", but meta-file headers always explicit.
       */
       if ((explicit_file == MagickFalse) && (group != 0x0002))
-        explicit_file=(isupper((unsigned char) *explicit_vr) != 0) &&
-          (isupper((unsigned char) *(explicit_vr+1)) != 0) ? MagickTrue :
-          MagickFalse;
+        explicit_file=(isupper((int) ((unsigned char) *explicit_vr)) != 0) &&
+          (isupper((int) ((unsigned char) *(explicit_vr+1))) != 0) ?
+          MagickTrue : MagickFalse;
       use_explicit=((group == 0x0002) && (explicit_retry == MagickFalse)) ||
         (explicit_file != MagickFalse) ? MagickTrue : MagickFalse;
       if ((use_explicit != MagickFalse) && (strncmp(implicit_vr,"xs",2) == 0))
