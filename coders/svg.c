@@ -5097,7 +5097,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
         (void) GetNextToken(q,&q,extent,token);
         number_attributes=1;
         for (p=token; *p != '\0'; p++)
-          if (isalpha((int) *p))
+          if (isalpha((int) ((unsigned char) *p)) != 0)
             number_attributes++;
         if (i > (ssize_t) (number_points-6*BezierQuantum*number_attributes-1))
           {

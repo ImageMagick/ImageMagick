@@ -279,7 +279,7 @@ static Image *SparseColorOption(const Image *image,
     sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
     /* Y coordinate */
     *token=','; while (*token == ',') GetNextToken(p,&p,MagickPathExtent,token);
-    if ( *token == '\0' ) break;
+    if (*token == '\0') break;
     if ( isalpha((int) ((unsigned char) *token)) || *token == '#' ) {
       (void) ThrowMagickException(exception,GetMagickModule(),
             OptionError, "InvalidArgument", "'%s': %s", "sparse-color",
@@ -290,7 +290,7 @@ static Image *SparseColorOption(const Image *image,
     sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
     /* color name or function given in string argument */
     *token=','; while (*token == ',') GetNextToken(p,&p,MagickPathExtent,token);
-    if ( *token == '\0' ) break;
+    if (*token == '\0') break;
     if ( isalpha((int) ((unsigned char) *token)) || *token == '#' ) {
       /* Color string given */
       (void) QueryColorCompliance(token,AllCompliance,&color,
@@ -314,7 +314,7 @@ static Image *SparseColorOption(const Image *image,
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         {
         while (*token == ',') GetNextToken(p,&p,MagickPathExtent,token);
-        if ((*token == '\0') || isalpha((int)*token) || *token == '#' )
+        if ((*token == '\0') || isalpha((int) ((unsigned char) *token)) || *token == '#' )
           break;
         sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
         *token=','; /* used this token - get another */
@@ -322,7 +322,7 @@ static Image *SparseColorOption(const Image *image,
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         {
         while (*token == ',') GetNextToken(p,&p,MagickPathExtent,token);
-        if ((*token == '\0') || isalpha((int)*token) || *token == '#' )
+        if ((*token == '\0') || isalpha((int) ((unsigned char) *token)) || *token == '#' )
           break;
         sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
         *token=','; /* used this token - get another */
@@ -330,7 +330,7 @@ static Image *SparseColorOption(const Image *image,
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         {
         while (*token == ',') GetNextToken(p,&p,MagickPathExtent,token);
-        if ((*token == '\0') || isalpha((int)*token) || *token == '#' )
+        if ((*token == '\0') || isalpha((int) ((unsigned char) *token)) || *token == '#' )
           break;
         sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
         *token = ','; /* used this token - get another */
@@ -339,7 +339,7 @@ static Image *SparseColorOption(const Image *image,
           (image->colorspace == CMYKColorspace))
         {
         while (*token == ',') GetNextToken(p,&p,MagickPathExtent,token);
-        if ((*token == '\0') || isalpha((int)*token) || *token == '#' )
+        if ((*token == '\0') || isalpha((int) ((unsigned char) *token)) || *token == '#' )
           break;
         sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
         *token=','; /* used this token - get another */
@@ -348,7 +348,7 @@ static Image *SparseColorOption(const Image *image,
           image->alpha_trait != UndefinedPixelTrait)
         {
         while (*token == ',') GetNextToken(p,&p,MagickPathExtent,token);
-        if ( *token == '\0' || isalpha((int)*token) || *token == '#' )
+        if ((*token == '\0') || isalpha((int) ((unsigned char) *token)) || *token == '#' )
           break;
         sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
         *token = ','; /* used this token - get another */
