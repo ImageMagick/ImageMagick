@@ -222,7 +222,7 @@ static inline void deshufflePalette(Image *image,PixelInfo* oldColormap)
   /*
    * Swap the 2nd and 3rd block in each page
    */
-  for (page=0; page < pages; page++)
+  for (page=0; page < (ssize_t) pages; page++)
   {
     memcpy(&(image->colormap[i+1*colors]),&(oldColormap[i+2*colors]),colors*
       sizeof(PixelInfo));
@@ -547,7 +547,7 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
           image->colormap[i].red=GetChannelValue(word,0,RGBA16);
           image->colormap[i].green=GetChannelValue(word,1,RGBA16);
           image->colormap[i].blue=GetChannelValue(word,2,RGBA16);
-          image->colormap[i].alpha=GetAlpha(word,16);
+          image->colormap[i].alpha=GetAlpha(word,RGBA16);
           p+=2;
         }
         break;

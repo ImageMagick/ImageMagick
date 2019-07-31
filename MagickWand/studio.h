@@ -51,12 +51,6 @@ extern "C" {
 #  define STDC
 #endif
 
-#if defined(__cplusplus) || defined(c_plusplus)
-# define storage_class  c_class
-#else
-# define storage_class  class
-#endif
-
 #include <stdarg.h>
 #include <stdio.h>
 #if defined(MAGICKCORE_HAVE_SYS_STAT_H)

@@ -94,7 +94,7 @@ static inline void SkipMagickByteBuffer(MagickByteBuffer *buffer,
   const size_t length)
 {
   CheckMagickByteBuffer(buffer,length);
-  if ((buffer->offset+length) < buffer->count)
+  if ((ssize_t) (buffer->offset+length) < buffer->count)
     buffer->offset+=length;
 }
 

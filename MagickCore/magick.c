@@ -164,11 +164,12 @@ static MagickBooleanType
 %
 %  The format of the AcquireMagickInfo method is:
 %
-%      MagickInfo *AcquireMagickInfo(const char *module, const char *name,)
+%      MagickInfo *AcquireMagickInfo(const char *magick_module,
+%        const char *name,const char *description)
 %
 %  A description of each parameter follows:
 %
-%    o module: a character string that represents the module associated
+%    o magick_module: a character string that represents the module associated
 %      with the MagickInfo structure.
 %
 %    o name: a character string that represents the image format associated
@@ -178,19 +179,19 @@ static MagickBooleanType
 %      associated with the MagickInfo structure.
 %
 */
-MagickExport MagickInfo *AcquireMagickInfo(const char *module,const char *name,
-  const char *description)
+MagickExport MagickInfo *AcquireMagickInfo(const char *magick_module,
+  const char *name,const char *description)
 {
   MagickInfo
     *magick_info;
 
-  assert(module != (const char *) NULL);
+  assert(magick_module != (const char *) NULL);
   assert(name != (const char *) NULL);
   assert(description != (const char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",name);
   magick_info=(MagickInfo *) AcquireCriticalMemory(sizeof(*magick_info));
   (void) memset(magick_info,0,sizeof(*magick_info));
-  magick_info->module=ConstantString(module);
+  magick_info->magick_module=ConstantString(magick_module);
   magick_info->name=ConstantString(name);
   magick_info->description=ConstantString(description);
   magick_info->flags=CoderAdjoinFlag | CoderBlobSupportFlag |
@@ -1015,8 +1016,8 @@ static void *DestroyMagickNode(void *magick_info)
     *p;
 
   p=(MagickInfo *) magick_info;
-  if (p->module != (char *) NULL)
-    p->module=DestroyString(p->module);
+  if (p->magick_module != (char *) NULL)
+    p->magick_module=DestroyString(p->magick_module);
   if (p->note != (char *) NULL)
     p->note=DestroyString(p->note);
   if (p->mime_type != (char *) NULL)
@@ -1153,14 +1154,16 @@ MagickExport MagickBooleanType ListMagickInfo(FILE *file,
 #if defined(MAGICKCORE_MODULES_SUPPORT)
     {
       char
-        module[MagickPathExtent];
+        magick_module[MagickPathExtent];
 
-      *module='\0';
-      if (magick_info[i]->module != (char *) NULL)
-        (void) CopyMagickString(module,magick_info[i]->module,MagickPathExtent);
-      (void) ConcatenateMagickString(module,"          ",MagickPathExtent);
-      module[9]='\0';
-      (void) FormatLocaleFile(file,"%9s ",module);
+      *magick_module='\0';
+      if (magick_info[i]->magick_module != (char *) NULL)
+        (void) CopyMagickString(magick_module,magick_info[i]->magick_module,
+          MagickPathExtent);
+      (void) ConcatenateMagickString(magick_module,"          ",
+        MagickPathExtent);
+      magick_module[9]='\0';
+      (void) FormatLocaleFile(file,"%9s ",magick_module);
     }
 #endif
     (void) FormatLocaleFile(file,"%c%c%c ",magick_info[i]->decoder ? 'r' : '-',

@@ -271,7 +271,7 @@ WandExport MagickBooleanType CLICatchException(MagickCLI *cli_wand,
 %
 */
 WandExport MagickBooleanType CLILogEvent(MagickCLI *cli_wand,
-     const LogEventType type,const char *module,const char *function,
+     const LogEventType type,const char *magick_module,const char *function,
      const size_t line,const char *format,...)
 {
   char
@@ -297,7 +297,8 @@ WandExport MagickBooleanType CLILogEvent(MagickCLI *cli_wand,
   (void) ConcatenateMagickString(new_format,format,MagickPathExtent);
 
   va_start(operands,format);
-  status=LogMagickEventList(type,module,function,line,new_format,operands);
+  status=LogMagickEventList(type,magick_module,function,line,new_format,
+    operands);
   va_end(operands);
 
   return(status);
@@ -318,7 +319,7 @@ WandExport MagickBooleanType CLILogEvent(MagickCLI *cli_wand,
 % it the location of the option that caused the exception to occur.
 */
 WandExport MagickBooleanType CLIThrowException(MagickCLI *cli_wand,
-  const char *module,const char *function,const size_t line,
+  const char *magick_module,const char *function,const size_t line,
   const ExceptionType severity,const char *tag,const char *format,...)
 {
   char
@@ -346,8 +347,8 @@ WandExport MagickBooleanType CLIThrowException(MagickCLI *cli_wand,
     cli_wand->location,cli_wand->filename,cli_wand->line,cli_wand->column);
 
   va_start(operands,format);
-  status=ThrowMagickExceptionList(cli_wand->wand.exception,module,function,
-    line,severity,tag,new_format,operands);
+  status=ThrowMagickExceptionList(cli_wand->wand.exception,magick_module,
+    function,line,severity,tag,new_format,operands);
   va_end(operands);
   return(status);
 }

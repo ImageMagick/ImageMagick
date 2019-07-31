@@ -66,7 +66,7 @@ typedef struct _MagickInfo
     *version,
     *mime_type,
     *note,
-    *module;
+    *magick_module;
 
   DecodeImageHandler
     *decoder;

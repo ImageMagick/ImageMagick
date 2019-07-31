@@ -3018,7 +3018,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
           */
           if ((magick_info != (const MagickInfo *) NULL) &&
               (GetMagickUseExtension(magick_info) != MagickFalse) &&
-              (LocaleCompare(magick_info->module,GetMagicName(
+              (LocaleCompare(magick_info->magick_module,GetMagicName(
                 magic_info)) == 0))
             (void) CopyMagickString(image_info->magick,magick_info->name,
               MagickPathExtent);

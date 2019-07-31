@@ -474,7 +474,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   /*
     Check for table-based substitution match.
   */
-  for (i=0; i < (sizeof(fontmap)/sizeof(fontmap[0])); i++)
+  for (i=0; i < (ssize_t) (sizeof(fontmap)/sizeof(fontmap[0])); i++)
   {
     if (family == (const char *) NULL)
       {

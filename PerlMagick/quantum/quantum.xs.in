@@ -13727,10 +13727,10 @@ QueryFormat(ref,...)
         PUSHs(&sv_undef);
       else
         PUSHs(sv_2mortal(newSVpv(magick_info->description,0)));
-      if (magick_info->module == (char *) NULL)
+      if (magick_info->magick_module == (char *) NULL)
         PUSHs(&sv_undef);
       else
-        PUSHs(sv_2mortal(newSVpv(magick_info->module,0)));
+        PUSHs(sv_2mortal(newSVpv(magick_info->magick_module,0)));
     }
 
   PerlException:

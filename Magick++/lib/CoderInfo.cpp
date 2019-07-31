@@ -75,7 +75,7 @@ Magick::CoderInfo::CoderInfo(const std::string &name_)
         NULL) ? false : true);
       _mimeType=std::string(magickInfo->mime_type != (char *) NULL ?
         magickInfo->mime_type : "");
-      _module=std::string(magickInfo->module);
+      _module=std::string(magickInfo->magick_module);
       _name=std::string(magickInfo->name);
     }
 }
