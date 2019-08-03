@@ -6157,8 +6157,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             {
               if (LocaleCompare(keyword, "opacity") == 0)
                 {
-                  ssize_t  opac = OpaqueAlpha,
-                  len = (ssize_t) strlen( value );
+                  Quantum  opac = OpaqueAlpha;
+                  ssize_t len = (ssize_t) strlen( value );
 
                   if (value[len-1] == '%') {
                     char  tmp[100];

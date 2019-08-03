@@ -154,7 +154,7 @@ int main( int /*argc*/, char ** argv)
     //
 
     // Test default value.
-    if ( image.backgroundColor() != string(ColorRGB("white")) )
+    if ( string(image.backgroundColor()) != string(ColorRGB("white")) )
       {
 	++failures;
 	cout << "Line: " << __LINE__ << ", backgroundColor default ("
@@ -174,7 +174,8 @@ int main( int /*argc*/, char ** argv)
     else
       if ( string(image.backgroundColor()) != "#0000FF" &&
 	   string(image.backgroundColor()) != "#00000000FFFF" &&
-	   string(image.backgroundColor()) != "#0000000000000000FFFFFFFF" )
+	   string(image.backgroundColor()) != "#0000000000000000FFFFFFFF" &&
+	   string(image.backgroundColor()) != "#00000000000000000000000000000000FFFFFFFFFFFFFFFF" )
 	{
 	  ++failures;
 	  cout << "Line: " << __LINE__ << ", backgroundColor ("
@@ -194,7 +195,8 @@ int main( int /*argc*/, char ** argv)
     else
       if ( string(image.backgroundColor()) != "#00AAFF" && 
 	   string(image.backgroundColor()) != "#0000AAAAFFFF" && 
-	   string(image.backgroundColor()) != "#00000000AAAAAAAAFFFFFFFF" )
+	   string(image.backgroundColor()) != "#00000000AAAAAAAAFFFFFFFF" &&
+	   string(image.backgroundColor()) != "#0000000000000000AAAAAAAAAAAAAAAAFFFFFFFFFFFFFFFF" )
 	{
 	  ++failures;
 	  cout << "Line: " << __LINE__
@@ -260,7 +262,8 @@ int main( int /*argc*/, char ** argv)
     // Base filename is color for xc images
     if ( image.baseFilename() != "xc:#FF0000" &&
 	 image.baseFilename() != "xc:#FFFF00000000" &&
-	 image.baseFilename() != "xc:#FFFFFFFF0000000000000000")
+	 image.baseFilename() != "xc:#FFFFFFFF0000000000000000" &&
+	 image.baseFilename() != "xc:#FFFFFFFFFFFFFFFF00000000000000000000000000000000")
       {
 	++failures;
 	cout << "Line: " << __LINE__
@@ -1271,7 +1274,8 @@ int main( int /*argc*/, char ** argv)
 
     if (( image.signature() != "a0747a8a5a0e6a1ec960ab8994986ba087d518db97db6f17e7bb4da3bbc3c91d") &&
         ( image.signature() != "373ba105dfe1c3e35a0ad70c18534db5c253911b32f1ef5b94b564b5fbd3f87d") &&
-        ( image.signature() != "eccb7a8ac230b0deb76c8dd10ddeeb76a0918cbe6e3469d2d9f223d35c66498b"))
+        ( image.signature() != "eccb7a8ac230b0deb76c8dd10ddeeb76a0918cbe6e3469d2d9f223d35c66498b") &&
+        ( image.signature() != "6857675cd7d967e1e3ff094e1b3e5f4bb3fb9ba2557eb6d083d37881db0a2039"))
       {
 	++failures;
 	cout << "Line: " << __LINE__ << ", signature ("
