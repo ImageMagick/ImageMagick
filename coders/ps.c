@@ -472,7 +472,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
           &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
         i=1;
       }
-    if (CompareMagickByteBuffer(&buffer,PageMedia,strlen(PageMedia)) == 0)
+    if (CompareMagickByteBuffer(&buffer,PageMedia,strlen(PageMedia)) != MagickFalse)
       {
         p=GetMagickByteBufferDatum(&buffer);
         count=(ssize_t) sscanf(p,PageMedia " %lf %lf %lf %lf",
