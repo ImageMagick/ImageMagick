@@ -53,13 +53,13 @@ int main() {
 
   for (std::list<Magick::CoderInfo>::iterator it = coderList.begin(); it != coderList.end(); it++)
   {
-    std::string magick_module=(*it).magick_module();
-    if (std::find(excludeList.begin(), excludeList.end(), magick_module) != excludeList.end())
+    std::string module=(*it).module();
+    if (std::find(excludeList.begin(), excludeList.end(), module) != excludeList.end())
       continue;
 
-    if ((*it).name() == magick_module)
-      std::cout << ((*it).isWritable() ? "+" : "-") << magick_module << ":" << getInitializer(magick_module) << std::endl;
-    else if (std::find(allowedNames.begin(), allowedNames.end(), magick_module) != allowedNames.end())
-      std::cout << ((*it).isWritable() ? "+" : "-") << (*it).name() << ":" << getInitializer(magick_module) << std::endl;
+    if ((*it).name() == module)
+      std::cout << ((*it).isWritable() ? "+" : "-") << module << ":" << getInitializer(module) << std::endl;
+    else if (std::find(allowedNames.begin(), allowedNames.end(), module) != allowedNames.end())
+      std::cout << ((*it).isWritable() ? "+" : "-") << (*it).name() << ":" << getInitializer(module) << std::endl;
   }
 }
