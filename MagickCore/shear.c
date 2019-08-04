@@ -730,11 +730,27 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
   assert(image != (Image *) NULL);
   page=image->page;
   rotations%=4;
-  if ((rotations == 1) || (rotations == 3))
-    rotate_image=CloneImage(image,image->rows,image->columns,MagickTrue,
-      exception);
-  else
-    rotate_image=CloneImage(image,0,0,MagickTrue,exception);
+  switch (rotations)
+  {
+    case 0:
+    {
+      rotate_image=CloneImage(image,0,0,MagickTrue,exception);
+      break;
+    }
+    case 2:
+    {
+      rotate_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+        exception);
+      break;
+    }
+    case 1:
+    case 3:
+    {
+      rotate_image=CloneImage(image,image->rows,image->columns,MagickTrue,
+        exception);
+      break;
+    }
+  }
   if (rotate_image == (Image *) NULL)
     return((Image *) NULL);
   /*
@@ -742,8 +758,11 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image,exception);
-  rotate_view=AcquireAuthenticCacheView(rotate_image,exception);
+  if (rotations != 0)
+    {
+      image_view=AcquireVirtualCacheView(image,exception);
+      rotate_view=AcquireAuthenticCacheView(rotate_image,exception);
+    }
   switch (rotations)
   {
     case 1:
@@ -1067,8 +1086,11 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
     default:
       break;
   }
-  rotate_view=DestroyCacheView(rotate_view);
-  image_view=DestroyCacheView(image_view);
+  if (rotations != 0)
+    {
+      rotate_view=DestroyCacheView(rotate_view);
+      image_view=DestroyCacheView(image_view);
+    }
   rotate_image->type=image->type;
   rotate_image->page=page;
   if (status == MagickFalse)
