@@ -2725,9 +2725,6 @@ static MagickBooleanType RenderMVGContent(Image *image,
                   graphic_context[n],token,clip_path,exception);
                 if (graphic_context[n]->compliance != SVGCompliance)
                   {
-                    const char
-                      *clip_path;
-
                     clip_path=(const char *) GetValueFromSplayTree(macros,
                       graphic_context[n]->clip_mask);
                     if (clip_path != (const char *) NULL)
