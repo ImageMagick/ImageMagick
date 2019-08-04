@@ -1424,9 +1424,6 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
         geometry_ratio,
         image_ratio;
 
-      GeometryInfo
-        geometry_info;
-
       /*
         Geometry is a relative to image size and aspect ratio.
       */
