@@ -3952,7 +3952,6 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         q+=GetPixelChannels(image);
       }
     }
-  x=0;
   q=pixels;
   ResetQuantumState(quantum_info);
   extent=GetQuantumExtent(image,quantum_info,quantum_type);
