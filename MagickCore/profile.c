@@ -427,7 +427,7 @@ static cmsHTRANSFORM *DestroyTransformThreadSet(cmsHTRANSFORM *transform)
   return(transform);
 }
 
-static cmsHTRANSFORM *AcquireTransformThreadSet(Image *image,
+static cmsHTRANSFORM *AcquireTransformThreadSet(
   const cmsHPROFILE source_profile,const cmsUInt32Number source_type,
   const cmsHPROFILE target_profile,const cmsUInt32Number target_type,
   const int intent,const cmsUInt32Number flags,
@@ -1133,9 +1133,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             if (image->black_point_compensation != MagickFalse)
               flags|=cmsFLAGS_BLACKPOINTCOMPENSATION;
 #endif
-            transform=AcquireTransformThreadSet(image,source_profile,
-              source_type,target_profile,target_type,intent,flags,
-	      &cms_exception);
+            transform=AcquireTransformThreadSet(source_profile,source_type,
+              target_profile,target_type,intent,flags,&cms_exception);
             if (transform == (cmsHTRANSFORM *) NULL)
               ThrowProfileException(ImageError,"UnableToCreateColorTransform",
                 name);
