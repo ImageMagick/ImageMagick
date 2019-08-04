@@ -191,7 +191,6 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
 
     DWORD
       registry_index = 0,
-      type,
       value_data_size,
       value_name_length;
 
