@@ -2197,9 +2197,9 @@ static void Hq2XHelper(const unsigned int rule,const Quantum *source,
             offsets[4] = { e, e, d, b };
 
           MixPixels(source,offsets,4,destination,destination_offset,channels);
-          break;
         }
-      CopyPixels(source,e,destination,destination_offset,channels);
+      else
+        CopyPixels(source,e,destination,destination_offset,channels);
       break;
     }
     case 13:
@@ -2210,9 +2210,9 @@ static void Hq2XHelper(const unsigned int rule,const Quantum *source,
             offsets[8] = { e, e, d, d, d, b, b, b };
 
           MixPixels(source,offsets,8,destination,destination_offset,channels);
-          break;
         }
-      CopyPixels(source,e,destination,destination_offset,channels);
+      else
+        CopyPixels(source,e,destination,destination_offset,channels);
       break;
     }
     case 14:
@@ -2223,9 +2223,9 @@ static void Hq2XHelper(const unsigned int rule,const Quantum *source,
             offsets[16] = { e, e, e, e, e, e, e, e, e, e, e, e, e, e, d, b };
 
           MixPixels(source,offsets,16,destination,destination_offset,channels);
-          break;
         }
-      CopyPixels(source,e,destination,destination_offset,channels);
+      else
+        CopyPixels(source,e,destination,destination_offset,channels);
       break;
     }
     case 15:
