@@ -3913,9 +3913,10 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
       /*
         Associate alpha.
       */
-      q=GetAuthenticPixelQueue(image);
       if (image_view != (CacheView *) NULL)
         q=GetCacheViewAuthenticPixelQueue(image_view);
+      else
+        q=GetAuthenticPixelQueue(image);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         register ssize_t
@@ -3941,8 +3942,9 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
       register Quantum
         *magick_restrict q;
 
-      q=GetAuthenticPixelQueue(image);
       if (image_view != (CacheView *) NULL)
+        q=GetAuthenticPixelQueue(image);
+      else
         q=GetAuthenticPixelQueue(image);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
@@ -4073,9 +4075,10 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
       register Quantum
         *magick_restrict q;
 
-      q=GetAuthenticPixelQueue(image);
       if (image_view != (CacheView *) NULL)
         q=GetCacheViewAuthenticPixelQueue(image_view);
+      else
+        q=GetAuthenticPixelQueue(image);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         quantum=GetPixelRed(image,q);
