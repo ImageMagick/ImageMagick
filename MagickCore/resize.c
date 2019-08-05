@@ -2295,7 +2295,7 @@ static void Hq2XHelper(const unsigned int rule,const Quantum *source,
         {
           const ssize_t
             offsets[4] = { e, e, e, d };
-        
+
           MixPixels(source,offsets,4,destination,destination_offset,channels);
         }
       break;
@@ -4405,8 +4405,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
             pixel[i]+=span.x*scanline[(x-1)*GetPixelChannels(image)+i];
         }
-      if ((next_column == MagickFalse) &&
-          (t < (ssize_t) scale_image->columns))
+      if ((next_column == MagickFalse) && (t < (ssize_t) scale_image->columns))
         for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           scale_scanline[t*GetPixelChannels(image)+i]=pixel[i];
       /*
