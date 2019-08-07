@@ -1765,14 +1765,12 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
         break;
     }
   }
-  for (q=filename; *q != '\0'; q++)
-    if ((*q == '%') && (*(q+1) == '%'))
-      {
-        (void) CopyMagickString(q,q+1,(size_t) (MagickPathExtent-(q-filename)));
-        canonical=MagickTrue;
-      }
   if (canonical == MagickFalse)
     (void) CopyMagickString(filename,format,MagickPathExtent);
+  else
+    for (q=filename; *q != '\0'; q++)
+      if ((*q == '%') && (*(q+1) == '%'))
+        (void) CopyMagickString(q,q+1,(size_t) (MagickPathExtent-(q-filename)));
   return(strlen(filename));
 }
 
