@@ -1241,6 +1241,8 @@ static const OptionInfo
     { "None", NoCompression, UndefinedOptionFlag, MagickFalse },
     { "Piz", PizCompression, UndefinedOptionFlag, MagickFalse },
     { "Pxr24", Pxr24Compression, UndefinedOptionFlag, MagickFalse },
+    { "Dwaa", DwaaCompression, UndefinedOptionFlag, MagickFalse },
+    { "Dwab", DwabCompression, UndefinedOptionFlag, MagickFalse },
     { "RLE", RLECompression, UndefinedOptionFlag, MagickFalse },
     { "RunlengthEncoded", RLECompression, UndefinedOptionFlag, MagickFalse },
     { "WebP", WebPCompression, UndefinedOptionFlag, MagickFalse },
