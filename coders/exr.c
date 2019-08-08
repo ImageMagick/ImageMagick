@@ -203,8 +203,8 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   hdr_info=ImfInputHeader(file);
   ImfHeaderDisplayWindow(hdr_info,&display_window.min_x,&display_window.min_y,
     &display_window.max_x,&display_window.max_y);
-  image->columns=(size_t) (display_window.max_x-display_window.min_x+1UL);
-  image->rows=(size_t) (display_window.max_y-display_window.min_y+1UL);
+  image->columns=((size_t) display_window.max_x-display_window.min_x+1UL);
+  image->rows=((size_t) display_window.max_y-display_window.min_y+1UL);
   image->alpha_trait=BlendPixelTrait;
   (void) SetImageColorspace(image,RGBColorspace,exception);
   image->gamma=1.0;
@@ -239,7 +239,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     return(DestroyImageList(image));
   ImfHeaderDataWindow(hdr_info,&data_window.min_x,&data_window.min_y,
     &data_window.max_x,&data_window.max_y);
-  columns=(size_t) (data_window.max_x-data_window.min_x+1UL);
+  columns=((size_t) data_window.max_x-data_window.min_x+1UL);
   if ((display_window.min_x > data_window.max_x) ||
       (display_window.min_x+(int) image->columns <= data_window.min_x))
     scanline=(ImfRgba *) NULL;
