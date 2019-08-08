@@ -468,6 +468,8 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image,
   ImfHeaderSetDisplayWindow(hdr_info,0,0,(int) image->columns-1,(int)
     image->rows-1);
   compression=IMF_NO_COMPRESSION;
+  if (write_info->compression == RLECompression)
+    compression=IMF_RLE_COMPRESSION;
   if (write_info->compression == ZipSCompression)
     compression=IMF_ZIPS_COMPRESSION;
   if (write_info->compression == ZipCompression)
