@@ -107,7 +107,9 @@ extern MagickExport char
 
 extern MagickExport const char
   *GetMagickDescription(const MagickInfo *),
-  *GetMagickMimeType(const MagickInfo *);
+  *GetMagickMimeType(const MagickInfo *),
+  *GetMagickModuleName(const MagickInfo *),
+  *GetMagickName(const MagickInfo *);
 
 extern MagickExport DecodeImageHandler
   *GetImageDecoder(const MagickInfo *) magick_attribute((__pure__));
