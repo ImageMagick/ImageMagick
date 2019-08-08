@@ -43,13 +43,13 @@ typedef enum
   NoCompression,
   PizCompression,
   Pxr24Compression,
-  DwaaCompression,
-  DwabCompression,
   RLECompression,
   ZipCompression,
   ZipSCompression,
   ZstdCompression,
-  WebPCompression
+  WebPCompression,
+  DwaaCompression,
+  DwabCompression
 } CompressionType;
 
 typedef struct _Ascii85Info

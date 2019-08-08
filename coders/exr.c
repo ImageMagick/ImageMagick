@@ -486,6 +486,14 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image,
   if (write_info->compression == B44ACompression)
     compression=IMF_B44A_COMPRESSION;
 #endif
+#if defined(IMF_DWAA_COMPRESSION)
+  if (write_info->compression == DwaaCompression)
+    compression=IMF_DWAA_COMPRESSION;
+#endif
+#if defined(IMF_DWAB_COMPRESSION)
+  if (write_info->compression == DwabCompression)
+    compression=IMF_DWAB_COMPRESSION;
+#endif
   channels=0;
   value=GetImageOption(image_info,"exr:color-type");
   if (value != (const char *) NULL)
