@@ -518,6 +518,8 @@ namespace Magick
   using MagickCore::LZWCompression;
   using MagickCore::PizCompression;
   using MagickCore::Pxr24Compression;
+  using MagickCore::DwaaCompression;
+  using MagickCore::DwabCompression;
   using MagickCore::RLECompression;
   using MagickCore::WebPCompression;
   using MagickCore::ZipCompression;

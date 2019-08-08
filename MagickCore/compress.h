@@ -43,6 +43,8 @@ typedef enum
   NoCompression,
   PizCompression,
   Pxr24Compression,
+  DwaaCompression,
+  DwabCompression,
   RLECompression,
   ZipCompression,
   ZipSCompression,
