@@ -230,11 +230,11 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
 #if defined(IMF_DWAA_COMPRESSION)
   if (compression == IMF_DWAA_COMPRESSION)
-    image->compression=DwaaCompression;
+    image->compression=DWAACompression;
 #endif
 #if defined(IMF_DWAB_COMPRESSION)
   if (compression == IMF_DWAB_COMPRESSION)
-    image->compression=DwabCompression;
+    image->compression=DWABCompression;
 #endif
   if (image_info->ping != MagickFalse)
     {
@@ -495,11 +495,11 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image,
     compression=IMF_B44A_COMPRESSION;
 #endif
 #if defined(IMF_DWAA_COMPRESSION)
-  if (write_info->compression == DwaaCompression)
+  if (write_info->compression == DWAACompression)
     compression=IMF_DWAA_COMPRESSION;
 #endif
 #if defined(IMF_DWAB_COMPRESSION)
-  if (write_info->compression == DwabCompression)
+  if (write_info->compression == DWABCompression)
     compression=IMF_DWAB_COMPRESSION;
 #endif
   channels=0;

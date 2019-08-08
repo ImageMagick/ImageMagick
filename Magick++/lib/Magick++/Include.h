@@ -504,8 +504,8 @@ namespace Magick
   using MagickCore::B44ACompression;
   using MagickCore::B44Compression;
   using MagickCore::BZipCompression;
-  using MagickCore::DwaaCompression;
-  using MagickCore::DwabCompression;
+  using MagickCore::DWAACompression;
+  using MagickCore::DWABCompression;
   using MagickCore::DXT1Compression;
   using MagickCore::DXT3Compression;
   using MagickCore::DXT5Compression;
