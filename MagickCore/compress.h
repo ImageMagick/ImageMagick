@@ -48,8 +48,8 @@ typedef enum
   ZipSCompression,
   ZstdCompression,
   WebPCompression,
-  DwaaCompression,
-  DwabCompression
+  DWAACompression,
+  DWABCompression
 } CompressionType;
 
 typedef struct _Ascii85Info
