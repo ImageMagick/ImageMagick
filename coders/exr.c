@@ -476,11 +476,11 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image,
     compression=IMF_PIZ_COMPRESSION;
   if (write_info->compression == Pxr24Compression)
     compression=IMF_PXR24_COMPRESSION;
-#if defined(B44Compression)
+#if defined(IMF_B44_COMPRESSION)
   if (write_info->compression == B44Compression)
     compression=IMF_B44_COMPRESSION;
 #endif
-#if defined(B44ACompression)
+#if defined(IMF_B44A_COMPRESSION)
   if (write_info->compression == B44ACompression)
     compression=IMF_B44A_COMPRESSION;
 #endif
