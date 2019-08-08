@@ -1,0 +1,102 @@
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  build_linux:
+    name: Build Linux
+    container:
+      image: ubuntu:bionic
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: true
+      matrix:
+        compiler: [ gcc, clang ]
+
+    steps:
+    - uses: actions/checkout@master
+      with:
+        fetch-depth: 1
+
+    - name: Install dependencies
+      run: |
+        set -e
+        apt-get update -y
+        apt-get install -y autoconf pkg-config ${{matrix.compiler}}
+
+    - name: Configure ImageMagick
+      run: |
+        export CC=${{matrix.compiler}}
+        export CFLAGS="-Wno-deprecated-declarations"
+        ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
+
+    - name: Build ImageMagick
+      run: |
+        set -e
+        make
+        make install
+
+  build_macos:
+    name: Build MacOS
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@master
+      with:
+        fetch-depth: 1
+
+    - name: Install dependencies
+      run: |
+        set -e
+        export HOMEBREW_NO_AUTO_UPDATE=1
+        brew install autoconf libtool pkg-config libxml2
+
+    - name: Configure ImageMagick
+      run: |
+        export CFLAGS="-Wno-deprecated-declarations"
+        export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
+        ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl
+
+    - name: Build ImageMagick
+      run: |
+        set -e
+        make install
+
+  build_windows:
+    name: Build Windows
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@master
+      with:
+        repository: ImageMagick/ImageMagick-Windows
+        ref: refs/heads/master
+        fetchDepth: 1
+
+    - name: Clone repositories
+      run: |
+        cd %RUNNER_WORKSPACE%\ImageMagick-Windows
+        CloneRepositories.cmd https://github.com/ImageMagick shallow
+
+    - name: Build configure
+      run: |
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+        cd %RUNNER_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
+        devenv /upgrade configure.vcxproj
+        msbuild configure.sln /m /t:Rebuild /p:Configuration=Release,Platform=Win32
+
+    - name: Configure ImageMagick
+      run: |
+        cd %RUNNER_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
+        configure.exe /noWizard /VS2019 /x64 /smtd
+
+    - name: Build ImageMagick
+      run: |
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+        cd %RUNNER_WORKSPACE%\ImageMagick-Windows\VisualMagick
+        msbuild VisualStaticMTD.sln /m /t:Rebuild /p:Configuration=Release,Platform=x64

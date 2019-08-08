@@ -1,0 +1,49 @@
+on:
+  schedule:
+  - cron: 0 6 * * *
+
+jobs:
+  build_linux:
+    name: 'Linux Q${{matrix.quantum}} hdri: ${{matrix.hdri}}'
+    container:
+      image: ubuntu:bionic
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        quantum: [ 8, 16, 32, 64 ]
+        hdri: [ yes, no ]
+        exclude:
+          - quantum: 8
+            hdri: yes
+          - quantum: 32
+            hdri: no
+          - quantum: 64
+            hdri: no
+
+    steps:
+    - uses: actions/checkout@master
+      with:
+        fetch-depth: 1
+
+    - name: Install dependencies
+      run: |
+        apt update
+        sh -c "echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections"
+        apt-get install -y autoconf pkg-config gcc msttcorefonts libfontconfig1-dev libfreetype6-dev
+
+    - name: Configure ImageMagick
+      run: |
+        export CFLAGS="-Wno-deprecated-declarations"
+        ./configure --with-quantum-depth=${{matrix.quantum}} --enable-hdri=${{matrix.hdri}}
+
+    - name: Build ImageMagick
+      run: |
+        make
+
+    - name: Test ImageMagick
+      run: |
+        make check || exit_code=$?
+        if [ $exit_code -ne 0 ] ; then cat ./test-suite.log ; fi
+        exit $exit_code
