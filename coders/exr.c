@@ -160,6 +160,9 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ImfRgba
     *scanline;
 
+  int
+    compression;
+
   MagickBooleanType
     status;
 
@@ -205,6 +208,26 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->alpha_trait=BlendPixelTrait;
   (void) SetImageColorspace(image,RGBColorspace,exception);
   image->gamma=1.0;
+  image->compression=NoCompression;
+  compression=ImfHeaderCompression(hdr_info);
+  if (compression == IMF_RLE_COMPRESSION)
+    image->compression=RLECompression;
+  if (compression == IMF_ZIPS_COMPRESSION)
+    image->compression=ZipSCompression;
+  if (compression == IMF_ZIP_COMPRESSION)
+    image->compression=ZipCompression;
+  if (compression == IMF_PIZ_COMPRESSION)
+    image->compression=PizCompression;
+  if (compression == IMF_PXR24_COMPRESSION)
+    image->compression=Pxr24Compression;
+#if defined(IMF_B44_COMPRESSION)
+  if (compression == IMF_B44_COMPRESSION)
+    image->compression=B44Compression;
+#endif
+#if defined(IMF_B44A_COMPRESSION)
+  if (compression == IMF_B44A_COMPRESSION)
+    image->compression=B44ACompression;
+#endif
   if (image_info->ping != MagickFalse)
     {
       (void) ImfCloseInputFile(file);
