@@ -25,6 +25,12 @@ extern "C" {
 #include <stdarg.h>
 #include "MagickCore/semaphore.h"
 
+#if defined(__cplusplus) || defined(c_plusplus)
+# define magick_module  _module   /* reserved word in C++(20) */
+#else
+# define magick_module  module
+#endif
+
 typedef enum
 {
   UndefinedFormatType,

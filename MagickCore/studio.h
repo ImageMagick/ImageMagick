@@ -55,12 +55,6 @@ extern "C" {
 #  define STDC
 #endif
 
-#if defined(__cplusplus) || defined(c_plusplus)
-# define magick_module  _module   /* reserved word in C++(20) */
-#else
-# define magick_module  module
-#endif
-
 #include <stdarg.h>
 #include <stdio.h>
 #if defined(MAGICKCORE_HAVE_SYS_STAT_H)
