@@ -228,6 +228,14 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (compression == IMF_B44A_COMPRESSION)
     image->compression=B44ACompression;
 #endif
+#if defined(IMF_DWAA_COMPRESSION)
+  if (compression == IMF_DWAA_COMPRESSION)
+    image->compression=DwaaCompression;
+#endif
+#if defined(IMF_DWAB_COMPRESSION)
+  if (compression == IMF_DWAB_COMPRESSION)
+    image->compression=DwabCompression;
+#endif
   if (image_info->ping != MagickFalse)
     {
       (void) ImfCloseInputFile(file);
