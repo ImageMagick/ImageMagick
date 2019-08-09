@@ -16,7 +16,8 @@
 
 #include "coders/coders-private.h"
 
-#define MagickTIM2Headers
+#define MagickTIM2Headers \
+  MagickCoderHeader("TM2", 0, "TIM2")
 
 #define MagickTIM2Aliases \
   MagickCoderAlias("TIM2","TM2")
