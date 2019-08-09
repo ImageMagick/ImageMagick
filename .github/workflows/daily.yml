@@ -2,6 +2,7 @@ on:
   schedule:
   - cron: 0 6 * * *
 
+name: daily
 jobs:
   build_linux:
     name: 'Linux Q${{matrix.quantum}}-x64 (${{matrix.modules}}) hdri: ${{matrix.hdri}}'

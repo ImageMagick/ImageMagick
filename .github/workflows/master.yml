@@ -6,6 +6,7 @@ on:
     branches:
     - master
 
+name: master
 jobs:
   build_linux:
     name: Build Linux
