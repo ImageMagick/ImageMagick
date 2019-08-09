@@ -4,7 +4,7 @@ on:
 
 jobs:
   build_linux:
-    name: 'Linux Q${{matrix.quantum}} hdri: ${{matrix.hdri}}'
+    name: 'Linux Q${{matrix.quantum}}-x64 (${{matrix.modules}}) hdri: ${{matrix.hdri}}'
     container:
       image: ubuntu:bionic
     runs-on: ubuntu-latest
@@ -14,13 +14,26 @@ jobs:
       matrix:
         quantum: [ 8, 16, 32, 64 ]
         hdri: [ yes, no ]
+        modules: [ 'with-modules', 'without-modules' ]
         exclude:
           - quantum: 8
             hdri: yes
+            modules: 'with-modules'
+          - quantum: 8
+            hdri: yes
+            modules: 'without-modules'
           - quantum: 32
             hdri: no
+            modules: 'with-modules'
+          - quantum: 32
+            hdri: no
+            modules: 'without-modules'
           - quantum: 64
             hdri: no
+            modules: 'with-modules'
+          - quantum: 64
+            hdri: no
+            modules: 'without-modules'
 
     steps:
     - uses: actions/checkout@master
@@ -31,19 +44,111 @@ jobs:
       run: |
         apt update
         sh -c "echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections"
-        apt-get install -y autoconf pkg-config gcc msttcorefonts libfontconfig1-dev libfreetype6-dev
-
+        apt-get install -y autoconf pkg-config gcc msttcorefonts libfontconfig1-dev libfreetype6-dev libltdl-dev
     - name: Configure ImageMagick
       run: |
         export CFLAGS="-Wno-deprecated-declarations"
-        ./configure --with-quantum-depth=${{matrix.quantum}} --enable-hdri=${{matrix.hdri}}
+        ./configure --with-quantum-depth=${{matrix.quantum}} --enable-hdri=${{matrix.hdri}} --${{matrix.modules}}
 
     - name: Build ImageMagick
       run: |
         make
-
     - name: Test ImageMagick
       run: |
         make check || exit_code=$?
-        if [ $exit_code -ne 0 ] ; then cat ./test-suite.log ; fi
+        if [ "$exit_code" != "0" ] ; then cat ./test-suite.log ; fi
         exit $exit_code
+
+  build_windows:
+    name: 'Windows Q${{matrix.quantum}}-${{matrix.platform}} (${{matrix.buildType}}) hdri: ${{matrix.hdri}}'
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        quantum: [ 8, 16, 32, 64 ]
+        hdri: [ yes, no ]
+        buildType: [ dmt, smtd ]
+        platform: [ x64, Win32 ]
+        exclude:
+          - quantum: 8
+            hdri: yes
+            buildType: dmt
+            platform: x64
+          - quantum: 8
+            hdri: yes
+            buildType: dmt
+            platform: Win32
+          - quantum: 8
+            hdri: yes
+            buildType: smtd
+            platform: x64
+          - quantum: 8
+            hdri: yes
+            buildType: smtd
+            platform: Win32
+          - quantum: 32
+            hdri: no
+            buildType: dmt
+            platform: x64
+          - quantum: 32
+            hdri: no
+            buildType: dmt
+            platform: Win32
+          - quantum: 32
+            hdri: no
+            buildType: smtd
+            platform: x64
+          - quantum: 32
+            hdri: no
+            buildType: smtd
+            platform: Win32
+          - quantum: 64
+            hdri: no
+            buildType: dmt
+            platform: x64
+          - quantum: 64
+            hdri: no
+            buildType: dmt
+            platform: Win32
+          - quantum: 64
+            hdri: no
+            buildType: smtd
+            platform: x64
+          - quantum: 64
+            hdri: no
+            buildType: smtd
+            platform: Win32
+
+    steps:
+    - name: Clone ImageMagick-Windows
+      uses: actions/checkout@master
+      with:
+        fetch-depth: 1
+        repository: ImageMagick/ImageMagick-Windows
+        ref: remotes/origin/master
+
+    - name: Clone repositories
+      run: |
+        cd %RUNNER_WORKSPACE%\ImageMagick-Windows
+        CloneRepositories.cmd https://github.com/ImageMagick shallow
+
+    - name: Build configure
+      run: |
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+        cd %RUNNER_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
+        devenv /upgrade configure.vcxproj
+        msbuild configure.sln /m /t:Rebuild /p:Configuration=Release,Platform=Win32
+
+    - name: Configure ImageMagick
+      run: |
+        cd %RUNNER_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
+        configure.exe /noWizard /VS2019 /${{matrix.platform}} /${{matrix.buildType}}
+
+    - name: Build ImageMagick
+      run: |
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+        cd %RUNNER_WORKSPACE%\ImageMagick-Windows\VisualMagick
+        dir /B *.sln > solution
+        set /p solution=<solution
+        msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
