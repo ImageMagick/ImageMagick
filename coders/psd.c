@@ -756,9 +756,8 @@ static MagickBooleanType NegateCMYK(Image *image,ExceptionInfo *exception)
   return(status);
 }
 
-static StringInfo *ParseImageResourceBlocks(Image *image,
-  const unsigned char *blocks,size_t length,
-  MagickBooleanType *has_merged_image,ExceptionInfo *exception)
+static StringInfo *ParseImageResourceBlocks(PSDInfo *psd_info,Image *image,
+  const unsigned char *blocks,size_t length,ExceptionInfo *exception)
 {
   const unsigned char
     *p;
@@ -837,7 +836,7 @@ static StringInfo *ParseImageResourceBlocks(Image *image,
       case 0x0421:
       {
         if ((offset > 4) && (*(p+4) == 0))
-          *has_merged_image=MagickFalse;
+          psd_info->has_merged_image=MagickFalse;
         p+=offset;
         break;
       }
@@ -1631,9 +1630,11 @@ static void AttachPSDLayers(Image *image,LayerInfo *layer_info,
   layer_info=(LayerInfo *) RelinquishMagickMemory(layer_info);
 }
 
-static inline MagickBooleanType PSDSkipImage(const ImageInfo *image_info,
-  const size_t index)
+static inline MagickBooleanType PSDSkipImage(const PSDInfo *psd_info,
+  const ImageInfo *image_info,const size_t index)
 {
+  if (psd_info->has_merged_image == MagickFalse)
+      return(MagickFalse);
   if (image_info->number_scenes == 0)
     return(MagickFalse);
   if (index < image_info->scene)
@@ -1986,7 +1987,7 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
   for (i=0; i < number_layers; i++)
   {
     if ((layer_info[i].image == (Image *) NULL) ||
-        (PSDSkipImage(image_info,++index) != MagickFalse))
+        (PSDSkipImage(psd_info, image_info,++index) != MagickFalse))
       {
         for (j=0; j < (ssize_t) layer_info[i].channels; j++)
         {
@@ -2118,7 +2119,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   MagickBooleanType
-    has_merged_image,
     skip_layers;
 
   MagickOffsetType
@@ -2286,7 +2286,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if ((image->depth == 1) && (image->storage_class != PseudoClass))
     ThrowReaderException(CorruptImageError, "ImproperImageHeader");
-  has_merged_image=MagickTrue;
+  psd_info.has_merged_image=MagickTrue;
   profile=(StringInfo *) NULL;
   length=ReadBlobMSBLong(image);
   if (length != 0)
@@ -2314,8 +2314,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           blocks=(unsigned char *) RelinquishMagickMemory(blocks);
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         }
-      profile=ParseImageResourceBlocks(image,blocks,(size_t) length,
-        &has_merged_image,exception);
+      profile=ParseImageResourceBlocks(&psd_info,image,blocks,(size_t) length,
+        exception);
       blocks=(unsigned char *) RelinquishMagickMemory(blocks);
     }
   /*
@@ -2330,7 +2330,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   offset=TellBlob(image);
   skip_layers=MagickFalse;
   if ((image_info->number_scenes == 1) && (image_info->scene == 0) &&
-      (has_merged_image != MagickFalse))
+      (psd_info.has_merged_image != MagickFalse))
     {
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2383,10 +2383,10 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  reading the precombined layer");
   imageListLength=GetImageListLength(image);
-  if ((has_merged_image != MagickFalse) || (imageListLength == 1))
-    has_merged_image=(MagickBooleanType) ReadPSDMergedImage(image_info,image,
-      &psd_info,exception);
-  if ((has_merged_image == MagickFalse) && (imageListLength == 1) &&
+  if ((psd_info.has_merged_image != MagickFalse) || (imageListLength == 1))
+    psd_info.has_merged_image=(MagickBooleanType) ReadPSDMergedImage(
+      image_info,image,&psd_info,exception);
+  if ((psd_info.has_merged_image == MagickFalse) && (imageListLength == 1) &&
       (length != 0))
     {
       (void) SeekBlob(image,offset,SEEK_SET);
@@ -2401,7 +2401,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           return((Image *) NULL);
         }
     }
-  if (has_merged_image == MagickFalse)
+  if (psd_info.has_merged_image == MagickFalse)
     {
       Image
         *merged;
@@ -2427,7 +2427,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       next=image;
       while (next != (Image *) NULL)
       {
-        if (PSDSkipImage(image_info,i++) == MagickFalse)
+        if (PSDSkipImage(&psd_info,image_info,i++) == MagickFalse)
           (void) SetImageProfile(next,GetStringInfoName(profile),profile,
             exception);
         next=next->next;

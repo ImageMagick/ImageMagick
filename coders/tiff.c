@@ -298,6 +298,7 @@ static void InitPSDInfo(const Image *image,PSDInfo *info)
   info->mode=10; /* Set the mode to a value that won't change the colorspace */
   info->channels=1U;
   info->min_channels=1U;
+  info->has_merged_image=MagickFalse;
   if (image->storage_class == PseudoClass)
     info->mode=2; /* indexed mode */
   else
