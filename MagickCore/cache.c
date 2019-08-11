@@ -5342,7 +5342,8 @@ MagickPrivate MagickBooleanType SyncAuthenticPixelCacheNexus(Image *image,
     }
   if (nexus_info->authentic_pixel_cache != MagickFalse)
     {
-      image->taint=MagickTrue;
+      if (image->taint == MagickFalse)
+        image->taint=MagickTrue;
       return(MagickTrue);
     }
   assert(cache_info->signature == MagickCoreSignature);
@@ -5350,7 +5351,7 @@ MagickPrivate MagickBooleanType SyncAuthenticPixelCacheNexus(Image *image,
   if ((cache_info->metacontent_extent != 0) &&
       (WritePixelCacheMetacontent(cache_info,nexus_info,exception) == MagickFalse))
     return(MagickFalse);
-  if (status != MagickFalse)
+  if ((status != MagickFalse) && (image->taint == MagickFalse))
     image->taint=MagickTrue;
   return(status);
 }
