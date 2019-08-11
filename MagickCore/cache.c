@@ -1750,7 +1750,8 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
       /*
         Ensure the image matches the pixel cache morphology.
       */
-      image->type=UndefinedType;
+      if (image->type != UndefinedType)
+        image->type=UndefinedType;
       if (ValidatePixelCacheMorphology(image) == MagickFalse)
         {
           status=OpenPixelCache(image,IOMode,exception);
