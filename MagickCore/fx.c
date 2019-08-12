@@ -5176,6 +5176,8 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
       swirl_image=DestroyImage(swirl_image);
       return((Image *) NULL);
     }
+  if (swirl_image->background_color.alpha_trait != UndefinedPixelTrait)
+    (void) SetImageAlpha(swirl_image,OnAlphaChannel,exception);
   /*
     Compute scaling factor.
   */
