@@ -5164,9 +5164,6 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
   canvas_image=CloneImage(image,0,0,MagickTrue,exception);
   if (canvas_image == (Image *) NULL)
     return((Image *) NULL);
-  if ((canvas_image->alpha_trait == UndefinedPixelTrait) &&
-      (canvas_image->background_color.alpha != OpaqueAlpha))
-    (void) SetImageAlphaChannel(canvas_image,OpaqueAlphaChannel,exception);
   swirl_image=CloneImage(canvas_image,0,0,MagickTrue,exception);
   if (swirl_image == (Image *) NULL)
     {
