@@ -2052,8 +2052,7 @@ static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,
   /*
     Initialize color cache.
   */
-  (void) memset(cube_info->cache,(-1),sizeof(*cube_info->cache)*
-    length);
+  (void) memset(cube_info->cache,(-1),sizeof(*cube_info->cache)*length);
   /*
     Distribute weights along a curve of exponential decay.
   */
