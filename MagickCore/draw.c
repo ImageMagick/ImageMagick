@@ -1841,6 +1841,8 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
           dash_polygon[0].coordinates=(size_t) j;
           dash_polygon[j].primitive=UndefinedPrimitive;
           status&=DrawStrokePolygon(image,clone_info,dash_polygon,exception);
+          if (status == MagickFalse)
+            break;
         }
       if (fabs(draw_info->dash_pattern[n]) >= MagickEpsilon)
         n++;
@@ -1855,7 +1857,8 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
     dash_polygon[j].coordinates=1;
     j++;
   }
-  if ((total_length < maximum_length) && ((n & 0x01) == 0) && (j > 1))
+  if ((status != MagickFalse) && (total_length < maximum_length) &&
+      ((n & 0x01) == 0) && (j > 1))
     {
       dash_polygon[j]=primitive_info[i-1];
       dash_polygon[j].point.x+=MagickEpsilon;
@@ -5696,7 +5699,6 @@ static MagickBooleanType DrawStrokePolygon(Image *image,
     if (stroke_polygon == (PrimitiveInfo *) NULL)
       {
         status=0;
-        stroke_polygon=(PrimitiveInfo *) RelinquishMagickMemory(stroke_polygon);
         break;
       }
     status&=DrawPolygonPrimitive(image,clone_info,stroke_polygon,exception);
