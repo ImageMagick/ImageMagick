@@ -6159,8 +6159,8 @@ static MagickBooleanType TraceBezier(MVGInfo *mvg_info,
         quantum=(size_t) alpha;
     }
   }
-  quantum=MagickMin(quantum/number_coordinates,BezierQuantum);
   primitive_info=(*mvg_info->primitive_info)+mvg_info->offset;
+  quantum=MagickMin(quantum/number_coordinates,BezierQuantum);
   coefficients=(double *) AcquireQuantumMemory(number_coordinates,
     sizeof(*coefficients));
   points=(PointInfo *) AcquireQuantumMemory(quantum,number_coordinates*
@@ -6182,6 +6182,7 @@ static MagickBooleanType TraceBezier(MVGInfo *mvg_info,
       coefficients=(double *) RelinquishMagickMemory(coefficients);
       return(MagickFalse);
     }
+  primitive_info=(*mvg_info->primitive_info)+mvg_info->offset;
   /*
     Compute bezier points.
   */
