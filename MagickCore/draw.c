@@ -3248,10 +3248,10 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 (void) GetNextToken(q,&q,extent,token);
                 for (p=q; *q != '\0'; )
                 {
-                	GetNextToken(q,&q,extent,token);
+                	(void) GetNextToken(q,&q,extent,token);
                 	if (LocaleCompare(token,"pop") != 0)
                 		continue;
-                	GetNextToken(q,(const char **) NULL,extent,token);
+                	(void) GetNextToken(q,(const char **) NULL,extent,token);
                 	if (LocaleCompare(token,"clip-path") != 0)
                 		continue;
                 	break;
@@ -6140,25 +6140,48 @@ static MagickBooleanType TraceBezier(MVGInfo *mvg_info,
     for (j=i+1; j < (ssize_t) number_coordinates; j++)
     {
       alpha=fabs(primitive_info[j].point.x-primitive_info[i].point.x);
+      if (alpha > (double) SSIZE_MAX)
+        {
+          (void) ThrowMagickException(mvg_info->exception,GetMagickModule(),
+            ResourceLimitError,"MemoryAllocationFailed","`%s'","");
+          return(MagickFalse);
+        }
       if (alpha > (double) quantum)
         quantum=(size_t) alpha;
       alpha=fabs(primitive_info[j].point.y-primitive_info[i].point.y);
+      if (alpha > (double) SSIZE_MAX)
+        {
+          (void) ThrowMagickException(mvg_info->exception,GetMagickModule(),
+            ResourceLimitError,"MemoryAllocationFailed","`%s'","");
+          return(MagickFalse);
+        }
       if (alpha > (double) quantum)
         quantum=(size_t) alpha;
     }
   }
-  quantum=(size_t) MagickMin((double) quantum/number_coordinates,
-    (double) BezierQuantum);
-  control_points=quantum*number_coordinates;
-  if (CheckPrimitiveExtent(mvg_info,control_points+1) == MagickFalse)
-    return(MagickFalse);
+  quantum=MagickMin(quantum/number_coordinates,BezierQuantum);
   primitive_info=(*mvg_info->primitive_info)+mvg_info->offset;
-  coefficients=(double *) AcquireQuantumMemory((size_t)
-    number_coordinates,sizeof(*coefficients));
-  points=(PointInfo *) AcquireQuantumMemory((size_t) control_points,
+  coefficients=(double *) AcquireQuantumMemory(number_coordinates,
+    sizeof(*coefficients));
+  points=(PointInfo *) AcquireQuantumMemory(quantum,number_coordinates*
     sizeof(*points));
   if ((coefficients == (double *) NULL) || (points == (PointInfo *) NULL))
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+    {
+      if (points != (PointInfo *) NULL)
+        points=(PointInfo *) RelinquishMagickMemory(points);
+      if (coefficients != (double *) NULL)
+        coefficients=(double *) RelinquishMagickMemory(coefficients);
+      (void) ThrowMagickException(mvg_info->exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'","");
+      return(MagickFalse);
+    }
+  control_points=quantum*number_coordinates;
+  if (CheckPrimitiveExtent(mvg_info,control_points+1) == MagickFalse)
+    {
+      points=(PointInfo *) RelinquishMagickMemory(points);
+      coefficients=(double *) RelinquishMagickMemory(coefficients);
+      return(MagickFalse);
+    }
   /*
     Compute bezier points.
   */
@@ -6189,11 +6212,19 @@ static MagickBooleanType TraceBezier(MVGInfo *mvg_info,
   for (i=0; i < (ssize_t) control_points; i++)
   {
     if (TracePoint(p,points[i]) == MagickFalse)
-      return(MagickFalse);
+      {
+        points=(PointInfo *) RelinquishMagickMemory(points);
+        coefficients=(double *) RelinquishMagickMemory(coefficients);
+        return(MagickFalse);
+      }
     p+=p->coordinates;
   }
   if (TracePoint(p,end) == MagickFalse)
-    return(MagickFalse);
+    {
+      points=(PointInfo *) RelinquishMagickMemory(points);
+      coefficients=(double *) RelinquishMagickMemory(coefficients);
+      return(MagickFalse);
+    }
   p+=p->coordinates;
   primitive_info->coordinates=(size_t) (p-primitive_info);
   primitive_info->closed_subpath=MagickFalse;
