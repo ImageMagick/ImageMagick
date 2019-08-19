@@ -1692,7 +1692,9 @@ MagickPrivate MagickBooleanType LocaleComponentGenesis(void)
 {
   if (locale_semaphore == (SemaphoreInfo *) NULL)
     locale_semaphore=AcquireSemaphoreInfo();
+#if defined(MAGICKCORE_LOCALE_SUPPORT)
   (void) AcquireCLocale();
+#endif
   return(MagickTrue);
 }
 
