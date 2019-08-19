@@ -1740,7 +1740,15 @@ MagickExport void MagickDelay(const MagickSizeType milliseconds)
 #elif defined(__BEOS__)
   snooze(1000*milliseconds);
 #else
-# error "Time delay method not defined."
+  {
+    clock_t
+      time_end;
+
+    time_end=clock()+milliseconds*CLOCKS_PER_SEC/1000;
+    while (clock() < time_end)
+    {
+    }
+  }
 #endif
 }
 
