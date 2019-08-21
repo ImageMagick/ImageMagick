@@ -173,8 +173,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   if (image->columns == 0)
     {
       text=AcquireString(caption);
-      i=FormatMagickCaption(image,draw_info,split,&metrics,&text,
-        exception);
+      i=FormatMagickCaption(image,draw_info,split,&metrics,&text,exception);
       (void) CloneString(&draw_info->text,text);
       text=DestroyString(text);
       (void) FormatLocaleString(geometry,MagickPathExtent,"%+g%+g",
@@ -182,8 +181,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       if (draw_info->gravity == UndefinedGravity)
         (void) CloneString(&draw_info->geometry,geometry);
       status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
-      width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
-      image->columns=width;
+      image->columns=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
     }
   if (image->rows == 0)
     {
