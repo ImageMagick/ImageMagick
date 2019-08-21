@@ -11400,14 +11400,15 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   (void) SetQuantumEndian(image,quantum_info,MSBEndian);
   num_passes=png_set_interlace_handling(ping);
 
-  if ((!mng_info->write_png8 && !mng_info->write_png24 &&
-       !mng_info->write_png48 && !mng_info->write_png64 &&
-       !mng_info->write_png32) &&
-       (mng_info->IsPalette ||
-       (image_info->type == BilevelType)) &&
-       image_matte == MagickFalse &&
-       ping_have_non_bw == MagickFalse)
-    {
+  if ((mng_info->write_png_colortype-1 == PNG_COLOR_TYPE_PALETTE) ||
+      ((!mng_info->write_png8 && !mng_info->write_png24 &&
+        !mng_info->write_png48 && !mng_info->write_png64 &&
+        !mng_info->write_png32) &&
+        (mng_info->IsPalette ||
+        (image_info->type == BilevelType)) &&
+        image_matte == MagickFalse &&
+        ping_have_non_bw == MagickFalse))
+     {
       /* Palette, Bilevel, or Opaque Monochrome */
       QuantumType
         quantum_type;
