@@ -8760,7 +8760,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
            if (logging != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "    Freeing bogus colormap");
-           (PixelInfo *) RelinquishMagickMemory(image->colormap);
            image->colormap=(PixelInfo *) RelinquishMagickMemory(
              image->colormap);
         }
