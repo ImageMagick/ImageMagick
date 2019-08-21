@@ -3283,6 +3283,7 @@ ShowImageDelegate = @ShowImageDelegate@
 TAR = @TAR@
 THREAD_LIBS = @THREAD_LIBS@
 TIFF_LIBS = @TIFF_LIBS@
+TraceEncodeDelegate = @TraceEncodeDelegate@
 UINT16_T = @UINT16_T@
 UINT32_F = @UINT32_F@
 UINT32_T = @UINT32_T@
