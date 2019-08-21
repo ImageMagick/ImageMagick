@@ -3197,6 +3197,7 @@ fi
 RMDelegateDefault='rm'
 RSVGDecodeDelegateDefault='rsvg-convert'
 SVGDecodeDelegateDefault='inkscape'
+TraceEncodeDelegateDefault='potrace'
 UniconvertorDelegateDefault='uniconvertor'
 WebPDecodeDelegateDefault='dwebp'
 WebPEncodeDelegateDefault='cwebp'
@@ -3243,6 +3244,7 @@ AC_PATH_PROGS(PSDelegate, gsx gsc "$PSDelegateDefault", "$PSDelegateDefault")
 AC_PATH_PROG(RMDelegate, "$RMDelegateDefault", "$RMDelegateDefault")
 AC_PATH_PROG(RSVGDecodeDelegate, "$RSVGDecodeDelegateDefault", "$RSVGDecodeDelegateDefault")
 AC_PATH_PROG(SVGDecodeDelegate, "$SVGDecodeDelegateDefault", "$SVGDecodeDelegateDefault")
+AC_PATH_PROG(TraceEncodeDelegate, "$TraceEncodeDelegateDefault", "$TraceEncodeDelegateDefault")
 AC_PATH_PROG(UniconvertorDelegate, "$UniconvertorDelegateDefault", "$UniconvertorDelegateDefault")
 AC_PATH_PROG(WebPDecodeDelegate, "$WebPDecodeDelegateDefault", "$WebPDecodeDelegateDefault")
 AC_PATH_PROG(WebPEncodeDelegate, "$WebPEncodeDelegateDefault", "$WebPEncodeDelegateDefault")
@@ -3442,6 +3444,7 @@ if test "$with_frozenpaths" != 'yes'; then
   RSVGDecodeDelegate="$RSVGDecodeDelegateDefault"
   SVGDecodeDelegate="$SVGDecodeDelegateDefault"
   ShowImageDelegate="$ShowImageDelegateDefault"
+  TraceEncodeDelegate="$TraceEncodeDelegateDefault"
   UniconvertorDelegate="$UniconvertorDelegateDefault"
   WebPDecodeDelegate="$WebPDecodeDelegateDefault"
   WebPEncodeDelegate="$WebPEncodeDelegateDefault"
@@ -3474,6 +3477,7 @@ AC_SUBST(MrSIDDecodeDelegate)
 AC_SUBST(PCLDelegate)
 AC_SUBST(PSDelegate)
 AC_SUBST(ShowImageDelegate)
+AC_SUBST(TraceEncodeDelegate)
 AC_SUBST(UniconvertorDelegate)
 AC_SUBST(WebPDecodeDelegate)
 AC_SUBST(WebPEncodeDelegate)

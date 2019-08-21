@@ -3979,6 +3979,7 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
   {
     char
       *base64,
+      filename[MagickPathExtent],
       message[MagickPathExtent];
 
     Image
@@ -3986,6 +3987,9 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
 
     ImageInfo
       *image_info;
+
+    MagickBooleanType
+      status;
 
     register char
       *p;
@@ -4000,6 +4004,15 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     unsigned char
       *blob;
 
+    image_info=AcquireImageInfo();
+    (void) CopyMagickString(image_info->magick,"TRACE",MagickPathExtent);
+    (void) FormatLocaleString(filename,MagickPathExtent,"trace:%s",
+      image_info->filename);
+    (void) CopyMagickString(image_info->filename,filename,MagickPathExtent);
+    status=WriteImage(image_info,image,exception);
+    image_info=DestroyImageInfo(image_info);
+    if (status != MagickFalse)
+      return(status);
     (void) WriteBlobString(image,
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n");
     (void) WriteBlobString(image,
