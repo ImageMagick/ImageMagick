@@ -777,6 +777,18 @@ static void CinemaProfileCompliance(const opj_image_t *jp2_image,
   parameters->cp_disto_alloc=1;
 }
 
+static inline int CalculateNumResolutions(size_t width,size_t height)
+{
+  int
+    i;
+
+  for (i=1; i < 6; i++)
+    if ((((size_t) 1UL << (i+2)) > width) &&
+        (((size_t) 1UL << (i+2)) > height))
+      break;
+  return(i);
+}
+
 static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
@@ -835,14 +847,12 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
     Initialize JPEG 2000 API.
   */
   opj_set_default_encoder_parameters(&parameters);
-  for (i=1; i < 6; i++)
-    if ((((size_t) 1UL << (i+2)) > image->columns) &&
-        (((size_t) 1UL << (i+2)) > image->rows))
-      break;
-  parameters.numresolution=i;
   option=GetImageOption(image_info,"jp2:number-resolutions");
   if (option != (const char *) NULL)
     parameters.numresolution=StringToInteger(option);
+  else
+    parameters.numresolution=CalculateNumResolutions(image->columns,
+      image->rows);
   parameters.tcp_numlayers=1;
   parameters.tcp_rates[0]=0;  /* lossless */
   parameters.cp_disto_alloc=1;
@@ -873,6 +883,8 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
       if ((flags & YValue) != 0)
         parameters.cp_ty0=geometry.y;
       parameters.tile_size_on=OPJ_TRUE;
+      parameters.numresolution=CalculateNumResolutions(parameters.cp_tdx,
+        parameters.cp_tdy);
     }
   option=GetImageOption(image_info,"jp2:quality");
   if (option != (const char *) NULL)
