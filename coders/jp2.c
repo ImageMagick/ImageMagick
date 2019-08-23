@@ -783,8 +783,7 @@ static inline int CalculateNumResolutions(size_t width,size_t height)
     i;
 
   for (i=1; i < 6; i++)
-    if ((((size_t) 1UL << (i+2)) > width) &&
-        (((size_t) 1UL << (i+2)) > height))
+    if ((width < ((size_t) 1UL << i)) || (height < ((size_t) 1UL << i)))
       break;
   return(i);
 }
