@@ -1,5 +1,5 @@
-2019-08-19  7.0.8-62 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.8-62, GIT revision 16...
+2019-08-23  7.0.8-62 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-62, GIT revision 16058:6f21580:20190823.
 
 2019-08-23  7.0.8-62 Dirk Lemstra <dirk@lem.....org>
   * Added option to limit the maximum point size with -define
