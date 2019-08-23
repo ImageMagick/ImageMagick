@@ -2356,7 +2356,8 @@ static SplayTreeInfo *GetMVGMacros(const char *primitive)
             n=1;
             for (p=q; *p != '\0'; )
             {
-              (void) GetNextToken(p,&p,extent,token);
+              if (GetNextToken(p,&p,extent,token) < 1)
+                break;
               if (*token == '\0')
                 break;
               if (LocaleCompare(token,"pop") == 0)
@@ -3174,7 +3175,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
           }
         if (LocaleCompare("pop",keyword) == 0)
           {
-            (void) GetNextToken(q,&q,extent,token);
+            if (GetNextToken(q,&q,extent,token) < 1)
+              break;
             if (LocaleCompare("class",token) == 0)
               break;
             if (LocaleCompare("clip-path",token) == 0)
@@ -3224,7 +3226,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
           }
         if (LocaleCompare("push",keyword) == 0)
           {
-            (void) GetNextToken(q,&q,extent,token);
+            if (GetNextToken(q,&q,extent,token) < 1)
+              break;
             if (LocaleCompare("class",token) == 0)
               {
                 /*
@@ -3232,7 +3235,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 */
                 for (p=q; *q != '\0'; )
                 {
-                  (void) GetNextToken(q,&q,extent,token);
+                  if (GetNextToken(q,&q,extent,token) < 1)
+                    break;
                   if (LocaleCompare(token,"pop") != 0)
                     continue;
                   (void) GetNextToken(q,(const char **) NULL,extent,token);
@@ -3248,7 +3252,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 (void) GetNextToken(q,&q,extent,token);
                 for (p=q; *q != '\0'; )
                 {
-                	(void) GetNextToken(q,&q,extent,token);
+                	if (GetNextToken(q,&q,extent,token) < 1)
+                    break;
                 	if (LocaleCompare(token,"pop") != 0)
                 		continue;
                 	(void) GetNextToken(q,(const char **) NULL,extent,token);
@@ -3315,7 +3320,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
                   }
                 for (p=q; *q != '\0'; )
                 {
-                  (void) GetNextToken(q,&q,extent,token);
+                  if (GetNextToken(q,&q,extent,token) < 1)
+                    break;
                   if (LocaleCompare(token,"pop") != 0)
                     continue;
                   (void) GetNextToken(q,(const char **) NULL,extent,token);
@@ -3416,7 +3422,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
                   ThrowPointExpectedException(token,exception);
                 for (p=q; *q != '\0'; )
                 {
-                  (void) GetNextToken(q,&q,extent,token);
+                  if (GetNextToken(q,&q,extent,token) < 1)
+                    break;
                   if (LocaleCompare(token,"pop") != 0)
                     continue;
                   (void) GetNextToken(q,(const char **) NULL,extent,token);
