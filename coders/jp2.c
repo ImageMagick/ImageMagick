@@ -836,8 +836,8 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
   */
   opj_set_default_encoder_parameters(&parameters);
   for (i=1; i < 6; i++)
-    if (((size_t) (1UL << (i+2)) > image->columns) &&
-        ((size_t) (1UL << (i+2)) > image->rows))
+    if ((((size_t) 1UL << (i+2)) > image->columns) &&
+        (((size_t) 1UL << (i+2)) > image->rows))
       break;
   parameters.numresolution=i;
   option=GetImageOption(image_info,"jp2:number-resolutions");
