@@ -222,18 +222,6 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
         filename);
       (void) RelinquishUniqueFileResource(read_info->filename);
-      (void) CopyMagickString(read_info->filename,image->filename,
-        MagickPathExtent);
-      (void) SetImageInfo(read_info,1,exception);
-      if (images != (Image *) NULL)
-        for (next=images; next != (Image *) NULL; next=next->next)
-        {
-          (void) CopyMagickString(next->filename,image->filename,
-            MagickPathExtent);
-          (void) CopyMagickString(next->magick,read_info->magick,
-            MagickPathExtent);
-        }
-      read_info=DestroyImageInfo(read_info);
       image=DestroyImage(image);
       return((Image *) NULL);
     }
