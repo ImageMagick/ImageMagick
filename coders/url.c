@@ -222,6 +222,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
         filename);
       (void) RelinquishUniqueFileResource(read_info->filename);
+      read_info=DestroyImageInfo(read_info);
       image=DestroyImage(image);
       return((Image *) NULL);
     }
