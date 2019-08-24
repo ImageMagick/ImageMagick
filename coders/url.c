@@ -149,6 +149,48 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__MINGW32__)
+  if (LocaleCompare(read_info->magick,"https") == 0)
+    {
+      Image
+        *image,
+        *images,
+        *next;
+
+      MagickBooleanType
+        status;
+
+      /*
+        Leverage delegate to read HTTPS link.
+      */
+      images=(Image *) NULL;
+      image=AcquireImage(image_info,exception);
+      status=InvokeDelegate(read_info,image,"https:decode",(char *) NULL,
+        exception);
+      if (status != MagickFalse)
+        {
+          (void) FormatLocaleString(read_info->filename,MagickPathExtent,
+            "%s.dat",read_info->unique);
+          *read_info->magick='\0';
+          images=ReadImage(read_info,exception);
+          (void) RelinquishUniqueFileResource(read_info->filename);
+          (void) CopyMagickString(read_info->filename,image->filename,
+            MagickPathExtent);
+          (void) SetImageInfo(read_info,1,exception);
+          if (images != (Image *) NULL)
+            for (next=images; next != (Image *) NULL; next=next->next)
+            {
+              (void) CopyMagickString(next->filename,image->filename,
+                MagickPathExtent);
+              (void) CopyMagickString(next->magick,read_info->magick,
+                MagickPathExtent);
+            }
+        }
+      read_info=DestroyImageInfo(read_info);
+      image=DestroyImage(image);
+      return(images);
+    }
+#endif
   if (LocaleCompare(read_info->magick,"file") == 0)
     {
       (void) CopyMagickString(read_info->filename,image_info->filename+2,
@@ -287,10 +329,7 @@ ModuleExport size_t RegisterURLImage(void)
   entry->format_type=ImplicitFormatType;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("URL","HTTPS","Uniform Resource Locator (https://)");
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
-    !defined(__MINGW32__)
   entry->decoder=(DecodeImageHandler *) ReadURLImage;
-#endif
   entry->format_type=ImplicitFormatType;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("URL","FTP","Uniform Resource Locator (ftp://)");
