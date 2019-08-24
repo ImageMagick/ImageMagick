@@ -207,6 +207,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowFileException(exception,FileOpenError,"UnableToCreateTemporaryFile",
         read_info->filename);
       read_info=DestroyImageInfo(read_info);
+      image=DestroyImage(image);
       return((Image *) NULL);
     }
   (void) CopyMagickString(filename,image_info->magick,MagickPathExtent);
@@ -233,6 +234,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
             MagickPathExtent);
         }
       read_info=DestroyImageInfo(read_info);
+      image=DestroyImage(image);
       return((Image *) NULL);
     }
 #else
