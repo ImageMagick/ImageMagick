@@ -701,7 +701,11 @@ static void TIFFGetProfiles(TIFF *tiff,Image *image,ExceptionInfo *exception)
 #if defined(TIFFTAG_XMLPACKET)
   if ((TIFFGetField(tiff,TIFFTAG_XMLPACKET,&length,&profile) == 1) &&
       (profile != (unsigned char *) NULL))
-    (void) ReadProfile(image,"xmp",profile,(ssize_t) length,exception);
+    {
+      (void) ReadProfile(image,"xmp",profile,(ssize_t) length,exception);
+      if (strstr((char *) profile,"dc:format=\"image/dng\"") != (char *) NULL)
+        (void) CopyMagickString(image->magick,"DNG",MagickPathExtent);
+    }
 #endif
   if ((TIFFGetField(tiff,34118,&length,&profile) == 1) &&
       (profile != (unsigned char *) NULL))
