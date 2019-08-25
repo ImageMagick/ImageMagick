@@ -1640,6 +1640,14 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
                 directory_stack[level].entry=entry;
                 directory_stack[level].offset=tag_offset;
                 level++;
+                /*
+                  Check for duplicate tag.
+                */
+                for (i=0; i < level; i++)
+                  if (directory_stack[i].directory == (exif+tag_offset1))
+                    break;
+                if (i < level)
+                  break;  /* duplicate tag */
                 directory_stack[level].directory=exif+tag_offset1;
                 directory_stack[level].offset=tag_offset2;
                 directory_stack[level].entry=0;
