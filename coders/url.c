@@ -171,17 +171,10 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
           *read_info->magick='\0';
           images=ReadImage(read_info,exception);
           (void) RelinquishUniqueFileResource(read_info->filename);
-          (void) CopyMagickString(read_info->filename,image->filename,
-            MagickPathExtent);
-          (void) SetImageInfo(read_info,1,exception);
           if (images != (Image *) NULL)
             for (next=images; next != (Image *) NULL; next=next->next)
-            {
               (void) CopyMagickString(next->filename,image->filename,
                 MagickPathExtent);
-              (void) CopyMagickString(next->magick,read_info->magick,
-                MagickPathExtent);
-            }
         }
       read_info=DestroyImageInfo(read_info);
       image=DestroyImage(image);
@@ -279,14 +272,9 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   *read_info->magick='\0';
   images=ReadImage(read_info,exception);
   (void) RelinquishUniqueFileResource(read_info->filename);
-  (void) CopyMagickString(read_info->filename,image->filename,MagickPathExtent);
-  (void) SetImageInfo(read_info,1,exception);
   if (images != (Image *) NULL)
     for (next=images; next != (Image *) NULL; next=next->next)
-    {
       (void) CopyMagickString(next->filename,image->filename,MagickPathExtent);
-      (void) CopyMagickString(next->magick,read_info->magick,MagickPathExtent);
-    }
   read_info=DestroyImageInfo(read_info);
   image=DestroyImage(image);
   if (images != (Image *) NULL)
