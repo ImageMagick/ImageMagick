@@ -850,7 +850,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
               {
                 PixelChannel channel = GetPixelChannelChannel(image,i);
                 PixelTrait traits = GetPixelChannelTraits(image,channel);
-                PixelTrait rotate_traits=GetPixelChannelTraits(rotate_image,
+                PixelTrait rotate_traits = GetPixelChannelTraits(rotate_image,
                   channel);
                 if ((traits == UndefinedPixelTrait) ||
                     (rotate_traits == UndefinedPixelTrait))
@@ -931,7 +931,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
           {
             PixelChannel channel = GetPixelChannelChannel(image,i);
             PixelTrait traits = GetPixelChannelTraits(image,channel);
-            PixelTrait rotate_traits=GetPixelChannelTraits(rotate_image,
+            PixelTrait rotate_traits = GetPixelChannelTraits(rotate_image,
               channel);
             if ((traits == UndefinedPixelTrait) ||
                 (rotate_traits == UndefinedPixelTrait))
@@ -1046,7 +1046,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
               {
                 PixelChannel channel = GetPixelChannelChannel(image,i);
                 PixelTrait traits = GetPixelChannelTraits(image,channel);
-                PixelTrait rotate_traits=GetPixelChannelTraits(rotate_image,
+                PixelTrait rotate_traits = GetPixelChannelTraits(rotate_image,
                   channel);
                 if ((traits == UndefinedPixelTrait) ||
                     (rotate_traits == UndefinedPixelTrait))
