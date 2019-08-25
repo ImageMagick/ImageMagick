@@ -2,7 +2,8 @@
   * Release ImageMagick version 7.0.8-63, GIT revision 16...
 
 2019-08-24  7.0.8-62 Cristy  <quetzlzacatenango@image...>
-  * Properly identify the image format of an HTTPS image.
+  * Properly identify the DNG and AI image format (reference
+    https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=36581).
 
 2019-08-23  7.0.8-62 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-62, GIT revision 16061:7525595:20190823.
