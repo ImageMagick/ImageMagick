@@ -362,6 +362,11 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       *q++=(*p);
   }
   *q='\0';
+  if (active != MagickFalse)
+    {
+      xpm_buffer=DestroyString(xpm_buffer);
+      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+    }
   /*
     Initialize image structure.
   */
