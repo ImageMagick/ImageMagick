@@ -6308,8 +6308,7 @@ static MagickBooleanType TraceEllipse(MVGInfo *mvg_info,const PointInfo center,
     y+=360.0;
   angle.y=DegreesToRadians(y);
   coordinates=ceil((angle.y-angle.x)/step+1.0);
-  if ((coordinates > (double) SSIZE_MAX) ||
-      (coordinates > (double) GetMaxMemoryRequest()))
+  if (coordinates > (double) SSIZE_MAX)
     {
       (void) ThrowMagickException(mvg_info->exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'","");
