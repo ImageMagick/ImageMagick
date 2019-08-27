@@ -5,7 +5,7 @@ on:
 name: daily
 jobs:
   build_linux:
-    name: 'Linux Q${{matrix.quantum}}-x64 (${{matrix.modules}}) hdri: ${{matrix.hdri}}'
+    name: 'Linux Q${{matrix.quantum}}-x64 hdri=${{matrix.hdri}} (${{matrix.modules}})'
     container:
       image: ubuntu:bionic
     runs-on: ubuntu-latest
@@ -49,7 +49,7 @@ jobs:
         exit $exit_code
 
   build_windows:
-    name: 'Windows Q${{matrix.quantum}}-${{matrix.platform}} (${{matrix.buildType}}) hdri: ${{matrix.hdri}}'
+    name: 'Windows Q${{matrix.quantum}}-${{matrix.platform}} hdri=${{matrix.hdri}} (${{matrix.buildType}})'
     runs-on: windows-latest
 
     strategy:
