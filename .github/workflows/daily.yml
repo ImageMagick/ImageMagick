@@ -19,22 +19,10 @@ jobs:
         exclude:
           - quantum: 8
             hdri: yes
-            modules: 'with-modules'
-          - quantum: 8
-            hdri: yes
-            modules: 'without-modules'
           - quantum: 32
             hdri: no
-            modules: 'with-modules'
-          - quantum: 32
-            hdri: no
-            modules: 'without-modules'
           - quantum: 64
             hdri: no
-            modules: 'with-modules'
-          - quantum: 64
-            hdri: no
-            modules: 'without-modules'
 
     steps:
     - uses: actions/checkout@master
@@ -74,52 +62,10 @@ jobs:
         exclude:
           - quantum: 8
             hdri: yes
-            buildType: dmt
-            platform: x64
-          - quantum: 8
-            hdri: yes
-            buildType: dmt
-            platform: Win32
-          - quantum: 8
-            hdri: yes
-            buildType: smtd
-            platform: x64
-          - quantum: 8
-            hdri: yes
-            buildType: smtd
-            platform: Win32
           - quantum: 32
             hdri: no
-            buildType: dmt
-            platform: x64
-          - quantum: 32
-            hdri: no
-            buildType: dmt
-            platform: Win32
-          - quantum: 32
-            hdri: no
-            buildType: smtd
-            platform: x64
-          - quantum: 32
-            hdri: no
-            buildType: smtd
-            platform: Win32
           - quantum: 64
             hdri: no
-            buildType: dmt
-            platform: x64
-          - quantum: 64
-            hdri: no
-            buildType: dmt
-            platform: Win32
-          - quantum: 64
-            hdri: no
-            buildType: smtd
-            platform: x64
-          - quantum: 64
-            hdri: no
-            buildType: smtd
-            platform: Win32
 
     steps:
     - name: Clone ImageMagick-Windows
