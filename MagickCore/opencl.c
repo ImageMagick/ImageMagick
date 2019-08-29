@@ -393,7 +393,7 @@ static void SelectOpenCLDevice(MagickCLEnv clEnv,cl_device_type type)
     j;
 
   (void) LogMagickEvent(AccelerateEvent,GetMagickModule(),
-    "Selecting OpenCL device for type: %d",(int) type);
+    "Selecting device for type: %d",(int) type);
   for (i = 0; i < clEnv->number_devices; i++)
     clEnv->devices[i]->enabled=MagickFalse;
 
@@ -2407,6 +2407,8 @@ static void LoadOpenCLDevices(MagickCLEnv clEnv)
         sizeof(cl_ulong),&device->local_memory_size,NULL);
 
       clEnv->devices[next]=device;
+      (void) LogMagickEvent(AccelerateEvent,GetMagickModule(),
+        "Found device: %s",device->name);
     }
   }
   if (next != clEnv->number_devices)
