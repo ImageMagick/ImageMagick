@@ -789,6 +789,8 @@ MagickPrivate Image* AccelerateBlurImage(const Image *image,
 
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   if (checkAccelerateCondition(image) == MagickFalse)
     return((Image *) NULL);
@@ -910,6 +912,8 @@ MagickPrivate MagickBooleanType AccelerateContrastImage(Image *image,
 
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   if (checkAccelerateCondition(image) == MagickFalse)
     return(MagickFalse);
@@ -1471,6 +1475,8 @@ MagickPrivate MagickBooleanType AccelerateContrastStretchImage(
 
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
       (checkHistogramCondition(image,image->intensity) == MagickFalse))
@@ -2678,6 +2684,8 @@ MagickPrivate MagickBooleanType AccelerateEqualizeImage(Image *image,
 
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
       (checkHistogramCondition(image,image->intensity) == MagickFalse))
@@ -2828,6 +2836,8 @@ MagickPrivate MagickBooleanType AccelerateFunctionImage(Image *image,
 
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   if (checkAccelerateCondition(image) == MagickFalse)
     return(MagickFalse);
@@ -2953,6 +2963,8 @@ MagickPrivate MagickBooleanType AccelerateGrayscaleImage(Image* image,
 
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   if ((checkAccelerateCondition(image) == MagickFalse) ||
       (checkPixelIntensity(image,method) == MagickFalse))
@@ -3520,6 +3532,8 @@ MagickPrivate MagickBooleanType AccelerateModulateImage(Image *image,
 
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   if (checkAccelerateConditionRGBA(image) == MagickFalse)
     return(MagickFalse);
@@ -4686,6 +4700,8 @@ MagickPrivate Image* AccelerateRotationalBlurImage(const Image *image,
 
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   if (checkAccelerateCondition(image) == MagickFalse)
     return((Image *) NULL);
