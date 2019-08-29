@@ -366,7 +366,14 @@ static const char *GetOpenCLCacheDirectory()
                 }
             }
           if (temp == (char *) NULL)
-            temp=AcquireString("?");
+            {
+              temp=AcquireString("?");
+              (void) LogMagickEvent(AccelerateEvent,GetMagickModule(),
+                "Cannot use cache directory: \"%s\"",path);
+            }
+          else
+            (void) LogMagickEvent(AccelerateEvent,GetMagickModule(),
+              "Using cache directory: \"%s\"",temp);
           cache_directory=temp;
         }
       UnlockSemaphoreInfo(cache_directory_lock);
@@ -385,6 +392,8 @@ static void SelectOpenCLDevice(MagickCLEnv clEnv,cl_device_type type)
     i,
     j;
 
+  (void) LogMagickEvent(AccelerateEvent,GetMagickModule(),
+    "Selecting OpenCL device for type: %d",(int) type);
   for (i = 0; i < clEnv->number_devices; i++)
     clEnv->devices[i]->enabled=MagickFalse;
 
@@ -395,6 +404,8 @@ static void SelectOpenCLDevice(MagickCLEnv clEnv,cl_device_type type)
       continue;
 
     device->enabled=MagickTrue;
+    (void) LogMagickEvent(AccelerateEvent,GetMagickModule(),
+      "Selected device: %s",device->name);
     for (j = i+1; j < clEnv->number_devices; j++)
     {
       MagickCLDevice
@@ -709,6 +720,8 @@ MagickPrivate cl_kernel AcquireOpenCLKernel(MagickCLDevice device,
     kernel;
 
   assert(device != (MagickCLDevice) NULL);
+  (void) LogMagickEvent(AccelerateEvent,GetMagickModule(),"Using kernel: %s",
+    kernel_name);
   kernel=openCL_library->clCreateKernel(device->program,kernel_name,
     (cl_int *) NULL);
   return(kernel);
@@ -905,8 +918,12 @@ static MagickBooleanType CanWriteProfileToFile(const char *filename)
 
   profileFile=fopen(filename,"ab");
 
-  if (profileFile == (FILE *)NULL)
-    return(MagickFalse);
+  if (profileFile == (FILE *) NULL)
+    {
+      (void) LogMagickEvent(AccelerateEvent,GetMagickModule(),
+        "Unable to save profile to: \"%s\"",filename);
+      return(MagickFalse);
+    }
 
   fclose(profileFile);
   return(MagickTrue);
@@ -1182,6 +1199,8 @@ static void BenchmarkOpenCLDevices(MagickCLEnv clEnv)
     i,
     j;
 
+  (void) LogMagickEvent(AccelerateEvent,GetMagickModule(),
+    "Starting benchmark");
   testEnv=AcquireMagickCLEnv();
   testEnv->library=openCL_library;
   testEnv->devices=(MagickCLDevice *) AcquireCriticalMemory(
@@ -1280,11 +1299,15 @@ static void CacheOpenCLKernel(MagickCLDevice device,char *filename,
   status=openCL_library->clGetProgramInfo(device->program,
     CL_PROGRAM_BINARIES,sizeof(unsigned char*),&binaryProgram,NULL);
   if (status == CL_SUCCESS)
-    (void) BlobToFile(filename,binaryProgram,binaryProgramSize,exception);
+    {
+      (void) LogMagickEvent(AccelerateEvent,GetMagickModule(),
+        "Creating cache file: \"%s\"",filename);
+      (void) BlobToFile(filename,binaryProgram,binaryProgramSize,exception);
+    }
   binaryProgram=(unsigned char *) RelinquishMagickMemory(binaryProgram);
 }
 
-static MagickBooleanType LoadCachedOpenCLKernel(MagickCLDevice device,
+static MagickBooleanType LoadCachedOpenCLKernels(MagickCLDevice device,
   const char *filename)
 {
   cl_int
@@ -1306,6 +1329,8 @@ static MagickBooleanType LoadCachedOpenCLKernel(MagickCLDevice device,
   sans_exception=DestroyExceptionInfo(sans_exception);
   if (binaryProgram == (unsigned char *) NULL)
     return(MagickFalse);
+  (void) LogMagickEvent(AccelerateEvent,GetMagickModule(),
+    "Loaded cached kernels: \"%s\"",filename);
   device->program=openCL_library->clCreateProgramWithBinary(device->context,1,
     &device->deviceID,&length,(const unsigned char**)&binaryProgram,
     &binaryStatus,&status);
@@ -1377,7 +1402,7 @@ static MagickBooleanType CompileOpenCLKernel(MagickCLDevice device,
     "%s%s%s_%s_%08x_%.20g.bin",GetOpenCLCacheDirectory(),
     DirectorySeparator,"magick_opencl",deviceName,(unsigned int) signature,
     (double) sizeof(char*)*8);
-  loaded=LoadCachedOpenCLKernel(device,filename);
+  loaded=LoadCachedOpenCLKernels(device,filename);
   if (loaded == MagickFalse)
     {
       /* Binary CL program unavailable, compile the program from source */
