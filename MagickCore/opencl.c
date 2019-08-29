@@ -1534,35 +1534,31 @@ MagickPrivate void DumpOpenCLProfileData()
   FILE
     *log;
 
-  MagickCLEnv
-    clEnv;
-
   size_t
     i,
     j;
 
-  clEnv=GetCurrentOpenCLEnv();
-  if (clEnv == (MagickCLEnv) NULL)
+  if (default_CLEnv == (MagickCLEnv) NULL)
     return;
 
-  for (i = 0; i < clEnv->number_devices; i++)
-    if (clEnv->devices[i]->profile_kernels != MagickFalse)
+  for (i = 0; i < default_CLEnv->number_devices; i++)
+    if (default_CLEnv->devices[i]->profile_kernels != MagickFalse)
       break;
-  if (i == clEnv->number_devices)
+  if (i == default_CLEnv->number_devices)
     return;
 
   (void) FormatLocaleString(filename,MagickPathExtent,"%s%s%s",
     GetOpenCLCacheDirectory(),DirectorySeparator,"ImageMagickOpenCL.log");
 
-  log = fopen_utf8(filename,"wb");
+  log=fopen_utf8(filename,"wb");
   if (log == (FILE *) NULL)
     return;
-  for (i = 0; i < clEnv->number_devices; i++)
+  for (i = 0; i < default_CLEnv->number_devices; i++)
   {
     MagickCLDevice
       device;
 
-    device=clEnv->devices[i];
+    device=default_CLEnv->devices[i];
     if ((device->profile_kernels == MagickFalse) ||
         (device->profile_records == (KernelProfileRecord *) NULL))
       continue;
@@ -1739,7 +1735,7 @@ MagickPrivate MagickBooleanType EnqueueOpenCLKernel(cl_command_queue queue,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t C u r r u n t O p e n C L E n v                                     %
++   G e t C u r r e n t O p e n C L E n v                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
