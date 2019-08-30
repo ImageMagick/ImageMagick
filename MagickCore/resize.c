@@ -156,7 +156,7 @@ static double Blackman(const double x,
     Refactored by Chantal Racette and Nicolas Robidoux to one trig call and
     five flops.
   */
-  const double cosine=cos((double) (MagickPI*x));
+  const double cosine = cos((double) (MagickPI*x));
   magick_unreferenced(resize_filter);
   return(0.34+cosine*(0.5+cosine*0.16));
 }
@@ -172,7 +172,7 @@ static double Bohman(const double x,
     taking advantage of the fact that the support of Bohman is 1.0 (so that we
     know that sin(pi x) >= 0).
   */
-  const double cosine=cos((double) (MagickPI*x));
+  const double cosine = cos((double) (MagickPI*x));
   const double sine=sqrt(1.0-cosine*cosine);
   magick_unreferenced(resize_filter);
   return((1.0-x)*cosine+(1.0/MagickPI)*sine);
@@ -201,7 +201,7 @@ static double Cosine(const double x,
     Cosine window function:
       cos((pi/2)*x).
   */
-  return((double)cos((double) (MagickPI2*x)));
+  return(cos((double) (MagickPI2*x)));
 }
 
 static double CubicBC(const double x,const ResizeFilter *resize_filter)
@@ -326,7 +326,7 @@ static double Hann(const double x,
     Cosine window function:
       0.5+0.5*cos(pi*x).
   */
-  const double cosine=cos((double) (MagickPI*x));
+  const double cosine = cos((double) (MagickPI*x));
   magick_unreferenced(resize_filter);
   return(0.5+0.5*cosine);
 }
@@ -338,7 +338,7 @@ static double Hamming(const double x,
     Offset cosine window function:
      .54 + .46 cos(pi x).
   */
-  const double cosine=cos((double) (MagickPI*x));
+  const double cosine = cos((double) (MagickPI*x));
   magick_unreferenced(resize_filter);
   return(0.54+0.46*cosine);
 }
@@ -1501,9 +1501,8 @@ static double BesselOrderOne(double x)
     x=(-x);
   if (x < 8.0)
     return(p*J1(x));
-  q=sqrt((double) (2.0/(MagickPI*x)))*(P1(x)*(1.0/sqrt(2.0)*(sin((double) x)-
-    cos((double) x)))-8.0/x*Q1(x)*(-1.0/sqrt(2.0)*(sin((double) x)+
-    cos((double) x))));
+  q=sqrt((double) (2.0/(MagickPI*x)))*(P1(x)*(1.0/sqrt(2.0)*(sin(x)-
+    cos(x)))-8.0/x*Q1(x)*(-1.0/sqrt(2.0)*(sin(x)+cos(x))));
   if (p < 0.0)
     q=(-q);
   return(q);
