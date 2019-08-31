@@ -1,5 +1,5 @@
-2019-08-24  7.0.8-63 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.8-63, GIT revision 16...
+2019-08-31  7.0.8-63 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-63, GIT revision 16088:3b7a33d:20190831.
 
 2019-08-24  7.0.8-62 Cristy  <quetzlzacatenango@image...>
   * Properly identify the DNG and AI image format (reference
