@@ -2842,9 +2842,15 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   */
   value=GetImageProperty(image,"comment",exception);
   if (value != (char *) NULL)
-    for (i=0; i < (ssize_t) strlen(value); i+=65533L)
-      jpeg_write_marker(&jpeg_info,JPEG_COM,(unsigned char *) value+i,
-        (unsigned int) MagickMin((size_t) strlen(value+i),65533L));
+    {
+      size_t
+        length;
+
+      length=strlen(value);
+      for (i=0; i < (ssize_t) length; i+=65533L)
+        jpeg_write_marker(&jpeg_info,JPEG_COM,(unsigned char *) value+i,
+          (unsigned int) MagickMin((size_t) strlen(value+i),65533L));
+    }
   if (image->profiles != (void *) NULL)
     WriteProfile(&jpeg_info,image,exception);
   /*

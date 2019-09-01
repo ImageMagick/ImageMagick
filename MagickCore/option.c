@@ -2850,6 +2850,9 @@ MagickExport ssize_t ParseChannelOption(const char *channels)
   register ssize_t
     i;
 
+  size_t
+    length;
+
   ssize_t
     channel;
 
@@ -2857,7 +2860,8 @@ MagickExport ssize_t ParseChannelOption(const char *channels)
   if (channel >= 0)
     return(channel);
   channel=0;
-  for (i=0; i < (ssize_t) strlen(channels); i++)
+  length=strlen(channels);
+  for (i=0; i < (ssize_t) length; i++)
   {
     switch (channels[i])
     {
