@@ -77,7 +77,8 @@
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
-         data-ad-format="auto"></ins>
+         data-full-width-responsive="true"
+         data-ad-format="horizontal"></ins>
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
@@ -99,42 +100,42 @@
 
 <p>Use this command to convert a JPEG-2000 image to the PNG image format:</p>
 
-<pre class="highlight"><code>convert wizard.jp2 wizard.png
+<pre class="highlight"><code>magick convert wizard.jp2 wizard.png
 </code></pre>
 
 <p>Let's convert a JPEG image to a lossless JPEG-2000 image:</p>
 
-<pre class="highlight"><code>convert wizard.jpg -quality 0 wizard.jp2
+<pre class="highlight"><code>magick convert wizard.jpg -quality 0 wizard.jp2
 </code></pre>
 
 <p>Here we extract an area from the image:</p>
 
-<pre class="highlight"><code>convert 'wizard.jp2[640x480+0+0]' wizard.png
+<pre class="highlight"><code>magick convert 'wizard.jp2[640x480+0+0]' wizard.png
 </code></pre>
 
 <p>Extract a particular tile from the image:</p>
 
-<pre class="highlight"><code>convert 'wizard.jp2[2]' wizard.png
+<pre class="highlight"><code>magick convert 'wizard.jp2[2]' wizard.png
 </code></pre>
 
 <p>Specify a subsampling factor:</p>
 
-<pre class="highlight"><code>convert wizard.png -colorspace YUV -sampling-factor 2,2 wizard.jp2
+<pre class="highlight"><code>magick convert wizard.png -colorspace YUV -sampling-factor 2,2 wizard.jp2
 </code></pre>
 
 <p>Save a tiled JPEG-2000 image:</p>
 
-<pre class="highlight"><code>convert wizard.png 'wizard.png[512x512]'
+<pre class="highlight"><code>magick convert wizard.png 'wizard.png[512x512]'
 </code></pre>
 
 <p>Write a digital Cinema 4K profile compliant codestream:</p>
 
-<pre class="highlight"><code>convert wizard.png -resize 4096x2160! -depth 12 wizard.jp2
+<pre class="highlight"><code>magick convert wizard.png -resize 4096x2160! -depth 12 wizard.jp2
 </code></pre>
 
 <p>Here is a complete list of JPEG-2000 decoding options:</p>
 
-<div class="table-responsive">
+<div class="table-responsive"  style="font-size:87.5% !important;">
 <table class="table table-sm table-striped">
   <tr>
     <td>jp2:quality-layers=<var>x</var></td>
@@ -148,7 +149,7 @@
 
 <p>Here is a complete list of JPEG-2000 encoding options:</p>
 
-<div class="table-responsive">
+<div class="table-responsive"  style="font-size:87.5% !important;">
 <table class="table table-sm table-striped">
   <tr>
     <td>jp2:number-resolutions=<var>x</var></td>
@@ -191,3 +192,4 @@
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
+<!-- Magick Cache 2nd September 2019 15:51 -->
