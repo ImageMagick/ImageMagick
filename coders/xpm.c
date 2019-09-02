@@ -256,11 +256,11 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *p,
     *q;
 
-  register ssize_t
-    x;
-
   register Quantum
     *r;
+
+  register ssize_t
+    x;
 
   size_t
     length;
@@ -407,7 +407,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if ((next-q) < 0)
           break;
         (void) CopyXPMColor(target,q,MagickMin((size_t) (next-q),
-            MagickPathExtent-1));
+          MagickPathExtent-1));
         q=ParseXPMColor(target,MagickFalse);
         if (q != (char *) NULL)
           *q='\0';
@@ -457,7 +457,10 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          ssize_t count=CopyXPMColor(key,p,MagickMin(width,MagickPathExtent-1));
+          ssize_t
+            count;
+
+          count=CopyXPMColor(key,p,MagickMin(width,MagickPathExtent-1));
           if (count != (ssize_t) width)
             break;
           j=(ssize_t) GetValueFromSplayTree(xpm_colors,key);
