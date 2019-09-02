@@ -2855,7 +2855,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           *magick_restrict k;
 
         register const Quantum
-          *magick_restrict pixels;
+          *magick_restrict pixels,
+          *magick_restrict quantum_pixels;
 
         register ssize_t
           u;
@@ -2878,6 +2879,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             continue;
           }
         pixels=p;
+        quantum_pixels=(const Quantum *) NULL;
         maximum=0.0;
         minimum=(double) QuantumRange;
         switch (method)
@@ -3101,6 +3103,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                     intensity=(double) GetPixelIntensity(image,pixels);
                     if (intensity < minimum)
                       {
+                        quantum_pixels=pixels;
                         pixel=(double) pixels[i];
                         minimum=intensity;
                       }
@@ -3131,6 +3134,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                     if (intensity > maximum)
                       {
                         pixel=(double) pixels[i];
+                        quantum_pixels=pixels;
                         maximum=intensity;
                       }
                     count++;
@@ -3194,7 +3198,11 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         gamma=PerceptibleReciprocal(gamma);
         if (count != 0)
           gamma*=(double) kernel->height*kernel->width/count;
-        SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*pixel),q);
+        if (quantum_pixels != (const Quantum *) NULL)
+          SetPixelChannel(morphology_image,channel,quantum_pixels[i],q);
+        else
+          SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*pixel),
+            q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(morphology_image);
