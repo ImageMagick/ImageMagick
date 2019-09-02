@@ -1,7 +1,14 @@
+2019-09-02  7.0.8-64 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-64, GIT revision 16...
+
+2019-09-02  7.0.8-64 Cristy  <quetzlzacatenango@image...>
+  * Support XPM symbolic (reference
+    https://github.com/ImageMagick/ImageMagick/issues/1684).
+
 2019-08-31  7.0.8-63 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-63, GIT revision 16088:3b7a33d:20190831.
 
-2019-08-24  7.0.8-62 Cristy  <quetzlzacatenango@image...>
+2019-08-24  7.0.8-63 Cristy  <quetzlzacatenango@image...>
   * Properly identify the DNG and AI image format (reference
     https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=36581).
 
