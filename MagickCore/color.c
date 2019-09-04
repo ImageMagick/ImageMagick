@@ -2466,7 +2466,8 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
             color->blue=(MagickRealType) ClampToQuantum((MagickRealType)
               (scale*geometry_info.xi+(QuantumRange+1)/2.0));
         }
-      if (LocaleCompare(colorspace,"gray") == 0)
+      if ((LocaleCompare(colorspace,"gray") == 0) ||
+          (LocaleCompare(colorspace,"lineargray") == 0))
         {
           color->green=color->red;
           color->blue=color->red;
@@ -2477,7 +2478,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
           if ((icc_color == MagickFalse) &&
               (color->colorspace == LinearGRAYColorspace))
             {
-              color->colorspace=GRAYColorspace;
+              color->colorspace=LinearGRAYColorspace;
               color->depth=8;
             }
         }
