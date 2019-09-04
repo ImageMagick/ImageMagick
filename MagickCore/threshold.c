@@ -820,7 +820,7 @@ MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+  if (IsGrayColorspace(image->colorspace) == MagickFalse)
     (void) SetImageColorspace(image,sRGBColorspace,exception);
   /*
     Bilevel threshold image.
