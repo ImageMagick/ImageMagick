@@ -380,6 +380,11 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       return(status);
     }
     case LinearGRAYColorspace:
+    {
+      if ((image->intensity != Rec601LuminancePixelIntensityMethod) &&
+          (image->intensity != Rec709LuminancePixelIntensityMethod))
+        image->intensity=Rec709LuminancePixelIntensityMethod;
+    }
     case GRAYColorspace:
     {
       /*
@@ -1157,10 +1162,7 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
   if (IsGrayColorspace(colorspace) != MagickFalse)
     {
       if (colorspace == LinearGRAYColorspace)
-        {
-          image->gamma=1.000;
-          image->intensity=Rec709LuminancePixelIntensityMethod;
-        }
+        image->gamma=1.000;
       type=GrayscaleType;
     }
   else
