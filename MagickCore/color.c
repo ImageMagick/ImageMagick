@@ -2475,12 +2475,6 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
               (color->alpha_trait != UndefinedPixelTrait))
             color->alpha=(double) ClampToQuantum(QuantumRange*
               geometry_info.sigma);
-          if ((icc_color == MagickFalse) &&
-              (color->colorspace == LinearGRAYColorspace))
-            {
-              color->colorspace=GRAYColorspace;
-              color->depth=8;
-            }
         }
       if ((LocaleCompare(colorspace,"HCL") == 0) ||
           (LocaleCompare(colorspace,"HSB") == 0) ||
