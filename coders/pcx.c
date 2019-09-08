@@ -578,13 +578,13 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               for (x=0; x < ((ssize_t) image->columns-7); x+=8)
               {
                 for (bit=7; bit >= 0; bit--)
-                  *r++=(unsigned char) ((*p) & (0x01 << bit) ? 0x01 : 0x00);
+                  *r++=(unsigned char) ((*p) & (0x01 << bit) ? 0x00 : 0x01);
                 p++;
               }
               if ((image->columns % 8) != 0)
                 {
                   for (bit=7; bit >= (ssize_t) (8-(image->columns % 8)); bit--)
-                    *r++=(unsigned char) ((*p) & (0x01 << bit) ? 0x01 : 0x00);
+                    *r++=(unsigned char) ((*p) & (0x01 << bit) ? 0x00 : 0x01);
                   p++;
                 }
               break;
@@ -1150,7 +1150,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 byte<<=1;
-                if (GetPixelLuma(image,p) >= (QuantumRange/2.0))
+                if (GetPixelLuma(image,p) < (QuantumRange/2.0))
                   byte|=0x01;
                 bit++;
                 if (bit == 8)
