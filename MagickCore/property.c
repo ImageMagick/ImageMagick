@@ -4517,6 +4517,17 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           geometry=DestroyString(geometry);
           return(MagickTrue);
         }
+      if (LocaleCompare("type",property) == 0)
+        {
+          ssize_t
+            type;
+
+          type=ParseCommandOption(MagickTypeOptions,MagickFalse,value);
+          if (type < 0)
+            return(MagickFalse);
+          image->type=(ImageType) type;
+          return(MagickTrue);
+        }
       break; /* not an attribute, add as a property */
     }
     case 'U':
