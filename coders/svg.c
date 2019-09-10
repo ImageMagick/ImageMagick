@@ -3982,6 +3982,9 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
       filename[MagickPathExtent],
       message[MagickPathExtent];
 
+    const DelegateInfo
+      *delegate_info;
+
     Image
       *clone_image;
 
@@ -4004,15 +4007,21 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     unsigned char
       *blob;
 
-    image_info=AcquireImageInfo();
-    (void) CopyMagickString(image_info->magick,"TRACE",MagickPathExtent);
-    (void) FormatLocaleString(filename,MagickPathExtent,"trace:%s",
-      image_info->filename);
-    (void) CopyMagickString(image_info->filename,filename,MagickPathExtent);
-    status=WriteImage(image_info,image,exception);
-    image_info=DestroyImageInfo(image_info);
-    if (status != MagickFalse)
-      return(status);
+    delegate_info=GetDelegateInfo((char *) NULL,"TRACE",exception);
+    if (delegate_info != (DelegateInfo *) NULL)
+      {
+        /*
+          Trace SVG with tracing delegate.
+        */
+        image_info=AcquireImageInfo();
+        (void) CopyMagickString(image_info->magick,"TRACE",MagickPathExtent);
+        (void) FormatLocaleString(filename,MagickPathExtent,"trace:%s",
+          image_info->filename);
+        (void) CopyMagickString(image_info->filename,filename,MagickPathExtent);
+        status=WriteImage(image_info,image,exception);
+        image_info=DestroyImageInfo(image_info);
+        return(status);
+      }
     (void) WriteBlobString(image,
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n");
     (void) WriteBlobString(image,
