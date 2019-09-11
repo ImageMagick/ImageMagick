@@ -575,6 +575,9 @@
 /* Define to 1 if you have the <sys/wait.h> header file. */
 #undef HAVE_SYS_WAIT_H
 
+/* Define if you have tcmalloc library */
+#undef HAVE_TCMALLOC
+
 /* Define to 1 if you have the `telldir' function. */
 #undef HAVE_TELLDIR
 
@@ -627,6 +630,9 @@
 
 /* Define to 1 if you have the `ulltostr' function. */
 #undef HAVE_ULLTOSTR
+
+/* Define if you have umem memory allocation library */
+#undef HAVE_UMEM
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
@@ -723,9 +729,6 @@
 
 /* Define if you have jemalloc memory allocation library */
 #undef HasJEMALLOC
-
-/* Define if you have umem memory allocation library */
-#undef HasUMEM
 
 /* Directory where ImageMagick architecture headers live. */
 #undef INCLUDEARCH_PATH

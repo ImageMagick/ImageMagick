@@ -3281,6 +3281,7 @@ SVGDecodeDelegate = @SVGDecodeDelegate@
 SYSCONF_DIR = @SYSCONF_DIR@
 ShowImageDelegate = @ShowImageDelegate@
 TAR = @TAR@
+TCMALLOC_LIBS = @TCMALLOC_LIBS@
 THREAD_LIBS = @THREAD_LIBS@
 TIFF_LIBS = @TIFF_LIBS@
 TraceEncodeDelegate = @TraceEncodeDelegate@

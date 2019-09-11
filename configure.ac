@@ -731,6 +731,16 @@ AC_ARG_ENABLE([efence],
     [enable_efence=$enableval],
     [enable_efence='no'])
 
+# Enable use of tcmalloc library.
+AC_ARG_WITH(tcmalloc,
+   AS_HELP_STRING([--with-tcmalloc],
+                  [enable 'tcmalloc' memory debug support]),
+   [with_tcmalloc=$withval],
+   [with_tcmalloc='no'])
+if test "$with_tcmalloc" != 'no' ; then
+   DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-tcmalloc=$with_tcmalloc "
+fi
+
 # Enable prof-based profiling support
 AC_ARG_ENABLE([prof],
     [AC_HELP_STRING([--enable-prof],
@@ -1494,7 +1504,7 @@ if test "$with_umem" != 'no'; then
     else
       UMEM_LIBS='-lumem'
       LIBS="$UMEM_LIBS $LIBS"
-      AC_DEFINE(HasUMEM,1,Define if you have umem memory allocation library)
+      AC_DEFINE(HAVE_UMEM,1,Define if you have umem memory allocation library)
       AC_MSG_RESULT(yes)
       have_umem='yes'
     fi
@@ -1502,7 +1512,7 @@ if test "$with_umem" != 'no'; then
     AC_MSG_RESULT(no)
   fi
 fi
-AM_CONDITIONAL(HasUMEM, test "$have_umem" = 'yes')
+AM_CONDITIONAL(HAVE_UMEM, test "$have_umem" = 'yes')
 AC_SUBST(UMEM_LIBS)
 
 #
@@ -1542,6 +1552,37 @@ if test "$enable_efence" = 'yes'; then
     EFENCE_LIBS='-lefence'
     LIBS="$EFENCE_LIBS $LIBS"
 fi
+
+#
+# Check for tcmalloc library
+#
+have_tcmalloc='no'
+TCMALLOC_LIBS=''
+OLIBS="$LIBS"
+if test "$have_threads" = 'yes' -a "$with_tcmalloc" != 'no'; then
+    AC_MSG_CHECKING([tcmalloc library support ])
+    AC_MSG_RESULT([])
+    failed=0
+    passed=0
+
+    AC_CHECK_LIB([tcmalloc_minimal],[mallinfo],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
+
+    if test $passed -gt 0; then
+        if test $failed -gt 0; then
+            have_tcmalloc='no (some components failed test)'
+        else
+            TCMALLOC_LIBS=-ltcmalloc_minimal
+            LIBS="$TCMALLOC_LIBS $LIBS"
+            CFLAGS="$CFLAGS -fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free"
+            AC_DEFINE([HAVE_TCMALLOC],[1],[Define if you have tcmalloc library])
+            have_tcmalloc='yes'
+        fi
+    fi
+    AC_MSG_CHECKING([if tcmalloc memory allocation library is complete ])
+    AC_MSG_RESULT([$have_tcmalloc])
+fi
+AM_CONDITIONAL([HAVE_TCMALLOC], [test "$have_tcmalloc" = 'yes'])
+AC_SUBST([TCMALLOC_LIBS])
 
 dnl ===========================================================================
 
@@ -3924,9 +3965,9 @@ fi
 #
 
 if test "$build_modules" != 'no'; then
-    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
 fi
 MAGICK_EXTRA_DEP_LIBS="$GOMP_LIBS"
 AC_SUBST(MAGICK_DEP_LIBS)
@@ -4093,6 +4134,7 @@ matches your expectations.
   RAQM              --with-raqm=$with_raqm		$have_raqm
   RAW               --with-raw=$with_raw 	   	$have_raw
   RSVG              --with-rsvg=$with_rsvg		$have_rsvg
+  TCMalloc          --with-tcmalloc=$with_tcmalloc		$have_tcmalloc
   TIFF              --with-tiff=$with_tiff		$have_tiff
   WEBP              --with-webp=$with_webp		$have_webp
   WMF               --with-wmf=$with_wmf		$have_wmf
