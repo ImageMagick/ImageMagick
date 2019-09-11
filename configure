@@ -4576,7 +4576,7 @@ MAGICK_PATCHLEVEL_VERSION=65
 
 MAGICK_VERSION=7.0.8-65
 
-MAGICK_GIT_REVISION=16115:55abbb402:20190911
+MAGICK_GIT_REVISION=16116:2acd478bb:20190911
 
 
 # Substitute library versioning
@@ -22894,7 +22894,7 @@ else
 fi
 
 
-# Enable use of tcmalloc library.
+# Enable use of TCMalloc library.
 
 # Check whether --with-tcmalloc was given.
 if test "${with_tcmalloc+set}" = set; then :
@@ -28477,7 +28477,7 @@ if test "$enable_efence" = 'yes'; then
 fi
 
 #
-# Check for tcmalloc library
+# Check for TCMalloc library
 #
 have_tcmalloc='no'
 TCMALLOC_LIBS=''

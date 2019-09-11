@@ -731,7 +731,7 @@ AC_ARG_ENABLE([efence],
     [enable_efence=$enableval],
     [enable_efence='no'])
 
-# Enable use of tcmalloc library.
+# Enable use of TCMalloc library.
 AC_ARG_WITH(tcmalloc,
    AS_HELP_STRING([--with-tcmalloc],
                   [enable 'tcmalloc' memory debug support]),
@@ -1554,7 +1554,7 @@ if test "$enable_efence" = 'yes'; then
 fi
 
 #
-# Check for tcmalloc library
+# Check for TCMalloc library
 #
 have_tcmalloc='no'
 TCMALLOC_LIBS=''
