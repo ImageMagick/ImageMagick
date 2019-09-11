@@ -792,7 +792,7 @@ AM_CONDITIONAL(LEGACY_SUPPORT, test "$with_legacy_support" != 'no')
 
 # Enable building command line utilities (default yes)
 AC_ARG_WITH(utilities,
-            [  --with-utilities enable building command-line utilities (default yes)],
+            [  --with-utilities	enable building command-line utilities (default yes)],
             [with_utilities=$withval], [with_utilities='yes'])
 AM_CONDITIONAL(WITH_UTILITIES, test "$with_utilities" = 'yes')
 
