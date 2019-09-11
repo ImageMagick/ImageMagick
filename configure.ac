@@ -731,16 +731,6 @@ AC_ARG_ENABLE([efence],
     [enable_efence=$enableval],
     [enable_efence='no'])
 
-# Enable use of TCMalloc library.
-AC_ARG_WITH(tcmalloc,
-   AS_HELP_STRING([--with-tcmalloc],
-                  [enable 'tcmalloc' memory debug support]),
-   [with_tcmalloc=$withval],
-   [with_tcmalloc='no'])
-if test "$with_tcmalloc" != 'no' ; then
-   DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-tcmalloc=$with_tcmalloc "
-fi
-
 # Enable prof-based profiling support
 AC_ARG_ENABLE([prof],
     [AC_HELP_STRING([--enable-prof],
@@ -882,6 +872,16 @@ AC_ARG_WITH(jemalloc,
         [with_jemalloc='no'])
 if test "$with_jemalloc" != 'yes' ; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-jemalloc=$with_jemalloc "
+fi
+
+# Enable use of TCMalloc library.
+AC_ARG_WITH(tcmalloc,
+   AS_HELP_STRING([--with-tcmalloc],
+                  [enable tcmalloc memory allocation library support]),
+   [with_tcmalloc=$withval],
+   [with_tcmalloc='no'])
+if test "$with_tcmalloc" != 'no' ; then
+   DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-tcmalloc=$with_tcmalloc "
 fi
 
 # Enable umem, object-caching memory allocation library.
@@ -1484,6 +1484,37 @@ AM_CONDITIONAL(HasJEMALLOC, test "$have_jemalloc" = 'yes')
 AC_SUBST(JEMALLOC_LIBS)
 
 #
+# Check for TCMalloc library
+#
+have_tcmalloc='no'
+TCMALLOC_LIBS=''
+OLIBS="$LIBS"
+if test "$have_threads" = 'yes' -a "$with_tcmalloc" != 'no'; then
+    AC_MSG_CHECKING([tcmalloc library support ])
+    AC_MSG_RESULT([])
+    failed=0
+    passed=0
+
+    AC_CHECK_LIB([tcmalloc_minimal],[mallinfo],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
+
+    if test $passed -gt 0; then
+        if test $failed -gt 0; then
+            have_tcmalloc='no (some components failed test)'
+        else
+            TCMALLOC_LIBS=-ltcmalloc_minimal
+            LIBS="$TCMALLOC_LIBS $LIBS"
+            CFLAGS="$CFLAGS -fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free"
+            AC_DEFINE([HAVE_TCMALLOC],[1],[Define if you have the tcmalloc memory allocation library])
+            have_tcmalloc='yes'
+        fi
+    fi
+    AC_MSG_CHECKING([if tcmalloc memory allocation library is complete ])
+    AC_MSG_RESULT([$have_tcmalloc])
+fi
+AM_CONDITIONAL([HAVE_TCMALLOC], [test "$have_tcmalloc" = 'yes'])
+AC_SUBST([TCMALLOC_LIBS])
+
+#
 # Check for umem.
 #
 have_umem='no'
@@ -1552,37 +1583,6 @@ if test "$enable_efence" = 'yes'; then
     EFENCE_LIBS='-lefence'
     LIBS="$EFENCE_LIBS $LIBS"
 fi
-
-#
-# Check for TCMalloc library
-#
-have_tcmalloc='no'
-TCMALLOC_LIBS=''
-OLIBS="$LIBS"
-if test "$have_threads" = 'yes' -a "$with_tcmalloc" != 'no'; then
-    AC_MSG_CHECKING([tcmalloc library support ])
-    AC_MSG_RESULT([])
-    failed=0
-    passed=0
-
-    AC_CHECK_LIB([tcmalloc_minimal],[mallinfo],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
-
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            have_tcmalloc='no (some components failed test)'
-        else
-            TCMALLOC_LIBS=-ltcmalloc_minimal
-            LIBS="$TCMALLOC_LIBS $LIBS"
-            CFLAGS="$CFLAGS -fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free"
-            AC_DEFINE([HAVE_TCMALLOC],[1],[Define if you have tcmalloc library])
-            have_tcmalloc='yes'
-        fi
-    fi
-    AC_MSG_CHECKING([if tcmalloc memory allocation library is complete ])
-    AC_MSG_RESULT([$have_tcmalloc])
-fi
-AM_CONDITIONAL([HAVE_TCMALLOC], [test "$have_tcmalloc" = 'yes'])
-AC_SUBST([TCMALLOC_LIBS])
 
 dnl ===========================================================================
 
@@ -4134,7 +4134,6 @@ matches your expectations.
   RAQM              --with-raqm=$with_raqm		$have_raqm
   RAW               --with-raw=$with_raw 	   	$have_raw
   RSVG              --with-rsvg=$with_rsvg		$have_rsvg
-  TCMalloc          --with-tcmalloc=$with_tcmalloc		$have_tcmalloc
   TIFF              --with-tiff=$with_tiff		$have_tiff
   WEBP              --with-webp=$with_webp		$have_webp
   WMF               --with-wmf=$with_wmf		$have_wmf

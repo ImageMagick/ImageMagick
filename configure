@@ -896,13 +896,13 @@ XMKMF
 BZLIB_LIBS
 BZLIB_DELEGATE_FALSE
 BZLIB_DELEGATE_TRUE
-TCMALLOC_LIBS
-HAVE_TCMALLOC_FALSE
-HAVE_TCMALLOC_TRUE
 CCMALLOCDelegate
 UMEM_LIBS
 HAVE_UMEM_FALSE
 HAVE_UMEM_TRUE
+TCMALLOC_LIBS
+HAVE_TCMALLOC_FALSE
+HAVE_TCMALLOC_TRUE
 JEMALLOC_LIBS
 HasJEMALLOC_FALSE
 HasJEMALLOC_TRUE
@@ -1197,7 +1197,6 @@ enable_maintainer_mode
 enable_hugepages
 enable_ccmalloc
 enable_efence
-with_tcmalloc
 enable_prof
 enable_gprof
 enable_gcov
@@ -1212,6 +1211,7 @@ with_package_release_name
 with_perl
 with_perl_options
 with_jemalloc
+with_tcmalloc
 with_umem
 with_libstdc
 with_bzlib
@@ -2007,7 +2007,6 @@ Optional Packages:
   --with-sysroot[=DIR]    Search for dependent libraries within DIR (or the
                           compiler's sysroot if not specified).
   --with-modules          enable building dynamically loadable modules
-  --with-tcmalloc         enable 'tcmalloc' memory debug support
   --with-method-prefix=PREFIX
                           prefix MagickCore API methods
   --with-utilities	enable building command-line utilities (default yes)
@@ -2025,6 +2024,7 @@ Optional Packages:
                           options to pass on command-line when generating
                           PerlMagick build file
   --with-jemalloc         enable jemalloc memory allocation library support
+  --with-tcmalloc         enable tcmalloc memory allocation library support
   --with-umem             enable umem memory allocation library support
   --with-libstdc=DIR      use libstdc++ in DIR (for GNU C++)
   --without-bzlib         disable BZLIB support
@@ -4576,7 +4576,7 @@ MAGICK_PATCHLEVEL_VERSION=65
 
 MAGICK_VERSION=7.0.8-65
 
-MAGICK_GIT_REVISION=16117:e344a85ef:20190911
+MAGICK_GIT_REVISION=16119:e3723ab13:20190911
 
 
 # Substitute library versioning
@@ -22894,19 +22894,6 @@ else
 fi
 
 
-# Enable use of TCMalloc library.
-
-# Check whether --with-tcmalloc was given.
-if test "${with_tcmalloc+set}" = set; then :
-  withval=$with_tcmalloc; with_tcmalloc=$withval
-else
-  with_tcmalloc='no'
-fi
-
-if test "$with_tcmalloc" != 'no' ; then
-   DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-tcmalloc=$with_tcmalloc "
-fi
-
 # Enable prof-based profiling support
 # Check whether --enable-prof was given.
 if test "${enable_prof+set}" = set; then :
@@ -23117,6 +23104,19 @@ fi
 
 if test "$with_jemalloc" != 'yes' ; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-jemalloc=$with_jemalloc "
+fi
+
+# Enable use of TCMalloc library.
+
+# Check whether --with-tcmalloc was given.
+if test "${with_tcmalloc+set}" = set; then :
+  withval=$with_tcmalloc; with_tcmalloc=$withval
+else
+  with_tcmalloc='no'
+fi
+
+if test "$with_tcmalloc" != 'no' ; then
+   DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-tcmalloc=$with_tcmalloc "
 fi
 
 # Enable umem, object-caching memory allocation library.
@@ -28221,6 +28221,91 @@ fi
 
 
 #
+# Check for TCMalloc library
+#
+have_tcmalloc='no'
+TCMALLOC_LIBS=''
+OLIBS="$LIBS"
+if test "$have_threads" = 'yes' -a "$with_tcmalloc" != 'no'; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking tcmalloc library support " >&5
+$as_echo_n "checking tcmalloc library support ... " >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+$as_echo "" >&6; }
+    failed=0
+    passed=0
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for mallinfo in -ltcmalloc_minimal" >&5
+$as_echo_n "checking for mallinfo in -ltcmalloc_minimal... " >&6; }
+if ${ac_cv_lib_tcmalloc_minimal_mallinfo+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-ltcmalloc_minimal  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char mallinfo ();
+int
+main ()
+{
+return mallinfo ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_tcmalloc_minimal_mallinfo=yes
+else
+  ac_cv_lib_tcmalloc_minimal_mallinfo=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_tcmalloc_minimal_mallinfo" >&5
+$as_echo "$ac_cv_lib_tcmalloc_minimal_mallinfo" >&6; }
+if test "x$ac_cv_lib_tcmalloc_minimal_mallinfo" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+
+    if test $passed -gt 0; then
+        if test $failed -gt 0; then
+            have_tcmalloc='no (some components failed test)'
+        else
+            TCMALLOC_LIBS=-ltcmalloc_minimal
+            LIBS="$TCMALLOC_LIBS $LIBS"
+            CFLAGS="$CFLAGS -fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free"
+
+$as_echo "#define HAVE_TCMALLOC 1" >>confdefs.h
+
+            have_tcmalloc='yes'
+        fi
+    fi
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if tcmalloc memory allocation library is complete " >&5
+$as_echo_n "checking if tcmalloc memory allocation library is complete ... " >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_tcmalloc" >&5
+$as_echo "$have_tcmalloc" >&6; }
+fi
+ if test "$have_tcmalloc" = 'yes'; then
+  HAVE_TCMALLOC_TRUE=
+  HAVE_TCMALLOC_FALSE='#'
+else
+  HAVE_TCMALLOC_TRUE='#'
+  HAVE_TCMALLOC_FALSE=
+fi
+
+
+
+#
 # Check for umem.
 #
 have_umem='no'
@@ -28475,91 +28560,6 @@ if test "$enable_efence" = 'yes'; then
     EFENCE_LIBS='-lefence'
     LIBS="$EFENCE_LIBS $LIBS"
 fi
-
-#
-# Check for TCMalloc library
-#
-have_tcmalloc='no'
-TCMALLOC_LIBS=''
-OLIBS="$LIBS"
-if test "$have_threads" = 'yes' -a "$with_tcmalloc" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking tcmalloc library support " >&5
-$as_echo_n "checking tcmalloc library support ... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
-    failed=0
-    passed=0
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for mallinfo in -ltcmalloc_minimal" >&5
-$as_echo_n "checking for mallinfo in -ltcmalloc_minimal... " >&6; }
-if ${ac_cv_lib_tcmalloc_minimal_mallinfo+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-ltcmalloc_minimal  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char mallinfo ();
-int
-main ()
-{
-return mallinfo ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_tcmalloc_minimal_mallinfo=yes
-else
-  ac_cv_lib_tcmalloc_minimal_mallinfo=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_tcmalloc_minimal_mallinfo" >&5
-$as_echo "$ac_cv_lib_tcmalloc_minimal_mallinfo" >&6; }
-if test "x$ac_cv_lib_tcmalloc_minimal_mallinfo" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            have_tcmalloc='no (some components failed test)'
-        else
-            TCMALLOC_LIBS=-ltcmalloc_minimal
-            LIBS="$TCMALLOC_LIBS $LIBS"
-            CFLAGS="$CFLAGS -fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free"
-
-$as_echo "#define HAVE_TCMALLOC 1" >>confdefs.h
-
-            have_tcmalloc='yes'
-        fi
-    fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if tcmalloc memory allocation library is complete " >&5
-$as_echo_n "checking if tcmalloc memory allocation library is complete ... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_tcmalloc" >&5
-$as_echo "$have_tcmalloc" >&6; }
-fi
- if test "$have_tcmalloc" = 'yes'; then
-  HAVE_TCMALLOC_TRUE=
-  HAVE_TCMALLOC_FALSE='#'
-else
-  HAVE_TCMALLOC_TRUE='#'
-  HAVE_TCMALLOC_FALSE=
-fi
-
-
 
 
 #
@@ -37361,12 +37361,12 @@ if test -z "${HasJEMALLOC_TRUE}" && test -z "${HasJEMALLOC_FALSE}"; then
   as_fn_error $? "conditional \"HasJEMALLOC\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
-if test -z "${HAVE_UMEM_TRUE}" && test -z "${HAVE_UMEM_FALSE}"; then
-  as_fn_error $? "conditional \"HAVE_UMEM\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
 if test -z "${HAVE_TCMALLOC_TRUE}" && test -z "${HAVE_TCMALLOC_FALSE}"; then
   as_fn_error $? "conditional \"HAVE_TCMALLOC\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_UMEM_TRUE}" && test -z "${HAVE_UMEM_FALSE}"; then
+  as_fn_error $? "conditional \"HAVE_UMEM\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${BZLIB_DELEGATE_TRUE}" && test -z "${BZLIB_DELEGATE_FALSE}"; then
@@ -40157,7 +40157,6 @@ matches your expectations.
   RAQM              --with-raqm=$with_raqm		$have_raqm
   RAW               --with-raw=$with_raw 	   	$have_raw
   RSVG              --with-rsvg=$with_rsvg		$have_rsvg
-  TCMalloc          --with-tcmalloc=$with_tcmalloc		$have_tcmalloc
   TIFF              --with-tiff=$with_tiff		$have_tiff
   WEBP              --with-webp=$with_webp		$have_webp
   WMF               --with-wmf=$with_wmf		$have_wmf
@@ -40250,7 +40249,6 @@ matches your expectations.
   RAQM              --with-raqm=$with_raqm		$have_raqm
   RAW               --with-raw=$with_raw 	   	$have_raw
   RSVG              --with-rsvg=$with_rsvg		$have_rsvg
-  TCMalloc          --with-tcmalloc=$with_tcmalloc		$have_tcmalloc
   TIFF              --with-tiff=$with_tiff		$have_tiff
   WEBP              --with-webp=$with_webp		$have_webp
   WMF               --with-wmf=$with_wmf		$have_wmf

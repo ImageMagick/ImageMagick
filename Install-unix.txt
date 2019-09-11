@@ -23,8 +23,8 @@ Configure
   default options, and build from within the source directory, you can simply
   type:
   
-    $magick> cd ImageMagick-7.0.7
-     $magick> ./configure
+    $magick> cd ImageMagick-7.0.8
+    $magick> ./configure
   
   Watch the configure script output to verify that it finds everything that
   you think it should. Pay particular attention to the last lines of the script
@@ -231,8 +231,8 @@ Configure
       enable 'gprof' profiling support (default disabled).
   
     --enable-gcov
-   
-     enable 'gcov' profiling support (default disabled).
+      enable 'gcov' profiling support (default disabled).
+
     --disable-openmp
       disable OpenMP (default enabled).
   
