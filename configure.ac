@@ -4106,12 +4106,12 @@ High Dynamic Range Imagery
 
 Install documentation:				$wantdocs
 
-Memory Allocation Library:
+Memory allocation library:
   JEMalloc          --with-jemalloc=$with_jemalloc		$have_jemalloc
   TCMalloc          --with-tcmalloc=$with_tcmalloc		$have_tcmalloc
   UMem              --with-umem=$with_umem		$have_umem
 
-Delegate Library Configuration:
+Delegate library configuration:
   BZLIB             --with-bzlib=$with_bzlib		$have_bzlib
   Autotrace         --with-autotrace=$with_autotrace		$have_autotrace
   DJVU              --with-djvu=$with_djvu		$have_djvu
@@ -4147,19 +4147,19 @@ Delegate Library Configuration:
   ZLIB              --with-zlib=$with_zlib		$have_zlib
   ZSTD              --with-zstd=$with_zstd		$have_zstd
 
-Delegate Program Configuration:
+Delegate program configuration:
   GhostPCL          None			$PCLDelegate ($PCLVersion)
   GhostXPS          None			$XPSDelegate ($XPSVersion)
   Ghostscript       None			$PSDelegate ($GSVersion)
 
-Font Configuration:
+Font configuration:
   Apple fonts       --with-apple-font-dir=$with_apple_font_dir	$result_apple_font_dir
   Dejavu fonts      --with-dejavu-font-dir=$with_dejavu_font_dir	$result_dejavu_font_dir
   Ghostscript fonts --with-gs-font-dir=$with_gs_font_dir		$result_ghostscript_font_dir
   URW-base35 fonts  --with-urw-base35-font-dir=$with_urw_base35_font_dir	$result_urw_base35_font_dir
   Windows fonts     --with-windows-font-dir=$with_windows_font_dir	$result_windows_font_dir
 
-X11 Configuration:
+X11 configuration:
   X_CFLAGS        = $X_CFLAGS
   X_PRE_LIBS      = $X_PRE_LIBS
   X_LIBS          = $X_LIBS
