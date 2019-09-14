@@ -423,10 +423,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             gray;
 
           gray=(MagickRealType) GetPixelIntensity(image,q);
-          if ((image->intensity == Rec601LumaPixelIntensityMethod) ||
-              (image->intensity == Rec709LumaPixelIntensityMethod))
-            gray=DecodePixelGamma(gray);
-          SetPixelGray(image,ClampToQuantum(GetPixelIntensity(image,q)),q);
+          SetPixelGray(image,ClampToQuantum(gray),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -1897,9 +1894,6 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             gray;
 
           gray=(MagickRealType) GetPixelIntensity(image,q);
-          if ((image->intensity == Rec601LuminancePixelIntensityMethod) ||
-              (image->intensity == Rec709LuminancePixelIntensityMethod))
-            gray=EncodePixelGamma(gray);
           SetPixelGray(image,ClampToQuantum(gray),q);
           q+=GetPixelChannels(image);
         }
