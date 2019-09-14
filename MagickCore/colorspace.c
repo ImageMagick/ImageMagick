@@ -421,7 +421,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           MagickRealType
             gray;
 
-          gray=(MagickRealType) GetPixelIntensity(image,q);
+          gray=0.212656*GetPixelRed(image,q)+0.715158*GetPixelGreen(image,q)+
+            0.072186*GetPixelBlue(image,q);
           SetPixelGray(image,ClampToQuantum(DecodePixelGamma(gray)),q);
           q+=GetPixelChannels(image);
         }
@@ -477,7 +478,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           MagickRealType
             gray;
 
-          gray=(MagickRealType) GetPixelIntensity(image,q);
+          gray=0.212656*GetPixelRed(image,q)+0.715158*GetPixelGreen(image,q)+
+            0.072186*GetPixelBlue(image,q);
           SetPixelGray(image,ClampToQuantum(gray),q);
           q+=GetPixelChannels(image);
         }
@@ -1284,7 +1286,7 @@ MagickExport MagickBooleanType SetImageGray(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (IsImageGray(image) != MagickFalse)
+  if (IsImageGray(image))
     return(MagickTrue);
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     return(MagickFalse);
@@ -1947,8 +1949,12 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           MagickRealType
             gray;
 
-          gray=(MagickRealType) GetPixelIntensity(image,q);
-          SetPixelGray(image,ClampToQuantum(EncodePixelGamma(gray)),q);
+          gray=0.212656*GetPixelRed(image,q)+0.715158*GetPixelGreen(image,q)+
+            0.072186*GetPixelBlue(image,q);
+          gray=EncodePixelGamma(gray);
+          SetPixelRed(image,ClampToQuantum(gray),q);
+          SetPixelGreen(image,ClampToQuantum(gray),q);
+          SetPixelBlue(image,ClampToQuantum(gray),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2004,8 +2010,11 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           MagickRealType
             gray;
 
-          gray=(MagickRealType) GetPixelIntensity(image,q);
-          SetPixelGray(image,ClampToQuantum(gray),q);
+          gray=0.212656*GetPixelRed(image,q)+0.715158*GetPixelGreen(image,q)+
+            0.072186*GetPixelBlue(image,q);
+          SetPixelRed(image,ClampToQuantum(gray),q);
+          SetPixelGreen(image,ClampToQuantum(gray),q);
+          SetPixelBlue(image,ClampToQuantum(gray),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
