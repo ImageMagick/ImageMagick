@@ -3,6 +3,8 @@
 
 2019-09-09  7.0.8-65 Cristy  <quetzlzacatenango@image...>
   * Eliminate fault when trace delegate is not available.
+  * Properly distinquish linear and non-linear gray colorspaces (reference
+    https://github.com/ImageMagick/ImageMagick/issues/1680).
 
 2019-09-07  7.0.8-64 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-64, GIT revision 16108:2ad3cbc:20190907.
