@@ -1161,14 +1161,27 @@ OPENCL_ENDIF()
       }
     )
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%    C o n t r a s t S t r e t c h                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+*/
+
     STRINGIFY(
-    /*
-    */
-    __kernel void ContrastStretch(__global CLPixelType * restrict im,
-      const ChannelType channel,
-      __global CLPixelType * restrict stretch_map,
-      const float4 white, const float4 black)
-      {
+      __kernel void ContrastStretch
+      (
+        __global CLPixelType *restrict im,
+        const ChannelType channel,
+        __global CLPixelType *restrict stretch_map,
+        const float4 white,
+        const float4 black
+      ){
         const int x = get_global_id(0);
         const int y = get_global_id(1);
         const int columns = get_global_size(0);
