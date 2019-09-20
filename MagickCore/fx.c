@@ -2949,12 +2949,18 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
     {
       if (IsFxFunction(expression,"while",5) != MagickFalse)
         {
-          do
-          {
-            alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,
-              depth+1,beta,exception);
-          } while (fabs(alpha) >= MagickEpsilon);
-          FxReturn(*beta);
+          if (strchr(expression,';') != (char *) NULL)
+            (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+              "UnableToParseExpression","`%s'",expression);
+          else
+            {
+              do
+              {
+                alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,
+                  depth+1,beta,exception);
+              } while (fabs(alpha) >= MagickEpsilon);
+              FxReturn(*beta);
+            }
         }
       if (LocaleCompare(expression,"w") == 0)
         FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
