@@ -2949,18 +2949,28 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
     {
       if (IsFxFunction(expression,"while",5) != MagickFalse)
         {
-          if (strchr(expression,';') != (char *) NULL)
-            (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-              "UnableToParseExpression","`%s'",expression);
-          else
+          /*
+            Parse while(condition,expression).
+          */
+          (void) CopyMagickString(subexpression,expression+5,MagickPathExtent);
+          q=subexpression;
+          p=StringToken(",",&q);
+          if ((p == (char *) NULL) || (strlen(p) < 1) || (q == (char *) NULL))
             {
-              do
-              {
-                alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,
-                  depth+1,beta,exception);
-              } while (fabs(alpha) >= MagickEpsilon);
-              FxReturn(*beta);
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"UnableToParseExpression","`%s'",expression);
+              FxReturn(0.0);
             }
+          for ( ; ; )
+          {
+            double sans = 0.0;
+            alpha=FxEvaluateSubexpression(fx_info,channel,x,y,p+1,depth+1,&sans,
+              exception);
+            if (fabs(alpha) < MagickEpsilon)
+              FxReturn(*beta);
+            alpha=FxEvaluateSubexpression(fx_info,channel,x,y,q,depth+1,beta,
+              exception);
+          }
         }
       if (LocaleCompare(expression,"w") == 0)
         FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
@@ -5183,7 +5193,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
       return((Image *) NULL);
     }
   if (swirl_image->background_color.alpha_trait != UndefinedPixelTrait)
-    (void) SetImageAlpha(swirl_image,OnAlphaChannel,exception);
+    (void) SetImageAlphaChannel(swirl_image,OnAlphaChannel,exception);
   /*
     Compute scaling factor.
   */
