@@ -35,7 +35,7 @@ extern "C" {
 #define OPENCL_IF(...)		"\n #""if " #__VA_ARGS__ " \n"
 #define STRINGIFY(...) #__VA_ARGS__ "\n"
 
-const char *accelerateKernels =
+const char *const accelerateKernels =
 
 /*
   Define declarations.
@@ -2435,7 +2435,7 @@ OPENCL_ENDIF()
   )
 
   ;
-  const char *accelerateKernels2 =
+  const char *const accelerateKernels2 =
 
   STRINGIFY(
 
