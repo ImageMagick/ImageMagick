@@ -252,7 +252,8 @@ const char *const accelerateKernels =
       IndexChannel = 0x0020,             /* Color Index Table? */
       ReadMaskChannel = 0x0040,          /* Pixel is Not Readable? */
       WriteMaskChannel = 0x0080,         /* Pixel is Write Protected? */
-      MetaChannel = 0x0100,              /* ???? */
+      MetaChannel = 0x0100,              /* not used */
+      CompositeMaskChannel = 0x0200,     /* SVG mask */
       CompositeChannels = 0x001F,
       AllChannels = 0x7ffffff,
       /*
