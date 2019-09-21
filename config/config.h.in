@@ -575,7 +575,7 @@
 /* Define to 1 if you have the <sys/wait.h> header file. */
 #undef HAVE_SYS_WAIT_H
 
-/* Define if you have tcmalloc library */
+/* Define if you have the tcmalloc memory allocation library */
 #undef HAVE_TCMALLOC
 
 /* Define to 1 if you have the `telldir' function. */

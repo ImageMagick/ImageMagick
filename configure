@@ -4576,7 +4576,7 @@ MAGICK_PATCHLEVEL_VERSION=66
 
 MAGICK_VERSION=7.0.8-66
 
-MAGICK_GIT_REVISION=16131:345a51f40:20190918
+MAGICK_GIT_REVISION=16132:faf618cf9:20190920
 
 
 # Substitute library versioning
@@ -11197,13 +11197,13 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 # Check whether --enable-opencl was given.
 if test "${enable_opencl+set}" = set; then :
-  enableval=$enable_opencl; disable_opencl=$enableval
+  enableval=$enable_opencl; enable_opencl=$enableval
 else
-  disable_opencl='yes'
+  enable_opencl='yes'
 fi
 
 
-if test "$disable_opencl" = 'yes'; then
+if test "$enable_opencl" = 'no'; then
   ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
