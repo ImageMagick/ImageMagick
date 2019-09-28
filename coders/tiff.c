@@ -3633,8 +3633,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     }
   mode=endian_type == LSBEndian ? "wl" : "wb";
 #if defined(TIFF_VERSION_BIG)
-  if ((LocaleCompare(image_info->magick,"TIFF64") == 0) ||
-      (((MagickOffsetType) image->columns*image->rows) > SSIZE_MAX))
+  if (LocaleCompare(image_info->magick,"TIFF64") == 0)
     mode=endian_type == LSBEndian ? "wl8" : "wb8";
 #endif
   tiff=TIFFClientOpen(image->filename,mode,(thandle_t) image,TIFFReadBlob,
