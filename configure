@@ -3632,7 +3632,7 @@ ac_aux_dir=
 for ac_dir in config "$srcdir"/config; do
   if test -f "$ac_dir/install-sh"; then
     ac_aux_dir=$ac_dir
-    ac_install_sh="$SHELL $ac_pwd/$ac_aux_dir/install-sh -c"
+    ac_install_sh="$ac_aux_dir/install-sh -c"
     break
   elif test -f "$ac_dir/install.sh"; then
     ac_aux_dir=$ac_dir
@@ -4576,7 +4576,7 @@ MAGICK_PATCHLEVEL_VERSION=67
 
 MAGICK_VERSION=7.0.8-67
 
-MAGICK_GIT_REVISION=16136:379ebc793:20190922
+MAGICK_GIT_REVISION=16141:9627eebf6:20190928
 
 
 # Substitute library versioning
@@ -11197,13 +11197,13 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 # Check whether --enable-opencl was given.
 if test "${enable_opencl+set}" = set; then :
-  enableval=$enable_opencl; enable_opencl=$enableval
+  enableval=$enable_opencl; disable_opencl=$enableval
 else
-  enable_opencl='yes'
+  disable_opencl='yes'
 fi
 
 
-if test "$enable_opencl" = 'no'; then
+if test "$disable_opencl" = 'yes'; then
   ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
