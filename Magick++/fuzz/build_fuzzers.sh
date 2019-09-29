@@ -3,7 +3,7 @@
 MAGICK_COMPILER_FLAGS="$MAGICK_COMPILER_FLAGS -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16"
 
 $MAGICK_COMPILER $MAGICK_COMPILER_FLAGS -std=c++11 -I$MAGICK_INCLUDE "$MAGICK_SRC/encoder_list.cc" \
-    -o "$MAGICK_SRC/encoder_list" $MAGICK_LIBS
+    -o "$MAGICK_SRC/encoder_list" $MAGICK_LIBS_NO_FUZZ
 
 for f in $MAGICK_SRC/*_fuzzer.cc; do
     fuzzer=$(basename "$f" _fuzzer.cc)
