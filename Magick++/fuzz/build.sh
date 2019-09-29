@@ -72,7 +72,7 @@ popd
 # Build libheif
 pushd "$SRC/libheif"
 ./autogen.sh
-./configure --disable-shared --prefix="$WORK" PKG_CONFIG_PATH="$WORK/lib/pkgconfig"
+./configure --disable-shared --disable-go --prefix="$WORK" PKG_CONFIG_PATH="$WORK/lib/pkgconfig"
 make -j$(nproc)
 make install
 popd
