@@ -6100,6 +6100,8 @@ static MagickBooleanType TraceArcPath(MVGInfo *mvg_info,const PointInfo start,
     mvg_info->offset+=p->coordinates;
     p+=p->coordinates;
   }
+  if (status == 0)
+    return(MagickFalse);
   mvg_info->offset=offset;
   primitive_info=(*mvg_info->primitive_info)+mvg_info->offset;
   primitive_info->coordinates=(size_t) (p-primitive_info);
@@ -6109,7 +6111,7 @@ static MagickBooleanType TraceArcPath(MVGInfo *mvg_info,const PointInfo start,
     p->primitive=primitive_info->primitive;
     p--;
   }
-  return(status == 0 ? MagickFalse : MagickTrue);
+  return(MagickTrue);
 }
 
 static MagickBooleanType TraceBezier(MVGInfo *mvg_info,
