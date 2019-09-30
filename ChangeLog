@@ -1,9 +1,9 @@
-2019-09-29  7.0.8-67 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.8-67, GIT revision 16145:6f2feb9:20190929.
+2019-09-30  7.0.8-68 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.8-68, GIT revision 16...
 
 2019-09-28  7.0.8-67 Cristy  <quetzlzacatenango@image...>
-  * line endings renedered as empty boxes (reference
-    https://github.com/ImageMagick/ImageMagick/issues/1704).
+  * Support animated WebP encoding/decoding (reference
+    https://github.com/ImageMagick/ImageMagick/pull/1708).
 
 2019-09-21  7.0.8-66 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-66, GIT revision 16134:f6ce80a:20190921.
