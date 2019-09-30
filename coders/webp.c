@@ -487,7 +487,7 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       webp_status=ReadAnimatedWEBPImage(image_info, image, stream,
 				 length, &configure, exception);
 #else
-      webp_status=VP8_STATUS_UNSUPPORTED_FEATURE
+      webp_status=VP8_STATUS_UNSUPPORTED_FEATURE;
 #endif
     } else {
       webp_status=ReadSingleWEBPImage(image, stream,
