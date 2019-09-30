@@ -1,7 +1,7 @@
 2019-09-30  7.0.8-68 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-68, GIT revision 16...
 
-2019-09-28  7.0.8-67 Cristy  <quetzlzacatenango@image...>
+2019-09-30  7.0.8-67 Cristy  <quetzlzacatenango@image...>
   * Support animated WebP encoding/decoding (reference
     https://github.com/ImageMagick/ImageMagick/pull/1708).
 
