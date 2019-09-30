@@ -2838,6 +2838,8 @@ fi
 AM_CONDITIONAL(TIFF_DELEGATE, test "$have_tiff" = 'yes')
 AC_SUBST(TIFF_LIBS)
 
+dnl ===========================================================================
+
 #
 # Set URW Base35 font directory.
 #
@@ -3510,9 +3512,9 @@ AC_SUBST(ILBMDecodeDelegate)
 AC_SUBST(ILBMEncodeDelegate)
 AC_SUBST(JXRDecodeDelegate)
 AC_SUBST(JXREncodeDelegate)
+AC_SUBST(LaunchDelegate)
 AC_SUBST(LEPDelegate)
 AC_SUBST(LPDelegate)
-AC_SUBST(LaunchDelegate)
 AC_SUBST(MPEGDecodeDelegate)
 AC_SUBST(MPEGEncodeDelegate)
 AC_SUBST(MogrifyDelegate)
@@ -3880,11 +3882,11 @@ fi
 if test "$have_ps"     = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES ps"
 fi
-if test "$have_raw"    = 'yes' ; then
-   MAGICK_DELEGATES="$MAGICK_DELEGATES raw"
-fi
 if test "$have_raqm"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES raqm"
+fi
+if test "$have_raw"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES raw"
 fi
 if test "$have_ra_ppm" = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES rad"

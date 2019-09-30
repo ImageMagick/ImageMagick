@@ -4576,7 +4576,7 @@ MAGICK_PATCHLEVEL_VERSION=68
 
 MAGICK_VERSION=7.0.8-68
 
-MAGICK_GIT_REVISION=16146:da4f7e6d2:20190929
+MAGICK_GIT_REVISION=16147:46d4fb5c9:20190930
 
 
 # Substitute library versioning
@@ -33460,6 +33460,7 @@ fi
 
 
 
+
 #
 # Set URW Base35 font directory.
 #
@@ -36908,11 +36909,11 @@ fi
 if test "$have_ps"     = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES ps"
 fi
-if test "$have_raw"    = 'yes' ; then
-   MAGICK_DELEGATES="$MAGICK_DELEGATES raw"
-fi
 if test "$have_raqm"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES raqm"
+fi
+if test "$have_raw"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES raw"
 fi
 if test "$have_ra_ppm" = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES rad"
