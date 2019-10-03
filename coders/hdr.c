@@ -785,9 +785,13 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image,
             exponent;
 
           gamma=frexp(gamma,&exponent)*256.0/gamma;
-          pixel[0]=(unsigned char) (gamma*QuantumScale*GetPixelRed(image,p));
-          pixel[1]=(unsigned char) (gamma*QuantumScale*GetPixelGreen(image,p));
-          pixel[2]=(unsigned char) (gamma*QuantumScale*GetPixelBlue(image,p));
+          if (GetPixelRed(image,p) > 0)
+            pixel[0]=(unsigned char) (gamma*QuantumScale*GetPixelRed(image,p));
+          if (GetPixelGreen(image,p) > 0)
+            pixel[1]=(unsigned char) (gamma*QuantumScale*
+              GetPixelGreen(image,p));
+          if (GetPixelBlue(image,p) > 0)
+            pixel[2]=(unsigned char) (gamma*QuantumScale*GetPixelBlue(image,p));
           pixel[3]=(unsigned char) (exponent+128);
         }
       if ((image->columns >= 8) && (image->columns <= 0x7ffff))
