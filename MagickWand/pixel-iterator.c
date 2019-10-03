@@ -918,11 +918,11 @@ WandExport MagickBooleanType PixelSyncIterator(PixelIterator *iterator)
   MagickBooleanType
     status;
 
+  register Quantum
+    *magick_restrict pixels;
+
   register ssize_t
     x;
-
-  register Quantum
-    *_magickcore_restrict pixels;
 
   assert(iterator != (const PixelIterator *) NULL);
   assert(iterator->signature == MagickWandSignature);
