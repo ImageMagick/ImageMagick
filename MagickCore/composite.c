@@ -1847,7 +1847,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             */
             if ((Sca*Da) < (Dca*Sa))
               {
-                pixel=QuantumRange*(Sca+Dca*(1.0-Sa));
+                pixel=QuantumRange*gamma*(Sca+Dca*(1.0-Sa));
                 break;
               }
             pixel=QuantumRange*(Dca+Sca*(1.0-Da));
@@ -1915,12 +1915,12 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case DstInCompositeOp:
           {
-            pixel=QuantumRange*(Dca*Sa);
+            pixel=QuantumRange*gamma*(Dca*Sa);
             break;
           }
           case DstOutCompositeOp:
           {
-            pixel=QuantumRange*(Dca*(1.0-Sa));
+            pixel=QuantumRange*gamma*(Dca*(1.0-Sa));
             break;
           }
           case DstOverCompositeOp:
@@ -1980,7 +1980,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           case InCompositeOp:
           case SrcInCompositeOp:
           {
-            pixel=QuantumRange*(Sca*Da);
+            pixel=QuantumRange*gamma*(Sca*Da);
             break;
           }
           case LinearBurnCompositeOp:
@@ -2014,10 +2014,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           {
             if ((Sca*Da) > (Dca*Sa))
               {
-                pixel=QuantumRange*(Sca+Dca*(1.0-Sa));
+                pixel=QuantumRange*gamma*(Sca+Dca*(1.0-Sa));
                 break;
               }
-            pixel=QuantumRange*(Dca+Sca*(1.0-Da));
+            pixel=QuantumRange*gamma*(Dca+Sca*(1.0-Da));
             break;
           }
           case LightenIntensityCompositeOp:
@@ -2189,7 +2189,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             */
             if (fabs((double) Da) < MagickEpsilon)
               {
-                pixel=QuantumRange*gamma*(Sca);
+                pixel=QuantumRange*gamma*Sca;
                 break;
               }
             pixel=QuantumRange*gamma*(Dca*Dca*(Sa-2.0*Sca)/Da+Sca*(2.0*Dca+1.0-
@@ -2323,7 +2323,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case XorCompositeOp:
           {
-            pixel=QuantumRange*(Sca*(1.0-Da)+Dca*(1.0-Sa));
+            pixel=QuantumRange*gamma*(Sca*(1.0-Da)+Dca*(1.0-Sa));
             break;
           }
           default:
