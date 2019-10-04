@@ -152,8 +152,7 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   image=AcquireImage(image_info,exception);
-  if (!IsClipboardFormatAvailable(CF_BITMAP) &&
-      !IsClipboardFormatAvailable(CF_DIB) &&
+  if (!IsClipboardFormatAvailable(CF_DIB) &&
       !IsClipboardFormatAvailable(CF_DIBV5))
     ThrowReaderException(CoderError,"NoBitmapOnClipboard");
   if (!OpenClipboard(NULL))
