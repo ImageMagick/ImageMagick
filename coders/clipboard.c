@@ -138,7 +138,7 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   ssize_t
     y;
 
-  unsigned int
+  unsigned char
     offset;
 
   void
@@ -186,7 +186,7 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   (void) GlobalUnlock(clip_mem);
   (void) CloseClipboard();
   memset(clip_data,0,BMP_HEADER_SIZE);
-  offset=((unsigned int) p[0])+BMP_HEADER_SIZE;
+  offset=p[0]+BMP_HEADER_SIZE;
   p-=BMP_HEADER_SIZE;
   p[0]='B';
   p[1]='M';
