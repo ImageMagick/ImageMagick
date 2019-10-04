@@ -2346,7 +2346,7 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
   if (gamma != 0.0)
     for (i=0; i <= (ssize_t) MaxMap; i++)
       gamma_map[i]=ScaleMapToQuantum((double) (MaxMap*pow((double) i/
-        MaxMap,1.0/gamma)));
+        MaxMap,PerceptibleReciprocal(gamma))));
   if (image->storage_class == PseudoClass)
     for (i=0; i < (ssize_t) image->colors; i++)
     {
@@ -2889,7 +2889,7 @@ static inline double LevelPixel(const double black_point,
 
   scale=PerceptibleReciprocal(white_point-black_point);
   level_pixel=QuantumRange*gamma_pow(scale*((double) pixel-black_point),
-    1.0/gamma);
+    PerceptibleReciprocal(gamma));
   return(level_pixel);
 }
 
