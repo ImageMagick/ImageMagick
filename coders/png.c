@@ -11390,11 +11390,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    Allocating %.20g bytes of memory for pixels",(double) rowbytes);
     }
-  pixel_info=AcquireVirtualMemory(rowbytes,sizeof(*ping_pixels));
+  pixel_info=AcquireVirtualMemory(rowbytes+256,sizeof(*ping_pixels));
   if (pixel_info == (MemoryInfo *) NULL)
     png_error(ping,"Allocation of memory for pixels failed");
   ping_pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
-  (void) memset(ping_pixels,0,rowbytes*sizeof(*ping_pixels));
+  (void) memset(ping_pixels,0,(rowbytes+256)*sizeof(*ping_pixels));
   /*
     Initialize image scanlines.
   */
