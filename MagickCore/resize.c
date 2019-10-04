@@ -1124,9 +1124,9 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     Adjust window function scaling to match windowing support for weighting
     function.  This avoids a division on every filter call.
   */
-  resize_filter->scale/=resize_filter->window_support;
+  resize_filter->scale*=PerceptibleReciprocal(resize_filter->window_support);
   /*
-   * Set Cubic Spline B,C values, calculate Cubic coefficients.
+    Set Cubic Spline B,C values, calculate Cubic coefficients.
   */
   B=0.0;
   C=0.0;
