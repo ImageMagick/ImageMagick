@@ -187,8 +187,6 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   (void) CloseClipboard();
   memset(clip_data,0,BMP_HEADER_SIZE);
   offset=p[0]+BMP_HEADER_SIZE;
-  printf("%d\n", (int) p[32]);
-    offset+=12;
   if ((p[0] == 40) && (p[16] == BI_BITFIELDS))
     offset+=12;
   p-=BMP_HEADER_SIZE;
