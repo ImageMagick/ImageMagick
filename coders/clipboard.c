@@ -178,6 +178,7 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   if (clip_mem == (LPVOID) NULL)
     {
       CloseClipboard();
+      clip_data=RelinquishMagickMemory(clip_data);
       ThrowReaderException(CoderError,"UnableToReadImageData");
     }
   p=(unsigned char *) clip_data;
