@@ -3371,6 +3371,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
   }
   blur_image->type=image->type;
   blur_view=DestroyCacheView(blur_view);
+  luminance_view=DestroyCacheView(luminance_view);
   image_view=DestroyCacheView(image_view);
   luminance_image=DestroyImage(luminance_image);
   kernel=(MagickRealType *) RelinquishAlignedMemory(kernel);
