@@ -2592,7 +2592,7 @@ MagickExport MagickBooleanType SubstituteString(char **string,
   {
     if (search_extent == 0)
       search_extent=strlen(search);
-    if (strncmp(p,search,search_extent) != 0)
+    if ((*p == *search) && (strncmp(p,search,search_extent) != 0))
       continue;
     /*
       We found a match.
@@ -2620,7 +2620,9 @@ MagickExport MagickBooleanType SubstituteString(char **string,
       (void) memmove(p+replace_extent,p+search_extent,
         strlen(p+search_extent)+1);
     (void) memcpy(p,replace,replace_extent);
-    p+=replace_extent-1;
+    p+=replace_extent;
+    if (replace_extent != 0)
+      p--;
   }
   return(status);
 }
