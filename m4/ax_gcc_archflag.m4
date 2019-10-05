@@ -262,6 +262,6 @@ AC_MSG_RESULT($ax_cv_gcc_archflag)
 if test "x$ax_cv_gcc_archflag" = xunknown; then
   m4_default([$3],:)
 else
-  m4_default([$2], [CFLAGS="$CFLAGS $ax_cv_gcc_archflag" CXXFLAGS="$CXXFLAGS $ax_cv_gcc_archflag"])
+  m4_default([$2], [CFLAGS="$CFLAGS $ax_cv_gcc_archflag"])
 fi
 ])
