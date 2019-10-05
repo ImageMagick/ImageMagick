@@ -55,7 +55,7 @@
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
-
+#if defined(MAGICKCORE_JXL_DELEGATE)
 #include <brunsli/decode.h>
 #include <brunsli/encode.h>
 
@@ -64,16 +64,9 @@
 */
 static MagickBooleanType
   WriteJXLImage(const ImageInfo *,Image *);
+#endif
 
-/*
-  Typedef declarations.
-*/
-typedef struct OutBuffer
-{
-  unsigned char* data;
-  size_t size;
-} OutBuffer;
-
+#if defined(MAGICKCORE_JXL_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -102,27 +95,39 @@ typedef struct OutBuffer
 %
 */
 
+/*
+  Typedef declarations.
+*/
+typedef struct OutBuffer
+{
+  unsigned char
+    *data;
+
+  size_t
+    size;
+} OutBuffer;
+
 static size_t AllocOutput(void* data, const uint8_t* buf, size_t count)
 {
-  OutBuffer* buffer=(OutBuffer*)data;
-  buffer->data=ResizeMagickMemory(buffer->data, buffer->size + count);
+  OutBuffer *buffer=(OutBuffer *) data;
+  buffer->data=ResizeMagickMemory(buffer->data,buffer->size+count);
   if (!buffer->data) return 0;
   memcpy(buffer->data+buffer->size, buf, count);
   buffer->size+=count;
-  return count;
+  return(count);
 }
 
 static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+  Image
+    *temp_image,
+    *result;
+
   MagickBooleanType
     status;
 
   OutBuffer
     b;
-
-  Image
-    *temp_image,
-    *result;
 
   unsigned char
     *jxl;
@@ -167,6 +172,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   return(result);
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -197,14 +203,14 @@ ModuleExport size_t RegisterJXLImage(void)
     *entry;
 
   entry=AcquireMagickInfo("JXL", "JXL", "JPEG XL Lossless JPEG1 Recompression");
+#if defined(MAGICKCORE_JXL_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJXLImage;
   entry->encoder=(EncodeImageHandler *) WriteJXLImage;
+#endif
   entry->note=ConstantString(
     "JPEG1 recompression as specified in https://arxiv.org/pdf/1908.03565.pdf"
     " page 135. Full JPEG XL support will be implemented in this coder later.");
-
   (void) RegisterMagickInfo(entry);
-
   return(MagickImageCoderSignature);
 }
 
@@ -232,6 +238,7 @@ ModuleExport void UnregisterJXLImage(void)
   (void) UnregisterMagickInfo("JXL");
 }
 
+#if defined(MAGICKCORE_JXL_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -263,9 +270,6 @@ ModuleExport void UnregisterJXLImage(void)
 static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,
     Image *image)
 {
-  MagickBooleanType
-    status;
-
   ExceptionInfo
     *exception;
 
@@ -274,6 +278,9 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,
 
   ImageInfo
     *temp_info;
+
+  MagickBooleanType
+    status;
 
   OutBuffer
     b;
@@ -316,3 +323,4 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,
   if(exception) exception=DestroyExceptionInfo(exception);
   return(status);
 }
+#endif
