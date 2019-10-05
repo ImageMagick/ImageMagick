@@ -110,9 +110,6 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     height,
     width;
 
-  ssize_t
-    offset;
-
   /*
     Initialize Image structure.
   */
@@ -257,11 +254,10 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   /*
     Draw label.
   */
-  offset=(ssize_t) (draw_info->stroke_width/2.0);
   (void) FormatLocaleString(geometry,MagickPathExtent,"%+g%+g",
     (draw_info->direction == RightToLeftDirection ? (double) image->columns-
-    metrics.bounds.x2 : 0.0)+offset,(draw_info->gravity == UndefinedGravity ?
-    MagickMax(metrics.ascent,metrics.bounds.y2) : 0.0)+offset);
+    metrics.bounds.x2 : 0.0),(draw_info->gravity == UndefinedGravity ?
+    MagickMax(metrics.ascent,metrics.bounds.y2) : 0.0));
   (void) CloneString(&draw_info->geometry,geometry);
   status=AnnotateImage(image,draw_info,exception);
   if (image_info->pointsize == 0.0)
