@@ -745,6 +745,9 @@
 /* Define if you have JPEG library */
 #undef JPEG_DELEGATE
 
+/* Define if you have brunsli library */
+#undef JXL_DELEGATE
+
 /* Define if you have LCMS library */
 #undef LCMS_DELEGATE
 

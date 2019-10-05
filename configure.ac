@@ -2463,6 +2463,54 @@ AC_SUBST(JPEG_LIBS)
 dnl ===========================================================================
 
 #
+# Check for Jpegxl delegate library.
+#
+AC_ARG_WITH([jxl],
+    [AC_HELP_STRING([--without-jxl],
+                    [disable Jpegxl support])],
+    [with_jxl=$withval],
+    [with_jxl='yes'])
+
+if test "$with_jxl" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-jxl=$with_jxl "
+fi
+
+# Check for the brunsli libraries, currently the only libraries used by the jxl coder.
+# Full jxl support will be added once the full libraries are released.
+have_jxl='no'
+JXL_LIBS=''
+if test "$with_jxl" != 'no'; then
+  AC_MSG_RESULT([-------------------------------------------------------------])
+  AC_MSG_CHECKING([for brunsli])
+  AC_MSG_RESULT([])
+  failed=0
+  passed=0
+  AC_CHECK_HEADER(brunsli/decode.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+  AC_CHECK_HEADER(brunsli/encode.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+  AC_CHECK_LIB(brunslidec-c,DecodeBrunsli,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  AC_CHECK_LIB(brunslienc-c,EncodeBrunsli,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  AC_MSG_CHECKING([if brunsli package is complete])
+  if test $passed -gt 0; then
+      if test $failed -gt 0; then
+          AC_MSG_RESULT([no -- some components failed test])
+          have_jxl='no (failed tests)'
+      else
+          JXL_LIBS='-lbrunslidec-c -lbrunslienc-c'
+          LIBS="$JXL_LIBS $LIBS"
+          AC_DEFINE(JXL_DELEGATE,1,Define if you have brunsli library)
+          AC_MSG_RESULT([yes])
+          have_jxl='yes'
+      fi
+  else
+      AC_MSG_RESULT([no])
+  fi
+fi
+AM_CONDITIONAL(JXL_DELEGATE, test "$have_jxl" = 'yes')
+AC_SUBST(JXL_LIBS)
+
+dnl ===========================================================================
+
+#
 # Check for LCMS delegate library.
 #
 AC_ARG_WITH(lcms,
@@ -3852,6 +3900,9 @@ fi
 if test "$have_jpeg"   = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES jpeg"
 fi
+if test "$have_jxl"   = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES jxl"
+fi
 if test "$have_lcms" = 'yes' || test "$have_lcms2" = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES lcms"
 fi
@@ -3969,7 +4020,7 @@ fi
 if test "$build_modules" != 'no'; then
     MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $JXL_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
 fi
 MAGICK_EXTRA_DEP_LIBS="$GOMP_LIBS"
 AC_SUBST(MAGICK_DEP_LIBS)
@@ -4128,6 +4179,7 @@ Delegate library configuration:
   HEIC              --with-heic=$with_heic             $have_heic
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
+  JPEG XL           --with-jxl=$with_jxl    $have_jxl
   LCMS              --with-lcms=$with_lcms		$have_lcms
   LQR               --with-lqr=$with_lqr		$have_lqr
   LTDL              --with-ltdl=$with_ltdl		$have_ltdl

@@ -119,6 +119,9 @@ namespace MagickCore
 #        if defined(MAGICKCORE_JPEG_DELEGATE)
 #          pragma comment(lib, "CORE_DB_jpeg_.lib")
 #        endif
+#        if defined(MAGICKCORE_JXL_DELEGATE)
+#          pragma comment(lib, "CORE_DB_jxl_.lib")
+#        endif
 #        if defined(MAGICKCORE_LCMS_DELEGATE)
 #          pragma comment(lib, "CORE_DB_lcms_.lib")
 #        endif
@@ -192,6 +195,9 @@ namespace MagickCore
 #        endif
 #        if defined(MAGICKCORE_JPEG_DELEGATE)
 #          pragma comment(lib, "CORE_RL_jpeg_.lib")
+#        endif
+#        if defined(MAGICKCORE_JXL_DELEGATE)
+#          pragma comment(lib, "CORE_RL_jxl_.lib")
 #        endif
 #        if defined(MAGICKCORE_LCMS_DELEGATE)
 #          pragma comment(lib, "CORE_RL_lcms_.lib")
@@ -892,7 +898,7 @@ namespace Magick
   using MagickCore::RightTopOrientation;
   using MagickCore::RightBottomOrientation;
   using MagickCore::LeftBottomOrientation;
-  
+
   // Paint methods
   using MagickCore::PaintMethod;
   using MagickCore::UndefinedMethod;
@@ -1037,7 +1043,7 @@ namespace Magick
   using MagickCore::PerceptualIntent;
   using MagickCore::AbsoluteIntent;
   using MagickCore::RelativeIntent;
-  
+
   // Resource types
   using MagickCore::ResourceType;
   using MagickCore::UndefinedResource;

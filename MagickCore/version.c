@@ -154,6 +154,9 @@ MagickExport const char *GetMagickDelegates(void)
 #if defined(MAGICKCORE_JPEG_DELEGATE)
   "jpeg "
 #endif
+#if defined(MAGICKCORE_JXL_DELEGATE)
+  "jxl "
+#endif
 #if defined(MAGICKCORE_LCMS_DELEGATE)
   "lcms "
 #endif

@@ -817,6 +817,9 @@ LCMS_DELEGATE_FALSE
 LCMS_DELEGATE_TRUE
 LCMS2_LIBS
 LCMS2_CFLAGS
+JXL_LIBS
+JXL_DELEGATE_FALSE
+JXL_DELEGATE_TRUE
 JPEG_LIBS
 JPEG_DELEGATE_FALSE
 JPEG_DELEGATE_TRUE
@@ -1236,6 +1239,7 @@ with_gvc
 with_heic
 with_jbig
 with_jpeg
+with_jxl
 with_lcms
 with_openjp2
 with_lqr
@@ -2051,6 +2055,7 @@ Optional Packages:
   --without-heic          disable HEIC support
   --without-jbig          disable JBIG support
   --without-jpeg          disable JPEG support
+  --without-jxl           disable Jpegxl support
   --without-lcms          disable lcms (v1.1X) support
   --without-openjp2       disable OpenJP2 support
   --without-lqr           disable Liquid Rescale support
@@ -4576,7 +4581,7 @@ MAGICK_PATCHLEVEL_VERSION=68
 
 MAGICK_VERSION=7.0.8-68
 
-MAGICK_GIT_REVISION=16147:46d4fb5c9:20190930
+MAGICK_GIT_REVISION=16175:d44f8a355:20191005
 
 
 # Substitute library versioning
@@ -31907,6 +31912,168 @@ fi
 
 
 #
+# Check for Jpegxl delegate library.
+#
+
+# Check whether --with-jxl was given.
+if test "${with_jxl+set}" = set; then :
+  withval=$with_jxl; with_jxl=$withval
+else
+  with_jxl='yes'
+fi
+
+
+if test "$with_jxl" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-jxl=$with_jxl "
+fi
+
+# Check for the brunsli libraries, currently the only libraries used by the jxl coder.
+# Full jxl support will be added once the full libraries are released.
+have_jxl='no'
+JXL_LIBS=''
+if test "$with_jxl" != 'no'; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
+$as_echo "-------------------------------------------------------------" >&6; }
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for brunsli" >&5
+$as_echo_n "checking for brunsli... " >&6; }
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+$as_echo "" >&6; }
+  failed=0
+  passed=0
+  ac_fn_c_check_header_mongrel "$LINENO" "brunsli/decode.h" "ac_cv_header_brunsli_decode_h" "$ac_includes_default"
+if test "x$ac_cv_header_brunsli_decode_h" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+
+  ac_fn_c_check_header_mongrel "$LINENO" "brunsli/encode.h" "ac_cv_header_brunsli_encode_h" "$ac_includes_default"
+if test "x$ac_cv_header_brunsli_encode_h" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for DecodeBrunsli in -lbrunslidec-c" >&5
+$as_echo_n "checking for DecodeBrunsli in -lbrunslidec-c... " >&6; }
+if ${ac_cv_lib_brunslidec_c_DecodeBrunsli+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lbrunslidec-c  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char DecodeBrunsli ();
+int
+main ()
+{
+return DecodeBrunsli ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_brunslidec_c_DecodeBrunsli=yes
+else
+  ac_cv_lib_brunslidec_c_DecodeBrunsli=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_brunslidec_c_DecodeBrunsli" >&5
+$as_echo "$ac_cv_lib_brunslidec_c_DecodeBrunsli" >&6; }
+if test "x$ac_cv_lib_brunslidec_c_DecodeBrunsli" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for EncodeBrunsli in -lbrunslienc-c" >&5
+$as_echo_n "checking for EncodeBrunsli in -lbrunslienc-c... " >&6; }
+if ${ac_cv_lib_brunslienc_c_EncodeBrunsli+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lbrunslienc-c  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char EncodeBrunsli ();
+int
+main ()
+{
+return EncodeBrunsli ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_brunslienc_c_EncodeBrunsli=yes
+else
+  ac_cv_lib_brunslienc_c_EncodeBrunsli=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_brunslienc_c_EncodeBrunsli" >&5
+$as_echo "$ac_cv_lib_brunslienc_c_EncodeBrunsli" >&6; }
+if test "x$ac_cv_lib_brunslienc_c_EncodeBrunsli" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking if brunsli package is complete" >&5
+$as_echo_n "checking if brunsli package is complete... " >&6; }
+  if test $passed -gt 0; then
+      if test $failed -gt 0; then
+          { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
+$as_echo "no -- some components failed test" >&6; }
+          have_jxl='no (failed tests)'
+      else
+          JXL_LIBS='-lbrunslidec-c -lbrunslienc-c'
+          LIBS="$JXL_LIBS $LIBS"
+
+$as_echo "#define JXL_DELEGATE 1" >>confdefs.h
+
+          { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+          have_jxl='yes'
+      fi
+  else
+      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+  fi
+fi
+ if test "$have_jxl" = 'yes'; then
+  JXL_DELEGATE_TRUE=
+  JXL_DELEGATE_FALSE='#'
+else
+  JXL_DELEGATE_TRUE='#'
+  JXL_DELEGATE_FALSE=
+fi
+
+
+
+
+#
 # Check for LCMS delegate library.
 #
 
@@ -36879,6 +37046,9 @@ fi
 if test "$have_jpeg"   = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES jpeg"
 fi
+if test "$have_jxl"   = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES jxl"
+fi
 if test "$have_lcms" = 'yes' || test "$have_lcms2" = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES lcms"
 fi
@@ -37084,7 +37254,7 @@ fi
 if test "$build_modules" != 'no'; then
     MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $JXL_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
 fi
 MAGICK_EXTRA_DEP_LIBS="$GOMP_LIBS"
 
@@ -37444,6 +37614,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${JPEG_DELEGATE_TRUE}" && test -z "${JPEG_DELEGATE_FALSE}"; then
   as_fn_error $? "conditional \"JPEG_DELEGATE\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${JXL_DELEGATE_TRUE}" && test -z "${JXL_DELEGATE_FALSE}"; then
+  as_fn_error $? "conditional \"JXL_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${LCMS_DELEGATE_TRUE}" && test -z "${LCMS_DELEGATE_FALSE}"; then
@@ -40150,6 +40324,7 @@ Delegate library configuration:
   HEIC              --with-heic=$with_heic             $have_heic
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
+  JPEG XL           --with-jxl=$with_jxl    $have_jxl
   LCMS              --with-lcms=$with_lcms		$have_lcms
   LQR               --with-lqr=$with_lqr		$have_lqr
   LTDL              --with-ltdl=$with_ltdl		$have_ltdl
@@ -40247,6 +40422,7 @@ Delegate library configuration:
   HEIC              --with-heic=$with_heic             $have_heic
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
+  JPEG XL           --with-jxl=$with_jxl    $have_jxl
   LCMS              --with-lcms=$with_lcms		$have_lcms
   LQR               --with-lqr=$with_lqr		$have_lqr
   LTDL              --with-ltdl=$with_ltdl		$have_ltdl

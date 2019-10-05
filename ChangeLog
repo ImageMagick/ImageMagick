@@ -6,6 +6,8 @@
     https://github.com/ImageMagick/ImageMagick/pull/1708).
   * Text stroke cut off (reference
     https://imagemagick.org/discourse-server/viewtopic.php?f=1&t=36829).
+  * Adds support for lossless JPEG1 recompression (reference
+    https://imagemagick.org/discourse-server/viewtopic.php?f=2&t=36828).
 
 2019-09-29  7.0.8-67 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.8-67, GIT revision 16145:6f2feb9:20190929.
