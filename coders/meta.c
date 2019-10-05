@@ -1146,6 +1146,7 @@ static inline void CopyBlob(Image *source,Image *destination)
     sizeof(*buffer));
   if (buffer != (unsigned char *) NULL)
     {
+      (void) memset(buffer,0,MagickMaxBufferExtent*sizeof(*buffer));
       i=0;
       while ((length=ReadBlob(source,MagickMaxBufferExtent,buffer)) != 0)
       {
