@@ -1284,6 +1284,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
 
         if (status == MagickFalse)
           continue;
+        ConformPixelInfo(image,&image->background_color,&background,exception);
         q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
           exception);
         if (q == (Quantum *) NULL)
@@ -1291,7 +1292,6 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
             status=MagickFalse;
             continue;
           }
-        ConformPixelInfo(image,&image->background_color,&background,exception);
         background.alpha_trait=BlendPixelTrait;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
