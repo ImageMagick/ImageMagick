@@ -1434,13 +1434,13 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
       if (geometry_ratio >= image_ratio)
         {
           *width=former_width;
-          *height=(size_t) floor((double) (former_height*image_ratio/
-            geometry_ratio)+0.5);
+          *height=(size_t) floor((double) (PerceptibleReciprocal(
+            geometry_ratio)*former_height*image_ratio)+0.5);
         }
       else
         {
-          *width=(size_t) floor((double) (former_width*geometry_ratio/
-            image_ratio)+0.5);
+          *width=(size_t) floor((double) (PerceptibleReciprocal(
+            image_ratio)*former_width*geometry_ratio)+0.5);
           *height=former_height;
         }
       former_width=(*width);
