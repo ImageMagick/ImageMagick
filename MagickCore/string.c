@@ -2438,8 +2438,8 @@ MagickExport char **StringToStrings(const char *text,size_t *count)
           p++;
         }
         *q='\0';
-        textlist[i]=(char *) ResizeQuantumMemory(textlist[i],q-textlist[i]+1,
-          sizeof(**textlist));
+        textlist[i]=(char *) ResizeQuantumMemory(textlist[i],(size_t) (q-
+          textlist[i]+1),sizeof(**textlist));
         if (textlist[i] == (char *) NULL)
           ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
       }
