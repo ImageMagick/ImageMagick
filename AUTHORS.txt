@@ -9,11 +9,6 @@ Dirk Lemstra
      Contributor to and maintainer of Magick++, OpenCL acceleration, and
      the Windows build (configure, ImageMagickObject, etc.).
 
-Glenn Randers-Pehrson
-     Contributed significantly to the utilities.  Authored support for JNG,
-     MNG, and PNG formats. Provided significant support for the BMP format.
-     Made significant improvements to the documentation.
-
 Bastien ROUCARIÈS
      Various patches from Debian downstream.
 
@@ -28,6 +23,11 @@ Fred Weinhaus
 
 These individuals have made source code contributions to the ImageMagick
 project in the past but are no longer active developers:
+
+Glenn Randers-Pehrson
+     Contributed significantly to the utilities.  Authored support for JNG,
+     MNG, and PNG formats. Provided significant support for the BMP format.
+     Made significant improvements to the documentation.
 
 Kelly Bergougnoux
      Authored the Cineon image coder (based on the existing DPX source).
