@@ -904,10 +904,10 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
         {
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            color16=(unsigned short) ((((31*(size_t) GetPixelRed(image,p))/
-              (size_t) QuantumRange) << 11) | (((63*(size_t)
-              GetPixelGreen(image,p))/(size_t) QuantumRange) << 5) |
-              ((31*(size_t) GetPixelBlue(image,p))/(size_t) QuantumRange));
+            color16=(unsigned short) ((((31*(ssize_t) GetPixelRed(image,p))/
+              (ssize_t) QuantumRange) << 11) | (((63*(ssize_t)
+              GetPixelGreen(image,p))/(ssize_t) QuantumRange) << 5) |
+              ((31*(ssize_t) GetPixelBlue(image,p))/(ssize_t) QuantumRange));
             if (GetPixelAlpha(image,p) == (Quantum) TransparentAlpha)
               {
                 transpix.red=(MagickRealType) GetPixelRed(image,p);
