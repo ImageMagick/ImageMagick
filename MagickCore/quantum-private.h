@@ -324,9 +324,15 @@ static inline Quantum ScaleAnyToQuantum(const QuantumAny quantum,
 static inline QuantumAny ScaleQuantumToAny(const Quantum quantum,
   const QuantumAny range)
 {
-  if (quantum < 0)
-    return((QuantumAny) 0);
-  return((QuantumAny) (((double) range*quantum)/QuantumRange+0.5));
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
+  return((QuantumAny) ((double) range*quantum/QuantumRange));
+#else
+  if (quantum <= 0.0)
+    return((QuantumAny) 0UL);
+  if (((double) range*quantum/QuantumRange) >= 18446744073709551615.0)
+    return((QuantumAny) MagickULLConstant(18446744073709551615));
+  return((QuantumAny) ((double) range*quantum/QuantumRange+0.5));
+#endif
 }
 
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
