@@ -4452,6 +4452,15 @@ static inline void CatromWeights(const double x,double (*weights)[4])
   (*weights)[2]=x-(*weights)[3]-gamma;
 }
 
+static inline double ConstrainPixelOffset(double x)
+{
+  if (x < (double) -(SSIZE_MAX-512))
+    return((double) -(SSIZE_MAX-512));
+  if (x > (double) (SSIZE_MAX-512))
+    return((double) (SSIZE_MAX-512));
+  return(x);
+}
+
 static inline void SplineWeights(const double x,double (*weights)[4])
 {
   double
@@ -4477,15 +4486,6 @@ static inline double MeshInterpolate(const PointInfo *delta,const double p,
 {
   return(delta->x*x+delta->y*y+(1.0-delta->x-delta->y)*p);
 }
-
-/*
-static inline ssize_t NearestNeighbor(const double x)
-{
-  if (x >= 0.0)
-    return((ssize_t) (x+0.5));
-  return((ssize_t) (x-0.5));
-}
-*/
 
 MagickExport MagickBooleanType InterpolatePixelChannel(
   const Image *magick_restrict image,const CacheView_ *image_view,
@@ -4522,8 +4522,8 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
   status=MagickTrue;
   *pixel=0.0;
   traits=GetPixelChannelTraits(image,channel);
-  x_offset=(ssize_t) floor(x);
-  y_offset=(ssize_t) floor(y);
+  x_offset=(ssize_t) floor(ConstrainPixelOffset(x));
+  y_offset=(ssize_t) floor(ConstrainPixelOffset(y));
   interpolate=method;
   if (interpolate == UndefinedInterpolatePixel)
     interpolate=image->interpolate;
@@ -4540,8 +4540,8 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
       if (interpolate == Average9InterpolatePixel)
         {
           count=3;
-          x_offset=(ssize_t) (floor(x+0.5)-1);
-          y_offset=(ssize_t) (floor(y+0.5)-1);
+          x_offset=(ssize_t) (floor(ConstrainPixelOffset(x)+0.5)-1);
+          y_offset=(ssize_t) (floor(ConstrainPixelOffset(y)+0.5)-1);
         }
       else
         if (interpolate == Average16InterpolatePixel)
@@ -4724,8 +4724,8 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
     }
     case NearestInterpolatePixel:
     {
-      x_offset=(ssize_t) floor(x+0.5);
-      y_offset=(ssize_t) floor(y+0.5);
+      x_offset=(ssize_t) floor(ConstrainPixelOffset(x)+0.5);
+      y_offset=(ssize_t) floor(ConstrainPixelOffset(y)+0.5);
       p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,1,1,exception);
       if (p == (const Quantum *) NULL)
         {
@@ -4942,8 +4942,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
   assert(source->signature == MagickCoreSignature);
   assert(source_view != (CacheView *) NULL);
   status=MagickTrue;
-  x_offset=(ssize_t) floor(x);
-  y_offset=(ssize_t) floor(y);
+  x_offset=(ssize_t) floor(ConstrainPixelOffset(x));
+  y_offset=(ssize_t) floor(ConstrainPixelOffset(y));
   interpolate=method;
   if (interpolate == UndefinedInterpolatePixel)
     interpolate=source->interpolate;
@@ -4960,8 +4960,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
       if (interpolate == Average9InterpolatePixel)
         {
           count=3;
-          x_offset=(ssize_t) (floor(x+0.5)-1);
-          y_offset=(ssize_t) (floor(y+0.5)-1);
+          x_offset=(ssize_t) (floor(ConstrainPixelOffset(x)+0.5)-1);
+          y_offset=(ssize_t) (floor(ConstrainPixelOffset(y)+0.5)-1);
         }
       else
         if (interpolate == Average16InterpolatePixel)
@@ -5225,8 +5225,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
     }
     case NearestInterpolatePixel:
     {
-      x_offset=(ssize_t) floor(x+0.5);
-      y_offset=(ssize_t) floor(y+0.5);
+      x_offset=(ssize_t) floor(ConstrainPixelOffset(x)+0.5);
+      y_offset=(ssize_t) floor(ConstrainPixelOffset(y)+0.5);
       p=GetCacheViewVirtualPixels(source_view,x_offset,y_offset,1,1,exception);
       if (p == (const Quantum *) NULL)
         {
@@ -5509,8 +5509,8 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
   assert(image->signature == MagickCoreSignature);
   assert(image_view != (CacheView *) NULL);
   status=MagickTrue;
-  x_offset=(ssize_t) floor(x);
-  y_offset=(ssize_t) floor(y);
+  x_offset=(ssize_t) floor(ConstrainPixelOffset(x));
+  y_offset=(ssize_t) floor(ConstrainPixelOffset(y));
   interpolate=method;
   if (interpolate == UndefinedInterpolatePixel)
     interpolate=image->interpolate;
@@ -5529,8 +5529,8 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
       if (interpolate == Average9InterpolatePixel)
         {
           count=3;
-          x_offset=(ssize_t) (floor(x+0.5)-1);
-          y_offset=(ssize_t) (floor(y+0.5)-1);
+          x_offset=(ssize_t) (floor(ConstrainPixelOffset(x)+0.5)-1);
+          y_offset=(ssize_t) (floor(ConstrainPixelOffset(y)+0.5)-1);
         }
       else if (interpolate == Average16InterpolatePixel)
         {
@@ -5854,8 +5854,8 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
     }
     case NearestInterpolatePixel:
     {
-      x_offset=(ssize_t) floor(x+0.5);
-      y_offset=(ssize_t) floor(y+0.5);
+      x_offset=(ssize_t) floor(ConstrainPixelOffset(x)+0.5);
+      y_offset=(ssize_t) floor(ConstrainPixelOffset(y)+0.5);
       p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,1,1,exception);
       if (p == (const Quantum *) NULL)
         {
