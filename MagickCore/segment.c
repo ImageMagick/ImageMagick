@@ -578,7 +578,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelIndex(image,0,q);
+      SetPixelIndex(image,(Quantum) 0,q);
       for (clust=head; clust != (Cluster *) NULL; clust=clust->next)
       {
         if (((ssize_t) ScaleQuantumToChar(GetPixelRed(image,q)) >=
@@ -1695,7 +1695,7 @@ static double OptimalTau(const ssize_t *histogram,const double max_tau,
   average_tau=0.0;
   for (i=0; i < number_nodes; i++)
     average_tau+=list[i]->tau;
-  average_tau/=(double) number_nodes;
+  average_tau*=PerceptibleReciprocal((double) number_nodes);
   /*
     Relinquish resources.
   */
