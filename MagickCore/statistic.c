@@ -270,7 +270,7 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case AndEvaluateOperator:
     {
-      result=(double) ((size_t) pixel & (size_t) (value+0.5));
+      result=(double) ((ssize_t) pixel & (ssize_t) (value+0.5));
       break;
     }
     case CosineEvaluateOperator:
@@ -309,7 +309,7 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case LeftShiftEvaluateOperator:
     {
-      result=(double) ((size_t) pixel << (size_t) (value+0.5));
+      result=(double) ((ssize_t) pixel << (ssize_t) (value+0.5));
       break;
     }
     case LogEvaluateOperator:
@@ -352,7 +352,7 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case OrEvaluateOperator:
     {
-      result=(double) ((size_t) pixel | (size_t) (value+0.5));
+      result=(double) ((ssize_t) pixel | (ssize_t) (value+0.5));
       break;
     }
     case PoissonNoiseEvaluateOperator:
@@ -369,7 +369,7 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case RightShiftEvaluateOperator:
     {
-      result=(double) ((size_t) pixel >> (size_t) (value+0.5));
+      result=(double) ((ssize_t) pixel >> (ssize_t) (value+0.5));
       break;
     }
     case RootMeanSquareEvaluateOperator:
@@ -421,7 +421,7 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case XorEvaluateOperator:
     {
-      result=(double) ((size_t) pixel ^ (size_t) (value+0.5));
+      result=(double) ((ssize_t) pixel ^ (ssize_t) (value+0.5));
       break;
     }
   }
