@@ -363,8 +363,12 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case PowEvaluateOperator:
     {
-      result=(double) (QuantumRange*pow((double) (QuantumScale*pixel),(double)
-        value));
+      if (pixel < 0)
+        result=(double) -(QuantumRange*pow((double) -(QuantumScale*pixel),
+          (double) value));
+      else
+        result=(double) (QuantumRange*pow((double) (QuantumScale*pixel),
+          (double) value));
       break;
     }
     case RightShiftEvaluateOperator:
