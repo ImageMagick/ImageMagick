@@ -6042,7 +6042,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *source,
 %  For example for an RGB:
 %    color_distance^2  = ( (u.r-v.r)^2 + (u.g-v.g)^2 + (u.b-v.b)^2 ) / 3
 %
-%  See http://imagemagick.org/Usage/bugs/fuzz_distance/
+%  See https://imagemagick.org/Usage/bugs/fuzz_distance/
 %
 %  Hue colorspace distances need more work.  Hue is not a distance, it is an
 %  angle!
