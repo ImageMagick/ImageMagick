@@ -337,6 +337,9 @@ typedef struct _DrawInfo
 
   Image
     *composite_mask;
+
+  char
+    *id;
 } DrawInfo;
 
 typedef struct _PrimitiveInfo

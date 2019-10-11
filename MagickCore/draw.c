@@ -280,6 +280,8 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   if (draw_info == (DrawInfo *) NULL)
     return(clone_info);
   exception=AcquireExceptionInfo();
+  if (draw_info->id != (char *) NULL)
+    (void) CloneString(&clone_info->id,draw_info->id);
   if (draw_info->primitive != (char *) NULL)
     (void) CloneString(&clone_info->primitive,draw_info->primitive);
   if (draw_info->geometry != (char *) NULL)
@@ -883,6 +885,8 @@ MagickExport DrawInfo *DestroyDrawInfo(DrawInfo *draw_info)
   if (draw_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(draw_info->signature == MagickCoreSignature);
+  if (draw_info->id != (char *) NULL)
+    draw_info->id=DestroyString(draw_info->id);
   if (draw_info->primitive != (char *) NULL)
     draw_info->primitive=DestroyString(draw_info->primitive);
   if (draw_info->text != (char *) NULL)
@@ -2680,6 +2684,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 status=MagickFalse;
                 break;
               }
+            if (LocaleCompare(token,graphic_context[n]->id) == 0)
+              break;
             mvg_class=(const char *) GetValueFromSplayTree(macros,token);
             if (mvg_class != (const char *) NULL)
               {
@@ -3377,7 +3383,10 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,
                   graphic_context[n-1]);
                 if (*q == '"')
-                  (void) GetNextToken(q,&q,extent,token);
+                  {
+                    (void) GetNextToken(q,&q,extent,token);
+                    (void) CloneString(&graphic_context[n]->id,token);
+                  }
                 break;
               }
             if (LocaleCompare("mask",token) == 0)
