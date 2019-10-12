@@ -292,6 +292,7 @@ static MagickOffsetType TIFFTellCustomStream(void *user_data)
 
 static void InitPSDInfo(const Image *image,PSDInfo *info)
 {
+  (void) memset(info,0,sizeof(*info));
   info->version=1;
   info->columns=image->columns;
   info->rows=image->rows;
