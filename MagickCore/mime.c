@@ -109,12 +109,6 @@ struct _MimeInfo
 /*
   Static declarations.
 */
-static const char
-  *MimeMap = (char *)
-    "<?xml version=\"1.0\"?>"
-    "<mimemap>"
-    "</mimemap>";
-
 static LinkedListInfo
   *mime_cache = (LinkedListInfo *) NULL;
 
@@ -185,8 +179,6 @@ MagickExport LinkedListInfo *AcquireMimeCache(const char *filename,
     options=DestroyConfigureOptions(options);
   }
 #endif
-  if (IsLinkedListEmpty(cache) != MagickFalse)
-    status&=LoadMimeCache(cache,MimeMap,"built-in",0,exception);
   return(cache);
 }
 
