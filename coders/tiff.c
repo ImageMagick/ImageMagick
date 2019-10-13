@@ -703,9 +703,20 @@ static void TIFFGetProfiles(TIFF *tiff,Image *image,ExceptionInfo *exception)
   if ((TIFFGetField(tiff,TIFFTAG_XMLPACKET,&length,&profile) == 1) &&
       (profile != (unsigned char *) NULL))
     {
+      StringInfo
+        *dng;
+
       (void) ReadProfile(image,"xmp",profile,(ssize_t) length,exception);
-      if (strstr((char *) profile,"dc:format=\"image/dng\"") != (char *) NULL)
-        (void) CopyMagickString(image->magick,"DNG",MagickPathExtent);
+      dng=BlobToStringInfo(profile,length);
+      if (dng != (StringInfo *) NULL)
+        {
+          const char
+            *target = "dc:format=\"image/dng\"";
+
+          if (strstr((char *) GetStringInfoDatum(dng),target) != (char *) NULL)
+            (void) CopyMagickString(image->magick,"DNG",MagickPathExtent);
+          dng=DestroyStringInfo(dng);
+        }
     }
 #endif
   if ((TIFFGetField(tiff,34118,&length,&profile) == 1) &&
@@ -869,7 +880,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
         {
           uint16
             *shorty;
- 
+
           shorty=0;
           if ((TIFFGetField(tiff,exif_info[i].tag,&shorty,sans) == 1) &&
               (shorty != (uint16 *) NULL))
