@@ -141,6 +141,9 @@ static double GetEdgeBackgroundFactor(const Image *image,
   CacheView
     *edge_view;
 
+  const char
+    *artifact;
+
   double
     factor;
 
@@ -195,6 +198,9 @@ static double GetEdgeBackgroundFactor(const Image *image,
     }
   }
   GetPixelInfoPixel(image,p,&background);
+  artifact=GetImageArtifact(image,"trim:background-color");
+  if (artifact != (const char *) NULL)
+    (void) QueryColorCompliance(artifact,AllCompliance,&background,exception);
   edge_geometry.width=width;
   edge_geometry.height=height;
   edge_geometry.x=x_offset;
