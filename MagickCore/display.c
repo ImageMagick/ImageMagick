@@ -13179,7 +13179,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
   if (id < 0)
     return((Image *) NULL);
   q=p;
-  while ((*q != '\n') && (*q != '\0'))
+  while ((*q != '\xff') && (*q != '\0'))
     q++;
   (void) CopyMagickString(filename,p,(size_t) (q-p+1));
   /*
