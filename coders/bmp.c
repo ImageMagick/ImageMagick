@@ -2305,32 +2305,32 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
         else
           (void) WriteBlobLSBLong(image,0x73524742U);  /* sRGB */
         (void) WriteBlobLSBLong(image,(unsigned int)
-          (image->chromaticity.red_primary.x*0x40000000));
+          ((ssize_t) image->chromaticity.red_primary.x*0x40000000));
         (void) WriteBlobLSBLong(image,(unsigned int)
-          (image->chromaticity.red_primary.y*0x40000000));
+          ((ssize_t) image->chromaticity.red_primary.y*0x40000000));
         (void) WriteBlobLSBLong(image,(unsigned int)
-          ((1.000f-(image->chromaticity.red_primary.x+
+          ((ssize_t) (1.000f-(image->chromaticity.red_primary.x+
           image->chromaticity.red_primary.y))*0x40000000));
         (void) WriteBlobLSBLong(image,(unsigned int)
-          (image->chromaticity.green_primary.x*0x40000000));
+          ((ssize_t) image->chromaticity.green_primary.x*0x40000000));
         (void) WriteBlobLSBLong(image,(unsigned int)
-          (image->chromaticity.green_primary.y*0x40000000));
+          ((ssize_t) image->chromaticity.green_primary.y*0x40000000));
         (void) WriteBlobLSBLong(image,(unsigned int)
-          ((1.000f-(image->chromaticity.green_primary.x+
+          ((ssize_t) (1.000f-(image->chromaticity.green_primary.x+
           image->chromaticity.green_primary.y))*0x40000000));
         (void) WriteBlobLSBLong(image,(unsigned int)
-          (image->chromaticity.blue_primary.x*0x40000000));
+          ((ssize_t) image->chromaticity.blue_primary.x*0x40000000));
         (void) WriteBlobLSBLong(image,(unsigned int)
-          (image->chromaticity.blue_primary.y*0x40000000));
+          ((ssize_t) image->chromaticity.blue_primary.y*0x40000000));
         (void) WriteBlobLSBLong(image,(unsigned int)
-          ((1.000f-(image->chromaticity.blue_primary.x+
+          ((ssize_t) (1.000f-(image->chromaticity.blue_primary.x+
           image->chromaticity.blue_primary.y))*0x40000000));
         (void) WriteBlobLSBLong(image,(unsigned int)
-          (bmp_info.gamma_scale.x*0x10000));
+          ((ssize_t) bmp_info.gamma_scale.x*0x10000));
         (void) WriteBlobLSBLong(image,(unsigned int)
-          (bmp_info.gamma_scale.y*0x10000));
+          ((ssize_t) bmp_info.gamma_scale.y*0x10000));
         (void) WriteBlobLSBLong(image,(unsigned int)
-          (bmp_info.gamma_scale.z*0x10000));
+          ((ssize_t) bmp_info.gamma_scale.z*0x10000));
         if ((image->rendering_intent != UndefinedIntent) ||
             (profile != (StringInfo *) NULL))
           {
