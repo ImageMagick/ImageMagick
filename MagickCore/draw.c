@@ -5437,6 +5437,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       if (primitive_info->text == (char *) NULL)
         break;
       clone_info=AcquireImageInfo();
+      composite_images=(Image *) NULL;
       if (LocaleNCompare(primitive_info->text,"data:",5) == 0)
         composite_images=ReadInlineImage(clone_info,primitive_info->text,
           exception);
