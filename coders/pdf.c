@@ -2543,7 +2543,7 @@ RestoreMSCWarning
                 for (x=0; x < (ssize_t) tile_image->columns; x++)
                 {
                   Ascii85Encode(image,(unsigned char)
-                    GetPixelIndex(tile_image,p));
+                    ((ssize_t) GetPixelIndex(tile_image,p)));
                   p+=GetPixelChannels(image);
                 }
               }
