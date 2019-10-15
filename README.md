@@ -1,4 +1,4 @@
-# ImageMagick  [![Build Status](https://travis-ci.org/ImageMagick/ImageMagick.svg?branch=master)](https://travis-ci.org/ImageMagick/ImageMagick) [![Build status](https://ci.appveyor.com/api/projects/status/jk7yr5plamnuh9g6/branch/master?svg=true)](https://ci.appveyor.com/project/dlemstra/imagemagick-windows/branch/master)
+# ImageMagick  [![Build Status](https://travis-ci.org/ImageMagick/ImageMagick.svg?branch=master)](https://travis-ci.org/ImageMagick/ImageMagick) [![Build status](https://ci.appveyor.com/api/projects/status/jk7yr5plamnuh9g6/branch/master?svg=true)](https://ci.appveyor.com/project/dlemstra/imagemagick-windows/branch/master) [![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/imagemagick.svg)](https://bugs.chromium.org/p/oss-fuzz/issues/list?sort=-opened&can=1&q=proj:imagemagick)
 
 <p align="center">
 <img align="center" src="https://imagemagick.org/image/wizard.png" alt="ImageMagick logo" width="265"/>
