@@ -1334,6 +1334,10 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                 }
 
               /* Allocate next image structure. */
+              if ((image_info->ping != MagickFalse) &&
+                  (image_info->number_scenes != 0))
+                if (image->scene >= (image_info->scene+image_info->number_scenes-1))
+                  break;
               AcquireNextImage(image_info,image,exception);
               image->depth=8;
               if (image->next == (Image *) NULL)
@@ -1537,6 +1541,10 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 
 
               /* Allocate next image structure. */
+              if ((image_info->ping != MagickFalse) &&
+                  (image_info->number_scenes != 0))
+                if (image->scene >= (image_info->scene+image_info->number_scenes-1))
+                  break;
               AcquireNextImage(image_info,image,exception);
               image->depth=8;
               if (image->next == (Image *) NULL)

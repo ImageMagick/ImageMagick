@@ -819,6 +819,9 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
       Allocate next image structure.
     */
 skip_reading_current:
+    if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
+      if (image->scene >= (image_info->scene+image_info->number_scenes-1))
+        break;
     AcquireNextImage(image_info,image,exception);
     if (GetNextImageInList(image) == (Image *) NULL)
       {
@@ -1401,6 +1404,9 @@ done_reading:
       break;
 
       /* Allocate next image structure. */
+    if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
+      if (image->scene >= (image_info->scene+image_info->number_scenes-1))
+        break;
     AcquireNextImage(image_info,image,exception);
     if (image->next == (Image *) NULL) break;
     image=SyncNextImageInList(image);
