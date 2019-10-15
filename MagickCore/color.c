@@ -2142,11 +2142,11 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *cache,const char *xml,
               compliance;
 
             compliance=color_info->compliance;
-            if (GlobExpression(token,"*SVG*",MagickTrue) != MagickFalse)
+            if (strcasestr(token,"SVG") != (char *) NULL)
               compliance|=SVGCompliance;
-            if (GlobExpression(token,"*X11*",MagickTrue) != MagickFalse)
+            if (strcasestr(token,"X11") != (char *) NULL)
               compliance|=X11Compliance;
-            if (GlobExpression(token,"*XPM*",MagickTrue) != MagickFalse)
+            if (strcasestr(token,"XPM") != (char *) NULL)
               compliance|=XPMCompliance;
             color_info->compliance=(ComplianceType) compliance;
             break;

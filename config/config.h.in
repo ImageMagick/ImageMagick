@@ -456,6 +456,9 @@
 /* Define to 1 if you have the `strcasecmp' function. */
 #undef HAVE_STRCASECMP
 
+/* Define to 1 if you have the `strcasestr' function. */
+#undef HAVE_STRCASESTR
+
 /* Define to 1 if you have the `strchr' function. */
 #undef HAVE_STRCHR
 

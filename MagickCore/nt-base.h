@@ -244,6 +244,9 @@ extern "C" {
 #if !defined(strcasecmp)
 #  define strcasecmp  _stricmp
 #endif
+#if !defined(strcasestr)
+#  define strcasestr  StrStrIA
+#endif
 #if !defined(strncasecmp)
 #  define strncasecmp  _strnicmp
 #endif

@@ -340,9 +340,9 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
     if (CompareMagickByteBuffer(&buffer,DocumentProcessColors,length) != MagickFalse)
       {
         p=GetMagickByteBufferDatum(&buffer);
-        if ((GlobExpression(p,"*Cyan*",MagickTrue) != MagickFalse) ||
-            (GlobExpression(p,"*Magenta*",MagickTrue) != MagickFalse) ||
-            (GlobExpression(p,"*Yellow*",MagickTrue) != MagickFalse))
+        if ((strcasestr(p,"Cyan") != (char *) NULL) ||
+            (strcasestr(p,"Magenta") != (char *) NULL) ||
+            (strcasestr(p,"Yellow") != (char *) NULL))
           ps_info->cmyk=MagickTrue;
       }
     if (CompareMagickByteBuffer(&buffer,CMYKCustomColor,strlen(CMYKCustomColor)) != MagickFalse)
