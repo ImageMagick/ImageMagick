@@ -48,6 +48,7 @@ Image Settings:
   \-interpolate method  pixel color interpolation method
   \-kerning value       set the space between two letters
   \-label string        assign a label to an image
+  \-layers method       optimize or compare image layers
   \-limit type value    pixel cache resource limit
   \-matte               store matte channel if the image has one
   \-mattecolor color    frame color

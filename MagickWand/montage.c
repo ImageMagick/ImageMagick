@@ -157,6 +157,7 @@ static MagickBooleanType MontageUsage(void)
       "  -interpolate method  pixel color interpolation method\n"
       "  -kerning value       set the space between two letters\n"
       "  -label string        assign a label to an image\n"
+      "  -layers method       optimize, merge, or compare image layers\n"
       "  -limit type value    pixel cache resource limit\n"
       "  -matte               store matte channel if the image has one\n"
       "  -mattecolor color    frame color\n"
@@ -602,7 +603,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             Image
               *clone_images,
               *clone_list;
-            
+
             clone_list=CloneImageList(image,exception);
             if (k != 0)
               clone_list=CloneImageList(image_stack[k-1].image,exception);
@@ -612,7 +613,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             if (*option == '+')
               clone_images=CloneImages(clone_list,"-1",exception);
             else
-              { 
+              {
                 i++;
                 if (i == (ssize_t) argc)
                   ThrowMontageException(OptionError,"MissingArgument",option);
@@ -1125,6 +1126,22 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
+            break;
+          }
+        if (LocaleCompare("layers",option+1) == 0)
+          {
+            ssize_t
+              type;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMontageException(OptionError,"MissingArgument",option);
+            type=ParseCommandOption(MagickLayerOptions,MagickFalse,argv[i]);
+            if (type < 0)
+              ThrowMontageException(OptionError,"UnrecognizedLayerMethod",
+                argv[i]);
             break;
           }
         if (LocaleCompare("limit",option+1) == 0)
