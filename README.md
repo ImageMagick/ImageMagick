@@ -1,16 +1,10 @@
-ImageMagick
-===========
+# ImageMagick  [![Build Status](https://travis-ci.org/ImageMagick/ImageMagick.svg?branch=master)](https://travis-ci.org/ImageMagick/ImageMagick) [![Build status](https://ci.appveyor.com/api/projects/status/jk7yr5plamnuh9g6/branch/master?svg=true)](https://ci.appveyor.com/project/dlemstra/imagemagick-windows/branch/master)
 
 <p align="center">
 <img align="center" src="https://imagemagick.org/image/wizard.png" alt="ImageMagick logo" width="265"/>
+</p>
 
 Use [ImageMagick®](https://imagemagick.org/) to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, GIF, HEIC, TIFF, DPX, EXR, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.
-
-
-| Version | *nix | Windows |
-| ------------- | ------------- | ------------- |
-| 7 | [![Build Status](https://travis-ci.org/ImageMagick/ImageMagick.svg?branch=master)](https://travis-ci.org/ImageMagick/ImageMagick) | [![Build status](https://ci.appveyor.com/api/projects/status/jk7yr5plamnuh9g6/branch/master?svg=true)](https://ci.appveyor.com/project/dlemstra/imagemagick-windows/branch/master) |
-| 6 | [![Build Status](https://travis-ci.org/ImageMagick/ImageMagick6.svg?branch=master)](https://travis-ci.org/ImageMagick/ImageMagick6) | [![Build status](https://ci.appveyor.com/api/projects/status/m21j5bmj9m8a2bre/branch/master?svg=true)](https://ci.appveyor.com/project/dlemstra/imagemagick6-windows/branch/master) |
 
 #### What is ImageMagick?
 
