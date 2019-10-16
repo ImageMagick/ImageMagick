@@ -350,13 +350,6 @@ OPENCL_ENDIF()
   )
 
   STRINGIFY(
-  static inline float RoundToUnity(const float value)
-   {
-     return clamp(value,0.0f,1.0f);
-   }
-  )
-
-  STRINGIFY(
 
   static inline unsigned int getPixelIndex(const unsigned int number_channels,
     const unsigned int columns, const unsigned int x, const unsigned int y)
@@ -377,22 +370,17 @@ OPENCL_ENDIF()
   static inline CLQuantum getBlue(CLPixelType p)               { return p.x; }
   static inline void setBlue(CLPixelType* p, CLQuantum value)  { (*p).x = value; }
   static inline float getBlueF4(float4 p)                      { return p.x; }
-  static inline void setBlueF4(float4* p, float value)         { (*p).x = value; }
 
   static inline CLQuantum getGreen(CLPixelType p)              { return p.y; }
   static inline void setGreen(CLPixelType* p, CLQuantum value) { (*p).y = value; }
   static inline float getGreenF4(float4 p)                     { return p.y; }
-  static inline void setGreenF4(float4* p, float value)        { (*p).y = value; }
 
   static inline CLQuantum getRed(CLPixelType p)                { return p.z; }
   static inline void setRed(CLPixelType* p, CLQuantum value)   { (*p).z = value; }
   static inline float getRedF4(float4 p)                       { return p.z; }
-  static inline void setRedF4(float4* p, float value)          { (*p).z = value; }
 
   static inline CLQuantum getAlpha(CLPixelType p)              { return p.w; }
-  static inline void setAlpha(CLPixelType* p, CLQuantum value) { (*p).w = value; }
   static inline float getAlphaF4(float4 p)                     { return p.w; }
-  static inline void setAlphaF4(float4* p, float value)        { (*p).w = value; }
 
   static inline void ReadChannels(const __global CLQuantum *p, const unsigned int number_channels,
     const ChannelType channel, float *red, float *green, float *blue, float *alpha)
