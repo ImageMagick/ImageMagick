@@ -1722,31 +1722,15 @@ static MagickBooleanType ValidateXMPProfile(const StringInfo *profile)
   return(MagickTrue);
 }
 #else
-static unsigned char *FindNeedleInHaystack(unsigned char *haystack,
-  const char *needle)
-{
-  size_t
-    length;
-
-  unsigned char
-    *c;
-
-  length=strlen(needle);
-  for (c=haystack; *c != '\0'; c++)
-    if (LocaleNCompare((const char *) c,needle,length) == 0)
-      return(c);
-  return((unsigned char *) NULL);
-}
-
 static MagickBooleanType ValidateXMPProfile(const StringInfo *profile)
 {
-  unsigned char
+  char
     *p;
 
-  p=FindNeedleInHaystack(GetStringInfoDatum(profile),"x:xmpmeta");
-  if (p == (unsigned char *) NULL)
-    p=FindNeedleInHaystack(GetStringInfoDatum(profile),"rdf:RDF");
-  return(p == (unsigned char *) NULL ? MagickFalse : MagickTrue);
+  p=strcasestr((const char *) GetStringInfoDatum(profile),"x:xmpmeta");
+  if (p != (char *) NULL)
+    p=strcasestr((const char *) GetStringInfoDatum(profile),"rdf:RDF");
+  return(p == (char *) NULL ? MagickFalse : MagickTrue);
 }
 #endif
 
