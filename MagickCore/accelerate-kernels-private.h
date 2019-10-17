@@ -1181,45 +1181,41 @@ OPENCL_ENDIF()
         //read from global
         oValue=im[c];
 
-        if ((channel & RedChannel) != 0)
+        if ((channel & RedChannel) && (getRedF4(white) != getRedF4(black)))
         {
-          if (getRedF4(white) != getRedF4(black))
-          {
-            ePos = ScaleQuantumToMap(getRed(oValue)); 
-            eValue = stretch_map[ePos];
-            red = getRed(eValue);
-          }
+          ePos = ScaleQuantumToMap(getRed(oValue));
+          eValue = stretch_map[ePos];
+          red = getRed(eValue);
         }
+        else
+          red = getRed(oValue);
 
-        if ((channel & GreenChannel) != 0)
+        if ((channel & GreenChannel) && (getGreenF4(white) != getGreenF4(black)))
         {
-          if (getGreenF4(white) != getGreenF4(black))
-          {
-            ePos = ScaleQuantumToMap(getGreen(oValue)); 
-            eValue = stretch_map[ePos];
-            green = getGreen(eValue);
-          }
+          ePos = ScaleQuantumToMap(getGreen(oValue));
+          eValue = stretch_map[ePos];
+          green = getGreen(eValue);
         }
+        else
+          green = getGreen(oValue);
 
-        if ((channel & BlueChannel) != 0)
+        if ((channel & BlueChannel) && (getBlueF4(white) != getBlueF4(black)))
         {
-          if (getBlueF4(white) != getBlueF4(black))
-          {
-            ePos = ScaleQuantumToMap(getBlue(oValue)); 
-            eValue = stretch_map[ePos];
-            blue = getBlue(eValue);
-          }
+          ePos = ScaleQuantumToMap(getBlue(oValue));
+          eValue = stretch_map[ePos];
+          blue = getBlue(eValue);
         }
+        else
+          blue = getBlue(oValue);
 
-        if ((channel & AlphaChannel) != 0)
+        if ((channel & AlphaChannel) && (getAlphaF4(white) != getAlphaF4(black)))
         {
-          if (getAlphaF4(white) != getAlphaF4(black))
-          {
-            ePos = ScaleQuantumToMap(getAlpha(oValue)); 
-            eValue = stretch_map[ePos];
-            alpha = getAlpha(eValue);
-          }
+          ePos = ScaleQuantumToMap(getAlpha(oValue));
+          eValue = stretch_map[ePos];
+          alpha = getAlpha(eValue);
         }
+        else
+          alpha = getAlpha(oValue);
 
         //write back
         im[c]=(CLPixelType)(blue, green, red, alpha);
