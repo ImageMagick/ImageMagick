@@ -1847,7 +1847,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             */
             if ((Sca*Da) < (Dca*Sa))
               {
-                pixel=QuantumRange*gamma*(Sca+Dca*(1.0-Sa));
+                pixel=QuantumRange*(Sca+Dca*(1.0-Sa));
                 break;
               }
             pixel=QuantumRange*(Dca+Sca*(1.0-Da));
@@ -1980,7 +1980,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           case InCompositeOp:
           case SrcInCompositeOp:
           {
-            pixel=QuantumRange*gamma*(Sca*Da);
+            pixel=QuantumRange*(Sca*Da);
             break;
           }
           case LinearBurnCompositeOp:
@@ -2014,10 +2014,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           {
             if ((Sca*Da) > (Dca*Sa))
               {
-                pixel=QuantumRange*gamma*(Sca+Dca*(1.0-Sa));
+                pixel=QuantumRange*(Sca+Dca*(1.0-Sa));
                 break;
               }
-            pixel=QuantumRange*gamma*(Dca+Sca*(1.0-Da));
+            pixel=QuantumRange*(Dca+Sca*(1.0-Da));
             break;
           }
           case LightenIntensityCompositeOp:
@@ -2323,7 +2323,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case XorCompositeOp:
           {
-            pixel=QuantumRange*gamma*(Sca*(1.0-Da)+Dca*(1.0-Sa));
+            pixel=QuantumRange*(Sca*(1.0-Da)+Dca*(1.0-Sa));
             break;
           }
           default:
