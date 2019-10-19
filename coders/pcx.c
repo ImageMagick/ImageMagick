@@ -345,6 +345,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows=(size_t) MagickAbsoluteValue((ssize_t) pcx_info.bottom-
       pcx_info.top)+1UL;
     if ((image->columns == 0) || (image->rows == 0) ||
+        (pcx_info.right < pcx_info.left) || (pcx_info.bottom < pcx_info.top) ||
         ((pcx_info.bits_per_pixel != 1) && (pcx_info.bits_per_pixel != 2) &&
          (pcx_info.bits_per_pixel != 4) && (pcx_info.bits_per_pixel != 8)))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
