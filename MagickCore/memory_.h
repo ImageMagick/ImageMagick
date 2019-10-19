@@ -28,7 +28,9 @@ typedef struct _MemoryInfo
 typedef void
   *(*AcquireMemoryHandler)(size_t) magick_alloc_size(1),
   (*DestroyMemoryHandler)(void *),
-  *(*ResizeMemoryHandler)(void *,size_t) magick_alloc_size(2);
+  *(*ResizeMemoryHandler)(void *,size_t) magick_alloc_size(2),
+  *(*AcquireAlignedMemoryHandler)(const size_t,const size_t),
+  (*RelinquishAlignedMemoryHandler)(void *);
 
 extern MagickExport MemoryInfo
   *AcquireVirtualMemory(const size_t,const size_t) magick_alloc_sizes(1,2),
@@ -55,7 +57,9 @@ extern MagickExport void
   *ResizeQuantumMemory(void *,const size_t,const size_t)
     magick_attribute((__malloc__)) magick_alloc_sizes(2,3),
   SetMagickMemoryMethods(AcquireMemoryHandler,ResizeMemoryHandler,
-    DestroyMemoryHandler);
+    DestroyMemoryHandler),
+  SetMagickAlignedMemoryMethods(AcquireAlignedMemoryHandler,
+    RelinquishAlignedMemoryHandler);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

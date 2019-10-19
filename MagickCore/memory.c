@@ -126,6 +126,12 @@ typedef struct _MagickMemoryMethods
 
   DestroyMemoryHandler
     destroy_memory_handler;
+
+  AcquireAlignedMemoryHandler
+    acquire_aligned_memory_handler;
+
+  RelinquishAlignedMemoryHandler
+    relinquish_aligned_memory_handler;
 } MagickMemoryMethods;
 
 struct _MemoryInfo
@@ -190,12 +196,14 @@ static MagickMemoryMethods
 #if defined _MSC_VER
     (AcquireMemoryHandler) MSCMalloc,
     (ResizeMemoryHandler) MSCRealloc,
-    (DestroyMemoryHandler) MSCFree
+    (DestroyMemoryHandler) MSCFree,
 #else
     (AcquireMemoryHandler) malloc,
     (ResizeMemoryHandler) realloc,
-    (DestroyMemoryHandler) free
+    (DestroyMemoryHandler) free,
 #endif
+    (AcquireAlignedMemoryHandler) NULL,
+    (RelinquishAlignedMemoryHandler) NULL
   };
 #if defined(MAGICKCORE_ANONYMOUS_MEMORY_SUPPORT)
 static MemoryPool
@@ -261,6 +269,8 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
   extent=AlignedExtent(size,alignment);
   if ((size == 0) || (extent < size))
     return((void *) NULL);
+  if (memory_methods.acquire_aligned_memory_handler != (AcquireAlignedMemoryHandler) NULL)
+    return(memory_methods.acquire_aligned_memory_handler(extent,alignment));
 #if defined(MAGICKCORE_HAVE_POSIX_MEMALIGN)
   if (posix_memalign(&memory,alignment,extent) != 0)
     memory=NULL;
@@ -1033,6 +1043,11 @@ MagickExport void *RelinquishAlignedMemory(void *memory)
 {
   if (memory == (void *) NULL)
     return((void *) NULL);
+  if (memory_methods.relinquish_aligned_memory_handler != (RelinquishAlignedMemoryHandler) NULL)
+    {
+      memory_methods.relinquish_aligned_memory_handler(memory);
+      return(NULL);
+    }
 #if defined(MAGICKCORE_HAVE_POSIX_MEMALIGN)
   free(memory);
 #elif defined(MAGICKCORE_HAVE__ALIGNED_MALLOC)
@@ -1410,4 +1425,40 @@ MagickExport void SetMagickMemoryMethods(
     memory_methods.resize_memory_handler=resize_memory_handler;
   if (destroy_memory_handler != (DestroyMemoryHandler) NULL)
     memory_methods.destroy_memory_handler=destroy_memory_handler;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t M a g i c k A l i g n e d M e m o r y M e t h o d s                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetMagickAlignedMemoryMethods() sets the methods to acquire and relinquish
+%  aligned memory.
+%
+%  The format of the SetMagickAlignedMemoryMethods() method is:
+%
+%      SetMagickAlignedMemoryMethods(
+%        AcquireAlignedMemoryHandler acquire_aligned_memory_handler,
+%        RelinquishAlignedMemoryHandler relinquish_aligned_memory_handler)
+%
+%  A description of each parameter follows:
+%
+%    o acquire_memory_handler: method to acquire aligned memory.
+%
+%    o relinquish_aligned_memory_handler: method to relinquish aligned memory.
+%
+*/
+MagickExport void SetMagickAlignedMemoryMethods(
+  AcquireAlignedMemoryHandler acquire_aligned_memory_handler,
+  RelinquishAlignedMemoryHandler relinquish_aligned_memory_handler)
+{
+  memory_methods.acquire_aligned_memory_handler=acquire_aligned_memory_handler;
+  memory_methods.relinquish_aligned_memory_handler=
+      relinquish_aligned_memory_handler;
 }
