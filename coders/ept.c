@@ -156,6 +156,10 @@ static MagickBooleanType IsEPT(const unsigned char *magick,const size_t length)
 */
 static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+  const void
+    *postscript_data,
+    *tiff_data;
+
   EPTInfo
     ept_info;
 
@@ -170,6 +174,9 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   MagickOffsetType
     offset;
+
+  ssize_t
+    count;
 
   /*
     Open image file.
@@ -201,34 +208,61 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ept_info.tiff_length=ReadBlobLSBLong(image);
   if ((MagickSizeType) ept_info.tiff_length > GetBlobSize(image))
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-  ept_info.tiff=NULL;
   (void) ReadBlobLSBShort(image);
+  ept_info.postscript=(unsigned char *) AcquireQuantumMemory(
+    GetBlobStreamData(image) == NULL ? ept_info.postscript_length+1 : 1,
+    sizeof(*ept_info.postscript));
+  if (ept_info.postscript == (unsigned char *) NULL)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  (void) memset(ept_info.postscript,0,(ept_info.postscript_length+1)*
+    sizeof(*ept_info.postscript));
+  ept_info.tiff=(unsigned char *) AcquireQuantumMemory(
+    GetBlobStreamData(image) == NULL ? ept_info.tiff_length+1 : 1,
+    sizeof(*ept_info.tiff));
+  if (ept_info.tiff == (unsigned char *) NULL)
+    {
+      ept_info.postscript=(unsigned char *) RelinquishMagickMemory(
+        ept_info.postscript);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  (void) memset(ept_info.tiff,0,(ept_info.tiff_length+1)*
+    sizeof(*ept_info.tiff));
+  offset=SeekBlob(image,ept_info.tiff_offset,SEEK_SET);
+  if ((ept_info.tiff_length != 0) && (offset < 30))
+    {
+      ept_info.tiff=(unsigned char *) RelinquishMagickMemory(ept_info.tiff);
+      ept_info.postscript=(unsigned char *) RelinquishMagickMemory(
+        ept_info.postscript);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
+  tiff_data=ReadBlobStream(image,ept_info.tiff_length,ept_info.tiff,&count);
+  if (count != (ssize_t) (ept_info.tiff_length))
+    (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageWarning,
+      "InsufficientImageDataInFile","`%s'",image->filename);
   offset=SeekBlob(image,ept_info.postscript_offset,SEEK_SET);
   if ((ept_info.postscript_length != 0) && (offset < 30))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  ept_info.postscript=ReadBlobZC(image,ept_info.postscript_length);
-  if ((ept_info.postscript == NULL) && (ept_info.tiff_length != 0))
     {
-      offset=SeekBlob(image,ept_info.tiff_offset,SEEK_SET);
-      if (offset >= 30)
-        ept_info.tiff=ReadBlobZC(image,ept_info.tiff_length);
+      ept_info.tiff=(unsigned char *) RelinquishMagickMemory(ept_info.tiff);
+      ept_info.postscript=(unsigned char *) RelinquishMagickMemory(
+        ept_info.postscript);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     }
+  postscript_data=ReadBlobStream(image,ept_info.postscript_length,
+    ept_info.postscript,&count);
+  if (count != (ssize_t) (ept_info.postscript_length))
+    (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageWarning,
+      "InsufficientImageDataInFile","`%s'",image->filename);
   (void) CloseBlob(image);
   image=DestroyImage(image);
   read_info=CloneImageInfo(image_info);
-  if (ept_info.postscript != NULL)
-     {
-       (void) CopyMagickString(read_info->magick,"EPS",MagickPathExtent);
-       image=BlobToImage(read_info,ept_info.postscript,
-         ept_info.postscript_length,exception);
-     }
-  else
-    if (ept_info.tiff != NULL)
-      {
-        (void) CopyMagickString(read_info->magick,"TIFF",MagickPathExtent);
-        image=BlobToImage(read_info,ept_info.tiff,ept_info.tiff_length,
-          exception);
-      }
+  (void) CopyMagickString(read_info->magick,"EPS",MagickPathExtent);
+  image=BlobToImage(read_info,postscript_data,ept_info.postscript_length,
+    exception);
+  if (image == (Image *) NULL)
+    {
+      (void) CopyMagickString(read_info->magick,"TIFF",MagickPathExtent);
+      image=BlobToImage(read_info,tiff_data,ept_info.tiff_length,exception);
+    }
   read_info=DestroyImageInfo(read_info);
   if (image != (Image *) NULL)
     {
@@ -236,10 +270,9 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         MagickPathExtent);
       (void) CopyMagickString(image->magick,"EPT",MagickPathExtent);
     }
-  if (ept_info.tiff != NULL)
-    ept_info.tiff=RelinquishBlobZC(image,ept_info.tiff);
-  if (ept_info.postscript != NULL)
-    ept_info.postscript=RelinquishBlobZC(image,ept_info.postscript);
+  ept_info.tiff=(unsigned char *) RelinquishMagickMemory(ept_info.tiff);
+  ept_info.postscript=(unsigned char *) RelinquishMagickMemory(
+    ept_info.postscript);
   return(image);
 }
 
