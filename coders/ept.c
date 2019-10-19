@@ -171,9 +171,6 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickOffsetType
     offset;
 
-  ssize_t
-    count;
-
   /*
     Open image file.
   */
@@ -196,66 +193,42 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   ept_info.postscript_offset=(MagickOffsetType) ReadBlobLSBLong(image);
   ept_info.postscript_length=ReadBlobLSBLong(image);
-  if (ept_info.postscript_length > GetBlobSize(image))
+  if ((MagickSizeType) ept_info.postscript_length > GetBlobSize(image))
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   (void) ReadBlobLSBLong(image);
   (void) ReadBlobLSBLong(image);
   ept_info.tiff_offset=(MagickOffsetType) ReadBlobLSBLong(image);
   ept_info.tiff_length=ReadBlobLSBLong(image);
-  if (ept_info.tiff_length > GetBlobSize(image))
+  if ((MagickSizeType) ept_info.tiff_length > GetBlobSize(image))
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+  ept_info.tiff=NULL;
   (void) ReadBlobLSBShort(image);
-  ept_info.postscript=(unsigned char *) AcquireQuantumMemory(
-    ept_info.postscript_length+1,sizeof(*ept_info.postscript));
-  if (ept_info.postscript == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  (void) memset(ept_info.postscript,0,(ept_info.postscript_length+1)*
-    sizeof(*ept_info.postscript));
-  ept_info.tiff=(unsigned char *) AcquireQuantumMemory(ept_info.tiff_length+1,
-    sizeof(*ept_info.tiff));
-  if (ept_info.tiff == (unsigned char *) NULL)
-    {
-      ept_info.postscript=(unsigned char *) RelinquishMagickMemory(
-        ept_info.postscript);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    }
-  (void) memset(ept_info.tiff,0,(ept_info.tiff_length+1)*
-    sizeof(*ept_info.tiff));
-  offset=SeekBlob(image,ept_info.tiff_offset,SEEK_SET);
-  if ((ept_info.tiff_length != 0) && (offset < 30))
-    {
-      ept_info.tiff=(unsigned char *) RelinquishMagickMemory(ept_info.tiff);
-      ept_info.postscript=(unsigned char *) RelinquishMagickMemory(
-        ept_info.postscript);
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    }
-  count=ReadBlob(image,ept_info.tiff_length,ept_info.tiff);
-  if (count != (ssize_t) (ept_info.tiff_length))
-    (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageWarning,
-      "InsufficientImageDataInFile","`%s'",image->filename);
   offset=SeekBlob(image,ept_info.postscript_offset,SEEK_SET);
   if ((ept_info.postscript_length != 0) && (offset < 30))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  ept_info.postscript=ReadBlobZC(image,ept_info.postscript_length);
+  if ((ept_info.postscript == NULL) && (ept_info.tiff_length != 0))
     {
-      ept_info.tiff=(unsigned char *) RelinquishMagickMemory(ept_info.tiff);
-      ept_info.postscript=(unsigned char *) RelinquishMagickMemory(
-        ept_info.postscript);
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      offset=SeekBlob(image,ept_info.tiff_offset,SEEK_SET);
+      if (offset >= 30)
+        ept_info.tiff=ReadBlobZC(image,ept_info.tiff_length);
     }
-  count=ReadBlob(image,ept_info.postscript_length,ept_info.postscript);
-  if (count != (ssize_t) (ept_info.postscript_length))
-    (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageWarning,
-      "InsufficientImageDataInFile","`%s'",image->filename);
   (void) CloseBlob(image);
   image=DestroyImage(image);
   read_info=CloneImageInfo(image_info);
-  (void) CopyMagickString(read_info->magick,"EPS",MagickPathExtent);
-  image=BlobToImage(read_info,ept_info.postscript,ept_info.postscript_length,
-    exception);
-  if (image == (Image *) NULL)
-    {
-      (void) CopyMagickString(read_info->magick,"TIFF",MagickPathExtent);
-      image=BlobToImage(read_info,ept_info.tiff,ept_info.tiff_length,exception);
-    }
+  if (ept_info.postscript != NULL)
+     {
+       (void) CopyMagickString(read_info->magick,"EPS",MagickPathExtent);
+       image=BlobToImage(read_info,ept_info.postscript,
+         ept_info.postscript_length,exception);
+     }
+  else
+    if (ept_info.tiff != NULL)
+      {
+        (void) CopyMagickString(read_info->magick,"TIFF",MagickPathExtent);
+        image=BlobToImage(read_info,ept_info.tiff,ept_info.tiff_length,
+          exception);
+      }
   read_info=DestroyImageInfo(read_info);
   if (image != (Image *) NULL)
     {
@@ -263,9 +236,10 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         MagickPathExtent);
       (void) CopyMagickString(image->magick,"EPT",MagickPathExtent);
     }
-  ept_info.tiff=(unsigned char *) RelinquishMagickMemory(ept_info.tiff);
-  ept_info.postscript=(unsigned char *) RelinquishMagickMemory(
-    ept_info.postscript);
+  if (ept_info.tiff != NULL)
+    ept_info.tiff=RelinquishBlobZC(image,ept_info.tiff);
+  if (ept_info.postscript != NULL)
+    ept_info.postscript=RelinquishBlobZC(image,ept_info.postscript);
   return(image);
 }
 
@@ -440,7 +414,7 @@ static MagickBooleanType WriteEPTImage(const ImageInfo *image_info,Image *image,
   write_info=CloneImageInfo(image_info);
   (void) CopyMagickString(write_info->magick,"TIFF",MagickPathExtent);
   (void) FormatLocaleString(filename,MagickPathExtent,"tiff:%s",
-    write_info->filename); 
+    write_info->filename);
   (void) CopyMagickString(write_info->filename,filename,MagickPathExtent);
   if ((write_image->columns > 512) || (write_image->rows > 512))
     {
