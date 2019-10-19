@@ -4805,6 +4805,86 @@ MagickExport char *ReadBlobString(Image *image,char *string)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++  R e a d B l o b Z C                                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% ReadBlobZC() reads data from the blob or image file and returns a pointer
+% to a buffer that contains the data.  If the image is in-memory, the in-memory
+% buffer is returned (zero copy), otherwise a buffer is allocated and the image
+% data is copied to it and returned.  NULL is returnedif the specified length
+% is zero, exceeds the confines of the image data, or if the buffer cannot be
+% allocated.  You must call RelinquishBlobZC() to free any allocated resources.
+%
+%  The format of the ReadBlobZC method is:
+%
+%      void *ReadBlobZC(Image *image,const size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o length:  Specifies an integer representing the number of bytes to read
+%      from the image.
+%
+*/
+
+MagickExport void *RelinquishBlobZC(Image *image,void *data)
+{
+  BlobInfo
+    *magick_restrict blob_info;
+
+  blob_info=image->blob;
+  if (blob_info->type != BlobStream)
+    return(RelinquishMagickMemory(data));
+  return((void *) NULL);
+}
+
+MagickExport void *ReadBlobZC(Image *image,const size_t length)
+{
+  BlobInfo
+    *magick_restrict blob_info;
+
+  ssize_t
+    count;
+
+  void
+    *data;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  assert(image->blob != (BlobInfo *) NULL);
+  assert(image->blob->type != UndefinedStream);
+  if (length == 0)
+    return((void *) NULL);
+  blob_info=image->blob;
+  if (blob_info->type == BlobStream)
+    {
+      if ((blob_info->offset+length) >= (MagickOffsetType) blob_info->length)
+        {
+          blob_info->eof=MagickTrue;
+          return((void *) NULL);
+        }
+      data=blob_info->data+blob_info->offset;
+      blob_info->offset+=length;
+      return(data);
+    }
+  data=AcquireMagickMemory(length);
+  if (data == (void *) NULL)
+    return((void *) NULL);
+  count=ReadBlob(image,length,data);
+  if (count != (ssize_t) length)
+    data=RelinquishMagickMemory(data);
+  return(data);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   R e f e r e n c e B l o b                                                 %
 %                                                                             %
 %                                                                             %
