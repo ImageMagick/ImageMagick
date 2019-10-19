@@ -2269,7 +2269,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
       (void) memset(&pixel,0,sizeof(pixel));
       name++;
       for (n=0; isxdigit((int) ((unsigned char) name[n])) != 0; n++) ;
-      if ((n % 3) == 0)
+      if ((n == 3) || (n == 6) || (n == 9) || (n == 12) || (n == 24))
         {
           do
           {
@@ -2296,7 +2296,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
         }
       else
         {
-          if ((n % 4) != 0)
+          if ((n != 4) && (n != 8) && (n != 16) && (n != 32))
             {
               (void) ThrowMagickException(exception,GetMagickModule(),
                 OptionWarning,"UnrecognizedColor","`%s'",name);
