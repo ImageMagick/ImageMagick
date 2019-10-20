@@ -1386,6 +1386,42 @@ MagickExport void *ResizeQuantumMemory(void *memory,const size_t count,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   S e t M a g i c k A l i g n e d M e m o r y M e t h o d s                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetMagickAlignedMemoryMethods() sets the methods to acquire and relinquish
+%  aligned memory.
+%
+%  The format of the SetMagickAlignedMemoryMethods() method is:
+%
+%      SetMagickAlignedMemoryMethods(
+%        AcquireAlignedMemoryHandler acquire_aligned_memory_handler,
+%        RelinquishAlignedMemoryHandler relinquish_aligned_memory_handler)
+%
+%  A description of each parameter follows:
+%
+%    o acquire_memory_handler: method to acquire aligned memory.
+%
+%    o relinquish_aligned_memory_handler: method to relinquish aligned memory.
+%
+*/
+MagickExport void SetMagickAlignedMemoryMethods(
+  AcquireAlignedMemoryHandler acquire_aligned_memory_handler,
+  RelinquishAlignedMemoryHandler relinquish_aligned_memory_handler)
+{
+  memory_methods.acquire_aligned_memory_handler=acquire_aligned_memory_handler;
+  memory_methods.relinquish_aligned_memory_handler=
+      relinquish_aligned_memory_handler;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S e t M a g i c k M e m o r y M e t h o d s                               %
 %                                                                             %
 %                                                                             %
@@ -1425,40 +1461,4 @@ MagickExport void SetMagickMemoryMethods(
     memory_methods.resize_memory_handler=resize_memory_handler;
   if (destroy_memory_handler != (DestroyMemoryHandler) NULL)
     memory_methods.destroy_memory_handler=destroy_memory_handler;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   S e t M a g i c k A l i g n e d M e m o r y M e t h o d s                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SetMagickAlignedMemoryMethods() sets the methods to acquire and relinquish
-%  aligned memory.
-%
-%  The format of the SetMagickAlignedMemoryMethods() method is:
-%
-%      SetMagickAlignedMemoryMethods(
-%        AcquireAlignedMemoryHandler acquire_aligned_memory_handler,
-%        RelinquishAlignedMemoryHandler relinquish_aligned_memory_handler)
-%
-%  A description of each parameter follows:
-%
-%    o acquire_memory_handler: method to acquire aligned memory.
-%
-%    o relinquish_aligned_memory_handler: method to relinquish aligned memory.
-%
-*/
-MagickExport void SetMagickAlignedMemoryMethods(
-  AcquireAlignedMemoryHandler acquire_aligned_memory_handler,
-  RelinquishAlignedMemoryHandler relinquish_aligned_memory_handler)
-{
-  memory_methods.acquire_aligned_memory_handler=acquire_aligned_memory_handler;
-  memory_methods.relinquish_aligned_memory_handler=
-      relinquish_aligned_memory_handler;
 }

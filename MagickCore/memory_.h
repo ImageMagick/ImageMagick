@@ -56,10 +56,10 @@ extern MagickExport void
     magick_attribute((__malloc__)) magick_alloc_size(2),
   *ResizeQuantumMemory(void *,const size_t,const size_t)
     magick_attribute((__malloc__)) magick_alloc_sizes(2,3),
-  SetMagickMemoryMethods(AcquireMemoryHandler,ResizeMemoryHandler,
-    DestroyMemoryHandler),
   SetMagickAlignedMemoryMethods(AcquireAlignedMemoryHandler,
-    RelinquishAlignedMemoryHandler);
+    RelinquishAlignedMemoryHandler),
+  SetMagickMemoryMethods(AcquireMemoryHandler,ResizeMemoryHandler,
+    DestroyMemoryHandler);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
