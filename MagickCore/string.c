@@ -2312,7 +2312,7 @@ MagickExport char **StringToList(const char *text)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  StringToList() converts a text string into a list by segmenting the text
+%  StringToStrings() converts a text string into a list by segmenting the text
 %  string at each carriage return discovered.  The list is converted to HEX
 %  characters if any control characters are discovered within the text string.
 %
@@ -2406,6 +2406,9 @@ MagickExport char **StringToStrings(const char *text,size_t *count)
       p=text;
       for (i=0; i < (ssize_t) lines; i++)
       {
+        size_t
+          length;
+
         textlist[i]=(char *) AcquireQuantumMemory(2UL*MagickPathExtent,
           sizeof(**textlist));
         if (textlist[i] == (char *) NULL)
@@ -2413,7 +2416,8 @@ MagickExport char **StringToStrings(const char *text,size_t *count)
         (void) FormatLocaleString(textlist[i],MagickPathExtent,"0x%08lx: ",
           (long) (CharsPerLine*i));
         q=textlist[i]+strlen(textlist[i]);
-        for (j=1; j <= (ssize_t) MagickMin(strlen(p),CharsPerLine); j++)
+        length=strlen(p);
+        for (j=1; j <= (ssize_t) MagickMin(length,CharsPerLine); j++)
         {
           (void) FormatLocaleString(hex_string,MagickPathExtent,"%02x",*(p+j));
           (void) CopyMagickString(q,hex_string,MagickPathExtent);
@@ -2429,7 +2433,7 @@ MagickExport char **StringToStrings(const char *text,size_t *count)
             *q++=' ';
         }
         *q++=' ';
-        for (j=1; j <= (ssize_t) MagickMin(strlen(p),CharsPerLine); j++)
+        for (j=1; j <= (ssize_t) MagickMin(length,CharsPerLine); j++)
         {
           if (isprint((int) ((unsigned char) *p)) != 0)
             *q++=(*p);
