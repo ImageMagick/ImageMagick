@@ -179,7 +179,7 @@ static inline const unsigned char *PushQuantumFloatPixel(
       p=(float *) quantum;
       *pixel=(*p);
       *pixel-=quantum_info->minimum;
-      *pixel*=quantum_info->scale;
+      *pixel*=(float) quantum_info->scale;
       return(pixels);
     }
   quantum[3]=(*pixels++);
@@ -189,7 +189,7 @@ static inline const unsigned char *PushQuantumFloatPixel(
   p=(float *) quantum;
   *pixel=(*p);
   *pixel-=quantum_info->minimum;
-  *pixel*=quantum_info->scale;
+  *pixel*=(float) quantum_info->scale;
   return(pixels);
 }
 
