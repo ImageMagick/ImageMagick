@@ -1593,11 +1593,14 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         }
         default:
         {
-          count=ReadBlob(image,packet_size*image->columns,pixels);
+          const void
+            *stream;
+
+          stream=ReadBlobStream(image,packet_size*image->columns,pixels,&count);
           if (count != (ssize_t) (packet_size*image->columns))
             ThrowMIFFException(CorruptImageError,"UnableToReadImageData");
           extent=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            quantum_type,pixels,exception);
+            quantum_type,stream,exception);
           break;
         }
       }
