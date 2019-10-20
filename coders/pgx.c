@@ -137,9 +137,6 @@ static Image *ReadPGXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     sans[MagickPathExtent],
     sign[MagickPathExtent];
 
-  const unsigned char
-    *pixels;
-
   Image
     *image;
 
@@ -160,6 +157,9 @@ static Image *ReadPGXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ssize_t
     count,
     y;
+
+  unsigned char
+    *pixels;
 
   /*
     Open image file.
@@ -207,20 +207,23 @@ static Image *ReadPGXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   length=GetQuantumExtent(image,quantum_info,GrayQuantum);
+  pixels=GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    const void
+      *stream;
+
     register Quantum
       *magick_restrict q;
 
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       break;
-    pixels=(const unsigned char *) ReadBlobStream(image,length,
-      GetQuantumPixels(quantum_info),&count);
+    stream=ReadBlobStream(image,length,pixels,&count);
     if (count != (ssize_t) length)
       break;
     (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-      GrayQuantum,pixels,exception);
+      GrayQuantum,stream,exception);
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
     if (SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,image->rows) == MagickFalse)

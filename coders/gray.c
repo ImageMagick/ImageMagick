@@ -100,8 +100,8 @@ static MagickBooleanType
 static Image *ReadGRAYImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  const unsigned char
-    *pixels;
+  const void
+    *stream;
 
   Image
     *canvas_image,
@@ -128,6 +128,9 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   ssize_t
     count,
     y;
+
+  unsigned char
+    *pixels;
 
   /*
     Open image file.
@@ -177,7 +180,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
       image->alpha_trait=BlendPixelTrait;
       canvas_image->alpha_trait=BlendPixelTrait;
     }
-  pixels=(const unsigned char *) NULL;
+  pixels=GetQuantumPixels(quantum_info);
   if (image_info->number_scenes != 0)
     while (image->scene < image_info->scene)
     {
@@ -188,8 +191,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
       length=GetQuantumExtent(canvas_image,quantum_info,quantum_type);
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        pixels=(const unsigned char *) ReadBlobStream(image,length,
-          GetQuantumPixels(quantum_info),&count);
+        stream=ReadBlobStream(image,length,pixels,&count);
         if (count != (ssize_t) length)
           break;
       }
@@ -198,6 +200,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   length=0;
   scene=0;
   status=MagickTrue;
+  stream=NULL;
   do
   {
     /*
@@ -220,8 +223,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         if (scene == 0)
           {
             length=GetQuantumExtent(canvas_image,quantum_info,quantum_type);
-            pixels=(const unsigned char *) ReadBlobStream(image,length,
-              GetQuantumPixels(quantum_info),&count);
+            stream=ReadBlobStream(image,length,pixels,&count);
           }
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
@@ -246,7 +248,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
           if (q == (Quantum *) NULL)
             break;
           length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
-            quantum_info,quantum_type,pixels,exception);
+            quantum_info,quantum_type,stream,exception);
           if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
             break;
           if (((y-image->extract_info.y) >= 0) && 
@@ -279,8 +281,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
               if (status == MagickFalse)
                 break;
             }
-          pixels=(const unsigned char *) ReadBlobStream(image,length,
-            GetQuantumPixels(quantum_info),&count);
+          stream=ReadBlobStream(image,length,pixels,&count);
         }
         break;
       }
@@ -299,8 +300,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         if (scene == 0)
           {
             length=GetQuantumExtent(canvas_image,quantum_info,RedQuantum);
-            pixels=(const unsigned char *) ReadBlobStream(image,length,
-              GetQuantumPixels(quantum_info),&count);
+            stream=ReadBlobStream(image,length,pixels,&count);
           }
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
@@ -328,7 +328,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
             if (q == (Quantum *) NULL)
               break;
             length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
-              quantum_info,quantum_type,pixels,exception);
+              quantum_info,quantum_type,stream,exception);
             if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
               break;
             if (((y-image->extract_info.y) >= 0) && 
@@ -363,8 +363,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
                 if (SyncAuthenticPixels(image,exception) == MagickFalse)
                   break;
               }
-            pixels=(const unsigned char *) ReadBlobStream(image,length,
-              GetQuantumPixels(quantum_info),&count);
+            stream=ReadBlobStream(image,length,pixels,&count);
           }
           if (image->previous == (Image *) NULL)
             {
@@ -384,8 +383,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         if (scene == 0)
           {
             length=GetQuantumExtent(canvas_image,quantum_info,RedQuantum);
-            pixels=(const unsigned char *) ReadBlobStream(image,length,
-              GetQuantumPixels(quantum_info),&count);
+            stream=ReadBlobStream(image,length,pixels,&count);
           }
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
@@ -410,7 +408,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
           if (q == (Quantum *) NULL)
             break;
           length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
-            quantum_info,RedQuantum,pixels,exception);
+            quantum_info,RedQuantum,stream,exception);
           if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
             break;
           if (((y-image->extract_info.y) >= 0) && 
@@ -431,8 +429,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
             }
-          pixels=(const unsigned char *) ReadBlobStream(image,length,
-            GetQuantumPixels(quantum_info),&count);
+          stream=ReadBlobStream(image,length,pixels,&count);
         }
         if (image->previous == (Image *) NULL)
           {
@@ -465,7 +462,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
               if (q == (Quantum *) NULL)
                 break;
               length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
-                quantum_info,AlphaQuantum,pixels,exception);
+                quantum_info,AlphaQuantum,stream,exception);
               if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
                 break;
               if (((y-image->extract_info.y) >= 0) && 
@@ -487,8 +484,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
                   if (SyncAuthenticPixels(image,exception) == MagickFalse)
                     break;
                 }
-              pixels=(const unsigned char *) ReadBlobStream(image,length,
-                GetQuantumPixels(quantum_info),&count);
+              stream=ReadBlobStream(image,length,pixels,&count);
             }
             if (image->previous == (Image *) NULL)
               {
@@ -517,8 +513,8 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         if (DiscardBlobBytes(image,(MagickSizeType) image->offset) == MagickFalse)
           {
             status=MagickFalse;
-            ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-              image->filename);
+            ThrowFileException(exception,CorruptImageError,
+              "UnexpectedEndOfFile",image->filename);
             break;
           }
         length=GetQuantumExtent(canvas_image,quantum_info,RedQuantum);
@@ -526,16 +522,14 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         {
           for (y=0; y < (ssize_t) image->extract_info.height; y++)
           {
-            pixels=(const unsigned char *) ReadBlobStream(image,length,
-              GetQuantumPixels(quantum_info),&count);
+            stream=ReadBlobStream(image,length,pixels,&count);
             if (count != (ssize_t) length)
               break;
           }
           if (count != (ssize_t) length)
             break;
         }
-        pixels=(const unsigned char *) ReadBlobStream(image,length,
-          GetQuantumPixels(quantum_info),&count);
+        stream=ReadBlobStream(image,length,pixels,&count);
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const Quantum
@@ -559,7 +553,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
           if (q == (Quantum *) NULL)
             break;
           length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
-            quantum_info,RedQuantum,pixels,exception);
+            quantum_info,RedQuantum,stream,exception);
           if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
             break;
           if (((y-image->extract_info.y) >= 0) && 
@@ -580,8 +574,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
             }
-          pixels=(const unsigned char *) ReadBlobStream(image,length,
-            GetQuantumPixels(quantum_info),&count);
+          stream=ReadBlobStream(image,length,pixels,&count);
         }
         if (image->previous == (Image *) NULL)
           {
@@ -602,16 +595,14 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
             {
               for (y=0; y < (ssize_t) image->extract_info.height; y++)
               {
-                pixels=(const unsigned char *) ReadBlobStream(image,length,
-                  GetQuantumPixels(quantum_info),&count);
+                stream=ReadBlobStream(image,length,pixels,&count);
                 if (count != (ssize_t) length)
                   break;
               }
               if (count != (ssize_t) length)
                 break;
             }
-            pixels=(const unsigned char *) ReadBlobStream(image,length,
-              GetQuantumPixels(quantum_info),&count);
+            stream=ReadBlobStream(image,length,pixels,&count);
             for (y=0; y < (ssize_t) image->extract_info.height; y++)
             {
               register const Quantum
@@ -635,7 +626,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
               if (q == (Quantum *) NULL)
                 break;
               length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
-                quantum_info,BlueQuantum,pixels,exception);
+                quantum_info,BlueQuantum,stream,exception);
               if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
                 break;
               if (((y-image->extract_info.y) >= 0) && 
@@ -656,8 +647,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
                   if (SyncAuthenticPixels(image,exception) == MagickFalse)
                     break;
                }
-              pixels=(const unsigned char *) ReadBlobStream(image,length,
-                GetQuantumPixels(quantum_info),&count);
+              stream=ReadBlobStream(image,length,pixels,&count);
             }
             if (image->previous == (Image *) NULL)
               {
