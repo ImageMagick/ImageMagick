@@ -2787,7 +2787,7 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
       pixel3=zero;
       area=point.y;
       if (hald_image->interpolate == NearestInterpolatePixel)
-        area=(point.y < 0.5) ? 0 : 1;
+        area=(point.y < 0.5) ? 0.0 : 1.0;
       CompositePixelInfoAreaBlend(&pixel1,pixel1.alpha,&pixel2,pixel2.alpha,
         area,&pixel3);
       offset+=cube_size;
