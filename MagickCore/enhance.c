@@ -2754,8 +2754,8 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       double
-        offset,
-        area;
+        area,
+        offset;
 
       HaldInfo
         point;
