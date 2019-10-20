@@ -210,14 +210,12 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   (void) ReadBlobLSBShort(image);
   ept_info.postscript=(unsigned char *) AcquireQuantumMemory(
-    GetBlobStreamData(image) == NULL ? ept_info.postscript_length+1 : 1,
-    sizeof(*ept_info.postscript));
+    ept_info.postscript_length+1,sizeof(*ept_info.postscript));
   if (ept_info.postscript == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   (void) memset(ept_info.postscript,0,(ept_info.postscript_length+1)*
     sizeof(*ept_info.postscript));
-  ept_info.tiff=(unsigned char *) AcquireQuantumMemory(
-    GetBlobStreamData(image) == NULL ? ept_info.tiff_length+1 : 1,
+  ept_info.tiff=(unsigned char *) AcquireQuantumMemory(ept_info.tiff_length+1,
     sizeof(*ept_info.tiff));
   if (ept_info.tiff == (unsigned char *) NULL)
     {
