@@ -452,13 +452,13 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
       TODO: This won't work if one of the delegate parameters has a forward
             slash as aparameter.
     */
-    p=strstr(sanitize_command, "cmd.exe /c");
+    p=strstr(sanitize_command,"cmd.exe /c");
     if (p != (char*) NULL)
       {
         p+=10;
-        for (; *p != '\0'; p++)
+        for ( ; *p != '\0'; p++)
           if (*p == '/')
-            *p=*DirectorySeparator;
+            *p=(*DirectorySeparator);
       }
   }
   status=NTSystemCommand(sanitize_command,message);
