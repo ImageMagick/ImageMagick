@@ -2754,7 +2754,8 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       double
-        offset;
+        offset,
+        area;
 
       HaldInfo
         point;
@@ -2784,8 +2785,11 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
       if (status == MagickFalse)
         break;
       pixel3=zero;
+      area=point.y;
+      if (hald_image->interpolate == NearestInterpolatePixel)
+        area=(point.y < 0.5) ? 0 : 1;
       CompositePixelInfoAreaBlend(&pixel1,pixel1.alpha,&pixel2,pixel2.alpha,
-        point.y,&pixel3);
+        area,&pixel3);
       offset+=cube_size;
       status=InterpolatePixelInfo(hald_image,hald_view,hald_image->interpolate,
         fmod(offset,width),floor(offset/width),&pixel1,exception);
@@ -2797,10 +2801,13 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
         break;
       pixel4=zero;
       CompositePixelInfoAreaBlend(&pixel1,pixel1.alpha,&pixel2,pixel2.alpha,
-        point.y,&pixel4);
+        area,&pixel4);
       pixel=zero;
+      area=point.z;
+      if (hald_image->interpolate==NearestInterpolatePixel)
+        area=(point.z<0.5)?0:1;
       CompositePixelInfoAreaBlend(&pixel3,pixel3.alpha,&pixel4,pixel4.alpha,
-        point.z,&pixel);
+        area,&pixel);
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         SetPixelRed(image,ClampToQuantum(pixel.red),q);
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
