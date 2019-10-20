@@ -2804,8 +2804,8 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
         area,&pixel4);
       pixel=zero;
       area=point.z;
-      if (hald_image->interpolate==NearestInterpolatePixel)
-        area=(point.z<0.5)?0:1;
+      if (hald_image->interpolate == NearestInterpolatePixel)
+        area=(point.z < 0.5)? 0.0 : 1.0;
       CompositePixelInfoAreaBlend(&pixel3,pixel3.alpha,&pixel4,pixel4.alpha,
         area,&pixel);
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
