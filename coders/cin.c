@@ -388,9 +388,6 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   CINInfo
     cin;
 
-  const unsigned char
-    *pixels;
-
   Image
     *image;
 
@@ -420,7 +417,9 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
     y;
 
   unsigned char
-    magick[4];
+    magick[4],
+    *pixels;
+
 
   /*
     Open image file.
@@ -760,17 +759,20 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
       quantum_type=GrayQuantum;
       length=GetBytesPerRow(image->columns,1,image->depth,MagickTrue);
     }
+  pixels=GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    const void
+      *stream;
+
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       break;
-    pixels=(const unsigned char *) ReadBlobStream(image,length,
-      GetQuantumPixels(quantum_info),&count);
+    stream=ReadBlobStream(image,length,pixels,&count);
     if ((size_t) count != length)
       break;
     (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-      quantum_type,pixels,exception);
+      quantum_type,stream,exception);
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
     if (image->previous == (Image *) NULL)
