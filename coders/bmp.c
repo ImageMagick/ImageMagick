@@ -524,6 +524,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     profile_size,
     start_position;
 
+  MagickSizeType
+    blob_size;
+
   MemoryInfo
     *pixel_info;
 
@@ -586,6 +589,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,2,magick);
   if (count != 2)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  blob_size=GetBlobSize(image);
   do
   {
     PixelInfo
@@ -664,7 +668,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bmp_info.x_pixels=ReadBlobLSBLong(image);
         bmp_info.y_pixels=ReadBlobLSBLong(image);
         bmp_info.number_colors=ReadBlobLSBLong(image);
-        if ((MagickSizeType) bmp_info.number_colors > GetBlobSize(image))
+        if ((MagickSizeType) bmp_info.number_colors > blob_size)
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         bmp_info.colors_important=ReadBlobLSBLong(image);
         if (image->debug != MagickFalse)
@@ -829,14 +833,17 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) ReadBlobLSBLong(image);  /* Reserved byte */
           }
       }
-    if ((MagickSizeType) bmp_info.file_size > GetBlobSize(image))
-      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-        "LengthAndFilesizeDoNotMatch","`%s'",image->filename);
-    else
-      if ((MagickSizeType) bmp_info.file_size < GetBlobSize(image))
-        (void) ThrowMagickException(exception,GetMagickModule(),
-          CorruptImageWarning,"LengthAndFilesizeDoNotMatch","`%s'",
-          image->filename);
+    if ((MagickSizeType) bmp_info.file_size != blob_size)
+      {
+        ExceptionType
+          severity;
+
+        severity=CorruptImageWarning;
+        if ((MagickSizeType) bmp_info.file_size > blob_size + 4)
+          severity=CorruptImageError;
+        (void) ThrowMagickException(exception,GetMagickModule(),severity,
+          "LengthAndFilesizeDoNotMatch","`%s'",image->filename);
+      }
     if (bmp_info.width <= 0)
       ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
     if (bmp_info.height == 0)
@@ -961,7 +968,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       bmp_info.bits_per_pixel<<=1;
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     length=(size_t) bytes_per_line*image->rows;
-    if ((MagickSizeType) (length/256) > GetBlobSize(image))
+    if ((MagickSizeType) (length/256) > blob_size)
       ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     if ((bmp_info.compression == BI_RGB) ||
         (bmp_info.compression == BI_BITFIELDS))
@@ -1460,7 +1467,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         offset=start_position+14+profile_data;
         if ((offset < TellBlob(image)) ||
             (SeekBlob(image,offset,SEEK_SET) != offset) ||
-            (GetBlobSize(image) < (MagickSizeType) (offset+profile_size)))
+            (blob_size < (MagickSizeType) (offset+profile_size)))
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         profile=AcquireStringInfo((size_t) profile_size);
         if (profile == (StringInfo *) NULL)
@@ -1512,8 +1519,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           }
         image=SyncNextImageInList(image);
-        status=SetImageProgress(image,LoadImagesTag,TellBlob(image),
-          GetBlobSize(image));
+        status=SetImageProgress(image,LoadImagesTag,TellBlob(image),blob_size);
         if (status == MagickFalse)
           break;
       }
