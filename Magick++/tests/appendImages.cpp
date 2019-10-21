@@ -41,7 +41,7 @@ int main( int /*argc*/, char ** argv)
     // Horizontal
     appendImages( &appended, imageList.begin(), imageList.end() );
     // appended.display();
-    if (( appended.signature() != "f5ed4a96632126a30c353340a1ddc4e0745295bb1f4bbbb6e020138c972c2f5e" ) &&
+    if (( appended.signature() != "d2b63ade27f08ba413533c56239fd5dca7ac5cdfcae7a15d48980209dbfc0a40" ) &&
         ( appended.signature() != "f48dd74b57ed277c9c62da1a65788186a910b8f2faa47851fcf1f4572640ed9c" ))
       {
 	++failures;
@@ -54,7 +54,7 @@ int main( int /*argc*/, char ** argv)
 
     // Vertical
     appendImages( &appended, imageList.begin(), imageList.end(), true );
-    if (( appended.signature() != "de891eb85d168bd2177ee92940ab0e29d32c9f8e4be41906f9272a88925d9dd3" ) &&
+    if (( appended.signature() != "bb411d8cc99700f29547e8ca60d925d0d3be3aaf16e70260a3506428e61339de" ) &&
         ( appended.signature() != "9cfe22dacae97e4e0fe1c12567a5d7e111f4680ec65a40da16281928cf4ba6be" ))
       {
 	++failures;
