@@ -19,7 +19,7 @@ chdir 't/png' || die 'Cd failed';
 # 
 print( "1-bit grayscale PNG ...\n" );
 testRead( 'input_bw.png',
-  '7d12eaac6f41d3c2947022f382e158ea715e918ce0cd73649ec04db01239c88f' );
+  '2446f29e7ad13d93abb0e34bfca5340e6b7c50c7cc6fccfc12ba1d26f150e85d' );
 
 #
 # 2) Test Monochrome PNG

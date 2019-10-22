@@ -85,10 +85,10 @@ typedef struct _QuantumInfo
 static inline Quantum ClampToQuantum(const MagickRealType value)
 {
 #if defined(MAGICKCORE_HDRI_SUPPORT)
-  if (value < FLT_MIN)
-    return((Quantum) FLT_MIN);
-  if (value > FLT_MAX)
-    return((Quantum) FLT_MAX);
+  if (value < DBL_MIN)
+    return((Quantum) DBL_MIN);
+  if (value > DBL_MAX)
+    return((Quantum) DBL_MAX);
   return((Quantum) value);
 #else
   if (value <= 0.0f)
