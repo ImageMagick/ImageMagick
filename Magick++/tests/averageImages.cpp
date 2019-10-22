@@ -44,7 +44,8 @@ int main( int /*argc*/, char ** argv)
         ( averaged.signature() != "88bb7267b362b0b41a26b0cd681d6e4fed58edd901024728e3964025e0b50ec1") &&
         ( averaged.signature() != "90c4ba4b092f37a0600d51356f9aba89e7402ba3f59ac591ae216bace4a9d10b") &&
         ( averaged.signature() != "5edad755f33a1cf8358f3909ea9cb7db71c1eb64f2e8279db86826d1d6de678d") &&
-        ( averaged.signature() != "a88e978776d45b73bc8c9f37f6726cc9f14a3118b9a82384ee5acf488c5c2863")
+        ( averaged.signature() != "a88e978776d45b73bc8c9f37f6726cc9f14a3118b9a82384ee5acf488c5c2863") &&
+        ( averaged.signature() != "6bda37a8b6734ac271595f5b583d801cfb2479637401d056eae9be97127f558f")
        )
       {
 	cout << "Line: " << __LINE__
