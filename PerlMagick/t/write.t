@@ -169,7 +169,7 @@ print("SUN 1-bit Rasterfile ...\n");
 testReadWrite( 'SUN:input.im1',
   'SUN:output.im1',
   q//,
-  '49d4c40abae73a1d6169dc1f0262e89ad5dc8a9f64e7feef3430090768e629c4');
+  '72815f4d36713f458da89557ede0f3c10b8c5e117f0275f0eaddb811e5bb82fd');
 
 print("SUN 8-bit Rasterfile ...\n");
 ++$test;
@@ -204,14 +204,14 @@ print("WBMP (Wireless Bitmap (level 0) image) ...\n");
 testReadWrite( 'WBMP:input.wbmp',
   'WBMP:output.wbmp',
   q//,
-  '8833a92cbe11a3b925a1b7edffd6508d7b12dd50e3f4907ca8d77917f6e4e697');
+  '3073e47766d60a567728cf74fba554ca8666ab1980b19f473ccbe94f175046e7');
 
 print("X Windows system bitmap (black and white only) ...\n");
 ++$test;
 testReadWrite( 'XBM:input.xbm',
   'XBM:output.xbm',
   q//,
-  '49d4c40abae73a1d6169dc1f0262e89ad5dc8a9f64e7feef3430090768e629c4');
+  '72815f4d36713f458da89557ede0f3c10b8c5e117f0275f0eaddb811e5bb82fd');
 
 print("X Windows system pixmap file (color) ...\n");
 ++$test;
