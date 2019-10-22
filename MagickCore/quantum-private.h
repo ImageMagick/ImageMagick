@@ -594,14 +594,14 @@ static inline MagickSizeType ScaleQuantumToLongLong(const Quantum quantum)
 
 static inline unsigned int ScaleQuantumToMap(const Quantum quantum)
 {
-  if ((IsNaN(quantum) != MagickFalse) || (quantum <= 0.0))
-    return(0U);
   if ((quantum/65537) >= (Quantum) MaxMap)
     return((unsigned int) MaxMap);
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((unsigned int) ((quantum+MagickULLConstant(32768))/
     MagickULLConstant(65537)));
 #else
+  if ((IsNaN(quantum) != MagickFalse) || (quantum <= 0.0))
+    return(0U);
   return((unsigned int) (quantum/65537.0+0.5));
 #endif
 }
