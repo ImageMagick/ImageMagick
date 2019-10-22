@@ -2527,8 +2527,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
             svg_info->height=(size_t) floor(svg_info->bounds.height+0.5);
           (void) FormatLocaleFile(svg_info->file,"viewbox 0 0 %.20g %.20g\n",
             (double) svg_info->width,(double) svg_info->height);
-          sx=(double) svg_info->width/svg_info->view_box.width;
-          sy=(double) svg_info->height/svg_info->view_box.height;
+          sx=PerceptibleReciprocal(svg_info->view_box.width)*svg_info->width;
+          sy=PerceptibleReciprocal(svg_info->view_box.height)*svg_info->height;
           tx=svg_info->view_box.x != 0.0 ? (double) -sx*svg_info->view_box.x :
             0.0;
           ty=svg_info->view_box.y != 0.0 ? (double) -sy*svg_info->view_box.y :
