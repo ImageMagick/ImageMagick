@@ -2296,7 +2296,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
         }
       else
         {
-          if ((n != 4) && (n != 8) && (n != 16) && (n != 32))
+          if ((n != 4) && (n != 8) && (n != 16) && (n != 32) && (n != 48))
             {
               (void) ThrowMagickException(exception,GetMagickModule(),
                 OptionWarning,"UnrecognizedColor","`%s'",name);
