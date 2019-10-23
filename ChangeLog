@@ -1,7 +1,7 @@
-2019-10-06  7.0.8-69 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.8-69, GIT revision 16...
+2019-10-23  7.0.9-0 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.9-0, GIT revision 16292:c3a32b4:20191023
 
-2019-10-06  7.0.8-69 Cristy  <quetzlzacatenango@image...>
+2019-10-06  7.0.9-0 Cristy  <quetzlzacatenango@image...>
   * Fixed numerous issues  posted to GitHub (reference
     https://github.com/ImageMagick/ImageMagick/issues).
   * Support trim:background-color define for -trim option.
