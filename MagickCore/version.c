@@ -278,6 +278,9 @@ MagickExport const char *GetMagickFeatures(void)
 #if defined(ZERO_CONFIGURATION_SUPPORT)
   "Zero-configuration "
 #endif
+#if (MAGICKCORE_QUANTUM_DEPTH == 64)
+  "Q64 (experimental, not for production) "
+#endif
   ;
 }
 
