@@ -79,6 +79,7 @@ jobs:
       run: |
         cd %RUNNER_WORKSPACE%\ImageMagick-Windows
         CloneRepositories.cmd https://github.com/ImageMagick shallow
+      shell: cmd
 
     - name: Build configure
       run: |
@@ -86,11 +87,13 @@ jobs:
         cd %RUNNER_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
         devenv /upgrade configure.vcxproj
         msbuild configure.sln /m /t:Rebuild /p:Configuration=Release,Platform=Win32
+      shell: cmd
 
     - name: Configure ImageMagick
       run: |
         cd %RUNNER_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
         configure.exe /noWizard /VS2019 /${{matrix.platform}} /${{matrix.buildType}}
+      shell: cmd
 
     - name: Build ImageMagick
       run: |
@@ -99,3 +102,4 @@ jobs:
         dir /B *.sln > solution
         set /p solution=<solution
         msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
+      shell: cmd
