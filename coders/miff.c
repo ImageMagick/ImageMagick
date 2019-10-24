@@ -267,7 +267,7 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
           if (image->alpha_trait != UndefinedPixelTrait)
             {
               p=PushShortPixel(MSBEndian,p,&quantum);
-              pixel->alpha=(MagickRealType) (quantum >> (image->depth-
+              pixel->alpha=(MagickRealType) ((size_t) quantum >> (image->depth-
                 MAGICKCORE_QUANTUM_DEPTH));
             }
           break;
@@ -281,7 +281,7 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
           if (image->alpha_trait != UndefinedPixelTrait)
             {
               p=PushLongPixel(MSBEndian,p,&quantum);
-              pixel->alpha=(MagickRealType) (quantum >> (image->depth-
+              pixel->alpha=(MagickRealType) ((size_t) quantum >> (image->depth-
                 MAGICKCORE_QUANTUM_DEPTH));
             }
           break;
@@ -326,29 +326,29 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
         quantum;
 
       p=PushShortPixel(MSBEndian,p,&quantum);
-      pixel->red=(MagickRealType) (quantum >> (image->depth-
+      pixel->red=(MagickRealType) ((size_t) quantum >> (image->depth-
         MAGICKCORE_QUANTUM_DEPTH));
       pixel->green=pixel->red;
       pixel->blue=pixel->red;
       if (IsGrayColorspace(image->colorspace) == MagickFalse)
         {
           p=PushShortPixel(MSBEndian,p,&quantum);
-          pixel->green=(MagickRealType) (quantum >> (image->depth-
+          pixel->green=(MagickRealType) ((size_t) quantum >> (image->depth-
             MAGICKCORE_QUANTUM_DEPTH));
           p=PushShortPixel(MSBEndian,p,&quantum);
-          pixel->blue=(MagickRealType) (quantum >> (image->depth-
+          pixel->blue=(MagickRealType) ((size_t) quantum >> (image->depth-
             MAGICKCORE_QUANTUM_DEPTH));
         }
       if (image->colorspace == CMYKColorspace)
         {
           p=PushShortPixel(MSBEndian,p,&quantum);
-          pixel->black=(MagickRealType) (quantum >> (image->depth-
+          pixel->black=(MagickRealType) ((size_t) quantum >> (image->depth-
             MAGICKCORE_QUANTUM_DEPTH));
         }
       if (image->alpha_trait != UndefinedPixelTrait)
         {
           p=PushShortPixel(MSBEndian,p,&quantum);
-          pixel->alpha=(MagickRealType) (quantum >> (image->depth-
+          pixel->alpha=(MagickRealType) ((size_t) quantum >> (image->depth-
             MAGICKCORE_QUANTUM_DEPTH));
         }
       break;
@@ -360,29 +360,29 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
         quantum;
 
       p=PushLongPixel(MSBEndian,p,&quantum);
-      pixel->red=(MagickRealType) (quantum >> (image->depth-
+      pixel->red=(MagickRealType) ((size_t) quantum >> (image->depth-
         MAGICKCORE_QUANTUM_DEPTH));
       pixel->green=pixel->red;
       pixel->blue=pixel->red;
       if (IsGrayColorspace(image->colorspace) == MagickFalse)
         {
           p=PushLongPixel(MSBEndian,p,&quantum);
-          pixel->green=(MagickRealType) (quantum >> (image->depth-
+          pixel->green=(MagickRealType) ((size_t) quantum >> (image->depth-
             MAGICKCORE_QUANTUM_DEPTH));
           p=PushLongPixel(MSBEndian,p,&quantum);
-          pixel->blue=(MagickRealType) (quantum >> (image->depth-
+          pixel->blue=(MagickRealType) ((size_t) quantum >> (image->depth-
             MAGICKCORE_QUANTUM_DEPTH));
         }
       if (image->colorspace == CMYKColorspace)
         {
           p=PushLongPixel(MSBEndian,p,&quantum);
-          pixel->black=(MagickRealType) (quantum >> (image->depth-
+          pixel->black=(MagickRealType) ((size_t) quantum >> (image->depth-
             MAGICKCORE_QUANTUM_DEPTH));
         }
       if (image->alpha_trait != UndefinedPixelTrait)
         {
           p=PushLongPixel(MSBEndian,p,&quantum);
-          pixel->alpha=(MagickRealType) (quantum >> (image->depth-
+          pixel->alpha=(MagickRealType) ((size_t) quantum >> (image->depth-
             MAGICKCORE_QUANTUM_DEPTH));
         }
       break;
