@@ -2243,11 +2243,17 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
   assert(name != (const char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",name);
   assert(color != (PixelInfo *) NULL);
-  GetPixelInfo((Image *) NULL,color);
-  if ((name == (char *) NULL) || (*name == '\0'))
+  if (name == (char *) NULL)
     name=BackgroundColor;
+  if (*name == '\0')
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
+        "UnrecognizedColor","`%s'",name);
+      return(MagickFalse);
+    }
   while (isspace((int) ((unsigned char) *name)) != 0)
     name++;
+  GetPixelInfo((Image *) NULL,color);
   if (*name == '#')
     {
       char
