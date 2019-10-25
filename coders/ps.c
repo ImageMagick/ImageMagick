@@ -628,9 +628,9 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         info.bounds.x1,info.bounds.y1);
       (void) SetImageProperty(image,"ps:HiResBoundingBox",geometry,exception);
       page.width=(size_t) ceil((double) ((info.bounds.x2-info.bounds.x1)*
-        MagickMax(resolution.x/delta.x,0.0))-0.5);
+        resolution.x/delta.x));
       page.height=(size_t) ceil((double) ((info.bounds.y2-info.bounds.y1)*
-        MagickMax(resolution.y/delta.y,0.0))-0.5);
+        resolution.y/delta.y));
     }
   fitPage=MagickFalse;
   option=GetImageOption(image_info,"eps:fit-page");
