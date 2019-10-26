@@ -221,7 +221,7 @@ static int FillBasicWEBPInfo(Image *image,const uint8_t *stream,size_t length,
   webp_status=WebPGetFeatures(stream,length,features);
 
   if (webp_status != VP8_STATUS_OK)
-	return webp_status;
+    return(webp_status);
 
   image->columns=(size_t) features->width;
   image->rows=(size_t) features->height;
@@ -229,7 +229,7 @@ static int FillBasicWEBPInfo(Image *image,const uint8_t *stream,size_t length,
   image->alpha_trait=features->has_alpha != 0 ? BlendPixelTrait :
         UndefinedPixelTrait;
 
-  return webp_status;
+  return(webp_status);
 }
 
 static int ReadSingleWEBPImage(Image *image,const uint8_t *stream,
@@ -252,14 +252,14 @@ static int ReadSingleWEBPImage(Image *image,const uint8_t *stream,
 
   webp_status = FillBasicWEBPInfo(image,stream,length,configure);
   if(webp_status != VP8_STATUS_OK)
-    return webp_status;
+    return(webp_status);
 
   if (IsWEBPImageLossless(stream,length) != MagickFalse)
     image->quality=100;
 
   webp_status=WebPDecode(stream,length, configure);
   if(webp_status != VP8_STATUS_OK)
-    return webp_status;
+    return(webp_status);
 
   p=(unsigned char *) webp_image->u.RGBA.rgba;
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -299,7 +299,7 @@ static int ReadSingleWEBPImage(Image *image,const uint8_t *stream,
 
     WebPData
      chunk,
-     content = { stream, length };
+     content;
 
     WebPMux
       *mux;
@@ -307,6 +307,8 @@ static int ReadSingleWEBPImage(Image *image,const uint8_t *stream,
     /*
       Extract any profiles.
     */
+    content.bytes=stream;
+    content.size=length;
     mux=WebPMuxCreate(&content,0);
     (void) memset(&chunk,0,sizeof(chunk));
     WebPMuxGetFeatures(mux,&webp_flags);
@@ -343,58 +345,61 @@ static int ReadSingleWEBPImage(Image *image,const uint8_t *stream,
     WebPMuxDelete(mux);
   }
 #endif
-  return webp_status;
+  return(webp_status);
 }
 
 #if defined(MAGICKCORE_WEBPMUX_DELEGATE)
 static int ReadAnimatedWEBPImage(const ImageInfo *image_info, Image *image,
-	uint8_t *stream, size_t length, WebPDecoderConfig *configure,
-	ExceptionInfo *exception) {
-  WebPData data = {.bytes=stream, .size=length};
-
-  WebPDemuxer* demux = WebPDemux(&data);
-
-  WebPIterator iter;
+  uint8_t *stream, size_t length, WebPDecoderConfig *configure,
+  ExceptionInfo *exception)
+{
+  Image
+    *original_image;
 
   int
-    webp_status = 0;
+    image_count,
+    webp_status;
 
-  int image_count = 0;
+  WebPData
+    data;
 
-  Image *original_image = image;
+  WebPDemuxer
+    *demux;
 
-  if (WebPDemuxGetFrame(demux, 1, &iter)) {
+  WebPIterator
+    iter;
+
+  image_count=0;
+  webp_status=0;
+  original_image=image;
+  data.bytes=stream;
+  data.size=length;
+  demux=WebPDemux(&data);
+  if (WebPDemuxGetFrame(demux,1,&iter)) {
     do {
       if (image_count != 0)
         {
-	  AcquireNextImage(image_info,image,exception);
-	  if (GetNextImageInList(image) == (Image *) NULL)
-	    {
-	      break;
-	    }
-	  image=SyncNextImageInList(image);
-	  CloneImageProperties(image, original_image);
-	  image->page.x = iter.x_offset;
-	  image->page.y = iter.y_offset;
+          AcquireNextImage(image_info,image,exception);
+          if (GetNextImageInList(image) == (Image *) NULL)
+            break;
+          image=SyncNextImageInList(image);
+          CloneImageProperties(image,original_image);
+          image->page.x=iter.x_offset;
+          image->page.y=iter.y_offset;
         }
-
-      webp_status = ReadSingleWEBPImage(image, iter.fragment.bytes,
-				        iter.fragment.size,
-					configure, exception);
+      webp_status=ReadSingleWEBPImage(image,iter.fragment.bytes,
+        iter.fragment.size,configure,exception);
       if(webp_status != VP8_STATUS_OK)
-	break;
+        break;
 
-      image->ticks_per_second = 100;
-      image->delay = iter.duration / 10;
-      if (image_info->verbose)
-	fprintf(stderr, "Reading WebP frame with delay %u\n", iter.duration);
+      image->ticks_per_second=100;
+      image->delay=iter.duration/10;
       image_count++;
-
     } while (WebPDemuxNextFrame(&iter));
     WebPDemuxReleaseIterator(&iter);
   }
   WebPDemuxDelete(demux);
-  return webp_status;
+  return(webp_status);
 }
 #endif
 
@@ -486,14 +491,14 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
 
     if (configure.input.has_animation) {
 #if defined(MAGICKCORE_WEBPMUX_DELEGATE)
-      webp_status=ReadAnimatedWEBPImage(image_info, image, stream,
-				 length, &configure, exception);
+      webp_status=ReadAnimatedWEBPImage(image_info,image,stream,
+        length,&configure,exception);
 #else
       webp_status=VP8_STATUS_UNSUPPORTED_FEATURE;
 #endif
     } else {
       webp_status=ReadSingleWEBPImage(image, stream,
-		      length, &configure, exception);
+        length,&configure,exception);
     }
   }
 
@@ -761,16 +766,24 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
   Image *image,WebPConfig *configure,WebPMemoryWriter *writer_info,
   ExceptionInfo *exception)
 {
-  WebPAnimEncoderOptions
-	  enc_options;
-  WebPPicture
-	  picture;
-  WebPAnimEncoder
-	  *enc;
   Image
-	  *first_image;
+    *first_image;
+
   PictureMemory
-	  *head, *current;
+    *current,
+    *head;
+
+  WebPAnimEncoder
+    *enc;
+
+  WebPAnimEncoderOptions
+    enc_options;
+
+  WebPData
+    webp_data;
+
+  WebPPicture
+    picture;
 
   size_t frame_timestamp = 0,
     effective_delta = 0;
@@ -779,14 +792,16 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
   if (image_info->verbose)
     enc_options.verbose = 1;
 
-  image = CoalesceImages(image, exception);
-  first_image = image;
-  enc = WebPAnimEncoderNew(image->page.width, image->page.height, &enc_options);
+  image=CoalesceImages(image, exception);
+  first_image=image;
+  enc=WebPAnimEncoderNew((int) image->page.width,(int) image->page.height,
+    &enc_options);
 
-  head = calloc(sizeof(*head), 1);
-  current = head;
+  head=calloc(sizeof(*head),1);
+  current=head;
 
-  while(image != NULL) {
+  while(image != NULL)
+  {
     if (WebPPictureInit(&picture) == 0)
       ThrowWriterException(ResourceLimitError,"UnableToEncodeImageFile");
 
@@ -794,21 +809,17 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
 
     effective_delta = image->delay*1000/image->ticks_per_second;
     if (effective_delta < 10)
-	    effective_delta = 100; // Consistent with gif2webp
+      effective_delta = 100; // Consistent with gif2webp
     frame_timestamp+=effective_delta;
 
-    if (image_info->verbose)
-	fprintf(stderr, "Writing WebP frame with delay %zu\n", effective_delta);
-
-    WebPAnimEncoderAdd(enc, &picture, frame_timestamp, configure);
+    WebPAnimEncoderAdd(enc, &picture,(int) frame_timestamp,configure);
 
     image = GetNextImageInList(image);
     current->next = calloc(sizeof(*head), 1);
     current = current->next;
   }
-  WebPData
-    webp_data = { writer_info->mem, writer_info->size };
-
+  webp_data.bytes=writer_info->mem;
+  webp_data.size=writer_info->size;
   WebPAnimEncoderAssemble(enc, &webp_data);
   WebPMemoryWriterClear(writer_info);
   writer_info->size=webp_data.size;
@@ -816,7 +827,7 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
   WebPAnimEncoderDelete(enc);
   DestroyImageList(first_image);
   FreePictureMemoryList(head);
-  return MagickTrue;
+  return(MagickTrue);
 }
 #endif
 
@@ -1059,7 +1070,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
 
     WebPData
       chunk,
-      image_chunk = { writer_info.mem, writer_info.size };
+      image_chunk;
 
     WebPMux
       *mux;
@@ -1070,6 +1081,8 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
     /*
       Set image profiles (if any).
     */
+    image_chunk.bytes=writer_info.mem;
+    image_chunk.size=writer_info.size;
     mux_error=WEBP_MUX_OK;
     (void) memset(&chunk,0,sizeof(chunk));
     mux=WebPMuxNew();
@@ -1100,11 +1113,13 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
     if (chunk.size != 0)
       {
         WebPData
-          picture_profiles = { writer_info.mem, writer_info.size };
+          picture_profiles;
 
         /*
           Replace original container with image profile (if any).
         */
+        picture_profiles.bytes=writer_info.mem;
+        picture_profiles.size=writer_info.size;
         WebPMuxSetImage(mux,&image_chunk,1);
         mux_error=WebPMuxAssemble(mux,&picture_profiles);
         WebPMemoryWriterClear(&writer_info);
