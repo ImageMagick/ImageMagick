@@ -7695,8 +7695,8 @@ static void MSLCDataBlock(void *context,const xmlChar *value,int length)
   MSLInfo
     *msl_info;
 
-   xmlNodePtr
-     child;
+  xmlNodePtr
+    child;
 
   xmlParserCtxtPtr
     parser;

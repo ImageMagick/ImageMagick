@@ -3088,8 +3088,8 @@ static void SVGCDataBlock(void *context,const xmlChar *value,int length)
   SVGInfo
     *svg_info;
 
-   xmlNodePtr
-     child;
+  xmlNodePtr
+    child;
 
   xmlParserCtxtPtr
     parser;
