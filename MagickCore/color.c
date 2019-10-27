@@ -2243,14 +2243,8 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
   assert(name != (const char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",name);
   assert(color != (PixelInfo *) NULL);
-  if (name == (char *) NULL)
+  if ((name == (char *) NULL) || (name == '\0'))
     name=BackgroundColor;
-  if (*name == '\0')
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
-        "UnrecognizedColor","`%s'",name);
-      return(MagickFalse);
-    }
   while (isspace((int) ((unsigned char) *name)) != 0)
     name++;
   GetPixelInfo((Image *) NULL,color);
@@ -2435,8 +2429,14 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
           if (LocaleCompare(name,colorname) != 0)
             status=QueryColorCompliance(colorname,AllCompliance,color,
               exception);
-          colorname=DestroyString(colorname);
           color->colorspace=colorspaceType;
+          if (*colorname == '\0')
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionWarning,"UnrecognizedColor","`%s'",name);
+              status=MagickFalse;
+            }
+          colorname=DestroyString(colorname);
           return(status);
         }
       if ((flags & PercentValue) != 0)
