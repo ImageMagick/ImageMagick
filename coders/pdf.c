@@ -468,10 +468,10 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ParseAbsoluteGeometry(PSPageGeometry,&page);
   if (image_info->page != (char *) NULL)
     (void) ParseAbsoluteGeometry(image_info->page,&page);
-  page.width=(size_t) ceil((double) (page.width*image->resolution.x/delta.x)-
-    0.5);
-  page.height=(size_t) ceil((double) (page.height*image->resolution.y/delta.y)-
-    0.5);
+  page.width=(size_t) ((ssize_t) ceil((double) (page.width*
+    image->resolution.x/delta.x)-0.5));
+  page.height=(size_t) ((ssize_t) ceil((double) (page.height*
+    image->resolution.y/delta.y)-0.5));
   /*
     Determine page geometry from the PDF media box.
   */
@@ -487,10 +487,10 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         pdf_info.bounds.x2-pdf_info.bounds.x1,pdf_info.bounds.y2-
         pdf_info.bounds.y1,pdf_info.bounds.x1,pdf_info.bounds.y1);
       (void) SetImageProperty(image,"pdf:HiResBoundingBox",geometry,exception);
-      page.width=(size_t) ceil((double) ((pdf_info.bounds.x2-
-        pdf_info.bounds.x1)*image->resolution.x/delta.x)-0.5);
-      page.height=(size_t) ceil((double) ((pdf_info.bounds.y2-
-        pdf_info.bounds.y1)*image->resolution.y/delta.y)-0.5);
+      page.width=(size_t) ((ssize_t) ceil((double) ((pdf_info.bounds.x2-
+        pdf_info.bounds.x1)*image->resolution.x/delta.x)-0.5));
+      page.height=(size_t) ((ssize_t) ceil((double) ((pdf_info.bounds.y2-
+        pdf_info.bounds.y1)*image->resolution.y/delta.y)-0.5));
     }
   fitPage=MagickFalse;
   option=GetImageOption(image_info,"pdf:fit-page");
@@ -511,10 +511,10 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image=DestroyImage(image);
           return((Image *) NULL);
         }
-      page.width=(size_t) ceil((double) (page.width*image->resolution.x/
-        delta.x)-0.5);
-      page.height=(size_t) ceil((double) (page.height*image->resolution.y/
-        delta.y)-0.5);
+      page.width=(size_t) ((ssize_t) ceil((double) (page.width*
+        image->resolution.x/delta.x)-0.5));
+      page.height=(size_t) ((ssize_t) ceil((double) (page.height*
+        image->resolution.y/delta.y)-0.5));
       fitPage=MagickTrue;
     }
   if ((fabs(pdf_info.angle) == 90.0) || (fabs(pdf_info.angle) == 270.0))
