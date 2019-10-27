@@ -7715,7 +7715,9 @@ static void MSLCDataBlock(void *context,const xmlChar *value,int length)
       xmlTextConcat(child,value,length);
       return;
     }
-  (void) xmlAddChild(parser->node,xmlNewCDataBlock(parser->myDoc,value,length));
+  child=xmlNewCDataBlock(parser->myDoc,value,length);
+  if (xmlAddChild(parser->node,child) == (xmlNodePtr) NULL)
+    xmlFreeNode(child);
 }
 
 static void MSLExternalSubset(void *context,const xmlChar *name,
