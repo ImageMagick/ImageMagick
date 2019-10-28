@@ -686,17 +686,6 @@ typedef struct PictureMemory {
   struct PictureMemory *next;
 } PictureMemory;
 
-static void FreePictureMemoryList (PictureMemory* head) {
-  PictureMemory* next;
-  while(head != NULL) {
-    next = head->next;
-    if(head->pixel_info != NULL)
-      RelinquishVirtualMemory(head->pixel_info);
-    free(head);
-    head = next;
-  }
-}
-
 static MagickBooleanType WriteSingleWEBPImage(const ImageInfo *image_info,
   Image *image,WebPPicture *picture,PictureMemory *picture_memory,
   ExceptionInfo *exception)
@@ -762,6 +751,17 @@ static MagickBooleanType WriteSingleWEBPImage(const ImageInfo *image_info,
 }
 
 #if defined(MAGICKCORE_WEBPMUX_DELEGATE)
+static void FreePictureMemoryList (PictureMemory* head) {
+  PictureMemory* next;
+  while(head != NULL) {
+    next = head->next;
+    if(head->pixel_info != NULL)
+      RelinquishVirtualMemory(head->pixel_info);
+    free(head);
+    head = next;
+  }
+}
+
 static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
   Image *image,WebPConfig *configure,WebPMemoryWriter *writer_info,
   ExceptionInfo *exception)
