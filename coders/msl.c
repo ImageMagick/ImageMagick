@@ -544,6 +544,13 @@ static void MSLEndDocument(void *context)
   msl_info=(MSLInfo *) context;
   if (msl_info->content != (char *) NULL)
     msl_info->content=DestroyString(msl_info->content);
+#if defined(MAGICKCORE_XML_DELEGATE)
+  if (msl_info->document != (xmlDocPtr) NULL)
+    {
+      xmlFreeDoc(msl_info->document);
+      msl_info->document=(xmlDocPtr) NULL;
+    }
+#endif
 }
 
 static void MSLPushImage(MSLInfo *msl_info,Image *image)
