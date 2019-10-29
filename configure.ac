@@ -512,15 +512,14 @@ if test "$enable_openmp" != no; then
 fi
 
 # Enable support for OpenCL
+ax_cv_check_cl_libcl=no
 AX_OPENCL([C])
 CFLAGS="$CL_CFLAGS $CFLAGS"
 CPPFLAGS="$CL_CFLAGS $CPPFLAGS"
 LIBS="$CL_LIBS $LIBS"
 AC_SUBST(CL_CFLAGS)
-if test "$enable_opencl" != no; then
-  if test "X$ax_cv_check_cl_libcl" != Xno; then :
-    MAGICK_FEATURES="OpenCL $MAGICK_FEATURES"
-  fi
+if test "X$ax_cv_check_cl_libcl" != Xno; then :
+  MAGICK_FEATURES="OpenCL $MAGICK_FEATURES"
 fi
 
 ########
@@ -1763,7 +1762,7 @@ dnl ===========================================================================
 with_ltdl='yes'
 have_ltdl='no'
 LTDL_LIBS=''
-if test "$build_modules" != 'no' || test "$enable_opencl" != 'no'; then
+if test "$build_modules" != 'no' || test "X$ax_cv_check_cl_libcl" != Xno; then
   AC_MSG_RESULT([-------------------------------------------------------------])
   AC_MSG_CHECKING([for libltdl])
   AC_MSG_RESULT([])
