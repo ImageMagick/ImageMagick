@@ -1,7 +1,8 @@
-2019-10-29  7.0.9-2 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.9-2, GIT revision 16322:141a300:20191029.
+2019-10-30  7.0.9-2 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.9-2, GIT revision 16325:6f84d89:20191030.
 
 2019-10-29  7.0.9-2 Cristy  <quetzlzacatenango@image...>
+  * JPEG and JPG are aliases in coder security policy.
   * Fixed numerous issues  posted to GitHub (reference
     https://github.com/ImageMagick/ImageMagick/issues).
 
