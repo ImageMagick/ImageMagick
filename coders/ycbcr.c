@@ -251,7 +251,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
           if (q == (Quantum *) NULL)
             break;
           length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
-            quantum_info,quantum_type,stream,exception);
+            quantum_info,quantum_type,(unsigned char *) stream,exception);
           if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
             break;
           if (((y-image->extract_info.y) >= 0) && 
@@ -333,7 +333,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
             if (q == (Quantum *) NULL)
               break;
             length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
-              quantum_info,quantum_type,stream,exception);
+              quantum_info,quantum_type,(unsigned char *) stream,exception);
             if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
               break;
             if (((y-image->extract_info.y) >= 0) && 
@@ -424,7 +424,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
           if (q == (Quantum *) NULL)
             break;
           length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
-            quantum_info,RedQuantum,stream,exception);
+            quantum_info,RedQuantum,(unsigned char *) stream,exception);
           if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
             break;
           if (((y-image->extract_info.y) >= 0) && 
@@ -477,7 +477,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
           if (q == (Quantum *) NULL)
             break;
           length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
-            quantum_info,GreenQuantum,stream,exception);
+            quantum_info,GreenQuantum,(unsigned char *) stream,exception);
           if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
             break;
           if (((y-image->extract_info.y) >= 0) && 
@@ -530,7 +530,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
           if (q == (Quantum *) NULL)
             break;
           length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
-            quantum_info,BlueQuantum,stream,exception);
+            quantum_info,BlueQuantum,(unsigned char *) stream,exception);
           if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
             break;
           if (((y-image->extract_info.y) >= 0) && 
@@ -585,7 +585,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
               if (q == (Quantum *) NULL)
                 break;
               length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
-                quantum_info,AlphaQuantum,stream,exception);
+                quantum_info,AlphaQuantum,(unsigned char *) stream,exception);
               if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
                 break;
               if (((y-image->extract_info.y) >= 0) && 
@@ -677,7 +677,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
           if (q == (Quantum *) NULL)
             break;
           length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
-            quantum_info,RedQuantum,stream,exception);
+            quantum_info,RedQuantum,(unsigned char *) stream,exception);
           if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
             break;
           if (((y-image->extract_info.y) >= 0) && 
@@ -748,7 +748,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
           if (q == (Quantum *) NULL)
             break;
           length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
-            quantum_info,GreenQuantum,stream,exception);
+            quantum_info,GreenQuantum,(unsigned char *) stream,exception);
           if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
             break;
           if (((y-image->extract_info.y) >= 0) && 
@@ -819,7 +819,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
           if (q == (Quantum *) NULL)
             break;
           length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
-            quantum_info,BlueQuantum,stream,exception);
+            quantum_info,BlueQuantum,(unsigned char *) stream,exception);
           if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
             break;
           if (((y-image->extract_info.y) >= 0) && 
@@ -892,7 +892,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
               if (q == (Quantum *) NULL)
                 break;
               length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
-                quantum_info,BlueQuantum,stream,exception);
+                quantum_info,BlueQuantum,(unsigned char *) stream,exception);
               if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
                 break;
               if (((y-image->extract_info.y) >= 0) && 

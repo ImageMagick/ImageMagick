@@ -313,7 +313,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
     if (count != (ssize_t) length)
       break;
     (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-      quantum_type,stream,exception);
+      quantum_type,(unsigned char *) stream,exception);
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
     status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,

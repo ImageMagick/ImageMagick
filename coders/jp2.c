@@ -845,7 +845,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
   /*
     Initialize JPEG 2000 API.
   */
-  parameters=AcquireMagickMemory(sizeof(*parameters));
+  parameters=(opj_cparameters_t *) AcquireMagickMemory(sizeof(*parameters));
   if (parameters == (opj_cparameters_t *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   opj_set_default_encoder_parameters(parameters);

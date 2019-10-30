@@ -1600,7 +1600,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           if (count != (ssize_t) (packet_size*image->columns))
             ThrowMIFFException(CorruptImageError,"UnableToReadImageData");
           extent=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            quantum_type,stream,exception);
+            quantum_type,(unsigned char *) stream,exception);
           break;
         }
       }

@@ -797,10 +797,10 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
   enc=WebPAnimEncoderNew((int) image->page.width,(int) image->page.height,
     &enc_options);
 
-  head=calloc(sizeof(*head),1);
+  head=(PictureMemory *) calloc(sizeof(*head),1);
   current=head;
 
-  while(image != NULL)
+  while (image != NULL)
   {
     if (WebPPictureInit(&picture) == 0)
       ThrowWriterException(ResourceLimitError,"UnableToEncodeImageFile");
@@ -815,7 +815,7 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
     WebPAnimEncoderAdd(enc, &picture,(int) frame_timestamp,configure);
 
     image = GetNextImageInList(image);
-    current->next = calloc(sizeof(*head), 1);
+    current->next=(PictureMemory *) calloc(sizeof(*head), 1);
     current = current->next;
   }
   webp_data.bytes=writer_info->mem;

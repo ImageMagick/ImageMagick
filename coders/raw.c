@@ -227,7 +227,7 @@ static Image *ReadRAWImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (q == (Quantum *) NULL)
         break;
       length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,quantum_info,
-        quantum_type,stream,exception);
+        quantum_type,(unsigned char *) stream,exception);
       if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
         break;
       if (((y-image->extract_info.y) >= 0) && 
