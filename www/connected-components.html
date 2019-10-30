@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no"  />
   <title>ImageMagick - Connected Components Labeling</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="ImageMagick® creates, edits, composes, and converts bitmap images. Resize an image, crop it, change its shades and colors, add captions, and more." />
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert bitmap images. Resize an image, crop it, change its shades and colors, add captions, and more." />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="connected, components, labeling, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
@@ -35,7 +35,6 @@
   <link href="assets/magick.css" rel="stylesheet" />
 </head>
 <body>
-  <header>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +62,7 @@
         <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server//">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="https://imagemagick.org/script/search.php">
@@ -84,7 +83,7 @@
     </script>
 
   </div>
-  </header>
+
   <main class="container">
     <div class="magick-template">
 <div class="magick-header">
@@ -108,7 +107,7 @@
   4: 21x23+0+45 8.8,55.9 409 srgb(255,255,255)
   1: 4x10+252+0 253.9,4.1 31 srgb(255,255,255)
 </code></pre>
-<p>Use <code>-connected-components 8</code> to visit 8 neighbors rather than 4.  By default, neighbor colors must be exact to be part of a unique object. Use the <a href="../www/command-line-options.html#fuzz">-fuzz</a> option to include pixels as part of an object that are <var>close</var> in color.</p>
+<p>Use <code>-connected-components 8</code> to visit 8 neighbors rather than 4.  By default, neighbor colors must be exact to be part of a unique object. Use the <a href="command-line-options.html#fuzz">-fuzz</a> option to include pixels as part of an object that are <var>close</var> in color.</p>
 <p>You might want to eliminate small objects by merging them with their larger neighbors.  If so, use this command:</p>
 <pre class="highlight"><code>magick objects.gif -define connected-components:area-threshold=410 -connected-components 4 \
   -auto-level objects.jpg</code></pre>

@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no"  />
   <title>ImageMagick - Changelog</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="ImageMagick® creates, edits, composes, and converts bitmap images. Resize an image, crop it, change its shades and colors, add captions, and more." />
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert bitmap images. Resize an image, crop it, change its shades and colors, add captions, and more." />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="changelog, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
@@ -35,7 +35,6 @@
   <link href="assets/magick.css" rel="stylesheet" />
 </head>
 <body>
-  <header>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +62,7 @@
         <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server//">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="https://imagemagick.org/script/search.php">
@@ -84,12 +83,45 @@
     </script>
 
   </div>
-  </header>
+
   <main class="container">
     <div class="magick-template">
-<div class="magick-header"><dl><dt>2019-08-31  7.0.8-63 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<div class="magick-header"><dl><dt>2019-10-27  7.0.9-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.9-1, GIT revision 16313:e068be3:20191027.</li>
+<dt>2019-10-27  7.0.9-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fixed numerous issues  posted to GitHub (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
+<dt>2019-10-23  7.0.9-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.9-0, GIT revision 16297:8744fd9:20191024</li>
+<dt>2019-10-06  7.0.9-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fixed numerous issues  posted to GitHub (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
+  <li> Support trim:background-color define for -trim option.</li>
+<dt>2019-10-05  7.0.8-68 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.8-68, GIT revision 16184:b75b0e5:20191005.</li>
+<dt>2019-09-30  7.0.8-68 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Support animated WebP encoding/decoding (reference    https://github.com/ImageMagick/ImageMagick/pull/1708).</li>
+  <li> Text stroke cut off (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=1&amp;t=36829).</li>
+  <li> Adds support for lossless JPEG1 recompression (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=2&amp;t=36828).</li>
+<dt>2019-09-29  7.0.8-67 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.8-67, GIT revision 16145:6f2feb9:20190929.</li>
+<dt>2019-09-28  7.0.8-67 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> line endings renedered as empty boxes (reference    https://github.com/ImageMagick/ImageMagick/issues/1704).</li>
+<dt>2019-09-21  7.0.8-66 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.8-66, GIT revision 16134:f6ce80a:20190921.</li>
+<dt>2019-09-09  7.0.8-66 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Support compound statements in FX while() (reference    https://github.com/ImageMagick/ImageMagick/issues/1701).</li>
+<dt>2019-09-15  7.0.8-65 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.8-65, GIT revision 16130:254db34:20190915.</li>
+<dt>2019-09-09  7.0.8-65 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Eliminate fault when trace delegate is not available.</li>
+  <li> Properly distinquish linear and non-linear gray colorspaces (reference    https://github.com/ImageMagick/ImageMagick/issues/1680).</li>
+<dt>2019-09-07  7.0.8-64 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.8-64, GIT revision 16108:2ad3cbc:20190907.</li>
+<dt>2019-09-02  7.0.8-64 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Support XPM symbolic (reference    https://github.com/ImageMagick/ImageMagick/issues/1684).</li>
+  <li> DilateIntensity is channel independent (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=36641).</li>
+<dt>2019-08-31  7.0.8-63 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.8-63, GIT revision 16088:3b7a33d:20190831.</li>
-<dt>2019-08-24  7.0.8-62 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2019-08-24  7.0.8-63 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Properly identify the DNG and AI image format (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=36581).</li>
 <dt>2019-08-23  7.0.8-62 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.8-62, GIT revision 16061:7525595:20190823.</li>
@@ -1039,4 +1071,4 @@
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 2nd September 2019 13:05 -->
+<!-- Magick Cache 30th October 2019 08:06 -->

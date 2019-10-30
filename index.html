@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no"  />
   <title>ImageMagick - Convert, Edit, or Compose Bitmap Images</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="ImageMagick® creates, edits, composes, and converts bitmap images. Resize an image, crop it, change its shades and colors, add captions, and more." />
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert bitmap images. Resize an image, crop it, change its shades and colors, add captions, and more." />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="convert, edit, or, compose, bitmap, images, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
@@ -35,7 +35,6 @@
   <link href="www/assets/magick.css" rel="stylesheet" />
 </head>
 <body>
-  <header>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,10 +62,10 @@
         <a class="nav-link" href="www/develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="./https://imagemagick.org/discourse-server//">Community</a>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="www/https://imagemagick.org/script/search.php">
+    <form class="form-inline my-2 my-lg-0" action="./www/https://imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
     </form>
@@ -84,7 +83,7 @@
     </script>
 
   </div>
-  </header>
+
   <main class="container">
     <div class="magick-template">
 <div class="magick-header">
@@ -96,13 +95,13 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
 <p>ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you may use, copy, modify, and distribute in both open and proprietary applications. It is distributed under a derived Apache 2.0 <a href="www/license.html">license</a>.</p>
 <p>ImageMagick utilizes multiple computational threads to increase performance and can read, process, or write mega-, giga-, or tera-pixel image sizes.</p>
 
-<p>The current release is ImageMagick <a href="www/download.html">7.0.8-63</a>.  It runs on <a href="www/download.html#unix">Linux</a>, <a href="www/download.html#windows">Windows</a>, <a href="www/download.html#macosx">Mac Os X</a>, <a href="www/download.html#iOS">iOS</a>, <a href="https://github.com/cherryleafroad/Android-ImageMagick7">Android</a> OS, and others.</p>
+<p>The current release is ImageMagick <a href="www/download.html">7.0.9-1</a>.  It runs on <a href="www/download.html#unix">Linux</a>, <a href="www/download.html#windows">Windows</a>, <a href="www/download.html#macosx">Mac Os X</a>, <a href="www/download.html#iOS">iOS</a>, <a href="https://github.com/cherryleafroad/Android-ImageMagick7">Android</a> OS, and others.</p>
 
 <p>The authoritative ImageMagick web site is <a href="index.html">https://imagemagick.org</a>. The authoritative source code repository is <a href="https://github.com/ImageMagick" target="_blank">https://github.com/ImageMagick</a>.  We maintain a source code mirror at <a href="https://gitlab.com/ImageMagick" target="_blank">https://gitlab.com/ImageMagick</a>.  We continue to maintain the legacy release of ImageMagick, version 6, at <a href="https://legacy.imagemagick.org/">https://legacy.imagemagick.org</a>.</p>
 
 <h2><a class="anchor" id="features"></a>Features and Capabilities</h2>
 <p>Here are just a few <a href="www/examples.html">examples</a> of what ImageMagick can do for you:</p>
-<div class="table-responsive"  style="font-size:87.5% !important;">
+<div class="table-responsive" style="font-size:87.5% !important;">
 <table class="table table-sm table-striped">
   <tr>
     <td><a href="./Usage/anim_basics/">Animation</a></td>
@@ -174,7 +173,7 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
   </tr>
   <tr>
     <td><a href="www/fx.html">Image calculator</a></td>
-    <td>apply a mathematical expression to an image or image channels.</td>
+    <td>apply a mathematical expression to an image, image sequence, or image channels.</td>
   </tr>
   <tr>
     <td><a href="www/gradient.html">Image gradients</a></td>
@@ -254,14 +253,15 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
 <p>Want more performance from ImageMagick?  Try these options:</p>
 
 <ul>
-<li>Add more memory to your system, see <a href="www/architecture.html#cache">the pixel cache</a>;</li>
-<li>Add more cores to your system, see <a href="www/architecture.html#threads">threads of execution support</a>;</li>
+<li>add more memory to your system, see <a href="www/architecture.html#cache">the pixel cache</a>;</li>
+<li>add more cores to your system, see <a href="www/architecture.html#threads">threads of execution support</a>;</li>
+<li>reduce lock contention with the <a href="http://goog-perftools.sourceforge.net/doc/tcmalloc.html">tcmalloc</a> memory allocation library;</li>
 <li>push large images to a solid-state drive, see <a href="www/architecture.html#tera-pixel">large image support</a>.</li>
 </ul>
 <p>If these options are prohibitive, you can reduce the quality of the image results.  The default build is Q16 HDRI.  If you disable <a href="www/high-dynamic-range.html">HDRI</a>, you use half the memory and instead of predominately floating point operations, you use the typically more efficient integer operations.  The tradeoff is reduced precision and you cannot process out of range pixel values (e.g. negative).  If you build the Q8 non-HDRI  version of ImageMagick, you again reduce the memory requirements in half-- and once again there is a tradeoff, even less precision and no out of range pixel values.  For a Q8 non-HDRI build of ImageMagick, use these <code>configure</code> script options: <code>--with-quantum-depth=8 --disable-hdri</code>.</p>
 
 <h2><a class="anchor" id="community"></a>Community</h2>
-<p>To join the ImageMagick community, try the <a target="_blank" href="https://imagemagick.org/discourse-server/">discourse server</a>.  You can review questions or comments (with informed responses) posed by ImageMagick users or ask your own questions. If you want to contribute image processing algorithms, other enhancements, or bug fixes, open an <a href="https://github.com/ImageMagick/ImageMagick/issues">issue</a>. </p>
+<p>To join the ImageMagick community, try the <a target="_blank" href="./https://imagemagick.org/discourse-server//">discourse server</a>.  You can review questions or comments (with informed responses) posed by ImageMagick users or ask your own questions. If you want to contribute image processing algorithms, other enhancements, or bug fixes, open an <a href="https://github.com/ImageMagick/ImageMagick/issues">issue</a>. </p>
 </div>
     </div>
   </main><!-- /.container -->
@@ -286,4 +286,4 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 2nd September 2019 13:07 -->
+<!-- Magick Cache 30th October 2019 07:51 -->

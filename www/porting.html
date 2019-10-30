@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no"  />
   <title>ImageMagick - Porting to ImageMagick Version 7</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="ImageMagick® creates, edits, composes, and converts bitmap images. Resize an image, crop it, change its shades and colors, add captions, and more." />
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert bitmap images. Resize an image, crop it, change its shades and colors, add captions, and more." />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="porting, to, imagemagick, version, 7, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
@@ -35,7 +35,6 @@
   <link href="assets/magick.css" rel="stylesheet" />
 </head>
 <body>
-  <header>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +62,7 @@
         <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server//">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="https://imagemagick.org/script/search.php">
@@ -84,14 +83,14 @@
     </script>
 
   </div>
-  </header>
+
   <main class="container">
     <div class="magick-template">
 <div class="magick-header">
 
 <p class="text-center"><a href="porting.html#imv7">ImageMagick Version 7</a> • <a href="porting.html#hdri">High Dynamic Range Imaging</a> • <a href="porting.html#channels">Pixel Channels</a> • <a href="porting.html#alpha">Alpha</a> • <a href="porting.html#grayscale">Grayscale</a> • <a href="porting.html#mask">Masks</a> • <a href="porting.html#core">MagickCore API</a> • <a href="porting.html#headers">Header Files</a>  • <a href="porting.html#deprecate">Deprecated Features Removed</a> • <a href="porting.html#cli">Command-line Interface</a> • <a href="porting.html#summary">Version 7 Change Summary</a> </p>
 
-<p class="lead magick-description">The design of ImageMagick is an evolutionary process, with the design and implementation efforts serving to influence and guide further progress in the other.  With ImageMagick version 7 we improved the design based on lessons learned from the version 6 implementation.  ImageMagick was originally designed to display RGB images to an X Windows server.  Over time we extended support to RGBA images and then to the CMYK and CMYKA image format.  With ImageMagick version 7, we extend support to arbitrary colorspaces with an arbitrary number of pixel channels.  In addition, ImageMagick 7 stores pixel channels as floats permitting out of band values (e.g. negative) and reduces rounding error.  There are numerous other design enhancements described within.</p>
+<p class="lead magick-description">The design of ImageMagick is an evolutionary process, with the design and implementation efforts serving to influence and guide further progress in the other.  With ImageMagick version 7, we improved the design based on lessons learned from the version 6 implementation.  ImageMagick was originally designed to display RGB images to an X Windows server.  Over time we extended support to RGBA images and then to the CMYK and CMYKA image format.  With ImageMagick version 7, we extend support to arbitrary colorspaces with an arbitrary number of pixel channels.  In addition, ImageMagick 7 stores pixel channels as floats permitting out of band values (e.g. negative) and reduces rounding error.  There are numerous other design enhancements described within.</p>
 
 <p>To support variable pixel channels in the MagickCore API, pixel handling has changed when getting or setting the pixel channels.  You can access channels as an array, <var>pixel[i]</var>, or use an accessor method such as GetPixelRed() or SetPixelRed().  There are some modest changes to the MagickCore and MagickWand API's.   The Magick++ and PerlMagick API's have not changed and matches that of the ImageMagick version 6.</p>
 
@@ -107,7 +106,7 @@ better reporting of which option failed, the consolidation and deprecation of
 options, and more global use of 'image properties' (more commonly known as
 'percent escapes' in option arguments. </p>
 
-<p>ImageMagick version 7 is available now as a <a href="../download">production</a> release.</p>
+<p>ImageMagick version 7 is available now as a <a href="https://imagemagick.org/download/">production</a> release.</p>
 
 <p>Now that ImageMagick version 7 is released, we continue to support and enhance version 6 for a minimum of 10 years.</p>
 
@@ -456,7 +455,7 @@ be applied to expand the one channel into separate RGB (or other) channels.
 <dt class="col-md-4">-gamma</dt>
 <dd class="col-md-8">Multiple gamma arguments (e.g. <code>-gamma 1,2,3</code>) are no longer supported, instead use <code>-channel</code> (e.g. <code>-channel blue -gamma 2)</code>.</dd>
 <dt class="col-md-4">-region</dt>
-<dd class="col-md-8">This option set a write mask for the region you define.  In IMv6, a separate image was clone instead, operated on, and the results were composited to the source image.  In addition, the draw transformations are relative to the upper left corner of the image, previously in IMv6 they were relative to the region.</dd>
+<dd class="col-md-8">This option sets a write mask for the region you define.  In IMv6, a separate image was cloned instead, operated on, and the results were composited to the source image.  In addition, the draw transformations are relative to the upper left corner of the image, previously in IMv6 they were relative to the region.</dd>
 </dl>
 
 <p>Use <code>-define morphology:showKernel=1</code> to post the morphology or convolution kernel.  Previously it was <code>-define showKernel=1</code>.</p>
@@ -682,4 +681,4 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 2nd September 2019 14:09 -->
+<!-- Magick Cache 30th October 2019 07:09 -->

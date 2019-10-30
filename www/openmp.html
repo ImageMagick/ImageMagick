@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no"  />
   <title>ImageMagick - Parallel Execution with OpenMP</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="ImageMagick® creates, edits, composes, and converts bitmap images. Resize an image, crop it, change its shades and colors, add captions, and more." />
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert bitmap images. Resize an image, crop it, change its shades and colors, add captions, and more." />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="parallel, execution, with, openmp, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
@@ -35,7 +35,6 @@
   <link href="assets/magick.css" rel="stylesheet" />
 </head>
 <body>
-  <header>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +62,7 @@
         <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server//">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="https://imagemagick.org/script/search.php">
@@ -84,17 +83,18 @@
     </script>
 
   </div>
-  </header>
+
   <main class="container">
     <div class="magick-template">
 <div class="magick-header">
 
 <p class="lead magick-description">Many of ImageMagick's internal algorithms are threaded to take advantage of speed-ups offered by the multicore processor chips and <a href="http://www.openmp.org">OpenMP</a>. OpenMP, is an API specification for parallel programming. If your compiler supports OpenMP (e.g. gcc, Visual Studio 2005) directives, ImageMagick automatically includes support. To verify, look for the OpenMP feature of ImageMagick with this command:</p>
 <pre class="highlight"><code>-> magick identify -version
-Version: ImageMagick 7.0.8-21 2019-01-04 Q16 https://imagemagick.org
+Version: ImageMagick 7.0.8-64 2019-09-04 Q16 https://imagemagick.org
 Copyright: © 1999-2019 ImageMagick Studio LLC
 Features: OpenMP(4.5)</code></pre>
 <p>With OpenMP enabled, most ImageMagick algorithms execute on all the cores on your system in parallel.  ImageMagick typically divides the work so that each thread processes 64 rows of pixels. As rows are completed, OpenMP assigns more chunks of pixel rows to each thread until the algorithm completes. For example, if you have a quad-core system, and attempt to resize an image, the resizing takes place on 4 cores (8 if hyperthreading is enabled).</p>
+<p>You can further increase performance by reducing lock contention with the <a href="http://goog-perftools.sourceforge.net/doc/tcmalloc.html">tcmalloc</a> memory allocation library.  To enable, add <code>--with-tcmalloc</code> to the <code>configure</code> command-line when you build ImageMagick.</p>
 <h5>The Perils of Parallel Execution</h5>
 <p>It can be difficult to predict behavior in a parallel environment. Performance might depend on a number of factors including the compiler, the version of the OpenMP library, the processor type, the number of cores, the amount of memory, whether hyperthreading is enabled, the mix of applications that are executing concurrently with ImageMagick, or the particular image-processing algorithm you utilize. The only way to be certain of the optimal performance, in terms of the number of threads, is to benchmark. ImageMagick includes progressive threading when benchmarking a command and returns the elapsed time and efficiency for one or more threads. This can help you identify how many threads are the most efficient in your environment. Here is an example benchmark for threads 1-8:</p>
 
@@ -132,3 +132,4 @@ Performance[8]: 40i 4.831ips 0.872e 15.680u 0:02.070</code></pre>
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
+<!-- Magick Cache 30th October 2019 09:15 -->
