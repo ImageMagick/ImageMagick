@@ -178,10 +178,6 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
   if (*raw_info->shootinginfo.BodySerial != '\0')
     (void) SetImageProperty(image,"dng:serial.number",
       raw_info->shootinginfo.BodySerial,exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%0.2f",
-    raw_info->other.FlashEC);
-  (void) SetImageProperty(image,"dng:flash.exposure.compensation",property,
-    exception);
   (void) FormatLocaleString(property,MagickPathExtent,"1/%0.1f",
     1.0/raw_info->other.shutter);
   (void) SetImageProperty(image,"dng:exposure.time",property,exception);
