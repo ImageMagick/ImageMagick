@@ -1254,9 +1254,6 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       size_t
         length;
 
-      ssize_t
-        offset;
-
       stream=ReadBlobStream(image,extent,pixels,&count);
       if (count != (ssize_t) extent)
         break;
@@ -1271,8 +1268,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (proceed == MagickFalse)
             break;
         }
-      offset=row++;
-      q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
+      q=QueueAuthenticPixels(image,0,++row,image->columns,1,exception);
       if (q == (Quantum *) NULL)
         break;
       length=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
