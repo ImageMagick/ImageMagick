@@ -577,6 +577,12 @@ ModuleExport size_t RegisterDNGImage(void)
   entry->flags^=CoderBlobSupportFlag;
   entry->format_type=ExplicitFormatType;
   (void) RegisterMagickInfo(entry);
+  entry=AcquireMagickInfo("DNG","CR3","Canon Digital Camera Raw Image Format");
+  entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->flags^=CoderBlobSupportFlag;
+  entry->format_type=ExplicitFormatType;
+  (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("DNG","CRW","Canon Digital Camera Raw Image Format");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
   entry->flags|=CoderDecoderSeekableStreamFlag;
@@ -741,6 +747,7 @@ ModuleExport void UnregisterDNGImage(void)
   (void) UnregisterMagickInfo("ERF");
   (void) UnregisterMagickInfo("DCR");
   (void) UnregisterMagickInfo("CRW");
+  (void) UnregisterMagickInfo("CR3");
   (void) UnregisterMagickInfo("CR2");
   (void) UnregisterMagickInfo("DNG");
   (void) UnregisterMagickInfo("ARW");
