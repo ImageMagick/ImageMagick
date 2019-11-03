@@ -2716,6 +2716,9 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
   char
     component[MagickPathExtent],
     magic[MagickPathExtent],
+#if defined(MAGICKCORE_ZLIB_DELEGATE) || defined(MAGICKCORE_BZLIB_DELEGATE)
+    path[MagickPathExtent],
+#endif
     *q;
 
   const MagicInfo
@@ -2800,9 +2803,6 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
         (LocaleCompare(component,"svgz") == 0) ||
         (LocaleCompare(component,"wmz") == 0))
       {
-        char
-          path[MagickPathExtent];
-
         (void) CopyMagickString(path,image_info->filename,MagickPathExtent);
         path[strlen(path)-strlen(component)-1]='\0';
         GetPathComponent(path,ExtensionPath,component);
@@ -2812,9 +2812,6 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
   if (*component != '\0')
     if (LocaleCompare(component,"bz2") == 0)
       {
-        char
-          path[MagickPathExtent];
-
         (void) CopyMagickString(path,image_info->filename,MagickPathExtent);
         path[strlen(path)-strlen(component)-1]='\0';
         GetPathComponent(path,ExtensionPath,component);
