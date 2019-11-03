@@ -1222,7 +1222,6 @@ MagickPrivate MagickBooleanType OpenModule(const char *module,
   ExceptionInfo *exception)
 {
   char
-    filename[MagickPathExtent],
     module_name[MagickPathExtent],
     name[MagickPathExtent],
     path[MagickPathExtent];
@@ -1270,11 +1269,11 @@ MagickPrivate MagickBooleanType OpenModule(const char *module,
     Locate module.
   */
   handle=(ModuleHandle) NULL;
-  TagToCoderModuleName(module_name,filename);
+  TagToCoderModuleName(module_name,name);
   (void) LogMagickEvent(ModuleEvent,GetMagickModule(),
-    "Searching for module \"%s\" using filename \"%s\"",module_name,filename);
+    "Searching for module \"%s\" using filename \"%s\"",module_name,name);
   *path='\0';
-  status=GetMagickModulePath(filename,MagickImageCoderModule,path,exception);
+  status=GetMagickModulePath(name,MagickImageCoderModule,path,exception);
   if (status == MagickFalse)
     return(MagickFalse);
   /*
