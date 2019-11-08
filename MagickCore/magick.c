@@ -131,7 +131,7 @@ static SplayTreeInfo
   *magick_list = (SplayTreeInfo *) NULL;
 
 static volatile MagickBooleanType
-  instantiate_magickcore = MagickFalse,
+  magickcore_instantiated = MagickFalse,
   magickcore_signal_in_progress = MagickFalse,
   magick_list_initialized = MagickFalse;
 
@@ -1278,7 +1278,7 @@ MagickExport MagickBooleanType ListMagickInfo(FILE *file,
 */
 MagickExport MagickBooleanType IsMagickCoreInstantiated(void)
 {
-  return(instantiate_magickcore);
+  return(magickcore_instantiated);
 }
 
 /*
@@ -1487,7 +1487,7 @@ MagickExport void MagickCoreGenesis(const char *path,
   */
   InitializeMagickMutex();
   LockMagickMutex();
-  if (instantiate_magickcore != MagickFalse)
+  if (magickcore_instantiated != MagickFalse)
     {
       UnlockMagickMutex();
       return;
@@ -1594,7 +1594,7 @@ MagickExport void MagickCoreGenesis(const char *path,
 #endif
   (void) RegistryComponentGenesis();
   (void) MonitorComponentGenesis();
-  instantiate_magickcore=MagickTrue;
+  magickcore_instantiated=MagickTrue;
   UnlockMagickMutex();
 }
 
@@ -1620,7 +1620,7 @@ MagickExport void MagickCoreTerminus(void)
 {
   InitializeMagickMutex();
   LockMagickMutex();
-  if (instantiate_magickcore == MagickFalse)
+  if (magickcore_instantiated == MagickFalse)
     {
       UnlockMagickMutex();
       return;
@@ -1661,7 +1661,7 @@ MagickExport void MagickCoreTerminus(void)
   LocaleComponentTerminus();
   LogComponentTerminus();
   ExceptionComponentTerminus();
-  instantiate_magickcore=MagickFalse;
+  magickcore_instantiated=MagickFalse;
   UnlockMagickMutex();
   SemaphoreComponentTerminus();
 }
