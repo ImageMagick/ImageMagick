@@ -1266,9 +1266,10 @@ MagickExport MagickBooleanType ListMagickInfo(FILE *file,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsMagickCoreInstantiated() returns MagickTrue if the ImageMagick environment
-%  is currently instantiated:  MagickCoreGenesis() has been called but
-%  MagickDestroy() has not.
+%  IsMagickCoreInstantiated() returns MagickFalse if the ImageMagick
+%  environment has not been instantiated; the ImageMagick environment
+%  has been instantiated when MagickCoreGenesis() has been called but
+%  MagickDestroy() has not been called.
 %
 %  The format of the IsMagickCoreInstantiated method is:
 %
