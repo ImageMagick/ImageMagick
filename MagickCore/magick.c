@@ -1661,9 +1661,10 @@ MagickExport void MagickCoreTerminus(void)
   LocaleComponentTerminus();
   LogComponentTerminus();
   ExceptionComponentTerminus();
+  SemaphoreComponentTerminus();
   magickcore_instantiated=MagickFalse;
   UnlockMagickMutex();
-  SemaphoreComponentTerminus();
+  DestroyMagickMutex();
 }
 
 /*
