@@ -523,6 +523,30 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
 %
 */
 
+static char *SanitizeDelegateString(const char *source)
+{
+  char
+    *sanitize_source;
+
+  const char
+    *q;
+
+  register char
+    *p;
+
+  static char
+    whitelist[] =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 "
+      "$-_.+!*'(),{}|\\^~[]`\"><#%/?:@&=";
+
+  sanitize_source=AcquireString(source);
+  p=sanitize_source;
+  q=sanitize_source+strlen(sanitize_source);
+  for (p+=strspn(p,whitelist); p != q; p+=strspn(p,whitelist))
+    *p='_';
+  return(sanitize_source);
+}
+
 static char *GetMagickPropertyLetter(ImageInfo *image_info,Image *image,
   const char letter,ExceptionInfo *exception)
 {
@@ -860,7 +884,7 @@ static char *GetMagickPropertyLetter(ImageInfo *image_info,Image *image,
       break;
     }
   }
-  return(SanitizeString(string));
+  return(SanitizeDelegateString(string));
 }
 
 static char *InterpretDelegateProperties(ImageInfo *image_info,
