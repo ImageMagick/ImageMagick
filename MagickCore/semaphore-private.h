@@ -40,8 +40,6 @@ extern MagickPrivate void
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 static omp_lock_t
   semaphore_mutex;
-static MagickBooleanType
-  active_mutex = MagickFalse;
 #elif defined(MAGICKCORE_THREAD_SUPPORT)
 static pthread_mutex_t
   semaphore_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -53,18 +51,14 @@ static LONG
 static inline void DestroyMagickMutex(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  if (active_mutex != MagickFalse)
     omp_destroy_lock(&semaphore_mutex);
-  active_mutex=MagickFalse;
 #endif
 }
 
 static inline void InitializeMagickMutex(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  if (active_mutex == MagickFalse)
     omp_init_lock(&semaphore_mutex);
-  active_mutex=MagickTrue;
 #endif
 }
 
