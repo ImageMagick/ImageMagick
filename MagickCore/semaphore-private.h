@@ -51,14 +51,14 @@ static LONG
 static inline void DestroyMagickMutex(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-    omp_destroy_lock(&semaphore_mutex);
+  omp_destroy_lock(&semaphore_mutex);
 #endif
 }
 
 static inline void InitializeMagickMutex(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-    omp_init_lock(&semaphore_mutex);
+  omp_init_lock(&semaphore_mutex);
 #endif
 }
 
