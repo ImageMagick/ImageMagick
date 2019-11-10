@@ -39,39 +39,39 @@ extern MagickPrivate void
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 static omp_lock_t
-  semaphore_mutex;
+  mutex_for_this_translation_unit;
 #elif defined(MAGICKCORE_THREAD_SUPPORT)
 static pthread_mutex_t
-  semaphore_mutex = PTHREAD_MUTEX_INITIALIZER;
+  mutex_for_this_translation_unit = PTHREAD_MUTEX_INITIALIZER;
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
 static LONG
-  semaphore_mutex = 0;
+  mutex_for_this_translation_unit = 0;
 #endif
 
 static inline void DestroyMagickMutex(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  omp_destroy_lock(&semaphore_mutex);
+  omp_destroy_lock(&mutex_for_this_translation_unit);
 #endif
 }
 
 static inline void InitializeMagickMutex(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  omp_init_lock(&semaphore_mutex);
+  omp_init_lock(&mutex_for_this_translation_unit);
 #endif
 }
 
 static inline void LockMagickMutex(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  omp_set_lock(&semaphore_mutex);
+  omp_set_lock(&mutex_for_this_translation_unit);
 #elif defined(MAGICKCORE_THREAD_SUPPORT)
   {
     int
       status;
 
-    status=pthread_mutex_lock(&semaphore_mutex);
+    status=pthread_mutex_lock(&mutex_for_this_translation_unit);
     if (status != 0)
       {
         errno=status;
@@ -79,7 +79,7 @@ static inline void LockMagickMutex(void)
       }
   }
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
-  while (InterlockedCompareExchange(&semaphore_mutex,1L,0L) != 0)
+  while (InterlockedCompareExchange(&mutex_for_this_translation_unit,1L,0L) != 0)
     Sleep(10);
 #endif
 }
@@ -87,13 +87,13 @@ static inline void LockMagickMutex(void)
 static inline void UnlockMagickMutex(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  omp_unset_lock(&semaphore_mutex);
+  omp_unset_lock(&mutex_for_this_translation_unit);
 #elif defined(MAGICKCORE_THREAD_SUPPORT)
   {
     int
       status;
 
-    status=pthread_mutex_unlock(&semaphore_mutex);
+    status=pthread_mutex_unlock(&mutex_for_this_translation_unit);
     if (status != 0)
       {
         errno=status;
@@ -101,7 +101,7 @@ static inline void UnlockMagickMutex(void)
       }
   }
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
-  InterlockedExchange(&semaphore_mutex,0L);
+  InterlockedExchange(&mutex_for_this_translation_unit,0L);
 #endif
 }
 
