@@ -28,6 +28,15 @@ extern MagickPrivate MagickBooleanType
 extern MagickPrivate void
   SemaphoreComponentTerminus(void);
 
+/*
+  When included in a translation unit, the following code provides within
+  that particular translation unit a means by which to synchronize multiple
+  threads that might try to enter the same critical section or to access a
+  shared resource; it can be included in multiple translation units, and
+  thereby provide a separate, independent means of synchronization to each
+  such translation unit.
+*/
+
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 static omp_lock_t
   semaphore_mutex;
