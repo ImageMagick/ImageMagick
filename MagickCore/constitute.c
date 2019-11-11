@@ -475,6 +475,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   */
   sans_exception=AcquireExceptionInfo();
   magick_info=GetMagickInfo(read_info->magick,sans_exception);
+  if (sans_exception->severity == PolicyError)
+    magick_info=GetMagickInfo(read_info->magick,exception);
   sans_exception=DestroyExceptionInfo(sans_exception);
   if (magick_info != (const MagickInfo *) NULL)
     {
@@ -1081,6 +1083,8 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
     Call appropriate image writer based on image type.
   */
   magick_info=GetMagickInfo(write_info->magick,sans_exception);
+  if (sans_exception->severity == PolicyError)
+    magick_info=GetMagickInfo(write_info->magick,exception);
   sans_exception=DestroyExceptionInfo(sans_exception);
   if (magick_info != (const MagickInfo *) NULL)
     {
@@ -1185,6 +1189,8 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
         {
           sans_exception=AcquireExceptionInfo();
           magick_info=GetMagickInfo(write_info->magick,sans_exception);
+          if (sans_exception->severity == PolicyError)
+            magick_info=GetMagickInfo(write_info->magick,exception);
           sans_exception=DestroyExceptionInfo(sans_exception);
           if ((write_info->affirm == MagickFalse) &&
               (magick_info == (const MagickInfo *) NULL))
