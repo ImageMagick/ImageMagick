@@ -6,6 +6,8 @@
   * Add exception parameter to CMS transform methods.
   * Output exception there is an attempt to perform an operation not allowed by
     the security policy
+  * Fixed numerous issues  posted to GitHub (reference
+    https://github.com/ImageMagick/ImageMagick/issues).
 
 2019-10-30  7.0.9-2 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-2, GIT revision 16325:6f84d89:20191030.
