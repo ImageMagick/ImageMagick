@@ -1669,18 +1669,14 @@ static void SVGStartElement(void *context,const xmlChar *name,
               const char
                 *p;
 
-              for (p=value; ; )
-              {
+              p=value;
+              (void) GetNextToken(p,&p,MagickPathExtent,token);
+              if (*token == ',')
                 (void) GetNextToken(p,&p,MagickPathExtent,token);
-                if (*token == ',')
-                  (void) GetNextToken(p,&p,MagickPathExtent,token);
-                if (*token != '\0')
-                  {
-                    (void) FormatLocaleFile(svg_info->file,"class \"%s\"\n",
-                      value);
-                    break;
-                  }
-              }
+              if (*token != '\0')
+                (void) FormatLocaleFile(svg_info->file,"class \"%s\"\n",value);
+              else
+                (void) FormatLocaleFile(svg_info->file,"class \"none\"\n");
               break;
             }
           if (LocaleCompare(keyword,"clip-path") == 0)
