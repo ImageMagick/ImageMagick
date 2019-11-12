@@ -242,9 +242,9 @@ static MagickBooleanType
 %
 %  A description of each parameter follows:
 %
-%    o count: the number of quantum elements to allocate.
+%    o count: the number of objects to allocate contiguously.
 %
-%    o quantum: the number of bytes in each quantum.
+%    o quantum: the size (in bytes) of each object.
 %
 */
 MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
@@ -545,9 +545,9 @@ MagickExport void *AcquireMagickMemory(const size_t size)
 %
 %  A description of each parameter follows:
 %
-%    o count: the number of quantum elements to allocate.
+%    o count: the number of objects to allocate contiguously.
 %
-%    o quantum: the number of bytes in each quantum.
+%    o quantum: the size (in bytes) of each object.
 %
 */
 MagickExport void *AcquireQuantumMemory(const size_t count,const size_t quantum)
@@ -582,9 +582,9 @@ MagickExport void *AcquireQuantumMemory(const size_t count,const size_t quantum)
 %
 %  A description of each parameter follows:
 %
-%    o count: the number of quantum elements to allocate.
+%    o count: the number of objects to allocate contiguously.
 %
-%    o quantum: the number of bytes in each quantum.
+%    o quantum: the size (in bytes) of each object.
 %
 */
 
@@ -998,7 +998,9 @@ MagickExport void *GetVirtualMemoryBlob(const MemoryInfo *memory_info)
 %
 %  A description of each parameter follows:
 %
-%    o size: the size of the memory in bytes we require.
+%    o count: the number of objects to allocate contiguously.
+%
+%    o quantum: the size (in bytes) of each object.
 %
 */
 MagickExport MagickBooleanType HeapOverflowSanityCheck(const size_t count,
@@ -1361,9 +1363,9 @@ MagickExport void *ResizeMagickMemory(void *memory,const size_t size)
 %
 %    o memory: A pointer to a memory allocation.
 %
-%    o count: the number of quantum elements to allocate.
+%    o count: the number of objects to allocate contiguously.
 %
-%    o quantum: the number of bytes in each quantum.
+%    o quantum: the size (in bytes) of each object.
 %
 */
 MagickExport void *ResizeQuantumMemory(void *memory,const size_t count,
