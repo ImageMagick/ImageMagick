@@ -43,7 +43,7 @@
 %  sizes.  It is based on the paper, "Fast Memory Allocation using Lazy Fits."
 %  written by Yoo C. Chung.
 %
-%  By default, ANSI memory methods are called (e.g. malloc).  Use the
+%  By default, C's standard library is used (e.g. malloc);  use the
 %  custom memory allocator by defining MAGICKCORE_ANONYMOUS_MEMORY_SUPPORT
 %  to allocate memory with private anonymous mapping rather than from the
 %  heap.
