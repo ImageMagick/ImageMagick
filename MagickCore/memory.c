@@ -233,8 +233,8 @@ static MagickBooleanType
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireAlignedMemory() returns a pointer to a block of memory at least size
-%  bytes whose address is aligned on a cache line or page boundary.
+%  AcquireAlignedMemory() returns a pointer to a block of memory whose size is
+%  at least (count*quantum) bytes, and whose address is aligned on a cache line.
 %
 %  The format of the AcquireAlignedMemory method is:
 %
