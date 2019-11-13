@@ -110,7 +110,7 @@ typedef struct _CompositeOptions
 */
 
 static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
-  Image *composite_image,CompositeOptions *composite_options,
+  Image *composite_image,Image *mask_image,CompositeOptions *composite_options,
   ExceptionInfo *exception)
 {
   const char
@@ -230,9 +230,30 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
               /*
                 Digitally composite image.
               */
-              status&=CompositeImage(*image,composite_image,
-                composite_options->compose,composite_options->clip_to_self,
-                geometry.x,geometry.y,exception);
+              if (mask_image == (Image *) NULL)
+                status&=CompositeImage(*image,composite_image,
+                  composite_options->compose,composite_options->clip_to_self,
+                  geometry.x,geometry.y,exception);
+              else
+                {
+                  Image
+                    *clone_image;
+
+                  clone_image=CloneImage(*image,0,0,MagickTrue,exception);
+                  if (clone_image != (Image *) NULL)
+                    {
+                      status&=CompositeImage(*image,composite_image,
+                        composite_options->compose,
+                        composite_options->clip_to_self,geometry.x,geometry.y,
+                        exception);
+                      status&=CompositeImage(*image,mask_image,
+                        CopyAlphaCompositeOp,MagickTrue,0,0,exception);
+                      status&=CompositeImage(clone_image,*image,OverCompositeOp,
+                        composite_options->clip_to_self,0,0,exception);
+                      *image=DestroyImageList(*image);
+                      *image=clone_image;
+                    }
+                }
             }
       (void) SetPixelChannelMask(composite_image,channel_mask);
     }
@@ -1637,18 +1658,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
         }
     }
   RemoveImageStack(mask_image);
-  if (mask_image != (Image *) NULL)
-    {
-      if ((composite_options.compose == DisplaceCompositeOp) ||
-          (composite_options.compose == DistortCompositeOp))
-        status&=CompositeImage(composite_image,mask_image,
-          CopyGreenCompositeOp,MagickTrue,0,0,exception);
-      else
-        status&=CompositeImage(composite_image,mask_image,IntensityCompositeOp,
-          MagickTrue,0,0,exception);
-      mask_image=DestroyImage(mask_image);
-    }
-  status&=CompositeImageList(image_info,&images,composite_image,
+  status&=CompositeImageList(image_info,&images,composite_image,mask_image,
     &composite_options,exception);
   composite_image=DestroyImage(composite_image);
   /*
