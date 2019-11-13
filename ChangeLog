@@ -1,5 +1,5 @@
-2019-11-10  7.0.9-3 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.9-4, GIT revision 16325:6f84d89:20191030.
+2019-11-13  7.0.9-3 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.9-4, GIT revision 16350:0f9a052:20191113.
 
 2019-11-10  7.0.9-3 Cristy  <quetzlzacatenango@image...>
   * Santize ';' from SHOW and WIN delegates.
