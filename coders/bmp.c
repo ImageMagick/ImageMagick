@@ -657,20 +657,22 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Microsoft Windows BMP image file.
         */
-        if (bmp_info.size < 40)
-          ThrowReaderException(CorruptImageError,"NonOS2HeaderSizeError");
         bmp_info.width=(ssize_t) ReadBlobLSBSignedLong(image);
         bmp_info.height=(ssize_t) ReadBlobLSBSignedLong(image);
         bmp_info.planes=ReadBlobLSBShort(image);
         bmp_info.bits_per_pixel=ReadBlobLSBShort(image);
         bmp_info.compression=ReadBlobLSBLong(image);
-        bmp_info.image_size=ReadBlobLSBLong(image);
-        bmp_info.x_pixels=ReadBlobLSBLong(image);
-        bmp_info.y_pixels=ReadBlobLSBLong(image);
-        bmp_info.number_colors=ReadBlobLSBLong(image);
-        if ((MagickSizeType) bmp_info.number_colors > blob_size)
-          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-        bmp_info.colors_important=ReadBlobLSBLong(image);
+        if (bmp_info.size > 16)
+          {
+            bmp_info.image_size=ReadBlobLSBLong(image);
+            bmp_info.x_pixels=ReadBlobLSBLong(image);
+            bmp_info.y_pixels=ReadBlobLSBLong(image);
+            bmp_info.number_colors=ReadBlobLSBLong(image);
+            if ((MagickSizeType) bmp_info.number_colors > blob_size)
+              ThrowReaderException(CorruptImageError,
+                "InsufficientImageDataInFile");
+            bmp_info.colors_important=ReadBlobLSBLong(image);
+          }
         if (image->debug != MagickFalse)
           {
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
