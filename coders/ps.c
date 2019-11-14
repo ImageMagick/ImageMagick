@@ -73,6 +73,7 @@
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/timer-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/transform.h"
@@ -340,9 +341,9 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
     if (CompareMagickByteBuffer(&buffer,DocumentProcessColors,length) != MagickFalse)
       {
         p=GetMagickByteBufferDatum(&buffer);
-        if ((strcasestr(p,"Cyan") != (char *) NULL) ||
-            (strcasestr(p,"Magenta") != (char *) NULL) ||
-            (strcasestr(p,"Yellow") != (char *) NULL))
+        if ((StringLocateSubstring(p,"Cyan") != (char *) NULL) ||
+            (StringLocateSubstring(p,"Magenta") != (char *) NULL) ||
+            (StringLocateSubstring(p,"Yellow") != (char *) NULL))
           ps_info->cmyk=MagickTrue;
       }
     if (CompareMagickByteBuffer(&buffer,CMYKCustomColor,strlen(CMYKCustomColor)) != MagickFalse)

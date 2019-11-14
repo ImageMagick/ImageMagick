@@ -66,6 +66,7 @@
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
@@ -2142,11 +2143,11 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *cache,const char *xml,
               compliance;
 
             compliance=color_info->compliance;
-            if (strcasestr(token,"SVG") != (char *) NULL)
+            if (StringLocateSubstring(token,"SVG") != (char *) NULL)
               compliance|=SVGCompliance;
-            if (strcasestr(token,"X11") != (char *) NULL)
+            if (StringLocateSubstring(token,"X11") != (char *) NULL)
               compliance|=X11Compliance;
-            if (strcasestr(token,"XPM") != (char *) NULL)
+            if (StringLocateSubstring(token,"XPM") != (char *) NULL)
               compliance|=XPMCompliance;
             color_info->compliance=(ComplianceType) compliance;
             break;

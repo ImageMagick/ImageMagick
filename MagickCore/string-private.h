@@ -45,6 +45,45 @@ static inline double StringToDouble(const char *magick_restrict string,
   return(InterpretLocaleValue(string,sentinal));
 }
 
+static inline char *StringLocateSubstring(const char *haystack,
+  const char *needle)
+{
+#if defined(MAGICKCORE_HAVE_STRCASESTR)
+  return((char *) strcasestr(haystack,needle));
+#else
+  {
+    size_t
+      length_needle,
+      length_haystack;
+
+    register ssize_t
+      i;
+
+    if (!haystack || !needle)
+      return(NULL);
+    length_needle=strlen(needle);
+    length_haystack=strlen(haystack)-length_needle+1;
+    for (i=0; i < length_haystack; i++)
+    {
+      register size_t
+        j;
+
+      for (j=0; j < length_needle; j++)
+      {
+        unsigned char c1 = haystack[i+j];
+        unsigned char c2 = needle[j];
+        if (toupper(c1) != toupper(c2))
+          goto next;
+      }
+      return((char *) haystack+i);
+      next:
+       ;
+    }
+    return((char *) NULL);
+  }
+#endif
+}
+
 static inline double StringToDoubleInterval(const char *string,
   const double interval)
 {
