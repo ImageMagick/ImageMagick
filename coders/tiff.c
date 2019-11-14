@@ -1828,7 +1828,7 @@ RestoreMSCWarning
     quantum_type=RGBQuantum;
     if (TIFFScanlineSize(tiff) <= 0)
       ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-    if (((MagickSizeType) TIFFScanlineSize(tiff)) > (2*GetBlobSize(image)))
+    if ((1.0*TIFFScanlineSize(tiff)) > (2.1*GetBlobSize(image)))
       ThrowTIFFException(CorruptImageError,"InsufficientImageDataInFile");
     number_pixels=MagickMax(TIFFScanlineSize(tiff),MagickMax((ssize_t)
       image->columns*samples_per_pixel*pow(2.0,ceil(log(bits_per_sample)/
