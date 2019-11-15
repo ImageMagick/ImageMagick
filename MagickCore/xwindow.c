@@ -63,7 +63,6 @@
 #include "MagickCore/log.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
-#include "MagickCore/memory-private.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/nt-base-private.h"
 #include "MagickCore/option.h"

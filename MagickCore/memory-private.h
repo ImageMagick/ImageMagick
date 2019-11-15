@@ -24,8 +24,6 @@
 extern "C" {
 #endif
 
-#include "MagickCore/exception-private.h"
-
 #if defined(__powerpc__)
 #  define CACHE_LINE_SIZE  (16 * MAGICKCORE_SIZEOF_VOID_P)
 #else
@@ -57,20 +55,6 @@ extern "C" {
 extern MagickPrivate void
   ResetMaxMemoryRequest(void),
   ResetVirtualAnonymousMemory(void);
-
-static inline void *AcquireCriticalMemory(const size_t size)
-{
-  register void
-    *memory;
- 
-  /*
-    Fail if memory request cannot be fulfilled.
-  */
-  memory=AcquireMagickMemory(size);
-  if (memory == (void *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  return(memory);
-}
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -55,7 +55,6 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
-#include "MagickCore/memory-private.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel.h"

@@ -529,6 +529,48 @@ MagickExport void *AcquireMagickMemory(const size_t size)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   A c q u i r e C r i t i c a l M e m o r y                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AcquireCriticalMemory() is just like AcquireMagickMemory(), throws a fatal
+%  exception if the memory cannot be acquired.
+%
+%  That is, AcquireCriticalMemory() returns a pointer to a block of memory that
+%  is at least size bytes, and that is suitably aligned for any use; however,
+%  if this is not possible, it throws an exception and terminates the program
+%  as unceremoniously as possible.
+%
+%  The format of the AcquireCriticalMemory method is:
+%
+%      void *AcquireCriticalMemory(const size_t size)
+%
+%  A description of each parameter follows:
+%
+%    o size: the size (in bytes) of the memory to allocate.
+%
+*/
+MagickExport void *AcquireCriticalMemory(const size_t size)
+{
+  register void
+    *memory;
+
+  /*
+    Fail if memory request cannot be fulfilled.
+  */
+  memory=AcquireMagickMemory(size);
+  if (memory == (void *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  return(memory);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   A c q u i r e Q u a n t u m M e m o r y                                   %
 %                                                                             %
 %                                                                             %
