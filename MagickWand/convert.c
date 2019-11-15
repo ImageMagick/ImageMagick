@@ -47,19 +47,10 @@
 #include "MagickWand/mogrify-private.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/utility-private.h"
+#include "MagickCore/exception-private.h"
 /*
   Define declarations.
 */
-#define ThrowFileException(exception,severity,tag,context) \
-{ \
-  char \
-    *message; \
- \
-  message=GetExceptionMessage(errno); \
-  (void) ThrowMagickException(exception,GetMagickModule(),severity, \
-    tag == (const char *) NULL ? "unknown" : tag,"'%s': %s",context,message); \
-  message=DestroyString(message); \
-}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
