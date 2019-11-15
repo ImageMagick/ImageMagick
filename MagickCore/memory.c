@@ -254,7 +254,6 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
 #define AlignedPowerOf2(x)  ((((x) - 1) & (x)) == 0)
 
   size_t
-    alignment,
     extent,
     size;
 
@@ -264,40 +263,39 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
   if (HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse)
     return((void *) NULL);
   memory=NULL;
-  alignment=CACHE_LINE_SIZE;
-  extent=AlignedExtent(size,alignment);
+  extent=AlignedExtent(size,CACHE_LINE_SIZE);
   if ((size == 0) || (extent < size))
     return((void *) NULL);
   if (memory_methods.acquire_aligned_memory_handler != (AcquireAlignedMemoryHandler) NULL)
-    return(memory_methods.acquire_aligned_memory_handler(extent,alignment));
+    return(memory_methods.acquire_aligned_memory_handler(extent,CACHE_LINE_SIZE));
 #if defined(MAGICKCORE_HAVE_POSIX_MEMALIGN)
-  if (posix_memalign(&memory,alignment,extent) != 0)
+  if (posix_memalign(&memory,CACHE_LINE_SIZE,extent) != 0)
     memory=NULL;
 #elif defined(MAGICKCORE_HAVE__ALIGNED_MALLOC)
-  memory=_aligned_malloc(extent,alignment);
+  memory=_aligned_malloc(extent,CACHE_LINE_SIZE);
 #else
   {
     void
       *p;
 
-    if ((alignment == 0) || (alignment % sizeof(void *) != 0) ||
-        (AlignedPowerOf2(alignment/sizeof(void *)) == 0))
+    if ((CACHE_LINE_SIZE == 0) || (CACHE_LINE_SIZE % sizeof(void *) != 0) ||
+        (AlignedPowerOf2(CACHE_LINE_SIZE/sizeof(void *)) == 0))
       {
         errno=EINVAL;
         return((void *) NULL);
       }
-    if (size > (SIZE_MAX-alignment-sizeof(void *)-1))
+    if (size > (SIZE_MAX-CACHE_LINE_SIZE-sizeof(void *)-1))
       {
         errno=ENOMEM;
         return((void *) NULL);
       }
-    extent=(size+alignment-1)+sizeof(void *);
+    extent=(size+CACHE_LINE_SIZE-1)+sizeof(void *);
     if (extent > size)
       {
         p=AcquireMagickMemory(extent);
         if (p != NULL)
           {
-            memory=(void *) AlignedExtent((size_t) p+sizeof(void *),alignment);
+            memory=(void *) AlignedExtent((size_t) p+sizeof(void *),CACHE_LINE_SIZE);
             *((void **) memory-1)=p;
           }
       }
