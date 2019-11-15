@@ -56,12 +56,6 @@ extern "C" {
 #define MagickAssumeAligned(address)  (address)
 #endif
 
-MagickExport MagickBooleanType 
-  HeapOverflowSanityCheck(const size_t,const size_t);
-
-MagickExport size_t
-  GetMaxMemoryRequest(void);
-
 extern MagickPrivate void
   ResetMaxMemoryRequest(void),
   ResetVirtualAnonymousMemory(void);

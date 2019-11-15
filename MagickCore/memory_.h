@@ -32,6 +32,12 @@ typedef void
   *(*AcquireAlignedMemoryHandler)(const size_t,const size_t),
   (*RelinquishAlignedMemoryHandler)(void *);
 
+extern MagickExport MagickBooleanType
+  HeapOverflowSanityCheck(const size_t,const size_t);
+
+extern MagickExport size_t
+  GetMaxMemoryRequest(void);
+
 extern MagickExport MemoryInfo
   *AcquireVirtualMemory(const size_t,const size_t) magick_alloc_sizes(1,2),
   *RelinquishVirtualMemory(MemoryInfo *);
