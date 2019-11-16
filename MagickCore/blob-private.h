@@ -67,7 +67,8 @@ extern MagickExport const struct stat
   *GetBlobProperties(const Image *);
 
 extern MagickExport const void
-  *ReadBlobStream(Image *,const size_t,void *,ssize_t *);
+  *ReadBlobStream(Image *,const size_t,void *magick_restrict ,ssize_t *)
+    magick_hot_spot;
 
 extern MagickExport double
   ReadBlobDouble(Image *);

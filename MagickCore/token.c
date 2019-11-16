@@ -156,8 +156,9 @@ MagickExport TokenInfo *DestroyTokenInfo(TokenInfo *token_info)
 %
 %  The format of the GetNextToken method is:
 %
-%      size_t GetNextToken(const char *start,const char **end,
-%        const size_t extent,char *token)
+%      size_t GetNextToken(const char *magick_restrict start,
+%        const char **magick_restrict end,const size_t extent,
+%        char *magick_restrict token)
 %
 %  A description of each parameter follows:
 %
@@ -170,17 +171,18 @@ MagickExport TokenInfo *DestroyTokenInfo(TokenInfo *token_info)
 %    o token: copy the token to this buffer.
 %
 */
-MagickExport size_t GetNextToken(const char *start,const char **end,
-  const size_t extent,char *token)
+MagickExport magick_hot_spot size_t GetNextToken(
+  const char *magick_restrict start,const char **magick_restrict end,
+  const size_t extent,char *magick_restrict token)
 {
   double
     value;
 
   register char
-    *q;
+    *magick_restrict q;
 
   register const char
-    *p;
+    *magick_restrict p;
 
   register ssize_t
     i;
@@ -336,8 +338,9 @@ MagickExport size_t GetNextToken(const char *start,const char **end,
 %
 %  The format of the GlobExpression function is:
 %
-%      MagickBooleanType GlobExpression(const char *expression,
-%        const char *pattern,const MagickBooleanType case_insensitive)
+%      MagickBooleanType GlobExpression(const char *magick_restrict expression,
+%        const char *magick_restrict pattern,
+%        const MagickBooleanType case_insensitive)
 %
 %  A description of each parameter follows:
 %
@@ -349,15 +352,16 @@ MagickExport size_t GetNextToken(const char *start,const char **end,
 %      an expression.
 %
 */
-MagickExport MagickBooleanType GlobExpression(const char *expression,
-  const char *pattern,const MagickBooleanType case_insensitive)
+MagickExport MagickBooleanType GlobExpression(
+  const char *magick_restrict expression,const char *magick_restrict pattern,
+  const MagickBooleanType case_insensitive)
 {
   MagickBooleanType
     done,
     match;
 
   register const char
-    *p;
+    *magick_restrict p;
 
   /*
     Return on empty pattern or '*'.

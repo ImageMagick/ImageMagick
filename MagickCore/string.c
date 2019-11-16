@@ -411,8 +411,8 @@ MagickExport int CompareStringInfo(const StringInfo *target,
 %
 %  The format of the ConcatenateMagickString method is:
 %
-%      size_t ConcatenateMagickString(char *destination,const char *source,
-%        const size_t length)
+%      size_t ConcatenateMagickString(char *magick_restrict destination,
+%        const char *magick_restrict source,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -423,14 +423,14 @@ MagickExport int CompareStringInfo(const StringInfo *target,
 %    o length: the length of the destination string.
 %
 */
-MagickExport size_t ConcatenateMagickString(char *destination,
-  const char *source,const size_t length)
+MagickExport size_t ConcatenateMagickString(char *magick_restrict destination,
+  const char *magick_restrict source,const size_t length)
 {
   register char
-    *q;
+    *magick_restrict q;
 
   register const char
-    *p;
+    *magick_restrict p;
 
   register size_t
     i;
@@ -479,8 +479,8 @@ MagickExport size_t ConcatenateMagickString(char *destination,
 %
 %  The format of the ConcatenateString method is:
 %
-%      MagickBooleanType ConcatenateString(char **destination,
-%        const char *source)
+%      MagickBooleanType ConcatenateString(char **magick_restrict destination,
+%        const char *magick_restrict source)
 %
 %  A description of each parameter follows:
 %
@@ -489,8 +489,8 @@ MagickExport size_t ConcatenateMagickString(char *destination,
 %    o source: A character string.
 %
 */
-MagickExport MagickBooleanType ConcatenateString(char **destination,
-  const char *source)
+MagickExport MagickBooleanType ConcatenateString(
+  char **magick_restrict destination,const char *magick_restrict source)
 {
   size_t
     destination_length,
@@ -740,8 +740,8 @@ MagickExport char *ConstantString(const char *source)
 %
 %  The format of the CopyMagickString method is:
 %
-%      size_t CopyMagickString(const char *destination,char *source,
-%        const size_t length)
+%      size_t CopyMagickString(const char *magick_restrict destination,
+%        char *magick_restrict source,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -752,14 +752,14 @@ MagickExport char *ConstantString(const char *source)
 %    o length: the length of the destination string.
 %
 */
-MagickExport size_t CopyMagickString(char *destination,const char *source,
-  const size_t length)
+MagickExport size_t CopyMagickString(char *magick_restrict destination,
+  const char *magick_restrict source,const size_t length)
 {
   register char
-    *q;
+    *magick_restrict q;
 
   register const char
-    *p;
+    *magick_restrict p;
 
   register size_t
     n;

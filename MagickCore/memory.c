@@ -707,8 +707,8 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
 %
 %  The format of the CopyMagickMemory method is:
 %
-%      void *CopyMagickMemory(void *destination,const void *source,
-%        const size_t size)
+%      void *CopyMagickMemory(void *magick_restrict destination,
+%        const void *magick_restrict source,const size_t size)
 %
 %  A description of each parameter follows:
 %
@@ -719,8 +719,8 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
 %    o size: the size of the memory in bytes to allocate.
 %
 */
-MagickExport void *CopyMagickMemory(void *destination,const void *source,
-  const size_t size)
+MagickExport void *CopyMagickMemory(void *magick_restrict destination,
+  const void *magick_restrict source,const size_t size)
 {
   register const unsigned char
     *p;

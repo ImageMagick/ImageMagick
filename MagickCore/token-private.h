@@ -51,16 +51,17 @@ static UTFInfo
     { 0xFE, 0xFC, 0x7ffffff, 0x4000000 },  /* 6 byte sequence */
   };
 
-static inline unsigned char *ConvertLatin1ToUTF8(const unsigned char *content)
+static inline unsigned char *ConvertLatin1ToUTF8(
+  const unsigned char *magick_restrict content)
 {
   int
     c;
 
   register const unsigned char
-    *p;
+    *magick_restrict p;
 
   register unsigned char
-    *q;
+    *magick_restrict q;
 
   size_t
     length;
@@ -92,7 +93,8 @@ static inline unsigned char *ConvertLatin1ToUTF8(const unsigned char *content)
   return(utf8);
 }
 
-static inline int GetNextUTFCode(const char *text,unsigned int *octets)
+static inline int GetNextUTFCode(const char *magick_restrict text,
+  unsigned int *magick_restrict octets)
 {
   int
     code;
@@ -133,7 +135,7 @@ static inline int GetNextUTFCode(const char *text,unsigned int *octets)
   return(-1);
 }
 
-static inline int GetUTFCode(const char *text)
+static inline int GetUTFCode(const char *magick_restrict text)
 {
   unsigned int
     octets;
@@ -141,7 +143,7 @@ static inline int GetUTFCode(const char *text)
   return(GetNextUTFCode(text,&octets));
 }
 
-static inline unsigned int GetUTFOctets(const char *text)
+static inline unsigned int GetUTFOctets(const char *magick_restrict text)
 {
   unsigned int
     octets;

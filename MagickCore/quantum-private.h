@@ -183,14 +183,14 @@ static inline float HalfToSinglePrecision(const unsigned short half)
 }
 
 static inline unsigned char *PopCharPixel(const unsigned char pixel,
-  unsigned char *pixels)
+  unsigned char *magick_restrict pixels)
 {
   *pixels++=pixel;
   return(pixels);
 }
 
 static inline unsigned char *PopLongPixel(const EndianType endian,
-  const unsigned int pixel,unsigned char *pixels)
+  const unsigned int pixel,unsigned char *magick_restrict pixels)
 {
   register unsigned int
     quantum;
@@ -212,7 +212,7 @@ static inline unsigned char *PopLongPixel(const EndianType endian,
 }
 
 static inline unsigned char *PopShortPixel(const EndianType endian,
-  const unsigned short pixel,unsigned char *pixels)
+  const unsigned short pixel,unsigned char *magick_restrict pixels)
 {
   register unsigned int
     quantum;
@@ -229,15 +229,17 @@ static inline unsigned char *PopShortPixel(const EndianType endian,
   return(pixels);
 }
 
-static inline const unsigned char *PushCharPixel(const unsigned char *pixels,
-  unsigned char *pixel)
+static inline const unsigned char *PushCharPixel(
+  const unsigned char *magick_restrict pixels,
+  unsigned char *magick_restrict pixel)
 {
   *pixel=(*pixels++);
   return(pixels);
 }
 
 static inline const unsigned char *PushLongPixel(const EndianType endian,
-  const unsigned char *pixels,unsigned int *pixel)
+  const unsigned char *magick_restrict pixels,
+  unsigned int *magick_restrict pixel)
 {
   register unsigned int
     quantum;
@@ -260,7 +262,8 @@ static inline const unsigned char *PushLongPixel(const EndianType endian,
 }
 
 static inline const unsigned char *PushShortPixel(const EndianType endian,
-  const unsigned char *pixels,unsigned short *pixel)
+  const unsigned char *magick_restrict pixels,
+  unsigned short *magick_restrict pixel)
 {
   register unsigned int
     quantum;
@@ -279,7 +282,8 @@ static inline const unsigned char *PushShortPixel(const EndianType endian,
 }
 
 static inline const unsigned char *PushFloatPixel(const EndianType endian,
-  const unsigned char *pixels,MagickFloatType *pixel)
+  const unsigned char *magick_restrict pixels,
+  MagickFloatType *magick_restrict pixel)
 {
   union
   {

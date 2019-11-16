@@ -69,16 +69,16 @@ extern MagickExport int
   CompareStringInfo(const StringInfo *,const StringInfo *);
 
 extern MagickExport MagickBooleanType
-  ConcatenateString(char **,const char *),
+  ConcatenateString(char **magick_restrict,const char *magick_restrict),
   IsStringTrue(const char *) magick_attribute((__pure__)),
   IsStringFalse(const char *) magick_attribute((__pure__)),
   SubstituteString(char **,const char *,const char *);
 
 extern MagickExport size_t
-  ConcatenateMagickString(char *,const char *,const size_t)
-    magick_attribute((__nonnull__)),
-  CopyMagickString(char *,const char *,const size_t)
-    magick_attribute((__nonnull__)),
+  ConcatenateMagickString(char *magick_restrict,const char *magick_restrict,
+    const size_t) magick_attribute((__nonnull__)),
+  CopyMagickString(char *magick_restrict,const char *magick_restrict,
+    const size_t) magick_attribute((__nonnull__)),
   GetStringInfoLength(const StringInfo *);
 
 extern MagickExport ssize_t
