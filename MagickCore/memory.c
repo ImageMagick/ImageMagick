@@ -249,8 +249,7 @@ static MagickBooleanType
 */
 MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
 {
-#define AlignedExtent(size,alignment) \
-  (((size)+((alignment)-1)) & ~((alignment)-1))
+#define AlignedExtent(size) (((size)+(CACHE_LINE_SIZE-1)) & ~(CACHE_LINE_SIZE-1))
 #define AlignedPowerOf2(x)  ((((x) - 1) & (x)) == 0)
 
   size_t
@@ -263,7 +262,7 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
   if (HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse)
     return((void *) NULL);
   memory=NULL;
-  extent=AlignedExtent(size,CACHE_LINE_SIZE);
+  extent=AlignedExtent(size);
   if ((size == 0) || (extent < size))
     return((void *) NULL);
   if (memory_methods.acquire_aligned_memory_handler != (AcquireAlignedMemoryHandler) NULL)
@@ -295,7 +294,7 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
         p=AcquireMagickMemory(extent);
         if (p != NULL)
           {
-            memory=(void *) AlignedExtent((size_t) p+sizeof(void *),CACHE_LINE_SIZE);
+            memory=(void *) AlignedExtent((size_t) p+sizeof(void *));
             *((void **) memory-1)=p;
           }
       }
