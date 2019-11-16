@@ -88,11 +88,11 @@ typedef struct HuffmanTable
 /*
   Huffman coding declarations.
 */
-#define TWId  23
-#define MWId  24
-#define TBId  25
-#define MBId  26
-#define EXId  27
+#define TWId  23U
+#define MWId  24U
+#define TBId  25U
+#define MBId  26U
+#define EXId  27U
 
 static const HuffmanTable
   MBTable[]=
@@ -227,11 +227,9 @@ static const HuffmanTable
 */
 #define MaxLineExtent  36
 
-static char *Ascii85Tuple(unsigned char *data)
+static char *Ascii85Tuple(char tuple[6],
+  const unsigned char *magick_restrict data)
 {
-  static char
-    tuple[6];
-
   register ssize_t
     i,
     x;
@@ -277,6 +275,9 @@ MagickExport void Ascii85Initialize(Image *image)
 
 MagickExport void Ascii85Flush(Image *image)
 {
+  char
+    tuple_info[6];
+
   register char
     *tuple;
 
@@ -290,7 +291,7 @@ MagickExport void Ascii85Flush(Image *image)
       image->ascii85->buffer[image->ascii85->offset]='\0';
       image->ascii85->buffer[image->ascii85->offset+1]='\0';
       image->ascii85->buffer[image->ascii85->offset+2]='\0';
-      tuple=Ascii85Tuple(image->ascii85->buffer);
+      tuple=Ascii85Tuple(tuple_info,image->ascii85->buffer);
       (void) WriteBlob(image,(size_t) image->ascii85->offset+1,
         (const unsigned char *) (*tuple == 'z' ? "!!!!" : tuple));
     }
@@ -301,6 +302,9 @@ MagickExport void Ascii85Flush(Image *image)
 
 MagickExport void Ascii85Encode(Image *image,const unsigned char code)
 {
+  char
+    tuple_info[6];
+
   register char
     *q;
 
@@ -320,7 +324,7 @@ MagickExport void Ascii85Encode(Image *image,const unsigned char code)
   p=image->ascii85->buffer;
   for (n=image->ascii85->offset; n >= 4; n-=4)
   {
-    for (q=Ascii85Tuple(p); *q != '\0'; q++)
+    for (q=Ascii85Tuple(tuple_info,p); *q != '\0'; q++)
     {
       image->ascii85->line_break--;
       if ((image->ascii85->line_break < 0) && (*q != '%'))
@@ -366,11 +370,11 @@ MagickExport void Ascii85Encode(Image *image,const unsigned char code)
 MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
   ExceptionInfo *exception)
 {
-#define HashSize  1021
-#define MBHashA  293
-#define MBHashB  2695
-#define MWHashA  3510
-#define MWHashB  1178
+#define HashSize  1021U
+#define MBHashA  293U
+#define MBHashB  2695U
+#define MWHashA  3510U
+#define MWHashB  1178U
 
 #define InitializeHashTable(hash,table,a,b) \
 { \
