@@ -18,6 +18,7 @@
 #ifndef MAGICKCORE_STRING_PRIVATE_H
 #define MAGICKCORE_STRING_PRIVATE_H
 
+#include <string.h>
 #include "MagickCore/locale_.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
