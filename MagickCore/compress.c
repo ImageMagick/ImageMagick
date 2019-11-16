@@ -88,11 +88,11 @@ typedef struct HuffmanTable
 /*
   Huffman coding declarations.
 */
-#define TWId  23U
-#define MWId  24U
-#define TBId  25U
-#define MBId  26U
-#define EXId  27U
+#define TWId  23L
+#define MWId  24L
+#define TBId  25L
+#define MBId  26L
+#define EXId  27L
 
 static const HuffmanTable
   MBTable[]=
@@ -225,10 +225,9 @@ static const HuffmanTable
 %
 %
 */
-#define MaxLineExtent  36
+#define MaxLineExtent  36L
 
-static char *Ascii85Tuple(char tuple[6],
-  const unsigned char *magick_restrict data)
+static char *Ascii85Tuple(char *tuple,const unsigned char *magick_restrict data)
 {
   register ssize_t
     i,
@@ -269,7 +268,7 @@ MagickExport void Ascii85Initialize(Image *image)
   if (image->ascii85 == (Ascii85Info *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) memset(image->ascii85,0,sizeof(*image->ascii85));
-  image->ascii85->line_break=(ssize_t) MaxLineExtent << 1;
+  image->ascii85->line_break=(ssize_t) (MaxLineExtent << 1);
   image->ascii85->offset=0;
 }
 
@@ -370,11 +369,11 @@ MagickExport void Ascii85Encode(Image *image,const unsigned char code)
 MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
   ExceptionInfo *exception)
 {
-#define HashSize  1021U
-#define MBHashA  293U
-#define MBHashB  2695U
-#define MWHashA  3510U
-#define MWHashB  1178U
+#define HashSize  1021L
+#define MBHashA  293L
+#define MBHashB  2695L
+#define MWHashA  3510L
+#define MWHashB  1178L
 
 #define InitializeHashTable(hash,table,a,b) \
 { \
