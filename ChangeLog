@@ -1,7 +1,13 @@
-2019-11-13  7.0.9-3 Cristy  <quetzlzacatenango@image...>
+2019-11-16  7.0.9-5 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.9-5, GIT revision 16...
+
+2019-11-16  7.0.9-5 Cristy  <quetzlzacatenango@image...>
+  * Ensure Ascii85 compression is thread safe.
+
+2019-11-13  7.0.9-4 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-4, GIT revision 16354:5f53562:20191114.
 
-2019-11-10  7.0.9-3 Cristy  <quetzlzacatenango@image...>
+2019-11-10  7.0.9-4 Cristy  <quetzlzacatenango@image...>
   * Santize ';' from SHOW and WIN delegates.
   * Add exception parameter to CMS transform methods.
   * Output exception there is an attempt to perform an operation not allowed by
