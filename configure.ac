@@ -309,9 +309,6 @@ PKG_PROG_PKG_CONFIG([0.20])
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 
-# Test for 64-bit build.
-AC_CHECK_SIZEOF([size_t])
-
 AX_COMPILER_VENDOR
 
 if test "x$GCC" = "xyes"; then
@@ -1028,44 +1025,10 @@ AC_CHECK_SIZEOF([float])
 AC_CHECK_SIZEOF([double])
 AC_CHECK_SIZEOF([long double])
 
-# Obtain size of an 'signed short' and define as SIZEOF_SIGNED_SHORT
-AC_CHECK_SIZEOF(signed short)
-
-# Obtain size of an 'unsigned short' and define as SIZEOF_UNSIGNED_SHORT
-AC_CHECK_SIZEOF(unsigned short)
-
-# Obtain size of an 'signed int' and define as SIZEOF_SIGNED_INT
-AC_CHECK_SIZEOF(signed int)
-
-# Obtain size of an 'unsigned int' and define as SIZEOF_UNSIGNED_INT
-AC_CHECK_SIZEOF(unsigned int)
-
-# Obtain size of a 'signed long' and define as SIZEOF_SIGNED_LONG
-AC_CHECK_SIZEOF(signed long)
-
-# Obtain size of a 'unsigned long' and define as SIZEOF_UNSIGNED_LONG
-AC_CHECK_SIZEOF(unsigned long)
-
-# Obtain size of a 'long long' and define as SIZEOF_SIGNED_LONG_LONG.  If
-# 'signed long long' is not supported then the value defined is zero.
-AC_CHECK_SIZEOF(signed long long)
-
 # Obtain size of a 'unsigned long long' and define as
 # SIZEOF_UNSIGNED_LONG_LONG.  If 'unsigned long long' is not
 # supported then the value defined is zero.
 AC_CHECK_SIZEOF(unsigned long long)
-
-# Obtain size of off_t and define as SIZEOF_OFF_T
-AC_CHECK_SIZEOF(off_t)
-
-# Obtain size of size_t and define as SIZEOF_SIZE_T
-AC_CHECK_SIZEOF(size_t)
-
-# Obtain size of ssize_t and define as SIZEOF_SSIZE_T
-AC_CHECK_SIZEOF(ssize_t)
-
-# Obtain size of an unsigned int pointer and define as SIZEOF_UNSIGNED_INTP
-AC_CHECK_SIZEOF(unsigned int*)
 
 AC_MSG_CHECKING([whether our compiler supports __func__])
 AC_TRY_COMPILE([],

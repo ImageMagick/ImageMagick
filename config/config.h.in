@@ -897,41 +897,8 @@
 /* The size of `long double', as computed by sizeof. */
 #undef SIZEOF_LONG_DOUBLE
 
-/* The size of `off_t', as computed by sizeof. */
-#undef SIZEOF_OFF_T
-
-/* The size of `signed int', as computed by sizeof. */
-#undef SIZEOF_SIGNED_INT
-
-/* The size of `signed long', as computed by sizeof. */
-#undef SIZEOF_SIGNED_LONG
-
-/* The size of `signed long long', as computed by sizeof. */
-#undef SIZEOF_SIGNED_LONG_LONG
-
-/* The size of `signed short', as computed by sizeof. */
-#undef SIZEOF_SIGNED_SHORT
-
-/* The size of `size_t', as computed by sizeof. */
-#undef SIZEOF_SIZE_T
-
-/* The size of `ssize_t', as computed by sizeof. */
-#undef SIZEOF_SSIZE_T
-
-/* The size of `unsigned int', as computed by sizeof. */
-#undef SIZEOF_UNSIGNED_INT
-
-/* The size of `unsigned int*', as computed by sizeof. */
-#undef SIZEOF_UNSIGNED_INTP
-
-/* The size of `unsigned long', as computed by sizeof. */
-#undef SIZEOF_UNSIGNED_LONG
-
 /* The size of `unsigned long long', as computed by sizeof. */
 #undef SIZEOF_UNSIGNED_LONG_LONG
-
-/* The size of `unsigned short', as computed by sizeof. */
-#undef SIZEOF_UNSIGNED_SHORT
 
 /* Define to 1 if the `S_IS*' macros in <sys/stat.h> do not work properly. */
 #undef STAT_MACROS_BROKEN
