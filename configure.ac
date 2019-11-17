@@ -30,7 +30,13 @@ m4_define([magick_micro_version], [9])
 m4_define([magick_patchlevel_version], [8])
 m4_define([magick_version],
           [magick_major_version.magick_minor_version.magick_micro_version-magick_patchlevel_version])
-m4_define([magick_git_revision], esyscmd([./gitversion.sh]))
+m4_define([magick_git_revision],
+          esyscmd([
+            c=$(git log --full-history --format=tformat:. HEAD | wc -l)
+            h=$(git rev-parse --short HEAD)
+            d=$(date +%Y%m%d)
+            printf %s "$c:$h:$d"
+          ]))
 m4_define([magick_tar_name],[ImageMagick])
 
 # ==============================================================================

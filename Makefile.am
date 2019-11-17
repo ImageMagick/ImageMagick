@@ -110,7 +110,6 @@ TOP_EXTRA_DIST = \
   Platforms.txt \
   README.txt \
   index.html \
-  gitversion.sh \
   version.sh \
   winpath.sh
 
@@ -287,7 +286,7 @@ magick-version: MagickCore/version.h
 	fi ; \
 	touch magick-version
 
-${srcdir}/configure: ${srcdir}/version.sh ${srcdir}/gitversion.sh
+${srcdir}/configure: ${srcdir}/version.sh
 
 # Automagically reconfigure libtool
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
