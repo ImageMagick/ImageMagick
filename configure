@@ -25048,41 +25048,7 @@ $as_echo "#define HAVE_UNSIGNED_LONG_LONG_INT 1" >>confdefs.h
   fi
 
 
-ac_fn_c_check_type "$LINENO" "locale_t" "ac_cv_type_locale_t" "#include <xlocale.h>
-"
-if test "x$ac_cv_type_locale_t" = xyes; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE_LOCALE_T 1
-_ACEOF
-
-
-fi
-
-
 # Float_t and double_t are intended to be the the most efficient type.
-ac_fn_c_check_type "$LINENO" "float_t" "ac_cv_type_float_t" "#include <math.h>
-"
-if test "x$ac_cv_type_float_t" = xyes; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE_FLOAT_T 1
-_ACEOF
-
-
-fi
-
-ac_fn_c_check_type "$LINENO" "double_t" "ac_cv_type_double_t" "#include <math.h>
-"
-if test "x$ac_cv_type_double_t" = xyes; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE_DOUBLE_T 1
-_ACEOF
-
-
-fi
-
 # The cast to long int works around a bug in the HP C Compiler
 # version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
 # declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.

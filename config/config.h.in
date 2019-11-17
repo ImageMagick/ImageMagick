@@ -164,9 +164,6 @@
 /* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
 #undef HAVE_DOPRNT
 
-/* Define to 1 if the system has the type `double_t'. */
-#undef HAVE_DOUBLE_T
-
 /* Define to 1 if you have the `erf' function. */
 #undef HAVE_ERF
 
@@ -181,9 +178,6 @@
 
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
-
-/* Define to 1 if the system has the type `float_t'. */
-#undef HAVE_FLOAT_T
 
 /* Define to 1 if you have the `floor' function. */
 #undef HAVE_FLOOR
@@ -271,9 +265,6 @@
 
 /* Define to 1 if you have the <locale.h> header file. */
 #undef HAVE_LOCALE_H
-
-/* Define to 1 if the system has the type `locale_t'. */
-#undef HAVE_LOCALE_T
 
 /* Define to 1 if you have the `localtime_r' function. */
 #undef HAVE_LOCALTIME_R
