@@ -72,6 +72,9 @@ struct _Ascii85Info
     offset,
     line_break;
 
+  char
+    tuple[6];
+
   unsigned char
     buffer[10];
 };
@@ -227,7 +230,8 @@ static const HuffmanTable
 */
 #define MaxLineExtent  36L
 
-static char *Ascii85Tuple(char *tuple,const unsigned char *magick_restrict data)
+static inline void Ascii85Tuple(Ascii85Info *ascii85_info,
+  const unsigned char *magick_restrict data)
 {
   register ssize_t
     i,
@@ -241,21 +245,20 @@ static char *Ascii85Tuple(char *tuple,const unsigned char *magick_restrict data)
     ((size_t) data[2] << 8) | (size_t) data[3];
   if (code == 0L)
     {
-      tuple[0]='z';
-      tuple[1]='\0';
-      return(tuple);
+      ascii85_info->tuple[0]='z';
+      ascii85_info->tuple[1]='\0';
+      return;
     }
   quantum=85UL*85UL*85UL*85UL;
   for (i=0; i < 4; i++)
   {
     x=(ssize_t) (code/quantum);
     code-=quantum*x;
-    tuple[i]=(char) (x+(int) '!');
+    ascii85_info->tuple[i]=(char) (x+(int) '!');
     quantum/=85L;
   }
-  tuple[4]=(char) ((code % 85L)+(int) '!');
-  tuple[5]='\0';
-  return(tuple);
+  ascii85_info->tuple[4]=(char) ((code % 85L)+(int) '!');
+  ascii85_info->tuple[5]='\0';
 }
 
 MagickExport void Ascii85Initialize(Image *image)
@@ -274,12 +277,6 @@ MagickExport void Ascii85Initialize(Image *image)
 
 MagickExport void Ascii85Flush(Image *image)
 {
-  char
-    tuple_info[6];
-
-  register char
-    *tuple;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
@@ -290,9 +287,10 @@ MagickExport void Ascii85Flush(Image *image)
       image->ascii85->buffer[image->ascii85->offset]='\0';
       image->ascii85->buffer[image->ascii85->offset+1]='\0';
       image->ascii85->buffer[image->ascii85->offset+2]='\0';
-      tuple=Ascii85Tuple(tuple_info,image->ascii85->buffer);
+      Ascii85Tuple(image->ascii85,image->ascii85->buffer);
       (void) WriteBlob(image,(size_t) image->ascii85->offset+1,
-        (const unsigned char *) (*tuple == 'z' ? "!!!!" : tuple));
+        (const unsigned char *) (*image->ascii85->tuple == 'z' ? "!!!!" :
+        image->ascii85->tuple));
     }
   (void) WriteBlobByte(image,'~');
   (void) WriteBlobByte(image,'>');
@@ -301,9 +299,6 @@ MagickExport void Ascii85Flush(Image *image)
 
 MagickExport void Ascii85Encode(Image *image,const unsigned char code)
 {
-  char
-    tuple_info[6];
-
   register char
     *q;
 
@@ -323,7 +318,8 @@ MagickExport void Ascii85Encode(Image *image,const unsigned char code)
   p=image->ascii85->buffer;
   for (n=image->ascii85->offset; n >= 4; n-=4)
   {
-    for (q=Ascii85Tuple(tuple_info,p); *q != '\0'; q++)
+    Ascii85Tuple(image->ascii85,p);
+    for (q=image->ascii85->tuple; *q != '\0'; q++)
     {
       image->ascii85->line_break--;
       if ((image->ascii85->line_break < 0) && (*q != '%'))
