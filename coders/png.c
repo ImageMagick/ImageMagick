@@ -6836,7 +6836,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
         MngBox
           crop_box;
 
-        if (mng_info->magn_methx || mng_info->magn_methy)
+        if (((mng_info->magn_methx > 0) && (mng_info->magn_methx <= 5)) &&
+            ((mng_info->magn_methy > 0) && (mng_info->magn_methy <= 5)))
           {
             png_uint_32
                magnified_height,
