@@ -177,7 +177,7 @@ static MagickBooleanType IsWEBPImageLossless(const unsigned char *stream,
 #define CHUNK_HEADER_SIZE  8
 #define MAX_CHUNK_PAYLOAD  (~0U-CHUNK_HEADER_SIZE-1)
 
-  size_t
+  ssize_t
     offset;
 
   /*
@@ -349,8 +349,8 @@ static int ReadSingleWEBPImage(Image *image,const uint8_t *stream,
 }
 
 #if defined(MAGICKCORE_WEBPMUX_DELEGATE)
-static int ReadAnimatedWEBPImage(const ImageInfo *image_info, Image *image,
-  uint8_t *stream, size_t length, WebPDecoderConfig *configure,
+static int ReadAnimatedWEBPImage(const ImageInfo *image_info,Image *image,
+  uint8_t *stream,size_t length,WebPDecoderConfig *configure,
   ExceptionInfo *exception)
 {
   Image
@@ -491,14 +491,13 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
 
     if (configure.input.has_animation) {
 #if defined(MAGICKCORE_WEBPMUX_DELEGATE)
-      webp_status=ReadAnimatedWEBPImage(image_info,image,stream,
-        length,&configure,exception);
+      webp_status=ReadAnimatedWEBPImage(image_info,image,stream,length,
+        &configure,exception);
 #else
       webp_status=VP8_STATUS_UNSUPPORTED_FEATURE;
 #endif
     } else {
-      webp_status=ReadSingleWEBPImage(image, stream,
-        length,&configure,exception);
+      webp_status=ReadSingleWEBPImage(image,stream,length,&configure,exception);
     }
   }
 
@@ -773,6 +772,10 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
     *current,
     *head;
 
+  size_t
+    effective_delta = 0,
+    frame_timestamp = 0;
+
   WebPAnimEncoder
     *enc;
 
@@ -784,9 +787,6 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
 
   WebPPicture
     picture;
-
-  size_t frame_timestamp = 0,
-    effective_delta = 0;
 
   WebPAnimEncoderOptionsInit(&enc_options);
   if (image_info->verbose)
@@ -809,10 +809,10 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
 
     effective_delta = image->delay*1000/image->ticks_per_second;
     if (effective_delta < 10)
-      effective_delta = 100; // Consistent with gif2webp
+      effective_delta = 100; /* Consistent with gif2webp */
     frame_timestamp+=effective_delta;
 
-    WebPAnimEncoderAdd(enc, &picture,(int) frame_timestamp,configure);
+    WebPAnimEncoderAdd(enc,&picture,(int) frame_timestamp,configure);
 
     image = GetNextImageInList(image);
     current->next=(PictureMemory *) calloc(sizeof(*head), 1);
