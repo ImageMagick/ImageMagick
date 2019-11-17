@@ -1,8 +1,10 @@
-2019-11-16  7.0.9-5 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.9-5, GIT revision 16...
+2019-11-17  7.0.9-5 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.9-5, GIT revision 16369:747618e:20191117.
 
 2019-11-16  7.0.9-5 Cristy  <quetzlzacatenango@image...>
   * Ensure Ascii85 compression is thread safe.
+  * Fixed numerous issues  posted to GitHub (reference
+    https://github.com/ImageMagick/ImageMagick/issues).
 
 2019-11-13  7.0.9-4 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-4, GIT revision 16354:5f53562:20191114.
