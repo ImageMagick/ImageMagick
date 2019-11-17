@@ -30,7 +30,7 @@ m4_define([magick_micro_version], [9])
 m4_define([magick_patchlevel_version], [8])
 m4_define([magick_version],
           [magick_major_version.magick_minor_version.magick_micro_version-magick_patchlevel_version])
-m4_define([magick_git_revision], esyscmd([sh -c "(./gitversion.sh .) | awk '{ print \$1 }' | tr -d '\n'"]))
+m4_define([magick_git_revision], esyscmd([./gitversion.sh | tr -d '\n']))
 m4_define([magick_tar_name],[ImageMagick])
 
 # ==============================================================================
