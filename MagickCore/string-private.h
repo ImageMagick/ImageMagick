@@ -50,7 +50,7 @@ static inline char *StringLocateSubstring(const char *haystack,
   const char *needle)
 {
 #if defined(MAGICKCORE_HAVE_STRCASESTR)
-  return((char *) strcasestr(haystack,needle));
+  return(strcasestr(haystack,needle));
 #else
   {
     size_t
