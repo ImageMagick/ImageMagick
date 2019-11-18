@@ -40,14 +40,8 @@
 /*
   Include declarations.
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <math.h>
-#include <locale.h>
+#include "MagickWand/studio.h"
 #include "MagickWand/MagickWand.h"
-#include "MagickCore/studio.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/gem.h"
 #include "MagickCore/resource_.h"
