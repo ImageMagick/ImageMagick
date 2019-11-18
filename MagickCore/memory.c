@@ -250,7 +250,6 @@ static MagickBooleanType
 MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
 {
 #define AlignedExtent(size) (((size)+(CACHE_LINE_SIZE-1)) & ~(CACHE_LINE_SIZE-1))
-#define AlignedPowerOf2(x)  ((((x) - 1) & (x)) == 0)
 
   size_t
     extent,
@@ -280,12 +279,6 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
     void
       *p;
 
-    if ((CACHE_LINE_SIZE == 0) || (CACHE_LINE_SIZE % sizeof(void *) != 0) ||
-        (AlignedPowerOf2(CACHE_LINE_SIZE/sizeof(void *)) == 0))
-      {
-        errno=EINVAL;
-        return((void *) NULL);
-      }
     if (size > (SIZE_MAX-CACHE_LINE_SIZE-sizeof(void *)-1))
       {
         errno=ENOMEM;
