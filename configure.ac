@@ -1026,6 +1026,8 @@ AC_CHECK_SIZEOF([long double])
 # supported then the value defined is zero.
 AC_CHECK_SIZEOF(unsigned long long)
 
+AC_CHECK_SIZEOF(void *)
+
 AC_MSG_CHECKING([whether our compiler supports __func__])
 AC_TRY_COMPILE([],
  [{ const char *func = __func__; return(func != 0 ? 0 : 1); }],
