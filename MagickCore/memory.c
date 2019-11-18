@@ -284,7 +284,7 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
         errno=ENOMEM;
         return((void *) NULL);
       }
-    extent=(size+CACHE_LINE_SIZE-1)+sizeof(void *);
+    extent=(size + (CACHE_LINE_SIZE-1 + sizeof(void *)));
     if (extent > size)
       {
         p=AcquireMagickMemory(extent);
