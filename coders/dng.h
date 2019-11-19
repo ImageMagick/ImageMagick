@@ -17,6 +17,8 @@
 #include "coders/coders-private.h"
 
 #define MagickDNGHeaders \
+  MagickCoderHeader("CR2", 0, "\115\115\000\052\000\020\000\000\122\103\002") \
+  MagickCoderHeader("CR2", 0, "\111\111\052\000\020\000\000\000\103\122\002") \
   MagickCoderHeader("CRW", 0, "II\x1a\x00\x00\x00HEAPCCDR") \
   MagickCoderHeader("ORF", 0, "IIRO\x08\x00\x00\x00") \
   MagickCoderHeader("MRW", 0, "\x00MRM") \
