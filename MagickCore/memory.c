@@ -268,9 +268,9 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
     void
       *memory;
 
-  if (posix_memalign(&memory,CACHE_LINE_SIZE,extent) != 0)
-    return(NULL);
-  return(memory);
+    if (posix_memalign(&memory,CACHE_LINE_SIZE,extent) != 0)
+      return(NULL);
+    return(memory);
   }
 #elif defined(MAGICKCORE_HAVE__ALIGNED_MALLOC)
   return(_aligned_malloc(extent,CACHE_LINE_SIZE));
