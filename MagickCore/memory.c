@@ -263,7 +263,9 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
     }
   if (memory_methods.acquire_aligned_memory_handler != (AcquireAlignedMemoryHandler) NULL)
     return(memory_methods.acquire_aligned_memory_handler(extent,CACHE_LINE_SIZE));
-#if defined(MAGICKCORE_HAVE_POSIX_MEMALIGN)
+#if MAGICKCORE_HAVE_STDC_ALIGNED_ALLOC
+  return(aligned_alloc(CACHE_LINE_SIZE,extent));
+#elif defined(MAGICKCORE_HAVE_POSIX_MEMALIGN)
   {
     void
       *memory;
@@ -1118,7 +1120,7 @@ MagickExport void *RelinquishAlignedMemory(void *memory)
       memory_methods.relinquish_aligned_memory_handler(memory);
       return(NULL);
     }
-#if defined(MAGICKCORE_HAVE_POSIX_MEMALIGN)
+#if MAGICKCORE_HAVE_STDC_ALIGNED_ALLOC || defined(MAGICKCORE_HAVE_POSIX_MEMALIGN)
   free(memory);
 #elif defined(MAGICKCORE_HAVE__ALIGNED_MALLOC)
   _aligned_free(memory);
