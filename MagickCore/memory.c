@@ -259,13 +259,13 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
     *memory;
 
   if (HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse)
-    return((void *) NULL);
+    return(NULL);
   memory=NULL;
   extent=AlignedExtent(size);
   if (extent < size)
     {
       errno=ENOMEM;
-      return((void *) NULL);
+      return(NULL);
     }
   if (memory_methods.acquire_aligned_memory_handler != (AcquireAlignedMemoryHandler) NULL)
     return(memory_methods.acquire_aligned_memory_handler(extent,CACHE_LINE_SIZE));
@@ -282,7 +282,7 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
     if (size > SIZE_MAX - (CACHE_LINE_SIZE-1 + sizeof(void *)))
       {
         errno=ENOMEM;
-        return((void *) NULL);
+        return(NULL);
       }
     extent=(size + (CACHE_LINE_SIZE-1 + sizeof(void *)));
     if (extent > size)
