@@ -250,36 +250,42 @@ static MagickBooleanType
 MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
 {
   size_t
-    extent,
     size;
 
   if (HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse)
     return(NULL);
-  extent=CACHE_ALIGNED(size);
-  if (extent < size)
-    {
-      errno=ENOMEM;
-      return(NULL);
-    }
   if (memory_methods.acquire_aligned_memory_handler != (AcquireAlignedMemoryHandler) NULL)
-    return(memory_methods.acquire_aligned_memory_handler(extent,CACHE_LINE_SIZE));
+    return(memory_methods.acquire_aligned_memory_handler(size,CACHE_LINE_SIZE));
 #if MAGICKCORE_HAVE_STDC_ALIGNED_ALLOC
-  return(aligned_alloc(CACHE_LINE_SIZE,extent));
+  {
+    size_t
+      extent=CACHE_ALIGNED(size);
+
+    if (extent < size)
+      {
+        errno=ENOMEM;
+        return(NULL);
+      }
+    return(aligned_alloc(CACHE_LINE_SIZE,extent));
+  }
 #elif defined(MAGICKCORE_HAVE_POSIX_MEMALIGN)
   {
     void
       *memory;
 
-    if (posix_memalign(&memory,CACHE_LINE_SIZE,extent))
+    if (posix_memalign(&memory,CACHE_LINE_SIZE,size))
       return(NULL);
     return(memory);
   }
 #elif defined(MAGICKCORE_HAVE__ALIGNED_MALLOC)
-  return(_aligned_malloc(extent,CACHE_LINE_SIZE));
+  return(_aligned_malloc(size,CACHE_LINE_SIZE));
 #else
   #define ALIGNMENT_OVERHEAD \
     (MAGICKCORE_MAX_ALIGNMENT_PADDING(CACHE_LINE_SIZE) + MAGICKCORE_SIZEOF_VOID_P)
   {
+    size_t
+      extent;
+
     void
       *memory,
       *p;
