@@ -281,12 +281,15 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
     void
       *p;
 
-    if (size > SIZE_MAX - ALIGNMENT_OVERHEAD)
+    #if SIZE_MAX < ALIGNMENT_OVERHEAD
+      #error "CACHE_LINE_SIZE is way too big."
+    #endif
+    extent=(size + ALIGNMENT_OVERHEAD);
+    if (extent <= size)
       {
         errno=ENOMEM;
         return(NULL);
       }
-    extent=(size + ALIGNMENT_OVERHEAD);
     if (extent > size)
       {
         p=AcquireMagickMemory(extent);
