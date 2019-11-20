@@ -989,9 +989,9 @@ MagickExport void *GetVirtualMemoryBlob(const MemoryInfo *memory_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  HeapOverflowSanityCheck() returns MagickFalse if the heap allocation request
-%  fits within the maximum limits of size_t, and the requested count is not
-%  zero. Otherwise, it returns a value other than MagickFalse, and sets errno
-%  to ENOMEM.
+%  is not zero and fits within the maximum limits of size_t. Otherwise, it
+%  returns a value other than MagickFalse; if the heap allocation request does
+%  not fit within the maximum limts of size_t, then errno is set to ENOMEM.
 %
 %  The format of the HeapOverflowSanityCheck method is:
 %
@@ -1008,11 +1008,9 @@ MagickExport void *GetVirtualMemoryBlob(const MemoryInfo *memory_info)
 MagickExport MagickBooleanType HeapOverflowSanityCheck(const size_t count,
   const size_t quantum)
 {
-  size_t
-    size;
-
-  size=count*quantum;
-  if ((count == 0) || (quantum != (size/count)))
+  if (count == 0 || quantum == 0)
+    return(MagickTrue);
+  if (quantum != ((count*quantum)/count))
     {
       errno=ENOMEM;
       return(MagickTrue);
