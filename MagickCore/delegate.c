@@ -537,7 +537,7 @@ static char *SanitizeDelegateString(const char *source)
   static char
     whitelist[] =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 "
-      "$-_.+!*'(),{}|\\^~[]`\"><#%/?:@&=";
+      "$-_.+!;*(),{}|\\^~[]`\"><#%/?:@&=";
 
   sanitize_source=AcquireString(source);
   p=sanitize_source;
