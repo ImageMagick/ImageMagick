@@ -275,16 +275,18 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
 #elif defined(MAGICKCORE_HAVE__ALIGNED_MALLOC)
   memory=_aligned_malloc(extent,CACHE_LINE_SIZE);
 #else
+  #define ALIGNMENT_OVERHEAD \
+    (CACHE_LINE_SIZE-1 + MAGICKCORE_SIZEOF_VOID_P)
   {
     void
       *p;
 
-    if (size > SIZE_MAX - (CACHE_LINE_SIZE-1 + sizeof(void *)))
+    if (size > SIZE_MAX - ALIGNMENT_OVERHEAD)
       {
         errno=ENOMEM;
         return(NULL);
       }
-    extent=(size + (CACHE_LINE_SIZE-1 + sizeof(void *)));
+    extent=(size + ALIGNMENT_OVERHEAD);
     if (extent > size)
       {
         p=AcquireMagickMemory(extent);
