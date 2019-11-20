@@ -264,7 +264,10 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
   memory=NULL;
   extent=AlignedExtent(size);
   if (extent < size)
-    return((void *) NULL);
+    {
+      errno=ENOMEM;
+      return((void *) NULL);
+    }
   if (memory_methods.acquire_aligned_memory_handler != (AcquireAlignedMemoryHandler) NULL)
     return(memory_methods.acquire_aligned_memory_handler(extent,CACHE_LINE_SIZE));
 #if defined(MAGICKCORE_HAVE_POSIX_MEMALIGN)
