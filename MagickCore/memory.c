@@ -276,7 +276,7 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
   memory=_aligned_malloc(extent,CACHE_LINE_SIZE);
 #else
   #define ALIGNMENT_OVERHEAD \
-    (CACHE_LINE_SIZE-1 + MAGICKCORE_SIZEOF_VOID_P)
+    (MAGICKCORE_MAX_ALIGNMENT_PADDING(CACHE_LINE_SIZE) + MAGICKCORE_SIZEOF_VOID_P)
   {
     void
       *p;
