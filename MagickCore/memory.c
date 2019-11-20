@@ -263,7 +263,7 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
     return((void *) NULL);
   memory=NULL;
   extent=AlignedExtent(size);
-  if ((size == 0) || (extent < size))
+  if (extent < size)
     return((void *) NULL);
   if (memory_methods.acquire_aligned_memory_handler != (AcquireAlignedMemoryHandler) NULL)
     return(memory_methods.acquire_aligned_memory_handler(extent,CACHE_LINE_SIZE));
