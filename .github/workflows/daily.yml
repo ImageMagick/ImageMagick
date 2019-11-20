@@ -31,9 +31,11 @@ jobs:
 
     - name: Install dependencies
       run: |
+        set -e
         apt update
         sh -c "echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections"
         apt-get install -y autoconf pkg-config gcc msttcorefonts libfontconfig1-dev libfreetype6-dev libltdl-dev
+
     - name: Configure ImageMagick
       run: |
         export CFLAGS="-Wno-deprecated-declarations"
@@ -42,6 +44,7 @@ jobs:
     - name: Build ImageMagick
       run: |
         make
+
     - name: Test ImageMagick
       run: |
         make check || exit_code=$?
