@@ -268,7 +268,7 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
     void
       *memory;
 
-    if (posix_memalign(&memory,CACHE_LINE_SIZE,extent) != 0)
+    if (posix_memalign(&memory,CACHE_LINE_SIZE,extent))
       return(NULL);
     return(memory);
   }
@@ -292,13 +292,11 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
         return(NULL);
       }
     p=AcquireMagickMemory(extent);
-    if (p != NULL)
-      {
-        memory=(void *) CACHE_ALIGNED(((MagickAddressType) p) + sizeof(void *));
-        *(((void **) memory)-1)=p;
-        return(memory)
-      }
-    return(NULL);
+    if (p == NULL)
+      return(NULL);
+    memory=(void *) CACHE_ALIGNED(((MagickAddressType) p) + sizeof(void *));
+    *(((void **) memory)-1)=p;
+    return(memory);
   }
 #endif
 }
