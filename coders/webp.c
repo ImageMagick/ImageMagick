@@ -982,16 +982,14 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   if (WebPValidateConfig(&configure) == 0)
     ThrowWriterException(ResourceLimitError,"UnableToEncodeImageFile");
 
-  WriteSingleWEBPImage(image_info, image, &picture,
-    &memory, exception);
+  WriteSingleWEBPImage(image_info,image,&picture,&memory,exception);
 
 #if defined(MAGICKCORE_WEBPMUX_DELEGATE)
-  if ((GetPreviousImageInList(image) == (Image *) NULL) &&
+  if ((image_info->adjoin != MagickFalse) &&
+      (GetPreviousImageInList(image) == (Image *) NULL) &&
       (GetNextImageInList(image) != (Image *) NULL) &&
-      (image->iterations != 1)) {
-     WriteAnimatedWEBPImage(image_info, image, &configure,
-       &writer_info, exception);
-  }
+      (image->iterations != 1))
+    WriteAnimatedWEBPImage(image_info,image,&configure,&writer_info,exception);
 #endif
 
   webp_status=WebPEncode(&configure,&picture);
