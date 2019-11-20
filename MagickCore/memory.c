@@ -247,7 +247,7 @@ static MagickBooleanType
 %    o quantum: the size (in bytes) of each object.
 %
 */
-#define AlignedExtent(size) MAGICKCORE_ALIGN_UP(size,CACHE_LINE_SIZE)
+#define CACHE_ALIGNED(n) MAGICKCORE_ALIGN_UP(n,CACHE_LINE_SIZE)
 
 MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
 {
@@ -261,7 +261,7 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
   if (HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse)
     return(NULL);
   memory=NULL;
-  extent=AlignedExtent(size);
+  extent=CACHE_ALIGNED(size);
   if (extent < size)
     {
       errno=ENOMEM;
@@ -293,7 +293,7 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
     p=AcquireMagickMemory(extent);
     if (p != NULL)
       {
-        memory=(void *) AlignedExtent(((MagickAddressType) p) + sizeof(void *));
+        memory=(void *) CACHE_ALIGNED(((MagickAddressType) p) + sizeof(void *));
         *(((void **) memory)-1)=p;
       }
   }
