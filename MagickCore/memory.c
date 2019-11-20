@@ -247,7 +247,7 @@ static MagickBooleanType
 %    o quantum: the size (in bytes) of each object.
 %
 */
-#define AlignedExtent(size) (((size)+(CACHE_LINE_SIZE-1)) & ~(CACHE_LINE_SIZE-1))
+#define AlignedExtent(size) MAGICKCORE_ALIGN_UP(size,CACHE_LINE_SIZE)
 
 MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
 {

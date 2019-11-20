@@ -249,11 +249,20 @@ extern "C" {
 #define MAGICKCORE_BITS_BELOW(power_of_2) \
   ((power_of_2)-1)
 
+#define MAGICKCORE_MAX_ALIGNMENT_PADDING(power_of_2) \
+  MAGICKCORE_BITS_BELOW(power_of_2)
+
 #define MAGICKCORE_IS_NOT_ALIGNED(n, power_of_2) \
   ((n) & MAGICKCORE_BITS_BELOW(power_of_2))
 
 #define MAGICKCORE_IS_NOT_POWER_OF_2(n) \
   MAGICKCORE_IS_NOT_ALIGNED((n), (n))
+
+#define MAGICKCORE_ALIGN_DOWN(n, power_of_2) \
+  ((n) & ~MAGICKCORE_BITS_BELOW(power_of_2))
+
+#define MAGICKCORE_ALIGN_UP(n, power_of_2) \
+  MAGICKCORE_ALIGN_DOWN((n) + MAGICKCORE_MAX_ALIGNMENT_PADDING(power_of_2),power_of_2)
  
 #if defined(__cplusplus) || defined(c_plusplus)
 }
