@@ -457,9 +457,7 @@ static cmsHTRANSFORM *AcquireTransformThreadSet(
   }
   return(transform);
 }
-#endif
 
-#if defined(MAGICKCORE_LCMS_DELEGATE)
 static void CMSExceptionHandler(cmsContext context,cmsUInt32Number severity,
   const char *message)
 {
