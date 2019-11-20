@@ -290,12 +290,12 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
         errno=ENOMEM;
         return(NULL);
       }
-        p=AcquireMagickMemory(extent);
-        if (p != NULL)
-          {
-            memory=(void *) AlignedExtent(((MagickAddressType) p) + sizeof(void *));
-            *(((void **) memory)-1)=p;
-          }
+    p=AcquireMagickMemory(extent);
+    if (p != NULL)
+      {
+        memory=(void *) AlignedExtent(((MagickAddressType) p) + sizeof(void *));
+        *(((void **) memory)-1)=p;
+      }
   }
 #endif
   return(memory);
