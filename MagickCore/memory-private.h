@@ -41,6 +41,8 @@ extern "C" {
 
 #undef IS_BAD_CACHE_LINE_SIZE
 
+#define CACHE_ALIGNED(n) MAGICKCORE_ALIGN_UP(n,CACHE_LINE_SIZE)
+
 #if (__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 6))
 #if !defined(__ICC)
 #define MagickAssumeAligned(address) \
