@@ -340,8 +340,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ((bits_per_pixel != 1) && (bits_per_pixel != 2) &&
          (bits_per_pixel != 4) && (bits_per_pixel != 8)))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    image->columns=1+(pcx_info.right - pcx_info.left);
-    image->rows=1+(pcx_info.bottom - pcx_info.top);
+    const size_t
+      columns=image->columns=1+(pcx_info.right - pcx_info.left),
+      rows=image->rows=1+(pcx_info.bottom - pcx_info.top);
     image->depth=bits_per_pixel;
     image->units=PixelsPerInchResolution;
     image->resolution.x=(double) pcx_info.horizontal_resolution;
@@ -350,9 +351,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
-    if ((MagickSizeType) (image->columns*image->rows/255) > GetBlobSize(image))
+    if ((MagickSizeType) (columns*rows/255) > GetBlobSize(image))
       ThrowPCXException(CorruptImageError,"InsufficientImageDataInFile");
-    status=SetImageExtent(image,image->columns,image->rows,exception);
+    status=SetImageExtent(image,columns,rows,exception);
     if (status == MagickFalse)
       ThrowPCXException(exception->severity,exception->reason);
     (void) SetImageBackgroundColor(image,exception);
@@ -394,17 +395,17 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read image data.
     */
-    if (HeapOverflowSanityCheck(image->rows,bytes_per_line) != MagickFalse)
+    if (HeapOverflowSanityCheck(rows,bytes_per_line) != MagickFalse)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    pcx_packets=image->rows*bytes_per_line;
+    pcx_packets=rows*bytes_per_line;
     if (HeapOverflowSanityCheck(pcx_packets,planes) != MagickFalse)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     pcx_packets*=planes;
-    if ((bits_per_color*image->columns) > (pcx_packets*8))
+    if ((bits_per_color*columns) > (pcx_packets*8))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     if ((MagickSizeType) (pcx_packets/32+128) > GetBlobSize(image))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    scanline=(unsigned char *) AcquireQuantumMemory(MagickMax(image->columns,
+    scanline=(unsigned char *) AcquireQuantumMemory(MagickMax(columns,
       bytes_per_line),MagickMax(planes,8)*sizeof(*scanline));
     pixel_info=AcquireVirtualMemory(pcx_packets,2*sizeof(*pixels));
     if ((scanline == (unsigned char *) NULL) ||
@@ -416,7 +417,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           pixel_info=RelinquishVirtualMemory(pixel_info);
         ThrowPCXException(ResourceLimitError,"MemoryAllocationFailed");
       }
-    (void) memset(scanline,0,MagickMax(image->columns,
+    (void) memset(scanline,0,MagickMax(columns,
       bytes_per_line)*MagickMax(planes,8)*sizeof(*scanline));
     pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
     (void) memset(pixels,0,pcx_packets*(2*sizeof(*pixels)));
@@ -501,10 +502,10 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Convert PCX raster image to pixel packets.
     */
     const size_t bytes_per_image_line=((size_t)bytes_per_line)*planes;
-    for (y=0; y < image->rows; ++y)
+    for (y=0; y < rows; ++y)
     {
       p=pixels+(y*bytes_per_image_line);
-      q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+      q=QueueAuthenticPixels(image,0,y,columns,1,exception);
       if (q == (Quantum *) NULL)
         break;
       r=scanline;
@@ -544,7 +545,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       else
         if (!there_is_only_one_plane)
           {
-            for (x=0; x < (ssize_t) image->columns; x++)
+            for (x=0; x < (ssize_t) columns; x++)
               *r++=0;
             for (i=0; i < planes; i++)
             {
@@ -569,15 +570,15 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               register ssize_t
                 bit;
 
-              for (x=0; x < ((ssize_t) image->columns-7); x+=8)
+              for (x=0; x < ((ssize_t) columns-7); x+=8)
               {
                 for (bit=7; bit >= 0; bit--)
                   *r++=(unsigned char) ((*p) & (0x01 << bit) ? 0x00 : 0x01);
                 p++;
               }
-              if ((image->columns % 8) != 0)
+              if ((columns % 8) != 0)
                 {
-                  for (bit=7; bit >= (ssize_t) (8-(image->columns % 8)); bit--)
+                  for (bit=7; bit >= (ssize_t) (8-(columns % 8)); bit--)
                     *r++=(unsigned char) ((*p) & (0x01 << bit) ? 0x00 : 0x01);
                   p++;
                 }
@@ -585,7 +586,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             case 2:
             {
-              for (x=0; x < ((ssize_t) image->columns-3); x+=4)
+              for (x=0; x < ((ssize_t) columns-3); x+=4)
               {
                 *r++=(*p >> 6) & 0x3;
                 *r++=(*p >> 4) & 0x3;
@@ -593,9 +594,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 *r++=(*p) & 0x3;
                 p++;
               }
-              if ((image->columns % 4) != 0)
+              if ((columns % 4) != 0)
                 {
-                  for (i=3; i >= (ssize_t) (4-(image->columns % 4)); i--)
+                  for (i=3; i >= (ssize_t) (4-(columns % 4)); i--)
                     *r++=(unsigned char) ((*p >> (i*2)) & 0x03);
                   p++;
                 }
@@ -603,19 +604,19 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             case 4:
             {
-              for (x=0; x < ((ssize_t) image->columns-1); x+=2)
+              for (x=0; x < ((ssize_t) columns-1); x+=2)
               {
                 *r++=(*p >> 4) & 0xf;
                 *r++=(*p) & 0xf;
                 p++;
               }
-              if ((image->columns % 2) != 0)
+              if ((columns % 2) != 0)
                 *r++=(*p++ >> 4) & 0xf;
               break;
             }
             case 8:
             {
-              (void) memcpy(r,p,image->columns);
+              (void) memcpy(r,p,columns);
               break;
             }
             default:
@@ -625,7 +626,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Transfer image scanline.
       */
       r=scanline;
-      for (x=0; x < (ssize_t) image->columns; x++)
+      for (x=0; x < (ssize_t) columns; x++)
       {
         if (image->storage_class == PseudoClass)
           SetPixelIndex(image,*r++,q);
@@ -643,8 +644,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       if (image->previous == (Image *) NULL)
         {
-          status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-            image->rows);
+          status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,rows);
           if (status == MagickFalse)
             break;
         }
