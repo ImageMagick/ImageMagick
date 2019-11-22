@@ -28,6 +28,7 @@
 #include <sys/types.h>
 
 #include <errno.h>
+#include <stdint.h>
 
 #if defined(__BORLANDC__)
 #  include <vcl.h> /* Borland C++ Builder 4.0 requirement */
