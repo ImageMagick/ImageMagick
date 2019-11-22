@@ -367,9 +367,10 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     if (planes > 6)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    const int there_is_only_one_plane=(planes == 1);
-    const int bits_per_color=(bits_per_pixel*planes);
-    const int image_is_bilevel=(bits_per_color == 1);
+    const int
+      there_is_only_one_plane=(planes == 1),
+      bits_per_color=(bits_per_pixel*planes),
+      image_is_bilevel=(bits_per_color == 1);
     if ((bits_per_pixel == 8) || there_is_only_one_plane)
       if ((pcx_info.version == 5) || (pcx_info.version == 3) || image_is_bilevel)
         image->colors=MagickMin((size_t)1 << bits_per_color,(size_t)256);
