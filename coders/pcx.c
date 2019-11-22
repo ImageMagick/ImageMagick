@@ -370,7 +370,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (pcx_info.planes > 6)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     if ((bits_per_pixel == 8) || (pcx_info.planes == 1))
-      if ((pcx_info.version == 3) || (pcx_info.version == 5) ||
+      if ((pcx_info.version == 5) || (pcx_info.version == 3) ||
           ((bits_per_pixel*pcx_info.planes) == 1))
         image->colors=MagickMin((size_t)1 << (bits_per_pixel*pcx_info.planes),(size_t)256);
     if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
