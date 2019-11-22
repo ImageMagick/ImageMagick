@@ -369,15 +369,13 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     if (pcx_info.planes > 6)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    if ((pcx_info.bits_per_pixel*pcx_info.planes) >= 64)
-      ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    if ((pcx_info.bits_per_pixel != 8) || (pcx_info.planes == 1))
+    if ((pcx_info.bits_per_pixel == 8) || (pcx_info.planes == 1))
       if ((pcx_info.version == 3) || (pcx_info.version == 5) ||
           ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
         image->colors=MagickMin((size_t)1 << (pcx_info.bits_per_pixel*pcx_info.planes),(size_t)256);
     if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
       ThrowPCXException(ResourceLimitError,"MemoryAllocationFailed");
-    if ((pcx_info.bits_per_pixel >= 8) && (pcx_info.planes != 1))
+    if ((pcx_info.bits_per_pixel == 8) && (pcx_info.planes != 1))
       image->storage_class=DirectClass;
     p=pcx_colormap;
     for (i=0; i < (ssize_t) image->colors; i++)
