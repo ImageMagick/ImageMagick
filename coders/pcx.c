@@ -248,7 +248,6 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *r;
 
   size_t
-    one,
     pcx_packets;
 
   ssize_t
@@ -340,15 +339,12 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read PCX raster colormap.
     */
-    image->columns=(size_t) MagickAbsoluteValue((ssize_t) pcx_info.right-
-      pcx_info.left)+1UL;
-    image->rows=(size_t) MagickAbsoluteValue((ssize_t) pcx_info.bottom-
-      pcx_info.top)+1UL;
-    if ((image->columns == 0) || (image->rows == 0) ||
-        (pcx_info.right < pcx_info.left) || (pcx_info.bottom < pcx_info.top) ||
+    if ((pcx_info.right < pcx_info.left) || (pcx_info.bottom < pcx_info.top) ||
         ((pcx_info.bits_per_pixel != 1) && (pcx_info.bits_per_pixel != 2) &&
          (pcx_info.bits_per_pixel != 4) && (pcx_info.bits_per_pixel != 8)))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
+    image->columns=1+(pcx_info.right - pcx_info.left);
+    image->rows=1+(pcx_info.bottom - pcx_info.top);
     image->depth=pcx_info.bits_per_pixel;
     image->units=PixelsPerInchResolution;
     image->resolution.x=(double) pcx_info.horizontal_resolution;
@@ -375,12 +371,10 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     if ((pcx_info.bits_per_pixel*pcx_info.planes) >= 64)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    one=1;
     if ((pcx_info.bits_per_pixel != 8) || (pcx_info.planes == 1))
       if ((pcx_info.version == 3) || (pcx_info.version == 5) ||
           ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
-        image->colors=(size_t) MagickMin(one << (1UL*
-          (pcx_info.bits_per_pixel*pcx_info.planes)),256UL);
+        image->colors=MagickMin((size_t)1 << (pcx_info.bits_per_pixel*pcx_info.planes),(size_t)256);
     if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
       ThrowPCXException(ResourceLimitError,"MemoryAllocationFailed");
     if ((pcx_info.bits_per_pixel >= 8) && (pcx_info.planes != 1))
@@ -401,13 +395,13 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read image data.
     */
-    if (HeapOverflowSanityCheck(image->rows, (size_t) pcx_info.bytes_per_line) != MagickFalse)
+    if (HeapOverflowSanityCheck(image->rows, pcx_info.bytes_per_line) != MagickFalse)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    pcx_packets=(size_t) image->rows*pcx_info.bytes_per_line;
-    if (HeapOverflowSanityCheck(pcx_packets, (size_t) pcx_info.planes) != MagickFalse)
+    pcx_packets=image->rows*pcx_info.bytes_per_line;
+    if (HeapOverflowSanityCheck(pcx_packets, pcx_info.planes) != MagickFalse)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    pcx_packets=(size_t) pcx_packets*pcx_info.planes;
-    if ((size_t) (pcx_info.bits_per_pixel*pcx_info.planes*image->columns) > (pcx_packets*8U))
+    pcx_packets=pcx_packets*pcx_info.planes;
+    if ((pcx_info.bits_per_pixel*pcx_info.planes*image->columns) > (pcx_packets*8))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     if ((MagickSizeType) (pcx_packets/32+128) > GetBlobSize(image))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
@@ -423,10 +417,10 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           pixel_info=RelinquishVirtualMemory(pixel_info);
         ThrowPCXException(ResourceLimitError,"MemoryAllocationFailed");
       }
-    (void) memset(scanline,0,(size_t) MagickMax(image->columns,
+    (void) memset(scanline,0,MagickMax(image->columns,
       pcx_info.bytes_per_line)*MagickMax(pcx_info.planes,8)*sizeof(*scanline));
     pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
-    (void) memset(pixels,0,(size_t) pcx_packets*(2*sizeof(*pixels)));
+    (void) memset(pixels,0,pcx_packets*(2*sizeof(*pixels)));
     /*
       Uncompress image data.
     */
@@ -980,7 +974,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
         if (image->alpha_trait != UndefinedPixelTrait)
           pcx_info.planes++;
       }
-    length=(((size_t) image->columns*pcx_info.bits_per_pixel+7)/8);
+    length=((image->columns*pcx_info.bits_per_pixel+7)/8);
     if ((image->columns > 65535UL) || (image->rows > 65535UL) ||
         (length > 65535UL))
       {
@@ -1031,7 +1025,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     (void) WriteBlobLSBShort(image,pcx_info.palette_info);
     for (i=0; i < 58; i++)
       (void) WriteBlobByte(image,'\0');
-    length=(size_t) pcx_info.bytes_per_line;
+    length=pcx_info.bytes_per_line;
     pixel_info=AcquireVirtualMemory(length,pcx_info.planes*sizeof(*pixels));
     if (pixel_info == (MemoryInfo *) NULL)
       {
