@@ -311,19 +311,20 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       comment=DestroyString(comment);
     }
-  if (tga_info.attributes & (1UL << 4))
+  image->orientation=BottomLeftOrientation;
+  if ((tga_info.attributes & (1UL << 4)) == 0)
     {
-      if (tga_info.attributes & (1UL << 5))
-        image->orientation=TopRightOrientation;
+      if ((tga_info.attributes & (1UL << 5)) == 0)
+        image->orientation=BottomLeftOrientation;
       else
-        image->orientation=BottomRightOrientation;
+        image->orientation=TopLeftOrientation;
     }
   else
     {
-      if (tga_info.attributes & (1UL << 5))
-        image->orientation=TopLeftOrientation;
+      if ((tga_info.attributes & (1UL << 5)) == 0)
+        image->orientation=BottomRightOrientation;
       else
-        image->orientation=BottomLeftOrientation;
+        image->orientation=TopRightOrientation;
     }
   if (image_info->ping != MagickFalse)
     {
@@ -543,15 +544,10 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
       q+=GetPixelChannels(image);
     }
-    /*
-      if (((unsigned char) (tga_info.attributes & 0xc0) >> 6) == 4)
-        offset+=4;
-      else
-    */
-      if (((unsigned char) (tga_info.attributes & 0xc0) >> 6) == 2)
-        offset+=2;
-      else
-        offset++;
+    if (((unsigned char) (tga_info.attributes & 0xc0) >> 6) == 2)
+      offset+=2;
+    else
+      offset++;
     if (offset >= image->rows)
       {
         base++;
@@ -759,7 +755,10 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
     channels;
 
   ssize_t
+    base,
     count,
+    offset,
+    real,
     y;
 
   TGAInfo
@@ -851,6 +850,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
       (image->orientation == TopRightOrientation))
     tga_info.attributes|=(1UL << 4);
   if ((image->orientation == TopLeftOrientation) ||
+      (image->orientation == UndefinedOrientation) ||
       (image->orientation == TopRightOrientation))
     tga_info.attributes|=(1UL << 5);
   if ((image->columns > 65535) || (image->rows > 65535))
@@ -914,10 +914,15 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
   /*
     Convert MIFF to TGA raster pixels.
   */
+  base=0;
+  offset=0;
   channels=GetPixelChannels(image);
-  for (y=(ssize_t) (image->rows-1); y >= 0; y--)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    real=offset;
+    if (((unsigned char) (tga_info.attributes & 0x20) >> 5) == 0)
+      real=image->rows-real-1;
+    p=GetVirtualPixels(image,0,real,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     if (compression == RLECompression)
@@ -936,26 +941,27 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
                     GetPixelIndex(image,p+((i-1)*channels)))
                   break;
               }
-            else if (tga_info.image_type == TGARLEMonochrome)
-              {
-                if (GetPixelLuma(image,p+(i*channels)) !=
-                    GetPixelLuma(image,p+((i-1)*channels)))
-                  break;
-              }
             else
-              {
-                if ((GetPixelBlue(image,p+(i*channels)) !=
-                     GetPixelBlue(image,p+((i-1)*channels))) ||
-                    (GetPixelGreen(image,p+(i*channels)) !=
-                     GetPixelGreen(image,p+((i-1)*channels))) ||
-                    (GetPixelRed(image,p+(i*channels)) !=
-                     GetPixelRed(image,p+((i-1)*channels))))
-                  break;
-                if ((image->alpha_trait != UndefinedPixelTrait) &&
-                    (GetPixelAlpha(image,p+(i*channels)) !=
-                     GetPixelAlpha(image,p+(i-1)*channels)))
-                  break;
-              }
+              if (tga_info.image_type == TGARLEMonochrome)
+                {
+                  if (GetPixelLuma(image,p+(i*channels)) !=
+                      GetPixelLuma(image,p+((i-1)*channels)))
+                    break;
+                }
+              else
+                {
+                  if ((GetPixelBlue(image,p+(i*channels)) !=
+                       GetPixelBlue(image,p+((i-1)*channels))) ||
+                      (GetPixelGreen(image,p+(i*channels)) !=
+                       GetPixelGreen(image,p+((i-1)*channels))) ||
+                      (GetPixelRed(image,p+(i*channels)) !=
+                       GetPixelRed(image,p+((i-1)*channels))))
+                    break;
+                  if ((image->alpha_trait != UndefinedPixelTrait) &&
+                      (GetPixelAlpha(image,p+(i*channels)) !=
+                       GetPixelAlpha(image,p+(i-1)*channels)))
+                    break;
+                }
             i++;
           }
           if (i < 3)
@@ -988,13 +994,20 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
         }
       }
     else
+      for (x=0; x < (ssize_t) image->columns; x++)
       {
-        for (x=0; x < (ssize_t) image->columns; x++)
-          {
-            WriteTGAPixel(image,tga_info.image_type,p,range,midpoint);
-            p+=channels;
-          }
+        WriteTGAPixel(image,tga_info.image_type,p,range,midpoint);
+        p+=channels;
       }
+     if (((unsigned char) (tga_info.attributes & 0xc0) >> 6) == 2)
+       offset+=2;
+     else
+       offset++;
+      if (offset >= image->rows)
+        {
+          base++;
+          offset=base;
+        }
     if (image->previous == (Image *) NULL)
       {
         status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
