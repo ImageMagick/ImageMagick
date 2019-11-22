@@ -5,6 +5,8 @@
   * Increase the maximum number of bezier coordinates (reference
     https://github.com/ImageMagick/ImageMagick/issues/1784).
   * Santize "'" from SHOW and WIN delegates.
+  * Correct for TGA orientation (reference
+    https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=34757).
 
 2019-11-17  7.0.9-5 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-5, GIT revision 16369:747618e:20191117.
