@@ -12,9 +12,6 @@
 /* Define as __inline if that's what the C compiler calls it.  */
 #define MAGICKCORE_inline __inline
 
-/* Define as the return type of signal handlers (int or void).  */
-#define MAGICKCORE_RETSIGTYPE void
-
 /* Define if the `S_IS*' macros in <sys/stat.h> do not work properly.  */
 #undef MAGICKCORE_STAT_MACROS_BROKEN
 

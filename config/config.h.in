@@ -847,9 +847,6 @@
 /* Define if you have LIBRAW library */
 #undef RAW_R_DELEGATE
 
-/* Define as the return type of signal handlers (`int' or `void'). */
-#undef RETSIGTYPE
-
 /* Define if you have RSVG library */
 #undef RSVG_DELEGATE
 

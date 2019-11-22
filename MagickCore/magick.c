@@ -103,9 +103,6 @@
 /*
   Define declarations.
 */
-#if !defined(MAGICKCORE_RETSIGTYPE)
-# define MAGICKCORE_RETSIGTYPE  void
-#endif
 #if !defined(SIG_DFL)
 # define SIG_DFL  ((SignalHandler *) 0)
 #endif
@@ -119,8 +116,7 @@
 /*
   Typedef declarations.
 */
-typedef MAGICKCORE_RETSIGTYPE
-  SignalHandler(int);
+typedef void SignalHandler(int);
 
 /*
   Global declarations.
