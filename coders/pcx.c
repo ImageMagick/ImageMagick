@@ -248,11 +248,11 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *r;
 
   size_t
+    y,
     pcx_packets;
 
   ssize_t
-    count,
-    y;
+    count;
 
   unsigned char
     packet,
@@ -501,7 +501,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Convert PCX raster image to pixel packets.
     */
     const size_t bytes_per_image_line=((size_t)bytes_per_line)*planes;
-    for (y=0; y < (ssize_t) image->rows; y++)
+    for (y=0; y < image->rows; ++y)
     {
       p=pixels+(y*bytes_per_image_line);
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -884,11 +884,9 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     *q;
 
   size_t
+    y,
     imageListLength,
     length;
-
-  ssize_t
-    y;
 
   unsigned char
     *pcx_colormap,
@@ -1040,7 +1038,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
         /*
           Convert DirectClass image to PCX raster pixels.
         */
-        for (y=0; y < (ssize_t) image->rows; y++)
+        for (y=0; y < image->rows; ++y)
         {
           q=pixels;
           for (i=0; i < pcx_info.planes; i++)
@@ -1103,7 +1101,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     else
       {
         if (pcx_info.bits_per_pixel > 1)
-          for (y=0; y < (ssize_t) image->rows; y++)
+          for (y=0; y < image->rows; ++y)
           {
             p=GetVirtualPixels(image,0,y,image->columns,1,exception);
             if (p == (const Quantum *) NULL)
@@ -1133,7 +1131,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
             /*
               Convert PseudoClass image to a PCX monochrome image.
             */
-            for (y=0; y < (ssize_t) image->rows; y++)
+            for (y=0; y < image->rows; ++y)
             {
               p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
