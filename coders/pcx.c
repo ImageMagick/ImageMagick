@@ -340,12 +340,12 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Read PCX raster colormap.
     */
     if ((pcx_info.right < pcx_info.left) || (pcx_info.bottom < pcx_info.top) ||
-        ((pcx_info.bits_per_pixel != 1) && (pcx_info.bits_per_pixel != 2) &&
-         (pcx_info.bits_per_pixel != 4) && (pcx_info.bits_per_pixel != 8)))
+        ((bits_per_pixel != 1) && (bits_per_pixel != 2) &&
+         (bits_per_pixel != 4) && (bits_per_pixel != 8)))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     image->columns=1+(pcx_info.right - pcx_info.left);
     image->rows=1+(pcx_info.bottom - pcx_info.top);
-    image->depth=pcx_info.bits_per_pixel;
+    image->depth=bits_per_pixel;
     image->units=PixelsPerInchResolution;
     image->resolution.x=(double) pcx_info.horizontal_resolution;
     image->resolution.y=(double) pcx_info.vertical_resolution;
@@ -369,13 +369,13 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     if (pcx_info.planes > 6)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    if ((pcx_info.bits_per_pixel == 8) || (pcx_info.planes == 1))
+    if ((bits_per_pixel == 8) || (pcx_info.planes == 1))
       if ((pcx_info.version == 3) || (pcx_info.version == 5) ||
-          ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
-        image->colors=MagickMin((size_t)1 << (pcx_info.bits_per_pixel*pcx_info.planes),(size_t)256);
+          ((bits_per_pixel*pcx_info.planes) == 1))
+        image->colors=MagickMin((size_t)1 << (bits_per_pixel*pcx_info.planes),(size_t)256);
     if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
       ThrowPCXException(ResourceLimitError,"MemoryAllocationFailed");
-    if ((pcx_info.bits_per_pixel == 8) && (pcx_info.planes != 1))
+    if ((bits_per_pixel == 8) && (pcx_info.planes != 1))
       image->storage_class=DirectClass;
     p=pcx_colormap;
     for (i=0; i < (ssize_t) image->colors; i++)
@@ -399,7 +399,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (HeapOverflowSanityCheck(pcx_packets, pcx_info.planes) != MagickFalse)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     pcx_packets=pcx_packets*pcx_info.planes;
-    if ((pcx_info.bits_per_pixel*pcx_info.planes*image->columns) > (pcx_packets*8))
+    if ((bits_per_pixel*pcx_info.planes*image->columns) > (pcx_packets*8))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     if ((MagickSizeType) (pcx_packets/32+128) > GetBlobSize(image))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
@@ -461,14 +461,14 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         UndefinedPixelTrait;
     else
       if ((pcx_info.version == 5) ||
-          ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
+          ((bits_per_pixel*pcx_info.planes) == 1))
         {
           /*
             Initialize image colormap.
           */
           if (image->colors > 256)
             ThrowPCXException(CorruptImageError,"ColormapExceeds256Colors");
-          if ((pcx_info.bits_per_pixel*pcx_info.planes) == 1)
+          if ((bits_per_pixel*pcx_info.planes) == 1)
             {
               /*
                 Monochrome colormap.
@@ -561,7 +561,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           }
         else
-          switch (pcx_info.bits_per_pixel)
+          switch (bits_per_pixel)
           {
             case 1:
             {
