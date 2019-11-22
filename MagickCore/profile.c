@@ -379,7 +379,7 @@ static LCMSType **DestroyPixelThreadSet(LCMSType **pixels)
   register ssize_t
     i;
 
-  if (pixels != (LCMSType **) NULL)
+  if (pixels == (LCMSType **) NULL)
     return((LCMSType **) NULL);
   for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
     if (pixels[i] != (LCMSType *) NULL)
