@@ -500,9 +500,10 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Convert PCX raster image to pixel packets.
     */
+    const size_t bytes_per_image_line=((size_t)bytes_per_line)*planes;
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      p=pixels+(y*bytes_per_line*planes);
+      p=pixels+(y*bytes_per_image_line);
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
       if (q == (Quantum *) NULL)
         break;
