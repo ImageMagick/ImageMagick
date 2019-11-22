@@ -314,9 +314,6 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,1,&pcx_info.identifier);
   for (id=1; id < 1024; id++)
   {
-    int
-      bits_per_pixel;
-
     /*
       Verify PCX identifier.
     */
@@ -324,7 +321,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((count != 1) || (pcx_info.identifier != 0x0a))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     pcx_info.encoding=(unsigned char) ReadBlobByte(image);
-    bits_per_pixel=ReadBlobByte(image);
+    const int bits_per_pixel=ReadBlobByte(image);
     if (bits_per_pixel == -1)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     pcx_info.bits_per_pixel=(unsigned char) bits_per_pixel;
