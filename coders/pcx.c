@@ -367,13 +367,14 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     if (planes > 6)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    if ((bits_per_pixel == 8) || (planes == 1))
+    const int there_is_only_one_plane=(planes == 1);
+    if ((bits_per_pixel == 8) || there_is_only_one_plane)
       if ((pcx_info.version == 5) || (pcx_info.version == 3) ||
           ((bits_per_pixel*planes) == 1))
         image->colors=MagickMin((size_t)1 << (bits_per_pixel*planes),(size_t)256);
     if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
       ThrowPCXException(ResourceLimitError,"MemoryAllocationFailed");
-    if ((bits_per_pixel == 8) && (planes != 1))
+    if ((bits_per_pixel == 8) && !there_is_only_one_plane)
       image->storage_class=DirectClass;
     p=pcx_colormap;
     for (i=0; i < (ssize_t) image->colors; i++)
@@ -539,7 +540,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         }
       else
-        if (planes > 1)
+        if (!there_is_only_one_plane)
           {
             for (x=0; x < (ssize_t) image->columns; x++)
               *r++=0;
