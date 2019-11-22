@@ -385,7 +385,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->colormap[i].green=ScaleCharToQuantum(*p++);
       image->colormap[i].blue=ScaleCharToQuantum(*p++);
     }
-    pcx_info.bytes_per_line=ReadBlobLSBShort(image);
+    const int bytes_per_line=pcx_info.bytes_per_line=ReadBlobLSBShort(image);
     pcx_info.palette_info=ReadBlobLSBShort(image);
     pcx_info.horizontal_screensize=ReadBlobLSBShort(image);
     pcx_info.vertical_screensize=ReadBlobLSBShort(image);
@@ -394,9 +394,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read image data.
     */
-    if (HeapOverflowSanityCheck(image->rows, pcx_info.bytes_per_line) != MagickFalse)
+    if (HeapOverflowSanityCheck(image->rows,bytes_per_line) != MagickFalse)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    pcx_packets=image->rows*pcx_info.bytes_per_line;
+    pcx_packets=image->rows*bytes_per_line;
     if (HeapOverflowSanityCheck(pcx_packets,planes) != MagickFalse)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     pcx_packets*=planes;
@@ -405,7 +405,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((MagickSizeType) (pcx_packets/32+128) > GetBlobSize(image))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     scanline=(unsigned char *) AcquireQuantumMemory(MagickMax(image->columns,
-      pcx_info.bytes_per_line),MagickMax(planes,8)*sizeof(*scanline));
+      bytes_per_line),MagickMax(planes,8)*sizeof(*scanline));
     pixel_info=AcquireVirtualMemory(pcx_packets,2*sizeof(*pixels));
     if ((scanline == (unsigned char *) NULL) ||
         (pixel_info == (MemoryInfo *) NULL))
@@ -417,7 +417,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowPCXException(ResourceLimitError,"MemoryAllocationFailed");
       }
     (void) memset(scanline,0,MagickMax(image->columns,
-      pcx_info.bytes_per_line)*MagickMax(planes,8)*sizeof(*scanline));
+      bytes_per_line)*MagickMax(planes,8)*sizeof(*scanline));
     pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
     (void) memset(pixels,0,pcx_packets*(2*sizeof(*pixels)));
     /*
@@ -502,7 +502,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      p=pixels+(y*pcx_info.bytes_per_line*planes);
+      p=pixels+(y*bytes_per_line*planes);
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
       if (q == (Quantum *) NULL)
         break;
@@ -511,7 +511,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (i=0; i < planes; i++)
         {
           r=scanline+i;
-          for (x=0; x < (ssize_t) pcx_info.bytes_per_line; x++)
+          for (x=0; x < (ssize_t) bytes_per_line; x++)
           {
             switch (i)
             {
@@ -548,7 +548,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (i=0; i < planes; i++)
             {
               r=scanline;
-              for (x=0; x < (ssize_t) pcx_info.bytes_per_line; x++)
+              for (x=0; x < (ssize_t) bytes_per_line; x++)
               {
                  bits=(*p++);
                  for (mask=0x80; mask != 0; mask>>=1)
