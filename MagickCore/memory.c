@@ -289,6 +289,31 @@ static MagickBooleanType
   #define ALIGNMENT_OVERHEAD \
     (MAGICKCORE_MAX_ALIGNMENT_PADDING(CACHE_LINE_SIZE) + MAGICKCORE_SIZEOF_VOID_P)
 
+  static inline void *reserve_space_for_actual_base_address(void *const p)
+  {
+    return((void **)p + 1);
+  }
+
+  static inline void **pointer_to_space_for_actual_base_address(void *const p)
+  {
+    return((void **)p - 1);
+  }
+
+  static inline void *actual_base_address(void *const p)
+  {
+    return(*pointer_to_space_for_actual_base_address(p));
+  }
+
+  static inline void *align_to_cache(void *const p)
+  {
+    return((void *) CACHE_ALIGNED((MagickAddressType) p));
+  }
+
+  static inline void *adjust(void *const p)
+  {
+    return(align_to_cache(reserve_space_for_actual_base_address(p)));
+  }
+
   #define AcquireAlignedMemory_Actual AcquireAlignedMemory_Generic
   static inline void *AcquireAlignedMemory_Generic(const size_t size)
   {
@@ -311,8 +336,8 @@ static MagickBooleanType
     p=AcquireMagickMemory(extent);
     if (p == NULL)
       return(NULL);
-    memory=(void *) CACHE_ALIGNED(((MagickAddressType) p) + sizeof(void *));
-    *(((void **) memory)-1)=p;
+    memory=adjust(p);
+    *pointer_to_space_for_actual_base_address(memory)=p;
     return(memory);
   }
 
@@ -1152,7 +1177,7 @@ MagickExport void *RelinquishAlignedMemory(void *memory)
 #elif defined(MAGICKCORE_HAVE__ALIGNED_MALLOC)
   _aligned_free(memory);
 #else
-  RelinquishMagickMemory(*((void **) memory-1));
+  RelinquishMagickMemory(actual_base_address(memory));
 #endif
   return(NULL);
 }
