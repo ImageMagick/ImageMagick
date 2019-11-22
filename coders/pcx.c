@@ -399,7 +399,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pcx_packets=image->rows*pcx_info.bytes_per_line;
     if (HeapOverflowSanityCheck(pcx_packets,planes) != MagickFalse)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    pcx_packets=pcx_packets*planes;
+    pcx_packets*=planes;
     if ((bits_per_color*image->columns) > (pcx_packets*8))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     if ((MagickSizeType) (pcx_packets/32+128) > GetBlobSize(image))
