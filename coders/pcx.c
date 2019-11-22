@@ -361,18 +361,19 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (count != (ssize_t) (3*image->colors))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     pcx_info.reserved=(unsigned char) ReadBlobByte(image);
-    pcx_info.planes=(unsigned char) ReadBlobByte(image);
-    if (pcx_info.planes == 0)
+    const int planes=ReadBlobByte(image);
+    pcx_info.planes=(unsigned char) planes;
+    if (planes == 0)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    if (pcx_info.planes > 6)
+    if (planes > 6)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    if ((bits_per_pixel == 8) || (pcx_info.planes == 1))
+    if ((bits_per_pixel == 8) || (planes == 1))
       if ((pcx_info.version == 5) || (pcx_info.version == 3) ||
-          ((bits_per_pixel*pcx_info.planes) == 1))
-        image->colors=MagickMin((size_t)1 << (bits_per_pixel*pcx_info.planes),(size_t)256);
+          ((bits_per_pixel*planes) == 1))
+        image->colors=MagickMin((size_t)1 << (bits_per_pixel*planes),(size_t)256);
     if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
       ThrowPCXException(ResourceLimitError,"MemoryAllocationFailed");
-    if ((bits_per_pixel == 8) && (pcx_info.planes != 1))
+    if ((bits_per_pixel == 8) && (planes != 1))
       image->storage_class=DirectClass;
     p=pcx_colormap;
     for (i=0; i < (ssize_t) image->colors; i++)
@@ -393,15 +394,15 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (HeapOverflowSanityCheck(image->rows, pcx_info.bytes_per_line) != MagickFalse)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     pcx_packets=image->rows*pcx_info.bytes_per_line;
-    if (HeapOverflowSanityCheck(pcx_packets, pcx_info.planes) != MagickFalse)
+    if (HeapOverflowSanityCheck(pcx_packets,planes) != MagickFalse)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    pcx_packets=pcx_packets*pcx_info.planes;
-    if ((bits_per_pixel*pcx_info.planes*image->columns) > (pcx_packets*8))
+    pcx_packets=pcx_packets*planes;
+    if ((bits_per_pixel*planes*image->columns) > (pcx_packets*8))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     if ((MagickSizeType) (pcx_packets/32+128) > GetBlobSize(image))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     scanline=(unsigned char *) AcquireQuantumMemory(MagickMax(image->columns,
-      pcx_info.bytes_per_line),MagickMax(pcx_info.planes,8)*sizeof(*scanline));
+      pcx_info.bytes_per_line),MagickMax(planes,8)*sizeof(*scanline));
     pixel_info=AcquireVirtualMemory(pcx_packets,2*sizeof(*pixels));
     if ((scanline == (unsigned char *) NULL) ||
         (pixel_info == (MemoryInfo *) NULL))
@@ -413,7 +414,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowPCXException(ResourceLimitError,"MemoryAllocationFailed");
       }
     (void) memset(scanline,0,MagickMax(image->columns,
-      pcx_info.bytes_per_line)*MagickMax(pcx_info.planes,8)*sizeof(*scanline));
+      pcx_info.bytes_per_line)*MagickMax(planes,8)*sizeof(*scanline));
     pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
     (void) memset(pixels,0,pcx_packets*(2*sizeof(*pixels)));
     /*
@@ -454,18 +455,18 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       }
     if (image->storage_class == DirectClass)
-      image->alpha_trait=pcx_info.planes > 3 ? BlendPixelTrait :
+      image->alpha_trait=planes > 3 ? BlendPixelTrait :
         UndefinedPixelTrait;
     else
       if ((pcx_info.version == 5) ||
-          ((bits_per_pixel*pcx_info.planes) == 1))
+          ((bits_per_pixel*planes) == 1))
         {
           /*
             Initialize image colormap.
           */
           if (image->colors > 256)
             ThrowPCXException(CorruptImageError,"ColormapExceeds256Colors");
-          if ((bits_per_pixel*pcx_info.planes) == 1)
+          if ((bits_per_pixel*planes) == 1)
             {
               /*
                 Monochrome colormap.
@@ -499,13 +500,13 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      p=pixels+(y*pcx_info.bytes_per_line*pcx_info.planes);
+      p=pixels+(y*pcx_info.bytes_per_line*planes);
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
       if (q == (Quantum *) NULL)
         break;
       r=scanline;
       if (image->storage_class == DirectClass)
-        for (i=0; i < pcx_info.planes; i++)
+        for (i=0; i < planes; i++)
         {
           r=scanline+i;
           for (x=0; x < (ssize_t) pcx_info.bytes_per_line; x++)
@@ -534,15 +535,15 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               }
             }
-            r+=pcx_info.planes;
+            r+=planes;
           }
         }
       else
-        if (pcx_info.planes > 1)
+        if (planes > 1)
           {
             for (x=0; x < (ssize_t) image->columns; x++)
               *r++=0;
-            for (i=0; i < pcx_info.planes; i++)
+            for (i=0; i < planes; i++)
             {
               r=scanline;
               for (x=0; x < (ssize_t) pcx_info.bytes_per_line; x++)
