@@ -576,9 +576,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   *r++=(unsigned char) ((*p) & (0x01 << bit) ? 0x00 : 0x01);
                 ++p;
               }
-              if ((columns % 8) != 0)
+              if (columns & 7)
                 {
-                  for (bit=7; bit >= (ssize_t) (8-(columns % 8)); --bit)
+                  for (bit=7; bit >= (ssize_t) (8-(columns & 7)); --bit)
                     *r++=(unsigned char) ((*p) & (0x01 << bit) ? 0x00 : 0x01);
                   ++p;
                 }
@@ -594,9 +594,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 *r++=(*p) & 0x3;
                 ++p;
               }
-              if ((columns % 4) != 0)
+              if (columns & 3)
                 {
-                  for (i=3; i >= (ssize_t) (4-(columns % 4)); --i)
+                  for (i=3; i >= (ssize_t) (4-(columns & 3)); --i)
                     *r++=(unsigned char) ((*p >> (i*2)) & 0x03);
                   ++p;
                 }
@@ -610,7 +610,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 *r++=(*p) & 0xf;
                 ++p;
               }
-              if ((columns % 2) != 0)
+              if (columns & 1)
                 *r++=(*p++ >> 4) & 0xf;
               break;
             }
