@@ -1005,18 +1005,8 @@ MagickExport void *GetVirtualMemoryBlob(const MemoryInfo *memory_info)
 %    o quantum: the size (in bytes) of each object.
 %
 */
-MagickExport MagickBooleanType HeapOverflowSanityCheck(const size_t count,
-  const size_t quantum)
-{
-  if (count == 0 || quantum == 0)
-    return(MagickTrue);
-  if (quantum != ((count*quantum)/count))
-    {
-      errno=ENOMEM;
-      return(MagickTrue);
-    }
-  return(MagickFalse);
-}
+extern MagickExport MagickBooleanType
+  HeapOverflowSanityCheck(const size_t count,const size_t quantum);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -18,6 +18,8 @@
 #ifndef MAGICKCORE_MEMORY_H
 #define MAGICKCORE_MEMORY_H
 
+#include <errno.h>
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
@@ -32,8 +34,19 @@ typedef void
   *(*AcquireAlignedMemoryHandler)(const size_t,const size_t),
   (*RelinquishAlignedMemoryHandler)(void *);
 
-extern MagickExport MagickBooleanType
-  HeapOverflowSanityCheck(const size_t,const size_t);
+inline MagickExport MagickBooleanType HeapOverflowSanityCheck(
+  const size_t count,
+  const size_t quantum
+){
+  if (count == 0 || quantum == 0)
+    return(MagickTrue);
+  if (quantum != ((count*quantum)/count))
+    {
+      errno=ENOMEM;
+      return(MagickTrue);
+    }
+  return(MagickFalse);
+}
 
 extern MagickExport size_t
   GetMaxMemoryRequest(void);
