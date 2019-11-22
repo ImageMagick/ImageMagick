@@ -371,8 +371,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     const int bits_per_color=(bits_per_pixel*planes);
     const int image_is_bilevel=(bits_per_color == 1);
     if ((bits_per_pixel == 8) || there_is_only_one_plane)
-      if ((pcx_info.version == 5) || (pcx_info.version == 3) ||
-          image_is_bilevel)
+      if ((pcx_info.version == 5) || (pcx_info.version == 3) || image_is_bilevel)
         image->colors=MagickMin((size_t)1 << bits_per_color,(size_t)256);
     if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
       ThrowPCXException(ResourceLimitError,"MemoryAllocationFailed");
@@ -461,8 +460,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->alpha_trait=planes > 3 ? BlendPixelTrait :
         UndefinedPixelTrait;
     else
-      if ((pcx_info.version == 5) ||
-          image_is_bilevel)
+      if ((pcx_info.version == 5) || image_is_bilevel)
         {
           /*
             Initialize image colormap.
