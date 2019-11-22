@@ -247,16 +247,10 @@ static MagickBooleanType
 %    o quantum: the size (in bytes) of each object.
 %
 */
-MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
-{
-  size_t
-    size;
-
-  if (HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse)
-    return(NULL);
-  if (memory_methods.acquire_aligned_memory_handler != (AcquireAlignedMemoryHandler) NULL)
-    return(memory_methods.acquire_aligned_memory_handler(size,CACHE_LINE_SIZE));
 #if MAGICKCORE_HAVE_STDC_ALIGNED_ALLOC
+
+  #define AcquireAlignedMemory_Actual AcquireAlignedMemory_STDC
+  static inline void *AcquireAlignedMemory_STDC(const size_t size)
   {
     size_t
       extent=CACHE_ALIGNED(size);
@@ -268,7 +262,11 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
       }
     return(aligned_alloc(CACHE_LINE_SIZE,extent));
   }
+
 #elif defined(MAGICKCORE_HAVE_POSIX_MEMALIGN)
+
+  #define AcquireAlignedMemory_Actual AcquireAlignedMemory_POSIX
+  static inline void *AcquireAlignedMemory_POSIX(const size_t size)
   {
     void
       *memory;
@@ -277,11 +275,22 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
       return(NULL);
     return(memory);
   }
+
 #elif defined(MAGICKCORE_HAVE__ALIGNED_MALLOC)
-  return(_aligned_malloc(size,CACHE_LINE_SIZE));
+
+  #define AcquireAlignedMemory_Actual AcquireAlignedMemory_WinAPI
+  static inline void *AcquireAlignedMemory_WinAPI(const size_t size)
+  {
+    return(_aligned_malloc(size,CACHE_LINE_SIZE));
+  }
+
 #else
+
   #define ALIGNMENT_OVERHEAD \
     (MAGICKCORE_MAX_ALIGNMENT_PADDING(CACHE_LINE_SIZE) + MAGICKCORE_SIZEOF_VOID_P)
+
+  #define AcquireAlignedMemory_Actual AcquireAlignedMemory_Generic
+  static inline void *AcquireAlignedMemory_Generic(const size_t size)
   {
     size_t
       extent;
@@ -306,7 +315,19 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
     *(((void **) memory)-1)=p;
     return(memory);
   }
+
 #endif
+
+MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
+{
+  size_t
+    size;
+
+  if (HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse)
+    return(NULL);
+  if (memory_methods.acquire_aligned_memory_handler != (AcquireAlignedMemoryHandler) NULL)
+    return(memory_methods.acquire_aligned_memory_handler(size,CACHE_LINE_SIZE));
+  return(AcquireAlignedMemory_Actual(size));
 }
 
 #if defined(MAGICKCORE_ANONYMOUS_MEMORY_SUPPORT)
