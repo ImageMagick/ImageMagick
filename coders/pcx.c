@@ -368,10 +368,11 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (planes > 6)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     const int there_is_only_one_plane=(planes == 1);
+    const int bits_per_color=(bits_per_pixel*planes);
     if ((bits_per_pixel == 8) || there_is_only_one_plane)
       if ((pcx_info.version == 5) || (pcx_info.version == 3) ||
-          ((bits_per_pixel*planes) == 1))
-        image->colors=MagickMin((size_t)1 << (bits_per_pixel*planes),(size_t)256);
+          (bits_per_color == 1))
+        image->colors=MagickMin((size_t)1 << bits_per_color,(size_t)256);
     if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
       ThrowPCXException(ResourceLimitError,"MemoryAllocationFailed");
     if ((bits_per_pixel == 8) && !there_is_only_one_plane)
@@ -398,7 +399,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (HeapOverflowSanityCheck(pcx_packets,planes) != MagickFalse)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     pcx_packets=pcx_packets*planes;
-    if ((bits_per_pixel*planes*image->columns) > (pcx_packets*8))
+    if ((bits_per_color*image->columns) > (pcx_packets*8))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     if ((MagickSizeType) (pcx_packets/32+128) > GetBlobSize(image))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
@@ -460,14 +461,14 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         UndefinedPixelTrait;
     else
       if ((pcx_info.version == 5) ||
-          ((bits_per_pixel*planes) == 1))
+          (bits_per_color == 1))
         {
           /*
             Initialize image colormap.
           */
           if (image->colors > 256)
             ThrowPCXException(CorruptImageError,"ColormapExceeds256Colors");
-          if ((bits_per_pixel*planes) == 1)
+          if (bits_per_color == 1)
             {
               /*
                 Monochrome colormap.
