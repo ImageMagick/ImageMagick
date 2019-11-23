@@ -575,12 +575,12 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 left_over_pixels=(columns & 7);
 
               if (start_of_last_octet < columns) /* overflow check */
-              for (x=0; x < start_of_last_octet; x+=8)
-              {
-                for (bit=1<<7; bit; bit>>=1)
-                  *r++=(unsigned char) !(*p & bit);
-                ++p;
-              }
+                for (x=0; x < start_of_last_octet; x+=8)
+                {
+                  for (bit=1<<7; bit; bit>>=1)
+                    *r++=(unsigned char) !(*p & bit);
+                  ++p;
+                }
               if (left_over_pixels)
                 {
                   for (bit=1<<7; left_over_pixels; --left_over_pixels)
