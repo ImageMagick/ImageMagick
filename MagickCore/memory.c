@@ -261,10 +261,9 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
   void
     *memory;
 
-  if (HeapOverflowSanityCheck(count,quantum) != MagickFalse)
+  if (HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse)
     return((void *) NULL);
   memory=NULL;
-  size=count*quantum;
   alignment=CACHE_LINE_SIZE;
   extent=AlignedExtent(size,alignment);
   if ((size == 0) || (extent < size))
@@ -555,9 +554,8 @@ MagickExport void *AcquireQuantumMemory(const size_t count,const size_t quantum)
   size_t
     extent;
 
-  if (HeapOverflowSanityCheck(count,quantum) != MagickFalse)
+  if (HeapOverflowSanityCheckGetSize(count,quantum,&extent) != MagickFalse)
     return((void *) NULL);
-  extent=count*quantum;
   return(AcquireMagickMemory(extent));
 }
 
@@ -600,7 +598,7 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
   size_t
     extent;
 
-  if (HeapOverflowSanityCheck(count,quantum) != MagickFalse)
+  if (HeapOverflowSanityCheckGetSize(count,quantum,&extent) != MagickFalse)
     return((MemoryInfo *) NULL);
   if (virtual_anonymous_memory == 0)
     {
@@ -622,11 +620,10 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
   if (memory_info == (MemoryInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) memset(memory_info,0,sizeof(*memory_info));
-  extent=count*quantum;
   memory_info->length=extent;
   memory_info->signature=MagickCoreSignature;
   if ((virtual_anonymous_memory == 1) &&
-      ((count*quantum) <= GetMaxMemoryRequest()))
+      (extent <= GetMaxMemoryRequest()))
     {
       memory_info->blob=AcquireAlignedMemory(1,extent);
       if (memory_info->blob != NULL)
@@ -638,7 +635,7 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
         Acquire anonymous memory map.
       */
       memory_info->blob=NULL;
-      if ((count*quantum) <= GetMaxMemoryRequest())
+      if (extent <= GetMaxMemoryRequest())
         memory_info->blob=MapBlob(-1,IOMode,0,extent);
       if (memory_info->blob != NULL)
         memory_info->type=MapVirtualMemory;
@@ -1013,6 +1010,48 @@ extern MagickExport MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   H e a p O v e r f l o w S a n i t y C h e c k G e t S i z e               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  HeapOverflowSanityCheckGetSize() returns MagickFalse if the heap allocation
+%  request is not zero and fits within the maximum limits of size_t; in this
+%  case, the value (count*quantum) is returned in the size_t object to which
+%  points the parameter named "size".
+%
+%  Otherwise, it returns a value other than MagickFalse; if the heap allocation
+%  request does not fit within the maximum limits of size_t, then errno is set
+%  to ENOMEM. In this case, the object referenced by "size" is not modified.
+%
+%
+%  The format of the HeapOverflowSanityCheckGetSize method is:
+%
+%      MagickBooleanType HeapOverflowSanityCheckGetSize
+%      (
+%        const size_t count,
+%        const size_t quantum,
+%        size_t *const size
+%      )
+%
+%  A description of each parameter follows:
+%
+%    o count: the number of objects to allocate contiguously.
+%
+%    o quantum: the size (in bytes) of each object.
+%
+%    o size: a pointer to an object to hold (count*quantum) if all goes well.
+%
+*/
+extern MagickExport MagickBooleanType
+  HeapOverflowSanityCheckGetSize(const size_t count,const size_t quantum,size_t *const size);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e l i n q u i s h A l i g n e d M e m o r y                             %
 %                                                                             %
 %                                                                             %
@@ -1364,12 +1403,11 @@ MagickExport void *ResizeQuantumMemory(void *memory,const size_t count,
   size_t
     extent;
 
-  if (HeapOverflowSanityCheck(count,quantum) != MagickFalse)
+  if (HeapOverflowSanityCheckGetSize(count,quantum,&extent) != MagickFalse)
     {
       memory=RelinquishMagickMemory(memory);
       return((void *) NULL);
     }
-  extent=count*quantum;
   return(ResizeMagickMemory(memory,extent));
 }
 

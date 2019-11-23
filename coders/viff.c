@@ -514,15 +514,13 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     }
     if (viff_info.data_storage_type == VFF_TYP_BIT)
       {
-        if (HeapOverflowSanityCheck((image->columns+7UL) >> 3UL,image->rows) != MagickFalse)
+        if (HeapOverflowSanityCheckGetSize((image->columns+7UL) >> 3UL,image->rows,&max_packets) != MagickFalse)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-        max_packets=((image->columns+7UL) >> 3UL)*image->rows;
       }
     else
       {
-        if (HeapOverflowSanityCheck((size_t) number_pixels,viff_info.number_data_bands) != MagickFalse)
+        if (HeapOverflowSanityCheckGetSize((size_t) number_pixels,viff_info.number_data_bands,&max_packets) != MagickFalse)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-        max_packets=(size_t) (number_pixels*viff_info.number_data_bands);
       }
     if ((MagickSizeType) (bytes_per_pixel*max_packets) > GetBlobSize(image))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
