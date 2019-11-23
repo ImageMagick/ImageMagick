@@ -567,9 +567,6 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             case 1:
             {
-              unsigned int
-                bit;
-
               const unsigned int
                 start_of_last_octet=(columns-7),
                 left_over_pixels=(columns & 7);
@@ -577,16 +574,70 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (start_of_last_octet < columns) /* overflow check */
                 for (x=0; x < start_of_last_octet; x+=8)
                 {
-                  for (bit=1<<7; bit; bit>>=1)
-                    *r++=!(*p & bit);
+                  const unsigned int
+                    v=*p;
+
+                  *r++=!(v & 1<<7);
+                  *r++=!(v & 1<<6);
+                  *r++=!(v & 1<<5);
+                  *r++=!(v & 1<<4);
+                  *r++=!(v & 1<<3);
+                  *r++=!(v & 1<<2);
+                  *r++=!(v & 1<<1);
+                  *r++=!(v & 1<<0);
                   ++p;
                 }
               if (left_over_pixels)
                 {
-                  for (bit=1<<7; left_over_pixels; --left_over_pixels)
+                  const unsigned int
+                    v=*p;
+
+                  switch (left_over_pixels)
                   {
-                    *r++=!(*p & bit);
-                    b>>=1;
+                    case 1:
+                      *r++=!(v & 1<<7);
+                      break;
+                    case 2:
+                      *r++=!(v & 1<<7);
+                      *r++=!(v & 1<<6);
+                      break;
+                    case 3:
+                      *r++=!(v & 1<<7);
+                      *r++=!(v & 1<<6);
+                      *r++=!(v & 1<<5);
+                      break;
+                    case 4:
+                      *r++=!(v & 1<<7);
+                      *r++=!(v & 1<<6);
+                      *r++=!(v & 1<<5);
+                      *r++=!(v & 1<<4);
+                      break;
+                    case 5:
+                      *r++=!(v & 1<<7);
+                      *r++=!(v & 1<<6);
+                      *r++=!(v & 1<<5);
+                      *r++=!(v & 1<<4);
+                      *r++=!(v & 1<<3);
+                      break;
+                    case 6:
+                      *r++=!(v & 1<<7);
+                      *r++=!(v & 1<<6);
+                      *r++=!(v & 1<<5);
+                      *r++=!(v & 1<<4);
+                      *r++=!(v & 1<<3);
+                      *r++=!(v & 1<<2);
+                      break;
+                    case 7:
+                      *r++=!(v & 1<<7);
+                      *r++=!(v & 1<<6);
+                      *r++=!(v & 1<<5);
+                      *r++=!(v & 1<<4);
+                      *r++=!(v & 1<<3);
+                      *r++=!(v & 1<<2);
+                      *r++=!(v & 1<<1);
+                      break;
+                    default:
+                      assert(0);
                   }
                   ++p;
                 }
