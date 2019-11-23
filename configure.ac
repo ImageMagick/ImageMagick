@@ -2524,7 +2524,7 @@ LCMS_LIBS=""
 LCMS_PKG=""
 if test "x$with_lcms" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES(LCMS2,[lcms2 >= 2.0.6], have_lcms=yes, have_lcms=no)
+  PKG_CHECK_MODULES(LCMS2,[lcms2 >= 2.0.0], have_lcms=yes, have_lcms=no)
   AC_MSG_RESULT([])
 fi
 
