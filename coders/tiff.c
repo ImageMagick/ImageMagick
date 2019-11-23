@@ -984,7 +984,7 @@ static tsize_t TIFFReadBlob(thandle_t image,tdata_t data,tsize_t size)
   return(count);
 }
 
-static int TIFFReadPixels(TIFF *tiff,const tsample_t sample,const ssize_t row,
+static int TIFFReadPixels(TIFF *tiff,const tsample_t sample,const size_t row,
   tdata_t scanline)
 {
   return(TIFFReadScanline(tiff,scanline,(uint32) row,sample));
