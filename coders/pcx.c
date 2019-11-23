@@ -567,7 +567,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             case 1:
             {
-              register ssize_t
+              unsigned int
                 bit;
 
               const unsigned int
