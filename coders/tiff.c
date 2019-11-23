@@ -1823,9 +1823,10 @@ RestoreMSCWarning
       method=ReadStripMethod;
     if (TIFFIsTiled(tiff))
       {
-        method=ReadRGBATileMethod;
         if (samples_per_pixel == 1)
           method=ReadTileMethod;
+        else
+          method=ReadRGBATileMethod;
       }
     quantum_info->endian=LSBEndian;
     quantum_type=RGBQuantum;
@@ -2395,9 +2396,10 @@ RestoreMSCWarning
         (photometric == PHOTOMETRIC_MINISBLACK) ||
         (photometric == PHOTOMETRIC_MINISWHITE))
       {
-        image->type=GrayscaleType;
         if (bits_per_sample == 1)
           image->type=BilevelType;
+        else
+          image->type=GrayscaleType;
       }
     /*
       Proceed to next image.
