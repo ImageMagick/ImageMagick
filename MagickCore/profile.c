@@ -374,6 +374,32 @@ MagickExport char *GetNextImageProfile(const Image *image)
 */
 
 #if defined(MAGICKCORE_LCMS_DELEGATE)
+
+#if LCMS_VERSION < 2060
+static void* cmsGetContextUserData(cmsContext ContextID)
+{
+  return(ContextID);
+}
+
+static cmsContext cmsCreateContext(void *magick_unused(Plugin),void *UserData)
+{
+  magick_unreferenced(Plugin);
+  return((cmsContext) UserData);
+}
+
+static void cmsSetLogErrorHandlerTHR(cmsContext magick_unused(ContextID),
+  cmsLogErrorHandlerFunction Fn)
+{
+  magick_unreferenced(ContextID);
+  cmsSetLogErrorHandler(Fn);
+}
+
+static void cmsDeleteContext(cmsContext magick_unused(ContextID))
+{
+  magick_unreferenced(ContextID);
+}
+#endif
+
 static LCMSType **DestroyPixelThreadSet(LCMSType **pixels)
 {
   register ssize_t
