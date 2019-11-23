@@ -645,31 +645,62 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             case 2:
             {
-              for (x=0; x < ((ssize_t) columns-3); x+=4)
-              {
-                *r++=(*p >> 6) & 0x3;
-                *r++=(*p >> 4) & 0x3;
-                *r++=(*p >> 2) & 0x3;
-                *r++=(*p) & 0x3;
-                ++p;
-              }
-              if (columns & 3)
+              const unsigned int
+                start_of_last_octet=(columns-3),
+                left_over_pixels=(columns & 3);
+
+              if (start_of_last_octet < columns) /* overflow check */
+                for (x=0; x < start_of_last_octet; x+=4)
                 {
-                  for (i=3; i >= (ssize_t) (4-(columns & 3)); --i)
-                    *r++=(unsigned char) ((*p >> (i*2)) & 0x03);
+                  const unsigned int
+                    v=*p;
+
+                  *r++=(v >> 6) & 0x3;
+                  *r++=(v >> 4) & 0x3;
+                  *r++=(v >> 2) & 0x3;
+                  *r++=(v >> 0) & 0x3;
+                  ++p;
+                }
+              if (left_over_pixels)
+                {
+                  const unsigned int
+                    v=*p;
+
+                  switch (left_over_pixels)
+                  {
+                    case 1:
+                      *r++=(v >> 6) & 0x3;
+                      break;
+                    case 2:
+                      *r++=(v >> 6) & 0x3;
+                      *r++=(v >> 4) & 0x3;
+                      break;
+                    case 3:
+                      *r++=(v >> 6) & 0x3;
+                      *r++=(v >> 4) & 0x3;
+                      *r++=(v >> 2) & 0x3;
+                      break;
+                    default:
+                      assert(0);
+                  }
                   ++p;
                 }
               break;
             }
             case 4:
             {
-              for (x=0; x < ((ssize_t) columns-1); x+=2)
-              {
-                *r++=(*p >> 4) & 0xf;
-                *r++=(*p) & 0xf;
-                ++p;
-              }
-              if (columns & 1)
+              const unsigned int
+                start_of_last_octet=(columns-1),
+                left_over_pixels=(columns & 1);
+
+              if (start_of_last_octet < columns) /* overflow check */
+                for (x=0; x < start_of_last_octet; x+=2)
+                {
+                  *r++=(*p >> 4) & 0xf;
+                  *r++=(*p >> 0) & 0xf;
+                  ++p;
+                }
+              if (left_over_pixels)
                 *r++=(*p++ >> 4) & 0xf;
               break;
             }
