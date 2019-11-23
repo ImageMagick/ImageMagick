@@ -984,14 +984,10 @@ static tsize_t TIFFReadBlob(thandle_t image,tdata_t data,tsize_t size)
   return(count);
 }
 
-static int32 TIFFReadPixels(TIFF *tiff,const tsample_t sample,const ssize_t row,
+static int TIFFReadPixels(TIFF *tiff,const tsample_t sample,const ssize_t row,
   tdata_t scanline)
 {
-  int32
-    status;
-
-  status=TIFFReadScanline(tiff,scanline,(uint32) row,sample);
-  return(status);
+  return(TIFFReadScanline(tiff,scanline,(uint32) row,sample));
 }
 
 static toff_t TIFFSeekBlob(thandle_t image,toff_t offset,int whence)
@@ -3161,10 +3157,10 @@ static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,
   return(MagickTrue);
 }
 
-static int32 TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
+static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
   tsample_t sample,Image *image)
 {
-  int32
+  int
     status;
 
   register ssize_t
