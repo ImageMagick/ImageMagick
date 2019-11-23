@@ -3157,7 +3157,7 @@ static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,
   return(MagickTrue);
 }
 
-static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
+static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
   tsample_t sample,Image *image)
 {
   int
@@ -3193,7 +3193,7 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
 
   i=(ssize_t) (row % height)*scanline_size;
   (void) memcpy(tiff_info->scanlines+i,(char *) tiff_info->scanline,scanline_size);
-  if (((size_t) (row % height) != (height-1)) && (row != (ssize_t) (image->rows-1)))
+  if (((row % height) != (height-1)) && (row != (image->rows-1)))
     return(0);
   /*
     Write tile to TIFF image.
