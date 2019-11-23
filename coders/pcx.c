@@ -679,7 +679,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             }
             default:
-              break;
+              assert(0);
           }
       /*
         Transfer image scanline.
