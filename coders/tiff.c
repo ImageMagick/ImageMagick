@@ -1821,7 +1821,7 @@ RestoreMSCWarning
         samples_per_pixel);
     if (compress_tag == COMPRESSION_JBIG)
       method=ReadStripMethod;
-    if (TIFFIsTiled(tiff) != MagickFalse)
+    if (TIFFIsTiled(tiff))
       {
         method=ReadRGBATileMethod;
         if (samples_per_pixel == 1)
