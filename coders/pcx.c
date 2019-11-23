@@ -237,14 +237,12 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register Quantum
     *q;
 
-  register ssize_t
-    i;
-
   register unsigned char
     *p,
     *r;
 
   size_t
+    i,
     x,
     y,
     pcx_packets;
@@ -378,7 +376,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((bits_per_pixel == 8) && !there_is_only_one_plane)
       image->storage_class=DirectClass;
     p=pcx_colormap;
-    for (i=0; i < (ssize_t) image->colors; ++i)
+    for (i=0; i < image->colors; ++i)
     {
       image->colormap[i].red=ScaleCharToQuantum(*p++);
       image->colormap[i].green=ScaleCharToQuantum(*p++);
@@ -488,7 +486,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 pcx_info.colormap_signature=(unsigned char) ReadBlobByte(image);
                 count=ReadBlob(image,3*image->colors,pcx_colormap);
                 p=pcx_colormap;
-                for (i=0; i < (ssize_t) image->colors; ++i)
+                for (i=0; i < image->colors; ++i)
                 {
                   image->colormap[i].red=ScaleCharToQuantum(*p++);
                   image->colormap[i].green=ScaleCharToQuantum(*p++);
