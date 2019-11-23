@@ -234,9 +234,6 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   PCXInfo
     pcx_info;
 
-  register ssize_t
-    x;
-
   register Quantum
     *q;
 
@@ -248,6 +245,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *r;
 
   size_t
+    x,
     y,
     pcx_packets;
 
@@ -513,7 +511,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (i=0; i < planes; ++i)
         {
           r=scanline+i;
-          for (x=0; x < (ssize_t) bytes_per_line; ++x)
+          for (x=0; x < bytes_per_line; ++x)
           {
             switch (i)
             {
@@ -545,12 +543,12 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       else
         if (!there_is_only_one_plane)
           {
-            for (x=0; x < (ssize_t) columns; ++x)
+            for (x=0; x < columns; ++x)
               *r++=0;
             for (i=0; i < planes; ++i)
             {
               r=scanline;
-              for (x=0; x < (ssize_t) bytes_per_line; ++x)
+              for (x=0; x < bytes_per_line; ++x)
               {
                  bits=(*p++);
                  for (mask=0x80; mask != 0; mask>>=1)
@@ -716,7 +714,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Transfer image scanline.
       */
       r=scanline;
-      for (x=0; x < (ssize_t) columns; ++x)
+      for (x=0; x < columns; ++x)
       {
         if (image->storage_class == PseudoClass)
           SetPixelIndex(image,*r++,q);
