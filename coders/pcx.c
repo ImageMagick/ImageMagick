@@ -241,6 +241,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *p,
     *r;
 
+  unsigned int
+    k;
+
   size_t
     i,
     x,
@@ -386,7 +389,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pcx_info.palette_info=ReadBlobLSBShort(image);
     pcx_info.horizontal_screensize=ReadBlobLSBShort(image);
     pcx_info.vertical_screensize=ReadBlobLSBShort(image);
-    for (i=0; i < 54; ++i)
+    for (k=0; k < 54; ++k)
       (void) ReadBlobByte(image);
     /*
       Read image data.
@@ -506,12 +509,12 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       r=scanline;
       if (image->storage_class == DirectClass)
-        for (i=0; i < planes; ++i)
+        for (k=0; k < planes; ++k)
         {
-          r=scanline+i;
+          r=scanline+k;
           for (x=0; x < bytes_per_line; ++x)
           {
-            switch (i)
+            switch (k)
             {
               case 0:
               {
@@ -543,7 +546,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             for (x=0; x < columns; ++x)
               *r++=0;
-            for (i=0; i < planes; ++i)
+            for (k=0; k < planes; ++k)
             {
               r=scanline;
               for (x=0; x < bytes_per_line; ++x)
@@ -552,7 +555,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                  for (mask=0x80; mask != 0; mask>>=1)
                  {
                    if (bits & mask)
-                     *r|=1 << i;
+                     *r|=1 << k;
                    ++r;
                  }
                }
