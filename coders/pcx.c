@@ -570,15 +570,21 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               register ssize_t
                 bit;
 
+              const unsigned int
+                left_over_pixels=(columns & 7);
+
               for (x=0; x < ((ssize_t) columns-7); x+=8)
               {
                 for (bit=7; bit >= 0; --bit)
                   *r++=(unsigned char) ((*p) & (0x01 << bit) ? 0x00 : 0x01);
                 ++p;
               }
-              if (columns & 7)
+              if (left_over_pixels)
                 {
-                  for (bit=7; bit >= (ssize_t) (8-(columns & 7)); --bit)
+                  const unsigned int
+                    lowest_bit=(8-left_over_pixels);
+
+                  for (bit=7; bit >= lowest_bit; --bit)
                     *r++=(unsigned char) ((*p) & (0x01 << bit) ? 0x00 : 0x01);
                   ++p;
                 }
