@@ -2983,21 +2983,20 @@ if test "$with_wmf" != 'no'; then
   AC_MSG_CHECKING([for WMF support ])
   AC_MSG_RESULT([])
 
-  have_libwmflite='no'
+  have_libwmf='no'
   have_libwmf_ipa_h='no'
 
   AC_CHECK_HEADER([libwmf/ipa.h],[have_libwmf_ipa_h='yes'],[],[$FT2BUILD_H])
   if test "$have_libwmf_ipa_h" = 'yes'; then
-    AC_CHECK_LIB([wmflite],[wmf_lite_create],[have_libwmflite='yes'],[],[])
-    if test "$have_libwmflite" = 'yes'; then
+    AC_CHECK_LIB([wmf],[wmf_api_create],[have_libwmf='yes'],[],[])
+    if test "$have_libwmf" = 'yes'; then
       AC_DEFINE(WMF_DELEGATE,1,Define if you have WMF library)
-      WMF_LIBS='-lwmflite'
+      WMF_LIBS='-lwmf'
       LIBS="$WMF_LIBS $LIBS"
       have_wmf='yes'
     else
       AC_MSG_RESULT([no -- some components failed test])
       have_wmf='no (failed tests)'
-      have_wmflite='no (failed tests)'
       LIBS="$OLIBS"
       WMF_LIBS=''
     fi

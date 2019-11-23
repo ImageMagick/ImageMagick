@@ -1353,7 +1353,7 @@ coders_webp_la_LIBADD      = $(MAGICKCORE_LIBS) $(WEBPMUX_LIBS) $(WEBP_LIBS) $(M
 coders_wmf_la_SOURCES      = coders/wmf.c
 coders_wmf_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_wmf_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_wmf_la_LIBADD       = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) $(WMF_LIBS) $(MATH_LIBS)
+coders_wmf_la_LIBADD       = $(MAGICKCORE_LIBS) $(WMF_LIBS) $(MATH_LIBS)
 
 # WPG coder module
 coders_wpg_la_SOURCES      = coders/wpg.c
