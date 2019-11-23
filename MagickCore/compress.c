@@ -552,7 +552,7 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
       if (length > 13)
         {
           while (runlength < 11)
-           InputBit(bit);
+            InputBit(bit);
           do { InputBit(bit); } while ((int) bit == 0);
           break;
         }
@@ -589,7 +589,8 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
                 }
               else
                 for ( ; count > 0; count--)
-                  scanline[x++]=(unsigned char) 1;
+                  if ((x >= 0) && (x < (ssize_t) image->columns))
+                    scanline[x++]=(unsigned char) 1;
             }
           color=(unsigned int)
             ((color == MagickFalse) ? MagickTrue : MagickFalse);
