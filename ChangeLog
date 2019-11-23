@@ -1,5 +1,5 @@
 2019-11-23  7.0.9-6 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.9-6, GIT revision 16392:24e2928:20191123.
+  * Release ImageMagick version 7.0.9-6, GIT revision 16394:e8d31fe:20191123.
 
 2019-11-19  7.0.9-6 Cristy  <quetzlzacatenango@image...>
   * Increase the maximum number of bezier coordinates (reference
@@ -11,6 +11,7 @@
     https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=37118).
   * Fix potential buffer overflow when reading a fax image (alert from
     Justin).
+  * Render WMF as EPS.
 
 2019-11-17  7.0.9-5 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-5, GIT revision 16369:747618e:20191117.
