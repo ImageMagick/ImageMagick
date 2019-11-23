@@ -514,30 +514,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           r=scanline+k;
           for (x=0; x < bytes_per_line; ++x)
           {
-            switch (k)
-            {
-              case 0:
-              {
-                *r=(*p++);
-                break;
-              }
-              case 1:
-              {
-                *r=(*p++);
-                break;
-              }
-              case 2:
-              {
-                *r=(*p++);
-                break;
-              }
-              case 3:
-              default:
-              {
-                *r=(*p++);
-                break;
-              }
-            }
+            *r=(*p++);
             r+=planes;
           }
         }
