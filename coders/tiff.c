@@ -3160,9 +3160,6 @@ static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,
 static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
   tsample_t sample,Image *image)
 {
-  int
-    status;
-
   register unsigned char
     *p,
     *q;
@@ -3214,7 +3211,6 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
   const uint32
     tile_y=tile*height;
 
-  status=0;
   tile_x=0;
   for (i=0; i < number_tiles; ++i)
   {
@@ -3234,12 +3230,11 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
         for (l=0; l < bytes_per_pixel; ++l)
           *q++=(*p++);
       }
-    status=TIFFWriteTile(tiff,pixels,tile_x,tile_y,0,sample);
-    if (status < 0)
-      break;
+    if(TIFFWriteTile(tiff,pixels,tile_x,tile_y,0,sample) == -1)
+      return(-1);
     tile_x+=width;
   }
-  return(status);
+  return(0);
 }
 
 static ssize_t TIFFWriteCustomStream(unsigned char *data,const size_t count,
