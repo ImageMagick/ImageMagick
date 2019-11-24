@@ -3201,11 +3201,11 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
     Write tile to TIFF image.
   */
   status=0;
-  for (i=0; i < number_tiles; i++)
+  for (i=0; i < number_tiles; ++i)
   {
     tile_width=(i == last_tile) ? columns-(i*width) : width;
-    for (j=0; j < ((row % height)+1); j++)
-      for (k=0; k < tile_width; k++)
+    for (j=0; j < ((row % height)+1); ++j)
+      for (k=0; k < tile_width; ++k)
       {
         if (bytes_per_pixel == 0)
           {
@@ -3216,7 +3216,7 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
           }
         p=scanlines+(j*scanline_size+(i*width+k)*bytes_per_pixel);
         q=pixels+(j*row_size+k*bytes_per_pixel);
-        for (l=0; l < bytes_per_pixel; l++)
+        for (l=0; l < bytes_per_pixel; ++l)
           *q++=(*p++);
       }
     if ((i*width) != columns)
