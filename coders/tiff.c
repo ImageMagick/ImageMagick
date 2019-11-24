@@ -3163,22 +3163,18 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
   int
     status;
 
-  register ssize_t
-    i;
-
   register unsigned char
     *p,
     *q;
 
   size_t
-    number_tiles,
-    tile_width;
-
-  ssize_t
-    bytes_per_pixel,
+    i,
     j,
     k,
-    l;
+    l,
+    bytes_per_pixel,
+    number_tiles,
+    tile_width;
 
   if (TIFFIsTiled(tiff) == 0)
     return(TIFFWriteScanline(tiff,tiff_info->scanline,(uint32) row,sample));
@@ -3191,7 +3187,7 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
     height=tiff_info->tile_geometry.height,
     width=tiff_info->tile_geometry.width;
 
-  i=(ssize_t) (row % height)*scanline_size;
+  i=(row % height)*scanline_size;
   (void) memcpy(tiff_info->scanlines+i,(char *) tiff_info->scanline,scanline_size);
   if (((row % height) != (height-1)) && (row != (image->rows-1)))
     return(0);
@@ -3199,13 +3195,13 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
     Write tile to TIFF image.
   */
   status=0;
-  bytes_per_pixel=TIFFTileSize(tiff)/(ssize_t) (height*width);
+  bytes_per_pixel=TIFFTileSize(tiff)/(height*width);
   number_tiles=(image->columns+width)/width;
-  for (i=0; i < (ssize_t) number_tiles; i++)
+  for (i=0; i < number_tiles; i++)
   {
-    tile_width=(i == (ssize_t) (number_tiles-1)) ? image->columns-(i*width) : width;
-    for (j=0; j < (ssize_t) ((row % height)+1); j++)
-      for (k=0; k < (ssize_t) tile_width; k++)
+    tile_width=(i == (number_tiles-1)) ? image->columns-(i*width) : width;
+    for (j=0; j < ((row % height)+1); j++)
+      for (k=0; k < tile_width; k++)
       {
         if (bytes_per_pixel == 0)
           {
