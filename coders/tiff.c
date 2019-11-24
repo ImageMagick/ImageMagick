@@ -3201,9 +3201,6 @@ static inline int process_tile
 static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
   tsample_t sample,Image *image)
 {
-  uint32
-    tile_x;
-
   if (TIFFIsTiled(tiff) == 0)
     return(TIFFWriteScanline(tiff,tiff_info->scanline,(uint32) row,sample));
   /*
@@ -3241,6 +3238,9 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
 
   const uint32
     tile_y=tile*height;
+
+  uint32
+    tile_x;
 
   for (tile_x=0; tile_x < last_tile_x; tile_x+=width)
     if (PROCESS_TILE(tile_x,width) == -1)
