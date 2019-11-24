@@ -3174,6 +3174,9 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
     l,
     tile_width;
 
+  uint32
+    tile_x;
+
   if (TIFFIsTiled(tiff) == 0)
     return(TIFFWriteScanline(tiff,tiff_info->scanline,(uint32) row,sample));
   /*
@@ -3193,6 +3196,9 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
     *const scanlines=tiff_info->scanlines,
     *const pixels=tiff_info->pixels;
 
+  const uint32
+    tile_y=(row/height)*height;
+
   i=(row % height)*scanline_size;
   (void) memcpy(scanlines+i,(char *) tiff_info->scanline,scanline_size);
   if (((row % height) != (height-1)) && (row != (image->rows-1)))
@@ -3201,29 +3207,31 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
     Write tile to TIFF image.
   */
   status=0;
+  tile_x=0;
   for (i=0; i < number_tiles; ++i)
   {
-    tile_width=(i == last_tile) ? columns-(i*width) : width;
+    tile_width=(i == last_tile) ? columns-tile_x : width;
     for (j=0; j < ((row % height)+1); ++j)
       for (k=0; k < tile_width; ++k)
       {
         if (bytes_per_pixel == 0)
           {
-            p=scanlines+(j*scanline_size+(i*width+k)/8);
+            p=scanlines+(j*scanline_size+(tile_x+k)/8);
             q=pixels+(j*row_size+k/8);
             *q++=(*p++);
             continue;
           }
-        p=scanlines+(j*scanline_size+(i*width+k)*bytes_per_pixel);
+        p=scanlines+(j*scanline_size+(tile_x+k)*bytes_per_pixel);
         q=pixels+(j*row_size+k*bytes_per_pixel);
         for (l=0; l < bytes_per_pixel; ++l)
           *q++=(*p++);
       }
-    if ((i*width) != columns)
-      status=TIFFWriteTile(tiff,pixels,(uint32) (i*width),
-        (uint32) ((row/height)*height),0,sample);
+    if (tile_x != columns)
+      status=TIFFWriteTile(tiff,pixels,tile_x,
+        tile_y,0,sample);
     if (status < 0)
       break;
+    tile_x+=width;
   }
   return(status);
 }
