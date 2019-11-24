@@ -3215,7 +3215,7 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
   for (i=0; i < number_tiles; ++i)
   {
     tile_width=(i == last_tile) ? columns-tile_x : width;
-    for (j=0; j < (row_in_tile+1); ++j)
+    for (j=0; j <= row_in_tile; ++j)
       for (k=0; k < tile_width; ++k)
       {
         if (bytes_per_pixel == 0)
