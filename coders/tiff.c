@@ -3203,6 +3203,7 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
 {
   if (TIFFIsTiled(tiff) == 0)
     return(TIFFWriteScanline(tiff,tiff_info->scanline,(uint32) row,sample));
+
   /*
     Fill scanlines to tile height.
   */
@@ -3220,6 +3221,7 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
   (void) memcpy(scanlines+row_in_tile_offset,(char *) tiff_info->scanline,scanline_size);
   if ((row_in_tile != last_row_in_tile) && (row != last_row_in_image))
     return(0);
+
   /*
     Write tile to TIFF image.
   */
