@@ -3227,8 +3227,7 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
           *q++=(*p++);
       }
     if (tile_x != columns)
-      status=TIFFWriteTile(tiff,pixels,tile_x,
-        tile_y,0,sample);
+      status=TIFFWriteTile(tiff,pixels,tile_x,tile_y,0,sample);
     if (status < 0)
       break;
     tile_x+=width;
