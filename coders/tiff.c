@@ -3189,8 +3189,12 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
     number_tiles=(columns+width)/width,
     last_tile=number_tiles-1;
 
+  unsigned char
+    *const scanlines=tiff_info->scanlines,
+    *const pixels=tiff_info->pixels;
+
   i=(row % height)*scanline_size;
-  (void) memcpy(tiff_info->scanlines+i,(char *) tiff_info->scanline,scanline_size);
+  (void) memcpy(scanlines+i,(char *) tiff_info->scanline,scanline_size);
   if (((row % height) != (height-1)) && (row != (image->rows-1)))
     return(0);
   /*
@@ -3205,18 +3209,18 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
       {
         if (bytes_per_pixel == 0)
           {
-            p=tiff_info->scanlines+(j*scanline_size+(i*width+k)/8);
-            q=tiff_info->pixels+(j*row_size+k/8);
+            p=scanlines+(j*scanline_size+(i*width+k)/8);
+            q=pixels+(j*row_size+k/8);
             *q++=(*p++);
             continue;
           }
-        p=tiff_info->scanlines+(j*scanline_size+(i*width+k)*bytes_per_pixel);
-        q=tiff_info->pixels+(j*row_size+k*bytes_per_pixel);
+        p=scanlines+(j*scanline_size+(i*width+k)*bytes_per_pixel);
+        q=pixels+(j*row_size+k*bytes_per_pixel);
         for (l=0; l < bytes_per_pixel; l++)
           *q++=(*p++);
       }
     if ((i*width) != columns)
-      status=TIFFWriteTile(tiff,tiff_info->pixels,(uint32) (i*width),
+      status=TIFFWriteTile(tiff,pixels,(uint32) (i*width),
         (uint32) ((row/height)*height),0,sample);
     if (status < 0)
       break;
