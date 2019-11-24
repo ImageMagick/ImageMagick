@@ -5001,7 +5001,7 @@ WandExport MagickBooleanType DrawSetFillPatternURL(DrawingWand *wand,
   (void) FormatLocaleString(pattern_spec,MagickPathExtent,"url(%s)",fill_url);
 #if DRAW_BINARY_IMPLEMENTATION
   DrawPatternPath(wand->image,CurrentContext,pattern_spec,
-    &CurrentContext->fill_pattern);
+    &CurrentContext->fill_pattern,wand->exception);
 #endif
   if (CurrentContext->fill.alpha != (Quantum) TransparentAlpha)
     CurrentContext->fill.alpha=(double) CurrentContext->alpha;
@@ -5441,7 +5441,7 @@ WandExport MagickBooleanType DrawSetStrokePatternURL(DrawingWand *wand,
   (void) FormatLocaleString(pattern_spec,MagickPathExtent,"url(%s)",stroke_url);
 #if DRAW_BINARY_IMPLEMENTATION
   DrawPatternPath(wand->image,CurrentContext,pattern_spec,
-    &CurrentContext->stroke_pattern);
+    &CurrentContext->stroke_pattern,wand->exception);
 #endif
   if (CurrentContext->stroke.alpha != (Quantum) TransparentAlpha)
     CurrentContext->stroke.alpha=(double) CurrentContext->alpha;

@@ -2524,7 +2524,7 @@ LCMS_LIBS=""
 LCMS_PKG=""
 if test "x$with_lcms" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES(LCMS2,[lcms2 >= 2.0.0], have_lcms=yes, have_lcms=no)
+  PKG_CHECK_MODULES(LCMS2,[lcms2 >= 2.0.6], have_lcms=yes, have_lcms=no)
   AC_MSG_RESULT([])
 fi
 
@@ -2983,20 +2983,21 @@ if test "$with_wmf" != 'no'; then
   AC_MSG_CHECKING([for WMF support ])
   AC_MSG_RESULT([])
 
-  have_libwmf='no'
+  have_libwmflite='no'
   have_libwmf_ipa_h='no'
 
   AC_CHECK_HEADER([libwmf/ipa.h],[have_libwmf_ipa_h='yes'],[],[$FT2BUILD_H])
   if test "$have_libwmf_ipa_h" = 'yes'; then
-    AC_CHECK_LIB([wmf],[wmf_api_create],[have_libwmf='yes'],[],[])
-    if test "$have_libwmf" = 'yes'; then
+    AC_CHECK_LIB([wmflite],[wmf_lite_create],[have_libwmflite='yes'],[],[])
+    if test "$have_libwmflite" = 'yes'; then
       AC_DEFINE(WMF_DELEGATE,1,Define if you have WMF library)
-      WMF_LIBS='-lwmf'
+      WMF_LIBS='-lwmflite'
       LIBS="$WMF_LIBS $LIBS"
       have_wmf='yes'
     else
       AC_MSG_RESULT([no -- some components failed test])
       have_wmf='no (failed tests)'
+      have_wmflite='no (failed tests)'
       LIBS="$OLIBS"
       WMF_LIBS=''
     fi

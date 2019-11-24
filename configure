@@ -4581,7 +4581,7 @@ MAGICK_PATCHLEVEL_VERSION=6
 
 MAGICK_VERSION=7.0.9-6
 
-MAGICK_GIT_REVISION=16391:c61f1697e:20191123
+MAGICK_GIT_REVISION=16392:76d04a8fe:20191124
 
 
 # Substitute library versioning
@@ -32094,19 +32094,19 @@ if test "x$with_lcms" = "xyes"; then
 $as_echo "-------------------------------------------------------------" >&6; }
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for lcms2 >= 2.0.0" >&5
-$as_echo_n "checking for lcms2 >= 2.0.0... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for lcms2 >= 2.0.6" >&5
+$as_echo_n "checking for lcms2 >= 2.0.6... " >&6; }
 
 if test -n "$LCMS2_CFLAGS"; then
     pkg_cv_LCMS2_CFLAGS="$LCMS2_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"lcms2 >= 2.0.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "lcms2 >= 2.0.0") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"lcms2 >= 2.0.6\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "lcms2 >= 2.0.6") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_LCMS2_CFLAGS=`$PKG_CONFIG --cflags "lcms2 >= 2.0.0" 2>/dev/null`
+  pkg_cv_LCMS2_CFLAGS=`$PKG_CONFIG --cflags "lcms2 >= 2.0.6" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -32118,12 +32118,12 @@ if test -n "$LCMS2_LIBS"; then
     pkg_cv_LCMS2_LIBS="$LCMS2_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"lcms2 >= 2.0.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "lcms2 >= 2.0.0") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"lcms2 >= 2.0.6\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "lcms2 >= 2.0.6") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_LCMS2_LIBS=`$PKG_CONFIG --libs "lcms2 >= 2.0.0" 2>/dev/null`
+  pkg_cv_LCMS2_LIBS=`$PKG_CONFIG --libs "lcms2 >= 2.0.6" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -32144,9 +32144,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        LCMS2_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "lcms2 >= 2.0.0" 2>&1`
+	        LCMS2_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "lcms2 >= 2.0.6" 2>&1`
         else
-	        LCMS2_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "lcms2 >= 2.0.0" 2>&1`
+	        LCMS2_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "lcms2 >= 2.0.6" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$LCMS2_PKG_ERRORS" >&5
@@ -33894,7 +33894,7 @@ $as_echo_n "checking for WMF support ... " >&6; }
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
 
-  have_libwmf='no'
+  have_libwmflite='no'
   have_libwmf_ipa_h='no'
 
   ac_fn_c_check_header_compile "$LINENO" "libwmf/ipa.h" "ac_cv_header_libwmf_ipa_h" "$FT2BUILD_H
@@ -33905,13 +33905,13 @@ fi
 
 
   if test "$have_libwmf_ipa_h" = 'yes'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for wmf_api_create in -lwmf" >&5
-$as_echo_n "checking for wmf_api_create in -lwmf... " >&6; }
-if ${ac_cv_lib_wmf_wmf_api_create+:} false; then :
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for wmf_lite_create in -lwmflite" >&5
+$as_echo_n "checking for wmf_lite_create in -lwmflite... " >&6; }
+if ${ac_cv_lib_wmflite_wmf_lite_create+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lwmf  $LIBS"
+LIBS="-lwmflite  $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -33921,41 +33921,42 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char wmf_api_create ();
+char wmf_lite_create ();
 int
 main ()
 {
-return wmf_api_create ();
+return wmf_lite_create ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_wmf_wmf_api_create=yes
+  ac_cv_lib_wmflite_wmf_lite_create=yes
 else
-  ac_cv_lib_wmf_wmf_api_create=no
+  ac_cv_lib_wmflite_wmf_lite_create=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_wmf_wmf_api_create" >&5
-$as_echo "$ac_cv_lib_wmf_wmf_api_create" >&6; }
-if test "x$ac_cv_lib_wmf_wmf_api_create" = xyes; then :
-  have_libwmf='yes'
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_wmflite_wmf_lite_create" >&5
+$as_echo "$ac_cv_lib_wmflite_wmf_lite_create" >&6; }
+if test "x$ac_cv_lib_wmflite_wmf_lite_create" = xyes; then :
+  have_libwmflite='yes'
 fi
 
-    if test "$have_libwmf" = 'yes'; then
+    if test "$have_libwmflite" = 'yes'; then
 
 $as_echo "#define WMF_DELEGATE 1" >>confdefs.h
 
-      WMF_LIBS='-lwmf'
+      WMF_LIBS='-lwmflite'
       LIBS="$WMF_LIBS $LIBS"
       have_wmf='yes'
     else
       { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
 $as_echo "no -- some components failed test" >&6; }
       have_wmf='no (failed tests)'
+      have_wmflite='no (failed tests)'
       LIBS="$OLIBS"
       WMF_LIBS=''
     fi
