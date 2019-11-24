@@ -3184,25 +3184,14 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
   */
   const size_t
     scanline_size=TIFFScanlineSize(tiff),
-    row_size=TIFFTileRowSize(tiff),
     height=tiff_info->tile_geometry.height,
-    tile=row/height,
+    last_row_in_tile=height-1,
     row_in_tile=row % height,
     row_in_tile_offset=row_in_tile*scanline_size,
-    last_row_in_tile=height-1,
-    last_row_in_image = image->rows-1,
-    width=tiff_info->tile_geometry.width,
-    bytes_per_pixel=TIFFTileSize(tiff)/(height*width),
-    columns=image->columns,
-    number_tiles=(columns+width)/width,
-    last_tile=number_tiles-1;
+    last_row_in_image = image->rows-1;
 
   unsigned char
-    *const scanlines=tiff_info->scanlines,
-    *const pixels=tiff_info->pixels;
-
-  const uint32
-    tile_y=tile*height;
+    *const scanlines=tiff_info->scanlines;
 
   (void) memcpy(scanlines+row_in_tile_offset,(char *) tiff_info->scanline,scanline_size);
   if ((row_in_tile != last_row_in_tile) && (row != last_row_in_image))
@@ -3210,6 +3199,21 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
   /*
     Write tile to TIFF image.
   */
+  const size_t
+    tile=row/height,
+    width=tiff_info->tile_geometry.width,
+    bytes_per_pixel=TIFFTileSize(tiff)/(height*width),
+    columns=image->columns,
+    number_tiles=(columns+width)/width,
+    last_tile=number_tiles-1,
+    row_size=TIFFTileRowSize(tiff);
+
+  unsigned char
+    *const pixels=tiff_info->pixels;
+
+  const uint32
+    tile_y=tile*height;
+
   status=0;
   tile_x=0;
   for (i=0; i < number_tiles; ++i)
