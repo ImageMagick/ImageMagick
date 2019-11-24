@@ -3157,18 +3157,52 @@ static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,
   return(MagickTrue);
 }
 
+static inline int process_tile
+(
+    const uint32 tile_x,
+    const size_t tile_width,
+    TIFF *const tiff,
+    tsample_t sample,
+    const uint32 tile_y,
+    const size_t row_in_tile,
+    const size_t row_size,
+    const size_t scanline_size,
+    const size_t bytes_per_pixel,
+    unsigned char *const scanlines,
+    unsigned char *const pixels
+){
+  size_t
+    j, k, l;
+
+  unsigned char
+    *p, *q;
+
+  for (j=0; j <= row_in_tile; ++j)
+    for (k=0; k < tile_width; ++k)
+    {
+      if (bytes_per_pixel == 0)
+        {
+          p=scanlines+(j*scanline_size+(tile_x+k)/8);
+          q=pixels+(j*row_size+k/8);
+          *q++=(*p++);
+          continue;
+        }
+      p=scanlines+(j*scanline_size+(tile_x+k)*bytes_per_pixel);
+      q=pixels+(j*row_size+k*bytes_per_pixel);
+      for (l=0; l < bytes_per_pixel; ++l)
+        *q++=(*p++);
+    }
+  return(TIFFWriteTile(tiff,pixels,tile_x,tile_y,0,sample));
+}
+
+#define PROCESS_TILE(tile_x,tile_width) \
+  process_tile(tile_x,tile_width,tiff,sample,tile_y,row_in_tile,row_size,scanline_size,bytes_per_pixel,scanlines,pixels)
+
 static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
   tsample_t sample,Image *image)
 {
-  register unsigned char
-    *p,
-    *q;
-
   size_t
     i,
-    j,
-    k,
-    l,
     tile_width;
 
   uint32
@@ -3215,22 +3249,7 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
   for (i=0; i < number_tiles; ++i)
   {
     tile_width=(i == last_tile) ? columns-tile_x : width;
-    for (j=0; j <= row_in_tile; ++j)
-      for (k=0; k < tile_width; ++k)
-      {
-        if (bytes_per_pixel == 0)
-          {
-            p=scanlines+(j*scanline_size+(tile_x+k)/8);
-            q=pixels+(j*row_size+k/8);
-            *q++=(*p++);
-            continue;
-          }
-        p=scanlines+(j*scanline_size+(tile_x+k)*bytes_per_pixel);
-        q=pixels+(j*row_size+k*bytes_per_pixel);
-        for (l=0; l < bytes_per_pixel; ++l)
-          *q++=(*p++);
-      }
-    if(TIFFWriteTile(tiff,pixels,tile_x,tile_y,0,sample) == -1)
+    if (PROCESS_TILE(tile_x,tile_width) == -1)
       return(-1);
     tile_x+=width;
   }
