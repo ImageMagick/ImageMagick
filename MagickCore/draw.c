@@ -4494,7 +4494,7 @@ MagickExport MagickBooleanType DrawPatternPath(Image *image,
   image_info->size=AcquireString(geometry);
   *pattern=AcquireImage(image_info,exception);
   image_info=DestroyImageInfo(image_info);
-  (void) QueryColorCompliance("#000000ff",AllCompliance,
+  (void) QueryColorCompliance("#00000000",AllCompliance,
     &(*pattern)->background_color,exception);
   (void) SetImageBackgroundColor(*pattern,exception);
   if (image->debug != MagickFalse)
