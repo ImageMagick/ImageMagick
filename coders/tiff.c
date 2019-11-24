@@ -1130,7 +1130,7 @@ static ssize_t TIFFReadCustomStream(unsigned char *data,const size_t count,
   size_t
     total;
 
-  ssize_t
+  MagickOffsetType
     remaining;
 
   if (count == 0)
