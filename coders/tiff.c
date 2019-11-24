@@ -3201,9 +3201,6 @@ static inline int process_tile
 static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
   tsample_t sample,Image *image)
 {
-  size_t
-    i;
-
   uint32
     tile_x;
 
@@ -3236,6 +3233,7 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
     columns=image->columns,
     number_tiles=(columns+width)/width,
     last_tile=number_tiles-1,
+    last_tile_x=last_tile*width,
     row_size=TIFFTileRowSize(tiff);
 
   unsigned char
@@ -3244,13 +3242,9 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
   const uint32
     tile_y=tile*height;
 
-  tile_x=0;
-  for (i=0; i < last_tile; ++i)
-  {
+  for (tile_x=0; tile_x < last_tile_x; tile_x+=width)
     if (PROCESS_TILE(tile_x,width) == -1)
       return(-1);
-    tile_x+=width;
-  }
   return(PROCESS_TILE(tile_x,columns-tile_x));
 }
 
