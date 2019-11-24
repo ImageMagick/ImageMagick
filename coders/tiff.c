@@ -3185,7 +3185,8 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
     height=tiff_info->tile_geometry.height,
     width=tiff_info->tile_geometry.width,
     bytes_per_pixel=TIFFTileSize(tiff)/(height*width),
-    number_tiles=(image->columns+width)/width,
+    columns=image->columns,
+    number_tiles=(columns+width)/width,
     last_tile=number_tiles-1;
 
   i=(row % height)*scanline_size;
@@ -3198,7 +3199,7 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
   status=0;
   for (i=0; i < number_tiles; i++)
   {
-    tile_width=(i == last_tile) ? image->columns-(i*width) : width;
+    tile_width=(i == last_tile) ? columns-(i*width) : width;
     for (j=0; j < ((row % height)+1); j++)
       for (k=0; k < tile_width; k++)
       {
@@ -3214,7 +3215,7 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
         for (l=0; l < bytes_per_pixel; l++)
           *q++=(*p++);
       }
-    if ((i*width) != image->columns)
+    if ((i*width) != columns)
       status=TIFFWriteTile(tiff,tiff_info->pixels,(uint32) (i*width),
         (uint32) ((row/height)*height),0,sample);
     if (status < 0)
