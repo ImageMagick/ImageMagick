@@ -2389,11 +2389,16 @@ static void lite_font_map( wmfAPI* API, wmfFont* font)
       int
         target_weight;
 
+      StyleType 
+        style = AnyStyle;
+
       if (WMF_FONT_WEIGHT(font) == 0)
         target_weight = 400;
       else
         target_weight = WMF_FONT_WEIGHT(font);
-      type_info=GetTypeInfoByFamily(wmf_font_name,AnyStyle,AnyStretch,
+      if (WMF_FONT_ITALIC(font)) 
+        style=ItalicStyle;
+      type_info=GetTypeInfoByFamily(wmf_font_name,style,AnyStretch,
         target_weight,exception);
       if (type_info == (const TypeInfo *) NULL)
         type_info=GetTypeInfoByFamily(wmf_font_name,AnyStyle,AnyStretch,0,
