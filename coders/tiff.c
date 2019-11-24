@@ -3202,8 +3202,7 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
   tsample_t sample,Image *image)
 {
   size_t
-    i,
-    tile_width;
+    i;
 
   uint32
     tile_x;
@@ -3246,14 +3245,13 @@ static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,size_t row,
     tile_y=tile*height;
 
   tile_x=0;
-  for (i=0; i < number_tiles; ++i)
+  for (i=0; i < last_tile; ++i)
   {
-    tile_width=(i == last_tile) ? columns-tile_x : width;
-    if (PROCESS_TILE(tile_x,tile_width) == -1)
+    if (PROCESS_TILE(tile_x,width) == -1)
       return(-1);
     tile_x+=width;
   }
-  return(0);
+  return(PROCESS_TILE(tile_x,columns-tile_x));
 }
 
 static ssize_t TIFFWriteCustomStream(unsigned char *data,const size_t count,
