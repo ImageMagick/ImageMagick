@@ -552,11 +552,11 @@ MagickExport void *AcquireMagickMemory(const size_t size)
 MagickExport void *AcquireQuantumMemory(const size_t count,const size_t quantum)
 {
   size_t
-    extent;
+    size;
 
-  if (HeapOverflowSanityCheckGetSize(count,quantum,&extent) != MagickFalse)
+  if (HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse)
     return((void *) NULL);
-  return(AcquireMagickMemory(extent));
+  return(AcquireMagickMemory(size));
 }
 
 /*
@@ -595,9 +595,9 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
     *memory_info;
 
   size_t
-    extent;
+    size;
 
-  if (HeapOverflowSanityCheckGetSize(count,quantum,&extent) != MagickFalse)
+  if (HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse)
     return((MemoryInfo *) NULL);
   if (virtual_anonymous_memory == 0)
     {
@@ -619,12 +619,12 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
   if (memory_info == (MemoryInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) memset(memory_info,0,sizeof(*memory_info));
-  memory_info->length=extent;
+  memory_info->length=size;
   memory_info->signature=MagickCoreSignature;
   if ((virtual_anonymous_memory == 1) &&
-      (extent <= GetMaxMemoryRequest()))
+      (size <= GetMaxMemoryRequest()))
     {
-      memory_info->blob=AcquireAlignedMemory(1,extent);
+      memory_info->blob=AcquireAlignedMemory(1,size);
       if (memory_info->blob != NULL)
         memory_info->type=AlignedVirtualMemory;
     }
@@ -634,8 +634,8 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
         Acquire anonymous memory map.
       */
       memory_info->blob=NULL;
-      if (extent <= GetMaxMemoryRequest())
-        memory_info->blob=MapBlob(-1,IOMode,0,extent);
+      if (size <= GetMaxMemoryRequest())
+        memory_info->blob=MapBlob(-1,IOMode,0,size);
       if (memory_info->blob != NULL)
         memory_info->type=MapVirtualMemory;
       else
@@ -652,17 +652,17 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
               MagickOffsetType
                 offset;
 
-              offset=(MagickOffsetType) lseek(file,extent-1,SEEK_SET);
-              if ((offset == (MagickOffsetType) (extent-1)) &&
+              offset=(MagickOffsetType) lseek(file,size-1,SEEK_SET);
+              if ((offset == (MagickOffsetType) (size-1)) &&
                   (write(file,"",1) == 1))
                 {
 MAGICKCORE_DIAGNOSTIC_PUSH()
 MAGICKCORE_DIAGNOSTIC_IGNORE_MAYBE_UNINITIALIZED()
 #if !defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
-                  memory_info->blob=MapBlob(file,IOMode,0,extent);
+                  memory_info->blob=MapBlob(file,IOMode,0,size);
 #else
-                  if (posix_fallocate(file,0,extent) == 0)
-                    memory_info->blob=MapBlob(file,IOMode,0,extent);
+                  if (posix_fallocate(file,0,size) == 0)
+                    memory_info->blob=MapBlob(file,IOMode,0,size);
 #endif
 MAGICKCORE_DIAGNOSTIC_POP()
                   if (memory_info->blob != NULL)
@@ -680,7 +680,7 @@ MAGICKCORE_DIAGNOSTIC_POP()
     }
   if (memory_info->blob == NULL)
     {
-      memory_info->blob=AcquireQuantumMemory(1,extent);
+      memory_info->blob=AcquireQuantumMemory(1,size);
       if (memory_info->blob != NULL)
         memory_info->type=UnalignedVirtualMemory;
     }
@@ -1403,14 +1403,14 @@ MagickExport void *ResizeQuantumMemory(void *memory,const size_t count,
   const size_t quantum)
 {
   size_t
-    extent;
+    size;
 
-  if (HeapOverflowSanityCheckGetSize(count,quantum,&extent) != MagickFalse)
+  if (HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse)
     {
       memory=RelinquishMagickMemory(memory);
       return((void *) NULL);
     }
-  return(ResizeMagickMemory(memory,extent));
+  return(ResizeMagickMemory(memory,size));
 }
 
 /*
