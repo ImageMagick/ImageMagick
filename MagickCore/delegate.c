@@ -534,6 +534,7 @@ static char *SanitizeDelegateString(const char *source)
   register char
     *p;
 
+  static char
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
     whitelist[] =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 "
