@@ -2189,10 +2189,10 @@ RestoreMSCWarning
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         if (HeapOverflowSanityCheck(TIFFTileSize(tiff)+sizeof(uint32),1) != MagickFalse)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-        tile_pixels=AcquireMagickMemory((TIFFTileSize(tiff)+sizeof(uint32))*1);
+        tile_pixels=AcquireMagickMemory(TIFFTileSize(tiff)+sizeof(uint32));
         if (tile_pixels == (unsigned char *) NULL)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-        memset(tile_pixels,0,TIFFTileSize(tiff)*1);
+        memset(tile_pixels,0,TIFFTileSize(tiff));
         for (y=0; y < image->rows; y+=rows)
         {
           size_t
