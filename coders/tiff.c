@@ -2185,7 +2185,6 @@ RestoreMSCWarning
             (AcquireMagickResource(HeightResource,rows) == MagickFalse))
           ThrowTIFFException(ImageError,"WidthOrHeightExceedsLimit");
         SetImageStorageClass(image,DirectClass,exception);
-        number_pixels=(MagickSizeType) columns*rows;
         if (HeapOverflowSanityCheck(rows,sizeof(*tile_pixels)) != MagickFalse)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         tile_pixels=(unsigned char *) AcquireQuantumMemory(TIFFTileSize(tiff)+
