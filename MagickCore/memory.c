@@ -585,7 +585,6 @@ MagickExport void *AcquireQuantumMemory(const size_t count,const size_t quantum)
 %    o quantum: the size (in bytes) of each object.
 %
 */
-
 MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
   const size_t quantum)
 {
@@ -657,12 +656,15 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
               if ((offset == (MagickOffsetType) (extent-1)) &&
                   (write(file,"",1) == 1))
                 {
+MAGICKCORE_DIAGNOSTIC_PUSH()
+MAGICKCORE_DIAGNOSTIC_IGNORE_MAYBE_UNINITIALIZED()
 #if !defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
                   memory_info->blob=MapBlob(file,IOMode,0,extent);
 #else
                   if (posix_fallocate(file,0,extent) == 0)
                     memory_info->blob=MapBlob(file,IOMode,0,extent);
 #endif
+MAGICKCORE_DIAGNOSTIC_POP()
                   if (memory_info->blob != NULL)
                     memory_info->type=MapVirtualMemory;
                   else
