@@ -1231,7 +1231,7 @@ static void ReadPhotoshopLayers(const ImageInfo *image_info,Image *image,
     }
   (void) DeleteImageProfile(layers,"tiff:37724");
   AttachCustomStream(layers->blob,custom_stream);
-  SeekBlob(layers,(MagickOffsetType) i,SEEK_SET);
+  (void) SeekBlob(layers,(MagickOffsetType) i,SEEK_SET);
   InitPSDInfo(layers,&info);
   clone_info=CloneImageInfo(image_info);
   clone_info->number_scenes=0;
