@@ -2185,13 +2185,13 @@ RestoreMSCWarning
             (AcquireMagickResource(HeightResource,rows) == MagickFalse))
           ThrowTIFFException(ImageError,"WidthOrHeightExceedsLimit");
         SetImageStorageClass(image,DirectClass,exception);
-        if (HeapOverflowSanityCheck(rows,sizeof(*tile_pixels)) != MagickFalse)
+        if (HeapOverflowSanityCheck(rows,1) != MagickFalse)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         tile_pixels=(unsigned char *) AcquireQuantumMemory(TIFFTileSize(tiff)+
-          sizeof(uint32),sizeof(*tile_pixels));
+          sizeof(uint32),1);
         if (tile_pixels == (unsigned char *) NULL)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-        memset(tile_pixels,0,TIFFTileSize(tiff)*sizeof(*tile_pixels));
+        memset(tile_pixels,0,TIFFTileSize(tiff)*1);
         for (y=0; y < image->rows; y+=rows)
         {
           size_t
