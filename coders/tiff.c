@@ -2187,8 +2187,9 @@ RestoreMSCWarning
         SetImageStorageClass(image,DirectClass,exception);
         if (HeapOverflowSanityCheck(rows,1) != MagickFalse)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-        tile_pixels=(unsigned char *) AcquireQuantumMemory(TIFFTileSize(tiff)+
-          sizeof(uint32),1);
+        if (HeapOverflowSanityCheck(TIFFTileSize(tiff)+sizeof(uint32),1) != MagickFalse)
+          ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
+        tile_pixels=AcquireMagickMemory((TIFFTileSize(tiff)+sizeof(uint32))*1);
         if (tile_pixels == (unsigned char *) NULL)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         memset(tile_pixels,0,TIFFTileSize(tiff)*1);
