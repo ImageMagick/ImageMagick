@@ -269,6 +269,40 @@ static MagickBooleanType
 #define vsnprintf                     (void) vsnprintf
 #define vsprintf                      (void) vsprintf
 
+static inline size_t convert_TIFF_size(tmsize_t size,int *const did_overflow)
+{
+  size_t
+    s;
+
+  assert(size >= 0);
+  if (sizeof(size_t) >= sizeof(size))
+    return(size);
+  s=size;
+  if (s != size)
+    {
+      assert(did_overflow);
+      *did_overflow=1;
+    }
+  return(s);
+}
+
+static inline size_t safe_bytes_per_pixel(size_t bytes, size_t height, size_t width)
+{
+  if (sizeof(size_t) >= 2*sizeof(tmsize_t))
+    return(bytes/(height*width));
+
+  #if defined(__GNUC__) || (defined(__clang__) && __has_builtin(__builtin_mul_overflow))
+    size_t
+      number_pixels;
+    if (__builtin_mul_overflow(height,width,&number_pixels))
+      return((bytes/height)/width);
+    else
+      return(bytes/number_pixels);
+  #else
+    return((bytes/height)/width);
+  #endif
+}
+
 static MagickOffsetType SeekCustomStream(const MagickOffsetType offset,
   const int whence,void *user_data)
 {
@@ -2185,8 +2219,12 @@ RestoreMSCWarning
             (AcquireMagickResource(HeightResource,rows) == MagickFalse))
           ThrowTIFFException(ImageError,"WidthOrHeightExceedsLimit");
         SetImageStorageClass(image,DirectClass,exception);
+        int
+          did_overflow=0;
         const size_t
-          size=TIFFTileSize(tiff);
+          size=convert_TIFF_size(TIFFTileSize(tiff),&did_overflow);
+        if (did_overflow)
+          ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         tile_pixels=AcquireMagickMemory(size);
         if (tile_pixels == (unsigned char *) NULL)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
@@ -3242,8 +3280,11 @@ static int WriteTIFFPixels(TIFF *tiff,Info *tiff_info,size_t row,
   /*
     Fill scanlines to tile height.
   */
+  int
+    did_overflow=0;
+
   const size_t
-    scanline_size=TIFFScanlineSize(tiff),
+    scanline_size=convert_TIFF_size(TIFFScanlineSize(tiff),&did_overflow),
     height=tiff_info->tile_geometry.height,
     last_row_in_tile=height-1,
     row_in_tile=row % height,
@@ -3252,6 +3293,9 @@ static int WriteTIFFPixels(TIFF *tiff,Info *tiff_info,size_t row,
 
   unsigned char
     *const scanlines=tiff_info->scanlines;
+
+  if(did_overflow)
+    return(-1);
 
   memcpy(scanlines+row_in_tile_offset,(char *) tiff_info->scanline,scanline_size);
   if ((row_in_tile != last_row_in_tile) && (row != last_row_in_image))
@@ -3263,12 +3307,13 @@ static int WriteTIFFPixels(TIFF *tiff,Info *tiff_info,size_t row,
   const size_t
     tile=row/height,
     width=tiff_info->tile_geometry.width,
-    bytes_per_pixel=TIFFTileSize(tiff)/(height*width),
+    tile_size=convert_TIFF_size(TIFFTileSize(tiff),&did_overflow),
+    bytes_per_pixel=safe_bytes_per_pixel(tile_size,height,width),
     columns=image->columns,
     number_tiles=(columns+width)/width,
     last_tile=number_tiles-1,
     last_tile_x=last_tile*width,
-    row_size=TIFFTileRowSize(tiff);
+    row_size=convert_TIFF_size(TIFFTileRowSize(tiff),&did_overflow);
 
   unsigned char
     *const pixels=tiff_info->pixels;
@@ -3278,6 +3323,9 @@ static int WriteTIFFPixels(TIFF *tiff,Info *tiff_info,size_t row,
 
   uint32
     tile_x;
+
+  if (did_overflow)
+    return(-1);
 
   for (tile_x=0; tile_x < last_tile_x; tile_x+=width)
     if (PROCESS_TILE(tile_x,width) == -1)

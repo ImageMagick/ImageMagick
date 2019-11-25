@@ -228,6 +228,11 @@ extern "C" {
 
 #endif
 
+/* for Clang compatibility */
+#ifndef __has_builtin
+#  define __has_builtin(x) 0
+#endif
+
 #if defined(__GNUC__) && !defined(__clang__)
 # define MAGICKCORE_DIAGNOSTIC_PUSH() \
    _Pragma("GCC diagnostic push")
