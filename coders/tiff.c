@@ -307,7 +307,7 @@ static void InitPSDInfo(const Image *image,PSDInfo *info)
       info->channels=(unsigned short) image->number_channels;
       info->min_channels=info->channels;
       if (image->alpha_trait == BlendPixelTrait)
-        info->min_channels--;
+        --(info->min_channels);
     }
 }
 #endif
@@ -482,7 +482,7 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
   length=WriteLSBLong(file,(unsigned int) image->resolution.x);
   length=WriteLSBLong(file,1);
   status=MagickTrue;
-  for (length=0; (c=ReadBlobByte(image)) != EOF; length++)
+  for (length=0; (c=ReadBlobByte(image)) != EOF; ++length)
     if (fputc(c,file) != c)
       status=MagickFalse;
   offset=(ssize_t) fseek(file,(ssize_t) offset,SEEK_SET);
@@ -569,7 +569,7 @@ static MagickBooleanType DecodeLabImage(Image *image,ExceptionInfo *exception)
 
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < image->rows; ++y)
   {
     register Quantum
       *magick_restrict q;
@@ -583,7 +583,7 @@ static MagickBooleanType DecodeLabImage(Image *image,ExceptionInfo *exception)
         status=MagickFalse;
         break;
       }
-    for (x=0; x < (ssize_t) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; ++x)
     {
       double
         a,
@@ -849,7 +849,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
       TIFFSetDirectory(tiff,directory);
       return;
     }
-  for (i=0; exif_info[i].tag != 0; i++)
+  for (i=0; exif_info[i].tag != 0; ++i)
   {
     *value='\0';
     switch (exif_info[i].type)
@@ -1083,7 +1083,7 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
   method=ReadRGBAMethod;
   if (ReadBlob(image,BUFFER_SIZE,buffer) == BUFFER_SIZE)
     {
-      for (i=0; i < BUFFER_SIZE; i++)
+      for (i=0; i < BUFFER_SIZE; ++i)
       {
         while (i < BUFFER_SIZE)
         {
@@ -1199,7 +1199,7 @@ static void TIFFReadPhotoshopLayers(const ImageInfo *image_info,Image *image,
     sentinel=length-8;
   if (sentinel >= length) /* overflow check */
     return;
-  for (i=0; i < sentinel; i++)
+  for (i=0; i < sentinel; ++i)
   {
     if (LocaleNCompare((const char *) (profile->datum+i),
         image->endian == MSBEndian ? "8BIM" : "MIB8",4) != 0)
@@ -1385,7 +1385,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       */
       if (image_info->scene < (size_t) TIFFNumberOfDirectories(tiff))
         {
-          for (i=0; i < image_info->scene; i++)
+          for (i=0; i < image_info->scene; ++i)
           {
             status=TIFFReadDirectory(tiff) != 0 ? MagickTrue : MagickFalse;
             if (status == MagickFalse)
@@ -1684,14 +1684,14 @@ RestoreMSCWarning
                 (blue_colormap != (uint16 *) NULL))
               {
                 range=255;  /* might be old style 8-bit colormap */
-                for (i=0; i < image->colors; i++)
+                for (i=0; i < image->colors; ++i)
                   if ((red_colormap[i] >= 256) || (green_colormap[i] >= 256) ||
                       (blue_colormap[i] >= 256))
                     {
                       range=65535;
                       break;
                     }
-                for (i=0; i < image->colors; i++)
+                for (i=0; i < image->colors; ++i)
                 {
                   image->colormap[i].red=ClampToQuantum(((double)
                     QuantumRange*red_colormap[i])/range);
@@ -1763,7 +1763,7 @@ RestoreMSCWarning
               image->alpha_trait=BlendPixelTrait;
           }
         else
-          for (i=0; i < extra_samples; i++)
+          for (i=0; i < extra_samples; ++i)
           {
             image->alpha_trait=BlendPixelTrait;
             if (sample_info[i] == EXTRASAMPLE_ASSOCALPHA)
@@ -1876,7 +1876,7 @@ RestoreMSCWarning
           bits_per_sample)/log(2))));
         if (status == MagickFalse)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < image->rows; ++y)
         {
           register Quantum
             *magick_restrict q;
@@ -1926,7 +1926,7 @@ RestoreMSCWarning
         status=SetQuantumPad(image,quantum_info,pad*((bits_per_sample+7) >> 3));
         if (status == MagickFalse)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < image->rows; ++y)
         {
           register Quantum
             *magick_restrict q;
@@ -1956,9 +1956,9 @@ RestoreMSCWarning
         /*
           Convert TIFF image to DirectClass MIFF image.
         */
-        for (i=0; i < samples_per_pixel; i++)
+        for (i=0; i < samples_per_pixel; ++i)
         {
-          for (y=0; y < image->rows; y++)
+          for (y=0; y < image->rows; ++y)
           {
             register Quantum
               *magick_restrict q;
@@ -2006,7 +2006,7 @@ RestoreMSCWarning
       }
       case ReadYCCKMethod:
       {
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < image->rows; ++y)
         {
           register Quantum
             *magick_restrict q;
@@ -2024,7 +2024,7 @@ RestoreMSCWarning
           if (q == (Quantum *) NULL)
             break;
           p=pixels;
-          for (x=0; x < (ssize_t) image->columns; x++)
+          for (x=0; x < (ssize_t) image->columns; ++x)
           {
             SetPixelCyan(image,ScaleCharToQuantum(ClampYCC((double) *p+
               (1.402*(double) *(p+2))-179.456)),q);
@@ -2060,7 +2060,7 @@ RestoreMSCWarning
         (void) SetImageStorageClass(image,DirectClass,exception);
         i=0;
         p=(uint32 *) NULL;
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < image->rows; ++y)
         {
           register ssize_t
             x;
@@ -2077,9 +2077,9 @@ RestoreMSCWarning
                 break;
               i=MagickMin(rows_per_strip,image->rows-y);
             }
-          i--;
+          --i;
           p=((uint32 *) pixels)+image->columns*i;
-          for (x=0; x < (ssize_t) image->columns; x++)
+          for (x=0; x < (ssize_t) image->columns; ++x)
           {
             SetPixelRed(image,ScaleCharToQuantum((unsigned char)
               (TIFFGetR(*p))),q);
@@ -2090,7 +2090,7 @@ RestoreMSCWarning
             if (image->alpha_trait != UndefinedPixelTrait)
               SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
                 (TIFFGetA(*p))),q);
-            p++;
+            ++p;
             q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -2184,7 +2184,7 @@ RestoreMSCWarning
             if (TIFFReadTile(tiff,tile_pixels,(uint32) x,(uint32) y,0,0) == 0)
               break;
             p=tile_pixels;
-            for (row=0; row < rows_remaining; row++)
+            for (row=0; row < rows_remaining; ++row)
             {
               register Quantum
                 *magick_restrict q;
@@ -2271,10 +2271,10 @@ RestoreMSCWarning
             p=tile_pixels+(rows-rows_remaining)*columns;
             q=tile+GetPixelChannels(image)*(image->columns*(rows_remaining-1)+
               x);
-            for (row=rows_remaining; row > 0; row--)
+            for (row=rows_remaining; row > 0; --row)
             {
               if (image->alpha_trait != UndefinedPixelTrait)
-                for (column=columns_remaining; column > 0; column--)
+                for (column=columns_remaining; column > 0; --column)
                 {
                   SetPixelRed(image,ScaleCharToQuantum((unsigned char)
                     TIFFGetR(*p)),q);
@@ -2284,11 +2284,11 @@ RestoreMSCWarning
                     TIFFGetB(*p)),q);
                   SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
                     TIFFGetA(*p)),q);
-                  p++;
+                  ++p;
                   q+=GetPixelChannels(image);
                 }
               else
-                for (column=columns_remaining; column > 0; column--)
+                for (column=columns_remaining; column > 0; --column)
                 {
                   SetPixelRed(image,ScaleCharToQuantum((unsigned char)
                     TIFFGetR(*p)),q);
@@ -2296,7 +2296,7 @@ RestoreMSCWarning
                     TIFFGetG(*p)),q);
                   SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
                     TIFFGetB(*p)),q);
-                  p++;
+                  ++p;
                   q+=GetPixelChannels(image);
                 }
               p+=columns-columns_remaining;
@@ -2345,7 +2345,7 @@ RestoreMSCWarning
           Convert image to DirectClass pixel packets.
         */
         p=pixels+number_pixels-1;
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < image->rows; ++y)
         {
           register ssize_t
             x;
@@ -2357,7 +2357,7 @@ RestoreMSCWarning
           if (q == (Quantum *) NULL)
             break;
           q+=GetPixelChannels(image)*(image->columns-1);
-          for (x=0; x < (ssize_t) image->columns; x++)
+          for (x=0; x < (ssize_t) image->columns; ++x)
           {
             SetPixelRed(image,ScaleCharToQuantum((unsigned char)
               TIFFGetR(*p)),q);
@@ -2368,7 +2368,7 @@ RestoreMSCWarning
             if (image->alpha_trait != UndefinedPixelTrait)
               SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
                 TIFFGetA(*p)),q);
-            p--;
+            --p;
             q-=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -2498,17 +2498,17 @@ static void TIFFIgnoreTags(TIFF *tiff)
   while (*p != '\0')
   {
     while ((isspace((int) ((unsigned char) *p)) != 0))
-      p++;
+      ++p;
 
     (void) strtol(p,&q,10);
     if (p == q)
       return;
 
     p=q;
-    count++;
+    ++count;
 
     while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == ','))
-      p++;
+      ++p;
   }
   if (count == 0)
     return;
@@ -2524,15 +2524,15 @@ static void TIFFIgnoreTags(TIFF *tiff)
   while (*p != '\0')
   {
     while ((isspace((int) ((unsigned char) *p)) != 0))
-      p++;
+      ++p;
 
     ignore[i].field_tag=(ttag_t) strtol(p,&q,10);
 
     p=q;
-    i++;
+    ++i;
 
     while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == ','))
-      p++;
+      ++p;
   }
   (void) TIFFMergeFieldInfo(tiff,ignore,(uint32) count);
   ignore=(TIFFFieldInfo *) RelinquishMagickMemory(ignore);
@@ -2600,7 +2600,7 @@ ModuleExport size_t RegisterTIFFImage(void)
 
     p=TIFFGetVersion();
     assert(MagickPathExtent >= 1);
-    for (i=0; (i < (MagickPathExtent-1)) && (*p != 0) && (*p != '\n'); i++)
+    for (i=0; (i < (MagickPathExtent-1)) && (*p != 0) && (*p != '\n'); ++i)
       version[i]=(*p++);
     version[i]='\0';
   }
@@ -2858,7 +2858,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
       return(MagickFalse);
     }
   strip_size=byte_count[0];
-  for (i=1; i < TIFFNumberOfStrips(tiff); i++)
+  for (i=1; i < TIFFNumberOfStrips(tiff); ++i)
     if (byte_count[i] > strip_size)
       strip_size=byte_count[i];
   buffer=(unsigned char *) AcquireQuantumMemory((size_t) strip_size,
@@ -2875,7 +2875,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
   /*
     Compress runlength encoded to 2D Huffman pixels.
   */
-  for (i=0; i < TIFFNumberOfStrips(tiff); i++)
+  for (i=0; i < TIFFNumberOfStrips(tiff); ++i)
   {
     count=(ssize_t) TIFFReadRawStrip(tiff,i,buffer,strip_size);
     if (WriteBlob(image,(size_t) count,buffer) != count)
@@ -3059,7 +3059,7 @@ static MagickBooleanType EncodeLabImage(Image *image,ExceptionInfo *exception)
 
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < image->rows; ++y)
   {
     register Quantum
       *magick_restrict q;
@@ -3073,7 +3073,7 @@ static MagickBooleanType EncodeLabImage(Image *image,ExceptionInfo *exception)
         status=MagickFalse;
         break;
       }
-    for (x=0; x < (ssize_t) image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; ++x)
     {
       double
         a,
@@ -3537,7 +3537,7 @@ static void TIFFSetEXIFProperties(TIFF *tiff,Image *image,
   */
   offset=0;
   (void) TIFFSetField(tiff,TIFFTAG_SUBIFD,1,&offset);
-  for (i=0; exif_info[i].tag != 0; i++)
+  for (i=0; exif_info[i].tag != 0; ++i)
   {
     value=GetImageProperty(image,exif_info[i].property,exception);
     if (value == (const char *) NULL)
@@ -4252,7 +4252,7 @@ RestoreMSCWarning
             quantum_type=RGBQuantum;
             if (image->alpha_trait != UndefinedPixelTrait)
               quantum_type=RGBAQuantum;
-            for (y=0; y < image->rows; y++)
+            for (y=0; y < image->rows; ++y)
             {
               register const Quantum
                 *magick_restrict p;
@@ -4281,7 +4281,7 @@ RestoreMSCWarning
             /*
               Plane interlacing:  RRRRRR...GGGGGG...BBBBBB...
             */
-            for (y=0; y < image->rows; y++)
+            for (y=0; y < image->rows; ++y)
             {
               register const Quantum
                 *magick_restrict p;
@@ -4300,7 +4300,7 @@ RestoreMSCWarning
                 if (status == MagickFalse)
                   break;
               }
-            for (y=0; y < image->rows; y++)
+            for (y=0; y < image->rows; ++y)
             {
               register const Quantum
                 *magick_restrict p;
@@ -4319,7 +4319,7 @@ RestoreMSCWarning
                 if (status == MagickFalse)
                   break;
               }
-            for (y=0; y < image->rows; y++)
+            for (y=0; y < image->rows; ++y)
             {
               register const Quantum
                 *magick_restrict p;
@@ -4339,7 +4339,7 @@ RestoreMSCWarning
                   break;
               }
             if (image->alpha_trait != UndefinedPixelTrait)
-              for (y=0; y < image->rows; y++)
+              for (y=0; y < image->rows; ++y)
               {
                 register const Quantum
                   *magick_restrict p;
@@ -4373,7 +4373,7 @@ RestoreMSCWarning
           quantum_type=CMYKAQuantum;
         if (image->colorspace != CMYKColorspace)
           (void) TransformImageColorspace(image,CMYKColorspace,exception);
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < image->rows; ++y)
         {
           register const Quantum
             *magick_restrict p;
@@ -4425,7 +4425,7 @@ RestoreMSCWarning
         (void) memset(red,0,65536*sizeof(*red));
         (void) memset(green,0,65536*sizeof(*green));
         (void) memset(blue,0,65536*sizeof(*blue));
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < image->colors; ++i)
         {
           red[i]=ScaleQuantumToShort(image->colormap[i].red);
           green[i]=ScaleQuantumToShort(image->colormap[i].green);
@@ -4452,7 +4452,7 @@ RestoreMSCWarning
          else
            if (photometric != PHOTOMETRIC_PALETTE)
              quantum_type=GrayQuantum;
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < image->rows; ++y)
         {
           register const Quantum
             *magick_restrict p;
