@@ -3619,8 +3619,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     i;
 
   size_t
-    imageListLength,
-    length;
+    imageListLength;
 
   size_t
     y;
@@ -4260,9 +4259,8 @@ RestoreMSCWarning
               p=GetVirtualPixels(image,0,(ssize_t) y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
-              length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+              ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
                 quantum_type,pixels,exception);
-              (void) length;
               if (WriteTIFFPixels(tiff,&tiff_info,y,0,image) == -1)
                 break;
               if (image->previous == (Image *) NULL)
@@ -4289,7 +4287,7 @@ RestoreMSCWarning
               p=GetVirtualPixels(image,0,(ssize_t) y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
-              length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+              ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
                 RedQuantum,pixels,exception);
               if (WriteTIFFPixels(tiff,&tiff_info,y,0,image) == -1)
                 break;
@@ -4308,7 +4306,7 @@ RestoreMSCWarning
               p=GetVirtualPixels(image,0,(ssize_t) y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
-              length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+              ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
                 GreenQuantum,pixels,exception);
               if (WriteTIFFPixels(tiff,&tiff_info,y,1,image) == -1)
                 break;
@@ -4327,7 +4325,7 @@ RestoreMSCWarning
               p=GetVirtualPixels(image,0,(ssize_t) y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
-              length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+              ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
                 BlueQuantum,pixels,exception);
               if (WriteTIFFPixels(tiff,&tiff_info,y,2,image) == -1)
                 break;
@@ -4347,7 +4345,7 @@ RestoreMSCWarning
                 p=GetVirtualPixels(image,0,(ssize_t) y,image->columns,1,exception);
                 if (p == (const Quantum *) NULL)
                   break;
-                length=ExportQuantumPixels(image,(CacheView *) NULL,
+                ExportQuantumPixels(image,(CacheView *) NULL,
                   quantum_info,AlphaQuantum,pixels,exception);
                 if (WriteTIFFPixels(tiff,&tiff_info,y,3,image) == -1)
                   break;
@@ -4381,7 +4379,7 @@ RestoreMSCWarning
           p=GetVirtualPixels(image,0,(ssize_t) y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
-          length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+          ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
           if (WriteTIFFPixels(tiff,&tiff_info,y,0,image) == -1)
             break;
@@ -4460,7 +4458,7 @@ RestoreMSCWarning
           p=GetVirtualPixels(image,0,(ssize_t) y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
-          length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+          ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
           if (WriteTIFFPixels(tiff,&tiff_info,y,0,image) == -1)
             break;
