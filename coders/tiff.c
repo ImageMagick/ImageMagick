@@ -564,12 +564,12 @@ static MagickBooleanType DecodeLabImage(Image *image,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  ssize_t
+  size_t
     y;
 
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
-  for (y=0; y < (ssize_t) image->rows; y++)
+  for (y=0; y < image->rows; y++)
   {
     register Quantum
       *magick_restrict q;
@@ -577,7 +577,7 @@ static MagickBooleanType DecodeLabImage(Image *image,ExceptionInfo *exception)
     register ssize_t
       x;
 
-    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    q=GetCacheViewAuthenticPixels(image_view,0,(ssize_t) y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
@@ -1302,7 +1302,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   size_t
     pad;
 
-  ssize_t
+  size_t
     y;
 
   TIFF
@@ -1871,7 +1871,7 @@ RestoreMSCWarning
           bits_per_sample)/log(2))));
         if (status == MagickFalse)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-        for (y=0; y < (ssize_t) image->rows; y++)
+        for (y=0; y < image->rows; y++)
         {
           register Quantum
             *magick_restrict q;
@@ -1879,7 +1879,7 @@ RestoreMSCWarning
           tiff_status=TIFFReadPixels(tiff,0,y,(char *) pixels);
           if (tiff_status == -1)
             break;
-          q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+          q=QueueAuthenticPixels(image,0,(ssize_t) y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
             break;
           (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
@@ -1921,7 +1921,7 @@ RestoreMSCWarning
         status=SetQuantumPad(image,quantum_info,pad*((bits_per_sample+7) >> 3));
         if (status == MagickFalse)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-        for (y=0; y < (ssize_t) image->rows; y++)
+        for (y=0; y < image->rows; y++)
         {
           register Quantum
             *magick_restrict q;
@@ -1929,7 +1929,7 @@ RestoreMSCWarning
           tiff_status=TIFFReadPixels(tiff,0,y,(char *) pixels);
           if (tiff_status == -1)
             break;
-          q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+          q=QueueAuthenticPixels(image,0,(ssize_t) y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
             break;
           (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
@@ -1953,7 +1953,7 @@ RestoreMSCWarning
         */
         for (i=0; i < (ssize_t) samples_per_pixel; i++)
         {
-          for (y=0; y < (ssize_t) image->rows; y++)
+          for (y=0; y < image->rows; y++)
           {
             register Quantum
               *magick_restrict q;
@@ -1962,7 +1962,7 @@ RestoreMSCWarning
               pixels);
             if (tiff_status == -1)
               break;
-            q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+            q=GetAuthenticPixels(image,0,(ssize_t) y,image->columns,1,exception);
             if (q == (Quantum *) NULL)
               break;
             if (image->colorspace != CMYKColorspace)
@@ -2001,7 +2001,7 @@ RestoreMSCWarning
       }
       case ReadYCCKMethod:
       {
-        for (y=0; y < (ssize_t) image->rows; y++)
+        for (y=0; y < image->rows; y++)
         {
           register Quantum
             *magick_restrict q;
@@ -2015,7 +2015,7 @@ RestoreMSCWarning
           tiff_status=TIFFReadPixels(tiff,0,y,(char *) pixels);
           if (tiff_status == -1)
             break;
-          q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+          q=QueueAuthenticPixels(image,0,(ssize_t) y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
             break;
           p=pixels;
@@ -2055,7 +2055,7 @@ RestoreMSCWarning
         (void) SetImageStorageClass(image,DirectClass,exception);
         i=0;
         p=(uint32 *) NULL;
-        for (y=0; y < (ssize_t) image->rows; y++)
+        for (y=0; y < image->rows; y++)
         {
           register ssize_t
             x;
@@ -2063,15 +2063,14 @@ RestoreMSCWarning
           register Quantum
             *magick_restrict q;
 
-          q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+          q=QueueAuthenticPixels(image,0,(ssize_t) y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
             break;
           if (i == 0)
             {
               if (TIFFReadRGBAStrip(tiff,(tstrip_t) y,(uint32 *) pixels) == 0)
                 break;
-              i=(ssize_t) MagickMin((ssize_t) rows_per_strip,(ssize_t)
-                image->rows-y);
+              i=(ssize_t) MagickMin(rows_per_strip,image->rows-y);
             }
           i--;
           p=((uint32 *) pixels)+image->columns*i;
@@ -2157,7 +2156,7 @@ RestoreMSCWarning
         if (tile_pixels == (unsigned char *) NULL)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         (void) memset(tile_pixels,0,TIFFTileSize(tiff)*sizeof(*tile_pixels));
-        for (y=0; y < (ssize_t) image->rows; y+=rows)
+        for (y=0; y < image->rows; y+=rows)
         {
           register ssize_t
             x;
@@ -2166,7 +2165,7 @@ RestoreMSCWarning
             rows_remaining;
 
           rows_remaining=image->rows-y;
-          if ((ssize_t) (y+rows) < (ssize_t) image->rows)
+          if ((y+rows) < image->rows)
             rows_remaining=rows;
           for (x=0; x < (ssize_t) image->columns; x+=columns)
           {
@@ -2185,7 +2184,7 @@ RestoreMSCWarning
               register Quantum
                 *magick_restrict q;
 
-              q=GetAuthenticPixels(image,x,y+row,columns_remaining,1,exception);
+              q=GetAuthenticPixels(image,x,(ssize_t) y+row,columns_remaining,1,exception);
               if (q == (Quantum *) NULL)
                 break;
               (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
@@ -2233,7 +2232,7 @@ RestoreMSCWarning
           sizeof(*tile_pixels));
         if (tile_pixels == (uint32 *) NULL)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-        for (y=0; y < (ssize_t) image->rows; y+=rows)
+        for (y=0; y < image->rows; y+=rows)
         {
           register ssize_t
             x;
@@ -2247,9 +2246,9 @@ RestoreMSCWarning
             rows_remaining;
 
           rows_remaining=image->rows-y;
-          if ((ssize_t) (y+rows) < (ssize_t) image->rows)
+          if ((y+rows) < image->rows)
             rows_remaining=rows;
-          tile=QueueAuthenticPixels(image,0,y,image->columns,rows_remaining,
+          tile=QueueAuthenticPixels(image,0,(ssize_t) y,image->columns,rows_remaining,
             exception);
           if (tile == (Quantum *) NULL)
             break;
@@ -2341,7 +2340,7 @@ RestoreMSCWarning
           Convert image to DirectClass pixel packets.
         */
         p=pixels+number_pixels-1;
-        for (y=0; y < (ssize_t) image->rows; y++)
+        for (y=0; y < image->rows; y++)
         {
           register ssize_t
             x;
@@ -2349,7 +2348,7 @@ RestoreMSCWarning
           register Quantum
             *magick_restrict q;
 
-          q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+          q=QueueAuthenticPixels(image,0,(ssize_t) y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
             break;
           q+=GetPixelChannels(image)*(image->columns-1);
@@ -3049,12 +3048,12 @@ static MagickBooleanType EncodeLabImage(Image *image,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  ssize_t
+  size_t
     y;
 
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
-  for (y=0; y < (ssize_t) image->rows; y++)
+  for (y=0; y < image->rows; y++)
   {
     register Quantum
       *magick_restrict q;
@@ -3062,7 +3061,7 @@ static MagickBooleanType EncodeLabImage(Image *image,ExceptionInfo *exception)
     register ssize_t
       x;
 
-    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    q=GetCacheViewAuthenticPixels(image_view,0,(ssize_t) y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
@@ -3617,7 +3616,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     imageListLength,
     length;
 
-  ssize_t
+  size_t
     y;
 
   TIFF
@@ -4247,12 +4246,12 @@ RestoreMSCWarning
             quantum_type=RGBQuantum;
             if (image->alpha_trait != UndefinedPixelTrait)
               quantum_type=RGBAQuantum;
-            for (y=0; y < (ssize_t) image->rows; y++)
+            for (y=0; y < image->rows; y++)
             {
               register const Quantum
                 *magick_restrict p;
 
-              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+              p=GetVirtualPixels(image,0,(ssize_t) y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
@@ -4276,12 +4275,12 @@ RestoreMSCWarning
             /*
               Plane interlacing:  RRRRRR...GGGGGG...BBBBBB...
             */
-            for (y=0; y < (ssize_t) image->rows; y++)
+            for (y=0; y < image->rows; y++)
             {
               register const Quantum
                 *magick_restrict p;
 
-              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+              p=GetVirtualPixels(image,0,(ssize_t) y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
@@ -4295,12 +4294,12 @@ RestoreMSCWarning
                 if (status == MagickFalse)
                   break;
               }
-            for (y=0; y < (ssize_t) image->rows; y++)
+            for (y=0; y < image->rows; y++)
             {
               register const Quantum
                 *magick_restrict p;
 
-              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+              p=GetVirtualPixels(image,0,(ssize_t) y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
@@ -4314,12 +4313,12 @@ RestoreMSCWarning
                 if (status == MagickFalse)
                   break;
               }
-            for (y=0; y < (ssize_t) image->rows; y++)
+            for (y=0; y < image->rows; y++)
             {
               register const Quantum
                 *magick_restrict p;
 
-              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+              p=GetVirtualPixels(image,0,(ssize_t) y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
@@ -4334,12 +4333,12 @@ RestoreMSCWarning
                   break;
               }
             if (image->alpha_trait != UndefinedPixelTrait)
-              for (y=0; y < (ssize_t) image->rows; y++)
+              for (y=0; y < image->rows; y++)
               {
                 register const Quantum
                   *magick_restrict p;
 
-                p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+                p=GetVirtualPixels(image,0,(ssize_t) y,image->columns,1,exception);
                 if (p == (const Quantum *) NULL)
                   break;
                 length=ExportQuantumPixels(image,(CacheView *) NULL,
@@ -4368,12 +4367,12 @@ RestoreMSCWarning
           quantum_type=CMYKAQuantum;
         if (image->colorspace != CMYKColorspace)
           (void) TransformImageColorspace(image,CMYKColorspace,exception);
-        for (y=0; y < (ssize_t) image->rows; y++)
+        for (y=0; y < image->rows; y++)
         {
           register const Quantum
             *magick_restrict p;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+          p=GetVirtualPixels(image,0,(ssize_t) y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
@@ -4447,12 +4446,12 @@ RestoreMSCWarning
          else
            if (photometric != PHOTOMETRIC_PALETTE)
              quantum_type=GrayQuantum;
-        for (y=0; y < (ssize_t) image->rows; y++)
+        for (y=0; y < image->rows; y++)
         {
           register const Quantum
             *magick_restrict p;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+          p=GetVirtualPixels(image,0,(ssize_t) y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
