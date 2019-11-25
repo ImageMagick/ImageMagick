@@ -821,7 +821,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
   char
     value[MagickPathExtent];
 
-  register ssize_t
+  size_t
     i;
 
   tdir_t
@@ -1045,7 +1045,7 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
     position,
     offset;
 
-  register size_t
+  size_t
     i;
 
   TIFFMethodType
@@ -1099,7 +1099,7 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
           continue;
         length=(unsigned short) (((unsigned int) (buffer[i] << 8) |
           (unsigned int) buffer[i+1]) & 0xffff);
-        if (i+(size_t) length >= BUFFER_SIZE)
+        if (i+length >= BUFFER_SIZE)
           break;
         if (buffer[i-1] == 238) /* JPEG_MARKER_APP0+14 */
           {
@@ -1110,7 +1110,7 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
               method=ReadYCCKMethod;
             break;
           }
-        i+=(size_t) length;
+        i+=length;
       }
     }
   (void) SeekBlob(image,position,SEEK_SET);
@@ -1181,7 +1181,7 @@ static void TIFFReadPhotoshopLayers(const ImageInfo *image_info,Image *image,
   PSDInfo
     info;
 
-  register ssize_t
+  size_t
     i;
 
   if (GetImageListLength(image) != 1)
@@ -1194,7 +1194,12 @@ static void TIFFReadPhotoshopLayers(const ImageInfo *image_info,Image *image,
   profile=GetImageProfile(image,"tiff:37724");
   if (profile == (const StringInfo *) NULL)
     return;
-  for (i=0; i < (ssize_t) profile->length-8; i++)
+  const size_t
+    length=profile->length,
+    sentinel=length-8;
+  if (sentinel >= length) /* overflow check */
+    return;
+  for (i=0; i < sentinel; i++)
   {
     if (LocaleNCompare((const char *) (profile->datum+i),
         image->endian == MSBEndian ? "8BIM" : "MIB8",4) != 0)
@@ -1211,10 +1216,10 @@ static void TIFFReadPhotoshopLayers(const ImageInfo *image_info,Image *image,
       break;
   }
   i+=4;
-  if (i >= (ssize_t) (profile->length-8))
+  if (i >= sentinel)
     return;
   photoshop_profile.data=(StringInfo *) profile;
-  photoshop_profile.length=profile->length;
+  photoshop_profile.length=length;
   custom_stream=TIFFAcquireCustomStreamForReading(&photoshop_profile,exception);
   if (custom_stream == (CustomStreamInfo *) NULL)
     return;
@@ -1296,7 +1301,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   QuantumType
     quantum_type;
 
-  register ssize_t
+  size_t
     i;
 
   size_t
@@ -1380,7 +1385,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       */
       if (image_info->scene < (size_t) TIFFNumberOfDirectories(tiff))
         {
-          for (i=0; i < (ssize_t) image_info->scene; i++)
+          for (i=0; i < image_info->scene; i++)
           {
             status=TIFFReadDirectory(tiff) != 0 ? MagickTrue : MagickFalse;
             if (status == MagickFalse)
@@ -1679,14 +1684,14 @@ RestoreMSCWarning
                 (blue_colormap != (uint16 *) NULL))
               {
                 range=255;  /* might be old style 8-bit colormap */
-                for (i=0; i < (ssize_t) image->colors; i++)
+                for (i=0; i < image->colors; i++)
                   if ((red_colormap[i] >= 256) || (green_colormap[i] >= 256) ||
                       (blue_colormap[i] >= 256))
                     {
                       range=65535;
                       break;
                     }
-                for (i=0; i < (ssize_t) image->colors; i++)
+                for (i=0; i < image->colors; i++)
                 {
                   image->colormap[i].red=ClampToQuantum(((double)
                     QuantumRange*red_colormap[i])/range);
@@ -1951,7 +1956,7 @@ RestoreMSCWarning
         /*
           Convert TIFF image to DirectClass MIFF image.
         */
-        for (i=0; i < (ssize_t) samples_per_pixel; i++)
+        for (i=0; i < samples_per_pixel; i++)
         {
           for (y=0; y < image->rows; y++)
           {
@@ -2070,7 +2075,7 @@ RestoreMSCWarning
             {
               if (TIFFReadRGBAStrip(tiff,(tstrip_t) y,(uint32 *) pixels) == 0)
                 break;
-              i=(ssize_t) MagickMin(rows_per_strip,image->rows-y);
+              i=MagickMin(rows_per_strip,image->rows-y);
             }
           i--;
           p=((uint32 *) pixels)+image->columns*i;
@@ -2473,7 +2478,7 @@ static void TIFFIgnoreTags(TIFF *tiff)
   Image
    *image;
 
-  register ssize_t
+  size_t
     i;
 
   size_t
@@ -2590,10 +2595,11 @@ ModuleExport size_t RegisterTIFFImage(void)
     const char
       *p;
 
-    register ssize_t
+    size_t
       i;
 
     p=TIFFGetVersion();
+    assert(MagickPathExtent >= 1);
     for (i=0; (i < (MagickPathExtent-1)) && (*p != 0) && (*p != '\n'); i++)
       version[i]=(*p++);
     version[i]='\0';
@@ -2764,7 +2770,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register ssize_t
+  uint32
     i;
 
   ssize_t
@@ -2852,7 +2858,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
       return(MagickFalse);
     }
   strip_size=byte_count[0];
-  for (i=1; i < (ssize_t) TIFFNumberOfStrips(tiff); i++)
+  for (i=1; i < TIFFNumberOfStrips(tiff); i++)
     if (byte_count[i] > strip_size)
       strip_size=byte_count[i];
   buffer=(unsigned char *) AcquireQuantumMemory((size_t) strip_size,
@@ -2869,9 +2875,9 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
   /*
     Compress runlength encoded to 2D Huffman pixels.
   */
-  for (i=0; i < (ssize_t) TIFFNumberOfStrips(tiff); i++)
+  for (i=0; i < TIFFNumberOfStrips(tiff); i++)
   {
-    count=(ssize_t) TIFFReadRawStrip(tiff,(uint32) i,buffer,strip_size);
+    count=(ssize_t) TIFFReadRawStrip(tiff,i,buffer,strip_size);
     if (WriteBlob(image,(size_t) count,buffer) != count)
       status=MagickFalse;
   }
@@ -3520,7 +3526,7 @@ static void TIFFSetEXIFProperties(TIFF *tiff,Image *image,
   const char
     *value;
 
-  register ssize_t
+  size_t
     i;
 
   uint32
@@ -3609,7 +3615,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   QuantumType
     quantum_type;
 
-  register ssize_t
+  size_t
     i;
 
   size_t
@@ -4419,7 +4425,7 @@ RestoreMSCWarning
         (void) memset(red,0,65536*sizeof(*red));
         (void) memset(green,0,65536*sizeof(*green));
         (void) memset(blue,0,65536*sizeof(*blue));
-        for (i=0; i < (ssize_t) image->colors; i++)
+        for (i=0; i < image->colors; i++)
         {
           red[i]=ScaleQuantumToShort(image->colormap[i].red);
           green[i]=ScaleQuantumToShort(image->colormap[i].green);
