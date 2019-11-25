@@ -2185,12 +2185,8 @@ RestoreMSCWarning
             (AcquireMagickResource(HeightResource,rows) == MagickFalse))
           ThrowTIFFException(ImageError,"WidthOrHeightExceedsLimit");
         SetImageStorageClass(image,DirectClass,exception);
-        if (HeapOverflowSanityCheck(rows,1) != MagickFalse)
-          ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         const size_t
           size=TIFFTileSize(tiff);
-        if (HeapOverflowSanityCheck(size,1) != MagickFalse)
-          ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         tile_pixels=AcquireMagickMemory(size);
         if (tile_pixels == (unsigned char *) NULL)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
