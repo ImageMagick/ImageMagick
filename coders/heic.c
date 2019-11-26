@@ -483,7 +483,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
       (void) heif_context_get_list_of_top_level_image_IDs(heif_context,
-        image_ids,count);
+        image_ids,(int) count);
       for (i=0; i < count; i++)
       {
         if (image_ids[i] == primary_image_id)
