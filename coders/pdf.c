@@ -119,7 +119,8 @@ typedef struct _PDFInfo
   Forward declarations.
 */
 static MagickBooleanType
-  WritePDFImage(const ImageInfo *,Image *,ExceptionInfo *);
+  WritePDFImage(const ImageInfo *,Image *,ExceptionInfo *),
+  WritePOCKETMODImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -783,6 +784,14 @@ ModuleExport size_t RegisterPDFImage(void)
   entry->flags^=CoderBlobSupportFlag;
   entry->mime_type=ConstantString("application/pdf");
   (void) RegisterMagickInfo(entry);
+  entry=AcquireMagickInfo("PDF","POCKETMOD","Pocketmod Personal Organizer");
+  entry->decoder=(DecodeImageHandler *) ReadPDFImage;
+  entry->encoder=(EncodeImageHandler *) WritePOCKETMODImage;
+  entry->format_type=ImplicitFormatType;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->flags^=CoderAdjoinFlag;
+  entry->flags^=CoderBlobSupportFlag;
+  entry->mime_type=ConstantString("application/pdf");
   return(MagickImageCoderSignature);
 }
 
@@ -1036,7 +1045,7 @@ static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
 }
 
 static MagickBooleanType WritePOCKETMODImage(const ImageInfo *image_info,
-  const Image *image,ExceptionInfo *exception)
+  Image *image,ExceptionInfo *exception)
 {
   const Image
     *next;
@@ -1285,7 +1294,7 @@ RestoreMSCWarning
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  if (IsStringTrue(GetImageOption(image_info,"pdf:pocketmod")) != MagickFalse)
+  if (LocaleCompare(image_info->magick,"POCKETMOD") == 0)
     return(WritePOCKETMODImage(image_info,image,exception));
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
