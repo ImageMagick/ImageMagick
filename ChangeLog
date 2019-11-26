@@ -12,7 +12,7 @@
     https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=37118).
   * Fix potential buffer overflow when reading a fax image (alert from
     Justin).
-  * Render WMF as EPS.
+  * Support dng:use-camera-wb option.
 
 2019-11-17  7.0.9-5 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-5, GIT revision 16369:747618e:20191117.
