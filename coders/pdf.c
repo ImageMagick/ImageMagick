@@ -53,6 +53,7 @@
 #include "MagickCore/constitute.h"
 #include "MagickCore/delegate.h"
 #include "MagickCore/delegate-private.h"
+#include "MagickCore/distort.h"
 #include "MagickCore/draw.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
@@ -64,6 +65,7 @@
 #include "MagickCore/memory_.h"
 #include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
+#include "MagickCore/montage.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/nt-base-private.h"
 #include "MagickCore/option.h"
@@ -1033,6 +1035,83 @@ static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
   return(status);
 }
 
+static MagickBooleanType WritePOCKETMODImage(const ImageInfo *image_info,
+  const Image *image,ExceptionInfo *exception)
+{
+  const Image
+    *next;
+
+  Image
+    *pages,
+    *pocket_mod;
+
+  ImageInfo
+    *write_info;
+
+  MagickBooleanType
+    status;
+
+  MontageInfo
+    *montage_info;
+
+  register ssize_t
+    i;
+
+  /*
+    Create Pocketmod page.
+  */
+  pocket_mod=NewImageList();
+  pages=NewImageList();
+  write_info=CloneImageInfo(image_info);
+  (void) DeleteImageOption(write_info,"pdf:pocketmod");
+  montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
+  (void) CloneString(&montage_info->geometry,"877x1240+0+0");
+  montage_info->border_width=2;
+  i=0;
+  for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
+  {
+    Image
+      *page;
+
+    i++;
+    if ((i == 1) || (i == 6) || (i == 7) || (i == 8))
+      page=RotateImage(next,180.0,exception);
+    else
+      page=CloneImage(next,0,0,MagickTrue,exception);
+    if (page == (Image *) NULL)
+      break;
+    AppendImageToList(&pages,page);
+    if ((i % 8) == 0)
+      {
+        Image
+          *images,
+          *montage_image;
+
+        images=CloneImages(pages,"1,2,3,4,0,7,6,5",exception);
+        pages=DestroyImageList(pages);
+        if (images == (Image *) NULL)
+          break;
+        montage_image=MontageImageList(image_info,montage_info,images,
+          exception);
+        images=DestroyImageList(images);
+        if (montage_image == (Image *) NULL)
+          break;
+        AppendImageToList(&pocket_mod,montage_image);
+        i=0;
+      }
+  }
+  montage_info=DestroyMontageInfo(montage_info);
+  if (pages != (Image *) NULL)
+    pages=DestroyImageList(pages);
+  status=MagickFalse;
+  if ((next == (Image *) NULL) && (pocket_mod != (Image *) NULL))
+    status=WritePDFImage(write_info,pocket_mod,exception);
+  if (pocket_mod != (Image *) NULL)
+    pocket_mod=DestroyImageList(pocket_mod);
+  write_info=DestroyImageInfo(write_info);
+  return(status);
+}
+
 static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
@@ -1189,6 +1268,9 @@ RestoreMSCWarning
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (GetImageListLength(image) >= 8)
+    if (IsStringTrue(GetImageOption(image_info,"pdf:pocketmod")) != MagickFalse)
+      return(WritePOCKETMODImage(image_info,image,exception));
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
@@ -2110,7 +2192,7 @@ RestoreMSCWarning
           *p;
 
         /*
-          Write ICC profile. 
+          Write ICC profile.
         */
         (void) FormatLocaleString(buffer,MagickPathExtent,
           "[/ICCBased %.20g 0 R]\n",(double) object+1);
