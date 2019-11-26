@@ -693,9 +693,6 @@ static void WriteProfile(struct heif_context *context,Image *image,
   size_t
     length;
 
-  StringInfo
-    *custom_profile;
-
   struct heif_error
     error;
 
@@ -712,7 +709,6 @@ static void WriteProfile(struct heif_context *context,Image *image,
   /*
     Save image profile as a APP marker.
   */
-  custom_profile=AcquireStringInfo(65535L);
   ResetImageProfileIterator(image);
   for (name=GetNextImageProfile(image); name != (const char *) NULL; )
   {
@@ -758,7 +754,6 @@ static void WriteProfile(struct heif_context *context,Image *image,
         "%s profile: %.20g bytes",name,(double) GetStringInfoLength(profile));
     name=GetNextImageProfile(image);
   }
-  custom_profile=DestroyStringInfo(custom_profile);
   heif_image_handle_release(image_handle);
 }
 #endif
