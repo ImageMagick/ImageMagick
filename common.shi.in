@@ -1,5 +1,5 @@
 # -*- shell-script -*-
-# Copyright 1999-2019 ImageMagick Studio LLC
+# Copyright 1999-2020 ImageMagick Studio LLC
 # Definitions of optional features and configuration values for this build.
 # Intended for use by test scripts.
 MAGICK_FEATURES='@MAGICK_FEATURES@'

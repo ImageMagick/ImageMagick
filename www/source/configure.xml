@@ -15,7 +15,7 @@
   <configure name="CODER_PATH" value="/usr/local/lib/ImageMagick-7.0.7/modules-Q16HDRI/coders"/>
   <configure name="CONFIGURE_PATH" value="/usr/local/etc/ImageMagick-7/"/>
   <configure name="CONFIGURE" value="./configure  '--with-modules'"/>
-  <configure name="COPYRIGHT" value="Copyright (C) 1999-2019 ImageMagick Studio LLC"/>
+  <configure name="COPYRIGHT" value="Copyright (C) 1999-2020 ImageMagick Studio LLC"/>
   <configure name="CPPFLAGS" value="-I/usr/local/include/ImageMagick-7"/>
   <configure name="CXXFLAGS" value="-g -O2 -pthread"/>
   <configure name="CXX" value="g++"/>

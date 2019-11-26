@@ -15,7 +15,7 @@
   <configure name="CODER_PATH" value="@CODER_PATH@"/>
   <configure name="CONFIGURE_PATH" value="@CONFIGURE_PATH@"/>
   <configure name="CONFIGURE" value="@CONFIGURE_ARGS@"/>
-  <configure name="COPYRIGHT" value="Copyright (C) 1999-2019 ImageMagick Studio LLC"/>
+  <configure name="COPYRIGHT" value="Copyright (C) 1999-2020 ImageMagick Studio LLC"/>
   <configure name="CPPFLAGS" value="@MAGICK_CPPFLAGS@"/>
   <configure name="CXXFLAGS" value="@CXXFLAGS@"/>
   <configure name="CXX" value="@CXX@"/>
