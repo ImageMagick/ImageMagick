@@ -284,7 +284,7 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
   struct heif_image_handle
     *image_handle;
 
-  uint8_t
+  const uint8_t
     *p_y,
     *p_cb,
     *p_cr;
@@ -361,9 +361,9 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
           return(MagickFalse);
         }
     }
-  p_y=heif_image_get_plane(heif_image,heif_channel_Y,&stride_y);
-  p_cb=heif_image_get_plane(heif_image,heif_channel_Cb,&stride_cb);
-  p_cr=heif_image_get_plane(heif_image,heif_channel_Cr,&stride_cr);
+  p_y=heif_image_get_plane_readonly(heif_image,heif_channel_Y,&stride_y);
+  p_cb=heif_image_get_plane_readonly(heif_image,heif_channel_Cb,&stride_cb);
+  p_cr=heif_image_get_plane_readonly(heif_image,heif_channel_Cr,&stride_cr);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     Quantum
