@@ -1055,6 +1055,7 @@ static MagickBooleanType WritePOCKETMODImage(const ImageInfo *image_info,
   Image
     *images,
     *page_layout,
+    *page,
     *pages,
     *pocket_mod;
 
@@ -1081,9 +1082,6 @@ static MagickBooleanType WritePOCKETMODImage(const ImageInfo *image_info,
   i=0;
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
-    Image
-      *page;
-
     if ((i == 0) || (i == 5) || (i == 6) || (i == 7))
       page=RotateImage(next,180.0,exception);
     else
@@ -1109,12 +1107,16 @@ static MagickBooleanType WritePOCKETMODImage(const ImageInfo *image_info,
   }
   if (pages != (Image *) NULL)
     {
-      ExceptionInfo
-        *sans_exception;
-
-      sans_exception=AcquireExceptionInfo();
-      images=CloneImages(pages,PocketPageOrder,sans_exception);
-      sans_exception=DestroyExceptionInfo(sans_exception);
+      for (i=GetImageListLength(pages); i < 8; i++)
+      {
+        page=CloneImage(pages,0,0,MagickTrue,exception);
+        (void) QueryColorCompliance("#FFF",AllCompliance,
+          &page->background_color,exception);
+        SetImageBackgroundColor(page,exception);
+        page->scene=i;
+        AppendImageToList(&pages,page);
+      }
+      images=CloneImages(pages,PocketPageOrder,exception);
       pages=DestroyImageList(pages);
       if (images != (Image *) NULL)
         {
