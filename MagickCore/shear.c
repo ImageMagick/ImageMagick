@@ -761,14 +761,16 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
     Integral rotate the image.
   */
   status=MagickTrue;
-  progress=0;
   if (effective_rotations)
     {
       image_view=AcquireVirtualCacheView(image,exception);
       rotate_view=AcquireAuthenticCacheView(rotate_image,exception);
-    }
+      progress=0;
   switch (effective_rotations)
   {
+    case 0:
+      assert(0);
+      break;
     case 1:
     {
       size_t
@@ -1088,10 +1090,8 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       break;
     }
     default:
-      break;
+      assert(0);
   }
-  if (effective_rotations)
-    {
       rotate_view=DestroyCacheView(rotate_view);
       image_view=DestroyCacheView(image_view);
     }
