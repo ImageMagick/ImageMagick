@@ -1602,10 +1602,10 @@ static Image *DrawClippingMask(Image *image,const DrawInfo *draw_info,
       if (status == MagickFalse)
         clip_mask=DestroyImage(clip_mask);
     }
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(DrawEvent,GetMagickModule(),"end clip-path");
   if (status == MagickFalse)
     clip_mask=DestroyImage(clip_mask);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(DrawEvent,GetMagickModule(),"end clip-path");
   return(clip_mask);
 }
 
@@ -1694,10 +1694,10 @@ static Image *DrawCompositeMask(Image *image,const DrawInfo *draw_info,
       if (status == MagickFalse)
         composite_mask=DestroyImage(composite_mask);
     }
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(DrawEvent,GetMagickModule(),"end mask-path");
   if (status == MagickFalse)
     composite_mask=DestroyImage(composite_mask);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(DrawEvent,GetMagickModule(),"end mask-path");
   return(composite_mask);
 }
 
