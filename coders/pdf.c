@@ -1091,6 +1091,7 @@ static MagickBooleanType WritePOCKETMODImage(const ImageInfo *image_info,
     if (page == (Image *) NULL)
       break;
     page->alpha_trait=UndefinedPixelTrait;
+    page->scene=i;
     AppendImageToList(&pages,page);
     if (++i == 8)
       {
@@ -1098,8 +1099,7 @@ static MagickBooleanType WritePOCKETMODImage(const ImageInfo *image_info,
         pages=DestroyImageList(pages);
         if (images == (Image *) NULL)
           break;
-        page_layout=MontageImageList(image_info,montage_info,images,
-          exception);
+        page_layout=MontageImages(images,montage_info,exception);
         images=DestroyImageList(images);
         if (page_layout == (Image *) NULL)
           break;
@@ -1118,8 +1118,7 @@ static MagickBooleanType WritePOCKETMODImage(const ImageInfo *image_info,
       pages=DestroyImageList(pages);
       if (images != (Image *) NULL)
         {
-          page_layout=MontageImageList(image_info,montage_info,images,
-            exception);
+          page_layout=MontageImages(images,montage_info,exception);
           images=DestroyImageList(images);
           if (page_layout != (Image *) NULL)
             AppendImageToList(&pocket_mod,page_layout);
