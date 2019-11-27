@@ -422,15 +422,6 @@ MagickPrivate DistributeCacheInfo *DestroyDistributeCacheInfo(
 %
 */
 
-static MagickBooleanType DestroyDistributeCache(SplayTreeInfo *registry,
-  const size_t session_key)
-{
-  /*
-    Destroy distributed pixel cache.
-  */
-  return(DeleteNodeFromSplayTree(registry,(const void *) session_key));
-}
-
 static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
   const unsigned char *magick_restrict message)
 {
@@ -461,6 +452,22 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
       }
   }
   return(i);
+}
+
+#if !MAGICKCORE_HAVE_DISTRIBUTE_CACHE
+MagickExport void DistributePixelCacheServer(const int port,ExceptionInfo *Exception)
+{
+  magick_unreferenced(port);
+  ThrowFatalException(MissingDelegateError,"DelegateLibrarySupportNotBuiltIn");
+}
+#else
+static MagickBooleanType DestroyDistributeCache(SplayTreeInfo *registry,
+  const size_t session_key)
+{
+  /*
+    Destroy distributed pixel cache.
+  */
+  return(DeleteNodeFromSplayTree(registry,(const void *) session_key));
 }
 
 static MagickBooleanType OpenDistributeCache(SplayTreeInfo *registry,int file,
@@ -887,7 +894,6 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket)
 MagickExport void DistributePixelCacheServer(const int port,
   ExceptionInfo *exception)
 {
-#if MAGICKCORE_HAVE_DISTRIBUTE_CACHE
   char
     service[MagickPathExtent];
 
@@ -996,11 +1002,8 @@ MagickExport void DistributePixelCacheServer(const int port,
     Not implemented!
 #endif
   }
-#else
-  magick_unreferenced(port);
-  ThrowFatalException(MissingDelegateError,"DelegateLibrarySupportNotBuiltIn");
-#endif
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

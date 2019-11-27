@@ -222,16 +222,19 @@ static SemaphoreInfo
 /*
   Forward declarations.
 */
-static LogHandlerType
-  ParseLogHandlers(const char *) magick_attribute((__pure__));
-
 static LogInfo
   *GetLogInfo(const char *,ExceptionInfo *);
 
 static MagickBooleanType
-  IsLogCacheInstantiated(ExceptionInfo *) magick_attribute((__pure__)),
-  LoadLogCache(LinkedListInfo *,const char *,const char *,const size_t,
-    ExceptionInfo *);
+  IsLogCacheInstantiated(ExceptionInfo *) magick_attribute((__pure__));
+
+#if !MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
+static LogHandlerType
+  ParseLogHandlers(const char *) magick_attribute((__pure__));
+
+static MagickBooleanType
+  LoadLogCache(LinkedListInfo *,const char *,const char *,const size_t,ExceptionInfo *);
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -276,7 +279,7 @@ static LinkedListInfo *AcquireLogCache(const char *filename,
   */
   cache=NewLinkedList(0);
   status=MagickTrue;
-#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+#if !MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
   {
     const StringInfo
       *option;
@@ -1428,6 +1431,7 @@ MagickExport MagickBooleanType LogMagickEvent(const LogEventType type,
   return(status);
 }
 
+#if !MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1667,7 +1671,9 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *cache,const char *xml,
     return(MagickFalse);
   return(status != 0 ? MagickTrue : MagickFalse);
 }
+#endif
 
+#if !MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1725,6 +1731,7 @@ static LogHandlerType ParseLogHandlers(const char *handlers)
   }
   return(handler_mask);
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
