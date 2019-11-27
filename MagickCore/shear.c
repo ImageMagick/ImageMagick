@@ -766,92 +766,173 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       image_view=AcquireVirtualCacheView(image,exception);
       rotate_view=AcquireAuthenticCacheView(rotate_image,exception);
       progress=0;
-  switch (effective_rotations)
-  {
-    case 0:
-      assert(0);
-      break;
-    case 1:
-    {
-      size_t
-        tile_height,
-        tile_width;
-
-      ssize_t
-        tile_y;
-
-      /*
-        Rotate 90 degrees.
-      */
-      GetPixelCacheTileSize(image,&tile_width,&tile_height);
-      tile_width=image->columns;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static) shared(status) \
-        magick_number_threads(image,rotate_image,image->rows/tile_height,1)
-#endif
-      for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
+      switch (effective_rotations)
       {
-        register ssize_t
-          tile_x;
-
-        if (status == MagickFalse)
-          continue;
-        tile_x=0;
-        for ( ; tile_x < (ssize_t) image->columns; tile_x+=(ssize_t) tile_width)
+        case 0:
+          assert(0);
+          break;
+        case 1:
         {
-          MagickBooleanType
-            sync;
+          size_t
+            tile_height,
+            tile_width;
 
-          register const Quantum
-            *magick_restrict p;
+          ssize_t
+            tile_y;
 
-          register Quantum
-            *magick_restrict q;
+          /*
+            Rotate 90 degrees.
+          */
+          GetPixelCacheTileSize(image,&tile_width,&tile_height);
+          tile_width=image->columns;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+          #pragma omp parallel for schedule(static) shared(status) \
+            magick_number_threads(image,rotate_image,image->rows/tile_height,1)
+#endif
+          for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
+          {
+            register ssize_t
+              tile_x;
 
+            if (status == MagickFalse)
+              continue;
+            tile_x=0;
+            for ( ; tile_x < (ssize_t) image->columns; tile_x+=(ssize_t) tile_width)
+            {
+              MagickBooleanType
+                sync;
+
+              register const Quantum
+                *magick_restrict p;
+
+              register Quantum
+                *magick_restrict q;
+
+              register ssize_t
+                y;
+
+              size_t
+                height,
+                width;
+
+              width=tile_width;
+              if ((tile_x+(ssize_t) tile_width) > (ssize_t) image->columns)
+                width=(size_t) (tile_width-(tile_x+tile_width-image->columns));
+              height=tile_height;
+              if ((tile_y+(ssize_t) tile_height) > (ssize_t) image->rows)
+                height=(size_t) (tile_height-(tile_y+tile_height-image->rows));
+              p=GetCacheViewVirtualPixels(image_view,tile_x,tile_y,width,height,
+                exception);
+              if (p == (const Quantum *) NULL)
+                {
+                  status=MagickFalse;
+                  break;
+                }
+              for (y=0; y < (ssize_t) width; y++)
+              {
+                register const Quantum
+                  *magick_restrict tile_pixels;
+
+                register ssize_t
+                  x;
+
+                if (status == MagickFalse)
+                  continue;
+                q=QueueCacheViewAuthenticPixels(rotate_view,(ssize_t)
+                  (rotate_image->columns-(tile_y+height)),y+tile_x,height,1,
+                  exception);
+                if (q == (Quantum *) NULL)
+                  {
+                    status=MagickFalse;
+                    continue;
+                  }
+                tile_pixels=p+((height-1)*width+y)*GetPixelChannels(image);
+                for (x=0; x < (ssize_t) height; x++)
+                {
+                  register ssize_t
+                    i;
+
+                  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+                  {
+                    PixelChannel channel = GetPixelChannelChannel(image,i);
+                    PixelTrait traits = GetPixelChannelTraits(image,channel);
+                    PixelTrait rotate_traits = GetPixelChannelTraits(rotate_image,
+                      channel);
+                    if ((traits == UndefinedPixelTrait) ||
+                        (rotate_traits == UndefinedPixelTrait))
+                      continue;
+                    SetPixelChannel(rotate_image,channel,tile_pixels[i],q);
+                  }
+                  tile_pixels-=width*GetPixelChannels(image);
+                  q+=GetPixelChannels(rotate_image);
+                }
+                sync=SyncCacheViewAuthenticPixels(rotate_view,exception);
+                if (sync == MagickFalse)
+                  status=MagickFalse;
+              }
+            }
+            if (image->progress_monitor != (MagickProgressMonitor) NULL)
+              {
+                MagickBooleanType
+                  proceed;
+
+                proceed=SetImageProgress(image,RotateImageTag,progress+=tile_height,
+                  image->rows);
+                if (proceed == MagickFalse)
+                  status=MagickFalse;
+              }
+          }
+          (void) SetImageProgress(image,RotateImageTag,(MagickOffsetType)
+            image->rows-1,image->rows);
+          Swap(page.width,page.height);
+          Swap(page.x,page.y);
+          if (page.width != 0)
+            page.x=(ssize_t) (page.width-rotate_image->columns-page.x);
+          break;
+        }
+        case 2:
+        {
           register ssize_t
             y;
 
-          size_t
-            height,
-            width;
-
-          width=tile_width;
-          if ((tile_x+(ssize_t) tile_width) > (ssize_t) image->columns)
-            width=(size_t) (tile_width-(tile_x+tile_width-image->columns));
-          height=tile_height;
-          if ((tile_y+(ssize_t) tile_height) > (ssize_t) image->rows)
-            height=(size_t) (tile_height-(tile_y+tile_height-image->rows));
-          p=GetCacheViewVirtualPixels(image_view,tile_x,tile_y,width,height,
-            exception);
-          if (p == (const Quantum *) NULL)
-            {
-              status=MagickFalse;
-              break;
-            }
-          for (y=0; y < (ssize_t) width; y++)
+          /*
+            Rotate 180 degrees.
+          */
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+          #pragma omp parallel for schedule(static) shared(status) \
+            magick_number_threads(image,rotate_image,image->rows,1)
+#endif
+          for (y=0; y < (ssize_t) image->rows; y++)
           {
+            MagickBooleanType
+              sync;
+
             register const Quantum
-              *magick_restrict tile_pixels;
+              *magick_restrict p;
+
+            register Quantum
+              *magick_restrict q;
 
             register ssize_t
               x;
 
             if (status == MagickFalse)
               continue;
-            q=QueueCacheViewAuthenticPixels(rotate_view,(ssize_t)
-              (rotate_image->columns-(tile_y+height)),y+tile_x,height,1,
-              exception);
-            if (q == (Quantum *) NULL)
+            p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+            q=QueueCacheViewAuthenticPixels(rotate_view,0,(ssize_t) (image->rows-y-
+              1),image->columns,1,exception);
+            if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
               {
                 status=MagickFalse;
                 continue;
               }
-            tile_pixels=p+((height-1)*width+y)*GetPixelChannels(image);
-            for (x=0; x < (ssize_t) height; x++)
+            q+=GetPixelChannels(rotate_image)*image->columns;
+            for (x=0; x < (ssize_t) image->columns; x++)
             {
               register ssize_t
                 i;
 
+              q-=GetPixelChannels(rotate_image);
               for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
               {
                 PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -861,237 +942,156 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
                 if ((traits == UndefinedPixelTrait) ||
                     (rotate_traits == UndefinedPixelTrait))
                   continue;
-                SetPixelChannel(rotate_image,channel,tile_pixels[i],q);
+                SetPixelChannel(rotate_image,channel,p[i],q);
               }
-              tile_pixels-=width*GetPixelChannels(image);
-              q+=GetPixelChannels(rotate_image);
+              p+=GetPixelChannels(image);
             }
             sync=SyncCacheViewAuthenticPixels(rotate_view,exception);
             if (sync == MagickFalse)
               status=MagickFalse;
+            if (image->progress_monitor != (MagickProgressMonitor) NULL)
+              {
+                MagickBooleanType
+                  proceed;
+
+                proceed=SetImageProgress(image,RotateImageTag,progress++,
+                  image->rows);
+                if (proceed == MagickFalse)
+                  status=MagickFalse;
+              }
           }
+          (void) SetImageProgress(image,RotateImageTag,(MagickOffsetType)
+            image->rows-1,image->rows);
+          if (page.width != 0)
+            page.x=(ssize_t) (page.width-rotate_image->columns-page.x);
+          if (page.height != 0)
+            page.y=(ssize_t) (page.height-rotate_image->rows-page.y);
+          break;
         }
-        if (image->progress_monitor != (MagickProgressMonitor) NULL)
-          {
-            MagickBooleanType
-              proceed;
-
-            proceed=SetImageProgress(image,RotateImageTag,progress+=tile_height,
-              image->rows);
-            if (proceed == MagickFalse)
-              status=MagickFalse;
-          }
-      }
-      (void) SetImageProgress(image,RotateImageTag,(MagickOffsetType)
-        image->rows-1,image->rows);
-      Swap(page.width,page.height);
-      Swap(page.x,page.y);
-      if (page.width != 0)
-        page.x=(ssize_t) (page.width-rotate_image->columns-page.x);
-      break;
-    }
-    case 2:
-    {
-      register ssize_t
-        y;
-
-      /*
-        Rotate 180 degrees.
-      */
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static) shared(status) \
-        magick_number_threads(image,rotate_image,image->rows,1)
-#endif
-      for (y=0; y < (ssize_t) image->rows; y++)
-      {
-        MagickBooleanType
-          sync;
-
-        register const Quantum
-          *magick_restrict p;
-
-        register Quantum
-          *magick_restrict q;
-
-        register ssize_t
-          x;
-
-        if (status == MagickFalse)
-          continue;
-        p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-        q=QueueCacheViewAuthenticPixels(rotate_view,0,(ssize_t) (image->rows-y-
-          1),image->columns,1,exception);
-        if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
-          {
-            status=MagickFalse;
-            continue;
-          }
-        q+=GetPixelChannels(rotate_image)*image->columns;
-        for (x=0; x < (ssize_t) image->columns; x++)
+        case 3:
         {
-          register ssize_t
-            i;
-
-          q-=GetPixelChannels(rotate_image);
-          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-          {
-            PixelChannel channel = GetPixelChannelChannel(image,i);
-            PixelTrait traits = GetPixelChannelTraits(image,channel);
-            PixelTrait rotate_traits = GetPixelChannelTraits(rotate_image,
-              channel);
-            if ((traits == UndefinedPixelTrait) ||
-                (rotate_traits == UndefinedPixelTrait))
-              continue;
-            SetPixelChannel(rotate_image,channel,p[i],q);
-          }
-          p+=GetPixelChannels(image);
-        }
-        sync=SyncCacheViewAuthenticPixels(rotate_view,exception);
-        if (sync == MagickFalse)
-          status=MagickFalse;
-        if (image->progress_monitor != (MagickProgressMonitor) NULL)
-          {
-            MagickBooleanType
-              proceed;
-
-            proceed=SetImageProgress(image,RotateImageTag,progress++,
-              image->rows);
-            if (proceed == MagickFalse)
-              status=MagickFalse;
-          }
-      }
-      (void) SetImageProgress(image,RotateImageTag,(MagickOffsetType)
-        image->rows-1,image->rows);
-      if (page.width != 0)
-        page.x=(ssize_t) (page.width-rotate_image->columns-page.x);
-      if (page.height != 0)
-        page.y=(ssize_t) (page.height-rotate_image->rows-page.y);
-      break;
-    }
-    case 3:
-    {
-      size_t
-        tile_height,
-        tile_width;
-
-      ssize_t
-        tile_y;
-
-      /*
-        Rotate 270 degrees.
-      */
-      GetPixelCacheTileSize(image,&tile_width,&tile_height);
-      tile_width=image->columns;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static) shared(status) \
-        magick_number_threads(image,rotate_image,image->rows/tile_height,1)
-#endif
-      for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
-      {
-        register ssize_t
-          tile_x;
-
-        if (status == MagickFalse)
-          continue;
-        tile_x=0;
-        for ( ; tile_x < (ssize_t) image->columns; tile_x+=(ssize_t) tile_width)
-        {
-          MagickBooleanType
-            sync;
-
-          register const Quantum
-            *magick_restrict p;
-
-          register Quantum
-            *magick_restrict q;
-
-          register ssize_t
-            y;
-
           size_t
-            height,
-            width;
+            tile_height,
+            tile_width;
 
-          width=tile_width;
-          if ((tile_x+(ssize_t) tile_width) > (ssize_t) image->columns)
-            width=(size_t) (tile_width-(tile_x+tile_width-image->columns));
-          height=tile_height;
-          if ((tile_y+(ssize_t) tile_height) > (ssize_t) image->rows)
-            height=(size_t) (tile_height-(tile_y+tile_height-image->rows));
-          p=GetCacheViewVirtualPixels(image_view,tile_x,tile_y,width,height,
-            exception);
-          if (p == (const Quantum *) NULL)
-            {
-              status=MagickFalse;
-              break;
-            }
-          for (y=0; y < (ssize_t) width; y++)
+          ssize_t
+            tile_y;
+
+          /*
+            Rotate 270 degrees.
+          */
+          GetPixelCacheTileSize(image,&tile_width,&tile_height);
+          tile_width=image->columns;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+          #pragma omp parallel for schedule(static) shared(status) \
+            magick_number_threads(image,rotate_image,image->rows/tile_height,1)
+#endif
+          for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
           {
-            register const Quantum
-              *magick_restrict tile_pixels;
-
             register ssize_t
-              x;
+              tile_x;
 
             if (status == MagickFalse)
               continue;
-            q=QueueCacheViewAuthenticPixels(rotate_view,tile_y,(ssize_t) (y+
-              rotate_image->rows-(tile_x+width)),height,1,exception);
-            if (q == (Quantum *) NULL)
-              {
-                status=MagickFalse;
-                continue;
-              }
-            tile_pixels=p+((width-1)-y)*GetPixelChannels(image);
-            for (x=0; x < (ssize_t) height; x++)
+            tile_x=0;
+            for ( ; tile_x < (ssize_t) image->columns; tile_x+=(ssize_t) tile_width)
             {
+              MagickBooleanType
+                sync;
+
+              register const Quantum
+                *magick_restrict p;
+
+              register Quantum
+                *magick_restrict q;
+
               register ssize_t
-                i;
+                y;
 
-              for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+              size_t
+                height,
+                width;
+
+              width=tile_width;
+              if ((tile_x+(ssize_t) tile_width) > (ssize_t) image->columns)
+                width=(size_t) (tile_width-(tile_x+tile_width-image->columns));
+              height=tile_height;
+              if ((tile_y+(ssize_t) tile_height) > (ssize_t) image->rows)
+                height=(size_t) (tile_height-(tile_y+tile_height-image->rows));
+              p=GetCacheViewVirtualPixels(image_view,tile_x,tile_y,width,height,
+                exception);
+              if (p == (const Quantum *) NULL)
+                {
+                  status=MagickFalse;
+                  break;
+                }
+              for (y=0; y < (ssize_t) width; y++)
               {
-                PixelChannel channel = GetPixelChannelChannel(image,i);
-                PixelTrait traits = GetPixelChannelTraits(image,channel);
-                PixelTrait rotate_traits = GetPixelChannelTraits(rotate_image,
-                  channel);
-                if ((traits == UndefinedPixelTrait) ||
-                    (rotate_traits == UndefinedPixelTrait))
-                  continue;
-                SetPixelChannel(rotate_image,channel,tile_pixels[i],q);
-              }
-              tile_pixels+=width*GetPixelChannels(image);
-              q+=GetPixelChannels(rotate_image);
-            }
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp critical (MagickCore_IntegralRotateImage)
-#endif
-            sync=SyncCacheViewAuthenticPixels(rotate_view,exception);
-            if (sync == MagickFalse)
-              status=MagickFalse;
-          }
-        }
-        if (image->progress_monitor != (MagickProgressMonitor) NULL)
-          {
-            MagickBooleanType
-              proceed;
+                register const Quantum
+                  *magick_restrict tile_pixels;
 
-            proceed=SetImageProgress(image,RotateImageTag,progress+=tile_height,
-              image->rows);
-            if (proceed == MagickFalse)
-              status=MagickFalse;
+                register ssize_t
+                  x;
+
+                if (status == MagickFalse)
+                  continue;
+                q=QueueCacheViewAuthenticPixels(rotate_view,tile_y,(ssize_t) (y+
+                  rotate_image->rows-(tile_x+width)),height,1,exception);
+                if (q == (Quantum *) NULL)
+                  {
+                    status=MagickFalse;
+                    continue;
+                  }
+                tile_pixels=p+((width-1)-y)*GetPixelChannels(image);
+                for (x=0; x < (ssize_t) height; x++)
+                {
+                  register ssize_t
+                    i;
+
+                  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+                  {
+                    PixelChannel channel = GetPixelChannelChannel(image,i);
+                    PixelTrait traits = GetPixelChannelTraits(image,channel);
+                    PixelTrait rotate_traits = GetPixelChannelTraits(rotate_image,
+                      channel);
+                    if ((traits == UndefinedPixelTrait) ||
+                        (rotate_traits == UndefinedPixelTrait))
+                      continue;
+                    SetPixelChannel(rotate_image,channel,tile_pixels[i],q);
+                  }
+                  tile_pixels+=width*GetPixelChannels(image);
+                  q+=GetPixelChannels(rotate_image);
+                }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+                #pragma omp critical (MagickCore_IntegralRotateImage)
+#endif
+                sync=SyncCacheViewAuthenticPixels(rotate_view,exception);
+                if (sync == MagickFalse)
+                  status=MagickFalse;
+              }
+            }
+            if (image->progress_monitor != (MagickProgressMonitor) NULL)
+              {
+                MagickBooleanType
+                  proceed;
+
+                proceed=SetImageProgress(image,RotateImageTag,progress+=tile_height,
+                  image->rows);
+                if (proceed == MagickFalse)
+                  status=MagickFalse;
+              }
           }
+          (void) SetImageProgress(image,RotateImageTag,(MagickOffsetType)
+            image->rows-1,image->rows);
+          Swap(page.width,page.height);
+          Swap(page.x,page.y);
+          if (page.height != 0)
+            page.y=(ssize_t) (page.height-rotate_image->rows-page.y);
+          break;
+        }
+        default:
+          assert(0);
       }
-      (void) SetImageProgress(image,RotateImageTag,(MagickOffsetType)
-        image->rows-1,image->rows);
-      Swap(page.width,page.height);
-      Swap(page.x,page.y);
-      if (page.height != 0)
-        page.y=(ssize_t) (page.height-rotate_image->rows-page.y);
-      break;
-    }
-    default:
-      assert(0);
-  }
       rotate_view=DestroyCacheView(rotate_view);
       image_view=DestroyCacheView(image_view);
     }
