@@ -724,13 +724,15 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
   RectangleInfo
     page;
 
+  const unsigned int
+    effective_rotations=rotations % 4;
+
   /*
     Initialize rotated image attributes.
   */
   assert(image != (Image *) NULL);
   page=image->page;
-  rotations%=4;
-  switch (rotations)
+  switch (effective_rotations)
   {
     case 0:
     {
@@ -750,6 +752,8 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
         exception);
       break;
     }
+    default:
+      assert(0);
   }
   if (rotate_image == (Image *) NULL)
     return((Image *) NULL);
@@ -758,12 +762,12 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
   */
   status=MagickTrue;
   progress=0;
-  if (rotations != 0)
+  if (effective_rotations)
     {
       image_view=AcquireVirtualCacheView(image,exception);
       rotate_view=AcquireAuthenticCacheView(rotate_image,exception);
     }
-  switch (rotations)
+  switch (effective_rotations)
   {
     case 1:
     {
@@ -1086,7 +1090,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
     default:
       break;
   }
-  if (rotations != 0)
+  if (effective_rotations)
     {
       rotate_view=DestroyCacheView(rotate_view);
       image_view=DestroyCacheView(image_view);
