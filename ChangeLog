@@ -3,7 +3,7 @@
 
 2019-11-26  7.0.9-7 Cristy  <quetzlzacatenango@image...>
   * Support Pocketmod image format, e.g.
-	  convert -density 300 pages?.pdf pocketmod:organize.pdf
+    convert -density 300 pages?.pdf pocketmod:organize.pdf
 
 2019-11-26  7.0.9-6 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-6, GIT revision 16407:1725ec3:20191126.
