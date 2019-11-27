@@ -6104,7 +6104,10 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         MagickRealType
           pixel;
 
+        MAGICKCORE_DIAGNOSTIC_PUSH()
+        MAGICKCORE_DIAGNOSTIC_IGNORE_MAYBE_UNINITIALIZED()
         pixel=(MagickRealType) pixels[i]+pixels[low_pass+i];
+        MAGICKCORE_DIAGNOSTIC_POP()
         q[offset]=ClampToQuantum(pixel);
         i++;
         q+=GetPixelChannels(noise_image);

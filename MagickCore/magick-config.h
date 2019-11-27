@@ -227,6 +227,19 @@ extern "C" {
 #endif
 
 #endif
+
+#if defined(__GNUC__) && !defined(__clang__)
+# define MAGICKCORE_DIAGNOSTIC_PUSH() \
+   _Pragma("GCC diagnostic push")
+# define MAGICKCORE_DIAGNOSTIC_IGNORE_MAYBE_UNINITIALIZED() \
+   _Pragma("GCC diagnostic ignored \"-Wmaybe-uninitialized\"")
+# define MAGICKCORE_DIAGNOSTIC_POP() \
+   _Pragma("GCC diagnostic pop")
+#else
+# define MAGICKCORE_DIAGNOSTIC_PUSH()
+# define MAGICKCORE_DIAGNOSTIC_IGNORE_MAYBE_UNINITIALIZED()
+# define MAGICKCORE_DIAGNOSTIC_POP()
+#endif
  
 #if defined(__cplusplus) || defined(c_plusplus)
 }
