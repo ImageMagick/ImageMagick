@@ -1062,6 +1062,14 @@ static MagickBooleanType WritePOCKETMODImage(const ImageInfo *image_info,
   register ssize_t
     i;
 
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickCoreSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
   pocket_mod=NewImageList();
   pages=NewImageList();
   i=0;
