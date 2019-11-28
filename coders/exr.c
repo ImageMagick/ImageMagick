@@ -354,6 +354,7 @@ ModuleExport size_t RegisterEXRImage(void)
   MagickInfo
     *entry;
 
+  *version='\0';
   entry=AcquireMagickInfo("EXR","EXR","High Dynamic-range (HDR)");
 #if defined(MAGICKCORE_OPENEXR_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadEXRImage;
