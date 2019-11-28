@@ -30,6 +30,9 @@ public:
       return(false);
 
     size = file.tellg();
+    if (size < 1)
+      return(false);
+
     _size = size;
     _data = new char[_size];
     file.seekg(0, ios::beg);
