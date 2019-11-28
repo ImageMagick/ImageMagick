@@ -22,7 +22,8 @@
 #define MagickPDFAliases \
   MagickCoderAlias("PDF", "AI") \
   MagickCoderAlias("PDF", "EPDF") \
-  MagickCoderAlias("PDF", "PDFA")
+  MagickCoderAlias("PDF", "PDFA") \
+  MagickCoderAlias("PDF", "POCKETMOD")
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
