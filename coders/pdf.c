@@ -1053,35 +1053,23 @@ static MagickBooleanType WritePOCKETMODImage(const ImageInfo *image_info,
     *next;
 
   Image
-    *images,
-    *page_layout,
-    *page,
     *pages,
     *pocket_mod;
 
   MagickBooleanType
     status;
 
-  MontageInfo
-    *montage_info;
-
   register ssize_t
     i;
 
-  /*
-    Create PocketMod page.
-  */
   pocket_mod=NewImageList();
   pages=NewImageList();
-  montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
-  (void) CloneString(&montage_info->geometry,"877x1240+0+0");
-  (void) CloneString(&montage_info->tile,"4x2");
-  (void) QueryColorCompliance("#000",AllCompliance,&montage_info->border_color,
-    exception);
-  montage_info->border_width=2;
   i=0;
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
+    Image
+      *page;
+
     if ((i == 0) || (i == 5) || (i == 6) || (i == 7))
       page=RotateImage(next,180.0,exception);
     else
@@ -1089,15 +1077,41 @@ static MagickBooleanType WritePOCKETMODImage(const ImageInfo *image_info,
     if (page == (Image *) NULL)
       break;
     page->alpha_trait=UndefinedPixelTrait;
-    page->scene=i;
+    page->scene=i++;
     AppendImageToList(&pages,page);
-    if (++i == 8)
+    if ((i == 8) || (GetNextImageInList(next) == (Image *) NULL))
       {
+        Image
+          *images,
+          *page_layout;
+
+        MontageInfo
+          *montage_info;
+
+        /*
+          Create PocketMod page.
+        */
+        for (i=(ssize_t) GetImageListLength(pages); i < 8; i++)
+        {
+          page=CloneImage(pages,0,0,MagickTrue,exception);
+          (void) QueryColorCompliance("#FFF",AllCompliance,
+            &page->background_color,exception);
+          SetImageBackgroundColor(page,exception);
+          page->scene=i;
+          AppendImageToList(&pages,page);
+        }
         images=CloneImages(pages,PocketPageOrder,exception);
         pages=DestroyImageList(pages);
         if (images == (Image *) NULL)
           break;
+        montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
+        (void) CloneString(&montage_info->geometry,"877x1240+0+0");
+        (void) CloneString(&montage_info->tile,"4x2");
+        (void) QueryColorCompliance("#000",AllCompliance,
+          &montage_info->border_color,exception);
+        montage_info->border_width=2;
         page_layout=MontageImages(images,montage_info,exception);
+        montage_info=DestroyMontageInfo(montage_info);
         images=DestroyImageList(images);
         if (page_layout == (Image *) NULL)
           break;
@@ -1105,28 +1119,6 @@ static MagickBooleanType WritePOCKETMODImage(const ImageInfo *image_info,
         i=0;
       }
   }
-  if (pages != (Image *) NULL)
-    {
-      for (i=GetImageListLength(pages); i < 8; i++)
-      {
-        page=CloneImage(pages,0,0,MagickTrue,exception);
-        (void) QueryColorCompliance("#FFF",AllCompliance,
-          &page->background_color,exception);
-        SetImageBackgroundColor(page,exception);
-        page->scene=i;
-        AppendImageToList(&pages,page);
-      }
-      images=CloneImages(pages,PocketPageOrder,exception);
-      pages=DestroyImageList(pages);
-      if (images != (Image *) NULL)
-        {
-          page_layout=MontageImages(images,montage_info,exception);
-          images=DestroyImageList(images);
-          if (page_layout != (Image *) NULL)
-            AppendImageToList(&pocket_mod,page_layout);
-        }
-    }
-  montage_info=DestroyMontageInfo(montage_info);
   if (pocket_mod == (Image *) NULL)
     return(MagickFalse);
   status=WritePDFImage(image_info,GetFirstImageInList(pocket_mod),exception);
