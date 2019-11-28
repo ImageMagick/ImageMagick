@@ -36,7 +36,7 @@
 </head>
 <body>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -44,25 +44,25 @@
     <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
-        <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="../">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="download.html">Download</a>
+        <a class="nav-link" href="../www/download.html">Download</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="command-line-tools.html">Tools</a>
+        <a class="nav-link" href="../www/command-line-tools.html">Tools</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="command-line-processing.html">Command-line</a>
+        <a class="nav-link" href="../www/command-line-processing.html">Command-line</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="resources.html">Resources</a>
+        <a class="nav-link" href="../www/resources.html">Resources</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="develop.html">Develop</a>
+        <a class="nav-link" href="../www/develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server//">Community</a>
+        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="https://imagemagick.org/script/search.php">
@@ -90,7 +90,7 @@
 
 <p class="lead magick-description">Many of ImageMagick's internal algorithms are threaded to take advantage of speed-ups offered by the multicore processor chips and <a href="http://www.openmp.org">OpenMP</a>. OpenMP, is an API specification for parallel programming. If your compiler supports OpenMP (e.g. gcc, Visual Studio 2005) directives, ImageMagick automatically includes support. To verify, look for the OpenMP feature of ImageMagick with this command:</p>
 <pre class="highlight"><code>-> magick identify -version
-Version: ImageMagick 7.0.8-64 2019-09-04 Q16 https://imagemagick.org
+Version: ImageMagick 7.0.9-7 2020-09-04 Q16 https://imagemagick.org
 Copyright: © 1999-2020 ImageMagick Studio LLC
 Features: OpenMP(4.5)</code></pre>
 <p>With OpenMP enabled, most ImageMagick algorithms execute on all the cores on your system in parallel.  ImageMagick typically divides the work so that each thread processes 64 rows of pixels. As rows are completed, OpenMP assigns more chunks of pixel rows to each thread until the algorithm completes. For example, if you have a quad-core system, and attempt to resize an image, the resizing takes place on 4 cores (8 if hyperthreading is enabled).</p>
@@ -112,17 +112,17 @@ Performance[8]: 40i 4.831ips 0.872e 15.680u 0:02.070</code></pre>
     </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
-    <p><a href="security-policy.html">Security</a> •
-    <a href="architecture.html">Architecture</a>
+    <p><a href="../www/security-policy.html">Security</a> •
+    <a href="../www/architecture.html">Architecture</a>
      
     <a href="openmp.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
-    <a href="links.html">Related</a> •
-     <a href="sitemap.html">Sitemap</a>
+    <a href="../www/links.html">Related</a> •
+     <a href="../www/sitemap.html">Sitemap</a>
     <br/>
-    <a href="support.html">Donate</a> •
+    <a href="../www/support.html">Donate</a> •
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="https://imagemagick.org/script/contact.php">Contact Us</a> 
+    <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a> 
     <br/>
     <small>© 1999-2020 ImageMagick Studio LLC</small></p>
   </footer>
@@ -132,4 +132,4 @@ Performance[8]: 40i 4.831ips 0.872e 15.680u 0:02.070</code></pre>
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 30th October 2019 09:15 -->
+<!-- Magick Cache 28th November 2019 09:11 -->
