@@ -556,13 +556,16 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Render Postscript with the Ghostscript delegate.
   */
-  if (image_info->monochrome != MagickFalse)
-    delegate_info=GetDelegateInfo("ps:mono",(char *) NULL,exception);
+  if (IsStringTrue(GetImageOption(image_info,"pdf:use-alpha")) != MagickFalse)
+    delegate_info=GetDelegateInfo("ps:alpha",(char *) NULL,exception);
   else
-     if (pdf_info.cmyk != MagickFalse)
-       delegate_info=GetDelegateInfo("ps:cmyk",(char *) NULL,exception);
-     else
-       delegate_info=GetDelegateInfo("ps:alpha",(char *) NULL,exception);
+    if (image_info->monochrome != MagickFalse)
+      delegate_info=GetDelegateInfo("ps:mono",(char *) NULL,exception);
+    else
+       if (pdf_info.cmyk != MagickFalse)
+         delegate_info=GetDelegateInfo("ps:cmyk",(char *) NULL,exception);
+       else
+         delegate_info=GetDelegateInfo("ps:color",(char *) NULL,exception);
   if (delegate_info == (const DelegateInfo *) NULL)
     {
       (void) RelinquishUniqueFileResource(postscript_filename);
