@@ -73,12 +73,10 @@
 #define BlockFooter(block,size) \
   ((size_t *) ((char *) (block)+(size)-2*sizeof(size_t)))
 #define BlockHeader(block)  ((size_t *) (block)-1)
-#define BlockSize  4096
 #define BlockThreshold  1024
 #define MaxBlockExponent  16
 #define MaxBlocks ((BlockThreshold/(4*sizeof(size_t)))+MaxBlockExponent+1)
 #define MaxSegments  1024
-#define MemoryGuard  ((0xdeadbeef << 31)+0xdeafdeed)
 #define NextBlock(block)  ((char *) (block)+SizeOfBlock(block))
 #define NextBlockInList(block)  (*(void **) (block))
 #define PreviousBlock(block)  ((char *) (block)-(*((size_t *) (block)-2)))
