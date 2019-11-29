@@ -4581,7 +4581,7 @@ MAGICK_PATCHLEVEL_VERSION=7
 
 MAGICK_VERSION=7.0.9-7
 
-MAGICK_GIT_REVISION=16408:53dad999e:20191126
+MAGICK_GIT_REVISION=16439:487c2a8a5:20191129
 
 
 # Substitute library versioning
@@ -36680,7 +36680,7 @@ fi
 # Ghostscript related configuration.
 #
 GSAlphaDevice=pngalpha
-GSColorDevice=pnmraw
+GSColorDevice=png16m
 GSCMYKDevice=pamcmyk32
 GSMonoDevice=pbmraw
 GSPDFDevice=pdfwrite
