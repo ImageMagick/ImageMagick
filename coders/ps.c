@@ -693,7 +693,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Render Postscript with the Ghostscript delegate.
   */
-  if (IsStringTrue(GetImageOption(image_info,"pdf:use-alpha")) != MagickFalse)
+  if (IsStringTrue(GetImageOption(image_info,"ps:use-alpha")) != MagickFalse)
     delegate_info=GetDelegateInfo("ps:alpha",(char *) NULL,exception);
   else
     if (image_info->monochrome != MagickFalse)
