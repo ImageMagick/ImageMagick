@@ -24,6 +24,40 @@ extern "C" {
 
 #include "MagickCore/magick-baseconfig.h"
 
+#define MAGICKCORE_STRING_QUOTE(str) #str
+#define MAGICKCORE_STRING_XQUOTE(str) MAGICKCORE_STRING_QUOTE(str)
+
+#if __STDC_VERSION__ >= 199901L
+# if defined(__GNUC__) || defined(__clang__)
+#  define MAGICK_COMPILER_WARNING(w) _Pragma(MAGICKCORE_STRING_QUOTE(GCC warning w))
+# elif defined(_MSC_VER)
+#  define MAGICK_COMPILER_WARNING(w) _Pragma(MAGICKCORE_STRING_QUOTE(message(w)))
+# endif
+#endif
+
+#ifndef MAGICK_COMPILER_WARNING
+# define MAGICK_COMPILER_WARNING(w)
+#endif
+
+#ifdef MAGICKCORE__FILE_OFFSET_BITS
+# ifdef _FILE_OFFSET_BITS
+#  if _FILE_OFFSET_BITS != MAGICKCORE__FILE_OFFSET_BITS
+    MAGICK_COMPILER_WARNING("_FILE_OFFSET_BITS is already defined, but does not match MAGICKCORE__FILE_OFFSET_BITS")
+#  else
+#   undef _FILE_OFFSET_BITS
+#  endif
+# endif
+# ifndef _FILE_OFFSET_BITS
+#  if MAGICKCORE__FILE_OFFSET_BITS == 64
+#   define _FILE_OFFSET_BITS 64
+#  elif MAGICKCORE__FILE_OFFSET_BITS == 32
+#   define _FILE_OFFSET_BITS 32
+#  else
+#   define _FILE_OFFSET_BITS MAGICKCORE__FILE_OFFSET_BITS
+#  endif
+# endif
+#endif
+
 /* Compatibility block */
 #if !defined(MAGICKCORE_QUANTUM_DEPTH) && defined(MAGICKCORE_QUANTUM_DEPTH_OBSOLETE_IN_H)
 # warning "you should set MAGICKCORE_QUANTUM_DEPTH to sensible default set it to configure time default"
@@ -108,10 +142,6 @@ extern "C" {
       we can rely on checking just for that macro. */
 #  define __CYGWIN__  __CYGWIN32__
 #endif
-
-/*! stringify */
-#define MAGICKCORE_STRING_QUOTE(str) #str
-#define MAGICKCORE_STRING_XQUOTE(str) MAGICKCORE_STRING_QUOTE(str)
 
 /*  ABI SUFFIX */
 #ifndef MAGICKCORE_HDRI_SUPPORT
