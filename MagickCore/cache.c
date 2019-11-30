@@ -2397,9 +2397,9 @@ MagickPrivate void GetPixelCacheTileSize(const Image *image,size_t *width,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickCoreSignature);
-  *width=2048UL/(cache_info->number_channels*sizeof(Quantum));
+  *width=2048UL/(MagickMax(cache_info->number_channels,1)*sizeof(Quantum));
   if (GetImagePixelCacheType(image) == DiskCache)
-    *width=8192UL/(cache_info->number_channels*sizeof(Quantum));
+    *width=8192UL/(MagickMax(cache_info->number_channels,1)*sizeof(Quantum));
   *height=(*width);
 }
 
