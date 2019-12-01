@@ -28,6 +28,7 @@
   MagickCoderAlias("DNG", "3FR") \
   MagickCoderAlias("DNG", "ARW") \
   MagickCoderAlias("DNG", "CR2") \
+  MagickCoderAlias("DNG", "CR3") \
   MagickCoderAlias("DNG", "CRW") \
   MagickCoderAlias("DNG", "DCR") \
   MagickCoderAlias("DNG", "DCRAW") \
