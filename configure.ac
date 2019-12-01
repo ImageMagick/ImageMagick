@@ -30,7 +30,7 @@ m4_define([magick_micro_version], [9])
 m4_define([magick_patchlevel_version], [8])
 m4_define([magick_version],
           [magick_major_version.magick_minor_version.magick_micro_version-magick_patchlevel_version])
-m4_define([magick_git_revision], esyscmd([sh -c "(gitversion.sh .) | awk '{ print \$1 }' | tr -d '\n'"]))
+m4_define([magick_git_revision], esyscmd([sh -c "(./gitversion.sh .) | awk '{ print \$1 }' | tr -d '\n'"]))
 m4_define([magick_tar_name],[ImageMagick])
 
 # ==============================================================================
@@ -56,7 +56,7 @@ AM_SILENT_RULES([yes])
 # Save initial user-tunable values
 #
 USER_LIBS=$LIBS
-for var in CC CFLAGS CPPFLAGS CXX CXXCPP LDFLAGS LIBS ; do
+for var in CC CFLAGS CPPFLAGS CXX CXXCPP LDFLAGS AR_FLAGS LIBS ; do
   eval isset=\${$var+set}
     if test "$isset" = 'set'; then
         eval val=$`echo $var`
@@ -559,6 +559,7 @@ fi
 AC_SUBST(LFS_CPPFLAGS)
 
 # Configure libtool
+: ${AR_FLAGS=cr}
 AC_LIBTOOL_DLOPEN
 LT_INIT([win32-dll])
 LT_LANG([C++])
