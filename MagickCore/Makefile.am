@@ -28,7 +28,7 @@ MAGICKCORE_BIN_SCRPTS = \
   MagickCore/MagickCore-config
 
 MAGICKCORE_PKGCONFIG = \
-  MagickCore/ImageMagick.pc \
+	MagickCore/ImageMagick.pc \
 	MagickCore/MagickCore.pc \
 	MagickCore/ImageMagick-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.pc \
 	MagickCore/MagickCore-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.pc 
@@ -198,7 +198,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/morphology.h \
 	MagickCore/morphology-private.h \
 	MagickCore/nt-base.h \
-  MagickCore/nt-base-private.h \
+	MagickCore/nt-base-private.h \
 	MagickCore/nt-feature.h \
 	MagickCore/opencl.c \
 	MagickCore/opencl.h \
@@ -271,7 +271,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/thread-private.h \
 	MagickCore/timer.c \
 	MagickCore/timer.h \
- 	MagickCore/timer-private.h \
+	MagickCore/timer-private.h \
 	MagickCore/token.c \
 	MagickCore/token.h \
 	MagickCore/token-private.h \
@@ -300,16 +300,16 @@ MAGICKCORE_BASE_SRCS = \
 
 if WIN32_NATIVE_BUILD
 MAGICKCORE_PLATFORM_SRCS = \
-  MagickCore/nt-base.c \
-  MagickCore/nt-base.h \
-  MagickCore/nt-base-private.h \
-  MagickCore/nt-feature.c \
-  MagickCore/nt-feature.h
+	MagickCore/nt-base.c \
+	MagickCore/nt-base.h \
+	MagickCore/nt-base-private.h \
+	MagickCore/nt-feature.c \
+	MagickCore/nt-feature.h
 else
 if CYGWIN_BUILD
 MAGICKCORE_PLATFORM_SRCS = \
-  MagickCore/nt-feature.c \
-  MagickCore/nt-feature.h
+	MagickCore/nt-feature.c \
+	MagickCore/nt-feature.h
 else
 MAGICKCORE_PLATFORM_SRCS =
 endif # if CYGWIN_BUILD
@@ -418,17 +418,17 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/animate-private.h \
 	MagickCore/annotate-private.h \
 	MagickCore/blob-private.h \
- 	MagickCore/cache-private.h \
 	MagickCore/cache-private.h \
- 	MagickCore/coder-private.h \
+	MagickCore/cache-private.h \
+	MagickCore/coder-private.h \
 	MagickCore/colormap-private.h \
- 	MagickCore/color-private.h \
+	MagickCore/color-private.h \
 	MagickCore/color-private.h \
 	MagickCore/colorspace-private.h \
 	MagickCore/composite-private.h \
- 	MagickCore/configure-private.h \
- 	MagickCore/constitute-private.h \
- 	MagickCore/delegate-private.h \
+	MagickCore/configure-private.h \
+	MagickCore/constitute-private.h \
+	MagickCore/delegate-private.h \
 	MagickCore/delegate-private.h \
 	MagickCore/display-private.h \
 	MagickCore/distribute-cache-private.h \
@@ -437,47 +437,47 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/fx-private.h \
 	MagickCore/gem-private.h \
 	MagickCore/image-private.h \
- 	MagickCore/locale-private.h \
- 	MagickCore/log-private.h \
- 	MagickCore/magick-private.h \
- 	MagickCore/magic-private.h \
+	MagickCore/locale-private.h \
+	MagickCore/log-private.h \
+	MagickCore/magick-private.h \
+	MagickCore/magic-private.h \
 	MagickCore/matrix-private.h \
 	MagickCore/memory-private.h \
- 	MagickCore/methods-private.h \
- 	MagickCore/mime-private.h \
+	MagickCore/methods-private.h \
 	MagickCore/mime-private.h \
- 	MagickCore/module-private.h \
+	MagickCore/mime-private.h \
+	MagickCore/module-private.h \
 	MagickCore/monitor-private.h \
 	MagickCore/morphology-private.h \
 	MagickCore/nt-base.h \
 	MagickCore/nt-feature.h \
 	MagickCore/opencl-private.h \
 	MagickCore/option-private.h \
- 	MagickCore/pixel-private.h \
- 	MagickCore/policy-private.h \
- 	MagickCore/profile-private.h \
+	MagickCore/pixel-private.h \
+	MagickCore/policy-private.h \
+	MagickCore/profile-private.h \
 	MagickCore/quantum-private.h \
- 	MagickCore/random_-private.h \
+	MagickCore/random_-private.h \
 	MagickCore/random-private.h \
- 	MagickCore/registry-private.h \
+	MagickCore/registry-private.h \
 	MagickCore/resample-private.h \
 	MagickCore/resize-private.h \
- 	MagickCore/resource-private.h \
 	MagickCore/resource-private.h \
- 	MagickCore/semaphore-private.h \
+	MagickCore/resource-private.h \
+	MagickCore/semaphore-private.h \
 	MagickCore/semaphore-private.h \
 	MagickCore/signature-private.h \
 	MagickCore/stream-private.h \
 	MagickCore/string-private.h \
 	MagickCore/thread_.h \
 	MagickCore/thread-private.h \
- 	MagickCore/timer-private.h \
+	MagickCore/timer-private.h \
 	MagickCore/token-private.h \
 	MagickCore/transform-private.h \
- 	MagickCore/type-private.h \
+	MagickCore/type-private.h \
 	MagickCore/utility-private.h \
 	MagickCore/version-private.h \
- 	MagickCore/widget-private.h \
+	MagickCore/widget-private.h \
 	MagickCore/xml-tree-private.h \
 	MagickCore/xwindow-private.h
 
