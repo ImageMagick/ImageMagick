@@ -92,7 +92,7 @@
 */
 #define BezierQuantum  200
 #define PrimitiveExtentPad  2048
-#define MaxBezierCoordinates  6291456
+#define MaxBezierCoordinates  67108864
 #define ThrowPointExpectedException(token,exception) \
 { \
   (void) ThrowMagickException(exception,GetMagickModule(),DrawError, \
