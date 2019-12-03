@@ -5056,6 +5056,14 @@ MagickPrivate Image *AccelerateUnsharpMaskImage(const Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
+  magick_unreferenced(radius);
+  magick_unreferenced(sigma);
+  magick_unreferenced(gain);
+  magick_unreferenced(threshold);
+  return((Image *) NULL);
+
+  /* This kernel appears to be broken.
+
   if (checkAccelerateCondition(image) == MagickFalse)
     return((Image *) NULL);
 
@@ -5070,6 +5078,7 @@ MagickPrivate Image *AccelerateUnsharpMaskImage(const Image *image,
     filteredImage=ComputeUnsharpMaskImage(image,clEnv,radius,sigma,gain,
       threshold,exception);
   return(filteredImage);
+  */
 }
 
 static Image *ComputeWaveletDenoiseImage(const Image *image,MagickCLEnv clEnv,
