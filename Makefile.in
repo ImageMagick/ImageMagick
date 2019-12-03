@@ -256,6 +256,8 @@ bin_PROGRAMS = $(am__EXEEXT_1)
 TESTS = $(TESTS_TESTS) $(am__EXEEXT_5)
 XFAIL_TESTS = $(am__EXEEXT_6) $(am__EXEEXT_6)
 check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_4)
+@MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE@am__append_1 = MagickCore/threshold-map.h
+@MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE@am__append_2 = MagickCore/threshold-map.h
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ac_func_fseeko.m4 \
@@ -826,7 +828,11 @@ am__objects_20 = filters/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK
 @WITH_MODULES_FALSE@	$(am__objects_19) $(am__objects_20)
 @WITH_MODULES_TRUE@am_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS =  \
 @WITH_MODULES_TRUE@	$(am__objects_1) $(am__objects_2)
-MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS = $(am_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS)
+am__objects_20 =
+nodist_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS =  \
+	$(am__objects_20)
+MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS = $(am_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS) \
+	$(nodist_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS)
 MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LINK =  \
 	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
@@ -2516,6 +2522,7 @@ am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
 SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
 	$(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
+	$(nodist_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
 	$(MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
 	$(coders_aai_la_SOURCES) $(coders_art_la_SOURCES) \
 	$(coders_avs_la_SOURCES) $(coders_bgr_la_SOURCES) \
@@ -3427,12 +3434,8 @@ MODULECOMMONCPPFLAGS = $(AM_CPPFLAGS)
 # compiler, headers, and libraries are used as for a normal build.
 DISTCHECK_CONFIGURE_FLAGS = $(DISTCHECK_CONFIG_FLAGS)
 DISTCLEANFILES = _configs.sed MagickCore/magick-baseconfig.h
-CLEANFILES = \
-	$(MAGICKWAND_CLEANFILES) \
-	$(MAGICKPP_CLEANFILES) \
-	$(UTILITIES_CLEANFILES) \
-	$(TESTS_CLEANFILES)
-
+CLEANFILES = $(MAGICKWAND_CLEANFILES) $(MAGICKPP_CLEANFILES) \
+	$(UTILITIES_CLEANFILES) $(TESTS_CLEANFILES) $(am__append_2)
 
 # Binary scripts
 bin_SCRIPTS = \
@@ -4975,6 +4978,8 @@ MAGICKCORE_LIBS = MagickCore/libMagickCore-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SU
 @WITH_MODULES_TRUE@MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES = $(MAGICKCORE_BASE_SRCS) $(MAGICKCORE_PLATFORM_SRCS)
 @WITH_MODULES_FALSE@MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LIBADD = $(MAGICK_DEP_LIBS)
 @WITH_MODULES_TRUE@MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LIBADD = $(MAGICK_DEP_LIBS)
+nodist_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES =  \
+	$(am__append_1)
 MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS = $(AM_CPPFLAGS) $(LIBRARY_EXTRA_CPPFLAGS)
 @HAVE_LD_VERSION_SCRIPT_FALSE@MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
 @HAVE_LD_VERSION_SCRIPT_TRUE@MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LDFLAGS_VERSION = -Wl,--version-script=$(top_srcdir)/MagickCore/libMagickCore.map
@@ -5410,6 +5415,7 @@ MAGICKCORE_EXTRA_DIST = \
 	MagickCore/nt-base.c \
 	MagickCore/nt-feature.c
 
+@MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE@libMagickCore_threshold_target = MagickCore/libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-threshold.lo
 MagickWandincdir = $(INCLUDE_PATH)/MagickWand
 MAGICKWAND_CPPFLAGS = $(AM_CPPFLAGS)
 MAGICKWAND_SOURCES = \
@@ -13299,6 +13305,9 @@ uninstall-man: uninstall-man1
 
 .PRECIOUS: Makefile
 
+@MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE@$(libMagickCore_threshold_target): MagickCore/threshold-map.h
+@MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE@MagickCore/threshold-map.h: config/thresholds.xml Makefile
+@MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE@	$(AM_V_GEN){ printf '%s\n  %s=\n' 'static const char *const' BuiltinMap; sed -e 's/"/\\"/g; s/^.*$$/    "&\\n"/; $$s/$$/;/' $<; } >$@
 install-exec-local-utilities:
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
 	cd $(DESTDIR)$(bindir) ; \

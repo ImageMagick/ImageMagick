@@ -116,8 +116,11 @@ struct _ThresholdMap
 /*
   Static declarations.
 */
-static const char
-  *MinimalThresholdMap =
+#if MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
+  #include "MagickCore/threshold-map.h"
+#else
+static const char *const
+  BuiltinMap=
     "<?xml version=\"1.0\"?>"
     "<thresholds>"
     "  <threshold map=\"threshold\" alias=\"1x1\">"
@@ -134,6 +137,7 @@ static const char
     "    </levels>"
     "  </threshold>"
     "</thresholds>";
+#endif
 
 /*
   Forward declarations.
@@ -1246,7 +1250,7 @@ MagickExport ThresholdMap *GetThresholdMap(const char *map_id,
   ThresholdMap
     *map;
 
-  map=GetThresholdMapFile(MinimalThresholdMap,"built-in",map_id,exception);
+  map=GetThresholdMapFile(BuiltinMap,"built-in",map_id,exception);
   if (map != (ThresholdMap *) NULL)
     return(map);
 #if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)

@@ -660,6 +660,7 @@ if test "$enable_zero_configuration" = 'yes'; then
     AC_DEFINE(ZERO_CONFIGURATION_SUPPORT,1,[Build self-contained, embeddable, zero-configuration ImageMagick])
     MAGICK_FEATURES="Zero-configuration $MAGICK_FEATURES"
 fi
+AM_CONDITIONAL([MAGICKCORE_ZERO_CONFIGURATION_SUPPORT], [test "$enable_zero_configuration" = yes])
 
 # Build a high dynamic range version of ImageMagick.
 AC_ARG_ENABLE([hdri],

@@ -947,6 +947,8 @@ MAINT
 MAINTAINER_MODE_FALSE
 MAINTAINER_MODE_TRUE
 MAGICK_HDRI
+MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_FALSE
+MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE
 WITH_MODULES_FALSE
 WITH_MODULES_TRUE
 WITH_SHARED_LIBS_FALSE
@@ -22787,6 +22789,14 @@ $as_echo "#define ZERO_CONFIGURATION_SUPPORT 1" >>confdefs.h
 
     MAGICK_FEATURES="Zero-configuration $MAGICK_FEATURES"
 fi
+ if test "$enable_zero_configuration" = yes; then
+  MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE=
+  MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_FALSE='#'
+else
+  MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE='#'
+  MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_FALSE=
+fi
+
 
 # Build a high dynamic range version of ImageMagick.
 # Check whether --enable-hdri was given.
@@ -37503,6 +37513,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${WITH_MODULES_TRUE}" && test -z "${WITH_MODULES_FALSE}"; then
   as_fn_error $? "conditional \"WITH_MODULES\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE}" && test -z "${MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_FALSE}"; then
+  as_fn_error $? "conditional \"MAGICKCORE_ZERO_CONFIGURATION_SUPPORT\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${MAINTAINER_MODE_TRUE}" && test -z "${MAINTAINER_MODE_FALSE}"; then
