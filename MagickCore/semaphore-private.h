@@ -37,9 +37,6 @@ static pthread_mutex_t
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
 static LONG
   semaphore_mutex = 0;
-#else
-static ssize_t
-  semaphore_mutex = 0;
 #endif
 
 static MagickBooleanType

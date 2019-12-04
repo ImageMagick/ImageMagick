@@ -89,9 +89,12 @@ static SemaphoreInfo
   Forward declarations.
 */
 static MagickBooleanType
-  IsConfigureCacheInstantiated(ExceptionInfo *),
-  LoadConfigureCache(LinkedListInfo *,const char *,const char *,const size_t,
-    ExceptionInfo *);
+  IsConfigureCacheInstantiated(ExceptionInfo *);
+
+#if !MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
+static MagickBooleanType
+  LoadConfigureCache(LinkedListInfo *,const char *,const char *,const size_t,ExceptionInfo *);
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -160,7 +163,7 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
     Load external configure map.
   */
   cache=NewLinkedList(0);
-#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+#if !MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
   {
     const StringInfo
       *option;
@@ -1100,6 +1103,7 @@ MagickExport MagickBooleanType ListConfigureInfo(FILE *file,
   return(MagickTrue);
 }
 
+#if !MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1303,3 +1307,4 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *cache,
   token=(char *) RelinquishMagickMemory(token);
   return(status != 0 ? MagickTrue : MagickFalse);
 }
+#endif

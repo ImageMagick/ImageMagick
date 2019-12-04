@@ -70,7 +70,12 @@
 #include "MagickCore/xml-tree.h"
 #include "MagickCore/xml-tree-private.h"
 #if defined(MAGICKCORE_RAW_R_DELEGATE)
-#include <libraw.h>
+  #if defined(__GNUC__) || defined(__linux__)
+    #if defined(_FILE_OFFSET_BITS) && _FILE_OFFSET_BITS != 64
+      #error "With the GNU C Library, libraw requires _FILE_OFFSET_BITS == 64"
+    #endif
+  #endif
+  #include <libraw.h>
 #endif
 
 /*
