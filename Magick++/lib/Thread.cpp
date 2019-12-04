@@ -16,6 +16,7 @@
 
 // Default constructor
 Magick::MutexLock::MutexLock(void)
+#if MAGICKCORE_THREAD_SUPPORT
 #if defined(MAGICKCORE_HAVE_PTHREAD)
   // POSIX threads
   : _mutex()
@@ -35,8 +36,7 @@ Magick::MutexLock::MutexLock(void)
   throwExceptionExplicit(MagickCore::OptionError,"mutex initialization failed",
     strerror(sysError));
 }
-#else
-#if defined(_VISUALC_) && defined(_MT)
+#elif defined(_VISUALC_) && defined(_MT)
 // Win32 threads
 {
   SECURITY_ATTRIBUTES
@@ -55,26 +55,32 @@ Magick::MutexLock::MutexLock(void)
     "mutex initialization failed");
 }
 #else
+  #error "MAGICKCORE_THREAD_SUPPORT enabled, but no implementation provided."
+#endif
+#else
 // Threads not supported
 {
 }
-#endif
 #endif
 
 // Destructor
 Magick::MutexLock::~MutexLock(void)
 {
+#if MAGICKCORE_THREAD_SUPPORT
 #if defined(MAGICKCORE_HAVE_PTHREAD)
   (void) ::pthread_mutex_destroy(&_mutex);
-#endif
-#if defined(_MT) && defined(_VISUALC_)
+#elif defined(_MT) && defined(_VISUALC_)
   (void) ::CloseHandle(_mutex);
+#else
+  #error "MAGICKCORE_THREAD_SUPPORT enabled, but no implementation provided."
+#endif
 #endif
 }
 
 // Lock mutex
 void Magick::MutexLock::lock(void)
 {
+#if MAGICKCORE_THREAD_SUPPORT
 #if defined(MAGICKCORE_HAVE_PTHREAD)
   int
     sysError;
@@ -83,17 +89,20 @@ void Magick::MutexLock::lock(void)
     return;
   throwExceptionExplicit(MagickCore::OptionError,"mutex lock failed",
     strerror(sysError));
-#endif
-#if defined(_MT) && defined(_VISUALC_)
+#elif defined(_MT) && defined(_VISUALC_)
   if (WaitForSingleObject(_mutex,INFINITE) != WAIT_FAILED)
     return;
   throwExceptionExplicit(MagickCore::OptionError,"mutex lock failed");
+#else
+  #error "MAGICKCORE_THREAD_SUPPORT enabled, but no implementation provided."
+#endif
 #endif
 }
 
 // Unlock mutex
 void Magick::MutexLock::unlock(void)
 {
+#if MAGICKCORE_THREAD_SUPPORT
 #if defined(MAGICKCORE_HAVE_PTHREAD)
   int
     sysError;
@@ -102,10 +111,12 @@ void Magick::MutexLock::unlock(void)
     return;
   throwExceptionExplicit(MagickCore::OptionError,"mutex unlock failed",
     strerror(sysError));
-#endif
-#if defined(_MT) && defined(_VISUALC_)
+#elif defined(_MT) && defined(_VISUALC_)
   if (ReleaseSemaphore(_mutex,1,(LPLONG) NULL) == TRUE)
     return;
   throwExceptionExplicit(MagickCore::OptionError,"mutex unlock failed");
+#else
+  #error "MAGICKCORE_THREAD_SUPPORT enabled, but no implementation provided."
+#endif
 #endif
 }

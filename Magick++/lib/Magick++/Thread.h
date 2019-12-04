@@ -17,9 +17,9 @@
 #include <windows.h>
 #endif // defined(_VISUALC_)
 
-#if defined(MAGICKCORE_HAVE_PTHREAD)
+#if MAGICKCORE_THREAD_SUPPORT && MAGICKCORE_HAVE_PTHREAD
 # include <pthread.h>
-#endif // defined(MAGICKCORE_HAVE_PTHREAD)
+#endif
 
 namespace Magick
 {
@@ -48,11 +48,14 @@ namespace Magick
     // Don't support assignment
     MutexLock& operator=(const MutexLock& original );
 
+#if MAGICKCORE_THREAD_SUPPORT
 #if defined(MAGICKCORE_HAVE_PTHREAD)
     pthread_mutex_t _mutex;
-#endif
-#if defined(_MT) && defined(_VISUALC_)
+#elif defined(_MT) && defined(_VISUALC_)
     HANDLE _mutex;
+#else
+    #error "MAGICKCORE_THREAD_SUPPORT enabled, but no implementation provided."
+#endif
 #endif
   };
 }
