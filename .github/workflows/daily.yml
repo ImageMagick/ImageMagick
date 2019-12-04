@@ -25,7 +25,7 @@ jobs:
             hdri: no
 
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v1
       with:
         fetch-depth: 1
 

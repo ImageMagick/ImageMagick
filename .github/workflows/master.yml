@@ -22,7 +22,7 @@ jobs:
         compiler: [ gcc, clang ]
 
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v1
       with:
         fetch-depth: 1
 
@@ -49,7 +49,7 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v1
       with:
         fetch-depth: 1
 
@@ -75,7 +75,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v1
       with:
         repository: ImageMagick/ImageMagick-Windows
         ref: refs/heads/master
