@@ -16,9 +16,9 @@
 TESTS_CPPFLAGS = $(AM_CPPFLAGS)
 
 TESTS_CHECK_PGRMS = \
-	tests/validate \
-	tests/drawtest \
-	tests/wandtest
+  tests/validate \
+  tests/drawtest \
+  tests/wandtest
 
 tests_validate_SOURCES  = tests/validate.c tests/validate.h
 tests_validate_CPPFLAGS = $(TESTS_CPPFLAGS)
@@ -38,31 +38,31 @@ tests_wandtest_LDADD    = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 TESTS_XFAIL_TESTS = 
 
 TESTS_TESTS = \
-	tests/cli-colorspace.tap \
-	tests/cli-pipe.tap \
-	tests/validate-colorspace.tap \
-	tests/validate-compare.tap \
-	tests/validate-composite.tap \
-	tests/validate-convert.tap \
-	tests/validate-formats-disk.tap \
-	tests/validate-formats-map.tap \
-	tests/validate-formats-memory.tap \
-	tests/validate-identify.tap \
-	tests/validate-import.tap \
-	tests/validate-montage.tap \
-	tests/validate-stream.tap \
-	tests/drawtest.tap \
-	tests/wandtest.tap
+  tests/cli-colorspace.tap \
+  tests/cli-pipe.tap \
+  tests/validate-colorspace.tap \
+  tests/validate-compare.tap \
+  tests/validate-composite.tap \
+  tests/validate-convert.tap \
+  tests/validate-formats-disk.tap \
+  tests/validate-formats-map.tap \
+  tests/validate-formats-memory.tap \
+  tests/validate-identify.tap \
+  tests/validate-import.tap \
+  tests/validate-montage.tap \
+  tests/validate-stream.tap \
+  tests/drawtest.tap \
+  tests/wandtest.tap
 
 TESTS_EXTRA_DIST = \
-	tests/common.shi \
+  tests/common.shi \
   tests/rose.pnm \
   tests/input_256c.miff \
   tests/input_bilevel.miff \
   tests/input_gray.miff \
   tests/input_truecolor.miff \
   tests/sequence.miff \
-	$(TESTS_TESTS)
+  $(TESTS_TESTS)
 
 TESTS_CLEANFILES = \
-	tests/*_out.*
+  tests/*_out.*

@@ -36,27 +36,27 @@ DISTCLEANFILES = _configs.sed MagickCore/magick-baseconfig.h
 
 ## Make sure these will be cleaned even when they're not built by default.
 CLEANFILES = \
-	$(MAGICKWAND_CLEANFILES) \
-	$(MAGICKPP_CLEANFILES) \
-	$(UTILITIES_CLEANFILES) \
-	$(TESTS_CLEANFILES)
+  $(MAGICKWAND_CLEANFILES) \
+  $(MAGICKPP_CLEANFILES) \
+  $(UTILITIES_CLEANFILES) \
+  $(TESTS_CLEANFILES)
 
 bin_PROGRAMS = \
-	$(UTILITIES_PGMS)
+  $(UTILITIES_PGMS)
 
 # Binary scripts
 bin_SCRIPTS = \
-	$(MAGICKCORE_BIN_SCRPTS) \
-	$(MAGICKWAND_BIN_SCRPTS) \
-	$(MAGICKPP_SCRPTS)
+  $(MAGICKCORE_BIN_SCRPTS) \
+  $(MAGICKWAND_BIN_SCRPTS) \
+  $(MAGICKPP_SCRPTS)
 
 include_HEADERS =
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = \
-	$(MAGICKCORE_NOINST_HDRS) \
-	$(MAGICKWAND_NOINST_HDRS) \
-	$(CODERS_NOINST_HDRS)
+  $(MAGICKCORE_NOINST_HDRS) \
+  $(MAGICKWAND_NOINST_HDRS) \
+  $(CODERS_NOINST_HDRS)
 
 if WIN32_NATIVE_BUILD
 SRCDIR='$(shell @WinPathScript@ $(srcdir)/)'
@@ -74,55 +74,55 @@ TAP_LOG_COMPILER = $(LOG_COMPILER)
 TEST_EXTENSIONS = .sh .tap
 
 TAP_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
-	$(top_srcdir)/config/tap-driver.sh
+  $(top_srcdir)/config/tap-driver.sh
 
 # Environment parameters to be used during tests
 TESTS_ENVIRONMENT = \
-	MAKE="$(MAKE)" \
-	MAKEFLAGS="$(MAKEFLAGS)" \
-	MEMCHECK="$(MEMCHECK)"
+  MAKE="$(MAKE)" \
+  MAKEFLAGS="$(MAKEFLAGS)" \
+  MEMCHECK="$(MEMCHECK)"
 
 # Tests to run
 TESTS = \
-	$(TESTS_TESTS) \
-	$(MAGICKPP_TESTS) \
-	$(MAGICKWAND_TESTS) \
-	$(UTILITIES_TESTS)
+  $(TESTS_TESTS) \
+  $(MAGICKPP_TESTS) \
+  $(MAGICKWAND_TESTS) \
+  $(UTILITIES_TESTS)
 
 # Tests which are expected to fail
 XFAIL_TESTS = \
-	$(TESTS_XFAIL_TESTS) \
-	$(UTILITIES_XFAIL_TESTS)
+  $(TESTS_XFAIL_TESTS) \
+  $(UTILITIES_XFAIL_TESTS)
 
 TOP_EXTRA_DIST = \
   AUTHORS.txt \
-	ChangeLog \
-	LICENSE \
-	QuickStart.txt \
-	NOTICE \
-	Install-mac.txt \
-	Install-unix.txt \
-	Install-vms.txt \
-	Install-windows.txt \
-	magick.sh.in \
-	Magickshr.opt \
-	NEWS.txt \
-	Platforms.txt \
-	README.txt \
-	index.html \
-	gitversion.sh \
-	version.sh \
-	winpath.sh
+  ChangeLog \
+  LICENSE \
+  QuickStart.txt \
+  NOTICE \
+  Install-mac.txt \
+  Install-unix.txt \
+  Install-vms.txt \
+  Install-windows.txt \
+  magick.sh.in \
+  Magickshr.opt \
+  NEWS.txt \
+  Platforms.txt \
+  README.txt \
+  index.html \
+  gitversion.sh \
+  version.sh \
+  winpath.sh
 
 # Additional files to distribute
 EXTRA_DIST = \
-	$(TOP_EXTRA_DIST) \
-	$(CONFIG_EXTRA_DIST) \
-	$(MAGICKCORE_EXTRA_DIST) \
-	$(MAGICKWAND_EXTRA_DIST) \
-	$(MAGICKPP_EXTRA_DIST) \
-	$(UTILITIES_EXTRA_DIST) \
-	$(TESTS_EXTRA_DIST)
+  $(TOP_EXTRA_DIST) \
+  $(CONFIG_EXTRA_DIST) \
+  $(MAGICKCORE_EXTRA_DIST) \
+  $(MAGICKWAND_EXTRA_DIST) \
+  $(MAGICKPP_EXTRA_DIST) \
+  $(UTILITIES_EXTRA_DIST) \
+  $(TESTS_EXTRA_DIST)
 
 lib_LTLIBRARIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) $(MAGICKPP_LIBS)
 AM_LDFLAGS =
@@ -132,9 +132,9 @@ BUILT_SOURCES =
 MOSTLYCLEANFILES =
 
 check_PROGRAMS = \
-	$(TESTS_CHECK_PGRMS) \
-	$(MAGICKPP_CHECK_PGRMS) \
-	$(MAGICKWAND_CHECK_PGRMS)
+  $(TESTS_CHECK_PGRMS) \
+  $(MAGICKPP_CHECK_PGRMS) \
+  $(MAGICKWAND_CHECK_PGRMS)
 
 include m4/Makefile.am
 include config/Makefile.am
@@ -152,9 +152,9 @@ pkgconfigdir = $(libdir)/pkgconfig
 
 # Files to install in Pkgconfig directory
 pkgconfig_DATA = \
-	$(MAGICKCORE_PKGCONFIG) \
-	$(MAGICKWAND_PKGCONFIG) \
-	$(MAGICKPP_PKGCONFIG)
+  $(MAGICKCORE_PKGCONFIG) \
+  $(MAGICKWAND_PKGCONFIG) \
+  $(MAGICKPP_PKGCONFIG)
 
 # create a copy for pc file (ideally the non abi should be symlinked)
 %-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.pc: %.pc
@@ -166,20 +166,20 @@ docdir = $(DOCUMENTATION_PATH)
 # Manual pages to install
 if INSTALL_DOC#
 man_MANS = \
-	$(MAGICKCORE_MANS) \
-	$(MAGICKWAND_MANS) \
-	$(MAGICKPP_MANS) \
-	$(UTILITIES_MANS)
+  $(MAGICKCORE_MANS) \
+  $(MAGICKWAND_MANS) \
+  $(MAGICKPP_MANS) \
+  $(UTILITIES_MANS)
 
 doc_DATA = \
-	LICENSE \
-	ChangeLog \
-	NEWS.txt
+  LICENSE \
+  ChangeLog \
+  NEWS.txt
 endif
 
 if MAINTAINER_MODE
 MAINTAINER_TARGETS = \
-	magick-version \
+  magick-version \
   ImageMagick.spec \
   $(PERLMAGICK_MAINTAINER_TARGETS)
 endif
@@ -255,9 +255,9 @@ install-data-html:
 	@for dir in $(DOCDIRS) ; do \
 	  $(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/$$dir && \
 	  if test -d $(builddir)/$$dir ; then \
-  		docsrcdir=$(builddir)/$$dir; \
+	    docsrcdir=$(builddir)/$$dir; \
 	  else \
-  		docsrcdir=$(srcdir)/$$dir; \
+	    docsrcdir=$(srcdir)/$$dir; \
 	  fi; \
 	  for file in $$docsrcdir/*.* ; do \
 	    echo "$(INSTALL_DATA) $$file $(DESTDIR)$(pkgdocdir)/$$dir" ; \
@@ -280,7 +280,7 @@ magick-version: MagickCore/version.h
 	fi
 	@if test -n "$(VPATH)" ; then \
 	  cmp MagickCore/version.h $(srcdir)/MagickCore/version.h > /dev/null ; \
-          if test $$? -eq 1 ; then \
+	        if test $$? -eq 1 ; then \
 	    echo "Updating $(srcdir)/MagickCore/version.h ..."; \
 	    cp MagickCore/version.h $(srcdir)/MagickCore/version.h ; \
 	  fi ; \
@@ -363,14 +363,14 @@ RPMDIR=rpmbuild
 RPMARCH=$(MAGICK_TARGET_CPU)
 
 DIST_ARCHIVE_RPM= \
-	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm \
-	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-c++-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm \
-	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-c++-devel-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm \
-	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-devel-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm \
-	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-perl-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm
+  $(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm \
+  $(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-c++-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm \
+  $(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-c++-devel-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm \
+  $(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-devel-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm \
+  $(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-perl-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm
 
 .PHONY: rpm
-rpm:	dist
+rpm: dist
 	rm -rf $(RPMDIR)
 	$(mkinstalldirs) $(RPMDIR)
 	$(mkinstalldirs) $(RPMDIR)/BUILD
