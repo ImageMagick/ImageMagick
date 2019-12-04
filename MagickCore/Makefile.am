@@ -47,6 +47,8 @@ else
 MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES = $(MAGICKCORE_BASE_SRCS) $(MAGICKCORE_PLATFORM_SRCS) $(MAGICKCORE_CODER_SRCS) $(MAGICKCORE_FILTER_SRCS)
 MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LIBADD = $(MAGICK_DEP_LIBS)
 endif # WITH_MODULES
+
+nodist_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES =
 MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS = $(AM_CPPFLAGS) $(LIBRARY_EXTRA_CPPFLAGS)
 
 if HAVE_LD_VERSION_SCRIPT
@@ -490,3 +492,12 @@ MAGICKCORE_EXTRA_DIST = \
 	MagickCore/libMagickCore.map \
 	MagickCore/nt-base.c \
 	MagickCore/nt-feature.c
+
+if MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
+libMagickCore_threshold_target = MagickCore/libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-threshold.lo
+$(libMagickCore_threshold_target): MagickCore/threshold-map.h
+nodist_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES += MagickCore/threshold-map.h
+CLEANFILES += MagickCore/threshold-map.h
+MagickCore/threshold-map.h: config/thresholds.xml Makefile
+	$(AM_V_GEN){ printf '%s\n  %s=\n' 'static const char *const' BuiltinMap; sed -e 's/"/\\"/g; s/^.*$$/    "&\\n"/; $$s/$$/;/' $<; } >$@
+endif
