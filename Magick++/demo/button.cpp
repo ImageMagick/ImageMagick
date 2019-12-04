@@ -64,12 +64,14 @@ int main( int /*argc*/, char ** argv)
     Image backgroundTexture( buttonTexture );
     button.texture( backgroundTexture );
 
+#if MAGICKCORE_FREETYPE_DELEGATE
     // Add some text
     button.fillColor( textColor );
     button.fontPointsize( fontPointSize );
     if (getenv("MAGICK_FONT") != 0)
       button.font(string(getenv("MAGICK_FONT")));
     button.annotate( text, CenterGravity );
+#endif
 
     // Add a decorative frame
     button.borderColor( border );

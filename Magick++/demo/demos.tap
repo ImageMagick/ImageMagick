@@ -8,7 +8,15 @@
 #
 subdir=Magick++/demo
 . ./common.shi
-echo "1..24"
+
+demos='button demo flip piddle shapes'
+
+if ((MAGICKCORE_FREETYPE_DELEGATE)); then
+  echo 1..24
+  demos="$demos gravity"
+else
+  echo 1..23
+fi
 
 SRCDIR=${top_srcdir}/${subdir}/
 export SRCDIR
@@ -17,7 +25,7 @@ cd ${subdir} || exit 1
 
 ./analyze "$SRCDIR/model.miff" && echo "ok" || echo "not ok"
 
-for demo in button demo flip gravity piddle shapes
+for demo in $demos
 do
   ./${demo} && echo "ok" || echo "not ok"
 done

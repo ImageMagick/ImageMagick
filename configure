@@ -841,8 +841,7 @@ RAQM_DELEGATE_FALSE
 RAQM_DELEGATE_TRUE
 RAQM_LIBS
 RAQM_CFLAGS
-FREETYPE_DELEGATE_FALSE
-FREETYPE_DELEGATE_TRUE
+MAGICKCORE_FREETYPE_DELEGATE
 FREETYPE_LIBS
 FREETYPE_CFLAGS
 FONTCONFIG_DELEGATE_FALSE
@@ -31073,15 +31072,11 @@ if test "$have_freetype" = 'yes'; then
 $as_echo "#define FREETYPE_DELEGATE 1" >>confdefs.h
 
   CFLAGS="$FREETYPE_CFLAGS $CFLAGS"
+  MAGICKCORE_FREETYPE_DELEGATE=1
+else
+  MAGICKCORE_FREETYPE_DELEGATE=0
 fi
 
- if test "$have_freetype" = 'yes'; then
-  FREETYPE_DELEGATE_TRUE=
-  FREETYPE_DELEGATE_FALSE='#'
-else
-  FREETYPE_DELEGATE_TRUE='#'
-  FREETYPE_DELEGATE_FALSE=
-fi
 
 
 
@@ -37598,10 +37593,6 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${FONTCONFIG_DELEGATE_TRUE}" && test -z "${FONTCONFIG_DELEGATE_FALSE}"; then
   as_fn_error $? "conditional \"FONTCONFIG_DELEGATE\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${FREETYPE_DELEGATE_TRUE}" && test -z "${FREETYPE_DELEGATE_FALSE}"; then
-  as_fn_error $? "conditional \"FREETYPE_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${RAQM_DELEGATE_TRUE}" && test -z "${RAQM_DELEGATE_FALSE}"; then

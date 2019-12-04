@@ -2161,11 +2161,14 @@ fi
 if test "$have_freetype" = 'yes'; then
   AC_DEFINE(FREETYPE_DELEGATE,1,Define if you have FREETYPE library)
   CFLAGS="$FREETYPE_CFLAGS $CFLAGS"
+  MAGICKCORE_FREETYPE_DELEGATE=1
+else
+  MAGICKCORE_FREETYPE_DELEGATE=0
 fi
 
-AM_CONDITIONAL(FREETYPE_DELEGATE, test "$have_freetype" = 'yes')
 AC_SUBST(FREETYPE_CFLAGS)
 AC_SUBST(FREETYPE_LIBS)
+AC_SUBST([MAGICKCORE_FREETYPE_DELEGATE])
 
 dnl ===========================================================================
 
