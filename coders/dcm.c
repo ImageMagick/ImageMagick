@@ -3600,7 +3600,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               */
               if (data == (unsigned char *) NULL)
                 break;
-              colors=(size_t) (length/2);
+              colors=(size_t) (length/info.bytes_per_pixel);
               datum=(int) colors;
               if (redmap != (int *) NULL)
                 redmap=(int *) RelinquishMagickMemory(redmap);
@@ -3632,7 +3632,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               */
               if (data == (unsigned char *) NULL)
                 break;
-              colors=(size_t) (length/2);
+              colors=(size_t) (length/info.bytes_per_pixel);
               datum=(int) colors;
               if (greenmap != (int *) NULL)
                 greenmap=(int *) RelinquishMagickMemory(greenmap);
@@ -3664,7 +3664,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               */
               if (data == (unsigned char *) NULL)
                 break;
-              colors=(size_t) (length/2);
+              colors=(size_t) (length/info.bytes_per_pixel);
               datum=(int) colors;
               if (bluemap != (int *) NULL)
                 bluemap=(int *) RelinquishMagickMemory(bluemap);
