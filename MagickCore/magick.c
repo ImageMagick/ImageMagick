@@ -77,6 +77,7 @@
 #include "MagickCore/resource-private.h"
 #include "MagickCore/policy.h"
 #include "MagickCore/policy-private.h"
+#include "MagickCore/mutex.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/semaphore-private.h"
 #include "MagickCore/signature-private.h"
