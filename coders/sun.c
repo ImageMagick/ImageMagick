@@ -57,7 +57,6 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
-#include "MagickCore/memory-private.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/pixel-accessor.h"
@@ -434,9 +433,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((sun_info.type != RT_ENCODED) &&
         ((number_pixels*sun_info.depth) > (8UL*sun_info.length)))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    if (HeapOverflowSanityCheck(sun_info.width,sun_info.depth) != MagickFalse)
+    if (HeapOverflowSanityCheckGetSize(sun_info.width,sun_info.depth,&bytes_per_line) != MagickFalse)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    bytes_per_line=sun_info.width*sun_info.depth;
     if (sun_info.length > GetBlobSize(image))
       ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     sun_data=(unsigned char *) AcquireQuantumMemory(sun_info.length,
@@ -465,12 +463,11 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(ResourceLimitError,"ImproperImageHeader");
       }
     bytes_per_line>>=4;
-    if (HeapOverflowSanityCheck(height,bytes_per_line) != MagickFalse)
+    if (HeapOverflowSanityCheckGetSize(height,bytes_per_line,&pixels_length) != MagickFalse)
       {
         sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
         ThrowReaderException(ResourceLimitError,"ImproperImageHeader");
       }
-    pixels_length=height*bytes_per_line;
     sun_pixels=(unsigned char *) AcquireQuantumMemory(pixels_length+image->rows,
       sizeof(*sun_pixels));
     if (sun_pixels == (unsigned char *) NULL)

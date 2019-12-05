@@ -56,7 +56,6 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
-#include "MagickCore/memory-private.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/pixel-accessor.h"
@@ -394,12 +393,10 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read image data.
     */
-    if (HeapOverflowSanityCheck(rows,bytes_per_line) != MagickFalse)
+    if (HeapOverflowSanityCheckGetSize(rows,bytes_per_line,&pcx_packets) != MagickFalse)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    pcx_packets=rows*bytes_per_line;
-    if (HeapOverflowSanityCheck(pcx_packets,planes) != MagickFalse)
+    if (HeapOverflowSanityCheckGetSize(pcx_packets,planes,&pcx_packets) != MagickFalse)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    pcx_packets*=planes;
     if ((bits_per_color*columns) > (pcx_packets*8))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     if ((MagickSizeType) (pcx_packets/32+128) > GetBlobSize(image))
