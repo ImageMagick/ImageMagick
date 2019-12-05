@@ -207,7 +207,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
 {
 #define BeginDocument  "BeginDocument:"
 #define EndDocument  "EndDocument:"
-#define PostscriptLevel  "!PS-"
+#define PostscriptLevel  "PS-"
 #define ImageData  "ImageData:"
 #define DocumentProcessColors  "DocumentProcessColors:"
 #define CMYKCustomColor  "CMYKCustomColor:"
@@ -229,6 +229,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
     c;
 
   MagickBooleanType
+    new_line,
     skip;
 
   MagickByteBuffer
@@ -290,6 +291,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
   *version='\0';
   spotcolor=0;
   skip=MagickFalse;
+  new_line=MagickTrue;
   (void) memset(&buffer,0,sizeof(buffer));
   buffer.image=image;
   for (c=ReadMagickByteBuffer(&buffer); c != EOF; c=ReadMagickByteBuffer(&buffer))
@@ -303,8 +305,18 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
       }
       case '\n':
       case '\r':
+        new_line=MagickTrue;
+        continue;
       case '%':
-        break;
+      {
+        if (new_line == MagickFalse)
+          continue;
+        new_line=MagickFalse;
+        c=ReadMagickByteBuffer(&buffer);
+        if ((c == '%') || (c == '!'))
+          break;
+        continue;
+      }
       default:
         continue;
     }
