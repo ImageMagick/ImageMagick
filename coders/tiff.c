@@ -65,7 +65,6 @@
 #include "MagickCore/log.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
-#include "MagickCore/memory-private.h"
 #include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
@@ -2288,6 +2287,9 @@ RestoreMSCWarning
           columns,
           rows;
 
+        size_t
+          column_size;
+
         /*
           Convert tiled TIFF image to DirectClass MIFF image.
         */
@@ -2299,10 +2301,9 @@ RestoreMSCWarning
           ThrowTIFFException(ImageError,"WidthOrHeightExceedsLimit");
         SetImageStorageClass(image,DirectClass,exception);
         number_pixels=(MagickSizeType) columns*rows;
-        if (HeapOverflowSanityCheck(rows,sizeof(*tile_pixels)) != MagickFalse)
+        if (HeapOverflowSanityCheckGetSize(rows,sizeof(*tile_pixels),&column_size) != MagickFalse)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-        tile_pixels=(uint32 *) AcquireQuantumMemory(columns,rows*
-          sizeof(*tile_pixels));
+        tile_pixels=(uint32 *) AcquireQuantumMemory(columns,column_size);
         if (tile_pixels == (uint32 *) NULL)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         for (y=0; y < image->rows; y+=rows)
@@ -2387,6 +2388,9 @@ RestoreMSCWarning
       case ReadGenericMethod:
       default:
       {
+        size_t
+          column_size;
+
         MemoryInfo
           *generic_info = (MemoryInfo * ) NULL;
 
@@ -2400,10 +2404,10 @@ RestoreMSCWarning
           Convert TIFF image to DirectClass MIFF image.
         */
         SetImageStorageClass(image,DirectClass,exception);
-        if (HeapOverflowSanityCheck(image->rows,sizeof(*pixels)) != MagickFalse)
+        if (HeapOverflowSanityCheckGetSize(image->rows,sizeof(*pixels),&column_size) != MagickFalse)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         number_pixels=(MagickSizeType) image->columns*image->rows;
-        generic_info=AcquireVirtualMemory(number_pixels,sizeof(uint32));
+        generic_info=AcquireVirtualMemory(image->columns,column_size);
         if (generic_info == (MemoryInfo *) NULL)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         pixels=(uint32 *) GetVirtualMemoryBlob(generic_info);

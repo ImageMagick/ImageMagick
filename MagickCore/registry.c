@@ -46,7 +46,6 @@
 #include "MagickCore/image.h"
 #include "MagickCore/list.h"
 #include "MagickCore/memory_.h"
-#include "MagickCore/memory-private.h"
 #include "MagickCore/registry.h"
 #include "MagickCore/registry-private.h"
 #include "MagickCore/splay-tree.h"

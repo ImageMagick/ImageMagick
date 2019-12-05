@@ -52,7 +52,6 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/memory_.h"
-#include "MagickCore/memory-private.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/random_.h"
 #include "MagickCore/random-private.h"

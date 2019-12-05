@@ -46,7 +46,6 @@
 #include "MagickCore/property.h"
 #include "MagickCore/image.h"
 #include "MagickCore/memory_.h"
-#include "MagickCore/memory-private.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"

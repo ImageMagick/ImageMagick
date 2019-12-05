@@ -64,7 +64,6 @@
 #include "MagickCore/list.h"
 #include "MagickCore/locale_.h"
 #include "MagickCore/memory_.h"
-#include "MagickCore/memory-private.h"
 #include "MagickCore/nt-base-private.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/policy.h"

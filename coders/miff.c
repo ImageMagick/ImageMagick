@@ -60,7 +60,6 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
-#include "MagickCore/memory-private.h"
 #include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
@@ -169,9 +168,8 @@ static void *AcquireCompressionMemory(void *context,const size_t items,
     extent;
 
   (void) context;
-  if (HeapOverflowSanityCheck(items,size) != MagickFalse)
+  if (HeapOverflowSanityCheckGetSize(items,size,&extent) != MagickFalse)
     return((void *) NULL);
-  extent=items*size;
   if (extent > GetMaxMemoryRequest())
     return((void *) NULL);
   return(AcquireMagickMemory(extent));

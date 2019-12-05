@@ -48,7 +48,6 @@
 #include "MagickCore/linked-list.h"
 #include "MagickCore/locale_.h"
 #include "MagickCore/memory_.h"
-#include "MagickCore/memory-private.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/signature-private.h"
 #include "MagickCore/string_.h"

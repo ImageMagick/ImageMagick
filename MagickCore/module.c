@@ -52,7 +52,6 @@
 #include "MagickCore/magic.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
-#include "MagickCore/memory-private.h"
 #include "MagickCore/module.h"
 #include "MagickCore/module-private.h"
 #include "MagickCore/nt-base-private.h"

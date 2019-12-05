@@ -61,7 +61,6 @@
 #include "MagickCore/linked-list.h"
 #include "MagickCore/list.h"
 #include "MagickCore/memory_.h"
-#include "MagickCore/memory-private.h"
 #include "MagickCore/nt-base-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/policy.h"

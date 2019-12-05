@@ -54,7 +54,6 @@
 #include "MagickCore/locale_.h"
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
-#include "MagickCore/memory-private.h"
 #include "MagickCore/splay-tree.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/string_.h"

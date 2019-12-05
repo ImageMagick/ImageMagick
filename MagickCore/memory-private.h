@@ -24,8 +24,6 @@
 extern "C" {
 #endif
 
-#include "MagickCore/exception-private.h"
-
 #if defined(__powerpc__)
 #  define CACHE_LINE_SIZE  (16 * MAGICKCORE_SIZEOF_VOID_P)
 #else
@@ -43,7 +41,7 @@ extern "C" {
 
 #undef IS_BAD_CACHE_LINE_SIZE
 
-#define CacheAlign(size)  ((size) < CACHE_LINE_SIZE ? CACHE_LINE_SIZE : (size))
+#define CACHE_ALIGNED(n) MAGICKCORE_ALIGN_UP(n,CACHE_LINE_SIZE)
 
 #if (__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 6))
 #if !defined(__ICC)
@@ -56,29 +54,9 @@ extern "C" {
 #define MagickAssumeAligned(address)  (address)
 #endif
 
-MagickExport MagickBooleanType 
-  HeapOverflowSanityCheck(const size_t,const size_t);
-
-MagickExport size_t
-  GetMaxMemoryRequest(void);
-
 extern MagickPrivate void
   ResetMaxMemoryRequest(void),
   ResetVirtualAnonymousMemory(void);
-
-static inline void *AcquireCriticalMemory(const size_t size)
-{
-  register void
-    *memory;
- 
-  /*
-    Fail if memory request cannot be fulfilled.
-  */
-  memory=AcquireMagickMemory(size);
-  if (memory == (void *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  return(memory);
-}
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
