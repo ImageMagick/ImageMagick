@@ -14093,6 +14093,10 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
 #define MagickMenus  10
 #define MagickTitle  "Commands"
 
+#if MagnifySize <= 0 || MAGICKCORE_IS_NOT_POWER_OF_2(MagnifySize)
+#  error "MagnifySize must be a power of 2 greater than zero."
+#endif
+
   const char
     *const CommandMenu[] =
     {

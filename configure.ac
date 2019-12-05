@@ -30,7 +30,13 @@ m4_define([magick_micro_version], [9])
 m4_define([magick_patchlevel_version], [8])
 m4_define([magick_version],
           [magick_major_version.magick_minor_version.magick_micro_version-magick_patchlevel_version])
-m4_define([magick_git_revision], esyscmd([sh -c "(./gitversion.sh .) | awk '{ print \$1 }' | tr -d '\n'"]))
+m4_define([magick_git_revision],
+          esyscmd([
+            c=$(git log --full-history --format=tformat:. HEAD | wc -l)
+            h=$(git rev-parse --short HEAD)
+            d=$(date +%Y%m%d)
+            printf %s "$c:$h:$d"
+          ]))
 m4_define([magick_tar_name],[ImageMagick])
 
 # ==============================================================================
@@ -302,9 +308,6 @@ AX_GCC_ARCHFLAG([yes])
 PKG_PROG_PKG_CONFIG([0.20])
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
-
-# Test for 64-bit build.
-AC_CHECK_SIZEOF([size_t])
 
 AX_COMPILER_VENDOR
 
@@ -995,9 +998,6 @@ AC_TYPE_INT32_T
 AC_TYPE_INT64_T
 AC_TYPE_INTMAX_T
 AC_TYPE_INTPTR_T
-AC_TYPE_LONG_DOUBLE
-AC_TYPE_LONG_DOUBLE_WIDER
-AC_TYPE_LONG_LONG_INT
 AC_TYPE_MBSTATE_T
 AC_TYPE_MODE_T
 AC_TYPE_OFF_T
@@ -1011,13 +1011,8 @@ AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
 AC_TYPE_UINTMAX_T
 AC_TYPE_UINTPTR_T
-AC_TYPE_UNSIGNED_LONG_LONG_INT
-
-AC_CHECK_TYPES([locale_t], [], [], [[#include <xlocale.h>]])
 
 # Float_t and double_t are intended to be the the most efficient type.
-AC_CHECK_TYPES([float_t], [], [], [[#include <math.h>]])
-AC_CHECK_TYPES([double_t], [], [], [[#include <math.h>]])
 AC_CHECK_SIZEOF([float_t], [], [[#include <math.h>]])
 AC_CHECK_SIZEOF([double_t], [], [[#include <math.h>]])
 
@@ -1026,162 +1021,12 @@ AC_CHECK_SIZEOF([float])
 AC_CHECK_SIZEOF([double])
 AC_CHECK_SIZEOF([long double])
 
-# Obtain size of an 'signed short' and define as SIZEOF_SIGNED_SHORT
-AC_CHECK_SIZEOF(signed short)
-
-# Obtain size of an 'unsigned short' and define as SIZEOF_UNSIGNED_SHORT
-AC_CHECK_SIZEOF(unsigned short)
-
-# Obtain size of an 'signed int' and define as SIZEOF_SIGNED_INT
-AC_CHECK_SIZEOF(signed int)
-
-# Obtain size of an 'unsigned int' and define as SIZEOF_UNSIGNED_INT
-AC_CHECK_SIZEOF(unsigned int)
-
-# Obtain size of a 'signed long' and define as SIZEOF_SIGNED_LONG
-AC_CHECK_SIZEOF(signed long)
-
-# Obtain size of a 'unsigned long' and define as SIZEOF_UNSIGNED_LONG
-AC_CHECK_SIZEOF(unsigned long)
-
-# Obtain size of a 'long long' and define as SIZEOF_SIGNED_LONG_LONG.  If
-# 'signed long long' is not supported then the value defined is zero.
-AC_CHECK_SIZEOF(signed long long)
-
 # Obtain size of a 'unsigned long long' and define as
 # SIZEOF_UNSIGNED_LONG_LONG.  If 'unsigned long long' is not
 # supported then the value defined is zero.
 AC_CHECK_SIZEOF(unsigned long long)
 
-# Obtain size of off_t and define as SIZEOF_OFF_T
-AC_CHECK_SIZEOF(off_t)
-
-# Obtain size of size_t and define as SIZEOF_SIZE_T
-AC_CHECK_SIZEOF(size_t)
-
-# Obtain size of ssize_t and define as SIZEOF_SSIZE_T
-AC_CHECK_SIZEOF(ssize_t)
-
-# Obtain size of an unsigned int pointer and define as SIZEOF_UNSIGNED_INTP
-AC_CHECK_SIZEOF(unsigned int*)
-
-#
-# Compute sized types for current CPU and compiler options.
-#
-
-AC_MSG_CHECKING(for signed 8-bit type)
-INT8_T='signed char'
-AC_MSG_RESULT($INT8_T)
-AC_SUBST(INT8_T)
-
-AC_MSG_CHECKING(for unsigned 8-bit type)
-UINT8_T='unsigned char'
-AC_MSG_RESULT($UINT8_T)
-AC_SUBST(UINT8_T)
-
-AC_MSG_CHECKING(for signed 16-bit type)
-INT16_T='signed short'
-AC_MSG_RESULT($INT16_T)
-AC_SUBST(INT16_T)
-
-AC_MSG_CHECKING(for unsigned 16-bit type)
-UINT16_T='unsigned short'
-AC_MSG_RESULT($UINT16_T)
-AC_SUBST(UINT16_T)
-
-AC_MSG_CHECKING(for signed 32-bit type)
-INT32_T='none'
-INT32_F='none'
-if test $ac_cv_sizeof_signed_int -eq 4; then
-  INT32_T='signed int'
-  INT32_F='""'
-elif test $ac_cv_sizeof_signed_long -eq 4; then
-  INT32_T='signed long'
-  INT32_F='"l"'
-fi
-AC_MSG_RESULT($INT32_T)
-AC_SUBST(INT32_T)
-AC_SUBST(INT32_F)
-
-AC_MSG_CHECKING(for unsigned 32-bit type)
-UINT32_T='none'
-UINT32_F='none'
-if test $ac_cv_sizeof_unsigned_int -eq 4; then
-  UINT32_T='unsigned int'
-  UINT32_F='""'
-elif test $ac_cv_sizeof_unsigned_long -eq 4; then
-  UINT32_T='unsigned long'
-  UINT32_F='"l"'
-fi
-AC_MSG_RESULT($UINT32_T)
-AC_SUBST(UINT32_T)
-AC_SUBST(UINT32_F)
-
-AC_MSG_CHECKING(for signed 64-bit type)
-INT64_T='none'
-INT64_F='none'
-if test $ac_cv_sizeof_signed_long -eq 8; then
-  INT64_T='signed long'
-  INT64_F='"l"'
-elif test $ac_cv_sizeof_signed_long_long -eq 8; then
-  INT64_T='signed long long'
-  INT64_F='"ll"'
-fi
-case "${host_os}" in
-  mingw* )
-    INT64_F='"I64"'
-    ;;
-esac
-AC_MSG_RESULT($INT64_T)
-AC_SUBST(INT64_T)
-AC_SUBST(INT64_F)
-
-AC_MSG_CHECKING(for unsigned 64-bit type)
-UINT64_T='none'
-UINT64_F='none'
-if test $ac_cv_sizeof_unsigned_long -eq 8; then
-  UINT64_T='unsigned long'
-  UINT64_F='"l"'
-elif test $ac_cv_sizeof_unsigned_long_long -eq 8; then
-  UINT64_T='unsigned long long'
-  UINT64_F='"ll"'
-fi
-case "${host_os}" in
-  mingw* )
-    UINT64_F='"I64"'
-    ;;
-esac
-AC_MSG_RESULT($UINT64_T)
-AC_SUBST(UINT64_T)
-AC_SUBST(UINT64_F)
-
-AC_MSG_CHECKING(for unsigned maximum type)
-UINTMAX_T='none'
-UINTMAX_F='none'
-if test "$UINT64_T" != 'none'; then
-  UINTMAX_T=$UINT64_T
-  UINTMAX_F=$UINT64_F
-elif test "$UINT32_T" != 'none'; then
-  UINTMAX_T=$UINT32_T
-  UINTMAX_F=$UINT32_F
-fi
-AC_MSG_RESULT($UINTMAX_T)
-AC_SUBST(UINTMAX_T)
-AC_SUBST(UINTMAX_F)
-
-AC_MSG_CHECKING(for pointer difference type)
-UINTPTR_T='none'
-UINTPTR_F='none'
-if test $ac_cv_sizeof_unsigned_long -eq $ac_cv_sizeof_unsigned_intp; then
-  UINTPTR_T='unsigned long'
-  UINTPTR_F='"l"'
-elif test $ac_cv_sizeof_unsigned_long_long -eq $ac_cv_sizeof_unsigned_intp; then
-  UINTPTR_T='unsigned long long'
-  UINTPTR_F='"ll"'
-fi
-AC_MSG_RESULT($UINTPTR_T)
-AC_SUBST(UINTPTR_T)
-AC_SUBST(UINTPTR_F)
+AC_CHECK_SIZEOF(void *)
 
 AC_MSG_CHECKING([whether our compiler supports __func__])
 AC_TRY_COMPILE([],
@@ -1209,7 +1054,6 @@ AC_FUNC_FORK
 AC_FUNC_MEMCMP
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_SETVBUF_REVERSED
-AC_TYPE_SIGNAL
 AC_FUNC_STRTOD
 AC_FUNC_STRERROR_R
 AC_FUNC_VPRINTF

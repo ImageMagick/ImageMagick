@@ -240,6 +240,15 @@ extern "C" {
 # define MAGICKCORE_DIAGNOSTIC_IGNORE_MAYBE_UNINITIALIZED()
 # define MAGICKCORE_DIAGNOSTIC_POP()
 #endif
+
+#define MAGICKCORE_BITS_BELOW(power_of_2) \
+  ((power_of_2)-1)
+
+#define MAGICKCORE_IS_NOT_ALIGNED(n, power_of_2) \
+  ((n) & MAGICKCORE_BITS_BELOW(power_of_2))
+
+#define MAGICKCORE_IS_NOT_POWER_OF_2(n) \
+  MAGICKCORE_IS_NOT_ALIGNED((n), (n))
  
 #if defined(__cplusplus) || defined(c_plusplus)
 }
