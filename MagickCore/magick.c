@@ -131,7 +131,7 @@ static SplayTreeInfo
   *magick_list = (SplayTreeInfo *) NULL;
 
 static volatile MagickBooleanType
-  instantiate_magickcore = MagickFalse,
+  magickcore_instantiated = MagickFalse,
   magickcore_signal_in_progress = MagickFalse,
   magick_list_initialized = MagickFalse;
 
@@ -1266,9 +1266,10 @@ MagickExport MagickBooleanType ListMagickInfo(FILE *file,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsMagickCoreInstantiated() returns MagickTrue if the ImageMagick environment
-%  is currently instantiated:  MagickCoreGenesis() has been called but
-%  MagickDestroy() has not.
+%  IsMagickCoreInstantiated() returns MagickFalse if the ImageMagick
+%  environment has not been instantiated; the ImageMagick environment
+%  has been instantiated when MagickCoreGenesis() has been called but
+%  MagickDestroy() has not been called.
 %
 %  The format of the IsMagickCoreInstantiated method is:
 %
@@ -1277,7 +1278,7 @@ MagickExport MagickBooleanType ListMagickInfo(FILE *file,
 */
 MagickExport MagickBooleanType IsMagickCoreInstantiated(void)
 {
-  return(instantiate_magickcore);
+  return(magickcore_instantiated);
 }
 
 /*
@@ -1484,13 +1485,8 @@ MagickExport void MagickCoreGenesis(const char *path,
   /*
     Initialize the Magick environment.
   */
-  InitializeMagickMutex();
-  LockMagickMutex();
-  if (instantiate_magickcore != MagickFalse)
-    {
-      UnlockMagickMutex();
-      return;
-    }
+  if (magickcore_instantiated != MagickFalse)
+    return;
   (void) SemaphoreComponentGenesis();
   (void) ExceptionComponentGenesis();
   (void) LogComponentGenesis();
@@ -1593,8 +1589,7 @@ MagickExport void MagickCoreGenesis(const char *path,
 #endif
   (void) RegistryComponentGenesis();
   (void) MonitorComponentGenesis();
-  instantiate_magickcore=MagickTrue;
-  UnlockMagickMutex();
+  magickcore_instantiated=MagickTrue;
 }
 
 /*
@@ -1617,13 +1612,8 @@ MagickExport void MagickCoreGenesis(const char *path,
 */
 MagickExport void MagickCoreTerminus(void)
 {
-  InitializeMagickMutex();
-  LockMagickMutex();
-  if (instantiate_magickcore == MagickFalse)
-    {
-      UnlockMagickMutex();
-      return;
-    }
+  if (magickcore_instantiated == MagickFalse)
+    return;
   MonitorComponentTerminus();
   RegistryComponentTerminus();
 #if defined(MAGICKCORE_X11_DELEGATE)
@@ -1660,9 +1650,8 @@ MagickExport void MagickCoreTerminus(void)
   LocaleComponentTerminus();
   LogComponentTerminus();
   ExceptionComponentTerminus();
-  instantiate_magickcore=MagickFalse;
-  UnlockMagickMutex();
   SemaphoreComponentTerminus();
+  magickcore_instantiated=MagickFalse;
 }
 
 /*
