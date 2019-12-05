@@ -234,26 +234,24 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   PCXInfo
     pcx_info;
 
-  register ssize_t
-    x;
-
   register Quantum
     *q;
-
-  register ssize_t
-    i;
 
   register unsigned char
     *p,
     *r;
 
+  unsigned int
+    k;
+
   size_t
-    one,
+    i,
+    x,
+    y,
     pcx_packets;
 
   ssize_t
-    count,
-    y;
+    count;
 
   unsigned char
     packet,
@@ -299,7 +297,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         sizeof(*page_table));
       if (page_table == (MagickOffsetType *) NULL)
         ThrowPCXException(ResourceLimitError,"MemoryAllocationFailed");
-      for (id=0; id < 1024; id++)
+      for (id=0; id < 1024; ++id)
       {
         page_table[id]=(MagickOffsetType) ReadBlobLSBLong(image);
         if (page_table[id] == 0)
@@ -313,11 +311,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     }
   count=ReadBlob(image,1,&pcx_info.identifier);
-  for (id=1; id < 1024; id++)
+  for (id=1; id < 1024; ++id)
   {
-    int
-      bits_per_pixel;
-
     /*
       Verify PCX identifier.
     */
@@ -325,7 +320,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((count != 1) || (pcx_info.identifier != 0x0a))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     pcx_info.encoding=(unsigned char) ReadBlobByte(image);
-    bits_per_pixel=ReadBlobByte(image);
+    const int bits_per_pixel=ReadBlobByte(image);
     if (bits_per_pixel == -1)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     pcx_info.bits_per_pixel=(unsigned char) bits_per_pixel;
@@ -340,16 +335,14 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read PCX raster colormap.
     */
-    image->columns=(size_t) MagickAbsoluteValue((ssize_t) pcx_info.right-
-      pcx_info.left)+1UL;
-    image->rows=(size_t) MagickAbsoluteValue((ssize_t) pcx_info.bottom-
-      pcx_info.top)+1UL;
-    if ((image->columns == 0) || (image->rows == 0) ||
-        (pcx_info.right < pcx_info.left) || (pcx_info.bottom < pcx_info.top) ||
-        ((pcx_info.bits_per_pixel != 1) && (pcx_info.bits_per_pixel != 2) &&
-         (pcx_info.bits_per_pixel != 4) && (pcx_info.bits_per_pixel != 8)))
+    if ((pcx_info.right < pcx_info.left) || (pcx_info.bottom < pcx_info.top) ||
+        ((bits_per_pixel != 1) && (bits_per_pixel != 2) &&
+         (bits_per_pixel != 4) && (bits_per_pixel != 8)))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    image->depth=pcx_info.bits_per_pixel;
+    const size_t
+      columns=image->columns=1+(pcx_info.right - pcx_info.left),
+      rows=image->rows=1+(pcx_info.bottom - pcx_info.top);
+    image->depth=bits_per_pixel;
     image->units=PixelsPerInchResolution;
     image->resolution.x=(double) pcx_info.horizontal_resolution;
     image->resolution.y=(double) pcx_info.vertical_resolution;
@@ -357,9 +350,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
-    if ((MagickSizeType) (image->columns*image->rows/255) > GetBlobSize(image))
+    if ((MagickSizeType) (columns*rows/255) > GetBlobSize(image))
       ThrowPCXException(CorruptImageError,"InsufficientImageDataInFile");
-    status=SetImageExtent(image,image->columns,image->rows,exception);
+    status=SetImageExtent(image,columns,rows,exception);
     if (status == MagickFalse)
       ThrowPCXException(exception->severity,exception->reason);
     (void) SetImageBackgroundColor(image,exception);
@@ -368,51 +361,51 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (count != (ssize_t) (3*image->colors))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     pcx_info.reserved=(unsigned char) ReadBlobByte(image);
-    pcx_info.planes=(unsigned char) ReadBlobByte(image);
-    if (pcx_info.planes == 0)
+    const int planes=ReadBlobByte(image);
+    pcx_info.planes=(unsigned char) planes;
+    if (planes == 0)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    if (pcx_info.planes > 6)
+    if (planes > 6)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    if ((pcx_info.bits_per_pixel*pcx_info.planes) >= 64)
-      ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    one=1;
-    if ((pcx_info.bits_per_pixel != 8) || (pcx_info.planes == 1))
-      if ((pcx_info.version == 3) || (pcx_info.version == 5) ||
-          ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
-        image->colors=(size_t) MagickMin(one << (1UL*
-          (pcx_info.bits_per_pixel*pcx_info.planes)),256UL);
+    const int
+      there_is_only_one_plane=(planes == 1),
+      bits_per_color=(bits_per_pixel*planes),
+      image_is_bilevel=(bits_per_color == 1);
+    if ((bits_per_pixel == 8) || there_is_only_one_plane)
+      if ((pcx_info.version == 5) || (pcx_info.version == 3) || image_is_bilevel)
+        image->colors=MagickMin((size_t)1 << bits_per_color,(size_t)256);
     if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
       ThrowPCXException(ResourceLimitError,"MemoryAllocationFailed");
-    if ((pcx_info.bits_per_pixel >= 8) && (pcx_info.planes != 1))
+    if ((bits_per_pixel == 8) && !there_is_only_one_plane)
       image->storage_class=DirectClass;
     p=pcx_colormap;
-    for (i=0; i < (ssize_t) image->colors; i++)
+    for (i=0; i < image->colors; ++i)
     {
       image->colormap[i].red=ScaleCharToQuantum(*p++);
       image->colormap[i].green=ScaleCharToQuantum(*p++);
       image->colormap[i].blue=ScaleCharToQuantum(*p++);
     }
-    pcx_info.bytes_per_line=ReadBlobLSBShort(image);
+    const int bytes_per_line=pcx_info.bytes_per_line=ReadBlobLSBShort(image);
     pcx_info.palette_info=ReadBlobLSBShort(image);
     pcx_info.horizontal_screensize=ReadBlobLSBShort(image);
     pcx_info.vertical_screensize=ReadBlobLSBShort(image);
-    for (i=0; i < 54; i++)
+    for (k=0; k < 54; ++k)
       (void) ReadBlobByte(image);
     /*
       Read image data.
     */
-    if (HeapOverflowSanityCheck(image->rows, (size_t) pcx_info.bytes_per_line) != MagickFalse)
+    if (HeapOverflowSanityCheck(rows,bytes_per_line) != MagickFalse)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    pcx_packets=(size_t) image->rows*pcx_info.bytes_per_line;
-    if (HeapOverflowSanityCheck(pcx_packets, (size_t) pcx_info.planes) != MagickFalse)
+    pcx_packets=rows*bytes_per_line;
+    if (HeapOverflowSanityCheck(pcx_packets,planes) != MagickFalse)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    pcx_packets=(size_t) pcx_packets*pcx_info.planes;
-    if ((size_t) (pcx_info.bits_per_pixel*pcx_info.planes*image->columns) > (pcx_packets*8U))
+    pcx_packets*=planes;
+    if ((bits_per_color*columns) > (pcx_packets*8))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     if ((MagickSizeType) (pcx_packets/32+128) > GetBlobSize(image))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    scanline=(unsigned char *) AcquireQuantumMemory(MagickMax(image->columns,
-      pcx_info.bytes_per_line),MagickMax(pcx_info.planes,8)*sizeof(*scanline));
+    scanline=(unsigned char *) AcquireQuantumMemory(MagickMax(columns,
+      bytes_per_line),MagickMax(planes,8)*sizeof(*scanline));
     pixel_info=AcquireVirtualMemory(pcx_packets,2*sizeof(*pixels));
     if ((scanline == (unsigned char *) NULL) ||
         (pixel_info == (MemoryInfo *) NULL))
@@ -423,10 +416,10 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           pixel_info=RelinquishVirtualMemory(pixel_info);
         ThrowPCXException(ResourceLimitError,"MemoryAllocationFailed");
       }
-    (void) memset(scanline,0,(size_t) MagickMax(image->columns,
-      pcx_info.bytes_per_line)*MagickMax(pcx_info.planes,8)*sizeof(*scanline));
+    (void) memset(scanline,0,MagickMax(columns,
+      bytes_per_line)*MagickMax(planes,8)*sizeof(*scanline));
     pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
-    (void) memset(pixels,0,(size_t) pcx_packets*(2*sizeof(*pixels)));
+    (void) memset(pixels,0,pcx_packets*(2*sizeof(*pixels)));
     /*
       Uncompress image data.
     */
@@ -438,7 +431,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (EOFBlob(image) != MagickFalse)
           ThrowPCXException(CorruptImageError,"UnexpectedEndOfFile");
         *p++=packet;
-        pcx_packets--;
+        --pcx_packets;
       }
     else
       while (pcx_packets != 0)
@@ -449,34 +442,33 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if ((packet & 0xc0) != 0xc0)
           {
             *p++=packet;
-            pcx_packets--;
+            --pcx_packets;
             continue;
           }
         count=(ssize_t) (packet & 0x3f);
         packet=(unsigned char) ReadBlobByte(image);
         if (EOFBlob(image) != MagickFalse)
           ThrowPCXException(CorruptImageError,"UnexpectedEndOfFile");
-        for ( ; count != 0; count--)
+        for ( ; count != 0; --count)
         {
           *p++=packet;
-          pcx_packets--;
+          --pcx_packets;
           if (pcx_packets == 0)
             break;
         }
       }
     if (image->storage_class == DirectClass)
-      image->alpha_trait=pcx_info.planes > 3 ? BlendPixelTrait :
+      image->alpha_trait=planes > 3 ? BlendPixelTrait :
         UndefinedPixelTrait;
     else
-      if ((pcx_info.version == 5) ||
-          ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
+      if ((pcx_info.version == 5) || image_is_bilevel)
         {
           /*
             Initialize image colormap.
           */
           if (image->colors > 256)
             ThrowPCXException(CorruptImageError,"ColormapExceeds256Colors");
-          if ((pcx_info.bits_per_pixel*pcx_info.planes) == 1)
+          if (image_is_bilevel)
             {
               /*
                 Monochrome colormap.
@@ -497,7 +489,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 pcx_info.colormap_signature=(unsigned char) ReadBlobByte(image);
                 count=ReadBlob(image,3*image->colors,pcx_colormap);
                 p=pcx_colormap;
-                for (i=0; i < (ssize_t) image->colors; i++)
+                for (i=0; i < image->colors; ++i)
                 {
                   image->colormap[i].red=ScaleCharToQuantum(*p++);
                   image->colormap[i].green=ScaleCharToQuantum(*p++);
@@ -508,131 +500,199 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Convert PCX raster image to pixel packets.
     */
-    for (y=0; y < (ssize_t) image->rows; y++)
+    const size_t bytes_per_image_line=((size_t)bytes_per_line)*planes;
+    for (y=0; y < rows; ++y)
     {
-      p=pixels+(y*pcx_info.bytes_per_line*pcx_info.planes);
-      q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+      p=pixels+(y*bytes_per_image_line);
+      q=QueueAuthenticPixels(image,0,y,columns,1,exception);
       if (q == (Quantum *) NULL)
         break;
       r=scanline;
       if (image->storage_class == DirectClass)
-        for (i=0; i < pcx_info.planes; i++)
+        for (k=0; k < planes; ++k)
         {
-          r=scanline+i;
-          for (x=0; x < (ssize_t) pcx_info.bytes_per_line; x++)
+          r=scanline+k;
+          for (x=0; x < bytes_per_line; ++x)
           {
-            switch (i)
-            {
-              case 0:
-              {
-                *r=(*p++);
-                break;
-              }
-              case 1:
-              {
-                *r=(*p++);
-                break;
-              }
-              case 2:
-              {
-                *r=(*p++);
-                break;
-              }
-              case 3:
-              default:
-              {
-                *r=(*p++);
-                break;
-              }
-            }
-            r+=pcx_info.planes;
+            *r=(*p++);
+            r+=planes;
           }
         }
       else
-        if (pcx_info.planes > 1)
+        if (!there_is_only_one_plane)
           {
-            for (x=0; x < (ssize_t) image->columns; x++)
+            for (x=0; x < columns; ++x)
               *r++=0;
-            for (i=0; i < pcx_info.planes; i++)
+            for (k=0; k < planes; ++k)
             {
               r=scanline;
-              for (x=0; x < (ssize_t) pcx_info.bytes_per_line; x++)
+              for (x=0; x < bytes_per_line; ++x)
               {
                  bits=(*p++);
                  for (mask=0x80; mask != 0; mask>>=1)
                  {
                    if (bits & mask)
-                     *r|=1 << i;
-                   r++;
+                     *r|=1 << k;
+                   ++r;
                  }
                }
             }
           }
         else
-          switch (pcx_info.bits_per_pixel)
+          switch (bits_per_pixel)
           {
             case 1:
             {
-              register ssize_t
-                bit;
+              const unsigned int
+                start_of_last_octet=(columns-7),
+                left_over_pixels=(columns & 7);
 
-              for (x=0; x < ((ssize_t) image->columns-7); x+=8)
-              {
-                for (bit=7; bit >= 0; bit--)
-                  *r++=(unsigned char) ((*p) & (0x01 << bit) ? 0x00 : 0x01);
-                p++;
-              }
-              if ((image->columns % 8) != 0)
+              if (start_of_last_octet < columns) /* overflow check */
+                for (x=0; x < start_of_last_octet; x+=8)
                 {
-                  for (bit=7; bit >= (ssize_t) (8-(image->columns % 8)); bit--)
-                    *r++=(unsigned char) ((*p) & (0x01 << bit) ? 0x00 : 0x01);
-                  p++;
+                  const unsigned int
+                    v=*p;
+
+                  *r++=!(v & 1<<7);
+                  *r++=!(v & 1<<6);
+                  *r++=!(v & 1<<5);
+                  *r++=!(v & 1<<4);
+                  *r++=!(v & 1<<3);
+                  *r++=!(v & 1<<2);
+                  *r++=!(v & 1<<1);
+                  *r++=!(v & 1<<0);
+                  ++p;
+                }
+              if (left_over_pixels)
+                {
+                  const unsigned int
+                    v=*p;
+
+                  switch (left_over_pixels)
+                  {
+                    case 1:
+                      *r++=!(v & 1<<7);
+                      break;
+                    case 2:
+                      *r++=!(v & 1<<7);
+                      *r++=!(v & 1<<6);
+                      break;
+                    case 3:
+                      *r++=!(v & 1<<7);
+                      *r++=!(v & 1<<6);
+                      *r++=!(v & 1<<5);
+                      break;
+                    case 4:
+                      *r++=!(v & 1<<7);
+                      *r++=!(v & 1<<6);
+                      *r++=!(v & 1<<5);
+                      *r++=!(v & 1<<4);
+                      break;
+                    case 5:
+                      *r++=!(v & 1<<7);
+                      *r++=!(v & 1<<6);
+                      *r++=!(v & 1<<5);
+                      *r++=!(v & 1<<4);
+                      *r++=!(v & 1<<3);
+                      break;
+                    case 6:
+                      *r++=!(v & 1<<7);
+                      *r++=!(v & 1<<6);
+                      *r++=!(v & 1<<5);
+                      *r++=!(v & 1<<4);
+                      *r++=!(v & 1<<3);
+                      *r++=!(v & 1<<2);
+                      break;
+                    case 7:
+                      *r++=!(v & 1<<7);
+                      *r++=!(v & 1<<6);
+                      *r++=!(v & 1<<5);
+                      *r++=!(v & 1<<4);
+                      *r++=!(v & 1<<3);
+                      *r++=!(v & 1<<2);
+                      *r++=!(v & 1<<1);
+                      break;
+                    default:
+                      assert(0);
+                  }
+                  ++p;
                 }
               break;
             }
             case 2:
             {
-              for (x=0; x < ((ssize_t) image->columns-3); x+=4)
-              {
-                *r++=(*p >> 6) & 0x3;
-                *r++=(*p >> 4) & 0x3;
-                *r++=(*p >> 2) & 0x3;
-                *r++=(*p) & 0x3;
-                p++;
-              }
-              if ((image->columns % 4) != 0)
+              const unsigned int
+                start_of_last_octet=(columns-3),
+                left_over_pixels=(columns & 3);
+
+              if (start_of_last_octet < columns) /* overflow check */
+                for (x=0; x < start_of_last_octet; x+=4)
                 {
-                  for (i=3; i >= (ssize_t) (4-(image->columns % 4)); i--)
-                    *r++=(unsigned char) ((*p >> (i*2)) & 0x03);
-                  p++;
+                  const unsigned int
+                    v=*p;
+
+                  *r++=(v >> 6) & 0x3;
+                  *r++=(v >> 4) & 0x3;
+                  *r++=(v >> 2) & 0x3;
+                  *r++=(v >> 0) & 0x3;
+                  ++p;
+                }
+              if (left_over_pixels)
+                {
+                  const unsigned int
+                    v=*p;
+
+                  switch (left_over_pixels)
+                  {
+                    case 1:
+                      *r++=(v >> 6) & 0x3;
+                      break;
+                    case 2:
+                      *r++=(v >> 6) & 0x3;
+                      *r++=(v >> 4) & 0x3;
+                      break;
+                    case 3:
+                      *r++=(v >> 6) & 0x3;
+                      *r++=(v >> 4) & 0x3;
+                      *r++=(v >> 2) & 0x3;
+                      break;
+                    default:
+                      assert(0);
+                  }
+                  ++p;
                 }
               break;
             }
             case 4:
             {
-              for (x=0; x < ((ssize_t) image->columns-1); x+=2)
-              {
-                *r++=(*p >> 4) & 0xf;
-                *r++=(*p) & 0xf;
-                p++;
-              }
-              if ((image->columns % 2) != 0)
+              const unsigned int
+                start_of_last_octet=(columns-1),
+                left_over_pixels=(columns & 1);
+
+              if (start_of_last_octet < columns) /* overflow check */
+                for (x=0; x < start_of_last_octet; x+=2)
+                {
+                  *r++=(*p >> 4) & 0xf;
+                  *r++=(*p >> 0) & 0xf;
+                  ++p;
+                }
+              if (left_over_pixels)
                 *r++=(*p++ >> 4) & 0xf;
               break;
             }
             case 8:
             {
-              (void) memcpy(r,p,image->columns);
+              (void) memcpy(r,p,columns);
               break;
             }
             default:
-              break;
+              assert(0);
           }
       /*
         Transfer image scanline.
       */
       r=scanline;
-      for (x=0; x < (ssize_t) image->columns; x++)
+      for (x=0; x < columns; ++x)
       {
         if (image->storage_class == PseudoClass)
           SetPixelIndex(image,*r++,q);
@@ -650,8 +710,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       if (image->previous == (Image *) NULL)
         {
-          status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-            image->rows);
+          status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,rows);
           if (status == MagickFalse)
             break;
         }
@@ -824,23 +883,23 @@ static MagickBooleanType PCXWritePixels(PCXInfo *pcx_info,
     previous;
 
   q=pixels;
-  for (i=0; i < (ssize_t) pcx_info->planes; i++)
+  for (i=0; i < (ssize_t) pcx_info->planes; ++i)
   {
     if (pcx_info->encoding == 0)
       {
-        for (x=0; x < (ssize_t) pcx_info->bytes_per_line; x++)
+        for (x=0; x < (ssize_t) pcx_info->bytes_per_line; ++x)
           (void) WriteBlobByte(image,(unsigned char) (*q++));
       }
     else
       {
         previous=(*q++);
         count=1;
-        for (x=0; x < (ssize_t) (pcx_info->bytes_per_line-1); x++)
+        for (x=0; x < (ssize_t) (pcx_info->bytes_per_line-1); ++x)
         {
           packet=(*q++);
           if ((packet == previous) && (count < 63))
             {
-              count++;
+              ++count;
               continue;
             }
           if ((count > 1) || ((previous & 0xc0) == 0xc0))
@@ -891,11 +950,9 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     *q;
 
   size_t
+    y,
     imageListLength,
     length;
-
-  ssize_t
-    y;
 
   unsigned char
     *pcx_colormap,
@@ -928,7 +985,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
         sizeof(*page_table));
       if (page_table == (MagickOffsetType *) NULL)
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-      for (scene=0; scene < 1024; scene++)
+      for (scene=0; scene < 1024; ++scene)
         (void) WriteBlobLSBLong(image,0x00000000L);
     }
   scene=0;
@@ -978,9 +1035,9 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
       {
         pcx_info.planes=3;
         if (image->alpha_trait != UndefinedPixelTrait)
-          pcx_info.planes++;
+          ++pcx_info.planes;
       }
-    length=(((size_t) image->columns*pcx_info.bits_per_pixel+7)/8);
+    length=((image->columns*pcx_info.bits_per_pixel+7)/8);
     if ((image->columns > 65535UL) || (image->rows > 65535UL) ||
         (length > 65535UL))
       {
@@ -1018,7 +1075,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     (void) memset(pcx_colormap,0,3*256*sizeof(*pcx_colormap));
     q=pcx_colormap;
     if ((image->storage_class == PseudoClass) && (image->colors <= 256))
-      for (i=0; i < (ssize_t) image->colors; i++)
+      for (i=0; i < (ssize_t) image->colors; ++i)
       {
         *q++=ScaleQuantumToChar(image->colormap[i].red);
         *q++=ScaleQuantumToChar(image->colormap[i].green);
@@ -1029,9 +1086,9 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     (void) WriteBlobByte(image,pcx_info.planes);
     (void) WriteBlobLSBShort(image,pcx_info.bytes_per_line);
     (void) WriteBlobLSBShort(image,pcx_info.palette_info);
-    for (i=0; i < 58; i++)
+    for (i=0; i < 58; ++i)
       (void) WriteBlobByte(image,'\0');
-    length=(size_t) pcx_info.bytes_per_line;
+    length=pcx_info.bytes_per_line;
     pixel_info=AcquireVirtualMemory(length,pcx_info.planes*sizeof(*pixels));
     if (pixel_info == (MemoryInfo *) NULL)
       {
@@ -1047,10 +1104,10 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
         /*
           Convert DirectClass image to PCX raster pixels.
         */
-        for (y=0; y < (ssize_t) image->rows; y++)
+        for (y=0; y < image->rows; ++y)
         {
           q=pixels;
-          for (i=0; i < pcx_info.planes; i++)
+          for (i=0; i < pcx_info.planes; ++i)
           {
             p=GetVirtualPixels(image,0,y,image->columns,1,exception);
             if (p == (const Quantum *) NULL)
@@ -1059,7 +1116,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
             {
               case 0:
               {
-                for (x=0; x < (ssize_t) pcx_info.bytes_per_line; x++)
+                for (x=0; x < (ssize_t) pcx_info.bytes_per_line; ++x)
                 {
                   *q++=ScaleQuantumToChar(GetPixelRed(image,p));
                   p+=GetPixelChannels(image);
@@ -1068,7 +1125,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
               }
               case 1:
               {
-                for (x=0; x < (ssize_t) pcx_info.bytes_per_line; x++)
+                for (x=0; x < (ssize_t) pcx_info.bytes_per_line; ++x)
                 {
                   *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
                   p+=GetPixelChannels(image);
@@ -1077,7 +1134,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
               }
               case 2:
               {
-                for (x=0; x < (ssize_t) pcx_info.bytes_per_line; x++)
+                for (x=0; x < (ssize_t) pcx_info.bytes_per_line; ++x)
                 {
                   *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
                   p+=GetPixelChannels(image);
@@ -1087,7 +1144,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
               case 3:
               default:
               {
-                for (x=(ssize_t) pcx_info.bytes_per_line; x != 0; x--)
+                for (x=(ssize_t) pcx_info.bytes_per_line; x != 0; --x)
                 {
                   *q++=ScaleQuantumToChar((Quantum) (GetPixelAlpha(image,p)));
                   p+=GetPixelChannels(image);
@@ -1110,13 +1167,13 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     else
       {
         if (pcx_info.bits_per_pixel > 1)
-          for (y=0; y < (ssize_t) image->rows; y++)
+          for (y=0; y < image->rows; ++y)
           {
             p=GetVirtualPixels(image,0,y,image->columns,1,exception);
             if (p == (const Quantum *) NULL)
               break;
             q=pixels;
-            for (x=0; x < (ssize_t) image->columns; x++)
+            for (x=0; x < (ssize_t) image->columns; ++x)
             {
               *q++=(unsigned char) GetPixelIndex(image,p);
               p+=GetPixelChannels(image);
@@ -1140,7 +1197,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
             /*
               Convert PseudoClass image to a PCX monochrome image.
             */
-            for (y=0; y < (ssize_t) image->rows; y++)
+            for (y=0; y < image->rows; ++y)
             {
               p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
@@ -1148,12 +1205,12 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
               bit=0;
               byte=0;
               q=pixels;
-              for (x=0; x < (ssize_t) image->columns; x++)
+              for (x=0; x < (ssize_t) image->columns; ++x)
               {
                 byte<<=1;
                 if (GetPixelLuma(image,p) < (QuantumRange/2.0))
                   byte|=0x01;
-                bit++;
+                ++bit;
                 if (bit == 8)
                   {
                     *q++=byte;
@@ -1204,7 +1261,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
           ThrowWriterException(CorruptImageError,"ImproperImageHeader");
         }
       (void) WriteBlobLSBLong(image,0x3ADE68B1L);
-      for (i=0; i <= (ssize_t) scene; i++)
+      for (i=0; i <= (ssize_t) scene; ++i)
         (void) WriteBlobLSBLong(image,(unsigned int) page_table[i]);
       page_table=(MagickOffsetType *) RelinquishMagickMemory(page_table);
     }
