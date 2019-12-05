@@ -64,7 +64,6 @@
 #include "MagickCore/list.h"
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
-#include "MagickCore/memory-private.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/montage.h"
@@ -1654,7 +1653,7 @@ MagickExport MagickBooleanType ListThresholdMaps(FILE *file,
 %
 %    o threshold_map: A string containing the name of the threshold dither
 %      map to use, followed by zero or more numbers representing the number
-%      of color levels tho dither between.
+%      of color levels to dither between.
 %
 %      Any level number less than 2 will be equivalent to 2, and means only
 %      binary dithering will be applied to each color channel.
@@ -1665,7 +1664,7 @@ MagickExport MagickBooleanType ListThresholdMaps(FILE *file,
 %      the color channels.
 %
 %      For example: "o3x3,6" will generate a 6 level posterization of the
-%      image with a ordered 3x3 diffused pixel dither being applied between
+%      image with an ordered 3x3 diffused pixel dither being applied between
 %      each level. While checker,8,8,4 will produce a 332 colormaped image
 %      with only a single checkerboard hash pattern (50% grey) between each
 %      color level, to basically double the number of color levels with

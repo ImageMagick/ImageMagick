@@ -18,6 +18,9 @@
 #ifndef MAGICKCORE_MEMORY_H
 #define MAGICKCORE_MEMORY_H
 
+#include <errno.h>
+#include <assert.h>
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
@@ -32,6 +35,44 @@ typedef void
   *(*AcquireAlignedMemoryHandler)(const size_t,const size_t),
   (*RelinquishAlignedMemoryHandler)(void *);
 
+inline MagickExport MagickBooleanType HeapOverflowSanityCheck(
+  const size_t count,
+  const size_t quantum
+){
+  if (count == 0 || quantum == 0)
+    return(MagickTrue);
+  if (quantum != ((count*quantum)/count))
+    {
+      errno=ENOMEM;
+      return(MagickTrue);
+    }
+  return(MagickFalse);
+}
+
+inline MagickExport MagickBooleanType HeapOverflowSanityCheckGetSize(
+  const size_t count,
+  const size_t quantum,
+  size_t *const size
+){
+  size_t
+    s;
+
+  if (count == 0 || quantum == 0)
+    return(MagickTrue);
+  s=count*quantum;
+  if (quantum != (s/count))
+    {
+      errno=ENOMEM;
+      return(MagickTrue);
+    }
+  assert(size);
+  *size=s;
+  return(MagickFalse);
+}
+
+extern MagickExport size_t
+  GetMaxMemoryRequest(void);
+
 extern MagickExport MemoryInfo
   *AcquireVirtualMemory(const size_t,const size_t) magick_alloc_sizes(1,2),
   *RelinquishVirtualMemory(MemoryInfo *);
@@ -41,6 +82,7 @@ extern MagickExport void
     magick_attribute((__malloc__)) magick_alloc_sizes(1,2),
   *AcquireMagickMemory(const size_t) magick_attribute((__malloc__))
     magick_alloc_size(1),
+  *AcquireCriticalMemory(const size_t size),
   *AcquireQuantumMemory(const size_t,const size_t)
     magick_attribute((__malloc__)) magick_alloc_sizes(1,2),
   *CopyMagickMemory(void *magick_restrict,const void *magick_restrict,

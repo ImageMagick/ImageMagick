@@ -1750,8 +1750,6 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
       /*
         Ensure the image matches the pixel cache morphology.
       */
-      if (image->type != UndefinedType)
-        image->type=UndefinedType;
       if (ValidatePixelCacheMorphology(image) == MagickFalse)
         {
           status=OpenPixelCache(image,IOMode,exception);
@@ -2127,11 +2125,11 @@ MagickExport MagickBooleanType GetOneVirtualPixelInfo(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetPixelCacheColorspace() returns the class type of the pixel cache.
+%  GetPixelCacheColorspace() returns the colorspace of the pixel cache.
 %
 %  The format of the GetPixelCacheColorspace() method is:
 %
-%      Colorspace GetPixelCacheColorspace(Cache cache)
+%      ColorspaceType GetPixelCacheColorspace(const Cache cache)
 %
 %  A description of each parameter follows:
 %

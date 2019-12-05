@@ -228,6 +228,15 @@ extern "C" {
 
 #endif
 
+/* for Clang compatibility */
+#ifndef __has_builtin
+#  define __has_builtin(x) 0
+#endif
+
+#if __STDC_VERSION__ >= 201100L
+# define MAGICKCORE_HAVE_STDC_ALIGNED_ALLOC 1
+#endif
+
 #if defined(__GNUC__) && !defined(__clang__)
 # define MAGICKCORE_DIAGNOSTIC_PUSH() \
    _Pragma("GCC diagnostic push")
@@ -240,6 +249,24 @@ extern "C" {
 # define MAGICKCORE_DIAGNOSTIC_IGNORE_MAYBE_UNINITIALIZED()
 # define MAGICKCORE_DIAGNOSTIC_POP()
 #endif
+
+#define MAGICKCORE_BITS_BELOW(power_of_2) \
+  ((power_of_2)-1)
+
+#define MAGICKCORE_MAX_ALIGNMENT_PADDING(power_of_2) \
+  MAGICKCORE_BITS_BELOW(power_of_2)
+
+#define MAGICKCORE_IS_NOT_ALIGNED(n, power_of_2) \
+  ((n) & MAGICKCORE_BITS_BELOW(power_of_2))
+
+#define MAGICKCORE_IS_NOT_POWER_OF_2(n) \
+  MAGICKCORE_IS_NOT_ALIGNED((n), (n))
+
+#define MAGICKCORE_ALIGN_DOWN(n, power_of_2) \
+  ((n) & ~MAGICKCORE_BITS_BELOW(power_of_2))
+
+#define MAGICKCORE_ALIGN_UP(n, power_of_2) \
+  MAGICKCORE_ALIGN_DOWN((n) + MAGICKCORE_MAX_ALIGNMENT_PADDING(power_of_2),power_of_2)
  
 #if defined(__cplusplus) || defined(c_plusplus)
 }

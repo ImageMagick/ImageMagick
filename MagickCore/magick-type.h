@@ -20,6 +20,10 @@
 
 #include "MagickCore/magick-config.h"
 
+#if MAGICKCORE_HAVE_UINTPTR_T
+#  include <stdint.h>
+#endif
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
@@ -136,6 +140,13 @@ typedef __int64 MagickOffsetType;
 typedef unsigned __int64 MagickSizeType;
 #define MagickOffsetFormat  "I64i"
 #define MagickSizeFormat  "I64u"
+#endif
+
+#if MAGICKCORE_HAVE_UINTPTR_T || defined(uintptr_t)
+typedef uintptr_t MagickAddressType;
+#else
+/* Hope for the best, I guess. */
+typedef size_t MagickAddressType;
 #endif
 
 #if defined(_MSC_VER) && (_MSC_VER == 1200)
