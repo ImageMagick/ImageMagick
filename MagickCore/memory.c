@@ -233,8 +233,8 @@ static MagickBooleanType
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireAlignedMemory() returns a pointer to a block of memory at least size
-%  bytes whose address is aligned on a cache line or page boundary.
+%  AcquireAlignedMemory() returns a pointer to a block of memory whose size is
+%  at least (count*quantum) bytes, and whose address is aligned on a cache line.
 %
 %  The format of the AcquireAlignedMemory method is:
 %
@@ -247,63 +247,112 @@ static MagickBooleanType
 %    o quantum: the size (in bytes) of each object.
 %
 */
-MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
-{
-#define AlignedExtent(size,alignment) \
-  (((size)+((alignment)-1)) & ~((alignment)-1))
-#define AlignedPowerOf2(x)  ((((x) - 1) & (x)) == 0)
+#if MAGICKCORE_HAVE_STDC_ALIGNED_ALLOC
 
-  size_t
-    alignment,
-    extent,
-    size;
-
-  void
-    *memory;
-
-  if (HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse)
-    return((void *) NULL);
-  memory=NULL;
-  alignment=CACHE_LINE_SIZE;
-  extent=AlignedExtent(size,alignment);
-  if ((size == 0) || (extent < size))
-    return((void *) NULL);
-  if (memory_methods.acquire_aligned_memory_handler != (AcquireAlignedMemoryHandler) NULL)
-    return(memory_methods.acquire_aligned_memory_handler(extent,alignment));
-#if defined(MAGICKCORE_HAVE_POSIX_MEMALIGN)
-  if (posix_memalign(&memory,alignment,extent) != 0)
-    memory=NULL;
-#elif defined(MAGICKCORE_HAVE__ALIGNED_MALLOC)
-  memory=_aligned_malloc(extent,alignment);
-#else
+  #define AcquireAlignedMemory_Actual AcquireAlignedMemory_STDC
+  static inline void *AcquireAlignedMemory_STDC(const size_t size)
   {
-    void
-      *p;
+    size_t
+      extent=CACHE_ALIGNED(size);
 
-    if ((alignment == 0) || (alignment % sizeof(void *) != 0) ||
-        (AlignedPowerOf2(alignment/sizeof(void *)) == 0))
-      {
-        errno=EINVAL;
-        return((void *) NULL);
-      }
-    if (size > (SIZE_MAX-alignment-sizeof(void *)-1))
+    if (extent < size)
       {
         errno=ENOMEM;
-        return((void *) NULL);
+        return(NULL);
       }
-    extent=(size+alignment-1)+sizeof(void *);
-    if (extent > size)
-      {
-        p=AcquireMagickMemory(extent);
-        if (p != NULL)
-          {
-            memory=(void *) AlignedExtent((size_t) p+sizeof(void *),alignment);
-            *((void **) memory-1)=p;
-          }
-      }
+    return(aligned_alloc(CACHE_LINE_SIZE,extent));
   }
+
+#elif defined(MAGICKCORE_HAVE_POSIX_MEMALIGN)
+
+  #define AcquireAlignedMemory_Actual AcquireAlignedMemory_POSIX
+  static inline void *AcquireAlignedMemory_POSIX(const size_t size)
+  {
+    void
+      *memory;
+
+    if (posix_memalign(&memory,CACHE_LINE_SIZE,size))
+      return(NULL);
+    return(memory);
+  }
+
+#elif defined(MAGICKCORE_HAVE__ALIGNED_MALLOC)
+
+  #define AcquireAlignedMemory_Actual AcquireAlignedMemory_WinAPI
+  static inline void *AcquireAlignedMemory_WinAPI(const size_t size)
+  {
+    return(_aligned_malloc(size,CACHE_LINE_SIZE));
+  }
+
+#else
+
+  #define ALIGNMENT_OVERHEAD \
+    (MAGICKCORE_MAX_ALIGNMENT_PADDING(CACHE_LINE_SIZE) + MAGICKCORE_SIZEOF_VOID_P)
+
+  static inline void *reserve_space_for_actual_base_address(void *const p)
+  {
+    return((void **)p + 1);
+  }
+
+  static inline void **pointer_to_space_for_actual_base_address(void *const p)
+  {
+    return((void **)p - 1);
+  }
+
+  static inline void *actual_base_address(void *const p)
+  {
+    return(*pointer_to_space_for_actual_base_address(p));
+  }
+
+  static inline void *align_to_cache(void *const p)
+  {
+    return((void *) CACHE_ALIGNED((MagickAddressType) p));
+  }
+
+  static inline void *adjust(void *const p)
+  {
+    return(align_to_cache(reserve_space_for_actual_base_address(p)));
+  }
+
+  #define AcquireAlignedMemory_Actual AcquireAlignedMemory_Generic
+  static inline void *AcquireAlignedMemory_Generic(const size_t size)
+  {
+    size_t
+      extent;
+
+    void
+      *memory,
+      *p;
+
+    #if SIZE_MAX < ALIGNMENT_OVERHEAD
+      #error "CACHE_LINE_SIZE is way too big."
+    #endif
+    extent=(size + ALIGNMENT_OVERHEAD);
+    if (extent <= size)
+      {
+        errno=ENOMEM;
+        return(NULL);
+      }
+    p=AcquireMagickMemory(extent);
+    if (p == NULL)
+      return(NULL);
+    memory=adjust(p);
+    *pointer_to_space_for_actual_base_address(memory)=p;
+    return(memory);
+  }
+
 #endif
-  return(memory);
+
+MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
+{
+  size_t
+    size;
+
+  if (HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse)
+    return(NULL);
+  if (memory_methods.acquire_aligned_memory_handler != (AcquireAlignedMemoryHandler) NULL)
+    return(memory_methods.acquire_aligned_memory_handler(size,CACHE_LINE_SIZE));
+  return(AcquireAlignedMemory_Actual(size));
 }
 
 #if defined(MAGICKCORE_ANONYMOUS_MEMORY_SUPPORT)
@@ -1123,12 +1172,12 @@ MagickExport void *RelinquishAlignedMemory(void *memory)
       memory_methods.relinquish_aligned_memory_handler(memory);
       return(NULL);
     }
-#if defined(MAGICKCORE_HAVE_POSIX_MEMALIGN)
+#if MAGICKCORE_HAVE_STDC_ALIGNED_ALLOC || defined(MAGICKCORE_HAVE_POSIX_MEMALIGN)
   free(memory);
 #elif defined(MAGICKCORE_HAVE__ALIGNED_MALLOC)
   _aligned_free(memory);
 #else
-  RelinquishMagickMemory(*((void **) memory-1));
+  RelinquishMagickMemory(actual_base_address(memory));
 #endif
   return(NULL);
 }
