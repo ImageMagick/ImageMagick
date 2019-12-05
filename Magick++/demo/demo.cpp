@@ -30,6 +30,9 @@ int main( int /*argc*/, char ** argv)
 
   // Initialize ImageMagick install location for Windows
   InitializeMagick(*argv);
+
+  const char *const p = getenv("MAGICK_FONT");
+  const string MAGICK_FONT(p ? p : "");
   
   try {
     
@@ -89,8 +92,7 @@ int main( int /*argc*/, char ** argv)
       MakeLabel(example, "Annotate");
       example.density( "72x72" );
       example.fontPointsize( 18 );
-      if (getenv("MAGICK_FONT") != 0)
-        example.font(string(getenv("MAGICK_FONT")));
+      example.font(MAGICK_FONT);
       example.strokeColor( Color() );
       example.fillColor( "gold" );
       example.annotate( "Magick++", "+0+20", NorthGravity );
@@ -482,6 +484,7 @@ int main( int /*argc*/, char ** argv)
       montageOpts.tile( "7x4" );
       montageOpts.backgroundColor( "#ffffff" );
       montageOpts.pointSize( 18 );
+      montageOpts.font(MAGICK_FONT);
       montageOpts.fillColor( "#600" );
       montageOpts.strokeColor( Color() );
       montageOpts.fileName( "Magick++ Demo" );
