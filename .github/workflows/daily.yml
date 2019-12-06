@@ -25,16 +25,17 @@ jobs:
             hdri: no
 
     steps:
-    - uses: actions/checkout@v1
-      with:
-        fetch-depth: 1
 
     - name: Install dependencies
       run: |
         set -e
         apt update
         sh -c "echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections"
-        apt-get install -y autoconf pkg-config gcc msttcorefonts libfontconfig1-dev libfreetype6-dev libltdl-dev
+        apt-get install -y autoconf pkg-config gcc git msttcorefonts libfontconfig1-dev libfreetype6-dev libltdl-dev
+
+    - uses: actions/checkout@master
+      with:
+        fetch-depth: 1
 
     - name: Configure ImageMagick
       run: |
