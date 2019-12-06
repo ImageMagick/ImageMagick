@@ -39,8 +39,7 @@
 %
 %
 */
-
-
+
 /*
   Include declarations.
 */
