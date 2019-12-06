@@ -74,9 +74,9 @@ jobs:
     - name: Clone ImageMagick-Windows
       uses: actions/checkout@master
       with:
-        fetch-depth: 1
         repository: ImageMagick/ImageMagick-Windows
-        ref: remotes/origin/master
+        ref: master
+        fetch-depth: 1
 
     - name: Clone repositories
       run: |

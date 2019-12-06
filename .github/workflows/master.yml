@@ -75,10 +75,10 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@master
       with:
         repository: ImageMagick/ImageMagick-Windows
-        ref: refs/heads/master
+        ref: master
         fetchDepth: 1
 
     - name: Clone repositories
