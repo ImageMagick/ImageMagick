@@ -79,10 +79,10 @@ jobs:
         fetch-depth: 1
 
     - name: Clone repositories
+      shell: cmd
       run: |
         cd %GITHUB_WORKSPACE%\ImageMagick-Windows
         CloneRepositories.cmd https://github.com/ImageMagick shallow
-      shell: cmd
 
     - name: Build configure
       shell: cmd

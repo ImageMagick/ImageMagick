@@ -84,6 +84,7 @@ jobs:
     - name: Clone repositories
       shell: cmd
       run: |
+        dir %GITHUB_WORKSPACE%
         cd %GITHUB_WORKSPACE%\ImageMagick-Windows
         CloneRepositories.cmd https://github.com/ImageMagick shallow
 
