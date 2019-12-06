@@ -84,27 +84,26 @@ jobs:
     - name: Clone repositories
       shell: cmd
       run: |
-        cd %RUNNER_WORKSPACE%\ImageMagick-Windows
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows
         CloneRepositories.cmd https://github.com/ImageMagick shallow
 
     - name: Build configure
       shell: cmd
       run: |
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cd %RUNNER_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
-        dir
-        devenv /upgrade %RUNNER_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure\configure.vcxproj
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
+        devenv /upgrade configure.vcxproj
         msbuild configure.sln /m /t:Rebuild /p:Configuration=Release,Platform=Win32
 
     - name: Configure ImageMagick
       shell: cmd
       run: |
-        cd %RUNNER_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
         configure.exe /noWizard /VS2019 /x64 /smtd
 
     - name: Build ImageMagick
       shell: cmd
       run: |
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cd %RUNNER_WORKSPACE%\ImageMagick-Windows\VisualMagick
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick
         msbuild VisualStaticMTD.sln /m /t:Rebuild /p:Configuration=Release,Platform=x64
