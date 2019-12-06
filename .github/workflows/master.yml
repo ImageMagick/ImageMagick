@@ -26,9 +26,9 @@ jobs:
       run: |
         set -e
         apt-get update -y
-        apt-get install -y autoconf pkg-config git ${{matrix.compiler}}
+        apt-get install -y autoconf pkg-config ${{matrix.compiler}}
 
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v1
       with:
         fetch-depth: 1
 
