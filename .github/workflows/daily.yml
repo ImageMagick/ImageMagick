@@ -72,7 +72,7 @@ jobs:
 
     steps:
     - name: Clone ImageMagick-Windows
-      uses: actions/checkout@master
+      uses: actions/checkout@v1
       with:
         repository: ImageMagick/ImageMagick-Windows
         ref: master
