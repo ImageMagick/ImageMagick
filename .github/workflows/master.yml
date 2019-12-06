@@ -21,13 +21,13 @@ jobs:
       matrix:
         compiler: [ gcc, clang ]
 
+    steps:
     - name: Install dependencies
       run: |
         set -e
         apt-get update -y
         apt-get install -y autoconf pkg-config git ${{matrix.compiler}}
 
-    steps:
     - uses: actions/checkout@master
       with:
         fetch-depth: 1

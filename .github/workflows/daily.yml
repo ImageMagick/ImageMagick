@@ -25,7 +25,6 @@ jobs:
             hdri: no
 
     steps:
-
     - name: Install dependencies
       run: |
         set -e
