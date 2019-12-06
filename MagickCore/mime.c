@@ -155,11 +155,7 @@ MagickExport LinkedListInfo *AcquireMimeCache(const char *filename,
   LinkedListInfo
     *cache;
 
-  MagickStatusType
-    status;
-
   cache=NewLinkedList(0);
-  status=MagickTrue;
 #if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   {
     const StringInfo
@@ -172,7 +168,7 @@ MagickExport LinkedListInfo *AcquireMimeCache(const char *filename,
     option=(const StringInfo *) GetNextValueInLinkedList(options);
     while (option != (const StringInfo *) NULL)
     {
-      status&=LoadMimeCache(cache,(const char *)
+      (void) LoadMimeCache(cache,(const char *)
         GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
       option=(const StringInfo *) GetNextValueInLinkedList(options);
     }
