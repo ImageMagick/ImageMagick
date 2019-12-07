@@ -96,7 +96,7 @@
 #  limitations under the License.
 #
 #  Makefile for building the MagickCore API.
-# 
+#
 
 #  Copyright 1999-2020 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
@@ -256,6 +256,8 @@ bin_PROGRAMS = $(am__EXEEXT_1)
 TESTS = $(TESTS_TESTS) $(am__EXEEXT_5)
 XFAIL_TESTS = $(am__EXEEXT_6) $(am__EXEEXT_6)
 check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_4)
+@MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE@am__append_1 = MagickCore/threshold-map.h
+@MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE@am__append_2 = MagickCore/threshold-map.h
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ac_func_fseeko.m4 \
@@ -826,7 +828,11 @@ am__objects_20 = filters/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK
 @WITH_MODULES_FALSE@	$(am__objects_19) $(am__objects_20)
 @WITH_MODULES_TRUE@am_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS =  \
 @WITH_MODULES_TRUE@	$(am__objects_1) $(am__objects_2)
-MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS = $(am_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS)
+am__objects_21 =
+nodist_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS =  \
+	$(am__objects_21)
+MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS = $(am_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS) \
+	$(nodist_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS)
 MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LINK =  \
 	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
@@ -835,7 +841,7 @@ MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LINK =  \
 MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_DEPENDENCIES =  \
 	$(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-am__objects_21 = MagickWand/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-animate.lo \
+am__objects_22 = MagickWand/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-animate.lo \
 	MagickWand/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-compare.lo \
 	MagickWand/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-composite.lo \
 	MagickWand/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-conjure.lo \
@@ -860,7 +866,7 @@ am__objects_21 = MagickWand/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUF
 	MagickWand/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wandcli.lo \
 	MagickWand/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wand-view.lo
 am_MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS =  \
-	$(am__objects_21)
+	$(am__objects_22)
 MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS = $(am_MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS)
 MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LINK =  \
 	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -2516,6 +2522,7 @@ am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
 SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
 	$(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
+	$(nodist_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
 	$(MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
 	$(coders_aai_la_SOURCES) $(coders_art_la_SOURCES) \
 	$(coders_avs_la_SOURCES) $(coders_bgr_la_SOURCES) \
@@ -3104,12 +3111,6 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
-INT16_T = @INT16_T@
-INT32_F = @INT32_F@
-INT32_T = @INT32_T@
-INT64_F = @INT64_F@
-INT64_T = @INT64_T@
-INT8_T = @INT8_T@
 JBIG_LIBS = @JBIG_LIBS@
 JEMALLOC_LIBS = @JEMALLOC_LIBS@
 JPEG_LIBS = @JPEG_LIBS@
@@ -3156,6 +3157,7 @@ LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 LZMA_CFLAGS = @LZMA_CFLAGS@
 LZMA_LIBS = @LZMA_LIBS@
 LaunchDelegate = @LaunchDelegate@
+MAGICKCORE_FREETYPE_DELEGATE = @MAGICKCORE_FREETYPE_DELEGATE@
 MAGICKCORE_PATH = @MAGICKCORE_PATH@
 MAGICKPP_LIBRARY_AGE = @MAGICKPP_LIBRARY_AGE@
 MAGICKPP_LIBRARY_CURRENT = @MAGICKPP_LIBRARY_CURRENT@
@@ -3299,16 +3301,6 @@ TCMALLOC_LIBS = @TCMALLOC_LIBS@
 THREAD_LIBS = @THREAD_LIBS@
 TIFF_LIBS = @TIFF_LIBS@
 TraceEncodeDelegate = @TraceEncodeDelegate@
-UINT16_T = @UINT16_T@
-UINT32_F = @UINT32_F@
-UINT32_T = @UINT32_T@
-UINT64_F = @UINT64_F@
-UINT64_T = @UINT64_T@
-UINT8_T = @UINT8_T@
-UINTMAX_F = @UINTMAX_F@
-UINTMAX_T = @UINTMAX_T@
-UINTPTR_F = @UINTPTR_F@
-UINTPTR_T = @UINTPTR_T@
 UMEM_LIBS = @UMEM_LIBS@
 UniconvertorDelegate = @UniconvertorDelegate@
 VERSION = @VERSION@
@@ -3427,26 +3419,22 @@ MODULECOMMONCPPFLAGS = $(AM_CPPFLAGS)
 # compiler, headers, and libraries are used as for a normal build.
 DISTCHECK_CONFIGURE_FLAGS = $(DISTCHECK_CONFIG_FLAGS)
 DISTCLEANFILES = _configs.sed MagickCore/magick-baseconfig.h
-CLEANFILES = \
-	$(MAGICKWAND_CLEANFILES) \
-	$(MAGICKPP_CLEANFILES) \
-	$(UTILITIES_CLEANFILES) \
-	$(TESTS_CLEANFILES)
-
+CLEANFILES = $(MAGICKWAND_CLEANFILES) $(MAGICKPP_CLEANFILES) \
+	$(UTILITIES_CLEANFILES) $(TESTS_CLEANFILES) $(am__append_2)
 
 # Binary scripts
 bin_SCRIPTS = \
-	$(MAGICKCORE_BIN_SCRPTS) \
-	$(MAGICKWAND_BIN_SCRPTS) \
-	$(MAGICKPP_SCRPTS)
+  $(MAGICKCORE_BIN_SCRPTS) \
+  $(MAGICKWAND_BIN_SCRPTS) \
+  $(MAGICKPP_SCRPTS)
 
 include_HEADERS = 
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = \
-	$(MAGICKCORE_NOINST_HDRS) \
-	$(MAGICKWAND_NOINST_HDRS) \
-	$(CODERS_NOINST_HDRS)
+  $(MAGICKCORE_NOINST_HDRS) \
+  $(MAGICKWAND_NOINST_HDRS) \
+  $(CODERS_NOINST_HDRS)
 
 @WIN32_NATIVE_BUILD_FALSE@SRCDIR = "$(srcdir)/"
 @WIN32_NATIVE_BUILD_TRUE@SRCDIR = '$(shell @WinPathScript@ $(srcdir)/)'
@@ -3459,45 +3447,44 @@ TAP_LOG_COMPILER = $(LOG_COMPILER)
 # Test extensions
 TEST_EXTENSIONS = .sh .tap
 TAP_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
-	$(top_srcdir)/config/tap-driver.sh
+  $(top_srcdir)/config/tap-driver.sh
 
 
 # Environment parameters to be used during tests
 TESTS_ENVIRONMENT = \
-	MAKE="$(MAKE)" \
-	MAKEFLAGS="$(MAKEFLAGS)" \
-	MEMCHECK="$(MEMCHECK)"
+  MAKE="$(MAKE)" \
+  MAKEFLAGS="$(MAKEFLAGS)" \
+  MEMCHECK="$(MEMCHECK)"
 
 TOP_EXTRA_DIST = \
   AUTHORS.txt \
-	ChangeLog \
-	LICENSE \
-	QuickStart.txt \
-	NOTICE \
-	Install-mac.txt \
-	Install-unix.txt \
-	Install-vms.txt \
-	Install-windows.txt \
-	magick.sh.in \
-	Magickshr.opt \
-	NEWS.txt \
-	Platforms.txt \
-	README.txt \
-	index.html \
-	gitversion.sh \
-	version.sh \
-	winpath.sh
+  ChangeLog \
+  LICENSE \
+  QuickStart.txt \
+  NOTICE \
+  Install-mac.txt \
+  Install-unix.txt \
+  Install-vms.txt \
+  Install-windows.txt \
+  magick.sh.in \
+  Magickshr.opt \
+  NEWS.txt \
+  Platforms.txt \
+  README.txt \
+  index.html \
+  version.sh \
+  winpath.sh
 
 
 # Additional files to distribute
 EXTRA_DIST = \
-	$(TOP_EXTRA_DIST) \
-	$(CONFIG_EXTRA_DIST) \
-	$(MAGICKCORE_EXTRA_DIST) \
-	$(MAGICKWAND_EXTRA_DIST) \
-	$(MAGICKPP_EXTRA_DIST) \
-	$(UTILITIES_EXTRA_DIST) \
-	$(TESTS_EXTRA_DIST)
+  $(TOP_EXTRA_DIST) \
+  $(CONFIG_EXTRA_DIST) \
+  $(MAGICKCORE_EXTRA_DIST) \
+  $(MAGICKWAND_EXTRA_DIST) \
+  $(MAGICKPP_EXTRA_DIST) \
+  $(UTILITIES_EXTRA_DIST) \
+  $(TESTS_EXTRA_DIST)
 
 lib_LTLIBRARIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) $(MAGICKPP_LIBS)
 AM_LDFLAGS = 
@@ -3506,91 +3493,91 @@ EXTRA_LTLIBRARIES =
 BUILT_SOURCES = 
 MOSTLYCLEANFILES = 
 M4_EXTRA_DIST = \
-	ac_func_fseeko.m4  \
-	ax_append_flag.m4  \
-	ax_c___attribute__.m4  \
-	ax_cflags_warn_all.m4  \
-	ax_compare_version.m4  \
-	ax_cxx_bool.m4  \
-	ax_cxx_namespaces.m4  \
-	ax_cxx_namespace_std.m4  \
-	ax_lang_compiler_ms.m4  \
-	ax_opencl.m4  \
-	ax_prefix_config_h.m4  \
-	ax_prog_perl_version.m4  \
-	ax_pthread.m4  \
-	ax_require_defined.m4  \
-	cxx_have_lstring.m4  \
-	cxx_have_std_libs.m4  \
-	framework.m4  \
-	libtool.m4  \
-	lt~obsolete.m4  \
-	ltoptions.m4  \
-	ltsugar.m4  \
-	ltversion.m4  \
-	magick_check_pthread_lib.m4  \
-	pkg.m4  
+  ac_func_fseeko.m4  \
+  ax_append_flag.m4  \
+  ax_c___attribute__.m4  \
+  ax_cflags_warn_all.m4  \
+  ax_compare_version.m4  \
+  ax_cxx_bool.m4  \
+  ax_cxx_namespaces.m4  \
+  ax_cxx_namespace_std.m4  \
+  ax_lang_compiler_ms.m4  \
+  ax_opencl.m4  \
+  ax_prefix_config_h.m4  \
+  ax_prog_perl_version.m4  \
+  ax_pthread.m4  \
+  ax_require_defined.m4  \
+  cxx_have_lstring.m4  \
+  cxx_have_std_libs.m4  \
+  framework.m4  \
+  libtool.m4  \
+  lt~obsolete.m4  \
+  ltoptions.m4  \
+  ltsugar.m4  \
+  ltversion.m4  \
+  magick_check_pthread_lib.m4  \
+  pkg.m4
 
 
 # Where architecture-independent configuration files get installed
 # (share/ImageMagick-version)
 configsharedir = $(SHARE_PATH)
 configshare_DATA = \
-	config/english.xml \
-	config/francais.xml \
-	config/locale.xml
+  config/english.xml \
+  config/francais.xml \
+  config/locale.xml
 
 
 # Where architecture-dependent configuration files get installed
 # (share/arch/ImageMagick-version)
 configsharearchdir = $(SHAREARCH_PATH)
 configsharearch_DATA = \
-	config/configure.xml
+  config/configure.xml
 
 
 # Where architecture-dependent configuration files get installed
 # (share/ImageMagick-version)
 configlibdir = $(CONFIGURE_PATH)
 configlib_DATA = \
-	config/colors.xml \
-	config/delegates.xml \
-	config/log.xml \
-	config/mime.xml \
-	config/policy.xml \
-	config/quantization-table.xml \
-	config/thresholds.xml \
-	config/type.xml \
-	config/type-apple.xml \
-	config/type-dejavu.xml \
-	config/type-ghostscript.xml \
-	config/type-urw-base35.xml \
-	config/type-windows.xml
+  config/colors.xml \
+  config/delegates.xml \
+  config/log.xml \
+  config/mime.xml \
+  config/policy.xml \
+  config/quantization-table.xml \
+  config/thresholds.xml \
+  config/type.xml \
+  config/type-apple.xml \
+  config/type-dejavu.xml \
+  config/type-ghostscript.xml \
+  config/type-urw-base35.xml \
+  config/type-windows.xml
 
 CONFIG_EXTRA_DIST = \
-	config/cmyk.icm \
-	config/colors.xml \
-	config/config.h.in \
-	config/delegates.xml.in \
-	config/english.xml \
-	config/francais.xml \
-	config/ImageMagick.rc \
-	config/ImageMagick.rdf.in \
-	config/install-sh \
-	config/lndir.sh \
-	config/locale.md \
-	config/locale.xml \
-	config/log.xml \
-	config/mime.xml \
-	config/policy.xml \
-	config/quantization-table.xml \
-	config/sRGB.icm \
-	config/thresholds.xml \
-	config/type-apple.xml.in \
-	config/type-dejavu.xml.in \
-	config/type-ghostscript.xml.in \
-	config/type-urw-base35.xml.in \
-	config/type-windows.xml.in \
-	config/type.xml.in
+  config/cmyk.icm \
+  config/colors.xml \
+  config/config.h.in \
+  config/delegates.xml.in \
+  config/english.xml \
+  config/francais.xml \
+  config/ImageMagick.rc \
+  config/ImageMagick.rdf.in \
+  config/install-sh \
+  config/lndir.sh \
+  config/locale.md \
+  config/locale.xml \
+  config/log.xml \
+  config/mime.xml \
+  config/policy.xml \
+  config/quantization-table.xml \
+  config/sRGB.icm \
+  config/thresholds.xml \
+  config/type-apple.xml.in \
+  config/type-dejavu.xml.in \
+  config/type-ghostscript.xml.in \
+  config/type-urw-base35.xml.in \
+  config/type-windows.xml.in \
+  config/type.xml.in
 
 
 # Where coder modules get installed
@@ -4953,19 +4940,19 @@ MagickCoreincarchdir = $(INCLUDEARCH_PATH)/MagickCore
 
 # Headers which are installed
 MagickCoreinc_HEADERS = \
-	$(MAGICKCORE_INCLUDE_HDRS)
+  $(MAGICKCORE_INCLUDE_HDRS)
 
 MagickCoreincarch_HEADERS = \
-	$(MAGICKCORE_INCLUDEARCH_HDRS)
+  $(MAGICKCORE_INCLUDEARCH_HDRS)
 
 MAGICKCORE_BIN_SCRPTS = \
   MagickCore/MagickCore-config
 
 MAGICKCORE_PKGCONFIG = \
   MagickCore/ImageMagick.pc \
-	MagickCore/MagickCore.pc \
-	MagickCore/ImageMagick-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.pc \
-	MagickCore/MagickCore-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.pc 
+  MagickCore/MagickCore.pc \
+  MagickCore/ImageMagick-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.pc \
+  MagickCore/MagickCore-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.pc
 
 MAGICKCORE_MANS = \
   MagickCore/MagickCore-config.1
@@ -4975,6 +4962,8 @@ MAGICKCORE_LIBS = MagickCore/libMagickCore-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SU
 @WITH_MODULES_TRUE@MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES = $(MAGICKCORE_BASE_SRCS) $(MAGICKCORE_PLATFORM_SRCS)
 @WITH_MODULES_FALSE@MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LIBADD = $(MAGICK_DEP_LIBS)
 @WITH_MODULES_TRUE@MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LIBADD = $(MAGICK_DEP_LIBS)
+nodist_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES =  \
+	$(am__append_1)
 MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS = $(AM_CPPFLAGS) $(LIBRARY_EXTRA_CPPFLAGS)
 @HAVE_LD_VERSION_SCRIPT_FALSE@MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
 @HAVE_LD_VERSION_SCRIPT_TRUE@MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LDFLAGS_VERSION = -Wl,--version-script=$(top_srcdir)/MagickCore/libMagickCore.map
@@ -4987,238 +4976,238 @@ MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_DEPENDENC
 
 # Library base sources
 MAGICKCORE_BASE_SRCS = \
-	MagickCore/MagickCore.h \
-	MagickCore/accelerate.c \
-	MagickCore/accelerate-private.h \
-	MagickCore/accelerate-kernels-private.h \
-	MagickCore/animate.c \
-	MagickCore/animate.h \
-	MagickCore/animate-private.h \
-	MagickCore/annotate.c \
-	MagickCore/annotate.h \
-	MagickCore/artifact.c \
-	MagickCore/artifact.h \
-	MagickCore/attribute.c \
-	MagickCore/attribute.h \
-	MagickCore/blob.c \
-	MagickCore/blob.h \
-	MagickCore/blob-private.h \
-	MagickCore/cache.c \
-	MagickCore/cache.h \
-	MagickCore/cache-private.h \
-	MagickCore/cache-view.c \
-	MagickCore/cache-view.h \
-	MagickCore/channel.c \
-	MagickCore/channel.h \
-	MagickCore/cipher.c \
-	MagickCore/cipher.h \
-	MagickCore/client.c \
-	MagickCore/client.h \
-	MagickCore/coder.c \
-	MagickCore/coder.h \
-	MagickCore/color.c \
-	MagickCore/color.h \
-	MagickCore/color-private.h \
-	MagickCore/colormap.c \
-	MagickCore/colormap.h \
-	MagickCore/colormap-private.h \
-	MagickCore/colorspace.c \
-	MagickCore/colorspace.h \
-	MagickCore/colorspace-private.h \
-	MagickCore/compare.c \
-	MagickCore/compare.h \
-	MagickCore/composite.c \
-	MagickCore/composite.h \
-	MagickCore/composite-private.h \
-	MagickCore/compress.c \
-	MagickCore/compress.h \
-	MagickCore/configure.c \
-	MagickCore/configure.h \
-	MagickCore/constitute.c \
-	MagickCore/constitute.h \
-	MagickCore/decorate.c \
-	MagickCore/decorate.h \
-	MagickCore/delegate.c \
-	MagickCore/delegate.h \
-	MagickCore/delegate-private.h \
-	MagickCore/deprecate.c \
-	MagickCore/deprecate.h \
-	MagickCore/display.c \
-	MagickCore/display.h \
-	MagickCore/display-private.h \
-	MagickCore/distort.c \
-	MagickCore/distort.h \
-	MagickCore/distribute-cache.c \
-	MagickCore/distribute-cache.h \
-	MagickCore/distribute-cache-private.h \
-	MagickCore/draw.c \
-	MagickCore/draw.h \
-	MagickCore/draw-private.h \
-	MagickCore/effect.c \
-	MagickCore/effect.h \
-	MagickCore/enhance.c \
-	MagickCore/enhance.h \
-	MagickCore/exception.c \
-	MagickCore/exception.h \
-	MagickCore/exception-private.h \
-	MagickCore/feature.c \
-	MagickCore/feature.h \
-	MagickCore/fourier.c \
-	MagickCore/fourier.h \
-	MagickCore/fx.c \
-	MagickCore/fx.h \
-	MagickCore/fx-private.h \
-	MagickCore/gem.c \
-	MagickCore/gem.h \
-	MagickCore/gem-private.h \
-	MagickCore/geometry.c \
-	MagickCore/geometry.h \
-	MagickCore/histogram.c \
-	MagickCore/histogram.h \
-	MagickCore/identify.c \
-	MagickCore/identify.h \
-	MagickCore/image.c \
-	MagickCore/image.h \
-	MagickCore/image-private.h \
-	MagickCore/image-view.c \
-	MagickCore/image-view.h \
-	MagickCore/layer.c \
-	MagickCore/layer.h \
-	MagickCore/linked-list.c \
-	MagickCore/linked-list.h \
-	MagickCore/list.c \
-	MagickCore/list.h \
-	MagickCore/locale.c \
-	MagickCore/locale_.h \
-	MagickCore/log.c \
-	MagickCore/log.h \
-	MagickCore/magic.c \
-	MagickCore/magic.h \
-	MagickCore/magick.c \
-	MagickCore/magick-baseconfig.h \
-	MagickCore/magick-config.h \
-	MagickCore/magick-type.h \
-	MagickCore/magick.h \
-	MagickCore/matrix.c \
-	MagickCore/matrix.h \
-	MagickCore/matrix-private.h \
-	MagickCore/memory.c \
-	MagickCore/memory_.h \
-	MagickCore/memory-private.h \
-	MagickCore/method-attribute.h \
-	MagickCore/methods.h \
-	MagickCore/mime.c \
-	MagickCore/mime.h \
-	MagickCore/module.c \
-	MagickCore/module.h \
-	MagickCore/monitor.c \
-	MagickCore/monitor.h \
-	MagickCore/monitor-private.h \
-	MagickCore/montage.c \
-	MagickCore/montage.h \
-	MagickCore/morphology.c \
-	MagickCore/morphology.h \
-	MagickCore/morphology-private.h \
-	MagickCore/nt-base.h \
+  MagickCore/MagickCore.h \
+  MagickCore/accelerate.c \
+  MagickCore/accelerate-private.h \
+  MagickCore/accelerate-kernels-private.h \
+  MagickCore/animate.c \
+  MagickCore/animate.h \
+  MagickCore/animate-private.h \
+  MagickCore/annotate.c \
+  MagickCore/annotate.h \
+  MagickCore/artifact.c \
+  MagickCore/artifact.h \
+  MagickCore/attribute.c \
+  MagickCore/attribute.h \
+  MagickCore/blob.c \
+  MagickCore/blob.h \
+  MagickCore/blob-private.h \
+  MagickCore/cache.c \
+  MagickCore/cache.h \
+  MagickCore/cache-private.h \
+  MagickCore/cache-view.c \
+  MagickCore/cache-view.h \
+  MagickCore/channel.c \
+  MagickCore/channel.h \
+  MagickCore/cipher.c \
+  MagickCore/cipher.h \
+  MagickCore/client.c \
+  MagickCore/client.h \
+  MagickCore/coder.c \
+  MagickCore/coder.h \
+  MagickCore/color.c \
+  MagickCore/color.h \
+  MagickCore/color-private.h \
+  MagickCore/colormap.c \
+  MagickCore/colormap.h \
+  MagickCore/colormap-private.h \
+  MagickCore/colorspace.c \
+  MagickCore/colorspace.h \
+  MagickCore/colorspace-private.h \
+  MagickCore/compare.c \
+  MagickCore/compare.h \
+  MagickCore/composite.c \
+  MagickCore/composite.h \
+  MagickCore/composite-private.h \
+  MagickCore/compress.c \
+  MagickCore/compress.h \
+  MagickCore/configure.c \
+  MagickCore/configure.h \
+  MagickCore/constitute.c \
+  MagickCore/constitute.h \
+  MagickCore/decorate.c \
+  MagickCore/decorate.h \
+  MagickCore/delegate.c \
+  MagickCore/delegate.h \
+  MagickCore/delegate-private.h \
+  MagickCore/deprecate.c \
+  MagickCore/deprecate.h \
+  MagickCore/display.c \
+  MagickCore/display.h \
+  MagickCore/display-private.h \
+  MagickCore/distort.c \
+  MagickCore/distort.h \
+  MagickCore/distribute-cache.c \
+  MagickCore/distribute-cache.h \
+  MagickCore/distribute-cache-private.h \
+  MagickCore/draw.c \
+  MagickCore/draw.h \
+  MagickCore/draw-private.h \
+  MagickCore/effect.c \
+  MagickCore/effect.h \
+  MagickCore/enhance.c \
+  MagickCore/enhance.h \
+  MagickCore/exception.c \
+  MagickCore/exception.h \
+  MagickCore/exception-private.h \
+  MagickCore/feature.c \
+  MagickCore/feature.h \
+  MagickCore/fourier.c \
+  MagickCore/fourier.h \
+  MagickCore/fx.c \
+  MagickCore/fx.h \
+  MagickCore/fx-private.h \
+  MagickCore/gem.c \
+  MagickCore/gem.h \
+  MagickCore/gem-private.h \
+  MagickCore/geometry.c \
+  MagickCore/geometry.h \
+  MagickCore/histogram.c \
+  MagickCore/histogram.h \
+  MagickCore/identify.c \
+  MagickCore/identify.h \
+  MagickCore/image.c \
+  MagickCore/image.h \
+  MagickCore/image-private.h \
+  MagickCore/image-view.c \
+  MagickCore/image-view.h \
+  MagickCore/layer.c \
+  MagickCore/layer.h \
+  MagickCore/linked-list.c \
+  MagickCore/linked-list.h \
+  MagickCore/list.c \
+  MagickCore/list.h \
+  MagickCore/locale.c \
+  MagickCore/locale_.h \
+  MagickCore/log.c \
+  MagickCore/log.h \
+  MagickCore/magic.c \
+  MagickCore/magic.h \
+  MagickCore/magick.c \
+  MagickCore/magick-baseconfig.h \
+  MagickCore/magick-config.h \
+  MagickCore/magick-type.h \
+  MagickCore/magick.h \
+  MagickCore/matrix.c \
+  MagickCore/matrix.h \
+  MagickCore/matrix-private.h \
+  MagickCore/memory.c \
+  MagickCore/memory_.h \
+  MagickCore/memory-private.h \
+  MagickCore/method-attribute.h \
+  MagickCore/methods.h \
+  MagickCore/mime.c \
+  MagickCore/mime.h \
+  MagickCore/module.c \
+  MagickCore/module.h \
+  MagickCore/monitor.c \
+  MagickCore/monitor.h \
+  MagickCore/monitor-private.h \
+  MagickCore/montage.c \
+  MagickCore/montage.h \
+  MagickCore/morphology.c \
+  MagickCore/morphology.h \
+  MagickCore/morphology-private.h \
+  MagickCore/nt-base.h \
   MagickCore/nt-base-private.h \
-	MagickCore/nt-feature.h \
-	MagickCore/opencl.c \
-	MagickCore/opencl.h \
-	MagickCore/opencl-private.h \
-	MagickCore/option.c \
-	MagickCore/option.h \
-	MagickCore/option-private.h \
-	MagickCore/paint.c \
-	MagickCore/paint.h \
-	MagickCore/pixel.c \
-	MagickCore/pixel.h \
-	MagickCore/pixel-accessor.h \
-	MagickCore/pixel-private.h \
-	MagickCore/policy.c \
-	MagickCore/policy.h \
-	MagickCore/policy-private.h \
-	MagickCore/prepress.c \
-	MagickCore/prepress.h \
-	MagickCore/property.c \
-	MagickCore/property.h \
-	MagickCore/profile.c \
-	MagickCore/profile.h \
-	MagickCore/profile-private.h \
-	MagickCore/quantize.c \
-	MagickCore/quantize.h \
-	MagickCore/quantum.c \
-	MagickCore/quantum.h \
-	MagickCore/quantum-export.c \
-	MagickCore/quantum-import.c \
-	MagickCore/quantum-private.h \
-	MagickCore/random.c \
-	MagickCore/random_.h \
-	MagickCore/random-private.h \
-	MagickCore/registry.c \
-	MagickCore/registry.h \
-	MagickCore/resample.c \
-	MagickCore/resample.h \
-	MagickCore/resample-private.h \
-	MagickCore/resize.c \
-	MagickCore/resize.h \
-	MagickCore/resize-private.h \
-	MagickCore/resource.c \
-	MagickCore/resource_.h \
-	MagickCore/resource-private.h \
-	MagickCore/segment.c \
-	MagickCore/segment.h \
-	MagickCore/semaphore.c \
-	MagickCore/semaphore.h \
-	MagickCore/semaphore-private.h \
-	MagickCore/shear.c \
-	MagickCore/shear.h \
-	MagickCore/signature.c \
-	MagickCore/signature.h \
-	MagickCore/signature-private.h \
-	MagickCore/splay-tree.c \
-	MagickCore/splay-tree.h \
-	MagickCore/static.c \
-	MagickCore/static.h \
-	MagickCore/statistic.c \
-	MagickCore/statistic.h \
-	MagickCore/stream.c \
-	MagickCore/stream.h \
-	MagickCore/stream-private.h \
-	MagickCore/string.c \
-	MagickCore/string_.h \
-	MagickCore/string-private.h \
-	MagickCore/studio.h \
-	MagickCore/thread.c \
-	MagickCore/thread_.h \
-	MagickCore/thread-private.h \
-	MagickCore/timer.c \
-	MagickCore/timer.h \
- 	MagickCore/timer-private.h \
-	MagickCore/token.c \
-	MagickCore/token.h \
-	MagickCore/token-private.h \
-	MagickCore/transform.c \
-	MagickCore/transform.h \
-	MagickCore/threshold.c \
-	MagickCore/threshold.h \
-	MagickCore/type.c \
-	MagickCore/type.h \
-	MagickCore/utility.c \
-	MagickCore/utility.h \
-	MagickCore/utility-private.h \
-	MagickCore/version.c \
-	MagickCore/version.h \
-	MagickCore/version-private.h \
-	MagickCore/vision.c \
-	MagickCore/vision.h \
-	MagickCore/widget.c \
-	MagickCore/widget.h \
-	MagickCore/widget-private.h \
-	MagickCore/xml-tree.c \
-	MagickCore/xml-tree.h \
-	MagickCore/xml-tree-private.h \
-	MagickCore/xwindow.c \
-	MagickCore/xwindow.h 
+  MagickCore/nt-feature.h \
+  MagickCore/opencl.c \
+  MagickCore/opencl.h \
+  MagickCore/opencl-private.h \
+  MagickCore/option.c \
+  MagickCore/option.h \
+  MagickCore/option-private.h \
+  MagickCore/paint.c \
+  MagickCore/paint.h \
+  MagickCore/pixel.c \
+  MagickCore/pixel.h \
+  MagickCore/pixel-accessor.h \
+  MagickCore/pixel-private.h \
+  MagickCore/policy.c \
+  MagickCore/policy.h \
+  MagickCore/policy-private.h \
+  MagickCore/prepress.c \
+  MagickCore/prepress.h \
+  MagickCore/property.c \
+  MagickCore/property.h \
+  MagickCore/profile.c \
+  MagickCore/profile.h \
+  MagickCore/profile-private.h \
+  MagickCore/quantize.c \
+  MagickCore/quantize.h \
+  MagickCore/quantum.c \
+  MagickCore/quantum.h \
+  MagickCore/quantum-export.c \
+  MagickCore/quantum-import.c \
+  MagickCore/quantum-private.h \
+  MagickCore/random.c \
+  MagickCore/random_.h \
+  MagickCore/random-private.h \
+  MagickCore/registry.c \
+  MagickCore/registry.h \
+  MagickCore/resample.c \
+  MagickCore/resample.h \
+  MagickCore/resample-private.h \
+  MagickCore/resize.c \
+  MagickCore/resize.h \
+  MagickCore/resize-private.h \
+  MagickCore/resource.c \
+  MagickCore/resource_.h \
+  MagickCore/resource-private.h \
+  MagickCore/segment.c \
+  MagickCore/segment.h \
+  MagickCore/semaphore.c \
+  MagickCore/semaphore.h \
+  MagickCore/semaphore-private.h \
+  MagickCore/shear.c \
+  MagickCore/shear.h \
+  MagickCore/signature.c \
+  MagickCore/signature.h \
+  MagickCore/signature-private.h \
+  MagickCore/splay-tree.c \
+  MagickCore/splay-tree.h \
+  MagickCore/static.c \
+  MagickCore/static.h \
+  MagickCore/statistic.c \
+  MagickCore/statistic.h \
+  MagickCore/stream.c \
+  MagickCore/stream.h \
+  MagickCore/stream-private.h \
+  MagickCore/string.c \
+  MagickCore/string_.h \
+  MagickCore/string-private.h \
+  MagickCore/studio.h \
+  MagickCore/thread.c \
+  MagickCore/thread_.h \
+  MagickCore/thread-private.h \
+  MagickCore/timer.c \
+  MagickCore/timer.h \
+  MagickCore/timer-private.h \
+  MagickCore/token.c \
+  MagickCore/token.h \
+  MagickCore/token-private.h \
+  MagickCore/transform.c \
+  MagickCore/transform.h \
+  MagickCore/threshold.c \
+  MagickCore/threshold.h \
+  MagickCore/type.c \
+  MagickCore/type.h \
+  MagickCore/utility.c \
+  MagickCore/utility.h \
+  MagickCore/utility-private.h \
+  MagickCore/version.c \
+  MagickCore/version.h \
+  MagickCore/version-private.h \
+  MagickCore/vision.c \
+  MagickCore/vision.h \
+  MagickCore/widget.c \
+  MagickCore/widget.h \
+  MagickCore/widget-private.h \
+  MagickCore/xml-tree.c \
+  MagickCore/xml-tree.h \
+  MagickCore/xml-tree-private.h \
+  MagickCore/xwindow.c \
+  MagickCore/xwindow.h
 
 @CYGWIN_BUILD_FALSE@@WIN32_NATIVE_BUILD_FALSE@MAGICKCORE_PLATFORM_SRCS = 
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@MAGICKCORE_PLATFORM_SRCS = \
@@ -5233,291 +5222,292 @@ MAGICKCORE_BASE_SRCS = \
 @WIN32_NATIVE_BUILD_TRUE@  MagickCore/nt-feature.h
 
 MAGICKCORE_INCLUDE_HDRS = \
-	MagickCore/MagickCore.h \
-	MagickCore/animate.h \
-	MagickCore/annotate.h \
-	MagickCore/artifact.h \
-	MagickCore/attribute.h \
-	MagickCore/blob.h \
-	MagickCore/cache.h \
-	MagickCore/cache-view.h \
-	MagickCore/channel.h \
-	MagickCore/cipher.h \
-	MagickCore/client.h \
-	MagickCore/coder.h \
-	MagickCore/color.h \
-	MagickCore/colormap.h \
-	MagickCore/colorspace.h \
-	MagickCore/compare.h \
-	MagickCore/composite.h \
-	MagickCore/compress.h \
-	MagickCore/configure.h \
-	MagickCore/constitute.h \
-	MagickCore/decorate.h \
-	MagickCore/delegate.h \
-	MagickCore/deprecate.h \
-	MagickCore/display.h \
-	MagickCore/distort.h \
-	MagickCore/distribute-cache.h \
-	MagickCore/draw.h \
-	MagickCore/effect.h \
-	MagickCore/enhance.h \
-	MagickCore/exception.h \
-	MagickCore/feature.h \
-	MagickCore/fourier.h \
-	MagickCore/fx.h \
-	MagickCore/gem.h \
-	MagickCore/geometry.h \
-	MagickCore/histogram.h \
-	MagickCore/identify.h \
-	MagickCore/image.h \
-	MagickCore/image-view.h \
-	MagickCore/layer.h \
-	MagickCore/linked-list.h \
-	MagickCore/list.h \
-	MagickCore/locale_.h \
-	MagickCore/log.h \
-	MagickCore/magic.h \
-	MagickCore/magick.h \
-	MagickCore/magick-config.h \
-	MagickCore/magick-type.h \
-	MagickCore/matrix.h \
-	MagickCore/memory_.h \
-	MagickCore/method-attribute.h \
-	MagickCore/methods.h \
-	MagickCore/mime.h \
-	MagickCore/module.h \
-	MagickCore/monitor.h \
-	MagickCore/montage.h \
-	MagickCore/morphology.h \
-	MagickCore/nt-base.h \
-	MagickCore/opencl.h \
-	MagickCore/option.h \
-	MagickCore/paint.h \
-	MagickCore/pixel.h \
-	MagickCore/pixel-accessor.h \
-	MagickCore/policy.h \
-	MagickCore/prepress.h \
-	MagickCore/profile.h \
-	MagickCore/property.h \
-	MagickCore/quantize.h \
-	MagickCore/quantum.h \
-	MagickCore/random_.h \
-	MagickCore/registry.h \
-	MagickCore/resample.h \
-	MagickCore/resize.h \
-	MagickCore/resource_.h \
-	MagickCore/segment.h \
-	MagickCore/semaphore.h \
-	MagickCore/shear.h \
-	MagickCore/signature.h \
-	MagickCore/splay-tree.h \
-	MagickCore/static.h \
-	MagickCore/statistic.h \
-	MagickCore/stream.h \
-	MagickCore/string_.h \
-	MagickCore/studio.h \
-	MagickCore/timer.h \
-	MagickCore/token.h \
-	MagickCore/transform.h \
-	MagickCore/threshold.h \
-	MagickCore/type.h \
-	MagickCore/utility.h \
-	MagickCore/version.h \
-	MagickCore/vision.h \
-	MagickCore/widget.h \
-	MagickCore/xml-tree.h \
-	MagickCore/xwindow.h
+  MagickCore/MagickCore.h \
+  MagickCore/animate.h \
+  MagickCore/annotate.h \
+  MagickCore/artifact.h \
+  MagickCore/attribute.h \
+  MagickCore/blob.h \
+  MagickCore/cache.h \
+  MagickCore/cache-view.h \
+  MagickCore/channel.h \
+  MagickCore/cipher.h \
+  MagickCore/client.h \
+  MagickCore/coder.h \
+  MagickCore/color.h \
+  MagickCore/colormap.h \
+  MagickCore/colorspace.h \
+  MagickCore/compare.h \
+  MagickCore/composite.h \
+  MagickCore/compress.h \
+  MagickCore/configure.h \
+  MagickCore/constitute.h \
+  MagickCore/decorate.h \
+  MagickCore/delegate.h \
+  MagickCore/deprecate.h \
+  MagickCore/display.h \
+  MagickCore/distort.h \
+  MagickCore/distribute-cache.h \
+  MagickCore/draw.h \
+  MagickCore/effect.h \
+  MagickCore/enhance.h \
+  MagickCore/exception.h \
+  MagickCore/feature.h \
+  MagickCore/fourier.h \
+  MagickCore/fx.h \
+  MagickCore/gem.h \
+  MagickCore/geometry.h \
+  MagickCore/histogram.h \
+  MagickCore/identify.h \
+  MagickCore/image.h \
+  MagickCore/image-view.h \
+  MagickCore/layer.h \
+  MagickCore/linked-list.h \
+  MagickCore/list.h \
+  MagickCore/locale_.h \
+  MagickCore/log.h \
+  MagickCore/magic.h \
+  MagickCore/magick.h \
+  MagickCore/magick-config.h \
+  MagickCore/magick-type.h \
+  MagickCore/matrix.h \
+  MagickCore/memory_.h \
+  MagickCore/method-attribute.h \
+  MagickCore/methods.h \
+  MagickCore/mime.h \
+  MagickCore/module.h \
+  MagickCore/monitor.h \
+  MagickCore/montage.h \
+  MagickCore/morphology.h \
+  MagickCore/nt-base.h \
+  MagickCore/opencl.h \
+  MagickCore/option.h \
+  MagickCore/paint.h \
+  MagickCore/pixel.h \
+  MagickCore/pixel-accessor.h \
+  MagickCore/policy.h \
+  MagickCore/prepress.h \
+  MagickCore/profile.h \
+  MagickCore/property.h \
+  MagickCore/quantize.h \
+  MagickCore/quantum.h \
+  MagickCore/random_.h \
+  MagickCore/registry.h \
+  MagickCore/resample.h \
+  MagickCore/resize.h \
+  MagickCore/resource_.h \
+  MagickCore/segment.h \
+  MagickCore/semaphore.h \
+  MagickCore/shear.h \
+  MagickCore/signature.h \
+  MagickCore/splay-tree.h \
+  MagickCore/static.h \
+  MagickCore/statistic.h \
+  MagickCore/stream.h \
+  MagickCore/string_.h \
+  MagickCore/studio.h \
+  MagickCore/timer.h \
+  MagickCore/token.h \
+  MagickCore/transform.h \
+  MagickCore/threshold.h \
+  MagickCore/type.h \
+  MagickCore/utility.h \
+  MagickCore/version.h \
+  MagickCore/vision.h \
+  MagickCore/widget.h \
+  MagickCore/xml-tree.h \
+  MagickCore/xwindow.h
 
 MAGICKCORE_NOINST_HDRS = \
-	MagickCore/accelerate-private.h \
-	MagickCore/accelerate-kernels-private.h \
-	MagickCore/animate-private.h \
-	MagickCore/annotate-private.h \
-	MagickCore/blob-private.h \
- 	MagickCore/cache-private.h \
-	MagickCore/cache-private.h \
- 	MagickCore/coder-private.h \
-	MagickCore/colormap-private.h \
- 	MagickCore/color-private.h \
-	MagickCore/color-private.h \
-	MagickCore/colorspace-private.h \
-	MagickCore/composite-private.h \
- 	MagickCore/configure-private.h \
- 	MagickCore/constitute-private.h \
- 	MagickCore/delegate-private.h \
-	MagickCore/delegate-private.h \
-	MagickCore/display-private.h \
-	MagickCore/distribute-cache-private.h \
-	MagickCore/draw-private.h \
-	MagickCore/exception-private.h \
-	MagickCore/fx-private.h \
-	MagickCore/gem-private.h \
-	MagickCore/image-private.h \
- 	MagickCore/locale-private.h \
- 	MagickCore/log-private.h \
- 	MagickCore/magick-private.h \
- 	MagickCore/magic-private.h \
-	MagickCore/matrix-private.h \
-	MagickCore/memory-private.h \
- 	MagickCore/methods-private.h \
- 	MagickCore/mime-private.h \
-	MagickCore/mime-private.h \
- 	MagickCore/module-private.h \
-	MagickCore/monitor-private.h \
-	MagickCore/morphology-private.h \
-	MagickCore/nt-base.h \
-	MagickCore/nt-feature.h \
-	MagickCore/opencl-private.h \
-	MagickCore/option-private.h \
- 	MagickCore/pixel-private.h \
- 	MagickCore/policy-private.h \
- 	MagickCore/profile-private.h \
-	MagickCore/quantum-private.h \
- 	MagickCore/random_-private.h \
-	MagickCore/random-private.h \
- 	MagickCore/registry-private.h \
-	MagickCore/resample-private.h \
-	MagickCore/resize-private.h \
- 	MagickCore/resource-private.h \
-	MagickCore/resource-private.h \
- 	MagickCore/semaphore-private.h \
-	MagickCore/semaphore-private.h \
-	MagickCore/signature-private.h \
-	MagickCore/stream-private.h \
-	MagickCore/string-private.h \
-	MagickCore/thread_.h \
-	MagickCore/thread-private.h \
- 	MagickCore/timer-private.h \
-	MagickCore/token-private.h \
-	MagickCore/transform-private.h \
- 	MagickCore/type-private.h \
-	MagickCore/utility-private.h \
-	MagickCore/version-private.h \
- 	MagickCore/widget-private.h \
-	MagickCore/xml-tree-private.h \
-	MagickCore/xwindow-private.h
+  MagickCore/accelerate-private.h \
+  MagickCore/accelerate-kernels-private.h \
+  MagickCore/animate-private.h \
+  MagickCore/annotate-private.h \
+  MagickCore/blob-private.h \
+  MagickCore/cache-private.h \
+  MagickCore/cache-private.h \
+  MagickCore/coder-private.h \
+  MagickCore/colormap-private.h \
+  MagickCore/color-private.h \
+  MagickCore/color-private.h \
+  MagickCore/colorspace-private.h \
+  MagickCore/composite-private.h \
+  MagickCore/configure-private.h \
+  MagickCore/constitute-private.h \
+  MagickCore/delegate-private.h \
+  MagickCore/delegate-private.h \
+  MagickCore/display-private.h \
+  MagickCore/distribute-cache-private.h \
+  MagickCore/draw-private.h \
+  MagickCore/exception-private.h \
+  MagickCore/fx-private.h \
+  MagickCore/gem-private.h \
+  MagickCore/image-private.h \
+  MagickCore/locale-private.h \
+  MagickCore/log-private.h \
+  MagickCore/magick-private.h \
+  MagickCore/magic-private.h \
+  MagickCore/matrix-private.h \
+  MagickCore/memory-private.h \
+  MagickCore/methods-private.h \
+  MagickCore/mime-private.h \
+  MagickCore/mime-private.h \
+  MagickCore/module-private.h \
+  MagickCore/monitor-private.h \
+  MagickCore/morphology-private.h \
+  MagickCore/nt-base.h \
+  MagickCore/nt-feature.h \
+  MagickCore/opencl-private.h \
+  MagickCore/option-private.h \
+  MagickCore/pixel-private.h \
+  MagickCore/policy-private.h \
+  MagickCore/profile-private.h \
+  MagickCore/quantum-private.h \
+  MagickCore/random_-private.h \
+  MagickCore/random-private.h \
+  MagickCore/registry-private.h \
+  MagickCore/resample-private.h \
+  MagickCore/resize-private.h \
+  MagickCore/resource-private.h \
+  MagickCore/resource-private.h \
+  MagickCore/semaphore-private.h \
+  MagickCore/semaphore-private.h \
+  MagickCore/signature-private.h \
+  MagickCore/stream-private.h \
+  MagickCore/string-private.h \
+  MagickCore/thread_.h \
+  MagickCore/thread-private.h \
+  MagickCore/timer-private.h \
+  MagickCore/token-private.h \
+  MagickCore/transform-private.h \
+  MagickCore/type-private.h \
+  MagickCore/utility-private.h \
+  MagickCore/version-private.h \
+  MagickCore/widget-private.h \
+  MagickCore/xml-tree-private.h \
+  MagickCore/xwindow-private.h
 
 MAGICKCORE_INCLUDEARCH_HDRS = \
-	MagickCore/magick-baseconfig.h
+  MagickCore/magick-baseconfig.h
 
 MAGICKCORE_EXTRA_DIST = \
-	MagickCore/MagickCore-config.in \
-	$(MAGICKCORE_MANS) \
-	MagickCore/ImageMagick.pc.in \
-	MagickCore/MagickCore.pc.in \
-	MagickCore/libMagickCore.map \
-	MagickCore/nt-base.c \
-	MagickCore/nt-feature.c
+  MagickCore/MagickCore-config.in \
+  $(MAGICKCORE_MANS) \
+  MagickCore/ImageMagick.pc.in \
+  MagickCore/MagickCore.pc.in \
+  MagickCore/libMagickCore.map \
+  MagickCore/nt-base.c \
+  MagickCore/nt-feature.c
 
+@MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE@libMagickCore_threshold_target = MagickCore/libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-threshold.lo
 MagickWandincdir = $(INCLUDE_PATH)/MagickWand
 MAGICKWAND_CPPFLAGS = $(AM_CPPFLAGS)
 MAGICKWAND_SOURCES = \
-	MagickWand/MagickWand.h \
-	MagickWand/animate.c \
-	MagickWand/animate.h \
-	MagickWand/compare.c \
-	MagickWand/compare.h \
-	MagickWand/composite.c \
-	MagickWand/composite.h \
-	MagickWand/conjure.c \
-	MagickWand/conjure.h \
-	MagickWand/convert.c \
-	MagickWand/convert.h \
-	MagickWand/deprecate.h \
-	MagickWand/deprecate.c \
-	MagickWand/display.c \
-	MagickWand/display.h \
-	MagickWand/drawing-wand.c \
-	MagickWand/drawing-wand.h \
-	MagickWand/identify.c \
-	MagickWand/identify.h \
-	MagickWand/import.c \
-	MagickWand/import.h \
-	MagickWand/magick-cli.c \
-	MagickWand/magick-cli.h \
-	MagickWand/magick-image.c \
-	MagickWand/magick-image.h \
-	MagickWand/magick-property.c \
-	MagickWand/magick-property.h \
-	MagickWand/magick-wand.c \
-	MagickWand/magick-wand-private.h \
-	MagickWand/method-attribute.h \
-	MagickWand/mogrify.c \
-	MagickWand/mogrify.h \
-	MagickWand/mogrify-private.h \
-	MagickWand/montage.c \
-	MagickWand/montage.h \
-	MagickWand/operation.c \
-	MagickWand/operation.h \
-	MagickWand/operation-private.h \
-	MagickWand/pixel-iterator.c \
-	MagickWand/pixel-iterator.h \
-	MagickWand/pixel-wand.c \
-	MagickWand/pixel-wand.h \
-	MagickWand/pixel-wand-private.h \
-	MagickWand/script-token.c \
-	MagickWand/script-token.h \
-	MagickWand/stream.c \
-	MagickWand/stream.h \
-	MagickWand/studio.h \
-	MagickWand/wand.c \
-	MagickWand/wand.h \
-	MagickWand/wandcli.c \
-	MagickWand/wandcli.h \
-	MagickWand/wandcli-private.h \
-	MagickWand/wand-view.c \
-	MagickWand/wand-view.h 
+  MagickWand/MagickWand.h \
+  MagickWand/animate.c \
+  MagickWand/animate.h \
+  MagickWand/compare.c \
+  MagickWand/compare.h \
+  MagickWand/composite.c \
+  MagickWand/composite.h \
+  MagickWand/conjure.c \
+  MagickWand/conjure.h \
+  MagickWand/convert.c \
+  MagickWand/convert.h \
+  MagickWand/deprecate.h \
+  MagickWand/deprecate.c \
+  MagickWand/display.c \
+  MagickWand/display.h \
+  MagickWand/drawing-wand.c \
+  MagickWand/drawing-wand.h \
+  MagickWand/identify.c \
+  MagickWand/identify.h \
+  MagickWand/import.c \
+  MagickWand/import.h \
+  MagickWand/magick-cli.c \
+  MagickWand/magick-cli.h \
+  MagickWand/magick-image.c \
+  MagickWand/magick-image.h \
+  MagickWand/magick-property.c \
+  MagickWand/magick-property.h \
+  MagickWand/magick-wand.c \
+  MagickWand/magick-wand-private.h \
+  MagickWand/method-attribute.h \
+  MagickWand/mogrify.c \
+  MagickWand/mogrify.h \
+  MagickWand/mogrify-private.h \
+  MagickWand/montage.c \
+  MagickWand/montage.h \
+  MagickWand/operation.c \
+  MagickWand/operation.h \
+  MagickWand/operation-private.h \
+  MagickWand/pixel-iterator.c \
+  MagickWand/pixel-iterator.h \
+  MagickWand/pixel-wand.c \
+  MagickWand/pixel-wand.h \
+  MagickWand/pixel-wand-private.h \
+  MagickWand/script-token.c \
+  MagickWand/script-token.h \
+  MagickWand/stream.c \
+  MagickWand/stream.h \
+  MagickWand/studio.h \
+  MagickWand/wand.c \
+  MagickWand/wand.h \
+  MagickWand/wandcli.c \
+  MagickWand/wandcli.h \
+  MagickWand/wandcli-private.h \
+  MagickWand/wand-view.c \
+  MagickWand/wand-view.h
 
 MAGICKWAND_INCLUDE_HDRS = \
-	MagickWand/MagickWand.h \
-	MagickWand/animate.h \
-	MagickWand/compare.h \
-	MagickWand/composite.h \
-	MagickWand/conjure.h \
-	MagickWand/convert.h \
-	MagickWand/deprecate.h \
-	MagickWand/display.h \
-	MagickWand/drawing-wand.h \
-	MagickWand/identify.h \
-	MagickWand/import.h \
-	MagickWand/magick-cli.h \
-	MagickWand/magick-image.h \
-	MagickWand/magick-property.h \
-	MagickWand/method-attribute.h \
-	MagickWand/mogrify.h \
-	MagickWand/montage.h \
-	MagickWand/operation.h \
-	MagickWand/pixel-iterator.h \
-	MagickWand/pixel-wand.h \
-	MagickWand/stream.h \
-	MagickWand/wandcli.h \
-	MagickWand/wand-view.h
+  MagickWand/MagickWand.h \
+  MagickWand/animate.h \
+  MagickWand/compare.h \
+  MagickWand/composite.h \
+  MagickWand/conjure.h \
+  MagickWand/convert.h \
+  MagickWand/deprecate.h \
+  MagickWand/display.h \
+  MagickWand/drawing-wand.h \
+  MagickWand/identify.h \
+  MagickWand/import.h \
+  MagickWand/magick-cli.h \
+  MagickWand/magick-image.h \
+  MagickWand/magick-property.h \
+  MagickWand/method-attribute.h \
+  MagickWand/mogrify.h \
+  MagickWand/montage.h \
+  MagickWand/operation.h \
+  MagickWand/pixel-iterator.h \
+  MagickWand/pixel-wand.h \
+  MagickWand/stream.h \
+  MagickWand/wandcli.h \
+  MagickWand/wand-view.h
 
 MAGICKWAND_NOINST_HDRS = \
-	MagickWand/mogrify-private.h \
-	MagickWand/magick-wand-private.h \
-	MagickWand/operation-private.h \
-	MagickWand/pixel-wand-private.h \
-	MagickWand/script-token.h \
-	MagickWand/studio.h \
-	MagickWand/wand.h \
-	MagickWand/wandcli-private.h
+  MagickWand/mogrify-private.h \
+  MagickWand/magick-wand-private.h \
+  MagickWand/operation-private.h \
+  MagickWand/pixel-wand-private.h \
+  MagickWand/script-token.h \
+  MagickWand/studio.h \
+  MagickWand/wand.h \
+  MagickWand/wandcli-private.h
 
 
 # Headers which are installed
 MagickWandinc_HEADERS = \
-	$(MAGICKWAND_INCLUDE_HDRS)
+  $(MAGICKWAND_INCLUDE_HDRS)
 
 MAGICKWAND_BIN_SCRPTS = \
-	MagickWand/MagickWand-config
+  MagickWand/MagickWand-config
 
 MAGICKWAND_PKGCONFIG = \
-	MagickWand/MagickWand.pc \
-	MagickWand/MagickWand-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.pc
+  MagickWand/MagickWand.pc \
+  MagickWand/MagickWand-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.pc
 
 MAGICKWAND_MANS = \
-	MagickWand/MagickWand-config.1
+  MagickWand/MagickWand-config.1
 
 MAGICKWAND_BUILT_SRCS = 
 MAGICKWAND_LIBS = MagickWand/libMagickWand-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.la
@@ -5527,15 +5517,15 @@ MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS 
 @HAVE_LD_VERSION_SCRIPT_TRUE@MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LDFLAGS_VERSION = -Wl,--version-script=$(top_srcdir)/MagickWand/libMagickWand.map
 MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LDFLAGS = -no-undefined \
   $(MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LDFLAGS_VERSION) $(MAGICK_LT_RELEASE_OPTS) \
-	-version-info \
-	$(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
+  -version-info \
+  $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
 MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LIBADD = $(MAGICKCORE_LIBS) $(X11_LIBS) $(GOMP_LIBS) $(MATH_LIBS)
 MAGICKWAND_EXTRA_DIST = \
-	MagickWand/ChangeLog \
-	MagickWand/libMagickWand.map \
-	MagickWand/MagickWand-config.1 \
-	MagickWand/MagickWand.pc.in
+  MagickWand/ChangeLog \
+  MagickWand/libMagickWand.map \
+  MagickWand/MagickWand-config.1 \
+  MagickWand/MagickWand.pc.in
 
 MAGICKWAND_CLEANFILES = 
 MAGICKPP_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/Magick++/lib
@@ -5558,89 +5548,89 @@ MAGICKPP_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/Magick++/lib
 @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_INCHEADERS = 
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_INCHEADERS = $(MAGICKPP_INCHEADERS_OPT)
 MAGICKPP_SCRPTS_OPT = \
-	Magick++/bin/Magick++-config
+  Magick++/bin/Magick++-config
 
 MAGICKPP_MANS_OPT = \
-	Magick++/bin/Magick++-config.1
+  Magick++/bin/Magick++-config.1
 
 MAGICKPP_PKGCONFIG_OPT = \
-	Magick++/lib/Magick++.pc \
-	Magick++/lib/Magick++-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.pc
+  Magick++/lib/Magick++.pc \
+  Magick++/lib/Magick++-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.pc
 
 MAGICKPP_TEST_SCRPTS_OPT = \
-	Magick++/tests/tests.tap \
-	Magick++/demo/demos.tap
+  Magick++/tests/tests.tap \
+  Magick++/demo/demos.tap
 
 MAGICKPP_EXTRA_DIST = \
-	Magick++/AUTHORS \
-	Magick++/ChangeLog \
-	Magick++/INSTALL \
-	Magick++/LICENSE \
-	Magick++/NEWS \
-	Magick++/README \
-	Magick++/bin/Magick++-config.1 \
-	Magick++/bin/Magick++-config.in \
-	Magick++/lib/libMagick++.map \
-	Magick++/lib/Magick++.pc.in \
-	Magick++/demo/model.miff \
-	Magick++/demo/smile.miff \
-	Magick++/demo/smile_anim.miff \
-	Magick++/demo/tile.miff \
-	$(MAGICKPP_TEST_SCRPTS_OPT) \
-	Magick++/tests/test_image.miff \
-	Magick++/tests/test_image_anim.miff
+  Magick++/AUTHORS \
+  Magick++/ChangeLog \
+  Magick++/INSTALL \
+  Magick++/LICENSE \
+  Magick++/NEWS \
+  Magick++/README \
+  Magick++/bin/Magick++-config.1 \
+  Magick++/bin/Magick++-config.in \
+  Magick++/lib/libMagick++.map \
+  Magick++/lib/Magick++.pc.in \
+  Magick++/demo/model.miff \
+  Magick++/demo/smile.miff \
+  Magick++/demo/smile_anim.miff \
+  Magick++/demo/tile.miff \
+  $(MAGICKPP_TEST_SCRPTS_OPT) \
+  Magick++/tests/test_image.miff \
+  Magick++/tests/test_image_anim.miff
 
 MAGICKPP_CLEANFILES = \
-	Magick++/demo/*_out* \
-	Magick++/demo/ir.out \
-	Magick++/tests/colorHistogram.txt \
-	Magick++/tests/testmagick_anim_out.miff \
-	Magick++/tests/ir.out
+  Magick++/demo/*_out* \
+  Magick++/demo/ir.out \
+  Magick++/tests/colorHistogram.txt \
+  Magick++/tests/testmagick_anim_out.miff \
+  Magick++/tests/ir.out
 
 Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES = \
-	Magick++/lib/Blob.cpp \
-	Magick++/lib/BlobRef.cpp \
-	Magick++/lib/CoderInfo.cpp \
-	Magick++/lib/Color.cpp \
-	Magick++/lib/Drawable.cpp \
-	Magick++/lib/Exception.cpp \
-	Magick++/lib/Functions.cpp \
-	Magick++/lib/Geometry.cpp \
-	Magick++/lib/Image.cpp \
-	Magick++/lib/ImageRef.cpp \
-	Magick++/lib/Montage.cpp \
-	Magick++/lib/Options.cpp \
-	Magick++/lib/Pixels.cpp \
-	Magick++/lib/ResourceLimits.cpp \
-	Magick++/lib/SecurityPolicy.cpp \
-	Magick++/lib/Statistic.cpp \
-	Magick++/lib/STL.cpp \
-	Magick++/lib/Thread.cpp \
-	Magick++/lib/TypeMetric.cpp \
-	Magick++/lib/Magick++.h \
-	Magick++/lib/Magick++/Blob.h \
-	Magick++/lib/Magick++/BlobRef.h \
-	Magick++/lib/Magick++/CoderInfo.h \
-	Magick++/lib/Magick++/Color.h \
-	Magick++/lib/Magick++/Drawable.h \
-	Magick++/lib/Magick++/Exception.h \
-	Magick++/lib/Magick++/Functions.h \
-	Magick++/lib/Magick++/Geometry.h \
-	Magick++/lib/Magick++/Image.h \
-	Magick++/lib/Magick++/ImageRef.h \
-	Magick++/lib/Magick++/Include.h \
-	Magick++/lib/Magick++/Montage.h \
-	Magick++/lib/Magick++/Options.h \
-	Magick++/lib/Magick++/Pixels.h \
-	Magick++/lib/Magick++/ResourceLimits.h \
-	Magick++/lib/Magick++/SecurityPolicy.h \
-	Magick++/lib/Magick++/Statistic.h \
-	Magick++/lib/Magick++/STL.h \
-	Magick++/lib/Magick++/Thread.h \
-	Magick++/lib/Magick++/TypeMetric.h
+  Magick++/lib/Blob.cpp \
+  Magick++/lib/BlobRef.cpp \
+  Magick++/lib/CoderInfo.cpp \
+  Magick++/lib/Color.cpp \
+  Magick++/lib/Drawable.cpp \
+  Magick++/lib/Exception.cpp \
+  Magick++/lib/Functions.cpp \
+  Magick++/lib/Geometry.cpp \
+  Magick++/lib/Image.cpp \
+  Magick++/lib/ImageRef.cpp \
+  Magick++/lib/Montage.cpp \
+  Magick++/lib/Options.cpp \
+  Magick++/lib/Pixels.cpp \
+  Magick++/lib/ResourceLimits.cpp \
+  Magick++/lib/SecurityPolicy.cpp \
+  Magick++/lib/Statistic.cpp \
+  Magick++/lib/STL.cpp \
+  Magick++/lib/Thread.cpp \
+  Magick++/lib/TypeMetric.cpp \
+  Magick++/lib/Magick++.h \
+  Magick++/lib/Magick++/Blob.h \
+  Magick++/lib/Magick++/BlobRef.h \
+  Magick++/lib/Magick++/CoderInfo.h \
+  Magick++/lib/Magick++/Color.h \
+  Magick++/lib/Magick++/Drawable.h \
+  Magick++/lib/Magick++/Exception.h \
+  Magick++/lib/Magick++/Functions.h \
+  Magick++/lib/Magick++/Geometry.h \
+  Magick++/lib/Magick++/Image.h \
+  Magick++/lib/Magick++/ImageRef.h \
+  Magick++/lib/Magick++/Include.h \
+  Magick++/lib/Magick++/Montage.h \
+  Magick++/lib/Magick++/Options.h \
+  Magick++/lib/Magick++/Pixels.h \
+  Magick++/lib/Magick++/ResourceLimits.h \
+  Magick++/lib/Magick++/SecurityPolicy.h \
+  Magick++/lib/Magick++/Statistic.h \
+  Magick++/lib/Magick++/STL.h \
+  Magick++/lib/Magick++/Thread.h \
+  Magick++/lib/Magick++/TypeMetric.h
 
 Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS = \
-	$(MAGICKPP_CPPFLAGS) $(LIBRARY_EXTRA_CPPFLAGS)
+  $(MAGICKPP_CPPFLAGS) $(LIBRARY_EXTRA_CPPFLAGS)
 
 magickpptopincdir = $(INCLUDE_PATH)
 magickpptopinc_HEADERS = $(MAGICKPP_TOP_INCHEADERS)
@@ -5650,22 +5640,22 @@ MAGICKPP_TOP_INCHEADERS_OPT = \
 magickppincdir = $(INCLUDE_PATH)/Magick++
 magickppinc_HEADERS = $(MAGICKPP_INCHEADERS)
 MAGICKPP_INCHEADERS_OPT = \
-	Magick++/lib/Magick++/Blob.h \
-	Magick++/lib/Magick++/CoderInfo.h \
-	Magick++/lib/Magick++/Color.h \
-	Magick++/lib/Magick++/Drawable.h \
-	Magick++/lib/Magick++/Exception.h \
-	Magick++/lib/Magick++/Functions.h \
-	Magick++/lib/Magick++/Geometry.h \
-	Magick++/lib/Magick++/Image.h \
-	Magick++/lib/Magick++/Include.h \
-	Magick++/lib/Magick++/Montage.h \
-	Magick++/lib/Magick++/Pixels.h \
-	Magick++/lib/Magick++/ResourceLimits.h \
-	Magick++/lib/Magick++/SecurityPolicy.h \
-	Magick++/lib/Magick++/Statistic.h \
-	Magick++/lib/Magick++/STL.h \
-	Magick++/lib/Magick++/TypeMetric.h
+  Magick++/lib/Magick++/Blob.h \
+  Magick++/lib/Magick++/CoderInfo.h \
+  Magick++/lib/Magick++/Color.h \
+  Magick++/lib/Magick++/Drawable.h \
+  Magick++/lib/Magick++/Exception.h \
+  Magick++/lib/Magick++/Functions.h \
+  Magick++/lib/Magick++/Geometry.h \
+  Magick++/lib/Magick++/Image.h \
+  Magick++/lib/Magick++/Include.h \
+  Magick++/lib/Magick++/Montage.h \
+  Magick++/lib/Magick++/Pixels.h \
+  Magick++/lib/Magick++/ResourceLimits.h \
+  Magick++/lib/Magick++/SecurityPolicy.h \
+  Magick++/lib/Magick++/Statistic.h \
+  Magick++/lib/Magick++/STL.h \
+  Magick++/lib/Magick++/TypeMetric.h
 
 @HAVE_LD_VERSION_SCRIPT_FALSE@Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
 @HAVE_LD_VERSION_SCRIPT_TRUE@Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LDFLAGS_VERSION = -Wl,--version-script=$(top_srcdir)/Magick++/lib/libMagick++.map
@@ -5676,28 +5666,28 @@ Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LDFLAGS =
 
 Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LIBADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 MAGICKPP_CHECK_PGRMS_OPT = \
-	Magick++/demo/analyze \
-	Magick++/demo/button \
-	Magick++/demo/demo \
-	Magick++/demo/detrans \
-	Magick++/demo/flip \
-	Magick++/demo/gravity \
-	Magick++/demo/piddle \
-	Magick++/demo/shapes \
-	Magick++/demo/zoom \
-	Magick++/tests/appendImages \
-	Magick++/tests/attributes \
-	Magick++/tests/averageImages \
-	Magick++/tests/coalesceImages \
-	Magick++/tests/coderInfo \
-	Magick++/tests/color \
-	Magick++/tests/colorHistogram \
-	Magick++/tests/exceptions \
-	Magick++/tests/geometry \
-	Magick++/tests/montageImages \
-	Magick++/tests/morphImages \
-	Magick++/tests/readWriteBlob \
-	Magick++/tests/readWriteImages
+  Magick++/demo/analyze \
+  Magick++/demo/button \
+  Magick++/demo/demo \
+  Magick++/demo/detrans \
+  Magick++/demo/flip \
+  Magick++/demo/gravity \
+  Magick++/demo/piddle \
+  Magick++/demo/shapes \
+  Magick++/demo/zoom \
+  Magick++/tests/appendImages \
+  Magick++/tests/attributes \
+  Magick++/tests/averageImages \
+  Magick++/tests/coalesceImages \
+  Magick++/tests/coderInfo \
+  Magick++/tests/color \
+  Magick++/tests/colorHistogram \
+  Magick++/tests/exceptions \
+  Magick++/tests/geometry \
+  Magick++/tests/montageImages \
+  Magick++/tests/morphImages \
+  Magick++/tests/readWriteBlob \
+  Magick++/tests/readWriteImages
 
 Magick___demo_analyze_SOURCES = Magick++/demo/analyze.cpp
 Magick___demo_analyze_LDADD = $(MAGICKPP_LDADD)
@@ -5771,11 +5761,11 @@ MAGICKPP_LOCAL_TARGETS = www/Magick++/NEWS.html www/Magick++/ChangeLog.html
 filtersdir = $(FILTER_PATH)
 MAGICK_FILTER_CPPFLAGS = $(AM_CPPFLAGS)
 MAGICKCORE_FILTER_SRCS = \
-	filters/analyze.c
+  filters/analyze.c
 
 @WITH_MODULES_FALSE@filters_LTLIBRARIES = 
 @WITH_MODULES_TRUE@filters_LTLIBRARIES = \
-@WITH_MODULES_TRUE@	filters/analyze.la
+@WITH_MODULES_TRUE@  filters/analyze.la
 
 filters_CPPFLAGS = $(MAGICK_FILTER_CPPFLAGS)
 
@@ -5786,7 +5776,7 @@ filters_analyze_la_LDFLAGS = $(MODULECOMMONFLAGS)
 filters_analyze_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 @WITH_UTILITIES_FALSE@UTILITIES_PGMS = 
 @WITH_UTILITIES_TRUE@UTILITIES_PGMS = \
-@WITH_UTILITIES_TRUE@	utilities/magick
+@WITH_UTILITIES_TRUE@  utilities/magick
 
 @WITH_UTILITIES_TRUE@UTILITIES_XFAIL_TESTS = \
 @WITH_UTILITIES_TRUE@  $(UTILITIES_TTF_XFAIL_TESTS) \
@@ -5797,42 +5787,42 @@ filters_analyze_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 @WITH_UTILITIES_TRUE@utilities_magick_SOURCES = utilities/magick.c
 @WITH_UTILITIES_FALSE@UTILITIES_MANS = 
 @WITH_UTILITIES_TRUE@UTILITIES_MANS = \
-@WITH_UTILITIES_TRUE@	utilities/ImageMagick.1 \
-@WITH_UTILITIES_TRUE@	utilities/animate.1 \
-@WITH_UTILITIES_TRUE@	utilities/compare.1 \
-@WITH_UTILITIES_TRUE@	utilities/composite.1 \
-@WITH_UTILITIES_TRUE@	utilities/conjure.1 \
-@WITH_UTILITIES_TRUE@	utilities/convert.1 \
-@WITH_UTILITIES_TRUE@	utilities/display.1 \
-@WITH_UTILITIES_TRUE@	utilities/identify.1 \
-@WITH_UTILITIES_TRUE@	utilities/import.1 \
-@WITH_UTILITIES_TRUE@	utilities/magick.1 \
-@WITH_UTILITIES_TRUE@	utilities/magick-script.1 \
-@WITH_UTILITIES_TRUE@	utilities/mogrify.1 \
-@WITH_UTILITIES_TRUE@	utilities/montage.1 \
-@WITH_UTILITIES_TRUE@	utilities/stream.1
+@WITH_UTILITIES_TRUE@  utilities/ImageMagick.1 \
+@WITH_UTILITIES_TRUE@  utilities/animate.1 \
+@WITH_UTILITIES_TRUE@  utilities/compare.1 \
+@WITH_UTILITIES_TRUE@  utilities/composite.1 \
+@WITH_UTILITIES_TRUE@  utilities/conjure.1 \
+@WITH_UTILITIES_TRUE@  utilities/convert.1 \
+@WITH_UTILITIES_TRUE@  utilities/display.1 \
+@WITH_UTILITIES_TRUE@  utilities/identify.1 \
+@WITH_UTILITIES_TRUE@  utilities/import.1 \
+@WITH_UTILITIES_TRUE@  utilities/magick.1 \
+@WITH_UTILITIES_TRUE@  utilities/magick-script.1 \
+@WITH_UTILITIES_TRUE@  utilities/mogrify.1 \
+@WITH_UTILITIES_TRUE@  utilities/montage.1 \
+@WITH_UTILITIES_TRUE@  utilities/stream.1
 
 @WITH_UTILITIES_FALSE@UTILITIES_CONFIGURE = 
 @WITH_UTILITIES_TRUE@UTILITIES_CONFIGURE = \
-@WITH_UTILITIES_TRUE@	utilities/ImageMagick.1.in \
-@WITH_UTILITIES_TRUE@	utilities/animate.1.in \
-@WITH_UTILITIES_TRUE@	utilities/compare.1.in \
-@WITH_UTILITIES_TRUE@	utilities/composite.1.in \
-@WITH_UTILITIES_TRUE@	utilities/conjure.1.in \
-@WITH_UTILITIES_TRUE@	utilities/convert.1.in \
-@WITH_UTILITIES_TRUE@	utilities/display.1.in \
-@WITH_UTILITIES_TRUE@	utilities/identify.1.in \
-@WITH_UTILITIES_TRUE@	utilities/import.1.in \
-@WITH_UTILITIES_TRUE@	utilities/magick.1.in \
-@WITH_UTILITIES_TRUE@	utilities/magick-script.1.in \
-@WITH_UTILITIES_TRUE@	utilities/mogrify.1.in \
-@WITH_UTILITIES_TRUE@	utilities/montage.1.in \
-@WITH_UTILITIES_TRUE@	utilities/stream.1.in
+@WITH_UTILITIES_TRUE@  utilities/ImageMagick.1.in \
+@WITH_UTILITIES_TRUE@  utilities/animate.1.in \
+@WITH_UTILITIES_TRUE@  utilities/compare.1.in \
+@WITH_UTILITIES_TRUE@  utilities/composite.1.in \
+@WITH_UTILITIES_TRUE@  utilities/conjure.1.in \
+@WITH_UTILITIES_TRUE@  utilities/convert.1.in \
+@WITH_UTILITIES_TRUE@  utilities/display.1.in \
+@WITH_UTILITIES_TRUE@  utilities/identify.1.in \
+@WITH_UTILITIES_TRUE@  utilities/import.1.in \
+@WITH_UTILITIES_TRUE@  utilities/magick.1.in \
+@WITH_UTILITIES_TRUE@  utilities/magick-script.1.in \
+@WITH_UTILITIES_TRUE@  utilities/mogrify.1.in \
+@WITH_UTILITIES_TRUE@  utilities/montage.1.in \
+@WITH_UTILITIES_TRUE@  utilities/stream.1.in
 
 @WITH_UTILITIES_FALSE@UTILITIES_EXTRA_DIST = 
 @WITH_UTILITIES_TRUE@UTILITIES_EXTRA_DIST = \
-@WITH_UTILITIES_TRUE@	$(UTILITIES_MANS) \
-@WITH_UTILITIES_TRUE@	$(UTILITIES_TESTS)
+@WITH_UTILITIES_TRUE@  $(UTILITIES_MANS) \
+@WITH_UTILITIES_TRUE@  $(UTILITIES_TESTS)
 
 @WITH_UTILITIES_FALSE@UTILITIES_CLEANFILES = 
 @WITH_UTILITIES_TRUE@UTILITIES_CLEANFILES = 
@@ -5860,9 +5850,9 @@ UTILITIES_UNINSTALL_LOCAL_TARGETS = uninstall-local-utilities
 #  Makefile for the ImageMagick validation suite.
 TESTS_CPPFLAGS = $(AM_CPPFLAGS)
 TESTS_CHECK_PGRMS = \
-	tests/validate \
-	tests/drawtest \
-	tests/wandtest
+  tests/validate \
+  tests/drawtest \
+  tests/wandtest
 
 tests_validate_SOURCES = tests/validate.c tests/validate.h
 tests_validate_CPPFLAGS = $(TESTS_CPPFLAGS)
@@ -5878,34 +5868,34 @@ tests_wandtest_LDFLAGS = $(LDFLAGS)
 tests_wandtest_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 TESTS_XFAIL_TESTS = 
 TESTS_TESTS = \
-	tests/cli-colorspace.tap \
-	tests/cli-pipe.tap \
-	tests/validate-colorspace.tap \
-	tests/validate-compare.tap \
-	tests/validate-composite.tap \
-	tests/validate-convert.tap \
-	tests/validate-formats-disk.tap \
-	tests/validate-formats-map.tap \
-	tests/validate-formats-memory.tap \
-	tests/validate-identify.tap \
-	tests/validate-import.tap \
-	tests/validate-montage.tap \
-	tests/validate-stream.tap \
-	tests/drawtest.tap \
-	tests/wandtest.tap
+  tests/cli-colorspace.tap \
+  tests/cli-pipe.tap \
+  tests/validate-colorspace.tap \
+  tests/validate-compare.tap \
+  tests/validate-composite.tap \
+  tests/validate-convert.tap \
+  tests/validate-formats-disk.tap \
+  tests/validate-formats-map.tap \
+  tests/validate-formats-memory.tap \
+  tests/validate-identify.tap \
+  tests/validate-import.tap \
+  tests/validate-montage.tap \
+  tests/validate-stream.tap \
+  tests/drawtest.tap \
+  tests/wandtest.tap
 
 TESTS_EXTRA_DIST = \
-	tests/common.shi \
+  tests/common.shi \
   tests/rose.pnm \
   tests/input_256c.miff \
   tests/input_bilevel.miff \
   tests/input_gray.miff \
   tests/input_truecolor.miff \
   tests/sequence.miff \
-	$(TESTS_TESTS)
+  $(TESTS_TESTS)
 
 TESTS_CLEANFILES = \
-	tests/*_out.*
+  tests/*_out.*
 
 @WITH_PERL_TRUE@PERLMAGICK = PerlMagick
 @WITH_PERL_TRUE@PERLMAKEMAKER = $(PERLMAGICK)/Makefile.PL
@@ -5924,25 +5914,25 @@ TESTS_CLEANFILES = \
 
 # Files to install in Pkgconfig directory
 pkgconfig_DATA = \
-	$(MAGICKCORE_PKGCONFIG) \
-	$(MAGICKWAND_PKGCONFIG) \
-	$(MAGICKPP_PKGCONFIG)
+  $(MAGICKCORE_PKGCONFIG) \
+  $(MAGICKWAND_PKGCONFIG) \
+  $(MAGICKPP_PKGCONFIG)
 
 
 # Manual pages to install
 @INSTALL_DOC_TRUE@man_MANS = \
-@INSTALL_DOC_TRUE@	$(MAGICKCORE_MANS) \
-@INSTALL_DOC_TRUE@	$(MAGICKWAND_MANS) \
-@INSTALL_DOC_TRUE@	$(MAGICKPP_MANS) \
-@INSTALL_DOC_TRUE@	$(UTILITIES_MANS)
+@INSTALL_DOC_TRUE@  $(MAGICKCORE_MANS) \
+@INSTALL_DOC_TRUE@  $(MAGICKWAND_MANS) \
+@INSTALL_DOC_TRUE@  $(MAGICKPP_MANS) \
+@INSTALL_DOC_TRUE@  $(UTILITIES_MANS)
 
 @INSTALL_DOC_TRUE@doc_DATA = \
-@INSTALL_DOC_TRUE@	LICENSE \
-@INSTALL_DOC_TRUE@	ChangeLog \
-@INSTALL_DOC_TRUE@	NEWS.txt
+@INSTALL_DOC_TRUE@  LICENSE \
+@INSTALL_DOC_TRUE@  ChangeLog \
+@INSTALL_DOC_TRUE@  NEWS.txt
 
 @MAINTAINER_MODE_TRUE@MAINTAINER_TARGETS = \
-@MAINTAINER_MODE_TRUE@	magick-version \
+@MAINTAINER_MODE_TRUE@  magick-version \
 @MAINTAINER_MODE_TRUE@  ImageMagick.spec \
 @MAINTAINER_MODE_TRUE@  $(PERLMAGICK_MAINTAINER_TARGETS)
 
@@ -5980,11 +5970,11 @@ HTML_UNINSTALL_DATA_TARGETS = uninstall-data-html
 @RPM_DELEGATE_TRUE@RPMARCH = $(MAGICK_TARGET_CPU)
 @RPM_DELEGATE_FALSE@DIST_ARCHIVE_RPM = 
 @RPM_DELEGATE_TRUE@DIST_ARCHIVE_RPM = \
-@RPM_DELEGATE_TRUE@	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm \
-@RPM_DELEGATE_TRUE@	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-c++-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm \
-@RPM_DELEGATE_TRUE@	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-c++-devel-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm \
-@RPM_DELEGATE_TRUE@	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-devel-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm \
-@RPM_DELEGATE_TRUE@	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-perl-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm
+@RPM_DELEGATE_TRUE@  $(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm \
+@RPM_DELEGATE_TRUE@  $(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-c++-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm \
+@RPM_DELEGATE_TRUE@  $(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-c++-devel-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm \
+@RPM_DELEGATE_TRUE@  $(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-devel-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm \
+@RPM_DELEGATE_TRUE@  $(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-perl-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-$(PACKAGE_RELEASE).$(RPMARCH).rpm
 
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -13299,6 +13289,9 @@ uninstall-man: uninstall-man1
 
 .PRECIOUS: Makefile
 
+@MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE@$(libMagickCore_threshold_target): MagickCore/threshold-map.h
+@MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE@MagickCore/threshold-map.h: config/thresholds.xml Makefile
+@MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE@	$(AM_V_GEN){ printf '%s\n  %s=\n' 'static const char *const' BuiltinMap; sed -e 's/"/\\"/g; s/^.*$$/    "&\\n"/; $$s/$$/;/' $<; } >$@
 install-exec-local-utilities:
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
 	cd $(DESTDIR)$(bindir) ; \
@@ -13464,9 +13457,9 @@ install-data-html:
 	@for dir in $(DOCDIRS) ; do \
 	  $(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/$$dir && \
 	  if test -d $(builddir)/$$dir ; then \
-  		docsrcdir=$(builddir)/$$dir; \
+	    docsrcdir=$(builddir)/$$dir; \
 	  else \
-  		docsrcdir=$(srcdir)/$$dir; \
+	    docsrcdir=$(srcdir)/$$dir; \
 	  fi; \
 	  for file in $$docsrcdir/*.* ; do \
 	    echo "$(INSTALL_DATA) $$file $(DESTDIR)$(pkgdocdir)/$$dir" ; \
@@ -13486,14 +13479,14 @@ magick-version: MagickCore/version.h
 	fi
 	@if test -n "$(VPATH)" ; then \
 	  cmp MagickCore/version.h $(srcdir)/MagickCore/version.h > /dev/null ; \
-          if test $$? -eq 1 ; then \
+	        if test $$? -eq 1 ; then \
 	    echo "Updating $(srcdir)/MagickCore/version.h ..."; \
 	    cp MagickCore/version.h $(srcdir)/MagickCore/version.h ; \
 	  fi ; \
 	fi ; \
 	touch magick-version
 
-${srcdir}/configure: ${srcdir}/version.sh ${srcdir}/gitversion.sh
+${srcdir}/configure: ${srcdir}/version.sh
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
 
@@ -13538,7 +13531,7 @@ $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 @RPM_DELEGATE_TRUE@	@echo ==============================================================
 
 @RPM_DELEGATE_TRUE@.PHONY: rpm
-@RPM_DELEGATE_TRUE@rpm:	dist
+@RPM_DELEGATE_TRUE@rpm: dist
 @RPM_DELEGATE_TRUE@	rm -rf $(RPMDIR)
 @RPM_DELEGATE_TRUE@	$(mkinstalldirs) $(RPMDIR)
 @RPM_DELEGATE_TRUE@	$(mkinstalldirs) $(RPMDIR)/BUILD

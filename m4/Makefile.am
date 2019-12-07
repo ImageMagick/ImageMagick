@@ -15,27 +15,27 @@
 #  Makefile for building ImageMagick m4 macros.
 
 M4_EXTRA_DIST =  \
-	ac_func_fseeko.m4  \
-	ax_append_flag.m4  \
-	ax_c___attribute__.m4  \
-	ax_cflags_warn_all.m4  \
-	ax_compare_version.m4  \
-	ax_cxx_bool.m4  \
-	ax_cxx_namespaces.m4  \
-	ax_cxx_namespace_std.m4  \
-	ax_lang_compiler_ms.m4  \
-	ax_opencl.m4  \
-	ax_prefix_config_h.m4  \
-	ax_prog_perl_version.m4  \
-	ax_pthread.m4  \
-	ax_require_defined.m4  \
-	cxx_have_lstring.m4  \
-	cxx_have_std_libs.m4  \
-	framework.m4  \
-	libtool.m4  \
-	lt~obsolete.m4  \
-	ltoptions.m4  \
-	ltsugar.m4  \
-	ltversion.m4  \
-	magick_check_pthread_lib.m4  \
-	pkg.m4  
+  ac_func_fseeko.m4  \
+  ax_append_flag.m4  \
+  ax_c___attribute__.m4  \
+  ax_cflags_warn_all.m4  \
+  ax_compare_version.m4  \
+  ax_cxx_bool.m4  \
+  ax_cxx_namespaces.m4  \
+  ax_cxx_namespace_std.m4  \
+  ax_lang_compiler_ms.m4  \
+  ax_opencl.m4  \
+  ax_prefix_config_h.m4  \
+  ax_prog_perl_version.m4  \
+  ax_pthread.m4  \
+  ax_require_defined.m4  \
+  cxx_have_lstring.m4  \
+  cxx_have_std_libs.m4  \
+  framework.m4  \
+  libtool.m4  \
+  lt~obsolete.m4  \
+  ltoptions.m4  \
+  ltsugar.m4  \
+  ltversion.m4  \
+  magick_check_pthread_lib.m4  \
+  pkg.m4

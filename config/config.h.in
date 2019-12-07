@@ -164,9 +164,6 @@
 /* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
 #undef HAVE_DOPRNT
 
-/* Define to 1 if the system has the type `double_t'. */
-#undef HAVE_DOUBLE_T
-
 /* Define to 1 if you have the `erf' function. */
 #undef HAVE_ERF
 
@@ -181,9 +178,6 @@
 
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
-
-/* Define to 1 if the system has the type `float_t'. */
-#undef HAVE_FLOAT_T
 
 /* Define to 1 if you have the `floor' function. */
 #undef HAVE_FLOOR
@@ -272,18 +266,8 @@
 /* Define to 1 if you have the <locale.h> header file. */
 #undef HAVE_LOCALE_H
 
-/* Define to 1 if the system has the type `locale_t'. */
-#undef HAVE_LOCALE_T
-
 /* Define to 1 if you have the `localtime_r' function. */
 #undef HAVE_LOCALTIME_R
-
-/* Define to 1 if the system has the type `long double'. */
-#undef HAVE_LONG_DOUBLE
-
-/* Define to 1 if the type `long double' works and has more range or precision
-   than `double'. */
-#undef HAVE_LONG_DOUBLE_WIDER
 
 /* Define to 1 if the system has the type `long long int'. */
 #undef HAVE_LONG_LONG_INT
@@ -863,9 +847,6 @@
 /* Define if you have LIBRAW library */
 #undef RAW_R_DELEGATE
 
-/* Define as the return type of signal handlers (`int' or `void'). */
-#undef RETSIGTYPE
-
 /* Define if you have RSVG library */
 #undef RSVG_DELEGATE
 
@@ -906,41 +887,11 @@
 /* The size of `long double', as computed by sizeof. */
 #undef SIZEOF_LONG_DOUBLE
 
-/* The size of `off_t', as computed by sizeof. */
-#undef SIZEOF_OFF_T
-
-/* The size of `signed int', as computed by sizeof. */
-#undef SIZEOF_SIGNED_INT
-
-/* The size of `signed long', as computed by sizeof. */
-#undef SIZEOF_SIGNED_LONG
-
-/* The size of `signed long long', as computed by sizeof. */
-#undef SIZEOF_SIGNED_LONG_LONG
-
-/* The size of `signed short', as computed by sizeof. */
-#undef SIZEOF_SIGNED_SHORT
-
-/* The size of `size_t', as computed by sizeof. */
-#undef SIZEOF_SIZE_T
-
-/* The size of `ssize_t', as computed by sizeof. */
-#undef SIZEOF_SSIZE_T
-
-/* The size of `unsigned int', as computed by sizeof. */
-#undef SIZEOF_UNSIGNED_INT
-
-/* The size of `unsigned int*', as computed by sizeof. */
-#undef SIZEOF_UNSIGNED_INTP
-
-/* The size of `unsigned long', as computed by sizeof. */
-#undef SIZEOF_UNSIGNED_LONG
-
 /* The size of `unsigned long long', as computed by sizeof. */
 #undef SIZEOF_UNSIGNED_LONG_LONG
 
-/* The size of `unsigned short', as computed by sizeof. */
-#undef SIZEOF_UNSIGNED_SHORT
+/* The size of `void *', as computed by sizeof. */
+#undef SIZEOF_VOID_P
 
 /* Define to 1 if the `S_IS*' macros in <sys/stat.h> do not work properly. */
 #undef STAT_MACROS_BROKEN

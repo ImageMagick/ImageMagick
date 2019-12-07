@@ -16,51 +16,51 @@
 
 if WITH_UTILITIES
 UTILITIES_PGMS = \
-	utilities/magick
+  utilities/magick
 
 UTILITIES_XFAIL_TESTS = \
   $(UTILITIES_TTF_XFAIL_TESTS) \
   $(UTILITIES_XML_XFAIL_TESTS)
 
-utilities_magick_LDADD	= $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_magick_LDFLAGS	= $(LDFLAGS)
-utilities_magick_SOURCES	= utilities/magick.c
+utilities_magick_LDADD    = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+utilities_magick_LDFLAGS  = $(LDFLAGS)
+utilities_magick_SOURCES  = utilities/magick.c
 
 UTILITIES_MANS = \
-	utilities/ImageMagick.1 \
-	utilities/animate.1 \
-	utilities/compare.1 \
-	utilities/composite.1 \
-	utilities/conjure.1 \
-	utilities/convert.1 \
-	utilities/display.1 \
-	utilities/identify.1 \
-	utilities/import.1 \
-	utilities/magick.1 \
-	utilities/magick-script.1 \
-	utilities/mogrify.1 \
-	utilities/montage.1 \
-	utilities/stream.1
+  utilities/ImageMagick.1 \
+  utilities/animate.1 \
+  utilities/compare.1 \
+  utilities/composite.1 \
+  utilities/conjure.1 \
+  utilities/convert.1 \
+  utilities/display.1 \
+  utilities/identify.1 \
+  utilities/import.1 \
+  utilities/magick.1 \
+  utilities/magick-script.1 \
+  utilities/mogrify.1 \
+  utilities/montage.1 \
+  utilities/stream.1
 
 UTILITIES_CONFIGURE = \
-	utilities/ImageMagick.1.in \
-	utilities/animate.1.in \
-	utilities/compare.1.in \
-	utilities/composite.1.in \
-	utilities/conjure.1.in \
-	utilities/convert.1.in \
-	utilities/display.1.in \
-	utilities/identify.1.in \
-	utilities/import.1.in \
-	utilities/magick.1.in \
-	utilities/magick-script.1.in \
-	utilities/mogrify.1.in \
-	utilities/montage.1.in \
-	utilities/stream.1.in
+  utilities/ImageMagick.1.in \
+  utilities/animate.1.in \
+  utilities/compare.1.in \
+  utilities/composite.1.in \
+  utilities/conjure.1.in \
+  utilities/convert.1.in \
+  utilities/display.1.in \
+  utilities/identify.1.in \
+  utilities/import.1.in \
+  utilities/magick.1.in \
+  utilities/magick-script.1.in \
+  utilities/mogrify.1.in \
+  utilities/montage.1.in \
+  utilities/stream.1.in
 
 UTILITIES_EXTRA_DIST = \
-	$(UTILITIES_MANS) \
-	$(UTILITIES_TESTS)
+  $(UTILITIES_MANS) \
+  $(UTILITIES_TESTS)
 
 UTILITIES_CLEANFILES =
 
