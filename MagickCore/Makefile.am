@@ -197,6 +197,7 @@ MAGICKCORE_BASE_SRCS = \
   MagickCore/morphology.c \
   MagickCore/morphology.h \
   MagickCore/morphology-private.h \
+  MagickCore/mutex.h \
   MagickCore/nt-base.h \
   MagickCore/nt-base-private.h \
   MagickCore/nt-feature.h \
@@ -449,6 +450,7 @@ MAGICKCORE_NOINST_HDRS = \
   MagickCore/module-private.h \
   MagickCore/monitor-private.h \
   MagickCore/morphology-private.h \
+  MagickCore/mutex.h \
   MagickCore/nt-base.h \
   MagickCore/nt-feature.h \
   MagickCore/opencl-private.h \
