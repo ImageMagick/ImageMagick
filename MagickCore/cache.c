@@ -2126,11 +2126,11 @@ MagickExport MagickBooleanType GetOneVirtualPixelInfo(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetPixelCacheColorspace() returns the class type of the pixel cache.
+%  GetPixelCacheColorspace() returns the colorspace of the pixel cache.
 %
 %  The format of the GetPixelCacheColorspace() method is:
 %
-%      Colorspace GetPixelCacheColorspace(Cache cache)
+%      Colorspace GetPixelCacheColorspace(const Cache cache)
 %
 %  A description of each parameter follows:
 %
