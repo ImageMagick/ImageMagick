@@ -169,9 +169,8 @@ static void *AcquireCompressionMemory(void *context,const size_t items,
     extent;
 
   (void) context;
-  if (HeapOverflowSanityCheck(items,size) != MagickFalse)
+  if (HeapOverflowSanityCheckGetSize(items,size,&extent) != MagickFalse)
     return((void *) NULL);
-  extent=items*size;
   if (extent > GetMaxMemoryRequest())
     return((void *) NULL);
   return(AcquireMagickMemory(extent));
