@@ -4,6 +4,8 @@
 2019-12-07  7.0.9-9 Cristy  <quetzlzacatenango@image...>
   * Build file clean-up (reference
     https://github.com/ImageMagick/ImageMagick/pull/1798).
+  * Introduce HeapOverflowSanityCheckGetExtent() method (reference
+    https://github.com/ImageMagick/ImageMagick/pull/1798).
 
 2019-12-01  7.0.9-8 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-8, GIT revision 16474:0bc0e95:20191207.
