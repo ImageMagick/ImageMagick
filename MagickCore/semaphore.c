@@ -46,6 +46,7 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/memory-private.h"
+#include "MagickCore/mutex.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/semaphore-private.h"
 #include "MagickCore/string_.h"
@@ -99,7 +100,6 @@ MagickExport void ActivateSemaphoreInfo(SemaphoreInfo **semaphore_info)
   assert(semaphore_info != (SemaphoreInfo **) NULL);
   if (*semaphore_info == (SemaphoreInfo *) NULL)
     {
-      InitializeMagickMutex();
       LockMagickMutex();
       if (*semaphore_info == (SemaphoreInfo *) NULL)
         *semaphore_info=AcquireSemaphoreInfo();
@@ -353,7 +353,6 @@ MagickExport void RelinquishSemaphoreInfo(SemaphoreInfo **semaphore_info)
   assert(semaphore_info != (SemaphoreInfo **) NULL);
   assert((*semaphore_info) != (SemaphoreInfo *) NULL);
   assert((*semaphore_info)->signature == MagickCoreSignature);
-  InitializeMagickMutex();
   LockMagickMutex();
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   omp_destroy_lock((omp_lock_t *) &(*semaphore_info)->mutex);

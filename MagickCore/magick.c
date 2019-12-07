@@ -66,6 +66,7 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/module.h"
 #include "MagickCore/module-private.h"
+#include "MagickCore/mutex.h"
 #include "MagickCore/nt-base-private.h"
 #include "MagickCore/nt-feature.h"
 #include "MagickCore/opencl-private.h"
