@@ -283,7 +283,7 @@ static inline void *AcquireAlignedMemory_WinAPI(const size_t size)
   (MAGICKCORE_MAX_ALIGNMENT_PADDING(CACHE_LINE_SIZE) + MAGICKCORE_SIZEOF_VOID_P)
 static inline void *reserve_space_for_actual_base_address(void *const p)
 {
-  return((void **)p+1);
+  return((void **) p+1);
 }
 
 static inline void **pointer_to_space_for_actual_base_address(void *const p)
@@ -339,7 +339,7 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
   size_t
     size;
 
-  if (HeapOverflowSanityCheckGetExtent(count,quantum,&size) != MagickFalse)
+  if (HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse)
     return(NULL);
   if (memory_methods.acquire_aligned_memory_handler != (AcquireAlignedMemoryHandler) NULL)
     return(memory_methods.acquire_aligned_memory_handler(size,CACHE_LINE_SIZE));
@@ -636,7 +636,7 @@ MagickExport void *AcquireQuantumMemory(const size_t count,const size_t quantum)
   size_t
     size;
 
-  if (HeapOverflowSanityCheckGetExtent(count,quantum,&size) != MagickFalse)
+  if (HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse)
     return((void *) NULL);
   return(AcquireMagickMemory(size));
 }
@@ -679,7 +679,7 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
   size_t
     size;
 
-  if (HeapOverflowSanityCheckGetExtent(count,quantum,&size) != MagickFalse)
+  if (HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse)
     return((MemoryInfo *) NULL);
   if (virtual_anonymous_memory == 0)
     {
@@ -1086,8 +1086,8 @@ MagickExport void *GetVirtualMemoryBlob(const MemoryInfo *memory_info)
 %    o quantum: the size (in bytes) of each object.
 %
 */
-extern MagickExport MagickBooleanType
-  HeapOverflowSanityCheck(const size_t count,const size_t quantum);
+extern MagickExport MagickBooleanType HeapOverflowSanityCheck(
+  const size_t count,const size_t quantum);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1100,7 +1100,7 @@ extern MagickExport MagickBooleanType
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  HeapOverflowSanityCheckGetExtent() returns MagickFalse if the heap allocation
+%  HeapOverflowSanityCheckGetSize() returns MagickFalse if the heap allocation
 %  request is not zero and fits within the maximum limits of size_t; in this
 %  case, the value (count*quantum) is returned in the size_t object to which
 %  points the parameter named "size".
@@ -1110,9 +1110,9 @@ extern MagickExport MagickBooleanType
 %  to ENOMEM. In this case, the object referenced by "size" is not modified.
 %
 %
-%  The format of the HeapOverflowSanityCheckGetExtent method is:
+%  The format of the HeapOverflowSanityCheckGetSize method is:
 %
-%      MagickBooleanType HeapOverflowSanityCheckGetExtent(const size_t count,
+%      MagickBooleanType HeapOverflowSanityCheckGetSize(const size_t count,
 %        const size_t quantum,size_t *const size)
 %
 %  A description of each parameter follows:
@@ -1124,9 +1124,8 @@ extern MagickExport MagickBooleanType
 %    o size: a pointer to an object to hold (count*quantum) if all goes well.
 %
 */
-extern MagickExport MagickBooleanType
-  HeapOverflowSanityCheckGetExtent(const size_t count,const size_t quantum,
-    size_t *const size);
+extern MagickExport MagickBooleanType HeapOverflowSanityCheckGetSize(
+  const size_t count,const size_t quantum,size_t *const size);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1484,7 +1483,7 @@ MagickExport void *ResizeQuantumMemory(void *memory,const size_t count,
   size_t
     size;
 
-  if (HeapOverflowSanityCheckGetExtent(count,quantum,&size) != MagickFalse)
+  if (HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse)
     {
       memory=RelinquishMagickMemory(memory);
       return((void *) NULL);

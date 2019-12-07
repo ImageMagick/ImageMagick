@@ -81,7 +81,7 @@ inline MagickExport MagickBooleanType HeapOverflowSanityCheck(
   return(MagickFalse);
 }
 
-inline MagickExport MagickBooleanType HeapOverflowSanityCheckGetExtent(
+inline MagickExport MagickBooleanType HeapOverflowSanityCheckGetSize(
   const size_t count,const size_t quantum,size_t *const extent)
 {
   size_t
