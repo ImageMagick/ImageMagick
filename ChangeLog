@@ -1,5 +1,5 @@
 2019-12-01  7.0.9-8 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.9-8, GIT revision 16
+  * Release ImageMagick version 7.0.9-8, GIT revision 16474:0bc0e95:20191207.
 
 2019-12-01  7.0.9-8 Cristy  <quetzlzacatenango@image...>
   * -type bilevel behavior restored, it creates a black and white image.
