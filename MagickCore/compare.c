@@ -221,7 +221,9 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
     Generate difference image.
   */
   status=MagickTrue;
-  fuzz=GetFuzzyColorDistance(image,reconstruct_image);
+  fuzz=(double) MagickMin(GetPixelChannels(image),
+    GetPixelChannels(reconstruct_image))*
+    GetFuzzyColorDistance(image,reconstruct_image);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
   highlight_view=AcquireAuthenticCacheView(highlight_image,exception);
