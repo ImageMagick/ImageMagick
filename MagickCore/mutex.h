@@ -23,49 +23,48 @@ extern "C" {
 #endif
 
 /*
-  When included in a translation unit, the following code provides within
-  that particular translation unit a means by which to synchronize multiple
-  threads that might try to enter the same critical section or to access a
-  shared resource; it can be included in multiple translation units, and
-  thereby provide a separate, independent means of synchronization to each
-  such translation unit.
+  When included in a translation unit, the following code provides the
+  translation unit a means by which to synchronize multiple threads that might
+  try to enter the same critical section or to access a shared resource; it can
+  be included in multiple translation units, and thereby provide a separate,
+  independent means of synchronization to each such translation unit.
 */
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 static omp_lock_t
-  mutex_for_this_translation_unit;
+  translation_unit_mutex;
 #elif defined(MAGICKCORE_THREAD_SUPPORT)
 static pthread_mutex_t
-  mutex_for_this_translation_unit = PTHREAD_MUTEX_INITIALIZER;
+  translation_unit_mutex = PTHREAD_MUTEX_INITIALIZER;
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
 static LONG
-  mutex_for_this_translation_unit = 0;
+  translation_unit_mutex = 0;
 #endif
 
 static inline void DestroyMagickMutex(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  omp_destroy_lock(&mutex_for_this_translation_unit);
+  omp_destroy_lock(&translation_unit_mutex);
 #endif
 }
 
 static inline void InitializeMagickMutex(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  omp_init_lock(&mutex_for_this_translation_unit);
+  omp_init_lock(&translation_unit_mutex);
 #endif
 }
 
 static inline void LockMagickMutex(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  omp_set_lock(&mutex_for_this_translation_unit);
+  omp_set_lock(&translation_unit_mutex);
 #elif defined(MAGICKCORE_THREAD_SUPPORT)
   {
     int
       status;
 
-    status=pthread_mutex_lock(&mutex_for_this_translation_unit);
+    status=pthread_mutex_lock(&translation_unit_mutex);
     if (status != 0)
       {
         errno=status;
@@ -73,7 +72,7 @@ static inline void LockMagickMutex(void)
       }
   }
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
-  while (InterlockedCompareExchange(&mutex_for_this_translation_unit,1L,0L) != 0)
+  while (InterlockedCompareExchange(&translation_unit_mutex,1L,0L) != 0)
     Sleep(10);
 #endif
 }
@@ -81,13 +80,13 @@ static inline void LockMagickMutex(void)
 static inline void UnlockMagickMutex(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  omp_unset_lock(&mutex_for_this_translation_unit);
+  omp_unset_lock(&translation_unit_mutex);
 #elif defined(MAGICKCORE_THREAD_SUPPORT)
   {
     int
       status;
 
-    status=pthread_mutex_unlock(&mutex_for_this_translation_unit);
+    status=pthread_mutex_unlock(&translation_unit_mutex);
     if (status != 0)
       {
         errno=status;
@@ -95,7 +94,7 @@ static inline void UnlockMagickMutex(void)
       }
   }
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
-  InterlockedExchange(&mutex_for_this_translation_unit,0L);
+  InterlockedExchange(&translation_unit_mutex,0L);
 #endif
 }
 
