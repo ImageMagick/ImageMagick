@@ -1764,9 +1764,13 @@ static MagickBooleanType ValidateXMPProfile(const StringInfo *profile)
   char
     *p;
 
-  p=StringLocateSubstring((const char *) GetStringInfoDatum(profile),"x:xmpmeta");
+  const char
+    *xmp;
+
+  xmp=(const char *) GetStringInfoDatum(profile);
+  p=StringLocateSubstring(xmp,"<rdf:RDF ");
   if (p != (char *) NULL)
-    p=StringLocateSubstring((const char *) GetStringInfoDatum(profile),"rdf:RDF");
+    p=StringLocateSubstring(p,"</rdf:RDF>");
   return(p == (char *) NULL ? MagickFalse : MagickTrue);
 }
 #endif
