@@ -64,7 +64,6 @@
 #include "MagickCore/list.h"
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
-#include "MagickCore/memory-private.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/montage.h"
@@ -116,8 +115,11 @@ struct _ThresholdMap
 /*
   Static declarations.
 */
-static const char
-  *MinimalThresholdMap =
+#if MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
+  #include "MagickCore/threshold-map.h"
+#else
+static const char *const
+  BuiltinMap=
     "<?xml version=\"1.0\"?>"
     "<thresholds>"
     "  <threshold map=\"threshold\" alias=\"1x1\">"
@@ -134,6 +136,7 @@ static const char
     "    </levels>"
     "  </threshold>"
     "</thresholds>";
+#endif
 
 /*
   Forward declarations.
@@ -1246,7 +1249,7 @@ MagickExport ThresholdMap *GetThresholdMap(const char *map_id,
   ThresholdMap
     *map;
 
-  map=GetThresholdMapFile(MinimalThresholdMap,"built-in",map_id,exception);
+  map=GetThresholdMapFile(BuiltinMap,"built-in",map_id,exception);
   if (map != (ThresholdMap *) NULL)
     return(map);
 #if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
@@ -1650,7 +1653,7 @@ MagickExport MagickBooleanType ListThresholdMaps(FILE *file,
 %
 %    o threshold_map: A string containing the name of the threshold dither
 %      map to use, followed by zero or more numbers representing the number
-%      of color levels tho dither between.
+%      of color levels to dither between.
 %
 %      Any level number less than 2 will be equivalent to 2, and means only
 %      binary dithering will be applied to each color channel.
@@ -1661,7 +1664,7 @@ MagickExport MagickBooleanType ListThresholdMaps(FILE *file,
 %      the color channels.
 %
 %      For example: "o3x3,6" will generate a 6 level posterization of the
-%      image with a ordered 3x3 diffused pixel dither being applied between
+%      image with an ordered 3x3 diffused pixel dither being applied between
 %      each level. While checker,8,8,4 will produce a 332 colormaped image
 %      with only a single checkerboard hash pattern (50% grey) between each
 %      color level, to basically double the number of color levels with
