@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+#if MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
 /*
   Zero configuration security policy.  Discussion @
   https://imagemagick.org/script/security-policy.php.

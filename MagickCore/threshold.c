@@ -1252,7 +1252,7 @@ MagickExport ThresholdMap *GetThresholdMap(const char *map_id,
   map=GetThresholdMapFile(BuiltinMap,"built-in",map_id,exception);
   if (map != (ThresholdMap *) NULL)
     return(map);
-#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+#if !MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
   {
     const StringInfo
       *option;

@@ -184,7 +184,7 @@ static LinkedListInfo *AcquirePolicyCache(const char *filename,
   */
   cache=NewLinkedList(0);
   status=MagickTrue;
-#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+#if MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
   status=LoadPolicyCache(cache,ZeroConfigurationPolicy,"[zero-configuration]",0,
     exception);
 #else

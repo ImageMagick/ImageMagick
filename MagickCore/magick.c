@@ -1568,7 +1568,7 @@ MagickExport void MagickCoreGenesis(const char *path,
   */
   (void) ConfigureComponentGenesis();
   (void) PolicyComponentGenesis();
-#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+#if MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
   (void) ZeroConfigurationPolicy;
 #endif
   (void) CacheComponentGenesis();
