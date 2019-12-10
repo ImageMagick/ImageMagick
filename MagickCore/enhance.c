@@ -3992,9 +3992,6 @@ MagickExport MagickBooleanType NegateImage(Image *image,
             MagickBooleanType
               proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp atomic
-#endif
             progress++;
             proceed=SetImageProgress(image,NegateImageTag,progress,image->rows);
             if (proceed == MagickFalse)
