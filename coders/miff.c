@@ -1832,7 +1832,7 @@ ModuleExport void UnregisterMIFFImage(void)
 */
 
 static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
-  size_t length,PixelInfo *pixel,ExceptionInfo *exception)
+  size_t length,PixelInfo *pixel)
 {
   if (image->storage_class != DirectClass)
     {
@@ -2666,13 +2666,13 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
               length++;
             else
               {
-                q=PopRunlengthPacket(image,q,length,&pixel,exception);
+                q=PopRunlengthPacket(image,q,length,&pixel);
                 length=0;
               }
             GetPixelInfoPixel(image,p,&pixel);
             p+=GetPixelChannels(image);
           }
-          q=PopRunlengthPacket(image,q,length,&pixel,exception);
+          q=PopRunlengthPacket(image,q,length,&pixel);
           (void) WriteBlob(image,(size_t) (q-pixels),pixels);
           break;
         }
