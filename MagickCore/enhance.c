@@ -493,7 +493,7 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
     y;
 
   unsigned short
-    lut[NumberCLAHEGrays];
+    *lut;
 
   /*
     Constrast limited adapted histogram equalization.
@@ -504,6 +504,12 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
     number_bins*sizeof(*tiles));
   if (tile_cache == (MemoryInfo *) NULL)
     return(MagickFalse);
+  lut=AcquireMagickMemory(NumberCLAHEGrays);
+  if (lut == (unsigned short *) NULL)
+    {
+      tile_cache=RelinquishVirtualMemory(tile_cache);
+      return(MagickFalse);
+    }
   tiles=(size_t *) GetVirtualMemoryBlob(tile_cache);
   limit=(size_t) (clip_limit*(tile_info->width*tile_info->height)/number_bins);
   if (limit < 1UL)
@@ -603,6 +609,7 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
     }
     p+=clahe_info->width*(tile.height-1);
   }
+  lut=RelinquishMagickMemory(lut);
   tile_cache=RelinquishVirtualMemory(tile_cache);
   return(MagickTrue);
 }
