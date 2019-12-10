@@ -715,9 +715,6 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp atomic
-#endif
         progress++;
         proceed=SetImageProgress(image,CLAHEImageTag,progress,2*
           GetPixelChannels(image));
