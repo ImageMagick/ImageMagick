@@ -4566,7 +4566,7 @@ MAGICK_PATCHLEVEL_VERSION=9
 
 MAGICK_VERSION=7.0.9-9
 
-MAGICK_GIT_REVISION=16488:393944bcf:20191207
+MAGICK_GIT_REVISION=16500:b61bc1845:20191210
 
 
 # Substitute library versioning
@@ -31281,19 +31281,19 @@ if test "x$with_lcms" = "xyes"; then
 $as_echo "-------------------------------------------------------------" >&6; }
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for lcms2 >= 2.0.6" >&5
-$as_echo_n "checking for lcms2 >= 2.0.6... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for lcms2 >= 2.0.0" >&5
+$as_echo_n "checking for lcms2 >= 2.0.0... " >&6; }
 
 if test -n "$LCMS2_CFLAGS"; then
     pkg_cv_LCMS2_CFLAGS="$LCMS2_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"lcms2 >= 2.0.6\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "lcms2 >= 2.0.6") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"lcms2 >= 2.0.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "lcms2 >= 2.0.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_LCMS2_CFLAGS=`$PKG_CONFIG --cflags "lcms2 >= 2.0.6" 2>/dev/null`
+  pkg_cv_LCMS2_CFLAGS=`$PKG_CONFIG --cflags "lcms2 >= 2.0.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -31305,12 +31305,12 @@ if test -n "$LCMS2_LIBS"; then
     pkg_cv_LCMS2_LIBS="$LCMS2_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"lcms2 >= 2.0.6\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "lcms2 >= 2.0.6") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"lcms2 >= 2.0.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "lcms2 >= 2.0.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_LCMS2_LIBS=`$PKG_CONFIG --libs "lcms2 >= 2.0.6" 2>/dev/null`
+  pkg_cv_LCMS2_LIBS=`$PKG_CONFIG --libs "lcms2 >= 2.0.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -31331,9 +31331,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        LCMS2_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "lcms2 >= 2.0.6" 2>&1`
+	        LCMS2_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "lcms2 >= 2.0.0" 2>&1`
         else
-	        LCMS2_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "lcms2 >= 2.0.6" 2>&1`
+	        LCMS2_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "lcms2 >= 2.0.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$LCMS2_PKG_ERRORS" >&5
