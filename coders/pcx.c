@@ -340,15 +340,12 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read PCX raster colormap.
     */
-    image->columns=(size_t) MagickAbsoluteValue((ssize_t) pcx_info.right-
-      pcx_info.left)+1UL;
-    image->rows=(size_t) MagickAbsoluteValue((ssize_t) pcx_info.bottom-
-      pcx_info.top)+1UL;
-    if ((image->columns == 0) || (image->rows == 0) ||
-        (pcx_info.right < pcx_info.left) || (pcx_info.bottom < pcx_info.top) ||
+    if ((pcx_info.right < pcx_info.left) || (pcx_info.bottom < pcx_info.top) ||
         ((pcx_info.bits_per_pixel != 1) && (pcx_info.bits_per_pixel != 2) &&
          (pcx_info.bits_per_pixel != 4) && (pcx_info.bits_per_pixel != 8)))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
+    image->columns=(size_t) (pcx_info.right-pcx_info.left)+1UL;
+    image->rows=(size_t) (pcx_info.bottom-pcx_info.top)+1UL;
     image->depth=pcx_info.bits_per_pixel;
     image->units=PixelsPerInchResolution;
     image->resolution.x=(double) pcx_info.horizontal_resolution;
@@ -401,12 +398,10 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read image data.
     */
-    if (HeapOverflowSanityCheck(image->rows, (size_t) pcx_info.bytes_per_line) != MagickFalse)
+    if (HeapOverflowSanityCheckGetSize(image->rows,(size_t) pcx_info.bytes_per_line,&pcx_packets) != MagickFalse)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    pcx_packets=(size_t) image->rows*pcx_info.bytes_per_line;
-    if (HeapOverflowSanityCheck(pcx_packets, (size_t) pcx_info.planes) != MagickFalse)
+    if (HeapOverflowSanityCheckGetSize(pcx_packets,(size_t) pcx_info.planes,&pcx_packets) != MagickFalse)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-    pcx_packets=(size_t) pcx_packets*pcx_info.planes;
     if ((size_t) (pcx_info.bits_per_pixel*pcx_info.planes*image->columns) > (pcx_packets*8U))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     if ((MagickSizeType) (pcx_packets/32+128) > GetBlobSize(image))
