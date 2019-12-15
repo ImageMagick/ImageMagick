@@ -999,6 +999,7 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
   prev_image->page.x=0;
   prev_image->page.y=0;
   prev_image->dispose=NoneDispose;
+  prev_image->alpha_trait=BlendPixelTrait;
   prev_image->background_color.alpha_trait=BlendPixelTrait;
   prev_image->background_color.alpha=(MagickRealType) TransparentAlpha;
   (void) SetImageBackgroundColor(prev_image,exception);
