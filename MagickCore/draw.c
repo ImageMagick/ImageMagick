@@ -4081,12 +4081,6 @@ static MagickBooleanType RenderMVGContent(Image *image,
       default:
         break;
     }
-    if (coordinates > MaxBezierCoordinates)
-      {
-        (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitError,"TooManyBezierCoordinates","`%s'",token);
-        status=MagickFalse;
-      }
     if (status == MagickFalse)
       break;
     if (((size_t) (i+coordinates)) >= number_points)
