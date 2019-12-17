@@ -259,17 +259,20 @@ static int ReadSingleWEBPImage(Image *image,const uint8_t *stream,
   MagickBooleanType
     status;
 
-  if (is_first) {
-    canvas_width=image->columns;
-    canvas_height=image->rows;
-    x_offset=image->page.x;
-    y_offset=image->page.y;
-    image->page.x=0;
-    image->page.y=0;
-  } else {
-    x_offset=0;
-    y_offset=0;
-  }
+  if (is_first)
+    {
+      canvas_width=image->columns;
+      canvas_height=image->rows;
+      x_offset=image->page.x;
+      y_offset=image->page.y;
+      image->page.x=0;
+      image->page.y=0;
+    }
+  else
+    {
+      x_offset=0;
+      y_offset=0;
+    }
   webp_status=FillBasicWEBPInfo(image,stream,length,configure);
   image_width=image->columns;
   image_height=image->rows;
@@ -304,17 +307,20 @@ static int ReadSingleWEBPImage(Image *image,const uint8_t *stream,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((x >= x_offset && x < x_offset + image_width) &&
-          (y >= y_offset && y < y_offset + image_height)) {
-        SetPixelRed(image,ScaleCharToQuantum(*p++),q);
-        SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
-        SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
-        SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
-      } else {
-        SetPixelRed(image,0,q);
-        SetPixelGreen(image,0,q);
-        SetPixelBlue(image,0,q);
-        SetPixelAlpha(image,0,q);
-      }
+          (y >= y_offset && y < y_offset + image_height))
+        {
+          SetPixelRed(image,ScaleCharToQuantum(*p++),q);
+          SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
+          SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
+          SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
+        }
+      else
+        {
+          SetPixelRed(image,0,q);
+          SetPixelGreen(image,0,q);
+          SetPixelBlue(image,0,q);
+          SetPixelAlpha(image,0,q);
+        }
       q+=GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -420,22 +426,25 @@ static int ReadAnimatedWEBPImage(const ImageInfo *image_info,Image *image,
   demux=WebPDemux(&data);
   if (WebPDemuxGetFrame(demux,1,&iter)) {
     do {
-      if (image_count != 0) {
-        AcquireNextImage(image_info,image,exception);
-        if (GetNextImageInList(image) == (Image *) NULL)
-          break;
-        image=SyncNextImageInList(image);
-        CloneImageProperties(image,original_image);
-        image->page.x=iter.x_offset;
-        image->page.y=iter.y_offset;
-        webp_status=ReadSingleWEBPImage(image,iter.fragment.bytes,
-          iter.fragment.size,configure,exception,MagickFalse);
-      } else {
-        image->page.x=iter.x_offset;
-        image->page.y=iter.y_offset;
-        webp_status=ReadSingleWEBPImage(image,iter.fragment.bytes,
-          iter.fragment.size,configure,exception,MagickTrue);
-	  }
+      if (image_count != 0)
+        {
+          AcquireNextImage(image_info,image,exception);
+          if (GetNextImageInList(image) == (Image *) NULL)
+            break;
+          image=SyncNextImageInList(image);
+          CloneImageProperties(image,original_image);
+          image->page.x=iter.x_offset;
+          image->page.y=iter.y_offset;
+          webp_status=ReadSingleWEBPImage(image,iter.fragment.bytes,
+            iter.fragment.size,configure,exception,MagickFalse);
+        }
+      else
+        {
+          image->page.x=iter.x_offset;
+          image->page.y=iter.y_offset;
+          webp_status=ReadSingleWEBPImage(image,iter.fragment.bytes,
+            iter.fragment.size,configure,exception,MagickTrue);
+        }
       if (webp_status != VP8_STATUS_OK)
         break;
 
