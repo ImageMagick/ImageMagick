@@ -455,10 +455,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(ResourceLimitError,"ImproperImageHeader");
       }
     quantum=sun_info.depth == 1 ? 15 : 7;
-    MAGICKCORE_DIAGNOSTIC_PUSH()
-    MAGICKCORE_DIAGNOSTIC_IGNORE_MAYBE_UNINITIALIZED()
     bytes_per_line+=quantum;
-    MAGICKCORE_DIAGNOSTIC_POP()
     bytes_per_line<<=1;
     if ((bytes_per_line >> 1) != (sun_info.width*sun_info.depth+quantum))
       {
