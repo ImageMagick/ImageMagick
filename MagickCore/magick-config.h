@@ -233,7 +233,7 @@ extern "C" {
 #  define __has_builtin(x) 0
 #endif
 
-#if __STDC_VERSION__ >= 201100L
+#if __STDC_VERSION__ >= 201112L
 # define MAGICKCORE_HAVE_STDC_ALIGNED_ALLOC 1
 #endif
 
