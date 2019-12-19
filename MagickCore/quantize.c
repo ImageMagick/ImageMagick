@@ -2414,8 +2414,8 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
   quantize_info->number_colors=number_colors;
   quantize_info->dither_method=NoDitherMethod;
   status=QuantizeImage(quantize_info,kmeans_image,exception);
-  status&=SetImageExtent(kmeans_image,1,1,exception);
   quantize_info=DestroyQuantizeInfo(quantize_info);
+  status&=SetImageExtent(kmeans_image,1,1,exception);
   if (status == MagickFalse)
     return(status);
   if (AcquireImageColormap(image,kmeans_image->colors,exception) == MagickFalse)
@@ -2556,9 +2556,10 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
   if (image->progress_monitor != (MagickProgressMonitor) NULL)
     (void) SetImageProgress(image,KmeansImageTag,max_iterations-1,
       max_iterations);
-  if (status != MagickFalse)
-    SyncImage(image,exception);
-  return(status);
+  kmeans_image=DestroyImage(kmeans_image);
+  if (status == MagickFalse)
+    return(status);
+  return(SyncImage(image,exception));
 }
 
 /*
