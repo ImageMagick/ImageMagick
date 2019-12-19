@@ -575,6 +575,8 @@ static struct
     { "CLAHE", { {"geometry", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference}, {"number-bins", IntegerReference},
       {"clip-limit", RealReference} } },
+    { "Kmeans", { {"geometry", StringReference}, {"colors", IntegerReference},
+      {"iterations", IntegerReference}, {"distortion", RealReference} } },
   };
 
 static SplayTreeInfo
@@ -7646,6 +7648,8 @@ Mogrify(ref,...)
     RangeThresholdImage= 296
     CLAHE              = 297
     CLAHEImage         = 298
+    Kmeans             = 299
+    KMeansImage        = 300
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -11505,6 +11509,27 @@ Mogrify(ref,...)
             geometry_info.psi=argument_list[4].real_reference;
           (void) CLAHEImage(image,geometry.width,geometry.height,geometry.x,
             geometry_info.psi,exception);
+          break;
+        }
+        case 150:  /* Kmeans */
+        {
+          if (attribute_flag[0] != 0)
+            {
+              flags=ParseGeometry(argument_list[0].string_reference,
+                &geometry_info);
+              if ((flags & SigmaValue) == 0)
+                geometry_info.sigma=40.0;
+              if ((flags & XiValue) == 0)
+                geometry_info.xi=0.0005;
+            }
+          if (attribute_flag[1] != 0)
+            geometry_info.rho=argument_list[1].integer_reference;
+          if (attribute_flag[2] != 0)
+            geometry_info.sigma=argument_list[2].integer_reference;
+          if (attribute_flag[3] != 0)
+            geometry_info.xi=(ChannelType) argument_list[3].real_reference;
+          (void) KmeansImage(image,geometry_info.rho,geometry_info.sigma,
+            geometry_info.xi,exception);
           break;
         }
       }
