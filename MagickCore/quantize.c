@@ -2458,10 +2458,6 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
     }
     distortion=0.0;
     image_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp parallel for schedule(static) shared(status) \
-      magick_number_threads(image,image,image->rows,1)
-#endif
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       register Quantum
@@ -2508,6 +2504,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
               j=i;
             }
         }
+        distortion+=min_distance;
         kmeans_colormap[j].red+=QuantumScale*GetPixelRed(image,q);
         kmeans_colormap[j].green+=QuantumScale*GetPixelGreen(image,q);
         kmeans_colormap[j].blue+=QuantumScale*GetPixelBlue(image,q);
@@ -2516,10 +2513,6 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
         if (kmeans_image->colorspace == CMYKColorspace)
           kmeans_colormap[j].black+=QuantumScale*GetPixelBlack(image,q);
         kmeans_colormap[j].count++;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp atomic
-#endif
-        distortion+=min_distance;
         SetPixelIndex(image,j,q);
         q+=GetPixelChannels(image);
       }
