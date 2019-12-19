@@ -177,6 +177,7 @@ static MagickBooleanType ConvertUsage(void)
       "  -clamp               keep pixel values in range (0-QuantumRange)\n"
       "  -colorize value      colorize the image with the fill color\n"
       "  -color-matrix matrix apply color correction to the image\n"
+      "  -colors value        preferred number of colors in the image\n"
       "  -connected-components connectivity\n"
       "                       connected-components uniquely labeled\n"
       "  -contrast            enhance or reduce the image contrast\n"
@@ -218,6 +219,7 @@ static MagickBooleanType ConvertUsage(void)
       "  -identify            identify the format and characteristics of the image\n"
       "  -ift                 implements the inverse discrete Fourier transform (DFT)\n"
       "  -implode amount      implode image pixels about the center\n"
+      "  -kmeans geometry     K means color reduction\n"
       "  -kuwahara geometry   edge preserving noise reduction filter\n"
       "  -lat geometry        local adaptive thresholding\n"
       "  -level value         adjust the level of image contrast\n"
@@ -356,7 +358,6 @@ static MagickBooleanType ConvertUsage(void)
       "  -clip                clip along the first path from the 8BIM profile\n"
       "  -clip-mask filename  associate a clip mask with the image\n"
       "  -clip-path id        clip along a named path from the 8BIM profile\n"
-      "  -colors value        preferred number of colors in the image\n"
       "  -colorspace type     alternate image colorspace\n"
       "  -comment string      annotate image with comment\n"
       "  -compose operator    set image composite operator\n"
@@ -1908,6 +1909,17 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
       case 'k':
       {
         if (LocaleCompare("kerning",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("kmeans",option+1) == 0)
           {
             if (*option == '+')
               break;

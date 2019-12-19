@@ -1920,6 +1920,21 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             draw_info->kerning=geometry_info.rho;
             break;
           }
+        if (LocaleCompare("kmeans",option+1) == 0)
+          {
+            /*
+              K-means clustering
+            */
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            flags=ParseGeometry(argv[i+1],&geometry_info);
+            if ((flags & SigmaValue) == 0)
+              geometry_info.sigma=40.0;
+            if ((flags & SigmaValue) == 0)
+              geometry_info.xi=0.0005;
+            (void) KmeansImage(*image,(size_t) geometry_info.rho,
+              (size_t) geometry_info.sigma,geometry_info.xi,exception);
+            break;
+          }
         if (LocaleCompare("kuwahara",option+1) == 0)
           {
             /*
@@ -3486,6 +3501,7 @@ static MagickBooleanType MogrifyUsage(void)
       "  -clip-path id        clip along a named path from the 8BIM profile\n"
       "  -colorize value      colorize the image with the fill color\n"
       "  -color-matrix matrix apply color correction to the image\n"
+      "  -colors value        preferred number of colors in the image\n"
       "  -connected-components connectivity\n"
       "                       connected-components uniquely labeled\n"
       "  -contrast            enhance or reduce the image contrast\n"
@@ -3529,6 +3545,7 @@ static MagickBooleanType MogrifyUsage(void)
       "  -implode amount      implode image pixels about the center\n"
       "  -interpolative-resize geometry\n"
       "                       resize image using interpolation\n"
+      "  -kmeans geometry     K means color reduction\n"
       "  -kuwahara geometry   edge preserving noise reduction filter\n"
       "  -lat geometry        local adaptive thresholding\n"
       "  -level value         adjust the level of image contrast\n"
@@ -3666,7 +3683,6 @@ static MagickBooleanType MogrifyUsage(void)
       "  -blue-primary point  chromaticity blue primary point\n"
       "  -bordercolor color   border color\n"
       "  -caption string      assign a caption to an image\n"
-      "  -colors value        preferred number of colors in the image\n"
       "  -colorspace type     alternate image colorspace\n"
       "  -comment string      annotate image with comment\n"
       "  -compose operator    set image composite operator\n"
@@ -5226,6 +5242,15 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           {
             if (*option == '+')
               break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("kmeans",option+1) == 0)
+          {
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);

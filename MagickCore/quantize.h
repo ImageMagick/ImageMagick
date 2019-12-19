@@ -53,9 +53,11 @@ typedef struct _QuantizeInfo
     signature;
 } QuantizeInfo;
 
+
 extern MagickExport MagickBooleanType
   CompressImageColormap(Image *,ExceptionInfo *),
   GetImageQuantizeError(Image *,ExceptionInfo *),
+  KmeansImage(Image *,const size_t,const size_t,const double,ExceptionInfo *),
   PosterizeImage(Image *,const size_t,const DitherMethod,ExceptionInfo *),
   QuantizeImage(const QuantizeInfo *,Image *,ExceptionInfo *),
   QuantizeImages(const QuantizeInfo *,Image *,ExceptionInfo *),

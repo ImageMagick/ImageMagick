@@ -2541,6 +2541,22 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'k':
     {
+      if (LocaleCompare("kmeans",option+1) == 0)
+        {
+          /*
+            K-means clustering.
+          */
+          flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          if ((flags & SigmaValue) == 0)
+            geometry_info.sigma=40.0;
+          if ((flags & XiValue) == 0)
+            geometry_info.xi=0.0005;
+          (void) KmeansImage(_image,(size_t) geometry_info.rho,(size_t)
+           geometry_info.sigma,geometry_info.xi,_exception);
+          break;
+        }
       if (LocaleCompare("kuwahara",option+1) == 0)
         {
           /*

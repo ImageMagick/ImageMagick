@@ -3,6 +3,7 @@
 
 2019-12-18  7.0.9-10 Cristy  <quetzlzacatenango@image...>
   * Some clang releases do not support _aligned_alloc().
+  * Support -kmeans command-line option.
 
 2019-12-07  7.0.9-9 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-9, GIT revision 16513:8ec82f4:20191215.
