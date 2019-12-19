@@ -2351,7 +2351,6 @@ static inline double KmeansDistance(const Image *magick_restrict image,
       distance+=gamma*QuantumScale*pixel*pixel;
       gamma=(QuantumScale*GetPixelAlpha(image,p))*(QuantumScale*q->alpha);
     }
-  distance=0.0;
   if (image->colorspace == CMYKColorspace)
     {
       pixel=GetPixelBlack(image,p)-q->black;
@@ -2374,7 +2373,7 @@ static inline double KmeansDistance(const Image *magick_restrict image,
   distance+=gamma*QuantumScale*pixel*pixel;
   pixel=GetPixelBlue(image,p)-q->blue;
   distance+=gamma*QuantumScale*pixel*pixel;
-  return(distance);
+  return(QuantumScale*distance);
 }
 
 MagickExport MagickBooleanType KmeansImage(Image *image,
@@ -2390,6 +2389,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
     *kmeans_image;
 
   MagickBooleanType
+    verbose,
     status;
 
   QuantizeInfo
@@ -2428,6 +2428,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
     Iterative refinement.
   */
   last_distortion=0.0;
+  verbose=IsStringTrue(GetImageArtifact(image,"debug"));
   for (n=0; n < max_iterations; n++)
   {
     CacheView
@@ -2541,6 +2542,9 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
       distortion+=kmeans_colormap[i].distortion/kmeans_image->colors;
     }
     image_view=DestroyCacheView(image_view);
+    if (verbose != MagickFalse)
+      (void) (void) FormatLocaleFile(stderr,"distortion[%ld]: %g %g\n",n,
+        distortion,fabs(distortion-last_distortion));
     if (fabs(distortion-last_distortion) <= max_distortion)
       break;
     last_distortion=distortion;
