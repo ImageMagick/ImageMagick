@@ -2553,7 +2553,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
       }
   }
   if (image->progress_monitor != (MagickProgressMonitor) NULL)
-    (void) SetImageProgress(image,KmeansImageTag,max_iterations+1,
+    (void) SetImageProgress(image,KmeansImageTag,max_iterations-1,
       max_iterations);
   if (status != MagickFalse)
     SyncImage(image,exception);
