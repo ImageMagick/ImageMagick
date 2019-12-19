@@ -2516,6 +2516,9 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
         if (kmeans_image->colorspace == CMYKColorspace)
           kmeans_colormap[j].black+=QuantumScale*GetPixelBlack(image,q);
         kmeans_colormap[j].count++;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
         distortion+=min_distance;
         SetPixelIndex(image,j,q);
         q+=GetPixelChannels(image);
