@@ -2455,8 +2455,8 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
       kmeans_colormap[i].alpha=0.0;
       kmeans_colormap[i].black=0.0;
       kmeans_colormap[i].count=0.0;
-      kmeans_colormap[i].distortion=0.0;
     }
+    distortion=0.0;
     image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp parallel for schedule(static) shared(status) \
@@ -2516,7 +2516,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
         if (kmeans_image->colorspace == CMYKColorspace)
           kmeans_colormap[j].black+=QuantumScale*GetPixelBlack(image,q);
         kmeans_colormap[j].count++;
-        kmeans_colormap[j].distortion+=min_distance;
+        distortion+=min_distance;
         SetPixelIndex(image,j,q);
         q+=GetPixelChannels(image);
       }
@@ -2524,7 +2524,6 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
     /*
       Calculate the new means (centroids) of the pixels in the new clusters.
     */
-    distortion=0.0;
     for (i=0; i < (ssize_t) kmeans_image->colors; i++)
     {
       image->colormap[i].red=QuantumRange*kmeans_colormap[i].red/(double)
@@ -2539,7 +2538,6 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
       if (kmeans_image->colorspace == CMYKColorspace)
         image->colormap[i].black=QuantumRange*kmeans_colormap[i].black/(double)
           kmeans_colormap[i].count;
-      distortion+=kmeans_colormap[i].distortion/kmeans_image->colors;
     }
     image_view=DestroyCacheView(image_view);
     if (verbose != MagickFalse)

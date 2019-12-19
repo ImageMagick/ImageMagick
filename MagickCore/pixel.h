@@ -193,9 +193,6 @@ typedef struct _PixelInfo
     black,
     alpha,
     index;
-
-  double
-    distortion;
 } PixelInfo;
 
 typedef struct _PixelPacket
