@@ -2414,6 +2414,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
   quantize_info->number_colors=number_colors;
   quantize_info->dither_method=NoDitherMethod;
   status=QuantizeImage(quantize_info,kmeans_image,exception);
+  SetImageExtent(kmeans_image,1,1,exception);
   quantize_info=DestroyQuantizeInfo(quantize_info);
   if (status == MagickFalse)
     return(status);

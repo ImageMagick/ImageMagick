@@ -1929,7 +1929,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             flags=ParseGeometry(argv[i+1],&geometry_info);
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=40.0;
-            if ((flags & SigmaValue) == 0)
+            if ((flags & XiValue) == 0)
               geometry_info.xi=0.05;
             (void) KmeansImage(*image,(size_t) geometry_info.rho,
               (size_t) geometry_info.sigma,geometry_info.xi,exception);
