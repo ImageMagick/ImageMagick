@@ -11514,7 +11514,7 @@ Mogrify(ref,...)
               if ((flags & SigmaValue) == 0)
                 geometry_info.sigma=40.0;
               if ((flags & XiValue) == 0)
-                geometry_info.xi=0.0005;
+                geometry_info.xi=0.05;
             }
           if (attribute_flag[1] != 0)
             geometry_info.rho=argument_list[1].integer_reference;
