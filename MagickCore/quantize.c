@@ -2382,8 +2382,11 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
 {
 #define KmeansImageTag  "Kmeans/Image"
 
+  CacheView
+    *image_view;
+
   double
-    last_distortion;
+    previous_distortion;
 
   Image
     *kmeans_image;
@@ -2392,6 +2395,9 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
     verbose,
     status;
 
+  PixelInfo
+    *kmeans_colormap;
+
   QuantizeInfo
     *quantize_info;
 
@@ -2399,7 +2405,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
     n;
 
   /*
-    Initialize the initial set of k means.
+    Initialize the initial set of K means.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
@@ -2415,31 +2421,26 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
   quantize_info->dither_method=NoDitherMethod;
   status=QuantizeImage(quantize_info,kmeans_image,exception);
   quantize_info=DestroyQuantizeInfo(quantize_info);
-  status&=SetImageExtent(kmeans_image,1,1,exception);
   if (status == MagickFalse)
     return(status);
-  if (AcquireImageColormap(image,kmeans_image->colors,exception) == MagickFalse)
-    {
-      kmeans_image=DestroyImage(kmeans_image);
-      return(MagickFalse);
-    }
-  (void) memcpy(image->colormap,kmeans_image->colormap,kmeans_image->colors*
-    sizeof(*kmeans_image->colormap));
+  status=AcquireImageColormap(image,kmeans_image->colors,exception);
+  if (status == MagickFalse)
+    return(status);
+  kmeans_colormap=kmeans_image->colormap;
+  kmeans_image->colormap=(PixelInfo *) NULL;
+  kmeans_image=DestroyImage(kmeans_image);
+  (void) memcpy(image->colormap,kmeans_colormap,image->colors*
+    sizeof(*kmeans_colormap));
   /*
     Iterative refinement.
   */
-  last_distortion=0.0;
+  previous_distortion=0.0;
   verbose=IsStringTrue(GetImageArtifact(image,"debug"));
+  image_view=AcquireAuthenticCacheView(image,exception);
   for (n=0; n < max_iterations; n++)
   {
-    CacheView
-      *image_view;
-
     double
       distortion;
-
-    PixelInfo
-      *kmeans_colormap;
 
     register ssize_t
       i;
@@ -2447,18 +2448,8 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
     ssize_t
       y;
 
-    kmeans_colormap=kmeans_image->colormap;
-    for (i=0; i < (ssize_t) kmeans_image->colors; i++)
-    {
-      kmeans_colormap[i].red=0.0;
-      kmeans_colormap[i].green=0.0;
-      kmeans_colormap[i].blue=0.0;
-      kmeans_colormap[i].alpha=0.0;
-      kmeans_colormap[i].black=0.0;
-      kmeans_colormap[i].count=0.0;
-    }
     distortion=0.0;
-    image_view=AcquireAuthenticCacheView(image,exception);
+    (void) memset(kmeans_colormap,0,image->colors*sizeof(*kmeans_colormap));
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       register Quantum
@@ -2467,13 +2458,11 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
       register ssize_t
         x;
 
-      if (status == MagickFalse)
-        continue;
       q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
       if (q == (Quantum *) NULL)
         {
           status=MagickFalse;
-          continue;
+          break;
         }
       for (x=0; x < (ssize_t) image->columns; x++)
       {
@@ -2509,9 +2498,9 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
         kmeans_colormap[j].red+=QuantumScale*GetPixelRed(image,q);
         kmeans_colormap[j].green+=QuantumScale*GetPixelGreen(image,q);
         kmeans_colormap[j].blue+=QuantumScale*GetPixelBlue(image,q);
-        if (kmeans_image->alpha_trait != BlendPixelTrait)
+        if (image->alpha_trait != BlendPixelTrait)
           kmeans_colormap[j].alpha+=QuantumScale*GetPixelAlpha(image,q);
-        if (kmeans_image->colorspace == CMYKColorspace)
+        if (image->colorspace == CMYKColorspace)
           kmeans_colormap[j].black+=QuantumScale*GetPixelBlack(image,q);
         kmeans_colormap[j].count++;
         SetPixelIndex(image,j,q);
@@ -2521,7 +2510,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
     /*
       Calculate the new means (centroids) of the pixels in the new clusters.
     */
-    for (i=0; i < (ssize_t) kmeans_image->colors; i++)
+    for (i=0; i < (ssize_t) image->colors; i++)
     {
       image->colormap[i].red=QuantumRange*kmeans_colormap[i].red/(double)
         kmeans_colormap[i].count;
@@ -2529,20 +2518,19 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
         kmeans_colormap[i].count;
       image->colormap[i].blue=QuantumRange*kmeans_colormap[i].blue/(double)
         kmeans_colormap[i].count;
-      if (kmeans_image->alpha_trait != BlendPixelTrait)
+      if (image->alpha_trait != BlendPixelTrait)
         image->colormap[i].alpha=QuantumRange*kmeans_colormap[i].alpha/(double)
           kmeans_colormap[i].count;
-      if (kmeans_image->colorspace == CMYKColorspace)
+      if (image->colorspace == CMYKColorspace)
         image->colormap[i].black=QuantumRange*kmeans_colormap[i].black/(double)
           kmeans_colormap[i].count;
     }
-    image_view=DestroyCacheView(image_view);
     if (verbose != MagickFalse)
       (void) (void) FormatLocaleFile(stderr,"distortion[%ld]: %g %g\n",n,
-        distortion,fabs(distortion-last_distortion));
-    if (fabs(distortion-last_distortion) <= max_distortion)
+        distortion,fabs(distortion-previous_distortion));
+    if (fabs(distortion-previous_distortion) <= max_distortion)
       break;
-    last_distortion=distortion;
+    previous_distortion=distortion;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType
@@ -2553,10 +2541,11 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
           status=MagickFalse;
       }
   }
+  image_view=DestroyCacheView(image_view);
+  kmeans_colormap=(PixelInfo *) RelinquishMagickMemory(kmeans_colormap);
   if (image->progress_monitor != (MagickProgressMonitor) NULL)
     (void) SetImageProgress(image,KmeansImageTag,max_iterations-1,
       max_iterations);
-  kmeans_image=DestroyImage(kmeans_image);
   if (status == MagickFalse)
     return(status);
   return(SyncImage(image,exception));
