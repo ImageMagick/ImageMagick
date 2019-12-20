@@ -2419,13 +2419,14 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
   quantize_info=AcquireQuantizeInfo((ImageInfo *) NULL);
   quantize_info->number_colors=number_colors;
   quantize_info->dither_method=NoDitherMethod;
-  status=QuantizeImage(quantize_info,kmeans_image,exception);
+  status=QuantizeImage(quantize_info,kmeans_image,exception) &&
+    AcquireImageColormap(image,kmeans_image->colors,exception);
   quantize_info=DestroyQuantizeInfo(quantize_info);
   if (status == MagickFalse)
-    return(status);
-  status=AcquireImageColormap(image,kmeans_image->colors,exception);
-  if (status == MagickFalse)
-    return(status);
+    {
+      kmeans_image=DestroyImage(kmeans_image);
+      return(status);
+    }
   kmeans_colormap=kmeans_image->colormap;
   kmeans_image->colormap=(PixelInfo *) NULL;
   kmeans_image=DestroyImage(kmeans_image);
