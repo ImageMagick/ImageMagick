@@ -1802,11 +1802,6 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
         if (recursive == MagickFalse)
           WriteTo8BimProfile(image,name,profile);
     }
-  /*
-    Inject profile into image properties.
-  */
-  (void) FormatLocaleString(property,MagickPathExtent,"%s:*",name);
-  (void) GetImageProperty(image,property,exception);
   return(status);
 }
 
