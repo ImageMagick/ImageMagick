@@ -2550,9 +2550,9 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ((flags & (RhoValue|SigmaValue)) == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
-            geometry_info.sigma=40.0;
+            geometry_info.sigma=100.0;
           if ((flags & XiValue) == 0)
-            geometry_info.xi=0.05;
+            geometry_info.xi=0.01;
           (void) KmeansImage(_image,(size_t) geometry_info.rho,(size_t)
            geometry_info.sigma,geometry_info.xi,_exception);
           break;
