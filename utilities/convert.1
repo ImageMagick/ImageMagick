@@ -27,7 +27,6 @@ Image Settings:
   \-clip                clip along the first path from the 8BIM profile
   \-clip-mask filename  associate a clip mask with the image
   \-clip-path id        clip along a named path from the 8BIM profile
-  \-colors value        preferred number of colors in the image
   \-colorspace type     alternate image colorspace
   \-comment string      annotate image with comment
   \-compose operator    set image composite operator
@@ -148,6 +147,7 @@ Image Operators:
   \-clip-path id        clip along a named path from the 8BIM profile
   \-colorize value      colorize the image with the fill color
   \-color-matrix matrix apply color correction to the image
+  \-colors value        preferred number of colors in the image
   \-connected-component connectivity
                        connected-components uniquely labeled
   \-contrast            enhance or reduce the image contrast
@@ -186,6 +186,7 @@ Image Operators:
   \-identify            identify the format and characteristics of the image
   \-ift                 implements the inverse discrete Fourier transform (DFT)
   \-implode amount      implode image pixels about the center
+  \-kmeans geometry     K means color reduction
   \-lat geometry        local adaptive thresholding
   \-layers method       optimize or compare image layers
   \-level value         adjust the level of image contrast

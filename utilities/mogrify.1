@@ -23,7 +23,6 @@ Image Settings:
   \-bordercolor color   border color
   \-caption string      assign a caption to an image
   \-cdl filename        color correct with a color decision list
-  \-colors value        preferred number of colors in the image
   \-colorspace type     alternate image colorspace
   \-comment string      annotate image with comment
   \-compose operator    set image composite operator
@@ -146,6 +145,7 @@ Image Operators:
   \-clip-path id        clip along a named path from the 8BIM profile
   \-colorize value      colorize the image with the fill color
   \-color-matrix matrix apply color correction to the image
+  \-colors value        preferred number of colors in the image
   \-connected-component connectivity
                        connected-components uniquely labeled
   \-contrast            enhance or reduce the image contrast
@@ -186,6 +186,7 @@ Image Operators:
   \-implode amount      implode image pixels about the center
   \-interpolative-resize geometry
                        resize image using interpolation
+  \-kmeans geometry     K means color reduction
   \-lat geometry        local adaptive thresholding
   \-layers method       optimize or compare image layers
   \-level value         adjust the level of image contrast

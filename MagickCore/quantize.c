@@ -200,6 +200,7 @@
 #include "MagickCore/quantize.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
+#include "MagickCore/random_.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
@@ -2381,12 +2382,13 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
   const double max_distortion,ExceptionInfo *exception)
 {
 #define KmeansImageTag  "Kmeans/Image"
+#define KmeansRandomColor(info)  (QuantumRange*GetPseudoRandomValue(info))
 
   CacheView
     *image_view;
 
   const char
-    *value;
+    *colors;
 
   double
     previous_distortion;
@@ -2415,34 +2417,15 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
   assert(exception->signature == MagickCoreSignature);
   if (AcquireImageColormap(image,number_colors,exception) == MagickFalse)
     return(MagickFalse);
-  value=GetImageArtifact(image,"kmeans:seed-colors");
-  if (value != (const char *) NULL)
-    {
-      char
-        *colorlist,
-        **color;
-
-      size_t
-        count;
-
-      kmeans_colormap=(PixelInfo *) AcquireQuantumMemory(image->colors,
-        sizeof(*kmeans_colormap));
-      if (kmeans_colormap == (PixelInfo *) NULL)
-        return(MagickFalse);
-      (void) memcpy(kmeans_colormap,image->colormap,image->colors*
-        sizeof(*image->colormap));
-      colorlist=AcquireString(value);
-      (void) SubstituteString(&colorlist,";","\n");
-      color=StringToStrings(colorlist,&count);
-      colorlist=DestroyString(colorlist);
-      for (n=0; n < (ssize_t) MagickMin(count,image->colors); n++)
-        (void) QueryColorCompliance(color[n],AllCompliance,kmeans_colormap+n,
-          exception);
-      for (n=0; n < (ssize_t) count; n++)
-        color[n]=DestroyString(color[n]);
-      color=(char **) RelinquishMagickMemory(color);
-    }
-  else
+  kmeans_colormap=(PixelInfo *) AcquireQuantumMemory(image->colors,
+    sizeof(*kmeans_colormap));
+  if (kmeans_colormap == (PixelInfo *) NULL)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
+  (void) memcpy(kmeans_colormap,image->colormap,image->colors*
+    sizeof(*image->colormap));
+  colors=GetImageArtifact(image,"kmeans:seed-colors");
+  if (colors == (const char *) NULL)
     {
       Image
         *kmeans_image;
@@ -2460,10 +2443,50 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
           kmeans_image=DestroyImage(kmeans_image);
           return(status);
         }
+      (void) memcpy(kmeans_colormap,kmeans_image->colormap,kmeans_image->colors*
+        sizeof(*kmeans_colormap));
       image->colors=kmeans_image->colors;
-      kmeans_colormap=kmeans_image->colormap;
-      kmeans_image->colormap=(PixelInfo *) NULL;
       kmeans_image=DestroyImage(kmeans_image);
+    }
+  else
+    {
+      char
+        color[MagickPathExtent];
+
+      register const char
+        *p;
+
+      for (n=0, p=colors; n < (ssize_t) image->colors; n++)
+      {
+        register const char
+          *q;
+
+        for (q=p; *q != '\0'; q++)
+          if (*q == ';')
+            break;
+        (void) CopyMagickString(color,p,MagickMin(q-p+1,MagickPathExtent));
+        status=QueryColorCompliance(color,AllCompliance,kmeans_colormap+n,
+          exception);
+        if (*q == '\0')
+          break;
+        p=q+1;
+      }
+      if (n < (ssize_t) image->colors)
+        {
+          RandomInfo
+            *random_info;
+
+          random_info=AcquireRandomInfo();
+          for ( ; n < (ssize_t) image->colors; n++)
+          {
+            kmeans_colormap[n].red=KmeansRandomColor(random_info);
+            kmeans_colormap[n].green=KmeansRandomColor(random_info);
+            kmeans_colormap[n].blue=KmeansRandomColor(random_info);
+            kmeans_colormap[n].alpha=KmeansRandomColor(random_info);
+            kmeans_colormap[n].black=KmeansRandomColor(random_info);
+          }
+          random_info=DestroyRandomInfo(random_info);
+        }
     }
   (void) memcpy(image->colormap,kmeans_colormap,image->colors*
     sizeof(*kmeans_colormap));

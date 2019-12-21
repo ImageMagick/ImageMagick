@@ -459,7 +459,6 @@ MAGICKCORE_NOINST_HDRS = \
   MagickCore/policy-private.h \
   MagickCore/profile-private.h \
   MagickCore/quantum-private.h \
-  MagickCore/random_-private.h \
   MagickCore/random-private.h \
   MagickCore/registry-private.h \
   MagickCore/resample-private.h \
