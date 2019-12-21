@@ -2571,18 +2571,17 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
     */
     for (i=0; i < (ssize_t) image->colors; i++)
     {
-      image->colormap[i].red=QuantumRange*kmeans_colormap[i].red/(double)
-        kmeans_colormap[i].count;
-      image->colormap[i].green=QuantumRange*kmeans_colormap[i].green/(double)
-        kmeans_colormap[i].count;
-      image->colormap[i].blue=QuantumRange*kmeans_colormap[i].blue/(double)
-        kmeans_colormap[i].count;
+      double
+        count;
+
+      count=PerceptibleReciprocal((double) kmeans_colormap[i].count);
+      image->colormap[i].red=QuantumRange*count*kmeans_colormap[i].red;
+      image->colormap[i].green=QuantumRange*count*kmeans_colormap[i].green;
+      image->colormap[i].blue=QuantumRange*count*kmeans_colormap[i].blue;
       if (image->alpha_trait != BlendPixelTrait)
-        image->colormap[i].alpha=QuantumRange*kmeans_colormap[i].alpha/(double)
-          kmeans_colormap[i].count;
+        image->colormap[i].alpha=QuantumRange*count*kmeans_colormap[i].alpha;
       if (image->colorspace == CMYKColorspace)
-        image->colormap[i].black=QuantumRange*kmeans_colormap[i].black/(double)
-          kmeans_colormap[i].count;
+        image->colormap[i].black=QuantumRange*count*kmeans_colormap[i].black;
     }
     if (verbose != MagickFalse)
       (void) (void) FormatLocaleFile(stderr,"distortion[%ld]: %g %g\n",n,
