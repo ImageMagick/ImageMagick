@@ -2423,7 +2423,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   (void) memcpy(kmeans_colormap,image->colormap,image->colors*
-    sizeof(*image->colormap));
+    sizeof(*kmeans_colormap));
   colors=GetImageArtifact(image,"kmeans:seed-colors");
   if (colors == (const char *) NULL)
     {
@@ -2468,7 +2468,10 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
         status=QueryColorCompliance(color,AllCompliance,kmeans_colormap+n,
           exception);
         if (*q == '\0')
-          break;
+          {
+            n++;
+            break;
+          }
         p=q+1;
       }
       if (n < (ssize_t) image->colors)
