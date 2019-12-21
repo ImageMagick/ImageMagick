@@ -2473,7 +2473,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
   previous_distortion=0.0;
   verbose=IsStringTrue(GetImageArtifact(image,"debug"));
   image_view=AcquireAuthenticCacheView(image,exception);
-  for (n=0; n < max_iterations; n++)
+  for (n=0; n < (ssize_t) max_iterations; n++)
   {
     double
       distortion;
@@ -2539,7 +2539,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
         if (image->colorspace == CMYKColorspace)
           kmeans_colormap[j].black+=QuantumScale*GetPixelBlack(image,q);
         kmeans_colormap[j].count++;
-        SetPixelIndex(image,j,q);
+        SetPixelIndex(image,(Quantum) j,q);
         q+=GetPixelChannels(image);
       }
     }
@@ -2572,7 +2572,8 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,KmeansImageTag,n,max_iterations);
+        proceed=SetImageProgress(image,KmeansImageTag,(MagickOffsetType) n,
+          max_iterations);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -2580,8 +2581,8 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
   image_view=DestroyCacheView(image_view);
   kmeans_colormap=(PixelInfo *) RelinquishMagickMemory(kmeans_colormap);
   if (image->progress_monitor != (MagickProgressMonitor) NULL)
-    (void) SetImageProgress(image,KmeansImageTag,max_iterations-1,
-      max_iterations);
+    (void) SetImageProgress(image,KmeansImageTag,(MagickOffsetType)
+      max_iterations-1,max_iterations);
   if (status == MagickFalse)
     return(status);
   return(SyncImage(image,exception));

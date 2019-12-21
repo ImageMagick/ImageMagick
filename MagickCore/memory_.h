@@ -95,7 +95,7 @@ inline MagickExport MagickBooleanType HeapOverflowSanityCheckGetSize(
       errno=ENOMEM;
       return(MagickTrue);
     }
-  assert(extent);
+  assert(extent != 0);
   *extent=length;
   return(MagickFalse);
 }
