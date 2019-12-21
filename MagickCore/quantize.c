@@ -2385,11 +2385,11 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
   CacheView
     *image_view;
 
+  const char
+    *value;
+
   double
     previous_distortion;
-
-  Image
-    *kmeans_image;
 
   MagickBooleanType
     verbose,
@@ -2413,23 +2413,58 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  kmeans_image=CloneImage(image,0,0,MagickTrue,exception);
-  if (kmeans_image == (Image *) NULL)
+  if (AcquireImageColormap(image,number_colors,exception) == MagickFalse)
     return(MagickFalse);
-  quantize_info=AcquireQuantizeInfo((ImageInfo *) NULL);
-  quantize_info->number_colors=number_colors;
-  quantize_info->dither_method=NoDitherMethod;
-  status=QuantizeImage(quantize_info,kmeans_image,exception) &&
-    AcquireImageColormap(image,kmeans_image->colors,exception);
-  quantize_info=DestroyQuantizeInfo(quantize_info);
-  if (status == MagickFalse)
+  value=GetImageArtifact(image,"kmeans:seed-colors");
+  if (value != (const char *) NULL)
     {
-      kmeans_image=DestroyImage(kmeans_image);
-      return(status);
+      char
+        *colorlist,
+        **color;
+
+      size_t
+        count;
+
+      kmeans_colormap=(PixelInfo *) AcquireQuantumMemory(image->colors,
+        sizeof(*kmeans_colormap));
+      if (kmeans_colormap == (PixelInfo *) NULL)
+        return(MagickFalse);
+      (void) memcpy(kmeans_colormap,image->colormap,image->colors*
+        sizeof(*image->colormap));
+      colorlist=AcquireString(value);
+      (void) SubstituteString(&colorlist,";","\n");
+      color=StringToStrings(colorlist,&count);
+      colorlist=DestroyString(colorlist);
+      for (n=0; n < (ssize_t) MagickMin(count,image->colors); n++)
+        (void) QueryColorCompliance(color[n],AllCompliance,kmeans_colormap+n,
+          exception);
+      for (n=0; n < (ssize_t) count; n++)
+        color[n]=DestroyString(color[n]);
+      color=(char **) RelinquishMagickMemory(color);
     }
-  kmeans_colormap=kmeans_image->colormap;
-  kmeans_image->colormap=(PixelInfo *) NULL;
-  kmeans_image=DestroyImage(kmeans_image);
+  else
+    {
+      Image
+        *kmeans_image;
+
+      kmeans_image=CloneImage(image,0,0,MagickTrue,exception);
+      if (kmeans_image == (Image *) NULL)
+        return(MagickFalse);
+      quantize_info=AcquireQuantizeInfo((ImageInfo *) NULL);
+      quantize_info->number_colors=number_colors;
+      quantize_info->dither_method=NoDitherMethod;
+      status=QuantizeImage(quantize_info,kmeans_image,exception);
+      quantize_info=DestroyQuantizeInfo(quantize_info);
+      if (status == MagickFalse)
+        {
+          kmeans_image=DestroyImage(kmeans_image);
+          return(status);
+        }
+      image->colors=kmeans_image->colors;
+      kmeans_colormap=kmeans_image->colormap;
+      kmeans_image->colormap=(PixelInfo *) NULL;
+      kmeans_image=DestroyImage(kmeans_image);
+    }
   (void) memcpy(image->colormap,kmeans_colormap,image->colors*
     sizeof(*kmeans_colormap));
   /*
