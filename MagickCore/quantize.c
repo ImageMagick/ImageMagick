@@ -2496,6 +2496,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
   /*
     Iterative refinement.
   */
+  status=MagickTrue;
   previous_distortion=0.0;
   verbose=IsStringTrue(GetImageArtifact(image,"debug"));
   image_view=AcquireAuthenticCacheView(image,exception);

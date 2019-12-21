@@ -1770,8 +1770,7 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
   ExceptionInfo *exception)
 {
   char
-    key[MagickPathExtent],
-    property[MagickPathExtent];
+    key[MagickPathExtent];
 
   MagickBooleanType
     status;
