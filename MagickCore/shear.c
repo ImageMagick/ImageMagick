@@ -733,6 +733,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
   switch (rotations)
   {
     case 0:
+    default:
     {
       rotate_image=CloneImage(image,0,0,MagickTrue,exception);
       break;
