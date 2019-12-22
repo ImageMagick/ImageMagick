@@ -88,8 +88,8 @@ struct _RandomInfo
   size_t
     i;
 
-  unsigned long
-    seed[4];
+  MagickSizeType
+    seed[2];
 
   double
     normalize;
@@ -182,7 +182,7 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
   random_info->reservoir=AcquireStringInfo(GetSignatureDigestsize(
     random_info->signature_info));
   ResetStringInfo(random_info->reservoir);
-  random_info->normalize=1.0/(~0UL);
+  random_info->normalize=1.0/MagickULLConstant(~0);
   random_info->secret_key=secret_key;
   random_info->protocol_major=RandomProtocolMajorVersion;
   random_info->protocol_minor=RandomProtocolMinorVersion;
@@ -241,15 +241,7 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
         sizeof(*random_info->seed)));
       signature_info=DestroySignatureInfo(signature_info);
     }
-  /*
-    Initialize pseudo-random number generator.
-  */
-  random_info->seed[1]=0x50a7f451UL;
-  random_info->seed[2]=0x5365417eUL;
-  random_info->seed[3]=0xc3a4171aUL;
-  (void) GetPseudoRandomValue(random_info);
-  (void) GetPseudoRandomValue(random_info);
-  (void) GetPseudoRandomValue(random_info);
+  random_info->seed[1]=MagickULLConstant(0x170865df4b3201fc);
   return(random_info);
 }
 
@@ -614,22 +606,21 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
 */
 MagickExport double GetPseudoRandomValue(RandomInfo *random_info)
 {
-  register unsigned long
-    *seed;
+#define RandomROTL(x,k) (((x) << (k)) | ((x) >> (64-(k))))
 
-  unsigned long
-    alpha;
+	const MagickSizeType
+    seed0 = random_info->seed[0];
 
-  seed=random_info->seed;
-  do
-  {
-    alpha=(unsigned long) (seed[1] ^ (seed[1] << 11));
-    seed[1]=seed[2];
-    seed[2]=seed[3];
-    seed[3]=seed[0];
-    seed[0]=(seed[0] ^ (seed[0] >> 19)) ^ (alpha ^ (alpha >> 8));
-  } while (seed[0] == ~0UL);
-  return(random_info->normalize*seed[0]);
+	MagickSizeType
+    seed1 = random_info->seed[1];
+
+	const MagickSizeType
+    value = (seed0+seed1);
+
+	seed1^=seed0;
+	random_info->seed[0]=RandomROTL(seed0,24) ^ seed1 ^ (seed1 << 16);
+	random_info->seed[1]=RandomROTL(seed1,37);
+	return(random_info->normalize*value);
 }
 
 /*
@@ -685,7 +676,7 @@ MagickPrivate double GetRandomInfoNormalize(const RandomInfo *random_info)
 MagickPrivate unsigned long *GetRandomInfoSeed(RandomInfo *random_info)
 {
   assert(random_info != (RandomInfo *) NULL);
-  return(random_info->seed);
+  return((unsigned long *) random_info->seed);
 }
 
 /*
