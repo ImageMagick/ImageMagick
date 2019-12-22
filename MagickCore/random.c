@@ -241,10 +241,13 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
         sizeof(*random_info->seed)));
       signature_info=DestroySignatureInfo(signature_info);
     }
+  /*
+    Initialize pseudo-random number generator.
+  */
   random_info->seed[1]=0x50a7f451UL;
   random_info->seed[2]=0x5365417eUL;
   random_info->seed[3]=0xc3a4171aUL;
-  (void) GetPseudoRandomValue(random_info);  /* bootstrap pseudo generator */
+  (void) GetPseudoRandomValue(random_info);
   (void) GetPseudoRandomValue(random_info);
   (void) GetPseudoRandomValue(random_info);
   return(random_info);
