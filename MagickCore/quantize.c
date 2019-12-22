@@ -2989,16 +2989,6 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
       if (SetImageGray(image,exception) != MagickFalse)
         (void) SetGrayscaleImage(image,exception);
     }
-  if ((quantize_info->dither_method == NoDitherMethod) &&
-      (image->storage_class == PseudoClass) &&
-      (image->colors <= maximum_colors))
-    {
-      if ((quantize_info->colorspace != UndefinedColorspace) &&
-          (quantize_info->colorspace != CMYKColorspace))
-        (void) TransformImageColorspace(image,quantize_info->colorspace,
-          exception);
-      return(MagickTrue);
-    }
   depth=quantize_info->tree_depth;
   if (depth == 0)
     {
