@@ -183,6 +183,8 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
     random_info->signature_info));
   ResetStringInfo(random_info->reservoir);
   random_info->normalize=1.0/MagickULLConstant(~0);
+  random_info->seed[0]=MagickULLConstant(0xd2a98b26625eee7b);
+  random_info->seed[1]=MagickULLConstant(0xdddf9b1090aa7ac1);
   random_info->secret_key=secret_key;
   random_info->protocol_major=RandomProtocolMajorVersion;
   random_info->protocol_minor=RandomProtocolMinorVersion;
@@ -241,7 +243,6 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
         sizeof(*random_info->seed)));
       signature_info=DestroySignatureInfo(signature_info);
     }
-  random_info->seed[1]=MagickULLConstant(0x170865df4b3201fc);
   return(random_info);
 }
 
