@@ -2221,7 +2221,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     *volatile quantum_scanline;
 
   ssize_t
-    ping_rowbytes,
     y;
 
   register unsigned char
@@ -2236,6 +2235,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   size_t
     length,
+    ping_rowbytes,
     row_offset;
 
   ssize_t
