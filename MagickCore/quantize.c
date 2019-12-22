@@ -2464,7 +2464,8 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
         for (q=p; *q != '\0'; q++)
           if (*q == ';')
             break;
-        (void) CopyMagickString(color,p,MagickMin(q-p+1,MagickPathExtent));
+        (void) CopyMagickString(color,p,(size_t) MagickMin(q-p+1,
+          MagickPathExtent));
         status=QueryColorCompliance(color,AllCompliance,kmeans_colormap+n,
           exception);
         if (*q == '\0')
