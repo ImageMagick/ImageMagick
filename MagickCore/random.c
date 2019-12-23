@@ -611,13 +611,11 @@ MagickExport double GetPseudoRandomValue(RandomInfo *random_info)
 {
 #define RandomROTL(x,k) (((x) << (k)) | ((x) >> (64-(k))))
 
-	const MagickSizeType
-    seed0 = random_info->seed[0];
-
 	MagickSizeType
     seed1 = random_info->seed[1];
 
 	const MagickSizeType
+    seed0 = random_info->seed[0],
     value = (seed0+seed1);
 
 	seed1^=seed0;
