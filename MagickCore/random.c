@@ -221,9 +221,11 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
   */
   if (random_info->secret_key == ~0UL)
     {
-      key=GetRandomKey(random_info,sizeof(random_info->secret_key));
-      (void) memcpy(random_info->seed,GetStringInfoDatum(key),
-        GetStringInfoLength(key));
+      key=GetRandomKey(random_info,2*sizeof(*random_info->seed));
+      (void) memcpy(random_info->seed+0,GetStringInfoDatum(key),
+        sizeof(*random_info->seed));
+      (void) memcpy(random_info->seed+1,GetStringInfoDatum(key)+
+        sizeof(*random_info->seed),sizeof(*random_info->seed));
       key=DestroyStringInfo(key);
     }
   else
