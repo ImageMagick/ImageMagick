@@ -182,7 +182,7 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
   random_info->reservoir=AcquireStringInfo(GetSignatureDigestsize(
     random_info->signature_info));
   ResetStringInfo(random_info->reservoir);
-  random_info->normalize=1.0/(double) MagickULLConstant(~0);
+  random_info->normalize=1.0/(double) (MagickULLConstant(~0) >> 11);
   random_info->seed[0]=MagickULLConstant(0xd2a98b26625eee7b);
   random_info->seed[1]=MagickULLConstant(0xdddf9b1090aa7ac1);
   random_info->secret_key=secret_key;
@@ -623,7 +623,7 @@ MagickExport double GetPseudoRandomValue(RandomInfo *random_info)
 	seed1^=seed0;
 	random_info->seed[0]=RandomROTL(seed0,24) ^ seed1 ^ (seed1 << 16);
 	random_info->seed[1]=RandomROTL(seed1,37);
-	return(random_info->normalize*(double) value);
+	return(random_info->normalize*(double) (value >> 11));
 }
 
 /*
