@@ -2382,6 +2382,8 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
   const double max_distortion,ExceptionInfo *exception)
 {
 #define KmeansImageTag  "Kmeans/Image"
+#define RandomPixel(random_info)  \
+  (QuantumRange*GetPseudoRandomValue(random_info))
 
   CacheView
     *image_view;
@@ -2482,15 +2484,16 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
           /*
             Seed with random pixels in image.
           */
-          image_view=AcquireAuthenticCacheView(image,exception);
           random_info=AcquireRandomInfo();
           for ( ; n < (ssize_t) image->colors; n++)
-            (void) GetOneCacheViewVirtualPixelInfo(image_view,
-              (ssize_t) (GetPseudoRandomValue(random_info)*image->columns),
-              (ssize_t) (GetPseudoRandomValue(random_info)*image->rows),
-              kmeans_colormap+n,exception);
+          {
+            kmeans_colormap[n].red=RandomPixel(random_info);
+            kmeans_colormap[n].green=RandomPixel(random_info);
+            kmeans_colormap[n].blue=RandomPixel(random_info);
+            kmeans_colormap[n].alpha=RandomPixel(random_info);
+            kmeans_colormap[n].black=RandomPixel(random_info);
+          }
           random_info=DestroyRandomInfo(random_info);
-          image_view=DestroyCacheView(image_view);
         }
     }
   (void) memcpy(image->colormap,kmeans_colormap,image->colors*
