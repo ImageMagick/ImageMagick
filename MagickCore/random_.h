@@ -35,7 +35,7 @@ typedef struct _RandomInfo
 */
 extern MagickExport double
   GetRandomValue(RandomInfo *),
-  GetPseudoRandomValue(RandomInfo *);
+  GetPseudoRandomValue(RandomInfo *magick_restrict);
 
 extern MagickExport RandomInfo
   *AcquireRandomInfo(void),

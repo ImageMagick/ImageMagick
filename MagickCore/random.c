@@ -607,7 +607,8 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
 %    o random_info: the random info.
 %
 */
-MagickExport double GetPseudoRandomValue(RandomInfo *random_info)
+MagickExport double GetPseudoRandomValue(
+  RandomInfo *magick_restrict random_info)
 {
 #define RandomROTL(x,k) (((x) << (k)) | ((x) >> (64-(k))))
 
