@@ -10,6 +10,7 @@
 2019-12-18  7.0.9-10 Cristy  <quetzlzacatenango@image...>
   * Some clang releases do not support _aligned_alloc().
   * Support -kmeans command-line option.
+  * The -layers optimize option requires a fully transparent previous image.
 
 2019-12-07  7.0.9-9 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-9, GIT revision 16513:8ec82f4:20191215.
@@ -21,7 +22,6 @@
     https://github.com/ImageMagick/ImageMagick/pull/1798).
   * Introduce HeapOverflowSanityCheckGetExtent() method (reference
     https://github.com/ImageMagick/ImageMagick/pull/1798).
-  * The -layers optimize option requires a fully transparent previous image.
 
 2019-12-01  7.0.9-8 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-8, GIT revision 16474:0bc0e95:20191207.
