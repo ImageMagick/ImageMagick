@@ -1,8 +1,9 @@
 2019-12-23  7.0.9-11 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.9-11, GIT revision 16548:281649843:20191222.
+  * Release ImageMagick version 7.0.9-11, GIT revision 16565:03b258a:20191224.
 
-2019-12-18  7.0.9-10 Cristy  <quetzlzacatenango@image...>
+2019-12-18  7.0.9-11 Cristy  <quetzlzacatenango@image...>
   * Replace pseudo-random number generator with a Xoshiro generator.
+  * The -layers optimize option requires a fully transparent previous image.
 
 2019-12-22  7.0.9-10 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-10, GIT revision 16548:281649843:20191222.
