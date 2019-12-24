@@ -1,5 +1,5 @@
 2019-12-23  7.0.9-11 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.9-11, GIT revision 16565:03b258a:20191224.
+  * Release ImageMagick version 7.0.9-11, GIT revision 16568:1d6c960:20191224.
 
 2019-12-18  7.0.9-11 Cristy  <quetzlzacatenango@image...>
   * Replace pseudo-random number generator with a Xoshiro generator.
