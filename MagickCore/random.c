@@ -596,7 +596,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
 %
 %  GetPseudoRandomValue() is a Xoshiro generator that returns a non-negative
 %  double-precision floating-point value uniformly distributed over the
-%  interval [0.0, 1.0) with a 2 to the 128th-1 period.
+%  interval [0.0, 1.0) with a 2 to the 256th-1 period.
 %
 %  The format of the GetPseudoRandomValue method is:
 %
