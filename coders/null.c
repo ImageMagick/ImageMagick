@@ -130,11 +130,12 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
     image->columns=1;
   if (image->rows == 0)
     image->rows=1;
+  image->alpha_trait=BlendPixelTrait;
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
   ConformPixelInfo(image,&image->background_color,&background,exception);
-  image->alpha_trait=BlendPixelTrait;
+  background.alpha_trait=BlendPixelTrait;
   background.alpha=(double) TransparentAlpha;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
