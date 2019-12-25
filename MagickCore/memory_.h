@@ -30,10 +30,10 @@ typedef struct _MemoryInfo
 
 typedef void
   *(*AcquireMemoryHandler)(size_t) magick_alloc_size(1),
-  (*DestroyMemoryHandler)(void *),
-  *(*ResizeMemoryHandler)(void *,size_t) magick_alloc_size(2),
   *(*AcquireAlignedMemoryHandler)(const size_t,const size_t),
-  (*RelinquishAlignedMemoryHandler)(void *);
+  (*DestroyMemoryHandler)(void *),
+  (*RelinquishAlignedMemoryHandler)(void *),
+  *(*ResizeMemoryHandler)(void *,size_t) magick_alloc_size(2);
 
 extern MagickExport MemoryInfo
   *AcquireVirtualMemory(const size_t,const size_t) magick_alloc_sizes(1,2),
