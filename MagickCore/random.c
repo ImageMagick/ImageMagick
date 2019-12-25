@@ -242,7 +242,7 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
       digest=GetSignatureDigest(signature_info);
       (void) memcpy(random_info->seed,GetStringInfoDatum(digest),
         MagickMin((size_t) GetSignatureDigestsize(signature_info),
-        sizeof(*random_info->seed)));
+        sizeof(random_info->seed)));
       signature_info=DestroySignatureInfo(signature_info);
     }
   return(random_info);
