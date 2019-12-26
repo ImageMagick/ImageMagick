@@ -27,7 +27,7 @@ extern "C" {
 #define MAGICKCORE_STRING_QUOTE(str) #str
 #define MAGICKCORE_STRING_XQUOTE(str) MAGICKCORE_STRING_QUOTE(str)
 
-#if __STDC_VERSION__ >= 199901L
+#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 # if defined(__GNUC__) || defined(__clang__)
 #  define MAGICK_COMPILER_WARNING(w) _Pragma(MAGICKCORE_STRING_QUOTE(GCC warning w))
 # elif defined(_MSC_VER)
@@ -233,7 +233,7 @@ extern "C" {
 #  define __has_builtin(x) 0
 #endif
 
-#if __STDC_VERSION__ > 201112L
+#if defined(__STDC_VERSION__) && __STDC_VERSION__ > 201112L && !defined(__MINGW32__)
 # define MAGICKCORE_HAVE_STDC_ALIGNED_ALLOC 1
 #endif
 
