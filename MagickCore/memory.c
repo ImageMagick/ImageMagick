@@ -1060,75 +1060,6 @@ MagickExport void *GetVirtualMemoryBlob(const MemoryInfo *memory_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   H e a p O v e r f l o w S a n i t y C h e c k                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  HeapOverflowSanityCheck() returns MagickFalse if the heap allocation request
-%  is not zero and fits within the maximum limits of size_t. Otherwise, it
-%  returns a value other than MagickFalse; if the heap allocation request does
-%  not fit within the maximum limts of size_t, then errno is set to ENOMEM.
-%
-%  The format of the HeapOverflowSanityCheck method is:
-%
-%      MagickBooleanType HeapOverflowSanityCheck(const size_t count,
-%        const size_t quantum)
-%
-%  A description of each parameter follows:
-%
-%    o count: the number of objects to allocate contiguously.
-%
-%    o quantum: the size (in bytes) of each object.
-%
-*/
-extern MagickExport MagickBooleanType HeapOverflowSanityCheck(
-  const size_t count,const size_t quantum);
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   H e a p O v e r f l o w S a n i t y C h e c k G e t S i z e               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  HeapOverflowSanityCheckGetSize() returns MagickFalse if the heap allocation
-%  request is not zero and fits within the maximum limits of size_t; in this
-%  case, the value (count*quantum) is returned in the size_t object to which
-%  points the parameter named "size".
-%
-%  Otherwise, it returns a value other than MagickFalse; if the heap allocation
-%  request does not fit within the maximum limits of size_t, then errno is set
-%  to ENOMEM. In this case, the object referenced by "size" is not modified.
-%
-%
-%  The format of the HeapOverflowSanityCheckGetSize method is:
-%
-%      MagickBooleanType HeapOverflowSanityCheckGetSize(const size_t count,
-%        const size_t quantum,size_t *const size)
-%
-%  A description of each parameter follows:
-%
-%    o count: the number of objects to allocate contiguously.
-%
-%    o quantum: the size (in bytes) of each object.
-%
-%    o size: a pointer to an object to hold (count*quantum) if all goes well.
-%
-*/
-extern MagickExport MagickBooleanType HeapOverflowSanityCheckGetSize(
-  const size_t count,const size_t quantum,size_t *const size);
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   R e l i n q u i s h A l i g n e d M e m o r y                             %
 %                                                                             %
 %                                                                             %
