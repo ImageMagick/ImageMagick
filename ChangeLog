@@ -1,5 +1,5 @@
 2019-12-26  7.0.9-12 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.9-12, GIT revision 16585:58e5728:20191226.
+  * Release ImageMagick version 7.0.9-12, GIT revision 16587:7d6a559:20191226.
 
 2019-12-26  7.0.9-12 Cristy  <quetzlzacatenango@image...>
   * Fix Build failure with MinGW-w64 (reference
