@@ -135,7 +135,6 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
   if (status == MagickFalse)
     return(DestroyImageList(image));
   ConformPixelInfo(image,&image->background_color,&background,exception);
-  background.alpha_trait=BlendPixelTrait;
   background.alpha=(double) TransparentAlpha;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
