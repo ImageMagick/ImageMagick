@@ -2575,7 +2575,14 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
         SetPixelIndex(image,(Quantum) j,q);
         q+=GetPixelChannels(image);
       }
+      if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+        {
+          status=MagickFalse;
+          break;
+        }
     }
+    if (status == MagickFalse)
+      break;
     /*
       Calculate the new means (centroids) of the pixels in the new clusters.
     */
