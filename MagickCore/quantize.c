@@ -2337,6 +2337,58 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %
 */
 
+typedef struct _KmeansInfo
+{
+  double
+    count,
+    distortion,
+    red,
+    green,
+    blue,
+    alpha,
+    black;
+} KmeansInfo;
+
+static KmeansInfo **DestroyKmeansThreadSet(KmeansInfo **kmeans_info)
+{
+  register ssize_t
+    i;
+
+  assert(kmeans_info != (KmeansInfo **) NULL);
+  for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
+    if (kmeans_info[i] != (KmeansInfo *) NULL)
+      kmeans_info[i]=(KmeansInfo *) RelinquishMagickMemory(kmeans_info[i]);
+  kmeans_info=(KmeansInfo **) RelinquishMagickMemory(kmeans_info);
+  return(kmeans_info);
+}
+
+static KmeansInfo **AcquireKmeansThreadSet(const size_t number_colors)
+{
+  KmeansInfo
+    **kmeans_info;
+
+  register ssize_t
+    i;
+
+  size_t
+    number_threads;
+
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
+  kmeans_info=(KmeansInfo **) AcquireQuantumMemory(number_threads,
+    sizeof(*kmeans_info));
+  if (kmeans_info == (KmeansInfo **) NULL)
+    return((KmeansInfo **) NULL);
+  (void) memset(kmeans_info,0,number_threads*sizeof(*kmeans_info));
+  for (i=0; i < (ssize_t) number_threads; i++)
+  {
+    kmeans_info[i]=(KmeansInfo *) AcquireQuantumMemory(number_colors,
+      sizeof(**kmeans_info));
+    if (kmeans_info[i] == (KmeansInfo *) NULL)
+      return(DestroyKmeansThreadSet(kmeans_info));
+  }
+  return(kmeans_info);
+}
+
 static inline double KmeansDistance(const Image *magick_restrict image,
   const Quantum *magick_restrict p,const PixelInfo *magick_restrict q)
 {
@@ -2395,18 +2447,21 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
   double
     previous_distortion;
 
+  KmeansInfo
+    **kmeans_pixels;
+
   MagickBooleanType
     verbose,
     status;
-
-  PixelInfo
-    *kmeans_colormap;
 
   QuantizeInfo
     *quantize_info;
 
   register ssize_t
     n;
+
+  size_t
+    number_threads;
 
   /*
     Initialize the initial set of K means.
@@ -2419,13 +2474,10 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
   assert(exception->signature == MagickCoreSignature);
   if (AcquireImageColormap(image,number_colors,exception) == MagickFalse)
     return(MagickFalse);
-  kmeans_colormap=(PixelInfo *) AcquireQuantumMemory(image->colors,
-    sizeof(*kmeans_colormap));
-  if (kmeans_colormap == (PixelInfo *) NULL)
+  kmeans_pixels=AcquireKmeansThreadSet(number_colors);
+  if (kmeans_pixels == (KmeansInfo **) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
-  (void) memcpy(kmeans_colormap,image->colormap,image->colors*
-    sizeof(*kmeans_colormap));
   colors=GetImageArtifact(image,"kmeans:seed-colors");
   if (colors == (const char *) NULL)
     {
@@ -2434,7 +2486,10 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
 
       kmeans_image=CloneImage(image,0,0,MagickTrue,exception);
       if (kmeans_image == (Image *) NULL)
-        return(MagickFalse);
+        {
+          kmeans_pixels=DestroyKmeansThreadSet(kmeans_pixels);
+          return(MagickFalse);
+        }
       quantize_info=AcquireQuantizeInfo((ImageInfo *) NULL);
       quantize_info->number_colors=number_colors;
       quantize_info->dither_method=NoDitherMethod;
@@ -2442,11 +2497,12 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
       quantize_info=DestroyQuantizeInfo(quantize_info);
       if (status == MagickFalse)
         {
+          kmeans_pixels=DestroyKmeansThreadSet(kmeans_pixels);
           kmeans_image=DestroyImage(kmeans_image);
           return(status);
         }
-      (void) memcpy(kmeans_colormap,kmeans_image->colormap,kmeans_image->colors*
-        sizeof(*kmeans_colormap));
+      (void) memcpy(image->colormap,kmeans_image->colormap,kmeans_image->colors*
+        sizeof(*kmeans_image->colormap));
       image->colors=kmeans_image->colors;
       kmeans_image=DestroyImage(kmeans_image);
     }
@@ -2468,7 +2524,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
             break;
         (void) CopyMagickString(color,p,(size_t) MagickMin(q-p+1,
           MagickPathExtent));
-        status=QueryColorCompliance(color,AllCompliance,kmeans_colormap+n,
+        status=QueryColorCompliance(color,AllCompliance,image->colormap+n,
           exception);
         if (*q == '\0')
           {
@@ -2488,23 +2544,24 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
           random_info=AcquireRandomInfo();
           for ( ; n < (ssize_t) image->colors; n++)
           {
-            kmeans_colormap[n].red=RandomColorComponent(random_info);
-            kmeans_colormap[n].green=RandomColorComponent(random_info);
-            kmeans_colormap[n].blue=RandomColorComponent(random_info);
-            kmeans_colormap[n].alpha=RandomColorComponent(random_info);
-            kmeans_colormap[n].black=RandomColorComponent(random_info);
+            status=QueryColorCompliance("#000",AllCompliance,image->colormap+n,
+              exception);
+            image->colormap[n].red=RandomColorComponent(random_info);
+            image->colormap[n].green=RandomColorComponent(random_info);
+            image->colormap[n].blue=RandomColorComponent(random_info);
+            image->colormap[n].alpha=RandomColorComponent(random_info);
+            image->colormap[n].black=RandomColorComponent(random_info);
           }
           random_info=DestroyRandomInfo(random_info);
         }
     }
-  (void) memcpy(image->colormap,kmeans_colormap,image->colors*
-    sizeof(*kmeans_colormap));
   /*
     Iterative refinement.
   */
   status=MagickTrue;
   previous_distortion=0.0;
   verbose=IsStringTrue(GetImageArtifact(image,"debug"));
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   image_view=AcquireAuthenticCacheView(image,exception);
   for (n=0; n < (ssize_t) max_iterations; n++)
   {
@@ -2517,21 +2574,30 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
     ssize_t
       y;
 
-    distortion=0.0;
-    (void) memset(kmeans_colormap,0,image->colors*sizeof(*kmeans_colormap));
+    for (i=0; i < (ssize_t) number_threads; i++)
+      (void) memset(kmeans_pixels[i],0,image->colors*sizeof(*kmeans_pixels[i]));
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+    #pragma omp parallel for schedule(static) shared(status) \
+      magick_number_threads(image,image,image->rows,1)
+#endif
     for (y=0; y < (ssize_t) image->rows; y++)
     {
+      const int
+        id = GetOpenMPThreadId();
+
       register Quantum
         *magick_restrict q;
 
       register ssize_t
         x;
 
+      if (status == MagickFalse)
+        continue;
       q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
       if (q == (Quantum *) NULL)
         {
           status=MagickFalse;
-          break;
+          continue;
         }
       for (x=0; x < (ssize_t) image->columns; x++)
       {
@@ -2545,7 +2611,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
           j;
 
         /*
-          Assign each pixel whose mean has the least squared Euclidean distance.
+          Assign each pixel whose mean has the least squared color distance.
         */
         j=0;
         min_distance=KmeansDistance(image,q,image->colormap+0);
@@ -2563,42 +2629,62 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
               j=i;
             }
         }
-        distortion+=min_distance;
-        kmeans_colormap[j].red+=QuantumScale*GetPixelRed(image,q);
-        kmeans_colormap[j].green+=QuantumScale*GetPixelGreen(image,q);
-        kmeans_colormap[j].blue+=QuantumScale*GetPixelBlue(image,q);
+        kmeans_pixels[id][j].red+=QuantumScale*GetPixelRed(image,q);
+        kmeans_pixels[id][j].green+=QuantumScale*GetPixelGreen(image,q);
+        kmeans_pixels[id][j].blue+=QuantumScale*GetPixelBlue(image,q);
         if (image->alpha_trait != BlendPixelTrait)
-          kmeans_colormap[j].alpha+=QuantumScale*GetPixelAlpha(image,q);
+          kmeans_pixels[id][j].alpha+=QuantumScale*GetPixelAlpha(image,q);
         if (image->colorspace == CMYKColorspace)
-          kmeans_colormap[j].black+=QuantumScale*GetPixelBlack(image,q);
-        kmeans_colormap[j].count++;
+          kmeans_pixels[id][j].black+=QuantumScale*GetPixelBlack(image,q);
+        kmeans_pixels[id][j].count++;
+        kmeans_pixels[id][j].distortion+=min_distance;
         SetPixelIndex(image,(Quantum) j,q);
         q+=GetPixelChannels(image);
       }
       if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
-        {
-          status=MagickFalse;
-          break;
-        }
+        status=MagickFalse;
     }
     if (status == MagickFalse)
       break;
     /*
+      Reduction operation: results land in [0] thread.
+    */
+    for (i=1; i < (ssize_t) number_threads; i++)
+    {
+      register ssize_t
+        j;
+
+      for (j=0; j < (ssize_t) image->colors; j++)
+      {
+        kmeans_pixels[0][j].red+=kmeans_pixels[i][j].red;
+        kmeans_pixels[0][j].green+=kmeans_pixels[i][j].green;
+        kmeans_pixels[0][j].blue+=kmeans_pixels[i][j].blue;
+        if (image->alpha_trait != BlendPixelTrait)
+          kmeans_pixels[0][j].alpha+=kmeans_pixels[i][j].alpha;
+        if (image->colorspace == CMYKColorspace)
+          kmeans_pixels[0][j].black+=kmeans_pixels[i][j].black;
+        kmeans_pixels[0][j].count+=kmeans_pixels[i][j].count;
+        kmeans_pixels[0][j].distortion+=kmeans_pixels[i][j].distortion;
+      }
+    }
+    /*
       Calculate the new means (centroids) of the pixels in the new clusters.
     */
+    distortion=0.0;
     for (i=0; i < (ssize_t) image->colors; i++)
     {
       double
-        count;
+        gamma;
 
-      count=PerceptibleReciprocal((double) kmeans_colormap[i].count);
-      image->colormap[i].red=QuantumRange*count*kmeans_colormap[i].red;
-      image->colormap[i].green=QuantumRange*count*kmeans_colormap[i].green;
-      image->colormap[i].blue=QuantumRange*count*kmeans_colormap[i].blue;
+      gamma=PerceptibleReciprocal((double) kmeans_pixels[0][i].count);
+      image->colormap[i].red=gamma*QuantumRange*kmeans_pixels[0][i].red;
+      image->colormap[i].green=gamma*QuantumRange*kmeans_pixels[0][i].green;
+      image->colormap[i].blue=gamma*QuantumRange*kmeans_pixels[0][i].blue;
       if (image->alpha_trait != BlendPixelTrait)
-        image->colormap[i].alpha=QuantumRange*count*kmeans_colormap[i].alpha;
+        image->colormap[i].alpha=gamma*QuantumRange*kmeans_pixels[0][i].alpha;
       if (image->colorspace == CMYKColorspace)
-        image->colormap[i].black=QuantumRange*count*kmeans_colormap[i].black;
+        image->colormap[i].black=gamma*QuantumRange*kmeans_pixels[0][i].black;
+      distortion+=kmeans_pixels[0][i].distortion;
     }
     if (verbose != MagickFalse)
       (void) (void) FormatLocaleFile(stderr,"distortion[%ld]: %g %g\n",n,
@@ -2618,7 +2704,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  kmeans_colormap=(PixelInfo *) RelinquishMagickMemory(kmeans_colormap);
+  kmeans_pixels=DestroyKmeansThreadSet(kmeans_pixels);
   if (image->progress_monitor != (MagickProgressMonitor) NULL)
     (void) SetImageProgress(image,KmeansImageTag,(MagickOffsetType)
       max_iterations-1,max_iterations);
