@@ -923,8 +923,7 @@ static inline void ReversePSDString(Image *image,char *p,size_t length)
 }
 
 static inline void SetPSDPixel(Image *image,const size_t channels,
-  const ssize_t type,const size_t packet_size,const Quantum pixel,Quantum *q,
-  ExceptionInfo *exception)
+  const ssize_t type,const Quantum pixel,Quantum *q,ExceptionInfo *exception)
 {
   if (image->storage_class == PseudoClass)
     {
@@ -932,14 +931,9 @@ static inline void SetPSDPixel(Image *image,const size_t channels,
         *color;
 
       if (type == 0)
-        {
-          if (packet_size == 1)
-            SetPixelIndex(image,ScaleQuantumToChar(pixel),q);
-          else
-            SetPixelIndex(image,ScaleQuantumToShort(pixel),q);
-        }
-      color=image->colormap+(ssize_t) ConstrainColormapIndex(image,
-        (ssize_t) GetPixelIndex(image,q),exception);
+        SetPixelIndex(image,(Quantum) ConstrainColormapIndex(image,
+          (ssize_t) pixel,exception),q);
+      color=image->colormap+(ssize_t) GetPixelIndex(image,q);
       if ((type == 0) && (channels > 1))
         return;
       else
@@ -1040,7 +1034,7 @@ static MagickBooleanType ReadPSDChannelPixels(Image *image,
         }
     if (image->depth > 1)
       {
-        SetPSDPixel(image,channels,type,packet_size,pixel,q,exception);
+        SetPSDPixel(image,channels,type,pixel,q,exception);
         q+=GetPixelChannels(image);
       }
     else
@@ -1054,7 +1048,7 @@ static MagickBooleanType ReadPSDChannelPixels(Image *image,
           number_bits=8;
         for (bit = 0; bit < (ssize_t) number_bits; bit++)
         {
-          SetPSDPixel(image,channels,type,packet_size,(((unsigned char) pixel)
+          SetPSDPixel(image,channels,type,(((unsigned char) pixel)
             & (0x01 << (7-bit))) != 0 ? 0 : QuantumRange,q,exception);
           q+=GetPixelChannels(image);
           x++;
