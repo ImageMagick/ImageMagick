@@ -1072,7 +1072,6 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                 ThrowProfileException(ImageError,
                   "ColorspaceColorProfileMismatch",name);
             }
-            (void) source_colorspace;
             signature=cmsGetPCS(source_profile);
             if (target_profile != (cmsHPROFILE) NULL)
               signature=cmsGetColorSpace(target_profile);
