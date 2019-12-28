@@ -5,6 +5,7 @@
   * xc:white no longer creates a black PNM image (reference
     https://github.com/ImageMagick/ImageMagick/issues/1817).
   * Sync pixel cache for -kmeans option.
+  * Thread -kmeans option.
 
 2019-12-26  7.0.9-12 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-12, GIT revision 16587:7d6a559:20191226.
