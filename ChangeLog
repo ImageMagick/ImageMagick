@@ -1,5 +1,5 @@
 2019-12-28  7.0.9-13 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.9-13, GIT revision 16599:3da08d1:20191228.
+  * Release ImageMagick version 7.0.9-13, GIT revision 16601:a61df38:20191228.
 
 2019-12-27  7.0.9-13 Cristy  <quetzlzacatenango@image...>
   * xc:white no longer creates a black PNM image (reference
