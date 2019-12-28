@@ -2699,7 +2699,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
       distortion+=kmeans_pixels[0][i].distortion;
     }
     if (verbose != MagickFalse)
-      (void) (void) FormatLocaleFile(stderr,"distortion[%ld]: %g %g\n",n,
+      (void) (void) FormatLocaleFile(stderr,"distortion[%zd]: %g %g\n",n,
         distortion,fabs(distortion-previous_distortion));
     if (fabs(distortion-previous_distortion) <= max_distortion)
       break;
