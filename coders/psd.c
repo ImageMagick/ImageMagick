@@ -936,7 +936,7 @@ static inline void SetPSDPixel(Image *image,const size_t channels,
       color=image->colormap+(ssize_t) GetPixelIndex(image,q);
       if ((type == 0) && (channels > 1))
         return;
-      else
+      else if (type != 0)
         color->alpha=(MagickRealType) pixel;
       SetPixelViaPixelInfo(image,color,q);
       return;
