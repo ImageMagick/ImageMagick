@@ -2139,11 +2139,11 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
         }
         case RepeatSpread:
         {
-          MagickBooleanType
-            antialias;
-
           double
             repeat;
+
+          MagickBooleanType
+            antialias;
 
           antialias=MagickFalse;
           repeat=0.0;
