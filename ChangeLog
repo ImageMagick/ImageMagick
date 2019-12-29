@@ -7,6 +7,8 @@
   * Sync pixel cache for -kmeans option.
   * Thread -kmeans option.
   * PSD: only set the alpha channel when type is not 0.
+ * Fix Lab to custom profile (CMYK or RGB) conversion bug (reference
+   https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=37318).
 
 2019-12-26  7.0.9-12 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-12, GIT revision 16587:7d6a559:20191226.
