@@ -2038,13 +2038,13 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
 #endif
   for (y=bounding_box.y; y < (ssize_t) bounding_box.height; y++)
   {
-    PixelInfo
-      composite,
-      pixel;
-
     double
       alpha,
       offset;
+
+    PixelInfo
+      composite,
+      pixel;
 
     register Quantum
       *magick_restrict q;
