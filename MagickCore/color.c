@@ -1137,7 +1137,7 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
 
   color=0.0;
   scale=QuantumRange;
-  if (compliance == SVGCompliance)
+  if (compliance != NoCompliance)
     scale=255.0;
   switch (channel)
   {
@@ -1183,7 +1183,8 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
     case AlphaPixelChannel:
     {
       color=pixel->alpha;
-      scale=1.0;
+      if (compliance != NoCompliance)
+        scale=1.0;
       break;
     }
     case BlackPixelChannel:

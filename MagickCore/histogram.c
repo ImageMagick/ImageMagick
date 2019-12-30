@@ -1051,21 +1051,21 @@ MagickExport size_t GetNumberColors(const Image *image,FILE *file,
   {
     pixel=(*p);
     (void) CopyMagickString(tuple,"(",MagickPathExtent);
-    ConcatenateColorComponent(&pixel,RedPixelChannel,X11Compliance,tuple);
+    ConcatenateColorComponent(&pixel,RedPixelChannel,NoCompliance,tuple);
     (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
-    ConcatenateColorComponent(&pixel,GreenPixelChannel,X11Compliance,tuple);
+    ConcatenateColorComponent(&pixel,GreenPixelChannel,NoCompliance,tuple);
     (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
-    ConcatenateColorComponent(&pixel,BluePixelChannel,X11Compliance,tuple);
+    ConcatenateColorComponent(&pixel,BluePixelChannel,NoCompliance,tuple);
     if (pixel.colorspace == CMYKColorspace)
       {
         (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
-        ConcatenateColorComponent(&pixel,BlackPixelChannel,X11Compliance,
+        ConcatenateColorComponent(&pixel,BlackPixelChannel,NoCompliance,
           tuple);
       }
     if (pixel.alpha_trait != UndefinedPixelTrait)
       {
         (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
-        ConcatenateColorComponent(&pixel,AlphaPixelChannel,X11Compliance,
+        ConcatenateColorComponent(&pixel,AlphaPixelChannel,NoCompliance,
           tuple);
       }
     (void) ConcatenateMagickString(tuple,")",MagickPathExtent);
