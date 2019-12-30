@@ -797,11 +797,6 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         GetPixelInfoPixel(image,p,&pixel);
-        if (pixel.colorspace == LabColorspace)
-          {
-            pixel.green-=(QuantumRange+1)/2.0;
-            pixel.blue-=(QuantumRange+1)/2.0;
-          }
         if (LocaleCompare(image_info->magick,"SPARSE-COLOR") == 0)
           {
             /*
