@@ -112,9 +112,15 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  assert(colors <= MaxColormapSize);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (colors > MaxColormapSize)
+    {
+      image->colors=0;
+      image->storage_class=DirectClass;
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        image->filename);
+    }
   image->colors=MagickMax(colors,1);
   if (image->colormap == (PixelInfo *) NULL)
     image->colormap=(PixelInfo *) AcquireQuantumMemory(image->colors+1,
