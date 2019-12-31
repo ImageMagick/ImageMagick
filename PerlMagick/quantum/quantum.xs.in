@@ -576,7 +576,7 @@ static struct
       {"height", IntegerReference}, {"number-bins", IntegerReference},
       {"clip-limit", RealReference} } },
     { "Kmeans", { {"geometry", StringReference}, {"colors", IntegerReference},
-      {"iterations", IntegerReference}, {"distortion", RealReference} } },
+      {"iterations", IntegerReference}, {"tolerance", RealReference} } },
   };
 
 static SplayTreeInfo

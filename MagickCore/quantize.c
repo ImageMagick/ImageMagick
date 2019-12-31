@@ -2320,7 +2320,7 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %  The format of the KmeansImage method is:
 %
 %      MagickBooleanType KmeansImage(Image *image,const size_t number_colors,
-%        const size_t max_iterations,const double max_distortion,
+%        const size_t max_iterations,const double tolerance,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -2331,7 +2331,7 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %
 %    o max_iterations: maximum number of iterations while converging.
 %
-%    o max_distortion: the maximum quantization distortion.
+%    o tolerance: the maximum tolerance.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -2431,8 +2431,8 @@ static inline double KmeansDistance(const Image *magick_restrict image,
 }
 
 MagickExport MagickBooleanType KmeansImage(Image *image,
-  const size_t number_colors,const size_t max_iterations,
-  const double max_distortion,ExceptionInfo *exception)
+  const size_t number_colors,const size_t max_iterations,const double tolerance,
+  ExceptionInfo *exception)
 {
 #define KmeansImageTag  "Kmeans/Image"
 #define RandomColorComponent(info)  (QuantumRange*GetPseudoRandomValue(info))
@@ -2702,7 +2702,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
       (void) FormatLocaleFile(stderr,"distortion[%.20g]: %*g %*g\n",(double) n,
         GetMagickPrecision(),distortion,GetMagickPrecision(),
         fabs(distortion-previous_distortion));
-    if (fabs(distortion-previous_distortion) <= max_distortion)
+    if (fabs(distortion-previous_distortion) <= tolerance)
       break;
     previous_distortion=distortion;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
