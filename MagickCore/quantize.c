@@ -2444,7 +2444,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
     *colors;
 
   double
-    previous_distortion;
+    previous_tolerance;
 
   KmeansInfo
     **kmeans_pixels;
@@ -2571,7 +2571,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
   if (kmeans_pixels == (KmeansInfo **) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
-  previous_distortion=0.0;
+  previous_tolerance=0.0;
   verbose=IsStringTrue(GetImageArtifact(image,"debug"));
   number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   image_view=AcquireAuthenticCacheView(image,exception);
@@ -2701,10 +2701,10 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
     if (verbose != MagickFalse)
       (void) FormatLocaleFile(stderr,"distortion[%.20g]: %*g %*g\n",(double) n,
         GetMagickPrecision(),distortion,GetMagickPrecision(),
-        fabs(distortion-previous_distortion));
-    if (fabs(distortion-previous_distortion) <= tolerance)
+        fabs(distortion-previous_tolerance));
+    if (fabs(distortion-previous_tolerance) <= tolerance)
       break;
-    previous_distortion=distortion;
+    previous_tolerance=distortion;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType
