@@ -1207,7 +1207,7 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
       break;
   }
   if ((pixel->colorspace == sRGBColorspace) &&
-      (fabs(color-(ssize_t) color) > 0.01f))
+      (fabs((double) color-(ssize_t) color) > 0.01f))
     scale=100.0f;
   if (scale != 100.0f)
     (void) FormatLocaleString(component,MagickPathExtent,"%.*g",
