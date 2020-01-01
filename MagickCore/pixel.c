@@ -6002,7 +6002,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *source,
       */
       if (fabs((double) pixel) > (QuantumRange/2))
         pixel-=QuantumRange;
-      pixel*=2;
+      pixel*=2.0;
     }
   distance+=scale*pixel*pixel;
   if (distance > fuzz)
@@ -6128,7 +6128,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
       */
       if (fabs((double) pixel) > (QuantumRange/2))
         pixel-=QuantumRange;
-      pixel*=2;
+      pixel*=2.0;
     }
   distance+=pixel*pixel*scale;
   if (distance > fuzz)
