@@ -100,6 +100,8 @@
 /*
   Define declarations.
 */
+#define IncrementOperator  0xf3U
+#define DecrementOperator  0xf4U
 #define LeftShiftOperator  0xf5U
 #define RightShiftOperator  0xf6U
 #define LessThanEqualOperator  0xf7U
@@ -211,6 +213,10 @@ MagickPrivate FxInfo *AcquireFxInfo(const Image *images,const char *expression,
     Convert compound to simple operators.
   */
   fx_op[1]='\0';
+  *fx_op=(char) IncrementOperator;
+  (void) SubstituteString(&fx_info->expression,"++",fx_op);
+  *fx_op=(char) DecrementOperator;
+  (void) SubstituteString(&fx_info->expression,"--",fx_op);
   *fx_op=(char) LeftShiftOperator;
   (void) SubstituteString(&fx_info->expression,"<<",fx_op);
   *fx_op=(char) RightShiftOperator;
@@ -2031,6 +2037,12 @@ static const char *FxOperatorPrecedence(const char *expression,
             precedence=AdditionPrecedence;
           break;
         }
+        case IncrementOperator:
+        case DecrementOperator:
+        {
+          precedence=AssignmentPrecedence;
+          break;
+        }
         case LeftShiftOperator:
         case RightShiftOperator:
         {
@@ -2142,7 +2154,8 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
 
   char
     *q,
-    *subexpression;
+    *subexpression,
+    value[MagickPathExtent];
 
   double
     alpha,
@@ -2225,6 +2238,30 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
             exception);
           FxReturn(alpha-(*beta));
+        }
+        case IncrementOperator:
+        {
+          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",alpha+1.0);
+          (void) DeleteNodeFromSplayTree(fx_info->symbols,subexpression);
+          if (*subexpression == '\0')
+            (void) AddValueToSplayTree(fx_info->symbols,ConstantString(++p),
+              ConstantString(value));
+          else
+            (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
+              subexpression),ConstantString(value));
+          FxReturn(*beta);
+        }
+        case DecrementOperator:
+        {
+          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",alpha-1.0);
+          (void) DeleteNodeFromSplayTree(fx_info->symbols,subexpression);
+          if (*subexpression == '\0')
+            (void) AddValueToSplayTree(fx_info->symbols,ConstantString(++p),
+              ConstantString(value));
+          else
+            (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
+              subexpression),ConstantString(value));
+          FxReturn(*beta);
         }
         case LeftShiftOperator:
         {
@@ -2349,9 +2386,6 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
         }
         case '=':
         {
-          char
-            numeric[MagickPathExtent];
-
           q=subexpression;
           while (isalpha((int) ((unsigned char) *q)) != 0)
             q++;
@@ -2364,10 +2398,10 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           ClearMagickException(exception);
           *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
             exception);
-          (void) FormatLocaleString(numeric,MagickPathExtent,"%.20g",*beta);
+          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",*beta);
           (void) DeleteNodeFromSplayTree(fx_info->symbols,subexpression);
           (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
-            subexpression),ConstantString(numeric));
+            subexpression),ConstantString(value));
           FxReturn(*beta);
         }
         case ',':
