@@ -3976,7 +3976,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
           register ssize_t
             j;
 
-          if (IsPixelGray(image,q) != MagickFalse)
+          if (IsPixelGray(image,q) == MagickFalse)
             {
               q+=GetPixelChannels(image);
               continue;
