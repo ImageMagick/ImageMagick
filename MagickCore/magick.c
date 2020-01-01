@@ -1438,10 +1438,6 @@ static void MagickSignalHandler(int signal_number)
   if (signal_number == SIGINT)
     _exit(signal_number);
 #endif
-#if defined(SIGBUS)
-  if (signal_number == SIGBUS)
-    _exit(signal_number);
-#endif
 #if defined(MAGICKCORE_HAVE_RAISE)
   if (signal_handlers[signal_number] != MagickSignalHandler)
     raise(signal_number);
