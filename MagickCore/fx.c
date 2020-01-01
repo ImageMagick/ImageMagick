@@ -100,8 +100,12 @@
 /*
   Define declarations.
 */
-#define IncrementOperator  0xf3U
-#define DecrementOperator  0xf4U
+#define PlusAssignmentOperator  0xefU
+#define SubtractAssignmentOperator  0xf0U
+#define MultiplyAssignmentOperator  0xf1U
+#define DivideAssignmentOperator  0xf2U
+#define IncrementAssignmentOperator  0xf3U
+#define DecrementAssignmentOperator  0xf4U
 #define LeftShiftOperator  0xf5U
 #define RightShiftOperator  0xf6U
 #define LessThanEqualOperator  0xf7U
@@ -203,19 +207,20 @@ MagickPrivate FxInfo *AcquireFxInfo(const Image *images,const char *expression,
   fx_info->file=stderr;
   (void) SubstituteString(&fx_info->expression," ","");  /* compact string */
   /*
-    Force right-to-left associativity for unary negation.
-  */
-  (void) SubstituteString(&fx_info->expression,"-","-1.0*");
-  (void) SubstituteString(&fx_info->expression,"^-1.0*","^-");
-  (void) SubstituteString(&fx_info->expression,"E-1.0*","E-");
-  (void) SubstituteString(&fx_info->expression,"e-1.0*","e-");
-  /*
     Convert compound to simple operators.
   */
   fx_op[1]='\0';
-  *fx_op=(char) IncrementOperator;
+  *fx_op=(char) PlusAssignmentOperator;
+  (void) SubstituteString(&fx_info->expression,"+=",fx_op);
+  *fx_op=(char) SubtractAssignmentOperator;
+  (void) SubstituteString(&fx_info->expression,"-=",fx_op);
+  *fx_op=(char) MultiplyAssignmentOperator;
+  (void) SubstituteString(&fx_info->expression,"*=",fx_op);
+  *fx_op=(char) DivideAssignmentOperator;
+  (void) SubstituteString(&fx_info->expression,"/=",fx_op);
+  *fx_op=(char) IncrementAssignmentOperator;
   (void) SubstituteString(&fx_info->expression,"++",fx_op);
-  *fx_op=(char) DecrementOperator;
+  *fx_op=(char) DecrementAssignmentOperator;
   (void) SubstituteString(&fx_info->expression,"--",fx_op);
   *fx_op=(char) LeftShiftOperator;
   (void) SubstituteString(&fx_info->expression,"<<",fx_op);
@@ -235,6 +240,13 @@ MagickPrivate FxInfo *AcquireFxInfo(const Image *images,const char *expression,
   (void) SubstituteString(&fx_info->expression,"||",fx_op);
   *fx_op=(char) ExponentialNotation;
   (void) SubstituteString(&fx_info->expression,"**",fx_op);
+  /*
+    Force right-to-left associativity for unary negation.
+  */
+  (void) SubstituteString(&fx_info->expression,"-","-1.0*");
+  (void) SubstituteString(&fx_info->expression,"^-1.0*","^-");
+  (void) SubstituteString(&fx_info->expression,"E-1.0*","E-");
+  (void) SubstituteString(&fx_info->expression,"e-1.0*","e-");
   return(fx_info);
 }
 
@@ -2037,8 +2049,12 @@ static const char *FxOperatorPrecedence(const char *expression,
             precedence=AdditionPrecedence;
           break;
         }
-        case IncrementOperator:
-        case DecrementOperator:
+        case PlusAssignmentOperator:
+        case SubtractAssignmentOperator:
+        case MultiplyAssignmentOperator:
+        case DivideAssignmentOperator:
+        case IncrementAssignmentOperator:
+        case DecrementAssignmentOperator:
         {
           precedence=AssignmentPrecedence;
           break;
@@ -2239,7 +2255,88 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
             exception);
           FxReturn(alpha-(*beta));
         }
-        case IncrementOperator:
+        case PlusAssignmentOperator:
+        {
+          q=subexpression;
+          while (isalpha((int) ((unsigned char) *q)) != 0)
+            q++;
+          if (*q != '\0')
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"UnableToParseExpression","`%s'",subexpression);
+              FxReturn(0.0);
+            }
+          ClearMagickException(exception);
+          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
+            exception);
+          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",alpha+*beta);
+          (void) DeleteNodeFromSplayTree(fx_info->symbols,subexpression);
+          (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
+            subexpression),ConstantString(value));
+          FxReturn(*beta);
+        }
+        case SubtractAssignmentOperator:
+        {
+          q=subexpression;
+          while (isalpha((int) ((unsigned char) *q)) != 0)
+            q++;
+          if (*q != '\0')
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"UnableToParseExpression","`%s'",subexpression);
+              FxReturn(0.0);
+            }
+          ClearMagickException(exception);
+          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
+            exception);
+          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",alpha-*beta);
+          (void) DeleteNodeFromSplayTree(fx_info->symbols,subexpression);
+          (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
+            subexpression),ConstantString(value));
+          FxReturn(*beta);
+        }
+        case MultiplyAssignmentOperator:
+        {
+          q=subexpression;
+          while (isalpha((int) ((unsigned char) *q)) != 0)
+            q++;
+          if (*q != '\0')
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"UnableToParseExpression","`%s'",subexpression);
+              FxReturn(0.0);
+            }
+          ClearMagickException(exception);
+          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
+            exception);
+          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",alpha**beta);
+          (void) DeleteNodeFromSplayTree(fx_info->symbols,subexpression);
+          (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
+            subexpression),ConstantString(value));
+          FxReturn(*beta);
+        }
+        case DivideAssignmentOperator:
+        {
+          q=subexpression;
+          while (isalpha((int) ((unsigned char) *q)) != 0)
+            q++;
+          if (*q != '\0')
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"UnableToParseExpression","`%s'",subexpression);
+              FxReturn(0.0);
+            }
+          ClearMagickException(exception);
+          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
+            exception);
+          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",
+            alpha*PerceptibleReciprocal(*beta));
+          (void) DeleteNodeFromSplayTree(fx_info->symbols,subexpression);
+          (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
+            subexpression),ConstantString(value));
+          FxReturn(*beta);
+        }
+        case IncrementAssignmentOperator:
         {
           (void) FormatLocaleString(value,MagickPathExtent,"%.20g",alpha+1.0);
           (void) DeleteNodeFromSplayTree(fx_info->symbols,subexpression);
@@ -2251,7 +2348,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
               subexpression),ConstantString(value));
           FxReturn(*beta);
         }
-        case DecrementOperator:
+        case DecrementAssignmentOperator:
         {
           (void) FormatLocaleString(value,MagickPathExtent,"%.20g",alpha-1.0);
           (void) DeleteNodeFromSplayTree(fx_info->symbols,subexpression);
