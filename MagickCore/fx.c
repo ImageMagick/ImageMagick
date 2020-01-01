@@ -3129,7 +3129,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
   q=(char *) expression;
   alpha=InterpretSiPrefixValue(expression,&q);
   if (q == expression)
-    FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
+    alpha=FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception);
   FxReturn(alpha);
 }
 

@@ -1423,14 +1423,6 @@ static void MagickSignalHandler(int signal_number)
   if (signal_number == SIGFPE)
     abort();
 #endif
-#if defined(SIGXCPU)
-  if (signal_number == SIGXCPU)
-    abort();
-#endif
-#if defined(SIGXFSZ)
-  if (signal_number == SIGXFSZ)
-    abort();
-#endif
 #if defined(SIGSEGV)
   if (signal_number == SIGSEGV)
     abort();
