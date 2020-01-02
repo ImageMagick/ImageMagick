@@ -647,6 +647,9 @@ MagickPrivate void ExpandFilename(char *path)
     {
 #if defined(MAGICKCORE_POSIX_SUPPORT) && !defined(__OS2__)
       char
+#if defined(MAGICKCORE_HAVE_GETPWNAM_R)
+        buffer[MagickPathExtent],
+#endif
         username[MagickPathExtent];
 
       register char
@@ -662,7 +665,16 @@ MagickPrivate void ExpandFilename(char *path)
       p=strchr(username,'/');
       if (p != (char *) NULL)
         *p='\0';
+#if !defined(MAGICKCORE_HAVE_GETPWNAM_R)
       entry=getpwnam(username);
+#else
+      struct passwd
+        pwd;
+
+      entry=(struct passwd *) NULL;
+      if (getpwnam_r(username,&pwd,buffer,sizeof(buffer),&entry) < 0)
+        return;
+#endif
       if (entry == (struct passwd *) NULL)
         return;
       (void) CopyMagickString(expand_path,entry->pw_dir,MagickPathExtent);
