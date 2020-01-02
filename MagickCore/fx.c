@@ -2270,7 +2270,6 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
             exception);
           (void) FormatLocaleString(value,MagickPathExtent,"%.20g",alpha+*beta);
-          (void) DeleteNodeFromSplayTree(fx_info->symbols,subexpression);
           (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
             subexpression),ConstantString(value));
           FxReturn(*beta);
@@ -2290,7 +2289,6 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
             exception);
           (void) FormatLocaleString(value,MagickPathExtent,"%.20g",alpha-*beta);
-          (void) DeleteNodeFromSplayTree(fx_info->symbols,subexpression);
           (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
             subexpression),ConstantString(value));
           FxReturn(*beta);
@@ -2310,7 +2308,6 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
             exception);
           (void) FormatLocaleString(value,MagickPathExtent,"%.20g",alpha**beta);
-          (void) DeleteNodeFromSplayTree(fx_info->symbols,subexpression);
           (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
             subexpression),ConstantString(value));
           FxReturn(*beta);
@@ -2331,17 +2328,18 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
             exception);
           (void) FormatLocaleString(value,MagickPathExtent,"%.20g",
             alpha*PerceptibleReciprocal(*beta));
-          (void) DeleteNodeFromSplayTree(fx_info->symbols,subexpression);
           (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
             subexpression),ConstantString(value));
           FxReturn(*beta);
         }
         case IncrementAssignmentOperator:
         {
-          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",alpha+1.0);
-          (void) DeleteNodeFromSplayTree(fx_info->symbols,subexpression);
           if (*subexpression == '\0')
-            (void) AddValueToSplayTree(fx_info->symbols,ConstantString(++p),
+            alpha=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
+              exception);
+          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",alpha+1.0);
+          if (*subexpression == '\0')
+            (void) AddValueToSplayTree(fx_info->symbols,ConstantString(p),
               ConstantString(value));
           else
             (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
@@ -2350,10 +2348,12 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
         }
         case DecrementAssignmentOperator:
         {
-          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",alpha-1.0);
-          (void) DeleteNodeFromSplayTree(fx_info->symbols,subexpression);
           if (*subexpression == '\0')
-            (void) AddValueToSplayTree(fx_info->symbols,ConstantString(++p),
+            alpha=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
+              exception);
+          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",alpha-1.0);
+          if (*subexpression == '\0')
+            (void) AddValueToSplayTree(fx_info->symbols,ConstantString(p),
               ConstantString(value));
           else
             (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
@@ -2496,7 +2496,6 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
             exception);
           (void) FormatLocaleString(value,MagickPathExtent,"%.20g",*beta);
-          (void) DeleteNodeFromSplayTree(fx_info->symbols,subexpression);
           (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
             subexpression),ConstantString(value));
           FxReturn(*beta);
