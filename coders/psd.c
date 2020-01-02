@@ -934,11 +934,11 @@ static inline void SetPSDPixel(Image *image,const size_t channels,
       Quantum
         index;
 
+      index=pixel;
       if (packet_size == 1)
-        index=(Quantum) ScaleQuantumToChar(pixel);
-      else
-        index=(Quantum) ConstrainColormapIndex(image,(ssize_t) pixel,
-          exception);
+        index=(Quantum) ScaleQuantumToChar(index);
+      index=(Quantum) ConstrainColormapIndex(image,(ssize_t) index,
+        exception);
 
       if (type == 0)
         SetPixelIndex(image,index,q);
