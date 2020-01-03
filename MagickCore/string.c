@@ -2212,7 +2212,7 @@ MagickExport double *StringToArrayOfDoubles(const char *string,ssize_t *count,
 %
 %  StringToken() looks for any one of given delimiters and splits the string
 %  into two separate strings by replacing the delimiter character found with a
-%  nul character.
+%  null character.
 %
 %  The given string pointer is changed to point to the string following the
 %  delimiter character found, or NULL.  A pointer to the start of the

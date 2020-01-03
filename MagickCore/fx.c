@@ -1251,9 +1251,9 @@ static inline MagickBooleanType IsFxFunction(const char *expression,
     i;
 
   for (i=0; i <= length; i++)
-    if (name[i] == '\0')
+    if (expression[i] == '\0')
       return(MagickFalse);
-  c=name[length];
+  c=expression[length];
   if ((LocaleNCompare(expression,name,length) == 0) &&
       ((isspace(c) == 0) || (c == '(')))
     return(MagickTrue);
@@ -1889,8 +1889,8 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
   value=(const char *) GetValueFromSplayTree(fx_info->symbols,symbol);
   if (value != (const char *) NULL)
     return(StringToDouble(value,(char **) NULL));
-  (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-    "UnableToParseExpression","`%s'",symbol);
+  (void) AddValueToSplayTree(fx_info->symbols,ConstantString(symbol),
+    ConstantString("0.0"));
   return(0.0);
 }
 
@@ -3109,22 +3109,18 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           */
           (void) CopyMagickString(subexpression,expression+6,MagickPathExtent);
           subexpression[strlen(subexpression)-1]='\0';
-          q=subexpression;
-          p=StringToken(",",&q);
-          if ((p == (char *) NULL) || (strlen(p) < 1) || (q == (char *) NULL))
-            {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"UnableToParseExpression","`%s'",expression);
-              FxReturn(0.0);
-            }
-          for ( ; ; )
+          p=subexpression;
+          for (q=(char *) p; (*q != ',') && (*q != '\0'); q++)
+            if (*q == '(')
+              for ( ; (*q != ')') && (*q != '\0'); q++);
+          for (*q='\0'; ; )
           {
             double sans = 0.0;
             alpha=FxEvaluateSubexpression(fx_info,channel,x,y,p,depth+1,&sans,
               exception);
             if (fabs(alpha) < MagickEpsilon)
               FxReturn(*beta);
-            alpha=FxEvaluateSubexpression(fx_info,channel,x,y,q,depth+1,beta,
+            alpha=FxEvaluateSubexpression(fx_info,channel,x,y,q+1,depth+1,beta,
               exception);
           }
         }
