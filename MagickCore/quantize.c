@@ -653,12 +653,15 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
       /*
         Monochrome image.
       */
-      intensity=GetPixelInfoLuma(image->colormap+0) < QuantumRange/2.0 ? 0.0 :
+      intensity=GetPixelInfoLuma(image->colormap+0) > QuantumRange/2.0 ? 0.0 :
         QuantumRange;
-      if ((image->colors > 1) &&
-          (GetPixelInfoLuma(image->colormap+0) >
-           GetPixelInfoLuma(image->colormap+1)))
-        intensity=(double) QuantumRange;
+      if (image->colors > 1)
+        {
+          intensity=0.0;
+          if (GetPixelInfoLuma(image->colormap+0) >
+              GetPixelInfoLuma(image->colormap+1))
+            intensity=(double) QuantumRange;
+        }
       image->colormap[0].red=intensity;
       image->colormap[0].green=intensity;
       image->colormap[0].blue=intensity;
