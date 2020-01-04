@@ -1125,6 +1125,37 @@ MagickPrivate FxInfo *DestroyFxInfo(FxInfo *fx_info)
 %
 */
 
+static inline const double *GetFxSymbolValue(FxInfo *magick_restrict fx_info,
+  const char *symbol)
+{
+  return((const double *) GetValueFromSplayTree(fx_info->symbols,symbol));
+}
+
+static inline MagickBooleanType SetFxSymbolValue(
+  FxInfo *magick_restrict fx_info,const char *magick_restrict symbol,
+  double const value)
+{
+  double
+    *object;
+
+  object=(double *) GetValueFromSplayTree(fx_info->symbols,symbol);
+  if (object != (double *) NULL)
+    {
+      *object=value;
+      return(MagickTrue);
+    }
+  object=(double *) AcquireQuantumMemory(1,sizeof(*object));
+  if (object == (double *) NULL)
+    {
+      (void) ThrowMagickException(fx_info->exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        fx_info->images->filename);
+      return(MagickFalse);
+    }
+  *object=value;
+  return(AddValueToSplayTree(fx_info->symbols,ConstantString(symbol),object));
+}
+
 static double FxChannelStatistics(FxInfo *fx_info,Image *image,
   PixelChannel channel,const char *symbol,ExceptionInfo *exception)
 {
@@ -1132,11 +1163,13 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
     channel_mask;
 
   char
-    key[MagickPathExtent],
-    statistic[MagickPathExtent];
+    key[MagickPathExtent];
 
-  const char
+  const double
     *value;
+
+  double
+    statistic;
 
   register const char
     *p;
@@ -1158,22 +1191,21 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
     }
   (void) FormatLocaleString(key,MagickPathExtent,"%p.%.20g.%s",(void *) image,
     (double) channel,symbol);
-  value=(const char *) GetValueFromSplayTree(fx_info->symbols,key);
-  if (value != (const char *) NULL)
+  value=GetFxSymbolValue(fx_info,key);
+  if (value != (const double *) NULL)
     {
       if (channel_mask != UndefinedChannel)
         (void) SetPixelChannelMask(image,channel_mask);
-      return(QuantumScale*StringToDouble(value,(char **) NULL));
+      return(QuantumScale*(*value));
     }
-  (void) DeleteNodeFromSplayTree(fx_info->symbols,key);
+  statistic=0.0;
   if (LocaleNCompare(symbol,"depth",5) == 0)
     {
       size_t
         depth;
 
       depth=GetImageDepth(image,exception);
-      (void) FormatLocaleString(statistic,MagickPathExtent,"%.20g",(double)
-        depth);
+      statistic=(double) depth;
     }
   if (LocaleNCompare(symbol,"kurtosis",8) == 0)
     {
@@ -1182,7 +1214,7 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
         skewness;
 
       (void) GetImageKurtosis(image,&kurtosis,&skewness,exception);
-      (void) FormatLocaleString(statistic,MagickPathExtent,"%.20g",kurtosis);
+      statistic=kurtosis;
     }
   if (LocaleNCompare(symbol,"maxima",6) == 0)
     {
@@ -1191,7 +1223,7 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
         minima;
 
       (void) GetImageRange(image,&minima,&maxima,exception);
-      (void) FormatLocaleString(statistic,MagickPathExtent,"%.20g",maxima);
+      statistic=maxima;
     }
   if (LocaleNCompare(symbol,"mean",4) == 0)
     {
@@ -1200,7 +1232,7 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
         standard_deviation;
 
       (void) GetImageMean(image,&mean,&standard_deviation,exception);
-      (void) FormatLocaleString(statistic,MagickPathExtent,"%.20g",mean);
+      statistic=mean;
     }
   if (LocaleNCompare(symbol,"minima",6) == 0)
     {
@@ -1209,7 +1241,7 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
         minima;
 
       (void) GetImageRange(image,&minima,&maxima,exception);
-      (void) FormatLocaleString(statistic,MagickPathExtent,"%.20g",minima);
+      statistic=minima;
     }
   if (LocaleNCompare(symbol,"skewness",8) == 0)
     {
@@ -1218,7 +1250,7 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
         skewness;
 
       (void) GetImageKurtosis(image,&kurtosis,&skewness,exception);
-      (void) FormatLocaleString(statistic,MagickPathExtent,"%.20g",skewness);
+      statistic=skewness;
     }
   if (LocaleNCompare(symbol,"standard_deviation",18) == 0)
     {
@@ -1227,14 +1259,13 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
         standard_deviation;
 
       (void) GetImageMean(image,&mean,&standard_deviation,exception);
-      (void) FormatLocaleString(statistic,MagickPathExtent,"%.20g",
-        standard_deviation);
+      statistic=standard_deviation;
     }
   if (channel_mask != UndefinedChannel)
     (void) SetPixelChannelMask(image,channel_mask);
-  (void) AddValueToSplayTree(fx_info->symbols,ConstantString(key),
-    ConstantString(statistic));
-  return(QuantumScale*StringToDouble(statistic,(char **) NULL));
+  if (SetFxSymbolValue(fx_info,key,statistic) == MagickFalse)
+    return(0.0);
+  return(QuantumScale*statistic);
 }
 
 static double
@@ -1303,8 +1334,14 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
     symbol[MagickPathExtent];
 
   const char
-    *p,
+    *p;
+
+  const double
     *value;
+
+  double
+    alpha,
+    beta;
 
   Image
     *image;
@@ -1314,10 +1351,6 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
 
   PixelInfo
     pixel;
-
-  double
-    alpha,
-    beta;
 
   PointInfo
     point;
@@ -1451,16 +1484,21 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
   status=InterpolatePixelInfo(image,fx_info->view[i],image->interpolate,
     point.x,point.y,&pixel,exception);
   (void) status;
-  if ((strlen(p) > 2) && (LocaleCompare(p,"intensity") != 0) &&
-      (LocaleCompare(p,"luma") != 0) && (LocaleCompare(p,"luminance") != 0) &&
-      (LocaleCompare(p,"hue") != 0) && (LocaleCompare(p,"saturation") != 0) &&
+  if ((*p != '\0') && (*(p+1) != '\0') && (*(p+2) != '\0') &&
+      (LocaleCompare(p,"intensity") != 0) && (LocaleCompare(p,"luma") != 0) &&
+      (LocaleCompare(p,"luminance") != 0) && (LocaleCompare(p,"hue") != 0) &&
+      (LocaleCompare(p,"saturation") != 0) &&
       (LocaleCompare(p,"lightness") != 0))
     {
       char
         name[MagickPathExtent];
 
+      size_t
+        length;
+
       (void) CopyMagickString(name,p,MagickPathExtent);
-      for (q=name+(strlen(name)-1); q > name; q--)
+      length=strlen(name);
+      for (q=name+length-1; q > name; q--)
       {
         if (*q == ')')
           break;
@@ -1470,8 +1508,9 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
             break;
           }
       }
-      if ((strlen(name) > 2) &&
-          (GetValueFromSplayTree(fx_info->symbols,name) == (const char *) NULL))
+      q=name;
+      if ((*q != '\0') && (*(q+1) != '\0') && (*(q+2) != '\0') &&
+          (GetFxSymbolValue(fx_info,name) == (const double *) NULL))
         {
           PixelInfo
             *color;
@@ -1480,7 +1519,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
           if (color != (PixelInfo *) NULL)
             {
               pixel=(*color);
-              p+=strlen(name);
+              p+=length;
             }
           else
             {
@@ -1491,9 +1530,9 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
                 fx_info->exception);
               if (status != MagickFalse)
                 {
-                  (void) AddValueToSplayTree(fx_info->colors,ConstantString(
-                    name),ClonePixelInfo(&pixel));
-                  p+=strlen(name);
+                  (void) AddValueToSplayTree(fx_info->colors,
+                    ConstantString(name),ClonePixelInfo(&pixel));
+                  p+=length;
                 }
             }
         }
@@ -1886,11 +1925,10 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
     default:
       break;
   }
-  value=(const char *) GetValueFromSplayTree(fx_info->symbols,symbol);
-  if (value != (const char *) NULL)
-    return(StringToDouble(value,(char **) NULL));
-  (void) AddValueToSplayTree(fx_info->symbols,ConstantString(symbol),
-    ConstantString("0.0"));
+  value=GetFxSymbolValue(fx_info,symbol);
+  if (value != (const double *) NULL)
+    return(*value);
+  (void) SetFxSymbolValue(fx_info,symbol,0.0);
   return(0.0);
 }
 
@@ -2176,12 +2214,12 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
 
   char
     *q,
-    *subexpression,
-    value[MagickPathExtent];
+    *subexpression;
 
   double
     alpha,
-    gamma;
+    gamma,
+    value;
 
   register const char
     *p;
@@ -2275,9 +2313,9 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           ClearMagickException(exception);
           *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
             exception);
-          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",alpha+*beta);
-          (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
-            subexpression),ConstantString(value));
+          value=alpha+(*beta);
+          if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
+            return(0.0);
           FxReturn(*beta);
         }
         case SubtractAssignmentOperator:
@@ -2294,9 +2332,9 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           ClearMagickException(exception);
           *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
             exception);
-          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",alpha-*beta);
-          (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
-            subexpression),ConstantString(value));
+          value=alpha-(*beta);
+          if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
+            return(0.0);
           FxReturn(*beta);
         }
         case MultiplyAssignmentOperator:
@@ -2313,9 +2351,9 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           ClearMagickException(exception);
           *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
             exception);
-          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",alpha**beta);
-          (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
-            subexpression),ConstantString(value));
+          value=alpha*(*beta);
+          if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
+            return(0.0);
           FxReturn(*beta);
         }
         case DivideAssignmentOperator:
@@ -2332,10 +2370,9 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           ClearMagickException(exception);
           *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
             exception);
-          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",
-            alpha*PerceptibleReciprocal(*beta));
-          (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
-            subexpression),ConstantString(value));
+          value=alpha*PerceptibleReciprocal(*beta);
+          if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
+            return(0.0);
           FxReturn(*beta);
         }
         case IncrementAssignmentOperator:
@@ -2343,13 +2380,15 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           if (*subexpression == '\0')
             alpha=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
               exception);
-          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",alpha+1.0);
+          value=alpha+1.0;
           if (*subexpression == '\0')
-            (void) AddValueToSplayTree(fx_info->symbols,ConstantString(p),
-              ConstantString(value));
+            {
+              if (SetFxSymbolValue(fx_info,p,value) == MagickFalse)
+                return(0.0);
+            }
           else
-            (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
-              subexpression),ConstantString(value));
+            if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
+              return(0.0);
           FxReturn(*beta);
         }
         case DecrementAssignmentOperator:
@@ -2357,13 +2396,15 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           if (*subexpression == '\0')
             alpha=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
               exception);
-          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",alpha-1.0);
+          value=alpha-1.0;
           if (*subexpression == '\0')
-            (void) AddValueToSplayTree(fx_info->symbols,ConstantString(p),
-              ConstantString(value));
+            {
+              if (SetFxSymbolValue(fx_info,p,value) == MagickFalse)
+                return(0.0);
+            }
           else
-            (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
-              subexpression),ConstantString(value));
+            if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
+              return(0.0);
           FxReturn(*beta);
         }
         case LeftShiftOperator:
@@ -2504,9 +2545,9 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           ClearMagickException(exception);
           *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
             exception);
-          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",*beta);
-          (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
-            subexpression),ConstantString(value));
+          value=(*beta);
+          if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
+            return(0.0);
           FxReturn(*beta);
         }
         case ',':
@@ -2531,12 +2572,15 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
     }
   if (strchr("(",(int) *expression) != (char *) NULL)
     {
+      size_t
+        length;
+
       if (depth >= FxMaxParenthesisDepth)
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
           "ParenthesisNestedTooDeeply","`%s'",expression);
-      (void) CopyMagickString(subexpression,expression+1,MagickPathExtent);
-      if (strlen(subexpression) != 0)
-        subexpression[strlen(subexpression)-1]='\0';
+      length=CopyMagickString(subexpression,expression+1,MagickPathExtent);
+      if (length > 1)
+        subexpression[length-1]='\0';
       gamma=FxEvaluateSubexpression(fx_info,channel,x,y,subexpression,depth+1,
         beta,exception);
       FxReturn(gamma);
@@ -2689,6 +2733,9 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           const char
             *type;
 
+          size_t
+            length;
+
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,
             depth+1,beta,exception);
           switch (fx_info->images->colorspace)
@@ -2730,11 +2777,12 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
             }
           }
           *subexpression='\0';
+          length=1;
           if (strlen(expression) > 6)
-            (void) CopyMagickString(subexpression,expression+6,
+            length=CopyMagickString(subexpression,expression+6,
               MagickPathExtent);
-          if (strlen(subexpression) > 1)
-            subexpression[strlen(subexpression)-1]='\0';
+          if (length > 1)
+            subexpression[length-1]='\0';
           if (fx_info->file != (FILE *) NULL)
             (void) FormatLocaleFile(fx_info->file,"%s[%.20g,%.20g].%s: "
               "%s=%.*g\n",fx_info->images->filename,(double) x,(double) y,type,
@@ -2786,11 +2834,14 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           double
             sans = 0.0;
 
+          size_t
+            length;
+
           /*
             Parse for(initialization, condition test, expression).
           */
-          (void) CopyMagickString(subexpression,expression+4,MagickPathExtent);
-          subexpression[strlen(subexpression)-1]='\0';
+          length=CopyMagickString(subexpression,expression+4,MagickPathExtent);
+          subexpression[length-1]='\0';
           p=subexpression;
           for (q=(char *) p; (*q != ',') && (*q != '\0'); q++)
             if (*q == '(')
@@ -3150,11 +3201,14 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
     {
       if (IsFxFunction(expression,"while",5) != MagickFalse)
         {
+          size_t
+            length;
+
           /*
             Parse while(condition test, expression).
           */
-          (void) CopyMagickString(subexpression,expression+6,MagickPathExtent);
-          subexpression[strlen(subexpression)-1]='\0';
+          length=CopyMagickString(subexpression,expression+6,MagickPathExtent);
+          subexpression[length-1]='\0';
           p=subexpression;
           for (q=(char *) p; (*q != ',') && (*q != '\0'); q++)
             if (*q == '(')
