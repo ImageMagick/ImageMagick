@@ -3,6 +3,10 @@
 
 2020-01-01  7.0.9-14 Cristy  <quetzlzacatenango@image...>
   * Support extended Fx assignment operators (e.g. *=, /=, ++, --, etc.)
+  * Support Fx for() iterator.
+  * Optimize Fx performance.
+  * Ensure circle.rb renders the same for IMv6 and IMv7 (reference
+    https://github.com/rmagick/rmagick/issues/905).
 
 2019-12-30  7.0.9-13 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-13, GIT revision 16616:dbafe0b:20191230.
