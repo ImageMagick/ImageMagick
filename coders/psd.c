@@ -1572,6 +1572,8 @@ static MagickBooleanType CheckPSDChannels(const PSDInfo *psd_info,
       type;
 
     type=layer_info->channel_info[i].type;
+    if ((i == 0) && (psd_info->mode == IndexedMode) && (type != 0))
+      return(MagickFalse);
     if (type == -1)
       {
         channel_type|=AlphaChannel;
