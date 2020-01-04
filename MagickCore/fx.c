@@ -2781,6 +2781,49 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
             depth+1,beta,exception);
           FxReturn(floor(alpha));
         }
+      if (IsFxFunction(expression,"for",3) != MagickFalse)
+        {
+          double
+            sans = 0.0;
+
+          /*
+            Parse for(initialization, condition test, expression).
+          */
+          (void) CopyMagickString(subexpression,expression+4,MagickPathExtent);
+          subexpression[strlen(subexpression)-1]='\0';
+          p=subexpression;
+          for (q=(char *) p; (*q != ',') && (*q != '\0'); q++)
+            if (*q == '(')
+              for ( ; (*q != ')') && (*q != '\0'); q++);
+          if (*q == '\0')
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"UnableToParseExpression","`%s'",subexpression);
+              FxReturn(0.0);
+            }
+          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,p,depth+1,&sans,
+            exception);
+          (void) CopyMagickString(subexpression,q+1,MagickPathExtent);
+          p=subexpression;
+          for (q=(char *) p; (*q != ',') && (*q != '\0'); q++)
+            if (*q == '(')
+              for ( ; (*q != ')') && (*q != '\0'); q++);
+          if (*q == '\0')
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"UnableToParseExpression","`%s'",subexpression);
+              FxReturn(0.0);
+            }
+          for (*q='\0'; ; )
+          {
+            alpha=FxEvaluateSubexpression(fx_info,channel,x,y,p,depth+1,&sans,
+              exception);
+            if (fabs(alpha) < MagickEpsilon)
+              FxReturn(*beta);
+            alpha=FxEvaluateSubexpression(fx_info,channel,x,y,q+1,depth+1,beta,
+              exception);
+          }
+        }
       break;
     }
     case 'G':
@@ -3108,7 +3151,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
       if (IsFxFunction(expression,"while",5) != MagickFalse)
         {
           /*
-            Parse while(condition,expression).
+            Parse while(condition test, expression).
           */
           (void) CopyMagickString(subexpression,expression+6,MagickPathExtent);
           subexpression[strlen(subexpression)-1]='\0';
