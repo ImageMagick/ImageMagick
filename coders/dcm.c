@@ -3859,18 +3859,17 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           tag=((unsigned int) ReadBlobLSBShort(image) << 16) |
             ReadBlobLSBShort(image);
           length=(size_t) ReadBlobLSBLong(image);
-          if (length > (size_t) GetBlobSize(image))
+          if (EOFBlob(image) != MagickFalse)
             {
-              read_info=DestroyImageInfo(read_info);
-              ThrowDCMException(CorruptImageError,
-                "InsufficientImageDataInFile");
+              status=MagickFalse;
+              break;
             }
           if (tag == 0xFFFEE0DD)
             break; /* sequence delimiter tag */
           if (tag != 0xFFFEE000)
             {
-              read_info=DestroyImageInfo(read_info);
-              ThrowDCMException(CorruptImageError,"ImproperImageHeader");
+              status=MagickFalse;
+              break;
             }
           file=(FILE *) NULL;
           unique_file=AcquireUniqueFileResource(filename);
