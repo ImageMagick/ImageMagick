@@ -29,14 +29,14 @@
   <meta property='og:site_name' content='ImageMagick' />
   <meta property='og:description' content="Convert, Edit, or Compose Bitmap Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="porting.html" rel="canonical" />
+  <link href="../www/porting.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
   <link href="assets/magick.css" rel="stylesheet" />
 </head>
 <body>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -44,22 +44,22 @@
     <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
-        <a class="nav-link" href="../">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/download.html">Download</a>
+        <a class="nav-link" href="download.html">Download</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/command-line-tools.html">Tools</a>
+        <a class="nav-link" href="command-line-tools.html">Tools</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/command-line-processing.html">Command-line</a>
+        <a class="nav-link" href="command-line-processing.html">Command-line</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/resources.html">Resources</a>
+        <a class="nav-link" href="resources.html">Resources</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/develop.html">Develop</a>
+        <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
@@ -72,7 +72,7 @@
     </div>
   </nav>
   <div class="container">
-   <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+   <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -111,7 +111,7 @@ options, and more global use of 'image properties' (more commonly known as
 <p>Now that ImageMagick version 7 is released, we continue to support and enhance version 6 for a minimum of 10 years.</p>
 
 <h2><a class="anchor" id="hdri"></a>High Dynamic Range Imaging</h2>
-<p>ImageMagick version 7 enables <a href="../www/high-dynamic-range.html">high dynamic range imaging</a> (HDRI) by default.  HDRI accurately represents the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.  In addition, image processing results are more accurate.  The disadvantage is it requires more memory and may result in slower processing times.  If you see differences in the results of your version 6 command-line with version 7, it is likely due to HDRI.  You may need to add <code>-clamp</code> to your command-line to constrain pixels to the 0 .. QuantumRange range, or disable HDRI when you build ImageMagick version 7.  To disable HDRI (recommended for smart phone builds such as iOS or production sites where performance is a premium), simply add <code>--disable-hdri</code> to the configure script command line when building ImageMagick.</p>
+<p>ImageMagick version 7 enables <a href="high-dynamic-range.html">high dynamic range imaging</a> (HDRI) by default.  HDRI accurately represents the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.  In addition, image processing results are more accurate.  The disadvantage is it requires more memory and may result in slower processing times.  If you see differences in the results of your version 6 command-line with version 7, it is likely due to HDRI.  You may need to add <code>-clamp</code> to your command-line to constrain pixels to the 0 .. QuantumRange range, or disable HDRI when you build ImageMagick version 7.  To disable HDRI (recommended for smart phone builds such as iOS or production sites where performance is a premium), simply add <code>--disable-hdri</code> to the configure script command line when building ImageMagick.</p>
 
 <h2><a class="anchor" id="channels"></a>Pixel Channels</h2>
 <p>A pixel is comprised of one or more color values, or <var>channels</var> (e.g. red pixel channel).</p>
@@ -391,6 +391,8 @@ handling or its replacement, which will allow you to ignore reported errors
 and continue processing (as appropriate due to error) in co-processes or
 interactive usage. </p>
 
+<p>With the IMv7 parser, activated by the `magick` utility, settings are applied to each image in memory in turn (if any). While an option: only need to be applied once globally. Using the other utilities directly, or as an argument to the `magick` CLI (e.g. `magick convert`) utilizes the legacy parser.</p>
+
 <p>The parenthesis options used to 'push' the current image list, and image
 settings (EG: '<code>(</code>' and '<code>)</code>' ) on to a stack now has
 a completely separate image settings stack. That is parenthesis 'push/pull'
@@ -661,24 +663,24 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
     </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
-    <p><a href="../www/security-policy.html">Security</a> •
-    <a href="../www/architecture.html">Architecture</a>
+    <p><a href="security-policy.html">Security</a> •
+    <a href="architecture.html">Architecture</a>
      
     <a href="porting.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
-    <a href="../www/links.html">Related</a> •
-     <a href="../www/sitemap.html">Sitemap</a>
+    <a href="links.html">Related</a> •
+     <a href="sitemap.html">Sitemap</a>
     <br/>
-    <a href="../www/support.html">Donate</a> •
+    <a href="support.html">Donate</a> •
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a> 
+    <a href="https://imagemagick.org/script/contact.php">Contact Us</a> 
     <br/>
     <small>© 1999-2020 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
   <script src="assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 28th November 2019 06:42 -->
+<!-- Magick Cache 5th January 2020 10:01 -->

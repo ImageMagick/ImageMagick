@@ -29,14 +29,14 @@
   <meta property='og:site_name' content='ImageMagick' />
   <meta property='og:description' content="Convert, Edit, or Compose Bitmap Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="../www/www/magick-core.html" rel="canonical" />
-  <link href="../www/images/wand.png" rel="icon" />
-  <link href="../www/images/wand.ico" rel="shortcut icon" />
-  <link href="../www/assets/magick.css" rel="stylesheet" />
+  <link href="../www/magick-core.html" rel="canonical" />
+  <link href="../images/wand.png" rel="icon" />
+  <link href="../images/wand.ico" rel="shortcut icon" />
+  <link href="assets/magick.css" rel="stylesheet" />
 </head>
 <body>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../www/images/wand.ico"/></a>
+    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -44,35 +44,35 @@
     <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
-        <a class="nav-link" href="../www/index.html">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/www/download.html">Download</a>
+        <a class="nav-link" href="download.html">Download</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/www/command-line-tools.html">Tools</a>
+        <a class="nav-link" href="command-line-tools.html">Tools</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/www/command-line-processing.html">Command-line</a>
+        <a class="nav-link" href="command-line-processing.html">Command-line</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/www/resources.html">Resources</a>
+        <a class="nav-link" href="resources.html">Resources</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/www/develop.html">Develop</a>
+        <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="../www/www/https://imagemagick.org/script/search.php">
+    <form class="form-inline my-2 my-lg-0" action="https://imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
     </form>
     </div>
   </nav>
   <div class="container">
-   <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+   <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -88,61 +88,61 @@
     <div class="magick-template">
 <div class="magick-header">
 
-<p  class="lead magick-description">The <a href="../www/api/MagickCore/index.html">MagickCore API</a> is a low-level interface between the C programming language and the ImageMagick image processing libraries and is recommended for wizard-level programmers only.  Unlike the <a href="../www/www/magick-wand.html">MagickWand</a> C API which uses only a few opaque types and accessors, with MagickCore you almost exlusively access the structure members directly.  A description of the MagickCore public methods are found here:</p>
+<p  class="lead magick-description">The <a href="api/MagickCore/index.html">MagickCore API</a> is a low-level interface between the C programming language and the ImageMagick image processing libraries and is recommended for wizard-level programmers only.  Unlike the <a href="magick-wand.html">MagickWand</a> C API which uses only a few opaque types and accessors, with MagickCore you almost exlusively access the structure members directly.  A description of the MagickCore public methods are found here:</p>
 
 <ul>
-  <li><a href="../www/api/magick.html">Initialize or Destroy the ImageMagick Environment</a></li>
-  <li><a href="../www/api/constitute.html">Constitute an Image</a></li>
-  <li><a href="../www/api/composite.html">Composite an Image</a></li>
-  <li><a href="../www/api/image.html">Image Methods</a></li>
-  <li><a href="../www/api/channel.html">Image Channel Methods</a></li>
-  <li><a href="../www/api/color.html">Count the Colors in an Image</a></li>
-  <li><a href="../www/api/colormap.html">Colormap Methods</a></li>
-  <li><a href="../www/api/colorspace.html">Colorspace Methods</a></li>
-  <li><a href="../www/api/distort.html">Image Distortions</a></li>
-  <li><a href="../www/api/layer.html">Dealing with Image Layers</a></li>
-  <li><a href="../www/api/profile.html">Dealing with Image Profiles</a></li>
-  <li><a href="../www/api/quantize.html">Reduce the Number of Unique Colors in an Image</a></li>
-  <li><a href="../www/api/histogram.html">Image Histograms</a></li>
-  <li><a href="../www/api/segment.html">Segment an Image with Thresholding Fuzzy c-Means</a></li>
-  <li><a href="../www/api/resize.html">Resize an Image</a></li>
-  <li><a href="../www/api/transform.html">Transform an Image</a></li>
-  <li><a href="../www/api/shear.html">Shear or Rotate an Image by an Arbitrary Angle</a></li>
-  <li><a href="../www/api/enhance.html">Enhance an Image</a></li>
-  <li><a href="../www/api/effect.html">Add an Effect</a></li>
-  <li><a href="../www/api/morphology.html">Morphological Erosions, Dilations, Openings, and Closings</a></li>
-  <li><a href="../www/api/fx.html">Add a Special Effect</a></li>
-  <li><a href="../www/api/decorate.html">Decorate an Image</a></li>
-  <li><a href="../www/api/attribute.html">Get/Set an Image Attribute</a></li>
-  <li><a href="../www/api/property.html">Get/Set Image Properties</a></li>
-  <li><a href="../www/api/statistic.html">Get Image Statistics</a></li>
-  <li><a href="../www/api/feature.html">Get Image Features</a></li>
-  <li><a href="../www/api/annotate.html">Annotate an Image</a></li>
-  <li><a href="../www/api/paint.html">Paint on an Image</a></li>
-  <li><a href="../www/api/draw.html">Draw on an Image</a></li>
-  <li><a href="../www/api/montage.html">Create an Image Thumbnail</a></li>
-  <li><a href="../www/api/fourier.html">Compute the discrete Fourier transform (DFT)</a></li>
-  <li><a href="../www/api/compare.html">Compare an Image to a Reconstructed Image</a></li>
-  <li><a href="../www/api/display.html">Interactively Display and Edit an Image</a></li>
-  <li><a href="../www/api/animate.html">Interactively Animate an Image Sequence</a></li>
-  <li><a href="../www/api/cipher.html">Convert to and from Cipher Pixels</a></li>
-  <li><a href="../www/api/list.html">Working with Image Lists</a></li>
-  <li><a href="../www/api/image-view.html">Image View Methods</a></li>
-  <li><a href="../www/api/cache.html">Get or Set Image Pixels</a></li>
-  <li><a href="../www/api/cache-view.html">Working with Cache Views</a></li>
-  <li><a href="../www/api/stream.html">The Pixel FIFO</a></li>
-  <li><a href="../www/api/blob.html">Read or Write Binary Large OBjects</a></li>
-  <li><a href="../www/api/module.html">Loadable Modules</a></li>
-  <li><a href="../www/api/signature.html">Compute a Message Digest for an Image</a></li>
-  <li><a href="../www/api/registry.html">The Image Registry</a></li>
-  <li><a href="../www/api/exception.html">Dealing with Exceptions</a></li>
-  <li><a href="../www/api/memory.html">Memory Allocation</a></li>
-  <li><a href="../www/api/resource.html">Monitor or Limit Resource Consumption</a></li>
-  <li><a href="../www/api/monitor.html">Monitor the Progress of an Image Operation</a></li>
-  <li><a href="../www/api/version.html">Get the Version and Copyrights</a></li>
-  <li><a href="../www/api/mime.html">Mime Methods</a></li>
-  <li><a href="../www/api/deprecate.html">Deprecated Methods</a></li>
-  <li><a href="../www/www/exception.html">Error and Warning Codes</a></li>
+  <li><a href="api/magick.html">Initialize or Destroy the ImageMagick Environment</a></li>
+  <li><a href="api/constitute.html">Constitute an Image</a></li>
+  <li><a href="api/composite.html">Composite an Image</a></li>
+  <li><a href="api/image.html">Image Methods</a></li>
+  <li><a href="api/channel.html">Image Channel Methods</a></li>
+  <li><a href="api/color.html">Count the Colors in an Image</a></li>
+  <li><a href="api/colormap.html">Colormap Methods</a></li>
+  <li><a href="api/colorspace.html">Colorspace Methods</a></li>
+  <li><a href="api/distort.html">Image Distortions</a></li>
+  <li><a href="api/layer.html">Dealing with Image Layers</a></li>
+  <li><a href="api/profile.html">Dealing with Image Profiles</a></li>
+  <li><a href="api/quantize.html">Reduce the Number of Unique Colors in an Image</a></li>
+  <li><a href="api/histogram.html">Image Histograms</a></li>
+  <li><a href="api/segment.html">Segment an Image with Thresholding Fuzzy c-Means</a></li>
+  <li><a href="api/resize.html">Resize an Image</a></li>
+  <li><a href="api/transform.html">Transform an Image</a></li>
+  <li><a href="api/shear.html">Shear or Rotate an Image by an Arbitrary Angle</a></li>
+  <li><a href="api/enhance.html">Enhance an Image</a></li>
+  <li><a href="api/effect.html">Add an Effect</a></li>
+  <li><a href="api/morphology.html">Morphological Erosions, Dilations, Openings, and Closings</a></li>
+  <li><a href="api/fx.html">Add a Special Effect</a></li>
+  <li><a href="api/decorate.html">Decorate an Image</a></li>
+  <li><a href="api/attribute.html">Get/Set an Image Attribute</a></li>
+  <li><a href="api/property.html">Get/Set Image Properties</a></li>
+  <li><a href="api/statistic.html">Get Image Statistics</a></li>
+  <li><a href="api/feature.html">Get Image Features</a></li>
+  <li><a href="api/annotate.html">Annotate an Image</a></li>
+  <li><a href="api/paint.html">Paint on an Image</a></li>
+  <li><a href="api/draw.html">Draw on an Image</a></li>
+  <li><a href="api/montage.html">Create an Image Thumbnail</a></li>
+  <li><a href="api/fourier.html">Compute the discrete Fourier transform (DFT)</a></li>
+  <li><a href="api/compare.html">Compare an Image to a Reconstructed Image</a></li>
+  <li><a href="api/display.html">Interactively Display and Edit an Image</a></li>
+  <li><a href="api/animate.html">Interactively Animate an Image Sequence</a></li>
+  <li><a href="api/cipher.html">Convert to and from Cipher Pixels</a></li>
+  <li><a href="api/list.html">Working with Image Lists</a></li>
+  <li><a href="api/image-view.html">Image View Methods</a></li>
+  <li><a href="api/cache.html">Get or Set Image Pixels</a></li>
+  <li><a href="api/cache-view.html">Working with Cache Views</a></li>
+  <li><a href="api/stream.html">The Pixel FIFO</a></li>
+  <li><a href="api/blob.html">Read or Write Binary Large OBjects</a></li>
+  <li><a href="api/module.html">Loadable Modules</a></li>
+  <li><a href="api/signature.html">Compute a Message Digest for an Image</a></li>
+  <li><a href="api/registry.html">The Image Registry</a></li>
+  <li><a href="api/exception.html">Dealing with Exceptions</a></li>
+  <li><a href="api/memory.html">Memory Allocation</a></li>
+  <li><a href="api/resource.html">Monitor or Limit Resource Consumption</a></li>
+  <li><a href="api/monitor.html">Monitor the Progress of an Image Operation</a></li>
+  <li><a href="api/version.html">Get the Version and Copyrights</a></li>
+  <li><a href="api/mime.html">Mime Methods</a></li>
+  <li><a href="api/deprecate.html">Deprecated Methods</a></li>
+  <li><a href="../www/exception.html">Error and Warning Codes</a></li>
 </ul>
 
 <p>After you write your MagickCore program, compile it like this:</p>
@@ -155,7 +155,7 @@
 <pre class="highlight"><code>export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 </code></pre>
 
-<p>Here is a example program that utilizes the MagickCore API to get you started, <a href="../www/source/core.c">core.c</a>. It reads a GIF image, creates a thumbnail, and writes it to disk in the PNG image format.</p>
+<p>Here is a example program that utilizes the MagickCore API to get you started, <a href="https://imagemagick.org/source/core.c">core.c</a>. It reads a GIF image, creates a thumbnail, and writes it to disk in the PNG image format.</p>
 
 <pre class="pre-scrollable"><code>#include &lt;stdio.h>
 #include &lt;stdlib.h>
@@ -220,7 +220,7 @@ int main(int argc,char **argv)
   MagickCoreTerminus();
   return(0);
 }</code></pre>
-<p><a class="anchor" id="image-view"></a>Now lets perform the same contrast enhancement while taking advantage of our dual or quad-core processing system by running the algorithm in parallel utilizing wand views.  The <a href="../www/source/core/sigmoidal-contrast.c">sigmoidal-contrast.c</a> module reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk just like the previous contrast enhancement program, but now it does its work in parallel (assumes ImageMagick is built with OpenMP support).</p>
+<p><a class="anchor" id="image-view"></a>Now lets perform the same contrast enhancement while taking advantage of our dual or quad-core processing system by running the algorithm in parallel utilizing wand views.  The <a href="https://imagemagick.org/source/core/sigmoidal-contrast.c">sigmoidal-contrast.c</a> module reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk just like the previous contrast enhancement program, but now it does its work in parallel (assumes ImageMagick is built with OpenMP support).</p>
 
 <pre class="pre-scrollable"><code>#include &lt;stdio.h>
 #include &lt;stdlib.h>
@@ -343,24 +343,24 @@ int main(int argc,char **argv)
     </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
-    <p><a href="../www/www/security-policy.html">Security</a> •
-    <a href="../www/www/architecture.html">Architecture</a>
+    <p><a href="security-policy.html">Security</a> •
+    <a href="architecture.html">Architecture</a>
      
-    <a href="magick-core.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../www/images/wand.ico"/></a>
+    <a href="magick-core.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
-    <a href="../www/www/links.html">Related</a> •
-     <a href="../www/www/sitemap.html">Sitemap</a>
+    <a href="links.html">Related</a> •
+     <a href="sitemap.html">Sitemap</a>
     <br/>
-    <a href="../www/www/support.html">Donate</a> •
+    <a href="support.html">Donate</a> •
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="../www/www/https://imagemagick.org/script/contact.php">Contact Us</a> 
+    <a href="https://imagemagick.org/script/contact.php">Contact Us</a> 
     <br/>
     <small>© 1999-2020 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
-  <script src="../www/assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
+  <script src="assets/magick.js" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 28th November 2019 07:38 -->
+<!-- Magick Cache 5th January 2020 09:22 -->

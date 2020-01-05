@@ -29,14 +29,14 @@
   <meta property='og:site_name' content='ImageMagick' />
   <meta property='og:description' content="Convert, Edit, or Compose Bitmap Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="cipher.html" rel="canonical" />
+  <link href="../www/cipher.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
   <link href="assets/magick.css" rel="stylesheet" />
 </head>
 <body>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -44,22 +44,22 @@
     <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
-        <a class="nav-link" href="../">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/download.html">Download</a>
+        <a class="nav-link" href="download.html">Download</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/command-line-tools.html">Tools</a>
+        <a class="nav-link" href="command-line-tools.html">Tools</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/command-line-processing.html">Command-line</a>
+        <a class="nav-link" href="command-line-processing.html">Command-line</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/resources.html">Resources</a>
+        <a class="nav-link" href="resources.html">Resources</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/develop.html">Develop</a>
+        <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
@@ -72,7 +72,7 @@
     </div>
   </nav>
   <div class="container">
-   <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+   <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -95,7 +95,7 @@
 
 <h2><a class="anchor" id="encipher"></a>Encipher an Image</h2>
 
-<p>Use the <a href="../www/command-line-options.html#encipher">-encipher</a> option to scramble your image so that it is unrecognizable.  The option requires a filename that contains your passphrase.  In this example we scramble an image and save it in the PNG format:</p>
+<p>Use the <a href="command-line-options.html#encipher">-encipher</a> option to scramble your image so that it is unrecognizable.  The option requires a filename that contains your passphrase.  In this example we scramble an image and save it in the PNG format:</p>
 
 <pre class="highlight"><code>convert rose.jpg -encipher passphrase.txt rose.png
 </code></pre>
@@ -107,7 +107,7 @@
 
 <h2><a class="anchor" id="decipher"></a>Decipher an Image</h2>
 
-<p>Use the <a href="../www/command-line-options.html#decipher">-decipher</a> option to unscramble your image so that it is recognizable once again.  The option requires a filename that contains your passphrase.  In this example we unscramble an image and save it in the JPEG format:</p>
+<p>Use the <a href="command-line-options.html#decipher">-decipher</a> option to unscramble your image so that it is recognizable once again.  The option requires a filename that contains your passphrase.  In this example we unscramble an image and save it in the JPEG format:</p>
 
 <pre class="highlight"><code>convert rose.png -decipher passphrase.txt rose.jpg
 </code></pre>
@@ -151,24 +151,24 @@ Examples <a href="../Usage/transform/#encipher"
     </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
-    <p><a href="../www/security-policy.html">Security</a> •
-    <a href="../www/architecture.html">Architecture</a>
+    <p><a href="security-policy.html">Security</a> •
+    <a href="architecture.html">Architecture</a>
      
     <a href="cipher.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
-    <a href="../www/links.html">Related</a> •
-     <a href="../www/sitemap.html">Sitemap</a>
+    <a href="links.html">Related</a> •
+     <a href="sitemap.html">Sitemap</a>
     <br/>
-    <a href="../www/support.html">Donate</a> •
+    <a href="support.html">Donate</a> •
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a> 
+    <a href="https://imagemagick.org/script/contact.php">Contact Us</a> 
     <br/>
     <small>© 1999-2020 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
   <script src="assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 28th November 2019 09:04 -->
+<!-- Magick Cache 5th January 2020 11:33 -->

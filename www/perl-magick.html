@@ -29,14 +29,14 @@
   <meta property='og:site_name' content='ImageMagick' />
   <meta property='og:description' content="Convert, Edit, or Compose Bitmap Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="perl-magick.html" rel="canonical" />
+  <link href="../www/perl-magick.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
   <link href="assets/magick.css" rel="stylesheet" />
 </head>
 <body>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -44,22 +44,22 @@
     <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
-        <a class="nav-link" href="../">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/download.html">Download</a>
+        <a class="nav-link" href="download.html">Download</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/command-line-tools.html">Tools</a>
+        <a class="nav-link" href="command-line-tools.html">Tools</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/command-line-processing.html">Command-line</a>
+        <a class="nav-link" href="command-line-processing.html">Command-line</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/resources.html">Resources</a>
+        <a class="nav-link" href="resources.html">Resources</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/develop.html">Develop</a>
+        <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
@@ -72,7 +72,7 @@
     </div>
   </nav>
   <div class="container">
-   <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+   <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -90,7 +90,7 @@
 <p class="text-center"><a href="perl-magick.html#installation">Installation</a> • <a href="perl-magick.html#overview">Overview</a> • <a href="perl-magick.html#example">Example Script</a> • <a href="perl-magick.html#read">Read or Write an Image</a> • <a href="perl-magick.html#manipulate">Manipulate an Image</a> • <a href="perl-magick.html#set-attribute">Set an Image Attribute</a> • <a href="perl-magick.html#get-attribute">Get an Image Attribute</a> • <a href="perl-magick.html#compare">Compare an Image to its Reconstruction</a> • <a href="perl-magick.html#montage">Create an Image Montage</a> • <a href="perl-magick.html#blobs">Working with Blobs</a> • <a href="perl-magick.html#direct-access">Direct-access to Image Pixels</a> • <a href="perl-magick.html#miscellaneous">Miscellaneous Methods</a> • <a href="perl-magick.html#exceptions">Handling Exceptions</a>• <a href="perl-magick.html#constants">Constant</a> </p>
 
 <a class="anchor" id="introduction"></a>
-<p class="lead magick-description"><a href="../www/download.html">PerlMagick</a> is an objected-oriented <a href="http://www.perl.com/perl/">Perl</a> interface to ImageMagick. Use the module to read, manipulate, or write an image or image sequence from within a Perl script. This makes it very suitable for Web CGI scripts. You must have ImageMagick 6.5.5 or above and Perl version 5.005_02 or greater installed on your system for PerlMagick to build properly.</p>
+<p class="lead magick-description"><a href="download.html">PerlMagick</a> is an objected-oriented <a href="http://www.perl.com/perl/">Perl</a> interface to ImageMagick. Use the module to read, manipulate, or write an image or image sequence from within a Perl script. This makes it very suitable for Web CGI scripts. You must have ImageMagick 6.5.5 or above and Perl version 5.005_02 or greater installed on your system for PerlMagick to build properly.</p>
 
 <p>There are a number of useful scripts available to show you the value of PerlMagick. You can do Web based image manipulation and conversion with <a href="https://imagemagick.org/download/perl">MagickStudio</a>, or use <a href="https://github.com/ImageMagick/ImageMagick/tree/master/PerlMagick/demo/tree.pl">L-systems</a> to create images of plants using mathematical constructs, and finally navigate through collections of thumbnail images and select the image to view with the <a href="http://webmagick.sourceforge.net/">WebMagick Image Navigator</a>.</p>
 
@@ -135,7 +135,7 @@
 
 <p><b>Windows XP / Windows 2000</b></p>
 
-<p>ImageMagick must already be installed on your system. Also, the ImageMagick source distribution for <a href="../www/download.html">Windows 2000</a> is required. You must also have the <code>nmake</code> from the Visual C++ or J++ development environment. Copy <code>\bin\IMagick.dll</code> and <code>\bin\X11.dll</code> to a directory in your dynamic load path such as <code>c:\perl\site\5.00502</code>.</p>
+<p>ImageMagick must already be installed on your system. Also, the ImageMagick source distribution for <a href="download.html">Windows 2000</a> is required. You must also have the <code>nmake</code> from the Visual C++ or J++ development environment. Copy <code>\bin\IMagick.dll</code> and <code>\bin\X11.dll</code> to a directory in your dynamic load path such as <code>c:\perl\site\5.00502</code>.</p>
 
 <p>Next, type</p>
 
@@ -815,6 +815,12 @@ $image-&gt;[$x]-&gt;Frame("100x200");
   </tr>
 
   <tr>
+    <td>Kmeans</td>
+    <td>geometry=&gt;<i>geometry</i>, 'colors'=&gt;<i>double</i>, 'iterations'=&gt;<i>double</i>, 'tolerance'=&gt;<i>double</i></td>
+    <td>K means color reduction.</td>
+  </tr>
+
+  <tr>
     <td>Kuwahara</td>
     <td>geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i>, bias=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Alpha, Red, RGB, Yellow}</td>
     <td>edge preserving noise reduction filter</td>
@@ -1322,7 +1328,7 @@ rectangle 60, 60 300, 300
 
 <p>You can optionally add <i>Image</i> to any method name. For example, TrimImage() is an alias for method Trim().</p>
 
-<p>Most of the attributes listed above have an analog in <a href="../www/convert.html">convert</a>. See the documentation for a more detailed description of these attributes.</p>
+<p>Most of the attributes listed above have an analog in <a href="convert.html">convert</a>. See the documentation for a more detailed description of these attributes.</p>
 
 <h2><a class="anchor" id="set-attribute"></a>Set an Image Attribute</h2>
 
@@ -1735,7 +1741,7 @@ can use the integers 1 and 0.</p>
 <p>SetAttribute() is an alias for method Set().</p>
 
 <p>Most of the attributes listed above have an analog in
-<a href="../www/convert.html">convert</a>. See the documentation for a more detailed description of these attributes.</p>
+<a href="convert.html">convert</a>. See the documentation for a more detailed description of these attributes.</p>
 
 <h2><a class="anchor" id="get-attribute"></a>Get an Image Attribute</h2>
 
@@ -2007,7 +2013,7 @@ $width = $image-&gt;[3]-&gt;Get('columns');
 <p>GetAttribute() is an alias for method Get().</p>
 
 <p>Most of the attributes listed above have an analog in
-<a href="../www/convert.html">convert</a>. See the documentation for a more detailed description of these attributes.</p>
+<a href="convert.html">convert</a>. See the documentation for a more detailed description of these attributes.</p>
 
 <h2><a class="anchor" id="compare"></a>Compare an Image to its Reconstruction</h2>
 
@@ -2192,13 +2198,13 @@ South, SouthEast</td>
 
 <p>MontageImage() is an alias for method Montage().</p>
 
-<p>Most of the attributes listed above have an analog in <a href="../www/montage.html">montage</a>. See the documentation for a more detailed description of these attributes.</p>
+<p>Most of the attributes listed above have an analog in <a href="montage.html">montage</a>. See the documentation for a more detailed description of these attributes.</p>
 
 <h2><a class="anchor" id="blobs"></a>Working with Blobs</h2>
 
 <p>A blob contains data that directly represent a particular image
 format in memory instead of on disk. PerlMagick supports
-blobs in any of these image <a href="../www/formats.html">formats</a> and provides methods to convert a blob to or from a particular image format.</p>
+blobs in any of these image <a href="formats.html">formats</a> and provides methods to convert a blob to or from a particular image format.</p>
 
 <table class="table table-sm table-striped">
   <caption>Blob Methods</caption>
@@ -2452,7 +2458,7 @@ $weight = ($image-&gt;QueryFont('Helvetica'))[5];
 <pre class="highlight"><code>$mime = $image-&gt;MagickToMime('tif');
 </code></pre>
 
-<p>Use RemoteCommand() to send a command to an already running <a href="../www/display.html">display</a> or <a href="animate.html">animate</a> application. The only parameter is the name of the image file to display or animate.</p>
+<p>Use RemoteCommand() to send a command to an already running <a href="display.html">display</a> or <a href="animate.html">animate</a> application. The only parameter is the name of the image file to display or animate.</p>
 
 <pre class="highlight"><code>$image-&gt;RemoteCommand('image.jpg');
 </code></pre>
@@ -2510,7 +2516,7 @@ print $1;               # print the error number
 <pre class="highlight"><code>Error 400: Memory allocation failed
 </code></pre>
 
-<p>Review the complete list of <a href="exception.html">error and warning codes</a>.</p>
+<p>Review the complete list of <a href="../www/exception.html">error and warning codes</a>.</p>
 
 <p>The following illustrates how you can use a numeric status code:</p>
 
@@ -2576,24 +2582,24 @@ XServerWarning
     </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
-    <p><a href="../www/security-policy.html">Security</a> •
-    <a href="../www/architecture.html">Architecture</a>
+    <p><a href="security-policy.html">Security</a> •
+    <a href="architecture.html">Architecture</a>
      
     <a href="perl-magick.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
-    <a href="../www/links.html">Related</a> •
-     <a href="../www/sitemap.html">Sitemap</a>
+    <a href="links.html">Related</a> •
+     <a href="sitemap.html">Sitemap</a>
     <br/>
-    <a href="../www/support.html">Donate</a> •
+    <a href="support.html">Donate</a> •
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a> 
+    <a href="https://imagemagick.org/script/contact.php">Contact Us</a> 
     <br/>
     <small>© 1999-2020 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
   <script src="assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 28th November 2019 08:56 -->
+<!-- Magick Cache 5th January 2020 11:48 -->

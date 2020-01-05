@@ -29,14 +29,14 @@
   <meta property='og:site_name' content='ImageMagick' />
   <meta property='og:description' content="Convert, Edit, or Compose Bitmap Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="install-source.html" rel="canonical" />
+  <link href="../www/install-source.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
   <link href="assets/magick.css" rel="stylesheet" />
 </head>
 <body>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -44,22 +44,22 @@
     <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
-        <a class="nav-link" href="../">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/download.html">Download</a>
+        <a class="nav-link" href="download.html">Download</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/command-line-tools.html">Tools</a>
+        <a class="nav-link" href="command-line-tools.html">Tools</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/command-line-processing.html">Command-line</a>
+        <a class="nav-link" href="command-line-processing.html">Command-line</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/resources.html">Resources</a>
+        <a class="nav-link" href="resources.html">Resources</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/develop.html">Develop</a>
+        <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
@@ -72,7 +72,7 @@
     </div>
   </nav>
   <div class="container">
-   <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+   <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -94,7 +94,7 @@
 <pre class="highlight"><code>identify -version
 </code></pre>
 
-<p>If the <a href="identify.html">identify</a> program executes and identifies itself as ImageMagick, you may not need to install ImageMagick from source unless you want to add support for additional image formats or upgrade to a newer version.  You also have the option of installing a pre-compiled <a href="../www/download.html">binary release</a>.  However, if you still want to install from source, choose a platform, <a href="install-source.html#unix">Unix</a> or <a href="install-source.html#windows">Windows</a>.  Before installing from source, you may want to review recent <a href="changelog.html">changes</a> to the ImageMagick distribution.</p>
+<p>If the <a href="identify.html">identify</a> program executes and identifies itself as ImageMagick, you may not need to install ImageMagick from source unless you want to add support for additional image formats or upgrade to a newer version.  You also have the option of installing a pre-compiled <a href="download.html">binary release</a>.  However, if you still want to install from source, choose a platform, <a href="install-source.html#unix">Unix</a> or <a href="install-source.html#windows">Windows</a>.  Before installing from source, you may want to review recent <a href="changelog.html">changes</a> to the ImageMagick distribution.</p>
 
 <p>The authoritative source code repository is <a href="https://github.com/ImageMagick">https://github.com/ImageMagick</a>.  We maintain a source code mirror at <a href="https://git.imagemagick.org/repos/ImageMagick">https://git.imagemagick.org/repos/ImageMagick</a>.  We test and deploy ImageMagick with <a href="https://travis-ci.org/ImageMagick">Travis CI</a> and <a href="https://ci.appveyor.com/project/dlemstra/imagemagick-windows">AppVeyor</a>.</p>
 
@@ -130,13 +130,13 @@
 <pre class="highlight"><code>make check
 </code></pre>
 
-<p>Congratulations, you have a working ImageMagick distribution and you are ready to use ImageMagick to <a href="../Usage/">convert, compose, or edit</a> your images or perhaps you'll want to use one of the <a href="../www/develop.html">Application Program Interfaces</a> for C, C++, Perl, and others.</p>
+<p>Congratulations, you have a working ImageMagick distribution and you are ready to use ImageMagick to <a href="../Usage/">convert, compose, or edit</a> your images or perhaps you'll want to use one of the <a href="develop.html">Application Program Interfaces</a> for C, C++, Perl, and others.</p>
 
-<p>The above instructions will satisfy a great number of ImageMagick users, but we suspect a few will have additional questions or problems to consider.  For example, what does one do if ImageMagick fails to configure or compile?  Or what if you don't have administrator privileges and what if you don't want to install ImageMagick in the default <code>/../usr/local</code> folder?  You will find the answer to these questions, and more, in <a href="advanced-unix-installation.html">Advanced Unix Source Installation</a>.</p>
+<p>The above instructions will satisfy a great number of ImageMagick users, but we suspect a few will have additional questions or problems to consider.  For example, what does one do if ImageMagick fails to configure or compile?  Or what if you don't have administrator privileges and what if you don't want to install ImageMagick in the default <code>/../usr/local</code> folder?  You will find the answer to these questions, and more, in <a href="../www/advanced-unix-installation.html">Advanced Unix Source Installation</a>.</p>
 
 <h2><a class="anchor" id="windows"></a>Install from Windows Source</h2>
 
-<p>Building ImageMagick source for Windows requires a modern version of Microsoft Visual Studio IDE.  Users have reported success with the Borland C++ compiler as well.  If you don't have a compiler you can still install a self-installing <a href="../www/download.html">binary release</a>.</p>
+<p>Building ImageMagick source for Windows requires a modern version of Microsoft Visual Studio IDE.  Users have reported success with the Borland C++ compiler as well.  If you don't have a compiler you can still install a self-installing <a href="download.html">binary release</a>.</p>
 
 <p>Clone the Github repo:<p>
 
@@ -161,32 +161,32 @@ to compile the program and on completion run the program.</p>
 <pre class="highlight"><code>validate
 </code></pre>
 
-<p>Congratulations, you have a working ImageMagick distribution under Windows and you are ready to use ImageMagick to <a href="../Usage/">convert, compose, or edit</a> your images or perhaps you'll want to use one of the <a href="../www/develop.html">Application Program Interfaces</a> for C, C++, Perl, and others.</p>
+<p>Congratulations, you have a working ImageMagick distribution under Windows and you are ready to use ImageMagick to <a href="../Usage/">convert, compose, or edit</a> your images or perhaps you'll want to use one of the <a href="develop.html">Application Program Interfaces</a> for C, C++, Perl, and others.</p>
 
-<p>The above instructions will satisfy a great number of ImageMagick users, but we suspect a few will have additional questions or problems to consider.  For example, what does one do if ImageMagick fails to configure or compile?  Or what if you want to install ImageMagick in a place other than the <kbd>ImageMagick-7.0.9/VisualMagick/bin</kbd> folder?  Or perhaps you want to build and install the <a href="ImageMagickObject.html">ImageMagickObject</a> COM+ component.  You will find the answer to these questions, and more, in <a href="advanced-windows-installation.html">Advanced Windows Source Installation</a>.</p>
+<p>The above instructions will satisfy a great number of ImageMagick users, but we suspect a few will have additional questions or problems to consider.  For example, what does one do if ImageMagick fails to configure or compile?  Or what if you want to install ImageMagick in a place other than the <kbd>ImageMagick-7.0.9/VisualMagick/bin</kbd> folder?  Or perhaps you want to build and install the <a href="ImageMagickObject.html">ImageMagickObject</a> COM+ component.  You will find the answer to these questions, and more, in <a href="../www/advanced-windows-installation.html">Advanced Windows Source Installation</a>.</p>
 
 </div>
     </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
-    <p><a href="../www/security-policy.html">Security</a> •
-    <a href="../www/architecture.html">Architecture</a>
+    <p><a href="security-policy.html">Security</a> •
+    <a href="architecture.html">Architecture</a>
      
     <a href="install-source.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
-    <a href="../www/links.html">Related</a> •
-     <a href="../www/sitemap.html">Sitemap</a>
+    <a href="links.html">Related</a> •
+     <a href="sitemap.html">Sitemap</a>
     <br/>
-    <a href="../www/support.html">Donate</a> •
+    <a href="support.html">Donate</a> •
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a> 
+    <a href="https://imagemagick.org/script/contact.php">Contact Us</a> 
     <br/>
     <small>© 1999-2020 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
   <script src="assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 28th November 2019 07:17 -->
+<!-- Magick Cache 5th January 2020 11:38 -->

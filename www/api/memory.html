@@ -19,7 +19,7 @@
   <meta name="author" content="ImageMagick Studio LLC" />
   <meta name="revisit-after" content="2 DAYS" />
   <meta name="resource-type" content="document" />
-  <meta name="copyright" content="Copyright (c) 1999-2019 ImageMagick Studio LLC" />
+  <meta name="copyright" content="Copyright (c) 1999-2020 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
   <meta property='og:url' content='../../' />
@@ -65,7 +65,7 @@
         <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="https://imagemagick.org/script/search.php">
+    <form class="form-inline my-2 my-lg-0" action="../https://imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
     </form>
@@ -87,11 +87,11 @@
   <main class="container">
     <div class="magick-template">
 <div class="magick-header">
-<p class="text-center"><a href="memory.html#AcquireAlignedMemory">AcquireAlignedMemory</a> &#8226; <a href="memory.html#AcquireMagickMemory">AcquireMagickMemory</a> &#8226; <a href="memory.html#AcquireQuantumMemory">AcquireQuantumMemory</a> &#8226; <a href="memory.html#AcquireVirtualMemory">AcquireVirtualMemory</a> &#8226; <a href="memory.html#CopyMagickMemory">CopyMagickMemory</a> &#8226; <a href="memory.html#GetMagickMemoryMethods">GetMagickMemoryMethods</a> &#8226; <a href="memory.html#GetVirtualMemoryBlob">GetVirtualMemoryBlob</a> &#8226; <a href="memory.html#RelinquishAlignedMemory">RelinquishAlignedMemory</a> &#8226; <a href="memory.html#RelinquishMagickMemory">RelinquishMagickMemory</a> &#8226; <a href="memory.html#RelinquishVirtualMemory">RelinquishVirtualMemory</a> &#8226; <a href="memory.html#ResetMagickMemory">ResetMagickMemory</a> &#8226; <a href="memory.html#ResizeMagickMemory">ResizeMagickMemory</a> &#8226; <a href="memory.html#ResizeQuantumMemory">ResizeQuantumMemory</a> &#8226; <a href="memory.html#SetMagickAlignedMemoryMethods">SetMagickAlignedMemoryMethods</a> &#8226; <a href="memory.html#SetMagickMemoryMethods">SetMagickMemoryMethods</a></p>
+<p class="text-center"><a href="memory.html#AcquireAlignedMemory">AcquireAlignedMemory</a> &#8226; <a href="memory.html#AcquireMagickMemory">AcquireMagickMemory</a> &#8226; <a href="memory.html#AcquireCriticalMemory">AcquireCriticalMemory</a> &#8226; <a href="memory.html#AcquireQuantumMemory">AcquireQuantumMemory</a> &#8226; <a href="memory.html#AcquireVirtualMemory">AcquireVirtualMemory</a> &#8226; <a href="memory.html#CopyMagickMemory">CopyMagickMemory</a> &#8226; <a href="memory.html#GetMagickMemoryMethods">GetMagickMemoryMethods</a> &#8226; <a href="memory.html#GetVirtualMemoryBlob">GetVirtualMemoryBlob</a> &#8226; <a href="memory.html#RelinquishAlignedMemory">RelinquishAlignedMemory</a> &#8226; <a href="memory.html#RelinquishMagickMemory">RelinquishMagickMemory</a> &#8226; <a href="memory.html#RelinquishVirtualMemory">RelinquishVirtualMemory</a> &#8226; <a href="memory.html#ResetMagickMemory">ResetMagickMemory</a> &#8226; <a href="memory.html#ResizeMagickMemory">ResizeMagickMemory</a> &#8226; <a href="memory.html#ResizeQuantumMemory">ResizeQuantumMemory</a> &#8226; <a href="memory.html#SetMagickAlignedMemoryMethods">SetMagickAlignedMemoryMethods</a> &#8226; <a href="memory.html#SetMagickMemoryMethods">SetMagickMemoryMethods</a></p>
 
 <h2><a href="../../api/MagickCore/memory_8c.html" id="AcquireAlignedMemory">AcquireAlignedMemory</a></h2>
 
-<p>AcquireAlignedMemory() returns a pointer to a block of memory at least size bytes whose address is aligned on a cache line or page boundary.</p>
+<p>AcquireAlignedMemory() returns a pointer to a block of memory whose size is at least (count*quantum) bytes, and whose address is aligned on a cache line.</p>
 
 <p>The format of the AcquireAlignedMemory method is:</p>
 
@@ -107,11 +107,11 @@ void *AcquireAlignedMemory(const size_t count,const size_t quantum)
 <dd> </dd>
 <dl class="dl-horizontal">
 <dt>count</dt>
-<dd>the number of quantum elements to allocate. </dd>
+<dd>the number of objects to allocate contiguously. </dd>
 
 <dd> </dd>
 <dt>quantum</dt>
-<dd>the number of bytes in each quantum. </dd>
+<dd>the size (in bytes) of each object. </dd>
 
 <dd>  </dd>
 </dl>
@@ -137,6 +137,30 @@ void *AcquireMagickMemory(const size_t size)
 
 <dd>  </dd>
 </dl>
+<h2><a href="../../api/MagickCore/memory_8c.html" id="AcquireCriticalMemory">AcquireCriticalMemory</a></h2>
+
+<p>AcquireCriticalMemory() is just like AcquireMagickMemory(), throws a fatal exception if the memory cannot be acquired.</p>
+
+<p>That is, AcquireCriticalMemory() returns a pointer to a block of memory that is at least size bytes, and that is suitably aligned for any use; however, if this is not possible, it throws an exception and terminates the program as unceremoniously as possible.</p>
+
+<p>The format of the AcquireCriticalMemory method is:</p>
+
+<pre class="text">
+void *AcquireCriticalMemory(const size_t size)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>size</dt>
+<dd>the size (in bytes) of the memory to allocate. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="../../api/MagickCore/memory_8c.html" id="AcquireQuantumMemory">AcquireQuantumMemory</a></h2>
 
 <p>AcquireQuantumMemory() returns a pointer to a block of memory at least count * quantum bytes suitably aligned for any use.</p>
@@ -155,11 +179,11 @@ void *AcquireQuantumMemory(const size_t count,const size_t quantum)
 <dd> </dd>
 <dl class="dl-horizontal">
 <dt>count</dt>
-<dd>the number of quantum elements to allocate. </dd>
+<dd>the number of objects to allocate contiguously. </dd>
 
 <dd> </dd>
 <dt>quantum</dt>
-<dd>the number of bytes in each quantum. </dd>
+<dd>the size (in bytes) of each object. </dd>
 
 <dd>  </dd>
 </dl>
@@ -181,11 +205,11 @@ MemoryInfo *AcquireVirtualMemory(const size_t count,const size_t quantum)
 <dd> </dd>
 <dl class="dl-horizontal">
 <dt>count</dt>
-<dd>the number of quantum elements to allocate. </dd>
+<dd>the number of objects to allocate contiguously. </dd>
 
 <dd> </dd>
 <dt>quantum</dt>
-<dd>the number of bytes in each quantum. </dd>
+<dd>the size (in bytes) of each object. </dd>
 
 <dd>  </dd>
 </dl>
@@ -417,11 +441,11 @@ void *ResizeQuantumMemory(void *memory,const size_t count,
 
 <dd> </dd>
 <dt>count</dt>
-<dd>the number of quantum elements to allocate. </dd>
+<dd>the number of objects to allocate contiguously. </dd>
 
 <dd> </dd>
 <dt>quantum</dt>
-<dd>the number of bytes in each quantum. </dd>
+<dd>the size (in bytes) of each object. </dd>
 
 <dd>  </dd>
 </dl>
@@ -501,12 +525,12 @@ SetMagickMemoryMethods(AcquireMemoryHandler acquire_memory_handler,
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="../../www/contact.html">Contact Us</a> 
     <br/>
-    <small>© 1999-2019 ImageMagick Studio LLC</small></p>
+    <small>© 1999-2020 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
   <script src="../assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 22nd November 2019 05:42 -->
+<!-- Magick Cache 29th December 2019 14:22 -->

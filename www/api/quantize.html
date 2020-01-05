@@ -19,7 +19,7 @@
   <meta name="author" content="ImageMagick Studio LLC" />
   <meta name="revisit-after" content="2 DAYS" />
   <meta name="resource-type" content="document" />
-  <meta name="copyright" content="Copyright (c) 1999-2019 ImageMagick Studio LLC" />
+  <meta name="copyright" content="Copyright (c) 1999-2020 ImageMagick Studio LLC" />
   <meta name="distribution" content="Global" />
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
   <meta property='og:url' content='../../' />
@@ -29,14 +29,14 @@
   <meta property='og:site_name' content='ImageMagick' />
   <meta property='og:description' content="Convert, Edit, or Compose Bitmap Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="quantize.html" rel="canonical" />
-  <link href="../../images/wand.png" rel="icon" />
-  <link href="../../images/wand.ico" rel="shortcut icon" />
-  <link href="../assets/magick.css" rel="stylesheet" />
+  <link href="../www/api/quantize.html" rel="canonical" />
+  <link href="../../www/images/wand.png" rel="icon" />
+  <link href="../../www/images/wand.ico" rel="shortcut icon" />
+  <link href="../../www/assets/magick.css" rel="stylesheet" />
 </head>
 <body>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="../../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../../images/wand.ico"/></a>
+    <a class="navbar-brand" href="../../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../../www/images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -44,28 +44,28 @@
     <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
-        <a class="nav-link" href="../../">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="../../www/">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../../www/download.html">Download</a>
+        <a class="nav-link" href="../../www/www/download.html">Download</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../../www/command-line-tools.html">Tools</a>
+        <a class="nav-link" href="../../www/www/command-line-tools.html">Tools</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../../www/command-line-processing.html">Command-line</a>
+        <a class="nav-link" href="../../www/www/command-line-processing.html">Command-line</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../../www/resources.html">Resources</a>
+        <a class="nav-link" href="../../www/www/resources.html">Resources</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../../www/develop.html">Develop</a>
+        <a class="nav-link" href="../../www/www/develop.html">Develop</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="https://imagemagick.org/script/search.php">
+    <form class="form-inline my-2 my-lg-0" action="../../www/www/search.html">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
     </form>
@@ -87,7 +87,7 @@
   <main class="container">
     <div class="magick-template">
 <div class="magick-header">
-<p class="text-center"><a href="quantize.html#QuantizeImage">QuantizeImage</a> &#8226; <a href="quantize.html#AcquireQuantizeInfo">AcquireQuantizeInfo</a> &#8226; <a href="quantize.html#CloneQuantizeInfo">CloneQuantizeInfo</a> &#8226; <a href="quantize.html#CompressImageColormap">CompressImageColormap</a> &#8226; <a href="quantize.html#DestroyQuantizeInfo">DestroyQuantizeInfo</a> &#8226; <a href="quantize.html#GetImageQuantizeError">GetImageQuantizeError</a> &#8226; <a href="quantize.html#GetQuantizeInfo">GetQuantizeInfo</a> &#8226; <a href="quantize.html#PosterizeImage">PosterizeImage</a> &#8226; <a href="quantize.html#QuantizeImage">QuantizeImage</a> &#8226; <a href="quantize.html#QuantizeImages">QuantizeImages</a> &#8226; <a href="quantize.html#RemapImage">RemapImage</a> &#8226; <a href="quantize.html#RemapImages">RemapImages</a> &#8226; <a href="quantize.html#SetGrayscaleImage">SetGrayscaleImage</a></p>
+<p class="text-center"><a href="quantize.html#QuantizeImage">QuantizeImage</a> &#8226; <a href="quantize.html#AcquireQuantizeInfo">AcquireQuantizeInfo</a> &#8226; <a href="quantize.html#CloneQuantizeInfo">CloneQuantizeInfo</a> &#8226; <a href="quantize.html#CompressImageColormap">CompressImageColormap</a> &#8226; <a href="quantize.html#DestroyQuantizeInfo">DestroyQuantizeInfo</a> &#8226; <a href="quantize.html#GetImageQuantizeError">GetImageQuantizeError</a> &#8226; <a href="quantize.html#GetQuantizeInfo">GetQuantizeInfo</a> &#8226; <a href="quantize.html#KmeansImage">KmeansImage</a> &#8226; <a href="quantize.html#PosterizeImage">PosterizeImage</a> &#8226; <a href="quantize.html#QuantizeImage">QuantizeImage</a> &#8226; <a href="quantize.html#QuantizeImages">QuantizeImages</a> &#8226; <a href="quantize.html#RemapImage">RemapImage</a> &#8226; <a href="quantize.html#RemapImages">RemapImages</a> &#8226; <a href="quantize.html#SetGrayscaleImage">SetGrayscaleImage</a></p>
 
 <h2><a href="../../api/MagickCore/quantize_8c.html" id="QuantizeImage">QuantizeImage</a></h2>
 
@@ -299,6 +299,46 @@ GetQuantizeInfo(QuantizeInfo *quantize_info)
 
 <dd>  </dd>
 </dl>
+<h2><a href="../../api/MagickCore/quantize_8c.html" id="KmeansImage">KmeansImage</a></h2>
+
+<p>KmeansImage() applies k-means color reduction to an image. This is a colorspace clustering or segmentation technique.</p>
+
+<p>The format of the KmeansImage method is:</p>
+
+<pre class="text">
+MagickBooleanType KmeansImage(Image *image,const size_t number_colors,
+  const size_t max_iterations,const double max_distortion,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>number_colors</dt>
+<dd>number of colors to use as seeds. </dd>
+
+<dd> </dd>
+<dt>max_iterations</dt>
+<dd>maximum number of iterations while converging. </dd>
+
+<dd> </dd>
+<dt>max_distortion</dt>
+<dd>the maximum quantization distortion. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="../../api/MagickCore/quantize_8c.html" id="PosterizeImage">PosterizeImage</a></h2>
 
 <p>PosterizeImage() reduces the image to a limited number of colors for a "poster" effect.</p>
@@ -497,24 +537,24 @@ MagickBooleanType SetGrayscaleImage(Image *image,
     </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
-    <p><a href="../../www/security-policy.html">Security</a> •
-    <a href="../../www/architecture.html">Architecture</a>
+    <p><a href="../../www/www/security-policy.html">Security</a> •
+    <a href="../../www/www/architecture.html">Architecture</a>
      
-    <a href="quantize.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../../images/wand.ico"/></a>
+    <a href="quantize.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../../www/images/wand.ico"/></a>
      
-    <a href="../../www/links.html">Related</a> •
-     <a href="../../www/sitemap.html">Sitemap</a>
+    <a href="../../www/www/links.html">Related</a> •
+     <a href="../../www/www/sitemap.html">Sitemap</a>
     <br/>
-    <a href="../../www/support.html">Donate</a> •
+    <a href="../../www/www/support.html">Donate</a> •
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="../../www/contact.html">Contact Us</a> 
+    <a href="../../www/www/contact.html">Contact Us</a> 
     <br/>
-    <small>© 1999-2019 ImageMagick Studio LLC</small></p>
+    <small>© 1999-2020 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
-  <script src="../assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
+  <script src="../../www/assets/magick.js" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 22nd November 2019 07:43 -->
+<!-- Magick Cache 4th January 2020 19:00 -->

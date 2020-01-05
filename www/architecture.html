@@ -162,11 +162,11 @@ if (image == (Image *) NULL)
 </code></pre></dd>
 </dl>
 
-<p>In our discussion of the pixel cache, we use the <a href="../www/magick-core.html">MagickCore API</a> to illustrate our points, however, the principles are the same for other program interfaces to ImageMagick.</p>
+<p>In our discussion of the pixel cache, we use the <a href="magick-core.html">MagickCore API</a> to illustrate our points, however, the principles are the same for other program interfaces to ImageMagick.</p>
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to 8-bit gray image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="command-line-options.html#version">&#x2011;version</a> option: </p>
 
-<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>identify -version</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>Version: ImageMagick 7.0.9-6 2019-11-26 Q16 https://imagemagick.org</span></pre>
+<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>identify -version</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>Version: ImageMagick 7.0.9-14 2020-01-01 Q16 https://imagemagick.org</span></pre>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 
 <h3><a class="anchor" id="authentic-pixels"></a>Access the Pixel Cache</h3>
@@ -179,7 +179,7 @@ if (image == (Image *) NULL)
   <li><a href="api/cache.html#SyncAuthenticPixels">SyncAuthenticPixels()</a>: update the pixel cache with any modified pixels</li>
 </ul>
 
-<p>Here is a typical <a href="../www/magick-core.html">MagickCore</a> code snippet for manipulating pixels in the pixel cache.  In our example, we copy pixels from the input image to the output image and decrease the intensity by 10%:</p>
+<p>Here is a typical <a href="magick-core.html">MagickCore</a> code snippet for manipulating pixels in the pixel cache.  In our example, we copy pixels from the input image to the output image and decrease the intensity by 10%:</p>
 
 <pre class="pre-scrollable"><code>const Quantum
   *p;
@@ -470,7 +470,7 @@ image_info->client_data=(void *) MyData;
 image=ReadStream(image_info,&amp;StreamPixels,exception);
 </code></pre>
 
-<p>We also provide a lightweight tool, <a href="../www/stream.html">stream</a>, to stream one or more pixel components of the image or portion of the image to your choice of storage formats.  It writes the pixel components as they are read from the input image a row at a time making <a href="../www/stream.html">stream</a> desirable when working with large images or when you require raw pixel components.  A majority of the image formats stream pixels (red, green, and blue) from left to right and top to bottom.  However, a few formats do not support this common ordering (e.g. the PSD format).</p>
+<p>We also provide a lightweight tool, <a href="stream.html">stream</a>, to stream one or more pixel components of the image or portion of the image to your choice of storage formats.  It writes the pixel components as they are read from the input image a row at a time making <a href="stream.html">stream</a> desirable when working with large images or when you require raw pixel components.  A majority of the image formats stream pixels (red, green, and blue) from left to right and top to bottom.  However, a few formats do not support this common ordering (e.g. the PSD format).</p>
 
 <h2><a class="anchor" id="properties"></a>Image Properties and Profiles</h2>
 
@@ -538,9 +538,9 @@ convert -limit memory 2mb -limit map 2mb -limit disk 2gb \
 
 <h2><a class="anchor" id="threads"></a>Threads of Execution</h2>
 
-<p>Many of ImageMagick's internal algorithms are threaded to take advantage of speed-ups offered by the multicore processor chips. However, you are welcome to use ImageMagick algorithms in your threads of execution with the exception of the MagickCore's GetVirtualPixels(), GetAuthenticPixels(), QueueAuthenticPixels(), or SyncAuthenticPixels() pixel cache methods.  These methods are intended for one thread of execution only with the exception of an OpenMP parallel section.  To access the pixel cache with more than one thread of execution, use a cache view.  We do this for the <a href="api/composite.html#CompositeImage">CompositeImage()</a> method, for example.  Suppose we want to composite a single source image over a different destination image in each thread of execution.  If we use GetVirtualPixels(), the results are unpredictable because multiple threads would likely be asking for different areas of the pixel cache simultaneously.  Instead we use GetCacheViewVirtualPixels() which creates a unique view for each thread of execution ensuring our program behaves properly regardless of how many threads are invoked.  The other program interfaces, such as the <a href="../www/magick-wand.html">MagickWand API</a>, are completely thread safe so there are no special precautions for threads of execution.</p>
+<p>Many of ImageMagick's internal algorithms are threaded to take advantage of speed-ups offered by the multicore processor chips. However, you are welcome to use ImageMagick algorithms in your threads of execution with the exception of the MagickCore's GetVirtualPixels(), GetAuthenticPixels(), QueueAuthenticPixels(), or SyncAuthenticPixels() pixel cache methods.  These methods are intended for one thread of execution only with the exception of an OpenMP parallel section.  To access the pixel cache with more than one thread of execution, use a cache view.  We do this for the <a href="api/composite.html#CompositeImage">CompositeImage()</a> method, for example.  Suppose we want to composite a single source image over a different destination image in each thread of execution.  If we use GetVirtualPixels(), the results are unpredictable because multiple threads would likely be asking for different areas of the pixel cache simultaneously.  Instead we use GetCacheViewVirtualPixels() which creates a unique view for each thread of execution ensuring our program behaves properly regardless of how many threads are invoked.  The other program interfaces, such as the <a href="magick-wand.html">MagickWand API</a>, are completely thread safe so there are no special precautions for threads of execution.</p>
 
-<p>Here is an MagickCore code snippet that takes advantage of threads of execution with the <a href="../www/openmp.html">OpenMP</a> programming paradigm:</p>
+<p>Here is an MagickCore code snippet that takes advantage of threads of execution with the <a href="openmp.html">OpenMP</a> programming paradigm:</p>
 <pre class="pre-scrollable"><code>CacheView
   *image_view;
 
@@ -650,7 +650,7 @@ void ConvertBMPToImage(const BITMAPINFOHEADER *bmp_info,
 
 <p>If you call the ImageMagick API from your OpenMP-enabled application and you intend to dynamically increase the number of threads available in subsequent parallel regions, be sure to perform the increase <var>before</var> you call the API otherwise ImageMagick may fault.</p>
 
-<p><a href="api/wand-view.html">MagickWand</a> supports wand views.  A view iterates over the entire, or portion, of the image in parallel and for each row of pixels, it invokes a callback method you provide.  This limits most of your parallel programming activity to just that one module.  There are similar methods in <a href="api/image-view.html">MagickCore</a>.  For an example, see the same sigmoidal contrast algorithm implemented in both <a href="../www/magick-wand.html#wand-view">MagickWand</a> and <a href="../www/magick-core.html#image-view">MagickCore</a>.</p>
+<p><a href="api/wand-view.html">MagickWand</a> supports wand views.  A view iterates over the entire, or portion, of the image in parallel and for each row of pixels, it invokes a callback method you provide.  This limits most of your parallel programming activity to just that one module.  There are similar methods in <a href="api/image-view.html">MagickCore</a>.  For an example, see the same sigmoidal contrast algorithm implemented in both <a href="magick-wand.html#wand-view">MagickWand</a> and <a href="magick-core.html#image-view">MagickCore</a>.</p>
 
 <p>In most circumstances, the default number of threads is set to the number of processor cores on your system for optimal performance.  However, if your system is hyperthreaded or if you are running on a virtual host and only a subset of the processors are available to your server instance, you might get an increase in performance by setting the thread <a href="resources.html#configure">policy</a> or the <a href="resources.html#environment">MAGICK_THREAD_LIMIT</a> environment variable.  For example, your virtual host has 8 processors but only 2 are assigned to your server instance.  The default of 8 threads can cause severe performance problems.  One solution is to limit the number of threads to the available processors in your <a href="https://imagemagick.org/source/policy.xml">policy.xml</a> configuration file:</p>
 <pre class="highlight"><code>&lt;policy domain="resource" name="thread" value="2"/>
@@ -1484,7 +1484,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
 
   <!-- Javascript assets -->
   <script src="assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 28th November 2019 06:34 -->
+<!-- Magick Cache 5th January 2020 11:41 -->

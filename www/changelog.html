@@ -29,14 +29,14 @@
   <meta property='og:site_name' content='ImageMagick' />
   <meta property='og:description' content="Convert, Edit, or Compose Bitmap Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="changelog.html" rel="canonical" />
+  <link href="../www/changelog.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
   <link href="assets/magick.css" rel="stylesheet" />
 </head>
 <body>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -44,22 +44,22 @@
     <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
-        <a class="nav-link" href="../">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/download.html">Download</a>
+        <a class="nav-link" href="download.html">Download</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/command-line-tools.html">Tools</a>
+        <a class="nav-link" href="command-line-tools.html">Tools</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/command-line-processing.html">Command-line</a>
+        <a class="nav-link" href="command-line-processing.html">Command-line</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/resources.html">Resources</a>
+        <a class="nav-link" href="resources.html">Resources</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../www/develop.html">Develop</a>
+        <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
@@ -72,7 +72,7 @@
     </div>
   </nav>
   <div class="container">
-   <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+   <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -86,7 +86,53 @@
 
   <main class="container">
     <div class="magick-template">
-<div class="magick-header"><dl><dt>2019-11-26  7.0.9-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<div class="magick-header"><dl><dt>2020-01-04  7.0.9-14 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.9-14, GIT revision 16654:89ef7ea:20200104.</li>
+<dt>2020-01-01  7.0.9-14 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Support extended Fx assignment operators (e.g. *=, /=, ++, --, etc.)</li>
+  <li> Support Fx for() iterator.</li>
+  <li> Optimize Fx performance.</li>
+  <li> Ensure circle.rb renders the same for IMv6 and IMv7 (reference    https://github.com/rmagick/rmagick/issues/905).</li>
+<dt>2019-12-30  7.0.9-13 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.9-13, GIT revision 16616:dbafe0b:20191230.</li>
+<dt>2019-12-27  7.0.9-13 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> xc:white no longer creates a black PNM image (reference    https://github.com/ImageMagick/ImageMagick/issues/1817).</li>
+  <li> Sync pixel cache for -kmeans option.</li>
+  <li> Thread -kmeans option.</li>
+  <li> PSD: only set the alpha channel when type is not 0.</li>
+  <li> Fix Lab to custom profile (CMYK or RGB) conversion bug (reference    https://imagemagick.org/discourse-server//viewtopic.html?f=3&amp;t=37318).</li>
+<dt>2019-12-26  7.0.9-12 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.9-12, GIT revision 16587:7d6a559:20191226.</li>
+<dt>2019-12-26  7.0.9-12 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fix Build failure with MinGW-w64 (reference    https://github.com/ImageMagick/ImageMagick6/issues/67).</li>
+  <li> Inject image profile properties immediately after the image is read.</li>
+<dt>2019-12-23  7.0.9-11 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.9-11, GIT revision 16568:1d6c960:20191224.</li>
+<dt>2019-12-18  7.0.9-11 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Replace pseudo-random number generator with a Xoshiro generator.</li>
+  <li> The -layers optimize option requires a fully transparent previous image.</li>
+<dt>2019-12-22  7.0.9-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.9-10, GIT revision 16548:281649843:20191222.</li>
+<dt>2019-12-18  7.0.9-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Some clang releases do not support _aligned_alloc().</li>
+  <li> Support -kmeans command-line option.</li>
+<dt>2019-12-07  7.0.9-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.9-9, GIT revision 16513:8ec82f4:20191215.</li>
+<dt>2019-12-07  7.0.9-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Build file clean-up (reference    https://github.com/ImageMagick/ImageMagick/pull/1798).</li>
+  <li> Improve semaphore handling @    https://github.com/ImageMagick/ImageMagick/pull/1798).</li>
+  <li> Introduce HeapOverflowSanityCheckGetExtent() method (reference    https://github.com/ImageMagick/ImageMagick/pull/1798).</li>
+<dt>2019-12-01  7.0.9-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.9-8, GIT revision 16474:0bc0e95:20191207.</li>
+<dt>2019-12-01  7.0.9-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> -type bilevel behavior restored, it creates a black and white image.</li>
+<dt>2019-11-30  7.0.9-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.9-7, GIT revision 16449:971ba06:20191130.</li>
+<dt>2019-11-26  7.0.9-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Support Pocketmod image format, e.g.    convert -density 300 pages?.pdf pocketmod:organize.pdf</li>
+  <li> Fixed numerous issues  posted to GitHub (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
+  <li> Update documentation.</li>
+<dt>2019-11-26  7.0.9-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.9-6, GIT revision 16407:1725ec3:20191126.</li>
 <dt>2019-11-19  7.0.9-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Increase the maximum number of bezier coordinates (reference    https://github.com/ImageMagick/ImageMagick/issues/1784).</li>
@@ -1076,24 +1122,24 @@
 </li></dl></div>    </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
-    <p><a href="../www/security-policy.html">Security</a> •
-    <a href="../www/architecture.html">Architecture</a>
+    <p><a href="security-policy.html">Security</a> •
+    <a href="architecture.html">Architecture</a>
      
     <a href="changelog.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
-    <a href="../www/links.html">Related</a> •
-     <a href="../www/sitemap.html">Sitemap</a>
+    <a href="links.html">Related</a> •
+     <a href="sitemap.html">Sitemap</a>
     <br/>
-    <a href="../www/support.html">Donate</a> •
+    <a href="support.html">Donate</a> •
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a> 
+    <a href="https://imagemagick.org/script/contact.php">Contact Us</a> 
     <br/>
     <small>© 1999-2020 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
   <script src="assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 28th November 2019 08:08 -->
+<!-- Magick Cache 5th January 2020 11:27 -->
