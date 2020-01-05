@@ -63,7 +63,6 @@
 #include "MagickCore/enhance.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
-#include "MagickCore/fx.h"
 #include "MagickCore/geometry.h"
 #include "MagickCore/image.h"
 #include "MagickCore/image-private.h"
@@ -92,6 +91,7 @@
 #include "MagickCore/transform.h"
 #include "MagickCore/threshold.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/visual-effects.h"
 #if defined(MAGICKCORE_XML_DELEGATE)
 #  if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #    if !defined(__MINGW32__)

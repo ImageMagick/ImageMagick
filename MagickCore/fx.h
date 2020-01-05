@@ -24,51 +24,8 @@
 extern "C" {
 #endif
 
-typedef enum
-{
-  UndefinedNoise,
-  UniformNoise,
-  GaussianNoise,
-  MultiplicativeGaussianNoise,
-  ImpulseNoise,
-  LaplacianNoise,
-  PoissonNoise,
-  RandomNoise
-} NoiseType;
-
 extern MagickExport Image
-  *AddNoiseImage(const Image *,const NoiseType,const double,ExceptionInfo *),
-  *BlueShiftImage(const Image *,const double,ExceptionInfo *),
-  *CharcoalImage(const Image *,const double,const double,ExceptionInfo *),
-  *ColorizeImage(const Image *,const char *,const PixelInfo *,ExceptionInfo *),
-  *ColorMatrixImage(const Image *,const KernelInfo *kernel,ExceptionInfo *),
-  *FxImage(const Image *,const char *,ExceptionInfo *),
-  *ImplodeImage(const Image *,const double,const PixelInterpolateMethod,
-    ExceptionInfo *),
-  *MorphImages(const Image *,const size_t,ExceptionInfo *),
-  *PolaroidImage(const Image *,const DrawInfo *,const char *,const double,
-    const PixelInterpolateMethod,ExceptionInfo *),
-  *SepiaToneImage(const Image *,const double,ExceptionInfo *),
-  *ShadowImage(const Image *,const double,const double,const ssize_t,
-    const ssize_t,ExceptionInfo *),
-  *SketchImage(const Image *,const double,const double,const double,
-    ExceptionInfo *),
-  *SteganoImage(const Image *,const Image *,ExceptionInfo *),
-  *StereoImage(const Image *,const Image *,ExceptionInfo *),
-  *StereoAnaglyphImage(const Image *,const Image *,const ssize_t,const ssize_t,
-     ExceptionInfo *),
-  *SwirlImage(const Image *,double,const PixelInterpolateMethod,
-    ExceptionInfo *),
-  *TintImage(const Image *,const char *,const PixelInfo *,ExceptionInfo *),
-  *VignetteImage(const Image *,const double,const double,const ssize_t,
-    const ssize_t,ExceptionInfo *),
-  *WaveImage(const Image *,const double,const double,
-    const PixelInterpolateMethod,ExceptionInfo *),
-  *WaveletDenoiseImage(const Image *,const double,const double,ExceptionInfo *);
-
-extern MagickExport MagickBooleanType
-  PlasmaImage(Image *,const SegmentInfo *,size_t,size_t,ExceptionInfo *),
-  SolarizeImage(Image *,const double,ExceptionInfo *);
+  *FxImage(const Image *,const char *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

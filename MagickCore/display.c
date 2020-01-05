@@ -94,6 +94,7 @@
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
 #include "MagickCore/version.h"
+#include "MagickCore/visual-effects.h"
 #include "MagickCore/widget.h"
 #include "MagickCore/widget-private.h"
 #include "MagickCore/xwindow.h"
