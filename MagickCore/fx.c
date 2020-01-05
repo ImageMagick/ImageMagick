@@ -2852,6 +2852,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
                 OptionError,"UnableToParseExpression","`%s'",subexpression);
               FxReturn(0.0);
             }
+          *q='\0';
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,p,depth+1,&sans,
             exception);
           (void) CopyMagickString(subexpression,q+1,MagickPathExtent);
@@ -2874,6 +2875,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
             alpha=FxEvaluateSubexpression(fx_info,channel,x,y,q+1,depth+1,beta,
               exception);
           }
+          FxReturn(alpha);
         }
       break;
     }
@@ -2927,6 +2929,49 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
     case 'I':
     case 'i':
     {
+      if (IsFxFunction(expression,"if",2) != MagickFalse)
+        {
+          double
+            sans = 0.0;
+
+          size_t
+            length;
+
+          length=CopyMagickString(subexpression,expression+3,MagickPathExtent);
+          subexpression[length-1]='\0';
+          p=subexpression;
+          for (q=(char *) p; (*q != ',') && (*q != '\0'); q++)
+            if (*q == '(')
+              for ( ; (*q != ')') && (*q != '\0'); q++);
+          if (*q == '\0')
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"UnableToParseExpression","`%s'",subexpression);
+              FxReturn(0.0);
+            }
+          *q='\0';
+          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,p,depth+1,&sans,
+            exception);
+          (void) CopyMagickString(subexpression,q+1,MagickPathExtent);
+          p=subexpression;
+          for (q=(char *) p; (*q != ',') && (*q != '\0'); q++)
+            if (*q == '(')
+              for ( ; (*q != ')') && (*q != '\0'); q++);
+          if (*q == '\0')
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"UnableToParseExpression","`%s'",subexpression);
+              FxReturn(0.0);
+            }
+          *q='\0';
+          if (fabs(alpha) >= MagickEpsilon)
+            alpha=FxEvaluateSubexpression(fx_info,channel,x,y,p,depth+1,beta,
+              exception);
+          else
+            alpha=FxEvaluateSubexpression(fx_info,channel,x,y,q+1,depth+1,beta,
+              exception);
+          FxReturn(alpha);
+        }
       if (LocaleCompare(expression,"intensity") == 0)
         FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
       if (IsFxFunction(expression,"int",3) != MagickFalse)
@@ -3229,6 +3274,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
             alpha=FxEvaluateSubexpression(fx_info,channel,x,y,q+1,depth+1,beta,
               exception);
           }
+          FxReturn(alpha);
         }
       if (LocaleCompare(expression,"w") == 0)
         FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
@@ -3443,7 +3489,7 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
   image_view=AcquireVirtualCacheView(image,exception);
   fx_view=AcquireAuthenticCacheView(fx_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(progress,status) \
+  #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(image,fx_image,fx_image->rows,1)
 #endif
   for (y=0; y < (ssize_t) fx_image->rows; y++)
