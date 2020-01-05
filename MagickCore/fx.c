@@ -2139,7 +2139,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
             (void) FormatLocaleFile(fx_info->file,"%s[%.20g,%.20g].%s: "
               "%s=%.*g\n",fx_info->images->filename,(double) x,(double) y,type,
               subexpression,GetMagickPrecision(),alpha);
-          FxReturn(0.0);
+          FxReturn(alpha);
         }
       if (IsFxFunction(expression,"do",2) != MagickFalse)
         {
@@ -2171,7 +2171,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
             if (fabs(alpha) < MagickEpsilon)
               FxReturn(*beta);
           }
-          FxReturn(*beta);
+          FxReturn(alpha);
         }
       if (IsFxFunction(expression,"drc",3) != MagickFalse)
         {
@@ -2270,8 +2270,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,
             depth+1,beta,exception);
-          gamma=exp((-alpha*alpha/2.0))/sqrt(2.0*MagickPI);
-          FxReturn(gamma);
+          FxReturn(exp((-alpha*alpha/2.0))/sqrt(2.0*MagickPI));
         }
       if (IsFxFunction(expression,"gcd",3) != MagickFalse)
         {
@@ -2354,7 +2353,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           else
             alpha=FxEvaluateSubexpression(fx_info,channel,x,y,q+1,depth+1,beta,
               exception);
-          FxReturn(*beta);
+          FxReturn(alpha);
         }
       if (LocaleCompare(expression,"intensity") == 0)
         FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
@@ -2402,8 +2401,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
             depth+1,beta,exception);
           if (alpha == 0.0)
             FxReturn(1.0);
-          gamma=(2.0*j1((MagickPI*alpha))/(MagickPI*alpha));
-          FxReturn(gamma);
+          FxReturn((2.0*j1((MagickPI*alpha))/(MagickPI*alpha)));
         }
 #endif
       break;
@@ -2458,8 +2456,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,
             depth+1,beta,exception);
-          gamma=alpha-floor((alpha*PerceptibleReciprocal(*beta)))*(*beta);
-          FxReturn(gamma);
+          FxReturn(alpha-floor((alpha*PerceptibleReciprocal(*beta)))*(*beta));
         }
       if (LocaleCompare(expression,"m") == 0)
         FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
@@ -2556,8 +2553,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
             depth+1,beta,exception);
           if (alpha == 0)
             FxReturn(1.0);
-          gamma=sin((MagickPI*alpha))/(MagickPI*alpha);
-          FxReturn(gamma);
+          FxReturn(sin((MagickPI*alpha))/(MagickPI*alpha));
         }
       if (IsFxFunction(expression,"sinh",4) != MagickFalse)
         {
@@ -2663,7 +2659,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
             alpha=FxEvaluateSubexpression(fx_info,channel,x,y,q+1,depth+1,beta,
               exception);
           }
-          FxReturn(*beta);
+          FxReturn(alpha);
         }
       if (LocaleCompare(expression,"w") == 0)
         FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
