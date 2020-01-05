@@ -3158,8 +3158,16 @@ static MagickBooleanType RenderMVGContent(Image *image,
               StringToDouble(token,&next_token),0.0),1.0);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
-            graphic_context[n]->fill_alpha*=opacity;
-            graphic_context[n]->stroke_alpha*=opacity;
+            if (graphic_context[n]->compliance == SVGCompliance)
+              {
+                graphic_context[n]->fill_alpha*=opacity;
+                graphic_context[n]->stroke_alpha*=opacity;
+              }
+            else
+              {
+    						graphic_context[n]->fill_alpha=QuantumRange*opacity;
+    						graphic_context[n]->stroke_alpha=QuantumRange*opacity;
+              }
             break;
           }
         status=MagickFalse;
@@ -3712,7 +3720,10 @@ static MagickBooleanType RenderMVGContent(Image *image,
               StringToDouble(token,&next_token),0.0),1.0);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
-            graphic_context[n]->stroke_alpha*=opacity;
+            if (graphic_context[n]->compliance == SVGCompliance)
+              graphic_context[n]->stroke_alpha*=opacity;
+            else
+  						graphic_context[n]->stroke_alpha=QuantumRange*opacity;
             if (graphic_context[n]->stroke.alpha != TransparentAlpha)
               graphic_context[n]->stroke.alpha=graphic_context[n]->stroke_alpha;
             else
