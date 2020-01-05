@@ -19,11 +19,11 @@
 #ifndef MAGICKCORE_ACCELERATE_PRIVATE_H
 #define MAGICKCORE_ACCELERATE_PRIVATE_H
 
-#include "MagickCore/fx.h"
 #include "MagickCore/morphology.h"
 #include "MagickCore/resample.h"
 #include "MagickCore/resize.h"
 #include "MagickCore/statistic.h"
+#include "MagickCore/visual-effects.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
