@@ -2911,7 +2911,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
             if (graphic_context[n]->compliance == SVGCompliance)
               graphic_context[n]->fill_alpha*=opacity;
             else
-  						graphic_context[n]->fill_alpha=QuantumRange*opacity;
+              graphic_context[n]->fill_alpha=QuantumRange*opacity;
             if (graphic_context[n]->fill.alpha != TransparentAlpha)
               graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
             else
