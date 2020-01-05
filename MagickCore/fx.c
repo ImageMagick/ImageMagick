@@ -98,23 +98,32 @@
 #include "MagickCore/utility.h"
 
 /*
-  Define declarations.
+  Typedef declarations.
 */
-#define PlusAssignmentOperator  0xefU
-#define SubtractAssignmentOperator  0xf0U
-#define MultiplyAssignmentOperator  0xf1U
-#define DivideAssignmentOperator  0xf2U
-#define IncrementAssignmentOperator  0xf3U
-#define DecrementAssignmentOperator  0xf4U
-#define LeftShiftOperator  0xf5U
-#define RightShiftOperator  0xf6U
-#define LessThanEqualOperator  0xf7U
-#define GreaterThanEqualOperator  0xf8U
-#define EqualOperator  0xf9U
-#define NotEqualOperator  0xfaU
-#define LogicalAndOperator  0xfbU
-#define LogicalOrOperator  0xfcU
-#define ExponentialNotation  0xfdU
+typedef enum
+{
+  BitwiseAndAssignmentOperator = 0xd9U,
+  BitwiseOrAssignmentOperator,
+  LeftShiftAssignmentOperator,
+  RightShiftAssignmentOperator,
+  PowerAssignmentOperator,
+  ModuloAssignmentOperator,
+  PlusAssignmentOperator,
+  SubtractAssignmentOperator,
+  MultiplyAssignmentOperator,
+  DivideAssignmentOperator,
+  IncrementAssignmentOperator,
+  DecrementAssignmentOperator,
+  LeftShiftOperator,
+  RightShiftOperator,
+  LessThanEqualOperator,
+  GreaterThanEqualOperator,
+  EqualOperator,
+  NotEqualOperator,
+  LogicalAndOperator,
+  LogicalOrOperator,
+  ExponentialNotation
+} FxOperator;
 
 struct _FxInfo
 {
@@ -210,6 +219,18 @@ MagickPrivate FxInfo *AcquireFxInfo(const Image *images,const char *expression,
     Convert compound to simple operators.
   */
   fx_op[1]='\0';
+  *fx_op=(char) BitwiseAndAssignmentOperator;
+  (void) SubstituteString(&fx_info->expression,"&=",fx_op);
+  *fx_op=(char) BitwiseOrAssignmentOperator;
+  (void) SubstituteString(&fx_info->expression,"|=",fx_op);
+  *fx_op=(char) LeftShiftAssignmentOperator;
+  (void) SubstituteString(&fx_info->expression,"<<=",fx_op);
+  *fx_op=(char) RightShiftAssignmentOperator;
+  (void) SubstituteString(&fx_info->expression,">>=",fx_op);
+  *fx_op=(char) PowerAssignmentOperator;
+  (void) SubstituteString(&fx_info->expression,"^=",fx_op);
+  *fx_op=(char) ModuloAssignmentOperator;
+  (void) SubstituteString(&fx_info->expression,"%=",fx_op);
   *fx_op=(char) PlusAssignmentOperator;
   (void) SubstituteString(&fx_info->expression,"+=",fx_op);
   *fx_op=(char) SubtractAssignmentOperator;
@@ -1293,6 +1314,12 @@ static const char *FxOperatorPrecedence(const char *expression,
             precedence=AdditionPrecedence;
           break;
         }
+        case BitwiseAndAssignmentOperator:
+        case BitwiseOrAssignmentOperator:
+        case LeftShiftAssignmentOperator:
+        case RightShiftAssignmentOperator:
+        case PowerAssignmentOperator:
+        case ModuloAssignmentOperator:
         case PlusAssignmentOperator:
         case SubtractAssignmentOperator:
         case MultiplyAssignmentOperator:
@@ -1484,7 +1511,6 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
         {
           *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
             exception);
-          *beta=fabs(floor((*beta)+0.5));
           FxReturn(fmod(alpha,*beta));
         }
         case '+':
@@ -1498,6 +1524,132 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
             exception);
           FxReturn(alpha-(*beta));
+        }
+        case BitwiseAndAssignmentOperator:
+        {
+          q=subexpression;
+          while (isalpha((int) ((unsigned char) *q)) != 0)
+            q++;
+          if (*q != '\0')
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"UnableToParseExpression","`%s'",subexpression);
+              FxReturn(0.0);
+            }
+          ClearMagickException(exception);
+          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
+            exception);
+          value=(double) ((size_t) (alpha+0.5) & (size_t) (*beta+0.5));
+          if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
+            return(0.0);
+          FxReturn(*beta);
+        }
+        case BitwiseOrAssignmentOperator:
+        {
+          q=subexpression;
+          while (isalpha((int) ((unsigned char) *q)) != 0)
+            q++;
+          if (*q != '\0')
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"UnableToParseExpression","`%s'",subexpression);
+              FxReturn(0.0);
+            }
+          ClearMagickException(exception);
+          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
+            exception);
+          value=(double) ((size_t) (alpha+0.5) | (size_t) (*beta+0.5));
+          if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
+            return(0.0);
+          FxReturn(*beta);
+        }
+        case LeftShiftAssignmentOperator:
+        {
+          q=subexpression;
+          while (isalpha((int) ((unsigned char) *q)) != 0)
+            q++;
+          if (*q != '\0')
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"UnableToParseExpression","`%s'",subexpression);
+              FxReturn(0.0);
+            }
+          ClearMagickException(exception);
+          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
+            exception);
+          if ((size_t) (*beta+0.5) >= (8*sizeof(size_t)))
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"ShiftCountOverflow","`%s'",subexpression);
+              FxReturn(0.0);
+            }
+          value=(double) ((size_t) (alpha+0.5) << (size_t) (*beta+0.5));
+          if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
+            return(0.0);
+          FxReturn(*beta);
+        }
+        case RightShiftAssignmentOperator:
+        {
+          q=subexpression;
+          while (isalpha((int) ((unsigned char) *q)) != 0)
+            q++;
+          if (*q != '\0')
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"UnableToParseExpression","`%s'",subexpression);
+              FxReturn(0.0);
+            }
+          ClearMagickException(exception);
+          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
+            exception);
+          if ((size_t) (*beta+0.5) >= (8*sizeof(size_t)))
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"ShiftCountOverflow","`%s'",subexpression);
+              FxReturn(0.0);
+            }
+          value=(double) ((size_t) (alpha+0.5) >> (size_t) (*beta+0.5));
+          if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
+            return(0.0);
+          FxReturn(*beta);
+        }
+        case PowerAssignmentOperator:
+        {
+          q=subexpression;
+          while (isalpha((int) ((unsigned char) *q)) != 0)
+            q++;
+          if (*q != '\0')
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"UnableToParseExpression","`%s'",subexpression);
+              FxReturn(0.0);
+            }
+          ClearMagickException(exception);
+          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
+            exception);
+          value=pow(alpha,*beta);
+          if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
+            return(0.0);
+          FxReturn(*beta);
+        }
+        case ModuloAssignmentOperator:
+        {
+          q=subexpression;
+          while (isalpha((int) ((unsigned char) *q)) != 0)
+            q++;
+          if (*q != '\0')
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"UnableToParseExpression","`%s'",subexpression);
+              FxReturn(0.0);
+            }
+          ClearMagickException(exception);
+          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
+            exception);
+          value=fmod(alpha,*beta);
+          if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
+            return(0.0);
+          FxReturn(*beta);
         }
         case PlusAssignmentOperator:
         {
