@@ -1764,10 +1764,19 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
   pixmap.table=0;
   pixmap.reserved=0;
   transfer_mode=0;
-  x_resolution=image->resolution.x != 0.0 ? image->resolution.x :
-    DefaultResolution;
-  y_resolution=image->resolution.y != 0.0 ? image->resolution.y :
-    DefaultResolution;
+  x_resolution=0.0;
+  y_resolution=0.0;
+  if ((image->resolution.x > MagickEpsilon) && 
+      (image->resolution.y > MagickEpsilon))
+    {
+      x_resolution=image->resolution.x;
+      y_resolution=image->resolution.y;
+      if (image->units == PixelsPerCentimeterResolution)
+        {
+          x_resolution*=2.54;
+          y_resolution*=2.54;
+        }
+    }
   storage_class=image->storage_class;
   if (image_info->compression == JPEGCompression)
     storage_class=DirectClass;
@@ -1786,7 +1795,8 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
   bytes_per_line=image->columns;
   if (storage_class == DirectClass)
     bytes_per_line*=image->alpha_trait != UndefinedPixelTrait ? 4 : 3;
-  if ((bytes_per_line == 0) || (bytes_per_line > 0x7FFF))
+  if ((bytes_per_line == 0) || (bytes_per_line > 0x7FFFU) ||
+      ((row_bytes+MaxCount*2U) >= 0x7FFFU))
     ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
   buffer=(unsigned char *) AcquireQuantumMemory(PictInfoSize,sizeof(*buffer));
   packed_scanline=(unsigned char *) AcquireQuantumMemory((size_t)
