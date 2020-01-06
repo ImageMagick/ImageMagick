@@ -1978,7 +1978,6 @@ static void ImportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
             SetPixelBlack(image,ClampToQuantum(pixel),q);
             p=PushDoublePixel(quantum_info,p,&pixel);
             SetPixelOpacity(image,ClampToQuantum(pixel),q);
-            p=PushDoublePixel(quantum_info,p,&pixel);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
           }
