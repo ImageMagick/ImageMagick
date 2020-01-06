@@ -2778,11 +2778,11 @@ static FxInfo **AcquireFxThreadSet(const Image *image,const char *expression,
   char
     *fx_expression;
 
-  FxInfo
-    **fx_info;
-
   double
     alpha;
+
+  FxInfo
+    **fx_info;
 
   register ssize_t
     i;
