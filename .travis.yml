@@ -18,7 +18,6 @@ before_script:
 script: |
   set -e
   set -x
-  export OMP_NUM_THREADS=1
   export CFLAGS="-Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable"
   ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
   make
