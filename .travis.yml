@@ -19,7 +19,7 @@ script: |
   set -e
   set -x
   export CFLAGS="-Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable"
-  if [ "$CC" == "gcc" ] ; then
+  if [ "$TRAVIS_COMPILER" == "gcc" ] ; then
     ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
   else
     ./configure --disable-openmp --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
