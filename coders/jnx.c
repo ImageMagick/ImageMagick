@@ -287,8 +287,7 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         sizeof(*blob));
       if (blob == (unsigned char *) NULL)
         {
-          if (images != (Image *) NULL)
-            images=DestroyImageList(images);
+          images=DestroyImageList(images);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
       blob[0]=0xFF;
@@ -296,8 +295,7 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       count=ReadBlob(image,tile_length,blob+2);
       if (count != (ssize_t) tile_length)
         {
-          if (images != (Image *) NULL)
-            images=DestroyImageList(images);
+          images=DestroyImageList(images);
           blob=(unsigned char *) RelinquishMagickMemory(blob);
           ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
         }
@@ -331,8 +329,6 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   (void) CloseBlob(image);
   image=DestroyImage(image);
-  if (images == (Image *) NULL)
-    return((Image *) NULL);
   return(GetFirstImageInList(images));
 }
 
