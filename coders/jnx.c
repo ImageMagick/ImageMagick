@@ -267,7 +267,10 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) ReadBlobLSBShort(image); /* width */
       (void) ReadBlobLSBShort(image); /* height */
       if (EOFBlob(image) != MagickFalse)
-        ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+        {
+          images=DestroyImageList(images);
+          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+        }
       tile_length=ReadBlobLSBLong(image);
       tile_offset=ReadBlobLSBSignedLong(image);
       if (tile_offset == -1)
@@ -282,7 +285,10 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Read a tile.
       */
       if (((MagickSizeType) tile_length) > GetBlobSize(image))
-        ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+        {
+          images=DestroyImageList(images);
+          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+        }
       blob=(unsigned char *) AcquireQuantumMemory((size_t) tile_length+2,
         sizeof(*blob));
       if (blob == (unsigned char *) NULL)
