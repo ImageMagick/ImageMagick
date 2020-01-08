@@ -594,8 +594,8 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image,
           bit=0;
           byte=0;
         }
-        p+=GetPixelChannels(image);
-      }
+      p+=GetPixelChannels(image);
+    }
     if (bit != 0)
       {
         /*
