@@ -1933,7 +1933,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
           "ParenthesisNestedTooDeeply","`%s'",expression);
       length=CopyMagickString(subexpression,expression+1,MagickPathExtent);
-      if (length > 1)
+      if (length != 0)
         subexpression[length-1]='\0';
       gamma=FxEvaluateSubexpression(fx_info,channel,x,y,subexpression,depth+1,
         beta,exception);
@@ -2135,7 +2135,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           if (strlen(expression) > 6)
             length=CopyMagickString(subexpression,expression+6,
               MagickPathExtent);
-          if (length > 1)
+          if (length != 0)
             subexpression[length-1]='\0';
           if (fx_info->file != (FILE *) NULL)
             (void) FormatLocaleFile(fx_info->file,"%s[%.20g,%.20g].%s: "
@@ -2152,7 +2152,8 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
             Parse do(expression,condition test).
           */
           length=CopyMagickString(subexpression,expression+3,MagickPathExtent);
-          subexpression[length-1]='\0';
+          if (length != 0)
+            subexpression[length-1]='\0';
           p=subexpression;
           for (q=(char *) p; (*q != ',') && (*q != '\0'); q++)
             if (*q == '(')
@@ -2226,7 +2227,8 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
             Parse for(initialization, condition test, expression).
           */
           length=CopyMagickString(subexpression,expression+4,MagickPathExtent);
-          subexpression[length-1]='\0';
+          if (length != 0)
+            subexpression[length-1]='\0';
           p=subexpression;
           for (q=(char *) p; (*q != ',') && (*q != '\0'); q++)
             if (*q == '(')
@@ -2322,7 +2324,8 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
             length;
 
           length=CopyMagickString(subexpression,expression+3,MagickPathExtent);
-          subexpression[length-1]='\0';
+          if (length != 0)
+            subexpression[length-1]='\0';
           p=subexpression;
           for (q=(char *) p; (*q != ',') && (*q != '\0'); q++)
             if (*q == '(')
@@ -2639,7 +2642,8 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
             Parse while(condition test, expression).
           */
           length=CopyMagickString(subexpression,expression+6,MagickPathExtent);
-          subexpression[length-1]='\0';
+          if (length != 0)
+            subexpression[length-1]='\0';
           p=subexpression;
           for (q=(char *) p; (*q != ',') && (*q != '\0'); q++)
             if (*q == '(')
