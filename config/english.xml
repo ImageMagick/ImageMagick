@@ -996,6 +996,9 @@
         <message name="NoSuchElement">
           no such element in list
         </message>
+        <message name="SetReadOnlyProperty">
+          attempt to set read-only property
+        </message>
         <message name="UnknownImageProperty">
           unknown image property
         </message>
