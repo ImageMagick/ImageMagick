@@ -3340,8 +3340,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          "%d, %d",(int) ping_width, (int) ping_height);
      (void) SetImageProperty(image,"png:IHDR.width,height",msg,exception);
 
-     (void) FormatLocaleString(msg,MagickPathExtent,"%d",
-        (int) ping_file_depth);
+     (void) FormatLocaleString(msg,MagickPathExtent,"%d",(int) ping_file_depth);
      (void) SetImageProperty(image,"png:IHDR.bit_depth",msg,exception);
 
      (void) FormatLocaleString(msg,MagickPathExtent,"%d (%s)",
@@ -3364,15 +3363,13 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          (void) FormatLocaleString(msg,MagickPathExtent,"%d (Unknown method)",
             (int) ping_interlace_method);
        }
-       (void) SetImageProperty(image,"png:IHDR.interlace_method",
-         msg,exception);
+       (void) SetImageProperty(image,"png:IHDR.interlace_method",msg,exception);
 
      if (number_colors != 0)
        {
          (void) FormatLocaleString(msg,MagickPathExtent,"%d",
             (int) number_colors);
-         (void) SetImageProperty(image,"png:PLTE.number_colors",msg,
-            exception);
+         (void) SetImageProperty(image,"png:PLTE.number_colors",msg,exception);
        }
    }
 #if defined(PNG_tIME_SUPPORTED)
@@ -4110,8 +4107,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          /* libpng doesn't tell us whether they were tEXt, zTXt, or iTXt */
          (void) FormatLocaleString(msg,MagickPathExtent,
             "%d tEXt/zTXt/iTXt chunks were found", num_text_total);
-         (void) SetImageProperty(image,"png:text",msg,
-                exception);
+         (void) SetImageProperty(image,"png:text",msg,exception);
        }
 
      if (num_raw_profiles != 0)
@@ -4127,8 +4123,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
        {
          (void) FormatLocaleString(msg,MagickPathExtent,"%s",
             "chunk was found (see Chromaticity, above)");
-         (void) SetImageProperty(image,"png:cHRM",msg,
-                exception);
+         (void) SetImageProperty(image,"png:cHRM",msg,exception);
        }
 
      /* bKGD chunk: */
@@ -4136,8 +4131,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
        {
          (void) FormatLocaleString(msg,MagickPathExtent,"%s",
             "chunk was found (see Background color, above)");
-         (void) SetImageProperty(image,"png:bKGD",msg,
-                exception);
+         (void) SetImageProperty(image,"png:bKGD",msg,exception);
        }
 
      (void) FormatLocaleString(msg,MagickPathExtent,"%s",
@@ -4146,13 +4140,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_iCCP_SUPPORTED)
      /* iCCP chunk: */
      if (ping_found_iCCP != MagickFalse)
-        (void) SetImageProperty(image,"png:iCCP",msg,
-                exception);
+        (void) SetImageProperty(image,"png:iCCP",msg,exception);
 #endif
 
      if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
-        (void) SetImageProperty(image,"png:tRNS",msg,
-                exception);
+        (void) SetImageProperty(image,"png:tRNS",msg,exception);
 
 #if defined(PNG_sRGB_SUPPORTED)
      /* sRGB chunk: */
@@ -4162,8 +4154,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             "intent=%d (%s)",
             (int) intent,
             Magick_RenderingIntentString_from_PNG_RenderingIntent(intent));
-         (void) SetImageProperty(image,"png:sRGB",msg,
-                 exception);
+         (void) SetImageProperty(image,"png:sRGB",msg,exception);
        }
 #endif
 
@@ -4173,8 +4164,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          (void) FormatLocaleString(msg,MagickPathExtent,
             "gamma=%.8g (See Gamma, above)",
             file_gamma);
-         (void) SetImageProperty(image,"png:gAMA",msg,
-                exception);
+         (void) SetImageProperty(image,"png:gAMA",msg,exception);
        }
 
 #if defined(PNG_pHYs_SUPPORTED)
@@ -4184,8 +4174,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          (void) FormatLocaleString(msg,MagickPathExtent,
             "x_res=%.10g, y_res=%.10g, units=%d",
             (double) x_resolution,(double) y_resolution, unit_type);
-         (void) SetImageProperty(image,"png:pHYs",msg,
-                exception);
+         (void) SetImageProperty(image,"png:pHYs",msg,exception);
        }
 #endif
 
@@ -4196,8 +4185,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          (void) FormatLocaleString(msg,MagickPathExtent,
             "x_off=%.20g, y_off=%.20g",
             (double) image->page.x,(double) image->page.y);
-         (void) SetImageProperty(image,"png:oFFs",msg,
-                exception);
+         (void) SetImageProperty(image,"png:oFFs",msg,exception);
        }
 #endif
 
@@ -4217,8 +4205,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             "width=%.20g, height=%.20g, x_offset=%.20g, y_offset=%.20g",
             (double) image->page.width,(double) image->page.height,
             (double) image->page.x,(double) image->page.y);
-         (void) SetImageProperty(image,"png:caNv",msg,
-                exception);
+         (void) SetImageProperty(image,"png:caNv",msg,exception);
        }
    }
 
