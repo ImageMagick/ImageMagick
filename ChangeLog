@@ -1,5 +1,5 @@
-2020-01-10  7.0.9-15 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.9-15, GIT revision 16...
+2020-01-11  7.0.9-15 Dirk Lemstra <dirk@lem.....org>
+  * Also support svg:xml-parse-huge when using librsvg.
 
 2020-01-10  7.0.9-15 Cristy  <quetzlzacatenango@image...>
   * Optimize -evaluate-sequence option (reference
