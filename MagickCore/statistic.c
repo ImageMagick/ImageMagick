@@ -134,7 +134,7 @@
 typedef struct _PixelChannels
 {
   double
-    channel[CompositePixelChannel];
+    channel[MaxPixelChannels];
 } PixelChannels;
 
 static PixelChannels **DestroyPixelThreadSet(const Image *images,
