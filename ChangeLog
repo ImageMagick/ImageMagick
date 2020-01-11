@@ -7,6 +7,8 @@
   * Support Fx do() iterator.
   * `magick -size 100x100 xc:black black.pnm` no longer creates a white image
     (reference https://github.com/ImageMagick/ImageMagick/issues/1817).
+  * setjmp/longjmp in jpeg.c no longer trigger undefind behavior (reference
+    https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=37379).
 
 2020-01-04  7.0.9-14 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-14, GIT revision 16654:89ef7ea:20200104.
