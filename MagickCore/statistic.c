@@ -169,15 +169,16 @@ static PixelChannels **AcquirePixelThreadSet(const Image *images)
 
   size_t
     columns,
+    number_images,
     rows;
 
-  rows=MagickMax(GetImageListLength(images),
-    (size_t) GetMagickResourceLimit(ThreadResource));
+  number_images=GetImageListLength(images);
+  rows=MagickMax(number_images,(size_t) GetMagickResourceLimit(ThreadResource));
   pixels=(PixelChannels **) AcquireQuantumMemory(rows,sizeof(*pixels));
   if (pixels == (PixelChannels **) NULL)
     return((PixelChannels **) NULL);
   (void) memset(pixels,0,rows*sizeof(*pixels));
-  columns=MagickMax(GetImageListLength(images),MaxPixelChannels);
+  columns=MagickMax(number_images,MaxPixelChannels);
   for (next=images; next != (Image *) NULL; next=next->next)
     columns=MagickMax(next->columns,columns);
   for (i=0; i < (ssize_t) rows; i++)
@@ -294,8 +295,8 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case GaussianNoiseEvaluateOperator:
     {
-      result=(double) GenerateDifferentialNoise(random_info,pixel,
-        GaussianNoise,value);
+      result=(double) GenerateDifferentialNoise(random_info,pixel,GaussianNoise,
+        value);
       break;
     }
     case ImpulseNoiseEvaluateOperator:
@@ -610,12 +611,11 @@ MagickExport Image *EvaluateImages(const Image *images,
           register ssize_t
             i;
 
-          for (j=0; j < (ssize_t) number_images; j++)
-            for (i=0; i < MaxPixelChannels; i++)
-              evaluate_pixel[j].channel[i]=0.0;
           next=images;
           for (j=0; j < (ssize_t) number_images; j++)
           {
+            for (i=0; i < MaxPixelChannels; i++)
+              evaluate_pixel[j].channel[i]=0.0;
             for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
             {
               PixelChannel channel = GetPixelChannelChannel(image,i);
