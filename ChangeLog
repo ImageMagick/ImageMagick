@@ -1,3 +1,10 @@
+2020-01-10  7.0.9-15 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.9-15, GIT revision 16...
+
+2020-01-10  7.0.9-15 Cristy  <quetzlzacatenango@image...>
+  * Optimize -evaluate-sequence option (reference
+    https://github.com/ImageMagick/ImageMagick/issues/1824).
+
 2020-01-04  7.0.9-14 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-14, GIT revision 16654:89ef7ea:20200104.
 
