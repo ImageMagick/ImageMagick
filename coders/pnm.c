@@ -1936,6 +1936,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         quantum_info=AcquireQuantumInfo(image_info,image);
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+        SetQuantumMinIsWhite(quantum_info,MagickTrue);
         (void) SetQuantumEndian(image,quantum_info,MSBEndian);
         pixels=GetQuantumPixels(quantum_info);
         for (y=0; y < (ssize_t) image->rows; y++)
