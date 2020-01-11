@@ -642,7 +642,7 @@ MagickExport Image *EvaluateImages(const Image *images,
                 ((traits & UpdatePixelTrait) == 0))
               continue;
             q[i]=ClampToQuantum(evaluate_pixel[number_images/2].channel[i]);
-           }
+          }
           q+=GetPixelChannels(image);
         }
         p=(const Quantum **) RelinquishMagickMemory(p);
