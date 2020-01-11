@@ -579,24 +579,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   source_image=CloneImage(composite,0,0,MagickTrue,exception);
   if (source_image == (const Image *) NULL)
     return(MagickFalse);
-  switch (compose)
-  {
-    case CopyCompositeOp:
-    case CopyRedCompositeOp:
-    case CopyGreenCompositeOp:
-    case CopyBlueCompositeOp:
-    case CopyCyanCompositeOp:
-    case CopyMagentaCompositeOp:
-    case CopyYellowCompositeOp:
-    case CopyBlackCompositeOp:
-      break;
-    default:
-    {
-      if (IsGrayColorspace(image->colorspace) == MagickFalse)
-        (void) SetImageColorspace(image,sRGBColorspace,exception);
-      break;
-    }
-  }
   (void) SetImageColorspace(source_image,image->colorspace,exception);
   if ((compose == OverCompositeOp) || (compose == SrcOverCompositeOp))
     {
@@ -983,8 +965,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           X = red_channel;  Y = green_channel;
           compose:args = x_scale[,y_scale[,center.x,center.y]]
       */
-      canvas_image=CloneImage(image,0,0,MagickTrue,
-        exception);
+      canvas_image=CloneImage(image,0,0,MagickTrue,exception);
       if (canvas_image == (Image *) NULL)
         {
           source_image=DestroyImage(source_image);
