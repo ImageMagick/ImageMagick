@@ -1,5 +1,5 @@
 2020-01-12  7.0.9-16 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.9-16, GIT revision 16715:96aa756:20200112.
+  * Release ImageMagick version 7.0.9-16, GIT revision 16717:e9bc365:20200112.
 
 2020-01-12  7.0.9-16 Cristy  <quetzlzacatenango@image...>
   * Fixed three failing Magick.NET unit tests.
