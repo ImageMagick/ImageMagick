@@ -609,7 +609,7 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
     }
     p+=clahe_info->width*(tile.height-1);
   }
-  lut=(unsigned short int *) RelinquishMagickMemory(lut);
+  lut=(unsigned short *) RelinquishMagickMemory(lut);
   tile_cache=RelinquishVirtualMemory(tile_cache);
   return(MagickTrue);
 }
