@@ -1480,8 +1480,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           }
         length=ReadBlobMSBLong(image);
         if ((MagickSizeType) length > GetBlobSize(image))
-          ThrowPICTException(CorruptImageError,
-            "InsufficientImageDataInFile");
+          ThrowPICTException(CorruptImageError,"InsufficientImageDataInFile");
         if (length > 154)
           {
             for (i=0; i < 6; i++)
