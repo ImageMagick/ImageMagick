@@ -504,7 +504,7 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
     number_bins*sizeof(*tiles));
   if (tile_cache == (MemoryInfo *) NULL)
     return(MagickFalse);
-  lut=AcquireQuantumMemory(NumberCLAHEGrays,sizeof(*lut));
+  lut=(unsigned short *) AcquireQuantumMemory(NumberCLAHEGrays,sizeof(*lut));
   if (lut == (unsigned short *) NULL)
     {
       tile_cache=RelinquishVirtualMemory(tile_cache);
@@ -609,7 +609,7 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
     }
     p+=clahe_info->width*(tile.height-1);
   }
-  lut=RelinquishMagickMemory(lut);
+  lut=(unsigned short int *) RelinquishMagickMemory(lut);
   tile_cache=RelinquishVirtualMemory(tile_cache);
   return(MagickTrue);
 }

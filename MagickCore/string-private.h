@@ -46,7 +46,7 @@ static inline double StringToDouble(const char *magick_restrict string,
   return(InterpretLocaleValue(string,sentinal));
 }
 
-static inline char *StringLocateSubstring(const char *haystack,
+static inline const char *StringLocateSubstring(const char *haystack,
   const char *needle)
 {
 #if defined(MAGICKCORE_HAVE_STRCASESTR)

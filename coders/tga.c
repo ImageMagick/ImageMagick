@@ -543,7 +543,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       offset+=2;
     else
       offset++;
-    if (offset >= image->rows)
+    if (offset >= (ssize_t) image->rows)
       {
         base++;
         offset=base;

@@ -120,7 +120,7 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
   ImageInfo
     *read_info;
 
-  MagickBooleanType
+  MagickStatusType
     status;
 
   register ssize_t

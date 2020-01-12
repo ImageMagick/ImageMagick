@@ -2512,7 +2512,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
           if (cube_info->colors > cube_info->maximum_colors)
             ReduceImageColors(image,cube_info);
           image->colors=0;
-          status=DefineImageColormap(image,cube_info,cube_info->root);
+          (void) DefineImageColormap(image,cube_info,cube_info->root);
         }
       DestroyCubeInfo(cube_info);
       quantize_info=DestroyQuantizeInfo(quantize_info);
