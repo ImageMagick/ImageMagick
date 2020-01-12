@@ -2793,13 +2793,10 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
   (void) TransformImageColorspace(image,sRGBColorspace,exception);
   pixelFormat=DDPF_FOURCC;
   compression=FOURCC_DXT5;
-
   if (image->alpha_trait == UndefinedPixelTrait)
     compression=FOURCC_DXT1;
-
   if (LocaleCompare(image_info->magick,"dxt1") == 0)
     compression=FOURCC_DXT1;
-
   option=GetImageOption(image_info,"dds:compression");
   if (option != (char *) NULL)
     {
@@ -2808,10 +2805,8 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
        if (LocaleCompare(option,"none") == 0)
          pixelFormat=DDPF_RGB;
     }
-
   clusterFit=MagickFalse;
   weightByAlpha=MagickFalse;
-
   if (pixelFormat == DDPF_FOURCC)
     {
       option=GetImageOption(image_info,"dds:cluster-fit");
@@ -2826,7 +2821,6 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
             }
         }
     }
-
   mipmaps=0;
   fromlist=MagickFalse;
   option=GetImageOption(image_info,"dds:mipmaps");
@@ -2846,7 +2840,6 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
           }
         }
     }
-
   if ((mipmaps == 0) &&
       ((image->columns & (image->columns - 1)) == 0) &&
       ((image->rows & (image->rows - 1)) == 0))
@@ -2867,20 +2860,16 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
           }
         }
     }
-
   option=GetImageOption(image_info,"dds:raw");
   if (IsStringTrue(option) == MagickFalse)
     WriteDDSInfo(image,pixelFormat,compression,mipmaps);
   else
     mipmaps=0;
-
   WriteImageData(image,pixelFormat,compression,clusterFit,weightByAlpha,
     exception);
-
   if ((mipmaps > 0) && (WriteMipmaps(image,image_info,pixelFormat,compression,
        mipmaps,fromlist,clusterFit,weightByAlpha,exception) == MagickFalse))
     return(MagickFalse);
-
   (void) CloseBlob(image);
   return(MagickTrue);
 }
