@@ -1149,6 +1149,8 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
   value=GetFxSymbolValue(fx_info,symbol);
   if (value != (const double *) NULL)
     return(*value);
+  (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+    "UndefinedVariable","`%s'",symbol);
   (void) SetFxSymbolValue(fx_info,symbol,0.0);
   return(0.0);
 }

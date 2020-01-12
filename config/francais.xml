@@ -767,6 +767,9 @@
         <message name="UnbalancedParenthesis">
           parenthèse non fermée
         </message>
+        <message name="UndefinedVariable">
+          undefined variable
+        </message>
         <message name="UnrecognizedAttribute">
           attribut non reconnu
         </message>

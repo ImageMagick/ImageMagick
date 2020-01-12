@@ -776,6 +776,9 @@
         <message name="UnbalancedParenthesis">
           unbalanced parenthesis
         </message>
+        <message name="UndefinedVariable">
+          undefined variable
+        </message>
         <message name="UnrecognizedAttribute">
           unrecognized attribute
         </message>
