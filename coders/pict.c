@@ -810,8 +810,8 @@ static MagickBooleanType ReadRectangle(Image *image,PICTRectangle *rectangle)
   if (((EOFBlob(image) != MagickFalse) ||
       (((rectangle->bottom | rectangle->top |
          rectangle->right | rectangle->left ) & 0x8000) != 0) ||
-      (rectangle->bottom <= rectangle->top) ||
-      (rectangle->right <= rectangle->left)))
+      (rectangle->bottom < rectangle->top) ||
+      (rectangle->right < rectangle->left)))
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -967,6 +967,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
       code=ReadBlobByte(image);
     if (version == 2)
       code=ReadBlobMSBSignedShort(image);
+    code&=0xffff;
     if (code < 0)
       break;
     if (code == 0)
@@ -1450,64 +1451,49 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
       continue;
     if (code == 0x8200)
       {
-        char
-          filename[MaxTextExtent];
-
-        FILE
-          *file;
-
-        int
-          unique_file;
-
         /*
           Embedded JPEG.
         */
         jpeg=MagickTrue;
-        read_info=CloneImageInfo(image_info);
-        SetImageInfoBlob(read_info,(void *) NULL,0);
-        file=(FILE *) NULL;
-        unique_file=AcquireUniqueFileResource(filename);
-        (void) FormatLocaleString(read_info->filename,MaxTextExtent,"jpeg:%s",
-          filename);
-        if (unique_file != -1)
-          file=fdopen(unique_file,"wb");
-        if ((unique_file == -1) || (file == (FILE *) NULL))
-          {
-            (void) RelinquishUniqueFileResource(read_info->filename);
-            (void) CopyMagickString(image->filename,read_info->filename,
-              MagickPathExtent);
-            ThrowPICTException(FileOpenError,"UnableToCreateTemporaryFile");
-          }
         length=ReadBlobMSBLong(image);
         if ((MagickSizeType) length > GetBlobSize(image))
           ThrowPICTException(CorruptImageError,"InsufficientImageDataInFile");
         if (length > 154)
           {
+            const void
+              *stream;
+
+            ssize_t
+              count;
+
+            unsigned char
+              *pixels;
+
             for (i=0; i < 6; i++)
               (void) ReadBlobMSBLong(image);
             if (ReadRectangle(image,&frame) == MagickFalse)
-              {
-                (void) fclose(file);
-                (void) RelinquishUniqueFileResource(read_info->filename);
-                ThrowPICTException(CorruptImageError,"ImproperImageHeader");
-              }
+              ThrowPICTException(CorruptImageError,"ImproperImageHeader");
             for (i=0; i < 122; i++)
               if (ReadBlobByte(image) == EOF)
                 break;
-            for (i=0; i < (ssize_t) (length-154); i++)
-            {
-              c=ReadBlobByte(image);
-              if (c == EOF)
-                break;
-              if (fputc(c,file) != c)
-                break;
-            }
+            length-=154;
+            pixels=(unsigned char *) AcquireQuantumMemory(length,
+              sizeof(*pixels));
+            if (pixels == (unsigned char *) NULL)
+              ThrowPICTException(ResourceLimitError,"MemoryAllocationFailed");
+            stream=ReadBlobStream(image,length,pixels,&count);
+            if (count != (ssize_t) length)
+              {
+                pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+                ThrowPICTException(CorruptImageError,"ImproperImageHeader");
+              }
+            read_info=AcquireImageInfo();
+            (void) FormatLocaleString(read_info->filename,MaxTextExtent,
+              "jpeg:%s",image_info->filename);
+            tile_image=BlobToImage(read_info,stream,count,exception);
+            pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+            read_info=DestroyImageInfo(read_info);
           }
-        (void) fclose(file);
-        (void) close(unique_file);
-        tile_image=ReadImage(read_info,exception);
-        (void) RelinquishUniqueFileResource(filename);
-        read_info=DestroyImageInfo(read_info);
         if (tile_image == (Image *) NULL)
           continue;
         (void) FormatLocaleString(geometry,MagickPathExtent,"%.20gx%.20g",
@@ -1767,7 +1753,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
   transfer_mode=0;
   x_resolution=0.0;
   y_resolution=0.0;
-  if ((image->resolution.x > MagickEpsilon) && 
+  if ((image->resolution.x > MagickEpsilon) &&
       (image->resolution.y > MagickEpsilon))
     {
       x_resolution=image->resolution.x;
