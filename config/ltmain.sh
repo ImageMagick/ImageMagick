@@ -472,7 +472,7 @@ opt_warning_types=all
 #
 # It's entirely deliberate that calling these functions can set
 # variables that don't obey the namespace limitations obeyed by the rest
-# of this file, in order that that they be as useful as possible to
+# of this file, in order that they be as useful as possible to
 # callers.
 
 
