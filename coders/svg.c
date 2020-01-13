@@ -3312,10 +3312,12 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           sizeof(*buffer));
         if (buffer == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+#if LIBRSVG_CHECK_VERSION(2,40,3)
         option=GetImageOption(image_info,"svg:xml-parse-huge");
         if ((option != (char *) NULL) && (IsStringTrue(option) != MagickFalse))
           svg_handle=rsvg_handle_new_with_flags(RSVG_HANDLE_FLAG_UNLIMITED);
         else
+#endif
           svg_handle=rsvg_handle_new();
         if (svg_handle == (RsvgHandle *) NULL)
           {
