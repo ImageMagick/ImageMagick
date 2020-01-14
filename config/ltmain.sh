@@ -1476,7 +1476,7 @@ fatal_help="Try '\$progname --help' for more information."
 ## ------------------------- ##
 
 # This section contains functions for adding, removing, and running hooks
-# to the main code.  A hook is just a named list of of function, that can
+# to the main code.  A hook is just a named list of function, that can
 # be run in order later on.
 
 # func_hookable FUNC_NAME
