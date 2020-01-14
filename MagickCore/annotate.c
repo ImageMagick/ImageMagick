@@ -717,17 +717,22 @@ MagickExport MagickBooleanType GetMultilineTypeMetrics(Image *image,
   char
     **textlist;
 
+  double
+    height;
+
   DrawInfo
     *annotate_info;
 
   MagickBooleanType
     status;
 
+  MagickSizeType
+    size;
+
   register ssize_t
     i;
 
   size_t
-    height,
     count;
 
   TypeMetric
@@ -762,7 +767,8 @@ MagickExport MagickBooleanType GetMultilineTypeMetrics(Image *image,
   *metrics=extent;
   height=(count*(size_t) (metrics->ascent-metrics->descent+
     0.5)+(count-1)*draw_info->interline_spacing);
-  if (AcquireMagickResource(HeightResource,height) == MagickFalse)
+  size=(MagickSizeType) fabs(height);
+  if (AcquireMagickResource(HeightResource,size) == MagickFalse)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
         "WidthOrHeightExceedsLimit","`%s'",image->filename);
@@ -778,7 +784,8 @@ MagickExport MagickBooleanType GetMultilineTypeMetrics(Image *image,
           break;
         if (extent.width > metrics->width)
           *metrics=extent;
-        if (AcquireMagickResource(WidthResource,extent.width) == MagickFalse)
+        size=(MagickSizeType) fabs(extent.width);
+        if (AcquireMagickResource(WidthResource,size) == MagickFalse)
           {
             (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
               "WidthOrHeightExceedsLimit","`%s'",image->filename);
