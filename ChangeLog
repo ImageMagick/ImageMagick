@@ -1,3 +1,11 @@
+2020-01-12  7.0.9-17 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.9-17, GIT revision 16...
+
+2020-01-12  7.0.9-17 Cristy  <quetzlzacatenango@image...>
+  * Allow larger negative interline spacing (reference
+    https://imagemagick.org/discourse-server/viewtopic.php?f=1&t=37391).
+  * Conditional compile for huge xml pages for RSVG delegate library.
+
 2020-01-12  7.0.9-16 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-16, GIT revision 16719:fefd765:20200112.
 
