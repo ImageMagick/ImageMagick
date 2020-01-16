@@ -7079,26 +7079,26 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
   const DrawInfo *draw_info,const PrimitiveInfo *primitive_info)
 {
 #define MaxStrokePad  (6*BezierQuantum+360)
-#define CheckPathExtent(pad) \
+#define CheckPathExtent(pad_p,pad_q) \
 {   \
-  if ((ssize_t) (p+(pad)) >= (ssize_t) extent_p) \
+  if ((ssize_t) (p+(pad_p)) >= (ssize_t) extent_p) \
     { \
-      if (~extent_p < (pad)) \
+      if (~extent_p < (pad_p)) \
         path_p=(PointInfo *) RelinquishMagickMemory(path_p); \
       else \
         { \
-          extent_p+=(pad); \
+          extent_p+=(pad_p); \
           path_p=(PointInfo *) ResizeQuantumMemory(path_p,extent_p+ \
             MaxStrokePad,sizeof(*path_p)); \
         } \
     } \
-  if ((ssize_t) (q+(pad)) >= (ssize_t) extent_q) \
+  if ((ssize_t) (q+(pad_q)) >= (ssize_t) extent_q) \
     { \
-      if (~extent_q < (pad)) \
+      if (~extent_q < (pad_q)) \
         path_q=(PointInfo *) RelinquishMagickMemory(path_q); \
       else \
         { \
-          extent_q+=(pad); \
+          extent_q+=(pad_q); \
           path_q=(PointInfo *) ResizeQuantumMemory(path_q,extent_q+ \
             MaxStrokePad,sizeof(*path_q)); \
         } \
@@ -7356,7 +7356,7 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
           box_q[3].y)/(slope.p-slope.q));
         box_q[4].y=(double) (slope.p*(box_q[4].x-box_q[0].x)+box_q[0].y);
       }
-    CheckPathExtent(0);
+    CheckPathExtent(MaxStrokePad,MaxStrokePad);
     dot_product=dx.q*dy.p-dx.p*dy.q;
     if (dot_product <= 0.0)
       switch (draw_info->linejoin)
@@ -7412,7 +7412,7 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
             theta.q+=2.0*MagickPI;
           arc_segments=(size_t) ceil((double) ((theta.q-theta.p)/
             (2.0*sqrt((double) (1.0/mid)))));
-          CheckPathExtent(arc_segments);
+          CheckPathExtent(0,arc_segments+MaxStrokePad);
           path_q[q].x=box_q[1].x;
           path_q[q].y=box_q[1].y;
           q++;
@@ -7485,7 +7485,7 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
             theta.p+=2.0*MagickPI;
           arc_segments=(size_t) ceil((double) ((theta.p-theta.q)/
             (2.0*sqrt((double) (1.0/mid)))));
-          CheckPathExtent(arc_segments);
+          CheckPathExtent(arc_segments+MaxStrokePad,0);
           path_p[p++]=box_p[1];
           for (j=1; j < (ssize_t) arc_segments; j++)
           {
