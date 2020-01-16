@@ -1649,6 +1649,18 @@ static inline MagickBooleanType PSDSkipImage(const PSDInfo *psd_info,
   return(MagickFalse);
 }
 
+static void CheckMergedImageAlpha(const PSDInfo *psd_info,Image *image)
+{
+  /*
+    The number of layers cannot be used to determine if the merged image
+    contains an alpha channel. So we enable it when we think we should.
+  */
+  if (((psd_info->mode == GrayscaleMode) && (psd_info->channels > 2)) ||
+      ((psd_info->mode == RGBMode) && (psd_info->channels > 3)) ||
+      ((psd_info->mode == CMYKMode) && (psd_info->channels > 4)))
+    image->alpha_trait=BlendPixelTrait;
+}
+
 static MagickBooleanType ReadPSDLayersInternal(Image *image,
   const ImageInfo *image_info,const PSDInfo *psd_info,
   const MagickBooleanType skip_layers,ExceptionInfo *exception)
@@ -1685,7 +1697,10 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
       if (count == 4)
         ReversePSDString(image,type,(size_t) count);
       if ((count != 4) || (LocaleNCompare(type,"8BIM",4) != 0))
-        return(MagickTrue);
+        {
+          CheckMergedImageAlpha(psd_info,image);
+          return(MagickTrue);
+        }
       else
         {
           count=ReadBlob(image,4,(unsigned char *) type);
@@ -1695,7 +1710,10 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
               (LocaleNCompare(type,"Lr32",4) == 0)))
             size=GetPSDSize(psd_info,image);
           else
-            return(MagickTrue);
+            {
+              CheckMergedImageAlpha(psd_info,image);
+              return(MagickTrue);
+            }
         }
     }
   if (size == 0)
