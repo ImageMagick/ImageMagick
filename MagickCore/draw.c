@@ -7212,15 +7212,22 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
         }
       n=(ssize_t) number_vertices-1L;
     }
-  p=0;
-  q=0;
   extent_p=2*number_vertices;
   extent_q=2*number_vertices;
   path_p=(PointInfo *) AcquireQuantumMemory((size_t) extent_p+MaxStrokePad,
     sizeof(*path_p));
   path_q=(PointInfo *) AcquireQuantumMemory((size_t) extent_q+MaxStrokePad,
     sizeof(*path_q));
-  CheckPathExtent(0);
+  if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL))
+    {
+      if (path_p != (PointInfo *) NULL)
+        path_p=(PointInfo *) RelinquishMagickMemory(path_p);
+      if (path_q != (PointInfo *) NULL)
+        path_q=(PointInfo *) RelinquishMagickMemory(path_q);
+      polygon_primitive=(PrimitiveInfo *)
+        RelinquishMagickMemory(polygon_primitive);
+      return((PrimitiveInfo *) NULL);
+    }
   slope.p=0.0;
   inverse_slope.p=0.0;
   if (fabs(dx.p) < MagickEpsilon)
@@ -7274,6 +7281,8 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
   /*
     Create strokes for the line join attribute: bevel, miter, round.
   */
+  p=0;
+  q=0;
   path_q[p++]=box_q[0];
   path_p[q++]=box_p[0];
   for (i=(ssize_t) n+1; i < (ssize_t) number_vertices; i++)
