@@ -7080,33 +7080,40 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
 {
 #define MaxStrokePad  (6*BezierQuantum+360)
 #define CheckPathExtent(pad) \
-  if (((ssize_t) (p+(pad)) >= (ssize_t) max_strokes) || \
-      ((ssize_t) (q+(pad)) >= (ssize_t) max_strokes)) \
+{   \
+  if ((ssize_t) (p+(pad)) >= (ssize_t) p_strokes) \
     { \
-      if (~max_strokes < (pad)) \
-        { \
-          path_p=(PointInfo *) RelinquishMagickMemory(path_p); \
-          path_q=(PointInfo *) RelinquishMagickMemory(path_q); \
-        } \
+      if (~p_strokes < (pad)) \
+        path_p=(PointInfo *) RelinquishMagickMemory(path_p); \
       else \
         { \
-          max_strokes+=(pad); \
-          path_p=(PointInfo *) ResizeQuantumMemory(path_p,max_strokes+ \
+          p_strokes+=(pad); \
+          path_p=(PointInfo *) ResizeQuantumMemory(path_p,p_strokes+ \
             MaxStrokePad,sizeof(*path_p)); \
-          path_q=(PointInfo *) ResizeQuantumMemory(path_q,max_strokes+ \
+        } \
+    } \
+  if ((ssize_t) (q+(pad)) >= (ssize_t) q_strokes) \
+    { \
+      if (~q_strokes < (pad)) \
+        path_q=(PointInfo *) RelinquishMagickMemory(path_q); \
+      else \
+        { \
+          q_strokes+=(pad); \
+          path_q=(PointInfo *) ResizeQuantumMemory(path_q,q_strokes+ \
             MaxStrokePad,sizeof(*path_q)); \
         } \
-      if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL)) \
-        { \
-          if (path_p != (PointInfo *) NULL) \
-            path_p=(PointInfo *) RelinquishMagickMemory(path_p); \
-          if (path_q != (PointInfo *) NULL) \
-            path_q=(PointInfo *) RelinquishMagickMemory(path_q); \
-          polygon_primitive=(PrimitiveInfo *) \
-            RelinquishMagickMemory(polygon_primitive); \
-          return((PrimitiveInfo *) NULL); \
-        } \
-    }
+    } \
+  if (path_p == (PointInfo *) NULL) \
+    { \
+      if (path_p != (PointInfo *) NULL) \
+        path_p=(PointInfo *) RelinquishMagickMemory(path_p); \
+      if (path_q != (PointInfo *) NULL) \
+        path_q=(PointInfo *) RelinquishMagickMemory(path_q); \
+      polygon_primitive=(PrimitiveInfo *) \
+        RelinquishMagickMemory(polygon_primitive); \
+      return((PrimitiveInfo *) NULL); \
+    } \
+}
 
   typedef struct _LineSegment
   {
@@ -7148,8 +7155,9 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
 
   size_t
     arc_segments,
-    max_strokes,
-    number_vertices;
+    number_vertices,
+    p_strokes,
+    q_strokes;
 
   ssize_t
     j,
@@ -7161,7 +7169,8 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
     Allocate paths.
   */
   number_vertices=primitive_info->coordinates;
-  max_strokes=2*number_vertices;
+  p_strokes=2*number_vertices;
+  q_strokes=2*number_vertices;
   polygon_primitive=(PrimitiveInfo *) AcquireQuantumMemory((size_t)
     number_vertices+2UL,sizeof(*polygon_primitive));
   if (polygon_primitive == (PrimitiveInfo *) NULL)
@@ -7205,7 +7214,7 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
         }
       n=(ssize_t) number_vertices-1L;
     }
-  path_p=(PointInfo *) AcquireQuantumMemory((size_t) max_strokes+MaxStrokePad,
+  path_p=(PointInfo *) AcquireQuantumMemory((size_t) p_strokes+MaxStrokePad,
     sizeof(*path_p));
   if (path_p == (PointInfo *) NULL)
     {
@@ -7213,7 +7222,7 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
         polygon_primitive);
       return((PrimitiveInfo *) NULL);
     }
-  path_q=(PointInfo *) AcquireQuantumMemory((size_t) max_strokes+MaxStrokePad,
+  path_q=(PointInfo *) AcquireQuantumMemory((size_t) q_strokes+MaxStrokePad,
     sizeof(*path_q));
   if (path_q == (PointInfo *) NULL)
     {
