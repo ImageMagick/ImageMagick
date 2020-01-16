@@ -7084,56 +7084,49 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
   if ((ssize_t) (p+(pad_p)) >= (ssize_t) extent_p) \
     { \
       if (~extent_p < (pad_p)) \
-        path_p=(PointInfo *) RelinquishMagickMemory(path_p); \
+        stroke_p=(PointInfo *) RelinquishMagickMemory(stroke_p); \
       else \
         { \
           extent_p+=(pad_p); \
-          path_p=(PointInfo *) ResizeQuantumMemory(path_p,extent_p+ \
-            MaxStrokePad,sizeof(*path_p)); \
+          stroke_p=(PointInfo *) ResizeQuantumMemory(stroke_p,extent_p+ \
+            MaxStrokePad,sizeof(*stroke_p)); \
         } \
     } \
   if ((ssize_t) (q+(pad_q)) >= (ssize_t) extent_q) \
     { \
       if (~extent_q < (pad_q)) \
-        path_q=(PointInfo *) RelinquishMagickMemory(path_q); \
+        stroke_q=(PointInfo *) RelinquishMagickMemory(stroke_q); \
       else \
         { \
           extent_q+=(pad_q); \
-          path_q=(PointInfo *) ResizeQuantumMemory(path_q,extent_q+ \
-            MaxStrokePad,sizeof(*path_q)); \
+          stroke_q=(PointInfo *) ResizeQuantumMemory(stroke_q,extent_q+ \
+            MaxStrokePad,sizeof(*stroke_q)); \
         } \
     } \
-  if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL)) \
+  if ((stroke_p == (PointInfo *) NULL) || (stroke_q == (PointInfo *) NULL)) \
     { \
-      if (path_p != (PointInfo *) NULL) \
-        path_p=(PointInfo *) RelinquishMagickMemory(path_p); \
-      if (path_q != (PointInfo *) NULL) \
-        path_q=(PointInfo *) RelinquishMagickMemory(path_q); \
+      if (stroke_p != (PointInfo *) NULL) \
+        stroke_p=(PointInfo *) RelinquishMagickMemory(stroke_p); \
+      if (stroke_q != (PointInfo *) NULL) \
+        stroke_q=(PointInfo *) RelinquishMagickMemory(stroke_q); \
       polygon_primitive=(PrimitiveInfo *) \
         RelinquishMagickMemory(polygon_primitive); \
       return((PrimitiveInfo *) NULL); \
     } \
 }
 
-  typedef struct _LineSegment
+  typedef struct _StrokeSegment
   {
     double
       p,
       q;
-  } LineSegment;
+  } StrokeSegment;
 
   double
     delta_theta,
     dot_product,
     mid,
     miterlimit;
-
-  LineSegment
-    dx = {0,0},
-    dy = {0,0},
-    inverse_slope = {0,0},
-    slope = {0,0},
-    theta = {0,0};
 
   MagickBooleanType
     closed_path;
@@ -7143,8 +7136,8 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
     box_q[5],
     center,
     offset,
-    *path_p,
-    *path_q;
+    *stroke_p,
+    *stroke_q;
 
   PrimitiveInfo
     *polygon_primitive,
@@ -7164,6 +7157,13 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
     n,
     p,
     q;
+
+  StrokeSegment
+    dx = {0.0, 0.0},
+    dy = {0.0, 0.0},
+    inverse_slope = {0.0, 0.0},
+    slope = {0.0, 0.0},
+    theta = {0.0, 0.0};
 
   /*
     Allocate paths.
@@ -7214,16 +7214,16 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
     }
   extent_p=2*number_vertices;
   extent_q=2*number_vertices;
-  path_p=(PointInfo *) AcquireQuantumMemory((size_t) extent_p+MaxStrokePad,
-    sizeof(*path_p));
-  path_q=(PointInfo *) AcquireQuantumMemory((size_t) extent_q+MaxStrokePad,
-    sizeof(*path_q));
-  if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL))
+  stroke_p=(PointInfo *) AcquireQuantumMemory((size_t) extent_p+MaxStrokePad,
+    sizeof(*stroke_p));
+  stroke_q=(PointInfo *) AcquireQuantumMemory((size_t) extent_q+MaxStrokePad,
+    sizeof(*stroke_q));
+  if ((stroke_p == (PointInfo *) NULL) || (stroke_q == (PointInfo *) NULL))
     {
-      if (path_p != (PointInfo *) NULL)
-        path_p=(PointInfo *) RelinquishMagickMemory(path_p);
-      if (path_q != (PointInfo *) NULL)
-        path_q=(PointInfo *) RelinquishMagickMemory(path_q);
+      if (stroke_p != (PointInfo *) NULL)
+        stroke_p=(PointInfo *) RelinquishMagickMemory(stroke_p);
+      if (stroke_q != (PointInfo *) NULL)
+        stroke_q=(PointInfo *) RelinquishMagickMemory(stroke_q);
       polygon_primitive=(PrimitiveInfo *)
         RelinquishMagickMemory(polygon_primitive);
       return((PrimitiveInfo *) NULL);
@@ -7283,8 +7283,8 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
   */
   p=0;
   q=0;
-  path_q[p++]=box_q[0];
-  path_p[q++]=box_p[0];
+  stroke_q[p++]=box_q[0];
+  stroke_p[q++]=box_p[0];
   for (i=(ssize_t) n+1; i < (ssize_t) number_vertices; i++)
   {
     /*
@@ -7363,16 +7363,16 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
       {
         case BevelJoin:
         {
-          path_q[q++]=box_q[1];
-          path_q[q++]=box_q[2];
+          stroke_q[q++]=box_q[1];
+          stroke_q[q++]=box_q[2];
           dot_product=(box_q[4].x-box_p[4].x)*(box_q[4].x-box_p[4].x)+
             (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
           if (dot_product <= miterlimit)
-            path_p[p++]=box_p[4];
+            stroke_p[p++]=box_p[4];
           else
             {
-              path_p[p++]=box_p[1];
-              path_p[p++]=box_p[2];
+              stroke_p[p++]=box_p[1];
+              stroke_p[p++]=box_p[2];
             }
           break;
         }
@@ -7382,15 +7382,15 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
             (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
           if (dot_product <= miterlimit)
             {
-              path_q[q++]=box_q[4];
-              path_p[p++]=box_p[4];
+              stroke_q[q++]=box_q[4];
+              stroke_p[p++]=box_p[4];
             }
           else
             {
-              path_q[q++]=box_q[1];
-              path_q[q++]=box_q[2];
-              path_p[p++]=box_p[1];
-              path_p[p++]=box_p[2];
+              stroke_q[q++]=box_q[1];
+              stroke_q[q++]=box_q[2];
+              stroke_p[p++]=box_p[1];
+              stroke_p[p++]=box_p[2];
             }
           break;
         }
@@ -7399,11 +7399,11 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
           dot_product=(box_q[4].x-box_p[4].x)*(box_q[4].x-box_p[4].x)+
             (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
           if (dot_product <= miterlimit)
-            path_p[p++]=box_p[4];
+            stroke_p[p++]=box_p[4];
           else
             {
-              path_p[p++]=box_p[1];
-              path_p[p++]=box_p[2];
+              stroke_p[p++]=box_p[1];
+              stroke_p[p++]=box_p[2];
             }
           center=polygon_primitive[n].point;
           theta.p=atan2(box_q[1].y-center.y,box_q[1].x-center.x);
@@ -7412,20 +7412,20 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
             theta.q+=2.0*MagickPI;
           arc_segments=(size_t) ceil((double) ((theta.q-theta.p)/
             (2.0*sqrt((double) (1.0/mid)))));
-          CheckPathExtent(0,arc_segments+MaxStrokePad);
-          path_q[q].x=box_q[1].x;
-          path_q[q].y=box_q[1].y;
+          CheckPathExtent(MaxStrokePad,arc_segments+MaxStrokePad);
+          stroke_q[q].x=box_q[1].x;
+          stroke_q[q].y=box_q[1].y;
           q++;
           for (j=1; j < (ssize_t) arc_segments; j++)
           {
             delta_theta=(double) (j*(theta.q-theta.p)/arc_segments);
-            path_q[q].x=(double) (center.x+mid*cos(fmod((double)
+            stroke_q[q].x=(double) (center.x+mid*cos(fmod((double)
               (theta.p+delta_theta),DegreesToRadians(360.0))));
-            path_q[q].y=(double) (center.y+mid*sin(fmod((double)
+            stroke_q[q].y=(double) (center.y+mid*sin(fmod((double)
               (theta.p+delta_theta),DegreesToRadians(360.0))));
             q++;
           }
-          path_q[q++]=box_q[2];
+          stroke_q[q++]=box_q[2];
           break;
         }
         default:
@@ -7436,16 +7436,16 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
       {
         case BevelJoin:
         {
-          path_p[p++]=box_p[1];
-          path_p[p++]=box_p[2];
+          stroke_p[p++]=box_p[1];
+          stroke_p[p++]=box_p[2];
           dot_product=(box_q[4].x-box_p[4].x)*(box_q[4].x-box_p[4].x)+
             (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
           if (dot_product <= miterlimit)
-            path_q[q++]=box_q[4];
+            stroke_q[q++]=box_q[4];
           else
             {
-              path_q[q++]=box_q[1];
-              path_q[q++]=box_q[2];
+              stroke_q[q++]=box_q[1];
+              stroke_q[q++]=box_q[2];
             }
           break;
         }
@@ -7455,15 +7455,15 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
             (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
           if (dot_product <= miterlimit)
             {
-              path_q[q++]=box_q[4];
-              path_p[p++]=box_p[4];
+              stroke_q[q++]=box_q[4];
+              stroke_p[p++]=box_p[4];
             }
           else
             {
-              path_q[q++]=box_q[1];
-              path_q[q++]=box_q[2];
-              path_p[p++]=box_p[1];
-              path_p[p++]=box_p[2];
+              stroke_q[q++]=box_q[1];
+              stroke_q[q++]=box_q[2];
+              stroke_p[p++]=box_p[1];
+              stroke_p[p++]=box_p[2];
             }
           break;
         }
@@ -7472,11 +7472,11 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
           dot_product=(box_q[4].x-box_p[4].x)*(box_q[4].x-box_p[4].x)+
             (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
           if (dot_product <= miterlimit)
-            path_q[q++]=box_q[4];
+            stroke_q[q++]=box_q[4];
           else
             {
-              path_q[q++]=box_q[1];
-              path_q[q++]=box_q[2];
+              stroke_q[q++]=box_q[1];
+              stroke_q[q++]=box_q[2];
             }
           center=polygon_primitive[n].point;
           theta.p=atan2(box_p[1].y-center.y,box_p[1].x-center.x);
@@ -7485,18 +7485,18 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
             theta.p+=2.0*MagickPI;
           arc_segments=(size_t) ceil((double) ((theta.p-theta.q)/
             (2.0*sqrt((double) (1.0/mid)))));
-          CheckPathExtent(arc_segments+MaxStrokePad,0);
-          path_p[p++]=box_p[1];
+          CheckPathExtent(arc_segments+MaxStrokePad,MaxStrokePad);
+          stroke_p[p++]=box_p[1];
           for (j=1; j < (ssize_t) arc_segments; j++)
           {
             delta_theta=(double) (j*(theta.q-theta.p)/arc_segments);
-            path_p[p].x=(double) (center.x+mid*cos(fmod((double)
+            stroke_p[p].x=(double) (center.x+mid*cos(fmod((double)
               (theta.p+delta_theta),DegreesToRadians(360.0))));
-            path_p[p].y=(double) (center.y+mid*sin(fmod((double)
+            stroke_p[p].y=(double) (center.y+mid*sin(fmod((double)
               (theta.p+delta_theta),DegreesToRadians(360.0))));
             p++;
           }
-          path_p[p++]=box_p[2];
+          stroke_p[p++]=box_p[2];
           break;
         }
         default:
@@ -7512,8 +7512,8 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
     dy.p=dy.q;
     n=i;
   }
-  path_p[p++]=box_p[1];
-  path_q[q++]=box_q[1];
+  stroke_p[p++]=box_p[1];
+  stroke_q[q++]=box_q[1];
   /*
     Trace stroked polygon.
   */
@@ -7524,7 +7524,7 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
       for (i=0; i < (ssize_t) p; i++)
       {
         stroke_polygon[i]=polygon_primitive[0];
-        stroke_polygon[i].point=path_p[i];
+        stroke_polygon[i].point=stroke_p[i];
       }
       if (closed_path != MagickFalse)
         {
@@ -7535,7 +7535,7 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
       for ( ; i < (ssize_t) (p+q+closed_path); i++)
       {
         stroke_polygon[i]=polygon_primitive[0];
-        stroke_polygon[i].point=path_q[p+q+closed_path-(i+1)];
+        stroke_polygon[i].point=stroke_q[p+q+closed_path-(i+1)];
       }
       if (closed_path != MagickFalse)
         {
@@ -7549,8 +7549,8 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
       stroke_polygon[i].primitive=UndefinedPrimitive;
       stroke_polygon[0].coordinates=(size_t) (p+q+2*closed_path+1);
     }
-  path_p=(PointInfo *) RelinquishMagickMemory(path_p);
-  path_q=(PointInfo *) RelinquishMagickMemory(path_q);
+  stroke_p=(PointInfo *) RelinquishMagickMemory(stroke_p);
+  stroke_q=(PointInfo *) RelinquishMagickMemory(stroke_q);
   polygon_primitive=(PrimitiveInfo *) RelinquishMagickMemory(polygon_primitive);
   return(stroke_polygon);
 }
