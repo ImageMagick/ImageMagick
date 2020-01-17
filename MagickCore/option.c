@@ -471,6 +471,8 @@ static const OptionInfo
     { "HSL", HSLColorspace, UndefinedOptionFlag, MagickFalse },
     { "HSV", HSVColorspace, UndefinedOptionFlag, MagickFalse },
     { "HWB", HWBColorspace, UndefinedOptionFlag, MagickFalse },
+    { "Jzazbz", JzazbzColorspace, UndefinedOptionFlag, MagickFalse },
+    { "JzCzhz", JzCzhzColorspace, UndefinedOptionFlag, MagickFalse },
     { "Lab", LabColorspace, UndefinedOptionFlag, MagickFalse },
     { "LCH", LCHColorspace, UndefinedOptionFlag, MagickFalse },
     { "LCHab", LCHabColorspace, UndefinedOptionFlag, MagickFalse },
