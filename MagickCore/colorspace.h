@@ -58,8 +58,7 @@ typedef enum
   YPbPrColorspace,
   YUVColorspace,
   LinearGRAYColorspace,     /* Single Channel greyscale (linear) image */
-  JzazbzColorspace,
-  JzCzhzColorspace
+  JzazbzColorspace
 } ColorspaceType;
 
 extern MagickExport ColorspaceType

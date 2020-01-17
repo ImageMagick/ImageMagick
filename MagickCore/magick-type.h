@@ -111,7 +111,7 @@ typedef MagickDoubleType Quantum;
 #else
 #error "MAGICKCORE_QUANTUM_DEPTH must be one of 8, 16, 32, or 64"
 #endif
-#define MagickEpsilon  (1.0e-12)
+#define MagickEpsilon  (1.6295499532821566e-11)
 #define MagickMaximumValue  1.79769313486231570E+308
 #define MagickMinimumValue   2.22507385850720140E-308
 #define MagickStringify(macro_or_string)  MagickStringifyArg(macro_or_string)
