@@ -2474,9 +2474,6 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  status=AcquireImageColormap(image,number_colors,exception);
-  if (status == MagickFalse)
-    return(status);
   colors=GetImageArtifact(image,"kmeans:seed-colors");
   if (colors == (const char *) NULL)
     {
@@ -2511,8 +2508,12 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
         {
           if (cube_info->colors > cube_info->maximum_colors)
             ReduceImageColors(image,cube_info);
-          image->colors=0;
-          (void) DefineImageColormap(image,cube_info,cube_info->root);
+          status=AcquireImageColormap(image,number_colors,exception);
+          if (status != MagickFalse)
+            {
+              image->colors=0;
+              (void) DefineImageColormap(image,cube_info,cube_info->root);
+            }
         }
       DestroyCubeInfo(cube_info);
       quantize_info=DestroyQuantizeInfo(quantize_info);
@@ -2530,6 +2531,9 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
       /*
         Seed clusters from color list (e.g. red;green;blue).
       */
+      status=AcquireImageColormap(image,number_colors,exception);
+      if (status == MagickFalse)
+        return(status);
       for (n=0, p=colors; n < (ssize_t) image->colors; n++)
       {
         register const char
