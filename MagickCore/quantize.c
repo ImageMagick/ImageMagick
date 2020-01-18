@@ -2400,7 +2400,7 @@ static KmeansInfo **AcquireKmeansThreadSet(const size_t number_colors)
 static inline double KmeansMetric(const Image *magick_restrict image,
   const Quantum *magick_restrict p,const PixelInfo *magick_restrict q)
 {
-  double
+  register double
     gamma,
     metric,
     pixel;
@@ -2410,18 +2410,17 @@ static inline double KmeansMetric(const Image *magick_restrict image,
   if ((image->alpha_trait != UndefinedPixelTrait) ||
       (q->alpha_trait != UndefinedPixelTrait))
     {
-      double
-        alpha;
-
-      alpha=q->alpha_trait != UndefinedPixelTrait ? q->alpha : OpaqueAlpha;
-      pixel=QuantumScale*(GetPixelAlpha(image,p)-alpha);
+      pixel=GetPixelAlpha(image,p)-(q->alpha_trait != UndefinedPixelTrait ?
+        q->alpha : OpaqueAlpha);
       metric+=pixel*pixel;
-      gamma*=QuantumScale*GetPixelAlpha(image,p);
-      gamma*=QuantumScale*alpha;
+      if (image->alpha_trait != UndefinedPixelTrait)
+        gamma*=QuantumScale*GetPixelAlpha(image,p);
+      if (q->alpha_trait != UndefinedPixelTrait)
+        gamma*=QuantumScale*q->alpha;
     }
   if (image->colorspace == CMYKColorspace)
     {
-      pixel=QuantumScale*(GetPixelBlack(image,p)-q->black);
+      pixel=GetPixelBlack(image,p)-q->black;
       metric+=gamma*pixel*pixel;
       gamma*=QuantumScale*(QuantumRange-GetPixelBlack(image,p));
       gamma*=QuantumScale*(QuantumRange-q->black);
