@@ -101,6 +101,16 @@ static inline MagickBooleanType IsGrayColorspace(
   return(MagickFalse);
 }
 
+static inline MagickBooleanType IsHueCompatibleColorspace(
+  const ColorspaceType colorspace)
+{
+  if ((colorspace == HCLColorspace) || (colorspace == HCLpColorspace) ||
+      (colorspace == HSBColorspace) || (colorspace == HSIColorspace) ||
+      (colorspace == HSLColorspace) || (colorspace == HSVColorspace))
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
 static inline MagickBooleanType IsRGBColorspace(const ColorspaceType colorspace)
 {
   if ((colorspace == RGBColorspace) || (colorspace == scRGBColorspace) ||

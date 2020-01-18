@@ -1144,13 +1144,7 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
     case RedPixelChannel:
     {
       color=pixel->red;
-      if ((pixel->colorspace == HCLColorspace) ||
-          (pixel->colorspace == HCLpColorspace) ||
-          (pixel->colorspace == HSBColorspace) ||
-          (pixel->colorspace == HSIColorspace) ||
-          (pixel->colorspace == HSLColorspace) ||
-          (pixel->colorspace == HSVColorspace) ||
-          (pixel->colorspace == HWBColorspace))
+      if (IsHueCompatibleColorspace(pixel->colorspace) != MagickFalse)
         scale=360.0f;
       if ((compliance != NoCompliance) && (pixel->colorspace == LabColorspace))
         scale=100.0f;
@@ -1159,13 +1153,7 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
     case GreenPixelChannel:
     {
       color=pixel->green;
-      if ((pixel->colorspace == HCLColorspace) ||
-          (pixel->colorspace == HCLpColorspace) ||
-          (pixel->colorspace == HSBColorspace) ||
-          (pixel->colorspace == HSIColorspace) ||
-          (pixel->colorspace == HSLColorspace) ||
-          (pixel->colorspace == HSVColorspace) ||
-          (pixel->colorspace == HWBColorspace))
+      if (IsHueCompatibleColorspace(pixel->colorspace) != MagickFalse)
         scale=100.0f;
       if ((compliance != NoCompliance) && (pixel->colorspace == LabColorspace))
         color-=QuantumRange/2.0f;
@@ -1174,13 +1162,7 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
     case BluePixelChannel:
     {
       color=pixel->blue;
-      if ((pixel->colorspace == HCLColorspace) ||
-          (pixel->colorspace == HCLpColorspace) ||
-          (pixel->colorspace == HSBColorspace) ||
-          (pixel->colorspace == HSIColorspace) ||
-          (pixel->colorspace == HSLColorspace) ||
-          (pixel->colorspace == HSVColorspace) ||
-          (pixel->colorspace == HWBColorspace))
+      if (IsHueCompatibleColorspace(pixel->colorspace) != MagickFalse)
         scale=100.0f;
       if (pixel->colorspace == LabColorspace)
         color-=QuantumRange/2.0f;

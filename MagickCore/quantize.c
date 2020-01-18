@@ -790,13 +790,17 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
     Classify the first cube_info->maximum_colors colors to a tree depth of 8.
   */
   SetAssociatedAlpha(image,cube_info);
-  if ((cube_info->quantize_info->colorspace != UndefinedColorspace) &&
-      (cube_info->quantize_info->colorspace != CMYKColorspace))
-    (void) TransformImageColorspace((Image *) image,
-      cube_info->quantize_info->colorspace,exception);
-  else
-    if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-      (void) TransformImageColorspace((Image *) image,sRGBColorspace,exception);
+  if (cube_info->quantize_info->colorspace != image->colorspace)
+    {
+      if ((cube_info->quantize_info->colorspace != UndefinedColorspace) &&
+          (cube_info->quantize_info->colorspace != CMYKColorspace))
+        (void) TransformImageColorspace((Image *) image,
+          cube_info->quantize_info->colorspace,exception);
+      else
+        if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+          (void) TransformImageColorspace((Image *) image,sRGBColorspace,
+            exception);
+    }
   midpoint.red=(double) QuantumRange/2.0;
   midpoint.green=(double) QuantumRange/2.0;
   midpoint.blue=(double) QuantumRange/2.0;
@@ -1013,9 +1017,10 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
       break;
   }
   image_view=DestroyCacheView(image_view);
-  if ((cube_info->quantize_info->colorspace != UndefinedColorspace) &&
-      (cube_info->quantize_info->colorspace != CMYKColorspace))
-    (void) TransformImageColorspace((Image *) image,sRGBColorspace,exception);
+  if (cube_info->quantize_info->colorspace != image->colorspace)
+    if ((cube_info->quantize_info->colorspace != UndefinedColorspace) &&
+        (cube_info->quantize_info->colorspace != CMYKColorspace))
+      (void) TransformImageColorspace((Image *) image,sRGBColorspace,exception);
   return(y < (ssize_t) image->rows ? MagickFalse : MagickTrue);
 }
 
@@ -2406,13 +2411,13 @@ static inline double KmeansMetric(const Image *magick_restrict image,
       (q->alpha_trait != UndefinedPixelTrait))
     {
       double
-        que_alpha;
+        alpha;
 
-      que_alpha=q->alpha_trait != UndefinedPixelTrait ? q->alpha : OpaqueAlpha;
-      pixel=QuantumScale*(GetPixelAlpha(image,p)-que_alpha);
+      alpha=q->alpha_trait != UndefinedPixelTrait ? q->alpha : OpaqueAlpha;
+      pixel=QuantumScale*(GetPixelAlpha(image,p)-alpha);
       metric+=pixel*pixel;
       gamma*=QuantumScale*GetPixelAlpha(image,p);
-      gamma*=QuantumScale*que_alpha;
+      gamma*=QuantumScale*alpha;
     }
   if (image->colorspace == CMYKColorspace)
     {
@@ -2423,9 +2428,7 @@ static inline double KmeansMetric(const Image *magick_restrict image,
     }
   metric*=3.0;
   pixel=QuantumScale*(GetPixelRed(image,p)-q->red);
-  if ((image->colorspace == HSLColorspace) ||
-      (image->colorspace == HSBColorspace) ||
-      (image->colorspace == HWBColorspace))
+  if (IsHueCompatibleColorspace(image->colorspace) != MagickFalse)
     {
       if (fabs((double) pixel) > 0.5)
         pixel-=0.5;
@@ -2491,6 +2494,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
         Seed clusters from color quantization.
       */
       quantize_info=AcquireQuantizeInfo((ImageInfo *) NULL);
+      quantize_info->colorspace=image->colorspace;
       quantize_info->number_colors=number_colors;
       quantize_info->dither_method=NoDitherMethod;
       colors=number_colors;

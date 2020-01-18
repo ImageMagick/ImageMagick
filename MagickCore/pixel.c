@@ -5992,9 +5992,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *source,
   distance*=3.0;  /* rescale appropriately */
   fuzz*=3.0;
   pixel=GetPixelRed(source,p)-(double) GetPixelRed(destination,q);
-  if ((source->colorspace == HSLColorspace) ||
-      (source->colorspace == HSBColorspace) ||
-      (source->colorspace == HWBColorspace))
+  if (IsHueCompatibleColorspace(source->colorspace) != MagickFalse)
     {
       /*
         Compute an arc distance for hue.  It should be a vector angle of
@@ -6118,8 +6116,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
   distance*=3.0;  /* rescale appropriately */
   fuzz*=3.0;
   pixel=p->red-q->red;
-  if ((p->colorspace == HSLColorspace) || (p->colorspace == HSBColorspace) ||
-      (p->colorspace == HWBColorspace))
+  if (IsHueCompatibleColorspace(p->colorspace) != MagickFalse)
     {
       /*
         This calculates a arc distance for hue-- it should be a vector
