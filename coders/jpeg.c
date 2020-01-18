@@ -413,6 +413,18 @@ static MagickBooleanType JPEGWarningHandler(j_common_ptr jpeg_info,int level)
 
 static boolean ReadComment(j_decompress_ptr jpeg_info)
 {
+#define GetProfileLength(jpeg_info,length) \
+{ \
+  int \
+    c[2]; \
+\
+  length=0; \
+  c[0]=GetCharacter(jpeg_info); \
+  c[1]=GetCharacter(jpeg_info); \
+  if ((c[0] >= 0) && (c[1] >= 0)) \
+    length=(size_t) ((c[0] << 8) | c[1]); \
+}
+
   ErrorManager
     *error_manager;
 
@@ -440,8 +452,7 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   error_manager=(ErrorManager *) jpeg_info->client_data;
   exception=error_manager->exception;
   image=error_manager->image;
-  length=(size_t) ((size_t) GetCharacter(jpeg_info) << 8);
-  length+=GetCharacter(jpeg_info);
+  GetProfileLength(jpeg_info,length);
   if (length <= 2)
     return(TRUE);
   length-=2;
@@ -516,8 +527,9 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
   /*
     Read color profile.
   */
-  length=(size_t) ((size_t) GetCharacter(jpeg_info) << 8);
-  length+=(size_t) GetCharacter(jpeg_info);
+  GetProfileLength(jpeg_info,length);
+  if (length <= 2)
+    return(TRUE);
   length-=2;
   if (length <= 14)
     {
@@ -628,8 +640,9 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   /*
     Determine length of binary data stored here.
   */
-  length=(size_t) ((size_t) GetCharacter(jpeg_info) << 8);
-  length+=(size_t) GetCharacter(jpeg_info);
+  GetProfileLength(jpeg_info,length);
+  if (length <= 2)
+    return(TRUE);
   length-=2;
   if (length <= 14)
     {
@@ -761,8 +774,7 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
   /*
     Read generic profile.
   */
-  length=(size_t) ((size_t) GetCharacter(jpeg_info) << 8);
-  length+=(size_t) GetCharacter(jpeg_info);
+  GetProfileLength(jpeg_info,length);
   if (length <= 2)
     return(TRUE);
   length-=2;
