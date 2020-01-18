@@ -2420,7 +2420,7 @@ static inline double KmeansMetric(const Image *magick_restrict image,
     }
   if (image->colorspace == CMYKColorspace)
     {
-      pixel=Quantumscale*(GetPixelBlack(image,p)-q->black);
+      pixel=QuantumScale*(GetPixelBlack(image,p)-q->black);
       metric+=gamma*pixel*pixel;
       gamma*=QuantumScale*(QuantumRange-GetPixelBlack(image,p));
       gamma*=QuantumScale*(QuantumRange-q->black);
