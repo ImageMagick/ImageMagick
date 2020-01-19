@@ -5277,7 +5277,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           status&=FloodfillPaintImage(image,draw_info,&target,x,y,
             primitive_info->method == FloodfillMethod ? MagickFalse :
             MagickTrue,exception);
-          status&=SetImageChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case ResetMethod:
