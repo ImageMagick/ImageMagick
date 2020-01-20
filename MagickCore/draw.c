@@ -991,9 +991,10 @@ static PolygonInfo *DestroyPolygonInfo(PolygonInfo *polygon_info)
   register ssize_t
     i;
 
-  for (i=0; i < (ssize_t) polygon_info->number_edges; i++)
-    polygon_info->edges[i].points=(PointInfo *)
-      RelinquishMagickMemory(polygon_info->edges[i].points);
+  if (polygon_info->edges != (EdgeInfo *) NULL)
+    for (i=0; i < (ssize_t) polygon_info->number_edges; i++)
+      polygon_info->edges[i].points=(PointInfo *)
+        RelinquishMagickMemory(polygon_info->edges[i].points);
   polygon_info->edges=(EdgeInfo *) RelinquishMagickMemory(polygon_info->edges);
   return((PolygonInfo *) RelinquishMagickMemory(polygon_info));
 }
@@ -5277,7 +5278,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           status&=FloodfillPaintImage(image,draw_info,&target,x,y,
             primitive_info->method == FloodfillMethod ? MagickFalse :
             MagickTrue,exception);
-          (void) SetImageChannelMask(image,channel_mask);
+          status&=SetImageChannelMask(image,channel_mask);
           break;
         }
         case ResetMethod:
