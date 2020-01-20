@@ -125,7 +125,7 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
         count=ReadBlob(image,0x800,buffer); \
         p=buffer; \
       } \
-    sum|=((unsigned int) (*p) << (24-bits)); \
+    sum|=(((unsigned int) (*p)) << (24-bits)); \
     bits+=8; \
     p++; \
   } \
@@ -230,17 +230,20 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
     }
     pcd_length[i]=(size_t) length;
   }
-  /*
-    Search for Sync byte.
-  */
-  for (i=0; i < 1; i++)
-    PCDGetBits(16);
-  for (i=0; i < 1; i++)
-    PCDGetBits(16);
-  while ((sum & 0x00fff000UL) != 0x00fff000UL)
-    PCDGetBits(8);
-  while (IsSync(sum) == 0)
-    PCDGetBits(1);
+  if (EOFBlob(image) == MagickFalse)
+    {
+      /*
+        Search for Sync byte.
+      */
+      for (i=0; i < 1; i++)
+        PCDGetBits(16);
+      for (i=0; i < 1; i++)
+        PCDGetBits(16);
+      while ((sum & 0x00fff000UL) != 0x00fff000UL)
+        PCDGetBits(8);
+      while (IsSync(sum) == 0)
+        PCDGetBits(1);
+    }
   /*
     Recover the Huffman encoded luminance and chrominance deltas.
   */
@@ -248,8 +251,7 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
   length=0;
   plane=0;
   row=0;
-  q=luma;
-  for ( ; ; )
+  for (q=luma; EOFBlob(image) == MagickFalse; )
   {
     if (IsSync(sum) != 0)
       {
