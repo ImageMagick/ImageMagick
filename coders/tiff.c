@@ -119,7 +119,9 @@ typedef enum
   ReadRGBAMethod,
   ReadCMYKAMethod,
   ReadYCCKMethod,
-  ReadStripMethod,
+  ReadContigStripMethod,
+  ReadPlanarStripMethod,
+  ReadRGBAStripMethod,
   ReadTileMethod,
   ReadContigTileMethod,
   ReadPlanarTileMethod,
@@ -1791,7 +1793,6 @@ RestoreMSCWarning
         char
           buffer[MagickPathExtent];
 
-        method=ReadStripMethod;
         (void) FormatLocaleString(buffer,MagickPathExtent,"%u",
           (unsigned int) rows_per_strip);
         (void) SetImageProperty(image,"tiff:rows-per-strip",buffer,exception);
@@ -1821,8 +1822,6 @@ RestoreMSCWarning
     if (image->compression == JPEGCompression)
       method=GetJPEGMethod(image,tiff,photometric,bits_per_sample,
         samples_per_pixel);
-    if (compress_tag == COMPRESSION_JBIG)
-      method=ReadStripMethod;
     if (TIFFIsTiled(tiff) != MagickFalse)
       {
         method=ReadTileMethod;
@@ -1835,6 +1834,19 @@ RestoreMSCWarning
         if (image->compression == JPEGCompression)
           method=ReadRGBATileMethod;
       }
+    else
+      if (TIFFGetField(tiff,TIFFTAG_ROWSPERSTRIP,&rows_per_strip) == 1)
+        {
+          method=ReadRGBAStripMethod;
+          if (samples_per_pixel > 1)
+            {
+              method=ReadContigStripMethod;
+              if (interlace == PLANARCONFIG_SEPARATE)
+                method=ReadPlanarStripMethod;
+            }
+          if (compress_tag == COMPRESSION_JBIG)
+            method=ReadRGBAStripMethod;
+        }
     quantum_info->endian=LSBEndian;
     quantum_type=RGBQuantum;
     if (TIFFScanlineSize(tiff) <= 0)
@@ -2055,7 +2067,174 @@ RestoreMSCWarning
         }
         break;
       }
-      case ReadStripMethod:
+      case ReadContigStripMethod:
+      {
+        register unsigned char
+          *p;
+
+        ssize_t
+          stride,
+          strip_id;
+
+        tsize_t
+          rows_remaining,
+          strip_size;
+
+        unsigned char
+          *strip_pixels;
+
+        /*
+          Convert tiled TIFF image to DirectClass MIFF image.
+        */
+        pad=(size_t) MagickMax((size_t) samples_per_pixel-3,0);
+        quantum_type=RGBQuantum;
+        if (image->alpha_trait != UndefinedPixelTrait)
+          {
+            quantum_type=RGBAQuantum;
+            pad=(size_t) MagickMax((size_t) samples_per_pixel-4,0);
+          }
+        if (image->colorspace == CMYKColorspace)
+          {
+            pad=(size_t) MagickMax((size_t) samples_per_pixel-4,0);
+            quantum_type=CMYKQuantum;
+            if (image->alpha_trait != UndefinedPixelTrait)
+              {
+                quantum_type=CMYKAQuantum;
+                pad=(size_t) MagickMax((size_t) samples_per_pixel-5,0);
+              }
+          }
+        status=SetQuantumPad(image,quantum_info,pad*((bits_per_sample+7) >> 3));
+        if (status == MagickFalse)
+          ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
+        strip_pixels=(unsigned char *) AcquireQuantumMemory(TIFFStripSize(tiff)+
+          sizeof(uint32),sizeof(*strip_pixels));
+        if (strip_pixels == (unsigned char *) NULL)
+          ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
+        (void) memset(strip_pixels,0,TIFFStripSize(tiff)*sizeof(*strip_pixels));
+        stride=TIFFVStripSize(tiff,1);
+        strip_id=0;
+        rows_remaining=0;
+        for (y=0; y < (ssize_t) image->rows; y++)
+        {
+          register Quantum
+            *magick_restrict q;
+
+          q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+          if (q == (Quantum *) NULL)
+            break;
+          if (rows_remaining == 0)
+            {
+              strip_size=TIFFReadEncodedStrip(tiff,strip_id,strip_pixels,
+                TIFFStripSize(tiff));
+              if (strip_size == -1)
+                break;
+              rows_remaining=rows_per_strip;
+              if ((y+rows_per_strip) > image->rows)
+                rows_remaining=(rows_per_strip-(y+rows_per_strip-image->rows));
+              p=strip_pixels;
+              strip_id++;
+            }
+          (void) ImportQuantumPixels(image,(CacheView *) NULL,
+            quantum_info,quantum_type,p,exception);
+          p+=stride;
+          rows_remaining--;
+          if (SyncAuthenticPixels(image,exception) == MagickFalse)
+            break;
+          if (image->previous == (Image *) NULL)
+            {
+              status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                image->rows);
+              if (status == MagickFalse)
+                break;
+            }
+        }
+        strip_pixels=(unsigned char *) RelinquishMagickMemory(strip_pixels);
+        break;
+      }
+      case ReadPlanarStripMethod:
+      {
+        register unsigned char
+          *p;
+
+        ssize_t
+          stride,
+          strip_id;
+
+        tsize_t
+          strip_size;
+
+        unsigned char
+          *strip_pixels;
+
+        /*
+          Convert tiled TIFF image to DirectClass MIFF image.
+        */
+        strip_pixels=(unsigned char *) AcquireQuantumMemory(TIFFStripSize(tiff)+
+          sizeof(uint32),sizeof(*strip_pixels));
+        if (strip_pixels == (unsigned char *) NULL)
+          ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
+        (void) memset(strip_pixels,0,TIFFStripSize(tiff)*sizeof(*strip_pixels));
+        stride=TIFFVStripSize(tiff,1);
+        strip_id=0;
+        for (i=0; i < (ssize_t) samples_per_pixel; i++)
+        {
+          size_t
+            rows_remaining;
+
+          switch (i)
+          {
+            case 0: quantum_type=RedQuantum; break;
+            case 1: quantum_type=GreenQuantum; break;
+            case 2: quantum_type=BlueQuantum; break;
+            case 3:
+            {
+              if (image->colorspace == CMYKColorspace)
+                quantum_type=BlackQuantum;
+              break;
+            }
+            case 4: quantum_type=AlphaQuantum; break;
+          }
+          rows_remaining=0;
+          for (y=0; y < (ssize_t) image->rows; y++)
+          {
+            register Quantum
+              *magick_restrict q;
+
+            q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+            if (q == (Quantum *) NULL)
+              break;
+            if (rows_remaining == 0)
+              {
+                strip_size=TIFFReadEncodedStrip(tiff,strip_id,strip_pixels,
+                  TIFFStripSize(tiff));
+                if (strip_size == -1)
+                  break;
+                rows_remaining=rows_per_strip;
+                if ((y+rows_per_strip) > image->rows)
+                  rows_remaining=(rows_per_strip-(y+rows_per_strip-
+                    image->rows));
+                p=strip_pixels;
+                strip_id++;
+              }
+            (void) ImportQuantumPixels(image,(CacheView *) NULL,
+              quantum_info,quantum_type,p,exception);
+            p+=stride;
+            rows_remaining--;
+            if (SyncAuthenticPixels(image,exception) == MagickFalse)
+              break;
+            if (image->previous == (Image *) NULL)
+              {
+                status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                  image->rows);
+                if (status == MagickFalse)
+                  break;
+              }
+          }
+        }
+        strip_pixels=(unsigned char *) RelinquishMagickMemory(strip_pixels);
+        break;
+      }
+      case ReadRGBAStripMethod:
       {
         register uint32
           *p;
@@ -2330,8 +2509,6 @@ RestoreMSCWarning
         /*
           Convert tiled TIFF image to DirectClass MIFF image.
         */
-        if (status == MagickFalse)
-          ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         if ((TIFFGetField(tiff,TIFFTAG_TILEWIDTH,&columns) != 1) ||
             (TIFFGetField(tiff,TIFFTAG_TILELENGTH,&rows) != 1))
           ThrowTIFFException(CoderError,"ImageIsNotTiled");
