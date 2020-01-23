@@ -2165,10 +2165,11 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           if (length != 0)
             subexpression[length-1]='\0';
           FxParseSubscription(subexpression,',',p,q);
-          for ( ; ; )
+          for (alpha=0.0; ; )
           {
-            alpha=FxEvaluateSubexpression(fx_info,channel,x,y,q+1,depth+1,beta,
-              exception);
+            if (*q != '\0')
+              alpha=FxEvaluateSubexpression(fx_info,channel,x,y,q+1,depth+1,
+                beta,exception);
             gamma=FxEvaluateSubexpression(fx_info,channel,x,y,p,depth+1,&sans,
               exception);
             if (fabs(gamma) < MagickEpsilon)
@@ -2235,14 +2236,15 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
             exception);
           (void) CopyMagickString(subexpression,q+1,MagickPathExtent);
           FxParseSubscription(subexpression,',',p,q);
-          for ( ; ; )
+          for (alpha=0.0; ; )
           {
             gamma=FxEvaluateSubexpression(fx_info,channel,x,y,p,depth+1,&sans,
               exception);
             if (fabs(gamma) < MagickEpsilon)
               break;
-            alpha=FxEvaluateSubexpression(fx_info,channel,x,y,q+1,depth+1,beta,
-              exception);
+            if (*q != '\0')
+              alpha=FxEvaluateSubexpression(fx_info,channel,x,y,q+1,depth+1,
+                beta,exception);
           }
           FxReturn(alpha);
         }
@@ -2607,14 +2609,15 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           if (length != 0)
             subexpression[length-1]='\0';
           FxParseSubscription(subexpression,',',p,q);
-          for ( ; ; )
+          for (alpha=0.0; ; )
           {
             gamma=FxEvaluateSubexpression(fx_info,channel,x,y,p,depth+1,&sans,
               exception);
             if (fabs(gamma) < MagickEpsilon)
               break;
-            alpha=FxEvaluateSubexpression(fx_info,channel,x,y,q+1,depth+1,beta,
-              exception);
+            if (*q != '\0')
+              alpha=FxEvaluateSubexpression(fx_info,channel,x,y,q+1,depth+1,
+                beta,exception);
           }
           FxReturn(alpha);
         }
