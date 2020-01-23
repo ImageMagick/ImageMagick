@@ -2113,7 +2113,7 @@ RestoreMSCWarning
                   break;
               }
           }
-          if ((samples_per_pixel > 2) && (interlace != PLANARCONFIG_SEPARATE))
+          if ((samples_per_pixel > 1) && (interlace != PLANARCONFIG_SEPARATE))
             break;
         }
         strip_pixels=(unsigned char *) RelinquishMagickMemory(strip_pixels);
@@ -2210,7 +2210,7 @@ RestoreMSCWarning
                   break;
               }
           }
-          if ((samples_per_pixel > 2) && (interlace != PLANARCONFIG_SEPARATE))
+          if ((samples_per_pixel > 1) && (interlace != PLANARCONFIG_SEPARATE))
             break;
         }
         tile_pixels=(unsigned char *) RelinquishMagickMemory(tile_pixels);
