@@ -1069,7 +1069,7 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
   */
   if ((photometric != PHOTOMETRIC_SEPARATED) || (bits_per_sample != 8) ||
       (samples_per_pixel != 4))
-    return(ReadGenericMethod);
+    return(ReadStripMethod);
   /*
     Search for Adobe APP14 JPEG marker.
   */
@@ -2153,6 +2153,8 @@ RestoreMSCWarning
       }
     }
     pixel_info=RelinquishVirtualMemory(pixel_info);
+    if (photometric == PHOTOMETRIC_YCBCR)
+      image->colorspace=YCbCrColorspace;
     SetQuantumImageType(image,quantum_type);
   next_tiff_frame:
     if (quantum_info != (QuantumInfo *) NULL)
@@ -3593,7 +3595,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         {
           (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
             "CompressionNotSupported","`%s'",CommandOptionToMnemonic(
-              MagickCompressOptions,(ssize_t) compression));
+            MagickCompressOptions,(ssize_t) compression));
           compress_tag=COMPRESSION_NONE;
           compression=NoCompression;
           break;
