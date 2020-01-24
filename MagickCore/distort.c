@@ -1560,6 +1560,8 @@ MagickExport Image *DistortResizeImage(const Image *image,
       (void) CompositeImage(resize_image,resize_alpha,CopyAlphaCompositeOp,
         MagickTrue,0,0,exception);
       resize_alpha=DestroyImage(resize_alpha);
+      resize_image->alpha_trait=image->alpha_trait;
+      resize_image->compose=image->compose;
     }
   (void) SetImageVirtualPixelMethod(resize_image,vp_save,exception);
 
@@ -1576,8 +1578,6 @@ MagickExport Image *DistortResizeImage(const Image *image,
   tmp_image=DestroyImage(tmp_image);
   if (resize_image != (Image *) NULL)
     {
-      resize_image->alpha_trait=image->alpha_trait;
-      resize_image->compose=image->compose;
       resize_image->page.width=0;
       resize_image->page.height=0;
     }
