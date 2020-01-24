@@ -115,9 +115,6 @@
 */
 typedef enum
 {
-  ReadSingleSampleMethod,
-  ReadRGBAMethod,
-  ReadCMYKAMethod,
   ReadYCCKMethod,
   ReadStripMethod,
   ReadTileMethod,
@@ -1078,12 +1075,12 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
   */
   value=NULL;
   if (!TIFFGetField(tiff,TIFFTAG_STRIPOFFSETS,&value) || (value == NULL))
-    return(ReadRGBAMethod);
+    return(ReadStripMethod);
   position=TellBlob(image);
   offset=(MagickOffsetType) (value[0]);
   if (SeekBlob(image,offset,SEEK_SET) != offset)
-    return(ReadRGBAMethod);
-  method=ReadRGBAMethod;
+    return(ReadStripMethod);
+  method=ReadStripMethod;
   if (ReadBlob(image,BUFFER_SIZE,buffer) == BUFFER_SIZE)
     {
       for (i=0; i < BUFFER_SIZE; i++)
@@ -1794,34 +1791,21 @@ RestoreMSCWarning
       }
     if (rows_per_strip > (uint32) image->rows)
       rows_per_strip=(uint32) image->rows;
-    if ((samples_per_pixel >= 3) && (interlace == PLANARCONFIG_CONTIG))
-      if ((image->alpha_trait == UndefinedPixelTrait) ||
-          (samples_per_pixel >= 4))
-        method=ReadRGBAMethod;
-    if ((samples_per_pixel >= 4) && (interlace == PLANARCONFIG_SEPARATE))
-      if ((image->alpha_trait == UndefinedPixelTrait) ||
-          (samples_per_pixel >= 5))
-        method=ReadCMYKAMethod;
     if ((photometric != PHOTOMETRIC_RGB) &&
         (photometric != PHOTOMETRIC_CIELAB) &&
         (photometric != PHOTOMETRIC_SEPARATED))
       method=ReadGenericMethod;
-    if (image->storage_class == PseudoClass)
-      method=ReadSingleSampleMethod;
-    if ((photometric == PHOTOMETRIC_MINISBLACK) ||
-        (photometric == PHOTOMETRIC_MINISWHITE))
-      method=ReadSingleSampleMethod;
     if ((photometric != PHOTOMETRIC_SEPARATED) &&
         (interlace == PLANARCONFIG_SEPARATE) && (bits_per_sample < 64))
       method=ReadGenericMethod;
-    if (image->compression == JPEGCompression)
-      method=GetJPEGMethod(image,tiff,photometric,bits_per_sample,
-        samples_per_pixel);
     if (TIFFIsTiled(tiff) != MagickFalse)
       method=ReadTileMethod;
     else
       if (TIFFGetField(tiff,TIFFTAG_ROWSPERSTRIP,&rows_per_strip) == 1)
         method=ReadStripMethod;
+    if (image->compression == JPEGCompression)
+      method=GetJPEGMethod(image,tiff,photometric,bits_per_sample,
+        samples_per_pixel);
     quantum_info->endian=LSBEndian;
     quantum_type=RGBQuantum;
     if (TIFFScanlineSize(tiff) <= 0)
@@ -1873,119 +1857,6 @@ RestoreMSCWarning
       }
     switch (method)
     {
-      case ReadSingleSampleMethod:
-      {
-        /*
-          Convert single sample TIFF image.
-        */
-        for (y=0; y < (ssize_t) image->rows; y++)
-        {
-          register Quantum
-            *magick_restrict q;
-
-          tiff_status=TIFFReadPixels(tiff,0,y,(char *) pixels);
-          if (tiff_status == -1)
-            break;
-          q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (Quantum *) NULL)
-            break;
-          (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            quantum_type,pixels,exception);
-          if (SyncAuthenticPixels(image,exception) == MagickFalse)
-            break;
-          if (image->previous == (Image *) NULL)
-            {
-              status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
-              if (status == MagickFalse)
-                break;
-            }
-        }
-        break;
-      }
-      case ReadRGBAMethod:
-      {
-        /*
-          Convert RGBA TIFF image.
-        */
-        for (y=0; y < (ssize_t) image->rows; y++)
-        {
-          register Quantum
-            *magick_restrict q;
-
-          tiff_status=TIFFReadPixels(tiff,0,y,(char *) pixels);
-          if (tiff_status == -1)
-            break;
-          q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (Quantum *) NULL)
-            break;
-          (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            quantum_type,pixels,exception);
-          if (SyncAuthenticPixels(image,exception) == MagickFalse)
-            break;
-          if (image->previous == (Image *) NULL)
-            {
-              status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
-              if (status == MagickFalse)
-                break;
-            }
-        }
-        break;
-      }
-      case ReadCMYKAMethod:
-      {
-        /*
-          Convert CMYK TIFF image.
-        */
-        for (i=0; i < (ssize_t) samples_per_pixel; i++)
-        {
-          for (y=0; y < (ssize_t) image->rows; y++)
-          {
-            register Quantum
-              *magick_restrict q;
-
-            tiff_status=TIFFReadPixels(tiff,(tsample_t) i,y,(char *)
-              pixels);
-            if (tiff_status == -1)
-              break;
-            q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-            if (q == (Quantum *) NULL)
-              break;
-            if (image->colorspace != CMYKColorspace)
-              switch (i)
-              {
-                case 0: quantum_type=RedQuantum; break;
-                case 1: quantum_type=GreenQuantum; break;
-                case 2: quantum_type=BlueQuantum; break;
-                case 3: quantum_type=AlphaQuantum; break;
-                default: quantum_type=UndefinedQuantum; break;
-              }
-            else
-              switch (i)
-              {
-                case 0: quantum_type=CyanQuantum; break;
-                case 1: quantum_type=MagentaQuantum; break;
-                case 2: quantum_type=YellowQuantum; break;
-                case 3: quantum_type=BlackQuantum; break;
-                case 4: quantum_type=AlphaQuantum; break;
-                default: quantum_type=UndefinedQuantum; break;
-              }
-            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-              quantum_type,pixels,exception);
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          if (image->previous == (Image *) NULL)
-            {
-              status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
-              if (status == MagickFalse)
-                break;
-            }
-        }
-        break;
-      }
       case ReadYCCKMethod:
       {
         /*
