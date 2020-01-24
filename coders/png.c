@@ -2507,7 +2507,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       *value;
 
     value=GetImageOption(image_info,"png:ignore-crc");
-    if (value != NULL)
+    if (IsStringTrue(value) != MagickFalse)
     {
        /* Turn off CRC checking while reading */
        png_set_crc_action(ping, PNG_CRC_QUIET_USE, PNG_CRC_QUIET_USE);
