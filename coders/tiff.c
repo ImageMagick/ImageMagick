@@ -1069,7 +1069,7 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
   */
   if ((photometric != PHOTOMETRIC_SEPARATED) || (bits_per_sample != 8) ||
       (samples_per_pixel != 4))
-    return(ReadStripMethod);
+    return(ReadGenericMethod);
   /*
     Search for Adobe APP14 JPEG marker.
   */
@@ -2153,8 +2153,6 @@ RestoreMSCWarning
       }
     }
     pixel_info=RelinquishVirtualMemory(pixel_info);
-    if (photometric == PHOTOMETRIC_YCBCR)
-      image->colorspace=YCbCrColorspace;
     SetQuantumImageType(image,quantum_type);
   next_tiff_frame:
     if (quantum_info != (QuantumInfo *) NULL)
