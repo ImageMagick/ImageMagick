@@ -1,5 +1,5 @@
-2020-01-19  7.0.9-18 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.9-18, GIT revision 16...
+2020-01-24  7.0.9-18 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.9-18, GIT revision 16776:60d04ff:20200124
 
 2020-01-19  7.0.9-18 Cristy  <quetzlzacatenango@image...>
   * Alpha draw primitive no longer returns a parser exception.
