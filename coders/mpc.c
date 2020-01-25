@@ -1173,6 +1173,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
     /*
       Write persistent cache meta-information.
     */
+    (void) GetAuthenticPixels(image,0,0,1,1,exception);  /* morphology check */
     depth=GetImageQuantumDepth(image,MagickTrue);
     if ((image->storage_class == PseudoClass) &&
         (image->colors > (size_t) (GetQuantumRange(image->depth)+1)))
