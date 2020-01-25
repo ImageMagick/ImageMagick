@@ -4,6 +4,8 @@
 2020-01-19  7.0.9-18 Cristy  <quetzlzacatenango@image...>
   * Alpha draw primitive no longer returns a parser exception.
   * Support 32-bit tiled TIFF images.
+  * New -connected-component options (reference
+    https://imagemagick.org/script/connected-components.php).
 
     https://imagemagick.org/discourse-server/viewtopic.php?f=1&t=37391).
 2020-01-18  7.0.9-17 Cristy  <quetzlzacatenango@image...>
