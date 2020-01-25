@@ -1791,13 +1791,7 @@ RestoreMSCWarning
       }
     if (rows_per_strip > (uint32) image->rows)
       rows_per_strip=(uint32) image->rows;
-    if ((photometric != PHOTOMETRIC_RGB) &&
-        (photometric != PHOTOMETRIC_CIELAB) &&
-        (photometric != PHOTOMETRIC_SEPARATED))
-      method=ReadGenericMethod;
-    if ((photometric != PHOTOMETRIC_SEPARATED) &&
-        (interlace == PLANARCONFIG_SEPARATE) && (bits_per_sample < 64))
-      method=ReadGenericMethod;
+    method=ReadGenericMethod;
     if (TIFFIsTiled(tiff) != MagickFalse)
       method=ReadTileMethod;
     else
@@ -1806,6 +1800,8 @@ RestoreMSCWarning
     if (image->compression == JPEGCompression)
       method=GetJPEGMethod(image,tiff,photometric,bits_per_sample,
         samples_per_pixel);
+    if (photometric == PHOTOMETRIC_LOGLUV)
+      method=ReadGenericMethod;
     quantum_info->endian=LSBEndian;
     quantum_type=RGBQuantum;
     if (TIFFScanlineSize(tiff) <= 0)
