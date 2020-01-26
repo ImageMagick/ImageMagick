@@ -547,15 +547,6 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       component_view=DestroyCacheView(component_view);
       (void) SyncImage(component_image,exception);
     }
-  artifact=GetImageArtifact(image,"connected-components:mean-color");
-  if (IsStringTrue(artifact) != MagickFalse)
-    {
-      /*
-        Replace object with mean color.
-      */
-      for (i=0; i < (ssize_t) component_image->colors; i++)
-        component_image->colormap[i]=object[i].color;
-    }
   artifact=GetImageArtifact(image,"connected-components:keep-colors");
   if (artifact != (const char *) NULL)
     {
@@ -740,6 +731,15 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             TransparentAlpha;
         }
       }
+    }
+  artifact=GetImageArtifact(image,"connected-components:mean-color");
+  if (IsStringTrue(artifact) != MagickFalse)
+    {
+      /*
+        Replace object with mean color.
+      */
+      for (i=0; i < (ssize_t) component_image->colors; i++)
+        component_image->colormap[i]=object[i].color;
     }
   (void) SyncImage(component_image,exception);
   artifact=GetImageArtifact(image,"connected-components:verbose");
