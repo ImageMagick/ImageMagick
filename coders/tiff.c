@@ -1926,6 +1926,7 @@ RestoreMSCWarning
         (void) memset(strip_pixels,0,TIFFStripSize(tiff)*sizeof(*strip_pixels));
         stride=TIFFVStripSize(tiff,1);
         strip_id=0;
+        p=strip_pixels;
         for (i=0; i < (ssize_t) samples_per_pixel; i++)
         {
           size_t
