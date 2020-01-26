@@ -96,7 +96,8 @@
 static Image *ReadCUBEImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-#define FlattenCube(level,b,g,r)  ((ssize_t) ((b)*(level)*(level)+(g)*(level)+(r)))
+#define FlattenCube(level,b,g,r)  \
+  ((ssize_t) ((b)*(level)*(level)+(g)*(level)+(r)))
 
   typedef struct _CubePixel
   {
@@ -224,7 +225,7 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     }
   /*
-    Write HALD image.
+    Convert CUBE image to HALD.
   */
   status=MagickTrue;
   hald_level=image_info->scene;
