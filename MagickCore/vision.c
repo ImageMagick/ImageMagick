@@ -477,8 +477,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 
         if (status == MagickFalse)
           continue;
-        if (((double) object[i].area >= min_threshold) &&
-            ((double) object[i].area < max_threshold))
+        if (((double) object[i].area > min_threshold) ||
+            ((double) object[i].area >= max_threshold))
           continue;
         for (j=0; j < (ssize_t) component_image->colors; j++)
           object[j].census=0;
@@ -821,8 +821,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 
             if (status == MagickFalse)
               break;
-            if (((double) object[i].area < min_threshold) ||
-                ((double) object[i].area >= max_threshold))
+            if (((double) object[i].area <= min_threshold) &&
+                ((double) object[i].area < max_threshold))
               continue;
             GetColorTuple(&object[i].color,MagickFalse,mean_color);
             (void) fprintf(stdout,
