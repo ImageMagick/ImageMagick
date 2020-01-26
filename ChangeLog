@@ -4,6 +4,7 @@
 2020-01-26  7.0.9-19 Cristy  <quetzlzacatenango@image...>
   * Make PNG creation reproducible (reference
     https://github.com/ImageMagick/ImageMagick/pull/1270).
+  * Refactor uninitialize variable patch for -fx "while(,)" expression.
 
 2020-01-25  7.0.9-18 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-18, GIT revision 16780:08beae5:20200125
