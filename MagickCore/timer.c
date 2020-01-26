@@ -325,10 +325,18 @@ MagickExport double GetElapsedTime(TimerInfo *time_info)
 */
 MagickExport time_t GetMagickTime(void)
 {
-  char
-    *source_date_epoch = getenv("SOURCE_DATE_EPOCH");
+  static const char
+    *source_date_epoch = (const char *) NULL;
 
-  if (source_date_epoch != (char *) NULL)
+  static MagickBooleanType
+    epoch_initalized = MagickFalse;
+
+  if (epoch_initalized == MagickFalse)
+    {
+      source_date_epoch=getenv("SOURCE_DATE_EPOCH");
+      epoch_initalized=MagickTrue;
+    }
+  if (source_date_epoch != (const char *) NULL)
     {
       time_t
         epoch;
