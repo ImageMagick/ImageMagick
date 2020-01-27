@@ -766,6 +766,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         object[i].bounding_box.y=(ssize_t) component_image->rows;
         object[i].centroid.x=0;
         object[i].centroid.y=0;
+        object[i].census=object[i].area == 0.0 ? 0 : 1;
         object[i].area=0;
       }
       component_view=AcquireVirtualCacheView(component_image,exception);
@@ -831,7 +832,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             if (status == MagickFalse)
               break;
             GetColorTuple(&object[i].color,MagickFalse,mean_color);
-            if (object[i].area > 0.0)
+            if (object[i].census != 0)
               (void) fprintf(stdout,
                 "  %.20g: %.20gx%.20g%+.20g%+.20g %.1f,%.1f %.20g %s\n",(double)
                 object[i].id,(double) object[i].bounding_box.width,(double)
