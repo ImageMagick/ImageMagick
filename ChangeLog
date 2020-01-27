@@ -3,6 +3,7 @@
 
 2020-01-27  7.0.9-20 Cristy  <quetzlzacatenango@image...>
   * Support addition connected components defines.
+  * Refresh cache morphology when writing MPC images.
 
 2020-01-26  7.0.9-19 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-19, GIT revision 16789:bac6ecc:20200126
