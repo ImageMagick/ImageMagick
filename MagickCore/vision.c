@@ -169,6 +169,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     size;
 
   ssize_t
+    background_id,
     first,
     last,
     n,
@@ -453,6 +454,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     max_threshold+=object[i].area;
   }
   max_threshold+=MagickEpsilon;
+  background_id=(-1);
+  artifact=GetImageArtifact(image,"connected-components:background-id");
+  if (artifact != (const char *) NULL)
+    background_id=(ssize_t) StringToDouble(artifact,(char **) NULL);
   artifact=GetImageArtifact(image,"connected-components:area-threshold");
   if (artifact != (const char *) NULL)
     {
@@ -478,8 +483,11 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         if (status == MagickFalse)
           continue;
         if (((double) object[i].area > min_threshold) ||
-            ((double) object[i].area >= max_threshold))
-          continue;
+            ((double) object[i].area >= max_threshold) || (i == background_id))
+          continue;  /* keep object */
+        /*
+          Merge this object.
+       */
         for (j=0; j < (ssize_t) component_image->colors; j++)
           object[j].census=0;
         bounding_box=object[i].bounding_box;
@@ -635,16 +643,16 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   artifact=GetImageArtifact(image,"connected-components:keep-top");
   if (artifact != (const char *) NULL)
     {
-      double
-        top;
+      ssize_t
+        top_ids;
 
       /*
         Keep top objects with most area (make others transparent).
       */
-      top=StringToDouble(artifact,(char **) NULL);
+      top_ids=(ssize_t) StringToDouble(artifact,(char **) NULL);
       qsort((void *) object,component_image->colors,sizeof(*object),
         CCObjectInfoCompare);
-      for (i=(ssize_t) top; i < (ssize_t) component_image->colors; i++)
+      for (i=top_ids; i < (ssize_t) component_image->colors; i++)
       {
         object[object[i].id].color.alpha_trait=BlendPixelTrait;
         component_image->alpha_trait=BlendPixelTrait;
@@ -822,7 +830,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             if (status == MagickFalse)
               break;
             if (((double) object[i].area >= min_threshold) &&
-                ((double) object[i].area < max_threshold))
+                ((double) object[i].area < max_threshold) &&
+                (i != background_id))
               continue;
             GetColorTuple(&object[i].color,MagickFalse,mean_color);
             (void) fprintf(stdout,
