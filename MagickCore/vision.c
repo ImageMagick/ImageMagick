@@ -482,8 +482,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 
         if (status == MagickFalse)
           continue;
-        if (((double) object[i].area > min_threshold) ||
-            ((double) object[i].area >= max_threshold) || (i == background_id))
+        if (((double) object[i].area >= min_threshold) ||
+            ((double) object[i].area > max_threshold) || (i == background_id))
           continue;  /* keep object */
         /*
           Merge this object.
@@ -829,17 +829,16 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 
             if (status == MagickFalse)
               break;
-            if (((double) object[i].area <= min_threshold) &&
-                ((double) object[i].area < max_threshold) &&
-                (i != background_id))
-              continue;
             GetColorTuple(&object[i].color,MagickFalse,mean_color);
-            (void) fprintf(stdout,
-              "  %.20g: %.20gx%.20g%+.20g%+.20g %.1f,%.1f %.20g %s\n",(double)
-              object[i].id,(double) object[i].bounding_box.width,(double)
-              object[i].bounding_box.height,(double) object[i].bounding_box.x,
-              (double) object[i].bounding_box.y,object[i].centroid.x,
-              object[i].centroid.y,(double) object[i].area,mean_color);
+            if ((((double) object[i].area >= min_threshold) &&
+                 ((double) object[i].area < max_threshold)) ||
+                 (i == background_id))
+              (void) fprintf(stdout,
+                "  %.20g: %.20gx%.20g%+.20g%+.20g %.1f,%.1f %.20g %s\n",(double)
+                object[i].id,(double) object[i].bounding_box.width,(double)
+                object[i].bounding_box.height,(double) object[i].bounding_box.x,
+                (double) object[i].bounding_box.y,object[i].centroid.x,
+                object[i].centroid.y,(double) object[i].area,mean_color);
         }
       }
     }
