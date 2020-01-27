@@ -482,13 +482,12 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 
         if (status == MagickFalse)
           continue;
-        if ((((double) object[i].area < min_threshold) ||
-             ((double) object[i].area >= max_threshold)) &&
-            (i != background_id))
+        if (((object[i].area >= min_threshold) &&
+             (object[i].area < max_threshold)) || (i == background_id))
           continue;  /* keep object */
         /*
           Merge this object.
-       */
+        */
         for (j=0; j < (ssize_t) component_image->colors; j++)
           object[j].census=0;
         bounding_box=object[i].bounding_box;
