@@ -482,7 +482,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 
         if (status == MagickFalse)
           continue;
-        if (((double) object[i].area >= min_threshold) ||
+        if (((double) object[i].area >= min_threshold) &&
             ((double) object[i].area > max_threshold) || (i == background_id))
           continue;  /* keep object */
         /*
