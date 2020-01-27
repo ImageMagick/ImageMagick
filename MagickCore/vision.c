@@ -525,6 +525,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
               id=(size_t) j;
             }
         object[id].area+=object[i].area;
+        object[i].area=0.0;
         for (y=0; y < (ssize_t) bounding_box.height; y++)
         {
           register Quantum
@@ -830,9 +831,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             if (status == MagickFalse)
               break;
             GetColorTuple(&object[i].color,MagickFalse,mean_color);
-            if ((((double) object[i].area < min_threshold) ||
-                 ((double) object[i].area >= max_threshold)) &&
-                 (i != background_id))
+            if (object[i].area > 0.0)
               (void) fprintf(stdout,
                 "  %.20g: %.20gx%.20g%+.20g%+.20g %.1f,%.1f %.20g %s\n",(double)
                 object[i].id,(double) object[i].bounding_box.width,(double)
