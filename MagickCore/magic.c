@@ -348,7 +348,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMagicPatternExtent() returns the the extent of the buffer that is
+%  GetMagicPatternExtent() returns the extent of the buffer that is
 %  required to check all the MagickInfos. It returns zero if the list is empty.
 %
 %  The format of the GetMagicPatternExtent method is:

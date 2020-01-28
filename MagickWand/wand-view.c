@@ -665,7 +665,7 @@ WandExport MagickWand *GetWandViewWand(const WandView *wand_view)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsWandView() returns MagickTrue if the the parameter is verified as a wand
+%  IsWandView() returns MagickTrue if the parameter is verified as a wand
 %  view object.
 %
 %  The format of the IsWandView method is:

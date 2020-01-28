@@ -584,7 +584,7 @@ MagickExport const void *GetCacheViewVirtualMetacontent(
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetCacheViewVirtualPixelQueue() returns the the pixels associated with
+%  GetCacheViewVirtualPixelQueue() returns the pixels associated with
 %  the last call to GetCacheViewVirtualPixels().  The pixels are virtual
 %  and therefore cannot be updated.
 %

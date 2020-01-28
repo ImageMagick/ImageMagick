@@ -3166,7 +3166,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                GrayErode:  Kernel values subtracted and minimum value found No
                kernel rotation used.
 
-               Note the the Iterative Distance method is essentially a
+               Note the Iterative Distance method is essentially a
                GrayErode, but with negative kernel values, and kernel rotation
                applied.
             */

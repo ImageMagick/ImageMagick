@@ -3205,7 +3205,7 @@ MagickExport const Quantum *GetVirtualPixelQueue(const Image *image)
 %  Pixels accessed via the returned pointer represent a simple array of type
 %  Quantum.  If the image type is CMYK or the storage class is PseudoClass,
 %  call GetAuthenticMetacontent() after invoking GetAuthenticPixels() to
-%  access the meta-content (of type void) corresponding to the the
+%  access the meta-content (of type void) corresponding to the
 %  region.
 %
 %  If you plan to modify the pixels, use GetAuthenticPixels() instead.

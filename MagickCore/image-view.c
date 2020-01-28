@@ -668,7 +668,7 @@ MagickExport const Quantum *GetImageViewVirtualPixels(
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsImageView() returns MagickTrue if the the parameter is verified as a image
+%  IsImageView() returns MagickTrue if the parameter is verified as a image
 %  view object.
 %
 %  The format of the IsImageView method is:

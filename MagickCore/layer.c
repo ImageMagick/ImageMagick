@@ -1911,7 +1911,7 @@ MagickExport void CompositeLayers(Image *destination,
 %           Images with negative offsets will be clipped.
 %
 %        TrimBoundsLayer: Determine the overall bounds of all the image
-%           layers just as in "MergeLayer", then adjust the the canvas
+%           layers just as in "MergeLayer", then adjust the canvas
 %           and offsets to be relative to those bounds, without overlaying
 %           the images.
 %
