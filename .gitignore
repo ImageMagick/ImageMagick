@@ -37,6 +37,7 @@
 
 /MagickCore/MagickCore-config
 /MagickCore/magick-baseconfig.h
+/MagickCore/threshold-map.h
 /MagickCore/version.h
 
 /MagickWand/MagickWand-config
