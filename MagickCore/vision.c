@@ -464,7 +464,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   if (artifact != (const char *) NULL)
     {
       /*
-        Merge object below area threshold.
+        Merge any object not within the min and max area threshold.
       */
       (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       component_view=AcquireAuthenticCacheView(component_image,exception);
@@ -758,7 +758,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       (objects != (CCObjectInfo **) NULL))
     {
       /*
-        Report statistics on unique object.
+        Report statistics on unique objects.
       */
       for (i=0; i < (ssize_t) component_image->colors; i++)
       {
