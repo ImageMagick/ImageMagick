@@ -244,8 +244,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 
     if (status == MagickFalse)
       continue;
-    dy=connectivity > 4 ? connect8[n][0] : connect4[n][0];
     dx=connectivity > 4 ? connect8[n][1] : connect4[n][1];
+    dy=connectivity > 4 ? connect8[n][0] : connect4[n][0];
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       register const Quantum
@@ -343,12 +343,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       }
     }
   }
-  image_view=DestroyCacheView(image_view);
   /*
     Label connected components.
   */
   n=0;
-  image_view=AcquireVirtualCacheView(image,exception);
   component_view=AcquireAuthenticCacheView(component_image,exception);
   for (y=0; y < (ssize_t) component_image->rows; y++)
   {
@@ -556,7 +554,6 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         }
       }
       component_view=DestroyCacheView(component_view);
-      (void) SyncImage(component_image,exception);
     }
   artifact=GetImageArtifact(image,"connected-components:keep-colors");
   if (artifact != (const char *) NULL)
@@ -671,7 +668,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         *p;
 
       /*
-        Keep selected objects based on color (make others transparent).
+        Remove selected objects based on color (make them transparent).
       */
       for (i=0; i < (ssize_t) component_image->colors; i++)
         object[i].census=0;
@@ -715,7 +712,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   if (artifact != (const char *) NULL)
     {
       /*
-        Remove these object (make them transparent).
+        Remove these objects (make them transparent).
       */
       for (c=(char *) artifact; *c != '\0';)
       {
@@ -758,7 +755,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       (objects != (CCObjectInfo **) NULL))
     {
       /*
-        Report statistics on unique objects.
+        Report statistics on each unique object.
       */
       for (i=0; i < (ssize_t) component_image->colors; i++)
       {
@@ -841,7 +838,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
                   object[i].centroid.x,object[i].centroid.y,(double)
                   object[i].area,mean_color);
               }
-      }
+        }
     }
   if (objects == (CCObjectInfo **) NULL)
     object=(CCObjectInfo *) RelinquishMagickMemory(object);
