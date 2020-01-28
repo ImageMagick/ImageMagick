@@ -437,6 +437,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     }
   min_threshold=0.0;
   max_threshold=0.0;
+  background_id=0;
   component_image->colors=(size_t) n;
   for (i=0; i < (ssize_t) component_image->colors; i++)
   {
@@ -452,9 +453,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     object[i].centroid.x/=object[i].area;
     object[i].centroid.y/=object[i].area;
     max_threshold+=object[i].area;
+    if (object[i].area > object[background_id].area)
+      background_id=i;
   }
   max_threshold+=MagickEpsilon;
-  background_id=(-1);
   artifact=GetImageArtifact(image,"connected-components:background-id");
   if (artifact != (const char *) NULL)
     background_id=(ssize_t) StringToDouble(artifact,(char **) NULL);
@@ -766,7 +768,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         object[i].bounding_box.y=(ssize_t) component_image->rows;
         object[i].centroid.x=0;
         object[i].centroid.y=0;
-        object[i].census=object[i].area == 0.0 ? 0 : 1;
+        object[i].census=object[i].area == 0.0 ? 0.0 : 1.0;
         object[i].area=0;
       }
       component_view=AcquireVirtualCacheView(component_image,exception);
@@ -825,21 +827,20 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             (void) fprintf(stdout,
               "Objects (id: bounding-box centroid area mean-color):\n");
           for (i=0; i < (ssize_t) component_image->colors; i++)
-          {
-            char
-              mean_color[MagickPathExtent];
+            if (object[i].census > 0.0)
+              {
+                char
+                  mean_color[MagickPathExtent];
 
-            if (status == MagickFalse)
-              break;
-            GetColorTuple(&object[i].color,MagickFalse,mean_color);
-            if (object[i].census != 0)
-              (void) fprintf(stdout,
-                "  %.20g: %.20gx%.20g%+.20g%+.20g %.1f,%.1f %.20g %s\n",(double)
-                object[i].id,(double) object[i].bounding_box.width,(double)
-                object[i].bounding_box.height,(double) object[i].bounding_box.x,
-                (double) object[i].bounding_box.y,object[i].centroid.x,
-                object[i].centroid.y,(double) object[i].area,mean_color);
-        }
+                GetColorTuple(&object[i].color,MagickFalse,mean_color);
+                (void) fprintf(stdout,
+                  "  %.20g: %.20gx%.20g%+.20g%+.20g %.1f,%.1f %.20g %s\n",
+                  (double) object[i].id,(double) object[i].bounding_box.width,
+                  (double) object[i].bounding_box.height,(double)
+                  object[i].bounding_box.x,(double) object[i].bounding_box.y,
+                  object[i].centroid.x,object[i].centroid.y,(double)
+                  object[i].area,mean_color);
+              }
       }
     }
   if (objects == (CCObjectInfo **) NULL)
