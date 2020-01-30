@@ -2375,8 +2375,7 @@ MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
-        SetPixelAlpha(image,alpha,q);
+      SetPixelAlpha(image,alpha,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
