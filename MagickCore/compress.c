@@ -228,11 +228,11 @@ static const HuffmanTable
 %
 %
 */
-#define MaxLineExtent  36L
-
 static inline void Ascii85Tuple(Ascii85Info *ascii85_info,
   const unsigned char *magick_restrict data)
 {
+#define MaxLineExtent  36L
+
   register ssize_t
     i,
     x;
