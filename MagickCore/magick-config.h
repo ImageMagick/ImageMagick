@@ -233,10 +233,6 @@ extern "C" {
 #  define __has_builtin(x) 0
 #endif
 
-#if defined(__STDC_VERSION__) && __STDC_VERSION__ > 201112L && !defined(__MINGW32__)
-# define MAGICKCORE_HAVE_STDC_ALIGNED_ALLOC 1
-#endif
-
 #if defined(__GNUC__) && !defined(__clang__)
 # define MAGICKCORE_DIAGNOSTIC_PUSH() \
    _Pragma("GCC diagnostic push")

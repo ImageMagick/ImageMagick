@@ -247,7 +247,7 @@ static MagickBooleanType
 %    o quantum: the size (in bytes) of each object.
 %
 */
-#if MAGICKCORE_HAVE_STDC_ALIGNED_ALLOC
+#if defined(MAGICKCORE_HAVE_ALIGNED_MALLOC)
 #define AcquireAlignedMemory_Actual AcquireAlignedMemory_STDC
 static inline void *AcquireAlignedMemory_STDC(const size_t size)
 {
@@ -1087,7 +1087,7 @@ MagickExport void *RelinquishAlignedMemory(void *memory)
       memory_methods.relinquish_aligned_memory_handler(memory);
       return(NULL);
     }
-#if MAGICKCORE_HAVE_STDC_ALIGNED_ALLOC || defined(MAGICKCORE_HAVE_POSIX_MEMALIGN)
+#if defined(MAGICKCORE_HAVE_ALIGNED_MALLOC) || defined(MAGICKCORE_HAVE_POSIX_MEMALIGN)
   free(memory);
 #elif defined(MAGICKCORE_HAVE__ALIGNED_MALLOC)
   _aligned_free(memory);

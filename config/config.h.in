@@ -73,6 +73,9 @@
 /* Define to 1 if you have the `acosh' function. */
 #undef HAVE_ACOSH
 
+/* Define to 1 if you have the `aligned_malloc' function. */
+#undef HAVE_ALIGNED_MALLOC
+
 /* Define to 1 if you have the <arm/limits.h> header file. */
 #undef HAVE_ARM_LIMITS_H
 
