@@ -468,9 +468,6 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       component_view=AcquireAuthenticCacheView(component_image,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
       {
-        double
-          census;
-
         RectangleInfo
           bounding_box;
 
@@ -516,14 +513,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             p+=GetPixelChannels(component_image);
           }
         }
-        census=object[0].census;
         id=0;
         for (j=1; j < (ssize_t) component_image->colors; j++)
-          if (census < object[j].census)
-            {
-              census=object[j].census;
-              id=(size_t) j;
-            }
+          if (object[j].census > object[id].census)
+            id=(size_t) j;
         object[id].area+=object[i].area;
         object[i].area=0.0;
         for (y=0; y < (ssize_t) bounding_box.height; y++)
