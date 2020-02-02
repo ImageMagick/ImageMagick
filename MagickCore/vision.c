@@ -134,8 +134,9 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 #define ConnectedComponentsImageTag  "ConnectedComponents/Image"
 
   CacheView
+    *component_view,
     *image_view,
-    *component_view;
+    *object_view;
 
   CCObjectInfo
     *object;
@@ -432,7 +433,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       ThrowImageException(ResourceLimitError,"TooManyObjects");
     }
   background_id=0;
-  min_threshold=(-1.0);
+  min_threshold=0.0;
   max_threshold=0.0;
   component_image->colors=(size_t) n;
   for (i=0; i < (ssize_t) component_image->colors; i++)
@@ -458,158 +459,15 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     background_id=(ssize_t) StringToDouble(artifact,(char **) NULL);
   artifact=GetImageArtifact(image,"connected-components:area-threshold");
   if (artifact != (const char *) NULL)
-    (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
-  artifact=GetImageArtifact(image,"connected-components:keep-top");
-  if (artifact != (const char *) NULL)
     {
-      ssize_t
-        top_ids;
-
-      /*
-        Keep top objects.
-      */
-      min_threshold=0.0;
-      top_ids=(ssize_t) StringToDouble(artifact,(char **) NULL);
-      if (top_ids < component_image->colors)
-        {
-          CCObjectInfo
-            *top_objects;
-
-          top_objects=(CCObjectInfo *) AcquireQuantumMemory(
-            component_image->colors,sizeof(*top_objects));
-          if (top_objects == (CCObjectInfo *) NULL)
-            {
-              object=(CCObjectInfo *) RelinquishMagickMemory(object);
-              component_image=DestroyImage(component_image);
-              ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-            }
-          (void) memcpy(top_objects,object,component_image->colors*
-            sizeof(*object));
-          qsort((void *) top_objects,component_image->colors,
-            sizeof(*top_objects),CCObjectInfoCompare);
-          min_threshold=top_objects[top_ids].area;
-          top_objects=(CCObjectInfo *) RelinquishMagickMemory(top_objects);
-        }
-    }
-  if (min_threshold >= 0.0)
-    {
-      CacheView
-        *object_view;
-
       /*
         Merge any object not within the min and max area threshold.
       */
-      component_view=AcquireAuthenticCacheView(component_image,exception);
-      object_view=AcquireVirtualCacheView(component_image,exception);
+      (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       for (i=0; i < (ssize_t) component_image->colors; i++)
-      {
-        RectangleInfo
-          bounding_box;
-
-        register ssize_t
-          j;
-
-        size_t
-          id;
-
-        if (status == MagickFalse)
-          continue;
-        if (((object[i].area >= min_threshold) &&
-             (object[i].area < max_threshold)) || (i == background_id))
-          continue;  /* keep object */
-        /*
-          Merge this object.
-        */
-        for (j=0; j < (ssize_t) component_image->colors; j++)
-          object[j].census=0;
-        bounding_box=object[i].bounding_box;
-        for (y=0; y < (ssize_t) bounding_box.height; y++)
-        {
-          register const Quantum
-            *magick_restrict p;
-
-          register ssize_t
-            x;
-
-          if (status == MagickFalse)
-            continue;
-          p=GetCacheViewVirtualPixels(component_view,bounding_box.x,
-            bounding_box.y+y,bounding_box.width,1,exception);
-          if (p == (const Quantum *) NULL)
-            {
-              status=MagickFalse;
-              continue;
-            }
-          for (x=0; x < (ssize_t) bounding_box.width; x++)
-          {
-            if (status == MagickFalse)
-              continue;
-            j=(ssize_t) GetPixelIndex(component_image,p);
-            if (j == i)
-              for (n=0; n < (ssize_t) (connectivity > 4 ? 4 : 2); n++)
-              {
-                register const Quantum
-                  *p;
-
-                /*
-                  Compute area of adjacent objects.
-                */
-                if (status == MagickFalse)
-                  continue;
-                dx=connectivity > 4 ? connect8[n][1] : connect4[n][1];
-                dy=connectivity > 4 ? connect8[n][0] : connect4[n][0];
-                p=GetCacheViewVirtualPixels(object_view,bounding_box.x+x+dx,
-                  bounding_box.y+y+dy,1,1,exception);
-                if (p == (const Quantum *) NULL)
-                  {
-                    status=MagickFalse;
-                    break;
-                  }
-                j=(ssize_t) GetPixelIndex(component_image,p);
-                if (j != i)
-                  object[j].census++;
-              }
-            p+=GetPixelChannels(component_image);
-          }
-        }
-        /*
-          Merge with object of greatest adjacent area.
-        */
-        id=0;
-        for (j=1; j < (ssize_t) component_image->colors; j++)
-          if (object[j].census > object[id].census)
-            id=(size_t) j;
-        object[id].area+=object[i].area;
-        object[i].area=0.0;
-        for (y=0; y < (ssize_t) bounding_box.height; y++)
-        {
-          register Quantum
-            *magick_restrict q;
-
-          register ssize_t
-            x;
-
-          if (status == MagickFalse)
-            continue;
-          q=GetCacheViewAuthenticPixels(component_view,bounding_box.x,
-            bounding_box.y+y,bounding_box.width,1,exception);
-          if (q == (Quantum *) NULL)
-            {
-              status=MagickFalse;
-              continue;
-            }
-          for (x=0; x < (ssize_t) bounding_box.width; x++)
-          {
-            if ((ssize_t) GetPixelIndex(component_image,q) == i)
-              SetPixelIndex(component_image,(Quantum) id,q);
-            q+=GetPixelChannels(component_image);
-          }
-          if (SyncCacheViewAuthenticPixels(component_view,exception) == MagickFalse)
-            status=MagickFalse;
-        }
-      }
-      object_view=DestroyCacheView(object_view);
-      component_view=DestroyCacheView(component_view);
+        if (((object[i].area < min_threshold) ||
+             (object[i].area >= max_threshold)) && (i != background_id))
+          object[i].merge=MagickTrue;
     }
   artifact=GetImageArtifact(image,"connected-components:keep-colors");
   if (artifact != (const char *) NULL)
@@ -618,10 +476,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         *p;
 
       /*
-        Keep selected objects based on color (make others transparent).
+        Keep selected objects based on color, merge others.
       */
-      for (i=0; i < (ssize_t) component_image->colors; i++)
-        object[i].census=0;
       for (p=artifact;  ; )
       {
         char
@@ -641,21 +497,153 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         (void) QueryColorCompliance(color,AllCompliance,&pixel,exception);
         for (i=0; i < (ssize_t) component_image->colors; i++)
           if (IsFuzzyEquivalencePixelInfo(&object[i].color,&pixel) != MagickFalse)
-            object[i].census++;
+            object[i].merge=MagickTrue;
         if (*q == '\0')
           break;
         p=q+1;
       }
-      for (i=0; i < (ssize_t) component_image->colors; i++)
-      {
-        if (object[i].census == 0)
+    }
+  artifact=GetImageArtifact(image,"connected-components:keep-top");
+  if (artifact != (const char *) NULL)
+    {
+      CCObjectInfo
+        *top_objects;
+
+      ssize_t
+        top_ids;
+
+      /*
+        Keep top objects.
+      */
+      top_ids=(ssize_t) StringToDouble(artifact,(char **) NULL);
+      top_objects=(CCObjectInfo *) AcquireQuantumMemory(component_image->colors,
+        sizeof(*top_objects));
+      if (top_objects == (CCObjectInfo *) NULL)
+        {
+          object=(CCObjectInfo *) RelinquishMagickMemory(object);
+          component_image=DestroyImage(component_image);
+          ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+        }
+      (void) memcpy(top_objects,object,component_image->colors*sizeof(*object));
+      qsort((void *) top_objects,component_image->colors,sizeof(*top_objects),
+        CCObjectInfoCompare);
+      for (i=top_ids+1; i < (ssize_t) component_image->colors; i++)
+        object[top_objects[i].id].merge=MagickTrue;
+      top_objects=(CCObjectInfo *) RelinquishMagickMemory(top_objects);
+    }
+  /*
+    Merge any object not within the min and max area threshold.
+  */
+  component_view=AcquireAuthenticCacheView(component_image,exception);
+  object_view=AcquireVirtualCacheView(component_image,exception);
+  for (i=0; i < (ssize_t) component_image->colors; i++)
+  {
+    RectangleInfo
+      bounding_box;
+
+    register ssize_t
+      j;
+
+    size_t
+      id;
+
+    if (status == MagickFalse)
+      continue;
+    if (object[i].merge == MagickFalse)
+      continue;  /* keep object */
+    /*
+      Merge this object.
+    */
+    for (j=0; j < (ssize_t) component_image->colors; j++)
+      object[j].census=0;
+    bounding_box=object[i].bounding_box;
+    for (y=0; y < (ssize_t) bounding_box.height; y++)
+    {
+      register const Quantum
+        *magick_restrict p;
+
+      register ssize_t
+        x;
+
+      if (status == MagickFalse)
+        continue;
+      p=GetCacheViewVirtualPixels(component_view,bounding_box.x,
+        bounding_box.y+y,bounding_box.width,1,exception);
+      if (p == (const Quantum *) NULL)
+        {
+          status=MagickFalse;
           continue;
-        object[i].color.alpha_trait=BlendPixelTrait;
-        component_image->alpha_trait=BlendPixelTrait;
-        component_image->colormap[i].alpha_trait=BlendPixelTrait;
-        component_image->colormap[i].alpha=(MagickRealType) TransparentAlpha;
+        }
+      for (x=0; x < (ssize_t) bounding_box.width; x++)
+      {
+        if (status == MagickFalse)
+          continue;
+        j=(ssize_t) GetPixelIndex(component_image,p);
+        if (j == i)
+          for (n=0; n < (ssize_t) (connectivity > 4 ? 4 : 2); n++)
+          {
+            register const Quantum
+              *p;
+
+            /*
+              Compute area of adjacent objects.
+            */
+            if (status == MagickFalse)
+              continue;
+            dx=connectivity > 4 ? connect8[n][1] : connect4[n][1];
+            dy=connectivity > 4 ? connect8[n][0] : connect4[n][0];
+            p=GetCacheViewVirtualPixels(object_view,bounding_box.x+x+dx,
+              bounding_box.y+y+dy,1,1,exception);
+            if (p == (const Quantum *) NULL)
+              {
+                status=MagickFalse;
+                break;
+              }
+            j=(ssize_t) GetPixelIndex(component_image,p);
+            if (j != i)
+              object[j].census++;
+          }
+        p+=GetPixelChannels(component_image);
       }
     }
+    /*
+      Merge with object of greatest adjacent area.
+    */
+    id=0;
+    for (j=1; j < (ssize_t) component_image->colors; j++)
+      if (object[j].census > object[id].census)
+        id=(size_t) j;
+    object[id].area+=object[i].area;
+    object[i].area=0.0;
+    for (y=0; y < (ssize_t) bounding_box.height; y++)
+    {
+      register Quantum
+        *magick_restrict q;
+
+      register ssize_t
+        x;
+
+      if (status == MagickFalse)
+        continue;
+      q=GetCacheViewAuthenticPixels(component_view,bounding_box.x,
+        bounding_box.y+y,bounding_box.width,1,exception);
+      if (q == (Quantum *) NULL)
+        {
+          status=MagickFalse;
+          continue;
+        }
+      for (x=0; x < (ssize_t) bounding_box.width; x++)
+      {
+        if ((ssize_t) GetPixelIndex(component_image,q) == i)
+          SetPixelIndex(component_image,(Quantum) id,q);
+        q+=GetPixelChannels(component_image);
+      }
+      if (SyncCacheViewAuthenticPixels(component_view,exception) == MagickFalse)
+        status=MagickFalse;
+    }
+  }
+  object_view=DestroyCacheView(object_view);
+  component_view=DestroyCacheView(component_view);
   artifact=GetImageArtifact(image,"connected-components:keep-ids");
   if (artifact == (const char *) NULL)
     artifact=GetImageArtifact(image,"connected-components:keep");

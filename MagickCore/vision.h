@@ -39,6 +39,9 @@ typedef struct _CCObjectInfo
   double
     area,
     census;
+
+  MagickBooleanType
+    merge;
 } CCObjectInfo;
 
 extern MagickExport Image
