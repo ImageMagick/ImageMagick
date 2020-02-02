@@ -432,7 +432,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       ThrowImageException(ResourceLimitError,"TooManyObjects");
     }
   background_id=0;
-  min_threshold=0.0;
+  min_threshold=(-1.0);
   max_threshold=0.0;
   component_image->colors=(size_t) n;
   for (i=0; i < (ssize_t) component_image->colors; i++)
@@ -458,13 +458,49 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     background_id=(ssize_t) StringToDouble(artifact,(char **) NULL);
   artifact=GetImageArtifact(image,"connected-components:area-threshold");
   if (artifact != (const char *) NULL)
+    (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
+  artifact=GetImageArtifact(image,"connected-components:keep-top");
+  if (artifact != (const char *) NULL)
     {
+      ssize_t
+        top_ids;
+
+      /*
+        Keep top objects.
+      */
+      min_threshold=0.0;
+      top_ids=(ssize_t) StringToDouble(artifact,(char **) NULL);
+      if (top_ids < component_image->colors)
+        {
+          CCObjectInfo
+            *top_objects;
+
+          top_objects=(CCObjectInfo *) AcquireQuantumMemory(
+            component_image->colors,sizeof(*top_objects));
+          if (top_objects == (CCObjectInfo *) NULL)
+            {
+              object=(CCObjectInfo *) RelinquishMagickMemory(object);
+              component_image=DestroyImage(component_image);
+              ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+            }
+          (void) memcpy(top_objects,object,component_image->colors*
+            sizeof(*object));
+          qsort((void *) top_objects,component_image->colors,
+            sizeof(*top_objects),CCObjectInfoCompare);
+          min_threshold=top_objects[top_ids].area;
+          top_objects=(CCObjectInfo *) RelinquishMagickMemory(top_objects);
+        }
+    }
+  if (min_threshold >= 0.0)
+    {
+      CacheView
+        *object_view;
+
       /*
         Merge any object not within the min and max area threshold.
       */
-      (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
-      image_view=AcquireVirtualCacheView(component_image,exception);
       component_view=AcquireAuthenticCacheView(component_image,exception);
+      object_view=AcquireVirtualCacheView(component_image,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
       {
         RectangleInfo
@@ -482,7 +518,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
              (object[i].area < max_threshold)) || (i == background_id))
           continue;  /* keep object */
         /*
-          Merge this object. 
+          Merge this object.
         */
         for (j=0; j < (ssize_t) component_image->colors; j++)
           object[j].census=0;
@@ -522,7 +558,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
                   continue;
                 dx=connectivity > 4 ? connect8[n][1] : connect4[n][1];
                 dy=connectivity > 4 ? connect8[n][0] : connect4[n][0];
-                p=GetCacheViewVirtualPixels(image_view,bounding_box.x+x+dx,
+                p=GetCacheViewVirtualPixels(object_view,bounding_box.x+x+dx,
                   bounding_box.y+y+dy,1,1,exception);
                 if (p == (const Quantum *) NULL)
                   {
@@ -572,8 +608,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             status=MagickFalse;
         }
       }
+      object_view=DestroyCacheView(object_view);
       component_view=DestroyCacheView(component_view);
-      image_view=DestroyCacheView(image_view);
     }
   artifact=GetImageArtifact(image,"connected-components:keep-colors");
   if (artifact != (const char *) NULL)
@@ -658,27 +694,6 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         component_image->alpha_trait=BlendPixelTrait;
         component_image->colormap[i].alpha_trait=BlendPixelTrait;
         component_image->colormap[i].alpha=(MagickRealType) TransparentAlpha;
-      }
-    }
-  artifact=GetImageArtifact(image,"connected-components:keep-top");
-  if (artifact != (const char *) NULL)
-    {
-      ssize_t
-        top_ids;
-
-      /*
-        Keep top objects with most area (make others transparent).
-      */
-      top_ids=(ssize_t) StringToDouble(artifact,(char **) NULL);
-      qsort((void *) object,component_image->colors,sizeof(*object),
-        CCObjectInfoCompare);
-      for (i=top_ids; i < (ssize_t) component_image->colors; i++)
-      {
-        object[object[i].id].color.alpha_trait=BlendPixelTrait;
-        component_image->alpha_trait=BlendPixelTrait;
-        component_image->colormap[object[i].id].alpha_trait=BlendPixelTrait;
-        component_image->colormap[object[i].id].alpha=(MagickRealType)
-          TransparentAlpha;
       }
     }
   artifact=GetImageArtifact(image,"connected-components:remove-colors");
