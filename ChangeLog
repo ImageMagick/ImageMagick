@@ -1,3 +1,10 @@
+2020-02-03  7.0.9-22 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.9-22, GIT revision 16...
+
+2020-02-03  7.0.9-22 Cristy  <quetzlzacatenango@image...>
+  * More work on connect components, e.g. keep-colors, remove-colors,
+    keep-topids.
+
 2020-02-01  7.0.9-21 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-21, GIT revision 16823:290cb93:20200201.
 
