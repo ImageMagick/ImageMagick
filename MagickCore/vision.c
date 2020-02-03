@@ -478,6 +478,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       /*
         Keep selected objects based on color, merge others.
       */
+      for (i=0; i < (ssize_t) component_image->colors; i++)
+        object[i].merge=MagickTrue;
       for (p=artifact;  ; )
       {
         char
@@ -497,7 +499,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         (void) QueryColorCompliance(color,AllCompliance,&pixel,exception);
         for (i=0; i < (ssize_t) component_image->colors; i++)
           if (IsFuzzyEquivalencePixelInfo(&object[i].color,&pixel) != MagickFalse)
-            object[i].merge=MagickTrue;
+            object[i].merge=MagickFalse;
         if (*q == '\0')
           break;
         p=q+1;
@@ -549,7 +551,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 
     if (status == MagickFalse)
       continue;
-    if (object[i].merge == MagickFalse)
+    if ((object[i].merge == MagickFalse) || (i == background_id))
       continue;  /* keep object */
     /*
       Merge this object.
