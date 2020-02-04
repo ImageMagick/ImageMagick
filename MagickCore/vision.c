@@ -505,6 +505,37 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         p=q+1;
       }
     }
+  artifact=GetImageArtifact(image,"connected-components:keep-ids");
+  if (artifact == (const char *) NULL)
+    artifact=GetImageArtifact(image,"connected-components:keep");
+  if (artifact != (const char *) NULL)
+    {
+      /*
+        Keep selected objects based on id, merge others.
+      */
+      for (i=0; i < (ssize_t) component_image->colors; i++)
+        object[i].merge=MagickTrue;
+      for (c=(char *) artifact; *c != '\0';)
+      {
+        while ((isspace((int) ((unsigned char) *c)) != 0) || (*c == ','))
+          c++;
+        first=(ssize_t) strtol(c,&c,10);
+        if (first < 0)
+          first+=(ssize_t) component_image->colors;
+        last=first;
+        while (isspace((int) ((unsigned char) *c)) != 0)
+          c++;
+        if (*c == '-')
+          {
+            last=(ssize_t) strtol(c+1,&c,10);
+            if (last < 0)
+              last+=(ssize_t) component_image->colors;
+          }
+        step=(ssize_t) (first > last ? -1 : 1);
+        for ( ; first != (last+step); first+=step)
+          object[first].merge=MagickFalse;
+      }
+    }
   artifact=GetImageArtifact(image,"connected-components:keep-top");
   if (artifact != (const char *) NULL)
     {
@@ -566,6 +597,33 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           break;
         p=q+1;
       }
+    }
+  artifact=GetImageArtifact(image,"connected-components:remove-ids");
+  if (artifact == (const char *) NULL)
+    artifact=GetImageArtifact(image,"connected-components:remove");
+  if (artifact != (const char *) NULL)
+    for (c=(char *) artifact; *c != '\0';)
+    {
+      /*
+        Remove selected objects based on id, keep others.
+      */
+      while ((isspace((int) ((unsigned char) *c)) != 0) || (*c == ','))
+        c++;
+      first=(ssize_t) strtol(c,&c,10);
+      if (first < 0)
+        first+=(ssize_t) component_image->colors;
+      last=first;
+      while (isspace((int) ((unsigned char) *c)) != 0)
+        c++;
+      if (*c == '-')
+        {
+          last=(ssize_t) strtol(c+1,&c,10);
+          if (last < 0)
+            last+=(ssize_t) component_image->colors;
+        }
+      step=(ssize_t) (first > last ? -1 : 1);
+      for ( ; first != (last+step); first+=step)
+        object[first].merge=MagickTrue;
     }
   /*
     Merge any object not within the min and max area threshold.
@@ -680,80 +738,6 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   }
   object_view=DestroyCacheView(object_view);
   component_view=DestroyCacheView(component_view);
-  artifact=GetImageArtifact(image,"connected-components:keep-ids");
-  if (artifact == (const char *) NULL)
-    artifact=GetImageArtifact(image,"connected-components:keep");
-  if (artifact != (const char *) NULL)
-    {
-      /*
-        Keep selected objects based on ID (make others transparent).
-      */
-      for (i=0; i < (ssize_t) component_image->colors; i++)
-        object[i].census=0;
-      for (c=(char *) artifact; *c != '\0';)
-      {
-        while ((isspace((int) ((unsigned char) *c)) != 0) || (*c == ','))
-          c++;
-        first=(ssize_t) strtol(c,&c,10);
-        if (first < 0)
-          first+=(ssize_t) component_image->colors;
-        last=first;
-        while (isspace((int) ((unsigned char) *c)) != 0)
-          c++;
-        if (*c == '-')
-          {
-            last=(ssize_t) strtol(c+1,&c,10);
-            if (last < 0)
-              last+=(ssize_t) component_image->colors;
-          }
-        step=(ssize_t) (first > last ? -1 : 1);
-        for ( ; first != (last+step); first+=step)
-          object[first].census++;
-      }
-      for (i=0; i < (ssize_t) component_image->colors; i++)
-      {
-        if (object[i].census != 0)
-          continue;
-        object[i].color.alpha_trait=BlendPixelTrait;
-        component_image->alpha_trait=BlendPixelTrait;
-        component_image->colormap[i].alpha_trait=BlendPixelTrait;
-        component_image->colormap[i].alpha=(MagickRealType) TransparentAlpha;
-      }
-    }
-  artifact=GetImageArtifact(image,"connected-components:remove-ids");
-  if (artifact == (const char *) NULL)
-    artifact=GetImageArtifact(image,"connected-components:remove");
-  if (artifact != (const char *) NULL)
-    {
-      /*
-        Remove these objects (make them transparent).
-      */
-      for (c=(char *) artifact; *c != '\0';)
-      {
-        while ((isspace((int) ((unsigned char) *c)) != 0) || (*c == ','))
-          c++;
-        first=(ssize_t) strtol(c,&c,10);
-        if (first < 0)
-          first+=(ssize_t) component_image->colors;
-        last=first;
-        while (isspace((int) ((unsigned char) *c)) != 0)
-          c++;
-        if (*c == '-')
-          {
-            last=(ssize_t) strtol(c+1,&c,10);
-            if (last < 0)
-              last+=(ssize_t) component_image->colors;
-          }
-        step=(ssize_t) (first > last ? -1 : 1);
-        for ( ; first != (last+step); first+=step)
-        {
-          component_image->alpha_trait=BlendPixelTrait;
-          component_image->colormap[first].alpha_trait=BlendPixelTrait;
-          component_image->colormap[first].alpha=(MagickRealType)
-            TransparentAlpha;
-        }
-      }
-    }
   artifact=GetImageArtifact(image,"connected-components:mean-color");
   if (IsStringTrue(artifact) != MagickFalse)
     {
