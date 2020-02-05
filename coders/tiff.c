@@ -1967,31 +1967,17 @@ RestoreMSCWarning
           strip_size;
 
         unsigned char
-          *photoshop_pixels,
           *strip_pixels;
 
         /*
           Convert stripped TIFF image.
         */
-        stride=TIFFVStripSize(tiff,1);
-        photoshop_pixels=(unsigned char *) NULL;
-        if (bits_per_sample == 24)
-          {
-            photoshop_pixels=(unsigned char *) AcquireQuantumMemory(4*stride/3,
-              sizeof(*strip_pixels));
-            if (photoshop_pixels == (unsigned char *) NULL)
-              ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-          }
         strip_pixels=(unsigned char *) AcquireQuantumMemory(TIFFStripSize(tiff)+
           sizeof(uint32),sizeof(*strip_pixels));
         if (strip_pixels == (unsigned char *) NULL)
-          {
-            if (photoshop_pixels != (unsigned char *) NULL)
-              photoshop_pixels=(unsigned char *) RelinquishMagickMemory(
-                photoshop_pixels);
-            ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-          }
+          ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         (void) memset(strip_pixels,0,TIFFStripSize(tiff)*sizeof(*strip_pixels));
+        stride=TIFFVStripSize(tiff,1);
         strip_id=0;
         p=strip_pixels;
         for (i=0; i < (ssize_t) samples_per_pixel; i++)
@@ -2044,7 +2030,7 @@ RestoreMSCWarning
                   *q;
 
                 pixels=p;
-                q=photoshop_pixels;
+                q=GetQuantumPixels(quantum_info);
                 for (i=0; i < (ssize_t) stride; i++)
                 {
                   PushPhotoshopPixel(image,pixels,q);
@@ -2052,7 +2038,8 @@ RestoreMSCWarning
                   q+=4;
                 }
                 (void) ImportQuantumPixels(image,(CacheView *) NULL,
-                  quantum_info,quantum_type,photoshop_pixels,exception);
+                  quantum_info,quantum_type,GetQuantumPixels(quantum_info),
+                  exception);
             }
             p+=stride;
             rows_remaining--;
@@ -2070,9 +2057,6 @@ RestoreMSCWarning
             break;
         }
         strip_pixels=(unsigned char *) RelinquishMagickMemory(strip_pixels);
-        if (bits_per_sample == 24)
-          photoshop_pixels=(unsigned char *) RelinquishMagickMemory(
-            photoshop_pixels);
         break;
       }
       case ReadTileMethod:
