@@ -2045,11 +2045,11 @@ RestoreMSCWarning
 
                 pixels=p;
                 q=photoshop_pixels;
-                for (i=0; i < (ssize_t) stride; i+=3)
+                for (i=0; i < (ssize_t) stride; i+=samples_per_pixel)
                 {
                   PushPhotoshopPixel(quantum_info,pixels,q);
-                  pixels+=3;
-                  q+=4;
+                  pixels+=samples_per_pixel;
+                  q+=samples_per_pixel+1;
                 }
                 (void) ImportQuantumPixels(image,(CacheView *) NULL,
                   quantum_info,quantum_type,photoshop_pixels,exception);
