@@ -1117,7 +1117,7 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
   return(method);
 }
 
-static void PushPhotoshopPixel(const Image *image,
+static void PushPhotoshopPixel(const QuantumInfo *quantum_info,
   const unsigned char *magick_restrict p,unsigned char *magick_restrict q)
 {
   unsigned char
@@ -1137,7 +1137,7 @@ static void PushPhotoshopPixel(const Image *image,
       *(q+3)=0;
       return;
     }
-  if (image->endian == LSBEndian)
+  if (quantum_info->endian == LSBEndian)
     {
       sign_bit=(*(p+2) & 0x80);
       exponent=(*(p+2) & 0x7F);
@@ -1156,7 +1156,7 @@ static void PushPhotoshopPixel(const Image *image,
   mantissa32[0]=(mantissa24[0] & 0x01) << 7;
   mantissa32[1]=((mantissa24[1] & 0x01) << 7) | ((mantissa24[0] & 0xFE) >> 1);
   mantissa32[2]=(mantissa24[1] & 0xFE) >> 1;
-  if (image->endian == LSBEndian)
+  if (quantum_info->endian == LSBEndian)
     {
       *q=mantissa32[0];
       *(q+1)=mantissa32[1];
@@ -2045,9 +2045,9 @@ RestoreMSCWarning
 
                 pixels=p;
                 q=photoshop_pixels;
-                for (i=0; i < (ssize_t) stride; i++)
+                for (i=0; i < (ssize_t) stride; i+=3)
                 {
-                  PushPhotoshopPixel(image,pixels,q);
+                  PushPhotoshopPixel(quantum_info,pixels,q);
                   pixels+=3;
                   q+=4;
                 }
