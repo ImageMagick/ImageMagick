@@ -1973,11 +1973,12 @@ RestoreMSCWarning
         /*
           Convert stripped TIFF image.
         */
+        stride=TIFFVStripSize(tiff,1);
         photoshop_pixels=(unsigned char *) NULL;
         if (bits_per_sample == 24)
           {
-            photoshop_pixels=(unsigned char *) AcquireQuantumMemory(
-              4*TIFFStripSize(tiff)/3+sizeof(uint32),sizeof(*strip_pixels));
+            photoshop_pixels=(unsigned char *) AcquireQuantumMemory(4*stride/3,
+              sizeof(*strip_pixels));
             if (photoshop_pixels == (unsigned char *) NULL)
               ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
           }
@@ -1991,7 +1992,6 @@ RestoreMSCWarning
             ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
           }
         (void) memset(strip_pixels,0,TIFFStripSize(tiff)*sizeof(*strip_pixels));
-        stride=TIFFVStripSize(tiff,1);
         strip_id=0;
         p=strip_pixels;
         for (i=0; i < (ssize_t) samples_per_pixel; i++)
