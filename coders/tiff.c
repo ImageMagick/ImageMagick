@@ -1118,8 +1118,7 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
 }
 
 static void PushPhotoshopPixel(const Image *image,
-  const unsigned char *magick_restrict pixels24,
-  unsigned char *magick_restrict pixels32)
+  const unsigned char *magick_restrict p,unsigned char *magick_restrict q)
 {
   unsigned char
     exponent,
@@ -1130,27 +1129,27 @@ static void PushPhotoshopPixel(const Image *image,
   /*
     Convert 24-bit floating point pixel to 32-bit.
   */
-  if ((*pixels24 | *(pixels24+1) | *(pixels24+2)) == 0U)
+  if ((*p | *(p+1) | *(p+2)) == 0U)
     {
-      *pixels32=0;
-      *(pixels32+1)=0;
-      *(pixels32+2)=0;
-      *(pixels32+3)=0;
+      *q=0;
+      *(q+1)=0;
+      *(q+2)=0;
+      *(q+3)=0;
       return;
     }
   if (image->endian == LSBEndian)
     {
-      sign_bit=(*(pixels24+2) & 0x80);
-      exponent=(*(pixels24+2) & 0x7F);
-      mantissa24[0]=(*pixels24);
-      mantissa24[1]=(*(pixels24+1));
+      sign_bit=(*(p+2) & 0x80);
+      exponent=(*(p+2) & 0x7F);
+      mantissa24[0]=(*p);
+      mantissa24[1]=(*(p+1));
     }
   else
     {
-      sign_bit=(*pixels24 & 0x80);
-      exponent=(*pixels24 & 0x7F);
-      mantissa24[0]=(*(pixels24+2));
-      mantissa24[1]=(*(pixels24+1));
+      sign_bit=(*p & 0x80);
+      exponent=(*p & 0x7F);
+      mantissa24[0]=(*(p+2));
+      mantissa24[1]=(*(p+1));
     }
   if (exponent != 0)
     exponent=exponent-63+127;
@@ -1159,16 +1158,16 @@ static void PushPhotoshopPixel(const Image *image,
   mantissa32[2]=(mantissa24[1] & 0xFE) >> 1;
   if (image->endian == LSBEndian)
     {
-      *pixels32=mantissa32[0];
-      *(pixels32+1)=mantissa32[1];
-      *(pixels32+2)=((exponent & 1) << 7) | mantissa32[2];
-      *(pixels32+3)=sign_bit | (exponent >> 1);
+      *q=mantissa32[0];
+      *(q+1)=mantissa32[1];
+      *(q+2)=((exponent & 1) << 7) | mantissa32[2];
+      *(q+3)=sign_bit | (exponent >> 1);
       return;
     }
-  *pixels32=sign_bit | (exponent >> 1);
-  *(pixels32+1)=((exponent & 0x01) << 7) | mantissa32[2];
-  *(pixels32+2)=mantissa32[1];
-  *(pixels32+3)=mantissa32[0];
+  *q=sign_bit | (exponent >> 1);
+  *(q+1)=((exponent & 0x01) << 7) | mantissa32[2];
+  *(q+2)=mantissa32[1];
+  *(q+3)=mantissa32[0];
 }
 
 static ssize_t TIFFReadCustomStream(unsigned char *data,const size_t count,
@@ -2041,16 +2040,16 @@ RestoreMSCWarning
             else
               {
                 unsigned char
-                  *pixels24,
-                  *pixels32;
+                  *pixels,
+                  *q;
 
-                pixels24=p;
-                pixels32=photoshop_pixels;
+                pixels=p;
+                q=photoshop_pixels;
                 for (i=0; i < (ssize_t) stride; i++)
                 {
-                  PushPhotoshopPixel(image,pixels24,pixels32);
-                  pixels24+=3;
-                  pixels32+=4;
+                  PushPhotoshopPixel(image,pixels,q);
+                  pixels+=3;
+                  q+=4;
                 }
                 (void) ImportQuantumPixels(image,(CacheView *) NULL,
                   quantum_info,quantum_type,photoshop_pixels,exception);
