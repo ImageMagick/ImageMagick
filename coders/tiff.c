@@ -1128,7 +1128,7 @@ static void PushPhotoshopPixel(const Image *image,
     sign_bit;
 
   /*
-    Convert 24-bit floating point value to 32-bit.
+    Convert 24-bit floating point pixel to 32-bit.
   */
   if ((*pixels24 | *(pixels24+1) | *(pixels24+2)) == 0U)
     {
