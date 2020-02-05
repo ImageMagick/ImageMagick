@@ -1117,6 +1117,59 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
   return(method);
 }
 
+static void PushPhotoshopPixel(const Image *image,
+  const unsigned char *magick_restrict fp24,unsigned char *magick_restrict fp32)
+{
+  unsigned char
+    exponent,
+    mantissa24[2],
+    mantissa32[3],
+    sign_bit;
+
+  /*
+    Convert 24-bit floating point value to 32-bit.
+  */
+  if ((*fp24 | *(fp24+1) | *(fp24+2)) == 0U)
+    {
+      *fp32=0;
+      *(fp32+1)=0;
+      *(fp32+2)=0;
+      *(fp32+3)=0;
+      return;
+    }
+  if (image->endian == LSBEndian)
+    {
+      sign_bit=(*(fp24+2) & 0x80);
+      exponent=(*(fp24+2) & 0x7F);
+      mantissa24[0]=(*fp24);
+      mantissa24[1]=(*(fp24+1));
+    }
+  else
+    {
+      sign_bit=(*fp24 & 0x80);
+      exponent=(*fp24 & 0x7F);
+      mantissa24[0]=(*(fp24+2));
+      mantissa24[1]=(*(fp24+1));
+    }
+  if (exponent != 0)
+    exponent=exponent-63+127;
+  mantissa32[0]=(mantissa24[0] & 0x01) << 7;
+  mantissa32[1]=((mantissa24[1] & 0x01) << 7) | ((mantissa24[0] & 0xFE) >> 1);
+  mantissa32[2]=(mantissa24[1] & 0xFE) >> 1;
+  if (image->endian == LSBEndian)
+    {
+      *fp32=mantissa32[0];
+      *(fp32+1)=mantissa32[1];
+      *(fp32+2)=((exponent & 1) << 7) | mantissa32[2];
+      *(fp32+3)=sign_bit | (exponent >> 1);
+      return;
+    }
+  *fp32=sign_bit | (exponent >> 1);
+  *(fp32+1)=((exponent & 0x01) << 7) | mantissa32[2];
+  *(fp32+2)=mantissa32[1];
+  *(fp32+3)=mantissa32[0];
+}
+
 static ssize_t TIFFReadCustomStream(unsigned char *data,const size_t count,
   void *user_data)
 {
@@ -1914,15 +1967,29 @@ RestoreMSCWarning
           strip_size;
 
         unsigned char
+          *photoshop_pixels,
           *strip_pixels;
 
         /*
           Convert stripped TIFF image.
         */
+        photoshop_pixels=(unsigned char *) NULL;
+        if (bits_per_sample == 24)
+          {
+            photoshop_pixels=(unsigned char *) AcquireQuantumMemory(
+              4*TIFFStripSize(tiff)/3+sizeof(uint32),sizeof(*strip_pixels));
+            if (photoshop_pixels == (unsigned char *) NULL)
+              ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
+          }
         strip_pixels=(unsigned char *) AcquireQuantumMemory(TIFFStripSize(tiff)+
           sizeof(uint32),sizeof(*strip_pixels));
         if (strip_pixels == (unsigned char *) NULL)
-          ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
+          {
+            if (photoshop_pixels != (unsigned char *) NULL)
+              photoshop_pixels=(unsigned char *) RelinquishMagickMemory(
+                photoshop_pixels);
+            ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
+          }
         (void) memset(strip_pixels,0,TIFFStripSize(tiff)*sizeof(*strip_pixels));
         stride=TIFFVStripSize(tiff,1);
         strip_id=0;
@@ -1967,8 +2034,26 @@ RestoreMSCWarning
                 p=strip_pixels;
                 strip_id++;
               }
-            (void) ImportQuantumPixels(image,(CacheView *) NULL,
-              quantum_info,quantum_type,p,exception);
+            if (bits_per_sample != 24)
+              (void) ImportQuantumPixels(image,(CacheView *) NULL,
+                quantum_info,quantum_type,p,exception);
+            else
+              {
+                unsigned char
+                  *fp24,
+                  *fp32;
+
+                fp24=p;
+                fp32=photoshop_pixels;
+                for (i=0; i < (ssize_t) stride; i++)
+                {
+                  PushPhotoshopPixel(image,fp24,fp32);
+                  fp24+=3;
+                  fp32+=4;
+                }
+                (void) ImportQuantumPixels(image,(CacheView *) NULL,
+                  quantum_info,quantum_type,photoshop_pixels,exception);
+            }
             p+=stride;
             rows_remaining--;
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -1985,6 +2070,9 @@ RestoreMSCWarning
             break;
         }
         strip_pixels=(unsigned char *) RelinquishMagickMemory(strip_pixels);
+        if (bits_per_sample == 24)
+          photoshop_pixels=(unsigned char *) RelinquishMagickMemory(
+            photoshop_pixels);
         break;
       }
       case ReadTileMethod:
