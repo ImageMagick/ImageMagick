@@ -174,14 +174,14 @@ static inline const unsigned char *PushQuantumFloatPixel(
       quantum[1]=(*pixels++);
       quantum[2]=(*pixels++);
       quantum[3]=(*pixels++);
-     }
-   else
-     {
-       quantum[3]=(*pixels++);
-       quantum[2]=(*pixels++);
-       quantum[1]=(*pixels++);
-       quantum[0]=(*pixels++);
-     }
+    }
+  else
+    {
+      quantum[3]=(*pixels++);
+      quantum[2]=(*pixels++);
+      quantum[1]=(*pixels++);
+      quantum[0]=(*pixels++);
+    }
   p=(float *) quantum;
   *pixel=(*p);
   *pixel-=quantum_info->minimum;
