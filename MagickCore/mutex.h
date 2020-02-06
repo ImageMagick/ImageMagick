@@ -32,7 +32,7 @@ extern "C" {
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 static omp_lock_t
-  translation_unit_mutex = 0;
+  translation_unit_mutex;
 #elif defined(MAGICKCORE_THREAD_SUPPORT)
 static pthread_mutex_t
   translation_unit_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -58,8 +58,6 @@ static inline void InitializeMagickMutex(void)
 static inline void LockMagickMutex(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  if (translation_unit_mutex == 0)
-    InitializeMagickMutex();
   omp_set_lock(&translation_unit_mutex);
 #elif defined(MAGICKCORE_THREAD_SUPPORT)
   {
