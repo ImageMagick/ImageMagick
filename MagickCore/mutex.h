@@ -32,7 +32,7 @@ extern "C" {
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 static MagickBooleanType
-   translation_unit_initialized = MagickFalse;
+  translation_unit_initialized = MagickFalse;
 
 static omp_lock_t
   translation_unit_mutex;
