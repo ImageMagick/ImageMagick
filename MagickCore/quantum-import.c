@@ -2033,12 +2033,12 @@ static void ImportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
         black,
         white;
 
-      black=0;
+      black=(Quantum) 0;
       white=QuantumRange;
       if (quantum_info->min_is_white != MagickFalse)
         {
           black=QuantumRange;
-          white=0;
+          white=(Quantum) 0;
         }
       for (x=0; x < ((ssize_t) number_pixels-7); x+=8)
       {
@@ -2247,6 +2247,18 @@ static void ImportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
             p=PushShortPixel(quantum_info->endian,p,&pixel);
             SetPixelGray(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
+            p+=quantum_info->pad;
+            q+=GetPixelChannels(image);
+          }
+          break;
+        }
+      if (quantum_info->format == SignedQuantumFormat)
+        {
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            p=PushShortPixel(quantum_info->endian,p,&pixel);
+            pixel=(unsigned short) (((unsigned int) pixel+32768) % 65536);
+            SetPixelGray(image,ScaleShortToQuantum(pixel),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
           }
@@ -2765,9 +2777,9 @@ static void ImportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelIndex(image,PushColormapIndex(image,ClampToQuantum(
-              (double) QuantumRange*HalfToSinglePrecision(pixel)),
-              &range_exception),q);
+            SetPixelIndex(image,PushColormapIndex(image,(size_t)
+              ClampToQuantum((double) QuantumRange*
+              HalfToSinglePrecision(pixel)),&range_exception),q);
             SetPixelViaPixelInfo(image,image->colormap+(ssize_t)
               GetPixelIndex(image,q),q);
             p+=quantum_info->pad;
@@ -2799,8 +2811,8 @@ static void ImportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
             p=PushQuantumFloatPixel(quantum_info,p,&pixel);
-            SetPixelIndex(image,PushColormapIndex(image,ClampToQuantum(pixel),
-              &range_exception),q);
+            SetPixelIndex(image,PushColormapIndex(image,(size_t)
+              ClampToQuantum(pixel),&range_exception),q);
             SetPixelViaPixelInfo(image,image->colormap+(ssize_t)
               GetPixelIndex(image,q),q);
             p+=quantum_info->pad;
@@ -2829,8 +2841,8 @@ static void ImportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
             p=PushDoublePixel(quantum_info,p,&pixel);
-            SetPixelIndex(image,PushColormapIndex(image,ClampToQuantum(pixel),
-              &range_exception),q);
+            SetPixelIndex(image,PushColormapIndex(image,(size_t)
+              ClampToQuantum(pixel),&range_exception),q);
             SetPixelViaPixelInfo(image,image->colormap+(ssize_t)
               GetPixelIndex(image,q),q);
             p+=quantum_info->pad;
@@ -2969,9 +2981,9 @@ static void ImportIndexAlphaQuantum(const Image *image,
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelIndex(image,PushColormapIndex(image,ClampToQuantum(
-              (double) QuantumRange*HalfToSinglePrecision(pixel)),
-              &range_exception),q);
+            SetPixelIndex(image,PushColormapIndex(image,(size_t)
+              ClampToQuantum((double) QuantumRange*
+              HalfToSinglePrecision(pixel)),&range_exception),q);
             SetPixelViaPixelInfo(image,image->colormap+(ssize_t)
               GetPixelIndex(image,q),q);
             p=PushShortPixel(quantum_info->endian,p,&pixel);
@@ -3008,7 +3020,7 @@ static void ImportIndexAlphaQuantum(const Image *image,
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
             p=PushQuantumFloatPixel(quantum_info,p,&pixel);
-            SetPixelIndex(image,PushColormapIndex(image,
+            SetPixelIndex(image,PushColormapIndex(image,(size_t)
               ClampToQuantum(pixel),&range_exception),q);
             SetPixelViaPixelInfo(image,image->colormap+(ssize_t)
               GetPixelIndex(image,q),q);
@@ -3042,8 +3054,8 @@ static void ImportIndexAlphaQuantum(const Image *image,
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
             p=PushDoublePixel(quantum_info,p,&pixel);
-            SetPixelIndex(image,PushColormapIndex(image,ClampToQuantum(pixel),
-              &range_exception),q);
+            SetPixelIndex(image,PushColormapIndex(image,(size_t)
+              ClampToQuantum(pixel),&range_exception),q);
             SetPixelViaPixelInfo(image,image->colormap+(ssize_t)
               GetPixelIndex(image,q),q);
             p=PushDoublePixel(quantum_info,p,&pixel);
