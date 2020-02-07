@@ -98,4 +98,20 @@ static inline void SkipMagickByteBuffer(MagickByteBuffer *buffer,
     buffer->offset+=length;
 }
 
+static inline MagickBooleanType SkipMagickByteBufferUntil(
+  MagickByteBuffer *buffer,const int p)
+{
+  int
+    c;
+
+  c=ReadMagickByteBuffer(buffer);
+  while (c != p)
+  {
+    c=ReadMagickByteBuffer(buffer);
+    if (c == EOF)
+      return(MagickFalse);
+  }
+  return(MagickTrue);
+}
+
 #endif

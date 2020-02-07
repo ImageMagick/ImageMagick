@@ -315,6 +315,11 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
         c=ReadMagickByteBuffer(&buffer);
         if ((c == '%') || (c == '!'))
           break;
+        if (c == 'B')
+          {
+            buffer.offset--;
+            break;
+          }
         continue;
       }
       default:
@@ -403,18 +408,21 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
         /*
           Read ICC profile.
         */
-        ps_info->icc_profile=AcquireStringInfo(MagickPathExtent);
-        datum=GetStringInfoDatum(ps_info->icc_profile);
-        for (i=0; (c=ProfileInteger(&buffer,hex_digits)) != EOF; i++)
-        {
-          if (i >= (ssize_t) GetStringInfoLength(ps_info->icc_profile))
+        if (SkipMagickByteBufferUntil(&buffer,'\n') != MagickFalse)
+          {
+            ps_info->icc_profile=AcquireStringInfo(MagickPathExtent);
+            datum=GetStringInfoDatum(ps_info->icc_profile);
+            for (i=0; (c=ProfileInteger(&buffer,hex_digits)) != EOF; i++)
             {
-              SetStringInfoLength(ps_info->icc_profile,(size_t) i << 1);
-              datum=GetStringInfoDatum(ps_info->icc_profile);
+              if (i >= (ssize_t) GetStringInfoLength(ps_info->icc_profile))
+                {
+                  SetStringInfoLength(ps_info->icc_profile,(size_t) i << 1);
+                  datum=GetStringInfoDatum(ps_info->icc_profile);
+                }
+              datum[i]=(unsigned char) c;
             }
-          datum[i]=(unsigned char) c;
-        }
-        SetStringInfoLength(ps_info->icc_profile,(size_t) i+1);
+            SetStringInfoLength(ps_info->icc_profile,(size_t) i+1);
+          }
         continue;
       }
     if ((ps_info->photoshop_profile == (StringInfo *) NULL) &&
@@ -437,17 +445,20 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
         if ((MagickSizeType) extent > GetBlobSize(image))
           continue;
         length=(size_t) extent;
-        ps_info->photoshop_profile=AcquireStringInfo(length+1U);
-        q=GetStringInfoDatum(ps_info->photoshop_profile);
-        while (extent > 0)
-        {
-          c=ProfileInteger(&buffer,hex_digits);
-          if (c == EOF)
-            break;
-          *q++=(unsigned char) c;
-          extent-=MagickMin(extent,2);
-        }
-        SetStringInfoLength(ps_info->photoshop_profile,length);
+        if (SkipMagickByteBufferUntil(&buffer,'\n') != MagickFalse)
+          {
+            ps_info->photoshop_profile=AcquireStringInfo(length+1U);
+            q=GetStringInfoDatum(ps_info->photoshop_profile);
+            while (extent > 0)
+            {
+              c=ProfileInteger(&buffer,hex_digits);
+              if (c == EOF)
+                break;
+              *q++=(unsigned char) c;
+              extent-=MagickMin(extent,2);
+            }
+            SetStringInfoLength(ps_info->photoshop_profile,length);
+          }
         continue;
       }
     if (image_info->page != (char *) NULL)
