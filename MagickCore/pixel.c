@@ -218,13 +218,13 @@ MagickExport void ConformPixelInfo(Image *image,const PixelInfo *source,
   *destination=(*source);
   if (image->colorspace == CMYKColorspace)
     {
-      if (IssRGBCompatibleColorspace(destination->colorspace))
+      if (IssRGBCompatibleColorspace(destination->colorspace) != MagickFalse)
         ConvertRGBToCMYK(destination);
     }
   else
     if (destination->colorspace == CMYKColorspace)
       {
-        if (IssRGBCompatibleColorspace(image->colorspace))
+        if (IssRGBCompatibleColorspace(image->colorspace) != MagickFalse)
           ConvertCMYKToRGB(destination);
       }
   if ((IsPixelInfoGray(&image->background_color) == MagickFalse) &&
