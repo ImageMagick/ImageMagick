@@ -275,6 +275,9 @@ MagickExport const char *GetMagickFeatures(void)
   " "
 #endif
 #endif
+#if defined(MAGICKCORE_HAVE_TCMALLOC)
+  "TCMalloc "
+#endif
 #if defined(ZERO_CONFIGURATION_SUPPORT)
   "Zero-configuration "
 #endif
