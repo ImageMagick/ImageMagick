@@ -145,7 +145,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     *c;
 
   const char
-    *artifact;
+    *artifact,
+    *metric = "";
 
   double
     max_threshold,
@@ -162,6 +163,9 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 
   MatrixInfo
     *equivalences;
+
+  RectangleInfo
+    bounding_box;
 
   register ssize_t
     i;
@@ -564,6 +568,83 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         object[top_objects[i].id].merge=MagickTrue;
       top_objects=(CCObjectInfo *) RelinquishMagickMemory(top_objects);
     }
+  artifact=GetImageArtifact(image,"connected-components:perimeter-threshold");
+  if (artifact != (const char *) NULL)
+    {
+      /*
+        Merge any object not within the min and max perimeter threshold.
+      */
+      (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
+      metric="perimeter";
+      for (i=0; i < (ssize_t) component_image->colors; i++)
+        object[i].metric=0.0;
+      component_view=AcquireAuthenticCacheView(component_image,exception);
+      object_view=AcquireVirtualCacheView(component_image,exception);
+      for (i=0; i < (ssize_t) component_image->colors; i++)
+      {
+        register ssize_t
+          j;
+
+        /*
+          Compute perimeter of each object.
+        */
+        if (status == MagickFalse)
+          continue;
+        bounding_box=object[i].bounding_box;
+        for (y=0; y < (ssize_t) bounding_box.height; y++)
+        {
+          register const Quantum
+            *magick_restrict p;
+
+          register ssize_t
+            x;
+
+          if (status == MagickFalse)
+            continue;
+          p=GetCacheViewVirtualPixels(component_view,bounding_box.x,
+            bounding_box.y+y,bounding_box.width,1,exception);
+          if (p == (const Quantum *) NULL)
+            {
+              status=MagickFalse;
+              continue;
+            }
+          for (x=0; x < (ssize_t) bounding_box.width; x++)
+          {
+            if (status == MagickFalse)
+              continue;
+            j=(ssize_t) GetPixelIndex(component_image,p);
+            if (j == i)
+              for (n=0; n < (ssize_t) 2; n++)
+              {
+                register const Quantum
+                  *p;
+
+                if (status == MagickFalse)
+                  continue;
+                dx=connect4[n][1];
+                dy=connect4[n][0];
+                p=GetCacheViewVirtualPixels(object_view,bounding_box.x+x+dx,
+                  bounding_box.y+y+dy,1,1,exception);
+                if (p == (const Quantum *) NULL)
+                  {
+                    status=MagickFalse;
+                    break;
+                  }
+                j=(ssize_t) GetPixelIndex(component_image,p);
+                if (j != i)
+                  object[i].metric+=2;
+              }
+            p+=GetPixelChannels(component_image);
+          }
+        }
+      }
+      object_view=DestroyCacheView(object_view);
+      component_view=DestroyCacheView(component_view);
+      for (i=0; i < (ssize_t) component_image->colors; i++)
+        if (((object[i].metric < min_threshold) ||
+             (object[i].metric >= max_threshold)) && (i != background_id))
+          object[i].merge=MagickTrue;
+    }
   artifact=GetImageArtifact(image,"connected-components:remove-colors");
   if (artifact != (const char *) NULL)
     {
@@ -632,9 +713,6 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   object_view=AcquireVirtualCacheView(component_image,exception);
   for (i=0; i < (ssize_t) component_image->colors; i++)
   {
-    RectangleInfo
-      bounding_box;
-
     register ssize_t
       j;
 
@@ -819,8 +897,12 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           artifact=GetImageArtifact(image,
             "connected-components:exclude-header");
           if (IsStringTrue(artifact) == MagickFalse)
-            (void) fprintf(stdout,
-              "Objects (id: bounding-box centroid area mean-color):\n");
+            {
+              (void) fprintf(stdout,"Objects (id: bounding-box centroid area");
+              if (*metric != '\0')
+                (void) fprintf(stdout," %s",metric);
+              (void) fprintf(stdout," mean-color):\n");
+            }
           for (i=0; i < (ssize_t) component_image->colors; i++)
             if (object[i].census > 0.0)
               {
@@ -829,12 +911,15 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 
                 GetColorTuple(&object[i].color,MagickFalse,mean_color);
                 (void) fprintf(stdout,
-                  "  %.20g: %.20gx%.20g%+.20g%+.20g %.1f,%.1f %.20g %s\n",
+                  "  %.20g: %.20gx%.20g%+.20g%+.20g %.1f,%.1f %.20g",
                   (double) object[i].id,(double) object[i].bounding_box.width,
                   (double) object[i].bounding_box.height,(double)
                   object[i].bounding_box.x,(double) object[i].bounding_box.y,
                   object[i].centroid.x,object[i].centroid.y,(double)
-                  object[i].area,mean_color);
+                  object[i].area);
+                if (*metric != '\0')
+                  (void) fprintf(stdout," %.20g",object[i].metric);
+                (void) fprintf(stdout," %s\n",mean_color);
               }
         }
     }
