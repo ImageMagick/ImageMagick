@@ -42,6 +42,9 @@ typedef struct _CCObjectInfo
 
   MagickBooleanType
     merge;
+
+  double
+    metric;
 } CCObjectInfo;
 
 extern MagickExport Image
