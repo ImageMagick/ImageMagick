@@ -180,9 +180,6 @@ struct _FxInfo
 MagickPrivate FxInfo *AcquireFxInfo(const Image *images,const char *expression,
   ExceptionInfo *exception)
 {
-  char
-    fx_op[2];
-
   const Image
     *next;
 
@@ -191,6 +188,9 @@ MagickPrivate FxInfo *AcquireFxInfo(const Image *images,const char *expression,
 
   register ssize_t
     i;
+
+  unsigned char
+    fx_op[2];
 
   fx_info=(FxInfo *) AcquireCriticalMemory(sizeof(*fx_info));
   (void) memset(fx_info,0,sizeof(*fx_info));
@@ -219,48 +219,48 @@ MagickPrivate FxInfo *AcquireFxInfo(const Image *images,const char *expression,
     Convert compound to simple operators.
   */
   fx_op[1]='\0';
-  *fx_op=(char) (BitwiseAndAssignmentOperator & 0xff);
-  (void) SubstituteString(&fx_info->expression,"&=",fx_op);
-  *fx_op=(char) (BitwiseOrAssignmentOperator & 0xff);
-  (void) SubstituteString(&fx_info->expression,"|=",fx_op);
-  *fx_op=(char) (LeftShiftAssignmentOperator & 0xff);
-  (void) SubstituteString(&fx_info->expression,"<<=",fx_op);
-  *fx_op=(char) (RightShiftAssignmentOperator & 0xff);
-  (void) SubstituteString(&fx_info->expression,">>=",fx_op);
-  *fx_op=(char) (PowerAssignmentOperator & 0xff);
-  (void) SubstituteString(&fx_info->expression,"^=",fx_op);
-  *fx_op=(char) (ModuloAssignmentOperator & 0xff);
-  (void) SubstituteString(&fx_info->expression,"%=",fx_op);
-  *fx_op=(char) (PlusAssignmentOperator & 0xff);
-  (void) SubstituteString(&fx_info->expression,"+=",fx_op);
-  *fx_op=(char) (SubtractAssignmentOperator & 0xff);
-  (void) SubstituteString(&fx_info->expression,"-=",fx_op);
-  *fx_op=(char) (MultiplyAssignmentOperator & 0xff);
-  (void) SubstituteString(&fx_info->expression,"*=",fx_op);
-  *fx_op=(char) (DivideAssignmentOperator & 0xff);
-  (void) SubstituteString(&fx_info->expression,"/=",fx_op);
-  *fx_op=(char) (IncrementAssignmentOperator & 0xff);
-  (void) SubstituteString(&fx_info->expression,"++",fx_op);
-  *fx_op=(char) (DecrementAssignmentOperator & 0xff);
-  (void) SubstituteString(&fx_info->expression,"--",fx_op);
-  *fx_op=(char) (LeftShiftOperator & 0xff);
-  (void) SubstituteString(&fx_info->expression,"<<",fx_op);
-  *fx_op=(char) (RightShiftOperator & 0xff);
-  (void) SubstituteString(&fx_info->expression,">>",fx_op);
-  *fx_op=(char) (LessThanEqualOperator & 0xff);
-  (void) SubstituteString(&fx_info->expression,"<=",fx_op);
-  *fx_op=(char) (GreaterThanEqualOperator & 0xff);
-  (void) SubstituteString(&fx_info->expression,">=",fx_op);
-  *fx_op=(char) (EqualOperator & 0xff);
-  (void) SubstituteString(&fx_info->expression,"==",fx_op);
-  *fx_op=(char) (NotEqualOperator & 0xff);
-  (void) SubstituteString(&fx_info->expression,"!=",fx_op);
-  *fx_op=(char) (LogicalAndOperator & 0xff);
-  (void) SubstituteString(&fx_info->expression,"&&",fx_op);
-  *fx_op=(char) (LogicalOrOperator & 0xff);
-  (void) SubstituteString(&fx_info->expression,"||",fx_op);
-  *fx_op=(char) (ExponentialNotation & 0xff);
-  (void) SubstituteString(&fx_info->expression,"**",fx_op);
+  *fx_op=(unsigned char) BitwiseAndAssignmentOperator;
+  (void) SubstituteString(&fx_info->expression,"&=",(char *) fx_op);
+  *fx_op=(unsigned char) BitwiseOrAssignmentOperator;
+  (void) SubstituteString(&fx_info->expression,"|=",(char *) fx_op);
+  *fx_op=(unsigned char) LeftShiftAssignmentOperator;
+  (void) SubstituteString(&fx_info->expression,"<<=",(char *) fx_op);
+  *fx_op=(unsigned char) RightShiftAssignmentOperator;
+  (void) SubstituteString(&fx_info->expression,">>=",(char *) fx_op);
+  *fx_op=(unsigned char) PowerAssignmentOperator;
+  (void) SubstituteString(&fx_info->expression,"^=",(char *) fx_op);
+  *fx_op=(unsigned char) ModuloAssignmentOperator;
+  (void) SubstituteString(&fx_info->expression,"%=",(char *) fx_op);
+  *fx_op=(unsigned char) PlusAssignmentOperator;
+  (void) SubstituteString(&fx_info->expression,"+=",(char *) fx_op);
+  *fx_op=(unsigned char) SubtractAssignmentOperator;
+  (void) SubstituteString(&fx_info->expression,"-=",(char *) fx_op);
+  *fx_op=(unsigned char) MultiplyAssignmentOperator;
+  (void) SubstituteString(&fx_info->expression,"*=",(char *) fx_op);
+  *fx_op=(unsigned char) DivideAssignmentOperator;
+  (void) SubstituteString(&fx_info->expression,"/=",(char *) fx_op);
+  *fx_op=(unsigned char) IncrementAssignmentOperator;
+  (void) SubstituteString(&fx_info->expression,"++",(char *) fx_op);
+  *fx_op=(unsigned char) DecrementAssignmentOperator;
+  (void) SubstituteString(&fx_info->expression,"--",(char *) fx_op);
+  *fx_op=(unsigned char) LeftShiftOperator;
+  (void) SubstituteString(&fx_info->expression,"<<",(char *) fx_op);
+  *fx_op=(unsigned char) RightShiftOperator;
+  (void) SubstituteString(&fx_info->expression,">>",(char *) fx_op);
+  *fx_op=(unsigned char) LessThanEqualOperator;
+  (void) SubstituteString(&fx_info->expression,"<=",(char *) fx_op);
+  *fx_op=(unsigned char) GreaterThanEqualOperator;
+  (void) SubstituteString(&fx_info->expression,">=",(char *) fx_op);
+  *fx_op=(unsigned char) EqualOperator;
+  (void) SubstituteString(&fx_info->expression,"==",(char *) fx_op);
+  *fx_op=(unsigned char) NotEqualOperator;
+  (void) SubstituteString(&fx_info->expression,"!=",(char *) fx_op);
+  *fx_op=(unsigned char) LogicalAndOperator;
+  (void) SubstituteString(&fx_info->expression,"&&",(char *) fx_op);
+  *fx_op=(unsigned char) LogicalOrOperator;
+  (void) SubstituteString(&fx_info->expression,"||",(char *) fx_op);
+  *fx_op=(unsigned char) ExponentialNotation;
+  (void) SubstituteString(&fx_info->expression,"**",(char *) fx_op);
   /*
     Force right-to-left associativity for unary negation.
   */
