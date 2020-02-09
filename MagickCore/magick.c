@@ -1089,6 +1089,7 @@ static void *DestroyMagickNode(void *magick_info)
 
 static MagickBooleanType IsMagickTreeInstantiated(ExceptionInfo *exception)
 {
+  (void) exception;
   if (magick_list_initialized == MagickFalse)
     {
       if (magick_semaphore == (SemaphoreInfo *) NULL)

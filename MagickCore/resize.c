@@ -2383,7 +2383,7 @@ static inline void Hq2X(const Image *source,const Quantum *pixels,
   const int pattern3[] = { Rotated(pattern2) };
   const int pattern4[] = { Rotated(pattern3) };
 #undef Rotated
-
+  (void) source;
   Hq2XHelper(Hq2XTable[Hq2XPatternToNumber(pattern1)],pixels,result,0,
     channels,4,0,1,3,5,7);
   Hq2XHelper(Hq2XTable[Hq2XPatternToNumber(pattern2)],pixels,result,1,

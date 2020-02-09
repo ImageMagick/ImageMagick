@@ -2645,7 +2645,7 @@ MagickPrivate MagickBooleanType OpenCLThrowMagickException(
   assert(device != (MagickCLDevice) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-
+  (void) exception;
   status=MagickTrue;
   if (severity != 0)
   {

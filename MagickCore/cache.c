@@ -322,6 +322,7 @@ MagickExport void *AcquirePixelCachePixels(const Image *image,size_t *length,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   assert(image->cache != (Cache) NULL);
+  (void) exception;
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickCoreSignature);
   *length=0;
