@@ -1635,7 +1635,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     FT_Vector_Transform(&glyph.origin,&affine);
     (void) FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
     ft_status=FT_Glyph_To_Bitmap(&glyph.image,ft_render_mode_normal,
-      (FT_Vector *) NULL,True);
+      (FT_Vector *) NULL,MagickTrue);
     if (ft_status != 0)
       continue;
     bitmap=(FT_BitmapGlyph) glyph.image;
