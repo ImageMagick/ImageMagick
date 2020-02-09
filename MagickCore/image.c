@@ -105,28 +105,6 @@
 #include "MagickCore/xwindow-private.h"
 
 /*
-  Constant declaration.
-*/
-const char
-  BackgroundColor[] = "#ffffff",  /* white */
-  BorderColor[] = "#dfdfdf",  /* gray */
-  DefaultTileFrame[] = "15x15+3+3",
-  DefaultTileGeometry[] = "120x120+4+3>",
-  DefaultTileLabel[] = "%f\n%G\n%b",
-  ForegroundColor[] = "#000",  /* black */
-  LoadImageTag[] = "Load/Image",
-  LoadImagesTag[] = "Load/Images",
-  MatteColor[] = "#bdbdbd",  /* gray */
-  PSDensityGeometry[] = "72.0x72.0",
-  PSPageGeometry[] = "612x792",
-  SaveImageTag[] = "Save/Image",
-  SaveImagesTag[] = "Save/Images",
-  TransparentColor[] = "#00000000";  /* transparent black */
-
-const double
-  DefaultResolution = 72.0;
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %

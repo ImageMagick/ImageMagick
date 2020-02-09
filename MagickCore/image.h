@@ -497,19 +497,6 @@ struct _ImageInfo
 extern MagickExport ChannelType
   SetImageChannelMask(Image *,const ChannelType);
 
-extern MagickExport const char
-  DefaultTileGeometry[],
-  DefaultTileLabel[],
-  LoadImageTag[],
-  LoadImagesTag[],
-  PSDensityGeometry[],
-  PSPageGeometry[],
-  SaveImageTag[],
-  SaveImagesTag[];
-
-extern MagickExport const double
-  DefaultResolution;
-
 extern MagickExport ExceptionType
   CatchImageException(Image *);
 
