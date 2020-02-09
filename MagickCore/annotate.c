@@ -1635,7 +1635,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     FT_Vector_Transform(&glyph.origin,&affine);
     (void) FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
     ft_status=FT_Glyph_To_Bitmap(&glyph.image,ft_render_mode_normal,
-      (FT_Vector *) NULL,MagickTrue);
+      (FT_Vector *) NULL,True);
     if (ft_status != 0)
       continue;
     bitmap=(FT_BitmapGlyph) glyph.image;
@@ -1713,11 +1713,13 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
                   q+=GetPixelChannels(image);
                 continue;
               }
-            if (bitmap->bitmap.pixel_mode != ft_pixel_mode_mono)
+            fill_opacity=1.0;
+            if (bitmap->bitmap.pixel_mode == ft_pixel_mode_grays)
               fill_opacity=(double) (r[n])/(bitmap->bitmap.num_grays-1);
             else
-              fill_opacity=((r[(x >> 3)+y*bitmap->bitmap.pitch] &
-                (1 << (~x & 0x07)))) == 0 ? 0.0 : 1.0;
+              if (bitmap->bitmap.pixel_mode == ft_pixel_mode_mono)
+                fill_opacity=((r[(x >> 3)+y*bitmap->bitmap.pitch] &
+                  (1 << (~x & 0x07)))) == 0 ? 0.0 : 1.0;
             if (draw_info->text_antialias == MagickFalse)
               fill_opacity=fill_opacity >= 0.5 ? 1.0 : 0.0;
             if (active == MagickFalse)
