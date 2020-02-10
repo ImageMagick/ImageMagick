@@ -609,7 +609,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   } while (LocaleNCompare((char *) text,MagickTXTID,strlen(MagickTXTID)) == 0);
   (void) CloseBlob(image);
   if (status == MagickFalse)
-    return(DestroyImageList(image));
+    (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageWarning,
+      "InsufficientImageDataInFile","`%s'",image->filename);
   return(GetFirstImageInList(image));
 }
 
