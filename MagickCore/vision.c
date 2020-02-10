@@ -898,10 +898,11 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             "connected-components:exclude-header");
           if (IsStringTrue(artifact) == MagickFalse)
             {
-              (void) fprintf(stdout,"Objects (id: bounding-box centroid area");
+              (void) fprintf(stdout,
+                "Objects (id: bounding-box centroid area mean-color");
               if (*metric != '\0')
                 (void) fprintf(stdout," %s",metric);
-              (void) fprintf(stdout," mean-color):\n");
+              (void) fprintf(stdout,"):\n");
             }
           for (i=0; i < (ssize_t) component_image->colors; i++)
             if (object[i].census > 0.0)
@@ -911,15 +912,15 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 
                 GetColorTuple(&object[i].color,MagickFalse,mean_color);
                 (void) fprintf(stdout,
-                  "  %.20g: %.20gx%.20g%+.20g%+.20g %.1f,%.1f %.20g",
+                  "  %.20g: %.20gx%.20g%+.20g%+.20g %.1f,%.1f %.20g %s",
                   (double) object[i].id,(double) object[i].bounding_box.width,
                   (double) object[i].bounding_box.height,(double)
                   object[i].bounding_box.x,(double) object[i].bounding_box.y,
                   object[i].centroid.x,object[i].centroid.y,(double)
-                  object[i].area);
+                  object[i].area,mean_color);
                 if (*metric != '\0')
                   (void) fprintf(stdout," %.20g",object[i].metric);
-                (void) fprintf(stdout," %s\n",mean_color);
+                (void) fprintf(stdout,"\n");
               }
         }
     }
