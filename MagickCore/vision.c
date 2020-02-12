@@ -582,61 +582,79 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       object_view=AcquireVirtualCacheView(component_image,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
       {
-        register ssize_t
-          j;
+        size_t
+          B1,
+          B2,
+          B3,
+          Bd;
 
         /*
           Compute perimeter of each object.
         */
         if (status == MagickFalse)
           continue;
+        B1=0;
+        B2=0;
+        B3=0;
+        Bd=0;
         bounding_box=object[i].bounding_box;
-        for (y=0; y < (ssize_t) bounding_box.height; y++)
+        for (y=(-1); y < (ssize_t) bounding_box.height+1; y++)
         {
-          register const Quantum
-            *magick_restrict p;
-
           register ssize_t
             x;
 
           if (status == MagickFalse)
             continue;
-          p=GetCacheViewVirtualPixels(component_view,bounding_box.x,
-            bounding_box.y+y,bounding_box.width,1,exception);
-          if (p == (const Quantum *) NULL)
-            {
-              status=MagickFalse;
-              continue;
-            }
-          for (x=0; x < (ssize_t) bounding_box.width; x++)
+          for (x=(-1); x < (ssize_t) bounding_box.width+1; x++)
           {
-            if (status == MagickFalse)
-              continue;
-            j=(ssize_t) GetPixelIndex(component_image,p);
-            if (j == i)
-              for (n=0; n < (ssize_t) 2; n++)
-              {
-                register const Quantum
-                  *p;
+            Quantum
+              pattern[4];
 
-                if (status == MagickFalse)
-                  continue;
-                dx=connect4[n][1];
-                dy=connect4[n][0];
-                p=GetCacheViewVirtualPixels(object_view,bounding_box.x+x+dx,
-                  bounding_box.y+y+dy,1,1,exception);
-                if (p == (const Quantum *) NULL)
-                  {
-                    status=MagickFalse;
-                    break;
-                  }
-                j=(ssize_t) GetPixelIndex(component_image,p);
-                if (j != i)
-                  object[i].metric+=2;
+            register const Quantum
+              *magick_restrict p;
+
+            register ssize_t
+              j;
+
+            size_t
+              foreground;
+
+            /*
+              An Algorithm for Calculating Objects’ Shape Features in Binary
+              Images, Lifeng He, Yuyan Chao.
+            */
+            p=GetCacheViewVirtualPixels(component_view,bounding_box.x+x,
+              bounding_box.y+y,2,2,exception);
+            if (p == (const Quantum *) NULL)
+              {
+                status=MagickFalse;
+                break;
               }
-            p+=GetPixelChannels(component_image);
+            foreground=0;
+            for (j=0; j < 4; j++)
+            {
+              pattern[j]=(ssize_t) GetPixelIndex(component_image,p);
+              if (pattern[j] == i)
+                foreground++;
+              p+=GetPixelChannels(component_image);
+            }
+            if (foreground == 1)
+              B1++;
+            else
+              if (foreground == 2)
+                {
+                  if (((pattern[0] == i) && (pattern[3] == i)) ||
+                      ((pattern[1] == i) && (pattern[2] == i)))
+                    Bd++;
+                  else
+                    B2++;
+                }
+              else
+                if (foreground == 3)
+                  B3++;
           }
         }
+        object[i].metric=MagickSQ1_2*B1+B2+MagickSQ1_2*B3+MagickSQ2*Bd;
       }
       object_view=DestroyCacheView(object_view);
       component_view=DestroyCacheView(component_view);
