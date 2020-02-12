@@ -654,7 +654,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
                   B3++;
           }
         }
-        object[i].metric=MagickSQ1_2*B1+B2+MagickSQ1_2*B3+MagickSQ2*Bd;
+        object[i].metric=ceil(MagickSQ1_2*B1+B2+MagickSQ1_2*B3+
+          MagickSQ2*Bd+MagickSQ2-0.5);
       }
       object_view=DestroyCacheView(object_view);
       component_view=DestroyCacheView(component_view);
