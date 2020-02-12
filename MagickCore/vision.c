@@ -576,8 +576,6 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       */
       (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metric="perimeter";
-      for (i=0; i < (ssize_t) component_image->colors; i++)
-        object[i].metric=0.0;
       component_view=AcquireAuthenticCacheView(component_image,exception);
       object_view=AcquireVirtualCacheView(component_image,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
