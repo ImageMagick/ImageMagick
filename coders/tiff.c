@@ -1906,6 +1906,9 @@ RestoreMSCWarning
         register unsigned char
           *p;
 
+        size_t
+          extent;
+
         ssize_t
           stride,
           strip_id;
@@ -1919,11 +1922,12 @@ RestoreMSCWarning
         /*
           Convert stripped TIFF image.
         */
-        strip_pixels=(unsigned char *) AcquireQuantumMemory(TIFFStripSize(tiff)+
-          sizeof(uint32),sizeof(*strip_pixels));
+        extent=TIFFStripSize(tiff)+sizeof(uint32);
+        strip_pixels=(unsigned char *) AcquireQuantumMemory(extent,
+          sizeof(*strip_pixels));
         if (strip_pixels == (unsigned char *) NULL)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-        (void) memset(strip_pixels,0,TIFFStripSize(tiff)*sizeof(*strip_pixels));
+        (void) memset(strip_pixels,0,extent*sizeof(*strip_pixels));
         stride=TIFFVStripSize(tiff,1);
         strip_id=0;
         p=strip_pixels;
@@ -1992,6 +1996,9 @@ RestoreMSCWarning
         register unsigned char
           *p;
 
+        size_t
+          extent;
+
         uint32
           columns,
           rows;
@@ -2011,8 +2018,9 @@ RestoreMSCWarning
         number_pixels=(MagickSizeType) columns*rows;
         if (HeapOverflowSanityCheck(rows,sizeof(*tile_pixels)) != MagickFalse)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-        tile_pixels=(unsigned char *) AcquireQuantumMemory(TIFFTileSize(tiff)+
-          sizeof(uint32),sizeof(*tile_pixels));
+        extent=TIFFTileSize(tiff)+sizeof(uint32);
+        tile_pixels=(unsigned char *) AcquireQuantumMemory(extent,
+          sizeof(*tile_pixels));
         if (tile_pixels == (unsigned char *) NULL)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         (void) memset(tile_pixels,0,TIFFTileSize(tiff)*sizeof(*tile_pixels));
