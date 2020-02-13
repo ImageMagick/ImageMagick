@@ -587,21 +587,19 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       object_view=AcquireVirtualCacheView(component_image,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
       {
+        register ssize_t
+          j;
+
         size_t
-          B1,
-          B2,
-          B3,
-          Bd;
+          pattern[4];
 
         /*
           Compute perimeter of each object.
         */
         if (status == MagickFalse)
           continue;
-        B1=0;
-        B2=0;
-        B3=0;
-        Bd=0;
+        for (j=0; j < 4; j++)
+          pattern[j]=0;
         bounding_box=object[i].bounding_box;
         for (y=(-1); y < (ssize_t) bounding_box.height+1; y++)
         {
@@ -613,13 +611,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           for (x=(-1); x < (ssize_t) bounding_box.width+1; x++)
           {
             Quantum
-              pattern[4];
+              pixels[4];
 
             register const Quantum
               *magick_restrict p;
-
-            register ssize_t
-              j;
 
             size_t
               foreground;
@@ -638,29 +633,31 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             foreground=0;
             for (j=0; j < 4; j++)
             {
-              pattern[j]=(ssize_t) GetPixelIndex(component_image,p);
-              if (pattern[j] == i)
+              pixels[j]=GetPixelIndex(component_image,p);
+              if ((ssize_t) pixels[j] == i)
                 foreground++;
               p+=GetPixelChannels(component_image);
             }
             if (foreground == 1)
-              B1++;
+              pattern[0]++;
             else
               if (foreground == 2)
                 {
-                  if (((pattern[0] == i) && (pattern[3] == i)) ||
-                      ((pattern[1] == i) && (pattern[2] == i)))
-                    Bd++;
+                  if ((((ssize_t) pixels[0] == i) &&
+                       ((ssize_t) pixels[3] == i)) ||
+                      (((ssize_t) pixels[1] == i) &&
+                       ((ssize_t) pixels[2] == i)))
+                    pattern[3]++;  /* diagonal */
                   else
-                    B2++;
+                    pattern[1]++;
                 }
               else
                 if (foreground == 3)
-                  B3++;
+                  pattern[2]++;
           }
         }
-        object[i].metric=ceil(MagickSQ1_2*B1+B2+MagickSQ1_2*B3+
-          MagickSQ2*Bd+MagickSQ2-0.5);
+        object[i].metric=ceil(MagickSQ1_2*pattern[0]+pattern[1]+
+          MagickSQ1_2*pattern[2]+MagickSQ2*pattern[3]+MagickSQ2-0.5);
         if (artifact != (const char *) NULL)
           object[i].metric=4.0*MagickPI*object[i].area/(object[i].metric*
             object[i].metric);
