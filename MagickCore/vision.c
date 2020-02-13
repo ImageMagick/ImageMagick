@@ -509,6 +509,22 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         p=q+1;
       }
     }
+  artifact=GetImageArtifact(image,"connected-components:diameter-threshold");
+  if (artifact != (const char *) NULL)
+    {
+      /*
+        Merge any object not within the min and max diameter threshold.
+      */
+      (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
+      metric="diameter";
+      for (i=0; i < (ssize_t) component_image->colors; i++)
+      {
+        object[i].metric=ceil(sqrt(4.0*object[i].area/MagickPI)-0.5);
+        if (((object[i].area < min_threshold) ||
+             (object[i].area >= max_threshold)) && (i != background_id))
+          object[i].merge=MagickTrue;
+      }
+    }
   artifact=GetImageArtifact(image,"connected-components:keep-ids");
   if (artifact == (const char *) NULL)
     artifact=GetImageArtifact(image,"connected-components:keep");
@@ -598,21 +614,28 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         bounding_box=object[i].bounding_box;
         for (y=(-1); y < (ssize_t) bounding_box.height+1; y++)
         {
+          register const Quantum
+            *magick_restrict p;
+
           register ssize_t
             x;
 
           if (status == MagickFalse)
             continue;
+          p=GetCacheViewVirtualPixels(component_view,bounding_box.x-1,
+            bounding_box.y+y,bounding_box.width+2,2,exception);
+          if (p == (const Quantum *) NULL)
+            {
+              status=MagickFalse;
+              break;
+            }
           for (x=(-1); x < (ssize_t) bounding_box.width+1; x++)
           {
             Quantum
               pixels[4];
 
-            register const Quantum
-              *magick_restrict p;
-
             register ssize_t
-              j;
+              v;
 
             size_t
               foreground;
@@ -621,20 +644,24 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
               An Algorithm for Calculating Objects’ Shape Features in Binary
               Images, Lifeng He, Yuyan Chao.
             */
-            p=GetCacheViewVirtualPixels(component_view,bounding_box.x+x,
-              bounding_box.y+y,2,2,exception);
-            if (p == (const Quantum *) NULL)
-              {
-                status=MagickFalse;
-                break;
-              }
             foreground=0;
-            for (j=0; j < 4; j++)
+            for (v=0; v < 2; v++)
             {
-              pixels[j]=GetPixelIndex(component_image,p);
-              if ((ssize_t) pixels[j] == i)
-                foreground++;
-              p+=GetPixelChannels(component_image);
+              register ssize_t
+                u;
+
+              for (u=0; u < 2; u++)
+              {
+                ssize_t
+                  offset;
+
+                offset=v*(bounding_box.width+2)*
+                  GetPixelChannels(component_image)+u*
+                  GetPixelChannels(component_image);
+                pixels[2*v+u]=GetPixelIndex(component_image,p+offset);
+                if ((ssize_t) pixels[2*v+u] == i)
+                  foreground++;
+              }
             }
             if (foreground == 1)
               pattern[1]++;
@@ -652,6 +679,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
               else
                 if (foreground == 3)
                   pattern[3]++;
+            p+=GetPixelChannels(component_image);
           }
         }
         object[i].metric=ceil(MagickSQ1_2*pattern[1]+1.0*pattern[2]+
