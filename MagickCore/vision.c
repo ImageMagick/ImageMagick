@@ -587,19 +587,14 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       object_view=AcquireVirtualCacheView(component_image,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
       {
-        register ssize_t
-          j;
-
         size_t
-          pattern[4];
+          pattern[4] = { 0, 0, 0, 1 };
 
         /*
           Compute perimeter of each object.
         */
         if (status == MagickFalse)
           continue;
-        for (j=0; j < 4; j++)
-          pattern[j]=0;
         bounding_box=object[i].bounding_box;
         for (y=(-1); y < (ssize_t) bounding_box.height+1; y++)
         {
@@ -615,6 +610,9 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 
             register const Quantum
               *magick_restrict p;
+
+            register ssize_t
+              j;
 
             size_t
               foreground;
@@ -657,7 +655,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           }
         }
         object[i].metric=ceil(MagickSQ1_2*pattern[0]+pattern[1]+
-          MagickSQ1_2*pattern[2]+MagickSQ2*pattern[3]+MagickSQ2-0.5);
+          MagickSQ1_2*pattern[2]+MagickSQ2*pattern[3]-0.5);
         if (artifact != (const char *) NULL)
           object[i].metric=4.0*MagickPI*object[i].area/(object[i].metric*
             object[i].metric);
