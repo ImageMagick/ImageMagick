@@ -569,6 +569,9 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       top_objects=(CCObjectInfo *) RelinquishMagickMemory(top_objects);
     }
   artifact=GetImageArtifact(image,"connected-components:perimeter-threshold");
+  if (artifact == (const char *) NULL)
+    artifact=GetImageArtifact(image,
+      "connected-components:circularity-threshold");
   if (artifact != (const char *) NULL)
     {
       /*
@@ -576,6 +579,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       */
       (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metric="perimeter";
+      artifact=GetImageArtifact(image,
+        "connected-components:circularity-threshold");
+      if (artifact != (const char *) NULL)
+        metric="circularity";
       component_view=AcquireAuthenticCacheView(component_image,exception);
       object_view=AcquireVirtualCacheView(component_image,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
@@ -654,6 +661,9 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         }
         object[i].metric=ceil(MagickSQ1_2*B1+B2+MagickSQ1_2*B3+
           MagickSQ2*Bd+MagickSQ2-0.5);
+        if (artifact != (const char *) NULL)
+          object[i].metric=4.0*MagickPI*object[i].area/(object[i].metric*
+            object[i].metric);
       }
       object_view=DestroyCacheView(object_view);
       component_view=DestroyCacheView(component_view);
@@ -936,7 +946,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
                   object[i].centroid.x,object[i].centroid.y,(double)
                   object[i].area,mean_color);
                 if (*metric != '\0')
-                  (void) fprintf(stdout," %.20g",object[i].metric);
+                  (void) fprintf(stdout," %.*g",GetMagickPrecision(),
+                    object[i].metric);
                 (void) fprintf(stdout,"\n");
               }
         }
