@@ -588,7 +588,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       for (i=0; i < (ssize_t) component_image->colors; i++)
       {
         size_t
-          pattern[4] = { 0, 0, 0, 1 };
+          pattern[4] = { 1, 0, 0, 0 };
 
         /*
           Compute perimeter of each object.
@@ -637,7 +637,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
               p+=GetPixelChannels(component_image);
             }
             if (foreground == 1)
-              pattern[0]++;
+              pattern[1]++;
             else
               if (foreground == 2)
                 {
@@ -645,17 +645,17 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
                        ((ssize_t) pixels[3] == i)) ||
                       (((ssize_t) pixels[1] == i) &&
                        ((ssize_t) pixels[2] == i)))
-                    pattern[3]++;  /* diagonal */
+                    pattern[0]++;  /* diagonal */
                   else
-                    pattern[1]++;
+                    pattern[2]++;
                 }
               else
                 if (foreground == 3)
-                  pattern[2]++;
+                  pattern[3]++;
           }
         }
-        object[i].metric=ceil(MagickSQ1_2*pattern[0]+pattern[1]+
-          MagickSQ1_2*pattern[2]+MagickSQ2*pattern[3]-0.5);
+        object[i].metric=ceil(MagickSQ1_2*pattern[1]+1.0*pattern[2]+
+          MagickSQ1_2*pattern[3]+MagickSQ2*pattern[0]-0.5);
         if (artifact != (const char *) NULL)
           object[i].metric=4.0*MagickPI*object[i].area/(object[i].metric*
             object[i].metric);
