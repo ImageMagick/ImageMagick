@@ -22,6 +22,8 @@
 extern "C" {
 #endif
 
+#define CCMetrics  3
+
 typedef struct _CCObjectInfo
 {
   ssize_t
@@ -44,7 +46,7 @@ typedef struct _CCObjectInfo
     merge;
 
   double
-    metric;
+    metric[CCMetrics];
 } CCObjectInfo;
 
 extern MagickExport Image
