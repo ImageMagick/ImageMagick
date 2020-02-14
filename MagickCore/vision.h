@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#define CCMetrics  16
+#define CCMaxMetrics  3
 
 typedef struct _CCObjectInfo
 {
@@ -46,7 +46,7 @@ typedef struct _CCObjectInfo
     merge;
 
   double
-    metric[CCMetrics];
+    metric[CCMaxMetrics];
 } CCObjectInfo;
 
 extern MagickExport Image

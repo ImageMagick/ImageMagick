@@ -146,7 +146,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 
   const char
     *artifact,
-    *metrics[CCMetrics];
+    *metrics[CCMaxMetrics];
 
   double
     max_threshold,
@@ -438,7 +438,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     }
   background_id=0;
   min_threshold=0.0;
-  max_threshold=0.0;
+  max_threshold=HUGE_VAL;
   component_image->colors=(size_t) n;
   for (i=0; i < (ssize_t) component_image->colors; i++)
   {
@@ -927,6 +927,9 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         }
       for (x=0; x < (ssize_t) bounding_box.width; x++)
       {
+        register ssize_t
+          n;
+
         if (status == MagickFalse)
           continue;
         j=(ssize_t) GetPixelIndex(component_image,p);
