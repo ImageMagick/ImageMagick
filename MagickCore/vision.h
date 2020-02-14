@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#define CCMetrics  3
+#define CCMetrics  16
 
 typedef struct _CCObjectInfo
 {
