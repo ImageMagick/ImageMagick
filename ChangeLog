@@ -1,3 +1,12 @@
+2020-02-15  7.0.9-24 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.9-24, GIT revision 16...
+
+2020-02-15  7.0.9-24 Cristy  <quetzlzacatenango@image...>
+  * Support connected-components:eccentricity-threshold,
+    connected-components:major-axis-threshold,
+    connected-components:minor-axis-threshold,
+    connected-components:angle-threshold.
+
 2020-02-14  7.0.9-23 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-23, GIT revision 16884:acb56cd:20200214
 

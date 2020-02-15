@@ -1036,8 +1036,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           }
         }
         component_view=DestroyCacheView(component_view);
-        object[i].metric[n]=sqrt((2.0*PerceptibleReciprocal(M00))*((M20+M02)+
-          sqrt(4.0*M11*M11+(M20-M02)*(M20-M02))));
+        object[i].metric[n]=2.0*sqrt((2.0*PerceptibleReciprocal(M00))*
+          ((M20+M02)+sqrt(4.0*M11*M11+(M20-M02)*(M20-M02))));
       }
       for (i=0; i < (ssize_t) component_image->colors; i++)
         if (((object[i].metric[n] < min_threshold) ||
@@ -1138,8 +1138,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           }
         }
         component_view=DestroyCacheView(component_view);
-        object[i].metric[n]=sqrt((2.0*PerceptibleReciprocal(M00))*((M20+M02)-
-          sqrt(4.0*M11*M11+(M20-M02)*(M20-M02))));
+        object[i].metric[n]=2.0*sqrt((2.0*PerceptibleReciprocal(M00))*
+          ((M20+M02)-sqrt(4.0*M11*M11+(M20-M02)*(M20-M02))));
       }
       for (i=0; i < (ssize_t) component_image->colors; i++)
         if (((object[i].metric[n] < min_threshold) ||
