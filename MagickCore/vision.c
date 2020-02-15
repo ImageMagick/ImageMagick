@@ -647,7 +647,6 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         p=q+1;
       }
     }
-  artifact=GetImageArtifact(image,"connected-components:remove-ids");
   artifact=GetImageArtifact(image,"connected-components:diameter-threshold");
   if (artifact != (const char *) NULL)
     {
