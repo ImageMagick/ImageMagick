@@ -482,18 +482,32 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       */
       (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="circularity";
-      component_view=AcquireAuthenticCacheView(component_image,exception);
-      object_view=AcquireVirtualCacheView(component_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(dynamic) shared(status) \
+        magick_number_threads(component_image,component_image,component_image->colors,1)
+#endif
       for (i=0; i < (ssize_t) component_image->colors; i++)
       {
+        CacheView
+          *component_view,
+          *object_view;
+
+        RectangleInfo
+          bounding_box;
+
         size_t
           pattern[4] = { 1, 0, 0, 0 };
+
+        ssize_t
+          y;
 
         /*
           Compute perimeter of each object.
         */
         if (status == MagickFalse)
           continue;
+        component_view=AcquireAuthenticCacheView(component_image,exception);
+        object_view=AcquireVirtualCacheView(component_image,exception);
         bounding_box=object[i].bounding_box;
         for (y=(-1); y < (ssize_t) bounding_box.height+1; y++)
         {
@@ -565,13 +579,13 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             p+=GetPixelChannels(component_image);
           }
         }
+        object_view=DestroyCacheView(object_view);
+        component_view=DestroyCacheView(component_view);
         object[i].metric[n]=ceil(MagickSQ1_2*pattern[1]+1.0*pattern[2]+
           MagickSQ1_2*pattern[3]+MagickSQ2*pattern[0]-0.5);
         object[i].metric[n]=4.0*MagickPI*object[i].area/(object[i].metric[n]*
           object[i].metric[n]);
       }
-      object_view=DestroyCacheView(object_view);
-      component_view=DestroyCacheView(component_view);
       for (i=0; i < (ssize_t) component_image->colors; i++)
         if (((object[i].metric[n] < min_threshold) ||
              (object[i].metric[n] >= max_threshold)) && (i != background_id))
@@ -696,18 +710,32 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       */
       (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="perimeter";
-      component_view=AcquireAuthenticCacheView(component_image,exception);
-      object_view=AcquireVirtualCacheView(component_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(dynamic) shared(status) \
+        magick_number_threads(component_image,component_image,component_image->colors,1)
+#endif
       for (i=0; i < (ssize_t) component_image->colors; i++)
       {
+        CacheView
+          *component_view,
+          *object_view;
+
+        RectangleInfo
+          bounding_box;
+
         size_t
           pattern[4] = { 1, 0, 0, 0 };
+
+        ssize_t
+          y;
 
         /*
           Compute perimeter of each object.
         */
         if (status == MagickFalse)
           continue;
+        component_view=AcquireAuthenticCacheView(component_image,exception);
+        object_view=AcquireVirtualCacheView(component_image,exception);
         bounding_box=object[i].bounding_box;
         for (y=(-1); y < (ssize_t) bounding_box.height+1; y++)
         {
@@ -779,11 +807,11 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             p+=GetPixelChannels(component_image);
           }
         }
+        object_view=DestroyCacheView(object_view);
+        component_view=DestroyCacheView(component_view);
         object[i].metric[n]=ceil(MagickSQ1_2*pattern[1]+1.0*pattern[2]+
           MagickSQ1_2*pattern[3]+MagickSQ2*pattern[0]-0.5);
       }
-      object_view=DestroyCacheView(object_view);
-      component_view=DestroyCacheView(component_view);
       for (i=0; i < (ssize_t) component_image->colors; i++)
         if (((object[i].metric[n] < min_threshold) ||
              (object[i].metric[n] >= max_threshold)) && (i != background_id))
