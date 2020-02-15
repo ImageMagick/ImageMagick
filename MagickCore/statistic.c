@@ -1588,7 +1588,7 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
       sqrt(4.0*M11[channel]*M11[channel]+(M20[channel]-M02[channel])*
       (M20[channel]-M02[channel]))));
     channel_moments[channel].ellipse_angle=RadiansToDegrees(0.5*atan(2.0*
-      M11[channel]*PerceptibleReciprocal(M20[channel]-M02[channel]))));
+      M11[channel]*PerceptibleReciprocal(M20[channel]-M02[channel])));
     if (fabs(M11[channel]) < MagickEpsilon)
       {
         if (fabs(M20[channel]-M02[channel]) < MagickEpsilon)
