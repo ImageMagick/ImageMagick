@@ -469,7 +469,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         Merge any object not within the min and max ellipse angle threshold.
       */
       (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
-      metrics[++n]="ellipse-angle";
+      metrics[++n]="angle";
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(dynamic) shared(status) \
         magick_number_threads(component_image,component_image,component_image->colors,1)
@@ -949,7 +949,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         Merge any object not within the min and max ellipse major threshold.
       */
       (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
-      metrics[++n]="ellipse-major-axis";
+      metrics[++n]="major-axis";
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(dynamic) shared(status) \
         magick_number_threads(component_image,component_image,component_image->colors,1)
@@ -1051,7 +1051,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         Merge any object not within the min and max ellipse minor threshold.
       */
       (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
-      metrics[++n]="ellipse-minor-axis";
+      metrics[++n]="minor-axis";
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(dynamic) shared(status) \
         magick_number_threads(component_image,component_image,component_image->colors,1)
