@@ -1496,16 +1496,8 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
     /*
        Compute center of mass (centroid).
     */
-    if (M00[channel] < MagickEpsilon)
-      {
-        M00[channel]+=MagickEpsilon;
-        centroid[channel].x=(double) image->columns/2.0;
-        centroid[channel].y=(double) image->rows/2.0;
-        continue;
-      }
-    M00[channel]+=MagickEpsilon;
-    centroid[channel].x=M10[channel]/M00[channel];
-    centroid[channel].y=M01[channel]/M00[channel];
+    centroid[channel].x=M10[channel]*PerceptibleReciprocal(M00[channel]);
+    centroid[channel].y=M01[channel]*PerceptibleReciprocal(M00[channel]);
   }
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1587,14 +1579,16 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
       Compute elliptical angle, major and minor axes, eccentricity, & intensity.
     */
     channel_moments[channel].centroid=centroid[channel];
-    channel_moments[channel].ellipse_axis.x=sqrt((2.0/M00[channel])*
-      ((M20[channel]+M02[channel])+sqrt(4.0*M11[channel]*M11[channel]+
-      (M20[channel]-M02[channel])*(M20[channel]-M02[channel]))));
-    channel_moments[channel].ellipse_axis.y=sqrt((2.0/M00[channel])*
-      ((M20[channel]+M02[channel])-sqrt(4.0*M11[channel]*M11[channel]+
-      (M20[channel]-M02[channel])*(M20[channel]-M02[channel]))));
+    channel_moments[channel].ellipse_axis.x=sqrt((2.0*
+      PerceptibleReciprocal(M00[channel]))*((M20[channel]+M02[channel])+
+      sqrt(4.0*M11[channel]*M11[channel]+(M20[channel]-M02[channel])*
+      (M20[channel]-M02[channel]))));
+    channel_moments[channel].ellipse_axis.y=sqrt((2.0*
+      PerceptibleReciprocal(M00[channel]))*((M20[channel]+M02[channel])-
+      sqrt(4.0*M11[channel]*M11[channel]+(M20[channel]-M02[channel])*
+      (M20[channel]-M02[channel]))));
     channel_moments[channel].ellipse_angle=RadiansToDegrees(0.5*atan(2.0*
-      M11[channel]/(M20[channel]-M02[channel]+MagickEpsilon)));
+      M11[channel]*PerceptibleReciprocal(M20[channel]-M02[channel]))));
     if (fabs(M11[channel]) < MagickEpsilon)
       {
         if (fabs(M20[channel]-M02[channel]) < MagickEpsilon)
@@ -1640,14 +1634,14 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
     */
     M10[channel]=0.0;
     M01[channel]=0.0;
-    M11[channel]/=pow(M00[channel],1.0+(1.0+1.0)/2.0);
-    M20[channel]/=pow(M00[channel],1.0+(2.0+0.0)/2.0);
-    M02[channel]/=pow(M00[channel],1.0+(0.0+2.0)/2.0);
-    M21[channel]/=pow(M00[channel],1.0+(2.0+1.0)/2.0);
-    M12[channel]/=pow(M00[channel],1.0+(1.0+2.0)/2.0);
-    M22[channel]/=pow(M00[channel],1.0+(2.0+2.0)/2.0);
-    M30[channel]/=pow(M00[channel],1.0+(3.0+0.0)/2.0);
-    M03[channel]/=pow(M00[channel],1.0+(0.0+3.0)/2.0);
+    M11[channel]*=PerceptibleReciprocal(pow(M00[channel],1.0+(1.0+1.0)/2.0));
+    M20[channel]*=PerceptibleReciprocal(pow(M00[channel],1.0+(2.0+0.0)/2.0));
+    M02[channel]*=PerceptibleReciprocal(pow(M00[channel],1.0+(0.0+2.0)/2.0));
+    M21[channel]*=PerceptibleReciprocal(pow(M00[channel],1.0+(2.0+1.0)/2.0));
+    M12[channel]*=PerceptibleReciprocal(pow(M00[channel],1.0+(1.0+2.0)/2.0));
+    M22[channel]*=PerceptibleReciprocal(pow(M00[channel],1.0+(2.0+2.0)/2.0));
+    M30[channel]*=PerceptibleReciprocal(pow(M00[channel],1.0+(3.0+0.0)/2.0));
+    M03[channel]*=PerceptibleReciprocal(pow(M00[channel],1.0+(0.0+3.0)/2.0));
     M00[channel]=1.0;
   }
   image_view=DestroyCacheView(image_view);
