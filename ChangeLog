@@ -1,5 +1,5 @@
 2020-02-16  7.0.9-24 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.9-24, GIT revision 16905:18144da5b:20200216
+  * Release ImageMagick version 7.0.9-24, GIT revision 16907:83a409ef0:20200216
 
 2020-02-15  7.0.9-24 Cristy  <quetzlzacatenango@image...>
   * Support connected-components:eccentricity-threshold,
@@ -7,6 +7,7 @@
     connected-components:minor-axis-threshold,
     connected-components:angle-threshold.
   * Set the alpha channel if the write mask is not enabled.
+  * Corrected ellipse orientation when computing image moments.
 
 2020-02-14  7.0.9-23 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-23, GIT revision 16884:acb56cd:20200214
