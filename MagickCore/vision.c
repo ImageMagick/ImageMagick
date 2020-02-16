@@ -839,8 +839,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           sqrt(4.0*M11*M11+(M20-M02)*(M20-M02))));
         ellipse_axis.y=sqrt((2.0*PerceptibleReciprocal(M00))*((M20+M02)-
           sqrt(4.0*M11*M11+(M20-M02)*(M20-M02))));
-        object[i].metric[n]=sqrt(1.0-(ellipse_axis.y*
-          PerceptibleReciprocal(ellipse_axis.x)));
+        object[i].metric[n]=sqrt(1.0-(ellipse_axis.y*ellipse_axis.y*
+          PerceptibleReciprocal(ellipse_axis.x*ellipse_axis.x)));
       }
       for (i=0; i < (ssize_t) component_image->colors; i++)
         if (((object[i].metric[n] < min_threshold) ||
