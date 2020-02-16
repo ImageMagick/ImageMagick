@@ -1608,7 +1608,7 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
             if ((M20[channel]-M02[channel]) < 0.0)
               channel_moments[channel].ellipse_angle+=90.0;
             else
-              channel_moments[channel].ellipse_angle+=180.0;
+              channel_moments[channel].ellipse_angle+=0.0;
         }
       else
         {

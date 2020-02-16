@@ -578,7 +578,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
                 if ((M20-M02) < 0.0)
                   ellipse_angle+=90.0;
                 else
-                  ellipse_angle+=180.0;
+                  ellipse_angle+=0.0;
             }
         else
           {
