@@ -480,7 +480,6 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           *component_view;
 
         double
-          ellipse_angle,
           M00 = 0.0,
           M01 = 0.0,
           M02 = 0.0,
@@ -490,6 +489,9 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 
         PointInfo
           centroid = { 0.0, 0.0 };
+
+        PrimaryInfo
+          central = { 0.0, 0.0, 0.0 };
 
         RectangleInfo
           bounding_box;
@@ -557,40 +559,11 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           }
         }
         component_view=DestroyCacheView(component_view);
-        ellipse_angle=RadiansToDegrees(0.5*atan(2.0*M11*
-          PerceptibleReciprocal(M20-M02)));
-        if (fabs(M11) < MagickEpsilon)
-          {
-            if (fabs(M20-M02) < MagickEpsilon)
-              ellipse_angle+=0.0;
-            else
-              if ((M20-M02) < 0.0)
-                ellipse_angle+=90.0;
-              else
-                ellipse_angle+=0.0;
-          }
-        else
-          if (M11 < 0.0)
-            {
-              if (fabs(M20-M02) < MagickEpsilon)
-                ellipse_angle+=0.0;
-              else
-                if ((M20-M02) < 0.0)
-                  ellipse_angle+=90.0;
-                else
-                  ellipse_angle+=0.0;
-            }
-        else
-          {
-            if (fabs(M20-M02) < MagickEpsilon)
-              ellipse_angle+=0.0;
-            else
-              if ((M20-M02) < 0.0)
-                ellipse_angle+=90.0;
-              else
-                ellipse_angle+=0.0;
-          }
-        object[i].metric[n]=ceil(ellipse_angle-0.5);
+        central.x=M20*PerceptibleReciprocal(M00)-centroid.x*centroid.x;
+        central.y=2.0*(M11*PerceptibleReciprocal(M00)-centroid.x*centroid.y);
+        central.z=M02*PerceptibleReciprocal(M00)-centroid.y*centroid.y;
+        object[i].metric[n]=RadiansToDegrees(atan(central.y/
+          (central.x-central.z))/2.0+(central.x < central.z)*MagickPI/2.0);
       }
       for (i=0; i < (ssize_t) component_image->colors; i++)
         if (((object[i].metric[n] < min_threshold) ||
@@ -970,6 +943,9 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         PointInfo
           centroid = { 0.0, 0.0 };
 
+        PrimaryInfo
+          central = { 0.0, 0.0, 0.0 };
+
         RectangleInfo
           bounding_box;
 
@@ -1036,8 +1012,11 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           }
         }
         component_view=DestroyCacheView(component_view);
-        object[i].metric[n]=2.0*sqrt((2.0*PerceptibleReciprocal(M00))*
-          ((M20+M02)+sqrt(4.0*M11*M11+(M20-M02)*(M20-M02))));
+        central.x=M20*PerceptibleReciprocal(M00)-centroid.x*centroid.x;
+        central.y=2.0*(M11*PerceptibleReciprocal(M00)-centroid.x*centroid.y);
+        central.z=M02*PerceptibleReciprocal(M00)-centroid.y*centroid.y;
+        object[i].metric[n]=sqrt(8.0*fabs(central.x+central.z-sqrt(central.y*
+          central.y+(central.x-central.z)*(central.x-central.z))))/2.0;
       }
       for (i=0; i < (ssize_t) component_image->colors; i++)
         if (((object[i].metric[n] < min_threshold) ||
@@ -1072,6 +1051,9 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         PointInfo
           centroid = { 0.0, 0.0 };
 
+        PrimaryInfo
+          central = { 0.0, 0.0, 0.0 };
+
         RectangleInfo
           bounding_box;
 
@@ -1085,7 +1067,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           y;
 
         /*
-          Compute ellipse minor axis of each object.
+          Compute ellipse major axis of each object.
         */
         if (status == MagickFalse)
           continue;
@@ -1138,8 +1120,11 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           }
         }
         component_view=DestroyCacheView(component_view);
-        object[i].metric[n]=2.0*sqrt((2.0*PerceptibleReciprocal(M00))*
-          ((M20+M02)-sqrt(4.0*M11*M11+(M20-M02)*(M20-M02))));
+        central.x=M20*PerceptibleReciprocal(M00)-centroid.x*centroid.x;
+        central.y=2.0*(M11*PerceptibleReciprocal(M00)-centroid.x*centroid.y);
+        central.z=M02*PerceptibleReciprocal(M00)-centroid.y*centroid.y;
+        object[i].metric[n]=sqrt(8.0*fabs(central.x+central.z+sqrt(central.y*
+          central.y+(central.x-central.z)*(central.x-central.z))))/2.0;
       }
       for (i=0; i < (ssize_t) component_image->colors; i++)
         if (((object[i].metric[n] < min_threshold) ||

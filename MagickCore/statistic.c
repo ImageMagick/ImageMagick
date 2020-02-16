@@ -1575,51 +1575,27 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
   M30[MaxPixelChannels]/=GetImageChannels(image);
   for (channel=0; channel <= MaxPixelChannels; channel++)
   {
+    PrimaryInfo
+      central;
+
     /*
       Compute elliptical angle, major and minor axes, eccentricity, & intensity.
     */
     channel_moments[channel].centroid=centroid[channel];
-    channel_moments[channel].ellipse_axis.x=sqrt((2.0*
-      PerceptibleReciprocal(M00[channel]))*((M20[channel]+M02[channel])+
-      sqrt(4.0*M11[channel]*M11[channel]+(M20[channel]-M02[channel])*
-      (M20[channel]-M02[channel]))));
-    channel_moments[channel].ellipse_axis.y=sqrt((2.0*
-      PerceptibleReciprocal(M00[channel]))*((M20[channel]+M02[channel])-
-      sqrt(4.0*M11[channel]*M11[channel]+(M20[channel]-M02[channel])*
-      (M20[channel]-M02[channel]))));
-    channel_moments[channel].ellipse_angle=RadiansToDegrees(0.5*atan(2.0*
-      M11[channel]*PerceptibleReciprocal(M20[channel]-M02[channel])));
-    if (fabs(M11[channel]) < MagickEpsilon)
-      {
-        if (fabs(M20[channel]-M02[channel]) < MagickEpsilon)
-          channel_moments[channel].ellipse_angle+=0.0;
-        else
-          if ((M20[channel]-M02[channel]) < 0.0)
-            channel_moments[channel].ellipse_angle+=90.0;
-          else
-            channel_moments[channel].ellipse_angle+=0.0;
-      }
-    else
-      if (M11[channel] < 0.0)
-        {
-          if (fabs(M20[channel]-M02[channel]) < MagickEpsilon)
-            channel_moments[channel].ellipse_angle+=0.0;
-          else
-            if ((M20[channel]-M02[channel]) < 0.0)
-              channel_moments[channel].ellipse_angle+=90.0;
-            else
-              channel_moments[channel].ellipse_angle+=0.0;
-        }
-      else
-        {
-          if (fabs(M20[channel]-M02[channel]) < MagickEpsilon)
-            channel_moments[channel].ellipse_angle+=0.0;
-          else
-            if ((M20[channel]-M02[channel]) < 0.0)
-              channel_moments[channel].ellipse_angle+=90.0;
-            else
-              channel_moments[channel].ellipse_angle+=0.0;
-       }
+    central.x=M20[channel]*PerceptibleReciprocal(M00[channel])-
+      centroid[channel].x*centroid[channel].x;
+    central.y=2.0*(M11[channel]*PerceptibleReciprocal(M00[channel])-
+      centroid[channel].x*centroid[channel].y);
+    central.z=M02[channel]*PerceptibleReciprocal(M00[channel])-
+      centroid[channel].y*centroid[channel].y;
+    channel_moments[channel].ellipse_axis.x=sqrt(8.0*fabs(central.x+central.z-
+      sqrt(central.y*central.y+(central.x-central.z)*(central.x-central.z))))/
+      2.0;
+    channel_moments[channel].ellipse_axis.y=sqrt(8.0*fabs(central.x+central.z+
+      sqrt(central.y*central.y+(central.x-central.z)*(central.x-central.z))))/
+      2.0;
+    channel_moments[channel].ellipse_angle=RadiansToDegrees(atan(central.y/
+      (central.x-central.z))/2.0+(central.x < central.z)*MagickPI/2.0);
     channel_moments[channel].ellipse_eccentricity=sqrt(1.0-(
       channel_moments[channel].ellipse_axis.y*
       channel_moments[channel].ellipse_axis.y*PerceptibleReciprocal(
