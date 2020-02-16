@@ -2872,6 +2872,8 @@ static MagickBooleanType EncodeLabImage(Image *image,ExceptionInfo *exception)
 static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,
   TIFF *tiff,TIFFInfo *tiff_info)
 {
+#define TIFFStripSizeDefault  1048576
+
   const char
     *option;
 
@@ -2887,16 +2889,22 @@ static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,
   option=GetImageOption(image_info,"tiff:tile-geometry");
   if (option == (const char *) NULL)
     {
+      size_t
+        extent;
+
       uint32
+        rows,
         rows_per_strip;
 
-      rows_per_strip=0;  /* use default */
+      extent=TIFFScanlineSize(tiff);
+      rows_per_strip=TIFFStripSizeDefault/(extent == 0 ? 1 : extent);
+      rows_per_strip=16*(((rows_per_strip < 16 ? 16 : rows_per_strip)+1)/16);
+      TIFFGetField(tiff,TIFFTAG_IMAGELENGTH,&rows);
+      if (rows_per_strip > rows)
+        rows_per_strip=rows;
       option=GetImageOption(image_info,"tiff:rows-per-strip");
       if (option != (const char *) NULL)
         rows_per_strip=(size_t) strtol(option,(char **) NULL,10);
-      else
-        if (TIFFGetField(tiff,TIFFTAG_IMAGELENGTH,&rows_per_strip) == 0)
-          rows_per_strip=0;
       rows_per_strip=TIFFDefaultStripSize(tiff,rows_per_strip);
       (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,rows_per_strip);
       return(MagickTrue);
