@@ -1595,7 +1595,8 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
       sqrt(central.y*central.y+(central.x-central.z)*(central.x-central.z))))/
       2.0;
     channel_moments[channel].ellipse_angle=RadiansToDegrees(atan(central.y/
-      (central.x-central.z))/2.0+(central.x < central.z)*MagickPI/2.0);
+      (central.x-central.z))/2.0+(central.x < central.z ? MagickPI/2.0 : 0.0))+
+      90.0;
     channel_moments[channel].ellipse_eccentricity=sqrt(1.0-(
       channel_moments[channel].ellipse_axis.y*
       channel_moments[channel].ellipse_axis.y*PerceptibleReciprocal(
