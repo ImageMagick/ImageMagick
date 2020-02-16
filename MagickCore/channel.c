@@ -1336,7 +1336,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           }
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
+          if (GetPixelWriteMask(image,q) > (QuantumRange/2))
             SetPixelAlpha(image,TransparentAlpha,q);
           q+=GetPixelChannels(image);
         }
