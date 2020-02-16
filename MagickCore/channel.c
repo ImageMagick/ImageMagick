@@ -1311,7 +1311,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     }
     case TransparentAlphaChannel:
     {
-      status=SetIageAlpha(image,TransparentAlpha,exception);
+      status=SetImageAlpha(image,TransparentAlpha,exception);
       break;
     }
     case UndefinedAlphaChannel:
