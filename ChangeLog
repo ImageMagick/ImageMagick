@@ -6,6 +6,7 @@
     connected-components:major-axis-threshold,
     connected-components:minor-axis-threshold,
     connected-components:angle-threshold.
+  * Set the alpha channel if the write mask is not enabled.
 
 2020-02-14  7.0.9-23 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-23, GIT revision 16884:acb56cd:20200214
