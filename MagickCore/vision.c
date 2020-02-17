@@ -628,7 +628,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           continue;
         component_view=AcquireAuthenticCacheView(component_image,exception);
         bounding_box=object[i].bounding_box;
-        for (y=(-1); y < (ssize_t) bounding_box.height+1; y++)
+        for (y=(-1); y < (ssize_t) bounding_box.height; y++)
         {
           register const Quantum
             *magick_restrict p;
@@ -645,7 +645,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
               status=MagickFalse;
               break;
             }
-          for (x=(-1); x < (ssize_t) bounding_box.width+1; x++)
+          for (x=(-1); x < (ssize_t) bounding_box.width; x++)
           {
             Quantum
               pixels[4];
