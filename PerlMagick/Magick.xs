@@ -440,7 +440,7 @@ static struct
       {"sigma", RealReference}, {"x", IntegerReference},
       {"y", IntegerReference} } },
     { "Identify", { {"file", FileReference}, {"features", StringReference},
-      {"unique", MagickBooleanOptions} } },
+      {"moments", StringReference}, {"unique", StringReference} } },
     { "SepiaTone", { {"threshold", RealReference} } },
     { "SigmoidalContrast", { {"geometry", StringReference},
       {"contrast", RealReference}, {"mid-point", RealReference},
@@ -1920,6 +1920,11 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
               (void) ParseGeometry(SvPV(sval,na),&geometry_info);
               info->image_info->pointsize=geometry_info.rho;
             }
+          break;
+        }
+      if (LocaleCompare(attribute,"precision") == 0)
+        {
+          (void) SetMagickPrecision(SvIV(sval));
           break;
         }
       if (info)
@@ -5554,6 +5559,12 @@ Get(ref,...)
             {
               if (info)
                 s=newSViv((ssize_t) info->image_info->pointsize);
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
+            }
+          if (LocaleCompare(attribute,"precision") == 0)
+            {
+              s=newSViv((ssize_t) GetMagickPrecision());
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -10105,6 +10116,12 @@ Mogrify(ref,...)
           if (attribute_flag[1] != 0)
             (void) SetImageArtifact(image,"identify:features",
               argument_list[1].string_reference);
+          if (attribute_flag[2] != 0)
+            (void) SetImageArtifact(image,"identify:moments",
+              argument_list[2].string_reference);
+          if (attribute_flag[3] != 0)
+            (void) SetImageArtifact(image,"identify:unique-colors",
+              argument_list[3].string_reference);
           (void) IdentifyImage(image,argument_list[0].file_reference,
             MagickTrue,exception);
           break;
