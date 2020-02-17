@@ -557,7 +557,26 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         }
         component_view=DestroyCacheView(component_view);
         object[i].metric[n]=RadiansToDegrees(1.0/2.0*atan(2.0*M11*
-          PerceptibleReciprocal(M20-M02))+(M20 < M02 ? MagickPI/2.0 : 0.0));
+          PerceptibleReciprocal(M20-M02)));
+        if (fabs(M11) < MagickEpsilon)
+           {
+             if ((fabs(M20-M02) >= MagickEpsilon) && ((M20-M02) < 0.0))
+               object[i].metric[n]+=90.0;
+           }
+         else
+           if (M11 < 0.0)
+             {
+               if (fabs(M20-M02) >= MagickEpsilon)
+                 {
+                   if ((M20-M02) < 0.0)
+                     object[i].metric[n]+=90.0;
+                   else
+                     object[i].metric[n]+=180.0;
+                 }
+             }
+           else
+             if ((fabs(M20-M02) >= MagickEpsilon) && ((M20-M02) < 0.0))
+               object[i].metric[n]+=90.0;
       }
       for (i=0; i < (ssize_t) component_image->colors; i++)
         if (((object[i].metric[n] < min_threshold) ||

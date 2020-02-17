@@ -1588,8 +1588,28 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
       sqrt(4.0*M11[channel]*M11[channel]+(M20[channel]-M02[channel])*
       (M20[channel]-M02[channel]))));
     channel_moments[channel].ellipse_angle=RadiansToDegrees(1.0/2.0*atan(2.0*
-      M11[channel]*PerceptibleReciprocal(M20[channel]-M02[channel]))+
-      (M20[channel] < M02[channel] ? MagickPI/2.0 : 0.0));
+      M11[channel]*PerceptibleReciprocal(M20[channel]-M02[channel])));
+    if (fabs(M11[channel]) < MagickEpsilon)
+      {
+        if ((fabs(M20[channel]-M02[channel]) >= MagickEpsilon) &&
+            ((M20[channel]-M02[channel]) < 0.0))
+          channel_moments[channel].ellipse_angle+=90.0;
+      }
+    else
+      if (M11[channel] < 0.0)
+        {
+          if (fabs(M20[channel]-M02[channel]) >= MagickEpsilon)
+            {
+              if ((M20[channel]-M02[channel]) < 0.0)
+                channel_moments[channel].ellipse_angle+=90.0;
+              else
+                channel_moments[channel].ellipse_angle+=180.0;
+            }
+        }
+      else
+        if ((fabs(M20[channel]-M02[channel]) >= MagickEpsilon) &&
+            ((M20[channel]-M02[channel]) < 0.0))
+          channel_moments[channel].ellipse_angle+=90.0;
     channel_moments[channel].ellipse_eccentricity=sqrt(1.0-(
       channel_moments[channel].ellipse_axis.y*
       channel_moments[channel].ellipse_axis.y*PerceptibleReciprocal(
