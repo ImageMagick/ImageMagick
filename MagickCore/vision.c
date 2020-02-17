@@ -490,9 +490,6 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         PointInfo
           centroid = { 0.0, 0.0 };
 
-        PrimaryInfo
-          central = { 0.0, 0.0, 0.0 };
-
         RectangleInfo
           bounding_box;
 
@@ -559,11 +556,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           }
         }
         component_view=DestroyCacheView(component_view);
-        central.x=M20*PerceptibleReciprocal(M00)-centroid.x*centroid.x;
-        central.y=2.0*(M11*PerceptibleReciprocal(M00)-centroid.x*centroid.y);
-        central.z=M02*PerceptibleReciprocal(M00)-centroid.y*centroid.y;
-        object[i].metric[n]=RadiansToDegrees(atan(central.y/(central.x-
-          central.z))/2.0+(central.x < central.z ? MagickPI/2.0 : 0.0))+90.0;
+        object[i].metric[n]=RadiansToDegrees(1.0/2.0*atan(2.0*M11*
+          PerceptibleReciprocal(M20-M02))+(M20 < M02 ? MagickPI/2.0 : 0.0));
       }
       for (i=0; i < (ssize_t) component_image->colors; i++)
         if (((object[i].metric[n] < min_threshold) ||
