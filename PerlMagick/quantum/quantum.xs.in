@@ -440,7 +440,7 @@ static struct
       {"sigma", RealReference}, {"x", IntegerReference},
       {"y", IntegerReference} } },
     { "Identify", { {"file", FileReference}, {"features", StringReference},
-      {"moments", StringReference}, {"unique", StringReference} } },
+      {"moments", MagickBooleanOptions}, {"unique", MagickBooleanOptions} } },
     { "SepiaTone", { {"threshold", RealReference} } },
     { "SigmoidalContrast", { {"geometry", StringReference},
       {"contrast", RealReference}, {"mid-point", RealReference},
@@ -10123,15 +10123,6 @@ Mogrify(ref,...)
         {
           if (attribute_flag[0] == 0)
             argument_list[0].file_reference=(FILE *) NULL;
-          if (attribute_flag[1] != 0)
-            (void) SetImageArtifact(image,"identify:features",
-              argument_list[1].string_reference);
-          if (attribute_flag[2] != 0)
-            (void) SetImageArtifact(image,"identify:moments",
-              argument_list[2].string_reference);
-          if (attribute_flag[3] != 0)
-            (void) SetImageArtifact(image,"identify:unique-colors",
-              argument_list[3].string_reference);
           (void) IdentifyImage(image,argument_list[0].file_reference,
             MagickTrue,exception);
           break;
@@ -10284,6 +10275,9 @@ Mogrify(ref,...)
               argument_list[1].string_reference);
           if ((attribute_flag[2] != 0) &&
               (argument_list[2].integer_reference != 0))
+            (void) SetImageArtifact(image,"identify:moments","true");
+          if ((attribute_flag[3] != 0) &&
+              (argument_list[3].integer_reference != 0))
             (void) SetImageArtifact(image,"identify:unique","true");
           (void) IdentifyImage(image,argument_list[0].file_reference,
             MagickTrue,exception);
