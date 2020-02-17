@@ -3462,7 +3462,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   found_transparent_pixel=MagickFalse;
 
-  if (image->storage_class == DirectClass)
+  if ((image->storage_class == DirectClass) ||
+      (image_info->stream != (StreamHandler) NULL))
     {
       for (pass=0; pass < num_passes; pass++)
       {
