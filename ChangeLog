@@ -1,3 +1,9 @@
+2020-02-18  7.0.9-25 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.9-25, GIT revision 16...
+
+2020-02-18  7.0.9-25 Cristy  <quetzlzacatenango@image...>
+  * Adapt to a change in command-line options in the SVG inkscape delegate.
+
 2020-02-17  7.0.9-24 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-24, GIT revision 16919:41efef9de:20200217
 

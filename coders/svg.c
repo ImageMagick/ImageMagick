@@ -303,11 +303,12 @@ static Image *RenderSVGImage(const ImageInfo *image_info,Image *image,
   if (delegate_info == (const DelegateInfo *) NULL)
     return((Image *) NULL);
   status=AcquireUniqueSymbolicLink(image->filename,input_filename);
-  (void) AcquireUniqueFilename(output_filename);
+  (void) AcquireUniqueFilename(unique);
+  (void) FormatLocaleString(output_filename,MagickPathExtent,"%s.png",unique);
   (void) AcquireUniqueFilename(unique);
   density=AcquireString("");
-  (void) FormatLocaleString(density,MagickPathExtent,"%.20g,%.20g",
-    image->resolution.x,image->resolution.y);
+  (void) FormatLocaleString(density,MagickPathExtent,"%.20g",
+    ceil(sqrt(image->resolution.x*image->resolution.y)-0.5));
   (void) FormatLocaleString(background,MagickPathExtent,
     "rgb(%.20g%%,%.20g%%,%.20g%%)",
     100.0*QuantumScale*image->background_color.red,
