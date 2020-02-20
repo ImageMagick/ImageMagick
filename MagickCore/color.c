@@ -1191,7 +1191,7 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
   if ((compliance != NoCompliance) && ((color-(ssize_t) color) > 0.01f) &&
       (IssRGBCompatibleColorspace(pixel->colorspace) != MagickFalse))
     scale=100.0f;
-  if (scale != 100.0f)
+  if ((scale != 100.0f) || (pixel->colorspace == LabColorspace))
     (void) FormatLocaleString(component,MagickPathExtent,"%.*g",
       GetMagickPrecision(),(double) (scale*QuantumScale*color));
   else
