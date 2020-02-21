@@ -2210,6 +2210,7 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
         if (knot_count == 0)
           {
             TraceBezierCurve(message,last,first);
+            (void) ConcatenateString(&path,message);
             in_subpath=MagickFalse;
           }
         break;
