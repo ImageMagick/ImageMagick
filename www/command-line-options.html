@@ -65,11 +65,11 @@
         <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
+    </div>
     <form class="form-inline my-2 my-lg-0" action="https://imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
     </form>
-    </div>
   </nav>
   <div class="container">
    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -146,7 +146,7 @@ strings, such as '<code>%d</code>' or '<code>%03d</code>', are familiar to those
 who have used the standard <code>printf()</code>' C-library function. As an
 example, the command</p>
 
-<pre class="highlight"><code>convert logo: rose: -morph 15 my%02dmorph.jpg
+<pre class="highlight"><code>magick logo: rose: -morph 15 my%02dmorph.jpg
 </code></pre>
 
 <p>will create a sequence of 17 images (the two given plus 15 more created by
@@ -281,7 +281,7 @@ channel data, to create an alpha channel, or to perform other operations on the 
     <dt class="col-md-4">Extract</dt>
     <dd class="col-md-8">
        Copies the alpha channel values into all the color channels and turns
-       'Off' the the image's transparency, so as to generate
+       'Off' the image's transparency, so as to generate
        a grayscale mask of the image's shape. The alpha channel data is left
        intact just deactivated.  This is the inverse of 'Copy'.
        </dd>
@@ -789,7 +789,7 @@ option has been given.  To modify a caption of images already in memory use
 "<code><a href="command-line-options.html#set">-set</a> caption</code>". </p>
 
 <p>The caption can contain special format characters listed in the <a
-href="../www/escape.html">Format and
+href="escape.html">Format and
 Print Image Properties</a>. These attributes are expanded when the caption
 is finally assigned to the individual images. </p>
 
@@ -994,10 +994,10 @@ href="command-line-options.html#clut">-clut</a> operator is a good example of th
 <p>A channel without an operation symbol implies separate (i.e, semicolon).</p>
 
 <p>Here we take an sRGB image and a grayscale image and inject the grayscale image into the alpha channel:</p>
-<pre class="highlight"><code>convert wizard.png mask.pgm -channel-fx '| gray=>alpha' wizard-alpha.png
+<pre class="highlight"><code>magick wizard.png mask.pgm -channel-fx '| gray=>alpha' wizard-alpha.png
 </code></pre>
 <p>Use a similar command to define a read mask:</p>
-<pre class="highlight"><code>convert wizard.png mask.pgm -channel-fx '| gray=>read-mask' wizard-mask.png
+<pre class="highlight"><code>magick wizard.png mask.pgm -channel-fx '| gray=>read-mask' wizard-mask.png
 </code></pre>
 
 <p>Add <code>-debug pixel</code> prior to the <code>-channel-fx</code> option to track the channel morphology.</p>
@@ -1057,7 +1057,7 @@ href="command-line-options.html#splice">-splice</a> that was given the same <var
 
 <p>For example, in the command</p>
 
-<pre class="highlight"><code>convert cockatoo.tif -clip -negate negated.tif
+<pre class="highlight"><code>magick cockatoo.tif -clip -negate negated.tif
 </code></pre>
 
 <p>only the pixels within the clipping path are negated.</p>
@@ -1244,7 +1244,7 @@ CMYKA images) and offsets are normalized (divide Flash offset by 255).</p>
 
 <p>As an example, to add contrast to an image with offsets, try this command:</p>
 
-<pre class="highlight"><code>convert kittens.jpg -color-matrix \
+<pre class="highlight"><code>magick kittens.jpg -color-matrix \
   " 1.5 0.0 0.0 0.0, 0.0, -0.157 \
     0.0 1.5 0.0 0.0, 0.0, -0.157 \
     0.0 0.0 1.5 0.0, 0.0, -0.157 \
@@ -1262,12 +1262,13 @@ CMYKA images) and offsets are normalized (divide Flash offset by 255).</p>
 
 <pre class="highlight"><code>CMY          CMYK         Gray         HCL
 HCLp         HSB          HSI          HSL
-HSV          HWB          Lab          LCHab
-LCHuv        LMS          Log          Luv
-OHTA         Rec601YCbCr  Rec709YCbCr  RGB
-scRGB        sRGB         Transparent  xyY
-XYZ          YCbCr        YCC          YDbDr
-YIQ          YPbPr        YUV          Undefined
+HSV          HWB          Jzazbz       Lab
+LCHab        LCHuv        LMS          Log
+Luv          OHTA         Rec601YCbCr  Rec709YCbCr
+RGB          scRGB        sRGB         Transparent
+xyY          XYZ          YCbCr        YCC
+YDbDr        YIQ          YPbPr        YUV
+Undefined
 </code></pre>
 
 <p>To print a complete list of colorspaces, use <a href="command-line-options.html#list">-list colorspace</a>.</p>
@@ -1394,7 +1395,7 @@ href="command-line-options.html#separate">-separate</a>, so long as the channel 
 Thus, in the following example, the final image should be a copy of the
 original.  </p>
 
-<pre class="highlight"><code>convert original.png -channel RGB -separate sepimage.png
+<pre class="highlight"><code>magick original.png -channel RGB -separate sepimage.png
 convert sepimage-0.png sepimage-1.png sepimage-2.png -channel RGB \
   -combine imagecopy.png
 </code></pre>
@@ -1410,7 +1411,7 @@ option has been given.  To modify a comment of images already in memory use
 "<code><a href="command-line-options.html#set">-set</a> comment</code>". </p>
 
 <p>The comment can contain special format characters listed in the <a
-href="../www/escape.html">Format and
+href="escape.html">Format and
 Print Image Properties</a>. These attributes are expanded when the comment
 is finally assigned to the individual images. </p>
 
@@ -1439,12 +1440,12 @@ that the image <code>bird.miff</code> has a width of 512 and a height of
 
 <p>This is a convert version of "<code>compare</code>" for two same sized images. The syntax is as follows, but other metrics are allowed.</p>
 
-<pre class="highlight"><code>convert image.png reference.png -metric RMSE -compare \ <br/> difference.png
+<pre class="highlight"><code>magick image.png reference.png -metric RMSE -compare \ <br/> difference.png
 </code></pre>
 
 <p>To get the metric value use the string format "%[distortion]".</p>
 
-<pre class="highlight"><code>convert image.png reference.png -metric RMSE -compare -format \
+<pre class="highlight"><code>magick image.png reference.png -metric RMSE -compare -format \
    "%[distortion]" info:
 </code></pre>
 
@@ -1583,7 +1584,7 @@ contrast.</p>
 
 <p>For a more pronounced effect you can repeat the option:</p>
 
-<pre class="highlight"><code>convert rose: -contrast -contrast rose_c2.png
+<pre class="highlight"><code>magick rose: -contrast -contrast rose_c2.png
 </code></pre>
 
 <div style="margin: auto;">
@@ -1736,7 +1737,7 @@ a comma-separated list consisting of one or more of the following domains:
 
 <p>For example, to log cache and blob events, use.</p>
 
-<pre class="highlight"><code>convert -debug "Cache,Blob" rose: rose.png
+<pre class="highlight"><code>magick -debug "Cache,Blob" rose: rose.png
 </code></pre>
 
 <p>The <code>User</code> domain is normally empty, but developers can log user
@@ -1807,7 +1808,7 @@ previously created.  Use <a href="command-line-options.html#define">+define "*"<
 existing definitions.</p>
 
 <p>The same 'artifact' settings can also be defined using the <a
-href="command-line-options.html#set" >-set "option:<var>key</var>" "<var>value</var>"</a> option, which also allows the use of <a href="../www/escape.html" >Format and Print Image
+href="command-line-options.html#set" >-set "option:<var>key</var>" "<var>value</var>"</a> option, which also allows the use of <a href="escape.html" >Format and Print Image
 Properties</a> in the defined value. </p>
 
 <p>The <var>option</var> and <var>key</var> are case-independent (they are
@@ -2052,14 +2053,14 @@ available:</p>
   <tr>
     <td>jp2:quality=<var>value,value...</var></td>
      <td>Sets the quality layer PSNR, given in dB. The order is from left to
-    right in ascending order. The default is a single lossless quality layer. 
+    right in ascending order. The default is a single lossless quality layer.
     Same for JPT, JC2, and J2K.</td>
   </tr>
 
   <tr>
     <td>jp2:rate=<var>value</var></td>
      <td>Specify the compression factor to use while writing JPEG-2000 files.
-     The compression factor is the reciprocal of the compression ratio. The 
+     The compression factor is the reciprocal of the compression ratio. The
      valid range is 0.0 to 1.0, with 1.0 indicating lossless compression. If
      defined, this value overrides the -quality setting.  A quality setting
      of 75 results in a rate value of 0.06641. Same for JPT, JC2, and J2K.</td>
@@ -2094,7 +2095,7 @@ available:</p>
     jpeg:extent=400KB</code>.  The JPEG encoder will search for the highest
     compression quality level that results in an output file that does not
     exceed the value. The <code>-quality</code> option also will be respected
-    starting with version 6.9.2-5. Between 6.9.1-0 and 6.9.2-4, add -quality 
+    starting with version 6.9.2-5. Between 6.9.1-0 and 6.9.2-4, add -quality
     100 in order for the jpeg:extent to work properly. Prior to 6.9.1-0, the
     -quality setting was ignored.</td>
   </tr>
@@ -2423,26 +2424,26 @@ available:</p>
      all additional information that is not related to the geometry of the
      image. The 'all' option should only be used when the geometry of the
      image has not been changed. This option is helpful when transferring
-     non-simple layers, such as adjustment layers from the input PSD file to 
-     the output PSD file. If this option is not used, the additional 
-     information will not be preserved. This define is available as of 
+     non-simple layers, such as adjustment layers from the input PSD file to
+     the output PSD file. If this option is not used, the additional
+     information will not be preserved. This define is available as of
      Imagemagick version 6.9.5-8.
 </td>
   </tr>
 
   <tr>
     <td>psd:alpha-unblend=off</td>
-     <td>Disables new automatic un-blending of transparency with the base image 
-     for the flattened layer 0 before adding the alpha channel to the output  
-     image. This define must be placed before the input psd image. (Available 
-     as of IM 6.9.2.5). The automatic un-blending is new to IM 6.9.2.5 and 
-     prevents the transparency from being applied twice in the output 
+     <td>Disables new automatic un-blending of transparency with the base image
+     for the flattened layer 0 before adding the alpha channel to the output 
+     image. This define must be placed before the input psd image. (Available
+     as of IM 6.9.2.5). The automatic un-blending is new to IM 6.9.2.5 and
+     prevents the transparency from being applied twice in the output
      image. This option should be set before reading the image.</td>
   </tr>
 
   <tr>
     <td>psd:preserve-opacity-mask=true</td>
-     <td>This option should only be used when converting from a PSD file to 
+     <td>This option should only be used when converting from a PSD file to
      another PSD file. It will preserve the opacity mask of a layer and add it 
      back to the layer when the image is saved. Setting this to 'true' will 
      enable this feature. This define is available as of Imagemagick version 
@@ -2570,7 +2571,7 @@ available:</p>
 <p>For example, to create a postscript file that will render only the black
 pixels of a bilevel image, use:</p>
 
-<pre class="highlight"><code>convert bilevel.tif -define ps:imagemask eps3:stencil.ps
+<pre class="highlight"><code>magick bilevel.tif -define ps:imagemask eps3:stencil.ps
 </code></pre>
 
 <p>Set attributes of the image registry by prefixing the value with
@@ -3004,7 +3005,7 @@ and meaning of the floating point values depends on the distortion <var>method</
        All arguments are optional. With <var>Rmin</var> defaulting to zero, the
        center to the center of the image, and the angles going from -180 (top)
        to +180 (top).  If <var>Rmax</var> is given the special value of
-       '0', the the distance from the center to the nearest edge
+       '0', the distance from the center to the nearest edge
        is used for the radius of the output image, which will ensure the whole
        image is visible (though scaled smaller).  However a special value of
        '-1' will use the distance from the center to the furthest
@@ -3132,7 +3133,7 @@ perspective distortion of the built-in "rose:" image. Note how spaces were
 used to group the 4 sets of coordinate pairs, to make it easier to read and
 understand.</p>
 
-<pre class="highlight"><code>convert rose:  -virtual-pixel black \
+<pre class="highlight"><code>magick rose:  -virtual-pixel black \
   -distort Perspective '0,0,0,0  0,45,0,45  69,0,60,10  69,45,60,35' \
    rose_3d_rotated.gif"
 </code></pre>
@@ -3156,7 +3157,7 @@ images become smaller (minified) in the output, which is very common when
 using '<code>perspective</code>' distortion. For example here we view
 a infinitely tiled 'plane' all the way to the horizon. </p>
 
-<pre class="highlight"><code>convert -size 90x90 pattern:checkerboard -normalize -virtual-pixel tile \
+<pre class="highlight"><code>magick -size 90x90 pattern:checkerboard -normalize -virtual-pixel tile \
   -distort perspective  '0,0,5,45  89,0,45,46  0,89,0,89  89,89,89,89' \
    checks_tiled.jpg
 </code></pre>
@@ -3227,7 +3228,7 @@ a lower level pattern of colors. Error diffusion dithers can use any set of
 colors (generated or user defined) to an image.  </p>
 
 <p>Dithering is turned on by default, to turn it off use the plus form of the
-setting, <a href="command-line-options.html#dither">+dither</a>. This will also also render PostScript
+setting, <a href="command-line-options.html#dither">+dither</a>. This will also render PostScript
 without text or graphic aliasing. Disabling dithering often (but not always)
 leads to faster process, a smaller number of colors, but more cartoon like
 image coloring.  Generally resulting in 'color banding' effects in areas with
@@ -3335,7 +3336,7 @@ Give the center and any point on the perimeter (boundary).</p>
 <p>The <code>arc</code> primitive is used to inscribe an elliptical segment in
 to a given rectangle. An <code>arc</code> requires the two corners used for
 <code>rectangle</code> (see above) followed by the start and end angles of the
-arc of the segment segment (e.g. 130,30 200,100 45,90). The start and end
+arc of the segment (e.g. 130,30 200,100 45,90). The start and end
 points produced are then joined with a line segment and the resulting segment
 of an ellipse is filled.</p>
 
@@ -3736,7 +3737,7 @@ specify how to compose the image with the background, use <a href="command-line-
 display.  If the aspect ratio of the input image isn't exactly 4:3, then the
 image is centered on an 800x600 black canvas: </p>
 
-<pre class="highlight"><code>convert input.jpg -resize 800x600 -background black -compose Copy \ 
+<pre class="highlight"><code>magick input.jpg -resize 800x600 -background black -compose Copy \ 
   -gravity center -extent 800x600 -quality 92 output.jpg
 </code></pre>
 
@@ -3751,7 +3752,7 @@ image is centered on an 800x600 black canvas: </p>
 <p>This option is most useful for extracting a subregion of a very large raw
 image.  Note that these two commands are equivalent:</p>
 
-<pre class="highlight"><code>convert -size 16000x16000 -depth 8 -extract 640x480+1280+960 \ 
+<pre class="highlight"><code>magick -size 16000x16000 -depth 8 -extract 640x480+1280+960 \ 
   image.rgb image.png",
 convert -size 16000x16000 -depth 8 'image.rgb[640x480+1280+960]' \
   image.rgb image.png"
@@ -3759,14 +3760,14 @@ convert -size 16000x16000 -depth 8 'image.rgb[640x480+1280+960]' \
 
 <p>If you omit the offsets, as in</p>
 
-<pre class="highlight"><code>convert -size 16000x16000 -depth 8 -extract 640x480 \ 
+<pre class="highlight"><code>magick -size 16000x16000 -depth 8 -extract 640x480 \ 
   image.rgb image.png
 </code></pre>
 
 <p>the image is <var>resized</var> to the specified dimensions instead,
 equivalent to:</p>
 
-<pre class="highlight"><code>convert -size 16000x16000 -depth 8 -resize 640x480 image.rgb image.png
+<pre class="highlight"><code>magick -size 16000x16000 -depth 8 -resize 640x480 image.rgb image.png
 </code></pre>
 
 <p>See <a href="command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument.</p>
@@ -3835,13 +3836,13 @@ formats that do not limit the color or compress the image. Thus, MIFF, TIF,
 PFM, EXR and PNG are the recommended image formats to use. All of these
 formats, except PNG support multi-frame images. So for example,</p>
 
-<pre class="highlight"><code>convert image.png -fft fft_image.miff
+<pre class="highlight"><code>magick image.png -fft fft_image.miff
 </code></pre>
 
 <p>generates a magnitude image as <code>fft_image.miff[0]</code> and a phase
 image as <code>fft_image.miff[1]</code>. Similarly,</p>
 
-<pre class="highlight"><code>convert image.png -fft fft_image.png
+<pre class="highlight"><code>magick image.png -fft fft_image.png
 </code></pre>
 
 <p>generates a magnitude image as <code>fft_image-0.png</code> and a phase image
@@ -3867,7 +3868,7 @@ function into what is usually called the spectrum. A log function is used to
 enhance the darker values more in comparison to the lighter values. This can
 be done, for example, as follows:</p>
 
-<pre class="highlight"><code>convert fft_image.miff[0] -contrast-stretch 0 \
+<pre class="highlight"><code>magick fft_image.miff[0] -contrast-stretch 0 \
   -evaluate log 1000 fft_image_spectrum.png"
 </code></pre>
 
@@ -4098,7 +4099,7 @@ href="command-line-options.html#set" >-set</a>):-</p>
 
 <p>For example, to get a 8 lobe jinc windowed sinc filter (Genseng filter?):</p>
 
-<pre class="highlight"><code>convert image.png \
+<pre class="highlight"><code>magick image.png \
   -filter sinc \
   -set filter:window=jinc \
   -set filter:lobes=8 \
@@ -4107,7 +4108,7 @@ href="command-line-options.html#set" >-set</a>):-</p>
 
 <p>Or a raw un-windowed Sinc filter with 4 lobes:</p>
 
-<pre class="highlight"><code>convert image.png \
+<pre class="highlight"><code>magick image.png \
   -set filter:filter=sinc \
   -set filter:lobes=4 \
   -resize 150% image.jpg"
@@ -4117,7 +4118,7 @@ href="command-line-options.html#set" >-set</a>):-</p>
 a '<code>Box</code>' filter.  For example the '<code>Welch</code> parabolic
 windowing function. </p>
 
-<pre class="highlight"><code>convert null: -define filter:filter=Box \
+<pre class="highlight"><code>magick null: -define filter:filter=Box \
   -define filter:window=Welch \
   -define filter:support=1.0 \
   -define filter:verbose=1 \
@@ -4236,7 +4237,7 @@ filename becomes <var>image.tiff</var>.</p>
 
 <p class="magick-description">output formatted image characteristics.</p>
 
-<p>See <a href="../www/escape.html">Format and Print Image
+<p>See <a href="escape.html">Format and Print Image
 Properties</a> for an explanation on how to specify the argument to this
 option.</p>
 
@@ -4498,7 +4499,7 @@ is useful if the image is of a known gamma but not set as an image attribute
 display gamma; e.g., if your image is sRGB and you want to write a PNG gAMA
 chunk, use</p>
 
-<pre class="highlight"><code>convert input.png +gamma .45455 output.png
+<pre class="highlight"><code>magick input.png +gamma .45455 output.png
 </code></pre>
 
 <p>(0.45455 is 1/2.2)</p>
@@ -4587,7 +4588,7 @@ that point. (In addition, the <a href="command-line-options.html#gravity">-gravi
 region itself, which is <var>centered</var> at the pixel
 coordinate (60,70). (See <a href="command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument.)</p>
 
-<pre class="highlight"><code>convert image.png -gravity Center -region 10x10-40+20 \
+<pre class="highlight"><code>magick image.png -gravity Center -region 10x10-40+20 \
   -negate output.png
 </code></pre>
 
@@ -4613,27 +4614,27 @@ convert the given image into a grayscale image. </p>
 
 <p>For example, to convert an image to (linear) Rec709Luminance grayscale,  type:</p>
 
-<pre class="highlight"><code>convert in.png -grayscale Rec709Luminance out.png
+<pre class="highlight"><code>magick in.png -grayscale Rec709Luminance out.png
 </code></pre>
 
 <p>which is equivalent to:</p>
 
 <pre class="highlight">
-<code>convert in.png -colorspace RGB -colorspace Gray out.png</code>
+<code>magick in.png -colorspace RGB -colorspace Gray out.png</code>
 or
-<code>convert in.png -colorspace LinearGray out.png</code>
+<code>magick in.png -colorspace LinearGray out.png</code>
 </pre>
 
 <p>Note that LinearGray is new as of Imagemagick 6.9.9-29 and 7.0.7-17.</p>
 
 <p>Similarly, to convert an image to (non-linear) Rec709Luma grayscale,  type:</p>
 
-<pre class="highlight"><code>convert in.png -grayscale Rec709Luma out.png
+<pre class="highlight"><code>magick in.png -grayscale Rec709Luma out.png
 </code></pre>
 
 <p>which is equivalent to:</p>
 
-<pre class="highlight"><code>convert in.png -colorspace Gray out.png
+<pre class="highlight"><code>magick in.png -colorspace Gray out.png
 </code></pre>
 
 <p>Note that a 'colorspace' intensity method will produce the same result
@@ -4664,7 +4665,7 @@ dimensions.  Create it with the <code>HALD:</code> prefix (e.g. HALD:8).  You
 can apply any color transformation to the Hald image and then use this option
 to apply the transform to the image. </p>
 
-<pre class="highlight"><code>convert image.png hald.png -hald-clut transform.png
+<pre class="highlight"><code>magick image.png hald.png -hald-clut transform.png
 </code></pre>
 
 <p>This option provides a convenient method for you to use Gimp or Photoshop
@@ -4772,12 +4773,12 @@ href="http://en.wikipedia.org/wiki/Fourier_transform">Fourier Transform</a>,
 <p>For example, depending upon the image format used to store the result of
 the <a href="command-line-options.html#fft">-fft</a>, one would use either</p>
 
-<pre class="highlight"><code>convert fft_image.miff -ift fft_image_ift.png
+<pre class="highlight"><code>magick fft_image.miff -ift fft_image_ift.png
 </code></pre>
 
 <p>or</p>
 
-<pre class="highlight"><code>convert fft_image-0.png fft_image-1.png -ift fft_image_ift.png
+<pre class="highlight"><code>magick fft_image-0.png fft_image-1.png -ift fft_image_ift.png
 </code></pre>
 
 <p>The resulting image may need to be cropped due to padding introduced when
@@ -5046,7 +5047,7 @@ assigned to an image is used as a header string to print above the postscript
 image. </p>
 
 <p>You can include the image filename, type, width, height, or other image
-attribute by embedding special format character.  See <a href="../www/escape.html">Format and Print Image
+attribute by embedding special format character.  See <a href="escape.html">Format and Print Image
 Properties</a> for details of the percent escape codes.</p>
 
 <p>For example,</p>
@@ -5333,7 +5334,7 @@ animation, or a fully-'coalesced' animation sequence. </p>
         image sequence, then adjust the offsets so all images are contained on
         a minimal positive canvas. None of the image data is modified or
         merged, only the individual image virtual canvas size and offset.
-        All the images is given the same canvas size, and and will have
+        All the images is given the same canvas size, and will have
         a positive offset, but will remain in the same position relative to
         each other. As a result of the minimal canvas size at least one image
         will touch every edge of that canvas.  The image data touching those
@@ -5405,7 +5406,7 @@ values (0 is opaque) and not as 'alpha' values (0 is transparent).</p>
 <p class="magick-description">adjust the level of an image using the provided dash separated colors.</p>
 
 <p>This function is exactly like <a href="command-line-options.html#level">-level</a>, except that the
-value value for each color channel is determined by the
+value for each color channel is determined by the
 '<code>black_color</code>' and '<code>white_color</code>' colors given (as
 described under the <a href="command-line-options.html#fill">-fill</a> option). </p>
 
@@ -5686,7 +5687,7 @@ characters:</p>
 
 <p>For example:</p>
 
-<pre class="highlight"><code>convert -debug coder -log "%u %m:%l %e" in.gif out.png
+<pre class="highlight"><code>magick -debug coder -log "%u %m:%l %e" in.gif out.png
 </code></pre>
 
 <p>The default behavior is to print all of the components.</p>
@@ -5913,7 +5914,7 @@ href="command-line-options.html#modulate">-modulate 120,90</a>.</p>
 >option:modulate:colorspace</code>' to specify which colorspace to
 modulate.  Choose from <code>HCL</code>, <code>HCLp</code>, <code>HSB</code>, <code>HSI</code>, <code>HSL</code> (the default), <code>HSV</code>, <code>HWB</code>, or <code>LCH</code> (LCHuv).  For example,</p>
 
-<pre class="highlight"><code>convert image.png -set option:modulate:colorspace hsb -modulate 120,90 modulate.png
+<pre class="highlight"><code>magick image.png -set option:modulate:colorspace hsb -modulate 120,90 modulate.png
 </code></pre>
 
 <div style="margin: auto;">
@@ -6328,7 +6329,7 @@ neighborhood whose width is specified with <var>radius</var>.</p>
 
 <p>Some simple uses are:</p>
 <ul>
-<li>A weighted sum of each image provided all weights add to unity and all exponents=1. If the the weights are all equal to 1/(number of images), then this is equivalent to <a href="command-line-options.html#profile">-evaluate-sequence</a> <var>mean</var>.</li>
+<li>A weighted sum of each image provided all weights add to unity and all exponents=1. If the weights are all equal to 1/(number of images), then this is equivalent to <a href="command-line-options.html#profile">-evaluate-sequence</a> <var>mean</var>.</li>
 <li>The sum of squares of two or more images, provided the weights are equal (and sum to 1 to avoid clamping) and the exponents equal 2.</li>
 </ul>
 
@@ -6359,7 +6360,7 @@ visible effect.</p>
 <p class="magick-description">image preview type.</p>
 
 <p>Use this option to affect the preview operation of an image (e.g.
-<code>convert file.png -preview Gamma Preview:gamma.png</code>). Choose from
+<code>magick file.png -preview Gamma Preview:gamma.png</code>). Choose from
 these previews:</p>
 
 <pre class="pre-scrollable"><code>
@@ -6442,7 +6443,7 @@ used. Instead, simply write the file to an image format such as <var>APP1, 8BIM,
 <p>For example, to extract the Exif data (which is stored in JPEG files in the
 <var>APP1</var> profile), use.</p>
 
-<pre class="highlight"><code>convert cockatoo.jpg profile.exif
+<pre class="highlight"><code>magick cockatoo.jpg profile.exif
 </code></pre>
 
 <p>It is important to note that results may depend on whether or not the
@@ -6452,7 +6453,7 @@ therefore a conversion is made each time it is encountered, in order, in the
 command-line. For instance, in the following example, if the original image is
 CMYK with profile, a CMYK-CMYK-RGB conversion results.</p>
 
-<pre class="highlight"><code>convert CMYK.tif -profile "CMYK.icc" -profile "RGB.icc" RGB.tiff
+<pre class="highlight"><code>magick CMYK.tif -profile "CMYK.icc" -profile "RGB.icc" RGB.tiff
 </code></pre>
 
 <p>Furthermore, since ICC profiles are not necessarily symmetric, extra
@@ -6757,7 +6758,7 @@ filter.</p>
 coding.  If your image is gamma-corrected, you can remove the nonlinear gamma
 correction, apply the transform, then restore it like this:</p>
 
-<pre class="highlight"><code>convert portrait.jpg -gamma .45455 -resize 25% -gamma 2.2  \
+<pre class="highlight"><code>magick portrait.jpg -gamma .45455 -resize 25% -gamma 2.2  \
   -quality 92 passport.jpg
 </code></pre>
 
@@ -6984,7 +6985,7 @@ the same name. </p>
 <p>This includes string 'properties' that are set by and assigned to images
 using the options <a href="command-line-options.html#comment" >-comment</a>, <a href="command-line-options.html#label"
 >-label</a>, <a href="command-line-options.html#caption" >-caption</a>. These options actually assign
-a global 'artifact' which are automatically assigned (and any <a href="../www/escape.html" >Format Percent
+a global 'artifact' which are automatically assigned (and any <a href="escape.html" >Format Percent
 Escapes</a> expanded) to images as they are read in.  For example:</p>
 
 <pre class="highlight"><code>-> convert rose: -set comment 'Rose is a rose is a rose is a rose' rose.png
@@ -6992,7 +6993,7 @@ identify -format %c rose.png
 Rose is a rose is a rose is a rose
 </code></pre>
 
-<p>The set value can also make use of <a href="../www/escape.html" >Format and Print Image
+<p>The set value can also make use of <a href="escape.html" >Format and Print Image
 Properties</a> in the defined value.  For example:</p>
 
 <pre class="highlight"><code>-> convert rose: -set origsize '%wx%h' -resize 50% \
@@ -7014,14 +7015,14 @@ attribute. </p>
 <p>This option can also associate a colorspace or profile with your image.
 For example,</p>
 
-<pre class="highlight"><code>convert image.psd -set profile ISOcoated_v2_eci.icc image-icc.psd
+<pre class="highlight"><code>magick image.psd -set profile ISOcoated_v2_eci.icc image-icc.psd
 </code></pre>
 
 <p>Some 'properties' must be defined in a specific way to be used. For
 example only 'properties' prefixed with "<code>filename:</code>" can be used to
 modify the output filename of an image. For example</p>
 
-<pre class="highlight"><code>convert rose: -set filename:mysize '%wx%h' 'rose_%[filename:mysize].png'
+<pre class="highlight"><code>magick rose: -set filename:mysize '%wx%h' 'rose_%[filename:mysize].png'
 </code></pre>
 
 <p>If the setting value is prefixed with "<code>option:</code>" the setting will
@@ -7031,11 +7032,11 @@ can be used to pass 'attributes' and 'properties' of one specific image,
 in a way that allows you to use them in a completely different image, even if
 the original image has long since been modified or destroyed. For example: </p>
 
-<pre class="highlight"><code>convert rose:  -set option:rosesize '%wx%h' -delete 0 \
+<pre class="highlight"><code>magick rose:  -set option:rosesize '%wx%h' -delete 0 \
   label:'%[rosesize]'   label_size_of_rose.gif"
 </code></pre>
 
-<p>Note that <a href="../www/escape.html" >Format Percent Escapes</a> will only match
+<p>Note that <a href="escape.html" >Format Percent Escapes</a> will only match
 a 'artifact' if the given <var>key</var> does not match an existing
 'attribute' or 'property'.  </p>
 
@@ -7047,7 +7048,7 @@ previously-formatted ancillary chunks into the output PNG file, using
 the commandline option as shown below or by setting the profile via a
 programming interface:</p>
 
-<pre class="highlight"><code>convert in.png -set profile PNG-chunk-x:&lt;filename&gt; out.png
+<pre class="highlight"><code>magick in.png -set profile PNG-chunk-x:&lt;filename&gt; out.png
 </code></pre>
 
 <p>where <var>x</var> is a location flag and
@@ -7062,7 +7063,7 @@ of the same type, then add a short unique string after the "x" to prevent
 subsequent profiles from overwriting the preceding ones, e.g.,</p>
 
 
-<pre class="highlight"><code>convert in.png -set profile PNG-chunk-b01:file01 \
+<pre class="highlight"><code>magick in.png -set profile PNG-chunk-b01:file01 \
   -profile PNG-chunk-b02:file02 out.png
 </code></pre>
 
@@ -7141,7 +7142,7 @@ important to note, since horizontal and vertical shears do not
 <var>commute</var>, i.e., the order matters in a sequence of shears. For
 example, the following two commands are not equivalent.</p>
 
-<pre class="highlight"><code>convert logo: -shear 20x0 -shear 0x60 logo-sheared.png
+<pre class="highlight"><code>magick logo: -shear 20x0 -shear 0x60 logo-sheared.png
 convert logo: -shear 0x60 -shear 20x0 logo-sheared.png
 </code></pre>
 
@@ -7149,7 +7150,7 @@ convert logo: -shear 0x60 -shear 20x0 logo-sheared.png
 for the amount of empty space created; the command that follows generates
 a smaller image, and so is a better choice in terms of time and space.</p>
 
-<pre class="highlight"><code>convert logo: -shear 20x60 logo-sheared.png
+<pre class="highlight"><code>magick logo: -shear 20x60 logo-sheared.png
 </code></pre>
 
 <div style="margin: auto;">
@@ -7335,7 +7336,7 @@ href="command-line-options.html#splice">-splice</a> is most commonly used for. <
 
 <p>If the exact same  <var>geometry</var> and <a
 href="command-line-options.html#gravity">-gravity</a> is later used with <a href="command-line-options.html#chop">-chop</a> the
-added added all splices removed. </p>
+added all splices removed. </p>
 
 <div style="margin: auto;">
   <h3><a class="anchor" id="spread"></a>-spread <var>amount</var></h3>
@@ -7586,7 +7587,7 @@ red values, while those at or below 50% red would be set to 0 in the red
 channel. The green, blue, and alpha channels (if present) would be unchanged.
 </p>
 
-<pre class="highlight"><code>convert in.png -channel red -threshold 50% out.png
+<pre class="highlight"><code>magick in.png -channel red -threshold 50% out.png
 </code></pre>
 
 <p>As (possibly) impractical but instructive examples, the following would
@@ -7594,7 +7595,7 @@ generate an all-black and an all-white image with the same dimensions as the
 input image.</p>
 
 
-<pre class="highlight"><code>convert in.png -channel RGB -threshold 100% black.png
+<pre class="highlight"><code>magick in.png -channel RGB -threshold 100% black.png
 convert in.png -channel RGB -threshold -1 white.png
 </code></pre>
 
@@ -7689,7 +7690,7 @@ titled <code>bird.miff</code> and whose width is 512 and height is 480.</p>
 
 <p>This option applies the transformation matrix from a previous <a href="command-line-options.html#affine">-affine</a> option.</p>
 
-<pre class="highlight"><code>convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
+<pre class="highlight"><code>magick -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
 </code></pre>
 
 
@@ -7820,7 +7821,7 @@ href="command-line-options.html#type">-type</a> option can be used to override t
 example, to prevent a JPEG from being written in grayscale format even though
 only gray pixels are present, use.</p>
 
-<pre class="highlight"><code>convert bird.png -type TrueColor bird.jpg
+<pre class="highlight"><code>magick bird.png -type TrueColor bird.jpg
 </code></pre>
 
 <p>Similarly, use <a href="command-line-options.html#type">-type TrueColorAlpha</a> to force the
@@ -8129,12 +8130,15 @@ but with strict boolean masking. </p>
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="https://imagemagick.org/script/contact.php">Contact Us</a> 
     <br/>
+    <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
+        <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
+    <br/>
     <small>© 1999-2020 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
   <script src="assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 5th January 2020 11:16 -->
+<!-- Magick Cache 21st February 2020 08:37 -->

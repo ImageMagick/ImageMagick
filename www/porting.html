@@ -65,11 +65,11 @@
         <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
+    </div>
     <form class="form-inline my-2 my-lg-0" action="https://imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
     </form>
-    </div>
   </nav>
   <div class="container">
    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -306,7 +306,7 @@ Rec601Luminance
 Rec709Luma
 Rec709Luminance</code></pre>
 <p>For example,</p>
-<pre class="highlight"><code>convert myImage.png -intensity Rec709Luminance -colorspace gray myImage.jpg</code></pre>
+<pre class="highlight"><code>magick myImage.png -intensity Rec709Luminance -colorspace gray myImage.jpg</code></pre>
 
 <h2><a class="anchor" id="grayscale"></a>Grayscale</h2>
 <p>Previously, grayscale images were Rec601Luminance and consumed 4 channels: red, green, blue, and alpha.  With version 7, grayscale consumes only 1 channel requiring far less resources as a result.</p>
@@ -316,7 +316,7 @@ Rec709Luminance</code></pre>
 <p>In this example, we compute the distortion of a masked reconstructed image:</p>
 <pre class="highlight"><code>compare -metric rmse -read-mask hat_mask.png hat.png wizard.png difference.png</code></pre>
 <p>Here we protect certain pixels from change:</p>
-<pre class="highlight"><code>convert rose: -write-mask rose_bg_mask.png -modulate 110,100,33.3  +mask rose_blue.png</code></pre>
+<pre class="highlight"><code>magick rose: -write-mask rose_bg_mask.png -modulate 110,100,33.3  +mask rose_blue.png</code></pre>
 
 <p>A mask associated with an image persists until it is modified or removed.  This may produce unexpected results for complex command-lines.  Here we only want to clip when applying the alpha option, not the resize:</p>
 <pre class="highlight">
@@ -407,7 +407,7 @@ specific </p>
 channels.  Most operators will blend alpha the other color channels, but other
 operators (and situations) may require this blending to be disabled, and is
 currently done by removing alpha from the active channels via
-<code>-channel</code> option.  (e.g. <code>convert castle.gif -channel RGB
+<code>-channel</code> option.  (e.g. <code>magick castle.gif -channel RGB
 -negate castle.png</code>). </p>
 
 <p>Reading gray-scale images generate an image with only one channel. If
@@ -421,7 +421,7 @@ be applied to expand the one channel into separate RGB (or other) channels.
 <dl class="row">
 <dt class="col-md-4">magick</dt>
 <dd class="col-md-8">The "<code>magick</code>" command is the new primary command of the Shell
-    API, replacing the old "<code>convert</code>" command. This allows you to
+    API, replacing the old "<code>magick</code>" command. This allows you to
     create a 'magick script' of the form  "<code>#!/path/to/command/magick
     -script</code>", or pipe options into a command "<code>magick -script
     -</code>, as abackground process. </dd>
@@ -436,15 +436,15 @@ be applied to expand the one channel into separate RGB (or other) channels.
     a "one argument she-bang bug" that is common on most UNIX systems
     (including Linux, but not MacOSX).</dd>
 <dt class="col-md-4">animate, compare, composite, conjure, convert, display, identify, import, mogrify, montage, stream</dt>
-<dd class="col-md-8">To reduce the footprint of the command-line utilities, these utilities are symbolic links to the <code>magick</code> utility.  You can also invoke them from the <code>magick</code> utility, for example, use <code>magick convert logo: logo.png</code> to invoke the <code>convert</code> utility.
+<dd class="col-md-8">To reduce the footprint of the command-line utilities, these utilities are symbolic links to the <code>magick</code> utility.  You can also invoke them from the <code>magick</code> utility, for example, use <code>magick convert logo: logo.png</code> to invoke the <code>magick</code> utility.
 </dd></dl>
 
 <h3>Behavioral Changes</h3>
 <p>Image settings are applied to each image on the command line.  To associate a setting with a particular image, use parenthesis to remove ambiguity.  In this example we assign a unique page offset to each image:</p>
-<pre class="highlight"><code>convert \( -page +10+20 first.png \) \( -page +100+200 second.png \) ...</code></pre>
+<pre class="highlight"><code>magick \( -page +10+20 first.png \) \( -page +100+200 second.png \) ...</code></pre>
 
 <p>By default, image operations such as convolution blends alpha with each channel.  To convolve each channel independently, deactivate the alpha channel as follows:</p>
-<pre class="highlight"><code>convert ... -alpha discrete -blur 0x1 ...</code></pre>
+<pre class="highlight"><code>magick ... -alpha discrete -blur 0x1 ...</code></pre>
 <p>To remove the alpha values from your image, use <code>-alpha off</code>. If you want to instead persist the alpha channel but not blend the alpha pixels for certain image processing operations, use <code>-alpha deactivate</code> instead.</p>
 <p>Some options have changed in ImageMagick version 7.  These include:</p>
 <dl>
@@ -509,9 +509,9 @@ scripts.</p>
 <p>A channel without an operation symbol implies separate (i.e, semicolon).</p>
 
 <p>Here we take an sRGB image and a grayscale image and inject the grayscale image into the alpha channel:</p>
-<pre class="highlight"><code>convert wizard.png mask.pgm -channel-fx '| gray=>alpha' wizard-alpha.png</code></pre>
+<pre class="highlight"><code>magick wizard.png mask.pgm -channel-fx '| gray=>alpha' wizard-alpha.png</code></pre>
 <p>Use a similar command to define a read mask:</p>
-<pre class="highlight"><code>convert wizard.png mask.pgm -channel-fx '| gray=>read-mask' wizard-mask.png</code></pre>
+<pre class="highlight"><code>magick wizard.png mask.pgm -channel-fx '| gray=>read-mask' wizard-mask.png</code></pre>
 
 <p>Add <code>-debug pixel</code> prior to the <code>-channel-fx</code> option to track the channel morphology.</p>
 
@@ -675,12 +675,15 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="https://imagemagick.org/script/contact.php">Contact Us</a> 
     <br/>
+    <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
+        <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
+    <br/>
     <small>© 1999-2020 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
   <script src="assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 5th January 2020 10:01 -->
+<!-- Magick Cache 21st February 2020 08:43 -->

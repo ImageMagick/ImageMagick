@@ -29,14 +29,14 @@
   <meta property='og:site_name' content='ImageMagick' />
   <meta property='og:description' content="Convert, Edit, or Compose Bitmap Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="fx.html" rel="canonical" />
-  <link href="../../images/wand.png" rel="icon" />
-  <link href="../../images/wand.ico" rel="shortcut icon" />
-  <link href="../assets/magick.css" rel="stylesheet" />
+  <link href="../www/api/fx.html" rel="canonical" />
+  <link href="../../www/images/wand.png" rel="icon" />
+  <link href="../../www/images/wand.ico" rel="shortcut icon" />
+  <link href="../../www/assets/magick.css" rel="stylesheet" />
 </head>
 <body>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="../../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../../images/wand.ico"/></a>
+    <a class="navbar-brand" href="../../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../../www/images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -44,32 +44,32 @@
     <div class="navbar-collapse collapse" id="navbarsMagick" style="">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
-        <a class="nav-link" href="../../">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="../../www/">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../../www/download.html">Download</a>
+        <a class="nav-link" href="../../www/www/download.html">Download</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../../www/command-line-tools.html">Tools</a>
+        <a class="nav-link" href="../../www/www/command-line-tools.html">Tools</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../../www/command-line-processing.html">Command-line</a>
+        <a class="nav-link" href="../../www/www/command-line-processing.html">Command-line</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../../www/resources.html">Resources</a>
+        <a class="nav-link" href="../../www/www/resources.html">Resources</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="../../www/develop.html">Develop</a>
+        <a class="nav-link" href="../../www/www/develop.html">Develop</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="../https://imagemagick.org/script/search.php">
+    </div>
+    <form class="form-inline my-2 my-lg-0" action="../../www/www/search.html">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
     </form>
-    </div>
   </nav>
   <div class="container">
    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -87,179 +87,8 @@
   <main class="container">
     <div class="magick-template">
 <div class="magick-header">
-<p class="text-center"><a href="fx.html#AddNoiseImage">AddNoiseImage</a> &#8226; <a href="fx.html#BlueShiftImage">BlueShiftImage</a> &#8226; <a href="fx.html#CharcoalImage">CharcoalImage</a> &#8226; <a href="fx.html#ColorizeImage">ColorizeImage</a> &#8226; <a href="fx.html#ColorMatrixImage">ColorMatrixImage</a> &#8226; <a href="fx.html#FxImage">FxImage</a> &#8226; <a href="fx.html#ImplodeImage">ImplodeImage</a> &#8226; <a href="fx.html#The MorphImages">The MorphImages</a> &#8226; <a href="fx.html#PlasmaImage">PlasmaImage</a> &#8226; <a href="fx.html#PolaroidImage">PolaroidImage</a> &#8226; <a href="fx.html#MagickSepiaToneImage">MagickSepiaToneImage</a> &#8226; <a href="fx.html#ShadowImage">ShadowImage</a> &#8226; <a href="fx.html#SketchImage">SketchImage</a> &#8226; <a href="fx.html#SolarizeImage">SolarizeImage</a> &#8226; <a href="fx.html#SteganoImage">SteganoImage</a> &#8226; <a href="fx.html#StereoAnaglyphImage">StereoAnaglyphImage</a> &#8226; <a href="fx.html#SwirlImage">SwirlImage</a> &#8226; <a href="fx.html#TintImage">TintImage</a> &#8226; <a href="fx.html#VignetteImage">VignetteImage</a> &#8226; <a href="fx.html#WaveImage">WaveImage</a> &#8226; <a href="fx.html#WaveletDenoiseImage">WaveletDenoiseImage</a></p>
+<p class="text-center"><a href="fx.html#FxImage">FxImage</a></p>
 
-<h2><a href="../../api/MagickCore/fx_8c.html" id="AddNoiseImage">AddNoiseImage</a></h2>
-
-<p>AddNoiseImage() adds random noise to the image.</p>
-
-<p>The format of the AddNoiseImage method is:</p>
-
-<pre class="text">
-Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
-  const double attenuate,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>channel</dt>
-<dd>the channel type. </dd>
-
-<dd> </dd>
-<dt>noise_type</dt>
-<dd> The type of noise: Uniform, Gaussian, Multiplicative, Impulse, Laplacian, or Poisson. </dd>
-
-<dd> </dd>
-<dt>attenuate</dt>
-<dd> attenuate the random distribution. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="../../api/MagickCore/fx_8c.html" id="BlueShiftImage">BlueShiftImage</a></h2>
-
-<p>BlueShiftImage() mutes the colors of the image to simulate a scene at nighttime in the moonlight.</p>
-
-<p>The format of the BlueShiftImage method is:</p>
-
-<pre class="text">
-Image *BlueShiftImage(const Image *image,const double factor,
-  ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>factor</dt>
-<dd>the shift factor. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="../../api/MagickCore/fx_8c.html" id="CharcoalImage">CharcoalImage</a></h2>
-
-<p>CharcoalImage() creates a new image that is a copy of an existing one with the edge highlighted.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p>
-
-<p>The format of the CharcoalImage method is:</p>
-
-<pre class="text">
-Image *CharcoalImage(const Image *image,const double radius,
-  const double sigma,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>radius</dt>
-<dd>the radius of the pixel neighborhood. </dd>
-
-<dd> </dd>
-<dt>sigma</dt>
-<dd>the standard deviation of the Gaussian, in pixels. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="../../api/MagickCore/fx_8c.html" id="ColorizeImage">ColorizeImage</a></h2>
-
-<p>ColorizeImage() blends the fill color with each pixel in the image. A percentage blend is specified with opacity.  Control the application of different color components by specifying a different percentage for each component (e.g. 90/100/10 is 90 red, 100 green, and 10 blue).</p>
-
-<p>The format of the ColorizeImage method is:</p>
-
-<pre class="text">
-Image *ColorizeImage(const Image *image,const char *blend,
-  const PixelInfo *colorize,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>blend</dt>
-<dd> A character string indicating the level of blending as a percentage. </dd>
-
-<dd> </dd>
-<dt>colorize</dt>
-<dd>A color value. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="../../api/MagickCore/fx_8c.html" id="ColorMatrixImage">ColorMatrixImage</a></h2>
-
-<p>ColorMatrixImage() applies color transformation to an image. This method permits saturation changes, hue rotation, luminance to alpha, and various other effects.  Although variable-sized transformation matrices can be used, typically one uses a 5x5 matrix for an RGBA image and a 6x6 for CMYKA (or RGBA with offsets).  The matrix is similar to those used by Adobe Flash except offsets are in column 6 rather than 5 (in support of CMYKA images) and offsets are normalized (divide Flash offset by 255).</p>
-
-<p>The format of the ColorMatrixImage method is:</p>
-
-<pre class="text">
-Image *ColorMatrixImage(const Image *image,
-  const KernelInfo *color_matrix,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>color_matrix</dt>
-<dd> the color matrix. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
 <h2><a href="../../api/MagickCore/fx_8c.html" id="FxImage">FxImage</a></h2>
 
 <p>FxImage() applies a mathematical expression to the specified image.</p>
@@ -291,582 +120,31 @@ Image *FxImage(const Image *image,const char *expression,
 
 <dd>  </dd>
 </dl>
-<h2><a href="../../api/MagickCore/fx_8c.html" id="ImplodeImage">ImplodeImage</a></h2>
-
-<p>ImplodeImage() creates a new image that is a copy of an existing one with the image pixels "implode" by the specified percentage.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p>
-
-<p>The format of the ImplodeImage method is:</p>
-
-<pre class="text">
-Image *ImplodeImage(const Image *image,const double amount,
-  const PixelInterpolateMethod method,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>implode_image</dt>
-<dd>Method ImplodeImage returns a pointer to the image after it is implode.  A null image is returned if there is a memory shortage. </dd>
-
-<dd> </dd>
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>amount</dt>
-<dd> Define the extent of the implosion. </dd>
-
-<dd> </dd>
-<dt>method</dt>
-<dd>the pixel interpolation method. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="../../api/MagickCore/fx_8c.html" id="The_MorphImages">The MorphImages</a></h2>
-
-<p>The MorphImages() method requires a minimum of two images.  The first image is transformed into the second by a number of intervening images as specified by frames.</p>
-
-<p>The format of the MorphImage method is:</p>
-
-<pre class="text">
-Image *MorphImages(const Image *image,const size_t number_frames,
-  ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>number_frames</dt>
-<dd> Define the number of in-between image to generate. The more in-between frames, the smoother the morph. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="../../api/MagickCore/fx_8c.html" id="PlasmaImage">PlasmaImage</a></h2>
-
-<p>PlasmaImage() initializes an image with plasma fractal values.  The image must be initialized with a base color and the random number generator seeded before this method is called.</p>
-
-<p>The format of the PlasmaImage method is:</p>
-
-<pre class="text">
-MagickBooleanType PlasmaImage(Image *image,const SegmentInfo *segment,
-  size_t attenuate,size_t depth,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>segment</dt>
-<dd>  Define the region to apply plasma fractals values. </dd>
-
-<dd> </dd>
-<dt>attenuate</dt>
-<dd>Define the plasma attenuation factor. </dd>
-
-<dd> </dd>
-<dt>depth</dt>
-<dd>Limit the plasma recursion depth. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="../../api/MagickCore/fx_8c.html" id="PolaroidImage">PolaroidImage</a></h2>
-
-<p>PolaroidImage() simulates a Polaroid picture.</p>
-
-<p>The format of the PolaroidImage method is:</p>
-
-<pre class="text">
-Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
-  const char *caption,const double angle,
-  const PixelInterpolateMethod method,ExceptionInfo exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>draw_info</dt>
-<dd>the draw info. </dd>
-
-<dd> </dd>
-<dt>caption</dt>
-<dd>the Polaroid caption. </dd>
-
-<dd> </dd>
-<dt>angle</dt>
-<dd>Apply the effect along this angle. </dd>
-
-<dd> </dd>
-<dt>method</dt>
-<dd>the pixel interpolation method. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="../../api/MagickCore/fx_8c.html" id="MagickSepiaToneImage">MagickSepiaToneImage</a></h2>
-
-<p>MagickSepiaToneImage() applies a special effect to the image, similar to the effect achieved in a photo darkroom by sepia toning.  Threshold ranges from 0 to QuantumRange and is a measure of the extent of the sepia toning.  A threshold of 80 is a good starting point for a reasonable tone.</p>
-
-<p>The format of the SepiaToneImage method is:</p>
-
-<pre class="text">
-Image *SepiaToneImage(const Image *image,const double threshold,
-  ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>threshold</dt>
-<dd>the tone threshold. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="../../api/MagickCore/fx_8c.html" id="ShadowImage">ShadowImage</a></h2>
-
-<p>ShadowImage() simulates a shadow from the specified image and returns it.</p>
-
-<p>The format of the ShadowImage method is:</p>
-
-<pre class="text">
-Image *ShadowImage(const Image *image,const double alpha,
-  const double sigma,const ssize_t x_offset,const ssize_t y_offset,
-  ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>alpha</dt>
-<dd>percentage transparency. </dd>
-
-<dd> </dd>
-<dt>sigma</dt>
-<dd>the standard deviation of the Gaussian, in pixels. </dd>
-
-<dd> </dd>
-<dt>x_offset</dt>
-<dd>the shadow x-offset. </dd>
-
-<dd> </dd>
-<dt>y_offset</dt>
-<dd>the shadow y-offset. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="../../api/MagickCore/fx_8c.html" id="SketchImage">SketchImage</a></h2>
-
-<p>SketchImage() simulates a pencil sketch.  We convolve the image with a Gaussian operator of the given radius and standard deviation (sigma).  For reasonable results, radius should be larger than sigma.  Use a radius of 0 and SketchImage() selects a suitable radius for you.  Angle gives the angle of the sketch.</p>
-
-<p>The format of the SketchImage method is:</p>
-
-<pre class="text">
-    Image *SketchImage(const Image *image,const double radius,
-const double sigma,const double angle,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>radius</dt>
-<dd>the radius of the Gaussian, in pixels, not counting the center pixel. </dd>
-
-<dd> </dd>
-<dt>sigma</dt>
-<dd>the standard deviation of the Gaussian, in pixels. </dd>
-
-<dd> </dd>
-<dt>angle</dt>
-<dd>apply the effect along this angle. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="../../api/MagickCore/fx_8c.html" id="SolarizeImage">SolarizeImage</a></h2>
-
-<p>SolarizeImage() applies a special effect to the image, similar to the effect achieved in a photo darkroom by selectively exposing areas of photo sensitive paper to light.  Threshold ranges from 0 to QuantumRange and is a measure of the extent of the solarization.</p>
-
-<p>The format of the SolarizeImage method is:</p>
-
-<pre class="text">
-MagickBooleanType SolarizeImage(Image *image,const double threshold,
-  ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>threshold</dt>
-<dd> Define the extent of the solarization. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="../../api/MagickCore/fx_8c.html" id="SteganoImage">SteganoImage</a></h2>
-
-<p>SteganoImage() hides a digital watermark within the image.  Recover the hidden watermark later to prove that the authenticity of an image. Offset defines the start position within the image to hide the watermark.</p>
-
-<p>The format of the SteganoImage method is:</p>
-
-<pre class="text">
-Image *SteganoImage(const Image *image,Image *watermark,
-  ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>watermark</dt>
-<dd>the watermark image. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="../../api/MagickCore/fx_8c.html" id="StereoAnaglyphImage">StereoAnaglyphImage</a></h2>
-
-<p>StereoAnaglyphImage() combines two images and produces a single image that is the composite of a left and right image of a stereo pair.  Special red-green stereo glasses are required to view this effect.</p>
-
-<p>The format of the StereoAnaglyphImage method is:</p>
-
-<pre class="text">
-Image *StereoImage(const Image *left_image,const Image *right_image,
-  ExceptionInfo *exception)
-Image *StereoAnaglyphImage(const Image *left_image,
-  const Image *right_image,const ssize_t x_offset,const ssize_t y_offset,
-  ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>left_image</dt>
-<dd>the left image. </dd>
-
-<dd> </dd>
-<dt>right_image</dt>
-<dd>the right image. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd> </dd>
-<dt>x_offset</dt>
-<dd>amount, in pixels, by which the left image is offset to the right of the right image. </dd>
-
-<dd> </dd>
-<dt>y_offset</dt>
-<dd>amount, in pixels, by which the left image is offset to the bottom of the right image. </dd>
-
-<dd> </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="../../api/MagickCore/fx_8c.html" id="SwirlImage">SwirlImage</a></h2>
-
-<p>SwirlImage() swirls the pixels about the center of the image, where degrees indicates the sweep of the arc through which each pixel is moved. You get a more dramatic effect as the degrees move from 1 to 360.</p>
-
-<p>The format of the SwirlImage method is:</p>
-
-<pre class="text">
-Image *SwirlImage(const Image *image,double degrees,
-  const PixelInterpolateMethod method,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>degrees</dt>
-<dd>Define the tightness of the swirling effect. </dd>
-
-<dd> </dd>
-<dt>method</dt>
-<dd>the pixel interpolation method. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="../../api/MagickCore/fx_8c.html" id="TintImage">TintImage</a></h2>
-
-<p>TintImage() applies a color vector to each pixel in the image.  The length of the vector is 0 for black and white and at its maximum for the midtones. The vector weighting function is f(x)=(1-(4.0*((x-0.5)*(x-0.5))))</p>
-
-<p>The format of the TintImage method is:</p>
-
-<pre class="text">
-Image *TintImage(const Image *image,const char *blend,
-  const PixelInfo *tint,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>blend</dt>
-<dd>A color value used for tinting. </dd>
-
-<dd> </dd>
-<dt>tint</dt>
-<dd>A color value used for tinting. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="../../api/MagickCore/fx_8c.html" id="VignetteImage">VignetteImage</a></h2>
-
-<p>VignetteImage() softens the edges of the image in vignette style.</p>
-
-<p>The format of the VignetteImage method is:</p>
-
-<pre class="text">
-Image *VignetteImage(const Image *image,const double radius,
-  const double sigma,const ssize_t x,const ssize_t y,
-  ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>radius</dt>
-<dd>the radius of the pixel neighborhood. </dd>
-
-<dd> </dd>
-<dt>sigma</dt>
-<dd>the standard deviation of the Gaussian, in pixels. </dd>
-
-<dd> </dd>
-<dt>x, y</dt>
-<dd> Define the x and y ellipse offset. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="../../api/MagickCore/fx_8c.html" id="WaveImage">WaveImage</a></h2>
-
-<p>WaveImage() creates a "ripple" effect in the image by shifting the pixels vertically along a sine wave whose amplitude and wavelength is specified by the given parameters.</p>
-
-<p>The format of the WaveImage method is:</p>
-
-<pre class="text">
-Image *WaveImage(const Image *image,const double amplitude,
-  const double wave_length,const PixelInterpolateMethod method,
-  ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>amplitude, wave_length</dt>
-<dd> Define the amplitude and wave length of the sine wave. </dd>
-
-<dd> </dd>
-<dt>interpolate</dt>
-<dd>the pixel interpolation method. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="../../api/MagickCore/fx_8c.html" id="WaveletDenoiseImage">WaveletDenoiseImage</a></h2>
-
-<p>WaveletDenoiseImage() removes noise from the image using a wavelet transform.  The wavelet transform is a fast hierarchical scheme for processing an image using a set of consecutive lowpass and high_pass filters, followed by a decimation.  This results in a decomposition into different scales which can be regarded as different “frequency bands”, determined by the mother wavelet.  Adapted from dcraw.c by David Coffin.</p>
-
-<p>The format of the WaveletDenoiseImage method is:</p>
-
-<pre class="text">
-Image *WaveletDenoiseImage(const Image *image,const double threshold,
-  const double softness,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>threshold</dt>
-<dd>set the threshold for smoothing. </dd>
-
-<dd> </dd>
-<dt>softness</dt>
-<dd>attenuate the smoothing threshold. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
 </div>
     </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
-    <p><a href="../../www/security-policy.html">Security</a> •
-    <a href="../../www/architecture.html">Architecture</a>
+    <p><a href="../../www/www/security-policy.html">Security</a> •
+    <a href="../../www/www/architecture.html">Architecture</a>
      
-    <a href="fx.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../../images/wand.ico"/></a>
+    <a href="fx.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../../www/images/wand.ico"/></a>
      
-    <a href="../../www/links.html">Related</a> •
-     <a href="../../www/sitemap.html">Sitemap</a>
+    <a href="../../www/www/links.html">Related</a> •
+     <a href="../../www/www/sitemap.html">Sitemap</a>
     <br/>
-    <a href="../../www/support.html">Donate</a> •
+    <a href="../../www/www/support.html">Donate</a> •
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="../../www/contact.html">Contact Us</a> 
+    <a href="../../www/www/contact.html">Contact Us</a> 
+    <br/>
+    <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
+        <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
     <br/>
     <small>© 1999-2020 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
-  <script src="../assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
+  <script src="../../www/assets/magick.js" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 2nd January 2020 23:22 -->
+<!-- Magick Cache 14th February 2020 20:06 -->

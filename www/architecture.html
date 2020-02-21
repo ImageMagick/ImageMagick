@@ -65,11 +65,11 @@
         <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
       </li>
     </ul>
+    </div>
     <form class="form-inline my-2 my-lg-0" action="https://imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
     </form>
-    </div>
   </nav>
   <div class="container">
    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -166,7 +166,7 @@ if (image == (Image *) NULL)
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to 8-bit gray image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="command-line-options.html#version">&#x2011;version</a> option: </p>
 
-<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>identify -version</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>Version: ImageMagick 7.0.9-14 2020-01-01 Q16 https://imagemagick.org</span></pre>
+<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>identify -version</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>Version: ImageMagick 7.0.9-25 2020-02-01 Q16 https://imagemagick.org</span></pre>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 
 <h3><a class="anchor" id="authentic-pixels"></a>Access the Pixel Cache</h3>
@@ -326,22 +326,33 @@ Resource limits:
 
 <p>You can set these limits either as a <a href="security-policy.html">security policy</a> (see <a href="https://imagemagick.org/source/policy.xml">policy.xml</a>), with an <a href="resources.html#environment">environment variable</a>, with the <a href="command-line-options.html#limit">-limit</a> command line option, or with the <a href="api/resource.html#SetMagickResourceLimit">SetMagickResourceLimit()</a> MagickCore API method. As an example, our online web interface to ImageMagick, <a href="../MagickStudio/scripts/MagickStudio.cgi">ImageMagick Studio</a>, includes these policy limits to help prevent a denial-of-service:</p>
 <pre class="highlight"><code>&lt;policymap>
+  &lt;!-- temporary path must be a preexisting writable directory -->
   &lt;policy domain="resource" name="temporary-path" value="/tmp"/>
   &lt;policy domain="resource" name="memory" value="256MiB"/>
   &lt;policy domain="resource" name="map" value="512MiB"/>
   &lt;policy domain="resource" name="width" value="8KP"/>
   &lt;policy domain="resource" name="height" value="8KP"/>
-  &lt;policy domain="resource" name="area" value="128MB"/>
+  &lt;policy domain="resource" name="area" value="16KP"/>
   &lt;policy domain="resource" name="disk" value="1GiB"/>
   &lt;policy domain="resource" name="file" value="768"/>
   &lt;policy domain="resource" name="thread" value="2"/>
   &lt;policy domain="resource" name="throttle" value="0"/>
   &lt;policy domain="resource" name="time" value="120"/>
+  &lt;policy domain="resource" name="list-length" value="128"/>
   &lt;policy domain="system" name="precision" value="6"/>
-  &lt;policy domain="cache" name="shared-secret" value="replace with your secret phrase" stealth="true"/>
-  &lt;policy domain="delegate" rights="none" pattern="HTTPS" />
-  &lt;policy domain="path" rights="none" pattern="@*"/>  &lt;!-- indirect reads not permitted -->
-&lt;/policymap>
+  &lt;policy domain="cache" name="shared-secret" stealth="true" value="replace with your secret phrase"/>
+  &lt;policy domain="coder" rights="none" pattern="MVG" />
+  &lt;policy domain="coder" rights="none" pattern="EPS" />
+  &lt;policy domain="coder" rights="none" pattern="PS" />
+  &lt;policy domain="coder" rights="none" pattern="PS2" />
+  &lt;policy domain="coder" rights="none" pattern="PS3" />
+  &lt;policy domain="coder" rights="none" pattern="PDF" />
+  &lt;policy domain="coder" rights="none" pattern="XPS" />
+  &lt;policy domain="filter" rights="none" pattern="*" />
+  &lt;policy domain="delegate" rights="none" pattern="HTTPS" />  <!--  prevent 'curl' program from reading HTTPS URL's -->
+  &lt;policy domain="delegate" rights="none" pattern="SHOW" />
+  &lt;policy domain="delegate" rights="none" pattern="WIN" />
+  &lt;policy domain="path" rights="none" pattern="@*"/>  <!-- indirect reads not permitted -->
 </code></pre>
 <p>Since we process multiple simultaneous sessions, we don't want any one session consuming all the available memory.With this policy, large images are cached to disk. If the image is too large and exceeds the pixel cache disk limit, the program exits. In addition, we place a time limit to prevent any run-away processing tasks. If any one image has a width or height that exceeds 8192 pixels, an exception is thrown and processing stops. As of ImageMagick 7.0.1-8 you can prevent the use of any delegate or all delegates (set the pattern to "*"). Note, prior to this release, use a domain of "coder" to prevent delegate usage (e.g. domain="coder" rights="none" pattern="HTTPS"). The policy also prevents indirect reads.  If you want to, for example, read text from a file (e.g. caption:@myCaption.txt), you'll need to remove this policy.</p>
 
@@ -371,7 +382,7 @@ Resource limits:
 
 <h3>Distributed Pixel Cache</h3>
 <p>A distributed pixel cache is an extension of the traditional pixel cache available on a single host.  The distributed pixel cache may span multiple servers so that it can grow in size and transactional capacity to support very large images.  Start up the pixel cache server on one or more machines.  When you read or operate on an image and the local pixel cache resources are exhausted, ImageMagick contacts one or more of these remote pixel servers to store or retrieve pixels.  The distributed pixel cache relies on network bandwidth to marshal pixels to and from the remote server.  As such, it will likely be significantly slower than a pixel cache utilizing local storage (e.g. memory, disk, etc.).</p>
-<pre class="highlight"><code>convert -distribute-cache 6668 &amp;  // start on 192.168.100.50
+<pre class="highlight"><code>magick -distribute-cache 6668 &amp;  // start on 192.168.100.50
 convert -define registry:cache:hosts=192.168.100.50:6668 myimage.jpg -sharpen 5x2 mimage.png
 </code></pre>
 
@@ -427,13 +438,13 @@ if (y &lt; (ssize_t) source-&gt;rows)
 <p>A great majority of image formats and algorithms restrict themselves to a fixed range of pixel values from 0 to some maximum value, for example, the Q16 version of ImageMagick permit intensities from 0 to 65535.  High dynamic-range imaging (HDRI), however, permits a far greater dynamic range of exposures (i.e. a large difference between light and dark areas) than standard digital imaging techniques. HDRI accurately represents the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.  Enable <a href="high-dynamic-range.html">HDRI</a> at ImageMagick build time to deal with high dynamic-range images, but be mindful that each pixel component is a 32-bit floating point value. In addition, pixel values are not clamped by default so some algorithms may have unexpected results due to out-of-band pixel values than the non-HDRI version.</p>
 
 <p>If you are dealing with large images, make sure the pixel cache is written to a disk area with plenty of free space.  Under Unix, this is typically <code>/tmp</code> and for Windows, <code>c:/temp</code>.  You can tell ImageMagick to write the pixel cache to an alternate location and conserve memory with these options:</p>
-<pre class="highlight"><code>convert -limit memory 2GB -limit map 4GB -define registry:temporary-path=/data/tmp ...
+<pre class="highlight"><code>magick -limit memory 2GB -limit map 4GB -define registry:temporary-path=/data/tmp ...
 </code></pre>
 
 <p>Set global resource limits for your environment in the <code>policy.xml</code> configuration file.</p>
 
 <p>If you plan on processing the same image many times, consider the MPC format.  Reading a MPC image has near-zero overhead because its in the native pixel cache format eliminating the need for decoding the image pixels.  Here is an example:</p>
-<pre class="highlight"><code>convert image.tif image.mpc
+<pre class="highlight"><code>magick image.tif image.mpc
 convert image.mpc -crop 100x100+0+0 +repage 1.png
 convert image.mpc -crop 100x100+100+0 +repage 2.png
 convert image.mpc -crop 100x100+200+0 +repage 3.png
@@ -505,30 +516,30 @@ if (profile != (StringInfo *) NULL)
 
 <h2><a class="anchor" id="tera-pixel"></a>Large Image Support</h2>
 <p>ImageMagick can read, process, or write mega-, giga-, or tera-pixel image sizes.  An image width or height can range from 1 to 2 giga-pixels on a 32 bit OS (up to 2147483647 rows/columns) and up to 9 exa-pixels on a 64-bit OS (up to 9223372036854775807 rows/columns).  Note, that some image formats have restrictions on image size.  For example, Photoshop images are limited to 300,000 pixels for width or height.  Here we resize an image to a quarter million pixels square:</p>
-<pre class="highlight"><code>convert logo: -resize 250000x250000 logo.miff
+<pre class="highlight"><code>magick logo: -resize 250000x250000 logo.miff
 </code></pre>
 
 <p>For large images, memory resources will likely be exhausted and ImageMagick will instead create a pixel cache on disk.  Make sure you have plenty of temporary disk space.  If your default temporary disk partition is too small, tell ImageMagick to use another partition with plenty of free space.  For example:</p>
-<pre class="highlight"><code>convert -define registry:temporary-path=/data/tmp logo:  \ <br/>     -resize 250000x250000 logo.miff
+<pre class="highlight"><code>magick -define registry:temporary-path=/data/tmp logo:  \ <br/>     -resize 250000x250000 logo.miff
 </code></pre>
 
 <p>To ensure large images do not consume all the memory on your system, force the image pixels to memory-mapped disk with resource limits:</p>
-<pre class="highlight"><code>convert -define registry:temporary-path=/data/tmp -limit memory 16mb \
+<pre class="highlight"><code>magick -define registry:temporary-path=/data/tmp -limit memory 16mb \
   logo: -resize 250000x250000 logo.miff
 </code></pre>
 
 <p>Here we force all image pixels to disk:</p>
-<pre class="highlight"><code>convert -define registry:temporary-path=/data/tmp -limit area 0 \
+<pre class="highlight"><code>magick -define registry:temporary-path=/data/tmp -limit area 0 \
   logo: -resize 250000x250000 logo.miff
 </code></pre>
 
 <p>Caching pixels to disk is about 1000 times slower than memory.  Expect long run times when processing large images on disk with ImageMagick.  You can monitor progress with this command:</p>
-<pre class="highlight"><code>convert -monitor -limit memory 2GiB -limit map 4GiB -define registry:temporary-path=/data/tmp \
+<pre class="highlight"><code>magick -monitor -limit memory 2GiB -limit map 4GiB -define registry:temporary-path=/data/tmp \
   logo: -resize 250000x250000 logo.miff
 </code></pre>
 
 <p>For really large images, or if there is limited resources on your host, you can utilize a distributed pixel cache on one or more remote hosts:</p>
-<pre class="highlight"><code>convert -distribute-cache 6668 &amp;  // start on 192.168.100.50
+<pre class="highlight"><code>magick -distribute-cache 6668 &amp;  // start on 192.168.100.50
 convert -distribute-cache 6668 &amp;  // start on 192.168.100.51
 convert -limit memory 2mb -limit map 2mb -limit disk 2gb \
   -define registry:cache:hosts=192.168.100.50:6668,192.168.100.51:6668 \
@@ -693,7 +704,7 @@ Features: DPC Cipher Modules OpenCL OpenMP(4.5)
 
 <p>If so, run this command to realize a significant speed-up for image convolution:</p>
 
-<pre class="highlight"><code>convert image.png -convolve '-1, -1, -1, -1, 9, -1, -1, -1, -1' convolve.png
+<pre class="highlight"><code>magick image.png -convolve '-1, -1, -1, -1, 9, -1, -1, -1, -1' convolve.png
 </code></pre>
 
 <p>If an accelerator is not available or if the accelerator fails to respond, ImageMagick reverts to the non-accelerated convolution algorithm.</p>
@@ -1187,7 +1198,7 @@ static MagickBooleanType WriteMGKImage(const ImageInfo *image_info,Image *image,
 }</code></pre>
 
 <p>To invoke the custom coder from the command line, use these commands:</p>
-<pre class="highlight"><code>convert logo: logo.mgk
+<pre class="highlight"><code>magick logo: logo.mgk
 display logo.mgk
 </code></pre>
 
@@ -1444,7 +1455,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
 
 <p>To invoke the custom filter from the command line, use this command:</p>
 
-<pre class="highlight"><code>convert logo: -process \"analyze\" -verbose info:
+<pre class="highlight"><code>magick logo: -process \"analyze\" -verbose info:
   Image: logo:
     Format: LOGO (ImageMagick Logo)
     Class: PseudoClass
@@ -1479,12 +1490,15 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="https://imagemagick.org/script/contact.php">Contact Us</a> 
     <br/>
+    <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
+        <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
+    <br/>
     <small>© 1999-2020 ImageMagick Studio LLC</small></p>
   </footer>
 
   <!-- Javascript assets -->
   <script src="assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 5th January 2020 11:41 -->
+<!-- Magick Cache 21st February 2020 08:43 -->
