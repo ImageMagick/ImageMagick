@@ -192,13 +192,15 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  (void) CopyMagickString(start_color,"black",MagickPathExtent);
-  (void) CopyMagickString(stop_color,"white",MagickPathExtent);
+  (void) CopyMagickString(start_color,"white",MagickPathExtent);
+  (void) CopyMagickString(stop_color,"black",MagickPathExtent);
   if (*image_info->filename != '\0')
     {
       register char
         *p;
 
+      (void) CopyMagickString(start_color,image_info->filename,
+        MagickPathExtent);
       for (p=start_color; (*p != '-') && (*p != '\0'); p++)
         if (*p == '(')
           for (p++; (*p != ')') && (*p != '\0'); p++);
@@ -235,6 +237,8 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       image=DestroyImage(image);
       return((Image *) NULL);
     }
+  (void) SetImageColorspace(image,stops[0].color.colorspace,exception);
+  image->alpha_trait=stops[0].color.alpha_trait;
   if (stops[1].color.alpha_trait != UndefinedPixelTrait)
     image->alpha_trait=stops[1].color.alpha_trait;
   /*
