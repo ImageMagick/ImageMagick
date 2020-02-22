@@ -82,9 +82,6 @@ struct timezone
 #endif
 
 typedef UINT
-  (CALLBACK *LPFNDLLFUNC1)(DWORD,UINT);
-
-typedef UINT
   (CALLBACK *LPFNDLLFUNC2)(NTMEMORYSTATUSEX *);
 
 #endif

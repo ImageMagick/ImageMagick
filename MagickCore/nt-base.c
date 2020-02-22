@@ -986,15 +986,16 @@ MagickPrivate const char *NTGetLibraryError(void)
 */
 void *NTGetLibrarySymbol(void *handle,const char *name)
 {
-  LPFNDLLFUNC1
-    lpfnDllFunc1;
+  FARPROC
+    proc_address;
 
-  lpfnDllFunc1=(LPFNDLLFUNC1) GetProcAddress((HINSTANCE) handle,name);
-  if (!lpfnDllFunc1)
+  proc_address=GetProcAddress((HMODULE) handle,(LPCSTR) name);
+  if (proc_address == (FARPROC) NULL)
     return((void *) NULL);
-  return((void *) lpfnDllFunc1);
+  return((void *) proc_address);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
