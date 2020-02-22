@@ -179,9 +179,6 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register char
-    *p;
-
   StopInfo
     *stops;
 
@@ -195,14 +192,20 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  (void) CopyMagickString(start_color,image_info->filename,MagickPathExtent);
-  (void) CopyMagickString(stop_color,image_info->filename,MagickPathExtent);
-  for (p=start_color; (*p != '-') && (*p != '\0'); p++)
-    if (*p == '(')
-      for (p++; (*p != ')') && (*p != '\0'); p++);
-  if (*p == '-')
-    (void) CopyMagickString(stop_color,p+1,MagickPathExtent);
-  *p='\0';
+  (void) CopyMagickString(start_color,"black",MagickPathExtent);
+  (void) CopyMagickString(stop_color,"white",MagickPathExtent);
+  if (*image_info->filename != '\0')
+    {
+      register char
+        *p;
+
+      for (p=start_color; (*p != '-') && (*p != '\0'); p++)
+        if (*p == '(')
+          for (p++; (*p != ')') && (*p != '\0'); p++);
+      if (*p == '-')
+        (void) CopyMagickString(stop_color,p+1,MagickPathExtent);
+      *p='\0';
+    }
   /*
     Create base gradient image from start color.
   */
