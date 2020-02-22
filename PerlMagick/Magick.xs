@@ -577,6 +577,8 @@ static struct
       {"clip-limit", RealReference} } },
     { "Kmeans", { {"geometry", StringReference}, {"colors", IntegerReference},
       {"iterations", IntegerReference}, {"tolerance", RealReference} } },
+    { "ColorThreshold", { {"threshold", StringReference},
+      {"channel", MagickChannelOptions} } },
   };
 
 static SplayTreeInfo
@@ -7662,6 +7664,8 @@ Mogrify(ref,...)
     CLAHEImage         = 298
     Kmeans             = 299
     KMeansImage        = 300
+    ColorThreshold     = 301
+    ColorThresholdImage= 302
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -10124,7 +10128,7 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             channel=(ChannelType) argument_list[2].integer_reference;
           channel_mask=SetImageChannelMask(image,channel);
-          BlackThresholdImage(image,argument_list[0].string_reference,
+          (void) BlackThresholdImage(image,argument_list[0].string_reference,
             exception);
           (void) SetImageChannelMask(image,channel_mask);
           break;
@@ -11535,6 +11539,18 @@ Mogrify(ref,...)
             geometry_info.xi=(ChannelType) argument_list[3].real_reference;
           (void) KmeansImage(image,geometry_info.rho,geometry_info.sigma,
             geometry_info.xi,exception);
+          break;
+        }
+        case 151:  /* ColorThreshold */
+        {
+          if (attribute_flag[0] == 0)
+            argument_list[0].string_reference="50%";
+          if (attribute_flag[2] != 0)
+            channel=(ChannelType) argument_list[2].integer_reference;
+          channel_mask=SetImageChannelMask(image,channel);
+          (void) ColorThresholdImage(image,argument_list[0].string_reference,
+            exception);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
       }

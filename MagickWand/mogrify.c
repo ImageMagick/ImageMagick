@@ -1193,6 +1193,15 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) TransformImageColorspace(*image,colorspace,exception);
             break;
           }
+        if (LocaleCompare("color-threshold",option+1) == 0)
+          {
+            /*
+              Color threshold image.
+            */
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            (void) ColorThresholdImage(*image,argv[i+1],exception);
+            break;
+          }
         if (LocaleCompare("compose",option+1) == 0)
           {
             (void) SyncImageSettings(mogrify_info,*image,exception);
@@ -3502,6 +3511,8 @@ static MagickBooleanType MogrifyUsage(void)
       "  -colorize value      colorize the image with the fill color\n"
       "  -color-matrix matrix apply color correction to the image\n"
       "  -colors value        preferred number of colors in the image\n"
+      "  -color-threshold start_color-stop_color\n"
+      "                       force all pixels in the color range to white otherwise black\n"
       "  -connected-components connectivity\n"
       "                       connected-components uniquely labeled\n"
       "  -contrast            enhance or reduce the image contrast\n"
@@ -4417,6 +4428,17 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (colorspace < 0)
               ThrowMogrifyException(OptionError,"UnrecognizedColorspace",
                 argv[i]);
+            break;
+          }
+        if (LocaleCompare("color-threshold",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
             break;
           }
         if (LocaleCompare("combine",option+1) == 0)

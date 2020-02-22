@@ -2065,6 +2065,13 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
                     _exception);
           break;
         }
+      if (LocaleCompare("color-threshold",option+1) == 0)
+        {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          (void) ColorThresholdImage(_image,arg1,_exception);
+          break;
+        }
       if (LocaleCompare("connected-components",option+1) == 0)
         {
           if (IsGeometry(arg1) == MagickFalse)

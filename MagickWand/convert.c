@@ -178,6 +178,8 @@ static MagickBooleanType ConvertUsage(void)
       "  -colorize value      colorize the image with the fill color\n"
       "  -color-matrix matrix apply color correction to the image\n"
       "  -colors value        preferred number of colors in the image\n"
+      "  -color-threshold start_color-stop_color\n"
+      "                       force all pixels in the color range to white otherwise black\n"
       "  -connected-components connectivity\n"
       "                       connected-components uniquely labeled\n"
       "  -contrast            enhance or reduce the image contrast\n"
@@ -1069,6 +1071,17 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (colorspace < 0)
               ThrowConvertException(OptionError,"UnrecognizedColorspace",
                 argv[i]);
+            break;
+          }
+        if (LocaleCompare("color-threshold",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
             break;
           }
         if (LocaleCompare("combine",option+1) == 0)
