@@ -2582,34 +2582,16 @@ MagickPrivate ssize_t NTSystemConfiguration(int name)
     }
     case _SC_PHYS_PAGES:
     {
-      HMODULE
-        handle;
-
-      LPFNDLLFUNC2
-        module;
-
-      NTMEMORYSTATUSEX
+      MEMORYSTATUSEX
         status;
 
       SYSTEM_INFO
         system_info;
 
-      handle=GetModuleHandle("kernel32.dll");
-      if (handle == (HMODULE) NULL)
+      status.dwLength=sizeof(status);
+      if (GlobalMemoryStatusEx(&status) == 0)
         return(0L);
       GetSystemInfo(&system_info);
-      module=(LPFNDLLFUNC2) NTGetLibrarySymbol(handle,"GlobalMemoryStatusEx");
-      if (module == (LPFNDLLFUNC2) NULL)
-        {
-          MEMORYSTATUS
-            global_status;
-
-          GlobalMemoryStatus(&global_status);
-          return((ssize_t) global_status.dwTotalPhys/system_info.dwPageSize/4);
-        }
-      status.dwLength=sizeof(status);
-      if (module(&status) == 0)
-        return(0L);
       return((ssize_t) status.ullTotalPhys/system_info.dwPageSize/4);
     }
     case _SC_OPEN_MAX:

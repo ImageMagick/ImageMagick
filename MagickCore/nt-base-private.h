@@ -54,22 +54,6 @@ typedef struct _DIR
     file_info;
 } DIR;
 
-typedef struct _NTMEMORYSTATUSEX
-{
-  DWORD
-    dwLength,
-    dwMemoryLoad;
-
-  DWORDLONG
-    ullTotalPhys,
-    ullAvailPhys,
-    ullTotalPageFile,
-    ullAvailPageFile,
-    ullTotalVirtual,
-    ullAvailVirtual,
-    ullAvailExtendedVirtual;
-} NTMEMORYSTATUSEX;
-
 #if !defined(__MINGW32__)
 struct timeval;
 
@@ -80,9 +64,6 @@ struct timezone
     tz_dsttime;
 };
 #endif
-
-typedef UINT
-  (CALLBACK *LPFNDLLFUNC2)(NTMEMORYSTATUSEX *);
 
 #endif
 
