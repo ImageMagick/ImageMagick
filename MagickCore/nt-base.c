@@ -2302,40 +2302,6 @@ MagickPrivate int NTSetSearchPath(const char *path)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+  N T S y n c M e m o r y                                                    %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  NTSyncMemory() emulates the Unix method of the same name.
-%
-%  The format of the NTSyncMemory method is:
-%
-%      int NTSyncMemory(void *address,size_t length,int flags)
-%
-%  A description of each parameter follows:
-%
-%    o address: the address of the binary large object.
-%
-%    o length: the length of the binary large object.
-%
-%    o flags: Option flags (ignored for Windows).
-%
-*/
-MagickPrivate int NTSyncMemory(void *address,size_t length,int flags)
-{
-  (void) flags;
-  if (FlushViewOfFile(address,length) == MagickFalse)
-    return(-1);
-  return(0);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   N T S y s t e m C o m m a n d                                             %
 %                                                                             %
 %                                                                             %

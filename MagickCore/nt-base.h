@@ -193,9 +193,6 @@ extern "C" {
 #  define mmap(address,length,protection,access,file,offset) \
   NTMapMemory(address,length,protection,access,file,offset)
 #endif
-#if !defined(msync)
-#  define msync(address,length,flags)  NTSyncMemory(address,length,flags)
-#endif
 #if !defined(munmap)
 #  define munmap(address,length)  NTUnmapMemory(address,length)
 #endif
