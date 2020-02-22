@@ -577,8 +577,8 @@ static struct
       {"clip-limit", RealReference} } },
     { "Kmeans", { {"geometry", StringReference}, {"colors", IntegerReference},
       {"iterations", IntegerReference}, {"tolerance", RealReference} } },
-    { "ColorThreshold", { {"threshold", StringReference},
-      {"channel", MagickChannelOptions} } },
+    { "ColorThreshold", { {"start-color", StringReference},
+      {"stop-color", StringReference}, {"channel", MagickChannelOptions} } },
   };
 
 static SplayTreeInfo
@@ -11543,10 +11543,20 @@ Mogrify(ref,...)
         }
         case 151:  /* ColorThreshold */
         {
-          if (attribute_flag[0] == 0)
-            argument_list[0].string_reference="50%";
-          if (attribute_flag[2] != 0)
-            channel=(ChannelType) argument_list[2].integer_reference;
+          PixelInfo
+            start_color,
+            stop_color;
+
+          (void) QueryColorCompliance("black",AllCompliance,&start_color,
+            exception);
+          (void) QueryColorCompliance("white",AllCompliance,&stop_color,
+            exception);
+          if (attribute_flag[0] != 0)
+            (void) QueryColorCompliance(argument_list[0].string_reference,
+              AllCompliance,&start_color,exception);
+          if (attribute_flag[1] != 0)
+            (void) QueryColorCompliance(argument_list[1].string_reference,
+              AllCompliance,&stop_color,exception);
           channel_mask=SetImageChannelMask(image,channel);
           (void) ColorThresholdImage(image,argument_list[0].string_reference,
             exception);

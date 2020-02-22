@@ -1528,14 +1528,16 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
       (void) ParseGeometry(geometry,&geometry_info);
       area=geometry_info.rho+sqrt(MagickEpsilon);
       distance=sqrt((double) former_width*former_height);
-      scale.x=(double) former_width*PerceptibleReciprocal(distance/sqrt(area));
-      scale.y=(double) former_height*PerceptibleReciprocal(distance/sqrt(area));
+      scale.x=(double) former_width*PerceptibleReciprocal(distance*
+        PerceptibleReciprocal(sqrt(area)));
+      scale.y=(double) former_height*PerceptibleReciprocal(distance*
+        PerceptibleReciprocal(sqrt(area)));
       if ((scale.x < (double) *width) || (scale.y < (double) *height))
         {
           *width=(unsigned long) (former_width*PerceptibleReciprocal(
-            distance/sqrt(area)));
+            distance*PerceptibleReciprocal(sqrt(area))));
           *height=(unsigned long) (former_height*PerceptibleReciprocal(
-            distance/sqrt(area)));
+            distance*PerceptibleReciprocal(sqrt(area))));
         }
       former_width=(*width);
       former_height=(*height);

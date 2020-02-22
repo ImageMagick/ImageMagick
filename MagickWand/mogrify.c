@@ -1195,11 +1195,16 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("color-threshold",option+1) == 0)
           {
+            PixelInfo
+              start_color,
+              stop_color;
+
             /*
               Color threshold image.
             */
             (void) SyncImageSettings(mogrify_info,*image,exception);
-            (void) ColorThresholdImage(*image,argv[i+1],exception);
+            (void) ColorThresholdImage(*image,&start_color,&stop_color,
+              exception);
             break;
           }
         if (LocaleCompare("compose",option+1) == 0)
