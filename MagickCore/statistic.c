@@ -2585,66 +2585,6 @@ static void AddNodePixelList(PixelList *pixel_list,const size_t color)
   } while (level-- > 0);
 }
 
-static inline void GetMaximumPixelList(PixelList *pixel_list,Quantum *pixel)
-{
-  register SkipList
-    *p;
-
-  size_t
-    color,
-    maximum;
-
-  ssize_t
-    count;
-
-  /*
-    Find the maximum value for each of the color.
-  */
-  p=(&pixel_list->skip_list);
-  color=65536L;
-  count=0;
-  maximum=p->nodes[color].next[0];
-  do
-  {
-    color=p->nodes[color].next[0];
-    if (color > maximum)
-      maximum=color;
-    count+=p->nodes[color].count;
-  } while (count < (ssize_t) pixel_list->length);
-  *pixel=ScaleShortToQuantum((unsigned short) maximum);
-}
-
-static inline void GetMeanPixelList(PixelList *pixel_list,Quantum *pixel)
-{
-  double
-    sum;
-
-  register SkipList
-    *p;
-
-  size_t
-    color;
-
-  ssize_t
-    count;
-
-  /*
-    Find the mean value for each of the color.
-  */
-  p=(&pixel_list->skip_list);
-  color=65536L;
-  count=0;
-  sum=0.0;
-  do
-  {
-    color=p->nodes[color].next[0];
-    sum+=(double) p->nodes[color].count*color;
-    count+=p->nodes[color].count;
-  } while (count < (ssize_t) pixel_list->length);
-  sum/=pixel_list->length;
-  *pixel=ScaleShortToQuantum((unsigned short) sum);
-}
-
 static inline void GetMedianPixelList(PixelList *pixel_list,Quantum *pixel)
 {
   register SkipList
@@ -2668,35 +2608,6 @@ static inline void GetMedianPixelList(PixelList *pixel_list,Quantum *pixel)
     count+=p->nodes[color].count;
   } while (count <= (ssize_t) (pixel_list->length >> 1));
   *pixel=ScaleShortToQuantum((unsigned short) color);
-}
-
-static inline void GetMinimumPixelList(PixelList *pixel_list,Quantum *pixel)
-{
-  register SkipList
-    *p;
-
-  size_t
-    color,
-    minimum;
-
-  ssize_t
-    count;
-
-  /*
-    Find the minimum value for each of the color.
-  */
-  p=(&pixel_list->skip_list);
-  count=0;
-  color=65536UL;
-  minimum=p->nodes[color].next[0];
-  do
-  {
-    color=p->nodes[color].next[0];
-    if (color < minimum)
-      minimum=color;
-    count+=p->nodes[color].count;
-  } while (count < (ssize_t) pixel_list->length);
-  *pixel=ScaleShortToQuantum((unsigned short) minimum);
 }
 
 static inline void GetModePixelList(PixelList *pixel_list,Quantum *pixel)
@@ -2766,78 +2677,6 @@ static inline void GetNonpeakPixelList(PixelList *pixel_list,Quantum *pixel)
     if ((previous != 65536UL) && (next == 65536UL))
       color=previous;
   *pixel=ScaleShortToQuantum((unsigned short) color);
-}
-
-static inline void GetRootMeanSquarePixelList(PixelList *pixel_list,
-  Quantum *pixel)
-{
-  double
-    sum;
-
-  register SkipList
-    *p;
-
-  size_t
-    color;
-
-  ssize_t
-    count;
-
-  /*
-    Find the root mean square value for each of the color.
-  */
-  p=(&pixel_list->skip_list);
-  color=65536L;
-  count=0;
-  sum=0.0;
-  do
-  {
-    color=p->nodes[color].next[0];
-    sum+=(double) (p->nodes[color].count*color*color);
-    count+=p->nodes[color].count;
-  } while (count < (ssize_t) pixel_list->length);
-  sum/=pixel_list->length;
-  *pixel=ScaleShortToQuantum((unsigned short) sqrt(sum));
-}
-
-static inline void GetStandardDeviationPixelList(PixelList *pixel_list,
-  Quantum *pixel)
-{
-  double
-    sum,
-    sum_squared;
-
-  register SkipList
-    *p;
-
-  size_t
-    color;
-
-  ssize_t
-    count;
-
-  /*
-    Find the standard-deviation value for each of the color.
-  */
-  p=(&pixel_list->skip_list);
-  color=65536L;
-  count=0;
-  sum=0.0;
-  sum_squared=0.0;
-  do
-  {
-    register ssize_t
-      i;
-
-    color=p->nodes[color].next[0];
-    sum+=(double) p->nodes[color].count*color;
-    for (i=0; i < (ssize_t) p->nodes[color].count; i++)
-      sum_squared+=((double) color)*((double) color);
-    count+=p->nodes[color].count;
-  } while (count < (ssize_t) pixel_list->length);
-  sum/=pixel_list->length;
-  sum_squared/=pixel_list->length;
-  *pixel=ScaleShortToQuantum((unsigned short) sqrt(sum_squared-(sum*sum)));
 }
 
 static inline void InsertPixelList(const Quantum pixel,PixelList *pixel_list)
@@ -2975,6 +2814,13 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
+        double
+          area,
+          maximum,
+          minimum,
+          sum,
+          sum_squared;
+
         Quantum
           pixel;
 
@@ -3003,12 +2849,30 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
         if ((statistic_traits & UpdatePixelTrait) == 0)
           continue;
         pixels=p;
+        area=0.0;
+        minimum=pixels[i];
+        maximum=pixels[i];
+        sum=0.0;
+        sum_squared=0.0;
         ResetPixelList(pixel_list[id]);
         for (v=0; v < (ssize_t) MagickMax(height,1); v++)
         {
           for (u=0; u < (ssize_t) MagickMax(width,1); u++)
           {
-            InsertPixelList(pixels[i],pixel_list[id]);
+            if ((type == MedianStatistic) || (type == ModeStatistic) ||
+                (type == NonpeakStatistic))
+              {
+                InsertPixelList(pixels[i],pixel_list[id]);
+                pixels+=GetPixelChannels(image);
+                continue;
+              }
+            area++;
+            if (pixels[i] < minimum)
+              minimum=(double) pixels[i];
+            if (pixels[i] > maximum)
+              maximum=(double) pixels[i];
+            sum+=(double) pixels[i];
+            sum_squared+=(double) pixels[i]*pixels[i];
             pixels+=GetPixelChannels(image);
           }
           pixels+=GetPixelChannels(image)*image->columns;
@@ -3017,36 +2881,28 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
         {
           case GradientStatistic:
           {
-            double
-              maximum,
-              minimum;
-
-            GetMinimumPixelList(pixel_list[id],&pixel);
-            minimum=(double) pixel;
-            GetMaximumPixelList(pixel_list[id],&pixel);
-            maximum=(double) pixel;
             pixel=ClampToQuantum(MagickAbsoluteValue(maximum-minimum));
             break;
           }
           case MaximumStatistic:
           {
-            GetMaximumPixelList(pixel_list[id],&pixel);
+            pixel=ClampToQuantum(maximum);
             break;
           }
           case MeanStatistic:
+          default:
           {
-            GetMeanPixelList(pixel_list[id],&pixel);
+            pixel=ClampToQuantum(sum/area);
             break;
           }
           case MedianStatistic:
-          default:
           {
             GetMedianPixelList(pixel_list[id],&pixel);
             break;
           }
           case MinimumStatistic:
           {
-            GetMinimumPixelList(pixel_list[id],&pixel);
+            pixel=ClampToQuantum(minimum);
             break;
           }
           case ModeStatistic:
@@ -3061,12 +2917,12 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
           }
           case RootMeanSquareStatistic:
           {
-            GetRootMeanSquarePixelList(pixel_list[id],&pixel);
+            pixel=ClampToQuantum(sqrt(sum_squared/area));
             break;
           }
           case StandardDeviationStatistic:
           {
-            GetStandardDeviationPixelList(pixel_list[id],&pixel);
+            pixel=ClampToQuantum(sqrt(sum_squared/area-(sum/area*sum/area)));
             break;
           }
         }

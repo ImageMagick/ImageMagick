@@ -5,6 +5,8 @@
   * Adapt to a change in command-line options in the SVG inkscape delegate.
   * No percent sign in lab() color.
   * Introducing the -color-threshold command-line option.
+  * Handle out of range HDRI values for -statistic option (reference
+    https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=37589).
 
 2020-02-17  7.0.9-24 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-24, GIT revision 16919:41efef9de:20200217
