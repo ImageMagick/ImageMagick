@@ -1684,7 +1684,7 @@ AUTOTRACE_LIBS=""
 AUTOTRACE_PKG=""
 if test "x$with_autotrace" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES(AUTOTRACE,[autotrace >= 0.31.1], have_autotrace=yes, have_autotrace=no)
+  PKG_CHECK_MODULES(AUTOTRACE,[autotrace >= 0.31.2], have_autotrace=yes, have_autotrace=no)
   AC_MSG_RESULT([])
 fi
 

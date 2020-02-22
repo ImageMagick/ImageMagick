@@ -4566,7 +4566,7 @@ MAGICK_PATCHLEVEL_VERSION=26
 
 MAGICK_VERSION=7.0.9-26
 
-MAGICK_GIT_REVISION=16936:89b4db04b:20200221
+MAGICK_GIT_REVISION=16949:563beb722:20200222
 
 
 # Substitute library versioning
@@ -29236,19 +29236,19 @@ if test "x$with_autotrace" = "xyes"; then
 $as_echo "-------------------------------------------------------------" >&6; }
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for autotrace >= 0.31.1" >&5
-$as_echo_n "checking for autotrace >= 0.31.1... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for autotrace >= 0.31.2" >&5
+$as_echo_n "checking for autotrace >= 0.31.2... " >&6; }
 
 if test -n "$AUTOTRACE_CFLAGS"; then
     pkg_cv_AUTOTRACE_CFLAGS="$AUTOTRACE_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"autotrace >= 0.31.1\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "autotrace >= 0.31.1") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"autotrace >= 0.31.2\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "autotrace >= 0.31.2") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_AUTOTRACE_CFLAGS=`$PKG_CONFIG --cflags "autotrace >= 0.31.1" 2>/dev/null`
+  pkg_cv_AUTOTRACE_CFLAGS=`$PKG_CONFIG --cflags "autotrace >= 0.31.2" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -29260,12 +29260,12 @@ if test -n "$AUTOTRACE_LIBS"; then
     pkg_cv_AUTOTRACE_LIBS="$AUTOTRACE_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"autotrace >= 0.31.1\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "autotrace >= 0.31.1") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"autotrace >= 0.31.2\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "autotrace >= 0.31.2") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_AUTOTRACE_LIBS=`$PKG_CONFIG --libs "autotrace >= 0.31.1" 2>/dev/null`
+  pkg_cv_AUTOTRACE_LIBS=`$PKG_CONFIG --libs "autotrace >= 0.31.2" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -29286,9 +29286,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        AUTOTRACE_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "autotrace >= 0.31.1" 2>&1`
+	        AUTOTRACE_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "autotrace >= 0.31.2" 2>&1`
         else
-	        AUTOTRACE_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "autotrace >= 0.31.1" 2>&1`
+	        AUTOTRACE_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "autotrace >= 0.31.2" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$AUTOTRACE_PKG_ERRORS" >&5
