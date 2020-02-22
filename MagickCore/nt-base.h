@@ -52,7 +52,7 @@ extern "C" {
 #define R_OK 4
 #define W_OK 2
 #define RW_OK 6
-#define _SC_PAGESIZE 1
+#define _SC_PAGE_SIZE 1
 #define _SC_PHYS_PAGES 2
 #define _SC_OPEN_MAX 3
 #if !defined(SSIZE_MAX)

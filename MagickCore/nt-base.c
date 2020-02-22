@@ -2572,7 +2572,7 @@ MagickPrivate ssize_t NTSystemConfiguration(int name)
 {
   switch (name)
   {
-    case _SC_PAGESIZE:
+    case _SC_PAGE_SIZE:
     {
       SYSTEM_INFO
         system_info;
