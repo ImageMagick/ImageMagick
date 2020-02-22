@@ -1128,6 +1128,9 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
 MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
   const PixelChannel channel,const ComplianceType compliance,char *tuple)
 {
+#define IsColorComponentFactional(color) \
+  ((color)-ScaleCharToQuantum(ScaleQuantumToChar(color)))
+
   char
     component[MagickPathExtent];
 
@@ -1141,9 +1144,9 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
     scale=255.0f;
   if ((compliance != NoCompliance) &&
       (IssRGBCompatibleColorspace(pixel->colorspace) != MagickFalse) &&
-      (((pixel->red-(ssize_t) pixel->red) >= MagickEpsilon) ||
-       ((pixel->green-(ssize_t) pixel->green) >= MagickEpsilon) ||
-       ((pixel->blue-(ssize_t) pixel->blue) >= MagickEpsilon)))
+      ((IsColorComponentFactional(pixel->red) >= MagickEpsilon) ||
+       (IsColorComponentFactional(pixel->green) >= MagickEpsilon) ||
+       (IsColorComponentFactional(pixel->blue) >= MagickEpsilon)))
     scale=100.0f;
   switch (channel)
   {
