@@ -146,6 +146,7 @@ Image Operators:
   \-colorize value      colorize the image with the fill color
   \-color-matrix matrix apply color correction to the image
   \-colors value        preferred number of colors in the image
+  \-color-threshold start_color-stop_color
   \-connected-component connectivity
                        connected-components uniquely labeled
   \-contrast            enhance or reduce the image contrast
