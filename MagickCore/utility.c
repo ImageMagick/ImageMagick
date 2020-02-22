@@ -1142,8 +1142,6 @@ MagickPrivate ssize_t GetMagickPageSize(void)
   page_size=(ssize_t) sysconf(_SC_PAGE_SIZE);
 #elif defined(MAGICKCORE_HAVE_GETPAGESIZE)
   page_size=(ssize_t) getpagesize();
-#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
-  page_size=NTGetPageSize();
 #endif
   if (page_size <= 0)
     page_size=4096;
