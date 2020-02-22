@@ -1277,7 +1277,7 @@ MagickExport MagickBooleanType ColorThresholdImage(Image *image,
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         if ((q[i] < GetPixelInfoChannel(start_color,channel)) ||
-            (q[i] >= GetPixelInfoChannel(stop_color,channel)))
+            (q[i] > GetPixelInfoChannel(stop_color,channel)))
           foreground=MagickFalse;
       }
       SetPixelIndex(image,(Quantum) foreground != MagickFalse ? 1 : 0,q);
