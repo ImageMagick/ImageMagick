@@ -257,9 +257,6 @@ extern "C" {
 #else
 #  define tell  _tell
 #endif
-#if !defined(telldir)
-#  define telldir(directory)  NTTellDirectory(directory)
-#endif
 #if !defined(tempnam)
 #  define tempnam  _tempnam_s
 #endif

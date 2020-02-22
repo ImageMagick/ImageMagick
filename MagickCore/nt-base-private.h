@@ -115,9 +115,7 @@ extern MagickPrivate int
   NTSystemCommand(const char *,char *);
 
 extern MagickPrivate ssize_t
-  NTGetPageSize(void),
-  NTSystemConfiguration(int),
-  NTTellDirectory(DIR *);
+  NTSystemConfiguration(int);
 
 extern MagickPrivate MagickBooleanType
   NTGatherRandomData(const size_t,unsigned char *),
