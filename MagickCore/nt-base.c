@@ -2497,7 +2497,7 @@ MagickPrivate ssize_t NTSystemConfiguration(int name)
       if (GlobalMemoryStatusEx(&status) == 0)
         return(0L);
       GetSystemInfo(&system_info);
-      return((ssize_t) status.ullTotalPhys/system_info.dwPageSize/2);
+      return((ssize_t) status.ullTotalPhys/system_info.dwPageSize);
     }
     case _SC_OPEN_MAX:
       return(2048);

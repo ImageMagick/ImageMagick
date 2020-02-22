@@ -1179,6 +1179,9 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
   pages=(-1);
 #if defined(MAGICKCORE_HAVE_SYSCONF) && defined(_SC_PHYS_PAGES)
   pages=(ssize_t) sysconf(_SC_PHYS_PAGES);
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+  pages=pages/2;
+#endif
 #endif
   memory=(MagickSizeType) pages*pagesize;
   if ((pagesize <= 0) || (pages <= 0))
