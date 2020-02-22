@@ -1195,16 +1195,37 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("color-threshold",option+1) == 0)
           {
+            char
+              start_color[MagickPathExtent] = "black",
+              stop_color[MagickPathExtent] = "white";
+
             PixelInfo
-              start_color,
-              stop_color;
+              start,
+              stop;
+
+            register char
+              *p;
 
             /*
               Color threshold image.
             */
             (void) SyncImageSettings(mogrify_info,*image,exception);
-            (void) ColorThresholdImage(*image,&start_color,&stop_color,
+            if (*option != '+')
+              {
+                (void) CopyMagickString(start_color,argv[i+1],MagickPathExtent);
+                (void) CopyMagickString(stop_color,argv[i+1],MagickPathExtent);
+              }
+            for (p=start_color; (*p != '-') && (*p != '\0'); p++)
+              if (*p == '(')
+                for (p++; (*p != ')') && (*p != '\0'); p++);
+            if (*p == '-')
+              (void) CopyMagickString(stop_color,p+1,MagickPathExtent);
+            *p='\0';
+            (void) QueryColorCompliance(start_color,AllCompliance,&start,
               exception);
+            (void) QueryColorCompliance(stop_color,AllCompliance,&stop,
+              exception);
+            (void) ColorThresholdImage(*image,&start,&stop,exception);
             break;
           }
         if (LocaleCompare("compose",option+1) == 0)
@@ -4442,8 +4463,6 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-            if (IsGeometry(argv[i]) == MagickFalse)
-              ThrowMogrifyInvalidArgumentException(option,argv[i]);
             break;
           }
         if (LocaleCompare("combine",option+1) == 0)

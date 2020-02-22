@@ -2067,14 +2067,36 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("color-threshold",option+1) == 0)
         {
-          PixelInfo
-            start_color,
-            stop_color;
+          char
+            start_color[MagickPathExtent] = "black",
+            stop_color[MagickPathExtent] = "white";
 
-          if (IsGeometry(arg1) == MagickFalse)
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          (void) ColorThresholdImage(_image,&start_color,&stop_color,
-            _exception);
+          PixelInfo
+            start,
+            stop;
+
+          register char
+            *p;
+
+          /*
+            Color threshold image.
+          */
+          if (*option != '+')
+            {
+              (void) CopyMagickString(start_color,arg1,MagickPathExtent);
+              (void) CopyMagickString(stop_color,arg1,MagickPathExtent);
+            }
+          for (p=start_color; (*p != '-') && (*p != '\0'); p++)
+            if (*p == '(')
+              for (p++; (*p != ')') && (*p != '\0'); p++);
+          if (*p == '-')
+            (void) CopyMagickString(stop_color,p+1,MagickPathExtent);
+          *p='\0';
+          (void) QueryColorCompliance(start_color,AllCompliance,&start,
+            exception);
+          (void) QueryColorCompliance(stop_color,AllCompliance,&stop,
+            exception);
+          (void) ColorThresholdImage(_image,&start,&stop,_exception);
           break;
         }
       if (LocaleCompare("connected-components",option+1) == 0)
@@ -2106,7 +2128,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           black_point=geometry_info.rho;
           white_point=(flags & SigmaValue) != 0 ? geometry_info.sigma :
             black_point;
-          if ((flags & PercentValue) != 0) {
+          if ((flags & PercentValue) != 0)
+            {
               black_point*=(double) _image->columns*_image->rows/100.0;
               white_point*=(double) _image->columns*_image->rows/100.0;
             }

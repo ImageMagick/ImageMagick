@@ -1193,9 +1193,8 @@ MagickExport MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ColorThresholdImage() is like ThresholdImage() but forces all pixels below
-%  the threshold into black while leaving all pixels at or above the threshold
-%  unchanged.
+%  ColorThresholdImage() forces all pixels in the color range to white
+%  otherwise black.
 %
 %  The format of the ColorThresholdImage method is:
 %
@@ -1207,9 +1206,8 @@ MagickExport MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
 %
 %    o image: the image.
 %
-%    o start_color: start color of the thresholding.
-%
-%    o stop_color: stop color of the thresholding.
+%    o start_color, stop_color: define the start and stop color range.  Any
+%      pixel within the range returns white otherwise black.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -1229,26 +1227,19 @@ MagickExport MagickBooleanType ColorThresholdImage(Image *image,
   MagickOffsetType
     progress;
 
-  PixelInfo
-    threshold;
-
   ssize_t
     y;
 
+  /*
+    Color threshold image.
+  */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-    return(MagickFalse);
-  if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) SetImageColorspace(image,sRGBColorspace,exception);
-  GetPixelInfo(image,&threshold);
-  threshold=(*start_color);
-  /*
-    White threshold image.
-  */
-  status=MagickTrue;
+  status=AcquireImageColormap(image,2,exception);
+  if (status == MagickFalse)
+    return(status);
   progress=0;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1273,24 +1264,23 @@ MagickExport MagickBooleanType ColorThresholdImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      double
-        pixel;
+      MagickBooleanType
+        foreground = MagickTrue;
 
       register ssize_t
         i;
 
-      pixel=GetPixelIntensity(image,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if (image->channel_mask != DefaultChannels)
-          pixel=(double) q[i];
-        if (pixel < GetPixelInfoChannel(&threshold,channel))
-          q[i]=(Quantum) 0;
+        if ((q[i] < GetPixelInfoChannel(start_color,channel)) ||
+            (q[i] >= GetPixelInfoChannel(stop_color,channel)))
+          foreground=MagickFalse;
       }
+      SetPixelIndex(image,(Quantum) foreground != MagickFalse ? 1 : 0,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -1311,7 +1301,7 @@ MagickExport MagickBooleanType ColorThresholdImage(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  return(status);
+  return(SyncImage(image,exception));
 }
 
 /*
