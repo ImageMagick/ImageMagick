@@ -220,9 +220,6 @@ extern "C" {
 #if !defined(readdir)
 #  define readdir(directory)  NTReadDirectory(directory)
 #endif
-#if !defined(seekdir)
-#  define seekdir(directory,offset)  NTSeekDirectory(directory,offset)
-#endif
 #if !defined(setmode)
 #  define setmode  _setmode
 #endif

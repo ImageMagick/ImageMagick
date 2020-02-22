@@ -138,7 +138,6 @@ extern MagickPrivate void
   NTInitializeWinsock(MagickBooleanType),
   *NTMapMemory(char *,size_t,int,int,int,MagickOffsetType),
   *NTOpenLibrary(const char *),
-  NTSeekDirectory(DIR *,ssize_t),
   NTWindowsGenesis(void),
   NTWindowsTerminus(void);
 

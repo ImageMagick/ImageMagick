@@ -2265,40 +2265,6 @@ MagickPrivate unsigned char *NTResourceToBlob(const char *id)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   N T S e e k D i r e c t o r y                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  NTSeekDirectory() sets the position of the next NTReadDirectory() operation
-%  on the directory stream.
-%
-%  The format of the NTSeekDirectory method is:
-%
-%      void NTSeekDirectory(DIR *entry,ssize_t position)
-%
-%  A description of each parameter follows:
-%
-%    o entry: Specifies a pointer to a DIR structure.
-%
-%    o position: specifies the position associated with the directory
-%      stream.
-%
-*/
-MagickPrivate void NTSeekDirectory(DIR *entry,ssize_t position)
-{
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  assert(entry != (DIR *) NULL);
-  (void) entry;
-  (void) position;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   N T S e t S e a r c h P a t h                                             %
 %                                                                             %
 %                                                                             %
