@@ -49,6 +49,7 @@
 #include "MagickWand/magick-wand-private.h"
 #include "MagickWand/mogrify-private.h"
 #include "MagickCore/blob-private.h"
+#include "MagickCore/color-private.h"
 #include "MagickCore/composite-private.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/monitor-private.h"
@@ -1195,40 +1196,18 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("color-threshold",option+1) == 0)
           {
-            char
-              start_color[MagickPathExtent] = "black",
-              stop_color[MagickPathExtent] = "white";
-
             PixelInfo
               start,
               stop;
-
-            register char
-              *p;
 
             /*
               Color threshold image.
             */
             (void) SyncImageSettings(mogrify_info,*image,exception);
-            if (*option != '+')
-              {
-                (void) CopyMagickString(start_color,argv[i+1],MagickPathExtent);
-                (void) CopyMagickString(stop_color,argv[i+1],MagickPathExtent);
-              }
-            for (p=start_color; (*p != '-') && (*p != '\0'); p++)
-              if (*p == '(')
-                {
-                  for (p++; (*p != ')') && (*p != '\0'); p++);
-                  if (*p == '\0')
-                    break;
-                }
-            if (*p == '-')
-              (void) CopyMagickString(stop_color,p+1,MagickPathExtent);
-            *p='\0';
-            (void) QueryColorCompliance(start_color,AllCompliance,&start,
-              exception);
-            (void) QueryColorCompliance(stop_color,AllCompliance,&stop,
-              exception);
+            if (*option == '+')
+              (void) GetColorRange("white-black",&start,&stop,exception);
+            else
+              (void) GetColorRange(argv[i+1],&start,&stop,exception);
             (void) ColorThresholdImage(*image,&start,&stop,exception);
             break;
           }

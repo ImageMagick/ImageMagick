@@ -55,6 +55,7 @@
 #include "MagickWand/wand.h"
 #include "MagickWand/wandcli.h"
 #include "MagickWand/wandcli-private.h"
+#include "MagickCore/color-private.h"
 #include "MagickCore/composite-private.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/monitor-private.h"
@@ -2067,39 +2068,17 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("color-threshold",option+1) == 0)
         {
-          char
-            start_color[MagickPathExtent] = "black",
-            stop_color[MagickPathExtent] = "white";
-
           PixelInfo
             start,
             stop;
 
-          register char
-            *p;
-
           /*
             Color threshold image.
           */
-          if (*option != '+')
-            {
-              (void) CopyMagickString(start_color,arg1,MagickPathExtent);
-              (void) CopyMagickString(stop_color,arg1,MagickPathExtent);
-            }
-          for (p=start_color; (*p != '-') && (*p != '\0'); p++)
-            if (*p == '(')
-              {
-                for (p++; (*p != ')') && (*p != '\0'); p++);
-                if (*p == '\0')
-                  break;
-              }
-          if (*p == '-')
-            (void) CopyMagickString(stop_color,p+1,MagickPathExtent);
-          *p='\0';
-          (void) QueryColorCompliance(start_color,AllCompliance,&start,
-            exception);
-          (void) QueryColorCompliance(stop_color,AllCompliance,&stop,
-            exception);
+          if (*option == '+')
+            (void) GetColorRange("white-black",&start,&stop,_exception);
+          else
+            (void) GetColorRange(arg1,&start,&stop,_exception);
           (void) ColorThresholdImage(_image,&start,&stop,_exception);
           break;
         }

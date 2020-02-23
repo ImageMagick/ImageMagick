@@ -43,6 +43,40 @@ static inline double GetFuzzyColorDistance(const Image *p,const Image *q)
   return(fuzz*fuzz);
 }
 
+static inline MagickBooleanType GetColorRange(const char *color,
+  PixelInfo *start,PixelInfo *stop,ExceptionInfo *exception)
+{
+  char
+    start_color[MagickPathExtent] = "white",
+    stop_color[MagickPathExtent] = "black";
+
+  MagickBooleanType
+    status;
+
+  if (*color != '\0')
+    {
+      register char
+        *p;
+
+      (void) CopyMagickString(start_color,color,MagickPathExtent);
+      for (p=start_color; (*p != '-') && (*p != '\0'); p++)
+        if (*p == '(')
+          {
+            for (p++; (*p != ')') && (*p != '\0'); p++);
+            if (*p == '\0')
+              break;
+          }
+      if (*p == '-')
+        (void) CopyMagickString(stop_color,p+1,MagickPathExtent);
+      *p='\0';
+    }
+  status=QueryColorCompliance(start_color,AllCompliance,start,exception);
+  if (status == MagickFalse)
+    return(status);
+  return(QueryColorCompliance(stop_color,AllCompliance,stop,exception));
+}
+
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
