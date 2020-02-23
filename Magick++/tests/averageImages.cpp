@@ -40,7 +40,7 @@ int main( int /*argc*/, char ** argv)
     averageImages( &averaged, imageList.begin(), imageList.end() );
     // averaged.display();
     if (
-        ( averaged.signature() != "be10086221b349ccf2ca03bf4e18d68c75a4ab434814e16de8c9a347f3b7d68f") &&
+        ( averaged.signature() != "8e6e1a9b5f1eec5539b1f44347249f227f3e07f9acb07d80404ca6a19f88db7c") &&
         ( averaged.signature() != "9706be2595aabde3ad70b70968e9a6a22de40c73da46c52b32539c05958f4813") &&
         ( averaged.signature() != "90c4ba4b092f37a0600d51356f9aba89e7402ba3f59ac591ae216bace4a9d10b") &&
         ( averaged.signature() != "2e9af094ccbb8c3c824980f597321aeef15d7accea84a5d233ba23e615d0c891") &&
