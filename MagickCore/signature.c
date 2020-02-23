@@ -539,7 +539,7 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        pixel=(float) QuantumScale*p[i];
+        pixel=(float) (QuantumScale*p[i]);
         if (signature_info->lsb_first == MagickFalse)
           for (j=(ssize_t) sizeof(pixel)-1; j >= 0; j--)
             *q++=(unsigned char) ((unsigned char *) &pixel)[j];
