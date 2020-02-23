@@ -1143,9 +1143,6 @@ static inline MagickBooleanType IsSVGCompliant(const PixelInfo *pixel)
   if ((pixel->colorspace == CMYKColorspace) &&
       (fabs(SVGCompliant(pixel->black)-pixel->black) >= MagickEpsilon))
     return(MagickFalse);
-  if ((pixel->alpha_trait != UndefinedPixelTrait) &&
-      (fabs(SVGCompliant(pixel->alpha)-pixel->alpha) >= MagickEpsilon))
-    return(MagickFalse);
   return(MagickTrue);
 }
 
