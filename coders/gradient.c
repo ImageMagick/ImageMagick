@@ -203,7 +203,11 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
         MagickPathExtent);
       for (p=start_color; (*p != '-') && (*p != '\0'); p++)
         if (*p == '(')
-          for (p++; (*p != ')') && (*p != '\0'); p++);
+          {
+            for (p++; (*p != ')') && (*p != '\0'); p++);
+            if (*p == '\0')
+              break;
+          }
       if (*p == '-')
         (void) CopyMagickString(stop_color,p+1,MagickPathExtent);
       *p='\0';
