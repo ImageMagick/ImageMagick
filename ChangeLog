@@ -1,11 +1,13 @@
 2020-02-23  7.0.9-26 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.9-26, GIT revision 16965:b27c79e7d:20200223
+  * Release ImageMagick version 7.0.9-26, GIT revision 16967:ed71f9355:20200223
 
 2020-02-22  7.0.9-26 Cristy  <quetzlzacatenango@image...>
   * No percent sign in lab() color.
   * Introducing the -color-threshold command-line option.
   * Handle out of range HDRI values for -statistic option (reference
     https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=37589).
+  * Fix improper casting when computing image signature (reference
+    https://imagemagick.org/discourse-server/viewtopic.php?f=1&t=37594).
 
 2020-02-21  7.0.9-25 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.9-25, GIT revision 16931:2a56db8:20200221
