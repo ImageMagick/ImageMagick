@@ -65,6 +65,7 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/module.h"
 #include "MagickCore/module-private.h"
+#include "MagickCore/mutex.h"
 #include "MagickCore/nt-base-private.h"
 #include "MagickCore/nt-feature.h"
 #include "MagickCore/opencl-private.h"
@@ -1474,8 +1475,13 @@ MagickExport void MagickCoreGenesis(const char *path,
   /*
     Initialize the Magick environment.
   */
+  InitializeMagickMutex();
+  LockMagickMutex();
   if (magickcore_instantiated != MagickFalse)
-    return;
+    {
+      UnlockMagickMutex();
+      return;
+    }
   (void) SemaphoreComponentGenesis();
   (void) ExceptionComponentGenesis();
   (void) LogComponentGenesis();
@@ -1579,6 +1585,7 @@ MagickExport void MagickCoreGenesis(const char *path,
   (void) RegistryComponentGenesis();
   (void) MonitorComponentGenesis();
   magickcore_instantiated=MagickTrue;
+  UnlockMagickMutex();
 }
 
 /*
