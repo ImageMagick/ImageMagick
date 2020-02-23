@@ -33,16 +33,6 @@ extern MagickPrivate MagickBooleanType
 extern MagickPrivate void
   ColorComponentTerminus(void);
 
-static inline double GetFuzzyColorDistance(const Image *p,const Image *q)
-{
-  double
-    fuzz;
-
-  fuzz=(double) MagickMax(MagickMax(p->fuzz,q->fuzz),(MagickRealType)
-    MagickSQ1_2);
-  return(fuzz*fuzz);
-}
-
 static inline MagickBooleanType GetColorRange(const char *color,
   PixelInfo *start,PixelInfo *stop,ExceptionInfo *exception)
 {
@@ -76,6 +66,15 @@ static inline MagickBooleanType GetColorRange(const char *color,
   return(QueryColorCompliance(stop_color,AllCompliance,stop,exception));
 }
 
+static inline double GetFuzzyColorDistance(const Image *p,const Image *q)
+{
+  double
+    fuzz;
+
+  fuzz=(double) MagickMax(MagickMax(p->fuzz,q->fuzz),(MagickRealType)
+    MagickSQ1_2);
+  return(fuzz*fuzz);
+}
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
