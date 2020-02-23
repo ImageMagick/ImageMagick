@@ -18,7 +18,7 @@ chdir 't/bzlib' || die 'Cd failed';
 # Test reading BZip compressed MIFF
 # 
 testRead( 'input.miff',
-  'd0b17026dc758a4088c96bc0f21a2bf14e3ab4af8a35638129f7731f2f1cbe7e' );
+  'fb6fc68beb3b1001c5ebaa671c8ac8fddea06995027127765ff508f77723cc52' );
 
 #
 # 2) Test reading BZip stream-compressed MIFF (.bz2 extension)
@@ -26,5 +26,5 @@ testRead( 'input.miff',
 print("Reading BZip stream-compressed MIFF (.bz2 extension) ...\n");
 ++$test;
 testRead( 'input.miff.bz2',
-  'd0b17026dc758a4088c96bc0f21a2bf14e3ab4af8a35638129f7731f2f1cbe7e' );
+  'fb6fc68beb3b1001c5ebaa671c8ac8fddea06995027127765ff508f77723cc52' );
 

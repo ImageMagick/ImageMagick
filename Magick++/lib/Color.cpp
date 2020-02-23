@@ -260,7 +260,7 @@ Magick::Color::operator std::string() const
     return std::string("none");
 
   pixel.colorspace=(_pixelType == RGBPixel || _pixelType == RGBAPixel) ?
-    RGBColorspace : CMYKColorspace;
+    sRGBColorspace : CMYKColorspace;
   pixel.alpha_trait=(_pixelType == RGBAPixel || _pixelType == CMYKAPixel) ?
     BlendPixelTrait : UndefinedPixelTrait;
   pixel.depth=MAGICKCORE_QUANTUM_DEPTH;

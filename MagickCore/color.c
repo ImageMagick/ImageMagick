@@ -1125,6 +1125,30 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
 %    o tuple:  The color tuple.
 %
 */
+
+static inline MagickBooleanType IsSVGCompliant(const PixelInfo *pixel)
+{
+#define SVGCompliant(component) ((double) \
+   ScaleCharToQuantum(ScaleQuantumToChar(ClampToQuantum(component))))
+
+  /*
+    SVG requires color depths > 8 expressed as percentages.
+  */
+  if (fabs(SVGCompliant(pixel->red)-pixel->red) >= MagickEpsilon)
+    return(MagickFalse);
+  if (fabs(SVGCompliant(pixel->green)-pixel->green) >= MagickEpsilon)
+    return(MagickFalse);
+  if (fabs(SVGCompliant(pixel->blue)-pixel->blue) >= MagickEpsilon)
+    return(MagickFalse);
+  if ((pixel->colorspace == CMYKColorspace) &&
+      (fabs(SVGCompliant(pixel->black)-pixel->black) >= MagickEpsilon))
+    return(MagickFalse);
+  if ((pixel->alpha_trait != UndefinedPixelTrait) &&
+      (fabs(SVGCompliant(pixel->alpha)-pixel->alpha) >= MagickEpsilon))
+    return(MagickFalse);
+  return(MagickTrue);
+}
+
 MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
   const PixelChannel channel,const ComplianceType compliance,char *tuple)
 {
@@ -1144,9 +1168,7 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
     scale=255.0f;
   if ((compliance != NoCompliance) &&
       (IssRGBCompatibleColorspace(pixel->colorspace) != MagickFalse) &&
-      ((IsColorComponentFactional(pixel->red) >= MagickEpsilon) ||
-       (IsColorComponentFactional(pixel->green) >= MagickEpsilon) ||
-       (IsColorComponentFactional(pixel->blue) >= MagickEpsilon)))
+      (IsSVGCompliant(pixel) == MagickFalse))
     scale=100.0f;
   switch (channel)
   {
@@ -1426,29 +1448,6 @@ MagickExport char **GetColorList(const char *pattern,
 %    o tuple: Return the color tuple as this string.
 %
 */
-
-static inline MagickBooleanType IsSVGCompliant(const PixelInfo *pixel)
-{
-#define SVGCompliant(component) ((double) \
-   ScaleCharToQuantum(ScaleQuantumToChar(ClampToQuantum(component))))
-
-  /*
-    SVG requires color depths > 8 expressed as percentages.
-  */
-  if (fabs(SVGCompliant(pixel->red)-pixel->red) >= MagickEpsilon)
-    return(MagickFalse);
-  if (fabs(SVGCompliant(pixel->green)-pixel->green) >= MagickEpsilon)
-    return(MagickFalse);
-  if (fabs(SVGCompliant(pixel->blue)-pixel->blue) >= MagickEpsilon)
-    return(MagickFalse);
-  if ((pixel->colorspace == CMYKColorspace) &&
-      (fabs(SVGCompliant(pixel->black)-pixel->black) >= MagickEpsilon))
-    return(MagickFalse);
-  if ((pixel->alpha_trait != UndefinedPixelTrait) &&
-      (fabs(SVGCompliant(pixel->alpha)-pixel->alpha) >= MagickEpsilon))
-    return(MagickFalse);
-  return(MagickTrue);
-}
 
 static void ConcatentateHexColorComponent(const PixelInfo *pixel,
   const PixelChannel channel,char *tuple)

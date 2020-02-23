@@ -1750,7 +1750,7 @@ MagickPrivate void ResetMagickPrecision(void)
 */
 MagickExport int SetMagickPrecision(const int precision)
 {
-#define MagickPrecision  6
+#define MagickPrecision  (4+MAGICKCORE_QUANTUM_DEPTH/8)
 
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (precision > 0)
