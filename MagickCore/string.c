@@ -2624,9 +2624,7 @@ MagickExport MagickBooleanType SubstituteString(char **string,
       (void) memmove(p+replace_extent,p+search_extent,
         strlen(p+search_extent)+1);
     (void) memcpy(p,replace,replace_extent);
-    p+=replace_extent;
-    if (replace_extent != 0)
-      p--;
+    p+=replace_extent-1;
   }
   return(status);
 }
