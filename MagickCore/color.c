@@ -892,7 +892,7 @@ static LinkedListInfo *AcquireColorCache(const char *filename,
     color_info->color.red=(double) ScaleCharToQuantum(p->red);
     color_info->color.green=(double) ScaleCharToQuantum(p->green);
     color_info->color.blue=(double) ScaleCharToQuantum(p->blue);
-    color_info->color.alpha=(double) (QuantumRange*p->alpha);
+    color_info->color.alpha=((double) QuantumRange*p->alpha);
     color_info->compliance=(ComplianceType) p->compliance;
     color_info->exempt=MagickTrue;
     color_info->signature=MagickCoreSignature;
