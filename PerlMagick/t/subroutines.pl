@@ -45,6 +45,8 @@ sub testCompositeCompare {
 
   $errorinfo='';
   $status='';
+  $normalized_mean_error_max+=1.0e-12;
+  $normalized_maximum_error_max+=1.0e-12;
 
   #print( $filter, " ...\n" );
 
@@ -291,6 +293,8 @@ sub testReadCompare {
   my($srcimage, $refimage, $normalized_mean_error, $normalized_maximum_error);
 
   $errorinfo='';
+  $normalized_mean_error_max+=1.0e-12;
+  $normalized_maximum_error_max+=1.0e-12;
 
   # Create images
   $srcimage=Image::Magick->new;
@@ -567,6 +571,8 @@ sub testReadWriteCompare {
     $normalized_maximum_error);
 
   $errorinfo='';
+  $normalized_mean_error_max+=1.0e-12;
+  $normalized_maximum_error_max+=1.0e-12;
 
   $image=Image::Magick->new;
   $refimage=Image::Magick->new;  
@@ -1144,6 +1150,8 @@ sub testFilterCompare {
 
   $errorinfo='';
   $status='';
+  $normalized_mean_error_max+=1.0e-12;
+  $normalized_maximum_error_max+=1.0e-12;
 
   #print( $filter, " ...\n" );
 
