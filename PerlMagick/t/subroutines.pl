@@ -962,7 +962,7 @@ sub testGetAttribute {
 #       [, expected REF_16] );
 #
 sub testMontage {
-  my( $imageOptions, $montageOptions, $ref_8, $ref_16, $ref_32 ) = @_;
+  my( $imageOptions, $montageOptions, $ref_8, $ref_16, $ref_32, $ref_32_hdri ) = @_;
 
   my($image,$ref_signature);
 
@@ -1017,6 +1017,7 @@ sub testMontage {
   #print "Montage Options: $montageOptions\n";
   print("\$montage=\$images->Montage( $montageOptions )\n");
   eval "\$montage=\$images->Montage( $montageOptions ) ;";
+  #$montage->Clamp();
   if( $@ ) {
     print "$@";
     print "not ok $test\n";
@@ -1030,7 +1031,7 @@ sub testMontage {
     # $montage->Display();
     $signature=$montage->GetAttribute('signature');
     if ( defined( $signature ) ) {
-      if ( $signature ne $ref_8 && $signature ne $ref_16 && $signature ne $ref_32 ) {
+      if ( $signature ne $ref_8 && $signature ne $ref_16 && $signature ne $ref_32 && $signature ne $ref_32_hdri) {
         print "ReadImage()\n";
         print "Test $test, signatures do not match.\n";
       	print "     Expected: $ref_8\n";
