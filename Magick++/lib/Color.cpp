@@ -405,7 +405,7 @@ Magick::Quantum Magick::Color::scaleDoubleToQuantum(const double double_)
 double Magick::Color::scaleQuantumToDouble(const Magick::Quantum quantum_)
 {
 #if (MAGICKCORE_QUANTUM_DEPTH < 32) && (MAGICKCORE_SIZEOF_FLOAT_T != MAGICKCORE_SIZEOF_DOUBLE || !defined(MAGICKCORE_HDRI_SUPPORT))
-  return(static_cast<double>(QaantumScale*quantum_));
+  return(static_cast<double>(QuantumScale*quantum_));
 #else
   return(QuantumScale*quantum_);
 #endif
