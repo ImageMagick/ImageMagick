@@ -2312,33 +2312,72 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
           (void) WriteBlobLSBLong(image,0x4D424544U);  /* PROFILE_EMBEDDED */
         else
           (void) WriteBlobLSBLong(image,0x73524742U);  /* sRGB */
+        
+        // bounds check, assign .0 if invalid value
+        if( isgreater(image->chromaticity.red_primary.x, 1.0) ||
+           !isgreater(image->chromaticity.red_primary.x, 0.0)) {
+          image->chromaticity.red_primary.x = 0.0;
+        }
+        if( isgreater(image->chromaticity.red_primary.y, 1.0) ||
+           !isgreater(image->chromaticity.red_primary.y, 0.0)) {
+          image->chromaticity.red_primary.y = 0.0;
+        }
+        if( isgreater(image->chromaticity.green_primary.x, 1.0) ||
+           !isgreater(image->chromaticity.green_primary.x, 0.0)) {
+          image->chromaticity.green_primary.x = 0.0;
+        }
+        if( isgreater(image->chromaticity.green_primary.y, 1.0) ||
+           !isgreater(image->chromaticity.green_primary.y, 0.0)) {
+          image->chromaticity.green_primary.y = 0.0;
+        }
+        if( isgreater(image->chromaticity.blue_primary.x, 1.0) ||
+           !isgreater(image->chromaticity.blue_primary.x, 0.0)) {
+          image->chromaticity.blue_primary.x = 0.0;
+        }
+        if( isgreater(image->chromaticity.blue_primary.y, 1.0) ||
+           !isgreater(image->chromaticity.blue_primary.y, 0.0)) {
+          image->chromaticity.blue_primary.y = 0.0;
+        }
+        if( isgreater(bmp_info.gamma_scale.x, 1.0) ||
+           !isgreater(bmp_info.gamma_scale.x, 0.0)) {
+          bmp_info.gamma_scale.x = 0.0;
+        }
+        if( isgreater(bmp_info.gamma_scale.y, 1.0) ||
+           !isgreater(bmp_info.gamma_scale.y, 0.0)) {
+          bmp_info.gamma_scale.y = 0.0;
+        }
+        if( isgreater(bmp_info.gamma_scale.z, 1.0) ||
+           !isgreater(bmp_info.gamma_scale.z, 0.0)) {
+          bmp_info.gamma_scale.z = 0.0;
+        }
+
         (void) WriteBlobLSBLong(image,(unsigned int)
-          ((ssize_t) image->chromaticity.red_primary.x*0x40000000));
+          (image->chromaticity.red_primary.x*0x40000000));
         (void) WriteBlobLSBLong(image,(unsigned int)
-          ((ssize_t) image->chromaticity.red_primary.y*0x40000000));
+          (image->chromaticity.red_primary.y*0x40000000));
         (void) WriteBlobLSBLong(image,(unsigned int)
-          ((ssize_t) (1.000f-(image->chromaticity.red_primary.x+
+          ((1.000f-(image->chromaticity.red_primary.x+
           image->chromaticity.red_primary.y))*0x40000000));
         (void) WriteBlobLSBLong(image,(unsigned int)
-          ((ssize_t) image->chromaticity.green_primary.x*0x40000000));
+          (image->chromaticity.green_primary.x*0x40000000));
         (void) WriteBlobLSBLong(image,(unsigned int)
-          ((ssize_t) image->chromaticity.green_primary.y*0x40000000));
+          (image->chromaticity.green_primary.y*0x40000000));
         (void) WriteBlobLSBLong(image,(unsigned int)
-          ((ssize_t) (1.000f-(image->chromaticity.green_primary.x+
+          ((1.000f-(image->chromaticity.green_primary.x+
           image->chromaticity.green_primary.y))*0x40000000));
         (void) WriteBlobLSBLong(image,(unsigned int)
-          ((ssize_t) image->chromaticity.blue_primary.x*0x40000000));
+          (image->chromaticity.blue_primary.x*0x40000000));
         (void) WriteBlobLSBLong(image,(unsigned int)
-          ((ssize_t) image->chromaticity.blue_primary.y*0x40000000));
+          (image->chromaticity.blue_primary.y*0x40000000));
         (void) WriteBlobLSBLong(image,(unsigned int)
-          ((ssize_t) (1.000f-(image->chromaticity.blue_primary.x+
+          ((1.000f-(image->chromaticity.blue_primary.x+
           image->chromaticity.blue_primary.y))*0x40000000));
         (void) WriteBlobLSBLong(image,(unsigned int)
-          ((ssize_t) bmp_info.gamma_scale.x*0x10000));
+          (bmp_info.gamma_scale.x*0x10000));
         (void) WriteBlobLSBLong(image,(unsigned int)
-          ((ssize_t) bmp_info.gamma_scale.y*0x10000));
+          (bmp_info.gamma_scale.y*0x10000));
         (void) WriteBlobLSBLong(image,(unsigned int)
-          ((ssize_t) bmp_info.gamma_scale.z*0x10000));
+          (bmp_info.gamma_scale.z*0x10000));
         if ((image->rendering_intent != UndefinedIntent) ||
             (profile != (StringInfo *) NULL))
           {
