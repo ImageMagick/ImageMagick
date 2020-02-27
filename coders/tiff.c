@@ -670,12 +670,11 @@ static toff_t TIFFGetBlobSize(thandle_t image)
 static void TIFFGetProfiles(TIFF *tiff,Image *image,ExceptionInfo *exception)
 {
   uint32
-    length;
+    length = 0;
 
   unsigned char
-    *profile;
+    *profile = unsigned char *) NULL;
 
-  length=0;
 #if defined(TIFFTAG_ICCPROFILE)
   if ((TIFFGetField(tiff,TIFFTAG_ICCPROFILE,&length,&profile) == 1) &&
       (profile != (unsigned char *) NULL))
