@@ -242,9 +242,9 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   (void) SetImageColorspace(image,stops[0].color.colorspace,exception);
-  image->alpha_trait=stops[0].color.alpha_trait;
-  if (stops[1].color.alpha_trait != UndefinedPixelTrait)
-    image->alpha_trait=stops[1].color.alpha_trait;
+  if ((stops[0].color.alpha_trait != UndefinedPixelTrait) ||
+      (stops[1].color.alpha_trait != UndefinedPixelTrait))
+    SetImageAlpha(image,TransparentAlpha,exception);
   /*
     Paint gradient.
   */
