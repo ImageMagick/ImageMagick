@@ -2483,7 +2483,6 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
             }
             case HSVColorspace:
             {
-printf("%g %g %g\n",geometry_info.rho,geometry_info.sigma,geometry_info.xi);
               ConvertHSVToRGB(fmod(fmod(geometry_info.rho,360.0)+360.0,360.0)/
                 360.0,geometry_info.sigma,geometry_info.xi,&red,&green,&blue);
               break;
