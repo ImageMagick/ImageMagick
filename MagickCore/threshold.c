@@ -1289,6 +1289,14 @@ MagickExport MagickBooleanType ColorThresholdImage(Image *image,
         &stop.red,&stop.green,&stop.blue);
       break;
     }
+    case LabColorspace:
+    {
+      ConvertRGBToLab(start_color->red,start_color->green,start_color->blue,
+        &start.red,&start.green,&start.blue);
+      ConvertRGBToLab(stop_color->red,stop_color->green,stop_color->blue,
+        &stop.red,&stop.green,&stop.blue);
+      break;
+    }
     default:
     {
       start.red*=QuantumScale;
@@ -1307,8 +1315,6 @@ MagickExport MagickBooleanType ColorThresholdImage(Image *image,
   stop.green*=QuantumRange;
   stop.blue*=QuantumRange;
   progress=0;
-/* convert start/stop colorspace to the same as image colorspace */
-/* for hsv() will need ConvertRGBToHSV() and them compare in HSV */
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \

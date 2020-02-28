@@ -69,6 +69,8 @@ extern MagickPrivate void
     double *),
   ConvertRGBToHWB(const double,const double,const double,double *,double *,
     double *),
+  ConvertRGBToLab(const double,const double,const double,double *,double *,
+    double *),
   ConvertRGBToLCHab(const double,const double,const double,double *,double *,
     double *),
   ConvertRGBToLCHuv(const double,const double,const double,double *,double *,

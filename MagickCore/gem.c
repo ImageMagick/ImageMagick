@@ -1273,6 +1273,45 @@ MagickPrivate void ConvertRGBToHWB(const double red,const double green,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C o n v e r t R G B T o L a b                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConvertRGBToLab() transforms a (red, green, blue) to a (L, a, b) triple.
+%
+%  The format of the ConvertRGBToLCHab method is:
+%
+%      void ConvertRGBToLCHab(const double red,const double green,
+%        const double blue,double *L,double *a,double *b)
+%
+%  A description of each parameter follows:
+%
+%    o red, green, blue: A Quantum value representing the red, green, and
+%      blue component of a pixel.
+%
+%    o L, a, b: A pointer to a double value representing a component of the
+%      Lab color space.
+%
+*/
+MagickPrivate void ConvertRGBToLab(const double red,const double green,
+  const double blue,double *L,double *a,double *b)
+{
+  double
+    X,
+    Y,
+    Z;
+
+  ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
+  ConvertXYZToLab(X,Y,Z,L,a,b);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C o n v e r t R G B T o L C H a b                                         %
 %                                                                             %
 %                                                                             %
