@@ -673,7 +673,7 @@ static void TIFFGetProfiles(TIFF *tiff,Image *image,ExceptionInfo *exception)
     length = 0;
 
   unsigned char
-    *profile = unsigned char *) NULL;
+    *profile = (unsigned char *) NULL;
 
 #if defined(TIFFTAG_ICCPROFILE)
   if ((TIFFGetField(tiff,TIFFTAG_ICCPROFILE,&length,&profile) == 1) &&
