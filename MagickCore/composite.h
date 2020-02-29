@@ -95,7 +95,14 @@ typedef enum
   ThresholdCompositeOp,
   VividLightCompositeOp,
   XorCompositeOp,
-  StereoCompositeOp
+  StereoCompositeOp,
+  FreezeCompositeOp,
+  InterpolateCompositeOp,
+  NegateCompositeOp,
+  ReflectCompositeOp,
+  SoftBurnCompositeOp,
+  SoftDodgeCompositeOp,
+  StampCompositeOp
 } CompositeOperator;
 
 extern MagickExport MagickBooleanType
