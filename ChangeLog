@@ -1,5 +1,5 @@
-2020-02-28  7.0.9-27 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.9-27, GIT revision 17002:9ea7d9c98:20200228
+2020-02-29  7.0.9-27 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.9-27, GIT revision 17006:49d81b672:20200229
 
 2020-02-24  7.0.9-27 Cristy  <quetzlzacatenango@image...>
   * Make sure we can grok this Fx expression: 1- -2.
