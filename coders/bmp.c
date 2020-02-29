@@ -2315,41 +2315,32 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
         
         // bounds check, assign .0 if invalid value
         if( isgreater(image->chromaticity.red_primary.x, 1.0) ||
-           !isgreater(image->chromaticity.red_primary.x, 0.0)) {
+           !isgreater(image->chromaticity.red_primary.x, 0.0))
           image->chromaticity.red_primary.x = 0.0;
-        }
         if( isgreater(image->chromaticity.red_primary.y, 1.0) ||
-           !isgreater(image->chromaticity.red_primary.y, 0.0)) {
+           !isgreater(image->chromaticity.red_primary.y, 0.0))
           image->chromaticity.red_primary.y = 0.0;
-        }
         if( isgreater(image->chromaticity.green_primary.x, 1.0) ||
-           !isgreater(image->chromaticity.green_primary.x, 0.0)) {
+           !isgreater(image->chromaticity.green_primary.x, 0.0))
           image->chromaticity.green_primary.x = 0.0;
-        }
         if( isgreater(image->chromaticity.green_primary.y, 1.0) ||
-           !isgreater(image->chromaticity.green_primary.y, 0.0)) {
+           !isgreater(image->chromaticity.green_primary.y, 0.0))
           image->chromaticity.green_primary.y = 0.0;
-        }
         if( isgreater(image->chromaticity.blue_primary.x, 1.0) ||
-           !isgreater(image->chromaticity.blue_primary.x, 0.0)) {
+           !isgreater(image->chromaticity.blue_primary.x, 0.0))
           image->chromaticity.blue_primary.x = 0.0;
-        }
         if( isgreater(image->chromaticity.blue_primary.y, 1.0) ||
-           !isgreater(image->chromaticity.blue_primary.y, 0.0)) {
+           !isgreater(image->chromaticity.blue_primary.y, 0.0))
           image->chromaticity.blue_primary.y = 0.0;
-        }
         if( isgreater(bmp_info.gamma_scale.x, 1.0) ||
-           !isgreater(bmp_info.gamma_scale.x, 0.0)) {
+           !isgreater(bmp_info.gamma_scale.x, 0.0))
           bmp_info.gamma_scale.x = 0.0;
-        }
         if( isgreater(bmp_info.gamma_scale.y, 1.0) ||
-           !isgreater(bmp_info.gamma_scale.y, 0.0)) {
+           !isgreater(bmp_info.gamma_scale.y, 0.0))
           bmp_info.gamma_scale.y = 0.0;
-        }
         if( isgreater(bmp_info.gamma_scale.z, 1.0) ||
-           !isgreater(bmp_info.gamma_scale.z, 0.0)) {
+           !isgreater(bmp_info.gamma_scale.z, 0.0))
           bmp_info.gamma_scale.z = 0.0;
-        }
 
         (void) WriteBlobLSBLong(image,(unsigned int)
           (image->chromaticity.red_primary.x*0x40000000));
