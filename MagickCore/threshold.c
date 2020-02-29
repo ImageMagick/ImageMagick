@@ -1375,6 +1375,7 @@ MagickExport MagickBooleanType ColorThresholdImage(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
+  image->colorspace=sRGBColorspace;
   return(SyncImage(image,exception));
 }
 
