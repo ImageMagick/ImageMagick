@@ -48,10 +48,8 @@
 #      include <wingdi.h>
 #    endif
 #  else
-#pragma warning(disable: 4457)
 #pragma warning(disable: 4458)
 #    include <gdiplus.h>
-#pragma warning(default: 4457)
 #pragma warning(default: 4458)
 #    pragma comment(lib, "gdiplus.lib")
 #  endif
