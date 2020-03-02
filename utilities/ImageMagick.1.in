@@ -37,7 +37,7 @@ line.
 .B magick
 
 Read images into memory, and perform operations on those images, and write
-then out to either the same of some other image file format.
+them out to either the same or some other image file format.
 
 The "-script" option can be switch from processing command line options,
 to reading options from a file or pipeline.
