@@ -1941,6 +1941,8 @@ RestoreMSCWarning
           Convert stripped TIFF image.
         */
         extent=TIFFStripSize(tiff)+sizeof(uint32);
+        if (photometric == PHOTOMETRIC_YCBCR)
+          extent<<=1;
         strip_pixels=(unsigned char *) AcquireQuantumMemory(extent,
           sizeof(*strip_pixels));
         if (strip_pixels == (unsigned char *) NULL)
