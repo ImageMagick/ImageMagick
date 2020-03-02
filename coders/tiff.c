@@ -1818,7 +1818,8 @@ RestoreMSCWarning
     if (image->compression == JPEGCompression)
       method=GetJPEGMethod(image,tiff,photometric,bits_per_sample,
         samples_per_pixel);
-    if (photometric == PHOTOMETRIC_LOGLUV)
+    if ((photometric == PHOTOMETRIC_LOGLUV) ||
+        (photometric == PHOTOMETRIC_YCBCR))
       method=ReadGenericMethod;
     quantum_info->endian=LSBEndian;
     quantum_type=RGBQuantum;
@@ -1941,8 +1942,6 @@ RestoreMSCWarning
           Convert stripped TIFF image.
         */
         extent=TIFFStripSize(tiff)+sizeof(uint32);
-        if (photometric == PHOTOMETRIC_YCBCR)
-          extent<<=1;
         strip_pixels=(unsigned char *) AcquireQuantumMemory(extent,
           sizeof(*strip_pixels));
         if (strip_pixels == (unsigned char *) NULL)
