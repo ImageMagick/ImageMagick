@@ -497,7 +497,7 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
 static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
 {
   char
-    magick[12];
+    magick[13];
 
   ErrorManager
     *error_manager;
@@ -540,6 +540,7 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
     }
   for (i=0; i < 12; i++)
     magick[i]=(char) GetCharacter(jpeg_info);
+  magick[i]='\0';
   if (LocaleCompare(magick,ICC_PROFILE) != 0)
     {
       /*
