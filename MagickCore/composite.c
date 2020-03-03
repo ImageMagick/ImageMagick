@@ -1637,7 +1637,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               }
               case FreezeCompositeOp:
               {
-                pixel=QuantumRange*(1.0-2.0*(1.0-Sa)*PerceptibleReciprocal(Da));
+                pixel=QuantumRange*(1.0-(1.0-Sa)*(1.0-Sa)*
+                  PerceptibleReciprocal(Da));
                 break;
               }
               case InterpolateCompositeOp:
@@ -1669,7 +1670,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               }
               case ReflectCompositeOp:
               {
-                pixel=QuantumRange*(2.0*Sa*PerceptibleReciprocal(1.0-Da));
+                pixel=QuantumRange*(Sa*Sa*PerceptibleReciprocal(1.0-Da));
                 break;
               }
               case StampCompositeOp:
@@ -1966,7 +1967,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case FreezeCompositeOp:
           {
-            pixel=QuantumRange*(1.0-2.0*(1.0-Sca)*PerceptibleReciprocal(Dca));
+            pixel=QuantumRange*(1.0-(1.0-Sca)*(1.0-Sca)*
+              PerceptibleReciprocal(Dca));
             break;
           }
           case HardLightCompositeOp:
@@ -2270,7 +2272,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case ReflectCompositeOp:
           {
-            pixel=QuantumRange*(2.0*Sca*PerceptibleReciprocal(1.0-Dca));
+            pixel=QuantumRange*(Sca*Sca*PerceptibleReciprocal(1.0-Dca));
             break;
           }
           case SaturateCompositeOp:
