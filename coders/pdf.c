@@ -2930,7 +2930,7 @@ RestoreMSCWarning
           hex_digits[13]='D';
           hex_digits[14]='E';
           hex_digits[15]='F';
-          (void) FormatLocaleString(buffer,MagickPathExtent,"/Title <FEFF");
+          (void) FormatLocaleString(buffer,MagickPathExtent,"/Title <");
           (void) WriteBlobString(image,buffer);
           for (i=0; i < (ssize_t) length; i++)
           {
