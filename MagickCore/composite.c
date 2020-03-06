@@ -1675,7 +1675,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               }
               case StampCompositeOp:
               {
-                pixel=QuantumRange*(Sa+2.0*Da-1.0);
+                pixel=QuantumRange*(Sa+Da*Da-1.0);
                 break;
               }
               case StereoCompositeOp:
@@ -2350,7 +2350,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case StampCompositeOp:
           {
-            pixel=QuantumRange*(Sca+2.0*Dca-1.0);
+            pixel=QuantumRange*(Sca+Dca*Dca-1.0);
             break;
           }
           case StereoCompositeOp:
