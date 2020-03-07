@@ -41,7 +41,7 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
-#include "MagickCore/property.h"
+#include "MagickCore/artifact.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/cache-view.h"
 #include "MagickCore/color.h"
@@ -71,6 +71,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/pixel-private.h"
+#include "MagickCore/property.h"
 #include "MagickCore/quantize.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
@@ -757,6 +758,9 @@ MagickExport MagickBooleanType AutoThresholdImage(Image *image,
   */
   (void) FormatLocaleString(property,MagickPathExtent,"%g%%",threshold);
   (void) SetImageProperty(image,"auto-threshold:threshold",property,exception);
+  if (IsStringTrue(GetImageArtifact(image,"auto-threshold:verbose")) != MagickFalse)
+    (void) FormatLocaleFile(stdout,"%.*g\n",GetMagickPrecision(),
+      (double) QuantumRange*threshold/100.0);
   return(BilevelImage(image,QuantumRange*threshold/100.0,exception));
 }
 
