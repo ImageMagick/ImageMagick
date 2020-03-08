@@ -201,13 +201,13 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
       complex_images=DestroyImageList(complex_images);
       return(complex_images);
     }
-  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-    {
-      image=DestroyImageList(image);
-      return(image);
-    }
   image->depth=32UL;
   AppendImageToList(&complex_images,image);
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+    {
+      complex_images=DestroyImageList(complex_images);
+      return(image);
+    }
   /*
     Apply complex mathematics to image pixels.
   */
