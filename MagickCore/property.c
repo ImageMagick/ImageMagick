@@ -2866,6 +2866,19 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             GetImageDepth(image,exception));
           break;
         }
+      if (LocaleCompare("bounding-box",property) == 0)
+        {
+          RectangleInfo
+            geometry;
+
+          WarnNoImageReturn("\"%%[%s]\"",property);
+          geometry=GetImageBoundingBox(image,exception);
+          (void) FormatLocaleString(value,MagickPathExtent,"%g,%g %g,%g\n",
+            (double) geometry.x,(double) geometry.y,
+            (double) geometry.x+geometry.width,
+            (double) geometry.y+geometry.height);
+          break;
+        }
       break;
     }
     case 'c':
