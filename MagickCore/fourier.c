@@ -206,7 +206,7 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     {
       complex_images=DestroyImageList(complex_images);
-      return(image);
+      return(complex_images);
     }
   /*
     Apply complex mathematics to image pixels.
