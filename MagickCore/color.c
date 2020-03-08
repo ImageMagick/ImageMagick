@@ -2461,6 +2461,9 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
             scale=1.0/100.0;
           geometry_info.sigma*=scale;
           geometry_info.xi*=scale;
+          red=0.0;
+          green=0.0;
+          blue=0.0;
           switch (color->colorspace)
           {
             case HCLColorspace:
@@ -2494,12 +2497,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
               break;
             }
             default:
-            {
-              red=0.0;
-              green=0.0;
-              blue=0.0;
               break;
-            }
           }
           color->colorspace=sRGBColorspace;
           color->red=(MagickRealType) red;
