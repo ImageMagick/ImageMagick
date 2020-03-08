@@ -2494,7 +2494,12 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
               break;
             }
             default:
+            {
+              red=0.0;
+              green=0.0;
+              blue=0.0;
               break;
+            }
           }
           color->colorspace=sRGBColorspace;
           color->red=(MagickRealType) red;
