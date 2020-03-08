@@ -613,7 +613,7 @@ MagickExport Image *CombineImages(const Image *image,
       {
         if (x < (ssize_t) next->columns)
           {
-            q[i]=GetPixelGray(next,p);
+            q[i]=GetPixelIntensity(next,p);
             p+=GetPixelChannels(next);
           }
         q+=GetPixelChannels(combine_image);
