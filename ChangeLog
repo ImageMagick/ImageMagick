@@ -4,6 +4,7 @@
 2020-03-07  7.0.10-1 Cristy  <quetzlzacatenango@image...>
   * Do not throw exception on empty draw path (reference
     https://github.com/ImageMagick/ImageMagick/issues/974).
+  * Fix possible buffer overflow in ComplexImages().
 
 2020-03-06  7.0.10-0 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-0, GIT revision 17026:fd430ac9a:20200307

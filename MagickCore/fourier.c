@@ -165,7 +165,9 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
     progress;
 
   size_t
-    number_channels;
+    columns,
+    number_channels,
+    rows;
 
   ssize_t
     y;
@@ -193,12 +195,18 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
   image->depth=32UL;
   complex_images=NewImageList();
   AppendImageToList(&complex_images,image);
-  image=CloneImage(images,0,0,MagickTrue,exception);
+  image=CloneImage(images->next,0,0,MagickTrue,exception);
   if (image == (Image *) NULL)
     {
       complex_images=DestroyImageList(complex_images);
       return(complex_images);
     }
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+    {
+      image=DestroyImageList(image);
+      return(image);
+    }
+  image->depth=32UL;
   AppendImageToList(&complex_images,image);
   /*
     Apply complex mathematics to image pixels.
@@ -231,11 +239,13 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
   Ci_view=AcquireAuthenticCacheView(Ci_image,exception);
   status=MagickTrue;
   progress=0;
+  columns=MagickMin(Cr_image->columns,Ci_image->columns);
+  rows=MagickMin(Cr_image->rows,Ci_image->rows);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    magick_number_threads(Cr_image,complex_images,Cr_image->rows,1L)
+    magick_number_threads(Cr_image,complex_images,rows,1L)
 #endif
-  for (y=0; y < (ssize_t) Cr_image->rows; y++)
+  for (y=0; y < (ssize_t) rows; y++)
   {
     register const Quantum
       *magick_restrict Ai,
@@ -252,12 +262,12 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
 
     if (status == MagickFalse)
       continue;
-    Ar=GetCacheViewVirtualPixels(Ar_view,0,y,Cr_image->columns,1,exception);
-    Ai=GetCacheViewVirtualPixels(Ai_view,0,y,Cr_image->columns,1,exception);
-    Br=GetCacheViewVirtualPixels(Br_view,0,y,Cr_image->columns,1,exception);
-    Bi=GetCacheViewVirtualPixels(Bi_view,0,y,Cr_image->columns,1,exception);
-    Cr=QueueCacheViewAuthenticPixels(Cr_view,0,y,Cr_image->columns,1,exception);
-    Ci=QueueCacheViewAuthenticPixels(Ci_view,0,y,Ci_image->columns,1,exception);
+    Ar=GetCacheViewVirtualPixels(Ar_view,0,y,columns,1,exception);
+    Ai=GetCacheViewVirtualPixels(Ai_view,0,y,columns,1,exception);
+    Br=GetCacheViewVirtualPixels(Br_view,0,y,columns,1,exception);
+    Bi=GetCacheViewVirtualPixels(Bi_view,0,y,columns,1,exception);
+    Cr=QueueCacheViewAuthenticPixels(Cr_view,0,y,columns,1,exception);
+    Ci=QueueCacheViewAuthenticPixels(Ci_view,0,y,columns,1,exception);
     if ((Ar == (const Quantum *) NULL) || (Ai == (const Quantum *) NULL) || 
         (Br == (const Quantum *) NULL) || (Bi == (const Quantum *) NULL) ||
         (Cr == (Quantum *) NULL) || (Ci == (Quantum *) NULL))
@@ -265,7 +275,7 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
         status=MagickFalse;
         continue;
       }
-    for (x=0; x < (ssize_t) Cr_image->columns; x++)
+    for (x=0; x < (ssize_t) columns; x++)
     {
       register ssize_t
         i;
