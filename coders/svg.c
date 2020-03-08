@@ -1356,8 +1356,179 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"r") == 0)
             {
-              svg_info->element.angle=
-                GetUserSpaceCoordinateValue(svg_info,0,value);
+              svg_info->element.angle=GetUserSpaceCoordinateValue(svg_info,0,
+                value);
+              break;
+            }
+          break;
+        }
+        case 'T':
+        case 't':
+        {
+          if (LocaleCompare(keyword,"transform") == 0)
+            {
+              AffineMatrix
+                affine,
+                current,
+                transform;
+
+              GetAffineMatrix(&transform);
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  ");
+              tokens=SVGKeyValuePairs(context,'(',')',value,&number_tokens);
+              if (tokens == (char **) NULL)
+                break;
+              for (j=0; j < (ssize_t) (number_tokens-1); j+=2)
+              {
+                keyword=(char *) tokens[j];
+                value=(char *) tokens[j+1];
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "    %s: %s",keyword,value);
+                current=transform;
+                GetAffineMatrix(&affine);
+                switch (*keyword)
+                {
+                  case 'M':
+                  case 'm':
+                  {
+                    if (LocaleCompare(keyword,"matrix") == 0)
+                      {
+                        p=(const char *) value;
+                        (void) GetNextToken(p,&p,MagickPathExtent,token);
+                        affine.sx=StringToDouble(value,(char **) NULL);
+                        (void) GetNextToken(p,&p,MagickPathExtent,token);
+                        if (*token == ',')
+                          (void) GetNextToken(p,&p,MagickPathExtent,token);
+                        affine.rx=StringToDouble(token,&next_token);
+                        (void) GetNextToken(p,&p,MagickPathExtent,token);
+                        if (*token == ',')
+                          (void) GetNextToken(p,&p,MagickPathExtent,token);
+                        affine.ry=StringToDouble(token,&next_token);
+                        (void) GetNextToken(p,&p,MagickPathExtent,token);
+                        if (*token == ',')
+                          (void) GetNextToken(p,&p,MagickPathExtent,token);
+                        affine.sy=StringToDouble(token,&next_token);
+                        (void) GetNextToken(p,&p,MagickPathExtent,token);
+                        if (*token == ',')
+                          (void) GetNextToken(p,&p,MagickPathExtent,token);
+                        affine.tx=StringToDouble(token,&next_token);
+                        (void) GetNextToken(p,&p,MagickPathExtent,token);
+                        if (*token == ',')
+                          (void) GetNextToken(p,&p,MagickPathExtent,token);
+                        affine.ty=StringToDouble(token,&next_token);
+                        break;
+                      }
+                    break;
+                  }
+                  case 'R':
+                  case 'r':
+                  {
+                    if (LocaleCompare(keyword,"rotate") == 0)
+                      {
+                        double
+                          angle,
+                          x,
+                          y;
+
+                        p=(const char *) value;
+                        (void) GetNextToken(p,&p,MagickPathExtent,token);
+                        angle=StringToDouble(value,(char **) NULL);
+                        affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
+                        affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
+                        affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
+                        affine.sy=cos(DegreesToRadians(fmod(angle,360.0)));
+                        (void) GetNextToken(p,&p,MagickPathExtent,token);
+                        if (*token == ',')
+                          (void) GetNextToken(p,&p,MagickPathExtent,token);
+                        x=StringToDouble(token,&next_token);
+                        (void) GetNextToken(p,&p,MagickPathExtent,token);
+                        if (*token == ',')
+                          (void) GetNextToken(p,&p,MagickPathExtent,token);
+                        y=StringToDouble(token,&next_token);
+                        affine.tx=svg_info->bounds.x+x*
+                          cos(DegreesToRadians(fmod(angle,360.0)))+y*
+                          sin(DegreesToRadians(fmod(angle,360.0)));
+                        affine.ty=svg_info->bounds.y-x*
+                          sin(DegreesToRadians(fmod(angle,360.0)))+y*
+                          cos(DegreesToRadians(fmod(angle,360.0)));
+                        affine.tx-=x;
+                        affine.ty-=y;
+                        break;
+                      }
+                    break;
+                  }
+                  case 'S':
+                  case 's':
+                  {
+                    if (LocaleCompare(keyword,"scale") == 0)
+                      {
+                        for (p=(const char *) value; *p != '\0'; p++)
+                          if ((isspace((int) ((unsigned char) *p)) != 0) ||
+                              (*p == ','))
+                            break;
+                        affine.sx=GetUserSpaceCoordinateValue(svg_info,1,value);
+                        affine.sy=affine.sx;
+                        if (*p != '\0')
+                          affine.sy=GetUserSpaceCoordinateValue(svg_info,-1,
+                            p+1);
+                        svg_info->scale[svg_info->n]=ExpandAffine(&affine);
+                        break;
+                      }
+                    if (LocaleCompare(keyword,"skewX") == 0)
+                      {
+                        affine.sx=svg_info->affine.sx;
+                        affine.ry=tan(DegreesToRadians(fmod(
+                          GetUserSpaceCoordinateValue(svg_info,1,value),
+                          360.0)));
+                        affine.sy=svg_info->affine.sy;
+                        break;
+                      }
+                    if (LocaleCompare(keyword,"skewY") == 0)
+                      {
+                        affine.sx=svg_info->affine.sx;
+                        affine.rx=tan(DegreesToRadians(fmod(
+                          GetUserSpaceCoordinateValue(svg_info,-1,value),
+                          360.0)));
+                        affine.sy=svg_info->affine.sy;
+                        break;
+                      }
+                    break;
+                  }
+                  case 'T':
+                  case 't':
+                  {
+                    if (LocaleCompare(keyword,"translate") == 0)
+                      {
+                        for (p=(const char *) value; *p != '\0'; p++)
+                          if ((isspace((int) ((unsigned char) *p)) != 0) ||
+                              (*p == ','))
+                            break;
+                        affine.tx=GetUserSpaceCoordinateValue(svg_info,1,value);
+                        affine.ty=0;
+                        if (*p != '\0')
+                          affine.ty=GetUserSpaceCoordinateValue(svg_info,-1,
+                            p+1);
+                        break;
+                      }
+                    break;
+                  }
+                  default:
+                    break;
+                }
+                transform.sx=affine.sx*current.sx+affine.ry*current.rx;
+                transform.rx=affine.rx*current.sx+affine.sy*current.rx;
+                transform.ry=affine.sx*current.ry+affine.ry*current.sy;
+                transform.sy=affine.rx*current.ry+affine.sy*current.sy;
+                transform.tx=affine.tx*current.sx+affine.ty*current.ry+
+                  current.tx;
+                transform.ty=affine.tx*current.rx+affine.ty*current.sy+
+                  current.ty;
+              }
+              (void) FormatLocaleFile(svg_info->file,
+                "affine %g %g %g %g %g %g\n",transform.sx,transform.rx,
+                transform.ry,transform.sy,transform.tx,transform.ty);
+              for (j=0; tokens[j] != (char *) NULL; j++)
+                tokens[j]=DestroyString(tokens[j]);
+              tokens=(char **) RelinquishMagickMemory(tokens);
               break;
             }
           break;
@@ -2232,172 +2403,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
             {
               (void) FormatLocaleFile(svg_info->file,"text-antialias %d\n",
                 LocaleCompare(value,"true") == 0);
-              break;
-            }
-          if (LocaleCompare(keyword,"transform") == 0)
-            {
-              AffineMatrix
-                affine,
-                current,
-                transform;
-
-              GetAffineMatrix(&transform);
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  ");
-              tokens=SVGKeyValuePairs(context,'(',')',value,&number_tokens);
-              if (tokens == (char **) NULL)
-                break;
-              for (j=0; j < (ssize_t) (number_tokens-1); j+=2)
-              {
-                keyword=(char *) tokens[j];
-                value=(char *) tokens[j+1];
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "    %s: %s",keyword,value);
-                current=transform;
-                GetAffineMatrix(&affine);
-                switch (*keyword)
-                {
-                  case 'M':
-                  case 'm':
-                  {
-                    if (LocaleCompare(keyword,"matrix") == 0)
-                      {
-                        p=(const char *) value;
-                        (void) GetNextToken(p,&p,MagickPathExtent,token);
-                        affine.sx=StringToDouble(value,(char **) NULL);
-                        (void) GetNextToken(p,&p,MagickPathExtent,token);
-                        if (*token == ',')
-                          (void) GetNextToken(p,&p,MagickPathExtent,token);
-                        affine.rx=StringToDouble(token,&next_token);
-                        (void) GetNextToken(p,&p,MagickPathExtent,token);
-                        if (*token == ',')
-                          (void) GetNextToken(p,&p,MagickPathExtent,token);
-                        affine.ry=StringToDouble(token,&next_token);
-                        (void) GetNextToken(p,&p,MagickPathExtent,token);
-                        if (*token == ',')
-                          (void) GetNextToken(p,&p,MagickPathExtent,token);
-                        affine.sy=StringToDouble(token,&next_token);
-                        (void) GetNextToken(p,&p,MagickPathExtent,token);
-                        if (*token == ',')
-                          (void) GetNextToken(p,&p,MagickPathExtent,token);
-                        affine.tx=StringToDouble(token,&next_token);
-                        (void) GetNextToken(p,&p,MagickPathExtent,token);
-                        if (*token == ',')
-                          (void) GetNextToken(p,&p,MagickPathExtent,token);
-                        affine.ty=StringToDouble(token,&next_token);
-                        break;
-                      }
-                    break;
-                  }
-                  case 'R':
-                  case 'r':
-                  {
-                    if (LocaleCompare(keyword,"rotate") == 0)
-                      {
-                        double
-                          angle,
-                          x,
-                          y;
-
-                        p=(const char *) value;
-                        (void) GetNextToken(p,&p,MagickPathExtent,token);
-                        angle=StringToDouble(value,(char **) NULL);
-                        affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
-                        affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
-                        affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
-                        affine.sy=cos(DegreesToRadians(fmod(angle,360.0)));
-                        (void) GetNextToken(p,&p,MagickPathExtent,token);
-                        if (*token == ',')
-                          (void) GetNextToken(p,&p,MagickPathExtent,token);
-                        x=StringToDouble(token,&next_token);
-                        (void) GetNextToken(p,&p,MagickPathExtent,token);
-                        if (*token == ',')
-                          (void) GetNextToken(p,&p,MagickPathExtent,token);
-                        y=StringToDouble(token,&next_token);
-                        affine.tx=svg_info->bounds.x+x*
-                          cos(DegreesToRadians(fmod(angle,360.0)))+y*
-                          sin(DegreesToRadians(fmod(angle,360.0)));
-                        affine.ty=svg_info->bounds.y-x*
-                          sin(DegreesToRadians(fmod(angle,360.0)))+y*
-                          cos(DegreesToRadians(fmod(angle,360.0)));
-                        affine.tx-=x;
-                        affine.ty-=y;
-                        break;
-                      }
-                    break;
-                  }
-                  case 'S':
-                  case 's':
-                  {
-                    if (LocaleCompare(keyword,"scale") == 0)
-                      {
-                        for (p=(const char *) value; *p != '\0'; p++)
-                          if ((isspace((int) ((unsigned char) *p)) != 0) ||
-                              (*p == ','))
-                            break;
-                        affine.sx=GetUserSpaceCoordinateValue(svg_info,1,value);
-                        affine.sy=affine.sx;
-                        if (*p != '\0')
-                          affine.sy=GetUserSpaceCoordinateValue(svg_info,-1,
-                            p+1);
-                        svg_info->scale[svg_info->n]=ExpandAffine(&affine);
-                        break;
-                      }
-                    if (LocaleCompare(keyword,"skewX") == 0)
-                      {
-                        affine.sx=svg_info->affine.sx;
-                        affine.ry=tan(DegreesToRadians(fmod(
-                          GetUserSpaceCoordinateValue(svg_info,1,value),
-                          360.0)));
-                        affine.sy=svg_info->affine.sy;
-                        break;
-                      }
-                    if (LocaleCompare(keyword,"skewY") == 0)
-                      {
-                        affine.sx=svg_info->affine.sx;
-                        affine.rx=tan(DegreesToRadians(fmod(
-                          GetUserSpaceCoordinateValue(svg_info,-1,value),
-                          360.0)));
-                        affine.sy=svg_info->affine.sy;
-                        break;
-                      }
-                    break;
-                  }
-                  case 'T':
-                  case 't':
-                  {
-                    if (LocaleCompare(keyword,"translate") == 0)
-                      {
-                        for (p=(const char *) value; *p != '\0'; p++)
-                          if ((isspace((int) ((unsigned char) *p)) != 0) ||
-                              (*p == ','))
-                            break;
-                        affine.tx=GetUserSpaceCoordinateValue(svg_info,1,value);
-                        affine.ty=0;
-                        if (*p != '\0')
-                          affine.ty=GetUserSpaceCoordinateValue(svg_info,-1,
-                            p+1);
-                        break;
-                      }
-                    break;
-                  }
-                  default:
-                    break;
-                }
-                transform.sx=affine.sx*current.sx+affine.ry*current.rx;
-                transform.rx=affine.rx*current.sx+affine.sy*current.rx;
-                transform.ry=affine.sx*current.ry+affine.ry*current.sy;
-                transform.sy=affine.rx*current.ry+affine.sy*current.sy;
-                transform.tx=affine.tx*current.sx+affine.ty*current.ry+
-                  current.tx;
-                transform.ty=affine.tx*current.rx+affine.ty*current.sy+
-                  current.ty;
-              }
-              (void) FormatLocaleFile(svg_info->file,
-                "affine %g %g %g %g %g %g\n",transform.sx,transform.rx,
-                transform.ry,transform.sy,transform.tx,transform.ty);
-              for (j=0; tokens[j] != (char *) NULL; j++)
-                tokens[j]=DestroyString(tokens[j]);
-              tokens=(char **) RelinquishMagickMemory(tokens);
               break;
             }
           break;
