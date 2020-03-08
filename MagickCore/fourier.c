@@ -211,7 +211,7 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
   /*
     Apply complex mathematics to image pixels.
   */
-  artifact=GetImageArtifact(image,"complex:snr");
+  artifact=GetImageArtifact(images,"complex:snr");
   snr=0.0;
   if (artifact != (const char *) NULL)
     snr=StringToDouble(artifact,(char **) NULL);
