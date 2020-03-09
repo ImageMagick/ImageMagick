@@ -1324,7 +1324,7 @@ RestoreMSCWarning
         preferred_version;
 
       preferred_version=StringToDouble(option,(char**) NULL);
-      version=MagickMax(version,MagickMin(1.7, prefered_version));
+      version=MagickMax(version,MagickMin(1.7, preferred_version));
     }
   (void) FormatLocaleString(buffer,MagickPathExtent,"%%PDF-%.2g \n",version);
   (void) WriteBlobString(image,buffer);
