@@ -79,6 +79,7 @@
 #include "MagickCore/signature.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/timer-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/transform.h"
@@ -1212,7 +1213,8 @@ RestoreMSCWarning
     *profile;
 
   double
-    pointsize;
+    pointsize,
+    version;
 
   GeometryInfo
     geometry_info;
@@ -1263,8 +1265,7 @@ RestoreMSCWarning
     object,
     pages_id,
     root_id,
-    text_size,
-    version;
+    text_size;
 
   ssize_t
     count,
@@ -1305,19 +1306,27 @@ RestoreMSCWarning
     Write Info object.
   */
   object=0;
-  version=3;
-  if (image_info->compression == JPEG2000Compression)
-    version=(size_t) MagickMax(version,5);
+  version=1.3;
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
     if (next->alpha_trait != UndefinedPixelTrait)
-      version=(size_t) MagickMax(version,4);
+      version=1.4;
+  if (image_info->compression == JPEG2000Compression)
+    version=1.5;
   if (LocaleCompare(image_info->magick,"PDFA") == 0)
-    version=(size_t) MagickMax(version,6);
+    version=1.6;
   profile=GetImageProfile(image,"icc");
   if (profile != (StringInfo *) NULL)
-    version=(size_t) MagickMax(version,7);
-  (void) FormatLocaleString(buffer,MagickPathExtent,"%%PDF-1.%.20g \n",(double)
-    version);
+    version=1.7;
+  option=GetImageOption(image_info,"pdf:version");
+  if (option != (const char *) NULL)
+    {
+      double
+        preferred_version;
+
+      preferred_version=StringToDouble(option,(char**) NULL);
+      version=MagickMax(version,MagickMin(1.7, prefered_version));
+    }
+  (void) FormatLocaleString(buffer,MagickPathExtent,"%%PDF-%.2g \n",version);
   (void) WriteBlobString(image,buffer);
   if (LocaleCompare(image_info->magick,"PDFA") == 0)
     {

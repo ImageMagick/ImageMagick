@@ -1,6 +1,10 @@
 2020-03-07  7.0.10-1 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-1, GIT revision 17...
 
+2020-03-09  7.0.10-1 Dirk Lemstra <dirk@lem.....org>
+  * Added option to specify the preferred version when writing a PDF file with
+    -define pdf:version=version (e.g. 1.7).
+
 2020-03-07  7.0.10-1 Cristy  <quetzlzacatenango@image...>
   * Do not throw exception on empty draw path (reference
     https://github.com/ImageMagick/ImageMagick/issues/974).
