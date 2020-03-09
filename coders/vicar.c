@@ -255,13 +255,13 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
           Assign a value to the specified keyword.
         */
         if (LocaleCompare(keyword,"LABEL_RECORDS") == 0)
-          length=(ssize_t) StringToLong(value)*MagickMax(1,length);
+          length*=(ssize_t) StringToLong(value);
         if (LocaleCompare(keyword,"LBLSIZE") == 0)
           length=(ssize_t) StringToLong(value);
         if (LocaleCompare(keyword,"RECORD_BYTES") == 0)
           {
             image->columns=StringToUnsignedLong(value);
-            length=(ssize_t) image->columns*MagickMax(1,length);
+            length=(ssize_t) image->columns;
           }
         if (LocaleCompare(keyword,"NS") == 0)
           image->columns=StringToUnsignedLong(value);
