@@ -1128,20 +1128,21 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
 
 static inline MagickBooleanType IsSVGCompliant(const PixelInfo *pixel)
 {
+#define SVGEpsilon  1.0e-6
 #define SVGCompliant(component) ((double) \
    ScaleCharToQuantum(ScaleQuantumToChar(ClampToQuantum(component))))
 
   /*
     SVG requires color depths > 8 expressed as percentages.
   */
-  if (fabs(SVGCompliant(pixel->red)-pixel->red) >= MagickEpsilon)
+  if (fabs(SVGCompliant(pixel->red)-pixel->red) >= SVGEpsilon)
     return(MagickFalse);
-  if (fabs(SVGCompliant(pixel->green)-pixel->green) >= MagickEpsilon)
+  if (fabs(SVGCompliant(pixel->green)-pixel->green) >= SVGEpsilon)
     return(MagickFalse);
-  if (fabs(SVGCompliant(pixel->blue)-pixel->blue) >= MagickEpsilon)
+  if (fabs(SVGCompliant(pixel->blue)-pixel->blue) >= SVGEpsilon)
     return(MagickFalse);
   if ((pixel->colorspace == CMYKColorspace) &&
-      (fabs(SVGCompliant(pixel->black)-pixel->black) >= MagickEpsilon))
+      (fabs(SVGCompliant(pixel->black)-pixel->black) >= SVGEpsilon))
     return(MagickFalse);
   return(MagickTrue);
 }
