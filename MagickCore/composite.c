@@ -1639,6 +1639,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               {
                 pixel=QuantumRange*(1.0-(1.0-Sa)*(1.0-Sa)*
                   PerceptibleReciprocal(Da));
+                if (pixel < 0.0)
+                  pixel=0.0;
                 break;
               }
               case InterpolateCompositeOp:
@@ -1969,6 +1971,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           {
             pixel=QuantumRange*(1.0-(1.0-Sca)*(1.0-Sca)*
               PerceptibleReciprocal(Dca));
+            if (pixel < 0.0)
+              pixel=0.0;
             break;
           }
           case HardLightCompositeOp:
