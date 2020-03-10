@@ -1128,9 +1128,9 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
 
 static inline MagickBooleanType IsSVGCompliant(const PixelInfo *pixel)
 {
-#define SVGEpsilon  1.0e-6
 #define SVGCompliant(component) ((double) \
    ScaleCharToQuantum(ScaleQuantumToChar(ClampToQuantum(component))))
+#define SVGEpsilon  1.0e-6
 
   /*
     SVG requires color depths > 8 expressed as percentages.
