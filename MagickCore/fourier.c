@@ -302,8 +302,8 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
             double
               gamma;
 
-            gamma=PerceptibleReciprocal((double) Br[i]*Br[i]+(double) Bi[i]*
-              Bi[i]+snr);
+            gamma=QuantumRange*PerceptibleReciprocal((double) Br[i]*Br[i]+
+              (double) Bi[i]*Bi[i]+snr);
             Cr[i]=gamma*((double) Ar[i]*Br[i]+(double) Ai[i]*Bi[i]);
             Ci[i]=gamma*((double) Ai[i]*Br[i]-(double) Ar[i]*Bi[i]);
             break;
