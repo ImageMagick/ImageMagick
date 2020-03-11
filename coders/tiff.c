@@ -743,7 +743,7 @@ static MagickBooleanType TIFFGetProperties(TIFF *tiff,Image *image,
     count,
     type;
 
-  *text='\0';
+  text=(char *) NULL;
   status=MagickTrue;
   if ((TIFFGetField(tiff,TIFFTAG_ARTIST,&text) == 1) &&
       (text != (char *) NULL))
