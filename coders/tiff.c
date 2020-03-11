@@ -2217,12 +2217,12 @@ RestoreMSCWarning
       }
   } while ((status != MagickFalse) && (more_frames != MagickFalse));
   TIFFClose(tiff);
-  TIFFReadPhotoshopLayers(image_info,image,exception);
   if ((image_info->number_scenes != 0) &&
       (image_info->scene >= GetImageListLength(image)))
     status=MagickFalse;
   if (status == MagickFalse)
     return(DestroyImageList(image));
+  TIFFReadPhotoshopLayers(image_info,image,exception);
   return(GetFirstImageInList(image));
 }
 #endif
