@@ -304,20 +304,20 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
 
             gamma=QuantumRange*PerceptibleReciprocal((double) Br[i]*Br[i]+
               (double) Bi[i]*Bi[i]+snr);
-            Cr[i]=gamma*((double) Ar[i]*Br[i]+(double) Ai[i]*Bi[i]);
-            Ci[i]=gamma*((double) Ai[i]*Br[i]-(double) Ar[i]*Bi[i]);
+            Cr[i]=gamma*(QuantumScale*Ar[i]*Br[i]+QuantumScale*Ai[i]*Bi[i]);
+            Ci[i]=gamma*(QuantumScale*Ai[i]*Br[i]-QuantumScale*Ar[i]*Bi[i]);
             break;
           }
           case MagnitudePhaseComplexOperator:
           {
-            Cr[i]=sqrt((double) Ar[i]*Ar[i]+(double) Ai[i]*Ai[i]);
+            Cr[i]=sqrt(QuantumScale*Ar[i]*Ar[i]+QuantumScale*Ai[i]*Ai[i]);
             Ci[i]=atan2((double) Ai[i],(double) Ar[i])/(2.0*MagickPI)+0.5;
             break;
           }
           case MultiplyComplexOperator:
           {
-            Cr[i]=((double) Ar[i]*Br[i]-(double) Ai[i]*Bi[i]);
-            Ci[i]=((double) Ai[i]*Br[i]+(double) Ar[i]*Bi[i]);
+            Cr[i]=(QuantumScale*Ar[i]*Br[i]-QuantumScale*Ai[i]*Bi[i]);
+            Ci[i]=(QuantumScale*Ai[i]*Br[i]+QuantumScale*Ar[i]*Bi[i]);
             break;
           }
           case RealImaginaryComplexOperator:
