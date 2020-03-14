@@ -519,6 +519,324 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   G e t I m a g e C o n v e x H u l l                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageConvexHull() returns the convex hull points of an image canvas.
+%
+%  The format of the GetImageConvexHull method is:
+%
+%      PointInfo *GetImageConvexHull(const Image *image,
+%        size_t number_coordinates,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o number_coordinates: the number of coordinates in the convex hull.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+static double LexicographicalSort(PointInfo *p1,PointInfo *p2,PointInfo *p3)
+{
+  /*
+    Sort first by x-coordinate, and in case of a tie, by y-coordinate.
+  */
+  return((p2->x-p1->x)*(p3->y-p1->y)-(p2->y-p1->y)*(p3->x-p1->x));
+}
+
+void ConvexHull(PointInfo *coordinates,size_t number_coordinates,
+  PointInfo ***monotone_chain,size_t *chain_length)
+{
+  PointInfo
+    **chain;
+
+  register ssize_t
+    i;
+
+  size_t
+    demark,
+    n;
+
+  /*
+    Construct the upper and lower hulls: rightmost to leftmost counterclockwise.
+  */
+  chain=(*monotone_chain);
+  n=0;
+  for (i=0; i < (ssize_t) number_coordinates; i++)
+  {
+    while ((n >= 2) &&
+           (LexicographicalSort(chain[n-2],chain[n-1],&coordinates[i]) <= 0.0))
+      n--;
+    chain[n++]=(&coordinates[i]);
+  }
+  demark=n+1;
+  for (i=(ssize_t) number_coordinates-2; i >= 0; i--)
+  {
+    while ((n >= demark) &&
+           (LexicographicalSort(chain[n-2],chain[n-1],&coordinates[i]) <= 0.0))
+      n--;
+    chain[n++]=(&coordinates[i]);
+  }
+  *monotone_chain=chain;
+  *chain_length=n;
+}
+
+static PixelInfo GetEdgeBackgroundColor(const Image *image,
+  const CacheView *image_view,ExceptionInfo *exception)
+{
+  CacheView
+    *edge_view;
+
+  const char
+    *artifact;
+
+  double
+    edge_factor,
+    factor;
+
+  Image
+    *edge_image;
+
+  PixelInfo
+    background,
+    edge_background,
+    pixel;
+
+  RectangleInfo
+    edge_geometry;
+
+  register ssize_t
+    i;
+
+  register const Quantum
+    *p;
+
+  ssize_t
+    y;
+
+  /*
+    Identify background color from edge of image.
+  */
+  edge_factor=(-1.0);
+  GetPixelInfo(image,&edge_background);
+  for (i=0; i < 4; i++)
+  {
+    GravityType
+      gravity;
+
+    switch (i)
+    {
+      case 0:
+      default:
+      {
+        gravity=WestGravity;
+        edge_geometry.width=1;
+        edge_geometry.height=0;
+      }
+      case 1:
+      {
+        gravity=EastGravity;
+        edge_geometry.width=1;
+        edge_geometry.height=0;
+      }
+      case 2:
+      {
+        gravity=NorthGravity;
+        edge_geometry.width=0;
+        edge_geometry.height=1;
+      }
+      case 3:
+      {
+        gravity=SouthGravity;
+        edge_geometry.width=0;
+        edge_geometry.height=1;
+      }
+    }
+    edge_geometry.x=0;
+    edge_geometry.y=0;
+    switch (gravity)
+    {
+      case NorthWestGravity:
+      case NorthGravity:
+      default:
+      {
+        p=GetCacheViewVirtualPixels(image_view,0,0,1,1,exception);
+        break;
+      }
+      case NorthEastGravity:
+      case EastGravity:
+      {
+        p=GetCacheViewVirtualPixels(image_view,(ssize_t) image->columns-1,0,1,1,
+          exception);
+        break;
+      }
+      case SouthEastGravity:
+      case SouthGravity:
+      {
+        p=GetCacheViewVirtualPixels(image_view,(ssize_t) image->columns-1,
+          (ssize_t) image->rows-1,1,1,exception);
+        break;
+      }
+      case SouthWestGravity:
+      case WestGravity:
+      {
+        p=GetCacheViewVirtualPixels(image_view,0,(ssize_t) image->rows-1,1,1,
+          exception);
+        break;
+      }
+    }
+    GetPixelInfoPixel(image,p,&background);
+    artifact=GetImageArtifact(image,"convex-hull:background-color");
+    if (artifact != (const char *) NULL)
+      (void) QueryColorCompliance(artifact,AllCompliance,&background,exception);
+    GravityAdjustGeometry(image->columns,image->rows,gravity,&edge_geometry);
+    edge_image=CropImage(image,&edge_geometry,exception);
+    if (edge_image == (Image *) NULL)
+      break;
+    factor=0.0;
+    edge_view=AcquireVirtualCacheView(edge_image,exception);
+    for (y=0; y < (ssize_t) edge_image->rows; y++)
+    {
+      register ssize_t
+        x;
+
+      p=GetCacheViewVirtualPixels(edge_view,0,y,edge_image->columns,1,
+        exception);
+      if (p == (const Quantum *) NULL)
+        break;
+      for (x=0; x < (ssize_t) edge_image->columns; x++)
+      {
+        GetPixelInfoPixel(edge_image,p,&pixel);
+        if (IsFuzzyEquivalencePixelInfo(&pixel,&background) == MagickFalse)
+          factor++;
+        p+=GetPixelChannels(edge_image);
+      }
+    }
+    factor/=((double) edge_image->columns*edge_image->rows);
+    if (factor > edge_factor)
+      {
+        edge_background=background;
+        edge_factor=factor;
+      }
+    edge_view=DestroyCacheView(edge_view);
+    edge_image=DestroyImage(edge_image);
+  }
+  return(edge_background);
+}
+
+MagickExport PointInfo *GetImageConvexHull(const Image *image,
+  size_t *number_coordinates,ExceptionInfo *exception)
+{
+  CacheView
+    *image_view;
+
+  MagickBooleanType
+    status;
+
+  MemoryInfo
+    *coordinate_info;
+
+  PixelInfo
+    background;
+
+  PointInfo
+    *convex_hull,
+    *coordinates,
+    **monotone_chain;
+
+  size_t
+    n;
+
+  ssize_t
+    y;
+
+  /*
+    Identify convex hull coordinates of image foreground object(s).
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  *number_coordinates=0;
+  coordinate_info=AcquireVirtualMemory(image->columns,image->rows*
+    sizeof(*coordinates));
+  monotone_chain=(PointInfo **) AcquireQuantumMemory(2*image->columns,2*
+    image->rows*sizeof(*monotone_chain));
+  if ((coordinate_info == (MemoryInfo *) NULL) ||
+      (monotone_chain == (PointInfo **) NULL))
+    {
+      if (monotone_chain != (PointInfo **) NULL)
+        monotone_chain=(PointInfo **) RelinquishMagickMemory(monotone_chain);
+      if (coordinate_info != (MemoryInfo *) NULL)
+        coordinate_info=RelinquishVirtualMemory(coordinate_info);
+      return((PointInfo *) NULL);
+    }
+  coordinates=(PointInfo *) GetVirtualMemoryBlob(coordinate_info);
+  image_view=AcquireVirtualCacheView(image,exception);
+  background=GetEdgeBackgroundColor(image,image_view,exception);
+  status=MagickTrue;
+  n=0;
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register const Quantum
+      *p;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    if (p == (const Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      PixelInfo
+        pixel;
+
+      GetPixelInfoPixel(image,p,&pixel);
+      if (IsFuzzyEquivalencePixelInfo(&pixel,&background) == MagickFalse)
+        {
+          coordinates[n].x=(double) x;
+          coordinates[n].y=(double) y;
+          n++;
+        }
+      p+=GetPixelChannels(image);
+    }
+  }
+  image_view=DestroyCacheView(image_view);
+  /*
+    Return the convex hull of the image foreground object(s).
+  */
+  ConvexHull(coordinates,n,&monotone_chain,number_coordinates);
+  convex_hull=(PointInfo *) AcquireQuantumMemory(*number_coordinates,
+    sizeof(*convex_hull));
+  if (convex_hull == (PointInfo *) NULL)
+    {
+      coordinate_info=RelinquishVirtualMemory(coordinate_info);
+      return((PointInfo *) NULL);
+    }
+  for (n=0; n < *number_coordinates; n++)
+    convex_hull[n]=(*monotone_chain[n]);
+  monotone_chain=(PointInfo **) RelinquishMagickMemory(monotone_chain);
+  coordinate_info=RelinquishVirtualMemory(coordinate_info);
+  return(convex_hull);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t I m a g e D e p t h                                                 %
 %                                                                             %
 %                                                                             %

@@ -1,5 +1,9 @@
-2020-03-07  7.0.10-1 Cristy  <quetzlzacatenango@image...>
+2020-03-14  7.0.10-1 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-1, GIT revision 17...
+
+2020-03-14  7.0.10-1 Cristy  <quetzlzacatenango@image...>
+  * Add support for returning the convex hull of an image with the
+    %[canvas-hull] property.
 
 2020-03-09  7.0.10-1 Dirk Lemstra <dirk@lem.....org>
   * Added option to specify the preferred version when writing a PDF file with

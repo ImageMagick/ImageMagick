@@ -2405,7 +2405,7 @@ MagickExport const char *GetImageProperty(const Image *image,
 %
 %  The returned string is stored in a structure somewhere, and should not be
 %  directly freed.  If the string was generated (common) the string will be
-%  stored as as either as artifact or option 'get-property'.  These may be
+%  stored as as either as artifact or option 'magick-property'.  These may be
 %  deleted (cleaned up) when no longer required, but neither artifact or
 %  option is guranteed to exist.
 %
@@ -2814,13 +2814,13 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
       */
       if (image != (Image *) NULL)
         {
-          (void) SetImageArtifact(image,"get-property",value);
-          return(GetImageArtifact(image,"get-property"));
+          (void) SetImageArtifact(image,"magick-property",value);
+          return(GetImageArtifact(image,"magick-property"));
         }
       else
         {
-          (void) SetImageOption(image_info,"get-property",value);
-          return(GetImageOption(image_info,"get-property"));
+          (void) SetImageOption(image_info,"magick-property",value);
+          return(GetImageOption(image_info,"magick-property"));
         }
     }
   return((char *) NULL);
@@ -2873,7 +2873,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
 
           WarnNoImageReturn("\"%%[%s]\"",property);
           geometry=GetImageBoundingBox(image,exception);
-          (void) FormatLocaleString(value,MagickPathExtent,"%g,%g %g,%g\n",
+          (void) FormatLocaleString(value,MagickPathExtent,"%g,%g %g,%g",
             (double) geometry.x,(double) geometry.y,
             (double) geometry.x+geometry.width,
             (double) geometry.y+geometry.height);
@@ -2922,6 +2922,37 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           WarnNoImageReturn("\"%%[%s]\"",property);
           string=CommandOptionToMnemonic(MagickCompressOptions,(ssize_t)
             image->compression);
+          break;
+        }
+      if (LocaleCompare("convex-hull",property) == 0)
+        {
+          char
+            *points;
+
+          PointInfo
+            *convex_hull;
+
+          register ssize_t
+            n;
+
+          size_t
+            number_points;
+
+          WarnNoImageReturn("\"%%[%s]\"",property);
+          convex_hull=GetImageConvexHull(image,&number_points,exception);
+          if (convex_hull == (PointInfo *) NULL)
+            break;
+          points=AcquireString("");
+          for (n=0; n < (ssize_t) number_points; n++)
+          {
+            (void) FormatLocaleString(value,MagickPathExtent,"%g,%g ",
+              convex_hull[n].x,convex_hull[n].y);
+            (void) ConcatenateString(&points,value);
+          }
+          convex_hull=(PointInfo *) RelinquishMagickMemory(convex_hull);
+          (void) SetImageArtifact(image,"convex-hull",points);
+          points=DestroyString(points);
+          string=GetImageArtifact(image,"convex-hull");
           break;
         }
       if (LocaleCompare("copyright",property) == 0)
@@ -3323,13 +3354,13 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
       */
       if (image != (Image *) NULL)
         {
-          (void) SetImageArtifact(image,"get-property",value);
-          return(GetImageArtifact(image,"get-property"));
+          (void) SetImageArtifact(image,"magick-property",value);
+          return(GetImageArtifact(image,"magick-property"));
         }
       else
         {
-          (void) SetImageOption(image_info,"get-property",value);
-          return(GetImageOption(image_info,"get-property"));
+          (void) SetImageOption(image_info,"magick-property",value);
+          return(GetImageOption(image_info,"magick-property"));
         }
     }
   return((char *) NULL);
@@ -3676,8 +3707,8 @@ RestoreMSCWarning
         if (string != (char *) NULL)
           {
             AppendString2Text(string);
-            (void) DeleteImageArtifact(property_image,"get-property");
-            (void) DeleteImageOption(property_info,"get-property");
+            (void) DeleteImageArtifact(property_image,"magick-property");
+            (void) DeleteImageOption(property_info,"magick-property");
             continue;
           }
         (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
@@ -3963,8 +3994,8 @@ RestoreMSCWarning
       if (string != (const char *) NULL)
         {
           AppendString2Text(string);
-          (void)DeleteImageArtifact(property_image,"get-property");
-          (void)DeleteImageOption(property_info,"get-property");
+          (void) DeleteImageArtifact(property_image,"magick-property");
+          (void) DeleteImageOption(property_info,"magick-property");
           continue;
         }
       if (IsGlob(pattern) != MagickFalse)

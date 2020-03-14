@@ -2718,6 +2718,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
     sigma+=0.25;
     if (preview_image == (Image *) NULL)
       break;
+    preview_image->alpha_trait=UndefinedPixelTrait;
     (void) DeleteImageProperty(preview_image,"label");
     (void) SetImageProperty(preview_image,"label",label,exception);
     AppendImageToList(&images,preview_image);
