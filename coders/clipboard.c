@@ -186,9 +186,23 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   (void) GlobalUnlock(clip_mem);
   (void) CloseClipboard();
   memset(clip_data,0,BMP_HEADER_SIZE);
-  offset=p[0]+BMP_HEADER_SIZE;
+  offset=p[0];
   if ((p[0] == 40) && (p[16] == BI_BITFIELDS))
     offset+=12;
+  else
+    {
+      unsigned int
+        image_size;
+
+      image_size=(unsigned int) p[20];
+      image_size|=(unsigned int) p[21] << 8;
+      image_size|=(unsigned int) p[22] << 16;
+      image_size|=(unsigned int) p[23] << 24;
+      /* Hack for chrome where the offset seems to be incorrect */
+      if (clip_size - offset - image_size == 12)
+        offset+=12;
+    }
+  offset+=BMP_HEADER_SIZE;
   p-=BMP_HEADER_SIZE;
   p[0]='B';
   p[1]='M';
