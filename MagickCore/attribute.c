@@ -133,7 +133,7 @@ typedef struct _EdgeInfo
     bottom;
 } EdgeInfo;
 
-static double GetEdgeBackgroundFactor(const Image *image,
+static double GetEdgeBackgroundCensus(const Image *image,
   const CacheView *image_view,const GravityType gravity,const size_t width,
   const size_t height,const ssize_t x_offset,const ssize_t y_offset,
   ExceptionInfo *exception)
@@ -145,7 +145,7 @@ static double GetEdgeBackgroundFactor(const Image *image,
     *artifact;
 
   double
-    factor;
+    census;
 
   Image
     *edge_image;
@@ -209,7 +209,7 @@ static double GetEdgeBackgroundFactor(const Image *image,
   edge_image=CropImage(image,&edge_geometry,exception);
   if (edge_image == (Image *) NULL)
     return(0.0);
-  factor=0.0;
+  census=0.0;
   edge_view=AcquireVirtualCacheView(edge_image,exception);
   for (y=0; y < (ssize_t) edge_image->rows; y++)
   {
@@ -223,24 +223,24 @@ static double GetEdgeBackgroundFactor(const Image *image,
     {
       GetPixelInfoPixel(edge_image,p,&pixel);
       if (IsFuzzyEquivalencePixelInfo(&pixel,&background) == MagickFalse)
-        factor++;
+        census++;
       p+=GetPixelChannels(edge_image);
     }
   }
-  factor/=((double) edge_image->columns*edge_image->rows);
+  census/=((double) edge_image->columns*edge_image->rows);
   edge_view=DestroyCacheView(edge_view);
   edge_image=DestroyImage(edge_image);
-  return(factor);
+  return(census);
 }
 
-static inline double GetMinEdgeBackgroundFactor(const EdgeInfo *edge)
+static inline double GetMinEdgeBackgroundCensus(const EdgeInfo *edge)
 {
   double
-    factor;
+    census;
 
-  factor=MagickMin(MagickMin(MagickMin(edge->left,edge->right),edge->top),
+  census=MagickMin(MagickMin(MagickMin(edge->left,edge->right),edge->top),
     edge->bottom);
-  return(factor);
+  return(census);
 }
 
 static RectangleInfo GetEdgeBoundingBox(const Image *image,
@@ -253,7 +253,7 @@ static RectangleInfo GetEdgeBoundingBox(const Image *image,
     *artifact;
 
   double
-    background_factor,
+    background_census,
     percent_background;
 
   EdgeInfo
@@ -278,15 +278,15 @@ static RectangleInfo GetEdgeBoundingBox(const Image *image,
   if (edge_image == (Image *) NULL)
     return(bounds);
   (void) ParseAbsoluteGeometry("0x0+0+0",&edge_image->page);
-  memset(&vertex,0,sizeof(vertex));
+  (void) memset(&vertex,0,sizeof(vertex));
   edge_view=AcquireVirtualCacheView(edge_image,exception);
-  edge.left=GetEdgeBackgroundFactor(edge_image,edge_view,WestGravity,
+  edge.left=GetEdgeBackgroundCensus(edge_image,edge_view,WestGravity,
     1,0,0,0,exception);
-  edge.right=GetEdgeBackgroundFactor(edge_image,edge_view,EastGravity,
+  edge.right=GetEdgeBackgroundCensus(edge_image,edge_view,EastGravity,
     1,0,0,0,exception);
-  edge.top=GetEdgeBackgroundFactor(edge_image,edge_view,NorthGravity,
+  edge.top=GetEdgeBackgroundCensus(edge_image,edge_view,NorthGravity,
     0,1,0,0,exception);
-  edge.bottom=GetEdgeBackgroundFactor(edge_image,edge_view,SouthGravity,
+  edge.bottom=GetEdgeBackgroundCensus(edge_image,edge_view,SouthGravity,
     0,1,0,0,exception);
   percent_background=1.0;
   artifact=GetImageArtifact(edge_image,"trim:percent-background");
@@ -294,80 +294,80 @@ static RectangleInfo GetEdgeBoundingBox(const Image *image,
     percent_background=StringToDouble(artifact,(char **) NULL)/100.0;
   percent_background=MagickMin(MagickMax(1.0-percent_background,MagickEpsilon),
     1.0);
-  background_factor=GetMinEdgeBackgroundFactor(&edge);
-  for ( ; background_factor < percent_background;
-          background_factor=GetMinEdgeBackgroundFactor(&edge))
+  background_census=GetMinEdgeBackgroundCensus(&edge);
+  for ( ; background_census < percent_background;
+          background_census=GetMinEdgeBackgroundCensus(&edge))
   {
     if ((bounds.width == 0) || (bounds.height == 0))
       break;
-    if (fabs(edge.left-background_factor) < MagickEpsilon)
+    if (fabs(edge.left-background_census) < MagickEpsilon)
       {
         /*
           Trim left edge.
         */
         vertex.left++;
         bounds.width--;
-        edge.left=GetEdgeBackgroundFactor(edge_image,edge_view,
+        edge.left=GetEdgeBackgroundCensus(edge_image,edge_view,
           NorthWestGravity,1,bounds.height,(ssize_t) vertex.left,(ssize_t)
           vertex.top,exception);
-        edge.top=GetEdgeBackgroundFactor(edge_image,edge_view,
+        edge.top=GetEdgeBackgroundCensus(edge_image,edge_view,
           NorthWestGravity,bounds.width,1,(ssize_t) vertex.left,(ssize_t)
           vertex.top,exception);
-        edge.bottom=GetEdgeBackgroundFactor(edge_image,edge_view,
+        edge.bottom=GetEdgeBackgroundCensus(edge_image,edge_view,
           SouthWestGravity,bounds.width,1,(ssize_t) vertex.left,(ssize_t)
           vertex.bottom,exception);
         continue;
       }
-    if (fabs(edge.right-background_factor) < MagickEpsilon)
+    if (fabs(edge.right-background_census) < MagickEpsilon)
       {
         /*
           Trim right edge.
         */
         vertex.right++;
         bounds.width--;
-        edge.right=GetEdgeBackgroundFactor(edge_image,edge_view,
+        edge.right=GetEdgeBackgroundCensus(edge_image,edge_view,
           NorthEastGravity,1,bounds.height,(ssize_t) vertex.right,(ssize_t)
           vertex.top,exception);
-        edge.top=GetEdgeBackgroundFactor(edge_image,edge_view,
+        edge.top=GetEdgeBackgroundCensus(edge_image,edge_view,
           NorthWestGravity,bounds.width,1,(ssize_t) vertex.left,(ssize_t)
           vertex.top,exception);
-        edge.bottom=GetEdgeBackgroundFactor(edge_image,edge_view,
+        edge.bottom=GetEdgeBackgroundCensus(edge_image,edge_view,
           SouthWestGravity,bounds.width,1,(ssize_t) vertex.left,(ssize_t)
           vertex.bottom,exception);
         continue;
       }
-    if (fabs(edge.top-background_factor) < MagickEpsilon)
+    if (fabs(edge.top-background_census) < MagickEpsilon)
       {
         /*
           Trim top edge.
         */
         vertex.top++;
         bounds.height--;
-        edge.left=GetEdgeBackgroundFactor(edge_image,edge_view,
+        edge.left=GetEdgeBackgroundCensus(edge_image,edge_view,
           NorthWestGravity,1,bounds.height,(ssize_t) vertex.left,(ssize_t)
           vertex.top,exception);
-        edge.right=GetEdgeBackgroundFactor(edge_image,edge_view,
+        edge.right=GetEdgeBackgroundCensus(edge_image,edge_view,
           NorthEastGravity,1,bounds.height,(ssize_t) vertex.right,(ssize_t)
           vertex.top,exception);
-        edge.top=GetEdgeBackgroundFactor(edge_image,edge_view,
+        edge.top=GetEdgeBackgroundCensus(edge_image,edge_view,
           NorthWestGravity,bounds.width,1,(ssize_t) vertex.left,(ssize_t)
           vertex.top,exception);
         continue;
       }
-    if (fabs(edge.bottom-background_factor) < MagickEpsilon)
+    if (fabs(edge.bottom-background_census) < MagickEpsilon)
       {
         /*
           Trim bottom edge.
         */
         vertex.bottom++;
         bounds.height--;
-        edge.left=GetEdgeBackgroundFactor(edge_image,edge_view,
+        edge.left=GetEdgeBackgroundCensus(edge_image,edge_view,
           NorthWestGravity,1,bounds.height,(ssize_t) vertex.left,(ssize_t)
           vertex.top,exception);
-        edge.right=GetEdgeBackgroundFactor(edge_image,edge_view,
+        edge.right=GetEdgeBackgroundCensus(edge_image,edge_view,
           NorthEastGravity,1,bounds.height,(ssize_t) vertex.right,(ssize_t)
           vertex.top,exception);
-        edge.bottom=GetEdgeBackgroundFactor(edge_image,edge_view,
+        edge.bottom=GetEdgeBackgroundCensus(edge_image,edge_view,
           SouthWestGravity,bounds.width,1,(ssize_t) vertex.left,(ssize_t)
           vertex.bottom,exception);
         continue;
@@ -542,15 +542,138 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 %
 */
 
-static double LexicographicalSort(PointInfo *p1,PointInfo *p2,PointInfo *p3)
+static double LexicographicalOrder(PointInfo *a,PointInfo *b,PointInfo *c)
 {
   /*
-    Sort first by x-coordinate, and in case of a tie, by y-coordinate.
+    Order by x-coordinate, and in case of a tie, by y-coordinate.
   */
-  return((p2->x-p1->x)*(p3->y-p1->y)-(p2->y-p1->y)*(p3->x-p1->x));
+  return((b->x-a->x)*(c->y-a->y)-(b->y-a->y)*(c->x-a->x));
 }
 
-void ConvexHull(PointInfo *coordinates,size_t number_coordinates,
+static PixelInfo GetEdgeBackgroundColor(const Image *image,
+  const CacheView *image_view,ExceptionInfo *exception)
+{
+  const char
+    *artifact;
+
+  double
+    census[4],
+    edge_census;
+
+  PixelInfo
+    background[4],
+    edge_background;
+
+  register ssize_t
+    i;
+
+  /*
+    Most dominant color of edges/corners is the background color of the image.
+  */
+  artifact=GetImageArtifact(image,"convex-hull:background-color");
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static)
+#endif
+  for (i=0; i < 4; i++)
+  {
+    CacheView
+      *edge_view;
+
+    GravityType
+      gravity;
+
+    Image
+      *edge_image;
+
+    PixelInfo
+      pixel;
+
+    RectangleInfo
+      edge_geometry;
+
+    register const Quantum
+      *p;
+
+    ssize_t
+      y;
+
+    census[i]=0.0;
+    (void) memset(&edge_geometry,0,sizeof(edge_geometry));
+    switch (i)
+    {
+      case 0:
+      default:
+      {
+        p=GetCacheViewVirtualPixels(image_view,0,(ssize_t) image->rows-1,1,1,
+          exception);
+        gravity=WestGravity;
+        edge_geometry.width=1;
+        edge_geometry.height=0;
+      }
+      case 1:
+      {
+        p=GetCacheViewVirtualPixels(image_view,(ssize_t) image->columns-1,0,1,1,
+          exception);
+        gravity=EastGravity;
+        edge_geometry.width=1;
+        edge_geometry.height=0;
+      }
+      case 2:
+      {
+        p=GetCacheViewVirtualPixels(image_view,0,0,1,1,exception);
+        gravity=NorthGravity;
+        edge_geometry.width=0;
+        edge_geometry.height=1;
+      }
+      case 3:
+      {
+        p=GetCacheViewVirtualPixels(image_view,(ssize_t) image->columns-1,
+          (ssize_t) image->rows-1,1,1,exception);
+        gravity=SouthGravity;
+        edge_geometry.width=0;
+        edge_geometry.height=1;
+      }
+    }
+    GetPixelInfoPixel(image,p,background+i);
+    if (artifact != (const char *) NULL)
+      (void) QueryColorCompliance(artifact,AllCompliance,background+i,
+        exception);
+    GravityAdjustGeometry(image->columns,image->rows,gravity,&edge_geometry);
+    edge_image=CropImage(image,&edge_geometry,exception);
+    if (edge_image == (Image *) NULL)
+      continue;
+    edge_view=AcquireVirtualCacheView(edge_image,exception);
+    for (y=0; y < (ssize_t) edge_image->rows; y++)
+    {
+      register ssize_t
+        x;
+
+      p=GetCacheViewVirtualPixels(edge_view,0,y,edge_image->columns,1,
+        exception);
+      if (p == (const Quantum *) NULL)
+        break;
+      for (x=0; x < (ssize_t) edge_image->columns; x++)
+      {
+        GetPixelInfoPixel(edge_image,p,&pixel);
+        if (IsFuzzyEquivalencePixelInfo(&pixel,background+i) == MagickFalse)
+          census[i]++;
+        p+=GetPixelChannels(edge_image);
+      }
+    }
+    edge_view=DestroyCacheView(edge_view);
+    edge_image=DestroyImage(edge_image);
+  }
+  edge_census=(-1.0);
+  for (i=0; i < 4; i++)
+    if (census[i] > edge_census)
+      {
+        edge_background=background[i];
+        edge_census=census[i];
+      }
+  return(edge_background);
+}
+
+void TraceConvexHull(PointInfo *coordinates,size_t number_coordinates,
   PointInfo ***monotone_chain,size_t *chain_length)
 {
   PointInfo
@@ -571,7 +694,7 @@ void ConvexHull(PointInfo *coordinates,size_t number_coordinates,
   for (i=0; i < (ssize_t) number_coordinates; i++)
   {
     while ((n >= 2) &&
-           (LexicographicalSort(chain[n-2],chain[n-1],&coordinates[i]) <= 0.0))
+           (LexicographicalOrder(chain[n-2],chain[n-1],&coordinates[i]) <= 0.0))
       n--;
     chain[n++]=(&coordinates[i]);
   }
@@ -579,154 +702,11 @@ void ConvexHull(PointInfo *coordinates,size_t number_coordinates,
   for (i=(ssize_t) number_coordinates-2; i >= 0; i--)
   {
     while ((n >= demark) &&
-           (LexicographicalSort(chain[n-2],chain[n-1],&coordinates[i]) <= 0.0))
+           (LexicographicalOrder(chain[n-2],chain[n-1],&coordinates[i]) <= 0.0))
       n--;
     chain[n++]=(&coordinates[i]);
   }
   *chain_length=n;
-}
-
-static PixelInfo GetEdgeBackgroundColor(const Image *image,
-  const CacheView *image_view,ExceptionInfo *exception)
-{
-  CacheView
-    *edge_view;
-
-  const char
-    *artifact;
-
-  double
-    edge_factor,
-    factor;
-
-  Image
-    *edge_image;
-
-  PixelInfo
-    background,
-    edge_background,
-    pixel;
-
-  RectangleInfo
-    edge_geometry;
-
-  register ssize_t
-    i;
-
-  register const Quantum
-    *p;
-
-  ssize_t
-    y;
-
-  /*
-    Identify background color from edge of image.
-  */
-  edge_factor=(-1.0);
-  GetPixelInfo(image,&edge_background);
-  for (i=0; i < 4; i++)
-  {
-    GravityType
-      gravity;
-
-    switch (i)
-    {
-      case 0:
-      default:
-      {
-        gravity=WestGravity;
-        edge_geometry.width=1;
-        edge_geometry.height=0;
-      }
-      case 1:
-      {
-        gravity=EastGravity;
-        edge_geometry.width=1;
-        edge_geometry.height=0;
-      }
-      case 2:
-      {
-        gravity=NorthGravity;
-        edge_geometry.width=0;
-        edge_geometry.height=1;
-      }
-      case 3:
-      {
-        gravity=SouthGravity;
-        edge_geometry.width=0;
-        edge_geometry.height=1;
-      }
-    }
-    edge_geometry.x=0;
-    edge_geometry.y=0;
-    switch (gravity)
-    {
-      case NorthWestGravity:
-      case NorthGravity:
-      default:
-      {
-        p=GetCacheViewVirtualPixels(image_view,0,0,1,1,exception);
-        break;
-      }
-      case NorthEastGravity:
-      case EastGravity:
-      {
-        p=GetCacheViewVirtualPixels(image_view,(ssize_t) image->columns-1,0,1,1,
-          exception);
-        break;
-      }
-      case SouthEastGravity:
-      case SouthGravity:
-      {
-        p=GetCacheViewVirtualPixels(image_view,(ssize_t) image->columns-1,
-          (ssize_t) image->rows-1,1,1,exception);
-        break;
-      }
-      case SouthWestGravity:
-      case WestGravity:
-      {
-        p=GetCacheViewVirtualPixels(image_view,0,(ssize_t) image->rows-1,1,1,
-          exception);
-        break;
-      }
-    }
-    GetPixelInfoPixel(image,p,&background);
-    artifact=GetImageArtifact(image,"convex-hull:background-color");
-    if (artifact != (const char *) NULL)
-      (void) QueryColorCompliance(artifact,AllCompliance,&background,exception);
-    GravityAdjustGeometry(image->columns,image->rows,gravity,&edge_geometry);
-    edge_image=CropImage(image,&edge_geometry,exception);
-    if (edge_image == (Image *) NULL)
-      break;
-    factor=0.0;
-    edge_view=AcquireVirtualCacheView(edge_image,exception);
-    for (y=0; y < (ssize_t) edge_image->rows; y++)
-    {
-      register ssize_t
-        x;
-
-      p=GetCacheViewVirtualPixels(edge_view,0,y,edge_image->columns,1,
-        exception);
-      if (p == (const Quantum *) NULL)
-        break;
-      for (x=0; x < (ssize_t) edge_image->columns; x++)
-      {
-        GetPixelInfoPixel(edge_image,p,&pixel);
-        if (IsFuzzyEquivalencePixelInfo(&pixel,&background) == MagickFalse)
-          factor++;
-        p+=GetPixelChannels(edge_image);
-      }
-    }
-    factor/=((double) edge_image->columns*edge_image->rows);
-    if (factor > edge_factor)
-      {
-        edge_background=background;
-        edge_factor=factor;
-      }
-    edge_view=DestroyCacheView(edge_view);
-    edge_image=DestroyImage(edge_image);
-  }
-  return(edge_background);
 }
 
 MagickExport PointInfo *GetImageConvexHull(const Image *image,
@@ -816,7 +796,7 @@ MagickExport PointInfo *GetImageConvexHull(const Image *image,
   /*
     Return the convex hull of the image foreground object(s).
   */
-  ConvexHull(coordinates,n,&monotone_chain,number_coordinates);
+  TraceConvexHull(coordinates,n,&monotone_chain,number_coordinates);
   convex_hull=(PointInfo *) AcquireQuantumMemory(*number_coordinates,
     sizeof(*convex_hull));
   if (convex_hull != (PointInfo *) NULL)
