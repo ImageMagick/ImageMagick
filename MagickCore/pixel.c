@@ -2365,6 +2365,8 @@ MagickExport MagickRealType GetPixelIntensity(
     intensity;
 
   red=(MagickRealType) GetPixelRed(image,pixel);
+  if (image->number_channels == 1)
+    return(red);
   green=(MagickRealType) GetPixelGreen(image,pixel);
   blue=(MagickRealType) GetPixelBlue(image,pixel);
   switch (image->intensity)
