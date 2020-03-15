@@ -583,7 +583,6 @@ void ConvexHull(PointInfo *coordinates,size_t number_coordinates,
       n--;
     chain[n++]=(&coordinates[i]);
   }
-  *monotone_chain=chain;
   *chain_length=n;
 }
 
