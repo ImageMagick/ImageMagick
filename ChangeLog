@@ -1,5 +1,5 @@
-2020-03-14  7.0.10-1 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-1, GIT revision 17...
+2020-03-15  7.0.10-1 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-1, GIT revision 17065:130e52e:20200315.
 
 2020-03-14  7.0.10-1 Cristy  <quetzlzacatenango@image...>
   * Add support for returning the convex hull of an image with the
