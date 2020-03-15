@@ -819,13 +819,9 @@ MagickExport PointInfo *GetImageConvexHull(const Image *image,
   ConvexHull(coordinates,n,&monotone_chain,number_coordinates);
   convex_hull=(PointInfo *) AcquireQuantumMemory(*number_coordinates,
     sizeof(*convex_hull));
-  if (convex_hull == (PointInfo *) NULL)
-    {
-      coordinate_info=RelinquishVirtualMemory(coordinate_info);
-      return((PointInfo *) NULL);
-    }
-  for (n=0; n < *number_coordinates; n++)
-    convex_hull[n]=(*monotone_chain[n]);
+  if (convex_hull != (PointInfo *) NULL)
+    for (n=0; n < *number_coordinates; n++)
+      convex_hull[n]=(*monotone_chain[n]);
   monotone_chain=(PointInfo **) RelinquishMagickMemory(monotone_chain);
   coordinate_info=RelinquishVirtualMemory(coordinate_info);
   return(convex_hull);
