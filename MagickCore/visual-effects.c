@@ -2359,6 +2359,7 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
         if ((double) image->colormap[i].blue > threshold)
           image->colormap[i].blue=QuantumRange-image->colormap[i].blue;
       }
+      return(SyncImage(image,exception));
     }
   /*
     Solarize image.
