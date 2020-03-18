@@ -3,6 +3,8 @@
 
 2020-03-16  7.0.10-2 Cristy  <quetzlzacatenango@image...>
   * Fixed another sizing issue with the label coder when pointsize is set.
+  * Respect explicit image filename modified (e.g. png24:im.png) (reference
+    https://github.com/ImageMagick/ImageMagick/issues/1835).
 
 2020-03-15  7.0.10-1 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-1, GIT revision 17065:130e52e:20200315.
