@@ -12,7 +12,7 @@
   <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert bitmap images. Resize an image, crop it, change its shades and colors, add captions, and more." />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
-  <meta name="keywords" content="resources, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
+  <meta name="keywords" content="resources, image converter, image resizer, image editor, photo editor, jpg converter, png converter, tiff converter, vector images, online, free, swiss army" />
   <meta name="rating" content="GENERAL" />
   <meta name="robots" content="INDEX, FOLLOW" />
   <meta name="generator" content="ImageMagick Studio LLC" />
@@ -27,7 +27,7 @@
   <meta property='og:image' content='../images/logo.png' />
   <meta property='og:type' content='website' />
   <meta property='og:site_name' content='ImageMagick' />
-  <meta property='og:description' content="Convert, Edit, or Compose Bitmap Images" />
+  <meta property='og:description' content="Create, Edit, Compose, or Convert Bitmap Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link href="../www/resources.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
@@ -215,7 +215,7 @@ $PREFIX/config
 $USERPROFILE/.config/ImageMagick
 &lt;<var>client path</var>&gt;</code></pre>
 
-<p>Above, $PREFIX is the default install path, typically <code>c:\\Program Files\\ImageMagick-7.0.9</code>.</p>
+<p>Above, $PREFIX is the default install path, typically <code>c:\\Program Files\\ImageMagick-7.0.10</code>.</p>
 
 <p>For an uninstalled Windows installation, the configuration load order is:</p>
 
@@ -232,31 +232,31 @@ $USERPROFILE/.config/ImageMagick
 <h5>Coders</h5>
 <p>An image coder (i.e. encoder / decoder) is responsible for registering, optionally classifying, optionally reading, optionally writing, and unregistering one image format (e.g. PNG, GIF, JPEG, etc.).  ImageMagick searches for coders in the following order and it uses the first match found:</p>
 
-<pre class="highlight"><code>$MAGICK_HOME/lib/ImageMagick-7.0.9/modules-Q16/coders
-&lt;<var>client path</var>&gt;/../lib/ImageMagick-7.0.9/modules-Q16/coders
-$MAGICK_HOME/lib/ImageMagick-7.0.9/modules-Q16/coders
-$MAGICK_HOME/share/ImageMagick-7.0.9/modules-Q16/coders
+<pre class="highlight"><code>$MAGICK_HOME/lib/ImageMagick-7.0.10/modules-Q16/coders
+&lt;<var>client path</var>&gt;/../lib/ImageMagick-7.0.10/modules-Q16/coders
+$MAGICK_HOME/lib/ImageMagick-7.0.10/modules-Q16/coders
+$MAGICK_HOME/share/ImageMagick-7.0.10/modules-Q16/coders
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
-&lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.9/modules-Q16/coders</code></pre>
+&lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.10/modules-Q16/coders</code></pre>
 
 <h5>Filters</h5>
 <p>ImageMagick provides a convenient mechanism for adding your own custom image processing algorithms.  ImageMagick searches for filters in the following order and it uses the first match found:</p>
-<pre class="highlight"><code>$MAGICK_HOME/lib/ImageMagick-7.0.9/modules-Q16/filters
-&lt;<var>client path</var>&gt;/../lib/ImageMagick-7.0.9/modules-Q16/filters
-$MAGICK_HOME/lib/ImageMagick-7.0.9/modules-Q16/filters
-$MAGICK_HOME/share/ImageMagick-7.0.9/modules-Q16/filters
+<pre class="highlight"><code>$MAGICK_HOME/lib/ImageMagick-7.0.10/modules-Q16/filters
+&lt;<var>client path</var>&gt;/../lib/ImageMagick-7.0.10/modules-Q16/filters
+$MAGICK_HOME/lib/ImageMagick-7.0.10/modules-Q16/filters
+$MAGICK_HOME/share/ImageMagick-7.0.10/modules-Q16/filters
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
-&lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.9/modules-Q16/filters</code></pre>
+&lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.10/modules-Q16/filters</code></pre>
 
 <h2><a class="anchor" id="fonts"></a>Fonts</h2>
 
 <p>ImageMagick is able to load raw TrueType and Postscript font files.  It searches for the font configuration file, <a href="resources.html#type.xml">type.xml</a>, in the following order, and loads them if found:</p>
 
 <pre class="highlight"><code>$MAGICK_CONFIGURE_PATH
-$MAGICK_HOME/etc/ImageMagick/-7.0.9
-$MAGICK_HOME/share/ImageMagick-7.0.9
+$MAGICK_HOME/etc/ImageMagick/-7.0.10
+$MAGICK_HOME/share/ImageMagick-7.0.10
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
 &lt;<var>client path</var>&gt;/etc/ImageMagick
@@ -396,7 +396,7 @@ $MAGICK_FONT_PATH</code></pre>
 
   <!-- Javascript assets -->
   <script src="assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 21st February 2020 08:42 -->
+<!-- Magick Cache 19th March 2020 17:49 -->

@@ -12,7 +12,7 @@
   <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert bitmap images. Resize an image, crop it, change its shades and colors, add captions, and more." />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
-  <meta name="keywords" content="alpha, compositing, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert" />
+  <meta name="keywords" content="alpha, compositing, image converter, image resizer, image editor, photo editor, jpg converter, png converter, tiff converter, vector images, online, free, swiss army" />
   <meta name="rating" content="GENERAL" />
   <meta name="robots" content="INDEX, FOLLOW" />
   <meta name="generator" content="ImageMagick Studio LLC" />
@@ -27,7 +27,7 @@
   <meta property='og:image' content='../images/logo.png' />
   <meta property='og:type' content='website' />
   <meta property='og:site_name' content='ImageMagick' />
-  <meta property='og:description' content="Convert, Edit, or Compose Bitmap Images" />
+  <meta property='og:description' content="Create, Edit, Compose, or Convert Bitmap Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link href="compose.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
@@ -310,7 +310,30 @@ the rest of the image outside the overlaid area.  </p>
         lighter, otherwise it is left unchanged. </td>
   </tr>
 
-  </tbody>
+  <tr>
+    <td>negate</td>
+    <td>The "opposite" of difference mode. Note that it is not difference mode inverted, because black and white return the same result, but colors between become brighter instead of darker. </td>
+  </tr>
+
+  <tr>
+    <td>reflect</td>
+    <td>This mode is useful when adding shining objects or light zones to images. The formula is similar to color dodge, but the result is not that bright in most cases. The result looks a bit like soft light. </td>
+  </tr>
+
+  <tr>
+    <td>freeze</td>
+    <td>Another variation of reflect mode (base and blend color inverted, the result inverted again). </td>
+  </tr>
+
+  <tr>
+    <td>stamp</td>
+    <td>This mode somehow is similar to average mode. It is helpful when applying relief or bump textures to images. </td>
+  </tr>
+
+  <tr>
+    <td>interpolate</td>
+    <td>This mode somehow combines multiply and screen mode (looks very similar for very dark or bright colors). </td>
+  </tr>
 </table>
 
 <p>Typically these use the default 'Over' alpha blending when transparencies
@@ -386,6 +409,16 @@ composition effects, becoming involved. </p>
     <td>Like 'Hard-Light' but using linear-dodge and linear-burn
         instead.  Increases contrast slightly with an impact on the
         foreground's tonal values.</td>
+  </tr>
+
+  <tr>
+    <td>soft-burn</td>
+    <td>A combination of color burn and inverse color dodge mode, but a lot smoother than both of them. The base image is lightened a bit, but very dark blend colors are "burned" in. </td>
+  </tr>
+
+  <tr>
+    <td>soft-dodge</td>
+    <td> Combination of color dodge and inverse color burn mode, but a lot smoother than both of them. The base image is darkened a bit, but very bright blend colors are "dodged" in. </td>
   </tr>
 
   <tr>
@@ -655,6 +688,6 @@ href="../www/command-line-options.html#list">-list compose</a>.</p>
 
   <!-- Javascript assets -->
   <script src="assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
