@@ -8,7 +8,7 @@ libname=Magick++-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@
 Name: Magick++
 Description: Magick++ - C++ API for ImageMagick (ABI @MAGICK_ABI_SUFFIX@)
 Version: @PACKAGE_VERSION@
-Requires: MagickWand
+Requires: MagickWand-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@
 Libs: -L${libdir} -l${libname}
 Libs.private: -L${libdir} -l${libname} @MATH_LIBS@
 Cflags: -I${includearchdir} -I${includedir} @MAGICK_PCFLAGS@
