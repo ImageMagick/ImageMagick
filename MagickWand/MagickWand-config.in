@@ -38,19 +38,19 @@ while test $# -gt 0; do
       echo '@PACKAGE_VERSION@ Q@QUANTUM_DEPTH@ @MAGICK_HDRI@'
       ;;
     --cflags)
-      @PKG_CONFIG@ --cflags MagickWand
+      @PKG_CONFIG@ --cflags MagickWand-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@
       ;;
     --cxxflags)
-      @PKG_CONFIG@ --cflags MagickWand
+      @PKG_CONFIG@ --cflags MagickWand-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@
       ;;
     --cppflags)
-      @PKG_CONFIG@ --cflags MagickWand
+      @PKG_CONFIG@ --cflags MagickWand-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@
       ;;
     --ldflags)
-      @PKG_CONFIG@ --libs MagickWand
+      @PKG_CONFIG@ --libs MagickWand-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@
       ;;
     --libs)
-      @PKG_CONFIG@ --libs MagickWand
+      @PKG_CONFIG@ --libs MagickWand-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@
       ;;
     *)
       echo "${usage}" 1>&2
