@@ -120,11 +120,11 @@ magick [-fuzz <var>XXX</var>%] [-define convex-hull:background-color] -format "%
 
 <p>Finally, here is an example with a non-constant, non-black background using -fuzz to determine the background color:</p>
 
-<ul><img class="img-fluid d-block" src="../images/convex-hull-barn.png" alt="[Convex Hull Barn]" width="250" height="250" name="convert-hull-barn" /></ul>
+<ul><img class="img-fluid d-block" src="../images/convex-hull-barn.jpp" alt="[Convex Hull Barn]" width="250" height="250" name="convert-hull-barn" /></ul>
 
 <ul><pre class="code">magick barn_rot20.png -fuzz 30% -set option:hull "%[convex-hull]" -fill none -stroke red -strokewidth 1 -draw "polygon %[hull]" barn_rot20_hull.png</pre></ul>
 
-<ul><img class="img-fluid d-block" src="../images/convex-hull-barn-closure.png" alt="[Convex Hull Barn Closure]" width="250" height="250" name="convert-hull" /></ul>
+<ul><img class="img-fluid d-block" src="../images/convex-hull-barn-closure.jpp" alt="[Convex Hull Barn Closure]" width="250" height="250" name="convert-hull" /></ul>
     </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
