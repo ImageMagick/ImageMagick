@@ -1017,7 +1017,7 @@ WandExport void MagickWandGenesis(void)
 %
 %  MagickWandTerminus() terminates the MagickWand environment.
 %
-%  The format of the MaickWandTerminus method is:
+%  The format of the MagickWandTerminus method is:
 %
 %      void MagickWandTerminus(void)
 %
