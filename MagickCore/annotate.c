@@ -1813,7 +1813,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   metrics->bounds.y2/=64.0;
   metrics->origin.x/=64.0;
   metrics->origin.y/=64.0;
-  metrics->width/=64.0;
+  metrics->width=ceil(metrics->width/64.0);
   /*
     Relinquish resources.
   */
