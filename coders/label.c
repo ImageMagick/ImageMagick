@@ -131,14 +131,13 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   (void) SetImageProperty(image,"label",label,exception);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   width=(size_t) floor(draw_info->pointsize*strlen(label)+0.5);
-  draw_info->text=ConstantString(label);
-  (void) ConcatenateString(&draw_info->text,":");
-  label=DestroyString(label);
   if (AcquireMagickResource(WidthResource,width) == MagickFalse)
     {
+      label=DestroyString(label);
       draw_info=DestroyDrawInfo(draw_info);
       ThrowReaderException(ImageError,"WidthOrHeightExceedsLimit");
     }
+  draw_info->text=ConstantString(label);
   (void) memset(&metrics,0,sizeof(metrics));
   status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
   if ((image->columns == 0) && (image->rows == 0))
@@ -147,7 +146,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       image->rows=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
     }
   else
-    if ((status != MagickFalse) && (strlen(draw_info->text) > 0) &&
+    if ((status != MagickFalse) && (strlen(label) > 0) &&
         (((image->columns == 0) || (image->rows == 0)) ||
          (fabs(image_info->pointsize) < MagickEpsilon)))
       {
@@ -184,6 +183,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         }
         if (status == MagickFalse)
           {
+            label=DestroyString(label);
             draw_info=DestroyDrawInfo(draw_info);
             image=DestroyImageList(image);
             return((Image *) NULL);
@@ -221,6 +221,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
             status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
           }
       }
+   label=DestroyString(label);
    if (status == MagickFalse)
      {
        draw_info=DestroyDrawInfo(draw_info);
@@ -253,7 +254,6 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   /*
     Draw label.
   */
-  draw_info->text[strlen(draw_info->text)-1]='\0';
   (void) FormatLocaleString(geometry,MagickPathExtent,"%+g%+g",
     (draw_info->direction == RightToLeftDirection ? (double) image->columns-
     metrics.bounds.x2 : 0.0),(draw_info->gravity == UndefinedGravity ?
