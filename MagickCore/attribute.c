@@ -519,7 +519,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t I m a g e C o n v e x H u l l                                       %
+%   G e t I m a g e C o n v e x H u l l                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1051,6 +1051,283 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
       depth=current_depth[i];
   current_depth=(size_t *) RelinquishMagickMemory(current_depth);
   return(depth);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I m a g e M i n i m u m B o u n d i n g B o x                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageMinimumBoundingBox() returns the points that form the minimum
+%  bounding box around the image foreground objects with the "Rotating
+%  Calipers" algorithm.
+%
+%  The format of the GetImageMinimumBoundingBox method is:
+%
+%      PointInfo *GetImageMinimumBoundingBox(const Image *image,
+%        size_t number_coordinates,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o number_coordinates: the number of coordinates in the convex hull.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+static double getAngle(const PointInfo *p,const PointInfo *q)
+{
+  /*
+    Angle in radians between vector p and q.
+  */
+  return(acos((p->x*q->x+p->y*q->y)*PerceptibleReciprocal(
+    sqrt(p->x*p->x+p->y*p->y)*sqrt(q->x*q->x+q->y*q->y))));
+}
+
+static double getDistance(const PointInfo *p,const PointInfo *q,
+  const PointInfo *v)
+{
+  double
+    gamma;
+
+  /*
+    Shortest distance between p to vector v through point q.
+  */
+  if (fabs(v->x) < MagickEpsilon)
+    return(fabs(p->x-q->x));
+  gamma=v->y*PerceptibleReciprocal(v->x);
+  return(fabs(p->y-(q->y-gamma*q->x)-gamma*p->x)*
+    PerceptibleReciprocal(sqrt(gamma*gamma+1.0)));
+}
+
+static PointInfo getIntersection(const PointInfo *a,const PointInfo *b,
+  const PointInfo *c,const PointInfo *d)
+{
+  PointInfo
+    p = { 0.0, 0.0 },
+    point = { 0.0, 0.0 },
+    q = { 0.0, 0.0 };
+
+  /*
+    Intersection: b passing through a and d passing c.
+  */
+  if ((fabs(b->x) < MagickEpsilon) && (fabs(d->x) < MagickEpsilon))
+    return(point);
+  if (fabs(b->x) >= MagickEpsilon)
+    {
+      q.x=b->y*PerceptibleReciprocal(b->x);
+      p.x=a->y-q.x*a->x;
+    }
+  if (fabs(d->x) >= MagickEpsilon)
+    {
+      q.y=d->y*PerceptibleReciprocal(d->x);
+      p.y=c->y-q.y*c->x;
+    }
+  if (fabs(b->x) < MagickEpsilon)
+    {
+      point.x=a->x;
+      point.y=q.y*a->x+p.y;
+      return(point);
+    }
+  if (fabs(d->x) <= MagickEpsilon)
+    {
+      point.x=c->x;
+      point.y=q.x*c->x+p.x;
+      return(point);
+    }
+  if (fabs(q.x-q.y) < MagickEpsilon)
+    return(point);
+  point.x=(p.y-p.x)*PerceptibleReciprocal(q.x-q.y);
+  point.y=q.x*point.x+p.x;
+  return(point);
+}
+
+static PointInfo *getModuloPoint(PointInfo *points,const ssize_t n,
+  const size_t number_points)
+{
+  return(points+(n % number_points));
+}
+
+static PointInfo rotateVector(const PointInfo *p,const double radians)
+{
+  PointInfo
+    point;
+
+  /*
+    Rotates the vector p.
+  */
+  point.x=p->x*cos(radians)-p->y*sin(radians);
+  point.y=p->x*sin(radians)+p->y*cos(radians);
+  return(point);
+}
+
+MagickExport PointInfo *GetImageMinimumBoundingBox(const Image *image,
+  size_t *number_coordinates,ExceptionInfo *exception)
+{
+  double
+    min_area = 0.0,
+    radians = 0.0;
+
+  PointInfo
+    *bounding_box,
+    caliper[4] = { { 1.0, 0.0 }, {-1.0, 0.0 }, { 0.0,-1.0 }, { 0.0, 1.0 } },
+    min_pair[4][2] = { { { 0.0, 0.0 }, { 0.0, 0.0 } },
+                       { { 0.0, 0.0 }, { 0.0, 0.0 } },
+                       { { 0.0, 0.0 }, { 0.0, 0.0 } },
+                       { { 0.0, 0.0 }, { 0.0, 0.0 } } },
+    *points;
+
+  size_t
+    hull_length;
+
+  ssize_t
+    extent[4] = { 0, 0, 0, 0 },
+    n;
+
+  /*
+    Generate the minimum bounding box with the "Rotating Calipers" algorithm.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  *number_coordinates=0;
+  points=GetImageConvexHull(image,&hull_length,exception);
+  if (points == (PointInfo *) NULL)
+    return((PointInfo *) NULL);
+  *number_coordinates=4;
+  bounding_box=(PointInfo *) AcquireQuantumMemory(*number_coordinates,
+    sizeof(*bounding_box));
+  if (bounding_box == (PointInfo *) NULL)
+    {
+      points=(PointInfo *) RelinquishMagickMemory(points);
+      return((PointInfo *) NULL);
+    }
+  for (n=1; n < (ssize_t) hull_length; n++)
+  {
+    if (points[n].y < points[extent[0]].y)
+      extent[0]=n;
+    if (points[n].y > points[extent[1]].y)
+      extent[1]=n;
+    if (points[n].x < points[extent[2]].x)
+      extent[2]=n;
+    if (points[n].x > points[extent[3]].x)
+      extent[3]=n;
+  }
+  while (radians < MagickPI)
+  {
+    double
+      angle[4],
+      area,
+      height,
+      min_angle,
+      width;
+
+    PointInfo
+      edge[4];
+
+    edge[0].x=getModuloPoint(points,extent[0]+1,hull_length)->x-
+      getModuloPoint(points,extent[0],hull_length)->x;
+    edge[0].y=getModuloPoint(points,extent[0]+1,hull_length)->y-
+      getModuloPoint(points,extent[0],hull_length)->y;
+    edge[1].x=getModuloPoint(points,extent[1]+1,hull_length)->x-
+      getModuloPoint(points,extent[1],hull_length)->x;
+    edge[1].y=getModuloPoint(points,extent[1]+1,hull_length)->y-
+      getModuloPoint(points,extent[1],hull_length)->y;
+    edge[2].x=getModuloPoint(points,extent[2]+1,hull_length)->x-
+      getModuloPoint(points,extent[2],hull_length)->x;
+    edge[2].y=getModuloPoint(points,extent[2]+1,hull_length)->y-
+      getModuloPoint(points,extent[2],hull_length)->y;
+    edge[3].x=getModuloPoint(points,extent[3]+1,hull_length)->x-
+      getModuloPoint(points,extent[3],hull_length)->x;
+    edge[3].y=getModuloPoint(points,extent[3]+1,hull_length)->y-
+      getModuloPoint(points,extent[3],hull_length)->y;
+    angle[0]=getAngle(&edge[0],&caliper[0]);
+    angle[1]=getAngle(&edge[1],&caliper[1]);
+    angle[2]=getAngle(&edge[2],&caliper[2]);
+    angle[3]=getAngle(&edge[3],&caliper[3]);
+    area=0.0;
+    min_angle=(double) ((float) MagickMin(MagickMin(MagickMin(angle[0],
+      angle[1]),angle[2]),angle[3]));
+    caliper[0]=rotateVector(&caliper[0],min_angle);
+    caliper[1]=rotateVector(&caliper[1],min_angle);
+    caliper[2]=rotateVector(&caliper[2],min_angle);
+    caliper[3]=rotateVector(&caliper[3],min_angle);
+    if (angle[0] == min_angle)
+      {
+        width=getDistance(getModuloPoint(points,extent[1],hull_length),
+          getModuloPoint(points,extent[0],hull_length),&caliper[0]);
+        height=getDistance(getModuloPoint(points,extent[3],hull_length),
+          getModuloPoint(points,extent[2],hull_length),&caliper[2]);
+      }
+    else
+      if (angle[1] == min_angle)
+        {
+          width=getDistance(getModuloPoint(points,extent[0],hull_length),
+            getModuloPoint(points,extent[1],hull_length),&caliper[1]);
+          height=getDistance(getModuloPoint(points,extent[3],hull_length),
+            getModuloPoint(points,extent[2],hull_length),&caliper[2]);
+        }
+      else
+        if (angle[2] == min_angle)
+          {
+            width=getDistance(getModuloPoint(points,extent[1],hull_length),
+              getModuloPoint(points,extent[0],hull_length),&caliper[0]);
+            height=getDistance(getModuloPoint(points,extent[3],hull_length),
+              getModuloPoint(points,extent[2],hull_length),&caliper[2]);
+          }
+        else
+          {
+            width=getDistance(getModuloPoint(points,extent[1],hull_length),
+              getModuloPoint(points,extent[0],hull_length),&caliper[0]);
+            height=getDistance(getModuloPoint(points,extent[2],hull_length),
+              getModuloPoint(points,extent[3],hull_length),&caliper[3]);
+          }
+    radians+=min_angle;
+    area=width*height;
+    if ((fabs(min_area) < MagickEpsilon) || (area < min_area))
+      {
+        min_pair[0][0]=(*getModuloPoint(points,extent[0],hull_length));
+        min_pair[0][1]=caliper[0];
+        min_pair[1][0]=(*getModuloPoint(points,extent[1],hull_length));
+        min_pair[1][1]=caliper[1];
+        min_pair[2][0]=(*getModuloPoint(points,extent[2],hull_length));
+        min_pair[2][1]=caliper[2];
+        min_pair[3][0]=(*getModuloPoint(points,extent[3],hull_length));
+        min_pair[3][1]=caliper[3];
+        min_area=area;
+      }
+    if (fabs(angle[0]-min_angle) < MagickEpsilon)
+      extent[0]++;
+    else
+      if (fabs(angle[1]-min_angle) < MagickEpsilon)
+			  extent[1]++;
+      else
+        if (fabs(angle[2]-min_angle) < MagickEpsilon)
+          extent[2]++;
+        else
+          extent[3]++;
+    if (IsNaN(radians) != MagickFalse)
+      break;
+  }
+  bounding_box[0]=getIntersection(min_pair[0]+0,min_pair[0]+1,min_pair[3]+0,
+    min_pair[3]+1);
+  bounding_box[1]=getIntersection(min_pair[3]+0,min_pair[3]+1,min_pair[1]+0,
+    min_pair[1]+1);
+  bounding_box[2]=getIntersection(min_pair[1]+0,min_pair[1]+1,min_pair[2]+0,
+    min_pair[2]+1);
+  bounding_box[3]=getIntersection(min_pair[2]+0,min_pair[2]+1,min_pair[0]+0,
+    min_pair[0]+1);
+  points=(PointInfo *) RelinquishMagickMemory(points);
+  return(bounding_box);
 }
 
 /*

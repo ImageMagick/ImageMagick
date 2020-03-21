@@ -3105,6 +3105,38 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             GetMagickPrecision(),minimum);
           break;
         }
+      if (LocaleCompare("minimum-bounding-box",property) == 0)
+        {
+          char
+            *points;
+
+          PointInfo
+            *bounding_box;
+
+          register ssize_t
+            n;
+
+          size_t
+            number_points;
+
+          WarnNoImageReturn("\"%%[%s]\"",property);
+          bounding_box=GetImageMinimumBoundingBox(image,&number_points,
+            exception);
+          if (bounding_box == (PointInfo *) NULL)
+            break;
+          points=AcquireString("");
+          for (n=0; n < (ssize_t) number_points; n++)
+          {
+            (void) FormatLocaleString(value,MagickPathExtent,"%g,%g ",
+              bounding_box[n].x,bounding_box[n].y);
+            (void) ConcatenateString(&points,value);
+          }
+          bounding_box=(PointInfo *) RelinquishMagickMemory(bounding_box);
+          (void) SetImageArtifact(image,"minimum-bounding-box",points);
+          points=DestroyString(points);
+          string=GetImageArtifact(image,"minimum-bounding-box");
+          break;
+        }
       break;
     }
     case 'o':
