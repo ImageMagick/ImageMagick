@@ -40,7 +40,7 @@ extern MagickExport MagickBooleanType
 
 extern MagickExport PointInfo
   *GetImageConvexHull(const Image *,size_t *,ExceptionInfo *),
-  *GetImageMinimumBoundingBox(const Image *,size_t *,ExceptionInfo *);
+  *GetImageMinimumBoundingBox(Image *,size_t *,ExceptionInfo *);
 
 extern MagickExport RectangleInfo
   GetImageBoundingBox(const Image *,ExceptionInfo *);

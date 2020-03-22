@@ -1066,11 +1066,13 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
 %
 %  GetImageMinimumBoundingBox() returns the points that form the minimum
 %  bounding box around the image foreground objects with the "Rotating
-%  Calipers" algorithm.
+%  Calipers" algorithm.  The method also returns these properties:
+%  minimum-bounding-box:area, minimum-bounding-box:width,
+%  minimum-bounding-box:height, and minimum-bounding-box:angle.
 %
 %  The format of the GetImageMinimumBoundingBox method is:
 %
-%      PointInfo *GetImageMinimumBoundingBox(const Image *image,
+%      PointInfo *GetImageMinimumBoundingBox(Image *image,
 %        size_t number_coordinates,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1169,11 +1171,16 @@ static PointInfo rotateVector(const PointInfo *p,const double radians)
   return(point);
 }
 
-MagickExport PointInfo *GetImageMinimumBoundingBox(const Image *image,
+MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
   size_t *number_coordinates,ExceptionInfo *exception)
 {
+  char
+    property[MagickPathExtent];
+
   double
     min_area = 0.0,
+    min_height = 0.0,
+    min_width = 0.0,
     radians = 0.0;
 
   PointInfo
@@ -1304,6 +1311,8 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(const Image *image,
         min_pair[3][0]=(*getModuloPoint(points,extent[3],hull_length));
         min_pair[3][1]=caliper[3];
         min_area=area;
+        min_width=width;
+        min_height=height;
       }
     if (fabs(angle[0]-min_angle) < MagickEpsilon)
       extent[0]++;
@@ -1326,6 +1335,18 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(const Image *image,
     min_pair[2]+1);
   bounding_box[3]=getIntersection(min_pair[2]+0,min_pair[2]+1,min_pair[0]+0,
     min_pair[0]+1);
+  (void) FormatLocaleString(property,MagickPathExtent,"%g",min_area);
+  (void) SetImageProperty(image,"minimum-bounding-box:area",property,exception);
+  (void) FormatLocaleString(property,MagickPathExtent,"%g",min_width);
+  (void) SetImageProperty(image,"minimum-bounding-box:width",property,
+    exception);
+  (void) FormatLocaleString(property,MagickPathExtent,"%g",min_height);
+  (void) SetImageProperty(image,"minimum-bounding-box:height",property,
+    exception);
+  (void) FormatLocaleString(property,MagickPathExtent,"%g",
+    RadiansToDegrees(radians));
+  (void) SetImageProperty(image,"minimum-bounding-box:angle",property,
+    exception);
   points=(PointInfo *) RelinquishMagickMemory(points);
   return(bounding_box);
 }
