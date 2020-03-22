@@ -1276,6 +1276,55 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         (void) fputc('\n',file);
       (void) FormatLocaleFile(file,"%s\n",value);
     }
+  {
+    char
+      *points,
+      value[MagickPathExtent];
+
+    PointInfo
+      *bounding_box,
+      *convex_hull;
+
+    register ssize_t
+      n;
+
+    size_t
+      number_points;
+
+    /*
+      Display convex hull & minimum bounding box.
+    */
+    convex_hull=GetImageConvexHull(image,&number_points,exception);
+    if (convex_hull != (PointInfo *) NULL)
+      {
+        points=AcquireString("");
+        for (n=0; n < (ssize_t) number_points; n++)
+        {
+          (void) FormatLocaleString(value,MagickPathExtent,"%g,%g ",
+            convex_hull[n].x,convex_hull[n].y);
+          (void) ConcatenateString(&points,value);
+        }
+        convex_hull=(PointInfo *) RelinquishMagickMemory(convex_hull);
+        (void) FormatLocaleFile(file,"  Convex hull: ");
+        (void) FormatLocaleFile(file,"%s\n",points);
+        points=DestroyString(points);
+      }
+    bounding_box=GetImageMinimumBoundingBox(image,&number_points,exception);
+    if (bounding_box != (PointInfo *) NULL)
+      {
+        points=AcquireString("");
+        for (n=0; n < (ssize_t) number_points; n++)
+        {
+          (void) FormatLocaleString(value,MagickPathExtent,"%g,%g ",
+            bounding_box[n].x,bounding_box[n].y);
+          (void) ConcatenateString(&points,value);
+        }
+        bounding_box=(PointInfo *) RelinquishMagickMemory(bounding_box);
+        (void) FormatLocaleFile(file,"  Minimum bounding box: ");
+        (void) FormatLocaleFile(file,"%s\n",points);
+        points=DestroyString(points);
+      }
+  }
   ResetImageProfileIterator(image);
   name=GetNextImageProfile(image);
   if (name != (char *) NULL)

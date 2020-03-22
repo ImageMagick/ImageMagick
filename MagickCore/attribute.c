@@ -1087,11 +1087,19 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
 
 static double getAngle(const PointInfo *p,const PointInfo *q)
 {
+  double
+    gamma;
+
   /*
     Angle in radians between vector p and q.
   */
-  return(acos((p->x*q->x+p->y*q->y)*PerceptibleReciprocal(
-    sqrt(p->x*p->x+p->y*p->y)*sqrt(q->x*q->x+q->y*q->y))));
+  gamma=(p->x*q->x+p->y*q->y)*PerceptibleReciprocal(
+    sqrt(p->x*p->x+p->y*p->y)*sqrt(q->x*q->x+q->y*q->y));
+  if (gamma < -1.0)
+    gamma=(-1.0);
+  if (gamma > 1.0)
+    gamma=1.0;
+  return(acos(gamma));
 }
 
 static double getDistance(const PointInfo *p,const PointInfo *q,
@@ -1262,8 +1270,8 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
     angle[2]=getAngle(&edge[2],&caliper[2]);
     angle[3]=getAngle(&edge[3],&caliper[3]);
     area=0.0;
-    min_angle=(double) ((float) MagickMin(MagickMin(MagickMin(angle[0],
-      angle[1]),angle[2]),angle[3]));
+    min_angle=(double) MagickMin(MagickMin(MagickMin(angle[0],
+      angle[1]),angle[2]),angle[3]);
     caliper[0]=rotateVector(&caliper[0],min_angle);
     caliper[1]=rotateVector(&caliper[1],min_angle);
     caliper[2]=rotateVector(&caliper[2],min_angle);
@@ -1324,8 +1332,6 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
           extent[2]++;
         else
           extent[3]++;
-    if (IsNaN(radians) != MagickFalse)
-      break;
   }
   bounding_box[0]=getIntersection(min_pair[0]+0,min_pair[0]+1,min_pair[3]+0,
     min_pair[3]+1);
