@@ -1191,9 +1191,9 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
     *bounding_box,
     caliper[4] = { { 1.0, 0.0 }, {-1.0, 0.0 }, { 0.0,-1.0 }, { 0.0, 1.0 } },
     support[4][2] = { { { 0.0, 0.0 }, { 0.0, 0.0 } },
-                      { { 0.0, 0.0 }, { 0.0, 0.0 } },
-                      { { 0.0, 0.0 }, { 0.0, 0.0 } },
-                      { { 0.0, 0.0 }, { 0.0, 0.0 } } },
+                       { { 0.0, 0.0 }, { 0.0, 0.0 } },
+                       { { 0.0, 0.0 }, { 0.0, 0.0 } },
+                       { { 0.0, 0.0 }, { 0.0, 0.0 } } },
     *vertices;
 
   size_t
@@ -1334,14 +1334,14 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
         else
           corner[3]++;
   }
-  bounding_box[0]=getIntersection(support[0]+0,support[0]+1,support[3]+0,
-    support[3]+1);
-  bounding_box[1]=getIntersection(support[3]+0,support[3]+1,support[1]+0,
-    support[1]+1);
-  bounding_box[2]=getIntersection(support[1]+0,support[1]+1,support[2]+0,
-    support[2]+1);
-  bounding_box[3]=getIntersection(support[2]+0,support[2]+1,support[0]+0,
-    support[0]+1);
+  bounding_box[0]=getIntersection(&support[0][0],&support[0][1],&support[3][0],
+    &support[3][1]);
+  bounding_box[1]=getIntersection(&support[3][0],&support[3][1],&support[1][0],
+    &support[1][1]);
+  bounding_box[2]=getIntersection(&support[1][0],&support[1][1],&support[2][0],
+    &support[2][1]);
+  bounding_box[3]=getIntersection(&support[2][0],&support[2][1],&support[0][0],
+    &support[0][1]);
   (void) FormatLocaleString(property,MagickPathExtent,"%g",min_area);
   (void) SetImageProperty(image,"minimum-bounding-box:area",property,exception);
   (void) FormatLocaleString(property,MagickPathExtent,"%g",min_width);
