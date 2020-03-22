@@ -1118,42 +1118,42 @@ static PointInfo getIntersection(const PointInfo *a,const PointInfo *b,
   const PointInfo *c,const PointInfo *d)
 {
   PointInfo
+    m = { 0.0, 0.0 },
     p = { 0.0, 0.0 },
-    point = { 0.0, 0.0 },
-    q = { 0.0, 0.0 };
+    vertex = { 0.0, 0.0 };
 
   /*
     Intersection: b passing through a and d passing c.
   */
   if ((fabs(b->x) < MagickEpsilon) && (fabs(d->x) < MagickEpsilon))
-    return(point);
+    return(vertex);
   if (fabs(b->x) >= MagickEpsilon)
     {
-      q.x=b->y*PerceptibleReciprocal(b->x);
-      p.x=a->y-q.x*a->x;
+      m.x=b->y*PerceptibleReciprocal(b->x);
+      p.x=a->y-m.x*a->x;
     }
   if (fabs(d->x) >= MagickEpsilon)
     {
-      q.y=d->y*PerceptibleReciprocal(d->x);
-      p.y=c->y-q.y*c->x;
+      m.y=d->y*PerceptibleReciprocal(d->x);
+      p.y=c->y-m.y*c->x;
     }
   if (fabs(b->x) < MagickEpsilon)
     {
-      point.x=a->x;
-      point.y=q.y*a->x+p.y;
-      return(point);
+      vertex.x=a->x;
+      vertex.y=m.y*a->x+p.y;
+      return(vertex);
     }
-  if (fabs(d->x) <= MagickEpsilon)
+  if (fabs(d->x) < MagickEpsilon)
     {
-      point.x=c->x;
-      point.y=q.x*c->x+p.x;
-      return(point);
+      vertex.x=c->x;
+      vertex.y=m.x*c->x+p.x;
+      return(vertex);
     }
-  if (fabs(q.x-q.y) < MagickEpsilon)
-    return(point);
-  point.x=(p.y-p.x)*PerceptibleReciprocal(q.x-q.y);
-  point.y=q.x*point.x+p.x;
-  return(point);
+  if (fabs(m.x-m.y) < MagickEpsilon)
+    return(vertex);
+  vertex.x=(p.y-p.x)*PerceptibleReciprocal(m.x-m.y);
+  vertex.y=m.x*vertex.x+p.x;
+  return(vertex);
 }
 
 static PointInfo *getVertex(PointInfo *vertices,const ssize_t n,
@@ -1165,14 +1165,14 @@ static PointInfo *getVertex(PointInfo *vertices,const ssize_t n,
 static PointInfo rotateVector(const PointInfo *p,const double radians)
 {
   PointInfo
-    point;
+    vector;
 
   /*
     Rotates the vector p.
   */
-  point.x=p->x*cos(radians)-p->y*sin(radians);
-  point.y=p->x*sin(radians)+p->y*cos(radians);
-  return(point);
+  vector.x=p->x*cos(radians)-p->y*sin(radians);
+  vector.y=p->x*sin(radians)+p->y*cos(radians);
+  return(vector);
 }
 
 MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
