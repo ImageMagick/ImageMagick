@@ -7,6 +7,7 @@
     https://github.com/ImageMagick/ImageMagick/issues/1835).
   * Add support for returning the minimum bounding box of an image with the
     %[minimum-bounding-box] property.
+  * Stroked dash array render properly again.
 
 2020-03-15  7.0.10-1 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-1, GIT revision 17065:130e52e:20200315.
