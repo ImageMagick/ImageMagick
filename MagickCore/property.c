@@ -2950,9 +2950,9 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             (void) ConcatenateString(&points,value);
           }
           convex_hull=(PointInfo *) RelinquishMagickMemory(convex_hull);
-          (void) SetImageArtifact(image,"convex-hull",points);
+          (void) SetImageProperty(image,"convex-hull",points,exception);
           points=DestroyString(points);
-          string=GetImageArtifact(image,"convex-hull");
+          string=GetImageProperty(image,"convex-hull",exception);
           break;
         }
       if (LocaleCompare("copyright",property) == 0)
@@ -3105,7 +3105,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             GetMagickPrecision(),minimum);
           break;
         }
-      if (LocaleCompare("minimum-bounding-box",property) == 0)
+      if (LocaleNCompare("minimum-bounding-box",property,20) == 0)
         {
           char
             *points;
@@ -3132,9 +3132,10 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             (void) ConcatenateString(&points,value);
           }
           bounding_box=(PointInfo *) RelinquishMagickMemory(bounding_box);
-          (void) SetImageArtifact(image,"minimum-bounding-box",points);
+          (void) SetImageProperty(image,"minimum-bounding-box",points,
+            exception);
           points=DestroyString(points);
-          string=GetImageArtifact(image,"minimum-bounding-box");
+          string=GetImageProperty(image,property,exception);
           break;
         }
       break;

@@ -530,13 +530,13 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 %  The format of the GetImageConvexHull method is:
 %
 %      PointInfo *GetImageConvexHull(const Image *image,
-%        size_t number_coordinates,ExceptionInfo *exception)
+%        size_t number_vertices,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o number_coordinates: the number of coordinates in the convex hull.
+%    o number_vertices: the number of vertices in the convex hull.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -673,7 +673,7 @@ static PixelInfo GetEdgeBackgroundColor(const Image *image,
   return(edge_background);
 }
 
-void TraceConvexHull(PointInfo *coordinates,size_t number_coordinates,
+void TraceConvexHull(PointInfo *vertices,size_t number_vertices,
   PointInfo ***monotone_chain,size_t *chain_length)
 {
   PointInfo
@@ -691,26 +691,26 @@ void TraceConvexHull(PointInfo *coordinates,size_t number_coordinates,
   */
   chain=(*monotone_chain);
   n=0;
-  for (i=0; i < (ssize_t) number_coordinates; i++)
+  for (i=0; i < (ssize_t) number_vertices; i++)
   {
     while ((n >= 2) &&
-           (LexicographicalOrder(chain[n-2],chain[n-1],&coordinates[i]) <= 0.0))
+           (LexicographicalOrder(chain[n-2],chain[n-1],&vertices[i]) <= 0.0))
       n--;
-    chain[n++]=(&coordinates[i]);
+    chain[n++]=(&vertices[i]);
   }
   demark=n+1;
-  for (i=(ssize_t) number_coordinates-2; i >= 0; i--)
+  for (i=(ssize_t) number_vertices-2; i >= 0; i--)
   {
     while ((n >= demark) &&
-           (LexicographicalOrder(chain[n-2],chain[n-1],&coordinates[i]) <= 0.0))
+           (LexicographicalOrder(chain[n-2],chain[n-1],&vertices[i]) <= 0.0))
       n--;
-    chain[n++]=(&coordinates[i]);
+    chain[n++]=(&vertices[i]);
   }
   *chain_length=n;
 }
 
 MagickExport PointInfo *GetImageConvexHull(const Image *image,
-  size_t *number_coordinates,ExceptionInfo *exception)
+  size_t *number_vertices,ExceptionInfo *exception)
 {
   CacheView
     *image_view;
@@ -719,15 +719,15 @@ MagickExport PointInfo *GetImageConvexHull(const Image *image,
     status;
 
   MemoryInfo
-    *coordinate_info;
+    *vertices_info;
 
   PixelInfo
     background;
 
   PointInfo
     *convex_hull,
-    *coordinates,
-    **monotone_chain;
+    **monotone_chain,
+    *vertices;
 
   size_t
     n;
@@ -736,27 +736,27 @@ MagickExport PointInfo *GetImageConvexHull(const Image *image,
     y;
 
   /*
-    Identify convex hull coordinates of image foreground object(s).
+    Identify convex hull vertices of image foreground object(s).
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  *number_coordinates=0;
-  coordinate_info=AcquireVirtualMemory(image->columns,image->rows*
-    sizeof(*coordinates));
+  *number_vertices=0;
+  vertices_info=AcquireVirtualMemory(image->columns,image->rows*
+    sizeof(*vertices));
   monotone_chain=(PointInfo **) AcquireQuantumMemory(2*image->columns,2*
     image->rows*sizeof(*monotone_chain));
-  if ((coordinate_info == (MemoryInfo *) NULL) ||
+  if ((vertices_info == (MemoryInfo *) NULL) ||
       (monotone_chain == (PointInfo **) NULL))
     {
       if (monotone_chain != (PointInfo **) NULL)
         monotone_chain=(PointInfo **) RelinquishMagickMemory(monotone_chain);
-      if (coordinate_info != (MemoryInfo *) NULL)
-        coordinate_info=RelinquishVirtualMemory(coordinate_info);
+      if (vertices_info != (MemoryInfo *) NULL)
+        vertices_info=RelinquishVirtualMemory(vertices_info);
       return((PointInfo *) NULL);
     }
-  coordinates=(PointInfo *) GetVirtualMemoryBlob(coordinate_info);
+  vertices=(PointInfo *) GetVirtualMemoryBlob(vertices_info);
   image_view=AcquireVirtualCacheView(image,exception);
   background=GetEdgeBackgroundColor(image,image_view,exception);
   status=MagickTrue;
@@ -785,8 +785,8 @@ MagickExport PointInfo *GetImageConvexHull(const Image *image,
       GetPixelInfoPixel(image,p,&pixel);
       if (IsFuzzyEquivalencePixelInfo(&pixel,&background) == MagickFalse)
         {
-          coordinates[n].x=(double) x;
-          coordinates[n].y=(double) y;
+          vertices[n].x=(double) x;
+          vertices[n].y=(double) y;
           n++;
         }
       p+=GetPixelChannels(image);
@@ -796,14 +796,14 @@ MagickExport PointInfo *GetImageConvexHull(const Image *image,
   /*
     Return the convex hull of the image foreground object(s).
   */
-  TraceConvexHull(coordinates,n,&monotone_chain,number_coordinates);
-  convex_hull=(PointInfo *) AcquireQuantumMemory(*number_coordinates,
+  TraceConvexHull(vertices,n,&monotone_chain,number_vertices);
+  convex_hull=(PointInfo *) AcquireQuantumMemory(*number_vertices,
     sizeof(*convex_hull));
   if (convex_hull != (PointInfo *) NULL)
-    for (n=0; n < *number_coordinates; n++)
+    for (n=0; n < *number_vertices; n++)
       convex_hull[n]=(*monotone_chain[n]);
   monotone_chain=(PointInfo **) RelinquishMagickMemory(monotone_chain);
-  coordinate_info=RelinquishVirtualMemory(coordinate_info);
+  vertices_info=RelinquishVirtualMemory(vertices_info);
   return(convex_hull);
 }
 
@@ -1073,13 +1073,13 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
 %  The format of the GetImageMinimumBoundingBox method is:
 %
 %      PointInfo *GetImageMinimumBoundingBox(Image *image,
-%        size_t number_coordinates,ExceptionInfo *exception)
+%        size_t number_vertices,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o number_coordinates: the number of coordinates in the convex hull.
+%    o number_vertices: the number of vertices in the bounding box.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -1095,11 +1095,6 @@ static double getAngle(const PointInfo *p,const PointInfo *q)
   */
   gamma=(p->x*q->x+p->y*q->y)*PerceptibleReciprocal(
     sqrt(p->x*p->x+p->y*p->y)*sqrt(q->x*q->x+q->y*q->y));
-  if (gamma < -1.0)
-    gamma=(-1.0);
-  else
-    if (gamma > 1.0)
-      gamma=1.0;
   return(acos(gamma));
 }
 
@@ -1161,10 +1156,10 @@ static PointInfo getIntersection(const PointInfo *a,const PointInfo *b,
   return(point);
 }
 
-static PointInfo *getModuloPoint(PointInfo *points,const ssize_t n,
-  const size_t number_points)
+static PointInfo *getVertex(PointInfo *vertices,const ssize_t n,
+  const size_t number_vertices)
 {
-  return(points+(n % number_points));
+  return(vertices+(n % number_vertices));
 }
 
 static PointInfo rotateVector(const PointInfo *p,const double radians)
@@ -1181,7 +1176,7 @@ static PointInfo rotateVector(const PointInfo *p,const double radians)
 }
 
 MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
-  size_t *number_coordinates,ExceptionInfo *exception)
+  size_t *number_vertices,ExceptionInfo *exception)
 {
   char
     property[MagickPathExtent];
@@ -1195,17 +1190,17 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
   PointInfo
     *bounding_box,
     caliper[4] = { { 1.0, 0.0 }, {-1.0, 0.0 }, { 0.0,-1.0 }, { 0.0, 1.0 } },
-    min_pair[4][2] = { { { 0.0, 0.0 }, { 0.0, 0.0 } },
+    support[4][2] = { { { 0.0, 0.0 }, { 0.0, 0.0 } },
                        { { 0.0, 0.0 }, { 0.0, 0.0 } },
                        { { 0.0, 0.0 }, { 0.0, 0.0 } },
                        { { 0.0, 0.0 }, { 0.0, 0.0 } } },
-    *points;
+    *vertices;
 
   size_t
-    hull_length;
+    hull_vertices;
 
   ssize_t
-    extent[4] = { 0, 0, 0, 0 },
+    corner[4] = { 0, 0, 0, 0 },
     n;
 
   /*
@@ -1215,28 +1210,28 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  *number_coordinates=0;
-  points=GetImageConvexHull(image,&hull_length,exception);
-  if (points == (PointInfo *) NULL)
+  *number_vertices=0;
+  vertices=GetImageConvexHull(image,&hull_vertices,exception);
+  if (vertices == (PointInfo *) NULL)
     return((PointInfo *) NULL);
-  *number_coordinates=4;
-  bounding_box=(PointInfo *) AcquireQuantumMemory(*number_coordinates,
+  *number_vertices=4;
+  bounding_box=(PointInfo *) AcquireQuantumMemory(*number_vertices,
     sizeof(*bounding_box));
   if (bounding_box == (PointInfo *) NULL)
     {
-      points=(PointInfo *) RelinquishMagickMemory(points);
+      vertices=(PointInfo *) RelinquishMagickMemory(vertices);
       return((PointInfo *) NULL);
     }
-  for (n=1; n < (ssize_t) hull_length; n++)
+  for (n=1; n < (ssize_t) hull_vertices; n++)
   {
-    if (points[n].y < points[extent[0]].y)
-      extent[0]=n;
-    if (points[n].y > points[extent[1]].y)
-      extent[1]=n;
-    if (points[n].x < points[extent[2]].x)
-      extent[2]=n;
-    if (points[n].x > points[extent[3]].x)
-      extent[3]=n;
+    if (vertices[n].y < vertices[corner[0]].y)
+      corner[0]=n;
+    if (vertices[n].y > vertices[corner[1]].y)
+      corner[1]=n;
+    if (vertices[n].x < vertices[corner[2]].x)
+      corner[2]=n;
+    if (vertices[n].x > vertices[corner[3]].x)
+      corner[3]=n;
   }
   while (radians < MagickPI)
   {
@@ -1250,98 +1245,103 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
     PointInfo
       edge[4];
 
-    edge[0].x=getModuloPoint(points,extent[0]+1,hull_length)->x-
-      getModuloPoint(points,extent[0],hull_length)->x;
-    edge[0].y=getModuloPoint(points,extent[0]+1,hull_length)->y-
-      getModuloPoint(points,extent[0],hull_length)->y;
-    edge[1].x=getModuloPoint(points,extent[1]+1,hull_length)->x-
-      getModuloPoint(points,extent[1],hull_length)->x;
-    edge[1].y=getModuloPoint(points,extent[1]+1,hull_length)->y-
-      getModuloPoint(points,extent[1],hull_length)->y;
-    edge[2].x=getModuloPoint(points,extent[2]+1,hull_length)->x-
-      getModuloPoint(points,extent[2],hull_length)->x;
-    edge[2].y=getModuloPoint(points,extent[2]+1,hull_length)->y-
-      getModuloPoint(points,extent[2],hull_length)->y;
-    edge[3].x=getModuloPoint(points,extent[3]+1,hull_length)->x-
-      getModuloPoint(points,extent[3],hull_length)->x;
-    edge[3].y=getModuloPoint(points,extent[3]+1,hull_length)->y-
-      getModuloPoint(points,extent[3],hull_length)->y;
+    edge[0].x=getVertex(vertices,corner[0]+1,hull_vertices)->x-
+      getVertex(vertices,corner[0],hull_vertices)->x;
+    edge[0].y=getVertex(vertices,corner[0]+1,hull_vertices)->y-
+      getVertex(vertices,corner[0],hull_vertices)->y;
+    edge[1].x=getVertex(vertices,corner[1]+1,hull_vertices)->x-
+      getVertex(vertices,corner[1],hull_vertices)->x;
+    edge[1].y=getVertex(vertices,corner[1]+1,hull_vertices)->y-
+      getVertex(vertices,corner[1],hull_vertices)->y;
+    edge[2].x=getVertex(vertices,corner[2]+1,hull_vertices)->x-
+      getVertex(vertices,corner[2],hull_vertices)->x;
+    edge[2].y=getVertex(vertices,corner[2]+1,hull_vertices)->y-
+      getVertex(vertices,corner[2],hull_vertices)->y;
+    edge[3].x=getVertex(vertices,corner[3]+1,hull_vertices)->x-
+      getVertex(vertices,corner[3],hull_vertices)->x;
+    edge[3].y=getVertex(vertices,corner[3]+1,hull_vertices)->y-
+      getVertex(vertices,corner[3],hull_vertices)->y;
     angle[0]=getAngle(&edge[0],&caliper[0]);
     angle[1]=getAngle(&edge[1],&caliper[1]);
     angle[2]=getAngle(&edge[2],&caliper[2]);
     angle[3]=getAngle(&edge[3],&caliper[3]);
+    if ((IsNaN(angle[0]) != MagickFalse) ||
+        (IsNaN(angle[1]) != MagickFalse) ||
+        (IsNaN(angle[2]) != MagickFalse) ||
+        (IsNaN(angle[3]) != MagickFalse))
+      break;
     area=0.0;
-    min_angle=(double) MagickMin(MagickMin(MagickMin(angle[0],
-      angle[1]),angle[2]),angle[3]);
+    min_angle=MagickMin(MagickMin(MagickMin(angle[0],angle[1]),angle[2]),
+      angle[3]);
     caliper[0]=rotateVector(&caliper[0],min_angle);
     caliper[1]=rotateVector(&caliper[1],min_angle);
     caliper[2]=rotateVector(&caliper[2],min_angle);
     caliper[3]=rotateVector(&caliper[3],min_angle);
     if (angle[0] == min_angle)
       {
-        width=getDistance(getModuloPoint(points,extent[1],hull_length),
-          getModuloPoint(points,extent[0],hull_length),&caliper[0]);
-        height=getDistance(getModuloPoint(points,extent[3],hull_length),
-          getModuloPoint(points,extent[2],hull_length),&caliper[2]);
+        width=getDistance(getVertex(vertices,corner[1],hull_vertices),
+          getVertex(vertices,corner[0],hull_vertices),&caliper[0]);
+        height=getDistance(getVertex(vertices,corner[3],hull_vertices),
+          getVertex(vertices,corner[2],hull_vertices),&caliper[2]);
       }
     else
       if (angle[1] == min_angle)
         {
-          width=getDistance(getModuloPoint(points,extent[0],hull_length),
-            getModuloPoint(points,extent[1],hull_length),&caliper[1]);
-          height=getDistance(getModuloPoint(points,extent[3],hull_length),
-            getModuloPoint(points,extent[2],hull_length),&caliper[2]);
+          width=getDistance(getVertex(vertices,corner[0],hull_vertices),
+            getVertex(vertices,corner[1],hull_vertices),&caliper[1]);
+          height=getDistance(getVertex(vertices,corner[3],hull_vertices),
+            getVertex(vertices,corner[2],hull_vertices),&caliper[2]);
         }
       else
         if (angle[2] == min_angle)
           {
-            width=getDistance(getModuloPoint(points,extent[1],hull_length),
-              getModuloPoint(points,extent[0],hull_length),&caliper[0]);
-            height=getDistance(getModuloPoint(points,extent[3],hull_length),
-              getModuloPoint(points,extent[2],hull_length),&caliper[2]);
+            width=getDistance(getVertex(vertices,corner[1],hull_vertices),
+              getVertex(vertices,corner[0],hull_vertices),&caliper[0]);
+            height=getDistance(getVertex(vertices,corner[3],hull_vertices),
+              getVertex(vertices,corner[2],hull_vertices),&caliper[2]);
           }
         else
           {
-            width=getDistance(getModuloPoint(points,extent[1],hull_length),
-              getModuloPoint(points,extent[0],hull_length),&caliper[0]);
-            height=getDistance(getModuloPoint(points,extent[2],hull_length),
-              getModuloPoint(points,extent[3],hull_length),&caliper[3]);
+            width=getDistance(getVertex(vertices,corner[1],hull_vertices),
+              getVertex(vertices,corner[0],hull_vertices),&caliper[0]);
+            height=getDistance(getVertex(vertices,corner[2],hull_vertices),
+              getVertex(vertices,corner[3],hull_vertices),&caliper[3]);
           }
     radians+=min_angle;
     area=width*height;
     if ((fabs(min_area) < MagickEpsilon) || (area < min_area))
       {
-        min_pair[0][0]=(*getModuloPoint(points,extent[0],hull_length));
-        min_pair[0][1]=caliper[0];
-        min_pair[1][0]=(*getModuloPoint(points,extent[1],hull_length));
-        min_pair[1][1]=caliper[1];
-        min_pair[2][0]=(*getModuloPoint(points,extent[2],hull_length));
-        min_pair[2][1]=caliper[2];
-        min_pair[3][0]=(*getModuloPoint(points,extent[3],hull_length));
-        min_pair[3][1]=caliper[3];
+        support[0][0]=(*getVertex(vertices,corner[0],hull_vertices));
+        support[0][1]=caliper[0];
+        support[1][0]=(*getVertex(vertices,corner[1],hull_vertices));
+        support[1][1]=caliper[1];
+        support[2][0]=(*getVertex(vertices,corner[2],hull_vertices));
+        support[2][1]=caliper[2];
+        support[3][0]=(*getVertex(vertices,corner[3],hull_vertices));
+        support[3][1]=caliper[3];
         min_area=area;
         min_width=width;
         min_height=height;
       }
     if (fabs(angle[0]-min_angle) < MagickEpsilon)
-      extent[0]++;
+      corner[0]++;
     else
       if (fabs(angle[1]-min_angle) < MagickEpsilon)
-			  extent[1]++;
+			  corner[1]++;
       else
         if (fabs(angle[2]-min_angle) < MagickEpsilon)
-          extent[2]++;
+          corner[2]++;
         else
-          extent[3]++;
+          corner[3]++;
   }
-  bounding_box[0]=getIntersection(min_pair[0]+0,min_pair[0]+1,min_pair[3]+0,
-    min_pair[3]+1);
-  bounding_box[1]=getIntersection(min_pair[3]+0,min_pair[3]+1,min_pair[1]+0,
-    min_pair[1]+1);
-  bounding_box[2]=getIntersection(min_pair[1]+0,min_pair[1]+1,min_pair[2]+0,
-    min_pair[2]+1);
-  bounding_box[3]=getIntersection(min_pair[2]+0,min_pair[2]+1,min_pair[0]+0,
-    min_pair[0]+1);
+  bounding_box[0]=getIntersection(support[0]+0,support[0]+1,support[3]+0,
+    support[3]+1);
+  bounding_box[1]=getIntersection(support[3]+0,support[3]+1,support[1]+0,
+    support[1]+1);
+  bounding_box[2]=getIntersection(support[1]+0,support[1]+1,support[2]+0,
+    support[2]+1);
+  bounding_box[3]=getIntersection(support[2]+0,support[2]+1,support[0]+0,
+    support[0]+1);
   (void) FormatLocaleString(property,MagickPathExtent,"%g",min_area);
   (void) SetImageProperty(image,"minimum-bounding-box:area",property,exception);
   (void) FormatLocaleString(property,MagickPathExtent,"%g",min_width);
@@ -1354,7 +1354,7 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
     RadiansToDegrees(radians));
   (void) SetImageProperty(image,"minimum-bounding-box:angle",property,
     exception);
-  points=(PointInfo *) RelinquishMagickMemory(points);
+  vertices=(PointInfo *) RelinquishMagickMemory(vertices);
   return(bounding_box);
 }
 
