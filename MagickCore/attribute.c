@@ -1097,8 +1097,9 @@ static double getAngle(const PointInfo *p,const PointInfo *q)
     sqrt(p->x*p->x+p->y*p->y)*sqrt(q->x*q->x+q->y*q->y));
   if (gamma < -1.0)
     gamma=(-1.0);
-  if (gamma > 1.0)
-    gamma=1.0;
+  else
+    if (gamma > 1.0)
+      gamma=1.0;
   return(acos(gamma));
 }
 
