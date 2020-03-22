@@ -1,5 +1,5 @@
 2020-03-21  7.0.10-2 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-2, GIT revision 17086:da11919:20200321.
+  * Release ImageMagick version 7.0.10-2, GIT revision 17088:ed6f37f:20200322.
 
 2020-03-16  7.0.10-2 Cristy  <quetzlzacatenango@image...>
   * Fixed another sizing issue with the label coder when pointsize is set.
