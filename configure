@@ -4566,7 +4566,7 @@ MAGICK_PATCHLEVEL_VERSION=3
 
 MAGICK_VERSION=7.0.10-3
 
-MAGICK_GIT_REVISION=17089:263fc2ce1:20200322
+MAGICK_GIT_REVISION=17090:4b25060:20200324
 
 
 # Substitute library versioning
@@ -31410,7 +31410,7 @@ have_openjp2='no'
 LIBOPENJP2_CFLAGS=""
 LIBOPENJP2_LIBS=""
 LIBOPENJP2_PKG=""
-if test "x$with_openjp2" = "xyes"; then
+if test "$with_openjp2" != 'no'; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
 
