@@ -1178,9 +1178,6 @@ static PointInfo rotateVector(const PointInfo *p,const double radians)
 MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
   size_t *number_vertices,ExceptionInfo *exception)
 {
-  char
-    property[MagickPathExtent];
-
   double
     min_area = 0.0,
     min_height = 0.0,
@@ -1342,18 +1339,14 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
     &support[2][1]);
   bounding_box[3]=getIntersection(&support[2][0],&support[2][1],&support[0][0],
     &support[0][1]);
-  (void) FormatLocaleString(property,MagickPathExtent,"%g",min_area);
-  (void) SetImageProperty(image,"minimum-bounding-box:area",property,exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%g",min_width);
-  (void) SetImageProperty(image,"minimum-bounding-box:width",property,
-    exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%g",min_height);
-  (void) SetImageProperty(image,"minimum-bounding-box:height",property,
-    exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%g",
-    RadiansToDegrees(radians));
-  (void) SetImageProperty(image,"minimum-bounding-box:angle",property,
-    exception);
+  (void) FormatImageProperty(image,"minimum-bounding-box:area","%.*g",
+    GetMagickPrecision(),min_area);
+  (void) FormatImageProperty(image,"minimum-bounding-box:width","%.*g",
+    GetMagickPrecision(),min_width);
+  (void) FormatImageProperty(image,"minimum-bounding-box:height","%.*g",
+    GetMagickPrecision(),min_height);
+  (void) FormatImageProperty(image,"minimum-bounding-box:angle","%.*g",
+    GetMagickPrecision(),RadiansToDegrees(radians));
   vertices=(PointInfo *) RelinquishMagickMemory(vertices);
   return(bounding_box);
 }
