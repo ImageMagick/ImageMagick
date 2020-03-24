@@ -862,6 +862,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
     {
       parameters->tcp_distoratio[0]=(double) image_info->quality;
       parameters->cp_fixed_quality=OPJ_TRUE;
+      parameters->cp_disto_alloc=0;
     }
   if (image_info->extract != (char *) NULL)
     {
@@ -910,6 +911,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
       }
       parameters->tcp_numlayers=i+1;
       parameters->cp_fixed_quality=OPJ_TRUE;
+      parameters->cp_disto_alloc=0;
     }
   option=GetImageOption(image_info,"jp2:progression-order");
   if (option != (const char *) NULL)
