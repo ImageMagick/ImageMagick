@@ -242,7 +242,7 @@ MagickBooleanType sixel_decode(Image *image,
     int attributed_pan, attributed_pad;
     int attributed_ph, attributed_pv;
     int repeat_count, color_index, max_color_index = 2, background_color_index;
-    int param[10];
+    int param[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     int sixel_palet[SIXEL_PALETTE_MAX];
     unsigned char *imbuf, *dmbuf;
     int imsx, imsy;
