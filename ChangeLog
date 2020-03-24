@@ -3,8 +3,7 @@
 
 2020-03-22  7.0.10-3 Cristy  <quetzlzacatenango@image...>
   * The -charcoal option should ignore the alpha channel.
-  * Fix off by one exception when calling QuantumImages() (reference
-    https://github.com/ImageMagick/ImageMagick6/issues/77).
+  * Fix numerical instability issue when drawing lines
 
 2020-03-21  7.0.10-2 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-2, GIT revision 17088:ed6f37f:20200322.
