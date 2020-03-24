@@ -532,7 +532,6 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     command[MagickPathExtent],
     *density,
     filename[MagickPathExtent],
-    geometry[MagickPathExtent],
     input_filename[MagickPathExtent],
     message[MagickPathExtent],
     *options,
@@ -649,10 +648,9 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((fabs(info.bounds.x2-info.bounds.x1) >= MagickEpsilon) &&
       (fabs(info.bounds.y2-info.bounds.y1) >= MagickEpsilon))
     {
-      (void) FormatLocaleString(geometry,MagickPathExtent,"%gx%g%+.15g%+.15g",
-        info.bounds.x2-info.bounds.x1,info.bounds.y2-info.bounds.y1,
-        info.bounds.x1,info.bounds.y1);
-      (void) SetImageProperty(image,"ps:HiResBoundingBox",geometry,exception);
+      (void) FormatImageProperty(image,"ps:HiResBoundingBox",
+        "%gx%g%+.15g%+.15g",info.bounds.x2-info.bounds.x1,info.bounds.y2-
+        info.bounds.y1,info.bounds.x1,info.bounds.y1);
       page.width=(size_t) ((ssize_t) ceil((double) ((info.bounds.x2-
         info.bounds.x1)*resolution.x/delta.x)-0.5));
       page.height=(size_t) ((ssize_t) ceil((double) ((info.bounds.y2-

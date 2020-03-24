@@ -162,7 +162,6 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
   ExceptionInfo *exception)
 {
   char
-    property[MagickPathExtent],
     timestamp[MagickPathExtent];
 
   (void) SetImageProperty(image,"dng:make",raw_info->idata.make,exception);
@@ -170,59 +169,43 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
     exception);
   (void) FormatMagickTime(raw_info->other.timestamp,MagickPathExtent,timestamp);
   (void) SetImageProperty(image,"dng:create.date",timestamp,exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%0.1f",
+  (void) FormatImageProperty(image,"dng:iso.setting","%0.1f",
     raw_info->other.iso_speed);
-  (void) SetImageProperty(image,"dng:iso.setting",property,exception);
 #if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,18)
   (void) SetImageProperty(image,"dng:software",raw_info->idata.software,
     exception);
   if (*raw_info->shootinginfo.BodySerial != '\0')
     (void) SetImageProperty(image,"dng:serial.number",
       raw_info->shootinginfo.BodySerial,exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"1/%0.1f",
+  (void) FormatImageProperty(image,"dng:exposure.time","1/%0.1f",
     1.0/raw_info->other.shutter);
-  (void) SetImageProperty(image,"dng:exposure.time",property,exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%0.1f",
+  (void) FormatImageProperty(image,"dng:f.number","%0.1f",
     raw_info->other.aperture);
-  (void) SetImageProperty(image,"dng:f.number",property,exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%0.1f",
+  (void) FormatImageProperty(image,"dng:max.aperture.value","%0.1f",
     raw_info->lens.EXIF_MaxAp);
-  (void) SetImageProperty(image,"dng:max.aperture.value",property,exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%0.1f",
+  (void) FormatImageProperty(image,"dng:ocal.length","%0.1f",
     raw_info->other.focal_len);
-  (void) SetImageProperty(image,"dng:focal.length",property,exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%f %f %f %f",
+  (void) FormatImageProperty(image,"dng:wb.rb.levels","%f %f %f %f",
     raw_info->color.cam_mul[0],raw_info->color.cam_mul[2],
     raw_info->color.cam_mul[1],raw_info->color.cam_mul[3]);
-  (void) SetImageProperty(image,"dng:wb.rb.levels",property,exception);
   (void) SetImageProperty(image,"dng:lens.type",
     raw_info->lens.makernotes.LensFeatures_suf,exception);
-  (void) FormatLocaleString(property,MagickPathExtent,
-    "%0.1f-%0.1fmm f/%0.1f-%0.1f",raw_info->lens.makernotes.MinFocal,
-    raw_info->lens.makernotes.MaxFocal,raw_info->lens.makernotes.MaxAp4MinFocal,
+  (void) FormatImageProperty(image,"dng:lens","%0.1f-%0.1fmm f/%0.1f-%0.1f",
+    raw_info->lens.makernotes.MinFocal,raw_info->lens.makernotes.MaxFocal,
+    raw_info->lens.makernotes.MaxAp4MinFocal,
     raw_info->lens.makernotes.MaxAp4MaxFocal);
-  (void) SetImageProperty(image,"dng:lens",property,exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%0.2f",
+  (void) FormatImageProperty(image,"dng:lens.f.stops","%0.2f",
     raw_info->lens.makernotes.LensFStops);
-  (void) SetImageProperty(image,"dng:lens.f.stops",property,exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%0.1f mm",
+  (void) FormatImageProperty(image,"dng:min.focal.length","%0.1f mm",
     raw_info->lens.makernotes.MinFocal);
-  (void) SetImageProperty(image,"dng:min.focal.length",property,exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%0.1f mm",
+  (void) FormatImageProperty(image,"dng:max.focal.length","%0.1f mm",
     raw_info->lens.makernotes.MaxFocal);
-  (void) SetImageProperty(image,"dng:max.focal.length",property,exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%0.1f",
+  (void) FormatImageProperty(image,"dng:max.aperture.at.min.focal","%0.1f",
     raw_info->lens.makernotes.MaxAp4MinFocal);
-  (void) SetImageProperty(image,"dng:max.aperture.at.min.focal",property,
-    exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%0.1f",
+  (void) FormatImageProperty(image,"dng:max.aperture.at.max.focal","%0.1f",
     raw_info->lens.makernotes.MaxAp4MaxFocal);
-  (void) SetImageProperty(image,"dng:max.aperture.at.max.focal",property,
-    exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%d mm",
+  (void) FormatImageProperty(image,"dng:focal.length.in.35mm.format","%d mm",
     raw_info->lens.FocalLengthIn35mmFormat);
-  (void) SetImageProperty(image,"dng:focal.length.in.35mm.format",property,
-    exception);
 #endif
 }
 #endif

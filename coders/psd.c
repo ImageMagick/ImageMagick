@@ -803,9 +803,6 @@ static StringInfo *ParseImageResourceBlocks(PSDInfo *psd_info,Image *image,
     {
       case 0x03ed:
       {
-        char
-          value[MagickPathExtent];
-
         unsigned short
           resolution;
 
@@ -816,17 +813,15 @@ static StringInfo *ParseImageResourceBlocks(PSDInfo *psd_info,Image *image,
           break;
         p=PushShortPixel(MSBEndian,p,&resolution);
         image->resolution.x=(double) resolution;
-        (void) FormatLocaleString(value,MagickPathExtent,"%g",
-          image->resolution.x);
-        (void) SetImageProperty(image,"tiff:XResolution",value,exception);
+        (void) FormatImageProperty(image,"tiff:XResolution","%*g",
+          GetMagickPrecision(),image->resolution.x);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&resolution);
         image->resolution.y=(double) resolution;
-        (void) FormatLocaleString(value,MagickPathExtent,"%g",
-          image->resolution.y);
-        (void) SetImageProperty(image,"tiff:YResolution",value,exception);
+        (void) FormatImageProperty(image,"tiff:YResolution","%*g",
+          GetMagickPrecision(),image->resolution.y);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);

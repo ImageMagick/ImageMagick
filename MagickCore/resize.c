@@ -4585,11 +4585,8 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
   GetPathComponent(image->magick_filename,TailPath,filename);
   (void) CopyMagickString(value,filename,MagickPathExtent);
   if ( GetPathAttributes(image->filename,&attributes) != MagickFalse )
-    {
-      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
-        attributes.st_mtime);
-      (void) SetImageProperty(thumbnail_image,"Thumb::MTime",value,exception);
-    }
+    (void) FormatImageProperty(thumbnail_image,"Thumb::MTime","%.20g",(double)
+      attributes.st_mtime);
   (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
     attributes.st_mtime);
   (void) FormatMagickSize(GetBlobSize(image),MagickFalse,"B",MagickPathExtent,
@@ -4600,17 +4597,11 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
   (void) SetImageProperty(thumbnail_image,"Thumb::Mimetype",value,exception);
   (void) SetImageProperty(thumbnail_image,"software",MagickAuthoritativeURL,
     exception);
-  (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
-    image->magick_columns);
-  (void) SetImageProperty(thumbnail_image,"Thumb::Image::Width",value,
-    exception);
-  (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
-    image->magick_rows);
-  (void) SetImageProperty(thumbnail_image,"Thumb::Image::Height",value,
-    exception);
-  (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
-    GetImageListLength(image));
-  (void) SetImageProperty(thumbnail_image,"Thumb::Document::Pages",value,
-    exception);
+  (void) FormatImageProperty(thumbnail_image,"Thumb::Image::Width","%.20g",
+    (double) image->magick_columns);
+  (void) FormatImageProperty(thumbnail_image,"Thumb::Image::Height","%.20g",
+    (double) image->magick_rows);
+  (void) FormatImageProperty(thumbnail_image,"Thumb::Document::Pages","%.20g",
+    (double) GetImageListLength(image));
   return(thumbnail_image);
 }

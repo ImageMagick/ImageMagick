@@ -9032,8 +9032,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case ShowPreviewCommand:
     {
       char
-        **previews,
-        value[MagickPathExtent];
+        **previews;
 
       Image
         *preview_image;
@@ -9063,9 +9062,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       preview=(PreviewType) ParseCommandOption(MagickPreviewOptions,
         MagickFalse,preview_type);
-      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
+      (void) FormatImageProperty(*image,"group","%.20g",(double)
         windows->image.id);
-      (void) SetImageProperty(*image,"group",value,exception);
       (void) DeleteImageProperty(*image,"label");
       (void) SetImageProperty(*image,"label","Preview",exception);
       preview_image=PreviewImage(*image,preview,exception);
@@ -9086,9 +9084,6 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     }
     case ShowHistogramCommand:
     {
-      char
-        value[MagickPathExtent];
-
       Image
         *histogram_image;
 
@@ -9097,10 +9092,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
-        windows->image.id);
-      (void) SetImageProperty(*image,"group",value,exception);
       (void) DeleteImageProperty(*image,"label");
+      (void) FormatImageProperty(*image,"group","%.20g",(double)
+        windows->image.id);
       (void) SetImageProperty(*image,"label","Histogram",exception);
       (void) AcquireUniqueFilename(filename);
       (void) FormatLocaleString((*image)->filename,MagickPathExtent,
@@ -9124,9 +9118,6 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     }
     case ShowMatteCommand:
     {
-      char
-        value[MagickPathExtent];
-
       Image
         *matte_image;
 
@@ -9141,9 +9132,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
+      (void) FormatImageProperty(*image,"group","%.20g",(double)
         windows->image.id);
-      (void) SetImageProperty(*image,"group",value,exception);
       (void) DeleteImageProperty(*image,"label");
       (void) SetImageProperty(*image,"label","Matte",exception);
       (void) AcquireUniqueFilename(filename);
@@ -9155,8 +9145,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) RelinquishUniqueFileResource(filename);
       if (matte_image == (Image *) NULL)
         break;
-      (void) FormatLocaleString(matte_image->filename,MagickPathExtent,"show:%s",
-        filename);
+      (void) FormatLocaleString(matte_image->filename,MagickPathExtent,
+        "show:%s",filename);
       status=WriteImage(image_info,matte_image,exception);
       matte_image=DestroyImage(matte_image);
       if (status == MagickFalse)
