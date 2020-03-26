@@ -1179,9 +1179,10 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
   size_t *number_vertices,ExceptionInfo *exception)
 {
   double
-    min_area = 0.0,
-    min_height = 0.0,
-    min_width = 0.0,
+    caliper_area = 0.0,
+    caliper_height = 0.0,
+    caliper_radians = 0.0,
+    caliper_width = 0.0,
     radians = 0.0;
 
   PointInfo
@@ -1306,7 +1307,7 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
           }
     radians+=min_angle;
     area=width*height;
-    if ((fabs(min_area) < MagickEpsilon) || (area < min_area))
+    if ((fabs(caliper_area) < MagickEpsilon) || (area < caliper_area))
       {
         support[0][0]=(*getVertex(vertices,corner[0],hull_vertices));
         support[0][1]=caliper[0];
@@ -1316,9 +1317,10 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
         support[2][1]=caliper[2];
         support[3][0]=(*getVertex(vertices,corner[3],hull_vertices));
         support[3][1]=caliper[3];
-        min_area=area;
-        min_width=width;
-        min_height=height;
+        caliper_radians=radians;
+        caliper_area=area;
+        caliper_width=width;
+        caliper_height=height;
       }
     if (fabs(angle[0]-min_angle) < MagickEpsilon)
       corner[0]++;
@@ -1340,13 +1342,13 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
   bounding_box[3]=getIntersection(&support[2][0],&support[2][1],&support[0][0],
     &support[0][1]);
   (void) FormatImageProperty(image,"minimum-bounding-box:area","%.*g",
-    GetMagickPrecision(),min_area);
+    GetMagickPrecision(),caliper_area);
   (void) FormatImageProperty(image,"minimum-bounding-box:width","%.*g",
-    GetMagickPrecision(),min_width);
+    GetMagickPrecision(),caliper_width);
   (void) FormatImageProperty(image,"minimum-bounding-box:height","%.*g",
-    GetMagickPrecision(),min_height);
+    GetMagickPrecision(),caliper_height);
   (void) FormatImageProperty(image,"minimum-bounding-box:angle","%.*g",
-    GetMagickPrecision(),RadiansToDegrees(radians));
+    GetMagickPrecision(),RadiansToDegrees(caliper_radians));
   vertices=(PointInfo *) RelinquishMagickMemory(vertices);
   return(bounding_box);
 }
