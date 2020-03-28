@@ -1348,7 +1348,7 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
   (void) FormatImageProperty(image,"minimum-bounding-box:height","%.*g",
     GetMagickPrecision(),caliper_height);
   (void) FormatImageProperty(image,"minimum-bounding-box:angle","%.*g",
-    GetMagickPrecision(),RadiansToDegrees(caliper_radians));
+    GetMagickPrecision(),90.0-RadiansToDegrees(caliper_radians));
   vertices=(PointInfo *) RelinquishMagickMemory(vertices);
   return(bounding_box);
 }
