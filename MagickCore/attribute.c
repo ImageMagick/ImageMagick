@@ -1085,19 +1085,6 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
 %
 */
 
-static double getAngle(const PointInfo *p,const PointInfo *q)
-{
-  double
-    gamma;
-
-  /*
-    Angle in radians between vector p and q.
-  */
-  gamma=(p->x*q->x+p->y*q->y)*PerceptibleReciprocal(
-    sqrt(p->x*p->x+p->y*p->y)*sqrt(q->x*q->x+q->y*q->y));
-  return(acos(gamma));
-}
-
 static double getDistance(const PointInfo *p,const PointInfo *q,
   const PointInfo *v)
 {
@@ -1154,6 +1141,19 @@ static PointInfo getIntersection(const PointInfo *a,const PointInfo *b,
   vertex.x=(p.y-p.x)*PerceptibleReciprocal(m.x-m.y);
   vertex.y=m.x*vertex.x+p.x;
   return(vertex);
+}
+
+static double getRadians(const PointInfo *p,const PointInfo *q)
+{
+  double
+    gamma;
+
+  /*
+    Angle in radians between vector p and q.
+  */
+  gamma=(p->x*q->x+p->y*q->y)*PerceptibleReciprocal(
+    sqrt(p->x*p->x+p->y*p->y)*sqrt(q->x*q->x+q->y*q->y));
+  return(acos(gamma));
 }
 
 static PointInfo *getVertex(PointInfo *vertices,const ssize_t n,
@@ -1259,10 +1259,10 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
       getVertex(vertices,corner[3],hull_vertices)->x;
     edge[3].y=getVertex(vertices,corner[3]+1,hull_vertices)->y-
       getVertex(vertices,corner[3],hull_vertices)->y;
-    angle[0]=getAngle(&edge[0],&caliper[0]);
-    angle[1]=getAngle(&edge[1],&caliper[1]);
-    angle[2]=getAngle(&edge[2],&caliper[2]);
-    angle[3]=getAngle(&edge[3],&caliper[3]);
+    angle[0]=getRadians(&edge[0],&caliper[0]);
+    angle[1]=getRadians(&edge[1],&caliper[1]);
+    angle[2]=getRadians(&edge[2],&caliper[2]);
+    angle[3]=getRadians(&edge[3],&caliper[3]);
     if ((IsNaN(angle[0]) != MagickFalse) ||
         (IsNaN(angle[1]) != MagickFalse) ||
         (IsNaN(angle[2]) != MagickFalse) ||
