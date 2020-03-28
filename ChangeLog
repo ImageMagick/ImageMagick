@@ -1,5 +1,5 @@
-2020-03-22  7.0.10-3 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-3, GIT revision 17...
+2020-03-27  7.0.10-3 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-3, GIT revision 17108:5a4f5a9:20200327.
 
 2020-03-22  7.0.10-3 Cristy  <quetzlzacatenango@image...>
   * The -charcoal option should ignore the alpha channel.
