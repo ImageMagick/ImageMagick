@@ -409,7 +409,7 @@ MagickBooleanType sixel_decode(Image *image,
                     if (param[2] > 360) param[2] = 360;
                     if (param[3] > 100) param[3] = 100;
                     if (param[4] > 100) param[4] = 100;
-                    sixel_palet[color_index] = hls_to_rgb(param[2] * 100 / 360, param[3], param[4]);
+                    sixel_palet[color_index] = hls_to_rgb((int) ((ssize_t) param[2] * 100 / 360), param[3], param[4]);
                 } else if (param[1] == 2) {    /* RGB */
                     if (param[2] > 100) param[2] = 100;
                     if (param[3] > 100) param[3] = 100;
