@@ -1127,9 +1127,10 @@ static double getRadians(const PointInfo *p,const PointInfo *q)
   /*
     Angle in radians between vector p and q.
   */
-  gamma=(p->x*q->x+p->y*q->y)*PerceptibleReciprocal(
-    sqrt(p->x*p->x+p->y*p->y)*sqrt(q->x*q->x+q->y*q->y));
-  return(acos(gamma));
+  gamma=sqrt(p->x*p->x+p->y*p->y)*sqrt(q->x*q->x+q->y*q->y);
+  if (fabs(gamma) < MagickEpsilon)
+    return(0.0);
+  return(acos((p->x*q->x+p->y*q->y)*PerceptibleReciprocal(gamma)));
 }
 
 static PointInfo *getVertex(PointInfo *vertices,const ssize_t n,
