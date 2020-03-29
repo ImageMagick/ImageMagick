@@ -1094,8 +1094,6 @@ static double getDistance(const PointInfo *p,const PointInfo *q,
   /*
     Shortest distance between p to vector v through point q.
   */
-  if (fabs(v->x) < MagickEpsilon)
-    return(fabs(p->x-q->x));
   gamma=v->y*PerceptibleReciprocal(v->x);
   return(fabs(p->y-(q->y-gamma*q->x)-gamma*p->x)*
     PerceptibleReciprocal(sqrt(gamma*gamma+1.0)));
@@ -1105,39 +1103,17 @@ static PointInfo getIntersection(const PointInfo *a,const PointInfo *b,
   const PointInfo *c,const PointInfo *d)
 {
   PointInfo
-    m = { 0.0, 0.0 },
-    p = { 0.0, 0.0 },
-    vertex = { 0.0, 0.0 };
+    m,
+    p,
+    vertex;
 
   /*
     Intersection: b passing through a and d passing c.
   */
-  if ((fabs(b->x) < MagickEpsilon) && (fabs(d->x) < MagickEpsilon))
-    return(vertex);
-  if (fabs(b->x) >= MagickEpsilon)
-    {
-      m.x=b->y*PerceptibleReciprocal(b->x);
-      p.x=a->y-m.x*a->x;
-    }
-  if (fabs(d->x) >= MagickEpsilon)
-    {
-      m.y=d->y*PerceptibleReciprocal(d->x);
-      p.y=c->y-m.y*c->x;
-    }
-  if (fabs(b->x) < MagickEpsilon)
-    {
-      vertex.x=a->x;
-      vertex.y=m.y*a->x+p.y;
-      return(vertex);
-    }
-  if (fabs(d->x) < MagickEpsilon)
-    {
-      vertex.x=c->x;
-      vertex.y=m.x*c->x+p.x;
-      return(vertex);
-    }
-  if (fabs(m.x-m.y) < MagickEpsilon)
-    return(vertex);
+  m.x=b->y*PerceptibleReciprocal(b->x);
+  p.x=a->y-m.x*a->x;
+  m.y=d->y*PerceptibleReciprocal(d->x);
+  p.y=c->y-m.y*c->x;
   vertex.x=(p.y-p.x)*PerceptibleReciprocal(m.x-m.y);
   vertex.y=m.x*vertex.x+p.x;
   return(vertex);
@@ -1275,7 +1251,7 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
     caliper[1]=rotateVector(&caliper[1],min_angle);
     caliper[2]=rotateVector(&caliper[2],min_angle);
     caliper[3]=rotateVector(&caliper[3],min_angle);
-    if (angle[0] == min_angle)
+    if (fabs(angle[0]-min_angle) < MagickEpsilon)
       {
         width=getDistance(getVertex(vertices,corner[1],hull_vertices),
           getVertex(vertices,corner[0],hull_vertices),&caliper[0]);
@@ -1283,7 +1259,7 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
           getVertex(vertices,corner[2],hull_vertices),&caliper[2]);
       }
     else
-      if (angle[1] == min_angle)
+      if (fabs(angle[1]-min_angle) < MagickEpsilon)
         {
           width=getDistance(getVertex(vertices,corner[0],hull_vertices),
             getVertex(vertices,corner[1],hull_vertices),&caliper[1]);
@@ -1291,7 +1267,7 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
             getVertex(vertices,corner[2],hull_vertices),&caliper[2]);
         }
       else
-        if (angle[2] == min_angle)
+        if (fabs(angle[2]-min_angle) < MagickEpsilon)
           {
             width=getDistance(getVertex(vertices,corner[1],hull_vertices),
               getVertex(vertices,corner[0],hull_vertices),&caliper[0]);
@@ -1307,7 +1283,7 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
           }
     radians+=min_angle;
     area=width*height;
-    if ((fabs(caliper_area) < MagickEpsilon) || (area < caliper_area))
+    if ((fabs(caliper_area) < MagickEpsilon) || (area <= caliper_area))
       {
         support[0][0]=(*getVertex(vertices,corner[0],hull_vertices));
         support[0][1]=caliper[0];
