@@ -520,6 +520,105 @@ static void CMSExceptionHandler(cmsContext context,cmsUInt32Number severity,
     "UnableToTransformColorspace","`%s', %s (#%u)",image->filename,
     message != (char *) NULL ? message : "no message",severity);
 }
+
+static void TransformDoublePixels(const int id,const Image* image,
+  const LCMSInfo *source_info,const LCMSInfo *target_info,
+  const cmsHTRANSFORM *transform,Quantum *q)
+{
+#define GetLCMSPixel(source_info,pixel) \
+  (source_info->scale*QuantumScale*(pixel)+source_info->translate)
+#define SetLCMSPixel(target_info,pixel) \
+  ClampToQuantum(target_info->scale*QuantumRange*(pixel)+target_info->translate)
+
+  register double
+    *p;
+
+  register ssize_t
+    x;
+
+  p=source_info->pixels[id];
+  for (x=0; x < (ssize_t) image->columns; x++)
+  {
+    *p++=GetLCMSPixel(source_info,GetPixelRed(image,q));
+    if (source_info->channels > 1)
+      {
+        *p++=GetLCMSPixel(source_info,GetPixelGreen(image,q));
+        *p++=GetLCMSPixel(source_info,GetPixelBlue(image,q));
+      }
+    if (source_info->channels > 3)
+      *p++=GetLCMSPixel(source_info,GetPixelBlack(image,q));
+    q+=GetPixelChannels(image);
+  }
+  cmsDoTransform(transform[id],source_info->pixels[id],
+    target_info->pixels[id],(unsigned int) image->columns);
+  p=target_info->pixels[id];
+  q-=GetPixelChannels(image)*image->columns;
+  for (x=0; x < (ssize_t) image->columns; x++)
+  {
+    if (target_info->channels == 1)
+      SetPixelGray(image,SetLCMSPixel(target_info,*p),q);
+    else
+      SetPixelRed(image,SetLCMSPixel(target_info,*p),q);
+    p++;
+    if (target_info->channels > 1)
+      {
+        SetPixelGreen(image,SetLCMSPixel(target_info,*p),q);
+        p++;
+        SetPixelBlue(image,SetLCMSPixel(target_info,*p),q);
+        p++;
+      }
+    if (target_info->channels > 3)
+      {
+        SetPixelBlack(image,SetLCMSPixel(target_info,*p),q);
+        p++;
+      }
+    q+=GetPixelChannels(image);
+  }
+}
+
+static void TransformQuantumPixels(const int id,const Image* image,
+  const LCMSInfo *source_info,const LCMSInfo *target_info,
+  const cmsHTRANSFORM *transform,Quantum *q)
+{
+  register Quantum
+    *p;
+
+  register ssize_t
+    x;
+
+  p=source_info->pixels[id];
+  for (x=0; x < (ssize_t) image->columns; x++)
+  {
+    *p++=GetPixelRed(image,q);
+    if (source_info->channels > 1)
+      {
+        *p++=GetPixelGreen(image,q);
+        *p++=GetPixelBlue(image,q);
+      }
+    if (source_info->channels > 3)
+      *p++=GetLCMSPixel(source_info,GetPixelBlack(image,q));
+    q+=GetPixelChannels(image);
+  }
+  cmsDoTransform(transform[id],source_info->pixels[id],
+    target_info->pixels[id],(unsigned int) image->columns);
+  p=target_info->pixels[id];
+  q-=GetPixelChannels(image)*image->columns;
+  for (x=0; x < (ssize_t) image->columns; x++)
+  {
+    if (target_info->channels == 1)
+      SetPixelGray(image,*p++,q);
+    else
+      SetPixelRed(image,*p++,q);
+    if (target_info->channels > 1)
+      {
+        SetPixelGreen(image,*p++,q);
+        SetPixelBlue(image,*p++,q);
+      }
+    if (target_info->channels > 3)
+      SetPixelBlack(image,*p++,q);
+    q+=GetPixelChannels(image);
+  }
+}
 #endif
 
 static MagickBooleanType SetsRGBImageProfile(Image *image,
@@ -813,105 +912,6 @@ static MagickBooleanType SetsRGBImageProfile(Image *image,
   status=SetImageProfile(image,"icc",profile,exception);
   profile=DestroyStringInfo(profile);
   return(status);
-}
-
-static void TransformDoublePixels(const int id,const Image* image,
-  const LCMSInfo *source_info,const LCMSInfo *target_info,
-  const cmsHTRANSFORM *transform,Quantum *q)
-{
-#define GetLCMSPixel(source_info,pixel) \
-  (source_info->scale*QuantumScale*(pixel)+source_info->translate)
-#define SetLCMSPixel(target_info,pixel) \
-  ClampToQuantum(target_info->scale*QuantumRange*(pixel)+target_info->translate)
-
-  register double
-    *p;
-
-  register ssize_t
-    x;
-
-  p=source_info->pixels[id];
-  for (x=0; x < (ssize_t) image->columns; x++)
-  {
-    *p++=GetLCMSPixel(source_info,GetPixelRed(image,q));
-    if (source_info->channels > 1)
-      {
-        *p++=GetLCMSPixel(source_info,GetPixelGreen(image,q));
-        *p++=GetLCMSPixel(source_info,GetPixelBlue(image,q));
-      }
-    if (source_info->channels > 3)
-      *p++=GetLCMSPixel(source_info,GetPixelBlack(image,q));
-    q+=GetPixelChannels(image);
-  }
-  cmsDoTransform(transform[id],source_info->pixels[id],
-    target_info->pixels[id],(unsigned int) image->columns);
-  p=target_info->pixels[id];
-  q-=GetPixelChannels(image)*image->columns;
-  for (x=0; x < (ssize_t) image->columns; x++)
-  {
-    if (target_info->channels == 1)
-      SetPixelGray(image,SetLCMSPixel(target_info,*p),q);
-    else
-      SetPixelRed(image,SetLCMSPixel(target_info,*p),q);
-    p++;
-    if (target_info->channels > 1)
-      {
-        SetPixelGreen(image,SetLCMSPixel(target_info,*p),q);
-        p++;
-        SetPixelBlue(image,SetLCMSPixel(target_info,*p),q);
-        p++;
-      }
-    if (target_info->channels > 3)
-      {
-        SetPixelBlack(image,SetLCMSPixel(target_info,*p),q);
-        p++;
-      }
-    q+=GetPixelChannels(image);
-  }
-}
-
-static void TransformQuantumPixels(const int id,const Image* image,
-  const LCMSInfo *source_info,const LCMSInfo *target_info,
-  const cmsHTRANSFORM *transform,Quantum *q)
-{
-  register Quantum
-    *p;
-
-  register ssize_t
-    x;
-
-  p=source_info->pixels[id];
-  for (x=0; x < (ssize_t) image->columns; x++)
-  {
-    *p++=GetPixelRed(image,q);
-    if (source_info->channels > 1)
-      {
-        *p++=GetPixelGreen(image,q);
-        *p++=GetPixelBlue(image,q);
-      }
-    if (source_info->channels > 3)
-      *p++=GetLCMSPixel(source_info,GetPixelBlack(image,q));
-    q+=GetPixelChannels(image);
-  }
-  cmsDoTransform(transform[id],source_info->pixels[id],
-    target_info->pixels[id],(unsigned int) image->columns);
-  p=target_info->pixels[id];
-  q-=GetPixelChannels(image)*image->columns;
-  for (x=0; x < (ssize_t) image->columns; x++)
-  {
-    if (target_info->channels == 1)
-      SetPixelGray(image,*p++,q);
-    else
-      SetPixelRed(image,*p++,q);
-    if (target_info->channels > 1)
-      {
-        SetPixelGreen(image,*p++,q);
-        SetPixelBlue(image,*p++,q);
-      }
-    if (target_info->channels > 3)
-      SetPixelBlack(image,*p++,q);
-    q+=GetPixelChannels(image);
-  }
 }
 
 MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
