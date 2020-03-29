@@ -1318,8 +1318,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               source_info.channels,highres);
             target_info.pixels=AcquirePixelThreadSet(image->columns,
               target_info.channels,highres);
-            if ((source_info.pixels == (double **) NULL) ||
-                (target_info.pixels == (double **) NULL))
+            if ((source_info.pixels == (void **) NULL) ||
+                (target_info.pixels == (void **) NULL))
               {
                 target_info.pixels=DestroyPixelThreadSet(target_info.pixels);
                 source_info.pixels=DestroyPixelThreadSet(source_info.pixels);
