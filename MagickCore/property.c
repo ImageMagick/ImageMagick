@@ -2557,9 +2557,11 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
       break;
     }
     case 'o': /* Output Filename - for delegate use only */
+    {
       WarnNoImageInfoReturn("\"%%%c\"",letter);
       string=image_info->filename;
       break;
+    }
     case 'p': /* Image index in current image list */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
