@@ -2261,7 +2261,10 @@ RestoreMSCWarning
     SetGeometry(image,&geometry);
     (void) ParseMetaGeometry("106x106+0+0>",&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
-    tile_image=ThumbnailImage(image,geometry.width,geometry.height,exception);
+    if (IsImageMonochrome(image) != MagickFalse)
+      tile_image=SampleImage(image,geometry.width,geometry.height,exception);
+    else
+      tile_image=ThumbnailImage(image,geometry.width,geometry.height,exception);
     if (tile_image == (Image *) NULL)
       return(MagickFalse);
     xref[object++]=TellBlob(image);
