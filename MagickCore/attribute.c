@@ -1099,6 +1099,30 @@ typedef struct _CaliperInfo
    	v;
 } CaliperInfo;
 
+static double getAngle(PointInfo *p,PointInfo *q)
+{
+  double
+    angle;
+
+  /*
+    Get the angle between line (p,q) and horizontal axis, in degrees.
+  */
+  if (fabs(q->x-p->x) < MagickEpsilon)
+    {
+      if (q->y > p->y)
+        return(90.0);
+      return(270.0);
+    }
+  angle=RadiansToDegrees(atan2(q->y-p->y,q->x-p->x));
+  if ((p->x < q->x) && (p->y <= q->y))
+    return(angle);
+  if ((p->x > q->x) && (p->y < q->y))
+    return(angle+90.0);
+  if ((p->x > q->x) && (p->y >= q->y))
+    return(angle+180.0);
+  return(360.0-angle);
+}
+
 static double getDistance(PointInfo *p,PointInfo *q)
 {
   double
@@ -1266,6 +1290,9 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
     GetMagickPrecision(),caliper_info.height);
   (void) FormatImageProperty(image,"minimum-bounding-box:angle","%.*g",
     GetMagickPrecision(),RadiansToDegrees(angle));
+  (void) FormatImageProperty(image,"minimum-bounding-box:unrotate","%.*g",
+    GetMagickPrecision(),getAngle(&vertices[caliper_info.p],
+    &vertices[caliper_info.q]));
   vertices=(PointInfo *) RelinquishMagickMemory(vertices);
   return(bounding_box);
 }
