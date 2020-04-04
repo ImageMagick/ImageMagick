@@ -1101,7 +1101,11 @@ typedef struct _CaliperInfo
 
 static double getDistance(PointInfo *p,PointInfo *q)
 {
-  return((p->x-q->x)*(p->x-q->x)+(p->y-q->y)*(p->y-q->y));
+  double
+    distance;
+
+  distance=hypot(p->x-q->x,p->y-q->y);
+  return(distance*distance);
 }
 
 static double getProjection(PointInfo *p,PointInfo *q,PointInfo *v)
