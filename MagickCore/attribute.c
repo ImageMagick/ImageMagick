@@ -1085,96 +1085,72 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
 %
 */
 
-static double getDistance(const PointInfo *p,const PointInfo *q,
-  const PointInfo *v)
+typedef struct _CaliperInfo
 {
   double
-    gamma;
+   	area,
+   	width,
+    height,
+   	projection;
 
-  /*
-    Shortest distance between p to vector v through point q.
-  */
-  gamma=v->y*PerceptibleReciprocal(v->x);
-  return(fabs(p->y-(q->y-gamma*q->x)-gamma*p->x)*
-    PerceptibleReciprocal(sqrt(gamma*gamma+1.0)));
-}
+  ssize_t
+   	p,
+   	q,
+   	v;
+} CaliperInfo;
 
-static PointInfo getIntersection(const PointInfo *a,const PointInfo *b,
-  const PointInfo *c,const PointInfo *d)
+static double getDistance(PointInfo *p,PointInfo *q)
 {
-  PointInfo
-    m,
-    p,
-    vertex;
-
-  /*
-    Intersection: b passing through a and d passing c.
-  */
-  m.x=b->y*PerceptibleReciprocal(b->x);
-  p.x=a->y-m.x*a->x;
-  m.y=d->y*PerceptibleReciprocal(d->x);
-  p.y=c->y-m.y*c->x;
-  vertex.x=(p.y-p.x)*PerceptibleReciprocal(m.x-m.y);
-  vertex.y=m.x*vertex.x+p.x;
-  return(vertex);
+  return((p->x-q->x)*(p->x-q->x)+(p->y-q->y)*(p->y-q->y));
 }
 
-static double getRadians(const PointInfo *p,const PointInfo *q)
+static double getProjection(PointInfo *p,PointInfo *q,PointInfo *v)
 {
   double
-    gamma;
+    distance;
 
   /*
-    Angle in radians between vector p and q.
+	  Projection of vector (x,y) - p into a line passing through p and q.
   */
-  gamma=sqrt(p->x*p->x+p->y*p->y)*sqrt(q->x*q->x+q->y*q->y);
-  return(acos((p->x*q->x+p->y*q->y)*PerceptibleReciprocal(gamma)));
+  distance=getDistance(p,q);
+  if (distance < MagickEpsilon)
+    return(INFINITY);
+	return((q->x-p->x)*(v->x-p->x)+(v->y-p->y)*(q->y-p->y))/sqrt(distance);
 }
 
-static PointInfo *getVertex(PointInfo *vertices,const ssize_t n,
-  const size_t number_vertices)
+static double getFeretDiameter(PointInfo *p,PointInfo *q,PointInfo *v)
 {
-  return(vertices+(n % number_vertices));
-}
-
-static PointInfo rotateVector(const PointInfo *p,const double radians)
-{
-  PointInfo
-    vector;
+  double
+    distance;
 
   /*
-    Rotates the vector p.
+    Distance from a point (x,y) to a line passing through p and q.
   */
-  vector.x=p->x*cos(radians)-p->y*sin(radians);
-  vector.y=p->x*sin(radians)+p->y*cos(radians);
-  return(vector);
+  distance=getDistance(p,q);
+  if (distance < MagickEpsilon)
+    return(INFINITY);
+	return((q->x-p->x)*(v->y-p->y)-(v->x-p->x)*(q->y-p->y))/sqrt(distance);
 }
 
 MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
   size_t *number_vertices,ExceptionInfo *exception)
 {
+  CaliperInfo
+    caliper_info;
+
   double
-    caliper_area = 0.0,
-    caliper_height = 0.0,
-    caliper_radians = 0.0,
-    caliper_width = 0.0,
-    radians = 0.0;
+    angle,
+    diameter;
 
   PointInfo
     *bounding_box,
-    caliper[4] = { { 1.0, 0.0 }, {-1.0, 0.0 }, { 0.0,-1.0 }, { 0.0, 1.0 } },
-    support[4][2] = { { { 0.0, 0.0 }, { 0.0, 0.0 } },
-                       { { 0.0, 0.0 }, { 0.0, 0.0 } },
-                       { { 0.0, 0.0 }, { 0.0, 0.0 } },
-                       { { 0.0, 0.0 }, { 0.0, 0.0 } } },
     *vertices;
 
-  size_t
-    hull_vertices;
+  register ssize_t
+    i;
 
-  ssize_t
-    corner[4] = { 0, 0, 0, 0 },
-    n;
+  size_t
+    number_hull_vertices;
 
   /*
     Generate the minimum bounding box with the "Rotating Calipers" algorithm.
@@ -1184,7 +1160,7 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   *number_vertices=0;
-  vertices=GetImageConvexHull(image,&hull_vertices,exception);
+  vertices=GetImageConvexHull(image,&number_hull_vertices,exception);
   if (vertices == (PointInfo *) NULL)
     return((PointInfo *) NULL);
   *number_vertices=4;
@@ -1195,135 +1171,97 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
       vertices=(PointInfo *) RelinquishMagickMemory(vertices);
       return((PointInfo *) NULL);
     }
-  for (n=1; n < (ssize_t) hull_vertices; n++)
-  {
-    if (vertices[n].y < vertices[corner[0]].y)
-      corner[0]=n;
-    if (vertices[n].y > vertices[corner[1]].y)
-      corner[1]=n;
-    if (vertices[n].x < vertices[corner[2]].x)
-      corner[2]=n;
-    if (vertices[n].x > vertices[corner[3]].x)
-      corner[3]=n;
-  }
-  while (radians < MagickPI)
+  caliper_info.area=2.0*image->columns*image->rows;
+  caliper_info.width=(double) image->columns+image->rows;
+  caliper_info.height=0.0;
+  caliper_info.projection=0.0;
+  caliper_info.p=(-1);
+	caliper_info.q=(-1);
+	caliper_info.v=(-1);
+  for (i=0; i < (ssize_t) number_hull_vertices; i++)
   {
     double
-      angle[4],
-      area,
-      height,
-      min_angle,
-      width;
+      area = 0.0,
+      max_projection = 0.0,
+      min_diameter = -1.0,
+      min_projection = 0.0;
 
-    PointInfo
-      edge[4];
+    register ssize_t
+      j,
+      k;
 
-    edge[0].x=getVertex(vertices,corner[0]+1,hull_vertices)->x-
-      getVertex(vertices,corner[0],hull_vertices)->x;
-    edge[0].y=getVertex(vertices,corner[0]+1,hull_vertices)->y-
-      getVertex(vertices,corner[0],hull_vertices)->y;
-    edge[1].x=getVertex(vertices,corner[1]+1,hull_vertices)->x-
-      getVertex(vertices,corner[1],hull_vertices)->x;
-    edge[1].y=getVertex(vertices,corner[1]+1,hull_vertices)->y-
-      getVertex(vertices,corner[1],hull_vertices)->y;
-    edge[2].x=getVertex(vertices,corner[2]+1,hull_vertices)->x-
-      getVertex(vertices,corner[2],hull_vertices)->x;
-    edge[2].y=getVertex(vertices,corner[2]+1,hull_vertices)->y-
-      getVertex(vertices,corner[2],hull_vertices)->y;
-    edge[3].x=getVertex(vertices,corner[3]+1,hull_vertices)->x-
-      getVertex(vertices,corner[3],hull_vertices)->x;
-    edge[3].y=getVertex(vertices,corner[3]+1,hull_vertices)->y-
-      getVertex(vertices,corner[3],hull_vertices)->y;
-    angle[0]=getRadians(&edge[0],&caliper[0]);
-    angle[1]=getRadians(&edge[1],&caliper[1]);
-    angle[2]=getRadians(&edge[2],&caliper[2]);
-    angle[3]=getRadians(&edge[3],&caliper[3]);
-    if ((IsNaN(angle[0]) != MagickFalse) ||
-        (IsNaN(angle[1]) != MagickFalse) ||
-        (IsNaN(angle[2]) != MagickFalse) ||
-        (IsNaN(angle[3]) != MagickFalse))
-      break;
-    area=0.0;
-    min_angle=MagickMin(MagickMin(MagickMin(angle[0],angle[1]),angle[2]),
-      angle[3]);
-    caliper[0]=rotateVector(&caliper[0],min_angle);
-    caliper[1]=rotateVector(&caliper[1],min_angle);
-    caliper[2]=rotateVector(&caliper[2],min_angle);
-    caliper[3]=rotateVector(&caliper[3],min_angle);
-    if (fabs(angle[0]-min_angle) < MagickEpsilon)
-      {
-        width=getDistance(getVertex(vertices,corner[1],hull_vertices),
-          getVertex(vertices,corner[0],hull_vertices),&caliper[0]);
-        height=getDistance(getVertex(vertices,corner[3],hull_vertices),
-          getVertex(vertices,corner[2],hull_vertices),&caliper[2]);
-      }
-    else
-      if (fabs(angle[1]-min_angle) < MagickEpsilon)
+    ssize_t
+      p = -1,
+      q = -1,
+      v = -1;
+
+    for (j=0; j < (ssize_t) number_hull_vertices; j++)
+    {
+      double
+        diameter;
+
+      diameter=fabs(getFeretDiameter(&vertices[i],
+        &vertices[(i+1) % number_hull_vertices],&vertices[j]));
+      if (min_diameter < diameter)
         {
-          width=getDistance(getVertex(vertices,corner[0],hull_vertices),
-            getVertex(vertices,corner[1],hull_vertices),&caliper[1]);
-          height=getDistance(getVertex(vertices,corner[3],hull_vertices),
-            getVertex(vertices,corner[2],hull_vertices),&caliper[2]);
-        }
-      else
-        if (fabs(angle[2]-min_angle) < MagickEpsilon)
-          {
-            width=getDistance(getVertex(vertices,corner[1],hull_vertices),
-              getVertex(vertices,corner[0],hull_vertices),&caliper[0]);
-            height=getDistance(getVertex(vertices,corner[3],hull_vertices),
-              getVertex(vertices,corner[2],hull_vertices),&caliper[2]);
-          }
-        else
-          {
-            width=getDistance(getVertex(vertices,corner[1],hull_vertices),
-              getVertex(vertices,corner[0],hull_vertices),&caliper[0]);
-            height=getDistance(getVertex(vertices,corner[2],hull_vertices),
-              getVertex(vertices,corner[3],hull_vertices),&caliper[3]);
-          }
-    radians+=min_angle;
-    area=width*height;
-    if ((fabs(caliper_area) < MagickEpsilon) || (area <= caliper_area))
+          min_diameter=diameter;
+  				p=i;
+  				q=(i+1) % number_hull_vertices;
+  				v=j;
+				}
+    }
+    for (k=0; k < (ssize_t) number_hull_vertices; k++)
+    {
+      double
+        projection;
+
+      /*
+        Rotating calipers.
+      */
+	  	projection=getProjection(&vertices[p],&vertices[q],&vertices[k]);
+	  	min_projection=MagickMin(min_projection,projection);
+	  	max_projection=MagickMax(max_projection,projection);
+		}
+    area=min_diameter*(max_projection-min_projection);
+    if (caliper_info.area > area)
       {
-        support[0][0]=(*getVertex(vertices,corner[0],hull_vertices));
-        support[0][1]=caliper[0];
-        support[1][0]=(*getVertex(vertices,corner[1],hull_vertices));
-        support[1][1]=caliper[1];
-        support[2][0]=(*getVertex(vertices,corner[2],hull_vertices));
-        support[2][1]=caliper[2];
-        support[3][0]=(*getVertex(vertices,corner[3],hull_vertices));
-        support[3][1]=caliper[3];
-        caliper_radians=radians;
-        caliper_area=area;
-        caliper_width=width;
-        caliper_height=height;
-      }
-    if (fabs(angle[0]-min_angle) < MagickEpsilon)
-      corner[0]++;
-    else
-      if (fabs(angle[1]-min_angle) < MagickEpsilon)
-			  corner[1]++;
-      else
-        if (fabs(angle[2]-min_angle) < MagickEpsilon)
-          corner[2]++;
-        else
-          corner[3]++;
+   	  	caliper_info.area=area;
+   	  	caliper_info.width=min_diameter;
+        caliper_info.height=max_projection-min_projection;
+   	  	caliper_info.projection=max_projection;
+   	  	caliper_info.p=p;
+   	  	caliper_info.q=q;
+   	  	caliper_info.v=v;
+	 	  }
   }
-  bounding_box[0]=getIntersection(&support[0][0],&support[0][1],&support[3][0],
-    &support[3][1]);
-  bounding_box[1]=getIntersection(&support[3][0],&support[3][1],&support[1][0],
-    &support[1][1]);
-  bounding_box[2]=getIntersection(&support[1][0],&support[1][1],&support[2][0],
-    &support[2][1]);
-  bounding_box[3]=getIntersection(&support[2][0],&support[2][1],&support[0][0],
-    &support[0][1]);
+  /*
+    Initialize minimum bounding box.
+  */
+  diameter=getFeretDiameter(&vertices[caliper_info.p],
+    &vertices[caliper_info.q],&vertices[caliper_info.v]);
+	angle=atan2(vertices[caliper_info.q].y-vertices[caliper_info.p].y,
+    vertices[caliper_info.q].x-vertices[caliper_info.p].x);
+  bounding_box[0].x=vertices[caliper_info.p].x+cos(angle)*
+    caliper_info.projection;
+  bounding_box[0].y=vertices[caliper_info.p].y+sin(angle)*
+    caliper_info.projection;
+  bounding_box[1].x=bounding_box[0].x+cos(angle+MagickPI/2.0)*diameter;
+  bounding_box[1].y=bounding_box[0].y+sin(angle+MagickPI/2.0)*diameter;
+  bounding_box[2].x=bounding_box[1].x+cos(angle)*(-caliper_info.height);
+  bounding_box[2].y=bounding_box[1].y+sin(angle)*(-caliper_info.height);
+  bounding_box[3].x=bounding_box[2].x+cos(angle+MagickPI/2.0)*(-diameter);
+  bounding_box[3].y=bounding_box[2].y+sin(angle+MagickPI/2.0)*(-diameter);
+  /*
+    Export minimum bounding box properties.
+  */
   (void) FormatImageProperty(image,"minimum-bounding-box:area","%.*g",
-    GetMagickPrecision(),caliper_area);
+    GetMagickPrecision(),caliper_info.area);
   (void) FormatImageProperty(image,"minimum-bounding-box:width","%.*g",
-    GetMagickPrecision(),caliper_width);
+    GetMagickPrecision(),caliper_info.width);
   (void) FormatImageProperty(image,"minimum-bounding-box:height","%.*g",
-    GetMagickPrecision(),caliper_height);
+    GetMagickPrecision(),caliper_info.height);
   (void) FormatImageProperty(image,"minimum-bounding-box:angle","%.*g",
-    GetMagickPrecision(),90.0-RadiansToDegrees(caliper_radians));
+    GetMagickPrecision(),RadiansToDegrees(angle));
   vertices=(PointInfo *) RelinquishMagickMemory(vertices);
   return(bounding_box);
 }
