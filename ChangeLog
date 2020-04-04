@@ -6,6 +6,8 @@
     https://imagemagick.org/discourse-server/viewtopic.php?f=1&t=37723).
   * Multi-value of jp2:quality does not work (reference
     https://github.com/ImageMagick/ImageMagick/issues/1873).
+  * Return EPS & TIFF images from the EPT image format (reference
+    https://imagemagick.org/discourse-server/viewtopic.php?f=3&t=37781).
 
 2020-03-27  7.0.10-3 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-3, GIT revision 17108:5a4f5a9:20200327.
