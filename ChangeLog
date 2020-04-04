@@ -1,5 +1,5 @@
-2020-04-03  7.0.10-4 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-4, GIT revision 17126:5e0c258:20200403.
+2020-04-04  7.0.10-4 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-4, GIT revision 17128:78cf68c:20200404.
 
 2020-03-28  7.0.10-4 Cristy  <quetzlzacatenango@image...>
   * The X max attribute for certain fonts is zero (reference
