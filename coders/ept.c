@@ -254,6 +254,8 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) CloseBlob(image);
   image=DestroyImage(image);
   read_info=CloneImageInfo(image_info);
+  read_info->number_scenes=1;
+  read_info->scene=0;
   (void) CopyMagickString(read_info->magick,"EPS",MagickPathExtent);
   image=BlobToImage(read_info,postscript_data,ept_info.postscript_length,
     exception);
