@@ -1,3 +1,11 @@
+2020-04-07  7.0.10-7 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-7, GIT revision 17...
+
+2020-04-07  7.0.10-7 Cristy  <quetzlzacatenango@image...>
+ * Fix erroneous "insufficient image data" exception (reference
+   https://github.com/ImageMagick/ImageMagick/issues/1883).
+
+    https://github.com/ImageMagick/ImageMagick/discussions/1880).
 2020-04-06  7.0.10-6 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-6, GIT revision 17146:634bbfd:20200406.
 
