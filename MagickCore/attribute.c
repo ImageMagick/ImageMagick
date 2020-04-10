@@ -1088,15 +1088,15 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
 typedef struct _CaliperInfo
 {
   double
-   	area,
-   	width,
+    area,
+    width,
     height,
-   	projection;
+    projection;
 
   ssize_t
-   	p,
-   	q,
-   	v;
+    p,
+    q,
+    v;
 } CaliperInfo;
 
 static double getAngle(PointInfo *p,PointInfo *q)
@@ -1138,12 +1138,12 @@ static double getProjection(PointInfo *p,PointInfo *q,PointInfo *v)
     distance;
 
   /*
-	  Projection of vector (x,y) - p into a line passing through p and q.
+    Projection of vector (x,y) - p into a line passing through p and q.
   */
   distance=getDistance(p,q);
   if (distance < MagickEpsilon)
     return(INFINITY);
-	return((q->x-p->x)*(v->x-p->x)+(v->y-p->y)*(q->y-p->y))/sqrt(distance);
+  return((q->x-p->x)*(v->x-p->x)+(v->y-p->y)*(q->y-p->y))/sqrt(distance);
 }
 
 static double getFeretDiameter(PointInfo *p,PointInfo *q,PointInfo *v)
@@ -1157,7 +1157,7 @@ static double getFeretDiameter(PointInfo *p,PointInfo *q,PointInfo *v)
   distance=getDistance(p,q);
   if (distance < MagickEpsilon)
     return(INFINITY);
-	return((q->x-p->x)*(v->y-p->y)-(v->x-p->x)*(q->y-p->y))/sqrt(distance);
+  return((q->x-p->x)*(v->y-p->y)-(v->x-p->x)*(q->y-p->y))/sqrt(distance);
 }
 
 MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
@@ -1204,8 +1204,8 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
   caliper_info.height=0.0;
   caliper_info.projection=0.0;
   caliper_info.p=(-1);
-	caliper_info.q=(-1);
-	caliper_info.v=(-1);
+  caliper_info.q=(-1);
+  caliper_info.v=(-1);
   for (i=0; i < (ssize_t) number_hull_vertices; i++)
   {
     double
@@ -1233,10 +1233,10 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
       if (min_diameter < diameter)
         {
           min_diameter=diameter;
-  				p=i;
-  				q=(i+1) % number_hull_vertices;
-  				v=j;
-				}
+          p=i;
+          q=(i+1) % number_hull_vertices;
+          v=j;
+        }
     }
     for (k=0; k < (ssize_t) number_hull_vertices; k++)
     {
@@ -1246,28 +1246,28 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
       /*
         Rotating calipers.
       */
-	  	projection=getProjection(&vertices[p],&vertices[q],&vertices[k]);
-	  	min_projection=MagickMin(min_projection,projection);
-	  	max_projection=MagickMax(max_projection,projection);
-		}
+      projection=getProjection(&vertices[p],&vertices[q],&vertices[k]);
+      min_projection=MagickMin(min_projection,projection);
+      max_projection=MagickMax(max_projection,projection);
+    }
     area=min_diameter*(max_projection-min_projection);
     if (caliper_info.area > area)
       {
-   	  	caliper_info.area=area;
-   	  	caliper_info.width=min_diameter;
+        caliper_info.area=area;
+        caliper_info.width=min_diameter;
         caliper_info.height=max_projection-min_projection;
-   	  	caliper_info.projection=max_projection;
-   	  	caliper_info.p=p;
-   	  	caliper_info.q=q;
-   	  	caliper_info.v=v;
-	 	  }
+        caliper_info.projection=max_projection;
+        caliper_info.p=p;
+        caliper_info.q=q;
+        caliper_info.v=v;
+      }
   }
   /*
     Initialize minimum bounding box.
   */
   diameter=getFeretDiameter(&vertices[caliper_info.p],
     &vertices[caliper_info.q],&vertices[caliper_info.v]);
-	angle=atan2(vertices[caliper_info.q].y-vertices[caliper_info.p].y,
+  angle=atan2(vertices[caliper_info.q].y-vertices[caliper_info.p].y,
     vertices[caliper_info.q].x-vertices[caliper_info.p].x);
   bounding_box[0].x=vertices[caliper_info.p].x+cos(angle)*
     caliper_info.projection;
@@ -1290,9 +1290,18 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
     GetMagickPrecision(),caliper_info.height);
   (void) FormatImageProperty(image,"minimum-bounding-box:angle","%.*g",
     GetMagickPrecision(),RadiansToDegrees(angle));
-  (void) FormatImageProperty(image,"minimum-bounding-box:unrotate","%.*g",
+  (void) FormatImageProperty(image,"minimum-bounding-box:_unrotate","%.*g",
     GetMagickPrecision(),getAngle(&vertices[caliper_info.p],
     &vertices[caliper_info.q]));
+  (void) FormatImageProperty(image,"minimum-bounding-box:_p","%.*g,%.*g",
+    GetMagickPrecision(),vertices[caliper_info.p].x,
+    GetMagickPrecision(),vertices[caliper_info.p].y);
+  (void) FormatImageProperty(image,"minimum-bounding-box:_q","%.*g,%.*g",
+    GetMagickPrecision(),vertices[caliper_info.q].x,
+    GetMagickPrecision(),vertices[caliper_info.q].y);
+  (void) FormatImageProperty(image,"minimum-bounding-box:_v","%.*g,%.*g",
+    GetMagickPrecision(),vertices[caliper_info.v].x,
+    GetMagickPrecision(),vertices[caliper_info.v].y);
   vertices=(PointInfo *) RelinquishMagickMemory(vertices);
   return(bounding_box);
 }
