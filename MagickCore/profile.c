@@ -1050,8 +1050,10 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             cmsUInt32Number
               flags;
 
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
             const char
               *artifact;
+#endif
 
             MagickBooleanType
               highres;
