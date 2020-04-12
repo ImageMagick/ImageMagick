@@ -1290,7 +1290,7 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
     GetMagickPrecision(),caliper_info.height);
   (void) FormatImageProperty(image,"minimum-bounding-box:angle","%.*g",
     GetMagickPrecision(),RadiansToDegrees(angle));
-  (void) FormatImageProperty(image,"minimum-bounding-box:_unrotate","%.*g",
+  (void) FormatImageProperty(image,"minimum-bounding-box:unrotate","%.*g",
     GetMagickPrecision(),getAngle(&vertices[caliper_info.p],
     &vertices[caliper_info.q]));
   (void) FormatImageProperty(image,"minimum-bounding-box:_p","%.*g,%.*g",
