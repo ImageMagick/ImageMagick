@@ -1113,7 +1113,7 @@ static double getAngle(PointInfo *p,PointInfo *q)
         return(90.0);
       return(270.0);
     }
-  angle=RadiansToDegrees(atan2(q->y-p->y,q->x-p->x));
+  angle=RadiansToDegrees(atan2(fabs(q->y-p->y),fabs(q->x-p->x)));
   if ((p->x < q->x) && (p->y <= q->y))
     return(angle);
   if ((p->x > q->x) && (p->y < q->y))
