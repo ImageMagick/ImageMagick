@@ -1042,6 +1042,7 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
     {
       outLayer->image->background_color.alpha_trait=BlendPixelTrait;
       outLayer->image->alpha_trait=BlendPixelTrait;
+      (void) SetImageBackgroundColor(outLayer->image,exception);
     }
 
   InitXCFImage(outLayer,exception);
