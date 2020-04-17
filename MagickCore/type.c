@@ -491,7 +491,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   }
   if (type_info != (const TypeInfo *) NULL)
     {
-      (void) ThrowMagickException(exception,GetMagickModule(),TypeError,
+      (void) ThrowMagickException(exception,GetMagickModule(),TypeWarning,
         "FontSubstitutionRequired","`%s'",type_info->family);
       return(type_info);
     }
