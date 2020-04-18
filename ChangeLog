@@ -6,6 +6,8 @@
     https://github.com/ImageMagick/ImageMagick/issues/1883).
   * Fix an unconditional jump for the XPM coder (reference
     https://github.com/ImageMagick/ImageMagick/issues/1895).
+  * Improve unrotate value returned by the minimum bounding box (thanks
+    to Fred Weinhaus).
 
     https://github.com/ImageMagick/ImageMagick/discussions/1880).
 2020-04-06  7.0.10-6 Cristy  <quetzlzacatenango@image...>
