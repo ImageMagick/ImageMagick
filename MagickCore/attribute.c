@@ -1303,7 +1303,7 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
   }
   (void) FormatImageProperty(image,"minimum-bounding-box:unrotate","%.*g",
     GetMagickPrecision(),-angle);
-  artifact=GetImageArtifact(image,"minimum-bounding-box:aspect");
+  artifact=GetImageArtifact(image,"minimum-bounding-box:orientation");
   if (artifact != (const char *) NULL)
     {
       double
