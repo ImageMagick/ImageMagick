@@ -1276,8 +1276,6 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
     GetMagickPrecision(),caliper_info.width);
   (void) FormatImageProperty(image,"minimum-bounding-box:height","%.*g",
     GetMagickPrecision(),caliper_info.height);
-  (void) FormatImageProperty(image,"minimum-bounding-box:angle","%.*g",
-    GetMagickPrecision(),RadiansToDegrees(angle));
   (void) FormatImageProperty(image,"minimum-bounding-box:_p","%.*g,%.*g",
     GetMagickPrecision(),vertices[caliper_info.p].x,
     GetMagickPrecision(),vertices[caliper_info.p].y);
@@ -1301,8 +1299,6 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
         angle=getAngle(&bounding_box[i],&bounding_box[(i+1) % 4]);
       }
   }
-  (void) FormatImageProperty(image,"minimum-bounding-box:unrotate","%.*g",
-    GetMagickPrecision(),-angle);
   artifact=GetImageArtifact(image,"minimum-bounding-box:orientation");
   if (artifact != (const char *) NULL)
     {
@@ -1367,9 +1363,11 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
             if (p_length < q_length)
               angle+=(angle >= 0.0) ? 90.0 : -90.0;
           }
-      (void) FormatImageProperty(image,"minimum-bounding-box:unrotate","%.*g",
-        GetMagickPrecision(),-angle);
     }
+  (void) FormatImageProperty(image,"minimum-bounding-box:angle","%.*g",
+    GetMagickPrecision(),RadiansToDegrees(angle));
+  (void) FormatImageProperty(image,"minimum-bounding-box:unrotate","%.*g",
+    GetMagickPrecision(),-angle);
   vertices=(PointInfo *) RelinquishMagickMemory(vertices);
   return(bounding_box);
 }
