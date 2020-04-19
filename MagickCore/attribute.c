@@ -1365,7 +1365,7 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
           }
     }
   (void) FormatImageProperty(image,"minimum-bounding-box:angle","%.*g",
-    GetMagickPrecision(),RadiansToDegrees(angle));
+    GetMagickPrecision(),angle);
   (void) FormatImageProperty(image,"minimum-bounding-box:unrotate","%.*g",
     GetMagickPrecision(),-angle);
   vertices=(PointInfo *) RelinquishMagickMemory(vertices);
