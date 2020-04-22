@@ -198,6 +198,9 @@ static double GetEdgeBackgroundCensus(const Image *image,
     }
   }
   GetPixelInfoPixel(image,p,&background);
+  artifact=GetImageArtifact(image,"background");
+  if (artifact != (const char *) NULL)
+    (void) QueryColorCompliance(artifact,AllCompliance,&background,exception);
   artifact=GetImageArtifact(image,"trim:background-color");
   if (artifact != (const char *) NULL)
     (void) QueryColorCompliance(artifact,AllCompliance,&background,exception);
@@ -571,6 +574,8 @@ static PixelInfo GetEdgeBackgroundColor(const Image *image,
     Most dominant color of edges/corners is the background color of the image.
   */
   artifact=GetImageArtifact(image,"convex-hull:background-color");
+  if (artifact == (const char *) NULL)
+    artifact=GetImageArtifact(image,"background");
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static)
 #endif
