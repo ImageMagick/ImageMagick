@@ -1,4 +1,11 @@
-2020-04-19  7.0.10-18 Cristy  <quetzlzacatenango@image...>
+2020-04-23  7.0.10-8 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-8, GIT revision 17...
+
+2020-04-23  7.0.10-8 Cristy  <quetzlzacatenango@image...>
+  * Some configure --with-method-prefix methods were missing (reference
+    https://github.com/ImageMagick/ImageMagick/issues/1912).
+
+2020-04-19  7.0.10-7 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-7, GIT revision 17170:c635e88:20200419.
 
 2020-04-07  7.0.10-7 Cristy  <quetzlzacatenango@image...>
