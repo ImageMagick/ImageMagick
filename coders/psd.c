@@ -757,7 +757,7 @@ static MagickBooleanType NegateCMYK(Image *image,ExceptionInfo *exception)
 }
 
 static StringInfo *ParseImageResourceBlocks(PSDInfo *psd_info,Image *image,
-  const unsigned char *blocks,size_t length,ExceptionInfo *exception)
+  const unsigned char *blocks,size_t length)
 {
   const unsigned char
     *p;
@@ -2332,8 +2332,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           blocks=(unsigned char *) RelinquishMagickMemory(blocks);
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         }
-      profile=ParseImageResourceBlocks(&psd_info,image,blocks,(size_t) length,
-        exception);
+      profile=ParseImageResourceBlocks(&psd_info,image,blocks,(size_t) length);
       blocks=(unsigned char *) RelinquishMagickMemory(blocks);
     }
   /*
