@@ -64,6 +64,7 @@
 #include "MagickCore/resource_.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/module.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
@@ -311,7 +312,7 @@ static Image *InvokeDNGDelegate(const ImageInfo *image_info,Image *image,
 }
 
 #if defined(MAGICKCORE_RAW_R_DELEGATE)
-static void SetLibRawParams(const ImageInfo *image_info,
+static void SetLibRawParams(const ImageInfo *image_info,Image *image,
   libraw_data_t *raw_info)
 {
   const char
@@ -321,6 +322,19 @@ static void SetLibRawParams(const ImageInfo *image_info,
   option=GetImageOption(image_info,"dng:use_camera_wb");
   if (option != (const char *) NULL)
     raw_info->params.use_camera_wb=IsStringTrue(option);
+  option=GetImageOption(image_info,"dng:use_auto_wb");
+  if (option != (const char *) NULL)
+    raw_info->params.use_auto_wb=IsStringTrue(option);
+  option=GetImageOption(image_info,"dng:no_auto_bright");
+  if (option != (const char *) NULL)
+    raw_info->params.no_auto_bright=IsStringTrue(option);
+  option=GetImageOption(image_info,"dng:output_color");
+  if (option != (const char *) NULL)
+    {
+      raw_info->params.output_color=StringToInteger(option);
+      if (raw_info->params.output_color == 5)
+        image->colorspace=XYZColorspace;
+    }
 }
 #endif
 
@@ -425,7 +439,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         libraw_close(raw_info);
         return(DestroyImageList(image));
       }
-    SetLibRawParams(image_info,raw_info);
+    SetLibRawParams(image_info,image,raw_info);
     errcode=libraw_dcraw_process(raw_info);
     if (errcode != LIBRAW_SUCCESS)
       {
