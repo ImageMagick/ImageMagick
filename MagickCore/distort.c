@@ -418,6 +418,7 @@ static double *GenerateCoefficients(const Image *image,
   number_coeff=0;
   switch (*method) {
     case AffineDistortion:
+    case RigidAffineDistortion:
     /* also BarycentricColorInterpolate: */
       number_coeff=3*number_values;
       break;
@@ -604,6 +605,118 @@ static double *GenerateCoefficients(const Image *image,
           return((double *) NULL);
         }
       }
+      return(coeff);
+    }
+    case RigidAffineDistortion:
+    {
+      /* Rigid Affine Distortion
+           v =  c0*x + c1*y + c2
+         for each 'value' given
+
+         Input Arguments are sets of control points...
+         For Distort Images    u,v, x,y  ...
+         For Sparse Gradients  x,y, r,g,b  ...
+      */
+      if ( number_arguments%cp_size != 0 ||
+           number_arguments < cp_size ) {
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+               "InvalidArgument", "%s : 'require at least %.20g CPs'",
+               "Affine", 1.0);
+        coeff=(double *) RelinquishMagickMemory(coeff);
+        return((double *) NULL);
+      }
+      /* handle special cases of not enough arguments */
+      if ( number_arguments == cp_size ) {
+        /* Only 1 CP Set Given */
+        if ( cp_values == 0 ) {
+          /* image distortion - translate the image */
+          coeff[0] = 1.0;
+          coeff[2] = arguments[0] - arguments[2];
+          coeff[4] = 1.0;
+          coeff[5] = arguments[1] - arguments[3];
+        }
+        else {
+          /* sparse gradient - use the values directly */
+          for (i=0; i<number_values; i++)
+            coeff[i*3+2] = arguments[cp_values+i];
+        }
+      }
+      else {
+        /* 2 or more points (usally 3) given.
+           Solve a least squares simultaneous equation for coefficients.
+        */
+        double
+          **matrix,
+          **vectors,
+          terms[3];
+
+        MagickBooleanType
+          status;
+
+        /* create matrix, and a fake vectors matrix */
+        matrix = AcquireMagickMatrix(2UL,2UL);
+        vectors = (double **) AcquireQuantumMemory(number_values,sizeof(*vectors));
+        if (matrix == (double **) NULL || vectors == (double **) NULL)
+        {
+          matrix  = RelinquishMagickMatrix(matrix, 2UL);
+          vectors = (double **) RelinquishMagickMemory(vectors);
+          coeff   = (double *) RelinquishMagickMemory(coeff);
+          (void) ThrowMagickException(exception,GetMagickModule(),
+                  ResourceLimitError,"MemoryAllocationFailed",
+                  "%s", "DistortCoefficients");
+          return((double *) NULL);
+        }
+        /* fake a number_values x3 vectors matrix from coefficients array */
+        for (i=0; i < number_values; i++)
+          vectors[i] = &(coeff[i*2]);
+        /* Add given control point pairs for least squares solving */
+        for (i=0; i < number_arguments; i+=cp_size) {
+          terms[0] = arguments[i+cp_x];  /* x */
+          terms[1] = arguments[i+cp_y];  /* y */
+          terms[2] = 1;                  /* 1 */
+          LeastSquaresAddTerms(matrix,vectors,terms,
+                   &(arguments[i+cp_values]),2UL,number_values);
+        }
+        if ( number_arguments == 2*cp_size ) {
+          /* Only two pairs were given, but we need 3 to solve the affine.
+             Fake extra coordinates by rotating p1 around p0 by 90 degrees.
+               x2 = x0 - (y1-y0)   y2 = y0 + (x1-x0)
+           */
+          terms[0] = arguments[cp_x]
+                   - ( arguments[cp_size+cp_y] - arguments[cp_y] ); /* x2 */
+          terms[1] = arguments[cp_y] +
+                   + ( arguments[cp_size+cp_x] - arguments[cp_x] ); /* y2 */
+          terms[2] = 1;                                             /* 1 */
+          if ( cp_values == 0 ) {
+            /* Image Distortion - rotate the u,v coordients too */
+            double
+              uv2[2];
+            uv2[0] = arguments[0] - arguments[5] + arguments[1];   /* u2 */
+            uv2[1] = arguments[1] + arguments[4] - arguments[0];   /* v2 */
+            LeastSquaresAddTerms(matrix,vectors,terms,uv2,2UL,2UL);
+          }
+          else {
+            /* Sparse Gradient - use values of p0 for linear gradient */
+            LeastSquaresAddTerms(matrix,vectors,terms,
+                  &(arguments[cp_values]),2UL,number_values);
+          }
+        }
+        /* Solve for LeastSquares Coefficients */
+        status=GaussJordanElimination(matrix,vectors,2UL,number_values);
+        matrix = RelinquishMagickMatrix(matrix, 2UL);
+        vectors = (double **) RelinquishMagickMemory(vectors);
+        if ( status == MagickFalse ) {
+          coeff = (double *) RelinquishMagickMemory(coeff);
+          (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+              "InvalidArgument","%s : 'Unsolvable Matrix'",
+              CommandOptionToMnemonic(MagickDistortOptions, *method) );
+          return((double *) NULL);
+        }
+      }
+      coeff[5]=coeff[3];
+      coeff[4]=coeff[2];
+      coeff[3]=coeff[0];
+      coeff[2]=(-coeff[1]);
       return(coeff);
     }
     case AffineProjectionDistortion:
@@ -1774,6 +1887,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
     switch (method)
     {
       case AffineDistortion:
+      case RigidAffineDistortion:
       { double inverse[6];
         InvertAffineCoefficients(coeff, inverse);
         s.x = (double) image->page.x;
@@ -1986,6 +2100,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
     switch (method)
     {
       case AffineDistortion:
+      case RigidAffineDistortion:
       {
         double
           *inverse;
@@ -2417,6 +2532,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
       switch (method)
       {
         case AffineDistortion:
+        case RigidAffineDistortion:
           ScaleFilter( resample_filter[id],
             coeff[0], coeff[1],
             coeff[3], coeff[4] );
@@ -2441,6 +2557,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
         switch (method)
         {
           case AffineDistortion:
+          case RigidAffineDistortion:
           {
             s.x=coeff[0]*d.x+coeff[1]*d.y+coeff[2];
             s.y=coeff[3]*d.x+coeff[4]*d.y+coeff[5];

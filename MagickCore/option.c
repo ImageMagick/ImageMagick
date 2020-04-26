@@ -1330,6 +1330,7 @@ static const OptionInfo
     { "None", NoDitherMethod, UndefinedOptionFlag, MagickFalse },
     { "FloydSteinberg", FloydSteinbergDitherMethod, UndefinedOptionFlag, MagickFalse },
     { "Riemersma", RiemersmaDitherMethod, UndefinedOptionFlag, MagickFalse },
+    { "RigidAffine", RigidAffineDistortion, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedEndian, UndefinedOptionFlag, MagickFalse }
   },
   EndianOptions[] =
