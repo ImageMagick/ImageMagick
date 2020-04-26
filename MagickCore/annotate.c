@@ -1783,13 +1783,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       origin.x+=(FT_Pos) (64.0*draw_info->interword_spacing);
     else
       if (i == last_character)
-        {
-          if ((bounds.xMax == 0) ||
-              (annotate_info->gravity == CenterGravity))
-            origin.x+=(FT_Pos) grapheme[i].x_advance;
-          else
-            origin.x+=(FT_Pos) bounds.xMax;
-        }
+        origin.x+=MagickMax((FT_Pos) grapheme[i].x_advance,bounds.xMax);
       else
         origin.x+=(FT_Pos) grapheme[i].x_advance;
     metrics->origin.x=(double) origin.x;
