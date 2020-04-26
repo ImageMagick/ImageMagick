@@ -258,16 +258,14 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
   Image *image,struct heif_context *heif_context,heif_item_id image_id,
   ExceptionInfo *exception)
 {
-  const char
-    *option;
-
   int
     stride_y,
     stride_cb,
     stride_cr;
 
   MagickBooleanType
-    status;
+    status,
+    preserve_orientation;
 
   ssize_t
     y;
@@ -308,6 +306,13 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
   image->depth=8;
   image->columns=(size_t) heif_image_handle_get_width(image_handle);
   image->rows=(size_t) heif_image_handle_get_height(image_handle);
+
+  preserve_orientation = IsStringTrue(GetImageOption(image_info,
+    "heic:preserve-orientation"));
+
+  if (preserve_orientation == MagickFalse)
+    (void) SetImageProperty(image,"exif:Orientation","1",exception);
+
   if (image_info->ping != MagickFalse)
     {
       image->colorspace=YCbCrColorspace;
@@ -330,14 +335,12 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
   */
   (void) SetImageColorspace(image,YCbCrColorspace,exception);
   decode_options=(struct heif_decoding_options *) NULL;
-  option=GetImageOption(image_info,"heic:preserve-orientation");
-  if (IsStringTrue(option) == MagickTrue)
+  if (preserve_orientation == MagickTrue)
     {
       decode_options=heif_decoding_options_alloc();
       decode_options->ignore_transformations=1;
     }
   else
-    (void) SetImageProperty(image,"exif:Orientation","1",exception);
   error=heif_decode_image(image_handle,&heif_image,heif_colorspace_YCbCr,
     heif_chroma_420,decode_options);
   if (decode_options != (struct heif_decoding_options *) NULL)
