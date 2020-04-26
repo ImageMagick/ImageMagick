@@ -1304,6 +1304,7 @@ static const OptionInfo
   DistortOptions[] =
   {
     { "Affine", AffineDistortion, UndefinedOptionFlag, MagickFalse },
+    { "RigidAffine", RigidAffineDistortion, UndefinedOptionFlag, MagickFalse },
     { "AffineProjection", AffineProjectionDistortion, UndefinedOptionFlag, MagickFalse },
     { "ScaleRotateTranslate", ScaleRotateTranslateDistortion, UndefinedOptionFlag, MagickFalse },
     { "SRT", ScaleRotateTranslateDistortion, UndefinedOptionFlag, MagickFalse },
@@ -1330,7 +1331,6 @@ static const OptionInfo
     { "None", NoDitherMethod, UndefinedOptionFlag, MagickFalse },
     { "FloydSteinberg", FloydSteinbergDitherMethod, UndefinedOptionFlag, MagickFalse },
     { "Riemersma", RiemersmaDitherMethod, UndefinedOptionFlag, MagickFalse },
-    { "RigidAffine", RigidAffineDistortion, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedEndian, UndefinedOptionFlag, MagickFalse }
   },
   EndianOptions[] =

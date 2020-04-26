@@ -821,7 +821,7 @@ MagickExport size_t GetMatrixRows(const MatrixInfo *matrix_info)
 %       c5 = vectors[1][2];
 %     }
 %     else
-%       printf("Matrix unsolvable\n);
+%       printf("Matrix unsolvable\n");
 %     RelinquishMagickMatrix(matrix,3UL);
 %     RelinquishMagickMatrix(vectors,2UL);
 %
