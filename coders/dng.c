@@ -310,6 +310,20 @@ static Image *InvokeDNGDelegate(const ImageInfo *image_info,Image *image,
   return(image);
 }
 
+#if defined(MAGICKCORE_RAW_R_DELEGATE)
+static void SetLibRawParams(const ImageInfo *image_info,
+  libraw_data_t *raw_info)
+{
+  const char
+    *option;
+
+  raw_info->params.output_bps=16;
+  option=GetImageOption(image_info,"dng:use_camera_wb");
+  if (option != (const char *) NULL)
+    raw_info->params.use_camera_wb=IsStringTrue(option);
+}
+#endif
+
 static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
@@ -367,8 +381,6 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         libraw_close(raw_info);
         return(DestroyImageList(image));
       }
-    raw_info->params.use_camera_wb=IsStringTrue(GetImageOption(image_info,
-      "dng:use_camera_wb"));
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && defined(_MSC_VER) && (_MSC_VER > 1310)
     {
       wchar_t
@@ -413,7 +425,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         libraw_close(raw_info);
         return(DestroyImageList(image));
       }
-    raw_info->params.output_bps=16;
+    SetLibRawParams(image_info,raw_info);
     errcode=libraw_dcraw_process(raw_info);
     if (errcode != LIBRAW_SUCCESS)
       {
