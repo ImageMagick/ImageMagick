@@ -234,8 +234,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     image->columns=(size_t) floor(draw_info->pointsize+draw_info->stroke_width+
       0.5);
   if (image->rows == 0)
-    image->rows=(size_t) floor(metrics.ascent-metrics.descent+
-      draw_info->stroke_width+0.5);
+    image->rows=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
   if (image->rows == 0)
     image->rows=(size_t) floor(draw_info->pointsize+draw_info->stroke_width+
       0.5);
