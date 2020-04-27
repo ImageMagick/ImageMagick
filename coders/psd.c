@@ -1661,9 +1661,6 @@ static void ParseAdditionalInfo(LayerInfo *layer_info)
   char
     key[5];
 
-  MagickBooleanType
-    found;
-
   register size_t
     i;
 
