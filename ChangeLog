@@ -1,5 +1,5 @@
 2020-04-27  7.0.10-10 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-10, GIT revision 17203:a2514e831:20200427
+  * Release ImageMagick version 7.0.10-10, GIT revision 17205:9b0340e:20200427
 
 2020-04-27  7.0.10-10 Cristy  <quetzlzacatenango@image...>
   * Correction to allocate a colormap of the maximum colors when color
