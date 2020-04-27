@@ -264,8 +264,8 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
     stride_cr;
 
   MagickBooleanType
-    status,
-    preserve_orientation;
+    preserve_orientation,
+    status;
 
   ssize_t
     y;
