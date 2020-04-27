@@ -425,7 +425,11 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   /*
     Copy source file to destination.
   */
-  destination_file=open_utf8(destination,O_WRONLY | O_BINARY | O_CREAT,S_MODE);
+  if (strcmp(destination,"-") == 0)
+    destination_file=fileno(stdout);
+  else
+    destination_file=open_utf8(destination,O_WRONLY | O_BINARY | O_CREAT,
+      S_MODE);
   if (destination_file == -1)
     return(MagickFalse);
   source_file=open_utf8(source,O_RDONLY | O_BINARY,0);
@@ -456,7 +460,8 @@ static MagickBooleanType CopyDelegateFile(const char *source,
     if ((size_t) count != length)
       break;
   }
-  (void) close(destination_file);
+  if (strcmp(destination,"-") != 0)
+    (void) close(destination_file);
   (void) close(source_file);
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
   return(i != 0 ? MagickTrue : MagickFalse);
