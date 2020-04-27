@@ -1661,9 +1661,6 @@ static void ParseAdditionalInfo(LayerInfo *layer_info)
   char
     key[5];
 
-  register size_t
-    i;
-
   size_t
     remaining_length;
 
