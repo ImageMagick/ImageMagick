@@ -308,10 +308,8 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
   image->rows=(size_t) heif_image_handle_get_height(image_handle);
   preserve_orientation=IsStringTrue(GetImageOption(image_info,
     "heic:preserve-orientation"));
-
   if (preserve_orientation == MagickFalse)
     (void) SetImageProperty(image,"exif:Orientation","1",exception);
-
   if (image_info->ping != MagickFalse)
     {
       image->colorspace=YCbCrColorspace;
