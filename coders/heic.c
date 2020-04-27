@@ -306,8 +306,7 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
   image->depth=8;
   image->columns=(size_t) heif_image_handle_get_width(image_handle);
   image->rows=(size_t) heif_image_handle_get_height(image_handle);
-
-  preserve_orientation = IsStringTrue(GetImageOption(image_info,
+  preserve_orientation=IsStringTrue(GetImageOption(image_info,
     "heic:preserve-orientation"));
 
   if (preserve_orientation == MagickFalse)
@@ -340,7 +339,6 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
       decode_options=heif_decoding_options_alloc();
       decode_options->ignore_transformations=1;
     }
-  else
   error=heif_decode_image(image_handle,&heif_image,heif_colorspace_YCbCr,
     heif_chroma_420,decode_options);
   if (decode_options != (struct heif_decoding_options *) NULL)
