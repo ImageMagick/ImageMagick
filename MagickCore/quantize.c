@@ -340,13 +340,12 @@ static MagickBooleanType
   AssignImageColors(Image *,CubeInfo *,ExceptionInfo *),
   ClassifyImageColors(CubeInfo *,const Image *,ExceptionInfo *),
   DitherImage(Image *,CubeInfo *,ExceptionInfo *),
-  SetGrayscaleImage(Image *,ExceptionInfo *);
-
-static size_t
-  DefineImageColormap(Image *,CubeInfo *,NodeInfo *);
+  SetGrayscaleImage(Image *,ExceptionInfo *),
+  SetImageColormap(Image *,CubeInfo *,ExceptionInfo *);
 
 static void
   ClosestColor(const Image *,CubeInfo *,const NodeInfo *),
+  DefineImageColormap(Image *,CubeInfo *,NodeInfo *),
   DestroyCubeInfo(CubeInfo *),
   PruneLevel(CubeInfo *,const NodeInfo *),
   PruneToCubeDepth(CubeInfo *,const NodeInfo *),
@@ -506,9 +505,6 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
   ssize_t
     y;
 
-  size_t
-    number_colors;
-
   /*
     Allocate image colormap.
   */
@@ -516,14 +512,10 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
   if (cube_info->quantize_info->colorspace != UndefinedColorspace)
     (void) TransformImageColorspace(image,cube_info->quantize_info->colorspace,
       exception);
-  number_colors=MagickMax(cube_info->colors,cube_info->maximum_colors);
-  if (AcquireImageColormap(image,number_colors,exception) == MagickFalse)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
-  image->colors=0;
   cube_info->transparent_pixels=0;
   cube_info->transparent_index=(-1);
-  (void) DefineImageColormap(image,cube_info,cube_info->root);
+  if (SetImageColormap(image,cube_info,exception) == MagickFalse)
+    return(MagickFalse);
   /*
     Create a reduced color image.
   */
@@ -1229,12 +1221,11 @@ MagickExport MagickBooleanType CompressImageColormap(Image *image,
 %
 %  DefineImageColormap() traverses the color cube tree and notes each colormap
 %  entry.  A colormap entry is any node in the color cube tree where the
-%  of unique colors is not zero.  DefineImageColormap() returns the number of
-%  colors in the image colormap.
+%  of unique colors is not zero.
 %
 %  The format of the DefineImageColormap method is:
 %
-%      size_t DefineImageColormap(Image *image,CubeInfo *cube_info,
+%      void DefineImageColormap(Image *image,CubeInfo *cube_info,
 %        NodeInfo *node_info)
 %
 %  A description of each parameter follows.
@@ -1247,7 +1238,7 @@ MagickExport MagickBooleanType CompressImageColormap(Image *image,
 %      node in the color cube tree that is to be pruned.
 %
 */
-static size_t DefineImageColormap(Image *image,CubeInfo *cube_info,
+static void DefineImageColormap(Image *image,CubeInfo *cube_info,
   NodeInfo *node_info)
 {
   register ssize_t
@@ -1262,7 +1253,7 @@ static size_t DefineImageColormap(Image *image,CubeInfo *cube_info,
   number_children=cube_info->associate_alpha == MagickFalse ? 8UL : 16UL;
   for (i=0; i < (ssize_t) number_children; i++)
     if (node_info->child[i] != (NodeInfo *) NULL)
-      (void) DefineImageColormap(image,cube_info,node_info->child[i]);
+      DefineImageColormap(image,cube_info,node_info->child[i]);
   if (node_info->number_unique != 0)
     {
       register double
@@ -1325,7 +1316,6 @@ static size_t DefineImageColormap(Image *image,CubeInfo *cube_info,
         }
       node_info->color_number=image->colors++;
     }
-  return(image->colors);
 }
 
 /*
@@ -2515,12 +2505,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
         {
           if (cube_info->colors > cube_info->maximum_colors)
             ReduceImageColors(image,cube_info);
-          status=AcquireImageColormap(image,number_colors,exception);
-          if (status != MagickFalse)
-            {
-              image->colors=0;
-              (void) DefineImageColormap(image,cube_info,cube_info->root);
-            }
+          status=SetImageColormap(image,cube_info,exception);
         }
       DestroyCubeInfo(cube_info);
       quantize_info=DestroyQuantizeInfo(quantize_info);
@@ -3900,4 +3885,57 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
   if (SetImageMonochrome(image,exception) != MagickFalse)
     image->type=BilevelType;
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   S e t I m a g e C o l o r m a p                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetImageColormap() traverses the color cube tree and sets the colormap of
+%  the image.  A colormap entry is any node in the color cube tree where the
+%  of unique colors is not zero.
+%
+%  The format of the SetImageColormap method is:
+%
+%      MagickBooleanType SetImageColormap(Image *image,CubeInfo *cube_info,
+%        ExceptionInfo *node_info)
+%
+%  A description of each parameter follows.
+%
+%    o image: the image.
+%
+%    o cube_info: A pointer to the Cube structure.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+MagickBooleanType SetImageColormap(Image *image,CubeInfo *cube_info,
+  ExceptionInfo *exception)
+{
+  size_t
+    number_colors;
+
+  number_colors=MagickMax(cube_info->maximum_colors,cube_info->colors);
+  if (AcquireImageColormap(image,number_colors,exception) == MagickFalse)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
+  image->colors=0;
+  DefineImageColormap(image,cube_info,cube_info->root);
+  if (image->colors != number_colors)
+    {
+      image->colormap=(PixelInfo *) ResizeQuantumMemory(image->colormap,
+        image->colors+1,sizeof(*image->colormap));
+      if (image->colormap == (PixelInfo *) NULL)
+        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+          image->filename);
+    }
+  return(MagickTrue);
 }
