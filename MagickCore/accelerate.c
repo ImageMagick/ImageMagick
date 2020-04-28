@@ -567,6 +567,8 @@ cleanup:
 MagickPrivate Image *AccelerateAddNoiseImage(const Image *image,
   const NoiseType noise_type,const double attenuate,ExceptionInfo *exception)
 {
+  /* Temporary disabled because of repetition.
+
   Image
     *filteredImage;
 
@@ -586,6 +588,12 @@ MagickPrivate Image *AccelerateAddNoiseImage(const Image *image,
   filteredImage=ComputeAddNoiseImage(image,clEnv,noise_type,attenuate,
     exception);
   return(filteredImage);
+  */
+  magick_unreferenced(image);
+  magick_unreferenced(noise_type);
+  magick_unreferenced(attenuate);
+  magick_unreferenced(exception);
+  return((Image *)NULL);
 }
 
 /*
