@@ -1266,12 +1266,18 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
     caliper_info.projection;
   bounding_box[0].y=vertices[caliper_info.p].y+sin(angle)*
     caliper_info.projection;
-  bounding_box[1].x=bounding_box[0].x+cos(angle+MagickPI/2.0)*diameter;
-  bounding_box[1].y=bounding_box[0].y+sin(angle+MagickPI/2.0)*diameter;
-  bounding_box[2].x=bounding_box[1].x+cos(angle)*(-caliper_info.height);
-  bounding_box[2].y=bounding_box[1].y+sin(angle)*(-caliper_info.height);
-  bounding_box[3].x=bounding_box[2].x+cos(angle+MagickPI/2.0)*(-diameter);
-  bounding_box[3].y=bounding_box[2].y+sin(angle+MagickPI/2.0)*(-diameter);
+  bounding_box[1].x=floor(bounding_box[0].x+cos(angle+MagickPI/2.0)*diameter+
+    0.5);
+  bounding_box[1].y=floor(bounding_box[0].y+sin(angle+MagickPI/2.0)*diameter+
+    0.5);
+  bounding_box[2].x=floor(bounding_box[1].x+cos(angle)*(-caliper_info.height)+
+    0.5);
+  bounding_box[2].y=floor(bounding_box[1].y+sin(angle)*(-caliper_info.height)+
+    0.5);
+  bounding_box[3].x=floor(bounding_box[2].x+cos(angle+MagickPI/2.0)*(-diameter)+
+    0.5);
+  bounding_box[3].y=floor(bounding_box[2].y+sin(angle+MagickPI/2.0)*(-diameter)+
+    0.5);
   /*
     Export minimum bounding box properties.
   */
