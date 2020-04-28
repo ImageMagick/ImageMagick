@@ -536,7 +536,7 @@ static void TransformDoublePixels(const int id,const Image* image,
   register ssize_t
     x;
 
-  p=source_info->pixels[id];
+  p=(double *) source_info->pixels[id];
   for (x=0; x < (ssize_t) image->columns; x++)
   {
     *p++=GetLCMSPixel(source_info,GetPixelRed(image,q));
@@ -551,7 +551,7 @@ static void TransformDoublePixels(const int id,const Image* image,
   }
   cmsDoTransform(transform[id],source_info->pixels[id],
     target_info->pixels[id],(unsigned int) image->columns);
-  p=target_info->pixels[id];
+  p=(double *) target_info->pixels[id];
   q-=GetPixelChannels(image)*image->columns;
   for (x=0; x < (ssize_t) image->columns; x++)
   {
@@ -586,7 +586,7 @@ static void TransformQuantumPixels(const int id,const Image* image,
   register ssize_t
     x;
 
-  p=source_info->pixels[id];
+  p=(Quantum *) source_info->pixels[id];
   for (x=0; x < (ssize_t) image->columns; x++)
   {
     *p++=GetPixelRed(image,q);
@@ -601,7 +601,7 @@ static void TransformQuantumPixels(const int id,const Image* image,
   }
   cmsDoTransform(transform[id],source_info->pixels[id],
     target_info->pixels[id],(unsigned int) image->columns);
-  p=target_info->pixels[id];
+  p=(Quantum *) target_info->pixels[id];
   q-=GetPixelChannels(image)*image->columns;
   for (x=0; x < (ssize_t) image->columns; x++)
   {
