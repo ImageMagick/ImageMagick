@@ -1,3 +1,10 @@
+2020-04-28  7.0.10-11 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-11, GIT revision 17
+
+2020-04-28  7.0.10-11 Cristy  <quetzlzacatenango@image...>
+  * Disable "random" OpenCL kernel.  Previously the work load was distributed
+    but each started with the same random seed.
+
 2020-04-27  7.0.10-10 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-10, GIT revision 17205:9b0340e:20200427
 
