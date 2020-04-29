@@ -3,11 +3,17 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                                 FFFFF  X   X                                %
-%                                 F       X X                                 %
-%                                 FFF      X                                  %
-%                                 F       X X                                 %
-%                                 F      X   X                                %
+%                   V   V  IIIII  SSSSS  U   U   AAA   L                      %
+%                   V   V    I    SS     U   U  A   A  L                      %
+%                   V   V    I     SSS   U   U  AAAAA  L                      %
+%                    V V     I       SS  U   U  A   A  L                      %
+%                     V    IIIII  SSSSS   UUU   A   A  LLLLL                  %
+%                                                                             %
+%                EEEEE  FFFFF  FFFFF  EEEEE  CCCC  TTTTT  SSSSS               %
+%                E      F      F      E     C        T    SS                  %
+%                EEE    FFF    FFF    EEE   C        T     SSS                %
+%                E      F      F      E     C        T       SS               %
+%                EEEEE  F      F      EEEEE  CCCC    T    SSSSS               %
 %                                                                             %
 %                                                                             %
 %                   MagickCore Image Special Effects Methods                  %
