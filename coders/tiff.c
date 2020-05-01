@@ -1942,7 +1942,12 @@ RestoreMSCWarning
         /*
           Convert stripped TIFF image.
         */
-        extent=TIFFStripSize(tiff)+sizeof(uint32);
+        extent=TIFFStripSize(tiff);
+#if defined(TIFF_VERSION_BIG)
+        extent+=sizeof(uint64);
+#else
+        extent+=sizeof(uint32);
+#endif
         strip_pixels=(unsigned char *) AcquireQuantumMemory(extent,
           sizeof(*strip_pixels));
         if (strip_pixels == (unsigned char *) NULL)
@@ -2038,7 +2043,12 @@ RestoreMSCWarning
         number_pixels=(MagickSizeType) columns*rows;
         if (HeapOverflowSanityCheck(rows,sizeof(*tile_pixels)) != MagickFalse)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-        extent=TIFFTileSize(tiff)+sizeof(uint32);
+        extent=TIFFTileSize(tiff);
+#if defined(TIFF_VERSION_BIG)
+        extent+=sizeof(uint64);
+#else
+        extent+=sizeof(uint32);
+#endif
         tile_pixels=(unsigned char *) AcquireQuantumMemory(extent,
           sizeof(*tile_pixels));
         if (tile_pixels == (unsigned char *) NULL)
