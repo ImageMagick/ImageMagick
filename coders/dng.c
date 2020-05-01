@@ -319,16 +319,24 @@ static void SetLibRawParams(const ImageInfo *image_info,Image *image,
     *option;
 
   raw_info->params.output_bps=16;
-  option=GetImageOption(image_info,"dng:use_camera_wb");
+  option=GetImageOption(image_info,"dng:use-camera-wb");
+  if (option == (const char *) NULL)
+    option=GetImageOption(image_info,"dng:use_camera_wb");
   if (option != (const char *) NULL)
     raw_info->params.use_camera_wb=IsStringTrue(option);
-  option=GetImageOption(image_info,"dng:use_auto_wb");
+  option=GetImageOption(image_info,"dng:use-auto-wb");
+  if (option == (const char *) NULL)
+    option=GetImageOption(image_info,"dng:use_auto_wb");
   if (option != (const char *) NULL)
     raw_info->params.use_auto_wb=IsStringTrue(option);
-  option=GetImageOption(image_info,"dng:no_auto_bright");
+  option=GetImageOption(image_info,"dng:no-auto-bright");
+  if (option == (const char *) NULL)
+    option=GetImageOption(image_info,"dng:no_auto_bright");
   if (option != (const char *) NULL)
     raw_info->params.no_auto_bright=IsStringTrue(option);
-  option=GetImageOption(image_info,"dng:output_color");
+  option=GetImageOption(image_info,"dng:output-color");
+  if (option == (const char *) NULL)
+    option=GetImageOption(image_info,"dng:output_color");
   if (option != (const char *) NULL)
     {
       raw_info->params.output_color=StringToInteger(option);
