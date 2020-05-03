@@ -1697,8 +1697,12 @@ static void ParseAdditionalInfo(LayerInfo *layer_info)
         unsigned int
           length;
 
-        p+=4;
-        length=(size-4)/2;
+        length=(unsigned int) (*p++) << 24;
+        length|=(unsigned int) (*p++) << 16;
+        length|=(unsigned int) (*p++) << 8;
+        length|=(unsigned int) (*p++);
+        if (length * 2 > size - 4)
+          break;
         if (sizeof(layer_info->name) <= length)
           break;
         name=layer_info->name;
