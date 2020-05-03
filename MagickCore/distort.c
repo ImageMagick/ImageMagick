@@ -612,8 +612,8 @@ static double *GenerateCoefficients(const Image *image,
       double
         inverse[6],
         **matrix,
-        *vectors[1],
-        terms[5];
+        terms[5],
+        *vectors[1];
 
       MagickBooleanType
         status;
