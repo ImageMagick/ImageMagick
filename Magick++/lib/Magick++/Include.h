@@ -113,6 +113,9 @@ namespace MagickCore
 #        if defined(MAGICKCORE_FLIF_DELEGATE)
 #          pragma comment(lib, "CORE_DB_flif_.lib")
 #        endif
+#        if defined(MAGICKCORE_FREETYPE_DELEGATE)
+#          pragma comment(lib, "CORE_DB_freetype_.lib")
+#        endif
 #        if defined(MAGICKCORE_JBIG_DELEGATE)
 #          pragma comment(lib, "CORE_DB_jbig_.lib")
 #        endif
@@ -133,7 +136,7 @@ namespace MagickCore
 #          pragma comment(lib, "CORE_DB_libheif_.lib")
 #        endif
 #        if defined(MAGICKCORE_LZMA_DELEGATE)
-#          pragma comment(lib, "CORE_DB_lzma_.lib")
+#          pragma comment(lib, "CORE_DB_liblzma_.lib")
 #        endif
 #        if defined(MAGICKCORE_RAW_R_DELEGATE)
 #          pragma comment(lib, "CORE_DB_libraw_.lib")
@@ -163,9 +166,6 @@ namespace MagickCore
 #        if defined(MAGICKCORE_TIFF_DELEGATE)
 #          pragma comment(lib, "CORE_DB_tiff_.lib")
 #        endif
-#        if defined(MAGICKCORE_FREETYPE_DELEGATE)
-#          pragma comment(lib, "CORE_DB_ttf_.lib")
-#        endif
 #        if defined(MAGICKCORE_WEBP_DELEGATE)
 #          pragma comment(lib, "CORE_DB_webp_.lib")
 #        endif
@@ -190,6 +190,9 @@ namespace MagickCore
 #        if defined(MAGICKCORE_FLIF_DELEGATE)
 #          pragma comment(lib, "CORE_RL_flif_.lib")
 #        endif
+#        if defined(MAGICKCORE_FREETYPE_DELEGATE)
+#          pragma comment(lib, "CORE_RL_freetype_.lib")
+#        endif
 #        if defined(MAGICKCORE_JBIG_DELEGATE)
 #          pragma comment(lib, "CORE_RL_jbig_.lib")
 #        endif
@@ -210,7 +213,7 @@ namespace MagickCore
 #          pragma comment(lib, "CORE_RL_libheif_.lib")
 #        endif
 #        if defined(MAGICKCORE_LZMA_DELEGATE)
-#          pragma comment(lib, "CORE_RL_lzma_.lib")
+#          pragma comment(lib, "CORE_RL_liblzma_.lib")
 #        endif
 #        if defined(MAGICKCORE_RAW_R_DELEGATE)
 #          pragma comment(lib, "CORE_RL_libraw_.lib")
@@ -239,9 +242,6 @@ namespace MagickCore
 #        endif
 #        if defined(MAGICKCORE_TIFF_DELEGATE)
 #          pragma comment(lib, "CORE_RL_tiff_.lib")
-#        endif
-#        if defined(MAGICKCORE_FREETYPE_DELEGATE)
-#          pragma comment(lib, "CORE_RL_ttf_.lib")
 #        endif
 #        if defined(MAGICKCORE_WEBP_DELEGATE)
 #          pragma comment(lib, "CORE_RL_webp_.lib")
