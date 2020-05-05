@@ -5,6 +5,7 @@
   * Disable "random" OpenCL kernel.  Previously the work load was distributed
     but each started with the same random seed.
   * Finished implementation of -distort rigid-affine.
+  * Enable threaded PNG coder.
 
 2020-04-27  7.0.10-10 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-10, GIT revision 17205:9b0340e:20200427

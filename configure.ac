@@ -561,6 +561,14 @@ if test "$enable_largefile" != no; then
 fi
 AC_SUBST(LFS_CPPFLAGS)
 
+#
+# Set SETJMP_IS_THREAD_SAFE define.
+#
+case "${host_os}" in
+  solaris2* ) ;;
+  *) AC_DEFINE(SETJMP_IS_THREAD_SAFE,1,[Setjmp/longjmp are thread safe]) ;;
+esac
+
 # Configure libtool
 : ${AR_FLAGS=cr}
 AC_LIBTOOL_DLOPEN
