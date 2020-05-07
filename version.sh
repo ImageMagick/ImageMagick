@@ -31,12 +31,13 @@ PACKAGE_STRING="$PACKAGE_NAME $PACKAGE_VERSION"
 PACKAGE_VERSION_ADDENDUM="-${PACKAGE_RELEASE}"
 
 #
-# Versions are denoted using a standard triplet of integers:
-# MAJOR.MINOR.PATCH. The basic intent is that MAJOR versions are
-# incompatible, large-scale upgrades of the API. MINOR versions retain
-# source and binary compatibility with older minor versions, and changes
-# in the PATCH level are perfectly compatible, forwards and backwards.
-# See http://apr.apache.org/versioning.html.
+# If the library source code has changed at all since the last update,
+# increment revision (‘c:r:a’ becomes ‘c:r+1:a’).  If any interfaces have been
+# added, removed, or changed since the last update, increment current, and set
+# revision to 0.  If any interfaces have been added since the last public
+# release, then increment age.  If any interfaces have been removed or changed
+# since the last public release, then set age to 0.
+#
 #
 # PLEASE NOTE that doing a SO BUMP aka raising the CURRENT REVISION
 # could be avoided using libversioning aka map files.  You MUST change .map

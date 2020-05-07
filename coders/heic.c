@@ -618,6 +618,22 @@ ModuleExport size_t RegisterHEICImage(void)
 #endif
   entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
+#if LIBHEIF_NUMERIC_VERSION > 0x01060200
+  entry=AcquireMagickInfo("HEIC","AVIF","AV1 Image File Format");
+#if defined(MAGICKCORE_HEIC_DELEGATE)
+  entry->decoder=(DecodeImageHandler *) ReadHEICImage;
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT)
+  entry->encoder=(EncodeImageHandler *) WriteHEICImage;
+#endif
+#endif
+  entry->magick=(IsImageFormatHandler *) IsHEIC;
+  entry->mime_type=ConstantString("image/x-heic");
+#if defined(LIBHEIF_VERSION)
+  entry->version=ConstantString(LIBHEIF_VERSION);
+#endif
+  entry->flags|=CoderDecoderSeekableStreamFlag;
+  (void) RegisterMagickInfo(entry);
+#endif
   return(MagickImageCoderSignature);
 }
 
@@ -923,6 +939,11 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     */
     error=heif_context_get_encoder_for_format(heif_context,
       heif_compression_HEVC,&heif_encoder);
+#if LIBHEIF_NUMERIC_VERSION > 0x01060200
+    if (LocaleCompare(image_info->magick,"AVIF") == 0)
+      error=heif_context_get_encoder_for_format(heif_context,
+        heif_compression_AVIF,&heif_encoder);
+#endif
     status=IsHeifSuccess(&error,image,exception);
     if (status == MagickFalse)
       break;
