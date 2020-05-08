@@ -443,6 +443,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   x_offset=(-1.0);
   y_offset=(-1.0);
+  q=(Quantum *) NULL;
   do
   {
     width=0;
@@ -576,7 +577,10 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=GetAuthenticPixels(image,(ssize_t) x_offset,(ssize_t) y_offset,1,1,
           exception);
         if (q == (Quantum *) NULL)
-          continue;
+          {
+            status=MagickFalse;
+            break;
+          }
         SetPixelViaPixelInfo(image,&pixel,q);
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           {
@@ -608,9 +612,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
   } while (LocaleNCompare((char *) text,MagickTXTID,strlen(MagickTXTID)) == 0);
   (void) CloseBlob(image);
-  if (status == MagickFalse)
-    (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageWarning,
-      "InsufficientImageDataInFile","`%s'",image->filename);
+  if (q == (Quantum *) NULL)
+    return(DestroyImage(image));
   return(GetFirstImageInList(image));
 }
 
