@@ -1944,9 +1944,9 @@ RestoreMSCWarning
         */
         extent=TIFFStripSize(tiff);
 #if defined(TIFF_VERSION_BIG)
-        extent+=sizeof(uint64);
+        extent+=image->columns*sizeof(uint64);
 #else
-        extent+=sizeof(uint32);
+        extent+=image->columns*sizeof(uint32);
 #endif
         strip_pixels=(unsigned char *) AcquireQuantumMemory(extent,
           sizeof(*strip_pixels));
