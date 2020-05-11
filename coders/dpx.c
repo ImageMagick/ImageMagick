@@ -1126,8 +1126,11 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (ReadBlobByte(image) == EOF)
       break;
   if (EOFBlob(image) != MagickFalse)
-    ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-      image->filename);
+    {
+      ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+        image->filename);
+      return(DestroyImageList(image));
+    }
   if (image_info->ping != MagickFalse)
     {
       (void) CloseBlob(image);
