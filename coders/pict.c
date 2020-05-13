@@ -1170,6 +1170,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               (size_t) (frame.bottom-frame.top),MagickTrue,exception);
             if (tile_image == (Image *) NULL)
               ThrowPICTException(CorruptImageError,"ImproperImageHeader");
+            status=ResetImagePixels(tile_image,exception);
             if ((code == 0x9a) || (code == 0x9b) ||
                 ((bytes_per_line & 0x8000) != 0))
               {
