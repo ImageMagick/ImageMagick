@@ -4996,8 +4996,8 @@ RestoreMSCWarning
         x,y,&stroke_alpha);
       if (draw_info->stroke_antialias == MagickFalse)
         {
-          fill_alpha=fill_alpha > 0.25 ? 1.0 : 0.0;
-          stroke_alpha=stroke_alpha > 0.25 ? 1.0 : 0.0;
+          fill_alpha=fill_alpha > 0.5 ? 1.0 : 0.0;
+          stroke_alpha=stroke_alpha > 0.5 ? 1.0 : 0.0;
         }
       GetFillColor(draw_info,x-start_x,y-start_y,&fill_color,exception);
       CompositePixelOver(image,&fill_color,fill_alpha*fill_color.alpha,q,
