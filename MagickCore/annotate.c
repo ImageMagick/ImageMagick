@@ -1645,7 +1645,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     if (bitmap->bitmap.pixel_mode == ft_pixel_mode_mono)
       point.x=origin.x >> 6;
     point.y=offset->y-bitmap->top;
-    if (draw_info->render != MagickFalse)
+    if ((draw_info->render != MagickFalse) && 
+        (bitmap->bitmap.buffer != (unsigned char *) NULL))
       {
         CacheView
           *image_view;
