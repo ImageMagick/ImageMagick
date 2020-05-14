@@ -465,6 +465,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
       return((unsigned char *) NULL);
     }
   (void) memset(scanline,0,2*row_bytes*sizeof(*scanline));
+  (void) memset(unpack_buffer,0,sizeof(unpack_buffer));
   status=MagickTrue;
   if (bytes_per_line < 8)
     {
