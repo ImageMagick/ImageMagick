@@ -628,7 +628,7 @@ static MagickCLEnv AcquireMagickCLEnv(void)
     clEnv->cpu_score=MAGICKCORE_OPENCL_UNDEFINED_SCORE;
     clEnv->enabled=MagickTrue;
     option=getenv("MAGICK_OCL_DEVICE");
-    if ((option != (const char *) NULL) && (strcmp(option,"OFF") == 0))
+    if (IsStringFalse(option) != MagickFalse)
       clEnv->enabled=MagickFalse;
   }
   return clEnv;
@@ -985,7 +985,7 @@ static void AutoSelectOpenCLDevices(MagickCLEnv clEnv)
         SelectOpenCLDevice(clEnv,CL_DEVICE_TYPE_GPU);
       else if (strcmp(option,"CPU") == 0)
         SelectOpenCLDevice(clEnv,CL_DEVICE_TYPE_CPU);
-      else if (strcmp(option,"OFF") == 0)
+      else if (IsStringFalse(option) != MagickFalse)
         {
           for (i = 0; i < clEnv->number_devices; i++)
             clEnv->devices[i]->enabled=MagickFalse;
