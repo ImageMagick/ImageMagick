@@ -1518,7 +1518,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   if (draw_info->render == MagickFalse)
     flags=FT_LOAD_NO_BITMAP;
   if (draw_info->text_antialias == MagickFalse)
-    flags|=FT_LOAD_RENDER | FT_LOAD_TARGET_MONO;
+    flags|=FT_LOAD_TARGET_MONO;
   else
     {
 #if defined(FT_LOAD_TARGET_LIGHT)
@@ -1643,7 +1643,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     bitmap=(FT_BitmapGlyph) glyph.image;
     point.x=offset->x+bitmap->left;
     if (bitmap->bitmap.pixel_mode == ft_pixel_mode_mono)
-      point.x=origin.x >> 6;
+      point.x=offset->x+origin.x/64.0;
     point.y=offset->y-bitmap->top;
     if (draw_info->render != MagickFalse)
       {
