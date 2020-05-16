@@ -735,8 +735,7 @@ MagickExport char *ConstantString(const char *source)
 %  out exceeding the given pre-declared length.
 %
 %  The destination buffer is always null-terminated even if the string must be
-%  truncated.  The return value is the minimum of the source string length or
-%  the length parameter.
+%  truncated.  The return value is the length of the string.
 %
 %  The format of the CopyMagickString method is:
 %
@@ -768,34 +767,23 @@ MagickExport size_t CopyMagickString(char *magick_restrict destination,
   q=destination;
   for (n=length; n > 4; n-=4)
   {
-    *q=(*p++);
-    if (*q == '\0')
+    if (((*q++)=(*p++)) == '\0')
       return((size_t) (p-source-1));
-    q++;
-    *q=(*p++);
-    if (*q == '\0')
+    if (((*q++)=(*p++)) == '\0')
       return((size_t) (p-source-1));
-    q++;
-    *q=(*p++);
-    if (*q == '\0')
+    if (((*q++)=(*p++)) == '\0')
       return((size_t) (p-source-1));
-    q++;
-    *q=(*p++);
-    if (*q == '\0')
+    if (((*q++)=(*p++)) == '\0')
       return((size_t) (p-source-1));
-    q++;
   }
-  if (n != 0)
-    for (n--; n != 0; n--)
-    {
-      *q=(*p++);
-      if (*q == '\0')
-        return((size_t) (p-source-1));
-      q++;
-    }
   if (length != 0)
-    *q='\0';
-  return((size_t) (p-source-1));
+    {
+      while (--n != 0)
+        if (((*q++)=(*p++)) == '\0')
+          return((size_t) (p-source-1));
+      *q='\0';
+    }
+  return((size_t) (p-source));
 }
 
 /*
