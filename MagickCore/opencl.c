@@ -1602,8 +1602,8 @@ MagickPrivate void DumpOpenCLProfileData()
 
       profile=device->profile_records[j];
       strcpy(indent,"                    ");
-      strncpy(indent,profile->kernel_name,MagickMin(strlen(
-        profile->kernel_name),strlen(indent)-1));
+      CopyMagickString(indent,profile->kernel_name,MagickMin(strlen(
+        profile->kernel_name),strlen(indent)));
       sprintf(buf,"%s %7d %7d %7d %7d",indent,(int) (profile->total/
         profile->count),(int) profile->count,(int) profile->min,
         (int) profile->max);

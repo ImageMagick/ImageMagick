@@ -833,8 +833,8 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   if(magic_info == (const MagicInfo *) NULL) goto FINISH_UNL;
   /*     printf("Detected:%s  \n",magic_info->name); */
   if(exception->severity != UndefinedException) goto FINISH_UNL;
-  (void) strncpy(clone_info->magick,GetMagicName(magic_info),
-    MagickPathExtent-1);
+  (void) CopyMagickString(clone_info->magick,GetMagicName(magic_info),
+    MagickPathExtent);
   if (LocaleCompare(clone_info->magick,"PFB") != 0)
     {      
       ThrowException(exception,CorruptImageError,"ImproperImageHeader",

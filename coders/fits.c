@@ -625,8 +625,8 @@ static inline void CopyFitsRecord(char *buffer,const char *data,
     return;
   length=MagickMin(strlen(data),80);
   if (length > (size_t) (FITSBlocksize-offset))
-    length=FITSBlocksize-offset;
-  (void) strncpy(buffer+offset,data,length);
+    length=FITSBlocksize-offset-1;
+  (void) CopyMagickString(buffer+offset,data,length+1);
 }
 
 static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
@@ -744,7 +744,7 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   url=DestroyString(url);
   CopyFitsRecord(fits_info,header,offset);
   offset+=80;
-  (void) strncpy(header,"END",FITSBlocksize);
+  (void) CopyMagickString(header,"END",FITSBlocksize);
   CopyFitsRecord(fits_info,header,offset);
   offset+=80;
   (void) WriteBlob(image,FITSBlocksize,(unsigned char *) fits_info);
