@@ -1511,7 +1511,7 @@ static char *ParseEntities(char *xml,char **entities,int state)
                   }
                 if (entity != (char *) NULL)
                   (void) memmove(xml+length,entity+1,strlen(entity));
-                (void) strncpy(xml,entities[i],length);
+                (void) memcpy(xml,entities[i],length);
               }
         }
       else
