@@ -596,7 +596,7 @@ static void TransformQuantumPixels(const int id,const Image* image,
         *p++=GetPixelBlue(image,q);
       }
     if (source_info->channels > 3)
-      *p++=GetLCMSPixel(source_info,GetPixelBlack(image,q));
+      *p++=GetPixelBlack(image,q);
     q+=GetPixelChannels(image);
   }
   cmsDoTransform(transform[id],source_info->pixels[id],
@@ -1081,8 +1081,11 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             if (IsStringFalse(artifact) != MagickFalse)
               highres=MagickFalse;
 #endif
-            source_info.scale=1.0;
-            source_info.translate=0.0;
+            if (highres != MagickFalse)
+              {
+                source_info.scale=1.0;
+                source_info.translate=0.0;
+              }
             source_info.colorspace=sRGBColorspace;
             source_info.channels=3;
             switch (cmsGetColorSpace(source_info.profile))
@@ -1178,8 +1181,11 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             signature=cmsGetPCS(source_info.profile);
             if (target_info.profile != (cmsHPROFILE) NULL)
               signature=cmsGetColorSpace(target_info.profile);
-            target_info.scale=1.0;
-            target_info.translate=0.0;
+            if (highres != MagickFalse)
+              {
+                target_info.scale=1.0;
+                target_info.translate=0.0;
+              }
             target_info.channels=3;
             switch (signature)
             {
