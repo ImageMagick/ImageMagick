@@ -1,7 +1,0 @@
-steps:
-- bash: git clone https://github.com/dlemstra/Magick.NET.git
-  workingDirectory: build
-  displayName: 'Clone Magick.NET'
-- bash: sudo bash Magick.NET/Build/ImageMagick.sh
-  workingDirectory: build
-  displayName: 'Run script for Magick.NET'
