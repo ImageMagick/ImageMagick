@@ -2408,7 +2408,7 @@ static void LoadOpenCLDevices(MagickCLEnv clEnv)
 
       clEnv->devices[next]=device;
       (void) LogMagickEvent(AccelerateEvent,GetMagickModule(),
-        "Found device: %s (%s)",device->name, device->platform_name);
+        "Found device: %s (%s)",device->name,device->platform_name);
     }
   }
   if (next != clEnv->number_devices)
