@@ -1643,7 +1643,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     bitmap=(FT_BitmapGlyph) glyph.image;
     point.x=offset->x+bitmap->left;
     if (bitmap->bitmap.pixel_mode == ft_pixel_mode_mono)
-      point.x=offset->x+origin.x/64.0;
+      point.x+=(origin.x/64.0);
     point.y=offset->y-bitmap->top;
     if (draw_info->render != MagickFalse)
       {
