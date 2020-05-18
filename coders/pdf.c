@@ -1222,7 +1222,6 @@ RestoreMSCWarning
     *next;
 
   MagickBooleanType
-    thumbnail,
     status;
 
   MagickOffsetType
@@ -1456,8 +1455,12 @@ RestoreMSCWarning
   imageListLength=GetImageListLength(image);
   do
   {
+    Image
+      *tile_image;
+
     MagickBooleanType
-      has_icc_profile;
+      has_icc_profile,
+      thumbnail;
 
     profile=GetImageProfile(image,"icc");
     has_icc_profile=(profile != (StringInfo *) NULL) ? MagickTrue : MagickFalse;
@@ -1628,13 +1631,9 @@ RestoreMSCWarning
     (void) FormatLocaleString(buffer,MagickPathExtent,"/Contents %.20g 0 R\n",
       (double) object+1);
     (void) WriteBlobString(image,buffer);
-    thumbnail=IsStringTrue(GetImageOption(image_info,"pdf:thumbnail"));
-    if (thumbnail != MagickFalse)
-      {
-        (void) FormatLocaleString(buffer,MagickPathExtent,"/Thumb %.20g 0 R\n",
-          (double) object+(has_icc_profile != MagickFalse ? 10 : 8));
-        (void) WriteBlobString(image,buffer);
-      }
+    (void) FormatLocaleString(buffer,MagickPathExtent,"/Thumb %.20g 0 R\n",
+      (double) object+(has_icc_profile != MagickFalse ? 10 : 8));
+    (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,">>\n");
     (void) WriteBlobString(image,"endobj\n");
     /*
@@ -2259,434 +2258,431 @@ RestoreMSCWarning
         (void) WriteBlobString(image,buffer);
       }
     (void) WriteBlobString(image,"endobj\n");
+    /*
+      Write Thumb object.
+    */
+    SetGeometry(image,&geometry);
+    (void) ParseMetaGeometry("106x106+0+0>",&geometry.x,&geometry.y,
+      &geometry.width,&geometry.height);
     thumbnail=IsStringTrue(GetImageOption(image_info,"pdf:thumbnail"));
-    if (thumbnail != MagickFalse)
+    if (thumbnail == MagickFalse)
+      (void) ParseMetaGeometry("1x1+0+0>",&geometry.x,&geometry.y,
+        &geometry.width,&geometry.height);
+    tile_image=ThumbnailImage(image,geometry.width,geometry.height,
+      exception);
+    if (tile_image == (Image *) NULL)
+      return(MagickFalse);
+    xref[object++]=TellBlob(image);
+    (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g 0 obj\n",
+      (double) object);
+    (void) WriteBlobString(image,buffer);
+    (void) WriteBlobString(image,"<<\n");
+    switch (compression)
+    {
+      case NoCompression:
       {
-        Image
-          *tile_image;
-
-        /*
-          Write Thumb object.
-        */
-        SetGeometry(image,&geometry);
-        (void) ParseMetaGeometry("106x106+0+0>",&geometry.x,&geometry.y,
-          &geometry.width,&geometry.height);
-        tile_image=ThumbnailImage(image,geometry.width,geometry.height,
-          exception);
-        if (tile_image == (Image *) NULL)
-          return(MagickFalse);
-        xref[object++]=TellBlob(image);
-        (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g 0 obj\n",
-          (double) object);
+        (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,
+          "ASCII85Decode");
+        break;
+      }
+      case JPEGCompression:
+      {
+        (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,
+          "DCTDecode");
+        if (image->colorspace != CMYKColorspace)
+          break;
         (void) WriteBlobString(image,buffer);
-        (void) WriteBlobString(image,"<<\n");
+        (void) CopyMagickString(buffer,"/Decode [1 0 1 0 1 0 1 0]\n",
+          MagickPathExtent);
+        break;
+      }
+      case JPEG2000Compression:
+      {
+        (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,
+          "JPXDecode");
+        if (image->colorspace != CMYKColorspace)
+          break;
+        (void) WriteBlobString(image,buffer);
+        (void) CopyMagickString(buffer,"/Decode [1 0 1 0 1 0 1 0]\n",
+          MagickPathExtent);
+        break;
+      }
+      case LZWCompression:
+      {
+        (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,
+          "LZWDecode");
+        break;
+      }
+      case ZipCompression:
+      {
+        (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,
+          "FlateDecode");
+        break;
+      }
+      case FaxCompression:
+      case Group4Compression:
+      {
+        (void) CopyMagickString(buffer,"/Filter [ /CCITTFaxDecode ]\n",
+          MagickPathExtent);
+        (void) WriteBlobString(image,buffer);
+        (void) FormatLocaleString(buffer,MagickPathExtent,"/DecodeParms [ "
+          "<< /K %s /BlackIs1 false /Columns %.20g /Rows %.20g >> ]\n",
+          CCITTParam,(double) tile_image->columns,(double)
+          tile_image->rows);
+        break;
+      }
+      default:
+      {
+        (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,
+          "RunLengthDecode");
+        break;
+      }
+    }
+    (void) WriteBlobString(image,buffer);
+    (void) FormatLocaleString(buffer,MagickPathExtent,"/Width %.20g\n",
+      (double) tile_image->columns);
+    (void) WriteBlobString(image,buffer);
+    (void) FormatLocaleString(buffer,MagickPathExtent,"/Height %.20g\n",
+      (double) tile_image->rows);
+    (void) WriteBlobString(image,buffer);
+    (void) FormatLocaleString(buffer,MagickPathExtent,
+      "/ColorSpace %.20g 0 R\n",(double) object-
+      (has_icc_profile != MagickFalse ? 3 : 1));
+    (void) WriteBlobString(image,buffer);
+    (void) FormatLocaleString(buffer,MagickPathExtent,
+      "/BitsPerComponent %d\n",(compression == FaxCompression) ||
+      (compression == Group4Compression) ? 1 : 8);
+    (void) WriteBlobString(image,buffer);
+    (void) FormatLocaleString(buffer,MagickPathExtent,"/Length %.20g 0 R\n",
+      (double) object+1);
+    (void) WriteBlobString(image,buffer);
+    (void) WriteBlobString(image,">>\n");
+    (void) WriteBlobString(image,"stream\n");
+    offset=TellBlob(image);
+    number_pixels=(MagickSizeType) tile_image->columns*tile_image->rows;
+    if ((compression == FaxCompression) ||
+        (compression == Group4Compression) ||
+        ((image_info->type != TrueColorType) &&
+         (SetImageGray(tile_image,exception) != MagickFalse)))
+      {
         switch (compression)
         {
-          case NoCompression:
+          case FaxCompression:
+          case Group4Compression:
           {
-            (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,
-              "ASCII85Decode");
+            if (LocaleCompare(CCITTParam,"0") == 0)
+              {
+                (void) HuffmanEncodeImage(image_info,image,tile_image,
+                  exception);
+                break;
+              }
+            (void) Huffman2DEncodeImage(image_info,image,tile_image,
+              exception);
             break;
           }
           case JPEGCompression:
           {
-            (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,
-              "DCTDecode");
-            if (image->colorspace != CMYKColorspace)
-              break;
-            (void) WriteBlobString(image,buffer);
-            (void) CopyMagickString(buffer,"/Decode [1 0 1 0 1 0 1 0]\n",
-              MagickPathExtent);
+            status=InjectImageBlob(image_info,image,tile_image,"jpeg",
+              exception);
+            if (status == MagickFalse)
+              {
+                xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
+                (void) CloseBlob(image);
+                return(MagickFalse);
+              }
             break;
           }
           case JPEG2000Compression:
           {
-            (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,
-              "JPXDecode");
-            if (image->colorspace != CMYKColorspace)
-              break;
-            (void) WriteBlobString(image,buffer);
-            (void) CopyMagickString(buffer,"/Decode [1 0 1 0 1 0 1 0]\n",
-              MagickPathExtent);
+            status=InjectImageBlob(image_info,image,tile_image,"jp2",
+              exception);
+            if (status == MagickFalse)
+              {
+                xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
+                (void) CloseBlob(image);
+                return(MagickFalse);
+              }
             break;
           }
-          case LZWCompression:
-          {
-            (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,
-              "LZWDecode");
-            break;
-          }
-          case ZipCompression:
-          {
-            (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,
-              "FlateDecode");
-            break;
-          }
-          case FaxCompression:
-          case Group4Compression:
-          {
-            (void) CopyMagickString(buffer,"/Filter [ /CCITTFaxDecode ]\n",
-              MagickPathExtent);
-            (void) WriteBlobString(image,buffer);
-            (void) FormatLocaleString(buffer,MagickPathExtent,"/DecodeParms [ "
-              "<< /K %s /BlackIs1 false /Columns %.20g /Rows %.20g >> ]\n",
-              CCITTParam,(double) tile_image->columns,(double)
-              tile_image->rows);
-            break;
-          }
+          case RLECompression:
           default:
           {
-            (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,
-              "RunLengthDecode");
+            MemoryInfo
+              *pixel_info;
+
+            /*
+              Allocate pixel array.
+            */
+            length=(size_t) number_pixels;
+            pixel_info=AcquireVirtualMemory(length,sizeof(*pixels));
+            if (pixel_info == (MemoryInfo *) NULL)
+              {
+                tile_image=DestroyImage(tile_image);
+                ThrowPDFException(ResourceLimitError,
+                  "MemoryAllocationFailed");
+              }
+            pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
+            /*
+              Dump runlength encoded pixels.
+            */
+            q=pixels;
+            for (y=0; y < (ssize_t) tile_image->rows; y++)
+            {
+              p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
+                exception);
+              if (p == (const Quantum *) NULL)
+                break;
+              for (x=0; x < (ssize_t) tile_image->columns; x++)
+              {
+                *q++=ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(
+                  tile_image,p)));
+                p+=GetPixelChannels(tile_image);
+              }
+            }
+#if defined(MAGICKCORE_ZLIB_DELEGATE)
+            if (compression == ZipCompression)
+              status=ZLIBEncodeImage(image,length,pixels,exception);
+            else
+#endif
+              if (compression == LZWCompression)
+                status=LZWEncodeImage(image,length,pixels,exception);
+              else
+                status=PackbitsEncodeImage(image,length,pixels,exception);
+            pixel_info=RelinquishVirtualMemory(pixel_info);
+            if (status == MagickFalse)
+              {
+                xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
+                (void) CloseBlob(image);
+                return(MagickFalse);
+              }
+            break;
+          }
+          case NoCompression:
+          {
+            /*
+              Dump uncompressed PseudoColor packets.
+            */
+            Ascii85Initialize(image);
+            for (y=0; y < (ssize_t) tile_image->rows; y++)
+            {
+              p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
+                exception);
+              if (p == (const Quantum *) NULL)
+                break;
+              for (x=0; x < (ssize_t) tile_image->columns; x++)
+              {
+                Ascii85Encode(image,ScaleQuantumToChar(ClampToQuantum(
+                  GetPixelLuma(tile_image,p))));
+                p+=GetPixelChannels(tile_image);
+              }
+            }
+            Ascii85Flush(image);
             break;
           }
         }
-        (void) WriteBlobString(image,buffer);
-        (void) FormatLocaleString(buffer,MagickPathExtent,"/Width %.20g\n",
-          (double) tile_image->columns);
-        (void) WriteBlobString(image,buffer);
-        (void) FormatLocaleString(buffer,MagickPathExtent,"/Height %.20g\n",
-          (double) tile_image->rows);
-        (void) WriteBlobString(image,buffer);
-        (void) FormatLocaleString(buffer,MagickPathExtent,
-          "/ColorSpace %.20g 0 R\n",(double) object-
-          (has_icc_profile != MagickFalse ? 3 : 1));
-        (void) WriteBlobString(image,buffer);
-        (void) FormatLocaleString(buffer,MagickPathExtent,
-          "/BitsPerComponent %d\n",(compression == FaxCompression) ||
-          (compression == Group4Compression) ? 1 : 8);
-        (void) WriteBlobString(image,buffer);
-        (void) FormatLocaleString(buffer,MagickPathExtent,"/Length %.20g 0 R\n",
-          (double) object+1);
-        (void) WriteBlobString(image,buffer);
-        (void) WriteBlobString(image,">>\n");
-        (void) WriteBlobString(image,"stream\n");
-        offset=TellBlob(image);
-        number_pixels=(MagickSizeType) tile_image->columns*tile_image->rows;
-        if ((compression == FaxCompression) ||
-            (compression == Group4Compression) ||
-            ((image_info->type != TrueColorType) &&
-             (SetImageGray(tile_image,exception) != MagickFalse)))
+      }
+    else
+      if ((tile_image->storage_class == DirectClass) ||
+          (tile_image->colors > 256) || (compression == JPEGCompression) ||
+          (compression == JPEG2000Compression))
+        switch (compression)
+        {
+          case JPEGCompression:
           {
-            switch (compression)
-            {
-              case FaxCompression:
-              case Group4Compression:
+            status=InjectImageBlob(image_info,image,tile_image,"jpeg",
+              exception);
+            if (status == MagickFalse)
               {
-                if (LocaleCompare(CCITTParam,"0") == 0)
-                  {
-                    (void) HuffmanEncodeImage(image_info,image,tile_image,
-                      exception);
-                    break;
-                  }
-                (void) Huffman2DEncodeImage(image_info,image,tile_image,
-                  exception);
-                break;
+                xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
+                (void) CloseBlob(image);
+                return(MagickFalse);
               }
-              case JPEGCompression:
-              {
-                status=InjectImageBlob(image_info,image,tile_image,"jpeg",
-                  exception);
-                if (status == MagickFalse)
-                  {
-                    xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
-                    (void) CloseBlob(image);
-                    return(MagickFalse);
-                  }
-                break;
-              }
-              case JPEG2000Compression:
-              {
-                status=InjectImageBlob(image_info,image,tile_image,"jp2",
-                  exception);
-                if (status == MagickFalse)
-                  {
-                    xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
-                    (void) CloseBlob(image);
-                    return(MagickFalse);
-                  }
-                break;
-              }
-              case RLECompression:
-              default:
-              {
-                MemoryInfo
-                  *pixel_info;
-
-                /*
-                  Allocate pixel array.
-                */
-                length=(size_t) number_pixels;
-                pixel_info=AcquireVirtualMemory(length,sizeof(*pixels));
-                if (pixel_info == (MemoryInfo *) NULL)
-                  {
-                    tile_image=DestroyImage(tile_image);
-                    ThrowPDFException(ResourceLimitError,
-                      "MemoryAllocationFailed");
-                  }
-                pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
-                /*
-                  Dump runlength encoded pixels.
-                */
-                q=pixels;
-                for (y=0; y < (ssize_t) tile_image->rows; y++)
-                {
-                  p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
-                    exception);
-                  if (p == (const Quantum *) NULL)
-                    break;
-                  for (x=0; x < (ssize_t) tile_image->columns; x++)
-                  {
-                    *q++=ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(
-                      tile_image,p)));
-                    p+=GetPixelChannels(tile_image);
-                  }
-                }
-#if     defined(MAGICKCORE_ZLIB_DELEGATE)
-                if (compression == ZipCompression)
-                  status=ZLIBEncodeImage(image,length,pixels,exception);
-                else
-#endif
-                  if (compression == LZWCompression)
-                    status=LZWEncodeImage(image,length,pixels,exception);
-                  else
-                    status=PackbitsEncodeImage(image,length,pixels,exception);
-                pixel_info=RelinquishVirtualMemory(pixel_info);
-                if (status == MagickFalse)
-                  {
-                    xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
-                    (void) CloseBlob(image);
-                    return(MagickFalse);
-                  }
-                break;
-              }
-              case NoCompression:
-              {
-                /*
-                  Dump uncompressed PseudoColor packets.
-                */
-                Ascii85Initialize(image);
-                for (y=0; y < (ssize_t) tile_image->rows; y++)
-                {
-                  p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
-                    exception);
-                  if (p == (const Quantum *) NULL)
-                    break;
-                  for (x=0; x < (ssize_t) tile_image->columns; x++)
-                  {
-                    Ascii85Encode(image,ScaleQuantumToChar(ClampToQuantum(
-                      GetPixelLuma(tile_image,p))));
-                    p+=GetPixelChannels(tile_image);
-                  }
-                }
-                Ascii85Flush(image);
-                break;
-              }
-            }
+            break;
           }
-        else
-          if ((tile_image->storage_class == DirectClass) ||
-              (tile_image->colors > 256) || (compression == JPEGCompression) ||
-              (compression == JPEG2000Compression))
-            switch (compression)
-            {
-              case JPEGCompression:
+          case JPEG2000Compression:
+          {
+            status=InjectImageBlob(image_info,image,tile_image,"jp2",
+              exception);
+            if (status == MagickFalse)
               {
-                status=InjectImageBlob(image_info,image,tile_image,"jpeg",
-                  exception);
-                if (status == MagickFalse)
-                  {
-                    xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
-                    (void) CloseBlob(image);
-                    return(MagickFalse);
-                  }
-                break;
+                xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
+                (void) CloseBlob(image);
+                return(MagickFalse);
               }
-              case JPEG2000Compression:
-              {
-                status=InjectImageBlob(image_info,image,tile_image,"jp2",
-                  exception);
-                if (status == MagickFalse)
-                  {
-                    xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
-                    (void) CloseBlob(image);
-                    return(MagickFalse);
-                  }
-                break;
-              }
-              case RLECompression:
-              default:
-              {
-                MemoryInfo
-                  *pixel_info;
+            break;
+          }
+          case RLECompression:
+          default:
+          {
+            MemoryInfo
+              *pixel_info;
 
-                /*
-                  Allocate pixel array.
-                */
-                length=(size_t) number_pixels;
-                length*=tile_image->colorspace == CMYKColorspace ? 4UL : 3UL;
-                pixel_info=AcquireVirtualMemory(length,4*sizeof(*pixels));
-                if (pixel_info == (MemoryInfo *) NULL)
-                  {
-                    tile_image=DestroyImage(tile_image);
-                    ThrowPDFException(ResourceLimitError,
-                      "MemoryAllocationFailed");
-                  }
-                pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
-                /*
-                  Dump runlength encoded pixels.
-                */
-                q=pixels;
-                for (y=0; y < (ssize_t) tile_image->rows; y++)
-                {
-                  p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
-                    exception);
-                  if (p == (const Quantum *) NULL)
-                    break;
-                  for (x=0; x < (ssize_t) tile_image->columns; x++)
-                  {
-                    *q++=ScaleQuantumToChar(GetPixelRed(tile_image,p));
-                    *q++=ScaleQuantumToChar(GetPixelGreen(tile_image,p));
-                    *q++=ScaleQuantumToChar(GetPixelBlue(tile_image,p));
-                    if (tile_image->colorspace == CMYKColorspace)
-                      *q++=ScaleQuantumToChar(GetPixelBlack(tile_image,p));
-                    p+=GetPixelChannels(tile_image);
-                  }
-                }
-#if defined(MAGICKCORE_ZLIB_DELEGATE)
-                if (compression == ZipCompression)
-                  status=ZLIBEncodeImage(image,length,pixels,exception);
-                else
-#endif
-                  if (compression == LZWCompression)
-                    status=LZWEncodeImage(image,length,pixels,exception);
-                  else
-                    status=PackbitsEncodeImage(image,length,pixels,exception);
-                pixel_info=RelinquishVirtualMemory(pixel_info);
-                if (status == MagickFalse)
-                  {
-                    xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
-                    (void) CloseBlob(image);
-                    return(MagickFalse);
-                  }
-                break;
-              }
-              case NoCompression:
+            /*
+              Allocate pixel array.
+            */
+            length=(size_t) number_pixels;
+            length*=tile_image->colorspace == CMYKColorspace ? 4UL : 3UL;
+            pixel_info=AcquireVirtualMemory(length,4*sizeof(*pixels));
+            if (pixel_info == (MemoryInfo *) NULL)
               {
-                /*
-                  Dump uncompressed DirectColor packets.
-                */
-                Ascii85Initialize(image);
-                for (y=0; y < (ssize_t) tile_image->rows; y++)
-                {
-                  p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
-                    exception);
-                  if (p == (const Quantum *) NULL)
-                    break;
-                  for (x=0; x < (ssize_t) tile_image->columns; x++)
-                  {
-                    Ascii85Encode(image,ScaleQuantumToChar(
-                      GetPixelRed(tile_image,p)));
-                    Ascii85Encode(image,ScaleQuantumToChar(
-                      GetPixelGreen(tile_image,p)));
-                    Ascii85Encode(image,ScaleQuantumToChar(
-                      GetPixelBlue(tile_image,p)));
-                    if (image->colorspace == CMYKColorspace)
-                      Ascii85Encode(image,ScaleQuantumToChar(
-                        GetPixelBlack(tile_image,p)));
-                    p+=GetPixelChannels(tile_image);
-                  }
-                }
-                Ascii85Flush(image);
+                tile_image=DestroyImage(tile_image);
+                ThrowPDFException(ResourceLimitError,
+                  "MemoryAllocationFailed");
+              }
+            pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
+            /*
+              Dump runlength encoded pixels.
+            */
+            q=pixels;
+            for (y=0; y < (ssize_t) tile_image->rows; y++)
+            {
+              p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
+                exception);
+              if (p == (const Quantum *) NULL)
                 break;
+              for (x=0; x < (ssize_t) tile_image->columns; x++)
+              {
+                *q++=ScaleQuantumToChar(GetPixelRed(tile_image,p));
+                *q++=ScaleQuantumToChar(GetPixelGreen(tile_image,p));
+                *q++=ScaleQuantumToChar(GetPixelBlue(tile_image,p));
+                if (tile_image->colorspace == CMYKColorspace)
+                  *q++=ScaleQuantumToChar(GetPixelBlack(tile_image,p));
+                p+=GetPixelChannels(tile_image);
               }
             }
-          else
+#if defined(MAGICKCORE_ZLIB_DELEGATE)
+            if (compression == ZipCompression)
+              status=ZLIBEncodeImage(image,length,pixels,exception);
+            else
+#endif
+              if (compression == LZWCompression)
+                status=LZWEncodeImage(image,length,pixels,exception);
+              else
+                status=PackbitsEncodeImage(image,length,pixels,exception);
+            pixel_info=RelinquishVirtualMemory(pixel_info);
+            if (status == MagickFalse)
+              {
+                xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
+                (void) CloseBlob(image);
+                return(MagickFalse);
+              }
+            break;
+          }
+          case NoCompression:
+          {
+            /*
+              Dump uncompressed DirectColor packets.
+            */
+            Ascii85Initialize(image);
+            for (y=0; y < (ssize_t) tile_image->rows; y++)
+            {
+              p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
+                exception);
+              if (p == (const Quantum *) NULL)
+                break;
+              for (x=0; x < (ssize_t) tile_image->columns; x++)
+              {
+                Ascii85Encode(image,ScaleQuantumToChar(
+                  GetPixelRed(tile_image,p)));
+                Ascii85Encode(image,ScaleQuantumToChar(
+                  GetPixelGreen(tile_image,p)));
+                Ascii85Encode(image,ScaleQuantumToChar(
+                  GetPixelBlue(tile_image,p)));
+                if (image->colorspace == CMYKColorspace)
+                  Ascii85Encode(image,ScaleQuantumToChar(
+                    GetPixelBlack(tile_image,p)));
+                p+=GetPixelChannels(tile_image);
+              }
+            }
+            Ascii85Flush(image);
+            break;
+          }
+        }
+      else
+        {
+          /*
+            Dump number of colors and colormap.
+          */
+          switch (compression)
+          {
+            case RLECompression:
+            default:
+            {
+              MemoryInfo
+                *pixel_info;
+
+              /*
+                Allocate pixel array.
+              */
+              length=(size_t) number_pixels;
+              pixel_info=AcquireVirtualMemory(length,sizeof(*pixels));
+              if (pixel_info == (MemoryInfo *) NULL)
+                {
+                  tile_image=DestroyImage(tile_image);
+                  ThrowPDFException(ResourceLimitError,
+                    "MemoryAllocationFailed");
+                }
+              pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
+              /*
+                Dump runlength encoded pixels.
+              */
+              q=pixels;
+              for (y=0; y < (ssize_t) tile_image->rows; y++)
+              {
+                p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
+                  exception);
+                if (p == (const Quantum *) NULL)
+                  break;
+                for (x=0; x < (ssize_t) tile_image->columns; x++)
+                {
+                  *q++=(unsigned char) ((ssize_t)
+                    GetPixelIndex(tile_image,p));
+                  p+=GetPixelChannels(tile_image);
+                }
+              }
+#if defined(MAGICKCORE_ZLIB_DELEGATE)
+              if (compression == ZipCompression)
+                status=ZLIBEncodeImage(image,length,pixels,exception);
+              else
+#endif
+                if (compression == LZWCompression)
+                  status=LZWEncodeImage(image,length,pixels,exception);
+                else
+                  status=PackbitsEncodeImage(image,length,pixels,exception);
+              pixel_info=RelinquishVirtualMemory(pixel_info);
+              if (status == MagickFalse)
+                {
+                  xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
+                  (void) CloseBlob(image);
+                  return(MagickFalse);
+                }
+              break;
+            }
+            case NoCompression:
             {
               /*
-                Dump number of colors and colormap.
+                Dump uncompressed PseudoColor packets.
               */
-              switch (compression)
+              Ascii85Initialize(image);
+              for (y=0; y < (ssize_t) tile_image->rows; y++)
               {
-                case RLECompression:
-                default:
-                {
-                  MemoryInfo
-                    *pixel_info;
-
-                  /*
-                    Allocate pixel array.
-                  */
-                  length=(size_t) number_pixels;
-                  pixel_info=AcquireVirtualMemory(length,sizeof(*pixels));
-                  if (pixel_info == (MemoryInfo *) NULL)
-                    {
-                      tile_image=DestroyImage(tile_image);
-                      ThrowPDFException(ResourceLimitError,
-                        "MemoryAllocationFailed");
-                    }
-                  pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
-                  /*
-                    Dump runlength encoded pixels.
-                  */
-                  q=pixels;
-                  for (y=0; y < (ssize_t) tile_image->rows; y++)
-                  {
-                    p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
-                      exception);
-                    if (p == (const Quantum *) NULL)
-                      break;
-                    for (x=0; x < (ssize_t) tile_image->columns; x++)
-                    {
-                      *q++=(unsigned char) ((ssize_t)
-                        GetPixelIndex(tile_image,p));
-                      p+=GetPixelChannels(tile_image);
-                    }
-                  }
-#if defined(MAGICKCORE_ZLIB_DELEGATE)
-                  if (compression == ZipCompression)
-                    status=ZLIBEncodeImage(image,length,pixels,exception);
-                  else
-#endif
-                    if (compression == LZWCompression)
-                      status=LZWEncodeImage(image,length,pixels,exception);
-                    else
-                      status=PackbitsEncodeImage(image,length,pixels,exception);
-                  pixel_info=RelinquishVirtualMemory(pixel_info);
-                  if (status == MagickFalse)
-                    {
-                      xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
-                      (void) CloseBlob(image);
-                      return(MagickFalse);
-                    }
+                p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
+                  exception);
+                if (p == (const Quantum *) NULL)
                   break;
-                }
-                case NoCompression:
+                for (x=0; x < (ssize_t) tile_image->columns; x++)
                 {
-                  /*
-                    Dump uncompressed PseudoColor packets.
-                  */
-                  Ascii85Initialize(image);
-                  for (y=0; y < (ssize_t) tile_image->rows; y++)
-                  {
-                    p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
-                      exception);
-                    if (p == (const Quantum *) NULL)
-                      break;
-                    for (x=0; x < (ssize_t) tile_image->columns; x++)
-                    {
-                      Ascii85Encode(image,(unsigned char)
-                        ((ssize_t) GetPixelIndex(tile_image,p)));
-                      p+=GetPixelChannels(image);
-                    }
-                  }
-                  Ascii85Flush(image);
-                  break;
+                  Ascii85Encode(image,(unsigned char)
+                    ((ssize_t) GetPixelIndex(tile_image,p)));
+                  p+=GetPixelChannels(image);
                 }
               }
+              Ascii85Flush(image);
+              break;
             }
-        tile_image=DestroyImage(tile_image);
-      }
+          }
+        }
+    tile_image=DestroyImage(tile_image);
     offset=TellBlob(image)-offset;
     (void) WriteBlobString(image,"\nendstream\n");
     (void) WriteBlobString(image,"endobj\n");
