@@ -1,3 +1,10 @@
+2020-05-23  7.0.10-14 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-14, GIT revision 17...
+
+2020-05-23  7.0.10-14 Cristy  <quetzlzacatenango@image...>
+  * Errant warning when reading a profile file (reference
+    https://github.com/ImageMagick/ImageMagick/issues/2030).
+
 2020-05-17  7.0.10-13 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-13, GIT revision 17257:e3b442c:20200517.
 
