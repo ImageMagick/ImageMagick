@@ -2489,6 +2489,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             const StringInfo
               *profile;
 
+            ExceptionInfo
+              *sans_exception;
+
             Image
               *profile_image;
 
@@ -2512,7 +2515,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             profile=GetImageProfile(*image,"iptc");
             if (profile != (StringInfo *) NULL)
               profile_info->profile=(void *) CloneStringInfo(profile);
-            profile_image=GetImageCache(profile_info,argv[i+1],exception);
+            sans_exception=AcquireExceptionInfo();
+            profile_image=GetImageCache(profile_info,argv[i+1],sans_exception);
+            sans_exception=DestroyExceptionInfo(sans_exception);
             profile_info=DestroyImageInfo(profile_info);
             if (profile_image == (Image *) NULL)
               {
