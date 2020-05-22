@@ -1,7 +1,7 @@
-2020-05-23  7.0.10-14 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-14, GIT revision 17...
+2020-05-22  7.0.10-14 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-14, GIT revision 17268:e9c804c93:20200522
 
-2020-05-23  7.0.10-14 Cristy  <quetzlzacatenango@image...>
+2020-05-22  7.0.10-14 Cristy  <quetzlzacatenango@image...>
   * Errant warning when reading a profile file (reference
     https://github.com/ImageMagick/ImageMagick/issues/2030).
    * Fix one off error on PDF object for images with ICC profile.
