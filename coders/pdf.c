@@ -1312,9 +1312,16 @@ RestoreMSCWarning
     version=1.5;
   if (LocaleCompare(image_info->magick,"PDFA") == 0)
     version=1.6;
-  profile=GetImageProfile(image,"icc");
-  if (profile != (StringInfo *) NULL)
-    version=1.7;
+  for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
+  {
+    profile=GetImageProfile(next,"icc");
+    if (profile != (StringInfo *) NULL)
+      {
+        if (image_info->adjoin != MagickFalse)
+          (void) SetImageType(next,TrueColorType,exception);
+        version=1.7;
+      }
+  }
   option=GetImageOption(image_info,"pdf:version");
   if (option != (const char *) NULL)
     {
@@ -1463,7 +1470,7 @@ RestoreMSCWarning
       thumbnail;
 
     profile=GetImageProfile(image,"icc");
-    has_icc_profile=(profile != (StringInfo *) NULL) ? MagickTrue : MagickFalse;
+    has_icc_profile=profile != (StringInfo *) NULL ? MagickTrue : MagickFalse;
     compression=image->compression;
     if (image_info->compression != UndefinedCompression)
       compression=image_info->compression;
@@ -2268,13 +2275,12 @@ RestoreMSCWarning
     if (thumbnail == MagickFalse)
       (void) ParseMetaGeometry("1x1+0+0>",&geometry.x,&geometry.y,
         &geometry.width,&geometry.height);
-    tile_image=ThumbnailImage(image,geometry.width,geometry.height,
-      exception);
+    tile_image=ThumbnailImage(image,geometry.width,geometry.height,exception);
     if (tile_image == (Image *) NULL)
       return(MagickFalse);
     xref[object++]=TellBlob(image);
-    (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g 0 obj\n",
-      (double) object);
+    (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g 0 obj\n",(double)
+      object);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"<<\n");
     switch (compression)
@@ -2287,9 +2293,8 @@ RestoreMSCWarning
       }
       case JPEGCompression:
       {
-        (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,
-          "DCTDecode");
-        if (image->colorspace != CMYKColorspace)
+        (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,"DCTDecode");
+        if (tile_image->colorspace != CMYKColorspace)
           break;
         (void) WriteBlobString(image,buffer);
         (void) CopyMagickString(buffer,"/Decode [1 0 1 0 1 0 1 0]\n",
@@ -2298,9 +2303,8 @@ RestoreMSCWarning
       }
       case JPEG2000Compression:
       {
-        (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,
-          "JPXDecode");
-        if (image->colorspace != CMYKColorspace)
+        (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,"JPXDecode");
+        if (tile_image->colorspace != CMYKColorspace)
           break;
         (void) WriteBlobString(image,buffer);
         (void) CopyMagickString(buffer,"/Decode [1 0 1 0 1 0 1 0]\n",
@@ -2309,8 +2313,7 @@ RestoreMSCWarning
       }
       case LZWCompression:
       {
-        (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,
-          "LZWDecode");
+        (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,"LZWDecode");
         break;
       }
       case ZipCompression:
@@ -2327,8 +2330,7 @@ RestoreMSCWarning
         (void) WriteBlobString(image,buffer);
         (void) FormatLocaleString(buffer,MagickPathExtent,"/DecodeParms [ "
           "<< /K %s /BlackIs1 false /Columns %.20g /Rows %.20g >> ]\n",
-          CCITTParam,(double) tile_image->columns,(double)
-          tile_image->rows);
+          CCITTParam,(double) tile_image->columns,(double) tile_image->rows);
         break;
       }
       default:
@@ -2339,11 +2341,11 @@ RestoreMSCWarning
       }
     }
     (void) WriteBlobString(image,buffer);
-    (void) FormatLocaleString(buffer,MagickPathExtent,"/Width %.20g\n",
-      (double) tile_image->columns);
+    (void) FormatLocaleString(buffer,MagickPathExtent,"/Width %.20g\n",(double)
+      tile_image->columns);
     (void) WriteBlobString(image,buffer);
-    (void) FormatLocaleString(buffer,MagickPathExtent,"/Height %.20g\n",
-      (double) tile_image->rows);
+    (void) FormatLocaleString(buffer,MagickPathExtent,"/Height %.20g\n",(double)
+      tile_image->rows);
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MagickPathExtent,
       "/ColorSpace %.20g 0 R\n",(double) object-
@@ -2376,8 +2378,7 @@ RestoreMSCWarning
                   exception);
                 break;
               }
-            (void) Huffman2DEncodeImage(image_info,image,tile_image,
-              exception);
+            (void) Huffman2DEncodeImage(image_info,image,tile_image,exception);
             break;
           }
           case JPEGCompression:
@@ -2394,8 +2395,7 @@ RestoreMSCWarning
           }
           case JPEG2000Compression:
           {
-            status=InjectImageBlob(image_info,image,tile_image,"jp2",
-              exception);
+            status=InjectImageBlob(image_info,image,tile_image,"jp2",exception);
             if (status == MagickFalse)
               {
                 xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
@@ -2418,8 +2418,7 @@ RestoreMSCWarning
             if (pixel_info == (MemoryInfo *) NULL)
               {
                 tile_image=DestroyImage(tile_image);
-                ThrowPDFException(ResourceLimitError,
-                  "MemoryAllocationFailed");
+                ThrowPDFException(ResourceLimitError,"MemoryAllocationFailed");
               }
             pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
             /*
@@ -2434,8 +2433,8 @@ RestoreMSCWarning
                 break;
               for (x=0; x < (ssize_t) tile_image->columns; x++)
               {
-                *q++=ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(
-                  tile_image,p)));
+                *q++=ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(tile_image,
+                  p)));
                 p+=GetPixelChannels(tile_image);
               }
             }
@@ -2501,8 +2500,7 @@ RestoreMSCWarning
           }
           case JPEG2000Compression:
           {
-            status=InjectImageBlob(image_info,image,tile_image,"jp2",
-              exception);
+            status=InjectImageBlob(image_info,image,tile_image,"jp2",exception);
             if (status == MagickFalse)
               {
                 xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
@@ -2526,8 +2524,7 @@ RestoreMSCWarning
             if (pixel_info == (MemoryInfo *) NULL)
               {
                 tile_image=DestroyImage(tile_image);
-                ThrowPDFException(ResourceLimitError,
-                  "MemoryAllocationFailed");
+                ThrowPDFException(ResourceLimitError,"MemoryAllocationFailed");
               }
             pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
             /*
@@ -2635,8 +2632,7 @@ RestoreMSCWarning
                   break;
                 for (x=0; x < (ssize_t) tile_image->columns; x++)
                 {
-                  *q++=(unsigned char) ((ssize_t)
-                    GetPixelIndex(tile_image,p));
+                  *q++=(unsigned char) ((ssize_t) GetPixelIndex(tile_image,p));
                   p+=GetPixelChannels(tile_image);
                 }
               }
@@ -2672,8 +2668,8 @@ RestoreMSCWarning
                   break;
                 for (x=0; x < (ssize_t) tile_image->columns; x++)
                 {
-                  Ascii85Encode(image,(unsigned char)
-                    ((ssize_t) GetPixelIndex(tile_image,p)));
+                  Ascii85Encode(image,(unsigned char) ((ssize_t)
+                    GetPixelIndex(tile_image,p)));
                   p+=GetPixelChannels(image);
                 }
               }
@@ -2733,11 +2729,11 @@ RestoreMSCWarning
               continue;
             }
           (void) WriteBlobByte(image,ScaleQuantumToChar(
-             ClampToQuantum(image->colormap[i].red)));
+            ClampToQuantum(image->colormap[i].red)));
           (void) WriteBlobByte(image,ScaleQuantumToChar(
-             ClampToQuantum(image->colormap[i].green)));
+            ClampToQuantum(image->colormap[i].green)));
           (void) WriteBlobByte(image,ScaleQuantumToChar(
-             ClampToQuantum(image->colormap[i].blue)));
+            ClampToQuantum(image->colormap[i].blue)));
         }
         if (compression == NoCompression)
           Ascii85Flush(image);
