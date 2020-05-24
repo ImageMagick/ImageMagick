@@ -3205,6 +3205,7 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
           break;
         }
       }
+      image->mask_trait=UndefinedPixelTrait;
       return(SyncImagePixelCache(image,exception));
     }
   switch (type)
