@@ -1,5 +1,5 @@
 2020-05-24  7.0.10-15 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-15, GIT revision 17...
+  * Release ImageMagick version 7.0.10-15, GIT revision 17272:a9b7621:20200524.
 
 2020-05-24  7.0.10-15 Cristy  <quetzlzacatenango@image...>
   * Clipping was not returning expected results (reference
