@@ -438,19 +438,19 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     }
   background_id=0;
   min_threshold=0.0;
-  max_threshold=HUGE_VAL;
+  max_threshold=0.0;
   component_image->colors=(size_t) n;
   for (i=0; i < (ssize_t) component_image->colors; i++)
   {
     object[i].bounding_box.width-=(object[i].bounding_box.x-1);
     object[i].bounding_box.height-=(object[i].bounding_box.y-1);
-    object[i].color.red/=(object[i].area/QuantumRange);
-    object[i].color.green/=(object[i].area/QuantumRange);
-    object[i].color.blue/=(object[i].area/QuantumRange);
+    object[i].color.red/=(QuantumScale*object[i].area);
+    object[i].color.green/=(QuantumScale*object[i].area);
+    object[i].color.blue/=(QuantumScale*object[i].area);
     if (image->alpha_trait != UndefinedPixelTrait)
-      object[i].color.alpha/=(object[i].area/QuantumRange);
+      object[i].color.alpha/=(QuantumScale*object[i].area);
     if (image->colorspace == CMYKColorspace)
-      object[i].color.black/=(object[i].area/QuantumRange);
+      object[i].color.black/=(QuantumScale*object[i].area);
     object[i].centroid.x/=object[i].area;
     object[i].centroid.y/=object[i].area;
     max_threshold+=object[i].area;
@@ -520,7 +520,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       */
       for (i=0; i < (ssize_t) component_image->colors; i++)
         object[i].merge=MagickTrue;
-      for (c=(char *) artifact; *c != '\0';)
+      for (c=(char *) artifact; *c != '\0'; )
       {
         while ((isspace((int) ((unsigned char) *c)) != 0) || (*c == ','))
           c++;
@@ -607,7 +607,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   if (artifact == (const char *) NULL)
     artifact=GetImageArtifact(image,"connected-components:remove");
   if (artifact != (const char *) NULL)
-    for (c=(char *) artifact; *c != '\0';)
+    for (c=(char *) artifact; *c != '\0'; )
     {
       /*
         Remove selected objects based on id, keep others.
