@@ -1546,11 +1546,11 @@ RestoreMSCWarning
 #endif
     if ((photometric == PHOTOMETRIC_MINISBLACK) ||
         (photometric == PHOTOMETRIC_MINISWHITE))
-      SetImageColorspace(image,GRAYColorspace,exception);
+      image->colorspace=GRAYColorspace;
     if (photometric == PHOTOMETRIC_SEPARATED)
-      SetImageColorspace(image,CMYKColorspace,exception);
+      image->colorspace=CMYKColorspace;
     if (photometric == PHOTOMETRIC_CIELAB)
-      SetImageColorspace(image,LabColorspace,exception);
+     image->colorspace=LabColorspace;
     status=TIFFGetProfiles(tiff,image,exception);
     if (status == MagickFalse)
       {
@@ -1734,6 +1734,7 @@ RestoreMSCWarning
         return(DestroyImageList(image));
       }
     status=ResetImagePixels(image,exception);
+    status|=SetImageColorspace(image,image->colorspace,exception);
     if (status == MagickFalse)
       {
         TIFFClose(tiff);
