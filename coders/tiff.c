@@ -2625,7 +2625,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
   write_info=CloneImageInfo((ImageInfo *) NULL);
   SetImageInfoFile(write_info,file);
   if (IsImageMonochrome(image) == MagickFalse)
-      (void) SetImageType(image,BilevelType,exception);
+    (void) SetImageType(image,BilevelType,exception);
   (void) SetImageDepth(image,1,exception);
   write_info->compression=Group4Compression;
   write_info->type=BilevelType;
