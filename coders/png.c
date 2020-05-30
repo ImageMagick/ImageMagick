@@ -6836,6 +6836,10 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "  Processing MNG MAGN chunk");
 
+            if (image->columns == 1)
+              mng_info->magn_methx = 1;
+            if (image->rows == 1)
+              mng_info->magn_methy = 1;
             if (mng_info->magn_methx == 1)
               {
                 magnified_width=mng_info->magn_ml;
