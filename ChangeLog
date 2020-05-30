@@ -1,3 +1,11 @@
+2020-05-30  7.0.10-16 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-15, GIT revision 17282:9294896:20200529
+
+2020-05-30  7.0.10-16 Cristy  <quetzlzacatenango@image...>
+  * Don't check for incompatible ICC profiles when writing PDF images, instead
+    the user is expected to provide compatible image colorspaces or strip the
+    ICC profile with, for example, the -strip option.
+
 2020-05-29  7.0.10-15 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-15, GIT revision 17282:9294896:20200529
 

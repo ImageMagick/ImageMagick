@@ -1316,11 +1316,7 @@ RestoreMSCWarning
   {
     profile=GetImageProfile(next,"icc");
     if (profile != (StringInfo *) NULL)
-      {
-        if (image_info->adjoin != MagickFalse)
-          (void) SetImageType(next,TrueColorType,exception);
-        version=1.7;
-      }
+      version=1.7;
   }
   option=GetImageOption(image_info,"pdf:version");
   if (option != (const char *) NULL)
