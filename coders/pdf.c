@@ -1325,7 +1325,7 @@ RestoreMSCWarning
         preferred_version;
 
       preferred_version=StringToDouble(option,(char**) NULL);
-      version=MagickMax(version,MagickMin(1.7, preferred_version));
+      version=MagickMax(version,MagickMin(1.7,preferred_version));
     }
   (void) FormatLocaleString(buffer,MagickPathExtent,"%%PDF-%.2g \n",version);
   (void) WriteBlobString(image,buffer);
@@ -2209,15 +2209,14 @@ RestoreMSCWarning
             device="DeviceRGB";
             channels=3;
           }
-    profile=GetImageProfile(image,"icc");
-    if ((profile == (StringInfo *) NULL) || (channels <= 1))
+    if ((has_icc_profile == MagickFalse) || (channels == 0))
       {
         if (channels != 0)
           (void) FormatLocaleString(buffer,MagickPathExtent,"/%s\n",device);
         else
           (void) FormatLocaleString(buffer,MagickPathExtent,
             "[ /Indexed /%s %.20g %.20g 0 R ]\n",device,(double) image->colors-
-            1,(double) object+3);
+            1,(double) object+(has_icc_profile ? 4 : 3));
         (void) WriteBlobString(image,buffer);
       }
     else
