@@ -3205,7 +3205,6 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
           break;
         }
       }
-      image->mask_trait=UndefinedPixelTrait;
       return(SyncImagePixelCache(image,exception));
     }
   switch (type)
@@ -3288,7 +3287,7 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
   }
-  image->mask_trait=CopyPixelTrait;
+  image->mask_trait=UndefinedPixelTrait;
   mask_view=DestroyCacheView(mask_view);
   image_view=DestroyCacheView(image_view);
   return(status);
@@ -3440,7 +3439,7 @@ MagickExport MagickBooleanType SetImageRegionMask(Image *image,
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
   }
-  image->mask_trait=CopyPixelTrait;
+  image->mask_trait=UndefinedPixelTrait;
   image_view=DestroyCacheView(image_view);
   return(status);
 }
