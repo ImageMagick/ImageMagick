@@ -2073,7 +2073,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           }
           count=WriteBlob(image,extent,pixels);
           if (count != (ssize_t) extent) {
-            perror("WriteBlob failed");
+            ThrowFileException(exception,FileOpenError,"UnableToWriteFile", image->filename); \
             status = MagickFalse;
             break;
           }
@@ -2178,7 +2178,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           }
           count=WriteBlob(image,extent,pixels);
           if (count != (ssize_t) extent) {
-            perror("WriteBlob failed");
+            ThrowFileException(exception,FileOpenError,"UnableToWriteFile", image->filename); \
             status = MagickFalse;
             break;
           }
