@@ -2480,5 +2480,5 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
       break;
   } while (image_info->adjoin != MagickFalse);
   (void) CloseBlob(image);
-  return(MagickTrue);
+  return(status);
 }
