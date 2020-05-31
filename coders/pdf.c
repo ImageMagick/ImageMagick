@@ -1321,7 +1321,7 @@ RestoreMSCWarning
         version=1.7;
       }
     if ((next->colorspace != CMYKColorspace) &&
-        (!IssRGBCompatibleColorspace(next->colorspace)))
+        (IssRGBCompatibleColorspace(next->colorspace) == MagickFalse))
       (void) TransformImageColorspace(next,sRGBColorspace,exception);
   }
   option=GetImageOption(image_info,"pdf:version");
