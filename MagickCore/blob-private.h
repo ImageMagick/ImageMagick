@@ -128,8 +128,7 @@ extern MagickExport ssize_t
 {   \
   ssize_t __ret_size = WriteBlob(img, (len), dat); \
   if (__ret_size != (ssize_t)(len)) { \
-    perror("WriteBlob failed"); \
-    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    ThrowFileException(exception,FileOpenError,"UnableToWriteFile", image->filename); \
     status = MagickFalse; \
     break; \
   } \
@@ -138,8 +137,7 @@ extern MagickExport ssize_t
 #define CheckWriteBlobByte(img, sz) \
 { \
   if (WriteBlobByte(img, sz) != sizeof(unsigned char)) { \
-    perror("WriteBlob failed"); \
-    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    ThrowFileException(exception,FileOpenError,"UnableToWriteFile", image->filename); \
     status = MagickFalse; \
     break; \
   } \
@@ -147,8 +145,7 @@ extern MagickExport ssize_t
 #define CheckWriteBlobFloat(img, sz) \
 { \
   if (WriteBlobFloat(img, sz) != sizeof(float)) { \
-    perror("WriteBlob failed"); \
-    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    ThrowFileException(exception,FileOpenError,"UnableToWriteFile", image->filename); \
     status = MagickFalse; \
     break; \
   } \
@@ -156,8 +153,7 @@ extern MagickExport ssize_t
 #define CheckWriteBlobLong(img, sz) \
 { \
   if (WriteBlobLong(img, sz) != sizeof(unsigned int)) { \
-    perror("WriteBlob failed"); \
-    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    ThrowFileException(exception,FileOpenError,"UnableToWriteFile", image->filename); \
     status = MagickFalse; \
     break; \
   } \
@@ -165,8 +161,7 @@ extern MagickExport ssize_t
 #define CheckWriteBlobLongLong(img, sz) \
 { \
   if (WriteBlobLongLong(img, sz) != sizeof(MagickSizeType)) { \
-    perror("WriteBlob failed"); \
-    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    ThrowFileException(exception,FileOpenError,"UnableToWriteFile", image->filename); \
     status = MagickFalse; \
     break; \
   } \
@@ -174,8 +169,7 @@ extern MagickExport ssize_t
 #define CheckWriteBlobShort(img, sz) \
 { \
   if (WriteBlobShort(img, sz) != sizeof(unsigned short)) { \
-    perror("WriteBlob failed"); \
-    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    ThrowFileException(exception,FileOpenError,"UnableToWriteFile", image->filename); \
     status = MagickFalse; \
     break; \
   } \
@@ -183,8 +177,7 @@ extern MagickExport ssize_t
 #define CheckWriteBlobSignedLong(img, sz) \
 { \
   if (WriteBlobSignedLong(img, sz) != sizeof(signed int)) { \
-    perror("WriteBlob failed"); \
-    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    ThrowFileException(exception,FileOpenError,"UnableToWriteFile", image->filename); \
     status = MagickFalse; \
     break; \
   } \
@@ -192,8 +185,7 @@ extern MagickExport ssize_t
 #define CheckWriteBlobLSBLong(img, sz) \
 { \
   if (WriteBlobLSBLong(img, sz) != sizeof(unsigned int)) { \
-    perror("WriteBlob failed"); \
-    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    ThrowFileException(exception,FileOpenError,"UnableToWriteFile", image->filename); \
     status = MagickFalse; \
     break; \
   } \
@@ -201,8 +193,7 @@ extern MagickExport ssize_t
 #define CheckWriteBlobLSBShort(img, sz) \
 { \
   if (WriteBlobLSBShort(img, sz) != sizeof(unsigned short)) { \
-    perror("WriteBlob failed"); \
-    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    ThrowFileException(exception,FileOpenError,"UnableToWriteFile", image->filename); \
     status = MagickFalse; \
     break; \
   } \
@@ -210,8 +201,7 @@ extern MagickExport ssize_t
 #define CheckWriteBlobLSBSignedLong(img, sz) \
 { \
   if (WriteBlobLSBSignedLong(img, sz) != sizeof(signed int)) { \
-    perror("WriteBlob failed"); \
-    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    ThrowFileException(exception,FileOpenError,"UnableToWriteFile", image->filename); \
     status = MagickFalse; \
     break; \
   } \
@@ -219,8 +209,7 @@ extern MagickExport ssize_t
 #define CheckWriteBlobLSBSignedShort(img, sz) \
 { \
   if (WriteBlobLSBSignedShort(img, sz) != sizeof(signed short)) { \
-    perror("WriteBlob failed"); \
-    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    ThrowFileException(exception,FileOpenError,"UnableToWriteFile", image->filename); \
     status = MagickFalse; \
     break; \
   } \
@@ -228,8 +217,7 @@ extern MagickExport ssize_t
 #define CheckWriteBlobMSBLong(img, sz) \
 { \
   if (WriteBlobMSBLong(img, sz) != sizeof(unsigned int)) { \
-    perror("WriteBlob failed"); \
-    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    ThrowFileException(exception,FileOpenError,"UnableToWriteFile", image->filename); \
     status = MagickFalse; \
     break; \
   } \
@@ -237,8 +225,7 @@ extern MagickExport ssize_t
 #define CheckWriteBlobMSBShort(img, sz) \
 { \
   if (WriteBlobMSBShort(img, sz) != sizeof(unsigned short)) { \
-    perror("WriteBlob failed"); \
-    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    ThrowFileException(exception,FileOpenError,"UnableToWriteFile", image->filename); \
     status = MagickFalse; \
     break; \
   } \
@@ -246,8 +233,7 @@ extern MagickExport ssize_t
 #define CheckWriteBlobMSBSignedShort(img, sz) \
 { \
   if (WriteBlobMSBSignedShort(img, sz) != sizeof(signed short)) { \
-    perror("WriteBlob failed"); \
-    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    ThrowFileException(exception,FileOpenError,"UnableToWriteFile", image->filename); \
     status = MagickFalse; \
     break; \
   } \
@@ -255,8 +241,7 @@ extern MagickExport ssize_t
 #define CheckWriteBlobString(img, str) \
 { \
   if (WriteBlobString(img, str) != strlen(str)) { \
-    perror("WriteBlob failed"); \
-    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    ThrowFileException(exception,FileOpenError,"UnableToWriteFile", image->filename); \
     status = MagickFalse; \
     break; \
   } \
