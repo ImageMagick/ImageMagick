@@ -1320,6 +1320,9 @@ RestoreMSCWarning
         (void) SetImageStorageClass(next,DirectClass,exception);
         version=1.7;
       }
+    if ((next->colorspace != CMYKColorspace) &&
+        (!IssRGBCompatibleColorspace(next->colorspace)))
+      (void) TransformImageColorspace(next,sRGBColorspace,exception);
   }
   option=GetImageOption(image_info,"pdf:version");
   if (option != (const char *) NULL)
