@@ -2266,37 +2266,37 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
           profile_size_pad=4-(profile_size%4);
         bmp_info.file_size+=profile_size+profile_size_pad;
       }
-    (void) WriteBlob(image,2,(unsigned char *) "BM");
-    (void) WriteBlobLSBLong(image,bmp_info.file_size);
-    (void) WriteBlobLSBLong(image,bmp_info.ba_offset);  /* always 0 */
-    (void) WriteBlobLSBLong(image,bmp_info.offset_bits);
+    CheckWriteBlob(image,2,(unsigned char *) "BM");
+    CheckWriteBlobLSBLong(image,bmp_info.file_size);
+    CheckWriteBlobLSBLong(image,bmp_info.ba_offset);  /* always 0 */
+    CheckWriteBlobLSBLong(image,bmp_info.offset_bits);
     if (type == 2)
       {
         /*
           Write 12-byte version 2 bitmap header.
         */
-        (void) WriteBlobLSBLong(image,bmp_info.size);
-        (void) WriteBlobLSBSignedShort(image,(signed short) bmp_info.width);
-        (void) WriteBlobLSBSignedShort(image,(signed short) bmp_info.height);
-        (void) WriteBlobLSBShort(image,bmp_info.planes);
-        (void) WriteBlobLSBShort(image,bmp_info.bits_per_pixel);
+        CheckWriteBlobLSBLong(image,bmp_info.size);
+        CheckWriteBlobLSBSignedShort(image,(signed short) bmp_info.width);
+        CheckWriteBlobLSBSignedShort(image,(signed short) bmp_info.height);
+        CheckWriteBlobLSBShort(image,bmp_info.planes);
+        CheckWriteBlobLSBShort(image,bmp_info.bits_per_pixel);
       }
     else
       {
         /*
           Write 40-byte version 3+ bitmap header.
         */
-        (void) WriteBlobLSBLong(image,bmp_info.size);
-        (void) WriteBlobLSBSignedLong(image,(signed int) bmp_info.width);
-        (void) WriteBlobLSBSignedLong(image,(signed int) bmp_info.height);
-        (void) WriteBlobLSBShort(image,bmp_info.planes);
-        (void) WriteBlobLSBShort(image,bmp_info.bits_per_pixel);
-        (void) WriteBlobLSBLong(image,bmp_info.compression);
-        (void) WriteBlobLSBLong(image,bmp_info.image_size);
-        (void) WriteBlobLSBLong(image,bmp_info.x_pixels);
-        (void) WriteBlobLSBLong(image,bmp_info.y_pixels);
-        (void) WriteBlobLSBLong(image,bmp_info.number_colors);
-        (void) WriteBlobLSBLong(image,bmp_info.colors_important);
+        CheckWriteBlobLSBLong(image,bmp_info.size);
+        CheckWriteBlobLSBSignedLong(image,(signed int) bmp_info.width);
+        CheckWriteBlobLSBSignedLong(image,(signed int) bmp_info.height);
+        CheckWriteBlobLSBShort(image,bmp_info.planes);
+        CheckWriteBlobLSBShort(image,bmp_info.bits_per_pixel);
+        CheckWriteBlobLSBLong(image,bmp_info.compression);
+        CheckWriteBlobLSBLong(image,bmp_info.image_size);
+        CheckWriteBlobLSBLong(image,bmp_info.x_pixels);
+        CheckWriteBlobLSBLong(image,bmp_info.y_pixels);
+        CheckWriteBlobLSBLong(image,bmp_info.number_colors);
+        CheckWriteBlobLSBLong(image,bmp_info.colors_important);
       }
     if ((type > 3) && ((image->alpha_trait != UndefinedPixelTrait) ||
         (have_color_info != MagickFalse)))
@@ -2304,14 +2304,15 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
         /*
           Write the rest of the 108-byte BMP Version 4 header.
         */
-        (void) WriteBlobLSBLong(image,bmp_info.red_mask);
-        (void) WriteBlobLSBLong(image,bmp_info.green_mask);
-        (void) WriteBlobLSBLong(image,bmp_info.blue_mask);
-        (void) WriteBlobLSBLong(image,bmp_info.alpha_mask);
-        if (profile != (StringInfo *) NULL)
-          (void) WriteBlobLSBLong(image,0x4D424544U);  /* PROFILE_EMBEDDED */
-        else
-          (void) WriteBlobLSBLong(image,0x73524742U);  /* sRGB */
+        CheckWriteBlobLSBLong(image,bmp_info.red_mask);
+        CheckWriteBlobLSBLong(image,bmp_info.green_mask);
+        CheckWriteBlobLSBLong(image,bmp_info.blue_mask);
+        CheckWriteBlobLSBLong(image,bmp_info.alpha_mask);
+        if (profile != (StringInfo *) NULL) {
+          CheckWriteBlobLSBLong(image,0x4D424544U); /* PROFILE_EMBEDDED */
+        } else {
+          CheckWriteBlobLSBLong(image,0x73524742U);  /* sRGB */
+        }
         
         // bounds check, assign .0 if invalid value
         if (isgreater(image->chromaticity.red_primary.x, 1.0) ||
@@ -2342,32 +2343,32 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
             !isgreater(bmp_info.gamma_scale.z, 0.0))
           bmp_info.gamma_scale.z = 0.0;
 
-        (void) WriteBlobLSBLong(image,(unsigned int)
+        CheckWriteBlobLSBLong(image,(unsigned int)
           (image->chromaticity.red_primary.x*0x40000000));
-        (void) WriteBlobLSBLong(image,(unsigned int)
+        CheckWriteBlobLSBLong(image,(unsigned int)
           (image->chromaticity.red_primary.y*0x40000000));
-        (void) WriteBlobLSBLong(image,(unsigned int)
+        CheckWriteBlobLSBLong(image,(unsigned int)
           ((1.000f-(image->chromaticity.red_primary.x+
           image->chromaticity.red_primary.y))*0x40000000));
-        (void) WriteBlobLSBLong(image,(unsigned int)
+        CheckWriteBlobLSBLong(image,(unsigned int)
           (image->chromaticity.green_primary.x*0x40000000));
-        (void) WriteBlobLSBLong(image,(unsigned int)
+        CheckWriteBlobLSBLong(image,(unsigned int)
           (image->chromaticity.green_primary.y*0x40000000));
-        (void) WriteBlobLSBLong(image,(unsigned int)
+        CheckWriteBlobLSBLong(image,(unsigned int)
           ((1.000f-(image->chromaticity.green_primary.x+
           image->chromaticity.green_primary.y))*0x40000000));
-        (void) WriteBlobLSBLong(image,(unsigned int)
+        CheckWriteBlobLSBLong(image,(unsigned int)
           (image->chromaticity.blue_primary.x*0x40000000));
-        (void) WriteBlobLSBLong(image,(unsigned int)
+        CheckWriteBlobLSBLong(image,(unsigned int)
           (image->chromaticity.blue_primary.y*0x40000000));
-        (void) WriteBlobLSBLong(image,(unsigned int)
+        CheckWriteBlobLSBLong(image,(unsigned int)
           ((1.000f-(image->chromaticity.blue_primary.x+
           image->chromaticity.blue_primary.y))*0x40000000));
-        (void) WriteBlobLSBLong(image,(unsigned int)
+        CheckWriteBlobLSBLong(image,(unsigned int)
           (bmp_info.gamma_scale.x*0x10000));
-        (void) WriteBlobLSBLong(image,(unsigned int)
+        CheckWriteBlobLSBLong(image,(unsigned int)
           (bmp_info.gamma_scale.y*0x10000));
-        (void) WriteBlobLSBLong(image,(unsigned int)
+        CheckWriteBlobLSBLong(image,(unsigned int)
           (bmp_info.gamma_scale.z*0x10000));
         if ((image->rendering_intent != UndefinedIntent) ||
             (profile != (StringInfo *) NULL))
@@ -2403,11 +2404,11 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
                 break;
               }
             }
-            (void) WriteBlobLSBLong(image,(unsigned int) intent);
-            (void) WriteBlobLSBLong(image,(unsigned int) profile_data);
-            (void) WriteBlobLSBLong(image,(unsigned int)
+            CheckWriteBlobLSBLong(image,(unsigned int) intent);
+            CheckWriteBlobLSBLong(image,(unsigned int) profile_data);
+            CheckWriteBlobLSBLong(image,(unsigned int)
               (profile_size+profile_size_pad));
-            (void) WriteBlobLSBLong(image,0x00);  /* reserved */
+            CheckWriteBlobLSBLong(image,0x00);  /* reserved */
           }
       }
     if (image->storage_class == PseudoClass)
@@ -2445,26 +2446,27 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
           if (type > 2)
             *q++=(unsigned char) 0x00;
         }
-        if (type <= 2)
-          (void) WriteBlob(image,(size_t) (3*(1L << bmp_info.bits_per_pixel)),
+        if (type <= 2) {
+          CheckWriteBlob(image,(size_t) (3*(1L << bmp_info.bits_per_pixel)),
             bmp_colormap);
-        else
-          (void) WriteBlob(image,(size_t) (4*(1L << bmp_info.bits_per_pixel)),
+        } else {
+          CheckWriteBlob(image,(size_t) (4*(1L << bmp_info.bits_per_pixel)),
             bmp_colormap);
+        }
         bmp_colormap=(unsigned char *) RelinquishMagickMemory(bmp_colormap);
       }
     if (image->debug != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  Pixels:  %u bytes",bmp_info.image_size);
-    (void) WriteBlob(image,(size_t) bmp_info.image_size,pixels);
+    CheckWriteBlob(image,(size_t) bmp_info.image_size,pixels);
     if (profile != (StringInfo *) NULL)
       {
         if (image->debug != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                 "  Profile:  %g bytes",(double) profile_size+profile_size_pad);
-        (void) WriteBlob(image,(size_t) profile_size,GetStringInfoDatum(profile));
+        CheckWriteBlob(image,(size_t) profile_size,GetStringInfoDatum(profile));
         if (profile_size_pad > 0)  /* padding for 4 bytes multiple */
-          (void) WriteBlob(image,(size_t) profile_size_pad,"\0\0\0");
+          CheckWriteBlob(image,(size_t) profile_size_pad,"\0\0\0");
       }
     pixel_info=RelinquishVirtualMemory(pixel_info);
     if (GetNextImageInList(image) == (Image *) NULL)
@@ -2475,5 +2477,5 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
       break;
   } while (image_info->adjoin != MagickFalse);
   (void) CloseBlob(image);
-  return(MagickTrue);
+  return(status);
 }
