@@ -1641,7 +1641,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
       }
     }
     (void) FormatLocaleString(buffer,MagickPathExtent,"P%c\n",format);
-    (void) WriteBlobString(image,buffer);
+    CheckWriteBlobString(image,buffer);
     value=GetImageProperty(image,"comment",exception);
     if (value != (const char *) NULL)
       {
@@ -1651,20 +1651,20 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         /*
           Write comments to file.
         */
-        (void) WriteBlobByte(image,'#');
+        CheckWriteBlobByte(image,'#');
         for (p=value; *p != '\0'; p++)
         {
-          (void) WriteBlobByte(image,(unsigned char) *p);
+          CheckWriteBlobByte(image,(unsigned char) *p);
           if ((*p == '\n') || (*p == '\r'))
-            (void) WriteBlobByte(image,'#');
+            CheckWriteBlobByte(image,'#');
         }
-        (void) WriteBlobByte(image,'\n');
+        CheckWriteBlobByte(image,'\n');
       }
     if (format != '7')
       {
         (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g %.20g\n",
           (double) image->columns,(double) image->rows);
-        (void) WriteBlobString(image,buffer);
+        CheckWriteBlobString(image,buffer);
       }
     else
       {
@@ -1677,7 +1677,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         (void) FormatLocaleString(buffer,MagickPathExtent,
           "WIDTH %.20g\nHEIGHT %.20g\n",(double) image->columns,(double)
           image->rows);
-        (void) WriteBlobString(image,buffer);
+        CheckWriteBlobString(image,buffer);
         quantum_type=GetQuantumType(image,exception);
         switch (quantum_type)
         {
@@ -1717,10 +1717,10 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         (void) FormatLocaleString(buffer,MagickPathExtent,
           "DEPTH %.20g\nMAXVAL %.20g\n",(double) packet_size,(double)
           ((MagickOffsetType) GetQuantumRange(image->depth)));
-        (void) WriteBlobString(image,buffer);
+        CheckWriteBlobString(image,buffer);
         (void) FormatLocaleString(buffer,MagickPathExtent,
           "TUPLTYPE %s\nENDHDR\n",type);
-        (void) WriteBlobString(image,buffer);
+        CheckWriteBlobString(image,buffer);
       }
     /*
       Convert runextent encoded to PNM raster pixels.
@@ -1755,14 +1755,14 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
             if ((q-pixels+2) >= (ssize_t) sizeof(pixels))
               {
                 *q++='\n';
-                (void) WriteBlob(image,q-pixels,pixels);
+                CheckWriteBlob(image,q-pixels,pixels);
                 q=pixels;
               }
             *q++=' ';
             p+=GetPixelChannels(image);
           }
           *q++='\n';
-          (void) WriteBlob(image,q-pixels,pixels);
+          CheckWriteBlob(image,q-pixels,pixels);
           q=pixels;
           if (image->previous == (Image *) NULL)
             {
@@ -1775,7 +1775,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         if (q != pixels)
           {
             *q++='\n';
-            (void) WriteBlob(image,q-pixels,pixels);
+            CheckWriteBlob(image,q-pixels,pixels);
           }
         break;
       }
@@ -1787,13 +1787,15 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         /*
           Convert image to a PGM image.
         */
-        if (image->depth <= 8)
-          (void) WriteBlobString(image,"255\n");
-        else
-          if (image->depth <= 16)
-            (void) WriteBlobString(image,"65535\n");
-          else
-            (void) WriteBlobString(image,"4294967295\n");
+        if (image->depth <= 8) {
+          CheckWriteBlobString(image,"255\n");
+        } else {
+          if (image->depth <= 16) {
+            CheckWriteBlobString(image,"65535\n");
+          } else {
+            CheckWriteBlobString(image,"4294967295\n");
+          }
+        }
         q=pixels;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
@@ -1823,7 +1825,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
             if ((q-pixels+extent+1) >= sizeof(pixels))
               {
                 *q++='\n';
-                (void) WriteBlob(image,q-pixels,pixels);
+                CheckWriteBlob(image,q-pixels,pixels);
                 q=pixels;
               }
             (void) memcpy((char *) q,buffer,extent);
@@ -1831,7 +1833,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
             p+=GetPixelChannels(image);
           }
           *q++='\n';
-          (void) WriteBlob(image,q-pixels,pixels);
+          CheckWriteBlob(image,q-pixels,pixels);
           q=pixels;
           if (image->previous == (Image *) NULL)
             {
@@ -1844,7 +1846,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         if (q != pixels)
           {
             *q++='\n';
-            (void) WriteBlob(image,q-pixels,pixels);
+            CheckWriteBlob(image,q-pixels,pixels);
           }
         break;
       }
@@ -1857,13 +1859,15 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           Convert image to a PNM image.
         */
         (void) TransformImageColorspace(image,sRGBColorspace,exception);
-        if (image->depth <= 8)
-          (void) WriteBlobString(image,"255\n");
-        else
-          if (image->depth <= 16)
-            (void) WriteBlobString(image,"65535\n");
-          else
-            (void) WriteBlobString(image,"4294967295\n");
+        if (image->depth <= 8) {
+          CheckWriteBlobString(image,"255\n");
+        } else {
+          if (image->depth <= 16) {
+            CheckWriteBlobString(image,"65535\n");
+          } else {
+            CheckWriteBlobString(image,"4294967295\n");
+          }
+        }
         q=pixels;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
@@ -1898,7 +1902,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
             if ((q-pixels+extent+2) >= sizeof(pixels))
               {
                 *q++='\n';
-                (void) WriteBlob(image,q-pixels,pixels);
+                CheckWriteBlob(image,q-pixels,pixels);
                 q=pixels;
               }
             (void) memcpy((char *) q,buffer,extent);
@@ -1906,7 +1910,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
             p+=GetPixelChannels(image);
           }
           *q++='\n';
-          (void) WriteBlob(image,q-pixels,pixels);
+          CheckWriteBlob(image,q-pixels,pixels);
           q=pixels;
           if (image->previous == (Image *) NULL)
             {
@@ -1919,7 +1923,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         if (q != pixels)
           {
             *q++='\n';
-            (void) WriteBlob(image,q-pixels,pixels);
+            CheckWriteBlob(image,q-pixels,pixels);
           }
         break;
       }
@@ -1975,7 +1979,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           image->depth=32;
         (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g\n",(double)
           ((MagickOffsetType) GetQuantumRange(image->depth)));
-        (void) WriteBlobString(image,buffer);
+        CheckWriteBlobString(image,buffer);
         quantum_info=AcquireQuantumInfo(image_info,image);
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
@@ -2068,8 +2072,11 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
             }
           }
           count=WriteBlob(image,extent,pixels);
-          if (count != (ssize_t) extent)
+          if (count != (ssize_t) extent) {
+            perror("WriteBlob failed");
+            status = MagickFalse;
             break;
+          }
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -2085,7 +2092,6 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
       {
         register unsigned char
           *pixels;
-        ssize_t written = 0;
 
         /*
           Convert image to a PNM image.
@@ -2095,12 +2101,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           image->depth=32;
         (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g\n",(double)
           ((MagickOffsetType) GetQuantumRange(image->depth)));
-        written = WriteBlobString(image,buffer);
-        if (written != strlen(buffer)) {
-            perror("WriteBlob failed");
-            status = MagickFalse;
-            break;
-        }
+        CheckWriteBlobString(image,buffer);
         quantum_info=AcquireQuantumInfo(image_info,image);
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
@@ -2177,7 +2178,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           }
           count=WriteBlob(image,extent,pixels);
           if (count != (ssize_t) extent) {
-            perror("WriteBlob failed!");
+            perror("WriteBlob failed");
             status = MagickFalse;
             break;
           }
@@ -2447,7 +2448,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         register unsigned char
           *pixels;
 
-        (void) WriteBlobString(image,image->endian == LSBEndian ? "-1.0\n" :
+        CheckWriteBlobString(image,image->endian == LSBEndian ? "-1.0\n" :
           "1.0\n");
         image->depth=32;
         quantum_type=format == 'f' ? GrayQuantum : RGBQuantum;
@@ -2468,7 +2469,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
             break;
           extent=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
-          (void) WriteBlob(image,extent,pixels);
+          CheckWriteBlob(image,extent,pixels);
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
