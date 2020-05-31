@@ -124,6 +124,144 @@ extern MagickExport ssize_t
   WriteBlobMSBSignedShort(Image *,const signed short),
   WriteBlobString(Image *,const char *);
 
+#define CheckWriteBlob(img, len, dat) \
+{   \
+  ssize_t __ret_size = WriteBlob(img, (len), dat); \
+  if (__ret_size != (ssize_t)(len)) { \
+    perror("WriteBlob failed"); \
+    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    status = MagickFalse; \
+    break; \
+  } \
+}
+
+#define CheckWriteBlobByte(img, sz) \
+{ \
+  if (WriteBlobByte(img, sz) != sizeof(unsigned char)) { \
+    perror("WriteBlob failed"); \
+    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    status = MagickFalse; \
+    break; \
+  } \
+}
+#define CheckWriteBlobFloat(img, sz) \
+{ \
+  if (WriteBlobFloat(img, sz) != sizeof(float)) { \
+    perror("WriteBlob failed"); \
+    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    status = MagickFalse; \
+    break; \
+  } \
+}
+#define CheckWriteBlobLong(img, sz) \
+{ \
+  if (WriteBlobLong(img, sz) != sizeof(unsigned int)) { \
+    perror("WriteBlob failed"); \
+    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    status = MagickFalse; \
+    break; \
+  } \
+}
+#define CheckWriteBlobLongLong(img, sz) \
+{ \
+  if (WriteBlobLongLong(img, sz) != sizeof(MagickSizeType)) { \
+    perror("WriteBlob failed"); \
+    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    status = MagickFalse; \
+    break; \
+  } \
+}
+#define CheckWriteBlobShort(img, sz) \
+{ \
+  if (WriteBlobShort(img, sz) != sizeof(unsigned short)) { \
+    perror("WriteBlob failed"); \
+    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    status = MagickFalse; \
+    break; \
+  } \
+}
+#define CheckWriteBlobSignedLong(img, sz) \
+{ \
+  if (WriteBlobSignedLong(img, sz) != sizeof(signed int)) { \
+    perror("WriteBlob failed"); \
+    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    status = MagickFalse; \
+    break; \
+  } \
+}
+#define CheckWriteBlobLSBLong(img, sz) \
+{ \
+  if (WriteBlobLSBLong(img, sz) != sizeof(unsigned int)) { \
+    perror("WriteBlob failed"); \
+    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    status = MagickFalse; \
+    break; \
+  } \
+}
+#define CheckWriteBlobLSBShort(img, sz) \
+{ \
+  if (WriteBlobLSBShort(img, sz) != sizeof(unsigned short)) { \
+    perror("WriteBlob failed"); \
+    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    status = MagickFalse; \
+    break; \
+  } \
+}
+#define CheckWriteBlobLSBSignedLong(img, sz) \
+{ \
+  if (WriteBlobLSBSignedLong(img, sz) != sizeof(signed int)) { \
+    perror("WriteBlob failed"); \
+    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    status = MagickFalse; \
+    break; \
+  } \
+}
+#define CheckWriteBlobLSBSignedShort(img, sz) \
+{ \
+  if (WriteBlobLSBSignedShort(img, sz) != sizeof(signed short)) { \
+    perror("WriteBlob failed"); \
+    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    status = MagickFalse; \
+    break; \
+  } \
+}
+#define CheckWriteBlobMSBLong(img, sz) \
+{ \
+  if (WriteBlobMSBLong(img, sz) != sizeof(unsigned int)) { \
+    perror("WriteBlob failed"); \
+    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    status = MagickFalse; \
+    break; \
+  } \
+}
+#define CheckWriteBlobMSBShort(img, sz) \
+{ \
+  if (WriteBlobMSBShort(img, sz) != sizeof(unsigned short)) { \
+    perror("WriteBlob failed"); \
+    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    status = MagickFalse; \
+    break; \
+  } \
+}
+#define CheckWriteBlobMSBSignedShort(img, sz) \
+{ \
+  if (WriteBlobMSBSignedShort(img, sz) != sizeof(signed short)) { \
+    perror("WriteBlob failed"); \
+    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    status = MagickFalse; \
+    break; \
+  } \
+}
+#define CheckWriteBlobString(img, str) \
+{ \
+  if (WriteBlobString(img, str) != strlen(str)) { \
+    perror("WriteBlob failed"); \
+    fprintf(stderr, "WriteBlob* failed in %s at %d\n", __FILE__, __LINE__); \
+    status = MagickFalse; \
+    break; \
+  } \
+}
+
 extern MagickExport unsigned int
   ReadBlobLong(Image *),
   ReadBlobLSBLong(Image *),
