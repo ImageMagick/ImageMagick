@@ -1316,7 +1316,10 @@ RestoreMSCWarning
   {
     profile=GetImageProfile(next,"icc");
     if (profile != (StringInfo *) NULL)
-      version=1.7;
+      {
+        (void) SetImageStorageClass(next,DirectClass,exception);
+        version=1.7;
+      }
   }
   option=GetImageOption(image_info,"pdf:version");
   if (option != (const char *) NULL)
@@ -2209,14 +2212,14 @@ RestoreMSCWarning
             device="DeviceRGB";
             channels=3;
           }
-    if ((has_icc_profile == MagickFalse) || (channels == 0))
+    if (has_icc_profile == MagickFalse)
       {
         if (channels != 0)
           (void) FormatLocaleString(buffer,MagickPathExtent,"/%s\n",device);
         else
           (void) FormatLocaleString(buffer,MagickPathExtent,
             "[ /Indexed /%s %.20g %.20g 0 R ]\n",device,(double) image->colors-
-            1,(double) object+(has_icc_profile ? 4 : 3));
+            1,(double) object+3);
         (void) WriteBlobString(image,buffer);
       }
     else
