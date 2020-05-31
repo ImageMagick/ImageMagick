@@ -2085,6 +2085,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
       {
         register unsigned char
           *pixels;
+        ssize_t written = 0;
 
         /*
           Convert image to a PNM image.
@@ -2094,7 +2095,12 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           image->depth=32;
         (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g\n",(double)
           ((MagickOffsetType) GetQuantumRange(image->depth)));
-        (void) WriteBlobString(image,buffer);
+        written = WriteBlobString(image,buffer);
+        if (written != strlen(buffer)) {
+            perror("WriteBlob failed");
+            status = MagickFalse;
+            break;
+        }
         quantum_info=AcquireQuantumInfo(image_info,image);
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
@@ -2170,8 +2176,11 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
             }
           }
           count=WriteBlob(image,extent,pixels);
-          if (count != (ssize_t) extent)
+          if (count != (ssize_t) extent) {
+            perror("WriteBlob failed!");
+            status = MagickFalse;
             break;
+          }
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
