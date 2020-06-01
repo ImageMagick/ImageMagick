@@ -418,15 +418,12 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
   CacheInfo
     *magick_restrict cache_info;
 
-  MagickSizeType
-    number_pixels;
-
   register Quantum
     *magick_restrict p,
     *magick_restrict q;
 
-  register ssize_t
-    n;
+  ssize_t
+    y;
 
   /*
     Apply clip mask.
@@ -444,37 +441,41 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
     nexus_info->region.width,nexus_info->region.height,
     nexus_info->virtual_nexus,exception);
   q=nexus_info->pixels;
-  number_pixels=(MagickSizeType) nexus_info->region.width*
-    nexus_info->region.height;
-  for (n=0; n < (ssize_t) number_pixels; n++)
+  if ((p == (Quantum *) NULL) || (q == (Quantum *) NULL))
+    return(MagickFalse);
+  for (y=0; y < (ssize_t) nexus_info->region.height; y++)
   {
-    double
-      mask_alpha;
-
     register ssize_t
-      i;
+      x;
 
-    if (p == (Quantum *) NULL)
-      break;
-    mask_alpha=QuantumScale*GetPixelWriteMask(image,p);
-    if (fabs(mask_alpha) >= MagickEpsilon)
-      {
-        for (i=0; i < (ssize_t) image->number_channels; i++)
+    for (x=0; x < (ssize_t) nexus_info->region.width; x++)
+    {
+      double
+        mask_alpha;
+
+      register ssize_t
+        i;
+
+      mask_alpha=QuantumScale*GetPixelWriteMask(image,p);
+      if (fabs(mask_alpha) >= MagickEpsilon)
         {
-          PixelChannel channel = GetPixelChannelChannel(image,i);
-          PixelTrait traits = GetPixelChannelTraits(image,channel);
-          if ((traits & UpdatePixelTrait) == 0)
-            continue;
-          q[i]=ClampToQuantum(MagickOver_((double) p[i],mask_alpha*
-            GetPixelAlpha(image,p),(double) q[i],(double)
-            GetPixelAlpha(image,q)));
+          for (i=0; i < (ssize_t) image->number_channels; i++)
+          {
+            PixelChannel channel = GetPixelChannelChannel(image,i);
+            PixelTrait traits = GetPixelChannelTraits(image,channel);
+            if ((traits & UpdatePixelTrait) == 0)
+              continue;
+            q[i]=ClampToQuantum(MagickOver_((double) p[i],mask_alpha*
+              GetPixelAlpha(image,p),(double) q[i],(double)
+              GetPixelAlpha(image,q)));
+          }
+          SetPixelAlpha(image,GetPixelAlpha(image,p),q);
         }
-        SetPixelAlpha(image,GetPixelAlpha(image,p),q);
-      }
-    p+=GetPixelChannels(image);
-    q+=GetPixelChannels(image);
+      p+=GetPixelChannels(image);
+      q+=GetPixelChannels(image);
+    }
   }
-  return(n < (ssize_t) number_pixels ? MagickFalse : MagickTrue);
+  return(MagickTrue);
 }
 
 /*
@@ -3353,7 +3354,7 @@ MagickPrivate const Quantum *GetVirtualPixelsNexus(const Cache cache,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MaskPixelCacheNexus() masks the cache nexus as defined by the image mask.
+%  MaskPixelCacheNexus() masks the cache nexus as defined by the composite mask.
 %  The method returns MagickTrue if the pixel region is masked, otherwise
 %  MagickFalse.
 %
@@ -3396,18 +3397,15 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
   CacheInfo
     *magick_restrict cache_info;
 
-  MagickSizeType
-    number_pixels;
-
   register Quantum
     *magick_restrict p,
     *magick_restrict q;
 
-  register ssize_t
-    n;
+  ssize_t
+    y;
 
   /*
-    Apply clip mask.
+    Apply composite mask.
   */
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
@@ -3422,33 +3420,35 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
     nexus_info->region.width,nexus_info->region.height,
     nexus_info->virtual_nexus,exception);
   q=nexus_info->pixels;
-  number_pixels=(MagickSizeType) nexus_info->region.width*
-    nexus_info->region.height;
-  for (n=0; n < (ssize_t) number_pixels; n++)
-  {
-    double
-      mask_alpha;
-
-    register ssize_t
-      i;
-
-    if (p == (Quantum *) NULL)
-      break;
-    mask_alpha=(double) GetPixelCompositeMask(image,p);
-    for (i=0; i < (ssize_t) image->number_channels; i++)
-    {
-      PixelChannel channel = GetPixelChannelChannel(image,i);
-      PixelTrait traits = GetPixelChannelTraits(image,channel);
-      if ((traits & UpdatePixelTrait) == 0)
-        continue;
-      q[i]=ApplyPixelCompositeMask(p[i],mask_alpha,q[i],(MagickRealType)
-        GetPixelAlpha(image,q));
-    }
-    p+=GetPixelChannels(image);
-    q+=GetPixelChannels(image);
-  }
-  if (n < (ssize_t) number_pixels)
+  if ((p == (Quantum *) NULL) || (q == (Quantum *) NULL))
     return(MagickFalse);
+  for (y=0; y < (ssize_t) nexus_info->region.height; y++)
+  {
+    register ssize_t
+      x;
+
+    for (x=0; x < (ssize_t) nexus_info->region.width; x++)
+    {
+      double
+        mask_alpha;
+
+      register ssize_t
+        i;
+
+      mask_alpha=(double) GetPixelCompositeMask(image,p);
+      for (i=0; i < (ssize_t) image->number_channels; i++)
+      {
+        PixelChannel channel = GetPixelChannelChannel(image,i);
+        PixelTrait traits = GetPixelChannelTraits(image,channel);
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        q[i]=ApplyPixelCompositeMask(p[i],mask_alpha,q[i],(MagickRealType)
+          GetPixelAlpha(image,q));
+      }
+      p+=GetPixelChannels(image);
+      q+=GetPixelChannels(image);
+    }
+  }
   return(MagickTrue);
 }
 
