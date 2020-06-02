@@ -2804,6 +2804,7 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%                                                                             %
 %   W r i t e T I F F I m a g e                                               %
 %                                                                             %
 %                                                                             %

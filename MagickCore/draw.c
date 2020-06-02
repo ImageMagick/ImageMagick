@@ -3841,6 +3841,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
               }
             break;
           }
+        status=MagickFalse;
         break;
       }
       case 'v':
