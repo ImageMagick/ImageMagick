@@ -4566,7 +4566,11 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           (void) SetImageInfo(image_info,1,exception);
           profile=FileToStringInfo(image_info->filename,~0UL,exception);
           if (profile != (StringInfo *) NULL)
-            status=SetImageProfile(image,image_info->magick,profile,exception);
+            {
+              status=SetImageProfile(image,image_info->magick,profile,
+                exception);
+              profile=DestroyStringInfo(profile);
+            }
           image_info=DestroyImageInfo(image_info);
           return(MagickTrue);
         }

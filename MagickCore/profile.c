@@ -923,6 +923,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
 #endif
 #define ThrowProfileException(severity,tag,context) \
 { \
+  if (profile != (StringInfo *) NULL) \
+     profile=DestroyStringInfo(profile); \
   if (cms_context != (cmsContext) NULL) \
     cmsDeleteContext(cms_context); \
   if (source_info.profile != (cmsHPROFILE) NULL) \
