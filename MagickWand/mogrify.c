@@ -39,6 +39,11 @@
 %  change the file suffix with the -format option) with any changes you
 %  request.
 %
+%  This embeds the legacy command-line parser as opposed to operation.c which
+%  embeds the modern parser designed for the execution in a strict one option
+%  at a time manner that is needed for 'pipelining and file scripting' of
+%  options in IMv7.
+%
 */
 
 /*
