@@ -41,6 +41,9 @@
 % manner that is needed for 'pipelining and file scripting' of options in
 % IMv7.
 %
+% This the modern command-line parser as opposed to mogrify.c which embeds the
+% legacy parser.
+%
 % Anthony Thyssen, September 2011
 */
 
