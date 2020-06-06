@@ -314,7 +314,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     (void) FormatImageProperty(image,"caption:pointsize","%.*g",
       GetMagickPrecision(),draw_info->pointsize);
   (void) FormatImageProperty(image,"caption:lines","%.*g",GetMagickPrecision(),
-    (double) i);
+    (double) (i+1));
   draw_info=DestroyDrawInfo(draw_info);
   if (status == MagickFalse)
     {
