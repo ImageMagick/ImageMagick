@@ -3939,7 +3939,18 @@ RestoreMSCWarning
               char
                 name[MagickPathExtent];
 
+              const char
+                *value;
+
               GetColorTuple(&pixel,MagickFalse,name);
+              value=GetImageArtifact(property_image,"pixel:compliance");
+              if (value != (char *) NULL)
+                {
+                  ComplianceType compliance=(ComplianceType) ParseCommandOption(
+                    MagickComplianceOptions,MagickFalse,value);
+                  (void) QueryColorname(property_image,&pixel,compliance,name,
+                    exception);
+                }
               AppendString2Text(name);
             }
           continue;
