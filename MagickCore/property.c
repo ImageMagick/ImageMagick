@@ -3889,11 +3889,8 @@ RestoreMSCWarning
           if (status != MagickFalse)
             {
               char
-                hex[MagickPathExtent],
-                name[MagickPathExtent];
+                hex[MagickPathExtent];
 
-              (void) QueryColorname(property_image,&pixel,SVGCompliance,name,
-                exception);
               GetColorTuple(&pixel,MagickTrue,hex);
               AppendString2Text(hex+1);
             }
@@ -3942,8 +3939,7 @@ RestoreMSCWarning
               char
                 name[MagickPathExtent];
 
-              (void) QueryColorname(property_image,&pixel,SVGCompliance,name,
-                exception);
+              GetColorTuple(&pixel,MagickFalse,name);
               AppendString2Text(name);
             }
           continue;
@@ -4269,7 +4265,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
       if (LocaleCompare("background",property) == 0)
         {
           (void) QueryColorCompliance(value,AllCompliance,
-               &image->background_color,exception);
+            &image->background_color,exception);
           /* check for FUTURE: value exception?? */
           /* also add user input to splay tree */
         }

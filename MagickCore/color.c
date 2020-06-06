@@ -2586,7 +2586,7 @@ MagickExport MagickBooleanType QueryColorname(
   if (compliance == XPMCompliance)
     {
       pixel.alpha_trait=UndefinedPixelTrait;
-      if ( pixel.depth > 16 )
+      if (pixel.depth > 16)
         pixel.depth=16;
     }
   GetColorTuple(&pixel,compliance != SVGCompliance ? MagickTrue : MagickFalse,
