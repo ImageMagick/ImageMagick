@@ -970,7 +970,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
             for (x = 0;  x < (ssize_t) bytes_per_row;  x += 8)
             {
               tptr = tmpbuf;
-              for (bit=0, byte=0; bit < (unsigned char) MagickMin(8,(ssize_t) bytes_per_row-x); bit++)
+              for (bit=0, byte=0; bit < (unsigned char) MagickMin(8L,(ssize_t) bytes_per_row-x); bit++)
               {
                 if ((y == 0) || (last_row[x + bit] != one_row[x + bit]))
                   {
