@@ -79,7 +79,7 @@ jobs:
       with:
         repository: ImageMagick/ImageMagick-Windows
         ref: refs/heads/master
-        fetchDepth: 1
+        fetch-depth: 1
 
     - name: Clone repositories
       shell: cmd
