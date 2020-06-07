@@ -236,7 +236,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     {
       bi=MagickTrue;
       limit=resource_info.disk_limit;
-      if ((resource_info.disk+request) > resource_info.disk)
+      if ((resource_info.disk+request) > (MagickOffsetType) resource_info.disk)
         {
           resource_info.disk+=request;
           if ((limit == MagickResourceInfinity) ||
@@ -251,7 +251,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     case FileResource:
     {
       limit=resource_info.file_limit;
-      if ((resource_info.file+request) > resource_info.file)
+      if ((resource_info.file+request) > (MagickOffsetType) resource_info.file)
         {
           resource_info.file+=request;
           if ((limit == MagickResourceInfinity) ||
@@ -282,7 +282,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     {
       bi=MagickTrue;
       limit=resource_info.map_limit;
-      if ((resource_info.map+request) > resource_info.map)
+      if ((resource_info.map+request) > (MagickOffsetType) resource_info.map)
         {
           resource_info.map+=request;
           if ((limit == MagickResourceInfinity) ||
@@ -298,7 +298,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     {
       bi=MagickTrue;
       limit=resource_info.memory_limit;
-      if ((resource_info.memory+request) > resource_info.memory)
+      if ((resource_info.memory+request) > (MagickOffsetType) resource_info.memory)
         {
           resource_info.memory+=request;
           if ((limit == MagickResourceInfinity) ||
@@ -329,7 +329,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     case TimeResource:
     {
       limit=resource_info.time_limit;
-      if ((resource_info.time+request) > resource_info.time)
+      if ((resource_info.time+request) > (MagickOffsetType) resource_info.time)
         {
           resource_info.time+=request;
           if ((limit == MagickResourceInfinity) ||
