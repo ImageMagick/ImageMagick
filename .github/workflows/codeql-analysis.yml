@@ -1,9 +1,6 @@
 on:
-  # schedule:
-  # - cron: 0 6 * * *
-  push:
-    branches:
-    - master
+  schedule:
+  - cron: 0 6 * * *
 
 name: codeql analysis
 jobs:
