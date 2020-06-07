@@ -3942,7 +3942,8 @@ RestoreMSCWarning
               const char
                 *value;
 
-              GetColorTuple(&pixel,MagickFalse,name);
+              (void) QueryColorname(property_image,&pixel,compliance,name,
+                exception);
               value=GetImageArtifact(property_image,"pixel:compliance");
               if (value != (char *) NULL)
                 {
