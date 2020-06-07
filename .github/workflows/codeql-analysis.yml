@@ -20,15 +20,15 @@ jobs:
       with:
         fetch-depth: 2
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v1
-      with:
-        languages: cpp
-
     - name: Configure ImageMagick
       run: |
         export CFLAGS="-Wno-deprecated-declarations"
         ./configure --with-quantum-depth=${{matrix.quantum}} --enable-hdri=${{matrix.hdri}} --${{matrix.modules}}
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: cpp
 
     - name: Build ImageMagick
       run: |
