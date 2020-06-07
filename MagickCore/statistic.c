@@ -386,7 +386,7 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case RootMeanSquareEvaluateOperator:
     {
-      result=(double) (pixel*pixel+value);
+      result=((double) pixel*pixel+value);
       break;
     }
     case SetEvaluateOperator:
