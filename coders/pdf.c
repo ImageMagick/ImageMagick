@@ -1314,6 +1314,7 @@ RestoreMSCWarning
     version=1.6;
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
+    (void) SetImageGray(next,&image->exception);
     profile=GetImageProfile(next,"icc");
     if (profile != (StringInfo *) NULL)
       {
