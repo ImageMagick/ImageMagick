@@ -644,8 +644,12 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
             /* duplicate the previous row RunCount x */
             for(i=0;i<=RunCount;i++)
               {
-                if (InsertRow(image,BImgBuff,(ssize_t) (image->rows > y ? y : image->rows-1),bpp,exception) != MagickFalse)
-                  y++;
+                if (InsertRow(image,BImgBuff,(ssize_t) (image->rows > y ? y : image->rows-1),bpp,exception) == MagickFalse)
+                  {
+                    BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
+                    return(-3);
+                  }
+                y++;
               }
           }
           break;
