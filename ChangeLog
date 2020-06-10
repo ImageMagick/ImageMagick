@@ -1,3 +1,10 @@
+2020-06-09  7.0.10-19 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-19, GIT revision 17...
+
+2020-06-09  7.0.10-19 Cristy  <quetzlzacatenango@image...>
+  * improved checking for write failures (reference
+    https://github.com/ImageMagick/ImageMagick/pull/2081).
+
 2020-06-08  7.0.10-18 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-18, GIT revision 17333:d071c2032:20200608
 
