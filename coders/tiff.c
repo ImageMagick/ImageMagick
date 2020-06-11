@@ -3489,8 +3489,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       Initialize TIFF fields.
     */
     if ((image_info->type != UndefinedType) &&
-        (image_info->type != OptimizeType) &&
-    	  (IsImageMonochrome(image) == MagickFalse))
+        (image_info->type != OptimizeType))
       (void) SetImageType(image,image_info->type,exception);
     compression=UndefinedCompression;
     if (image->compression != JPEGCompression)
