@@ -3488,6 +3488,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     /*
       Initialize TIFF fields.
     */
+    (void) IsImageMonochrome(image);
     if ((image_info->type != UndefinedType) &&
         (image_info->type != OptimizeType))
       (void) SetImageType(image,image_info->type,exception);
