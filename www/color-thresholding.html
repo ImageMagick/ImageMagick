@@ -29,7 +29,7 @@
   <meta property='og:site_name' content='ImageMagick' />
   <meta property='og:description' content="Create, Edit, Compose, or Convert Bitmap Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="../www/color-thresholding.html" rel="canonical" />
+  <link href="color-thresholding.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
   <link href="assets/magick.css" rel="stylesheet" />
@@ -62,7 +62,7 @@
         <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
       </li>
     </ul>
     </div>
@@ -72,7 +72,7 @@
     </form>
   </nav>
   <div class="container">
-   <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+   <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -86,11 +86,12 @@
 
   <main class="container">
     <div class="magick-template">
+<div class="magick-header">
 <p>Use color thresholding to specify a color range and return a black and white image. All colors between the start and stop colors (inclusively) become white and the rest of the image pixels become black. The two colors are separated with a hyphen between them. Thresholding, by default, take place in the sRGB colorspace.  Use the <code>-colorspace</code> to perform the thresholding in an alternative colorspaces (currently limited to sRGB, Gray, HSV, HSL, HCL, HSB, and HSW). Start and stop colors can be specified in any colorspace (recognized by ImageMagick), but in general, we advise you specify them in the colorspace corresponding to the <code>-colorspace</code> option. For colorspace Gray, be sure to use a start value lower than the stop value. Note that Hue is cyclical -- 0 and 360 are the same. However, a range of colors that spans hue = 0 may still be useful, if the start hue value is higher than the stop hue value.</p>
 
 <p>Caution is advised when mixing the colorspace of the start and stop colors and that of the image. A large range in one colorspace may map to only a narrow range in another colorspace. For example, one might naively think that <code>sRGB(0,0,0)</code> to <code>sRGB(255,255,255)</code> would produce a white image, catching all colors, even when using -colorspace HSV. But these two colors are black and white and so map only to a range of grayscale as <code>hsv(0,0%,0%)</code> and <code>hsv(0,0%,100%)</code>. For a color image, you would likely not find too many gray pixels.</p>
 
-<p>To illustate how color thresholding performs, use this image:</p>
+<p>To illustrate how color thresholding performs, use this image:</p>
 
 <ul><pre class="code">convert <var>input-image</var> -colorspace <var>XXX</var> -color-threshold <var>"start - stop"</var> <var>output-image</var></pre></ul>
 
@@ -153,6 +154,7 @@ magick xc:"sRGB(205,100,45)" -colorspace gray txt:
 <p>Here is the results of the color thresholding operation:</p>
 ￼
 <ul><img class="img-fluid d-block" src="../images/color-thresholding-gray.gif" alt="[Color Thresholding]" width="265" height="333" name="Color Thresholding" /></ul>
+</div>
     </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
@@ -164,7 +166,8 @@ magick xc:"sRGB(205,100,45)" -colorspace gray txt:
     <a href="links.html">Related</a> •
      <a href="sitemap.html">Sitemap</a>
     <br/>
-    <a href="support.html">Donate</a> •
+    <a href="support.html">Sponsor</a> •
+    <a href="cite.html">Cite</a> •
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="https://imagemagick.org/script/contact.php">Contact Us</a> 
     <br/>
@@ -179,4 +182,4 @@ magick xc:"sRGB(205,100,45)" -colorspace gray txt:
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 19th March 2020 17:59 -->
+<!-- Magick Cache 12th June 2020 18:12 -->

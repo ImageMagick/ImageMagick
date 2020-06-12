@@ -29,7 +29,7 @@
   <meta property='og:site_name' content='ImageMagick' />
   <meta property='og:description' content="Create, Edit, Compose, or Convert Bitmap Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="../www/jp2.html" rel="canonical" />
+  <link href="jp2.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
   <link href="assets/magick.css" rel="stylesheet" />
@@ -62,7 +62,7 @@
         <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
       </li>
     </ul>
     </div>
@@ -72,7 +72,7 @@
     </form>
   </nav>
   <div class="container">
-   <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+   <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -99,37 +99,37 @@
 
 <p>Use this command to convert a JPEG-2000 image to the PNG image format:</p>
 
-<pre class="highlight"><code>magick convert wizard.jp2 wizard.png
+<pre class="highlight"><code>magick wizard.jp2 wizard.png
 </code></pre>
 
 <p>Let's convert a JPEG image to a lossless JPEG-2000 image:</p>
 
-<pre class="highlight"><code>magick convert wizard.jpg -quality 0 wizard.jp2
+<pre class="highlight"><code>magick wizard.jpg -quality 0 wizard.jp2
 </code></pre>
 
 <p>Here we extract an area from the image:</p>
 
-<pre class="highlight"><code>magick convert 'wizard.jp2[640x480+0+0]' wizard.png
+<pre class="highlight"><code>magick 'wizard.jp2[640x480+0+0]' wizard.png
 </code></pre>
 
 <p>Extract a particular tile from the image:</p>
 
-<pre class="highlight"><code>magick convert 'wizard.jp2[2]' wizard.png
+<pre class="highlight"><code>magick 'wizard.jp2[2]' wizard.png
 </code></pre>
 
 <p>Specify a subsampling factor:</p>
 
-<pre class="highlight"><code>magick convert wizard.png -colorspace YUV -sampling-factor 2,2 wizard.jp2
+<pre class="highlight"><code>magick wizard.png -colorspace YUV -sampling-factor 2,2 wizard.jp2
 </code></pre>
 
 <p>Save a tiled JPEG-2000 image:</p>
 
-<pre class="highlight"><code>magick convert wizard.png 'wizard.png[512x512]'
+<pre class="highlight"><code>magick wizard.png 'wizard.png[512x512]'
 </code></pre>
 
 <p>Write a digital Cinema 4K profile compliant codestream:</p>
 
-<pre class="highlight"><code>magick convert wizard.png -resize 4096x2160! -depth 12 wizard.jp2
+<pre class="highlight"><code>magick wizard.png -resize 4096x2160! -depth 12 wizard.jp2
 </code></pre>
 
 <p>Here is a complete list of JPEG-2000 decoding options:</p>
@@ -179,7 +179,8 @@
     <a href="links.html">Related</a> •
      <a href="sitemap.html">Sitemap</a>
     <br/>
-    <a href="support.html">Donate</a> •
+    <a href="support.html">Sponsor</a> •
+    <a href="cite.html">Cite</a> •
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="https://imagemagick.org/script/contact.php">Contact Us</a> 
     <br/>
@@ -194,4 +195,4 @@
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 19th March 2020 18:00 -->
+<!-- Magick Cache 12th June 2020 18:31 -->

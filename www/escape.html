@@ -29,7 +29,7 @@
   <meta property='og:site_name' content='ImageMagick' />
   <meta property='og:description' content="Create, Edit, Compose, or Convert Bitmap Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="../www/escape.html" rel="canonical" />
+  <link href="escape.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
   <link href="assets/magick.css" rel="stylesheet" />
@@ -62,7 +62,7 @@
         <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://imagemagick.org/discourse-server/">Community</a>
+        <a class="nav-link" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
       </li>
     </ul>
     </div>
@@ -72,7 +72,7 @@
     </form>
   </nav>
   <div class="container">
-   <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+   <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -170,6 +170,10 @@ filename, type, width, height. </p>
 
 <div class="table-responsive" style="font-size:87.5% !important;">
 <table class="table table-sm table-striped">
+  <tr>
+    <td>\</td>
+    <td>backslash, the next character is literal and not subject to interpretation</td>
+  </tr>
   <tr>
     <td>\n</td>
     <td>newline</td>
@@ -432,8 +436,8 @@ when enclosed in braces (long form):</p>
     <td>image compression type</td>
   </tr>
   <tr>
-    <td><a href="../www/convex-hull.html">%[convex-hull]</a></td>
-    <td>points that form a convex hull around the foreground object.  Use <code><a href="escape.html#define">-define</a> convex-hull:background-color=<em>color</em></code> to identify the image background color.</td>
+    <td><a href="convex-hull.html">%[convex-hull]</a></td>
+    <td>points that form a convex hull around the foreground object.  Use <code><a href="command-line-options.html#define">-define</a> convex-hull:background-color=<em>color</em></code> to identify the image background color.  Use <code><a href="command-line-options.html#fuzz">-fuzz</a> to allow for a non-uniform background color. </td>
   </tr>
   <tr>
     <td>%[copyright]</td>
@@ -510,6 +514,10 @@ when enclosed in braces (long form):</p>
   <tr>
     <td>%[min]</td>
     <td>CALCULATED: minimum value statistic of image</td>
+  </tr>
+  <tr>
+    <td><a href="convex-hull.html">%[minimum-bounding-box]</a></td>
+    <td>Use <code><a href="command-line-options.html#define">-define</a> convex-hull:background-color=<em>color</em></code> to identify the image background color.  Use <code><a href="command-line-options.html#fuzz">-fuzz</a> to allow for a non-uniform background color.  In addition to the bounding box points, these properties are set: <code>minimum-bounding-box:area</code>, <code>minimum-bounding-box:width</code>, <code>minimum-bounding-box:height</code>, <code>minimum-bounding-box:angle</code>, and <code>minimum-bounding-box:unrotate</code>.</td>
   </tr>
   <tr>
     <td>%[opaque]</td>
@@ -617,7 +625,7 @@ CLI option (or API equivalent), or from special convenience options
 >-caption</a>). </p>
 
 <p>These convenience options are globally saved (as 'global options' so thay can
-be set before images are read), and later are transfered to the property of
+be set before images are read), and later are transferred to the property of
 individual images, only when they are read in. At that time any internal
 percent escape present is then handled. </p>
 
@@ -649,7 +657,7 @@ are in fact generating a global option, which the <a href="command-line-options.
 >-distort</a> operator will use to modify its behavior (distorted output
 image 'view'). </p>
 
-<p>An Option is essentually a Artifact that has been stored globally as part
+<p>An Option is essentually an Artifact that has been stored globally as part
 of a list of images (specifically a 'Wand' of images). As such they are
 identical, in that a Option, is simply a global Artifact for all the
 associated images. </p>
@@ -671,7 +679,7 @@ one of the key differences between IMv6 and IMv7.</p>
 <p>Sets a link back to the global options
 data, so that if a specific per-image Artifact is not found , then it will
 look for a equivalent global Option for that image list.  directly.  This
-saves coping these free-form options into artifacts repeatally, and means you
+saves coping these free-form options into artifacts repeatedly, and means you
 can now separately define a global option for a list, and a individual
 overriding artifact for a specific image in that list. </p>
 
@@ -717,6 +725,8 @@ expression:</p>
 
 <pre class="highlight"><code>%[pixel:<var>expression</var>]
 </code></pre>
+
+<p>Use <a href="command-line-options.html#define">-define</a> to specify the color compliance (e.g. <code>-define pixel:compliance=css</code>)</p>.
 
 <h3>Specific Profile Percent Escape Prefixes</h3>
 
@@ -926,7 +936,8 @@ Post ObjectData Descriptor Record
     <a href="links.html">Related</a> •
      <a href="sitemap.html">Sitemap</a>
     <br/>
-    <a href="support.html">Donate</a> •
+    <a href="support.html">Sponsor</a> •
+    <a href="cite.html">Cite</a> •
     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="https://imagemagick.org/script/contact.php">Contact Us</a> 
     <br/>
@@ -941,4 +952,3 @@ Post ObjectData Descriptor Record
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 19th March 2020 17:39 -->
