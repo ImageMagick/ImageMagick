@@ -173,8 +173,6 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
          (LocaleCompare(token,"LUT_3D_SIZE") == 0)) &&
         (cube_info == (MemoryInfo *) NULL))
       {
-        if (cube_info != (MemoryInfo *) NULL)
-          cube_info=RelinquishVirtualMemory(cube_info);
         (void) GetNextToken(q,&q,MagickPathExtent,value);
         cube_level=(size_t) StringToLong(value);
         if (LocaleCompare(token,"LUT_1D_SIZE") == 0)
