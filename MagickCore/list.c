@@ -41,6 +41,7 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
+#include "MagickCore/artifact.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/exception.h"
@@ -49,6 +50,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -207,6 +209,9 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
   char
     *p;
 
+  const char
+    *artifact;
+
   const Image
     *next;
 
@@ -234,6 +239,7 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
   assert(exception->signature == MagickCoreSignature);
   clone_images=NewImageList();
   images=GetFirstImageInList(images);
+  artifact=GetImageArtifact(images,"frames:step");
   length=GetImageListLength(images);
   for (p=(char *) scenes; *p != '\0';)
   {
@@ -262,6 +268,8 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
       }
     match=MagickFalse;
     step=(ssize_t) (first > last ? -1 : 1);
+    if (artifact != (const char *) NULL)
+      step*=(ssize_t) StringToDouble(artifact,(char **) NULL);
     for ( ; first != (last+step); first+=step)
     {
       i=0;
