@@ -2043,8 +2043,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               (void) LevelizeImage(*image,black_point,white_point,gamma,
                 exception);
             else
-              (void) LevelImage(*image,black_point,white_point,gamma,
-                exception);
+              (void) LevelImage(*image,black_point,white_point,gamma,exception);
             break;
           }
         if (LocaleCompare("level-colors",option+1) == 0)
