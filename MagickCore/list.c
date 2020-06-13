@@ -267,10 +267,15 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
             last=(ssize_t) length;
       }
     match=MagickFalse;
-    step=(ssize_t) (first > last ? -1 : 1);
+    step=1;
     if (artifact != (const char *) NULL)
-      step*=(ssize_t) StringToDouble(artifact,(char **) NULL);
-    for ( ; first != (last+step); first+=step)
+      {
+        step=(ssize_t) StringToDouble(artifact,(char **) NULL);
+        if (step == 0)
+          step=1;
+      }
+    step=(ssize_t) (first > last ? -step : step);
+    for ( ; (first > -(last+step)) && (first < (last+step)); first+=step)
     {
       i=0;
       for (next=images; next != (Image *) NULL; next=GetNextImageInList(next))
