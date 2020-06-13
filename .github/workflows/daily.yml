@@ -29,10 +29,21 @@ jobs:
       run: |
         set -e
         apt update
-        sh -c "echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections"
-        apt-get install -y autoconf pkg-config gcc msttcorefonts libfontconfig1-dev libfreetype6-dev libltdl-dev
+        apt-get install -y autoconf pkg-config gcc libfontconfig1-dev libfreetype6-dev libltdl-dev
 
-    - uses: actions/checkout@v1
+    - name: Clone msttcorefonts
+      uses: actions/checkout@v2
+      with:
+        repository: ImageMagick/msttcorefonts
+        ref: refs/heads/master
+        fetch-depth: 1
+
+    - name: Install msttcorefonts
+      run: |
+        set -e
+        ./install.sh
+
+    - uses: actions/checkout@v2
       with:
         fetch-depth: 1
 
@@ -72,37 +83,38 @@ jobs:
 
     steps:
     - name: Clone ImageMagick-Windows
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
       with:
         repository: ImageMagick/ImageMagick-Windows
+        path: ImageMagick-Windows
         ref: refs/heads/master
         fetch-depth: 1
 
     - name: Clone repositories
       shell: cmd
       run: |
-        cd %RUNNER_WORKSPACE%\ImageMagick-Windows
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows
         CloneRepositories.cmd https://github.com/ImageMagick shallow
 
     - name: Build configure
       shell: cmd
       run: |
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cd %RUNNER_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
         devenv /upgrade configure.vcxproj
         msbuild configure.sln /m /t:Rebuild /p:Configuration=Release,Platform=Win32
 
     - name: Configure ImageMagick
       shell: cmd
       run: |
-        cd %RUNNER_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
         configure.exe /noWizard /VS2019 /${{matrix.platform}} /${{matrix.buildType}}
 
     - name: Build ImageMagick
       shell: cmd
       run: |
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cd %RUNNER_WORKSPACE%\ImageMagick-Windows\VisualMagick
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick
         dir /B *.sln > solution
         set /p solution=<solution
         msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
