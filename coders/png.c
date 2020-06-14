@@ -1779,6 +1779,9 @@ static int
 Magick_png_read_raw_profile(png_struct *ping,Image *image,
    const ImageInfo *image_info, png_textp text,int ii,ExceptionInfo *exception)
 {
+  png_charp
+    ep;
+
   register ssize_t
     i;
 
@@ -1808,7 +1811,8 @@ Magick_png_read_raw_profile(png_struct *ping,Image *image,
 
   sp=text[ii].text+1;
   extent=text[ii].text_length;
-  if ((sp+extent) < sp)
+  ep=text[ii].text+extent;
+  if (ep <= sp)
     {
       png_warning(ping,"invalid profile length");
       return(MagickFalse);
