@@ -674,7 +674,7 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
                   InsertByte6(SampleBuffer[bbuf]);
             }
           else {      /* NRP */
-            for(i=0; i< SampleSize*(RunCount+1);i++)
+            for(i=0; i < (ssize_t) (SampleSize*(RunCount+1)); i++)
               {
                 bbuf=ReadBlobByte(image);
                 InsertByte6(bbuf);
