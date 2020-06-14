@@ -356,8 +356,8 @@ MagickBooleanType sixel_decode(Image *image,
 
             if (n > 0) attributed_pad = param[0];
             if (n > 1) attributed_pan = param[1];
-            if (n > 2 && param[2] > 0) attributed_ph = param[2];
-            if (n > 3 && param[3] > 0) attributed_pv = param[3];
+            if (n > 2 && param[2] > 0) attributed_ph = param[2] & 0xffff;
+            if (n > 3 && param[3] > 0) attributed_pv = param[3] & 0xffff;
 
             if (attributed_pan <= 0) attributed_pan = 1;
             if (attributed_pad <= 0) attributed_pad = 1;
