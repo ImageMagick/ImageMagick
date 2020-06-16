@@ -1,0 +1,222 @@
+on:
+  push:
+    branches:
+    - master
+    paths:
+    - 'ChangeLog'
+
+name: release
+jobs:
+  release_windows_installer:
+    name: 'Windows ${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.platform}} (${{matrix.type}})'
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ x64, x86 ]
+        type: [ dll, static ]
+        quantum: [ Q8, Q16 ]
+        hdri: [ HDRI, noHDRI ]
+        exclude:
+          - quantum: Q8
+            hdri: HDRI
+        include:
+          - platform: x64
+            bit: 64
+            platform_alias: x64
+          - platform: x86
+            bit: 32
+            platform_alias: Win32
+          - type: dll
+            type_flag: dmt
+          - type: static
+            type_flag: smtd
+          - hdri: HDRI
+            hdri_flag: '-hdri'
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        repository: ImageMagick/ImageMagick-Windows
+        path: ImageMagick-Windows
+        ref: refs/heads/master
+        fetch-depth: 1
+
+    - name: Clone repositories
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows
+        CloneRepositories.cmd https://github.com/ImageMagick shallow
+
+    - name: Install FFmpeg
+      shell: cmd
+      run: |
+        powershell Invoke-WebRequest -Uri https://github.com/ImageMagick/ImageMagick-Windows/releases/download/20200615/ffmpeg-4.2.3-win${{matrix.bit}}.exe -OutFile ffmpeg.exe
+        copy /Y ffmpeg.exe %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\bin
+
+    - name: Install Strawberry Perl
+      if: ${{matrix.type == 'dll'}}
+      shell: cmd
+      run: |
+        powershell Invoke-WebRequest -Uri https://github.com/ImageMagick/ImageMagick-Windows/releases/download/20200615/strawberry-perl-5.30.2.1-${{matrix.bit}}bit.msi -OutFile strawberry-perl-5.30.2.1-${{matrix.bit}}bit.msi
+        msiexec /i strawberry-perl-5.30.2.1-${{matrix.bit}}bit.msi /qn INSTALLDIR="C:\Strawberry${{matrix.bit}}"
+        mv "C:\Strawberry" "C:\Strawberry64"
+
+    - name: Build configure
+      shell: cmd
+      run: |
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
+        devenv /upgrade configure.vcxproj
+        msbuild configure.sln /m /t:Rebuild /p:Configuration=Release,Platform=Win32
+
+    - name: Configure ImageMagick
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
+        configure.exe /noWizard /VS2019 /includeOptional /installedSupport /deprecated /${{matrix.hdri}} /${{matrix.quantum}} /${{matrix.platform}} /${{matrix.type_flag}}
+
+    - name: Build ImageMagick
+      shell: cmd
+      run: |
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick
+        set /p solution=<solution
+        msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform_alias}}
+
+    - name: Build PerlMagick
+      if: ${{matrix.type == 'dll'}}
+      shell: cmd
+      run: |
+        set PATH=
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\ImageMagick\PerlMagick
+        set PATH=%PATH%;C:\Strawberry${{matrix.bit}}\c\bin;C:\Strawberry${{matrix.bit}}\perl\site\bin;C:\Strawberry${{matrix.bit}}\perl\bin;C:\WINDOWS\System32\WindowsPowerShell\v1.0
+        perl "Makefile.PL" "MAKE=nmake"
+        nmake
+        nmake release
+
+    - name: Sign binaries
+      uses: dlemstra/code-sign-action@v1
+      with:
+        certificate: '${{ secrets.CERTIFICATE }}'
+        folder: 'ImageMagick-Windows\VisualMagick\bin'
+
+    - name: Create installer
+      shell: cmd
+      run: |
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+        "C:\Program Files (x86)\Inno Setup 6\iscc.exe" %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\installer\im-${{matrix.platform}}${{matrix.hdri_flag}}-${{matrix.type}}-${{matrix.quantum}}.iss
+
+    - name: Sign installer
+      uses: dlemstra/code-sign-action@v1
+      with:
+        certificate: '${{ secrets.CERTIFICATE }}'
+        folder: 'ImageMagick-Windows\VisualMagick\installer\output'
+  
+    - uses: actions/upload-artifact@v2
+      with:
+        name: installers
+        path: 'ImageMagick-Windows\VisualMagick\installer\output'
+
+  release_windows_portable:
+    name: 'Windows portable ${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.platform}}'
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ x64, x86 ]
+        quantum: [ Q8, Q16 ]
+        hdri: [ HDRI, noHDRI ]
+        exclude:
+          - quantum: Q8
+            hdri: HDRI
+        include:
+          - platform: x64
+            bit: 64
+            platform_alias: x64
+          - platform: x86
+            bit: 32
+            platform_alias: Win32
+          - hdri: HDRI
+            hdri_flag: '-hdri'
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        repository: ImageMagick/ImageMagick-Windows
+        path: ImageMagick-Windows
+        ref: refs/heads/master
+        fetch-depth: 1
+
+    - name: Clone repositories
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows
+        CloneRepositories.cmd https://github.com/ImageMagick shallow
+
+    - name: Install FFmpeg
+      shell: cmd
+      run: |
+        powershell Invoke-WebRequest -Uri https://github.com/ImageMagick/ImageMagick-Windows/releases/download/20160630/ffmpeg-4.2-win${{matrix.bit}}.exe -OutFile ffmpeg.exe
+        copy /Y ffmpeg.exe %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\bin
+
+    - name: Build configure
+      shell: cmd
+      run: |
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
+        devenv /upgrade configure.vcxproj
+        msbuild configure.sln /m /t:Rebuild /p:Configuration=Release,Platform=Win32
+
+    - name: Configure ImageMagick
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
+        configure.exe /noWizard /VS2019 /noOpenMP /${{matrix.hdri}} /${{matrix.quantum}} /${{matrix.platform}} /smt
+
+    - name: Build ImageMagick
+      shell: cmd
+      run: |
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick
+        set /p solution=<solution
+        msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform_alias}}
+
+    - name: Sign exectables
+      uses: dlemstra/code-sign-action@v1
+      with:
+        certificate: '${{ secrets.CERTIFICATE }}'
+        folder: 'ImageMagick-Windows\VisualMagick\bin'
+
+    - name: Copy Files
+      shell: powershell
+      run: |
+        [void](New-Item -Name "portable" -ItemType directory)
+        Copy-Item "ImageMagick-Windows\VisualMagick\bin\*.exe" "portable"
+        Copy-Item "ImageMagick-Windows\ImageMagick\config\colors.xml" "portable"
+        Copy-Item "ImageMagick-Windows\ImageMagick\config\english.xml" "portable"
+        Copy-Item "ImageMagick-Windows\ImageMagick\config\locale.xml" "portable"
+        Copy-Item "ImageMagick-Windows\ImageMagick\config\log.xml" "portable"
+        Copy-Item "ImageMagick-Windows\ImageMagick\config\mime.xml" "portable"
+        Copy-Item "ImageMagick-Windows\ImageMagick\config\quantization-table.xml" "portable"
+        Copy-Item "ImageMagick-Windows\VisualMagick\bin\configure.xml" "portable"
+        Copy-Item "ImageMagick-Windows\VisualMagick\bin\ImageMagick.rdf" "portable"
+        Copy-Item "ImageMagick-Windows\VisualMagick\bin\delegates.xml" "portable"
+        Copy-Item "ImageMagick-Windows\VisualMagick\bin\policy.xml" "portable"
+        Copy-Item "ImageMagick-Windows\VisualMagick\bin\sRGB.icc" "portable"
+        Copy-Item "ImageMagick-Windows\VisualMagick\bin\thresholds.xml" "portable"
+        Copy-Item "ImageMagick-Windows\VisualMagick\bin\type-ghostscript.xml" "portable"
+        Copy-Item "ImageMagick-Windows\VisualMagick\bin\type.xml" "portable"
+
+        Copy-Item "ImageMagick-Windows\ImageMagick\ChangeLog" "portable"
+        Copy-Item "ImageMagick-Windows\ImageMagick\LICENSE" "portable\LICENSE.txt"
+        Copy-Item "ImageMagick-Windows\VisualMagick\NOTICE.txt" "portable"
+        Copy-Item "ImageMagick-Windows\ImageMagick\README.txt" "portable"
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: '${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.platform}}-portable'
+        path: portable
