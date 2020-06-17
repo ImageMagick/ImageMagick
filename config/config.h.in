@@ -865,6 +865,9 @@
 /* Define to the type of arg 5 for `select'. */
 #undef SELECT_TYPE_ARG5
 
+/* Setjmp/longjmp are thread safe */
+#undef SETJMP_IS_THREAD_SAFE
+
 /* Sharearch directory name without ABI part. */
 #undef SHAREARCH_BASEDIRNAME
 
