@@ -3731,8 +3731,7 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,void *data)
     *magick_restrict blob_info;
 
   int
-    c,
-    status;
+    c;
 
   register unsigned char
     *q;
@@ -3749,7 +3748,6 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,void *data)
   assert(data != (void *) NULL);
   blob_info=image->blob;
   count=0;
-  status=0;
   q=(unsigned char *) data;
   switch (blob_info->type)
   {
@@ -3809,6 +3807,9 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,void *data)
     case ZipStream:
     {
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
+      int
+        status;
+
       switch (length)
       {
         default:
@@ -3877,6 +3878,9 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,void *data)
     case BZipStream:
     {
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
+      int
+        status;
+
       register ssize_t
         i;
 
@@ -5597,8 +5601,7 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
     *magick_restrict blob_info;
 
   int
-    c,
-    status;
+    c;
 
   register const unsigned char
     *p;
@@ -5618,7 +5621,6 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
   assert(data != (const void *) NULL);
   blob_info=image->blob;
   count=0;
-  status=0;
   p=(const unsigned char *) data;
   q=(unsigned char *) data;
   switch (blob_info->type)
@@ -5676,6 +5678,9 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
     case ZipStream:
     {
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
+      int
+        status;
+
       switch (length)
       {
         default:
@@ -5738,6 +5743,9 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
     case BZipStream:
     {
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
+      int
+        status;
+
       register ssize_t
         i;
 
