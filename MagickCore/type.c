@@ -319,7 +319,6 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
 MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   const StyleType style,const StretchType stretch,const size_t weight,
   ExceptionInfo *exception)
