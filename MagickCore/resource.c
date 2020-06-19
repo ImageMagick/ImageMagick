@@ -236,7 +236,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     {
       bi=MagickTrue;
       limit=resource_info.disk_limit;
-      if ((MagickSizeType) (resource_info.disk+request) >
+      if (((MagickSizeType) resource_info.disk+request) >
           (MagickSizeType) resource_info.disk)
         {
           resource_info.disk+=request;
@@ -252,7 +252,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     case FileResource:
     {
       limit=resource_info.file_limit;
-      if ((MagickSizeType) (resource_info.file+request) >
+      if (((MagickSizeType) resource_info.file+request) >
           (MagickSizeType) resource_info.file)
         {
           resource_info.file+=request;
@@ -284,7 +284,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     {
       bi=MagickTrue;
       limit=resource_info.map_limit;
-      if ((MagickSizeType) (resource_info.map+request) >
+      if (((MagickSizeType) resource_info.map+request) >
           (MagickSizeType) resource_info.map)
         {
           resource_info.map+=request;
@@ -301,7 +301,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     {
       bi=MagickTrue;
       limit=resource_info.memory_limit;
-      if ((MagickSizeType) (resource_info.memory+request) >
+      if (((MagickSizeType) resource_info.memory+request) >
           (MagickSizeType) resource_info.memory)
         {
           resource_info.memory+=request;
@@ -333,7 +333,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     case TimeResource:
     {
       limit=resource_info.time_limit;
-      if ((MagickSizeType) (resource_info.time+request) >
+      if (((MagickSizeType) resource_info.time+request) >
           (MagickSizeType) resource_info.time)
         {
           resource_info.time+=request;

@@ -1465,7 +1465,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
           dir_offset=(ssize_t) ReadPropertySignedLong(endian,q+8);
           if ((dir_offset < 0) || (size_t) dir_offset >= length)
             continue;
-          if ((dir_offset+number_bytes) < (size_t) dir_offset)
+          if ((size_t) (dir_offset+number_bytes) < (size_t) dir_offset)
             continue;  /* prevent overflow */
           if ((size_t) (dir_offset+number_bytes) > length)
             continue;

@@ -403,7 +403,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
                  image->filename);
       break;
     }
-   if (t_count < ipl_info.z * ipl_info.time)
+   if (t_count < (size_t) (ipl_info.z*ipl_info.time))
      {
       /*
        Proceed to next image.
@@ -420,7 +420,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (status == MagickFalse)
         break;
     }
-  } while (t_count < ipl_info.z*ipl_info.time);
+  } while (t_count < (size_t) (ipl_info.z*ipl_info.time));
   CloseBlob(image);
   if (status == MagickFalse)
     return(DestroyImageList(image));

@@ -314,8 +314,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     sun_info.maplength=ReadBlobMSBLong(image);
     if (sun_info.maplength > GetBlobSize(image))
       ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-    extent=sun_info.height*sun_info.width;
-    if ((sun_info.height != 0) && (sun_info.width != extent/sun_info.height))
+    extent=(size_t) (sun_info.height*sun_info.width);
+    if ((sun_info.height != 0) && (sun_info.width != (extent/sun_info.height)))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if ((sun_info.type != RT_STANDARD) && (sun_info.type != RT_ENCODED) &&
         (sun_info.type != RT_FORMAT_RGB))
@@ -457,7 +457,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     quantum=sun_info.depth == 1 ? 15 : 7;
     bytes_per_line+=quantum;
     bytes_per_line<<=1;
-    if ((bytes_per_line >> 1) != (sun_info.width*sun_info.depth+quantum))
+    if ((bytes_per_line >> 1) != (size_t) (sun_info.width*sun_info.depth+quantum))
       {
         sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
         ThrowReaderException(ResourceLimitError,"ImproperImageHeader");
