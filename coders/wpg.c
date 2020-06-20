@@ -561,12 +561,14 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
     RunCount,
     XorMe = 0;
 
+  register ssize_t
+    i;
+
   size_t
     x,
     y;
 
   ssize_t
-    i,
     ldblk;
 
   unsigned int
@@ -615,7 +617,7 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
           RunCount=ReadBlobByte(image);   /* BLK */
           if (RunCount < 0)
             break;
-          for(i=0; i < SampleSize*(RunCount+1); i++)
+          for(i=0; i < ((ssize_t) SampleSize*(RunCount+1)); i++)
             {
               InsertByte6(0);
             }
@@ -657,7 +659,7 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
           RunCount=ReadBlobByte(image);   /* WHT */
           if (RunCount < 0)
             break;
-          for(i=0; i < SampleSize*(RunCount+1); i++)
+          for(i=0; i < ((ssize_t) SampleSize*(RunCount+1)); i++)
             {
               InsertByte6(0xFF);
             }

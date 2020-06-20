@@ -457,7 +457,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     quantum=sun_info.depth == 1 ? 15 : 7;
     bytes_per_line+=quantum;
     bytes_per_line<<=1;
-    if ((bytes_per_line >> 1) != (size_t) (sun_info.width*sun_info.depth+quantum))
+    if ((bytes_per_line >> 1) != ((size_t) sun_info.width*sun_info.depth+quantum))
       {
         sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
         ThrowReaderException(ResourceLimitError,"ImproperImageHeader");
