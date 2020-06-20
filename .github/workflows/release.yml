@@ -192,6 +192,7 @@ jobs:
         folder: 'ImageMagick-Windows\VisualMagick\bin'
 
     - name: Copy Files
+      id: package
       shell: powershell
       run: |
         [void](New-Item -Name "portable" -ItemType directory)
@@ -216,7 +217,12 @@ jobs:
         Copy-Item "ImageMagick-Windows\VisualMagick\NOTICE.txt" "portable"
         Copy-Item "ImageMagick-Windows\ImageMagick\README.txt" "portable"
 
+        $version = (cat "ImageMagick-Windows\VisualMagick\installer\inc\version.isx" | Select-String "MagickPackageVersion") | Out-String
+        $version = ($version | Select-String '".*"' -AllMatches |  Select -Expand Matches | Select -Expand Value | Out-String)
+        $version = $version -Replace "`n|`r|""",""
+        Write-Host "::set-output name=version::$version"
+
     - uses: actions/upload-artifact@v2
       with:
-        name: '${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.platform}}-portable'
+        name: 'ImageMagick-${{steps.package.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.platform}}'
         path: portable
