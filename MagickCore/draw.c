@@ -4221,7 +4221,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
       {
         if (primitive_info[j].coordinates != 3)
           {
-            primitive_type=UndefinedPrimitive;
+            status=MagickFalse;
             break;
           }
         status&=TraceArc(&mvg_info,primitive_info[j].point,
