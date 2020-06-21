@@ -17,6 +17,7 @@
 #include "coders/coders-private.h"
 
 #define MagickHEICHeaders \
+  MagickCoderHeader("HEIC", 4, "ftypavif") \
   MagickCoderHeader("HEIC", 4, "ftypheic") \
   MagickCoderHeader("HEIC", 4, "ftypheix") \
   MagickCoderHeader("HEIC", 4, "ftypmif1")
