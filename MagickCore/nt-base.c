@@ -1402,10 +1402,11 @@ MagickPrivate void NTGhostscriptEXE(char *path,int length)
             {
               UnlockSemaphoreInfo(ghost_semaphore);
 #if defined(_WIN64)
-              (void) CopyMagickString(path,"gswin64c.exe",length);
+              (void) CopyMagickString(program,"gswin64c.exe",sizeof(program));
 #else
-              (void) CopyMagickString(path,"gswin32c.exe",length);
+              (void) CopyMagickString(program,"gswin32c.exe",sizeof(program));
 #endif
+              (void) CopyMagickString(path,program,length);
               return;
             }
           p=strrchr(program,'\\');
