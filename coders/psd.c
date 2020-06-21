@@ -1211,6 +1211,98 @@ static MagickBooleanType ReadPSDChannelRLE(Image *image,const PSDInfo *psd_info,
 }
 
 #ifdef MAGICKCORE_ZLIB_DELEGATE
+static void Unpredict8Bit(unsigned char *pixels,const size_t count)
+{
+  register unsigned char
+    *p;
+
+  size_t
+    remaining;
+
+  p=pixels;
+  remaining=count;
+  while (--remaining)
+  {
+    *(p+1)+=*p;
+    p++;
+  }
+}
+
+static void Unpredict16Bit(const Image *image,unsigned char *pixels,
+  const size_t count, const size_t row_size)
+{
+  register unsigned char
+    *p;
+
+  size_t
+    length,
+    remaining;
+
+  p=pixels;
+  remaining=count;
+  while (remaining > 0)
+  {
+    length=image->columns;
+    while (--length)
+    {
+      p[2]+=p[0]+((p[1]+p[3]) >> 8);
+      p[3]+=p[1];
+      p+=2;
+    }
+    p+=2;
+    remaining-=row_size;
+  }
+}
+
+static void Unpredict32Bit(const Image *image,unsigned char *pixels,
+  unsigned char *output_pixels,const size_t row_size)
+{
+  register unsigned char
+    *p,
+    *q;
+
+  register ssize_t
+    y;
+
+  size_t
+    offset1,
+    offset2,
+    offset3,
+    remaining;
+
+  unsigned char
+    *start;
+
+  offset1=image->columns;
+  offset2=2*offset1;
+  offset3=3*offset1;
+  p=pixels;
+  q=output_pixels;
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    start=p;
+    remaining=row_size;
+    while (--remaining)
+    {
+      *(p+1)+=*p;
+      p++;
+    }
+
+    p=start;
+    remaining=image->columns;
+    while (remaining--)
+    {
+      *(q++)=*p;
+      *(q++)=*(p+offset1);
+      *(q++)=*(p+offset2);
+      *(q++)=*(p+offset3);
+
+      p++;
+    }
+    p=start+row_size;
+  }
+}
+
 static MagickBooleanType ReadPSDChannelZip(Image *image,const size_t channels,
   const ssize_t type,const PSDCompressionType compression,
   const size_t compact_size,ExceptionInfo *exception)
@@ -1223,11 +1315,10 @@ static MagickBooleanType ReadPSDChannelZip(Image *image,const size_t channels,
 
   size_t
     count,
-    length,
     packet_size,
     row_size;
 
-  ssize_t
+  register ssize_t
     y;
 
   unsigned char
@@ -1300,29 +1391,28 @@ static MagickBooleanType ReadPSDChannelZip(Image *image,const size_t channels,
 
   if (compression == ZipWithPrediction)
     {
-      p=pixels;
-      while (count > 0)
+      if (packet_size == 1)
+        Unpredict8Bit(pixels,count);
+      else if (packet_size == 2)
+        Unpredict16Bit(image,pixels,count,row_size);
+      else if (packet_size == 4)
       {
-        length=image->columns;
-        while (--length)
-        {
-          if (packet_size == 2)
-            {
-              p[2]+=p[0]+((p[1]+p[3]) >> 8);
-              p[3]+=p[1];
-            }
-          /*
-          else if (packet_size == 4)
-             {
-               TODO: Figure out what to do there.
-             }
-          */
-          else
-            *(p+1)+=*p;
-          p+=packet_size;
-        }
-        p+=packet_size;
-        count-=row_size;
+        unsigned char
+          *output_pixels;
+
+        output_pixels=(unsigned char *) AcquireQuantumMemory(count,
+          sizeof(*output_pixels));
+        if (pixels == (unsigned char *) NULL)
+          {
+            compact_pixels=(unsigned char *) RelinquishMagickMemory(
+              compact_pixels);
+            pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+            ThrowBinaryException(ResourceLimitError,
+              "MemoryAllocationFailed",image->filename);
+          }
+        Unpredict32Bit(image,pixels,output_pixels,row_size);
+        pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+        pixels=output_pixels;
       }
     }
 
@@ -1494,15 +1584,6 @@ static MagickBooleanType ReadPSDLayer(Image *image,const ImageInfo *image_info,
         "    reading data for channel %.20g",(double) j);
 
     compression=(PSDCompressionType) ReadBlobShort(layer_info->image);
-
-    /* TODO: Remove this when we figure out how to support this */
-    if ((compression == ZipWithPrediction) && (image->depth == 32))
-      {
-        (void) ThrowMagickException(exception,GetMagickModule(),
-          TypeError,"CompressionNotSupported","ZipWithPrediction(32 bit)");
-        return(MagickFalse);
-      }
-
     layer_info->image->compression=ConvertPSDCompression(compression);
     if (layer_info->channel_info[j].type == -1)
       layer_info->image->alpha_trait=BlendPixelTrait;

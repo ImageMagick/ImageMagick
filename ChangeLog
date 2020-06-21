@@ -1,5 +1,9 @@
+2020-06-21  7.0.10-21 Dirk Lemstra <dirk@lem.....org>
+  * Added support for 32 bit zip with prediction format to the PSD decoder
+    (reference https://github.com/ImageMagick/ImageMagick/issues/455).
+
 2020-06-20  7.0.10-20  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-20 GIT revision 17372:d91c43f3b:20200620 
+  * Release ImageMagick version 7.0.10-20 GIT revision 17372:d91c43f3b:20200620
 
 2020-06-14  7.0.10-20  <quetzlzacatenango@image...>
   * Fix out-of-bounds vulnerability when reading sixel images (reference
