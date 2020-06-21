@@ -2704,6 +2704,15 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
       string=image->magick_filename;
       break;
     }
+    case 'N': /* Number of images in the list.  */
+    {
+      if ((image != (Image *) NULL) && (image->next == (Image *) NULL))
+        (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+          GetImageListLength(image));
+      else
+        string="";
+      break;
+    }
     case 'O': /* layer canvas offset with sign = "+%X+%Y" */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
