@@ -33,7 +33,7 @@ jobs:
           - type: static
             type_flag: smtd
           - hdri: HDRI
-            hdri_flag: '-hdri'
+            hdri_flag: '-HDRI'
 
     steps:
     - uses: actions/checkout@v2
@@ -141,7 +141,7 @@ jobs:
             bit: 32
             platform_alias: Win32
           - hdri: HDRI
-            hdri_flag: '-hdri'
+            hdri_flag: '-HDRI'
 
     steps:
     - uses: actions/checkout@v2
