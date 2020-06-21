@@ -1370,7 +1370,7 @@ MagickPrivate const GhostInfo *NTGhostscriptDLLVectors(void)
 %
 %  The format of the NTGhostscriptEXE method is:
 %
-%      int NTGhostscriptEXE(char *path,int length)
+%      void NTGhostscriptEXE(char *path,int length)
 %
 %  A description of each parameter follows:
 %
@@ -1379,7 +1379,7 @@ MagickPrivate const GhostInfo *NTGhostscriptDLLVectors(void)
 %    o length: length of buffer.
 %
 */
-MagickPrivate int NTGhostscriptEXE(char *path,int length)
+MagickPrivate void NTGhostscriptEXE(char *path,int length)
 {
   register char
     *p;
@@ -1406,7 +1406,7 @@ MagickPrivate int NTGhostscriptEXE(char *path,int length)
               sizeof(program)) == FALSE)
             {
               UnlockSemaphoreInfo(ghost_semaphore);
-              return(FALSE);
+              return;
             }
           p=strrchr(program,'\\');
           if (p != (char *) NULL)
@@ -1420,7 +1420,6 @@ MagickPrivate int NTGhostscriptEXE(char *path,int length)
       UnlockSemaphoreInfo(ghost_semaphore);
     }
   (void) CopyMagickString(path,program,length);
-  return(TRUE);
 }
 
 /*

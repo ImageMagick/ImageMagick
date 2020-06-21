@@ -105,7 +105,6 @@ extern MagickPrivate int
   NTExitLibrary(void),
   NTTruncateFile(int,off_t),
   NTGhostscriptDLL(char *,int),
-  NTGhostscriptEXE(char *,int),
   NTGhostscriptFonts(char *,int),
   NTGhostscriptLoadDLL(void),
   NTInitializeLibrary(void),
@@ -134,6 +133,7 @@ extern MagickPrivate unsigned char
 
 extern MagickPrivate void
   *NTGetLibrarySymbol(void *,const char *),
+  NTGhostscriptEXE(char *,int),
   NTInitializeWinsock(MagickBooleanType),
   *NTMapMemory(char *,size_t,int,int,int,MagickOffsetType),
   *NTOpenLibrary(const char *),
