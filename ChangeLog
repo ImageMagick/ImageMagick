@@ -1,9 +1,11 @@
-2020-06-21  7.0.10-21  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-21 GIT revision 17... 
+2020-06-22  7.0.10-21  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-21 GIT revision 17395:af81c28c9:20200622
 
 2020-06-21  7.0.10-21  <quetzlzacatenango@image...>
   * new image property, %N, only report the # of frames in an image sequence,
     just once rather than on a per frame basis
+  * problems converting CMYK to RGB regression (reference
+    https://github.com/ImageMagick/ImageMagick6/issues/83)
 
 2020-06-21  7.0.10-21 Dirk Lemstra <dirk@lem.....org>
   * Added support for 32 bit zip with prediction format to the PSD decoder
