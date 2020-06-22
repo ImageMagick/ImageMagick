@@ -850,7 +850,7 @@ WandExport void MagickResetIterator(MagickWand *wand)
 %  MagickReadImage() will be prepended before any image in the wand.
 %
 %  Also the current image has been set to the first image (if any) in the
-%  Magick Wand.  Using MagickNextImage() will then set teh current image
+%  Magick Wand.  Using MagickNextImage() will then set the current image
 %  to the second image in the list (if present).
 %
 %  This operation is similar to MagickResetIterator() but differs in how
