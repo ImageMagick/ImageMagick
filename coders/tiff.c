@@ -690,7 +690,7 @@ static MagickBooleanType TIFFGetProfiles(TIFF *tiff,Image *image,
       (profile != (unsigned char *) NULL))
     status=ReadProfile(image,"8bim",profile,(ssize_t) length,exception);
 #endif
-#if defined(TIFFTAG_RICHTIFFIPTC)
+#if defined(TIFFTAG_RICHTIFFIPTC) && (TIFFLIB_VERSION >= 20191103)
   if ((TIFFGetField(tiff,TIFFTAG_RICHTIFFIPTC,&length,&profile) == 1) &&
       (profile != (unsigned char *) NULL))
     {
