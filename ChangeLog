@@ -1,5 +1,5 @@
 2020-06-21  7.0.10-21  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-21 GIT revision 17...
+  * Release ImageMagick version 7.0.10-21 GIT revision 17... 
 
 2020-06-21  7.0.10-21  <quetzlzacatenango@image...>
   * new image property, %N, only report the # of frames in an image sequence,
