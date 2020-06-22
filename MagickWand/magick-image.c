@@ -367,7 +367,7 @@ WandExport MagickBooleanType MagickAdaptiveThresholdImage(MagickWand *wand,
 %
 %  Use MagickSetLastIterator(), to append new images into an existing wand,
 %  current image will be set to last image so later adds with also be
-%  appened to end of wand.
+%  appended to end of wand.
 %
 %  Use MagickSetFirstIterator() to prepend new images into wand, any more
 %  images added will also be prepended before other images in the wand.
@@ -8815,7 +8815,7 @@ WandExport MagickBooleanType MagickRandomThresholdImage(MagickWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickReadImage() reads an image or image sequence.  The images are inserted
-%  jjust before the current image pointer position.
+%  just before the current image pointer position.
 %
 %  Use MagickSetFirstIterator(), to insert new images before all the current
 %  images in the wand, MagickSetLastIterator() to append add to the end,
