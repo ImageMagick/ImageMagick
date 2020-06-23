@@ -44,7 +44,7 @@ typedef enum
   ItalicStyle,
   ObliqueStyle,
   AnyStyle,
-  BoldStyle
+  BoldStyle  /* deprecated */
 } StyleType;
 
 typedef struct _TypeInfo
