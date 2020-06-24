@@ -4566,7 +4566,7 @@ MAGICK_PATCHLEVEL_VERSION=22
 
 MAGICK_VERSION=7.0.10-22
 
-MAGICK_GIT_REVISION=17396:167aa2271:20200623
+MAGICK_GIT_REVISION=17403:343c236a4:20200624
 
 
 # Substitute library versioning
@@ -33706,7 +33706,7 @@ BPGEncodeDelegateDefault='bpgenc'
 BlenderDecodeDelegateDefault='blender'
 BrowseDelegateDefault='xdg-open'
 DNGDecodeDelegateDefault='ufraw-batch'
-DOCDecodeDelegateDefault='soffice'
+DOCDecodeDelegateDefault='libreoffice'
 GVCDecodeDelegateDefault='dot'
 DVIDecodeDelegateDefault='dvips'
 EditorDelegateDefault='xterm'
