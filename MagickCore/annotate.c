@@ -338,8 +338,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
     height=(size_t) ceil(metrics.ascent-metrics.descent+
       draw_info->interline_spacing-0.5);
     if (height == 0)
-      height=(size_t) ceil(draw_info->pointsize+draw_info->interline_spacing-
-        0.5);
+      height=(size_t) draw_info->pointsize;
     switch (annotate->gravity)
     {
       case UndefinedGravity:
