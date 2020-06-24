@@ -228,7 +228,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       option=GetImageOption(image_info,"caption:max-pointsize");
       if (option != (const char*) NULL)
         {
-          high=StringToDouble(option,(char **) NULL);
+          high=StringToDouble(option,(char**) NULL);
           if (high < 1.0)
             high=1.0;
           high+=1.0;
