@@ -335,8 +335,10 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
     (void) CloneString(&annotate->text,textlist[i]);
     if ((metrics.width == 0) || (annotate->gravity != NorthWestGravity))
       (void) GetTypeMetrics(image,annotate,&metrics,exception);
-    height=(ssize_t) (metrics.ascent-metrics.descent+
-      draw_info->interline_spacing+0.5);
+    height=(size_t) floor(metrics.ascent-metrics.descent+0.5);
+    if (height == 0)
+      height=draw_info->pointsize;
+    height+=(size_t) floor(draw_info->interline_spacing+0.5);
     switch (annotate->gravity)
     {
       case UndefinedGravity:

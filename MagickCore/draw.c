@@ -5877,7 +5877,6 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->text_antialias=clone_info->antialias;
   if (fabs(clone_info->pointsize) >= MagickEpsilon)
     draw_info->pointsize=clone_info->pointsize;
-  draw_info->interline_spacing=draw_info->pointsize;
   draw_info->border_color=clone_info->border_color;
   if (clone_info->server_name != (char *) NULL)
     draw_info->server_name=AcquireString(clone_info->server_name);
