@@ -845,7 +845,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   }
   read_info=DestroyImageInfo(read_info);
   if (GetBlobError(image) != MagickFalse)
-    ThrowImageException(FileOpenError,"UnableToReadFile");
+    ThrowReaderException(ThrowImageException,"UnableToReadImageData");
   return(GetFirstImageInList(image));
 }
 
