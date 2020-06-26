@@ -24,6 +24,7 @@ jobs:
       run: |
         export CFLAGS="-Wno-deprecated-declarations"
         ./configure --with-quantum-depth=${{matrix.quantum}} --enable-hdri=${{matrix.hdri}} --${{matrix.modules}}
+        echo "" > config.status
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v1
