@@ -13507,7 +13507,7 @@ magick-version: MagickCore/version.h
 	fi ; \
 	touch magick-version
 
-${srcdir}/configure: ${srcdir}/version.sh
+MagickCore/version.h:	$(top_srcdir)/ChangeLog $(top_srcdir)/version.sh
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
 
