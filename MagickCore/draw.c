@@ -4370,12 +4370,22 @@ static MagickBooleanType RenderMVGContent(Image *image,
       }
     }
     mvg_info.offset=i;
+    if (status == 0)
+      break;
+    primitive_info[i].primitive=UndefinedPrimitive;
     if ((image->debug != MagickFalse) && (q > p))
       (void) LogMagickEvent(DrawEvent,GetMagickModule(),"  %.*s",(int) (q-p-1),
         p);
-    if (status == MagickFalse)
+    /*
+      Sanity check.
+    */
+    status&=CheckPrimitiveExtent(&mvg_info,
+      ExpandAffine(&graphic_context[n]->affine));
+    if (status == 0)
       break;
-    primitive_info[i].primitive=UndefinedPrimitive;
+    status&=CheckPrimitiveExtent(&mvg_info,graphic_context[n]->stroke_width);
+    if (status == 0)
+      break;
     if (i == 0)
       continue;
     /*
@@ -4420,12 +4430,6 @@ static MagickBooleanType RenderMVGContent(Image *image,
             status&=DrawClipPath(image,graphic_context[n],
               graphic_context[n]->clip_mask,exception);
           }
-        /*
-          One last sanity check before we draw.
-        */
-        status&=CheckPrimitiveExtent(&mvg_info,
-          ExpandAffine(&graphic_context[n]->affine));
-        status&=CheckPrimitiveExtent(&mvg_info,draw_info->stroke_width);
         status&=DrawPrimitive(image,graphic_context[n],primitive_info,
           exception);
       }
