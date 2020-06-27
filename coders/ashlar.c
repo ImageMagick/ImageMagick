@@ -165,5 +165,8 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  return(MagickTrue);
+  (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
+    "DelegateLibrarySupportNotBuiltIn","'%s' (work in progress)",
+    image_info->filename);
+  return(MagickFalse);
 }
