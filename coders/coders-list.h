@@ -16,6 +16,7 @@
 
 AddMagickCoder(AAI)
 AddMagickCoder(ART)
+AddMagickCoder(ASHLAR)
 AddMagickCoder(AVS)
 AddMagickCoder(BGR)
 AddMagickCoder(BMP)
