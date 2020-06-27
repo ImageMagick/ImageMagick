@@ -1321,13 +1321,6 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
 %
 */
 
-static inline double SaneStrokeWidth(const Image *image,
-  const DrawInfo *draw_info)
-{
-  return(MagickMin((double) draw_info->stroke_width,
-    (2.0*sqrt(2.0)+MagickEpsilon)*MagickMax(image->columns,image->rows)));
-}
-
 static MagickBooleanType DrawBoundingRectangles(Image *image,
   const DrawInfo *draw_info,const PolygonInfo *polygon_info,
   ExceptionInfo *exception)
@@ -1384,7 +1377,7 @@ static MagickBooleanType DrawBoundingRectangles(Image *image,
         resolution.y=resolution.x;
     }
   mid=(resolution.x/96.0)*ExpandAffine(&clone_info->affine)*
-    SaneStrokeWidth(image,clone_info)/2.0;
+    clone_info->stroke_width/2.0;
   bounds.x1=0.0;
   bounds.y1=0.0;
   bounds.x2=0.0;
@@ -4427,6 +4420,12 @@ static MagickBooleanType RenderMVGContent(Image *image,
             status&=DrawClipPath(image,graphic_context[n],
               graphic_context[n]->clip_mask,exception);
           }
+        /*
+          One last sanity check before we draw.
+        */
+        status&=CheckPrimitiveExtent(&mvg_info,
+          ExpandAffine(&graphic_context[n]->affine));
+        status&=CheckPrimitiveExtent(&mvg_info,draw_info->stroke_width);
         status&=DrawPrimitive(image,graphic_context[n],primitive_info,
           exception);
       }
@@ -4875,7 +4874,7 @@ RestoreMSCWarning
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"    begin draw-polygon");
   fill=(primitive_info->method == FillToBorderMethod) ||
     (primitive_info->method == FloodfillMethod) ? MagickTrue : MagickFalse;
-  mid=ExpandAffine(&draw_info->affine)*SaneStrokeWidth(image,draw_info)/2.0;
+  mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
   bounds=polygon_info[0]->edges[0].bounds;
   for (i=1; i < (ssize_t) polygon_info[0]->number_edges; i++)
   {
@@ -5599,7 +5598,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             status&=DrawDashPolygon(draw_info,primitive_info,image,exception);
           break;
         }
-      mid=ExpandAffine(&draw_info->affine)*SaneStrokeWidth(image,draw_info)/2.0;
+      mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
       if ((mid > 1.0) &&
           ((draw_info->stroke.alpha != (Quantum) TransparentAlpha) ||
            (draw_info->stroke_pattern != (Image *) NULL)))
@@ -7281,7 +7280,7 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
         slope.p=dy.p/dx.p;
         inverse_slope.p=(-1.0/slope.p);
       }
-  mid=ExpandAffine(&draw_info->affine)*SaneStrokeWidth(image,draw_info)/2.0;
+  mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
   miterlimit=(double) (draw_info->miterlimit*draw_info->miterlimit*mid*mid);
   if ((draw_info->linecap == SquareCap) && (closed_path == MagickFalse))
     (void) TraceSquareLinecap(polygon_primitive,number_vertices,mid);
