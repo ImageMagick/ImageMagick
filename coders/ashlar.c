@@ -156,12 +156,6 @@ ModuleExport void UnregisterASHLARImage(void)
 static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
-  Image
-    *write_image;
-
-  MagickBooleanType
-    status;
-
   /*
     Convert image sequence laid out in continuous irregular courses.
   */
@@ -171,6 +165,5 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  base64=DestroyString(base64);
   return(MagickTrue);
 }
