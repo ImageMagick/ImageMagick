@@ -4553,8 +4553,10 @@ MagickExport MagickBooleanType DrawPatternPath(Image *image,
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),
       "begin pattern-path %s %s",name,geometry);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  clone_info->fill_pattern=NewImageList();
-  clone_info->stroke_pattern=NewImageList();
+  if (clone_info->fill_pattern != (Image *) NULL)
+    clone_info->fill_pattern=DestroyImage(clone_info->fill_pattern);
+  if (clone_info->stroke_pattern != (Image *) NULL)
+    clone_info->stroke_pattern=DestroyImage(clone_info->stroke_pattern);
   (void) FormatLocaleString(property,MagickPathExtent,"%s-type",name);
   type=GetImageArtifact(image,property);
   if (type != (const char *) NULL)
