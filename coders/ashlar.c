@@ -560,8 +560,9 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
   (void) SetImageBackgroundColor(ashlar_image,exception);
   tiles=(CanvasInfo *) AcquireQuantumMemory(GetImageListLength(image),
     sizeof(*tiles));
-  nodes=(NodeInfo *) AcquireQuantumMemory(MagickMax(geometry.width,
-    geometry.height),sizeof(nodes));
+  ashlar_info.number_nodes=2*geometry.width;
+  nodes=(NodeInfo *) AcquireQuantumMemory(ashlar_info.number_nodes,
+    sizeof(*nodes));
   if ((tiles == (CanvasInfo *) NULL) || (nodes == (NodeInfo *) NULL))
     {
       if (tiles != (CanvasInfo *) NULL)
@@ -588,7 +589,6 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
       tiles[n].height=(size_t) (0.05*i*next->rows+2*geometry.y);
       n++;
     }
-    ashlar_info.number_nodes=MagickMax(geometry.width,geometry.height);
     for (j=0; j < (ssize_t) ashlar_info.number_nodes-1; j++)
       nodes[j].next=nodes+j+1;
     nodes[j].next=(NodeInfo *) NULL;
