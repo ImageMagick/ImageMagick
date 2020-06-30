@@ -1,3 +1,10 @@
+2020-06-28  7.0.10-23  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-23 GIT revision 17...
+
+2020-06-28  7.0.10-28  <quetzlzacatenango@image...>
+  * Ensure that float is valid in ClampToQuantum() (reference
+    https://github.com/ImageMagick/ImageMagick/pull/2219).
+
 2020-06-27  7.0.10-22  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-22 GIT revision 17415:5318a3e0a:20200627
 
