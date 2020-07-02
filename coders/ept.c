@@ -249,8 +249,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   postscript_data=ReadBlobStream(image,ept_info.postscript_length,
     ept_info.postscript,&count);
   if (count != (ssize_t) (ept_info.postscript_length))
-    (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageWarning,
-      "InsufficientImageDataInFile","`%s'",image->filename);
+    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   (void) CloseBlob(image);
   image=DestroyImage(image);
   read_info=CloneImageInfo(image_info);
