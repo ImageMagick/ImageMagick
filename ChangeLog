@@ -1,7 +1,7 @@
 2020-07-03  7.0.10-23  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-23 GIT revision 17433:ab7f5686a:20200703
 
-2020-06-28  7.0.10-28  <quetzlzacatenango@image...>
+2020-06-28  7.0.10-23  <quetzlzacatenango@image...>
   * Ensure that float is valid in ClampToQuantum() (reference
     https://github.com/ImageMagick/ImageMagick/pull/2219).
   * new pseudo-image format, ashlar, e.g.
