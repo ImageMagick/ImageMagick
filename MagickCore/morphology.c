@@ -2738,7 +2738,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 if (!IsNaN(*k))
                   {
                     pixel+=(*k)*pixels[i];
-                    gamma+=(*k);
                     count++;
                   }
                 k--;
