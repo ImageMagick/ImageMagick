@@ -4404,6 +4404,9 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
   CacheView
     *image_view;
 
+  const char
+    *artifact;
+
   double
     a_mean,
     b_mean;
@@ -4509,7 +4512,48 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  if (status == MagickFalse)
-    return(status);
-  return(TransformImageColorspace(image,sRGBColorspace,exception));
+  artifact=GetImageArtifact(image,"white-balance:level");
+  if (artifact != (const char *) NULL)
+    {
+      ChannelType
+        channel_mask;
+
+      double
+        black_point,
+        gamma,
+        white_point;
+
+      GeometryInfo
+        geometry_info;
+
+      MagickStatusType
+        flags;
+
+      /*
+        Level the a & b channels.
+      */
+      flags=ParseGeometry(artifact,&geometry_info);
+      black_point=geometry_info.rho;
+      white_point=(double) QuantumRange;
+      if ((flags & SigmaValue) != 0)
+        white_point=geometry_info.sigma;
+      gamma=1.0;
+      if ((flags & XiValue) != 0)
+        gamma=geometry_info.xi;
+      if ((flags & PercentValue) != 0)
+        {
+          black_point*=(double) (QuantumRange/100.0);
+          white_point*=(double) (QuantumRange/100.0);
+        }
+      if ((flags & SigmaValue) == 0)
+        white_point=(double) QuantumRange-black_point;
+      channel_mask=SetImageChannelMask(image,aChannel | bChannel);
+      if ((flags & AspectValue) != 0)
+        status&=LevelizeImage(image,black_point,white_point,gamma,exception);
+      else
+        status&=LevelImage(image,black_point,white_point,gamma,exception);
+      (void) SetImageChannelMask(image,channel_mask);
+    }
+  status&=TransformImageColorspace(image,sRGBColorspace,exception);
+  return(status);
 }
