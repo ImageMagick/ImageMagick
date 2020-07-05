@@ -4512,7 +4512,9 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  artifact=GetImageArtifact(image,"white-balance:level");
+  artifact=GetImageArtifact(image,"white-balance:saturation");
+  if (artifact == (const char *) NULL)
+    artifact=GetImageArtifact(image,"white-balance:vibrance");
   if (artifact != (const char *) NULL)
     {
       ChannelType
@@ -4520,7 +4522,6 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
 
       double
         black_point,
-        gamma,
         white_point;
 
       GeometryInfo
@@ -4532,26 +4533,26 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
       /*
         Level the a & b channels.
       */
-      flags=ParseGeometry(artifact,&geometry_info);
-      black_point=geometry_info.rho;
-      white_point=(double) QuantumRange;
-      if ((flags & SigmaValue) != 0)
-        white_point=geometry_info.sigma;
-      gamma=1.0;
-      if ((flags & XiValue) != 0)
-        gamma=geometry_info.xi;
-      if ((flags & PercentValue) != 0)
+      black_point=0.0;
+      artifact=GetImageArtifact(image,"white-balance:saturation");
+      if (artifact != (const char *) NULL)
         {
-          black_point*=(double) (QuantumRange/100.0);
-          white_point*=(double) (QuantumRange/100.0);
+          flags=ParseGeometry(artifact,&geometry_info);
+          black_point=geometry_info.rho;
+          if ((flags & PercentValue) != 0)
+            black_point*=(double) (QuantumRange/100.0);
         }
-      if ((flags & SigmaValue) == 0)
-        white_point=(double) QuantumRange-black_point;
+      white_point=(double) QuantumRange-black_point;
+      artifact=GetImageArtifact(image,"white-balance:vibrance");
+      if (artifact != (const char *) NULL)
+        {
+          flags=ParseGeometry(artifact,&geometry_info);
+          white_point=geometry_info.rho;
+          if ((flags & PercentValue) != 0)
+            white_point*=(double) (QuantumRange/100.0);
+        }
       channel_mask=SetImageChannelMask(image,aChannel | bChannel);
-      if ((flags & AspectValue) != 0)
-        status&=LevelizeImage(image,black_point,white_point,gamma,exception);
-      else
-        status&=LevelImage(image,black_point,white_point,gamma,exception);
+      status&=LevelImage(image,black_point,white_point,1.0,exception);
       (void) SetImageChannelMask(image,channel_mask);
     }
   status&=TransformImageColorspace(image,sRGBColorspace,exception);
