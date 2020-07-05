@@ -909,7 +909,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
         if (LocaleCompare("auto-gamma",option+1) == 0)
           {
             /*
-              Auto Adjust Gamma of image based on its mean
+              Auto Adjust Gamma of image based on its mean.
             */
             (void) SyncImageSettings(mogrify_info,*image,exception);
             (void) AutoGammaImage(*image,exception);
@@ -918,7 +918,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
         if (LocaleCompare("auto-level",option+1) == 0)
           {
             /*
-              Perfectly Normalize (max/min stretch) the image
+              Perfectly Normalize (max/min stretch) the image.
             */
             (void) SyncImageSettings(mogrify_info,*image,exception);
             (void) AutoLevelImage(*image,exception);
@@ -3410,7 +3410,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             draw_info->weight=(size_t) weight;
             break;
           }
-        if (LocaleCompare("auto-gamma",option+1) == 0)
+        if (LocaleCompare("white-balance",option+1) == 0)
           {
             /*
               White balance image.
@@ -3701,6 +3701,7 @@ static MagickBooleanType MogrifyUsage(void)
       "  -wave geometry       alter an image along a sine wave\n"
       "  -wavelet-denoise threshold\n"
       "                       removes noise from the image using a wavelet transform\n"
+      "  -white-balance       automagically adjust white balance of image\n"
       "  -white-threshold value\n"
       "                       force all pixels above the threshold into white",
     sequence_operators[] =
@@ -6593,6 +6594,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
+        if (LocaleCompare("white-balance",option+1) == 0)
+          break;
         if (LocaleCompare("white-point",option+1) == 0)
           {
             if (*option == '+')

@@ -4381,7 +4381,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WhiteBalanceImage() Applies white balancing to an image according to a
+%  WhiteBalanceImage() applies white balancing to an image according to a
 %  grayworld assumption in the LAB colorspace.
 %
 %  The format of the WhiteBalanceImage method is:
@@ -4399,5 +4399,117 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
 MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
   ExceptionInfo *exception)
 {
-  return(MagickTrue);
+#define WhiteBalanceImageTag  "WhiteBalance/Image"
+
+  CacheView
+    *image_view;
+
+  double
+    a_mean,
+    b_mean;
+
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
+
+  ssize_t
+    y;
+
+  /*
+    White balance image.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+    return(MagickFalse);
+  status=TransformImageColorspace(image,LabColorspace,exception);
+  a_mean=0.0;
+  b_mean=0.0;
+  image_view=AcquireAuthenticCacheView(image,exception);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register const Quantum
+      *magick_restrict p;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    if (p == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      a_mean+=QuantumScale*GetPixela(image,p)-0.5;
+      b_mean+=QuantumScale*GetPixelb(image,p)-0.5;
+      p+=GetPixelChannels(image);
+    }
+  }
+  a_mean/=((double) image->columns*image->rows);
+  b_mean/=((double) image->columns*image->rows);
+  progress=0;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(progress,status) \
+    magick_number_threads(image,image,image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    double
+      a,
+      b;
+
+    register Quantum
+      *magick_restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      /*
+        Scale the chroma distance shifted according to amount of luminance.
+      */
+      a=(double) GetPixela(image,q)-1.1*GetPixelL(image,q)*a_mean;
+      b=(double) GetPixelb(image,q)-1.1*GetPixelL(image,q)*b_mean;
+      SetPixela(image,ClampToQuantum(a),q);
+      SetPixelb(image,ClampToQuantum(b),q);
+      q+=GetPixelChannels(image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,WhiteBalanceImageTag,progress,image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    return(status);
+  return(TransformImageColorspace(image,sRGBColorspace,exception));
 }

@@ -272,6 +272,7 @@ Image Operators:
   \-wave geometry       alter an image along a sine wave
   \-wavelet-denoise threshold
                         removes noise from the image using a wavelet transform
+  \-white-balance       automagically adjust white balance of image
   \-white-threshold value
                        force all pixels above the threshold into white
 
