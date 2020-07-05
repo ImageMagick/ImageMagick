@@ -4512,9 +4512,7 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  artifact=GetImageArtifact(image,"white-balance:saturation");
-  if (artifact == (const char *) NULL)
-    artifact=GetImageArtifact(image,"white-balance:vibrance");
+  artifact=GetImageArtifact(image,"white-balance:vibrance");
   if (artifact != (const char *) NULL)
     {
       ChannelType
@@ -4534,7 +4532,7 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
         Level the a & b channels.
       */
       black_point=0.0;
-      artifact=GetImageArtifact(image,"white-balance:saturation");
+      artifact=GetImageArtifact(image,"white-balance:vibrance");
       if (artifact != (const char *) NULL)
         {
           flags=ParseGeometry(artifact,&geometry_info);
@@ -4543,14 +4541,6 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
             black_point*=(double) (QuantumRange/100.0);
         }
       white_point=(double) QuantumRange-black_point;
-      artifact=GetImageArtifact(image,"white-balance:vibrance");
-      if (artifact != (const char *) NULL)
-        {
-          flags=ParseGeometry(artifact,&geometry_info);
-          white_point=geometry_info.rho;
-          if ((flags & PercentValue) != 0)
-            white_point*=(double) (QuantumRange/100.0);
-        }
       channel_mask=SetImageChannelMask(image,aChannel | bChannel);
       status&=LevelImage(image,black_point,white_point,1.0,exception);
       (void) SetImageChannelMask(image,channel_mask);
