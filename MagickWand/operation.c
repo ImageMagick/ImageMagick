@@ -3643,6 +3643,11 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.sigma,_exception);
           break;
         }
+      if (LocaleCompare("white-balance",option+1) == 0)
+        {
+          (void) WhiteBalanceImage(_image,_exception);
+          break;
+        }
       if (LocaleCompare("white-threshold",option+1) == 0)
         {
           if (IsGeometry(arg1) == MagickFalse)

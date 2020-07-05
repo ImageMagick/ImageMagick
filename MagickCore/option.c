@@ -1120,6 +1120,8 @@ static const OptionInfo
     { "-wavelet-denoise", 1L, SimpleOperatorFlag, MagickFalse },
     { "+weight", 1L, DeprecateOptionFlag, MagickTrue },
     { "-weight", 1L, DrawInfoOptionFlag, MagickFalse },
+    { "+white-balance", 0L, DeprecateOptionFlag, MagickTrue },
+    { "-white-balance", 0L, SimpleOperatorFlag, MagickFalse },
     { "+white-point", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-white-point", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+white-threshold", 1L, DeprecateOptionFlag, MagickTrue },

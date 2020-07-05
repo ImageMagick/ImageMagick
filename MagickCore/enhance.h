@@ -47,7 +47,8 @@ extern MagickExport MagickBooleanType
   NegateImage(Image *,const MagickBooleanType,ExceptionInfo *),
   NormalizeImage(Image *,ExceptionInfo *),
   SigmoidalContrastImage(Image *,const MagickBooleanType,const double,
-    const double,ExceptionInfo *);
+    const double,ExceptionInfo *),
+  WhiteBalanceImage(Image *,ExceptionInfo *);
 
 extern MagickExport Image
   *EnhanceImage(const Image *,ExceptionInfo *);

@@ -579,6 +579,7 @@ static struct
       {"iterations", IntegerReference}, {"tolerance", RealReference} } },
     { "ColorThreshold", { {"start-color", StringReference},
       {"stop-color", StringReference}, {"channel", MagickChannelOptions} } },
+    { "WhiteBalance", { { (const char *) NULL, NullReference } } },
   };
 
 static SplayTreeInfo
@@ -7666,6 +7667,8 @@ Mogrify(ref,...)
     KMeansImage        = 300
     ColorThreshold     = 301
     ColorThresholdImage= 302
+    WhiteBalance       = 303
+    WhiteBalanceImage  = 304
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -11562,6 +11565,10 @@ Mogrify(ref,...)
           (void) SetImageChannelMask(image,channel_mask);
           break;
         }
+        case 152:  /* WhiteBalance */
+        {
+          (void) WhiteBalanceImage(image,exception);
+          break;
       }
       if (next != (Image *) NULL)
         (void) CatchImageException(next);

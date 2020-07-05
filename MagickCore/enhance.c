@@ -95,7 +95,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  AutoGammaImage() extract the 'mean' from the image and adjust the image
-%  to try make set its gamma appropriatally.
+%  to try make set its gamma appropriately.
 %
 %  The format of the AutoGammaImage method is:
 %
@@ -3179,7 +3179,7 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
 %  If the boolean 'invert' is set true the image values will modifyed in the
 %  reverse direction. That is any existing "black" and "white" colors in the
 %  image will become the color values given, with all other values compressed
-%  appropriatally.  This effectivally maps a greyscale gradient into the given
+%  appropriately.  This effectivally maps a greyscale gradient into the given
 %  color gradient.
 %
 %  The format of the LevelImageColors method is:
@@ -4368,4 +4368,36 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
   }
   image_view=DestroyCacheView(image_view);
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     W h i t e B a l a n c e I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WhiteBalanceImage() Applies white balancing to an image according to a
+%  grayworld assumption in the LAB colorspace.
+%
+%  The format of the WhiteBalanceImage method is:
+%
+%      MagickBooleanType WhiteBalanceImage(Image *image,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image to auto-level
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
+  ExceptionInfo *exception)
+{
+  return(MagickTrue);
 }

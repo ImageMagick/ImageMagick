@@ -3410,6 +3410,15 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             draw_info->weight=(size_t) weight;
             break;
           }
+        if (LocaleCompare("auto-gamma",option+1) == 0)
+          {
+            /*
+              White balance image.
+            */
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            (void) WhiteBalanceImage(*image,exception);
+            break;
+          }
         if (LocaleCompare("white-threshold",option+1) == 0)
           {
             /*
