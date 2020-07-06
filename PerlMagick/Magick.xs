@@ -11569,6 +11569,7 @@ Mogrify(ref,...)
         {
           (void) WhiteBalanceImage(image,exception);
           break;
+        }
       }
       if (next != (Image *) NULL)
         (void) CatchImageException(next);
