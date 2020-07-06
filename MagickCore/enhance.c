@@ -4519,8 +4519,7 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
         channel_mask;
 
       double
-        black_point,
-        white_point;
+        black_point;
 
       GeometryInfo
         geometry_info;
@@ -4535,9 +4534,9 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
       black_point=geometry_info.rho;
       if ((flags & PercentValue) != 0)
         black_point*=(double) (QuantumRange/100.0);
-      white_point=(double) QuantumRange-black_point;
       channel_mask=SetImageChannelMask(image,aChannel | bChannel);
-      status&=LevelImage(image,black_point,white_point,1.0,exception);
+      status&=LevelImage(image,black_point,(double) QuantumRange-black_point,
+        1.0,exception);
       (void) SetImageChannelMask(image,channel_mask);
     }
   status&=TransformImageColorspace(image,sRGBColorspace,exception);
