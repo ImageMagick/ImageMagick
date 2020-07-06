@@ -3,6 +3,8 @@
 
 2020-07-05  7.0.10-24  <quetzlzacatenango@image...>
   * Add support for the -white-balance command-line option.
+  * discover hidden files when globbing (e.g. *.jpg) (reference
+    https://github.com/ImageMagick/ImageMagick/discussions/2239).
 
 2020-07-04  7.0.10-23  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-23 GIT revision 17437:894231bc3:20200704 
