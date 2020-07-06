@@ -4531,15 +4531,10 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
       /*
         Level the a & b channels.
       */
-      black_point=0.0;
-      artifact=GetImageArtifact(image,"white-balance:vibrance");
-      if (artifact != (const char *) NULL)
-        {
-          flags=ParseGeometry(artifact,&geometry_info);
-          black_point=geometry_info.rho;
-          if ((flags & PercentValue) != 0)
-            black_point*=(double) (QuantumRange/100.0);
-        }
+      flags=ParseGeometry(artifact,&geometry_info);
+      black_point=geometry_info.rho;
+      if ((flags & PercentValue) != 0)
+        black_point*=(double) (QuantumRange/100.0);
       white_point=(double) QuantumRange-black_point;
       channel_mask=SetImageChannelMask(image,aChannel | bChannel);
       status&=LevelImage(image,black_point,white_point,1.0,exception);
