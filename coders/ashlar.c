@@ -40,6 +40,7 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
+#include "MagickCore/annotate.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/client.h"
@@ -53,6 +54,7 @@
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/option.h"
+#include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
@@ -613,6 +615,7 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
   /*
     Determine layout of images tiles on the canvas.
   */
+  value=GetImageOption(image_info,"label");
   extent.width=0;
   extent.height=0;
   for (i=0; i < n; i++)
@@ -630,6 +633,28 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
       continue;
     (void) CompositeImage(ashlar_image,tile_image,image->compose,MagickTrue,
       tiles[i].x+geometry.x,tiles[i].y+geometry.y,exception);
+    if (value != (const char *) NULL)
+      {
+        char
+          *label,
+          offset[MagickPathExtent];
+
+        DrawInfo
+          *draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+
+        label=InterpretImageProperties((ImageInfo *) image_info,tile_image,
+          value,exception);
+        if (label != (const char *) NULL)
+          {
+            (void) CloneString(&draw_info->text,label);
+            draw_info->pointsize=1.8*geometry.y;
+            (void) FormatLocaleString(offset,MagickPathExtent,"%+g%+g",(double)
+              tiles[i].x+geometry.x,(double) tiles[i].height+tiles[i].y+
+              geometry.y/2.0);
+            (void) CloneString(&draw_info->geometry,offset);
+            (void) AnnotateImage(ashlar_image,draw_info,exception);
+          }
+      }
     if ((tiles[i].width+tiles[i].x) > extent.width)
       extent.width=(size_t) (tiles[i].width+tiles[i].x);
     if ((tiles[i].height+tiles[i].y) > extent.height)
@@ -654,5 +679,5 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
   status=WriteImage(write_info,ashlar_image,exception);
   ashlar_image=DestroyImage(ashlar_image);
   write_info=DestroyImageInfo(write_info);
-  return(MagickFalse);
+  return(MagickTrue);
 }

@@ -4466,10 +4466,6 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    double
-      a,
-      b;
-
     register Quantum
       *magick_restrict q;
 
@@ -4486,6 +4482,10 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      double
+        a,
+        b;
+
       /*
         Scale the chroma distance shifted according to amount of luminance.
       */
