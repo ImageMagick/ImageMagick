@@ -837,14 +837,14 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if ((MagickSizeType) bmp_info.file_size != blob_size)
       {
-        ExceptionType
-          severity;
+        const char
+          *option;
 
-        severity=CorruptImageWarning;
-        if ((MagickSizeType) bmp_info.file_size > blob_size + 4)
-          severity=CorruptImageError;
-        (void) ThrowMagickException(exception,GetMagickModule(),severity,
-          "LengthAndFilesizeDoNotMatch","`%s'",image->filename);
+        option=GetImageOption(image_info,"bmp:ignore-file-size");
+        if (IsStringTrue(option) == MagickFalse)
+          (void) ThrowMagickException(exception,GetMagickModule(),
+            CorruptImageError,"LengthAndFilesizeDoNotMatch","`%s'",
+            image->filename);
       }
     if (bmp_info.width <= 0)
       ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
