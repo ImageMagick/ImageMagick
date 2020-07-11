@@ -840,7 +840,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         const char
           *option;
 
-        option=GetImageOption(image_info,"bmp:ignore-file-size");
+        option=GetImageOption(image_info,"bmp:ignore-filesize");
         if (IsStringTrue(option) == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
             CorruptImageError,"LengthAndFilesizeDoNotMatch","`%s'",
