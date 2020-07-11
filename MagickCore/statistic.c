@@ -305,6 +305,12 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
         value);
       break;
     }
+    case InverseLogEvaluateOperator:
+    {
+      result=(QuantumRange*pow((value+1.0),QuantumScale*pixel)-1.0)*
+        PerceptibleReciprocal(value);
+      break;
+    }
     case LaplacianNoiseEvaluateOperator:
     {
       result=(double) GenerateDifferentialNoise(random_info,pixel,

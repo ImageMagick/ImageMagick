@@ -115,7 +115,8 @@ typedef enum
   ThresholdEvaluateOperator,
   ThresholdWhiteEvaluateOperator,
   UniformNoiseEvaluateOperator,
-  XorEvaluateOperator
+  XorEvaluateOperator,
+  InverseLogEvaluateOperator
 } MagickEvaluateOperator;
 
 typedef enum

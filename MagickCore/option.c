@@ -1356,6 +1356,7 @@ static const OptionInfo
     { "Exponential", ExponentialEvaluateOperator, UndefinedOptionFlag, MagickFalse },
     { "GaussianNoise", GaussianNoiseEvaluateOperator, UndefinedOptionFlag, MagickFalse },
     { "ImpulseNoise", ImpulseNoiseEvaluateOperator, UndefinedOptionFlag, MagickFalse },
+    { "InverseLog", InverseLogEvaluateOperator, UndefinedOptionFlag, MagickFalse },
     { "LaplacianNoise", LaplacianNoiseEvaluateOperator, UndefinedOptionFlag, MagickFalse },
     { "LeftShift", LeftShiftEvaluateOperator, UndefinedOptionFlag, MagickFalse },
     { "Log", LogEvaluateOperator, UndefinedOptionFlag, MagickFalse },
