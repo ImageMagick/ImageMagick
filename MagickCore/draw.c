@@ -7115,28 +7115,34 @@ static PrimitiveInfo *TraceStrokePolygon(const Image *image,
 #define MaxStrokePad  (6*BezierQuantum+360)
 #define CheckPathExtent(pad_p,pad_q) \
 {   \
-  if ((ssize_t) (p+(pad_p)) >= (ssize_t) extent_p) \
-    { \
-      if (~extent_p < (pad_p)) \
-        stroke_p=(PointInfo *) RelinquishMagickMemory(stroke_p); \
-      else \
-        { \
-          extent_p+=(pad_p); \
-          stroke_p=(PointInfo *) ResizeQuantumMemory(stroke_p,extent_p+ \
-            MaxStrokePad,sizeof(*stroke_p)); \
-        } \
-    } \
-  if ((ssize_t) (q+(pad_q)) >= (ssize_t) extent_q) \
-    { \
-      if (~extent_q < (pad_q)) \
-        stroke_q=(PointInfo *) RelinquishMagickMemory(stroke_q); \
-      else \
-        { \
-          extent_q+=(pad_q); \
-          stroke_q=(PointInfo *) ResizeQuantumMemory(stroke_q,extent_q+ \
-            MaxStrokePad,sizeof(*stroke_q)); \
-        } \
-    } \
+  if ((pad_p) > MaxBezierCoordinates) \
+    stroke_p=(PointInfo *) RelinquishMagickMemory(stroke_p); \
+  else \
+    if ((ssize_t) (p+(pad_p)) >= (ssize_t) extent_p) \
+      { \
+        if (~extent_p < (pad_p)) \
+          stroke_p=(PointInfo *) RelinquishMagickMemory(stroke_p); \
+        else \
+          { \
+            extent_p+=(pad_p); \
+            stroke_p=(PointInfo *) ResizeQuantumMemory(stroke_p,extent_p+ \
+              MaxStrokePad,sizeof(*stroke_p)); \
+          } \
+      } \
+  if ((pad_q) > MaxBezierCoordinates) \
+    stroke_q=(PointInfo *) RelinquishMagickMemory(stroke_q); \
+  else \
+    if ((ssize_t) (q+(pad_q)) >= (ssize_t) extent_q) \
+      { \
+        if (~extent_q < (pad_q)) \
+          stroke_q=(PointInfo *) RelinquishMagickMemory(stroke_q); \
+        else \
+          { \
+            extent_q+=(pad_q); \
+            stroke_q=(PointInfo *) ResizeQuantumMemory(stroke_q,extent_q+ \
+              MaxStrokePad,sizeof(*stroke_q)); \
+          } \
+      } \
   if ((stroke_p == (PointInfo *) NULL) || (stroke_q == (PointInfo *) NULL)) \
     { \
       if (stroke_p != (PointInfo *) NULL) \
