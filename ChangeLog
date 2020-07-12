@@ -3,7 +3,7 @@
 
 2020-07-05  7.0.10-24  <quetzlzacatenango@image...>
   * Add support for the -white-balance command-line option.
-  * discover hidden files when globbing (e.g. *.jpg) (reference
+  * Discover hidden files when globbing (e.g. *.jpg) (reference
     https://github.com/ImageMagick/ImageMagick/discussions/2239).
   * New inverse-log evaluate operator.
 
@@ -13,24 +13,24 @@
 2020-06-28  7.0.10-23  <quetzlzacatenango@image...>
   * Ensure that float is valid in ClampToQuantum() (reference
     https://github.com/ImageMagick/ImageMagick/pull/2219).
-  * new pseudo-image format, ashlar, e.g.
+  * New pseudo-image format, ashlar, e.g.
     convert *.jpg -resize 320x320 ashlar:canvas.png).
 
 2020-06-27  7.0.10-22  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-22 GIT revision 17415:5318a3e0a:20200627
 
 2020-06-24  7.0.10-22  <quetzlzacatenango@image...>
-  * fix wrapping of caption (reference
+  * Fix wrapping of caption (reference
     https://github.com/ImageMagick/ImageMagick/issues/2178).
-  * sanity check of affine matrix when drawing.
+  * Sanity check of affine matrix when drawing.
 
 2020-06-22  7.0.10-21  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-21 GIT revision 17395:af81c28c9:20200622
 
 2020-06-21  7.0.10-21  <quetzlzacatenango@image...>
-  * new image property, %N, only report the # of frames in an image sequence,
+  * New image property, %N, only report the # of frames in an image sequence,
     just once rather than on a per frame basis
-  * problems converting CMYK to RGB regression (reference
+  * Problems converting CMYK to RGB regression (reference
     https://github.com/ImageMagick/ImageMagick6/issues/83)
 
 2020-06-21  7.0.10-21 Dirk Lemstra <dirk@lem.....org>
