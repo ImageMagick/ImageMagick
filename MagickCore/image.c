@@ -2962,6 +2962,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
           (void) CloseBlob(image);
           if (status == MagickFalse)
             {
+              (void) RelinquishUniqueFileResource(component);
               image=DestroyImage(image);
               return(MagickFalse);
             }
@@ -2970,6 +2971,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
           status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
           if (status == MagickFalse)
             {
+              (void) RelinquishUniqueFileResource(component);
               image=DestroyImage(image);
               return(MagickFalse);
             }
