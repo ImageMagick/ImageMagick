@@ -2699,7 +2699,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
             if (LocaleCompare(token,graphic_context[n]->id) == 0)
               break;
             mvg_class=(const char *) GetValueFromSplayTree(macros,token);
-            if (mvg_class != (const char *) NULL)
+            if ((mvg_class != (const char *) NULL) && (p > primitive))
               {
                 char
                   *elements;
