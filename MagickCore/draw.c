@@ -2294,11 +2294,18 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
 static inline double GetDrawValue(const char *magick_restrict string,
   char **magick_restrict sentinal)
 {
-  double value = InterpretLocaleValue(string,sentinal);
-  if (value < (double) -(SSIZE_MAX-512))
-    return((double) -(SSIZE_MAX-512));
-  if (value > (double) (SSIZE_MAX-512))
-    return((double) (SSIZE_MAX-512));
+  char
+    **magick_restrict q;
+
+  double
+    value;
+
+  q=sentinal;
+  value=InterpretLocaleValue(string,q);
+  if ((IsNaN(value) != 0) || (value < -(SSIZE_MAX-512.0)) ||
+      (value > (SSIZE_MAX-512.0)))
+    return(0.0);
+  sentinal=q;
   return(value);
 }
 

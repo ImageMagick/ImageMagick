@@ -87,7 +87,7 @@ static inline Quantum ClampToQuantum(const MagickRealType quantum)
 #if defined(MAGICKCORE_HDRI_SUPPORT)
   return((Quantum) quantum);
 #else
-  if ((IsNaN(quantum) != MagickFalse) || (quantum <= 0.0))
+  if ((IsNaN(quantum) != 0) || (quantum <= 0.0))
     return((Quantum) 0);
   if (quantum >= (MagickRealType) QuantumRange)
     return(QuantumRange);
@@ -101,7 +101,7 @@ static inline unsigned char ScaleQuantumToChar(const Quantum quantum)
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((unsigned char) quantum);
 #else
-  if ((IsNaN(quantum) != MagickFalse) || (quantum <= 0.0))
+  if ((IsNaN(quantum) != 0) || (quantum <= 0.0))
     return(0);
   if (quantum >= 255.0)
     return(255);
@@ -114,7 +114,7 @@ static inline unsigned char ScaleQuantumToChar(const Quantum quantum)
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((unsigned char) (((quantum+128UL)-((quantum+128UL) >> 8)) >> 8));
 #else
-  if ((IsNaN(quantum) != MagickFalse) || (quantum <= 0.0))
+  if ((IsNaN(quantum) != 0) || (quantum <= 0.0))
     return(0);
   if ((quantum/257.0) >= 255.0)
     return(255);
@@ -128,7 +128,7 @@ static inline unsigned char ScaleQuantumToChar(const Quantum quantum)
   return((unsigned char) ((quantum+MagickULLConstant(8421504))/
     MagickULLConstant(16843009)));
 #else
-  if ((IsNaN(quantum) != MagickFalse) || (quantum <= 0.0))
+  if ((IsNaN(quantum) != 0) || (quantum <= 0.0))
     return(0);
   if ((quantum/16843009.0) >= 255.0)
     return(255);
@@ -141,7 +141,7 @@ static inline unsigned char ScaleQuantumToChar(const Quantum quantum)
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((unsigned char) (quantum/72340172838076673.0+0.5));
 #else
-  if ((IsNaN(quantum) != MagickFalse) || (quantum <= 0.0))
+  if ((IsNaN(quantum) != 0) || (quantum <= 0.0))
     return(0);
   if ((quantum/72340172838076673.0) >= 255.0)
     return(255);
