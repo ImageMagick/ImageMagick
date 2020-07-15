@@ -4102,8 +4102,8 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
     {
       if (LocaleCompare("deconstruct",option+1) == 0)
         {
-          CLIWandWarnReplaced("-layer CompareAny");
-          (void) CLIListOperatorImages(cli_wand,"-layer","CompareAny",NULL);
+          CLIWandWarnReplaced("-layers CompareAny");
+          (void) CLIListOperatorImages(cli_wand,"-layers","CompareAny",NULL);
           break;
         }
       if (LocaleCompare("delete",option+1) == 0)
