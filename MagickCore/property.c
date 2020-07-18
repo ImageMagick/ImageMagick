@@ -3942,15 +3942,12 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
               char
                 name[MagickPathExtent];
 
-              const char
-                *value;
-
               GetColorTuple(&pixel,MagickFalse,name);
-              value=GetImageArtifact(property_image,"pixel:compliance");
-              if (value != (char *) NULL)
+              string=GetImageArtifact(property_image,"pixel:compliance");
+              if (string != (char *) NULL)
                 {
                   ComplianceType compliance=(ComplianceType) ParseCommandOption(
-                    MagickComplianceOptions,MagickFalse,value);
+                    MagickComplianceOptions,MagickFalse,string);
                   (void) QueryColorname(property_image,&pixel,compliance,name,
                     exception);
                 }
