@@ -34,14 +34,14 @@ int main(int argc, char **argv)
 
   cli_wand = AcquireMagickCLI((ImageInfo *) NULL,(ExceptionInfo *) NULL);
 
-  CLISettingOptionInfo    (cli_wand, "-size", "100x100");
-  CLISpecialOperator      (cli_wand, "-read", "xc:red");
-  CLISpecialOperator      (cli_wand, "(", NULL);
-  CLISpecialOperator      (cli_wand, "-read", "rose:");
-  CLISimpleOperatorImages (cli_wand, "-rotate", "-90", NULL);
-  CLISpecialOperator      (cli_wand, ")", NULL);
-  CLIListOperatorImages   (cli_wand, "+append", NULL, NULL);
-  CLIListOperatorImages   (cli_wand, "-write", "show:", NULL);
+  CLIOption (cli_wand, "-size", "100x100");
+  CLIOption (cli_wand, "-read", "xc:red");
+  CLIOption (cli_wand, "(", NULL);
+  CLIOption (cli_wand, "-read", "rose:");
+  CLIOption (cli_wand, "-rotate", "-90", NULL);
+  CLIOption (cli_wand, ")", NULL);
+  CLIOption (cli_wand, "+append", NULL, NULL);
+  CLIOption (cli_wand, "-write", "show:", NULL);
 
   /* Note use of 'True' to report all exceptions - including fatals */
   if ( CLICatchException(cli_wand,MagickTrue) != MagickFalse )
