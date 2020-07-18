@@ -4872,17 +4872,6 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
   polygon_info=AcquirePolygonThreadSet(primitive_info);
   if (polygon_info == (PolygonInfo **) NULL)
     return(MagickFalse);
-DisableMSCWarning(4127)
-  if (0)
-    {
-      status=DrawBoundingRectangles(image,draw_info,polygon_info[0],exception);
-      if (status == MagickFalse)
-        {
-          polygon_info=DestroyPolygonThreadSet(polygon_info);
-          return(status);
-        }
-    }
-RestoreMSCWarning
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"    begin draw-polygon");
   fill=(primitive_info->method == FillToBorderMethod) ||
