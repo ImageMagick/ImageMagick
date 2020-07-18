@@ -4033,31 +4033,37 @@ static MagickBooleanType resizeHorizontalFilter(MagickCLDevice device,
     pixelPerWorkgroup=workgroupSize;
   }
 
-  /* calculate the local memory size needed per workgroup */
-  cacheRangeStart=(int) (((0 + 0.5)/xFactor+MagickEpsilon)-support+0.5);
-  cacheRangeEnd=(int) ((((pixelPerWorkgroup-1) + 0.5)/xFactor+
-    MagickEpsilon)+support+0.5);
-  numCachedPixels=cacheRangeEnd-cacheRangeStart+1;
-  imageCacheLocalMemorySize=numCachedPixels*sizeof(CLQuantum)*
-    number_channels;
-  totalLocalMemorySize=imageCacheLocalMemorySize;
+DisableMSCWarning(4127)
+  while(1)
+RestoreMSCWarning
+  {
+    /* calculate the local memory size needed per workgroup */
+    cacheRangeStart=(int) (((0 + 0.5)/xFactor+MagickEpsilon)-support+0.5);
+    cacheRangeEnd=(int) ((((pixelPerWorkgroup-1) + 0.5)/xFactor+
+      MagickEpsilon)+support+0.5);
+    numCachedPixels=cacheRangeEnd-cacheRangeStart+1;
+    imageCacheLocalMemorySize=numCachedPixels*sizeof(CLQuantum)*
+      number_channels;
+    totalLocalMemorySize=imageCacheLocalMemorySize;
 
-  /* local size for the pixel accumulator */
-  pixelAccumulatorLocalMemorySize=chunkSize*sizeof(cl_float4);
-  totalLocalMemorySize+=pixelAccumulatorLocalMemorySize;
+    /* local size for the pixel accumulator */
+    pixelAccumulatorLocalMemorySize=chunkSize*sizeof(cl_float4);
+    totalLocalMemorySize+=pixelAccumulatorLocalMemorySize;
 
-  /* local memory size for the weight accumulator */
-  weightAccumulatorLocalMemorySize=chunkSize*sizeof(float);
-  totalLocalMemorySize+=weightAccumulatorLocalMemorySize;
+    /* local memory size for the weight accumulator */
+    weightAccumulatorLocalMemorySize=chunkSize*sizeof(float);
+    totalLocalMemorySize+=weightAccumulatorLocalMemorySize;
 
-  /* local memory size for the gamma accumulator */
-  if ((number_channels == 4) || (number_channels == 2))
-    gammaAccumulatorLocalMemorySize=chunkSize*sizeof(float);
-  else
-    gammaAccumulatorLocalMemorySize=sizeof(float);
-  totalLocalMemorySize+=gammaAccumulatorLocalMemorySize;
+    /* local memory size for the gamma accumulator */
+    if ((number_channels == 4) || (number_channels == 2))
+      gammaAccumulatorLocalMemorySize=chunkSize*sizeof(float);
+    else
+      gammaAccumulatorLocalMemorySize=sizeof(float);
+    totalLocalMemorySize+=gammaAccumulatorLocalMemorySize;
 
-  if (totalLocalMemorySize > device->local_memory_size)
+    if (totalLocalMemorySize <= device->local_memory_size)
+      break;
+    else
     {
       pixelPerWorkgroup=pixelPerWorkgroup/2;
       chunkSize=chunkSize/2;
@@ -4067,6 +4073,7 @@ static MagickBooleanType resizeHorizontalFilter(MagickCLDevice device,
         goto cleanup;
       }
     }
+  }
 
   resizeFilterType=(int)GetResizeFilterWeightingType(resizeFilter);
   resizeWindowType=(int)GetResizeFilterWindowWeightingType(resizeFilter);
@@ -4210,31 +4217,37 @@ static MagickBooleanType resizeVerticalFilter(MagickCLDevice device,
     pixelPerWorkgroup=workgroupSize;
   }
 
-  /* calculate the local memory size needed per workgroup */
-  cacheRangeStart=(int) (((0 + 0.5)/yFactor+MagickEpsilon)-support+0.5);
-  cacheRangeEnd=(int) ((((pixelPerWorkgroup-1) + 0.5)/yFactor+
-    MagickEpsilon)+support+0.5);
-  numCachedPixels=cacheRangeEnd-cacheRangeStart+1;
-  imageCacheLocalMemorySize=numCachedPixels*sizeof(CLQuantum)*
-    number_channels;
-  totalLocalMemorySize=imageCacheLocalMemorySize;
+DisableMSCWarning(4127)
+  while(1)
+RestoreMSCWarning
+  {
+    /* calculate the local memory size needed per workgroup */
+    cacheRangeStart=(int) (((0 + 0.5)/yFactor+MagickEpsilon)-support+0.5);
+    cacheRangeEnd=(int) ((((pixelPerWorkgroup-1) + 0.5)/yFactor+
+      MagickEpsilon)+support+0.5);
+    numCachedPixels=cacheRangeEnd-cacheRangeStart+1;
+    imageCacheLocalMemorySize=numCachedPixels*sizeof(CLQuantum)*
+      number_channels;
+    totalLocalMemorySize=imageCacheLocalMemorySize;
 
-  /* local size for the pixel accumulator */
-  pixelAccumulatorLocalMemorySize=chunkSize*sizeof(cl_float4);
-  totalLocalMemorySize+=pixelAccumulatorLocalMemorySize;
+    /* local size for the pixel accumulator */
+    pixelAccumulatorLocalMemorySize=chunkSize*sizeof(cl_float4);
+    totalLocalMemorySize+=pixelAccumulatorLocalMemorySize;
 
-  /* local memory size for the weight accumulator */
-  weightAccumulatorLocalMemorySize=chunkSize*sizeof(float);
-  totalLocalMemorySize+=weightAccumulatorLocalMemorySize;
+    /* local memory size for the weight accumulator */
+    weightAccumulatorLocalMemorySize=chunkSize*sizeof(float);
+    totalLocalMemorySize+=weightAccumulatorLocalMemorySize;
 
-  /* local memory size for the gamma accumulator */
-  if ((number_channels == 4) || (number_channels == 2))
-    gammaAccumulatorLocalMemorySize=chunkSize*sizeof(float);
-  else
-    gammaAccumulatorLocalMemorySize=sizeof(float);
-  totalLocalMemorySize+=gammaAccumulatorLocalMemorySize;
+    /* local memory size for the gamma accumulator */
+    if ((number_channels == 4) || (number_channels == 2))
+      gammaAccumulatorLocalMemorySize=chunkSize*sizeof(float);
+    else
+      gammaAccumulatorLocalMemorySize=sizeof(float);
+    totalLocalMemorySize+=gammaAccumulatorLocalMemorySize;
 
-  if (totalLocalMemorySize > device->local_memory_size)
+    if (totalLocalMemorySize <= device->local_memory_size)
+      break;
+    else
     {
       pixelPerWorkgroup=pixelPerWorkgroup/2;
       chunkSize=chunkSize/2;
@@ -4244,6 +4257,7 @@ static MagickBooleanType resizeVerticalFilter(MagickCLDevice device,
         goto cleanup;
       }
     }
+  }
 
   resizeFilterType=(int)GetResizeFilterWeightingType(resizeFilter);
   resizeWindowType=(int)GetResizeFilterWindowWeightingType(resizeFilter);
