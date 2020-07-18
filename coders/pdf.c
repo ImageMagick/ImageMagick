@@ -1147,7 +1147,6 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   ThrowWriterException((exception),(message)); \
 }
 
-DisableMSCWarning(4310)
   static const char
     XMPProfile[]=
     {
@@ -1188,8 +1187,7 @@ DisableMSCWarning(4310)
       "</x:xmpmeta>\n"
       "<?xpacket end=\"w\"?>\n"
     },
-    XMPProfileMagick[4]= { (char) 0xef, (char) 0xbb, (char) 0xbf, (char) 0x00 };
-RestoreMSCWarning
+    XMPProfileMagick[4]= { (char) -17, (char) -69, (char) -65, (char) 0 };
 
   char
     basename[MagickPathExtent],
