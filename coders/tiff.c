@@ -3402,6 +3402,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   MagickBooleanType
     adjoin,
     debug,
+    preserve_compression,
     status;
 
   MagickOffsetType
@@ -3487,6 +3488,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   (void) debug;
   adjoin=image_info->adjoin;
   imageListLength=GetImageListLength(image);
+  option=GetImageOption(image_info,"tiff:preserve-compression");
+  preserve_compression=IsStringTrue(option);
   do
   {
     /*
@@ -3496,11 +3499,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     if ((image_info->type != UndefinedType) &&
         (image_info->type != OptimizeType))
       (void) SetImageType(image,image_info->type,exception);
-    compression=UndefinedCompression;
-    if (image->compression != JPEGCompression)
+    compression=image_info->compression;
+    if (preserve_compression != MagickFalse)
       compression=image->compression;
-    if (image_info->compression != UndefinedCompression)
-      compression=image_info->compression;
     switch (compression)
     {
       case FaxCompression:
