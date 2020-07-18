@@ -1,5 +1,5 @@
-2020-07-13  7.0.10-24  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-24 GIT revision 17461:d27a50dab:20200713
+2020-07-18  7.0.10-24  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-24 GIT revision 17483:d11a2ec03:20200718
 
 2020-07-18  7.0.10-24 Dirk Lemstra <dirk@lem.....org>
   * To preserve compression of input image with the tiff encoder use:
