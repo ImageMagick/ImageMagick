@@ -285,44 +285,40 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (ssize_t) image->columns; x+=2)
     {
-      int
-        two_columns = x+1 < (ssize_t) image->columns;
+      MagickBooleanType
+        two_columns;
 
       unsigned char
         cell = 0;
 
-      do
-      {
-#define do_cell(dx,dy,bit) do { \
-        if (image->storage_class == PseudoClass) \
-          cell |= (GetPixelIndex(image,p+x+dx+dy*image->columns) == polarity) << bit; \
-        else \
-          cell |= (GetPixelGreen(image,p+x+dx+dy*image->columns) == 0) << bit; \
-DisableMSCWarning(4127) \
-} while (0) \
-RestoreMSCWarning
+      two_columns=(x+1 < (ssize_t) image->columns) ? MagickTrue : MagickFalse;
+#define do_cell(dx,dy,bit) \
+      if (image->storage_class == PseudoClass) \
+        cell |= (GetPixelIndex(image,p+x+dx+dy*image->columns) == polarity) << bit; \
+      else \
+        cell |= (GetPixelGreen(image,p+x+dx+dy*image->columns) == 0) << bit;
 
-        do_cell(0,0,0);
-        if (two_columns)
-          do_cell(1,0,3);
-        if (cell_height < 2)
-          break;
-        do_cell(0,1,1);
-        if (two_columns)
-          do_cell(1,1,4);
-        if (cell_height < 3)
-          break;
-        do_cell(0,2,2);
-        if (two_columns)
-          do_cell(1,2,5);
-        if (cell_height < 4)
-          break;
-        do_cell(0,3,6);
-        if (two_columns)
-          do_cell(1,3,7);
-DisableMSCWarning(4127)
-      } while (0);
-RestoreMSCWarning
+      do_cell(0,0,0)
+      if (two_columns != MagickFalse)
+        do_cell(1,0,3)
+      if (cell_height > 1)
+        {
+          do_cell(0,1,1)
+          if (two_columns != MagickFalse)
+            do_cell(1,1,4)
+          if (cell_height > 2)
+            {
+              do_cell(0,2,2)
+              if (two_columns != MagickFalse)
+                do_cell(1,2,5)
+              if (cell_height > 3)
+                {
+                  do_cell(0,3,6)
+                  if (two_columns != MagickFalse)
+                    do_cell(1,3,7)
+                }
+            }
+        }
       if (unicode != 0)
         {
           unsigned char
