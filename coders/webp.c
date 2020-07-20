@@ -454,6 +454,8 @@ static int ReadAnimatedWEBPImage(const ImageInfo *image_info,Image *image,
       image->delay=iter.duration/10;
       if (iter.dispose_method == WEBP_MUX_DISPOSE_BACKGROUND)
         image->dispose=BackgroundDispose;
+      else
+        image->dispose=NoneDispose;
       image_count++;
     } while (WebPDemuxNextFrame(&iter));
     WebPDemuxReleaseIterator(&iter);
