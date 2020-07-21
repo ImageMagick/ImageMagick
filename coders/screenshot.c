@@ -136,6 +136,9 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
     MagickBooleanType
       status;
 
+    RectangleInfo
+      geometry;
+
     register Quantum
       *q;
 
@@ -162,8 +165,42 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
         ThrowReaderException(CoderError,"UnableToCreateDC");
 
       screen=AcquireImage(image_info,exception);
-      screen->columns=(size_t) GetDeviceCaps(hDC,HORZRES);
-      screen->rows=(size_t) GetDeviceCaps(hDC,VERTRES);
+      geometry=screen->extract_info;
+      geometry.x=0;
+      geometry.y=0;
+      geometry.width=(size_t) GetDeviceCaps(hDC,HORZRES);
+      geometry.height=(size_t) GetDeviceCaps(hDC,VERTRES);
+      if (image_info->extract != (char *) NULL)
+        {
+          geometry.x=MagickMin(screen->extract_info.x,geometry.width);
+          if (geometry.x < 0)
+            {
+              geometry.width=(size_t ) MagickMin(0,(ssize_t) geometry.width
+                +geometry.x);
+              geometry.x=0;
+            }
+          geometry.width=geometry.width-geometry.x;
+          if (screen->columns > 0)
+            geometry.width=MagickMin(geometry.width,screen->columns);
+          geometry.y=MagickMin(screen->extract_info.y,geometry.height);
+          if (geometry.y < 0)
+            {
+              geometry.width=(size_t ) MagickMin(0,(ssize_t) geometry.width
+                +geometry.y);
+              geometry.y=0;
+            }
+          geometry.height=geometry.height-geometry.y;
+          if (screen->rows > 0)
+            geometry.height=MagickMin(geometry.height,screen->rows);
+          /* Reset extract to prevent cropping */
+          *image_info->extract='\0';
+          screen->extract_info.x=0;
+          screen->extract_info.y=0;
+        }
+      if ((geometry.width == 0) || (geometry.height == 0))
+        ThrowReaderException(OptionError,"InvalidGeometry");
+      screen->columns=geometry.width;
+      screen->rows=geometry.height;
       screen->storage_class=DirectClass;
       if (image == (Image *) NULL)
         image=screen;
@@ -201,8 +238,8 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
           DeleteObject(bitmap);
           ThrowReaderException(CoderError,"UnableToCreateBitmap");
         }
-      BitBlt(bitmapDC,0,0,(int) screen->columns,(int) screen->rows,hDC,0,0,
-        SRCCOPY);
+      BitBlt(bitmapDC,0,0,(int) screen->columns,(int) screen->rows,hDC,
+        geometry.x,geometry.y,SRCCOPY);
       (void) SelectObject(bitmapDC,bitmapOld);
 
       for (y=0; y < (ssize_t) screen->rows; y++)
