@@ -212,12 +212,12 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
           break;
         for (x=0; x < (ssize_t) screen->columns; x++)
         {
-          SetPixelRed(image,ScaleCharToQuantum(p->rgbRed),q);
-          SetPixelGreen(image,ScaleCharToQuantum(p->rgbGreen),q);
-          SetPixelBlue(image,ScaleCharToQuantum(p->rgbBlue),q);
-          SetPixelAlpha(image,OpaqueAlpha,q);
+          SetPixelRed(screen,ScaleCharToQuantum(p->rgbRed),q);
+          SetPixelGreen(screen,ScaleCharToQuantum(p->rgbGreen),q);
+          SetPixelBlue(screen,ScaleCharToQuantum(p->rgbBlue),q);
+          SetPixelAlpha(screen,OpaqueAlpha,q);
           p++;
-          q+=GetPixelChannels(image);
+          q+=GetPixelChannels(screen);
         }
         if (SyncAuthenticPixels(screen,exception) == MagickFalse)
           break;
