@@ -165,7 +165,6 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
         ThrowReaderException(CoderError,"UnableToCreateDC");
 
       screen=AcquireImage(image_info,exception);
-      geometry=screen->extract_info;
       geometry.x=0;
       geometry.y=0;
       geometry.width=(size_t) GetDeviceCaps(hDC,HORZRES);
