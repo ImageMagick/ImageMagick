@@ -70,6 +70,7 @@
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/token.h"
+#include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/xwindow.h"
 #include "MagickCore/xwindow-private.h"
@@ -174,8 +175,8 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
           geometry.x=MagickMin(screen->extract_info.x,geometry.width);
           if (geometry.x < 0)
             {
-              geometry.width=(size_t ) MagickMin(0,(ssize_t) geometry.width
-                +geometry.x);
+              geometry.width=(size_t ) MagickMin(0,(ssize_t) geometry.width+
+                geometry.x);
               geometry.x=0;
             }
           geometry.width=geometry.width-geometry.x;
@@ -184,8 +185,8 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
           geometry.y=MagickMin(screen->extract_info.y,geometry.height);
           if (geometry.y < 0)
             {
-              geometry.width=(size_t ) MagickMin(0,(ssize_t) geometry.width
-                +geometry.y);
+              geometry.width=(size_t ) MagickMin(0,(ssize_t) geometry.width+
+                geometry.y);
               geometry.y=0;
             }
           geometry.height=geometry.height-geometry.y;
@@ -280,6 +281,26 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
     if (option != (const char *) NULL)
       ximage_info.silent=IsStringTrue(option);
     image=XImportImage(image_info,&ximage_info,exception);
+    if ((image != (Image *) NULL) && (image_info->extract != (char *) NULL))
+      {
+        Image
+          *crop_image;
+
+        RectangleInfo
+          crop_info;
+
+        /*
+          Crop image as defined by the extract rectangle.
+        */
+        (void) ParsePageGeometry(image,image_info->extract,&crop_info,
+          exception);
+        crop_image=CropImage(image,&crop_info,exception);
+        if (crop_image != (Image *) NULL)
+          {
+            image=DestroyImage(image);
+            image=crop_image;
+          }
+      }
   }
 #endif
   return(image);
