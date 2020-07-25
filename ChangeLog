@@ -1,3 +1,9 @@
+2020-07-25  7.0.10-25  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-25 GIT revision 17...
+
+2020-07-25  7.0.10-25  <quetzlzacatenango@image...>
+  * Remove UseCIEColor setting from PDF code as its use is not recommended.
+
 2020-07-18  7.0.10-24  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-24 GIT revision 17483:d11a2ec03:20200718
 

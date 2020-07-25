@@ -580,8 +580,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       page.width,(double) page.height);
   if (fitPage != MagickFalse)
     (void) ConcatenateMagickString(options,"-dPSFitPage ",MagickPathExtent);
-  if (pdf_info.cmyk != MagickFalse)
-    (void) ConcatenateMagickString(options,"-dUseCIEColor ",MagickPathExtent);
   if (pdf_info.cropbox != MagickFalse)
     (void) ConcatenateMagickString(options,"-dUseCropBox ",MagickPathExtent);
   if (stop_on_error != MagickFalse)
