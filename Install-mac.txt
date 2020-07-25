@@ -32,13 +32,13 @@ Test your installation by running:
     identify -version
 
 If you want to add support for extra features, such as HDRI, Perl, JPEG2000, 
-pango,fftw, TIFF or rsvg etc. you can find the necessary switches by running:
+pango,fftw, TIFF or rsvg etc. you can configure the necessary switches by running:
 
-    brew options imagemagick
+    brew edit imagemagick
 
 then find the options you need and apply them like this:
 
-    brew reinstall imagemagick --with-jp2 --with-quantum-depth-16 --with-pango
+    brew reinstall -s imagemagick
  
 If you have any problems with "homebrew", simply run:
 
