@@ -3430,6 +3430,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if (status == MagickFalse)
     {
       png_destroy_read_struct(&ping,&ping_info,&end_info);
+      InheritException(exception, &image->exception);
 #ifdef IMPNG_SETJMP_NOT_THREAD_SAFE
       UnlockSemaphoreInfo(ping_semaphore);
 #endif
