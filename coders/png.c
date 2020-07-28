@@ -3430,7 +3430,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if (status == MagickFalse)
     {
       png_destroy_read_struct(&ping,&ping_info,&end_info);
+#if !defined(__APPLE__)
+      // FIXME: make this call work on macos
       InheritException(exception, &image->exception);
+#endif
 #ifdef IMPNG_SETJMP_NOT_THREAD_SAFE
       UnlockSemaphoreInfo(ping_semaphore);
 #endif
