@@ -56,17 +56,20 @@
         <a class="nav-link" href="command-line-processing.html">Command-line</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="resources.html">Resources</a>
-      </li>
-      <li class="nav-item ">
         <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
       </li>
+      <li class="nav-item">
+          
+      </li>
+      <li class="nav-item">
+        <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
+      </li>
     </ul>
     </div>
-    <form class="form-inline my-2 my-lg-0" action="https://imagemagick.org/script/search.php">
+    <form class="form-inline my-2 my-md-0" action="https://imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
     </form>
@@ -84,7 +87,7 @@
 
   </div>
 
-  <main class="container">
+  <main role="main" class="container">
     <div class="magick-template">
 <div class="magick-header">
 <p class="text-center"><a href="security-policy.html#policy">Security Policy </a> • <a href="security-policy.html#synchronize">Pixel Cache Synchronize Policy</a> • <a href="security-policy.html#zero-configuration">Zero Configuration Security Policy</a> • <a href="security-policy.html#other">Other Security Considerations</a></p>
@@ -98,35 +101,26 @@
 
 <pre class="pre-scrollable"><code>&lt;policymap>
   &lt;!-- temporary path must be a preexisting writable directory -->
-  &lt;policy domain="resource" name="temporary-path" value="/tmp"/>
+  &lt;policy domain="resource" name="temporary-path" value="/data/magick"/>
   &lt;policy domain="resource" name="memory" value="256MiB"/>
-  &lt;policy domain="resource" name="map" value="512MiB"/>
+  &lt;policy domain="resource" name="list-length" value="32"/>
   &lt;policy domain="resource" name="width" value="8KP"/>
   &lt;policy domain="resource" name="height" value="8KP"/>
+  &lt;policy domain="resource" name="map" value="512MiB"/>
   &lt;policy domain="resource" name="area" value="16KP"/>
   &lt;policy domain="resource" name="disk" value="1GiB"/>
   &lt;policy domain="resource" name="file" value="768"/>
   &lt;policy domain="resource" name="thread" value="2"/>
-  &lt;policy domain="resource" name="throttle" value="0"/>
   &lt;policy domain="resource" name="time" value="120"/>
-  &lt;policy domain="resource" name="list-length" value="128"/>
-  &lt;policy domain="system" name="precision" value="6"/>
-  &lt;policy domain="cache" name="shared-secret" stealth="true" value="replace with your secret phrase"/>
-  &lt;policy domain="coder" rights="none" pattern="MVG" />
-  &lt;policy domain="coder" rights="none" pattern="EPS" />
-  &lt;policy domain="coder" rights="none" pattern="PS" />
-  &lt;policy domain="coder" rights="none" pattern="PS2" />
-  &lt;policy domain="coder" rights="none" pattern="PS3" />
-  &lt;policy domain="coder" rights="none" pattern="PDF" />
-  &lt;policy domain="coder" rights="none" pattern="XPS" />
+  &lt;policy domain="cache" name="memory-map" value="anonymous"/>
+  &lt;policy domain="cache" name="synchronize" value="true"/>
+  &lt;policy domain="cache" name="shared-secret" value="<em>passphrase</em>" stealth="True"/>
+  &lt;policy domain="coder" rights="write" pattern="{HTTP,HTTPS,MVG,PS,EPS,PDF,XPS}" />
   &lt;policy domain="filter" rights="none" pattern="*" />
-  &lt;policy domain="delegate" rights="none" pattern="HTTPS" />  <!--  prevent 'curl' program from reading HTTPS URL's -->
-  &lt;policy domain="delegate" rights="none" pattern="SHOW" />
-  &lt;policy domain="delegate" rights="none" pattern="WIN" />
   &lt;policy domain="path" rights="none" pattern="@*"/>  <!-- indirect reads not permitted -->
 &lt;/policymap></code></pre>
 
-<p>Since we process multiple simultaneous sessions, we do not want any one session consuming all the available memory. With this policy, large images are cached to disk. If the image is too large and exceeds the pixel cache disk limit, the program exits. In addition, we place a time limit to prevent any run-away processing tasks. If any one image has a width or height that exceeds 8192 pixels or if an image sequence exceeds 128 frames, an exception is thrown and processing stops. As of ImageMagick 7.0.1-8, you can prevent the use of any delegate or all delegates (set the pattern to "*"). Note, prior to these releases, use a domain of <code>coder</code> to prevent delegate usage (e.g. <code>domain="coder" rights="none" pattern="HTTPS"</code>). We prevent users from executing any image filters.  The policy also prevents indirect reads. If you want to, for example, read text from a file (e.g. <code>caption:@myCaption.txt</code>), you'll need to disable the <code>path</code> policy.</p>
+<p>Since we process multiple simultaneous sessions, we do not want any one session consuming all the available memory. With this policy, large images are cached to disk. If the image is too large and exceeds the pixel cache disk limit, the program exits. In addition, we place a time limit to prevent any run-away processing tasks. If any one image has a width or height that exceeds 8192 pixels or if an image sequence exceeds 32 frames, an exception is thrown and processing stops. As of ImageMagick 7.0.1-8, you can prevent the use of any delegate or all delegates (set the pattern to "*"). Note, prior to these releases, use a domain of <code>coder</code> to prevent delegate usage (e.g. <code>domain="coder" rights="none" pattern="HTTPS"</code>). We prevent users from executing any image filters.  The policy also prevents indirect reads. If you want to, for example, read text from a file (e.g. <code>caption:@myCaption.txt</code>), you'll need to disable the <code>path</code> policy.</p>
 
 <p>Policy patterns are <em>case sensitive</em>.  To get expected behavior, coders and modules must be upper-case (e.g. "EPS" not "eps").</p>
 
@@ -134,7 +128,6 @@
 
 <pre class="highlight">-> convert ../images/wizard.png wizard.jpg
 convert: attempt to perform an operation not allowed by the security policy `HTTPS'
-convert: unable to open file: No such file or directory
 convert: no images defined `wizard.jpg'</pre>
 
 <p>As of ImageMagick version 7.0.4-7, you can conveniently deny access to all delegates and coders except for a small subset of proven web-safe image types.  For example,</p>
@@ -144,7 +137,7 @@ convert: no images defined `wizard.jpg'</pre>
 &lt;policy domain="module" rights="read | write" pattern="{GIF,JPEG,PNG,WEBP}" /></code></pre>
 
 <p>Here we disable just a few Postscript related formats:</p>
-<pre class="highlight"><code>&lt;policy domain="module" rights="none" pattern="{PDF,PS,PS2,PS3,XPS}" /></code></pre>
+<pre class="highlight"><code>&lt;policy domain="module" rights="write" pattern="{PDF,PS,PS2,PS3,XPS}" /></code></pre>
 
 <p>As of ImageMagick 7.0.7-0, you can allocate the pixel cache and some internal buffers with anonymous memory mapping rather than from heap.  As a consequence, the pixels are initialized to zero resulting in a minor performance penalty.  You can also securely delete any temporary files for increased security.  The value is the number of times to shred (replace its content with random data) before deleting a temporary file.  For example,</p>
 <pre class="highlight"><code>&lt;policy domain="system" name="memory-map" value="anonymous"/>
@@ -160,13 +153,13 @@ convert: no images defined `wizard.jpg'</pre>
 <p>You can verify your policy changes are in effect with this command:</p>
 
 <pre class="pre-scrollable">-> identify -list policy
-Path: ImageMagick/policy.xml
+Path: ImageMagick-7/policy.xml
+  Policy: Resource
+    name: list-length
+    value: 32
   Policy: Resource
     name: time
     value: 120
-  Policy: Resource
-    name: throttle
-    value: 0
   Policy: Resource
     name: thread
     value: 2
@@ -193,18 +186,30 @@ Path: ImageMagick/policy.xml
     value: 8KP
   Policy: Resource
     name: temporary-path
-    value: /tmp
+    value: /opt/tmp
   Policy: System
     name: precision
     value: 6
+  Policy: Cache
+    name: memory-map
+    value: anonymous
+  Policy: Cache
+    name: synchronize
+    value: true
+  Policy: Coder
+    rights: Write 
+    pattern: {HTTP,HTTPS,MVG,PS,EPS,PDF,XPS}
+  Policy: Filter
+    rights: None 
+    pattern: *
   Policy: Path
-    rights: None
+    rights: None 
     pattern: @*
 
 Path: [built-in]
   Policy: Undefined
     rights: None</pre>
-<p>Notice the <code>Cache</code> policy is not listed due to the <code>stealth</code> property.</p>
+<p>Notice the <code>shared-secret</code> policy is not listed due to the <code>stealth</code> property.</p>
 
 <p>As of ImageMagick 7.0.6-0, you can programmatically set the ImageMagick security policy with SetMagickSecurityPolicy() (MagickCore) or MagickSetSecurityPolicy() (MagickWand).</p>
 
@@ -245,14 +250,16 @@ Path: [built-in]
 <li>running ImageMagick in a sanitized software container such as Docker;</li>
 <li>running ImageMagick as the least-privileged user (e.g. 'nobody');</li>
 <li>explicitly setting the image file type.  For example, use the filename <code>png:image.png</code> rather than <code>image.png</code>.  Without an explicit image type in the filename, ImageMagick guesses the image type.</li>
+<li>do not create temporary files in shared directories, instead specify a private area to store only ImageMagick temporary files by setting the <code>temporary-path</code> security policy or the <code>-define registry:temporary-path=/data/magick</code> command-line option.</li>
 </ul>
 
 </div>
     </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
+    <div class="container">
     <p><a href="security-policy.html">Security</a> •
-    <a href="architecture.html">Architecture</a>
+    <a href="resources.html">Resources</a>
      
     <a href="security-policy.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
@@ -268,6 +275,7 @@ Path: [built-in]
         <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
     <br/>
     <small>© 1999-2020 ImageMagick Studio LLC</small></p>
+    <div>
   </footer>
 
   <!-- Javascript assets -->
@@ -275,4 +283,4 @@ Path: [built-in]
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 12th June 2020 18:03 -->
+<!-- Magick Cache 30th July 2020 16:05 -->
