@@ -1578,6 +1578,42 @@ AC_SUBST(ZLIB_LIBS)
 dnl ===========================================================================
 
 #
+# Check for libzip
+#
+AC_ARG_WITH([libzip],
+    [AC_HELP_STRING([--without-libzip],
+                    [disable libzip support])],
+    [with_libzip=$withval],
+    [with_libzip='yes'])
+
+if test "$with_libzip" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-libzip=$with_libzip "
+fi
+
+have_libzip='no'
+LIBZIP_CFLAGS=""
+LIBZIP_LIBS=""
+LIBZIP_PKG=""
+if test "x$with_libzip" = "xyes"; then
+  AC_MSG_RESULT([-------------------------------------------------------------])
+  PKG_CHECK_MODULES(LIBZIP,[libzip >= 1.0.0], have_libzip=yes, have_libzip=no)
+  AC_MSG_RESULT([])
+fi
+
+if test "$have_libzip" = 'yes'; then
+  AC_DEFINE(LIBZIP_DELEGATE,1,Define if you have libzip library)
+  CFLAGS="$LIBZIP_CFLAGS $CFLAGS"
+  LIBS="$LIBZIP_LIBS $LIBS"
+fi
+
+AM_CONDITIONAL(LIBZIP_DELEGATE, test "$have_libzip" = 'yes')
+AC_SUBST(LIBZIP_CFLAGS)
+AC_SUBST(LIBZIP_LIBS)
+
+
+dnl ===========================================================================
+
+#
 # Check for ZSTD
 #
 AC_ARG_WITH([zstd],
@@ -3872,9 +3908,9 @@ fi
 #
 
 if test "$build_modules" != 'no'; then
-    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZIP_LIBS $LIBZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $JXL_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $JXL_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $LIBZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
 fi
 MAGICK_EXTRA_DEP_LIBS="$GOMP_LIBS"
 AC_SUBST(MAGICK_DEP_LIBS)
@@ -4053,6 +4089,7 @@ Delegate library configuration:
   X11               --with-x=$with_x			$have_x
   XML               --with-xml=$with_xml		$have_xml
   ZLIB              --with-zlib=$with_zlib		$have_zlib
+  LIBZIP            --with-libzip=$with_libzip  $have_libzip
   ZSTD              --with-zstd=$with_zstd		$have_zstd
 
 Delegate program configuration:
