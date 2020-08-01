@@ -22,15 +22,15 @@ jobs:
         compiler: [ gcc, clang ]
 
     steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+
     - name: Install dependencies
       run: |
         set -e
         apt-get update -y
         apt-get install -y autoconf pkg-config ${{matrix.compiler}}
-
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 1
 
     - name: Configure ImageMagick
       run: |
@@ -75,6 +75,10 @@ jobs:
     runs-on: windows-latest
 
     steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+
     - uses: actions/checkout@v2
       with:
         repository: ImageMagick/ImageMagick-Windows
