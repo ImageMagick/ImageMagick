@@ -12,6 +12,9 @@
 /* Define if you have the bzip2 library */
 #undef BZLIB_DELEGATE
 
+/* Define if you have the libzip library */
+#undef LIBZIP_DELEGATE
+
 /* Define if you have CAIRO library */
 #undef CAIRO_DELEGATE
 

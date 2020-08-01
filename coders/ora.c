@@ -61,9 +61,10 @@
 #include "MagickCore/resource_.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/utility.h"
-// #if defined(ZIP_DELEGATE)
+
+#if defined(MAGICKCORE_LIBZIP_DELEGATE)
 #include <zip.h>
-// #endif
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -101,7 +102,8 @@ extern "C" {
 }
 #endif
 
-// #if defined(ZIP_DELEGATE)
+#if defined(MAGICKCORE_PNG_DELEGATE)
+#if defined(MAGICKCORE_LIBZIP_DELEGATE)
 static Image *ReadORAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define MaxBufferExtent  8192
@@ -241,7 +243,8 @@ static Image *ReadORAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   read_info=DestroyImageInfo(read_info);
   return image;
 }
-// #endif // #if defined(ZIP_DELEGATE)
+#endif // #if defined(MAGICKCORE_LIBZIP_DELEGATE)
+#endif // defined(MAGICKCORE_PNG_DELEGATE)
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -268,19 +271,19 @@ static Image *ReadORAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 ModuleExport size_t RegisterORAImage(void)
 {
-#define ORADescription "OpenRaster Format"
-#define ORAStringify(macro_or_string)  ORAStringifyArg(macro_or_string)
-#define ORAStringifyArg(contents)  #contents
+  #if defined(MAGICKCORE_PNG_DELEGATE)
+  #if defined(MAGICKCORE_LIBZIP_DELEGATE)
   MagickInfo
     *entry;
 
   entry=AcquireMagickInfo("ORA","ORA","OpenRaster format");
-  // #if defined(ZIP_DELEGATE)
+
   entry->decoder=(DecodeImageHandler *) ReadORAImage;
-  // #endif
+
   entry->format_type=ExplicitFormatType;
   (void) RegisterMagickInfo(entry);
-
+  #endif // defined(MAGICKCORE_LIBZIP_DELEGATE)
+  #endif // defined(MAGICKCORE_PNG_DELEGATE)
   return(MagickImageCoderSignature);
 }
 

@@ -615,7 +615,7 @@ fi
 AM_CONDITIONAL(WITH_MODULES, test "$build_modules" != 'no')
 
 # Enable build using delegate libraries built in subdirectories rather than installed
-# delegate libraries (bzlib fftw fpx gslib jp2 jbig jpeg lcms lzma png tiff ttf wmf xml zlib)
+# delegate libraries (bzlib fftw fpx gslib jp2 jbig jpeg lcms lzma png tiff ttf wmf xml zlib zip)
 AC_ARG_ENABLE([delegate-build],
     [AC_HELP_STRING([--enable-delegate-build],
                     [look for delegate libraries in build directory])],
@@ -1174,7 +1174,7 @@ if test "$enable_delegate_build" != 'no'; then
     # Most delegates have includes in the same directory as the library, but not all...
     #
     # Includes
-    for dir in bzlib fftw fpx gslib/src jp2 jbig/libjbig jpeg lcms/include lzma magick openjp2/include png tiff/libtiff ttf/include wand webp/src wmf/include xml/include zlib; do
+    for dir in zip bzlib fftw fpx gslib/src jp2 jbig/libjbig jpeg lcms/include lzma magick openjp2/include png tiff/libtiff ttf/include wand webp/src wmf/include xml/include zlib; do
         if test -d "$builddir/$dir"; then
             CPPFLAGS="$CPPFLAGS -I$builddir/$dir"
         else
@@ -1185,7 +1185,7 @@ if test "$enable_delegate_build" != 'no'; then
     done
 
     # Libraries
-    for dir in bzlib fftw fpx gslib/src jbig/libjbig jpeg lcms/src lzma magick openjp2 png tiff/libtiff ttf/objs wand webp wmf/src xml zlib; do
+    for dir in zip bzlib fftw fpx gslib/src jbig/libjbig jpeg lcms/src lzma magick openjp2 png tiff/libtiff ttf/objs wand webp wmf/src xml zlib; do
     if test -d "$builddir/$dir/.libs"; then
         LDFLAGS="$LDFLAGS -L$builddir/$dir/.libs"
     else
@@ -1578,37 +1578,37 @@ AC_SUBST(ZLIB_LIBS)
 dnl ===========================================================================
 
 #
-# Check for zip
+# Check for libzip
 #
-AC_ARG_WITH([zip],
-    [AC_HELP_STRING([--without-zip],
-                    [disable zip support])],
-    [with_zip=$withval],
-    [with_zip='yes'])
+AC_ARG_WITH([libzip],
+    [AC_HELP_STRING([--without-libzip],
+                    [disable libzip support])],
+    [with_libzip=$withval],
+    [with_libzip='yes'])
 
-if test "$with_zip" != 'yes'; then
-    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-zip=$with_zip "
+if test "$with_libzip" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-libzip=$with_libzip "
 fi
 
-have_zip='no'
-ZIP_CFLAGS=""
-ZIP_LIBS=""
-ZIP_PKG=""
-if test "x$with_zip" = "xyes"; then
+have_libzip='no'
+LIBZIP_CFLAGS=""
+LIBZIP_LIBS=""
+LIBZIP_PKG=""
+if test "x$with_libzip" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES(ZIP,[libzip >= 1.0.0], have_zip=yes, have_zip=no)
+  PKG_CHECK_MODULES(LIBZIP,[libzip >= 1.0.0], have_libzip=yes, have_libzip=no)
   AC_MSG_RESULT([])
 fi
 
-if test "$have_zip" = 'yes'; then
-  AC_DEFINE(ZIP_DELEGATE,1,Define if you have zip library)
-  CFLAGS="$ZIP_CFLAGS $CFLAGS"
-  LIBS="$ZIP_LIBS $LIBS"
+if test "$have_libzip" = 'yes'; then
+  AC_DEFINE(LIBZIP_DELEGATE,1,Define if you have libzip library)
+  CFLAGS="$LIBZIP_CFLAGS $CFLAGS"
+  LIBS="$LIBZIP_LIBS $LIBS"
 fi
 
-AM_CONDITIONAL(ZIP_DELEGATE, test "$have_zip" = 'yes')
-AC_SUBST(ZIP_CFLAGS)
-AC_SUBST(ZIP_LIBS)
+AM_CONDITIONAL(LIBZIP_DELEGATE, test "$have_libzip" = 'yes')
+AC_SUBST(LIBZIP_CFLAGS)
+AC_SUBST(LIBZIP_LIBS)
 
 
 dnl ===========================================================================
@@ -3853,6 +3853,9 @@ fi
 if test "$have_xml"      = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES xml"
 fi
+if test "$have_libzip"      = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES libzip"
+fi
 if test "$have_zlib"   = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES zlib"
 fi
@@ -3908,7 +3911,7 @@ fi
 #
 
 if test "$build_modules" != 'no'; then
-    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZIP_LIBS $LIBZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $LIBZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
 else
     MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $JXL_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $LIBZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
 fi
@@ -4089,7 +4092,7 @@ Delegate library configuration:
   X11               --with-x=$with_x			$have_x
   XML               --with-xml=$with_xml		$have_xml
   ZLIB              --with-zlib=$with_zlib		$have_zlib
-  ZIP               --with-zip=$with_zip  		$have_zip
+  LIBZIP               --with-libzip=$with_libzip  		$have_libzip
   ZSTD              --with-zstd=$with_zstd		$have_zstd
 
 Delegate program configuration:
