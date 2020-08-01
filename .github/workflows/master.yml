@@ -76,6 +76,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      path: ImageMagick
       with:
         fetch-depth: 1
 
