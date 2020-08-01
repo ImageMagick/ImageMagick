@@ -4577,7 +4577,7 @@ MAGICK_PATCHLEVEL_VERSION=26
 
 MAGICK_VERSION=7.0.10-26
 
-MAGICK_GIT_REVISION=17504:905fa54e0:20200801
+MAGICK_GIT_REVISION=17505:9b7bef169:20200801
 
 
 # Substitute library versioning
@@ -39786,7 +39786,7 @@ Delegate library configuration:
   X11               --with-x=$with_x			$have_x
   XML               --with-xml=$with_xml		$have_xml
   ZLIB              --with-zlib=$with_zlib		$have_zlib
-  LIBZIP               --with-libzip=$with_libzip  		$have_libzip
+  LIBZIP            --with-libzip=$with_libzip  		$have_libzip
   ZSTD              --with-zstd=$with_zstd		$have_zstd
 
 Delegate program configuration:
@@ -39885,7 +39885,7 @@ Delegate library configuration:
   X11               --with-x=$with_x			$have_x
   XML               --with-xml=$with_xml		$have_xml
   ZLIB              --with-zlib=$with_zlib		$have_zlib
-  LIBZIP               --with-libzip=$with_libzip  		$have_libzip
+  LIBZIP            --with-libzip=$with_libzip  		$have_libzip
   ZSTD              --with-zstd=$with_zstd		$have_zstd
 
 Delegate program configuration:

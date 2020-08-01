@@ -4092,7 +4092,7 @@ Delegate library configuration:
   X11               --with-x=$with_x			$have_x
   XML               --with-xml=$with_xml		$have_xml
   ZLIB              --with-zlib=$with_zlib		$have_zlib
-  LIBZIP               --with-libzip=$with_libzip  		$have_libzip
+  LIBZIP            --with-libzip=$with_libzip  		$have_libzip
   ZSTD              --with-zstd=$with_zstd		$have_zstd
 
 Delegate program configuration:

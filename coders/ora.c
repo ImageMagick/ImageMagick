@@ -109,7 +109,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define MaxBufferExtent  8192
 
   char
-    imageDataBuffer[MaxBufferExtent];
+    image_data_buffer[MaxBufferExtent];
 
   const char
     *MERGED_IMAGE_PATH = "mergedimage.png";
@@ -118,7 +118,8 @@ static Image *ReadORAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *file;
 
   Image
-    *image;
+    *image_metadata,
+		*out_image;
 
   ImageInfo
     *read_info;
@@ -126,36 +127,40 @@ static Image *ReadORAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     unique_file;
 
-  image=AcquireImage(image_info,exception);
+  image_metadata=AcquireImage(image_info,exception);
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
 
   zip_t
-    *zipArchive;
+    *zip_archive;
 
   zip_file_t
-    *mergedImageFile;
+    *merged_image_file;
 
+  struct stat stat_info;
+
+  stat(image_info->filename, &stat_info);
   int zipError;
-  zipArchive = zip_open(image_info->filename, ZIP_RDONLY, &zipError);
-  if (zipArchive == NULL) {
+  zip_archive = zip_open(image_info->filename, ZIP_RDONLY, &zipError);
+  if (zip_archive == NULL) {
     ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
       image_info->filename);
     read_info=DestroyImageInfo(read_info);
-    image=DestroyImage(image);
+    image_metadata=DestroyImage(image_metadata);
     return((Image *) NULL);
   }
 
-  mergedImageFile = zip_fopen(zipArchive, MERGED_IMAGE_PATH, ZIP_FL_UNCHANGED);
-  if (mergedImageFile == NULL) {
+  merged_image_file = zip_fopen(zip_archive, MERGED_IMAGE_PATH, ZIP_FL_UNCHANGED);
+  if (merged_image_file == NULL) {
     ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
       image_info->filename);
     read_info=DestroyImageInfo(read_info);
-    image=DestroyImage(image);
-    zip_discard(zipArchive);
+    image_metadata=DestroyImage(image_metadata);
+    zip_discard(zip_archive);
     return((Image *) NULL);
   }
 
+  // Get a temporary file to write the mergedimage.png of the ZIP to
   (void) CopyMagickString(read_info->magick, "PNG", MagickPathExtent);
   unique_file = AcquireUniqueFileResource(read_info->unique);
   (void) CopyMagickString(read_info->filename, read_info->unique,
@@ -168,80 +173,93 @@ static Image *ReadORAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowFileException(exception,FileOpenError,"UnableToCreateTemporaryFile",
         read_info->filename);
       read_info=DestroyImageInfo(read_info);
-      image=DestroyImage(image);
-      zip_fclose(mergedImageFile);
-      zip_discard(zipArchive);
+      image_metadata=DestroyImage(image_metadata);
+      zip_fclose(merged_image_file);
+      zip_discard(zip_archive);
       return((Image *) NULL);
     }
 
-
-  zip_uint64_t readBytes = 0;
+  // Write the uncompressed mergedimage.png to the temporary file
+  zip_uint64_t read_bytes = 0;
   zip_uint64_t offset = 0;
   do
   {
-    readBytes = zip_fread(mergedImageFile, imageDataBuffer + offset, MaxBufferExtent - offset);
-    if (readBytes == -1) {
+    read_bytes = zip_fread(merged_image_file, image_data_buffer + offset, MaxBufferExtent - offset);
+    if (read_bytes == -1) {
       ThrowFileException(exception,FileOpenError,"UnableToCreateTemporaryFile",
           read_info->filename);
       fclose(file);
       RelinquishUniqueFileResource(read_info->filename);
       read_info=DestroyImageInfo(read_info);
-      image=DestroyImage(image);
-      zip_fclose(mergedImageFile);
-      zip_discard(zipArchive);
-      zip_fclose(mergedImageFile);
+      image_metadata=DestroyImage(image_metadata);
+      zip_fclose(merged_image_file);
+      zip_discard(zip_archive);
+      zip_fclose(merged_image_file);
       return((Image *) NULL);
     }
-    if (readBytes == 0) {
-        // Write up to offset of imageDataBuffer to temp file
+    if (read_bytes == 0) {
+        // Write up to offset of image_data_buffer to temp file
         ssize_t
-          success=(ssize_t) fwrite(imageDataBuffer,offset,1,file);
+          success=(ssize_t) fwrite(image_data_buffer,offset,1,file);
         if (!success) {
           ThrowFileException(exception,FileOpenError,"UnableToCreateTemporaryFile",
             read_info->filename);
           fclose(file);
           RelinquishUniqueFileResource(read_info->filename);
           read_info=DestroyImageInfo(read_info);
-          image=DestroyImage(image);
-          zip_fclose(mergedImageFile);
-          zip_discard(zipArchive);
-          zip_fclose(mergedImageFile);
+          image_metadata=DestroyImage(image_metadata);
+          zip_fclose(merged_image_file);
+          zip_discard(zip_archive);
+          zip_fclose(merged_image_file);
           return((Image *) NULL);
         }
     }
-    else if (readBytes == MaxBufferExtent - offset) {
-        // Write the entirely of imageDataBuffer to temp file
+    else if (read_bytes == MaxBufferExtent - offset) {
+        // Write the entirely of image_data_buffer to temp file
         ssize_t
-          success=(ssize_t) fwrite(imageDataBuffer,MaxBufferExtent,1,file);
+          success=(ssize_t) fwrite(image_data_buffer,MaxBufferExtent,1,file);
         if (!success) {
           ThrowFileException(exception,FileOpenError,"UnableToCreateTemporaryFile",
             read_info->filename);
           fclose(file);
           RelinquishUniqueFileResource(read_info->filename);
           read_info=DestroyImageInfo(read_info);
-          image=DestroyImage(image);
-          zip_fclose(mergedImageFile);
-          zip_discard(zipArchive);
-          zip_fclose(mergedImageFile);
+          image_metadata=DestroyImage(image_metadata);
+          zip_fclose(merged_image_file);
+          zip_discard(zip_archive);
+          zip_fclose(merged_image_file);
           return((Image *) NULL);
         }
         offset = 0;
     }
     else {
-        offset += readBytes;
+        offset += read_bytes;
     }
   }
-  while (readBytes > 0);
+  while (read_bytes > 0);
 
-  zip_fclose(mergedImageFile);
-  zip_discard(zipArchive);
+  zip_fclose(merged_image_file);
+  zip_discard(zip_archive);
   fclose(file);
 
-  image = ReadImage(read_info, exception);
-
+  // delegate to ReadImage to read mergedimage.png
+  out_image = ReadImage(read_info, exception);
   RelinquishUniqueFileResource(read_info->filename);
   read_info=DestroyImageInfo(read_info);
-  return image;
+
+  // Update fields of image from fields of png_image
+  if (image_metadata != NULL && out_image != NULL) {
+    (void) CopyMagickString(out_image->filename, image_metadata->filename,
+      MagickPathExtent);
+    (void) CopyMagickString(out_image->magick_filename,
+      image_metadata->magick_filename, MagickPathExtent);
+    out_image->timestamp = time(&stat_info.st_mtime);
+    (void) CopyMagickString(out_image->magick, image_metadata->magick,
+      MagickPathExtent);
+    out_image->extent = stat_info.st_size;
+    DestroyImage(image_metadata);
+  }
+  return out_image;
 }
 #endif // #if defined(MAGICKCORE_LIBZIP_DELEGATE)
 #endif // defined(MAGICKCORE_PNG_DELEGATE)
