@@ -672,8 +672,6 @@ PCLVersion
 PCLCMYKDevice
 PCLColorDevice
 PCLMonoDevice
-ZIP_DELEGATE_FALSE
-ZIP_DELEGATE_TRUE
 ZIP
 P7ZIP_DELEGATE_FALSE
 P7ZIP_DELEGATE_TRUE
@@ -882,10 +880,10 @@ ZSTD_DELEGATE_FALSE
 ZSTD_DELEGATE_TRUE
 LIBZSTD_LIBS
 LIBZSTD_CFLAGS
-LIBZIP_DELEGATE_FALSE
-LIBZIP_DELEGATE_TRUE
-LIBZIP_LIBS
-LIBZIP_CFLAGS
+ZIP_DELEGATE_FALSE
+ZIP_DELEGATE_TRUE
+ZIP_LIBS
+ZIP_CFLAGS
 ZLIB_DELEGATE_FALSE
 ZLIB_DELEGATE_TRUE
 ZLIB_LIBS
@@ -1209,7 +1207,7 @@ with_libstdc
 with_bzlib
 with_x
 with_zlib
-with_libzip
+with_zip
 with_zstd
 with_apple_font_dir
 with_autotrace
@@ -1267,8 +1265,8 @@ CXXCPP
 XMKMF
 ZLIB_CFLAGS
 ZLIB_LIBS
-LIBZIP_CFLAGS
-LIBZIP_LIBS
+ZIP_CFLAGS
+ZIP_LIBS
 LIBZSTD_CFLAGS
 LIBZSTD_LIBS
 AUTOTRACE_CFLAGS
@@ -2026,7 +2024,7 @@ Optional Packages:
   --without-bzlib         disable BZLIB support
   --with-x                use the X Window System
   --without-zlib          disable ZLIB support
-  --without-libzip        disable libzip support
+  --without-zip           disable zip support
   --without-zstd          disable ZSTD support
   --with-apple-font-dir=DIR
                           Apple font directory
@@ -2089,9 +2087,8 @@ Some influential environment variables:
   XMKMF       Path to xmkmf, Makefile generator for X Window System
   ZLIB_CFLAGS C compiler flags for ZLIB, overriding pkg-config
   ZLIB_LIBS   linker flags for ZLIB, overriding pkg-config
-  LIBZIP_CFLAGS
-              C compiler flags for LIBZIP, overriding pkg-config
-  LIBZIP_LIBS linker flags for LIBZIP, overriding pkg-config
+  ZIP_CFLAGS  C compiler flags for ZIP, overriding pkg-config
+  ZIP_LIBS    linker flags for ZIP, overriding pkg-config
   LIBZSTD_CFLAGS
               C compiler flags for LIBZSTD, overriding pkg-config
   LIBZSTD_LIBS
@@ -4577,7 +4574,7 @@ MAGICK_PATCHLEVEL_VERSION=26
 
 MAGICK_VERSION=7.0.10-26
 
-MAGICK_GIT_REVISION=17502:1c6143afb:20200801
+MAGICK_GIT_REVISION=17503:e317d050f:20200801
 
 
 # Substitute library versioning
@@ -29054,26 +29051,26 @@ fi
 
 
 #
-# Check for libzip
+# Check for zip
 #
 
-# Check whether --with-libzip was given.
-if test "${with_libzip+set}" = set; then :
-  withval=$with_libzip; with_libzip=$withval
+# Check whether --with-zip was given.
+if test "${with_zip+set}" = set; then :
+  withval=$with_zip; with_zip=$withval
 else
-  with_libzip='yes'
+  with_zip='yes'
 fi
 
 
-if test "$with_libzip" != 'yes'; then
-    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-libzip=$with_libzip "
+if test "$with_zip" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-zip=$with_zip "
 fi
 
-have_libzip='no'
-LIBZIP_CFLAGS=""
-LIBZIP_LIBS=""
-LIBZIP_PKG=""
-if test "x$with_libzip" = "xyes"; then
+have_zip='no'
+ZIP_CFLAGS=""
+ZIP_LIBS=""
+ZIP_PKG=""
+if test "x$with_zip" = "xyes"; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
 
@@ -29081,8 +29078,8 @@ pkg_failed=no
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for libzip >= 1.0.0" >&5
 $as_echo_n "checking for libzip >= 1.0.0... " >&6; }
 
-if test -n "$LIBZIP_CFLAGS"; then
-    pkg_cv_LIBZIP_CFLAGS="$LIBZIP_CFLAGS"
+if test -n "$ZIP_CFLAGS"; then
+    pkg_cv_ZIP_CFLAGS="$ZIP_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libzip >= 1.0.0\""; } >&5
@@ -29090,7 +29087,7 @@ if test -n "$LIBZIP_CFLAGS"; then
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_LIBZIP_CFLAGS=`$PKG_CONFIG --cflags "libzip >= 1.0.0" 2>/dev/null`
+  pkg_cv_ZIP_CFLAGS=`$PKG_CONFIG --cflags "libzip >= 1.0.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -29098,8 +29095,8 @@ fi
  else
     pkg_failed=untried
 fi
-if test -n "$LIBZIP_LIBS"; then
-    pkg_cv_LIBZIP_LIBS="$LIBZIP_LIBS"
+if test -n "$ZIP_LIBS"; then
+    pkg_cv_ZIP_LIBS="$ZIP_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libzip >= 1.0.0\""; } >&5
@@ -29107,7 +29104,7 @@ if test -n "$LIBZIP_LIBS"; then
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_LIBZIP_LIBS=`$PKG_CONFIG --libs "libzip >= 1.0.0" 2>/dev/null`
+  pkg_cv_ZIP_LIBS=`$PKG_CONFIG --libs "libzip >= 1.0.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -29128,43 +29125,43 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        LIBZIP_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libzip >= 1.0.0" 2>&1`
+	        ZIP_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libzip >= 1.0.0" 2>&1`
         else
-	        LIBZIP_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libzip >= 1.0.0" 2>&1`
+	        ZIP_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libzip >= 1.0.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
-	echo "$LIBZIP_PKG_ERRORS" >&5
+	echo "$ZIP_PKG_ERRORS" >&5
 
-	have_libzip=no
+	have_zip=no
 elif test $pkg_failed = untried; then
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-	have_libzip=no
+	have_zip=no
 else
-	LIBZIP_CFLAGS=$pkg_cv_LIBZIP_CFLAGS
-	LIBZIP_LIBS=$pkg_cv_LIBZIP_LIBS
+	ZIP_CFLAGS=$pkg_cv_ZIP_CFLAGS
+	ZIP_LIBS=$pkg_cv_ZIP_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-	have_libzip=yes
+	have_zip=yes
 fi
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
 fi
 
-if test "$have_libzip" = 'yes'; then
+if test "$have_zip" = 'yes'; then
 
-$as_echo "#define LIBZIP_DELEGATE 1" >>confdefs.h
+$as_echo "#define ZIP_DELEGATE 1" >>confdefs.h
 
-  CFLAGS="$LIBZIP_CFLAGS $CFLAGS"
-  LIBS="$LIBZIP_LIBS $LIBS"
+  CFLAGS="$ZIP_CFLAGS $CFLAGS"
+  LIBS="$ZIP_LIBS $LIBS"
 fi
 
- if test "$have_libzip" = 'yes'; then
-  LIBZIP_DELEGATE_TRUE=
-  LIBZIP_DELEGATE_FALSE='#'
+ if test "$have_zip" = 'yes'; then
+  ZIP_DELEGATE_TRUE=
+  ZIP_DELEGATE_FALSE='#'
 else
-  LIBZIP_DELEGATE_TRUE='#'
-  LIBZIP_DELEGATE_FALSE=
+  ZIP_DELEGATE_TRUE='#'
+  ZIP_DELEGATE_FALSE=
 fi
 
 
@@ -36991,8 +36988,8 @@ if test -z "${ZLIB_DELEGATE_TRUE}" && test -z "${ZLIB_DELEGATE_FALSE}"; then
   as_fn_error $? "conditional \"ZLIB_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
-if test -z "${LIBZIP_DELEGATE_TRUE}" && test -z "${LIBZIP_DELEGATE_FALSE}"; then
-  as_fn_error $? "conditional \"LIBZIP_DELEGATE\" was never defined.
+if test -z "${ZIP_DELEGATE_TRUE}" && test -z "${ZIP_DELEGATE_FALSE}"; then
+  as_fn_error $? "conditional \"ZIP_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${ZSTD_DELEGATE_TRUE}" && test -z "${ZSTD_DELEGATE_FALSE}"; then
@@ -39763,7 +39760,7 @@ Delegate library configuration:
   HEIC              --with-heic=$with_heic             $have_heic
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
-  JPEG XL           --with-jxl=$with_jxl    $have_jxl
+  JPEG XL           --with-jxl=$with_jxl	    	$have_jxl
   LCMS              --with-lcms=$with_lcms		$have_lcms
   LQR               --with-lqr=$with_lqr		$have_lqr
   LTDL              --with-ltdl=$with_ltdl		$have_ltdl
@@ -39783,7 +39780,7 @@ Delegate library configuration:
   X11               --with-x=$with_x			$have_x
   XML               --with-xml=$with_xml		$have_xml
   ZLIB              --with-zlib=$with_zlib		$have_zlib
-  LIBZIP            --with-libzip=$with_libzip  $have_libzip
+  ZIP               --with-zip=$with_zip  		$have_zip
   ZSTD              --with-zstd=$with_zstd		$have_zstd
 
 Delegate program configuration:
@@ -39862,7 +39859,7 @@ Delegate library configuration:
   HEIC              --with-heic=$with_heic             $have_heic
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
-  JPEG XL           --with-jxl=$with_jxl    $have_jxl
+  JPEG XL           --with-jxl=$with_jxl	    	$have_jxl
   LCMS              --with-lcms=$with_lcms		$have_lcms
   LQR               --with-lqr=$with_lqr		$have_lqr
   LTDL              --with-ltdl=$with_ltdl		$have_ltdl
@@ -39882,7 +39879,7 @@ Delegate library configuration:
   X11               --with-x=$with_x			$have_x
   XML               --with-xml=$with_xml		$have_xml
   ZLIB              --with-zlib=$with_zlib		$have_zlib
-  LIBZIP            --with-libzip=$with_libzip  $have_libzip
+  ZIP               --with-zip=$with_zip  		$have_zip
   ZSTD              --with-zstd=$with_zstd		$have_zstd
 
 Delegate program configuration:

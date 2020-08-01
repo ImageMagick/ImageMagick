@@ -1578,37 +1578,37 @@ AC_SUBST(ZLIB_LIBS)
 dnl ===========================================================================
 
 #
-# Check for libzip
+# Check for zip
 #
-AC_ARG_WITH([libzip],
-    [AC_HELP_STRING([--without-libzip],
-                    [disable libzip support])],
-    [with_libzip=$withval],
-    [with_libzip='yes'])
+AC_ARG_WITH([zip],
+    [AC_HELP_STRING([--without-zip],
+                    [disable zip support])],
+    [with_zip=$withval],
+    [with_zip='yes'])
 
-if test "$with_libzip" != 'yes'; then
-    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-libzip=$with_libzip "
+if test "$with_zip" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-zip=$with_zip "
 fi
 
-have_libzip='no'
-LIBZIP_CFLAGS=""
-LIBZIP_LIBS=""
-LIBZIP_PKG=""
-if test "x$with_libzip" = "xyes"; then
+have_zip='no'
+ZIP_CFLAGS=""
+ZIP_LIBS=""
+ZIP_PKG=""
+if test "x$with_zip" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES(LIBZIP,[libzip >= 1.0.0], have_libzip=yes, have_libzip=no)
+  PKG_CHECK_MODULES(ZIP,[libzip >= 1.0.0], have_zip=yes, have_zip=no)
   AC_MSG_RESULT([])
 fi
 
-if test "$have_libzip" = 'yes'; then
-  AC_DEFINE(LIBZIP_DELEGATE,1,Define if you have libzip library)
-  CFLAGS="$LIBZIP_CFLAGS $CFLAGS"
-  LIBS="$LIBZIP_LIBS $LIBS"
+if test "$have_zip" = 'yes'; then
+  AC_DEFINE(ZIP_DELEGATE,1,Define if you have zip library)
+  CFLAGS="$ZIP_CFLAGS $CFLAGS"
+  LIBS="$ZIP_LIBS $LIBS"
 fi
 
-AM_CONDITIONAL(LIBZIP_DELEGATE, test "$have_libzip" = 'yes')
-AC_SUBST(LIBZIP_CFLAGS)
-AC_SUBST(LIBZIP_LIBS)
+AM_CONDITIONAL(ZIP_DELEGATE, test "$have_zip" = 'yes')
+AC_SUBST(ZIP_CFLAGS)
+AC_SUBST(ZIP_LIBS)
 
 
 dnl ===========================================================================
@@ -4069,7 +4069,7 @@ Delegate library configuration:
   HEIC              --with-heic=$with_heic             $have_heic
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
-  JPEG XL           --with-jxl=$with_jxl    $have_jxl
+  JPEG XL           --with-jxl=$with_jxl	    	$have_jxl
   LCMS              --with-lcms=$with_lcms		$have_lcms
   LQR               --with-lqr=$with_lqr		$have_lqr
   LTDL              --with-ltdl=$with_ltdl		$have_ltdl
@@ -4089,7 +4089,7 @@ Delegate library configuration:
   X11               --with-x=$with_x			$have_x
   XML               --with-xml=$with_xml		$have_xml
   ZLIB              --with-zlib=$with_zlib		$have_zlib
-  LIBZIP            --with-libzip=$with_libzip  $have_libzip
+  ZIP               --with-zip=$with_zip  		$have_zip
   ZSTD              --with-zstd=$with_zstd		$have_zstd
 
 Delegate program configuration:

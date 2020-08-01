@@ -3,13 +3,13 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                         ####### ######     #                                %
-%                         #     # #     #   # #                               %
-%                         #     # #     #  #   #                              %
-%                         #     # ######  #     #                             %
-%                         #     # #   #   #######                             %
-%                         #     # #    #  #     #                             %
-%                         ####### #     # #     #                             %
+%                         OOOOOOO RRRRRR     A                                %
+%                         O     O R     R   A A                               %
+%                         O     O R     R  A   A                              %
+%                         O     O RRRRRR  A     A                             %
+%                         O     O R   R   AAAAAAA                             %
+%                         O     O R    R  A     A                             %
+%                         OOOOOOO R     R A     A                             %
 %                                                                             %
 %                                                                             %
 %                       Read OpenRaster (.ora) files                          %
@@ -61,23 +61,9 @@
 #include "MagickCore/resource_.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/utility.h"
-#if defined(MAGICKCORE_XML_DELEGATE)
-#  if defined(MAGICKCORE_WINDOWS_SUPPORT)
-#    if !defined(__MINGW32__)
-#      include <win32config.h>
-#    endif
-#  endif
-#  include <libxml/parser.h>
-#  include <libxml/xmlmemory.h>
-#  include <libxml/nanoftp.h>
-#  include <libxml/nanohttp.h>
-#endif
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
-    !defined(__MINGW32__)
-#  include <urlmon.h>
-#  pragma comment(lib, "urlmon.lib")
-#endif
+// #if defined(ZIP_DELEGATE)
 #include <zip.h>
+// #endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -115,6 +101,7 @@ extern "C" {
 }
 #endif
 
+// #if defined(ZIP_DELEGATE)
 static Image *ReadORAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define MaxBufferExtent  8192
@@ -123,7 +110,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     imageDataBuffer[MaxBufferExtent];
 
   const char
-    *MERGED_IMAGE_PATH = "/mergedimage.png";
+    *MERGED_IMAGE_PATH = "mergedimage.png";
 
    FILE
     *file;
@@ -151,7 +138,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   zipArchive = zip_open(image_info->filename, ZIP_RDONLY, &zipError);
   if (zipArchive == NULL) {
     ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
-      read_info->filename);
+      image_info->filename);
     read_info=DestroyImageInfo(read_info);
     image=DestroyImage(image);
     return((Image *) NULL);
@@ -160,17 +147,18 @@ static Image *ReadORAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   mergedImageFile = zip_fopen(zipArchive, MERGED_IMAGE_PATH, ZIP_FL_UNCHANGED);
   if (mergedImageFile == NULL) {
     ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
-      read_info->filename);
+      image_info->filename);
     read_info=DestroyImageInfo(read_info);
     image=DestroyImage(image);
     zip_discard(zipArchive);
     return((Image *) NULL);
   }
 
-  (void) FormatLocaleString(read_info->filename,MagickPathExtent,
-            "%s.png",read_info->unique);
-  *read_info->magick='\0';
-  unique_file = AcquireUniqueFileResource(read_info->filename);
+  (void) CopyMagickString(read_info->magick, "PNG", MagickPathExtent);
+  unique_file = AcquireUniqueFileResource(read_info->unique);
+  (void) CopyMagickString(read_info->filename, read_info->unique,
+		  MagickPathExtent);
+
   if (unique_file != -1)
     file=fdopen(unique_file,"wb");
   if ((unique_file == -1) || (file == (FILE *) NULL))
@@ -253,6 +241,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   read_info=DestroyImageInfo(read_info);
   return image;
 }
+// #endif // #if defined(ZIP_DELEGATE)
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -279,16 +268,22 @@ static Image *ReadORAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 ModuleExport size_t RegisterORAImage(void)
 {
+#define ORADescription "OpenRaster Format"
+#define ORAStringify(macro_or_string)  ORAStringifyArg(macro_or_string)
+#define ORAStringifyArg(contents)  #contents
   MagickInfo
     *entry;
 
   entry=AcquireMagickInfo("ORA","ORA","OpenRaster format");
+  // #if defined(ZIP_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadORAImage;
-  entry->format_type=ImplicitFormatType;
+  // #endif
+  entry->format_type=ExplicitFormatType;
   (void) RegisterMagickInfo(entry);
 
   return(MagickImageCoderSignature);
 }
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

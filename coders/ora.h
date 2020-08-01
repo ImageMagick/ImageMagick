@@ -13,11 +13,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
-
 #include "coders/coders-private.h"
-
-#define MagickORAHeaders \
-  MagickCoderHeader("ORA", 0, "\211PNG\r\n\032\n")
+#define MagickORAHeaders
 
 #define MagickORAAliases
 
