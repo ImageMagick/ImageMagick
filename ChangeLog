@@ -1,3 +1,10 @@
+2020-08-02  7.0.10-26  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-26 GIT revision 17...
+
+2020-07-02  7.0.10-26  <quetzlzacatenango@image...>
+  * Add animated webp blend method support (reference
+    https://github.com/ImageMagick/ImageMagick/pull/2351).
+
 2020-07-31  7.0.10-25  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-25 GIT revision 17497:0e12ff687:20200731
 
