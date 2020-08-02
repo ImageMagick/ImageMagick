@@ -1639,9 +1639,9 @@ MagickExport void RemoveDuplicateLayers(Image **images,ExceptionInfo *exception)
           time;
 
         time=(size_t) (1000.0*image->delay*
-          PerceptibleReciprocal((double) image->ticks_per_second);
+          PerceptibleReciprocal((double) image->ticks_per_second));
         time+=(size_t) (1000.0*next->delay*
-          PerceptibleReciprocal((double) next->ticks_per_second);
+          PerceptibleReciprocal((double) next->ticks_per_second));
         next->ticks_per_second=100L;
         next->delay=time*image->ticks_per_second/1000;
         next->iterations=image->iterations;
