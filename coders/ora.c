@@ -3,13 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                         OOOOOOO RRRRRR     A                                %
-%                         O     O R     R   A A                               %
-%                         O     O R     R  A   A                              %
-%                         O     O RRRRRR  A     A                             %
-%                         O     O R   R   AAAAAAA                             %
-%                         O     O R    R  A     A                             %
-%                         OOOOOOO R     R A     A                             %
+%                              OOO   RRRR    AAA                              %
+%                             O   O  R   R  A   A                             %
+%                             O   O  RRRR   AAAAA                             %
+%                             O   O  R  R   A   A                             %
+%                              OOO   R   R  A   A                             %
 %                                                                             %
 %                                                                             %
 %                       Read OpenRaster (.ora) files                          %
@@ -78,9 +76,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ReadORAImage reads an ORA file in the most basic way possible: by
-%  reading it as a ZIP File and extracting the mergedimage.png file
-%  from it (see https://www.freedesktop.org/wiki/Specifications/OpenRaster/Draft/FileLayout/)
-%  it, which is then passed to ReadPNGImage.
+%  reading it as a ZIP File and extracting the mergedimage.png file from it,
+%  which is then passed to ReadPNGImage.
+%
+%  https://www.freedesktop.org/wiki/Specifications/OpenRaster/Draft/FileLayout/
 %
 %  The format of the ReadORAImage method is:
 %
@@ -264,7 +263,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 }
 #endif /* #if defined(MAGICKCORE_LIBZIP_DELEGATE) */
 #endif /* defined(MAGICKCORE_PNG_DELEGATE) */
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -305,8 +304,7 @@ ModuleExport size_t RegisterORAImage(void)
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
