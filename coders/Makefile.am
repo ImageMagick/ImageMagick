@@ -230,6 +230,8 @@ MAGICKCORE_CODER_SRCS = \
 	coders/mvg.h \
 	coders/null.c \
 	coders/null.h \
+	coders/ora.c \
+	coders/ora.h \
 	coders/otb.c \
 	coders/otb.h \
 	coders/palm.c \
@@ -445,6 +447,7 @@ CODERS_NOINST_HDRS = \
 	coders/mtv.h \
 	coders/mvg.h \
 	coders/null.h \
+	coders/ora.h \
 	coders/otb.h \
 	coders/palm.h \
 	coders/pango.h \
@@ -568,6 +571,7 @@ coders_LTLIBRARIES = \
 	coders/mtv.la \
 	coders/mvg.la \
 	coders/null.la \
+	coders/ora.la \
 	coders/otb.la \
 	coders/palm.la \
 	coders/pango.la \
@@ -1052,6 +1056,12 @@ coders_null_la_SOURCES     = coders/null.c
 coders_null_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
 coders_null_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 coders_null_la_LIBADD      = $(MAGICKCORE_LIBS)
+
+# ORA coder module
+coders_ora_la_SOURCES     = coders/ora.c
+coders_ora_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
+coders_ora_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+coders_ora_la_LIBADD      = $(MAGICKCORE_LIBS) $(LIBZIP_LIBS)
 
 # OTB coder module
 coders_otb_la_SOURCES      = coders/otb.c

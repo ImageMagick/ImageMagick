@@ -113,6 +113,7 @@
 #include "coders/mtv.h"
 #include "coders/mvg.h"
 #include "coders/null.h"
+#include "coders/ora.h"
 #include "coders/otb.h"
 #include "coders/palm.h"
 #include "coders/pango.h"

@@ -557,43 +557,44 @@ am__MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURC
 	coders/mono.h coders/mpc.c coders/mpc.h coders/mpeg.c \
 	coders/mpeg.h coders/mpr.c coders/mpr.h coders/msl.c \
 	coders/msl.h coders/mtv.c coders/mtv.h coders/mvg.c \
-	coders/mvg.h coders/null.c coders/null.h coders/otb.c \
-	coders/otb.h coders/palm.c coders/palm.h coders/pango.c \
-	coders/pango.h coders/pattern.c coders/pattern.h coders/pcd.c \
-	coders/pcd.h coders/pcl.c coders/pcl.h coders/pcx.c \
-	coders/pcx.h coders/pdb.c coders/pdb.h coders/pdf.c \
-	coders/pdf.h coders/pes.c coders/pes.h coders/pgx.c \
-	coders/pgx.h coders/pict.c coders/pict.h coders/pix.c \
-	coders/pix.h coders/plasma.c coders/plasma.h coders/png.h \
-	coders/pnm.c coders/pnm.h coders/ps2.c coders/ps2.h \
-	coders/ps3.c coders/ps3.h coders/ps.c coders/psd.c \
-	coders/psd.h coders/psd-private.h coders/ps.h coders/pwp.c \
-	coders/pwp.h coders/raw.c coders/raw.h coders/rgb.c \
-	coders/rgb.h coders/rgf.c coders/rgf.h coders/rla.c \
-	coders/rla.h coders/rle.c coders/rle.h coders/scr.c \
-	coders/screenshot.c coders/screenshot.h coders/scr.h \
-	coders/sct.c coders/sct.h coders/sfw.c coders/sfw.h \
-	coders/sgi.c coders/sgi.h coders/sixel.c coders/sixel.h \
-	coders/stegano.c coders/stegano.h coders/sun.c coders/sun.h \
-	coders/svg.c coders/svg.h coders/tga.c coders/tga.h \
-	coders/thumbnail.c coders/thumbnail.h coders/tiff.h \
-	coders/tile.c coders/tile.h coders/tim2.c coders/tim2.h \
-	coders/tim.c coders/tim.h coders/ttf.c coders/ttf.h \
-	coders/txt.c coders/txt.h coders/uil.c coders/uil.h \
-	coders/url.c coders/url.h coders/uyvy.c coders/uyvy.h \
-	coders/vicar.c coders/vicar.h coders/vid.c coders/vid.h \
-	coders/viff.c coders/viff.h coders/vips.c coders/vips.h \
-	coders/wbmp.c coders/wbmp.h coders/webp.h coders/wmf.h \
-	coders/wpg.c coders/wpg.h coders/xbm.c coders/xbm.h \
-	coders/xc.c coders/xcf.c coders/xcf.h coders/xc.h coders/x.h \
-	coders/xpm.c coders/xpm.h coders/xps.c coders/xps.h \
-	coders/xtrn.c coders/xtrn.h coders/xwd.h coders/ycbcr.c \
-	coders/ycbcr.h coders/yuv.c coders/yuv.h coders/dps.c \
-	coders/djvu.c coders/exr.c coders/flif.c coders/fpx.c \
-	coders/clipboard.c coders/emf.c coders/heic.c coders/jbig.c \
-	coders/jpeg.c coders/jp2.c coders/jxl.c coders/png.c \
-	coders/ept.c coders/tiff.c coders/webp.c coders/wmf.c \
-	coders/x.c coders/xwd.c filters/analyze.c
+	coders/mvg.h coders/null.c coders/null.h coders/ora.c \
+	coders/ora.h coders/otb.c coders/otb.h coders/palm.c \
+	coders/palm.h coders/pango.c coders/pango.h coders/pattern.c \
+	coders/pattern.h coders/pcd.c coders/pcd.h coders/pcl.c \
+	coders/pcl.h coders/pcx.c coders/pcx.h coders/pdb.c \
+	coders/pdb.h coders/pdf.c coders/pdf.h coders/pes.c \
+	coders/pes.h coders/pgx.c coders/pgx.h coders/pict.c \
+	coders/pict.h coders/pix.c coders/pix.h coders/plasma.c \
+	coders/plasma.h coders/png.h coders/pnm.c coders/pnm.h \
+	coders/ps2.c coders/ps2.h coders/ps3.c coders/ps3.h \
+	coders/ps.c coders/psd.c coders/psd.h coders/psd-private.h \
+	coders/ps.h coders/pwp.c coders/pwp.h coders/raw.c \
+	coders/raw.h coders/rgb.c coders/rgb.h coders/rgf.c \
+	coders/rgf.h coders/rla.c coders/rla.h coders/rle.c \
+	coders/rle.h coders/scr.c coders/screenshot.c \
+	coders/screenshot.h coders/scr.h coders/sct.c coders/sct.h \
+	coders/sfw.c coders/sfw.h coders/sgi.c coders/sgi.h \
+	coders/sixel.c coders/sixel.h coders/stegano.c \
+	coders/stegano.h coders/sun.c coders/sun.h coders/svg.c \
+	coders/svg.h coders/tga.c coders/tga.h coders/thumbnail.c \
+	coders/thumbnail.h coders/tiff.h coders/tile.c coders/tile.h \
+	coders/tim2.c coders/tim2.h coders/tim.c coders/tim.h \
+	coders/ttf.c coders/ttf.h coders/txt.c coders/txt.h \
+	coders/uil.c coders/uil.h coders/url.c coders/url.h \
+	coders/uyvy.c coders/uyvy.h coders/vicar.c coders/vicar.h \
+	coders/vid.c coders/vid.h coders/viff.c coders/viff.h \
+	coders/vips.c coders/vips.h coders/wbmp.c coders/wbmp.h \
+	coders/webp.h coders/wmf.h coders/wpg.c coders/wpg.h \
+	coders/xbm.c coders/xbm.h coders/xc.c coders/xcf.c \
+	coders/xcf.h coders/xc.h coders/x.h coders/xpm.c coders/xpm.h \
+	coders/xps.c coders/xps.h coders/xtrn.c coders/xtrn.h \
+	coders/xwd.h coders/ycbcr.c coders/ycbcr.h coders/yuv.c \
+	coders/yuv.h coders/dps.c coders/djvu.c coders/exr.c \
+	coders/flif.c coders/fpx.c coders/clipboard.c coders/emf.c \
+	coders/heic.c coders/jbig.c coders/jpeg.c coders/jp2.c \
+	coders/jxl.c coders/png.c coders/ept.c coders/tiff.c \
+	coders/webp.c coders/wmf.c coders/x.c coders/xwd.c \
+	filters/analyze.c
 am__objects_1 = MagickCore/libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-accelerate.lo \
 	MagickCore/libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-animate.lo \
 	MagickCore/libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-annotate.lo \
@@ -763,6 +764,7 @@ am__objects_19 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-mtv.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-mvg.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-null.lo \
+	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ora.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-otb.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-palm.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-pango.lo \
@@ -1419,6 +1421,13 @@ coders_null_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_null_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_null_la_rpath = -rpath $(codersdir)
+coders_ora_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+am_coders_ora_la_OBJECTS = coders/ora_la-ora.lo
+coders_ora_la_OBJECTS = $(am_coders_ora_la_OBJECTS)
+coders_ora_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(coders_ora_la_LDFLAGS) $(LDFLAGS) -o $@
+@WITH_MODULES_TRUE@am_coders_ora_la_rpath = -rpath $(codersdir)
 coders_otb_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
 am_coders_otb_la_OBJECTS = coders/otb_la-otb.lo
 coders_otb_la_OBJECTS = $(am_coders_otb_la_OBJECTS)
@@ -2300,6 +2309,7 @@ am__depfiles_remade = Magick++/demo/$(DEPDIR)/analyze-analyze.Po \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-mtv.Plo \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-mvg.Plo \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-null.Plo \
+	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ora.Plo \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-otb.Plo \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-palm.Plo \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-pango.Plo \
@@ -2432,6 +2442,7 @@ am__depfiles_remade = Magick++/demo/$(DEPDIR)/analyze-analyze.Po \
 	coders/$(DEPDIR)/mtv_la-mtv.Plo \
 	coders/$(DEPDIR)/mvg_la-mvg.Plo \
 	coders/$(DEPDIR)/null_la-null.Plo \
+	coders/$(DEPDIR)/ora_la-ora.Plo \
 	coders/$(DEPDIR)/otb_la-otb.Plo \
 	coders/$(DEPDIR)/palm_la-palm.Plo \
 	coders/$(DEPDIR)/pango_la-pango.Plo \
@@ -2574,39 +2585,39 @@ SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_
 	$(coders_mpeg_la_SOURCES) $(coders_mpr_la_SOURCES) \
 	$(coders_msl_la_SOURCES) $(coders_mtv_la_SOURCES) \
 	$(coders_mvg_la_SOURCES) $(coders_null_la_SOURCES) \
-	$(coders_otb_la_SOURCES) $(coders_palm_la_SOURCES) \
-	$(coders_pango_la_SOURCES) $(coders_pattern_la_SOURCES) \
-	$(coders_pcd_la_SOURCES) $(coders_pcl_la_SOURCES) \
-	$(coders_pcx_la_SOURCES) $(coders_pdb_la_SOURCES) \
-	$(coders_pdf_la_SOURCES) $(coders_pes_la_SOURCES) \
-	$(coders_pgx_la_SOURCES) $(coders_pict_la_SOURCES) \
-	$(coders_pix_la_SOURCES) $(coders_plasma_la_SOURCES) \
-	$(coders_png_la_SOURCES) $(coders_pnm_la_SOURCES) \
-	$(coders_ps_la_SOURCES) $(coders_ps2_la_SOURCES) \
-	$(coders_ps3_la_SOURCES) $(coders_psd_la_SOURCES) \
-	$(coders_pwp_la_SOURCES) $(coders_raw_la_SOURCES) \
-	$(coders_rgb_la_SOURCES) $(coders_rgf_la_SOURCES) \
-	$(coders_rla_la_SOURCES) $(coders_rle_la_SOURCES) \
-	$(coders_scr_la_SOURCES) $(coders_sct_la_SOURCES) \
-	$(coders_sfw_la_SOURCES) $(coders_sgi_la_SOURCES) \
-	$(coders_sixel_la_SOURCES) $(coders_stegano_la_SOURCES) \
-	$(coders_sun_la_SOURCES) $(coders_svg_la_SOURCES) \
-	$(coders_tga_la_SOURCES) $(coders_thumbnail_la_SOURCES) \
-	$(coders_tiff_la_SOURCES) $(coders_tile_la_SOURCES) \
-	$(coders_tim_la_SOURCES) $(coders_tim2_la_SOURCES) \
-	$(coders_ttf_la_SOURCES) $(coders_txt_la_SOURCES) \
-	$(coders_uil_la_SOURCES) $(coders_url_la_SOURCES) \
-	$(coders_uyvy_la_SOURCES) $(coders_vicar_la_SOURCES) \
-	$(coders_vid_la_SOURCES) $(coders_viff_la_SOURCES) \
-	$(coders_vips_la_SOURCES) $(coders_wbmp_la_SOURCES) \
-	$(coders_webp_la_SOURCES) $(coders_wmf_la_SOURCES) \
-	$(coders_wpg_la_SOURCES) $(coders_x_la_SOURCES) \
-	$(coders_xbm_la_SOURCES) $(coders_xc_la_SOURCES) \
-	$(coders_xcf_la_SOURCES) $(coders_xpm_la_SOURCES) \
-	$(coders_xps_la_SOURCES) $(coders_xtrn_la_SOURCES) \
-	$(coders_xwd_la_SOURCES) $(coders_ycbcr_la_SOURCES) \
-	$(coders_yuv_la_SOURCES) $(filters_analyze_la_SOURCES) \
-	$(Magick___demo_analyze_SOURCES) \
+	$(coders_ora_la_SOURCES) $(coders_otb_la_SOURCES) \
+	$(coders_palm_la_SOURCES) $(coders_pango_la_SOURCES) \
+	$(coders_pattern_la_SOURCES) $(coders_pcd_la_SOURCES) \
+	$(coders_pcl_la_SOURCES) $(coders_pcx_la_SOURCES) \
+	$(coders_pdb_la_SOURCES) $(coders_pdf_la_SOURCES) \
+	$(coders_pes_la_SOURCES) $(coders_pgx_la_SOURCES) \
+	$(coders_pict_la_SOURCES) $(coders_pix_la_SOURCES) \
+	$(coders_plasma_la_SOURCES) $(coders_png_la_SOURCES) \
+	$(coders_pnm_la_SOURCES) $(coders_ps_la_SOURCES) \
+	$(coders_ps2_la_SOURCES) $(coders_ps3_la_SOURCES) \
+	$(coders_psd_la_SOURCES) $(coders_pwp_la_SOURCES) \
+	$(coders_raw_la_SOURCES) $(coders_rgb_la_SOURCES) \
+	$(coders_rgf_la_SOURCES) $(coders_rla_la_SOURCES) \
+	$(coders_rle_la_SOURCES) $(coders_scr_la_SOURCES) \
+	$(coders_sct_la_SOURCES) $(coders_sfw_la_SOURCES) \
+	$(coders_sgi_la_SOURCES) $(coders_sixel_la_SOURCES) \
+	$(coders_stegano_la_SOURCES) $(coders_sun_la_SOURCES) \
+	$(coders_svg_la_SOURCES) $(coders_tga_la_SOURCES) \
+	$(coders_thumbnail_la_SOURCES) $(coders_tiff_la_SOURCES) \
+	$(coders_tile_la_SOURCES) $(coders_tim_la_SOURCES) \
+	$(coders_tim2_la_SOURCES) $(coders_ttf_la_SOURCES) \
+	$(coders_txt_la_SOURCES) $(coders_uil_la_SOURCES) \
+	$(coders_url_la_SOURCES) $(coders_uyvy_la_SOURCES) \
+	$(coders_vicar_la_SOURCES) $(coders_vid_la_SOURCES) \
+	$(coders_viff_la_SOURCES) $(coders_vips_la_SOURCES) \
+	$(coders_wbmp_la_SOURCES) $(coders_webp_la_SOURCES) \
+	$(coders_wmf_la_SOURCES) $(coders_wpg_la_SOURCES) \
+	$(coders_x_la_SOURCES) $(coders_xbm_la_SOURCES) \
+	$(coders_xc_la_SOURCES) $(coders_xcf_la_SOURCES) \
+	$(coders_xpm_la_SOURCES) $(coders_xps_la_SOURCES) \
+	$(coders_xtrn_la_SOURCES) $(coders_xwd_la_SOURCES) \
+	$(coders_ycbcr_la_SOURCES) $(coders_yuv_la_SOURCES) \
+	$(filters_analyze_la_SOURCES) $(Magick___demo_analyze_SOURCES) \
 	$(Magick___demo_button_SOURCES) $(Magick___demo_demo_SOURCES) \
 	$(Magick___demo_detrans_SOURCES) $(Magick___demo_flip_SOURCES) \
 	$(Magick___demo_gravity_SOURCES) \
@@ -2664,39 +2675,39 @@ DIST_SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUF
 	$(coders_mpeg_la_SOURCES) $(coders_mpr_la_SOURCES) \
 	$(coders_msl_la_SOURCES) $(coders_mtv_la_SOURCES) \
 	$(coders_mvg_la_SOURCES) $(coders_null_la_SOURCES) \
-	$(coders_otb_la_SOURCES) $(coders_palm_la_SOURCES) \
-	$(coders_pango_la_SOURCES) $(coders_pattern_la_SOURCES) \
-	$(coders_pcd_la_SOURCES) $(coders_pcl_la_SOURCES) \
-	$(coders_pcx_la_SOURCES) $(coders_pdb_la_SOURCES) \
-	$(coders_pdf_la_SOURCES) $(coders_pes_la_SOURCES) \
-	$(coders_pgx_la_SOURCES) $(coders_pict_la_SOURCES) \
-	$(coders_pix_la_SOURCES) $(coders_plasma_la_SOURCES) \
-	$(coders_png_la_SOURCES) $(coders_pnm_la_SOURCES) \
-	$(coders_ps_la_SOURCES) $(coders_ps2_la_SOURCES) \
-	$(coders_ps3_la_SOURCES) $(coders_psd_la_SOURCES) \
-	$(coders_pwp_la_SOURCES) $(coders_raw_la_SOURCES) \
-	$(coders_rgb_la_SOURCES) $(coders_rgf_la_SOURCES) \
-	$(coders_rla_la_SOURCES) $(coders_rle_la_SOURCES) \
-	$(coders_scr_la_SOURCES) $(coders_sct_la_SOURCES) \
-	$(coders_sfw_la_SOURCES) $(coders_sgi_la_SOURCES) \
-	$(coders_sixel_la_SOURCES) $(coders_stegano_la_SOURCES) \
-	$(coders_sun_la_SOURCES) $(coders_svg_la_SOURCES) \
-	$(coders_tga_la_SOURCES) $(coders_thumbnail_la_SOURCES) \
-	$(coders_tiff_la_SOURCES) $(coders_tile_la_SOURCES) \
-	$(coders_tim_la_SOURCES) $(coders_tim2_la_SOURCES) \
-	$(coders_ttf_la_SOURCES) $(coders_txt_la_SOURCES) \
-	$(coders_uil_la_SOURCES) $(coders_url_la_SOURCES) \
-	$(coders_uyvy_la_SOURCES) $(coders_vicar_la_SOURCES) \
-	$(coders_vid_la_SOURCES) $(coders_viff_la_SOURCES) \
-	$(coders_vips_la_SOURCES) $(coders_wbmp_la_SOURCES) \
-	$(coders_webp_la_SOURCES) $(coders_wmf_la_SOURCES) \
-	$(coders_wpg_la_SOURCES) $(coders_x_la_SOURCES) \
-	$(coders_xbm_la_SOURCES) $(coders_xc_la_SOURCES) \
-	$(coders_xcf_la_SOURCES) $(coders_xpm_la_SOURCES) \
-	$(coders_xps_la_SOURCES) $(coders_xtrn_la_SOURCES) \
-	$(coders_xwd_la_SOURCES) $(coders_ycbcr_la_SOURCES) \
-	$(coders_yuv_la_SOURCES) $(filters_analyze_la_SOURCES) \
-	$(Magick___demo_analyze_SOURCES) \
+	$(coders_ora_la_SOURCES) $(coders_otb_la_SOURCES) \
+	$(coders_palm_la_SOURCES) $(coders_pango_la_SOURCES) \
+	$(coders_pattern_la_SOURCES) $(coders_pcd_la_SOURCES) \
+	$(coders_pcl_la_SOURCES) $(coders_pcx_la_SOURCES) \
+	$(coders_pdb_la_SOURCES) $(coders_pdf_la_SOURCES) \
+	$(coders_pes_la_SOURCES) $(coders_pgx_la_SOURCES) \
+	$(coders_pict_la_SOURCES) $(coders_pix_la_SOURCES) \
+	$(coders_plasma_la_SOURCES) $(coders_png_la_SOURCES) \
+	$(coders_pnm_la_SOURCES) $(coders_ps_la_SOURCES) \
+	$(coders_ps2_la_SOURCES) $(coders_ps3_la_SOURCES) \
+	$(coders_psd_la_SOURCES) $(coders_pwp_la_SOURCES) \
+	$(coders_raw_la_SOURCES) $(coders_rgb_la_SOURCES) \
+	$(coders_rgf_la_SOURCES) $(coders_rla_la_SOURCES) \
+	$(coders_rle_la_SOURCES) $(coders_scr_la_SOURCES) \
+	$(coders_sct_la_SOURCES) $(coders_sfw_la_SOURCES) \
+	$(coders_sgi_la_SOURCES) $(coders_sixel_la_SOURCES) \
+	$(coders_stegano_la_SOURCES) $(coders_sun_la_SOURCES) \
+	$(coders_svg_la_SOURCES) $(coders_tga_la_SOURCES) \
+	$(coders_thumbnail_la_SOURCES) $(coders_tiff_la_SOURCES) \
+	$(coders_tile_la_SOURCES) $(coders_tim_la_SOURCES) \
+	$(coders_tim2_la_SOURCES) $(coders_ttf_la_SOURCES) \
+	$(coders_txt_la_SOURCES) $(coders_uil_la_SOURCES) \
+	$(coders_url_la_SOURCES) $(coders_uyvy_la_SOURCES) \
+	$(coders_vicar_la_SOURCES) $(coders_vid_la_SOURCES) \
+	$(coders_viff_la_SOURCES) $(coders_vips_la_SOURCES) \
+	$(coders_wbmp_la_SOURCES) $(coders_webp_la_SOURCES) \
+	$(coders_wmf_la_SOURCES) $(coders_wpg_la_SOURCES) \
+	$(coders_x_la_SOURCES) $(coders_xbm_la_SOURCES) \
+	$(coders_xc_la_SOURCES) $(coders_xcf_la_SOURCES) \
+	$(coders_xpm_la_SOURCES) $(coders_xps_la_SOURCES) \
+	$(coders_xtrn_la_SOURCES) $(coders_xwd_la_SOURCES) \
+	$(coders_ycbcr_la_SOURCES) $(coders_yuv_la_SOURCES) \
+	$(filters_analyze_la_SOURCES) $(Magick___demo_analyze_SOURCES) \
 	$(Magick___demo_button_SOURCES) $(Magick___demo_demo_SOURCES) \
 	$(Magick___demo_detrans_SOURCES) $(Magick___demo_flip_SOURCES) \
 	$(Magick___demo_gravity_SOURCES) \
@@ -3155,6 +3166,8 @@ LIBTOOL = @LIBTOOL@
 
 # Automagically reconfigure libtool
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
+LIBZIP_CFLAGS = @LIBZIP_CFLAGS@
+LIBZIP_LIBS = @LIBZIP_LIBS@
 LIBZSTD_CFLAGS = @LIBZSTD_CFLAGS@
 LIBZSTD_LIBS = @LIBZSTD_LIBS@
 LIB_BIN_BASEDIRNAME = @LIB_BIN_BASEDIRNAME@
@@ -3765,6 +3778,8 @@ MAGICKCORE_CODER_SRCS = \
 	coders/mvg.h \
 	coders/null.c \
 	coders/null.h \
+	coders/ora.c \
+	coders/ora.h \
 	coders/otb.c \
 	coders/otb.h \
 	coders/palm.c \
@@ -3980,6 +3995,7 @@ CODERS_NOINST_HDRS = \
 	coders/mtv.h \
 	coders/mvg.h \
 	coders/null.h \
+	coders/ora.h \
 	coders/otb.h \
 	coders/palm.h \
 	coders/pango.h \
@@ -4103,6 +4119,7 @@ CODERS_NOINST_HDRS = \
 @WITH_MODULES_TRUE@	coders/mtv.la \
 @WITH_MODULES_TRUE@	coders/mvg.la \
 @WITH_MODULES_TRUE@	coders/null.la \
+@WITH_MODULES_TRUE@	coders/ora.la \
 @WITH_MODULES_TRUE@	coders/otb.la \
 @WITH_MODULES_TRUE@	coders/palm.la \
 @WITH_MODULES_TRUE@	coders/pango.la \
@@ -4585,6 +4602,12 @@ coders_null_la_SOURCES = coders/null.c
 coders_null_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_null_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_null_la_LIBADD = $(MAGICKCORE_LIBS)
+
+# ORA coder module
+coders_ora_la_SOURCES = coders/ora.c
+coders_ora_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
+coders_ora_la_LDFLAGS = $(MODULECOMMONFLAGS)
+coders_ora_la_LIBADD = $(MAGICKCORE_LIBS) $(LIBZIP_LIBS)
 
 # OTB coder module
 coders_otb_la_SOURCES = coders/otb.c
@@ -6796,6 +6819,8 @@ coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-mv
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-null.lo:  \
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
+coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ora.lo:  \
+	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-otb.lo:  \
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-palm.lo:  \
@@ -7382,6 +7407,11 @@ coders/null_la-null.lo: coders/$(am__dirstamp) \
 
 coders/null.la: $(coders_null_la_OBJECTS) $(coders_null_la_DEPENDENCIES) $(EXTRA_coders_null_la_DEPENDENCIES) coders/$(am__dirstamp)
 	$(AM_V_CCLD)$(coders_null_la_LINK) $(am_coders_null_la_rpath) $(coders_null_la_OBJECTS) $(coders_null_la_LIBADD) $(LIBS)
+coders/ora_la-ora.lo: coders/$(am__dirstamp) \
+	coders/$(DEPDIR)/$(am__dirstamp)
+
+coders/ora.la: $(coders_ora_la_OBJECTS) $(coders_ora_la_DEPENDENCIES) $(EXTRA_coders_ora_la_DEPENDENCIES) coders/$(am__dirstamp)
+	$(AM_V_CCLD)$(coders_ora_la_LINK) $(am_coders_ora_la_rpath) $(coders_ora_la_OBJECTS) $(coders_ora_la_LIBADD) $(LIBS)
 coders/otb_la-otb.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 
@@ -8182,6 +8212,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-mtv.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-mvg.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-null.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ora.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-otb.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-palm.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-pango.Plo@am__quote@ # am--include-marker
@@ -8314,6 +8345,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/mtv_la-mtv.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/mvg_la-mvg.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/null_la-null.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/ora_la-ora.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/otb_la-otb.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/palm_la-palm.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/pango_la-pango.Plo@am__quote@ # am--include-marker
@@ -9457,6 +9489,13 @@ coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-nu
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/null.c' object='coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-null.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-null.lo `test -f 'coders/null.c' || echo '$(srcdir)/'`coders/null.c
+
+coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ora.lo: coders/ora.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ora.lo -MD -MP -MF coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ora.Tpo -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ora.lo `test -f 'coders/ora.c' || echo '$(srcdir)/'`coders/ora.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ora.Tpo coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ora.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/ora.c' object='coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ora.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ora.lo `test -f 'coders/ora.c' || echo '$(srcdir)/'`coders/ora.c
 
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-otb.lo: coders/otb.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-otb.lo -MD -MP -MF coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-otb.Tpo -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-otb.lo `test -f 'coders/otb.c' || echo '$(srcdir)/'`coders/otb.c
@@ -10647,6 +10686,13 @@ coders/null_la-null.lo: coders/null.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/null.c' object='coders/null_la-null.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_null_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/null_la-null.lo `test -f 'coders/null.c' || echo '$(srcdir)/'`coders/null.c
+
+coders/ora_la-ora.lo: coders/ora.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_ora_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/ora_la-ora.lo -MD -MP -MF coders/$(DEPDIR)/ora_la-ora.Tpo -c -o coders/ora_la-ora.lo `test -f 'coders/ora.c' || echo '$(srcdir)/'`coders/ora.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) coders/$(DEPDIR)/ora_la-ora.Tpo coders/$(DEPDIR)/ora_la-ora.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/ora.c' object='coders/ora_la-ora.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_ora_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/ora_la-ora.lo `test -f 'coders/ora.c' || echo '$(srcdir)/'`coders/ora.c
 
 coders/otb_la-otb.lo: coders/otb.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_otb_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/otb_la-otb.lo -MD -MP -MF coders/$(DEPDIR)/otb_la-otb.Tpo -c -o coders/otb_la-otb.lo `test -f 'coders/otb.c' || echo '$(srcdir)/'`coders/otb.c
@@ -12601,6 +12647,7 @@ distclean: distclean-am
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-mtv.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-mvg.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-null.Plo
+	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ora.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-otb.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-palm.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-pango.Plo
@@ -12733,6 +12780,7 @@ distclean: distclean-am
 	-rm -f coders/$(DEPDIR)/mtv_la-mtv.Plo
 	-rm -f coders/$(DEPDIR)/mvg_la-mvg.Plo
 	-rm -f coders/$(DEPDIR)/null_la-null.Plo
+	-rm -f coders/$(DEPDIR)/ora_la-ora.Plo
 	-rm -f coders/$(DEPDIR)/otb_la-otb.Plo
 	-rm -f coders/$(DEPDIR)/palm_la-palm.Plo
 	-rm -f coders/$(DEPDIR)/pango_la-pango.Plo
@@ -13085,6 +13133,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-mtv.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-mvg.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-null.Plo
+	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ora.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-otb.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-palm.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-pango.Plo
@@ -13217,6 +13266,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f coders/$(DEPDIR)/mtv_la-mtv.Plo
 	-rm -f coders/$(DEPDIR)/mvg_la-mvg.Plo
 	-rm -f coders/$(DEPDIR)/null_la-null.Plo
+	-rm -f coders/$(DEPDIR)/ora_la-ora.Plo
 	-rm -f coders/$(DEPDIR)/otb_la-otb.Plo
 	-rm -f coders/$(DEPDIR)/palm_la-palm.Plo
 	-rm -f coders/$(DEPDIR)/pango_la-pango.Plo
