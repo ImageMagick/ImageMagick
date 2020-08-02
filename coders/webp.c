@@ -456,6 +456,10 @@ static int ReadAnimatedWEBPImage(const ImageInfo *image_info,Image *image,
         image->dispose=BackgroundDispose;
       else
         image->dispose=NoneDispose;
+      if (iter.blend_method == WEBP_MUX_BLEND)
+        image->alpha_coalesce = OverAlphaCoalesce;
+      else
+        image->alpha_coalesce = CopyAlphaCoalesce;
       image_count++;
     } while (WebPDemuxNextFrame(&iter));
     WebPDemuxReleaseIterator(&iter);

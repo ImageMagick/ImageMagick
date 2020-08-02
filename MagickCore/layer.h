@@ -35,6 +35,13 @@ typedef enum
 
 typedef enum
 {
+  UndefinedAlphaCoalesce = 0,
+  OverAlphaCoalesce = 1,
+  CopyAlphaCoalesce = 2,
+} AlphaCoalesceMethod;
+
+typedef enum
+{
   UndefinedLayer,
   CoalesceLayer,
   CompareAnyLayer,
