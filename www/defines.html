@@ -56,17 +56,20 @@
         <a class="nav-link" href="command-line-processing.html">Command-line</a>
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="resources.html">Resources</a>
-      </li>
-      <li class="nav-item ">
         <a class="nav-link" href="develop.html">Develop</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
       </li>
+      <li class="nav-item">
+          
+      </li>
+      <li class="nav-item">
+        <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
+      </li>
     </ul>
     </div>
-    <form class="form-inline my-2 my-lg-0" action="https://imagemagick.org/script/search.php">
+    <form class="form-inline my-2 my-md-0" action="https://imagemagick.org/script/search.php">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
     </form>
@@ -84,7 +87,7 @@
 
   </div>
 
-  <main class="container">
+  <main role="main" class="container">
     <div class="magick-template">
 <div class="magick-header">
 
@@ -139,7 +142,7 @@ use:</p>
 
   <tr>
     <td>colorspace:auto-grayscale=<var>on|off</var></td>
-    <td>prevent automatic conversion to grayscale inside coders that support
+    <td>Prevent automatic conversion to grayscale inside coders that support
     grayscale. This should be accompanied by -type truecolor. PNG and TIF do
     not need this define. With PNG, just use PNG24:image. With TIF, just use
     -type truecolor. JPG and PSD will need this define.</td>
@@ -147,22 +150,22 @@ use:</p>
 
    <tr>
     <td>compare:ssim-radius=<var>value</var></td>
-     <td>Sets the structural similarity index radius.</td>
+     <td>Set the structural similarity index radius.</td>
   </tr>
 
     <tr>
     <td>compare:ssim-sigma=<var>value</var></td>
-     <td>Sets the structural similarity index sigma.</td>
+     <td>Set the structural similarity index sigma.</td>
   </tr>
 
     <tr>
     <td>compare:ssim-k1=<var>value</var></td>
-     <td>Sets the structural similarity index k1 argument.</td>
+     <td>Set the structural similarity index k1 argument.</td>
   </tr>
 
     <tr>
     <td>compare:ssim-k2=<var>value</var></td>
-     <td>Sets the structural similarity index k2 argument.</td>
+     <td>Set the structural similarity index k2 argument.</td>
   </tr>
 
  <tr>
@@ -172,7 +175,7 @@ use:</p>
 
   <tr>
     <td>compose:args=<var>arguments</var></td>
-     <td>Sets certain compose argument values when using convert ... -compose ...
+     <td>Set certain compose argument values when using convert ... -compose ...
     -composite. See <a href="compose.html"
     >Image Composition</a>.</td>
   </tr>
@@ -185,7 +188,7 @@ use:</p>
 
   <tr>
     <td>compose:clamp=<var>on|off</var></td>
-    <td>Sets each pixel whose value is below zero to zero and any the pixel
+    <td>Set each pixel whose value is below zero to zero and any the pixel
     whose value is above the quantum range to the quantum range (e.g. 65535)
     otherwise the pixel value remains unchanged.  Define supported in
     ImageMagick 6.9.1-3 and above.</td>
@@ -206,13 +209,13 @@ use:</p>
 
   <tr>
     <td>connected-components:background-id=<var>object-id</var></td>
-    <td>Identifies which object is to be the background object.
+    <td>Identify which object is to be the background object.
     Supported in Imagemagick 7.0.9.21.</td>
   </tr>
 
   <tr>
     <td>connected-components:circularity-threshold=<var>value</var></td>
-    <td>Merges any region with circularity smaller than <var>value</var> 
+    <td>Merge any region with circularity smaller than <var>value</var> 
     into its surrounding region or largest neighbor. Circularity is 
     computed as 4*pi*area/perimeter^2.
     Supported in Imagemagick 7.0.9.24.</td>
@@ -220,7 +223,7 @@ use:</p>
 
   <tr>
     <td>connected-components:diameter-threshold=<var>value</var></td>
-    <td>Merges any region with diameter smaller than <var>value</var> 
+    <td>Merge any region with diameter smaller than <var>value</var> 
     into its surrounding region or largest neighbor. Diameter is 
     computed as sqrt(4*area/pi).
     Supported in Imagemagick 7.0.9.24.</td>
@@ -228,60 +231,51 @@ use:</p>
 
   <tr>
     <td>connected-components:eccentricity-threshold=<var>value</var></td>
-    <td>Merges any region with equivalent ellipse eccentricity smaller 
+    <td>Merge any region with equivalent ellipse eccentricity smaller 
     than <var>value</var> into its surrounding region or largest neighbor.
     Supported in Imagemagick 7.0.9.24.</td>
   </tr>
 
   <tr>
     <td>connected-components:exclude-header=<var>true</var></td>
-    <td>List the objects without the header. 
-    Supported in Imagemagick 7.0.9.21.</td>
+    <td>List the objects without the header.  Supported in Imagemagick 7.0.9.21.</td>
   </tr>
 
   <tr>
     <td>connected-components:keep=<var>list-of-ids</var></td>
-    <td>Comma and/or hyphenated list of id values to keep in the output.
-    Supported in Imagemagick 6.9.3-0.</td>
+    <td>Comma and/or hyphenated list of id values to keep in the output.  Supported in Imagemagick 6.9.3-0.</td>
   </tr>
 
    <tr>
     <td>connected-components:keep-colors=<var>red;green;blue</var></td>
-    <td>Keeps objects identified by their color in a semicolon separated list.
-    Supported in Imagemagick 6.9.3-0.</td>
+    <td>Keeps objects identified by their color in a semicolon separated list.  Supported in Imagemagick 6.9.3-0.</td>
   </tr>
 
    <tr>
     <td>connected-components:keep-top=<var>number-of-objects</var></td>
-    <td>Keeps only the top number of objects by area.
-    Supported in Imagemagick 7.0.9.21.</td>
+    <td>Keeps only the top number of objects by area.  Supported in Imagemagick 7.0.9.21.</td>
   </tr>
 
   <tr>
     <td>connected-components:major-axis-threshold=<var>value</var></td>
-    <td>Merges any region with equivalent ellipse major axis diameter smaller 
+    <td>Merge any region with equivalent ellipse major axis diameter smaller 
     than <var>value</var> into its surrounding region or largest neighbor.
     Supported in Imagemagick 7.0.9.24.</td>
   </tr>
 
  <tr>
     <td>connected-components:mean-color=<var>true</var></td>
-    <td>Changes the output image from id values to mean color values. Supported
-    in Imagemagick 6.9.2-8.</td>
+    <td>Change the output image from id values to mean color values. Supported in Imagemagick 6.9.2-8.</td>
   </tr>
 
   <tr>
     <td>connected-components:minor-axis-threshold=<var>value</var></td>
-    <td>Merges any region with equivalent ellipse minor axis diameter smaller 
-    than <var>value</var> into its surrounding region or largest neighbor.
-    Supported in Imagemagick 7.0.9.24.</td>
+    <td>Merge any region with equivalent ellipse minor axis diameter smaller than <var>value</var> into its surrounding region or largest neighbor.  Supported in Imagemagick 7.0.9.24.</td>
   </tr>
 
   <tr>
     <td>connected-components:perimeter-threshold=<var>value</var></td>
-    <td>Merges any region with perimeter smaller than <var>value</var> 
-    into its surrounding region or largest neighbor.
-    Supported in Imagemagick 7.0.9.24.</td>
+    <td>Merge any region with perimeter smaller than <var>value</var> into its surrounding region or largest neighbor.  Supported in Imagemagick 7.0.9.24.</td>
   </tr>
 
   <tr>
@@ -292,7 +286,7 @@ use:</p>
 
    <tr>
     <td>connected-components:remove-colors=<var>red;green;blue</var></td>
-    <td>Removes objects identified by their color in a semicolon separated list.
+    <td>Remove objects identified by their color in a semicolon separated list.
     Supported in Imagemagick 6.9.3-0.</td>
   </tr>
 
@@ -303,7 +297,7 @@ use:</p>
 
   <tr>
     <td>convolve:scale=<var>{kernel_scale}[!^] [,{origin_addition}] [%]</var></td>
-     <td>Defines the kernel scaling. The special flag ! automatically scales to
+     <td>Define the kernel scaling. The special flag ! automatically scales to
     full dynamic range. The ! flag can be used in combination with a factor or
     percent. The factor or percent is then applied after the automatic scaling.
     An example is 50%!. This produces a result 50% darker than full dynamic
@@ -323,23 +317,23 @@ use:</p>
 
   <tr>
     <td>delegate:bimodal=<var>true</var></td>
-     <td>Specifies direct conversion from Postscript to PDF.</td>
+     <td>Specify direct conversion from Postscript to PDF.</td>
   </tr>
 
   <tr>
     <td>distort:scale=<var>value</var></td>
-    <td>Sets the output scaling factor for use with <a href="command-line-options.html#distort"
+    <td>Set the output scaling factor for use with <a href="command-line-options.html#distort"
    >-distort</a>.</td>
   </tr>
 
   <tr>
     <td>distort:viewport=<var>WxH+X+Y</var></td>
-    <td>Sets the viewport for use with <a href="command-line-options.html#distort">-distort</a>.</td>
+    <td>Set the viewport for use with <a href="command-line-options.html#distort">-distort</a>.</td>
   </tr>
 
   <tr>
     <td>dither:diffusion-amount=<var>X%</var></td>
-    <td>Sets the amount of diffusion to use with Floyd-Steinberg diffusion</td>
+    <td>Set the amount of diffusion to use with Floyd-Steinberg diffusion</td>
   </tr>
 
   <tr>
@@ -350,7 +344,7 @@ use:</p>
 
   <tr>
     <td>filter:b=<var>value</var></td>
-     <td>Redefines the spline factor used for cubic filters such as Cubic, 
+     <td>Redefine the spline factor used for cubic filters such as Cubic, 
      Catrom, Mitchel, and Hermite, as well as the Parzen cubic windowing 
      function. If only one of the b or c values are defined, the other is 
      set so as to generate a 'Cubic-Keys' filter. The meaning of the b and c 
@@ -376,7 +370,7 @@ use:</p>
 
   <tr>
     <td>filter:kaiser-alpha=<var>value</var></td>
-     <td>Sets the Kaiser window alpha value. When it is multiplied by 'PI', 
+     <td>Set the Kaiser window alpha value. When it is multiplied by 'PI', 
      it is equivalent to "kaiser-beta" and will override that setting. 
      It only affects the Kaiser windowing function and does not affect 
      any other attributes.</td>
@@ -384,7 +378,7 @@ use:</p>
 
    <tr>
     <td>filter:kaiser-beta=<var>value</var></td>
-     <td>Sets the Kaiser window beta value. It only affects Kaiser windowing 
+     <td>Set the Kaiser window beta value. It only affects Kaiser windowing 
      function and does not affect any other attributes. Before ImageMagick 
      v6.7.6-10, this option was known as "filter:alpha" (an inheritance 
      from the very old "zoom" program). It was changed to bring the function 
@@ -394,7 +388,7 @@ use:</p>
 
  <tr>
     <td>filter:lobes=<var>count</var></td>
-     <td>Sets the number of lobes to use for the Sinc/Bessel filter. 
+     <td>Set the number of lobes to use for the Sinc/Bessel filter. 
      This is an alternate way of specifying the 'support' range of the filter, 
      that is designed to be more suited to windowed filters, especially when 
      used for image distorts.</td>
@@ -402,7 +396,7 @@ use:</p>
 
   <tr>
     <td>filter:sigma=<var>value</var></td>
-     <td>Sets the 'sigma' value used to define the Gaussian filter. 
+     <td>Set the 'sigma' value used to define the Gaussian filter. 
      The default sigma value is '0.5'. It only affects the Gaussian filter, 
      but does not shrink (but may enlarge) the filter's 'support'. 
      It can be used to generate very small blurs, but without the filter 
@@ -413,7 +407,7 @@ use:</p>
 
   <tr>
     <td>filter:support=<var>radius</var></td>
-     <td>Sets the filter support radius. It defines how large the filter 
+     <td>Set the filter support radius. It defines how large the filter 
      should be and thus directly defines how slow the filtered resampling 
      process is. All filters have a default 'preferred' support size. 
      Some filters like Lagrange and windowed filters adjust themselves 
@@ -424,7 +418,7 @@ use:</p>
 
   <tr>
     <td>filter:verbose=<var>true</var></td>
-     <td>This enables printing of information about the final internal 
+     <td>Enable printing of information about the final internal 
      filter selection to standard output. This includes a commented header 
      on the filter settings being used and data allowing the filter weights 
      to be easily graphed. Note however that some filters are internally 
@@ -446,7 +440,7 @@ use:</p>
   
   <tr>
     <td>filter:window-support=<var>radius</var></td>
-     <td>This define scales the windowing function to this size. This causes 
+     <td>Scale the windowing function to this size. This causes 
      the windowing (or self-windowing Lagrange filter) to act is if the 
      support window is larger than what is actually supplied to the calling 
      operator. The filter, however, is still clipped to the true support 
@@ -456,9 +450,14 @@ use:</p>
 
   <tr>
     <td>fourier:normalize=<var>inverse</var></td>
-    <td>Sets the location for the FFT/IFT normalization as use by
+    <td>Set the location for the FFT/IFT normalization as use by
     <a href="command-line-options.html#fft">+-fft</a> and <a href="command-line-options.html#ift">+-ift</a>. The default is
     <var>forward</var>.</td>
+  </tr>
+
+  <tr>
+    <td>frames:step</td>
+    <td>When selecting image <a href="command-line-processing.html">frames</a>, the default is to step one frame at a time through a list, e.g. [0-3], returns frames 0, 1, 2, and 3.  Set the step to 2 in this example and we instead get frames 0 and 2.</td>
   </tr>
 
   <tr>
@@ -473,12 +472,12 @@ use:</p>
 
   <tr>
     <td>hough-lines:accumulator=true</td>
-     <td>Returns the accumulator image in addition to the lines image.</td>
+     <td>Return the accumulator image in addition to the lines image.</td>
   </tr>
 
   <tr>
     <td>json:features</td>
-   <td>includes features in verbose information.</td>
+   <td>Include features in verbose information.</td>
   </tr>
 
   <tr>
@@ -493,12 +492,12 @@ use:</p>
 
   <tr>
     <td>json:moments</td>
-   <td>includes image moments in verbose information.</td>
+   <td>Include image moments in verbose information.</td>
   </tr>
 
    <tr>
     <td>kmeans:seed-colors=<var>color-list</var></td>
-     <td>Initializes the colors, where color-list is a semicolon delimited 
+     <td>Initialize the colors, where color-list is a semicolon delimited 
      list of seed colors (e.g. red;sRGB(19,167,254);#00ffff)</td>
   </tr>
 
@@ -510,20 +509,20 @@ use:</p>
 
    <tr>
     <td>magnify:method=<var>value</var></td>
-    <td>Specifies the method of pixel art magnification. The choices are: 
+    <td>Choose the method of pixel art magnification. The choices are: 
     eagle2X, eagle3X, eagle3XB, epb2X, fish2X, hq2X, scale2X (default), 
     scale3X, xbr2X</td>
   	</tr>
 
    <tr>
     <td>modulate:colorspace=<var>colorspace</var></td>
-    <td>Specified the colorspace to use with <a href="command-line-options.html#modulate">-modulate</a>. 
+    <td>Define the colorspace to use with <a href="command-line-options.html#modulate">-modulate</a>. 
     Any hue-based colorspace may be use. The default is HSL.</td>
   	</tr>
 
  <tr>
     <td>morphology:compose=<var>compose-method</var></td>
-     <td>Specifies how to merge results generated by multiple<a
+     <td>Specify how to merge results generated by multiple<a
     href="defines.html#morphology" >-morphology</a> kernel. The default is none. One
     typical value is 'lighten' as used, for example, with the sobel edge
     kernels. </td>
@@ -531,7 +530,7 @@ use:</p>
 
   <tr>
     <td>morphology:showKernel=<var>1</var></td>
-     <td>Outputs (to 'standard error') all the information about a generated <a
+     <td>Output (to 'standard error') all the information about a generated <a
     href="defines.html#morphology" >-morphology</a> kernel.</td>
   </tr>
 
@@ -544,7 +543,7 @@ use:</p>
 
   <tr>
     <td>phash:normalize=<var>true</var></td>
-    <td>Normalizes the phash metric by dividing by the number of channels
+    <td>Normalize the phash metric by dividing by the number of channels
     specified by <code>-define phash:colorspaces</code> when using compare
     -metric phash. (as of IM 7.0.3-8)</td>
   </tr>
@@ -558,7 +557,7 @@ use:</p>
 
   <tr>
     <td>precision:highres-transform=<var>true</var></td>
-     <td>Increases the profile transform precision. Note, there is a slight 
+     <td>Increase the profile transform precision. Note, there is a slight 
      performance penalty as the high-precision transform is floating point 
      rather than unsigned. It is important to note that results may depend 
      on whether or not the original image already has an included profile.</td>
@@ -605,14 +604,14 @@ use:</p>
 
   <tr>
     <td>registry:<var>attribute</var>=<var>value</var></td>
-     <td>Sets attributes of the image registry, for example, 
+     <td>Set attributes of the image registry, for example, 
      registry:temporary-path=/data/tmp.
     </td>
   </tr>
 
   <tr>
     <td>resample:verbose=<var>true</var></td>
-     <td>Outputs the cylindrical filter lookup table created by the EWA 
+     <td>Output the cylindrical filter lookup table created by the EWA 
      (Elliptical Weighted Average) resampling algorithm. Note this table 
      uses a squared radius lookup value. This is typically only used for 
      debugging EWA resampling.
@@ -627,7 +626,7 @@ use:</p>
 
    <tr>
     <td>shepards:power=<var>value</var></td>
-     <td>Sets the exponent in the Shepard's distortion. The default is 2.</td>
+     <td>Set the exponent in the Shepard's distortion. The default is 2.</td>
   </tr>
 
 <tr>
@@ -637,7 +636,7 @@ use:</p>
 
  <tr>
     <td>trim:percent-background=<var>X%</var></td>
-   <td>Sets the amount of background that is tolerated in an edge. It is 
+   <td>Set the amount of background that is tolerated in an edge. It is 
    specified as a percent. 0% means no background is tolerated. 
    50% means an edge can contain up to 50% pixels that are background per 
    the fuzz-factor.</td>
@@ -645,7 +644,7 @@ use:</p>
 
   <tr>
     <td>type:features=<var>string</var></td>
-    <td>Adds a font feature to be used by the RAQM delegate during complex 
+    <td>Add a font feature to be used by the RAQM delegate during complex 
     text layout. This is usually used to turn on optional font features that 
     are not enabled by default, but can be also used to turn off default font 
     features. Features include those to control kerning, ligature and Arabic.</td>
@@ -653,7 +652,7 @@ use:</p>
 
   <tr>
     <td>type:hinting=<var>false</var></td>
-    <td>Disables font hinting. Proper glyph rendering needs the scaled points 
+    <td>Disable font hinting. Proper glyph rendering needs the scaled points 
     to be aligned along the target device pixel grid, through an operation 
     often called hinting. One of its main purposes is to ensure that important 
     widths and heights are respected throughout the whole font. (For example, 
@@ -664,13 +663,18 @@ use:</p>
   </tr>
 
   <tr>
+    <td>white-balance:vibrance=<var>value{%}</var></td>
+    <td>Change in color vibrance of the a &amp; b channels.</td>
+  </tr>
+
+  <tr>
     <td>x:screen=<var>true</var></td>
-    <td>Obtains the image from the root window.</td>
+    <td>Obtain the image from the root window.</td>
   </tr>
 
   <tr>
     <td>x:silent=<var>true</var></td>
-    <td>Turns off the beep when importing an image.</td>
+    <td>Turn off the beep when importing an image.</td>
   </tr>
 
 
@@ -692,12 +696,12 @@ use:</p>
 
   <tr>
     <td>bmp3:alpha=<var>true|false</var></td>
-    <td>include any alpha channel when writing in the BMP image format.</td>
+    <td>Include any alpha channel when writing in the BMP image format.</td>
   </tr>
 
   <tr>
     <td>bmp:format=<var>value</var></td>
-    <td> valid values are <var>bmp2</var>, <var>bmp3</var>,
+    <td>Valid values are <var>bmp2</var>, <var>bmp3</var>,
    and <var>bmp4</var>.  This option can be useful when the
    method of prepending "BMP2:" to the output filename is inconvenient or
    is not available, such as when using the <a href="mogrify.html">mogrify</a>   utility.</td>
@@ -712,7 +716,7 @@ use:</p>
 
   <tr>
     <td>dcm:display-range=<var>reset</var></td>
-     <td>Sets the display range to the minimum and maximum pixel values for the
+     <td>Set the display range to the minimum and maximum pixel values for the
     DCM image format.</td>
   </tr>
 
@@ -730,27 +734,27 @@ use:</p>
 
     <tr>
     <td>dcm:window=<var>CxW</var></td>
-     <td>Specifies the dcm window center and width.</td>
+     <td>Specify the dcm window center and width.</td>
   </tr>
 
 <tr>
     <td>dds:cluster-fit=<var>true|false</var></td>
-     <td>Enables the dds cluster-fit.</td>
+     <td>Enable the DDS cluster-fit.</td>
   </tr>
 
   <tr>
     <td>dds:compression=<var>dxt1|dxt5|none</var></td>
-     <td>Sets the dds compression.</td>
+     <td>Set the dds compression.</td>
   </tr>
 
   <tr>
     <td>dds:mipmaps=<var>value</var></td>
-     <td>Sets the dds number of mipmaps.</td>
+     <td>Set the dds number of mipmaps.</td>
   </tr>
 
   <tr>
      <td>dds:weight-by-alpha=<var>true|false</var></td>
-     <td>Enables the dds alpha weighting.</td>
+     <td>Enable the DDS alpha weighting.</td>
   </tr>
 
   <tr>
@@ -767,12 +771,12 @@ use:</p>
 
   <tr>
     <td>dng:use-auto-bright=<var>false</var></td>
-     <td>Disables the histogram-based white level.</td>
+     <td>Disable the histogram-based white level.</td>
   </tr>
 
  <tr>
     <td>dng:use-auto-wb=<var>true</var></td>
-     <td>Computes the white balance by averaging the entire image.</td>
+     <td>Compute the white balance by averaging the entire image.</td>
   </tr>
 
   <tr>
@@ -782,24 +786,24 @@ use:</p>
 
   <tr>
     <td>dot:layout-engine=<var>value</var></td>
-     <td>Specifies the layout engine for the DOT image format (e.g.
+     <td>Specify the layout engine for the DOT image format (e.g.
     <code>neato</code>).</td>
   </tr>
 
   <tr>
     <td>eps:use-cropbox=<var>true</var></td>
-     <td>Forces Imagemagick to respect the crop box.</td>
+     <td>Force Imagemagick to respect the crop box.</td>
   </tr>
 
   <tr>
     <td>exr:color-type=<var>value</var></td>
-     <td>Specifies the color type for the EXR format: RGB, RGBA, YC, YCA, Y, 
+     <td>Specify the color type for the EXR format: RGB, RGBA, YC, YCA, Y, 
      YA, R, G, B, A).</td>
   </tr>
 
   <tr>
     <td>fpx:view=<var>value</var></td>
-     <td>Specifies the FlashPix viewing object, which contains the specification 
+     <td>Specify the FlashPix viewing object, which contains the specification 
      of a viewing transform. The viewing transform enables applications to 
      represent a set of simple edits as a list of "commands" which are applied 
      to the image in real time without altering the original image.</td>
@@ -815,19 +819,18 @@ use:</p>
 
   <tr>
     <td>icon:auto-resize</td>
-     <td>Automatically stores multiple sizes when writing an ico image
-    (requires a 256x256 input image).</td>
+     <td>Automatically stores multiple sizes when writing an ico image (requires a 256x256 input image).</td>
   </tr>
 
   <tr>
     <td>jp2:layer-number=<var>value</var></td>
-     <td>Sets the maximum number of quality layers to decode. Same for JPT, JC2,
+     <td>Set the maximum number of quality layers to decode. Same for JPT, JC2,
     and J2K.</td>
   </tr>
 
   <tr>
     <td>jp2:number-resolutions=<var>value</var></td>
-     <td>Sets the number of resolutions to encode.Same for JPT, JC2, and
+     <td>Set the number of resolutions to encode.Same for JPT, JC2, and
      J2K.</td>
   </tr>
 
@@ -839,7 +842,7 @@ use:</p>
 
   <tr>
     <td>jp2:quality=<var>value,value...</var></td>
-     <td>Sets the quality layer PSNR, given in dB. The order is from left to
+     <td>Set the quality layer PSNR, given in dB. The order is from left to
     right in ascending order. The default is a single lossless quality layer.
     Same for JPT, JC2, and J2K.</td>
   </tr>
@@ -855,7 +858,7 @@ use:</p>
 
   <tr>
     <td>jp2:reduce-factor=<var>value</var></td>
-     <td>Sets the number of highest resolution levels to be discarded.Same for
+     <td>Set the number of highest resolution levels to be discarded.Same for
     JPT, JC2, and J2K.</td>
   </tr>
 
@@ -926,9 +929,7 @@ use:</p>
 
  <tr>
     <td>pdf:fit-page=<var>geometry</var></td>
-     <td> geometry specifies the scaling dimensions for resizing when the PDF 
-    is being read. The geometry is either WxH{%} or page size. No offsets are
-    allowed. (introduced in IM 6.8.8-8)</td>
+     <td><var>Geometry</var> specifies the scaling dimensions for resizing when the PDF is being read. The geometry is either WxH{%} or page size. No offsets are allowed. (introduced in IM 6.8.8-8)</td>
   </tr>
 
   <tr>
@@ -948,7 +949,7 @@ use:</p>
 
    <tr>
     <td>pdf:thumbnail=<var>false</var></td>
-     <td>Skips writing a thumbnail when saving a PDF file.</td>
+     <td>Skip writing a thumbnail when saving a PDF file.</td>
   </tr>
 
   <tr>
@@ -968,7 +969,7 @@ use:</p>
 
   <tr>
     <td>png:color-type=<var>value</var></td>
-     <td>desired bit-depth and color-type for PNG output.  You can force the 
+     <td>Desired bit-depth and color-type for PNG output.  You can force the 
     PNG encoder to use a different bit-depth and color-type than it would have
     normally selected, but only if this does not cause any loss of image
     quality. Any attempt to reduce image quality is treated as an error and no
@@ -986,7 +987,7 @@ use:</p>
 
   <tr>
     <td>png:compression-filter=<var>value</var></td>
-    <td> valid values are 0 through 9. 0-4 are the corresponding PNG filters,
+    <td>Valid values are 0 through 9. 0-4 are the corresponding PNG filters,
    5 means adaptive filtering except for images with a colormap, 6 means
    adaptive filtering for all images, 7 means MNG "loco" compression, 8 means
    Z_RLE strategy with adaptive filtering, and 9 means Z_RLE strategy with no
@@ -995,13 +996,13 @@ use:</p>
 
   <tr>
     <td>png:compression-level=<var>value</var></td>
-    <td> valid values are 0 through 9, with 0 providing the least, but fastest
+    <td>Valid values are 0 through 9, with 0 providing the least, but fastest
        compression and 9 usually providing the best and always the slowest.</td>
   </tr>
 
   <tr>
     <td>png:compression-strategy=<var>value</var></td>
-    <td> valid values are 0 through 4, meaning default, filtered, huffman_only,
+    <td>Valid values are 0 through 4, meaning default, filtered, huffman_only,
    rle, and fixed ZLIB compression strategy. If you are using an old zlib
    that does not support Z_RLE (before 1.2.0) or Z_FIXED (before 1.2.2.2),
    values 3 and 4, respectively, will use the zlib default strategy
@@ -1013,7 +1014,7 @@ use:</p>
     <td> valid values are <var>png8</var>, <var>png24</var>,
    <var>png32</var>, <var>png48</var>,
    <var>png64</var>, and <var>png00</var>.
-   This property can be useful for specifying
+   This property is useful for specifying
    the specific PNG format to be used, when the usual method of prepending the
    format name to the output filename is inconvenient, such as when writing
    a PNG-encoded ICO file or when using <a href="mogrify.html">mogrify</a>.
@@ -1163,7 +1164,7 @@ use:</p>
 
   <tr>
     <td>psd:alpha-unblend=off</td>
-     <td>Disables new automatic un-blending of transparency with the base image
+     <td>Disable new automatic un-blending of transparency with the base image
      for the flattened layer 0 before adding the alpha channel to the output
      image. This define must be placed before the input psd image. (Available
      as of IM 6.9.2.5). The automatic un-blending is new to IM 6.9.2.5 and
@@ -1183,7 +1184,7 @@ use:</p>
 
   <tr>
     <td>svg:xml-parse-huge=<var>true</var></td>
-    <td>Enables rendering of a very large SVG for which you trust the source</td>
+    <td>Enable rendering of a very large SVG for which you trust the source</td>
   </tr>
 
   <tr>
@@ -1199,7 +1200,7 @@ use:</p>
 
   <tr>
     <td>tiff:exif-properties=<var>true</var></td>
-    <td>Enables reading the EXIF properties.</td>
+    <td>Enable reading the EXIF properties.</td>
   </tr>
 
   <tr>
@@ -1209,12 +1210,12 @@ use:</p>
 
   <tr>
     <td>tiff:ignore-layers=<var>true</var></td>
-    <td>Ignores the photoshop layers.</td>
+    <td>Ignore the Photoshop layers.</td>
   </tr>
 
   <tr>
     <td>tiff:ignore-tags=<var>comma-separate-list-of-tag-IDs</var></td>
-    <td>Allows one or more tag ID values to be ignored.</td>
+    <td>Allow one or more tag ID values to be ignored.</td>
   </tr>
 
   <tr>
@@ -1229,13 +1230,18 @@ use:</p>
   </tr>
 
   <tr>
+    <td>tiff:preserve-compression=<var>true</var></td>
+    <td>Preserve compression of the source image.</td>
+  </tr>
+
+  <tr>
     <td>tiff:rows-per-strip=<var>value</var></td>
-    <td>Sets the number of rows per strip.</td>
+    <td>Set the number of rows per strip.</td>
   </tr>
 
   <tr>
     <td>tiff:tile-geometry=<var>WxH</var></td>
-    <td>Sets the tile size for pyramid tiffs. Requires the suffix
+    <td>Set the tile size for pyramid tiffs. Requires the suffix
         PTIF: before the outputname.</td>
   </tr>
 
@@ -1253,7 +1259,7 @@ use:</p>
 
   <tr>
     <td>caption:max-pointsize=<var>pointsize</var></td>
-     <td>Limits the maximum point size</td>
+     <td>Limit the maximum point size</td>
   </tr>
 
    <tr>
@@ -1268,7 +1274,7 @@ use:</p>
 
    <tr>
    	 <td>gradient:bounding-box=<var>WxH+X+Y</var></td>
-     <td>Limits the gradient to a larger or smaller region than 
+     <td>Limit the gradient to a larger or smaller region than 
      the image dimensions. If the region defined by the bounding 
      box is smaller than the image, then color1 will be the color 
      of the background.
@@ -1277,14 +1283,14 @@ use:</p>
 
    <tr>
     <td>gradient:center=<var>x,y</var></td>
-     <td>Specifies the coordinates of the center point for the 
+     <td>Specify the coordinates of the center point for the 
      radial gradient. The default is the center of the image.
       Supported in Imagemagick 6.9.2-5.</td>
    </tr>
 
     <tr>
     <td>gradient:direction=<var>value</var></td>
-     <td>Specifies the direction of the linear gradient towards 
+     <td>Specify the direction of the linear gradient towards 
      the top/bottom/left/right or diagonal corners. The choices are: 
      NorthWest, North, Northeast, West, East, SouthWest, South, SouthEast.
       Supported in Imagemagick 6.9.2-5.</td>
@@ -1292,7 +1298,7 @@ use:</p>
 
      <tr>
     <td>gradient:extent=<var>value</var></td>
-     <td>Specifies the shape of an image centered radial gradient. 
+     <td>Specify the shape of an image centered radial gradient. 
      The choices are: Circle, Diagonal, Ellipse, Maximum, Minimum.
      Circle and Maximum draw a circular radial gradient even for 
      rectangular shaped images of radius equal to the larger of 
@@ -1311,7 +1317,7 @@ use:</p>
 
  <tr>
     <td>gradient:radii=<var>x,y</var></td>
-     <td>Specifies the x and y radii of the gradient. If the 
+     <td>Specify the x and y radii of the gradient. If the 
      x radius and the y radius are equal, the shape of the 
      radial gradient will be a circle. If they differ, then 
      the shape will be an ellipse. The default values are the 
@@ -1321,7 +1327,7 @@ use:</p>
 
    <tr>
     <td>gradient:vector=<var>x1,y1,x2,y2</var></td>
-     <td>Specifies the direction of the linear gradient going from 
+     <td>Specify the direction of the linear gradient going from 
      vector1 (x1,y1) to vector2 (x2,y2). Color1 (fromColor) will be 
      located at vector position x1,y1 and color2 (toColor) will be 
      located at vector position x2,y2.
@@ -1330,7 +1336,7 @@ use:</p>
 
   <tr>
     <td>histogram:unique-colors=<var>false</var></td>
-     <td>Suppresses the textual listing of the image's unique colors.</td>
+     <td>Suppress the textual listing of the image's unique colors.</td>
    </tr>
 
   <tr>
@@ -1390,12 +1396,12 @@ use:</p>
 
    <tr>
     <td>pixel:compliance=<var>value</var></td>
-     <td>Sets the "pixel:" output format according to several standards.
-     The choices are svg, none, undefined, mvg, x11, xpm. The default will 
+     <td>Set the "pixel:" output format according to several standards.
+     The choices are SVG, None, Undefined, MVG, X11, XPM. The default
      list values for (s)RGB colors in the form of (s)rgb(r,g,b) or 
      (s)rgba(r,g,b,a). Color names will no longer be presented. For sRGB or 
-     RGB colors, the svg, x11, xpm and none options will list color names, 
-     if they exist. The mvg and undefined options will list hex values. When 
+     RGB colors, the SVG, X11, XPM and None options lists color names, 
+     if they exist. The MVG and Undefined options list hex values. When 
      colors are presented or converted to hue-based colorspaces, the values 
      listed will be integers for hue and percents for the other two components. 
      For other colorspaces, values may be listed as either percents or 
@@ -1405,10 +1411,10 @@ use:</p>
 
     <tr>
     <td>txt:compliance=<var>value</var></td>
-     <td>Sets the "txt:" format for the values in parentheses according to 
+     <td>Set the "txt:" format for the values in parentheses according to 
      several standards. The choices are svg, none, undefined, mvg, x11, xpm.
      The default will list values for (s)RGB colors in the quantum range.
-     The svg, x11, xpm, mvg and none options will list values in the 8-bit range 
+     The SVG, X11, XPM, MVG and None options lists values in the 8-bit range 
      for all Q-level compiles. The undefined option also lists values in the 
      quantum range. When colors are presented or converted to hue-based 
      colorspaces, the values listed will be integers for hue and percents for 
@@ -1435,12 +1441,12 @@ use:</p>
 
   <tr>
     <td>identify:locate=<var>minimum|maximum</var></td>
-     <td>Locates the coordinates of one or more image minimum or maximum.</td>
+     <td>Locate the coordinates of one or more image minimum or maximum.</td>
   </tr>
 
   <tr>
     <td>identify:limit=<var>number</var></td>
-     <td>Locates the coordinates for the number of minima or maxima specified.</td>
+     <td>Locate the coordinates for the number of minima or maxima specified.</td>
   </tr>
 
 </table>
@@ -1450,8 +1456,9 @@ use:</p>
     </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
+    <div class="container">
     <p><a href="security-policy.html">Security</a> •
-    <a href="architecture.html">Architecture</a>
+    <a href="resources.html">Resources</a>
      
     <a href="defines.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
@@ -1467,6 +1474,7 @@ use:</p>
         <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
     <br/>
     <small>© 1999-2020 ImageMagick Studio LLC</small></p>
+    <div>
   </footer>
 
   <!-- Javascript assets -->
@@ -1474,4 +1482,3 @@ use:</p>
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 12th June 2020 18:37 -->

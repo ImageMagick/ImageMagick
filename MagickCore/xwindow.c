@@ -4968,7 +4968,7 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
             target=prior_target;
         }
     }
-  if (ximage_info->screen)
+  if (ximage_info->screen != MagickFalse)
     {
       int
         y;

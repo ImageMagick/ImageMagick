@@ -70,6 +70,7 @@
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/token.h"
+#include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/xwindow.h"
 #include "MagickCore/xwindow-private.h"
@@ -136,6 +137,9 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
     MagickBooleanType
       status;
 
+    RectangleInfo
+      geometry;
+
     register Quantum
       *q;
 
@@ -162,8 +166,41 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
         ThrowReaderException(CoderError,"UnableToCreateDC");
 
       screen=AcquireImage(image_info,exception);
-      screen->columns=(size_t) GetDeviceCaps(hDC,HORZRES);
-      screen->rows=(size_t) GetDeviceCaps(hDC,VERTRES);
+      geometry.x=0;
+      geometry.y=0;
+      geometry.width=(size_t) GetDeviceCaps(hDC,HORZRES);
+      geometry.height=(size_t) GetDeviceCaps(hDC,VERTRES);
+      if (image_info->extract != (char *) NULL)
+        {
+          geometry.x=MagickMin(screen->extract_info.x,geometry.width);
+          if (geometry.x < 0)
+            {
+              geometry.width=(size_t ) MagickMin(0,(ssize_t) geometry.width+
+                geometry.x);
+              geometry.x=0;
+            }
+          geometry.width=geometry.width-geometry.x;
+          if (screen->columns > 0)
+            geometry.width=MagickMin(geometry.width,screen->columns);
+          geometry.y=MagickMin(screen->extract_info.y,geometry.height);
+          if (geometry.y < 0)
+            {
+              geometry.width=(size_t ) MagickMin(0,(ssize_t) geometry.width+
+                geometry.y);
+              geometry.y=0;
+            }
+          geometry.height=geometry.height-geometry.y;
+          if (screen->rows > 0)
+            geometry.height=MagickMin(geometry.height,screen->rows);
+          /* Reset extract to prevent cropping */
+          *image_info->extract='\0';
+          screen->extract_info.x=0;
+          screen->extract_info.y=0;
+        }
+      if ((geometry.width == 0) || (geometry.height == 0))
+        ThrowReaderException(OptionError,"InvalidGeometry");
+      screen->columns=geometry.width;
+      screen->rows=geometry.height;
       screen->storage_class=DirectClass;
       if (image == (Image *) NULL)
         image=screen;
@@ -201,8 +238,8 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
           DeleteObject(bitmap);
           ThrowReaderException(CoderError,"UnableToCreateBitmap");
         }
-      BitBlt(bitmapDC,0,0,(int) screen->columns,(int) screen->rows,hDC,0,0,
-        SRCCOPY);
+      BitBlt(bitmapDC,0,0,(int) screen->columns,(int) screen->rows,hDC,
+        geometry.x,geometry.y,SRCCOPY);
       (void) SelectObject(bitmapDC,bitmapOld);
 
       for (y=0; y < (ssize_t) screen->rows; y++)
@@ -212,12 +249,12 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
           break;
         for (x=0; x < (ssize_t) screen->columns; x++)
         {
-          SetPixelRed(image,ScaleCharToQuantum(p->rgbRed),q);
-          SetPixelGreen(image,ScaleCharToQuantum(p->rgbGreen),q);
-          SetPixelBlue(image,ScaleCharToQuantum(p->rgbBlue),q);
-          SetPixelAlpha(image,OpaqueAlpha,q);
+          SetPixelRed(screen,ScaleCharToQuantum(p->rgbRed),q);
+          SetPixelGreen(screen,ScaleCharToQuantum(p->rgbGreen),q);
+          SetPixelBlue(screen,ScaleCharToQuantum(p->rgbBlue),q);
+          SetPixelAlpha(screen,OpaqueAlpha,q);
           p++;
-          q+=GetPixelChannels(image);
+          q+=GetPixelChannels(screen);
         }
         if (SyncAuthenticPixels(screen,exception) == MagickFalse)
           break;
@@ -244,6 +281,26 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
     if (option != (const char *) NULL)
       ximage_info.silent=IsStringTrue(option);
     image=XImportImage(image_info,&ximage_info,exception);
+    if ((image != (Image *) NULL) && (image_info->extract != (char *) NULL))
+      {
+        Image
+          *crop_image;
+
+        RectangleInfo
+          crop_info;
+
+        /*
+          Crop image as defined by the extract rectangle.
+        */
+        (void) ParsePageGeometry(image,image_info->extract,&crop_info,
+          exception);
+        crop_image=CropImage(image,&crop_info,exception);
+        if (crop_image != (Image *) NULL)
+          {
+            image=DestroyImage(image);
+            image=crop_image;
+          }
+      }
   }
 #endif
   return(image);

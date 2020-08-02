@@ -696,8 +696,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   (void) CopyMagickString(command,"/setpagedevice {pop} bind 1 index where {"
-    "dup wcheck {3 1 roll put} {pop def} ifelse} {def} ifelse\n"
-    "<</UseCIEColor true>>setpagedevice\n",MagickPathExtent);
+    "dup wcheck {3 1 roll put} {pop def} ifelse} {def} ifelse\n",
+    MagickPathExtent);
   count=write(file,command,(unsigned int) strlen(command));
   if (image_info->page == (char *) NULL)
     {

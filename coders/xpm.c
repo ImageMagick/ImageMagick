@@ -203,6 +203,8 @@ static char *ParseXPMColor(char *color,MagickBooleanType search_start)
   static const char
     *const targets[NumberTargets] = { "c ", "g ", "g4 ", "m ", "b ", "s " };
 
+  if (*color == '\0')
+    return((char *) NULL);
   if (search_start != MagickFalse)
     {
       for (i=0; i < NumberTargets; i++)
