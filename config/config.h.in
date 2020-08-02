@@ -12,9 +12,6 @@
 /* Define if you have the bzip2 library */
 #undef BZLIB_DELEGATE
 
-/* Define if you have the libzip library */
-#undef LIBZIP_DELEGATE
-
 /* Define if you have CAIRO library */
 #undef CAIRO_DELEGATE
 
@@ -756,6 +753,9 @@
 /* Subdirectory of lib where ImageMagick architecture dependent files are
    installed. */
 #undef LIBRARY_RELATIVE_PATH
+
+/* Define if you have libzip library */
+#undef LIBZIP_DELEGATE
 
 /* Binaries in libraries path base name (will be during install linked to bin)
    */
