@@ -236,9 +236,6 @@ struct _Image
   DisposeType
     dispose;        /* GIF animation disposal method */
 
-  AlphaCoalesceMethod
-    alpha_coalesce;   /* WEBP animation alpha channel blend method */
-
   size_t
     scene,          /* index of image in multi-image file */
     delay,          /* Animation delay time */
@@ -367,6 +364,9 @@ struct _Image
 
   ChannelType
     channels;
+
+  AlphaBlendMethod
+    alpha_blend;   /* alpha channel blend method */
 };
 
 /*

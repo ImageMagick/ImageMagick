@@ -337,14 +337,14 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     previous=coalesce_image;
     coalesce_image=GetNextImageInList(coalesce_image);
     coalesce_image->background_color.alpha_trait=BlendPixelTrait;
-    if (next->alpha_coalesce == UndefinedAlphaCoalesce)
+    if (next->alpha_blend == UndefinedAlphaBlend)
       (void) CompositeImage(coalesce_image,next,
-      next->alpha_trait != UndefinedPixelTrait ? OverCompositeOp : CopyCompositeOp,
-      MagickTrue,next->page.x,next->page.y,exception);
+        next->alpha_trait != UndefinedPixelTrait ? OverCompositeOp :
+        CopyCompositeOp,MagickTrue,next->page.x,next->page.y,exception);
     else
       (void) CompositeImage(coalesce_image,next,
-      next->alpha_coalesce == OverAlphaCoalesce ? OverCompositeOp : CopyCompositeOp,
-      MagickTrue,next->page.x,next->page.y,exception);
+        next->alpha_blend == AtopBackgroundAlphaBlend ? OverCompositeOp :
+        CopyCompositeOp,MagickTrue,next->page.x,next->page.y,exception);
     (void) CloneImageProfiles(coalesce_image,next);
     (void) CloneImageProperties(coalesce_image,next);
     (void) CloneImageArtifacts(coalesce_image,next);

@@ -50,6 +50,7 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image.h"
 #include "MagickCore/image-private.h"
+#include "MagickCore/layer.h"
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/monitor.h"
@@ -452,14 +453,12 @@ static int ReadAnimatedWEBPImage(const ImageInfo *image_info,Image *image,
       image->page.height=canvas_height;
       image->ticks_per_second=100;
       image->delay=iter.duration/10;
+      image->dispose=NoneDispose;
       if (iter.dispose_method == WEBP_MUX_DISPOSE_BACKGROUND)
         image->dispose=BackgroundDispose;
-      else
-        image->dispose=NoneDispose;
+      image->alpha_blend=AtopPreviousAlphaBlend;
       if (iter.blend_method == WEBP_MUX_BLEND)
-        image->alpha_coalesce = OverAlphaCoalesce;
-      else
-        image->alpha_coalesce = CopyAlphaCoalesce;
+        image->alpha_blend=AtopBackgroundAlphaBlend;
       image_count++;
     } while (WebPDemuxNextFrame(&iter));
     WebPDemuxReleaseIterator(&iter);
