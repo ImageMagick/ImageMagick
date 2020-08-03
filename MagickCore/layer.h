@@ -26,13 +26,6 @@ extern "C" {
 
 typedef enum
 {
-  UndefinedAlphaBlend = 0,
-  AtopPreviousAlphaBlend = 1,
-  AtopBackgroundAlphaBlend = 2
-} AlphaBlendMethod;
-
-typedef enum
-{
   UnrecognizedDispose,
   UndefinedDispose = 0,
   NoneDispose = 1,

@@ -289,6 +289,9 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
   next=GetNextImageInList(next);
   for ( ; next != (Image *) NULL; next=GetNextImageInList(next))
   {
+    const char
+      *attribute;
+
     /*
       Determine the bounds that was overlaid in the previous image.
     */
@@ -337,14 +340,16 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     previous=coalesce_image;
     coalesce_image=GetNextImageInList(coalesce_image);
     coalesce_image->background_color.alpha_trait=BlendPixelTrait;
-    if (next->alpha_blend == UndefinedAlphaBlend)
+    attribute=GetImageArtifact(next,"webp:mux-blend");
+    if (attribute == (const char *) NULL)
       (void) CompositeImage(coalesce_image,next,
         next->alpha_trait != UndefinedPixelTrait ? OverCompositeOp :
         CopyCompositeOp,MagickTrue,next->page.x,next->page.y,exception);
     else
       (void) CompositeImage(coalesce_image,next,
-        next->alpha_blend == AtopBackgroundAlphaBlend ? OverCompositeOp :
-        CopyCompositeOp,MagickTrue,next->page.x,next->page.y,exception);
+        LocaleCompare(attribute,"AtopBackgroundAlphaBlend") == 0 ?
+        OverCompositeOp : CopyCompositeOp,MagickTrue,next->page.x,next->page.y,
+        exception);
     (void) CloneImageProfiles(coalesce_image,next);
     (void) CloneImageProperties(coalesce_image,next);
     (void) CloneImageArtifacts(coalesce_image,next);

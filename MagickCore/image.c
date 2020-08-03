@@ -173,7 +173,6 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   image->interlace=NoInterlace;
   image->ticks_per_second=UndefinedTicksPerSecond;
   image->compose=OverCompositeOp;
-  image->alpha_blend=UndefinedAlphaBlend;
   (void) QueryColorCompliance(MatteColor,AllCompliance,&image->matte_color,
     exception);
   (void) QueryColorCompliance(BackgroundColor,AllCompliance,

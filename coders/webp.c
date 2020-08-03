@@ -456,9 +456,10 @@ static int ReadAnimatedWEBPImage(const ImageInfo *image_info,Image *image,
       image->dispose=NoneDispose;
       if (iter.dispose_method == WEBP_MUX_DISPOSE_BACKGROUND)
         image->dispose=BackgroundDispose;
-      image->alpha_blend=AtopPreviousAlphaBlend;
+      (void) SetImageArtifact(image,"webp:mux-blend","AtopPreviousAlphaBlend");
       if (iter.blend_method == WEBP_MUX_BLEND)
-        image->alpha_blend=AtopBackgroundAlphaBlend;
+        (void) SetImageArtifact(image,"webp:mux-blend",
+          "AtopBackgroundAlphaBlend");
       image_count++;
     } while (WebPDemuxNextFrame(&iter));
     WebPDemuxReleaseIterator(&iter);

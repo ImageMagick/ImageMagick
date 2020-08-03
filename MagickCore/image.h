@@ -364,9 +364,6 @@ struct _Image
 
   ChannelType
     channels;
-
-  AlphaBlendMethod
-    alpha_blend;   /* alpha channel blend method */
 };
 
 /*
