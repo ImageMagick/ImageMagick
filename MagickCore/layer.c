@@ -340,7 +340,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     previous=coalesce_image;
     coalesce_image=GetNextImageInList(coalesce_image);
     coalesce_image->background_color.alpha_trait=BlendPixelTrait;
-    attribute=GetImageArtifact(next,"webp:mux-blend");
+    attribute=GetImageProperty(next,"webp:mux-blend",exception);
     if (attribute == (const char *) NULL)
       (void) CompositeImage(coalesce_image,next,
         next->alpha_trait != UndefinedPixelTrait ? OverCompositeOp :
@@ -552,8 +552,7 @@ static MagickBooleanType ComparePixels(const LayerMethod method,
     Any change in pixel values
   */
   if (method == CompareAnyLayer)
-    return((MagickBooleanType)(IsFuzzyEquivalencePixelInfo(p,q) == MagickFalse));
-
+    return(IsFuzzyEquivalencePixelInfo(p,q) == MagickFalse ? MagickTrue : MagickFalse);
   o1 = (p->alpha_trait != UndefinedPixelTrait) ? p->alpha : OpaqueAlpha;
   o2 = (q->alpha_trait != UndefinedPixelTrait) ? q->alpha : OpaqueAlpha;
   /*
@@ -569,7 +568,8 @@ static MagickBooleanType ComparePixels(const LayerMethod method,
     {
       if (o2 < ((double) QuantumRange/2.0))
         return MagickFalse;
-      return((MagickBooleanType) (IsFuzzyEquivalencePixelInfo(p,q) == MagickFalse));
+      return(IsFuzzyEquivalencePixelInfo(p,q) == MagickFalse ? MagickTrue :
+        MagickFalse);
     }
   return(MagickFalse);
 }
@@ -644,7 +644,7 @@ static RectangleInfo CompareImagesBounds(const Image *image1,
     {
       GetPixelInfoPixel(image1,p,&pixel1);
       GetPixelInfoPixel(image2,q,&pixel2);
-      if (ComparePixels(method,&pixel1,&pixel2))
+      if (ComparePixels(method,&pixel1,&pixel2) != MagickFalse)
         break;
       p+=GetPixelChannels(image1);
       q+=GetPixelChannels(image2);
@@ -674,7 +674,7 @@ static RectangleInfo CompareImagesBounds(const Image *image1,
     {
       GetPixelInfoPixel(image1,p,&pixel1);
       GetPixelInfoPixel(image2,q,&pixel2);
-      if (ComparePixels(method,&pixel1,&pixel2))
+      if (ComparePixels(method,&pixel1,&pixel2) != MagickFalse)
         break;
       p+=GetPixelChannels(image1);
       q+=GetPixelChannels(image2);
@@ -693,7 +693,7 @@ static RectangleInfo CompareImagesBounds(const Image *image1,
     {
       GetPixelInfoPixel(image1,p,&pixel1);
       GetPixelInfoPixel(image2,q,&pixel2);
-      if (ComparePixels(method,&pixel1,&pixel2))
+      if (ComparePixels(method,&pixel1,&pixel2) != MagickFalse)
         break;
       p+=GetPixelChannels(image1);
       q+=GetPixelChannels(image2);
@@ -712,7 +712,7 @@ static RectangleInfo CompareImagesBounds(const Image *image1,
     {
       GetPixelInfoPixel(image1,p,&pixel1);
       GetPixelInfoPixel(image2,q,&pixel2);
-      if (ComparePixels(method,&pixel1,&pixel2))
+      if (ComparePixels(method,&pixel1,&pixel2) != MagickFalse)
         break;
       p+=GetPixelChannels(image1);
       q+=GetPixelChannels(image2);
