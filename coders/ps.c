@@ -428,11 +428,11 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
     if ((ps_info->photoshop_profile == (StringInfo *) NULL) &&
         (CompareMagickByteBuffer(&buffer,PhotoshopProfile,strlen(PhotoshopProfile)) != MagickFalse))
       {
+        size_t
+          extent;
+
         unsigned char
           *q;
-
-        unsigned long
-          extent;
 
         /*
           Read Photoshop profile.
@@ -455,7 +455,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
               if (c == EOF)
                 break;
               *q++=(unsigned char) c;
-              extent-=MagickMin(extent,2);
+              extent-=MagickMin(extent,1);
             }
             SetStringInfoLength(ps_info->photoshop_profile,length);
           }

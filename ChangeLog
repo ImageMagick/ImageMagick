@@ -6,6 +6,8 @@
     https://github.com/ImageMagick/ImageMagick/pull/2351).
   * Add support for OpenRaster (.ora) image format (reference
     https://github.com/ImageMagick/ImageMagick/pull/2342).
+  * Paths in Photoshop EPS files are no longer corrupted (reference
+    https://github.com/ImageMagick/ImageMagick/issues/2380).
 
 2020-07-31  7.0.10-25  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-25 GIT revision 17497:0e12ff687:20200731
