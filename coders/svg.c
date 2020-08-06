@@ -374,6 +374,8 @@ static SVGInfo *AcquireSVGInfo(void)
 
 static SVGInfo *DestroySVGInfo(SVGInfo *svg_info)
 {
+  if (svg_info->size != (char *) NULL)
+    svg_info->size=DestroyString(svg_info->size);
   if (svg_info->text != (char *) NULL)
     svg_info->text=DestroyString(svg_info->text);
   if (svg_info->scale != (double *) NULL)
