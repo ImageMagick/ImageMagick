@@ -1,7 +1,7 @@
-2020-08-02  7.0.10-26  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-26 GIT revision 17...
+2020-08-08  7.0.10-26  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-26 GIT revision 17520:9c2744359:20200808
 
-2020-07-02  7.0.10-26  <quetzlzacatenango@image...>
+2020-08-02  7.0.10-26  <quetzlzacatenango@image...>
   * Add animated webp blend method support (reference
     https://github.com/ImageMagick/ImageMagick/pull/2351).
   * Add support for OpenRaster (.ora) image format (reference
