@@ -914,13 +914,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               blur.y1=(-height*sin(angle));
               blur.y2=height*cos(angle);
             }
-#if 0
-          if ( x == 10 && y == 60 ) {
-            (void) fprintf(stderr, "blur.x=%lf,%lf, blur.y=%lf,%lf\n",blur.x1,
-              blur.x2,blur.y1, blur.y2);
-            (void) fprintf(stderr, "scaled by=%lf,%lf\n",QuantumScale*
-              GetPixelRed(p),QuantumScale*GetPixelGreen(p));
-#endif
           ScaleResampleFilter(resample_filter,
             blur.x1*QuantumScale*GetPixelRed(source_image,p),
             blur.y1*QuantumScale*GetPixelGreen(source_image,p),
