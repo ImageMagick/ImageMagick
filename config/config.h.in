@@ -754,9 +754,6 @@
    installed. */
 #undef LIBRARY_RELATIVE_PATH
 
-/* Define if you have libzip library */
-#undef LIBZIP_DELEGATE
-
 /* Binaries in libraries path base name (will be during install linked to bin)
    */
 #undef LIB_BIN_BASEDIRNAME
@@ -992,6 +989,9 @@
 
 /* Build self-contained, embeddable, zero-configuration ImageMagick */
 #undef ZERO_CONFIGURATION_SUPPORT
+
+/* Define if you have ZIPLIB library */
+#undef ZIPLIB_DELEGATE
 
 /* Define if you have ZLIB library */
 #undef ZLIB_DELEGATE

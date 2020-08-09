@@ -1174,7 +1174,7 @@ if test "$enable_delegate_build" != 'no'; then
     # Most delegates have includes in the same directory as the library, but not all...
     #
     # Includes
-    for dir in zip bzlib fftw fpx gslib/src jp2 jbig/libjbig jpeg lcms/include lzma magick openjp2/include png tiff/libtiff ttf/include wand webp/src wmf/include xml/include zlib; do
+    for dir in bzlib fftw fpx gslib/src jp2 jbig/libjbig jpeg lcms/include lzma magick openjp2/include png tiff/libtiff ttf/include wand webp/src wmf/include xml/include zlib zip; do
         if test -d "$builddir/$dir"; then
             CPPFLAGS="$CPPFLAGS -I$builddir/$dir"
         else
@@ -1185,7 +1185,7 @@ if test "$enable_delegate_build" != 'no'; then
     done
 
     # Libraries
-    for dir in zip bzlib fftw fpx gslib/src jbig/libjbig jpeg lcms/src lzma magick openjp2 png tiff/libtiff ttf/objs wand webp wmf/src xml zlib; do
+    for dir in bzlib fftw fpx gslib/src jbig/libjbig jpeg lcms/src lzma magick openjp2 png tiff/libtiff ttf/objs wand webp wmf/src xml zlib zip; do
     if test -d "$builddir/$dir/.libs"; then
         LDFLAGS="$LDFLAGS -L$builddir/$dir/.libs"
     else
@@ -1543,6 +1543,41 @@ AC_SUBST(XEXT_LIBS)
 dnl ===========================================================================
 
 #
+# Check for ZIPLIB
+#
+AC_ARG_WITH([ziplib],
+    [AC_HELP_STRING([--without-ziplib],
+                    [disable ZIPLIB support])],
+    [with_ziplib=$withval],
+    [with_ziplib='yes'])
+
+if test "$with_ziplib" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-ziplib=$with_ziplib "
+fi
+
+have_ziplib='no'
+ZIPLIB_CFLAGS=""
+ZIPLIB_LIBS=""
+ZIPLIB_PKG=""
+if test "x$with_ziplib" = "xyes"; then
+  AC_MSG_RESULT([-------------------------------------------------------------])
+  PKG_CHECK_MODULES(ZIPLIB,[libzip >= 1.0.0], have_ziplib=yes, have_ziplib=no)
+  AC_MSG_RESULT([])
+fi
+
+if test "$have_ziplib" = 'yes'; then
+  AC_DEFINE(ZIPLIB_DELEGATE,1,Define if you have ZIPLIB library)
+  CFLAGS="$ZIPLIB_CFLAGS $CFLAGS"
+  LIBS="$ZIPLIB_LIBS $LIBS"
+fi
+
+AM_CONDITIONAL(ZIPLIB_DELEGATE, test "$have_ziplib" = 'yes')
+AC_SUBST(ZIPLIB_CFLAGS)
+AC_SUBST(ZIPLIB_LIBS)
+
+dnl ===========================================================================
+
+#
 # Check for ZLIB
 #
 AC_ARG_WITH([zlib],
@@ -1574,42 +1609,6 @@ fi
 AM_CONDITIONAL(ZLIB_DELEGATE, test "$have_zlib" = 'yes')
 AC_SUBST(ZLIB_CFLAGS)
 AC_SUBST(ZLIB_LIBS)
-
-dnl ===========================================================================
-
-#
-# Check for libzip
-#
-AC_ARG_WITH([libzip],
-    [AC_HELP_STRING([--without-libzip],
-                    [disable libzip support])],
-    [with_libzip=$withval],
-    [with_libzip='yes'])
-
-if test "$with_libzip" != 'yes'; then
-    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-libzip=$with_libzip "
-fi
-
-have_libzip='no'
-LIBZIP_CFLAGS=""
-LIBZIP_LIBS=""
-LIBZIP_PKG=""
-if test "x$with_libzip" = "xyes"; then
-  AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES(LIBZIP,[libzip >= 1.0.0], have_libzip=yes, have_libzip=no)
-  AC_MSG_RESULT([])
-fi
-
-if test "$have_libzip" = 'yes'; then
-  AC_DEFINE(LIBZIP_DELEGATE,1,Define if you have libzip library)
-  CFLAGS="$LIBZIP_CFLAGS $CFLAGS"
-  LIBS="$LIBZIP_LIBS $LIBS"
-fi
-
-AM_CONDITIONAL(LIBZIP_DELEGATE, test "$have_libzip" = 'yes')
-AC_SUBST(LIBZIP_CFLAGS)
-AC_SUBST(LIBZIP_LIBS)
-
 
 dnl ===========================================================================
 
@@ -3154,6 +3153,7 @@ DVIDecodeDelegateDefault='dvips'
 EditorDelegateDefault='xterm'
 ConvertDelegateDefault=`echo magick | sed ${configure_transform_name}`
 DisplayDelegateDefault=`echo magick | sed ${configure_transform_name}`
+Fig2devDelegateDefault='fig2dev'
 MogrifyDelegateDefault=`echo magick | sed ${configure_transform_name}`
 HPGLDecodeDelegateDefault='hp2xx'
 HTMLDecodeDelegateDefault='html2ps'
@@ -3181,7 +3181,6 @@ RMDelegateDefault='rm'
 RSVGDecodeDelegateDefault='rsvg-convert'
 SVGDecodeDelegateDefault='inkscape'
 TraceEncodeDelegateDefault='potrace'
-UniconvertorDelegateDefault='uniconvertor'
 WebPDecodeDelegateDefault='dwebp'
 WebPEncodeDelegateDefault='cwebp'
 WWWDecodeDelegateDefault='curl'
@@ -3228,7 +3227,7 @@ AC_PATH_PROG(RMDelegate, "$RMDelegateDefault", "$RMDelegateDefault")
 AC_PATH_PROG(RSVGDecodeDelegate, "$RSVGDecodeDelegateDefault", "$RSVGDecodeDelegateDefault")
 AC_PATH_PROG(SVGDecodeDelegate, "$SVGDecodeDelegateDefault", "$SVGDecodeDelegateDefault")
 AC_PATH_PROG(TraceEncodeDelegate, "$TraceEncodeDelegateDefault", "$TraceEncodeDelegateDefault")
-AC_PATH_PROG(UniconvertorDelegate, "$UniconvertorDelegateDefault", "$UniconvertorDelegateDefault")
+AC_PATH_PROG(Fig2devDelegate, "$Fig2devDelegateDefault", "$Fig2devDelegateDefault")
 AC_PATH_PROG(WebPDecodeDelegate, "$WebPDecodeDelegateDefault", "$WebPDecodeDelegateDefault")
 AC_PATH_PROG(WebPEncodeDelegate, "$WebPEncodeDelegateDefault", "$WebPEncodeDelegateDefault")
 AC_PATH_PROG(WWWDecodeDelegate, "$WWWDecodeDelegateDefault", "$WWWDecodeDelegateDelegateDefault")
@@ -3428,7 +3427,7 @@ if test "$with_frozenpaths" != 'yes'; then
   SVGDecodeDelegate="$SVGDecodeDelegateDefault"
   ShowImageDelegate="$ShowImageDelegateDefault"
   TraceEncodeDelegate="$TraceEncodeDelegateDefault"
-  UniconvertorDelegate="$UniconvertorDelegateDefault"
+  Fig2devDelegate="$Fig2devDelegateDefault"
   WebPDecodeDelegate="$WebPDecodeDelegateDefault"
   WebPEncodeDelegate="$WebPEncodeDelegateDefault"
   WWWDecodeDelegate="$WWWDecodeDelegateDefault"
@@ -3444,6 +3443,7 @@ AC_SUBST(ConvertDelegate)
 AC_SUBST(GVCDecodeDelegate)
 AC_SUBST(DVIDecodeDelegate)
 AC_SUBST(EditorDelegate)
+AC_SUBST(Fig2devDelegate)
 AC_SUBST(HPGLDecodeDelegate)
 AC_SUBST(HTMLDecodeDelegate)
 AC_SUBST(ILBMDecodeDelegate)
@@ -3461,7 +3461,6 @@ AC_SUBST(PCLDelegate)
 AC_SUBST(PSDelegate)
 AC_SUBST(ShowImageDelegate)
 AC_SUBST(TraceEncodeDelegate)
-AC_SUBST(UniconvertorDelegate)
 AC_SUBST(WebPDecodeDelegate)
 AC_SUBST(WebPEncodeDelegate)
 AC_SUBST(WWWDecodeDelegate)
@@ -3853,8 +3852,8 @@ fi
 if test "$have_xml"      = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES xml"
 fi
-if test "$have_libzip"      = 'yes' ; then
-   MAGICK_DELEGATES="$MAGICK_DELEGATES libzip"
+if test "$have_ziplib"   = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES ziplib"
 fi
 if test "$have_zlib"   = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES zlib"
@@ -3911,9 +3910,9 @@ fi
 #
 
 if test "$build_modules" != 'no'; then
-    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $LIBZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $ZIPLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $JXL_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $LIBZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $JXL_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
 fi
 MAGICK_EXTRA_DEP_LIBS="$GOMP_LIBS"
 AC_SUBST(MAGICK_DEP_LIBS)
@@ -4072,7 +4071,7 @@ Delegate library configuration:
   HEIC              --with-heic=$with_heic             $have_heic
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
-  JPEG XL           --with-jxl=$with_jxl	    	$have_jxl
+  JPEG XL           --with-jxl=$with_jxl    $have_jxl
   LCMS              --with-lcms=$with_lcms		$have_lcms
   LQR               --with-lqr=$with_lqr		$have_lqr
   LTDL              --with-ltdl=$with_ltdl		$have_ltdl
@@ -4091,8 +4090,8 @@ Delegate library configuration:
   WMF               --with-wmf=$with_wmf		$have_wmf
   X11               --with-x=$with_x			$have_x
   XML               --with-xml=$with_xml		$have_xml
+  ZIP               --with-ziplib=$with_ziplib		$have_ziplib
   ZLIB              --with-zlib=$with_zlib		$have_zlib
-  LIBZIP            --with-libzip=$with_libzip  		$have_libzip
   ZSTD              --with-zstd=$with_zstd		$have_zstd
 
 Delegate program configuration:
