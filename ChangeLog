@@ -1,3 +1,9 @@
+2020-08-09  7.0.10-27  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-26 GIT revision 17...
+
+2020-08-08  7.0.10-27  <quetzlzacatenango@image...>
+  * fix regression when detecting the libz delegate library.
+
 2020-08-08  7.0.10-26  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-26 GIT revision 17520:9c2744359:20200808
 
