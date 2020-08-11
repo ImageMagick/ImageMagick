@@ -2,11 +2,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%                              IIIII PPPP  L                                  %
-%                                I   P   P L                                  %
-%                                I   PPPP  L                                  %
-%                                I   P     L                                  %
-%                              IIIII P     LLLLL                              %
+%                             IIIII  PPPP   L                                 %
+%                               I    P   P  L                                 %
+%                               I    PPPP   L                                 %
+%                               I    P      L                                 %
+%                             IIIII  P      LLLLL                             %
 %                                                                             %
 %                 Read/Write Scanalytics IPLab Image Format                   %
 %                                Sean Burke                                   %
