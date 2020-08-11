@@ -2,22 +2,16 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%                              IIIII PPPP  L                                  %
+%                                I   P   P L                                  %
+%                                I   PPPP  L                                  %
+%                                I   P     L                                  %
+%                              IIIII P     LLLLL                              %
 %                                                                             %
-%                     IIIIIIIIII    PPPPPPPP      LL                          %
-%                         II        PP      PP    LL                          %
-%                         II        PP       PP   LL                          %
-%                         II        PP      PP    LL                          %
-%                         II        PPPPPPPP      LL                          %
-%                         II        PP            LL                          %
-%                         II        PP            LL                          %
-%                     IIIIIIIIII    PP            LLLLLLLL                    %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%                   Read/Write Scanalytics IPLab Image Format                 %
-%                                  Sean Burke                                 %
-%                                  2008.05.07                                 %
-%                                     v 0.9                                   %
+%                 Read/Write Scanalytics IPLab Image Format                   %
+%                                Sean Burke                                   %
+%                                2008.05.07                                   %
+%                                   v 0.9                                     %
 %                                                                             %
 %  Copyright 1999-2020 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
