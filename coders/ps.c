@@ -408,7 +408,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
         /*
           Read ICC profile.
         */
-        if (SkipMagickByteBufferUntil(&buffer,'\n') != MagickFalse)
+        if (SkipMagickByteBufferUntilNewline(&buffer) != MagickFalse)
           {
             ps_info->icc_profile=AcquireStringInfo(MagickPathExtent);
             datum=GetStringInfoDatum(ps_info->icc_profile);
@@ -445,7 +445,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
         if ((MagickSizeType) extent > GetBlobSize(image))
           continue;
         length=(size_t) extent;
-        if (SkipMagickByteBufferUntil(&buffer,'\n') != MagickFalse)
+        if (SkipMagickByteBufferUntilNewline(&buffer) != MagickFalse)
           {
             ps_info->photoshop_profile=AcquireStringInfo(length+1U);
             q=GetStringInfoDatum(ps_info->photoshop_profile);
