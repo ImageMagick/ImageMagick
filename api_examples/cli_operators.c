@@ -3,7 +3,7 @@
    as defined in "MagickWand/operators.c" which uses a special
    MagickCLI type of 'wand'.
 
-   This is essentually the calls 'ProcessCommandOptions()' make
+   This is essentially the calls 'ProcessCommandOptions()' make
    though without as many error and sanity checks.
 
    Compile with ImageMagick-devlop installed...
