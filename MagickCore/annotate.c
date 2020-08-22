@@ -630,11 +630,13 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
       continue;
     if (s != (char *) NULL)
       {
+        for (i=0; i < (ssize_t) GetUTFOctets(s); i++)
+          *(s+i)=' ';
         *s='\n';
         p=s;
       }
     else
-      if (split != MagickFalse)
+      if ((split != MagickFalse) || (GetUTFOctets(p) > 2))
         {
           /*
             No convenient line breaks-- insert newline.
