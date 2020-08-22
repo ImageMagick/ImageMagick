@@ -349,13 +349,6 @@ OPENCL_ENDIF()
   )
 
   STRINGIFY(
-  static inline float RoundToUnity(const float value)
-   {
-     return clamp(value,0.0f,1.0f);
-   }
-  )
-
-  STRINGIFY(
 
   static inline unsigned int getPixelIndex(const unsigned int number_channels,
     const unsigned int columns, const unsigned int x, const unsigned int y)
