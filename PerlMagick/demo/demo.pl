@@ -97,6 +97,12 @@ $example->Label('Border');
 $example->Border(geometry=>'6x6',color=>'gold');
 push(@$images,$example);
 
+print "CLAHE...\n";
+$example=$model->Clone();
+$example->Label('CLAHE');
+$example->CLAHE('128x192+32+3');
+push(@$images,$example);
+
 print "Channel...\n";
 $example=$model->Clone();
 $example->Label('Channel');
