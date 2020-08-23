@@ -183,6 +183,8 @@ static Image *ReadORAImage(const ImageInfo *image_info,
     {
       ThrowFileException(exception,FileOpenError,"UnableToCreateTemporaryFile",
         read_info->filename);
+      if (unique_file != -1)
+        (void) RelinquishUniqueFileResource(read_info->filename);
       read_info=DestroyImageInfo(read_info);
       image_metadata=DestroyImage(image_metadata);
       zip_fclose(merged_image_file);
