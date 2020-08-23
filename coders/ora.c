@@ -127,6 +127,9 @@ static Image *ReadORAImage(const ImageInfo *image_info,
     unique_file,
     zip_error;
 
+  MagickBooleanType
+    status;
+
   struct stat
     stat_info;
 
@@ -147,23 +150,25 @@ static Image *ReadORAImage(const ImageInfo *image_info,
   stat(image_info->filename, &stat_info);
 
   zip_archive=zip_open(image_info->filename, ZIP_RDONLY, &zip_error);
-  if (zip_archive == NULL) {
-    ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
-      image_info->filename);
-    read_info=DestroyImageInfo(read_info);
-    image_metadata=DestroyImage(image_metadata);
-    return((Image *) NULL);
-  }
+  if (zip_archive == NULL)
+    {
+      ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
+        image_info->filename);
+      read_info=DestroyImageInfo(read_info);
+      image_metadata=DestroyImage(image_metadata);
+      return((Image *) NULL);
+    }
 
-  merged_image_file=zip_fopen(zip_archive, MERGED_IMAGE_PATH, ZIP_FL_UNCHANGED);
-  if (merged_image_file == NULL) {
-    ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
-      image_info->filename);
-    read_info=DestroyImageInfo(read_info);
-    image_metadata=DestroyImage(image_metadata);
-    zip_discard(zip_archive);
-    return((Image *) NULL);
-  }
+  merged_image_file=zip_fopen(zip_archive,MERGED_IMAGE_PATH,ZIP_FL_UNCHANGED);
+  if (merged_image_file == NULL)
+    {
+      ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
+        image_info->filename);
+      read_info=DestroyImageInfo(read_info);
+      image_metadata=DestroyImage(image_metadata);
+      zip_discard(zip_archive);
+      return((Image *) NULL);
+    }
 
   /* Get a temporary file to write the mergedimage.png of the ZIP to */
   (void) CopyMagickString(read_info->magick,"PNG",MagickPathExtent);
@@ -186,80 +191,61 @@ static Image *ReadORAImage(const ImageInfo *image_info,
     }
 
   /* Write the uncompressed mergedimage.png to the temporary file */
+  status=MagickTrue;
   offset=0;
-  do
+  while (status != MagickFalse)
   {
-    read_bytes=zip_fread(merged_image_file, image_data_buffer + offset, MaxBufferExtent - offset);
-    if (read_bytes == -1) {
-      ThrowFileException(exception,FileOpenError,"UnableToCreateTemporaryFile",
+    read_bytes=zip_fread(merged_image_file,image_data_buffer + offset,
+      MaxBufferExtent-offset);
+    if (read_bytes == -1)
+      status=MagickFalse;
+    else if (read_bytes == 0)
+      {
+        /* Write up to offset of image_data_buffer to temp file */
+        if (!fwrite(image_data_buffer,offset,1,file))
+          status=MagickFalse;
+        break;
+      }
+    else if (read_bytes == MaxBufferExtent-offset)
+      {
+        /* Write the entirely of image_data_buffer to temp file */
+        if (!fwrite(image_data_buffer,MaxBufferExtent,1,file))
+          status=MagickFalse;
+        else
+          offset=0;
+      }
+    else
+      offset+=read_bytes;
+  }
+  (void) fclose(file);
+  (void) zip_fclose(merged_image_file);
+  (void) zip_discard(zip_archive);
+  if (status == MagickFalse)
+    {
+      ThrowFileException(exception,CoderError,"UnableToReadImageData",
           read_info->filename);
-      fclose(file);
-      RelinquishUniqueFileResource(read_info->filename);
+      (void) RelinquishUniqueFileResource(read_info->filename);
       read_info=DestroyImageInfo(read_info);
       image_metadata=DestroyImage(image_metadata);
-      zip_fclose(merged_image_file);
-      zip_discard(zip_archive);
-      zip_fclose(merged_image_file);
       return((Image *) NULL);
     }
-    if (read_bytes == 0) {
-        /* Write up to offset of image_data_buffer to temp file */
-        if (!fwrite(image_data_buffer,offset,1,file)) {
-          ThrowFileException(exception,FileOpenError,"UnableToCreateTemporaryFile",
-            read_info->filename);
-          fclose(file);
-          RelinquishUniqueFileResource(read_info->filename);
-          read_info=DestroyImageInfo(read_info);
-          image_metadata=DestroyImage(image_metadata);
-          zip_fclose(merged_image_file);
-          zip_discard(zip_archive);
-          zip_fclose(merged_image_file);
-          return((Image *) NULL);
-        }
-    }
-    else if (read_bytes == MaxBufferExtent - offset) {
-        /* Write the entirely of image_data_buffer to temp file */
-        if (!fwrite(image_data_buffer,MaxBufferExtent,1,file)) {
-          ThrowFileException(exception,FileOpenError,"UnableToCreateTemporaryFile",
-            read_info->filename);
-          fclose(file);
-          RelinquishUniqueFileResource(read_info->filename);
-          read_info=DestroyImageInfo(read_info);
-          image_metadata=DestroyImage(image_metadata);
-          zip_fclose(merged_image_file);
-          zip_discard(zip_archive);
-          zip_fclose(merged_image_file);
-          return((Image *) NULL);
-        }
-        offset = 0;
-    }
-    else {
-        offset += read_bytes;
-    }
-  }
-  while (read_bytes > 0);
-
-  zip_fclose(merged_image_file);
-  zip_discard(zip_archive);
-  fclose(file);
-
-  /* delegate to ReadImage to read mergedimage.png */
+  /* Delegate to ReadImage to read mergedimage.png */
   out_image=ReadImage(read_info, exception);
-  RelinquishUniqueFileResource(read_info->filename);
+  (void) RelinquishUniqueFileResource(read_info->filename);
   read_info=DestroyImageInfo(read_info);
-
   /* Update fields of image from fields of png_image */
-  if (image_metadata != NULL && out_image != NULL) {
-    (void) CopyMagickString(out_image->filename, image_metadata->filename,
-      MagickPathExtent);
-    (void) CopyMagickString(out_image->magick_filename,
-      image_metadata->magick_filename, MagickPathExtent);
-    out_image->timestamp=time(&stat_info.st_mtime);
-    (void) CopyMagickString(out_image->magick, image_metadata->magick,
-      MagickPathExtent);
-    out_image->extent=stat_info.st_size;
-    DestroyImage(image_metadata);
-  }
+  if (out_image != NULL)
+    {
+      (void) CopyMagickString(out_image->filename, image_metadata->filename,
+        MagickPathExtent);
+      (void) CopyMagickString(out_image->magick_filename,
+        image_metadata->magick_filename, MagickPathExtent);
+      out_image->timestamp=time(&stat_info.st_mtime);
+      (void) CopyMagickString(out_image->magick, image_metadata->magick,
+        MagickPathExtent);
+      out_image->extent=stat_info.st_size;
+    }
+  image_metadata=DestroyImage(image_metadata);
   return(out_image);
 }
 #endif /* MAGICKCORE_LIBZIP_DELEGATE && MAGICKCORE_PNG_DELEGATE */
