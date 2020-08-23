@@ -171,6 +171,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,
   (void) CopyMagickString(read_info->filename, read_info->unique,
     MagickPathExtent);
 
+  file=(FILE *) NULL;
   if (unique_file != -1)
     file=fdopen(unique_file,"wb");
   if ((unique_file == -1) || (file == (FILE *) NULL))
