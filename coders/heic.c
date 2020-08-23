@@ -92,7 +92,8 @@
 */
 static const char
   xmp_namespace[] = "http://ns.adobe.com/xap/1.0/ ";
-
+
+
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT)
 /*
   Forward declarations.
@@ -100,7 +101,8 @@ static const char
 static MagickBooleanType
   WriteHEICImage(const ImageInfo *,Image *,ExceptionInfo *);
 #endif
-
+
+
 /*x
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -855,6 +857,20 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
       *p_cr;
 
     /*
+      Get encoder for the specified format.
+    */
+#if LIBHEIF_NUMERIC_VERSION > 0x01060200
+    if (LocaleCompare(image_info->magick,"AVIF") == 0)
+      error=heif_context_get_encoder_for_format(heif_context,
+        heif_compression_AV1,&heif_encoder);
+    else
+#endif
+      error=heif_context_get_encoder_for_format(heif_context,
+        heif_compression_HEVC,&heif_encoder);
+    status=IsHeifSuccess(&error,image,exception);
+    if (status == MagickFalse)
+      break;
+    /*
       Transform colorspace to YCbCr.
     */
     if (image->colorspace != YCbCrColorspace)
@@ -939,17 +955,6 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     /*
       Code and actually write the HEIC image
     */
-#if LIBHEIF_NUMERIC_VERSION > 0x01060200
-    if (LocaleCompare(image_info->magick,"AVIF") == 0)
-      error=heif_context_get_encoder_for_format(heif_context,
-        heif_compression_AV1,&heif_encoder);
-    else
-#endif
-      error=heif_context_get_encoder_for_format(heif_context,
-        heif_compression_HEVC,&heif_encoder);
-    status=IsHeifSuccess(&error,image,exception);
-    if (status == MagickFalse)
-      break;
     if (image_info->quality != UndefinedCompressionQuality)
       {
         error=heif_encoder_set_lossy_quality(heif_encoder,(int)
