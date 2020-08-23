@@ -146,9 +146,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,
   image_metadata=AcquireImage(image_info,exception);
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
-
   stat(image_info->filename, &stat_info);
-
   zip_archive=zip_open(image_info->filename, ZIP_RDONLY, &zip_error);
   if (zip_archive == NULL)
     {
@@ -158,7 +156,6 @@ static Image *ReadORAImage(const ImageInfo *image_info,
       image_metadata=DestroyImage(image_metadata);
       return((Image *) NULL);
     }
-
   merged_image_file=zip_fopen(zip_archive,MERGED_IMAGE_PATH,ZIP_FL_UNCHANGED);
   if (merged_image_file == NULL)
     {
@@ -169,13 +166,11 @@ static Image *ReadORAImage(const ImageInfo *image_info,
       zip_discard(zip_archive);
       return((Image *) NULL);
     }
-
   /* Get a temporary file to write the mergedimage.png of the ZIP to */
   (void) CopyMagickString(read_info->magick,"PNG",MagickPathExtent);
   unique_file=AcquireUniqueFileResource(read_info->unique);
   (void) CopyMagickString(read_info->filename,read_info->unique,
     MagickPathExtent);
-
   file=(FILE *) NULL;
   if (unique_file != -1)
     file=fdopen(unique_file,"wb");
@@ -191,7 +186,6 @@ static Image *ReadORAImage(const ImageInfo *image_info,
       zip_discard(zip_archive);
       return((Image *) NULL);
     }
-
   /* Write the uncompressed mergedimage.png to the temporary file */
   status=MagickTrue;
   offset=0;
