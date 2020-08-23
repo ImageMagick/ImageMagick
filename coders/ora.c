@@ -146,7 +146,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,
 
   stat(image_info->filename, &stat_info);
 
-  zip_archive = zip_open(image_info->filename, ZIP_RDONLY, &zip_error);
+  zip_archive=zip_open(image_info->filename, ZIP_RDONLY, &zip_error);
   if (zip_archive == NULL) {
     ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
       image_info->filename);
@@ -155,7 +155,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,
     return((Image *) NULL);
   }
 
-  merged_image_file = zip_fopen(zip_archive, MERGED_IMAGE_PATH, ZIP_FL_UNCHANGED);
+  merged_image_file=zip_fopen(zip_archive, MERGED_IMAGE_PATH, ZIP_FL_UNCHANGED);
   if (merged_image_file == NULL) {
     ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
       image_info->filename);
@@ -166,9 +166,9 @@ static Image *ReadORAImage(const ImageInfo *image_info,
   }
 
   /* Get a temporary file to write the mergedimage.png of the ZIP to */
-  (void) CopyMagickString(read_info->magick, "PNG", MagickPathExtent);
-  unique_file = AcquireUniqueFileResource(read_info->unique);
-  (void) CopyMagickString(read_info->filename, read_info->unique,
+  (void) CopyMagickString(read_info->magick,"PNG",MagickPathExtent);
+  unique_file=AcquireUniqueFileResource(read_info->unique);
+  (void) CopyMagickString(read_info->filename,read_info->unique,
     MagickPathExtent);
 
   file=(FILE *) NULL;
@@ -186,10 +186,10 @@ static Image *ReadORAImage(const ImageInfo *image_info,
     }
 
   /* Write the uncompressed mergedimage.png to the temporary file */
-  offset = 0;
+  offset=0;
   do
   {
-    read_bytes = zip_fread(merged_image_file, image_data_buffer + offset, MaxBufferExtent - offset);
+    read_bytes=zip_fread(merged_image_file, image_data_buffer + offset, MaxBufferExtent - offset);
     if (read_bytes == -1) {
       ThrowFileException(exception,FileOpenError,"UnableToCreateTemporaryFile",
           read_info->filename);
@@ -244,7 +244,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,
   fclose(file);
 
   /* delegate to ReadImage to read mergedimage.png */
-  out_image = ReadImage(read_info, exception);
+  out_image=ReadImage(read_info, exception);
   RelinquishUniqueFileResource(read_info->filename);
   read_info=DestroyImageInfo(read_info);
 
@@ -254,13 +254,13 @@ static Image *ReadORAImage(const ImageInfo *image_info,
       MagickPathExtent);
     (void) CopyMagickString(out_image->magick_filename,
       image_metadata->magick_filename, MagickPathExtent);
-    out_image->timestamp = time(&stat_info.st_mtime);
+    out_image->timestamp=time(&stat_info.st_mtime);
     (void) CopyMagickString(out_image->magick, image_metadata->magick,
       MagickPathExtent);
-    out_image->extent = stat_info.st_size;
+    out_image->extent=stat_info.st_size;
     DestroyImage(image_metadata);
   }
-  return out_image;
+  return(out_image);
 }
 #endif /* MAGICKCORE_LIBZIP_DELEGATE && MAGICKCORE_PNG_DELEGATE */
 
