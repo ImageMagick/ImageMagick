@@ -191,7 +191,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,
   offset=0;
   while (status != MagickFalse)
   {
-    read_bytes=zip_fread(merged_image_file,image_data_buffer + offset,
+    read_bytes=zip_fread(merged_image_file,image_data_buffer+offset,
       MaxBufferExtent-offset);
     if (read_bytes == -1)
       status=MagickFalse;
@@ -226,18 +226,18 @@ static Image *ReadORAImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   /* Delegate to ReadImage to read mergedimage.png */
-  out_image=ReadImage(read_info, exception);
+  out_image=ReadImage(read_info,exception);
   (void) RelinquishUniqueFileResource(read_info->filename);
   read_info=DestroyImageInfo(read_info);
   /* Update fields of image from fields of png_image */
   if (out_image != NULL)
     {
-      (void) CopyMagickString(out_image->filename, image_metadata->filename,
+      (void) CopyMagickString(out_image->filename,image_metadata->filename,
         MagickPathExtent);
       (void) CopyMagickString(out_image->magick_filename,
-        image_metadata->magick_filename, MagickPathExtent);
+        image_metadata->magick_filename,MagickPathExtent);
       out_image->timestamp=time(&stat_info.st_mtime);
-      (void) CopyMagickString(out_image->magick, image_metadata->magick,
+      (void) CopyMagickString(out_image->magick,image_metadata->magick,
         MagickPathExtent);
       out_image->extent=stat_info.st_size;
     }
