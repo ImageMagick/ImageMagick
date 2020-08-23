@@ -118,13 +118,17 @@ static Image *ReadORAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   Image
     *image_metadata,
-		*out_image;
+    *out_image;
 
   ImageInfo
     *read_info;
 
   int
-    unique_file;
+    unique_file,
+    zip_error;
+
+  struct stat
+    stat_info;
 
   zip_t
     *zip_archive;
@@ -136,17 +140,13 @@ static Image *ReadORAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     read_bytes,
     offset;
 
-  int zipError;
-
-  struct stat stat_info;
-
   image_metadata=AcquireImage(image_info,exception);
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
 
   stat(image_info->filename, &stat_info);
 
-  zip_archive = zip_open(image_info->filename, ZIP_RDONLY, &zipError);
+  zip_archive = zip_open(image_info->filename, ZIP_RDONLY, &zip_error);
   if (zip_archive == NULL) {
     ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
       image_info->filename);
@@ -169,7 +169,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) CopyMagickString(read_info->magick, "PNG", MagickPathExtent);
   unique_file = AcquireUniqueFileResource(read_info->unique);
   (void) CopyMagickString(read_info->filename, read_info->unique,
-		  MagickPathExtent);
+    MagickPathExtent);
 
   if (unique_file != -1)
     file=fdopen(unique_file,"wb");
@@ -261,8 +261,8 @@ static Image *ReadORAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   return out_image;
 }
-#endif /* #if defined(MAGICKCORE_LIBZIP_DELEGATE) */
-#endif /* defined(MAGICKCORE_PNG_DELEGATE) */
+#endif /* MAGICKCORE_LIBZIP_DELEGATE */
+#endif /* MAGICKCORE_PNG_DELEGATE */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
