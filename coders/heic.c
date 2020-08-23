@@ -92,17 +92,13 @@
 */
 static const char
   xmp_namespace[] = "http://ns.adobe.com/xap/1.0/ ";
-
-
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT)
+
 /*
   Forward declarations.
 */
 static MagickBooleanType
   WriteHEICImage(const ImageInfo *,Image *,ExceptionInfo *);
-#endif
-
-
+
 /*x
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -611,9 +607,7 @@ ModuleExport size_t RegisterHEICImage(void)
   entry=AcquireMagickInfo("HEIC","HEIC","High Efficiency Image Format");
 #if defined(MAGICKCORE_HEIC_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadHEICImage;
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT)
   entry->encoder=(EncodeImageHandler *) WriteHEICImage;
-#endif
 #endif
   entry->magick=(IsImageFormatHandler *) IsHEIC;
   entry->mime_type=ConstantString("image/x-heic");
@@ -626,9 +620,7 @@ ModuleExport size_t RegisterHEICImage(void)
   entry=AcquireMagickInfo("HEIC","AVIF","AV1 Image File Format");
 #if defined(MAGICKCORE_HEIC_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadHEICImage;
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT)
   entry->encoder=(EncodeImageHandler *) WriteHEICImage;
-#endif
 #endif
   entry->magick=(IsImageFormatHandler *) IsHEIC;
   entry->mime_type=ConstantString("image/x-heic");
@@ -693,7 +685,7 @@ ModuleExport void UnregisterHEICImage(void)
 %
 */
 
-#if defined(MAGICKCORE_HEIC_DELEGATE) && !defined(MAGICKCORE_WINDOWS_SUPPORT)
+#if defined(MAGICKCORE_HEIC_DELEGATE)
 #if LIBHEIF_NUMERIC_VERSION >= 0x01030000
 static void WriteProfile(struct heif_context *context,Image *image,
   ExceptionInfo *exception)

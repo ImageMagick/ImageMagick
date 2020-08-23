@@ -1,3 +1,6 @@
+2020-08-23  7.0.10-29 Dirk Lemstra <dirk@lem.....org>
+  * Enabled support for AVIF encoding on Windows.
+
 2020-08-16  7.0.10-28  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-28 GIT revision 17533:41e79fc33:20200816
 
