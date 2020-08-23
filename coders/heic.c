@@ -939,13 +939,14 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     /*
       Code and actually write the HEIC image
     */
-    error=heif_context_get_encoder_for_format(heif_context,
-      heif_compression_HEVC,&heif_encoder);
 #if LIBHEIF_NUMERIC_VERSION > 0x01060200
     if (LocaleCompare(image_info->magick,"AVIF") == 0)
       error=heif_context_get_encoder_for_format(heif_context,
         heif_compression_AV1,&heif_encoder);
+    else
 #endif
+      error=heif_context_get_encoder_for_format(heif_context,
+        heif_compression_HEVC,&heif_encoder);
     status=IsHeifSuccess(&error,image,exception);
     if (status == MagickFalse)
       break;
