@@ -101,9 +101,9 @@ extern "C" {
 }
 #endif
 
-#if defined(MAGICKCORE_PNG_DELEGATE)
-#if defined(MAGICKCORE_LIBZIP_DELEGATE)
-static Image *ReadORAImage(const ImageInfo *image_info,ExceptionInfo *exception)
+#if defined(MAGICKCORE_PNG_DELEGATE) && defined(MAGICKCORE_LIBZIP_DELEGATE)
+static Image *ReadORAImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
 #define MaxBufferExtent  8192
 
@@ -261,8 +261,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   return out_image;
 }
-#endif /* MAGICKCORE_LIBZIP_DELEGATE */
-#endif /* MAGICKCORE_PNG_DELEGATE */
+#endif /* MAGICKCORE_LIBZIP_DELEGATE && MAGICKCORE_PNG_DELEGATE */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -294,12 +293,11 @@ ModuleExport size_t RegisterORAImage(void)
 
   entry=AcquireMagickInfo("ORA","ORA","OpenRaster format");
 
-#if defined(MAGICKCORE_PNG_DELEGATE)
-#if defined(MAGICKCORE_LIBZIP_DELEGATE)
+#if defined(MAGICKCORE_LIBZIP_DELEGATE) && defined(MAGICKCORE_PNG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadORAImage;
 #endif
-#endif
-
+  entry->flags^=CoderBlobSupportFlag;
+  entry->flags|=CoderSeekableStreamFlag;
   entry->format_type=ExplicitFormatType;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
