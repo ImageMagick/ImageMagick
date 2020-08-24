@@ -49,11 +49,17 @@ jobs:
         cd %GITHUB_WORKSPACE%\ImageMagick-Windows
         CloneRepositories.cmd https://github.com/ImageMagick shallow
 
-    - name: Install FFmpeg
+    - name: Download FFmpeg
       shell: cmd
       run: |
         powershell Invoke-WebRequest -Uri https://github.com/ImageMagick/ImageMagick-Windows/releases/download/20200615/ffmpeg-4.2.3-win${{matrix.bit}}.exe -OutFile ffmpeg.exe
         copy /Y ffmpeg.exe %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\bin
+
+    - name: Download hp2xx
+      shell: cmd
+      run: |
+        powershell Invoke-WebRequest -Uri https://github.com/ImageMagick/ImageMagick-Windows/releases/download/20200615/hp2xx.exe -OutFile hp2xx.exe
+        copy /Y hp2xx.exe %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\bin
 
     - name: Install Strawberry Perl
       if: ${{matrix.type == 'dll'}}
