@@ -4573,7 +4573,7 @@ MAGICK_PATCHLEVEL_VERSION=29
 
 MAGICK_VERSION=7.0.10-29
 
-MAGICK_GIT_REVISION=17562:95dc0daf0:20200825
+MAGICK_GIT_REVISION=17563:6830cfab5:20200825
 
 
 # Substitute library versioning
@@ -10602,6 +10602,7 @@ if test "$enable_openmp" != no; then
 fi
 
 # Enable support for OpenCL
+no_cl='yes'
       CPPFLAGS_CL=""
     for ac_header in CL/cl.h OpenCL/cl.h
 do :
