@@ -264,6 +264,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ac_func_fseeko.m4 \
 	$(top_srcdir)/m4/ax_c___attribute__.m4 \
 	$(top_srcdir)/m4/ax_cflags_warn_all.m4 \
 	$(top_srcdir)/m4/ax_check_compile_flag.m4 \
+	$(top_srcdir)/m4/ax_check_framework.m4 \
 	$(top_srcdir)/m4/ax_compare_version.m4 \
 	$(top_srcdir)/m4/ax_compiler_vendor.m4 \
 	$(top_srcdir)/m4/ax_cxx_bool.m4 \
@@ -271,8 +272,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ac_func_fseeko.m4 \
 	$(top_srcdir)/m4/ax_cxx_namespaces.m4 \
 	$(top_srcdir)/m4/ax_gcc_archflag.m4 \
 	$(top_srcdir)/m4/ax_gcc_x86_cpuid.m4 \
-	$(top_srcdir)/m4/ax_lang_compiler_ms.m4 \
-	$(top_srcdir)/m4/ax_opencl.m4 \
+	$(top_srcdir)/m4/ax_have_opencl.m4 \
 	$(top_srcdir)/m4/ax_prefix_config_h.m4 \
 	$(top_srcdir)/m4/ax_prepend_flag.m4 \
 	$(top_srcdir)/m4/ax_prog_perl_version.m4 \
@@ -3058,8 +3058,6 @@ CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CCMALLOCDelegate = @CCMALLOCDelegate@
 CFLAGS = @CFLAGS@
-CL_CFLAGS = @CL_CFLAGS@
-CL_LIBS = @CL_LIBS@
 CODER_DIRNAME = @CODER_DIRNAME@
 CODER_PATH = @CODER_PATH@
 CONFIGURE_ARGS = @CONFIGURE_ARGS@
@@ -3533,7 +3531,7 @@ M4_EXTRA_DIST = \
   ax_cxx_namespaces.m4  \
   ax_cxx_namespace_std.m4  \
   ax_lang_compiler_ms.m4  \
-  ax_opencl.m4  \
+  ax_have_opencl.m4  \
   ax_prefix_config_h.m4  \
   ax_prog_perl_version.m4  \
   ax_pthread.m4  \

@@ -675,9 +675,6 @@
 /* Define to 1 if you have the <wchar.h> header file. */
 #undef HAVE_WCHAR_H
 
-/* Define to 1 if you have the <windows.h> header file. */
-#undef HAVE_WINDOWS_H
-
 /* Define to 1 if `fork' works. */
 #undef HAVE_WORKING_FORK
 
@@ -1018,9 +1015,6 @@
 
 /* Define to 1 if on MINIX. */
 #undef _MINIX
-
-/* Define this for the OpenCL Accelerator */
-#undef _OPENCL
 
 /* Define to 2 if the system does not provide POSIX.1 features except with
    this defined. */

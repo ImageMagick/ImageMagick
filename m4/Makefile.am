@@ -24,7 +24,7 @@ M4_EXTRA_DIST =  \
   ax_cxx_namespaces.m4  \
   ax_cxx_namespace_std.m4  \
   ax_lang_compiler_ms.m4  \
-  ax_opencl.m4  \
+  ax_have_opencl.m4  \
   ax_prefix_config_h.m4  \
   ax_prog_perl_version.m4  \
   ax_pthread.m4  \
