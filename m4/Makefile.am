@@ -19,6 +19,7 @@ M4_EXTRA_DIST =  \
   ax_append_flag.m4  \
   ax_c___attribute__.m4  \
   ax_cflags_warn_all.m4  \
+  ax_check_framework.m4  \
   ax_compare_version.m4  \
   ax_cxx_bool.m4  \
   ax_cxx_namespaces.m4  \
