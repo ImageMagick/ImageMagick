@@ -515,9 +515,9 @@ if test "$enable_openmp" != no; then
 fi
 
 # Enable support for OpenCL
-no_cl='yes'
+no_cl=yes
 AX_HAVE_OPENCL([C])
-if test "$no_cl" != 'yes'; then
+if test "X$no_cl" != 'Xyes'; then
   MAGICK_FEATURES="OpenCL $MAGICK_FEATURES"
 fi
 
@@ -1647,7 +1647,7 @@ dnl ===========================================================================
 with_ltdl='yes'
 have_ltdl='no'
 LTDL_LIBS=''
-if test "$build_modules" != 'no' || test "no_cl" != 'no'; then
+if test "$build_modules" != 'no' || test "X$no_cl" != 'Xyes'; then
   AC_MSG_RESULT([-------------------------------------------------------------])
   AC_MSG_CHECKING([for libltdl])
   AC_MSG_RESULT([])
