@@ -946,7 +946,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
 
   double
     elapsed_time,
-    user_time;
+    user_time,
+    version;
 
   ImageType
     type;
@@ -981,7 +982,14 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   ping=p == (const Quantum *) NULL ? MagickTrue : MagickFalse;
   (void) ping;
   (void) SignatureImage(image,exception);
-  JSONFormatLocaleFile(file,"{\n  \"image\": {\n    \"name\": %s,\n",
+  (void) FormatLocaleFile(file,"\n{\n");
+  version=1.0;
+  artifact=GetImageArtifact(image,"json:version");
+  if (artifact != (const char *) NULL)
+    version=StringToDouble(artifact,(char **) NULL);
+  if (version >= 1.0)
+    (void) FormatLocaleFile(file,"  \"version\": \"%.1f\",\n",version);
+  JSONFormatLocaleFile(file,"  \"image\": {\n    \"name\": %s,\n",
     image->filename);
   if (*image->magick_filename != '\0')
     if (LocaleCompare(image->magick_filename,image->filename) != 0)
@@ -1033,8 +1041,12 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   if (image->type != type)
     JSONFormatLocaleFile(file,"    \"baseType\": %s,\n",
       CommandOptionToMnemonic(MagickTypeOptions,(ssize_t) image->type));
-  JSONFormatLocaleFile(file,"    \"endianness\": %s,\n",
-    CommandOptionToMnemonic(MagickEndianOptions,(ssize_t) image->endian));
+  if (version < 1.0)
+    JSONFormatLocaleFile(file,"    \"endianess\": %s,\n",
+      CommandOptionToMnemonic(MagickEndianOptions,(ssize_t) image->endian));
+  else
+    JSONFormatLocaleFile(file,"    \"endianness\": %s,\n",
+      CommandOptionToMnemonic(MagickEndianOptions,(ssize_t) image->endian));
   locate=GetImageArtifact(image,"identify:locate");
   if (locate == (const char *) NULL)
     locate=GetImageArtifact(image,"json:locate");
