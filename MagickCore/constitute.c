@@ -1106,13 +1106,13 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
   if (sans_exception->severity == PolicyError)
     magick_info=GetMagickInfo(write_info->magick,exception);
   sans_exception=DestroyExceptionInfo(sans_exception);
-  if (magick_info != (const MagickInfo *) NULL)
+  if ((magick_info != (const MagickInfo *) NULL) &&
+      (GetMagickRawSupport(magick_info) != MagickFalse))
     {
       if (GetMagickEndianSupport(magick_info) == MagickFalse)
         image->endian=UndefinedEndian;
       else
-        if ((image_info->endian == UndefinedEndian) &&
-            (GetMagickRawSupport(magick_info) != MagickFalse))
+        if (image_info->endian == UndefinedEndian)
           {
             unsigned long
               lsb_first;
