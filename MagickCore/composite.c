@@ -798,8 +798,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         Blur Image dictated by an overlay gradient map: X = red_channel;
           Y = green_channel; compose:args =  x_scale[,y_scale[,angle]].
       */
-      canvas_image=CloneImage(image,0,0,MagickTrue,
-        exception);
+      canvas_image=CloneImage(image,0,0,MagickTrue,exception);
       if (canvas_image == (Image *) NULL)
         {
           source_image=DestroyImage(source_image);
@@ -902,7 +901,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               p+=GetPixelChannels(source_image);
               continue;
             }
-          if (fabs((double) angle_range) > MagickEpsilon)
+          if (fabs(angle_range) > MagickEpsilon)
             {
               MagickRealType
                 angle;
