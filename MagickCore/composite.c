@@ -1606,6 +1606,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                   pixel=QuantumRange*Sa;
                 break;
               }
+              case BlurCompositeOp:
               case CopyCompositeOp:
               case DisplaceCompositeOp:
               case DistortCompositeOp:
@@ -1748,7 +1749,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             pixel=gamma*(source_dissolve*Sa*Sc+canvas_dissolve*Da*Dc);
             break;
           }
-          case BlurCompositeOp:
           case CopyCompositeOp:
           case ReplaceCompositeOp:
           case SrcCompositeOp:
@@ -1756,6 +1756,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             pixel=QuantumRange*Sca;
             break;
           }
+          case BlurCompositeOp:
           case DisplaceCompositeOp:
           case DistortCompositeOp:
           {
