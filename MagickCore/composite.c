@@ -777,7 +777,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       CacheView
         *canvas_view;
 
-      MagickRealType
+      double
         angle_range,
         angle_start,
         height,
@@ -793,10 +793,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         blur;
 
       /*
-        Blur Image by resampling.
-
-        Blur Image dictated by an overlay gradient map: X = red_channel;
-          Y = green_channel; compose:args =  x_scale[,y_scale[,angle]].
+        Blur Image by resampling dictated by an overlay gradient map:
+          X = red_channel; Y = green_channel; compose:args =
+          x_scale[,y_scale[,angle]].
       */
       canvas_image=CloneImage(image,0,0,MagickTrue,exception);
       if (canvas_image == (Image *) NULL)
@@ -821,12 +820,13 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         }
       /*
         Users input sigma now needs to be converted to the EWA ellipse size.
-        The filter defaults to a sigma of 0.5 so to make this match the
-        users input the ellipse size needs to be doubled.
+        The filter defaults to a sigma of 0.5 so to make this match the users
+        input the ellipse size needs to be doubled.
       */
-      width=height=geometry_info.rho*2.0;
-      if ((flags & HeightValue) != 0 )
-        height=geometry_info.sigma*2.0;
+      width=2.0*geometry_info.rho;
+      height=width;
+      if ((flags & HeightValue) != 0)
+        height=2.0*geometry_info.sigma;
       /*
         Default the unrotated ellipse width and height axis vectors.
       */
@@ -834,23 +834,27 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       blur.x2=0.0;
       blur.y1=0.0;
       blur.y2=height;
-      /* rotate vectors if a rotation angle is given */
       if ((flags & XValue) != 0 )
         {
           MagickRealType
             angle;
 
+          /*
+            Rotate vectors if a rotation angle is given.
+          */
           angle=DegreesToRadians(geometry_info.xi);
           blur.x1=width*cos(angle);
           blur.x2=width*sin(angle);
           blur.y1=(-height*sin(angle));
           blur.y2=height*cos(angle);
         }
-      /* Otherwise lets set a angle range and calculate in the loop */
       angle_start=0.0;
       angle_range=0.0;
       if ((flags & YValue) != 0 )
         {
+          /*
+            Lets set a angle range and calculate in the loop.
+          */
           angle_start=DegreesToRadians(geometry_info.xi);
           angle_range=DegreesToRadians(geometry_info.psi)-angle_start;
         }
@@ -859,16 +863,15 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 
         As the minimum ellipse radius of support*1.0 the EWA algorithm
         can only produce a minimum blur of 0.5 for Gaussian (support=2.0)
-        This means that even 'No Blur' will be still a little blurry!
-
-        The solution (as well as the problem of preventing any user
-        expert filter settings, is to set our own user settings, then
-        restore them afterwards.
+        This means that even 'No Blur' will be still a little blurry! The
+        solution (as well as the problem of preventing any user expert filter
+        settings, is to set our own user settings, restore them afterwards.
       */
       resample_filter=AcquireResampleFilter(image,exception);
       SetResampleFilter(resample_filter,GaussianFilter);
-
-      /* do the variable blurring of each pixel in image */
+      /*
+        Perform the variable blurring of each pixel in image.
+      */
       GetPixelInfo(image,&pixel);
       source_view=AcquireVirtualCacheView(source_image,exception);
       canvas_view=AcquireAuthenticCacheView(canvas_image,exception);
