@@ -2240,12 +2240,13 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
   } while ((status != MagickFalse) && (more_frames != MagickFalse));
   TIFFClose(tiff);
+  if (status != MagickFalse)
+    TIFFReadPhotoshopLayers(image_info,image,exception);
   if ((image_info->number_scenes != 0) &&
       (image_info->scene >= GetImageListLength(image)))
     status=MagickFalse;
   if (status == MagickFalse)
     return(DestroyImageList(image));
-  TIFFReadPhotoshopLayers(image_info,image,exception);
   return(GetFirstImageInList(image));
 }
 #endif
