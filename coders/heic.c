@@ -871,6 +871,94 @@ static MagickBooleanType heif_compose_image_YCbCr(Image *image, ExceptionInfo *e
   return status;
 }
 
+static MagickBooleanType heif_compose_image_sRGB(Image *image, ExceptionInfo *exception, struct heif_image *heif_image) {
+  MagickBooleanType
+    status = MagickTrue;
+
+  ssize_t
+    y;
+
+  const Quantum
+    *p;
+
+  int
+    stride_r,
+    stride_g,
+    stride_b,
+    stride_a;
+
+  struct heif_error
+    error;
+
+  uint8_t
+    *p_r,
+    *p_g,
+    *p_b,
+    *p_a;
+
+  error=heif_image_add_plane(heif_image,heif_channel_R,(int) image->columns,
+    (int) image->rows,8);
+  status=IsHeifSuccess(&error,image,exception);
+  if (status == MagickFalse)
+    return status;
+  error=heif_image_add_plane(heif_image,heif_channel_Cb,
+    ((int) image->columns+1)/2,((int) image->rows+1)/2,8);
+  status=IsHeifSuccess(&error,image,exception);
+  if (status == MagickFalse)
+    return status;
+  error=heif_image_add_plane(heif_image,heif_channel_Cr,
+    ((int) image->columns+1)/2,((int) image->rows+1)/2,8);
+  status=IsHeifSuccess(&error,image,exception);
+  if (status == MagickFalse)
+    return status;
+  p_y=heif_image_get_plane(heif_image,heif_channel_Y,&stride_y);
+  p_cb=heif_image_get_plane(heif_image,heif_channel_Cb,&stride_cb);
+  p_cr=heif_image_get_plane(heif_image,heif_channel_Cr,&stride_cr);
+  /*
+    Copy image to heif_image
+  */
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register ssize_t
+      x;
+
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    if (p == (const Quantum *) NULL)
+      {
+        status=MagickFalse;
+        break;
+      }
+    if ((y & 0x01) == 0)
+      for (x=0; x < (ssize_t) image->columns; x+=2)
+      {
+        p_y[y*stride_y+x]=ScaleQuantumToChar(GetPixelRed(image,p));
+        p_cb[y/2*stride_cb+x/2]=ScaleQuantumToChar(GetPixelGreen(image,p));
+        p_cr[y/2*stride_cr+x/2]=ScaleQuantumToChar(GetPixelBlue(image,p));
+        p+=GetPixelChannels(image);
+        if ((x+1) < (ssize_t) image->columns)
+          {
+            p_y[y*stride_y+x+1]=ScaleQuantumToChar(GetPixelRed(image,p));
+            p+=GetPixelChannels(image);
+          }
+      }
+    else
+      for (x=0; x < (ssize_t) image->columns; x++)
+      {
+        p_y[y*stride_y+x]=ScaleQuantumToChar(GetPixelRed(image,p));
+        p+=GetPixelChannels(image);
+      }
+    if (image->previous == (Image *) NULL)
+      {
+        status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+          image->rows);
+        if (status == MagickFalse)
+          break;
+      }
+  }
+
+  return status;
+}
+
 static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
@@ -963,8 +1051,18 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
         GetStringInfoDatum(profile),GetStringInfoLength(profile));
 #endif
 
-    if (cs == heif_colorspace_YCbCr) {
+    switch (cs)
+    {
+    case heif_colorspace_YCbCr:
       status=heif_compose_image_YCbCr(image, exception, heif_image);
+      break;
+    case heif_colorspace_RGB:
+      //TODO
+      break;
+    default:
+      status=MagickFalse;
+      //TODO: Error
+      break;
     }
 
     if (status == MagickFalse)
