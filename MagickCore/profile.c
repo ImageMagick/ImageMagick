@@ -2385,3 +2385,151 @@ MagickPrivate MagickBooleanType SyncImageProfiles(Image *image)
       status=MagickFalse;
   return(status);
 }
+
+static void UpdateClipPath(unsigned char *blob,size_t length,
+  const size_t old_columns,const size_t old_rows,
+  const RectangleInfo *new_geometry)
+{
+  MagickBooleanType
+    in_subpath;
+
+  register ssize_t
+    i;
+
+  ssize_t
+    knot_count,
+    selector;
+
+  knot_count=0;
+  in_subpath=MagickFalse;
+  while (length != 0)
+  {
+    selector=(ssize_t) ReadProfileMSBShort(&blob,&length);
+    switch (selector)
+    {
+      case 0:
+      case 3:
+      {
+        if (knot_count != 0)
+          {
+            blob+=24;
+            length-=MagickMin(24,(ssize_t) length);
+            break;
+          }
+        /*
+          Expected subpath length record.
+        */
+        knot_count=(ssize_t) ReadProfileMSBShort(&blob,&length);
+        blob+=22;
+        length-=MagickMin(22,(ssize_t) length);
+        break;
+      }
+      case 1:
+      case 2:
+      case 4:
+      case 5:
+      {
+        if (knot_count == 0)
+          {
+            /*
+              Unexpected subpath knot.
+            */
+            blob+=24;
+            length-=MagickMin(24,(ssize_t) length);
+            break;
+          }
+        /*
+          Add sub-path knot
+        */
+        for (i=0; i < 3; i++)
+        {
+          double
+            x,
+            y;
+
+          signed int
+            xx,
+            yy;
+
+          y=(double) ReadProfileMSBLong(&blob,&length);
+          y=y*old_rows/4096/4096;
+          y-=new_geometry->y;
+          yy=(signed int) ((y*4096*4096)/new_geometry->height);
+          WriteProfileLong(MSBEndian,(size_t) yy,blob-4);
+          x=(double) ReadProfileMSBLong(&blob,&length);
+          x=x*old_columns/4096/4096;
+          x-=new_geometry->x;
+          xx=(signed int) ((x*4096*4096)/new_geometry->width);
+          WriteProfileLong(MSBEndian,(size_t) xx,blob-4);
+        }
+        in_subpath=MagickTrue;
+        knot_count--;
+        /*
+          Close the subpath if there are no more knots.
+        */
+        if (knot_count == 0)
+          in_subpath=MagickFalse;
+        break;
+      }
+      case 6:
+      case 7:
+      case 8:
+      default:
+      {
+        blob+=24;
+        length-=MagickMin(24,(ssize_t) length);
+        break;
+      }
+    }
+  }
+}
+
+MagickPrivate void Update8BIMClipPath(const StringInfo *profile,
+  const size_t old_columns,const size_t old_rows,
+  const RectangleInfo *new_geometry)
+{
+  unsigned char
+    *info;
+
+  size_t
+    length;
+
+  ssize_t
+    count,
+    id;
+
+  assert(profile != (StringInfo *) NULL);
+  assert(new_geometry != (RectangleInfo *) NULL);
+  length=GetStringInfoLength(profile);
+  info=GetStringInfoDatum(profile);
+  while (length > 0)
+  {
+    if (ReadProfileByte(&info,&length) != (unsigned char) '8')
+      continue;
+    if (ReadProfileByte(&info,&length) != (unsigned char) 'B')
+      continue;
+    if (ReadProfileByte(&info,&length) != (unsigned char) 'I')
+      continue;
+    if (ReadProfileByte(&info,&length) != (unsigned char) 'M')
+      continue;
+    id=(ssize_t) ReadProfileMSBShort(&info,&length);
+    count=(ssize_t) ReadProfileByte(&info,&length);
+    if ((count != 0) && ((size_t) count <= length))
+      {
+        info+=count;
+        length-=count;
+      }
+    if ((count & 0x01) == 0)
+      (void) ReadProfileByte(&info,&length);
+    count=(ssize_t) ReadProfileMSBLong(&info,&length);
+    if ((count < 0) || ((size_t) count > length))
+      {
+        length=0;
+        continue;
+      }
+    if ((id > 1999) && (id < 2999))
+      UpdateClipPath(info,(size_t) count,old_columns,old_rows,new_geometry);
+    info+=count;
+    length-=MagickMin(count,(ssize_t) length);
+  }
+}

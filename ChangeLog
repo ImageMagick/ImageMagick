@@ -1,5 +1,7 @@
-2020-08-23  7.0.10-29 Dirk Lemstra <dirk@lem.....org>
+2020-09-01  7.0.10-29 Dirk Lemstra <dirk@lem.....org>
   * Enabled support for AVIF encoding on Windows.
+  * Clip path in 8bim profile is updated when the image is extended. (reference
+    https://github.com/ImageMagick/ImageMagick/issues/2414)
 
 2020-08-16  7.0.10-28  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-28 GIT revision 17533:41e79fc33:20200816

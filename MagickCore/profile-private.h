@@ -27,6 +27,10 @@ extern "C" {
 extern MagickPrivate MagickBooleanType
   SyncImageProfiles(Image *);
 
+extern MagickPrivate void
+  Update8BIMClipPath(const StringInfo *,const size_t,const size_t,
+    const RectangleInfo *);
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif 
