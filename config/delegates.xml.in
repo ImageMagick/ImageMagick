@@ -110,8 +110,8 @@
   <delegate decode="shtml" command="&quot;@HTMLDecodeDelegate@&quot; -U -o &quot;%o&quot; &quot;%i&quot;"/>
   <delegate decode="sid" command="&quot;@MrSIDDecodeDelegate@&quot; -if sid -i &quot;%i&quot; -of tif -o &quot;%o&quot; &gt; &quot;%u&quot;"/>
   <delegate decode="svg" command="&quot;@RSVGDecodeDelegate@&quot; -o &quot;%o&quot; &quot;%i&quot;"/>
-  <!-- Change export-file to export-png for inkscape < 1.0 -->
-  <delegate decode="svg:decode" stealth="True" command="&quot;@SVGDecodeDelegate@&quot; &quot;%s&quot; --export-file=&quot;%s&quot; --export-dpi=&quot;%s&quot; --export-background=&quot;%s&quot; --export-background-opacity=&quot;%s&quot; &gt; &quot;%s&quot; 2&gt;&amp;1"/>
+  <!-- Change export-filename to export-png for inkscape < 1.0 -->
+  <delegate decode="svg:decode" stealth="True" command="&quot;@SVGDecodeDelegate@&quot; &quot;%s&quot; --export-filename=&quot;%s&quot; --export-dpi=&quot;%s&quot; --export-background=&quot;%s&quot; --export-background-opacity=&quot;%s&quot; &gt; &quot;%s&quot; 2&gt;&amp;1"/>
   <delegate decode="tiff" encode="launch" mode="encode" command="&quot;@LaunchDelegate@&quot; &quot;%i&quot;"/>
   <delegate decode="wdp" command="@MVDelegate@ &quot;%i&quot; &quot;%i.jxr&quot;; &quot;@JXRDecodeDelegate@&quot; -i &quot;%i.jxr&quot; -o &quot;%o.bmp&quot;; @MVDelegate@ &quot;%i.jxr&quot; &quot;%i&quot;; @MVDelegate@ &quot;%o.bmp&quot; &quot;%o&quot;"/>
   <delegate decode="webp" command="&quot;@WebPDecodeDelegate@&quot; -pam &quot;%i&quot; -o &quot;%o&quot;"/>
