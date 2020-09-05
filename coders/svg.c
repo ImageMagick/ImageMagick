@@ -883,6 +883,8 @@ static void SVGProcessStyleElement(void *context,const xmlChar *name,
         if (LocaleCompare(keyword,"color") == 0)
           {
             (void) CloneString(&color,value);
+            (void) FormatLocaleFile(svg_info->file,"currentColor \"%s\"\n",
+              color);
             break;
           }
         break;
