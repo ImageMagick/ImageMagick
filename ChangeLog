@@ -1,3 +1,12 @@
+2020-09-05  7.0.10-29  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-29 GIT revision 17580:fc52fa0a9:20200905
+
+2020-09-05  7.0.10-28  <quetzlzacatenango@image...>
+  * Eliminate infinite loop for certain SVG styles (reference
+    https://github.com/ImageMagick/ImageMagick6/issues/96).
+  * Add version element to JSON file format (reference
+    https://github.com/ImageMagick/ImageMagick6/issues/91).
+
 2020-09-01  7.0.10-29 Dirk Lemstra <dirk@lem.....org>
   * Enabled support for AVIF encoding on Windows.
   * Clip path in 8bim profile is updated when the image is extended. (reference
