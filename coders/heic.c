@@ -73,6 +73,7 @@
 #include "MagickCore/string-private.h"
 #include "MagickCore/module.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/attribute.h"
 #if defined(MAGICKCORE_HEIC_DELEGATE)
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #include <heif.h>
@@ -874,7 +875,8 @@ static MagickBooleanType heif_compose_image_YCbCr(Image *image, ExceptionInfo *e
 
 static MagickBooleanType heif_compose_image_sRGB(Image *image, ExceptionInfo *exception, struct heif_image *heif_image) {
   MagickBooleanType
-    status = MagickTrue;
+    status = MagickTrue,
+    opaque = heif_image_get_chroma_format(heif_image) == heif_chroma_interleaved_RGB;
 
   ssize_t
     y;
@@ -888,11 +890,12 @@ static MagickBooleanType heif_compose_image_sRGB(Image *image, ExceptionInfo *ex
     error;
 
   uint8_t
-    *target_p;
+    *target_p,
+    pixelSize = opaque ? 3 : 4;
 
-  printf("heif_compose_image_sRGB\n");
+  printf("heif_compose_image_sRGB %d\n", opaque);
   error=heif_image_add_plane(heif_image,heif_channel_interleaved,(int) image->columns,
-    (int) image->rows,32);
+    (int) image->rows, 8*pixelSize);
   status=IsHeifSuccess(&error,image,exception);
   if (status == MagickFalse)
     return status;
@@ -916,10 +919,13 @@ static MagickBooleanType heif_compose_image_sRGB(Image *image, ExceptionInfo *ex
     
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      target_p[y*stride+x*4]=ScaleQuantumToChar(GetPixelRed(image,p));
-      target_p[y*stride+x*4+1]=ScaleQuantumToChar(GetPixelGreen(image,p));
-      target_p[y*stride+x*4+2]=ScaleQuantumToChar(GetPixelBlue(image,p));
-      target_p[y*stride+x*4+3]=ScaleQuantumToChar(GetPixelAlpha(image,p));
+      target_p[y*stride+x*pixelSize]=ScaleQuantumToChar(GetPixelRed(image,p));
+      target_p[y*stride+x*pixelSize+1]=ScaleQuantumToChar(GetPixelGreen(image,p));
+      target_p[y*stride+x*pixelSize+2]=ScaleQuantumToChar(GetPixelBlue(image,p));
+      if (!opaque) 
+        {
+          target_p[y*stride+x*pixelSize+3]=ScaleQuantumToChar(GetPixelAlpha(image,p));
+        }
       p+=GetPixelChannels(image);
     }
 
@@ -939,7 +945,8 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
   MagickBooleanType
-    status;
+    status,
+    opaque;
 
   MagickOffsetType
     scene;
@@ -1003,8 +1010,9 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     printf("Colorspace: %d\n", image->colorspace);
     if (image->colorspace == sRGBColorspace) {
       printf("sRGB colorspace!\n");
+      opaque = IsImageOpaque(image, exception);
       cs=heif_colorspace_RGB;
-      chroma=heif_chroma_interleaved_RGBA;
+      chroma=opaque ? heif_chroma_interleaved_RGB : heif_chroma_interleaved_RGBA;
     } else if (image->colorspace != YCbCrColorspace) {
       /*
       Transform colorspace to YCbCr.
