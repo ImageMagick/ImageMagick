@@ -1810,7 +1810,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
     dx=primitive_info[i].point.x-primitive_info[i-1].point.x;
     dy=primitive_info[i].point.y-primitive_info[i-1].point.y;
     maximum_length=hypot(dx,dy);
-    if (maximum_length > (MaxBezierCoordinates >> 2))
+    if (maximum_length > (double) (MaxBezierCoordinates >> 2))
       break;
     if (fabs(length) < MagickEpsilon)
       {
@@ -4391,11 +4391,12 @@ static MagickBooleanType RenderMVGContent(Image *image,
     /*
       Sanity check.
     */
-    status&=CheckPrimitiveExtent(&mvg_info,
+    status&=CheckPrimitiveExtent(&mvg_info,(size_t)
       ExpandAffine(&graphic_context[n]->affine));
     if (status == 0)
       break;
-    status&=CheckPrimitiveExtent(&mvg_info,graphic_context[n]->stroke_width);
+    status&=CheckPrimitiveExtent(&mvg_info,(size_t)
+      graphic_context[n]->stroke_width);
     if (status == 0)
       break;
     if (i == 0)
@@ -4838,6 +4839,9 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
   CacheView
     *image_view;
 
+  const char
+    *artifact;
+
   MagickBooleanType
     fill,
     status;
@@ -4883,6 +4887,9 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
     (primitive_info->method == FloodfillMethod) ? MagickTrue : MagickFalse;
   mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
   bounds=polygon_info[0]->edges[0].bounds;
+  artifact=GetImageArtifact(image,"draw:render-bounding-rectangles");
+  if (IsStringTrue(artifact) != MagickFalse)
+    (void) DrawBoundingRectangles(image,draw_info,polygon_info[0],exception);
   for (i=1; i < (ssize_t) polygon_info[0]->number_edges; i++)
   {
     p=polygon_info[0]->edges+i;
