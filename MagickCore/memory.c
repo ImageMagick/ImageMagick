@@ -703,8 +703,7 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
   (void) memset(memory_info,0,sizeof(*memory_info));
   memory_info->length=size;
   memory_info->signature=MagickCoreSignature;
-  if ((virtual_anonymous_memory == 1) &&
-      (size <= GetMaxMemoryRequest()))
+  if ((virtual_anonymous_memory == 1) && (size <= GetMaxMemoryRequest()))
     {
       memory_info->blob=AcquireAlignedMemory(1,size);
       if (memory_info->blob != NULL)
