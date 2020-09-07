@@ -786,9 +786,11 @@ static struct heif_error heif_write_func(struct heif_context *context,
   return(error_ok);
 }
 
-static MagickBooleanType heif_compose_image_YCbCr(Image *image, ExceptionInfo *exception, struct heif_image *heif_image) {
+static MagickBooleanType WriteHEICImageYCbCr(Image *image,
+  ExceptionInfo *exception,struct heif_image *heif_image) 
+{
   MagickBooleanType
-    status = MagickTrue;
+    status;
 
   ssize_t
     y;
@@ -808,6 +810,8 @@ static MagickBooleanType heif_compose_image_YCbCr(Image *image, ExceptionInfo *e
     *p_y,
     *p_cb,
     *p_cr;
+
+  status = MagickTrue;
 
   printf("heif_compose_image_YCbCr\n");
   error=heif_image_add_plane(heif_image,heif_channel_Y,(int) image->columns,
@@ -873,10 +877,12 @@ static MagickBooleanType heif_compose_image_YCbCr(Image *image, ExceptionInfo *e
   return status;
 }
 
-static MagickBooleanType heif_compose_image_sRGB(Image *image, ExceptionInfo *exception, struct heif_image *heif_image) {
+static MagickBooleanType WriteHEICImageRGBA(Image *image,
+  ExceptionInfo *exception,struct heif_image *heif_image) 
+{
   MagickBooleanType
-    status = MagickTrue,
-    opaque = heif_image_get_chroma_format(heif_image) == heif_chroma_interleaved_RGB;
+    status,
+    opaque;
 
   ssize_t
     y;
@@ -884,16 +890,21 @@ static MagickBooleanType heif_compose_image_sRGB(Image *image, ExceptionInfo *ex
   const Quantum
     *p;
 
-  int stride;
+  int
+    stride;
 
   struct heif_error
     error;
 
   uint8_t
     *target_p,
-    pixelSize = opaque ? 3 : 4;
+    pixelSize;
 
-  printf("heif_compose_image_sRGB %d\n", opaque);
+  status = MagickTrue;
+  opaque = heif_image_get_chroma_format(heif_image) == heif_chroma_interleaved_RGB;
+  pixelSize = opaque ? 3 : 4;
+
+  printf("WriteHEICImageRGBA %d\n", opaque);
   error=heif_image_add_plane(heif_image,heif_channel_interleaved,(int) image->columns,
     (int) image->rows, 8*pixelSize);
   status=IsHeifSuccess(&error,image,exception);
@@ -918,16 +929,15 @@ static MagickBooleanType heif_compose_image_sRGB(Image *image, ExceptionInfo *ex
       }
     
     for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      target_p[y*stride+x*pixelSize]=ScaleQuantumToChar(GetPixelRed(image,p));
-      target_p[y*stride+x*pixelSize+1]=ScaleQuantumToChar(GetPixelGreen(image,p));
-      target_p[y*stride+x*pixelSize+2]=ScaleQuantumToChar(GetPixelBlue(image,p));
-      if (!opaque) 
-        {
+      {
+        target_p[y*stride+x*pixelSize]=ScaleQuantumToChar(GetPixelRed(image,p));
+        target_p[y*stride+x*pixelSize+1]=ScaleQuantumToChar(GetPixelGreen(image,p));
+        target_p[y*stride+x*pixelSize+2]=ScaleQuantumToChar(GetPixelBlue(image,p));
+        if (!opaque) 
           target_p[y*stride+x*pixelSize+3]=ScaleQuantumToChar(GetPixelAlpha(image,p));
-        }
-      p+=GetPixelChannels(image);
-    }
+
+        p+=GetPixelChannels(image);
+      }
 
     if (image->previous == (Image *) NULL)
       {
@@ -945,8 +955,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
   MagickBooleanType
-    status,
-    opaque;
+    status;
 
   MagickOffsetType
     scene;
@@ -976,6 +985,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
   heif_context=heif_context_alloc();
   heif_image=(struct heif_image*) NULL;
   heif_encoder=(struct heif_encoder*) NULL;
+
   do
   {
 #if LIBHEIF_NUMERIC_VERSION >= 0x01040000
@@ -989,16 +999,30 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     struct heif_writer
       writer;
 
-    enum heif_colorspace cs=heif_colorspace_YCbCr;
-    enum heif_chroma chroma=heif_chroma_420;
+    enum heif_colorspace 
+      colorspace;
+
+    enum heif_chroma 
+      chroma;
+
+    MagickBooleanType 
+      isAvif;
+
+
+    colorspace=heif_colorspace_YCbCr;
+    chroma=heif_chroma_420;
+    isAvif=MagickFalse;
 
     /*
       Get encoder for the specified format.
     */
 #if LIBHEIF_NUMERIC_VERSION > 0x01060200
     if (LocaleCompare(image_info->magick,"AVIF") == 0)
-      error=heif_context_get_encoder_for_format(heif_context,
-        heif_compression_AV1,&heif_encoder);
+      {
+        error=heif_context_get_encoder_for_format(heif_context,
+          heif_compression_AV1,&heif_encoder);
+        isAvif=MagickTrue;
+      }
     else
 #endif
       error=heif_context_get_encoder_for_format(heif_context,
@@ -1008,56 +1032,50 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
       break;
 
     printf("Colorspace: %d\n", image->colorspace);
-    if (image->colorspace == sRGBColorspace) {
-      printf("sRGB colorspace!\n");
-      opaque = IsImageOpaque(image, exception);
-      cs=heif_colorspace_RGB;
-      chroma=opaque ? heif_chroma_interleaved_RGB : heif_chroma_interleaved_RGBA;
-    } else if (image->colorspace != YCbCrColorspace) {
-      /*
-      Transform colorspace to YCbCr.
-      */
-      status=TransformImageColorspace(image,YCbCrColorspace,exception);
-    }
+    if (IssRGBCompatibleColorspace(image->colorspace) && isAvif)
+      {
+        printf("sRGB colorspace!\n");
+        colorspace=heif_colorspace_RGB;
+        chroma=IsImageOpaque(image, exception) ? 
+          heif_chroma_interleaved_RGB : 
+          heif_chroma_interleaved_RGBA;
+      } 
+    else if (image->colorspace != YCbCrColorspace)
+      {
+        /*
+        Transform colorspace to YCbCr.
+        */
+        status=TransformImageColorspace(image,YCbCrColorspace,exception);
+        if (status == MagickFalse)
+          break;
+      }
 
-    if (status == MagickFalse)
-      break;
     /*
       Initialize HEIF encoder context.
     */
     error=heif_image_create((int) image->columns,(int) image->rows,
-      cs,chroma,&heif_image);
+      colorspace,chroma,&heif_image);
     status=IsHeifSuccess(&error,image,exception);
     if (status == MagickFalse)
       break;
 #if LIBHEIF_NUMERIC_VERSION >= 0x01040000
     printf("Trying to set color profile\n");
     profile=GetImageProfile(image,"icc");
-    if (profile != (StringInfo *) NULL) {
-      printf("Setting color profile %s\n", GetStringInfoDatum(profile));
+    if (profile != (StringInfo *) NULL)
       (void) heif_image_set_raw_color_profile(heif_image,"prof",
         GetStringInfoDatum(profile),GetStringInfoLength(profile));
-    }
 #endif
 
-    switch (cs)
-    {
-    case heif_colorspace_YCbCr:
-      printf("case heif_colorspace_YCbCr:\n");
-      status=heif_compose_image_YCbCr(image, exception, heif_image);
-      break;
-    case heif_colorspace_RGB:
-      printf("case heif_colorspace_RGB:\n");
-      status=heif_compose_image_sRGB(image, exception, heif_image);
-      break;
-    default:
+    if (colorspace == heif_colorspace_YCbCr)
+      status=WriteHEICImageYCbCr(image, exception, heif_image);
+    else if (colorspace == heif_colorspace_RGB)
+      status=WriteHEICImageRGBA(image, exception, heif_image);
+    else
       status=MagickFalse;
-      //TODO: Error
-      break;
-    }
 
     if (status == MagickFalse)
       break;
+
     /*
       Code and actually write the HEIC image
     */
