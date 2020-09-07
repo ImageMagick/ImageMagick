@@ -1,7 +1,13 @@
+2020-09-07  7.0.10-30  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-30 GIT revision 17584:e47c01b2c:20200907
+
+2020-09-07  7.0.10-30  <quetzlzacatenango@image...>
+  * Add endian support to JSON coder.
+
 2020-09-05  7.0.10-29  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-29 GIT revision 17580:fc52fa0a9:20200905
 
-2020-09-05  7.0.10-28  <quetzlzacatenango@image...>
+2020-09-05  7.0.10-29  <quetzlzacatenango@image...>
   * Eliminate infinite loop for certain SVG styles (reference
     https://github.com/ImageMagick/ImageMagick6/issues/96).
   * Add version element to JSON file format (reference
