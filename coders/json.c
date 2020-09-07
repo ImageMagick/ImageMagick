@@ -129,6 +129,7 @@ ModuleExport size_t RegisterJSONImage(void)
   entry=AcquireMagickInfo("JSON","JSON","The image format and characteristics");
   entry->encoder=(EncodeImageHandler *) WriteJSONImage;
   entry->mime_type=ConstantString("application/json");
+  entry->flags|=CoderEndianSupportFlag;
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
