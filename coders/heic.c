@@ -811,7 +811,7 @@ static MagickBooleanType WriteHEICImageYCbCr(Image *image,
     *p_cb,
     *p_cr;
 
-  status = MagickTrue;
+  status=MagickTrue;
 
   printf("heif_compose_image_YCbCr\n");
   error=heif_image_add_plane(heif_image,heif_channel_Y,(int) image->columns,
@@ -900,9 +900,9 @@ static MagickBooleanType WriteHEICImageRGBA(Image *image,
     *target_p,
     pixelSize;
 
-  status = MagickTrue;
-  opaque = heif_image_get_chroma_format(heif_image) == heif_chroma_interleaved_RGB;
-  pixelSize = opaque ? 3 : 4;
+  status=MagickTrue;
+  opaque=heif_image_get_chroma_format(heif_image) == heif_chroma_interleaved_RGB;
+  pixelSize=opaque ? 3 : 4;
 
   printf("WriteHEICImageRGBA %d\n", opaque);
   error=heif_image_add_plane(heif_image,heif_channel_interleaved,(int) image->columns,
