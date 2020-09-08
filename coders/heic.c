@@ -897,21 +897,20 @@ static MagickBooleanType WriteHEICImageRGBA(Image *image,
     error;
 
   uint8_t
-    *target_p,
-    pixelSize;
+    *q,
+    *plane;
 
   status=MagickTrue;
-  opaque=heif_image_get_chroma_format(heif_image) == heif_chroma_interleaved_RGB;
-  pixelSize=opaque ? 3 : 4;
+  opaque=(image->alpha_trait == UndefinedPixelTrait);
 
   printf("WriteHEICImageRGBA %d\n", opaque);
   error=heif_image_add_plane(heif_image,heif_channel_interleaved,(int) image->columns,
-    (int) image->rows, 8*pixelSize);
+    (int) image->rows, 8*(opaque ? 3 : 4));
   status=IsHeifSuccess(&error,image,exception);
   if (status == MagickFalse)
     return status;
 
-  target_p=heif_image_get_plane(heif_image,heif_channel_interleaved,&stride);
+  plane=heif_image_get_plane(heif_image,heif_channel_interleaved,&stride);
 
   /*
     Copy image to heif_image
@@ -928,13 +927,14 @@ static MagickBooleanType WriteHEICImageRGBA(Image *image,
         break;
       }
     
+    q=plane+(y*stride);
     for (x=0; x < (ssize_t) image->columns; x++)
       {
-        target_p[y*stride+x*pixelSize]=ScaleQuantumToChar(GetPixelRed(image,p));
-        target_p[y*stride+x*pixelSize+1]=ScaleQuantumToChar(GetPixelGreen(image,p));
-        target_p[y*stride+x*pixelSize+2]=ScaleQuantumToChar(GetPixelBlue(image,p));
-        if (!opaque) 
-          target_p[y*stride+x*pixelSize+3]=ScaleQuantumToChar(GetPixelAlpha(image,p));
+        *(q++)=ScaleQuantumToChar(GetPixelRed(image,p));
+        *(q++)=ScaleQuantumToChar(GetPixelGreen(image,p));
+        *(q++)=ScaleQuantumToChar(GetPixelBlue(image,p));
+        if (!opaque)
+          *(q++)=ScaleQuantumToChar(GetPixelAlpha(image,p));
 
         p+=GetPixelChannels(image);
       }
@@ -1006,12 +1006,12 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
       chroma;
 
     MagickBooleanType 
-      isAvif;
+      is_avif;
 
 
     colorspace=heif_colorspace_YCbCr;
     chroma=heif_chroma_420;
-    isAvif=MagickFalse;
+    is_avif=MagickFalse;
 
     /*
       Get encoder for the specified format.
@@ -1021,7 +1021,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
       {
         error=heif_context_get_encoder_for_format(heif_context,
           heif_compression_AV1,&heif_encoder);
-        isAvif=MagickTrue;
+        is_avif=MagickTrue;
       }
     else
 #endif
@@ -1032,11 +1032,11 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
       break;
 
     printf("Colorspace: %d\n", image->colorspace);
-    if (IssRGBCompatibleColorspace(image->colorspace) && isAvif)
+    if (is_avif == MagickTrue && IssRGBCompatibleColorspace(image->colorspace))
       {
         printf("sRGB colorspace!\n");
         colorspace=heif_colorspace_RGB;
-        chroma=IsImageOpaque(image, exception) ? 
+        chroma=(image->alpha_trait == UndefinedPixelTrait) ? 
           heif_chroma_interleaved_RGB : 
           heif_chroma_interleaved_RGBA;
       } 
