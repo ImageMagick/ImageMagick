@@ -73,7 +73,7 @@
 #include "MagickCore/string-private.h"
 #include "MagickCore/module.h"
 #include "MagickCore/utility.h"
-#include "MagickCore/attribute.h"
+
 #if defined(MAGICKCORE_HEIC_DELEGATE)
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #include <heif.h>
@@ -799,17 +799,17 @@ static MagickBooleanType WriteHEICImageYCbCr(Image *image,
     *p;
 
   int
-    stride_y,
-    stride_cb,
-    stride_cr;
+    p_y,
+    p_cb,
+    p_cr;
 
   struct heif_error
     error;
 
   uint8_t
-    *p_y,
-    *p_cb,
-    *p_cr;
+    *q_y,
+    *q_cb,
+    *q_cr;
 
   status=MagickTrue;
 
@@ -829,9 +829,9 @@ static MagickBooleanType WriteHEICImageYCbCr(Image *image,
   status=IsHeifSuccess(&error,image,exception);
   if (status == MagickFalse)
     return status;
-  p_y=heif_image_get_plane(heif_image,heif_channel_Y,&stride_y);
-  p_cb=heif_image_get_plane(heif_image,heif_channel_Cb,&stride_cb);
-  p_cr=heif_image_get_plane(heif_image,heif_channel_Cr,&stride_cr);
+  q_y=heif_image_get_plane(heif_image,heif_channel_Y,&p_y);
+  q_cb=heif_image_get_plane(heif_image,heif_channel_Cb,&p_cb);
+  q_cr=heif_image_get_plane(heif_image,heif_channel_Cr,&p_cr);
   /*
     Copy image to heif_image
   */
@@ -849,20 +849,20 @@ static MagickBooleanType WriteHEICImageYCbCr(Image *image,
     if ((y & 0x01) == 0)
       for (x=0; x < (ssize_t) image->columns; x+=2)
       {
-        p_y[y*stride_y+x]=ScaleQuantumToChar(GetPixelRed(image,p));
-        p_cb[y/2*stride_cb+x/2]=ScaleQuantumToChar(GetPixelGreen(image,p));
-        p_cr[y/2*stride_cr+x/2]=ScaleQuantumToChar(GetPixelBlue(image,p));
+        q_y[y*p_y+x]=ScaleQuantumToChar(GetPixelRed(image,p));
+        q_cb[y/2*p_cb+x/2]=ScaleQuantumToChar(GetPixelGreen(image,p));
+        q_cr[y/2*p_cr+x/2]=ScaleQuantumToChar(GetPixelBlue(image,p));
         p+=GetPixelChannels(image);
         if ((x+1) < (ssize_t) image->columns)
           {
-            p_y[y*stride_y+x+1]=ScaleQuantumToChar(GetPixelRed(image,p));
+            q_y[y*p_y+x+1]=ScaleQuantumToChar(GetPixelRed(image,p));
             p+=GetPixelChannels(image);
           }
       }
     else
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        p_y[y*stride_y+x]=ScaleQuantumToChar(GetPixelRed(image,p));
+        q_y[y*p_y+x]=ScaleQuantumToChar(GetPixelRed(image,p));
         p+=GetPixelChannels(image);
       }
     if (image->previous == (Image *) NULL)
@@ -1032,7 +1032,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
       break;
 
     printf("Colorspace: %d\n", image->colorspace);
-    if (is_avif == MagickTrue && IssRGBCompatibleColorspace(image->colorspace))
+    if ((is_avif != MagickFalse) && (IssRGBCompatibleColorspace(image->colorspace) != MagickFalse))
       {
         printf("sRGB colorspace!\n");
         colorspace=heif_colorspace_RGB;
@@ -1068,10 +1068,8 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
 
     if (colorspace == heif_colorspace_YCbCr)
       status=WriteHEICImageYCbCr(image, exception, heif_image);
-    else if (colorspace == heif_colorspace_RGB)
-      status=WriteHEICImageRGBA(image, exception, heif_image);
     else
-      status=MagickFalse;
+      status=WriteHEICImageRGBA(image, exception, heif_image);
 
     if (status == MagickFalse)
       break;
