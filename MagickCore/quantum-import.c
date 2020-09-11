@@ -161,17 +161,16 @@ static inline const unsigned char *PushDoublePixel(QuantumInfo *quantum_info,
 static inline float ScaleFloatPixel(const QuantumInfo *quantum_info,
   const unsigned char *quantum)
 {
-  float
+  double
     pixel;
 
-  pixel=(*((float *) quantum));
+  pixel=(double) (*((float *) quantum));
   pixel-=quantum_info->minimum;
-  pixel*=(float) quantum_info->scale;
-  if (pixel < FLT_MIN)
-    pixel=FLT_MIN;
-  else
-    if (pixel > FLT_MAX)
-      pixel=FLT_MAX;
+  pixel*=quantum_info->scale;
+  if (pixel < -FLT_MAX)
+    return(-FLT_MAX);
+  if (pixel > FLT_MAX)
+    return(FLT_MAX);
   return(pixel);
 }
 
