@@ -505,8 +505,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
       scanline_length=ReadBlobMSBShort(blob);
     else
       scanline_length=(size_t) ReadBlobByte(blob);
-    if (((scanline_length >= row_bytes) || (scanline_length == 0)) ||
-        ((MagickSizeType) scanline_length > GetBlobSize(image)))
+    if ((scanline_length >= row_bytes) || (scanline_length == 0))
       {
         status=MagickFalse;
         break;
