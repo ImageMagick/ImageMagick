@@ -1387,7 +1387,6 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     for (j=1; j < (ssize_t) component_image->colors; j++)
       if (object[j].census > object[id].census)
         id=(size_t) j;
-    object[id].area+=object[i].area;
     object[i].area=0.0;
     for (y=0; y < (ssize_t) bounding_box.height; y++)
     {
