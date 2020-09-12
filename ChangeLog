@@ -1,5 +1,5 @@
-2020-09-08  7.0.10-30  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-30 GIT revision 17587:6aa9e0651:20200908
+2020-09-12  7.0.10-30  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-30 GIT revision 17593:3e00b4d7f:20200912
 
 2020-09-07  7.0.10-30  <quetzlzacatenango@image...>
   * Add endian support to JSON coder.
