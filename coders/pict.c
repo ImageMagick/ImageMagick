@@ -505,7 +505,8 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
       scanline_length=ReadBlobMSBShort(blob);
     else
       scanline_length=(size_t) ReadBlobByte(blob);
-    if ((scanline_length >= row_bytes) || (scanline_length == 0))
+    if (((scanline_length >= row_bytes) || (scanline_length == 0)) ||
+        ((MagickSizeType) scanline_length > GetBlobSize(image)))
       {
         status=MagickFalse;
         break;
@@ -1078,18 +1079,21 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             else
               for (i=0; i < (ssize_t) height; i++)
               {
+                size_t
+                  scanline_length;
+
                 if (EOFBlob(image) != MagickFalse)
                   break;
                 if (length > 200)
-                  {
-                    for (j=0; j < (ssize_t) ReadBlobMSBShort(image); j++)
-                      if (ReadBlobByte(image) == EOF)
-                        break;
-                  }
+                  scanline_length=ReadBlobMSBShort(image);
                 else
-                  for (j=0; j < (ssize_t) ReadBlobByte(image); j++)
-                    if (ReadBlobByte(image) == EOF)
-                      break;
+                  scanline_length=ReadBlobByte(image);
+                if ((MagickSizeType) scanline_length > GetBlobSize(image))
+                  ThrowPICTException(CorruptImageError,
+                    "InsufficientImageDataInFile");
+                for (j=0; j < (ssize_t) scanline_length; j++)
+                  if (ReadBlobByte(image) == EOF)
+                    break;
               }
             break;
           }
