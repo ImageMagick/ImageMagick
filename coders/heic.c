@@ -734,7 +734,7 @@ static void WriteProfile(struct heif_context *context,Image *image,
             length=65533L;
           }
           (void) heif_context_add_exif_metadata(context,image_handle,
-            (void*) GetStringInfoDatum(profile),length);
+            (void*) GetStringInfoDatum(profile),(int) length);
       }
     if (LocaleCompare(name,"XMP") == 0)
       {
@@ -751,7 +751,7 @@ static void WriteProfile(struct heif_context *context,Image *image,
             {
               length=MagickMin(GetStringInfoLength(xmp_profile)-i,65533L);
               error=heif_context_add_XMP_metadata(context,image_handle,
-                (void*) (GetStringInfoDatum(xmp_profile)+i),length);
+                (void*) (GetStringInfoDatum(xmp_profile)+i),(int) length);
               if (error.code != 0)
                 break;
             }
