@@ -73,7 +73,6 @@
 #include "MagickCore/string-private.h"
 #include "MagickCore/module.h"
 #include "MagickCore/utility.h"
-
 #if defined(MAGICKCORE_HEIC_DELEGATE)
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #include <heif.h>
@@ -797,7 +796,7 @@ static struct heif_error heif_write_func(struct heif_context *context,
 }
 
 static MagickBooleanType WriteHEICImageYCbCr(Image *image,
-  ExceptionInfo *exception,struct heif_image *heif_image) 
+  struct heif_image *heif_image,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -882,16 +881,14 @@ static MagickBooleanType WriteHEICImageYCbCr(Image *image,
           break;
       }
   }
-
-  return status;
+  return(status);
 }
 
 static MagickBooleanType WriteHEICImageRGBA(Image *image,
-  ExceptionInfo *exception,struct heif_image *heif_image) 
+  struct heif_image *heif_image,ExceptionInfo *exception)
 {
   MagickBooleanType
-    status,
-    opaque;
+    status;
 
   ssize_t
     y;
@@ -910,16 +907,12 @@ static MagickBooleanType WriteHEICImageRGBA(Image *image,
     *plane;
 
   status=MagickTrue;
-  opaque=(image->alpha_trait == UndefinedPixelTrait);
-
-  error=heif_image_add_plane(heif_image,heif_channel_interleaved,(int) image->columns,
-    (int) image->rows, 8*(opaque ? 3 : 4));
+  error=heif_image_add_plane(heif_image,heif_channel_interleaved,
+    (int) image->columns,(int) image->rows,8);
   status=IsHeifSuccess(&error,image,exception);
   if (status == MagickFalse)
     return status;
-
   plane=heif_image_get_plane(heif_image,heif_channel_interleaved,&stride);
-
   /*
     Copy image to heif_image
   */
@@ -934,19 +927,17 @@ static MagickBooleanType WriteHEICImageRGBA(Image *image,
         status=MagickFalse;
         break;
       }
-
     q=plane+(y*stride);
     for (x=0; x < (ssize_t) image->columns; x++)
       {
         *(q++)=ScaleQuantumToChar(GetPixelRed(image,p));
         *(q++)=ScaleQuantumToChar(GetPixelGreen(image,p));
         *(q++)=ScaleQuantumToChar(GetPixelBlue(image,p));
-        if (!opaque)
+        if (image->alpha_trait != UndefinedPixelTrait)
           *(q++)=ScaleQuantumToChar(GetPixelAlpha(image,p));
 
         p+=GetPixelChannels(image);
       }
-
     if (image->previous == (Image *) NULL)
       {
         status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -955,8 +946,7 @@ static MagickBooleanType WriteHEICImageRGBA(Image *image,
           break;
       }
   }
-
-  return status;
+  return(status);
 }
 
 static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
@@ -1020,7 +1010,6 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     colorspace=heif_colorspace_YCbCr;
     chroma=heif_chroma_420;
     is_avif=MagickFalse;
-
     /*
       Get encoder for the specified format.
     */
@@ -1038,13 +1027,12 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     status=IsHeifSuccess(&error,image,exception);
     if (status == MagickFalse)
       break;
-
-    if ((is_avif != MagickFalse) && (IssRGBCompatibleColorspace(image->colorspace) != MagickFalse))
+    if ((is_avif != MagickFalse) &&
+        (IssRGBCompatibleColorspace(image->colorspace) != MagickFalse))
       {
         colorspace=heif_colorspace_RGB;
-        chroma=(image->alpha_trait == UndefinedPixelTrait) ? 
-          heif_chroma_interleaved_RGB : 
-          heif_chroma_interleaved_RGBA;
+        chroma=(image->alpha_trait == UndefinedPixelTrait) ?
+          heif_chroma_interleaved_RGB : heif_chroma_interleaved_RGBA;
       } 
     else if (image->colorspace != YCbCrColorspace)
       {
@@ -1055,7 +1043,6 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
         if (status == MagickFalse)
           break;
       }
-
     /*
       Initialize HEIF encoder context.
     */
@@ -1070,15 +1057,12 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
       (void) heif_image_set_raw_color_profile(heif_image,"prof",
         GetStringInfoDatum(profile),GetStringInfoLength(profile));
 #endif
-
     if (colorspace == heif_colorspace_YCbCr)
-      status=WriteHEICImageYCbCr(image, exception, heif_image);
+      status=WriteHEICImageYCbCr(image,heif_image,exception);
     else
-      status=WriteHEICImageRGBA(image, exception, heif_image);
-
+      status=WriteHEICImageRGBA(image,heif_image,exception);
     if (status == MagickFalse)
       break;
-
     /*
       Code and actually write the HEIC image
     */
