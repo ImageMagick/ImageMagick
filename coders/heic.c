@@ -813,7 +813,6 @@ static MagickBooleanType WriteHEICImageYCbCr(Image *image,
 
   status=MagickTrue;
 
-  printf("heif_compose_image_YCbCr\n");
   error=heif_image_add_plane(heif_image,heif_channel_Y,(int) image->columns,
     (int) image->rows,8);
   status=IsHeifSuccess(&error,image,exception);
@@ -903,7 +902,6 @@ static MagickBooleanType WriteHEICImageRGBA(Image *image,
   status=MagickTrue;
   opaque=(image->alpha_trait == UndefinedPixelTrait);
 
-  printf("WriteHEICImageRGBA %d\n", opaque);
   error=heif_image_add_plane(heif_image,heif_channel_interleaved,(int) image->columns,
     (int) image->rows, 8*(opaque ? 3 : 4));
   status=IsHeifSuccess(&error,image,exception);
@@ -926,7 +924,7 @@ static MagickBooleanType WriteHEICImageRGBA(Image *image,
         status=MagickFalse;
         break;
       }
-    
+
     q=plane+(y*stride);
     for (x=0; x < (ssize_t) image->columns; x++)
       {
@@ -1031,10 +1029,8 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
 
-    printf("Colorspace: %d\n", image->colorspace);
     if ((is_avif != MagickFalse) && (IssRGBCompatibleColorspace(image->colorspace) != MagickFalse))
       {
-        printf("sRGB colorspace!\n");
         colorspace=heif_colorspace_RGB;
         chroma=(image->alpha_trait == UndefinedPixelTrait) ? 
           heif_chroma_interleaved_RGB : 
@@ -1059,7 +1055,6 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
 #if LIBHEIF_NUMERIC_VERSION >= 0x01040000
-    printf("Trying to set color profile\n");
     profile=GetImageProfile(image,"icc");
     if (profile != (StringInfo *) NULL)
       (void) heif_image_set_raw_color_profile(heif_image,"prof",
