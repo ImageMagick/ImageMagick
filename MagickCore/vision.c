@@ -1504,7 +1504,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             {
               (void) fprintf(stdout,"Objects (");
               artifact=GetImageArtifact(image,
-                "connected-components:exclude-id");
+                "connected-components:exclude-ids");
               if (IsStringTrue(artifact) == MagickFalse)
                 (void) fprintf(stdout,"id: ");
               (void) fprintf(stdout,"bounding-box centroid area mean-color");
@@ -1521,7 +1521,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
                 GetColorTuple(&object[i].color,MagickFalse,mean_color);
                 (void) fprintf(stdout,"  ");
                 artifact=GetImageArtifact(image,
-                  "connected-components:exclude-id");
+                  "connected-components:exclude-ids");
                 if (IsStringTrue(artifact) == MagickFalse)
                   (void) fprintf(stdout,"%.20g: ",(double) object[i].id);
                 (void) fprintf(stdout,
