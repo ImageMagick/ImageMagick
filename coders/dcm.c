@@ -3021,7 +3021,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       stream_info->offsets); \
   if (stream_info != (DCMStreamInfo *) NULL) \
     stream_info=(DCMStreamInfo *) RelinquishMagickMemory(stream_info); \
-  if (stack) \
+  if (stack != (LinkedListInfo *) NULL) \
     DestroyLinkedList(stack,RelinquishMagickMemory); \
   ThrowReaderException((exception),(message)); \
 }
@@ -3033,7 +3033,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     photometric[MagickPathExtent];
 
   DCMInfo
-    info;
+    info,
+    *info_copy;
 
   DCMStreamInfo
     *stream_info;
@@ -3152,7 +3153,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   number_scenes=1;
   use_explicit=MagickFalse;
   explicit_retry = MagickFalse;
-
   while (TellBlob(image) < (MagickOffsetType) GetBlobSize(image))
   {
     for (group=0; (group != 0x7FE0) || (element != 0x0010) ; )
@@ -3226,7 +3226,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((group == 0xFFFE) && (element == 0xE0DD))
         {
           sequence_depth--;
-          DCMInfo *info_copy = (DCMInfo *)RemoveLastElementFromLinkedList(stack);
+          info_copy=(DCMInfo *) RemoveLastElementFromLinkedList(stack);
           if (info_copy == (DCMInfo *)NULL)
             {
               /*
@@ -3245,7 +3245,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       if (strcmp(explicit_vr,"SQ") == 0)
         {
-          DCMInfo *info_copy = (DCMInfo *) AcquireMagickMemory(sizeof(info));
+          info_copy=(DCMInfo *) AcquireMagickMemory(sizeof(info));
           memcpy(info_copy,&info,sizeof(info));
           AppendValueToLinkedList(stack,info_copy);
           sequence_depth++;
@@ -4037,9 +4037,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ThrowDCMException(ResourceLimitError,"MemoryAllocationFailed");
             for (i=0; i < (ssize_t) stream_info->offset_count; i++)
             {
-              MagickOffsetType
-                offset;
-
               offset=(MagickOffsetType) ReadBlobLSBSignedLong(image);
               if (offset > (MagickOffsetType) GetBlobSize(image))
                 ThrowDCMException(CorruptImageError,
@@ -4326,7 +4323,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     stream_info->offsets=(ssize_t *)
       RelinquishMagickMemory(stream_info->offsets);
   stream_info=(DCMStreamInfo *) RelinquishMagickMemory(stream_info);
-  DestroyLinkedList(stack,RelinquishMagickMemory);
+  stack=DestroyLinkedList(stack,RelinquishMagickMemory);
   if (info.scale != (Quantum *) NULL)
     info.scale=(Quantum *) RelinquishMagickMemory(info.scale);
   if (graymap != (int *) NULL)
