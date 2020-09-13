@@ -333,16 +333,15 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
     Copy HEIF image into ImageMagick data structures.
   */
   (void) SetImageColorspace(image,YCbCrColorspace,exception);
-  decode_options=(struct heif_decoding_options *) NULL;
+  decode_options=heif_decoding_options_alloc();
+#if LIBHEIF_NUMERIC_VERSION > 0x01070000
+  decode_options->convert_hdr_to_8bit=1;
+#endif
   if (preserve_orientation == MagickTrue)
-    {
-      decode_options=heif_decoding_options_alloc();
-      decode_options->ignore_transformations=1;
-    }
+    decode_options->ignore_transformations=1;
   error=heif_decode_image(image_handle,&heif_image,heif_colorspace_YCbCr,
     heif_chroma_420,decode_options);
-  if (decode_options != (struct heif_decoding_options *) NULL)
-    heif_decoding_options_free(decode_options);
+  heif_decoding_options_free(decode_options);
   if (IsHeifSuccess(&error,image,exception) == MagickFalse)
     {
       heif_image_handle_release(image_handle);
