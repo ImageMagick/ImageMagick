@@ -259,7 +259,8 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
   int
     stride_y,
     stride_cb,
-    stride_cr;
+    stride_cr,
+    stride_a;
 
   MagickBooleanType
     preserve_orientation,
@@ -283,7 +284,8 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
   const uint8_t
     *p_y,
     *p_cb,
-    *p_cr;
+    *p_cr,
+    *p_a;
 
   error=heif_context_get_image_handle(heif_context,image_id,&image_handle);
   if (IsHeifSuccess(&error,image,exception) == MagickFalse)
@@ -304,6 +306,8 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
   image->depth=8;
   image->columns=(size_t) heif_image_handle_get_width(image_handle);
   image->rows=(size_t) heif_image_handle_get_height(image_handle);
+  if (heif_image_handle_has_alpha_channel(image_handle))
+    image->alpha_trait=BlendPixelTrait;
   preserve_orientation=IsStringTrue(GetImageOption(image_info,
     "heic:preserve-orientation"));
   if (preserve_orientation == MagickFalse)
@@ -359,6 +363,10 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
   p_y=heif_image_get_plane_readonly(heif_image,heif_channel_Y,&stride_y);
   p_cb=heif_image_get_plane_readonly(heif_image,heif_channel_Cb,&stride_cb);
   p_cr=heif_image_get_plane_readonly(heif_image,heif_channel_Cr,&stride_cr);
+  p_a=(const uint8_t *) NULL;
+  stride_a=0;
+  if (image->alpha_trait != UndefinedPixelTrait)
+    p_a=heif_image_get_plane_readonly(heif_image,heif_channel_Alpha,&stride_a);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     Quantum
@@ -378,6 +386,9 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
         stride_cb+x/2]),q);
       SetPixelBlue(image,ScaleCharToQuantum((unsigned char) p_cr[(y/2)*
         stride_cr+x/2]),q);
+      if (p_a != (const uint8_t *) NULL)
+        SetPixelAlpha(image,ScaleCharToQuantum((unsigned char) p_a[y*
+          stride_a+x]),q);
       q+=GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
