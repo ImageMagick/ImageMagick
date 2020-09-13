@@ -2482,6 +2482,7 @@ static void UpdateClipPath(unsigned char *blob,size_t length,
       }
     }
   }
+  (void) in_subpath;
 }
 
 MagickPrivate void Update8BIMClipPath(const StringInfo *profile,
