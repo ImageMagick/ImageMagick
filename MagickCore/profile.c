@@ -2390,9 +2390,6 @@ static void UpdateClipPath(unsigned char *blob,size_t length,
   const size_t old_columns,const size_t old_rows,
   const RectangleInfo *new_geometry)
 {
-  MagickBooleanType
-    in_subpath;
-
   register ssize_t
     i;
 
@@ -2401,7 +2398,6 @@ static void UpdateClipPath(unsigned char *blob,size_t length,
     selector;
 
   knot_count=0;
-  in_subpath=MagickFalse;
   while (length != 0)
   {
     selector=(ssize_t) ReadProfileMSBShort(&blob,&length);
@@ -2462,13 +2458,7 @@ static void UpdateClipPath(unsigned char *blob,size_t length,
           xx=(signed int) ((x*4096*4096)/new_geometry->width);
           WriteProfileLong(MSBEndian,(size_t) xx,blob-4);
         }
-        in_subpath=MagickTrue;
         knot_count--;
-        /*
-          Close the subpath if there are no more knots.
-        */
-        if (knot_count == 0)
-          in_subpath=MagickFalse;
         break;
       }
       case 6:
@@ -2482,7 +2472,6 @@ static void UpdateClipPath(unsigned char *blob,size_t length,
       }
     }
   }
-  (void) in_subpath;
 }
 
 MagickPrivate void Update8BIMClipPath(const StringInfo *profile,
