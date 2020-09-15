@@ -1110,7 +1110,8 @@ static int NTGetRegistryValue(HKEY root,const char *key,DWORD flags,
 }
 
 static int NTLocateGhostscript(DWORD flags,int *root_index,
-  const char **product_family,int *major_version,int *minor_version)
+  const char **product_family,int *major_version,int *minor_version,
+  int *patch_version)
 {
   int
     i;
@@ -1171,19 +1172,24 @@ static int NTLocateGhostscript(DWORD flags,int *root_index,
           {
             int
               major,
-              minor;
+              minor,
+              patch;
 
             major=0;
             minor=0;
-            if (sscanf(key,"%d.%d",&major,&minor) != 2)
-              continue;
-            if ((major > *major_version) || ((major == *major_version) &&
-                (minor > *minor_version)))
+            patch=0;
+            if (sscanf(key,"%d.%d.%d",&major,&minor,&patch) != 3)
+              if (sscanf(key,"%d.%d",&major,&minor) != 2)
+                continue;
+            if ((major > *major_version) ||
+               ((major == *major_version) && (minor > *minor_version)) ||
+               ((minor == *minor_version) && (patch > *patch_version)))
               {
                 *root_index=j;
                 *product_family=products[i];
                 *major_version=major;
                 *minor_version=minor;
+                *patch_version=patch;
                 status=MagickTrue;
               }
          }
@@ -1195,9 +1201,10 @@ static int NTLocateGhostscript(DWORD flags,int *root_index,
     {
       *major_version=0;
       *minor_version=0;
+      *patch_version=0;
     }
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),"Ghostscript (%s) "
-    "version %d.%02d",*product_family,*major_version,*minor_version);
+    "version %d.%d.%d",*product_family,*major_version,*minor_version,*patch_version);
   return(status);
 }
 
@@ -1221,6 +1228,7 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
     flags = 0,
     major_version = 0,
     minor_version = 0,
+    patch_version = 0,
     root_index = 0;
 
   /*
@@ -1233,16 +1241,6 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
       directory=GetEnvironmentValue("MAGICK_GHOSTSCRIPT_PATH");
       if (directory != (char *) NULL)
         {
-          (void) FormatLocaleString(buffer,MagickPathExtent,"%s%sgsdll32.dll",
-            directory,DirectorySeparator);
-          if (IsPathAccessible(buffer) != MagickFalse)
-            {
-              directory=DestroyString(directory);
-              (void) CopyMagickString(value,buffer,length);
-              if (is_64_bit != NULL)
-                *is_64_bit=FALSE;
-              return(TRUE);
-            }
           (void) FormatLocaleString(buffer,MagickPathExtent,"%s%sgsdll64.dll",
             directory,DirectorySeparator);
           if (IsPathAccessible(buffer) != MagickFalse)
@@ -1251,6 +1249,16 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
               (void) CopyMagickString(value,buffer,length);
               if (is_64_bit != NULL)
                 *is_64_bit=TRUE;
+              return(TRUE);
+            }
+          (void) FormatLocaleString(buffer,MagickPathExtent,"%s%sgsdll32.dll",
+            directory,DirectorySeparator);
+          if (IsPathAccessible(buffer) != MagickFalse)
+            {
+              directory=DestroyString(directory);
+              (void) CopyMagickString(value,buffer,length);
+              if (is_64_bit != NULL)
+                *is_64_bit=FALSE;
               return(TRUE);
             }
           return(FALSE);
@@ -1266,21 +1274,21 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
       flags=KEY_WOW64_32KEY;
 #endif
       (void) NTLocateGhostscript(flags,&root_index,&product_family,
-        &major_version,&minor_version);
+        &major_version,&minor_version,&patch_version);
       if (product_family == NULL)
 #if defined(_WIN64)
         flags=KEY_WOW64_32KEY;
       else
         is_64_bit_version=TRUE;
 #else
-        flags=KEY_WOW64_64KEY;
+      flags=KEY_WOW64_64KEY;
 #endif
 #endif
     }
   if (product_family == NULL)
     {
       (void) NTLocateGhostscript(flags,&root_index,&product_family,
-      &major_version,&minor_version);
+        &major_version,&minor_version,&patch_version);
 #if !defined(_WIN64)
       is_64_bit_version=TRUE;
 #endif
@@ -1289,17 +1297,21 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
     return(FALSE);
   if (is_64_bit != NULL)
     *is_64_bit=is_64_bit_version;
-  (void) FormatLocaleString(buffer,MagickPathExtent,"SOFTWARE\\%s\\%d.%02d",
-    product_family,major_version,minor_version);
   extent=(int) length;
-  if (NTGetRegistryValue(registry_roots[root_index].hkey,buffer,flags,name,value,&extent) == 0)
+  (void) FormatLocaleString(buffer,MagickPathExtent,"SOFTWARE\\%s\\%d.%d.%d",
+    product_family,major_version,minor_version,patch_version);
+  if (NTGetRegistryValue(registry_roots[root_index].hkey,buffer,flags,name,value,&extent) != 0)
     {
-      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-        "registry: \"%s\\%s\\%s\"=\"%s\"",registry_roots[root_index].name,
-        buffer,name,value);
-      return(TRUE);
+      extent=(int) length;
+      (void) FormatLocaleString(buffer,MagickPathExtent,"SOFTWARE\\%s\\%d.%02d",
+        product_family,major_version,minor_version);
+      if (NTGetRegistryValue(registry_roots[root_index].hkey,buffer,flags,name,value,&extent) != 0)
+        return(FALSE);
     }
-  return(FALSE);
+  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+    "registry: \"%s\\%s\\%s\"=\"%s\"",registry_roots[root_index].name,
+    buffer,name,value);
+  return(TRUE);
 }
 
 MagickPrivate int NTGhostscriptDLL(char *path,int length)
