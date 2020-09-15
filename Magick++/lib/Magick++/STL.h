@@ -2154,10 +2154,10 @@ namespace Magick
           container_->push_back( coderInfo );
         }
         // Intentionally ignore missing module errors
-        catch ( Magick::ErrorModule& )
-          {
-            continue;
-          }
+        catch (Magick::ErrorModule&)
+        {
+          continue;
+        }
       }
     coder_list=(char **) MagickCore::RelinquishMagickMemory( coder_list );
     ThrowPPException(false);
