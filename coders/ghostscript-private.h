@@ -46,6 +46,18 @@ static int MagickDLLCall GhostscriptDelegateMessage(void *handle,
 }
 #endif
 
+static double GhostscriptVersion(const GhostInfo *ghost_info)
+{
+  gsapi_revision_t
+    revision;
+
+  if ((ghost_info->revision)(&revision,(int) sizeof(revision)) != 0)
+    return(0.0);
+  if (revision.revision > 1000)
+    return(revision.revision/1000.0);
+  return(revision.revision/100.0);
+}
+
 static inline MagickBooleanType InvokeGhostscriptDelegate(
   const MagickBooleanType verbose,const char *command,char *message,
   ExceptionInfo *exception)
@@ -93,9 +105,6 @@ static inline MagickBooleanType InvokeGhostscriptDelegate(
   gs_main_instance
     *interpreter;
 
-  gsapi_revision_t
-    revision;
-
   int
     argc,
     code;
@@ -127,12 +136,10 @@ static inline MagickBooleanType InvokeGhostscriptDelegate(
 #endif
   if (ghost_info == (GhostInfo *) NULL)
     ExecuteGhostscriptCommand(command,status);
-  if ((ghost_info->revision)(&revision,(int) sizeof(revision)) != 0)
-    revision.revision=0;
   if (verbose != MagickFalse)
     {
-      (void) fprintf(stdout,"[ghostscript library %.2f]",(double)
-        revision.revision/100.0);
+      (void) fprintf(stdout,"[ghostscript library %.2f]",
+        GhostscriptVersion(ghost_info));
       SetArgsStart(command,args_start);
       (void) fputs(args_start,stdout);
     }
@@ -164,14 +171,14 @@ static inline MagickBooleanType InvokeGhostscriptDelegate(
       SetArgsStart(command,args_start);
       if (status == -101) /* quit */
         (void) FormatLocaleString(message,MaxTextExtent,
-          "[ghostscript library %.2f]%s: %s",(double) revision.revision/100.0,
+          "[ghostscript library %.2f]%s: %s",GhostscriptVersion(ghost_info),
           args_start,errors);
       else
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
             DelegateError,"PostscriptDelegateFailed",
-            "`[ghostscript library %.2f]%s': %s",(double) revision.revision/
-            100.0,args_start,errors);
+            "`[ghostscript library %.2f]%s': %s",GhostscriptVersion(ghost_info),
+            args_start,errors);
           if (errors != (char *) NULL)
             errors=DestroyString(errors);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
