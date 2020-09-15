@@ -1593,7 +1593,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       image->orientation=(OrientationType) orientation;
     if (TIFFGetField(tiff,TIFFTAG_WHITEPOINT,&chromaticity) == 1)
       {
-        if (chromaticity != (float *) NULL)
+        if ((chromaticity != (float *) NULL) && (*chromaticity != 0.0))
           {
             image->chromaticity.white_point.x=chromaticity[0];
             image->chromaticity.white_point.y=chromaticity[1];
@@ -1601,7 +1601,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
     if (TIFFGetField(tiff,TIFFTAG_PRIMARYCHROMATICITIES,&chromaticity) == 1)
       {
-        if (chromaticity != (float *) NULL)
+        if ((chromaticity != (float *) NULL) && (*chromaticity != 0.0))
           {
             image->chromaticity.red_primary.x=chromaticity[0];
             image->chromaticity.red_primary.y=chromaticity[1];
