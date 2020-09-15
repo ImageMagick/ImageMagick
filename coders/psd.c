@@ -1213,25 +1213,33 @@ static MagickBooleanType ReadPSDChannelRLE(Image *image,const PSDInfo *psd_info,
 }
 
 #ifdef MAGICKCORE_ZLIB_DELEGATE
-static void Unpredict8Bit(unsigned char *pixels,const size_t count)
+static void Unpredict8Bit(const Image *image,unsigned char *pixels,
+  const size_t count,const size_t row_size)
 {
   register unsigned char
     *p;
 
   size_t
+    length,
     remaining;
 
   p=pixels;
   remaining=count;
-  while (--remaining)
+  while (remaining > 0)
   {
-    *(p+1)+=*p;
+    length=image->columns;
+    while (--length)
+    {
+      *(p+1)+=*p;
+      p++;
+    }
     p++;
+    remaining-=row_size;
   }
 }
 
 static void Unpredict16Bit(const Image *image,unsigned char *pixels,
-  const size_t count, const size_t row_size)
+  const size_t count,const size_t row_size)
 {
   register unsigned char
     *p;
@@ -1394,7 +1402,7 @@ static MagickBooleanType ReadPSDChannelZip(Image *image,const size_t channels,
   if (compression == ZipWithPrediction)
     {
       if (packet_size == 1)
-        Unpredict8Bit(pixels,count);
+        Unpredict8Bit(image,pixels,count,row_size);
       else if (packet_size == 2)
         Unpredict16Bit(image,pixels,count,row_size);
       else if (packet_size == 4)
