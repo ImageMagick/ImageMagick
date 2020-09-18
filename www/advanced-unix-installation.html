@@ -110,7 +110,7 @@
 
 <p>The configure script looks at your environment and decides what it can cobble together to get ImageMagick compiled and installed on your system.  This includes finding a compiler, where your compiler header files are located (e.g. stdlib.h), and if any delegate libraries are available for ImageMagick to use (e.g. JPEG, PNG, TIFF, etc.).  If you are willing to accept configure's default options, and build from within the source directory, you can simply type:</p>
 
-<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.10-24</span><span class='crtout'></span><span class="crtprompt">$ </span><span class='crtin'>./configure</span></pre>
+<pre><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.10-29</span><span class='crtout'></span><span class="crtprompt">$ </span><span class='crtin'>./configure</span></pre>
 <p>Watch the configure script output to verify that it finds everything that
  you think it should.  Pay particular attention to the last lines of the script output.  For example, here is a recent report from our system:</p>
 
@@ -222,7 +222,7 @@ Options used to compile and link:
 <p>Here are the optional features you can configure:</p>
 
 <div class="table-responsive" style="font-size:87.5% !important;">
-<table class="table table-sm table-striped">
+<table class="table table-sm table-hover">
   <tr>
     <td>--enable-shared</td>
     <td>build the  shared libraries and support for loading coder and process modules. Shared libraries are preferred because they allow programs to share common code, making the individual programs much smaller. In addition shared libraries are required in order for PerlMagick to be dynamically loaded by an installed PERL (otherwise an additional PERL (PerlMagick) must be installed.
@@ -276,7 +276,7 @@ Options used to compile and link:
 <p>Here are the optional packages you can configure:</p>
 
 <div class="table-responsive" style="font-size:87.5% !important;">
-<table class="table table-sm table-striped">
+<table class="table table-sm table-hover">
   <tr>
     <td>--with-quantum-depth</td>
     <td>number of bits in a pixel quantum (default 16).
@@ -475,7 +475,7 @@ Options used to compile and link:
   <dd class="col-md-8">Remove all files from the system which are (or would be) installed by <code>sudo make install</code> using the current configuration.  Note that this target is imperfect for PerlMagick since Perl no longer supports an <var>uninstall</var> target.</dd>
 </dl>
 
-<p>In most cases you will simply wand to compile ImageMagick with this command:</p>
+<p>In most cases you will simply want to compile ImageMagick with this command:</p>
 
 <pre class="highlight"><code>make
 </code></pre>
@@ -529,7 +529,7 @@ identify logo.gif
 
 <p>After the build you, locate the RPMS folder and install the ImageMagick binary RPM distribution:</p>
 
-<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>rpm -ivh ImageMagick-7.0.10-?.*.rpm</span></pre>
+<pre><span class="crtprompt">$ </span><span class='crtin'>rpm -ivh ImageMagick-7.0.10-?.*.rpm</span></pre>
 <h2><a class="anchor" id="macosx"></a>Mac OS X-specific Build instructions</h2>
 
 <p>Perform these steps as an administrator or with the <tt>sudo</tt> command:</p>
@@ -554,7 +554,7 @@ sudo port -v install graphviz +gs +wmf +jbig +jpeg2 +lcms
 
 	  <p><a href="download.html">Download</a> the ImageMagick source distribution and verify the distribution against its <a href="https://imagemagick.org/download/digest.rdf">message digest</a>.</p>
 	  <p>Unpack and change into the top-level ImageMagick directory:</p>
-		<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>tar xvzf ImageMagick-7.0.10-24.tar.gz</span><span class='crtout'></span><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.10-24</span></pre>	  <p>Configure ImageMagick:</p>
+		<pre><span class="crtprompt">$ </span><span class='crtin'>tar xvzf ImageMagick-7.0.10-29.tar.gz</span><span class='crtout'></span><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.10-29</span></pre>	  <p>Configure ImageMagick:</p>
 <pre class="highlight"><code>./configure --prefix=/opt --with-quantum-depth=16 \
   --disable-dependency-tracking --with-x=yes \
   --x-includes=/usr/X11R6/include --x-libraries=/usr/X11R6/lib/ \
@@ -581,7 +581,7 @@ sudo port -v install graphviz +gs +wmf +jbig +jpeg2 +lcms
 
 <p>Although you can download and install delegate libraries yourself, many are already available in the <a href="http://gnuwin32.sourceforge.net/">GnuWin32</a> distribution.  Download and install whichever delegate libraries you require such as JPEG, PNG, TIFF, etc.  Make sure you specify the development headers when you install a package.  Next type,</p>
 
-<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>tar jxvf ImageMagick-7.0.10-?.tar.bz2</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.10-24</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>./configure --without-perl</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>make</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>sudo make install</span></pre>
+<pre><span class="crtprompt">$ </span><span class='crtin'>tar jxvf ImageMagick-7.0.10-?.tar.bz2</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.10-29</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>./configure --without-perl</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>make</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>sudo make install</span></pre>
 <h2><a class="anchor" id="problems"></a>Dealing with Unexpected Problems</h2>
 
 <p>Chances are the download, configure, build, and install of ImageMagick went flawlessly as it is intended, however, certain systems and environments may cause one or more steps to fail.  We discuss a few problems we've run across and how to take corrective action to ensure you have a working release of ImageMagick</p>
@@ -655,4 +655,4 @@ no encode delegate for this image format
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 30th July 2020 16:13 -->
+<!-- Magick Cache 18th September 2020 20:46 -->

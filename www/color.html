@@ -100,11 +100,11 @@
 
 <p>Each of the following commands produces the same <var>lime</var> border around the image. (Use "double quotes" for Windows.)</p>
 
-<pre class="highlight"><code>convert -bordercolor lime -border 10 image.jpg image.png
-convert -bordercolor '#0f0' -border 10 image.jpg image.png
-convert -bordercolor '#00ff00' -border 10 image.jpg image.png
-convert -bordercolor 'rgb(0,255,0)' -border 10 image.jpg image.png
-convert -bordercolor 'rgb(0,100%,0)' -border 10 image.jpg image.png</code></pre>
+<pre class="highlight"><code>magick -bordercolor lime -border 10 image.jpg image.png
+magick -bordercolor '#0f0' -border 10 image.jpg image.png
+magick -bordercolor '#00ff00' -border 10 image.jpg image.png
+magick -bordercolor 'rgb(0,255,0)' -border 10 image.jpg image.png
+magick -bordercolor 'rgb(0,100%,0)' -border 10 image.jpg image.png</code></pre>
 
 <p>The list of recognized color names (for example, <var>aqua</var>, <var>black</var>, <var>blue</var>, <var>fuchsia</var>, <var>gray</var>, <var>green</var>, <var>lime</var>, <var>maroon</var>, <var>navy</var>, <var>olive</var>, <var>purple</var>, <var>red</var>, <var>silver</var>, <var>teal</var>, <var>white</var>, <var>yellow</var>, and others) is shown in a table further below.</p>
 
@@ -198,11 +198,11 @@ hsla(120, 255,  127.5,  1.0)       the same, with an alpha value of 1.0</code></
 <p>Specify the Lab colors like this:</p>
 <pre class="highlight"><code>cielab(62.253188, 23.950124, 48.410653)</code></pre>
 <p>Note, the <code>a</code> and <code>b</code> components of any Lab color you specify are biased internally by 50% to ensure it fits in the quantum range (typically 0 to 65535).  The bias is retained when writing to the TIFF and MIFF image formats.  However, the TXT format supports negative pixel values so the bias is removed when writing to this format:</p>
-<pre class="highlight"><code>-> convert xc:#CD853F -colorspace LAB txt:
+<pre class="highlight"><code>-> magick xc:cyan -colorspace LAB txt:
 # ImageMagick pixel enumeration: 1,1,65535,cielab
-0,0: (40470.8,38266.6,12314.5)  #9E17957BB01A  cielab(61.7544,21.3973,47.9163)
+0,0: (59711,20409.5,-3632.9)  #E93F4FBA71CF  cielab(91.1132,-48.0855,-14.1358)
 
--> convert xc:"cielab(61.7544,21.3973,47.9163)" -colorspace sRGB -depth 8 peru.png</code></pre>
+-> magick -size 100x100 xc:"cielab(91.1132,-48.0855,-14.1358)" -colorspace sRGB cyan.png</code></pre>
 
 <p>Or specify colors generically with the <code>icc-color</code> keyword, for example:</p>
 <pre class="highlight"><code>
@@ -224,7 +224,7 @@ device-cmyk(0.11, 0.48, 0.83, 0.00)</code></pre>
 
 <p>The table below provides a list of named colors recognized by ImageMagick:</p>
 
-<table class="table table-sm table-striped">
+<table class="table table-sm table-hover">
 <tbody>
   <tr>
     <th align="right">Name</th>
@@ -4984,4 +4984,4 @@ device-cmyk(0.11, 0.48, 0.83, 0.00)</code></pre>
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 30th July 2020 16:49 -->
+<!-- Magick Cache 18th September 2020 21:34 -->

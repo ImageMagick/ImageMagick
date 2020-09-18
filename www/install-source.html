@@ -105,11 +105,11 @@
 
 <p>ImageMagick builds on a variety of Unix and Unix-like operating systems including Linux, Solaris, FreeBSD, Mac OS X, and others.  A compiler is required and fortunately almost all modern Unix systems have one.  Clone the source repository:</p>
 
-<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>git clone git@github.com:ImageMagick/ImageMagick.git ImageMagick-7.0.10</span></pre>
+<pre><span class="crtprompt">$ </span><span class='crtin'>git clone git@github.com:ImageMagick/ImageMagick.git ImageMagick-7.0.10</span></pre>
 <p>Next configure and compile ImageMagick.  Note the <a href="https://en.wikipedia.org/wiki/Pkg-config">pkg-config</a> script is required so that ImageMagick can find certain optional delegate libraries on your system.  To configure, type:</p>
 
-<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.10</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>./configure</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>make</span></pre><p>For advanced users, we recommend a modules build:</p>
-<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>./configure --with-modules</span></pre><p>If ImageMagick configured and compiled without complaint, you are ready to install it on your system.  Administrator privileges are required to install.  To install, type</p>
+<pre><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.10</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>./configure</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>make</span></pre><p>For advanced users, we recommend a modules build:</p>
+<pre><span class="crtprompt">$ </span><span class='crtin'>./configure --with-modules</span></pre><p>If ImageMagick configured and compiled without complaint, you are ready to install it on your system.  Administrator privileges are required to install.  To install, type</p>
 
 <pre class="highlight"><code>sudo make install
 </code></pre>
@@ -129,7 +129,7 @@
 <pre class="highlight"><code>make check
 </code></pre>
 
-<p>Congratulations, you have a working ImageMagick distribution and you are ready to use ImageMagick to <a href="../Usage/">convert, compose, or edit</a> your images or perhaps you'll want to use one of the <a href="develop.html">Application Program Interfaces</a> for C, C++, Perl, and others.</p>
+<p>Congratulations, you have a working ImageMagick distribution and you are ready to use ImageMagick to <a href="https://legacy.imagemagick.org/Usage/">convert, compose, or edit</a> your images or perhaps you'll want to use one of the <a href="develop.html">Application Program Interfaces</a> for C, C++, Perl, and others.</p>
 
 <p>The above instructions will satisfy a great number of ImageMagick users, but we suspect a few will have additional questions or problems to consider.  For example, what does one do if ImageMagick fails to configure or compile?  Or what if you don't have administrator privileges and what if you don't want to install ImageMagick in the default <code>/../usr/local</code> folder?  You will find the answer to these questions, and more, in <a href="advanced-unix-installation.html">Advanced Unix Source Installation</a>.</p>
 
@@ -154,13 +154,13 @@ to compile the program and on completion run the program.</p>
 
 <p>To verify ImageMagick is working properly, launch a MS-DOS Command Prompt window and type</p>
 
-<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.10</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>convert logo: image.jpg</span></pre><p>You may want to add the full path to VisualMagick\bin for your environment PATH variable, so you can call Magick/convert from any directory.<p>
+<pre><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.10</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>convert logo: image.jpg</span></pre><p>You may want to add the full path to VisualMagick\bin for your environment PATH variable, so you can call Magick/convert from any directory.<p>
 <p>For a more comprehensive test, run the ImageMagick validation suite:</p>
 
 <pre class="highlight"><code>validate
 </code></pre>
 
-<p>Congratulations, you have a working ImageMagick distribution under Windows and you are ready to use ImageMagick to <a href="../Usage/">convert, compose, or edit</a> your images or perhaps you'll want to use one of the <a href="develop.html">Application Program Interfaces</a> for C, C++, Perl, and others.</p>
+<p>Congratulations, you have a working ImageMagick distribution under Windows and you are ready to use ImageMagick to <a href="https://legacy.imagemagick.org/Usage/">convert, compose, or edit</a> your images or perhaps you'll want to use one of the <a href="develop.html">Application Program Interfaces</a> for C, C++, Perl, and others.</p>
 
 <p>The above instructions will satisfy a great number of ImageMagick users, but we suspect a few will have additional questions or problems to consider.  For example, what does one do if ImageMagick fails to configure or compile?  Or what if you want to install ImageMagick in a place other than the <kbd>ImageMagick-7.0.10/VisualMagick/bin</kbd> folder?  Or perhaps you want to build and install the <a href="ImageMagickObject.html">ImageMagickObject</a> COM+ component.  You will find the answer to these questions, and more, in <a href="advanced-windows-installation.html">Advanced Windows Source Installation</a>.</p>
 
@@ -194,4 +194,4 @@ to compile the program and on completion run the program.</p>
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 30th July 2020 15:23 -->
+<!-- Magick Cache 18th September 2020 20:58 -->

@@ -132,7 +132,7 @@ example,</p>
 </code></pre>
 
 <p>As of IM 6.7.8-2 one can properly work in LAB colorspace whether or not
-Imagemagick is <a href="high-dynamic-range.html">HDRI</a>-enabled.  Essentually the A and
+Imagemagick is <a href="high-dynamic-range.html">HDRI</a>-enabled.  Essentially the A and
 B channels are stored with a 50% gray bias, to allow it to handle the
 negatives required by the format.</p>
 
@@ -159,7 +159,7 @@ including sub-formats). The following table provides a summary of
 the supported image formats.</p>
 
 <div class="table-responsive" style="font-size:87.5% !important;">
-<table class="table table-sm table-striped">
+<table class="table table-sm table-hover">
   <tbody>
   <tr>
     <th>Tag</th>
@@ -621,13 +621,13 @@ the supported image formats.</p>
     <td><a href="http://www.json.org">JSON</a></td>
     <td>W</td>
     <td>JavaScript Object Notation, a lightweight data-interchange format</td>
-    <td>Include additional attributes about the image with these defines: <a href="command-line-options.html#define">-define json:locate</a>, <a href="command-line-options.html#define">-define json:limit</a>, <a href="command-line-options.html#define">-define json:moments</a>, or <a href="command-line-options.html#define">-define json:features</a>.</td>
+    <td>Include additional attributes about the image with these defines: <a href="command-line-options.html#define">-define json:locate</a>, <a href="command-line-options.html#define">-define json:limit</a>, <a href="command-line-options.html#define">-define json:moments</a>, or <a href="command-line-options.html#define">-define json:features</a>.  Specify the JSON model schema version with <a href="command-line-options.html#define">-define json:version</a>.  The current version is 1.0.  Any version less than 1.0, returns the original JSON output which included misspelled labels.</td>
   </tr>
 
   <tr>
-    <td><a href="https://en.wikipedia.org/wiki/JPEG_XR">JXL</a></td>
+    <td><a href="https://jpeg.org/jpegxl/index.html">JXL</a></td>
     <td>RW</td>
-    <td>JPEG1 recompression as specified in https://arxiv.org/pdf/1908.03565.pdf</td>
+    <td><a href="https://arxiv.org/ftp/arxiv/papers/1908/1908.03565.pdf">JPEG XL image coding system</a></td>
     <td>Requires the <a href="https://github.com/google/brunsli">brunsli</a> delegate library.</td>
   </tr>
 
@@ -737,6 +737,13 @@ the supported image formats.</p>
     <td>ORF</td>
     <td>R</td>
     <td>Olympus Digital Camera Raw Image File</td>
+    <td> </td>
+  </tr>
+
+  <tr>
+    <td><a href="https://www.freedesktop.org/wiki/Specifications/OpenRaster/">ORA</a></td>
+    <td>R</td>
+    <td>open exchange format for layered raster based graphics</td>
     <td> </td>
   </tr>
 
@@ -1307,7 +1314,7 @@ the supported image formats.</p>
 <p>ImageMagick supports a number of image format specifications which refer to images prepared via an algorithm, or input/output targets. The following table lists these pseudo-image formats:</p>
 
 <div class="table-responsive" style="font-size:87.5% !important;">
-<table class="table table-sm table-striped">
+<table class="table table-sm table-hover">
   <tr>
     <th>Tag</th>
     <th>Mode</th>
@@ -1547,7 +1554,7 @@ the supported image formats.</p>
 <p>ImageMagick includes a number of built-in (embedded) images which may be referenced as if they were an image file. The <code>magick:</code> format tag may be used via the syntax <code>magick:</code><var>name</var> to request an embedded image (e.g. <code>magick:logo</code>). For backwards compatibility, the image specifications <code>GRANITE:</code>, <code>LOGO:</code>, <code>NETSCAPE:</code>, and <code>ROSE:</code> may also be used to request images with those names.</p>
 
 <div class="table-responsive" style="font-size:87.5% !important;">
-<table class="table table-sm table-striped">
+<table class="table table-sm table-hover">
   <tr>
     <th>Tag</th>
     <th>Mode</th>
@@ -1597,7 +1604,7 @@ the supported image formats.</p>
 <p>ImageMagick includes a number of built-in (embedded) patterns which may be referenced as if they were an image file. The <code>pattern:</code> format tag may be used via the syntax <code>pattern:</code><var>name</var> to request an embedded pattern (e.g. <code>pattern:checkerboard</code>). The pattern size is controlled with the <a href="command-line-options.html#size">-size</a> command line option.</p>
 
 <div class="table-responsive" style="font-size:87.5% !important;">
-<table class="table table-sm table-striped">
+<table class="table table-sm table-hover">
   <tr>
     <th>Tag</th>
     <th>Mode</th>
@@ -1989,7 +1996,7 @@ the supported image formats.</p>
 <p>ImageMagick provides a number of format identifiers which are used to add, remove, and save embedded profiles for images which can support embedded profiles. Image types which may contain embedded profiles are TIFF, JPEG, and PDF.</p>
 
 <div class="table-responsive" style="font-size:87.5% !important;">
-<table class="table table-sm table-striped">
+<table class="table table-sm table-hover">
   <tbody>
   <tr>
     <th>Tag</th>
@@ -2080,4 +2087,4 @@ the supported image formats.</p>
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
-<!-- Magick Cache 30th July 2020 15:46 -->
+<!-- Magick Cache 18th September 2020 20:17 -->

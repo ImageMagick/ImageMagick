@@ -117,7 +117,7 @@
 
 <p>Next configure and compile ImageMagick:</p>
 
-<pre class="highlight"><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.10<br/>$ ./configure -with-perl<br/>$ make</span></pre>
+<pre><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.0.10<br/>$ ./configure -with-perl<br/>$ make</span></pre>
 <p>If ImageMagick / PerlMagick configured and compiled without complaint, you are ready to install it on your system.  Administrator privileges are required to install.  To install, type</p>
 
 <pre class="highlight"><code>sudo make install
@@ -134,7 +134,7 @@
 <pre class="highlight"><code>perl -MImage::Magick -le 'print Image::Magick->QuantumDepth'
 </code></pre>
 
-<p>Congratulations, you have a working ImageMagick distribution and you are ready to use PerlMagick to <a href="../Usage/">convert, compose, or edit</a> your images.</p>
+<p>Congratulations, you have a working ImageMagick distribution and you are ready to use PerlMagick to <a href="https://legacy.imagemagick.org/Usage/">convert, compose, or edit</a> your images.</p>
 
 <p><b>Windows XP / Windows 2000</b></p>
 
@@ -293,7 +293,7 @@ $p-&gt;Convolve([1, 2, 1, 2, 4, 2, 1, 2, 1]);   # 3x3 Gaussian kernel
 
 <p>Use the methods listed below to either read, write, or display an image or image sequence:</p>
 
-<table class="table table-sm table-striped">
+<table class="table table-sm table-hover">
 <caption>Read or Write Methods</caption>
 <colgroup>
   <col width="20%" />
@@ -388,7 +388,7 @@ $image-&gt;[$x]-&gt;Frame("100x200");
 
 <p>And here is a list of other image manipulation methods you can call:</p>
 
-<table class="table table-sm table-striped">
+<table class="table table-sm table-hover">
 <caption>Image Manipulation Methods</caption>
 <tbody>
   <tr>
@@ -1361,7 +1361,7 @@ can use the integers 1 and 0.</p>
 
 <p>And here is a list of all the image attributes you can set:</p>
 
-<table class="table table-sm table-striped">
+<table class="table table-sm table-hover">
   <caption>Image Attributes</caption>
   <tbody>
   <tr>
@@ -1774,7 +1774,7 @@ $width = $image-&gt;[3]-&gt;Get('columns');
 
 <p>In addition to all the attributes listed in <a href="perl-magick.html#set-attribute">Set an Image Attribute</a> , you can get these additional attributes:</p>
 
-<table class="table table-sm table-striped">
+<table class="table table-sm table-hover">
   <caption>Image Attributes</caption>
   <tbody>
   <tr>
@@ -2040,7 +2040,7 @@ $width = $image-&gt;[3]-&gt;Get('columns');
 
 <p>Mathematically and visually annotate the difference between an image and its reconstruction with the Compare() method.  The method supports these parameters:</p>
 
-<table class="table table-sm table-striped">
+<table class="table table-sm table-hover">
   <caption>Compare Parameters</caption>
   <tbody>
   <tr>
@@ -2100,7 +2100,7 @@ $difference->Display();
 
 <p>And here is a list of Montage() parameters you can set:</p>
 
-<table class="table table-sm table-striped">
+<table class="table table-sm table-hover">
   <caption>Montage Parameters</caption>
   <tbody>
   <tr>
@@ -2227,7 +2227,7 @@ South, SouthEast</td>
 format in memory instead of on disk. PerlMagick supports
 blobs in any of these image <a href="formats.html">formats</a> and provides methods to convert a blob to or from a particular image format.</p>
 
-<table class="table table-sm table-striped">
+<table class="table table-sm table-hover">
   <caption>Blob Methods</caption>
   <tbody>
   <tr>
@@ -2273,7 +2273,7 @@ $image-&gt;BlobToImage(@blob);
 
 <p>Use these methods to obtain direct access to the image pixels:</p>
 
-<table class="table table-sm table-striped">
+<table class="table table-sm table-hover">
 <caption>Direct-access to Image Pixels</caption>
 <tbody>
   <tr>
@@ -2629,3 +2629,4 @@ XServerWarning
   <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
 </body>
 </html>
+<!-- Magick Cache 18th September 2020 19:25 -->
