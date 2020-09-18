@@ -206,7 +206,7 @@ static MagickBooleanType
   TraceSquareLinecap(PrimitiveInfo *,const size_t,const double);
 
 static PrimitiveInfo
-  *TraceStrokePolygon(const Image *,const DrawInfo *,const PrimitiveInfo *);
+  *TraceStrokePolygon(const DrawInfo *,const PrimitiveInfo *);
 
 static ssize_t
   TracePath(MVGInfo *,const char *,ExceptionInfo *);
@@ -5742,7 +5742,7 @@ static MagickBooleanType DrawStrokePolygon(Image *image,
   {
     if (p->coordinates == 1)
       continue;
-    stroke_polygon=TraceStrokePolygon(image,draw_info,p);
+    stroke_polygon=TraceStrokePolygon(draw_info,p);
     if (stroke_polygon == (PrimitiveInfo *) NULL)
       {
         status=0;
@@ -7099,8 +7099,8 @@ static MagickBooleanType TraceSquareLinecap(PrimitiveInfo *primitive_info,
   return(MagickTrue);
 }
 
-static PrimitiveInfo *TraceStrokePolygon(const Image *image,
-  const DrawInfo *draw_info,const PrimitiveInfo *primitive_info)
+static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
+  const PrimitiveInfo *primitive_info)
 {
 #define MaxStrokePad  (6*BezierQuantum+360)
 #define CheckPathExtent(pad_p,pad_q) \
