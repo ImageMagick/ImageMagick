@@ -1165,6 +1165,7 @@ with_sharearch_dir
 with_pkgconfigdir
 with_threads
 enable_openmp
+enable_opencl
 enable_largefile
 enable_shared
 enable_static
@@ -1949,6 +1950,7 @@ Optional Features:
   --enable-osx-universal-binary
                           build universal binary on OS X [[default=no]]
   --disable-openmp        do not use OpenMP
+  --disable-opencl        do not use OpenCL
   --disable-largefile     omit support for large files
   --enable-shared[=PKGS]  build shared libraries [default=yes]
   --enable-static[=PKGS]  build static libraries [default=yes]
@@ -4573,7 +4575,7 @@ MAGICK_PATCHLEVEL_VERSION=30
 
 MAGICK_VERSION=7.0.10-30
 
-MAGICK_GIT_REVISION=17623:9bf5d9ce4:20200916
+MAGICK_GIT_REVISION=17640:bd3978a55:20200919
 
 
 # Substitute library versioning
@@ -10603,7 +10605,15 @@ fi
 
 # Enable support for OpenCL
 no_cl=yes
-      CPPFLAGS_CL=""
+    # Check whether --enable-opencl was given.
+if test "${enable_opencl+set}" = set; then :
+  enableval=$enable_opencl; enable_opencl=$enableval
+else
+  enable_opencl='yes'
+fi
+
+  if test x"$enable_opencl" != xno ; then
+    CPPFLAGS_CL=""
     for ac_header in CL/cl.h OpenCL/cl.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
@@ -10624,10 +10634,10 @@ done
       { $as_echo "$as_me:${as_lineno-$LINENO}: checking for AMD's SDK cl.h" >&5
 $as_echo_n "checking for AMD's SDK cl.h... " >&6; }
       if test -d /opt/AMDAPP/include/CL ; then
-	HAVE_CL_H="yes"
-	$as_echo "#define HAVE_CL_CL_H 1" >>confdefs.h
+        HAVE_CL_H="yes"
+        $as_echo "#define HAVE_CL_CL_H 1" >>confdefs.h
 
-	CPPFLAGS_CL="-I/opt/AMDAPP/include"
+        CPPFLAGS_CL="-I/opt/AMDAPP/include"
       fi
       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $HAVE_CL_H" >&5
 $as_echo "$HAVE_CL_H" >&6; }
@@ -10637,43 +10647,44 @@ $as_echo "$HAVE_CL_H" >&6; }
       { $as_echo "$as_me:${as_lineno-$LINENO}: checking for NVIDIA's SDK cl.h" >&5
 $as_echo_n "checking for NVIDIA's SDK cl.h... " >&6; }
       if test -d /usr/local/cuda/include/CL ; then
-	HAVE_CL_H="yes"
-	$as_echo "#define HAVE_CL_CL_H 1" >>confdefs.h
+        HAVE_CL_H="yes"
+        $as_echo "#define HAVE_CL_CL_H 1" >>confdefs.h
 
-	CPPFLAGS_CL="-I/usr/local/cuda/include"
+        CPPFLAGS_CL="-I/usr/local/cuda/include"
       elif test -d /usr/local/cuda-6.5/include/CL ; then
-	HAVE_CL_H="yes"
-	$as_echo "#define HAVE_CL_CL_H 1" >>confdefs.h
+        HAVE_CL_H="yes"
+        $as_echo "#define HAVE_CL_CL_H 1" >>confdefs.h
 
-	CPPFLAGS_CL="-I/usr/local/cuda-6.5/include"
+        CPPFLAGS_CL="-I/usr/local/cuda-6.5/include"
       elif test -d /usr/local/cuda-6.0/include/CL ; then
-	HAVE_CL_H="yes"
-	$as_echo "#define HAVE_CL_CL_H 1" >>confdefs.h
+        HAVE_CL_H="yes"
+        $as_echo "#define HAVE_CL_CL_H 1" >>confdefs.h
 
-	CPPFLAGS_CL="-I/usr/local/cuda-6.0/include"
+        CPPFLAGS_CL="-I/usr/local/cuda-6.0/include"
       elif test -d /usr/local/cuda-5.5/include/CL ; then
-	HAVE_CL_H="yes"
-	$as_echo "#define HAVE_CL_CL_H 1" >>confdefs.h
+        HAVE_CL_H="yes"
+        $as_echo "#define HAVE_CL_CL_H 1" >>confdefs.h
 
-	CPPFLAGS_CL="-I/usr/local/cuda-5.5/include"
+        CPPFLAGS_CL="-I/usr/local/cuda-5.5/include"
       fi
       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $HAVE_CL_H" >&5
 $as_echo "$HAVE_CL_H" >&6; }
     fi
     if test x"$HAVE_CL_H" = xno ; then
-    	no_cl=yes
-    	{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: no OpenCL headers found" >&5
+      no_cl=yes
+      { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: no OpenCL headers found" >&5
 $as_echo "$as_me: WARNING: no OpenCL headers found" >&2;}
-    	CL_ENABLED=false
-    	CL_VERSION=0
-
+      CL_ENABLED=false
+      CL_VERSION=0
     else
-  	#
-  	# First we check for Mac OS X, since OpenCL is standard there
-  	#
-  	LIBS_CL="none"
-  	case "$host_os" in
-  	  darwin*) # On Mac OS X we check for installed frameworks
+      #
+      # First we check for Mac OS X, since OpenCL is standard there
+      #
+      LIBS_CL="none"
+      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for OpenCL library" >&5
+$as_echo_n "checking for OpenCL library... " >&6; }
+      case "$host_os" in
+        darwin*) # On Mac OS X we check for installed frameworks
 
     case x"$host_os" in
     xdarwin*)
@@ -10721,47 +10732,48 @@ fi
 $as_echo "$ax_cv_check_OpenCL" >&6; }
       if test x"$ax_cv_check_OpenCL" = "xyes" ; then
 
-	    LIBS_CL="-framework OpenCL"
-    	    no_cl=no
-    	    CL_ENABLED=true
-    	    CL_VERSION=1
+          LIBS_CL="-framework OpenCL"
+          no_cl=no
+          { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+          CL_ENABLED=true
+          CL_VERSION=1
 
 
       else
 
-    	    no_cl=yes
-    	    CL_ENABLED=false
-    	    CL_VERSION=0
+          no_cl=yes
+          { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+          CL_ENABLED=false
+          CL_VERSION=0
 
       fi
       LIBS=$ac_check_framework_save_LIBS
           ;;
   esac
 
-  	  ;;
-  	  *)
-	    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for OpenCL library" >&5
-$as_echo_n "checking for OpenCL library... " >&6; }
-  	    save_LIBS=$LIBS
-	    save_CFLAGS=$CFLAGS
-	    CFLAGS=$CPPFLAGS_CL
-  	    LIBS="$save_LIBS -L/usr/lib64/nvidia -L/usr/lib/nvidia -lOpenCL"
-	    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+      ;;
+      *)
+        save_LIBS=$LIBS
+        save_CFLAGS=$CFLAGS
+        CFLAGS=$CPPFLAGS_CL
+        LIBS="$save_LIBS -L/usr/lib64/nvidia -L/usr/lib/nvidia -lOpenCL"
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-  		#ifdef HAVE_OPENCL_CL_H
-			#include <OpenCL/cl.h>
-		#elif defined(HAVE_CL_CL_H)
-			#include <CL/cl.h>
-		#endif
-	    	#include <stddef.h>
+          #ifdef HAVE_OPENCL_CL_H
+            #include <OpenCL/cl.h>
+          #elif defined(HAVE_CL_CL_H)
+            #include <CL/cl.h>
+          #endif
+          #include <stddef.h>
 
 int
 main ()
 {
 
-		clGetPlatformIDs(0, NULL, NULL);
-
+          clGetPlatformIDs(0, NULL, NULL);
 
   ;
   return 0;
@@ -10769,30 +10781,38 @@ main ()
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
 
-    		no_cl=no
-    		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+          no_cl=no
+          { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-    		CL_ENABLED=true
-    		CL_VERSION=1
-	    	LIBS_CL="$save_LIBS -L/usr/lib64/nvidia -L/usr/lib/nvidia -lOpenCL"
+          CL_ENABLED=true
+          CL_VERSION=1
+          LIBS_CL="$save_LIBS -L/usr/lib64/nvidia -L/usr/lib/nvidia -lOpenCL"
 
 else
 
-    		no_cl=yes
-    		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+          no_cl=yes
+          { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-    		CL_ENABLED=false
-    		CL_VERSION=0
+          CL_ENABLED=false
+          CL_VERSION=0
 
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 
-  	    LIBS=$save_LIBS
-	    CFLAGS=$save_CFLAGS
-  	  ;;
-  	esac
-
+        LIBS=$save_LIBS
+        CFLAGS=$save_CFLAGS
+      ;;
+      esac
+    fi
+  else
+    no_cl=yes
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for OpenCL library" >&5
+$as_echo_n "checking for OpenCL library... " >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: disabled" >&5
+$as_echo "disabled" >&6; }
+    CL_ENABLED=false
+    CL_VERSION=0
   fi
 
 if test "X$no_cl" != 'Xyes'; then
@@ -28569,10 +28589,14 @@ fi
 
 
 # whether modules are built or not.
-with_ltdl='yes'
+if test "$build_modules" != 'no' || test "X$no_cl" != 'Xyes'; then
+  with_ltdl='yes'
+else
+  with_ltdl='no'
+fi
 have_ltdl='no'
 LTDL_LIBS=''
-if test "$build_modules" != 'no' || test "X$no_cl" != 'Xyes'; then
+if test "$with_ltdl" = 'yes'; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for libltdl" >&5
@@ -31244,6 +31268,8 @@ $as_echo "yes" >&6; }
 fi
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
+else
+  have_lzma=no
 fi
 
 if test "$have_lzma" = 'yes'; then
@@ -39011,7 +39037,7 @@ configuration matches your expectations.
 Host system type: $host
 Build system type: $build
 
-               Option                        Value
+                  Option                        Value
 ------------------------------------------------------------------------------
 Shared libraries  --enable-shared=$enable_shared		$libtool_build_shared_libs
 Static libraries  --enable-static=$enable_static		$libtool_build_static_libs
@@ -39041,10 +39067,10 @@ Delegate library configuration:
   FreeType          --with-freetype=$with_freetype		$have_freetype
   Ghostscript lib   --with-gslib=$with_gslib		$have_gslib
   Graphviz          --with-gvc=$with_gvc		$have_gvc
-  HEIC              --with-heic=$with_heic             $have_heic
+  HEIC              --with-heic=$with_heic		$have_heic
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
-  JPEG XL           --with-jxl=$with_jxl    $have_jxl
+  JPEG XL           --with-jxl=$with_jxl		$have_jxl
   LCMS              --with-lcms=$with_lcms		$have_lcms
   LQR               --with-lqr=$with_lqr		$have_lqr
   LTDL              --with-ltdl=$with_ltdl		$have_ltdl
@@ -39056,7 +39082,7 @@ Delegate library configuration:
   PERL              --with-perl=$with_perl		$have_perl
   PNG               --with-png=$with_png		$have_png
   RAQM              --with-raqm=$with_raqm		$have_raqm
-  RAW               --with-raw=$with_raw 	   	$have_raw
+  RAW               --with-raw=$with_raw		$have_raw
   RSVG              --with-rsvg=$with_rsvg		$have_rsvg
   TIFF              --with-tiff=$with_tiff		$have_tiff
   WEBP              --with-webp=$with_webp		$have_webp
@@ -39110,7 +39136,7 @@ configuration matches your expectations.
 Host system type: $host
 Build system type: $build
 
-               Option                        Value
+                  Option                        Value
 ------------------------------------------------------------------------------
 Shared libraries  --enable-shared=$enable_shared		$libtool_build_shared_libs
 Static libraries  --enable-static=$enable_static		$libtool_build_static_libs
@@ -39140,10 +39166,10 @@ Delegate library configuration:
   FreeType          --with-freetype=$with_freetype		$have_freetype
   Ghostscript lib   --with-gslib=$with_gslib		$have_gslib
   Graphviz          --with-gvc=$with_gvc		$have_gvc
-  HEIC              --with-heic=$with_heic             $have_heic
+  HEIC              --with-heic=$with_heic		$have_heic
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
-  JPEG XL           --with-jxl=$with_jxl    $have_jxl
+  JPEG XL           --with-jxl=$with_jxl		$have_jxl
   LCMS              --with-lcms=$with_lcms		$have_lcms
   LQR               --with-lqr=$with_lqr		$have_lqr
   LTDL              --with-ltdl=$with_ltdl		$have_ltdl
@@ -39155,7 +39181,7 @@ Delegate library configuration:
   PERL              --with-perl=$with_perl		$have_perl
   PNG               --with-png=$with_png		$have_png
   RAQM              --with-raqm=$with_raqm		$have_raqm
-  RAW               --with-raw=$with_raw 	   	$have_raw
+  RAW               --with-raw=$with_raw		$have_raw
   RSVG              --with-rsvg=$with_rsvg		$have_rsvg
   TIFF              --with-tiff=$with_tiff		$have_tiff
   WEBP              --with-webp=$with_webp		$have_webp
