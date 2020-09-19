@@ -4038,7 +4038,7 @@ configuration matches your expectations.
 Host system type: $host
 Build system type: $build
 
-               Option                        Value
+                  Option                        Value
 ------------------------------------------------------------------------------
 Shared libraries  --enable-shared=$enable_shared		$libtool_build_shared_libs
 Static libraries  --enable-static=$enable_static		$libtool_build_static_libs
@@ -4068,10 +4068,10 @@ Delegate library configuration:
   FreeType          --with-freetype=$with_freetype		$have_freetype
   Ghostscript lib   --with-gslib=$with_gslib		$have_gslib
   Graphviz          --with-gvc=$with_gvc		$have_gvc
-  HEIC              --with-heic=$with_heic             $have_heic
+  HEIC              --with-heic=$with_heic		$have_heic
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
-  JPEG XL           --with-jxl=$with_jxl    $have_jxl
+  JPEG XL           --with-jxl=$with_jxl		$have_jxl
   LCMS              --with-lcms=$with_lcms		$have_lcms
   LQR               --with-lqr=$with_lqr		$have_lqr
   LTDL              --with-ltdl=$with_ltdl		$have_ltdl
@@ -4083,7 +4083,7 @@ Delegate library configuration:
   PERL              --with-perl=$with_perl		$have_perl
   PNG               --with-png=$with_png		$have_png
   RAQM              --with-raqm=$with_raqm		$have_raqm
-  RAW               --with-raw=$with_raw 	   	$have_raw
+  RAW               --with-raw=$with_raw		$have_raw
   RSVG              --with-rsvg=$with_rsvg		$have_rsvg
   TIFF              --with-tiff=$with_tiff		$have_tiff
   WEBP              --with-webp=$with_webp		$have_webp
