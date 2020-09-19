@@ -1644,10 +1644,14 @@ AC_SUBST(ZSTD_LIBS)
 dnl ===========================================================================
 
 # whether modules are built or not.
-with_ltdl='yes'
+if test "$build_modules" != 'no' || test "X$no_cl" != 'Xyes'; then
+  with_ltdl='yes'
+else
+  with_ltdl='no'
+fi
 have_ltdl='no'
 LTDL_LIBS=''
-if test "$build_modules" != 'no' || test "X$no_cl" != 'Xyes'; then
+if test "$with_ltdl" = 'yes'; then
   AC_MSG_RESULT([-------------------------------------------------------------])
   AC_MSG_CHECKING([for libltdl])
   AC_MSG_RESULT([])
