@@ -1083,11 +1083,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             if (IsStringFalse(artifact) != MagickFalse)
               highres=MagickFalse;
 #endif
-            if (highres != MagickFalse)
-              {
-                source_info.scale=1.0;
-                source_info.translate=0.0;
-              }
+            source_info.scale=1.0;
+            source_info.translate=0.0;
             source_info.colorspace=sRGBColorspace;
             source_info.channels=3;
             switch (cmsGetColorSpace(source_info.profile))
@@ -1183,11 +1180,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             signature=cmsGetPCS(source_info.profile);
             if (target_info.profile != (cmsHPROFILE) NULL)
               signature=cmsGetColorSpace(target_info.profile);
-            if (highres != MagickFalse)
-              {
-                target_info.scale=1.0;
-                target_info.translate=0.0;
-              }
+            target_info.scale=1.0;
+            target_info.translate=0.0;
             target_info.channels=3;
             switch (signature)
             {
