@@ -620,7 +620,21 @@ static MagickBooleanType ClonePixelCacheOnDisk(
     return(MagickFalse);
   quantum=(size_t) MagickMaxBufferExtent;
   if ((fstat(cache_info->file,&file_stats) == 0) && (file_stats.st_size > 0))
-    quantum=(size_t) MagickMin(file_stats.st_size,MagickMaxBufferExtent);
+    {
+#if defined(MAGICKCORE_HAVE_SENDFILE)
+      if (cache_info->length < 0x7ffff000)
+        {
+          count=sendfile(clone_info->file,cache_info->file,(off_t *) NULL,
+            (ssize_t) cache_info->length);
+          if (count == (ssize_t) cache_info->length)
+            return(MagickTrue);
+          if ((lseek(cache_info->file,0,SEEK_SET) < 0) ||
+              (lseek(clone_info->file,0,SEEK_SET) < 0))
+            return(MagickFalse);
+        }
+#endif
+      quantum=(size_t) MagickMin(file_stats.st_size,MagickMaxBufferExtent);
+    }
   buffer=(unsigned char *) AcquireQuantumMemory(quantum,sizeof(*buffer));
   if (buffer == (unsigned char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
