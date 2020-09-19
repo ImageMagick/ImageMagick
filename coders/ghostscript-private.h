@@ -44,7 +44,6 @@ static int MagickDLLCall GhostscriptDelegateMessage(void *handle,
   (*messages)[length+offset] ='\0';
   return(length);
 }
-#endif
 
 static double GhostscriptVersion(const GhostInfo *ghost_info)
 {
@@ -57,6 +56,7 @@ static double GhostscriptVersion(const GhostInfo *ghost_info)
     return(revision.revision/1000.0);
   return(revision.revision/100.0);
 }
+#endif
 
 static inline MagickBooleanType InvokeGhostscriptDelegate(
   const MagickBooleanType verbose,const char *command,char *message,
