@@ -2522,6 +2522,8 @@ if test "x$with_lzma" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
   PKG_CHECK_MODULES(LZMA,[liblzma >= 2.9.0], have_lzma=yes, have_lzma=no)
   AC_MSG_RESULT([])
+else
+  have_lzma=no
 fi
 
 if test "$have_lzma" = 'yes'; then
