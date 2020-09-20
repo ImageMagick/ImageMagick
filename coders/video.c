@@ -3,14 +3,14 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                        M   M  PPPP   EEEEE   GGGG                           %
-%                        MM MM  P   P  E      G                               %
-%                        M M M  PPPP   EEE    G  GG                           %
-%                        M   M  P      E      G   G                           %
-%                        M   M  P      EEEEE   GGGG                           %
+%                     V   V  IIIII  DDDD   EEEEE   OOO                        %
+%                     V   V    I    D   D  E      O   O                       %
+%                     V   V    I    D   D  EEE    O   O                       %
+%                      V V     I    D   D  E      O   O                       %
+%                       V    IIIII  DDDD   EEEEE   OOO                        %
 %                                                                             %
 %                                                                             %
-%                       Read/Write MPEG Image Format                          %
+%                       Read/Write VIDEO Image Format                         %
 %                                                                             %
 %                              Software Design                                %
 %                                   Cristy                                    %
@@ -66,25 +66,26 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteMPEGImage(const ImageInfo *,Image *,ExceptionInfo *);
+  WriteVIDEOImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I s A V I                                                                 %
+%   I s V I D E O                                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsAVI() returns MagickTrue if the image format type, identified by the
-%  magick string, is Audio/Video Interleaved file format.
+%  IsVIDEO() returns MagickTrue if the image format type, identified by the
+%  magick string, is VIDEO.
 %
-%  The format of the IsAVI method is:
+%  The format of the IsVIDEO method is:
 %
-%      size_t IsAVI(const unsigned char *magick,const size_t length)
+%      MagickBooleanType IsVIDEO(const unsigned char *magick,
+%        const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -93,6 +94,7 @@ static MagickBooleanType
 %    o length: Specifies the length of the magick string.
 %
 */
+
 static MagickBooleanType IsAVI(const unsigned char *magick,const size_t length)
 {
   if (length < 4)
@@ -101,33 +103,18 @@ static MagickBooleanType IsAVI(const unsigned char *magick,const size_t length)
     return(MagickTrue);
   return(MagickFalse);
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I s M P E G                                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  IsMPEG() returns MagickTrue if the image format type, identified by the
-%  magick string, is MPEG.
-%
-%  The format of the IsMPEG method is:
-%
-%      MagickBooleanType IsMPEG(const unsigned char *magick,const size_t length)
-%
-%  A description of each parameter follows:
-%
-%    o magick: compare image format pattern against these bytes.
-%
-%    o length: Specifies the length of the magick string.
-%
-*/
-static MagickBooleanType IsMPEG(const unsigned char *magick,const size_t length)
+
+static MagickBooleanType IsPNG(const unsigned char *magick,const size_t length)
+{
+  if (length < 8)
+    return(MagickFalse);
+  if (memcmp(magick,"\211PNG\r\n\032\n",8) == 0)
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
+static MagickBooleanType IsVIDEO(const unsigned char *magick,
+  const size_t length)
 {
   if (length < 4)
     return(MagickFalse);
@@ -141,19 +128,19 @@ static MagickBooleanType IsMPEG(const unsigned char *magick,const size_t length)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d M P E G I m a g e                                                 %
+%   R e a d V I D E O I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadMPEGImage() reads an binary file in the MPEG video stream format
+%  ReadVIDEOImage() reads an binary file in the VIDEO video stream format
 %  and returns it.  It allocates the memory necessary for the new Image
 %  structure and returns a pointer to the new image.
 %
-%  The format of the ReadMPEGImage method is:
+%  The format of the ReadVIDEOImage method is:
 %
-%      Image *ReadMPEGImage(const ImageInfo *image_info,
+%      Image *ReadVIDEOImage(const ImageInfo *image_info,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -163,10 +150,10 @@ static MagickBooleanType IsMPEG(const unsigned char *magick,const size_t length)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static Image *ReadMPEGImage(const ImageInfo *image_info,
+static Image *ReadVIDEOImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-#define ReadMPEGIntermediateFormat "pam"
+#define ReadVIDEOIntermediateFormat "pam"
 
   Image
     *image,
@@ -199,16 +186,16 @@ static Image *ReadMPEGImage(const ImageInfo *image_info,
   (void) CloseBlob(image);
   (void) DestroyImageList(image);
   /*
-    Convert MPEG to PAM with delegate.
+    Convert VIDEO to PAM with delegate.
   */
   images=(Image *) NULL;
   read_info=CloneImageInfo(image_info);
   image=AcquireImage(image_info,exception);
-  status=InvokeDelegate(read_info,image,"mpeg:decode",(char *) NULL,exception);
+  status=InvokeDelegate(read_info,image,"video:decode",(char *) NULL,exception);
   if (status != MagickFalse)
     {
       (void) FormatLocaleString(read_info->filename,MagickPathExtent,"%s.%s",
-        read_info->unique,ReadMPEGIntermediateFormat);
+        read_info->unique,ReadVIDEOIntermediateFormat);
       *read_info->magick='\0';
       images=ReadImage(read_info,exception);
       if (images != (Image *) NULL)
@@ -230,96 +217,107 @@ static Image *ReadMPEGImage(const ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e g i s t e r M P E G I m a g e                                         %
+%   R e g i s t e r V I D E O I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RegisterMPEGImage() adds attributes for the MPEG image format to
+%  RegisterVIDEOImage() adds attributes for the VIDEO image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterMPEGImage method is:
+%  The format of the RegisterVIDEOImage method is:
 %
-%      size_t RegisterMPEGImage(void)
+%      size_t RegisterVIDEOImage(void)
 %
 */
-ModuleExport size_t RegisterMPEGImage(void)
+ModuleExport size_t RegisterVIDEOImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=AcquireMagickInfo("MPEG","3GP","Media Container");
-  entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
+  entry=AcquireMagickInfo("VIDEO","3GP","Media Container");
+  entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
   entry->flags^=CoderBlobSupportFlag;
   entry->flags|=CoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
-  entry=AcquireMagickInfo("MPEG","3G2","Media Container");
-  entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
+  entry=AcquireMagickInfo("VIDEO","3G2","Media Container");
+  entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
   entry->flags^=CoderBlobSupportFlag;
   entry->flags|=CoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
-  entry=AcquireMagickInfo("MPEG","AVI","Microsoft Audio/Visual Interleaved");
-  entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
+  entry=AcquireMagickInfo("VIDEO","APNG","Animated Portable Network Graphics");
+  entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
+  entry->encoder=(EncodeImageHandler *) WriteVIDEOImage;
+  entry->magick=(IsImageFormatHandler *) IsPNG;
+  entry->flags^=CoderBlobSupportFlag;
+  (void) RegisterMagickInfo(entry);
+  entry=AcquireMagickInfo("VIDEO","AVI","Microsoft Audio/Visual Interleaved");
+  entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
   entry->magick=(IsImageFormatHandler *) IsAVI;
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
-  entry=AcquireMagickInfo("MPEG","FLV","Flash Video Stream");
-  entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
-  entry->encoder=(EncodeImageHandler *) WriteMPEGImage;
-  entry->magick=(IsImageFormatHandler *) IsMPEG;
+  entry=AcquireMagickInfo("VIDEO","FLV","Flash Video Stream");
+  entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
+  entry->encoder=(EncodeImageHandler *) WriteVIDEOImage;
+  entry->magick=(IsImageFormatHandler *) IsVIDEO;
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
-  entry=AcquireMagickInfo("MPEG","MKV","Multimedia Container");
-  entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
-  entry->encoder=(EncodeImageHandler *) WriteMPEGImage;
-  entry->magick=(IsImageFormatHandler *) IsMPEG;
+  entry=AcquireMagickInfo("VIDEO","MKV","Multimedia Container");
+  entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
+  entry->encoder=(EncodeImageHandler *) WriteVIDEOImage;
+  entry->magick=(IsImageFormatHandler *) IsVIDEO;
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
-  entry=AcquireMagickInfo("MPEG","MOV","MPEG Video Stream");
-  entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
-  entry->encoder=(EncodeImageHandler *) WriteMPEGImage;
-  entry->magick=(IsImageFormatHandler *) IsMPEG;
+  entry=AcquireMagickInfo("VIDEO","MOV","MPEG Video Stream");
+  entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
+  entry->encoder=(EncodeImageHandler *) WriteVIDEOImage;
+  entry->magick=(IsImageFormatHandler *) IsVIDEO;
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
-  entry=AcquireMagickInfo("MPEG","MPEG","MPEG Video Stream");
-  entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
-  entry->encoder=(EncodeImageHandler *) WriteMPEGImage;
-  entry->magick=(IsImageFormatHandler *) IsMPEG;
+  entry=AcquireMagickInfo("VIDEO","MPEG","MPEG Video Stream");
+  entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
+  entry->encoder=(EncodeImageHandler *) WriteVIDEOImage;
+  entry->magick=(IsImageFormatHandler *) IsVIDEO;
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
-  entry=AcquireMagickInfo("MPEG","MPG","MPEG Video Stream");
-  entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
-  entry->encoder=(EncodeImageHandler *) WriteMPEGImage;
-  entry->magick=(IsImageFormatHandler *) IsMPEG;
+  entry=AcquireMagickInfo("VIDEO","MPG","MPEG Video Stream");
+  entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
+  entry->encoder=(EncodeImageHandler *) WriteVIDEOImage;
+  entry->magick=(IsImageFormatHandler *) IsVIDEO;
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
-  entry=AcquireMagickInfo("MPEG","MP4","MPEG-4 Video Stream");
-  entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
-  entry->encoder=(EncodeImageHandler *) WriteMPEGImage;
-  entry->magick=(IsImageFormatHandler *) IsMPEG;
+  entry=AcquireMagickInfo("VIDEO","MP4","VIDEO-4 Video Stream");
+  entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
+  entry->encoder=(EncodeImageHandler *) WriteVIDEOImage;
+  entry->magick=(IsImageFormatHandler *) IsVIDEO;
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
-  entry=AcquireMagickInfo("MPEG","M2V","MPEG Video Stream");
-  entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
-  entry->encoder=(EncodeImageHandler *) WriteMPEGImage;
-  entry->magick=(IsImageFormatHandler *) IsMPEG;
+  entry=AcquireMagickInfo("VIDEO","M2V","MPEG Video Stream");
+  entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
+  entry->encoder=(EncodeImageHandler *) WriteVIDEOImage;
+  entry->magick=(IsImageFormatHandler *) IsVIDEO;
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
-  entry=AcquireMagickInfo("MPEG","M4V","Raw MPEG-4 Video");
-  entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
-  entry->encoder=(EncodeImageHandler *) WriteMPEGImage;
-  entry->magick=(IsImageFormatHandler *) IsMPEG;
+  entry=AcquireMagickInfo("VIDEO","M4V","Raw VIDEO-4 Video");
+  entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
+  entry->encoder=(EncodeImageHandler *) WriteVIDEOImage;
+  entry->magick=(IsImageFormatHandler *) IsVIDEO;
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
-  entry=AcquireMagickInfo("MPEG","WMV","Windows Media Video");
-  entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
-  entry->encoder=(EncodeImageHandler *) WriteMPEGImage;
-  entry->magick=(IsImageFormatHandler *) IsMPEG;
+  entry=AcquireMagickInfo("VIDEO","WEBM","Open Web Media");
+  entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
+  entry->encoder=(EncodeImageHandler *) WriteVIDEOImage;
+  entry->flags^=CoderBlobSupportFlag;
+  (void) RegisterMagickInfo(entry);
+  entry=AcquireMagickInfo("VIDEO","WMV","Windows Media Video");
+  entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
+  entry->encoder=(EncodeImageHandler *) WriteVIDEOImage;
+  entry->magick=(IsImageFormatHandler *) IsVIDEO;
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
@@ -330,23 +328,24 @@ ModuleExport size_t RegisterMPEGImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r M P E G I m a g e                                     %
+%   U n r e g i s t e r V I D E O I m a g e                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  UnregisterMPEGImage() removes format registrations made by the
+%  UnregisterVIDEOImage() removes format registrations made by the
 %  BIM module from the list of supported formats.
 %
 %  The format of the UnregisterBIMImage method is:
 %
-%      UnregisterMPEGImage(void)
+%      UnregisterVIDEOImage(void)
 %
 */
-ModuleExport void UnregisterMPEGImage(void)
+ModuleExport void UnregisterVIDEOImage(void)
 {
   (void) UnregisterMagickInfo("WMV");
+  (void) UnregisterMagickInfo("WEBM");
   (void) UnregisterMagickInfo("MOV");
   (void) UnregisterMagickInfo("M4V");
   (void) UnregisterMagickInfo("M2V");
@@ -355,6 +354,7 @@ ModuleExport void UnregisterMPEGImage(void)
   (void) UnregisterMagickInfo("MPEG");
   (void) UnregisterMagickInfo("MKV");
   (void) UnregisterMagickInfo("AVI");
+  (void) UnregisterMagickInfo("APNG");
   (void) UnregisterMagickInfo("3G2");
   (void) UnregisterMagickInfo("3GP");
 }
@@ -364,19 +364,19 @@ ModuleExport void UnregisterMPEGImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   W r i t e M P E G I m a g e                                               %
+%   W r i t e V I D E O I m a g e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteMPEGImage() writes an image to a file in MPEG video stream format.
+%  WriteVIDEOImage() writes an image to a file in VIDEO video stream format.
 %  Lawrence Livermore National Laboratory (LLNL) contributed code to adjust
-%  the MPEG parameters to correspond to the compression quality setting.
+%  the VIDEO parameters to correspond to the compression quality setting.
 %
-%  The format of the WriteMPEGImage method is:
+%  The format of the WriteVIDEOImage method is:
 %
-%      MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
+%      MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
 %        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
@@ -467,10 +467,10 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   return(i != 0 ? MagickTrue : MagickFalse);
 }
 
-static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
+static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
-#define WriteMPEGIntermediateFormat "jpg"
+#define WriteVIDEOIntermediateFormat "pam"
 
   char
     basename[MagickPathExtent],
@@ -556,12 +556,12 @@ static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
             *frame;
 
           (void) FormatLocaleString(p->filename,MagickPathExtent,"%s%.20g.%s",
-            basename,(double) p->scene,WriteMPEGIntermediateFormat);
+            basename,(double) p->scene,WriteVIDEOIntermediateFormat);
           (void) FormatLocaleString(filename,MagickPathExtent,"%s%.20g.%s",
-            basename,(double) p->scene,WriteMPEGIntermediateFormat);
+            basename,(double) p->scene,WriteVIDEOIntermediateFormat);
           (void) FormatLocaleString(previous_image,MagickPathExtent,
             "%s%.20g.%s",basename,(double) p->scene,
-            WriteMPEGIntermediateFormat);
+            WriteVIDEOIntermediateFormat);
           frame=CloneImage(p,0,0,MagickTrue,exception);
           if (frame == (Image *) NULL)
             break;
@@ -577,7 +577,7 @@ static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
         default:
         {
           (void) FormatLocaleString(filename,MagickPathExtent,"%s%.20g.%s",
-            basename,(double) p->scene,WriteMPEGIntermediateFormat);
+            basename,(double) p->scene,WriteVIDEOIntermediateFormat);
           if (length > 0)
             status=BlobToFile(filename,blob,length,exception);
           break;
@@ -588,11 +588,11 @@ static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
           if (status != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "%.20g. Wrote %s file for scene %.20g:",(double) i,
-              WriteMPEGIntermediateFormat,(double) p->scene);
+              WriteVIDEOIntermediateFormat,(double) p->scene);
           else
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "%.20g. Failed to write %s file for scene %.20g:",(double) i,
-              WriteMPEGIntermediateFormat,(double) p->scene);
+              WriteVIDEOIntermediateFormat,(double) p->scene);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"%s",filename);
         }
     }
@@ -603,7 +603,7 @@ static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
       break;
   }
   /*
-    Convert JPEG to MPEG.
+    Convert PAM to VIDEO.
   */
   (void) CopyMagickString(coalesce_image->magick_filename,basename,
     MagickPathExtent);
@@ -612,7 +612,7 @@ static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
   if (*coalesce_image->magick == '\0')
     (void) CopyMagickString(coalesce_image->magick,image->magick,
       MagickPathExtent);
-  status=InvokeDelegate(write_info,coalesce_image,(char *) NULL,"mpeg:encode",
+  status=InvokeDelegate(write_info,coalesce_image,(char *) NULL,"video:encode",
     exception);
   (void) FormatLocaleString(write_info->filename,MagickPathExtent,"%s.%s",
     write_info->unique,coalesce_image->magick);
@@ -629,7 +629,7 @@ static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
     for (i=0; i < (ssize_t) MagickMax((1.0*delay+1.0)/3.0,1.0); i++)
     {
       (void) FormatLocaleString(p->filename,MagickPathExtent,"%s%.20g.%s",
-        basename,(double) count++,WriteMPEGIntermediateFormat);
+        basename,(double) count++,WriteVIDEOIntermediateFormat);
       (void) RelinquishUniqueFileResource(p->filename);
     }
     (void) CopyMagickString(p->filename,image_info->filename,MagickPathExtent);

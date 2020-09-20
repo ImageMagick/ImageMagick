@@ -16,28 +16,31 @@
 
 #include "coders/coders-private.h"
 
-#define MagickMPEGHeaders \
-  MagickCoderHeader("MPEG", 0, "\000\000\001\263") \
-  MagickCoderHeader("MPEG", 0, "RIFF")
+#define MagickVIDEOHeaders \
+  MagickCoderHeader("VIDEO", 0, "\000\000\001\263") \
+  MagickCoderHeader("VIDEO", 0, "RIFF")
 
-#define MagickMPEGAliases \
-  MagickCoderAlias("MPEG", "3GP") \
-  MagickCoderAlias("MPEG", "3G2") \
-  MagickCoderAlias("MPEG", "AVI") \
-  MagickCoderAlias("MPEG", "FLV") \
-  MagickCoderAlias("MPEG", "MKV") \
-  MagickCoderAlias("MPEG", "MOV") \
-  MagickCoderAlias("MPEG", "MPG") \
-  MagickCoderAlias("MPEG", "MP4") \
-  MagickCoderAlias("MPEG", "M2V") \
-  MagickCoderAlias("MPEG", "M4V") \
-  MagickCoderAlias("MPEG", "WMV")
+#define MagickVIDEOAliases \
+  MagickCoderAlias("VIDEO", "3GP") \
+  MagickCoderAlias("VIDEO", "3G2") \
+  MagickCoderAlias("VIDEO", "APNG") \
+  MagickCoderAlias("VIDEO", "AVI") \
+  MagickCoderAlias("VIDEO", "FLV") \
+  MagickCoderAlias("VIDEO", "MKV") \
+  MagickCoderAlias("VIDEO", "MOV") \
+  MagickCoderAlias("VIDEO", "MPEG") \
+  MagickCoderAlias("VIDEO", "MPG") \
+  MagickCoderAlias("VIDEO", "MP4") \
+  MagickCoderAlias("VIDEO", "M2V") \
+  MagickCoderAlias("VIDEO", "M4V") \
+  MagickCoderAlias("VIDEO", "WEBM") \
+  MagickCoderAlias("VIDEO", "WMV")
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
-MagickCoderExports(MPEG)
+MagickCoderExports(VIDEO)
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -218,8 +218,6 @@ MAGICKCORE_CODER_SRCS = \
 	coders/mono.h \
 	coders/mpc.c \
 	coders/mpc.h \
-	coders/mpeg.c \
-	coders/mpeg.h \
 	coders/mpr.c \
 	coders/mpr.h \
 	coders/msl.c \
@@ -328,6 +326,8 @@ MAGICKCORE_CODER_SRCS = \
 	coders/vicar.h \
 	coders/vid.c \
 	coders/vid.h \
+	coders/video.c \
+	coders/video.h \
 	coders/viff.c \
 	coders/viff.h \
 	coders/vips.c \
@@ -441,7 +441,6 @@ CODERS_NOINST_HDRS = \
 	coders/miff.h \
 	coders/mono.h \
 	coders/mpc.h \
-	coders/mpeg.h \
 	coders/mpr.h \
 	coders/msl.h \
 	coders/mtv.h \
@@ -497,6 +496,7 @@ CODERS_NOINST_HDRS = \
 	coders/uyvy.h \
 	coders/vicar.h \
 	coders/vid.h \
+	coders/video.h \
 	coders/viff.h \
 	coders/vips.h \
 	coders/wbmp.h \
@@ -565,7 +565,6 @@ coders_LTLIBRARIES = \
 	coders/miff.la \
 	coders/mono.la \
 	coders/mpc.la \
-	coders/mpeg.la \
 	coders/mpr.la \
 	coders/msl.la \
 	coders/mtv.la \
@@ -617,6 +616,7 @@ coders_LTLIBRARIES = \
 	coders/uyvy.la \
 	coders/vicar.la \
 	coders/vid.la \
+	coders/video.la \
 	coders/viff.la \
 	coders/vips.la \
 	coders/wbmp.la \
@@ -1021,12 +1021,6 @@ coders_mpc_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_mpc_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_mpc_la_LIBADD       = $(MAGICKCORE_LIBS)
 
-# MPEG coder module
-coders_mpeg_la_SOURCES     = coders/mpeg.c
-coders_mpeg_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
-coders_mpeg_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_mpeg_la_LIBADD      = $(MAGICKCORE_LIBS)
-
 # MPR coder module
 coders_mpr_la_SOURCES      = coders/mpr.c
 coders_mpr_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
@@ -1344,6 +1338,12 @@ coders_vid_la_SOURCES      = coders/vid.c
 coders_vid_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_vid_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_vid_la_LIBADD       = $(MAGICKCORE_LIBS)
+
+# VIDEO coder module
+coders_video_la_SOURCES     = coders/video.c
+coders_video_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
+coders_video_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+coders_video_la_LIBADD      = $(MAGICKCORE_LIBS)
 
 # VIFF coder module
 coders_viff_la_SOURCES     = coders/viff.c

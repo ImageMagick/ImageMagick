@@ -1,3 +1,10 @@
+2020-09-20  7.0.10-31  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-31 GIT revision 17...
+
+2020-09-20  7.0.10-31  <quetzlzacatenango@image...>
+  * Add support for APNG (specify explicitly, e.g. apng:animate.png).
+  * Add support for WEBM.
+
 2020-09-19  7.0.10-30  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-30 GIT revision 17641:ab95f7264:20200919
 

@@ -85,7 +85,6 @@
   <delegate decode="lep" mode="decode" command="&quot;@LEPDelegate@&quot; &quot;%i&quot; &quot;%o&quot;"/>
   <delegate decode="miff" encode="show" spawn="True" command="&quot;@DisplayDelegate@&quot; display -immutable -delay 0 -title &quot;%M&quot; &quot;%i&quot;"/>
   <delegate decode="miff" encode="win" stealth="True" spawn="True" command="&quot;@DisplayDelegate@&quot; display -immutable -delay 0 -title &quot;%M&quot; &quot;%i&quot;"/>
-  <delegate decode="mpeg:decode" command="&quot;@MPEGDecodeDelegate@&quot; -nostdin -v -1 -i &quot;%i&quot; -vframes %S -vcodec pam -an -f rawvideo -y &quot;%u.pam&quot; 2&gt; &quot;%u&quot;"/>
   <delegate decode="odt" command="&quot;@DOCDecodeDelegate@&quot; --headless --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
   <delegate decode="pcl:cmyk" stealth="True" command="&quot;@PCLDelegate@&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@PCLCMYKDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
   <delegate decode="pcl:color" stealth="True" command="&quot;@PCLDelegate@&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@PCLColorDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
@@ -120,5 +119,6 @@
   <delegate decode="xps:cmyk" stealth="True" command="&quot;@XPSDelegate@&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@XPSCMYKDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
   <delegate decode="xps:color" stealth="True" command="&quot;@XPSDelegate@&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@XPSColorDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
   <delegate decode="xps:mono" stealth="True" command="&quot;@XPSDelegate@&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@XPSMonoDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
-  <delegate encode="mpeg:encode" stealth="True" command="&quot;@MPEGEncodeDelegate@&quot; -nostdin -v -1 -i &quot;%M%%d.jpg&quot; &quot;%u.%m&quot; 2&gt; &quot;%u&quot;"/>
+  <delegate decode="video:decode" command="&quot;@MPEGDecodeDelegate@&quot; -nostdin -v -1 -i &quot;%i&quot; -vframes %S -vcodec pam -an -f rawvideo -y &quot;%u.pam&quot; 2&gt; &quot;%u&quot;"/>
+  <delegate encode="video:encode" stealth="True" command="&quot;@MPEGEncodeDelegate@&quot; -nostdin -v -1 -i &quot;%M%%d.pam&quot; &quot;%u.%m&quot; 2&gt; &quot;%u&quot;"/>
 </delegatemap>
