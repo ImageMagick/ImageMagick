@@ -1,6 +1,10 @@
 2020-09-19  7.0.10-30  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-30 GIT revision 17641:ab95f7264:20200919
 
+2020-09-15  7.0.10-30 Dirk Lemstra <dirk@lem.....org>
+  * Fixed registry lookup of GhostScript that now writes the patch version to the
+    registry (reference https://github.com/ImageMagick/ImageMagick/issues/2571).
+
 2020-09-07  7.0.10-30  <quetzlzacatenango@image...>
   * Add endian support to JSON coder.
   * Regression: MapCache type cache allocation skipped (reference
@@ -69,7 +73,7 @@
   * New inverse-log evaluate operator.
 
 2020-07-04  7.0.10-23  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-23 GIT revision 17437:894231bc3:20200704 
+  * Release ImageMagick version 7.0.10-23 GIT revision 17437:894231bc3:20200704
 
 2020-06-28  7.0.10-23  <quetzlzacatenango@image...>
   * Ensure that float is valid in ClampToQuantum() (reference
