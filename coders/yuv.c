@@ -109,9 +109,6 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  register const Quantum
-    *chroma_pixels;
-
   register ssize_t
     x;
 
@@ -449,11 +446,14 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     chroma_image=DestroyImage(chroma_image);
     if (resize_image == (Image *) NULL)
       {
-        scanline=(unsigned char *) RelinquishMagickMemory(scanline);   
+        scanline=(unsigned char *) RelinquishMagickMemory(scanline);
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       }
     for (y=0; y < (ssize_t) image->rows; y++)
     {
+      register const Quantum
+        *chroma_pixels;
+
       q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
       chroma_pixels=GetVirtualPixels(resize_image,0,y,resize_image->columns,1,
         exception);

@@ -924,21 +924,23 @@ static void SVGProcessStyleElement(void *context,const xmlChar *name,
         if (LocaleCompare(keyword,"font") == 0)
           {
             char
-              family[MagickPathExtent],
-              size[MagickPathExtent],
-              style[MagickPathExtent];
+              font_family[MagickPathExtent],
+              font_size[MagickPathExtent],
+              font_style[MagickPathExtent];
 
-            if (sscanf(value,"%2048s %2048s %2048s",style,size,family) != 3)
+            if (sscanf(value,"%2048s %2048s %2048s",font_style,font_size,
+                  font_family) != 3)
               break;
-            if (GetUserSpaceCoordinateValue(svg_info,0,style) == 0)
+            if (GetUserSpaceCoordinateValue(svg_info,0,font_style) == 0)
               (void) FormatLocaleFile(svg_info->file,"font-style \"%s\"\n",
                 style);
             else
-              if (sscanf(value,"%2048s %2048s",size,family) != 2)
+              if (sscanf(value,"%2048s %2048s",font_size,font_family) != 2)
                 break;
-            (void) FormatLocaleFile(svg_info->file,"font-size \"%s\"\n",size);
+            (void) FormatLocaleFile(svg_info->file,"font-size \"%s\"\n",
+              font_size);
             (void) FormatLocaleFile(svg_info->file,"font-family \"%s\"\n",
-              family);
+              font_family);
             break;
           }
         if (LocaleCompare(keyword,"font-family") == 0)
@@ -1671,9 +1673,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"class") == 0)
             {
-              const char
-                *p;
-
               p=value;
               (void) GetNextToken(p,&p,MagickPathExtent,token);
               if (*token == ',')
@@ -1867,7 +1866,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   {
                     if (LocaleCompare(keyword,"matrix") == 0)
                       {
-                        p=(const char *) value;
+                        p=value;
                         (void) GetNextToken(p,&p,MagickPathExtent,token);
                         affine.sx=StringToDouble(value,(char **) NULL);
                         (void) GetNextToken(p,&p,MagickPathExtent,token);
@@ -1916,7 +1915,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   {
                     if (LocaleCompare(keyword,"scale") == 0)
                       {
-                        for (p=(const char *) value; *p != '\0'; p++)
+                        for (p=value; *p != '\0'; p++)
                           if ((isspace((int) ((unsigned char) *p)) != 0) ||
                               (*p == ','))
                             break;
@@ -1953,7 +1952,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   {
                     if (LocaleCompare(keyword,"translate") == 0)
                       {
-                        for (p=(const char *) value; *p != '\0'; p++)
+                        for (p=value; *p != '\0'; p++)
                           if ((isspace((int) ((unsigned char) *p)) != 0) ||
                               (*p == ','))
                             break;
@@ -2265,7 +2264,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   {
                     if (LocaleCompare(keyword,"matrix") == 0)
                       {
-                        p=(const char *) value;
+                        p=value;
                         (void) GetNextToken(p,&p,MagickPathExtent,token);
                         affine.sx=StringToDouble(value,(char **) NULL);
                         (void) GetNextToken(p,&p,MagickPathExtent,token);
@@ -2302,7 +2301,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                           x,
                           y;
 
-                        p=(const char *) value;
+                        p=value;
                         (void) GetNextToken(p,&p,MagickPathExtent,token);
                         angle=StringToDouble(value,(char **) NULL);
                         affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
@@ -2334,7 +2333,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   {
                     if (LocaleCompare(keyword,"scale") == 0)
                       {
-                        for (p=(const char *) value; *p != '\0'; p++)
+                        for (p=value; *p != '\0'; p++)
                           if ((isspace((int) ((unsigned char) *p)) != 0) ||
                               (*p == ','))
                             break;
@@ -2371,7 +2370,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   {
                     if (LocaleCompare(keyword,"translate") == 0)
                       {
-                        for (p=(const char *) value; *p != '\0'; p++)
+                        for (p=value; *p != '\0'; p++)
                           if ((isspace((int) ((unsigned char) *p)) != 0) ||
                               (*p == ','))
                             break;
@@ -2416,7 +2415,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"viewBox") == 0)
             {
-              p=(const char *) value;
+              p=value;
               (void) GetNextToken(p,&p,MagickPathExtent,token);
               svg_info->view_box.x=StringToDouble(token,&next_token);
               (void) GetNextToken(p,&p,MagickPathExtent,token);
@@ -5199,9 +5198,6 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
       }
       case TextPrimitive:
       {
-        register char
-          *p;
-
         if (primitive_info[j].coordinates != 1)
           {
             status=MagickFalse;
@@ -5212,7 +5208,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
           "  <text x=\"%g\" y=\"%g\">",primitive_info[j].point.x,
           primitive_info[j].point.y);
         (void) WriteBlobString(image,message);
-        for (p=token; *p != '\0'; p++)
+        for (p=(const char *) token; *p != '\0'; p++)
           switch (*p)
           {
             case '<': (void) WriteBlobString(image,"&lt;"); break;

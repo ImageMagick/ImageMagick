@@ -932,12 +932,6 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        register ssize_t
-          x;
-
-        register Quantum
-          *magick_restrict q;
-
         q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (Quantum *) NULL)
           break;

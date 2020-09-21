@@ -202,14 +202,14 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
         if (cube_level != 0)
           {
             char
-              *q;
+              *r;
 
             if (n >= (ssize_t) (cube_level*cube_level*cube_level))
               break;
-            q=buffer;
-            cube[n].r=StringToDouble(q,&q);
-            cube[n].g=StringToDouble(q,&q);
-            cube[n].b=StringToDouble(q,&q);
+            r=buffer;
+            cube[n].r=StringToDouble(r,&r);
+            cube[n].g=StringToDouble(r,&r);
+            cube[n].b=StringToDouble(r,&r);
             n++;
           }
         else

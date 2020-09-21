@@ -160,11 +160,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     i,
     x;
 
-  register unsigned char
-    *p;
-
   ssize_t
-    count,
     y;
 
   unsigned char
@@ -406,6 +402,9 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) memset(pixels,0,4*image->columns*sizeof(*pixels));
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    ssize_t
+      count;
+
     if (image->compression != RLECompression)
       {
         count=ReadBlob(image,4*image->columns*sizeof(*pixels),pixels);
@@ -425,6 +424,9 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         else
           {
+            register unsigned char
+              *p;
+
             p=pixels;
             for (i=0; i < 4; i++)
             {

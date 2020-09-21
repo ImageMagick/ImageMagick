@@ -1190,10 +1190,6 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
       else
         if (image->colors <= 2)
           {
-            ssize_t
-              x,
-              y;
-
             register unsigned char
               bit,
               byte;
