@@ -348,7 +348,8 @@ static int ReadSingleWEBPImage(Image *image,const uint8_t *stream,
       *mux;
 
     /*
-      Extract any profiles.
+      Extract any profiles:
+      https://developers.google.com/speed/webp/docs/container-api.
     */
     content.bytes=stream;
     content.size=length;
