@@ -1,5 +1,5 @@
-sudo: required # needed for trusty beta
-dist: trusty   # needed for HarfBuzz
+os: osx
+osx_image: xcode9.4
 
 language: c
 
@@ -7,40 +7,23 @@ compiler:
   - clang
   - gcc
 
-before_script:
-  - sudo add-apt-repository -y ppa:as-bahanta/raqm
-  - sudo add-apt-repository ppa:dns/gnu -y
-  - sudo apt-key update -q
-  - sudo apt-get update -q
-  - sudo apt-get install --only-upgrade autoconf
-  - sudo apt-get install -y libraqm-dev libfreetype6-dev libharfbuzz-dev libfribidi-dev
+addons:
+  homebrew:
+    packages:
+      - pkg-config
+      - freetype
+      - jpeg
+      - libpng
+      - libtiff
+      - libtool
+      - little-cms2
+      - openjpeg
+      - webp
+      - xz
 
 script: |
   set -e
   set -x
   export CFLAGS="-Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable"
-  if [ "$TRAVIS_COMPILER" == "gcc" ] ; then
-    ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
-  else
-    ./configure --disable-openmp --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
-  fi
+  ./configure --enable-osx-universal-binary=no --disable-dpenency-tracking --disable-silent-rules --enable-static --disable-shared --without-perl --disable-opencl --disable-openmp --with-freetype=yes --with-modules --with-webp=yes --with-openjp2 --without-gslib --without-fftw --without-pango --without-x --without-wmf --with-quantum-depth=16 --enable-delegate-build --prefix='/usr/local/bin' --with-raw=yes
   make
-  make install DESTDIR=$(readlink -f appdir)
-  # Build the fuzzers
-  ./.travis/build_fuzzers.sh
-  # Generate AppImage
-  mkdir -p appdir/usr/share/applications/ ; cp imagemagick.desktop appdir/usr/share/applications/
-  mkdir -p appdir/usr/share/icons/hicolor/128x128/apps/ ; touch appdir/usr/share/icons/hicolor/128x128/apps/imagemagick.png # FIXME
-  wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
-  chmod a+x linuxdeployqt*.AppImage
-  unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
-  export VERSION=$(git rev-parse --short HEAD)-$CC
-  ./linuxdeployqt*.AppImage ./appdir/usr/share/applications/imagemagick.desktop -bundle-non-qt-libs
-  ./linuxdeployqt*.AppImage --appimage-extract
-  rm ./appdir/AppRun ; cp AppRun appdir/ ; chmod a+x ./appdir/AppRun # Replace symlink with custom script
-  PATH=./squashfs-root/usr/bin:$PATH ./squashfs-root/usr/bin/appimagetool -g ./appdir/
-
-after_success:
-  - find ./appdir -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
-  - if [ "$TRAVIS_BRANCH" == "$TRAVIS_TAG" ] ; then wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh ; bash upload.sh ImageMagick*AppImage* ; fi
-  - if [ "$TRAVIS_BRANCH" != "$TRAVIS_TAG" ] ; then curl --upload-file ./ImageMagick*.AppImage https://transfer.sh/ImageMagick-git.$(git rev-parse --short HEAD)-x86_64.AppImage ; fi
