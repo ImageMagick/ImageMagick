@@ -5,13 +5,19 @@ language: c
 
 compiler:
   - clang
+  
+cache: ccache
 
+install:
+  - brew install ccache
+  - export PATH="/usr/local/opt/ccache/libexec:$PATH"
+  - HOMEBREW_NO_AUTO_UPDATE=1 brew install freetype jpeg libpng libtiff libtool little-cms2 openjpeg webp xz libxml2
+  #for newer xcode? - export LDFLAGS="-L/usr/local/opt/libxml2/lib"
+  #for newer xcode? - export CPPFLAGS="-I/usr/local/opt/libxml2/include"
+  
 script: |
   set -e
   set -x
-  HOMEBREW_NO_AUTO_UPDATE=1 brew install freetype jpeg libpng libtiff libtool little-cms2 openjpeg webp xz libxml2
-  export LDFLAGS="-L/usr/local/opt/libxml2/lib"
-  export CPPFLAGS="-I/usr/local/opt/libxml2/include"
   export CFLAGS="-Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable"
-  ./configure --enable-osx-universal-binary=no --disable-depenency-tracking --disable-silent-rules --enable-static --disable-shared --without-perl --disable-opencl --disable-openmp --with-freetype=yes --with-modules --with-webp=yes --with-openjp2 --without-gslib --without-fftw --without-pango --without-x --without-wmf --with-magick-plus-plus=no --with-rsvg=no --with-gvc=no --with-quantum-depth=16 --enable-delegate-build --prefix='/usr/local/bin' --with-raw=yes
+  ./configure --enable-osx-universal-binary=no --disable-dependency-tracking --disable-silent-rules --enable-static --disable-shared --without-perl --disable-opencl --disable-openmp --with-freetype=yes --with-modules --with-webp=yes --with-openjp2 --without-gslib --without-fftw --without-pango --without-x --without-wmf --with-magick-plus-plus=no --with-rsvg=no --with-gvc=no --with-quantum-depth=16 --enable-delegate-build --prefix='/usr/local/bin' --with-raw=yes
   make
