@@ -1,23 +1,33 @@
 os: osx
-#osx_image: xcode11
-
 language: c
-
 compiler:
-  - clang
-  
+- clang
 cache: ccache
-
 install:
-  - brew install ccache
-  - export PATH="/usr/local/opt/ccache/libexec:$PATH"
-  - HOMEBREW_NO_AUTO_UPDATE=1 brew install --ignore-already-installed freetype jpeg libpng libtiff libtool little-cms2 openjpeg webp xz libxml2 || true
-  #for newer xcode? - export LDFLAGS="-L/usr/local/opt/libxml2/lib"
-  #for newer xcode? - export CPPFLAGS="-I/usr/local/opt/libxml2/include"
-  
+make DESTDIR=/tmp install
+- brew install ccache
+- export PATH="/usr/local/opt/ccache/libexec:$PATH"
+- HOMEBREW_NO_AUTO_UPDATE=1 brew install --ignore-already-installed freetype jpeg libpng libtiff libtool little-cms2 openjpeg webp xz libxml2 || true
+#for newer xcode? - export LDFLAGS="-L/usr/local/opt/libxml2/lib"
+#for newer xcode? - export CPPFLAGS="-I/usr/local/opt/libxml2/include"
 script: |
   set -e
   set -x
   export CFLAGS="-Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable"
-  ./configure --enable-osx-universal-binary=no --disable-dependency-tracking --disable-silent-rules --enable-static --disable-shared --without-perl --disable-opencl --disable-openmp --with-freetype=yes --with-modules --with-webp=yes --with-openjp2 --without-gslib --without-fftw --without-pango --without-x --without-wmf --with-magick-plus-plus=no --with-rsvg=no --with-gvc=no --with-quantum-depth=16 --enable-delegate-build --prefix='/usr/local/bin' --with-raw=yes
+  ./configure --enable-osx-universal-binary=no --disable-dependency-tracking --disable-silent-rules --enable-static --disable-shared --without-perl --disable-opencl --disable-openmp --with-freetype=yes --with-modules --with-webp=yes --with-openjp2 --without-gslib --without-fftw --without-pango --without-x --without-wmf --with-magick-plus-plus=no --with-rsvg=no --with-gvc=no --with-quantum-depth=16 --enable-delegate-build --prefix='/usr/local' --with-raw=yes
   make
+  mkdir tmp
+  mkdir out-dmg
+  make DEST_DIR=$PWD/tmp install
+  pkgbuild --root ./tmp/ -i com.imagemagick --install-location / imagemagick.pkg
+  hdiutil makehybrid -hfs -hfs-volume-name imagemagick -o ./imagemagick.dmg out-dmg
+deploy:
+  provider: releases
+  api_key:
+    secure: 5XJ7FQY6UCZPFdTr5dnznEM7unJxouLMQhVSKOt5cU3PDk1fkq8zgJMkS5O/gUNNJ0jX2unZkd66nCueppvzDvfEp7uwTvNEXgdaDMiJ0tVlcW2i9cNeOnI22+aj7o6bBMJuaWcq+9f0FZ0GrS5LSobpU9T5b0k99kUDu0VgWO7K7E7Ler2+iabnClTQy3UmqJOoAIwJa2XCGYbICGhmks65VY7CrQh9H63btI44SLHDXTeGsijHJk2xwelXrxwxLjQhPYluWANaMxtge3GWD4Wz5KGV5HMeyQtAW2L7F2I0zE+qCvabluGRCzH4A8ZmGWd9rhWsf42kK506BH2CyBTAXiNmL/iPibAw1BZizrkOP3CrWUqzxPb9FQqyxW4TyHtqFUJTY9WVB48KY62HRR3wfFTwzKnG1WC1JX1WBGDCXOAzOPj5ULCAbu9JvCorvHZ+JjNuHHmJ4DZq4Sb5Sgb1XdJKBvpGTwRlnnyJ8atVFJOtaZOkgg10EZzHgwP9UKIo0MzNQjwYDXtqOqDytMW1cDz8RRHsMfaCHVL0aQHPXh7Fk+ni97tOUSNQWfG/Hpe25dPnKeuRcy+qYo6+6ePV7boxjbSUAAGuMEBMK9VfCw+j/I9o+FAFdm9bdbDB/0AR+cRFcpZ21gZ1z/1lDmYEsXjMM01OXYfqKa5V4UA=
+  file: imagemagick.dmg
+  on:
+    repo: davehouse/ImageMagick
+    branch: test_osx_build
+  skip_cleanup: 'true'
+  draft: true
