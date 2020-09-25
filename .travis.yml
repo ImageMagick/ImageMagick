@@ -1,29 +1,15 @@
 os: osx
-osx_image: xcode11
+#osx_image: xcode11
 
 language: c
 
 compiler:
   - clang
 
-addons:
-  homebrew:
-    packages:
-    - freetype
-    - jpeg
-    - libpng
-    - libtiff
-    - libtool
-    - little-cms2
-    - openjpeg
-    - webp
-    - xz
-    - libxml2
-
 script: |
   set -e
   set -x
-  brew reinstall libxml2
+  brew install freetype jpeg libpng libtiff libtool little openjpeg webp xz libxml2
   export CFLAGS="-Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable"
   ./configure --enable-osx-universal-binary=no --disable-depenency-tracking --disable-silent-rules --enable-static --disable-shared --without-perl --disable-opencl --disable-openmp --with-freetype=yes --with-modules --with-webp=yes --with-openjp2 --without-gslib --without-fftw --without-pango --without-x --without-wmf --with-magick-plus-plus=no --with-rsvg=no --with-gvc=no --with-quantum-depth=16 --enable-delegate-build --prefix='/usr/local/bin' --with-raw=yes
   make
