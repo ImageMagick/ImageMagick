@@ -4,7 +4,6 @@ compiler:
 - clang
 cache: ccache
 install:
-make DESTDIR=/tmp install
 - brew install ccache
 - export PATH="/usr/local/opt/ccache/libexec:$PATH"
 - HOMEBREW_NO_AUTO_UPDATE=1 brew install --ignore-already-installed freetype jpeg libpng libtiff libtool little-cms2 openjpeg webp xz libxml2 || true
@@ -16,6 +15,7 @@ script: |
   export CFLAGS="-Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable"
   ./configure --enable-osx-universal-binary=no --disable-dependency-tracking --disable-silent-rules --enable-static --disable-shared --without-perl --disable-opencl --disable-openmp --with-freetype=yes --with-modules --with-webp=yes --with-openjp2 --without-gslib --without-fftw --without-pango --without-x --without-wmf --with-magick-plus-plus=no --with-rsvg=no --with-gvc=no --with-quantum-depth=16 --enable-delegate-build --prefix='/usr/local' --with-raw=yes
   make
+  make DESTDIR=/tmp install
   mkdir tmp
   mkdir out-dmg
   make DEST_DIR=$PWD/tmp install
