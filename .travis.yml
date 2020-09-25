@@ -9,7 +9,7 @@ compiler:
 script: |
   set -e
   set -x
-  brew install freetype jpeg libpng libtiff libtool little openjpeg webp xz libxml2
+  HOMEBREW_NO_AUTO_UPDATE=1 brew install freetype jpeg libpng libtiff libtool little openjpeg webp xz libxml2
   export LDFLAGS="-L/usr/local/opt/libxml2/lib"
   export CPPFLAGS="-I/usr/local/opt/libxml2/include"
   export CFLAGS="-Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable"
