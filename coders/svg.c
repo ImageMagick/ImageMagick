@@ -3605,16 +3605,26 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       svg_info->parser=xmlCreatePushParserCtxt(sax_handler,svg_info,(char *)
         message,n,image->filename);
-      option=GetImageOption(image_info,"svg:xml-parse-huge");
-      if ((option != (char *) NULL) && (IsStringTrue(option) != MagickFalse))
-        (void) xmlCtxtUseOptions(svg_info->parser,XML_PARSE_HUGE);
-      while ((n=ReadBlob(image,MagickPathExtent-1,message)) != 0)
-      {
-        message[n]='\0';
-        status=xmlParseChunk(svg_info->parser,(char *) message,(int) n,0);
-        if (status != 0)
-          break;
-      }
+      if (svg_info->parser != (xmlParserCtxtPtr) NULL)
+        {
+          option=GetImageOption(image_info,"svg:xml-parse-huge");
+          if ((option != (char *) NULL) && (IsStringTrue(option) != MagickFalse))
+            (void) xmlCtxtUseOptions(svg_info->parser,XML_PARSE_HUGE);
+          while ((n=ReadBlob(image,MagickPathExtent-1,message)) != 0)
+          {
+            message[n]='\0';
+            status=xmlParseChunk(svg_info->parser,(char *) message,(int) n,0);
+            if (status != 0)
+              break;
+          }
+        }
+    }
+  if (svg_info->parser == (xmlParserCtxtPtr) NULL)
+    {
+      svg_info=DestroySVGInfo(svg_info);
+      (void) RelinquishUniqueFileResource(filename);
+      image=DestroyImage(image);
+      return((Image *) NULL);
     }
   (void) xmlParseChunk(svg_info->parser,(char *) message,0,1);
   SVGEndDocument(svg_info);
