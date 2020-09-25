@@ -5,7 +5,6 @@ language: c
 
 compiler:
   - clang
-  - gcc
 
 addons:
   homebrew:
@@ -19,6 +18,7 @@ addons:
     - openjpeg
     - webp
     - xz
+    update: true
 
 script: |
   set -e
