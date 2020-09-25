@@ -11,7 +11,7 @@ cache: ccache
 install:
   - brew install ccache
   - export PATH="/usr/local/opt/ccache/libexec:$PATH"
-  - HOMEBREW_NO_AUTO_UPDATE=1 brew install freetype jpeg libpng libtiff libtool little-cms2 openjpeg webp xz libxml2
+  - HOMEBREW_NO_AUTO_UPDATE=1 brew install --ignore-already-installed freetype jpeg libpng libtiff libtool little-cms2 openjpeg webp xz libxml2 || true
   #for newer xcode? - export LDFLAGS="-L/usr/local/opt/libxml2/lib"
   #for newer xcode? - export CPPFLAGS="-I/usr/local/opt/libxml2/include"
   
