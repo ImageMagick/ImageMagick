@@ -231,7 +231,7 @@ make %{?_smp_mflags} check
 %postun c++ -p /sbin/ldconfig
 
 %files
-%doc README.txt LICENSE NOTICE AUTHORS.txt NEWS.txt ChangeLog Platforms.txt
+%doc README.txt LICENSE NOTICE AUTHORS.txt NEWS.txt ChangeLog
 %{_bindir}/[a-z]*
 %{_mandir}/man[145]/[a-z]*
 %{_mandir}/man1/%{name}.*
