@@ -785,6 +785,13 @@ static char *GetMagickPropertyLetter(ImageInfo *image_info,Image *image,
         (double) image->page.height);
       break;
     }
+    case 'I': /* image iterations for animations */
+    {
+      WarnNoImageReturn("\"%%%c\"",letter);
+      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+        image->iterations);
+      break;
+    }
     case 'M': /* Magick filename - filename given incl. coder & read mods */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
