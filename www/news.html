@@ -7,12 +7,12 @@
 <head>
   <meta charset="utf-8"  />
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,shrink-to-fit=no"  />
-  <title>ImageMagick - Command-line Tools</title>
+  <title>ImageMagick - News</title>
   <meta name="application-name" content="ImageMagick" />
   <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert bitmap images. Resize an image, crop it, change its shades and colors, add captions, and more." />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
-  <meta name="keywords" content="command-line, tools, image converter, image resizer, image editor, photo editor, jpg converter, png converter, tiff converter, vector images, online, free, swiss army" />
+  <meta name="keywords" content="news, image converter, image resizer, image editor, photo editor, jpg converter, png converter, tiff converter, vector images, online, free, swiss army" />
   <meta name="rating" content="GENERAL" />
   <meta name="robots" content="INDEX, FOLLOW" />
   <meta name="generator" content="ImageMagick Studio LLC" />
@@ -29,7 +29,7 @@
   <meta property='og:site_name' content='ImageMagick' />
   <meta property='og:description' content="Create, Edit, Compose, or Convert Bitmap Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="command-line-tools.html" rel="canonical" />
+  <link href="news.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
   <link href="assets/magick.css" rel="stylesheet" />
@@ -49,7 +49,7 @@
       <li class="nav-item ">
         <a class="nav-link" href="download.html">Download</a>
       </li>
-      <li class="nav-item active">
+      <li class="nav-item ">
         <a class="nav-link" href="command-line-tools.html">Tools</a>
       </li>
       <li class="nav-item ">
@@ -90,34 +90,35 @@
   <main role="main" class="container">
     <div class="magick-template">
 <div class="magick-header">
+<p class="text-center"><a href="news.html#news">News</a> • <a href="news.html#community">Community</a></p>
 
-<p class="lead magick-description">ImageMagick includes a number of command-line utilities for manipulating images.  Most of you are probably accustomed to editing images one at a time with a graphical user interface (GUI) with such programs as Gimp or Photoshop.  However, a GUI is not always convenient.  Suppose you want to process an image dynamically from a web script or you want to apply the same operations to many images or repeat a specific operation at different times to the same or different image.  For these types of operations, the command-line image processing utility is appropriate.</p>
+<h2><a class="anchor" id="news"></a>News</h2>
 
-<p>The ImageMagick <a href="command-line-processing.html">command-line</a> tools exit with a status of 0 if the command line arguments have a proper syntax and no problems are encountered.  Expect a descriptive message and an exit status of 1 if any exception occurs such as improper syntax, a problem reading or writing an image, or any other problem that prevents the command from completing successfully.</p>
+<p>ImageMagick best practices <strong>strongly</strong> encourages you to configure a <a href="security-policy.html">security policy</a> that suits your local environment.</p>
 
-<p>Here is a short description for each command-line tool. Click on the program name to get details about the program usage and a list of command-line options that alters how the program behaves.  If you are just getting acquainted with ImageMagick, start with the <a href="command-line-tools.html#magick">magick</a> program.  Be sure to peruse Anthony Thyssen's tutorial on how to use ImageMagick utilities to <a href="https://legacy.imagemagick.org/Usage/">create, edit, compose, or convert</a> images from the command-line.</p>
 
-<dl class="row">
-  <dt class="col-md-4"><a class="anchor" id="magick"></a><a href="magick.html">magick</a></dt><dd class="col-md-8">convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.</dd>
-  <dt class="col-md-4"><a class="anchor" id="magick-script"></a><a href="magick-script.html">magick-script</a></dt><dd class="col-md-8">use this scripting language interpreter to convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.</dd>
-</dl>
-<p>We also support sub-commands for compatibility with ImageMagick <a href="http://legacy.imagemagick.org">version 6</a>:</p>
-<dl class="row">
-  <dt class="col-md-4"><a href="animate.html">magick animate</a></dt><dd class="col-md-8">animate an image sequence on any X server.</dd>
-  <dt class="col-md-4"><a class="anchor" id="compare"></a><a href="compare.html">magick compare</a></dt><dd class="col-md-8">mathematically and visually annotate the difference between an image and its reconstruction.</dd>
-  <dt class="col-md-4"><a class="anchor" id="composite"></a><a href="composite.html">magick composite</a></dt><dd class="col-md-8">overlap one image over another.</dd>
-  <dt class="col-md-4"><a class="anchor" id="conjure"></a><a href="conjure.html">magick conjure</a></dt><dd class="col-md-8">interpret and execute scripts written in the Magick Scripting Language (MSL).</dd>
-  <dt class="col-md-4"><a class="anchor" id="convert"></a><a href="convert.html">magick convert</a></dt><dd class="col-md-8">convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.</dd>
-  <dt class="col-md-4"><a class="anchor" id="display"></a><a href="display.html">magick display</a></dt><dd class="col-md-8">display an image or image sequence on any X server.</dd>
-  <dt class="col-md-4"><a class="anchor" id="identify"></a><a href="identify.html">magick identify</a></dt><dd class="col-md-8">describe the format and characteristics of one or more image files.</dd>
-  <dt class="col-md-4"><a class="anchor" id="import"></a><a href="import.html">magick import</a></dt><dd class="col-md-8">save any visible window on an X server and outputs it as an image file. You can capture a single window, the entire screen, or any rectangular portion of the screen.</dd>
-  <dt class="col-md-4"><a class="anchor" id="mogrify"></a><a href="mogrify.html">magick mogrify</a></dt><dd class="col-md-8">resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.  Mogrify overwrites the original image file, whereas, <a href="magick.html">magick</a> writes to a different image file.</dd>
-  <dt class="col-md-4"><a class="anchor" id="montage"></a><a href="montage.html">magick montage</a></dt><dd class="col-md-8">create a composite image by combining several separate images.  The images are tiled on the composite image optionally adorned with a border, frame, image name, and more.</dd>
-  <dt class="col-md-4"><a class="anchor" id="stream"></a><a href="stream.html">magick stream</a></dt><dd class="col-md-8">a lightweight tool to stream one or more pixel components of the image or portion of the image to your choice of storage formats.  It writes the pixel components as they are read from the input image a row at a time making <code>stream</code> desirable when working with large images or when you require raw pixel components.</dd>
-</dl>
-<p>Your installation may have direct ImageMagick version 6 compatibility links.  If so, you can access the tools directly by referring to them by name.  For example,
-<pre class="highlight"><code>identify -verbose myImage.png</code></pre>
+<p class="highlight">We are utilizing a new community <a target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">discussion</a> service.  The previous <a target="_blank" href="https://legacy.imagemagick.org/discourse-server">discourse server</a> remains available to read legacy discussions.</p>
 
+<p>We discovered a bug in the pseudo-random generator prior to ImageMagick 7.0.9-11, the first 3 values repeated because the random state was not initialized properly.  As a consequence of the fix, expect a different numerical sequence when seeding (-seed).</p>
+
+<p>As an analog to linear (RGB) and non-linear (sRGB) color colorspaces, as of ImageMagick 7.0.7-17, we introduce the LinearGray colorspace.  Gray is non-linear grayscale and LinearGray is linear (e.g. -colorspace linear-gray).</p>
+
+<p>Now that ImageMagick version 7 is released, we continue to maintain the legacy release of ImageMagick, version 6, at <a href="https://legacy.imagemagick.org/">https://legacy.imagemagick.org</a>.  Learn how ImageMagick version 7 differs from previous versions with our <a href="porting.html">porting guide</a>.</p>
+
+<p>The ImageMagick development process ensures a stable API and <a href="https://abi-laboratory.pro/tracker/timeline/imagemagick/">ABI</a>. Before each ImageMagick release, we perform a comprehensive security assessment that includes <a href="https://github.com/google/sanitizers/wiki/AddressSanitizer">memory error</a>, <a href="https://github.com/google/sanitizers/wiki/ThreadSanitizer">thread data race</a> detection, and continuous <a href="https://github.com/google/oss-fuzz">fuzzing</a> to detect and prevent security vulnerabilities.</p>
+
+<p>Want more performance from ImageMagick?  Try these options:</p>
+
+<ul>
+<li>add more memory to your system, see <a href="architecture.html#cache">the pixel cache</a>;</li>
+<li>add more cores to your system, see <a href="architecture.html#threads">threads of execution support</a>;</li>
+<li>reduce lock contention with the <a href="http://goog-perftools.sourceforge.net/doc/tcmalloc.html">tcmalloc</a> memory allocation library;</li>
+<li>push large images to a solid-state drive, see <a href="architecture.html#tera-pixel">large image support</a>.</li>
+</ul>
+<p>If these options are prohibitive, you can reduce the quality of the image results.  The default build is Q16 HDRI.  If you disable <a href="high-dynamic-range.html">HDRI</a>, you use half the memory and instead of predominately floating point operations, you use the typically more efficient integer operations.  The tradeoff is reduced precision and you cannot process out of range pixel values (e.g. negative).  If you build the Q8 non-HDRI  version of ImageMagick, you again reduce the memory requirements in half-- and once again there is a tradeoff, even less precision and no out of range pixel values.  For a Q8 non-HDRI build of ImageMagick, use these <code>configure</code> script options: <code>--with-quantum-depth=8 --disable-hdri</code>.</p>
+
+<h2><a class="anchor" id="community"></a>Community</h2>
+<p>To join the ImageMagick community, try the <a target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">discussion</a> service.  You can review questions or comments (with informed responses) posed by ImageMagick users or ask your own questions. If you want to contribute image processing algorithms, other enhancements, or bug fixes, open an <a href="https://github.com/ImageMagick/ImageMagick/issues">issue</a>. </p>
 </div>
     </div>
   </main><!-- /.container -->
@@ -126,7 +127,7 @@
     <p><a href="security-policy.html">Security</a> •
     <a href="news.html">News</a>
      
-    <a href="command-line-tools.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+    <a href="news.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
     <a href="links.html">Related</a> •
      <a href="sitemap.html">Sitemap</a>
@@ -148,4 +149,4 @@
   <script>window.jQuery || document.write('<script src="assets/jquery.slim.min.js"><\/script>')</script><script src="assets/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous">
 </body>
 </html>
-<!-- Magick Cache 26th September 2020 12:49 -->
+<!-- Magick Cache 26th September 2020 13:17 -->

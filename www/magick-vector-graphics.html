@@ -93,7 +93,7 @@
 <p class="text-center"><a href="magick-vector-graphics.html#overview">MVG Overview</a> • <a href="magick-vector-graphics.html#primitives">Drawing Primitives</a></p>
 
 <p class="lead magick-description">This specification defines the features and syntax for Magick Vector Graphics (MVG), a modularized language for describing two-dimensional vector and mixed vector/raster graphics in ImageMagick.  You can use the language to draw from the
-command line, from an MVG file, from an <a href="http://www.w3.org/TR/SVG/">SVG -- Scalable Vector Graphics</a> file or from one of the ImageMagick <a href="../www/api.html">program interfaces</a>.  Use this command, for example, to render an arc:</p>
+command line, from an MVG file, from an <a href="http://www.w3.org/TR/SVG/">SVG -- Scalable Vector Graphics</a> file or from one of the ImageMagick <a href="develop.html">program interfaces</a>.  Use this command, for example, to render an arc:</p>
 
 <pre class="highlight"><code>magick -size 100x60 canvas:skyblue -fill white -stroke black \
   -draw "path 'M 30,40  A 30,20  20  0,0 70,20 A 30,20  20  1,0 30,40 Z '" \
@@ -279,7 +279,7 @@ pop graphic-context
 
 <p>to produce the same pie chart we created with the MVG language.</p>
 
-<p>Drawing is available from many of the ImageMagick <a href="../www/api.html">program interfaces</a> as well.  ImageMagick converts the drawing API calls to MVG and renders it.  Here is example code written in the <a href="magick-wand.html">MagickWand</a> language: </p>
+<p>Drawing is available from many of the ImageMagick <a href="develop.html">program interfaces</a> as well.  ImageMagick converts the drawing API calls to MVG and renders it.  Here is example code written in the <a href="magick-wand.html">MagickWand</a> language: </p>
 
 <pre class="pre-scrollable"><code>(void) PushDrawingWand(draw_wand);
 {
@@ -898,7 +898,7 @@ round</code></pre></td>
   <footer class="magick-footer">
     <div class="container">
     <p><a href="security-policy.html">Security</a> •
-    <a href="resources.html">Resources</a>
+    <a href="news.html">News</a>
      
     <a href="magick-vector-graphics.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
@@ -918,7 +918,8 @@ round</code></pre></td>
   </footer>
 
   <!-- Javascript assets -->
-  <script src="assets/magick.js" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="https://localhost/ajax/libs/jquery/3.4.1/jquery.min.js"><\/script>')</script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="assets/jquery.slim.min.js"><\/script>')</script><script src="assets/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous">
 </body>
 </html>
+<!-- Magick Cache 26th September 2020 12:57 -->
