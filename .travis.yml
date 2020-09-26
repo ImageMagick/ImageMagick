@@ -27,6 +27,6 @@ deploy:
   file: imagemagick.dmg
   on:
     repo: davehouse/ImageMagick
-    branch: test_osx_build
+    all_branches: true
   skip_cleanup: 'true'
   draft: true
