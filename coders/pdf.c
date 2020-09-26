@@ -401,8 +401,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   MagickBooleanType
     fitPage,
-    status,
-    stop_on_error;
+    status;
 
   MagickStatusType
     flags;
@@ -532,7 +531,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if (IssRGBCompatibleColorspace(image_info->colorspace) != MagickFalse)
     pdf_info.cmyk=MagickFalse;
-  stop_on_error=IsStringTrue(GetImageOption(image_info,"pdf:stop-on-error"));
   /*
     Create Ghostscript control file.
   */
@@ -582,11 +580,12 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ConcatenateMagickString(options,"-dPSFitPage ",MagickPathExtent);
   if (pdf_info.cropbox != MagickFalse)
     (void) ConcatenateMagickString(options,"-dUseCropBox ",MagickPathExtent);
-  if (stop_on_error != MagickFalse)
-    (void) ConcatenateMagickString(options,"-dPDFSTOPONERROR ",
-      MagickPathExtent);
   if (pdf_info.trimbox != MagickFalse)
     (void) ConcatenateMagickString(options,"-dUseTrimBox ",MagickPathExtent);
+  option=GetImageOption(image_info,"pdf:stop-on-error");
+  if (IsStringTrue(option) != MagickFalse)
+    (void) ConcatenateMagickString(options,"-dPDFSTOPONERROR ",
+      MagickPathExtent);
   option=GetImageOption(image_info,"authenticate");
   if (option != (char *) NULL)
     {
