@@ -1,4 +1,10 @@
-2020-09-26  7.0.10-31  <quetzlzacatenango@image...>
+2020-09-27  7.0.10-32  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-32 GIT revision 17...
+
+2020-09-27  7.0.10-32  <quetzlzacatenango@image...>
+  * enable WMF for module build.
+
+2020-09-27  7.0.10-31  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-31 GIT revision 17652:78ad905d9:20200926
 
 2020-09-20  7.0.10-31  <quetzlzacatenango@image...>

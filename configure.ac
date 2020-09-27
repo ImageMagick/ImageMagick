@@ -2863,7 +2863,7 @@ AC_ARG_WITH([wmf],
     [AC_HELP_STRING([--with-wmf],
                     [enable WMF support])],
     [with_wmf=$withval],
-    [with_wmf='yes'])
+    [with_wmf=$build_module])
 
 if test "$with_wmf" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-wmf=$with_wmf "
