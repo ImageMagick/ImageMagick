@@ -1606,9 +1606,6 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
   /*
     Write images to file.
   */
-  if ((write_info->adjoin != MagickFalse) &&
-      (GetNextImageInList(image) != (Image *) NULL))
-    write_info->interlace=NoInterlace;
   scene=0;
   one=1;
   imageListLength=GetImageListLength(image);
