@@ -217,6 +217,12 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 # if defined(MAGICKCORE_HAVE_SYS_SENDFILE_H)
 #  include <sys/sendfile.h>
 # endif
+# if defined(MAGICKCORE_HAVE_SYS_SOCKET_H)
+#  include <sys/socket.h>
+# endif
+# if defined(MAGICKCORE_HAVE_SYS_UIO_H)
+#  include <sys/uio.h>
+# endif
 #endif
 #else
 # include <types.h>
