@@ -2,8 +2,6 @@ on:
   push:
     branches:
     - master
-    paths:
-    - 'ChangeLog'
 
 name: release
 jobs:
@@ -47,7 +45,7 @@ jobs:
       shell: cmd
       run: |
         cd %GITHUB_WORKSPACE%\ImageMagick-Windows
-        CloneRepositories.cmd https://github.com/ImageMagick shallow
+        CloneRepositories.cmd https://github.com/ImageMagick source
 
     - name: Download FFmpeg
       shell: cmd
@@ -125,6 +123,35 @@ jobs:
       with:
         name: installers
         path: 'ImageMagick-Windows\VisualMagick\installer\output'
+
+  release_windows_source:
+    name: 'Windows source'
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        repository: ImageMagick/ImageMagick-Windows
+        path: ImageMagick-Windows
+        ref: refs/heads/master
+        fetch-depth: 1
+
+    - name: Clone repositories
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows
+        CloneRepositories.cmd https://github.com/ImageMagick source
+
+    - name: Create source archive
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows
+        7z a ImageMagick-Windows.7z .\source\*
+  
+    - uses: actions/upload-artifact@v2
+      with:
+        name: windows-source
+        path: 'ImageMagick-Windows\ImageMagick-Windows.7z'
 
   release_windows_portable:
     name: 'Windows portable ${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.platform}}'
