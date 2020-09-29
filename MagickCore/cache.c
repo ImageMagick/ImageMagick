@@ -621,7 +621,7 @@ static MagickBooleanType ClonePixelCacheOnDisk(
   quantum=(size_t) MagickMaxBufferExtent;
   if ((fstat(cache_info->file,&file_stats) == 0) && (file_stats.st_size > 0))
     {
-#if defined(MAGICKCORE_HAVE_SENDFILE)
+#if defined(MAGICKCORE_HAVE_SENDFILE) && !defined(__APPLE__)
       if (cache_info->length < 0x7ffff000)
         {
           count=sendfile(clone_info->file,cache_info->file,(off_t *) NULL,
