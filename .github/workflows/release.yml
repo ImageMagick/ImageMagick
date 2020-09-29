@@ -2,6 +2,8 @@ on:
   push:
     branches:
     - master
+    paths:
+    - 'ChangeLog'
 
 name: release
 jobs:
