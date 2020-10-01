@@ -5,7 +5,7 @@ Introduction to ImageMagick
   200) including PNG, JPEG, GIF, HEIC, TIFF, DPX, EXR, WebP, Postscript,
   PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort,
   shear and transform images, adjust image colors, apply various special
-  effects, or draw text, lines, polygons, ellipses and Bézier curves.
+  effects, or draw text, lines, polygons, ellipses and Bezier curves.
   
   The functionality of ImageMagick is typically utilized from the command
   line or you can use the features from programs written in your favorite
@@ -17,7 +17,7 @@ Introduction to ImageMagick
   (Tcl/TK). With a language interface, use ImageMagick to modify or create
   images dynamically and automagically.
 
-  ImageMagick utilizes multiple computational threads to increase performance
+  ImageMagick utilize multiple computational threads to increase performance
   and can read, process, or write mega-, giga-, or tera-pixel image sizes.
   
   ImageMagick is free software delivered as a ready-to-run binary distribution
