@@ -292,6 +292,7 @@ AC_PROG_CXX
 AC_PROG_CC_STDC
 AC_PROG_CPP
 AC_PROG_LD
+LT_PATH_LD
 AC_SUBST(LD)
 AC_PROG_CC_C99
 AM_PROG_CC_C_O
@@ -567,8 +568,7 @@ esac
 
 # Configure libtool
 : ${AR_FLAGS=cr}
-AC_LIBTOOL_DLOPEN
-LT_INIT([win32-dll])
+LT_INIT([disable-shared win32-dll dlopen])
 LT_LANG([C++])
 AC_SUBST(LIBTOOL_DEPS)
 
@@ -2310,26 +2310,6 @@ if test "$with_jpeg" != 'no'; then
     AC_CHECK_HEADER(jmorecfg.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_HEADER(jpeglib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_LIB(jpeg,jpeg_read_header,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-
-# Test for compatible JPEG library
-if test "$ac_cv_jpeg_version_ok" != 'yes'; then
-AC_CACHE_CHECK(for JPEG library is version 6b or later, ac_cv_jpeg_version_ok,
-[AC_TRY_COMPILE(
-#include <stdio.h>
-#include <stdlib.h>
-#include <jpeglib.h>
-,
-changequote(<<, >>)dnl
-<<
-#if JPEG_LIB_VERSION < 62
-#error IJG JPEG library must be version 6b or newer!
-#endif
-return 0;
->>,
-changequote([, ])dnl
-ac_cv_jpeg_version_ok='yes'; passed=`expr $passed + 1`,
-ac_cv_jpeg_version_ok='no'; failed=`expr $failed + 1`)])
-fi
     AC_MSG_CHECKING([if JPEG package is complete])
     if test $passed -gt 0; then
         if test $failed -gt 0; then
@@ -2618,8 +2598,7 @@ dnl ===========================================================================
 # Check for PNG delegate library.
 #
 AC_ARG_WITH(png,
-    [AC_HELP_STRING([--without-png],
-                    [disable PNG support])],
+    [AC_HELP_STRING([--without-png], [disable PNG support])],
     [with_png=$withval],
     [with_png='yes'])
 
