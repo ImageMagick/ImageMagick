@@ -102,7 +102,8 @@ typedef enum
   ReflectCompositeOp,
   SoftBurnCompositeOp,
   SoftDodgeCompositeOp,
-  StampCompositeOp
+  StampCompositeOp,
+  RMSECompositeOp
 } CompositeOperator;
 
 extern MagickExport MagickBooleanType

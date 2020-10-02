@@ -799,13 +799,13 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   fftw_destroy_plan(fftw_r2c_plan);
   source_info=(MemoryInfo *) RelinquishVirtualMemory(source_info);
   value=GetImageArtifact(image,"fourier:normalize");
-  if ((value == (const char *) NULL) || (LocaleCompare(value,"forward") == 0))
+  if (LocaleCompare(value,"forward") == 0)
     {
       double
         gamma;
 
       /*
-        Normalize fourier transform.
+        Normalize forward transform.
       */
       i=0L;
       gamma=PerceptibleReciprocal((double) fourier_info->width*

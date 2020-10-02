@@ -1216,6 +1216,7 @@ static const OptionInfo
     { "Plus", PlusCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "Reflect", ReflectCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "Replace", ReplaceCompositeOp, UndefinedOptionFlag, MagickFalse },
+    { "RMSE", RMSECompositeOp, UndefinedOptionFlag, MagickFalse },
     { "Saturate", SaturateCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "Screen", ScreenCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "SoftBurn", SoftBurnCompositeOp, UndefinedOptionFlag, MagickFalse },

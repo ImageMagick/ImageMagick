@@ -1508,6 +1508,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         case HueCompositeOp:
         case LuminizeCompositeOp:
         case ModulateCompositeOp:
+        case RMSECompositeOp:
         case SaturateCompositeOp:
         {
           GetPixelInfoPixel(source_image,p,&source_pixel);
@@ -1581,6 +1582,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               case ColorizeCompositeOp:
               case HueCompositeOp:
               case LuminizeCompositeOp:
+              case RMSECompositeOp:
               case SaturateCompositeOp:
               {
                 if (fabs((double) (QuantumRange*Sa-TransparentAlpha)) < MagickEpsilon)
@@ -2277,6 +2279,37 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             pixel=QuantumRange*gamma*(Sca*Sca*PerceptibleReciprocal(1.0-Dca));
             if (pixel > QuantumRange)
               pixel=QuantumRange;
+            break;
+          }
+          case RMSECompositeOp:
+          {
+            double
+              gray;
+
+            if (fabs((double) (QuantumRange*Sa-TransparentAlpha)) < MagickEpsilon)
+              {
+                pixel=Dc;
+                break;
+              }
+            if (fabs((double) (QuantumRange*Da-TransparentAlpha)) < MagickEpsilon)
+              {
+                pixel=Sc;
+                break;
+              }
+            gray=sqrt(
+              (canvas_pixel.red-source_pixel.red)*
+              (canvas_pixel.red-source_pixel.red)+
+              (canvas_pixel.green-source_pixel.green)*
+              (canvas_pixel.green-source_pixel.green)+
+              (canvas_pixel.blue-source_pixel.blue)*
+              (canvas_pixel.blue-source_pixel.blue)/3.0);
+            switch (channel)
+            {
+              case RedPixelChannel: pixel=gray; break;
+              case GreenPixelChannel: pixel=gray; break;
+              case BluePixelChannel: pixel=gray; break;
+              default: pixel=Dc; break;
+            }
             break;
           }
           case SaturateCompositeOp:
