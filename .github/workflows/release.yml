@@ -47,7 +47,7 @@ jobs:
       shell: cmd
       run: |
         cd %GITHUB_WORKSPACE%\ImageMagick-Windows
-        CloneRepositories.cmd https://github.com/ImageMagick source
+        CloneRepositories.cmd https://github.com/ImageMagick shallow
 
     - name: Download FFmpeg
       shell: cmd
