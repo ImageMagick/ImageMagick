@@ -30,7 +30,7 @@ Image Settings:
   \-decipher filename   magick cipher pixels to plain pixels
   \-define format:option
                        define one or more image format options
-  \-delay value         display the next image after pausing
+  \-delay centiseconds  display the next image after pausing
   \-density geometry    horizontal and vertical density of the image
   \-depth value         image depth
   \-direction type      render text right-to-left or left-to-right
