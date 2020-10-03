@@ -3,6 +3,7 @@
 
 2020-09-27  7.0.10-32  <quetzlzacatenango@image...>
   * enable WMF for module build.
+  * writing PDF requires a seekable stream.
 
 2020-09-27  7.0.10-31  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-31 GIT revision 17652:78ad905d9:20200926
