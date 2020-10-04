@@ -1952,7 +1952,7 @@ Optional Features:
   --disable-openmp        do not use OpenMP
   --disable-opencl        do not use OpenCL
   --disable-largefile     omit support for large files
-  --enable-shared[=PKGS]  build shared libraries [default=no]
+  --enable-shared[=PKGS]  build shared libraries [default=yes]
   --enable-static[=PKGS]  build static libraries [default=yes]
   --enable-fast-install[=PKGS]
                           optimize for fast installation [default=yes]
@@ -4575,7 +4575,7 @@ MAGICK_PATCHLEVEL_VERSION=33
 
 MAGICK_VERSION=7.0.10-33
 
-MAGICK_GIT_REVISION=17678:8e6effe91:20201003
+MAGICK_GIT_REVISION=17681:731cd2494:20201004
 
 
 # Substitute library versioning
@@ -14237,35 +14237,6 @@ func_stripname_cnf ()
 
 
 # Set options
-# Check whether --enable-shared was given.
-if test "${enable_shared+set}" = set; then :
-  enableval=$enable_shared; p=${PACKAGE-default}
-    case $enableval in
-    yes) enable_shared=yes ;;
-    no) enable_shared=no ;;
-    *)
-      enable_shared=no
-      # Look at the argument we got.  We use all the common list separators.
-      lt_save_ifs=$IFS; IFS=$IFS$PATH_SEPARATOR,
-      for pkg in $enableval; do
-	IFS=$lt_save_ifs
-	if test "X$pkg" = "X$p"; then
-	  enable_shared=yes
-	fi
-      done
-      IFS=$lt_save_ifs
-      ;;
-    esac
-else
-  enable_shared=no
-fi
-
-
-
-
-
-
-
 enable_win32_dll=yes
 
 case $host in
@@ -14567,6 +14538,36 @@ test -z "$OBJDUMP" && OBJDUMP=objdump
 
 
 enable_dlopen=yes
+
+
+
+
+
+            # Check whether --enable-shared was given.
+if test "${enable_shared+set}" = set; then :
+  enableval=$enable_shared; p=${PACKAGE-default}
+    case $enableval in
+    yes) enable_shared=yes ;;
+    no) enable_shared=no ;;
+    *)
+      enable_shared=no
+      # Look at the argument we got.  We use all the common list separators.
+      lt_save_ifs=$IFS; IFS=$IFS$PATH_SEPARATOR,
+      for pkg in $enableval; do
+	IFS=$lt_save_ifs
+	if test "X$pkg" = "X$p"; then
+	  enable_shared=yes
+	fi
+      done
+      IFS=$lt_save_ifs
+      ;;
+    esac
+else
+  enable_shared=yes
+fi
+
+
+
 
 
 
@@ -37131,10 +37132,10 @@ ECHO='`$ECHO "$ECHO" | $SED "$delay_single_quote_subst"`'
 LD='`$ECHO "$LD" | $SED "$delay_single_quote_subst"`'
 macro_version='`$ECHO "$macro_version" | $SED "$delay_single_quote_subst"`'
 macro_revision='`$ECHO "$macro_revision" | $SED "$delay_single_quote_subst"`'
-enable_shared='`$ECHO "$enable_shared" | $SED "$delay_single_quote_subst"`'
 AS='`$ECHO "$AS" | $SED "$delay_single_quote_subst"`'
 DLLTOOL='`$ECHO "$DLLTOOL" | $SED "$delay_single_quote_subst"`'
 OBJDUMP='`$ECHO "$OBJDUMP" | $SED "$delay_single_quote_subst"`'
+enable_shared='`$ECHO "$enable_shared" | $SED "$delay_single_quote_subst"`'
 enable_static='`$ECHO "$enable_static" | $SED "$delay_single_quote_subst"`'
 pic_mode='`$ECHO "$pic_mode" | $SED "$delay_single_quote_subst"`'
 enable_fast_install='`$ECHO "$enable_fast_install" | $SED "$delay_single_quote_subst"`'
@@ -38415,9 +38416,6 @@ ECHO=$lt_ECHO
 macro_version=$macro_version
 macro_revision=$macro_revision
 
-# Whether or not to build shared libraries.
-build_libtool_libs=$enable_shared
-
 # Assembler program.
 AS=$lt_AS
 
@@ -38426,6 +38424,9 @@ DLLTOOL=$lt_DLLTOOL
 
 # Object dumper program.
 OBJDUMP=$lt_OBJDUMP
+
+# Whether or not to build shared libraries.
+build_libtool_libs=$enable_shared
 
 # Whether or not to build static libraries.
 build_old_libs=$enable_static

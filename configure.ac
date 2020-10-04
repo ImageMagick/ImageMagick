@@ -568,7 +568,7 @@ esac
 
 # Configure libtool
 : ${AR_FLAGS=cr}
-LT_INIT([disable-shared win32-dll dlopen])
+LT_INIT([win32-dll dlopen])
 LT_LANG([C++])
 AC_SUBST(LIBTOOL_DEPS)
 
