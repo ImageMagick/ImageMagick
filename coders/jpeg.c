@@ -2487,7 +2487,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
   if (IsStringTrue(option) != MagickFalse)
     {
       jpeg_info->arith_code=TRUE;
-      jpeg_info->optimize_coding=FALSE; // Not supported.
+      jpeg_info->optimize_coding=FALSE;  /* not supported */
     }
 #endif
 #if (JPEG_LIB_VERSION >= 61) && defined(C_PROGRESSIVE_SUPPORTED)
