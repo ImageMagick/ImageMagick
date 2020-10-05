@@ -495,7 +495,7 @@ if test "$with_threads" != 'no'; then
             AC_MSG_WARN([Replacing compiler $CC with compiler $PTHREAD_CC to support pthreads.])
             CC="$PTHREAD_CC"
         fi
-        AC_DEFINE([THREAD_SUPPORT],[1],[[Define if you have POSIX threads libraries and header files.]])
+        AC_DEFINE([THREAD_SUPPORT],[1],[Define if you have POSIX threads libraries and header files.])
     fi
 fi
 LIBS="$LIBS $THREAD_LIBS"
@@ -563,7 +563,7 @@ AC_SUBST([LFS_CPPFLAGS])
 #
 case "${host_os}" in
   solaris2* ) ;;
-  *) AC_DEFINE([SETJMP_IS_THREAD_SAFE],[1],[[Setjmp/longjmp are thread safe]]) ;;
+  *) AC_DEFINE([SETJMP_IS_THREAD_SAFE],[1],[Setjmp/longjmp are thread safe]) ;;
 esac
 
 # Configure libtool
@@ -625,7 +625,7 @@ AC_ARG_ENABLE([deprecated],
     [enable_deprecated='no'])
 
 if test "$enable_deprecated" = 'yes'; then
-  AC_DEFINE([EXCLUDE_DEPRECATED],[1],[[exclude deprecated methods in MagickCore API]])
+  AC_DEFINE([EXCLUDE_DEPRECATED],[1],[exclude deprecated methods in MagickCore API])
 else
   DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --disable-deprecated "
 fi
@@ -639,7 +639,7 @@ AC_ARG_ENABLE([installed],
     [enable_installed='yes'])
 
 if test "$enable_installed" = 'yes'; then
-    AC_DEFINE([INSTALLED_SUPPORT],[1],[[ImageMagick is formally installed under prefix]])
+    AC_DEFINE([INSTALLED_SUPPORT],[1],[ImageMagick is formally installed under prefix])
 else
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --disable-installed "
 fi
@@ -652,7 +652,7 @@ AC_ARG_ENABLE([cipher],
     [enable_cipher='yes'])
 
 if test "$enable_cipher" = 'yes'; then
-    AC_DEFINE([CIPHER_SUPPORT],[1],[[permit enciphering and deciphering image pixels]])
+    AC_DEFINE([CIPHER_SUPPORT],[1],[permit enciphering and deciphering image pixels])
     MAGICK_FEATURES="Cipher $MAGICK_FEATURES"
 fi
 
@@ -664,7 +664,7 @@ AC_ARG_ENABLE([zero-configuration],
     [enable_zero_configuration='no'])
 
 if test "$enable_zero_configuration" = 'yes'; then
-    AC_DEFINE([ZERO_CONFIGURATION_SUPPORT],[1],[[Build self-contained, embeddable, zero-configuration ImageMagick]])
+    AC_DEFINE([ZERO_CONFIGURATION_SUPPORT],[1],[Build self-contained, embeddable, zero-configuration ImageMagick])
     MAGICK_FEATURES="Zero-configuration $MAGICK_FEATURES"
 fi
 AM_CONDITIONAL([MAGICKCORE_ZERO_CONFIGURATION_SUPPORT],[test "$enable_zero_configuration" = yes])
@@ -698,7 +698,7 @@ AC_ARG_ENABLE([pipes],
     [enable_pipes='no'])
 
 if test "$enable_pipes" = 'yes'; then
-    AC_DEFINE([PIPES_SUPPORT],[1],[[enable pipes (|]) in filenames])
+    AC_DEFINE([PIPES_SUPPORT],[1],[enable pipes (|) in filenames])
     MAGICK_FEATURES="Pipes $MAGICK_FEATURES"
 fi
 
@@ -710,7 +710,7 @@ AC_ARG_ENABLE([assert],
     [enable_assert='yes'])
 
 if test "$enable_assert" = 'no'; then
-    AC_DEFINE([NDEBUG],[1],[[Turn off assert statements]])
+    AC_DEFINE([NDEBUG],[1],[Turn off assert statements])
 fi
 
 # Don't emit "rebuild rules" for configure, Makefile.ins, etc.
@@ -1669,7 +1669,7 @@ if test "$with_ltdl" = 'yes'; then
     else
       LTDL_LIBS='-lltdl'
       LIBS="$LTDL_LIBS $LIBS"
-      AC_DEFINE([LTDL_DELEGATE],[1],[[Define if using libltdl to support dynamically loadable modules and OpenCL]])
+      AC_DEFINE([LTDL_DELEGATE],[1],[Define if using libltdl to support dynamically loadable modules and OpenCL])
       AC_DEFINE_UNQUOTED([LTDL_MODULE_EXT],["${shrext_cmds}"],[Native module suffix])
       AC_MSG_RESULT([yes])
       have_ltdl='yes'
