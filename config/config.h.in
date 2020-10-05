@@ -230,7 +230,7 @@
 /* Define to 1 if you have the `gmtime_r' function. */
 #undef HAVE_GMTIME_R
 
-/* Compile with hugepage support */
+/* [Compile with hugepage support] */
 #undef HAVE_HUGEPAGES
 
 /* Define to 1 if the system has the type `intmax_t'. */
@@ -262,6 +262,9 @@
 
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H
+
+/* Define if you have Linux-compatible sendfile() */
+#undef HAVE_LINUX_SENDFILE
 
 /* Define to 1 if you have the <linux/unistd.h> header file. */
 #undef HAVE_LINUX_UNISTD_H
@@ -564,6 +567,9 @@
 
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the <sys/uio.h> header file. */
+#undef HAVE_SYS_UIO_H
 
 /* Define to 1 if you have the <sys/wait.h> header file. */
 #undef HAVE_SYS_WAIT_H
