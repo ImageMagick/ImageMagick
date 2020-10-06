@@ -288,7 +288,6 @@ AC_USE_SYSTEM_EXTENSIONS
 # ==============================================================================
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 AC_PROG_CC
-AC_PROG_CXX
 AC_PROG_CPP
 AC_PROG_LD
 LT_PATH_LD
