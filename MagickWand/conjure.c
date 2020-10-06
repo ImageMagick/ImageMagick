@@ -113,7 +113,7 @@ static MagickBooleanType ConjureUsage(void)
   (void) printf("\nIn addition, define any key value pairs required by "
     "your script.  For\nexample,\n\n");
   (void) printf("    conjure -size 100x100 -color blue -foo bar script.msl\n");
-  return(MagickFalse);
+  return(MagickTrue);
 }
 
 WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,

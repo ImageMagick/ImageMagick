@@ -144,7 +144,7 @@ static MagickBooleanType StreamUsage(void)
   (void) printf(
     "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
   (void) printf("'-' for standard input or output.\n");
-  return(MagickFalse);
+  return(MagickTrue);
 }
 
 WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,

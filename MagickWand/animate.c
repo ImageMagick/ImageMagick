@@ -200,7 +200,7 @@ static MagickBooleanType AnimateUsage(void)
   (void) printf("'-' for standard input or output.\n");
   (void) printf("\nButtons: \n");
   (void) puts(buttons);
-  return(MagickFalse);
+  return(MagickTrue);
 }
 
 WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,

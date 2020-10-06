@@ -193,7 +193,7 @@ static MagickBooleanType ImportUsage(void)
   (void) printf(
     "the filename suffix (i.e. image.ps).  Specify 'file' as '-' for\n");
   (void) printf("standard input or output.\n");
-  return(MagickFalse);
+  return(MagickTrue);
 }
 
 WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
