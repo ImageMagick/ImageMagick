@@ -1608,7 +1608,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
       if (LocaleCompare((const char *) name,"text") == 0)
         {
           PushGraphicContext(id);
-          (void) FormatLocaleFile(svg_info->file,"class \"text\"\n");
           svg_info->text_offset.x=svg_info->bounds.x;
           svg_info->text_offset.y=svg_info->bounds.y;
           svg_info->bounds.x=0.0;
@@ -2580,7 +2579,6 @@ static void SVGEndElement(void *context,const xmlChar *name)
     {
       if (LocaleCompare((const char *) name,"circle") == 0)
         {
-          (void) FormatLocaleFile(svg_info->file,"class \"circle\"\n");
           (void) FormatLocaleFile(svg_info->file,"circle %g,%g %g,%g\n",
             svg_info->element.cx,svg_info->element.cy,svg_info->element.cx,
             svg_info->element.cy+svg_info->element.minor);
@@ -2630,7 +2628,6 @@ static void SVGEndElement(void *context,const xmlChar *name)
           double
             angle;
 
-          (void) FormatLocaleFile(svg_info->file,"class \"ellipse\"\n");
           angle=svg_info->element.angle;
           (void) FormatLocaleFile(svg_info->file,"ellipse %g,%g %g,%g 0,360\n",
             svg_info->element.cx,svg_info->element.cy,
@@ -2680,7 +2677,6 @@ static void SVGEndElement(void *context,const xmlChar *name)
     {
       if (LocaleCompare((const char *) name,"line") == 0)
         {
-          (void) FormatLocaleFile(svg_info->file,"class \"line\"\n");
           (void) FormatLocaleFile(svg_info->file,"line %g,%g %g,%g\n",
             svg_info->segment.x1,svg_info->segment.y1,svg_info->segment.x2,
             svg_info->segment.y2);
@@ -2714,7 +2710,6 @@ static void SVGEndElement(void *context,const xmlChar *name)
         }
       if (LocaleCompare((const char *) name,"path") == 0)
         {
-          (void) FormatLocaleFile(svg_info->file,"class \"path\"\n");
           (void) FormatLocaleFile(svg_info->file,"path \"%s\"\n",
             svg_info->vertices);
           (void) FormatLocaleFile(svg_info->file,"pop graphic-context\n");
@@ -2722,7 +2717,6 @@ static void SVGEndElement(void *context,const xmlChar *name)
         }
       if (LocaleCompare((const char *) name,"polygon") == 0)
         {
-          (void) FormatLocaleFile(svg_info->file,"class \"polygon\"\n");
           (void) FormatLocaleFile(svg_info->file,"polygon %s\n",
             svg_info->vertices);
           (void) FormatLocaleFile(svg_info->file,"pop graphic-context\n");
@@ -2730,7 +2724,6 @@ static void SVGEndElement(void *context,const xmlChar *name)
         }
       if (LocaleCompare((const char *) name,"polyline") == 0)
         {
-          (void) FormatLocaleFile(svg_info->file,"class \"polyline\"\n");
           (void) FormatLocaleFile(svg_info->file,"polyline %s\n",
             svg_info->vertices);
           (void) FormatLocaleFile(svg_info->file,"pop graphic-context\n");
@@ -2750,7 +2743,6 @@ static void SVGEndElement(void *context,const xmlChar *name)
         {
           if ((svg_info->radius.x == 0.0) && (svg_info->radius.y == 0.0))
             {
-              (void) FormatLocaleFile(svg_info->file,"class \"rect\"\n");
               if ((fabs(svg_info->bounds.width-1.0) < MagickEpsilon) &&
                   (fabs(svg_info->bounds.height-1.0) < MagickEpsilon))
                 (void) FormatLocaleFile(svg_info->file,"point %g,%g\n",
@@ -2863,7 +2855,6 @@ static void SVGEndElement(void *context,const xmlChar *name)
               char
                 *text;
 
-              (void) FormatLocaleFile(svg_info->file,"class \"tspan\"\n");
               text=EscapeString(svg_info->text,'\"');
               (void) FormatLocaleFile(svg_info->file,"text %g,%g \"%s\"\n",
                 svg_info->bounds.x,svg_info->bounds.y,text);
