@@ -33,6 +33,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+%  Adapted from http://im.snibgo.com/customim.htm#img2knl.c.
 %
 */
 
@@ -162,7 +163,7 @@ static MagickBooleanType WriteKERNELImage(const ImageInfo *image_info,
 
   ssize_t
     y;
-
+ 
   /*
     Open output image file.
   */
@@ -213,7 +214,6 @@ static MagickBooleanType WriteKERNELImage(const ImageInfo *image_info,
         }
       p+=GetPixelChannels(image);
     }
-    (void) WriteBlobString(image,"\n");
     if (image->previous == (Image *) NULL)
       {
         status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -222,6 +222,7 @@ static MagickBooleanType WriteKERNELImage(const ImageInfo *image_info,
           break;
       }
   }
+  (void) WriteBlobString(image,"\n");
   (void) CloseBlob(image);
   return(MagickTrue);
 }
