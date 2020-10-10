@@ -96,6 +96,7 @@
 #if defined(MAGICKCORE_JXL_DELEGATE)
   #include "coders/jxl.h"
 #endif
+#include "coders/kernel.h"
 #include "coders/label.h"
 #include "coders/mac.h"
 #include "coders/magick.h"

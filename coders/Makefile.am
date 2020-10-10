@@ -196,6 +196,8 @@ MAGICKCORE_CODER_SRCS = \
 	coders/json.c \
 	coders/json.h \
 	coders/jxl.h \
+	coders/kernel.c \
+	coders/kernel.h \
 	coders/label.c \
 	coders/label.h \
 	coders/mac.c \
@@ -430,6 +432,7 @@ CODERS_NOINST_HDRS = \
 	coders/jpeg.h \
 	coders/json.h \
 	coders/jxl.h \
+	coders/kernel.h \
 	coders/label.h \
 	coders/mac.h \
 	coders/magick.h \
@@ -554,6 +557,7 @@ coders_LTLIBRARIES = \
 	coders/ipl.la \
 	coders/jnx.la \
 	coders/json.la \
+	coders/kernel.la \
 	coders/label.la \
 	coders/mac.la \
 	coders/magick.la \
@@ -954,6 +958,12 @@ coders_jxl_la_SOURCES      = coders/jxl.c
 coders_jxl_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_jxl_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_jxl_la_LIBADD       = $(MAGICKCORE_LIBS) $(JXL_LIBS)
+
+# KERNEL coder module
+coders_kernel_la_SOURCES   = coders/kernel.c
+coders_kernel_la_CPPFLAGS  = $(MAGICK_CODER_CPPFLAGS)
+coders_kernel_la_LDFLAGS   = $(MODULECOMMONFLAGS)
+coders_kernel_la_LIBADD    = $(MAGICKCORE_LIBS)
 
 # LABEL coder module
 coders_label_la_SOURCES    = coders/label.c
