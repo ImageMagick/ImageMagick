@@ -1186,20 +1186,23 @@ MagickExport void ReplaceImageInList(Image **images,Image *replace)
   if ((*images) == (Image *) NULL)
     return;
   assert((*images)->signature == MagickCoreSignature);
-
-  /* link next pointer */
+  /*
+    Link next pointer.
+  */
   replace=GetLastImageInList(replace);
   replace->next=(*images)->next;
   if (replace->next != (Image *) NULL)
     replace->next->previous=replace;
-
-  /* link previous pointer - set images position to first replacement image */
+  /*
+    Link previous pointer - set images position to first replacement image.
+  */
   replace=GetFirstImageInList(replace);
   replace->previous=(*images)->previous;
   if (replace->previous != (Image *) NULL)
     replace->previous->next=replace;
-
-  /* destroy the replaced image that was in images */
+  /*
+    Destroy the replaced image that was in images.
+  */
   (void) DestroyImage(*images);
   (*images)=replace;
 }
@@ -1244,20 +1247,23 @@ MagickExport void ReplaceImageInListReturnLast(Image **images,Image *replace)
   if ((*images) == (Image *) NULL)
     return;
   assert((*images)->signature == MagickCoreSignature);
-
-  /* link previous pointer */
+  /*
+    Link previous pointer.
+  */
   replace=GetFirstImageInList(replace);
   replace->previous=(*images)->previous;
   if (replace->previous != (Image *) NULL)
     replace->previous->next=replace;
-
-  /* link next pointer - set images position to last replacement image */
+  /*
+    Link next pointer - set images position to last replacement image.
+  */
   replace=GetLastImageInList(replace);
   replace->next=(*images)->next;
   if (replace->next != (Image *) NULL)
     replace->next->previous=replace;
-
-  /* destroy the replaced image that was in images */
+  /*
+    Destroy the replaced image that was in images.
+  */
   (void) DestroyImage(*images);
   (*images)=replace;
 }
