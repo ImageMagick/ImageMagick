@@ -870,18 +870,18 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
       ThrowWriterException(ResourceLimitError,"UnableToEncodeImageFile");
 
     WriteSingleWEBPImage(image_info, image, &picture, current, exception);
+    WebPAnimEncoderAdd(enc,&picture,(int) frame_timestamp,configure);
 
     effective_delta = image->delay*1000/image->ticks_per_second;
     if (effective_delta < 10)
       effective_delta = 100; /* Consistent with gif2webp */
     frame_timestamp+=effective_delta;
 
-    WebPAnimEncoderAdd(enc,&picture,(int) frame_timestamp,configure);
-
     image = GetNextImageInList(image);
     current->next=(PictureMemory *) calloc(sizeof(*head), 1);
     current = current->next;
   }
+  WebPAnimEncoderAdd(enc,NULL,(int) frame_timestamp,configure);
   webp_data.bytes=writer_info->mem;
   webp_data.size=writer_info->size;
   WebPAnimEncoderAssemble(enc, &webp_data);
@@ -1051,8 +1051,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
 #if defined(MAGICKCORE_WEBPMUX_DELEGATE)
   if ((image_info->adjoin != MagickFalse) &&
       (GetPreviousImageInList(image) == (Image *) NULL) &&
-      (GetNextImageInList(image) != (Image *) NULL) &&
-      (image->iterations != 1))
+      (GetNextImageInList(image) != (Image *) NULL))
     WriteAnimatedWEBPImage(image_info,image,&configure,&writer_info,exception);
 #endif
 
