@@ -6,7 +6,7 @@ Download & Unpack
   ImageMagick.tar.gz from ftp.imagemagick.org or its mirrors and verify the
   distribution against its message digest.
   
-  Unpack the distribution it with this command:
+  Unpack the distribution with this command:
   
     $magick> tar xvfz ImageMagick.tar.gz
   
@@ -104,7 +104,7 @@ Configure
       CXX             = g++
       CXXFLAGS        = -g -O2 -Wall -W -pthread
   
-  You can influence choice of compiler, compilation flags, or libraries of the
+  You can influence the choice of compiler, compilation flags, or libraries of the
   configure script by setting initial values for variables in the configure
   command line. These include, among others:
   
@@ -129,7 +129,7 @@ Configure
         argument in order to find shared libraries at run time. For example,
         the Solaris linker requires an argument of the form -R/path. Some
         Linux systems will work with -rpath /usr/local/lib, while some other
-        Linux systems who's gcc does not pass -rpath to the linker, require
+        Linux systems who's gcc does not pass -rpath to the linker require
         an argument of the form -Wl,-rpath,/usr/local/lib.
 
     LIBS
