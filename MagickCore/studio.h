@@ -128,7 +128,9 @@ extern "C" {
 #include <ws2tcpip.h>
 #endif
 #include <windows.h>
+#ifdef _MSC_VER
 #pragma comment (lib, "ws2_32.lib")
+#endif
 #endif
 #if defined(MAGICKCORE_HAVE_SYS_SYSLIMITS_H)
 # include <sys/syslimits.h>
