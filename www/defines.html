@@ -204,7 +204,7 @@ use:</p>
   <tr>
     <td>connected-components:area-threshold=<var>value</var></td>
     <td>Merges any region with area smaller than <var>value</var> into its 
-    surrounding region or largest neighbor.</td>
+    surrounding region or largest neighbor.  Thresholds can optionally include ranges, e.g. 410-1600.</td>
   </tr>
 
   <tr>
@@ -925,6 +925,7 @@ use:</p>
 
   <tr>
     <td>pcl:fit-to-page=<var>true</var></td>
+    <td> </td>
   </tr>
 
  <tr>
@@ -935,6 +936,11 @@ use:</p>
   <tr>
     <td>pdf:fit-to-page=<var>true</var></td>
     <td> </td>
+  </tr>
+
+  <tr>
+    <td>pdf:interpolate=<var>true</var></td>
+    <td>enable interpolation while rendering</td>
   </tr>
 
   <tr>
@@ -1478,8 +1484,6 @@ use:</p>
   </footer>
 
   <!-- Javascript assets -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
   <script>window.jQuery || document.write('<script src="assets/jquery.slim.min.js"><\/script>')</script><script src="assets/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous">
 </body>
 </html>
-<!-- Magick Cache 26th September 2020 12:45 -->
