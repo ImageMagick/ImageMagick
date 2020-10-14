@@ -1,3 +1,9 @@
+2020-10-14  7.0.10-35  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-35 GIT revision 17...
+
+2020-10-14  7.0.10-35  <quetzlzacatenango@image...>
+  * prefer ffmpeg over avconv
+
 2020-10-07  7.0.10-34  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-34 GIT revision 17695:de3284341:20201008
 

@@ -704,8 +704,8 @@ PSDelegate
 PCLDelegate
 MVDelegate
 MrSIDDecodeDelegate
-MPEGEncodeDelegate
-MPEGDecodeDelegate
+VIDEOEncodeDelegate
+VIDEODecodeDelegate
 MogrifyDelegate
 LaunchDelegate
 LPRDelegate
@@ -4575,7 +4575,7 @@ MAGICK_PATCHLEVEL_VERSION=35
 
 MAGICK_VERSION=7.0.10-35
 
-MAGICK_GIT_REVISION=17698:3b12a5757:20201009
+MAGICK_GIT_REVISION=17712:2b4b9a757:20201014
 
 
 # Substitute library versioning
@@ -32994,8 +32994,6 @@ LEPDelegateDefault='lepton'
 LPDelegateDefault='lp'
 LPRDelegateDefault='lpr'
 LaunchDelegateDefault='gimp'
-MPEGDecodeDelegateDefault='avconv'
-MPEGEncodeDelegateDefault='avconv'
 MrSIDDecodeDelegateDefault='mrsidgeodecode'
 MVDelegateDefault='mv'
 PCLDelegateDefault='pcl6'
@@ -33010,6 +33008,8 @@ RMDelegateDefault='rm'
 RSVGDecodeDelegateDefault='rsvg-convert'
 SVGDecodeDelegateDefault='inkscape'
 TraceEncodeDelegateDefault='potrace'
+VIDEODecodeDelegateDefault='ffmpeg'
+VIDEOEncodeDelegateDefault='ffmpeg'
 WebPDecodeDelegateDefault='dwebp'
 WebPEncodeDelegateDefault='cwebp'
 WWWDecodeDelegateDefault='curl'
@@ -33923,16 +33923,16 @@ $as_echo "no" >&6; }
 fi
 
 
-# Extract the first word of " "$MPEGDecodeDelegateDefault"", so it can be a program name with args.
-set dummy  "$MPEGDecodeDelegateDefault"; ac_word=$2
+# Extract the first word of " "$VIDEODecodeDelegateDefault"", so it can be a program name with args.
+set dummy  "$VIDEODecodeDelegateDefault"; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_MPEGDecodeDelegate+:} false; then :
+if ${ac_cv_path_VIDEODecodeDelegate+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  case $MPEGDecodeDelegate in
+  case $VIDEODecodeDelegate in
   [\\/]* | ?:[\\/]*)
-  ac_cv_path_MPEGDecodeDelegate="$MPEGDecodeDelegate" # Let the user override the test with a path.
+  ac_cv_path_VIDEODecodeDelegate="$VIDEODecodeDelegate" # Let the user override the test with a path.
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
@@ -33942,7 +33942,7 @@ do
   test -z "$as_dir" && as_dir=.
     for ac_exec_ext in '' $ac_executable_extensions; do
   if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_MPEGDecodeDelegate="$as_dir/$ac_word$ac_exec_ext"
+    ac_cv_path_VIDEODecodeDelegate="$as_dir/$ac_word$ac_exec_ext"
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -33950,32 +33950,30 @@ done
   done
 IFS=$as_save_IFS
 
-  test -z "$ac_cv_path_MPEGDecodeDelegate" && ac_cv_path_MPEGDecodeDelegate=" "$MPEGDecodeDelegateDefault""
+  test -z "$ac_cv_path_VIDEODecodeDelegate" && ac_cv_path_VIDEODecodeDelegate=" "$VIDEODecodeDelegateDefault""
   ;;
 esac
 fi
-MPEGDecodeDelegate=$ac_cv_path_MPEGDecodeDelegate
-if test -n "$MPEGDecodeDelegate"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $MPEGDecodeDelegate" >&5
-$as_echo "$MPEGDecodeDelegate" >&6; }
+VIDEODecodeDelegate=$ac_cv_path_VIDEODecodeDelegate
+if test -n "$VIDEODecodeDelegate"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $VIDEODecodeDelegate" >&5
+$as_echo "$VIDEODecodeDelegate" >&6; }
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 fi
 
 
-if test "$MPEGDecodeDelegate" = "$MPEGDecodeDelegateDefault" ; then
-  MPEGDecodeDelegateDefault='ffmpeg'
-  # Extract the first word of " "$MPEGDecodeDelegateDefault"", so it can be a program name with args.
-set dummy  "$MPEGDecodeDelegateDefault"; ac_word=$2
+# Extract the first word of " "$VIDEOEncodeDelegateDefault"", so it can be a program name with args.
+set dummy  "$VIDEOEncodeDelegateDefault"; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_MPEGDecodeDelegate+:} false; then :
+if ${ac_cv_path_VIDEOEncodeDelegate+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  case $MPEGDecodeDelegate in
+  case $VIDEOEncodeDelegate in
   [\\/]* | ?:[\\/]*)
-  ac_cv_path_MPEGDecodeDelegate="$MPEGDecodeDelegate" # Let the user override the test with a path.
+  ac_cv_path_VIDEOEncodeDelegate="$VIDEOEncodeDelegate" # Let the user override the test with a path.
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
@@ -33985,7 +33983,7 @@ do
   test -z "$as_dir" && as_dir=.
     for ac_exec_ext in '' $ac_executable_extensions; do
   if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_MPEGDecodeDelegate="$as_dir/$ac_word$ac_exec_ext"
+    ac_cv_path_VIDEOEncodeDelegate="$as_dir/$ac_word$ac_exec_ext"
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -33993,106 +33991,20 @@ done
   done
 IFS=$as_save_IFS
 
-  test -z "$ac_cv_path_MPEGDecodeDelegate" && ac_cv_path_MPEGDecodeDelegate=" "$MPEGDecodeDelegateDefault""
+  test -z "$ac_cv_path_VIDEOEncodeDelegate" && ac_cv_path_VIDEOEncodeDelegate=" "$VIDEOEncodeDelegateDefault""
   ;;
 esac
 fi
-MPEGDecodeDelegate=$ac_cv_path_MPEGDecodeDelegate
-if test -n "$MPEGDecodeDelegate"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $MPEGDecodeDelegate" >&5
-$as_echo "$MPEGDecodeDelegate" >&6; }
+VIDEOEncodeDelegate=$ac_cv_path_VIDEOEncodeDelegate
+if test -n "$VIDEOEncodeDelegate"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $VIDEOEncodeDelegate" >&5
+$as_echo "$VIDEOEncodeDelegate" >&6; }
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 fi
 
 
-fi;
-# Extract the first word of " "$MPEGEncodeDelegateDefault"", so it can be a program name with args.
-set dummy  "$MPEGEncodeDelegateDefault"; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_MPEGEncodeDelegate+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $MPEGEncodeDelegate in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_MPEGEncodeDelegate="$MPEGEncodeDelegate" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_MPEGEncodeDelegate="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  test -z "$ac_cv_path_MPEGEncodeDelegate" && ac_cv_path_MPEGEncodeDelegate=" "$MPEGEncodeDelegateDefault""
-  ;;
-esac
-fi
-MPEGEncodeDelegate=$ac_cv_path_MPEGEncodeDelegate
-if test -n "$MPEGEncodeDelegate"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $MPEGEncodeDelegate" >&5
-$as_echo "$MPEGEncodeDelegate" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-if test "$MPEGEncodeDelegate" = "$MPEGEncodeDelegateDefault" ; then
-  MPEGEncodeDelegateDefault='ffmpeg'
-  # Extract the first word of " "$MPEGEncodeDelegateDefault"", so it can be a program name with args.
-set dummy  "$MPEGEncodeDelegateDefault"; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_MPEGEncodeDelegate+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $MPEGEncodeDelegate in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_MPEGEncodeDelegate="$MPEGEncodeDelegate" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_MPEGEncodeDelegate="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  test -z "$ac_cv_path_MPEGEncodeDelegate" && ac_cv_path_MPEGEncodeDelegate=" "$MPEGEncodeDelegateDefault""
-  ;;
-esac
-fi
-MPEGEncodeDelegate=$ac_cv_path_MPEGEncodeDelegate
-if test -n "$MPEGEncodeDelegate"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $MPEGEncodeDelegate" >&5
-$as_echo "$MPEGEncodeDelegate" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-fi;
 # Extract the first word of " "$MrSIDDecodeDelegateDefault"", so it can be a program name with args.
 set dummy  "$MrSIDDecodeDelegateDefault"; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
@@ -34646,13 +34558,13 @@ DisplayDelegate="${BIN_DIR}/${DisplayDelegateDefault}"
 MogrifyDelegate="${BIN_DIR}/${MogrifyDelegateDefault}"
 
 # Set delegate booleans
-have_avconv='no'; if test "$MPEGDecodeDelegate" != "$MPEGDecodeDelegateDefault" ; then have_avconv='yes'; fi
 have_gs='no'         ; if test "$PSDelegate" != "$PSDelegateDefault"; then have_gs='yes'; fi
 have_hp2xx='no'      ; if test "$HPGLDecodeDelegate" !=  "$HPGLDecodeDelegateDefault" ; then have_hp2xx='yes'; fi
 have_ilbmtoppm='no'  ; if test "$ILBMDecodeDelegate" != "$ILBMDecodeDelegateDefault" ; then have_ilbmtoppm='yes'; fi
 have_mrsid='no'; if test "$MrSIDDecodeDelegate" != "$MrSIDDecodeDelegateDefault" ; then have_mrsid='yes'; fi
 have_pcl='no'        ; if test "$PCLDelegate" != "$PCLDelegateDefault"; then have_pcl='yes'; fi
 have_ppmtoilbm='no'  ; if test "$ILBMEncodeDelegate" != "$ILBMEncodeDelegateDefault" ; then have_ppmtoilbm='yes'; fi
+have_video='no'; if test "$VIDEODecodeDelegate" != "$VIDEODecodeDelegateDefault" ; then have_video='yes'; fi
 have_xps='no'        ; if test "$XPSDelegate" != "$XPSDelegateDefault"; then have_xps='yes'; fi
 
 #
@@ -34831,8 +34743,6 @@ if test "$with_frozenpaths" != 'yes'; then
   LEPDelegate="$LEPDelegateDefault"
   LPDelegate="$LPDelegateDefault"
   LaunchDelegate="$LaunchDelegateDefault"
-  MPEGDecodeDelegate="$MPEGDecodeDelegateDefault"
-  MPEGEncodeDelegate="$MPEGEncodeDelegateDefault"
   MogrifyDelegate="$MogrifyDelegateDefault"
   MrSIDDecodeDelegate="$MrSIDDecodeDelegateDefault"
   PCLDelegate="$PCLDelegateDefault"
@@ -34842,6 +34752,8 @@ if test "$with_frozenpaths" != 'yes'; then
   ShowImageDelegate="$ShowImageDelegateDefault"
   TraceEncodeDelegate="$TraceEncodeDelegateDefault"
   Fig2devDelegate="$Fig2devDelegateDefault"
+  VIDEODecodeDelegate="$VIDEODecodeDelegateDefault"
+  VIDEOEncodeDelegate="$VIDEOEncodeDelegateDefault"
   WebPDecodeDelegate="$WebPDecodeDelegateDefault"
   WebPEncodeDelegate="$WebPEncodeDelegateDefault"
   WWWDecodeDelegate="$WWWDecodeDelegateDefault"
@@ -35588,9 +35500,6 @@ fi
 if test "$have_djvu"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES djvu"
 fi
-if test "$have_avconv"   = 'yes' ; then
-   MAGICK_DELEGATES="$MAGICK_DELEGATES mpeg"
-fi
 if test "$have_fftw"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES fftw"
 fi
@@ -35671,6 +35580,9 @@ if test "$have_tiff"   = 'yes' ; then
 fi
 if test "$have_ttf"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES ttf"
+fi
+if test "$have_video"   = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES video"
 fi
 if test "$have_webp"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES webp"
