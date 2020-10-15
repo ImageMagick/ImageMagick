@@ -94,11 +94,9 @@ extern MagickPrivate double
   NTUserTime(void);
 
 extern MagickPrivate int
-  Exit(int),
 #if !defined(__MINGW32__)
   gettimeofday(struct timeval *,struct timezone *),
 #endif
-  IsWindows95(void),
   NTCloseDirectory(DIR *),
   NTCloseLibrary(void *),
   NTControlHandler(void),

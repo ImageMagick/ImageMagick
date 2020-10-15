@@ -321,39 +321,6 @@ BOOL WINAPI DllMain(HINSTANCE handle,DWORD reason,LPVOID lpvReserved)
 }
 #endif
 
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   E x i t                                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Exit() calls TerminateProcess for Win95.
-%
-%  The format of the exit method is:
-%
-%      int Exit(int status)
-%
-%  A description of each parameter follows:
-%
-%    o status: an integer value representing the status of the terminating
-%      process.
-%
-*/
-MagickPrivate int Exit(int status)
-{
-  if (IsWindows95())
-    {
-      TerminateProcess(GetCurrentProcess(),(unsigned int) status);
-      return(0);
-    }
-  exit(status);
-}
-
 #if !defined(__MINGW32__)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -420,36 +387,6 @@ MagickPrivate int gettimeofday (struct timeval *time_value,
   return(0);
 }
 #endif
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I s W i n d o w s 9 5                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  IsWindows95() returns true if the system is Windows 95.
-%
-%  The format of the IsWindows95 method is:
-%
-%      int IsWindows95()
-%
-*/
-MagickPrivate int IsWindows95()
-{
-  OSVERSIONINFO
-    version_info;
-
-  version_info.dwOSVersionInfoSize=sizeof(version_info);
-  if (GetVersionEx(&version_info) &&
-      (version_info.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS))
-    return(1);
-  return(0);
-}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -556,8 +493,6 @@ MagickPrivate int NTCloseDirectory(DIR *entry)
 */
 MagickPrivate int NTCloseLibrary(void *handle)
 {
-  if (IsWindows95())
-    return(FreeLibrary((HINSTANCE) handle));
   return(!(FreeLibrary((HINSTANCE) handle)));
 }
 
