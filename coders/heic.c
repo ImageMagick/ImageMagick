@@ -305,7 +305,11 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
   */
   image->columns=(size_t) heif_image_handle_get_width(image_handle);
   image->rows=(size_t) heif_image_handle_get_height(image_handle);
+#if LIBHEIF_NUMERIC_VERSION > 0x01040000
   image->depth=(size_t) heif_image_handle_get_luma_bits_per_pixel(image_handle);
+#else
+  image->depth=8;
+#endif
   if (heif_image_handle_has_alpha_channel(image_handle))
     image->alpha_trait=BlendPixelTrait;
   preserve_orientation=IsStringTrue(GetImageOption(image_info,
