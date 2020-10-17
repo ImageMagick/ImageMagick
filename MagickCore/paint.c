@@ -186,8 +186,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   /*
     Set floodfill state.
   */
-  floodplane_image=CloneImage(image,0,0,MagickTrue,
-    exception);
+  floodplane_image=CloneImage(image,0,0,MagickTrue,exception);
   if (floodplane_image == (Image *) NULL)
     return(MagickFalse);
   floodplane_image->alpha_trait=UndefinedPixelTrait;
