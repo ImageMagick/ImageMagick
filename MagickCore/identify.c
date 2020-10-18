@@ -441,7 +441,7 @@ static ssize_t PrintChannelStatistics(FILE *file,const PixelChannel channel,
   const ChannelStatistics *channel_statistics)
 {
 #define StatisticsFormat "    %s:\n      min: %.*g  (%.*g)\n      " \
-  "max: %.*g (%.*g)\n      mean: %.*g (%.*g)\n      " \
+  "max: %.*g (%.*g)\n      mean: %.*g (%.*g)\n      median: %.*g (%.*g)\n      " \
   "standard deviation: %.*g (%.*g)\n      kurtosis: %.*g\n      " \
   "skewness: %.*g\n      entropy: %.*g\n"
 
@@ -457,6 +457,8 @@ static ssize_t PrintChannelStatistics(FILE *file,const PixelChannel channel,
     channel_statistics[channel].maxima/(double) QuantumRange,
     GetMagickPrecision(),scale*channel_statistics[channel].mean,
     GetMagickPrecision(),channel_statistics[channel].mean/(double) QuantumRange,
+    GetMagickPrecision(),scale*channel_statistics[channel].median,
+    GetMagickPrecision(),channel_statistics[channel].median/(double) QuantumRange,
     GetMagickPrecision(),scale*channel_statistics[channel].standard_deviation,
     GetMagickPrecision(),channel_statistics[channel].standard_deviation/
     (double) QuantumRange,GetMagickPrecision(),

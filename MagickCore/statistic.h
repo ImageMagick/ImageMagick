@@ -44,7 +44,8 @@ typedef struct _ChannelStatistics
     standard_deviation,
     kurtosis,
     skewness,
-    entropy;
+    entropy,
+    median;
 } ChannelStatistics;
 
 typedef struct _ChannelMoments
@@ -165,6 +166,7 @@ extern MagickExport MagickBooleanType
   GetImageEntropy(const Image *,double *,ExceptionInfo *),
   GetImageExtrema(const Image *,size_t *,size_t *,ExceptionInfo *),
   GetImageMean(const Image *,double *,double *,ExceptionInfo *),
+  GetImageMedian(const Image *,double *,ExceptionInfo *),
   GetImageKurtosis(const Image *,double *,double *,ExceptionInfo *),
   GetImageRange(const Image *,double *,double *,ExceptionInfo *);
 

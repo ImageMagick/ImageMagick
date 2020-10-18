@@ -3083,6 +3083,17 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             GetMagickPrecision(),mean);
           break;
         }
+      if (LocaleCompare("median",property) == 0)
+        {
+          double
+            median;
+
+          WarnNoImageReturn("\"%%[%s]\"",property);
+          (void) GetImageMedian(image,&median,exception);
+          (void) FormatLocaleString(value,MagickPathExtent,"%.*g",
+            GetMagickPrecision(),median);
+          break;
+        }
       if ((LocaleCompare("minima",property) == 0) ||
           (LocaleCompare("min",property) == 0))
         {

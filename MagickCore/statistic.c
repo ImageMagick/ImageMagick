@@ -229,7 +229,7 @@ static int IntensityCompare(const void *x,const void *y)
   distance=0.0;
   for (i=0; i < MaxPixelChannels; i++)
     distance+=color_1->channel[i]-(double) color_2->channel[i];
-  return(distance < 0 ? -1 : distance > 0 ? 1 : 0);
+  return(distance < 0.0 ? -1 : distance > 0.0 ? 1 : 0);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -1362,6 +1362,52 @@ MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t I m a g e M e d i a n                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageMedian() returns the median pixel of one or more image channels.
+%
+%  The format of the GetImageMedian method is:
+%
+%      MagickBooleanType GetImageMedian(const Image *image,double *median,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o median: the average value in the channel.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickBooleanType GetImageMedian(const Image *image,double *median,
+  ExceptionInfo *exception)
+{
+  ChannelStatistics
+    *channel_statistics;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  channel_statistics=GetImageStatistics(image,exception);
+  if (channel_statistics == (ChannelStatistics *) NULL)
+    return(MagickFalse);
+  *median=channel_statistics[CompositePixelChannel].median;
+  channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
+    channel_statistics);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t I m a g e M o m e n t s                                             %
 %                                                                             %
 %                                                                             %
@@ -1964,6 +2010,30 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+static int ChannelCompare(const void *x,const void *y)
+{
+  const Quantum
+    *pixel_1,
+    *pixel_2;
+
+  double
+    distance;
+
+  pixel_1=(const Quantum *) x;
+  pixel_2=(const Quantum *) y;
+  distance=(*pixel_1)-(double) (*pixel_2);
+  return(distance < 0.0 ? -1 : distance > 0.0 ? 1 : 0);
+}
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
 MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   ExceptionInfo *exception)
 {
@@ -1977,6 +2047,12 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
 
   MagickStatusType
     status;
+
+  MemoryInfo
+    *median_info;
+
+  Quantum
+    *median;
 
   QuantumAny
     range;
@@ -2015,6 +2091,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     channel_statistics[i].depth=1;
     channel_statistics[i].maxima=(-MagickMaximumValue);
     channel_statistics[i].minima=MagickMaximumValue;
+//    channel_statistics[i].median=sqrt((double)-1.0);
   }
   (void) memset(histogram,0,(MaxMap+1)*GetPixelChannels(image)*
     sizeof(*histogram));
@@ -2160,19 +2237,79 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       channel_statistics[i].mean)*(standard_deviation*standard_deviation*
       standard_deviation*standard_deviation)-3.0;
   }
+  median_info=AcquireVirtualMemory(image->columns,image->rows*sizeof(*median));
+  if (median_info == (MemoryInfo *) NULL)
+    (void) ThrowMagickException(exception,GetMagickModule(),
+      ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+  else
+    {
+      ssize_t
+        i;
+
+      median=(Quantum *) GetVirtualMemoryBlob(median_info);
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        size_t
+          n;
+
+        /*
+          Compute median statistics for each channel.
+        */
+        PixelChannel channel = GetPixelChannelChannel(image,i);
+        PixelTrait traits = GetPixelChannelTraits(image,channel);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        n=0;
+        for (y=0; y < (ssize_t) image->rows; y++)
+        {
+          register const Quantum
+            *magick_restrict p;
+
+          register ssize_t
+            x;
+
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+          if (p == (const Quantum *) NULL)
+            break;
+          for (x=0; x < (ssize_t) image->columns; x++)
+          {
+            if (GetPixelReadMask(image,p) <= (QuantumRange/2))
+              {
+                p+=GetPixelChannels(image);
+                continue;
+              }
+            median[n++]=p[i];
+          }
+          p+=GetPixelChannels(image);
+        }
+        (void) qsort((void *) median,n,sizeof(*median),ChannelCompare);
+        channel_statistics[channel].median=(double) median[n/2];
+        if ((n % 2) == 0)
+          channel_statistics[channel].median=((double) median[n/2]+
+            (double) median[n/2-1])/2.0;
+      }
+      median_info=RelinquishVirtualMemory(median_info);
+    }
   channel_statistics[CompositePixelChannel].mean=0.0;
+  channel_statistics[CompositePixelChannel].median=0.0;
   channel_statistics[CompositePixelChannel].standard_deviation=0.0;
   channel_statistics[CompositePixelChannel].entropy=0.0;
   for (i=0; i < (ssize_t) MaxPixelChannels; i++)
   {
     channel_statistics[CompositePixelChannel].mean+=
       channel_statistics[i].mean;
+    channel_statistics[CompositePixelChannel].median+=
+      channel_statistics[i].median;
     channel_statistics[CompositePixelChannel].standard_deviation+=
       channel_statistics[i].standard_deviation;
     channel_statistics[CompositePixelChannel].entropy+=
       channel_statistics[i].entropy;
   }
   channel_statistics[CompositePixelChannel].mean/=(double)
+    GetImageChannels(image);
+  channel_statistics[CompositePixelChannel].median/=(double)
     GetImageChannels(image);
   channel_statistics[CompositePixelChannel].standard_deviation/=(double)
     GetImageChannels(image);
