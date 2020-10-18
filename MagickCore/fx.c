@@ -455,6 +455,14 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
       (void) GetImageMean(image,&mean,&standard_deviation,exception);
       statistic=mean;
     }
+  if (LocaleNCompare(symbol,"median",6) == 0)
+    {
+      double
+        median;
+
+      (void) GetImageMedian(image,&median,exception);
+      statistic=median;
+    }
   if (LocaleNCompare(symbol,"minima",6) == 0)
     {
       double
@@ -1039,6 +1047,8 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
       if (LocaleNCompare(symbol,"maxima",6) == 0)
         return(FxChannelStatistics(fx_info,image,channel,symbol,exception));
       if (LocaleNCompare(symbol,"mean",4) == 0)
+        return(FxChannelStatistics(fx_info,image,channel,symbol,exception));
+      if (LocaleNCompare(symbol,"median",6) == 0)
         return(FxChannelStatistics(fx_info,image,channel,symbol,exception));
       if (LocaleNCompare(symbol,"minima",6) == 0)
         return(FxChannelStatistics(fx_info,image,channel,symbol,exception));
