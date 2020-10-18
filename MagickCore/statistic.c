@@ -2238,8 +2238,12 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   }
   median_info=AcquireVirtualMemory(image->columns,image->rows*sizeof(*median));
   if (median_info == (MemoryInfo *) NULL)
-    (void) ThrowMagickException(exception,GetMagickModule(),
-      ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+    {
+      for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
+        channel_statistics[i].median=sqrt((double) -1.0);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+    }
   else
     {
       ssize_t
