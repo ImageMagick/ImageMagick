@@ -2091,7 +2091,6 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     channel_statistics[i].depth=1;
     channel_statistics[i].maxima=(-MagickMaximumValue);
     channel_statistics[i].minima=MagickMaximumValue;
-//    channel_statistics[i].median=sqrt((double)-1.0);
   }
   (void) memset(histogram,0,(MaxMap+1)*GetPixelChannels(image)*
     sizeof(*histogram));
@@ -2250,7 +2249,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         size_t
-          n;
+          n = 0;
 
         /*
           Compute median statistics for each channel.
@@ -2261,7 +2260,6 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
           continue;
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        n=0;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const Quantum
