@@ -1352,11 +1352,13 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
     if ( disposals[i] == DelDispose ) {
       size_t time = 0;
       while ( disposals[i] == DelDispose ) {
-        time += curr->delay*1000/curr->ticks_per_second;
+        time +=(size_t) (curr->delay*1000*
+          PerceptibleReciprocal((double) curr->ticks_per_second));
         curr=GetNextImageInList(curr);
         i++;
       }
-      time += curr->delay*1000/curr->ticks_per_second;
+      time += (size_t)(curr->delay*1000*
+        PerceptibleReciprocal((double) curr->ticks_per_second));
       prev_image->ticks_per_second = 100L;
       prev_image->delay = time*prev_image->ticks_per_second/1000;
     }
