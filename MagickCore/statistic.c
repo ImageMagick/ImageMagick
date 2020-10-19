@@ -2011,28 +2011,56 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
 %
 */
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-static int ChannelCompare(const void *x,const void *y)
+static ssize_t GetMedianPixel(Quantum *pixels,const size_t n)
 {
-  const Quantum
-    *pixel_1,
-    *pixel_2;
-
-  double
-    distance;
-
-  pixel_1=(const Quantum *) x;
-  pixel_2=(const Quantum *) y;
-  distance=(*pixel_1)-(double) (*pixel_2);
-  return(distance < 0.0 ? -1 : distance > 0.0 ? 1 : 0);
+#define SwapPixels(alpha,beta) \
+{ \
+  register Quantum gamma=(alpha); \
+  (alpha)=(beta);(beta)=gamma; \
 }
 
-#if defined(__cplusplus) || defined(c_plusplus)
+  ssize_t
+    low = 0,
+    high = (ssize_t) n-1,
+    median = (low+high)/2;
+
+  for ( ; ; )
+  {
+    ssize_t
+      l = low+1,
+      h = high,
+      mid = (low+high)/2;
+
+    if (high <= low)
+      return(median);
+    if (high == (low+1))
+      {
+        if (pixels[low] > pixels[high])
+          SwapPixels(pixels[low],pixels[high]);
+        return(median);
+      }
+    if (pixels[mid] > pixels[high])
+      SwapPixels(pixels[mid],pixels[high]);
+    if (pixels[low] > pixels[high])
+      SwapPixels(pixels[low], pixels[high]);
+    if (pixels[mid] > pixels[low])
+      SwapPixels(pixels[mid],pixels[low]);
+    SwapPixels(pixels[mid],pixels[low+1]);
+    for ( ; ; )
+    {
+      do l++; while (pixels[low] > pixels[l]);
+      do h--; while (pixels[h] > pixels[low]);
+      if (h < l)
+        break;
+      SwapPixels(pixels[l],pixels[h]);
+    }
+    SwapPixels(pixels[low],pixels[h]);
+    if (h <= median)
+      low=l;
+    if (h >= median)
+      high=h-1;
+  }
 }
-#endif
 
 MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   ExceptionInfo *exception)
@@ -2238,12 +2266,8 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   }
   median_info=AcquireVirtualMemory(image->columns,image->rows*sizeof(*median));
   if (median_info == (MemoryInfo *) NULL)
-    {
-      for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
-        channel_statistics[i].median=sqrt((double) -1.0);
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
-    }
+    (void) ThrowMagickException(exception,GetMagickModule(),
+      ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
   else
     {
       ssize_t
@@ -2286,11 +2310,8 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
           }
           p+=GetPixelChannels(image);
         }
-        (void) qsort((void *) median,n,sizeof(*median),ChannelCompare);
-        channel_statistics[channel].median=(double) median[n/2];
-        if ((n % 2) == 0)
-          channel_statistics[channel].median=((double) median[n/2]+
-            (double) median[n/2-1])/2.0;
+        channel_statistics[channel].median=(double) median[
+          GetMedianPixel(median,n)];
       }
       median_info=RelinquishVirtualMemory(median_info);
     }
