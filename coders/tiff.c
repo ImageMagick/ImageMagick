@@ -1806,7 +1806,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
     if (image->alpha_trait != UndefinedPixelTrait)
       (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
-    if ((samples_per_pixel+extra_samples) > MaxPixelChannels)
+    if (samples_per_pixel > MaxPixelChannels)
       {
         TIFFClose(tiff);
         ThrowReaderException(CorruptImageError,"MaximumChannelsExceeded");
