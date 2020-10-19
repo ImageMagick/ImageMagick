@@ -280,7 +280,7 @@ ModuleExport size_t RegisterORAImage(void)
   entry->decoder=(DecodeImageHandler *) ReadORAImage;
 #endif
   entry->flags^=CoderBlobSupportFlag;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->format_type=ExplicitFormatType;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);

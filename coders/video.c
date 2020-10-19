@@ -243,12 +243,12 @@ ModuleExport size_t RegisterVIDEOImage(void)
   entry=AcquireMagickInfo("VIDEO","3GP","Media Container");
   entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
   entry->flags^=CoderBlobSupportFlag;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("VIDEO","3G2","Media Container");
   entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
   entry->flags^=CoderBlobSupportFlag;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("VIDEO","APNG","Animated Portable Network Graphics");
   entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
