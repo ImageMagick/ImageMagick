@@ -87,6 +87,7 @@ Image Operators:
   \-despeckle           reduce the speckles within an image
   \-edge factor         apply a filter to detect edges in the image
   \-enhance             apply a digital filter to enhance a noisy image
+  \-extent geometry     set the image size
   \-extract geometry    extract area from image
   \-flip                flip image in the vertical direction
   \-flop                flop image in the horizontal direction

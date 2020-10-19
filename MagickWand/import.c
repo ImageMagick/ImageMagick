@@ -106,6 +106,7 @@ static MagickBooleanType ImportUsage(void)
       "  -colors value        preferred number of colors in the image\n"
       "  -crop geometry       preferred size and location of the cropped image\n"
       "  -encipher filename   convert plain pixels to cipher pixels\n"
+      "  -extent geometry     set the image size\n"
       "  -geometry geometry   preferred size or location of the image\n"
       "  -help                print program options\n"
       "  -monochrome          transform image to black and white\n"
@@ -766,6 +767,17 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
             if (endian < 0)
               ThrowImportException(OptionError,"UnrecognizedEndianType",
                 argv[i]);
+            break;
+          }
+        if (LocaleCompare("extent",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowImportException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowImportInvalidArgumentException(option,argv[i]);
             break;
           }
         ThrowImportException(OptionError,"UnrecognizedOption",option);

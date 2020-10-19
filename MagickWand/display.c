@@ -118,6 +118,7 @@ static MagickBooleanType DisplayUsage(void)
       "  -edge factor         apply a filter to detect edges in the image\n"
       "  -enhance             apply a digital filter to enhance a noisy image\n"
       "  -equalize            perform histogram equalization to an image\n"
+      "  -extent geometry     set the image size\n"
       "  -extract geometry    extract area from image\n"
       "  -flip                flip image in the vertical direction\n"
       "  -flop                flop image in the horizontal direction\n"
@@ -1048,6 +1049,17 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("equalize",option+1) == 0)
           break;
+        if (LocaleCompare("extent",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowDisplayException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowDisplayInvalidArgumentException(option,argv[i]);
+            break;
+          }
         if (LocaleCompare("extract",option+1) == 0)
           {
             if (*option == '+')
