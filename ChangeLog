@@ -2,20 +2,21 @@
   * Release ImageMagick version 7.0.10-35 GIT revision 17...
 
 2020-10-14  7.0.10-35  <quetzlzacatenango@image...>
-  * prefer ffmpeg over avconv.
-  * support median image statistic and median property.
+  * Perfer ffmpeg over avconv.
+  * Support median image statistic and median property.
+  * Add -extend option to {display,animate,import}.
 
 2020-10-07  7.0.10-34  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-34 GIT revision 17695:de3284341:20201008
 
 2020-10-05  7.0.10-34  <quetzlzacatenango@image...>
-  * check for linux-compatible sendfile().
+  * Check for linux-compatible sendfile().
 
 2020-10-04  7.0.10-33  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-33 GIT revision 17683:c1bfec283:20201004
 
 2020-10-04  7.0.10-33  <quetzlzacatenango@image...>
-  * miscellaneous clean-up.
+  * Miscellaneous clean-up.
 
 2020-10-02  7.0.10-32  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-32 GIT revision 17670:1686dd921:20201002 
