@@ -712,7 +712,7 @@ static ssize_t PrintChannelStatistics(FILE *file,const PixelChannel channel,
   const ChannelStatistics *channel_statistics)
 {
 #define StatisticsFormat "      \"%s\": {\n        \"min\": %.*g,\n"  \
-  "        \"max\": %.*g,\n        \"mean\": %.*g,\n        "  \
+  "        \"max\": %.*g,\n        \"mean\": %.*g,\n        \"median\": %.*g,\n        "  \
   "\"standardDeviation\": %.*g,\n        \"kurtosis\": %.*g,\n        "\
   "\"skewness\": %.*g,\n        \"entropy\": %.*g\n      }"
 
@@ -722,8 +722,9 @@ static ssize_t PrintChannelStatistics(FILE *file,const PixelChannel channel,
   n=FormatLocaleFile(file,StatisticsFormat,name,GetMagickPrecision(),
     (double) ClampToQuantum(scale*channel_statistics[channel].minima),
     GetMagickPrecision(),(double) ClampToQuantum(scale*
-    channel_statistics[channel].maxima),GetMagickPrecision(),scale*
-    channel_statistics[channel].mean,GetMagickPrecision(),scale*
+    channel_statistics[channel].maxima),GetMagickPrecision(),
+    scale*channel_statistics[channel].mean,GetMagickPrecision(),
+    scale*channel_statistics[channel].median,GetMagickPrecision(),scale*
     IsNaN(channel_statistics[channel].standard_deviation) != 0 ? MagickEpsilon :
     channel_statistics[channel].standard_deviation,GetMagickPrecision(),
     channel_statistics[channel].kurtosis,GetMagickPrecision(),
@@ -931,9 +932,6 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   ChannelStatistics
     *channel_statistics;
 
-  char
-    *url;
-
   const char
     *artifact,
     *locate,
@@ -983,24 +981,29 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   ping=p == (const Quantum *) NULL ? MagickTrue : MagickFalse;
   (void) ping;
   (void) SignatureImage(image,exception);
-  (void) FormatLocaleFile(file,"\n{\n");
+  (void) FormatLocaleFile(file,"{\n");
   version=1.0;
   artifact=GetImageArtifact(image,"json:version");
   if (artifact != (const char *) NULL)
     version=StringToDouble(artifact,(char **) NULL);
   if (version >= 1.0)
     (void) FormatLocaleFile(file,"  \"version\": \"%.1f\",\n",version);
-  JSONFormatLocaleFile(file,"  \"image\": {\n    \"name\": %s,\n",
-    image->filename);
-  if (*image->magick_filename != '\0')
-    if (LocaleCompare(image->magick_filename,image->filename) != 0)
-      {
-        char
-          filename[MagickPathExtent];
-
-        GetPathComponent(image->magick_filename,TailPath,filename);
-        JSONFormatLocaleFile(file,"    \"baseName\": %s,\n",filename);
-      }
+  if (*image->magick_filename == '\0')
+    JSONFormatLocaleFile(file,"  \"image\": {\n    \"name\": %s,\n",
+      image->filename);
+  else
+    {
+      JSONFormatLocaleFile(file,"  \"image\": {\n    \"name\": %s,\n",
+        image->magick_filename);
+      if (LocaleCompare(image->magick_filename,image->filename) != 0)
+        {   
+          char
+            filename[MaxTextExtent];
+          
+          GetPathComponent(image->magick_filename,TailPath,filename);
+          JSONFormatLocaleFile(file,"    \"baseName\": %s,\n",filename);
+        }
+    }
   JSONFormatLocaleFile(file,"    \"format\": %s,\n",image->magick);
   magick_info=GetMagickInfo(image->magick,exception);
   if ((magick_info != (const MagickInfo *) NULL) &&
@@ -1681,10 +1684,9 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
     (unsigned long) (elapsed_time/60.0),(unsigned long) ceil(fmod(
     elapsed_time,60.0)),(unsigned long) (1000.0*(elapsed_time-floor(
     elapsed_time))));
-  url=GetMagickHomeURL();
-  JSONFormatLocaleFile(file,"    \"version\": %s\n",url);
-  url=DestroyString(url);
-  (void) FormatLocaleFile(file,"  }\n}\n");
+  JSONFormatLocaleFile(file,"    \"version\": %s\n",GetMagickVersion(
+    (size_t *) NULL));
+  (void) FormatLocaleFile(file,"  }\n}");
   (void) fflush(file);
   return(ferror(file) != 0 ? MagickFalse : MagickTrue);
 }
