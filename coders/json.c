@@ -1668,7 +1668,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
     }
   (void) FormatLocaleFile(file,"    \"tainted\": %s,\n",
     image->taint != MagickFalse ? "true" : "false");
-  (void) FormatMagickSize(GetBlobSize(image),MagickFalse,"B",MagickPathExtent,
+  (void) FormatMagickSize(image->extent,MagickFalse,"B",MagickPathExtent,
     format);
   JSONFormatLocaleFile(file,"    \"filesize\": %s,\n",format);
   (void) FormatMagickSize((MagickSizeType) image->columns*image->rows,
