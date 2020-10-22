@@ -1035,8 +1035,10 @@ static void SetAESKey(AESInfo *aes_info,const StringInfo *key)
   (void) memcpy(datum,GetStringInfoDatum(key),MagickMin(
     GetStringInfoLength(key),GetStringInfoLength(aes_info->key)));
   for (i=0; i < n; i++)
-    aes_info->encipher_key[i]=datum[4*i] | (datum[4*i+1] << 8) |
-      (datum[4*i+2] << 16) | (datum[4*i+3] << 24);
+    aes_info->encipher_key[i]=(unsigned int) datum[4*i] |
+      ((unsigned int) datum[4*i+1] << 8) |
+      ((unsigned int) datum[4*i+2] << 16) |
+      ((unsigned int) datum[4*i+3] << 24);
   beta=1;
   bytes=(AESBlocksize/4)*(aes_info->rounds+1);
   for (i=n; i < bytes; i++)
