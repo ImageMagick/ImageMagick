@@ -831,7 +831,7 @@ case "${with_quantum_depth}" in
     * ) AC_MSG_ERROR("Pixel quantum depth must have value of 8, 16, 32, or 64") ;;
 esac
 QUANTUM_DEPTH="$with_quantum_depth"
-AC_DEFINE_UNQUOTED([QUANTUM_DEPTH_OBSOLETE_IN_H],["$QUANTUM_DEPTH"],[Number of bits in a pixel Quantum (8/16/32/64)])
+AC_DEFINE_UNQUOTED([QUANTUM_DEPTH_OBSOLETE_IN_H],[$QUANTUM_DEPTH],[Number of bits in a pixel Quantum (8/16/32/64)])
 AC_SUBST([QUANTUM_DEPTH])dnl
 MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_QUANTUM_DEPTH=$QUANTUM_DEPTH"
 CFLAGS="$CFLAGS -DMAGICKCORE_QUANTUM_DEPTH=$QUANTUM_DEPTH"
