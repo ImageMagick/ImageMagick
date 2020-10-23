@@ -996,6 +996,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
           Only write PNG32 formatted PNG (32-bit RGBA), 8 bits per channel.
         */
         (void) SetImageArtifact(write_image,"png:format","png32");
+        (void) SetImageArtifact(write_image,"png:color-type","6");
         png=(unsigned char *) ImageToBlob(write_info,write_image,&length,
           exception);
         write_image=DestroyImageList(write_image);
