@@ -110,7 +110,7 @@ Anthony Thyssen
      image sequence operators, and GIF animation processing.  Wrote the
      image perspective distortions (-distort) and resampling methods.
      Maintains a comprehensive set of examples of using ImageMagick at
-     https://legacy.imgemagick.org/Usage/.
+     https://legacy.imagemagick.org/Usage/.
 
 Milan Votava
      Contributed support for Wireless BitMap, used in WAP - Wireless Access
