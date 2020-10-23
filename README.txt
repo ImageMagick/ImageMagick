@@ -99,7 +99,7 @@ Features and Capabilities
       * ImageMagick on the iPhone: convert, edit, or compose images on your
         iPhone or iPad.
   
-  Examples of ImageMagick Usage * https://imagemagick.org/Usage/
+  Examples of ImageMagick Usage * https://legacy.imgemagick.org/Usage/
   shows how to use ImageMagick from the command-line to accomplish any
   of these tasks and much more. Also, see Fred's ImageMagick Scripts @
   http://www.fmwconcepts.com/imagemagick/: a plethora of command-line scripts

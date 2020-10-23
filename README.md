@@ -31,23 +31,23 @@ We continue to maintain the legacy release of ImageMagick, version 6, at https:/
 Here are just a few examples of what ImageMagick can do:
 
 * [Format conversion](https://imagemagick.org/script/convert.php): convert an image from one [format](https://imagemagick.org/script/formats.php) to another (e.g.  PNG to JPEG).
-* [Transform](https://imagemagick.org/Usage/resize/): resize, rotate, deskew, crop, flip or trim an image.
-* [Transparency](https://imagemagick.org/Usage/masking/): render portions of an image invisible.
-* [Draw](https://imagemagick.org/Usage/draw/): add shapes or text to an image.
-* [Decorate](https://imagemagick.org/Usage/crop/): add a border or frame to an image.
-* [Special effects](https://imagemagick.org/Usage/blur/): blur, sharpen, threshold, or tint an image.
-* [Text & comments](https://imagemagick.org/Usage/text/): insert descriptive or artistic text in an image.
+* [Transform](https://legacy.imgemagick.org/Usage/resize/): resize, rotate, deskew, crop, flip or trim an image.
+* [Transparency](https://legacy.imgemagick.org/Usage/masking/): render portions of an image invisible.
+* [Draw](https://legacy.imgemagick.org/Usage/draw/): add shapes or text to an image.
+* [Decorate](https://legacy.imgemagick.org/Usage/crop/): add a border or frame to an image.
+* [Special effects](https://legacy.imgemagick.org/Usage/blur/): blur, sharpen, threshold, or tint an image.
+* [Text & comments](https://legacy.imgemagick.org/Usage/text/): insert descriptive or artistic text in an image.
 * [Image gradients](https://imagemagick.org/script/gradient.php): create a gradual blend of one color whose shape is horizontal, vertical, circular, or ellipical.
 * [Image identification](https://imagemagick.org/script/identify.php): describe the format and attributes of an image.
 * [Composite](https://imagemagick.org/script/composite.php): overlap one image over another.
 * [Montage](https://imagemagick.org/script/montage.php): juxtapose image thumbnails on an image canvas.
-* [Generalized pixel distortion](https://imagemagick.org/Usage/distorts/): correct for, or induce image distortions including perspective.
-* [Morphology of shapes](https://imagemagick.org/Usage/morphology/): extract features, describe shapes and recognize patterns in images.
-* [Delineate image features](https://imagemagick.org/Usage/transform/#vision): Canny edge detection, mean-shift, Hough lines.
+* [Generalized pixel distortion](https://legacy.imgemagick.org/Usage/distorts/): correct for, or induce image distortions including perspective.
+* [Morphology of shapes](https://legacy.imgemagick.org/Usage/morphology/): extract features, describe shapes and recognize patterns in images.
+* [Delineate image features](https://legacy.imgemagick.org/Usage/transform/#vision): Canny edge detection, mean-shift, Hough lines.
 * [Motion picture support](https://imagemagick.org/script/motion-picture.php): read and write the common image formats used in digital film work.
 * [Image calculator](https://imagemagick.org/script/fx.php): apply a mathematical expression to an image or image channels.
 * [Connected component labeling](https://imagemagick.org/script/connected-components.php): uniquely label connected regions in an image.
-* [Discrete Fourier transform](https://imagemagick.org/Usage/fourier/): implements the forward and inverse [DFT](http://en.wikipedia.org/wiki/Discrete_Fourier_transform).
+* [Discrete Fourier transform](https://legacy.imgemagick.org/Usage/fourier/): implements the forward and inverse [DFT](http://en.wikipedia.org/wiki/Discrete_Fourier_transform).
 * [Perceptual hash](http://www.fmwconcepts.com/misc_tests/perceptual_hash_test_results_510/index.html): maps visually identical images to the same or similar hash-- useful in image retrieval, authentication, indexing, or copy detection as well as digital watermarking.
 * [Complex text layout](https://en.wikipedia.org/wiki/Complex_text_layout) bidirectional text support and shaping.
 * [Color management](https://imagemagick.org/script/color-management.php): accurate color management with color profiles or in lieu of-- built-in gamma compression or expansion as demanded by the colorspace.
@@ -60,7 +60,7 @@ Here are just a few examples of what ImageMagick can do:
 * [Heterogeneous distributed processing](https://imagemagick.org/script/architecture.php#distributed): certain algorithms are OpenCL-enabled to take advantage of speed-ups offered by executing in concert across heterogeneous platforms consisting of CPUs, GPUs, and other processors.
 * [ImageMagick on the iPhone](https://imagemagick.org/script/download.php#iOS): convert, edit, or compose images on your iPhone.
 
-[Examples of ImageMagick Usage](https://imagemagick.org/Usage/), shows how to use ImageMagick from the command-line to accomplish any of these tasks and much more. Also, see [Fred's ImageMagick Scripts](http://www.fmwconcepts.com/imagemagick/): a plethora of command-line scripts that perform geometric transforms, blurs, sharpens, edging, noise removal, and color manipulations. With [Magick.NET](https://github.com/dlemstra/Magick.NET), use ImageMagick without having to install ImageMagick on your server or desktop.
+[Examples of ImageMagick Usage](https://legacy.imgemagick.org/Usage/), shows how to use ImageMagick from the command-line to accomplish any of these tasks and much more. Also, see [Fred's ImageMagick Scripts](http://www.fmwconcepts.com/imagemagick/): a plethora of command-line scripts that perform geometric transforms, blurs, sharpens, edging, noise removal, and color manipulations. With [Magick.NET](https://github.com/dlemstra/Magick.NET), use ImageMagick without having to install ImageMagick on your server or desktop.
 
 #### News
 
