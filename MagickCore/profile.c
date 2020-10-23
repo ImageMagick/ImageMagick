@@ -1860,7 +1860,13 @@ static MagickBooleanType ValidateXMPProfile(const StringInfo *profile)
 #else
 static MagickBooleanType ValidateXMPProfile(const StringInfo *profile)
 {
-  return(MagickFalse);
+  const char
+    *xmp;
+
+  xmp=(const char *) GetStringInfoDatum(profile);
+  if (StringLocateSubstring(xmp,"rdf:RDF") == (const char *) NULL)
+    return(MagickFalse);
+  return(MagickTrue);
 }
 #endif
 
