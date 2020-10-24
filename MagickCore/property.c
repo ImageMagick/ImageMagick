@@ -3181,10 +3181,17 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             *papersize;
 
           WarnNoImageReturn("\"%%[%s]\"",property);
-          papersize=GetPageGeometry(property+10);
           *value='\0';
+          papersize=GetPageGeometry(property+10);
           if (papersize != (const char *) NULL)
-            (void) CopyMagickString(value,papersize,MagickPathExtent);
+            {
+              RectangleInfo
+                page;
+
+              (void) ParseAbsoluteGeometry(papersize,&page);
+              (void) FormatLocaleString(value,MaxTextExtent,"%.20gx%.20g",
+                (double) page.width,(double) page.height);
+            }
           break;
         }
 #if defined(MAGICKCORE_LCMS_DELEGATE)
