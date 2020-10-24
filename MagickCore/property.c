@@ -3175,6 +3175,18 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             (double) image->page.width,(double) image->page.height);
           break;
         }
+      if (LocaleNCompare("papersize.",property,10) == 0)
+        {
+          const char
+            *papersize;
+
+          WarnNoImageReturn("\"%%[%s]\"",property);
+          papersize=GetPageGeometry(property+10);
+          *value='\0';
+          if (papersize != (const char *) NULL)
+            (void) CopyMagickString(value,papersize,MagickPathExtent);
+          break;
+        }
 #if defined(MAGICKCORE_LCMS_DELEGATE)
       if (LocaleCompare("profile:icc",property) == 0 ||
           LocaleCompare("profile:icm",property) == 0)
