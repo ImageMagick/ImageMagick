@@ -2182,7 +2182,8 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image,
             custom_profile),(unsigned int) (length+tag_length+roundup));
         }
       }
-   if (LocaleCompare(name,"XMP") == 0)
+   if ((LocaleCompare(name,"XMP") == 0) &&
+       (GetStringInfoLength(profile) < (65533 - sizeof(xmp_namespace))))
       {
         StringInfo
           *xmp_profile;
@@ -2193,15 +2194,11 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image,
         xmp_profile=StringToStringInfo(xmp_namespace);
         if (xmp_profile != (StringInfo *) NULL)
           {
-            if (profile != (StringInfo *) NULL)
-              ConcatenateStringInfo(xmp_profile,profile);
+            ConcatenateStringInfo(xmp_profile,profile);
             GetStringInfoDatum(xmp_profile)[XmpNamespaceExtent]='\0';
-            for (i=0; i < (ssize_t) GetStringInfoLength(xmp_profile); i+=65533L)
-            {
-              length=MagickMin(GetStringInfoLength(xmp_profile)-i,65533L);
-              jpeg_write_marker(jpeg_info,XML_MARKER,
-                GetStringInfoDatum(xmp_profile)+i,(unsigned int) length);
-            }
+            length=GetStringInfoLength(xmp_profile);
+            jpeg_write_marker(jpeg_info,XML_MARKER,
+              GetStringInfoDatum(xmp_profile),(unsigned int) length);
             xmp_profile=DestroyStringInfo(xmp_profile);
           }
       }
