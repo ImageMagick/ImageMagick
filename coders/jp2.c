@@ -397,7 +397,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   for (i=0; i < (ssize_t) jp2_image->numcomps; i++)
   {
     if ((jp2_image->comps[i].dx == 0) || (jp2_image->comps[i].dy == 0) ||
-        (jp2_image->comps[i].dy == 2) ||
         (jp2_image->comps[0].prec != jp2_image->comps[i].prec) ||
         (jp2_image->comps[0].sgnd != jp2_image->comps[i].sgnd) ||
         ((image->ping == MagickFalse) && (jp2_image->comps[i].data == NULL)))
@@ -474,12 +473,14 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           scale;
 
         ssize_t
-          data_index;
+          index,
+          pad;
 
-        data_index=y/jp2_image->comps[i].dy*image->columns/
+        pad=image->columns % jp2_image->comps[i].dx;
+        index=y/jp2_image->comps[i].dy*(image->columns+pad)/
           jp2_image->comps[i].dx+x/jp2_image->comps[i].dx;
-        if ((data_index < 0) ||
-            (data_index >= (jp2_image->comps[i].h*jp2_image->comps[i].w)))
+        if ((index < 0) ||
+            (index >= (jp2_image->comps[i].h*jp2_image->comps[i].w)))
           {
             opj_destroy_codec(jp2_codec);
             opj_image_destroy(jp2_image);
@@ -487,7 +488,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
               "IrregularChannelGeometryNotSupported")
           }
         scale=QuantumRange/(double) ((1UL << jp2_image->comps[i].prec)-1);
-        pixel=scale*(jp2_image->comps[i].data[data_index]+
+        pixel=scale*(jp2_image->comps[i].data[index]+
           (jp2_image->comps[i].sgnd ? 1UL << (jp2_image->comps[i].prec-1) : 0));
         switch (i)
         {
