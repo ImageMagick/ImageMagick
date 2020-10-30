@@ -8133,7 +8133,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
         }
       if (LocaleCompare(keyword,"authenticate") == 0)
         {
-          (void) CloneString(&image_info->authenticate,value);
+          (void) SetImageOption(image_info,keyword,keyword);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
