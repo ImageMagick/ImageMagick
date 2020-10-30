@@ -99,10 +99,14 @@
 /*
   Define declarations.
 */
-#define ICC_MARKER  (JPEG_APP0+2)
+#define COMMENT_INDEX  0
+#define ICC_INDEX  2
+#define ICC_MARKER  (JPEG_APP0+ICC_INDEX)
 #define ICC_PROFILE  "ICC_PROFILE"
-#define IPTC_MARKER  (JPEG_APP0+13)
-#define XML_MARKER  (JPEG_APP0+1)
+#define IPTC_INDEX  13
+#define IPTC_MARKER  (JPEG_APP0+IPTC_INDEX)
+#define XML_INDEX  1
+#define XML_MARKER  (JPEG_APP0+XML_INDEX)
 #define MaxJPEGScans  1024
 
 /*
@@ -133,7 +137,7 @@ typedef struct _ErrorManager
     finished;
 
   StringInfo
-    *profile;
+    *profiles[16];
 
   ExceptionInfo
     *exception;
@@ -411,6 +415,74 @@ static MagickBooleanType JPEGWarningHandler(j_common_ptr jpeg_info,int level)
   return(MagickTrue);
 }
 
+static boolean ReadProfileData(j_decompress_ptr jpeg_info,const size_t index,
+  const size_t length)
+{
+  ErrorManager
+    *error_manager;
+
+  ExceptionInfo
+    *exception;
+
+  Image
+    *image;
+
+  register unsigned char
+    *p;
+
+  register ssize_t
+    i;
+
+  error_manager=(ErrorManager *) jpeg_info->client_data;
+  exception=error_manager->exception;
+  image=error_manager->image;
+  if (error_manager->profiles[index] == (StringInfo *) NULL)
+    {
+      error_manager->profiles[index]=BlobToStringInfo((const void *) NULL,
+        length);
+      if (error_manager->profiles[index] == (StringInfo *) NULL)
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),
+            ResourceLimitError,"MemoryAllocationFailed","`%s'",
+            image->filename);
+          return(FALSE);
+        }
+      p=GetStringInfoDatum(error_manager->profiles[index]);
+    }
+  else
+    {
+      size_t
+        current_length;
+
+      current_length=GetStringInfoLength(error_manager->profiles[index]);
+      SetStringInfoLength(error_manager->profiles[index],current_length+
+        length);
+      p=GetStringInfoDatum(error_manager->profiles[index])+current_length;
+    }
+  for (i=0; i < (ssize_t) length; i++)
+  {
+    int
+      c;
+
+    c=GetCharacter(jpeg_info);
+    if (c == EOF)
+      break;
+    *p++=(unsigned char) c;
+  }
+  if (i != (ssize_t) length)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        CorruptImageError,"InsufficientImageDataInFile","`%s'",
+        image->filename);
+      return(FALSE);
+    }
+  *p='\0';
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "Profile[%.20g]: %.20g bytes",(double) index,(double) length);
+  return(TRUE);
+}
+
 static boolean ReadComment(j_decompress_ptr jpeg_info)
 {
 #define GetProfileLength(jpeg_info,length) \
@@ -425,73 +497,17 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
     length=(size_t) ((c[0] << 8) | c[1]); \
 }
 
-  ErrorManager
-    *error_manager;
-
-  ExceptionInfo
-    *exception;
-
-  Image
-    *image;
-
-  register unsigned char
-    *p;
-
-  register ssize_t
-    i;
-
   size_t
     length;
-
-  StringInfo
-    *comment;
 
   /*
     Determine length of comment.
   */
-  error_manager=(ErrorManager *) jpeg_info->client_data;
-  exception=error_manager->exception;
-  image=error_manager->image;
   GetProfileLength(jpeg_info,length);
   if (length <= 2)
     return(TRUE);
   length-=2;
-  comment=BlobToStringInfo((const void *) NULL,length);
-  if (comment == (StringInfo *) NULL)
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
-      return(FALSE);
-    }
-  /*
-    Read comment.
-  */
-  error_manager->profile=comment;
-  p=GetStringInfoDatum(comment);
-  for (i=0; i < (ssize_t) length; i++)
-  {
-    int
-      c;
-
-    c=GetCharacter(jpeg_info);
-    if (c == EOF)
-      break;
-    *p++=(unsigned char) c;
-  }
-  *p='\0';
-  error_manager->profile=NULL;
-  if (i != (ssize_t) length)
-    {
-      comment=DestroyStringInfo(comment);
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        CorruptImageError,"InsufficientImageDataInFile","`%s'",
-        image->filename);
-      return(FALSE);
-    }
-  p=GetStringInfoDatum(comment);
-  (void) SetImageProperty(image,"comment",(const char *) p,exception);
-  comment=DestroyStringInfo(comment);
-  return(TRUE);
+  return(ReadProfileData(jpeg_info,COMMENT_INDEX,length));
 }
 
 static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
@@ -499,30 +515,11 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
   char
     magick[13];
 
-  ErrorManager
-    *error_manager;
-
-  ExceptionInfo
-    *exception;
-
-  Image
-    *image;
-
-  MagickBooleanType
-    status;
-
   register ssize_t
     i;
 
-  register unsigned char
-    *p;
-
   size_t
     length;
-
-  StringInfo
-    *icc_profile,
-    *profile;
 
   /*
     Read color profile.
@@ -554,58 +551,7 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
   (void) GetCharacter(jpeg_info);  /* id */
   (void) GetCharacter(jpeg_info);  /* markers */
   length-=14;
-  error_manager=(ErrorManager *) jpeg_info->client_data;
-  exception=error_manager->exception;
-  image=error_manager->image;
-  profile=BlobToStringInfo((const void *) NULL,length);
-  if (profile == (StringInfo *) NULL)
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
-      return(FALSE);
-    }
-  error_manager->profile=profile;
-  p=GetStringInfoDatum(profile);
-  for (i=0; i < (ssize_t) length; i++)
-  {
-    int
-      c;
-
-    c=GetCharacter(jpeg_info);
-    if (c == EOF)
-      break;
-    *p++=(unsigned char) c;
-  }
-  error_manager->profile=NULL;
-  if (i != (ssize_t) length)
-    {
-      profile=DestroyStringInfo(profile);
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        CorruptImageError,"InsufficientImageDataInFile","`%s'",
-        image->filename);
-      return(FALSE);
-    }
-  icc_profile=(StringInfo *) GetImageProfile(image,"icc");
-  if (icc_profile != (StringInfo *) NULL)
-    {
-      ConcatenateStringInfo(icc_profile,profile);
-      profile=DestroyStringInfo(profile);
-    }
-  else
-    {
-      status=SetImageProfile(image,"icc",profile,exception);
-      profile=DestroyStringInfo(profile);
-      if (status == MagickFalse)
-        {
-          (void) ThrowMagickException(exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
-          return(FALSE);
-        }
-    }
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "Profile: ICC, %.20g bytes",(double) length);
-  return(TRUE);
+  return(ReadProfileData(jpeg_info,ICC_INDEX,length));
 }
 
 static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
@@ -613,30 +559,11 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   char
     magick[MagickPathExtent];
 
-  ErrorManager
-    *error_manager;
-
-  ExceptionInfo
-    *exception;
-
-  Image
-    *image;
-
-  MagickBooleanType
-    status;
-
   register ssize_t
     i;
 
-  register unsigned char
-    *p;
-
   size_t
     length;
-
-  StringInfo
-    *iptc_profile,
-    *profile;
 
   /*
     Determine length of binary data stored here.
@@ -680,71 +607,30 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   if (length <= 11)
     return(TRUE);
   length-=4;
-  error_manager=(ErrorManager *) jpeg_info->client_data;
-  exception=error_manager->exception;
-  image=error_manager->image;
-  profile=BlobToStringInfo((const void *) NULL,length);
-  if (profile == (StringInfo *) NULL)
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
-      return(FALSE);
-    }
-  error_manager->profile=profile;
-  p=GetStringInfoDatum(profile);
-  for (i=0; i < (ssize_t) length; i++)
-  {
-    int
-      c;
-
-    c=GetCharacter(jpeg_info);
-    if (c == EOF)
-      break;
-    *p++=(unsigned char) c;
-  }
-  error_manager->profile=NULL;
-  if (i != (ssize_t) length)
-    {
-      profile=DestroyStringInfo(profile);
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        CorruptImageError,"InsufficientImageDataInFile","`%s'",
-        image->filename);
-      return(FALSE);
-    }
-  /*
-    The IPTC profile is actually an 8bim.
-  */
-  iptc_profile=(StringInfo *) GetImageProfile(image,"8bim");
-  if (iptc_profile != (StringInfo *) NULL)
-    {
-      ConcatenateStringInfo(iptc_profile,profile);
-      profile=DestroyStringInfo(profile);
-    }
-  else
-    {
-      status=SetImageProfile(image,"8bim",profile,exception);
-      profile=DestroyStringInfo(profile);
-      if (status == MagickFalse)
-        {
-          (void) ThrowMagickException(exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
-          return(FALSE);
-        }
-    }
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "Profile: iptc, %.20g bytes",(double) length);
-  return(TRUE);
+  return(ReadProfileData(jpeg_info,IPTC_INDEX,length));
 }
 
 static boolean ReadProfile(j_decompress_ptr jpeg_info)
 {
-  char
-    name[MagickPathExtent];
+  int
+    marker;
 
-  const StringInfo
-    *previous_profile;
+  size_t
+    length;
 
+  /*
+    Read generic profile.
+  */
+  GetProfileLength(jpeg_info,length);
+  if (length <= 2)
+    return(TRUE);
+  length-=2;
+  marker=jpeg_info->unread_marker-JPEG_APP0;
+  return(ReadProfileData(jpeg_info,marker,length));
+}
+
+static boolean ReadXmlProfile(j_decompress_ptr jpeg_info)
+{
   ErrorManager
     *error_manager;
 
@@ -754,14 +640,8 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
   Image
     *image;
 
-  int
-    marker;
-
   MagickBooleanType
     status;
-
-  register ssize_t
-    i;
 
   register unsigned char
     *p;
@@ -772,103 +652,50 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
   StringInfo
     *profile;
 
-  /*
-    Read generic profile.
-  */
   GetProfileLength(jpeg_info,length);
   if (length <= 2)
     return(TRUE);
   length-=2;
-  marker=jpeg_info->unread_marker-JPEG_APP0;
-  (void) FormatLocaleString(name,MagickPathExtent,"APP%d",marker);
+  if (ReadProfileData(jpeg_info,XML_INDEX,length) == FALSE)
+    return(FALSE);
   error_manager=(ErrorManager *) jpeg_info->client_data;
   exception=error_manager->exception;
   image=error_manager->image;
-  profile=BlobToStringInfo((const void *) NULL,length);
-  if (profile == (StringInfo *) NULL)
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
-      return(FALSE);
-    }
-  error_manager->profile=profile;
+  profile=error_manager->profiles[XML_INDEX];
   p=GetStringInfoDatum(profile);
-  for (i=0; i < (ssize_t) length; i++)
-  {
-    int
-      c;
+  length=GetStringInfoLength(profile);
+  status=MagickTrue;
+  if ((length > XmpNamespaceExtent) &&
+      (LocaleNCompare((char *) p,xmp_namespace,XmpNamespaceExtent-1) == 0))
+    {
+      ssize_t
+        j;
 
-    c=GetCharacter(jpeg_info);
-    if (c == EOF)
-      break;
-    *p++=(unsigned char) c;
-  }
-  error_manager->profile=NULL;
-  if (i != (ssize_t) length)
-    {
-      profile=DestroyStringInfo(profile);
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        CorruptImageError,"InsufficientImageDataInFile","`%s'",
-        image->filename);
-      return(FALSE);
+      /*
+        Extract namespace from XMP profile.
+      */
+      p=GetStringInfoDatum(profile)+XmpNamespaceExtent;
+      for (j=XmpNamespaceExtent; j < (ssize_t) length; j++)
+      {
+        if (*p == '\0')
+          break;
+        p++;
+      }
+      if (j < (ssize_t) length)
+        (void) DestroyStringInfo(SplitStringInfo(profile,(size_t) (j+1)));
+      status=SetImageProfile(image,"xmp",profile,exception);
     }
-  if (marker == 1)
-    {
-      p=GetStringInfoDatum(profile);
-      if ((length > 4) && (LocaleNCompare((char *) p,"exif",4) == 0))
-        (void) CopyMagickString(name,"exif",MagickPathExtent);
-      else
-        if ((length > XmpNamespaceExtent) &&
-            (LocaleNCompare((char *) p,xmp_namespace,XmpNamespaceExtent-1) == 0))
-          {
-            ssize_t
-              j;
-
-            /*
-              Extract namespace from XMP profile.
-            */
-            p=GetStringInfoDatum(profile)+XmpNamespaceExtent;
-            for (j=XmpNamespaceExtent; j < (ssize_t) GetStringInfoLength(profile); j++)
-            {
-              if (*p == '\0')
-                break;
-              p++;
-            }
-            if (j < (ssize_t) GetStringInfoLength(profile))
-              (void) DestroyStringInfo(SplitStringInfo(profile,(size_t) (j+1)));
-            (void) CopyMagickString(name,"xmp",MagickPathExtent);
-          }
-    }
-  previous_profile=GetImageProfile(image,name);
-  if ((previous_profile != (const StringInfo *) NULL) &&
-      (CompareStringInfo(previous_profile,profile) != 0))
-    {
-      size_t
-        profile_length;
-
-      profile_length=GetStringInfoLength(profile);
-      SetStringInfoLength(profile,GetStringInfoLength(profile)+
-        GetStringInfoLength(previous_profile));
-      (void) memmove(GetStringInfoDatum(profile)+
-        GetStringInfoLength(previous_profile),GetStringInfoDatum(profile),
-        profile_length);
-      (void) memcpy(GetStringInfoDatum(profile),
-        GetStringInfoDatum(previous_profile),
-        GetStringInfoLength(previous_profile));
-      GetStringInfoDatum(profile)[GetStringInfoLength(profile)]='\0';
-    }
-  status=SetImageProfile(image,name,profile,exception);
-  profile=DestroyStringInfo(profile);
-  if (status == MagickFalse)
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
-      return(FALSE);
-    }
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "Profile: %s, %.20g bytes",name,(double) length);
-  return(TRUE);
+  else
+    if (length > 4)
+      if ((LocaleNCompare((char *) p,"exif",4) == 0) ||
+          (LocaleNCompare((char *) p,"MM",2) == 0) ||
+          (LocaleNCompare((char *) p,"II",2) == 0))
+        status=SetImageProfile(image,"exif",profile,exception);
+  else
+    status=SetImageProfile(image,"app1",profile,exception);
+  error_manager->profiles[XML_INDEX]=DestroyStringInfo(
+    error_manager->profiles[XML_INDEX]);
+  return(status != MagickFalse ? TRUE : FALSE);
 }
 
 static void SkipInputData(j_decompress_ptr cinfo,long number_bytes)
@@ -1113,6 +940,92 @@ static void JPEGSetImageSamplingFactor(struct jpeg_decompress_struct *jpeg_info,
     sampling_factor);
 }
 
+static void JPEGDestroyDecompress(j_decompress_ptr jpeg_info)
+{
+  ErrorManager
+    *error_manager;
+
+  register size_t
+    i;
+
+  error_manager=(ErrorManager *) jpeg_info->client_data;
+  for (i=0; i < 16; i++)
+  {
+    if (error_manager->profiles[i] != (StringInfo *) NULL)
+      error_manager->profiles[i]=DestroyStringInfo(error_manager->profiles[i]);
+  }
+  jpeg_destroy_decompress(jpeg_info);
+}
+
+static MagickBooleanType JPEGSetImageProfiles(ErrorManager *error_manager)
+{
+  ExceptionInfo
+    *exception;
+
+  Image
+    *image;
+
+  MagickBooleanType
+    status;
+
+  register unsigned char
+    *p;
+
+  register ssize_t
+    i;
+
+  size_t
+    length;
+
+  StringInfo
+    *profile;
+
+  exception=error_manager->exception;
+  image=error_manager->image;
+  status=MagickTrue;
+  for (i=0; i < 16; i++)
+  {
+    profile=error_manager->profiles[i];
+    if (profile == (StringInfo *) NULL)
+      continue;
+    switch (i)
+    {
+      case COMMENT_INDEX:
+      {
+        p=GetStringInfoDatum(profile);
+        status=SetImageProperty(image,"comment",(const char *) p,exception);
+        break;
+      }
+      case ICC_INDEX:
+      {
+        status=SetImageProfile(image,"icc",profile,exception);
+        break;
+      }
+      case IPTC_INDEX:
+      {
+        /*
+          The IPTC profile is actually an 8bim.
+        */
+        status=SetImageProfile(image,"8bim",profile,exception);
+        break;
+      }
+      default:
+      {
+        char
+          name[6];
+
+        (void) FormatLocaleString(name,sizeof(name),"APP%d",(int) i);
+        status=SetImageProfile(image,name,profile,exception);
+        break;
+      }
+    }
+    error_manager->profiles[i]=DestroyStringInfo(error_manager->profiles[i]);
+    if (status == MagickFalse)
+      break;
+  }
+  return(status);
+}
+
 static Image *ReadJPEGImage_(const ImageInfo *image_info,
   struct jpeg_decompress_struct *jpeg_info,ExceptionInfo *exception)
 {
@@ -1205,9 +1118,7 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
   error_manager.image=image;
   if (setjmp(error_manager.error_recovery) != 0)
     {
-      jpeg_destroy_decompress(jpeg_info);
-      if (error_manager.profile != (StringInfo *) NULL)
-        error_manager.profile=DestroyStringInfo(error_manager.profile);
+      JPEGDestroyDecompress(jpeg_info);
       (void) CloseBlob(image);
       number_pixels=(MagickSizeType) image->columns*image->rows;
       if (number_pixels != 0)
@@ -1227,8 +1138,10 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
     jpeg_set_marker_processor(jpeg_info,ICC_MARKER,ReadICCProfile);
   if (IsOptionMember("IPTC",option) == MagickFalse)
     jpeg_set_marker_processor(jpeg_info,IPTC_MARKER,ReadIPTCProfile);
-  for (i=1; i < 16; i++)
-    if ((i != 2) && (i != 13) && (i != 14))
+  if (IsOptionMember("APP",option) == MagickFalse)
+    jpeg_set_marker_processor(jpeg_info,XML_MARKER,ReadXmlProfile);
+  for (i=3; i < 16; i++)
+    if (i != IPTC_INDEX)
       if (IsOptionMember("APP",option) == MagickFalse)
         jpeg_set_marker_processor(jpeg_info,(int) (JPEG_APP0+i),ReadProfile);
   i=(ssize_t) jpeg_read_header(jpeg_info,TRUE);
@@ -1392,7 +1305,7 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
   if (option != (const char *) NULL)
     if (AcquireImageColormap(image,StringToUnsignedLong(option),exception) == MagickFalse)
       {
-        jpeg_destroy_decompress(jpeg_info);
+        JPEGDestroyDecompress(jpeg_info);
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       }
   if ((jpeg_info->output_components == 1) && (jpeg_info->quantize_colors == 0))
@@ -1403,7 +1316,7 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
       colors=(size_t) GetQuantumRange(image->depth)+1;
       if (AcquireImageColormap(image,colors,exception) == MagickFalse)
         {
-          jpeg_destroy_decompress(jpeg_info);
+          JPEGDestroyDecompress(jpeg_info);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
     }
@@ -1429,30 +1342,35 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
   if (jpeg_info->arith_code == TRUE)
     (void) SetImageProperty(image,"jpeg:coding","arithmetic",exception);
 #endif
+  if (JPEGSetImageProfiles(&error_manager) == MagickFalse)
+    {
+      JPEGDestroyDecompress(jpeg_info);
+      return(DestroyImageList(image));
+    }
   if (image_info->ping != MagickFalse)
     {
-      jpeg_destroy_decompress(jpeg_info);
+      JPEGDestroyDecompress(jpeg_info);
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     {
-      jpeg_destroy_decompress(jpeg_info);
+      JPEGDestroyDecompress(jpeg_info);
       return(DestroyImageList(image));
     }
   (void) jpeg_start_decompress(jpeg_info);
   if ((jpeg_info->output_components != 1) &&
       (jpeg_info->output_components != 3) && (jpeg_info->output_components != 4))
     {
-      jpeg_destroy_decompress(jpeg_info);
+      JPEGDestroyDecompress(jpeg_info);
       ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
     }
   memory_info=AcquireVirtualMemory((size_t) image->columns,
     jpeg_info->output_components*sizeof(*jpeg_pixels));
   if (memory_info == (MemoryInfo *) NULL)
     {
-      jpeg_destroy_decompress(jpeg_info);
+      JPEGDestroyDecompress(jpeg_info);
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
   jpeg_pixels=(JSAMPLE *) GetVirtualMemoryBlob(memory_info);
@@ -1465,7 +1383,7 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
     {
       if (memory_info != (MemoryInfo *) NULL)
         memory_info=RelinquishVirtualMemory(memory_info);
-      jpeg_destroy_decompress(jpeg_info);
+      JPEGDestroyDecompress(jpeg_info);
       (void) CloseBlob(image);
       number_pixels=(MagickSizeType) image->columns*image->rows;
       if (number_pixels != 0)
@@ -1623,7 +1541,7 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
   /*
     Free jpeg resources.
   */
-  jpeg_destroy_decompress(jpeg_info);
+  JPEGDestroyDecompress(jpeg_info);
   memory_info=RelinquishVirtualMemory(memory_info);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
