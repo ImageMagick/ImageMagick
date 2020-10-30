@@ -144,6 +144,7 @@ static Image *ReadDOTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (graph == (graph_t *) NULL)
     {
       (void) RelinquishUniqueFileResource(read_info->filename);
+      read_info=DestroyImageInfo(read_info);
       return(DestroyImageList(image));
     }
   option=GetImageOption(image_info,"dot:layout-engine");
