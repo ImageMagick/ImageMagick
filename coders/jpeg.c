@@ -687,12 +687,14 @@ static boolean ReadXmlProfile(j_decompress_ptr jpeg_info)
     }
   else
     if (length > 4)
-      if ((LocaleNCompare((char *) p,"exif",4) == 0) ||
-          (LocaleNCompare((char *) p,"MM",2) == 0) ||
-          (LocaleNCompare((char *) p,"II",2) == 0))
-        status=SetImageProfile(image,"exif",profile,exception);
-  else
-    status=SetImageProfile(image,"app1",profile,exception);
+      {
+        if ((LocaleNCompare((char *) p,"exif",4) == 0) ||
+            (LocaleNCompare((char *) p,"MM",2) == 0) ||
+            (LocaleNCompare((char *) p,"II",2) == 0))
+          status=SetImageProfile(image,"exif",profile,exception);
+      }
+    else
+      status=SetImageProfile(image,"app1",profile,exception);
   error_manager->profiles[XML_INDEX]=DestroyStringInfo(
     error_manager->profiles[XML_INDEX]);
   return(status != MagickFalse ? TRUE : FALSE);
