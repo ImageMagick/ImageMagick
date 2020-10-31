@@ -71,6 +71,8 @@ static inline double GetFuzzyColorDistance(const Image *p,const Image *q)
   double
     fuzz;
 
+  if ((fabs(p->fuzz) < MagickEpsilon) && (fabs(q->fuzz) < MagickEpsilon))
+    return(0.0);
   fuzz=(double) MagickMax(MagickMax(p->fuzz,q->fuzz),(MagickRealType)
     MagickSQ1_2);
   return(fuzz*fuzz);
