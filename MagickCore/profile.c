@@ -1840,6 +1840,60 @@ static void GetProfilesFromResourceBlock(Image *image,
   }
 }
 
+static void PatchProfile(const char *name,StringInfo *profile)
+{
+  size_t
+    length;
+
+  unsigned char
+    *p;
+
+  if (LocaleCompare(name,"xmp") == 0)
+    {
+      /*
+        Remove garbage after xpacket end
+      */
+      p=GetStringInfoDatum(profile);
+      p=(unsigned char *) strstr((const char *) p,"<?xpacket end=\"w\"?>");
+      if (p != (unsigned char *) NULL)
+        {
+          p+=19;
+          length=p-GetStringInfoDatum(profile);
+          if (length != GetStringInfoLength(profile))
+            {
+              *p='\0';
+              SetStringInfoLength(profile,length);
+            }
+        }
+    }
+  else if (LocaleCompare(name,"exif") == 0)
+    {
+      /*
+        Check if profile starts with byte order marker instead of Exif.
+      */
+      p=GetStringInfoDatum(profile);
+      if ((LocaleNCompare((const char *) p,"MM",2) == 0) ||
+          (LocaleNCompare((const char *) p,"II",2) == 0))
+        {
+          const unsigned char
+            profile_start[] = "Exif\0\0";
+
+          StringInfo
+            *exif_profile;
+
+          exif_profile=AcquireStringInfo(6);
+          if (exif_profile != (StringInfo *) NULL)
+            {
+              SetStringInfoDatum(exif_profile,profile_start);
+              ConcatenateStringInfo(exif_profile,profile);
+              SetStringInfoLength(profile,GetStringInfoLength(exif_profile));
+              SetStringInfo(profile,exif_profile);
+              exif_profile=DestroyStringInfo(exif_profile);
+            }
+        }
+    }
+}
+
 #if defined(MAGICKCORE_XML_DELEGATE)
 static MagickBooleanType ValidateXMPProfile(Image *image,
   const StringInfo *profile,ExceptionInfo *exception)
@@ -1882,27 +1936,35 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
   MagickBooleanType
     status;
 
+  StringInfo
+    *clone_info;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  clone_info=CloneStringInfo(profile);
+  PatchProfile(name,clone_info);
   if ((LocaleCompare(name,"xmp") == 0) &&
-      (ValidateXMPProfile(image,profile,exception) == MagickFalse))
-    return(MagickTrue);
+      (ValidateXMPProfile(image,clone_info,exception) == MagickFalse))
+    {
+      clone_info=DestroyStringInfo(clone_info);
+      return(MagickTrue);
+    }
   if (image->profiles == (SplayTreeInfo *) NULL)
     image->profiles=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
       DestroyProfile);
   (void) CopyMagickString(key,name,MagickPathExtent);
   LocaleLower(key);
   status=AddValueToSplayTree((SplayTreeInfo *) image->profiles,
-    ConstantString(key),CloneStringInfo(profile));
+    ConstantString(key),clone_info);
   if (status != MagickFalse)
     {
       if (LocaleCompare(name,"8bim") == 0)
-        GetProfilesFromResourceBlock(image,profile,exception);
+        GetProfilesFromResourceBlock(image,clone_info,exception);
       else
         if (recursive == MagickFalse)
-          WriteTo8BimProfile(image,name,profile);
+          WriteTo8BimProfile(image,name,clone_info);
     }
   return(status);
 }
