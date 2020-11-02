@@ -451,32 +451,6 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
   SetStringInfoLength(chaos,sizeof(nanoseconds));
   SetStringInfoDatum(chaos,(unsigned char *) &nanoseconds);
   ConcatenateStringInfo(entropy,chaos);
-#if defined(MAGICKCORE_HAVE_MKSTEMP)
-  {
-    char
-      path[MagickPathExtent];
-
-    int
-      file;
-
-    (void) strcpy(path,"XXXXXX");
-    file=mkstemp(path);
-    if (file != -1)
-      {
-#if defined(MAGICKCORE_HAVE_FCHMOD)
-        (void) fchmod(file,0600);
-#endif
-#if defined(__OS2__)
-        setmode(file,O_BINARY);
-#endif
-        (void) close(file);
-      }
-    (void) remove_utf8(path);
-    SetStringInfoLength(chaos,strlen(path));
-    SetStringInfoDatum(chaos,(unsigned char *) path);
-    ConcatenateStringInfo(entropy,chaos);
-  }
-#endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   {
     double
