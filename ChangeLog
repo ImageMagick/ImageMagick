@@ -1,7 +1,7 @@
 2020-11-02  7.0.10-36  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-36 GIT revision 17...
 
-2020-10-14  7.0.10-35  <quetzlzacatenango@image...>
+2020-11-02  7.0.10-36  <quetzlzacatenango@image...>
   * check and report if profile is corrupt.
   * do not add entropy based on mkstemp() unique filename.
 
