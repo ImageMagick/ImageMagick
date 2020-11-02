@@ -1478,7 +1478,7 @@ MagickExport void LocaleLower(char *string)
 */
 MagickExport int LocaleLowercase(const int c)
 {
-  if (c == EOF)
+  if ((c == EOF) || (c != (unsigned char) c))
     return(c);
 #if defined(MAGICKCORE_LOCALE_SUPPORT)
   if (c_locale != (locale_t) NULL)
