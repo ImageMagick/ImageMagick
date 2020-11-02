@@ -1840,7 +1840,7 @@ static void GetProfilesFromResourceBlock(Image *image,
   }
 }
 
-static void PatchProfile(const char *name,StringInfo *profile)
+static void FixCorruptProfile(const char *name,StringInfo *profile)
 {
   size_t
     length;
@@ -1937,18 +1937,18 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
     status;
 
   StringInfo
-    *clone_info;
+    *clone_profile;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  clone_info=CloneStringInfo(profile);
-  PatchProfile(name,clone_info);
+  clone_profile=CloneStringInfo(profile);
+  FixCorruptProfile(name,clone_profile);
   if ((LocaleCompare(name,"xmp") == 0) &&
-      (ValidateXMPProfile(image,clone_info,exception) == MagickFalse))
+      (ValidateXMPProfile(image,clone_profile,exception) == MagickFalse))
     {
-      clone_info=DestroyStringInfo(clone_info);
+      clone_profile=DestroyStringInfo(clone_profile);
       return(MagickTrue);
     }
   if (image->profiles == (SplayTreeInfo *) NULL)
@@ -1957,14 +1957,14 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
   (void) CopyMagickString(key,name,MagickPathExtent);
   LocaleLower(key);
   status=AddValueToSplayTree((SplayTreeInfo *) image->profiles,
-    ConstantString(key),clone_info);
+    ConstantString(key),clone_profile);
   if (status != MagickFalse)
     {
       if (LocaleCompare(name,"8bim") == 0)
-        GetProfilesFromResourceBlock(image,clone_info,exception);
+        GetProfilesFromResourceBlock(image,clone_profile,exception);
       else
         if (recursive == MagickFalse)
-          WriteTo8BimProfile(image,name,clone_info);
+          WriteTo8BimProfile(image,name,clone_profile);
     }
   return(status);
 }
