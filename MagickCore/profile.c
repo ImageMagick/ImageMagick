@@ -1840,18 +1840,21 @@ static void GetProfilesFromResourceBlock(Image *image,
   }
 }
 
-static void FixCorruptProfile(const char *name,StringInfo *profile)
+static MagickBooleanType IsProfileCorrupt(const char *name,StringInfo *profile)
 {
+  register unsigned char
+    *p;
+
   size_t
     length;
 
-  unsigned char
-    *p;
-
+  /*
+    Detect corrupt profiles and if discovered, repair.
+  */
   if (LocaleCompare(name,"xmp") == 0)
     {
       /*
-        Remove garbage after xpacket end
+        Remove garbage after xpacket end.
       */
       p=GetStringInfoDatum(profile);
       p=(unsigned char *) strstr((const char *) p,"<?xpacket end=\"w\"?>");
@@ -1863,10 +1866,12 @@ static void FixCorruptProfile(const char *name,StringInfo *profile)
             {
               *p='\0';
               SetStringInfoLength(profile,length);
+              return(MagickTrue);
             }
         }
+      return(MagickFalse);
     }
-  else if (LocaleCompare(name,"exif") == 0)
+  if (LocaleCompare(name,"exif") == 0)
     {
       /*
         Check if profile starts with byte order marker instead of Exif.
@@ -1881,7 +1886,7 @@ static void FixCorruptProfile(const char *name,StringInfo *profile)
           StringInfo
             *exif_profile;
 
-          exif_profile=AcquireStringInfo(6);
+          exif_profile=AcquireStringInfo(GetStringInfoLength(profile)+6);
           if (exif_profile != (StringInfo *) NULL)
             {
               SetStringInfoDatum(exif_profile,profile_start);
@@ -1889,9 +1894,11 @@ static void FixCorruptProfile(const char *name,StringInfo *profile)
               SetStringInfoLength(profile,GetStringInfoLength(exif_profile));
               SetStringInfo(profile,exif_profile);
               exif_profile=DestroyStringInfo(exif_profile);
+              return(MagickTrue);
             }
         }
     }
+  return(MagickFalse);
 }
 
 #if defined(MAGICKCORE_XML_DELEGATE)
@@ -1944,7 +1951,9 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   clone_profile=CloneStringInfo(profile);
-  FixCorruptProfile(name,clone_profile);
+  if (IsProfileCorrupt(name,clone_profile) != MagickFalse)
+    (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
+      "CorruptImageProfile","`%s' (%s)",image->filename,name);
   if ((LocaleCompare(name,"xmp") == 0) &&
       (ValidateXMPProfile(image,clone_profile,exception) == MagickFalse))
     {
