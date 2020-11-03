@@ -1840,7 +1840,7 @@ static void GetProfilesFromResourceBlock(Image *image,
   }
 }
 
-static MagickBooleanType IsProfileCorrupt(const char *name,StringInfo *profile)
+static void PatchCorruptProfile(const char *name,StringInfo *profile)
 {
   register unsigned char
     *p;
@@ -1866,10 +1866,9 @@ static MagickBooleanType IsProfileCorrupt(const char *name,StringInfo *profile)
             {
               *p='\0';
               SetStringInfoLength(profile,length);
-              return(MagickTrue);
             }
         }
-      return(MagickFalse);
+      return;
     }
   if (LocaleCompare(name,"exif") == 0)
     {
@@ -1886,7 +1885,7 @@ static MagickBooleanType IsProfileCorrupt(const char *name,StringInfo *profile)
           StringInfo
             *exif_profile;
 
-          exif_profile=AcquireStringInfo(GetStringInfoLength(profile)+6);
+          exif_profile=AcquireStringInfo(6);
           if (exif_profile != (StringInfo *) NULL)
             {
               SetStringInfoDatum(exif_profile,profile_start);
@@ -1894,11 +1893,9 @@ static MagickBooleanType IsProfileCorrupt(const char *name,StringInfo *profile)
               SetStringInfoLength(profile,GetStringInfoLength(exif_profile));
               SetStringInfo(profile,exif_profile);
               exif_profile=DestroyStringInfo(exif_profile);
-              return(MagickTrue);
             }
         }
     }
-  return(MagickFalse);
 }
 
 #if defined(MAGICKCORE_XML_DELEGATE)
@@ -1951,9 +1948,7 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   clone_profile=CloneStringInfo(profile);
-  if (IsProfileCorrupt(name,clone_profile) != MagickFalse)
-    (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
-      "CorruptImageProfile","`%s' (%s)",image->filename,name);
+  PatchCorruptProfile(name,clone_profile);
   if ((LocaleCompare(name,"xmp") == 0) &&
       (ValidateXMPProfile(image,clone_profile,exception) == MagickFalse))
     {
