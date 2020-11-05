@@ -6688,6 +6688,55 @@ WandExport MagickBooleanType MagickInverseFourierTransformImage(
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k K m e a n s I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickKmeansImage() applies k-means color reduction to an image. This is a
+%  colorspace clustering or segmentation technique.
+%
+%  The format of the MagickKuwaharaImage method is:
+%
+%      MagickBooleanType MagickKmeansImage(MagickWand *wand,
+%        const size_t number_colors, const size_t max_iterations,
+%        const double tolerance)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o number_colors: number of colors to use as seeds.
+%
+%    o max_iterations: maximum number of iterations while converging.
+%
+%    o tolerance: the maximum tolerance.
+%
+*/
+WandExport MagickBooleanType MagickKmeansImage(MagickWand *wand,
+  const size_t number_colors,const size_t max_iterations,
+  const double tolerance)
+{
+  MagickBooleanType
+    status;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  status=KmeansImage(wand->images,number_colors,max_iterations,tolerance,
+    wand->exception);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k K u w a h a r a I m a g e                                     %
 %                                                                             %
 %                                                                             %
@@ -13034,6 +13083,44 @@ WandExport MagickBooleanType MagickWaveletDenoiseImage(MagickWand *wand,
     return(MagickFalse);
   ReplaceImageInList(&wand->images,noise_image);
   return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k W h i t e B a l a n c e I m a g e                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickWhiteBalanceImage() applies white balancing to an image according to
+%  a grayworld assumption in the LAB colorspace.
+%
+%  The format of the WhiteBalanceImage method is:
+%
+%      MagickBooleanType WhiteBalanceImage(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+*/
+WandExport MagickBooleanType MagickWhiteBalanceImage(MagickWand *wand)
+{
+  MagickBooleanType
+    status;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  status=WhiteBalanceImage(wand->images, wand->exception);
+  return(status);
 }
 
 /*
