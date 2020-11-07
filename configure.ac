@@ -3186,6 +3186,7 @@ fi
 RMDelegateDefault='rm'
 RSVGDecodeDelegateDefault='rsvg-convert'
 SVGDecodeDelegateDefault='inkscape'
+TextEncodeDelegateDefault='tesseract'
 TraceEncodeDelegateDefault='potrace'
 VIDEODecodeDelegateDefault='ffmpeg'
 VIDEOEncodeDelegateDefault='ffmpeg'
@@ -3226,6 +3227,7 @@ AC_PATH_PROGS([PSDelegate],[gsx gsc "$PSDelegateDefault"],["$PSDelegateDefault"]
 AC_PATH_PROG([RMDelegate],[ "$RMDelegateDefault"],[ "$RMDelegateDefault"])
 AC_PATH_PROG([RSVGDecodeDelegate],[ "$RSVGDecodeDelegateDefault"],[ "$RSVGDecodeDelegateDefault"])
 AC_PATH_PROG([SVGDecodeDelegate],[ "$SVGDecodeDelegateDefault"],[ "$SVGDecodeDelegateDefault"])
+AC_PATH_PROG([TextEncodeDelegate],[ "$TextEncodeDelegateDefault"],[ "$TextEncodeDelegateDefault"])
 AC_PATH_PROG([TraceEncodeDelegate],[ "$TraceEncodeDelegateDefault"],[ "$TraceEncodeDelegateDefault"])
 AC_PATH_PROG([Fig2devDelegate],[ "$Fig2devDelegateDefault"],[ "$Fig2devDelegateDefault"])
 AC_PATH_PROG([WebPDecodeDelegate],[ "$WebPDecodeDelegateDefault"],[ "$WebPDecodeDelegateDefault"])
@@ -3424,6 +3426,7 @@ if test "$with_frozenpaths" != 'yes'; then
   RSVGDecodeDelegate="$RSVGDecodeDelegateDefault"
   SVGDecodeDelegate="$SVGDecodeDelegateDefault"
   ShowImageDelegate="$ShowImageDelegateDefault"
+  TextEncodeDelegate="$TextEncodeDelegateDefault"
   TraceEncodeDelegate="$TraceEncodeDelegateDefault"
   Fig2devDelegate="$Fig2devDelegateDefault"
   VIDEODecodeDelegate="$VIDEODecodeDelegateDefault"
@@ -3460,6 +3463,7 @@ AC_SUBST([MrSIDDecodeDelegate])
 AC_SUBST([PCLDelegate])
 AC_SUBST([PSDelegate])
 AC_SUBST([ShowImageDelegate])
+AC_SUBST([TextEncodeDelegate])
 AC_SUBST([TraceEncodeDelegate])
 AC_SUBST([WebPDecodeDelegate])
 AC_SUBST([WebPEncodeDelegate])
