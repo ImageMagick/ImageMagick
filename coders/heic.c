@@ -1025,19 +1025,14 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     struct heif_writer
       writer;
 
-    enum heif_colorspace 
+    enum heif_colorspace
       colorspace;
 
-    enum heif_chroma 
+    enum heif_chroma
       chroma;
-
-    MagickBooleanType 
-      is_avif;
-
 
     colorspace=heif_colorspace_YCbCr;
     chroma=heif_chroma_420;
-    is_avif=MagickFalse;
     /*
       Get encoder for the specified format.
     */
@@ -1046,7 +1041,12 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
       {
         error=heif_context_get_encoder_for_format(heif_context,
           heif_compression_AV1,&heif_encoder);
-        is_avif=MagickTrue;
+        if (IssRGBCompatibleColorspace(image->colorspace) != MagickFalse)
+          {
+            colorspace=heif_colorspace_RGB;
+            chroma=(image->alpha_trait == UndefinedPixelTrait) ?
+              heif_chroma_interleaved_RGB : heif_chroma_interleaved_RGBA;
+          }
       }
     else
 #endif
@@ -1055,18 +1055,9 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     status=IsHeifSuccess(&error,image,exception);
     if (status == MagickFalse)
       break;
-    if ((is_avif != MagickFalse) &&
-        (IssRGBCompatibleColorspace(image->colorspace) != MagickFalse))
+    if ((colorspace == heif_colorspace_YCbCr) &&
+        (image->colorspace != YCbCrColorspace))
       {
-        colorspace=heif_colorspace_RGB;
-        chroma=(image->alpha_trait == UndefinedPixelTrait) ?
-          heif_chroma_interleaved_RGB : heif_chroma_interleaved_RGBA;
-      } 
-    else if (image->colorspace != YCbCrColorspace)
-      {
-        /*
-        Transform colorspace to YCbCr.
-        */
         status=TransformImageColorspace(image,YCbCrColorspace,exception);
         if (status == MagickFalse)
           break;
