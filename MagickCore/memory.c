@@ -638,6 +638,8 @@ MagickExport void *AcquireQuantumMemory(const size_t count,const size_t quantum)
 
   if (HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse)
     return((void *) NULL);
+  if (size > GetMaxMemoryRequest())
+    return(NULL);
   return(AcquireMagickMemory(size));
 }
 
@@ -1010,6 +1012,7 @@ MagickExport size_t GetMaxMemoryRequest(void)
       char
         *value;
 
+      max_memory_request=(size_t) MagickULLConstant(~0);
       value=GetPolicyValue("system:max-memory-request");
       if (value != (char *) NULL)
         {
@@ -1019,8 +1022,6 @@ MagickExport size_t GetMaxMemoryRequest(void)
           max_memory_request=StringToSizeType(value,100.0);
           value=DestroyString(value);
         }
-      else
-        max_memory_request=(size_t) MagickULLConstant(~0);
     }
   return(max_memory_request);
 }
@@ -1413,8 +1414,10 @@ MagickExport void *ResizeQuantumMemory(void *memory,const size_t count,
   if (HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse)
     {
       memory=RelinquishMagickMemory(memory);
-      return((void *) NULL);
+      return(NULL);
     }
+  if (size > GetMaxMemoryRequest())
+    return(NULL);
   return(ResizeMagickMemory(memory,size));
 }
 

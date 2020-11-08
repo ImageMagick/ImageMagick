@@ -2300,23 +2300,19 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
   */
   extent=(double) mvg_info->offset+pad+PrimitiveExtentPad+1;
   quantum=sizeof(**mvg_info->primitive_info);
-  if (((extent*quantum) < (double) SSIZE_MAX) &&
-      ((extent*quantum) < (double) GetMaxMemoryRequest()))
+  if (extent <= (double) *mvg_info->extent)
+    return(MagickTrue);
+  *mvg_info->primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(
+    *mvg_info->primitive_info,(size_t) extent,quantum);
+  if (*mvg_info->primitive_info != (PrimitiveInfo *) NULL)
     {
-      if (extent <= (double) *mvg_info->extent)
-        return(MagickTrue);
-      *mvg_info->primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(
-        *mvg_info->primitive_info,(size_t) extent,quantum);
-      if (*mvg_info->primitive_info != (PrimitiveInfo *) NULL)
-        {
-          register ssize_t
-            i;
+      register ssize_t
+        i;
 
-          *mvg_info->extent=(size_t) extent;
-          for (i=mvg_info->offset+1; i < (ssize_t) extent; i++)
-            (*mvg_info->primitive_info)[i].primitive=UndefinedPrimitive;
-          return(MagickTrue);
-        }
+      *mvg_info->extent=(size_t) extent;
+      for (i=mvg_info->offset+1; i < (ssize_t) extent; i++)
+        (*mvg_info->primitive_info)[i].primitive=UndefinedPrimitive;
+      return(MagickTrue);
     }
   /*
     Reallocation failed, allocate a primitive to facilitate unwinding.
