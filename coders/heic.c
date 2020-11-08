@@ -1103,7 +1103,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     writer.write=heif_write_func;
 #if LIBHEIF_NUMERIC_VERSION >= 0x01030000
     if (image->profiles != (void *) NULL)
-      WriteProfile(heif_context, image, exception);
+      WriteProfile(heif_context,image,exception);
 #endif
     error=heif_context_write(heif_context,&writer,image);
     status=IsHeifSuccess(&error,image,exception);
