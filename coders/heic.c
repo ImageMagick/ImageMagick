@@ -635,6 +635,23 @@ ModuleExport size_t RegisterHEICImage(void)
 #endif
   entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
+  entry=AcquireMagickInfo("HEIC","HEIF","High Efficiency Image Format");
+#if defined(MAGICKCORE_HEIC_DELEGATE)
+  entry->decoder=(DecodeImageHandler *) ReadHEICImage;
+#if LIBHEIF_NUMERIC_VERSION >= 0x01030000
+  if (heif_have_encoder_for_format(heif_compression_HEVC))
+    entry->encoder=(EncodeImageHandler *) WriteHEICImage;
+#else
+  entry->encoder=(EncodeImageHandler *) WriteHEICImage;
+#endif
+#endif
+  entry->magick=(IsImageFormatHandler *) IsHEIC;
+  entry->mime_type=ConstantString("image/x-heic");
+#if defined(LIBHEIF_VERSION)
+  entry->version=ConstantString(LIBHEIF_VERSION);
+#endif
+  entry->flags|=CoderDecoderSeekableStreamFlag;
+  (void) RegisterMagickInfo(entry);
 #if LIBHEIF_NUMERIC_VERSION > 0x01060200
   entry=AcquireMagickInfo("HEIC","AVIF","AV1 Image File Format");
 #if defined(MAGICKCORE_HEIC_DELEGATE)

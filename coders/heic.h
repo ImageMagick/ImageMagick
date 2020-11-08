@@ -23,10 +23,8 @@
   MagickCoderHeader("HEIC", 4, "ftypmif1")
 
 #define MagickHEICAliases \
-  MagickCoderAlias("HEIC", "HEICS") \
-  MagickCoderAlias("HEIC", "HEIF") \
-  MagickCoderAlias("HEIC", "HEIFS") \
-  MagickCoderAlias("AVIF", "AVIFS")
+  MagickCoderAlias("HEIC", "AVIF") \
+  MagickCoderAlias("HEIC", "HEIF")
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
