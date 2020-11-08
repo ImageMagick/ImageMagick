@@ -634,6 +634,7 @@ ModuleExport size_t RegisterHEICImage(void)
   entry->version=ConstantString(LIBHEIF_VERSION);
 #endif
   entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->flags^=CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("HEIC","HEIF","High Efficiency Image Format");
 #if defined(MAGICKCORE_HEIC_DELEGATE)
@@ -651,6 +652,7 @@ ModuleExport size_t RegisterHEICImage(void)
   entry->version=ConstantString(LIBHEIF_VERSION);
 #endif
   entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->flags^=CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
 #if LIBHEIF_NUMERIC_VERSION > 0x01060200
   entry=AcquireMagickInfo("HEIC","AVIF","AV1 Image File Format");
@@ -666,6 +668,7 @@ ModuleExport size_t RegisterHEICImage(void)
   entry->version=ConstantString(LIBHEIF_VERSION);
 #endif
   entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->flags^=CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
 #endif
   return(MagickImageCoderSignature);
@@ -692,7 +695,9 @@ ModuleExport size_t RegisterHEICImage(void)
 */
 ModuleExport void UnregisterHEICImage(void)
 {
+  (void) UnregisterMagickInfo("AVIF");
   (void) UnregisterMagickInfo("HEIC");
+  (void) UnregisterMagickInfo("HEIF");
 }
 
 /*
