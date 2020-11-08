@@ -3,6 +3,8 @@
 
 2020-11-07  7.0.10-38  <quetzlzacatenango@image...>
   * add image settings support to -fx.
+  * verify TTF glyph format before dereferencing (reference
+    https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=26932).
 
 2020-11-07  7.0.10-37  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-37 GIT revision 17780:47a8392ef:20201107

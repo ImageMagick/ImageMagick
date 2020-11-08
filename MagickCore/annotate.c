@@ -1611,6 +1611,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     ft_status=FT_Get_Glyph(face->glyph,&glyph.image);
     if (ft_status != 0)
       continue;
+    if (glyph.image->format != FT_GLYPH_FORMAT_OUTLINE)
+      continue;
     outline=((FT_OutlineGlyph) glyph.image)->outline;
     ft_status=FT_Outline_Get_BBox(&outline,&bounds);
     if (ft_status != 0)
