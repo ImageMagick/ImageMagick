@@ -1,3 +1,9 @@
+2020-11-07  7.0.10-38  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-38 GIT revision 17...
+
+2020-11-07  7.0.10-38  <quetzlzacatenango@image...>
+  * add image settings support to -fx.
+
 2020-11-07  7.0.10-37  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-37 GIT revision 17780:47a8392ef:20201107
 
