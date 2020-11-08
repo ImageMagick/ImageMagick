@@ -24,6 +24,7 @@
   * Prefer ffmpeg over avconv.
   * Support median image statistic and median property.
   * Add -extend option to {display,animate,import}.
+  * Support papersize property, e.g. [%papersize:A5].
 
 2020-10-07  7.0.10-34  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-34 GIT revision 17695:de3284341:20201008
