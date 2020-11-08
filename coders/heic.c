@@ -621,7 +621,8 @@ ModuleExport size_t RegisterHEICImage(void)
   entry=AcquireMagickInfo("HEIC","HEIC","High Efficiency Image Format");
 #if defined(MAGICKCORE_HEIC_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadHEICImage;
-  entry->encoder=(EncodeImageHandler *) WriteHEICImage;
+  if (heif_have_encoder_for_format(heif_compression_HEVC))
+    entry->encoder=(EncodeImageHandler *) WriteHEICImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsHEIC;
   entry->mime_type=ConstantString("image/x-heic");
