@@ -629,7 +629,7 @@ ModuleExport size_t RegisterHEICImage(void)
 #endif
 #endif
   entry->magick=(IsImageFormatHandler *) IsHEIC;
-  entry->mime_type=ConstantString("image/x-heic");
+  entry->mime_type=ConstantString("image/heic");
 #if defined(LIBHEIF_VERSION)
   entry->version=ConstantString(LIBHEIF_VERSION);
 #endif
@@ -646,7 +646,7 @@ ModuleExport size_t RegisterHEICImage(void)
 #endif
 #endif
   entry->magick=(IsImageFormatHandler *) IsHEIC;
-  entry->mime_type=ConstantString("image/x-heic");
+  entry->mime_type=ConstantString("image/heif");
 #if defined(LIBHEIF_VERSION)
   entry->version=ConstantString(LIBHEIF_VERSION);
 #endif
@@ -661,7 +661,7 @@ ModuleExport size_t RegisterHEICImage(void)
     entry->encoder=(EncodeImageHandler *) WriteHEICImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsHEIC;
-  entry->mime_type=ConstantString("image/x-heic");
+  entry->mime_type=ConstantString("image/avif");
 #if defined(LIBHEIF_VERSION)
   entry->version=ConstantString(LIBHEIF_VERSION);
 #endif
