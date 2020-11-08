@@ -798,17 +798,17 @@ MagickExport MagickSizeType GetMagickResourceLimit(const ResourceType type)
   switch (type)
   {
     case AreaResource:
-      return resource_info.area_limit;
+      return(resource_info.area_limit);
     case HeightResource:
-      return resource_info.height_limit;
+      return(resource_info.height_limit);
     case ListLengthResource:
-      return resource_info.list_length_limit;
+      return(resource_info.list_length_limit);
     case ThreadResource:
-      return resource_info.thread_limit;
+      return(resource_info.thread_limit);
     case ThrottleResource:
-      return resource_info.throttle_limit;
+      return(resource_info.throttle_limit);
     case WidthResource:
-      return resource_info.width_limit;
+      return(resource_info.width_limit);
     default: ;
   }
   resource=0;
