@@ -1143,7 +1143,8 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
   if (IsOptionMember("APP",option) == MagickFalse)
     jpeg_set_marker_processor(jpeg_info,XML_MARKER,ReadXmlProfile);
   for (i=3; i < 16; i++)
-    if (i != IPTC_INDEX)
+    /* APP14 is ignored because this will change the colors of the image */
+    if (i != IPTC_INDEX && i != 14)
       if (IsOptionMember("APP",option) == MagickFalse)
         jpeg_set_marker_processor(jpeg_info,(int) (JPEG_APP0+i),ReadProfile);
   i=(ssize_t) jpeg_read_header(jpeg_info,TRUE);
