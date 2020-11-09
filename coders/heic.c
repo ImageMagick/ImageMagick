@@ -997,11 +997,11 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
   struct heif_error
     error;
 
-  struct heif_writer
-    writer;
-
   struct heif_image
     *heif_image;
+
+  struct heif_writer
+    writer;
 
   /*
     Open output image file.
