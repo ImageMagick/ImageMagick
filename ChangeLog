@@ -3,6 +3,7 @@
 
 2020-11-07  7.0.10-38  <quetzlzacatenango@image...>
   * add image settings support to -fx.
+  * better support for TIFF YCbCr photometric.
   * verify TTF glyph format before dereferencing (reference
     https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=26932).
   * force single HEIC image per container.
