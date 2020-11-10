@@ -1554,7 +1554,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (photometric == PHOTOMETRIC_SEPARATED)
       image->colorspace=CMYKColorspace;
     if (photometric == PHOTOMETRIC_CIELAB)
-     image->colorspace=LabColorspace;
+      image->colorspace=LabColorspace;
+    if (photometric == PHOTOMETRIC_YCBCR)
+      image->colorspace=YCbCrColorspace;
     status=TIFFGetProfiles(tiff,image,exception);
     if (status == MagickFalse)
       {
@@ -1830,8 +1832,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (image->compression == JPEGCompression)
       method=GetJPEGMethod(image,tiff,photometric,bits_per_sample,
         samples_per_pixel);
-    if ((photometric == PHOTOMETRIC_LOGLUV) ||
-        (photometric == PHOTOMETRIC_YCBCR))
+    if (photometric == PHOTOMETRIC_LOGLUV)
       method=ReadGenericMethod;
     quantum_info->endian=LSBEndian;
     quantum_type=RGBQuantum;
