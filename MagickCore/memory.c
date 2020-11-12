@@ -1415,13 +1415,12 @@ MagickExport void *ResizeQuantumMemory(void *memory,const size_t count,
   size_t
     size;
 
-  if (HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse)
+  if ((HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse) ||
+      (size > GetMaxMemoryRequest()))
     {
       memory=RelinquishMagickMemory(memory);
       return(NULL);
     }
-  if (size > GetMaxMemoryRequest())
-    return(NULL);
   return(ResizeMagickMemory(memory,size));
 }
 
