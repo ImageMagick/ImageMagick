@@ -137,6 +137,16 @@ static inline MagickBooleanType IssRGBCompatibleColorspace(
   return(MagickFalse);
 }
 
+static inline MagickBooleanType IsYCbCrCompatibleColorspace(
+  const ColorspaceType colorspace)
+{
+  if ((colorspace == YCbCrColorspace) ||
+      (colorspace == Rec709YCbCrColorspace) ||
+      (colorspace == Rec601YCbCrColorspace))
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

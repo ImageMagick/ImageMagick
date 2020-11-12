@@ -46,6 +46,7 @@
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache.h"
 #include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/geometry.h"
@@ -1530,7 +1531,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
           (vertical_factor != 2) && (vertical_factor != 4))
         ThrowWriterException(CorruptImageError,"UnexpectedSamplingFactor");
     }
-  if ((image->colorspace == YCbCrColorspace) &&
+  if ((IsYCbCrCompatibleColorspace(image->colorspace) != MagickFalse) &&
       ((horizontal_factor == 2) || (vertical_factor == 2)))
     if ((image->columns % 2) != 0)
       image->columns++;
@@ -1990,7 +1991,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
   quantum_type=RGBQuantum;
   if (image->alpha_trait != UndefinedPixelTrait)
     quantum_type=RGBAQuantum;
-  if (image->colorspace == YCbCrColorspace)
+  if (IsYCbCrCompatibleColorspace(image->colorspace) != MagickFalse)
     {
       quantum_type=CbYCrQuantum;
       if (image->alpha_trait != UndefinedPixelTrait)
