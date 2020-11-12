@@ -637,9 +637,8 @@ MagickExport void *AcquireQuantumMemory(const size_t count,const size_t quantum)
   size_t
     size;
 
-  if (HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse)
-    return((void *) NULL);
-  if (size > GetMaxMemoryRequest())
+  if ((HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse) ||
+      (size > GetMaxMemoryRequest()))
     return(NULL);
   return(AcquireMagickMemory(size));
 }
