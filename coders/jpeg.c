@@ -1148,9 +1148,7 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
       if (IsOptionMember("APP",option) == MagickFalse)
         jpeg_set_marker_processor(jpeg_info,(int) (JPEG_APP0+i),ReadProfile);
   i=(ssize_t) jpeg_read_header(jpeg_info,TRUE);
-  if ((image_info->colorspace == YCbCrColorspace) ||
-      (image_info->colorspace == Rec601YCbCrColorspace) ||
-      (image_info->colorspace == Rec709YCbCrColorspace))
+  if (IsYCbCrCompatibleColorspace(image_info->colorspace) != MagickFalse)
     jpeg_info->out_color_space=JCS_YCbCr;
   /*
     Set image resolution.

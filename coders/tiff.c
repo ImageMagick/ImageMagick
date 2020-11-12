@@ -3685,7 +3685,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             EncodeLabImage(image,exception);
           }
         else
-          if (image->colorspace == YCbCrColorspace)
+          if (IsYCbCrCompatibleColorspace(image->colorspace) != MagickFalse)
             {
               photometric=PHOTOMETRIC_YCBCR;
               (void) TIFFSetField(tiff,TIFFTAG_YCBCRSUBSAMPLING,1,1);
@@ -3824,7 +3824,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               *value;
 
             (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,JPEGCOLORMODE_RGB);
-            if (image->colorspace == YCbCrColorspace)
+            if (IsYCbCrCompatibleColorspace(image->colorspace) != MagickFalse)
               {
                 const char
                   *sampling_factor;
