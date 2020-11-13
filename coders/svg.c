@@ -310,7 +310,7 @@ static Image *RenderSVGImage(const ImageInfo *image_info,Image *image,
   (void) FormatLocaleString(density,MagickPathExtent,"%.20g",
     ceil(sqrt(image->resolution.x*image->resolution.y)-0.5));
   (void) FormatLocaleString(background,MagickPathExtent,
-    "rgb(%.20g%%,%.20g%%,%.20g%%)",
+    image->background_color.alpha ? "rgb(%.20g%%,%.20g%%,%.20g%%)" : "",
     100.0*QuantumScale*image->background_color.red,
     100.0*QuantumScale*image->background_color.green,
     100.0*QuantumScale*image->background_color.blue);
