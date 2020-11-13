@@ -315,7 +315,7 @@ static Image *RenderSVGImage(const ImageInfo *image_info,Image *image,
     100.0*QuantumScale*image->background_color.green,
     100.0*QuantumScale*image->background_color.blue);
   (void) FormatLocaleString(opacity,MagickPathExtent,"%.20g",QuantumScale*
-    image->background_color.alpha);
+    image->background_color.alpha-MagickEpsilon);
   (void) FormatLocaleString(command,MagickPathExtent,
     GetDelegateCommands(delegate_info),input_filename,output_filename,density,
     background,opacity,unique);
@@ -2777,7 +2777,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
       if (LocaleCompare((const char *) name,"stop") == 0)
         {
           (void) FormatLocaleFile(svg_info->file,"stop-color \"%s\" %s\n",
-            svg_info->stop_color,svg_info->offset == (char *) NULL ? "100%" : 
+            svg_info->stop_color,svg_info->offset == (char *) NULL ? "100%" :
             svg_info->offset);
           break;
         }
