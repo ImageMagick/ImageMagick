@@ -201,7 +201,7 @@ MagickExport StreamInfo *AcquireStreamInfo(const ImageInfo *image_info,
 static inline void RelinquishStreamPixels(CacheInfo *cache_info)
 {
   assert(cache_info != (CacheInfo *) NULL);
-  if (cache_info->pixels != (Quantum *) NULL)
+  if (cache_info->pixels != NULL)
     {
       if (cache_info->mapped == MagickFalse)
         (void) RelinquishAlignedMemory(cache_info->pixels);
