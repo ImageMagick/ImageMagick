@@ -38,10 +38,11 @@ PACKAGE_VERSION_ADDENDUM="-${PACKAGE_RELEASE}"
 # release, then increment age.  If any interfaces have been removed or changed
 # since the last public release, then set age to 0.
 #
-#
 # PLEASE NOTE that doing a SO BUMP aka raising the CURRENT REVISION
 # could be avoided using libversioning aka map files.  You MUST change .map
 # files if you raise these versions.
+#
+# Bump the minor release # whenever there is an SOVersion bump.
 MAGICK_LIBRARY_CURRENT=8
 MAGICK_LIBRARY_REVISION=0
 MAGICK_LIBRARY_AGE=0
