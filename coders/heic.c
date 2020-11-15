@@ -153,7 +153,7 @@ static MagickBooleanType ReadHEICColorProfile(Image *image,
       if ((MagickSizeType) length > GetBlobSize(image))
         ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
           image->filename);
-      color_buffer=(unsigned char *) AcquireMagickMemory(length);
+      color_buffer=(unsigned char *) AcquireQuantumMemory(1,length);
       if (color_buffer != (unsigned char *) NULL)
         {
           struct heif_error
@@ -206,7 +206,7 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
       if ((MagickSizeType) exif_size > GetBlobSize(image))
         ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
           image->filename);
-      exif_buffer=(unsigned char *) AcquireMagickMemory(exif_size);
+      exif_buffer=(unsigned char *) AcquireQuantumMemory(1,exif_size);
       if (exif_buffer != (unsigned char *) NULL)
         {
           struct heif_error

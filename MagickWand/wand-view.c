@@ -127,7 +127,7 @@ WandExport WandView *CloneWandView(const WandView *wand_view)
   assert(wand_view->signature == MagickWandSignature);
   if (wand_view->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand_view->name);
-  clone_view=(WandView *) AcquireMagickMemory(sizeof(*clone_view));
+  clone_view=(WandView *) AcquireQuantumMemory(1,sizeof(*clone_view));
   if (clone_view == (WandView *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       wand_view->name);
@@ -752,7 +752,7 @@ WandExport WandView *NewWandView(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
-  wand_view=(WandView *) AcquireMagickMemory(sizeof(*wand_view));
+  wand_view=(WandView *) AcquireQuantumMemory(1,sizeof(*wand_view));
   if (wand_view == (WandView *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
@@ -814,7 +814,7 @@ WandExport WandView *NewWandViewExtent(MagickWand *wand,const ssize_t x,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
-  wand_view=(WandView *) AcquireMagickMemory(sizeof(*wand_view));
+  wand_view=(WandView *) AcquireQuantumMemory(1,sizeof(*wand_view));
   if (wand_view == (WandView *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));

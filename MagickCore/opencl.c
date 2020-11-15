@@ -585,7 +585,7 @@ static MagickCLDevice AcquireMagickCLDevice()
   MagickCLDevice
     device;
 
-  device=(MagickCLDevice) AcquireMagickMemory(sizeof(*device));
+  device=(MagickCLDevice) AcquireQuantumMemory(1,sizeof(*device));
   if (device != NULL)
   {
     (void) memset(device,0,sizeof(*device));
@@ -620,7 +620,7 @@ static MagickCLEnv AcquireMagickCLEnv(void)
   MagickCLEnv
     clEnv;
 
-  clEnv=(MagickCLEnv) AcquireMagickMemory(sizeof(*clEnv));
+  clEnv=(MagickCLEnv) AcquireQuantumMemory(1,sizeof(*clEnv));
   if (clEnv != (MagickCLEnv) NULL)
   {
     (void) memset(clEnv,0,sizeof(*clEnv));
@@ -806,7 +806,7 @@ static void LoadOpenCLDeviceBenchmark(MagickCLEnv clEnv,const char *xml)
         /*
           Device element.
         */
-        device_benchmark=(MagickCLDeviceBenchmark *) AcquireMagickMemory(
+        device_benchmark=(MagickCLDeviceBenchmark *) AcquireQuantumMemory(1,
           sizeof(*device_benchmark));
         if (device_benchmark == (MagickCLDeviceBenchmark *) NULL)
           break;
@@ -1289,7 +1289,7 @@ static void CacheOpenCLKernel(MagickCLDevice device,char *filename,
     CL_PROGRAM_BINARY_SIZES,sizeof(size_t),&binaryProgramSize,NULL);
   if (status != CL_SUCCESS)
     return;
-  binaryProgram=(unsigned char*) AcquireMagickMemory(binaryProgramSize);
+  binaryProgram=(unsigned char*) AcquireQuantumMemory(1,binaryProgramSize);
   if (binaryProgram == (unsigned char *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -2176,7 +2176,7 @@ static MagickBooleanType HasOpenCLDevices(MagickCLEnv clEnv,
     (unsigned int)MAGICKCORE_QUANTUM_DEPTH);
 
   signature=StringSignature(options);
-  accelerateKernelsBuffer=(char*) AcquireMagickMemory(
+  accelerateKernelsBuffer=(char*) AcquireQuantumMemory(1,
     strlen(accelerateKernels)+strlen(accelerateKernels2)+1);
   if (accelerateKernelsBuffer == (char*) NULL)
     return(MagickFalse);
@@ -2287,7 +2287,7 @@ static void LoadOpenCLDevices(MagickCLEnv clEnv)
     return;
   if (number_platforms == 0)
     return;
-  platforms=(cl_platform_id *) AcquireMagickMemory(number_platforms*
+  platforms=(cl_platform_id *) AcquireQuantumMemory(1,number_platforms*
     sizeof(cl_platform_id));
   if (platforms == (cl_platform_id *) NULL)
     return;
@@ -2544,7 +2544,7 @@ static MagickBooleanType BindOpenCLFunctions()
 
 static MagickBooleanType LoadOpenCLLibrary(void)
 {
-  openCL_library=(MagickLibrary *) AcquireMagickMemory(sizeof(MagickLibrary));
+  openCL_library=(MagickLibrary *) AcquireQuantumMemory(1,sizeof(MagickLibrary));
   if (openCL_library == (MagickLibrary *) NULL)
     return(MagickFalse);
 
@@ -2774,7 +2774,7 @@ MagickPrivate MagickBooleanType RecordProfileData(MagickCLDevice device,
       profile_record=AcquireCriticalMemory(sizeof(*profile_record));
       (void) memset(profile_record,0,sizeof(*profile_record));
       profile_record->kernel_name=name;
-      device->profile_records=ResizeMagickMemory(device->profile_records,(i+2)*
+      device->profile_records=ResizeQuantumMemory(device->profile_records,(i+2),
         sizeof(*device->profile_records));
       if (device->profile_records == (KernelProfileRecord *) NULL)
         ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");

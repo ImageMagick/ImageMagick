@@ -3113,7 +3113,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   redmap=(int *) NULL;
   greenmap=(int *) NULL;
   bluemap=(int *) NULL;
-  stream_info=(DCMStreamInfo *) AcquireMagickMemory(sizeof(*stream_info));
+  stream_info=(DCMStreamInfo *) AcquireQuantumMemory(1,sizeof(*stream_info));
   sequence_depth=0;
   stack = NewLinkedList(256);
   if (stream_info == (DCMStreamInfo *) NULL)
@@ -3245,7 +3245,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       if (strcmp(explicit_vr,"SQ") == 0)
         {
-          info_copy=(DCMInfo *) AcquireMagickMemory(sizeof(info));
+          info_copy=(DCMInfo *) AcquireQuantumMemory(1,sizeof(info));
           memcpy(info_copy,&info,sizeof(info));
           AppendValueToLinkedList(stack,info_copy);
           sequence_depth++;

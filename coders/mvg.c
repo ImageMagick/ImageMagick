@@ -217,7 +217,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       length=GetBlobSize(image);
       if (length == (MagickSizeType) ((size_t) length))
         {
-          draw_info->primitive=(char *) AcquireMagickMemory((size_t) length+1);
+          draw_info->primitive=(char *) AcquireQuantumMemory(1,(size_t) length+1);
           if (draw_info->primitive != (char *) NULL)
             {
               memcpy(draw_info->primitive,GetBlobStreamData(image),(size_t)

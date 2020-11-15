@@ -209,7 +209,7 @@ static LinkedListInfo *AcquireMagicList(ExceptionInfo *exception)
       *p;
 
     p=MagicMap+i;
-    magic_info=(MagicInfo *) AcquireMagickMemory(sizeof(*magic_info));
+    magic_info=(MagicInfo *) AcquireQuantumMemory(1,sizeof(*magic_info));
     if (magic_info == (MagicInfo *) NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),

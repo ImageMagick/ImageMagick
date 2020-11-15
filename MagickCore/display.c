@@ -2221,7 +2221,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
   /*
     Initialize annotate structure.
   */
-  annotate_info=(XAnnotateInfo *) AcquireMagickMemory(sizeof(*annotate_info));
+  annotate_info=(XAnnotateInfo *) AcquireQuantumMemory(1,sizeof(*annotate_info));
   if (annotate_info == (XAnnotateInfo *) NULL)
     return(MagickFalse);
   XGetAnnotateInfo(annotate_info);
@@ -2504,7 +2504,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
                 p=annotate_info->text;
                 break;
               }
-            annotate_info->next=(XAnnotateInfo *) AcquireMagickMemory(
+            annotate_info->next=(XAnnotateInfo *) AcquireQuantumMemory(1,
               sizeof(*annotate_info->next));
             if (annotate_info->next == (XAnnotateInfo *) NULL)
               return(MagickFalse);
@@ -2599,7 +2599,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
               p=annotate_info->text;
               continue;
             }
-          annotate_info->next=(XAnnotateInfo *) AcquireMagickMemory(
+          annotate_info->next=(XAnnotateInfo *) AcquireQuantumMemory(1,
             sizeof(*annotate_info->next));
           if (annotate_info->next == (XAnnotateInfo *) NULL)
             return(MagickFalse);
@@ -13649,7 +13649,7 @@ static Image *XVisualDirectoryImage(Display *display,
   /*
     Expand the filenames.
   */
-  filelist=(char **) AcquireMagickMemory(sizeof(*filelist));
+  filelist=(char **) AcquireQuantumMemory(1,sizeof(*filelist));
   if (filelist == (char **) NULL)
     {
       ThrowXWindowException(ResourceLimitError,"MemoryAllocationFailed",

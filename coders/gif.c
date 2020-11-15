@@ -208,7 +208,7 @@ static LZWInfo *AcquireLZWInfo(Image *image,const size_t data_size)
   size_t
     one;
 
-  lzw_info=(LZWInfo *) AcquireMagickMemory(sizeof(*lzw_info));
+  lzw_info=(LZWInfo *) AcquireQuantumMemory(1,sizeof(*lzw_info));
   if (lzw_info == (LZWInfo *) NULL)
     return((LZWInfo *) NULL);
   (void) memset(lzw_info,0,sizeof(*lzw_info));
@@ -244,7 +244,7 @@ static LZWInfo *AcquireLZWInfo(Image *image,const size_t data_size)
   lzw_info->code_info.bit=8*lzw_info->code_info.count;
   lzw_info->code_info.eof=MagickFalse;
   lzw_info->genesis=MagickTrue;
-  lzw_info->stack=(LZWStack *) AcquireMagickMemory(sizeof(*lzw_info->stack));
+  lzw_info->stack=(LZWStack *) AcquireQuantumMemory(1,sizeof(*lzw_info->stack));
   if (lzw_info->stack == (LZWStack *) NULL)
     {
       lzw_info=RelinquishLZWInfo(lzw_info);

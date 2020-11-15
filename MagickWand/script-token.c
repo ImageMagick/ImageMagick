@@ -207,7 +207,7 @@ WandExport ScriptTokenInfo *AcquireScriptTokenInfo(const char *filename)
   ScriptTokenInfo
     *token_info;
 
-  token_info=(ScriptTokenInfo *) AcquireMagickMemory(sizeof(*token_info));
+  token_info=(ScriptTokenInfo *) AcquireQuantumMemory(1,sizeof(*token_info));
   if (token_info == (ScriptTokenInfo *) NULL)
     return token_info;
   (void) memset(token_info,0,sizeof(*token_info));
@@ -231,7 +231,7 @@ WandExport ScriptTokenInfo *AcquireScriptTokenInfo(const char *filename)
 
   token_info->curr_line=1;
   token_info->length=INITAL_TOKEN_LENGTH;
-  token_info->token=(char *) AcquireMagickMemory(token_info->length);
+  token_info->token=(char *) AcquireQuantumMemory(1,token_info->length);
 
   token_info->status=(token_info->token != (char *) NULL)
                       ? TokenStatusOK : TokenStatusMemoryFailed;
@@ -341,8 +341,8 @@ WandExport ScriptTokenInfo * DestroyScriptTokenInfo(ScriptTokenInfo *token_info)
       token_info->length += MagickPathExtent; \
     else \
       token_info->length *= 4; \
-    token_info->token = (char *) \
-         ResizeMagickMemory(token_info->token, token_info->length); \
+    token_info->token=(char *) ResizeQuantumMemory(token_info->token, \
+      token_info->length,sizeof(*token_info->token)); \
     if ( token_info->token == (char *) NULL ) { \
       token_info->status=TokenStatusMemoryFailed; \
       break; \

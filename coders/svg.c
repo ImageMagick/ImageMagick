@@ -361,7 +361,7 @@ static SVGInfo *AcquireSVGInfo(void)
   SVGInfo
     *svg_info;
 
-  svg_info=(SVGInfo *) AcquireMagickMemory(sizeof(*svg_info));
+  svg_info=(SVGInfo *) AcquireQuantumMemory(1,sizeof(*svg_info));
   if (svg_info == (SVGInfo *) NULL)
     return((SVGInfo *) NULL);
   (void) memset(svg_info,0,sizeof(*svg_info));

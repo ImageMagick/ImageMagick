@@ -167,7 +167,7 @@ static SplayTreeInfo *AcquireCoderCache(ExceptionInfo *exception)
       *p;
 
     p=CoderMap+i;
-    coder_info=(CoderInfo *) AcquireMagickMemory(sizeof(*coder_info));
+    coder_info=(CoderInfo *) AcquireQuantumMemory(1,sizeof(*coder_info));
     if (coder_info == (CoderInfo *) NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),

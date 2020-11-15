@@ -179,7 +179,7 @@ static Image *ReadFLIFImage(const ImageInfo *image_info,
   image_count=flif_decoder_num_images(flifdec);
   flifimage=flif_decoder_get_image(flifdec,0);
   length=sizeof(unsigned short)*4*flif_image_get_width(flifimage);
-  pixels=(unsigned short *) AcquireMagickMemory(length);
+  pixels=(unsigned short *) AcquireQuantumMemory(1,length);
   if (pixels == (unsigned short *) NULL)
     {
       flif_destroy_decoder(flifdec);

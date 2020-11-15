@@ -325,13 +325,13 @@ static MagickBooleanType Classify(Image *image,short **extrema,
         */
         if (head != (Cluster *) NULL)
           {
-            cluster->next=(Cluster *) AcquireMagickMemory(
+            cluster->next=(Cluster *) AcquireQuantumMemory(1,
               sizeof(*cluster->next));
             cluster=cluster->next;
           }
         else
           {
-            cluster=(Cluster *) AcquireMagickMemory(sizeof(*cluster));
+            cluster=(Cluster *) AcquireQuantumMemory(1,sizeof(*cluster));
             head=cluster;
           }
         if (cluster == (Cluster *) NULL)
@@ -353,7 +353,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       /*
         No classes were identified-- create one.
       */
-      cluster=(Cluster *) AcquireMagickMemory(sizeof(*cluster));
+      cluster=(Cluster *) AcquireQuantumMemory(1,sizeof(*cluster));
       if (cluster == (Cluster *) NULL)
         ThrowClassifyException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
@@ -1037,13 +1037,13 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
         */
         if (head != (Cluster *) NULL)
           {
-            cluster->next=(Cluster *) AcquireMagickMemory(
+            cluster->next=(Cluster *) AcquireQuantumMemory(1,
               sizeof(*cluster->next));
             cluster=cluster->next;
           }
         else
           {
-            cluster=(Cluster *) AcquireMagickMemory(sizeof(*cluster));
+            cluster=(Cluster *) AcquireQuantumMemory(1,sizeof(*cluster));
             head=cluster;
           }
         if (cluster == (Cluster *) NULL)
@@ -1069,7 +1069,7 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
       /*
         No classes were identified-- create one.
       */
-      cluster=(Cluster *) AcquireMagickMemory(sizeof(*cluster));
+      cluster=(Cluster *) AcquireQuantumMemory(1,sizeof(*cluster));
       if (cluster == (Cluster *) NULL)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
@@ -1412,13 +1412,13 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
           {
             if (node == head)
               {
-                node->child=(IntervalTree *) AcquireMagickMemory(
+                node->child=(IntervalTree *) AcquireQuantumMemory(1,
                   sizeof(*node->child));
                 node=node->child;
               }
             else
               {
-                node->sibling=(IntervalTree *) AcquireMagickMemory(
+                node->sibling=(IntervalTree *) AcquireQuantumMemory(1,
                   sizeof(*node->sibling));
                 node=node->sibling;
               }
@@ -1438,7 +1438,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
         }
       if (left != head->left)
         {
-          node->sibling=(IntervalTree *) AcquireMagickMemory(
+          node->sibling=(IntervalTree *) AcquireQuantumMemory(1,
             sizeof(*node->sibling));
           node=node->sibling;
           if (node == (IntervalTree *) NULL)

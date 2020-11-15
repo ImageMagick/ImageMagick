@@ -162,7 +162,7 @@ WandExport PixelIterator *ClonePixelIterator(const PixelIterator *iterator)
   assert(iterator->signature == MagickWandSignature);
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
-  clone_iterator=(PixelIterator *) AcquireMagickMemory(sizeof(*clone_iterator));
+  clone_iterator=(PixelIterator *) AcquireQuantumMemory(1,sizeof(*clone_iterator));
   if (clone_iterator == (PixelIterator *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       iterator->name);
@@ -316,7 +316,7 @@ WandExport PixelIterator *NewPixelIterator(MagickWand *wand)
   view=AcquireVirtualCacheView(image,exception);
   if (view == (CacheView *) NULL)
     return((PixelIterator *) NULL);
-  iterator=(PixelIterator *) AcquireMagickMemory(sizeof(*iterator));
+  iterator=(PixelIterator *) AcquireQuantumMemory(1,sizeof(*iterator));
   if (iterator == (PixelIterator *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
@@ -435,7 +435,7 @@ WandExport PixelIterator *NewPixelRegionIterator(MagickWand *wand,
   view=AcquireVirtualCacheView(image,exception);
   if (view == (CacheView *) NULL)
     return((PixelIterator *) NULL);
-  iterator=(PixelIterator *) AcquireMagickMemory(sizeof(*iterator));
+  iterator=(PixelIterator *) AcquireQuantumMemory(1,sizeof(*iterator));
   if (iterator == (PixelIterator *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       wand->name);

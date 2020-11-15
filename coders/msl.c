@@ -7847,15 +7847,15 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   */
   (void) memset(&msl_info,0,sizeof(msl_info));
   msl_info.exception=exception;
-  msl_info.image_info=(ImageInfo **) AcquireMagickMemory(
+  msl_info.image_info=(ImageInfo **) AcquireQuantumMemory(1,
     sizeof(*msl_info.image_info));
-  msl_info.draw_info=(DrawInfo **) AcquireMagickMemory(
+  msl_info.draw_info=(DrawInfo **) AcquireQuantumMemory(1,
     sizeof(*msl_info.draw_info));
   /* top of the stack is the MSL file itself */
-  msl_info.image=(Image **) AcquireMagickMemory(sizeof(*msl_info.image));
-  msl_info.attributes=(Image **) AcquireMagickMemory(
+  msl_info.image=(Image **) AcquireQuantumMemory(1,sizeof(*msl_info.image));
+  msl_info.attributes=(Image **) AcquireQuantumMemory(1,
     sizeof(*msl_info.attributes));
-  msl_info.group_info=(MSLGroupInfo *) AcquireMagickMemory(
+  msl_info.group_info=(MSLGroupInfo *) AcquireQuantumMemory(1,
     sizeof(*msl_info.group_info));
   if ((msl_info.image_info == (ImageInfo **) NULL) ||
       (msl_info.draw_info == (DrawInfo **) NULL) ||

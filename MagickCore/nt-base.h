@@ -56,7 +56,7 @@ extern "C" {
 #define _SC_PHYS_PAGES 2
 #define _SC_OPEN_MAX 3
 #if !defined(SSIZE_MAX)
-#define SSIZE_MAX  0x7fffffffL
+#define SSIZE_MAX  ((SIZE_MAX)/2)
 #endif
 
 /*

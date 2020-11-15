@@ -1024,7 +1024,7 @@ MagickExport MagickBooleanType ThrowException(ExceptionInfo *exception,
       UnlockSemaphoreInfo(exception->semaphore);
       return(MagickTrue);
     }
-  p=(ExceptionInfo *) AcquireMagickMemory(sizeof(*p));
+  p=(ExceptionInfo *) AcquireQuantumMemory(1,sizeof(*p));
   if (p == (ExceptionInfo *) NULL)
     {
       UnlockSemaphoreInfo(exception->semaphore);

@@ -2979,7 +2979,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
             MagickPathExtent);
           image_info->temporary=MagickTrue;
         }
-      magick=(unsigned char *) AcquireMagickMemory(magick_size);
+      magick=(unsigned char *) AcquireQuantumMemory(1,magick_size);
       if (magick == (unsigned char *) NULL)
         {
           (void) CloseBlob(image);

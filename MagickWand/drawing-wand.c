@@ -441,7 +441,7 @@ WandExport void ClearDrawingWand(DrawingWand *wand)
   wand->pattern_bounds.width=0;
   wand->pattern_bounds.height=0;
   wand->index=0;
-  wand->graphic_context=(DrawInfo **) AcquireMagickMemory(
+  wand->graphic_context=(DrawInfo **) AcquireQuantumMemory(1,
     sizeof(*wand->graphic_context));
   if (wand->graphic_context == (DrawInfo **) NULL)
     {
@@ -494,7 +494,7 @@ WandExport DrawingWand *CloneDrawingWand(const DrawingWand *wand)
   assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  clone_wand=(DrawingWand *) AcquireMagickMemory(sizeof(*clone_wand));
+  clone_wand=(DrawingWand *) AcquireQuantumMemory(1,sizeof(*clone_wand));
   if (clone_wand == (DrawingWand *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,
       "MemoryAllocationFailed",GetExceptionMessage(errno));
@@ -6798,7 +6798,7 @@ WandExport DrawingWand *NewDrawingWand(void)
   quantum=GetMagickQuantumDepth(&depth);
   if (depth != MAGICKCORE_QUANTUM_DEPTH)
     ThrowWandFatalException(WandError,"QuantumDepthMismatch",quantum);
-  wand=(DrawingWand *) AcquireMagickMemory(sizeof(*wand));
+  wand=(DrawingWand *) AcquireQuantumMemory(1,sizeof(*wand));
   if (wand == (DrawingWand *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
@@ -6819,7 +6819,7 @@ WandExport DrawingWand *NewDrawingWand(void)
   wand->pattern_bounds.width=0;
   wand->pattern_bounds.height=0;
   wand->index=0;
-  wand->graphic_context=(DrawInfo **) AcquireMagickMemory(sizeof(
+  wand->graphic_context=(DrawInfo **) AcquireQuantumMemory(1,sizeof(
     *wand->graphic_context));
   if (wand->graphic_context == (DrawInfo **) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",

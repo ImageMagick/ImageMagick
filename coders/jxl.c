@@ -110,7 +110,8 @@ typedef struct OutBuffer
 static size_t AllocOutput(void* data, const uint8_t* buf, size_t count)
 {
   OutBuffer *buffer=(OutBuffer *) data;
-  buffer->data=ResizeMagickMemory(buffer->data,buffer->size+count);
+  buffer->data=ResizeQuantumMemory(buffer->data,buffer->size+count,
+    sizeof(*buffer->data));
   if (!buffer->data) return 0;
   memcpy(buffer->data+buffer->size, buf, count);
   buffer->size+=count;
@@ -143,7 +144,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status == MagickTrue)
   {
     jxlsize=(size_t) GetBlobSize(temp_image);
-    jxl=(unsigned char *) AcquireMagickMemory(jxlsize);
+    jxl=(unsigned char *) AcquireQuantumMemory(1,jxlsize);
     size_t num_read=ReadBlob(temp_image,jxlsize,jxl);
     if (num_read != jxlsize) status=MagickFalse;
   }

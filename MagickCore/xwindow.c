@@ -4293,7 +4293,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
                 /*
                   Append colormap to colormap list.
                 */
-                p=(ColormapInfo *) AcquireMagickMemory(sizeof(*p));
+                p=(ColormapInfo *) AcquireQuantumMemory(1,sizeof(*p));
                 if (p == (ColormapInfo *) NULL)
                   return((Image *) NULL);
                 p->colormap=window_info[id].colormap;
@@ -5119,7 +5119,7 @@ MagickPrivate XWindows *XInitializeWindows(Display *display,
   /*
     Allocate windows structure.
   */
-  windows=(XWindows *) AcquireMagickMemory(sizeof(*windows));
+  windows=(XWindows *) AcquireQuantumMemory(1,sizeof(*windows));
   if (windows == (XWindows *) NULL)
     {
       ThrowXWindowFatalException(XServerFatalError,"MemoryAllocationFailed",
@@ -5127,11 +5127,11 @@ MagickPrivate XWindows *XInitializeWindows(Display *display,
       return((XWindows *) NULL);
     }
   (void) memset(windows,0,sizeof(*windows));
-  windows->pixel_info=(XPixelInfo *) AcquireMagickMemory(
+  windows->pixel_info=(XPixelInfo *) AcquireQuantumMemory(1,
     sizeof(*windows->pixel_info));
-  windows->icon_pixel=(XPixelInfo *) AcquireMagickMemory(
+  windows->icon_pixel=(XPixelInfo *) AcquireQuantumMemory(1,
     sizeof(*windows->icon_pixel));
-  windows->icon_resources=(XResourceInfo *) AcquireMagickMemory(
+  windows->icon_resources=(XResourceInfo *) AcquireQuantumMemory(1,
     sizeof(*windows->icon_resources));
   if ((windows->pixel_info == (XPixelInfo *) NULL) ||
       (windows->icon_pixel == (XPixelInfo *) NULL) ||

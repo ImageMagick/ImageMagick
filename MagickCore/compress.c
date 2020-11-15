@@ -267,7 +267,7 @@ MagickExport void Ascii85Initialize(Image *image)
     Allocate image structure.
   */
   if (image->ascii85 == (Ascii85Info *) NULL)
-    image->ascii85=(Ascii85Info *) AcquireMagickMemory(sizeof(*image->ascii85));
+    image->ascii85=(Ascii85Info *) AcquireQuantumMemory(1,sizeof(*image->ascii85));
   if (image->ascii85 == (Ascii85Info *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) memset(image->ascii85,0,sizeof(*image->ascii85));

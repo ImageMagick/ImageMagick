@@ -4890,7 +4890,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
         size++;
       if ( size >= MAX_STACK_DEPTH )
         CLIWandExceptionBreak(OptionError,"ParenthesisNestedTooDeeply",option);
-      node=(Stack *) AcquireMagickMemory(sizeof(*node));
+      node=(Stack *) AcquireQuantumMemory(1,sizeof(*node));
       if (node == (Stack *) NULL)
         CLIWandExceptionBreak(ResourceLimitFatalError,
             "MemoryAllocationFailed",option);
@@ -4921,7 +4921,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
         size++;
       if ( size >= MAX_STACK_DEPTH )
         CLIWandExceptionBreak(OptionError,"CurlyBracesNestedTooDeeply",option);
-      node=(Stack *) AcquireMagickMemory(sizeof(*node));
+      node=(Stack *) AcquireQuantumMemory(1,sizeof(*node));
       if (node == (Stack *) NULL)
         CLIWandExceptionBreak(ResourceLimitFatalError,
             "MemoryAllocationFailed",option);

@@ -1820,7 +1820,7 @@ static Image *RenderHoughLines(const ImageInfo *image_info,const size_t columns,
     draw_info->primitive=FileToString(image->filename,~0UL,exception);
   else
     {
-      draw_info->primitive=(char *) AcquireMagickMemory((size_t)
+      draw_info->primitive=(char *) AcquireQuantumMemory(1,(size_t)
         GetBlobSize(image)+1);
       if (draw_info->primitive != (char *) NULL)
         {

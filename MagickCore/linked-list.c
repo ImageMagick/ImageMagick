@@ -118,7 +118,7 @@ MagickExport MagickBooleanType AppendValueToLinkedList(
   assert(list_info->signature == MagickCoreSignature);
   if (list_info->elements == list_info->capacity)
     return(MagickFalse);
-  next=(ElementInfo *) AcquireMagickMemory(sizeof(*next));
+  next=(ElementInfo *) AcquireQuantumMemory(1,sizeof(*next));
   if (next == (ElementInfo *) NULL)
     return(MagickFalse);
   next->value=(void *) value;
@@ -460,7 +460,7 @@ MagickExport MagickBooleanType InsertValueInLinkedList(
   if ((index > list_info->elements) ||
       (list_info->elements == list_info->capacity))
     return(MagickFalse);
-  next=(ElementInfo *) AcquireMagickMemory(sizeof(*next));
+  next=(ElementInfo *) AcquireQuantumMemory(1,sizeof(*next));
   if (next == (ElementInfo *) NULL)
     return(MagickFalse);
   next->value=(void *) value;
@@ -565,7 +565,7 @@ MagickExport MagickBooleanType InsertValueInSortedLinkedList(
     return(MagickFalse);
   if (list_info->elements == list_info->capacity)
     return(MagickFalse);
-  next=(ElementInfo *) AcquireMagickMemory(sizeof(*next));
+  next=(ElementInfo *) AcquireQuantumMemory(1,sizeof(*next));
   if (next == (ElementInfo *) NULL)
     return(MagickFalse);
   next->value=(void *) value;
