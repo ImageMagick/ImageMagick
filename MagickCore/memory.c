@@ -175,14 +175,14 @@ static size_t
   virtual_anonymous_memory = 0;
 
 #if defined _MSC_VER
-static void* MSCMalloc(size_t size)
+static void *MSCMalloc(size_t size)
 {
-  return malloc(size);
+  return(malloc(size));
 }
 
-static void* MSCRealloc(void* ptr, size_t size)
+static void *MSCRealloc(void* ptr, size_t size)
 {
-  return realloc(ptr,size);
+  return(realloc(ptr,size));
 }
 
 static void MSCFree(void* ptr)
