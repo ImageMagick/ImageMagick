@@ -1,3 +1,9 @@
+2020-11-15  7.0.10-39  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-39 GIT revision 17...
+
+2020-11-07  7.0.10-39  <quetzlzacatenango@image...>
+  * support DPX 4:2:2 sampling.
+
 2020-11-14  7.0.10-38  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-38 GIT revision 17815:bf51a3f1f:20201114
 
