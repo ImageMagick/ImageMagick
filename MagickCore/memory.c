@@ -320,7 +320,7 @@ static inline void *AcquireAlignedMemory_Generic(const size_t size)
   #if SIZE_MAX < ALIGNMENT_OVERHEAD
     #error "CACHE_LINE_SIZE is way too big."
   #endif
-  extent=(size + ALIGNMENT_OVERHEAD);
+  extent=(size+ALIGNMENT_OVERHEAD);
   if (extent <= size)
     {
       errno=ENOMEM;
