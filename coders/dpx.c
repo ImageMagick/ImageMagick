@@ -857,7 +857,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offset+=ReadBlob(image,sizeof(dpx.image.image_element[i].description),
       (unsigned char *) dpx.image.image_element[i].description);
   }
-  SetImageColorspace(image,RGBColorspace,exception);
+  (void) SetImageColorspace(image,RGBColorspace,exception);
   offset+=ReadBlob(image,sizeof(dpx.image.reserve),(unsigned char *)
     dpx.image.reserve);
   if (dpx.file.image_offset >= 1664U)
@@ -1109,7 +1109,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           StringInfo
             *profile;
 
-           if (dpx.file.user_size > GetBlobSize(image))
+           if ((MagickSizeType) dpx.file.user_size > GetBlobSize(image))
              ThrowReaderException(CorruptImageError,
                "InsufficientImageDataInFile");
            profile=BlobToStringInfo((const unsigned char *) NULL,
@@ -1211,24 +1211,23 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       case CbYCrY422ComponentType:
       case CbYACrYA4224ComponentType:
-         ThrowReaderException(CoderError,"DataEncodingSchemeIsNotSupported");
       case CbYCr444ComponentType:
       {
-        SetImageColorspace(image,Rec709YCbCrColorspace,exception);
+        (void) SetImageColorspace(image,Rec709YCbCrColorspace,exception);
         break;
       }
       case LumaComponentType:
       {
-        SetImageColorspace(image,GRAYColorspace,exception);
+        (void) SetImageColorspace(image,GRAYColorspace,exception);
         break;
       }
       default:
       {
-        SetImageColorspace(image,sRGBColorspace,exception);
+        (void) SetImageColorspace(image,sRGBColorspace,exception);
         if (dpx.image.image_element[n].transfer_characteristic == LogarithmicColorimetric)
-          SetImageColorspace(image,LogColorspace,exception);
+          (void) SetImageColorspace(image,LogColorspace,exception);
         if (dpx.image.image_element[n].transfer_characteristic == PrintingDensityColorimetric)
-          SetImageColorspace(image,LogColorspace,exception);
+          (void) SetImageColorspace(image,LogColorspace,exception);
         break;
       }
     }
@@ -1495,7 +1494,8 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
 
   size_t
     channels,
-    extent;
+    extent,
+    samples_per_pixel;
 
   ssize_t
     count,
@@ -1507,6 +1507,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
     seconds;
 
   unsigned char
+    component_type,
     *pixels;
 
   /*
@@ -1531,8 +1532,6 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
           (horizontal_factor != 4) && (vertical_factor != 1) &&
           (vertical_factor != 2) && (vertical_factor != 4))
         ThrowWriterException(CorruptImageError,"UnexpectedSamplingFactor");
-      if ((horizontal_factor == 2) || (vertical_factor == 2))
-        ThrowWriterException(CoderError,"DataEncodingSchemeIsNotSupported");
     }
   if ((IsYCbCrCompatibleColorspace(image->colorspace) != MagickFalse) &&
       ((horizontal_factor == 2) || (vertical_factor == 2)))
@@ -2002,17 +2001,42 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
       if ((horizontal_factor == 2) || (vertical_factor == 2))
         quantum_type=CbYCrYQuantum;
     }
-  extent=GetBytesPerRow(image->columns,
-    image->alpha_trait != UndefinedPixelTrait ? 4UL : 3UL,image->depth,
-    dpx.image.image_element[0].packing == 0 ? MagickFalse : MagickTrue);
-  if ((image_info->type != TrueColorType) &&
-      (image->alpha_trait == UndefinedPixelTrait) &&
-      (SetImageGray(image,exception) != MagickFalse))
+  samples_per_pixel=1;
+  quantum_type=GrayQuantum;
+  component_type=dpx.image.image_element[0].descriptor;
+  switch (component_type)
+  {
+    case CbYCrY422ComponentType:
     {
-      quantum_type=GrayQuantum;
-      extent=GetBytesPerRow(image->columns,1UL,image->depth,
-        dpx.image.image_element[0].packing == 0 ? MagickFalse : MagickTrue);
+      samples_per_pixel=2;
+      quantum_type=CbYCrYQuantum;
+      break;
     }
+    case CbYACrYA4224ComponentType:
+    case CbYCr444ComponentType:
+    {
+      samples_per_pixel=3;
+      quantum_type=CbYCrQuantum;
+      break;
+    }
+    case RGBComponentType:
+    {
+      samples_per_pixel=3;
+      quantum_type=RGBQuantum;
+      break;
+    }
+    case ABGRComponentType:
+    case RGBAComponentType:
+    {
+      samples_per_pixel=4;
+      quantum_type=RGBAQuantum;
+      break;
+    }
+    default:
+      break;
+  }
+  extent=GetBytesPerRow(image->columns,samples_per_pixel,image->depth,
+    dpx.image.image_element[0].packing == 0 ? MagickFalse : MagickTrue);
   pixels=(unsigned char *) GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
