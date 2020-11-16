@@ -57,7 +57,7 @@ extern "C" {
 #define _SC_OPEN_MAX 3
 #if !defined(SSIZE_MAX)
 # ifdef _WIN64
-#   define SSIZE_MAX _I64_MAX
+#   define SSIZE_MAX LLONG_MAX
 # else
 #   define SSIZE_MAX LONG_MAX
 # endif
