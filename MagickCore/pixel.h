@@ -24,7 +24,7 @@
 extern "C" {
 #endif
 
-#define MaxPixelChannels  32
+#define MaxPixelChannels  64
 #undef index
 
 /*
