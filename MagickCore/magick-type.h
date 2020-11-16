@@ -40,6 +40,7 @@ extern "C" {
 #  define MagickULLConstant(c)  ((MagickSizeType) (c ## ULL))
 #endif
 
+#if !defined(__s390__)
 #if MAGICKCORE_SIZEOF_FLOAT_T == 0
 typedef float MagickFloatType;
 #elif (MAGICKCORE_SIZEOF_FLOAT_T == MAGICKCORE_SIZEOF_FLOAT)
@@ -50,6 +51,9 @@ typedef double MagickFloatType;
 typedef double MagickFloatType;
 #else
 #error Your MagickFloatType type is neither a float, nor a double, nor a long double
+#endif
+#else
+typedef double MagickFloatType;
 #endif
 #if MAGICKCORE_SIZEOF_DOUBLE_T == 0
 typedef double MagickDoubleType;
