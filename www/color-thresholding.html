@@ -90,6 +90,7 @@
   <main role="main" class="container">
     <div class="magick-template">
 <div class="magick-header">
+<h1 class="text-center">Color Thresholding</h1>
 <p>Use color thresholding to specify a color range and return a black and white image. All colors between the start and stop colors (inclusively) become white and the rest of the image pixels become black. The two colors are separated with a hyphen between them. Thresholding, by default, take place in the sRGB colorspace.  Use the <code>-colorspace</code> to perform the thresholding in an alternative colorspaces (currently limited to sRGB, Gray, HSV, HSL, HCL, HSB, and HSW). Start and stop colors can be specified in any colorspace (recognized by ImageMagick), but in general, we advise you specify them in the colorspace corresponding to the <code>-colorspace</code> option. For colorspace Gray, be sure to use a start value lower than the stop value. Note that Hue is cyclical -- 0 and 360 are the same. However, a range of colors that spans hue = 0 may still be useful, if the start hue value is higher than the stop hue value.</p>
 
 <p>Caution is advised when mixing the colorspace of the start and stop colors and that of the image. A large range in one colorspace may map to only a narrow range in another colorspace. For example, one might naively think that <code>sRGB(0,0,0)</code> to <code>sRGB(255,255,255)</code> would produce a white image, catching all colors, even when using -colorspace HSV. But these two colors are black and white and so map only to a range of grayscale as <code>hsv(0,0%,0%)</code> and <code>hsv(0,0%,100%)</code>. For a color image, you would likely not find too many gray pixels.</p>
@@ -186,4 +187,4 @@ magick xc:"sRGB(205,100,45)" -colorspace gray txt:
   <script>window.jQuery || document.write('<script src="assets/jquery.slim.min.js"><\/script>')</script><script src="assets/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous">
 </body>
 </html>
-<!-- Magick Cache 12th October 2020 12:55 -->
+<!-- Magick Cache 16th November 2020 15:40 -->

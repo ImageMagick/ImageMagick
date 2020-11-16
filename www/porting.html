@@ -90,7 +90,7 @@
   <main role="main" class="container">
     <div class="magick-template">
 <div class="magick-header">
-
+<h1 class="text-center">ImageMagick Porting Guide</h1>
 <p class="text-center"><a href="porting.html#imv7">ImageMagick Version 7</a> • <a href="porting.html#hdri">High Dynamic Range Imaging</a> • <a href="porting.html#channels">Pixel Channels</a> • <a href="porting.html#alpha">Alpha</a> • <a href="porting.html#grayscale">Grayscale</a> • <a href="porting.html#mask">Masks</a> • <a href="porting.html#core">MagickCore API</a> • <a href="porting.html#headers">Header Files</a>  • <a href="porting.html#deprecate">Deprecated Features Removed</a> • <a href="porting.html#cli">Command-line Interface</a> • <a href="porting.html#summary">Version 7 Change Summary</a> </p>
 
 <p class="lead magick-description">The design of ImageMagick is an evolutionary process, with the design and implementation efforts serving to influence and guide further progress in the other.  With ImageMagick version 7, we improved the design based on lessons learned from the version 6 implementation.  ImageMagick was originally designed to display RGB images to an X Windows server.  Over time we extended support to RGBA images and then to the CMYK and CMYKA image format.  With ImageMagick version 7, we extend support to arbitrary colorspaces with an arbitrary number of pixel channels.  In addition, ImageMagick 7 stores pixel channels as floats permitting out of band values (e.g. negative) and reduces rounding error.  There are numerous other design enhancements described within.</p>
@@ -101,7 +101,7 @@
 a major overhaul, with specific emphasis on the ability to read 'options' not
 only from the command line, but also from scripts, and file streams. This
 allows for the use of 'co-processing' programming techniques or performing
-image handling using 'deamon/server backends', and even multi-machine
+image handling using 'daemon/server backends', and even multi-machine
 distributed processing.</p>
 
 <p>With the shell API overhaul other improvements were made, including:
@@ -290,7 +290,7 @@ NegateImage(image,exception);
 (void) SetImageChannelMask(image,channel_mask);</code></pre>
 
 <h5>Pixel User Channels</h5>
-<p>In version 7, we introduce pixel user channels.  Traditionally we utilize 4 channels, red, green, blue, and alpha.   For CMYK we also have a black channel.  User channels are designed to contain whatever additional channel information that makes sense for your application.  Some examples include extra channels in TIFF or PSD images or perhaps you require a channel with infrared information for the pixel.  You can associate traits with the user channels so that they when they are acted upon by an image processing algorithm (e.g. blur) the pixels are copied, acted upon by the algorithm, or even blended with the alpha channel if that makes sense.</p>
+<p>In version 7, we introduce pixel user channels.  Traditionally we utilize 4 channels, red, green, blue, and alpha.   For CMYK we also have a black channel.  User channels are designed to contain whatever additional channel information that makes sense for your application.  Some examples include extra channels in TIFF or PSD images or perhaps you require a channel with infrared information for the pixel.  You can associate traits with the user channels so that when they are acted upon by an image processing algorithm (e.g. blur) the pixels are copied, acted upon by the algorithm, or even blended with the alpha channel if that makes sense.</p>
 <h5>Pixel Metacontent</h5>
 <p>In version 7, we introduce pixel metacontent.  Metacontent is content about content. So rather than being the content itself, it's something that describes or is associated with the content.  Here the content is a pixel.  The pixel metacontent is for your exclusive use (internally the data is just copied, it is not modified) and is accessed with these MagickCore API methods:</p>
 <pre class="highlight"><code>SetImageMetacontentExtent()
@@ -301,7 +301,7 @@ GetCacheViewAuthenticMetacontent()
 GetCacheViewVirtualMetacontent()</code></pre>
 
 <h2><a class="anchor" id="alpha"></a>Alpha</h2>
-<p>We support alpha now, previously opacity.  With alpha, a value of <kbd>0</kbd> means that the pixel does not have any coverage information and is transparent; i.e. there was no color contribution from any geometry because the geometry did not overlap this pixel. A value of <code>QuantumRange</code> means that the pixel is opaque because the geometry completely overlapped the pixel. As a consequence, in version 7, the PixelInfo structure member alpha has replaced the previous opacity member.  Another consequence is the alpha part of a sRGB value in hexadecimal notation is now reversed (e.g. #0000 is fully transparent).</p>
+<p>We support alpha now, previously opacity.  With alpha, a value of <kbd>0</kbd> means that the pixel does not have any coverage information and is transparent; i.e. there was no color contribution from any geometry because the geometry did not overlap this pixel. A value of <code>QuantumRange</code> means that the pixel is opaque because the geometry completely overlapped the pixel. As a consequence, in version 7, the PixelInfo structure member alpha has replaced the previous opacity member.  Another consequence is the alpha part of an sRGB value in hexadecimal notation is now reversed (e.g. #0000 is fully transparent).</p>
 <h2><a class="anchor" id="colorspace"></a>Colorspace</h2>
 <p>The <code>Rec601Luma</code> and <code>Rec709Luma</code> colorspaces are no longer supported.  Instead, specify the <code>gray</code> colorspace and choose from these intensity options:</p>
 <pre class="highlight"><code>Rec601Luma
@@ -330,7 +330,7 @@ convert -density 300 -colorspace srgb image.eps -alpha transparent -clip -alpha 
 <p>Here are a list of changes to the MagickCore API:</p>
 <ul>
 <li>Almost all image processing algorithms are now channel aware.</li>
-<li>The MagickCore API adds an <code>ExceptionInfo</code> argument to those methods that lacked it in version 6, e.g. <code>NegateImage(image,MagickTrue,exception</code>);</li>
+<li>The MagickCore API adds an <code>ExceptionInfo</code> argument to those methods that lacked it in version 6, e.g. <code>NegateImage(image,MagickTrue,exception)</code></li>
 <li>All method channel analogs have been removed (e.g. BlurImageChannel()), they are no longer necessary, use pixel traits instead.</li>
 <li>Public and private API calls are now declared with the GCC visibility attribute.  The MagickCore and MagickWand dynamic libraries now only export public struct and function declarations.</li>
 <li>The InterpolatePixelMethod enum is now PixelInterpolateMethod.</li>
@@ -427,7 +427,7 @@ be applied to expand the one channel into separate RGB (or other) channels.
     API, replacing the old "<code>magick</code>" command. This allows you to
     create a 'magick script' of the form  "<code>#!/path/to/command/magick
     -script</code>", or pipe options into a command "<code>magick -script
-    -</code>, as abackground process. </dd>
+    -</code>, as a background process. </dd>
 
 <dt class="col-md-4">magick-script</dt>
 <dd class="col-md-8">This the same as "<code>magick</code>", (only command name is different)
@@ -484,7 +484,7 @@ scripts.</p>
     are to be processed 'in-place'.  (not yet implemented).  However if
     not provided, "<code>-read</code>" can still be used to differentiate
     secondary image reads (for use in things like alpha composition) from
-    the 'in-place' image being processed.  In other commands (such as "magick") it is equivalent to a explicit "<code>-read</code>" (see below) of the next option as a image (as it was in IMv6).  </dd>
+    the 'in-place' image being processed.  In other commands (such as "magick") it is equivalent to an explicit "<code>-read</code>" (see below) of the next option as an image (as it was in IMv6).  </dd>
 
 <dt class="col-md-4">-alpha activate/deactivate</dt>
 <dd class="col-md-8">enables and disables the alpha channel, respectively, with persistence. This is like on/off in Imagemagick 6. In Imagemagick 7, -alpha off will remove the alpha channel permanently such that -alpha on will not re-enable it.</dd>
@@ -525,7 +525,7 @@ scripts.</p>
     this option. Can be used in a script to force the "<code>magick</code>"
     command to exit, without actually closing the pipeline that it is
     processing options from.  May also be used as a 'final' option on the "<code>magick</code>" command
-    line, instead of a implicit output image, to completely prevent any image
+    line, instead of an implicit output image, to completely prevent any image
     write. ASIDE: even the "<code>NULL:</code>" coder requires at least one
     image, for it to 'not write'! This option does not require any images at
     all. </dd>
@@ -691,4 +691,3 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
   <script>window.jQuery || document.write('<script src="assets/jquery.slim.min.js"><\/script>')</script><script src="assets/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous">
 </body>
 </html>
-<!-- Magick Cache 12th October 2020 13:49 -->

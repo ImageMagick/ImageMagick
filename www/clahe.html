@@ -90,7 +90,8 @@
   <main role="main" class="container">
     <div class="magick-template">
 <div class="magick-header">
-<p class="lead magick-description">Use Adaptive histogram equalization (AHE) to improve contrast in images.  Ordinary histogram equalization computes a global equalization whereas an adaptive method computes several histograms, each corresponding to a distinct section of the image, and uses them to redistribute the lightness values of the image.  It is suitable for improving the local contrast and enhancing the definitions of edges in each region of an image.  A variant of adaptive histogram equalization, contrast limited adaptive histogram equalization (CLAHE) limits AHE's tendency to overamplify noise in relatively homogeneous regions of an image.</p>
+<h1 class="text-center">Adaptive Histogram Equalization</h1>
+<p class="lead magick-description">Use contrast limited adaptive histogram equalization (AHE) to improve contrast in images.  Ordinary histogram equalization computes a global equalization whereas an adaptive method computes several histograms, each corresponding to a distinct section of the image, and uses them to redistribute the lightness values of the image.  It is suitable for improving the local contrast and enhancing the definitions of edges in each region of an image.  A variant of adaptive histogram equalization, contrast limited adaptive histogram equalization (CLAHE) limits AHE's tendency to overamplify noise in relatively homogeneous regions of an image.</p>
 <p>CLAHE is supported as of ImageMagick 7.0.8-24 with the <a href="command-line-options.html#clahe">-clahe</a> option:</p>
 <ul>
 <h6><a class="anchor" id="clahe"></a>-clahe <var>width</var>x<var>height</var>{%}{+}<var>number-bins</var>{+}<var>clip-limit</var>{!}</h6>
@@ -149,4 +150,4 @@ magick mountains.jpg -virtual-pixel mirror -clahe 300x300+128+3! mountains-clahe
   <script>window.jQuery || document.write('<script src="assets/jquery.slim.min.js"><\/script>')</script><script src="assets/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous">
 </body>
 </html>
-<!-- Magick Cache 12th October 2020 11:07 -->
+<!-- Magick Cache 16th November 2020 15:20 -->

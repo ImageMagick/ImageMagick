@@ -90,12 +90,17 @@
   <main role="main" class="container">
     <div class="magick-template">
 <div class="magick-header">
+<h1 class="text-center">Image Scripting Language</h1>
 <p class="lead magick-description">Use the <code>magick-script</code> scripting language to convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.   See <a href="command-line-processing.html">Command Line Processing</a> for advice on how to structure your <code>magick</code> command or see below for example usages of the command.</p>
 
 <p>Here is an example script:</p>
 
-<pre class="highlight">
-#!/bin/env magick-script
+<pre class="highlight"><code>#!/bin/env magick-script
+-size 100x100 xc:red ( rose: -rotate -90 ) +append  -write show:
+</code></pre>
+
+<p>Or use the <code>magick</code> utility with the scripting option like this:</p>
+<pre class="highlight"></code>#!/bin/magick -script
 -size 100x100 xc:red ( rose: -rotate -90 ) +append  -write show:
 </code></pre>
 
@@ -1323,4 +1328,3 @@ transparent, extract, background, or shape the alpha channel</td>
   <script>window.jQuery || document.write('<script src="assets/jquery.slim.min.js"><\/script>')</script><script src="assets/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous">
 </body>
 </html>
-<!-- Magick Cache 12th October 2020 13:50 -->

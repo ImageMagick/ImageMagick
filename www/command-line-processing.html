@@ -90,6 +90,7 @@
   <main role="main" class="container">
     <div class="magick-template">
 <div class="magick-header">
+<h1 class="text-center">Anatomy of the Command-line</h1>
 <p class="text-center"><a href="command-line-processing.html#anatomy">The Anatomy of the Command-line</a> • <a href="command-line-processing.html#input">Input Filename</a> • <a href="command-line-processing.html#option">Command-line Options</a> • <a href="command-line-processing.html#output">Output Filename</a></p>
 
 <p class="lead magick-description">The ImageMagick command-line <a href="command-line-tools.html">tools</a> can be as simple as this:</p>
@@ -353,7 +354,7 @@ image-5.jpg</pre>
 <li><a href="command-line-processing.html#stack">Image Stack</a></li>
 </ul>
 
-<h4 class="magick-header"><a class="anchor" id="setting"></a>Image Setting</h4>
+<h5><a class="anchor" id="setting"></a>Image Setting</h5>
 
 <p>An image setting persists as it appears on the command-line and may affect
 subsequent processing such as reading an image, an image operator, or when
@@ -368,7 +369,7 @@ is reset or the command-line terminates.  The image settings include:</p>
 
 <pre class="highlight"><code>magick -channel RGB wand.png wizard.png images.png</code></pre>
 
-<h4 class="magick-header"><a class="anchor" id="operator"></a>Image Operator</h4>
+<h5><a class="anchor" id="operator"></a>Image Operator</h5>
 
 <p>An image operator differs from a setting in that it affects the image
 immediately as it appears on the command-line.  An operator is
@@ -392,12 +393,12 @@ may be smaller than the whole image and resizing all the frames into the same
 size may result in an unexpected output. In such a case,
 <a class="text-nowrap" href="command-line-options.html#coalesce">-coalesce</a> should be used to prepare those frames.</p>
 
-<h4 class="magick-header"><a class="anchor" id="channel"></a>Image Channel Operator</h5>
+<h5<a class="anchor" id="channel"></a>Image Channel Operator</h5>
 <p>Operate directly on image channels:</p>
 <ul>
 <a class="text-nowrap" href="command-line-options.html#channel-fx">-channel-fx</a>  • <a class="text-nowrap" href="command-line-options.html#separate">-separate</a> </ul>
 
-<h4 class="magick-header"><a class="anchor" id="sequence"></a>Image Sequence Operator</h4>
+<h5><a class="anchor" id="sequence"></a>Image Sequence Operator</h5>
 
 <p>An image sequence operator differs from a setting in that it affects an
 image sequence immediately as it appears on the command-line.  Choose from
@@ -409,7 +410,7 @@ these image sequence operators:</p>
 
 <pre class="highlight"><code>magick mikayla.png picnic.png beach.png -append vacation.png</code></pre>
 
-<h4 class="magick-header"><a class="anchor" id="geometry"></a>Image Geometry</h4>
+<h5"><a class="anchor" id="geometry"></a>Image Geometry</h5>
 
 <p>Many command-line <a href="command-line-options.html">options</a> take a <var>geometry</var> argument
 to specify such things as the desired width and height of an image and other
@@ -557,7 +558,7 @@ magick logo: -gravity center -region '100x200-10+20' -negate wizNeg3.png</code><
 </p>
 
 
-<h4 class="magick-header"><a class="anchor" id="stack"></a>Image Stack</h4>
+<h5><a class="anchor" id="stack"></a>Image Stack</h5>
 
 <p>In school, your teacher probably permitted you to work on problems on a scrap of paper and then copy the results to your test paper.  An image stack is similar.  It permits you to work on an image or image sequence in isolation and subsequently introduce the results back into the command-line.  The image stack is delineated with parenthesis.  Image operators only affect images in the current stack.  For example, we can limit the image rotation to just the wizard image like this:</p>
 
@@ -662,4 +663,4 @@ image-2.jpg</pre>
   <script>window.jQuery || document.write('<script src="assets/jquery.slim.min.js"><\/script>')</script><script src="assets/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous">
 </body>
 </html>
-<!-- Magick Cache 12th October 2020 12:41 -->
+<!-- Magick Cache 16th November 2020 16:32 -->

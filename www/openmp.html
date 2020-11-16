@@ -90,10 +90,10 @@
   <main role="main" class="container">
     <div class="magick-template">
 <div class="magick-header">
-
+<h1 class="text-center">Threads of Execution</h1>
 <p class="lead magick-description">Many of ImageMagick's internal algorithms are threaded to take advantage of speed-ups offered by the multicore processor chips and <a href="http://www.openmp.org">OpenMP</a>. OpenMP, is an API specification for parallel programming. If your compiler supports OpenMP (e.g. gcc, Visual Studio 2005) directives, ImageMagick automatically includes support. To verify, look for the OpenMP feature of ImageMagick with this command:</p>
 <pre class="highlight"><code>-> magick identify -version
-Version: ImageMagick 7.0.9-7 2020-09-04 Q16 https://imagemagick.org
+Version: ImageMagick 7.0.10-7 2020-09-04 Q16 https://imagemagick.org
 Copyright: © 1999-2020 ImageMagick Studio LLC
 Features: OpenMP(4.5)</code></pre>
 <p>With OpenMP enabled, most ImageMagick algorithms execute on all the cores on your system in parallel.  ImageMagick typically divides the work so that each thread processes 64 rows of pixels. As rows are completed, OpenMP assigns more chunks of pixel rows to each thread until the algorithm completes. For example, if you have a quad-core system, and attempt to resize an image, the resizing takes place on 4 cores (8 if hyperthreading is enabled).</p>
@@ -140,4 +140,4 @@ Performance[8]: 40i 4.831ips 0.872e 15.680u 0:02.070</code></pre>
   <script>window.jQuery || document.write('<script src="assets/jquery.slim.min.js"><\/script>')</script><script src="assets/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous">
 </body>
 </html>
-<!-- Magick Cache 12th October 2020 12:18 -->
+<!-- Magick Cache 16th November 2020 17:27 -->

@@ -90,6 +90,7 @@
   <main role="main" class="container">
     <div class="magick-template">
 <div class="magick-header">
+<h1 class="text-center">ImageMagick Security Policy</h1>
 <p class="text-center"><a href="security-policy.html#policy">Security Policy </a> • <a href="security-policy.html#synchronize">Pixel Cache Synchronize Policy</a> • <a href="security-policy.html#zero-configuration">Zero Configuration Security Policy</a> • <a href="security-policy.html#other">Other Security Considerations</a></p>
 
 
@@ -97,7 +98,7 @@
 
 <p>Security is a trade-off between a secure environment and convenience. If you want ImageMagick to be optimally secure, you could, for example, limit ImageMagick to only read or write web safe images (e.g. GIF, JPEG, PNG).   However, ImageMagick provides for a more secure option by adjusting the security policy per the requirements of your local environment or organizational policies. The security policy covers areas such as memory, which paths to read or write, how many images are permitted in an image sequence, how long a workflow can run, how much disk the image pixels can consume, a secret passphrase for remote connections, which coders are permitted or denied, and others. These policies should provide robust coverage to not only secure your environment per your requirements but also ensure ImageMagick remains a good citizen (e.g. prevent thrashing with large images) in your local environment.</p>
 
-<p>As an example, suppose you download an image from the internet and unbeknownst to you its been crafted to generate a 20000 by 20000 pixel image. ImageMagick attempts to allocate enough resources (memory, disk) and your system will likely deny the resource request and exit. However, its also possible that your computer might be temporarily sluggish or unavailable or ImageMagick may abort. To prevent such a scenario, you can set limits in the <code>policy.xml</code> configuration file. You might wonder why ImageMagick does not already include reasonable limits? Simply because what is reasonable in your environment, might not be reasonable to someone else. For example, you may have ImageMagick sandboxed where security is not a concern, whereas another user may use ImageMagick to process images on their publically accessible website.  Or ImageMagick runs on a host with 1TB of memory whereas another ImageMagick instance runs on an mobile phone. By policy, permitting giga-pixel image processing on the large memory host makes sense, not so much for the resource constrained mobile phone. If you utilize ImageMagick from a public website, you may want to increase security by preventing usage of the MVG or HTTPS coders. Only you can decide what are reasonable limits taking in consideration your environment. We provide this policy with reasonable limits and encourage you to modify it to suit your local environment:</p>
+<p>As an example, suppose you download an image from the internet and unbeknownst to you its been crafted to generate a 20000 by 20000 pixel image. ImageMagick attempts to allocate enough resources (memory, disk) and your system will likely deny the resource request and exit. However, its also possible that your computer might be temporarily sluggish or unavailable or ImageMagick may abort. To prevent such a scenario, you can set limits in the <a href="https://imagemagick.org/source/policy.xml">policy.xml</a> configuration file. You might wonder why ImageMagick does not already include reasonable limits? Simply because what is reasonable in your environment, might not be reasonable to someone else. For example, you may have ImageMagick sandboxed where security is not a concern, whereas another user may use ImageMagick to process images on their publically accessible website.  Or ImageMagick runs on a host with 1TB of memory whereas another ImageMagick instance runs on an mobile phone. By policy, permitting giga-pixel image processing on the large memory host makes sense, not so much for the resource constrained mobile phone. If you utilize ImageMagick from a public website, you may want to increase security by preventing usage of the MVG or HTTPS coders. Only you can decide what are reasonable limits taking in consideration your environment. We provide this policy with reasonable limits and encourage you to modify it to suit your local environment:</p>
 
 <pre class="pre-scrollable"><code>&lt;policymap>
   &lt;!-- temporary path must be a preexisting writable directory -->
@@ -112,12 +113,14 @@
   &lt;policy domain="resource" name="file" value="768"/>
   &lt;policy domain="resource" name="thread" value="2"/>
   &lt;policy domain="resource" name="time" value="120"/>
+  &lt;policy domain="coder" rights="write" pattern="{HTTP,HTTPS,MVG,PS,EPS,PDF,XPS}" />
+  &lt;policy domain="filter" rights="none" pattern="*" />
+  &lt;policy domain="path" rights="none" pattern="@*"/>  &lt;!-- indirect reads not permitted -->
   &lt;policy domain="cache" name="memory-map" value="anonymous"/>
   &lt;policy domain="cache" name="synchronize" value="true"/>
   &lt;policy domain="cache" name="shared-secret" value="<em>passphrase</em>" stealth="True"/>
-  &lt;policy domain="coder" rights="write" pattern="{HTTP,HTTPS,MVG,PS,EPS,PDF,XPS}" />
-  &lt;policy domain="filter" rights="none" pattern="*" />
-  &lt;policy domain="path" rights="none" pattern="@*"/>  <!-- indirect reads not permitted -->
+  &lt;policy domain="system" name="precision" value="6"/>
+  &lt;policy domain="system" name="shred" value="1"/>
 &lt;/policymap></code></pre>
 
 <p>Since we process multiple simultaneous sessions, we do not want any one session consuming all the available memory. With this policy, large images are cached to disk. If the image is too large and exceeds the pixel cache disk limit, the program exits. In addition, we place a time limit to prevent any run-away processing tasks. If any one image has a width or height that exceeds 8192 pixels or if an image sequence exceeds 32 frames, an exception is thrown and processing stops. As of ImageMagick 7.0.1-8, you can prevent the use of any delegate or all delegates (set the pattern to "*"). Note, prior to these releases, use a domain of <code>coder</code> to prevent delegate usage (e.g. <code>domain="coder" rights="none" pattern="HTTPS"</code>). We prevent users from executing any image filters.  The policy also prevents indirect reads. If you want to, for example, read text from a file (e.g. <code>caption:@myCaption.txt</code>), you'll need to disable the <code>path</code> policy.</p>
@@ -136,7 +139,7 @@ convert: no images defined `wizard.jpg'</pre>
 &lt;policy domain="module" rights="none" pattern="*" />
 &lt;policy domain="module" rights="read | write" pattern="{GIF,JPEG,PNG,WEBP}" /></code></pre>
 
-<p>Here we disable just a few Postscript related formats:</p>
+<p>Here we disable reading just a few Postscript related formats, you can still write them:</p>
 <pre class="highlight"><code>&lt;policy domain="module" rights="write" pattern="{PDF,PS,PS2,PS3,XPS}" /></code></pre>
 
 <p>As of ImageMagick 7.0.7-0, you can allocate the pixel cache and some internal buffers with anonymous memory mapping rather than from heap.  As a consequence, the pixels are initialized to zero resulting in a minor performance penalty.  You can also securely delete any temporary files for increased security.  The value is the number of times to shred (replace its content with random data) before deleting a temporary file.  For example,</p>
@@ -147,7 +150,7 @@ convert: no images defined `wizard.jpg'</pre>
 <p>Some image processing algorithms (e.g. wavelet transform) might consume a substantial amount of memory to complete.  ImageMagick maintains a separate memory pool for these large resource requests and as of 7.0.6-1 permits you to set a maximum request limit.  If the limit is exceeded, the allocation is instead memory-mapped on disk.  Here we limit the maximum memory request by policy:</p>
 <pre class="highlight"><code>&lt;policy domain="system" name="max-memory-request" value="256MiB"/> </code></pre>
 
-<p>As of ImageMagick version 7.0.4-23, you can limit the maximum number of images in a sequence.  For example, to limit an image sequence to 64 frames, use:</p>
+<p>As of ImageMagick version 7.0.4-23, you can limit the maximum number of images in a sequence.  For example, to limit an image sequence to at most 64 frames, use:</p>
 <pre class="highlight"><code>&lt;policy domain="resource" name="list-length" value="64"/></code></pre>
 
 <p>You can verify your policy changes are in effect with this command:</p>
@@ -282,4 +285,3 @@ Path: [built-in]
   <script>window.jQuery || document.write('<script src="assets/jquery.slim.min.js"><\/script>')</script><script src="assets/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous">
 </body>
 </html>
-<!-- Magick Cache 12th October 2020 11:49 -->
