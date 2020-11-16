@@ -591,17 +591,14 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ConcatenateMagickString(options,"-dInterpolateControl=-1 ",
       MagickPathExtent);
   option=GetImageOption(image_info,"authenticate");
-  if (option != (char *) NULL)
+  if ((option != (char *) NULL) && (strpbrk(option,"&;<>|") == (char *) NULL))
     {
       char
-        message[MagickPathExtent],
-        *passphrase;
+        passphrase[MagickPathExtent];
 
-      passphrase=SanitizeString(option);
-      (void) FormatLocaleString(message,MagickPathExtent,
-        "\"-sPDFPassword=%s\" ",passphrase);
-      passphrase=DestroyString(passphrase);
-      (void) ConcatenateMagickString(options,message,MagickPathExtent);
+      (void) FormatLocaleString(passphrase,MagickPathExtent,
+        "\"-sPDFPassword=%s\" ",option);
+      (void) ConcatenateMagickString(options,passphrase,MagickPathExtent);
     }
   read_info=CloneImageInfo(image_info);
   *read_info->magick='\0';

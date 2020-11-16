@@ -1588,9 +1588,15 @@ MagickExport char *SanitizeString(const char *source)
     *p;
 
   static char
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
     whitelist[] =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 "
-      "$-_.+!*'(),{}|\\^~[]`\"><#%;/?:@&=";
+      "$-_.+!;*(),{}|^~[]`\'><#%/?:@&=";
+#else
+    whitelist[] =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 "
+      "$-_.+!;*(),{}|\\^~[]`\"><#%/?:@&=";
+#endif
 
   sanitize_source=AcquireString(source);
   p=sanitize_source;
