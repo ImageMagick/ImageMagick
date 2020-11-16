@@ -1210,6 +1210,11 @@ cleanup:
 #endif
 }
 
+static inline MagickBooleanType IsEmptyOutline(FT_Outline outline)
+{
+  return((outline.n_points == 0) || (outline.n_contours <= 0));
+}
+
 static int TraceCubicBezier(FT_Vector *p,FT_Vector *q,FT_Vector *to,
   DrawInfo *draw_info)
 {
@@ -1272,11 +1277,6 @@ static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
     to->y/64.0);
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
-}
-
-static inline MagickBooleanType IsEmptyOutline(FT_Outline outline)
-{
-  return (outline.n_points == 0) || (outline.n_contours <= 0);
 }
 
 static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
