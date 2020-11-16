@@ -1274,6 +1274,11 @@ static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
   return(0);
 }
 
+static inline MagickBooleanType IsEmptyOutline(FT_Outline outline)
+{
+  return (outline.n_points == 0) || (outline.n_contours <= 0);
+}
+
 static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   const char *encoding,const PointInfo *offset,TypeMetric *metrics,
   ExceptionInfo *exception)
@@ -1611,9 +1616,10 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     ft_status=FT_Get_Glyph(face->glyph,&glyph.image);
     if (ft_status != 0)
       continue;
-    if (glyph.image->format != FT_GLYPH_FORMAT_OUTLINE)
-      continue;
     outline=((FT_OutlineGlyph) glyph.image)->outline;
+    if ((glyph.image->format != FT_GLYPH_FORMAT_OUTLINE) &&
+        (IsEmptyOutline(outline) == MagickFalse))
+      continue;
     ft_status=FT_Outline_Get_BBox(&outline,&bounds);
     if (ft_status != 0)
       continue;
@@ -1638,7 +1644,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         */
         annotate_info->affine.tx=glyph.origin.x/64.0;
         annotate_info->affine.ty=(-glyph.origin.y/64.0);
-        if ((outline.n_contours > 0) && (outline.n_points > 0))
+        if (IsEmptyOutline(outline) == MagickFalse)
           ft_status=FT_Outline_Decompose(&outline,&OutlineMethods,
             annotate_info);
       }
