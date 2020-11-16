@@ -594,11 +594,14 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (option != (char *) NULL)
     {
       char
-        passphrase[MagickPathExtent];
+        message[MagickPathExtent],
+        *passphrase;
 
-      (void) FormatLocaleString(passphrase,MagickPathExtent,
-        "\"-sPDFPassword=%s\" ",option);
-      (void) ConcatenateMagickString(options,passphrase,MagickPathExtent);
+      passphrase=SanitizeString(option);
+      (void) FormatLocaleString(message,MagickPathExtent,
+        "\"-sPDFPassword=%s\" ",passphrase);
+      passphrase=DestroyString(passphrase);
+      (void) ConcatenateMagickString(options,message,MagickPathExtent);
     }
   read_info=CloneImageInfo(image_info);
   *read_info->magick='\0';
