@@ -3769,7 +3769,6 @@ ModuleExport size_t RegisterSVGImage(void)
   entry=AcquireMagickInfo("SVG","SVG","Scalable Vector Graphics");
   entry->decoder=(DecodeImageHandler *) ReadSVGImage;
   entry->encoder=(EncodeImageHandler *) WriteSVGImage;
-  entry->flags^=CoderBlobSupportFlag;
 #if defined(MAGICKCORE_RSVG_DELEGATE)
   entry->flags^=CoderDecoderThreadSupportFlag;
 #endif
@@ -3783,7 +3782,6 @@ ModuleExport size_t RegisterSVGImage(void)
   entry->decoder=(DecodeImageHandler *) ReadSVGImage;
 #endif
   entry->encoder=(EncodeImageHandler *) WriteSVGImage;
-  entry->flags^=CoderBlobSupportFlag;
 #if defined(MAGICKCORE_RSVG_DELEGATE)
   entry->flags^=CoderDecoderThreadSupportFlag;
 #endif
@@ -3798,7 +3796,6 @@ ModuleExport size_t RegisterSVGImage(void)
   entry->decoder=(DecodeImageHandler *) ReadSVGImage;
 #endif
   entry->encoder=(EncodeImageHandler *) WriteSVGImage;
-  entry->flags^=CoderBlobSupportFlag;
 #if defined(MAGICKCORE_RSVG_DELEGATE)
   entry->flags^=CoderDecoderThreadSupportFlag;
 #endif
