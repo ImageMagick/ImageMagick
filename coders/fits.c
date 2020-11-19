@@ -625,8 +625,8 @@ static inline void CopyFitsRecord(char *buffer,const char *data,
     return;
   length=MagickMin(strlen(data),80);
   if (length > (size_t) (FITSBlocksize-offset))
-    length=FITSBlocksize-offset-1;
-  (void) CopyMagickString(buffer+offset,data,length+1);
+    length=FITSBlocksize-offset;
+  (void) CopyMagickString(buffer+offset,data,length);
 }
 
 static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
