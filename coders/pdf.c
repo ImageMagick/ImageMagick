@@ -591,7 +591,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ConcatenateMagickString(options,"-dInterpolateControl=-1 ",
       MagickPathExtent);
   option=GetImageOption(image_info,"authenticate");
-  if ((option != (char *) NULL) && (strpbrk(option,"&;<>|") == (char *) NULL))
+  if ((option != (char *) NULL) && (strpbrk(option,"&;<>|\"") == (char *) NULL))
     {
       char
         passphrase[MagickPathExtent];
