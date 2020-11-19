@@ -170,7 +170,7 @@ if (image == (Image *) NULL)
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to 8-bit gray image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a class="text-nowrap" href="command-line-options.html#version">-version</a> option: </p>
 
-<pre><span class="crtprompt">$ </span><span class='crtin'>identify -version</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>Version: ImageMagick 7.0.10-38 2020-11-14 Q16 https://imagemagick.org</span></pre>
+<pre><span class="crtprompt">$ </span><span class='crtin'>identify -version</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>Version: ImageMagick 7.0.10-39 2020-11-14 Q16 https://imagemagick.org</span></pre>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 
 <h3><a class="anchor" id="authentic-pixels"></a>Access the Pixel Cache</h3>
@@ -1507,4 +1507,4 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
   <script>window.jQuery || document.write('<script src="assets/jquery.slim.min.js"><\/script>')</script><script src="assets/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous">
 </body>
 </html>
-<!-- Magick Cache 16th November 2020 15:41 -->
+<!-- Magick Cache 19th November 2020 21:38 -->
