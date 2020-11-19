@@ -368,6 +368,36 @@ static inline void CleanupPDFInfo(PDFInfo *pdf_info)
     pdf_info->profile=DestroyStringInfo(pdf_info->profile);
 }
 
+static char *SanitizeDelegateString(const char *source)
+{
+  char
+    *sanitize_source;
+
+  const char
+    *q;
+
+  register char
+    *p;
+
+  static char
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+    whitelist[] =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 "
+      "$-_.+!;*(),{}|^~[]`\'><#%/?:@&=";
+#else
+    whitelist[] =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 "
+      "$-_.+!;*(),{}|\\^~[]`\"><#%/?:@&=";
+#endif
+
+  sanitize_source=AcquireString(source);
+  p=sanitize_source;
+  q=sanitize_source+strlen(sanitize_source);
+  for (p+=strspn(p,whitelist); p != q; p+=strspn(p,whitelist))
+    *p='_';
+  return(sanitize_source);
+}
+
 static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
@@ -591,14 +621,16 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ConcatenateMagickString(options,"-dInterpolateControl=-1 ",
       MagickPathExtent);
   option=GetImageOption(image_info,"authenticate");
-  if ((option != (char *) NULL) &&
-      (strpbrk(option,"&;<>|\"'") == (char *) NULL))
+  if (option != (char *) NULL)
     {
       char
-        passphrase[MagickPathExtent];
+        passphrase[MagickPathExtent],
+        *sanitize_passphrase;
 
+      sanitize_passphrase=SanitizeDelegateString(option);
       (void) FormatLocaleString(passphrase,MagickPathExtent,
-        "\"-sPDFPassword=%s\" ",option);
+        "'-sPDFPassword=%s' ",sanitize_passphrase);
+      sanitize_passphrase=DestroyString(sanitize_passphrase);
       (void) ConcatenateMagickString(options,passphrase,MagickPathExtent);
     }
   read_info=CloneImageInfo(image_info);
@@ -1093,7 +1125,7 @@ static MagickBooleanType WritePOCKETMODImage(const ImageInfo *image_info,
     if (page == (Image *) NULL)
       break;
     (void) SetImageAlphaChannel(page,RemoveAlphaChannel,exception);
-    page->scene=i++;
+    page->scene=(size_t) i++;
     AppendImageToList(&pages,page);
     if ((i == 8) || (GetNextImageInList(next) == (Image *) NULL))
       {
@@ -1112,8 +1144,8 @@ static MagickBooleanType WritePOCKETMODImage(const ImageInfo *image_info,
           page=CloneImage(pages,0,0,MagickTrue,exception);
           (void) QueryColorCompliance("#FFF",AllCompliance,
             &page->background_color,exception);
-          SetImageBackgroundColor(page,exception);
-          page->scene=i;
+          (void) SetImageBackgroundColor(page,exception);
+          page->scene=(size_t) i;
           AppendImageToList(&pages,page);
         }
         images=CloneImages(pages,PocketPageOrder,exception);
