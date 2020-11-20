@@ -173,10 +173,10 @@ typedef struct _DDSSourceBlock
     error;
 } DDSSourceBlock;
 
-typedef struct _DDSSingleColourLookup
+typedef struct _DDSSingleColorLookup
 {
   DDSSourceBlock sources[2];
-} DDSSingleColourLookup;
+} DDSSingleColorLookup;
 
 typedef MagickBooleanType
   DDSDecoder(const ImageInfo *,Image *,DDSInfo *,const MagickBooleanType,
@@ -185,7 +185,7 @@ typedef MagickBooleanType
 typedef MagickBooleanType
   DDSPixelDecoder(Image *,DDSInfo *,ExceptionInfo *);
 
-static const DDSSingleColourLookup DDSLookup_5_4[] =
+static const DDSSingleColorLookup DDSLookup_5_4[] =
 {
   { { { 0, 0, 0 }, { 0, 0, 0 } } },
   { { { 0, 0, 1 }, { 0, 1, 1 } } },
@@ -445,7 +445,7 @@ static const DDSSingleColourLookup DDSLookup_5_4[] =
   { { { 31, 0, 0 }, { 31, 31, 0 } } }
 };
 
-static const DDSSingleColourLookup DDSLookup_6_4[] =
+static const DDSSingleColorLookup DDSLookup_6_4[] =
 {
   { { { 0, 0, 0 }, { 0, 0, 0 } } },
   { { { 0, 0, 1 }, { 0, 1, 0 } } },
@@ -705,7 +705,7 @@ static const DDSSingleColourLookup DDSLookup_6_4[] =
   { { { 63, 0, 0 }, { 63, 63, 0 } } }
 };
 
-static const DDSSingleColourLookup*
+static const DDSSingleColorLookup*
   DDS_LOOKUP[] =
 {
   DDSLookup_5_4,
@@ -1334,7 +1334,7 @@ static void CompressRangeFit(const size_t count,
   RemapIndices(map, closest, indices);
 }
 
-static void ComputeEndPoints(const DDSSingleColourLookup *lookup[],
+static void ComputeEndPoints(const DDSSingleColorLookup *lookup[],
   const unsigned char *color, DDSVector3 *start, DDSVector3 *end,
   unsigned char *index)
 {

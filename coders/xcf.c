@@ -1239,8 +1239,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /* Cannot rely on prop_size here--the value is set incorrectly
            by some Gimp versions.
         */
-        size_t num_colours = ReadBlobMSBLong(image);
-        if (DiscardBlobBytes(image,3*num_colours) == MagickFalse)
+        size_t num_colors = ReadBlobMSBLong(image);
+        if (DiscardBlobBytes(image,3*num_colors) == MagickFalse)
           ThrowFileException(exception,CorruptImageError,
             "UnexpectedEndOfFile",image->filename);
     /*

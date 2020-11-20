@@ -96,16 +96,16 @@ typedef enum
   VIPSTypeB_W       = 1,   /* Some single band image */
   VIPSTypeHISTOGRAM = 10,  /* Histogram or LUT */
   VIPSTypeFOURIER   = 24,  /* Image in Fourier space */
-  VIPSTypeXYZ       = 12,  /* CIE XYZ colour space */
-  VIPSTypeLAB       = 13,  /* CIE LAB colour space */
+  VIPSTypeXYZ       = 12,  /* CIE XYZ color space */
+  VIPSTypeLAB       = 13,  /* CIE LAB color space */
   VIPSTypeCMYK      = 15,  /* im_icc_export() */
   VIPSTypeLABQ      = 16,  /* 32-bit CIE LAB */
   VIPSTypeRGB       = 17,  /* Some RGB */
-  VIPSTypeUCS       = 18,  /* UCS(1:1) colour space */
-  VIPSTypeLCH       = 19,  /* CIE LCh colour space */
+  VIPSTypeUCS       = 18,  /* UCS(1:1) color space */
+  VIPSTypeLCH       = 19,  /* CIE LCh color space */
   VIPSTypeLABS      = 21,  /* 48-bit CIE LAB */
-  VIPSTypesRGB      = 22,  /* sRGB colour space */
-  VIPSTypeYXY       = 23,  /* CIE Yxy colour space */
+  VIPSTypesRGB      = 22,  /* sRGB color space */
+  VIPSTypeYXY       = 23,  /* CIE Yxy color space */
   VIPSTypeRGB16     = 25,  /* 16-bit RGB */
   VIPSTypeGREY16    = 26   /* 16-bit monochrome */
 } VIPSType;

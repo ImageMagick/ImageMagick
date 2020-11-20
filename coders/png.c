@@ -8115,7 +8115,7 @@ ModuleExport void UnregisterPNGImage(void)
 %
 %    Write the iCCP chunk at MNG level when (icc profile length > 0)
 %
-%    Improve selection of color type (use indexed-colour or indexed-colour
+%    Improve selection of color type (use indexed-color or indexed-color
 %    with tRNS when 256 or fewer unique RGBA values are present).
 %
 %    Figure out what to do with "dispose=<restore-to-previous>" (dispose == 3)
