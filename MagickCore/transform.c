@@ -1134,9 +1134,6 @@ MagickExport Image *ExtentImage(const Image *image,
   MagickBooleanType
     status;
 
-  const StringInfo
-    *profile;
-
   /*
     Allocate extent image.
   */
@@ -1160,11 +1157,7 @@ MagickExport Image *ExtentImage(const Image *image,
   status=CompositeImage(extent_image,image,image->compose,MagickTrue,
     -geometry->x,-geometry->y,exception);
   if (status != MagickFalse)
-    {
-      profile=GetImageProfile(extent_image,"8bim");
-      if (profile != (StringInfo *) NULL)
-        Update8BIMClipPath(profile,image->columns,image->rows,geometry);
-    }
+    Update8BIMClipPath(extent_image,image->columns,image->rows,geometry);
   return(extent_image);
 }
 
@@ -2412,6 +2405,9 @@ MagickExport Image *TransverseImage(const Image *image,ExceptionInfo *exception)
 */
 MagickExport Image *TrimImage(const Image *image,ExceptionInfo *exception)
 {
+  Image
+    *trim_image;
+
   RectangleInfo
     geometry;
 
@@ -2438,5 +2434,8 @@ MagickExport Image *TrimImage(const Image *image,ExceptionInfo *exception)
     }
   geometry.x+=image->page.x;
   geometry.y+=image->page.y;
-  return(CropImage(image,&geometry,exception));
+  trim_image=CropImage(image,&geometry,exception);
+  if (trim_image != (Image *) NULL)
+    Update8BIMClipPath(trim_image,image->columns,image->rows,&geometry);
+  return(trim_image);
 }

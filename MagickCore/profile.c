@@ -2538,12 +2538,12 @@ static void UpdateClipPath(unsigned char *blob,size_t length,
   }
 }
 
-MagickPrivate void Update8BIMClipPath(const StringInfo *profile,
+MagickPrivate void Update8BIMClipPath(const Image *image,
   const size_t old_columns,const size_t old_rows,
   const RectangleInfo *new_geometry)
 {
-  unsigned char
-    *info;
+  const StringInfo
+    *profile;
 
   size_t
     length;
@@ -2552,8 +2552,14 @@ MagickPrivate void Update8BIMClipPath(const StringInfo *profile,
     count,
     id;
 
-  assert(profile != (StringInfo *) NULL);
+  unsigned char
+    *info;
+
+  assert(image != (Image *) NULL);
   assert(new_geometry != (RectangleInfo *) NULL);
+  profile=GetImageProfile(image,"8bim");
+  if (profile == (StringInfo *) NULL)
+    return;
   length=GetStringInfoLength(profile);
   info=GetStringInfoDatum(profile);
   while (length > 0)
