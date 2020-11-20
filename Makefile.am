@@ -239,9 +239,7 @@ dist-hook:
 
 # Install HTML files
 pkgdocdir = $(DOCUMENTATION_PATH)
-DOCDIRSDOXYGEN = www/api/MagickCore www/api/MagickWand
-DOCDIRSMANUAL = images images/patterns www www/assets www/api www/source www/Magick++
-DOCDIRS= $(DOCDIRSMANUAL) $(DOCDIRSDOXYGEN)
+DOCDIRS = images images/patterns www www/assets www/api www/source www/Magick++
 
 if INSTALL_DOC
 HTML_INSTALL_DATA_TARGETS = install-data-html
