@@ -1588,14 +1588,14 @@ MagickExport char *SanitizeString(const char *source)
     *p;
 
   static char
-    whitelist[] =
+    allowlist[] =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 "
       "$-_.+!*'(),{}|\\^~[]`\"><#%;/?:@&=";
 
   sanitize_source=AcquireString(source);
   p=sanitize_source;
   q=sanitize_source+strlen(sanitize_source);
-  for (p+=strspn(p,whitelist); p != q; p+=strspn(p,whitelist))
+  for (p+=strspn(p,allowlist); p != q; p+=strspn(p,allowlist))
     *p='_';
   return(sanitize_source);
 }

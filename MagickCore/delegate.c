@@ -536,11 +536,11 @@ static char *SanitizeDelegateString(const char *source)
 
   static char
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-    whitelist[] =
+    allowlist[] =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 "
       "$-_.+!;*(),{}|^~[]`\'><#%/?:@&=";
 #else
-    whitelist[] =
+    allowlist[] =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 "
       "$-_.+!;*(),{}|\\^~[]`\"><#%/?:@&=";
 #endif
@@ -548,7 +548,7 @@ static char *SanitizeDelegateString(const char *source)
   sanitize_source=AcquireString(source);
   p=sanitize_source;
   q=sanitize_source+strlen(sanitize_source);
-  for (p+=strspn(p,whitelist); p != q; p+=strspn(p,whitelist))
+  for (p+=strspn(p,allowlist); p != q; p+=strspn(p,allowlist))
     *p='_';
   return(sanitize_source);
 }

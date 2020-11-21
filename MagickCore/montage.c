@@ -340,7 +340,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   Image
     *image,
     **image_list,
-    **master_list,
+    **primary_list,
     *montage,
     *texture,
     *tile_image,
@@ -410,10 +410,10 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   number_images=GetImageListLength(images);
-  master_list=ImageListToArray(images,exception);
-  if (master_list == (Image **) NULL)
+  primary_list=ImageListToArray(images,exception);
+  if (primary_list == (Image **) NULL)
     return((Image *) NULL);
-  image_list=master_list;
+  image_list=primary_list;
   image=image_list[0];
   thumbnail=NewImageList();
   for (i=0; i < (ssize_t) number_images; i++)
@@ -445,7 +445,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       for (tile=0; (ssize_t) tile <= i; tile++)
         if (image_list[tile] != (Image *) NULL)
           image_list[tile]=DestroyImage(image_list[tile]);
-      master_list=(Image **) RelinquishMagickMemory(master_list);
+      primary_list=(Image **) RelinquishMagickMemory(primary_list);
       return((Image *) NULL);
     }
   /*
@@ -884,7 +884,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   if (texture != (Image *) NULL)
     texture=DestroyImage(texture);
   title=DestroyString(title);
-  master_list=(Image **) RelinquishMagickMemory(master_list);
+  primary_list=(Image **) RelinquishMagickMemory(primary_list);
   draw_info=DestroyDrawInfo(draw_info);
   clone_info=DestroyImageInfo(clone_info);
   return(GetFirstImageInList(montage));
