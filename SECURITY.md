@@ -1,6 +1,6 @@
 # Security Policy
 
-ImageMagick best practices **strongly** encourages you to configure a [security policy](https://imagemagick.org/script/security-policy.php) that suits your local environment.
+ImageMagick recommended practices **strongly** encourages you to configure a [security policy](https://imagemagick.org/script/security-policy.php) that suits your local environment.
 
 ## Supported Versions
 
