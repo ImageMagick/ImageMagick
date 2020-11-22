@@ -4295,7 +4295,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
   /*
     Allocate a MngInfo structure.
   */
-  mng_info=(MngInfo *) AcquireQuantumMemory(1,sizeof(MngInfo));
+  mng_info=(MngInfo *) AcquireMagickMemory(sizeof(MngInfo));
 
   if (mng_info == (MngInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -5268,7 +5268,7 @@ static Image *ReadJNGImage(const ImageInfo *image_info,
 
   /* Allocate a MngInfo structure.  */
 
-  mng_info=(MngInfo *) AcquireQuantumMemory(1,sizeof(*mng_info));
+  mng_info=(MngInfo *) AcquireMagickMemory(sizeof(*mng_info));
 
   if (mng_info == (MngInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -7771,7 +7771,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
 
   /* Allocate a MngInfo structure.  */
 
-  mng_info=(MngInfo *) AcquireQuantumMemory(1,sizeof(MngInfo));
+  mng_info=(MngInfo *) AcquireMagickMemory(sizeof(MngInfo));
 
   if (mng_info == (MngInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -12104,7 +12104,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   /*
     Allocate a MngInfo structure.
   */
-  mng_info=(MngInfo *) AcquireQuantumMemory(1,sizeof(MngInfo));
+  mng_info=(MngInfo *) AcquireMagickMemory(sizeof(MngInfo));
 
   if (mng_info == (MngInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
@@ -13388,7 +13388,7 @@ static MagickBooleanType WriteJNGImage(const ImageInfo *image_info,
   /*
     Allocate a MngInfo structure.
   */
-  mng_info=(MngInfo *) AcquireQuantumMemory(1,sizeof(MngInfo));
+  mng_info=(MngInfo *) AcquireMagickMemory(sizeof(MngInfo));
   if (mng_info == (MngInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   /*
@@ -13479,7 +13479,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,
   /*
     Allocate a MngInfo structure.
   */
-  mng_info=(MngInfo *) AcquireQuantumMemory(1,sizeof(MngInfo));
+  mng_info=(MngInfo *) AcquireMagickMemory(sizeof(MngInfo));
   if (mng_info == (MngInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   /*

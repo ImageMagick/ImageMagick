@@ -7852,7 +7852,7 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   msl_info.draw_info=(DrawInfo **) AcquireQuantumMemory(1,
     sizeof(*msl_info.draw_info));
   /* top of the stack is the MSL file itself */
-  msl_info.image=(Image **) AcquireQuantumMemory(1,sizeof(*msl_info.image));
+  msl_info.image=(Image **) AcquireMagickMemory(sizeof(*msl_info.image));
   msl_info.attributes=(Image **) AcquireQuantumMemory(1,
     sizeof(*msl_info.attributes));
   msl_info.group_info=(MSLGroupInfo *) AcquireQuantumMemory(1,

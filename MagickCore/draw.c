@@ -529,7 +529,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info,
   /*
     Convert a path to the more efficient sorted rendering form.
   */
-  polygon_info=(PolygonInfo *) AcquireQuantumMemory(1,sizeof(*polygon_info));
+  polygon_info=(PolygonInfo *) AcquireMagickMemory(sizeof(*polygon_info));
   if (polygon_info == (PolygonInfo *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -2589,7 +2589,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
   /*
     Allocate primitive info memory.
   */
-  graphic_context=(DrawInfo **) AcquireQuantumMemory(1,sizeof(*graphic_context));
+  graphic_context=(DrawInfo **) AcquireMagickMemory(sizeof(*graphic_context));
   if (graphic_context == (DrawInfo **) NULL)
     {
       primitive=DestroyString(primitive);

@@ -312,7 +312,7 @@ static LinkedListInfo *AcquireLogCache(const char *filename,
       *p;
 
     p=LogMap+i;
-    log_info=(LogInfo *) AcquireQuantumMemory(1,sizeof(*log_info));
+    log_info=(LogInfo *) AcquireMagickMemory(sizeof(*log_info));
     if (log_info == (LogInfo *) NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),

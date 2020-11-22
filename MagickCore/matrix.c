@@ -209,7 +209,7 @@ MagickExport MatrixInfo *AcquireMatrixInfo(const size_t columns,
   MatrixInfo
     *matrix_info;
 
-  matrix_info=(MatrixInfo *) AcquireQuantumMemory(1,sizeof(*matrix_info));
+  matrix_info=(MatrixInfo *) AcquireMagickMemory(sizeof(*matrix_info));
   if (matrix_info == (MatrixInfo *) NULL)
     return((MatrixInfo *) NULL);
   (void) memset(matrix_info,0,sizeof(*matrix_info));

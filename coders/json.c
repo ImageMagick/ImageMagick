@@ -787,7 +787,7 @@ static void EncodeIptcProfile(FILE *file,const StringInfo *profile)
           sizeof(*values));
         if (values == (IPTCInfo **) NULL)
           break;
-        value=(IPTCInfo *) AcquireQuantumMemory(1,sizeof(*value));
+        value=(IPTCInfo *) AcquireMagickMemory(sizeof(*value));
         if (value == (IPTCInfo *) NULL)
           break;
         /* Check the tag length in IPTCInfo when a new tag is added */

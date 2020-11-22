@@ -1603,7 +1603,7 @@ MagickPrivate void NTInitializeWinsock(MagickBooleanType use_lock)
     }
   if (wsaData == (WSADATA *) NULL)
     {
-      wsaData=(WSADATA *) AcquireQuantumMemory(1,sizeof(WSADATA));
+      wsaData=(WSADATA *) AcquireMagickMemory(sizeof(WSADATA));
       if (WSAStartup(MAKEWORD(2,2),wsaData) != 0)
         ThrowFatalException(CacheFatalError,"WSAStartup failed");
     }

@@ -207,7 +207,7 @@ WandExport ScriptTokenInfo *AcquireScriptTokenInfo(const char *filename)
   ScriptTokenInfo
     *token_info;
 
-  token_info=(ScriptTokenInfo *) AcquireQuantumMemory(1,sizeof(*token_info));
+  token_info=(ScriptTokenInfo *) AcquireMagickMemory(sizeof(*token_info));
   if (token_info == (ScriptTokenInfo *) NULL)
     return token_info;
   (void) memset(token_info,0,sizeof(*token_info));

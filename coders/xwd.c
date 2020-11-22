@@ -335,7 +335,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize the X image.
   */
-  ximage=(XImage *) AcquireQuantumMemory(1,sizeof(*ximage));
+  ximage=(XImage *) AcquireMagickMemory(sizeof(*ximage));
   if (ximage == (XImage *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   ximage->depth=(int) header.pixmap_depth;

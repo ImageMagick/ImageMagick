@@ -331,7 +331,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
           }
         else
           {
-            cluster=(Cluster *) AcquireQuantumMemory(1,sizeof(*cluster));
+            cluster=(Cluster *) AcquireMagickMemory(sizeof(*cluster));
             head=cluster;
           }
         if (cluster == (Cluster *) NULL)
@@ -353,7 +353,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       /*
         No classes were identified-- create one.
       */
-      cluster=(Cluster *) AcquireQuantumMemory(1,sizeof(*cluster));
+      cluster=(Cluster *) AcquireMagickMemory(sizeof(*cluster));
       if (cluster == (Cluster *) NULL)
         ThrowClassifyException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
@@ -1043,7 +1043,7 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
           }
         else
           {
-            cluster=(Cluster *) AcquireQuantumMemory(1,sizeof(*cluster));
+            cluster=(Cluster *) AcquireMagickMemory(sizeof(*cluster));
             head=cluster;
           }
         if (cluster == (Cluster *) NULL)
@@ -1069,7 +1069,7 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
       /*
         No classes were identified-- create one.
       */
-      cluster=(Cluster *) AcquireQuantumMemory(1,sizeof(*cluster));
+      cluster=(Cluster *) AcquireMagickMemory(sizeof(*cluster));
       if (cluster == (Cluster *) NULL)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),

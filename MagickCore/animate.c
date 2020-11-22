@@ -421,7 +421,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Expand the filenames.
       */
-      filelist=(char **) AcquireQuantumMemory(1,sizeof(char *));
+      filelist=(char **) AcquireMagickMemory(sizeof(char *));
       if (filelist == (char **) NULL)
         {
           ThrowXWindowException(ResourceLimitError,"MemoryAllocationFailed",

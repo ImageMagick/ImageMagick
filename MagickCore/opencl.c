@@ -585,7 +585,7 @@ static MagickCLDevice AcquireMagickCLDevice()
   MagickCLDevice
     device;
 
-  device=(MagickCLDevice) AcquireQuantumMemory(1,sizeof(*device));
+  device=(MagickCLDevice) AcquireMagickMemory(sizeof(*device));
   if (device != NULL)
   {
     (void) memset(device,0,sizeof(*device));
@@ -620,7 +620,7 @@ static MagickCLEnv AcquireMagickCLEnv(void)
   MagickCLEnv
     clEnv;
 
-  clEnv=(MagickCLEnv) AcquireQuantumMemory(1,sizeof(*clEnv));
+  clEnv=(MagickCLEnv) AcquireMagickMemory(sizeof(*clEnv));
   if (clEnv != (MagickCLEnv) NULL)
   {
     (void) memset(clEnv,0,sizeof(*clEnv));
@@ -2544,7 +2544,7 @@ static MagickBooleanType BindOpenCLFunctions()
 
 static MagickBooleanType LoadOpenCLLibrary(void)
 {
-  openCL_library=(MagickLibrary *) AcquireQuantumMemory(1,sizeof(MagickLibrary));
+  openCL_library=(MagickLibrary *) AcquireMagickMemory(sizeof(MagickLibrary));
   if (openCL_library == (MagickLibrary *) NULL)
     return(MagickFalse);
 

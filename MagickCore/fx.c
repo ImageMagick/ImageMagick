@@ -365,7 +365,7 @@ static inline MagickBooleanType SetFxSymbolValue(
       *object=value;
       return(MagickTrue);
     }
-  object=(double *) AcquireQuantumMemory(1,sizeof(*object));
+  object=(double *) AcquireMagickMemory(sizeof(*object));
   if (object == (double *) NULL)
     {
       (void) ThrowMagickException(fx_info->exception,GetMagickModule(),

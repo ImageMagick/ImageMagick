@@ -186,7 +186,7 @@ MagickExport MagickBooleanType AddValueToSplayTree(SplayTreeInfo *splay_tree,
           return(MagickTrue);
         }
     }
-  node=(NodeInfo *) AcquireQuantumMemory(1,sizeof(*node));
+  node=(NodeInfo *) AcquireMagickMemory(sizeof(*node));
   if (node == (NodeInfo *) NULL)
     {
       UnlockSemaphoreInfo(splay_tree->semaphore);
