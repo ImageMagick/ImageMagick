@@ -139,11 +139,14 @@ static Image *ReadFL32Image(const ImageInfo *image_info,
   QuantumInfo
     *quantum_info;
 
+  QuantumType
+    quantum_type;
+
   MagickBooleanType
     status;
 
   size_t
-    length;
+    extent;
 
   ssize_t
     count,
@@ -151,6 +154,9 @@ static Image *ReadFL32Image(const ImageInfo *image_info,
 
   unsigned char
     *pixels;
+
+  unsigned int
+    magic;
 
   /*
     Open image file.
@@ -169,30 +175,66 @@ static Image *ReadFL32Image(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  image->depth=1;
-  image->endian=MSBEndian;
-  (void) ReadBlobLSBShort(image);
-  image->columns=(size_t) ReadBlobLSBShort(image);
-  (void) ReadBlobLSBShort(image);
-  image->rows=(size_t) ReadBlobLSBShort(image);
-  if ((image->columns == 0) || (image->rows == 0))
+  magic=ReadBlobLSBLong(image);
+  if (magic != 842222662)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  image->depth=32;
+  image->endian=LSBEndian;
+  image->rows=(size_t) ReadBlobLSBLong(image);
+  image->columns=(size_t) ReadBlobLSBLong(image);
+  image->number_channels=(size_t) ReadBlobLSBLong(image);
+  if ((image->columns == 0) || (image->rows == 0) ||
+      (image->number_channels == 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if (image_info->ping != MagickFalse)
     {
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
+  switch (image->number_channels)
+  {
+    case 1:
+    {
+      image->colorspace=GRAYColorspace;
+      quantum_type=GrayQuantum;
+      break;
+    }
+    case 2:
+    {
+      image->colorspace=GRAYColorspace;
+      image->alpha_trait=BlendPixelTrait;
+      quantum_type=GrayAlphaQuantum;
+      break;
+    }
+    case 3:
+    {
+      quantum_type=RGBQuantum;
+      break;
+    }
+    case 4:
+    {
+      image->alpha_trait=BlendPixelTrait;
+      quantum_type=RGBAQuantum;
+      break;
+    }
+    default:
+    {
+      quantum_type=RGBQuantum;
+      image->number_meta_channels=image->number_channels-3;
+      break;
+    }
+  }
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
   /*
-    Convert bi-level image to pixel packets.
+    Convert FL32 image to pixel packets.
   */
-  SetImageColorspace(image,GRAYColorspace,exception);
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  length=GetQuantumExtent(image,quantum_info,GrayQuantum);
+  status=SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
+  extent=GetQuantumExtent(image,quantum_info,quantum_type);
   pixels=GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -205,19 +247,17 @@ static Image *ReadFL32Image(const ImageInfo *image_info,
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       break;
-    stream=ReadBlobStream(image,length,pixels,&count);
-    if (count != (ssize_t) length)
+    stream=ReadBlobStream(image,extent,pixels,&count);
+    if (count != (ssize_t) extent)
       break;
     (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-      GrayQuantum,(unsigned char *) stream,exception);
-    stream=ReadBlobStream(image,(size_t) (-(ssize_t) length) & 0x01,pixels,
-      &count);
+      quantum_type,(unsigned char *) stream,exception);
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
     if (SetImageProgress(image,LoadImageTag,y,image->rows) == MagickFalse)
       break;
   }
-  SetQuantumImageType(image,GrayQuantum);
+  SetQuantumImageType(image,quantum_type);
   quantum_info=DestroyQuantumInfo(quantum_info);
   if (y < (ssize_t) image->rows)
     ThrowReaderException(CorruptImageError,"UnableToReadImageData");
@@ -326,11 +366,14 @@ static MagickBooleanType WriteFL32Image(const ImageInfo *image_info,
   QuantumInfo
     *quantum_info;
 
+  QuantumType
+    quantum_type;
+
   register const Quantum
     *p;
 
   size_t
-    length;
+    extent;
 
   ssize_t
     count,
@@ -353,31 +396,55 @@ static MagickBooleanType WriteFL32Image(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
-  if ((image->columns > 65535UL) || (image->rows > 65535UL))
-    ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
-  (void) TransformImageColorspace(image,sRGBColorspace,exception);
-  (void) SetImageType(image,BilevelType,exception);
-  image->endian=MSBEndian;
-  image->depth=1;
-  (void) WriteBlobLSBShort(image,0);
-  (void) WriteBlobLSBShort(image,(unsigned short) image->columns);
-  (void) WriteBlobLSBShort(image,0);
-  (void) WriteBlobLSBShort(image,(unsigned short) image->rows);
+  (void) WriteBlobLSBLong(image,842222662U);
+  (void) WriteBlobLSBLong(image,(unsigned int) image->rows);
+  (void) WriteBlobLSBLong(image,(unsigned int) image->columns);
+  (void) WriteBlobLSBLong(image,(unsigned int) image->number_channels);
+  image->endian=LSBEndian;
+  image->depth=32;
+  switch (image->number_channels)
+  {
+    case 1:
+    {
+      quantum_type=GrayQuantum;
+      break;
+    }
+    case 2:
+    {
+      quantum_type=GrayAlphaQuantum;
+      break;
+    }
+    case 3:
+    {
+      quantum_type=RGBQuantum;
+      break;
+    }
+    case 4:
+    {
+      quantum_type=RGBAQuantum;
+      break;
+    }
+    default:
+    {
+      quantum_type=RGBQuantum;
+      break;
+    }
+  }
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowWriterException(ImageError,"MemoryAllocationFailed");
+  status=SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
   pixels=(unsigned char *) GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
-    length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-      GrayQuantum,pixels,exception);
-    count=WriteBlob(image,length,pixels);
-    if (count != (ssize_t) length)
+    extent=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+      quantum_type,pixels,exception);
+    count=WriteBlob(image,extent,pixels);
+    if (count != (ssize_t) extent)
       break;
-    count=WriteBlob(image,(size_t) (-(ssize_t) length) & 0x01,pixels);
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);
     if (status == MagickFalse)
