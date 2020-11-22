@@ -1,5 +1,5 @@
 2020-11-22  7.0.10-42  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-42 GIT revision 17878:d85197f27:20201122
+  * Release ImageMagick version 7.0.10-42 GIT revision 17881:d228ef95e:20201122
 
 2020-11-21  7.0.10-42  <quetzlzacatenango@image...>
   * revert memory patch to avert possible thread lock.
