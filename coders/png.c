@@ -8155,59 +8155,63 @@ ModuleExport void UnregisterPNGImage(void)
 
 static void
 Magick_png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
-   png_info *ping_info, unsigned char *profile_type, unsigned char
-   *profile_description, unsigned char *profile_data, png_uint_32 length)
+  png_info *ping_info, unsigned char *profile_type, unsigned char
+  *profile_description, unsigned char *profile_data, png_uint_32 length,
+  ExceptionInfo *exception)
 {
-   png_textp
-     text;
-
-   register ssize_t
-     i;
-
-   unsigned char
-     *sp;
-
    png_charp
      dp;
+
+   png_textp
+     text;
 
    png_uint_32
      allocated_length,
      description_length;
 
+   register ssize_t
+     i;
+
    unsigned char
-     hex[16]={'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+     hex[16] =
+       { '0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f' },
+     *sp;
 
    if (length > 1)
      {
        if (LocaleNCompare((char *) profile_type+1, "ng-chunk-",9) == 0)
           return;
      }
-
-   if (image_info->verbose)
+   if (image_info->verbose != MagickFalse)
      {
        (void) printf("writing raw profile: type=%s, length=%.20g\n",
          (char *) profile_type, (double) length);
      }
-
+   description_length=(png_uint_32) strlen((const char *) profile_description);
+   allocated_length=(png_uint_32) (2*length+(length >> 5)+description_length+
+     20);
+   if (allocated_length < length)
+     {
+       (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+         "maximum profile length exceeded","`%s'",image_info->filename);
+       return;
+     }
 #if PNG_LIBPNG_VER >= 10400
    text=(png_textp) png_malloc(ping,(png_alloc_size_t) sizeof(png_text));
 #else
    text=(png_textp) png_malloc(ping,(png_size_t) sizeof(png_text));
 #endif
-   description_length=(png_uint_32) strlen((const char *) profile_description);
-   allocated_length=(png_uint_32) (length*2 + (length >> 5) + 20
-      + description_length);
 #if PNG_LIBPNG_VER >= 10400
-   text[0].text=(png_charp) png_malloc(ping,
-      (png_alloc_size_t) allocated_length);
-   text[0].key=(png_charp) png_malloc(ping, (png_alloc_size_t) 80);
+   text[0].text=(png_charp) png_malloc(ping,(png_alloc_size_t)
+     allocated_length);
+   text[0].key=(png_charp) png_malloc(ping,(png_alloc_size_t) 80);
 #else
-   text[0].text=(png_charp) png_malloc(ping, (png_size_t) allocated_length);
-   text[0].key=(png_charp) png_malloc(ping, (png_size_t) 80);
+   text[0].text=(png_charp) png_malloc(ping,(png_size_t) allocated_length);
+   text[0].key=(png_charp) png_malloc(ping,(png_size_t) 80);
 #endif
    text[0].key[0]='\0';
-   (void) ConcatenateMagickString(text[0].key,
-      "Raw profile type ",MagickPathExtent);
+   (void) ConcatenateMagickString(text[0].key,"Raw profile type ",
+     MagickPathExtent);
    (void) ConcatenateMagickString(text[0].key,(const char *) profile_type,62);
    sp=profile_data;
    dp=text[0].text;
@@ -11086,8 +11090,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                  name);
               Magick_png_write_raw_profile(image_info,ping,ping_info,
                 (unsigned char *) name,(unsigned char *) name,
-                GetStringInfoDatum(profile),
-                (png_uint_32) GetStringInfoLength(profile));
+                GetStringInfoDatum(profile),(png_uint_32)
+                GetStringInfoLength(profile),exception);
           }
         name=GetNextImageProfile(image);
       }

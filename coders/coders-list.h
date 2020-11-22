@@ -58,6 +58,7 @@ AddMagickCoder(DPX)
 #endif
 AddMagickCoder(FAX)
 AddMagickCoder(FITS)
+AddMagickCoder(FL32)
 #if defined(MAGICKCORE_FLIF_DELEGATE)
   AddMagickCoder(FLIF)
 #endif

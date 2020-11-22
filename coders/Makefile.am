@@ -160,6 +160,8 @@ MAGICKCORE_CODER_SRCS = \
 	coders/fax.h \
 	coders/fits.c \
 	coders/fits.h \
+	coders/fl32.c \
+	coders/fl32.h \
 	coders/flif.h \
 	coders/fpx.h \
 	coders/ghostscript-private.h \
@@ -410,6 +412,7 @@ CODERS_NOINST_HDRS = \
 	coders/exr.h \
 	coders/fax.h \
 	coders/fits.h \
+	coders/fl32.h \
 	coders/flif.h \
 	coders/fpx.h \
 	coders/ghostscript-private.h \
@@ -543,6 +546,7 @@ coders_LTLIBRARIES = \
 	coders/dpx.la \
 	coders/fax.la \
 	coders/fits.la \
+	coders/fl32.la \
 	coders/gif.la \
 	coders/gradient.la \
 	coders/gray.la \
@@ -832,6 +836,12 @@ coders_fits_la_SOURCES     = coders/fits.c
 coders_fits_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
 coders_fits_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 coders_fits_la_LIBADD      = $(MAGICKCORE_LIBS) $(MATH_LIBS)
+
+# FL32 coder module
+coders_fl32_la_SOURCES     = coders/fl32.c
+coders_fl32_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
+coders_fl32_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+coders_fl32_la_LIBADD      = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
 # FLIF coder module
 coders_flif_la_SOURCES      = coders/flif.c

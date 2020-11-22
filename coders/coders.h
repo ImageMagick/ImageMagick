@@ -63,6 +63,7 @@
 #endif
 #include "coders/fax.h"
 #include "coders/fits.h"
+#include "coders/fl32.h"
 #if defined(MAGICKCORE_FLIF_DELEGATE)
   #include "coders/flif.h"
 #endif
