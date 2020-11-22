@@ -1,7 +1,7 @@
-2020-11-21  7.0.10-41  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-41 GIT revision 17864:20680f349:20201121
+2020-11-22  7.0.10-42  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-42 GIT revision 17878:d85197f27:20201122
 
-2020-11-21  7.0.10-41  <quetzlzacatenango@image...>
+2020-11-21  7.0.10-42  <quetzlzacatenango@image...>
   * revert memory patch to avert possible thread lock.
   * add support for FilmLight FL32 image format.
 
