@@ -74,7 +74,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireString() returns an new extented string, containing a clone of the
+%  AcquireString() returns an new extended string, containing a clone of the
 %  given string.
 %
 %  An extended string is the string length, plus an extra MagickPathExtent space
@@ -108,7 +108,6 @@ MagickExport char *AcquireString(const char *source)
     sizeof(*destination));
   if (destination == (char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
-  *destination='\0';
   if (source != (char *) NULL)
     (void) memcpy(destination,source,length*sizeof(*destination));
   destination[length]='\0';
@@ -680,7 +679,6 @@ MagickExport char *ConstantString(const char *source)
     destination=(char *) AcquireQuantumMemory(length+1UL,sizeof(*destination));
   if (destination == (char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
-  *destination='\0';
   if (source != (char *) NULL)
     (void) memcpy(destination,source,length*sizeof(*destination));
   destination[length]='\0';
