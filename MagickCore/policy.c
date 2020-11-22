@@ -460,8 +460,8 @@ static char *AcquirePolicyString(const char *source)
   return(destination);
 }
 
-MagickExport char **GetPolicyList(const char *pattern,
-  size_t *number_policies,ExceptionInfo *exception)
+MagickExport char **GetPolicyList(const char *pattern,size_t *number_policies,
+  ExceptionInfo *exception)
 {
   char
     **policies;
