@@ -746,40 +746,8 @@ if ((ssize_t) max - min < steps) \
 /*
   Forward declarations
 */
-/*
-  Forward declarations
-*/
 static MagickBooleanType
-  ConstructOrdering(const size_t,const DDSVector4 *,const DDSVector3,
-    DDSVector4 *, DDSVector4 *, unsigned char *, size_t),
-  ReadDDSInfo(Image *,DDSInfo *),
-  ReadDXT1(const ImageInfo *,Image *,DDSInfo *,const MagickBooleanType,
-    ExceptionInfo *),
-  ReadDXT3(const ImageInfo *,Image *,DDSInfo *,const MagickBooleanType,
-    ExceptionInfo *),
-  ReadDXT5(const ImageInfo *,Image *,DDSInfo *,const MagickBooleanType,
-    ExceptionInfo *),
-  ReadUncompressedRGB(const ImageInfo *,Image *,DDSInfo *,
-    const MagickBooleanType,ExceptionInfo *),
-  ReadUncompressedRGBA(const ImageInfo *,Image *,DDSInfo *,
-    const MagickBooleanType,ExceptionInfo *),
-  SkipDXTMipmaps(Image *,DDSInfo *,int,ExceptionInfo *),
-  SkipRGBMipmaps(Image *,DDSInfo *,int,ExceptionInfo *),
-  WriteDDSImage(const ImageInfo *,Image *,ExceptionInfo *),
-  WriteMipmaps(Image *,const ImageInfo*,const size_t,const size_t,const size_t,
-    const MagickBooleanType,const MagickBooleanType,const MagickBooleanType,
-    ExceptionInfo *);
-
-static void
-  RemapIndices(const ssize_t *,const unsigned char *,unsigned char *),
-  WriteDDSInfo(Image *,const size_t,const size_t,const size_t),
-  WriteFourCC(Image *,const size_t,const MagickBooleanType,
-    const MagickBooleanType,ExceptionInfo *),
-  WriteImageData(Image *,const size_t,const size_t,const MagickBooleanType,
-    const MagickBooleanType,ExceptionInfo *),
-  WriteIndices(Image *,const DDSVector3,const DDSVector3,unsigned char *),
-  WriteSingleColorFit(Image *,const DDSVector4 *,const ssize_t *),
-  WriteUncompressed(Image *,ExceptionInfo *);
+  WriteDDSImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 static inline void VectorAdd(const DDSVector4 left, const DDSVector4 right,
   DDSVector4 *destination)
@@ -906,6 +874,227 @@ static inline void VectorTruncate3(DDSVector3 *value)
   value->z = value->z > 0.0f ? floor(value->z) : ceil(value->z);
 }
 
+static inline size_t ClampToLimit(const float value, const size_t limit)
+{
+  size_t
+    result = (int) (value + 0.5f);
+
+  if (result < 0.0f)
+    return(0);
+  if (result > limit)
+    return(limit);
+  return result;
+}
+
+static inline size_t ColorTo565(const DDSVector3 point)
+{
+  size_t r = ClampToLimit(31.0f*point.x,31);
+  size_t g = ClampToLimit(63.0f*point.y,63);
+  size_t b = ClampToLimit(31.0f*point.z,31);
+
+  return (r << 11) | (g << 5) | b;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s D D S                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsDDS() returns MagickTrue if the image format type, identified by the
+%  magick string, is DDS.
+%
+%  The format of the IsDDS method is:
+%
+%      MagickBooleanType IsDDS(const unsigned char *magick,const size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o magick: compare image format pattern against these bytes.
+%
+%    o length: Specifies the length of the magick string.
+%
+*/
+static MagickBooleanType IsDDS(const unsigned char *magick, const size_t length)
+{
+  if (length < 4)
+    return(MagickFalse);
+  if (LocaleNCompare((char *) magick,"DDS ", 4) == 0)
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e a d D D S I m a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReadDDSImage() reads a DirectDraw Surface image file and returns it.  It
+%  allocates the memory necessary for the new Image structure and returns a
+%  pointer to the new image.
+%
+%  The format of the ReadDDSImage method is:
+%
+%      Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+static MagickBooleanType ReadDDSInfo(Image *image, DDSInfo *dds_info)
+{
+  size_t
+    hdr_size,
+    required;
+  
+  /* Seek to start of header */
+  (void) SeekBlob(image, 4, SEEK_SET);
+  
+  /* Check header field */
+  hdr_size = ReadBlobLSBLong(image);
+  if (hdr_size != 124)
+    return MagickFalse;
+  
+  /* Fill in DDS info struct */
+  dds_info->flags = ReadBlobLSBLong(image);
+  
+  /* Check required flags */
+  required=(size_t) (DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT);
+  if ((dds_info->flags & required) != required)
+    return MagickFalse;
+  
+  dds_info->height = ReadBlobLSBLong(image);
+  dds_info->width = ReadBlobLSBLong(image);
+  dds_info->pitchOrLinearSize = ReadBlobLSBLong(image);
+  dds_info->depth = ReadBlobLSBLong(image);
+  dds_info->mipmapcount = ReadBlobLSBLong(image);
+  
+  (void) SeekBlob(image, 44, SEEK_CUR);   /* reserved region of 11 DWORDs */
+  
+  /* Read pixel format structure */
+  hdr_size = ReadBlobLSBLong(image);
+  if (hdr_size != 32)
+    return MagickFalse;
+  
+  dds_info->pixelformat.flags = ReadBlobLSBLong(image);
+  dds_info->pixelformat.fourcc = ReadBlobLSBLong(image);
+  dds_info->pixelformat.rgb_bitcount = ReadBlobLSBLong(image);
+  dds_info->pixelformat.r_bitmask = ReadBlobLSBLong(image);
+  dds_info->pixelformat.g_bitmask = ReadBlobLSBLong(image);
+  dds_info->pixelformat.b_bitmask = ReadBlobLSBLong(image);
+  dds_info->pixelformat.alpha_bitmask = ReadBlobLSBLong(image);
+  
+  dds_info->ddscaps1 = ReadBlobLSBLong(image);
+  dds_info->ddscaps2 = ReadBlobLSBLong(image);
+  (void) SeekBlob(image, 12, SEEK_CUR); /* 3 reserved DWORDs */
+  
+  return MagickTrue;
+}
+
+static MagickBooleanType SetDXT1Pixels(Image *image,ssize_t x,ssize_t y,
+  DDSColors colors,size_t bits,Quantum *q)
+{
+  register ssize_t
+    i;
+
+  ssize_t
+    j;
+
+  unsigned char
+    code;
+
+  for (j = 0; j < 4; j++)
+  {
+    for (i = 0; i < 4; i++)
+    {
+      if ((x + i) < (ssize_t) image->columns &&
+          (y + j) < (ssize_t) image->rows)
+        {
+          code=(unsigned char) ((bits >> ((j*4+i)*2)) & 0x3);
+          SetPixelRed(image,ScaleCharToQuantum(colors.r[code]),q);
+          SetPixelGreen(image,ScaleCharToQuantum(colors.g[code]),q);
+          SetPixelBlue(image,ScaleCharToQuantum(colors.b[code]),q);
+          SetPixelOpacity(image,ScaleCharToQuantum(colors.a[code]),q);
+          if ((colors.a[code] != 0) &&
+              (image->alpha_trait == UndefinedPixelTrait))
+            return(MagickFalse);
+          q+=GetPixelChannels(image);
+        }
+    }
+  }
+  return(MagickTrue);
+}
+
+static MagickBooleanType ReadMipmaps(const ImageInfo *image_info,Image *image,
+  DDSInfo *dds_info,DDSPixelDecoder decoder,ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status;
+
+  /*
+    Only skip mipmaps for textures and cube maps
+  */
+  if (EOFBlob(image) != MagickFalse)
+    {
+      ThrowFileException(exception,CorruptImageWarning,"UnexpectedEndOfFile",
+        image->filename);
+      return(MagickFalse);
+    }
+  status=MagickTrue;
+  if (dds_info->ddscaps1 & DDSCAPS_MIPMAP
+      && (dds_info->ddscaps1 & DDSCAPS_TEXTURE
+          || dds_info->ddscaps2 & DDSCAPS2_CUBEMAP))
+    {
+      register ssize_t
+        i;
+
+      size_t
+        h,
+        w;
+
+      w=DIV2(dds_info->width);
+      h=DIV2(dds_info->height);
+
+      /*
+        Mipmapcount includes the main image, so start from one
+      */
+      for (i = 1; (i < (ssize_t) dds_info->mipmapcount) && w && h; i++)
+      {
+        AcquireNextImage(image_info,image,exception);
+        if (image->next == (Image *) NULL)
+          return(MagickFalse);
+        image->next->alpha_trait=image->alpha_trait;
+        image=SyncNextImageInList(image);
+        status=SetImageExtent(image,w,h,exception);
+        if (status == MagickFalse)
+          break;
+        status=decoder(image,dds_info,exception);
+        if (status == MagickFalse)
+          break;
+        if ((w == 1) && (h == 1))
+          break;
+
+        w=DIV2(w);
+        h=DIV2(h);
+      }
+    }
+  return(status);
+}
+
 static void CalculateColors(unsigned short c0, unsigned short c1,
   DDSColors *c, MagickBooleanType ignoreAlpha)
 {
@@ -939,6 +1128,895 @@ static void CalculateColors(unsigned short c0, unsigned short c1,
       c->a[3] = 255;
     }
 }
+
+static MagickBooleanType ReadDXT1Pixels(Image *image,
+  DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
+{
+  DDSColors
+    colors;
+
+  register Quantum
+    *q;
+
+  register ssize_t
+    x;
+
+  size_t
+    bits;
+
+  ssize_t
+    y;
+
+  unsigned short
+    c0,
+    c1;
+
+  magick_unreferenced(dds_info);
+  for (y = 0; y < (ssize_t) image->rows; y += 4)
+  {
+    for (x = 0; x < (ssize_t) image->columns; x += 4)
+    {
+      /* Get 4x4 patch of pixels to write on */
+      q=QueueAuthenticPixels(image,x,y,MagickMin(4,image->columns-x),
+        MagickMin(4,image->rows-y),exception);
+
+      if (q == (Quantum *) NULL)
+        return(MagickFalse);
+
+      /* Read 8 bytes of data from the image */
+      c0=ReadBlobLSBShort(image);
+      c1=ReadBlobLSBShort(image);
+      bits=ReadBlobLSBLong(image);
+
+      CalculateColors(c0,c1,&colors,MagickFalse);
+      if (EOFBlob(image) != MagickFalse)
+        return(MagickFalse);
+
+      /* Write the pixels */
+      if (SetDXT1Pixels(image,x,y,colors,bits,q) == MagickFalse)
+        {
+          /* Correct alpha */
+          SetImageAlpha(image,QuantumRange,exception);
+          q=QueueAuthenticPixels(image,x,y,MagickMin(4,image->columns-x),
+            MagickMin(4,image->rows-y),exception);
+          if (q != (Quantum *) NULL)
+            SetDXT1Pixels(image,x,y,colors,bits,q);
+        }
+      if (SyncAuthenticPixels(image,exception) == MagickFalse)
+        return(MagickFalse);
+    }
+    if (EOFBlob(image) != MagickFalse)
+      return(MagickFalse);
+  }
+  return(MagickTrue);
+}
+
+/*
+  Skip the mipmap images for compressed (DXTn) dds files
+*/
+static MagickBooleanType SkipDXTMipmaps(Image *image,DDSInfo *dds_info,
+  int texel_size,ExceptionInfo *exception)
+{
+  /*
+    Only skip mipmaps for textures and cube maps
+  */
+  if (EOFBlob(image) != MagickFalse)
+    {
+      ThrowFileException(exception,CorruptImageWarning,"UnexpectedEndOfFile",
+        image->filename);
+      return(MagickFalse);
+    }
+  if (dds_info->ddscaps1 & DDSCAPS_MIPMAP
+      && (dds_info->ddscaps1 & DDSCAPS_TEXTURE
+          || dds_info->ddscaps2 & DDSCAPS2_CUBEMAP))
+    {
+      MagickOffsetType
+        offset;
+
+      register ssize_t
+        i;
+
+      size_t
+        h,
+        w;
+
+      w=DIV2(dds_info->width);
+      h=DIV2(dds_info->height);
+
+      /*
+        Mipmapcount includes the main image, so start from one
+      */
+      for (i = 1; (i < (ssize_t) dds_info->mipmapcount) && w && h; i++)
+      {
+        offset=(MagickOffsetType)((w+3)/4)*((h+3)/4)*texel_size;
+        if (SeekBlob(image,offset,SEEK_CUR) < 0)
+          break;
+        w=DIV2(w);
+        h=DIV2(h);
+        if ((w == 1) && (h == 1))
+          break;
+      }
+    }
+  return(MagickTrue);
+}
+
+static MagickBooleanType ReadDXT1(const ImageInfo *image_info,Image *image,
+  DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
+  ExceptionInfo *exception)
+{
+  if (ReadDXT1Pixels(image,dds_info,exception) == MagickFalse)
+    return(MagickFalse);
+
+  if (read_mipmaps != MagickFalse)
+    return(ReadMipmaps(image_info,image,dds_info,ReadDXT1Pixels,exception));
+  else
+    return(SkipDXTMipmaps(image,dds_info,8,exception));
+}
+
+static MagickBooleanType ReadDXT3Pixels(Image *image,
+  DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
+{
+  DDSColors
+    colors;
+
+  register Quantum
+    *q;
+
+  register ssize_t
+    i,
+    x;
+
+  unsigned char
+    alpha;
+
+  size_t
+    a0,
+    a1,
+    bits,
+    code;
+
+  ssize_t
+    j,
+    y;
+
+  unsigned short
+    c0,
+    c1;
+
+  magick_unreferenced(dds_info);
+  for (y = 0; y < (ssize_t) image->rows; y += 4)
+  {
+    for (x = 0; x < (ssize_t) image->columns; x += 4)
+    {
+      /* Get 4x4 patch of pixels to write on */
+      q = QueueAuthenticPixels(image, x, y, MagickMin(4, image->columns - x),
+                         MagickMin(4, image->rows - y),exception);
+
+      if (q == (Quantum *) NULL)
+        return(MagickFalse);
+
+      /* Read alpha values (8 bytes) */
+      a0 = ReadBlobLSBLong(image);
+      a1 = ReadBlobLSBLong(image);
+
+      /* Read 8 bytes of data from the image */
+      c0 = ReadBlobLSBShort(image);
+      c1 = ReadBlobLSBShort(image);
+      bits = ReadBlobLSBLong(image);
+
+      CalculateColors(c0, c1, &colors, MagickTrue);
+
+      if (EOFBlob(image) != MagickFalse)
+        return(MagickFalse);
+
+      /* Write the pixels */
+      for (j = 0; j < 4; j++)
+      {
+        for (i = 0; i < 4; i++)
+        {
+          if ((x + i) < (ssize_t) image->columns && (y + j) < (ssize_t) image->rows)
+            {
+              code = (bits >> ((4*j+i)*2)) & 0x3;
+              SetPixelRed(image,ScaleCharToQuantum(colors.r[code]),q);
+              SetPixelGreen(image,ScaleCharToQuantum(colors.g[code]),q);
+              SetPixelBlue(image,ScaleCharToQuantum(colors.b[code]),q);
+              /*
+                Extract alpha value: multiply 0..15 by 17 to get range 0..255
+              */
+              if (j < 2)
+                alpha = 17U * (unsigned char) ((a0 >> (4*(4*j+i))) & 0xf);
+              else
+                alpha = 17U * (unsigned char) ((a1 >> (4*(4*(j-2)+i))) & 0xf);
+              SetPixelAlpha(image,ScaleCharToQuantum((unsigned char) alpha),q);
+              q+=GetPixelChannels(image);
+            }
+        }
+      }
+      if (SyncAuthenticPixels(image,exception) == MagickFalse)
+        return(MagickFalse);
+    }
+    if (EOFBlob(image) != MagickFalse)
+      return(MagickFalse);
+  }
+  return(MagickTrue);
+}
+
+static MagickBooleanType ReadDXT3(const ImageInfo *image_info,Image *image,
+  DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
+  ExceptionInfo *exception)
+{
+  if (ReadDXT3Pixels(image,dds_info,exception) == MagickFalse)
+    return(MagickFalse);
+
+  if (read_mipmaps != MagickFalse)
+    return(ReadMipmaps(image_info,image,dds_info,ReadDXT3Pixels,exception));
+  else
+    return(SkipDXTMipmaps(image,dds_info,16,exception));
+}
+
+static MagickBooleanType ReadDXT5Pixels(Image *image,
+  DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
+{
+  DDSColors
+    colors;
+
+  MagickSizeType
+    alpha_bits;
+
+  register Quantum
+    *q;
+
+  register ssize_t
+    i,
+    x;
+
+  unsigned char
+    a0,
+    a1;
+
+  size_t
+    alpha,
+    bits,
+    code,
+    alpha_code;
+
+  ssize_t
+    j,
+    y;
+
+  unsigned short
+    c0,
+    c1;
+
+  magick_unreferenced(dds_info);
+  for (y = 0; y < (ssize_t) image->rows; y += 4)
+  {
+    for (x = 0; x < (ssize_t) image->columns; x += 4)
+    {
+      /* Get 4x4 patch of pixels to write on */
+      q = QueueAuthenticPixels(image, x, y, MagickMin(4, image->columns - x),
+                         MagickMin(4, image->rows - y),exception);
+
+      if (q == (Quantum *) NULL)
+        return(MagickFalse);
+
+      /* Read alpha values (8 bytes) */
+      a0 = (unsigned char) ReadBlobByte(image);
+      a1 = (unsigned char) ReadBlobByte(image);
+
+      alpha_bits = (MagickSizeType)ReadBlobLSBLong(image);
+      alpha_bits = alpha_bits | ((MagickSizeType)ReadBlobLSBShort(image) << 32);
+
+      /* Read 8 bytes of data from the image */
+      c0 = ReadBlobLSBShort(image);
+      c1 = ReadBlobLSBShort(image);
+      bits = ReadBlobLSBLong(image);
+
+      CalculateColors(c0, c1, &colors, MagickTrue);
+      if (EOFBlob(image) != MagickFalse)
+        return(MagickFalse);
+
+      /* Write the pixels */
+      for (j = 0; j < 4; j++)
+      {
+        for (i = 0; i < 4; i++)
+        {
+          if ((x + i) < (ssize_t) image->columns &&
+              (y + j) < (ssize_t) image->rows)
+            {
+              code = (bits >> ((4*j+i)*2)) & 0x3;
+              SetPixelRed(image,ScaleCharToQuantum(colors.r[code]),q);
+              SetPixelGreen(image,ScaleCharToQuantum(colors.g[code]),q);
+              SetPixelBlue(image,ScaleCharToQuantum(colors.b[code]),q);
+              /* Extract alpha value */
+              alpha_code = (size_t) (alpha_bits >> (3*(4*j+i))) & 0x7;
+              if (alpha_code == 0)
+                alpha = a0;
+              else if (alpha_code == 1)
+                alpha = a1;
+              else if (a0 > a1)
+                alpha = ((8-alpha_code) * a0 + (alpha_code-1) * a1) / 7;
+              else if (alpha_code == 6)
+                alpha = 0;
+              else if (alpha_code == 7)
+                alpha = 255;
+              else
+                alpha = (((6-alpha_code) * a0 + (alpha_code-1) * a1) / 5);
+              SetPixelAlpha(image,ScaleCharToQuantum((unsigned char) alpha),q);
+              q+=GetPixelChannels(image);
+            }
+        }
+      }
+      if (SyncAuthenticPixels(image,exception) == MagickFalse)
+        return(MagickFalse);
+    }
+    if (EOFBlob(image) != MagickFalse)
+      return(MagickFalse);
+  }
+  return(MagickTrue);
+}
+
+static MagickBooleanType ReadDXT5(const ImageInfo *image_info,Image *image,
+  DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
+  ExceptionInfo *exception)
+{
+  if (ReadDXT5Pixels(image,dds_info,exception) == MagickFalse)
+    return(MagickFalse);
+
+  if (read_mipmaps != MagickFalse)
+    return(ReadMipmaps(image_info,image,dds_info,ReadDXT5Pixels,exception));
+  else
+    return(SkipDXTMipmaps(image,dds_info,16,exception));
+}
+
+static MagickBooleanType ReadUncompressedRGBPixels(Image *image,
+  DDSInfo *dds_info,ExceptionInfo *exception)
+{
+  register Quantum
+    *q;
+
+  ssize_t
+    x, y;
+
+  unsigned short
+    color;
+
+  for (y = 0; y < (ssize_t) image->rows; y++)
+  {
+    q = QueueAuthenticPixels(image, 0, y, image->columns, 1,exception);
+
+    if (q == (Quantum *) NULL)
+      return(MagickFalse);
+
+    for (x = 0; x < (ssize_t) image->columns; x++)
+    {
+      if (dds_info->pixelformat.rgb_bitcount == 8)
+        SetPixelGray(image,ScaleCharToQuantum(ReadBlobByte(image)),q);
+      else if (dds_info->pixelformat.rgb_bitcount == 16)
+        {
+           color=ReadBlobShort(image);
+           SetPixelRed(image,ScaleCharToQuantum((unsigned char)
+             (((color >> 11)/31.0)*255)),q);
+           SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
+             ((((unsigned short)(color << 5) >> 10)/63.0)*255)),q);
+           SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
+             ((((unsigned short)(color << 11) >> 11)/31.0)*255)),q);
+        }
+      else
+        {
+          SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
+            ReadBlobByte(image)),q);
+          SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
+            ReadBlobByte(image)),q);
+          SetPixelRed(image,ScaleCharToQuantum((unsigned char)
+            ReadBlobByte(image)),q);
+          if (dds_info->pixelformat.rgb_bitcount == 32)
+            (void) ReadBlobByte(image);
+        }
+      q+=GetPixelChannels(image);
+    }
+    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+      return(MagickFalse);
+    if (EOFBlob(image) != MagickFalse)
+      return(MagickFalse);
+  }
+  return(MagickTrue);
+}
+
+/*
+  Skip the mipmap images for uncompressed (RGB or RGBA) dds files
+*/
+static MagickBooleanType SkipRGBMipmaps(Image *image,DDSInfo *dds_info,
+  int pixel_size,ExceptionInfo *exception)
+{
+  /*
+    Only skip mipmaps for textures and cube maps
+  */
+  if (EOFBlob(image) != MagickFalse)
+    {
+      ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+        image->filename);
+      return(MagickFalse);
+    }
+  if (dds_info->ddscaps1 & DDSCAPS_MIPMAP
+      && (dds_info->ddscaps1 & DDSCAPS_TEXTURE
+          || dds_info->ddscaps2 & DDSCAPS2_CUBEMAP))
+    {
+      MagickOffsetType
+        offset;
+  
+      register ssize_t
+        i;
+
+      size_t
+        h,
+        w;
+
+      w=DIV2(dds_info->width);
+      h=DIV2(dds_info->height);
+
+      /*
+        Mipmapcount includes the main image, so start from one
+      */
+      for (i=1; (i < (ssize_t) dds_info->mipmapcount) && w && h; i++)
+      {
+        offset=(MagickOffsetType)w*h*pixel_size;
+        if (SeekBlob(image,offset,SEEK_CUR) < 0)
+          break;
+        w=DIV2(w);
+        h=DIV2(h);
+        if ((w == 1) && (h == 1))
+          break;
+      }
+    }
+  return(MagickTrue);
+}
+
+static MagickBooleanType ReadUncompressedRGB(const ImageInfo *image_info,
+  Image *image,DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
+  ExceptionInfo *exception)
+{
+  if (dds_info->pixelformat.rgb_bitcount == 8)
+    (void) SetImageType(image,GrayscaleType,exception);
+  else if (dds_info->pixelformat.rgb_bitcount == 16 && !IsBitMask(
+    dds_info->pixelformat,0xf800,0x07e0,0x001f,0x0000))
+    ThrowBinaryException(CorruptImageError,"ImageTypeNotSupported",
+      image->filename);
+
+  if (ReadUncompressedRGBPixels(image,dds_info,exception) == MagickFalse)
+    return(MagickFalse);
+
+  if (read_mipmaps != MagickFalse)
+    return(ReadMipmaps(image_info,image,dds_info,ReadUncompressedRGBPixels,
+      exception));
+  else
+    return(SkipRGBMipmaps(image,dds_info,3,exception));
+}
+
+static MagickBooleanType ReadUncompressedRGBAPixels(Image *image,
+  DDSInfo *dds_info,ExceptionInfo *exception)
+{
+  register Quantum
+    *q;
+
+  ssize_t
+    alphaBits,
+    x,
+    y;
+
+  unsigned short
+    color;
+
+  alphaBits=0;
+  if (dds_info->pixelformat.rgb_bitcount == 16)
+    {
+      if (IsBitMask(dds_info->pixelformat,0x7c00,0x03e0,0x001f,0x8000))
+        alphaBits=1;
+      else if (IsBitMask(dds_info->pixelformat,0x00ff,0x00ff,0x00ff,0xff00))
+        {
+          alphaBits=2;
+          (void) SetImageType(image,GrayscaleAlphaType,exception);
+        }
+      else if (IsBitMask(dds_info->pixelformat,0x0f00,0x00f0,0x000f,0xf000))
+        alphaBits=4;
+      else
+        ThrowBinaryException(CorruptImageError,"ImageTypeNotSupported",
+          image->filename);
+    }
+
+  for (y = 0; y < (ssize_t) image->rows; y++)
+  {
+    q = QueueAuthenticPixels(image, 0, y, image->columns, 1,exception);
+
+    if (q == (Quantum *) NULL)
+      return(MagickFalse);
+
+    for (x = 0; x < (ssize_t) image->columns; x++)
+    {
+      if (dds_info->pixelformat.rgb_bitcount == 16)
+        {
+           color=ReadBlobShort(image);
+           if (alphaBits == 1)
+             {
+               SetPixelAlpha(image,(color & (1 << 15)) ? QuantumRange : 0,q);
+               SetPixelRed(image,ScaleCharToQuantum((unsigned char)
+                 ((((unsigned short)(color << 1) >> 11)/31.0)*255)),q);
+               SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
+                 ((((unsigned short)(color << 6) >> 11)/31.0)*255)),q);
+               SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
+                 ((((unsigned short)(color << 11) >> 11)/31.0)*255)),q);
+             }
+          else if (alphaBits == 2)
+            {
+               SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
+                 (color >> 8)),q);
+               SetPixelGray(image,ScaleCharToQuantum((unsigned char)color),q);
+            }
+          else
+            {
+               SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
+                 (((color >> 12)/15.0)*255)),q);
+               SetPixelRed(image,ScaleCharToQuantum((unsigned char)
+                 ((((unsigned short)(color << 4) >> 12)/15.0)*255)),q);
+               SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
+                 ((((unsigned short)(color << 8) >> 12)/15.0)*255)),q);
+               SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
+                 ((((unsigned short)(color << 12) >> 12)/15.0)*255)),q);
+            }
+        }
+      else
+        {
+          SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
+            ReadBlobByte(image)),q);
+          SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
+            ReadBlobByte(image)),q);
+          SetPixelRed(image,ScaleCharToQuantum((unsigned char)
+            ReadBlobByte(image)),q);
+          SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
+            ReadBlobByte(image)),q);
+        }
+      q+=GetPixelChannels(image);
+    }
+    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+      return(MagickFalse);
+    if (EOFBlob(image) != MagickFalse)
+      return(MagickFalse);
+  }
+  return(MagickTrue);
+}
+
+static MagickBooleanType ReadUncompressedRGBA(const ImageInfo *image_info,
+  Image *image,DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
+  ExceptionInfo *exception)
+{
+  if (ReadUncompressedRGBAPixels(image,dds_info,exception) == MagickFalse)
+    return(MagickFalse);
+
+  if (read_mipmaps != MagickFalse)
+    return(ReadMipmaps(image_info,image,dds_info,ReadUncompressedRGBAPixels,
+      exception));
+  else
+    return(SkipRGBMipmaps(image,dds_info,4,exception));
+}
+
+static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
+{
+  const char
+    *option;
+
+  CompressionType
+    compression;
+
+  DDSInfo
+    dds_info;
+
+  DDSDecoder
+    *decoder;
+
+  Image
+    *image;
+
+  MagickBooleanType
+    status,
+    cubemap,
+    volume,
+    read_mipmaps;
+
+  PixelTrait
+    alpha_trait;
+
+  size_t
+    n,
+    num_images;
+
+  /*
+    Open image file.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickCoreSignature);
+  if (image_info->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      image_info->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
+  cubemap=MagickFalse,
+  volume=MagickFalse,
+  read_mipmaps=MagickFalse;
+  image=AcquireImage(image_info,exception);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    {
+      image=DestroyImageList(image);
+      return((Image *) NULL);
+    }
+  
+  /*
+    Initialize image structure.
+  */
+  if (ReadDDSInfo(image, &dds_info) != MagickTrue)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+
+  if (dds_info.ddscaps2 & DDSCAPS2_CUBEMAP)
+    cubemap = MagickTrue;
+
+  if (dds_info.ddscaps2 & DDSCAPS2_VOLUME && dds_info.depth > 0)
+    volume = MagickTrue;
+
+  (void) SeekBlob(image, 128, SEEK_SET);
+
+  /*
+    Determine pixel format
+  */
+  if (dds_info.pixelformat.flags & DDPF_RGB)
+    {
+      compression = NoCompression;
+      if (dds_info.pixelformat.flags & DDPF_ALPHAPIXELS)
+        {
+          alpha_trait = BlendPixelTrait;
+          decoder = ReadUncompressedRGBA;
+        }
+      else
+        {
+          alpha_trait = UndefinedPixelTrait;
+          decoder = ReadUncompressedRGB;
+        }
+    }
+  else if (dds_info.pixelformat.flags & DDPF_LUMINANCE)
+   {
+      compression = NoCompression;
+      if (dds_info.pixelformat.flags & DDPF_ALPHAPIXELS)
+        {
+          /* Not sure how to handle this */
+          ThrowReaderException(CorruptImageError, "ImageTypeNotSupported");
+        }
+      else
+        {
+          alpha_trait = UndefinedPixelTrait;
+          decoder = ReadUncompressedRGB;
+        }
+    }
+  else if (dds_info.pixelformat.flags & DDPF_FOURCC)
+    {
+      switch (dds_info.pixelformat.fourcc)
+      {
+        case FOURCC_DXT1:
+        {
+          alpha_trait = UndefinedPixelTrait;
+          compression = DXT1Compression;
+          decoder = ReadDXT1;
+          break;
+        }
+        case FOURCC_DXT3:
+        {
+          alpha_trait = BlendPixelTrait;
+          compression = DXT3Compression;
+          decoder = ReadDXT3;
+          break;
+        }
+        case FOURCC_DXT5:
+        {
+          alpha_trait = BlendPixelTrait;
+          compression = DXT5Compression;
+          decoder = ReadDXT5;
+          break;
+        }
+        default:
+        {
+          /* Unknown FOURCC */
+          ThrowReaderException(CorruptImageError, "ImageTypeNotSupported");
+        }
+      }
+    }
+  else
+    {
+      /* Neither compressed nor uncompressed... thus unsupported */
+      ThrowReaderException(CorruptImageError, "ImageTypeNotSupported");
+    }
+  
+  num_images = 1;
+  if (cubemap)
+    {
+      /*
+        Determine number of faces defined in the cubemap
+      */
+      num_images = 0;
+      if (dds_info.ddscaps2 & DDSCAPS2_CUBEMAP_POSITIVEX) num_images++;
+      if (dds_info.ddscaps2 & DDSCAPS2_CUBEMAP_NEGATIVEX) num_images++;
+      if (dds_info.ddscaps2 & DDSCAPS2_CUBEMAP_POSITIVEY) num_images++;
+      if (dds_info.ddscaps2 & DDSCAPS2_CUBEMAP_NEGATIVEY) num_images++;
+      if (dds_info.ddscaps2 & DDSCAPS2_CUBEMAP_POSITIVEZ) num_images++;
+      if (dds_info.ddscaps2 & DDSCAPS2_CUBEMAP_NEGATIVEZ) num_images++;
+    }
+  
+  if (volume)
+    num_images = dds_info.depth;
+
+  if ((num_images == 0) || (num_images > GetBlobSize(image)))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+
+  if (AcquireMagickResource(ListLengthResource,num_images) == MagickFalse)
+    ThrowReaderException(ResourceLimitError,"ListLengthExceedsLimit");
+
+  option=GetImageOption(image_info,"dds:skip-mipmaps");
+  if (IsStringFalse(option) != MagickFalse)
+    read_mipmaps=MagickTrue;
+
+  for (n = 0; n < num_images; n++)
+  {
+    if (n != 0)
+      {
+        /* Start a new image */
+        if (EOFBlob(image) != MagickFalse)
+          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+        AcquireNextImage(image_info,image,exception);
+        if (GetNextImageInList(image) == (Image *) NULL)
+          return(DestroyImageList(image));
+        image=SyncNextImageInList(image);
+      }
+    
+    image->alpha_trait=alpha_trait;
+    image->compression=compression;
+    image->columns=dds_info.width;
+    image->rows=dds_info.height;
+    image->storage_class=DirectClass;
+    image->endian=LSBEndian;
+    image->depth=8;
+    if (image_info->ping != MagickFalse)
+      {
+        (void) CloseBlob(image);
+        return(GetFirstImageInList(image));
+      }
+    status=SetImageExtent(image,image->columns,image->rows,exception);
+    if (status == MagickFalse)
+      return(DestroyImageList(image));
+    (void) SetImageBackgroundColor(image,exception);
+    status=(decoder)(image_info,image,&dds_info,read_mipmaps,exception);
+    if (status == MagickFalse)
+      {
+        (void) CloseBlob(image);
+        if (n == 0)
+          return(DestroyImageList(image));
+        return(GetFirstImageInList(image));
+      }
+  }
+  (void) CloseBlob(image);
+  return(GetFirstImageInList(image));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r D D S I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  RegisterDDSImage() adds attributes for the DDS image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterDDSImage method is:
+%
+%      RegisterDDSImage(void)
+%
+*/
+ModuleExport size_t RegisterDDSImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry = AcquireMagickInfo("DDS","DDS","Microsoft DirectDraw Surface");
+  entry->decoder = (DecodeImageHandler *) ReadDDSImage;
+  entry->encoder = (EncodeImageHandler *) WriteDDSImage;
+  entry->magick = (IsImageFormatHandler *) IsDDS;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
+  (void) RegisterMagickInfo(entry);
+  entry = AcquireMagickInfo("DDS","DXT1","Microsoft DirectDraw Surface");
+  entry->decoder = (DecodeImageHandler *) ReadDDSImage;
+  entry->encoder = (EncodeImageHandler *) WriteDDSImage;
+  entry->magick = (IsImageFormatHandler *) IsDDS;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
+  (void) RegisterMagickInfo(entry);
+  entry = AcquireMagickInfo("DDS","DXT5","Microsoft DirectDraw Surface");
+  entry->decoder = (DecodeImageHandler *) ReadDDSImage;
+  entry->encoder = (EncodeImageHandler *) WriteDDSImage;
+  entry->magick = (IsImageFormatHandler *) IsDDS;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
+  (void) RegisterMagickInfo(entry);
+  return(MagickImageCoderSignature);
+}
+
+static void RemapIndices(const ssize_t *map, const unsigned char *source,
+  unsigned char *target)
+{
+  register ssize_t
+    i;
+
+  for (i = 0; i < 16; i++)
+  {
+    if (map[i] == -1)
+      target[i] = 3;
+    else
+      target[i] = source[map[i]];
+  }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r D D S I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  UnregisterDDSImage() removes format registrations made by the
+%  DDS module from the list of supported formats.
+%
+%  The format of the UnregisterDDSImage method is:
+%
+%      UnregisterDDSImage(void)
+%
+*/
+ModuleExport void UnregisterDDSImage(void)
+{
+  (void) UnregisterMagickInfo("DDS");
+  (void) UnregisterMagickInfo("DXT1");
+  (void) UnregisterMagickInfo("DXT5");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e D D S I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteDDSImage() writes a DirectDraw Surface image file in the DXT5 format.
+%
+%  The format of the WriteBMPImage method is:
+%
+%     MagickBooleanType WriteDDSImage(const ImageInfo *image_info,Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o image_info: the image info.
+%
+%    o image:  The image.
+%
+*/
 
 static size_t CompressAlpha(const size_t min, const size_t max,
   const size_t steps, const ssize_t *alphas, unsigned char* indices)
@@ -996,6 +2074,92 @@ static size_t CompressAlpha(const size_t min, const size_t max,
   }
 
   return error;
+}
+
+static MagickBooleanType ConstructOrdering(const size_t count,
+  const DDSVector4 *points, const DDSVector3 axis, DDSVector4 *pointsWeights,
+  DDSVector4 *xSumwSum, unsigned char *order, size_t iteration)
+{
+  float
+     dps[16],
+     f;
+
+  register ssize_t
+    i;
+
+  size_t
+    j;
+
+  unsigned char
+    c,
+    *o,
+    *p;
+
+  o = order + (16*iteration);
+
+  for (i=0; i < (ssize_t) count; i++)
+  {
+    dps[i] = Dot(points[i],axis);
+    o[i] = (unsigned char)i;
+  }
+
+  for (i=0; i < (ssize_t) count; i++)
+  {
+    for (j=i; j > 0 && dps[j] < dps[j - 1]; j--)
+    {
+      f = dps[j];
+      dps[j] = dps[j - 1];
+      dps[j - 1] = f;
+
+      c = o[j];
+      o[j] = o[j - 1];
+      o[j - 1] = c;
+    }
+  }
+
+  for (i=0; i < (ssize_t) iteration; i++)
+  {
+    MagickBooleanType
+      same;
+
+    p = order + (16*i);
+    same = MagickTrue;
+
+    for (j=0; j < count; j++)
+    {
+      if (o[j] != p[j])
+        {
+          same = MagickFalse;
+          break;
+        }
+    }
+
+    if (same != MagickFalse)
+      return MagickFalse;
+  }
+
+  xSumwSum->x = 0;
+  xSumwSum->y = 0;
+  xSumwSum->z = 0;
+  xSumwSum->w = 0;
+
+  for (i=0; i < (ssize_t) count; i++)
+  {
+    DDSVector4
+      v;
+
+    j = (size_t) o[i];
+
+    v.x = points[j].w * points[j].x;
+    v.y = points[j].w * points[j].y;
+    v.z = points[j].w * points[j].z;
+    v.w = points[j].w * 1.0f;
+
+    VectorCopy44(v,&pointsWeights[i]);
+    VectorAdd(*xSumwSum,v,xSumwSum);
+  }
+
+  return MagickTrue;
 }
 
 static void CompressClusterFit(const size_t count,
@@ -1494,1156 +2658,6 @@ static void ComputeWeightedCovariance(const size_t count,
   }
 }
 
-static MagickBooleanType ConstructOrdering(const size_t count,
-  const DDSVector4 *points, const DDSVector3 axis, DDSVector4 *pointsWeights,
-  DDSVector4 *xSumwSum, unsigned char *order, size_t iteration)
-{
-  float
-     dps[16],
-     f;
-
-  register ssize_t
-    i;
-
-  size_t
-    j;
-
-  unsigned char
-    c,
-    *o,
-    *p;
-
-  o = order + (16*iteration);
-
-  for (i=0; i < (ssize_t) count; i++)
-  {
-    dps[i] = Dot(points[i],axis);
-    o[i] = (unsigned char)i;
-  }
-
-  for (i=0; i < (ssize_t) count; i++)
-  {
-    for (j=i; j > 0 && dps[j] < dps[j - 1]; j--)
-    {
-      f = dps[j];
-      dps[j] = dps[j - 1];
-      dps[j - 1] = f;
-
-      c = o[j];
-      o[j] = o[j - 1];
-      o[j - 1] = c;
-    }
-  }
-
-  for (i=0; i < (ssize_t) iteration; i++)
-  {
-    MagickBooleanType
-      same;
-
-    p = order + (16*i);
-    same = MagickTrue;
-
-    for (j=0; j < count; j++)
-    {
-      if (o[j] != p[j])
-        {
-          same = MagickFalse;
-          break;
-        }
-    }
-
-    if (same != MagickFalse)
-      return MagickFalse;
-  }
-
-  xSumwSum->x = 0;
-  xSumwSum->y = 0;
-  xSumwSum->z = 0;
-  xSumwSum->w = 0;
-
-  for (i=0; i < (ssize_t) count; i++)
-  {
-    DDSVector4
-      v;
-
-    j = (size_t) o[i];
-
-    v.x = points[j].w * points[j].x;
-    v.y = points[j].w * points[j].y;
-    v.z = points[j].w * points[j].z;
-    v.w = points[j].w * 1.0f;
-
-    VectorCopy44(v,&pointsWeights[i]);
-    VectorAdd(*xSumwSum,v,xSumwSum);
-  }
-
-  return MagickTrue;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I s D D S                                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  IsDDS() returns MagickTrue if the image format type, identified by the
-%  magick string, is DDS.
-%
-%  The format of the IsDDS method is:
-%
-%      MagickBooleanType IsDDS(const unsigned char *magick,const size_t length)
-%
-%  A description of each parameter follows:
-%
-%    o magick: compare image format pattern against these bytes.
-%
-%    o length: Specifies the length of the magick string.
-%
-*/
-static MagickBooleanType IsDDS(const unsigned char *magick, const size_t length)
-{
-  if (length < 4)
-    return(MagickFalse);
-  if (LocaleNCompare((char *) magick,"DDS ", 4) == 0)
-    return(MagickTrue);
-  return(MagickFalse);
-}
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   R e a d D D S I m a g e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ReadDDSImage() reads a DirectDraw Surface image file and returns it.  It
-%  allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.
-%
-%  The format of the ReadDDSImage method is:
-%
-%      Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image_info: The image info.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-
-static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
-{
-  const char
-    *option;
-
-  CompressionType
-    compression;
-
-  DDSInfo
-    dds_info;
-
-  DDSDecoder
-    *decoder;
-
-  Image
-    *image;
-
-  MagickBooleanType
-    status,
-    cubemap,
-    volume,
-    read_mipmaps;
-
-  PixelTrait
-    alpha_trait;
-
-  size_t
-    n,
-    num_images;
-
-  /*
-    Open image file.
-  */
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickCoreSignature);
-  if (image_info->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image_info->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickCoreSignature);
-  cubemap=MagickFalse,
-  volume=MagickFalse,
-  read_mipmaps=MagickFalse;
-  image=AcquireImage(image_info,exception);
-  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
-  if (status == MagickFalse)
-    {
-      image=DestroyImageList(image);
-      return((Image *) NULL);
-    }
-  
-  /*
-    Initialize image structure.
-  */
-  if (ReadDDSInfo(image, &dds_info) != MagickTrue)
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-
-  if (dds_info.ddscaps2 & DDSCAPS2_CUBEMAP)
-    cubemap = MagickTrue;
-
-  if (dds_info.ddscaps2 & DDSCAPS2_VOLUME && dds_info.depth > 0)
-    volume = MagickTrue;
-
-  (void) SeekBlob(image, 128, SEEK_SET);
-
-  /*
-    Determine pixel format
-  */
-  if (dds_info.pixelformat.flags & DDPF_RGB)
-    {
-      compression = NoCompression;
-      if (dds_info.pixelformat.flags & DDPF_ALPHAPIXELS)
-        {
-          alpha_trait = BlendPixelTrait;
-          decoder = ReadUncompressedRGBA;
-        }
-      else
-        {
-          alpha_trait = UndefinedPixelTrait;
-          decoder = ReadUncompressedRGB;
-        }
-    }
-  else if (dds_info.pixelformat.flags & DDPF_LUMINANCE)
-   {
-      compression = NoCompression;
-      if (dds_info.pixelformat.flags & DDPF_ALPHAPIXELS)
-        {
-          /* Not sure how to handle this */
-          ThrowReaderException(CorruptImageError, "ImageTypeNotSupported");
-        }
-      else
-        {
-          alpha_trait = UndefinedPixelTrait;
-          decoder = ReadUncompressedRGB;
-        }
-    }
-  else if (dds_info.pixelformat.flags & DDPF_FOURCC)
-    {
-      switch (dds_info.pixelformat.fourcc)
-      {
-        case FOURCC_DXT1:
-        {
-          alpha_trait = UndefinedPixelTrait;
-          compression = DXT1Compression;
-          decoder = ReadDXT1;
-          break;
-        }
-        case FOURCC_DXT3:
-        {
-          alpha_trait = BlendPixelTrait;
-          compression = DXT3Compression;
-          decoder = ReadDXT3;
-          break;
-        }
-        case FOURCC_DXT5:
-        {
-          alpha_trait = BlendPixelTrait;
-          compression = DXT5Compression;
-          decoder = ReadDXT5;
-          break;
-        }
-        default:
-        {
-          /* Unknown FOURCC */
-          ThrowReaderException(CorruptImageError, "ImageTypeNotSupported");
-        }
-      }
-    }
-  else
-    {
-      /* Neither compressed nor uncompressed... thus unsupported */
-      ThrowReaderException(CorruptImageError, "ImageTypeNotSupported");
-    }
-  
-  num_images = 1;
-  if (cubemap)
-    {
-      /*
-        Determine number of faces defined in the cubemap
-      */
-      num_images = 0;
-      if (dds_info.ddscaps2 & DDSCAPS2_CUBEMAP_POSITIVEX) num_images++;
-      if (dds_info.ddscaps2 & DDSCAPS2_CUBEMAP_NEGATIVEX) num_images++;
-      if (dds_info.ddscaps2 & DDSCAPS2_CUBEMAP_POSITIVEY) num_images++;
-      if (dds_info.ddscaps2 & DDSCAPS2_CUBEMAP_NEGATIVEY) num_images++;
-      if (dds_info.ddscaps2 & DDSCAPS2_CUBEMAP_POSITIVEZ) num_images++;
-      if (dds_info.ddscaps2 & DDSCAPS2_CUBEMAP_NEGATIVEZ) num_images++;
-    }
-  
-  if (volume)
-    num_images = dds_info.depth;
-
-  if ((num_images == 0) || (num_images > GetBlobSize(image)))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-
-  if (AcquireMagickResource(ListLengthResource,num_images) == MagickFalse)
-    ThrowReaderException(ResourceLimitError,"ListLengthExceedsLimit");
-
-  option=GetImageOption(image_info,"dds:skip-mipmaps");
-  if (IsStringFalse(option) != MagickFalse)
-    read_mipmaps=MagickTrue;
-
-  for (n = 0; n < num_images; n++)
-  {
-    if (n != 0)
-      {
-        /* Start a new image */
-        if (EOFBlob(image) != MagickFalse)
-          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
-        AcquireNextImage(image_info,image,exception);
-        if (GetNextImageInList(image) == (Image *) NULL)
-          return(DestroyImageList(image));
-        image=SyncNextImageInList(image);
-      }
-    
-    image->alpha_trait=alpha_trait;
-    image->compression=compression;
-    image->columns=dds_info.width;
-    image->rows=dds_info.height;
-    image->storage_class=DirectClass;
-    image->endian=LSBEndian;
-    image->depth=8;
-    if (image_info->ping != MagickFalse)
-      {
-        (void) CloseBlob(image);
-        return(GetFirstImageInList(image));
-      }
-    status=SetImageExtent(image,image->columns,image->rows,exception);
-    if (status == MagickFalse)
-      return(DestroyImageList(image));
-    (void) SetImageBackgroundColor(image,exception);
-    status=(decoder)(image_info,image,&dds_info,read_mipmaps,exception);
-    if (status == MagickFalse)
-      {
-        (void) CloseBlob(image);
-        if (n == 0)
-          return(DestroyImageList(image));
-        return(GetFirstImageInList(image));
-      }
-  }
-  (void) CloseBlob(image);
-  return(GetFirstImageInList(image));
-}
-
-static MagickBooleanType ReadDDSInfo(Image *image, DDSInfo *dds_info)
-{
-  size_t
-    hdr_size,
-    required;
-  
-  /* Seek to start of header */
-  (void) SeekBlob(image, 4, SEEK_SET);
-  
-  /* Check header field */
-  hdr_size = ReadBlobLSBLong(image);
-  if (hdr_size != 124)
-    return MagickFalse;
-  
-  /* Fill in DDS info struct */
-  dds_info->flags = ReadBlobLSBLong(image);
-  
-  /* Check required flags */
-  required=(size_t) (DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT);
-  if ((dds_info->flags & required) != required)
-    return MagickFalse;
-  
-  dds_info->height = ReadBlobLSBLong(image);
-  dds_info->width = ReadBlobLSBLong(image);
-  dds_info->pitchOrLinearSize = ReadBlobLSBLong(image);
-  dds_info->depth = ReadBlobLSBLong(image);
-  dds_info->mipmapcount = ReadBlobLSBLong(image);
-  
-  (void) SeekBlob(image, 44, SEEK_CUR);   /* reserved region of 11 DWORDs */
-  
-  /* Read pixel format structure */
-  hdr_size = ReadBlobLSBLong(image);
-  if (hdr_size != 32)
-    return MagickFalse;
-  
-  dds_info->pixelformat.flags = ReadBlobLSBLong(image);
-  dds_info->pixelformat.fourcc = ReadBlobLSBLong(image);
-  dds_info->pixelformat.rgb_bitcount = ReadBlobLSBLong(image);
-  dds_info->pixelformat.r_bitmask = ReadBlobLSBLong(image);
-  dds_info->pixelformat.g_bitmask = ReadBlobLSBLong(image);
-  dds_info->pixelformat.b_bitmask = ReadBlobLSBLong(image);
-  dds_info->pixelformat.alpha_bitmask = ReadBlobLSBLong(image);
-  
-  dds_info->ddscaps1 = ReadBlobLSBLong(image);
-  dds_info->ddscaps2 = ReadBlobLSBLong(image);
-  (void) SeekBlob(image, 12, SEEK_CUR); /* 3 reserved DWORDs */
-  
-  return MagickTrue;
-}
-
-static MagickBooleanType SetDXT1Pixels(Image *image,ssize_t x,ssize_t y,
-  DDSColors colors,size_t bits,Quantum *q)
-{
-  register ssize_t
-    i;
-
-  ssize_t
-    j;
-
-  unsigned char
-    code;
-
-  for (j = 0; j < 4; j++)
-  {
-    for (i = 0; i < 4; i++)
-    {
-      if ((x + i) < (ssize_t) image->columns &&
-          (y + j) < (ssize_t) image->rows)
-        {
-          code=(unsigned char) ((bits >> ((j*4+i)*2)) & 0x3);
-          SetPixelRed(image,ScaleCharToQuantum(colors.r[code]),q);
-          SetPixelGreen(image,ScaleCharToQuantum(colors.g[code]),q);
-          SetPixelBlue(image,ScaleCharToQuantum(colors.b[code]),q);
-          SetPixelOpacity(image,ScaleCharToQuantum(colors.a[code]),q);
-          if ((colors.a[code] != 0) &&
-              (image->alpha_trait == UndefinedPixelTrait))
-            return(MagickFalse);
-          q+=GetPixelChannels(image);
-        }
-    }
-  }
-  return(MagickTrue);
-}
-
-static MagickBooleanType ReadMipmaps(const ImageInfo *image_info,Image *image,
-  DDSInfo *dds_info,DDSPixelDecoder decoder,ExceptionInfo *exception)
-{
-  MagickBooleanType
-    status;
-
-  /*
-    Only skip mipmaps for textures and cube maps
-  */
-  if (EOFBlob(image) != MagickFalse)
-    {
-      ThrowFileException(exception,CorruptImageWarning,"UnexpectedEndOfFile",
-        image->filename);
-      return(MagickFalse);
-    }
-  status=MagickTrue;
-  if (dds_info->ddscaps1 & DDSCAPS_MIPMAP
-      && (dds_info->ddscaps1 & DDSCAPS_TEXTURE
-          || dds_info->ddscaps2 & DDSCAPS2_CUBEMAP))
-    {
-      register ssize_t
-        i;
-
-      size_t
-        h,
-        w;
-
-      w=DIV2(dds_info->width);
-      h=DIV2(dds_info->height);
-
-      /*
-        Mipmapcount includes the main image, so start from one
-      */
-      for (i = 1; (i < (ssize_t) dds_info->mipmapcount) && w && h; i++)
-      {
-        AcquireNextImage(image_info,image,exception);
-        if (image->next == (Image *) NULL)
-          return(MagickFalse);
-        image->next->alpha_trait=image->alpha_trait;
-        image=SyncNextImageInList(image);
-        status=SetImageExtent(image,w,h,exception);
-        if (status == MagickFalse)
-          break;
-        status=decoder(image,dds_info,exception);
-        if (status == MagickFalse)
-          break;
-        if ((w == 1) && (h == 1))
-          break;
-
-        w=DIV2(w);
-        h=DIV2(h);
-      }
-    }
-  return(status);
-}
-
-static MagickBooleanType ReadDXT1Pixels(Image *image,
-  DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
-{
-  DDSColors
-    colors;
-
-  register Quantum
-    *q;
-
-  register ssize_t
-    x;
-
-  size_t
-    bits;
-
-  ssize_t
-    y;
-
-  unsigned short
-    c0,
-    c1;
-
-  magick_unreferenced(dds_info);
-  for (y = 0; y < (ssize_t) image->rows; y += 4)
-  {
-    for (x = 0; x < (ssize_t) image->columns; x += 4)
-    {
-      /* Get 4x4 patch of pixels to write on */
-      q=QueueAuthenticPixels(image,x,y,MagickMin(4,image->columns-x),
-        MagickMin(4,image->rows-y),exception);
-
-      if (q == (Quantum *) NULL)
-        return(MagickFalse);
-
-      /* Read 8 bytes of data from the image */
-      c0=ReadBlobLSBShort(image);
-      c1=ReadBlobLSBShort(image);
-      bits=ReadBlobLSBLong(image);
-
-      CalculateColors(c0,c1,&colors,MagickFalse);
-      if (EOFBlob(image) != MagickFalse)
-        return(MagickFalse);
-
-      /* Write the pixels */
-      if (SetDXT1Pixels(image,x,y,colors,bits,q) == MagickFalse)
-        {
-          /* Correct alpha */
-          SetImageAlpha(image,QuantumRange,exception);
-          q=QueueAuthenticPixels(image,x,y,MagickMin(4,image->columns-x),
-            MagickMin(4,image->rows-y),exception);
-          if (q != (Quantum *) NULL)
-            SetDXT1Pixels(image,x,y,colors,bits,q);
-        }
-      if (SyncAuthenticPixels(image,exception) == MagickFalse)
-        return(MagickFalse);
-    }
-    if (EOFBlob(image) != MagickFalse)
-      return(MagickFalse);
-  }
-  return(MagickTrue);
-}
-
-static MagickBooleanType ReadDXT1(const ImageInfo *image_info,Image *image,
-  DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
-  ExceptionInfo *exception)
-{
-  if (ReadDXT1Pixels(image,dds_info,exception) == MagickFalse)
-    return(MagickFalse);
-
-  if (read_mipmaps != MagickFalse)
-    return(ReadMipmaps(image_info,image,dds_info,ReadDXT1Pixels,exception));
-  else
-    return(SkipDXTMipmaps(image,dds_info,8,exception));
-}
-
-static MagickBooleanType ReadDXT3Pixels(Image *image,
-  DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
-{
-  DDSColors
-    colors;
-
-  register Quantum
-    *q;
-
-  register ssize_t
-    i,
-    x;
-
-  unsigned char
-    alpha;
-
-  size_t
-    a0,
-    a1,
-    bits,
-    code;
-
-  ssize_t
-    j,
-    y;
-
-  unsigned short
-    c0,
-    c1;
-
-  magick_unreferenced(dds_info);
-  for (y = 0; y < (ssize_t) image->rows; y += 4)
-  {
-    for (x = 0; x < (ssize_t) image->columns; x += 4)
-    {
-      /* Get 4x4 patch of pixels to write on */
-      q = QueueAuthenticPixels(image, x, y, MagickMin(4, image->columns - x),
-                         MagickMin(4, image->rows - y),exception);
-
-      if (q == (Quantum *) NULL)
-        return(MagickFalse);
-
-      /* Read alpha values (8 bytes) */
-      a0 = ReadBlobLSBLong(image);
-      a1 = ReadBlobLSBLong(image);
-
-      /* Read 8 bytes of data from the image */
-      c0 = ReadBlobLSBShort(image);
-      c1 = ReadBlobLSBShort(image);
-      bits = ReadBlobLSBLong(image);
-
-      CalculateColors(c0, c1, &colors, MagickTrue);
-
-      if (EOFBlob(image) != MagickFalse)
-        return(MagickFalse);
-
-      /* Write the pixels */
-      for (j = 0; j < 4; j++)
-      {
-        for (i = 0; i < 4; i++)
-        {
-          if ((x + i) < (ssize_t) image->columns && (y + j) < (ssize_t) image->rows)
-            {
-              code = (bits >> ((4*j+i)*2)) & 0x3;
-              SetPixelRed(image,ScaleCharToQuantum(colors.r[code]),q);
-              SetPixelGreen(image,ScaleCharToQuantum(colors.g[code]),q);
-              SetPixelBlue(image,ScaleCharToQuantum(colors.b[code]),q);
-              /*
-                Extract alpha value: multiply 0..15 by 17 to get range 0..255
-              */
-              if (j < 2)
-                alpha = 17U * (unsigned char) ((a0 >> (4*(4*j+i))) & 0xf);
-              else
-                alpha = 17U * (unsigned char) ((a1 >> (4*(4*(j-2)+i))) & 0xf);
-              SetPixelAlpha(image,ScaleCharToQuantum((unsigned char) alpha),q);
-              q+=GetPixelChannels(image);
-            }
-        }
-      }
-      if (SyncAuthenticPixels(image,exception) == MagickFalse)
-        return(MagickFalse);
-    }
-    if (EOFBlob(image) != MagickFalse)
-      return(MagickFalse);
-  }
-  return(MagickTrue);
-}
-
-static MagickBooleanType ReadDXT3(const ImageInfo *image_info,Image *image,
-  DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
-  ExceptionInfo *exception)
-{
-  if (ReadDXT3Pixels(image,dds_info,exception) == MagickFalse)
-    return(MagickFalse);
-
-  if (read_mipmaps != MagickFalse)
-    return(ReadMipmaps(image_info,image,dds_info,ReadDXT3Pixels,exception));
-  else
-    return(SkipDXTMipmaps(image,dds_info,16,exception));
-}
-
-static MagickBooleanType ReadDXT5Pixels(Image *image,
-  DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
-{
-  DDSColors
-    colors;
-
-  MagickSizeType
-    alpha_bits;
-
-  register Quantum
-    *q;
-
-  register ssize_t
-    i,
-    x;
-
-  unsigned char
-    a0,
-    a1;
-
-  size_t
-    alpha,
-    bits,
-    code,
-    alpha_code;
-
-  ssize_t
-    j,
-    y;
-
-  unsigned short
-    c0,
-    c1;
-
-  magick_unreferenced(dds_info);
-  for (y = 0; y < (ssize_t) image->rows; y += 4)
-  {
-    for (x = 0; x < (ssize_t) image->columns; x += 4)
-    {
-      /* Get 4x4 patch of pixels to write on */
-      q = QueueAuthenticPixels(image, x, y, MagickMin(4, image->columns - x),
-                         MagickMin(4, image->rows - y),exception);
-
-      if (q == (Quantum *) NULL)
-        return(MagickFalse);
-
-      /* Read alpha values (8 bytes) */
-      a0 = (unsigned char) ReadBlobByte(image);
-      a1 = (unsigned char) ReadBlobByte(image);
-
-      alpha_bits = (MagickSizeType)ReadBlobLSBLong(image);
-      alpha_bits = alpha_bits | ((MagickSizeType)ReadBlobLSBShort(image) << 32);
-
-      /* Read 8 bytes of data from the image */
-      c0 = ReadBlobLSBShort(image);
-      c1 = ReadBlobLSBShort(image);
-      bits = ReadBlobLSBLong(image);
-
-      CalculateColors(c0, c1, &colors, MagickTrue);
-      if (EOFBlob(image) != MagickFalse)
-        return(MagickFalse);
-
-      /* Write the pixels */
-      for (j = 0; j < 4; j++)
-      {
-        for (i = 0; i < 4; i++)
-        {
-          if ((x + i) < (ssize_t) image->columns &&
-              (y + j) < (ssize_t) image->rows)
-            {
-              code = (bits >> ((4*j+i)*2)) & 0x3;
-              SetPixelRed(image,ScaleCharToQuantum(colors.r[code]),q);
-              SetPixelGreen(image,ScaleCharToQuantum(colors.g[code]),q);
-              SetPixelBlue(image,ScaleCharToQuantum(colors.b[code]),q);
-              /* Extract alpha value */
-              alpha_code = (size_t) (alpha_bits >> (3*(4*j+i))) & 0x7;
-              if (alpha_code == 0)
-                alpha = a0;
-              else if (alpha_code == 1)
-                alpha = a1;
-              else if (a0 > a1)
-                alpha = ((8-alpha_code) * a0 + (alpha_code-1) * a1) / 7;
-              else if (alpha_code == 6)
-                alpha = 0;
-              else if (alpha_code == 7)
-                alpha = 255;
-              else
-                alpha = (((6-alpha_code) * a0 + (alpha_code-1) * a1) / 5);
-              SetPixelAlpha(image,ScaleCharToQuantum((unsigned char) alpha),q);
-              q+=GetPixelChannels(image);
-            }
-        }
-      }
-      if (SyncAuthenticPixels(image,exception) == MagickFalse)
-        return(MagickFalse);
-    }
-    if (EOFBlob(image) != MagickFalse)
-      return(MagickFalse);
-  }
-  return(MagickTrue);
-}
-
-static MagickBooleanType ReadDXT5(const ImageInfo *image_info,Image *image,
-  DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
-  ExceptionInfo *exception)
-{
-  if (ReadDXT5Pixels(image,dds_info,exception) == MagickFalse)
-    return(MagickFalse);
-
-  if (read_mipmaps != MagickFalse)
-    return(ReadMipmaps(image_info,image,dds_info,ReadDXT5Pixels,exception));
-  else
-    return(SkipDXTMipmaps(image,dds_info,16,exception));
-}
-
-static MagickBooleanType ReadUncompressedRGBPixels(Image *image,
-  DDSInfo *dds_info,ExceptionInfo *exception)
-{
-  register Quantum
-    *q;
-
-  ssize_t
-    x, y;
-
-  unsigned short
-    color;
-
-  for (y = 0; y < (ssize_t) image->rows; y++)
-  {
-    q = QueueAuthenticPixels(image, 0, y, image->columns, 1,exception);
-
-    if (q == (Quantum *) NULL)
-      return(MagickFalse);
-
-    for (x = 0; x < (ssize_t) image->columns; x++)
-    {
-      if (dds_info->pixelformat.rgb_bitcount == 8)
-        SetPixelGray(image,ScaleCharToQuantum(ReadBlobByte(image)),q);
-      else if (dds_info->pixelformat.rgb_bitcount == 16)
-        {
-           color=ReadBlobShort(image);
-           SetPixelRed(image,ScaleCharToQuantum((unsigned char)
-             (((color >> 11)/31.0)*255)),q);
-           SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
-             ((((unsigned short)(color << 5) >> 10)/63.0)*255)),q);
-           SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
-             ((((unsigned short)(color << 11) >> 11)/31.0)*255)),q);
-        }
-      else
-        {
-          SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
-            ReadBlobByte(image)),q);
-          SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
-            ReadBlobByte(image)),q);
-          SetPixelRed(image,ScaleCharToQuantum((unsigned char)
-            ReadBlobByte(image)),q);
-          if (dds_info->pixelformat.rgb_bitcount == 32)
-            (void) ReadBlobByte(image);
-        }
-      q+=GetPixelChannels(image);
-    }
-    if (SyncAuthenticPixels(image,exception) == MagickFalse)
-      return(MagickFalse);
-    if (EOFBlob(image) != MagickFalse)
-      return(MagickFalse);
-  }
-  return(MagickTrue);
-}
-
-static MagickBooleanType ReadUncompressedRGB(const ImageInfo *image_info,
-  Image *image,DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
-  ExceptionInfo *exception)
-{
-  if (dds_info->pixelformat.rgb_bitcount == 8)
-    (void) SetImageType(image,GrayscaleType,exception);
-  else if (dds_info->pixelformat.rgb_bitcount == 16 && !IsBitMask(
-    dds_info->pixelformat,0xf800,0x07e0,0x001f,0x0000))
-    ThrowBinaryException(CorruptImageError,"ImageTypeNotSupported",
-      image->filename);
-
-  if (ReadUncompressedRGBPixels(image,dds_info,exception) == MagickFalse)
-    return(MagickFalse);
-
-  if (read_mipmaps != MagickFalse)
-    return(ReadMipmaps(image_info,image,dds_info,ReadUncompressedRGBPixels,
-      exception));
-  else
-    return(SkipRGBMipmaps(image,dds_info,3,exception));
-}
-
-static MagickBooleanType ReadUncompressedRGBAPixels(Image *image,
-  DDSInfo *dds_info,ExceptionInfo *exception)
-{
-  register Quantum
-    *q;
-
-  ssize_t
-    alphaBits,
-    x,
-    y;
-
-  unsigned short
-    color;
-
-  alphaBits=0;
-  if (dds_info->pixelformat.rgb_bitcount == 16)
-    {
-      if (IsBitMask(dds_info->pixelformat,0x7c00,0x03e0,0x001f,0x8000))
-        alphaBits=1;
-      else if (IsBitMask(dds_info->pixelformat,0x00ff,0x00ff,0x00ff,0xff00))
-        {
-          alphaBits=2;
-          (void) SetImageType(image,GrayscaleAlphaType,exception);
-        }
-      else if (IsBitMask(dds_info->pixelformat,0x0f00,0x00f0,0x000f,0xf000))
-        alphaBits=4;
-      else
-        ThrowBinaryException(CorruptImageError,"ImageTypeNotSupported",
-          image->filename);
-    }
-
-  for (y = 0; y < (ssize_t) image->rows; y++)
-  {
-    q = QueueAuthenticPixels(image, 0, y, image->columns, 1,exception);
-
-    if (q == (Quantum *) NULL)
-      return(MagickFalse);
-
-    for (x = 0; x < (ssize_t) image->columns; x++)
-    {
-      if (dds_info->pixelformat.rgb_bitcount == 16)
-        {
-           color=ReadBlobShort(image);
-           if (alphaBits == 1)
-             {
-               SetPixelAlpha(image,(color & (1 << 15)) ? QuantumRange : 0,q);
-               SetPixelRed(image,ScaleCharToQuantum((unsigned char)
-                 ((((unsigned short)(color << 1) >> 11)/31.0)*255)),q);
-               SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
-                 ((((unsigned short)(color << 6) >> 11)/31.0)*255)),q);
-               SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
-                 ((((unsigned short)(color << 11) >> 11)/31.0)*255)),q);
-             }
-          else if (alphaBits == 2)
-            {
-               SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
-                 (color >> 8)),q);
-               SetPixelGray(image,ScaleCharToQuantum((unsigned char)color),q);
-            }
-          else
-            {
-               SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
-                 (((color >> 12)/15.0)*255)),q);
-               SetPixelRed(image,ScaleCharToQuantum((unsigned char)
-                 ((((unsigned short)(color << 4) >> 12)/15.0)*255)),q);
-               SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
-                 ((((unsigned short)(color << 8) >> 12)/15.0)*255)),q);
-               SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
-                 ((((unsigned short)(color << 12) >> 12)/15.0)*255)),q);
-            }
-        }
-      else
-        {
-          SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
-            ReadBlobByte(image)),q);
-          SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
-            ReadBlobByte(image)),q);
-          SetPixelRed(image,ScaleCharToQuantum((unsigned char)
-            ReadBlobByte(image)),q);
-          SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
-            ReadBlobByte(image)),q);
-        }
-      q+=GetPixelChannels(image);
-    }
-    if (SyncAuthenticPixels(image,exception) == MagickFalse)
-      return(MagickFalse);
-    if (EOFBlob(image) != MagickFalse)
-      return(MagickFalse);
-  }
-  return(MagickTrue);
-}
-
-static MagickBooleanType ReadUncompressedRGBA(const ImageInfo *image_info,
-  Image *image,DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
-  ExceptionInfo *exception)
-{
-  if (ReadUncompressedRGBAPixels(image,dds_info,exception) == MagickFalse)
-    return(MagickFalse);
-
-  if (read_mipmaps != MagickFalse)
-    return(ReadMipmaps(image_info,image,dds_info,ReadUncompressedRGBAPixels,
-      exception));
-  else
-    return(SkipRGBMipmaps(image,dds_info,4,exception));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   R e g i s t e r D D S I m a g e                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  RegisterDDSImage() adds attributes for the DDS image format to
-%  the list of supported formats.  The attributes include the image format
-%  tag, a method to read and/or write the format, whether the format
-%  supports the saving of more than one frame to the same file or blob,
-%  whether the format supports native in-memory I/O, and a brief
-%  description of the format.
-%
-%  The format of the RegisterDDSImage method is:
-%
-%      RegisterDDSImage(void)
-%
-*/
-ModuleExport size_t RegisterDDSImage(void)
-{
-  MagickInfo
-    *entry;
-
-  entry = AcquireMagickInfo("DDS","DDS","Microsoft DirectDraw Surface");
-  entry->decoder = (DecodeImageHandler *) ReadDDSImage;
-  entry->encoder = (EncodeImageHandler *) WriteDDSImage;
-  entry->magick = (IsImageFormatHandler *) IsDDS;
-  entry->flags|=CoderDecoderSeekableStreamFlag;
-  (void) RegisterMagickInfo(entry);
-  entry = AcquireMagickInfo("DDS","DXT1","Microsoft DirectDraw Surface");
-  entry->decoder = (DecodeImageHandler *) ReadDDSImage;
-  entry->encoder = (EncodeImageHandler *) WriteDDSImage;
-  entry->magick = (IsImageFormatHandler *) IsDDS;
-  entry->flags|=CoderDecoderSeekableStreamFlag;
-  (void) RegisterMagickInfo(entry);
-  entry = AcquireMagickInfo("DDS","DXT5","Microsoft DirectDraw Surface");
-  entry->decoder = (DecodeImageHandler *) ReadDDSImage;
-  entry->encoder = (EncodeImageHandler *) WriteDDSImage;
-  entry->magick = (IsImageFormatHandler *) IsDDS;
-  entry->flags|=CoderDecoderSeekableStreamFlag;
-  (void) RegisterMagickInfo(entry);
-  return(MagickImageCoderSignature);
-}
-
-static void RemapIndices(const ssize_t *map, const unsigned char *source,
-  unsigned char *target)
-{
-  register ssize_t
-    i;
-
-  for (i = 0; i < 16; i++)
-  {
-    if (map[i] == -1)
-      target[i] = 3;
-    else
-      target[i] = source[map[i]];
-  }
-}
-
-/*
-  Skip the mipmap images for compressed (DXTn) dds files
-*/
-static MagickBooleanType SkipDXTMipmaps(Image *image,DDSInfo *dds_info,
-  int texel_size,ExceptionInfo *exception)
-{
-  /*
-    Only skip mipmaps for textures and cube maps
-  */
-  if (EOFBlob(image) != MagickFalse)
-    {
-      ThrowFileException(exception,CorruptImageWarning,"UnexpectedEndOfFile",
-        image->filename);
-      return(MagickFalse);
-    }
-  if (dds_info->ddscaps1 & DDSCAPS_MIPMAP
-      && (dds_info->ddscaps1 & DDSCAPS_TEXTURE
-          || dds_info->ddscaps2 & DDSCAPS2_CUBEMAP))
-    {
-      MagickOffsetType
-        offset;
-
-      register ssize_t
-        i;
-
-      size_t
-        h,
-        w;
-
-      w=DIV2(dds_info->width);
-      h=DIV2(dds_info->height);
-
-      /*
-        Mipmapcount includes the main image, so start from one
-      */
-      for (i = 1; (i < (ssize_t) dds_info->mipmapcount) && w && h; i++)
-      {
-        offset=(MagickOffsetType)((w+3)/4)*((h+3)/4)*texel_size;
-        if (SeekBlob(image,offset,SEEK_CUR) < 0)
-          break;
-        w=DIV2(w);
-        h=DIV2(h);
-        if ((w == 1) && (h == 1))
-          break;
-      }
-    }
-  return(MagickTrue);
-}
-
-/*
-  Skip the mipmap images for uncompressed (RGB or RGBA) dds files
-*/
-static MagickBooleanType SkipRGBMipmaps(Image *image,DDSInfo *dds_info,
-  int pixel_size,ExceptionInfo *exception)
-{
-  /*
-    Only skip mipmaps for textures and cube maps
-  */
-  if (EOFBlob(image) != MagickFalse)
-    {
-      ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-        image->filename);
-      return(MagickFalse);
-    }
-  if (dds_info->ddscaps1 & DDSCAPS_MIPMAP
-      && (dds_info->ddscaps1 & DDSCAPS_TEXTURE
-          || dds_info->ddscaps2 & DDSCAPS2_CUBEMAP))
-    {
-      MagickOffsetType
-        offset;
-  
-      register ssize_t
-        i;
-
-      size_t
-        h,
-        w;
-
-      w=DIV2(dds_info->width);
-      h=DIV2(dds_info->height);
-
-      /*
-        Mipmapcount includes the main image, so start from one
-      */
-      for (i=1; (i < (ssize_t) dds_info->mipmapcount) && w && h; i++)
-      {
-        offset=(MagickOffsetType)w*h*pixel_size;
-        if (SeekBlob(image,offset,SEEK_CUR) < 0)
-          break;
-        w=DIV2(w);
-        h=DIV2(h);
-        if ((w == 1) && (h == 1))
-          break;
-      }
-    }
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   U n r e g i s t e r D D S I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  UnregisterDDSImage() removes format registrations made by the
-%  DDS module from the list of supported formats.
-%
-%  The format of the UnregisterDDSImage method is:
-%
-%      UnregisterDDSImage(void)
-%
-*/
-ModuleExport void UnregisterDDSImage(void)
-{
-  (void) UnregisterMagickInfo("DDS");
-  (void) UnregisterMagickInfo("DXT1");
-  (void) UnregisterMagickInfo("DXT5");
-}
-
 static void WriteAlphas(Image *image, const ssize_t *alphas, size_t min5,
   size_t max5, size_t min7, size_t max7)
 {
@@ -2707,6 +2721,51 @@ static void WriteAlphas(Image *image, const ssize_t *alphas, size_t min5,
   }
 }
 
+static void WriteIndices(Image *image, const DDSVector3 start,
+  const DDSVector3 end, unsigned char *indices)
+{
+  register ssize_t
+    i;
+
+  size_t
+    a,
+    b;
+
+  unsigned char
+    remapped[16];
+
+  const unsigned char
+    *ind;
+
+  a = ColorTo565(start);
+  b = ColorTo565(end);
+
+  for (i=0; i<16; i++)
+  {
+    if( a < b )
+      remapped[i] = (indices[i] ^ 0x1) & 0x3;
+    else if( a == b )
+      remapped[i] = 0;
+    else
+      remapped[i] = indices[i];
+  }
+
+  if( a < b )
+    Swap(a,b);
+
+  (void) WriteBlobByte(image,(unsigned char) (a & 0xff));
+  (void) WriteBlobByte(image,(unsigned char) (a >> 8));
+  (void) WriteBlobByte(image,(unsigned char) (b & 0xff));
+  (void) WriteBlobByte(image,(unsigned char) (b >> 8));
+
+  for (i=0; i<4; i++)
+  {
+     ind = remapped + 4*i;
+     (void) WriteBlobByte(image,ind[0] | (ind[1] << 2) | (ind[2] << 4) |
+       (ind[3] << 6));
+  }
+}
+
 static void WriteCompressed(Image *image, const size_t count,
   DDSVector4 *points, const ssize_t *map, const MagickBooleanType clusterFit)
 {
@@ -2739,244 +2798,33 @@ static void WriteCompressed(Image *image, const size_t count,
   WriteIndices(image,start,end,indices);
 }
 
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   W r i t e D D S I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  WriteDDSImage() writes a DirectDraw Surface image file in the DXT5 format.
-%
-%  The format of the WriteBMPImage method is:
-%
-%     MagickBooleanType WriteDDSImage(const ImageInfo *image_info,Image *image)
-%
-%  A description of each parameter follows.
-%
-%    o image_info: the image info.
-%
-%    o image:  The image.
-%
-*/
-static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
-  Image *image, ExceptionInfo *exception)
+static void WriteSingleColorFit(Image *image, const DDSVector4 *points,
+  const ssize_t *map)
 {
-  const char
-    *option;
-
-  size_t
-    compression,
-    columns,
-    maxMipmaps,
-    mipmaps,
-    pixelFormat,
-    rows;
-
-  MagickBooleanType
-    clusterFit,
-    fromlist,
-    status,
-    weightByAlpha;
-
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickCoreSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
-  if (status == MagickFalse)
-    return(status);
-  (void) TransformImageColorspace(image,sRGBColorspace,exception);
-  pixelFormat=DDPF_FOURCC;
-  compression=FOURCC_DXT5;
-  if (image->alpha_trait == UndefinedPixelTrait)
-    compression=FOURCC_DXT1;
-  if (LocaleCompare(image_info->magick,"dxt1") == 0)
-    compression=FOURCC_DXT1;
-  if (image_info->compression == DXT1Compression)
-    compression=FOURCC_DXT1;
-  else if (image_info->compression == NoCompression)
-    pixelFormat=DDPF_RGB;
-  option=GetImageOption(image_info,"dds:compression");
-  if (option != (char *) NULL)
-    {
-       if (LocaleCompare(option,"dxt1") == 0)
-         compression=FOURCC_DXT1;
-       if (LocaleCompare(option,"none") == 0)
-         pixelFormat=DDPF_RGB;
-    }
-  clusterFit=MagickFalse;
-  weightByAlpha=MagickFalse;
-  if (pixelFormat == DDPF_FOURCC)
-    {
-      option=GetImageOption(image_info,"dds:cluster-fit");
-      if (IsStringTrue(option) != MagickFalse)
-        {
-          clusterFit=MagickTrue;
-          if (compression != FOURCC_DXT1)
-            {
-              option=GetImageOption(image_info,"dds:weight-by-alpha");
-              if (IsStringTrue(option) != MagickFalse)
-                weightByAlpha=MagickTrue;
-            }
-        }
-    }
-  mipmaps=0;
-  fromlist=MagickFalse;
-  option=GetImageOption(image_info,"dds:mipmaps");
-  if (option != (char *) NULL)
-    {
-      if (LocaleNCompare(option,"fromlist",8) == 0)
-        {
-          Image
-            *next;
-
-          fromlist=MagickTrue;
-          next=image->next;
-          while(next != (Image *) NULL)
-          {
-            mipmaps++;
-            next=next->next;
-          }
-        }
-    }
-  if ((mipmaps == 0) &&
-      ((image->columns & (image->columns - 1)) == 0) &&
-      ((image->rows & (image->rows - 1)) == 0))
-    {
-      maxMipmaps=SIZE_MAX;
-      if (option != (char *) NULL)
-        maxMipmaps=StringToUnsignedLong(option);
-
-      if (maxMipmaps != 0)
-        {
-          columns=image->columns;
-          rows=image->rows;
-          while ((columns != 1 || rows != 1) && mipmaps != maxMipmaps)
-          {
-            columns=DIV2(columns);
-            rows=DIV2(rows);
-            mipmaps++;
-          }
-        }
-    }
-  option=GetImageOption(image_info,"dds:raw");
-  if (IsStringTrue(option) == MagickFalse)
-    WriteDDSInfo(image,pixelFormat,compression,mipmaps);
-  else
-    mipmaps=0;
-  WriteImageData(image,pixelFormat,compression,clusterFit,weightByAlpha,
-    exception);
-  if ((mipmaps > 0) && (WriteMipmaps(image,image_info,pixelFormat,compression,
-       mipmaps,fromlist,clusterFit,weightByAlpha,exception) == MagickFalse))
-    return(MagickFalse);
-  (void) CloseBlob(image);
-  return(MagickTrue);
-}
-
-static void WriteDDSInfo(Image *image, const size_t pixelFormat,
-  const size_t compression, const size_t mipmaps)
-{
-  char
-    software[MagickPathExtent];
+  DDSVector3
+    start,
+    end;
 
   register ssize_t
     i;
 
-  unsigned int
-    format,
-    caps,
-    flags;
+  unsigned char
+    color[3],
+    index,
+    indexes[16],
+    indices[16];
 
-  flags=(unsigned int) (DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT |
-    DDSD_PIXELFORMAT);
-  caps=(unsigned int) DDSCAPS_TEXTURE;
-  format=(unsigned int) pixelFormat;
+  color[0] = (unsigned char) ClampToLimit(255.0f*points->x,255);
+  color[1] = (unsigned char) ClampToLimit(255.0f*points->y,255);
+  color[2] = (unsigned char) ClampToLimit(255.0f*points->z,255);
 
-  if (format == DDPF_FOURCC)
-      flags=flags | DDSD_LINEARSIZE;
-  else
-      flags=flags | DDSD_PITCH;
+  index=0;
+  ComputeEndPoints(DDS_LOOKUP,color,&start,&end,&index);
 
-  if (mipmaps > 0)
-    {
-      flags=flags | (unsigned int) DDSD_MIPMAPCOUNT;
-      caps=caps | (unsigned int) (DDSCAPS_MIPMAP | DDSCAPS_COMPLEX);
-    }
-
-  if (format != DDPF_FOURCC && image->alpha_trait != UndefinedPixelTrait)
-    format=format | DDPF_ALPHAPIXELS;
-
-  (void) WriteBlob(image,4,(unsigned char *) "DDS ");
-  (void) WriteBlobLSBLong(image,124);
-  (void) WriteBlobLSBLong(image,flags);
-  (void) WriteBlobLSBLong(image,(unsigned int) image->rows);
-  (void) WriteBlobLSBLong(image,(unsigned int) image->columns);
-
-  if (pixelFormat == DDPF_FOURCC)
-    {
-      /* Compressed DDS requires linear compressed size of first image */
-      if (compression == FOURCC_DXT1)
-        (void) WriteBlobLSBLong(image,(unsigned int) (MagickMax(1,
-          (image->columns+3)/4)*MagickMax(1,(image->rows+3)/4)*8));
-      else /* DXT5 */
-        (void) WriteBlobLSBLong(image,(unsigned int) (MagickMax(1,
-          (image->columns+3)/4)*MagickMax(1,(image->rows+3)/4)*16));
-    }
-  else
-    {
-      /* Uncompressed DDS requires byte pitch of first image */
-      if (image->alpha_trait != UndefinedPixelTrait)
-        (void) WriteBlobLSBLong(image,(unsigned int) (image->columns * 4));
-      else
-        (void) WriteBlobLSBLong(image,(unsigned int) (image->columns * 3));
-    }
-
-  (void) WriteBlobLSBLong(image,0x00);
-  (void) WriteBlobLSBLong(image,(unsigned int) mipmaps+1);
-  (void) memset(software,0,sizeof(software));
-  (void) CopyMagickString(software,"IMAGEMAGICK",MagickPathExtent);
-  (void) WriteBlob(image,44,(unsigned char *) software);
-
-  (void) WriteBlobLSBLong(image,32);
-  (void) WriteBlobLSBLong(image,format);
-
-  if (pixelFormat == DDPF_FOURCC)
-    {
-      (void) WriteBlobLSBLong(image,(unsigned int) compression);
-      for(i=0;i < 5;i++)  /* bitcount / masks */
-        (void) WriteBlobLSBLong(image,0x00);
-    }
-  else
-    {
-      (void) WriteBlobLSBLong(image,0x00);
-      if (image->alpha_trait != UndefinedPixelTrait)
-        {
-          (void) WriteBlobLSBLong(image,32);
-          (void) WriteBlobLSBLong(image,0xff0000);
-          (void) WriteBlobLSBLong(image,0xff00);
-          (void) WriteBlobLSBLong(image,0xff);
-          (void) WriteBlobLSBLong(image,0xff000000);
-        }
-      else
-        {
-          (void) WriteBlobLSBLong(image,24);
-          (void) WriteBlobLSBLong(image,0xff0000);
-          (void) WriteBlobLSBLong(image,0xff00);
-          (void) WriteBlobLSBLong(image,0xff);
-          (void) WriteBlobLSBLong(image,0x00);
-        }
-    }
-  
-  (void) WriteBlobLSBLong(image,caps);
-  for(i=0;i < 4;i++)   /* ddscaps2 + reserved region */
-    (void) WriteBlobLSBLong(image,0x00);
+  for (i=0; i< 16; i++)
+    indexes[i]=index;
+  RemapIndices(map,indexes,indices);
+  WriteIndices(image,start,end,indices);
 }
 
 static void WriteFourCC(Image *image, const size_t compression,
@@ -3108,6 +2956,35 @@ static void WriteFourCC(Image *image, const size_t compression,
   }
 }
 
+static void WriteUncompressed(Image *image, ExceptionInfo *exception)
+{
+  register const Quantum
+    *p;
+
+  register ssize_t
+    x;
+
+  ssize_t
+    y;
+
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    if (p == (const Quantum *) NULL)
+      break;
+
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelBlue(image,p)));
+      (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelGreen(image,p)));
+      (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelRed(image,p)));
+      if (image->alpha_trait != UndefinedPixelTrait)
+        (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelAlpha(image,p)));
+      p+=GetPixelChannels(image);
+    }
+  }
+}
+
 static void WriteImageData(Image *image, const size_t pixelFormat,
   const size_t compression,const MagickBooleanType clusterFit,
   const MagickBooleanType weightByAlpha, ExceptionInfo *exception)
@@ -3116,72 +2993,6 @@ static void WriteImageData(Image *image, const size_t pixelFormat,
     WriteFourCC(image,compression,clusterFit,weightByAlpha,exception);
   else
     WriteUncompressed(image,exception);
-}
-
-static inline size_t ClampToLimit(const float value, const size_t limit)
-{
-  size_t
-    result = (int) (value + 0.5f);
-
-  if (result < 0.0f)
-    return(0);
-  if (result > limit)
-    return(limit);
-  return result;
-}
-
-static inline size_t ColorTo565(const DDSVector3 point)
-{
-  size_t r = ClampToLimit(31.0f*point.x,31);
-  size_t g = ClampToLimit(63.0f*point.y,63);
-  size_t b = ClampToLimit(31.0f*point.z,31);
-
-  return (r << 11) | (g << 5) | b;
-}
-
-static void WriteIndices(Image *image, const DDSVector3 start,
-  const DDSVector3 end, unsigned char *indices)
-{
-  register ssize_t
-    i;
-
-  size_t
-    a,
-    b;
-
-  unsigned char
-    remapped[16];
-
-  const unsigned char
-    *ind;
-
-  a = ColorTo565(start);
-  b = ColorTo565(end);
-
-  for (i=0; i<16; i++)
-  {
-    if( a < b )
-      remapped[i] = (indices[i] ^ 0x1) & 0x3;
-    else if( a == b )
-      remapped[i] = 0;
-    else
-      remapped[i] = indices[i];
-  }
-
-  if( a < b )
-    Swap(a,b);
-
-  (void) WriteBlobByte(image,(unsigned char) (a & 0xff));
-  (void) WriteBlobByte(image,(unsigned char) (a >> 8));
-  (void) WriteBlobByte(image,(unsigned char) (b & 0xff));
-  (void) WriteBlobByte(image,(unsigned char) (b >> 8));
-
-  for (i=0; i<4; i++)
-  {
-     ind = remapped + 4*i;
-     (void) WriteBlobByte(image,ind[0] | (ind[1] << 2) | (ind[2] << 4) |
-       (ind[3] << 6));
-  }
 }
 
 static MagickBooleanType WriteMipmaps(Image *image,const ImageInfo *image_info,
@@ -3264,60 +3075,218 @@ static MagickBooleanType WriteMipmaps(Image *image,const ImageInfo *image_info,
   return(status);
 }
 
-static void WriteSingleColorFit(Image *image, const DDSVector4 *points,
-  const ssize_t *map)
+static void WriteDDSInfo(Image *image, const size_t pixelFormat,
+  const size_t compression, const size_t mipmaps)
 {
-  DDSVector3
-    start,
-    end;
+  char
+    software[MagickPathExtent];
 
   register ssize_t
     i;
 
-  unsigned char
-    color[3],
-    index,
-    indexes[16],
-    indices[16];
+  unsigned int
+    format,
+    caps,
+    flags;
 
-  color[0] = (unsigned char) ClampToLimit(255.0f*points->x,255);
-  color[1] = (unsigned char) ClampToLimit(255.0f*points->y,255);
-  color[2] = (unsigned char) ClampToLimit(255.0f*points->z,255);
+  flags=(unsigned int) (DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT |
+    DDSD_PIXELFORMAT);
+  caps=(unsigned int) DDSCAPS_TEXTURE;
+  format=(unsigned int) pixelFormat;
 
-  index=0;
-  ComputeEndPoints(DDS_LOOKUP,color,&start,&end,&index);
+  if (format == DDPF_FOURCC)
+      flags=flags | DDSD_LINEARSIZE;
+  else
+      flags=flags | DDSD_PITCH;
 
-  for (i=0; i< 16; i++)
-    indexes[i]=index;
-  RemapIndices(map,indexes,indices);
-  WriteIndices(image,start,end,indices);
+  if (mipmaps > 0)
+    {
+      flags=flags | (unsigned int) DDSD_MIPMAPCOUNT;
+      caps=caps | (unsigned int) (DDSCAPS_MIPMAP | DDSCAPS_COMPLEX);
+    }
+
+  if (format != DDPF_FOURCC && image->alpha_trait != UndefinedPixelTrait)
+    format=format | DDPF_ALPHAPIXELS;
+
+  (void) WriteBlob(image,4,(unsigned char *) "DDS ");
+  (void) WriteBlobLSBLong(image,124);
+  (void) WriteBlobLSBLong(image,flags);
+  (void) WriteBlobLSBLong(image,(unsigned int) image->rows);
+  (void) WriteBlobLSBLong(image,(unsigned int) image->columns);
+
+  if (pixelFormat == DDPF_FOURCC)
+    {
+      /* Compressed DDS requires linear compressed size of first image */
+      if (compression == FOURCC_DXT1)
+        (void) WriteBlobLSBLong(image,(unsigned int) (MagickMax(1,
+          (image->columns+3)/4)*MagickMax(1,(image->rows+3)/4)*8));
+      else /* DXT5 */
+        (void) WriteBlobLSBLong(image,(unsigned int) (MagickMax(1,
+          (image->columns+3)/4)*MagickMax(1,(image->rows+3)/4)*16));
+    }
+  else
+    {
+      /* Uncompressed DDS requires byte pitch of first image */
+      if (image->alpha_trait != UndefinedPixelTrait)
+        (void) WriteBlobLSBLong(image,(unsigned int) (image->columns * 4));
+      else
+        (void) WriteBlobLSBLong(image,(unsigned int) (image->columns * 3));
+    }
+
+  (void) WriteBlobLSBLong(image,0x00);
+  (void) WriteBlobLSBLong(image,(unsigned int) mipmaps+1);
+  (void) memset(software,0,sizeof(software));
+  (void) CopyMagickString(software,"IMAGEMAGICK",MagickPathExtent);
+  (void) WriteBlob(image,44,(unsigned char *) software);
+
+  (void) WriteBlobLSBLong(image,32);
+  (void) WriteBlobLSBLong(image,format);
+
+  if (pixelFormat == DDPF_FOURCC)
+    {
+      (void) WriteBlobLSBLong(image,(unsigned int) compression);
+      for(i=0;i < 5;i++)  /* bitcount / masks */
+        (void) WriteBlobLSBLong(image,0x00);
+    }
+  else
+    {
+      (void) WriteBlobLSBLong(image,0x00);
+      if (image->alpha_trait != UndefinedPixelTrait)
+        {
+          (void) WriteBlobLSBLong(image,32);
+          (void) WriteBlobLSBLong(image,0xff0000);
+          (void) WriteBlobLSBLong(image,0xff00);
+          (void) WriteBlobLSBLong(image,0xff);
+          (void) WriteBlobLSBLong(image,0xff000000);
+        }
+      else
+        {
+          (void) WriteBlobLSBLong(image,24);
+          (void) WriteBlobLSBLong(image,0xff0000);
+          (void) WriteBlobLSBLong(image,0xff00);
+          (void) WriteBlobLSBLong(image,0xff);
+          (void) WriteBlobLSBLong(image,0x00);
+        }
+    }
+  
+  (void) WriteBlobLSBLong(image,caps);
+  for(i=0;i < 4;i++)   /* ddscaps2 + reserved region */
+    (void) WriteBlobLSBLong(image,0x00);
 }
 
-static void WriteUncompressed(Image *image, ExceptionInfo *exception)
+static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
+  Image *image, ExceptionInfo *exception)
 {
-  register const Quantum
-    *p;
+  const char
+    *option;
 
-  register ssize_t
-    x;
+  size_t
+    compression,
+    columns,
+    maxMipmaps,
+    mipmaps,
+    pixelFormat,
+    rows;
 
-  ssize_t
-    y;
+  MagickBooleanType
+    clusterFit,
+    fromlist,
+    status,
+    weightByAlpha;
 
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-    if (p == (const Quantum *) NULL)
-      break;
-
-    for (x=0; x < (ssize_t) image->columns; x++)
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickCoreSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    return(status);
+  (void) TransformImageColorspace(image,sRGBColorspace,exception);
+  pixelFormat=DDPF_FOURCC;
+  compression=FOURCC_DXT5;
+  if (image->alpha_trait == UndefinedPixelTrait)
+    compression=FOURCC_DXT1;
+  if (LocaleCompare(image_info->magick,"dxt1") == 0)
+    compression=FOURCC_DXT1;
+  if (image_info->compression == DXT1Compression)
+    compression=FOURCC_DXT1;
+  else if (image_info->compression == NoCompression)
+    pixelFormat=DDPF_RGB;
+  option=GetImageOption(image_info,"dds:compression");
+  if (option != (char *) NULL)
     {
-      (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelBlue(image,p)));
-      (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelGreen(image,p)));
-      (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelRed(image,p)));
-      if (image->alpha_trait != UndefinedPixelTrait)
-        (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelAlpha(image,p)));
-      p+=GetPixelChannels(image);
+       if (LocaleCompare(option,"dxt1") == 0)
+         compression=FOURCC_DXT1;
+       if (LocaleCompare(option,"none") == 0)
+         pixelFormat=DDPF_RGB;
     }
-  }
+  clusterFit=MagickFalse;
+  weightByAlpha=MagickFalse;
+  if (pixelFormat == DDPF_FOURCC)
+    {
+      option=GetImageOption(image_info,"dds:cluster-fit");
+      if (IsStringTrue(option) != MagickFalse)
+        {
+          clusterFit=MagickTrue;
+          if (compression != FOURCC_DXT1)
+            {
+              option=GetImageOption(image_info,"dds:weight-by-alpha");
+              if (IsStringTrue(option) != MagickFalse)
+                weightByAlpha=MagickTrue;
+            }
+        }
+    }
+  mipmaps=0;
+  fromlist=MagickFalse;
+  option=GetImageOption(image_info,"dds:mipmaps");
+  if (option != (char *) NULL)
+    {
+      if (LocaleNCompare(option,"fromlist",8) == 0)
+        {
+          Image
+            *next;
+
+          fromlist=MagickTrue;
+          next=image->next;
+          while(next != (Image *) NULL)
+          {
+            mipmaps++;
+            next=next->next;
+          }
+        }
+    }
+  if ((mipmaps == 0) &&
+      ((image->columns & (image->columns - 1)) == 0) &&
+      ((image->rows & (image->rows - 1)) == 0))
+    {
+      maxMipmaps=SIZE_MAX;
+      if (option != (char *) NULL)
+        maxMipmaps=StringToUnsignedLong(option);
+
+      if (maxMipmaps != 0)
+        {
+          columns=image->columns;
+          rows=image->rows;
+          while ((columns != 1 || rows != 1) && mipmaps != maxMipmaps)
+          {
+            columns=DIV2(columns);
+            rows=DIV2(rows);
+            mipmaps++;
+          }
+        }
+    }
+  option=GetImageOption(image_info,"dds:raw");
+  if (IsStringTrue(option) == MagickFalse)
+    WriteDDSInfo(image,pixelFormat,compression,mipmaps);
+  else
+    mipmaps=0;
+  WriteImageData(image,pixelFormat,compression,clusterFit,weightByAlpha,
+    exception);
+  if ((mipmaps > 0) && (WriteMipmaps(image,image_info,pixelFormat,compression,
+       mipmaps,fromlist,clusterFit,weightByAlpha,exception) == MagickFalse))
+    return(MagickFalse);
+  (void) CloseBlob(image);
+  return(MagickTrue);
 }
