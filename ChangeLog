@@ -1,3 +1,9 @@
+2020-11-23  7.0.10-43  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-43 GIT revision 17885:be852878e:20201123
+
+2020-11-23  7.0.10-43  <quetzlzacatenango@image...>
+  * add padding to AcquirePolicyString().
+
 2020-11-22  7.0.10-42  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-42 GIT revision 17881:d228ef95e:20201122
 
