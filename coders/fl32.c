@@ -184,7 +184,8 @@ static Image *ReadFL32Image(const ImageInfo *image_info,
   image->columns=(size_t) ReadBlobLSBLong(image);
   image->number_channels=(size_t) ReadBlobLSBLong(image);
   if ((image->columns == 0) || (image->rows == 0) ||
-      (image->number_channels == 0))
+      (image->number_channels == 0) ||
+      (image->number_channels > MaxPixelChannels))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if (image_info->ping != MagickFalse)
     {
