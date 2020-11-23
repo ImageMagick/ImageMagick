@@ -4691,7 +4691,7 @@ static PolygonInfo **AcquirePolygonThreadSet(
   return(polygon_info);
 }
 
-static size_t DestroyEdge(PolygonInfo *polygon_info,const size_t edge)
+static size_t DestroyEdge(PolygonInfo *polygon_info,const ssize_t edge)
 {
   assert(edge < polygon_info->number_edges);
   polygon_info->edges[edge].points=(PointInfo *) RelinquishMagickMemory(
@@ -4741,7 +4741,7 @@ static double GetFillAlpha(PolygonInfo *polygon_info,const double mid,
       break;
     if ((double) y > (p->bounds.y2+mid+0.5))
       {
-        (void) DestroyEdge(polygon_info,(size_t) j);
+        (void) DestroyEdge(polygon_info,j);
         continue;
       }
     if (((double) x <= (p->bounds.x1-mid-0.5)) ||
