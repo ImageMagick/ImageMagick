@@ -4649,7 +4649,7 @@ static PolygonInfo **AcquirePolygonThreadSet(
     register ssize_t
       j;
 
-    polygon_info[i]=(PolygonInfo *) AcquireQuantumMemory(1,
+    polygon_info[i]=(PolygonInfo *) AcquireMagickMemory(
       sizeof(*polygon_info[i]));
     if (polygon_info[i] == (PolygonInfo *) NULL)
       {
