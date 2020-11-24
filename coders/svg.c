@@ -2315,14 +2315,13 @@ static void SVGStartElement(void *context,const xmlChar *name,
                         if (*token == ',')
                           (void) GetNextToken(p,&p,MagickPathExtent,token);
                         y=StringToDouble(token,&next_token);
-                        affine.tx=svg_info->bounds.x+x*
-                          cos(DegreesToRadians(fmod(angle,360.0)))+y*
-                          sin(DegreesToRadians(fmod(angle,360.0)));
-                        affine.ty=svg_info->bounds.y-x*
+                        y=StringToDouble(token,&next_token);
+                        affine.tx=(-1.0*(svg_info->bounds.x+x*
+                          cos(DegreesToRadians(fmod(angle,360.0)))-y*
+                          sin(DegreesToRadians(fmod(angle,360.0)))))+x;
+                        affine.ty=(-1.0*(svg_info->bounds.y+x*
                           sin(DegreesToRadians(fmod(angle,360.0)))+y*
-                          cos(DegreesToRadians(fmod(angle,360.0)));
-                        affine.tx-=x;
-                        affine.ty-=y;
+                          cos(DegreesToRadians(fmod(angle,360.0)))))+y;
                         break;
                       }
                     break;
