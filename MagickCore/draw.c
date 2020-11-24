@@ -415,6 +415,22 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 %
 */
 
+static PolygonInfo *DestroyPolygonInfo(PolygonInfo *polygon_info)
+{
+  register ssize_t
+    i;
+
+  if (polygon_info->edges != (EdgeInfo *) NULL)
+    {
+      for (i=0; i < (ssize_t) polygon_info->number_edges; i++)
+        if (polygon_info->edges[i].points != (PointInfo *) NULL)
+          polygon_info->edges[i].points=(PointInfo *)
+            RelinquishMagickMemory(polygon_info->edges[i].points);
+      polygon_info->edges=(EdgeInfo *) RelinquishMagickMemory(
+        polygon_info->edges);
+    }
+  return((PolygonInfo *) RelinquishMagickMemory(polygon_info));
+}
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
@@ -543,7 +559,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info,
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'","");
-      return((PolygonInfo *) NULL);
+      return(DestroyPolygonInfo(polygon_info));
     }
   (void) memset(polygon_info->edges,0,number_edges*
     sizeof(*polygon_info->edges));
@@ -583,7 +599,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info,
                   {
                     (void) ThrowMagickException(exception,GetMagickModule(),
                       ResourceLimitError,"MemoryAllocationFailed","`%s'","");
-                    return((PolygonInfo *) NULL);
+                    return(DestroyPolygonInfo(polygon_info));
                   }
               }
             polygon_info->edges[edge].number_points=(size_t) n;
@@ -610,7 +626,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info,
               {
                 (void) ThrowMagickException(exception,GetMagickModule(),
                   ResourceLimitError,"MemoryAllocationFailed","`%s'","");
-                return((PolygonInfo *) NULL);
+                return(DestroyPolygonInfo(polygon_info));
               }
           }
         ghostline=path_info[i].code == GhostlineCode ? MagickTrue : MagickFalse;
@@ -645,7 +661,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info,
               {
                 (void) ThrowMagickException(exception,GetMagickModule(),
                   ResourceLimitError,"MemoryAllocationFailed","`%s'","");
-                return((PolygonInfo *) NULL);
+                return(DestroyPolygonInfo(polygon_info));
               }
           }
         polygon_info->edges[edge].number_points=(size_t) n;
@@ -666,7 +682,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info,
           {
             (void) ThrowMagickException(exception,GetMagickModule(),
               ResourceLimitError,"MemoryAllocationFailed","`%s'","");
-            return((PolygonInfo *) NULL);
+            return(DestroyPolygonInfo(polygon_info));
           }
         n=1;
         ghostline=MagickFalse;
@@ -687,7 +703,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info,
           {
             (void) ThrowMagickException(exception,GetMagickModule(),
               ResourceLimitError,"MemoryAllocationFailed","`%s'","");
-            return((PolygonInfo *) NULL);
+            return(DestroyPolygonInfo(polygon_info));
           }
       }
     point=path_info[i].point;
@@ -714,7 +730,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info,
                 {
                   (void) ThrowMagickException(exception,GetMagickModule(),
                     ResourceLimitError,"MemoryAllocationFailed","`%s'","");
-                  return((PolygonInfo *) NULL);
+                  return(DestroyPolygonInfo(polygon_info));
                 }
             }
           polygon_info->edges[edge].number_points=(size_t) n;
@@ -733,6 +749,29 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info,
         }
     }
   polygon_info->number_edges=edge;
+  polygon_info->edges=(EdgeInfo *) ResizeQuantumMemory(polygon_info->edges,
+    polygon_info->number_edges,sizeof(*polygon_info->edges));
+  if (polygon_info->edges == (EdgeInfo *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'","");
+      return(DestroyPolygonInfo(polygon_info));
+    }
+  for (i=0; i < (ssize_t) polygon_info->number_edges; i++)
+  {
+    EdgeInfo
+      *edge_info;
+
+    edge_info=polygon_info->edges+i;
+    edge_info->points=(PointInfo *) ResizeQuantumMemory(edge_info->points,
+      edge_info->number_points,sizeof(*edge_info->points));
+    if (edge_info->points == (PointInfo *) NULL)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ResourceLimitError,"MemoryAllocationFailed","`%s'","");
+        return(DestroyPolygonInfo(polygon_info));
+      }
+  }
   qsort(polygon_info->edges,(size_t) polygon_info->number_edges,
     sizeof(*polygon_info->edges),DrawCompareEdges);
   if (IsEventLogging() != MagickFalse)
@@ -963,44 +1002,6 @@ MagickExport DrawInfo *DestroyDrawInfo(DrawInfo *draw_info)
   draw_info->signature=(~MagickCoreSignature);
   draw_info=(DrawInfo *) RelinquishMagickMemory(draw_info);
   return(draw_info);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   D e s t r o y P o l y g o n I n f o                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DestroyPolygonInfo() destroys the PolygonInfo data structure.
-%
-%  The format of the DestroyPolygonInfo method is:
-%
-%      PolygonInfo *DestroyPolygonInfo(PolygonInfo *polygon_info)
-%
-%  A description of each parameter follows:
-%
-%    o polygon_info: Specifies a pointer to an PolygonInfo structure.
-%
-*/
-static PolygonInfo *DestroyPolygonInfo(PolygonInfo *polygon_info)
-{
-  register ssize_t
-    i;
-
-  if (polygon_info->edges != (EdgeInfo *) NULL)
-    {
-      for (i=0; i < (ssize_t) polygon_info->number_edges; i++)
-        polygon_info->edges[i].points=(PointInfo *)
-          RelinquishMagickMemory(polygon_info->edges[i].points);
-      polygon_info->edges=(EdgeInfo *) RelinquishMagickMemory(
-        polygon_info->edges);
-    }
-  return((PolygonInfo *) RelinquishMagickMemory(polygon_info));
 }
 
 /*
