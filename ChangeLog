@@ -1,3 +1,9 @@
+2020-11-24  7.0.10-44  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-44 GIT revision 17...
+
+2020-11-24  7.0.10-44  <quetzlzacatenango@image...>
+  * correct rotation parameter for SVG transform.
+
 2020-11-23  7.0.10-43  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-43 GIT revision 17885:be852878e:20201123
 
