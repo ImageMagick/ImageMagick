@@ -811,10 +811,10 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  BilateralFilterImage() smooths and reducees noise in an image while
+%  BilateralFilterImage() smooths and reduces noise in an image while
 %  preserving edges.
 %
-%  The format of the AdaptiveBlurImage method is:
+%  The format of the BilateralFilteImage method is:
 %
 %      Image *BilateralFilterImage(const Image *image,const double radius,
 %        const double sigma,ExceptionInfo *exception)
@@ -835,7 +835,6 @@ MagickExport Image *BilateralFilterImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
 #define BilateralFilterImageTag  "Convolve/Image"
-#define MagickSigma  (fabs(sigma) < MagickEpsilon ? MagickEpsilon : sigma)
 
   CacheView
     *bilateral_view,
@@ -871,10 +870,7 @@ MagickExport Image *BilateralFilterImage(const Image *image,const double radius,
       return((Image *) NULL);
     }
   /*
-    Create a kernel.
-  */
-  /*
-    Adaptively blur image.
+    Bilateral filter image.
   */
   status=MagickTrue;
   progress=0;
