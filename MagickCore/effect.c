@@ -805,6 +805,233 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     B i l a t e r a l F i l t e r I m a g e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  BilateralFilterImage() smooths and reducees noise in an image while
+%  preserving edges.
+%
+%  The format of the AdaptiveBlurImage method is:
+%
+%      Image *BilateralFilterImage(const Image *image,const double radius,
+%        const double sigma,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o radius: the radius of the Gaussian, in pixels, not counting the center
+%      pixel.
+%
+%    o sigma: the standard deviation of the Laplacian, in pixels.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *BilateralFilterImage(const Image *image,const double radius,
+  const double sigma,ExceptionInfo *exception)
+{
+#define BilateralFilterImageTag  "Convolve/Image"
+#define MagickSigma  (fabs(sigma) < MagickEpsilon ? MagickEpsilon : sigma)
+
+  CacheView
+    *bilateral_view,
+    *image_view;
+
+  Image
+    *bilateral_image;
+
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
+  size_t
+    width;
+
+  ssize_t
+    y;
+
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
+  bilateral_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (bilateral_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageStorageClass(bilateral_image,DirectClass,exception) == MagickFalse)
+    {
+      bilateral_image=DestroyImage(bilateral_image);
+      return((Image *) NULL);
+    }
+  /*
+    Create a kernel.
+  */
+  /*
+    Adaptively blur image.
+  */
+  status=MagickTrue;
+  progress=0;
+  width=GetOptimalKernelWidth2D(radius,sigma);
+  image_view=AcquireVirtualCacheView(image,exception);
+  bilateral_view=AcquireAuthenticCacheView(bilateral_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(progress,status) \
+    magick_number_threads(image,bilateral_image,bilateral_image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) bilateral_image->rows; y++)
+  {
+    register const Quantum
+      *magick_restrict r;
+
+    register Quantum
+      *magick_restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    r=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    q=QueueCacheViewAuthenticPixels(bilateral_view,0,y,
+      bilateral_image->columns,1,exception);
+    if ((r == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) bilateral_image->columns; x++)
+    {
+      register const Quantum
+        *magick_restrict p;
+
+      register ssize_t
+        i;
+
+      ssize_t
+        center;
+
+      p=GetCacheViewVirtualPixels(image_view,x-((ssize_t) width/2L),y-
+        (ssize_t) (width/2L),width,width,exception);
+      if (p == (const Quantum *) NULL)
+        break;
+      center=(ssize_t) GetPixelChannels(image)*width*(width/2L)+
+        GetPixelChannels(image)*(width/2);
+      for (i=0; i < (ssize_t) GetPixelChannels(bilateral_image); i++)
+      {
+        double
+          alpha,
+          gamma,
+          pixel;
+
+        PixelChannel
+          channel;
+
+        PixelTrait
+          bilateral_traits,
+          traits;
+
+        register const double
+          *magick_restrict k;
+
+        register const Quantum
+          *magick_restrict pixels;
+
+        register ssize_t
+          u;
+
+        ssize_t
+          v;
+
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
+        bilateral_traits=GetPixelChannelTraits(bilateral_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (bilateral_traits == UndefinedPixelTrait))
+          continue;
+        if ((bilateral_traits & CopyPixelTrait) != 0)
+          {
+            SetPixelChannel(bilateral_image,channel,p[center+i],q);
+            continue;
+          }
+        pixels=p;
+        pixel=0.0;
+        gamma=0.0;
+        if ((bilateral_traits & BlendPixelTrait) == 0)
+          {
+            /*
+              No alpha blending.
+            */
+            for (v=0; v < (ssize_t) width; v++)
+            {
+              for (u=0; u < (ssize_t) width; u++)
+              {
+                pixel+=1.0*pixels[i];
+                gamma+=1.0;
+                k++;
+                pixels+=GetPixelChannels(image);
+              }
+            }
+            gamma=PerceptibleReciprocal(gamma);
+            SetPixelChannel(bilateral_image,channel,ClampToQuantum(gamma*pixel),q);
+            continue;
+          }
+        /*
+          Alpha blending.
+        */
+        for (v=0; v < (ssize_t) width; v++)
+        {
+          for (u=0; u < (ssize_t) width; u++)
+          {
+            alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
+            pixel+=1.0*alpha*pixels[i];
+            gamma+=1.0*alpha;
+            k++;
+            pixels+=GetPixelChannels(image);
+          }
+        }
+        gamma=PerceptibleReciprocal(gamma);
+        SetPixelChannel(bilateral_image,channel,ClampToQuantum(gamma*pixel),q);
+      }
+      q+=GetPixelChannels(bilateral_image);
+      r+=GetPixelChannels(image);
+    }
+    if (SyncCacheViewAuthenticPixels(bilateral_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,BilateralFilterImageTag,progress,
+          image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  bilateral_image->type=image->type;
+  bilateral_view=DestroyCacheView(bilateral_view);
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    bilateral_image=DestroyImage(bilateral_image);
+  return(bilateral_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %     C o n v o l v e I m a g e                                               %
 %                                                                             %
 %                                                                             %

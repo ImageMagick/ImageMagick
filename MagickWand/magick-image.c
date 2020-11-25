@@ -877,6 +877,53 @@ WandExport MagickBooleanType MagickAutoThresholdImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k B i l a t e r a l F i l t e r I m a g e                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickBilateralFilterImage() smooth and reduce noise while preserving edges.
+%
+%  The format of the MagickBilateralFilterImage method is:
+%
+%      MagickBooleanType MagickBilateralFilterImage(MagickWand *wand,
+%        const double radius,const double sigma)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o radius: the radius of the Gaussian, in pixels, not counting the center
+%      pixel.
+%
+%    o sigma: the standard deviation of the , in pixels.
+%
+*/
+WandExport MagickBooleanType MagickBilateralFilterImage(MagickWand *wand,
+  const double radius,const double sigma)
+{
+  Image
+    *blur_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  blur_image=BilateralFilterImage(wand->images,radius,sigma,wand->exception);
+  if (blur_image == (Image *) NULL)
+    return(MagickFalse);
+  ReplaceImageInList(&wand->images,blur_image);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k B l a c k T h r e s h o l d I m a g e                         %
 %                                                                             %
 %                                                                             %
@@ -988,7 +1035,7 @@ WandExport MagickBooleanType MagickBlueShiftImage(MagickWand *wand,
 %
 %    o wand: the magick wand.
 %
-%    o radius: the radius of the , in pixels, not counting the center
+%    o radius: the radius of the Gaussian, in pixels, not counting the center
 %      pixel.
 %
 %    o sigma: the standard deviation of the , in pixels.

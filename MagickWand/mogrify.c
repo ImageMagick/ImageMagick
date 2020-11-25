@@ -946,6 +946,19 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
       }
       case 'b':
       {
+        if (LocaleCompare("bilateral-filter",option+1) == 0)
+          {
+            /*
+              Bilateral filter image.
+            */
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            flags=ParseGeometry(argv[i+1],&geometry_info);
+            if ((flags & SigmaValue) == 0)
+              geometry_info.sigma=geometry_info.rho;
+            mogrify_image=BilateralFilterImage(*image,(size_t)
+              geometry_info.rho,(size_t) geometry_info.sigma,exception);
+            break;
+          }
         if (LocaleCompare("black-threshold",option+1) == 0)
           {
             /*
@@ -3541,6 +3554,8 @@ static MagickBooleanType MogrifyUsage(void)
       "  -auto-threshold method\n"
       "                       automatically perform image thresholding\n"
       "  -bench iterations    measure performance\n"
+      "  -bilateral-filter geometry\n"
+      "                       smooth and reduce noise while preserving edges\n"
       "  -black-threshold value\n"
       "                       force all pixels below the threshold into black\n"
       "  -blue-shift          simulate a scene at nighttime in the moonlight\n"
@@ -4223,6 +4238,17 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         if (LocaleCompare("bias",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("bilateral-filter",option+1) == 0)
           {
             if (*option == '+')
               break;

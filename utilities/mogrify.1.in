@@ -127,6 +127,8 @@ Image Operators:
   \-auto-threshold method
                        automatically perform image thresholding
   \-bench iterations    measure performance
+  \-bilateral-filter geometry     
+                        smooth and reduce noise while preserving edges
   \-black-threshold value
                        force all pixels below the threshold into black
   \-blue-shift          simulate a scene at nighttime in the moonlight
