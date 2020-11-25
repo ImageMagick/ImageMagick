@@ -204,7 +204,6 @@ extern WandExport MagickBooleanType
   MagickLocalContrastImage(MagickWand *,const double,const double),
   MagickMagnifyImage(MagickWand *),
   MagickMeanShiftImage(MagickWand *,const size_t,const size_t,const double),
-  MagickMedianConvolveImage(MagickWand *,const double),
   MagickMinifyImage(MagickWand *),
   MagickModeImage(MagickWand *,const double),
   MagickModulateImage(MagickWand *,const double,const double,const double),
