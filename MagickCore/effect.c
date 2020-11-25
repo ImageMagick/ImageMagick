@@ -1352,7 +1352,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
 %  GaussianBlurImage() blurs an image.  We convolve the image with a
 %  Gaussian operator of the given radius and standard deviation (sigma).
 %  For reasonable results, the radius should be larger than sigma.  Use a
-%  radius of 0 and GaussianBlurImage() selects a suitable radius for you
+%  radius of 0 and GaussianBlurImage() selects a suitable radius for you.
 %
 %  The format of the GaussianBlurImage method is:
 %
