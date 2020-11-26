@@ -814,7 +814,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 %  BilateralFilterImage() smooths and reduces noise in an image while
 %  preserving edges.
 %
-%  The format of the BilateralFilteImage method is:
+%  The format of the BilateralFilterImage method is:
 %
 %      Image *BilateralFilterImage(const Image *image,const double radius,
 %        const double sigma,const double intensity_sigma,
@@ -829,9 +829,9 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 %
 %    o sigma: the standard deviation of the Laplacian, in pixels.
 %
-%    o intensity-sigma: the intensity sigma.
+%    o intensity_sigma: the intensity sigma.
 %
-%    o spatial-sigma: the spatial sigma.
+%    o spatial_sigma: the spatial sigma.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -941,8 +941,12 @@ MagickExport Image *BilateralFilterImage(const Image *image,const double radius,
       {
         double
           alpha,
+          beta,
+          distance,
           gamma,
-          pixel;
+          intensity,
+          pixel,
+          weight;
 
         PixelChannel
           channel;
@@ -958,6 +962,7 @@ MagickExport Image *BilateralFilterImage(const Image *image,const double radius,
           u;
 
         ssize_t
+          n,
           v;
 
         channel=GetPixelChannelChannel(image,i);
@@ -983,19 +988,9 @@ MagickExport Image *BilateralFilterImage(const Image *image,const double radius,
             {
               for (u=0; u < (ssize_t) width; u++)
               {
-                double
-                  distance,
-                  intensity,
-                  weight;
-
-                ssize_t
-                  n,
-                  uu = (width/2-u),
-                  vv = (width/2-v);
-
-                n=(ssize_t) GetPixelChannels(image)*uu*vv+
-                  GetPixelChannels(image)*uu;
-                distance=BilateralDistance(x,y,x-uu,y-vv);
+                n=(ssize_t) GetPixelChannels(image)*(width/2-u)*(width/2-v)+
+                  GetPixelChannels(image)*(width/2-u);  /* neighbor pixel */
+                distance=BilateralDistance(x,y,x-(width/2-u),y-(width/2-v));
                 intensity=QuantumScale*(p[center+n+i]-p[center+i]);
                 weight=BilateralGuassian(intensity,intensity_sigma)*
                   BilateralGuassian(distance,spatial_sigma);
@@ -1016,11 +1011,22 @@ MagickExport Image *BilateralFilterImage(const Image *image,const double radius,
         {
           for (u=0; u < (ssize_t) width; u++)
           {
-            alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
+            n=(ssize_t) GetPixelChannels(image)*(width/2-u)*(width/2-v)+
+              GetPixelChannels(image)*(width/2-u);  /* neighbor pixel */
+            distance=BilateralDistance(x,y,x-(width/2-u),y-(width/2-v));
+            alpha=(double) (QuantumScale*GetPixelAlpha(image,p+center));
+            beta=(double) (QuantumScale*GetPixelAlpha(image,p+center+n));
+            intensity=QuantumScale*(beta*p[center+n+i]-alpha*p[center+i]);
+            weight=BilateralGuassian(intensity,intensity_sigma)*
+              BilateralGuassian(distance,spatial_sigma);
+            pixel+=weight*QuantumScale*pixels[i];
+            gamma+=weight*alpha*beta;
             pixels+=GetPixelChannels(image);
           }
         }
-        SetPixelChannel(bilateral_image,channel,ClampToQuantum(1.0),q);
+        gamma=PerceptibleReciprocal(gamma);
+        SetPixelChannel(bilateral_image,channel,ClampToQuantum(QuantumRange*
+          gamma*pixel),q);
       }
       q+=GetPixelChannels(bilateral_image);
       r+=GetPixelChannels(image);
