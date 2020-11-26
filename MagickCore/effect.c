@@ -805,23 +805,23 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     B i l a t e r a l S m o o t h i n g I m a g e                           %
+%     B i l a t e r a l B l u r I m a g e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  BilateralSmoothingImage() is a non-linear, edge-preserving, and
-%  noise-reducing smoothing filter for images.  It replaces the intensity of
-%  each pixel with a weighted average of intensity values from nearby pixels.
-%  This weight is based on a Gaussian distribution.  The weights depend not
-%  only on Euclidean distance of pixels, but also on the radiometric
-%  differences (e.g., range differences, such as color intensity, depth
-%  distance, etc.). This preserves sharp edges.
+%  BilateralBlurImage() is a non-linear, edge-preserving, and noise-reducing
+%  smoothing filter for images.  It replaces the intensity of each pixel with
+%  a weighted average of intensity values from nearby pixels.  This weight is
+%  based on a Gaussian distribution.  The weights depend not only on Euclidean
+%  distance of pixels, but also on the radiometric differences (e.g., range
+%  differences, such as color intensity, depth distance, etc.). This preserves
+%  sharp edges.
 %
-%  The format of the BilateralSmoothingImage method is:
+%  The format of the BilateralBlurImage method is:
 %
-%      Image *BilateralSmoothingImage(const Image *image,const double radius,
+%      Image *BilateralBlurImage(const Image *image,const double radius,
 %        const double sigma,const double intensity_sigma,
 %        const double spatial_sigma,ExceptionInfo *exception)
 %
@@ -861,11 +861,11 @@ static inline double SmoothGuassian(const double x,const double sigma)
     PerceptibleReciprocal(Magick2PI*sigma*sigma));
 }
 
-MagickExport Image *BilateralSmoothingImage(const Image *image,
-  const double radius,const double sigma,const double intensity_sigma,
-  const double spatial_sigma,ExceptionInfo *exception)
+MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
+  const double sigma,const double intensity_sigma,const double spatial_sigma,
+  ExceptionInfo *exception)
 {
-#define BilateralSmoothingImageTag  "Convolve/Image"
+#define BilateralBlurImageTag  "Convolve/Image"
 
   CacheView
     *smooth_view,
@@ -1055,7 +1055,7 @@ MagickExport Image *BilateralSmoothingImage(const Image *image,
         #pragma omp atomic
 #endif
         progress++;
-        proceed=SetImageProgress(image,BilateralSmoothingImageTag,progress,
+        proceed=SetImageProgress(image,BilateralBlurImageTag,progress,
           image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;

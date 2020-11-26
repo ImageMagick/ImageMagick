@@ -877,13 +877,13 @@ WandExport MagickBooleanType MagickAutoThresholdImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k B i l a t e r a l S m o o t h i n g I m a g e                 %
+%   M a g i c k B i l a t e r a l B l u r I m a g e                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickBilateralSmoothingImage() is a non-linear, edge-preserving, and
+%  MagickBilateralBlurImage() is a non-linear, edge-preserving, and
 %  noise-reducing smoothing filter for images.  It replaces the intensity of
 %  each pixel with a weighted average of intensity values from nearby pixels.
 %  This weight is based on a Gaussian distribution.  The weights depend not
@@ -891,9 +891,9 @@ WandExport MagickBooleanType MagickAutoThresholdImage(MagickWand *wand,
 %  differences (e.g., range differences, such as color intensity, depth
 %  distance, etc.). This preserves sharp edges.
 %
-%  The format of the MagickBilateralSmoothingImage method is:
+%  The format of the MagickBilateralBlurImage method is:
 %
-%      MagickBooleanType MagickBilateralSmoothingImage(MagickWand *wand,
+%      MagickBooleanType MagickBilateralBlurImage(MagickWand *wand,
 %        const double radius,const double sigma,const double intensity_sigma,
 %        const double spatial_sigma)
 %
@@ -918,7 +918,7 @@ WandExport MagickBooleanType MagickAutoThresholdImage(MagickWand *wand,
 %      spatial_sigma.
 %
 */
-WandExport MagickBooleanType MagickBilateralSmoothingImage(MagickWand *wand,
+WandExport MagickBooleanType MagickBilateralBlurImage(MagickWand *wand,
   const double radius,const double sigma,const double intensity_sigma,
   const double spatial_sigma)
 {
@@ -931,7 +931,7 @@ WandExport MagickBooleanType MagickBilateralSmoothingImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  blur_image=BilateralSmoothingImage(wand->images,radius,sigma,intensity_sigma,
+  blur_image=BilateralBlurImage(wand->images,radius,sigma,intensity_sigma,
     spatial_sigma,wand->exception);
   if (blur_image == (Image *) NULL)
     return(MagickFalse);

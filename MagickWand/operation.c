@@ -1840,7 +1840,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'b':
     {
-      if (LocaleCompare("bilateral-smoothing",option+1) == 0)
+      if (LocaleCompare("bilateral-blur",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & (RhoValue|SigmaValue)) == 0)
@@ -1851,7 +1851,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.xi=1.0;
           if ((flags & PsiValue) == 0)
             geometry_info.psi=1.0;
-          new_image=BilateralSmoothingImage(_image,(size_t) geometry_info.rho,
+          new_image=BilateralBlurImage(_image,(size_t) geometry_info.rho,
             (size_t) geometry_info.sigma,geometry_info.xi,geometry_info.psi,
             _exception);
           break;

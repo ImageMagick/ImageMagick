@@ -127,7 +127,7 @@ Image Operators:
   \-auto-threshold method
                        automatically perform image thresholding
   \-bench iterations    measure performance
-  \-bilateral-smoothing geometry     
+  \-bilateral-blur geometry     
                         non-linear, edge-preserving, and noise-reducing smoothing filter
   \-black-threshold value
                        force all pixels below the threshold into black

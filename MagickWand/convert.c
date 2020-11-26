@@ -160,7 +160,7 @@ static MagickBooleanType ConvertUsage(void)
       "  -auto-threshold method\n"
       "                       automatically perform image thresholding\n"
       "  -bench iterations    measure performance\n"
-      "  -bilateral-smoothing geometry\n"
+      "  -bilateral-blur geometry\n"
       "                       non-linear, edge-preserving, and noise-reducing smoothing filter\n"
       "  -black-threshold value\n"
       "                       force all pixels below the threshold into black\n"
@@ -774,7 +774,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertInvalidArgumentException(option,argv[i]);
             break;
           }
-        if (LocaleCompare("bilateral-smoothing",option+1) == 0)
+        if (LocaleCompare("bilateral-blur",option+1) == 0)
           {
             if (*option == '+')
               break;
