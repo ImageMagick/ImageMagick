@@ -2170,7 +2170,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         pixels=(uint32 *) GetVirtualMemoryBlob(generic_info);
         (void) TIFFReadRGBAImage(tiff,(uint32) image->columns,(uint32)
           image->rows,(uint32 *) pixels,0);
-        p=pixels+number_pixels-1;
+        p=pixels+(image->columns*image->rows)-1;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register ssize_t
