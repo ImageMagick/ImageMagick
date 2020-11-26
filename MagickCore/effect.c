@@ -805,23 +805,23 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     B i l a t e r a l F i l t e r I m a g e                                 %
+%     B i l a t e r a l S m o o t h i n g I m a g e                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  BilateralFilterImage() is a non-linear, edge-preserving, and noise-reducing
-%  smoothing filter for images.  It replaces the intensity of each pixel with a
-%  weighted average of intensity values from nearby pixels. This weight is
-%  based on a Gaussian distribution.  The weights depend not only on Euclidean
-%  distance of pixels, but also on the radiometric differences (e.g., range
-%  differences, such as color intensity, depth distance, etc.). This preserves
-%  sharp edges.
+%  BilateralSmoothingImage() is a non-linear, edge-preserving, and
+%  noise-reducing smoothing filter for images.  It replaces the intensity of
+%  each pixel with a weighted average of intensity values from nearby pixels.
+%  This weight is based on a Gaussian distribution.  The weights depend not
+%  only on Euclidean distance of pixels, but also on the radiometric
+%  differences (e.g., range differences, such as color intensity, depth
+%  distance, etc.). This preserves sharp edges.
 %
-%  The format of the BilateralFilterImage method is:
+%  The format of the BilateralSmoothingImage method is:
 %
-%      Image *BilateralFilterImage(const Image *image,const double radius,
+%      Image *BilateralSmoothingImage(const Image *image,const double radius,
 %        const double sigma,const double intensity_sigma,
 %        const double spatial_sigma,ExceptionInfo *exception)
 %
@@ -842,29 +842,30 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 %
 */
 
-static inline double BilateralDistance(const ssize_t x,const ssize_t y,
+static inline double SmoothDistance(const ssize_t x,const ssize_t y,
   const ssize_t u,const ssize_t v)
 {
   return(sqrt(((double) x-u)*((double) x-u)+((double) y-v)*((double) y-v)));
 }
 
-static inline double BilateralGuassian(const double x,const double sigma)
+static inline double SmoothGuassian(const double x,const double sigma)
 {
-  return(exp(-((double) x*x)/(2.0*sigma*sigma))/(2.0*MagickPI*sigma*sigma));
+  return(exp(-((double) x*x)*PerceptibleReciprocal(2.0*sigma*sigma))*
+    PerceptibleReciprocal(2.0*MagickPI*sigma*sigma));
 }
 
-MagickExport Image *BilateralFilterImage(const Image *image,const double radius,
-  const double sigma,const double intensity_sigma,const double spatial_sigma,
-  ExceptionInfo *exception)
+MagickExport Image *BilateralSmoothingImage(const Image *image,
+  const double radius,const double sigma,const double intensity_sigma,
+  const double spatial_sigma,ExceptionInfo *exception)
 {
-#define BilateralFilterImageTag  "Convolve/Image"
+#define BilateralSmoothingImageTag  "Convolve/Image"
 
   CacheView
-    *bilateral_view,
+    *smooth_view,
     *image_view;
 
   Image
-    *bilateral_image;
+    *smooth_image;
 
   MagickBooleanType
     status;
@@ -884,12 +885,12 @@ MagickExport Image *BilateralFilterImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  bilateral_image=CloneImage(image,0,0,MagickTrue,exception);
-  if (bilateral_image == (Image *) NULL)
+  smooth_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (smooth_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(bilateral_image,DirectClass,exception) == MagickFalse)
+  if (SetImageStorageClass(smooth_image,DirectClass,exception) == MagickFalse)
     {
-      bilateral_image=DestroyImage(bilateral_image);
+      smooth_image=DestroyImage(smooth_image);
       return((Image *) NULL);
     }
   /*
@@ -899,12 +900,12 @@ MagickExport Image *BilateralFilterImage(const Image *image,const double radius,
   progress=0;
   width=GetOptimalKernelWidth2D(radius,sigma);
   image_view=AcquireVirtualCacheView(image,exception);
-  bilateral_view=AcquireAuthenticCacheView(bilateral_image,exception);
+  smooth_view=AcquireAuthenticCacheView(smooth_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    magick_number_threads(image,bilateral_image,bilateral_image->rows,1)
+    magick_number_threads(image,smooth_image,smooth_image->rows,1)
 #endif
-  for (y=0; y < (ssize_t) bilateral_image->rows; y++)
+  for (y=0; y < (ssize_t) smooth_image->rows; y++)
   {
     register const Quantum
       *magick_restrict r;
@@ -918,14 +919,14 @@ MagickExport Image *BilateralFilterImage(const Image *image,const double radius,
     if (status == MagickFalse)
       continue;
     r=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=QueueCacheViewAuthenticPixels(bilateral_view,0,y,
-      bilateral_image->columns,1,exception);
+    q=QueueCacheViewAuthenticPixels(smooth_view,0,y,
+      smooth_image->columns,1,exception);
     if ((r == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
       }
-    for (x=0; x < (ssize_t) bilateral_image->columns; x++)
+    for (x=0; x < (ssize_t) smooth_image->columns; x++)
     {
       register const Quantum
         *magick_restrict p;
@@ -942,7 +943,7 @@ MagickExport Image *BilateralFilterImage(const Image *image,const double radius,
         break;
       center=(ssize_t) GetPixelChannels(image)*width*(width/2L)+
         GetPixelChannels(image)*(width/2);
-      for (i=0; i < (ssize_t) GetPixelChannels(bilateral_image); i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(smooth_image); i++)
       {
         double
           alpha,
@@ -957,7 +958,7 @@ MagickExport Image *BilateralFilterImage(const Image *image,const double radius,
           channel;
 
         PixelTrait
-          bilateral_traits,
+          smooth_traits,
           traits;
 
         register const Quantum
@@ -972,19 +973,19 @@ MagickExport Image *BilateralFilterImage(const Image *image,const double radius,
 
         channel=GetPixelChannelChannel(image,i);
         traits=GetPixelChannelTraits(image,channel);
-        bilateral_traits=GetPixelChannelTraits(bilateral_image,channel);
+        smooth_traits=GetPixelChannelTraits(smooth_image,channel);
         if ((traits == UndefinedPixelTrait) ||
-            (bilateral_traits == UndefinedPixelTrait))
+            (smooth_traits == UndefinedPixelTrait))
           continue;
-        if ((bilateral_traits & CopyPixelTrait) != 0)
+        if ((smooth_traits & CopyPixelTrait) != 0)
           {
-            SetPixelChannel(bilateral_image,channel,p[center+i],q);
+            SetPixelChannel(smooth_image,channel,p[center+i],q);
             continue;
           }
         pixel=0.0;
         gamma=0.0;
         pixels=p;
-        if ((bilateral_traits & BlendPixelTrait) == 0)
+        if ((smooth_traits & BlendPixelTrait) == 0)
           {
             /*
               No alpha blending.
@@ -995,17 +996,17 @@ MagickExport Image *BilateralFilterImage(const Image *image,const double radius,
               {
                 n=(ssize_t) GetPixelChannels(image)*(width/2-u)*(width/2-v)+
                   GetPixelChannels(image)*(width/2-u);  /* neighbor pixel */
-                distance=BilateralDistance(x,y,x-(width/2-u),y-(width/2-v));
+                distance=SmoothDistance(x,y,x-(width/2-u),y-(width/2-v));
                 intensity=QuantumScale*(p[center+n+i]-p[center+i]);
-                weight=BilateralGuassian(intensity,intensity_sigma)*
-                  BilateralGuassian(distance,spatial_sigma);
+                weight=SmoothGuassian(intensity,intensity_sigma)*
+                  SmoothGuassian(distance,spatial_sigma);
                 pixel+=weight*QuantumScale*pixels[i];
                 gamma+=weight;
                 pixels+=GetPixelChannels(image);
               }
             }
             gamma=PerceptibleReciprocal(gamma);
-            SetPixelChannel(bilateral_image,channel,ClampToQuantum(
+            SetPixelChannel(smooth_image,channel,ClampToQuantum(
               QuantumRange*gamma*pixel),q);
             continue;
           }
@@ -1018,25 +1019,25 @@ MagickExport Image *BilateralFilterImage(const Image *image,const double radius,
           {
             n=(ssize_t) GetPixelChannels(image)*(width/2-u)*(width/2-v)+
               GetPixelChannels(image)*(width/2-u);  /* neighbor pixel */
-            distance=BilateralDistance(x,y,x-(width/2-u),y-(width/2-v));
+            distance=SmoothDistance(x,y,x-(width/2-u),y-(width/2-v));
             alpha=(double) (QuantumScale*GetPixelAlpha(image,p+center));
             beta=(double) (QuantumScale*GetPixelAlpha(image,p+center+n));
             intensity=QuantumScale*(beta*p[center+n+i]-alpha*p[center+i]);
-            weight=BilateralGuassian(intensity,intensity_sigma)*
-              BilateralGuassian(distance,spatial_sigma);
+            weight=SmoothGuassian(intensity,intensity_sigma)*
+              SmoothGuassian(distance,spatial_sigma);
             pixel+=weight*QuantumScale*pixels[i];
             gamma+=weight*alpha*beta;
             pixels+=GetPixelChannels(image);
           }
         }
         gamma=PerceptibleReciprocal(gamma);
-        SetPixelChannel(bilateral_image,channel,ClampToQuantum(QuantumRange*
+        SetPixelChannel(smooth_image,channel,ClampToQuantum(QuantumRange*
           gamma*pixel),q);
       }
-      q+=GetPixelChannels(bilateral_image);
+      q+=GetPixelChannels(smooth_image);
       r+=GetPixelChannels(image);
     }
-    if (SyncCacheViewAuthenticPixels(bilateral_view,exception) == MagickFalse)
+    if (SyncCacheViewAuthenticPixels(smooth_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -1047,18 +1048,18 @@ MagickExport Image *BilateralFilterImage(const Image *image,const double radius,
         #pragma omp atomic
 #endif
         progress++;
-        proceed=SetImageProgress(image,BilateralFilterImageTag,progress,
+        proceed=SetImageProgress(image,BilateralSmoothingImageTag,progress,
           image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
-  bilateral_image->type=image->type;
-  bilateral_view=DestroyCacheView(bilateral_view);
+  smooth_image->type=image->type;
+  smooth_view=DestroyCacheView(smooth_view);
   image_view=DestroyCacheView(image_view);
   if (status == MagickFalse)
-    bilateral_image=DestroyImage(bilateral_image);
-  return(bilateral_image);
+    smooth_image=DestroyImage(smooth_image);
+  return(smooth_image);
 }
 
 /*
