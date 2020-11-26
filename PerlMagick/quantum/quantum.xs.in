@@ -7672,7 +7672,7 @@ Mogrify(ref,...)
     ColorThresholdImage= 302
     WhiteBalance       = 303
     WhiteBalanceImage  = 304
-    BilateralSmoothing    =  305
+    BilateralSmoothing =  305
     BilateralSmoothingImage =  306
     MogrifyRegion      = 666
   PPCODE:
@@ -11591,9 +11591,9 @@ Mogrify(ref,...)
               if ((flags & SigmaValue) == 0)
                 geometry_info.sigma=1.0;
               if ((flags & XiValue) == 0)
-                geometry_info.xi=1.0;
+                geometry_info.xi=2.0*(ceil(geometry_info.rho)+1.0);
               if ((flags & PsiValue) == 0)
-                geometry_info.psi=1.0;
+                geometry_info.psi=0.5*(ceil(geometry_info.rho)+1.0);
             }
           if (attribute_flag[1] != 0)
             geometry_info.rho=argument_list[1].real_reference;

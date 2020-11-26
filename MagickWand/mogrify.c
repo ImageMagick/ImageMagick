@@ -956,9 +956,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=geometry_info.rho;
             if ((flags & XiValue) == 0)
-              geometry_info.xi=1.0;
+              geometry_info.xi=2.0*(ceil(geometry_info.rho)+1.0);
             if ((flags & PsiValue) == 0)
-              geometry_info.psi=1.0;
+              geometry_info.psi=0.5*(ceil(geometry_info.rho)+1.0);
             mogrify_image=BilateralSmoothingImage(*image,(size_t)
               geometry_info.rho,(size_t) geometry_info.sigma,
               geometry_info.xi,geometry_info.psi,exception);

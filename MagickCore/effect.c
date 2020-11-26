@@ -858,7 +858,7 @@ static inline double SmoothDistance(const ssize_t x,const ssize_t y,
 static inline double SmoothGuassian(const double x,const double sigma)
 {
   return(exp(-((double) x*x)*PerceptibleReciprocal(2.0*sigma*sigma))*
-    PerceptibleReciprocal(2.0*MagickPI*sigma*sigma));
+    PerceptibleReciprocal(Magick2PI*sigma*sigma));
 }
 
 MagickExport Image *BilateralSmoothingImage(const Image *image,
