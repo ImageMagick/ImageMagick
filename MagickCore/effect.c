@@ -1012,9 +1012,8 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
                 pixels+=GetPixelChannels(image);
               }
             }
-            gamma=PerceptibleReciprocal(gamma);
             SetPixelChannel(smooth_image,channel,ClampToQuantum(
-              QuantumRange*gamma*pixel),q);
+              QuantumRange*PerceptibleReciprocal(gamma)*pixel),q);
             continue;
           }
         /*
@@ -1037,9 +1036,8 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
             pixels+=GetPixelChannels(image);
           }
         }
-        gamma=PerceptibleReciprocal(gamma);
         SetPixelChannel(smooth_image,channel,ClampToQuantum(QuantumRange*
-          gamma*pixel),q);
+          PerceptibleReciprocal(gamma)*pixel),q);
       }
       q+=GetPixelChannels(smooth_image);
       r+=GetPixelChannels(image);
