@@ -1001,7 +1001,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
             {
               for (u=0; u < (ssize_t) width; u++)
               {
-                n=(ssize_t) GetPixelChannels(image)*(width/2-u)*(width/2-v)+
+                n=(ssize_t) GetPixelChannels(image)*width*(width/2-v)+
                   GetPixelChannels(image)*(width/2-u);  /* neighbor pixel */
                 distance=BlurDistance(x,y,x-(width/2-u),y-(width/2-v));
                 intensity=QuantumScale*(p[center+n+i]-p[center+i]);
