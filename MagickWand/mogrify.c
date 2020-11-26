@@ -946,7 +946,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
       }
       case 'b':
       {
-        if (LocaleCompare("bilateral-filter",option+1) == 0)
+        if (LocaleCompare("bilateral-smoothing",option+1) == 0)
           {
             /*
               Bilateral filter image.
@@ -959,7 +959,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               geometry_info.xi=1.0;
             if ((flags & PsiValue) == 0)
               geometry_info.psi=1.0;
-            mogrify_image=BilateralFilterImage(*image,(size_t)
+            mogrify_image=BilateralSmoothingImage(*image,(size_t)
               geometry_info.rho,(size_t) geometry_info.sigma,
               geometry_info.xi,geometry_info.psi,exception);
             break;
@@ -3559,8 +3559,8 @@ static MagickBooleanType MogrifyUsage(void)
       "  -auto-threshold method\n"
       "                       automatically perform image thresholding\n"
       "  -bench iterations    measure performance\n"
-      "  -bilateral-filter geometry\n"
-      "                       smooth and reduce noise while preserving edges\n"
+      "  -bilateral-smoothing geometry\n"
+      "                       non-linear, edge-preserving, and noise-reducing smoothing filter\n"
       "  -black-threshold value\n"
       "                       force all pixels below the threshold into black\n"
       "  -blue-shift          simulate a scene at nighttime in the moonlight\n"
@@ -4253,7 +4253,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
             break;
           }
-        if (LocaleCompare("bilateral-filter",option+1) == 0)
+        if (LocaleCompare("bilateral-smoothing",option+1) == 0)
           {
             if (*option == '+')
               break;

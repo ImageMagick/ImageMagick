@@ -580,7 +580,7 @@ static struct
     { "ColorThreshold", { {"start-color", StringReference},
       {"stop-color", StringReference}, {"channel", MagickChannelOptions} } },
     { "WhiteBalance", { { (const char *) NULL, NullReference } } },
-    { "BilateralFilter", { {"geometry", StringReference},
+    { "BilateralSmoothing", { {"geometry", StringReference},
       {"radius", RealReference}, {"sigma", RealReference},
       {"intensity-sigma", RealReference}, {"spatial-sigma", RealReference},
       {"channel", MagickChannelOptions} } },
@@ -7672,8 +7672,8 @@ Mogrify(ref,...)
     ColorThresholdImage= 302
     WhiteBalance       = 303
     WhiteBalanceImage  = 304
-    BilateralFilter    =  305
-    BilateralFilterImage =  306
+    BilateralSmoothing    =  305
+    BilateralSmoothingImage =  306
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -11582,7 +11582,7 @@ Mogrify(ref,...)
           (void) WhiteBalanceImage(image,exception);
           break;
         }
-        case 153:  /* BilateralFilter */
+        case 153:  /* BilateralSmoothing */
         {
           if (attribute_flag[0] != 0)
             {
@@ -11606,7 +11606,7 @@ Mogrify(ref,...)
           if (attribute_flag[5] != 0)
             channel=(ChannelType) argument_list[5].integer_reference;
           channel_mask=SetImageChannelMask(image,channel);
-          image=BilateralFilterImage(image,geometry_info.rho,
+          image=BilateralSmoothingImage(image,geometry_info.rho,
             geometry_info.sigma,geometry_info.xi,geometry_info.psi,exception);
           if (image != (Image *) NULL)
             (void) SetImageChannelMask(image,channel_mask);
