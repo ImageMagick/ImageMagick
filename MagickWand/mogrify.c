@@ -955,8 +955,13 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             flags=ParseGeometry(argv[i+1],&geometry_info);
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=geometry_info.rho;
+            if ((flags & XiValue) == 0)
+              geometry_info.xi=1.0;
+            if ((flags & PsiValue) == 0)
+              geometry_info.psi=1.0;
             mogrify_image=BilateralFilterImage(*image,(size_t)
-              geometry_info.rho,(size_t) geometry_info.sigma,exception);
+              geometry_info.rho,(size_t) geometry_info.sigma,
+              geometry_info.xi,geometry_info.psi,exception);
             break;
           }
         if (LocaleCompare("black-threshold",option+1) == 0)

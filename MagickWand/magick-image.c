@@ -899,9 +899,14 @@ WandExport MagickBooleanType MagickAutoThresholdImage(MagickWand *wand,
 %
 %    o sigma: the standard deviation of the , in pixels.
 %
+%    o intensity-sigma: the intensity sigma.
+%
+%    o spatial-sigma: the spatial sigma.
+%
 */
 WandExport MagickBooleanType MagickBilateralFilterImage(MagickWand *wand,
-  const double radius,const double sigma)
+  const double radius,const double sigma,const double intensity_sigma,
+  const double spatial_sigma)
 {
   Image
     *blur_image;
@@ -912,7 +917,8 @@ WandExport MagickBooleanType MagickBilateralFilterImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  blur_image=BilateralFilterImage(wand->images,radius,sigma,wand->exception);
+  blur_image=BilateralFilterImage(wand->images,radius,sigma,intensity_sigma,
+    spatial_sigmal,wand->exception);
   if (blur_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,blur_image);

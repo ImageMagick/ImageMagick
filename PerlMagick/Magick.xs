@@ -582,6 +582,7 @@ static struct
     { "WhiteBalance", { { (const char *) NULL, NullReference } } },
     { "BilateralFilter", { {"geometry", StringReference},
       {"radius", RealReference}, {"sigma", RealReference},
+      {"intensity-sigma", RealReference}, {"spatial-sigma", RealReference},
       {"channel", MagickChannelOptions} } },
   };
 
@@ -11583,16 +11584,24 @@ Mogrify(ref,...)
                 &geometry_info);
               if ((flags & SigmaValue) == 0)
                 geometry_info.sigma=1.0;
+              if ((flags & XiValue) == 0)
+                geometry_info.xi=1.0;
+              if ((flags & PsiValue) == 0)
+                geometry_info.psi=1.0;
             }
           if (attribute_flag[1] != 0)
             geometry_info.rho=argument_list[1].real_reference;
           if (attribute_flag[2] != 0)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
-            channel=(ChannelType) argument_list[3].integer_reference;
+            geometry_info.xi=argument_list[3].real_reference;
+          if (attribute_flag[4] != 0)
+            geometry_info.psi=argument_list[4].real_reference;
+          if (attribute_flag[5] != 0)
+            channel=(ChannelType) argument_list[5].integer_reference;
           channel_mask=SetImageChannelMask(image,channel);
           image=BilateralFilterImage(image,geometry_info.rho,
-            geometry_info.sigma,exception);
+            geometry_info.sigma,geometry_info.xi,geometry_info.psi,exception);
           if (image != (Image *) NULL)
             (void) SetImageChannelMask(image,channel_mask);
           break;

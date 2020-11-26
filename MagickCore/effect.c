@@ -817,7 +817,8 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 %  The format of the BilateralFilteImage method is:
 %
 %      Image *BilateralFilterImage(const Image *image,const double radius,
-%        const double sigma,ExceptionInfo *exception)
+%        const double sigma,const double intensity_sigma,
+%        const double spatial_sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -828,11 +829,28 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 %
 %    o sigma: the standard deviation of the Laplacian, in pixels.
 %
+%    o intensity-sigma: the intensity sigma.
+%
+%    o spatial-sigma: the spatial sigma.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static inline double BilateralDistance(const ssize_t x,const ssize_t y,
+  const ssize_t u,const ssize_t v)
+{
+  return(sqrt(((double) x-u)*((double) x-u)+((double) y-v)*((double) y-v)));
+}
+
+static inline double BilateralGuassian(const double x,const double sigma)
+{
+  return(exp(-((double) x*x)/(2.0*sigma*sigma))/(2.0*MagickPI*sigma*sigma));
+}
+
 MagickExport Image *BilateralFilterImage(const Image *image,const double radius,
-  const double sigma,ExceptionInfo *exception)
+  const double sigma,const double intensity_sigma,const double spatial_sigma,
+  ExceptionInfo *exception)
 {
 #define BilateralFilterImageTag  "Convolve/Image"
 
@@ -933,9 +951,6 @@ MagickExport Image *BilateralFilterImage(const Image *image,const double radius,
           bilateral_traits,
           traits;
 
-        register const double
-          *magick_restrict k;
-
         register const Quantum
           *magick_restrict pixels;
 
@@ -956,9 +971,9 @@ MagickExport Image *BilateralFilterImage(const Image *image,const double radius,
             SetPixelChannel(bilateral_image,channel,p[center+i],q);
             continue;
           }
-        pixels=p;
         pixel=0.0;
         gamma=0.0;
+        pixels=p;
         if ((bilateral_traits & BlendPixelTrait) == 0)
           {
             /*
@@ -968,14 +983,30 @@ MagickExport Image *BilateralFilterImage(const Image *image,const double radius,
             {
               for (u=0; u < (ssize_t) width; u++)
               {
-                pixel+=1.0*pixels[i];
-                gamma+=1.0;
-                k++;
+                double
+                  distance,
+                  intensity,
+                  weight;
+
+                ssize_t
+                  n,
+                  uu = (width/2-u),
+                  vv = (width/2-v);
+
+                n=(ssize_t) GetPixelChannels(image)*uu*vv+
+                  GetPixelChannels(image)*uu;
+                distance=BilateralDistance(x,y,x-uu,y-vv);
+                intensity=QuantumScale*(p[center+n+i]-p[center+i]);
+                weight=BilateralGuassian(intensity,intensity_sigma)*
+                  BilateralGuassian(distance,spatial_sigma);
+                pixel+=weight*QuantumScale*pixels[i];
+                gamma+=weight;
                 pixels+=GetPixelChannels(image);
               }
             }
             gamma=PerceptibleReciprocal(gamma);
-            SetPixelChannel(bilateral_image,channel,ClampToQuantum(gamma*pixel),q);
+            SetPixelChannel(bilateral_image,channel,ClampToQuantum(
+              QuantumRange*gamma*pixel),q);
             continue;
           }
         /*
@@ -986,14 +1017,10 @@ MagickExport Image *BilateralFilterImage(const Image *image,const double radius,
           for (u=0; u < (ssize_t) width; u++)
           {
             alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
-            pixel+=1.0*alpha*pixels[i];
-            gamma+=1.0*alpha;
-            k++;
             pixels+=GetPixelChannels(image);
           }
         }
-        gamma=PerceptibleReciprocal(gamma);
-        SetPixelChannel(bilateral_image,channel,ClampToQuantum(gamma*pixel),q);
+        SetPixelChannel(bilateral_image,channel,ClampToQuantum(1.0),q);
       }
       q+=GetPixelChannels(bilateral_image);
       r+=GetPixelChannels(image);
