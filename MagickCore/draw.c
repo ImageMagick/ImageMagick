@@ -616,6 +616,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info,
             points=(PointInfo *) NULL;
             ghostline=MagickFalse;
             edge++;
+            polygon_info->number_edges=edge;
           }
         if (points == (PointInfo *) NULL)
           {
@@ -675,6 +676,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info,
         polygon_info->edges[edge].bounds=bounds;
         polygon_info->edges[edge].bounds.y1=points[0].y;
         polygon_info->edges[edge].bounds.y2=points[n-1].y;
+        polygon_info->number_edges=edge+1;
         number_points=16;
         points=(PointInfo *) AcquireQuantumMemory((size_t) number_points,
           sizeof(*points));
@@ -690,6 +692,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info,
         bounds.x1=point.x;
         bounds.x2=point.x;
         edge++;
+        polygon_info->number_edges=edge;
       }
     direction=next_direction;
     if (points == (PointInfo *) NULL)
@@ -746,6 +749,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info,
           polygon_info->edges[edge].bounds.y2=points[n-1].y;
           ghostline=MagickFalse;
           edge++;
+          polygon_info->number_edges=edge;
         }
     }
   polygon_info->number_edges=edge;
