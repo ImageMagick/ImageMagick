@@ -918,7 +918,7 @@ WandExport MagickBooleanType MagickBilateralFilterImage(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   blur_image=BilateralFilterImage(wand->images,radius,sigma,intensity_sigma,
-    spatial_sigma,wand->exception);
+    spatial_sigma,wand->exception); 
   if (blur_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,blur_image);
