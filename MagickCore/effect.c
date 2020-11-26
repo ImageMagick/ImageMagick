@@ -996,7 +996,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
           {
             /*
               No alpha blending.
-            */
+            */ 
             for (v=0; v < (ssize_t) width; v++)
             {
               for (u=0; u < (ssize_t) width; u++)
