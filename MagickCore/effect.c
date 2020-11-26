@@ -849,13 +849,13 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 %
 */
 
-static inline double SmoothDistance(const ssize_t x,const ssize_t y,
+static inline double BlurDistance(const ssize_t x,const ssize_t y,
   const ssize_t u,const ssize_t v)
 {
   return(sqrt(((double) x-u)*((double) x-u)+((double) y-v)*((double) y-v)));
 }
 
-static inline double SmoothGuassian(const double x,const double sigma)
+static inline double BlurGaussian(const double x,const double sigma)
 {
   return(exp(-((double) x*x)*PerceptibleReciprocal(2.0*sigma*sigma))*
     PerceptibleReciprocal(Magick2PI*sigma*sigma));
@@ -1003,10 +1003,10 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
               {
                 n=(ssize_t) GetPixelChannels(image)*(width/2-u)*(width/2-v)+
                   GetPixelChannels(image)*(width/2-u);  /* neighbor pixel */
-                distance=SmoothDistance(x,y,x-(width/2-u),y-(width/2-v));
+                distance=BlurDistance(x,y,x-(width/2-u),y-(width/2-v));
                 intensity=QuantumScale*(p[center+n+i]-p[center+i]);
-                weight=SmoothGuassian(intensity,intensity_sigma)*
-                  SmoothGuassian(distance,spatial_sigma);
+                weight=BlurGaussian(intensity,intensity_sigma)*
+                  BlurGaussian(distance,spatial_sigma);
                 pixel+=weight*QuantumScale*pixels[i];
                 gamma+=weight;
                 pixels+=GetPixelChannels(image);
@@ -1026,12 +1026,12 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
           {
             n=(ssize_t) GetPixelChannels(image)*(width/2-u)*(width/2-v)+
               GetPixelChannels(image)*(width/2-u);  /* neighbor pixel */
-            distance=SmoothDistance(x,y,x-(width/2-u),y-(width/2-v));
+            distance=BlurDistance(x,y,x-(width/2-u),y-(width/2-v));
             alpha=(double) (QuantumScale*GetPixelAlpha(image,p+center));
             beta=(double) (QuantumScale*GetPixelAlpha(image,p+center+n));
             intensity=QuantumScale*(beta*p[center+n+i]-alpha*p[center+i]);
-            weight=SmoothGuassian(intensity,intensity_sigma)*
-              SmoothGuassian(distance,spatial_sigma);
+            weight=BlurGaussian(intensity,intensity_sigma)*
+              BlurGaussian(distance,spatial_sigma);
             pixel+=weight*QuantumScale*pixels[i];
             gamma+=weight*alpha*beta;
             pixels+=GetPixelChannels(image);
