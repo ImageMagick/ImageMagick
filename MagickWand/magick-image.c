@@ -888,7 +888,8 @@ WandExport MagickBooleanType MagickAutoThresholdImage(MagickWand *wand,
 %  The format of the MagickBilateralFilterImage method is:
 %
 %      MagickBooleanType MagickBilateralFilterImage(MagickWand *wand,
-%        const double radius,const double sigma)
+%        const double radius,const double sigma,const double intensity_sigma,
+%        const double spatial_sigma)
 %
 %  A description of each parameter follows:
 %
@@ -899,9 +900,9 @@ WandExport MagickBooleanType MagickAutoThresholdImage(MagickWand *wand,
 %
 %    o sigma: the standard deviation of the , in pixels.
 %
-%    o intensity-sigma: the intensity sigma.
+%    o intensity_sigma: the intensity sigma.
 %
-%    o spatial-sigma: the spatial sigma.
+%    o spatial_sigma: the spatial sigma.
 %
 */
 WandExport MagickBooleanType MagickBilateralFilterImage(MagickWand *wand,
