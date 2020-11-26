@@ -883,7 +883,13 @@ WandExport MagickBooleanType MagickAutoThresholdImage(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickBilateralFilterImage() smooth and reduce noise while preserving edges.
+%  MagickBilateralFilterImage() is a non-linear, edge-preserving, and
+%  noise-reducing smoothing filter for images.  It replaces the intensity of
+%  each pixel with a weighted average of intensity values from nearby pixels.
+%  This weight is based on a Gaussian distribution.  The weights depend not
+%  only on Euclidean distance of pixels, but also on the radiometric
+%  differences (e.g., range differences, such as color intensity, depth
+%  distance, etc.). This preserves sharp edges.
 %
 %  The format of the MagickBilateralFilterImage method is:
 %
