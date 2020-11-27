@@ -968,9 +968,6 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
           smooth_traits,
           traits;
 
-        register const Quantum
-          *magick_restrict pixels;
-
         register ssize_t
           u;
 
@@ -991,7 +988,6 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
           }
         pixel=0.0;
         gamma=0.0;
-        pixels=p;
         if ((smooth_traits & BlendPixelTrait) == 0)
           {
             /*
@@ -1007,9 +1003,8 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
                 intensity=QuantumScale*(p[center+n+i]-p[center+i]);
                 weight=BlurGaussian(intensity,intensity_sigma)*
                   BlurGaussian(distance,spatial_sigma);
-                pixel+=weight*QuantumScale*pixels[i];
+                pixel+=weight*QuantumScale*p[center+n+i];
                 gamma+=weight;
-                pixels+=GetPixelChannels(image);
               }
             }
             SetPixelChannel(smooth_image,channel,ClampToQuantum(
@@ -1031,9 +1026,8 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
             intensity=QuantumScale*(beta*p[center+n+i]-alpha*p[center+i]);
             weight=BlurGaussian(intensity,intensity_sigma)*
               BlurGaussian(distance,spatial_sigma);
-            pixel+=weight*QuantumScale*pixels[i];
+            pixel+=weight*QuantumScale*p[center+n+i];
             gamma+=weight*alpha*beta;
-            pixels+=GetPixelChannels(image);
           }
         }
         SetPixelChannel(smooth_image,channel,ClampToQuantum(QuantumRange*
