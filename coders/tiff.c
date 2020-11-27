@@ -2131,16 +2131,16 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   break;
               }
             }
-            if (image->previous == (Image *) NULL)
-              {
-                status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                  image->rows);
-                if (status == MagickFalse)
-                  break;
-              }
           }
           if ((samples_per_pixel > 1) && (interlace != PLANARCONFIG_SEPARATE))
             break;
+          if (image->previous == (Image *) NULL)
+            {
+              status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) i,
+                samples_per_pixel);
+              if (status == MagickFalse)
+                break;
+            }
         }
         tile_pixels=(unsigned char *) RelinquishMagickMemory(tile_pixels);
         break;
