@@ -884,6 +884,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
     width;
 
   ssize_t
+    mid,
     y;
 
   assert(image != (const Image *) NULL);
@@ -906,6 +907,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
   status=MagickTrue;
   progress=0;
   width=GetOptimalKernelWidth2D(radius,sigma);
+  mid=(ssize_t) width/2L;
   image_view=AcquireVirtualCacheView(image,exception);
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -938,18 +940,15 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
       register ssize_t
         i;
 
-      p=GetCacheViewVirtualPixels(image_view,x-((ssize_t) width/2L),y-(ssize_t)
-        (width/2L),width,width,exception);
+      p=GetCacheViewVirtualPixels(image_view,x-mid,y-mid,width,width,exception);
       if (p == (const Quantum *) NULL)
         break;
-      p+=(ssize_t) GetPixelChannels(image)*width*(width/2L)+
-        GetPixelChannels(image)*(width/2);
+      p+=(ssize_t) GetPixelChannels(image)*width*mid+GetPixelChannels(image)*
+        mid;
       for (i=0; i < (ssize_t) GetPixelChannels(blur_image); i++)
       {
         double
-          distance,
           gamma,
-          intensity,
           pixel,
           weight;
 
@@ -988,12 +987,10 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
             {
               for (u=0; u < (ssize_t) width; u++)
               {
-                n=p+(ssize_t) GetPixelChannels(image)*width*(width/2L-v)+
-                  GetPixelChannels(image)*(width/2L-u);
-                intensity=QuantumScale*(n[i]-p[i]);
-                distance=BlurDistance(x,y,x-(width/2L-u),y-(width/2L-v));
-                weight=BlurGaussian(intensity,intensity_sigma)*
-                  BlurGaussian(distance,spatial_sigma);
+                n=p+(ssize_t) GetPixelChannels(image)*width*(mid-v)+
+                  GetPixelChannels(image)*(mid-u);
+                weight=BlurGaussian(QuantumScale*(n[i]-p[i]),intensity_sigma)*
+                  BlurGaussian(BlurDistance(x,y,x-mid-u,y-mid-v),spatial_sigma);
                 pixel+=weight*QuantumScale*n[i];
                 gamma+=weight;
               }
@@ -1013,14 +1010,12 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
               alpha,
               beta;
 
-            n=p+(ssize_t) GetPixelChannels(image)*width*(width/2L-v)+
-              GetPixelChannels(image)*(width/2L-u);
+            n=p+(ssize_t) GetPixelChannels(image)*width*(mid-v)+
+              GetPixelChannels(image)*(mid-u);
             alpha=(double) (QuantumScale*GetPixelAlpha(image,p));
             beta=(double) (QuantumScale*GetPixelAlpha(image,n));
-            intensity=QuantumScale*(beta*n[i]-alpha*p[i]);
-            distance=BlurDistance(x,y,x-(width/2L-u),y-(width/2L-v));
-            weight=BlurGaussian(intensity,intensity_sigma)*
-              BlurGaussian(distance,spatial_sigma);
+            weight=BlurGaussian(QuantumScale*(n[i]-p[i]),intensity_sigma)*
+              BlurGaussian(BlurDistance(x,y,x-mid-u,y-mid-v),spatial_sigma);
             pixel+=weight*QuantumScale*n[i];
             gamma+=weight*alpha*beta;
           }
