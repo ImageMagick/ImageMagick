@@ -868,11 +868,11 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
 #define BilateralBlurImageTag  "Convolve/Image"
 
   CacheView
-    *smooth_view,
+    *blur_view,
     *image_view;
 
   Image
-    *smooth_image;
+    *blur_image;
 
   MagickBooleanType
     status;
@@ -892,27 +892,27 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  smooth_image=CloneImage(image,0,0,MagickTrue,exception);
-  if (smooth_image == (Image *) NULL)
+  blur_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (blur_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(smooth_image,DirectClass,exception) == MagickFalse)
+  if (SetImageStorageClass(blur_image,DirectClass,exception) == MagickFalse)
     {
-      smooth_image=DestroyImage(smooth_image);
+      blur_image=DestroyImage(blur_image);
       return((Image *) NULL);
     }
   /*
-    Bilateral filter image.
+    Bilateral blur image.
   */
   status=MagickTrue;
   progress=0;
   width=GetOptimalKernelWidth2D(radius,sigma);
   image_view=AcquireVirtualCacheView(image,exception);
-  smooth_view=AcquireAuthenticCacheView(smooth_image,exception);
+  blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    magick_number_threads(image,smooth_image,smooth_image->rows,1)
+    magick_number_threads(image,blur_image,blur_image->rows,1)
 #endif
-  for (y=0; y < (ssize_t) smooth_image->rows; y++)
+  for (y=0; y < (ssize_t) blur_image->rows; y++)
   {
     register Quantum
       *magick_restrict q;
@@ -922,35 +922,31 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
 
     if (status == MagickFalse)
       continue;
-    q=QueueCacheViewAuthenticPixels(smooth_view,0,y,smooth_image->columns,1,
+    q=QueueCacheViewAuthenticPixels(blur_view,0,y,blur_image->columns,1,
       exception);
     if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
       }
-    for (x=0; x < (ssize_t) smooth_image->columns; x++)
+    for (x=0; x < (ssize_t) blur_image->columns; x++)
     {
       register const Quantum
+        *magick_restrict n,
         *magick_restrict p;
 
       register ssize_t
         i;
 
-      ssize_t
-        center;
-
-      p=GetCacheViewVirtualPixels(image_view,x-((ssize_t) width/2L),y-
-        (ssize_t) (width/2L),width,width,exception);
+      p=GetCacheViewVirtualPixels(image_view,x-((ssize_t) width/2L),y-(ssize_t)
+        (width/2L),width,width,exception);
       if (p == (const Quantum *) NULL)
         break;
-      center=(ssize_t) GetPixelChannels(image)*width*(width/2L)+
+      p+=(ssize_t) GetPixelChannels(image)*width*(width/2L)+
         GetPixelChannels(image)*(width/2);
-      for (i=0; i < (ssize_t) GetPixelChannels(smooth_image); i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(blur_image); i++)
       {
         double
-          alpha,
-          beta,
           distance,
           gamma,
           intensity,
@@ -961,30 +957,29 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
           channel;
 
         PixelTrait
-          smooth_traits,
+          blur_traits,
           traits;
 
         register ssize_t
           u;
 
         ssize_t
-          n,
           v;
 
         channel=GetPixelChannelChannel(image,i);
         traits=GetPixelChannelTraits(image,channel);
-        smooth_traits=GetPixelChannelTraits(smooth_image,channel);
+        blur_traits=GetPixelChannelTraits(blur_image,channel);
         if ((traits == UndefinedPixelTrait) ||
-            (smooth_traits == UndefinedPixelTrait))
+            (blur_traits == UndefinedPixelTrait))
           continue;
-        if ((smooth_traits & CopyPixelTrait) != 0)
+        if ((blur_traits & CopyPixelTrait) != 0)
           {
-            SetPixelChannel(smooth_image,channel,p[center+i],q);
+            SetPixelChannel(blur_image,channel,p[i],q);
             continue;
           }
         pixel=0.0;
         gamma=0.0;
-        if ((smooth_traits & BlendPixelTrait) == 0)
+        if ((blur_traits & BlendPixelTrait) == 0)
           {
             /*
               No alpha blending.
@@ -993,17 +988,17 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
             {
               for (u=0; u < (ssize_t) width; u++)
               {
-                n=(ssize_t) GetPixelChannels(image)*width*(width/2L-v)+
-                  GetPixelChannels(image)*(width/2L-u);  /* neighbor pixel */
+                n=p+(ssize_t) GetPixelChannels(image)*width*(width/2L-v)+
+                  GetPixelChannels(image)*(width/2L-u);
+                intensity=QuantumScale*(n[i]-p[i]);
                 distance=BlurDistance(x,y,x-(width/2L-u),y-(width/2L-v));
-                intensity=QuantumScale*(p[center+n+i]-p[center+i]);
                 weight=BlurGaussian(intensity,intensity_sigma)*
                   BlurGaussian(distance,spatial_sigma);
-                pixel+=weight*QuantumScale*p[center+n+i];
+                pixel+=weight*QuantumScale*n[i];
                 gamma+=weight;
               }
             }
-            SetPixelChannel(smooth_image,channel,ClampToQuantum(
+            SetPixelChannel(blur_image,channel,ClampToQuantum(
               QuantumRange*PerceptibleReciprocal(gamma)*pixel),q);
             continue;
           }
@@ -1014,24 +1009,28 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
         {
           for (u=0; u < (ssize_t) width; u++)
           {
-            n=(ssize_t) GetPixelChannels(image)*width*(width/2L-v)+
-              GetPixelChannels(image)*(width/2L-u);  /* neighbor pixel */
+            double
+              alpha,
+              beta;
+
+            n=p+(ssize_t) GetPixelChannels(image)*width*(width/2L-v)+
+              GetPixelChannels(image)*(width/2L-u);
+            alpha=(double) (QuantumScale*GetPixelAlpha(image,p));
+            beta=(double) (QuantumScale*GetPixelAlpha(image,n));
+            intensity=QuantumScale*(beta*n[i]-alpha*p[i]);
             distance=BlurDistance(x,y,x-(width/2L-u),y-(width/2L-v));
-            alpha=(double) (QuantumScale*GetPixelAlpha(image,p+center));
-            beta=(double) (QuantumScale*GetPixelAlpha(image,p+center+n));
-            intensity=QuantumScale*(beta*p[center+n+i]-alpha*p[center+i]);
             weight=BlurGaussian(intensity,intensity_sigma)*
               BlurGaussian(distance,spatial_sigma);
-            pixel+=weight*QuantumScale*p[center+n+i];
+            pixel+=weight*QuantumScale*n[i];
             gamma+=weight*alpha*beta;
           }
         }
-        SetPixelChannel(smooth_image,channel,ClampToQuantum(QuantumRange*
+        SetPixelChannel(blur_image,channel,ClampToQuantum(QuantumRange*
           PerceptibleReciprocal(gamma)*pixel),q);
       }
-      q+=GetPixelChannels(smooth_image);
+      q+=GetPixelChannels(blur_image);
     }
-    if (SyncCacheViewAuthenticPixels(smooth_view,exception) == MagickFalse)
+    if (SyncCacheViewAuthenticPixels(blur_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -1048,12 +1047,12 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
           status=MagickFalse;
       }
   }
-  smooth_image->type=image->type;
-  smooth_view=DestroyCacheView(smooth_view);
+  blur_image->type=image->type;
+  blur_view=DestroyCacheView(blur_view);
   image_view=DestroyCacheView(image_view);
   if (status == MagickFalse)
-    smooth_image=DestroyImage(smooth_image);
-  return(smooth_image);
+    blur_image=DestroyImage(blur_image);
+  return(blur_image);
 }
 
 /*
