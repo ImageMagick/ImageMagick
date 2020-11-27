@@ -914,9 +914,6 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
 #endif
   for (y=0; y < (ssize_t) smooth_image->rows; y++)
   {
-    register const Quantum
-      *magick_restrict r;
-
     register Quantum
       *magick_restrict q;
 
@@ -925,10 +922,9 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
 
     if (status == MagickFalse)
       continue;
-    r=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=QueueCacheViewAuthenticPixels(smooth_view,0,y,
-      smooth_image->columns,1,exception);
-    if ((r == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+    q=QueueCacheViewAuthenticPixels(smooth_view,0,y,smooth_image->columns,1,
+      exception);
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
@@ -1034,7 +1030,6 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
           PerceptibleReciprocal(gamma)*pixel),q);
       }
       q+=GetPixelChannels(smooth_image);
-      r+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(smooth_view,exception) == MagickFalse)
       status=MagickFalse;
