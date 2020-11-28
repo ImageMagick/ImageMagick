@@ -988,8 +988,8 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
         pixel;
 
       register const Quantum
-        *magick_restrict r,
-        *magick_restrict p;
+        *magick_restrict p,
+        *magick_restrict r;
 
       register ssize_t
         i,
