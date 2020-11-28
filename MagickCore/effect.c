@@ -871,9 +871,6 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
     *blur_view,
     *image_view;
 
-  double
-    *weights;
-
   Image
     *blur_image;
 
@@ -904,18 +901,13 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
       blur_image=DestroyImage(blur_image);
       return((Image *) NULL);
     }
-  width=GetOptimalKernelWidth2D(radius,sigma);
-  weights=(double *) AcquireQuantumMemory(width,width*sizeof(*weights));
-  if (weights == (double *) NULL)
-    {
-      blur_image=DestroyImage(blur_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-    }
   /*
     Bilateral blur image.
   */
   status=MagickTrue;
   progress=0;
+  width=GetOptimalKernelWidth2D(radius,sigma);
+printf("%d\n",width);
   mid=(ssize_t) width/2L;
   image_view=AcquireVirtualCacheView(image,exception);
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
@@ -942,52 +934,37 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
       }
     for (x=0; x < (ssize_t) blur_image->columns; x++)
     {
-      double
-        gamma,
-        pixel;
-
       register const Quantum
-        *magick_restrict r,
+        *magick_restrict n,
         *magick_restrict p;
 
       register ssize_t
-        i,
-        u;
+        i;
 
-      ssize_t
-        n,
-        v;
-
-      /*
-        Tonal weighting preserves edges while smoothing in the flat regions.
-      */
       p=GetCacheViewVirtualPixels(image_view,x-mid,y-mid,width,width,exception);
       if (p == (const Quantum *) NULL)
         break;
       p+=(ssize_t) GetPixelChannels(image)*width*mid+GetPixelChannels(image)*
         mid;
-      n=0;
-      for (v=0; v < (ssize_t) width; v++)
-      {
-        for (u=0; u < (ssize_t) width; u++)
-        {
-          r=p+(ssize_t) GetPixelChannels(image)*width*(mid-v)+
-            GetPixelChannels(image)*(mid-u);
-          weights[n]=BlurGaussian(ScaleQuantumToChar(
-            GetPixelIntensity(image,r))-(double) ScaleQuantumToChar(
-            GetPixelIntensity(image,p)),intensity_sigma)*BlurGaussian(
-            BlurDistance(x,y,x+u-mid,y+v-mid),spatial_sigma);
-          n++;
-        }
-      }
       for (i=0; i < (ssize_t) GetPixelChannels(blur_image); i++)
       {
+        double
+          gamma,
+          pixel,
+          weight;
+
         PixelChannel
           channel;
 
         PixelTrait
           blur_traits,
           traits;
+
+        register ssize_t
+          u;
+
+        ssize_t
+          v;
 
         channel=GetPixelChannelChannel(image,i);
         traits=GetPixelChannelTraits(image,channel);
@@ -1002,7 +979,6 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
           }
         pixel=0.0;
         gamma=0.0;
-        n=0;
         if ((blur_traits & BlendPixelTrait) == 0)
           {
             /*
@@ -1012,11 +988,13 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
             {
               for (u=0; u < (ssize_t) width; u++)
               {
-                r=p+(ssize_t) GetPixelChannels(image)*width*(mid-v)+
+                n=p+(ssize_t) GetPixelChannels(image)*width*(mid-v)+
                   GetPixelChannels(image)*(mid-u);
-                pixel+=weights[n]*r[i];
-                gamma+=weights[n];
-                n++;
+                weight=BlurGaussian(ScaleQuantumToChar(n[i])-(ssize_t)
+                  ScaleQuantumToChar(p[i]),intensity_sigma)*BlurGaussian(
+                  BlurDistance(x,y,x+u-mid,y+v-mid),spatial_sigma);
+                pixel+=weight*n[i];
+                gamma+=weight;
               }
             }
             SetPixelChannel(blur_image,channel,ClampToQuantum(
@@ -1034,13 +1012,15 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
               alpha,
               beta;
 
-            r=p+(ssize_t) GetPixelChannels(image)*width*(mid-v)+
+            n=p+(ssize_t) GetPixelChannels(image)*width*(mid-v)+
               GetPixelChannels(image)*(mid-u);
             alpha=(double) (QuantumScale*GetPixelAlpha(image,p));
-            beta=(double) (QuantumScale*GetPixelAlpha(image,r));
-            pixel+=weights[n]*r[i];
-            gamma+=weights[n]*alpha*beta;
-            n++;
+            beta=(double) (QuantumScale*GetPixelAlpha(image,n));
+            weight=BlurGaussian(ScaleQuantumToChar(n[i])-(ssize_t)
+              ScaleQuantumToChar(p[i]),intensity_sigma)*BlurGaussian(
+              BlurDistance(x,y,x+u-mid,y+v-mid),spatial_sigma);
+            pixel+=weight*n[i];
+            gamma+=weight*alpha*beta;
           }
         }
         SetPixelChannel(blur_image,channel,ClampToQuantum(
@@ -1068,7 +1048,6 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
   blur_image->type=image->type;
   blur_view=DestroyCacheView(blur_view);
   image_view=DestroyCacheView(image_view);
-  weights=(double *) RelinquishMagickMemory(weights);
   if (status == MagickFalse)
     blur_image=DestroyImage(blur_image);
   return(blur_image);
