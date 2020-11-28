@@ -974,7 +974,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
           r=p+(ssize_t) GetPixelChannels(image)*width*(mid-v)+
             GetPixelChannels(image)*(mid-u);
           weights[n]=BlurGaussian(ScaleQuantumToChar(
-            GetPixelIntensity(image,r))-(ssize_t) ScaleQuantumToChar(
+            GetPixelIntensity(image,r))-(double) ScaleQuantumToChar(
             GetPixelIntensity(image,p)),intensity_sigma)*BlurGaussian(
             BlurDistance(x,y,x+u-mid,y+v-mid),spatial_sigma);
           n++;
