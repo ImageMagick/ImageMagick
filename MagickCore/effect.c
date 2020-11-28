@@ -907,6 +907,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
   status=MagickTrue;
   progress=0;
   width=GetOptimalKernelWidth2D(radius,sigma);
+printf("%d\n",width);
   mid=(ssize_t) width/2L;
   image_view=AcquireVirtualCacheView(image,exception);
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
@@ -989,14 +990,15 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
               {
                 n=p+(ssize_t) GetPixelChannels(image)*width*(mid-v)+
                   GetPixelChannels(image)*(mid-u);
-                weight=BlurGaussian(QuantumScale*(n[i]-p[i]),intensity_sigma)*
-                  BlurGaussian(BlurDistance(x,y,x+u-mid,y+v-mid),spatial_sigma);
-                pixel+=weight*QuantumScale*n[i];
+                weight=BlurGaussian(ScaleQuantumToChar(n[i])-(ssize_t)
+                  ScaleQuantumToChar(p[i]),intensity_sigma)*BlurGaussian(
+                  BlurDistance(x,y,x+u-mid,y+v-mid),spatial_sigma);
+                pixel+=weight*n[i];
                 gamma+=weight;
               }
             }
             SetPixelChannel(blur_image,channel,ClampToQuantum(
-              QuantumRange*PerceptibleReciprocal(gamma)*pixel),q);
+              PerceptibleReciprocal(gamma)*pixel),q);
             continue;
           }
         /*
@@ -1014,13 +1016,14 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
               GetPixelChannels(image)*(mid-u);
             alpha=(double) (QuantumScale*GetPixelAlpha(image,p));
             beta=(double) (QuantumScale*GetPixelAlpha(image,n));
-            weight=BlurGaussian(QuantumScale*(n[i]-p[i]),intensity_sigma)*
-              BlurGaussian(BlurDistance(x,y,x+u-mid,y+v-mid),spatial_sigma);
-            pixel+=weight*QuantumScale*n[i];
+            weight=BlurGaussian(ScaleQuantumToChar(n[i])-(ssize_t)
+              ScaleQuantumToChar(p[i]),intensity_sigma)*BlurGaussian(
+              BlurDistance(x,y,x+u-mid,y+v-mid),spatial_sigma);
+            pixel+=weight*n[i];
             gamma+=weight*alpha*beta;
           }
         }
-        SetPixelChannel(blur_image,channel,ClampToQuantum(QuantumRange*
+        SetPixelChannel(blur_image,channel,ClampToQuantum(
           PerceptibleReciprocal(gamma)*pixel),q);
       }
       q+=GetPixelChannels(blur_image);
