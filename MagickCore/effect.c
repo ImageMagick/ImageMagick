@@ -905,7 +905,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
       return((Image *) NULL);
     }
   width=GetOptimalKernelWidth2D(radius,sigma);
-  weights=(double *) AcquireQuantumMemory(width*width,sizeof(*weights));
+  weights=(double *) AcquireQuantumMemory(width,width*sizeof(*weights));
   if (weights == (double *) NULL)
     {
       blur_image=DestroyImage(blur_image);
