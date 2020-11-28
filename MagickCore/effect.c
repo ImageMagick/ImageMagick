@@ -861,6 +861,44 @@ static inline double BlurGaussian(const double x,const double sigma)
     PerceptibleReciprocal(Magick2PI*sigma*sigma));
 }
 
+static double **DestroyBilateralThreadSet(double **weights)
+{
+  register ssize_t
+    i;
+
+  assert(weights != (double **) NULL);
+  for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
+    if (weights[i] != (double *) NULL)
+      weights[i]=(double *) RelinquishMagickMemory(weights[i]);
+  weights=(double **) RelinquishMagickMemory(weights);
+  return(weights);
+}
+
+static double **AcquireBilateralThreadSet(const size_t width)
+{
+  double
+    **weights;
+
+  register ssize_t
+    i;
+
+  size_t
+    number_threads;
+
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
+  weights=(double **) AcquireQuantumMemory(number_threads,sizeof(*weights));
+  if (weights == (double **) NULL)
+    return((double **) NULL);
+  (void) memset(weights,0,number_threads*sizeof(*weights));
+  for (i=0; i < (ssize_t) number_threads; i++)
+  {
+    weights[i]=(double *) AcquireQuantumMemory(width,width*sizeof(**weights));
+    if (weights[i] == (double *) NULL)
+      return(DestroyBilateralThreadSet(weights));
+  }
+  return(weights);
+}
+
 MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
   const double sigma,const double intensity_sigma,const double spatial_sigma,
   ExceptionInfo *exception)
@@ -870,6 +908,9 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
   CacheView
     *blur_view,
     *image_view;
+
+  double
+    **weights;
 
   Image
     *blur_image;
@@ -901,13 +942,18 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
       blur_image=DestroyImage(blur_image);
       return((Image *) NULL);
     }
+  width=GetOptimalKernelWidth2D(radius,sigma);
+  weights=AcquireBilateralThreadSet(width);
+  if (weights == (double **) NULL)
+    {
+      blur_image=DestroyImage(blur_image);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   /*
     Bilateral blur image.
   */
   status=MagickTrue;
   progress=0;
-  width=GetOptimalKernelWidth2D(radius,sigma);
-printf("%d\n",width);
   mid=(ssize_t) width/2L;
   image_view=AcquireVirtualCacheView(image,exception);
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
@@ -917,6 +963,9 @@ printf("%d\n",width);
 #endif
   for (y=0; y < (ssize_t) blur_image->rows; y++)
   {
+    const int
+      id = GetOpenMPThreadId();
+
     register Quantum
       *magick_restrict q;
 
@@ -934,37 +983,52 @@ printf("%d\n",width);
       }
     for (x=0; x < (ssize_t) blur_image->columns; x++)
     {
+      double
+        gamma,
+        pixel;
+
       register const Quantum
-        *magick_restrict n,
+        *magick_restrict r,
         *magick_restrict p;
 
       register ssize_t
-        i;
+        i,
+        u;
 
+      ssize_t
+        n,
+        v;
+
+      /*
+        Tonal weighting preserves edges while smoothing in the flat regions.
+      */
       p=GetCacheViewVirtualPixels(image_view,x-mid,y-mid,width,width,exception);
       if (p == (const Quantum *) NULL)
         break;
       p+=(ssize_t) GetPixelChannels(image)*width*mid+GetPixelChannels(image)*
         mid;
+      n=0;
+      for (v=0; v < (ssize_t) width; v++)
+      {
+        for (u=0; u < (ssize_t) width; u++)
+        {
+          r=p+(ssize_t) GetPixelChannels(image)*width*(mid-v)+
+            GetPixelChannels(image)*(mid-u);
+          weights[id][n]=BlurGaussian(ScaleQuantumToChar(
+            GetPixelIntensity(image,r))-(double) ScaleQuantumToChar(
+            GetPixelIntensity(image,p)),intensity_sigma)*BlurGaussian(
+            BlurDistance(x,y,x+u-mid,y+v-mid),spatial_sigma);
+          n++;
+        }
+      }
       for (i=0; i < (ssize_t) GetPixelChannels(blur_image); i++)
       {
-        double
-          gamma,
-          pixel,
-          weight;
-
         PixelChannel
           channel;
 
         PixelTrait
           blur_traits,
           traits;
-
-        register ssize_t
-          u;
-
-        ssize_t
-          v;
 
         channel=GetPixelChannelChannel(image,i);
         traits=GetPixelChannelTraits(image,channel);
@@ -979,6 +1043,7 @@ printf("%d\n",width);
           }
         pixel=0.0;
         gamma=0.0;
+        n=0;
         if ((blur_traits & BlendPixelTrait) == 0)
           {
             /*
@@ -988,13 +1053,11 @@ printf("%d\n",width);
             {
               for (u=0; u < (ssize_t) width; u++)
               {
-                n=p+(ssize_t) GetPixelChannels(image)*width*(mid-v)+
+                r=p+(ssize_t) GetPixelChannels(image)*width*(mid-v)+
                   GetPixelChannels(image)*(mid-u);
-                weight=BlurGaussian(ScaleQuantumToChar(n[i])-(ssize_t)
-                  ScaleQuantumToChar(p[i]),intensity_sigma)*BlurGaussian(
-                  BlurDistance(x,y,x+u-mid,y+v-mid),spatial_sigma);
-                pixel+=weight*n[i];
-                gamma+=weight;
+                pixel+=weights[id][n]*r[i];
+                gamma+=weights[id][n];
+                n++;
               }
             }
             SetPixelChannel(blur_image,channel,ClampToQuantum(
@@ -1012,15 +1075,13 @@ printf("%d\n",width);
               alpha,
               beta;
 
-            n=p+(ssize_t) GetPixelChannels(image)*width*(mid-v)+
+            r=p+(ssize_t) GetPixelChannels(image)*width*(mid-v)+
               GetPixelChannels(image)*(mid-u);
             alpha=(double) (QuantumScale*GetPixelAlpha(image,p));
-            beta=(double) (QuantumScale*GetPixelAlpha(image,n));
-            weight=BlurGaussian(ScaleQuantumToChar(n[i])-(ssize_t)
-              ScaleQuantumToChar(p[i]),intensity_sigma)*BlurGaussian(
-              BlurDistance(x,y,x+u-mid,y+v-mid),spatial_sigma);
-            pixel+=weight*n[i];
-            gamma+=weight*alpha*beta;
+            beta=(double) (QuantumScale*GetPixelAlpha(image,r));
+            pixel+=weights[id][n]*r[i];
+            gamma+=weights[id][n]*alpha*beta;
+            n++;
           }
         }
         SetPixelChannel(blur_image,channel,ClampToQuantum(
@@ -1048,6 +1109,7 @@ printf("%d\n",width);
   blur_image->type=image->type;
   blur_view=DestroyCacheView(blur_view);
   image_view=DestroyCacheView(image_view);
+  weights=DestroyBilateralThreadSet(weights);
   if (status == MagickFalse)
     blur_image=DestroyImage(blur_image);
   return(blur_image);
