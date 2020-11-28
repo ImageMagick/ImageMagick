@@ -1007,15 +1007,13 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               break;
             image->columns=(size_t) (frame.right-frame.left);
             image->rows=(size_t) (frame.bottom-frame.top);
-            if (image_info->ping == MagickFalse)
-              {
-                status=SetImageExtent(image,image->columns,image->rows,
-                  exception);
-                if (status != MagickFalse)
-                  status=ResetImagePixels(image,exception);
-                if (status == MagickFalse)
-                  return(DestroyImageList(image));
-              }
+            if (image_info->ping != MagickFalse)
+              break;
+            status=SetImageExtent(image,image->columns,image->rows,exception);
+            if (status != MagickFalse)
+              status=ResetImagePixels(image,exception);
+            if (status == MagickFalse)
+              return(DestroyImageList(image));
             break;
           }
           case 0x12:
