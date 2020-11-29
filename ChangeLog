@@ -1,3 +1,9 @@
+2020-11-29  7.0.10-45  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-45 GIT revision 17...
+
+2020-11-29  7.0.10-45  <quetzlzacatenango@image...>
+  * specify the bilateral neighbor as width/height rather than radius/sigma.
+
 2020-11-28  7.0.10-44  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-44 GIT revision 17948:7e96e9fdd:20201128
 
