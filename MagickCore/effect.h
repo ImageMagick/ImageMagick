@@ -62,7 +62,7 @@ extern MagickExport Image
   *AdaptiveBlurImage(const Image *,const double,const double,ExceptionInfo *),
   *AdaptiveSharpenImage(const Image *,const double,const double,
      ExceptionInfo *),
-  *BilateralBlurImage(const Image *,const double,const double,
+  *BilateralBlurImage(const Image *,const size_t,const size_t,
     const double,const double,ExceptionInfo *),
   *BlurImage(const Image *,const double,const double,ExceptionInfo *),
   *ConvolveImage(const Image *,const KernelInfo *,ExceptionInfo *),

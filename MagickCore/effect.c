@@ -821,8 +821,8 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 %
 %  The format of the BilateralBlurImage method is:
 %
-%      Image *BilateralBlurImage(const Image *image,const double width,
-%        const double height,const double intensity_sigma,
+%      Image *BilateralBlurImage(const Image *image,const size_t width,
+%        const size_t height,const double intensity_sigma,
 %        const double spatial_sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -899,8 +899,8 @@ static double **AcquireBilateralThreadSet(const size_t width,
   return(weights);
 }
 
-MagickExport Image *BilateralBlurImage(const Image *image,const double width,
-  const double height,const double intensity_sigma,const double spatial_sigma,
+MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
+  const size_t height,const double intensity_sigma,const double spatial_sigma,
   ExceptionInfo *exception)
 {
 #define BilateralBlurImageTag  "Convolve/Image"
@@ -1001,7 +1001,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double width,
       p=GetCacheViewVirtualPixels(image_view,x-mid,y-mid,width,width,exception);
       if (p == (const Quantum *) NULL)
         break;
-      p+=(ssize_t) GetPixelChannels(image)*(ssize_t) width*mid+
+      p+=(ssize_t) GetPixelChannels(image)*width*mid+
         GetPixelChannels(image)*mid;
       n=0;
       for (v=0; v < (ssize_t) height; v++)
@@ -1049,7 +1049,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double width,
             {
               for (u=0; u < (ssize_t) width; u++)
               {
-                r=p+(ssize_t) GetPixelChannels(image)*(ssize_t) width*(mid-v)+
+                r=p+(ssize_t) GetPixelChannels(image)*width*(mid-v)+
                   GetPixelChannels(image)*(mid-u);
                 pixel+=weights[id][n]*r[i];
                 gamma+=weights[id][n];
@@ -1071,7 +1071,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double width,
               alpha,
               beta;
 
-            r=p+(ssize_t) GetPixelChannels(image)*(ssize_t) width*(mid-v)+
+            r=p+(ssize_t) GetPixelChannels(image)*width*(mid-v)+
               GetPixelChannels(image)*(mid-u);
             alpha=(double) (QuantumScale*GetPixelAlpha(image,p));
             beta=(double) (QuantumScale*GetPixelAlpha(image,r));
