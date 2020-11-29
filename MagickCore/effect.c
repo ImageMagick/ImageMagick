@@ -950,7 +950,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
   */
   status=MagickTrue;
   progress=0;
-  mid=(ssize_t) (width/2.0);
+  mid=(ssize_t) (width/2L);
   image_view=AcquireVirtualCacheView(image,exception);
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
