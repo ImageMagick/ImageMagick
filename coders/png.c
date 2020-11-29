@@ -4422,12 +4422,12 @@ DestroyJNG(unsigned char *chunk,Image **color_image,
   }
   if (color_image && *color_image)
   {
-    DestroyImage(*color_image);
+    DestroyImageList(*color_image);
     *color_image = (Image *)NULL;
   }
   if (alpha_image && *alpha_image)
   {
-    DestroyImage(*alpha_image);
+    DestroyImageList(*alpha_image);
     *alpha_image = (Image *)NULL;
   }
 }
@@ -4719,6 +4719,13 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
         if ((image_info->ping == MagickFalse) && (jng_color_type >= 12))
           {
+            if ((jng_alpha_compression_method != 0) &&
+                (jng_alpha_compression_method != 8))
+              {
+                DestroyJNG(chunk,&color_image,&color_image_info,&alpha_image,
+                  &alpha_image_info);
+                ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+              }
             alpha_image_info=(ImageInfo *)
               AcquireMagickMemory(sizeof(ImageInfo));
 
@@ -5030,7 +5037,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   jng_image=ReadImage(color_image_info,exception);
 
   (void) RelinquishUniqueFileResource(color_image->filename);
-  color_image=DestroyImage(color_image);
+  color_image=DestroyImageList(color_image);
   color_image_info=DestroyImageInfo(color_image_info);
 
   if (jng_image == (Image *) NULL)
@@ -5138,7 +5145,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             break;
         }
       (void) RelinquishUniqueFileResource(alpha_image->filename);
-      alpha_image=DestroyImage(alpha_image);
+      alpha_image=DestroyImageList(alpha_image);
       alpha_image_info=DestroyImageInfo(alpha_image_info);
       if (jng_image != (Image *) NULL)
         jng_image=DestroyImage(jng_image);
