@@ -5148,7 +5148,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       alpha_image=DestroyImageList(alpha_image);
       alpha_image_info=DestroyImageInfo(alpha_image_info);
       if (jng_image != (Image *) NULL)
-        jng_image=DestroyImage(jng_image);
+        jng_image=DestroyImageList(jng_image);
     }
 
   /* Read the JNG image.  */
@@ -5189,7 +5189,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
   return(image);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
