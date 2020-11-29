@@ -821,18 +821,17 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 %
 %  The format of the BilateralBlurImage method is:
 %
-%      Image *BilateralBlurImage(const Image *image,const double radius,
-%        const double sigma,const double intensity_sigma,
+%      Image *BilateralBlurImage(const Image *image,const double width,
+%        const double height,const double intensity_sigma,
 %        const double spatial_sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o radius: the radius of the Gaussian, in pixels, not counting the center
-%      pixel.
+%    o width: the width of the neighborhood in pixels.
 %
-%    o sigma: the standard deviation of the Laplacian, in pixels.
+%    o height: the height of the neighborhood in pixels.
 %
 %    o intensity_sigma: sigma in the intensity space. A larger value means
 %      that farther colors within the pixel neighborhood (see spatial_sigma)
@@ -874,7 +873,8 @@ static double **DestroyBilateralThreadSet(double **weights)
   return(weights);
 }
 
-static double **AcquireBilateralThreadSet(const size_t width)
+static double **AcquireBilateralThreadSet(const size_t width,
+  const size_t height)
 {
   double
     **weights;
@@ -892,15 +892,15 @@ static double **AcquireBilateralThreadSet(const size_t width)
   (void) memset(weights,0,number_threads*sizeof(*weights));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
-    weights[i]=(double *) AcquireQuantumMemory(width,width*sizeof(**weights));
+    weights[i]=(double *) AcquireQuantumMemory(width,height*sizeof(**weights));
     if (weights[i] == (double *) NULL)
       return(DestroyBilateralThreadSet(weights));
   }
   return(weights);
 }
 
-MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
-  const double sigma,const double intensity_sigma,const double spatial_sigma,
+MagickExport Image *BilateralBlurImage(const Image *image,const double width,
+  const double height,const double intensity_sigma,const double spatial_sigma,
   ExceptionInfo *exception)
 {
 #define BilateralBlurImageTag  "Convolve/Image"
@@ -921,9 +921,6 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
   MagickOffsetType
     progress;
 
-  size_t
-    width;
-
   ssize_t
     mid,
     y;
@@ -942,8 +939,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
       blur_image=DestroyImage(blur_image);
       return((Image *) NULL);
     }
-  width=GetOptimalKernelWidth2D(radius,sigma);
-  weights=AcquireBilateralThreadSet(width);
+  weights=AcquireBilateralThreadSet(width,height);
   if (weights == (double **) NULL)
     {
       blur_image=DestroyImage(blur_image);
@@ -954,7 +950,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
   */
   status=MagickTrue;
   progress=0;
-  mid=(ssize_t) width/2L;
+  mid=(ssize_t) (width/2.0);
   image_view=AcquireVirtualCacheView(image,exception);
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1005,14 +1001,14 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
       p=GetCacheViewVirtualPixels(image_view,x-mid,y-mid,width,width,exception);
       if (p == (const Quantum *) NULL)
         break;
-      p+=(ssize_t) GetPixelChannels(image)*width*mid+GetPixelChannels(image)*
-        mid;
+      p+=(ssize_t) GetPixelChannels(image)*(ssize_t) width*mid+
+        GetPixelChannels(image)*mid;
       n=0;
-      for (v=0; v < (ssize_t) width; v++)
+      for (v=0; v < (ssize_t) height; v++)
       {
         for (u=0; u < (ssize_t) width; u++)
         {
-          r=p+(ssize_t) GetPixelChannels(image)*width*(mid-v)+
+          r=p+(ssize_t) GetPixelChannels(image)*(ssize_t) width*(mid-v)+
             GetPixelChannels(image)*(mid-u);
           weights[id][n]=BlurGaussian(ScaleQuantumToChar(
             GetPixelIntensity(image,r))-(double) ScaleQuantumToChar(
@@ -1049,11 +1045,11 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
             /*
               No alpha blending.
             */
-            for (v=0; v < (ssize_t) width; v++)
+            for (v=0; v < (ssize_t) height; v++)
             {
               for (u=0; u < (ssize_t) width; u++)
               {
-                r=p+(ssize_t) GetPixelChannels(image)*width*(mid-v)+
+                r=p+(ssize_t) GetPixelChannels(image)*(ssize_t) width*(mid-v)+
                   GetPixelChannels(image)*(mid-u);
                 pixel+=weights[id][n]*r[i];
                 gamma+=weights[id][n];
@@ -1067,7 +1063,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
         /*
           Alpha blending.
         */
-        for (v=0; v < (ssize_t) width; v++)
+        for (v=0; v < (ssize_t) height; v++)
         {
           for (u=0; u < (ssize_t) width; u++)
           {
@@ -1075,7 +1071,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const double radius,
               alpha,
               beta;
 
-            r=p+(ssize_t) GetPixelChannels(image)*width*(mid-v)+
+            r=p+(ssize_t) GetPixelChannels(image)*(ssize_t) width*(mid-v)+
               GetPixelChannels(image)*(mid-u);
             alpha=(double) (QuantumScale*GetPixelAlpha(image,p));
             beta=(double) (QuantumScale*GetPixelAlpha(image,r));

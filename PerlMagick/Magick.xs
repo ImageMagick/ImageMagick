@@ -581,7 +581,7 @@ static struct
       {"stop-color", StringReference}, {"channel", MagickChannelOptions} } },
     { "WhiteBalance", { { (const char *) NULL, NullReference } } },
     { "BilateralBlur", { {"geometry", StringReference},
-      {"radius", RealReference}, {"sigma", RealReference},
+      {"width", RealReference}, {"height", RealReference},
       {"intensity-sigma", RealReference}, {"spatial-sigma", RealReference},
       {"channel", MagickChannelOptions} } },
   };
@@ -11583,11 +11583,13 @@ Mogrify(ref,...)
               flags=ParseGeometry(argument_list[0].string_reference,
                 &geometry_info);
               if ((flags & SigmaValue) == 0)
-                geometry_info.sigma=1.0;
+                geometry_info.sigma=geometry_info.rho;
               if ((flags & XiValue) == 0)
-                geometry_info.xi=2.0*(ceil(geometry_info.rho)+1.0);
+                geometry_info.xi=2.0*sqrt(geometry_info.rho*geometry_info.rho+
+                  geometry_info.sigma*geometry_info.sigma);
               if ((flags & PsiValue) == 0)
-                geometry_info.psi=0.5*(ceil(geometry_info.rho)+1.0);
+                geometry_info.psi=0.5*sqrt(geometry_info.rho*geometry_info.rho+
+                  geometry_info.sigma*geometry_info.sigma);
             }
           if (attribute_flag[1] != 0)
             geometry_info.rho=argument_list[1].real_reference;
