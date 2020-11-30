@@ -1,13 +1,17 @@
 2020-11-30  7.0.10-45  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-45 GIT revision 17961:6b1e8132f:20201130
 
+2020-11-30  7.0.10-45  Dirk Lemstra <dirk@lem.....org>
+  * added support for the farbfeld format (reference
+    https://github.com/ImageMagick/ImageMagick/discussions/2664).
+
 2020-11-29  7.0.10-45  <quetzlzacatenango@image...>
   * specify the bilateral neighbor as width/height rather than radius/sigma.
 
 2020-11-28  7.0.10-44  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-44 GIT revision 17948:7e96e9fdd:20201128
 
-2020-11-26  7.0.10-44 Dirk Lemstra <dirk@lem.....org>
+2020-11-26  7.0.10-44  Dirk Lemstra <dirk@lem.....org>
   * correct reading of first row in TIFF decoder.
 
 2020-11-24  7.0.10-44  <quetzlzacatenango@image...>
