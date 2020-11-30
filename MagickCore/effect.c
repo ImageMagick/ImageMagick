@@ -921,8 +921,10 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
   MagickOffsetType
     progress;
 
+  OffsetInfo
+    mid;
+
   ssize_t
-    mid,
     y;
 
   assert(image != (const Image *) NULL);
@@ -950,7 +952,8 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
   */
   status=MagickTrue;
   progress=0;
-  mid=(ssize_t) (width/2L);
+  mid.x=(ssize_t) (width/2L);
+  mid.y=(ssize_t) (height/2L);
   image_view=AcquireVirtualCacheView(image,exception);
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -998,22 +1001,23 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
       /*
         Tonal weighting preserves edges while smoothing in the flat regions.
       */
-      p=GetCacheViewVirtualPixels(image_view,x-mid,y-mid,width,width,exception);
+      p=GetCacheViewVirtualPixels(image_view,x-mid.x,y-mid.y,width,height,
+        exception);
       if (p == (const Quantum *) NULL)
         break;
-      p+=(ssize_t) GetPixelChannels(image)*width*mid+
-        GetPixelChannels(image)*mid;
+      p+=(ssize_t) GetPixelChannels(image)*width*mid.y+
+        GetPixelChannels(image)*mid.x;
       n=0;
       for (v=0; v < (ssize_t) height; v++)
       {
         for (u=0; u < (ssize_t) width; u++)
         {
-          r=p+(ssize_t) GetPixelChannels(image)*(ssize_t) width*(mid-v)+
-            GetPixelChannels(image)*(mid-u);
+          r=p+(ssize_t) GetPixelChannels(image)*(ssize_t) width*(mid.y-v)+
+            GetPixelChannels(image)*(mid.x-u);
           weights[id][n]=BlurGaussian(ScaleQuantumToChar(
             GetPixelIntensity(image,r))-(double) ScaleQuantumToChar(
             GetPixelIntensity(image,p)),intensity_sigma)*BlurGaussian(
-            BlurDistance(x,y,x+u-mid,y+v-mid),spatial_sigma);
+            BlurDistance(x,y,x+u-mid.x,y+v-mid.y),spatial_sigma);
           n++;
         }
       }
@@ -1049,8 +1053,8 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
             {
               for (u=0; u < (ssize_t) width; u++)
               {
-                r=p+(ssize_t) GetPixelChannels(image)*width*(mid-v)+
-                  GetPixelChannels(image)*(mid-u);
+                r=p+(ssize_t) GetPixelChannels(image)*width*(mid.y-v)+
+                  GetPixelChannels(image)*(mid.x-u);
                 pixel+=weights[id][n]*r[i];
                 gamma+=weights[id][n];
                 n++;
@@ -1071,8 +1075,8 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
               alpha,
               beta;
 
-            r=p+(ssize_t) GetPixelChannels(image)*width*(mid-v)+
-              GetPixelChannels(image)*(mid-u);
+            r=p+(ssize_t) GetPixelChannels(image)*width*(mid.y-v)+
+              GetPixelChannels(image)*(mid.x-u);
             alpha=(double) (QuantumScale*GetPixelAlpha(image,p));
             beta=(double) (QuantumScale*GetPixelAlpha(image,r));
             pixel+=weights[id][n]*r[i];
