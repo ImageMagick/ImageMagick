@@ -19,7 +19,8 @@
 #define MagickFARBFELDHeaders \
   MagickCoderHeader("FARBFELD", 0, "farbfeld")
 
-#define MagickFARBFELDAliases
+#define MagickFARBFELDAliases \
+  MagickCoderAlias("FARBFELD", "FF")
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

@@ -263,6 +263,13 @@ ModuleExport size_t RegisterFARBFELDImage(void)
   entry->flags|=CoderRawSupportFlag;
   entry->flags^=CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
+  entry=AcquireMagickInfo("FARBFELD","FF","Farbfeld");
+  entry->decoder=(DecodeImageHandler *) ReadFARBFELDImage;
+  entry->encoder=(EncodeImageHandler *) WriteFARBFELDImage;
+  entry->magick=(IsImageFormatHandler *) IsFARBFELD;
+  entry->flags|=CoderRawSupportFlag;
+  entry->flags^=CoderAdjoinFlag;
+  (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
 
