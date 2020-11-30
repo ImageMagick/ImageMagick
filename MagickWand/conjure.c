@@ -219,7 +219,10 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
             (LocaleCompare("-help",option+1) == 0))
           {
             if (*option == '-')
-              return(ConjureUsage());
+              {
+                DestroyConjure();
+                return(ConjureUsage());
+              }
             continue;
           }
         if (LocaleCompare("log",option+1) == 0)

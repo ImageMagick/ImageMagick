@@ -461,7 +461,10 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
       {
         if ((LocaleCompare("help",option+1) == 0) ||
             (LocaleCompare("-help",option+1) == 0))
-          return(StreamUsage());
+          {
+            DestroyStream();
+            return(StreamUsage());
+          }
         ThrowStreamException(OptionError,"UnrecognizedOption",option)
       }
       case 'i':

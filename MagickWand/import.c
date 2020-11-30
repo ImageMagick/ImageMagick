@@ -334,7 +334,10 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
       }
     if ((LocaleCompare("help",option+1) == 0) ||
         (LocaleCompare("-help",option+1) == 0))
-      return(ImportUsage());
+      {
+        DestroyImport();
+        return(ImportUsage());
+      }
   }
   /*
     Get user defaults from X resource database.

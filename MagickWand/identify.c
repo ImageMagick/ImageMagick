@@ -628,7 +628,10 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
       {
         if ((LocaleCompare("help",option+1) == 0) ||
             (LocaleCompare("-help",option+1) == 0))
-          return(IdentifyUsage());
+          {
+            DestroyIdentify();
+            return(IdentifyUsage());
+          }
         ThrowIdentifyException(OptionError,"UnrecognizedOption",option)
       }
       case 'i':

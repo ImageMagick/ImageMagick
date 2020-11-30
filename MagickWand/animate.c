@@ -336,7 +336,10 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
       }
     if ((LocaleCompare("help",option+1) == 0) ||
         (LocaleCompare("-help",option+1) == 0))
-      return(AnimateUsage());
+      {
+        DestroyAnimate();
+        return(AnimateUsage());
+      }
   }
   /*
     Get user defaults from X resource database.

@@ -5231,7 +5231,10 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           break;
         if ((LocaleCompare("help",option+1) == 0) ||
             (LocaleCompare("-help",option+1) == 0))
-          return(MogrifyUsage());
+          {
+            DestroyMogrify();
+            return(MogrifyUsage());
+          }
         if (LocaleCompare("hough-lines",option+1) == 0)
           {
             if (*option == '+')

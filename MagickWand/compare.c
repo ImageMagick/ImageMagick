@@ -702,7 +702,10 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       {
         if ((LocaleCompare("help",option+1) == 0) ||
             (LocaleCompare("-help",option+1) == 0))
-          return(CompareUsage());
+          {
+            DestroyCompare();
+            return(CompareUsage());
+          }
         if (LocaleCompare("highlight-color",option+1) == 0)
           {
             if (*option == '+')

@@ -1797,7 +1797,10 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
           break;
         if ((LocaleCompare("help",option+1) == 0) ||
             (LocaleCompare("-help",option+1) == 0))
-          return(ConvertUsage());
+          {
+            DestroyConvert();
+            return(ConvertUsage());
+          }
         if (LocaleCompare("hough-lines",option+1) == 0)
           {
             if (*option == '+')

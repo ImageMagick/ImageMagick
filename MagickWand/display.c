@@ -398,7 +398,10 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
       nostdin=MagickTrue;
     if ((LocaleCompare("help",option+1) == 0) ||
         (LocaleCompare("-help",option+1) == 0))
-      return(DisplayUsage());
+      {
+        DestroyDisplay();
+        return(DisplayUsage());
+      }
   }
   /*
     Get user defaults from X resource database.
