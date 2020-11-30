@@ -312,7 +312,7 @@ ModuleExport size_t RegisterFL32Image(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r F L 3 2 I m a g e                                       %
+%   U n r e g i s t e r F L 3 2 I m a g e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
