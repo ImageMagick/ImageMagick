@@ -2955,7 +2955,7 @@ static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,
         rows_per_strip;
 
       extent=TIFFScanlineSize(tiff);
-      rows_per_strip=TIFFStripSizeDefault/(extent == 0 ? 1 : extent);
+      rows_per_strip=TIFFStripSizeDefault/(extent == 0 ? 1 : (uint32) extent);
       rows_per_strip=16*(((rows_per_strip < 16 ? 16 : rows_per_strip)+1)/16);
       TIFFGetField(tiff,TIFFTAG_IMAGELENGTH,&rows);
       if (rows_per_strip > rows)
