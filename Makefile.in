@@ -538,13 +538,13 @@ am__MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURC
 	coders/debug.h coders/dib.c coders/dib.h coders/djvu.h \
 	coders/dng.c coders/dng.h coders/dot.c coders/dot.h \
 	coders/dps.h coders/dpx.c coders/dpx.h coders/emf.h \
-	coders/ept.h coders/exr.h coders/fax.c coders/fax.h \
-	coders/farbfeld.c coders/farbfeld.h coders/fits.c \
-	coders/fits.h coders/fl32.c coders/fl32.h \
-	coders/flif.h coders/fpx.h coders/ghostscript-private.h \
-	coders/gif.c coders/gif.h coders/gradient.c coders/gradient.h \
-	coders/gray.c coders/gray.h coders/hald.c coders/hald.h \
-	coders/hdr.c coders/hdr.h coders/heic.h coders/histogram.c \
+	coders/ept.h coders/exr.h coders/farbfeld.c coders/farbfeld.h \
+	coders/fax.c coders/fax.h coders/fits.c coders/fits.h \
+	coders/fl32.c coders/fl32.h coders/flif.h coders/fpx.h \
+	coders/ghostscript-private.h coders/gif.c coders/gif.h \
+	coders/gradient.c coders/gradient.h coders/gray.c \
+	coders/gray.h coders/hald.c coders/hald.h coders/hdr.c \
+	coders/hdr.h coders/heic.h coders/histogram.c \
 	coders/histogram.h coders/hrz.c coders/hrz.h coders/html.c \
 	coders/html.h coders/icon.c coders/icon.h coders/info.c \
 	coders/info.h coders/inline.c coders/inline.h coders/ipl.c \
@@ -1103,13 +1103,14 @@ coders_exr_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(coders_exr_la_LDFLAGS) $(LDFLAGS) -o $@
 @OPENEXR_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_exr_la_rpath =  \
 @OPENEXR_DELEGATE_TRUE@@WITH_MODULES_TRUE@	-rpath $(codersdir)
-coders_farbfeld_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_farbfeld_la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
+	$(am__DEPENDENCIES_1)
 am_coders_farbfeld_la_OBJECTS = coders/farbfeld_la-farbfeld.lo
 coders_farbfeld_la_OBJECTS = $(am_coders_farbfeld_la_OBJECTS)
 coders_farbfeld_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(coders_farbfeld_la_LDFLAGS) $(LDFLAGS) -o \
-	$@
+	$(AM_CFLAGS) $(CFLAGS) $(coders_farbfeld_la_LDFLAGS) \
+	$(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_farbfeld_la_rpath = -rpath $(codersdir)
 coders_fax_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
 am_coders_fax_la_OBJECTS = coders/fax_la-fax.lo
@@ -2585,142 +2586,75 @@ SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_
 	$(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
 	$(nodist_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
 	$(MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
-	$(coders_aai_la_SOURCES) \
-	$(coders_art_la_SOURCES) \
-	$(coders_ashlar_la_SOURCES) \
-	$(coders_avs_la_SOURCES) \
-	$(coders_bgr_la_SOURCES) \
-	$(coders_bmp_la_SOURCES) \
-	$(coders_braille_la_SOURCES) \
-	$(coders_cals_la_SOURCES) \
-	$(coders_caption_la_SOURCES) \
-	$(coders_cin_la_SOURCES) \
-	$(coders_cip_la_SOURCES) \
-	$(coders_clip_la_SOURCES) \
-	$(coders_clipboard_la_SOURCES) \
-	$(coders_cmyk_la_SOURCES) \
-	$(coders_cube_la_SOURCES) \
-	$(coders_cut_la_SOURCES) \
-	$(coders_dcm_la_SOURCES) \
-	$(coders_dds_la_SOURCES) \
-	$(coders_debug_la_SOURCES) \
-	$(coders_dib_la_SOURCES) \
-	$(coders_djvu_la_SOURCES) \
-	$(coders_dng_la_SOURCES) \
-	$(coders_dot_la_SOURCES) \
-	$(coders_dps_la_SOURCES) \
-	$(coders_dpx_la_SOURCES) \
-	$(coders_emf_la_SOURCES) \
-	$(coders_ept_la_SOURCES) \
-	$(coders_exr_la_SOURCES) \
-	$(coders_farbfeld_la_SOURCES) \
-	$(coders_fax_la_SOURCES) \
-	$(coders_fits_la_SOURCES) \
-	$(coders_fl32_la_SOURCES) \
-	$(coders_flif_la_SOURCES) \
-	$(coders_fpx_la_SOURCES) \
-	$(coders_gif_la_SOURCES) \
-	$(coders_gradient_la_SOURCES) \
-	$(coders_gray_la_SOURCES) \
-	$(coders_hald_la_SOURCES) \
-	$(coders_hdr_la_SOURCES) \
-	$(coders_heic_la_SOURCES) \
-	$(coders_histogram_la_SOURCES) \
-	$(coders_hrz_la_SOURCES) \
-	$(coders_html_la_SOURCES) \
-	$(coders_icon_la_SOURCES) \
-	$(coders_info_la_SOURCES) \
-	$(coders_inline_la_SOURCES) \
-	$(coders_ipl_la_SOURCES) \
-	$(coders_jbig_la_SOURCES) \
-	$(coders_jnx_la_SOURCES) \
-	$(coders_jp2_la_SOURCES) \
-	$(coders_jpeg_la_SOURCES) \
-	$(coders_json_la_SOURCES) \
-	$(coders_jxl_la_SOURCES) \
-	$(coders_kernel_la_SOURCES) \
-	$(coders_label_la_SOURCES) \
-	$(coders_mac_la_SOURCES) \
-	$(coders_magick_la_SOURCES) \
-	$(coders_map_la_SOURCES) \
-	$(coders_mask_la_SOURCES) \
-	$(coders_mat_la_SOURCES) \
-	$(coders_matte_la_SOURCES) \
-	$(coders_meta_la_SOURCES) \
-	$(coders_miff_la_SOURCES) \
-	$(coders_mono_la_SOURCES) \
-	$(coders_mpc_la_SOURCES) \
-	$(coders_mpr_la_SOURCES) \
-	$(coders_msl_la_SOURCES) \
-	$(coders_mtv_la_SOURCES) \
-	$(coders_mvg_la_SOURCES) \
-	$(coders_null_la_SOURCES) \
-	$(coders_ora_la_SOURCES) \
-	$(coders_otb_la_SOURCES) \
-	$(coders_palm_la_SOURCES) \
-	$(coders_pango_la_SOURCES) \
-	$(coders_pattern_la_SOURCES) \
-	$(coders_pcd_la_SOURCES) \
-	$(coders_pcl_la_SOURCES) \
-	$(coders_pcx_la_SOURCES) \
-	$(coders_pdb_la_SOURCES) \
-	$(coders_pdf_la_SOURCES) \
-	$(coders_pes_la_SOURCES) \
-	$(coders_pgx_la_SOURCES) \
-	$(coders_pict_la_SOURCES) \
-	$(coders_pix_la_SOURCES) \
-	$(coders_plasma_la_SOURCES) \
-	$(coders_png_la_SOURCES) \
-	$(coders_pnm_la_SOURCES) \
-	$(coders_ps_la_SOURCES) \
-	$(coders_ps2_la_SOURCES) \
-	$(coders_ps3_la_SOURCES) \
-	$(coders_psd_la_SOURCES) \
-	$(coders_pwp_la_SOURCES) \
-	$(coders_raw_la_SOURCES) \
-	$(coders_rgb_la_SOURCES) \
-	$(coders_rgf_la_SOURCES) \
-	$(coders_rla_la_SOURCES) \
-	$(coders_rle_la_SOURCES) \
-	$(coders_scr_la_SOURCES) \
-	$(coders_sct_la_SOURCES) \
-	$(coders_sfw_la_SOURCES) \
-	$(coders_sgi_la_SOURCES) \
-	$(coders_sixel_la_SOURCES) \
-	$(coders_stegano_la_SOURCES) \
-	$(coders_sun_la_SOURCES) \
-	$(coders_svg_la_SOURCES) \
-	$(coders_tga_la_SOURCES) \
-	$(coders_thumbnail_la_SOURCES) \
-	$(coders_tiff_la_SOURCES) \
-	$(coders_tile_la_SOURCES) \
-	$(coders_tim_la_SOURCES) \
-	$(coders_tim2_la_SOURCES) \
-	$(coders_ttf_la_SOURCES) \
-	$(coders_txt_la_SOURCES) \
-	$(coders_uil_la_SOURCES) \
-	$(coders_url_la_SOURCES) \
-	$(coders_uyvy_la_SOURCES) \
-	$(coders_vicar_la_SOURCES) \
-	$(coders_vid_la_SOURCES) \
-	$(coders_video_la_SOURCES) \
-	$(coders_viff_la_SOURCES) \
-	$(coders_vips_la_SOURCES) \
-	$(coders_wbmp_la_SOURCES) \
-	$(coders_webp_la_SOURCES) \
-	$(coders_wmf_la_SOURCES) \
-	$(coders_wpg_la_SOURCES) \
-	$(coders_x_la_SOURCES) \
-	$(coders_xbm_la_SOURCES) \
-	$(coders_xc_la_SOURCES) \
-	$(coders_xcf_la_SOURCES) \
-	$(coders_xpm_la_SOURCES) \
-	$(coders_xps_la_SOURCES) \
-	$(coders_xtrn_la_SOURCES) \
-	$(coders_xwd_la_SOURCES) \
-	$(coders_ycbcr_la_SOURCES) \
-	$(coders_yuv_la_SOURCES) \
-	$(filters_analyze_la_SOURCES) $(Magick___demo_analyze_SOURCES) \
+	$(coders_aai_la_SOURCES) $(coders_art_la_SOURCES) \
+	$(coders_ashlar_la_SOURCES) $(coders_avs_la_SOURCES) \
+	$(coders_bgr_la_SOURCES) $(coders_bmp_la_SOURCES) \
+	$(coders_braille_la_SOURCES) $(coders_cals_la_SOURCES) \
+	$(coders_caption_la_SOURCES) $(coders_cin_la_SOURCES) \
+	$(coders_cip_la_SOURCES) $(coders_clip_la_SOURCES) \
+	$(coders_clipboard_la_SOURCES) $(coders_cmyk_la_SOURCES) \
+	$(coders_cube_la_SOURCES) $(coders_cut_la_SOURCES) \
+	$(coders_dcm_la_SOURCES) $(coders_dds_la_SOURCES) \
+	$(coders_debug_la_SOURCES) $(coders_dib_la_SOURCES) \
+	$(coders_djvu_la_SOURCES) $(coders_dng_la_SOURCES) \
+	$(coders_dot_la_SOURCES) $(coders_dps_la_SOURCES) \
+	$(coders_dpx_la_SOURCES) $(coders_emf_la_SOURCES) \
+	$(coders_ept_la_SOURCES) $(coders_exr_la_SOURCES) \
+	$(coders_farbfeld_la_SOURCES) $(coders_fax_la_SOURCES) \
+	$(coders_fits_la_SOURCES) $(coders_fl32_la_SOURCES) \
+	$(coders_flif_la_SOURCES) $(coders_fpx_la_SOURCES) \
+	$(coders_gif_la_SOURCES) $(coders_gradient_la_SOURCES) \
+	$(coders_gray_la_SOURCES) $(coders_hald_la_SOURCES) \
+	$(coders_hdr_la_SOURCES) $(coders_heic_la_SOURCES) \
+	$(coders_histogram_la_SOURCES) $(coders_hrz_la_SOURCES) \
+	$(coders_html_la_SOURCES) $(coders_icon_la_SOURCES) \
+	$(coders_info_la_SOURCES) $(coders_inline_la_SOURCES) \
+	$(coders_ipl_la_SOURCES) $(coders_jbig_la_SOURCES) \
+	$(coders_jnx_la_SOURCES) $(coders_jp2_la_SOURCES) \
+	$(coders_jpeg_la_SOURCES) $(coders_json_la_SOURCES) \
+	$(coders_jxl_la_SOURCES) $(coders_kernel_la_SOURCES) \
+	$(coders_label_la_SOURCES) $(coders_mac_la_SOURCES) \
+	$(coders_magick_la_SOURCES) $(coders_map_la_SOURCES) \
+	$(coders_mask_la_SOURCES) $(coders_mat_la_SOURCES) \
+	$(coders_matte_la_SOURCES) $(coders_meta_la_SOURCES) \
+	$(coders_miff_la_SOURCES) $(coders_mono_la_SOURCES) \
+	$(coders_mpc_la_SOURCES) $(coders_mpr_la_SOURCES) \
+	$(coders_msl_la_SOURCES) $(coders_mtv_la_SOURCES) \
+	$(coders_mvg_la_SOURCES) $(coders_null_la_SOURCES) \
+	$(coders_ora_la_SOURCES) $(coders_otb_la_SOURCES) \
+	$(coders_palm_la_SOURCES) $(coders_pango_la_SOURCES) \
+	$(coders_pattern_la_SOURCES) $(coders_pcd_la_SOURCES) \
+	$(coders_pcl_la_SOURCES) $(coders_pcx_la_SOURCES) \
+	$(coders_pdb_la_SOURCES) $(coders_pdf_la_SOURCES) \
+	$(coders_pes_la_SOURCES) $(coders_pgx_la_SOURCES) \
+	$(coders_pict_la_SOURCES) $(coders_pix_la_SOURCES) \
+	$(coders_plasma_la_SOURCES) $(coders_png_la_SOURCES) \
+	$(coders_pnm_la_SOURCES) $(coders_ps_la_SOURCES) \
+	$(coders_ps2_la_SOURCES) $(coders_ps3_la_SOURCES) \
+	$(coders_psd_la_SOURCES) $(coders_pwp_la_SOURCES) \
+	$(coders_raw_la_SOURCES) $(coders_rgb_la_SOURCES) \
+	$(coders_rgf_la_SOURCES) $(coders_rla_la_SOURCES) \
+	$(coders_rle_la_SOURCES) $(coders_scr_la_SOURCES) \
+	$(coders_sct_la_SOURCES) $(coders_sfw_la_SOURCES) \
+	$(coders_sgi_la_SOURCES) $(coders_sixel_la_SOURCES) \
+	$(coders_stegano_la_SOURCES) $(coders_sun_la_SOURCES) \
+	$(coders_svg_la_SOURCES) $(coders_tga_la_SOURCES) \
+	$(coders_thumbnail_la_SOURCES) $(coders_tiff_la_SOURCES) \
+	$(coders_tile_la_SOURCES) $(coders_tim_la_SOURCES) \
+	$(coders_tim2_la_SOURCES) $(coders_ttf_la_SOURCES) \
+	$(coders_txt_la_SOURCES) $(coders_uil_la_SOURCES) \
+	$(coders_url_la_SOURCES) $(coders_uyvy_la_SOURCES) \
+	$(coders_vicar_la_SOURCES) $(coders_vid_la_SOURCES) \
+	$(coders_video_la_SOURCES) $(coders_viff_la_SOURCES) \
+	$(coders_vips_la_SOURCES) $(coders_wbmp_la_SOURCES) \
+	$(coders_webp_la_SOURCES) $(coders_wmf_la_SOURCES) \
+	$(coders_wpg_la_SOURCES) $(coders_x_la_SOURCES) \
+	$(coders_xbm_la_SOURCES) $(coders_xc_la_SOURCES) \
+	$(coders_xcf_la_SOURCES) $(coders_xpm_la_SOURCES) \
+	$(coders_xps_la_SOURCES) $(coders_xtrn_la_SOURCES) \
+	$(coders_xwd_la_SOURCES) $(coders_ycbcr_la_SOURCES) \
+	$(coders_yuv_la_SOURCES) $(filters_analyze_la_SOURCES) \
+	$(Magick___demo_analyze_SOURCES) \
 	$(Magick___demo_button_SOURCES) $(Magick___demo_demo_SOURCES) \
 	$(Magick___demo_detrans_SOURCES) $(Magick___demo_flip_SOURCES) \
 	$(Magick___demo_gravity_SOURCES) \
@@ -2744,142 +2678,75 @@ SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_
 DIST_SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
 	$(am__MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES_DIST) \
 	$(MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
-	$(coders_aai_la_SOURCES) \
-	$(coders_art_la_SOURCES) \
-	$(coders_ashlar_la_SOURCES) \
-	$(coders_avs_la_SOURCES) \
-	$(coders_bgr_la_SOURCES) \
-	$(coders_bmp_la_SOURCES) \
-	$(coders_braille_la_SOURCES) \
-	$(coders_cals_la_SOURCES) \
-	$(coders_caption_la_SOURCES) \
-	$(coders_cin_la_SOURCES) \
-	$(coders_cip_la_SOURCES) \
-	$(coders_clip_la_SOURCES) \
-	$(coders_clipboard_la_SOURCES) \
-	$(coders_cmyk_la_SOURCES) \
-	$(coders_cube_la_SOURCES) \
-	$(coders_cut_la_SOURCES) \
-	$(coders_dcm_la_SOURCES) \
-	$(coders_dds_la_SOURCES) \
-	$(coders_debug_la_SOURCES) \
-	$(coders_dib_la_SOURCES) \
-	$(coders_djvu_la_SOURCES) \
-	$(coders_dng_la_SOURCES) \
-	$(coders_dot_la_SOURCES) \
-	$(coders_dps_la_SOURCES) \
-	$(coders_dpx_la_SOURCES) \
-	$(coders_emf_la_SOURCES) \
-	$(coders_ept_la_SOURCES) \
-	$(coders_exr_la_SOURCES) \
-	$(coders_farbfeld_la_SOURCES) \
-	$(coders_fax_la_SOURCES) \
-	$(coders_fits_la_SOURCES) \
-	$(coders_fl32_la_SOURCES) \
-	$(coders_flif_la_SOURCES) \
-	$(coders_fpx_la_SOURCES) \
-	$(coders_gif_la_SOURCES) \
-	$(coders_gradient_la_SOURCES) \
-	$(coders_gray_la_SOURCES) \
-	$(coders_hald_la_SOURCES) \
-	$(coders_hdr_la_SOURCES) \
-	$(coders_heic_la_SOURCES) \
-	$(coders_histogram_la_SOURCES) \
-	$(coders_hrz_la_SOURCES) \
-	$(coders_html_la_SOURCES) \
-	$(coders_icon_la_SOURCES) \
-	$(coders_info_la_SOURCES) \
-	$(coders_inline_la_SOURCES) \
-	$(coders_ipl_la_SOURCES) \
-	$(coders_jbig_la_SOURCES) \
-	$(coders_jnx_la_SOURCES) \
-	$(coders_jp2_la_SOURCES) \
-	$(coders_jpeg_la_SOURCES) \
-	$(coders_json_la_SOURCES) \
-	$(coders_jxl_la_SOURCES) \
-	$(coders_kernel_la_SOURCES) \
-	$(coders_label_la_SOURCES) \
-	$(coders_mac_la_SOURCES) \
-	$(coders_magick_la_SOURCES) \
-	$(coders_map_la_SOURCES) \
-	$(coders_mask_la_SOURCES) \
-	$(coders_mat_la_SOURCES) \
-	$(coders_matte_la_SOURCES) \
-	$(coders_meta_la_SOURCES) \
-	$(coders_miff_la_SOURCES) \
-	$(coders_mono_la_SOURCES) \
-	$(coders_mpc_la_SOURCES) \
-	$(coders_mpr_la_SOURCES) \
-	$(coders_msl_la_SOURCES) \
-	$(coders_mtv_la_SOURCES) \
-	$(coders_mvg_la_SOURCES) \
-	$(coders_null_la_SOURCES) \
-	$(coders_ora_la_SOURCES) \
-	$(coders_otb_la_SOURCES) \
-	$(coders_palm_la_SOURCES) \
-	$(coders_pango_la_SOURCES) \
-	$(coders_pattern_la_SOURCES) \
-	$(coders_pcd_la_SOURCES) \
-	$(coders_pcl_la_SOURCES) \
-	$(coders_pcx_la_SOURCES) \
-	$(coders_pdb_la_SOURCES) \
-	$(coders_pdf_la_SOURCES) \
-	$(coders_pes_la_SOURCES) \
-	$(coders_pgx_la_SOURCES) \
-	$(coders_pict_la_SOURCES) \
-	$(coders_pix_la_SOURCES) \
-	$(coders_plasma_la_SOURCES) \
-	$(coders_png_la_SOURCES) \
-	$(coders_pnm_la_SOURCES) \
-	$(coders_ps_la_SOURCES) \
-	$(coders_ps2_la_SOURCES) \
-	$(coders_ps3_la_SOURCES) \
-	$(coders_psd_la_SOURCES) \
-	$(coders_pwp_la_SOURCES) \
-	$(coders_raw_la_SOURCES) \
-	$(coders_rgb_la_SOURCES) \
-	$(coders_rgf_la_SOURCES) \
-	$(coders_rla_la_SOURCES) \
-	$(coders_rle_la_SOURCES) \
-	$(coders_scr_la_SOURCES) \
-	$(coders_sct_la_SOURCES) \
-	$(coders_sfw_la_SOURCES) \
-	$(coders_sgi_la_SOURCES) \
-	$(coders_sixel_la_SOURCES) \
-	$(coders_stegano_la_SOURCES) \
-	$(coders_sun_la_SOURCES) \
-	$(coders_svg_la_SOURCES) \
-	$(coders_tga_la_SOURCES) \
-	$(coders_thumbnail_la_SOURCES) \
-	$(coders_tiff_la_SOURCES) \
-	$(coders_tile_la_SOURCES) \
-	$(coders_tim_la_SOURCES) \
-	$(coders_tim2_la_SOURCES) \
-	$(coders_ttf_la_SOURCES) \
-	$(coders_txt_la_SOURCES) \
-	$(coders_uil_la_SOURCES) \
-	$(coders_url_la_SOURCES) \
-	$(coders_uyvy_la_SOURCES) \
-	$(coders_vicar_la_SOURCES) \
-	$(coders_vid_la_SOURCES) \
-	$(coders_video_la_SOURCES) \
-	$(coders_viff_la_SOURCES) \
-	$(coders_vips_la_SOURCES) \
-	$(coders_wbmp_la_SOURCES) \
-	$(coders_webp_la_SOURCES) \
-	$(coders_wmf_la_SOURCES) \
-	$(coders_wpg_la_SOURCES) \
-	$(coders_x_la_SOURCES) \
-	$(coders_xbm_la_SOURCES) \
-	$(coders_xc_la_SOURCES) \
-	$(coders_xcf_la_SOURCES) \
-	$(coders_xpm_la_SOURCES) \
-	$(coders_xps_la_SOURCES) \
-	$(coders_xtrn_la_SOURCES) \
-	$(coders_xwd_la_SOURCES) \
-	$(coders_ycbcr_la_SOURCES) \
-	$(coders_yuv_la_SOURCES) \
-	$(filters_analyze_la_SOURCES) $(Magick___demo_analyze_SOURCES) \
+	$(coders_aai_la_SOURCES) $(coders_art_la_SOURCES) \
+	$(coders_ashlar_la_SOURCES) $(coders_avs_la_SOURCES) \
+	$(coders_bgr_la_SOURCES) $(coders_bmp_la_SOURCES) \
+	$(coders_braille_la_SOURCES) $(coders_cals_la_SOURCES) \
+	$(coders_caption_la_SOURCES) $(coders_cin_la_SOURCES) \
+	$(coders_cip_la_SOURCES) $(coders_clip_la_SOURCES) \
+	$(coders_clipboard_la_SOURCES) $(coders_cmyk_la_SOURCES) \
+	$(coders_cube_la_SOURCES) $(coders_cut_la_SOURCES) \
+	$(coders_dcm_la_SOURCES) $(coders_dds_la_SOURCES) \
+	$(coders_debug_la_SOURCES) $(coders_dib_la_SOURCES) \
+	$(coders_djvu_la_SOURCES) $(coders_dng_la_SOURCES) \
+	$(coders_dot_la_SOURCES) $(coders_dps_la_SOURCES) \
+	$(coders_dpx_la_SOURCES) $(coders_emf_la_SOURCES) \
+	$(coders_ept_la_SOURCES) $(coders_exr_la_SOURCES) \
+	$(coders_farbfeld_la_SOURCES) $(coders_fax_la_SOURCES) \
+	$(coders_fits_la_SOURCES) $(coders_fl32_la_SOURCES) \
+	$(coders_flif_la_SOURCES) $(coders_fpx_la_SOURCES) \
+	$(coders_gif_la_SOURCES) $(coders_gradient_la_SOURCES) \
+	$(coders_gray_la_SOURCES) $(coders_hald_la_SOURCES) \
+	$(coders_hdr_la_SOURCES) $(coders_heic_la_SOURCES) \
+	$(coders_histogram_la_SOURCES) $(coders_hrz_la_SOURCES) \
+	$(coders_html_la_SOURCES) $(coders_icon_la_SOURCES) \
+	$(coders_info_la_SOURCES) $(coders_inline_la_SOURCES) \
+	$(coders_ipl_la_SOURCES) $(coders_jbig_la_SOURCES) \
+	$(coders_jnx_la_SOURCES) $(coders_jp2_la_SOURCES) \
+	$(coders_jpeg_la_SOURCES) $(coders_json_la_SOURCES) \
+	$(coders_jxl_la_SOURCES) $(coders_kernel_la_SOURCES) \
+	$(coders_label_la_SOURCES) $(coders_mac_la_SOURCES) \
+	$(coders_magick_la_SOURCES) $(coders_map_la_SOURCES) \
+	$(coders_mask_la_SOURCES) $(coders_mat_la_SOURCES) \
+	$(coders_matte_la_SOURCES) $(coders_meta_la_SOURCES) \
+	$(coders_miff_la_SOURCES) $(coders_mono_la_SOURCES) \
+	$(coders_mpc_la_SOURCES) $(coders_mpr_la_SOURCES) \
+	$(coders_msl_la_SOURCES) $(coders_mtv_la_SOURCES) \
+	$(coders_mvg_la_SOURCES) $(coders_null_la_SOURCES) \
+	$(coders_ora_la_SOURCES) $(coders_otb_la_SOURCES) \
+	$(coders_palm_la_SOURCES) $(coders_pango_la_SOURCES) \
+	$(coders_pattern_la_SOURCES) $(coders_pcd_la_SOURCES) \
+	$(coders_pcl_la_SOURCES) $(coders_pcx_la_SOURCES) \
+	$(coders_pdb_la_SOURCES) $(coders_pdf_la_SOURCES) \
+	$(coders_pes_la_SOURCES) $(coders_pgx_la_SOURCES) \
+	$(coders_pict_la_SOURCES) $(coders_pix_la_SOURCES) \
+	$(coders_plasma_la_SOURCES) $(coders_png_la_SOURCES) \
+	$(coders_pnm_la_SOURCES) $(coders_ps_la_SOURCES) \
+	$(coders_ps2_la_SOURCES) $(coders_ps3_la_SOURCES) \
+	$(coders_psd_la_SOURCES) $(coders_pwp_la_SOURCES) \
+	$(coders_raw_la_SOURCES) $(coders_rgb_la_SOURCES) \
+	$(coders_rgf_la_SOURCES) $(coders_rla_la_SOURCES) \
+	$(coders_rle_la_SOURCES) $(coders_scr_la_SOURCES) \
+	$(coders_sct_la_SOURCES) $(coders_sfw_la_SOURCES) \
+	$(coders_sgi_la_SOURCES) $(coders_sixel_la_SOURCES) \
+	$(coders_stegano_la_SOURCES) $(coders_sun_la_SOURCES) \
+	$(coders_svg_la_SOURCES) $(coders_tga_la_SOURCES) \
+	$(coders_thumbnail_la_SOURCES) $(coders_tiff_la_SOURCES) \
+	$(coders_tile_la_SOURCES) $(coders_tim_la_SOURCES) \
+	$(coders_tim2_la_SOURCES) $(coders_ttf_la_SOURCES) \
+	$(coders_txt_la_SOURCES) $(coders_uil_la_SOURCES) \
+	$(coders_url_la_SOURCES) $(coders_uyvy_la_SOURCES) \
+	$(coders_vicar_la_SOURCES) $(coders_vid_la_SOURCES) \
+	$(coders_video_la_SOURCES) $(coders_viff_la_SOURCES) \
+	$(coders_vips_la_SOURCES) $(coders_wbmp_la_SOURCES) \
+	$(coders_webp_la_SOURCES) $(coders_wmf_la_SOURCES) \
+	$(coders_wpg_la_SOURCES) $(coders_x_la_SOURCES) \
+	$(coders_xbm_la_SOURCES) $(coders_xc_la_SOURCES) \
+	$(coders_xcf_la_SOURCES) $(coders_xpm_la_SOURCES) \
+	$(coders_xps_la_SOURCES) $(coders_xtrn_la_SOURCES) \
+	$(coders_xwd_la_SOURCES) $(coders_ycbcr_la_SOURCES) \
+	$(coders_yuv_la_SOURCES) $(filters_analyze_la_SOURCES) \
+	$(Magick___demo_analyze_SOURCES) \
 	$(Magick___demo_button_SOURCES) $(Magick___demo_demo_SOURCES) \
 	$(Magick___demo_detrans_SOURCES) $(Magick___demo_flip_SOURCES) \
 	$(Magick___demo_gravity_SOURCES) \
