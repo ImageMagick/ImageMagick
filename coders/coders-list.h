@@ -56,6 +56,7 @@ AddMagickCoder(DPX)
 #if defined(MAGICKCORE_OPENEXR_DELEGATE)
   AddMagickCoder(EXR)
 #endif
+AddMagickCoder(FARBFELD)
 AddMagickCoder(FAX)
 AddMagickCoder(FITS)
 AddMagickCoder(FL32)
