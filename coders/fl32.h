@@ -16,7 +16,8 @@
 
 #include "coders/coders-private.h"
 
-#define MagickFL32Headers
+#define MagickFL32Headers \
+  MagickCoderHeader("FL32", 0, "FL32")
 
 #define MagickFL32Aliases
 
