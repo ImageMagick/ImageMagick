@@ -2586,6 +2586,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image=DestroyImageList(image);
           return((Image *) NULL);
         }
+      image_list_length=GetImageListLength(image);
     }
   if (psd_info.has_merged_image == MagickFalse)
     {
