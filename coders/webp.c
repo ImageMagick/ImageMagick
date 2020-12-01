@@ -425,6 +425,22 @@ static int ReadAnimatedWEBPImage(const ImageInfo *image_info,Image *image,
   canvas_height=image->rows;
   data.bytes=stream;
   data.size=length;
+  {
+    WebPMux
+      *mux;
+
+    WebPMuxAnimParams
+      params;
+
+    WebPMuxError
+      status;
+
+    mux=WebPMuxCreate(&data,0);
+    status=WebPMuxGetAnimationParams(mux,&params);
+    if (status >= 0)
+      image->iterations=params.loop_count;
+    WebPMuxDelete(mux);
+  }
   demux=WebPDemux(&data);
   if (WebPDemuxGetFrame(demux,1,&iter))
     {
