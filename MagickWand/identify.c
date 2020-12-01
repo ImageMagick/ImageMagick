@@ -338,6 +338,7 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
         continue;
       }
     pend=image != (Image *) NULL ? MagickTrue : MagickFalse;
+    image_info->ping=MagickFalse;
     switch (*(option+1))
     {
       case 'a':
@@ -445,7 +446,6 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
               ThrowIdentifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowIdentifyInvalidArgumentException(option,argv[i]);
-            image_info->ping=MagickFalse;
             break;
           }
         if (LocaleCompare("concurrent",option+1) == 0)
@@ -486,8 +486,6 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
                   ThrowIdentifyException(OptionError,"NoSuchOption",argv[i]);
                 break;
               }
-            if (LocaleNCompare("identify:locate",argv[i],15) == 0)
-              image_info->ping=MagickFalse;
             break;
           }
         if (LocaleCompare("density",option+1) == 0)
@@ -568,7 +566,6 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
             if (i == (ssize_t) argc)
               ThrowIdentifyException(OptionError,"MissingArgument",option);
             format=argv[i];
-            image_info->ping=MagickFalse;
             break;
           }
         if (LocaleCompare("fuzz",option+1) == 0)
@@ -764,7 +761,10 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
       case 'p':
       {
         if (LocaleCompare("ping",option+1) == 0)
-          break;
+          {
+            image_info->ping=MagickTrue;
+            break;
+          }
         if (LocaleCompare("precision",option+1) == 0)
           {
             if (*option == '+')
