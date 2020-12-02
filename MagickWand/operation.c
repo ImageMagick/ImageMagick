@@ -2365,6 +2365,18 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'f':
     {
+      if (LocaleCompare("features",option+1) == 0)
+        {
+          CLIWandWarnReplaced("-version -define identify:features=");
+          if (*option == '+')
+            {
+              (void) DeleteImageArtifact(_image,"identify:features");
+              break;
+            }
+          (void) SetImageArtifact(_image,"identify:features",arg1);
+          (void) SetImageArtifact(_image,"verbose","true");
+          break;
+        }
       if (LocaleCompare("flip",option+1) == 0)
         {
           new_image=FlipImage(_image,_exception);
