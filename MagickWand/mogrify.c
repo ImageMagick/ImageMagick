@@ -7122,12 +7122,6 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
           }
         if (LocaleCompare("format",option+1) == 0)
           {
-            register const char
-              *q;
-
-            for (q=strchr(argv[i+1],'%'); q != (char *) NULL; q=strchr(q+1,'%'))
-              if (strchr("Agkrz@[#",*(q+1)) != (char *) NULL)
-                image_info->ping=MagickFalse;
             (void) SetImageOption(image_info,option+1,argv[i+1]);
             break;
           }

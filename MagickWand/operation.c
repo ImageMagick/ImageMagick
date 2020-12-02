@@ -909,15 +909,6 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       if (LocaleCompare("format",option+1) == 0)
         {
-          /* FUTURE: why the ping test, you could set ping after this! */
-          /*
-          register const char
-            *q;
-
-          for (q=strchr(arg1,'%'); q != (char *) NULL; q=strchr(q+1,'%'))
-            if (strchr("Agkrz@[#",*(q+1)) != (char *) NULL)
-              _image_info->ping=MagickFalse;
-          */
           (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
           break;
         }
@@ -1226,7 +1217,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       if (LocaleCompare("ping",option+1) == 0)
         {
-          _image_info->ping = ArgBoolean;
+          _image_info->ping=ArgBoolean;
           break;
         }
       if (LocaleCompare("pointsize",option+1) == 0)
