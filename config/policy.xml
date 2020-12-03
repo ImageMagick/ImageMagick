@@ -38,6 +38,10 @@
 
     <policy domain="resource" name="area" value="1GP"/>
 
+  Use the default system font unless overwridden by the application:
+
+    <policy domain="system" name="font" value="/usr/share/fonts/favorite.ttf"/>
+
   Define arguments for the memory, map, area, width, height and disk resources
   with SI prefixes (.e.g 100MB).  In addition, resource policies are maximums
   for each instance of ImageMagick (e.g. policy memory limit 1GB, -limit 2GB
@@ -74,4 +78,5 @@
   <!-- <policy domain="system" name="max-memory-request" value="256MiB"/> -->
   <!-- <policy domain="system" name="shred" value="2"/> -->
   <!-- <policy domain="system" name="precision" value="6"/> -->
+  <!-- <policy domain="system" name="font" value="/path/to/font.ttf"/> -->
 </policymap>
