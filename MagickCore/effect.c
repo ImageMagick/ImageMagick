@@ -1023,8 +1023,8 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
         exception);
       if (p == (const Quantum *) NULL)
         break;
-      p+=(ssize_t) GetPixelChannels(image)*width*mid.y+
-        GetPixelChannels(image)*mid.x;
+      p+=(ssize_t) GetPixelChannels(image)*width*mid.y+GetPixelChannels(image)*
+        mid.x;
       n=0;
       for (v=0; v < (ssize_t) height; v++)
       {
