@@ -941,6 +941,9 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
   DrawInfo
     *annotate_info;
 
+  ExceptionInfo
+    *sans_exception;
+
   MagickBooleanType
     status;
 
@@ -1018,23 +1021,19 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
       annotate_info=DestroyDrawInfo(annotate_info);
       return(status);
     }
+  sans_exception=AcquireExceptionInfo();
   if (type_info == (const TypeInfo *) NULL)
-    type_info=GetTypeInfoByFamily("Arial",draw_info->style,
-      draw_info->stretch,draw_info->weight,exception);
+    type_info=GetTypeInfoByFamily("Open Sans",draw_info->style,
+      draw_info->stretch,draw_info->weight,sans_exception);
   if (type_info == (const TypeInfo *) NULL)
-    type_info=GetTypeInfoByFamily("Helvetica",draw_info->style,
-      draw_info->stretch,draw_info->weight,exception);
-  if (type_info == (const TypeInfo *) NULL)
-    type_info=GetTypeInfoByFamily("Century Schoolbook",draw_info->style,
-      draw_info->stretch,draw_info->weight,exception);
-  if (type_info == (const TypeInfo *) NULL)
-    type_info=GetTypeInfoByFamily("Sans",draw_info->style,
-      draw_info->stretch,draw_info->weight,exception);
+    type_info=GetTypeInfoByFamily("Sans Serif",draw_info->style,
+      draw_info->stretch,draw_info->weight,sans_exception);
   if (type_info == (const TypeInfo *) NULL)
     type_info=GetTypeInfoByFamily((const char *) NULL,draw_info->style,
-      draw_info->stretch,draw_info->weight,exception);
+      draw_info->stretch,draw_info->weight,sans_exception);
   if (type_info == (const TypeInfo *) NULL)
-    type_info=GetTypeInfo("*",exception);
+    type_info=GetTypeInfo("*",sans_exception);
+  sans_exception=DestroyExceptionInfo(sans_exception);
   if (type_info == (const TypeInfo *) NULL)
     {
       status=RenderFreetype(image,draw_info,draw_info->encoding,offset,metrics,
