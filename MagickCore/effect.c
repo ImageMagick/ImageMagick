@@ -867,7 +867,7 @@ static double **DestroyBilateralThreadSet(const ssize_t number_threads,
     i;
 
   assert(weights != (double **) NULL);
-  for (i=0; i <= (ssize_t) number_threads; i++)
+  for (i=0; i < (ssize_t) number_threads; i++)
     if (weights[i] != (double *) NULL)
       weights[i]=(double *) RelinquishMagickMemory(weights[i]);
   weights=(double **) RelinquishMagickMemory(weights);
@@ -887,7 +887,7 @@ static double **AcquireBilateralThreadSet(const size_t number_threads,
   if (weights == (double **) NULL)
     return((double **) NULL);
   (void) memset(weights,0,number_threads*sizeof(*weights));
-  for (i=0; i <= (ssize_t) number_threads; i++)
+  for (i=0; i < (ssize_t) number_threads; i++)
   {
     weights[i]=(double *) AcquireQuantumMemory(width,height*sizeof(**weights));
     if (weights[i] == (double *) NULL)
@@ -951,7 +951,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
       return((Image *) NULL);
     }
   number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
-  weights=AcquireBilateralThreadSet(number_threads,width,height);
+  weights=AcquireBilateralThreadSet(number_threads+1,width,height);
   if (weights == (double **) NULL)
     {
       blur_image=DestroyImage(blur_image);
