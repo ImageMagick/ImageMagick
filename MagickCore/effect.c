@@ -860,22 +860,21 @@ static inline double BlurGaussian(const double x,const double sigma)
     PerceptibleReciprocal(Magick2PI*sigma*sigma));
 }
 
-static double **DestroyBilateralThreadSet(const ssize_t number_threads,
-  double **weights)
+static double **DestroyBilateralThreadSet(double **weights)
 {
   register ssize_t
     i;
 
   assert(weights != (double **) NULL);
-  for (i=0; i <= (ssize_t) number_threads; i++)
+  for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
     if (weights[i] != (double *) NULL)
       weights[i]=(double *) RelinquishMagickMemory(weights[i]);
   weights=(double **) RelinquishMagickMemory(weights);
   return(weights);
 }
 
-static double **AcquireBilateralThreadSet(const size_t number_threads,
-  const size_t width,const size_t height)
+static double **AcquireBilateralThreadSet(const size_t width,
+  const size_t height)
 {
   double
     **weights;
@@ -883,15 +882,19 @@ static double **AcquireBilateralThreadSet(const size_t number_threads,
   register ssize_t
     i;
 
+  size_t
+    number_threads;
+
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   weights=(double **) AcquireQuantumMemory(number_threads,sizeof(*weights));
   if (weights == (double **) NULL)
     return((double **) NULL);
   (void) memset(weights,0,number_threads*sizeof(*weights));
-  for (i=0; i <= (ssize_t) number_threads; i++)
+  for (i=0; i < (ssize_t) number_threads; i++)
   {
     weights[i]=(double *) AcquireQuantumMemory(width,height*sizeof(**weights));
     if (weights[i] == (double *) NULL)
-      return(DestroyBilateralThreadSet(number_threads,weights));
+      return(DestroyBilateralThreadSet(weights));
   }
   return(weights);
 }
@@ -900,7 +903,6 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
   const size_t height,const double intensity_sigma,const double spatial_sigma,
   ExceptionInfo *exception)
 {
-#define MaxIntensity  (255)
 #define BilateralBlurImageTag  "Convolve/Image"
 
   CacheView
@@ -908,8 +910,6 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
     *image_view;
 
   double
-    intensity_gaussian[2*(MaxIntensity+1)],
-    *spatial_gaussian,
     **weights;
 
   Image
@@ -924,16 +924,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
   OffsetInfo
     mid;
 
-  register ssize_t
-    u;
-
   ssize_t
-    n,
-    number_threads,
-    v;
-
-  ssize_t
-    i,
     y;
 
   assert(image != (const Image *) NULL);
@@ -950,28 +941,19 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
       blur_image=DestroyImage(blur_image);
       return((Image *) NULL);
     }
-  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
-  weights=AcquireBilateralThreadSet(number_threads,width,height);
+  weights=AcquireBilateralThreadSet(width,height);
   if (weights == (double **) NULL)
     {
       blur_image=DestroyImage(blur_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  for (i=(-MaxIntensity); i < MaxIntensity; i++)
-    intensity_gaussian[i+MaxIntensity]=BlurGaussian((double) i,intensity_sigma);
-  spatial_gaussian=weights[number_threads];
-  n=0;
-  mid.x=(ssize_t) (width/2L);
-  mid.y=(ssize_t) (height/2L);
-  for (v=0; v < (ssize_t) height; v++)
-    for (u=0; u < (ssize_t) width; u++)
-      spatial_gaussian[n++]=BlurGaussian(BlurDistance(0,0,u-mid.x,v-mid.y),
-        spatial_sigma);
   /*
     Bilateral blur image.
   */
   status=MagickTrue;
   progress=0;
+  mid.x=(ssize_t) (width/2L);
+  mid.y=(ssize_t) (height/2L);
   image_view=AcquireVirtualCacheView(image,exception);
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1023,26 +1005,19 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
         exception);
       if (p == (const Quantum *) NULL)
         break;
-      p+=(ssize_t) GetPixelChannels(image)*width*mid.y+GetPixelChannels(image)*
-        mid.x;
+      p+=(ssize_t) GetPixelChannels(image)*width*mid.y+
+        GetPixelChannels(image)*mid.x;
       n=0;
       for (v=0; v < (ssize_t) height; v++)
       {
         for (u=0; u < (ssize_t) width; u++)
         {
-          double
-            intensity;
-
           r=p+(ssize_t) GetPixelChannels(image)*(ssize_t) width*(mid.y-v)+
             GetPixelChannels(image)*(mid.x-u);
-          intensity=ScaleQuantumToChar(GetPixelIntensity(image,r))-
-            (double) ScaleQuantumToChar(GetPixelIntensity(image,p));
-          if ((intensity >= -MaxIntensity) && (intensity <= MaxIntensity))
-            weights[id][n]=intensity_gaussian[(ssize_t) intensity+MaxIntensity]*
-              spatial_gaussian[n];
-          else
-            weights[id][n]=BlurGaussian(intensity,intensity_sigma)*
-              BlurGaussian(BlurDistance(x,y,x+u-mid.x,y+v-mid.y),spatial_sigma);
+          weights[id][n]=BlurGaussian(ScaleQuantumToChar(
+            GetPixelIntensity(image,r))-(double) ScaleQuantumToChar(
+            GetPixelIntensity(image,p)),intensity_sigma)*BlurGaussian(
+            BlurDistance(x,y,x+u-mid.x,y+v-mid.y),spatial_sigma);
           n++;
         }
       }
@@ -1134,7 +1109,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
   blur_image->type=image->type;
   blur_view=DestroyCacheView(blur_view);
   image_view=DestroyCacheView(image_view);
-  weights=DestroyBilateralThreadSet(number_threads,weights);
+  weights=DestroyBilateralThreadSet(weights);
   if (status == MagickFalse)
     blur_image=DestroyImage(blur_image);
   return(blur_image);
