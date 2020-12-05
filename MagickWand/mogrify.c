@@ -956,7 +956,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=geometry_info.rho;
             if ((flags & XiValue) == 0)
-              geometry_info.xi=0.75*sqrt(geometry_info.rho*geometry_info.rho+
+              geometry_info.xi=1.0*sqrt(geometry_info.rho*geometry_info.rho+
                 geometry_info.sigma*geometry_info.sigma);
             if ((flags & PsiValue) == 0)
               geometry_info.psi=0.25*sqrt(geometry_info.rho*geometry_info.rho+
