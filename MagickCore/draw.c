@@ -1262,6 +1262,8 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
     ssize_t
       x_offset;
 
+    if (status == MagickFalse)
+      continue;
     inverse_edge=AffineEdge(source,&inverse_affine,(double) y,&edge);
     if (inverse_edge.x2 < inverse_edge.x1)
       continue;
