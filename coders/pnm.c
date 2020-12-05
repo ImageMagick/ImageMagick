@@ -1277,9 +1277,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         quantum_info=AcquireQuantumInfo(image_info,image);
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowPNMException(ResourceLimitError,"MemoryAllocationFailed");
-        status=SetQuantumDepth(image,quantum_info,32);
-        if (status == MagickFalse)
-          ThrowPNMException(ResourceLimitError,"MemoryAllocationFailed");
         status=SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
         if (status == MagickFalse)
           ThrowPNMException(ResourceLimitError,"MemoryAllocationFailed");
