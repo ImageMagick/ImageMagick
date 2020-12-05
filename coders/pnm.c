@@ -277,6 +277,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   MagickBooleanType
+    has_alpha,
     status;
 
   QuantumAny
@@ -334,12 +335,15 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     max_value=1;
     quantum_type=UndefinedQuantum;
     quantum_scale=1.0;
+    has_alpha=MagickFalse;
     format=(char) ReadBlobByte(image);
     if (format != '7')
       {
         /*
           PBM, PGM, PPM, and PNM.
         */
+        if (ReadBlobByte(image) == '4')
+          has_alpha=MagickTrue;
         image->columns=(size_t) PNMInteger(image,&comment_info,10,exception);
         image->rows=(size_t) PNMInteger(image,&comment_info,10,exception);
         if ((format == 'f') || (format == 'F'))
@@ -1295,8 +1299,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Convert PFM raster image to pixel packets.
         */
         if (format == 'f')
-          (void) SetImageColorspace(image,GRAYColorspace,exception);
-        quantum_type=format == 'f' ? GrayQuantum : RGBQuantum;
+          {
+            (void) SetImageColorspace(image,GRAYColorspace,exception);
+            quantum_type=GrayQuantum;
+          }
+        else
+          quantum_type=(has_alpha != MagickFalse) ? RGBAQuantum : RGBQuantum;
         image->endian=quantum_scale < 0.0 ? LSBEndian : MSBEndian;
         image->depth=32;
         quantum_info=AcquireQuantumInfo(image_info,image);
