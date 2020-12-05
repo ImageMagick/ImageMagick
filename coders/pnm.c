@@ -227,6 +227,31 @@ static unsigned int PNMInteger(Image *image,CommentInfo *comment_info,
   return(value);
 }
 
+static char *PNMString(Image *image,char *string,const size_t extent)
+{
+  int
+    c;
+
+  register size_t
+    i;
+
+  for (i=0; i < (extent-1L); i++)
+  {
+    c=ReadBlobByte(image);
+    if (c == EOF)
+      {
+        if (i == 0)
+          return((char *) NULL);
+        break;
+      }
+    string[i]=c;
+    if (c == '\n' || c == '\r')
+      break;
+  }
+  string[i]='\0';
+  return(string);
+}
+
 static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define ThrowPNMException(exception,message) \
@@ -320,9 +345,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if ((format == 'f') || (format == 'F'))
           {
             char
-              scale[MagickPathExtent];
+              scale[32];
 
-            if (ReadBlobString(image,scale) != (char *) NULL)
+            if (PNMString(image,scale,sizeof(scale)) != (char *) NULL)
               quantum_scale=StringToDouble(scale,(char **) NULL);
           }
         else
