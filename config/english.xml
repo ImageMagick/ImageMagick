@@ -1339,6 +1339,11 @@
         average image sequence
       </message>
     </Average>
+    <Blur>
+      <message name="Image">
+        blur image
+      </message>
+    </Blur>
     <Chop>
       <message name="Image">
         chop image

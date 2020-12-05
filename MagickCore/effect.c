@@ -901,7 +901,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
   ExceptionInfo *exception)
 {
 #define MaxIntensity  (255)
-#define BilateralBlurImageTag  "Convolve/Image"
+#define BilateralBlurImageTag  "Blur/Image"
 
   CacheView
     *blur_view,

@@ -1318,6 +1318,11 @@
         Moyenner la séquence d'images
       </message>
     </Average>
+    <Blur>
+      <message name="Image">
+        Blur de l'image
+      </message>
+    </Blur>
     <Chop>
       <message name="Image">
         Cisailler l'image
