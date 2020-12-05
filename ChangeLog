@@ -3,6 +3,8 @@
 
 2020-11-30  7.0.10-45  <quetzlzacatenango@image...>
   * possible TIFF related-heap buffer overflow (alert & POC by Hardik Shah).
+  * set default system fault in policy.xml configuration file.
+  * support portable float map format 16-bit half.
 
 2020-11-30  7.0.10-45  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-45 GIT revision 17972:6c0cb7f72:20201130

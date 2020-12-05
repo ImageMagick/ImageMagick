@@ -25,12 +25,15 @@
   MagickCoderHeader("PPM", 0, "P6") \
   MagickCoderHeader("PAM", 0, "P7") \
   MagickCoderHeader("PFM", 0, "PF") \
-  MagickCoderHeader("PFM", 0, "Pf")
+  MagickCoderHeader("PFM", 0, "Pf") \
+  MagickCoderHeader("PHM", 0, "PH") \
+  MagickCoderHeader("PHM", 0, "Ph")
 
 #define MagickPNMAliases \
   MagickCoderAlias("PNM", "PAM") \
   MagickCoderAlias("PNM", "PBM") \
   MagickCoderAlias("PNM", "PFM") \
+  MagickCoderAlias("PNM", "PHM") \
   MagickCoderAlias("PNM", "PGM") \
   MagickCoderAlias("PNM", "PPM")
 
