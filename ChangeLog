@@ -1,7 +1,7 @@
 2020-12-05  7.0.10-46  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-46 GIT revision 17999:e3eeb2f21:20201205
+  * Release ImageMagick version 7.0.10-46 GIT revision 18001:7c75b33a1:20201205
 
-2020-11-30  7.0.10-45  <quetzlzacatenango@image...>
+2020-11-30  7.0.10-46  <quetzlzacatenango@image...>
   * possible TIFF related-heap buffer overflow (alert & POC by Hardik Shah).
   * set default system fault in policy.xml configuration file.
   * support portable float map format 16-bit half.
