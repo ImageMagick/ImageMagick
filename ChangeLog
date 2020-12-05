@@ -1,5 +1,5 @@
-2020-11-30  7.0.10-46  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-46 GIT revision 17...
+2020-12-05  7.0.10-46  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-46 GIT revision 17997:982d04bdb:20201205
 
 2020-11-30  7.0.10-45  <quetzlzacatenango@image...>
   * possible TIFF related-heap buffer overflow (alert & POC by Hardik Shah).
