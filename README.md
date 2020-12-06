@@ -69,8 +69,6 @@ ImageMagick best practices **strongly** encourages you to configure a [security 
 
 Now that ImageMagick version 7 is released, we continue to maintain the legacy release of ImageMagick, version 6, at https://legacy.imagemagick.org. Learn how ImageMagick version 7 differs from previous versions with our [porting guide](https://imagemagick.org/script/porting.php).
 
-The ImageMagick development process ensures a stable API and ABI. Before each ImageMagick release, we perform a comprehensive security assessment that includes memory error, thread data race detection, and continuous fuzzing to detect and prevent security vulnerabilities.
-
 Want more performance from ImageMagick? Try these options:
 
 * add more memory to your system, see the pixel cache;
