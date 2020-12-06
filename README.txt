@@ -34,8 +34,8 @@ Introduction to ImageMagick
   Windows, Mac Os X, iOS, Android OS, and others.
 
   The authoritative ImageMagick web site is https://imagemagick.org. The
-  authoritative source code repository is https://github.com/ImageMagick. We
-  maintain a source code mirror at https://gitlab.com/ImageMagick.
+  authoritative source code repository is
+  https://github.com/ImageMagick/ImageMagick.
 
   We continue to maintain the legacy release of ImageMagick, version 6,
   at https://legacy.imagemagick.org.
@@ -78,6 +78,8 @@ Features and Capabilities
       * Color management: accurate color management with color profiles or in
         lieu of-- built-in gamma compression or expansion as demanded by the
         colorspace.
+      * Bilateral blur: non-linear, edge-preserving, and noise-reducing
+        smoothing filter.
       * High dynamic-range images: accurately represent the wide range of
         intensity levels found in real scenes ranging from the brightest direct
         sunlight to the deepest darkest shadows.
@@ -110,23 +112,20 @@ Features and Capabilities
 
 News
 
+  ImageMagick best practices strongly encourages you to configure a security
+  policy that suits your local environment.
+
   Now that ImageMagick version 7 is released, we continue
   to maintain the legacy release of ImageMagick, version 6, at
   https://legacy.imagemagick.org. Learn how ImageMagick version 7 differs
   from previous versions with our porting guide.
 
-  ImageMagick best practices strongly encourages you to configure a security
-  policy that suits your local environment.
-
-  As an analog to linear (RGB) and non-linear (sRGB) color colorspaces, as
-  of ImageMagick 7.0.7-17, we introduce the LinearGray colorspace. Gray is
-  non-linear grayscale and LinearGray is linear (e.g. -colorspace linear-gray).
-
   Want more performance from ImageMagick? Try these options:
 
-    Add more memory to your system, see the pixel cache; Add more cores to
-    your system, see threads of execution support; push large images to a
-    solid-state drive, see large image support.
+    * add more memory to your system, see the pixel cache;
+    * add more cores to your system, see threads of execution support;
+    * reduce lock contention with the tcmalloc memory allocation library;
+    * push large images to a solid-state drive, see large image support.
 
   If these options are prohibitive, you can reduce the quality of the image
   results. The default build is Q16 HDRI. If you disable HDRI, you use
