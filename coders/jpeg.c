@@ -976,9 +976,6 @@ static MagickBooleanType JPEGSetImageProfiles(ErrorManager *error_manager)
   register ssize_t
     i;
 
-  size_t
-    length;
-
   StringInfo
     *profile;
 

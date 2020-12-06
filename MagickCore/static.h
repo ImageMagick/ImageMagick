@@ -199,6 +199,7 @@ extern ModuleExport size_t
   RegisterXTRNImage(void),
   RegisterXVImage(void),
   RegisterXWDImage(void),
+  RegisterYAMLImage(void),
   RegisterYCBCRImage(void),
   RegisterYUVImage(void);
 
@@ -370,6 +371,7 @@ extern ModuleExport void
   UnregisterXTRNImage(void),
   UnregisterXVImage(void),
   UnregisterXWDImage(void),
+  UnregisterYAMLImage(void),
   UnregisterYCBCRImage(void),
   UnregisterYUVImage(void);
 

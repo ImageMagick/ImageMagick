@@ -1228,7 +1228,8 @@ cleanup:
 
 static inline MagickBooleanType IsEmptyOutline(FT_Outline outline)
 {
-  return((outline.n_points == 0) || (outline.n_contours <= 0));
+  return((outline.n_points == 0) || (outline.n_contours <= 0) ? MagickTrue :
+    MagickFalse);
 }
 
 static int TraceCubicBezier(FT_Vector *p,FT_Vector *q,FT_Vector *to,

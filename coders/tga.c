@@ -166,11 +166,11 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   size_t
     base,
     flag,
-    offset,
     skip;
 
   ssize_t
     count,
+    offset,
     y;
 
   TGAInfo
@@ -994,7 +994,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
        offset+=2;
      else
        offset++;
-      if (offset >= image->rows)
+      if (offset >= (ssize_t) image->rows)
         {
           base++;
           offset=base;

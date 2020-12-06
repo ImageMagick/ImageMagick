@@ -358,6 +358,8 @@ MAGICKCORE_CODER_SRCS = \
 	coders/xtrn.c \
 	coders/xtrn.h \
 	coders/xwd.h \
+	coders/yaml.c \
+	coders/yaml.h \
 	coders/ycbcr.c \
 	coders/ycbcr.h \
 	coders/yuv.c \
@@ -520,6 +522,7 @@ CODERS_NOINST_HDRS = \
 	coders/xps.h \
 	coders/xtrn.h \
 	coders/xwd.h \
+	coders/yaml.h \
 	coders/ycbcr.h \
 	coders/yuv.h
 
@@ -639,6 +642,7 @@ coders_LTLIBRARIES = \
 	coders/xpm.la \
 	coders/xps.la \
 	coders/xtrn.la \
+	coders/yaml.la \
 	coders/ycbcr.la \
 	coders/yuv.la \
 	$(MAGICKCORE_DPS_MODULES) \
@@ -1458,6 +1462,12 @@ coders_xwd_la_SOURCES      = coders/xwd.c
 coders_xwd_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_xwd_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_xwd_la_LIBADD       = $(MAGICKCORE_LIBS) $(X11_LIBS)
+
+# YAML coder module
+coders_yaml_la_SOURCES     = coders/yaml.c
+coders_yaml_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
+coders_yaml_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+coders_yaml_la_LIBADD      = $(MAGICKCORE_LIBS)
 
 # YCBCR coder module
 coders_ycbcr_la_SOURCES    = coders/ycbcr.c

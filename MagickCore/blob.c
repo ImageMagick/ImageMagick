@@ -3869,7 +3869,8 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,void *data)
       if ((count != (ssize_t) length) && (status != Z_OK))
         ThrowBlobException(blob_info);
       if (blob_info->eof == MagickFalse)
-        blob_info->eof=gzeof(blob_info->file_info.gzfile);
+        blob_info->eof=gzeof(blob_info->file_info.gzfile) != 0 ? MagickTrue :
+          MagickFalse;
 #endif
       break;
     }

@@ -4412,12 +4412,11 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
     a_mean,
     b_mean;
 
-  MagickBooleanType
-    status;
-
   MagickOffsetType
     progress;
 
+  MagickStatusType
+    status;
 
   ssize_t
     y;
@@ -4535,11 +4534,12 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
       black_point=geometry_info.rho;
       if ((flags & PercentValue) != 0)
         black_point*=(double) (QuantumRange/100.0);
-      channel_mask=SetImageChannelMask(image,aChannel | bChannel);
+      channel_mask=SetImageChannelMask(image,(ChannelType) (aChannel |
+        bChannel));
       status&=LevelImage(image,black_point,(double) QuantumRange-black_point,
         1.0,exception);
       (void) SetImageChannelMask(image,channel_mask);
     }
   status&=TransformImageColorspace(image,sRGBColorspace,exception);
-  return(status);
+  return(status != 0 ? MagickTrue : MagickFalse);
 }

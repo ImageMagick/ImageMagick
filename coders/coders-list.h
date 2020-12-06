@@ -189,5 +189,6 @@ AddMagickCoder(XTRN)
 #if defined(MAGICKCORE_X11_DELEGATE)
   AddMagickCoder(XWD)
 #endif
+AddMagickCoder(YAML)
 AddMagickCoder(YCBCR)
 AddMagickCoder(YUV)

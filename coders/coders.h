@@ -193,5 +193,6 @@
 #if defined(MAGICKCORE_X11_DELEGATE)
   #include "coders/xwd.h"
 #endif
+#include "coders/yaml.h"
 #include "coders/ycbcr.h"
 #include "coders/yuv.h"

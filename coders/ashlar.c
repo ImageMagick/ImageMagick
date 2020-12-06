@@ -230,7 +230,7 @@ static ssize_t FindMinimumTileLocation(NodeInfo *first,const ssize_t x,
   y=0;
   extent=0;
   node=first;
-  while (node->x < (x+width))
+  while (node->x < (ssize_t) (x+width))
   {
     if (node->y > y)
       {
@@ -374,7 +374,7 @@ static TileInfo AssignTileLocation(AshlarInfo *ashlar_info,const size_t width,
   */
   tile=AssignBestTileLocation(ashlar_info,width,height);
   if ((tile.previous == (NodeInfo **) NULL) ||
-      ((tile.y+height) > (ssize_t) ashlar_info->height) ||
+      ((tile.y+(ssize_t) height) > (ssize_t) ashlar_info->height) ||
       (ashlar_info->free == (NodeInfo *) NULL))
     {
       tile.previous=(NodeInfo **) NULL;
@@ -400,7 +400,7 @@ static TileInfo AssignTileLocation(AshlarInfo *ashlar_info,const size_t width,
        current=next;
      }
    while ((current->next != (NodeInfo *) NULL) &&
-          (current->next->x <= (tile.x+width)))
+          (current->next->x <= (tile.x+(ssize_t) width)))
    {
      /*
        Push current node to free list.
@@ -411,7 +411,7 @@ static TileInfo AssignTileLocation(AshlarInfo *ashlar_info,const size_t width,
      current=next;
    }
    node->next=current;
-   if (current->x < (tile.x+width))
+   if (current->x < (tile.x+(ssize_t) width))
      current->x=(ssize_t) (tile.x+width);
    return(tile);
 }
