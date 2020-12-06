@@ -22,7 +22,7 @@ The ImageMagick development process ensures a stable API and ABI. Before each Im
 
 The current release is the ImageMagick 7.0.9 series. It runs on Linux, Windows, Mac Os X, iOS, Android OS, and others.
 
-The authoritative ImageMagick web site is https://imagemagick.org. The authoritative source code repository is https://github.com/ImageMagick. We maintain a source code mirror at https://gitlab.com/ImageMagick.
+The authoritative ImageMagick web site is https://imagemagick.org. The authoritative source code repository is https://github.com/ImageMagick/ImageMagick.
 
 We continue to maintain the legacy release of ImageMagick, version 6, at https://legacy.imagemagick.org.
 
