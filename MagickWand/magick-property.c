@@ -2210,13 +2210,17 @@ WandExport MagickBooleanType MagickSetGravity(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k S e t I m a g e A r t i f r c t                               %
+%   M a g i c k S e t I m a g e A r t i f a c t                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickSetImageArtifact() associates a artifact with an image.
+%  MagickSetImageArtifact() sets a key-value pair in the image artifact
+%  namespace.  Artifacts differ from properties.  Properties are public and are
+%  generally exported to an external image format if the format supports it.
+%  Artifacts are private and are utilized by the internal ImageMagick API to
+%  modify the behavior of certain algorithms.
 %
 %  The format of the MagickSetImageArtifact method is:
 %
