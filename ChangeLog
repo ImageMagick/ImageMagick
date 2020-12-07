@@ -9,7 +9,7 @@
 
 2020-11-30  7.0.10-46  <quetzlzacatenango@image...>
   * possible TIFF related-heap buffer overflow (alert & POC by Hardik Shah).
-  * set default system fault in policy.xml configuration file.
+  * set default system font in policy.xml configuration file.
   * support portable float map format 16-bit half.
 
 2020-11-30  7.0.10-45  <quetzlzacatenango@image...>
