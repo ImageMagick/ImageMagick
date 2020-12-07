@@ -979,7 +979,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   ping=p == (const Quantum *) NULL ? MagickTrue : MagickFalse;
   (void) ping;
   (void) SignatureImage(image,exception);
-  (void) FormatLocaleFile(file,"\n");
+  (void) FormatLocaleFile(file,"---\n");
   version=1.0;
   artifact=GetImageArtifact(image,"yaml:version");
   if (artifact != (const char *) NULL)
@@ -1079,37 +1079,37 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
         return(MagickFalse);
       (void) FormatLocaleFile(file,"    channel%s: \n",locate);
       if (image->alpha_trait != UndefinedPixelTrait)
-        (void) PrintChannelLocations(file,image,AlphaPixelChannel,"Alpha",
+        (void) PrintChannelLocations(file,image,AlphaPixelChannel,"alpha",
           type,max_locations,MagickTrue,channel_statistics);
       switch (image->colorspace)
       {
         case RGBColorspace:
         default:
         {
-          (void) PrintChannelLocations(file,image,RedPixelChannel,"Red",
+          (void) PrintChannelLocations(file,image,RedPixelChannel,"red",
             type,max_locations,MagickTrue,channel_statistics);
-          (void) PrintChannelLocations(file,image,GreenPixelChannel,"Green",
+          (void) PrintChannelLocations(file,image,GreenPixelChannel,"green",
             type,max_locations,MagickTrue,channel_statistics);
-          (void) PrintChannelLocations(file,image,BluePixelChannel,"Blue",
+          (void) PrintChannelLocations(file,image,BluePixelChannel,"blue",
             type,max_locations,MagickFalse,channel_statistics);
           break;
         }
         case CMYKColorspace:
         {
-          (void) PrintChannelLocations(file,image,CyanPixelChannel,"Cyan",
+          (void) PrintChannelLocations(file,image,CyanPixelChannel,"cyan",
             type,max_locations,MagickTrue,channel_statistics);
           (void) PrintChannelLocations(file,image,MagentaPixelChannel,
-            "Magenta",type,max_locations,MagickTrue,channel_statistics);
-          (void) PrintChannelLocations(file,image,YellowPixelChannel,"Yellow",
+            "magenta",type,max_locations,MagickTrue,channel_statistics);
+          (void) PrintChannelLocations(file,image,YellowPixelChannel,"yellow",
             type,max_locations,MagickTrue,channel_statistics);
-          (void) PrintChannelLocations(file,image,BlackPixelChannel,"Black",
+          (void) PrintChannelLocations(file,image,BlackPixelChannel,"black",
             type,max_locations,MagickFalse,channel_statistics);
           break;
         }
         case LinearGRAYColorspace:
         case GRAYColorspace:
         {
-          (void) PrintChannelLocations(file,image,GrayPixelChannel,"Gray",
+          (void) PrintChannelLocations(file,image,GrayPixelChannel,"gray",
             type,max_locations,MagickFalse,channel_statistics);
           break;
         }
@@ -1208,37 +1208,37 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
         }
       (void) FormatLocaleFile(file,"    channelStatistics: \n");
       if (image->alpha_trait != UndefinedPixelTrait)
-        (void) PrintChannelStatistics(file,AlphaPixelChannel,"Alpha",1.0/scale,
+        (void) PrintChannelStatistics(file,AlphaPixelChannel,"alpha",1.0/scale,
           MagickTrue,channel_statistics);
       switch (image->colorspace)
       {
         case RGBColorspace:
         default:
         {
-          (void) PrintChannelStatistics(file,RedPixelChannel,"Red",1.0/scale,
+          (void) PrintChannelStatistics(file,RedPixelChannel,"red",1.0/scale,
             MagickTrue,channel_statistics);
-          (void) PrintChannelStatistics(file,GreenPixelChannel,"Green",1.0/
+          (void) PrintChannelStatistics(file,GreenPixelChannel,"green",1.0/
             scale,MagickTrue,channel_statistics);
-          (void) PrintChannelStatistics(file,BluePixelChannel,"Blue",1.0/scale,
+          (void) PrintChannelStatistics(file,BluePixelChannel,"blue",1.0/scale,
             MagickFalse,channel_statistics);
           break;
         }
         case CMYKColorspace:
         {
-          (void) PrintChannelStatistics(file,CyanPixelChannel,"Cyan",1.0/scale,
+          (void) PrintChannelStatistics(file,CyanPixelChannel,"cyan",1.0/scale,
             MagickTrue,channel_statistics);
-          (void) PrintChannelStatistics(file,MagentaPixelChannel,"Magenta",1.0/
+          (void) PrintChannelStatistics(file,MagentaPixelChannel,"magenta",1.0/
             scale,MagickTrue,channel_statistics);
-          (void) PrintChannelStatistics(file,YellowPixelChannel,"Yellow",1.0/
+          (void) PrintChannelStatistics(file,YellowPixelChannel,"yellow",1.0/
             scale,MagickTrue,channel_statistics);
-          (void) PrintChannelStatistics(file,BlackPixelChannel,"Black",1.0/
+          (void) PrintChannelStatistics(file,BlackPixelChannel,"black",1.0/
             scale,MagickFalse,channel_statistics);
           break;
         }
         case LinearGRAYColorspace:
         case GRAYColorspace:
         {
-          (void) PrintChannelStatistics(file,GrayPixelChannel,"Gray",1.0/scale,
+          (void) PrintChannelStatistics(file,GrayPixelChannel,"gray",1.0/scale,
             MagickFalse,channel_statistics);
           break;
         }
@@ -1251,37 +1251,37 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
     {
       (void) FormatLocaleFile(file,"    channelMoments: \n");
       if (image->alpha_trait != UndefinedPixelTrait)
-        (void) PrintChannelMoments(file,AlphaPixelChannel,"Alpha",MagickTrue,
+        (void) PrintChannelMoments(file,AlphaPixelChannel,"alpha",MagickTrue,
           channel_moments);
       switch (image->colorspace)
       {
         case RGBColorspace:
         default:
         {
-          (void) PrintChannelMoments(file,RedPixelChannel,"Red",MagickTrue,
+          (void) PrintChannelMoments(file,RedPixelChannel,"red",MagickTrue,
             channel_moments);
-          (void) PrintChannelMoments(file,GreenPixelChannel,"Green",MagickTrue,
+          (void) PrintChannelMoments(file,GreenPixelChannel,"green",MagickTrue,
             channel_moments);
-          (void) PrintChannelMoments(file,BluePixelChannel,"Blue",MagickFalse,
+          (void) PrintChannelMoments(file,BluePixelChannel,"blue",MagickFalse,
             channel_moments);
           break;
         }
         case CMYKColorspace:
         {
-          (void) PrintChannelMoments(file,CyanPixelChannel,"Cyan",MagickTrue,
+          (void) PrintChannelMoments(file,CyanPixelChannel,"cyan",MagickTrue,
             channel_moments);
-          (void) PrintChannelMoments(file,MagentaPixelChannel,"Magenta",
+          (void) PrintChannelMoments(file,MagentaPixelChannel,"magenta",
             MagickTrue,channel_moments);
-          (void) PrintChannelMoments(file,YellowPixelChannel,"Yellow",
+          (void) PrintChannelMoments(file,YellowPixelChannel,"yellow",
             MagickTrue,channel_moments);
-          (void) PrintChannelMoments(file,BlackPixelChannel,"Black",
+          (void) PrintChannelMoments(file,BlackPixelChannel,"black",
             MagickFalse,channel_moments);
           break;
         }
         case LinearGRAYColorspace:
         case GRAYColorspace:
         {
-          (void) PrintChannelMoments(file,GrayPixelChannel,"Gray",MagickFalse,
+          (void) PrintChannelMoments(file,GrayPixelChannel,"gray",MagickFalse,
             channel_moments);
           break;
         }
@@ -1302,37 +1302,37 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
     {
       (void) FormatLocaleFile(file,"    channelFeatures: \n");
       if (image->alpha_trait != UndefinedPixelTrait)
-        (void) PrintChannelFeatures(file,AlphaPixelChannel,"Alpha",MagickTrue,
+        (void) PrintChannelFeatures(file,AlphaPixelChannel,"alpha",MagickTrue,
           channel_features);
       switch (image->colorspace)
       {
         case RGBColorspace:
         default:
         {
-          (void) PrintChannelFeatures(file,RedPixelChannel,"Red",MagickTrue,
+          (void) PrintChannelFeatures(file,RedPixelChannel,"red",MagickTrue,
             channel_features);
-          (void) PrintChannelFeatures(file,GreenPixelChannel,"Green",
+          (void) PrintChannelFeatures(file,GreenPixelChannel,"green",
             MagickTrue,channel_features);
-          (void) PrintChannelFeatures(file,BluePixelChannel,"Blue",MagickFalse,
+          (void) PrintChannelFeatures(file,BluePixelChannel,"blue",MagickFalse,
             channel_features);
           break;
         }
         case CMYKColorspace:
         {
-          (void) PrintChannelFeatures(file,CyanPixelChannel,"Cyan",MagickTrue,
+          (void) PrintChannelFeatures(file,CyanPixelChannel,"cyan",MagickTrue,
             channel_features);
-          (void) PrintChannelFeatures(file,MagentaPixelChannel,"Magenta",
+          (void) PrintChannelFeatures(file,MagentaPixelChannel,"magenta",
             MagickTrue,channel_features);
-          (void) PrintChannelFeatures(file,YellowPixelChannel,"Yellow",
+          (void) PrintChannelFeatures(file,YellowPixelChannel,"yellow",
             MagickTrue,channel_features);
-          (void) PrintChannelFeatures(file,BlackPixelChannel,"Black",
+          (void) PrintChannelFeatures(file,BlackPixelChannel,"black",
             MagickFalse,channel_features);
           break;
         }
         case LinearGRAYColorspace:
         case GRAYColorspace:
         {
-          (void) PrintChannelFeatures(file,GrayPixelChannel,"Gray",MagickFalse,
+          (void) PrintChannelFeatures(file,GrayPixelChannel,"gray",MagickFalse,
             channel_features);
           break;
         }
@@ -1677,7 +1677,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
     elapsed_time))));
   YAMLFormatLocaleFile(file,"    version: %s\n",GetMagickVersion(
     (size_t *) NULL));
-  (void) FormatLocaleFile(file,"  \n");
+  (void) FormatLocaleFile(file,"...\n");
   (void) fflush(file);
   return(ferror(file) != 0 ? MagickFalse : MagickTrue);
 }
@@ -1695,7 +1695,7 @@ static MagickBooleanType WriteYAMLImage(const ImageInfo *image_info,
     scene;
 
   size_t
-    imageListLength;
+    number_scenes;
 
   /*
     Open output image file.
@@ -1713,22 +1713,16 @@ static MagickBooleanType WriteYAMLImage(const ImageInfo *image_info,
   if (file == (FILE *) NULL)
     file=stdout;
   scene=0;
-  imageListLength=GetImageListLength(image);
+  number_scenes=GetImageListLength(image);
   do
   {
-    if (scene == 0)
-      (void) WriteBlobString(image," ");
     image->magick_columns=image->columns;
     image->magick_rows=image->rows;
     (void) EncodeImageAttributes(image,file,exception);
     if (GetNextImageInList(image) == (Image *) NULL)
-      {
-        (void) WriteBlobString(image," ");
-        break;
-      }
-    (void) WriteBlobString(image,"\n");
+      break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
+    status=SetImageProgress(image,SaveImagesTag,scene++,number_scenes);
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);
