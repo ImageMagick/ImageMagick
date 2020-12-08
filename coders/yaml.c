@@ -1203,7 +1203,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
         {
           (void) FormatLocaleFile(file,"    imageStatistics: \n");
           (void) PrintChannelStatistics(file,(PixelChannel) MaxPixelChannels,
-            "Overall",1.0/scale,MagickFalse,channel_statistics);
+            "overall",1.0/scale,MagickFalse,channel_statistics);
           (void) FormatLocaleFile(file,"    \n");
         }
       (void) FormatLocaleFile(file,"    channelStatistics: \n");
