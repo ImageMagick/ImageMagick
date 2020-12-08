@@ -1845,11 +1845,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           ThrowTIFFException(ImageError,"WidthOrHeightExceedsLimit");
         method=ReadTileMethod;
       }
+    if ((image->compression != UndefinedCompression) ||
+        (photometric == PHOTOMETRIC_LOGLUV))
+      method=ReadGenericMethod;
     if (image->compression == JPEGCompression)
       method=GetJPEGMethod(image,tiff,photometric,bits_per_sample,
         samples_per_pixel);
-    if (photometric == PHOTOMETRIC_LOGLUV)
-      method=ReadGenericMethod;
     quantum_info->endian=LSBEndian;
     quantum_type=RGBQuantum;
     if (TIFFScanlineSize(tiff) <= 0)
