@@ -3,6 +3,8 @@
 
 2020-12-06  7.0.10-47  <quetzlzacatenango@image...>
   * support YAML image format.
+  * use generic TIFF read method for LZW-compressed strips (reference
+    https://github.com/ImageMagick/ImageMagick/discussions/2935).
 
 2020-12-05  7.0.10-46  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-46 GIT revision 18001:7c75b33a1:20201205
