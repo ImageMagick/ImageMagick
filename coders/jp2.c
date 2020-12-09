@@ -398,6 +398,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     if ((jp2_image->comps[i].dx == 0) || (jp2_image->comps[i].dy == 0) ||
         (jp2_image->comps[0].prec != jp2_image->comps[i].prec) ||
+        (jp2_image->comps[0].prec > 64) ||
         (jp2_image->comps[0].sgnd != jp2_image->comps[i].sgnd) ||
         ((image->ping == MagickFalse) && (jp2_image->comps[i].data == NULL)))
       {
