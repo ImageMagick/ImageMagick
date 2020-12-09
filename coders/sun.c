@@ -489,7 +489,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     else
       {
-        if (sun_info.length > pixels_length)
+        if (sun_info.length > (pixels_length+image->rows))
           {
             sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
             sun_pixels=(unsigned char *) RelinquishMagickMemory(sun_pixels);
