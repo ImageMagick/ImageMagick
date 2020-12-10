@@ -1,3 +1,10 @@
+2020-12-09  7.0.10-48  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-48 GIT revision 18023:9ccb4b82b:20201210
+
+2020-12-09  7.0.10-48  <quetzlzacatenango@image...>
+  * Repair unit test failures (reference
+    https://github.com/ImageMagick/ImageMagick/issues/2959).
+
 2020-12-09  7.0.10-47  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-47 GIT revision 18020:6f1ee6104:20201209
 
