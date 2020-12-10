@@ -1845,8 +1845,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           ThrowTIFFException(ImageError,"WidthOrHeightExceedsLimit");
         method=ReadTileMethod;
       }
-    if ((image->compression != UndefinedCompression) ||
-        (photometric == PHOTOMETRIC_LOGLUV))
+    if (photometric == PHOTOMETRIC_LOGLUV)
       method=ReadGenericMethod;
     if (image->compression == JPEGCompression)
       method=GetJPEGMethod(image,tiff,photometric,bits_per_sample,
@@ -1992,16 +1991,18 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
           switch (i)
           {
-            case 0: break;
+            case 0: quantum_type=RedQuantum; break;
             case 1: quantum_type=GreenQuantum; break;
             case 2: quantum_type=BlueQuantum; break;
             case 3:
             {
+              quantum_type=AlphaQuantum;
               if (image->colorspace == CMYKColorspace)
                 quantum_type=BlackQuantum;
               break;
             }
             case 4: quantum_type=AlphaQuantum; break;
+            default: break;
           }
           rows_remaining=0;
           for (y=0; y < (ssize_t) image->rows; y++)
@@ -2084,16 +2085,18 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         {
           switch (i)
           {
-            case 0: break;
+            case 0: quantum_type=RedQuantum; break;
             case 1: quantum_type=GreenQuantum; break;
             case 2: quantum_type=BlueQuantum; break;
             case 3:
             {
+              quantum_type=AlphaQuantum;
               if (image->colorspace == CMYKColorspace)
                 quantum_type=BlackQuantum;
               break;
             }
             case 4: quantum_type=AlphaQuantum; break;
+            default: break;
           }
           for (y=0; y < (ssize_t) image->rows; y+=rows)
           {
