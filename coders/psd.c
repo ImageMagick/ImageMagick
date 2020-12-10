@@ -2603,6 +2603,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->background_color.alpha_trait=BlendPixelTrait;
       (void) SetImageBackgroundColor(image,exception);
       merged=MergeImageLayers(image,FlattenLayer,exception);
+      if (merged == (Image *) NULL)
+        {
+          (void) CloseBlob(image);
+          image=DestroyImageList(image);
+          return((Image *) NULL);
+        }
       ReplaceImageInList(&image,merged);
     }
   if (profile != (StringInfo *) NULL)
