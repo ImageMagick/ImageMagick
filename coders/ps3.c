@@ -267,6 +267,7 @@ static MagickBooleanType SerializeImage(const ImageInfo *image_info,
   if (*pixel_info == (MemoryInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   q=(unsigned char *) GetVirtualMemoryBlob(*pixel_info);
+  (void) memset(q,0,*length*sizeof(*q));
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
