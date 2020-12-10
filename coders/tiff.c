@@ -2169,7 +2169,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (HeapOverflowSanityCheck(image->rows,sizeof(*pixels)) != MagickFalse)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         number_pixels=(MagickSizeType) image->columns*image->rows;
+#if defined(TIFF_VERSION_BIG)
+        number_pixels+=image->columns*sizeof(uint64);
+#else
         number_pixels+=image->columns*sizeof(uint32);
+#endif
         generic_info=AcquireVirtualMemory(number_pixels,sizeof(uint32));
         if (generic_info == (MemoryInfo *) NULL)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
