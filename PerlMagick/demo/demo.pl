@@ -85,6 +85,12 @@ $example->Label('Auto Threshold');
 $example->AutoThreshold();
 push(@$images,$example);
 
+print "Blilateral Blur...\n";
+$example=$model->Clone();
+$example->Label('Blilateral Blur');
+$example->BilateralBlur('8x8');
+push(@$images,$example);
+
 print "Blur...\n";
 $example=$model->Clone();
 $example->Label('Blur');
