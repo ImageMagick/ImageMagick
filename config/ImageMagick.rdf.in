@@ -131,7 +131,6 @@ Features and Capabilities
     </release>
 
     <download-page rdf:resource="https://imagemagick.org/script/download.php"/>
-    <download-mirror rdf:resource="https://sourceforge.net/projects/imagemagick/"/>
 
     <!-- Licensing details -->
     <license rdf:resource="https://imagemagick.org/script/license.php"/>
