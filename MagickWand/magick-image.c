@@ -6584,8 +6584,8 @@ WandExport MagickBooleanType MagickImplodeImage(MagickWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickImportImagePixels() accepts pixel datand stores it in the image at the
-%  location you specify.  The method returns MagickFalse on success otherwise
-%  MagickTrue if an error is encountered.  The pixel data can be either char,
+%  location you specify.  The method returns MagickTrue on success otherwise
+%  MagickFalse if an error is encountered.  The pixel data can be either char,
 %  short int, int, ssize_t, float, or double in the order specified by map.
 %
 %  Suppose your want to upload the first scanline of a 640x480 image from
