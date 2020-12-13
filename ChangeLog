@@ -1,3 +1,9 @@
+2020-12-13  7.0.10-49  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-49 GIT revision 18034:a61f0aeba:20201213
+
+2020-12-13  7.0.10-49  <quetzlzacatenango@image...>
+  * correct previous patch to read planar RGB TIFF images.
+
 2020-12-10  7.0.10-48  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-48 GIT revision 18026:4646e5fd1:20201210
 
