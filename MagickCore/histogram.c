@@ -1072,7 +1072,7 @@ MagickExport size_t GetNumberColors(const Image *image,FILE *file,
     (void) ConcatenateMagickString(tuple,")",MagickPathExtent);
     (void) QueryColorname(image,&pixel,SVGCompliance,color,exception);
     GetColorTuple(&pixel,MagickTrue,hex);
-    (void) sprintf(count,"%g:",(double) ((MagickOffsetType) p->count));
+    (void) sprintf(count,"%.20g:",(double) ((MagickOffsetType) p->count));
     (void) FormatLocaleFile(file,"    %s %s %s %s\n",count,tuple,hex,color);
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
