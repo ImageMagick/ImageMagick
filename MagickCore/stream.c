@@ -1633,7 +1633,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             }
             case AlphaQuantum:
             {
-              *q=ScaleQuantumToChar((Quantum) (GetPixelAlpha(image,p)));
+              *q=ScaleQuantumToChar(GetPixelAlpha(image,p));
               break;
             }
             case OpacityQuantum:
