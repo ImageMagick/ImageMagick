@@ -1638,7 +1638,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             }
             case OpacityQuantum:
             {
-              *q=ScaleQuantumToChar(GetPixelAlpha(image,p));
+              *q=ScaleQuantumToChar(GetPixelOpacity(image,p));
               break;
             }
             case BlackQuantum:
@@ -1827,7 +1827,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             }
             case OpacityQuantum:
             {
-              *q=(double) ((QuantumScale*GetPixelAlpha(image,p))*
+              *q=(double) ((QuantumScale*GetPixelOpacity(image,p))*
                 quantum_info->scale+quantum_info->minimum);
               break;
             }
@@ -2019,7 +2019,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             }
             case OpacityQuantum:
             {
-              *q=(float) ((QuantumScale*GetPixelAlpha(image,p))*
+              *q=(float) ((QuantumScale*GetPixelOpacity(image,p))*
                 quantum_info->scale+quantum_info->minimum);
               break;
             }
@@ -2186,7 +2186,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             }
             case OpacityQuantum:
             {
-              *q=ScaleQuantumToLong(GetPixelAlpha(image,p));
+              *q=ScaleQuantumToLong(GetPixelOpacity(image,p));
               break;
             }
             case BlackQuantum:
@@ -2351,7 +2351,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             }
             case OpacityQuantum:
             {
-              *q=ScaleQuantumToLongLong(GetPixelAlpha(image,p));
+              *q=ScaleQuantumToLongLong(GetPixelOpacity(image,p));
               break;
             }
             case BlackQuantum:
@@ -2516,7 +2516,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             }
             case OpacityQuantum:
             {
-              *q=GetPixelAlpha(image,p);
+              *q=GetPixelOpacity(image,p);
               break;
             }
             case BlackQuantum:
@@ -2681,7 +2681,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             }
             case OpacityQuantum:
             {
-              *q=ScaleQuantumToShort(GetPixelAlpha(image,p));
+              *q=ScaleQuantumToShort(GetPixelOpacity(image,p));
               break;
             }
             case BlackQuantum:
