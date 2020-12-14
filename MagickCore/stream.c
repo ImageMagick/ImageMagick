@@ -1583,7 +1583,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             *q++=ScaleQuantumToChar(GetPixelRed(image,p));
             *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
             *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
-            *q++=ScaleQuantumToChar((Quantum) (GetPixelAlpha(image,p)));
+            *q++=ScaleQuantumToChar(GetPixelAlpha(image,p));
             p+=GetPixelChannels(image);
           }
           break;
@@ -1889,7 +1889,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
               quantum_info->scale+quantum_info->minimum);
             *q++=(float) ((QuantumScale*GetPixelRed(image,p))*
               quantum_info->scale+quantum_info->minimum);
-            *q++=(float) ((QuantumScale*(Quantum) (GetPixelAlpha(image,p)))*
+            *q++=(float) ((QuantumScale*GetPixelAlpha(image,p))*
               quantum_info->scale+quantum_info->minimum);
             p+=GetPixelChannels(image);
           }
@@ -2075,7 +2075,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             *q++=ScaleQuantumToLong(GetPixelBlue(image,p));
             *q++=ScaleQuantumToLong(GetPixelGreen(image,p));
             *q++=ScaleQuantumToLong(GetPixelRed(image,p));
-            *q++=ScaleQuantumToLong((Quantum) (GetPixelAlpha(image,p)));
+            *q++=ScaleQuantumToLong(GetPixelAlpha(image,p));
             p+=GetPixelChannels(image);
           }
           break;
@@ -2131,7 +2131,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             *q++=ScaleQuantumToLong(GetPixelRed(image,p));
             *q++=ScaleQuantumToLong(GetPixelGreen(image,p));
             *q++=ScaleQuantumToLong(GetPixelBlue(image,p));
-            *q++=ScaleQuantumToLong((Quantum) (GetPixelAlpha(image,p)));
+            *q++=ScaleQuantumToLong(GetPixelAlpha(image,p));
             p+=GetPixelChannels(image);
           }
           break;
@@ -2181,7 +2181,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             }
             case AlphaQuantum:
             {
-              *q=ScaleQuantumToLong((Quantum) (GetPixelAlpha(image,p)));
+              *q=ScaleQuantumToLong(GetPixelAlpha(image,p));
               break;
             }
             case OpacityQuantum:
@@ -2511,7 +2511,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             }
             case AlphaQuantum:
             {
-              *q=(Quantum) (GetPixelAlpha(image,p));
+              *q=GetPixelAlpha(image,p);
               break;
             }
             case OpacityQuantum:
@@ -2569,7 +2569,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             *q++=ScaleQuantumToShort(GetPixelBlue(image,p));
             *q++=ScaleQuantumToShort(GetPixelGreen(image,p));
             *q++=ScaleQuantumToShort(GetPixelRed(image,p));
-            *q++=ScaleQuantumToShort((Quantum) (GetPixelAlpha(image,p)));
+            *q++=ScaleQuantumToShort(GetPixelAlpha(image,p));
             p+=GetPixelChannels(image);
           }
           break;
@@ -2626,7 +2626,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             *q++=ScaleQuantumToShort(GetPixelRed(image,p));
             *q++=ScaleQuantumToShort(GetPixelGreen(image,p));
             *q++=ScaleQuantumToShort(GetPixelBlue(image,p));
-            *q++=ScaleQuantumToShort((Quantum) (GetPixelAlpha(image,p)));
+            *q++=ScaleQuantumToShort(GetPixelAlpha(image,p));
             p+=GetPixelChannels(image);
           }
           break;
