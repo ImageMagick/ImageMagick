@@ -435,14 +435,14 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if (HeapOverflowSanityCheckGetSize(sun_info.width,sun_info.depth,&bytes_per_line) != MagickFalse)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    if (sun_info.length > GetBlobSize(image))
+    if ((sun_info.type != RT_ENCODED) && (sun_info.length > GetBlobSize(image)))
       ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     sun_data=(unsigned char *) AcquireQuantumMemory(sun_info.length,
       sizeof(*sun_data));
     if (sun_data == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     count=(ssize_t) ReadBlob(image,sun_info.length,sun_data);
-    if (count != (ssize_t) sun_info.length)
+    if ((sun_info.type != RT_ENCODED) && (count != (ssize_t) sun_info.length))
       {
         sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
         ThrowReaderException(CorruptImageError,"UnableToReadImageData");
@@ -475,8 +475,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       }
-    (void) memset(sun_pixels,0,(pixels_length+image->rows)*
-      sizeof(*sun_pixels));
+    (void) memset(sun_pixels,0,(pixels_length+image->rows)*sizeof(*sun_pixels));
     if (sun_info.type == RT_ENCODED)
       {
         status=DecodeImage(sun_data,sun_info.length,sun_pixels,pixels_length);
@@ -489,6 +488,12 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     else
       {
+        if (EOFBlob(image) != MagickFalse)
+          {
+            ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+              image->filename);
+            break;
+          }
         if (sun_info.length > (pixels_length+image->rows))
           {
             sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
@@ -625,12 +630,6 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image->storage_class == PseudoClass)
       (void) SyncImage(image,exception);
     sun_pixels=(unsigned char *) RelinquishMagickMemory(sun_pixels);
-    if (EOFBlob(image) != MagickFalse)
-      {
-        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-          image->filename);
-        break;
-      }
     /*
       Proceed to next image.
     */
