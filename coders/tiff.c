@@ -1982,7 +1982,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           2*sizeof(*strip_pixels));
         if (strip_pixels == (unsigned char *) NULL)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-        (void) memset(strip_pixels,0,extent*sizeof(*strip_pixels));
+        (void) memset(strip_pixels,0,2*extent*sizeof(*strip_pixels));
         stride=TIFFVStripSize(tiff,1);
         strip_id=0;
         p=strip_pixels;
