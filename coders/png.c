@@ -5091,7 +5091,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
   jng_image=DestroyImage(jng_image);
 
-  if ((image_info->ping == MagickFalse) && (jng_color_type >= 12))
+  if ((image_info->ping == MagickFalse) && (alpha_image != (Image *) NULL) &&
+      (jng_color_type >= 12))
     {
       if (jng_alpha_compression_method == 0)
         {
