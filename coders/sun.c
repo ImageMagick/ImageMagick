@@ -441,6 +441,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       sizeof(*sun_data));
     if (sun_data == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    (void) memset(sun_data,0,sun_info.length*sizeof(*sun_data));
     count=(ssize_t) ReadBlob(image,sun_info.length,sun_data);
     if ((sun_info.type != RT_ENCODED) && (count != (ssize_t) sun_info.length))
       {
