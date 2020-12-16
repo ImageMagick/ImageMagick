@@ -1867,17 +1867,18 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           pad;
 
         pad=(size_t) MagickMax((ssize_t) samples_per_pixel-1,0);
-        if (image->storage_class == PseudoClass)
-          quantum_type=IndexQuantum;
         if (image->alpha_trait != UndefinedPixelTrait)
           {
-            quantum_type=AlphaQuantum;
             if (image->storage_class == PseudoClass)
               quantum_type=IndexAlphaQuantum;
-            if (samples_per_pixel > 1)
-              quantum_type=GrayAlphaQuantum;
+            else
+              quantum_type=samples_per_pixel == 1 ? AlphaQuantum :
+                GrayAlphaQuantum;
           }
-        if (samples_per_pixel > 2)
+        else
+          if (image->storage_class != PseudoClass)
+            quantum_type=GrayQuantum;
+        if ((samples_per_pixel > 2) && (interlace != PLANARCONFIG_SEPARATE))
           {
             quantum_type=RGBQuantum;
             pad=(size_t) MagickMax((size_t) samples_per_pixel-3,0);
@@ -1896,10 +1897,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                     pad=(size_t) MagickMax((size_t) samples_per_pixel-5,0);
                   }
               }
+            status=SetQuantumPad(image,quantum_info,pad*((bits_per_sample+7) >>
+              3));
+            if (status == MagickFalse)
+              ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
           }
-        status=SetQuantumPad(image,quantum_info,pad*((bits_per_sample+7) >> 3));
-        if (status == MagickFalse)
-          ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
       }
     switch (method)
     {
