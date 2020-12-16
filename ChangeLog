@@ -1,5 +1,5 @@
-2020-12-15  7.0.10-50  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-50 GIT revision 18...
+2020-12-16  7.0.10-50  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-50 GIT revision 18046:83c162886:20201216
 
 2020-12-15  7.0.10-50  <quetzlzacatenango@image...>
   * revert patch to ready gray alpha TIFF image.
