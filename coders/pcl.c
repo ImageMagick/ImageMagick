@@ -389,6 +389,13 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     (void) CopyMagickString(image->filename,filename,MagickPathExtent);
     image->page=page;
+    if (image_info->ping != MagickFalse)
+      {
+        image->magick_columns*=DefaultResolution/2.0;
+        image->magick_rows*=DefaultResolution/2.0;
+        image->columns*=DefaultResolution/2.0;
+        image->rows*=DefaultResolution/2.0;
+      }
     next_image=SyncNextImageInList(image);
     if (next_image != (Image *) NULL)
       image=next_image;
