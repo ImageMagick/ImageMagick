@@ -481,6 +481,12 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   delta.x=DefaultResolution;
   delta.y=DefaultResolution;
+  if (image_info->ping != MagickFalse)
+    {
+      image->resolution.x=2.0;
+      image->resolution.y=2.0;
+    }
+  (void) memset(&page,0,sizeof(page));
   if ((image->resolution.x == 0.0) || (image->resolution.y == 0.0))
     {
       flags=ParseGeometry(PSDensityGeometry,&geometry_info);
@@ -497,7 +503,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((flags & SigmaValue) == 0)
         image->resolution.y=image->resolution.x;
     }
-  (void) memset(&page,0,sizeof(page));
   (void) ParseAbsoluteGeometry(PSPageGeometry,&page);
   if (image_info->page != (char *) NULL)
     (void) ParseAbsoluteGeometry(image_info->page,&page);

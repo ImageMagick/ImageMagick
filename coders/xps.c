@@ -206,6 +206,11 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   delta.x=DefaultResolution;
   delta.y=DefaultResolution;
+  if (image_info->ping != MagickFalse)
+    {
+      image->resolution.x=2.0;
+      image->resolution.y=2.0;
+    }
   if ((image->resolution.x == 0.0) || (image->resolution.y == 0.0))
     {
       flags=ParseGeometry(PSDensityGeometry,&geometry_info);

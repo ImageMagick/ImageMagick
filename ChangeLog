@@ -1,3 +1,10 @@
+2020-12-17  7.0.10-51  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-51 GIT revision 18...
+
+2020-12-17  7.0.10-51  <quetzlzacatenango@image...>
+  * reduce time to identify PDF/PS/XPS/PCL image width/height (reference
+    https://github.com/ImageMagick/ImageMagick/discussions/2993).
+
 2020-12-16  7.0.10-50  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-50 GIT revision 18046:83c162886:20201216
 
