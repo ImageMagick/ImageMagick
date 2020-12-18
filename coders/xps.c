@@ -206,11 +206,6 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   delta.x=DefaultResolution;
   delta.y=DefaultResolution;
-  if (image_info->ping != MagickFalse)
-    {
-      image->resolution.x=2.0;
-      image->resolution.y=2.0;
-    }
   if ((image->resolution.x == 0.0) || (image->resolution.y == 0.0))
     {
       flags=ParseGeometry(PSDensityGeometry,&geometry_info);
@@ -273,6 +268,8 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   options=AcquireString("");
   (void) FormatLocaleString(density,MagickPathExtent,"%gx%g",resolution.x,
     resolution.y);
+  if (image_info->ping != MagickFalse)
+    (void) FormatLocaleString(density,MagickPathExtent,"2.0x2.0");
   (void) FormatLocaleString(options,MagickPathExtent,"-g%.20gx%.20g ",(double)
     page.width,(double) page.height);
   read_info=CloneImageInfo(image_info);
@@ -392,10 +389,10 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     postscript_image->page=page;
     if (image_info->ping != MagickFalse)
       {
-        postscript_image->magick_columns*=DefaultResolution/2.0;
-        postscript_image->magick_rows*=DefaultResolution/2.0;
-        postscript_image->columns*=DefaultResolution/2.0;
-        postscript_image->rows*=DefaultResolution/2.0;
+        postscript_image->magick_columns*=image->resolution.x/2.0;
+        postscript_image->magick_rows*=image->resolution.y/2.0;
+        postscript_image->columns*=image->resolution.x/2.0;
+        postscript_image->rows*=image->resolution.y/2.0;
       }
     (void) CloneImageProfiles(postscript_image,image);
     (void) CloneImageProperties(postscript_image,image);

@@ -225,11 +225,6 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   delta.x=DefaultResolution;
   delta.y=DefaultResolution;
-  if (image_info->ping != MagickFalse)
-    {
-      image->resolution.x=2.0;
-      image->resolution.y=2.0;
-    }
   if ((image->resolution.x == 0.0) || (image->resolution.y == 0.0))
     {
       GeometryInfo
@@ -336,6 +331,8 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   options=AcquireString("");
   (void) FormatLocaleString(density,MagickPathExtent,"%gx%g",
     image->resolution.x,image->resolution.y);
+  if (image_info->ping != MagickFalse)
+    (void) FormatLocaleString(density,MagickPathExtent,"2.0x2.0");
   page.width=(size_t) floor(page.width*image->resolution.x/delta.x+0.5);
   page.height=(size_t) floor(page.height*image->resolution.y/delta.y+0.5);
   (void) FormatLocaleString(options,MagickPathExtent,"-g%.20gx%.20g ",(double)
@@ -391,10 +388,10 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->page=page;
     if (image_info->ping != MagickFalse)
       {
-        image->magick_columns*=DefaultResolution/2.0;
-        image->magick_rows*=DefaultResolution/2.0;
-        image->columns*=DefaultResolution/2.0;
-        image->rows*=DefaultResolution/2.0;
+        image->magick_columns*=image->resolution.x/2.0;
+        image->magick_rows*=image->resolution.y/2.0;
+        image->columns*=image->resolution.x/2.0;
+        image->rows*=image->resolution.y/2.0;
       }
     next_image=SyncNextImageInList(image);
     if (next_image != (Image *) NULL)
