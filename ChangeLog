@@ -1,3 +1,10 @@
+2020-12-19  7.0.10-52  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-52 GIT revision 18...
+
+2020-12-19  7.0.10-52  <quetzlzacatenango@image...>
+  * return alpha bytes with stream utility (reference
+    https://github.com/ImageMagick/ImageMagick/discussions/2862).
+
 2020-12-18  7.0.10-51  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-51 GIT revision 18052:475508769:20201218
 

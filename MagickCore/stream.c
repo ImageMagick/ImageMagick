@@ -881,6 +881,37 @@ MagickExport MagickBooleanType OpenStream(const ImageInfo *image_info,
 %      pixels.
 %
 */
+
+static inline MagickBooleanType ValidatePixelCacheMorphology(
+  const Image *magick_restrict image)
+{
+  const CacheInfo
+    *magick_restrict cache_info;
+
+  const PixelChannelMap
+    *magick_restrict p,
+    *magick_restrict q;
+
+  /*
+    Does the image match the pixel cache morphology?
+  */
+  cache_info=(CacheInfo *) image->cache;
+  p=image->channel_map;
+  q=cache_info->channel_map;
+  if ((image->storage_class != cache_info->storage_class) ||
+      (image->colorspace != cache_info->colorspace) ||
+      (image->alpha_trait != cache_info->alpha_trait) ||
+      (image->channels != cache_info->channels) ||
+      (image->columns != cache_info->columns) ||
+      (image->rows != cache_info->rows) ||
+      (image->number_channels != cache_info->number_channels) ||
+      (memcmp(p,q,image->number_channels*sizeof(*p)) != 0) ||
+      (image->metacontent_extent != cache_info->metacontent_extent) ||
+      (cache_info->nexus_info == (NexusInfo **) NULL))
+    return(MagickFalse);
+  return(MagickTrue);
+}
+
 static Quantum *QueueAuthenticPixelsStream(Image *image,const ssize_t x,
   const ssize_t y,const size_t columns,const size_t rows,
   ExceptionInfo *exception)
@@ -922,16 +953,20 @@ static Quantum *QueueAuthenticPixelsStream(Image *image,const ssize_t x,
     }
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickCoreSignature);
-  if ((image->storage_class != GetPixelCacheStorageClass(image->cache)) ||
-      (image->colorspace != GetPixelCacheColorspace(image->cache)))
+  if (ValidatePixelCacheMorphology(image) == MagickFalse)
     {
-      if (GetPixelCacheStorageClass(image->cache) == UndefinedClass)
+      if (cache_info->storage_class == UndefinedClass)
         (void) stream_handler(image,(const void *) NULL,(size_t)
           cache_info->columns);
       cache_info->storage_class=image->storage_class;
       cache_info->colorspace=image->colorspace;
+      cache_info->alpha_trait=image->alpha_trait;
+      cache_info->channels=image->channels;
       cache_info->columns=image->columns;
       cache_info->rows=image->rows;
+      cache_info->number_channels=image->number_channels;
+      InitializePixelChannelMap(image);
+      ResetPixelCacheChannels(image);
       image->cache=cache_info;
     }
   /*
@@ -2420,7 +2455,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             *q++=GetPixelBlue(image,p);
             *q++=GetPixelGreen(image,p);
             *q++=GetPixelRed(image,p);
-            *q++=0;
+            *q++=(Quantum) 0;
             p+=GetPixelChannels(image);
           }
           break;
@@ -2476,7 +2511,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             *q++=GetPixelRed(image,p);
             *q++=GetPixelGreen(image,p);
             *q++=GetPixelBlue(image,p);
-            *q++=0U;
+            *q++=(Quantum) 0;
             p+=GetPixelChannels(image);
           }
           break;
@@ -2531,7 +2566,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
               break;
             }
             default:
-              *q=0;
+              *q=(Quantum) 0;
           }
           q++;
         }

@@ -3725,8 +3725,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   cache_info->length=length;
   if (image->ping != MagickFalse)
     {
-      cache_info->storage_class=image->storage_class;
-      cache_info->colorspace=image->colorspace;
       cache_info->type=PingCache;
       return(MagickTrue);
     }
