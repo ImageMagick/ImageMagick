@@ -1,9 +1,11 @@
 2020-12-19  7.0.10-52  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-52 GIT revision 18055:17b281e69:20201219
+  * Release ImageMagick version 7.0.10-52 GIT revision 18057:1f5bab30b:20201219
 
 2020-12-19  7.0.10-52  <quetzlzacatenango@image...>
   * return alpha bytes with stream utility (reference
     https://github.com/ImageMagick/ImageMagick/discussions/2862).
+  * percentage -border in x no longer adds one pixel border in y (reference
+    https://github.com/ImageMagick/ImageMagick/issues/2978).
 
 2020-12-18  7.0.10-51  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-51 GIT revision 18052:475508769:20201218
