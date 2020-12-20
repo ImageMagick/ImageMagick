@@ -451,7 +451,18 @@ do
     trap 'ret=$?; rm -f "$dsttmp" "$rmtmp" && exit $ret' 0
 
     # Copy the file name to the temp name.
-    (umask $cp_umask && $doit_exec $cpprog "$src" "$dsttmp") &&
+    (umask $cp_umask &&
+     { test -z "$stripcmd" || {
+	 # Create $dsttmp read-write so that cp doesn't create it read-only,
+	 # which would cause strip to fail.
+	 if test -z "$doit"; then
+	   : >"$dsttmp" # No need to fork-exec 'touch'.
+	 else
+	   $doit touch "$dsttmp"
+	 fi
+       }
+     } &&
+     $doit_exec $cpprog "$src" "$dsttmp") &&
 
     # and set any options; do chmod last to preserve setuid bits.
     #
