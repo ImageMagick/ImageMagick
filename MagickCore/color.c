@@ -2177,6 +2177,87 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *cache,const char *xml,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static MagickStatusType ParseCSSColor(const char *magick_restrict color,
+  GeometryInfo *geometry_info)
+{
+  char
+    *q;
+
+  register ssize_t
+    i;
+
+  MagickStatusType
+    flags;
+
+  (void) memset(geometry_info,0,sizeof(*geometry_info));
+  flags=NoValue;
+  if ((color == (char *) NULL) || (*color == '\0'))
+    return(flags);
+  q=(char *) color;
+  if (*q == '(')
+    q++;
+  for (i=0; (i < 5) && (*q != ')') && (*q != '\0'); i++)
+  {
+    double
+      intensity;
+
+    intensity=StringToDouble(q,&q);
+    if ((intensity > 0.0) && (intensity < 1.0))
+      intensity*=255.0;
+    if (*q == '%')
+      {
+        intensity*=255.0/100.0;
+        q++;
+      }
+    switch (i)
+    {
+      case 0:
+      {
+        geometry_info->rho=intensity;
+        flags|=RhoValue;
+        if (LocaleNCompare(q,"deg",3) == 0)
+          q+=3;
+        break;
+      }
+      case 1:
+      {
+        geometry_info->sigma=intensity;
+        flags|=SigmaValue;
+        break;
+      }
+      case 2:
+      {
+        geometry_info->xi=intensity;
+        flags|=XiValue;
+        break;
+      }
+      case 3:
+      {
+        geometry_info->psi=intensity;
+        flags|=PsiValue;
+        break;
+      }
+      case 4:
+      {
+        geometry_info->chi=intensity;
+        flags|=ChiValue;
+        break;
+      }
+    }
+    while (isspace((int) ((unsigned char) *q)) != 0)
+      q++;
+    if (*q == ',')
+      q++;
+    if (*q == '/')
+      {
+        flags|=AlphaValue;
+        q++;
+      }
+  }
+  return(flags);
+}
+
 MagickExport MagickBooleanType QueryColorCompliance(const char *name,
   const ComplianceType compliance,PixelInfo *color,ExceptionInfo *exception)
 {
@@ -2365,9 +2446,9 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
         }
       SetGeometryInfo(&geometry_info);
       if (i >= (ssize_t) strlen(name))
-        flags=ParseGeometry(name,&geometry_info);
+        flags=ParseCSSColor(name,&geometry_info);
       else
-        flags=ParseGeometry(name+i+1,&geometry_info);
+        flags=ParseCSSColor(name+i+1,&geometry_info);
       if (flags == 0)
         {
           char
@@ -2400,8 +2481,8 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
           colorname=DestroyString(colorname);
           return(status);
         }
-      if ((flags & PercentValue) != 0)
-        scale=(double) (QuantumRange/100.0);
+      if ((flags & AlphaValue) != 0)
+        color->alpha_trait=BlendPixelTrait;
       if ((flags & RhoValue) != 0)
         color->red=(double) ClampToQuantum((MagickRealType) (scale*
           geometry_info.rho));
@@ -2419,8 +2500,8 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
               geometry_info.psi));
           else
             if (color->alpha_trait != UndefinedPixelTrait)
-              color->alpha=(double) ClampToQuantum(QuantumRange*
-                geometry_info.psi);
+              color->alpha=(double) ClampToQuantum((MagickRealType) (scale*
+                geometry_info.psi));
         }
       if (((flags & ChiValue) != 0) &&
           (color->alpha_trait != UndefinedPixelTrait))
@@ -2458,8 +2539,6 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
             red;
 
           scale=1.0/255.0;
-          if ((flags & PercentValue) != 0)
-            scale=1.0/100.0;
           geometry_info.sigma*=scale;
           geometry_info.xi*=scale;
           red=0.0;
