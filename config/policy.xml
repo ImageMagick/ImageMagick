@@ -78,5 +78,5 @@
   <!-- <policy domain="system" name="max-memory-request" value="256MiB"/> -->
   <!-- <policy domain="system" name="shred" value="2"/> -->
   <!-- <policy domain="system" name="precision" value="6"/> -->
-  <!-- <policy domain="system" name="font" value="/path/to/font.ttf"/> -->
+  <!-- <policy domain="system" name="font" value="/path/to/unicode-font.ttf"/> -->
 </policymap>
