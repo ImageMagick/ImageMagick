@@ -126,8 +126,8 @@ static ResourceInfo
     MagickULLConstant(0),              /* initial thread */
     MagickULLConstant(0),              /* initial throttle */
     MagickULLConstant(0),              /* initial time */
-    (INT_MAX/(5*sizeof(Quantum))),     /* width limit */
-    (INT_MAX/(5*sizeof(Quantum))),     /* height limit */
+    SSIZE_MAX/2,                       /* width limit */
+    SSIZE_MAX/2,                       /* height limit */
     MagickResourceInfinity,            /* list length limit */
     MagickULLConstant(3072)*1024*1024, /* area limit */
     MagickULLConstant(1536)*1024*1024, /* memory limit */
