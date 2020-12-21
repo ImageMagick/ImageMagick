@@ -2199,12 +2199,16 @@ static MagickStatusType ParseCSSColor(const char *magick_restrict color,
     q++;
   for (i=0; (i < 5) && (*q != ')') && (*q != '\0'); i++)
   {
+    char
+      *p;
+
     double
       intensity;
 
-    intensity=StringToDouble(q,&q);
-    if ((intensity > 0.0) && (intensity < 1.0))
-      intensity*=255.0;
+    p=q;
+    intensity=StringToDouble(p,&q);
+    if (p == q)
+      break;
     if (*q == '%')
       {
         intensity*=255.0/100.0;
