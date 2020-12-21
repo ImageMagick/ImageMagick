@@ -561,7 +561,7 @@ MagickBooleanType sixel_decode(Image *image,
     *pwidth = imsx;
     *pheight = imsy;
     *ncolors = max_color_index + 1;
-    *palette = (unsigned char *) AcquireQuantumMemory(*ncolors, 4 * sizeof(unsigned char));
+    *palette = (unsigned char *) AcquireQuantumMemory(*ncolors,4);
     if (*palette == (unsigned char *) NULL)
       return(MagickFalse);
     for (n = 0; n < (ssize_t) *ncolors; ++n) {
@@ -1030,7 +1030,7 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
   */
   length=MagickPathExtent;
   sixel_buffer=(char *) AcquireQuantumMemory((size_t) length+MagickPathExtent,
-    sizeof(char));
+    sizeof(*sixel_buffer));
   p=sixel_buffer;
   if (sixel_buffer != (char *) NULL)
     while (ReadBlobString(image,p) != (char *) NULL)
@@ -1044,7 +1044,7 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
         continue;
       length<<=1;
       sixel_buffer=(char *) ResizeQuantumMemory(sixel_buffer,length+
-        MagickPathExtent+1,sizeof(char));
+        MagickPathExtent+1,sizeof(*sixel_buffer));
       if (sixel_buffer == (char *) NULL)
         break;
       p=sixel_buffer+strlen(sixel_buffer);
