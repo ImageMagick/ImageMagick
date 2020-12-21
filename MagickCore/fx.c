@@ -520,11 +520,13 @@ static inline MagickBooleanType IsFxFunction(const char *expression,
   return(MagickFalse);
 }
 
-static MagickOffsetType FxGCD(MagickOffsetType alpha,MagickOffsetType beta)
+static inline double FxGCD(const double alpha,const double beta)
 {
-  if (beta != 0)
-    return(FxGCD(beta,alpha % beta));
-  return(alpha);
+  if (alpha < beta) 
+    return(FxGCD(beta,alpha)); 
+  if (fabs(beta) < MagickEpsilon) 
+    return(alpha); 
+  return(FxGCD(beta,alpha-beta*floor(alpha/beta))); 
 }
 
 static inline const char *FxSubexpression(const char *expression,
@@ -2277,14 +2279,13 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
         }
       if (IsFxFunction(expression,"gcd",3) != MagickFalse)
         {
-          MagickOffsetType
+          double
             gcd;
 
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,
             depth+1,beta,exception);
-          gcd=FxGCD((MagickOffsetType) (alpha+0.5),(MagickOffsetType) (*beta+
-            0.5));
-          FxReturn((double) gcd);
+          gcd=FxGCD(alpha,*beta);
+          FxReturn(gcd);
         }
       if (LocaleCompare(expression,"g") == 0)
         FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
