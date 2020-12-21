@@ -594,6 +594,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       return(status);
     }
     case CMYColorspace:
+    case DisplayP3Colorspace:
     case HCLColorspace:
     case HCLpColorspace:
     case HSBColorspace:
@@ -679,6 +680,12 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             case CMYColorspace:
             {
               ConvertRGBToCMY(red,green,blue,&X,&Y,&Z);
+              break;
+            }
+            case DisplayP3Colorspace:
+            {
+              ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
+              ConvertXYZToP3(X,Y,Z,&red,&green,&blue);
               break;
             }
             case HCLColorspace:
@@ -2143,6 +2150,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       return(status);
     }
     case CMYColorspace:
+    case DisplayP3Colorspace:
     case HCLColorspace:
     case HCLpColorspace:
     case HSBColorspace:
@@ -2228,6 +2236,12 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             case CMYColorspace:
             {
               ConvertCMYToRGB(X,Y,Z,&red,&green,&blue);
+              break;
+            }
+            case DisplayP3Colorspace:
+            {
+              ConvertP3ToXYZ(red,green,blue,&X,&Y,&Z);
+              ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
               break;
             }
             case HCLColorspace:

@@ -465,6 +465,7 @@ static const OptionInfo
     { "CIELab", LabColorspace, UndefinedOptionFlag, MagickFalse },
     { "CMY", CMYColorspace, UndefinedOptionFlag, MagickFalse },
     { "CMYK", CMYKColorspace, UndefinedOptionFlag, MagickFalse },
+    { "DisplayP3", DisplayP3Colorspace, UndefinedOptionFlag, MagickFalse },
     { "Gray", GRAYColorspace, UndefinedOptionFlag, MagickFalse },
     { "HCL", HCLColorspace, UndefinedOptionFlag, MagickFalse },
     { "HCLp", HCLpColorspace, UndefinedOptionFlag, MagickFalse },

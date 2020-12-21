@@ -128,6 +128,28 @@ static inline void ConvertLuvToXYZ(const double L,const double u,const double v,
     5.0*(*Y);
 }
 
+static inline void ConvertP3ToXYZ(const double red,const double green,
+  const double blue,double *X,double *Y,double *Z)
+{
+  double
+    b,
+    g,
+    r;
+
+  /*
+    Convert Display P3 to XYZ colorspace.
+  */
+  assert(X != (double *) NULL);
+  assert(Y != (double *) NULL);
+  assert(Z != (double *) NULL);
+  r=QuantumScale*DecodePixelGamma(red);
+  g=QuantumScale*DecodePixelGamma(green);
+  b=QuantumScale*DecodePixelGamma(blue);
+  *X=0.4865709486482162*r+0.26566769316909306*g+0.1982172852343625*b;
+  *Y=0.2289745640697488*r+0.6917385218365064*g+0.079286914093745*b;
+  *Z=0.0000000000000000*r+0.04511338185890264*g+1.043944368900976*b;
+}
+
 static inline void ConvertRGBToXYZ(const double red,const double green,
   const double blue,double *X,double *Y,double *Z)
 {
@@ -197,6 +219,25 @@ static inline void ConvertXYZToLuv(const double X,const double Y,const double Z,
   *L/=100.0;
   *u=(*u+134.0)/354.0;
   *v=(*v+140.0)/262.0;
+}
+
+static inline void ConvertXYZToP3(const double X,const double Y,
+  const double Z,double *red,double *green,double *blue)
+{
+  double
+    b,
+    g,
+    r;
+
+  assert(red != (double *) NULL);
+  assert(green != (double *) NULL);
+  assert(blue != (double *) NULL);
+  r=2.493496911941425*X-0.9313836179191239*Y-0.40271078445071684*Z;
+  g=(-0.8294889695615747)*X+1.7626640603183463*Y+0.023624685841943577*Z;
+  b=0.03584583024378447*X-0.07617238926804182*Y+0.9568845240076872*Z;
+  *red=EncodePixelGamma(QuantumRange*r);
+  *green=EncodePixelGamma(QuantumRange*g);
+  *blue=EncodePixelGamma(QuantumRange*b);
 }
 
 static inline void ConvertXYZToRGB(const double X,const double Y,const double Z,

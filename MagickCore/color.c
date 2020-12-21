@@ -2415,14 +2415,15 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
             scale=(double) QuantumRange;
           icc_color=MagickTrue;
         }
-      if (LocaleCompare(colorspace,"icc-color") == 0)
+      if ((LocaleCompare(colorspace,"color") == 0) ||
+          (LocaleCompare(colorspace,"icc-color") == 0))
         {
           register ssize_t
             j;
 
           (void) CopyMagickString(colorspace,name+i+2,MagickPathExtent);
           for (j=0; colorspace[j] != '\0'; j++)
-            if (colorspace[j] == ',')
+            if ((colorspace[j] == ' ') || (colorspace[j] == ','))
               break;
           colorspace[j--]='\0';
           i+=j+3;
