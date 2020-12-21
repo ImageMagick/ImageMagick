@@ -2190,7 +2190,7 @@ static MagickStatusType ParseCSSColor(const char *magick_restrict color,
   MagickStatusType
     flags;
 
-  (void) memset(geometry_info,0,sizeof(*geometry_info));
+  SetGeometryInfo(geometry_info);
   flags=NoValue;
   if ((color == (char *) NULL) || (*color == '\0'))
     return(flags);
@@ -2444,7 +2444,6 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
           color->colorspace=sRGBColorspace;  /* as required by SVG standard */
           color->depth=8;
         }
-      SetGeometryInfo(&geometry_info);
       if (i >= (ssize_t) strlen(name))
         flags=ParseCSSColor(name,&geometry_info);
       else
