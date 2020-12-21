@@ -449,7 +449,7 @@ MagickBooleanType sixel_decode(Image *image,
                 }
                 (void) memset(dmbuf, background_color_index, (size_t) dmsx * dmsy * sizeof(sixel_pixel_t));
                 for (y = 0; y < imsy; ++y) {
-                    (void) memcpy(dmbuf + dmsx, imbuf + imsx * y, imsx * sizeof(sixel_pixel_t));
+                    (void) memcpy(dmbuf + dmsx * y, imbuf + imsx * y, imsx * sizeof(sixel_pixel_t));
                 }
                 imbuf = (sixel_pixel_t *) RelinquishMagickMemory(imbuf);
                 imsx = dmsx;
