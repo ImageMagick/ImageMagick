@@ -1029,7 +1029,7 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
   status=SetImageExtent(outLayer->image,outLayer->image->columns,
     outLayer->image->rows,exception);
   if (status != MagickFalse)
-    status=ResetImagePixels(image,exception);
+    status=ResetImagePixels(outLayer->image,exception);
   if (status == MagickFalse)
     {
       outLayer->image=DestroyImageList(outLayer->image);
