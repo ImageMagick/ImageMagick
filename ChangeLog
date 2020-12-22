@@ -6,6 +6,8 @@
   * eliminate possible arthimetic overflow (reference
     https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=28849)
   * support display-p3 colorspace
+  * read/write 1024 colors Sixel images (reference
+    https://github.com/ImageMagick/ImageMagick/discussions/3018).
 
 2020-12-19  7.0.10-52  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-52 GIT revision 18057:1f5bab30b:20201219
