@@ -235,7 +235,7 @@ MagickBooleanType sixel_decode(Image *image,
                                size_t                     /* out */ *pwidth,    /* image width */
                                size_t                     /* out */ *pheight,   /* image height */
                                unsigned char              /* out */ **palette,  /* ARGB palette */
-                               size_t                     /* out */ *ncolors,    /* palette size (<= 1024) */
+                               size_t                     /* out */ *ncolors,   /* palette size (<= SIXEL_PALETTE_MAX) */
   ExceptionInfo *exception)
 {
     int n, i, r, g, b, sixel_vertical_mask, c;
