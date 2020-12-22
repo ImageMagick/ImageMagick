@@ -126,8 +126,8 @@ static ResourceInfo
     MagickULLConstant(0),              /* initial thread */
     MagickULLConstant(0),              /* initial throttle */
     MagickULLConstant(0),              /* initial time */
-    SSIZE_MAX/MaxPixelChannel,         /* width limit */
-    SSIZE_MAX/MaxPixelChannel,         /* height limit */
+    SSIZE_MAX/MaxPixelChannels,        /* width limit */
+    SSIZE_MAX/MaxPixelChannels,        /* height limit */
     MagickResourceInfinity,            /* list length limit */
     MagickULLConstant(3072)*1024*1024, /* area limit */
     MagickULLConstant(1536)*1024*1024, /* memory limit */
