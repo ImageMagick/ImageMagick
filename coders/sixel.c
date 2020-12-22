@@ -320,11 +320,18 @@ MagickBooleanType sixel_decode(Image *image,
                     case 3:
                         attributed_pad = 4;
                         break;
+                    case 4:
+                        attributed_pad = 4;
+                        break;
                     case 5:
+                        attributed_pad = 3;
+                        break;
                     case 6:
                         attributed_pad = 3;
                         break;
                     case 7:
+                        attributed_pad = 2;
+                        break;
                     case 8:
                         attributed_pad = 2;
                         break;
@@ -1003,7 +1010,7 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
     y;
 
   sixel_pixel_t
-	 *sixel_pixels;
+    *sixel_pixels;
 
   unsigned char
     *sixel_palette;
