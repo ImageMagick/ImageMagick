@@ -307,8 +307,8 @@ static int ReadSingleWEBPImage(Image *image,const uint8_t *stream,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((x >= x_offset && x < x_offset + image_width) &&
-          (y >= y_offset && y < y_offset + image_height))
+      if ((x >= x_offset && x < (ssize_t) (x_offset+image_width)) &&
+          (y >= y_offset && y < (ssize_t) (y_offset+image_height)))
         {
           SetPixelRed(image,ScaleCharToQuantum(*p++),q);
           SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
