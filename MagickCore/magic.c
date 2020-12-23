@@ -181,7 +181,7 @@ static int CompareMagickInfoSize(const void *a,const void *b)
       else
         return((int) (ma->offset-mb->offset));
     }
-  return((int) (mb->length-ma->length));
+  return((int) (mb->length-(ssize_t) ma->length));
 }
 
 static LinkedListInfo *AcquireMagicList(ExceptionInfo *exception)
