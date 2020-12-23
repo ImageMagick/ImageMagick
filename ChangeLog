@@ -5,7 +5,7 @@
   * CSS colors no longer require commas.
   * eliminate possible arthimetic overflow (reference
     https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=28849)
-  * support display-p3 colorspace
+  * support display-p3, Adobe-98, and Pro-photo colorspaces
   * read/write 1024 colors Sixel images (reference
     https://github.com/ImageMagick/ImageMagick/discussions/3018).
 
