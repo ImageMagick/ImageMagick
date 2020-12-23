@@ -524,7 +524,7 @@ static inline double FxGCD(const double alpha,const double beta)
 {
   if (alpha < beta) 
     return(FxGCD(beta,alpha)); 
-  if (fabs(beta) < MagickEpsilon) 
+  if (fabs(beta) < 0.001) 
     return(alpha); 
   return(FxGCD(beta,alpha-beta*floor(alpha/beta))); 
 }
