@@ -852,7 +852,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
     offset;
 
   void
-    *sans[2] = { NULL, NULL };
+    *sans[4] = { NULL, NULL, NULL, NULL };
 
   /*
     Read EXIF properties.
