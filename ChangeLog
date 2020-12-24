@@ -1,7 +1,7 @@
-2020-12-19  7.0.10-53  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-53 GIT revision 18...
+2020-12-24  7.0.10-53  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-53 GIT revision 18083:3b141f557:20201224
 
-2020-12-39  7.0.10-53  <quetzlzacatenango@image...>
+2020-12-20  7.0.10-53  <quetzlzacatenango@image...>
   * CSS colors no longer require commas.
   * eliminate possible arthimetic overflow (reference
     https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=28849)
