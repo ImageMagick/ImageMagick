@@ -50,11 +50,6 @@ extern "C" {
 #define UndefinedCompressionQuality  0UL
 #define UndefinedTicksPerSecond  100L
 
-static inline double DegreesToRadians(const double degrees)
-{
-  return((double) (MagickPI*degrees/180.0));
-}
-
 static inline ssize_t CastDoubleToLong(const double value)
 {
   if (IsNaN(value) != 0)
@@ -64,6 +59,11 @@ static inline ssize_t CastDoubleToLong(const double value)
   if (value < (double) -SSIZE_MAX)
     return((ssize_t) -SSIZE_MAX);
   return((ssize_t) value);
+}
+
+static inline double DegreesToRadians(const double degrees)
+{
+  return((double) (MagickPI*degrees/180.0));
 }
 
 static inline double RadiansToDegrees(const double radians)
