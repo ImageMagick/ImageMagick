@@ -1862,7 +1862,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
     pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
     (void) memset(pixels,0,number_pixels*sizeof(uint32));
-    quantum_type=IndexQuantum;
+    quantum_type=GrayQuantum;
+    if (image->storage_class == PseudoClass)
+      quantum_type=IndexQuantum;
     if (interlace != PLANARCONFIG_SEPARATE)
       {
         size_t
@@ -1877,9 +1879,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               quantum_type=samples_per_pixel == 1 ? AlphaQuantum :
                 GrayAlphaQuantum;
           }
-        else
-          if (image->storage_class != PseudoClass)
-            quantum_type=GrayQuantum;
         if ((samples_per_pixel > 2) && (interlace != PLANARCONFIG_SEPARATE))
           {
             quantum_type=RGBQuantum;
