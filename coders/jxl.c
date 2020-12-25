@@ -60,10 +60,22 @@
 #include <brunsli/encode.h>
 
 /*
+  Typedef declarations.
+*/
+typedef struct JXLInfo
+{
+  unsigned char
+    *data;
+
+  size_t
+    extent;
+} JXLInfo;
+
+/*
   Forward declarations.
 */
 static MagickBooleanType
-  WriteJXLImage(const ImageInfo *,Image *);
+  WriteJXLImage(const ImageInfo *,Image *,ExceptionInfo *);
 #endif
 
 #if defined(MAGICKCORE_JXL_DELEGATE)
@@ -95,83 +107,106 @@ static MagickBooleanType
 %
 */
 
-/*
-  Typedef declarations.
-*/
-typedef struct OutBuffer
+static size_t BufferJXLContent(void *data,const uint8_t *buffer,size_t extent)
 {
-  unsigned char
-    *data;
+  JXLInfo
+    *jxl_info;
 
-  size_t
-    size;
-} OutBuffer;
-
-static size_t AllocOutput(void* data, const uint8_t* buf, size_t count)
-{
-  OutBuffer *buffer=(OutBuffer *) data;
-  buffer->data=ResizeQuantumMemory(buffer->data,buffer->size+count,
-    sizeof(*buffer->data));
-  if (!buffer->data) return 0;
-  memcpy(buffer->data+buffer->size, buf, count);
-  buffer->size+=count;
-  return(count);
+  jxl_info=(JXLInfo *) data;
+  jxl_info->data=(unsigned char *) ResizeQuantumMemory(jxl_info->data,
+    jxl_info->extent+extent,sizeof(*jxl_info->data));
+  if (jxl_info->data == (unsigned char *) NULL)
+    return(0);
+  (void) memcpy(jxl_info->data+jxl_info->extent,buffer,extent);
+  jxl_info->extent+=extent;
+  return(extent);
 }
 
 static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
-    *temp_image,
-    *result;
+    *image;
+
+  JXLInfo
+    jxl_info;
 
   MagickBooleanType
     status;
 
-  OutBuffer
-    b;
+  MagickSizeType
+    extent;
+
+  ssize_t
+    count;
 
   unsigned char
-    *jxl;
+    *buffer;
 
   /*
-    TODO: do we need an Image here? No pixels are needed, but OpenBlob
-    needs an Image.
+    Open image file.
   */
-  temp_image=AcquireImage(image_info, exception);
-  status=OpenBlob(image_info,temp_image,ReadBinaryBlobMode,exception);
-  jxl=NULL;
-  size_t jxlsize = 0;
-  if (status == MagickTrue)
-  {
-    jxlsize=(size_t) GetBlobSize(temp_image);
-    jxl=(unsigned char *) AcquireQuantumMemory(1,jxlsize);
-    size_t num_read=ReadBlob(temp_image,jxlsize,jxl);
-    if (num_read != jxlsize) status=MagickFalse;
-  }
-  (void) DestroyImage(temp_image);
-
-  b.data=NULL;
-  b.size=0;
-
-  if (status == MagickTrue)
-  {
-    status=DecodeBrunsli(jxlsize,jxl,&b,AllocOutput) == 1 ?
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickCoreSignature);
+  if (image_info->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      image_info->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
+  image=AcquireImage(image_info, exception);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    {
+      image=DestroyImageList(image);
+      return((Image *) NULL);
+    }
+  /*
+    Read JXL image.
+  */
+  extent=(size_t) GetBlobSize(image);
+  buffer=(unsigned char *) AcquireQuantumMemory(extent,sizeof(*buffer));
+  if (buffer == (unsigned char *) NULL)
+    status=MagickFalse;
+  else
+    {
+      count=ReadBlob(image,extent,buffer);
+      if (count != (ssize_t) extent)
+        status=MagickFalse;
+    }
+  image=DestroyImage(image);
+  /*
+    Unpackage JPEG image from JXL.
+  */
+  jxl_info.data=(unsigned char *) NULL;
+  jxl_info.extent=0;
+  if (status != MagickFalse)
+    {
+      status=DecodeBrunsli(extent,buffer,&jxl_info,BufferJXLContent) == 1 ?
         MagickTrue : MagickFalse;
-  }
-  (void) RelinquishMagickMemory(jxl);
+      buffer=(unsigned char *) RelinquishMagickMemory(buffer);
+    }
+  if (status != MagickFalse)
+    {
+      ImageInfo
+        *write_info;
 
-  result=NULL;
-
-  if (status == MagickTrue)
-  {
-    ImageInfo* temp_info=AcquireImageInfo();
-    SetImageInfoBlob(temp_info,b.data,b.size);
-    result=BlobToImage(temp_info,b.data,b.size,exception);
-    (void) DestroyImageInfo(temp_info);
-  }
-  (void) RelinquishMagickMemory(b.data);
-
-  return(result);
+      /*
+        Convert JXL format.
+      */
+      write_info=AcquireImageInfo();
+      SetImageInfoBlob(write_info,jxl_info.data,jxl_info.extent);
+      image=BlobToImage(write_info,jxl_info.data,jxl_info.extent,exception);
+      if (image != (Image *) NULL)
+        {
+          (void) CopyMagickString(image->filename,image_info->filename,
+            MagickPathExtent);
+          (void) CopyMagickString(image->magick,image_info->magick,
+            MagickPathExtent);
+        }
+      write_info=DestroyImageInfo(write_info);
+    }
+  if (jxl_info.data != (unsigned char *) NULL)
+    jxl_info.data=(unsigned char *) RelinquishMagickMemory(jxl_info.data);
+  return(image);
 }
 #endif
 
@@ -210,7 +245,7 @@ ModuleExport size_t RegisterJXLImage(void)
 #endif
   entry->note=ConstantString(
     "JPEG1 recompression as specified in https://arxiv.org/pdf/1908.03565.pdf"
-    " page 135. Full JPEG XL support will be implemented in this coder later.");
+    " page 135. Full JPEG XL support is pending.");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
@@ -266,62 +301,68 @@ ModuleExport void UnregisterJXLImage(void)
 %
 %    o image:  The image.
 %
-%
 */
-static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,
-    Image *image)
+static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
-  ExceptionInfo
-    *exception;
-
   Image
-    *temp_image;
+    *write_image;
 
   ImageInfo
-    *temp_info;
+    *write_info;
+
+  JXLInfo
+    jxl_info;
 
   MagickBooleanType
     status;
 
-  OutBuffer
-    b;
-
   size_t
-    jpegsize;
+    extent;
 
   unsigned char
-    *jpeg;
-
-  exception=AcquireExceptionInfo();
+    *jpeg_blob;
 
   /*
-    TODO: can cloning the image be avoided? The pixels don't need to be cloned,
-    only filename or blob information. ImageToBlob overwrites this information.
+    Open output image file.
   */
-  temp_image=CloneImage(image, 0, 0, MagickTrue, exception);
-  temp_info=AcquireImageInfo();
-  (void) CopyMagickString(temp_image->magick,"JPG",MaxTextExtent);
-  jpeg=ImageToBlob(temp_info,temp_image,&jpegsize,exception);
-  (void) DestroyImage(temp_image);
-  (void) DestroyImageInfo(temp_info);
-
-  b.data=NULL;
-  b.size=0;
-  status=EncodeBrunsli(jpegsize,jpeg,&b,AllocOutput) == 1 ?
-      MagickTrue : MagickFalse;
-  if (status == MagickTrue)
-  {
-    status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
-  }
-
-  if (status == MagickTrue)
-  {
-    WriteBlob(image,b.size,b.data);
-    CloseBlob(image);
-  }
-  (void) RelinquishMagickMemory(b.data);
-
-  if(exception) exception=DestroyExceptionInfo(exception);
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickCoreSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    return(status);
+  /*
+    Write image as a JPEG blob.
+  */
+  write_info=AcquireImageInfo();
+  write_image=CloneImage(image,0,0,MagickTrue,exception);
+  (void) CopyMagickString(write_image->magick,"JPG",MaxTextExtent);
+  jpeg_blob=ImageToBlob(write_info,write_image,&extent,exception);
+  write_image=DestroyImage(write_image);
+  write_info=DestroyImageInfo(write_info);
+  if (jpeg_blob == (unsigned char *) NULL)
+    return(MagickFalse);
+  /*
+    Repackage JPEG image.
+  */
+  jxl_info.data=(unsigned char *) NULL;
+  jxl_info.extent=0;
+  status=EncodeBrunsli(extent,jpeg_blob,&jxl_info,BufferJXLContent) == 1 ?
+    MagickTrue : MagickFalse;
+  jpeg_blob=(unsigned char *) RelinquishMagickMemory(jpeg_blob);
+  if (status != MagickFalse)
+    {
+      (void) WriteBlob(image,jxl_info.extent,jxl_info.data);
+      (void) CloseBlob(image);
+    }
+  if (jxl_info.data != (unsigned char *) NULL)
+    jxl_info.data=(unsigned char *) RelinquishMagickMemory(jxl_info.data);
   return(status);
 }
 #endif
