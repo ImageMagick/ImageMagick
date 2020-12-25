@@ -273,7 +273,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
       draw_info=DestroyDrawInfo(draw_info);
       ThrowReaderException(TypeError,"UnableToGetTypeMetrics");
     }
-  page.y=MagickDoubleToLong(ceil((double) page.y+metrics.ascent-0.5));
+  page.y=CastDoubleToLong(ceil((double) page.y+metrics.ascent-0.5));
   (void) FormatLocaleString(geometry,MagickPathExtent,"%gx%g%+g%+g",(double)
     image->columns,(double) image->rows,(double) page.x,(double) page.y);
   (void) CloneString(&draw_info->geometry,geometry);
@@ -574,8 +574,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           MagickMax(black+0.5,0.0),range);
         pixel.alpha=(MagickRealType) ScaleAnyToQuantum((QuantumAny)
           MagickMax(alpha+0.5,0.0),range);
-        q=GetAuthenticPixels(image,MagickDoubleToLong(x_offset),
-          MagickDoubleToLong(y_offset),1,1,exception);
+        q=GetAuthenticPixels(image,CastDoubleToLong(x_offset),
+          CastDoubleToLong(y_offset),1,1,exception);
         if (q == (Quantum *) NULL)
           {
             status=MagickFalse;
