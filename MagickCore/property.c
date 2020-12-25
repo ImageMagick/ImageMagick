@@ -4354,14 +4354,15 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           else
             if ((flags & LessValue) != 0)
               {
-                if (image->delay < (size_t) floor(geometry_info.rho+0.5))
-                  image->delay=(ssize_t)
-                    floor(geometry_info.sigma+0.5);
+                if ((double) image->delay < floor(geometry_info.rho+0.5))
+                  image->delay=MagickDoubleToLong(
+                    floor(geometry_info.sigma+0.5));
               }
             else
               image->delay=(size_t) floor(geometry_info.rho+0.5);
           if ((flags & SigmaValue) != 0)
-            image->ticks_per_second=(ssize_t) floor(geometry_info.sigma+0.5);
+            image->ticks_per_second=MagickDoubleToLong(floor(
+              geometry_info.sigma+0.5));
           return(MagickTrue);
         }
       if (LocaleCompare("delay_units",property) == 0)

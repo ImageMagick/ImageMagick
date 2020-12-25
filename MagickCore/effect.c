@@ -288,8 +288,8 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
         center,
         j;
 
-      j=(ssize_t) ceil((double) width*(1.0-QuantumScale*
-        GetPixelIntensity(edge_image,r))-0.5);
+      j=MagickDoubleToLong(ceil((double) width*(1.0-QuantumScale*
+        GetPixelIntensity(edge_image,r))-0.5));
       if (j < 0)
         j=0;
       else
@@ -609,8 +609,8 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
         center,
         j;
 
-      j=(ssize_t) ceil((double) width*(1.0-QuantumScale*
-        GetPixelIntensity(edge_image,r))-0.5);
+      j=MagickDoubleToLong(ceil((double) width*(1.0-QuantumScale*
+        GetPixelIntensity(edge_image,r))-0.5));
       if (j < 0)
         j=0;
       else
@@ -2402,8 +2402,10 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   point.y=(double) width*cos(DegreesToRadians(angle));
   for (i=0; i < (ssize_t) width; i++)
   {
-    offset[i].x=(ssize_t) ceil((double) (i*point.y)/hypot(point.x,point.y)-0.5);
-    offset[i].y=(ssize_t) ceil((double) (i*point.x)/hypot(point.x,point.y)-0.5);
+    offset[i].x=MagickDoubleToLong(ceil((double) (i*point.y)/
+      hypot(point.x,point.y)-0.5));
+    offset[i].y=MagickDoubleToLong(ceil((double) (i*point.x)/
+      hypot(point.x,point.y)-0.5));
   }
   /*
     Motion blur image.

@@ -1589,8 +1589,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if ((TIFFGetFieldDefaulted(tiff,TIFFTAG_XPOSITION,&x_position,sans) == 1) &&
         (TIFFGetFieldDefaulted(tiff,TIFFTAG_YPOSITION,&y_position,sans) == 1))
       {
-        image->page.x=(ssize_t) ceil(x_position*image->resolution.x-0.5);
-        image->page.y=(ssize_t) ceil(y_position*image->resolution.y-0.5);
+        image->page.x=MagickDoubleToLong(ceil(x_position*
+          image->resolution.x-0.5));
+        image->page.y=MagickDoubleToLong(ceil(y_position*
+          image->resolution.y-0.5));
       }
     if (TIFFGetFieldDefaulted(tiff,TIFFTAG_ORIENTATION,&orientation,sans) == 1)
       image->orientation=(OrientationType) orientation;

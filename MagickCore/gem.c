@@ -692,7 +692,7 @@ MagickPrivate void ConvertHWBToRGB(const double hue,const double whiteness,
       *blue=QuantumRange*v;
       return;
     }
-  i=(ssize_t) floor(6.0*hue);
+  i=MagickDoubleToLong(floor(6.0*hue));
   f=6.0*hue-i;
   if ((i & 0x01) != 0)
     f=1.0-f;

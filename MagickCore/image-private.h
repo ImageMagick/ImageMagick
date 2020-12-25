@@ -55,6 +55,17 @@ static inline double DegreesToRadians(const double degrees)
   return((double) (MagickPI*degrees/180.0));
 }
 
+static inline ssize_t MagickDoubleToLong(const double value)
+{
+  if (IsNaN(value) != 0)
+    return(0);
+  if (value > (double) SSIZE_MAX)
+    return((ssize_t) SSIZE_MAX);
+  if (value < (double) -SSIZE_MAX)
+    return((ssize_t) -SSIZE_MAX);
+  return((ssize_t) value);
+}
+
 static inline double RadiansToDegrees(const double radians)
 {
   return((double) (180.0*radians/MagickPI));

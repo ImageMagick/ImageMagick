@@ -273,7 +273,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
       draw_info=DestroyDrawInfo(draw_info);
       ThrowReaderException(TypeError,"UnableToGetTypeMetrics");
     }
-  page.y=(ssize_t) ceil((double) page.y+metrics.ascent-0.5);
+  page.y=MagickDoubleToLong(ceil((double) page.y+metrics.ascent-0.5));
   (void) FormatLocaleString(geometry,MagickPathExtent,"%gx%g%+g%+g",(double)
     image->columns,(double) image->rows,(double) page.x,(double) page.y);
   (void) CloneString(&draw_info->geometry,geometry);
@@ -458,7 +458,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows=height;
     if ((max_value == 0.0) || (max_value > 18446744073709551615.0))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    for (depth=1; (GetQuantumRange(depth)+1.0) < max_value; depth++) ;
+    for (depth=1; ((double) GetQuantumRange(depth)+1) < max_value; depth++) ;
     image->depth=depth;
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status != MagickFalse)
@@ -574,8 +574,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           MagickMax(black+0.5,0.0),range);
         pixel.alpha=(MagickRealType) ScaleAnyToQuantum((QuantumAny)
           MagickMax(alpha+0.5,0.0),range);
-        q=GetAuthenticPixels(image,(ssize_t) x_offset,(ssize_t) y_offset,1,1,
-          exception);
+        q=GetAuthenticPixels(image,MagickDoubleToLong(x_offset),
+          MagickDoubleToLong(y_offset),1,1,exception);
         if (q == (Quantum *) NULL)
           {
             status=MagickFalse;
