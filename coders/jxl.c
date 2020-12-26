@@ -56,8 +56,10 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
 #if defined(MAGICKCORE_JXL_DELEGATE)
+/*
 #include <brunsli/decode.h>
 #include <brunsli/encode.h>
+*/
 
 /*
   Typedef declarations.
@@ -180,8 +182,10 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   jxl_info.extent=0;
   if (status != MagickFalse)
     {
+/*
       status=DecodeBrunsli(extent,buffer,&jxl_info,BufferJXLContent) == 1 ?
         MagickTrue : MagickFalse;
+*/
       buffer=(unsigned char *) RelinquishMagickMemory(buffer);
     }
   if (status != MagickFalse)
@@ -353,8 +357,10 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   */
   jxl_info.data=(unsigned char *) NULL;
   jxl_info.extent=0;
+/*
   status=EncodeBrunsli(extent,jpeg_blob,&jxl_info,BufferJXLContent) == 1 ?
     MagickTrue : MagickFalse;
+*/
   jpeg_blob=(unsigned char *) RelinquishMagickMemory(jpeg_blob);
   if (status != MagickFalse)
     {

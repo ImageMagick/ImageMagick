@@ -2047,7 +2047,7 @@ Optional Packages:
   --without-heic          disable HEIC support
   --without-jbig          disable JBIG support
   --without-jpeg          disable JPEG support
-  --without-jxl           disable Jpegxl support
+  --without-jxl           disable JPEG-XL support
   --without-lcms          disable lcms (v1.1X) support
   --without-openjp2       disable OpenJP2 support
   --without-lqr           disable Liquid Rescale support
@@ -4576,7 +4576,7 @@ MAGICK_PATCHLEVEL_VERSION=54
 
 MAGICK_VERSION=7.0.10-54
 
-MAGICK_GIT_REVISION=18084:d5daf3036:20201224
+MAGICK_GIT_REVISION=18090:69d041215:20201226
 
 
 # Substitute library versioning
@@ -30499,42 +30499,41 @@ if test "$with_jxl" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-jxl=$with_jxl "
 fi
 
-# Check for the brunsli libraries, currently the only libraries used by the jxl coder.
-# Full jxl support will be added once the full libraries are released.
+# Check for the JPEG-XL library.
 have_jxl='no'
 JXL_LIBS=''
 if test "$with_jxl" != 'no'; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for brunsli" >&5
-$as_echo_n "checking for brunsli... " >&6; }
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for jpeg-xl" >&5
+$as_echo_n "checking for jpeg-xl... " >&6; }
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
   failed=0
   passed=0
-  ac_fn_c_check_header_mongrel "$LINENO" "brunsli/decode.h" "ac_cv_header_brunsli_decode_h" "$ac_includes_default"
-if test "x$ac_cv_header_brunsli_decode_h" = xyes; then :
+  ac_fn_c_check_header_mongrel "$LINENO" "jxl/decode.h" "ac_cv_header_jxl_decode_h" "$ac_includes_default"
+if test "x$ac_cv_header_jxl_decode_h" = xyes; then :
   passed=`expr $passed + 1`
 else
   failed=`expr $failed + 1`
 fi
 
 
-  ac_fn_c_check_header_mongrel "$LINENO" "brunsli/encode.h" "ac_cv_header_brunsli_encode_h" "$ac_includes_default"
-if test "x$ac_cv_header_brunsli_encode_h" = xyes; then :
+  ac_fn_c_check_header_mongrel "$LINENO" "jxl/encode.h" "ac_cv_header_jxl_encode_h" "$ac_includes_default"
+if test "x$ac_cv_header_jxl_encode_h" = xyes; then :
   passed=`expr $passed + 1`
 else
   failed=`expr $failed + 1`
 fi
 
 
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for DecodeBrunsli in -lbrunslidec-c" >&5
-$as_echo_n "checking for DecodeBrunsli in -lbrunslidec-c... " >&6; }
-if ${ac_cv_lib_brunslidec_c_DecodeBrunsli+:} false; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for JxlDecoderProcessInput in -ljxl" >&5
+$as_echo_n "checking for JxlDecoderProcessInput in -ljxl... " >&6; }
+if ${ac_cv_lib_jxl_JxlDecoderProcessInput+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lbrunslidec-c  $LIBS"
+LIBS="-ljxl  $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -30544,40 +30543,40 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char DecodeBrunsli ();
+char JxlDecoderProcessInput ();
 int
 main ()
 {
-return DecodeBrunsli ();
+return JxlDecoderProcessInput ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_brunslidec_c_DecodeBrunsli=yes
+  ac_cv_lib_jxl_JxlDecoderProcessInput=yes
 else
-  ac_cv_lib_brunslidec_c_DecodeBrunsli=no
+  ac_cv_lib_jxl_JxlDecoderProcessInput=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_brunslidec_c_DecodeBrunsli" >&5
-$as_echo "$ac_cv_lib_brunslidec_c_DecodeBrunsli" >&6; }
-if test "x$ac_cv_lib_brunslidec_c_DecodeBrunsli" = xyes; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_jxl_JxlDecoderProcessInput" >&5
+$as_echo "$ac_cv_lib_jxl_JxlDecoderProcessInput" >&6; }
+if test "x$ac_cv_lib_jxl_JxlDecoderProcessInput" = xyes; then :
   passed=`expr $passed + 1`
 else
   failed=`expr $failed + 1`
 fi
 
 
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for EncodeBrunsli in -lbrunslienc-c" >&5
-$as_echo_n "checking for EncodeBrunsli in -lbrunslienc-c... " >&6; }
-if ${ac_cv_lib_brunslienc_c_EncodeBrunsli+:} false; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for JxlEncoderProcessOutput in -ljxl" >&5
+$as_echo_n "checking for JxlEncoderProcessOutput in -ljxl... " >&6; }
+if ${ac_cv_lib_jxl_JxlEncoderProcessOutput+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lbrunslienc-c  $LIBS"
+LIBS="-ljxl  $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -30587,42 +30586,42 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char EncodeBrunsli ();
+char JxlEncoderProcessOutput ();
 int
 main ()
 {
-return EncodeBrunsli ();
+return JxlEncoderProcessOutput ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_brunslienc_c_EncodeBrunsli=yes
+  ac_cv_lib_jxl_JxlEncoderProcessOutput=yes
 else
-  ac_cv_lib_brunslienc_c_EncodeBrunsli=no
+  ac_cv_lib_jxl_JxlEncoderProcessOutput=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_brunslienc_c_EncodeBrunsli" >&5
-$as_echo "$ac_cv_lib_brunslienc_c_EncodeBrunsli" >&6; }
-if test "x$ac_cv_lib_brunslienc_c_EncodeBrunsli" = xyes; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_jxl_JxlEncoderProcessOutput" >&5
+$as_echo "$ac_cv_lib_jxl_JxlEncoderProcessOutput" >&6; }
+if test "x$ac_cv_lib_jxl_JxlEncoderProcessOutput" = xyes; then :
   passed=`expr $passed + 1`
 else
   failed=`expr $failed + 1`
 fi
 
 
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking if brunsli package is complete" >&5
-$as_echo_n "checking if brunsli package is complete... " >&6; }
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking if jpeg-xl package is complete" >&5
+$as_echo_n "checking if jpeg-xl package is complete... " >&6; }
   if test $passed -gt 0; then
       if test $failed -gt 0; then
           { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
 $as_echo "no -- some components failed test" >&6; }
           have_jxl='no (failed tests)'
       else
-          JXL_LIBS='-lbrunslidec-c -lbrunslienc-c'
+          JXL_LIBS='-ljxl'
           LIBS="$JXL_LIBS $LIBS"
 
 $as_echo "#define JXL_DELEGATE 1" >>confdefs.h

@@ -2361,7 +2361,7 @@ dnl ===========================================================================
 #
 AC_ARG_WITH([jxl],
     [AC_HELP_STRING([--without-jxl],
-                    [disable Jpegxl support])],
+                    [disable JPEG-XL support])],
     [with_jxl=$withval],
     [with_jxl='yes'])
 
@@ -2369,31 +2369,30 @@ if test "$with_jxl" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-jxl=$with_jxl "
 fi
 
-# Check for the brunsli libraries, currently the only libraries used by the jxl coder.
-# Full jxl support will be added once the full libraries are released.
+# Check for the JPEG-XL library.
 have_jxl='no'
 JXL_LIBS=''
 if test "$with_jxl" != 'no'; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  AC_MSG_CHECKING([for brunsli])
+  AC_MSG_CHECKING([for jpeg-xl])
   AC_MSG_RESULT([])
   failed=0
   passed=0
-  AC_CHECK_HEADER([brunsli/decode.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
-  AC_CHECK_HEADER([brunsli/encode.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
-  AC_CHECK_LIB([brunslidec-c],[DecodeBrunsli],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
+  AC_CHECK_HEADER([jxl/decode.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
+  AC_CHECK_HEADER([jxl/encode.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
+  AC_CHECK_LIB([jxl],[JxlDecoderProcessInput],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
 
-  AC_CHECK_LIB([brunslienc-c],[EncodeBrunsli],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
+  AC_CHECK_LIB([jxl],[JxlEncoderProcessOutput],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
 
-  AC_MSG_CHECKING([if brunsli package is complete])
+  AC_MSG_CHECKING([if jpeg-xl package is complete])
   if test $passed -gt 0; then
       if test $failed -gt 0; then
           AC_MSG_RESULT([no -- some components failed test])
           have_jxl='no (failed tests)'
       else
-          JXL_LIBS='-lbrunslidec-c -lbrunslienc-c'
+          JXL_LIBS='-ljxl'
           LIBS="$JXL_LIBS $LIBS"
-          AC_DEFINE([JXL_DELEGATE],[1],[Define if you have brunsli library])
+          AC_DEFINE([JXL_DELEGATE],[1],[Define if you have jpeg-xl library])
           AC_MSG_RESULT([yes])
           have_jxl='yes'
       fi
