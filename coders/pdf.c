@@ -292,7 +292,7 @@ static void ReadPDFInfo(const ImageInfo *image_info,Image *image,
         SkipMagickByteBuffer(&buffer,strlen(SpotColor)+1);
         for (c=ReadMagickByteBuffer(&buffer); c != EOF; c=ReadMagickByteBuffer(&buffer))
         {
-          if ((isspace(c) != 0) || (c == '/') || ((i+1) == MagickPathExtent))
+          if ((isspace((int) ((unsigned char) c)) != 0) || (c == '/') || ((i+1) == MagickPathExtent))
             break;
           name[i++]=(char) c;
         }

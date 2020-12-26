@@ -221,8 +221,7 @@ static void
 %  The format of the Classify method is:
 %
 %      MagickBooleanType Classify(Image *image,short **extrema,
-%        const double cluster_threshold,
-%        const double weighting_exponent,
+%        const double cluster_threshold,const double weighting_exponent,
 %        const MagickBooleanType verbose,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
@@ -246,9 +245,8 @@ static void
 %
 */
 static MagickBooleanType Classify(Image *image,short **extrema,
-  const double cluster_threshold,
-  const double weighting_exponent,const MagickBooleanType verbose,
-  ExceptionInfo *exception)
+  const double cluster_threshold,const double weighting_exponent,
+  const MagickBooleanType verbose,ExceptionInfo *exception)
 {
 #define SegmentImageTag  "Segment/Image"
 #define ThrowClassifyException(severity,tag,label) \
@@ -276,6 +274,9 @@ static MagickBooleanType Classify(Image *image,short **extrema,
     *last_cluster,
     *next_cluster;
 
+  double
+    *free_squares;
+
   ExtentPacket
     blue,
     green,
@@ -283,9 +284,6 @@ static MagickBooleanType Classify(Image *image,short **extrema,
 
   MagickOffsetType
     progress;
-
-  double
-    *free_squares;
 
   MagickStatusType
     status;
@@ -340,11 +338,10 @@ static MagickBooleanType Classify(Image *image,short **extrema,
         /*
           Initialize a new class.
         */
-        cluster->count=0;
+        (void) memset(cluster,0,sizeof(*cluster));
         cluster->red=red;
         cluster->green=green;
         cluster->blue=blue;
-        cluster->next=(Cluster *) NULL;
       }
     }
   }
@@ -360,11 +357,10 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       /*
         Initialize a new class.
       */
-      cluster->count=0;
+      (void) memset(cluster,0,sizeof(*cluster));
       cluster->red=red;
       cluster->green=green;
       cluster->blue=blue;
-      cluster->next=(Cluster *) NULL;
       head=cluster;
     }
   /*
@@ -1512,6 +1508,13 @@ static double OptimalTau(const ssize_t *histogram,const double max_tau,
   const double min_tau,const double delta_tau,const double smooth_threshold,
   short *extrema)
 {
+  double
+    average_tau,
+    *derivative,
+    *second_derivative,
+    tau,
+    value;
+
   IntervalTree
     **list,
     *node,
@@ -1519,13 +1522,6 @@ static double OptimalTau(const ssize_t *histogram,const double max_tau,
 
   MagickBooleanType
     peak;
-
-  double
-    average_tau,
-    *derivative,
-    *second_derivative,
-    tau,
-    value;
 
   register ssize_t
     i,
@@ -1732,8 +1728,7 @@ static void ScaleSpace(const ssize_t *histogram,const double tau,
 
   gamma=(double *) AcquireQuantumMemory(256,sizeof(*gamma));
   if (gamma == (double *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,
-      "UnableToAllocateGammaMap");
+    ThrowFatalException(ResourceLimitFatalError,"UnableToAllocateGammaMap");
   alpha=PerceptibleReciprocal(tau*sqrt(2.0*MagickPI));
   beta=(-1.0*PerceptibleReciprocal(2.0*tau*tau));
   for (x=0; x <= 255; x++)
@@ -1844,12 +1839,12 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
   previous_colorspace=image->colorspace;
   (void) TransformImageColorspace(image,colorspace,exception);
   InitializeHistogram(image,histogram,exception);
-  (void) OptimalTau(histogram[Red],Tau,0.2,DeltaTau,
-    smooth_threshold == 0.0 ? 1.0 : smooth_threshold,extrema[Red]);
-  (void) OptimalTau(histogram[Green],Tau,0.2,DeltaTau,
-    smooth_threshold == 0.0 ? 1.0 : smooth_threshold,extrema[Green]);
-  (void) OptimalTau(histogram[Blue],Tau,0.2,DeltaTau,
-    smooth_threshold == 0.0 ? 1.0 : smooth_threshold,extrema[Blue]);
+  (void) OptimalTau(histogram[Red],Tau,0.2,DeltaTau,smooth_threshold == 0.0 ?
+    1.0 : smooth_threshold,extrema[Red]);
+  (void) OptimalTau(histogram[Green],Tau,0.2,DeltaTau,smooth_threshold == 0.0 ?
+    1.0 : smooth_threshold,extrema[Green]);
+  (void) OptimalTau(histogram[Blue],Tau,0.2,DeltaTau,smooth_threshold == 0.0 ?
+    1.0 : smooth_threshold,extrema[Blue]);
   /*
     Classify using the fuzzy c-Means technique.
   */

@@ -900,7 +900,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
   for (p=pedantic_geometry; *p != '\0'; )
   {
     c=(int) ((unsigned char) *p);
-    if (isspace(c) != 0)
+    if (isspace((int) ((unsigned char) c)) != 0)
       {
         (void) CopyMagickString(p,p+1,MagickPathExtent);
         continue;

@@ -211,7 +211,7 @@ static unsigned int PNMInteger(Image *image,CommentInfo *comment_info,
     Evaluate number.
   */
   value=0;
-  while (isdigit(c) != 0)
+  while (isdigit((int) ((unsigned char) c)) != 0)
   {
     if (value <= (unsigned int) (INT_MAX/10))
       {
@@ -380,7 +380,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         for (c=ReadBlobByte(image); c != EOF; c=ReadBlobByte(image))
         {
-          while (isspace(c) != 0)
+          while (isspace((int) ((unsigned char) c)) != 0)
             c=ReadBlobByte(image);
           if (c == '#')
             {
@@ -389,7 +389,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               */
               c=PNMComment(image,&comment_info,exception);
               c=ReadBlobByte(image);
-              while (isspace(c) != 0)
+              while (isspace((int) ((unsigned char) c)) != 0)
                 c=ReadBlobByte(image);
             }
           p=keyword;
@@ -398,14 +398,14 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if ((size_t) (p-keyword) < (MagickPathExtent-1))
               *p++=c;
             c=ReadBlobByte(image);
-          } while (isalnum(c));
+          } while (isalnum((int) ((unsigned char) c)));
           *p='\0';
           if (LocaleCompare(keyword,"endhdr") == 0)
             break;
-          while (isspace(c) != 0)
+          while (isspace((int) ((unsigned char) c)) != 0)
             c=ReadBlobByte(image);
           p=value;
-          while (isalnum(c) || (c == '_'))
+          while (isalnum((int) ((unsigned char) c)) || (c == '_'))
           {
             if ((size_t) (p-value) < (MagickPathExtent-1))
               *p++=c;

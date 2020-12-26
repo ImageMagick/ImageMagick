@@ -515,7 +515,7 @@ static inline MagickBooleanType IsFxFunction(const char *expression,
       return(MagickFalse);
   c=expression[length];
   if ((LocaleNCompare(expression,name,length) == 0) &&
-      ((isspace(c) == 0) || (c == '(')))
+      ((isspace((int) ((unsigned char) c)) == 0) || (c == '(')))
     return(MagickTrue);
   return(MagickFalse);
 }
@@ -1257,7 +1257,7 @@ static const char *FxOperatorPrecedence(const char *expression,
       case 'E':
       case 'e':
       {
-        if ((isdigit(c) != 0) &&
+        if ((isdigit((int) ((unsigned char) c)) != 0) &&
             ((LocaleNCompare(expression,"E+",2) == 0) ||
              (LocaleNCompare(expression,"E-",2) == 0)))
           {
@@ -1307,11 +1307,11 @@ static const char *FxOperatorPrecedence(const char *expression,
         }
         default:
         {
-          if (((c != 0) && ((isdigit(c) != 0) ||
+          if (((c != 0) && ((isdigit((int) ((unsigned char) c)) != 0) ||
                (strchr(")",c) != (char *) NULL))) &&
               (((islower((int) ((unsigned char) *expression)) != 0) ||
                (strchr("(",(int) ((unsigned char) *expression)) != (char *) NULL)) ||
-               ((isdigit(c) == 0) &&
+               ((isdigit((int) ((unsigned char) c)) == 0) &&
                 (isdigit((int) ((unsigned char) *expression)) != 0))) &&
               (strchr("xy",(int) ((unsigned char) *expression)) == (char *) NULL))
             precedence=MultiplyPrecedence;
@@ -1328,7 +1328,7 @@ static const char *FxOperatorPrecedence(const char *expression,
         case '-':
         {
           if ((strchr("(+-/*%:&^|<>~,",c) == (char *) NULL) ||
-              (isalpha(c) != 0))
+              (isalpha((int) ((unsigned char) c)) != 0))
             precedence=AdditionPrecedence;
           break;
         }

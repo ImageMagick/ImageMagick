@@ -208,9 +208,9 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   length=0;
   image->columns=0;
   image->rows=0;
-  while (isgraph(c) && ((image->columns == 0) || (image->rows == 0)))
+  while (isgraph((int) ((unsigned char) c)) && ((image->columns == 0) || (image->rows == 0)))
   {
-    if (isalnum(c) == MagickFalse)
+    if (isalnum((int) ((unsigned char) c)) == MagickFalse)
       {
         c=ReadBlobByte(image);
         count++;
@@ -230,10 +230,10 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
             *p++=c;
           c=ReadBlobByte(image);
           count++;
-        } while (isalnum(c) || (c == '_'));
+        } while (isalnum((int) ((unsigned char) c)) || (c == '_'));
         *p='\0';
         value_expected=MagickFalse;
-        while ((isspace(c) != 0) || (c == '='))
+        while ((isspace((int) ((unsigned char) c)) != 0) || (c == '='))
         {
           if (c == '=')
             value_expected=MagickTrue;
@@ -243,7 +243,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
         if (value_expected == MagickFalse)
           continue;
         p=value;
-        while (isalnum(c))
+        while (isalnum((int) ((unsigned char) c)))
         {
           if ((size_t) (p-value) < (MagickPathExtent-1))
             *p++=c;
@@ -270,7 +270,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
         if (LocaleCompare(keyword,"NL") == 0)
           image->rows=StringToUnsignedLong(value);
       }
-    while (isspace(c) != 0)
+    while (isspace((int) ((unsigned char) c)) != 0)
     {
       c=ReadBlobByte(image);
       count++;

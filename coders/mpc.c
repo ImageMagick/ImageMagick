@@ -228,7 +228,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     signature=GetMagickSignature((const StringInfo *) NULL);
     image->depth=8;
     image->compression=NoCompression;
-    while ((isgraph(c) != MagickFalse) && (c != (int) ':'))
+    while ((isgraph((int) ((unsigned char) c)) != 0) && (c != (int) ':'))
     {
       register char
         *p;
@@ -275,7 +275,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           c=ReadBlobByte(image);
         }
       else
-        if (isalnum(c) != MagickFalse)
+        if (isalnum((int) ((unsigned char) c)) != MagickFalse)
           {
             /*
               Get the keyword.
@@ -292,7 +292,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             } while (c != EOF);
             *p='\0';
             p=options;
-            while (isspace(c) != 0)
+            while (isspace((int) ((unsigned char) c)) != 0)
               c=ReadBlobByte(image);
             if (c == (int) '=')
               {
@@ -324,7 +324,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         }
                     }
                   if (*options != '{')
-                    if (isspace(c) != 0)
+                    if (isspace((int) ((unsigned char) c)) != 0)
                       break;
                 }
                 if (options == (char *) NULL)
@@ -775,7 +775,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         else
           c=ReadBlobByte(image);
-      while (isspace(c) != 0)
+      while (isspace((int) ((unsigned char) c)) != 0)
         c=ReadBlobByte(image);
     }
     options=DestroyString(options);
@@ -1006,7 +1006,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     do
     {
       c=ReadBlobByte(image);
-    } while ((isgraph(c) == MagickFalse) && (c != EOF));
+    } while ((isgraph((int) ((unsigned char) c)) == 0) && (c != EOF));
     if (c != EOF)
       {
         /*

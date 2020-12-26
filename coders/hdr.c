@@ -197,7 +197,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImage(image);
       return((Image *) NULL);
     }
-  while (isgraph(c) && (image->columns == 0) && (image->rows == 0))
+  while (isgraph((int) ((unsigned char) c)) && (image->columns == 0) && (image->rows == 0))
   {
     if (c == (int) '#')
       {
@@ -240,7 +240,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
         c=ReadBlobByte(image);
       }
     else
-      if (isalnum(c) == MagickFalse)
+      if (isalnum((int) ((unsigned char) c)) == 0)
         c=ReadBlobByte(image);
       else
         {
@@ -256,10 +256,10 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if ((size_t) (p-keyword) < (MagickPathExtent-1))
               *p++=c;
             c=ReadBlobByte(image);
-          } while (isalnum(c) || (c == '_'));
+          } while (isalnum((int) ((unsigned char) c)) || (c == '_'));
           *p='\0';
           value_expected=MagickFalse;
-          while ((isspace(c) != 0) || (c == '='))
+          while ((isspace((int) ((unsigned char) c)) != 0) || (c == '='))
           {
             if (c == '=')
               value_expected=MagickTrue;
@@ -371,7 +371,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         }
     if ((image->columns == 0) && (image->rows == 0))
-      while (isspace(c) != 0)
+      while (isspace((int) ((unsigned char) c)) != 0)
         c=ReadBlobByte(image);
   }
   if ((LocaleCompare(format,"32-bit_rle_rgbe") != 0) &&

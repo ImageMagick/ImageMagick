@@ -161,7 +161,7 @@ static const struct
 
 static int stringnicmp(const char *p,const char *q,size_t n)
 {
-  register ssize_t
+  int
     i,
     j;
 
@@ -176,10 +176,10 @@ static int stringnicmp(const char *p,const char *q,size_t n)
     if ((*p == '\0') || (*q == '\0'))
       break;
     i=(*p);
-    if (islower(i))
+    if (islower((int) ((unsigned char) i)) != 0)
       i=LocaleUppercase(i);
     j=(*q);
-    if (islower(j))
+    if (islower((int) ((unsigned char) j)) != 0)
       j=LocaleUppercase(j);
     if (i != j)
       break;
@@ -1800,7 +1800,7 @@ static void formatString(Image *ofile, const char *s, int len)
       (void) WriteBlobString(ofile,"&quot;");
       break;
     default:
-      if (isprint(c))
+      if (isprint((int) ((unsigned char) c)) != 0)
         (void) WriteBlobByte(ofile,(unsigned char) *s);
       else
         {
