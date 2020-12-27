@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE codermap [
-<!ELEMENT codermap (coder)+>
+<!ELEMENT codermap (coder)*>
   <!ATTLIST codermap xmlns CDATA #FIXED ''>
   <!ELEMENT coder EMPTY>
   <!ATTLIST coder xmlns CDATA #FIXED '' magick NMTOKEN #REQUIRED

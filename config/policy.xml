@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE policymap [
-  <!ELEMENT policymap (policy)+>
+  <!ELEMENT policymap (policy)*>
   <!ATTLIST policymap xmlns CDATA #FIXED ''>
   <!ELEMENT policy EMPTY>
   <!ATTLIST policy xmlns CDATA #FIXED '' domain NMTOKEN #REQUIRED
