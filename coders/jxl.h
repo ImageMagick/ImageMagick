@@ -16,10 +16,9 @@
 
 #include "coders/coders-private.h"
 
-// The pattern for JXL JPEG1 recompression for now, the main pattern will be
-// added when full decoder support is added.
 #define MagickJXLHeaders \
-  MagickCoderHeader("JXL", 0, "\x0a\x04\x42\xd2\xd5\x4e")
+  MagickCoderHeader("JXL", 0, "\xff\x0a") \
+  MagickCoderHeader("JXL", 0, "\x00\x00\x00\x0c\x4a\x58\x4c\x20\x0d\x0a\x87\x0a")
 
 #define MagickJXLAliases
 
