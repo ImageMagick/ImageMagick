@@ -760,11 +760,6 @@ static int WebPEncodeWriter(const unsigned char *stream,size_t length,
 }
 #endif
 
-typedef struct PictureMemory {
-  MemoryInfo *pixel_info;
-  struct PictureMemory *next;
-} PictureMemory;
-
 static const char * WebPErrorCodeMessage(WebPEncodingError error_code)
 {
   switch (error_code)
@@ -924,41 +919,66 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
   WebPPicture
     picture;
 
+  MagickBooleanType
+    status = MagickTrue;
+
+  first_image=CoalesceImages(image,exception);
+  image=first_image;
+  if (first_image == (Image *) NULL)
+    return(MagickFalse);
+
   WebPAnimEncoderOptionsInit(&enc_options);
   if (image_info->verbose)
     enc_options.verbose = 1;
   enc=WebPAnimEncoderNew((int) image->page.width,(int) image->page.height,
     &enc_options);
 
-  first_image=CoalesceImages(image,exception);
-  image=first_image;
-
   while (image != NULL)
   {
-    if (WebPPictureInit(&picture) == 0)
-      ThrowWriterException(ResourceLimitError,"UnableToEncodeImageFile");
+    status=(MagickBooleanType)WebPPictureInit(&picture);
+    if (!status)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ResourceLimitError,"UnableToEncodeImageFile","`%s'",image->filename);
+        break;
+      }
 
-    WriteSingleWEBPPicture(image_info,image,configure,&picture,exception);
-    WebPAnimEncoderAdd(enc,&picture,(int) frame_timestamp,configure);
+    status=WriteSingleWEBPPicture(image_info,image,configure,&picture,exception);
+    if (!status)
+      break;
+
+    status=(MagickBooleanType)WebPAnimEncoderAdd(enc,&picture,(int) frame_timestamp,configure);
     WebPPictureFree(&picture);
-
-    if (WebPAnimEncoderGetError(enc) && strlen(WebPAnimEncoderGetError(enc)))
-      ThrowWriterException(CoderError, WebPAnimEncoderGetError(enc));
+    if (!status)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CoderError,WebPAnimEncoderGetError(enc),"`%s'",image->filename);
+        break;
+      }
 
     effective_delta = image->delay*1000/image->ticks_per_second;
     if (effective_delta < 10)
       effective_delta = 100; /* Consistent with gif2webp */
     frame_timestamp+=effective_delta;
 
-    image = GetNextImageInList(image);
+    image=GetNextImageInList(image);
   }
 
-  WebPAnimEncoderAdd(enc,NULL,(int) frame_timestamp,configure);
-  WebPAnimEncoderAssemble(enc,webp_data);
+  if(status)
+    {
+      // add last null frame and assemble picture.
+      status=(MagickBooleanType)WebPAnimEncoderAdd(enc,NULL,(int) frame_timestamp,configure);
+      if(status)
+        status=(MagickBooleanType)WebPAnimEncoderAssemble(enc,webp_data);
+
+      if (!status)
+          (void) ThrowMagickException(exception,GetMagickModule(),
+            CoderError,WebPAnimEncoderGetError(enc),"`%s'",image->filename);
+    }
 
   WebPAnimEncoderDelete(enc);
   DestroyImageList(first_image);
-  return(MagickTrue);
+  return(status);
 }
 
 static MagickBooleanType WriteWEBPImageProfile(Image *image,WebPData *webp_data,ExceptionInfo *exception) 
