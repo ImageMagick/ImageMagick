@@ -7,6 +7,8 @@
 
 2020-12-25  7.0.10-54  <quetzlzacatenango@image...>
   * enable reading of a certain grayscale TIFF image.
+  * support HEIC depth masks (reference
+    https://github.com/ImageMagick/ImageMagick/discussions/3040).
 
 2020-12-24  7.0.10-53  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-53 GIT revision 18083:3b141f557:20201224
