@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE colormap [
-<!ELEMENT colormap (color)+>
+<!ELEMENT colormap (color)*>
 <!ELEMENT color (#PCDATA)>
 <!ATTLIST color name CDATA "0">
 <!ATTLIST color color CDATA "rgb(0,0,0)">
