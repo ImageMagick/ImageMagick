@@ -172,8 +172,7 @@ static inline OrientationType JXLOrientationToOrientation(
   }
 }
 
-static Image *ReadJXLImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
