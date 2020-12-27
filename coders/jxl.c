@@ -496,8 +496,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     bytes_per_row;
 
   unsigned char
-    *input_buffer,
-    *output_buffer;
+    *input_buffer;
 
   /*
     Open output image file.
@@ -557,6 +556,9 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     bytes_per_row*image->rows);
   if (encoder_status == JXL_ENC_SUCCESS)
     {
+      unsigned char
+        *output_buffer;
+
       output_buffer=AcquireQuantumMemory(MagickMaxBufferExtent,
         sizeof(*output_buffer));
       if (output_buffer == (unsigned char *) NULL)
