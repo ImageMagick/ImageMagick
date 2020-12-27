@@ -58,6 +58,7 @@
 #define MAGICKCORE_JXL_DELEGATE
 #if defined(MAGICKCORE_JXL_DELEGATE)
 #include <jxl/decode.h>
+#include <jxl/encode.h>
 #endif
 
 /*
@@ -71,6 +72,12 @@ typedef struct MemoryManagerInfo
   ExceptionInfo
     *exception;
 } MemoryManagerInfo;
+
+/*
+  Forward declarations.
+*/
+static MagickBooleanType
+  WriteJXLImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 #if defined(MAGICKCORE_JXL_DELEGATE)
 static void *JXLAcquireMemory(void *opaque, size_t size)
@@ -108,7 +115,12 @@ static inline void JXLSetMemoryManager(JxlMemoryManager *memory_manager,
   memory_manager->free=JXLRelinquishMemory;
 }
 
-
+static inline void JXLSetFormat(Image *image,JxlPixelFormat *format)
+{
+  format->num_channels=(image->alpha_trait == BlendPixelTrait) ? 4 : 3;
+  format->data_type=(image->depth > 8) ? JXL_TYPE_FLOAT : JXL_TYPE_UINT8;
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -294,8 +306,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
         size_t
           output_size;
 
-        format.num_channels=(image->alpha_trait == BlendPixelTrait) ? 4 : 3;
-        format.data_type=(image->depth > 8) ? JXL_TYPE_FLOAT : JXL_TYPE_UINT8;
+        JXLSetFormat(image,&format);
         decoder_status=JxlDecoderImageOutBufferSize(decoder,&format,
           &output_size);
         if (decoder_status != JXL_DEC_SUCCESS)
@@ -376,6 +387,7 @@ ModuleExport size_t RegisterJXLImage(void)
   entry=AcquireMagickInfo("JXL", "JXL", "JPEG XL Lossless JPEG1 Recompression");
 #if defined(MAGICKCORE_JXL_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJXLImage;
+  entry->encoder=(EncodeImageHandler *) WriteJXLImage;
 #endif
   entry->flags^=CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
@@ -405,3 +417,150 @@ ModuleExport void UnregisterJXLImage(void)
 {
   (void) UnregisterMagickInfo("JXL");
 }
+
+#if defined(MAGICKCORE_JXL_DELEGATE)
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  W r i t e J X L I m a g e                                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteJXLImage() writes a JXL image file and returns it.  It
+%  allocates the memory necessary for the new Image structure and returns a
+%  pointer to the new image.
+%
+%  The format of the WriteJXLImage method is:
+%
+%      MagickBooleanType WriteJXLImage(const ImageInfo *image_info,
+%        Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: the image info.
+%
+%    o image:  The image.
+%
+*/
+static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
+{
+  JxlEncoder
+    *encoder;
+
+  JxlEncoderOptions
+    *encoder_options;
+
+  JxlEncoderStatus
+    encoder_status;
+
+  JxlMemoryManager
+    memory_manager;
+
+  JxlPixelFormat
+    format;
+
+  MagickBooleanType
+    status;
+
+  MemoryManagerInfo
+    memory_manager_info;
+
+  size_t
+    count;
+
+  ssize_t
+    y;
+
+  unsigned char
+    *input_buffer,
+    *output_buffer;
+
+  /*
+    Open output image file.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickCoreSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    return(status);
+  JXLSetMemoryManager(&memory_manager,&memory_manager_info,image,exception);
+  encoder=JxlEncoderCreate(&memory_manager);
+  if (encoder == (JxlEncoder *) NULL)
+    ThrowWriterException(CoderError,"MemoryAllocationFailed");
+  memset(&format,0,sizeof(format));
+  JXLSetFormat(image,&format);
+  encoder_status=JxlEncoderSetDimensions(encoder,image->columns,image->rows);
+  if (encoder_status != JXL_ENC_SUCCESS)
+    {
+      JxlEncoderDestroy(encoder);
+      return(MagickFalse);
+    }
+  encoder_options=JxlEncoderOptionsCreate(encoder,(JxlEncoderOptions *) NULL);
+  if (encoder_options == (JxlEncoderOptions *) NULL)
+    {
+      JxlEncoderDestroy(encoder);
+      return(MagickFalse);
+    }
+  count=image->rows*image->columns;
+  count*=((image->alpha_trait == BlendPixelTrait) ? 4 : 3);
+  count*=(format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) : sizeof(char);
+  input_buffer=AcquireQuantumMemory(count,sizeof(*input_buffer));
+  if (input_buffer == (unsigned char *) NULL)
+    {
+      JxlEncoderDestroy(encoder);
+      return(MagickFalse);
+    }
+  status=ExportImagePixels(image,0,0,image->columns,image->rows,
+    image->alpha_trait == BlendPixelTrait ? "RGBA" : "RGB",
+    format.data_type == JXL_TYPE_FLOAT ? FloatPixel : CharPixel,
+    input_buffer,exception);
+  if (status == MagickFalse)
+    {
+      input_buffer=(unsigned char *) RelinquishMagickMemory(input_buffer);
+      JxlEncoderDestroy(encoder);
+      return(MagickFalse);
+    }
+  encoder_status=JxlEncoderAddImageFrame(encoder_options,&format,input_buffer,
+    count);
+  if (encoder_status == JXL_ENC_SUCCESS)
+    {
+      output_buffer=AcquireQuantumMemory(MagickMaxBufferExtent,
+        sizeof(*output_buffer));
+      if (output_buffer == (unsigned char *) NULL)
+        {
+          input_buffer=(unsigned char *) RelinquishMagickMemory(input_buffer);
+          JxlEncoderDestroy(encoder);
+          return(MagickFalse);
+        }
+      encoder_status=JXL_ENC_NEED_MORE_OUTPUT;
+      while (encoder_status == JXL_ENC_NEED_MORE_OUTPUT)
+      {
+          unsigned char
+            *p;
+
+          count=MagickMaxBufferExtent;
+          p=output_buffer;
+          encoder_status=JxlEncoderProcessOutput(encoder,&p,&count);
+          (void) WriteBlob(image,MagickMaxBufferExtent-count,output_buffer);
+      }
+      output_buffer=(unsigned char *) RelinquishMagickMemory(output_buffer);
+    }
+  input_buffer=(unsigned char *) RelinquishMagickMemory(input_buffer);
+  JxlEncoderDestroy(encoder);
+  if (encoder_status != JXL_ENC_SUCCESS)
+    ThrowWriterException(CoderError,"UnableToWriteImageData");
+  (void) CloseBlob(image);
+  return(status);
+}
+#endif
