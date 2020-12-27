@@ -514,6 +514,8 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       JxlEncoderDestroy(encoder);
       return(MagickFalse);
     }
+  if (image->quality == 100)
+    JxlEncoderOptionsSetLossless(encoder_options,JXL_TRUE);
   count=image->rows*image->columns;
   count*=((image->alpha_trait == BlendPixelTrait) ? 4 : 3);
   count*=(format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) : sizeof(char);
