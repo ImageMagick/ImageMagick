@@ -334,10 +334,12 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
               "UnableToReadImageData","`%s'",image->filename);
             break;
           }
-        (void) ImportImagePixels(image,0,0,image->columns,image->rows,
+        status=ImportImagePixels(image,0,0,image->columns,image->rows,
           image->alpha_trait == BlendPixelTrait ? "RGBA" : "RGB",
           format.data_type == JXL_TYPE_FLOAT ? FloatPixel : CharPixel,
           output_buffer,exception);
+        if (status == MagickFalse)
+          decoder_status=JXL_DEC_ERROR;
         break;
       case JXL_DEC_SUCCESS:
       case JXL_DEC_ERROR:
