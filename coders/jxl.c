@@ -493,6 +493,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     memory_manager_info;
 
   size_t
+    bytes_per_row,
     count;
 
   unsigned char
@@ -533,10 +534,11 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     }
   if (image->quality == 100)
     JxlEncoderOptionsSetLossless(encoder_options,JXL_TRUE);
-  count=image->rows*image->columns;
-  count*=((image->alpha_trait == BlendPixelTrait) ? 4 : 3);
-  count*=(format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) : sizeof(char);
-  input_buffer=AcquireQuantumMemory(count,sizeof(*input_buffer));
+  bytes_per_row=image->columns*
+    ((image->alpha_trait == BlendPixelTrait) ? 4 : 3)*
+    ((format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) : sizeof(char));
+  input_buffer=AcquireQuantumMemory(bytes_per_row,image->rows*
+    sizeof(*input_buffer));
   if (input_buffer == (unsigned char *) NULL)
     {
       JxlEncoderDestroy(encoder);
@@ -553,7 +555,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       return(MagickFalse);
     }
   encoder_status=JxlEncoderAddImageFrame(encoder_options,&format,input_buffer,
-    count);
+    bytes_per_row);
   if (encoder_status == JXL_ENC_SUCCESS)
     {
       output_buffer=AcquireQuantumMemory(MagickMaxBufferExtent,
