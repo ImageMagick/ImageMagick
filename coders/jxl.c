@@ -55,7 +55,6 @@
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
-#define MAGICKCORE_JXL_DELEGATE
 #if defined(MAGICKCORE_JXL_DELEGATE)
 #include <jxl/decode.h>
 #include <jxl/encode.h>
