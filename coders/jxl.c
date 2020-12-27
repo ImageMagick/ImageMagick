@@ -249,11 +249,11 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
   while ((decoder_status != JXL_DEC_SUCCESS) &&
          (decoder_status != JXL_DEC_ERROR))
   {
+    const uint8_t
+      *p;
+
     size_t
       size;
-
-    unsigned char
-      *p;
 
     size=input_size;
     p=input_buffer;
@@ -494,9 +494,6 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
 
   size_t
     count;
-
-  ssize_t
-    y;
 
   unsigned char
     *input_buffer,
