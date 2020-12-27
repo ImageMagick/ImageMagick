@@ -466,7 +466,12 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
       image_ids=(heif_item_id *) AcquireQuantumMemory((size_t) count,
         sizeof(*image_ids));
       if (image_ids == (heif_item_id *) NULL)
-        break;
+        {
+          heif_image_handle_release(image_handle);
+          heif_context_free(heif_context);
+          file_data=RelinquishMagickMemory(file_data);
+          return(DestroyImageList(image));
+        }
       (void) heif_context_get_list_of_top_level_image_IDs(heif_context,
         image_ids,(int) count);
       for (i=0; i < count; i++)
