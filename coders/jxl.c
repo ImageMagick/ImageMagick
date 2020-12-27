@@ -229,7 +229,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
     ThrowReaderException(CoderError,"MemoryAllocationFailed");
   events_wanted=JXL_DEC_BASIC_INFO;
   if (image_info->ping == MagickFalse)
-    events_wanted|=JXL_DEC_FULL_IMAGE;
+    events_wanted|=JXL_DEC_FULL_IMAGE | JXL_DEC_COLOR_ENCODING;
   if (JxlDecoderSubscribeEvents(decoder,events_wanted) != JXL_DEC_SUCCESS)
     {
       JxlDecoderDestroy(decoder);
@@ -298,6 +298,27 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
           image->alpha_trait=BlendPixelTrait;
         image->orientation=JXLOrientationToOrientation(basic_info.orientation);
         decoder_status=JXL_DEC_BASIC_INFO;
+        break;
+      }
+      case JXL_DEC_COLOR_ENCODING:
+      {
+        size_t
+          profile_size;
+
+        StringInfo
+          *profile;
+
+        decoder_status=JxlDecoderGetICCProfileSize(decoder,&format,
+          JXL_COLOR_PROFILE_TARGET_ORIGINAL,&profile_size);
+        if (decoder_status != JXL_DEC_SUCCESS)
+          break;
+        profile=AcquireStringInfo(profile_size);
+        decoder_status=JxlDecoderGetColorAsICCProfile(decoder,&format,
+          JXL_COLOR_PROFILE_TARGET_ORIGINAL,GetStringInfoDatum(profile),
+          profile_size);
+        if (decoder_status != JXL_DEC_SUCCESS)
+          break;
+        decoder_status=JXL_DEC_COLOR_ENCODING;
         break;
       }
       case JXL_DEC_NEED_IMAGE_OUT_BUFFER:
