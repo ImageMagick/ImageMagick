@@ -1171,7 +1171,7 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
         100.0));
       limit=DestroyString(limit);
     }
-  (void) SetMagickResourceLimit(WidthResource,(MagickSizeType)
+  (void) SetMagickResourceLimit(HeightResource,(MagickSizeType)
     sqrt(resource_info.height_limit));
   limit=GetEnvironmentValue("MAGICK_HEIGHT_LIMIT");
   if (limit != (char *) NULL)
