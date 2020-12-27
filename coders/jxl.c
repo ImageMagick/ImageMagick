@@ -12,8 +12,8 @@
 %                                                                             %
 %               Read/Write JPEG XL Lossless JPEG1 Recompression               %
 %                                                                             %
-%                            The JPEG XL Project                              %
-%                               September 2019                                %
+%                               Dirk Lemstra                                  %
+%                               December 2020                                 %
 %                                                                             %
 %                                                                             %
 %  Copyright 1999-2020 ImageMagick Studio LLC, a non-profit organization      %
@@ -55,32 +55,60 @@
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
+#define MAGICKCORE_JXL_DELEGATE
 #if defined(MAGICKCORE_JXL_DELEGATE)
-/*
-#include <brunsli/decode.h>
-#include <brunsli/encode.h>
-*/
+#include <jxl/decode.h>
+#endif
 
 /*
   Typedef declarations.
 */
-typedef struct JXLInfo
+typedef struct MemoryManagerInfo
+{
+  Image
+    *image;
+
+  ExceptionInfo
+    *exception;
+} MemoryManagerInfo;
+
+#if defined(MAGICKCORE_JXL_DELEGATE)
+static void *JXLAcquireMemory(void *opaque, size_t size)
 {
   unsigned char
     *data;
 
-  size_t
-    extent;
-} JXLInfo;
-
-/*
-  Forward declarations.
-*/
-static MagickBooleanType
-  WriteJXLImage(const ImageInfo *,Image *,ExceptionInfo *);
-#endif
-
-#if defined(MAGICKCORE_JXL_DELEGATE)
+  data=(unsigned char *) AcquireQuantumMemory(size,sizeof(*data));
+  if (data == (unsigned char *) NULL)
+    {
+      MemoryManagerInfo
+        *memory_manager_info;
+
+      memory_manager_info=(MemoryManagerInfo *) opaque;
+      (void) ThrowMagickException(memory_manager_info->exception,
+        GetMagickModule(),CoderError,"MemoryAllocationFailed","`%s'",
+        memory_manager_info->image->filename);
+    }
+  return(data);
+}
+
+static void JXLRelinquishMemory(void *magick_unused(opaque),void *address)
+{
+  magick_unreferenced(opaque);
+  (void) RelinquishMagickMemory(address);
+}
+
+static inline void JXLSetMemoryManager(JxlMemoryManager *memory_manager,
+  MemoryManagerInfo *memory_manager_info,Image *image,ExceptionInfo *exception)
+{
+  memory_manager_info->image=image;
+  memory_manager_info->exception=exception;
+  memory_manager->opaque=memory_manager_info;
+  memory_manager->alloc=JXLAcquireMemory;
+  memory_manager->free=JXLRelinquishMemory;
+}
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -108,41 +136,64 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static size_t BufferJXLContent(void *data,const uint8_t *buffer,size_t extent)
+static inline OrientationType JXLOrientationToOrientation(
+  JxlOrientation orientation)
 {
-  JXLInfo
-    *jxl_info;
-
-  jxl_info=(JXLInfo *) data;
-  jxl_info->data=(unsigned char *) ResizeQuantumMemory(jxl_info->data,
-    jxl_info->extent+extent,sizeof(*jxl_info->data));
-  if (jxl_info->data == (unsigned char *) NULL)
-    return(0);
-  (void) memcpy(jxl_info->data+jxl_info->extent,buffer,extent);
-  jxl_info->extent+=extent;
-  return(extent);
+  switch (orientation)
+  {
+    default:
+    case JXL_ORIENT_IDENTITY:
+      return TopLeftOrientation;
+    case JXL_ORIENT_FLIP_HORIZONTAL:
+      return TopRightOrientation;
+    case JXL_ORIENT_ROTATE_180:
+      return BottomRightOrientation;
+    case JXL_ORIENT_FLIP_VERTICAL:
+      return BottomLeftOrientation;
+    case JXL_ORIENT_TRANSPOSE:
+      return LeftTopOrientation;
+    case JXL_ORIENT_ROTATE_90_CW:
+      return RightTopOrientation;
+    case JXL_ORIENT_ANTI_TRANSPOSE:
+      return RightBottomOrientation;
+    case JXL_ORIENT_ROTATE_90_CCW:
+      return LeftBottomOrientation;
+  }
 }
 
-static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadJXLImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   Image
     *image;
 
-  JXLInfo
-    jxl_info;
+  JxlPixelFormat
+    format;
+
+  JxlDecoderStatus
+    events_wanted;
+
+  JxlDecoder
+    *decoder;
+
+  JxlDecoderStatus
+    decoder_status;
+
+  JxlMemoryManager
+    memory_manager;
 
   MagickBooleanType
     status;
 
-  MagickSizeType
-    extent;
+  MemoryManagerInfo
+    memory_manager_info;
 
-  ssize_t
-    count;
+  size_t
+    input_size;
 
   unsigned char
-    *buffer;
+    *input_buffer,
+    *output_buffer;
 
   /*
     Open image file.
@@ -161,55 +212,135 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  /*
-    Read JXL image.
-  */
-  extent=(size_t) GetBlobSize(image);
-  buffer=(unsigned char *) AcquireQuantumMemory(extent,sizeof(*buffer));
-  if (buffer == (unsigned char *) NULL)
-    status=MagickFalse;
-  else
+  JXLSetMemoryManager(&memory_manager,&memory_manager_info,image,exception);
+  decoder=JxlDecoderCreate(&memory_manager);
+  if (decoder == (JxlDecoder *) NULL)
+    ThrowReaderException(CoderError,"MemoryAllocationFailed");
+  events_wanted=JXL_DEC_BASIC_INFO;
+  if (image_info->ping == MagickFalse)
+    events_wanted|=JXL_DEC_FULL_IMAGE;
+  if (JxlDecoderSubscribeEvents(decoder,events_wanted) != JXL_DEC_SUCCESS)
     {
-      count=ReadBlob(image,extent,buffer);
-      if (count != (ssize_t) extent)
-        status=MagickFalse;
+      JxlDecoderDestroy(decoder);
+      ThrowReaderException(CoderError,"UnableToReadImageData");
     }
-  image=DestroyImage(image);
-  /*
-    Unpackage JPEG image from JXL.
-  */
-  jxl_info.data=(unsigned char *) NULL;
-  jxl_info.extent=0;
-  if (status != MagickFalse)
+  input_buffer=AcquireQuantumMemory(MagickMaxBufferExtent,
+    sizeof(*input_buffer));
+  if (input_buffer == (unsigned char *) NULL)
     {
-/*
-      status=DecodeBrunsli(extent,buffer,&jxl_info,BufferJXLContent) == 1 ?
-        MagickTrue : MagickFalse;
-*/
-      buffer=(unsigned char *) RelinquishMagickMemory(buffer);
+      JxlDecoderDestroy(decoder);
+      ThrowReaderException(CoderError,"MemoryAllocationFailed");
     }
-  if (status != MagickFalse)
-    {
-      ImageInfo
-        *write_info;
+  output_buffer=(unsigned char *) NULL;
+  memset(&format,0,sizeof(format));
+  input_size=0;
+  decoder_status=JXL_DEC_NEED_MORE_INPUT;
+  while ((decoder_status != JXL_DEC_SUCCESS) &&
+         (decoder_status != JXL_DEC_ERROR))
+  {
+    size_t
+      size;
 
-      /*
-        Convert JXL format.
-      */
-      write_info=AcquireImageInfo();
-      SetImageInfoBlob(write_info,jxl_info.data,jxl_info.extent);
-      image=BlobToImage(write_info,jxl_info.data,jxl_info.extent,exception);
-      if (image != (Image *) NULL)
-        {
-          (void) CopyMagickString(image->filename,image_info->filename,
-            MagickPathExtent);
-          (void) CopyMagickString(image->magick,image_info->magick,
-            MagickPathExtent);
-        }
-      write_info=DestroyImageInfo(write_info);
+    unsigned char
+      *p;
+
+    size=input_size;
+    p=input_buffer;
+    decoder_status=JxlDecoderProcessInput(decoder,&p,&input_size);
+    if ((input_size > 0) && ((size-input_size) > 0))
+      (void) memmove(input_buffer,input_buffer+(size-input_size),input_size);
+    switch (decoder_status)
+    {
+      case JXL_DEC_NEED_MORE_INPUT:
+      {
+        input_size+=ReadBlob(image,MagickMaxBufferExtent-input_size,
+          input_buffer+input_size);
+        if (input_size == 0)
+          {
+            decoder_status=JXL_DEC_SUCCESS;
+            ThrowMagickException(exception,GetMagickModule(),CoderError,
+              "InsufficientImageDataInFile","`%s'",image->filename);
+            break;
+          }
+        break;
+      }
+      case JXL_DEC_BASIC_INFO:
+      {
+        JxlBasicInfo
+          basic_info;
+
+        decoder_status=JxlDecoderGetBasicInfo(decoder,&basic_info);
+        if (decoder_status != JXL_DEC_SUCCESS)
+          break;
+        /* For now we dont support images with an animation */
+        if (basic_info.have_animation == 1)
+          {
+            ThrowMagickException(exception,GetMagickModule(),
+              MissingDelegateError,"NoDecodeDelegateForThisImageFormat",
+              "`%s'",image->filename);
+            break;
+          }
+        image->columns=basic_info.xsize;
+        image->rows=basic_info.ysize;
+        image->depth=basic_info.bits_per_sample;
+        if (basic_info.alpha_bits != 0)
+          image->alpha_trait=BlendPixelTrait;
+        image->orientation=JXLOrientationToOrientation(basic_info.orientation);
+        decoder_status=JXL_DEC_BASIC_INFO;
+        break;
+      }
+      case JXL_DEC_NEED_IMAGE_OUT_BUFFER:
+      {
+        size_t
+          output_size;
+
+        format.num_channels=(image->alpha_trait == BlendPixelTrait) ? 4 : 3;
+        format.data_type=(image->depth > 8) ? JXL_TYPE_FLOAT : JXL_TYPE_UINT8;
+        decoder_status=JxlDecoderImageOutBufferSize(decoder,&format,
+          &output_size);
+        if (decoder_status != JXL_DEC_SUCCESS)
+          break;
+        status=SetImageExtent(image,image->columns,image->rows,exception);
+        if (status == MagickFalse)
+          break;
+        output_buffer=AcquireQuantumMemory(output_size,sizeof(*output_buffer));
+        if (output_buffer == (unsigned char *) NULL)
+          {
+            ThrowMagickException(exception,GetMagickModule(),CoderError,
+              "MemoryAllocationFailed","`%s'",image->filename);
+            break;
+          }
+        decoder_status=JxlDecoderSetImageOutBuffer(decoder,&format,
+          output_buffer,output_size);
+        if (decoder_status != JXL_DEC_SUCCESS)
+          break;
+        decoder_status=JXL_DEC_NEED_IMAGE_OUT_BUFFER;
+      }
+      case JXL_DEC_FULL_IMAGE:
+        if (output_buffer == (unsigned char *) NULL)
+          {
+            ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+              "UnableToReadImageData","`%s'",image->filename);
+            break;
+          }
+        (void) ImportImagePixels(image,0,0,image->columns,image->rows,
+          image->alpha_trait == BlendPixelTrait ? "RGBA" : "RGB",
+          format.data_type == JXL_TYPE_FLOAT ? FloatPixel : CharPixel,
+          output_buffer,exception);
+        break;
+      case JXL_DEC_SUCCESS:
+      case JXL_DEC_ERROR:
+        break;
+      default:
+        decoder_status=JXL_DEC_ERROR;
+        break;
     }
-  if (jxl_info.data != (unsigned char *) NULL)
-    jxl_info.data=(unsigned char *) RelinquishMagickMemory(jxl_info.data);
+  }
+  output_buffer=(unsigned char *) RelinquishMagickMemory(output_buffer);
+  input_buffer=(unsigned char *) RelinquishMagickMemory(input_buffer);
+  JxlDecoderDestroy(decoder);
+  if (decoder_status == JXL_DEC_ERROR)
+     ThrowReaderException(CorruptImageError,"UnableToReadImageData");
   return(image);
 }
 #endif
@@ -245,11 +376,8 @@ ModuleExport size_t RegisterJXLImage(void)
   entry=AcquireMagickInfo("JXL", "JXL", "JPEG XL Lossless JPEG1 Recompression");
 #if defined(MAGICKCORE_JXL_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJXLImage;
-  entry->encoder=(EncodeImageHandler *) WriteJXLImage;
 #endif
-  entry->note=ConstantString(
-    "JPEG1 recompression as specified in https://arxiv.org/pdf/1908.03565.pdf"
-    " page 135. Full JPEG XL support is pending.");
+  entry->flags^=CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
@@ -277,98 +405,3 @@ ModuleExport void UnregisterJXLImage(void)
 {
   (void) UnregisterMagickInfo("JXL");
 }
-
-#if defined(MAGICKCORE_JXL_DELEGATE)
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%  W r i t e J X L I m a g e                                                  %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  WriteJXLImage() writes a JXL image file and returns it.  It
-%  allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.
-%
-%  The format of the WriteJXLImage method is:
-%
-%      MagickBooleanType WriteJXLImage(const ImageInfo *image_info,
-%        Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image_info: the image info.
-%
-%    o image:  The image.
-%
-*/
-static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
-  ExceptionInfo *exception)
-{
-  Image
-    *write_image;
-
-  ImageInfo
-    *write_info;
-
-  JXLInfo
-    jxl_info;
-
-  MagickBooleanType
-    status;
-
-  size_t
-    extent;
-
-  unsigned char
-    *jpeg_blob;
-
-  /*
-    Open output image file.
-  */
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickCoreSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickCoreSignature);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
-  if (status == MagickFalse)
-    return(status);
-  /*
-    Write image as a JPEG blob.
-  */
-  write_info=AcquireImageInfo();
-  write_image=CloneImage(image,0,0,MagickTrue,exception);
-  (void) CopyMagickString(write_image->magick,"JPG",MaxTextExtent);
-  jpeg_blob=ImageToBlob(write_info,write_image,&extent,exception);
-  write_image=DestroyImage(write_image);
-  write_info=DestroyImageInfo(write_info);
-  if (jpeg_blob == (unsigned char *) NULL)
-    return(MagickFalse);
-  /*
-    Repackage JPEG image.
-  */
-  jxl_info.data=(unsigned char *) NULL;
-  jxl_info.extent=0;
-/*
-  status=EncodeBrunsli(extent,jpeg_blob,&jxl_info,BufferJXLContent) == 1 ?
-    MagickTrue : MagickFalse;
-*/
-  jpeg_blob=(unsigned char *) RelinquishMagickMemory(jpeg_blob);
-  if (status != MagickFalse)
-    {
-      (void) WriteBlob(image,jxl_info.extent,jxl_info.data);
-      (void) CloseBlob(image);
-    }
-  if (jxl_info.data != (unsigned char *) NULL)
-    jxl_info.data=(unsigned char *) RelinquishMagickMemory(jxl_info.data);
-  return(status);
-}
-#endif
