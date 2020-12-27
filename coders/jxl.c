@@ -493,8 +493,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     memory_manager_info;
 
   size_t
-    bytes_per_row,
-    count;
+    bytes_per_row;
 
   unsigned char
     *input_buffer,
@@ -555,7 +554,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       return(MagickFalse);
     }
   encoder_status=JxlEncoderAddImageFrame(encoder_options,&format,input_buffer,
-    bytes_per_row);
+    bytes_per_row*image->rows);
   if (encoder_status == JXL_ENC_SUCCESS)
     {
       output_buffer=AcquireQuantumMemory(MagickMaxBufferExtent,
@@ -569,13 +568,16 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       encoder_status=JXL_ENC_NEED_MORE_OUTPUT;
       while (encoder_status == JXL_ENC_NEED_MORE_OUTPUT)
       {
-          unsigned char
-            *p;
+        size_t
+          count;
 
-          count=MagickMaxBufferExtent;
-          p=output_buffer;
-          encoder_status=JxlEncoderProcessOutput(encoder,&p,&count);
-          (void) WriteBlob(image,MagickMaxBufferExtent-count,output_buffer);
+        unsigned char
+          *p;
+
+        count=MagickMaxBufferExtent;
+        p=output_buffer;
+        encoder_status=JxlEncoderProcessOutput(encoder,&p,&count);
+        (void) WriteBlob(image,MagickMaxBufferExtent-count,output_buffer);
       }
       output_buffer=(unsigned char *) RelinquishMagickMemory(output_buffer);
     }
