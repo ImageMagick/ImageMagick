@@ -1,12 +1,12 @@
-2020-12-25  7.0.10-54  <quetzlzacatenango@image...>
+2020-12-27  7.0.10-54  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-54 GIT revision 18...
+
+2020-12-27  7.0.10-54  Dirk Lemstra <dirk@lem.....org>
+  * replaced jxl coder with an implementation that uses the jpeg-xl reference
+    library.
 
 2020-12-25  7.0.10-54  <quetzlzacatenango@image...>
   * enable reading of a certain grayscale TIFF image.
-
-2020-11-30  7.0.10-54  Dirk Lemstra <dirk@lem.....org>
-  * replaced jxl coder with an implementation that uses the
-    jpeg-xl reference library.
 
 2020-12-24  7.0.10-53  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-53 GIT revision 18083:3b141f557:20201224
