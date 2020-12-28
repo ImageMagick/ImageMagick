@@ -2380,9 +2380,6 @@ if test "$with_jxl" != 'no'; then
   passed=0
   AC_CHECK_HEADER([jxl/decode.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
   AC_CHECK_HEADER([jxl/encode.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
-  AC_CHECK_LIB([jxl],[JxlDecoderProcessInput],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
-
-  AC_CHECK_LIB([jxl],[JxlEncoderProcessOutput],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
 
   AC_MSG_CHECKING([if jpeg-xl package is complete])
   if test $passed -gt 0; then
