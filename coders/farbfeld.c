@@ -201,7 +201,7 @@ static Image *ReadFARBFELDImage(const ImageInfo *image_info,
     const void
       *stream;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -333,7 +333,7 @@ static MagickBooleanType WriteFARBFELDImage(const ImageInfo *image_info,
   QuantumInfo
     *quantum_info;
 
-  register const Quantum
+  const Quantum
     *p;
 
   size_t

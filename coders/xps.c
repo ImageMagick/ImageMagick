@@ -170,7 +170,7 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   RectangleInfo
     page;
 
-  register ssize_t
+  ssize_t
     i;
 
   unsigned long

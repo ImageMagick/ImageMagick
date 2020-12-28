@@ -190,10 +190,10 @@ static MagickBooleanType WriteKERNELImage(const ImageInfo *image_info,
   */
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register ssize_t
+    ssize_t
       x;
 
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);

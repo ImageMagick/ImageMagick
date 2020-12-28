@@ -273,7 +273,7 @@ static MagickBooleanType InsertRow(Image *image,unsigned char *p,ssize_t y,
   Quantum
     index;
 
-  register Quantum
+  Quantum
     *q;
 
   ssize_t
@@ -561,7 +561,7 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
     RunCount,
     XorMe = 0;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t

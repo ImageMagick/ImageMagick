@@ -150,7 +150,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     fill_color,
     pixel;
 
-  register SegmentInfo
+  SegmentInfo
     *s;
 
   SegmentInfo
@@ -215,13 +215,13 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   floodplane_view=AcquireAuthenticCacheView(floodplane_image,exception);
   while (s > segment_stack)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     /*
@@ -321,13 +321,13 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   status=MagickTrue;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     /*
@@ -647,7 +647,7 @@ MagickExport MagickBooleanType GradientImage(Image *image,
 
 static size_t **DestroyHistogramThreadSet(size_t **histogram)
 {
-  register ssize_t
+  ssize_t
     i;
 
   assert(histogram != (size_t **) NULL);
@@ -660,7 +660,7 @@ static size_t **DestroyHistogramThreadSet(size_t **histogram)
 
 static size_t **AcquireHistogramThreadSet(const size_t count)
 {
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -757,16 +757,16 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 #endif
   for (y=0; y < (ssize_t) linear_image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register size_t
+    size_t
       *histogram;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -783,7 +783,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     histogram=histograms[GetOpenMPThreadId()];
     for (x=0; x < (ssize_t) linear_image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         i,
         u;
 
@@ -951,10 +951,10 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
     PixelInfo
       pixel;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -1098,10 +1098,10 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
     PixelInfo
       pixel;
 
-    register ssize_t
+    ssize_t
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     if (status == MagickFalse)
@@ -1229,10 +1229,10 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
     PixelInfo
       pixel;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)

@@ -125,10 +125,10 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register Quantum
+  Quantum
     *q;
 
   size_t

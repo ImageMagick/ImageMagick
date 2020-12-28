@@ -120,7 +120,7 @@ WandExport WandView *CloneWandView(const WandView *wand_view)
   WandView
     *clone_view;
 
-  register ssize_t
+  ssize_t
     i;
 
   assert(wand_view != (WandView *) NULL);
@@ -178,7 +178,7 @@ WandExport WandView *CloneWandView(const WandView *wand_view)
 static PixelWand ***DestroyPixelsThreadSet(PixelWand ***pixel_wands,
   const size_t number_wands)
 {
-  register ssize_t
+  ssize_t
     i;
 
   assert(pixel_wands != (PixelWand ***) NULL);
@@ -302,14 +302,14 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
     MagickBooleanType
       sync;
 
-    register const Quantum
+    const Quantum
       *magick_restrict duplex_pixels,
       *magick_restrict pixels;
 
-    register ssize_t
+    ssize_t
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict destination_pixels;
 
     if (status == MagickFalse)
@@ -553,10 +553,10 @@ WandExport MagickBooleanType GetWandViewIterator(WandView *source,
     const int
       id = GetOpenMPThreadId();
 
-    register const Quantum
+    const Quantum
       *pixels;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -721,7 +721,7 @@ static PixelWand ***AcquirePixelsThreadSet(const size_t number_wands)
   PixelWand
     ***pixel_wands;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -960,10 +960,10 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
     MagickBooleanType
       sync;
 
-    register ssize_t
+    ssize_t
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict pixels;
 
     if (status == MagickFalse)
@@ -1098,13 +1098,13 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
     MagickBooleanType
       sync;
 
-    register const Quantum
+    const Quantum
       *magick_restrict pixels;
 
-    register ssize_t
+    ssize_t
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict destination_pixels;
 
     if (status == MagickFalse)
@@ -1253,10 +1253,10 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
     MagickBooleanType
       sync;
 
-    register ssize_t
+    ssize_t
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict pixels;
 
     if (status == MagickFalse)

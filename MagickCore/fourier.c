@@ -247,17 +247,17 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict Ai,
       *magick_restrict Ar,
       *magick_restrict Bi,
       *magick_restrict Br;
 
-    register Quantum
+    Quantum
       *magick_restrict Ci,
       *magick_restrict Cr;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -277,7 +277,7 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
       }
     for (x=0; x < (ssize_t) columns; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) number_channels; i++)
@@ -412,7 +412,7 @@ static MagickBooleanType RollFourier(const size_t width,const size_t height,
   MemoryInfo
     *source_info;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
@@ -458,7 +458,7 @@ static MagickBooleanType ForwardQuadrantSwap(const size_t width,
   MagickBooleanType
     status;
 
-  register ssize_t
+  ssize_t
     x;
 
   ssize_t
@@ -488,7 +488,7 @@ static MagickBooleanType ForwardQuadrantSwap(const size_t width,
 static void CorrectPhaseLHS(const size_t width,const size_t height,
   double *fourier_pixels)
 {
-  register ssize_t
+  ssize_t
     x;
 
   ssize_t
@@ -521,10 +521,10 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
     *magnitude_info,
     *phase_info;
 
-  register Quantum
+  Quantum
     *q;
 
-  register ssize_t
+  ssize_t
     x;
 
   ssize_t
@@ -712,10 +712,10 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
     *forward_info,
     *source_info;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
@@ -1083,7 +1083,7 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
 static MagickBooleanType InverseQuadrantSwap(const size_t width,
   const size_t height,const double *source,double *destination)
 {
-  register ssize_t
+  ssize_t
     x;
 
   ssize_t
@@ -1125,10 +1125,10 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
     *magnitude_info,
     *phase_info;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
@@ -1324,10 +1324,10 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
   MemoryInfo
     *source_info;
 
-  register Quantum
+  Quantum
     *q;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 

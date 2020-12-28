@@ -189,7 +189,7 @@ static void InsertComplexDoubleRow(Image *image,double *p,int y,double MinVal,
 {
   double f;
   int x;
-  register Quantum *q;
+  Quantum *q;
 
   if (MinVal >= 0)
     MinVal = -1;
@@ -252,7 +252,7 @@ static void InsertComplexFloatRow(Image *image,float *p,int y,double MinVal,
 {
   double f;
   int x;
-  register Quantum *q;
+  Quantum *q;
 
   if (MinVal >= 0)
     MinVal = -1;
@@ -624,7 +624,7 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
   QuantumFormatType
     format_type;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -752,7 +752,7 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     pixels=(unsigned char *) GetQuantumPixels(quantum_info);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      register Quantum
+      Quantum
         *magick_restrict q;
 
       count=ReadBlob(image,depth/8*image->columns,(char *) pixels);
@@ -874,7 +874,7 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image *image, *image2=NULL,
    *rotated_image;
-  register Quantum *q;
+  Quantum *q;
 
   unsigned int status;
   MATHeader MATLAB_HDR;

@@ -448,7 +448,7 @@ static MagickBooleanType PackAshlarTiles(AshlarInfo *ashlar_info,
   MagickBooleanType
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -580,7 +580,7 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
   value=GetImageOption(image_info,"ashlar:best-fit");
   for (i=20; i > 0; i--)
   {
-    register ssize_t
+    ssize_t
       j;
 
     n=0;

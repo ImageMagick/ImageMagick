@@ -109,10 +109,10 @@ static void ClearBounds(Image *image,RectangleInfo *bounds,
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
   for (y=0; y < (ssize_t) bounds->height; y++)
   {
-    register ssize_t
+    ssize_t
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     q=GetAuthenticPixels(image,bounds->x,bounds->y+y,bounds->width,1,exception);
@@ -165,11 +165,11 @@ static void ClearBounds(Image *image,RectangleInfo *bounds,
 static MagickBooleanType IsBoundsCleared(const Image *image1,
   const Image *image2,RectangleInfo *bounds,ExceptionInfo *exception)
 {
-  register const Quantum
+  const Quantum
     *p,
     *q;
 
-  register ssize_t
+  ssize_t
     x;
 
   ssize_t
@@ -233,7 +233,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     *dispose_image,
     *previous;
 
-  register Image
+  Image
     *next;
 
   RectangleInfo
@@ -402,7 +402,7 @@ MagickExport Image *DisposeImages(const Image *images,ExceptionInfo *exception)
   RectangleInfo
     bounds;
 
-  register Image
+  Image
     *image,
     *next;
 
@@ -619,11 +619,11 @@ static RectangleInfo CompareImagesBounds(const Image *image1,
     pixel1,
     pixel2;
 
-  register const Quantum
+  const Quantum
     *p,
     *q;
 
-  register ssize_t
+  ssize_t
     x;
 
   ssize_t
@@ -773,10 +773,10 @@ MagickExport Image *CompareImagesLayers(const Image *image,
   RectangleInfo
     *bounds;
 
-  register const Image
+  const Image
     *next;
 
-  register ssize_t
+  ssize_t
     i;
 
   assert(image != (const Image *) NULL);
@@ -961,10 +961,10 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
   DisposeType
     *disposals;
 
-  register const Image
+  const Image
     *curr;
 
-  register ssize_t
+  ssize_t
     i;
 
   assert(image != (const Image *) NULL);
@@ -1491,7 +1491,7 @@ MagickExport void OptimizeImageTransparency(const Image *image,
   Image
     *dispose_image;
 
-  register Image
+  Image
     *next;
 
   /*
@@ -1619,7 +1619,7 @@ MagickExport void RemoveDuplicateLayers(Image **images,ExceptionInfo *exception)
   RectangleInfo
     bounds;
 
-  register Image
+  Image
     *image,
     *next;
 
@@ -1949,7 +1949,7 @@ MagickExport Image *MergeImageLayers(Image *image,const LayerMethod method,
   RectangleInfo
     page;
 
-  register const Image
+  const Image
     *next;
 
   size_t

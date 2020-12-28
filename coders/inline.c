@@ -101,7 +101,7 @@ static Image *ReadINLINEImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register size_t
+  size_t
     i;
 
   size_t

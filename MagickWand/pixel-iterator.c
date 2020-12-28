@@ -488,10 +488,10 @@ WandExport PixelIterator *NewPixelRegionIterator(MagickWand *wand,
 WandExport PixelWand **PixelGetCurrentIteratorRow(PixelIterator *iterator,
   size_t *number_wands)
 {
-  register const Quantum
+  const Quantum
     *pixels;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(iterator != (PixelIterator *) NULL);
@@ -667,10 +667,10 @@ WandExport ssize_t PixelGetIteratorRow(PixelIterator *iterator)
 WandExport PixelWand **PixelGetNextIteratorRow(PixelIterator *iterator,
   size_t *number_wands)
 {
-  register const Quantum
+  const Quantum
     *pixels;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(iterator != (PixelIterator *) NULL);
@@ -726,10 +726,10 @@ WandExport PixelWand **PixelGetNextIteratorRow(PixelIterator *iterator,
 WandExport PixelWand **PixelGetPreviousIteratorRow(PixelIterator *iterator,
   size_t *number_wands)
 {
-  register const Quantum
+  const Quantum
     *pixels;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(iterator != (PixelIterator *) NULL);
@@ -918,10 +918,10 @@ WandExport MagickBooleanType PixelSyncIterator(PixelIterator *iterator)
   MagickBooleanType
     status;
 
-  register Quantum
+  Quantum
     *magick_restrict pixels;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(iterator != (const PixelIterator *) NULL);

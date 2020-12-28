@@ -101,13 +101,13 @@ static Image *ReadAAIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register Quantum
+  Quantum
     *q;
 
-  register unsigned char
+  unsigned char
     *p;
 
   size_t
@@ -334,13 +334,13 @@ static MagickBooleanType WriteAAIImage(const ImageInfo *image_info,Image *image,
   MagickOffsetType
     scene;
 
-  register const Quantum
+  const Quantum
     *magick_restrict p;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register unsigned char
+  unsigned char
     *magick_restrict q;
 
   size_t

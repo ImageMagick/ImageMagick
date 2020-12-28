@@ -209,13 +209,13 @@ MagickPrivate SignatureInfo *DestroySignatureInfo(SignatureInfo *signature_info)
 */
 MagickPrivate void FinalizeSignature(SignatureInfo *signature_info)
 {
-  register ssize_t
+  ssize_t
     i;
 
-  register unsigned char
+  unsigned char
     *q;
 
-  register unsigned int
+  unsigned int
     *p;
 
   size_t
@@ -479,7 +479,7 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
   float
     pixel;
 
-  register const Quantum
+  const Quantum
     *p;
 
   SignatureInfo
@@ -507,10 +507,10 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register ssize_t
+    ssize_t
       x;
 
-    register unsigned char
+    unsigned char
       *q;
 
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
@@ -522,7 +522,7 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
     q=pixels;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       if (GetPixelReadMask(image,p) <= (QuantumRange/2))
@@ -532,7 +532,7 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        register ssize_t
+        ssize_t
           j;
 
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -599,10 +599,10 @@ static void TransformSignature(SignatureInfo *signature_info)
 #define Suma1(x)  (RotateRight(x,6) ^ RotateRight(x,11) ^ RotateRight(x,25))
 #define Trunc32(x)  ((unsigned int) ((x) & 0xffffffffU))
 
-  register ssize_t
+  ssize_t
     i;
 
-  register unsigned char
+  unsigned char
     *p;
 
   ssize_t
@@ -766,10 +766,10 @@ RestoreMSCWarning
 MagickPrivate void UpdateSignature(SignatureInfo *signature_info,
   const StringInfo *message)
 {
-  register size_t
+  size_t
     i;
 
-  register unsigned char
+  unsigned char
     *p;
 
   size_t

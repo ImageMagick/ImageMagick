@@ -464,7 +464,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
   PrimaryInfo
     primary_info;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -517,10 +517,10 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         PixelInfo
           pixel;
 
-        register ssize_t
+        ssize_t
           x;
 
-        register Quantum
+        Quantum
           *magick_restrict q;
 
         if (status == MagickFalse)
@@ -573,10 +573,10 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         MagickBooleanType
           sync;
 
-        register ssize_t
+        ssize_t
           x;
 
-        register Quantum
+        Quantum
           *magick_restrict q;
 
         if (status == MagickFalse)
@@ -630,10 +630,10 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         MagickBooleanType
           sync;
 
-        register ssize_t
+        ssize_t
           x;
 
-        register Quantum
+        Quantum
           *magick_restrict q;
 
         if (status == MagickFalse)
@@ -721,10 +721,10 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         MagickBooleanType
           sync;
 
-        register ssize_t
+        ssize_t
           x;
 
-        register Quantum
+        Quantum
           *magick_restrict q;
 
         if (status == MagickFalse)
@@ -959,10 +959,10 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         MagickBooleanType
           sync;
 
-        register ssize_t
+        ssize_t
           x;
 
-        register Quantum
+        Quantum
           *magick_restrict q;
 
         if (status == MagickFalse)
@@ -1026,10 +1026,10 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         MagickBooleanType
           sync;
 
-        register ssize_t
+        ssize_t
           x;
 
-        register Quantum
+        Quantum
           *magick_restrict q;
 
         if (status == MagickFalse)
@@ -1272,13 +1272,13 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         PixelInfo
           pixel;
 
-        register Quantum
+        Quantum
           *magick_restrict q;
 
-        register ssize_t
+        ssize_t
           x;
 
-        register unsigned int
+        unsigned int
           blue,
           green,
           red;
@@ -1334,7 +1334,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
     }
     case PseudoClass:
     {
-      register unsigned int
+      unsigned int
         blue,
         green,
         red;
@@ -2031,7 +2031,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
   MagickOffsetType
     progress;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -2079,10 +2079,10 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         PixelInfo
           pixel;
 
-        register ssize_t
+        ssize_t
           x;
 
-        register Quantum
+        Quantum
           *magick_restrict q;
 
         if (status == MagickFalse)
@@ -2135,10 +2135,10 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         MagickBooleanType
           sync;
 
-        register ssize_t
+        ssize_t
           x;
 
-        register Quantum
+        Quantum
           *magick_restrict q;
 
         if (status == MagickFalse)
@@ -2196,10 +2196,10 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         MagickBooleanType
           sync;
 
-        register ssize_t
+        ssize_t
           x;
 
-        register Quantum
+        Quantum
           *magick_restrict q;
 
         if (status == MagickFalse)
@@ -2288,10 +2288,10 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         MagickBooleanType
           sync;
 
-        register ssize_t
+        ssize_t
           x;
 
-        register Quantum
+        Quantum
           *magick_restrict q;
 
         if (status == MagickFalse)
@@ -2529,10 +2529,10 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         MagickBooleanType
           sync;
 
-        register ssize_t
+        ssize_t
           x;
 
-        register Quantum
+        Quantum
           *magick_restrict q;
 
         if (status == MagickFalse)
@@ -2595,10 +2595,10 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         MagickBooleanType
           sync;
 
-        register ssize_t
+        ssize_t
           x;
 
-        register Quantum
+        Quantum
           *magick_restrict q;
 
         if (status == MagickFalse)
@@ -2830,10 +2830,10 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         PixelInfo
           pixel;
 
-        register ssize_t
+        ssize_t
           x;
 
-        register Quantum
+        Quantum
           *magick_restrict q;
 
         if (status == MagickFalse)
@@ -2847,7 +2847,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           }
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          register size_t
+          size_t
             blue,
             green,
             red;
@@ -2913,7 +2913,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         PixelInfo
           pixel;
 
-        register size_t
+        size_t
           blue,
           green,
           red;

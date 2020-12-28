@@ -178,13 +178,13 @@ MagickExport magick_hot_spot size_t GetNextToken(
   double
     value;
 
-  register char
+  char
     *magick_restrict q;
 
-  register const char
+  const char
     *magick_restrict p;
 
-  register ssize_t
+  ssize_t
     i;
 
   assert(start != (const char *) NULL);
@@ -202,7 +202,7 @@ MagickExport magick_hot_spot size_t GetNextToken(
     case '`':
     case '{':
     {
-      register char
+      char
         escape;
 
       switch (*p)
@@ -360,7 +360,7 @@ MagickExport MagickBooleanType GlobExpression(
     done,
     match;
 
-  register const char
+  const char
     *magick_restrict p;
 
   /*
@@ -511,7 +511,7 @@ MagickExport MagickBooleanType GlobExpression(
         char
           *target;
 
-        register char
+        char
           *p;
 
         target=AcquireString(pattern);
@@ -602,7 +602,7 @@ MagickPrivate MagickBooleanType IsGlob(const char *path)
   MagickBooleanType
     status = MagickFalse;
 
-  register const char
+  const char
     *p;
 
   if (IsPathAccessible(path) != MagickFalse)
@@ -797,7 +797,7 @@ MagickPrivate MagickBooleanType IsGlob(const char *path)
 
 static ssize_t sindex(int c,const char *string)
 {
-  register const char
+  const char
     *p;
 
   for (p=string; *p != '\0'; p++)
@@ -809,7 +809,7 @@ static ssize_t sindex(int c,const char *string)
 static void StoreToken(TokenInfo *token_info,char *string,
   size_t max_token_length,int c)
 {
-  register ssize_t
+  ssize_t
     i;
 
   if ((token_info->offset < 0) ||
@@ -844,7 +844,7 @@ MagickExport int Tokenizer(TokenInfo *token_info,const unsigned flag,
   int
     c;
 
-  register ssize_t
+  ssize_t
     i;
 
   *breaker='\0';

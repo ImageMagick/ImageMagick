@@ -193,10 +193,10 @@ static void JSONFormatLocaleFile(FILE *file,const char *format,
   char
     *escaped_json;
 
-  register char
+  char
     *q;
 
-  register const char
+  const char
     *p;
 
   size_t
@@ -319,7 +319,7 @@ static ChannelStatistics *GetLocationStatistics(const Image *image,
   ChannelStatistics
     *channel_statistics;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -354,10 +354,10 @@ static ChannelStatistics *GetLocationStatistics(const Image *image,
   }
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register ssize_t
+    ssize_t
       x;
 
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -365,7 +365,7 @@ static ChannelStatistics *GetLocationStatistics(const Image *image,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       if (GetPixelReadMask(image,p) <= (QuantumRange/2))
@@ -573,7 +573,7 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
   n=0;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *p;
 
     ssize_t
@@ -620,7 +620,7 @@ static ssize_t PrintChannelMoments(FILE *file,const PixelChannel channel,
   const char *name,const MagickBooleanType separator,
   const ChannelMoments *channel_moments)
 {
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -658,7 +658,7 @@ static ssize_t PrintChannelMoments(FILE *file,const PixelChannel channel,
 static ssize_t PrintChannelPerceptualHash(Image *image,FILE *file,
   const ChannelPerceptualHash *channel_phash)
 {
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -675,7 +675,7 @@ static ssize_t PrintChannelPerceptualHash(Image *image,FILE *file,
   (void) FormatLocaleFile(file,"],\n");
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
-    register ssize_t
+    ssize_t
       j;
 
     PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -685,7 +685,7 @@ static ssize_t PrintChannelPerceptualHash(Image *image,FILE *file,
     n=FormatLocaleFile(file,"      \"Channel%.20g\": {\n",(double) channel);
     for (j=0; j < MaximumNumberOfPerceptualHashes; j++)
     {
-      register ssize_t
+      ssize_t
         k;
 
       n+=FormatLocaleFile(file,"        \"PH%.20g\": [",(double) j+1);
@@ -754,7 +754,7 @@ static void EncodeIptcProfile(FILE *file,const StringInfo *profile)
     record,
     sentinel;
 
-  register ssize_t
+  ssize_t
     i,
     j,
     k;
@@ -954,10 +954,10 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   MagickBooleanType
     ping;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
@@ -1350,7 +1350,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
     x=0;
     if (image->alpha_trait != UndefinedPixelTrait)
       {
-        register const Quantum
+        const Quantum
           *p;
 
         p=(const Quantum *) NULL;
@@ -1381,7 +1381,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       }
   if (image->storage_class == PseudoClass)
     {
-      register PixelInfo
+      PixelInfo
         *magick_restrict p;
 
       (void) FormatLocaleFile(file,"    \"colormapEntries\": %.20g,\n",
@@ -1502,7 +1502,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       ImageInfo
         *image_info;
 
-      register char
+      char
         *p,
         *q;
 

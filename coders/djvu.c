@@ -428,7 +428,7 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                 /* old: */
                 char* r;
 #else
-                register Quantum *r;
+                Quantum *r;
                 unsigned char *s;
 #endif
                 s=q;
@@ -575,7 +575,7 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
         /* Read one DJVU image */
         image = lc->image;
 
-        /* register Quantum *q; */
+        /* Quantum *q; */
 
         logging=LogMagickEvent(CoderEvent,GetMagickModule(), "  enter ReadOneDJVUImage()");
         (void) logging;
@@ -759,7 +759,7 @@ static Image *ReadDJVUImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*

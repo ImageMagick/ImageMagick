@@ -96,7 +96,7 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
   MagickBooleanType
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -525,7 +525,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
   MagickStatusType
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t

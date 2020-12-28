@@ -120,7 +120,7 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image,
   MagickStatusType
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
   log_mean=log(0.5);
@@ -304,7 +304,7 @@ static void ClipCLAHEHistogram(const double clip_limit,const size_t number_bins,
 {
 #define NumberCLAHEGrays  (65536)
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -351,7 +351,7 @@ static void ClipCLAHEHistogram(const double clip_limit,const size_t number_bins,
   */
   do
   {
-    register size_t
+    size_t
       *p;
 
     size_t
@@ -380,10 +380,10 @@ static void GenerateCLAHEHistogram(const RectangleInfo *clahe_info,
   const RectangleInfo *tile_info,const size_t number_bins,
   const unsigned short *lut,const unsigned short *pixels,size_t *histogram)
 {
-  register const unsigned short
+  const unsigned short
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -420,7 +420,7 @@ static void InterpolateCLAHE(const RectangleInfo *clahe_info,const size_t *Q12,
   */
   for (y=(ssize_t) tile->height; y > 0; y--)
   {
-    register ssize_t
+    ssize_t
       x;
 
     for (x=(ssize_t) tile->width; x > 0; x--)
@@ -459,7 +459,7 @@ static void MapCLAHEHistogram(const RangeInfo *range_info,
     scale,
     sum;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -483,7 +483,7 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
   MemoryInfo
     *tile_cache;
 
-  register unsigned short
+  unsigned short
     *p;
 
   size_t
@@ -522,7 +522,7 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
   p=pixels;
   for (y=0; y < (ssize_t) clahe_info->y; y++)
   {
-    register ssize_t
+    ssize_t
       x;
 
     for (x=0; x < (ssize_t) clahe_info->x; x++)
@@ -551,7 +551,7 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
     RectangleInfo
       tile;
 
-    register ssize_t
+    ssize_t
       x;
 
     tile.height=tile_info->height;
@@ -698,10 +698,10 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
   n=0;
   for (y=0; y < (ssize_t) clahe_info.height; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -743,10 +743,10 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
   n=clahe_info.width*(tile_info.y >> 1);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -848,7 +848,7 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
   PixelInfo
     *clut_map;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t adjust,
@@ -896,10 +896,10 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
     PixelInfo
       pixel;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -1055,7 +1055,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
   PixelInfo
     *cdl_map;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -1291,10 +1291,10 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
     double
       luma;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -1413,7 +1413,7 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
   MagickOffsetType
     progress;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -1466,10 +1466,10 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
       green,
       red;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -1569,7 +1569,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   MagickOffsetType
     progress;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -1613,10 +1613,10 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -1652,7 +1652,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
     double
       intensity;
 
-    register ssize_t
+    ssize_t
       j;
 
     black[i]=0.0;
@@ -1682,7 +1682,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
     sizeof(*stretch_map));
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
-    register ssize_t
+    ssize_t
       j;
 
     for (j=0; j <= (ssize_t) MaxMap; j++)
@@ -1704,7 +1704,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   }
   if (image->storage_class == PseudoClass)
     {
-      register ssize_t
+      ssize_t
         j;
 
       /*
@@ -1750,10 +1750,10 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -1766,7 +1766,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         j;
 
       for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
@@ -1911,13 +1911,13 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
     PixelInfo
       pixel;
 
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     ssize_t
@@ -1946,7 +1946,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
       PixelInfo
         aggregate;
 
-      register const Quantum
+      const Quantum
         *magick_restrict r;
 
       GetPixelInfo(image,&aggregate);
@@ -2047,7 +2047,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
   MagickOffsetType
     progress;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -2090,10 +2090,10 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -2129,7 +2129,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
     double
       intensity;
 
-    register ssize_t
+    ssize_t
       j;
 
     intensity=0.0;
@@ -2145,7 +2145,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
   (void) memset(white,0,sizeof(*white));
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
-    register ssize_t
+    ssize_t
       j;
 
     black[i]=map[i];
@@ -2160,7 +2160,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
   map=(double *) RelinquishMagickMemory(map);
   if (image->storage_class == PseudoClass)
     {
-      register ssize_t
+      ssize_t
         j;
 
       /*
@@ -2217,10 +2217,10 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -2233,7 +2233,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         j;
 
       for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
@@ -2325,7 +2325,7 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
   Quantum
     *gamma_map;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -2380,10 +2380,10 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -2396,7 +2396,7 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         j;
 
       for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
@@ -2511,10 +2511,10 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -2739,10 +2739,10 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -2916,7 +2916,7 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
   MagickOffsetType
     progress;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -2960,10 +2960,10 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -2976,7 +2976,7 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         j;
 
       for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
@@ -3070,7 +3070,7 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
   MagickOffsetType
     progress;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -3112,10 +3112,10 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -3128,7 +3128,7 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         j;
 
       for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
@@ -3374,10 +3374,10 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register ssize_t
+    ssize_t
       x;
 
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
@@ -3649,7 +3649,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
   MagickStatusType
     flags;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -3773,10 +3773,10 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -3917,7 +3917,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
   MagickOffsetType
     progress;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -3957,10 +3957,10 @@ MagickExport MagickBooleanType NegateImage(Image *image,
         MagickBooleanType
           sync;
 
-        register Quantum
+        Quantum
           *magick_restrict q;
 
-        register ssize_t
+        ssize_t
           x;
 
         if (status == MagickFalse)
@@ -3974,7 +3974,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
           }
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          register ssize_t
+          ssize_t
             j;
 
           if (IsPixelGray(image,q) == MagickFalse)
@@ -4018,10 +4018,10 @@ MagickExport MagickBooleanType NegateImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -4034,7 +4034,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         j;
 
       for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
@@ -4270,7 +4270,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
   */
   if (image->storage_class == PseudoClass)
     {
-      register ssize_t
+      ssize_t
         i;
 
       if( sharpen != MagickFalse )
@@ -4318,10 +4318,10 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -4334,7 +4334,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
@@ -4436,10 +4436,10 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -4466,10 +4466,10 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)

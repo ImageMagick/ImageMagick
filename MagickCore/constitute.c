@@ -140,7 +140,7 @@ MagickExport Image *ConstituteImage(const size_t columns,const size_t rows,
   MagickBooleanType
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -1002,7 +1002,7 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
   size_t
     length;
 
-  register const char
+  const char
     *p;
 
   /*
@@ -1358,7 +1358,7 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
   MagickStatusType
     status;
 
-  register Image
+  Image
     *p;
 
   assert(image_info != (const ImageInfo *) NULL);
@@ -1385,7 +1385,7 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
   p=images;
   for ( ; GetNextImageInList(p) != (Image *) NULL; p=GetNextImageInList(p))
   {
-    register Image
+    Image
       *next;
 
     next=GetNextImageInList(p);
@@ -1393,7 +1393,7 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
       break;
     if (p->scene >= next->scene)
       {
-        register ssize_t
+        ssize_t
           i;
 
         /*

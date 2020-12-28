@@ -180,10 +180,10 @@ MagickExport void *CropImageToHBITMAP(Image *image,
   RectangleInfo
     page;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register RGBQUAD
+  RGBQUAD
     *q;
 
   RGBQUAD
@@ -251,7 +251,7 @@ MagickExport void *CropImageToHBITMAP(Image *image,
   q=bitmap_bits;
   for (y=0; y < (ssize_t) page.height; y++)
   {
-    register ssize_t
+    ssize_t
       x;
 
     p=GetVirtualPixels(image,page.x,page.y+y,page.width,1,exception);
@@ -320,13 +320,13 @@ MagickExport void *ImageToHBITMAP(Image *image,ExceptionInfo *exception)
   HBITMAP
     bitmapH;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register RGBQUAD
+  RGBQUAD
     *q;
 
   RGBQUAD

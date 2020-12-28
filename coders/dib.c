@@ -170,11 +170,11 @@ static MagickBooleanType DecodeImage(Image *image,
   ssize_t
     y;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
-  register unsigned char
+  unsigned char
     *p,
     *q;
 
@@ -344,14 +344,14 @@ static size_t EncodeImage(Image *image,const size_t bytes_per_line,
   ssize_t
     y;
 
-  register const unsigned char
+  const unsigned char
     *p;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
-  register unsigned char
+  unsigned char
     *q;
 
   /*
@@ -473,16 +473,16 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Quantum
     index;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register Quantum
+  Quantum
     *q;
 
-  register ssize_t
+  ssize_t
     i;
 
-  register unsigned char
+  unsigned char
     *p;
 
   size_t
@@ -1097,14 +1097,14 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
   MagickBooleanType
     status;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
-  register unsigned char
+  unsigned char
     *q;
 
   size_t
@@ -1198,7 +1198,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
   {
     case 1:
     {
-      register unsigned char
+      unsigned char
         bit,
         byte;
 

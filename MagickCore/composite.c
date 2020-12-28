@@ -333,13 +333,13 @@ static MagickBooleanType CompositeOverImage(Image *image,
       canvas_pixel,
       source_pixel;
 
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -391,7 +391,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
         Sc,
         Sca;
 
-      register ssize_t
+      ssize_t
         i;
 
       size_t
@@ -624,13 +624,13 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         MagickBooleanType
           sync;
 
-        register const Quantum
+        const Quantum
           *p;
 
-        register Quantum
+        Quantum
           *q;
 
-        register ssize_t
+        ssize_t
           x;
 
         if (status == MagickFalse)
@@ -646,7 +646,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
         for (x=0; x < (ssize_t) source_image->columns; x++)
         {
-          register ssize_t
+          ssize_t
             i;
 
           if (GetPixelReadMask(source_image,p) <= (QuantumRange/2))
@@ -708,13 +708,13 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         MagickBooleanType
           sync;
 
-        register const Quantum
+        const Quantum
           *p;
 
-        register Quantum
+        Quantum
           *q;
 
-        register ssize_t
+        ssize_t
           x;
 
         if (status == MagickFalse)
@@ -880,13 +880,13 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         MagickBooleanType
           sync;
 
-        register const Quantum
+        const Quantum
           *magick_restrict p;
 
-        register Quantum
+        Quantum
           *magick_restrict q;
 
-        register ssize_t
+        ssize_t
           x;
 
         if (((y+y_offset) < 0) || ((y+y_offset) >= (ssize_t) image->rows))
@@ -1051,13 +1051,13 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         MagickBooleanType
           sync;
 
-        register const Quantum
+        const Quantum
           *magick_restrict p;
 
-        register Quantum
+        Quantum
           *magick_restrict q;
 
-        register ssize_t
+        ssize_t
           x;
 
         if (((y+y_offset) < 0) || ((y+y_offset) >= (ssize_t) image->rows))
@@ -1231,13 +1231,13 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       canvas_pixel,
       source_pixel;
 
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -1294,7 +1294,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         Sc,
         Sca;
 
-      register ssize_t
+      ssize_t
         i;
 
       size_t
@@ -2547,7 +2547,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
       */
       for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) texture_image->rows)
       {
-        register ssize_t
+        ssize_t
           x;
 
         if (status == MagickFalse)
@@ -2597,14 +2597,14 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
     MagickBooleanType
       sync;
 
-    register const Quantum
+    const Quantum
       *p,
       *pixels;
 
-    register ssize_t
+    ssize_t
       x;
 
-    register Quantum
+    Quantum
       *q;
 
     size_t
@@ -2623,7 +2623,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
       }
     for (x=0; x < (ssize_t) image->columns; x+=(ssize_t) texture_image->columns)
     {
-      register ssize_t
+      ssize_t
         j;
 
       p=pixels;
@@ -2632,7 +2632,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
         width=image->columns-x;
       for (j=0; j < (ssize_t) width; j++)
       {
-        register ssize_t
+        ssize_t
           i;
 
         for (i=0; i < (ssize_t) GetPixelChannels(texture_image); i++)

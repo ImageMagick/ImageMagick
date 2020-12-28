@@ -111,10 +111,10 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   PixelInfo
     pixel;
 
-  register Quantum
+  Quantum
     *q;
 
-  register ssize_t
+  ssize_t
     x;
 
   size_t

@@ -207,13 +207,13 @@ static Image *ReadRAWImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     for (y=0; y < (ssize_t) image->extract_info.height; y++)
     {
-      register const Quantum
+      const Quantum
         *magick_restrict p;
 
-      register Quantum
+      Quantum
         *magick_restrict q;
 
-      register ssize_t
+      ssize_t
         x;
 
       if (count != (ssize_t) length)
@@ -462,7 +462,7 @@ static MagickBooleanType WriteRAWImage(const ImageInfo *image_info,Image *image,
   MagickBooleanType
     status;
 
-  register const Quantum
+  const Quantum
     *p;
 
   size_t

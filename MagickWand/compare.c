@@ -265,7 +265,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   RectangleInfo
     offset;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t

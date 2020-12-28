@@ -105,10 +105,10 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register Quantum
+  Quantum
     *q;
 
-  register ssize_t
+  ssize_t
     x;
 
   size_t
@@ -288,10 +288,10 @@ static MagickBooleanType WriteMONOImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     x;
 
   size_t

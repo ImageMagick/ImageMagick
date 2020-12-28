@@ -240,13 +240,13 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register Quantum
+  Quantum
     *q;
 
-  register unsigned char
+  unsigned char
     *p;
 
   size_t
@@ -511,7 +511,7 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
     CSM
       csm;
 
-    register ssize_t
+    ssize_t
       i;
 
     unsigned char

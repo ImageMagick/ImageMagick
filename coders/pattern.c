@@ -949,7 +949,7 @@ static Image *ReadPATTERNImage(const ImageInfo *image_info,
   ImageInfo
     *blob_info;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t

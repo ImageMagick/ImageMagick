@@ -165,7 +165,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   QuantumType
     quantum_type;
 
-  register Quantum
+  Quantum
     *q;
 
   size_t
@@ -217,7 +217,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
       }
     else
       {
-        register char
+        char
           *p;
 
         /*
@@ -442,7 +442,7 @@ static MagickBooleanType WriteVICARImage(const ImageInfo *image_info,
   QuantumInfo
     *quantum_info;
 
-  register const Quantum
+  const Quantum
     *p;
 
   size_t

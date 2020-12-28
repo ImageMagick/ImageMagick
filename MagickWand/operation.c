@@ -104,7 +104,7 @@ static MagickBooleanType MonitorProgress(const char *text,
   const char
     *locale_message;
 
-  register char
+  char
     *p;
 
   magick_unreferenced(client_data);
@@ -201,7 +201,7 @@ static Image *SparseColorOption(const Image *image,
   MagickBooleanType
     error;
 
-  register size_t
+  size_t
     x;
 
   size_t
@@ -2155,7 +2155,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           KernelInfo
             *kernel_info;
 
-          register ssize_t
+          ssize_t
             j;
 
           kernel_info=AcquireKernelInfo(arg1,exception);

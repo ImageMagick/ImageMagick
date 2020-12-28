@@ -147,13 +147,13 @@ static MagickBooleanType ChannelImage(Image *destination_image,
       destination_traits,
       source_traits;
 
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -574,13 +574,13 @@ MagickExport Image *CombineImages(const Image *image,
     Quantum
       *pixels;
 
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       i;
 
     if (status == MagickFalse)
@@ -595,7 +595,7 @@ MagickExport Image *CombineImages(const Image *image,
     next=image;
     for (i=0; i < (ssize_t) GetPixelChannels(combine_image); i++)
     {
-      register ssize_t
+      ssize_t
         x;
 
       PixelChannel channel = GetPixelChannelChannel(combine_image,i);
@@ -760,13 +760,13 @@ MagickExport Image *SeparateImage(const Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -781,7 +781,7 @@ MagickExport Image *SeparateImage(const Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       SetPixelChannel(separate_image,GrayPixelChannel,(Quantum) 0,q);
@@ -852,7 +852,7 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
     *images,
     *separate_image;
 
-  register ssize_t
+  ssize_t
     i;
 
   assert(image != (Image *) NULL);
@@ -918,7 +918,7 @@ static inline void FlattenPixelInfo(const Image *image,const PixelInfo *p,
     gamma,
     Sa;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -1010,10 +1010,10 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        register Quantum
+        Quantum
           *magick_restrict q;
 
-        register ssize_t
+        ssize_t
           x;
 
         if (status == MagickFalse)
@@ -1030,7 +1030,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           double
             gamma;
 
-          register ssize_t
+          ssize_t
             i;
 
           gamma=QuantumScale*GetPixelAlpha(image,q);
@@ -1070,10 +1070,10 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        register Quantum
+        Quantum
           *magick_restrict q;
 
-        register ssize_t
+        ssize_t
           x;
 
         if (status == MagickFalse)
@@ -1130,10 +1130,10 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        register Quantum
+        Quantum
           *magick_restrict q;
 
-        register ssize_t
+        ssize_t
           x;
 
         if (status == MagickFalse)
@@ -1151,7 +1151,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
             gamma,
             Sa;
 
-          register ssize_t
+          ssize_t
             i;
 
           Sa=QuantumScale*GetPixelAlpha(image,q);
@@ -1223,10 +1223,10 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        register Quantum
+        Quantum
           *magick_restrict q;
 
-        register ssize_t
+        ssize_t
           x;
 
         if (status == MagickFalse)
@@ -1281,10 +1281,10 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         PixelInfo
           pixel;
 
-        register Quantum
+        Quantum
           *magick_restrict q;
 
-        register ssize_t
+        ssize_t
           x;
 
         if (status == MagickFalse)

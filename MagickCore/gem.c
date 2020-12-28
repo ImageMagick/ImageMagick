@@ -675,7 +675,7 @@ MagickPrivate void ConvertHWBToRGB(const double hue,const double whiteness,
     r,
     v;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -1578,7 +1578,7 @@ MagickPrivate double GenerateDifferentialNoise(RandomInfo *random_info,
       double
         poisson;
 
-      register ssize_t
+      ssize_t
         i;
 
       poisson=exp(-SigmaPoisson*QuantumScale*pixel);
@@ -1640,7 +1640,7 @@ MagickPrivate size_t GetOptimalKernelWidth1D(const double radius,
     normalize,
     value;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t

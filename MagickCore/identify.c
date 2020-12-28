@@ -134,7 +134,7 @@ static ChannelStatistics *GetLocationStatistics(const Image *image,
   ChannelStatistics
     *channel_statistics;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -169,10 +169,10 @@ static ChannelStatistics *GetLocationStatistics(const Image *image,
   }
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register ssize_t
+    ssize_t
       x;
 
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -309,7 +309,7 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
   n=0;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *p;
 
     ssize_t
@@ -352,7 +352,7 @@ static ssize_t PrintChannelMoments(FILE *file,const PixelChannel channel,
     powers[MaximumNumberOfImageMoments] =
       { 1.0, 2.0, 3.0, 3.0, 6.0, 4.0, 6.0, 4.0 };
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -383,7 +383,7 @@ static ssize_t PrintChannelMoments(FILE *file,const PixelChannel channel,
 static ssize_t PrintChannelPerceptualHash(Image *image,FILE *file,
   const ChannelPerceptualHash *channel_phash)
 {
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -407,7 +407,7 @@ static ssize_t PrintChannelPerceptualHash(Image *image,FILE *file,
     PixelTrait
       traits;
 
-    register ssize_t
+    ssize_t
       j;
 
     channel=GetPixelChannelChannel(image,i);
@@ -419,7 +419,7 @@ static ssize_t PrintChannelPerceptualHash(Image *image,FILE *file,
     n=FormatLocaleFile(file,"    Channel %.20g:\n",(double) channel);
     for (j=0; j < MaximumNumberOfPerceptualHashes; j++)
     {
-      register ssize_t
+      ssize_t
         k;
 
       n+=FormatLocaleFile(file,"      PH%.20g: ",(double) j+1);
@@ -513,10 +513,10 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   MagickBooleanType
     ping;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
@@ -1083,7 +1083,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           PixelInfo
             pixel;
 
-          register PixelInfo
+          PixelInfo
             *magick_restrict c;
 
           GetPixelInfo(image,&pixel);
@@ -1218,7 +1218,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       ImageInfo
         *image_info;
 
-      register char
+      char
         *d,
         *q;
 
@@ -1286,7 +1286,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       *bounding_box,
       *convex_hull;
 
-    register ssize_t
+    ssize_t
       n;
 
     size_t
@@ -1358,7 +1358,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
               record,
               sentinel;
 
-            register ssize_t
+            ssize_t
               j;
 
             size_t

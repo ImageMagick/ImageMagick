@@ -163,7 +163,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     const void
       *stream;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -289,7 +289,7 @@ static MagickBooleanType WriteARTImage(const ImageInfo *image_info,Image *image,
   QuantumInfo
     *quantum_info;
 
-  register const Quantum
+  const Quantum
     *p;
 
   size_t

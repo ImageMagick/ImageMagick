@@ -141,7 +141,7 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -202,7 +202,7 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *jnx_level_info[i].copyright='\0';
     if (jnx_info.version > 3)
       {
-        register ssize_t
+        ssize_t
           j;
 
         unsigned short
@@ -227,7 +227,7 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     MagickOffsetType
       offset;
 
-    register ssize_t
+    ssize_t
       j;
 
     offset=SeekBlob(image,(MagickOffsetType) jnx_level_info[i].offset,SEEK_SET);

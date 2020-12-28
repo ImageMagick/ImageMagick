@@ -171,10 +171,10 @@ struct dirent *readdir(DIR *directory)
   int
     status;
 
-  register char
+  char
     *p;
 
-  register int
+  int
     i;
 
   struct dsc$descriptor_s

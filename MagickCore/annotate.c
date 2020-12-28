@@ -249,7 +249,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
   RectangleInfo
     geometry;
 
-  register ssize_t
+  ssize_t
     i;
 
   TypeMetric
@@ -595,12 +595,12 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
   MagickBooleanType
     status;
 
-  register char
+  char
     *p,
     *q,
     *s;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -734,7 +734,7 @@ MagickExport MagickBooleanType GetMultilineTypeMetrics(Image *image,
   MagickSizeType
     size;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -985,7 +985,7 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
           int
             number_families;
 
-          register ssize_t
+          ssize_t
             i;
 
           /*
@@ -1104,7 +1104,7 @@ static size_t ComplexTextLayout(const Image *image,const DrawInfo *draw_info,
   raqm_glyph_t
     *glyphs;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -1182,7 +1182,7 @@ cleanup:
   FT_Error
     ft_status;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -1370,10 +1370,10 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     point,
     resolution;
 
-  register char
+  char
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -1682,7 +1682,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         MagickBooleanType
           transparent_fill;
 
-        register unsigned char
+        unsigned char
           *r;
 
         /*
@@ -1707,10 +1707,10 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
           PixelInfo
             fill_color;
 
-          register Quantum
+          Quantum
             *magick_restrict q;
 
-          register ssize_t
+          ssize_t
             x;
 
           ssize_t
@@ -1901,10 +1901,10 @@ static char *EscapeParenthesis(const char *source)
   char
     *destination;
 
-  register char
+  char
     *q;
 
-  register const char
+  const char
     *p;
 
   size_t
@@ -1969,7 +1969,7 @@ static MagickBooleanType RenderPostscript(Image *image,
     point,
     resolution;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -2138,10 +2138,10 @@ static MagickBooleanType RenderPostscript(Image *image,
       annotate_view=AcquireAuthenticCacheView(annotate_image,exception);
       for (y=0; y < (ssize_t) annotate_image->rows; y++)
       {
-        register ssize_t
+        ssize_t
           x;
 
-        register Quantum
+        Quantum
           *magick_restrict q;
 
         q=GetCacheViewAuthenticPixels(annotate_view,0,y,annotate_image->columns,

@@ -156,7 +156,7 @@ MagickExport QuantumInfo *AcquireQuantumInfo(const ImageInfo *image_info,
 static MagickBooleanType AcquireQuantumPixels(QuantumInfo *quantum_info,
   const size_t extent)
 {
-  register ssize_t
+  ssize_t
     i;
 
   assert(quantum_info != (QuantumInfo *) NULL);
@@ -247,7 +247,7 @@ MagickExport QuantumInfo *DestroyQuantumInfo(QuantumInfo *quantum_info)
 */
 static void DestroyQuantumPixels(QuantumInfo *quantum_info)
 {
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t

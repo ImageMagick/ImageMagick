@@ -280,7 +280,7 @@ static AESInfo *DestroyAESInfo(AESInfo *aes_info)
 static inline void AddRoundKey(const unsigned int *ciphertext,
   const unsigned int *key,unsigned int *plaintext)
 {
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -320,10 +320,10 @@ static inline unsigned int ByteSubTransform(unsigned int x,
 static void FinalizeRoundKey(const unsigned int *ciphertext,
   const unsigned int *key,unsigned char *plaintext)
 {
-  register unsigned char
+  unsigned char
     *p;
 
-  register unsigned int
+  unsigned int
     i,
     j;
 
@@ -349,10 +349,10 @@ static void FinalizeRoundKey(const unsigned int *ciphertext,
 static void InitializeRoundKey(const unsigned char *ciphertext,
   const unsigned int *key,unsigned int *plaintext)
 {
-  register const unsigned char
+  const unsigned char
     *p;
 
-  register unsigned int
+  unsigned int
     i,
     j;
 
@@ -381,7 +381,7 @@ static inline unsigned int RotateLeft(const unsigned int x)
 static void EncipherAESBlock(AESInfo *aes_info,const unsigned char *plaintext,
   unsigned char *ciphertext)
 {
-  register ssize_t
+  ssize_t
     i,
     j;
 
@@ -523,7 +523,7 @@ static void EncipherAESBlock(AESInfo *aes_info,const unsigned char *plaintext,
 static inline void IncrementCipherNonce(const size_t length,
   unsigned char *nonce)
 {
-  register ssize_t
+  ssize_t
     i;
 
   for (i=(ssize_t) (length-1); i >= 0; i--)
@@ -583,7 +583,7 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
   SignatureInfo
     *signature_info;
 
-  register unsigned char
+  unsigned char
     *p;
 
   size_t
@@ -658,11 +658,11 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register ssize_t
+    ssize_t
       i,
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
@@ -793,7 +793,7 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
   QuantumType
     quantum_type;
 
-  register unsigned char
+  unsigned char
     *p;
 
   SignatureInfo
@@ -878,11 +878,11 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register ssize_t
+    ssize_t
       i,
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
@@ -960,7 +960,7 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
 static inline void InverseAddRoundKey(const unsigned int *alpha,
   unsigned int *beta)
 {
-  register unsigned int
+  unsigned int
     i,
     j;
 
@@ -993,7 +993,7 @@ static inline unsigned int RotateRight(const unsigned int x)
 
 static void SetAESKey(AESInfo *aes_info,const StringInfo *key)
 {
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t

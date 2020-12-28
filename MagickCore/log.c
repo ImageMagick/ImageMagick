@@ -273,7 +273,7 @@ static LinkedListInfo *AcquireLogCache(const char *filename,
   MagickStatusType
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -308,7 +308,7 @@ static LinkedListInfo *AcquireLogCache(const char *filename,
     LogInfo
       *log_info;
 
-    register const LogMapInfo
+    const LogMapInfo
       *p;
 
     p=LogMap+i;
@@ -403,7 +403,7 @@ MagickExport void CloseMagickLog(void)
 */
 static LogInfo *GetLogInfo(const char *name,ExceptionInfo *exception)
 {
-  register LogInfo
+  LogInfo
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
@@ -487,10 +487,10 @@ MagickExport const LogInfo **GetLogInfoList(const char *pattern,
   const LogInfo
     **preferences;
 
-  register const LogInfo
+  const LogInfo
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -561,7 +561,7 @@ extern "C" {
 
 static int LogCompare(const void *x,const void *y)
 {
-  register const char
+  const char
     **p,
     **q;
 
@@ -580,10 +580,10 @@ MagickExport char **GetLogList(const char *pattern,size_t *number_preferences,
   char
     **preferences;
 
-  register const LogInfo
+  const LogInfo
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -761,7 +761,7 @@ MagickExport MagickBooleanType ListLogInfo(FILE *file,ExceptionInfo *exception)
   const LogInfo
     **log_info;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -1123,7 +1123,7 @@ MagickPrivate MagickBooleanType LogComponentGenesis(void)
 
 static void *DestroyLogElement(void *log_info)
 {
-  register LogInfo
+  LogInfo
     *p;
 
   p=(LogInfo *) log_info;
@@ -1206,10 +1206,10 @@ static char *TranslateEvent(const char *module,const char *function,
   LogInfo
     *log_info;
 
-  register char
+  char
     *q;
 
-  register const char
+  const char
     *p;
 
   size_t
@@ -1360,7 +1360,7 @@ static char *TranslateEvent(const char *module,const char *function,
       }
       case 'm':
       {
-        register const char
+        const char
           *r;
 
         for (r=module+strlen(module)-1; r > module; r--)
@@ -1426,10 +1426,10 @@ static char *TranslateFilename(const LogInfo *log_info)
   char
     *filename;
 
-  register char
+  char
     *q;
 
-  register const char
+  const char
     *p;
 
   size_t
@@ -1704,10 +1704,10 @@ static LogHandlerType ParseLogHandlers(const char *handlers)
   LogHandlerType
     handler_mask;
 
-  register const char
+  const char
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t

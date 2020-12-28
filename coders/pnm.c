@@ -155,7 +155,7 @@ static int PNMComment(Image *image,CommentInfo *comment_info,
   int
     c;
 
-  register char
+  char
     *p;
 
   /*
@@ -233,7 +233,7 @@ static char *PNMString(Image *image,char *string,const size_t extent)
   int
     c;
 
-  register size_t
+  size_t
     i;
 
   for (i=0; i < (extent-1L); i++)
@@ -372,7 +372,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         int
           c;
 
-        register char
+        char
           *p;
 
         /*
@@ -503,10 +503,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) SetImageColorspace(image,GRAYColorspace,exception);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          register ssize_t
+          ssize_t
             x;
 
-          register Quantum
+          Quantum
             *magick_restrict q;
 
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -546,10 +546,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) SetImageColorspace(image,GRAYColorspace,exception);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          register ssize_t
+          ssize_t
             x;
 
-          register Quantum
+          Quantum
             *magick_restrict q;
 
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -586,10 +586,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          register ssize_t
+          ssize_t
             x;
 
-          register Quantum
+          Quantum
             *magick_restrict q;
 
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -647,7 +647,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           MagickBooleanType
             sync;
 
-          register Quantum
+          Quantum
             *magick_restrict q;
 
           ssize_t
@@ -704,13 +704,13 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           MagickBooleanType
             sync;
 
-          register const unsigned char
+          const unsigned char
             *magick_restrict p;
 
-          register ssize_t
+          ssize_t
             x;
 
-          register Quantum
+          Quantum
             *magick_restrict q;
 
           ssize_t
@@ -812,13 +812,13 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           MagickBooleanType
             sync;
 
-          register const unsigned char
+          const unsigned char
             *magick_restrict p;
 
-          register ssize_t
+          ssize_t
             x;
 
-          register Quantum
+          Quantum
             *magick_restrict q;
 
           ssize_t
@@ -997,13 +997,13 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           MagickBooleanType
             sync;
 
-          register const unsigned char
+          const unsigned char
             *magick_restrict p;
 
-          register ssize_t
+          ssize_t
             x;
 
-          register Quantum
+          Quantum
             *magick_restrict q;
 
           ssize_t
@@ -1322,7 +1322,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           MagickBooleanType
             sync;
 
-          register Quantum
+          Quantum
             *magick_restrict q;
 
           ssize_t
@@ -1392,7 +1392,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           MagickBooleanType
             sync;
 
-          register Quantum
+          Quantum
             *magick_restrict q;
 
           ssize_t
@@ -1648,7 +1648,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
   QuantumType
     quantum_type;
 
-  register unsigned char
+  unsigned char
     *q;
 
   size_t
@@ -1761,7 +1761,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
     value=GetImageProperty(image,"comment",exception);
     if (value != (const char *) NULL)
       {
-        register const char
+        const char
           *p;
 
         /*
@@ -1855,10 +1855,10 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         q=pixels;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          register const Quantum
+          const Quantum
             *magick_restrict p;
 
-          register ssize_t
+          ssize_t
             x;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -1913,10 +1913,10 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         q=pixels;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          register const Quantum
+          const Quantum
             *magick_restrict p;
 
-          register ssize_t
+          ssize_t
             x;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -1983,10 +1983,10 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         q=pixels;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          register const Quantum
+          const Quantum
             *magick_restrict p;
 
-          register ssize_t
+          ssize_t
             x;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -2041,7 +2041,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
       }
       case '4':
       {
-        register unsigned char
+        unsigned char
           *pixels;
 
         /*
@@ -2057,7 +2057,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         pixels=GetQuantumPixels(quantum_info);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          register const Quantum
+          const Quantum
             *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -2081,7 +2081,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
       }
       case '5':
       {
-        register unsigned char
+        unsigned char
           *pixels;
 
         /*
@@ -2100,10 +2100,10 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         extent=GetQuantumExtent(image,quantum_info,GrayQuantum);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          register const Quantum
+          const Quantum
             *magick_restrict p;
 
-          register ssize_t
+          ssize_t
             x;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -2199,7 +2199,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
       }
       case '6':
       {
-        register unsigned char
+        unsigned char
           *pixels;
 
         /*
@@ -2219,10 +2219,10 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         extent=GetQuantumExtent(image,quantum_info,quantum_type);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          register const Quantum
+          const Quantum
             *magick_restrict p;
 
-          register ssize_t
+          ssize_t
             x;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -2301,7 +2301,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
       }
       case '7':
       {
-        register unsigned char
+        unsigned char
           *pixels;
 
         /*
@@ -2316,10 +2316,10 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         pixels=GetQuantumPixels(quantum_info);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          register const Quantum
+          const Quantum
             *magick_restrict p;
 
-          register ssize_t
+          ssize_t
             x;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -2551,7 +2551,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
       case 'F':
       case 'f':
       {
-        register unsigned char
+        unsigned char
           *pixels;
 
         (void) WriteBlobString(image,image->endian == LSBEndian ? "-1.0\n" :
@@ -2567,7 +2567,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         pixels=GetQuantumPixels(quantum_info);
         for (y=(ssize_t) image->rows-1; y >= 0; y--)
         {
-          register const Quantum
+          const Quantum
             *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -2590,7 +2590,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
       case 'H':
       case 'h':
       {
-        register unsigned char
+        unsigned char
           *pixels;
 
         (void) WriteBlobString(image,image->endian == LSBEndian ? "-1.0\n" :
@@ -2606,7 +2606,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         pixels=GetQuantumPixels(quantum_info);
         for (y=(ssize_t) image->rows-1; y >= 0; y--)
         {
-          register const Quantum
+          const Quantum
             *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);

@@ -2205,7 +2205,7 @@ MagickExport MagickBooleanType DefineImageOption(ImageInfo *image_info,
     key[MagickPathExtent],
     value[MagickPathExtent];
 
-  register char
+  char
     *p;
 
   assert(image_info != (ImageInfo *) NULL);
@@ -2457,13 +2457,13 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
   MagickBooleanType
     negate;
 
-  register char
+  char
     *q;
 
-  register const char
+  const char
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -2550,7 +2550,7 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
 */
 MagickExport const OptionInfo *GetCommandOptionInfo(const char *option)
 {
-  register ssize_t
+  ssize_t
     i;
 
   for (i=0; CommandOptions[i].mnemonic != (char *) NULL; i++)
@@ -2589,7 +2589,7 @@ MagickExport char **GetCommandOptions(const CommandOption option)
   const OptionInfo
     *option_info;
 
-  register ssize_t
+  ssize_t
     i;
 
   option_info=GetOptionInfo(option);
@@ -2707,7 +2707,7 @@ MagickExport const char *CommandOptionToMnemonic(const CommandOption option,
   const OptionInfo
     *option_info;
 
-  register ssize_t
+  ssize_t
     i;
 
   option_info=GetOptionInfo(option);
@@ -2760,7 +2760,7 @@ MagickExport MagickBooleanType IsOptionMember(const char *option,
   MagickBooleanType
     member;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -2827,7 +2827,7 @@ MagickExport MagickBooleanType ListCommandOptions(FILE *file,
   const OptionInfo
     *option_info;
 
-  register ssize_t
+  ssize_t
     i;
 
   magick_unreferenced(exception);
@@ -2870,7 +2870,7 @@ MagickExport MagickBooleanType ListCommandOptions(FILE *file,
 */
 MagickExport ssize_t ParseChannelOption(const char *channels)
 {
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -3008,13 +3008,13 @@ MagickExport ssize_t ParseCommandOption(const CommandOption option,
   MagickBooleanType
     negate;
 
-  register char
+  char
     *q;
 
-  register const char
+  const char
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t

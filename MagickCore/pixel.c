@@ -95,7 +95,7 @@ MagickExport PixelChannelMap *AcquirePixelChannelMap(void)
   PixelChannelMap
     *channel_map;
 
-  register ssize_t
+  ssize_t
     i;
 
   channel_map=(PixelChannelMap *) AcquireQuantumMemory(MaxPixelChannels,
@@ -510,13 +510,13 @@ static MagickBooleanType ExportCharPixel(const Image *image,
   const RectangleInfo *roi,const char *magick_restrict map,
   const QuantumType *quantum_map,void *pixels,ExceptionInfo *exception)
 {
-  register const Quantum
+  const Quantum
     *magick_restrict p;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register unsigned char
+  unsigned char
     *magick_restrict q;
 
   size_t
@@ -655,7 +655,7 @@ static MagickBooleanType ExportCharPixel(const Image *image,
       break;
     for (x=0; x < (ssize_t) roi->width; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) length; i++)
@@ -717,13 +717,13 @@ static MagickBooleanType ExportDoublePixel(const Image *image,
   const RectangleInfo *roi,const char *magick_restrict map,
   const QuantumType *quantum_map,void *pixels,ExceptionInfo *exception)
 {
-  register const Quantum
+  const Quantum
     *magick_restrict p;
 
-  register double
+  double
     *magick_restrict q;
 
-  register ssize_t
+  ssize_t
     x;
 
   size_t
@@ -862,7 +862,7 @@ static MagickBooleanType ExportDoublePixel(const Image *image,
       break;
     for (x=0; x < (ssize_t) roi->width; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) length; i++)
@@ -925,13 +925,13 @@ static MagickBooleanType ExportFloatPixel(const Image *image,
   const RectangleInfo *roi,const char *magick_restrict map,
   const QuantumType *quantum_map,void *pixels,ExceptionInfo *exception)
 {
-  register const Quantum
+  const Quantum
     *magick_restrict p;
 
-  register float
+  float
     *magick_restrict q;
 
-  register ssize_t
+  ssize_t
     x;
 
   size_t
@@ -1070,7 +1070,7 @@ static MagickBooleanType ExportFloatPixel(const Image *image,
       break;
     for (x=0; x < (ssize_t) roi->width; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) length; i++)
@@ -1132,13 +1132,13 @@ static MagickBooleanType ExportLongPixel(const Image *image,
   const RectangleInfo *roi,const char *magick_restrict map,
   const QuantumType *quantum_map,void *pixels,ExceptionInfo *exception)
 {
-  register const Quantum
+  const Quantum
     *magick_restrict p;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register unsigned int
+  unsigned int
     *magick_restrict q;
 
   size_t
@@ -1277,7 +1277,7 @@ static MagickBooleanType ExportLongPixel(const Image *image,
       break;
     for (x=0; x < (ssize_t) roi->width; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) length; i++)
@@ -1339,13 +1339,13 @@ static MagickBooleanType ExportLongLongPixel(const Image *image,
   const RectangleInfo *roi,const char *magick_restrict map,
   const QuantumType *quantum_map,void *pixels,ExceptionInfo *exception)
 {
-  register const Quantum
+  const Quantum
     *magick_restrict p;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register MagickSizeType
+  MagickSizeType
     *magick_restrict q;
 
   size_t
@@ -1485,7 +1485,7 @@ static MagickBooleanType ExportLongLongPixel(const Image *image,
       break;
     for (x=0; x < (ssize_t) roi->width; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) length; i++)
@@ -1548,13 +1548,13 @@ static MagickBooleanType ExportQuantumPixel(const Image *image,
   const RectangleInfo *roi,const char *magick_restrict map,
   const QuantumType *quantum_map,void *pixels,ExceptionInfo *exception)
 {
-  register const Quantum
+  const Quantum
     *magick_restrict p;
 
-  register Quantum
+  Quantum
     *magick_restrict q;
 
-  register ssize_t
+  ssize_t
     x;
 
   size_t
@@ -1693,7 +1693,7 @@ static MagickBooleanType ExportQuantumPixel(const Image *image,
       break;
     for (x=0; x < (ssize_t) roi->width; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) length; i++)
@@ -1758,13 +1758,13 @@ static MagickBooleanType ExportShortPixel(const Image *image,
   const RectangleInfo *roi,const char *magick_restrict map,
   const QuantumType *quantum_map,void *pixels,ExceptionInfo *exception)
 {
-  register const Quantum
+  const Quantum
     *magick_restrict p;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register unsigned short
+  unsigned short
     *magick_restrict q;
 
   size_t
@@ -1903,7 +1903,7 @@ static MagickBooleanType ExportShortPixel(const Image *image,
       break;
     for (x=0; x < (ssize_t) roi->width; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) length; i++)
@@ -1974,7 +1974,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
   RectangleInfo
     roi;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -2512,13 +2512,13 @@ static MagickBooleanType ImportCharPixel(Image *image,const RectangleInfo *roi,
   const char *magick_restrict map,const QuantumType *quantum_map,
   const void *pixels,ExceptionInfo *exception)
 {
-  register const unsigned char
+  const unsigned char
     *magick_restrict p;
 
-  register Quantum
+  Quantum
     *magick_restrict q;
 
-  register ssize_t
+  ssize_t
     x;
 
   size_t
@@ -2711,7 +2711,7 @@ static MagickBooleanType ImportCharPixel(Image *image,const RectangleInfo *roi,
       break;
     for (x=0; x < (ssize_t) roi->width; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) length; i++)
@@ -2773,13 +2773,13 @@ static MagickBooleanType ImportDoublePixel(Image *image,
   const RectangleInfo *roi,const char *magick_restrict map,
   const QuantumType *quantum_map,const void *pixels,ExceptionInfo *exception)
 {
-  register const double
+  const double
     *magick_restrict p;
 
-  register Quantum
+  Quantum
     *magick_restrict q;
 
-  register ssize_t
+  ssize_t
     x;
 
   size_t
@@ -2952,7 +2952,7 @@ static MagickBooleanType ImportDoublePixel(Image *image,
       break;
     for (x=0; x < (ssize_t) roi->width; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) length; i++)
@@ -3014,13 +3014,13 @@ static MagickBooleanType ImportFloatPixel(Image *image,const RectangleInfo *roi,
   const char *magick_restrict map,const QuantumType *quantum_map,
   const void *pixels,ExceptionInfo *exception)
 {
-  register const float
+  const float
     *magick_restrict p;
 
-  register Quantum
+  Quantum
     *magick_restrict q;
 
-  register ssize_t
+  ssize_t
     x;
 
   size_t
@@ -3193,7 +3193,7 @@ static MagickBooleanType ImportFloatPixel(Image *image,const RectangleInfo *roi,
       break;
     for (x=0; x < (ssize_t) roi->width; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) length; i++)
@@ -3255,13 +3255,13 @@ static MagickBooleanType ImportLongPixel(Image *image,const RectangleInfo *roi,
   const char *magick_restrict map,const QuantumType *quantum_map,
   const void *pixels,ExceptionInfo *exception)
 {
-  register const unsigned int
+  const unsigned int
     *magick_restrict p;
 
-  register Quantum
+  Quantum
     *magick_restrict q;
 
-  register ssize_t
+  ssize_t
     x;
 
   size_t
@@ -3414,7 +3414,7 @@ static MagickBooleanType ImportLongPixel(Image *image,const RectangleInfo *roi,
       break;
     for (x=0; x < (ssize_t) roi->width; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) length; i++)
@@ -3476,13 +3476,13 @@ static MagickBooleanType ImportLongLongPixel(Image *image,
   const RectangleInfo *roi,const char *magick_restrict map,
   const QuantumType *quantum_map,const void *pixels,ExceptionInfo *exception)
 {
-  register const MagickSizeType
+  const MagickSizeType
     *magick_restrict p;
 
-  register Quantum
+  Quantum
     *magick_restrict q;
 
-  register ssize_t
+  ssize_t
     x;
 
   size_t
@@ -3635,7 +3635,7 @@ static MagickBooleanType ImportLongLongPixel(Image *image,
       break;
     for (x=0; x < (ssize_t) roi->width; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) length; i++)
@@ -3697,13 +3697,13 @@ static MagickBooleanType ImportQuantumPixel(Image *image,
   const RectangleInfo *roi,const char *magick_restrict map,
   const QuantumType *quantum_map,const void *pixels,ExceptionInfo *exception)
 {
-  register const Quantum
+  const Quantum
     *magick_restrict p;
 
-  register Quantum
+  Quantum
     *magick_restrict q;
 
-  register ssize_t
+  ssize_t
     x;
 
   size_t
@@ -3856,7 +3856,7 @@ static MagickBooleanType ImportQuantumPixel(Image *image,
       break;
     for (x=0; x < (ssize_t) roi->width; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) length; i++)
@@ -3918,13 +3918,13 @@ static MagickBooleanType ImportShortPixel(Image *image,const RectangleInfo *roi,
   const char *magick_restrict map,const QuantumType *quantum_map,
   const void *pixels,ExceptionInfo *exception)
 {
-  register const unsigned short
+  const unsigned short
     *magick_restrict p;
 
-  register Quantum
+  Quantum
     *magick_restrict q;
 
-  register ssize_t
+  ssize_t
     x;
 
   size_t
@@ -4077,7 +4077,7 @@ static MagickBooleanType ImportShortPixel(Image *image,const RectangleInfo *roi,
       break;
     for (x=0; x < (ssize_t) roi->width; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) length; i++)
@@ -4148,7 +4148,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,const ssize_t x,
   RectangleInfo
     roi;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -4336,7 +4336,7 @@ MagickExport void InitializePixelChannelMap(Image *image)
   PixelTrait
     trait;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -4508,10 +4508,10 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
   PixelTrait
     traits;
 
-  register const Quantum
+  const Quantum
     *magick_restrict p;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -4927,10 +4927,10 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
     gamma,
     pixels[16];
 
-  register const Quantum
+  const Quantum
     *magick_restrict p;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -4985,7 +4985,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
         double
           sum;
 
-        register ssize_t
+        ssize_t
           j;
 
         PixelChannel channel = GetPixelChannelChannel(source,i);
@@ -5087,7 +5087,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
         }
       for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
       {
-        register ssize_t
+        ssize_t
           j;
 
         PixelChannel channel = GetPixelChannelChannel(source,i);
@@ -5164,7 +5164,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
         }
       for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
       {
-        register ssize_t
+        ssize_t
           j;
 
         PixelChannel channel = GetPixelChannelChannel(source,i);
@@ -5371,7 +5371,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
         }
       for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
       {
-        register ssize_t
+        ssize_t
           j;
 
         PixelChannel channel = GetPixelChannelChannel(source,i);
@@ -5494,10 +5494,10 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
   PixelInfo
     pixels[16];
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -5960,7 +5960,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *source,
     fuzz,
     pixel;
 
-  register double
+  double
     distance,
     scale;
 
@@ -6069,7 +6069,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
     fuzz,
     pixel;
 
-  register double
+  double
     scale,
     distance;
 
@@ -6172,7 +6172,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
 
 static void LogPixelChannels(const Image *image)
 {
-  register ssize_t
+  ssize_t
     i;
 
   (void) LogMagickEvent(PixelEvent,GetMagickModule(),"%s[%08x]",
@@ -6285,7 +6285,7 @@ MagickExport ChannelType SetPixelChannelMask(Image *image,
   ChannelType
     mask;
 
-  register ssize_t
+  ssize_t
     i;
 
   assert(image != (Image *) NULL);

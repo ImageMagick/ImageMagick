@@ -195,7 +195,7 @@ WandExport PixelWand *ClonePixelWand(const PixelWand *wand)
 WandExport PixelWand **ClonePixelWands(const PixelWand **wands,
   const size_t number_wands)
 {
-  register ssize_t
+  ssize_t
     i;
 
   PixelWand
@@ -275,7 +275,7 @@ WandExport PixelWand *DestroyPixelWand(PixelWand *wand)
 WandExport PixelWand **DestroyPixelWands(PixelWand **wand,
   const size_t number_wands)
 {
-  register ssize_t
+  ssize_t
     i;
 
   assert(wand != (PixelWand **) NULL);
@@ -441,7 +441,7 @@ WandExport PixelWand *NewPixelWand(void)
 */
 WandExport PixelWand **NewPixelWands(const size_t number_wands)
 {
-  register ssize_t
+  ssize_t
     i;
 
   PixelWand

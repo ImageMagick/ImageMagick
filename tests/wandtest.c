@@ -5185,7 +5185,7 @@ int main(int argc,char **argv)
     *border,
     **pixels;
 
-  register ssize_t
+  ssize_t
     i;
 
   unsigned char

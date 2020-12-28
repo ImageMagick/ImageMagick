@@ -104,10 +104,10 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   PixelInfo
     pixel;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register Quantum
+  Quantum
     *q;
 
   ssize_t
@@ -196,7 +196,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   (void) CopyMagickString(stop_color,"black",MagickPathExtent);
   if (*image_info->filename != '\0')
     {
-      register char
+      char
         *p;
 
       (void) CopyMagickString(start_color,image_info->filename,

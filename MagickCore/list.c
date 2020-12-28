@@ -79,7 +79,7 @@
 */
 MagickExport void AppendImageToList(Image **images,const Image *append)
 {
-  register Image
+  Image
     *p,
     *q;
 
@@ -131,7 +131,7 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
     *clone,
     *image;
 
-  register Image
+  Image
     *p;
 
   if (images == (Image *) NULL)
@@ -219,7 +219,7 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
     *clone_images,
     *image;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -383,7 +383,7 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
   MagickBooleanType
     *delete_list;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -527,7 +527,7 @@ MagickExport Image *DuplicateImages(Image *images,
     *clone_images,
     *duplicate_images;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -573,7 +573,7 @@ MagickExport Image *DuplicateImages(Image *images,
 */
 MagickExport Image *GetFirstImageInList(const Image *images)
 {
-  register const Image
+  const Image
     *p;
 
   if (images == (Image *) NULL)
@@ -617,10 +617,10 @@ MagickExport Image *GetFirstImageInList(const Image *images)
 */
 MagickExport Image *GetImageFromList(const Image *images,const ssize_t index)
 {
-  register const Image
+  const Image
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   if (images == (Image *) NULL)
@@ -669,7 +669,7 @@ MagickExport Image *GetImageFromList(const Image *images,const ssize_t index)
 */
 MagickExport ssize_t GetImageIndexInList(const Image *images)
 {
-  register ssize_t
+  ssize_t
     i;
 
   if (images == (const Image *) NULL)
@@ -708,7 +708,7 @@ MagickExport ssize_t GetImageIndexInList(const Image *images)
 */
 MagickExport size_t GetImageListLength(const Image *images)
 {
-  register ssize_t
+  ssize_t
     i;
 
   if (images == (Image *) NULL)
@@ -749,7 +749,7 @@ MagickExport size_t GetImageListLength(const Image *images)
 */
 MagickExport Image *GetLastImageInList(const Image *images)
 {
-  register const Image
+  const Image
     *p;
 
   if (images == (Image *) NULL)
@@ -860,7 +860,7 @@ MagickExport Image **ImageListToArray(const Image *images,
   Image
     **group;
 
-  register ssize_t
+  ssize_t
     i;
 
   if (images == (Image *) NULL)
@@ -1015,7 +1015,7 @@ MagickExport void PrependImageToList(Image **images,Image *prepend)
 */
 MagickExport Image *RemoveImageFromList(Image **images)
 {
-  register Image
+  Image
     *p;
 
   assert(images != (Image **) NULL);
@@ -1296,7 +1296,7 @@ MagickExport void ReverseImageList(Image **images)
   Image
     *next;
 
-  register Image
+  Image
     *p;
 
   assert(images != (Image **) NULL);
@@ -1351,7 +1351,7 @@ MagickExport Image *SpliceImageIntoList(Image **images,
     *image,
     *split;
 
-  register size_t
+  size_t
     i;
 
   assert(images != (Image **) NULL);
@@ -1429,7 +1429,7 @@ MagickExport Image *SplitImageList(Image *images)
 */
 MagickExport void SyncImageList(Image *images)
 {
-  register Image
+  Image
     *p,
     *q;
 

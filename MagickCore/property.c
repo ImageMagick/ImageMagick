@@ -236,7 +236,7 @@ MagickExport MagickBooleanType DefineImageProperty(Image *image,
     key[MagickPathExtent],
     value[MagickPathExtent];
 
-  register char
+  char
     *p;
 
   assert(image != (Image *) NULL);
@@ -434,7 +434,7 @@ static MagickBooleanType GetIPTCProperty(const Image *image,const char *key,
     dataset,
     record;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -513,7 +513,7 @@ static inline signed int ReadPropertyMSBLong(const unsigned char **p,
   int
     c;
 
-  register ssize_t
+  ssize_t
     i;
 
   unsigned char
@@ -553,7 +553,7 @@ static inline signed short ReadPropertyMSBShort(const unsigned char **p,
   int
     c;
 
-  register ssize_t
+  ssize_t
     i;
 
   unsigned char
@@ -598,7 +598,7 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key,
   MagickBooleanType
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -1239,7 +1239,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
   MagickBooleanType
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -1423,7 +1423,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
     number_entries=(size_t) ReadPropertyUnsignedShort(endian,directory);
     for ( ; entry < number_entries; entry++)
     {
-      register unsigned char
+      unsigned char
         *p,
         *q;
 
@@ -1785,7 +1785,7 @@ static MagickBooleanType GetXMPProperty(const Image *image,const char *property)
   MagickBooleanType
     status;
 
-  register const char
+  const char
     *p;
 
   XMLTreeInfo
@@ -1875,7 +1875,7 @@ static char *TracePSClippath(const unsigned char *blob,size_t length)
     last[3],
     point[3];
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
@@ -2092,7 +2092,7 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
     last[3],
     point[3];
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -2220,7 +2220,7 @@ MagickExport const char *GetImageProperty(const Image *image,
   MagickBooleanType
     read_from_properties;
 
-  register const char
+  const char
     *p;
 
   size_t
@@ -2923,7 +2923,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           PointInfo
             *convex_hull;
 
-          register ssize_t
+          ssize_t
             n;
 
           size_t
@@ -3115,7 +3115,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           PointInfo
             *bounding_box;
 
-          register ssize_t
+          ssize_t
             n;
 
           size_t
@@ -3587,10 +3587,10 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
   MagickBooleanType
     number;
 
-  register char
+  char
     *q;  /* current position in interpret_text */
 
-  register const char
+  const char
     *p;  /* position in embed_text string being expanded */
 
   size_t
@@ -3771,7 +3771,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
         *key,
         *string;
 
-      register ssize_t
+      ssize_t
         len;
 
       ssize_t

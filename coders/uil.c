@@ -179,10 +179,10 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
   PixelInfo
     pixel;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
@@ -259,7 +259,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
       colors=image->colors;
       if (transparent != MagickFalse)
         {
-          register Quantum
+          Quantum
             *q;
 
           i=0;

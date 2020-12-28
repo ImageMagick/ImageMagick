@@ -242,10 +242,10 @@ static inline const unsigned char *PushQuantumFloat24Pixel(
 static inline const unsigned char *PushQuantumPixel(QuantumInfo *quantum_info,
   const unsigned char *magick_restrict pixels,unsigned int *quantum)
 {
-  register ssize_t
+  ssize_t
     i;
 
-  register size_t
+  size_t
     quantum_bits;
 
   *quantum=(QuantumAny) 0;
@@ -272,10 +272,10 @@ static inline const unsigned char *PushQuantumLongPixel(
   QuantumInfo *quantum_info,const unsigned char *magick_restrict pixels,
   unsigned int *quantum)
 {
-  register ssize_t
+  ssize_t
     i;
 
-  register size_t
+  size_t
     quantum_bits;
 
   *quantum=0UL;
@@ -305,7 +305,7 @@ static void ImportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(image != (Image *) NULL);
@@ -442,7 +442,7 @@ static void ImportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   ssize_t
@@ -786,7 +786,7 @@ static void ImportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(image != (Image *) NULL);
@@ -821,7 +821,7 @@ static void ImportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
       pixel=0;
       if (quantum_info->pack == MagickFalse)
         {
-          register ssize_t
+          ssize_t
             i;
 
           size_t
@@ -1049,7 +1049,7 @@ static void ImportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(image != (Image *) NULL);
@@ -1084,7 +1084,7 @@ static void ImportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
       pixel=0;
       if (quantum_info->pack == MagickFalse)
         {
-          register ssize_t
+          ssize_t
             i;
 
           size_t
@@ -1312,7 +1312,7 @@ static void ImportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   if (image->colorspace != CMYKColorspace)
@@ -1453,7 +1453,7 @@ static void ImportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(image != (Image *) NULL);
@@ -1590,7 +1590,7 @@ static void ImportCbYCrYQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   unsigned int
@@ -1608,7 +1608,7 @@ static void ImportCbYCrYQuantum(const Image *image,QuantumInfo *quantum_info,
       pixel=0;
       if (quantum_info->pack == MagickFalse)
         {
-          register ssize_t
+          ssize_t
             i;
 
           size_t
@@ -1684,7 +1684,7 @@ static void ImportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   if (image->colorspace != CMYKColorspace)
@@ -1875,7 +1875,7 @@ static void ImportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   if (image->colorspace != CMYKColorspace)
@@ -2083,7 +2083,7 @@ static void ImportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   if (image->colorspace != CMYKColorspace)
@@ -2291,7 +2291,7 @@ static void ImportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   ssize_t
@@ -2303,7 +2303,7 @@ static void ImportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
   {
     case 1:
     {
-      register Quantum
+      Quantum
         black,
         white;
 
@@ -2334,7 +2334,7 @@ static void ImportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 4:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       range=GetQuantumRange(quantum_info->depth);
@@ -2647,7 +2647,7 @@ static void ImportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   ssize_t
@@ -2659,7 +2659,7 @@ static void ImportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
   {
     case 1:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       bit=0;
@@ -2690,7 +2690,7 @@ static void ImportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 4:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       range=GetQuantumRange(quantum_info->depth);
@@ -2886,7 +2886,7 @@ static void ImportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(image != (Image *) NULL);
@@ -3023,7 +3023,7 @@ static void ImportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
   MagickBooleanType
     range_exception;
 
-  register ssize_t
+  ssize_t
     x;
 
   ssize_t
@@ -3040,7 +3040,7 @@ static void ImportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
   {
     case 1:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=0; x < ((ssize_t) number_pixels-7); x+=8)
@@ -3076,7 +3076,7 @@ static void ImportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 4:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=0; x < ((ssize_t) number_pixels-1); x+=2)
@@ -3260,7 +3260,7 @@ static void ImportIndexAlphaQuantum(const Image *image,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   ssize_t
@@ -3277,7 +3277,7 @@ static void ImportIndexAlphaQuantum(const Image *image,
   {
     case 1:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=((ssize_t) number_pixels-3); x > 0; x-=4)
@@ -3312,7 +3312,7 @@ static void ImportIndexAlphaQuantum(const Image *image,
     }
     case 4:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       range=GetQuantumRange(quantum_info->depth);
@@ -3500,7 +3500,7 @@ static void ImportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(image != (Image *) NULL);
@@ -3637,7 +3637,7 @@ static void ImportRedQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(image != (Image *) NULL);
@@ -3774,7 +3774,7 @@ static void ImportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   ssize_t
@@ -4118,7 +4118,7 @@ static void ImportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(image != (Image *) NULL);
@@ -4153,7 +4153,7 @@ static void ImportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
       pixel=0;
       if (quantum_info->pack == MagickFalse)
         {
-          register ssize_t
+          ssize_t
             i;
 
           size_t
@@ -4381,7 +4381,7 @@ static void ImportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(image != (Image *) NULL);
@@ -4416,7 +4416,7 @@ static void ImportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
       pixel=0;
       if (quantum_info->pack == MagickFalse)
         {
-          register ssize_t
+          ssize_t
             i;
 
           size_t
@@ -4645,13 +4645,13 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
   MagickSizeType
     number_pixels;
 
-  register const unsigned char
+  const unsigned char
     *magick_restrict p;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register Quantum
+  Quantum
     *magick_restrict q;
 
   size_t
@@ -4819,7 +4819,7 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
         q=GetCacheViewAuthenticPixelQueue(image_view);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
-        register ssize_t
+        ssize_t
           i;
 
         Sa=QuantumScale*GetPixelAlpha(image,q);

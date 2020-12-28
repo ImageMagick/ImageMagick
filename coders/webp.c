@@ -149,10 +149,10 @@ static MagickBooleanType IsWEBP(const unsigned char *magick,const size_t length)
 static inline uint32_t ReadWebPLSBWord(
   const unsigned char *magick_restrict data)
 {
-  register const unsigned char
+  const unsigned char
     *p;
 
-  register uint32_t
+  uint32_t
     value;
 
   p=data;
@@ -240,7 +240,7 @@ static int ReadSingleWEBPImage(Image *image,const uint8_t *stream,
   int
     webp_status;
 
-  register unsigned char
+  unsigned char
     *p;
 
   size_t
@@ -297,10 +297,10 @@ static int ReadSingleWEBPImage(Image *image,const uint8_t *stream,
   p=(unsigned char *) webp_image->u.RGBA.rgba;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *q;
 
-    register ssize_t
+    ssize_t
       x;
 
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -801,7 +801,7 @@ static MagickBooleanType WriteSingleWEBPPicture(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register uint32_t
+  uint32_t
     *magick_restrict q;
 
   ssize_t
@@ -836,10 +836,10 @@ static MagickBooleanType WriteSingleWEBPPicture(const ImageInfo *image_info,
   q=picture->argb;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register ssize_t
+    ssize_t
       x;
 
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);

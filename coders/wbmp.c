@@ -127,10 +127,10 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register Quantum
+  Quantum
     *q;
 
   ssize_t
@@ -324,7 +324,7 @@ static void WBMPWriteInteger(Image *image,const size_t value)
     flag,
     n;
 
-  register ssize_t
+  ssize_t
     i;
 
   unsigned char
@@ -354,10 +354,10 @@ static MagickBooleanType WriteWBMPImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     x;
 
   ssize_t

@@ -175,7 +175,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image *image;
 
   MagickBooleanType status;
-  register Quantum *q;
+  Quantum *q;
   unsigned char magick[12], *pixels;
   ssize_t count;
   ssize_t y;
@@ -515,7 +515,7 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image,
   MagickOffsetType
     scene;
   
-  register const Quantum
+  const Quantum
     *p;
 
   QuantumInfo

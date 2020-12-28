@@ -1436,7 +1436,7 @@ static cl_event* CopyOpenCLEvents(MagickCLCacheInfo first,
   cl_event
     *events;
 
-  register size_t
+  size_t
     i;
 
   size_t

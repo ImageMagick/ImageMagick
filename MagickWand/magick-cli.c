@@ -653,7 +653,7 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
   int
     c;
 
-  register ssize_t
+  ssize_t
     i;
 
   if (ExpandFilenames(&argc,&argv) == MagickFalse)

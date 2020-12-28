@@ -319,7 +319,7 @@ MagickExport RandomInfo *DestroyRandomInfo(RandomInfo *random_info)
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT)
 static ssize_t ReadRandom(int file,unsigned char *source,size_t length)
 {
-  register unsigned char
+  unsigned char
     *q;
 
   ssize_t
@@ -498,7 +498,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
     */
     if (environ != (char **) NULL)
       {
-        register ssize_t
+        ssize_t
           i;
 
         /*
@@ -831,7 +831,7 @@ MagickPrivate void RandomComponentTerminus(void)
 
 static inline void IncrementRandomNonce(StringInfo *nonce)
 {
-  register ssize_t
+  ssize_t
     i;
 
   unsigned char
@@ -850,10 +850,10 @@ static inline void IncrementRandomNonce(StringInfo *nonce)
 MagickExport void SetRandomKey(RandomInfo *random_info,const size_t length,
   unsigned char *key)
 {
-  register size_t
+  size_t
     i;
 
-  register unsigned char
+  unsigned char
     *p;
 
   SignatureInfo

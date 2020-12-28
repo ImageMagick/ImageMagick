@@ -179,7 +179,7 @@ static inline int ProfileInteger(MagickByteBuffer *buffer,short int *hex_digits)
     l,
     value;
 
-  register ssize_t
+  ssize_t
     i;
 
   l=0;
@@ -235,10 +235,10 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
   MagickByteBuffer
     buffer;
 
-  register char
+  char
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   SegmentInfo
@@ -574,7 +574,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   RectangleInfo
     page;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -1029,7 +1029,7 @@ ModuleExport void UnregisterPSImage(void)
 static inline unsigned char *PopHexPixel(const char hex_digits[][3],
   const size_t pixel,unsigned char *pixels)
 {
-  register const char
+  const char
     *hex;
 
   hex=hex_digits[pixel];
@@ -1381,14 +1381,14 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
     media_info,
     page_info;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
-  register unsigned char
+  unsigned char
     *q;
 
   SegmentInfo
@@ -1592,7 +1592,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
             Quantum
               pixel;
 
-            register ssize_t
+            ssize_t
               x;
 
             ssize_t

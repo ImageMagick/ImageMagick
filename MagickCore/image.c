@@ -446,7 +446,7 @@ MagickExport Image *AppendImages(const Image *images,
   RectangleInfo
     geometry;
 
-  register const Image
+  const Image
     *next;
 
   size_t
@@ -545,13 +545,13 @@ MagickExport Image *AppendImages(const Image *images,
       PixelInfo
         pixel;
 
-      register const Quantum
+      const Quantum
         *magick_restrict p;
 
-      register Quantum
+      Quantum
         *magick_restrict q;
 
-      register ssize_t
+      ssize_t
         x;
 
       if (status == MagickFalse)
@@ -1081,13 +1081,13 @@ MagickExport MagickBooleanType CopyImagePixels(Image *image,
     MagickBooleanType
       sync;
 
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register ssize_t
+    ssize_t
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     if (status == MagickFalse)
@@ -1103,7 +1103,7 @@ MagickExport MagickBooleanType CopyImagePixels(Image *image,
       }
     for (x=0; x < (ssize_t) geometry->width; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
@@ -1476,13 +1476,13 @@ MagickExport Image *GetImageMask(const Image *image,const PixelMask type,
   mask_view=AcquireAuthenticCacheView(mask_image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -1646,7 +1646,7 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
   MagickBooleanType
     canonical;
 
-  register const char
+  const char
     *p;
 
   ssize_t
@@ -1695,10 +1695,10 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
         const char
           *option;
 
-        register char
+        char
           *r;
 
-        register ssize_t
+        ssize_t
           i;
 
         ssize_t
@@ -1817,10 +1817,10 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *p;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -1833,7 +1833,7 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
@@ -1889,7 +1889,7 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
 */
 MagickExport MagickBooleanType IsImageObject(const Image *image)
 {
-  register const Image
+  const Image
     *p;
 
   assert(image != (Image *) NULL);
@@ -1930,7 +1930,7 @@ MagickExport MagickBooleanType IsTaintImage(const Image *image)
     magick[MagickPathExtent],
     filename[MagickPathExtent];
 
-  register const Image
+  const Image
     *p;
 
   assert(image != (Image *) NULL);
@@ -2067,10 +2067,10 @@ MagickExport Image *NewMagickImage(const ImageInfo *image_info,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -2267,10 +2267,10 @@ MagickExport MagickBooleanType ResetImagePixels(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -2346,10 +2346,10 @@ MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -2432,10 +2432,10 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -2546,10 +2546,10 @@ MagickExport MagickBooleanType SetImageColor(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -2724,7 +2724,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register const char
+  const char
     *p;
 
   ssize_t
@@ -2812,7 +2812,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
       MagickFormatType
         format_type;
 
-      register ssize_t
+      ssize_t
         i;
 
       static const char
@@ -3248,13 +3248,13 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -3404,10 +3404,10 @@ MagickExport MagickBooleanType SetImageRegionMask(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -3544,10 +3544,10 @@ static ssize_t SmushXGap(const Image *smush_image,const Image *images,
     left_geometry,
     right_geometry;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     i,
     y;
 
@@ -3615,10 +3615,10 @@ static ssize_t SmushYGap(const Image *smush_image,const Image *images,
     bottom_geometry,
     top_geometry;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
@@ -3695,7 +3695,7 @@ MagickExport Image *SmushImages(const Image *images,
   RectangleInfo
     geometry;
 
-  register const Image
+  const Image
     *next;
 
   size_t
@@ -3910,10 +3910,10 @@ MagickExport MagickBooleanType SyncImage(Image *image,ExceptionInfo *exception)
     Quantum
       index;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)

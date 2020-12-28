@@ -125,7 +125,7 @@ static inline float HalfToSinglePrecision(const unsigned short half)
       single_precision;
   } SinglePrecision;
 
-  register unsigned int
+  unsigned int
     exponent,
     significand,
     sign_bit;
@@ -192,7 +192,7 @@ static inline unsigned char *PopCharPixel(const unsigned char pixel,
 static inline unsigned char *PopLongPixel(const EndianType endian,
   const unsigned int pixel,unsigned char *magick_restrict pixels)
 {
-  register unsigned int
+  unsigned int
     quantum;
 
   quantum=(unsigned int) pixel;
@@ -214,7 +214,7 @@ static inline unsigned char *PopLongPixel(const EndianType endian,
 static inline unsigned char *PopShortPixel(const EndianType endian,
   const unsigned short pixel,unsigned char *magick_restrict pixels)
 {
-  register unsigned int
+  unsigned int
     quantum;
 
   quantum=pixel;
@@ -241,7 +241,7 @@ static inline const unsigned char *PushLongPixel(const EndianType endian,
   const unsigned char *magick_restrict pixels,
   unsigned int *magick_restrict pixel)
 {
-  register unsigned int
+  unsigned int
     quantum;
 
   if (endian == LSBEndian)
@@ -265,7 +265,7 @@ static inline const unsigned char *PushShortPixel(const EndianType endian,
   const unsigned char *magick_restrict pixels,
   unsigned short *magick_restrict pixel)
 {
-  register unsigned int
+  unsigned int
     quantum;
 
   if (endian == LSBEndian)
@@ -710,10 +710,10 @@ static inline unsigned short SinglePrecisionToHalf(const float value)
       single_precision;
   } SinglePrecision;
 
-  register int
+  int
     exponent;
 
-  register unsigned int
+  unsigned int
     significand,
     sign_bit;
 
@@ -771,7 +771,7 @@ static inline unsigned short SinglePrecisionToHalf(const float value)
       float
         alpha;
 
-      register int
+      int
         i;
 
       /*

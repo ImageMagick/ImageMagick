@@ -164,16 +164,16 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Quantum
     index;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register Quantum
+  Quantum
     *q;
 
-  register ssize_t
+  ssize_t
     i;
 
-  register unsigned char
+  unsigned char
     *p;
 
   size_t

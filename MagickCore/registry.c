@@ -111,7 +111,7 @@ MagickExport MagickBooleanType DefineImageRegistry(const RegistryType type,
     key[MagickPathExtent],
     value[MagickPathExtent];
 
-  register char
+  char
     *p;
 
   assert(option != (const char *) NULL);
@@ -423,7 +423,7 @@ MagickExport void ResetImageRegistryIterator(void)
 
 static void *DestroyRegistryNode(void *registry_info)
 {
-  register RegistryInfo
+  RegistryInfo
     *p;
 
   p=(RegistryInfo *) registry_info;

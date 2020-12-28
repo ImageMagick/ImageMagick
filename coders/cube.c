@@ -124,7 +124,7 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
   MemoryInfo
     *cube_info;
 
-  register char
+  char
     *p;
 
   size_t
@@ -240,17 +240,17 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
     }
   for (b=0; b < (ssize_t) (hald_level*hald_level); b++)
   {
-    register ssize_t
+    ssize_t
       g;
 
     if (status == MagickFalse)
       continue;
     for (g=0; g < (ssize_t) (hald_level*hald_level); g++)
     {
-      register Quantum
+      Quantum
         *magick_restrict q;
 
-      register ssize_t
+      ssize_t
         r;
 
       if (status == MagickFalse)

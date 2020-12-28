@@ -192,7 +192,7 @@ static LinkedListInfo *AcquireMagicList(ExceptionInfo *exception)
   MagickStatusType
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
   list=NewLinkedList(0);
@@ -205,7 +205,7 @@ static LinkedListInfo *AcquireMagicList(ExceptionInfo *exception)
     MagicInfo
       *magic_info;
 
-    register const MagicMapInfo
+    const MagicMapInfo
       *p;
 
     p=MagicMap+i;
@@ -280,7 +280,7 @@ static MagickBooleanType IsMagicCacheInstantiated()
 MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   const size_t length,ExceptionInfo *exception)
 {
-  register const MagicInfo
+  const MagicInfo
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
@@ -362,7 +362,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
 */
 MagickExport size_t GetMagicPatternExtent(ExceptionInfo *exception)
 {
-  register const MagicInfo
+  const MagicInfo
     *p;
 
   size_t
@@ -447,10 +447,10 @@ MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
   const MagicInfo
     **aliases;
 
-  register const MagicInfo
+  const MagicInfo
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -523,7 +523,7 @@ extern "C" {
 
 static int MagicCompare(const void *x,const void *y)
 {
-  register const char
+  const char
     *p,
     *q;
 
@@ -542,10 +542,10 @@ MagickExport char **GetMagicList(const char *pattern,size_t *number_aliases,
   char
     **aliases;
 
-  register const MagicInfo
+  const MagicInfo
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -679,7 +679,7 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
   const MagicInfo
     **magic_info;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -775,7 +775,7 @@ MagickPrivate MagickBooleanType MagicComponentGenesis(void)
 
 static void *DestroyMagicElement(void *magic_info)
 {
-  register MagicInfo
+  MagicInfo
     *p;
 
   p=(MagicInfo *) magic_info;

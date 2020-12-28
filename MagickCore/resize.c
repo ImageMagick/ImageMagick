@@ -384,7 +384,7 @@ static double Lagrange(const double x,const ResizeFilter *resize_filter)
   double
     value;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -770,7 +770,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     C,
     value;
 
-  register ResizeFilter
+  ResizeFilter
     *resize_filter;
 
   /*
@@ -1345,7 +1345,7 @@ static double I0(double x)
     t,
     y;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -1369,7 +1369,7 @@ static double J1(double x)
     p,
     q;
 
-  register ssize_t
+  ssize_t
     i;
 
   static const double
@@ -1415,7 +1415,7 @@ static double P1(double x)
     p,
     q;
 
-  register ssize_t
+  ssize_t
     i;
 
   static const double
@@ -1455,7 +1455,7 @@ static double Q1(double x)
     p,
     q;
 
-  register ssize_t
+  ssize_t
     i;
 
   static const double
@@ -1763,10 +1763,10 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
     PointInfo
       offset;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -1778,7 +1778,7 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
     offset.y=((double) y+0.5)*scale.y-0.5;
     for (x=0; x < (ssize_t) resize_image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
@@ -1896,7 +1896,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
   MemoryInfo
     *pixel_info;
 
-  register gfloat
+  gfloat
     *q;
 
   ssize_t
@@ -1927,10 +1927,10 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -1943,7 +1943,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
@@ -1980,10 +1980,10 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
   (void) lqr_carver_scan_reset(carver);
   while (lqr_carver_scan_ext(carver,&x_offset,&y_offset,(void **) &packet) != 0)
   {
-    register Quantum
+    Quantum
       *magick_restrict p;
 
-    register ssize_t
+    ssize_t
       i;
 
     p=QueueCacheViewAuthenticPixels(rescale_view,x_offset,y_offset,1,1,
@@ -2063,7 +2063,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,
 static inline void CopyPixels(const Quantum *source,const ssize_t source_offset,
   Quantum *destination,const ssize_t destination_offset,const size_t channels)
 {
-  register ssize_t
+  ssize_t
     i;
 
   for (i=0; i < (ssize_t) channels; i++)
@@ -2077,12 +2077,12 @@ static inline void MixPixels(const Quantum *source,const ssize_t *source_offset,
   ssize_t
     sum;
 
-  register ssize_t
+  ssize_t
     i;
 
   for (i=0; i < (ssize_t) channels; i++)
   {
-    register ssize_t
+    ssize_t
       j;
 
     sum=0;
@@ -2105,7 +2105,7 @@ static inline void Mix2Pixels(const Quantum *source,
 static inline int PixelsEqual(const Quantum *source1,ssize_t offset1,
   const Quantum *source2,ssize_t offset2,const size_t channels)
 {
-  register ssize_t
+  ssize_t
     i;
 
   offset1*=channels;
@@ -2434,7 +2434,7 @@ static void Fish2X(const Image *source,const Quantum *pixels,Quantum *result,
     be,
     de;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -2589,7 +2589,7 @@ static void Scale2X(const Image *source,const Quantum *pixels,Quantum *result,
   if (PixelsEqual(pixels,1,pixels,7,channels) ||
       PixelsEqual(pixels,3,pixels,5,channels))
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < 4; i++)
@@ -2626,7 +2626,7 @@ static void Epbx2X(const Image *source,const Quantum *pixels,
     ) \
   )
 
-  register ssize_t
+  ssize_t
     i;
 
   for (i=0; i < 4; i++)
@@ -2814,7 +2814,7 @@ static inline void Scale3X(const Image *source,const Quantum *pixels,
     }
   else
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < 9; i++)
@@ -2999,10 +2999,10 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     Quantum
       r[128]; /* to hold result pixels */
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -3019,13 +3019,13 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     */
     for (x=0; x < (ssize_t) source_image->columns; x++)
     {
-      register const Quantum
+      const Quantum
         *magick_restrict p;
 
       size_t
         channels;
 
-      register ssize_t
+      ssize_t
         i;
 
       ssize_t
@@ -3227,7 +3227,7 @@ typedef struct _ContributionInfo
 static ContributionInfo **DestroyContributionThreadSet(
   ContributionInfo **contribution)
 {
-  register ssize_t
+  ssize_t
     i;
 
   assert(contribution != (ContributionInfo **) NULL);
@@ -3241,7 +3241,7 @@ static ContributionInfo **DestroyContributionThreadSet(
 
 static ContributionInfo **AcquireContributionThreadSet(const size_t count)
 {
-  register ssize_t
+  ssize_t
     i;
 
   ContributionInfo
@@ -3334,16 +3334,16 @@ static MagickBooleanType HorizontalFilter(
       bisect,
       density;
 
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register ContributionInfo
+    ContributionInfo
       *magick_restrict contribution;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       y;
 
     ssize_t
@@ -3369,7 +3369,7 @@ static MagickBooleanType HorizontalFilter(
       continue;
     if ((density != 0.0) && (density != 1.0))
       {
-        register ssize_t
+        ssize_t
           i;
 
         /*
@@ -3390,7 +3390,7 @@ static MagickBooleanType HorizontalFilter(
       }
     for (y=0; y < (ssize_t) resize_image->rows; y++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
@@ -3407,7 +3407,7 @@ static MagickBooleanType HorizontalFilter(
           resize_traits,
           traits;
 
-        register ssize_t
+        ssize_t
           j;
 
         ssize_t
@@ -3552,16 +3552,16 @@ static MagickBooleanType VerticalFilter(
       bisect,
       density;
 
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register ContributionInfo
+    ContributionInfo
       *magick_restrict contribution;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     ssize_t
@@ -3587,7 +3587,7 @@ static MagickBooleanType VerticalFilter(
       continue;
     if ((density != 0.0) && (density != 1.0))
       {
-        register ssize_t
+        ssize_t
           i;
 
         /*
@@ -3609,7 +3609,7 @@ static MagickBooleanType VerticalFilter(
       }
     for (x=0; x < (ssize_t) resize_image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
@@ -3626,7 +3626,7 @@ static MagickBooleanType VerticalFilter(
           resize_traits,
           traits;
 
-        register ssize_t
+        ssize_t
           j;
 
         ssize_t
@@ -3866,7 +3866,7 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
   MagickOffsetType
     progress;
 
-  register ssize_t
+  ssize_t
     x1;
 
   ssize_t
@@ -3942,13 +3942,13 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
 #endif
   for (y=0; y < (ssize_t) sample_image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     ssize_t
@@ -3972,7 +3972,7 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
     */
     for (x=0; x < (ssize_t) sample_image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       if (GetPixelWriteMask(sample_image,q) <= (QuantumRange/2))
@@ -4083,7 +4083,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
     scale,
     span;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -4154,13 +4154,13 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
   scale_view=AcquireAuthenticCacheView(scale_image,exception);
   for (y=0; y < (ssize_t) scale_image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)

@@ -142,10 +142,10 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  register Image
+  Image
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t

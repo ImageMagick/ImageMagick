@@ -207,10 +207,10 @@ static void ReadPDFInfo(const ImageInfo *image_info,Image *image,
   MagickByteBuffer
     buffer;
 
-  register char
+  char
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   SegmentInfo
@@ -376,7 +376,7 @@ static char *SanitizeDelegateString(const char *source)
   const char
     *q;
 
-  register char
+  char
     *p;
 
   static char
@@ -445,7 +445,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   RectangleInfo
     page;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -910,10 +910,10 @@ static char *EscapeParenthesis(const char *source)
   char
     *destination;
 
-  register char
+  char
     *q;
 
-  register const char
+  const char
     *p;
 
   size_t
@@ -951,12 +951,12 @@ static char *EscapeParenthesis(const char *source)
 
 static size_t UTF8ToUTF16(const unsigned char *utf8,wchar_t *utf16)
 {
-  register const unsigned char
+  const unsigned char
     *p;
 
   if (utf16 != (wchar_t *) NULL)
     {
-      register wchar_t
+      wchar_t
         *q;
 
       wchar_t
@@ -1040,7 +1040,7 @@ static wchar_t *ConvertUTF8ToUTF16(const unsigned char *source,size_t *length)
   *length=UTF8ToUTF16(source,(wchar_t *) NULL);
   if (*length == 0)
     {
-      register ssize_t
+      ssize_t
         i;
 
       /*
@@ -1113,7 +1113,7 @@ static MagickBooleanType WritePOCKETMODImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
   assert(image_info != (const ImageInfo *) NULL);
@@ -1296,13 +1296,13 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     media_info,
     page_info;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register unsigned char
+  unsigned char
     *q;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 

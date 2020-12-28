@@ -161,7 +161,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   RectangleInfo
     page;
 
-  register unsigned char
+  unsigned char
     *p;
 
   size_t
@@ -434,10 +434,10 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   GetPixelInfo(image,&fill_color);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *q;
 
-    register ssize_t
+    ssize_t
       x;
 
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);

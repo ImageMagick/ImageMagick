@@ -192,11 +192,11 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   PixelInfo
     background_color;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
-  register Quantum
+  Quantum
     *q;
 
   ssize_t

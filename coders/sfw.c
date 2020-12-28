@@ -123,7 +123,7 @@ static MagickBooleanType IsSFW(const unsigned char *magick,const size_t length)
 static unsigned char *SFWScan(const unsigned char *p,const unsigned char *q,
   const unsigned char *target,const size_t length)
 {
-  register ssize_t
+  ssize_t
     i;
 
   while ((p+length) < q)
@@ -216,7 +216,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  register unsigned char
+  unsigned char
     *header,
     *data;
 

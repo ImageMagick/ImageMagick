@@ -177,12 +177,12 @@ static MagickBooleanType IsWMF(const unsigned char *magick,const size_t length)
 #    if defined(MAGICKCORE_HAVE__WFOPEN)
 static size_t UTF8ToUTF16(const unsigned char *utf8,wchar_t *utf16)
 {
-  register const unsigned char
+  const unsigned char
     *p;
 
   if (utf16 != (wchar_t *) NULL)
     {
-      register wchar_t
+      wchar_t
         *q;
 
       wchar_t
@@ -269,7 +269,7 @@ static wchar_t *ConvertUTF8ToUTF16(const unsigned char *source)
   length=UTF8ToUTF16(source,(wchar_t *) NULL);
   if (length == 0)
     {
-      register ssize_t
+      ssize_t
         i;
 
       /*
@@ -463,10 +463,10 @@ static Image *ReadEMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   RECT
     rect;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register Quantum
+  Quantum
     *q;
 
   RGBQUAD
@@ -521,7 +521,7 @@ static Image *ReadEMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       char
         *geometry;
 
-      register char
+      char
         *p;
 
       MagickStatusType
@@ -685,10 +685,10 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
   MagickStatusType
     flags;
 
-  register Quantum
+  Quantum
     *q;
 
-  register ssize_t
+  ssize_t
     x;
 
   ssize_t

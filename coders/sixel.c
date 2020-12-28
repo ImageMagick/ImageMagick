@@ -992,13 +992,13 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
   MagickBooleanType
     status;
 
-  register char
+  char
     *p;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register Quantum
+  Quantum
     *q;
 
   size_t
@@ -1230,10 +1230,10 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register const Quantum
+  const Quantum
     *q;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 

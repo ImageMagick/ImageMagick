@@ -377,7 +377,7 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
 
 static inline size_t AllocationPolicy(size_t size)
 {
-  register size_t
+  size_t
     blocksize;
 
   /*
@@ -405,7 +405,7 @@ static inline size_t AllocationPolicy(size_t size)
 
 static inline void InsertFreeBlock(void *block,const size_t i)
 {
-  register void
+  void
     *next,
     *previous;
 
@@ -432,7 +432,7 @@ static inline void InsertFreeBlock(void *block,const size_t i)
 
 static inline void RemoveFreeBlock(void *block,const size_t i)
 {
-  register void
+  void
     *next,
     *previous;
 
@@ -448,10 +448,10 @@ static inline void RemoveFreeBlock(void *block,const size_t i)
 
 static void *AcquireBlock(size_t size)
 {
-  register size_t
+  size_t
     i;
 
-  register void
+  void
     *block;
 
   /*
@@ -524,7 +524,7 @@ static void *AcquireBlock(size_t size)
 */
 MagickExport void *AcquireMagickMemory(const size_t size)
 {
-  register void
+  void
     *memory;
 
 #if !defined(MAGICKCORE_ANONYMOUS_MEMORY_SUPPORT)
@@ -537,7 +537,7 @@ MagickExport void *AcquireMagickMemory(const size_t size)
       LockSemaphoreInfo(memory_semaphore);
       if (free_segments == (DataSegmentInfo *) NULL)
         {
-          register ssize_t
+          ssize_t
             i;
 
           assert(2*sizeof(size_t) > (size_t) (~SizeMask));
@@ -598,7 +598,7 @@ MagickExport void *AcquireMagickMemory(const size_t size)
 */
 MagickExport void *AcquireCriticalMemory(const size_t size)
 {
-  register void
+  void
     *memory;
 
   /*
@@ -810,10 +810,10 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
 MagickExport void *CopyMagickMemory(void *magick_restrict destination,
   const void *magick_restrict source,const size_t size)
 {
-  register const unsigned char
+  const unsigned char
     *p;
 
-  register unsigned char
+  unsigned char
     *q;
 
   assert(destination != (void *) NULL);
@@ -858,7 +858,7 @@ MagickExport void *CopyMagickMemory(void *magick_restrict destination,
 MagickExport void DestroyMagickMemory(void)
 {
 #if defined(MAGICKCORE_ANONYMOUS_MEMORY_SUPPORT)
-  register ssize_t
+  ssize_t
     i;
 
   if (memory_semaphore == (SemaphoreInfo *) NULL)
@@ -910,10 +910,10 @@ static MagickBooleanType ExpandHeap(size_t size)
   MagickBooleanType
     mapped;
 
-  register ssize_t
+  ssize_t
     i;
 
-  register void
+  void
     *block;
 
   size_t
@@ -1340,7 +1340,7 @@ MagickPrivate void ResetVirtualAnonymousMemory(void)
 #if defined(MAGICKCORE_ANONYMOUS_MEMORY_SUPPORT)
 static inline void *ResizeBlock(void *block,size_t size)
 {
-  register void
+  void
     *memory;
 
   if (block == (void *) NULL)
@@ -1359,7 +1359,7 @@ static inline void *ResizeBlock(void *block,size_t size)
 
 MagickExport void *ResizeMagickMemory(void *memory,const size_t size)
 {
-  register void
+  void
     *block;
 
   if (memory == (void *) NULL)

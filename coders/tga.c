@@ -156,10 +156,10 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Quantum
     index;
 
-  register Quantum
+  Quantum
     *q;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
@@ -734,16 +734,16 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
   QuantumAny
     range;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register ssize_t
+  ssize_t
     i;
 
-  register unsigned char
+  unsigned char
     *q;
 
   size_t

@@ -1008,7 +1008,7 @@ static MagickBooleanType ReadDDSInfo(Image *image, DDSInfo *dds_info)
 static MagickBooleanType SetDXT1Pixels(Image *image,ssize_t x,ssize_t y,
   DDSColors colors,size_t bits,Quantum *q)
 {
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -1059,7 +1059,7 @@ static MagickBooleanType ReadMipmaps(const ImageInfo *image_info,Image *image,
       && (dds_info->ddscaps1 & DDSCAPS_TEXTURE
           || dds_info->ddscaps2 & DDSCAPS2_CUBEMAP))
     {
-      register ssize_t
+      ssize_t
         i;
 
       size_t
@@ -1135,10 +1135,10 @@ static MagickBooleanType ReadDXT1Pixels(Image *image,
   DDSColors
     colors;
 
-  register Quantum
+  Quantum
     *q;
 
-  register ssize_t
+  ssize_t
     x;
 
   size_t
@@ -1213,7 +1213,7 @@ static MagickBooleanType SkipDXTMipmaps(Image *image,DDSInfo *dds_info,
       MagickOffsetType
         offset;
 
-      register ssize_t
+      ssize_t
         i;
 
       size_t
@@ -1259,10 +1259,10 @@ static MagickBooleanType ReadDXT3Pixels(Image *image,
   DDSColors
     colors;
 
-  register Quantum
+  Quantum
     *q;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
@@ -1363,10 +1363,10 @@ static MagickBooleanType ReadDXT5Pixels(Image *image,
   MagickSizeType
     alpha_bits;
 
-  register Quantum
+  Quantum
     *q;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
@@ -1472,7 +1472,7 @@ static MagickBooleanType ReadDXT5(const ImageInfo *image_info,Image *image,
 static MagickBooleanType ReadUncompressedRGBPixels(Image *image,
   DDSInfo *dds_info,ExceptionInfo *exception)
 {
-  register Quantum
+  Quantum
     *q;
 
   ssize_t
@@ -1545,7 +1545,7 @@ static MagickBooleanType SkipRGBMipmaps(Image *image,DDSInfo *dds_info,
       MagickOffsetType
         offset;
   
-      register ssize_t
+      ssize_t
         i;
 
       size_t
@@ -1596,7 +1596,7 @@ static MagickBooleanType ReadUncompressedRGB(const ImageInfo *image_info,
 static MagickBooleanType ReadUncompressedRGBAPixels(Image *image,
   DDSInfo *dds_info,ExceptionInfo *exception)
 {
-  register Quantum
+  Quantum
     *q;
 
   ssize_t
@@ -1955,7 +1955,7 @@ ModuleExport size_t RegisterDDSImage(void)
 static void RemapIndices(const ssize_t *map, const unsigned char *source,
   unsigned char *target)
 {
-  register ssize_t
+  ssize_t
     i;
 
   for (i = 0; i < 16; i++)
@@ -2024,7 +2024,7 @@ static size_t CompressAlpha(const size_t min, const size_t max,
   unsigned char
     codes[8];
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -2084,7 +2084,7 @@ static MagickBooleanType ConstructOrdering(const size_t count,
      dps[16],
      f;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -2413,7 +2413,7 @@ static void CompressRangeFit(const size_t count,
     half,
     dist;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -2502,7 +2502,7 @@ static void ComputeEndPoints(const DDSSingleColorLookup *lookup[],
   const unsigned char *color, DDSVector3 *start, DDSVector3 *end,
   unsigned char *index)
 {
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -2548,7 +2548,7 @@ static void ComputePrincipleComponent(const float *covariance,
     row2,
     v;
 
-  register ssize_t
+  ssize_t
     i;
 
   row0.x = covariance[0];
@@ -2661,7 +2661,7 @@ static void ComputeWeightedCovariance(const size_t count,
 static void WriteAlphas(Image *image, const ssize_t *alphas, size_t min5,
   size_t max5, size_t min7, size_t max7)
 {
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -2724,7 +2724,7 @@ static void WriteAlphas(Image *image, const ssize_t *alphas, size_t min5,
 static void WriteIndices(Image *image, const DDSVector3 start,
   const DDSVector3 end, unsigned char *indices)
 {
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -2805,7 +2805,7 @@ static void WriteSingleColorFit(Image *image, const DDSVector4 *points,
     start,
     end;
 
-  register ssize_t
+  ssize_t
     i;
 
   unsigned char
@@ -2831,7 +2831,7 @@ static void WriteFourCC(Image *image, const size_t compression,
   const MagickBooleanType clusterFit, const MagickBooleanType weightByAlpha,
   ExceptionInfo *exception)
 {
-  register ssize_t
+  ssize_t
     x;
 
   ssize_t
@@ -2840,7 +2840,7 @@ static void WriteFourCC(Image *image, const size_t compression,
     bx,
     by;
 
-  register const Quantum
+  const Quantum
     *p;
 
   for (y=0; y < (ssize_t) image->rows; y+=4)
@@ -2958,10 +2958,10 @@ static void WriteFourCC(Image *image, const size_t compression,
 
 static void WriteUncompressed(Image *image, ExceptionInfo *exception)
 {
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     x;
 
   ssize_t
@@ -3011,7 +3011,7 @@ static MagickBooleanType WriteMipmaps(Image *image,const ImageInfo *image_info,
     fast_mipmaps,
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -3081,7 +3081,7 @@ static void WriteDDSInfo(Image *image, const size_t pixelFormat,
   char
     software[MagickPathExtent];
 
-  register ssize_t
+  ssize_t
     i;
 
   unsigned int

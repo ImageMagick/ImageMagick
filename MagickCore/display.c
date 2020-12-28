@@ -1629,7 +1629,7 @@ MagickExport MagickBooleanType DisplayImages(const ImageInfo *image_info,
   Image
     *image;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -1843,10 +1843,10 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
   KeySym
     key_symbol;
 
-  register char
+  char
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   unsigned int
@@ -3301,10 +3301,10 @@ static MagickBooleanType XColorEditImage(Display *display,
     y,
     y_offset;
 
-  register Quantum
+  Quantum
     *q;
 
-  register ssize_t
+  ssize_t
     i;
 
   unsigned int
@@ -4278,10 +4278,10 @@ static MagickBooleanType XCompositeImage(Display *display,
       Quantum
         opacity;
 
-      register int
+      int
         x;
 
-      register Quantum
+      Quantum
         *q;
 
       /*
@@ -4596,7 +4596,7 @@ static MagickBooleanType XCropImage(Display *display,
     crop_info,
     highlight_info;
 
-  register Quantum
+  Quantum
     *q;
 
   unsigned int
@@ -5434,7 +5434,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
   RectangleInfo
     rectangle_info;
 
-  register int
+  int
     i;
 
   unsigned int
@@ -7099,7 +7099,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
   RectangleInfo
     page_geometry;
 
-  register int
+  int
     i;
 
   static char
@@ -8938,7 +8938,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         unique_file=close(unique_file)-1;
       else
         {
-          register const char
+          const char
             *p;
 
           file=fdopen(unique_file,"w");
@@ -9311,7 +9311,7 @@ static void XMagnifyImage(Display *display,XWindows *windows,XEvent *event,
   char
     text[MagickPathExtent];
 
-  register int
+  int
     x,
     y;
 
@@ -9670,10 +9670,10 @@ static MagickBooleanType XMatteEditImage(Display *display,
     y,
     y_offset;
 
-  register int
+  int
     i;
 
-  register Quantum
+  Quantum
     *q;
 
   unsigned int
@@ -10243,7 +10243,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
         count,
         status;
 
-      register int
+      int
         i,
         j;
 
@@ -10344,7 +10344,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
           char
             title[MagickPathExtent];
 
-          register int
+          int
             i;
 
           (void) FormatLocaleString(title,MagickPathExtent,
@@ -12049,7 +12049,7 @@ static MagickBooleanType XRotateImage(Display *display,
   double
     normalized_degrees;
 
-  register int
+  int
     i;
 
   unsigned int
@@ -12697,7 +12697,7 @@ extern "C" {
 
 static int XPredicate(Display *magick_unused(display),XEvent *event,char *data)
 {
-  register XWindows
+  XWindows
     *windows;
 
   windows=(XWindows *) data;
@@ -12714,7 +12714,7 @@ static int XPredicate(Display *magick_unused(display),XEvent *event,char *data)
 static void XScreenEvent(Display *display,XWindows *windows,XEvent *event,
   ExceptionInfo *exception)
 {
-  register int
+  int
     x,
     y;
 
@@ -13101,11 +13101,11 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
   double
     scale_factor;
 
-  register char
+  char
     *p,
     *q;
 
-  register int
+  int
     i;
 
   unsigned int
@@ -13244,10 +13244,10 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       PixelInfo
         pixel;
 
-      register int
+      int
         j;
 
-      register Quantum
+      Quantum
         *s;
 
       /*
@@ -13467,7 +13467,7 @@ static MagickBooleanType XTrimImage(Display *display,
   RectangleInfo
     trim_info;
 
-  register int
+  int
     x,
     y;
 
@@ -13630,7 +13630,7 @@ static Image *XVisualDirectoryImage(Display *display,
   RectangleInfo
     geometry;
 
-  register int
+  int
     i;
 
   static char
@@ -14456,7 +14456,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   RectangleInfo
     geometry_info;
 
-  register int
+  int
     i;
 
   static char

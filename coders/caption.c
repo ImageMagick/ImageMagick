@@ -113,7 +113,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     split,
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t

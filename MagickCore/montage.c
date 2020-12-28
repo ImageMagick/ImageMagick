@@ -363,7 +363,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   MagickStatusType
     flags;
 
-  register ssize_t
+  ssize_t
     i;
 
   RectangleInfo

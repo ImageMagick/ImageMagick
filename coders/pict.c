@@ -329,13 +329,13 @@ static const unsigned char *UnpackScanline(
   const unsigned char *magick_restrict pixels,const unsigned int bits_per_pixel,
   unsigned char *scanline,MagickSizeType *bytes_per_line)
 {
-  register const unsigned char
+  const unsigned char
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
-  register unsigned char
+  unsigned char
     *q;
 
   p=pixels;
@@ -402,13 +402,13 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
   MagickSizeType
     number_pixels;
 
-  register const unsigned char
+  const unsigned char
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
-  register unsigned char
+  unsigned char
     *q;
 
   size_t
@@ -586,13 +586,13 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
 #define MaxCount  128
 #define MaxPackbitsRunlength  128
 
-  register const unsigned char
+  const unsigned char
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
-  register unsigned char
+  unsigned char
     *q;
 
   size_t
@@ -857,10 +857,10 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   Quantum
     index;
 
-  register Quantum
+  Quantum
     *q;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
@@ -1143,7 +1143,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               source,
               destination;
 
-            register unsigned char
+            unsigned char
               *p;
 
             size_t
@@ -1688,10 +1688,10 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
     size_rectangle,
     source_rectangle;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
@@ -2056,7 +2056,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
       }
     else
       {
-        register unsigned char
+        unsigned char
           *blue,
           *green,
           *opacity,

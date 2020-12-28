@@ -220,7 +220,7 @@ MagickPrivate XMLTreeInfo *AddPathToXMLTree(XMLTreeInfo *xml_info,
     subnode[MagickPathExtent],
     tag[MagickPathExtent];
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -304,10 +304,10 @@ MagickPrivate char *CanonicalXMLContent(const char *content,
     *base64,
     *canonical_content;
 
-  register const unsigned char
+  const unsigned char
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -438,7 +438,7 @@ MagickPrivate char *CanonicalXMLContent(const char *content,
 
 static char **DestroyXMLTreeAttributes(char **attributes)
 {
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -497,7 +497,7 @@ static void DestroyXMLTreeRoot(XMLTreeInfo *xml_info)
   char
     **attributes;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -607,7 +607,7 @@ MagickPrivate char *FileToXML(const char *filename,const size_t extent)
   MagickOffsetType
     offset;
 
-  register size_t
+  size_t
     i;
 
   size_t
@@ -779,7 +779,7 @@ MagickExport XMLTreeInfo *GetNextXMLTreeTag(XMLTreeInfo *xml_info)
 MagickExport const char *GetXMLTreeAttribute(XMLTreeInfo *xml_info,
   const char *tag)
 {
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -848,7 +848,7 @@ MagickExport const char *GetXMLTreeAttribute(XMLTreeInfo *xml_info,
 MagickPrivate MagickBooleanType GetXMLTreeAttributes(
   const XMLTreeInfo *xml_info,SplayTreeInfo *attributes)
 {
-  register ssize_t
+  ssize_t
     i;
 
   assert(xml_info != (XMLTreeInfo *) NULL);
@@ -1008,7 +1008,7 @@ MagickPrivate XMLTreeInfo *GetXMLTreePath(XMLTreeInfo *xml_info,
     subnode[MagickPathExtent],
     tag[MagickPathExtent];
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -1079,7 +1079,7 @@ MagickPrivate XMLTreeInfo *GetXMLTreePath(XMLTreeInfo *xml_info,
 MagickPrivate const char **GetXMLTreeProcessingInstructions(
   XMLTreeInfo *xml_info,const char *target)
 {
-  register ssize_t
+  ssize_t
     i;
 
   XMLTreeRoot
@@ -1298,7 +1298,7 @@ static char *ConvertUTF16ToUTF8(const char *content,size_t *length)
     c,
     encoding;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -1377,11 +1377,11 @@ static char *ParseEntities(char *xml,char **entities,int state)
     byte,
     c;
 
-  register char
+  char
     *p,
     *q;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -1588,7 +1588,7 @@ static XMLTreeInfo *ParseCloseTag(XMLTreeRoot *root,char *tag,
 static MagickBooleanType ValidateEntities(char *tag,char *xml,
   const size_t depth,char **entities)
 {
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -1620,7 +1620,7 @@ static void ParseProcessingInstructions(XMLTreeRoot *root,char *xml,
   char
     *target;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -1701,7 +1701,7 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
     *t,
     *v;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -1940,7 +1940,7 @@ static const char
 
 static inline MagickBooleanType IsSkipTag(const char *tag)
 {
-  register ssize_t
+  ssize_t
     i;
 
   i=0;
@@ -1968,10 +1968,10 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  register char
+  char
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -2492,7 +2492,7 @@ MagickPrivate XMLTreeInfo *PruneTagFromXMLTree(XMLTreeInfo *xml_info)
 MagickPrivate XMLTreeInfo *SetXMLTreeAttribute(XMLTreeInfo *xml_info,
   const char *tag,const char *value)
 {
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -2661,7 +2661,7 @@ static char *XMLTreeTagToXML(XMLTreeInfo *xml_info,char **source,size_t *length,
   const char
     *attribute;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -2763,11 +2763,11 @@ MagickExport char *XMLTreeInfoToXML(XMLTreeInfo *xml_info)
   char
     *xml;
 
-  register char
+  char
     *p,
     *q;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t

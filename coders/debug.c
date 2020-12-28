@@ -181,10 +181,10 @@ static MagickBooleanType WriteDEBUGImage(const ImageInfo *image_info,
   PixelInfo
     pixel;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     x;
 
   size_t

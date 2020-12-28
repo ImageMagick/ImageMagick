@@ -109,7 +109,7 @@ static inline MagickBooleanType InvokeGhostscriptDelegate(
     argc,
     code;
 
-  register ssize_t
+  ssize_t
     i;
 
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
@@ -226,7 +226,7 @@ static inline void ReadGhostScriptXMPProfile(MagickByteBuffer *buffer,
     found_end,
     status;
 
-  register char
+  char
     *p;
 
   size_t

@@ -124,13 +124,13 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   Quantum
     index;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register Quantum
+  Quantum
     *q;
 
-  register unsigned char
+  unsigned char
     *p;
 
   ssize_t
@@ -419,13 +419,13 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
   MemoryInfo
     *pixel_info;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register unsigned char
+  unsigned char
     *q;
 
   size_t

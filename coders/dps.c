@@ -113,13 +113,13 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Pixmap
     pixmap;
 
-  register ssize_t
+  ssize_t
     i;
 
-  register Quantum
+  Quantum
     *q;
 
-  register size_t
+  size_t
     pixel;
 
   Screen
@@ -338,7 +338,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     case DirectClass:
     default:
     {
-      register size_t
+      size_t
         color,
         index;
 

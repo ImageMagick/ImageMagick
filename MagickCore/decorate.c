@@ -191,7 +191,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     shadow,
     trough;
 
-  register ssize_t
+  ssize_t
     x;
 
   size_t
@@ -285,10 +285,10 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     frame_info->inner_bevel);
   if (height != 0)
     {
-      register ssize_t
+      ssize_t
         x;
 
-      register Quantum
+      Quantum
         *magick_restrict q;
 
       /*
@@ -387,10 +387,10 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register ssize_t
+    ssize_t
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     size_t
@@ -467,10 +467,10 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     frame_info->y-image->rows-bevel_width+frame_info->outer_bevel);
   if (height != 0)
     {
-      register ssize_t
+      ssize_t
         x;
 
-      register Quantum
+      Quantum
         *magick_restrict q;
 
       /*
@@ -663,11 +663,11 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) raise_info->height; y++)
   {
-    register ssize_t
+    ssize_t
       i,
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     if (status == MagickFalse)
@@ -739,11 +739,11 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
 #endif
   for (y=(ssize_t) raise_info->height; y < (ssize_t) (image->rows-raise_info->height); y++)
   {
-    register ssize_t
+    ssize_t
       i,
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     if (status == MagickFalse)
@@ -804,11 +804,11 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
 #endif
   for (y=(ssize_t) (image->rows-raise_info->height); y < (ssize_t) image->rows; y++)
   {
-    register ssize_t
+    ssize_t
       i,
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     if (status == MagickFalse)

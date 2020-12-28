@@ -243,14 +243,14 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
       channel_bias[MaxPixelChannels],
       channel_sum[MaxPixelChannels];
 
-    register const Quantum
+    const Quantum
       *magick_restrict p,
       *magick_restrict pixels;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       i,
       x;
 
@@ -404,7 +404,7 @@ static double KapurThreshold(const Image *image,const double *histogram,
     maximum_entropy,
     *white_entropy;
 
-  register ssize_t
+  ssize_t
     i,
     j;
 
@@ -501,7 +501,7 @@ static double OTSUThreshold(const Image *image,const double *histogram,
     *sigma,
     threshold;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -585,7 +585,7 @@ static double TriangleThreshold(const double *histogram)
     y1,
     y2;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -677,7 +677,7 @@ MagickExport MagickBooleanType AutoThresholdImage(Image *image,
   MagickBooleanType
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -700,10 +700,10 @@ MagickExport MagickBooleanType AutoThresholdImage(Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register ssize_t
+    ssize_t
       x;
 
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
@@ -841,10 +841,10 @@ MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register ssize_t
+    ssize_t
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     if (status == MagickFalse)
@@ -860,7 +860,7 @@ MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold,
       double
         pixel;
 
-      register ssize_t
+      ssize_t
         i;
 
       pixel=GetPixelIntensity(image,q);
@@ -1002,10 +1002,10 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register ssize_t
+    ssize_t
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     if (status == MagickFalse)
@@ -1021,7 +1021,7 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
       double
         pixel;
 
-      register ssize_t
+      ssize_t
         i;
 
       pixel=GetPixelIntensity(image,q);
@@ -1108,10 +1108,10 @@ MagickExport MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == PseudoClass)
     {
-      register ssize_t
+      ssize_t
         i;
 
-      register PixelInfo
+      PixelInfo
         *magick_restrict q;
 
       q=image->colormap;
@@ -1137,10 +1137,10 @@ MagickExport MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register ssize_t
+    ssize_t
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     if (status == MagickFalse)
@@ -1153,7 +1153,7 @@ MagickExport MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
@@ -1325,10 +1325,10 @@ MagickExport MagickBooleanType ColorThresholdImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register ssize_t
+    ssize_t
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     if (status == MagickFalse)
@@ -1344,7 +1344,7 @@ MagickExport MagickBooleanType ColorThresholdImage(Image *image,
       MagickBooleanType
         foreground = MagickTrue;
 
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
@@ -1519,7 +1519,7 @@ static ThresholdMap *GetThresholdMapFile(const char *xml,const char *filename,
   double
     value;
 
-  register ssize_t
+  ssize_t
     i;
 
   ThresholdMap
@@ -1896,7 +1896,7 @@ MagickExport MagickBooleanType OrderedDitherImage(Image *image,
   MagickOffsetType
     progress;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -1964,10 +1964,10 @@ MagickExport MagickBooleanType OrderedDitherImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register ssize_t
+    ssize_t
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     if (status == MagickFalse)
@@ -1980,7 +1980,7 @@ MagickExport MagickBooleanType OrderedDitherImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       ssize_t
@@ -2098,10 +2098,10 @@ MagickExport MagickBooleanType PerceptibleImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == PseudoClass)
     {
-      register ssize_t
+      ssize_t
         i;
 
-      register PixelInfo
+      PixelInfo
         *magick_restrict q;
 
       q=image->colormap;
@@ -2131,10 +2131,10 @@ MagickExport MagickBooleanType PerceptibleImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register ssize_t
+    ssize_t
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     if (status == MagickFalse)
@@ -2147,7 +2147,7 @@ MagickExport MagickBooleanType PerceptibleImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
@@ -2265,10 +2265,10 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
     const int
       id = GetOpenMPThreadId();
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -2281,7 +2281,7 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
@@ -2399,10 +2399,10 @@ MagickExport MagickBooleanType RangeThresholdImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register ssize_t
+    ssize_t
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     if (status == MagickFalse)
@@ -2418,7 +2418,7 @@ MagickExport MagickBooleanType RangeThresholdImage(Image *image,
       double
         pixel;
 
-      register ssize_t
+      ssize_t
         i;
 
       pixel=GetPixelIntensity(image,q);
@@ -2577,10 +2577,10 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register ssize_t
+    ssize_t
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     if (status == MagickFalse)
@@ -2596,7 +2596,7 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
       double
         pixel;
 
-      register ssize_t
+      ssize_t
         i;
 
       pixel=GetPixelIntensity(image,q);

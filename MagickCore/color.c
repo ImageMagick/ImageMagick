@@ -839,7 +839,7 @@ static LinkedListInfo *AcquireColorCache(const char *filename,
   MagickStatusType
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -874,7 +874,7 @@ static LinkedListInfo *AcquireColorCache(const char *filename,
     ColorInfo
       *color_info;
 
-    register const ColormapInfo
+    const ColormapInfo
       *p;
 
     p=Colormap+i;
@@ -950,7 +950,7 @@ MagickPrivate MagickBooleanType ColorComponentGenesis(void)
 
 static void *DestroyColorElement(void *color_info)
 {
-  register ColorInfo
+  ColorInfo
     *p;
 
   p=(ColorInfo *) color_info;
@@ -1010,10 +1010,10 @@ MagickExport const ColorInfo *GetColorCompliance(const char *name,
   char
     colorname[MagickPathExtent];
 
-  register const ColorInfo
+  const ColorInfo
     *p;
 
-  register char
+  char
     *q;
 
   assert(exception != (ExceptionInfo *) NULL);
@@ -1285,10 +1285,10 @@ MagickExport const ColorInfo **GetColorInfoList(const char *pattern,
   const ColorInfo
     **colors;
 
-  register const ColorInfo
+  const ColorInfo
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -1359,7 +1359,7 @@ extern "C" {
 
 static int ColorCompare(const void *x,const void *y)
 {
-  register const char
+  const char
     **p,
     **q;
 
@@ -1378,10 +1378,10 @@ MagickExport char **GetColorList(const char *pattern,
   char
     **colors;
 
-  register const ColorInfo
+  const ColorInfo
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -1650,7 +1650,7 @@ MagickPrivate MagickBooleanType IsEquivalentAlpha(const Image *image,
     fuzz,
     pixel;
 
-  register double
+  double
     distance;
 
   if (image->alpha_trait == UndefinedPixelTrait)
@@ -1718,11 +1718,11 @@ MagickExport MagickBooleanType IsEquivalentImage(const Image *image,
     target,
     pixel;
 
-  register const Quantum
+  const Quantum
     *p,
     *q;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
@@ -1827,7 +1827,7 @@ MagickPrivate MagickBooleanType IsEquivalentIntensity(const Image *image,
     fuzz,
     pixel;
 
-  register double
+  double
     distance;
 
   if (GetPixelInfoIntensity(image,p) == GetPixelInfoIntensity(image,q))
@@ -1879,7 +1879,7 @@ MagickExport MagickBooleanType ListColorInfo(FILE *file,
   const ColorInfo
     **color_info;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -2184,7 +2184,7 @@ static MagickStatusType ParseCSSColor(const char *magick_restrict color,
   char
     *q;
 
-  register ssize_t
+  ssize_t
     i;
 
   MagickStatusType
@@ -2274,10 +2274,10 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
   MagickStatusType
     flags;
 
-  register const ColorInfo
+  const ColorInfo
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -2418,7 +2418,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
       if ((LocaleCompare(colorspace,"color") == 0) ||
           (LocaleCompare(colorspace,"icc-color") == 0))
         {
-          register ssize_t
+          ssize_t
             j;
 
           (void) CopyMagickString(colorspace,name+i+2,MagickPathExtent);
@@ -2661,7 +2661,7 @@ MagickExport MagickBooleanType QueryColorname(
   double
     alpha;
 
-  register const ColorInfo
+  const ColorInfo
     *p;
 
   magick_unreferenced(image);

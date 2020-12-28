@@ -341,10 +341,10 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
     p_a=heif_image_get_plane_readonly(heif_image,heif_channel_Alpha,&stride_a);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *q;
 
-    register ssize_t
+    ssize_t
       x;
 
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -459,7 +459,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   count=(size_t) heif_context_get_number_of_top_level_images(heif_context);
   if ((status != MagickFalse) && (count > 1))
     {
-      register size_t
+      size_t
         i;
 
       image_ids=(heif_item_id *) AcquireQuantumMemory((size_t) count,
@@ -759,7 +759,7 @@ static void WriteProfile(struct heif_context *context,Image *image,
   const StringInfo
     *profile;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -894,10 +894,10 @@ static MagickBooleanType WriteHEICImageYCbCr(Image *image,
   */
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *p;
 
-    register ssize_t
+    ssize_t
       x;
 
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -970,7 +970,7 @@ static MagickBooleanType WriteHEICImageRGBA(Image *image,
   */
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register ssize_t
+    ssize_t
       x;
 
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);

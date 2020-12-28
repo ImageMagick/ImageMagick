@@ -157,7 +157,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       char
         primitive[MagickPathExtent];
 
-      register char
+      char
         *p;
 
       SegmentInfo

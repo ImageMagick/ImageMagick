@@ -176,7 +176,7 @@ static inline unsigned char *PopFloatPixel(QuantumInfo *quantum_info,
 static inline unsigned char *PopQuantumPixel(QuantumInfo *quantum_info,
   const QuantumAny pixel,unsigned char *magick_restrict pixels)
 {
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -209,7 +209,7 @@ static inline unsigned char *PopQuantumPixel(QuantumInfo *quantum_info,
 static inline unsigned char *PopQuantumLongPixel(QuantumInfo *quantum_info,
   const size_t pixel,unsigned char *magick_restrict pixels)
 {
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -245,7 +245,7 @@ static void ExportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(exception != (ExceptionInfo *) NULL);
@@ -255,7 +255,7 @@ static void ExportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
   {
     case 8:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=0; x < (ssize_t) number_pixels; x++)
@@ -269,7 +269,7 @@ static void ExportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 16:
     {
-      register unsigned short
+      unsigned short
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -294,7 +294,7 @@ static void ExportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 32:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -351,7 +351,7 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   ssize_t
@@ -376,7 +376,7 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 10:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       range=GetQuantumRange(quantum_info->depth);
@@ -425,7 +425,7 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 12:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       range=GetQuantumRange(quantum_info->depth);
@@ -549,7 +549,7 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 16:
     {
-      register unsigned short
+      unsigned short
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -582,7 +582,7 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 32:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -651,7 +651,7 @@ static void ExportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(exception != (ExceptionInfo *) NULL);
@@ -660,7 +660,7 @@ static void ExportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
   {
     case 8:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=0; x < (ssize_t) number_pixels; x++)
@@ -680,13 +680,13 @@ static void ExportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 10:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       range=GetQuantumRange(quantum_info->depth);
       if (quantum_info->pack == MagickFalse)
         {
-          register ssize_t
+          ssize_t
             i;
 
           size_t
@@ -775,7 +775,7 @@ static void ExportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 16:
     {
-      register unsigned short
+      unsigned short
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -812,7 +812,7 @@ static void ExportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 32:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -895,7 +895,7 @@ static void ExportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(exception != (ExceptionInfo *) NULL);
@@ -904,7 +904,7 @@ static void ExportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
   {
     case 8:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=0; x < (ssize_t) number_pixels; x++)
@@ -924,13 +924,13 @@ static void ExportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 10:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       range=GetQuantumRange(quantum_info->depth);
       if (quantum_info->pack == MagickFalse)
         {
-          register ssize_t
+          ssize_t
             i;
 
           size_t
@@ -1019,7 +1019,7 @@ static void ExportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 16:
     {
-      register unsigned short
+      unsigned short
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1056,7 +1056,7 @@ static void ExportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 32:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1139,7 +1139,7 @@ static void ExportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   if (image->colorspace != CMYKColorspace)
@@ -1152,7 +1152,7 @@ static void ExportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
   {
     case 8:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=0; x < (ssize_t) number_pixels; x++)
@@ -1166,7 +1166,7 @@ static void ExportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 16:
     {
-      register unsigned short
+      unsigned short
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1191,7 +1191,7 @@ static void ExportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 32:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1248,7 +1248,7 @@ static void ExportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(exception != (ExceptionInfo *) NULL);
@@ -1257,7 +1257,7 @@ static void ExportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
   {
     case 8:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=0; x < (ssize_t) number_pixels; x++)
@@ -1271,7 +1271,7 @@ static void ExportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 16:
     {
-      register unsigned short
+      unsigned short
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1296,7 +1296,7 @@ static void ExportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 32:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1353,11 +1353,11 @@ static void ExportCbYCrYQuantum(const Image *image,QuantumInfo *quantum_info,
   Quantum
     cbcr[4];
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
-  register unsigned int
+  unsigned int
     pixel;
 
   size_t
@@ -1465,7 +1465,7 @@ static void ExportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const Quantum *magick_restrict p,
   unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
-  register ssize_t
+  ssize_t
     x;
 
   if (image->colorspace != CMYKColorspace)
@@ -1478,7 +1478,7 @@ static void ExportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
   {
     case 8:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=0; x < (ssize_t) number_pixels; x++)
@@ -1498,7 +1498,7 @@ static void ExportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 16:
     {
-      register unsigned short
+      unsigned short
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1535,7 +1535,7 @@ static void ExportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 32:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1610,7 +1610,7 @@ static void ExportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const Quantum *magick_restrict p,
   unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
-  register ssize_t
+  ssize_t
     x;
 
   if (image->colorspace != CMYKColorspace)
@@ -1623,7 +1623,7 @@ static void ExportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
   {
     case 8:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=0; x < (ssize_t) number_pixels; x++)
@@ -1645,7 +1645,7 @@ static void ExportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 16:
     {
-      register unsigned short
+      unsigned short
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1686,7 +1686,7 @@ static void ExportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 32:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1775,7 +1775,7 @@ static void ExportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const Quantum *magick_restrict p,
   unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
-  register ssize_t
+  ssize_t
     x;
 
   if (image->colorspace != CMYKColorspace)
@@ -1788,7 +1788,7 @@ static void ExportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
   {
     case 8:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=0; x < (ssize_t) number_pixels; x++)
@@ -1810,7 +1810,7 @@ static void ExportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 16:
     {
-      register unsigned short
+      unsigned short
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1851,7 +1851,7 @@ static void ExportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 32:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -1943,7 +1943,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(exception != (ExceptionInfo *) NULL);
@@ -1952,10 +1952,10 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
   {
     case 1:
     {
-      register double
+      double
         threshold;
 
-      register unsigned char
+      unsigned char
         black,
         white;
 
@@ -2005,7 +2005,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 4:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=0; x < (ssize_t) (number_pixels-1) ; x+=2)
@@ -2029,7 +2029,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 8:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=0; x < (ssize_t) number_pixels; x++)
@@ -2046,7 +2046,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
       range=GetQuantumRange(quantum_info->depth);
       if (quantum_info->pack == MagickFalse)
         {
-          register unsigned int
+          unsigned int
             pixel;
 
           for (x=0; x < (ssize_t) (number_pixels-2); x+=3)
@@ -2084,7 +2084,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 12:
     {
-      register unsigned short
+      unsigned short
         pixel;
 
       range=GetQuantumRange(quantum_info->depth);
@@ -2111,7 +2111,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 16:
     {
-      register unsigned short
+      unsigned short
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -2136,7 +2136,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 32:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -2201,7 +2201,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(exception != (ExceptionInfo *) NULL);
@@ -2210,10 +2210,10 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
   {
     case 1:
     {
-      register double
+      double
         threshold;
 
-      register unsigned char
+      unsigned char
         black,
         pixel,
         white;
@@ -2273,7 +2273,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 4:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=0; x < (ssize_t) number_pixels ; x++)
@@ -2289,7 +2289,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 8:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=0; x < (ssize_t) number_pixels; x++)
@@ -2305,7 +2305,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 16:
     {
-      register unsigned short
+      unsigned short
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -2334,7 +2334,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 32:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -2407,7 +2407,7 @@ static void ExportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(exception != (ExceptionInfo *) NULL);
@@ -2416,7 +2416,7 @@ static void ExportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
   {
     case 8:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=0; x < (ssize_t) number_pixels; x++)
@@ -2430,7 +2430,7 @@ static void ExportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 16:
     {
-      register unsigned short
+      unsigned short
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -2455,7 +2455,7 @@ static void ExportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 32:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -2509,7 +2509,7 @@ static void ExportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const Quantum *magick_restrict p,
   unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
-  register ssize_t
+  ssize_t
     x;
 
   ssize_t
@@ -2525,7 +2525,7 @@ static void ExportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
   {
     case 1:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=((ssize_t) number_pixels-7); x > 0; x-=8)
@@ -2571,7 +2571,7 @@ static void ExportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 4:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=0; x < (ssize_t) (number_pixels-1) ; x+=2)
@@ -2677,7 +2677,7 @@ static void ExportIndexAlphaQuantum(const Image *image,
   const Quantum *magick_restrict p,unsigned char *magick_restrict q,
   ExceptionInfo *exception)
 {
-  register ssize_t
+  ssize_t
     x;
 
   ssize_t
@@ -2693,7 +2693,7 @@ static void ExportIndexAlphaQuantum(const Image *image,
   {
     case 1:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=((ssize_t) number_pixels-3); x > 0; x-=4)
@@ -2742,7 +2742,7 @@ static void ExportIndexAlphaQuantum(const Image *image,
     }
     case 4:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=0; x < (ssize_t) number_pixels ; x++)
@@ -2758,7 +2758,7 @@ static void ExportIndexAlphaQuantum(const Image *image,
     }
     case 8:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=0; x < (ssize_t) number_pixels; x++)
@@ -2773,7 +2773,7 @@ static void ExportIndexAlphaQuantum(const Image *image,
     }
     case 16:
     {
-      register unsigned short
+      unsigned short
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -2802,7 +2802,7 @@ static void ExportIndexAlphaQuantum(const Image *image,
     }
     case 32:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -2875,7 +2875,7 @@ static void ExportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(exception != (ExceptionInfo *) NULL);
@@ -2884,7 +2884,7 @@ static void ExportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
   {
     case 8:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=0; x < (ssize_t) number_pixels; x++)
@@ -2898,7 +2898,7 @@ static void ExportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 16:
     {
-      register unsigned short
+      unsigned short
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -2923,7 +2923,7 @@ static void ExportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 32:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -2980,7 +2980,7 @@ static void ExportRedQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(exception != (ExceptionInfo *) NULL);
@@ -2989,7 +2989,7 @@ static void ExportRedQuantum(const Image *image,QuantumInfo *quantum_info,
   {
     case 8:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=0; x < (ssize_t) number_pixels; x++)
@@ -3003,7 +3003,7 @@ static void ExportRedQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 16:
     {
-      register unsigned short
+      unsigned short
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -3028,7 +3028,7 @@ static void ExportRedQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 32:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -3085,7 +3085,7 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   ssize_t
@@ -3109,7 +3109,7 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 10:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       range=GetQuantumRange(quantum_info->depth);
@@ -3158,7 +3158,7 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 12:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       range=GetQuantumRange(quantum_info->depth);
@@ -3282,7 +3282,7 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 16:
     {
-      register unsigned short
+      unsigned short
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -3315,7 +3315,7 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 32:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -3384,7 +3384,7 @@ static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(exception != (ExceptionInfo *) NULL);
@@ -3393,7 +3393,7 @@ static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
   {
     case 8:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=0; x < (ssize_t) number_pixels; x++)
@@ -3413,13 +3413,13 @@ static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 10:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       range=GetQuantumRange(quantum_info->depth);
       if (quantum_info->pack == MagickFalse)
         {
-          register ssize_t
+          ssize_t
             i;
 
           size_t
@@ -3508,7 +3508,7 @@ static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 16:
     {
-      register unsigned short
+      unsigned short
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -3545,7 +3545,7 @@ static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 32:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -3628,7 +3628,7 @@ static void ExportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  register ssize_t
+  ssize_t
     x;
 
   assert(exception != (ExceptionInfo *) NULL);
@@ -3637,7 +3637,7 @@ static void ExportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
   {
     case 8:
     {
-      register unsigned char
+      unsigned char
         pixel;
 
       for (x=0; x < (ssize_t) number_pixels; x++)
@@ -3657,13 +3657,13 @@ static void ExportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 10:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       range=GetQuantumRange(quantum_info->depth);
       if (quantum_info->pack == MagickFalse)
         {
-          register ssize_t
+          ssize_t
             i;
 
           size_t
@@ -3752,7 +3752,7 @@ static void ExportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 16:
     {
-      register unsigned short
+      unsigned short
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -3789,7 +3789,7 @@ static void ExportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 32:
     {
-      register unsigned int
+      unsigned int
         pixel;
 
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -3873,13 +3873,13 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
   MagickSizeType
     number_pixels;
 
-  register const Quantum
+  const Quantum
     *magick_restrict p;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register unsigned char
+  unsigned char
     *magick_restrict q;
 
   size_t
@@ -3908,7 +3908,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
       double
         Sa;
 
-      register Quantum
+      Quantum
         *magick_restrict q;
 
       /*
@@ -3920,7 +3920,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         q=GetAuthenticPixelQueue(image);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        register ssize_t
+        ssize_t
           i;
 
         Sa=QuantumScale*GetPixelAlpha(image,q);
@@ -3940,7 +3940,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
       Quantum
         quantum;
 
-      register Quantum
+      Quantum
         *magick_restrict q;
 
       if (image_view != (CacheView *) NULL)
@@ -4073,7 +4073,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
       Quantum
         quantum;
 
-      register Quantum
+      Quantum
         *magick_restrict q;
 
       if (image_view != (CacheView *) NULL)

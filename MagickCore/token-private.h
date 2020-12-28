@@ -57,10 +57,10 @@ static inline unsigned char *ConvertLatin1ToUTF8(
   int
     c;
 
-  register const unsigned char
+  const unsigned char
     *magick_restrict p;
 
-  register unsigned char
+  unsigned char
     *magick_restrict q;
 
   size_t
@@ -99,10 +99,10 @@ static inline int GetNextUTFCode(const char *magick_restrict text,
   int
     code;
 
-  register ssize_t
+  ssize_t
     i;
 
-  register int
+  int
     c,
     unicode;
 

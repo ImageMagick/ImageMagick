@@ -57,7 +57,7 @@ static inline void CompositePixelOver(const Image *image,const PixelInfo *p,
     gamma,
     Sa;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*

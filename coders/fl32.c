@@ -242,7 +242,7 @@ static Image *ReadFL32Image(const ImageInfo *image_info,
     const void
       *stream;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -370,7 +370,7 @@ static MagickBooleanType WriteFL32Image(const ImageInfo *image_info,
   QuantumType
     quantum_type;
 
-  register const Quantum
+  const Quantum
     *p;
 
   size_t

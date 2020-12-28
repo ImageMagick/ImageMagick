@@ -45,7 +45,7 @@ static inline MagickBooleanType GetColorRange(const char *color,
 
   if (*color != '\0')
     {
-      register char
+      char
         *p;
 
       (void) CopyMagickString(start_color,color,MagickPathExtent);

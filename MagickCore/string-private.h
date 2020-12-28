@@ -57,7 +57,7 @@ static inline const char *StringLocateSubstring(const char *haystack,
       length_needle,
       length_haystack;
 
-    register size_t
+    size_t
       i;
 
     if (!haystack || !needle)
@@ -66,7 +66,7 @@ static inline const char *StringLocateSubstring(const char *haystack,
     length_haystack=strlen(haystack)-length_needle+1;
     for (i=0; i < length_haystack; i++)
     {
-      register size_t
+      size_t
         j;
 
       for (j=0; j < length_needle; j++)

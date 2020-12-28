@@ -152,7 +152,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
   MagickOffsetType
     progress;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -257,13 +257,13 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
 #endif
   for (y=0; y < (ssize_t) blur_image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict r;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -278,10 +278,10 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
       }
     for (x=0; x < (ssize_t) blur_image->columns; x++)
     {
-      register const Quantum
+      const Quantum
         *magick_restrict p;
 
-      register ssize_t
+      ssize_t
         i;
 
       ssize_t
@@ -317,13 +317,13 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
           blur_traits,
           traits;
 
-        register const double
+        const double
           *magick_restrict k;
 
-        register const Quantum
+        const Quantum
           *magick_restrict pixels;
 
-        register ssize_t
+        ssize_t
           u;
 
         ssize_t
@@ -473,7 +473,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
   MagickOffsetType
     progress;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -578,13 +578,13 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
 #endif
   for (y=0; y < (ssize_t) sharp_image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict r;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -599,10 +599,10 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
       }
     for (x=0; x < (ssize_t) sharp_image->columns; x++)
     {
-      register const Quantum
+      const Quantum
         *magick_restrict p;
 
-      register ssize_t
+      ssize_t
         i;
 
       ssize_t
@@ -638,13 +638,13 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
           sharp_traits,
           traits;
 
-        register const double
+        const double
           *magick_restrict k;
 
-        register const Quantum
+        const Quantum
           *magick_restrict pixels;
 
-        register ssize_t
+        ssize_t
           u;
 
         ssize_t
@@ -863,7 +863,7 @@ static inline double BlurGaussian(const double x,const double sigma)
 static double **DestroyBilateralThreadSet(const ssize_t number_threads,
   double **weights)
 {
-  register ssize_t
+  ssize_t
     i;
 
   assert(weights != (double **) NULL);
@@ -880,7 +880,7 @@ static double **AcquireBilateralThreadSet(const size_t number_threads,
   double
     **weights;
 
-  register ssize_t
+  ssize_t
     i;
 
   weights=(double **) AcquireQuantumMemory(number_threads+1,sizeof(*weights));
@@ -924,7 +924,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
   OffsetInfo
     mid;
 
-  register ssize_t
+  ssize_t
     u;
 
   ssize_t
@@ -983,10 +983,10 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
     const int
       id = GetOpenMPThreadId();
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -1004,11 +1004,11 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
         gamma,
         pixel;
 
-      register const Quantum
+      const Quantum
         *magick_restrict p,
         *magick_restrict r;
 
-      register ssize_t
+      ssize_t
         i,
         u;
 
@@ -1218,7 +1218,7 @@ static void Hull(const Image *image,const ssize_t x_offset,
   const ssize_t y_offset,const size_t columns,const size_t rows,
   const int polarity,Quantum *magick_restrict f,Quantum *magick_restrict g)
 {
-  register Quantum
+  Quantum
     *p,
     *q,
     *r,
@@ -1245,7 +1245,7 @@ static void Hull(const Image *image,const ssize_t x_offset,
     MagickRealType
       v;
 
-    register ssize_t
+    ssize_t
       i,
       x;
 
@@ -1279,7 +1279,7 @@ static void Hull(const Image *image,const ssize_t x_offset,
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
-    register ssize_t
+    ssize_t
       i,
       x;
 
@@ -1332,7 +1332,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     *magick_restrict buffer,
     *magick_restrict pixels;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -1398,7 +1398,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
       despeckle_traits,
       traits;
 
-    register ssize_t
+    ssize_t
       k,
       x;
 
@@ -1420,7 +1420,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     j=(ssize_t) image->columns+2;
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      register const Quantum
+      const Quantum
         *magick_restrict p;
 
       p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
@@ -1451,7 +1451,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
       MagickBooleanType
         sync;
 
-      register Quantum
+      Quantum
         *magick_restrict q;
 
       q=GetCacheViewAuthenticPixels(despeckle_view,0,y,despeckle_image->columns,
@@ -1531,7 +1531,7 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
   KernelInfo
     *kernel_info;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -1615,7 +1615,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   KernelInfo
     *kernel_info;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -1840,10 +1840,10 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
 #endif
   for (y=0; y < (ssize_t) gaussian_image->rows; y++)
   {
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -1867,7 +1867,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
         quadrant,
         target;
 
-      register size_t
+      size_t
         i;
 
       min_variance=MagickMaximumValue;
@@ -1883,7 +1883,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
           mean[MaxPixelChannels],
           variance;
 
-        register ssize_t
+        ssize_t
           n;
 
         ssize_t
@@ -2120,7 +2120,7 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
         *pix,
         *pixels;
 
-      register ssize_t
+      ssize_t
         y;
 
       ssize_t
@@ -2198,10 +2198,10 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
         *pix,
         *pixels;
 
-      register Quantum
+      Quantum
         *magick_restrict q;
 
-      register ssize_t
+      ssize_t
         x;
 
       ssize_t
@@ -2323,7 +2323,7 @@ static MagickRealType *GetMotionBlurKernel(const size_t width,
     *kernel,
     normalize;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -2374,7 +2374,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   PointInfo
     point;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -2444,13 +2444,13 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -2465,7 +2465,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
@@ -2482,13 +2482,13 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
           blur_traits,
           traits;
 
-        register const Quantum
+        const Quantum
           *magick_restrict r;
 
-        register MagickRealType
+        MagickRealType
           *magick_restrict k;
 
-        register ssize_t
+        ssize_t
           j;
 
         channel=GetPixelChannelChannel(image,i);
@@ -2639,7 +2639,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
   RectangleInfo
     geometry;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
@@ -3162,7 +3162,7 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
   PointInfo
     blur_center;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -3232,13 +3232,13 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -3259,7 +3259,7 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
       PointInfo
         center;
 
-      register ssize_t
+      ssize_t
         i;
 
       size_t
@@ -3292,10 +3292,10 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
           blur_traits,
           traits;
 
-        register const Quantum
+        const Quantum
           *magick_restrict r;
 
-        register ssize_t
+        ssize_t
           j;
 
         channel=GetPixelChannelChannel(image,i);
@@ -3440,7 +3440,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
   MagickRealType
     *kernel;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -3481,7 +3481,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
         format[MagickPathExtent],
         *message;
 
-      register const MagickRealType
+      const MagickRealType
         *k;
 
       ssize_t
@@ -3554,14 +3554,14 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
     MagickBooleanType
       sync;
 
-    register const Quantum
+    const Quantum
       *magick_restrict l,
       *magick_restrict p;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -3583,7 +3583,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
       double
         intensity;
 
-      register ssize_t
+      ssize_t
         i;
 
       intensity=GetPixelIntensity(image,p+center);
@@ -3601,14 +3601,14 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
           blur_traits,
           traits;
 
-        register const MagickRealType
+        const MagickRealType
           *magick_restrict k;
 
-        register const Quantum
+        const Quantum
           *magick_restrict luminance_pixels,
           *magick_restrict pixels;
 
-        register ssize_t
+        ssize_t
           u;
 
         ssize_t
@@ -3833,16 +3833,16 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
     PrimaryInfo
       normal;
 
-    register const Quantum
+    const Quantum
       *magick_restrict center,
       *magick_restrict p,
       *magick_restrict post,
       *magick_restrict pre;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -3862,7 +3862,7 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
     normal.z=2.0*(double) QuantumRange;  /* constant Z of surface normal */
     for (x=0; x < (ssize_t) linear_image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       /*
@@ -4011,7 +4011,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   KernelInfo
     *kernel_info;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -4171,10 +4171,10 @@ MagickExport Image *SpreadImage(const Image *image,
     const int
       id = GetOpenMPThreadId();
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -4318,13 +4318,13 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -4339,7 +4339,7 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)

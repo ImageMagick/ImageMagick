@@ -330,7 +330,7 @@ static MagickBooleanType LaunchHistogramKernel(MagickCLEnv clEnv,
     colorspace,
     method;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -1000,7 +1000,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
   PixelPacket
     *stretch_map;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -2321,7 +2321,7 @@ static MagickBooleanType ComputeEqualizeImage(Image *image,MagickCLEnv clEnv,
   PixelPacket
     *equalize_map;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -3398,7 +3398,7 @@ static MagickBooleanType ComputeModulateImage(Image *image,MagickCLEnv clEnv,
   MagickSizeType
     length;
 
-  register ssize_t
+  ssize_t
     i;
 
   void

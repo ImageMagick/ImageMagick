@@ -146,10 +146,10 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
     image_view=AcquireVirtualCacheView(image,exception);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      register const Quantum
+      const Quantum
         *p;
 
-      register ssize_t
+      ssize_t
         x;
 
       if (status == MagickFalse)

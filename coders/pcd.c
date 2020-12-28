@@ -147,14 +147,14 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
   PCDTable
     *pcd_table[3];
 
-  register ssize_t
+  ssize_t
     i,
     j;
 
-  register PCDTable
+  PCDTable
     *r;
 
-  register unsigned char
+  unsigned char
     *p,
     *q;
 
@@ -404,7 +404,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image,
   MontageInfo
     *montage_info;
 
-  register Image
+  Image
     *p;
 
   /*
@@ -429,11 +429,11 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image,
 static void Upsample(const size_t width,const size_t height,
   const size_t scaled_width,unsigned char *pixels)
 {
-  register ssize_t
+  ssize_t
     x,
     y;
 
-  register unsigned char
+  unsigned char
     *p,
     *q,
     *r;
@@ -505,14 +505,14 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickSizeType
     number_pixels;
 
-  register ssize_t
+  ssize_t
     i,
     y;
 
-  register Quantum
+  Quantum
     *q;
 
-  register unsigned char
+  unsigned char
     *c1,
     *c2,
     *yy;
@@ -661,7 +661,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       MagickProgressMonitor
         progress_monitor;
 
-      register ssize_t
+      ssize_t
         j;
 
       /*
@@ -1001,11 +1001,11 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
   RectangleInfo
     geometry;
 
-  register const Quantum
+  const Quantum
     *p,
     *q;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
@@ -1123,7 +1123,7 @@ static MagickBooleanType WritePCDImage(const ImageInfo *image_info,Image *image,
   MagickBooleanType
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
   assert(image_info != (const ImageInfo *) NULL);

@@ -151,7 +151,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
   MagickStatusType
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t

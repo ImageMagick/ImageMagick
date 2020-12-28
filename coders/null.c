@@ -106,10 +106,10 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
   PixelInfo
     background;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register Quantum
+  Quantum
     *q;
 
   ssize_t

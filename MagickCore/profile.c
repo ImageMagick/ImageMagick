@@ -401,7 +401,7 @@ static void cmsDeleteContext(cmsContext magick_unused(ContextID))
 
 static void **DestroyPixelThreadSet(void **pixels)
 {
-  register ssize_t
+  ssize_t
     i;
 
   if (pixels == (void **) NULL)
@@ -416,7 +416,7 @@ static void **DestroyPixelThreadSet(void **pixels)
 static void **AcquirePixelThreadSet(const size_t columns,
   const size_t channels,MagickBooleanType highres)
 {
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -447,7 +447,7 @@ static void **AcquirePixelThreadSet(const size_t columns,
 
 static cmsHTRANSFORM *DestroyTransformThreadSet(cmsHTRANSFORM *transform)
 {
-  register ssize_t
+  ssize_t
     i;
 
   assert(transform != (cmsHTRANSFORM *) NULL);
@@ -465,7 +465,7 @@ static cmsHTRANSFORM *AcquireTransformThreadSet(const LCMSInfo *source_info,
   cmsHTRANSFORM
     *transform;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -530,10 +530,10 @@ static void TransformDoublePixels(const int id,const Image* image,
 #define SetLCMSPixel(target_info,pixel) \
   ClampToQuantum(target_info->scale*QuantumRange*(pixel)+target_info->translate)
 
-  register double
+  double
     *p;
 
-  register ssize_t
+  ssize_t
     x;
 
   p=(double *) source_info->pixels[id];
@@ -580,10 +580,10 @@ static void TransformQuantumPixels(const int id,const Image* image,
   const LCMSInfo *source_info,const LCMSInfo *target_info,
   const cmsHTRANSFORM *transform,Quantum *q)
 {
-  register Quantum
+  Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     x;
 
   p=(Quantum *) source_info->pixels[id];
@@ -1354,7 +1354,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               MagickBooleanType
                 sync;
 
-              register Quantum
+              Quantum
                 *magick_restrict q;
 
               if (status == MagickFalse)
@@ -1589,7 +1589,7 @@ static void WriteTo8BimProfile(Image *image,const char *name,
     *datum,
     *q;
 
-  register const unsigned char
+  const unsigned char
     *p;
 
   size_t
@@ -1697,7 +1697,7 @@ static void GetProfilesFromResourceBlock(Image *image,
   const unsigned char
     *datum;
 
-  register const unsigned char
+  const unsigned char
     *p;
 
   size_t
@@ -1842,7 +1842,7 @@ static void GetProfilesFromResourceBlock(Image *image,
 
 static void PatchCorruptProfile(const char *name,StringInfo *profile)
 {
-  register unsigned char
+  unsigned char
     *p;
 
   size_t
@@ -2317,7 +2317,7 @@ MagickBooleanType SyncExifProfile(Image *image,StringInfo *profile)
       int
         components;
 
-      register unsigned char
+      unsigned char
         *p,
         *q;
 
@@ -2454,7 +2454,7 @@ static void UpdateClipPath(unsigned char *blob,size_t length,
   const size_t old_columns,const size_t old_rows,
   const RectangleInfo *new_geometry)
 {
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t

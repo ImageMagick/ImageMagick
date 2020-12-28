@@ -195,15 +195,15 @@ static CubeInfo *ClassifyImageColors(const Image *image,
   NodeInfo
     *node_info;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register size_t
+  size_t
     id,
     index,
     level;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
@@ -338,7 +338,7 @@ static CubeInfo *ClassifyImageColors(const Image *image,
 static void DefineImageHistogram(const Image *image,NodeInfo *node_info,
   PixelInfo **histogram)
 {
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -353,7 +353,7 @@ static void DefineImageHistogram(const Image *image,NodeInfo *node_info,
       DefineImageHistogram(image,node_info->child[i],histogram);
   if (node_info->level == (MaxTreeDepth-1))
     {
-      register PixelInfo
+      PixelInfo
         *p;
 
       p=node_info->list;
@@ -392,7 +392,7 @@ static void DefineImageHistogram(const Image *image,NodeInfo *node_info,
 */
 static CubeInfo *DestroyCubeInfo(const Image *image,CubeInfo *cube_info)
 {
-  register Nodes
+  Nodes
     *nodes;
 
   /*
@@ -437,7 +437,7 @@ static CubeInfo *DestroyCubeInfo(const Image *image,CubeInfo *cube_info)
 */
 static void DestroyColorCube(const Image *image,NodeInfo *node_info)
 {
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -650,16 +650,16 @@ static MagickBooleanType CheckImageColors(const Image *image,
     pixel,
     target;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register NodeInfo
+  NodeInfo
     *node_info;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -904,7 +904,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
     min,
     max;
 
-  register ssize_t
+  ssize_t
     i;
 
   MagickStatusType
@@ -1019,10 +1019,10 @@ MagickExport size_t GetNumberColors(const Image *image,FILE *file,
   PixelInfo
     pixel;
 
-  register PixelInfo
+  PixelInfo
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -1126,7 +1126,7 @@ static void UniqueColorsToImage(Image *unique_image,CacheView *unique_view,
   MagickBooleanType
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -1142,10 +1142,10 @@ static void UniqueColorsToImage(Image *unique_image,CacheView *unique_view,
         node_info->child[i],exception);
   if (node_info->level == (MaxTreeDepth-1))
     {
-      register PixelInfo
+      PixelInfo
         *p;
 
-      register Quantum
+      Quantum
         *magick_restrict q;
 
       status=MagickTrue;

@@ -167,7 +167,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   RectangleInfo
     bounding_box;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -251,10 +251,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     dy=connectivity > 4 ? connect8[n][0] : connect4[n][0];
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      register const Quantum
+      const Quantum
         *magick_restrict p;
 
-      register ssize_t
+      ssize_t
         x;
 
       if (status == MagickFalse)
@@ -353,13 +353,13 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   component_view=AcquireAuthenticCacheView(component_image,exception);
   for (y=0; y < (ssize_t) component_image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -477,7 +477,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   artifact=GetImageArtifact(image,"connected-components:keep-colors");
   if (artifact != (const char *) NULL)
     {
-      register const char
+      const char
         *p;
 
       /*
@@ -493,7 +493,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         PixelInfo
           pixel;
 
-        register const char
+        const char
           *q;
 
         for (q=p; *q != '\0'; q++)
@@ -572,7 +572,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   artifact=GetImageArtifact(image,"connected-components:remove-colors");
   if (artifact != (const char *) NULL)
     {
-      register const char
+      const char
         *p;
 
       /*
@@ -586,7 +586,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         PixelInfo
           pixel;
 
-        register const char
+        const char
           *q;
 
         for (q=p; *q != '\0'; q++)
@@ -665,10 +665,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         bounding_box=object[i].bounding_box;
         for (y=(-1); y < (ssize_t) bounding_box.height+1; y++)
         {
-          register const Quantum
+          const Quantum
             *magick_restrict p;
 
-          register ssize_t
+          ssize_t
             x;
 
           if (status == MagickFalse)
@@ -685,7 +685,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             Quantum
               pixels[4];
 
-            register ssize_t
+            ssize_t
               v;
 
             size_t
@@ -698,7 +698,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             foreground=0;
             for (v=0; v < 2; v++)
             {
-              register ssize_t
+              ssize_t
                 u;
 
               for (u=0; u < 2; u++)
@@ -777,10 +777,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         bounding_box=object[i].bounding_box;
         for (y=(-1); y < (ssize_t) bounding_box.height; y++)
         {
-          register const Quantum
+          const Quantum
             *magick_restrict p;
 
-          register ssize_t
+          ssize_t
             x;
 
           if (status == MagickFalse)
@@ -797,7 +797,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             Quantum
               pixels[4];
 
-            register ssize_t
+            ssize_t
               v;
 
             size_t
@@ -810,7 +810,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             foreground=0;
             for (v=0; v < 2; v++)
             {
-              register ssize_t
+              ssize_t
                 u;
 
               for (u=0; u < 2; u++)
@@ -903,10 +903,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         RectangleInfo
           bounding_box;
 
-        register const Quantum
+        const Quantum
           *magick_restrict p;
 
-        register ssize_t
+        ssize_t
           x;
 
         ssize_t
@@ -1005,10 +1005,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         RectangleInfo
           bounding_box;
 
-        register const Quantum
+        const Quantum
           *magick_restrict p;
 
-        register ssize_t
+        ssize_t
           x;
 
         ssize_t
@@ -1109,10 +1109,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         RectangleInfo
           bounding_box;
 
-        register const Quantum
+        const Quantum
           *magick_restrict p;
 
-        register ssize_t
+        ssize_t
           x;
 
         ssize_t
@@ -1215,10 +1215,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         RectangleInfo
           bounding_box;
 
-        register const Quantum
+        const Quantum
           *magick_restrict p;
 
-        register ssize_t
+        ssize_t
           x;
 
         ssize_t
@@ -1312,7 +1312,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   object_view=AcquireVirtualCacheView(component_image,exception);
   for (i=0; i < (ssize_t) component_image->colors; i++)
   {
-    register ssize_t
+    ssize_t
       j;
 
     size_t
@@ -1330,10 +1330,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     bounding_box=object[i].bounding_box;
     for (y=0; y < (ssize_t) bounding_box.height; y++)
     {
-      register const Quantum
+      const Quantum
         *magick_restrict p;
 
-      register ssize_t
+      ssize_t
         x;
 
       if (status == MagickFalse)
@@ -1347,7 +1347,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         }
       for (x=0; x < (ssize_t) bounding_box.width; x++)
       {
-        register ssize_t
+        ssize_t
           n;
 
         if (status == MagickFalse)
@@ -1356,7 +1356,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         if (j == i)
           for (n=0; n < (ssize_t) (connectivity > 4 ? 4 : 2); n++)
           {
-            register const Quantum
+            const Quantum
               *p;
 
             /*
@@ -1390,10 +1390,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     object[i].area=0.0;
     for (y=0; y < (ssize_t) bounding_box.height; y++)
     {
-      register Quantum
+      Quantum
         *magick_restrict q;
 
-      register ssize_t
+      ssize_t
         x;
 
       if (status == MagickFalse)
@@ -1448,10 +1448,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       component_view=AcquireVirtualCacheView(component_image,exception);
       for (y=0; y < (ssize_t) component_image->rows; y++)
       {
-        register const Quantum
+        const Quantum
           *magick_restrict p;
 
-        register ssize_t
+        ssize_t
           x;
 
         if (status == MagickFalse)
@@ -1495,7 +1495,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         CCObjectInfoCompare);
       if (objects == (CCObjectInfo **) NULL)
         {
-          register ssize_t
+          ssize_t
             j;
 
           artifact=GetImageArtifact(image,

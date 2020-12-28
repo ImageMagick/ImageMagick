@@ -201,10 +201,10 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
   Quantum
     polarity;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     x;
 
   size_t

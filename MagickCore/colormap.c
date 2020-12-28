@@ -104,7 +104,7 @@
 MagickExport MagickBooleanType AcquireImageColormap(Image *image,
   const size_t colors,ExceptionInfo *exception)
 {
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -209,10 +209,10 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register ssize_t
+    ssize_t
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     ssize_t
@@ -302,7 +302,7 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image,
   MagickBooleanType
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -347,10 +347,10 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image,
     Quantum
       index;
 
-    register ssize_t
+    ssize_t
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);

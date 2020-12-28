@@ -102,10 +102,10 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register Quantum
+  Quantum
     *q;
 
   ssize_t
@@ -299,10 +299,10 @@ static MagickBooleanType WriteUYVYImage(const ImageInfo *image_info,
     full,
     status;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     x;
 
   ssize_t

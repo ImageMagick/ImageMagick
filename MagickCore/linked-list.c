@@ -111,7 +111,7 @@ struct _LinkedListInfo
 MagickExport MagickBooleanType AppendValueToLinkedList(
   LinkedListInfo *list_info,const void *value)
 {
-  register ElementInfo
+  ElementInfo
     *next;
 
   assert(list_info != (LinkedListInfo *) NULL);
@@ -168,7 +168,7 @@ MagickExport void ClearLinkedList(LinkedListInfo *list_info,
   ElementInfo
     *element;
 
-  register ElementInfo
+  ElementInfo
     *next;
 
   assert(list_info != (LinkedListInfo *) NULL);
@@ -222,7 +222,7 @@ MagickExport LinkedListInfo *DestroyLinkedList(LinkedListInfo *list_info,
   ElementInfo
     *entry;
 
-  register ElementInfo
+  ElementInfo
     *next;
 
   assert(list_info != (LinkedListInfo *) NULL);
@@ -382,10 +382,10 @@ MagickExport size_t GetNumberOfElementsInLinkedList(
 MagickExport void *GetValueFromLinkedList(LinkedListInfo *list_info,
   const size_t index)
 {
-  register ElementInfo
+  ElementInfo
     *next;
 
-  register ssize_t
+  ssize_t
     i;
 
   void
@@ -447,10 +447,10 @@ MagickExport void *GetValueFromLinkedList(LinkedListInfo *list_info,
 MagickExport MagickBooleanType InsertValueInLinkedList(
   LinkedListInfo *list_info,const size_t index,const void *value)
 {
-  register ElementInfo
+  ElementInfo
     *next;
 
-  register ssize_t
+  ssize_t
     i;
 
   assert(list_info != (LinkedListInfo *) NULL);
@@ -552,10 +552,10 @@ MagickExport MagickBooleanType InsertValueInSortedLinkedList(
   ElementInfo
     *element;
 
-  register ElementInfo
+  ElementInfo
     *next;
 
-  register ssize_t
+  ssize_t
     i;
 
   assert(list_info != (LinkedListInfo *) NULL);
@@ -666,10 +666,10 @@ MagickExport MagickBooleanType IsLinkedListEmpty(
 MagickExport MagickBooleanType LinkedListToArray(LinkedListInfo *list_info,
   void **array)
 {
-  register ElementInfo
+  ElementInfo
     *next;
 
-  register ssize_t
+  ssize_t
     i;
 
   assert(list_info != (LinkedListInfo *) NULL);
@@ -831,7 +831,7 @@ MagickExport void *RemoveElementFromLinkedList(LinkedListInfo *list_info,
   ElementInfo
     *next;
 
-  register ssize_t
+  ssize_t
     i;
 
   void

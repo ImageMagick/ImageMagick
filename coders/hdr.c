@@ -153,10 +153,10 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status,
     value_expected;
 
-  register Quantum
+  Quantum
     *q;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
@@ -204,7 +204,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
         char
           *comment;
 
-        register char
+        char
           *p;
 
         size_t
@@ -244,7 +244,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
         c=ReadBlobByte(image);
       else
         {
-          register char
+          char
             *p;
 
           /*
@@ -424,7 +424,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         else
           {
-            register unsigned char
+            unsigned char
               *p;
 
             p=pixels;
@@ -598,7 +598,7 @@ static size_t HDRWriteRunlengthPixels(Image *image,unsigned char *pixels)
 {
 #define MinimumRunlength 4
 
-  register size_t
+  size_t
     p,
     q;
 
@@ -670,10 +670,10 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image,
   MagickBooleanType
     status;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 

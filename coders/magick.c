@@ -13044,7 +13044,7 @@ static Image *ReadMAGICKImage(const ImageInfo *image_info,
   ImageInfo
     *blob_info;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -13231,10 +13231,10 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
   size_t
     length;
 
-  register char
+  char
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   void

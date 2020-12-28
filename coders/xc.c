@@ -100,10 +100,10 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   PixelInfo
     pixel;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register Quantum
+  Quantum
     *q;
 
   ssize_t

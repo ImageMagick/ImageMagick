@@ -141,10 +141,10 @@ static MagickBooleanType IsSUN(const unsigned char *magick,const size_t length)
 static MagickBooleanType DecodeImage(const unsigned char *compressed_pixels,
   const size_t length,unsigned char *pixels,size_t extent)
 {
-  register const unsigned char
+  const unsigned char
     *p;
 
-  register unsigned char
+  unsigned char
     *q;
 
   ssize_t
@@ -248,14 +248,14 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickSizeType
     number_pixels;
 
-  register Quantum
+  Quantum
     *q;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
-  register unsigned char
+  unsigned char
     *p;
 
   size_t
@@ -787,10 +787,10 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
   MagickSizeType
     number_pixels;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
@@ -892,7 +892,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
     y=0;
     if (image->storage_class == DirectClass)
       {
-        register unsigned char
+        unsigned char
           *q;
 
         size_t
@@ -946,7 +946,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
     else
       if (SetImageMonochrome(image,exception) != MagickFalse)
         {
-          register unsigned char
+          unsigned char
             bit,
             byte;
 

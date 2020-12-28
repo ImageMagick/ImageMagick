@@ -708,7 +708,7 @@ MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
   Quantum
     *magick_restrict q;
 
-  register ssize_t
+  ssize_t
     i;
 
   assert(cache_view != (CacheView *) NULL);
@@ -777,10 +777,10 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualPixel(
   const int
     id = GetOpenMPThreadId();
 
-  register const Quantum
+  const Quantum
     *magick_restrict p;
 
-  register ssize_t
+  ssize_t
     i;
 
   assert(cache_view != (CacheView *) NULL);
@@ -850,7 +850,7 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualPixelInfo(
   const int
     id = GetOpenMPThreadId();
 
-  register const Quantum
+  const Quantum
     *magick_restrict p;
 
   assert(cache_view != (CacheView *) NULL);
@@ -912,7 +912,7 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualMethodPixel(
   const Quantum
     *magick_restrict p;
 
-  register ssize_t
+  ssize_t
     i;
 
   assert(cache_view != (CacheView *) NULL);

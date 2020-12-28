@@ -103,13 +103,13 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register Quantum
+  Quantum
     *q;
 
-  register unsigned char
+  unsigned char
     *p;
 
   ssize_t
@@ -339,13 +339,13 @@ static MagickBooleanType WriteMTVImage(const ImageInfo *image_info,Image *image,
   MagickOffsetType
     scene;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register unsigned char
+  unsigned char
     *q;
 
   size_t

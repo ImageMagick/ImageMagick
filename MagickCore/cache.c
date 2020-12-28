@@ -261,7 +261,7 @@ MagickPrivate NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
   NexusInfo
     **magick_restrict nexus_info;
 
-  register ssize_t
+  ssize_t
     i;
 
   nexus_info=(NexusInfo **) MagickAssumeAligned(AcquireAlignedMemory(2*
@@ -418,7 +418,7 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
   CacheInfo
     *magick_restrict cache_info;
 
-  register Quantum
+  Quantum
     *magick_restrict p,
     *magick_restrict q;
 
@@ -445,7 +445,7 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
     return(MagickFalse);
   for (y=0; y < (ssize_t) nexus_info->region.height; y++)
   {
-    register ssize_t
+    ssize_t
       x;
 
     for (x=0; x < (ssize_t) nexus_info->region.width; x++)
@@ -453,7 +453,7 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
       double
         mask_alpha;
 
-      register ssize_t
+      ssize_t
         i;
 
       mask_alpha=QuantumScale*GetPixelWriteMask(image,p);
@@ -741,7 +741,7 @@ static MagickBooleanType ClonePixelCacheRepository(
     Quantum
       *pixels;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -765,10 +765,10 @@ static MagickBooleanType ClonePixelCacheRepository(
         sizeof(Quantum));
     else
       {
-        register const Quantum
+        const Quantum
           *magick_restrict p;
 
-        register Quantum
+        Quantum
           *magick_restrict q;
 
         /*
@@ -778,7 +778,7 @@ static MagickBooleanType ClonePixelCacheRepository(
         q=clone_nexus[id]->pixels;
         for (x=0; x < (ssize_t) cache_info->columns; x++)
         {
-          register ssize_t
+          ssize_t
             i;
 
           if (x == (ssize_t) clone_info->columns)
@@ -1117,7 +1117,7 @@ static inline void RelinquishCacheNexusPixels(NexusInfo *nexus_info)
 MagickPrivate NexusInfo **DestroyPixelCacheNexus(NexusInfo **nexus_info,
   const size_t number_threads)
 {
-  register ssize_t
+  ssize_t
     i;
 
   assert(nexus_info != (NexusInfo **) NULL);
@@ -1852,7 +1852,7 @@ MagickExport CacheType GetImagePixelCacheType(const Image *image)
 static inline MagickBooleanType CopyPixel(const Image *image,
   const Quantum *source,Quantum *destination)
 {
-  register ssize_t
+  ssize_t
     i;
 
   if (source == (const Quantum *) NULL)
@@ -1882,7 +1882,7 @@ MagickExport MagickBooleanType GetOneAuthenticPixel(Image *image,
   CacheInfo
     *magick_restrict cache_info;
 
-  register Quantum
+  Quantum
     *magick_restrict q;
 
   assert(image != (Image *) NULL);
@@ -1937,7 +1937,7 @@ static MagickBooleanType GetOneAuthenticPixelFromCache(Image *image,
   const int
     id = GetOpenMPThreadId();
 
-  register Quantum
+  Quantum
     *magick_restrict q;
 
   assert(image != (const Image *) NULL);
@@ -2114,7 +2114,7 @@ MagickExport MagickBooleanType GetOneVirtualPixelInfo(const Image *image,
   const int
     id = GetOpenMPThreadId();
 
-  register const Quantum
+  const Quantum
     *magick_restrict p;
 
   assert(image != (const Image *) NULL);
@@ -2732,20 +2732,20 @@ MagickPrivate const Quantum *GetVirtualPixelCacheNexus(const Image *image,
     *magick_restrict pixels,
     virtual_pixel[MaxPixelChannels];
 
-  register const Quantum
+  const Quantum
     *magick_restrict p;
 
-  register const void
+  const void
     *magick_restrict r;
 
-  register Quantum
+  Quantum
     *magick_restrict q;
 
-  register ssize_t
+  ssize_t
     i,
     u;
 
-  register unsigned char
+  unsigned char
     *magick_restrict s;
 
   ssize_t
@@ -3408,7 +3408,7 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
   CacheInfo
     *magick_restrict cache_info;
 
-  register Quantum
+  Quantum
     *magick_restrict p,
     *magick_restrict q;
 
@@ -3435,7 +3435,7 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
     return(MagickFalse);
   for (y=0; y < (ssize_t) nexus_info->region.height; y++)
   {
-    register ssize_t
+    ssize_t
       x;
 
     for (x=0; x < (ssize_t) nexus_info->region.width; x++)
@@ -3443,7 +3443,7 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
       double
         mask_alpha;
 
-      register ssize_t
+      ssize_t
         i;
 
       mask_alpha=(double) GetPixelCompositeMask(image,p);
@@ -3547,7 +3547,7 @@ static inline MagickOffsetType WritePixelCacheRegion(
   const CacheInfo *magick_restrict cache_info,const MagickOffsetType offset,
   const MagickSizeType length,const unsigned char *magick_restrict buffer)
 {
-  register MagickOffsetType
+  MagickOffsetType
     i;
 
   ssize_t
@@ -4370,7 +4370,7 @@ static inline MagickOffsetType ReadPixelCacheRegion(
   const CacheInfo *magick_restrict cache_info,const MagickOffsetType offset,
   const MagickSizeType length,unsigned char *magick_restrict buffer)
 {
-  register MagickOffsetType
+  MagickOffsetType
     i;
 
   ssize_t
@@ -4412,10 +4412,10 @@ static MagickBooleanType ReadPixelCacheMetacontent(
     extent,
     length;
 
-  register ssize_t
+  ssize_t
     y;
 
-  register unsigned char
+  unsigned char
     *magick_restrict q;
 
   size_t
@@ -4438,7 +4438,7 @@ static MagickBooleanType ReadPixelCacheMetacontent(
     case MemoryCache:
     case MapCache:
     {
-      register unsigned char
+      unsigned char
         *magick_restrict p;
 
       /*
@@ -4583,10 +4583,10 @@ static MagickBooleanType ReadPixelCachePixels(
     extent,
     length;
 
-  register Quantum
+  Quantum
     *magick_restrict q;
 
-  register ssize_t
+  ssize_t
     y;
 
   size_t
@@ -4615,7 +4615,7 @@ static MagickBooleanType ReadPixelCachePixels(
     case MemoryCache:
     case MapCache:
     {
-      register Quantum
+      Quantum
         *magick_restrict p;
 
       /*
@@ -5186,10 +5186,10 @@ static MagickBooleanType SetCacheAlphaChannel(Image *image,const Quantum alpha,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -5563,10 +5563,10 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
     extent,
     length;
 
-  register const unsigned char
+  const unsigned char
     *magick_restrict p;
 
-  register ssize_t
+  ssize_t
     y;
 
   size_t
@@ -5589,7 +5589,7 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
     case MemoryCache:
     case MapCache:
     {
-      register unsigned char
+      unsigned char
         *magick_restrict q;
 
       /*
@@ -5734,10 +5734,10 @@ static MagickBooleanType WritePixelCachePixels(
     extent,
     length;
 
-  register const Quantum
+  const Quantum
     *magick_restrict p;
 
-  register ssize_t
+  ssize_t
     y;
 
   size_t
@@ -5758,7 +5758,7 @@ static MagickBooleanType WritePixelCachePixels(
     case MemoryCache:
     case MapCache:
     {
-      register Quantum
+      Quantum
         *magick_restrict q;
 
       /*

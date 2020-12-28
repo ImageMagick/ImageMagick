@@ -297,7 +297,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
   MontageInfo
     *montage_info;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t

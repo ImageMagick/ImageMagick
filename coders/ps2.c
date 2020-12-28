@@ -420,13 +420,13 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
     media_info,
     page_info;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register ssize_t
+  ssize_t
     i;
 
   SegmentInfo
@@ -769,7 +769,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
             MemoryInfo
               *pixel_info;
 
-            register unsigned char
+            unsigned char
               *q;
 
             /*
@@ -868,7 +868,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
               MemoryInfo
                 *pixel_info;
 
-              register unsigned char
+              unsigned char
                 *q;
 
               /*
@@ -1019,7 +1019,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
               MemoryInfo
                 *pixel_info;
 
-              register unsigned char
+              unsigned char
                 *q;
 
               /*

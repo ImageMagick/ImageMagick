@@ -118,13 +118,13 @@ static Image *ReadFLIFImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register Quantum
+  Quantum
     *q;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register unsigned short
+  unsigned short
     *p;
 
   size_t
@@ -395,16 +395,16 @@ static MagickBooleanType WriteFLIFImage(const ImageInfo *image_info,
   MagickOffsetType
     scene;
 
-  register const Quantum
+  const Quantum
     *magick_restrict p;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register unsigned char
+  unsigned char
     *magick_restrict qc;
 
-  register unsigned short
+  unsigned short
     *magick_restrict qs;
 
   size_t

@@ -481,7 +481,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
   QuantumType
     quantum_type;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -552,7 +552,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     image->compression=NoCompression;
     while ((isgraph((int) ((unsigned char) c)) != 0) && (c != (int) ':'))
     {
-      register char
+      char
         *p;
 
       if (c == (int) '{')
@@ -1127,7 +1127,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       }
     if (image->montage != (char *) NULL)
       {
-        register char
+        char
           *p;
 
         /*
@@ -1425,10 +1425,10 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     length=0;
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      register ssize_t
+      ssize_t
         x;
 
-      register Quantum
+      Quantum
         *magick_restrict q;
 
       if (status == MagickFalse)
@@ -2032,7 +2032,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
   QuantumType
     quantum_type;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -2439,7 +2439,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
             case 32:
             default:
             {
-              register unsigned int
+              unsigned int
                 long_pixel;
 
               long_pixel=ScaleQuantumToLong((Quantum)
@@ -2455,7 +2455,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
             }
             case 16:
             {
-              register unsigned short
+              unsigned short
                 short_pixel;
 
               short_pixel=ScaleQuantumToShort((Quantum)
@@ -2471,7 +2471,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
             }
             case 8:
             {
-              register unsigned char
+              unsigned char
                 char_pixel;
 
               char_pixel=(unsigned char) ScaleQuantumToChar((Quantum)
@@ -2556,10 +2556,10 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     pixels=(unsigned char *) GetQuantumPixels(quantum_info);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      register const Quantum
+      const Quantum
         *magick_restrict p;
 
-      register ssize_t
+      ssize_t
         x;
 
       if (status == MagickFalse)

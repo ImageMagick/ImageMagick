@@ -652,7 +652,7 @@ static void SVGElementDeclaration(void *context,const xmlChar *name,int type,
 
 static void SVGStripString(const MagickBooleanType trim,char *message)
 {
-  register char
+  char
     *p,
     *q;
 
@@ -716,11 +716,11 @@ static char **SVGKeyValuePairs(void *context,const int key_sentinel,
   char
     **tokens;
 
-  register const char
+  const char
     *p,
     *q;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -815,7 +815,7 @@ static void SVGProcessStyleElement(void *context,const xmlChar *name,
   char
     **tokens;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -1254,7 +1254,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
     *p,
     *value;
 
-  register ssize_t
+  ssize_t
     i,
     j;
 
@@ -2601,7 +2601,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
         }
       if (LocaleCompare((const char *) name,"desc") == 0)
         {
-          register char
+          char
             *p;
 
           if (*svg_info->text == '\0')
@@ -2787,7 +2787,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
             **tokens,
             *value;
 
-          register ssize_t
+          ssize_t
             j;
 
           size_t
@@ -2902,10 +2902,10 @@ static void SVGCharacters(void *context,const xmlChar *c,int length)
   char
     *text;
 
-  register char
+  char
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   SVGInfo
@@ -3265,7 +3265,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         MemoryInfo
           *pixel_info;
 
-        register unsigned char
+        unsigned char
           *p;
 
         RsvgDimensionData
@@ -3278,7 +3278,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         GdkPixbuf
           *pixel_buffer;
 
-        register const guchar
+        const guchar
           *p;
 #endif
 
@@ -3288,10 +3288,10 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         PixelInfo
           fill_color;
 
-        register ssize_t
+        ssize_t
           x;
 
-        register Quantum
+        Quantum
           *q;
 
         RsvgHandle
@@ -3948,10 +3948,10 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     ImageType
       type;
 
-    register const Quantum
+    const Quantum
       *p;
 
-    register ssize_t
+    ssize_t
       i,
       x;
 
@@ -4021,7 +4021,7 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     MagickBooleanType
       status;
 
-    register char
+    char
       *p;
 
     size_t
@@ -4144,10 +4144,10 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
   PrimitiveType
     primitive_type;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t

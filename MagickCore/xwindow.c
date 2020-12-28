@@ -246,7 +246,7 @@ static Window
 */
 MagickExport void DestroyXResources(void)
 {
-  register int
+  int
     i;
 
   unsigned int
@@ -569,10 +569,10 @@ MagickPrivate MagickBooleanType XAnnotateImage(Display *display,
   annotate_view=AcquireAuthenticCacheView(annotate_image,exception);
   for (y=0; y < (int) annotate_image->rows; y++)
   {
-    register int
+    int
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     q=GetCacheViewAuthenticPixels(annotate_view,0,(ssize_t) y,
@@ -747,11 +747,11 @@ static char **FontToList(char *font)
   char
     **fontlist;
 
-  register char
+  char
     *p,
     *q;
 
-  register int
+  int
     i;
 
   unsigned int
@@ -820,7 +820,7 @@ MagickPrivate XFontStruct *XBestFont(Display *display,
   char
     *font_name;
 
-  register const char
+  const char
     **p;
 
   XFontStruct
@@ -835,7 +835,7 @@ MagickPrivate XFontStruct *XBestFont(Display *display,
       char
         **fontlist;
 
-      register int
+      int
         i;
 
       /*
@@ -1040,10 +1040,10 @@ MagickPrivate void XBestPixel(Display *display,const Colormap colormap,
   double
     min_distance;
 
-  register double
+  double
     distance;
 
-  register int
+  int
     i,
     j;
 
@@ -1165,7 +1165,7 @@ MagickPrivate XVisualInfo *XBestVisualInfo(Display *display,
   int
     visual_mask;
 
-  register int
+  int
     i;
 
   size_t
@@ -1962,7 +1962,7 @@ MagickPrivate void XDisplayImageInfo(Display *display,
   int
     unique_file;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -2139,13 +2139,13 @@ static void XDitherImage(Image *image,XImage *ximage,ExceptionInfo *exception)
   PixelInfo
     color;
 
-  register char
+  char
     *q;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register int
+  int
     i,
     j,
     x;
@@ -2153,7 +2153,7 @@ static void XDitherImage(Image *image,XImage *ximage,ExceptionInfo *exception)
   unsigned int
     scanline_pad;
 
-  register size_t
+  size_t
     pixel;
 
   unsigned char
@@ -2468,10 +2468,10 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
   draw_view=AcquireAuthenticCacheView(draw_image,exception);
   for (y=0; y < (int) draw_image->rows; y++)
   {
-    register int
+    int
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     q=QueueCacheViewAuthenticPixels(draw_view,0,(ssize_t) y,draw_image->columns,
@@ -2594,10 +2594,10 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
   draw_view=AcquireAuthenticCacheView(draw_image,exception);
   for (y=0; y < (int) draw_image->rows; y++)
   {
-    register int
+    int
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     q=GetCacheViewAuthenticPixels(draw_view,0,(ssize_t) y,draw_image->columns,1,
@@ -3032,7 +3032,7 @@ MagickPrivate void XGetPixelInfo(Display *display,
   Colormap
     colormap;
 
-  register ssize_t
+  ssize_t
     i;
 
   Status
@@ -3356,7 +3356,7 @@ MagickExport XrmDatabase XGetResourceDatabase(Display *display,
   int
     c;
 
-  register const char
+  const char
     *p;
 
   XrmDatabase
@@ -4000,7 +4000,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
   RectangleInfo
     crop_info;
 
-  register int
+  int
     i;
 
   static ColormapInfo
@@ -4158,14 +4158,14 @@ static Image *XGetWindowImage(Display *display,const Window window,
       MagickBooleanType
         import;
 
-      register int
+      int
         j,
         x;
 
-      register Quantum
+      Quantum
         *magick_restrict q;
 
-      register size_t
+      size_t
         pixel;
 
       unsigned int
@@ -4326,7 +4326,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
           case DirectClass:
           default:
           {
-            register size_t
+            size_t
               color,
               index;
 
@@ -5859,13 +5859,13 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
   int
     y;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register int
+  int
     x;
 
-  register unsigned char
+  unsigned char
     *q;
 
   unsigned char
@@ -5929,7 +5929,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
   canvas_view=AcquireVirtualCacheView(canvas,exception);
   if (ximage->format == XYBitmap)
     {
-      register unsigned short
+      unsigned short
         polarity;
 
       unsigned char
@@ -5985,7 +5985,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
       {
         case 2:
         {
-          register unsigned int
+          unsigned int
             nibble;
 
           /*
@@ -6037,7 +6037,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
         }
         case 4:
         {
-          register unsigned int
+          unsigned int
             nibble;
 
           /*
@@ -6105,10 +6105,10 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
         }
         default:
         {
-          register int
+          int
             k;
 
-          register unsigned int
+          unsigned int
             bytes_per_pixel;
 
           /*
@@ -6141,7 +6141,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
       {
         case 2:
         {
-          register unsigned int
+          unsigned int
             nibble;
 
           /*
@@ -6194,7 +6194,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
         }
         case 4:
         {
-          register unsigned int
+          unsigned int
             nibble;
 
           /*
@@ -6352,10 +6352,10 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
               }
             else
               {
-                register int
+                int
                   k;
 
-                register unsigned int
+                unsigned int
                   bytes_per_pixel;
 
                 /*
@@ -6476,13 +6476,13 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
   int
     y;
 
-  register int
+  int
     x;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register unsigned char
+  unsigned char
     *q;
 
   unsigned char
@@ -6546,7 +6546,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
   canvas_view=AcquireVirtualCacheView(canvas,exception);
   if (ximage->format == XYBitmap)
     {
-      register unsigned short
+      unsigned short
         polarity;
 
       unsigned char
@@ -6602,7 +6602,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
       {
         case 2:
         {
-          register unsigned int
+          unsigned int
             nibble;
 
           /*
@@ -6655,7 +6655,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
         }
         case 4:
         {
-          register unsigned int
+          unsigned int
             nibble;
 
           /*
@@ -6724,10 +6724,10 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
         }
         default:
         {
-          register int
+          int
             k;
 
-          register unsigned int
+          unsigned int
             bytes_per_pixel;
 
           unsigned char
@@ -6766,7 +6766,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
       {
         case 2:
         {
-          register unsigned int
+          unsigned int
             nibble;
 
           /*
@@ -6819,7 +6819,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
         }
         case 4:
         {
-          register unsigned int
+          unsigned int
             nibble;
 
           /*
@@ -6977,10 +6977,10 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
               }
             else
               {
-                register int
+                int
                   k;
 
-                register unsigned int
+                unsigned int
                   bytes_per_pixel;
 
                 unsigned char
@@ -7094,13 +7094,13 @@ MagickPrivate void XMakeMagnifyImage(Display *display,XWindows *windows,
   PixelInfo
     pixel;
 
-  register int
+  int
     x;
 
-  register ssize_t
+  ssize_t
     i;
 
-  register unsigned char
+  unsigned char
     *p,
     *q;
 
@@ -7195,14 +7195,14 @@ MagickPrivate void XMakeMagnifyImage(Display *display,XWindows *windows,
     ((width*windows->magnify.ximage->bits_per_pixel) >> 3));
   if (ximage->bits_per_pixel < 8)
     {
-      register unsigned char
+      unsigned char
         background,
         byte,
         foreground,
         p_bit,
         q_bit;
 
-      register unsigned int
+      unsigned int
         plane;
 
       XPixelInfo
@@ -7391,7 +7391,7 @@ MagickPrivate void XMakeMagnifyImage(Display *display,XWindows *windows,
       }
       default:
       {
-        register unsigned int
+        unsigned int
           bytes_per_pixel,
           m;
 
@@ -7714,7 +7714,7 @@ MagickPrivate void XMakeStandardColormap(Display *display,
   Colormap
     colormap;
 
-  register ssize_t
+  ssize_t
     i;
 
   Status
@@ -7756,7 +7756,7 @@ MagickPrivate void XMakeStandardColormap(Display *display,
             Image
               *affinity_image;
 
-            register Quantum
+            Quantum
               *magick_restrict q;
 
             /*
@@ -7939,7 +7939,7 @@ MagickPrivate void XMakeStandardColormap(Display *display,
           int
             y;
 
-          register int
+          int
             x;
 
           unsigned short
@@ -7967,10 +7967,10 @@ MagickPrivate void XMakeStandardColormap(Display *display,
           image_view=AcquireAuthenticCacheView(image,exception);
           for (y=0; y < (int) image->rows; y++)
           {
-            register int
+            int
               x;
 
-            register const Quantum
+            const Quantum
               *magick_restrict p;
 
             p=GetCacheViewAuthenticPixels(image_view,0,(ssize_t) y,
@@ -8391,7 +8391,7 @@ MagickPrivate void XMakeWindow(Display *display,Window parent,char **argv,
       int
         flags;
 
-      register char
+      char
         *p;
 
       /*
@@ -8581,7 +8581,7 @@ static const char *GetLocaleMonitorMessage(const char *text)
   const char
     *locale_message;
 
-  register char
+  char
     *p;
 
   (void) CopyMagickString(tag,text,MagickPathExtent);
@@ -9694,7 +9694,7 @@ MagickPrivate Window XWindowByID(Display *display,const Window root_window,
   RectangleInfo
     rectangle_info;
 
-  register int
+  int
     i;
 
   Status
@@ -9769,7 +9769,7 @@ MagickPrivate Window XWindowByID(Display *display,const Window root_window,
 MagickPrivate Window XWindowByName(Display *display,const Window root_window,
   const char *name)
 {
-  register int
+  int
     i;
 
   Status

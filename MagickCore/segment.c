@@ -288,10 +288,10 @@ static MagickBooleanType Classify(Image *image,short **extrema,
   MagickStatusType
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
-  register double
+  double
     *squares;
 
   size_t
@@ -372,10 +372,10 @@ static MagickBooleanType Classify(Image *image,short **extrema,
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    const Quantum
       *p;
 
-    register ssize_t
+    ssize_t
       x;
 
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
@@ -552,13 +552,13 @@ static MagickBooleanType Classify(Image *image,short **extrema,
     Cluster
       *cluster;
 
-    register const PixelInfo
+    const PixelInfo
       *magick_restrict p;
 
-    register ssize_t
+    ssize_t
       x;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
     if (status == MagickFalse)
@@ -603,7 +603,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
             ratio,
             sum;
 
-          register ssize_t
+          ssize_t
             j,
             k;
 
@@ -704,7 +704,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
 static void ConsolidateCrossings(ZeroCrossing *zero_crossing,
   const size_t number_crossings)
 {
-  register ssize_t
+  ssize_t
     i,
     j,
     k,
@@ -877,7 +877,7 @@ static ssize_t DefineRegion(const short *extrema,ExtentPacket *extents)
 static void DerivativeHistogram(const double *histogram,
   double *derivative)
 {
-  register ssize_t
+  ssize_t
     i,
     n;
 
@@ -954,10 +954,10 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
   double
     threshold;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
@@ -1223,10 +1223,10 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
 static void InitializeHistogram(const Image *image,ssize_t **histogram,
   ExceptionInfo *exception)
 {
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
@@ -1298,7 +1298,7 @@ static void InitializeList(IntervalTree **list,ssize_t *number_nodes,
 
 static void MeanStability(IntervalTree *node)
 {
-  register IntervalTree
+  IntervalTree
     *child;
 
   if (node == (IntervalTree *) NULL)
@@ -1307,10 +1307,10 @@ static void MeanStability(IntervalTree *node)
   child=node->child;
   if (child != (IntervalTree *) NULL)
     {
-      register ssize_t
+      ssize_t
         count;
 
-      register double
+      double
         sum;
 
       sum=0.0;
@@ -1347,7 +1347,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
     *node,
     *root;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -1523,7 +1523,7 @@ static double OptimalTau(const ssize_t *histogram,const double max_tau,
   MagickBooleanType
     peak;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
@@ -1722,7 +1722,7 @@ static void ScaleSpace(const ssize_t *histogram,const double tau,
     *gamma,
     sum;
 
-  register ssize_t
+  ssize_t
     u,
     x;
 
@@ -1802,7 +1802,7 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
   MagickBooleanType
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
   short
@@ -1895,7 +1895,7 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
 static void ZeroCrossHistogram(double *second_derivative,
   const double smooth_threshold,short *crossings)
 {
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t

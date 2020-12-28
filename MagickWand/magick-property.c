@@ -600,7 +600,7 @@ WandExport char **MagickGetImageArtifacts(MagickWand *wand,
   const char
     *artifact;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -752,7 +752,7 @@ WandExport char **MagickGetImageProfiles(MagickWand *wand,const char *pattern,
   const char
     *property;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -889,7 +889,7 @@ WandExport char **MagickGetImageProperties(MagickWand *wand,
   const char
     *property;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -1091,7 +1091,7 @@ WandExport char **MagickGetOptions(MagickWand *wand,const char *pattern,
   const char
     *option;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -1497,10 +1497,10 @@ WandExport double *MagickGetSamplingFactors(MagickWand *wand,
   double
     *sampling_factors;
 
-  register const char
+  const char
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   assert(wand != (MagickWand *) NULL);
@@ -2779,7 +2779,7 @@ WandExport MagickBooleanType MagickSetSamplingFactors(MagickWand *wand,
   char
     sampling_factor[MagickPathExtent];
 
-  register ssize_t
+  ssize_t
     i;
 
   assert(wand != (MagickWand *) NULL);

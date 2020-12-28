@@ -223,16 +223,16 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
   MagickSizeType
     number_pixels;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register Quantum
+  Quantum
     *q;
 
-  register ssize_t
+  ssize_t
     i;
 
-  register unsigned char
+  unsigned char
     *p;
 
   size_t
@@ -950,16 +950,16 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
   MemoryInfo
     *pixel_info;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register ssize_t
+  ssize_t
     i;
 
-  register unsigned char
+  unsigned char
     *q;
 
   size_t
@@ -1190,7 +1190,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
       else
         if (image->colors <= 2)
           {
-            register unsigned char
+            unsigned char
               bit,
               byte;
 

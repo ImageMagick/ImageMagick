@@ -174,7 +174,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickStatusType
     flags;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -230,7 +230,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->compression=NoCompression;
     while ((isgraph((int) ((unsigned char) c)) != 0) && (c != (int) ':'))
     {
-      register char
+      char
         *p;
 
       if (c == (int) '{')
@@ -804,7 +804,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (image->montage != (char *) NULL)
       {
-        register char
+        char
           *p;
 
         /*
@@ -1142,7 +1142,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
     offset,
     scene;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t

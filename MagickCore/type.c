@@ -162,7 +162,7 @@ static MagickBooleanType
 
 static void *DestroyTypeNode(void *type_info)
 {
-  register TypeInfo
+  TypeInfo
     *p;
 
   p=(TypeInfo *) type_info;
@@ -333,10 +333,10 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   const TypeInfo
     *type_info;
 
-  register const TypeInfo
+  const TypeInfo
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -555,10 +555,10 @@ MagickExport const TypeInfo **GetTypeInfoList(const char *pattern,
   const TypeInfo
     **fonts;
 
-  register const TypeInfo
+  const TypeInfo
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -629,7 +629,7 @@ extern "C" {
 
 static int TypeCompare(const void *x,const void *y)
 {
-  register const char
+  const char
     **p,
     **q;
 
@@ -648,10 +648,10 @@ MagickExport char **GetTypeList(const char *pattern,size_t *number_fonts,
   char
     **fonts;
 
-  register const TypeInfo
+  const TypeInfo
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   /*
@@ -753,7 +753,7 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_cache,
     width,
     weight;
 
-  register ssize_t
+  ssize_t
     i;
 
   TypeInfo
@@ -947,7 +947,7 @@ MagickExport MagickBooleanType ListTypeInfo(FILE *file,ExceptionInfo *exception)
   const TypeInfo
     **type_info;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t

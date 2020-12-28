@@ -206,11 +206,11 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
     byte,
     count;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
-  register unsigned char
+  unsigned char
     *p,
     *q;
 
@@ -383,14 +383,14 @@ static size_t EncodeImage(Image *image,const size_t bytes_per_line,
   MagickBooleanType
     status;
 
-  register const unsigned char
+  const unsigned char
     *p;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
-  register unsigned char
+  unsigned char
     *q;
 
   ssize_t
@@ -533,14 +533,14 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Quantum
     index;
 
-  register Quantum
+  Quantum
     *q;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
-  register unsigned char
+  unsigned char
     *p;
 
   size_t
@@ -1060,7 +1060,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) memset(&quantum_bits,0,sizeof(quantum_bits));
     if ((bmp_info.bits_per_pixel == 16) || (bmp_info.bits_per_pixel == 32))
       {
-        register unsigned int
+        unsigned int
           sample;
 
         /*
@@ -1664,14 +1664,14 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
   MemoryInfo
     *pixel_info;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     i,
     x;
 
-  register unsigned char
+  unsigned char
     *q;
 
   size_t

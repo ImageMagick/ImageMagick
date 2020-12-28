@@ -169,7 +169,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  register Quantum
+  Quantum
     *q;
 
   size_t
@@ -269,7 +269,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     int
       yy;
 
-    register ssize_t
+    ssize_t
       x;
 
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -456,10 +456,10 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image,
   MagickBooleanType
     status;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     x;
 
   ssize_t

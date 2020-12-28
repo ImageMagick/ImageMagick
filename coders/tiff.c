@@ -567,10 +567,10 @@ static MagickBooleanType DecodeLabImage(Image *image,ExceptionInfo *exception)
   image_view=AcquireAuthenticCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
@@ -838,7 +838,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
   char
     value[MagickPathExtent];
 
-  register ssize_t
+  ssize_t
     i;
 
   tdir_t
@@ -1066,7 +1066,7 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
     position,
     offset;
 
-  register size_t
+  size_t
     i;
 
   TIFFMethodType
@@ -1202,7 +1202,7 @@ static void TIFFReadPhotoshopLayers(const ImageInfo *image_info,Image *image,
   PSDInfo
     info;
 
-  register ssize_t
+  ssize_t
     i;
 
   if (GetImageListLength(image) != 1)
@@ -1319,7 +1319,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   QuantumType
     quantum_type;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -1913,10 +1913,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         */
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          register Quantum
+          Quantum
             *magick_restrict q;
 
-          register ssize_t
+          ssize_t
             x;
 
           unsigned char
@@ -1956,7 +1956,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
       case ReadStripMethod:
       {
-        register unsigned char
+        unsigned char
           *p;
 
         size_t
@@ -2012,7 +2012,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           rows_remaining=0;
           for (y=0; y < (ssize_t) image->rows; y++)
           {
-            register Quantum
+            Quantum
               *magick_restrict q;
 
             q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -2053,7 +2053,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
       case ReadTileMethod:
       {
-        register unsigned char
+        unsigned char
           *p;
 
         size_t
@@ -2105,7 +2105,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           }
           for (y=0; y < (ssize_t) image->rows; y+=rows)
           {
-            register ssize_t
+            ssize_t
               x;
 
             size_t
@@ -2128,7 +2128,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               p=tile_pixels;
               for (row=0; row < rows_remaining; row++)
               {
-                register Quantum
+                Quantum
                   *magick_restrict q;
 
                 q=GetAuthenticPixels(image,x,y+row,columns_remaining,1,
@@ -2162,7 +2162,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         MemoryInfo
           *generic_info = (MemoryInfo * ) NULL;
 
-        register uint32
+        uint32
           *p;
 
         uint32
@@ -2188,10 +2188,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         p=pixels+(image->columns*image->rows)-1;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          register ssize_t
+          ssize_t
             x;
 
-          register Quantum
+          Quantum
             *magick_restrict q;
 
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -2319,7 +2319,7 @@ static void TIFFIgnoreTags(TIFF *tiff)
   Image
    *image;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -2436,7 +2436,7 @@ ModuleExport size_t RegisterTIFFImage(void)
     const char
       *p;
 
-    register ssize_t
+    ssize_t
       i;
 
     p=TIFFGetVersion();
@@ -2610,7 +2610,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -2904,10 +2904,10 @@ static MagickBooleanType EncodeLabImage(Image *image,ExceptionInfo *exception)
   image_view=AcquireAuthenticCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
@@ -3019,10 +3019,10 @@ static int32 TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
   int32
     status;
 
-  register ssize_t
+  ssize_t
     i;
 
-  register unsigned char
+  unsigned char
     *p,
     *q;
 
@@ -3359,7 +3359,7 @@ static void TIFFSetEXIFProperties(TIFF *tiff,Image *image,
   const char
     *value;
 
-  register ssize_t
+  ssize_t
     i;
 
   uint32
@@ -3449,7 +3449,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   QuantumType
     quantum_type;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -4102,7 +4102,7 @@ RestoreMSCWarning
               quantum_type=RGBAQuantum;
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              register const Quantum
+              const Quantum
                 *magick_restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -4131,7 +4131,7 @@ RestoreMSCWarning
             */
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              register const Quantum
+              const Quantum
                 *magick_restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -4150,7 +4150,7 @@ RestoreMSCWarning
               }
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              register const Quantum
+              const Quantum
                 *magick_restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -4169,7 +4169,7 @@ RestoreMSCWarning
               }
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              register const Quantum
+              const Quantum
                 *magick_restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -4189,7 +4189,7 @@ RestoreMSCWarning
             if (image->alpha_trait != UndefinedPixelTrait)
               for (y=0; y < (ssize_t) image->rows; y++)
               {
-                register const Quantum
+                const Quantum
                   *magick_restrict p;
 
                 p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -4223,7 +4223,7 @@ RestoreMSCWarning
           (void) TransformImageColorspace(image,CMYKColorspace,exception);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          register const Quantum
+          const Quantum
             *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -4302,7 +4302,7 @@ RestoreMSCWarning
              quantum_type=GrayQuantum;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          register const Quantum
+          const Quantum
             *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);

@@ -533,7 +533,7 @@ MagickExport MagickBooleanType GetPathTemplate(char *path)
   directory=DestroyString(directory);
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   {
-    register char
+    char
       *p;
 
     /*
@@ -561,10 +561,10 @@ MagickExport int AcquireUniqueFileResource(char *path)
     c,
     file;
 
-  register char
+  char
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   static const char
@@ -591,7 +591,7 @@ MagickExport int AcquireUniqueFileResource(char *path)
   file=(-1);
   for (i=0; i < (ssize_t) TMP_MAX; i++)
   {
-    register ssize_t
+    ssize_t
       j;
 
     /*
@@ -1148,7 +1148,7 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
   MagickSizeType
     memory;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -1310,7 +1310,7 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
 */
 MagickPrivate void ResourceComponentTerminus(void)
 {
-  register ssize_t
+  ssize_t
     i;
 
   for (i=0; i < (ssize_t) NumberOfResourceTypes; i++)

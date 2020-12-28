@@ -149,7 +149,7 @@ MagickExport ExceptionInfo *AcquireExceptionInfo(void)
 
 static void *DestroyExceptionElement(void *exception)
 {
-  register ExceptionInfo
+  ExceptionInfo
     *p;
 
   p=(ExceptionInfo *) exception;
@@ -205,7 +205,7 @@ MagickExport void CatchException(ExceptionInfo *exception)
   LinkedListInfo
     *exceptions;
 
-  register const ExceptionInfo
+  const ExceptionInfo
     *p;
 
   ssize_t
@@ -687,7 +687,7 @@ MagickExport const char *GetLocaleExceptionMessage(const ExceptionType severity,
 MagickExport void InheritException(ExceptionInfo *exception,
   const ExceptionInfo *relative)
 {
-  register const ExceptionInfo
+  const ExceptionInfo
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
@@ -995,7 +995,7 @@ MagickExport MagickBooleanType ThrowException(ExceptionInfo *exception,
   LinkedListInfo
     *exceptions;
 
-  register ExceptionInfo
+  ExceptionInfo
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);

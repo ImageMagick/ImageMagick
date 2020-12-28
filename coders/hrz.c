@@ -100,13 +100,13 @@ static Image *ReadHRZImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  register ssize_t
+  ssize_t
     x;
 
-  register Quantum
+  Quantum
     *q;
 
-  register unsigned char
+  unsigned char
     *p;
 
   ssize_t
@@ -278,14 +278,14 @@ static MagickBooleanType WriteHRZImage(const ImageInfo *image_info,Image *image,
   MagickBooleanType
     status;
 
-  register const Quantum
+  const Quantum
     *p;
 
-  register ssize_t
+  ssize_t
     x,
     y;
 
-  register unsigned char
+  unsigned char
     *q;
 
   ssize_t

@@ -197,7 +197,7 @@ static size_t convertHTMLcodes(char *s)
   int
     value;
 
-  register size_t
+  size_t
     i;
 
   size_t
@@ -1616,10 +1616,10 @@ static size_t GetIPTCStream(unsigned char **info,size_t length)
   int
     c;
 
-  register ssize_t
+  ssize_t
     i;
 
-  register unsigned char
+  unsigned char
     *p;
 
   size_t

@@ -186,7 +186,7 @@ MagickPrivate FxInfo *AcquireFxInfo(const Image *images,const char *expression,
   FxInfo
     *fx_info;
 
-  register ssize_t
+  ssize_t
     i;
 
   unsigned char
@@ -295,7 +295,7 @@ MagickPrivate FxInfo *AcquireFxInfo(const Image *images,const char *expression,
 */
 MagickPrivate FxInfo *DestroyFxInfo(FxInfo *fx_info)
 {
-  register ssize_t
+  ssize_t
     i;
 
   fx_info->exception=DestroyExceptionInfo(fx_info->exception);
@@ -392,7 +392,7 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
   double
     statistic;
 
-  register const char
+  const char
     *p;
 
   channel_mask=UndefinedChannel;
@@ -507,7 +507,7 @@ static inline MagickBooleanType IsFxFunction(const char *expression,
   int
     c;
 
-  register size_t
+  size_t
     i;
 
   for (i=0; i <= length; i++)
@@ -535,7 +535,7 @@ static inline const char *FxSubexpression(const char *expression,
   const char
     *subexpression;
 
-  register ssize_t
+  ssize_t
     level;
 
   level=0;
@@ -587,7 +587,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
   PointInfo
     point;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -1200,10 +1200,10 @@ static const char *FxOperatorPrecedence(const char *expression,
     precedence,
     target;
 
-  register const char
+  const char
     *subexpression;
 
-  register int
+  int
     c;
 
   size_t
@@ -1487,7 +1487,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
     sans,
     value;
 
-  register const char
+  const char
     *p;
 
   *beta=0.0;
@@ -2739,7 +2739,7 @@ MagickPrivate MagickBooleanType FxEvaluateChannelExpression(FxInfo *fx_info,
 
 static FxInfo **DestroyFxThreadSet(FxInfo **fx_info)
 {
-  register ssize_t
+  ssize_t
     i;
 
   assert(fx_info != (FxInfo **) NULL);
@@ -2762,7 +2762,7 @@ static FxInfo **AcquireFxThreadSet(const Image *image,const char *expression,
   FxInfo
     **fx_info;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -2860,13 +2860,13 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
     const int
       id = GetOpenMPThreadId();
 
-    register const Quantum
+    const Quantum
       *magick_restrict p;
 
-    register Quantum
+    Quantum
       *magick_restrict q;
 
-    register ssize_t
+    ssize_t
       x;
 
     if (status == MagickFalse)
@@ -2880,7 +2880,7 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
       }
     for (x=0; x < (ssize_t) fx_image->columns; x++)
     {
-      register ssize_t
+      ssize_t
         i;
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)

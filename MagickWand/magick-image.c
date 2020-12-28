@@ -5333,7 +5333,7 @@ WandExport PixelWand **MagickGetImageHistogram(MagickWand *wand,
   PixelWand
     **pixel_wands;
 
-  register ssize_t
+  ssize_t
     i;
 
   assert(wand != (MagickWand *) NULL);
@@ -5658,7 +5658,7 @@ WandExport MagickBooleanType MagickGetImagePage(MagickWand *wand,
 WandExport MagickBooleanType MagickGetImagePixelColor(MagickWand *wand,
   const ssize_t x,const ssize_t y,PixelWand *color)
 {
-  register const Quantum
+  const Quantum
     *p;
 
   CacheView
@@ -11045,7 +11045,7 @@ WandExport MagickBooleanType MagickSetImagePage(MagickWand *wand,
 WandExport MagickBooleanType MagickSetImagePixelColor(MagickWand *wand,
   const ssize_t x,const ssize_t y,const PixelWand *color)
 {
-  register Quantum
+  Quantum
     *q;
 
   CacheView

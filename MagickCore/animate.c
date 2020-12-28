@@ -404,7 +404,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       int
         number_files;
 
-      register int
+      int
         i;
 
       static char
@@ -753,7 +753,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   RectangleInfo
     geometry_info;
 
-  register ssize_t
+  ssize_t
     i;
 
   size_t
@@ -1340,10 +1340,10 @@ MagickExport Image *XAnimateImages(Display *display,
   RectangleInfo
     geometry_info;
 
-  register char
+  char
     *p;
 
-  register ssize_t
+  ssize_t
     i;
 
   ssize_t
@@ -1436,7 +1436,7 @@ MagickExport Image *XAnimateImages(Display *display,
     }
   else
     {
-      register Image
+      Image
         *p;
 
       /*
