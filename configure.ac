@@ -2363,7 +2363,7 @@ AC_ARG_WITH([jxl],
     [AC_HELP_STRING([--without-jxl],
                     [disable JPEG-XL support])],
     [with_jxl=$withval],
-    [with_jxl='yes'])
+    [with_jxl='no'])
 
 if test "$with_jxl" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-jxl=$with_jxl "

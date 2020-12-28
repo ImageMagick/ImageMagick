@@ -4576,7 +4576,7 @@ MAGICK_PATCHLEVEL_VERSION=54
 
 MAGICK_VERSION=7.0.10-54
 
-MAGICK_GIT_REVISION=18091:b0314b270:20201226
+MAGICK_GIT_REVISION=18118:1ae169694:20201228
 
 
 # Substitute library versioning
@@ -30491,7 +30491,7 @@ fi
 if test "${with_jxl+set}" = set; then :
   withval=$with_jxl; with_jxl=$withval
 else
-  with_jxl='yes'
+  with_jxl='no'
 fi
 
 
