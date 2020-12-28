@@ -5013,18 +5013,18 @@ static inline void PrefetchPixelCacheNexusPixels(const NexusInfo *nexus_info,
   MagickCachePrefetch((unsigned char *) nexus_info->pixels+CACHE_LINE_SIZE,1,1);
 }
 
-static inline MagickBooleanType ValidatePixelOffset(const ssize_t u,
-  const ssize_t v)  
-{  
+static inline MagickBooleanType ValidatePixelRange(const ssize_t alpha,
+  const ssize_t beta)
+{
   ssize_t
-    offset;
+    gamma;
 
-  offset=u+v;  
-  if (((u > 0) && (v > 0) && (offset < 0)) ||
-      ((u < 0) && (v < 0) && (offset > 0)))
+  gamma=alpha+beta; 
+  if (((alpha > 0) && (beta > 0) && (gamma < 0)) ||
+      ((alpha < 0) && (beta < 0) && (gamma > 0)))
     return(MagickFalse);
   return(MagickTrue);
-}  
+}
 
 static Quantum *SetPixelCacheNexusPixels(
   const CacheInfo *magick_restrict cache_info,const MapMode mode,
@@ -5047,8 +5047,8 @@ static Quantum *SetPixelCacheNexusPixels(
   (void) memset(&nexus_info->region,0,sizeof(nexus_info->region));
   if ((width == 0) || (width > (size_t) SSIZE_MAX) ||
       (height == 0) || (height > (size_t) SSIZE_MAX) ||
-      (ValidatePixelOffset(x,(ssize_t) width) == MagickFalse) ||
-      (ValidatePixelOffset(y,(ssize_t) height) == MagickFalse))
+      (ValidatePixelRange(x,(ssize_t) width) == MagickFalse) ||
+      (ValidatePixelRange(y,(ssize_t) height) == MagickFalse))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "NoPixelsDefinedInCache","`%s'",cache_info->filename);
