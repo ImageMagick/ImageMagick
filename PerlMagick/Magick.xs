@@ -904,7 +904,7 @@ static Image *GetList(pTHX_ SV *reference,SV ***reference_vector,
         *head,
         *previous;
 
-      register ssize_t
+      ssize_t
         i;
 
       ssize_t
@@ -1635,7 +1635,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           long
             index;
 
-          register Quantum
+          Quantum
             *q;
 
           CacheView
@@ -1872,7 +1872,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           PixelInfo
             pixel;
 
-          register Quantum
+          Quantum
             *q;
 
           CacheView
@@ -2424,7 +2424,7 @@ static ssize_t strEQcase(const char *p,const char *q)
   char
     c;
 
-  register ssize_t
+  ssize_t
     i;
 
   for (i=0 ; (c=(*q)) != 0; i++)
@@ -2503,7 +2503,7 @@ Animate(ref,...)
     Image
       *image;
 
-    register ssize_t
+    ssize_t
       i;
 
     struct PackageInfo
@@ -2591,7 +2591,7 @@ Append(ref,...)
     Image
       *image;
 
-    register ssize_t
+    ssize_t
       i;
 
     ssize_t
@@ -2828,10 +2828,10 @@ BlobToImage(ref,...)
     Image
       *image;
 
-    register char
+    char
       **p;
 
-    register ssize_t
+    ssize_t
       i;
 
     ssize_t
@@ -2988,7 +2988,7 @@ ChannelFx(ref,...)
     Image
       *image;
 
-    register ssize_t
+    ssize_t
       i;
 
     struct PackageInfo
@@ -3226,7 +3226,7 @@ CLONE(ref,...)
     PERL_UNUSED_VAR(ref);
     if (magick_registry != (SplayTreeInfo *) NULL)
       {
-        register Image
+        Image
           *p;
 
         ResetSplayTreeIterator(magick_registry);
@@ -3373,7 +3373,7 @@ Compare(ref,...)
     MetricType
       metric;
 
-    register ssize_t
+    ssize_t
       i;
 
     ssize_t
@@ -3563,7 +3563,7 @@ ComplexImages(ref)
     Image
       *image;
 
-    register ssize_t
+    ssize_t
       i;
 
     struct PackageInfo
@@ -3720,7 +3720,7 @@ CompareLayers(ref)
     LayerMethod
       method;
 
-    register ssize_t
+    ssize_t
       i;
 
     ssize_t
@@ -3929,7 +3929,7 @@ Display(ref,...)
     Image
       *image;
 
-    register ssize_t
+    ssize_t
       i;
 
     struct PackageInfo
@@ -4020,7 +4020,7 @@ EvaluateImages(ref)
     MagickEvaluateOperator
       op;
 
-    register ssize_t
+    ssize_t
       i;
 
     struct PackageInfo
@@ -4224,7 +4224,7 @@ Features(ref,...)
     Image
       *image;
 
-    register ssize_t
+    ssize_t
       i;
 
     ssize_t
@@ -4287,7 +4287,7 @@ Features(ref,...)
     count=0;
     for ( ; image; image=image->next)
     {
-      register ssize_t
+      ssize_t
         j;
 
       channel_features=GetImageFeatures(image,distance,exception);
@@ -4356,7 +4356,7 @@ Flatten(ref)
     PixelInfo
       background_color;
 
-    register ssize_t
+    ssize_t
       i;
 
     struct PackageInfo
@@ -4494,7 +4494,7 @@ Fx(ref,...)
     Image
       *image;
 
-    register ssize_t
+    ssize_t
       i;
 
     struct PackageInfo
@@ -4655,7 +4655,7 @@ Get(ref,...)
     long
       j;
 
-    register ssize_t
+    ssize_t
       i;
 
     struct PackageInfo
@@ -5271,7 +5271,7 @@ Get(ref,...)
                 x,
                 y;
 
-              register const Quantum
+              const Quantum
                 *p;
 
               CacheView
@@ -5537,7 +5537,7 @@ Get(ref,...)
                 x,
                 y;
 
-              register const Quantum
+              const Quantum
                 *p;
 
               if (image == (Image *) NULL)
@@ -6399,7 +6399,7 @@ Histogram(ref,...)
     Image
       *image;
 
-    register ssize_t
+    ssize_t
       i;
 
     ssize_t
@@ -6515,10 +6515,10 @@ GetPixel(ref,...)
     RectangleInfo
       region;
 
-    register const Quantum
+    const Quantum
       *p;
 
-    register ssize_t
+    ssize_t
       i;
 
     ssize_t
@@ -6716,7 +6716,7 @@ GetPixels(ref,...)
     RectangleInfo
       region;
 
-    register ssize_t
+    ssize_t
       i;
 
     ssize_t
@@ -6954,7 +6954,7 @@ ImageToBlob(ref,...)
       *image,
       *next;
 
-    register ssize_t
+    ssize_t
       i;
 
     struct PackageInfo
@@ -7073,7 +7073,7 @@ Layers(ref,...)
     LayerMethod
       method;
 
-    register ssize_t
+    ssize_t
       i;
 
     ssize_t
@@ -7720,7 +7720,7 @@ Mogrify(ref,...)
       geometry,
       region_info;
 
-    register ssize_t
+    ssize_t
       i;
 
     ssize_t
@@ -8727,10 +8727,10 @@ Mogrify(ref,...)
                   MagickBooleanType
                     sync;
 
-                  register ssize_t
+                  ssize_t
                     x;
 
-                  register Quantum
+                  Quantum
                     *q;
 
                   ssize_t
@@ -11685,7 +11685,7 @@ Montage(ref,...)
     MontageInfo
       *montage_info;
 
-    register ssize_t
+    ssize_t
       i;
 
     ssize_t
@@ -12090,7 +12090,7 @@ Morph(ref,...)
     Image
       *image;
 
-    register ssize_t
+    ssize_t
       i;
 
     ssize_t
@@ -12315,10 +12315,10 @@ Ping(ref,...)
     MagickBooleanType
       status;
 
-    register char
+    char
       **p;
 
-    register ssize_t
+    ssize_t
       i;
 
     ssize_t
@@ -12611,7 +12611,7 @@ QueryColor(ref,...)
     PixelInfo
       color;
 
-    register ssize_t
+    ssize_t
       i;
 
     SV
@@ -12697,7 +12697,7 @@ QueryColorname(ref,...)
     PixelInfo
       target_color;
 
-    register ssize_t
+    ssize_t
       i;
 
     struct PackageInfo
@@ -12764,7 +12764,7 @@ QueryFont(ref,...)
     ExceptionInfo
       *exception;
 
-    register ssize_t
+    ssize_t
       i;
 
     SV
@@ -12909,7 +12909,7 @@ QueryFontMetrics(ref,...)
     MagickStatusType
       flags;
 
-    register ssize_t
+    ssize_t
       i;
 
     ssize_t
@@ -13320,7 +13320,7 @@ QueryMultilineFontMetrics(ref,...)
     MagickStatusType
       flags;
 
-    register ssize_t
+    ssize_t
       i;
 
     ssize_t
@@ -13667,7 +13667,7 @@ QueryFormat(ref,...)
     ExceptionInfo
       *exception;
 
-    register ssize_t
+    ssize_t
       i;
 
     SV
@@ -13754,7 +13754,7 @@ QueryOption(ref,...)
     ExceptionInfo
       *exception;
 
-    register ssize_t
+    ssize_t
       i;
 
     ssize_t
@@ -13832,10 +13832,10 @@ Read(ref,...)
     MagickBooleanType
       status;
 
-    register char
+    char
       **p;
 
-    register ssize_t
+    ssize_t
       i;
 
     ssize_t
@@ -14034,7 +14034,7 @@ Remote(ref,...)
     ExceptionInfo
       *exception;
 
-    register ssize_t
+    ssize_t
       i;
 
     SV
@@ -14089,7 +14089,7 @@ Set(ref,...)
     Image
       *image;
 
-    register ssize_t
+    ssize_t
       i;
 
     struct PackageInfo
@@ -14168,10 +14168,10 @@ SetPixel(ref,...)
     RectangleInfo
       region;
 
-    register ssize_t
+    ssize_t
       i;
 
-    register Quantum
+    Quantum
       *q;
 
     ssize_t
@@ -14325,7 +14325,7 @@ SetPixel(ref,...)
         double
           scale;
 
-        register ssize_t
+        ssize_t
           i;
 
         i=0;
@@ -14416,10 +14416,10 @@ SetPixels(ref,...)
     RectangleInfo
       region;
 
-    register ssize_t
+    ssize_t
       i;
 
-    register Quantum
+    Quantum
       *q;
 
     struct PackageInfo
@@ -14574,7 +14574,7 @@ SetPixels(ref,...)
         double
           scale;
 
-        register ssize_t
+        ssize_t
           i,
           n,
           number_pixels;
@@ -14669,7 +14669,7 @@ Smush(ref,...)
     Image
       *image;
 
-    register ssize_t
+    ssize_t
       i;
 
     ssize_t
@@ -14884,7 +14884,7 @@ Statistics(ref,...)
     count=0;
     for ( ; image; image=image->next)
     {
-      register size_t
+      size_t
         i;
 
       channel_statistics=GetImageStatistics(image,exception);
@@ -15010,7 +15010,7 @@ Write(ref,...)
       *image,
       *next;
 
-    register ssize_t
+    ssize_t
       i;
 
     ssize_t
