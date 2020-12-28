@@ -255,11 +255,12 @@ static int ReadSingleWEBPImage(Image *image,const uint8_t *stream,
     y;
 
   WebPDecBuffer
-    *magick_restrict webp_image = &configure->output;
+    *magick_restrict webp_image;
 
   MagickBooleanType
     status;
 
+  webp_image=&configure->output;
   if (is_first)
     {
       canvas_width=image->columns;
