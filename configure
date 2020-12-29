@@ -4576,7 +4576,7 @@ MAGICK_PATCHLEVEL_VERSION=54
 
 MAGICK_VERSION=7.0.10-54
 
-MAGICK_GIT_REVISION=18124:edb23f607:20201228
+MAGICK_GIT_REVISION=18126:133411f2d:20201228
 
 
 # Substitute library versioning
@@ -30498,6 +30498,11 @@ fi
 if test "$with_jxl" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-jxl=$with_jxl "
 fi
+if test "$enable_static" = 'yes'; then
+    if test "$with_utilities" = 'yes'; then
+        with_jxl='no'
+    fi
+fi
 
 # Check for the JPEG-XL library.
 have_jxl='no'
@@ -30527,7 +30532,9 @@ else
 fi
 
 
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for JxlDecoderCreate in -ljxl" >&5
+  # This check should be changed once we have a .pc file for the JPEG-XL library.
+  if test "$enable_static" != 'yes'; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for JxlDecoderCreate in -ljxl" >&5
 $as_echo_n "checking for JxlDecoderCreate in -ljxl... " >&6; }
 if ${ac_cv_lib_jxl_JxlDecoderCreate+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -30569,8 +30576,7 @@ else
   failed=`expr $failed + 1`
 fi
 
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for JxlEncoderCreate in -ljxl" >&5
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for JxlEncoderCreate in -ljxl" >&5
 $as_echo_n "checking for JxlEncoderCreate in -ljxl... " >&6; }
 if ${ac_cv_lib_jxl_JxlEncoderCreate+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -30612,6 +30618,7 @@ else
   failed=`expr $failed + 1`
 fi
 
+  fi
 
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking if jpeg-xl package is complete" >&5
 $as_echo_n "checking if jpeg-xl package is complete... " >&6; }
