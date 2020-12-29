@@ -2368,6 +2368,11 @@ AC_ARG_WITH([jxl],
 if test "$with_jxl" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-jxl=$with_jxl "
 fi
+if test "$enable_static" = 'yes'; then
+    if test "$with_utilities" = 'yes'; then
+        with_jxl='no'
+    fi
+fi
 
 # Check for the JPEG-XL library.
 have_jxl='no'
@@ -2380,9 +2385,11 @@ if test "$with_jxl" != 'no'; then
   passed=0
   AC_CHECK_HEADER([jxl/decode.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
   AC_CHECK_HEADER([jxl/encode.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
-  AC_CHECK_LIB([jxl],[JxlDecoderCreate],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
-
-  AC_CHECK_LIB([jxl],[JxlEncoderCreate],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
+  # This check should be changed once we have a .pc file for the JPEG-XL library.
+  if test "$enable_static" != 'yes'; then
+    AC_CHECK_LIB([jxl],[JxlDecoderCreate],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
+    AC_CHECK_LIB([jxl],[JxlEncoderCreate],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
+  fi
 
   AC_MSG_CHECKING([if jpeg-xl package is complete])
   if test $passed -gt 0; then
