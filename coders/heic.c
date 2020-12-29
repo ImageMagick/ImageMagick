@@ -539,6 +539,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
               image=SyncNextImageInList(image);
               status=ReadHEICImageByID(image_info,image,depth_handle,
                 exception);
+              heif_image_handle_release(depth_handle);
             }
        }
     }
