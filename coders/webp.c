@@ -1001,6 +1001,9 @@ static MagickBooleanType WriteWEBPImageProfile(Image *image,
  
   WebPMuxError
     mux_error=WEBP_MUX_OK;
+
+  WebPMuxAnimParams
+    new_params;
  
   icc_profile=GetImageProfile(image,"ICC");
   exif_profile=GetImageProfile(image,"EXIF");
@@ -1008,7 +1011,8 @@ static MagickBooleanType WriteWEBPImageProfile(Image *image,
 
   if (icc_profile == (StringInfo *) NULL 
           && exif_profile == (StringInfo *) NULL 
-          && xmp_profile == (StringInfo *) NULL)
+          && xmp_profile == (StringInfo *) NULL
+          && image->iterations == 0)
     return(MagickTrue);
 
   mux=WebPMuxCreate(webp_data, 1);
@@ -1020,6 +1024,21 @@ static MagickBooleanType WriteWEBPImageProfile(Image *image,
 
   // Clean up returned data
   memset(webp_data, 0, sizeof(*webp_data));
+
+  if (image->iterations > 0)
+    {
+      mux_error=WebPMuxGetAnimationParams(mux, &new_params);
+      if (mux_error == WEBP_MUX_OK)
+        {
+          new_params.loop_count=image->iterations >= 65536 ? 65536-1 : image->iterations;
+          mux_error=WebPMuxSetAnimationParams(mux, &new_params);
+        }
+      // If gif only has 1 frame webp_data will create by WriteSingleWEBPImage
+      // WebPMuxGetAnimationParams will return WEBP_MUX_NOT_FOUND
+      else if (mux_error == WEBP_MUX_NOT_FOUND)
+        mux_error=WEBP_MUX_OK;
+    }
+
   if (icc_profile != (StringInfo *) NULL && (mux_error == WEBP_MUX_OK))
     {
       chunk.bytes=GetStringInfoDatum(icc_profile);
