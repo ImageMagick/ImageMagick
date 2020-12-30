@@ -122,21 +122,9 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   LPVOID
     clip_mem;
 
-  MagickBooleanType
-    status;
-
-  ssize_t
-    x;
-
-  Quantum
-    *q;
-
   size_t
     clip_size,
     total_size;
-
-  ssize_t
-    y;
 
   unsigned char
     offset;
