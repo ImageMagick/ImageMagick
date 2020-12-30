@@ -1049,6 +1049,17 @@ static MagickBooleanType WriteWEBPImageProfile(Image *image,
 }
 #endif
 
+static inline void SetIntegerOption(const ImageInfo *image_info,
+  const char *option,int *setting)
+{
+  const char
+    *value;
+
+  value=GetImageOption(image_info,option);
+  if (value != (const char *) NULL)
+    *setting=StringToInteger(value);
+}
+
 static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo * exception)
 {
@@ -1088,9 +1099,6 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   if (value != (char *) NULL)
     configure.lossless=(int) ParseCommandOption(MagickBooleanOptions,
       MagickFalse,value);
-  value=GetImageOption(image_info,"webp:method");
-  if (value != (char *) NULL)
-    configure.method=StringToInteger(value);
   value=GetImageOption(image_info,"webp:image-hint");
   if (value != (char *) NULL)
     {
@@ -1105,55 +1113,35 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
         configure.image_hint=WEBP_HINT_GRAPH;
 #endif
     }
-  value=GetImageOption(image_info,"webp:target-size");
-  if (value != (char *) NULL)
-    configure.target_size=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:target-psnr");
-  if (value != (char *) NULL)
-    configure.target_PSNR=(float) StringToDouble(value,(char **) NULL);
-  value=GetImageOption(image_info,"webp:segments");
-  if (value != (char *) NULL)
-    configure.segments=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:sns-strength");
-  if (value != (char *) NULL)
-    configure.sns_strength=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:filter-strength");
-  if (value != (char *) NULL)
-    configure.filter_strength=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:filter-sharpness");
-  if (value != (char *) NULL)
-    configure.filter_sharpness=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:filter-type");
-  if (value != (char *) NULL)
-    configure.filter_type=StringToInteger(value);
   value=GetImageOption(image_info,"webp:auto-filter");
   if (value != (char *) NULL)
     configure.autofilter=(int) ParseCommandOption(MagickBooleanOptions,
       MagickFalse,value);
-  value=GetImageOption(image_info,"webp:alpha-compression");
+  value=GetImageOption(image_info,"webp:target-psnr");
   if (value != (char *) NULL)
-    configure.alpha_compression=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:alpha-filtering");
-  if (value != (char *) NULL)
-    configure.alpha_filtering=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:alpha-quality");
-  if (value != (char *) NULL)
-    configure.alpha_quality=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:pass");
-  if (value != (char *) NULL)
-    configure.pass=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:show-compressed");
-  if (value != (char *) NULL)
-    configure.show_compressed=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:preprocessing");
-  if (value != (char *) NULL)
-    configure.preprocessing=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:partitions");
-  if (value != (char *) NULL)
-    configure.partitions=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:partition-limit");
-  if (value != (char *) NULL)
-    configure.partition_limit=StringToInteger(value);
+    configure.target_PSNR=(float) StringToDouble(value,(char **) NULL);
+  SetIntegerOption(image_info,"webp:alpha-compression",
+    &configure.alpha_compression);
+  SetIntegerOption(image_info,"webp:alpha-filtering",
+    &configure.alpha_filtering);
+  SetIntegerOption(image_info,"webp:alpha-quality",
+    &configure.alpha_quality);
+  SetIntegerOption(image_info,"webp:filter-strength",
+    &configure.filter_strength);
+  SetIntegerOption(image_info,"webp:filter-sharpness",
+    &configure.filter_sharpness);
+  SetIntegerOption(image_info,"webp:filter-type",&configure.filter_type);
+  SetIntegerOption(image_info,"webp:method",&configure.method);
+  SetIntegerOption(image_info,"webp:partitions",&configure.partitions);
+  SetIntegerOption(image_info,"webp:partition-limit",
+    &configure.partition_limit);
+  SetIntegerOption(image_info,"webp:pass",&configure.pass);
+  SetIntegerOption(image_info,"webp:preprocessing",&configure.preprocessing);
+  SetIntegerOption(image_info,"webp:segments",&configure.segments);
+  SetIntegerOption(image_info,"webp:show-compressed",
+    &configure.show_compressed);
+  SetIntegerOption(image_info,"webp:sns-strength",&configure.sns_strength);
+  SetIntegerOption(image_info,"webp:target-size",&configure.target_size);
 #if WEBP_ENCODER_ABI_VERSION >= 0x0201
   value=GetImageOption(image_info,"webp:emulate-jpeg-size");
   if (value != (char *) NULL)
@@ -1163,18 +1151,13 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   if (value != (char *) NULL)
     configure.low_memory=(int) ParseCommandOption(MagickBooleanOptions,
       MagickFalse,value);
-  value=GetImageOption(image_info,"webp:thread-level");
-  if (value != (char *) NULL)
-    configure.thread_level=StringToInteger(value);
+  SetIntegerOption(image_info,"webp:thread-level",&configure.thread_level);
 #endif
 #if WEBP_ENCODER_ABI_VERSION >= 0x020e
-  value=GetImageOption(image_info,"webp:use-sharp-yuv");
-  if (value != (char *) NULL)
-    configure.use_sharp_yuv=StringToInteger(value);
+  SetIntegerOption(image_info,"webp:use-sharp-yuv",&configure.use_sharp_yuv);
 #endif
   if (WebPValidateConfig(&configure) == 0)
     ThrowWriterException(ResourceLimitError,"UnableToEncodeImageFile");
-
 #if defined(MAGICKCORE_WEBPMUX_DELEGATE)
   {
     WebPData
