@@ -1664,6 +1664,7 @@ MagickExport MagickBooleanType NTLongPathsEnabled()
           long_paths_enabled=0;
           return(MagickFalse);
         }
+      size=0;
       status=RegQueryValueExA(registry_key,"LongPathsEnabled",0,&type,
         (LPBYTE) &value,&size);
       RegCloseKey(registry_key);
