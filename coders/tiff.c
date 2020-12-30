@@ -1975,7 +1975,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert stripped TIFF image.
         */
-        extent=TIFFStripSize(tiff);
+        extent=2*TIFFStripSize(tiff);
 #if defined(TIFF_VERSION_BIG)
         extent+=image->columns*sizeof(uint64);
 #else
