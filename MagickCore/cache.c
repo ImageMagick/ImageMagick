@@ -224,8 +224,10 @@ MagickPrivate Cache AcquirePixelCache(const size_t number_threads)
       cache_info->synchronize=IsStringTrue(value);
       value=DestroyString(value);
     }
-  cache_info->width_limit=GetMagickResourceLimit(WidthResource);
-  cache_info->height_limit=GetMagickResourceLimit(HeightResource);
+  cache_info->width_limit=MagickMin(GetMagickResourceLimit(WidthResource),
+    (MagickSizeType) SSIZE_MAX);
+  cache_info->height_limit=MagickMin(GetMagickResourceLimit(HeightResource),
+    (MagickSizeType) SSIZE_MAX);
   cache_info->semaphore=AcquireSemaphoreInfo();
   cache_info->reference_count=1;
   cache_info->file_semaphore=AcquireSemaphoreInfo();
@@ -5051,8 +5053,7 @@ static Quantum *SetPixelCacheNexusPixels(
         "NoPixelsDefinedInCache","`%s'",cache_info->filename);
       return((Quantum *) NULL);
     }
-  if ((width > (size_t) SSIZE_MAX) || (height > (size_t) SSIZE_MAX) ||
-      ((MagickSizeType) width > cache_info->width_limit) ||
+  if (((MagickSizeType) width > cache_info->width_limit) ||
       ((MagickSizeType) height > cache_info->height_limit) ||
       (ValidatePixelRange(x,(ssize_t) width) == MagickFalse) ||
       (ValidatePixelRange(y,(ssize_t) height) == MagickFalse))
