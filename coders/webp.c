@@ -1154,6 +1154,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   SetIntegerOption(image_info,"webp:thread-level",&configure.thread_level);
 #endif
 #if WEBP_ENCODER_ABI_VERSION >= 0x020e
+  SetIntegerOption(image_info,"webp:near-lossless",&configure.near_lossless);
   SetIntegerOption(image_info,"webp:use-sharp-yuv",&configure.use_sharp_yuv);
 #endif
   if (WebPValidateConfig(&configure) == 0)
