@@ -422,6 +422,21 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   bounds.height=0;
   bounds.x=(ssize_t) image->columns;
   bounds.y=(ssize_t) image->rows;
+  artifact=GetImageArtifact(image,"trim:vertical");
+  if (IsStringTrue(artifact) != MagickFalse)
+    {
+      bounds.width=(ssize_t) image->columns;
+      bounds.x=0;
+    }
+  else
+    {
+      artifact=GetImageArtifact(image,"trim:horizontal");
+      if (IsStringTrue(artifact) != MagickFalse)
+        {
+          bounds.height=(ssize_t) image->rows;
+          bounds.y=0;
+        }
+    }
   GetPixelInfo(image,&target[0]);
   image_view=AcquireVirtualCacheView(image,exception);
   p=GetCacheViewVirtualPixels(image_view,0,0,1,1,exception);
