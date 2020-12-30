@@ -342,32 +342,18 @@ fi
 AC_EXEEXT
 AC_OBJEXT
 
-GDI32_LIBS=''
-WS2_32_LIBS=''
 native_win32_build='no'
 cygwin_build='no'
 case "${host_os}" in
     cygwin* )
         cygwin_build='yes'
-        GDI32_LIBS='-lgdi32'
     ;;
     mingw* )
         native_win32_build='yes'
-        GDI32_LIBS='-lgdi32'
-        OLE_LIBS='-loleaut32'
-        WS2_32_LIBS="-lws2_32"
     ;;
 esac
-if test "${GDI32_LIBS}x" != 'x'; then
-    AC_DEFINE([WINGDI32_DELEGATE],[1],[Define to use the Windows GDI32 library])
-fi
-AC_SUBST([GDI32_LIBS])
-AC_SUBST([OLE_LIBS])
-AC_SUBST([WS2_32_LIBS])
-AM_CONDITIONAL([WINGDI32_DELEGATE],[ test "${GDI32_LIBS}x" != 'x' ])
 AM_CONDITIONAL([WIN32_NATIVE_BUILD],[ test "${native_win32_build}" = 'yes' ])
 AM_CONDITIONAL([CYGWIN_BUILD],[ test "${cygwin_build}" = 'yes' ])
-AM_CONDITIONAL([USING_CL],[ test "x${CC}" = 'xcl.exe' ])
 
 WinPathScript="${srcdirfull}/winpath.sh"
 AC_SUBST([WinPathScript])
@@ -1339,7 +1325,7 @@ if test "$with_jemalloc" != 'no'; then
     else
       JEMALLOC_LIBS='-ljemalloc'
       LIBS="$JEMALLOC_LIBS $LIBS"
-      AC_DEFINE([HasJEMALLOC],[1],[Define if you have jemalloc memory allocation library])
+      AC_DEFINE([HAVE_JEMALLOC],[1],[Define if you have jemalloc memory allocation library])
       AC_MSG_RESULT([yes])
       have_jemalloc='yes'
     fi
@@ -1347,7 +1333,7 @@ if test "$with_jemalloc" != 'no'; then
     AC_MSG_RESULT([no])
   fi
 fi
-AM_CONDITIONAL([HasJEMALLOC],[ test "$have_jemalloc" = 'yes'])
+AM_CONDITIONAL([HAVE_JEMALLOC],[ test "$have_jemalloc" = 'yes'])
 AC_SUBST([JEMALLOC_LIBS])
 
 #
@@ -2113,6 +2099,62 @@ fi
 AM_CONDITIONAL([RAQM_DELEGATE],[ test "$have_raqm" = 'yes'])
 AC_SUBST([RAQM_CFLAGS])
 AC_SUBST([RAQM_LIBS])
+
+dnl ===========================================================================
+
+#
+# Enable Windows gdi32 libraries
+#
+AC_ARG_WITH([gdi32],
+    AS_HELP_STRING([--without-gdi32],
+                   [disable Windows gdi32 support]),
+    [with_gdi32=$withval],
+    [with_gdi32='yes'])
+if test "$with_gdi32" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-gdi32=$with_gdi32 "
+fi
+
+#
+# Check for Windows gdi32 library.
+#
+have_gdi32='no'
+if test "$with_gdi32" != 'no'; then
+  GDI32_LIBS=''
+  AC_MSG_CHECKING([for Windows GDI32 support])
+  AC_MSG_RESULT()
+  failed=0
+  passed=0
+  found_libuser32=0
+  found_libgdi32=0
+  AC_CHECK_HEADER([windows.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
+  AC_CHECK_HEADER([winuser.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[#include <windows.h>])
+  AC_CHECK_HEADER([wingdi.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[#include <windows.h>])
+  AC_CHECK_LIB([user32],[OpenClipboard],[found_libuser32=`expr $found_libuser32 + 1`],[],)
+  AC_CHECK_LIB([gdi32],[CreateDIBSection],[found_libgdi32=`expr $found_libgdi32 + 1`],[],[-luser32])
+  if test $found_libuser32 -gt 0 -a  $found_libgdi32 -gt 0; then
+    passed=`expr $passed + 1`
+  else
+    failed=`expr $failed + 1`
+  fi
+  AC_MSG_CHECKING([if Windows GDI32 support is complete])
+  if test $passed -gt 0; then
+    if test $failed -gt 0; then
+      AC_MSG_RESULT([no -- some components failed test])
+      have_gdi32='no (failed tests)'
+    else
+      GDI32_LIBS='-lgdi32 -luser32'
+      LIBS="$GDI32_LIBS $LIBS"
+      AC_DEFINE([WINGDI32_DELEGATE],[1],[Define to use the Windows GDI32 library])
+      AC_MSG_RESULT([yes])
+      have_gdi32='yes'
+    fi
+  else
+    AC_MSG_RESULT([no])
+  fi
+fi
+AM_CONDITIONAL([WINGDI32_DELEGATE], [test "$have_gdi32" = 'yes'])
+AC_SUBST([GDI32_LIBS])
+
 
 dnl ===========================================================================
 
@@ -3920,9 +3962,9 @@ fi
 #
 
 if test "$build_modules" != 'no'; then
-    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $ZIPLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $ZIPLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $JXL_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $WS2_32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $JXL_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
 fi
 MAGICK_EXTRA_DEP_LIBS="$GOMP_LIBS"
 AC_SUBST([MAGICK_DEP_LIBS])

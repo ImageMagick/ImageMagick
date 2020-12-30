@@ -1923,7 +1923,7 @@ coders_xps_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_xps_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_xps_la_rpath = -rpath $(codersdir)
-coders_xtrn_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_xtrn_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
 am_coders_xtrn_la_OBJECTS = coders/xtrn_la-xtrn.lo
 coders_xtrn_la_OBJECTS = $(am_coders_xtrn_la_OBJECTS)
 coders_xtrn_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -3297,7 +3297,6 @@ NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-OLE_LIBS = @OLE_LIBS@
 OPENEXR_CFLAGS = @OPENEXR_CFLAGS@
 OPENEXR_LIBS = @OPENEXR_LIBS@
 OPENMP_CFLAGS = @OPENMP_CFLAGS@
@@ -3389,7 +3388,6 @@ WEBP_CFLAGS = @WEBP_CFLAGS@
 WEBP_LIBS = @WEBP_LIBS@
 WMF_CFLAGS = @WMF_CFLAGS@
 WMF_LIBS = @WMF_LIBS@
-WS2_32_LIBS = @WS2_32_LIBS@
 WWWDecodeDelegate = @WWWDecodeDelegate@
 WebPDecodeDelegate = @WebPDecodeDelegate@
 WebPEncodeDelegate = @WebPEncodeDelegate@
