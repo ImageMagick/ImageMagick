@@ -1540,8 +1540,8 @@ static double *GenerateCoefficients(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *DistortResizeImage(const Image *image,
-  const size_t columns,const size_t rows,ExceptionInfo *exception)
+MagickExport Image *DistortResizeImage(const Image *image,const size_t columns,
+  const size_t rows,ExceptionInfo *exception)
 {
 #define DistortResizeImageTag  "Distort/Image"
 
@@ -1588,18 +1588,15 @@ MagickExport Image *DistortResizeImage(const Image *image,
   if (image->alpha_trait == UndefinedPixelTrait)
     {
       /*
-        Image has not transparency channel, so we free to use it
+        Image has no alpha channel, so we are free to use it.
       */
       (void) SetImageAlphaChannel(tmp_image,SetAlphaChannel,exception);
       resize_image=DistortImage(tmp_image,AffineDistortion,12,distort_args,
         MagickTrue,exception),
-
       tmp_image=DestroyImage(tmp_image);
       if (resize_image == (Image *) NULL)
         return((Image *) NULL);
-
-      (void) SetImageAlphaChannel(resize_image,DeactivateAlphaChannel,
-        exception);
+      (void) SetImageAlphaChannel(resize_image,OffAlphaChannel,exception);
     }
   else
     {
