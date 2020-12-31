@@ -97,6 +97,7 @@ static const char
 static const char
   *convert_options[] =
   {
+    "",
     "-affine 1,0,0.785,1,0,0 -transform",
     "-black-threshold 20%",
     "-blur 0x0.5",
