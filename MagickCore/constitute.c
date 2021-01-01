@@ -1040,11 +1040,11 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
       p++;
       if (LocaleNCompare(p,"x-",2) == 0)
         p+=2;
-      q=read_info->magick;
-      for (i=0; (*p != ';') && (*p != '\0') && (i < (MagickPathExtent-1)); i++)
+      (void) strcpy(read_info->filename,"inline.");
+      q=read_info->filename+7;
+      for (i=0; (*p != ';') && (*p != '\0') && (i < (MagickPathExtent-8)); i++)
         *q++=(*p++);
       *q++='\0';
-      LocaleUpper(read_info->magick);
     }
   image=BlobToImage(read_info,blob,length,exception);
   blob=(unsigned char *) RelinquishMagickMemory(blob);
