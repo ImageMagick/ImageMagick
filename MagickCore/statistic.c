@@ -1775,6 +1775,7 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
 
   char
     *colorspaces,
+    *p,
     *q;
 
   const char
@@ -1782,9 +1783,6 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
 
   MagickBooleanType
     status;
-
-  char
-    *p;
 
   ssize_t
     i;
