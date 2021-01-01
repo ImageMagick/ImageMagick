@@ -124,7 +124,20 @@ static Image *ReadINLINEImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   if (LocaleNCompare(image_info->filename,"data:",5) == 0)
-    return(ReadInlineImage(image_info,image_info->filename,exception));
+    {
+      char
+        *filename;
+
+      Image
+        *data_image;
+
+      filename=AcquireString("data:");
+      (void) ConcatenateMagickString(filename,image_info->filename,
+        MagickPathExtent);
+      data_image=ReadInlineImage(image_info,filename,exception);
+      filename=DestroyString(filename);
+      return(data_image);
+    }
   image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
