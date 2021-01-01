@@ -4574,7 +4574,7 @@ MAGICK_PATCHLEVEL_VERSION=54
 
 MAGICK_VERSION=7.0.10-54
 
-MAGICK_GIT_REVISION=18132:a5b64ccc4:20201230
+MAGICK_GIT_REVISION=18155:d84201129:20210101
 
 
 # Substitute library versioning
@@ -29798,8 +29798,6 @@ $as_echo_n "checking for Windows GDI32 support... " >&6; }
 $as_echo "" >&6; }
   failed=0
   passed=0
-  found_libuser32=0
-  found_libgdi32=0
   ac_fn_c_check_header_mongrel "$LINENO" "windows.h" "ac_cv_header_windows_h" "$ac_includes_default"
 if test "x$ac_cv_header_windows_h" = xyes; then :
   passed=`expr $passed + 1`
@@ -29826,90 +29824,8 @@ else
 fi
 
 
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for OpenClipboard in -luser32" >&5
-$as_echo_n "checking for OpenClipboard in -luser32... " >&6; }
-if ${ac_cv_lib_user32_OpenClipboard+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-luser32  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char OpenClipboard ();
-int
-main ()
-{
-return OpenClipboard ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_user32_OpenClipboard=yes
-else
-  ac_cv_lib_user32_OpenClipboard=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_user32_OpenClipboard" >&5
-$as_echo "$ac_cv_lib_user32_OpenClipboard" >&6; }
-if test "x$ac_cv_lib_user32_OpenClipboard" = xyes; then :
-  found_libuser32=`expr $found_libuser32 + 1`
-fi
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for CreateDIBSection in -lgdi32" >&5
-$as_echo_n "checking for CreateDIBSection in -lgdi32... " >&6; }
-if ${ac_cv_lib_gdi32_CreateDIBSection+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lgdi32 -luser32 $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char CreateDIBSection ();
-int
-main ()
-{
-return CreateDIBSection ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_gdi32_CreateDIBSection=yes
-else
-  ac_cv_lib_gdi32_CreateDIBSection=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_gdi32_CreateDIBSection" >&5
-$as_echo "$ac_cv_lib_gdi32_CreateDIBSection" >&6; }
-if test "x$ac_cv_lib_gdi32_CreateDIBSection" = xyes; then :
-  found_libgdi32=`expr $found_libgdi32 + 1`
-fi
-
-  if test $found_libuser32 -gt 0 -a  $found_libgdi32 -gt 0; then
+  if test "$cygwin_build" = yes -o "$native_win32_build" = yes; then
     passed=`expr $passed + 1`
-  else
-    failed=`expr $failed + 1`
   fi
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking if Windows GDI32 support is complete" >&5
 $as_echo_n "checking if Windows GDI32 support is complete... " >&6; }
