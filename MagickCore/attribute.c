@@ -418,24 +418,39 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   artifact=GetImageArtifact(image,"trim:percent-background");
   if (artifact != (const char *) NULL)
     return(GetEdgeBoundingBox(image,exception));
-  bounds.width=0;
-  bounds.height=0;
-  bounds.x=(ssize_t) image->columns;
-  bounds.y=(ssize_t) image->rows;
-  artifact=GetImageArtifact(image,"trim:vertical");
-  if (IsStringTrue(artifact) != MagickFalse)
+  artifact=GetImageArtifact(image, "trim:edges");
+  if (artifact == (const char *) NULL)
     {
-      bounds.width=(ssize_t) image->columns;
-      bounds.x=0;
+      bounds.width=0;
+      bounds.height=0;
+      bounds.x=(ssize_t) image->columns;
+      bounds.y=(ssize_t) image->rows;
     }
   else
     {
-      artifact=GetImageArtifact(image,"trim:horizontal");
-      if (IsStringTrue(artifact) != MagickFalse)
-        {
-          bounds.height=(ssize_t) image->rows;
-          bounds.y=0;
-        }
+      char
+        *edges,
+        *p,
+        *q;
+
+      bounds.width=(ssize_t) image->columns;
+      bounds.height=(ssize_t) image->rows;
+      bounds.x=0;
+      bounds.y=0;
+      edges=AcquireString(artifact);
+      q=edges;
+      while ((p=StringToken(",",&q)) != (char *) NULL)
+      {
+        if (LocaleCompare(p,"north") == 0)
+          bounds.y=(ssize_t) image->rows;
+        if (LocaleCompare(p,"east") == 0)
+          bounds.width=0;
+        if (LocaleCompare(p,"south") == 0)
+          bounds.height=0;
+        if (LocaleCompare(p,"west") == 0)
+          bounds.x=(ssize_t) image->columns;
+      }
+      edges=DestroyString(edges);
     }
   GetPixelInfo(image,&target[0]);
   image_view=AcquireVirtualCacheView(image,exception);

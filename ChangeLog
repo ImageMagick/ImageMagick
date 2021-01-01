@@ -4,6 +4,8 @@
 2020-12-27  7.0.10-54  Dirk Lemstra <dirk@lem.....org>
   * replaced jxl coder with an implementation that uses the jpeg-xl reference
     library.
+  * added -define trim:edges=(north,east,south,west) that can be used to
+    trim a single or multiple edges.
 
 2020-12-25  7.0.10-54  <quetzlzacatenango@image...>
   * enable reading of a certain grayscale TIFF image.
