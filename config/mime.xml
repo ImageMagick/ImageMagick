@@ -827,6 +827,7 @@
   <mime type="image/x-gzeps" description="EPS image (gzip-compressed)" priority="100" pattern="*.epsi.gz" />
   <mime type="image/x-gzeps" description="EPS image (gzip-compressed)" priority="100" pattern="*.epsf.gz" />
   <mime type="image/x-ico" acronym="ICO" description="Windows Icon" priority="100" pattern="*.ico" />
+  <mime type="image/x-icon" acronym="ICO" description="Windows Icon" priority="100" pattern="*.ico" />
   <mime type="image/x-icns" description="MacOS X icon" data-type="string" offset="0" magic="icns" priority="50" />
   <mime type="image/x-icns" description="MacOS X icon" priority="100" pattern="*.icns" />
   <mime type="image/x-iff" description="IFF image" priority="100" pattern="*.iff" />
