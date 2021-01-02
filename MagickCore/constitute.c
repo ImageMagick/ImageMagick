@@ -1040,9 +1040,9 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
       p++;
       if (LocaleNCompare(p,"x-",2) == 0)
         p+=2;
-      (void) strcpy(read_info->filename,"inline.");
-      q=read_info->filename+7;
-      for (i=0; (*p != ';') && (*p != '\0') && (i < (MagickPathExtent-8)); i++)
+      (void) strcpy(read_info->filename,"data.");
+      q=read_info->filename+5;
+      for (i=0; (*p != ';') && (*p != '\0') && (i < (MagickPathExtent-6)); i++)
         *q++=(*p++);
       *q++='\0';
     }
