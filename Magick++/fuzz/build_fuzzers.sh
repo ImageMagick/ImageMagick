@@ -1,6 +1,6 @@
 #!/bin/bash -eu
 
-MAGICK_COMPILER_FLAGS="$MAGICK_COMPILER_FLAGS -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16"
+MAGICK_COMPILER_FLAGS="$MAGICK_COMPILER_FLAGS -fuse-ld=lld -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16"
 
 $MAGICK_COMPILER $MAGICK_COMPILER_FLAGS -std=c++11 -I$MAGICK_INCLUDE "$MAGICK_SRC/encoder_list.cc" \
     -o "$MAGICK_SRC/encoder_list" $MAGICK_LIBS_NO_FUZZ
@@ -40,7 +40,7 @@ for item in $("$MAGICK_SRC/encoder_list"); do
          $encoder_flags $MAGICK_LIBS
 
     echo -e "[libfuzzer]\nclose_fd_mask=3" > "$MAGICK_OUTPUT/encoder_${encoder,,}_fuzzer.options"
-    
+
     if [ -f "$MAGICK_SRC/dictionaries/${encoder,,}.dict" ]; then
         cp "$MAGICK_SRC/dictionaries/${encoder,,}.dict" "$MAGICK_OUTPUT/ping_${encoder,,}_fuzzer.dict"
         cp "$MAGICK_SRC/dictionaries/${encoder,,}.dict" "$MAGICK_OUTPUT/encoder_${encoder,,}_fuzzer.dict"
