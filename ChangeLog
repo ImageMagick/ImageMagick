@@ -1,5 +1,5 @@
-2020-12-27  7.0.10-54  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-54 GIT revision 18...
+2021-01-02  7.0.10-54  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-54 GIT revision 18159:24fabe7e2:20210102
 
 2020-12-27  7.0.10-54  Dirk Lemstra <dirk@lem.....org>
   * replaced jxl coder with an implementation that uses the jpeg-xl reference
