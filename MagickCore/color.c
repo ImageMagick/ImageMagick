@@ -2505,8 +2505,14 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
               geometry_info.psi));
           else
             if (color->alpha_trait != UndefinedPixelTrait)
-              color->alpha=(double) ClampToQuantum((MagickRealType) (scale*
-                geometry_info.psi));
+              {
+                if ((flags & AlphaValue) != 0)
+                  color->alpha=(double) ClampToQuantum((MagickRealType) (scale*
+                    geometry_info.psi));
+                else
+                  color->alpha=(double) ClampToQuantum((MagickRealType) (
+                    QuantumRange*geometry_info.psi));
+              }
         }
       if (((flags & ChiValue) != 0) &&
           (color->alpha_trait != UndefinedPixelTrait))
