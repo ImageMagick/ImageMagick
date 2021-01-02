@@ -1012,7 +1012,6 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
   for (p=content; (*p != ',') && (*p != '\0'); p++) ;
   if (*p == '\0')
     ThrowReaderException(CorruptImageError,"CorruptImage");
-  length=0;
   blob=Base64Decode(++p,&length);
   if (length == 0)
     {
