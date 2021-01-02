@@ -2171,7 +2171,7 @@ MagickExport double *StringToArrayOfDoubles(const char *string,ssize_t *count,
 %  delimiter character found, or NULL.  A pointer to the start of the
 %  string is returned, representing the token before the delimiter.
 %
-%  In may ways this is equivent to the strtok() C library function, but with
+%  StringToken() is similar to the strtok() C library method, but with
 %  multiple delimiter characters rather than a delimiter string.
 %
 %  The format of the StringToken method is:
