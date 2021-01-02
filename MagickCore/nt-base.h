@@ -55,13 +55,6 @@ extern "C" {
 #define _SC_PAGE_SIZE 1
 #define _SC_PHYS_PAGES 2
 #define _SC_OPEN_MAX 3
-#if !defined(SSIZE_MAX)
-# ifdef _WIN64
-#   define SSIZE_MAX LLONG_MAX
-# else
-#   define SSIZE_MAX LONG_MAX
-# endif
-#endif
 
 /*
   _MSC_VER values:

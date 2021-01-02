@@ -54,10 +54,10 @@ static inline ssize_t CastDoubleToLong(const double value)
 {
   if (IsNaN(value) != 0)
     return(0);
-  if (value > (double) SSIZE_MAX)
-    return((ssize_t) SSIZE_MAX);
-  if (value < (double) -SSIZE_MAX)
-    return((ssize_t) -SSIZE_MAX);
+  if (value > (double) LONG_MAX)
+    return((ssize_t) LONG_MAX);
+  if (value < (double) LONG_MIN)
+    return((ssize_t) LONG_MIN);
   return((ssize_t) value);
 }
 

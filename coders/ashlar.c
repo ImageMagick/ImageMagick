@@ -283,9 +283,9 @@ static TileInfo AssignBestTileLocation(AshlarInfo *ashlar_info,
       tile.y=0;
       return(tile);
     }
-  tile.x=(ssize_t) SSIZE_MAX;
-  tile.y=(ssize_t) SSIZE_MAX;
-  min_excess=(ssize_t) SSIZE_MAX;
+  tile.x=(ssize_t) LONG_MAX;
+  tile.y=(ssize_t) LONG_MAX;
+  min_excess=(ssize_t) LONG_MAX;
   node=ashlar_info->current;
   previous=(&ashlar_info->current);
   while ((width+node->x) <= ashlar_info->width)
@@ -472,8 +472,8 @@ static MagickBooleanType PackAshlarTiles(AshlarInfo *ashlar_info,
         tiles[i].y=(ssize_t) tile_info.y;
         if (tile_info.previous == (NodeInfo **) NULL)
           {
-            tiles[i].x=(ssize_t) SSIZE_MAX;
-            tiles[i].y=(ssize_t) SSIZE_MAX;
+            tiles[i].x=(ssize_t) LONG_MAX;
+            tiles[i].y=(ssize_t) LONG_MAX;
           }
       }
   }
@@ -481,8 +481,8 @@ static MagickBooleanType PackAshlarTiles(AshlarInfo *ashlar_info,
   status=MagickTrue;
   for (i=0; i < (ssize_t) number_tiles; i++)
   {
-    tiles[i].order=(ssize_t) ((tiles[i].x != (ssize_t) SSIZE_MAX) ||
-      (tiles[i].y != (ssize_t) SSIZE_MAX) ? 1 : 0);
+    tiles[i].order=(ssize_t) ((tiles[i].x != (ssize_t) LONG_MAX) ||
+      (tiles[i].y != (ssize_t) LONG_MAX) ? 1 : 0);
     if (tiles[i].order == 0)
       status=MagickFalse;
   }
@@ -606,7 +606,7 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
     ashlar_info.head.y=0;
     ashlar_info.head.next=(&ashlar_info.sentinal);
     ashlar_info.sentinal.x=(ssize_t) geometry.width;
-    ashlar_info.sentinal.y=(ssize_t) SSIZE_MAX;
+    ashlar_info.sentinal.y=(ssize_t) LONG_MAX;
     ashlar_info.sentinal.next=(NodeInfo *) NULL;
     status=PackAshlarTiles(&ashlar_info,tiles,(size_t) n);
     if (status != MagickFalse)
@@ -623,8 +623,8 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
     Image
       *tile_image;
 
-    if ((tiles[i].x == (ssize_t) SSIZE_MAX) ||
-        (tiles[i].y == (ssize_t) SSIZE_MAX))
+    if ((tiles[i].x == (ssize_t) LONG_MAX) ||
+        (tiles[i].y == (ssize_t) LONG_MAX))
       continue;
     tile_image=ResizeImage(GetImageFromList(image,tiles[i].id),(size_t)
       (tiles[i].width-2*geometry.x),(size_t) (tiles[i].height-2*geometry.y),
