@@ -2314,12 +2314,6 @@ static inline double GetDrawValue(const char *magick_restrict string,
 
   q=sentinal;
   value=InterpretLocaleValue(string,q);
-  if (IsNaN(value) != 0)
-    return(0.0);
-  if (value > (double) LONG_MAX)
-    return((double) LONG_MAX);
-  if (value < (double) LONG_MIN)
-    return((double) LONG_MIN);
   sentinal=q;
   return(value);
 }
