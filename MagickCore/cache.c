@@ -5056,7 +5056,7 @@ static Quantum *SetPixelCacheNexusPixels(
       (ValidatePixelOffset(y,(ssize_t) height) == MagickFalse))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-        "WidthOrHeightExceedsLimit","`%s'",cache_info->filename);
+        "WidthOrHeightExceedsLimit","`%s %.20g %.20g %.20g %.20g %.20g %.20g %.20g %20g'",cache_info->filename,(double) width,(double) height,(double) cache_info->width_limit,(double) cache_info->height_limit,(double) x,(double) y,(double) ValidatePixelOffset(x,(ssize_t) width),(double) ValidatePixelOffset(y,(ssize_t) height));
       return((Quantum *) NULL);
     }
   if (((cache_info->type == MemoryCache) || (cache_info->type == MapCache)) &&
