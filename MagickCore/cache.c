@@ -5020,7 +5020,7 @@ static inline MagickBooleanType ValidatePixelOffset(const ssize_t x,
 {
   if ((x >= 0) && (a > ((ssize_t) LONG_MAX-x)))
     return(MagickFalse);
-  if (a < ((ssize_t) LONG_MIN-x))
+  if (a < ((ssize_t) LONG_MIN+x))
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -5056,7 +5056,7 @@ static Quantum *SetPixelCacheNexusPixels(
       (ValidatePixelOffset(y,(ssize_t) height) == MagickFalse))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-        "WidthOrHeightExceedsLimit","`%s %.20g %.20g %.20g %.20g %.20g %.20g %.20g %20g'",cache_info->filename,(double) width,(double) height,(double) cache_info->width_limit,(double) cache_info->height_limit,(double) x,(double) y,(double) ValidatePixelOffset(x,(ssize_t) width),(double) ValidatePixelOffset(y,(ssize_t) height));
+        "WidthOrHeightExceedsLimit","`%s'",cache_info->filename);
       return((Quantum *) NULL);
     }
   if (((cache_info->type == MemoryCache) || (cache_info->type == MapCache)) &&
