@@ -1,5 +1,5 @@
 2021-01-03  7.0.10-55  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-54 GIT revision 18... 
+  * Release ImageMagick version 7.0.10-54 GIT revision 18181:636ebf7ba:20210103
 
 2021-01-04  7.0.10-55  <quetzlzacatenango@image...>
   * revert changes to the default max width/height of image.
