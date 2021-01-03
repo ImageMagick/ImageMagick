@@ -5016,11 +5016,11 @@ static inline void PrefetchPixelCacheNexusPixels(const NexusInfo *nexus_info,
 }
 
 static inline MagickBooleanType ValidatePixelOffset(const ssize_t x,
-  const ssize_t a)
+  const size_t a)
 {
-  if ((x >= 0) && (a > ((ssize_t) LONG_MAX-x)))
+  if ((x >= 0) && (x >= ((ssize_t) LONG_MAX-(ssize_t) a)))
     return(MagickFalse);
-  if (a < ((ssize_t) LONG_MIN+x))
+  if (x <= ((ssize_t) LONG_MIN+(ssize_t) a))
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -5052,8 +5052,8 @@ static Quantum *SetPixelCacheNexusPixels(
     }
   if (((MagickSizeType) width > cache_info->width_limit) ||
       ((MagickSizeType) height > cache_info->height_limit) ||
-      (ValidatePixelOffset(x,(ssize_t) width) == MagickFalse) ||
-      (ValidatePixelOffset(y,(ssize_t) height) == MagickFalse))
+      (ValidatePixelOffset(x,width) == MagickFalse) ||
+      (ValidatePixelOffset(y,height) == MagickFalse))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
         "WidthOrHeightExceedsLimit","`%s'",cache_info->filename);
