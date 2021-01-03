@@ -49,6 +49,7 @@
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
 #include "MagickCore/colormap.h"
+#include "MagickCore/colormap-private.h"
 #include "MagickCore/client.h"
 #include "MagickCore/configure.h"
 #include "MagickCore/exception.h"
@@ -361,7 +362,8 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      index=(Quantum) pixels[(ssize_t) GetPixelIndex(image,q)];
+      i=ConstrainColormapIndex(image,GetPixelIndex(image,q),exception);
+      index=(Quantum) pixels[i];
       SetPixelIndex(image,index,q);
       SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
       q+=GetPixelChannels(image);
