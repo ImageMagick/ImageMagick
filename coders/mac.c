@@ -163,9 +163,10 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Convert MAC raster image to pixel packets.
   */
   length=(image->columns+7)/8;
-  pixels=(unsigned char *) AcquireQuantumMemory(length+1,sizeof(*pixels));
+  pixels=(unsigned char *) AcquireQuantumMemory(length+257,sizeof(*pixels));
   if (pixels == (unsigned char *) NULL) 
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  (void) memset(pixels,0,(length+257)*sizeof(*pixels));
   p=pixels;
   offset=0;
   for (y=0; y < (ssize_t) image->rows; )
