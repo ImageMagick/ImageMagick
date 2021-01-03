@@ -4454,15 +4454,6 @@ static inline void CatromWeights(const double x,double (*weights)[4])
   (*weights)[2]=x-(*weights)[3]-gamma;
 }
 
-static inline double ConstrainPixelOffset(double x)
-{
-  if (x < (double) -(LONG_MAX-512))
-    return((double) -(LONG_MAX-512));
-  if (x > (double) (LONG_MAX-512))
-    return((double) (LONG_MAX-512));
-  return(x);
-}
-
 static inline void SplineWeights(const double x,double (*weights)[4])
 {
   double
@@ -4524,8 +4515,8 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
   status=MagickTrue;
   *pixel=0.0;
   traits=GetPixelChannelTraits(image,channel);
-  x_offset=CastDoubleToLong(floor(ConstrainPixelOffset(x)));
-  y_offset=CastDoubleToLong(floor(ConstrainPixelOffset(y)));
+  x_offset=CastDoubleToLong(floor(x));
+  y_offset=CastDoubleToLong(floor(y));
   interpolate=method;
   if (interpolate == UndefinedInterpolatePixel)
     interpolate=image->interpolate;
@@ -4542,8 +4533,8 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
       if (interpolate == Average9InterpolatePixel)
         {
           count=3;
-          x_offset=CastDoubleToLong(floor(ConstrainPixelOffset(x)+0.5)-1.0);
-          y_offset=CastDoubleToLong(floor(ConstrainPixelOffset(y)+0.5)-1.0);
+          x_offset=CastDoubleToLong(floor(x+0.5)-1.0);
+          y_offset=CastDoubleToLong(floor(y+0.5)-1.0);
         }
       else
         if (interpolate == Average16InterpolatePixel)
@@ -4726,8 +4717,8 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
     }
     case NearestInterpolatePixel:
     {
-      x_offset=CastDoubleToLong(floor(ConstrainPixelOffset(x)+0.5));
-      y_offset=CastDoubleToLong(floor(ConstrainPixelOffset(y)+0.5));
+      x_offset=CastDoubleToLong(floor(x+0.5));
+      y_offset=CastDoubleToLong(floor(y+0.5));
       p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,1,1,exception);
       if (p == (const Quantum *) NULL)
         {
@@ -4944,8 +4935,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
   assert(source->signature == MagickCoreSignature);
   assert(source_view != (CacheView *) NULL);
   status=MagickTrue;
-  x_offset=CastDoubleToLong(floor(ConstrainPixelOffset(x)));
-  y_offset=CastDoubleToLong(floor(ConstrainPixelOffset(y)));
+  x_offset=CastDoubleToLong(floor(x));
+  y_offset=CastDoubleToLong(floor(y));
   interpolate=method;
   if (interpolate == UndefinedInterpolatePixel)
     interpolate=source->interpolate;
@@ -4962,8 +4953,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
       if (interpolate == Average9InterpolatePixel)
         {
           count=3;
-          x_offset=CastDoubleToLong(floor(ConstrainPixelOffset(x)+0.5)-1.0);
-          y_offset=CastDoubleToLong(floor(ConstrainPixelOffset(y)+0.5)-1.0);
+          x_offset=CastDoubleToLong(floor(x+0.5)-1.0);
+          y_offset=CastDoubleToLong(floor(y+0.5)-1.0);
         }
       else
         if (interpolate == Average16InterpolatePixel)
@@ -5227,8 +5218,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
     }
     case NearestInterpolatePixel:
     {
-      x_offset=CastDoubleToLong(floor(ConstrainPixelOffset(x)+0.5));
-      y_offset=CastDoubleToLong(floor(ConstrainPixelOffset(y)+0.5));
+      x_offset=CastDoubleToLong(floor(x+0.5));
+      y_offset=CastDoubleToLong(floor(y+0.5));
       p=GetCacheViewVirtualPixels(source_view,x_offset,y_offset,1,1,exception);
       if (p == (const Quantum *) NULL)
         {
@@ -5511,8 +5502,8 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
   assert(image->signature == MagickCoreSignature);
   assert(image_view != (CacheView *) NULL);
   status=MagickTrue;
-  x_offset=CastDoubleToLong(floor(ConstrainPixelOffset(x)));
-  y_offset=CastDoubleToLong(floor(ConstrainPixelOffset(y)));
+  x_offset=CastDoubleToLong(floor(x));
+  y_offset=CastDoubleToLong(floor(y));
   interpolate=method;
   if (interpolate == UndefinedInterpolatePixel)
     interpolate=image->interpolate;
@@ -5531,8 +5522,8 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
       if (interpolate == Average9InterpolatePixel)
         {
           count=3;
-          x_offset=CastDoubleToLong(floor(ConstrainPixelOffset(x)+0.5)-1.0);
-          y_offset=CastDoubleToLong(floor(ConstrainPixelOffset(y)+0.5)-1.0);
+          x_offset=CastDoubleToLong(floor(x+0.5)-1.0);
+          y_offset=CastDoubleToLong(floor(y+0.5)-1.0);
         }
       else if (interpolate == Average16InterpolatePixel)
         {
@@ -5856,8 +5847,8 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
     }
     case NearestInterpolatePixel:
     {
-      x_offset=CastDoubleToLong(floor(ConstrainPixelOffset(x)+0.5));
-      y_offset=CastDoubleToLong(floor(ConstrainPixelOffset(y)+0.5));
+      x_offset=CastDoubleToLong(floor(x+0.5));
+      y_offset=CastDoubleToLong(floor(y+0.5));
       p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,1,1,exception);
       if (p == (const Quantum *) NULL)
         {
