@@ -1119,8 +1119,7 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
     {
       JPEGDestroyDecompress(jpeg_info);
       (void) CloseBlob(image);
-      number_pixels=(MagickSizeType) image->columns*image->rows;
-      if (number_pixels != 0)
+      if (exception->severity < ErrorException)
         return(GetFirstImageInList(image));
       return(DestroyImage(image));
     }
