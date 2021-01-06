@@ -17,6 +17,7 @@
 #define MAGICK_BYTE_BUFFER_PRIVATE_H
 
 #include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
 
 typedef struct _MagickByteBuffer
 {
