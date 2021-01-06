@@ -704,10 +704,10 @@ static void ExportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
             {
               switch (i)
               {
-                case 0: quantum=GetPixelRed(image,p); break;
-                case 1: quantum=GetPixelGreen(image,p); break;
-                case 2: quantum=GetPixelBlue(image,p); break;
-                case 3: quantum=GetPixelAlpha(image,p); break;
+                case 0: quantum=(size_t) GetPixelRed(image,p); break;
+                case 1: quantum=(size_t) GetPixelGreen(image,p); break;
+                case 2: quantum=(size_t) GetPixelBlue(image,p); break;
+                case 3: quantum=(size_t) GetPixelAlpha(image,p); break;
               }
               switch (n % 3)
               {
@@ -948,10 +948,10 @@ static void ExportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
             {
               switch (i)
               {
-                case 0: quantum=GetPixelRed(image,p); break;
-                case 1: quantum=GetPixelGreen(image,p); break;
-                case 2: quantum=GetPixelBlue(image,p); break;
-                case 3: quantum=GetPixelOpacity(image,p); break;
+                case 0: quantum=(size_t) GetPixelRed(image,p); break;
+                case 1: quantum=(size_t) GetPixelGreen(image,p); break;
+                case 2: quantum=(size_t) GetPixelBlue(image,p); break;
+                case 3: quantum=(size_t) GetPixelOpacity(image,p); break;
               }
               switch (n % 3)
               {
@@ -1384,17 +1384,17 @@ static void ExportCbYCrYQuantum(const Image *image,QuantumInfo *quantum_info,
               {
                 case 0:
                 {
-                  quantum=GetPixelRed(image,p);
+                  quantum=(size_t) GetPixelRed(image,p);
                   break;
                 }
                 case 1:
                 {
-                  quantum=GetPixelGreen(image,p);
+                  quantum=(size_t) GetPixelGreen(image,p);
                   break;
                 }
                 case 2:
                 {
-                  quantum=GetPixelBlue(image,p);
+                  quantum=(size_t) GetPixelBlue(image,p);
                   break;
                 }
               }
@@ -1428,17 +1428,17 @@ static void ExportCbYCrYQuantum(const Image *image,QuantumInfo *quantum_info,
           {
             case 0:
             {
-              quantum=GetPixelRed(image,p);
+              quantum=(size_t) GetPixelRed(image,p);
               break;
             }
             case 1:
             {
-              quantum=GetPixelGreen(image,p);
+              quantum=(size_t) GetPixelGreen(image,p);
               break;
             }
             case 2:
             {
-              quantum=GetPixelBlue(image,p);
+              quantum=(size_t) GetPixelBlue(image,p);
               break;
             }
           }
@@ -2663,7 +2663,7 @@ static void ExportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
     {
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
-        q=PopQuantumPixel(quantum_info,GetPixelIndex(image,p),q);
+        q=PopQuantumPixel(quantum_info,(QuantumAny) GetPixelIndex(image,p),q);
         p+=GetPixelChannels(image);
         q+=quantum_info->pad;
       }
@@ -2857,7 +2857,7 @@ static void ExportIndexAlphaQuantum(const Image *image,
       range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
-        q=PopQuantumPixel(quantum_info,GetPixelIndex(image,p),q);
+        q=PopQuantumPixel(quantum_info,(QuantumAny) GetPixelIndex(image,p),q);
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(GetPixelAlpha(image,p),
           range),q);
         p+=GetPixelChannels(image);
@@ -3437,10 +3437,10 @@ static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
             {
               switch (i)
               {
-                case 0: quantum=GetPixelRed(image,p); break;
-                case 1: quantum=GetPixelGreen(image,p); break;
-                case 2: quantum=GetPixelBlue(image,p); break;
-                case 3: quantum=GetPixelAlpha(image,p); break;
+                case 0: quantum=(size_t) GetPixelRed(image,p); break;
+                case 1: quantum=(size_t) GetPixelGreen(image,p); break;
+                case 2: quantum=(size_t) GetPixelBlue(image,p); break;
+                case 3: quantum=(size_t) GetPixelAlpha(image,p); break;
               }
               switch (n % 3)
               {
@@ -3681,10 +3681,10 @@ static void ExportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
             {
               switch (i)
               {
-                case 0: quantum=GetPixelRed(image,p); break;
-                case 1: quantum=GetPixelGreen(image,p); break;
-                case 2: quantum=GetPixelBlue(image,p); break;
-                case 3: quantum=GetPixelOpacity(image,p); break;
+                case 0: quantum=(size_t) GetPixelRed(image,p); break;
+                case 1: quantum=(size_t) GetPixelGreen(image,p); break;
+                case 2: quantum=(size_t) GetPixelBlue(image,p); break;
+                case 3: quantum=(size_t) GetPixelOpacity(image,p); break;
               }
               switch (n % 3)
               {
