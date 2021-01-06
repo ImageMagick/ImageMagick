@@ -2530,28 +2530,28 @@ static void ExportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
 
       for (x=((ssize_t) number_pixels-7); x > 0; x-=8)
       {
-        pixel=(unsigned char) GetPixelIndex(image,p);
+        pixel=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
         *q=((pixel & 0x01) << 7);
         p+=GetPixelChannels(image);
-        pixel=(unsigned char) GetPixelIndex(image,p);
+        pixel=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
         *q|=((pixel & 0x01) << 6);
         p+=GetPixelChannels(image);
-        pixel=(unsigned char) GetPixelIndex(image,p);
+        pixel=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
         *q|=((pixel & 0x01) << 5);
         p+=GetPixelChannels(image);
-        pixel=(unsigned char) GetPixelIndex(image,p);
+        pixel=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
         *q|=((pixel & 0x01) << 4);
         p+=GetPixelChannels(image);
-        pixel=(unsigned char) GetPixelIndex(image,p);
+        pixel=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
         *q|=((pixel & 0x01) << 3);
         p+=GetPixelChannels(image);
-        pixel=(unsigned char) GetPixelIndex(image,p);
+        pixel=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
         *q|=((pixel & 0x01) << 2);
         p+=GetPixelChannels(image);
-        pixel=(unsigned char) GetPixelIndex(image,p);
+        pixel=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
         *q|=((pixel & 0x01) << 1);
         p+=GetPixelChannels(image);
-        pixel=(unsigned char) GetPixelIndex(image,p);
+        pixel=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
         *q|=((pixel & 0x01) << 0);
         p+=GetPixelChannels(image);
         q++;
@@ -2561,7 +2561,7 @@ static void ExportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
           *q='\0';
           for (bit=7; bit >= (ssize_t) (8-(number_pixels % 8)); bit--)
           {
-            pixel=(unsigned char) GetPixelIndex(image,p);
+            pixel=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
             *q|=((pixel & 0x01) << (unsigned char) bit);
             p+=GetPixelChannels(image);
           }
@@ -2576,17 +2576,17 @@ static void ExportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
 
       for (x=0; x < (ssize_t) (number_pixels-1) ; x+=2)
       {
-        pixel=(unsigned char) GetPixelIndex(image,p);
+        pixel=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
         *q=((pixel & 0xf) << 4);
         p+=GetPixelChannels(image);
-        pixel=(unsigned char) GetPixelIndex(image,p);
+        pixel=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
         *q|=((pixel & 0xf) << 0);
         p+=GetPixelChannels(image);
         q++;
       }
       if ((number_pixels % 2) != 0)
         {
-          pixel=(unsigned char) GetPixelIndex(image,p);
+          pixel=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
           *q=((pixel & 0xf) << 4);
           p+=GetPixelChannels(image);
           q++;
@@ -2597,7 +2597,7 @@ static void ExportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
     {
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
-        q=PopCharPixel((unsigned char) GetPixelIndex(image,p),q);
+        q=PopCharPixel((unsigned char) ((ssize_t) GetPixelIndex(image,p)),q);
         p+=GetPixelChannels(image);
         q+=quantum_info->pad;
       }
