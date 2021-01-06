@@ -1054,9 +1054,16 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
 
     enum heif_chroma
       chroma;
+    
+    MagickBooleanType
+      lossless;
 
     colorspace=heif_colorspace_YCbCr;
-    chroma=heif_chroma_420;
+    lossless=IsStringTrue(GetImageOption(image_info,
+      "heic:lossless"));
+    chroma=lossless ? heif_chroma_444 : heif_chroma_420;
+
+
     /*
       Get encoder for the specified format.
     */
@@ -1109,7 +1116,9 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     /*
       Code and actually write the HEIC image
     */
-    if (image_info->quality != UndefinedCompressionQuality)
+    if (lossless == MagickTrue)
+      heif_encoder_set_lossless(heif_encoder, 1);
+    else if (image_info->quality != UndefinedCompressionQuality)
       {
         error=heif_encoder_set_lossy_quality(heif_encoder,(int)
           image_info->quality);
