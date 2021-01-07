@@ -934,7 +934,7 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image,
       {
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          *q++=(unsigned char) GetPixelIndex(image,p);
+          *q++=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
           p+=GetPixelChannels(image);
         }
       }
