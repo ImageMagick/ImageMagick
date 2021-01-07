@@ -1113,7 +1113,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
             q=pixels;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              *q++=(unsigned char) GetPixelIndex(image,p);
+              *q++=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
               p+=GetPixelChannels(image);
             }
             if (PCXWritePixels(&pcx_info,pixels,image) == MagickFalse)
