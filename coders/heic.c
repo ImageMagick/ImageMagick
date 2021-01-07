@@ -1025,6 +1025,9 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
 
   struct heif_writer
     writer;
+  
+  struct heif_color_profile_nclx 
+    nclx;
 
   /*
     Open output image file.
@@ -1101,6 +1104,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     status=IsHeifSuccess(image,&error,exception);
     if (status == MagickFalse)
       break;
+    printf("2\n");
 #if LIBHEIF_NUMERIC_VERSION >= 0x01040000
     profile=GetImageProfile(image,"icc");
     if (profile != (StringInfo *) NULL)
@@ -1113,11 +1117,14 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
       status=WriteHEICImageRGBA(image,heif_image,exception);
     if (status == MagickFalse)
       break;
+    printf("3\n");
     /*
       Code and actually write the HEIC image
     */
     if (lossless == MagickTrue)
-      heif_encoder_set_lossless(heif_encoder, 1);
+      {
+        heif_encoder_set_lossless(heif_encoder, 1);
+      }
     else if (image_info->quality != UndefinedCompressionQuality)
       {
         error=heif_encoder_set_lossy_quality(heif_encoder,(int)
@@ -1126,12 +1133,23 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
         if (status == MagickFalse)
           break;
       }
+    printf("4\n");
+
+    nclx.matrix_coefficients = heif_matrix_coefficients_RGB_GBR;
+    nclx.transfer_characteristics = heif_transfer_characteristic_unspecified;
+    nclx.color_primaries =   heif_color_primaries_unspecified;
+    nclx.full_range_flag = (uint8_t) 1;
+
+    struct heif_encoding_options* options = heif_encoding_options_alloc();
+    options->output_nclx_profile = &nclx;
+
     error=heif_context_encode_image(heif_context,heif_image,heif_encoder,
-      (const struct heif_encoding_options *) NULL,
+      options,
       (struct heif_image_handle **) NULL);
     status=IsHeifSuccess(image,&error,exception);
     if (status == MagickFalse)
       break;
+    printf("5\n");
 #if LIBHEIF_NUMERIC_VERSION >= 0x01030000
     if (image->profiles != (void *) NULL)
       WriteProfile(heif_context,image,exception);
