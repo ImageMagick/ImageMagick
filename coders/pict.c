@@ -2033,7 +2033,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        scanline[x]=(unsigned char) GetPixelIndex(image,p);
+        scanline[x]=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
         p+=GetPixelChannels(image);
       }
       count+=EncodeImage(image,scanline,(size_t) (row_bytes & 0x7FFF),
