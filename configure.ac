@@ -59,9 +59,12 @@ AC_CONFIG_SRCDIR([MagickCore/MagickCore.h])
 AC_CONFIG_AUX_DIR([config])
 AC_REQUIRE_AUX_FILE([tap-driver.sh])
 AC_CONFIG_MACRO_DIR([m4])
+AC_CONFIG_HEADERS([config/config.h])
 AX_PREFIX_CONFIG_H([MagickCore/magick-baseconfig.h],[MagickCore])
 AC_CANONICAL_SYSTEM
 AC_CANONICAL_TARGET
+AM_INIT_AUTOMAKE([foreign color-tests -Wall -Wno-portability subdir-objects dist-bzip2 dist-lzip dist-xz dist-zip tar-ustar])
+AM_SILENT_RULES([yes])
 
 #
 # Save initial user-tunable values
@@ -141,9 +144,6 @@ AC_SUBST([PACKAGE_RELEASE_DATE])dnl
 
 # Ensure that make can run correctly
 AM_SANITY_CHECK
-AC_CONFIG_HEADERS([config/config.h])
-AM_INIT_AUTOMAKE([foreign color-tests no-define no-dependencies nostdinc -Wall -Wno-portability no-define subdir-objects parallel-tests dist-bzip2 dist-lzip dist-xz dist-zip tar-ustar])
-AM_SILENT_RULES([yes])
 
 # versioning of library
 MAGICK_LIB_VERSION="0x"

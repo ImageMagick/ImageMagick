@@ -807,6 +807,9 @@
 /* Define if you have OPENEXR library */
 #undef OPENEXR_DELEGATE
 
+/* Name of package */
+#undef PACKAGE
+
 /* Define to the address where bug reports for this package should be sent. */
 #undef PACKAGE_BUGREPORT
 
@@ -944,6 +947,9 @@
 # undef __EXTENSIONS__
 #endif
 
+
+/* Version number of package */
+#undef VERSION
 
 /* Define if you have WEBPMUX library */
 #undef WEBPMUX_DELEGATE
