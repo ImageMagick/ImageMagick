@@ -677,7 +677,7 @@ static inline void WriteTGAPixel(Image *image,TGAImageType image_type,
   const Quantum *p,const QuantumAny range,const double midpoint)
 {
   if (image_type == TGAColormap || image_type == TGARLEColormap)
-    (void) WriteBlobByte(image,(unsigned char) GetPixelIndex(image,p));
+    (void) WriteBlobByte(image,(unsigned char) ((ssize_t) GetPixelIndex(image,p)));
   else
     {
       if (image_type == TGAMonochrome || image_type == TGARLEMonochrome)
