@@ -38,7 +38,7 @@ while test $# -gt 0; do
       echo $exec_prefix
       ;;
     --version)
-      echo '@PACKAGE_VERSION@ Q@QUANTUM_DEPTH@ @MAGICK_HDRI@'
+      echo '@PACKAGE_BASE_VERSION@ Q@QUANTUM_DEPTH@ @MAGICK_HDRI@'
       ;;
     --cflags)
       @PKG_CONFIG@ --cflags Magick++-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@
