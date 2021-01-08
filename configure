@@ -4263,15 +4263,6 @@ fi
  VERSION='7.0.10-57'
 
 
-cat >>confdefs.h <<_ACEOF
-#define PACKAGE "$PACKAGE"
-_ACEOF
-
-
-cat >>confdefs.h <<_ACEOF
-#define VERSION "$VERSION"
-_ACEOF
-
 # Some tools Automake needs.
 
 ACLOCAL=${ACLOCAL-"${am_missing_run}aclocal-${am__api_version}"}
@@ -4574,7 +4565,7 @@ MAGICK_PATCHLEVEL_VERSION=57
 
 MAGICK_VERSION=7.0.10-57
 
-MAGICK_GIT_REVISION=18210:e3fef2a8e:20210108
+MAGICK_GIT_REVISION=18213:f0c84d6a1:20210108
 
 
 # Substitute library versioning
