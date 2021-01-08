@@ -162,7 +162,7 @@ static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
     count=recv(file,CHAR_TYPE_CAST message+i,(LENGTH_TYPE) MagickMin(length-i,
-      (MagickSizeType) LONG_MAX),0);
+      (MagickSizeType) MAGICK_SSIZE_MAX),0);
     if (count <= 0)
       {
         count=0;
@@ -442,7 +442,7 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
     count=(MagickOffsetType) send(file,CHAR_TYPE_CAST message+i,(LENGTH_TYPE)
-      MagickMin(length-i,(MagickSizeType) LONG_MAX),MSG_NOSIGNAL);
+      MagickMin(length-i,(MagickSizeType) MAGICK_SSIZE_MAX),MSG_NOSIGNAL);
     if (count <= 0)
       {
         count=0;
@@ -1236,7 +1236,7 @@ MagickPrivate MagickOffsetType ReadDistributePixelCacheMetacontent(
   assert(server_info->signature == MagickCoreSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(metacontent != (unsigned char *) NULL);
-  if (length > (MagickSizeType) LONG_MAX)
+  if (length > (MagickSizeType) MAGICK_SSIZE_MAX)
     return(-1);
   p=message;
   *p++='R';
@@ -1311,7 +1311,7 @@ MagickPrivate MagickOffsetType ReadDistributePixelCachePixels(
   assert(server_info->signature == MagickCoreSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(pixels != (unsigned char *) NULL);
-  if (length > (MagickSizeType) LONG_MAX)
+  if (length > (MagickSizeType) MAGICK_SSIZE_MAX)
     return(-1);
   p=message;
   *p++='r';
@@ -1447,7 +1447,7 @@ MagickPrivate MagickOffsetType WriteDistributePixelCacheMetacontent(
   assert(server_info->signature == MagickCoreSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(metacontent != (unsigned char *) NULL);
-  if (length > (MagickSizeType) LONG_MAX)
+  if (length > (MagickSizeType) MAGICK_SSIZE_MAX)
     return(-1);
   p=message;
   *p++='W';
@@ -1523,7 +1523,7 @@ MagickPrivate MagickOffsetType WriteDistributePixelCachePixels(
   assert(server_info->signature == MagickCoreSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(pixels != (const unsigned char *) NULL);
-  if (length > (MagickSizeType) LONG_MAX)
+  if (length > (MagickSizeType) MAGICK_SSIZE_MAX)
     return(-1);
   p=message;
   *p++='w';

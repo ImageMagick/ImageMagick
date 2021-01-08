@@ -416,7 +416,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
-  if (GetBlobSize(image) > (MagickSizeType) LONG_MAX)
+  if (GetBlobSize(image) > (MagickSizeType) MAGICK_SSIZE_MAX)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   length=(size_t) GetBlobSize(image);
   file_data=AcquireMagickMemory(length);

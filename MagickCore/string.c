@@ -613,7 +613,7 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
       for (i=0; i < length; i+=count)
       {
         count=read(file,string+i,(size_t) MagickMin(length-i,(size_t)
-          LONG_MAX));
+          MAGICK_SSIZE_MAX));
         if (count <= 0)
           {
             count=0;

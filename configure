@@ -274,11 +274,11 @@ fi
     $as_echo "$0: In particular, zsh $ZSH_VERSION has bugs and should"
     $as_echo "$0: be upgraded to zsh 4.3.4 or later."
   else
-    $as_echo "$0: Please tell bug-autoconf@gnu.org and
-$0: https://github.com/ImageMagick/ImageMagick/issues about
-$0: your system, including any error possibly output before
-$0: this message. Then install a modern shell, or manually
-$0: run the script under such a shell if you do have one."
+    $as_echo "$0: Please tell bug-autoconf@gnu.org and https://github.com/ImageMagick/ImageMagick/issues
+$0: about your system, including any error possibly output
+$0: before this message. Then install a modern shell, or
+$0: manually run the script under such a shell if you do
+$0: have one."
   fi
   exit 1
 fi
@@ -1039,34 +1039,6 @@ MAGICKPP_LIB_VERSION
 MAGICK_LIB_VERSION_NUMBER
 MAGICK_LIB_VERSION_TEXT
 MAGICK_LIB_VERSION
-PACKAGE_VERSION_ADDENDUM
-PACKAGE_RELEASE_DATE
-PACKAGE_LIB_VERSION_NUMBER
-PACKAGE_LIB_VERSION
-PACKAGE_CHANGE_DATE
-PACKAGE_RELEASE
-PACKAGE_PERL_VERSION
-MAGICKPP_LIBRARY_VERSION_INFO
-MAGICKPP_LIBRARY_CURRENT_MIN
-MAGICKPP_LIBRARY_AGE
-MAGICKPP_LIBRARY_REVISION
-MAGICKPP_LIBRARY_CURRENT
-MAGICK_LIBRARY_VERSION_INFO
-MAGICK_LIBRARY_CURRENT_MIN
-MAGICK_LIBRARY_AGE
-MAGICK_LIBRARY_REVISION
-MAGICK_LIBRARY_CURRENT
-MAGICK_GIT_REVISION
-MAGICK_VERSION
-MAGICK_PATCHLEVEL_VERSION
-MAGICK_MICRO_VERSION
-MAGICK_MINOR_VERSION
-MAGICK_MAJOR_VERSION
-MAGICK_TARGET_OS
-MAGICK_TARGET_VENDOR
-MAGICK_TARGET_CPU
-CONFIGURE_ARGS
-DISTCHECK_CONFIG_FLAGS
 AM_BACKSLASH
 AM_DEFAULT_VERBOSITY
 AM_DEFAULT_V
@@ -1094,6 +1066,33 @@ am__isrc
 INSTALL_DATA
 INSTALL_SCRIPT
 INSTALL_PROGRAM
+PACKAGE_RELEASE_DATE
+PACKAGE_LIB_VERSION_NUMBER
+PACKAGE_LIB_VERSION
+PACKAGE_VERSION_ADDENDUM
+PACKAGE_PATCHLEVEL_VERSION
+PACKAGE_BASE_VERSION
+MAGICKPP_LIBRARY_VERSION_INFO
+MAGICKPP_LIBRARY_CURRENT_MIN
+MAGICKPP_LIBRARY_AGE
+MAGICKPP_LIBRARY_REVISION
+MAGICKPP_LIBRARY_CURRENT
+MAGICK_LIBRARY_VERSION_INFO
+MAGICK_LIBRARY_CURRENT_MIN
+MAGICK_LIBRARY_AGE
+MAGICK_LIBRARY_REVISION
+MAGICK_LIBRARY_CURRENT
+MAGICK_GIT_REVISION
+MAGICK_VERSION
+MAGICK_PATCHLEVEL_VERSION
+MAGICK_MICRO_VERSION
+MAGICK_MINOR_VERSION
+MAGICK_MAJOR_VERSION
+MAGICK_TARGET_OS
+MAGICK_TARGET_VENDOR
+MAGICK_TARGET_CPU
+CONFIGURE_ARGS
+DISTCHECK_CONFIG_FLAGS
 target_os
 target_vendor
 target_cpu
@@ -1148,8 +1147,8 @@ am__quote'
 ac_subst_files=''
 ac_user_opts='
 enable_option_checking
-enable_silent_rules
 enable_reproducible_build
+enable_silent_rules
 enable_dependency_tracking
 with_gnu_ld
 with_dmalloc
@@ -1932,10 +1931,10 @@ Optional Features:
   --disable-option-checking  ignore unrecognized --enable/--with options
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
-  --enable-silent-rules   less verbose build output (undo: "make V=1")
-  --disable-silent-rules  verbose build output (undo: "make V=0")
   --enable-reproducible-build
                           enable reproducible build
+  --enable-silent-rules   less verbose build output (undo: "make V=1")
+  --disable-silent-rules  verbose build output (undo: "make V=0")
   --enable-dependency-tracking
                           do not reject slow dependency extractors
   --disable-dependency-tracking
@@ -3626,6 +3625,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
+
 ac_aux_dir=
 for ac_dir in config "$srcdir"/config; do
   if test -f "$ac_dir/install-sh"; then
@@ -3656,8 +3656,6 @@ ac_configure="$SHELL $ac_aux_dir/configure"  # Please don't use this var.
 
 
 
-
-ac_config_headers="$ac_config_headers config/config.h"
 
 
 ac_config_commands="$ac_config_commands MagickCore/magick-baseconfig.h"
@@ -3774,6 +3772,172 @@ test -n "$target_alias" &&
   program_prefix=${target_alias}-
 
 
+
+#
+# Save initial user-tunable values
+#
+USER_LIBS=$LIBS
+for var in CC CFLAGS CPPFLAGS CXX CXXCPP LDFLAGS AR_FLAGS LIBS ; do
+  eval isset=\${$var+set}
+    if test "$isset" = 'set'; then
+        eval val=$`echo $var`
+        DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS}'${var}=${val}' "
+    fi
+done
+
+
+CONFIGURE_ARGS="$0 ${ac_configure_args}"
+
+
+# Check whether --enable-reproducible-build was given.
+if test "${enable_reproducible_build+set}" = set; then :
+  enableval=$enable_reproducible_build; enable_reproducible_build=$enableval
+else
+  enable_reproducible_build='no'
+fi
+
+
+# Source file containing package/library versioning information.
+. ${srcdir}/version.sh
+
+echo "Configuring ${PACKAGE_NAME} ${PACKAGE_VERSION}"
+
+MAGICK_TARGET_CPU=$host_cpu
+
+
+cat >>confdefs.h <<_ACEOF
+#define MAGICK_TARGET_CPU $MAGICK_TARGET_CPU
+_ACEOF
+
+
+MAGICK_TARGET_VENDOR=$host_vendor
+
+
+cat >>confdefs.h <<_ACEOF
+#define MAGICK_TARGET_VENDOR $MAGICK_TARGET_VENDOR
+_ACEOF
+
+
+MAGICK_TARGET_OS=$host_os
+
+
+cat >>confdefs.h <<_ACEOF
+#define MAGICK_TARGET_OS $MAGICK_TARGET_OS
+_ACEOF
+
+
+
+# Substitute versioning
+MAGICK_MAJOR_VERSION=7
+
+MAGICK_MINOR_VERSION=0
+
+MAGICK_MICRO_VERSION=10
+
+MAGICK_PATCHLEVEL_VERSION=57
+
+MAGICK_VERSION=7.0.10-57
+
+MAGICK_GIT_REVISION=18201:e191e397a:20210108
+
+
+# Substitute library versioning
+MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
+
+MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
+
+
+MAGICKPP_LIBRARY_CURRENT_MIN=`expr $MAGICKPP_LIBRARY_CURRENT - $MAGICKPP_LIBRARY_AGE`
+
+MAGICKPP_LIBRARY_VERSION_INFO=$MAGICKPP_LIBRARY_CURRENT:$MAGICKPP_LIBRARY_REVISION:$MAGICKPP_LIBRARY_AGE
+
+
+PACKAGE_BASE_VERSION=7.0.10
+
+PACKAGE_PATCHLEVEL_VERSION=57
+
+PACKAGE_VERSION_ADDENDUM=-57
+
+PACKAGE_LIB_VERSION=0x70A
+
+PACKAGE_LIB_VERSION_NUMBER=7,0,10,57
+
+if test X$enable_reproducible_build = Xyes; then :
+  PACKAGE_RELEASE_DATE=$PACKAGE_RELEASE_DATE_REPRODUCIBLE
+elif PACKAGE_RELEASE_DATE=$PACKAGE_RELEASE_DATE_RAW; then :
+
+fi
+
+# Ensure that make can run correctly
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether build environment is sane" >&5
+$as_echo_n "checking whether build environment is sane... " >&6; }
+# Reject unsafe characters in $srcdir or the absolute working directory
+# name.  Accept space and tab only in the latter.
+am_lf='
+'
+case `pwd` in
+  *[\\\"\#\$\&\'\`$am_lf]*)
+    as_fn_error $? "unsafe absolute working directory name" "$LINENO" 5;;
+esac
+case $srcdir in
+  *[\\\"\#\$\&\'\`$am_lf\ \	]*)
+    as_fn_error $? "unsafe srcdir value: '$srcdir'" "$LINENO" 5;;
+esac
+
+# Do 'set' in a subshell so we don't clobber the current shell's
+# arguments.  Must try -L first in case configure is actually a
+# symlink; some systems play weird games with the mod time of symlinks
+# (eg FreeBSD returns the mod time of the symlink's containing
+# directory).
+if (
+   am_has_slept=no
+   for am_try in 1 2; do
+     echo "timestamp, slept: $am_has_slept" > conftest.file
+     set X `ls -Lt "$srcdir/configure" conftest.file 2> /dev/null`
+     if test "$*" = "X"; then
+	# -L didn't work.
+	set X `ls -t "$srcdir/configure" conftest.file`
+     fi
+     if test "$*" != "X $srcdir/configure conftest.file" \
+	&& test "$*" != "X conftest.file $srcdir/configure"; then
+
+	# If neither matched, then we have a broken ls.  This can happen
+	# if, for instance, CONFIG_SHELL is bash and it inherits a
+	# broken ls alias from the environment.  This has actually
+	# happened.  Such a system could not be considered "sane".
+	as_fn_error $? "ls -t appears to fail.  Make sure there is not a broken
+  alias in your environment" "$LINENO" 5
+     fi
+     if test "$2" = conftest.file || test $am_try -eq 2; then
+       break
+     fi
+     # Just in case.
+     sleep 1
+     am_has_slept=yes
+   done
+   test "$2" = conftest.file
+   )
+then
+   # Ok.
+   :
+else
+   as_fn_error $? "newly created file is older than distributed files!
+Check your system clock" "$LINENO" 5
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+# If we didn't sleep, we still need to ensure time stamps of config.status and
+# generated files are strictly newer.
+am_sleep_pid=
+if grep 'slept: no' conftest.file >/dev/null 2>&1; then
+  ( sleep 1 ) &
+  am_sleep_pid=$!
+fi
+
+rm -f conftest.file
+
+ac_config_headers="$ac_config_headers config/config.h"
+
 am__api_version='1.16'
 
 # Find a good install program.  We prefer a C program (faster),
@@ -3868,73 +4032,6 @@ test -z "$INSTALL_PROGRAM" && INSTALL_PROGRAM='${INSTALL}'
 test -z "$INSTALL_SCRIPT" && INSTALL_SCRIPT='${INSTALL}'
 
 test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether build environment is sane" >&5
-$as_echo_n "checking whether build environment is sane... " >&6; }
-# Reject unsafe characters in $srcdir or the absolute working directory
-# name.  Accept space and tab only in the latter.
-am_lf='
-'
-case `pwd` in
-  *[\\\"\#\$\&\'\`$am_lf]*)
-    as_fn_error $? "unsafe absolute working directory name" "$LINENO" 5;;
-esac
-case $srcdir in
-  *[\\\"\#\$\&\'\`$am_lf\ \	]*)
-    as_fn_error $? "unsafe srcdir value: '$srcdir'" "$LINENO" 5;;
-esac
-
-# Do 'set' in a subshell so we don't clobber the current shell's
-# arguments.  Must try -L first in case configure is actually a
-# symlink; some systems play weird games with the mod time of symlinks
-# (eg FreeBSD returns the mod time of the symlink's containing
-# directory).
-if (
-   am_has_slept=no
-   for am_try in 1 2; do
-     echo "timestamp, slept: $am_has_slept" > conftest.file
-     set X `ls -Lt "$srcdir/configure" conftest.file 2> /dev/null`
-     if test "$*" = "X"; then
-	# -L didn't work.
-	set X `ls -t "$srcdir/configure" conftest.file`
-     fi
-     if test "$*" != "X $srcdir/configure conftest.file" \
-	&& test "$*" != "X conftest.file $srcdir/configure"; then
-
-	# If neither matched, then we have a broken ls.  This can happen
-	# if, for instance, CONFIG_SHELL is bash and it inherits a
-	# broken ls alias from the environment.  This has actually
-	# happened.  Such a system could not be considered "sane".
-	as_fn_error $? "ls -t appears to fail.  Make sure there is not a broken
-  alias in your environment" "$LINENO" 5
-     fi
-     if test "$2" = conftest.file || test $am_try -eq 2; then
-       break
-     fi
-     # Just in case.
-     sleep 1
-     am_has_slept=yes
-   done
-   test "$2" = conftest.file
-   )
-then
-   # Ok.
-   :
-else
-   as_fn_error $? "newly created file is older than distributed files!
-Check your system clock" "$LINENO" 5
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-# If we didn't sleep, we still need to ensure time stamps of config.status and
-# generated files are strictly newer.
-am_sleep_pid=
-if grep 'slept: no' conftest.file >/dev/null 2>&1; then
-  ( sleep 1 ) &
-  am_sleep_pid=$!
-fi
-
-rm -f conftest.file
 
 test "$program_prefix" != NONE &&
   program_transform_name="s&^&$program_prefix&;$program_transform_name"
@@ -4263,15 +4360,6 @@ fi
  VERSION='7.0.10-57'
 
 
-cat >>confdefs.h <<_ACEOF
-#define PACKAGE "$PACKAGE"
-_ACEOF
-
-
-cat >>confdefs.h <<_ACEOF
-#define VERSION "$VERSION"
-_ACEOF
-
 # Some tools Automake needs.
 
 ACLOCAL=${ACLOCAL-"${am_missing_run}aclocal-${am__api_version}"}
@@ -4509,161 +4597,6 @@ fi
 AM_BACKSLASH='\'
 
 
-#
-# Save initial user-tunable values
-#
-USER_LIBS=$LIBS
-for var in CC CFLAGS CPPFLAGS CXX CXXCPP LDFLAGS AR_FLAGS LIBS ; do
-  eval isset=\${$var+set}
-    if test "$isset" = 'set'; then
-        eval val=$`echo $var`
-        DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS}'${var}=${val}' "
-    fi
-done
-
-
-CONFIGURE_ARGS="$0 ${ac_configure_args}"
-
-
-# Check whether --enable-reproducible-build was given.
-if test "${enable_reproducible_build+set}" = set; then :
-  enableval=$enable_reproducible_build; enable_reproducible_build=$enableval
-else
-  enable_reproducible_build='no'
-fi
-
-
-# Source file containing package/library versioning information.
-. ${srcdir}/version.sh
-
-echo "configuring ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}"
-
-MAGICK_TARGET_CPU=$host_cpu
-
-
-cat >>confdefs.h <<_ACEOF
-#define MAGICK_TARGET_CPU $MAGICK_TARGET_CPU
-_ACEOF
-
-
-MAGICK_TARGET_VENDOR=$host_vendor
-
-
-cat >>confdefs.h <<_ACEOF
-#define MAGICK_TARGET_VENDOR $MAGICK_TARGET_VENDOR
-_ACEOF
-
-
-MAGICK_TARGET_OS=$host_os
-
-
-cat >>confdefs.h <<_ACEOF
-#define MAGICK_TARGET_OS $MAGICK_TARGET_OS
-_ACEOF
-
-
-
-# Substitute versioning
-MAGICK_MAJOR_VERSION=7
-
-MAGICK_MINOR_VERSION=0
-
-MAGICK_MICRO_VERSION=10
-
-MAGICK_PATCHLEVEL_VERSION=57
-
-MAGICK_VERSION=7.0.10-57
-
-MAGICK_GIT_REVISION=18193:4633fa369:20210105
-
-
-# Substitute library versioning
-MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
-
-MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
-
-
-MAGICKPP_LIBRARY_CURRENT_MIN=`expr $MAGICKPP_LIBRARY_CURRENT - $MAGICKPP_LIBRARY_AGE`
-
-MAGICKPP_LIBRARY_VERSION_INFO=$MAGICKPP_LIBRARY_CURRENT:$MAGICKPP_LIBRARY_REVISION:$MAGICKPP_LIBRARY_AGE
-
-
-if test X$enable_reproducible_build = Xyes; then :
-  PACKAGE_RELEASE_DATE=$PACKAGE_RELEASE_DATE_REPRODUCIBLE
-elif PACKAGE_RELEASE_DATE=$PACKAGE_RELEASE_DATE_RAW; then :
-
-fi
-
-
-# Ensure that make can run correctly
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether build environment is sane" >&5
-$as_echo_n "checking whether build environment is sane... " >&6; }
-# Reject unsafe characters in $srcdir or the absolute working directory
-# name.  Accept space and tab only in the latter.
-am_lf='
-'
-case `pwd` in
-  *[\\\"\#\$\&\'\`$am_lf]*)
-    as_fn_error $? "unsafe absolute working directory name" "$LINENO" 5;;
-esac
-case $srcdir in
-  *[\\\"\#\$\&\'\`$am_lf\ \	]*)
-    as_fn_error $? "unsafe srcdir value: '$srcdir'" "$LINENO" 5;;
-esac
-
-# Do 'set' in a subshell so we don't clobber the current shell's
-# arguments.  Must try -L first in case configure is actually a
-# symlink; some systems play weird games with the mod time of symlinks
-# (eg FreeBSD returns the mod time of the symlink's containing
-# directory).
-if (
-   am_has_slept=no
-   for am_try in 1 2; do
-     echo "timestamp, slept: $am_has_slept" > conftest.file
-     set X `ls -Lt "$srcdir/configure" conftest.file 2> /dev/null`
-     if test "$*" = "X"; then
-	# -L didn't work.
-	set X `ls -t "$srcdir/configure" conftest.file`
-     fi
-     if test "$*" != "X $srcdir/configure conftest.file" \
-	&& test "$*" != "X conftest.file $srcdir/configure"; then
-
-	# If neither matched, then we have a broken ls.  This can happen
-	# if, for instance, CONFIG_SHELL is bash and it inherits a
-	# broken ls alias from the environment.  This has actually
-	# happened.  Such a system could not be considered "sane".
-	as_fn_error $? "ls -t appears to fail.  Make sure there is not a broken
-  alias in your environment" "$LINENO" 5
-     fi
-     if test "$2" = conftest.file || test $am_try -eq 2; then
-       break
-     fi
-     # Just in case.
-     sleep 1
-     am_has_slept=yes
-   done
-   test "$2" = conftest.file
-   )
-then
-   # Ok.
-   :
-else
-   as_fn_error $? "newly created file is older than distributed files!
-Check your system clock" "$LINENO" 5
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-# If we didn't sleep, we still need to ensure time stamps of config.status and
-# generated files are strictly newer.
-am_sleep_pid=
-if grep 'slept: no' conftest.file >/dev/null 2>&1; then
-  ( sleep 1 ) &
-  am_sleep_pid=$!
-fi
-
-rm -f conftest.file
-
-
 # versioning of library
 MAGICK_LIB_VERSION="0x"
 if test ${MAGICK_LIBRARY_CURRENT} -lt 10 ; then
@@ -4681,7 +4614,7 @@ MAGICK_LIB_VERSION=${MAGICK_LIB_VERSION}${MAGICK_LIBRARY_REVISION}
 
 
 # Definition used to define MagickLibVersionText in version.h
-MAGICK_LIB_VERSION_TEXT="${PACKAGE_VERSION}"
+MAGICK_LIB_VERSION_TEXT="${PACKAGE_BASE_VERSION}"
 
 
 # Definition used to define MagickLibVersionNumber in version.h
@@ -4704,13 +4637,11 @@ MAGICKPP_LIB_VERSION=${MAGICKPP_LIB_VERSION}${MAGICKPP_LIBRARY_REVISION}
 
 
 # Definition used to define MagickLibVersionText in version.h
-MAGICKPP_LIB_VERSION_TEXT="${PACKAGE_VERSION}"
+MAGICKPP_LIB_VERSION_TEXT="${PACKAGE_BASE_VERSION}"
 
 
 # Definition used to define MagickLibVersionNumber in version.h
 MAGICK_LIB_VERSION_NUMBER="${MAGICK_LIBRARY_CURRENT},${MAGICK_LIBRARY_AGE},${MAGICK_LIBRARY_REVISION}"
-
-
 
 
 # Regenerate config.status if ChangeLog or version.sh is updated.
@@ -32798,7 +32729,7 @@ _ACEOF
 
 
 # Subdirectory under lib to place ImageMagick lib files
-LIBRARY_RELATIVE_PATH="${PACKAGE_NAME}-${PACKAGE_VERSION}"
+LIBRARY_RELATIVE_PATH="${PACKAGE_NAME}-${PACKAGE_BASE_VERSION}"
 
 cat >>confdefs.h <<_ACEOF
 #define LIBRARY_RELATIVE_PATH "$LIBRARY_RELATIVE_PATH"
@@ -36054,14 +35985,6 @@ else
   am__EXEEXT_FALSE=
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking that generated files are newer than configure" >&5
-$as_echo_n "checking that generated files are newer than configure... " >&6; }
-   if test -n "$am_sleep_pid"; then
-     # Hide warnings about reused PIDs.
-     wait $am_sleep_pid 2>/dev/null
-   fi
-   { $as_echo "$as_me:${as_lineno-$LINENO}: result: done" >&5
-$as_echo "done" >&6; }
 if test -z "${AMDEP_TRUE}" && test -z "${AMDEP_FALSE}"; then
   as_fn_error $? "conditional \"AMDEP\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
@@ -37288,8 +37211,8 @@ cat >>$CONFIG_STATUS <<\_ACEOF || ac_write_fail=1
 for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
-    "config/config.h") CONFIG_HEADERS="$CONFIG_HEADERS config/config.h" ;;
     "MagickCore/magick-baseconfig.h") CONFIG_COMMANDS="$CONFIG_COMMANDS MagickCore/magick-baseconfig.h" ;;
+    "config/config.h") CONFIG_HEADERS="$CONFIG_HEADERS config/config.h" ;;
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
     "default") CONFIG_COMMANDS="$CONFIG_COMMANDS default" ;;
@@ -38886,7 +38809,7 @@ fi
 # ==============================================================================
 { $as_echo "$as_me:${as_lineno-$LINENO}:
 ==============================================================================
-${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM} is configured as follows. Please verify that this
+${PACKAGE_NAME} ${PACKAGE_VERSION} is configured as follows. Please verify that this
 configuration matches your expectations.
 
 Host system type: $host
@@ -38985,7 +38908,7 @@ Options used to compile and link:
 " >&5
 $as_echo "$as_me:
 ==============================================================================
-${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM} is configured as follows. Please verify that this
+${PACKAGE_NAME} ${PACKAGE_VERSION} is configured as follows. Please verify that this
 configuration matches your expectations.
 
 Host system type: $host

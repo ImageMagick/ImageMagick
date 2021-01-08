@@ -194,7 +194,7 @@ WriteMakefile
    'AUTHOR' => 'ImageMagick Studio LLC',
 
    # Module version
-   'VERSION' => '@PACKAGE_PERL_VERSION@',
+   'VERSION' => '@PACKAGE_BASE_VERSION@',
 
    # Preprocessor defines
    'DEFINE'	=> '@LFS_CPPFLAGS@ @DEFS@',     # e.g., '-DHAVE_SOMETHING'

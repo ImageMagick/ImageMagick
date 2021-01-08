@@ -755,7 +755,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
 %  all the normal geometry flags for Crop.
 %
 %      Image *CropImageToTiles(const Image *image,
-%         const RectangleInfo *crop_geometry, ExceptionInfo *exception)
+%        const RectangleInfo *crop_geometry, ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -767,23 +767,14 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
 %
 */
 
-static inline double ConstrainPixelOffset(double x)
-{
-  if (x < (double) -(LONG_MAX-512))
-    return((double) -(LONG_MAX-512));
-  if (x > (double) (LONG_MAX-512))
-    return((double) (LONG_MAX-512));
-  return(x);
-}
-
 static inline ssize_t PixelRoundOffset(double x)
 {
   /*
     Round the fraction to nearest integer.
   */
   if ((x-floor(x)) < (ceil(x)-x))
-    return((ssize_t) floor(ConstrainPixelOffset(x)));
-  return((ssize_t) ceil(ConstrainPixelOffset(x)));
+    return(CastDoubleToLong(floor(x)));
+  return(CastDoubleToLong(ceil(x)));
 }
 
 MagickExport Image *CropImageToTiles(const Image *image,

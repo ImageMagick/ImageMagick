@@ -17,19 +17,26 @@
 #  Copying and distribution of this file, with or without modification,
 #  are permitted in any medium without royalty provided the copyright
 #  notice and this notice are preserved.
-
-# Process this file with autoconf to create configure script.
 AC_PREREQ(2.69)
 
 # ==============================================================================
-# ImageMagick release.
+# ImageMagick versioning
 # ==============================================================================
+m4_define([magick_name], [ImageMagick])
 m4_define([magick_major_version], [7])
 m4_define([magick_minor_version], [0])
 m4_define([magick_micro_version], [10])
 m4_define([magick_patchlevel_version], [57])
+m4_define([magick_base_version],
+          [magick_major_version.magick_minor_version.magick_micro_version])
 m4_define([magick_version],
-          [magick_major_version.magick_minor_version.magick_micro_version-magick_patchlevel_version])
+          [magick_base_version-magick_patchlevel_version])
+m4_define([magick_bugreport],
+          [https://github.com/ImageMagick/ImageMagick/issues])
+m4_define([magick_url], [https://imagemagick.org])
+m4_define([magick_lib_version],[0x70A])
+m4_define([magick_lib_version_number],
+          [magick_major_version,magick_minor_version,magick_micro_version,magick_patchlevel_version])
 m4_define([magick_git_revision],
           esyscmd([
             c=$(git log --full-history --format=tformat:. HEAD | wc -l)
@@ -37,26 +44,24 @@ m4_define([magick_git_revision],
             d=$(date +%Y%m%d)
             printf %s "$c:$h:$d"
           ]))
-m4_define([magick_tar_name],[ImageMagick])
+m4_define([magick_tarname],[ImageMagick])
 
 # ==============================================================================
-# Initalize Automake
+# Initialize Automake
 # ==============================================================================
-AC_INIT([ImageMagick],
+AC_INIT([magick_name],
         [magick_version],
-        [https://github.com/ImageMagick/ImageMagick/issues],
-        [magick_tar_name],
-        [https://imagemagick.org])
+        [magick_bugreport],
+        [magick_tarname],
+        [magick_url])
+
 AC_CONFIG_SRCDIR([MagickCore/MagickCore.h])
 AC_CONFIG_AUX_DIR([config])
 AC_REQUIRE_AUX_FILE([tap-driver.sh])
 AC_CONFIG_MACRO_DIR([m4])
-AC_CONFIG_HEADERS([config/config.h])
 AX_PREFIX_CONFIG_H([MagickCore/magick-baseconfig.h],[MagickCore])
 AC_CANONICAL_SYSTEM
 AC_CANONICAL_TARGET
-AM_INIT_AUTOMAKE([foreign color-tests -Wall -Wno-portability subdir-objects dist-bzip2 dist-lzip dist-xz dist-zip tar-ustar])
-AM_SILENT_RULES([yes])
 
 #
 # Save initial user-tunable values
@@ -83,7 +88,7 @@ AC_ARG_ENABLE([reproducible-build],
 # Source file containing package/library versioning information.
 . ${srcdir}/version.sh
 
-echo "configuring ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}"
+echo "Configuring ${PACKAGE_NAME} ${PACKAGE_VERSION}"
 
 MAGICK_TARGET_CPU=$host_cpu
 AC_SUBST([MAGICK_TARGET_CPU])
@@ -123,23 +128,22 @@ AC_SUBST([MAGICKPP_LIBRARY_CURRENT_MIN],
 AC_SUBST([MAGICKPP_LIBRARY_VERSION_INFO],
          [$MAGICKPP_LIBRARY_CURRENT:$MAGICKPP_LIBRARY_REVISION:$MAGICKPP_LIBRARY_AGE])
 
-AC_SUBST([PACKAGE_NAME])dnl
-AC_SUBST([PACKAGE_VERSION])dnl
-AC_SUBST([PACKAGE_PERL_VERSION])dnl
-AC_SUBST([PACKAGE_RELEASE])dnl
-AC_SUBST([PACKAGE_CHANGE_DATE])dnl
-AC_SUBST([PACKAGE_LIB_VERSION])dnl
-AC_SUBST([PACKAGE_LIB_VERSION_NUMBER])dnl
+AC_SUBST([PACKAGE_BASE_VERSION],[magick_base_version])
+AC_SUBST([PACKAGE_PATCHLEVEL_VERSION],[magick_patchlevel_version])
+AC_SUBST([PACKAGE_VERSION_ADDENDUM],[-magick_patchlevel_version])
+AC_SUBST([PACKAGE_LIB_VERSION],[magick_lib_version])
+AC_SUBST([PACKAGE_LIB_VERSION_NUMBER],[magick_lib_version_number])
 AS_IF([test X$enable_reproducible_build = Xyes],
  [PACKAGE_RELEASE_DATE=$PACKAGE_RELEASE_DATE_REPRODUCIBLE],
  [PACKAGE_RELEASE_DATE=$PACKAGE_RELEASE_DATE_RAW],
 )
 AC_SUBST([PACKAGE_RELEASE_DATE])dnl
 
-AC_SUBST([PACKAGE_VERSION_ADDENDUM])dnl
-
 # Ensure that make can run correctly
 AM_SANITY_CHECK
+AC_CONFIG_HEADERS([config/config.h])
+AM_INIT_AUTOMAKE([foreign color-tests no-define nostdinc -Wall -Wno-portability no-define nostdinc subdir-objects parallel-tests dist-bzip2 dist-lzip dist-xz dist-zip tar-ustar])
+AM_SILENT_RULES([yes])
 
 # versioning of library
 MAGICK_LIB_VERSION="0x"
@@ -158,7 +162,7 @@ MAGICK_LIB_VERSION=${MAGICK_LIB_VERSION}${MAGICK_LIBRARY_REVISION}
 AC_SUBST([MAGICK_LIB_VERSION])
 
 # Definition used to define MagickLibVersionText in version.h
-MAGICK_LIB_VERSION_TEXT="${PACKAGE_VERSION}"
+MAGICK_LIB_VERSION_TEXT="${PACKAGE_BASE_VERSION}"
 AC_SUBST([MAGICK_LIB_VERSION_TEXT])
 
 # Definition used to define MagickLibVersionNumber in version.h
@@ -181,14 +185,12 @@ MAGICKPP_LIB_VERSION=${MAGICKPP_LIB_VERSION}${MAGICKPP_LIBRARY_REVISION}
 AC_SUBST([MAGICKPP_LIB_VERSION])
 
 # Definition used to define MagickLibVersionText in version.h
-MAGICKPP_LIB_VERSION_TEXT="${PACKAGE_VERSION}"
+MAGICKPP_LIB_VERSION_TEXT="${PACKAGE_BASE_VERSION}"
 AC_SUBST([MAGICKPP_LIB_VERSION_TEXT])
 
 # Definition used to define MagickLibVersionNumber in version.h
 MAGICK_LIB_VERSION_NUMBER="${MAGICK_LIBRARY_CURRENT},${MAGICK_LIBRARY_AGE},${MAGICK_LIBRARY_REVISION}"
 AC_SUBST([MAGICK_LIB_VERSION_NUMBER])
-
-
 
 # Regenerate config.status if ChangeLog or version.sh is updated.
 AC_SUBST([CONFIG_STATUS_DEPENDENCIES],['$(top_srcdir)/version.sh'])
@@ -3027,7 +3029,7 @@ AC_DEFINE_UNQUOTED([INCLUDEARCH_PATH],["$DEFINE_INCLUDE_PATH"],[Directory where 
 AC_SUBST([INCLUDEARCH_PATH])
 
 # Subdirectory under lib to place ImageMagick lib files
-LIBRARY_RELATIVE_PATH="${PACKAGE_NAME}-${PACKAGE_VERSION}"
+LIBRARY_RELATIVE_PATH="${PACKAGE_NAME}-${PACKAGE_BASE_VERSION}"
 AC_DEFINE_UNQUOTED([LIBRARY_RELATIVE_PATH],["$LIBRARY_RELATIVE_PATH"],[Subdirectory of lib where ImageMagick architecture dependent files are installed.])
 
 # Path to ImageMagick bin directory
@@ -4078,7 +4080,7 @@ AC_OUTPUT
 # ==============================================================================
 AC_MSG_NOTICE([
 ==============================================================================
-${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM} is configured as follows. Please verify that this
+${PACKAGE_NAME} ${PACKAGE_VERSION} is configured as follows. Please verify that this
 configuration matches your expectations.
 
 Host system type: $host

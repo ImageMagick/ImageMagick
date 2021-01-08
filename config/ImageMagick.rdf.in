@@ -125,8 +125,8 @@ Features and Capabilities
       <Version>
           <name>stable</name>
           <created>@PACKAGE_RELEASE_DATE@</created>
-          <revision>@PACKAGE_VERSION@</revision>
-          <patch-level>@PACKAGE_VERSION_ADDENDUM@</patch-level>
+          <revision>@PACKAGE_BASE_VERSION@</revision>
+          <patch-level>@PACKAGE_RELEASE_DATE@</patch-level>
       </Version>
     </release>
 

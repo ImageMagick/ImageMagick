@@ -43,7 +43,7 @@ require AutoLoader;
       ConfigureError FatalErrorException
     );
 
-$VERSION = '@PACKAGE_PERL_VERSION@';
+$VERSION = '@PACKAGE_BASE_VERSION@';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
@@ -123,12 +123,11 @@ It was originally developed to be used by CGI scripts for Web pages.
 
 A web page has been set up for this extension. See:
 
-	 file://@DOCUMENTATION_PATH@/www/perl-magick.html
 	 https://imagemagick.org/script/perl-magick.php
 
 If you have problems, go to
 
-   https://imagemagick.org/discourse-server/viewforum.php?f=7
+   https://github.com/ImageMagick/ImageMagick/discussions/categories/development
 
 =head1 AUTHOR
 

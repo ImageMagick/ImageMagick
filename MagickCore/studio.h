@@ -350,6 +350,8 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
   Magick defines.
 */
 #define MagickMaxRecursionDepth  600
+#define MAGICK_SSIZE_MAX  (SSIZE_MAX)
+#define MAGICK_SSIZE_MIN  (-(SSIZE_MAX)-1)
 #define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
 #if defined(_MSC_VER)
 # define DisableMSCWarning(nr) __pragma(warning(push)) \
