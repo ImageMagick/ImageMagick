@@ -142,7 +142,7 @@ AC_SUBST([PACKAGE_RELEASE_DATE])dnl
 # Ensure that make can run correctly
 AM_SANITY_CHECK
 AC_CONFIG_HEADERS([config/config.h])
-AM_INIT_AUTOMAKE([foreign color-tests no-define nostdinc -Wall -Wno-portability no-define nostdinc subdir-objects parallel-tests dist-bzip2 dist-lzip dist-xz dist-zip tar-ustar])
+AM_INIT_AUTOMAKE([foreign color-tests no-define no-dependencies nostdinc -Wall -Wno-portability no-define subdir-objects parallel-tests dist-bzip2 dist-lzip dist-xz dist-zip tar-ustar])
 AM_SILENT_RULES([yes])
 
 # versioning of library
