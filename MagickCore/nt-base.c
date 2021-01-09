@@ -2412,7 +2412,7 @@ MagickPrivate int NTSystemCommand(const char *command,char *output)
           if (count > 0)
             {
               CopyMagickString(output+output_offset,buffer,count);
-              output_offset+=count;
+              output_offset+=count-1;
             }
         }
       if (!PeekNamedPipe(read_output,NULL,0,NULL,&size,NULL))
