@@ -33,15 +33,7 @@ extern "C" {
 #define MagickLibAddendum  "@PACKAGE_VERSION_ADDENDUM@"
 #define MagickLibInterface  @MAGICK_LIBRARY_CURRENT@
 #define MagickLibMinInterface  @MAGICK_LIBRARY_CURRENT_MIN@
-#if defined(_WINDOWS)
-#  if defined(_WIN64)
-#    define MagickPlatform "x64"
-#  else
-#    define MagickPlatform "x86"
-#  endif
-#else
 #define MagickPlatform  "@MAGICK_TARGET_CPU@"
-#endif
 #define MagickppLibVersionText  "@MAGICKPP_LIB_VERSION_TEXT@"
 #define MagickppLibVersionNumber  @MAGICKPP_LIBRARY_VERSION_INFO@
 #define MagickppLibAddendum  "@PACKAGE_VERSION_ADDENDUM@"
