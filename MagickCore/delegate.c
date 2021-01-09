@@ -462,8 +462,6 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
       }
   }
   status=NTSystemCommand(sanitize_command,message);
-#elif defined(macintosh)
-  status=MACSystemCommand(sanitize_command);
 #elif defined(vms)
   status=system(sanitize_command);
 #else
