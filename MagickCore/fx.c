@@ -2324,6 +2324,9 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           size_t
             length;
 
+          /*
+            Parse if(condition test).
+          */
           length=CopyMagickString(subexpression,expression+3,
             MagickPathExtent-1);
           if (length != 0)
