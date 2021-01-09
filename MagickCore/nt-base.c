@@ -2402,17 +2402,17 @@ MagickPrivate int NTSystemCommand(const char *command,char *output)
       DWORD
         bytes_read;
 
-      if (ReadFile(read_output,buffer,sizeof(buffer)-1,&bytes_read,NULL))
+      if (ReadFile(read_output,buffer,MagickPathExtent-1,&bytes_read,NULL))
         {
           size_t
             count;
 
-          count=MagickMin(MagickPathExtent-1-output_offset,bytes_read);
+          count=MagickMin(MagickPathExtent-output_offset,
+            (size_t) bytes_read+1);
           if (count > 0)
             {
               CopyMagickString(output+output_offset,buffer,count);
-              output[count]='\0';
-              output_offset=count;
+              output_offset+=count;
             }
         }
       if (!PeekNamedPipe(read_output,NULL,0,NULL,&size,NULL))
