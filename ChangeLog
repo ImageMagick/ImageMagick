@@ -1,8 +1,8 @@
-2021-01-08  7.0.10-57  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-57 GIT revision 18... 
+2021-01-09  7.0.10-57  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-57 GIT revision 18218:d7a3d75ff:20210109
 
 2021-01-08  7.0.10-57  <quetzlzacatenango@image...>
-  * update automake/aucong configuration files.
+  * update automake/autoconf configuration files.
   * additional checks to prevent integer overflow.
 
 2021-01-05  7.0.10-56  <quetzlzacatenango@image...>
