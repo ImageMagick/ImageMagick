@@ -400,31 +400,31 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
         buffer[MagickPathExtent];
 
       FILE
-        *fp;
+        *file;
 
       size_t
-        output_offset;
+        offset;
 
-      output_offset=0;
-      fp=popen_utf8(sanitize_command,"r");
-      if (fp != (FILE *) NULL)
+      offset=0;
+      file=popen_utf8(sanitize_command,"r");
+      if (file == (FILE *) NULL)
+        status=system(sanitize_command);
+      else
         {
-          while (fgets(buffer,sizeof(buffer),fp) != NULL)
+          while (fgets(buffer,(int) sizeof(buffer),file) != NULL)
           {
             size_t
-              count;
+              length;
 
-            count=MagickMin(MagickPathExtent-output_offset,strlen(buffer)+1);
-            if (count > 0)
+            length=MagickMin(MagickPathExtent-offset,strlen(buffer)+1);
+            if (length > 0)
               {
-                CopyMagickString(message+output_offset,buffer,count);
-                output_offset+=count-1;
+                (void) CopyMagickString(message+offset,buffer,length);
+                offset+=length-1;
               }
           }
-          status=pclose(fp);
+          status=pclose(file);
         }
-      else
-        status=system(sanitize_command);
     }
   else
 #endif
