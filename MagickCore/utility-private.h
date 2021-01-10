@@ -201,26 +201,31 @@ static inline FILE *popen_utf8(const char *command,const char *type)
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
   return(popen(command,type));
 #else
-   FILE
-     *file;
+  FILE
+    *file;
 
-   wchar_t
-     *type_wide,
-     *command_wide;
+  int
+    length;
 
-   command_wide=create_wchar_path(command);
-   if (command_wide == (wchar_t *) NULL)
-     return((FILE *) NULL);
-   type_wide=create_wchar_path(type);
-   if (type_wide == (wchar_t *) NULL)
-     {
-       command_wide=(wchar_t *) RelinquishMagickMemory(command_wide);
-       return((FILE *) NULL);
-     }
-   file=_wpopen(command_wide,type_wide);
-   type_wide=(wchar_t *) RelinquishMagickMemory(type_wide);
-   command_wide=(wchar_t *) RelinquishMagickMemory(command_wide);
-   return(file);
+  wchar_t
+    *command_wide,
+    type_wide[5];
+
+  file=(FILE *) NULL;
+  length=MultiByteToWideChar(CP_UTF8,0,type,-1,type_wide,5);
+  if (length == 0)
+    return(file);
+  length=MultiByteToWideChar(CP_UTF8,0,command,-1,NULL,0);
+  if (length == 0)
+    return(file);
+  command_wide=(wchar_t *) AcquireQuantumMemory(length,sizeof(*command_wide));
+  if (command_wide == (wchar_t *) NULL)
+    return(file);
+  length=MultiByteToWideChar(CP_UTF8,0,command,-1,command_wide,length);
+  if (length != 0)
+    file=_wpopen(command_wide,type_wide);
+  command_wide=(wchar_t *) RelinquishMagickMemory(command_wide);
+  return(file);
 #endif
 }
 
