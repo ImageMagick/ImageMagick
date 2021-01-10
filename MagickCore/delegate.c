@@ -393,50 +393,87 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
   if (message != (char *) NULL)
     *message='\0';
 #if defined(MAGICKCORE_POSIX_SUPPORT)
-#if !defined(MAGICKCORE_HAVE_EXECVP)
-  status=system(sanitize_command);
-#else
-  if ((asynchronous != MagickFalse) ||
-      (strpbrk(sanitize_command,"&;<>|") != (char *) NULL))
-    status=system(sanitize_command);
-  else
+#if defined(MAGICKCORE_HAVE_POPEN)
+  if ((asynchronous == MagickFalse) && (message !=  (char *) NULL))
     {
-      pid_t
-        child_pid;
+      char
+        buffer[MagickPathExtent];
 
-      /*
-        Call application directly rather than from a shell.
-      */
-      child_pid=(pid_t) fork();
-      if (child_pid == (pid_t) -1)
-        status=system(sanitize_command);
-      else
-        if (child_pid == 0)
+      FILE
+        *fp;
+
+      size_t
+        output_offset;
+
+      output_offset=0;
+      fp=popen_utf8(sanitize_command,"r");
+      if (fp != (FILE *) NULL)
+        {
+          while (fgets(buffer,sizeof(buffer),fp) != NULL)
           {
-            status=execvp(arguments[1],arguments+1);
-            _exit(1);
-          }
-        else
-          {
-            int
-              child_status;
+            size_t
+              count;
 
-            pid_t
-              pid;
-
-            child_status=0;
-            pid=(pid_t) waitpid(child_pid,&child_status,0);
-            if (pid == -1)
-              status=(-1);
-            else
+            count=MagickMin(MagickPathExtent-output_offset,strlen(buffer)+1);
+            if (count > 0)
               {
-                if (WIFEXITED(child_status) != 0)
-                  status=WEXITSTATUS(child_status);
-                else
-                  if (WIFSIGNALED(child_status))
-                    status=(-1);
+                CopyMagickString(message+output_offset,buffer,count);
+                output_offset+=count-1;
               }
           }
+          status=pclose(fp);
+        }
+      else
+        status=system(sanitize_command);
+    }
+  else
+#endif
+    {
+#if !defined(MAGICKCORE_HAVE_EXECVP)
+      status=system(sanitize_command);
+#else
+      if ((asynchronous != MagickFalse) ||
+          (strpbrk(sanitize_command,"&;<>|") != (char *) NULL))
+        status=system(sanitize_command);
+      else
+        {
+          pid_t
+            child_pid;
+
+          /*
+            Call application directly rather than from a shell.
+          */
+          child_pid=(pid_t) fork();
+          if (child_pid == (pid_t) -1)
+            status=system(sanitize_command);
+          else
+            if (child_pid == 0)
+              {
+                status=execvp(arguments[1],arguments+1);
+                _exit(1);
+              }
+            else
+              {
+                int
+                  child_status;
+
+                pid_t
+                  pid;
+
+                child_status=0;
+                pid=(pid_t) waitpid(child_pid,&child_status,0);
+                if (pid == -1)
+                  status=(-1);
+                else
+                  {
+                    if (WIFEXITED(child_status) != 0)
+                      status=WEXITSTATUS(child_status);
+                    else
+                      if (WIFSIGNALED(child_status))
+                        status=(-1);
+                  }
+              }
+        }
     }
 #endif
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
