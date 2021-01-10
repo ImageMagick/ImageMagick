@@ -93,6 +93,7 @@
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/threshold.h"
+#include "MagickCore/token.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/transform-private.h"
 #include "MagickCore/utility.h"
@@ -2854,9 +2855,11 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
   progress=0;
   image_view=AcquireVirtualCacheView(image,exception);
   fx_view=AcquireAuthenticCacheView(fx_image,exception);
+puts("aaa");
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic) shared(progress,status) \
-    magick_number_threads(image,fx_image,fx_image->rows,1)
+    magick_number_threads(image,fx_image,fx_image->rows, \
+      GlobExpression(fx_info[0]->expression,"debug(",MagickTrue) == 0 ? 1 : 0)
 #endif
   for (y=0; y < (ssize_t) fx_image->rows; y++)
   {
