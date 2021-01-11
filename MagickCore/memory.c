@@ -33,9 +33,36 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Segregate our memory requirements from any program that calls our API.  This
-%  should help reduce the risk of others changing our program state or causing
-%  memory corruption.
+%  We provide these memory allocators:
+%
+%    AcquireCriticalMemory(): allocate a small memory request with
+%      AcquireMagickMemory(), however, on fail throw a fatal exception and exit.
+%      Free the memory reserve with RelinquishMagickMemory().
+%    AcquireAlignedMemory(): allocate a small memory request that is aligned
+%      on a cache line.  On fail, return NULL for possible recovery.
+%      Free the memory reserve with RelinquishMagickMemory().
+%    AcquireMagickMemory()/ResizeMagickMemory(): allocate a small to medium
+%      memory request, typically with malloc()/realloc(). On fail, return NULL
+%      for possible recovery.  Free the memory reserve with
+%      RelinquishMagickMemory().
+%    AcquireQuantumMemory()/ResizeQuantumMemory(): allocate a small to medium
+%      memory request.  This is a secure memory allocator as it accepts two
+%      parameters, count and quantum, to ensure the request does not overflow.
+%      It also check to ensure the request does not exceed the maximum memory
+%      per the security policy.  Free the memory reserve with
+%      RelinquishMagickMemory().
+%    AcquireVirtualMemory(): allocate a large memory request either in heap,
+%      memory-mapped, or memory-mapped on disk depending on whether heap
+%      allocation fails or if the request exceeds the maximum memory policy.
+%      Free the memory reserve with RelinquishVirtualMemory().
+%    ResetMagickMemory(): fills the bytes of the memory area with a constant
+%      byte.
+%    
+%  In addition, we provide hooks for your own memory constructor/destructors.
+%  You can also utilize our internal custom allocator as follows: Segregate
+%  our memory requirements from any program that calls our API.  This should
+%  help reduce the risk of others changing our program state or causing memory
+%  corruption.
 %
 %  Our custom memory allocation manager implements a best-fit allocation policy
 %  using segregated free lists.  It uses a linear distribution of size classes
