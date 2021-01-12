@@ -4,6 +4,8 @@
 2021-01-11  7.0.10-58  <quetzlzacatenango@image...>
   * identify the convex hull and minimum bounding box attributes of an image
     with the -define identify:convex-hull=true define.
+  * set the quality to 100 to produce lossless HEIC images (reference
+    https://github.com/ImageMagick/ImageMagick/pull/3116).
 
 2021-01-09  7.0.10-57  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-57 GIT revision 18221:2f611d533:20210109
