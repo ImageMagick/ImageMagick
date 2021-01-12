@@ -270,8 +270,8 @@ MagickPrivate NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
     number_threads,sizeof(*nexus_info)));
   if (nexus_info == (NexusInfo **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  *nexus_info=(NexusInfo *) AcquireQuantumMemory(2*number_threads,
-    sizeof(**nexus_info));
+  *nexus_info=(NexusInfo *) AcquireQuantumMemory(number_threads,
+    2*sizeof(**nexus_info));
   if (*nexus_info == (NexusInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) memset(*nexus_info,0,2*number_threads*sizeof(**nexus_info));
