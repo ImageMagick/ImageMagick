@@ -287,7 +287,7 @@ static cl_mem createKernelInfo(MagickCLDevice device,const double radius,
       ResourceLimitWarning,"AcquireKernelInfo failed.",".");
     return((cl_mem) NULL);
   }
-  kernelBufferPtr=(float *)AcquireMagickMemory(kernel->width*
+  kernelBufferPtr=(float *) AcquireMagickMemory(kernel->width*
     sizeof(*kernelBufferPtr));
   if (kernelBufferPtr == (float *) NULL)
     {
@@ -297,7 +297,7 @@ static cl_mem createKernelInfo(MagickCLDevice device,const double radius,
       return((cl_mem) NULL);
     }
   for (i = 0; i < (ssize_t) kernel->width; i++)
-    kernelBufferPtr[i] = (float)kernel->values[i];
+    kernelBufferPtr[i]=(float) kernel->values[i];
   imageKernelBuffer=CreateOpenCLBuffer(device,CL_MEM_COPY_HOST_PTR |
     CL_MEM_READ_ONLY,kernel->width*sizeof(*kernelBufferPtr),kernelBufferPtr);
   *width=(cl_uint) kernel->width;
