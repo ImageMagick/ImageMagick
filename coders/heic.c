@@ -1131,7 +1131,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
       }
 
     error=heif_context_encode_image(heif_context,heif_image,heif_encoder,
-      (struct heif_encoding_options *) NULL,
+      (const struct heif_encoding_options *) NULL,
       (struct heif_image_handle **) NULL);
     status=IsHeifSuccess(image,&error,exception);
     if (status == MagickFalse)
