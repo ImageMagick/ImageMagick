@@ -1054,9 +1054,15 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
 
     enum heif_chroma
       chroma;
+    
+    MagickBooleanType
+      lossless;
 
     colorspace=heif_colorspace_YCbCr;
-    chroma=heif_chroma_420;
+    lossless=image_info->quality == 100;
+    chroma=lossless ? heif_chroma_444 : heif_chroma_420;
+
+
     /*
       Get encoder for the specified format.
     */
@@ -1094,6 +1100,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     status=IsHeifSuccess(image,&error,exception);
     if (status == MagickFalse)
       break;
+
 #if LIBHEIF_NUMERIC_VERSION >= 0x01040000
     profile=GetImageProfile(image,"icc");
     if (profile != (StringInfo *) NULL)
@@ -1106,23 +1113,28 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
       status=WriteHEICImageRGBA(image,heif_image,exception);
     if (status == MagickFalse)
       break;
+
     /*
       Code and actually write the HEIC image
     */
-    if (image_info->quality != UndefinedCompressionQuality)
-      {
-        error=heif_encoder_set_lossy_quality(heif_encoder,(int)
-          image_info->quality);
-        status=IsHeifSuccess(image,&error,exception);
-        if (status == MagickFalse)
-          break;
-      }
+    if (lossless != MagickFalse)
+      error=heif_encoder_set_lossless(heif_encoder, 1);
+    else if (image_info->quality != UndefinedCompressionQuality)
+      error=heif_encoder_set_lossy_quality(heif_encoder,(int)
+        image_info->quality);
+
+    status=IsHeifSuccess(image,&error,exception);
+    if (status == MagickFalse)
+      break;
+
+
     error=heif_context_encode_image(heif_context,heif_image,heif_encoder,
       (const struct heif_encoding_options *) NULL,
       (struct heif_image_handle **) NULL);
     status=IsHeifSuccess(image,&error,exception);
     if (status == MagickFalse)
       break;
+
 #if LIBHEIF_NUMERIC_VERSION >= 0x01030000
     if (image->profiles != (void *) NULL)
       WriteProfile(heif_context,image,exception);
