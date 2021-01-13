@@ -1614,7 +1614,7 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
   /*
     Get image distortion.
   */
-  length=MaxPixelChannels+1;
+  length=MaxPixelChannels+1UL;
   channel_distortion=(double *) AcquireQuantumMemory(length,
     sizeof(*channel_distortion));
   if (channel_distortion == (double *) NULL)
