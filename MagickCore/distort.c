@@ -381,7 +381,7 @@ static double *GenerateCoefficients(const Image *image,
     i;
 
   size_t
-    number_coeff, /* number of coefficients to return (array size) */
+    number_coefficients, /* number of coefficients to return (array size) */
     cp_size,      /* number floating point numbers per control point */
     cp_x,cp_y,    /* the x,y indexes for control point */
     cp_values;    /* index of values for this control point */
@@ -415,17 +415,17 @@ static double *GenerateCoefficients(const Image *image,
        ) )
     *method = AffineDistortion;
 
-  number_coeff=0;
+  number_coefficients=0;
   switch (*method) {
     case AffineDistortion:
     case RigidAffineDistortion:
     /* also BarycentricColorInterpolate: */
-      number_coeff=3*number_values;
+      number_coefficients=3*number_values;
       break;
     case PolynomialDistortion:
       /* number of coefficents depend on the given polynomal 'order' */
       i = poly_number_terms(arguments[0]);
-      number_coeff = 2 + i*number_values;
+      number_coefficients = 2 + i*number_values;
       if ( i == 0 ) {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
                    "InvalidArgument","%s : '%s'","Polynomial",
@@ -440,61 +440,62 @@ static double *GenerateCoefficients(const Image *image,
       }
       break;
     case BilinearReverseDistortion:
-      number_coeff=4*number_values;
+      number_coefficients=4*number_values;
       break;
     /*
       The rest are constants as they are only used for image distorts
     */
     case BilinearForwardDistortion:
-      number_coeff=10; /* 2*4 coeff plus 2 constants */
+      number_coefficients=10; /* 2*4 coeff plus 2 constants */
       cp_x = 0;        /* Reverse src/dest coords for forward mapping */
       cp_y = 1;
       cp_values = 2;
       break;
 #if 0
     case QuadraterialDistortion:
-      number_coeff=19; /* BilinearForward + BilinearReverse */
+      number_coefficients=19; /* BilinearForward + BilinearReverse */
 #endif
       break;
     case ShepardsDistortion:
-      number_coeff=1;  /* The power factor to use */
+      number_coefficients=1;  /* The power factor to use */
       break;
     case ArcDistortion:
-      number_coeff=5;
+      number_coefficients=5;
       break;
     case ScaleRotateTranslateDistortion:
     case AffineProjectionDistortion:
     case Plane2CylinderDistortion:
     case Cylinder2PlaneDistortion:
-      number_coeff=6;
+      number_coefficients=6;
       break;
     case PolarDistortion:
     case DePolarDistortion:
-      number_coeff=8;
+      number_coefficients=8;
       break;
     case PerspectiveDistortion:
     case PerspectiveProjectionDistortion:
-      number_coeff=9;
+      number_coefficients=9;
       break;
     case BarrelDistortion:
     case BarrelInverseDistortion:
-      number_coeff=10;
+      number_coefficients=10;
       break;
     default:
       perror("unknown method given"); /* just fail assertion */
   }
 
   /* allocate the array of coefficients needed */
-  coeff = (double *) AcquireQuantumMemory(number_coeff,sizeof(*coeff));
-  if (coeff == (double *) NULL) {
-    (void) ThrowMagickException(exception,GetMagickModule(),
-                  ResourceLimitError,"MemoryAllocationFailed",
-                  "%s", "GenerateCoefficients");
-    return((double *) NULL);
-  }
+  coeff=(double *) AcquireQuantumMemory(number_coefficients,sizeof(*coeff));
+  if (coeff == (double *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","%s",
+        "GenerateCoefficients");
+      return((double *) NULL);
+    }
 
   /* zero out coefficients array */
-  for (i=0; i < number_coeff; i++)
+  for (i=0; i < number_coefficients; i++)
     coeff[i] = 0.0;
 
   switch (*method)
@@ -546,8 +547,9 @@ static double *GenerateCoefficients(const Image *image,
           status;
 
         /* create matrix, and a fake vectors matrix */
-        matrix = AcquireMagickMatrix(3UL,3UL);
-        vectors = (double **) AcquireQuantumMemory(number_values,sizeof(*vectors));
+        matrix=AcquireMagickMatrix(3UL,3UL);
+        vectors=(double **) AcquireQuantumMemory(number_values,
+          sizeof(*vectors));
         if (matrix == (double **) NULL || vectors == (double **) NULL)
         {
           matrix  = RelinquishMagickMatrix(matrix, 3UL);
@@ -993,8 +995,8 @@ static double *GenerateCoefficients(const Image *image,
         return((double *) NULL);
       }
       /* create matrix, and a fake vectors matrix */
-      matrix = AcquireMagickMatrix(4UL,4UL);
-      vectors = (double **) AcquireQuantumMemory(number_values,sizeof(*vectors));
+      matrix=AcquireMagickMatrix(4UL,4UL);
+      vectors=(double **) AcquireQuantumMemory(number_values,sizeof(*vectors));
       if (matrix == (double **) NULL || vectors == (double **) NULL)
       {
         matrix  = RelinquishMagickMatrix(matrix, 4UL);
@@ -1133,12 +1135,12 @@ static double *GenerateCoefficients(const Image *image,
       nterms = (size_t) coeff[1];
 
       /* create matrix, a fake vectors matrix, and least sqs terms */
-      matrix = AcquireMagickMatrix(nterms,nterms);
-      vectors = (double **) AcquireQuantumMemory(number_values,sizeof(*vectors));
-      terms = (double *) AcquireQuantumMemory(nterms, sizeof(*terms));
-      if (matrix  == (double **) NULL ||
-          vectors == (double **) NULL ||
-          terms   == (double *) NULL )
+      matrix=AcquireMagickMatrix(nterms,nterms);
+      vectors=(double **) AcquireQuantumMemory(number_values,
+        sizeof(*vectors));
+      terms=(double *) AcquireQuantumMemory(nterms,sizeof(*terms));
+      if ((matrix  == (double **) NULL) || (vectors == (double **) NULL) ||
+          (terms   == (double *) NULL))
       {
         matrix  = RelinquishMagickMatrix(matrix, nterms);
         vectors = (double **) RelinquishMagickMemory(vectors);
