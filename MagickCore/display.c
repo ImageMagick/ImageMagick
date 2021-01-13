@@ -5296,6 +5296,8 @@ static MagickBooleanType XCropImage(Display *display,
   crop_info.y+=y;
   crop_info.y=(ssize_t) (scale_factor*crop_info.y+0.5);
   crop_info.height=(unsigned int) (scale_factor*crop_info.height+0.5);
+  crop_info.x+=image->page.x;
+  crop_info.y+=image->page.y;
   crop_image=CropImage(image,&crop_info,exception);
   XSetCursorState(display,windows,MagickFalse);
   if (crop_image == (Image *) NULL)
