@@ -4137,7 +4137,9 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
         }
       if (LocaleCompare("duplicate",option+1) == 0)
         {
-          if (IfNormalOp)
+          if (!IfNormalOp)
+            new_images=DuplicateImages(_images,1,"-1",_exception);
+          else
             {
               const char
                 *p;
@@ -4147,18 +4149,16 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
 
               if (IsGeometry(arg1) == MagickFalse)
                 CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,
-                      arg1);
+                  arg1);
               number_duplicates=(size_t) StringToLong(arg1);
               p=strchr(arg1,',');
               if (p == (const char *) NULL)
                 new_images=DuplicateImages(_images,number_duplicates,"-1",
                   _exception);
               else
-                new_images=DuplicateImages(_images,number_duplicates,p,
+                new_images=DuplicateImages(_images,number_duplicates,p+1,
                   _exception);
             }
-          else
-            new_images=DuplicateImages(_images,1,"-1",_exception);
           AppendImageToList(&_images, new_images);
           new_images=(Image *) NULL;
           break;

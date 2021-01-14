@@ -275,7 +275,7 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
           step=1;
       }
     step=(ssize_t) (first > last ? -step : step);
-    for ( ; (first > -(last+step)) && (first < (last+step)); first+=step)
+    for ( ; step > 0 ? (last-first) >= 0 : (last-first) <= 0; first+=step)
     {
       i=0;
       for (next=images; next != (Image *) NULL; next=GetNextImageInList(next))

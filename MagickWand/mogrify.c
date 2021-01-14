@@ -8285,8 +8285,8 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                   duplicate_images=DuplicateImages(*images,number_duplicates,
                     "-1",exception);
                 else
-                  duplicate_images=DuplicateImages(*images,number_duplicates,p,
-                    exception);
+                  duplicate_images=DuplicateImages(*images,number_duplicates,
+                    p+1,exception);
               }
             AppendImageToList(images, duplicate_images);
             (void) SyncImagesSettings(mogrify_info,*images,exception);
