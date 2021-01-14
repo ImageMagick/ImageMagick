@@ -8,6 +8,8 @@
     https://github.com/ImageMagick/ImageMagick/pull/3116).
   * properly identify SVG images (reference
     https://github.com/ImageMagick/ImageMagick/issues/3117).
+  * duplicate operator: inverse range parameter working again (reference
+    https://github.com/ImageMagick/ImageMagick/issues/3113).
 
 2021-01-09  7.0.10-57  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-57 GIT revision 18221:2f611d533:20210109
