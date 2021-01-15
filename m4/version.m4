@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-#  ImageMagick verisoning
+#  ImageMagick versioning.
 #
 m4_define([magick_name], [ImageMagick])
 m4_define([magick_major_version], [7])
