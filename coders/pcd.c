@@ -484,12 +484,8 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 { \
   if (header != (unsigned char *) NULL) \
     header=(unsigned char *) RelinquishMagickMemory(header); \
-  if (luma != (unsigned char *) NULL) \
-    luma=(unsigned char *) RelinquishMagickMemory(luma); \
-  if (chroma2 != (unsigned char *) NULL) \
-    chroma2=(unsigned char *) RelinquishMagickMemory(chroma2); \
-  if (chroma1 != (unsigned char *) NULL) \
-    chroma1=(unsigned char *) RelinquishMagickMemory(chroma1); \
+  if (pixel_info != (MemoryInfo *) NULL) \
+    pixel_info=RelinquishVirtualMemory(pixel_info); \
   ThrowReaderException((exception),(message)); \
 }
 
