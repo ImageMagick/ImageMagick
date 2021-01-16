@@ -1033,7 +1033,6 @@ SBIN_DIR
 BIN_DIR
 EXEC_PREFIX_DIR
 PREFIX_DIR
-CONFIG_STATUS_DEPENDENCIES
 MAGICKPP_LIB_VERSION_TEXT
 MAGICKPP_LIB_VERSION
 MAGICK_LIB_VERSION_NUMBER
@@ -1149,7 +1148,6 @@ ac_subst_files=''
 ac_user_opts='
 enable_option_checking
 enable_silent_rules
-enable_reproducible_build
 enable_dependency_tracking
 with_gnu_ld
 with_dmalloc
@@ -1934,8 +1932,6 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-silent-rules   less verbose build output (undo: "make V=1")
   --disable-silent-rules  verbose build output (undo: "make V=0")
-  --enable-reproducible-build
-                          enable reproducible build
   --enable-dependency-tracking
                           do not reject slow dependency extractors
   --disable-dependency-tracking
@@ -4502,7 +4498,7 @@ else
 fi
 AM_BACKSLASH='\'
 
-CONFIGURE_DEPENDENCIES="$CONFIGURE_DEPENDENCIES \$(top_srcdir)/ChangeLog \$(top_srcdir)/version.sh"
+CONFIGURE_DEPENDENCIES="$CONFIGURE_DEPENDENCIES \$(top_srcdir)/ChangeLog \$(top_srcdir)/m4/version.m4"
 
 
 #
@@ -4520,17 +4516,6 @@ done
 
 CONFIGURE_ARGS="$0 ${ac_configure_args}"
 
-
-# Check whether --enable-reproducible-build was given.
-if test "${enable_reproducible_build+set}" = set; then :
-  enableval=$enable_reproducible_build; enable_reproducible_build=$enableval
-else
-  enable_reproducible_build='no'
-fi
-
-
-# Source file containing package/library versioning information.
-. ${srcdir}/version.sh
 
 echo "Configuring ${PACKAGE_NAME} ${PACKAGE_VERSION}"
 
@@ -4570,15 +4555,21 @@ MAGICK_PATCHLEVEL_VERSION=58
 
 MAGICK_VERSION=7.0.10-58
 
-MAGICK_GIT_REVISION=18254:51629689f:20210114
+MAGICK_GIT_REVISION=18261:adcdf0a22:20210115
 
 
 # Substitute library versioning
+MAGICK_LIBRARY_CURRENT=8
+MAGICK_LIBRARY_REVISION=0
+MAGICK_LIBRARY_AGE=0
 MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
 
+MAGICKPP_LIBRARY_CURRENT=4
+MAGICKPP_LIBRARY_REVISION=0
+MAGICKPP_LIBRARY_AGE=0
 MAGICKPP_LIBRARY_CURRENT_MIN=`expr $MAGICKPP_LIBRARY_CURRENT - $MAGICKPP_LIBRARY_AGE`
 
 MAGICKPP_LIBRARY_VERSION_INFO=$MAGICKPP_LIBRARY_CURRENT:$MAGICKPP_LIBRARY_REVISION:$MAGICKPP_LIBRARY_AGE
@@ -4594,11 +4585,8 @@ PACKAGE_LIB_VERSION=0x70A
 
 PACKAGE_LIB_VERSION_NUMBER=7,0,10,58
 
-if test X$enable_reproducible_build = Xyes; then :
-  PACKAGE_RELEASE_DATE=$PACKAGE_RELEASE_DATE_REPRODUCIBLE
-elif PACKAGE_RELEASE_DATE=$PACKAGE_RELEASE_DATE_RAW; then :
+PACKAGE_RELEASE_DATE=2021-01-14
 
-fi
 
 # Ensure that make can run correctly
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether build environment is sane" >&5
@@ -4714,10 +4702,6 @@ MAGICKPP_LIB_VERSION_TEXT="${PACKAGE_BASE_VERSION}"
 
 # Definition used to define MagickLibVersionNumber in version.h
 MAGICK_LIB_VERSION_NUMBER="${MAGICK_LIBRARY_CURRENT},${MAGICK_LIBRARY_AGE},${MAGICK_LIBRARY_REVISION}"
-
-
-# Regenerate config.status if ChangeLog or version.sh is updated.
-CONFIG_STATUS_DEPENDENCIES='$(top_srcdir)/version.sh'
 
 
 PERLMAINCC=$CC

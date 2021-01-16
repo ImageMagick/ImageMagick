@@ -3114,7 +3114,6 @@ CODER_PATH = @CODER_PATH@
 CONFIGURE_ARGS = @CONFIGURE_ARGS@
 CONFIGURE_DEPENDENCIES = @CONFIGURE_DEPENDENCIES@
 CONFIGURE_PATH = @CONFIGURE_PATH@
-CONFIG_STATUS_DEPENDENCIES = @CONFIG_STATUS_DEPENDENCIES@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
@@ -3550,7 +3549,6 @@ TOP_EXTRA_DIST = \
   NEWS.txt \
   README.txt \
   index.html \
-  version.sh \
   winpath.sh
 
 
@@ -13809,7 +13807,7 @@ magick-version: MagickCore/version.h
 	fi ; \
 	touch magick-version
 
-MagickCore/version.h:	$(top_srcdir)/ChangeLog $(top_srcdir)/version.sh
+MagickCore/version.h:	$(top_srcdir)/ChangeLog $(top_srcdir)/m4/version.m4
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
 
