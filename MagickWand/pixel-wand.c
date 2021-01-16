@@ -148,10 +148,7 @@ WandExport PixelWand *ClonePixelWand(const PixelWand *wand)
   assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  clone_wand=(PixelWand *) AcquireMagickMemory(sizeof(*clone_wand));
-  if (clone_wand == (PixelWand *) NULL)
-    ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
-      wand->name);
+  clone_wand=(PixelWand *) AcquireCriticalMemory(sizeof(*clone_wand));
   (void) memset(clone_wand,0,sizeof(*clone_wand));
   clone_wand->id=AcquireWandId();
   (void) FormatLocaleString(clone_wand->name,MagickPathExtent,"%s-%.20g",
@@ -201,11 +198,8 @@ WandExport PixelWand **ClonePixelWands(const PixelWand **wands,
   PixelWand
     **clone_wands;
 
-  clone_wands=(PixelWand **) AcquireQuantumMemory((size_t) number_wands,
+  clone_wands=(PixelWand **) AcquireCriticalMemory((size_t) number_wands*
     sizeof(*clone_wands));
-  if (clone_wands == (PixelWand **) NULL)
-    ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
-      GetExceptionMessage(errno));
   for (i=0; i < (ssize_t) number_wands; i++)
     clone_wands[i]=ClonePixelWand(wands[i]);
   return(clone_wands);
@@ -400,10 +394,7 @@ WandExport PixelWand *NewPixelWand(void)
   quantum=GetMagickQuantumDepth(&depth);
   if (depth != MAGICKCORE_QUANTUM_DEPTH)
     ThrowWandFatalException(WandError,"QuantumDepthMismatch",quantum);
-  wand=(PixelWand *) AcquireMagickMemory(sizeof(*wand));
-  if (wand == (PixelWand *) NULL)
-    ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
-      GetExceptionMessage(errno));
+  wand=(PixelWand *) AcquireCriticalMemory(sizeof(*wand));
   (void) memset(wand,0,sizeof(*wand));
   wand->id=AcquireWandId();
   (void) FormatLocaleString(wand->name,MagickPathExtent,"%s-%.20g",PixelWandId,
@@ -447,11 +438,8 @@ WandExport PixelWand **NewPixelWands(const size_t number_wands)
   PixelWand
     **wands;
 
-  wands=(PixelWand **) AcquireQuantumMemory((size_t) number_wands,
+  wands=(PixelWand **) AcquireCriticalMemory((size_t) number_wands*
     sizeof(*wands));
-  if (wands == (PixelWand **) NULL)
-    ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
-      GetExceptionMessage(errno));
   for (i=0; i < (ssize_t) number_wands; i++)
     wands[i]=NewPixelWand();
   return(wands);

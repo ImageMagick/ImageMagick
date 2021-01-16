@@ -85,10 +85,7 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
   }
 
   /* allocate memory for MgaickCLI */
-  cli_wand=(MagickCLI *) AcquireMagickMemory(sizeof(*cli_wand));
-  if (cli_wand == (MagickCLI *) NULL)
-    ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
-      GetExceptionMessage(errno));
+  cli_wand=(MagickCLI *) AcquireCriticalMemory(sizeof(*cli_wand));
 
   /* Initialize Wand Part of MagickCLI
      FUTURE: this is a repeat of code from NewMagickWand()
