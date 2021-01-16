@@ -1,7 +1,10 @@
-2014-11-05  7.03 Cristy  <quetzlzacatenango@image...>
+2021-01-16  7.0.11 Cristy  <quetzlzacatenango@image...>
+  * requires ImageMagick 6.8.11 or above.
+
+2014-11-05  7.0.3 Cristy  <quetzlzacatenango@image...>
   * Add support for $image->Colorspace() (reference
     https://imagemagick.org/discourse-server/viewtopic.php?f=7&t=30980).
 
-2011-08-01  7.00 Cristy  <quetzlzacatenango@image...>
+2011-08-01  7.0.0 Cristy  <quetzlzacatenango@image...>
   * New version 7.00.
 
