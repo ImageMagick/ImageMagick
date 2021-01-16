@@ -266,8 +266,8 @@ MagickBooleanType sixel_decode(Image *image,
     imsy = 2048;
     if (SetImageExtent(image,imsx,imsy,exception) == MagickFalse)
       return(MagickFalse);
-    imbuf = (sixel_pixel_t *) AcquireQuantumMemory(imsx * imsy, sizeof(sixel_pixel_t));
-
+    imbuf=(sixel_pixel_t *) AcquireQuantumMemory(imsx,imsy*
+      sizeof(sixel_pixel_t));
     if (imbuf == NULL) {
         return(MagickFalse);
     }
@@ -1349,7 +1349,7 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      sixel_pixels[y*image->columns+x]= ((ssize_t) GetPixelIndex(image,q));
+      sixel_pixels[y*image->columns+x]=((ssize_t) GetPixelIndex(image,q));
       q+=GetPixelChannels(image);
     }
   }
