@@ -23,6 +23,25 @@ AC_PREREQ(2.69)
 # Initialize Automake
 # ==============================================================================
 m4_include([m4/version.m4])
+m4_define([magick_base_version],
+          [magick_major_version.magick_minor_version.magick_micro_version])
+m4_define([magick_version],
+          [magick_base_version-magick_patchlevel_version])
+m4_define([magick_lib_version_number],
+          [magick_major_version,magick_minor_version,magick_micro_version,magick_patchlevel_version])
+m4_define([magick_git_revision],
+          m4_esyscmd([
+            c=$(git log --full-history --format=tformat:. HEAD | wc -l)
+            h=$(git rev-parse --short HEAD)
+            d=$(date +%Y%m%d)
+            printf %s "$c:$h:$d"
+          ]))
+m4_define([magick_release_date],
+          m4_esyscmd([
+            d=$(date +%F -r ./ChangeLog)
+            printf %s "$d"
+          ]))
+
 AC_INIT([magick_name],
         [magick_version],
         [magick_bugreport],
