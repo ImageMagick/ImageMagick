@@ -1279,7 +1279,8 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,
       /*
         Identify transparent colormap index.
       */
-      if ((image->storage_class == DirectClass) || (image->colors > SIXEL_PALETTE_MAX))
+      if ((image->storage_class == DirectClass) ||
+          (image->colors > SIXEL_PALETTE_MAX))
         (void) SetImageType(image,PaletteBilevelAlphaType,exception);
       for (i=0; i < (ssize_t) image->colors; i++)
         if (image->colormap[i].alpha != OpaqueAlpha)
@@ -1334,11 +1335,11 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,
   output = sixel_output_create(image);
   if (output == (sixel_output_t *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  sixel_pixels=(sixel_pixel_t *) AcquireQuantumMemory(image->columns * image->rows,
-    sizeof(sixel_pixel_t));
+  sixel_pixels=(sixel_pixel_t *) AcquireQuantumMemory(image->columns,
+    image->rows*sizeof(sixel_pixel_t));
   if (sixel_pixels == (sixel_pixel_t *) NULL)
     {
-      output = (sixel_output_t *) RelinquishMagickMemory(output);
+      output=(sixel_output_t *) RelinquishMagickMemory(output);
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     }
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -1352,7 +1353,7 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,
       q+=GetPixelChannels(image);
     }
   }
-  status = sixel_encode_impl(sixel_pixels,image->columns,image->rows,
+  status=sixel_encode_impl(sixel_pixels,image->columns,image->rows,
     sixel_palette,image->colors,-1,output);
   sixel_pixels=(sixel_pixel_t *) RelinquishMagickMemory(sixel_pixels);
   output=(sixel_output_t *) RelinquishMagickMemory(output);
