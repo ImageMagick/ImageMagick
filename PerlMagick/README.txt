@@ -12,7 +12,7 @@ Introduction
 
     for additional information about PerlMagick.  If you have problems, go to
 
-        https://imagemagick.org/discourse-server/viewforum.php?f=7
+        https://github.com/ImageMagick/ImageMagick6/discussions
 
     for help.  For instructions about installing ImageMagick, see
 
