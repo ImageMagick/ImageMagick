@@ -428,7 +428,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
     if ((ps_info->photoshop_profile == (StringInfo *) NULL) &&
         (CompareMagickByteBuffer(&buffer,PhotoshopProfile,strlen(PhotoshopProfile)) != MagickFalse))
       {
-        size_t
+        unsigned long
           extent;
 
         unsigned char
