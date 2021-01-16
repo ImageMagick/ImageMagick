@@ -2202,7 +2202,7 @@ static MagickStatusType ParseCSSColor(const char *magick_restrict color,
     char
       *p;
 
-    float
+    double
       intensity;
 
     p=q;
@@ -2211,7 +2211,7 @@ static MagickStatusType ParseCSSColor(const char *magick_restrict color,
       break;
     if (*q == '%')
       {
-        intensity*=0.01f*255.0f;
+        intensity*=0.01*255.0;
         q++;
       }
     switch (i)
