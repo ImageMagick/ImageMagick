@@ -12,7 +12,7 @@ Introduction
 
     for additional information about PerlMagick.  If you have problems, go to
 
-        https://github.com/ImageMagick/ImageMagick6/discussions
+        https://github.com/ImageMagick/ImageMagick/discussions
 
     for help.  For instructions about installing ImageMagick, see
 
@@ -23,8 +23,8 @@ Installation
 
     Get the PerlMagick distribution and type the following: 
 
-        gunzip ImageMagick-7.0.0-0.tar.gz
-        tar xvf ImageMagick-7.0.0
+        gunzip ImageMagick-7.0.10-58.tar.gz
+        tar xvf ImageMagick-7.0.10
 
     Follow the ImageMagick installation instructions in INSTALL-unix.txt
 		then type
