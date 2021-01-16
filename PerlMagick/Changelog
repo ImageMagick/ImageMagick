@@ -1,5 +1,5 @@
-2021-01-16  7.0.11 Cristy  <quetzlzacatenango@image...>
-  * requires ImageMagick 6.8.11 or above.
+2021-01-16  7.0.10 Cristy  <quetzlzacatenango@image...>
+  * requires ImageMagick 7.0.10 or above.
 
 2014-11-05  7.0.3 Cristy  <quetzlzacatenango@image...>
   * Add support for $image->Colorspace() (reference
