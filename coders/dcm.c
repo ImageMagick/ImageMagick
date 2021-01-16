@@ -3308,8 +3308,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if ((group == dicom_info[i].group) &&
                 (element == dicom_info[i].element))
               break;
-          (void) FormatLocaleFile(stdout,"0x%04lX %4ld S%ld %s-%s (0x%04lx,0x%04lx)",
-            (unsigned long) image->offset,(long) length,sequence_depth,
+          (void) FormatLocaleFile(stdout,
+            "0x%04lX %4ld S%ld %s-%s (0x%04lx,0x%04lx)",
+            (unsigned long) image->offset,(long) length,(long) sequence_depth,
             implicit_vr,explicit_vr,(unsigned long) group,
             (unsigned long) element);
           if (dicom_info[i].description != (char *) NULL)

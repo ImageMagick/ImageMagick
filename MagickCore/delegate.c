@@ -474,8 +474,8 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
                   }
               }
         }
-    }
 #endif
+    }
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
   {
     char
