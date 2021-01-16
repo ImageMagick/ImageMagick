@@ -1,5 +1,5 @@
-2021-01-11  7.0.10-58  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-58 GIT revision 18... 
+2021-01-16  7.0.10-58  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-58 GIT revision 18274:05efa5ec2:20210116
 
 2021-01-11  7.0.10-58  <quetzlzacatenango@image...>
   * identify the convex hull and minimum bounding box attributes of an image
@@ -10,6 +10,8 @@
     https://github.com/ImageMagick/ImageMagick/issues/3117).
   * duplicate operator: inverse range parameter working again (reference
     https://github.com/ImageMagick/ImageMagick/issues/3113).
+  * Fix rounding error for CSS colors on i686 (reference
+    https://tracker.debian.org/pkg/imagemagick).
 
 2021-01-09  7.0.10-57  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-57 GIT revision 18221:2f611d533:20210109
