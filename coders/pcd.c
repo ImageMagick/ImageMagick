@@ -557,9 +557,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   header=(unsigned char *) AcquireQuantumMemory(0x800,3UL*sizeof(*header));
   if (header == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  chroma1=(unsigned char *) NULL;
-  chroma2=(unsigned char *) NULL;
-  luma=(unsigned char *) NULL;
+  pixel_info=(MemoryInfo *) NULL;
   count=ReadBlob(image,3*0x800,header);
   if (count != (3*0x800))
     ThrowPCDException(CorruptImageError,"ImproperImageHeader");
