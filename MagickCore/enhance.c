@@ -501,8 +501,8 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
   */
   if (clip_limit == 1.0)
     return(MagickTrue);
-  tile_cache=AcquireVirtualMemory((size_t) clahe_info->x*clahe_info->y,
-    number_bins*sizeof(*tiles));
+  tile_cache=AcquireVirtualMemory((size_t) clahe_info->x*number_bins,
+    clahe_info->y*sizeof(*tiles));
   if (tile_cache == (MemoryInfo *) NULL)
     return(MagickFalse);
   lut=(unsigned short *) AcquireQuantumMemory(NumberCLAHEGrays,sizeof(*lut));
