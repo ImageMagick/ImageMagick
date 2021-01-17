@@ -174,7 +174,7 @@ static MagickBooleanType AcquireQuantumPixels(QuantumInfo *quantum_info,
     unsigned char
       *pixels;
 
-    quantum_info->pixels[i]=AcquireVirtualMemory((extent+1),sizeof(*pixels));
+    quantum_info->pixels[i]=AcquireVirtualMemory(extent+1,sizeof(*pixels));
     if (quantum_info->pixels[i] == (MemoryInfo *) NULL)
       {
         DestroyQuantumPixels(quantum_info);
