@@ -3079,16 +3079,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         ping_background->blue *= bkgd_scale;
 
         if (logging != MagickFalse)
-          {
-            if (logging != MagickFalse)
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                 "    Reading PNG bKGD chunk, raw ping_background=(%d,%d,%d)\n"
-                 "    bkgd_scale=%d.  ping_background=(%d,%d,%d)",
-                 ping_background->red,ping_background->green,
-                 ping_background->blue,
-                 bkgd_scale,ping_background->red,
-                 ping_background->green,ping_background->blue);
-          }
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "    Reading PNG bKGD chunk, raw ping_background=(%d,%d,%d)\n"
+              "    bkgd_scale=%d.  ping_background=(%d,%d,%d)",
+              ping_background->red,ping_background->green,
+              ping_background->blue,bkgd_scale,ping_background->red,
+              ping_background->green,ping_background->blue);
 
         image->background_color.red=
             ScaleShortToQuantum(ping_background->red);
