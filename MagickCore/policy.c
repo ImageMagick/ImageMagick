@@ -1246,6 +1246,8 @@ MagickExport MagickBooleanType SetMagickSecurityPolicyValue(
     }
     case SystemPolicyDomain:
     {
+      if (LocaleCompare(name,"font") == 0)
+        return(SetPolicyValue(domain,name,value));
       if (LocaleCompare(name,"max-memory-request") == 0)
         {
           current_value=GetPolicyValue("system:max-memory-request");
