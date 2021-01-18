@@ -1,5 +1,5 @@
 #include <cstdint>
-#include <string.h>
+#include <cstring>
 
 #include <Magick++/Blob.h>
 #include <Magick++/Image.h>
