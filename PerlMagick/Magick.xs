@@ -584,6 +584,7 @@ static struct
       {"width", IntegerReference}, {"height", IntegerReference},
       {"intensity-sigma", RealReference}, {"spatial-sigma", RealReference},
       {"channel", MagickChannelOptions} } },
+    { "SortPixels", { { (const char *) NULL, NullReference } } },
   };
 
 static SplayTreeInfo
@@ -7683,6 +7684,8 @@ Mogrify(ref,...)
     WhiteBalanceImage  = 304
     BilateralBlur      = 305
     BilateralBlurImage = 306
+    SortPixels         = 307
+    SortPixelsImage    = 308
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -11614,6 +11617,11 @@ Mogrify(ref,...)
             geometry_info.sigma,geometry_info.xi,geometry_info.psi,exception);
           if (image != (Image *) NULL)
             (void) SetImageChannelMask(image,channel_mask);
+          break;
+        }
+        case 154:  /* SortPixels */
+        {
+          (void) SortImagePixels(image,exception);
           break;
         }
       }

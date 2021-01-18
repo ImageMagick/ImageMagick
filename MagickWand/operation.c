@@ -3429,17 +3429,22 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (IsGeometry(arg1) == MagickFalse)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) SolarizeImage(_image,StringToDoubleInterval(arg1,(double)
-                 QuantumRange+1.0),_exception);
+             QuantumRange+1.0),_exception);
+          break;
+        }
+      if (LocaleCompare("sort-pixels",option+1) == 0)
+        {
+          (void) SortImagePixels(_image,_exception);
           break;
         }
       if (LocaleCompare("sparse-color",option+1) == 0)
         {
-          parse= ParseCommandOption(MagickSparseColorOptions,MagickFalse,arg1);
-          if ( parse < 0 )
+          parse=ParseCommandOption(MagickSparseColorOptions,MagickFalse,arg1);
+          if (parse < 0)
             CLIWandExceptArgBreak(OptionError,"UnrecognizedSparseColorMethod",
-                option,arg1);
+              option,arg1);
           new_image=SparseColorOption(_image,(SparseColorMethod)parse,arg2,
-               _exception);
+            _exception);
           break;
         }
       if (LocaleCompare("splice",option+1) == 0)

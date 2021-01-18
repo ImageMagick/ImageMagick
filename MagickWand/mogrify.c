@@ -3035,6 +3035,15 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SolarizeImage(*image,threshold,exception);
             break;
           }
+        if (LocaleCompare("sort-pixels",option+1) == 0)
+          {
+            /*
+              Sort each scanline in scending order of intensity.
+            */
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            (void) SortImagePixels(*image,exception);
+            break;
+          }
         if (LocaleCompare("sparse-color",option+1) == 0)
           {
             SparseColorMethod
@@ -3699,6 +3708,7 @@ static MagickBooleanType MogrifyUsage(void)
       "                       shadows\n"
       "  -sketch geometry     simulate a pencil sketch\n"
       "  -solarize threshold  negate all pixels above the threshold level\n"
+      "  -sort-pixels         sort each scanline in ascending order of intensity\n"
       "  -sparse-color method args\n"
       "                       fill in a image based on a few color points\n"
       "  -splice geometry     splice the background color into the image\n"
@@ -6257,6 +6267,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("sort",option+1) == 0)
+          break;
         if (LocaleCompare("sparse-color",option+1) == 0)
           {
             ssize_t

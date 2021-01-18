@@ -1063,6 +1063,8 @@ static const OptionInfo
     { "-snaps", 1L, NonMagickOptionFlag, MagickFalse },
     { "+solarize", 1L, DeprecateOptionFlag, MagickTrue },
     { "-solarize", 1L, SimpleOperatorFlag, MagickFalse },
+    { "+sort-pixels", 0L, DeprecateOptionFlag, MagickTrue },
+    { "-sort-pixels", 0L, SimpleOperatorFlag, MagickFalse },
     { "+sparse-color", 1L, DeprecateOptionFlag, MagickTrue },
     { "-sparse-color", 2L, SimpleOperatorFlag | AlwaysInterpretArgsFlag, MagickFalse },
     { "+splice", 1L, DeprecateOptionFlag, MagickTrue },

@@ -235,7 +235,8 @@ extern MagickExport MagickBooleanType
     const Quantum *) magick_attribute((__pure__)),
   IsFuzzyEquivalencePixelInfo(const PixelInfo *,const PixelInfo *)
     magick_attribute((__pure__)),
-  SetPixelMetaChannels(Image *,const size_t,ExceptionInfo *);
+  SetPixelMetaChannels(Image *,const size_t,ExceptionInfo *),
+  SortImagePixels(Image *,ExceptionInfo *);
 
 extern MagickExport MagickRealType
   GetPixelInfoIntensity(const Image *magick_restrict,
