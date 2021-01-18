@@ -558,36 +558,6 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
 %
 */
 
-static char *SanitizeDelegateString(const char *source)
-{
-  char
-    *sanitize_source;
-
-  const char
-    *q;
-
-  char
-    *p;
-
-  static char
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
-    allowlist[] =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 "
-      "$-_.+!;*(),{}|^~[]`\'><#%/?:@&=";
-#else
-    allowlist[] =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 "
-      "$-_.+!;*(),{}|\\^~[]`\"><#%/?:@&=";
-#endif
-
-  sanitize_source=AcquireString(source);
-  p=sanitize_source;
-  q=sanitize_source+strlen(sanitize_source);
-  for (p+=strspn(p,allowlist); p != q; p+=strspn(p,allowlist))
-    *p='_';
-  return(sanitize_source);
-}
-
 static char *GetMagickPropertyLetter(ImageInfo *image_info,Image *image,
   const char letter,ExceptionInfo *exception)
 {
