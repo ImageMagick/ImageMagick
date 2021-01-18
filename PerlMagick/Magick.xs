@@ -6903,7 +6903,7 @@ GetPixels(ref,...)
         Quantum
           *pixels;
 
-        pixels_info=AcquireVirtualemory(strlen(map)*region.width,
+        pixels_info=AcquireVirtualMemory(strlen(map)*region.width,
           region.height*sizeof(*pixels));
         if (pixels == (Quantum *) NULL)
           {
