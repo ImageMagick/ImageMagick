@@ -6910,6 +6910,7 @@ GetPixels(ref,...)
               "MemoryAllocationFailed",PackageName);
             goto PerlException;
           }
+        pixels=(float *) GetVirtualMemoryBlob(pixels_info);
         status=ExportImagePixels(image,region.x,region.y,region.width,
           region.height,map,QuantumPixel,pixels,exception);
         if (status == MagickFalse)

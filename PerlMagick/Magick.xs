@@ -6876,7 +6876,7 @@ GetPixels(ref,...)
 
         pixels_info=AcquireVirtualMemory(strlen(map)*region.width,
           region.height*sizeof(*pixels));
-        if (pixel_info == (MemoryInfo *) NULL)
+        if (pixels_info == (MemoryInfo *) NULL)
           {
             ThrowPerlException(exception,ResourceLimitError,
               "MemoryAllocationFailed",PackageName);
@@ -6905,7 +6905,7 @@ GetPixels(ref,...)
 
         pixels_info=AcquireVirtualMemory(strlen(map)*region.width,
           region.height*sizeof(*pixels));
-        if (pixels == (Quantum *) NULL)
+        if (pixels_info == (MemoryInfo *) NULL)
           {
             ThrowPerlException(exception,ResourceLimitError,
               "MemoryAllocationFailed",PackageName);
