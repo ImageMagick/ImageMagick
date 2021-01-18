@@ -635,10 +635,10 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       sanitize_passphrase=SanitizeDelegateString(option);
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
       (void) FormatLocaleString(passphrase,MagickPathExtent,
-        "\"-sPDFPassword=%s\" ",sanitize_passphrase);
+        "-sPDFPassword=\"%s\" ",sanitize_passphrase);
 #else
       (void) FormatLocaleString(passphrase,MagickPathExtent,
-        "'-sPDFPassword=%s' ",sanitize_passphrase);
+        "-sPDFPassword='%s' ",sanitize_passphrase);
 #endif
       sanitize_passphrase=DestroyString(sanitize_passphrase);
       (void) ConcatenateMagickString(options,passphrase,MagickPathExtent);
