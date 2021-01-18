@@ -6873,7 +6873,7 @@ GetPixels(ref,...)
         MemoryInfo
           *pixels_info;
 
-        pixels_info=AcquireVirtualemory(strlen(map)*region.width,
+        pixels_info=AcquireVirtualMemory(strlen(map)*region.width,
           region.height*sizeof(*pixels));
         if (pixel_info == (MemoryInfo *) NULL)
           {
