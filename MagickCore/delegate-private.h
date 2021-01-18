@@ -77,7 +77,7 @@ typedef struct _GhostInfo
     (MagickDLLCall *revision)(gsapi_revision_t *, int);
 } GhostInfo;
 
-static char *SanitizeDelegateString(const char *source)
+static inline char *SanitizeDelegateString(const char *source)
 {
   char
     *sanitize_source;
