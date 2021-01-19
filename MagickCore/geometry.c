@@ -663,7 +663,8 @@ MagickExport MagickBooleanType IsSceneGeometry(const char *geometry,
     return(MagickFalse);
   p=(char *) geometry;
   value=StringToDouble(geometry,&p);
-  (void) value;
+  if (value != (double) CastDoubleToLong(value))
+    return(MagickFalse);
   if (p == geometry)
     return(MagickFalse);
   if (strspn(geometry,"0123456789-, ") != strlen(geometry))
