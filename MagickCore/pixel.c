@@ -6434,12 +6434,18 @@ MagickExport MagickBooleanType SortImagePixels(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns-1; x++)
     {
+      MagickRealType
+        current,
+        previous;
+
       ssize_t
         j;
 
+      previous=GetPixelIntensity(image,q);
       for (j=0; j < (ssize_t) (image->columns-x-1); j++)
-        if (GetPixelIntensity(image,q+j*GetPixelChannels(image)) >
-            GetPixelIntensity(image,q+(j+1)*GetPixelChannels(image)))
+      {
+        current=GetPixelIntensity(image,q+(j+1)*GetPixelChannels(image));
+        if (previous > current)
           {
             Quantum
               pixel[MaxPixelChannels];
@@ -6454,6 +6460,9 @@ MagickExport MagickBooleanType SortImagePixels(Image *image,
             (void) memcpy(q+(j+1)*GetPixelChannels(image),pixel,
               GetPixelChannels(image)*sizeof(Quantum));
           }
+        else
+          previous=current;
+      }
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
