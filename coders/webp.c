@@ -1041,19 +1041,27 @@ static MagickBooleanType WriteWEBPImageProfile(Image *image,
             mux_error=WebPMuxSetAnimationParams(mux, &new_params);
           }
     }
-  if (icc_profile != (StringInfo *) NULL && (mux_error == WEBP_MUX_OK))
+  if ((icc_profile != (StringInfo *) NULL) && (mux_error == WEBP_MUX_OK))
     {
       chunk.bytes=GetStringInfoDatum(icc_profile);
       chunk.size=GetStringInfoLength(icc_profile);
       mux_error=WebPMuxSetChunk(mux,"ICCP",&chunk,0);
     }
-  if (exif_profile != (StringInfo *) NULL && (mux_error == WEBP_MUX_OK))
+  if ((exif_profile != (StringInfo *) NULL) && (mux_error == WEBP_MUX_OK))
     {
       chunk.bytes=GetStringInfoDatum(exif_profile);
       chunk.size=GetStringInfoLength(exif_profile);
+      if ((chunk.size >= 6) &&
+          (chunk.bytes[0] == 'E') && (chunk.bytes[1] == 'x') &&
+          (chunk.bytes[2] == 'i') && (chunk.bytes[3] == 'f') &&
+          (chunk.bytes[4] == '\0') && (chunk.bytes[5] == '\0'))
+        {
+          chunk.bytes=GetStringInfoDatum(exif_profile)+6;
+          chunk.size-=6;
+        }
       mux_error=WebPMuxSetChunk(mux,"EXIF",&chunk,0);
     }
-  if (xmp_profile != (StringInfo *) NULL && (mux_error == WEBP_MUX_OK))
+  if ((xmp_profile != (StringInfo *) NULL) && (mux_error == WEBP_MUX_OK))
     {
       chunk.bytes=GetStringInfoDatum(xmp_profile);
       chunk.size=GetStringInfoLength(xmp_profile);
