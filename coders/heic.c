@@ -427,12 +427,6 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
       file_data=RelinquishMagickMemory(file_data);
       ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     }
-  if (length > 24)
-    {
-      (void) memset(image->magick,0,sizeof(image->magick));
-      (void) strncpy(image->magick,(unsigned char *) file_data+20,4);
-      LocaleUpper(image->magick);
-    }
   /*
     Decode HEIF image.
   */
