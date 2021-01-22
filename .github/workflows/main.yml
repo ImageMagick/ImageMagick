@@ -1,14 +1,14 @@
 on:
   push:
     branches:
-    - master
+    - main
     tags:
     - '!*'
   pull_request:
     branches:
-    - master
+    - main
 
-name: master
+name: main
 jobs:
   build_linux:
     name: Build Linux
@@ -84,7 +84,7 @@ jobs:
       with:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows
-        ref: refs/heads/master
+        ref: refs/heads/main
         fetch-depth: 1
 
     - name: Clone repositories

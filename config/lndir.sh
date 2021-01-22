@@ -12,7 +12,7 @@
 # non- directories.  If you are building the distribution on more than
 # one machine, you should use this script.
 #
-# If your master sources are located in /usr/local/src/X and you would like
+# If your main sources are located in /usr/local/src/X and you would like
 # your link tree to be in /usr/local/src/new-X, do the following:
 #
 # 	%  mkdir /usr/local/src/new-X

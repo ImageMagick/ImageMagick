@@ -328,7 +328,7 @@ $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 	  chmod -R u+w $(PACKAGE_NAME)-$(PACKAGE_VERSION) ; \
 	  rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION) ; \
 	fi
-	git clone -b master https://github.com/ImageMagick/ImageMagick.git $(PACKAGE_NAME)-$(PACKAGE_VERSION)
+	git clone -b main https://github.com/ImageMagick/ImageMagick.git $(PACKAGE_NAME)-$(PACKAGE_VERSION)
 if ZIP_DELEGATE
 	rm -f $(DIST_WINDOWS_SRC_ZIP)
 	$(ZIP) -r -9 -q  $(DIST_WINDOWS_SRC_ZIP) $(PACKAGE_NAME)-$(PACKAGE_VERSION)

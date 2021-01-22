@@ -2,7 +2,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-    - master
+    - main
     paths:
     - 'ChangeLog'
 
@@ -41,7 +41,7 @@ jobs:
       with:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows
-        ref: refs/heads/master
+        ref: refs/heads/main
         fetch-depth: 1
 
     - name: Clone repositories
@@ -136,7 +136,7 @@ jobs:
       with:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows
-        ref: refs/heads/master
+        ref: refs/heads/main
         fetch-depth: 1
 
     - name: Clone repositories
@@ -184,7 +184,7 @@ jobs:
       with:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows
-        ref: refs/heads/master
+        ref: refs/heads/main
         fetch-depth: 1
 
     - name: Clone repositories
