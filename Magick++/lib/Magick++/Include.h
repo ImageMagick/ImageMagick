@@ -123,7 +123,7 @@ namespace MagickCore
 #          pragma comment(lib, "CORE_DB_jp2_.lib")
 #        endif
 #        if defined(MAGICKCORE_JPEG_DELEGATE)
-#          pragma comment(lib, "CORE_DB_jpeg_.lib")
+#          pragma comment(lib, "CORE_DB_jpeg-turbo_.lib")
 #        endif
 #        if defined(MAGICKCORE_JXL_DELEGATE)
 #          pragma comment(lib, "CORE_DB_jxl_.lib")
@@ -205,7 +205,7 @@ namespace MagickCore
 #          pragma comment(lib, "CORE_RL_jp2_.lib")
 #        endif
 #        if defined(MAGICKCORE_JPEG_DELEGATE)
-#          pragma comment(lib, "CORE_RL_jpeg_.lib")
+#          pragma comment(lib, "CORE_RL_jpeg-turbo_.lib")
 #        endif
 #        if defined(MAGICKCORE_JXL_DELEGATE)
 #          pragma comment(lib, "CORE_RL_jxl_.lib")
