@@ -1254,9 +1254,13 @@ MagickExport MagickBooleanType SetMagickSecurityPolicyValue(
           if ((current_value == (char *) NULL) ||
               (StringToSizeType(value,100.0) < StringToSizeType(current_value,100.0)))
             {
+              if (current_value != (char *) NULL)
+                current_value=DestroyString(current_value);
               ResetMaxMemoryRequest();
               return(SetPolicyValue(domain,name,value));
             }
+          if (current_value != (char *) NULL)
+            current_value=DestroyString(current_value);
         }
       if (LocaleCompare(name,"memory-map") == 0)
         {
@@ -1275,7 +1279,13 @@ MagickExport MagickBooleanType SetMagickSecurityPolicyValue(
           current_value=GetPolicyValue("system:shred");
           if ((current_value == (char *) NULL) ||
               (StringToInteger(value) > StringToInteger(current_value)))
-            return(SetPolicyValue(domain,name,value));
+            {
+              if (current_value != (char *) NULL)
+                current_value=DestroyString(current_value);
+              return(SetPolicyValue(domain,name,value));
+            }
+          if (current_value != (char *) NULL)
+            current_value=DestroyString(current_value);
         }
       break;
     }

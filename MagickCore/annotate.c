@@ -1009,17 +1009,21 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
         }
     }
   font=GetPolicyValue("system:font");
-  if ((font != (const char *) NULL) && (IsPathAccessible(font) != MagickFalse))
+  if (font != (const char *) NULL)
     {
-      /*
-        Render with default system font.
-      */
-      annotate_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-      annotate_info->font=ConstantString(font);
-      status=RenderFreetype(image,annotate_info,annotate_info->encoding,offset,
-        metrics,exception);
-      annotate_info=DestroyDrawInfo(annotate_info);
-      return(status);
+      if (IsPathAccessible(font) != MagickFalse)
+        {
+          /*
+            Render with default system font.
+          */
+          annotate_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+          annotate_info->font=font;
+          status=RenderFreetype(image,annotate_info,annotate_info->encoding,
+            offset,metrics,exception);
+          annotate_info=DestroyDrawInfo(annotate_info);
+          return(status);
+        }
+      font=DestroyString(font);
     }
   sans_exception=AcquireExceptionInfo();
   if (type_info == (const TypeInfo *) NULL)

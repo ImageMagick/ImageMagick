@@ -204,7 +204,6 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
   shared_secret=GetPolicyValue("cache:shared-secret");
   if (shared_secret == (char *) NULL)
     {
-      shared_secret=DestroyString(shared_secret);
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "DistributedPixelCache","'%s'","shared secret expected");
       return(-1);
