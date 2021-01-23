@@ -3395,7 +3395,7 @@ static inline Quantum ApplyPixelCompositeMask(const Quantum p,
   Quantum
     pixel;
 
-  if (fabs(alpha-OpaqueAlpha) < MagickEpsilon)
+  if (fabs((double) (alpha-OpaqueAlpha)) < MagickEpsilon)
     return(p);
   mask_alpha=1.0-QuantumScale*QuantumScale*alpha*beta;
   mask_alpha=PerceptibleReciprocal(mask_alpha);

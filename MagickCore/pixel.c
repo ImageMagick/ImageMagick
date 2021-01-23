@@ -4759,7 +4759,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
         GetPixelLuma(image,p+3*GetPixelChannels(image));
       luminance.y=GetPixelLuma(image,p+GetPixelChannels(image))-(double)
         GetPixelLuma(image,p+2*GetPixelChannels(image));
-      if (fabs(luminance.x) < fabs(luminance.y))
+      if (fabs((double) luminance.x) < fabs((double) luminance.y))
         {
           /*
             Diagonal 0-3 NW-SE.
@@ -5747,7 +5747,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
       AlphaBlendPixelInfo(image,p+GetPixelChannels(image),pixels+1,alpha+1);
       AlphaBlendPixelInfo(image,p+2*GetPixelChannels(image),pixels+2,alpha+2);
       AlphaBlendPixelInfo(image,p+3*GetPixelChannels(image),pixels+3,alpha+3);
-      if (fabs(luminance.x) < fabs(luminance.y))
+      if (fabs((double) luminance.x) < fabs((double) luminance.y))
         {
           /*
             Diagonal 0-3 NW-SE.

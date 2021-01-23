@@ -1135,14 +1135,14 @@ static inline MagickBooleanType IsSVGCompliant(const PixelInfo *pixel)
   /*
     SVG requires color depths > 8 expressed as percentages.
   */
-  if (fabs(SVGCompliant(pixel->red)-pixel->red) >= SVGEpsilon)
+  if (fabs((double) (SVGCompliant(pixel->red)-pixel->red)) >= SVGEpsilon)
     return(MagickFalse);
-  if (fabs(SVGCompliant(pixel->green)-pixel->green) >= SVGEpsilon)
+  if (fabs((double) (SVGCompliant(pixel->green)-pixel->green)) >= SVGEpsilon)
     return(MagickFalse);
-  if (fabs(SVGCompliant(pixel->blue)-pixel->blue) >= SVGEpsilon)
+  if (fabs((double) (SVGCompliant(pixel->blue)-pixel->blue)) >= SVGEpsilon)
     return(MagickFalse);
   if ((pixel->colorspace == CMYKColorspace) &&
-      (fabs(SVGCompliant(pixel->black)-pixel->black) >= SVGEpsilon))
+      (fabs((double) (SVGCompliant(pixel->black)-pixel->black)) >= SVGEpsilon))
     return(MagickFalse);
   return(MagickTrue);
 }

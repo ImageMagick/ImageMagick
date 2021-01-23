@@ -1630,7 +1630,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               }
               case DifferenceCompositeOp:
               {
-                pixel=QuantumRange*fabs(Sa-Da);
+                pixel=QuantumRange*fabs((double (Sa-Da));
                 break;
               }
               case FreezeCompositeOp:
