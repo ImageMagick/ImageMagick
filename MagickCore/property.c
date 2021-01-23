@@ -1680,7 +1680,6 @@ static MagickBooleanType GetICCProperty(const Image *image,const char *property,
     *profile;
 
   magick_unreferenced(property);
-
   profile=GetImageProfile(image,"icc");
   if (profile == (StringInfo *) NULL)
     profile=GetImageProfile(image,"icm");

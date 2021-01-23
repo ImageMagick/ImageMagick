@@ -1110,6 +1110,7 @@ static size_t ComplexTextLayout(const Image *image,const DrawInfo *draw_info,
   size_t
     extent;
 
+  magick_unreferenced(flags);
   extent=0;
   rq=raqm_create();
   if (rq == (raqm_t *) NULL)

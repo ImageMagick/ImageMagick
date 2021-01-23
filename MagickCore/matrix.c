@@ -125,6 +125,7 @@ struct _MatrixInfo
 #if defined(SIGBUS)
 static void MatrixSignalHandler(int status)
 {
+  magick_unreferenced(status);
   ThrowFatalException(CacheFatalError,"UnableToExtendMatrixCache");
 }
 #endif
