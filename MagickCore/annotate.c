@@ -932,7 +932,7 @@ MagickExport MagickBooleanType GetTypeMetrics(Image *image,
 static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
   const PointInfo *offset,TypeMetric *metrics,ExceptionInfo *exception)
 {
-  const char
+  char
     *font;
 
   const TypeInfo
@@ -1009,7 +1009,7 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
         }
     }
   font=GetPolicyValue("system:font");
-  if (font != (const char *) NULL)
+  if (font != (char *) NULL)
     {
       if (IsPathAccessible(font) != MagickFalse)
         {
