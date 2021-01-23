@@ -39,10 +39,10 @@ AC_DEFUN([AX_HAVE_OPENCL],
 [dnl
   AC_REQUIRE([AC_CANONICAL_HOST])dnl
   AC_ARG_ENABLE([opencl],
-  [AS_HELP_STRING([--disable-opencl],
-                  [do not use OpenCL])],
+  [AS_HELP_STRING([--enable-opencl],
+                  [use OpenCL])],
   [enable_opencl=$enableval],
-  [enable_opencl='yes'])
+  [enable_opencl='no'])
   if test x"$enable_opencl" != xno ; then
     CPPFLAGS_CL=""
     AC_CHECK_HEADERS([CL/cl.h OpenCL/cl.h], [HAVE_CL_H="yes"; break], [HAVE_CL_H="no"])

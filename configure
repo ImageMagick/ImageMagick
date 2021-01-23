@@ -1944,7 +1944,7 @@ Optional Features:
   --enable-osx-universal-binary
                           build universal binary on OS X [[default=no]]
   --disable-openmp        do not use OpenMP
-  --disable-opencl        do not use OpenCL
+  --enable-opencl         use OpenCL
   --disable-largefile     omit support for large files
   --enable-shared[=PKGS]  build shared libraries [default=yes]
   --enable-static[=PKGS]  build static libraries [default=yes]
@@ -4555,7 +4555,7 @@ MAGICK_PATCHLEVEL_VERSION=59
 
 MAGICK_VERSION=7.0.10-59
 
-MAGICK_GIT_REVISION=18301:f49ad0ba6:20210117
+MAGICK_GIT_REVISION=18327:f7e785915:20210122
 
 
 # Substitute library versioning
@@ -4585,7 +4585,7 @@ PACKAGE_LIB_VERSION=0x70A
 
 PACKAGE_LIB_VERSION_NUMBER=7,0,10,59
 
-PACKAGE_RELEASE_DATE=2021-01-16
+PACKAGE_RELEASE_DATE=2021-01-22
 
 
 # Ensure that make can run correctly
@@ -9998,7 +9998,7 @@ no_cl=yes
 if test "${enable_opencl+set}" = set; then :
   enableval=$enable_opencl; enable_opencl=$enableval
 else
-  enable_opencl='yes'
+  enable_opencl='no'
 fi
 
   if test x"$enable_opencl" != xno ; then
