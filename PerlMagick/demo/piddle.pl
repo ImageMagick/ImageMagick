@@ -59,8 +59,8 @@ $image->Draw(primitive=>'line',points=>'200,260 260,260',stroke=>green,
 #
 # Draw text.
 #
-$image->Annotate(text=>'This is a test!',geometry=>'+30+140',fill=>'green',
-  pointsize=>24,rotate=>45.0);
+$image->Annotate(font=>'Generic.ttf',text=>'This is a test!',
+  geometry=>'+30+140',fill=>'green',pointsize=>24,rotate=>45.0);
 $image->Write('piddle.gif');
 $image->Write('piddle.mvg');
 $image->Write('win:');

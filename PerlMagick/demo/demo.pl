@@ -63,8 +63,8 @@ push(@$images,$example);
 print "Annotate...\n";
 $example=$model->Clone();
 $example->Label('Annotate');
-$example->Annotate(text=>'Magick',geometry=>'+0+20',fill=>'gold',
-  gravity=>'North',pointsize=>14);
+$example->Annotate(font=>'Generic.ttf',text=>'Magick',geometry=>'+0+20',
+  fill=>'gold',gravity=>'North',pointsize=>14);
 push(@$images,$example);
 
 print "Auto-gamma...\n";
@@ -515,9 +515,9 @@ push(@$images,$example);
 # Create image montage.
 #
 print "Montage...\n";
-$montage=$images->Montage(geometry=>'140x160+8+4>',gravity=>'Center',
-  tile=>'5x+10+200',compose=>'over',background=>'#ffffff',pointsize=>18,
-  fill=>'#600',stroke=>'none',shadow=>'true');
+$montage=$images->Montage(font=>'Generic.ttf',geometry=>'140x160+8+4>',
+  gravity=>'Center',tile=>'5x+10+200',compose=>'over',background=>'#ffffff',
+  pointsize=>18,fill=>'#600',stroke=>'none',shadow=>'true');
 
 $logo=Image::Magick->new();
 $logo->Read('logo:');

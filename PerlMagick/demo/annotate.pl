@@ -16,19 +16,24 @@ for ($angle=0; $angle < 360; $angle+=30)
   $label->Draw(primitive=>'line',points=>"100,300 500,300",stroke=>'#600');
   $label->Draw(primitive=>'rectangle',points=>"100,100 500,500",fill=>'none',
     stroke=>'#600');
-  $label->Annotate(text=>"North West",gravity=>"NorthWest",x=>$x,y=>$y,
-    undercolor=>'yellow',rotate=>$angle);
-  $label->Annotate(text=>"North",gravity=>"North",y=>$y,rotate=>$angle);
-  $label->Annotate(text=>"North East",gravity=>"NorthEast",x=>$x,y=>$y,
+  $label->Annotate(font=>'Generic.ttf',text=>"North West",gravity=>"NorthWest",
+    x=>$x,y=>$y,undercolor=>'yellow',rotate=>$angle);
+  $label->Annotate(font=>'Generic.ttf',text=>"North",gravity=>"North",
+    y=>$y,rotate=>$angle);
+  $label->Annotate(font=>'Generic.ttf',text=>"North East",gravity=>"NorthEast",
+    x=>$x,y=>$y,rotate=>$angle);
+  $label->Annotate(font=>'Generic.ttf',text=>"West",gravity=>"West",
+    x=>$x,rotate=>$angle);
+  $label->Annotate(font=>'Generic.ttf',text=>"Center",gravity=>"Center",
     rotate=>$angle);
-  $label->Annotate(text=>"West",gravity=>"West",x=>$x,rotate=>$angle);
-  $label->Annotate(text=>"Center",gravity=>"Center",rotate=>$angle);
-  $label->Annotate(text=>"East",gravity=>"East",x=>$x,rotate=>$angle);
-  $label->Annotate(text=>"South West",gravity=>"SouthWest",x=>$x,y=>$y,
+  $label->Annotate(font=>'Generic.ttf',text=>"East",gravity=>"East",
+    x=>$x,rotate=>$angle);
+  $label->Annotate(font=>'Generic.ttf',text=>"South West",gravity=>"SouthWest",
+    x=>$x,y=>$y,rotate=>$angle);
+  $label->Annotate(font=>'Generic.ttf',text=>"South",gravity=>"South",y=>$y,
     rotate=>$angle);
-  $label->Annotate(text=>"South",gravity=>"South",y=>$y,rotate=>$angle);
-  $label->Annotate(text=>"South East",gravity=>"SouthEast",x=>$x,y=>$y,
-    rotate=>$angle);
+  $label->Annotate(font=>'Generic.ttf',text=>"South East",gravity=>"SouthEast",
+    x=>$x,y=>$y,rotate=>$angle);
   push(@$image,$label);
 }
 $image->Set(delay=>20);

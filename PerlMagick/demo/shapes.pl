@@ -25,12 +25,12 @@ $image->FloodfillPaint(geometry=>'+132+62',fill=>'blue',bordercolor=>'black',
 #
 # Draw text.
 #
-$image->Annotate(fill=>'red',geometry=>'+150+20',pointsize=>18,
-  text=>'Hello world!');
-$image->Annotate(fill=>'blue',geometry=>'+150+38',pointsize=>14,
-  text=>'Goodbye cruel world!');
-$image->Annotate(fill=>'black',geometry=>'+280+120',pointsize=>14,
-  text=>"I'm climbing the wall!",rotate=>90.0);
+$image->Annotate(font=>'Generic.ttf',fill=>'red',geometry=>'+150+20',
+  pointsize=>18,text=>'Hello world!');
+$image->Annotate(font=>'Generic.ttf',fill=>'blue',geometry=>'+150+38',
+  pointsize=>14,text=>'Goodbye cruel world!');
+$image->Annotate(font=>'Generic.ttf',fill=>'black',geometry=>'+280+120',
+  pointsize=>14,text=>"I'm climbing the wall!",rotate=>90.0);
 #
 # Write image.
 #

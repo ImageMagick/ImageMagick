@@ -241,12 +241,12 @@ for my $image ( @$results ) {
   );
 }
 
-my $montage=$results->Montage(
+my $montage=$results->Montage(font=>'Generic.ttf',
   geometry=>'+10+10',
   tile=>'4x',
   frame=>'6x6+2+2',
   shadow=>'True',
 );
 $montage->Write('show:');
-$montage->Write('compose_specials.jpg');
+$montage->Write('compose-specials.jpg');
 
