@@ -159,8 +159,7 @@ static void
 %
 */
 
-static inline size_t ColorToNodeId(const Image *image,
-  const PixelInfo *pixel,size_t index)
+static inline size_t ColorToNodeId(const PixelInfo *pixel,size_t index)
 {
   size_t
     id;
@@ -169,11 +168,39 @@ static inline size_t ColorToNodeId(const Image *image,
     ((ScaleQuantumToChar(ClampToQuantum(pixel->red)) >> index) & 0x01) |
     ((ScaleQuantumToChar(ClampToQuantum(pixel->green)) >> index) & 0x01) << 1 |
     ((ScaleQuantumToChar(ClampToQuantum(pixel->blue)) >> index) & 0x01) << 2);
-  if (image->alpha_trait != UndefinedPixelTrait)
+  if (pixel->alpha_trait != UndefinedPixelTrait)
     id|=((ScaleQuantumToChar(ClampToQuantum(pixel->alpha)) >> index) &
       0x01) << 3;
   return(id);
 }
+
+static inline MagickBooleanType IsPixelInfoColorMatch(
+  const PixelInfo *magick_restrict p,const PixelInfo *magick_restrict q)
+{
+  MagickRealType
+    alpha,
+    beta;
+
+  alpha=p->alpha_trait == UndefinedPixelTrait ? (MagickRealType) OpaqueAlpha :
+    p->alpha;
+  beta=q->alpha_trait == UndefinedPixelTrait ? (MagickRealType) OpaqueAlpha :
+    q->alpha;
+  if (AbsolutePixelValue(alpha-beta) >= MagickEpsilon)
+    return(MagickFalse);
+  if (AbsolutePixelValue(p->red-q->red) >= MagickEpsilon)
+    return(MagickFalse);
+  if (AbsolutePixelValue(p->green-q->green) >= MagickEpsilon)
+    return(MagickFalse);
+  if (AbsolutePixelValue(p->blue-q->blue) >= MagickEpsilon)
+    return(MagickFalse);
+  if (p->colorspace == CMYKColorspace)
+    {
+      if (AbsolutePixelValue(p->black-q->black) >= MagickEpsilon)
+        return(MagickFalse);
+    }
+  return(MagickTrue);
+}
+
 
 static CubeInfo *ClassifyImageColors(const Image *image,
   ExceptionInfo *exception)
@@ -241,7 +268,7 @@ static CubeInfo *ClassifyImageColors(const Image *image,
       for (level=1; level < MaxTreeDepth; level++)
       {
         GetPixelInfoPixel(image,p,&pixel);
-        id=ColorToNodeId(image,&pixel,index);
+        id=ColorToNodeId(&pixel,index);
         if (node_info->child[id] == (NodeInfo *) NULL)
           {
             node_info->child[id]=GetNodeInfo(cube_info,level);
@@ -257,7 +284,7 @@ static CubeInfo *ClassifyImageColors(const Image *image,
         index--;
       }
       for (i=0; i < (ssize_t) node_info->number_unique; i++)
-        if (IsPixelInfoEquivalent(&pixel,node_info->list+i) != MagickFalse)
+        if (IsPixelInfoColorMatch(&pixel,node_info->list+i) != MagickFalse)
           break;
       if (i < (ssize_t) node_info->number_unique)
         node_info->list[i].count++;
@@ -700,7 +727,7 @@ static MagickBooleanType CheckImageColors(const Image *image,
       for (level=1; level < MaxTreeDepth; level++)
       {
         GetPixelInfoPixel(image,p,&pixel);
-        id=ColorToNodeId(image,&pixel,index);
+        id=ColorToNodeId(&pixel,index);
         if (node_info->child[id] == (NodeInfo *) NULL)
           {
             node_info->child[id]=GetNodeInfo(cube_info,level);
@@ -720,7 +747,7 @@ static MagickBooleanType CheckImageColors(const Image *image,
       for (i=0; i < (ssize_t) node_info->number_unique; i++)
       {
         target=node_info->list[i];
-        if (IsPixelInfoEquivalent(&pixel,&target) != MagickFalse)
+        if (IsPixelInfoColorMatch(&pixel,&target) != MagickFalse)
           break;
       }
       if (i < (ssize_t) node_info->number_unique)

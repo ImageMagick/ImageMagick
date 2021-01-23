@@ -6,6 +6,8 @@
     https://github.com/ImageMagick/ImageMagick/issues/3140).
   * add --enable-opencl to the configure command-line to enable OpenCL
     support.
+  * generate histograms by comparing pixel components rather than color
+    (reference https://github.com/ImageMagick/ImageMagick/discussions/3142).
 
 2021-01-16  7.0.10-58  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-58 GIT revision 18277:8876652f5:20210116
