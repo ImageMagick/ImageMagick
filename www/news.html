@@ -29,7 +29,7 @@
   <meta property='og:site_name' content='ImageMagick' />
   <meta property='og:description' content="Create, Edit, Compose, or Convert Bitmap Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="news.html" rel="canonical" />
+  <link href="../www/news.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
   <link href="assets/magick.css" rel="stylesheet" />
@@ -69,13 +69,13 @@
       </li>
     </ul>
     </div>
-    <form class="form-inline my-2 my-md-0" action="search.html">
+    <form class="form-inline my-2 my-md-0" action="../www/search.html">
       <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
     </form>
   </nav>
   <div class="container">
-   <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+   <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -90,7 +90,7 @@
   <main role="main" class="container">
     <div class="magick-template">
 <div class="magick-header">
-<h1 class="text-center">ImageMagick News</h1>
+<h1 class="text-center">News</h1>
 <p class="text-center"><a href="news.html#news">News</a> • <a href="news.html#community">Community</a></p>
 
 <p>ImageMagick best practices <strong>strongly</strong> encourages you to configure a <a href="security-policy.html">security policy</a> that suits your local environment.</p>
@@ -102,17 +102,17 @@
 
 <p>As an analog to linear (RGB) and non-linear (sRGB) color colorspaces, as of ImageMagick 7.0.7-17, we introduce the LinearGray colorspace.  Gray is non-linear grayscale and LinearGray is linear (e.g. -colorspace linear-gray).</p>
 
-<p>Now that ImageMagick version 7 is released, we continue to maintain the legacy release of ImageMagick, version 6, at <a href="https://legacy.imagemagick.org/">https://legacy.imagemagick.org</a>.  Learn how ImageMagick version 7 differs from previous versions with our <a href="porting.html">porting guide</a>.</p>
+<p>Now that ImageMagick version 7 is released, we continue to maintain the legacy release of ImageMagick, version 6, at <a href="https://legacy.imagemagick.org/">https://legacy.imagemagick.org</a>.  Learn how ImageMagick version 7 differs from previous versions with our <a href="../www/porting.html">porting guide</a>.</p>
 
 <p>The ImageMagick development process ensures a stable API and <a href="https://abi-laboratory.pro/tracker/timeline/imagemagick/">ABI</a>. Before each ImageMagick release, we perform a comprehensive security assessment that includes <a href="https://github.com/google/sanitizers/wiki/AddressSanitizer">memory error</a>, <a href="https://github.com/google/sanitizers/wiki/ThreadSanitizer">thread data race</a> detection, and continuous <a href="https://github.com/google/oss-fuzz">fuzzing</a> to detect and prevent security vulnerabilities.</p>
 
 <p>Want more performance from ImageMagick?  Try these options:</p>
 
 <ul>
-<li>add more memory to your system, see <a href="architecture.html#cache">the pixel cache</a>;</li>
-<li>add more cores to your system, see <a href="architecture.html#threads">threads of execution support</a>;</li>
+<li>add more memory to your system, see <a href="../www/architecture.html#cache">the pixel cache</a>;</li>
+<li>add more cores to your system, see <a href="../www/architecture.html#threads">threads of execution support</a>;</li>
 <li>reduce lock contention with the <a href="http://goog-perftools.sourceforge.net/doc/tcmalloc.html">tcmalloc</a> memory allocation library;</li>
-<li>push large images to a solid-state drive, see <a href="architecture.html#tera-pixel">large image support</a>.</li>
+<li>push large images to a solid-state drive, see <a href="../www/architecture.html#tera-pixel">large image support</a>.</li>
 </ul>
 <p>If these options are prohibitive, you can reduce the quality of the image results.  The default build is Q16 HDRI.  If you disable <a href="high-dynamic-range.html">HDRI</a>, you use half the memory and instead of predominately floating point operations, you use the typically more efficient integer operations.  The tradeoff is reduced precision and you cannot process out of range pixel values (e.g. negative).  If you build the Q8 non-HDRI  version of ImageMagick, you again reduce the memory requirements in half-- and once again there is a tradeoff, even less precision and no out of range pixel values.  For a Q8 non-HDRI build of ImageMagick, use these <code>configure</code> script options: <code>--with-quantum-depth=8 --disable-hdri</code>.</p>
 
@@ -147,4 +147,4 @@
   <script>window.jQuery || document.write('<script src="assets/jquery.slim.min.js"><\/script>')</script><script src="assets/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous">
 </body>
 </html>
-<!-- Magick Cache 1st January 2021 18:09 -->
+<!-- Magick Cache 24th January 2021 15:12 -->
