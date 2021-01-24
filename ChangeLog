@@ -1,7 +1,7 @@
 2021-01-24  7.0.10-60  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-60 GIT revision 18...
 
-2021-01-20  7.0.10-60  <quetzlzacatenango@image...>
+2021-01-24  7.0.10-60  <quetzlzacatenango@image...>
   * revert configure script for validating JXL delegate library.
 
 2021-01-24  7.0.10-59  <quetzlzacatenango@image...>
