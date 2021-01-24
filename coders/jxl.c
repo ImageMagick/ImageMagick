@@ -248,11 +248,15 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   while ((decoder_status != JXL_DEC_SUCCESS) &&
          (decoder_status != JXL_DEC_ERROR))
   {
+    const uint8_t
+      *p;
+
     size_t
       size;
 
     size=input_size;
-    decoder_status=JxlDecoderProcessInput(decoder);
+    p=input_buffer;
+    decoder_status=JxlDecoderProcessInput(decoder,&p,&input_size);
     if ((input_size > 0) && ((size-input_size) > 0))
       (void) memmove(input_buffer,input_buffer+(size-input_size),input_size);
     switch (decoder_status)
@@ -268,7 +272,6 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
               "InsufficientImageDataInFile","`%s'",image->filename);
             break;
           }
-        JxlDecoderSetInput(decoder,input_buffer,input_size);
         break;
       }
       case JXL_DEC_BASIC_INFO:
