@@ -2376,7 +2376,7 @@ AC_SUBST([JPEG_LIBS])
 dnl ===========================================================================
 
 #
-# Check for Jpegxl delegate library.
+# Check for JPEG-XL delegate library.
 #
 AC_ARG_WITH([jxl],
     [AC_HELP_STRING([--with-jxl],
@@ -2387,24 +2387,46 @@ AC_ARG_WITH([jxl],
 if test "$with_jxl" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-jxl=$with_jxl "
 fi
+if test "$enable_static" = 'yes'; then
+    if test "$with_utilities" = 'yes'; then
+        with_jxl='no'
+    fi
+fi
 
+# Check for the JPEG-XL library.
 have_jxl='no'
-JXL_CFLAGS=""
-JXL_LIBS=""
-JXL_PKG=""
-if test "x$with_jxl" = "xyes"; then
+JXL_LIBS=''
+if test "$with_jxl" != 'no'; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([JXL],[libjxl >= 0.2.0],[have_jxl=yes],[have_jxl=no])
+  AC_MSG_CHECKING([for jpeg-xl])
   AC_MSG_RESULT([])
-fi
+  failed=0
+  passed=0
+  AC_CHECK_HEADER([jxl/decode.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
+  AC_CHECK_HEADER([jxl/encode.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
+  # This check should be changed once we have a .pc file for the JPEG-XL library.
+  if test "$enable_static" != 'yes'; then
+    AC_CHECK_LIB([jxl],[JxlDecoderCreate],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
+    AC_CHECK_LIB([jxl],[JxlEncoderCreate],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
+  fi
 
-if test "$have_jxl" = 'yes'; then
-  AC_DEFINE([JXL_DELEGATE],[1],[Define if you have JXL library])
-  CFLAGS="$JXL_CFLAGS $CFLAGS"
+  AC_MSG_CHECKING([if jpeg-xl package is complete])
+  if test $passed -gt 0; then
+      if test $failed -gt 0; then
+          AC_MSG_RESULT([no -- some components failed test])
+          have_jxl='no (failed tests)'
+      else
+          JXL_LIBS='-ljxl'
+          LIBS="$JXL_LIBS $LIBS"
+          AC_DEFINE([JXL_DELEGATE],[1],[Define if you have jpeg-xl library])
+          AC_MSG_RESULT([yes])
+          have_jxl='yes'
+      fi
+  else
+      AC_MSG_RESULT([no])
+  fi
 fi
-
 AM_CONDITIONAL([JXL_DELEGATE],[ test "$have_jxl" = 'yes'])
-AC_SUBST([JXL_CFLAGS])
 AC_SUBST([JXL_LIBS])
 
 dnl ===========================================================================
