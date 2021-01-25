@@ -1,8 +1,9 @@
-2021-01-24  7.0.10-60  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.10-60 GIT revision 18...
+2021-01-25  7.0.10-60  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-60 GIT revision 18347:9a84e249b:20210125
 
 2021-01-24  7.0.10-60  <quetzlzacatenango@image...>
   * revert configure script for validating JXL delegate library.
+  * the distributed pixel cache now properly deserializes the image attributes.
 
 2021-01-24  7.0.10-59  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-59 GIT revision 18340:d30ae5272:20210124
