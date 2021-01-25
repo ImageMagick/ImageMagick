@@ -514,8 +514,6 @@ static MagickBooleanType OpenDistributeCache(SplayTreeInfo *registry,int file,
   p+=sizeof(image->alpha_trait);
   (void) memcpy(&image->channels,p,sizeof(image->channels));
   p+=sizeof(image->channels);
-  (void) memcpy(&image->channels,p,sizeof(image->channels));
-  p+=sizeof(image->channels);
   (void) memcpy(&image->columns,p,sizeof(image->columns));
   p+=sizeof(image->columns);
   (void) memcpy(&image->rows,p,sizeof(image->rows));
