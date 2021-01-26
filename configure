@@ -4555,7 +4555,7 @@ MAGICK_PATCHLEVEL_VERSION=61
 
 MAGICK_VERSION=7.0.10-61
 
-MAGICK_GIT_REVISION=18348:c04ba148f:20210125
+MAGICK_GIT_REVISION=18351:2279cf976:20210126
 
 
 # Substitute library versioning
@@ -22154,12 +22154,12 @@ fi
 if test "$with_method_prefix" != 'no'; then
 
 cat >>confdefs.h <<_ACEOF
-#define NAMESPACE_PREFIX "$with_method_prefix"
+#define NAMESPACE_PREFIX $with_method_prefix
 _ACEOF
 
 
 cat >>confdefs.h <<_ACEOF
-#define NAMESPACE_PREFIX_TAG "$with_method_prefix"
+#define NAMESPACE_PREFIX_TAG $with_method_prefix
 _ACEOF
 
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-method-prefix "
