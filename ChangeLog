@@ -1,3 +1,10 @@
+2021-01-25  7.0.10-61  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.10-61 GIT revision 18...
+
+2021-01-25  7.0.10-61  <quetzlzacatenango@image...>
+  * dng:decode element in delegates.xml quoted incorrectly (reference
+    https://github.com/ImageMagick/ImageMagick/issues/3156).
+
 2021-01-25  7.0.10-60  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-60 GIT revision 18347:9a84e249b:20210125
 
