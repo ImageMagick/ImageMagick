@@ -5066,6 +5066,9 @@ Get(ref,...)
             {
               j=info ? info->image_info->endian : image ? image->endian :
                 UndefinedEndian;
+              if (info)
+                if (info->image_info->endian == UndefinedEndian)
+                  j=image->endian;
               s=newSViv(j);
               (void) sv_setpv(s,CommandOptionToMnemonic(MagickEndianOptions,j));
               SvIOK_on(s);
@@ -5324,6 +5327,9 @@ Get(ref,...)
             {
               j=info ? info->image_info->interlace : image ? image->interlace :
                 UndefinedInterlace;
+              if (info)
+                if (info->image_info->interlace == UndefinedInterlace)
+                  j=image->interlace;
               s=newSViv(j);
               (void) sv_setpv(s,CommandOptionToMnemonic(MagickInterlaceOptions,
                 j));
@@ -5480,6 +5486,9 @@ Get(ref,...)
             {
               j=info ? info->image_info->orientation : image ?
                 image->orientation : UndefinedOrientation;
+              if (info)
+                if (info->image_info->orientation == UndefinedOrientation)
+                  j=image->orientation;
               s=newSViv(j);
               (void) sv_setpv(s,CommandOptionToMnemonic(MagickOrientationOptions,
                 j));
@@ -5753,8 +5762,8 @@ Get(ref,...)
             {
               j=info ? info->image_info->units : image ? image->units :
                 UndefinedResolution;
-              if (info && (info->image_info->units == UndefinedResolution))
-                if (image)
+              if (info)
+                if (info->image_info->units == UndefinedResolution)
                   j=image->units;
               if (j == UndefinedResolution)
                 s=newSVpv("undefined units",0);
