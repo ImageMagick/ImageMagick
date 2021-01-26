@@ -157,7 +157,6 @@ static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
   magick_unreferenced(file);
   magick_unreferenced(message);
 #endif
-
   count=0;
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
@@ -424,9 +423,7 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
   const unsigned char *magick_restrict message)
 {
   MagickOffsetType
-    count;
-
-  MagickOffsetType
+    count,
     i;
 
 #if !MAGICKCORE_HAVE_DISTRIBUTE_CACHE
@@ -453,7 +450,8 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
 }
 
 #if !MAGICKCORE_HAVE_DISTRIBUTE_CACHE
-MagickExport void DistributePixelCacheServer(const int port,ExceptionInfo *Exception)
+MagickExport void DistributePixelCacheServer(const int port,
+  ExceptionInfo *Exception)
 {
   magick_unreferenced(port);
   ThrowFatalException(MissingDelegateError,"DelegateLibrarySupportNotBuiltIn");
@@ -484,10 +482,8 @@ static MagickBooleanType OpenDistributeCache(SplayTreeInfo *registry,int file,
     length;
 
   unsigned char
+    message[MagickPathExtent],
     *p;
-
-  unsigned char
-    message[MagickPathExtent];
 
   /*
     Open distributed pixel cache.
@@ -534,6 +530,9 @@ static MagickBooleanType OpenDistributeCache(SplayTreeInfo *registry,int file,
 static MagickBooleanType ReadDistributeCacheMetacontent(SplayTreeInfo *registry,
   int file,const size_t session_key,ExceptionInfo *exception)
 {
+  const Quantum
+    *p;
+
   const unsigned char
     *metacontent;
 
@@ -549,14 +548,9 @@ static MagickBooleanType ReadDistributeCacheMetacontent(SplayTreeInfo *registry,
   RectangleInfo
     region;
 
-  const Quantum
-    *p;
-
   unsigned char
+    message[MagickPathExtent],
     *q;
-
-  unsigned char
-    message[MagickPathExtent];
 
   /*
     Read distributed pixel cache metacontent.
@@ -594,6 +588,9 @@ static MagickBooleanType ReadDistributeCacheMetacontent(SplayTreeInfo *registry,
 static MagickBooleanType ReadDistributeCachePixels(SplayTreeInfo *registry,
   int file,const size_t session_key,ExceptionInfo *exception)
 {
+  const Quantum
+    *p;
+
   Image
     *image;
 
@@ -606,14 +603,9 @@ static MagickBooleanType ReadDistributeCachePixels(SplayTreeInfo *registry,
   RectangleInfo
     region;
 
-  const Quantum
-    *p;
-
   unsigned char
+    message[MagickPathExtent],
     *q;
-
-  unsigned char
-    message[MagickPathExtent];
 
   /*
     Read distributed pixel cache pixels.
@@ -665,18 +657,16 @@ static MagickBooleanType WriteDistributeCacheMetacontent(
   MagickSizeType
     length;
 
-  RectangleInfo
-    region;
-
   Quantum
     *q;
 
-  unsigned char
-    *p;
+  RectangleInfo
+    region;
 
   unsigned char
     message[MagickPathExtent],
-    *metacontent;
+    *metacontent,
+    *p;
 
   /*
     Write distributed pixel cache metacontent.
@@ -723,17 +713,15 @@ static MagickBooleanType WriteDistributeCachePixels(SplayTreeInfo *registry,
   MagickSizeType
     length;
 
-  RectangleInfo
-    region;
-
   Quantum
     *q;
 
-  unsigned char
-    *p;
+  RectangleInfo
+    region;
 
   unsigned char
-    message[MagickPathExtent];
+    message[MagickPathExtent],
+    *p;
 
   /*
     Write distributed pixel cache pixels.
@@ -781,9 +769,6 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket)
   MagickOffsetType
     count;
 
-  unsigned char
-    *p;
-
   RandomInfo
     *random_info;
 
@@ -802,6 +787,7 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket)
 
   unsigned char
     command,
+    *p,
     session[2*MagickPathExtent];
 
   /*
@@ -1122,20 +1108,14 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
   DistributeCacheInfo *server_info,Image *image)
 {
   MagickBooleanType
-#ifdef __VMS
-     status=MagickTrue;
-#else
     status;
-#endif
 
   MagickOffsetType
     count;
 
   unsigned char
+    message[MagickPathExtent],
     *p;
-
-  unsigned char
-    message[MagickPathExtent];
 
   /*
     Open distributed pixel cache.
@@ -1221,10 +1201,8 @@ MagickPrivate MagickOffsetType ReadDistributePixelCacheMetacontent(
     count;
 
   unsigned char
+    message[MagickPathExtent],
     *p;
-
-  unsigned char
-    message[MagickPathExtent];
 
   /*
     Read distributed pixel cache metacontent.
@@ -1296,10 +1274,8 @@ MagickPrivate MagickOffsetType ReadDistributePixelCachePixels(
     count;
 
   unsigned char
+    message[MagickPathExtent],
     *p;
-
-  unsigned char
-    message[MagickPathExtent];
 
   /*
     Read distributed pixel cache pixels.
@@ -1358,20 +1334,14 @@ MagickPrivate MagickBooleanType RelinquishDistributePixelCache(
   DistributeCacheInfo *server_info)
 {
   MagickBooleanType
-#ifdef __VMS
-     status = MagickTrue;
-#else
     status;
-#endif
 
   MagickOffsetType
     count;
 
   unsigned char
+    message[MagickPathExtent],
     *p;
-
-  unsigned char
-    message[MagickPathExtent];
 
   /*
     Delete distributed pixel cache.
@@ -1385,6 +1355,7 @@ MagickPrivate MagickBooleanType RelinquishDistributePixelCache(
   count=dpc_send(server_info->file,p-message,message);
   if (count != (MagickOffsetType) (p-message))
     return(MagickFalse);
+  status=MagickFalse;
   count=dpc_read(server_info->file,sizeof(status),(unsigned char *) &status);
   if (count != (MagickOffsetType) sizeof(status))
     return(MagickFalse);
@@ -1432,10 +1403,8 @@ MagickPrivate MagickOffsetType WriteDistributePixelCacheMetacontent(
     count;
 
   unsigned char
+    message[MagickPathExtent],
     *p;
-
-  unsigned char
-    message[MagickPathExtent];
 
   /*
     Write distributed pixel cache metacontent.
@@ -1508,10 +1477,8 @@ MagickPrivate MagickOffsetType WriteDistributePixelCachePixels(
     count;
 
   unsigned char
+    message[MagickPathExtent],
     *p;
-
-  unsigned char
-    message[MagickPathExtent];
 
   /*
     Write distributed pixel cache pixels.
