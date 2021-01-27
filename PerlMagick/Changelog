@@ -1,3 +1,6 @@
+2021-01-26  7.0.10 Cristy  <quetzlzacatenango@image...>
+  * if info has undefined orientation, return the image orientation.
+
 2021-01-16  7.0.10 Cristy  <quetzlzacatenango@image...>
   * requires ImageMagick 7.0.10 or above.
 
