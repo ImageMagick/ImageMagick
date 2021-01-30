@@ -812,7 +812,7 @@ static MagickBooleanType TIFFSetImageProperties(TIFF *tiff,Image *image,
 static MagickBooleanType TIFFGetEXIFProperties(TIFF *tiff,Image *image,
   ExceptionInfo *exception)
 {
-#if defined(TIFFTAG_EXIFIFD)
+#if defined(MAGICKCORE_HAVE_TIFFREADEXIFDIRECTORY)
   MagickBooleanType
     status;
 
@@ -851,7 +851,7 @@ static MagickBooleanType TIFFGetEXIFProperties(TIFF *tiff,Image *image,
 static MagickBooleanType TIFFGetGPSProperties(TIFF *tiff,Image *image,
   ExceptionInfo *exception)
 {
-#if defined(TIFFTAG_GPSIFD)
+#if defined(MAGICKCORE_HAVE_TIFFREADGPSDIRECTORY)
   MagickBooleanType
     status;
 

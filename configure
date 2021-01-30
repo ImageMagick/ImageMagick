@@ -4555,7 +4555,7 @@ MAGICK_PATCHLEVEL_VERSION=61
 
 MAGICK_VERSION=7.0.10-61
 
-MAGICK_GIT_REVISION=18357:7459f56e2:20210130
+MAGICK_GIT_REVISION=18358:1af2c872a:20210130
 
 
 # Substitute library versioning
@@ -32258,6 +32258,7 @@ done
 
             for ac_func in TIFFIsCODECConfigured TIFFMergeFieldInfo \
               TIFFIsBigEndian TIFFSetErrorHandlerExt TIFFSetTagExtender \
+              TIFFReadEXIFDirectory TIFFReadGPSDirectory \
               TIFFSetWarningHandlerExt TIFFSwabArrayOfTriples
 do :
   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
