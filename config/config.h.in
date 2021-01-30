@@ -598,9 +598,6 @@
 /* Define to 1 if you have the `TIFFMergeFieldInfo' function. */
 #undef HAVE_TIFFMERGEFIELDINFO
 
-/* Define to 1 if you have the `TIFFReadEXIFDirectory' function. */
-#undef HAVE_TIFFREADEXIFDIRECTORY
-
 /* Define to 1 if you have the `TIFFSetErrorHandlerExt' function. */
 #undef HAVE_TIFFSETERRORHANDLEREXT
 
@@ -741,7 +738,7 @@
 /* Define if you have JPEG library */
 #undef JPEG_DELEGATE
 
-/* Define if you have JXL library */
+/* Define if you have jpeg-xl library */
 #undef JXL_DELEGATE
 
 /* Define if you have LCMS library */

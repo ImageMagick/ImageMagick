@@ -6464,6 +6464,7 @@ WandExport char *MagickIdentifyImage(MagickWand *wand)
     file=fdopen(unique_file,"wb");
   if ((unique_file == -1) || (file == (FILE *) NULL))
     {
+      (void) RelinquishUniqueFileResource(filename);
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
         "UnableToCreateTemporaryFile","`%s'",wand->name);
       return((char *) NULL);
