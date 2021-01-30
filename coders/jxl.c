@@ -198,9 +198,6 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MemoryManagerInfo
     memory_manager_info;
 
-  size_t
-    input_size;
-
   unsigned char
     *input_buffer,
     *output_buffer;
@@ -243,35 +240,31 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   output_buffer=(unsigned char *) NULL;
   memset(&format,0,sizeof(format));
-  input_size=0;
   decoder_status=JXL_DEC_NEED_MORE_INPUT;
   while ((decoder_status != JXL_DEC_SUCCESS) &&
          (decoder_status != JXL_DEC_ERROR))
   {
-    const uint8_t
-      *p;
-
-    size_t
-      size;
-
-    size=input_size;
-    p=input_buffer;
-    decoder_status=JxlDecoderProcessInput(decoder,&p,&input_size);
-    if ((input_size > 0) && ((size-input_size) > 0))
-      (void) memmove(input_buffer,input_buffer+(size-input_size),input_size);
+    decoder_status=JxlDecoderProcessInput(decoder);
     switch (decoder_status)
     {
       case JXL_DEC_NEED_MORE_INPUT:
       {
-        input_size+=ReadBlob(image,MagickMaxBufferExtent-input_size,
-          input_buffer+input_size);
-        if (input_size == 0)
+        ssize_t
+          count;
+
+        count=ReadBlob(image,MagickMaxBufferExtent,input_buffer);
+        if (count <= 0)
           {
             decoder_status=JXL_DEC_SUCCESS;
             ThrowMagickException(exception,GetMagickModule(),CoderError,
               "InsufficientImageDataInFile","`%s'",image->filename);
             break;
           }
+        decoder_status=JxlDecoderSetInput(decoder,(const uint8_t *)
+          input_buffer,(size_t) count);
+        if (decoder_status != JXL_DEC_SUCCESS)
+          break;
+        decoder_status=JXL_DEC_NEED_MORE_INPUT;
         break;
       }
       case JXL_DEC_BASIC_INFO:
