@@ -27,19 +27,8 @@
 extern "C" {
 #endif
 
-/*
-  Number of threads bounded by the amount of work and any thread resource limit.
-  The limit is 2 if the pixel cache type is not memory or memory-mapped.
-*/
 #define magick_number_threads(source,destination,chunk,multithreaded) \
-  num_threads((multithreaded) == 0 ? 1 : \
-    ((GetImagePixelCacheType(source) != MemoryCache) && \
-     (GetImagePixelCacheType(source) != MapCache)) || \
-    ((GetImagePixelCacheType(destination) != MemoryCache) && \
-     (GetImagePixelCacheType(destination) != MapCache)) ? \
-    MagickMax(MagickMin(GetMagickResourceLimit(ThreadResource),2),1) : \
-    MagickMax(MagickMin((ssize_t) GetMagickResourceLimit(ThreadResource),(ssize_t) (chunk)/64),1))
-
+  num_threads(GetMagickNumberThreads(source,destination,chunk,multithreaded))
 #if defined(__clang__) || (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ > 10))
 #define MagickCachePrefetch(address,mode,locality) \
   __builtin_prefetch(address,mode,locality)
@@ -57,6 +46,25 @@ extern "C" {
 #else
   typedef size_t MagickMutexType;
 #endif
+
+static inline int GetMagickNumberThreads(const Image *source,
+  const Image *destination,const size_t chunk,int multithreaded)
+{
+  /*
+    Number of threads bounded by the amount of work and any thread resource
+    limit.  The limit is 2 if the pixel cache type is not memory or
+    memory-mapped.
+  */
+  if (multithreaded == 0)
+    return(1);
+  if (((GetImagePixelCacheType(source) != MemoryCache) && 
+       (GetImagePixelCacheType(source) != MapCache)) || 
+      ((GetImagePixelCacheType(destination) != MemoryCache) && 
+       (GetImagePixelCacheType(destination) != MapCache)))
+    return(MagickMax(MagickMin(GetMagickResourceLimit(ThreadResource),2),1));
+  return(MagickMax(MagickMin((ssize_t) GetMagickResourceLimit(ThreadResource),
+    (ssize_t) (chunk)/64),1));
+}
 
 static inline MagickThreadType GetMagickThreadId(void)
 {

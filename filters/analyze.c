@@ -91,20 +91,34 @@ typedef struct _StatisticsInfo
     skewness;
 } StatisticsInfo;
 
+static inline int GetMagickNumberThreads(const Image *source,
+  const Image *destination,const size_t chunk,int multithreaded)
+{
+#define MagickMax(x,y)  (((x) > (y)) ? (x) : (y))
+#define MagickMin(x,y)  (((x) < (y)) ? (x) : (y))
+
+  /*
+    Number of threads bounded by the amount of work and any thread resource
+    limit.  The limit is 2 if the pixel cache type is not memory or
+    memory-mapped.
+  */
+  if (multithreaded == 0)
+    return(1);
+  if (((GetImagePixelCacheType(source) != MemoryCache) &&
+       (GetImagePixelCacheType(source) != MapCache)) ||
+      ((GetImagePixelCacheType(destination) != MemoryCache) &&
+       (GetImagePixelCacheType(destination) != MapCache)))
+    return(MagickMax(MagickMin(GetMagickResourceLimit(ThreadResource),2),1));
+  return(MagickMax(MagickMin((ssize_t) GetMagickResourceLimit(ThreadResource),
+    (ssize_t) (chunk)/64),1));
+}
+
 ModuleExport size_t analyzeImage(Image **images,const int argc,
   const char **argv,ExceptionInfo *exception)
 {
 #define AnalyzeImageFilterTag  "Filter/Analyze"
-#define MagickMax(x,y)  (((x) > (y)) ? (x) : (y))
-#define MagickMin(x,y)  (((x) < (y)) ? (x) : (y))
 #define magick_number_threads(source,destination,chunk,multithreaded) \
-  num_threads((multithreaded) == 0 ? 1 : \
-    ((GetImagePixelCacheType(source) != MemoryCache) && \
-     (GetImagePixelCacheType(source) != MapCache)) || \
-    ((GetImagePixelCacheType(destination) != MemoryCache) && \
-     (GetImagePixelCacheType(destination) != MapCache)) ? \
-    MagickMax(MagickMin(GetMagickResourceLimit(ThreadResource),2),1) : \
-    MagickMax(MagickMin((ssize_t) GetMagickResourceLimit(ThreadResource),(ssize_t) (chunk)/64),1))
+  num_threads(GetMagickNumberThreads(source,destination,chunk,multithreaded))
 
   char
     text[MagickPathExtent];
