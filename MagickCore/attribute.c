@@ -399,7 +399,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
     status;
 
   PixelInfo
-    target[3],
+    target[4],
     zero;
 
   RectangleInfo
@@ -433,8 +433,8 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
         *p,
         *q;
 
-      bounds.width=(ssize_t) image->columns;
-      bounds.height=(ssize_t) image->rows;
+      bounds.width=(size_t) image->columns;
+      bounds.height=(size_t) image->rows;
       bounds.x=0;
       bounds.y=0;
       edges=AcquireString(artifact);
@@ -471,6 +471,10 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
     exception);
   if (p != (const Quantum *) NULL)
     GetPixelInfoPixel(image,p,&target[2]);
+  p=GetCacheViewVirtualPixels(image_view,(ssize_t) image->columns-1,(ssize_t)
+    image->rows-1,1,1,exception);
+  if (p != (const Quantum *) NULL)
+    GetPixelInfoPixel(image,p,&target[3]);
   status=MagickTrue;
   GetPixelInfo(image,&zero);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -519,6 +523,13 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
       if ((y > (ssize_t) bounding_box.height) &&
           (IsFuzzyEquivalencePixelInfo(&pixel,&target[2]) == MagickFalse))
         bounding_box.height=(size_t) y;
+      if ((x < (ssize_t) bounding_box.width) &&
+          (y > (ssize_t) bounding_box.height) &&
+          (IsFuzzyEquivalencePixelInfo(&pixel,&target[3]) == MagickFalse))
+        {
+          bounding_box.width=(size_t) x;
+          bounding_box.height=(size_t) y;
+        }
       p+=GetPixelChannels(image);
     }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
