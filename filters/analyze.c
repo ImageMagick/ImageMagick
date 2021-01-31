@@ -95,6 +95,16 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
   const char **argv,ExceptionInfo *exception)
 {
 #define AnalyzeImageFilterTag  "Filter/Analyze"
+#define MagickMax(x,y)  (((x) > (y)) ? (x) : (y))
+#define MagickMin(x,y)  (((x) < (y)) ? (x) : (y))
+#define magick_number_threads(source,destination,chunk,multithreaded) \
+  num_threads((multithreaded) == 0 ? 1 : \
+    ((GetImagePixelCacheType(source) != MemoryCache) && \
+     (GetImagePixelCacheType(source) != MapCache)) || \
+    ((GetImagePixelCacheType(destination) != MemoryCache) && \
+     (GetImagePixelCacheType(destination) != MapCache)) ? \
+    MagickMax(MagickMin(GetMagickResourceLimit(ThreadResource),2),1) : \
+    MagickMax(MagickMin((ssize_t) GetMagickResourceLimit(ThreadResource),(ssize_t) (chunk)/64),1))
 
   char
     text[MagickPathExtent];
@@ -139,7 +149,8 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
     image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) \
-    shared(progress,status,brightness,saturation)
+    shared(progress,status,brightness,saturation) \
+    magick_number_threads(image,image,image->rows,1)
 #endif
     for (y=0; y < (ssize_t) image->rows; y++)
     {
