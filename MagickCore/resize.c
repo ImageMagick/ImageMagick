@@ -1656,7 +1656,7 @@ MagickPrivate double GetResizeFilterWeight(const ResizeFilter *resize_filter,
   */
   assert(resize_filter != (ResizeFilter *) NULL);
   assert(resize_filter->signature == MagickCoreSignature);
-  x_blur=fabs((double) x)/resize_filter->blur;  /* X offset with blur scaling */
+  x_blur=fabs((double) x)*PerceptibleReciprocal(resize_filter->blur);  /* X offset with blur scaling */
   if ((resize_filter->window_support < MagickEpsilon) ||
       (resize_filter->window == Box))
     scale=1.0;  /* Point or Box Filter -- avoid division by zero */
