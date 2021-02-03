@@ -1056,8 +1056,10 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
 
         scale=(double) (((size_t) 1UL << jp2_image->comps[i].prec)-1)/
           QuantumRange;
-        q=jp2_image->comps[i].data+(y/jp2_image->comps[i].dy*
-          image->columns/jp2_image->comps[i].dx+x/jp2_image->comps[i].dx);
+        q=jp2_image->comps[i].data+(ssize_t) (y*PerceptibleReciprocal(
+          jp2_image->comps[i].dy)*image->columns*PerceptibleReciprocal(
+          jp2_image->comps[i].dx)+x*PerceptibleReciprocal(
+          jp2_image->comps[i].dx));
         switch (i)
         {
           case 0:
