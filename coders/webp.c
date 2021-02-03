@@ -958,7 +958,8 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
         break;
       }
 
-    effective_delta=image->delay*1000/image->ticks_per_second;
+    effective_delta=image->delay*1000*PerceptibleReciprocal(
+      image->ticks_per_second);
     if (effective_delta < 10)
       effective_delta=100; /* Consistent with gif2webp */
     frame_timestamp+=effective_delta;
