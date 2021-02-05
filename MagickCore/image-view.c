@@ -1184,8 +1184,6 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
     if (update(source,y,id,context) == MagickFalse)
       status=MagickFalse;
     status=SyncCacheViewAuthenticPixels(source->view,source->exception);
-    if (status == MagickFalse)
-      status=MagickFalse;
     if (source_image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType
