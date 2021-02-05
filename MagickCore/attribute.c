@@ -655,6 +655,7 @@ static PixelInfo GetEdgeBackgroundColor(const Image *image,
         gravity=WestGravity;
         edge_geometry.width=1;
         edge_geometry.height=0;
+        break;
       }
       case 1:
       {
@@ -663,6 +664,7 @@ static PixelInfo GetEdgeBackgroundColor(const Image *image,
         gravity=EastGravity;
         edge_geometry.width=1;
         edge_geometry.height=0;
+        break;
       }
       case 2:
       {
@@ -670,6 +672,7 @@ static PixelInfo GetEdgeBackgroundColor(const Image *image,
         gravity=NorthGravity;
         edge_geometry.width=0;
         edge_geometry.height=1;
+        break;
       }
       case 3:
       {
@@ -678,6 +681,7 @@ static PixelInfo GetEdgeBackgroundColor(const Image *image,
         gravity=SouthGravity;
         edge_geometry.width=0;
         edge_geometry.height=1;
+        break;
       }
     }
     GetPixelInfoPixel(image,p,background+i);
