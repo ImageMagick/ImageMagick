@@ -161,7 +161,7 @@ MagickExport const char *GetMagickDelegates(void)
   "lcms "
 #endif
 #if defined(MAGICKCORE_LIBZIP_DELEGATE)
-  "libzip"
+  "libzip "
 #endif
 #if defined(MAGICKCORE_LQR_DELEGATE)
   "lqr "
