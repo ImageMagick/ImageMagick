@@ -6,6 +6,8 @@
     https://github.com/ImageMagick/ImageMagick/discussions/3172).
   * possible undefined behavior (reference
     https://github.com/ImageMagick/ImageMagick/issues/3195).
+  * sanitize buggy ascender and descender values (reference
+    https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=980202).
 
 2021-01-30  7.0.10-61  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-61 GIT revision 18360:d3bec838c:20210130

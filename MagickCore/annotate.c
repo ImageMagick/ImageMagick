@@ -1513,6 +1513,15 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   metrics->pixels_per_em.y=face->size->metrics.y_ppem;
   metrics->ascent=(double) face->size->metrics.ascender/64.0;
   metrics->descent=(double) face->size->metrics.descender/64.0;
+  if (face->size->metrics.ascender == 0)
+    {
+      /*
+        Sanitize buggy ascender and descender values.
+      */
+      metrics->ascent=face->size->metrics.y_ppem;
+      if (face->size->metrics.descender == 0)
+        metrics->descent=face->size->metrics.y_ppem/-3.5;
+    }
   metrics->width=0;
   metrics->origin.x=0;
   metrics->origin.y=0;
@@ -2103,11 +2112,11 @@ static MagickBooleanType RenderPostscript(Image *image,
   metrics->pixels_per_em.x=(resolution.y/DefaultResolution)*
     ExpandAffine(&draw_info->affine)*draw_info->pointsize;
   metrics->pixels_per_em.y=metrics->pixels_per_em.x;
-  metrics->ascent=metrics->pixels_per_em.x;
+  metrics->ascent=metrics->pixels_per_em.y;
   metrics->descent=metrics->pixels_per_em.y/-5.0;
   metrics->width=(double) annotate_image->columns/
     ExpandAffine(&draw_info->affine);
-  metrics->height=1.152*metrics->pixels_per_em.x;
+  metrics->height=floor(metrics->ascent-metrics->descent+0.5);
   metrics->max_advance=metrics->pixels_per_em.x;
   metrics->bounds.x1=0.0;
   metrics->bounds.y1=metrics->descent;
