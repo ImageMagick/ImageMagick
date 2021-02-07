@@ -2784,27 +2784,14 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
   *component='\0';
   if (*image_info->magick == '\0')
     GetPathComponent(image_info->filename,ExtensionPath,component);
-#if defined(MAGICKCORE_ZLIB_DELEGATE)
   if (*component != '\0')
-    if ((LocaleCompare(component,"gz") == 0) ||
-        (LocaleCompare(component,"Z") == 0) ||
-        (LocaleCompare(component,"svgz") == 0) ||
-        (LocaleCompare(component,"wmz") == 0))
-      {
-        (void) CopyMagickString(path,image_info->filename,MagickPathExtent);
-        path[strlen(path)-strlen(component)-1]='\0';
-        GetPathComponent(path,ExtensionPath,component);
-      }
-#endif
-#if defined(MAGICKCORE_BZLIB_DELEGATE)
-  if (*component != '\0')
-    if (LocaleCompare(component,"bz2") == 0)
-      {
-        (void) CopyMagickString(path,image_info->filename,MagickPathExtent);
-        path[strlen(path)-strlen(component)-1]='\0';
-        GetPathComponent(path,ExtensionPath,component);
-      }
-#endif
+    {
+      /*
+        Base path sans any compression extension.
+      */
+      GetPathComponent(image_info->filename,BasePathSansCompression,path);
+      GetPathComponent(path,ExtensionPath,component);
+    }
   image_info->affirm=MagickFalse;
   sans_exception=AcquireExceptionInfo();
   if ((*component != '\0') && (IsGlob(component) == MagickFalse))

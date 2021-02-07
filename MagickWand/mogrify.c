@@ -4037,25 +4037,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           continue;
         properties=(*GetBlobProperties(images));
         if (format != (char *) NULL)
-          {
-            char
-              extension[MagickPathExtent];
-
-            ssize_t
-              offset;
-
-            (void) CopyMagickString(images->filename,images->magick_filename,
-              MagickPathExtent);
-            GetPathComponent(images->filename,ExtensionPath,extension);
-            offset=strlen(images->filename)-strlen(extension)-1;
-            if ((*extension != '\0') && (offset > 0) &&
-                ((LocaleCompare(extension,"gz") == 0) ||
-                 (LocaleCompare(extension,"Z") == 0) ||
-                 (LocaleCompare(extension,"bz2") == 0) ||
-                 (LocaleCompare(extension,"svgz") == 0) ||
-                 (LocaleCompare(extension,"wmz") == 0)))
-              images->filename[offset]='\0';
-          }
+          GetPathComponent(images->magick_filename,BasePathSansCompression,
+            images->filename);
         if (path != (char *) NULL)
           {
             GetPathComponent(option,TailPath,filename);
