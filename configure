@@ -4552,7 +4552,7 @@ MAGICK_PATCHLEVEL_VERSION=62
 
 MAGICK_VERSION=7.0.10-62
 
-MAGICK_GIT_REVISION=18396:c24429664:20210207
+MAGICK_GIT_REVISION=18406:2e6584eab:20210207
 
 
 # Substitute library versioning
@@ -4582,7 +4582,7 @@ PACKAGE_LIB_VERSION=0x70A
 
 PACKAGE_LIB_VERSION_NUMBER=7,0,10,62
 
-PACKAGE_RELEASE_DATE=2021-02-06
+PACKAGE_RELEASE_DATE=2021-02-07
 
 
 # Ensure that make can run correctly
@@ -28113,19 +28113,19 @@ if test "x$with_zip" = "xyes"; then
 $as_echo "-------------------------------------------------------------" >&6; }
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for zip >= 1.0.0" >&5
-$as_echo_n "checking for zip >= 1.0.0... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for libzip >= 1.0.0" >&5
+$as_echo_n "checking for libzip >= 1.0.0... " >&6; }
 
 if test -n "$ZIP_CFLAGS"; then
     pkg_cv_ZIP_CFLAGS="$ZIP_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"zip >= 1.0.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "zip >= 1.0.0") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libzip >= 1.0.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libzip >= 1.0.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_ZIP_CFLAGS=`$PKG_CONFIG --cflags "zip >= 1.0.0" 2>/dev/null`
+  pkg_cv_ZIP_CFLAGS=`$PKG_CONFIG --cflags "libzip >= 1.0.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -28137,12 +28137,12 @@ if test -n "$ZIP_LIBS"; then
     pkg_cv_ZIP_LIBS="$ZIP_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"zip >= 1.0.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "zip >= 1.0.0") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libzip >= 1.0.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libzip >= 1.0.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_ZIP_LIBS=`$PKG_CONFIG --libs "zip >= 1.0.0" 2>/dev/null`
+  pkg_cv_ZIP_LIBS=`$PKG_CONFIG --libs "libzip >= 1.0.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -28163,9 +28163,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        ZIP_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "zip >= 1.0.0" 2>&1`
+	        ZIP_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libzip >= 1.0.0" 2>&1`
         else
-	        ZIP_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "zip >= 1.0.0" 2>&1`
+	        ZIP_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libzip >= 1.0.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$ZIP_PKG_ERRORS" >&5
