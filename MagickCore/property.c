@@ -2615,14 +2615,16 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     {
       WarnNoImageReturn("\"%%%c\"",letter);
       (void) FormatLocaleString(value,MagickPathExtent,"%.20g",
-        fabs(image->resolution.x) > MagickEpsilon ? image->resolution.x : 72.0);
+        fabs(image->resolution.x) > MagickEpsilon ? image->resolution.x :
+        image->units == PixelsPerCentimeterResolution ? 72.0/2.54 : 72.0);
       break;
     }
     case 'y': /* Image vertical resolution (with units) */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
       (void) FormatLocaleString(value,MagickPathExtent,"%.20g",
-        fabs(image->resolution.y) > MagickEpsilon ? image->resolution.y : 72.0);
+        fabs(image->resolution.y) > MagickEpsilon ? image->resolution.y :
+        image->units == PixelsPerCentimeterResolution ? 72.0/2.54 : 72.0);
       break;
     }
     case 'z': /* Image depth as read in */
