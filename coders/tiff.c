@@ -888,8 +888,9 @@ static MagickBooleanType TIFFGetGPSProperties(TIFF *tiff,Image *image,
   TIFFSetDirectory(tiff,directory);
   return(status);
 #else
-  (void) tiff;
-  (void) image;
+  magick_unreferenced(tiff);
+  magick_unreferenced(image);
+  magick_unreferenced(exception);
   return(MagickTrue);
 #endif
 }
