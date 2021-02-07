@@ -1548,7 +1548,7 @@ ZIP_LIBS=""
 ZIP_PKG=""
 if test "x$with_zip" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([ZIP],[zip >= 1.0.0],[have_zip=yes],[have_zip=no])
+  PKG_CHECK_MODULES([ZIP],[libzip >= 1.0.0],[have_zip=yes],[have_zip=no])
   AC_MSG_RESULT([])
 fi
 
