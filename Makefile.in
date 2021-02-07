@@ -1444,7 +1444,7 @@ coders_null_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_null_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_null_la_rpath = -rpath $(codersdir)
-coders_ora_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_ora_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
 am_coders_ora_la_OBJECTS = coders/ora_la-ora.lo
 coders_ora_la_OBJECTS = $(am_coders_ora_la_OBJECTS)
 coders_ora_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \

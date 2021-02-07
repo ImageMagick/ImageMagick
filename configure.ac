@@ -3380,6 +3380,7 @@ AC_MSG_CHECKING([for URW-base35 fonts directory])
 urw_base35_font_dir=''
 if test "${with_urw_base35_font_dir}" != 'default'; then
   urw_base35_font_dir="${with_urw_base35_font_dir}/"
+fi
 if test "${urw_base35_font_dir}x" != 'x'; then
   type_include_files="${type_include_files} "'<include file="type-urw-base35.xml" />'
   AC_MSG_RESULT([$urw_base35_font_dir])
