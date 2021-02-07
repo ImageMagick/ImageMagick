@@ -3164,9 +3164,9 @@ MagickExport Image *ResampleImage(const Image *image,const double x_resolution,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   width=(size_t) (x_resolution*image->columns/(image->resolution.x == 0.0 ?
-    72.0 : image->resolution.x)+0.5);
+    DefaultResolution : image->resolution.x)+0.5);
   height=(size_t) (y_resolution*image->rows/(image->resolution.y == 0.0 ?
-    72.0 : image->resolution.y)+0.5);
+    DefaultResolution : image->resolution.y)+0.5);
   resample_image=ResizeImage(image,width,height,filter,exception);
   if (resample_image != (Image *) NULL)
     {

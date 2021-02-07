@@ -1392,8 +1392,8 @@ WandExport MagickBooleanType MagickGetResolution(const MagickWand *wand,
   assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  *x=72.0;
-  *y=72.0;
+  *x=DefaultResolution;
+  *y=DefaultResolution;
   if (wand->image_info->density != (char *) NULL)
     {
       GeometryInfo
