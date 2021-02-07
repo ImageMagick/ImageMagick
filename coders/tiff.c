@@ -87,6 +87,7 @@
 #include "MagickCore/thread_.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
+#include "psd-private.h"
 #if defined(MAGICKCORE_TIFF_DELEGATE)
 # if defined(MAGICKCORE_HAVE_TIFFCONF_H)
 #  include <tiffconf.h>
@@ -108,7 +109,13 @@
 # if defined(COMPRESSION_ZSTD) && defined(MAGICKCORE_ZSTD_DELEGATE)
 #   include <zstd.h>
 # endif
-#include "psd-private.h"
+
+#if defined(MAGICKCORE_HAVE_STDINT_H) && (TIFFLIB_VERSION >= 20201219)
+#  undef uint16
+#  define uint16  uint16_t
+#  undef uint32
+#  define uint32  uint32_t
+#endif
 
 /*
   Typedef declarations.
