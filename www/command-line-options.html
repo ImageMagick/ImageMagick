@@ -2,17 +2,17 @@
 
 
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8"  />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"  />
+  <meta name="viewport" content="width=device-width, initial-scale=1"  />
   <title>ImageMagick - Command-line Options</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert bitmap images. Resize an image, crop it, change its shades and colors, add captions, and more." />
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert digital images. Resize an image, crop it, change its shades and colors, add captions, and more." />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
-  <meta name="keywords" content="command-line, options, image converter, image resizer, image editor, photo editor, jpg converter, png converter, tiff converter, vector images, online, free, swiss army" />
+  <meta name="keywords" content="command-line, options, image processing software" />
   <meta name="rating" content="GENERAL" />
   <meta name="robots" content="INDEX, FOLLOW" />
   <meta name="generator" content="ImageMagick Studio LLC" />
@@ -27,7 +27,7 @@
   <meta property='og:image' content='../images/logo.png' />
   <meta property='og:type' content='website' />
   <meta property='og:site_name' content='ImageMagick' />
-  <meta property='og:description' content="Create, Edit, Compose, or Convert Bitmap Images" />
+  <meta property='og:description' content="Create, Edit, Compose, or Convert Digital Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link href="../www/command-line-options.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
@@ -35,60 +35,63 @@
   <link href="assets/magick.css" rel="stylesheet" />
 </head>
 <body>
-  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <div class="container-fluid">
     <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#magick-navbars" aria-controls="magick-navbars" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="navbar-collapse collapse" id="navbarsMagick" style="">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item ">
-        <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item ">
-        <a class="nav-link" href="download.html">Download</a>
-      </li>
-      <li class="nav-item ">
-        <a class="nav-link" href="command-line-tools.html">Tools</a>
-      </li>
-      <li class="nav-item ">
-        <a class="nav-link" href="command-line-processing.html">Command-line</a>
-      </li>
-      <li class="nav-item ">
-        <a class="nav-link" href="develop.html">Develop</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
-      </li>
-      <li class="nav-item">
-          
-      </li>
-      <li class="nav-item">
-        <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
-      </li>
-    </ul>
+    <div class="collapse navbar-collapse" id="magick-navbars">
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        <li class="nav-item ">
+          <a class="nav-link" href="index.html">Home</a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link" href="download.html">Download</a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link" href="command-line-tools.html">Tools</a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link" href="command-line-processing.html">Command-line</a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link" href="develop.html">Develop</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
+        </li>
+        <li class="nav-item">
+            
+        </li>
+        <li class="nav-item">
+          <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
+        </li>
+      </ul>
+      <form class="d-flex form-inline" action="../www/search.html">
+        <input class="form-control me-2" type="text" name="q" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit" name="sa">Search</button>
+      </form>
     </div>
-    <form class="form-inline my-2 my-md-0" action="../www/search.html">
-      <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
-    </form>
+  </div>
   </nav>
+
   <div class="container">
-   <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-3129977114552745"
-         data-ad-slot="6345125851"
-         data-full-width-responsive="true"
-         data-ad-format="horizontal"></ins>
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+      style="display:block"
+      data-ad-client="ca-pub-3129977114552745"
+      data-ad-slot="6345125851"
+      data-full-width-responsive="true"
+      data-ad-format="horizontal"></ins>
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
 
   </div>
 
-  <main role="main" class="container">
-    <div class="magick-template">
+  <main class="container">
+  <div class="magick-template">
 <div class="magick-header">
 <h1 class="text-center">Annotated List of Command-line Options</h1>
 <p class="text-center"><a class="text-nowrap" href="command-line-options.html#adaptive-blur">-adaptive-blur</a>  • <a class="text-nowrap" href="command-line-options.html#adaptive-resize">-adaptive-resize</a>  • <a class="text-nowrap" href="command-line-options.html#adaptive-sharpen">-adaptive-sharpen</a>  • <a class="text-nowrap" href="command-line-options.html#adjoin">-adjoin</a>  • <a class="text-nowrap" href="command-line-options.html#affine">-affine</a>  • <a class="text-nowrap" href="command-line-options.html#alpha">-alpha</a>  • <a class="text-nowrap" href="command-line-options.html#annotate">-annotate</a>  • <a class="text-nowrap" href="command-line-options.html#antialias">-antialias</a>  • <a class="text-nowrap" href="command-line-options.html#append">-append</a>  • <a class="text-nowrap" href="command-line-options.html#attenuate">-attenuate</a>  • <a class="text-nowrap" href="command-line-options.html#authenticate">-authenticate</a>  • <a class="text-nowrap" href="command-line-options.html#auto-gamma">-auto-gamma</a>  • <a class="text-nowrap" href="command-line-options.html#auto-level">-auto-level</a>  • <a class="text-nowrap" href="command-line-options.html#auto-orient">-auto-orient</a>  • <a class="text-nowrap" href="command-line-options.html#auto-threshold">-auto-threshold</a>  • <a class="text-nowrap" href="command-line-options.html#backdrop">-backdrop</a>  • <a class="text-nowrap" href="command-line-options.html#background">-background</a>  • <a class="text-nowrap" href="command-line-options.html#bench">-bench</a>  • <a class="text-nowrap" href="command-line-options.html#bias">-bias</a>  • <a class="text-nowrap" href="command-line-options.html#bilateral-blur">-bilateral-blur</a>  • <a class="text-nowrap" href="command-line-options.html#black-point-compensation">-black-point-compensation</a>  • <a class="text-nowrap" href="command-line-options.html#black-threshold">-black-threshold</a>  • <a class="text-nowrap" href="command-line-options.html#blend">-blend</a>  • <a class="text-nowrap" href="command-line-options.html#blue-primary">-blue-primary</a>  • <a class="text-nowrap" href="command-line-options.html#blue-shift">-blue-shift</a>  • <a class="text-nowrap" href="command-line-options.html#blur">-blur</a>  • <a class="text-nowrap" href="command-line-options.html#border">-border</a>  • <a class="text-nowrap" href="command-line-options.html#bordercolor">-bordercolor</a>  • <a class="text-nowrap" href="command-line-options.html#borderwidth">-borderwidth</a>  • <a class="text-nowrap" href="command-line-options.html#brightness-contrast">-brightness-contrast</a>  • <a class="text-nowrap" href="command-line-options.html#cache">-cache</a>  • <a class="text-nowrap" href="command-line-options.html#canny">-canny</a>  • <a class="text-nowrap" href="command-line-options.html#caption">-caption</a>  • <a class="text-nowrap" href="command-line-options.html#cdl">-cdl</a>  • <a class="text-nowrap" href="command-line-options.html#channel">-channel</a>  • <a class="text-nowrap" href="command-line-options.html#charcoal">-charcoal</a>  • <a class="text-nowrap" href="command-line-options.html#channel-fx">-channel-fx</a>  • <a class="text-nowrap" href="command-line-options.html#chop">-chop</a>  • <a class="text-nowrap" href="command-line-options.html#clahe">-clahe</a>  • <a class="text-nowrap" href="command-line-options.html#clamp">-clamp</a>  • <a class="text-nowrap" href="command-line-options.html#clip">-clip</a>  • <a class="text-nowrap" href="command-line-options.html#clip-mask">-clip-mask</a>  • <a class="text-nowrap" href="command-line-options.html#clip-path">-clip-path</a>  • <a class="text-nowrap" href="command-line-options.html#clone">-clone</a>  • <a class="text-nowrap" href="command-line-options.html#clut">-clut</a>  • <a class="text-nowrap" href="command-line-options.html#coalesce">-coalesce</a>  • <a class="text-nowrap" href="command-line-options.html#colorize">-colorize</a>  • <a class="text-nowrap" href="command-line-options.html#colormap">-colormap</a>  • <a class="text-nowrap" href="command-line-options.html#color-matrix">-color-matrix</a>  • <a class="text-nowrap" href="command-line-options.html#colors">-colors</a>  • <a class="text-nowrap" href="command-line-options.html#colorspace">-colorspace</a>  • <a class="text-nowrap" href="command-line-options.html#color-threshold">-color-threshold</a>  • <a class="text-nowrap" href="command-line-options.html#combine">-combine</a>  • <a class="text-nowrap" href="command-line-options.html#comment">-comment</a>  • <a class="text-nowrap" href="command-line-options.html#compare">-compare</a>  • <a class="text-nowrap" href="command-line-options.html#complex">-complex</a>  • <a class="text-nowrap" href="command-line-options.html#compose">-compose</a>  • <a class="text-nowrap" href="command-line-options.html#composite">-composite</a>  • <a class="text-nowrap" href="command-line-options.html#compress">-compress</a>  • <a class="text-nowrap" href="command-line-options.html#connected-components">-connected-components</a>  • <a class="text-nowrap" href="command-line-options.html#contrast">-contrast</a>  • <a class="text-nowrap" href="command-line-options.html#contrast-stretch">-contrast-stretch</a>  • <a class="text-nowrap" href="command-line-options.html#convolve">-convolve</a>  • <a class="text-nowrap" href="command-line-options.html#copy">-copy</a>  • <a class="text-nowrap" href="command-line-options.html#crop">-crop</a>  • <a class="text-nowrap" href="command-line-options.html#cycle">-cycle</a>  • <a class="text-nowrap" href="command-line-options.html#debug">-debug</a>  • <a class="text-nowrap" href="command-line-options.html#decipher">-decipher</a>  • <a class="text-nowrap" href="command-line-options.html#deconstruct">-deconstruct</a>  • <a class="text-nowrap" href="command-line-options.html#define">-define</a>  • <a class="text-nowrap" href="command-line-options.html#delay">-delay</a>  • <a class="text-nowrap" href="command-line-options.html#delete">-delete</a>  • <a class="text-nowrap" href="command-line-options.html#density">-density</a>  • <a class="text-nowrap" href="command-line-options.html#depth">-depth</a>  • <a class="text-nowrap" href="command-line-options.html#descend">-descend</a>  • <a class="text-nowrap" href="command-line-options.html#deskew">-deskew</a>  • <a class="text-nowrap" href="command-line-options.html#despeckle">-despeckle</a>  • <a class="text-nowrap" href="command-line-options.html#direction">-direction</a>  • <a class="text-nowrap" href="command-line-options.html#displace">-displace</a>  • <a class="text-nowrap" href="command-line-options.html#display">-display</a>  • <a class="text-nowrap" href="command-line-options.html#dispose">-dispose</a>  • <a class="text-nowrap" href="command-line-options.html#dissimilarity-threshold">-dissimilarity-threshold</a>  • <a class="text-nowrap" href="command-line-options.html#dissolve">-dissolve</a>  • <a class="text-nowrap" href="command-line-options.html#distort">-distort</a>  • <a class="text-nowrap" href="command-line-options.html#distribute-cache">-distribute-cache</a>  • <a class="text-nowrap" href="command-line-options.html#dither">-dither</a>  • <a class="text-nowrap" href="command-line-options.html#draw">-draw</a>  • <a class="text-nowrap" href="command-line-options.html#duplicate">-duplicate</a>  • <a class="text-nowrap" href="command-line-options.html#edge">-edge</a>  • <a class="text-nowrap" href="command-line-options.html#emboss">-emboss</a>  • <a class="text-nowrap" href="command-line-options.html#encipher">-encipher</a>  • <a class="text-nowrap" href="command-line-options.html#encoding">-encoding</a>  • <a class="text-nowrap" href="command-line-options.html#endian">-endian</a>  • <a class="text-nowrap" href="command-line-options.html#enhance">-enhance</a>  • <a class="text-nowrap" href="command-line-options.html#equalize">-equalize</a>  • <a class="text-nowrap" href="command-line-options.html#evaluate">-evaluate</a>  • <a class="text-nowrap" href="command-line-options.html#evaluate-sequence">-evaluate-sequence</a>  • <a class="text-nowrap" href="command-line-options.html#extent">-extent</a>  • <a class="text-nowrap" href="command-line-options.html#extract">-extract</a>  • <a class="text-nowrap" href="command-line-options.html#family">-family</a>  • <a class="text-nowrap" href="command-line-options.html#features">-features</a>  • <a class="text-nowrap" href="command-line-options.html#fft">-fft</a>  • <a class="text-nowrap" href="command-line-options.html#fill">-fill</a>  • <a class="text-nowrap" href="command-line-options.html#filter">-filter</a>  • <a class="text-nowrap" href="command-line-options.html#flatten">-flatten</a>  • <a class="text-nowrap" href="command-line-options.html#flip">-flip</a>  • <a class="text-nowrap" href="command-line-options.html#floodfill">-floodfill</a>  • <a class="text-nowrap" href="command-line-options.html#flop">-flop</a>  • <a class="text-nowrap" href="command-line-options.html#font">-font</a>  • <a class="text-nowrap" href="command-line-options.html#foreground">-foreground</a>  • <a class="text-nowrap" href="command-line-options.html#format">-format</a>  • <a class="text-nowrap" href="command-line-options.html#format_identify_">-format[identify]</a>  • <a class="text-nowrap" href="command-line-options.html#frame">-frame</a>  • <a class="text-nowrap" href="command-line-options.html#frame_import_">-frame[import]</a>  • <a class="text-nowrap" href="command-line-options.html#function">-function</a>  • <a class="text-nowrap" href="command-line-options.html#fuzz">-fuzz</a>  • <a class="text-nowrap" href="command-line-options.html#fx">-fx</a>  • <a class="text-nowrap" href="command-line-options.html#gamma">-gamma</a>  • <a class="text-nowrap" href="command-line-options.html#gaussian-blur">-gaussian-blur</a>  • <a class="text-nowrap" href="command-line-options.html#geometry">-geometry</a>  • <a class="text-nowrap" href="command-line-options.html#gravity">-gravity</a>  • <a class="text-nowrap" href="command-line-options.html#grayscale">-grayscale</a>  • <a class="text-nowrap" href="command-line-options.html#green-primary">-green-primary</a>  • <a class="text-nowrap" href="command-line-options.html#hald-clut">-hald-clut</a>  • <a class="text-nowrap" href="command-line-options.html#help">-help</a>  • <a class="text-nowrap" href="command-line-options.html#highlight-color">-highlight-color</a>  • <a class="text-nowrap" href="command-line-options.html#hough-lines">-hough-lines</a>  • <a class="text-nowrap" href="command-line-options.html#iconGeometry">-iconGeometry</a>  • <a class="text-nowrap" href="command-line-options.html#iconic">-iconic</a>  • <a class="text-nowrap" href="command-line-options.html#identify">-identify</a>  • <a class="text-nowrap" href="command-line-options.html#ift">-ift</a>  • <a class="text-nowrap" href="command-line-options.html#immutable">-immutable</a>  • <a class="text-nowrap" href="command-line-options.html#implode">-implode</a>  • <a class="text-nowrap" href="command-line-options.html#insert">-insert</a>  • <a class="text-nowrap" href="command-line-options.html#intensity">-intensity</a>  • <a class="text-nowrap" href="command-line-options.html#intent">-intent</a>  • <a class="text-nowrap" href="command-line-options.html#interlace">-interlace</a>  • <a class="text-nowrap" href="command-line-options.html#interpolate">-interpolate</a>  • <a class="text-nowrap" href="command-line-options.html#interline-spacing">-interline-spacing</a>  • <a class="text-nowrap" href="command-line-options.html#interword-spacing">-interword-spacing</a>  • <a class="text-nowrap" href="command-line-options.html#kerning">-kerning</a>  • <a class="text-nowrap" href="command-line-options.html#kmeans">-kmeans</a>  • <a class="text-nowrap" href="command-line-options.html#kuwahara">-kuwahara</a>  • <a class="text-nowrap" href="command-line-options.html#label">-label</a>  • <a class="text-nowrap" href="command-line-options.html#lat">-lat</a>  • <a class="text-nowrap" href="command-line-options.html#layers">-layers</a>  • <a class="text-nowrap" href="command-line-options.html#level">-level</a>  • <a class="text-nowrap" href="command-line-options.html#level-colors">-level-colors</a>  • <a class="text-nowrap" href="command-line-options.html#limit">-limit</a>  • <a class="text-nowrap" href="command-line-options.html#linear-stretch">-linear-stretch</a>  • <a class="text-nowrap" href="command-line-options.html#linewidth">-linewidth</a>  • <a class="text-nowrap" href="command-line-options.html#liquid-rescale">-liquid-rescale</a>  • <a class="text-nowrap" href="command-line-options.html#list">-list</a>  • <a class="text-nowrap" href="command-line-options.html#log">-log</a>  • <a class="text-nowrap" href="command-line-options.html#loop">-loop</a>  • <a class="text-nowrap" href="command-line-options.html#lowlight-color">-lowlight-color</a>  • <a class="text-nowrap" href="command-line-options.html#magnify">-magnify</a>  • <a class="text-nowrap" href="command-line-options.html#map">-map</a>  • <a class="text-nowrap" href="command-line-options.html#map_stream_">-map[stream]</a>  • <a class="text-nowrap" href="command-line-options.html#mattecolor">-mattecolor</a>  • <a class="text-nowrap" href="command-line-options.html#median">-median</a>  • <a class="text-nowrap" href="command-line-options.html#mean-shift">-mean-shift</a>  • <a class="text-nowrap" href="command-line-options.html#metric">-metric</a>  • <a class="text-nowrap" href="command-line-options.html#mode">-mode</a>  • <a class="text-nowrap" href="command-line-options.html#modulate">-modulate</a>  • <a class="text-nowrap" href="command-line-options.html#moments">-moments</a>  • <a class="text-nowrap" href="command-line-options.html#monitor">-monitor</a>  • <a class="text-nowrap" href="command-line-options.html#monochrome">-monochrome</a>  • <a class="text-nowrap" href="command-line-options.html#morph">-morph</a>  • <a class="text-nowrap" href="command-line-options.html#morphology">-morphology</a>  • <a class="text-nowrap" href="command-line-options.html#mosaic">-mosaic</a>  • <a class="text-nowrap" href="command-line-options.html#motion-blur">-motion-blur</a>  • <a class="text-nowrap" href="command-line-options.html#name">-name</a>  • <a class="text-nowrap" href="command-line-options.html#negate">-negate</a>  • <a class="text-nowrap" href="command-line-options.html#noise">-noise</a>  • <a class="text-nowrap" href="command-line-options.html#normalize">-normalize</a>  • <a class="text-nowrap" href="command-line-options.html#opaque">-opaque</a>  • <a class="text-nowrap" href="command-line-options.html#ordered-dither">-ordered-dither</a>  • <a class="text-nowrap" href="command-line-options.html#orient">-orient</a>  • <a class="text-nowrap" href="command-line-options.html#page">-page</a>  • <a class="text-nowrap" href="command-line-options.html#paint">-paint</a>  • <a class="text-nowrap" href="command-line-options.html#path">-path</a>  • <a class="text-nowrap" href="command-line-options.html#pause_animate_">-pause[animate]</a>  • <a class="text-nowrap" href="command-line-options.html#pause_import_">-pause[import]</a>  • <a class="text-nowrap" href="command-line-options.html#perceptible">-perceptible</a>  • <a class="text-nowrap" href="command-line-options.html#ping">-ping</a>  • <a class="text-nowrap" href="command-line-options.html#pointsize">-pointsize</a>  • <a class="text-nowrap" href="command-line-options.html#polaroid">-polaroid</a>  • <a class="text-nowrap" href="command-line-options.html#poly">-poly</a>  • <a class="text-nowrap" href="command-line-options.html#posterize">-posterize</a>  • <a class="text-nowrap" href="command-line-options.html#precision">-precision</a>  • <a class="text-nowrap" href="command-line-options.html#preview">-preview</a>  • <a class="text-nowrap" href="command-line-options.html#print">-print</a>  • <a class="text-nowrap" href="command-line-options.html#process">-process</a>  • <a class="text-nowrap" href="command-line-options.html#profile">-profile</a>  • <a class="text-nowrap" href="command-line-options.html#quality">-quality</a>  • <a class="text-nowrap" href="command-line-options.html#quantize">-quantize</a>  • <a class="text-nowrap" href="command-line-options.html#quiet">-quiet</a>  • <a class="text-nowrap" href="command-line-options.html#radial-blur">-radial-blur</a>  • <a class="text-nowrap" href="command-line-options.html#raise">-raise</a>  • <a class="text-nowrap" href="command-line-options.html#random-threshold">-random-threshold</a>  • <a class="text-nowrap" href="command-line-options.html#range-threshold">-range-threshold</a>  • <a class="text-nowrap" href="command-line-options.html#read-mask">-read-mask</a>  • <a class="text-nowrap" href="command-line-options.html#red-primary">-red-primary</a>  • <a class="text-nowrap" href="command-line-options.html#regard-warnings">-regard-warnings</a>  • <a class="text-nowrap" href="command-line-options.html#region">-region</a>  • <a class="text-nowrap" href="command-line-options.html#remap">-remap</a>  • <a class="text-nowrap" href="command-line-options.html#remote">-remote</a>  • <a class="text-nowrap" href="command-line-options.html#render">-render</a>  • <a class="text-nowrap" href="command-line-options.html#repage">-repage</a>  • <a class="text-nowrap" href="command-line-options.html#resample">-resample</a>  • <a class="text-nowrap" href="command-line-options.html#resize">-resize</a>  • <a class="text-nowrap" href="command-line-options.html#respect-parentheses">-respect-parentheses</a>  • <a class="text-nowrap" href="command-line-options.html#reverse">-reverse</a>  • <a class="text-nowrap" href="command-line-options.html#roll">-roll</a>  • <a class="text-nowrap" href="command-line-options.html#rotate">-rotate</a>  • <a class="text-nowrap" href="command-line-options.html#sample">-sample</a>  • <a class="text-nowrap" href="command-line-options.html#sampling-factor">-sampling-factor</a>  • <a class="text-nowrap" href="command-line-options.html#scale">-scale</a>  • <a class="text-nowrap" href="command-line-options.html#scene">-scene</a>  • <a class="text-nowrap" href="command-line-options.html#screen">-screen</a>  • <a class="text-nowrap" href="command-line-options.html#seed">-seed</a>  • <a class="text-nowrap" href="command-line-options.html#segment">-segment</a>  • <a class="text-nowrap" href="command-line-options.html#selective-blur">-selective-blur</a>  • <a class="text-nowrap" href="command-line-options.html#separate">-separate</a>  • <a class="text-nowrap" href="command-line-options.html#sepia-tone">-sepia-tone</a>  • <a class="text-nowrap" href="command-line-options.html#set">-set</a>  • <a class="text-nowrap" href="command-line-options.html#shade">-shade</a>  • <a class="text-nowrap" href="command-line-options.html#shadow">-shadow</a>  • <a class="text-nowrap" href="command-line-options.html#shared-memory">-shared-memory</a>  • <a class="text-nowrap" href="command-line-options.html#sharpen">-sharpen</a>  • <a class="text-nowrap" href="command-line-options.html#shave">-shave</a>  • <a class="text-nowrap" href="command-line-options.html#shear">-shear</a>  • <a class="text-nowrap" href="command-line-options.html#sigmoidal-contrast">-sigmoidal-contrast</a>  • <a class="text-nowrap" href="command-line-options.html#silent">-silent</a>  • <a class="text-nowrap" href="command-line-options.html#similarity-threshold">-similarity-threshold</a>  • <a class="text-nowrap" href="command-line-options.html#size">-size</a>  • <a class="text-nowrap" href="command-line-options.html#sketch">-sketch</a>  • <a class="text-nowrap" href="command-line-options.html#smush">-smush</a>  • <a class="text-nowrap" href="command-line-options.html#snaps">-snaps</a>  • <a class="text-nowrap" href="command-line-options.html#solarize">-solarize</a>  • <a class="text-nowrap" href="command-line-options.html#sort-pixels">-sort-pixels</a>  • <a class="text-nowrap" href="command-line-options.html#sparse-color">-sparse-color</a>  • <a class="text-nowrap" href="command-line-options.html#splice">-splice</a>  • <a class="text-nowrap" href="command-line-options.html#spread">-spread</a>  • <a class="text-nowrap" href="command-line-options.html#statistic">-statistic</a>  • <a class="text-nowrap" href="command-line-options.html#stegano">-stegano</a>  • <a class="text-nowrap" href="command-line-options.html#stereo">-stereo</a>  • <a class="text-nowrap" href="command-line-options.html#storage-type">-storage-type</a>  • <a class="text-nowrap" href="command-line-options.html#stretch">-stretch</a>  • <a class="text-nowrap" href="command-line-options.html#strip">-strip</a>  • <a class="text-nowrap" href="command-line-options.html#stroke">-stroke</a>  • <a class="text-nowrap" href="command-line-options.html#strokewidth">-strokewidth</a>  • <a class="text-nowrap" href="command-line-options.html#style">-style</a>  • <a class="text-nowrap" href="command-line-options.html#subimage-search">-subimage-search</a>  • <a class="text-nowrap" href="command-line-options.html#swap">-swap</a>  • <a class="text-nowrap" href="command-line-options.html#swirl">-swirl</a>  • <a class="text-nowrap" href="command-line-options.html#synchronize">-synchronize</a>  • <a class="text-nowrap" href="command-line-options.html#taint">-taint</a>  • <a class="text-nowrap" href="command-line-options.html#text-font">-text-font</a>  • <a class="text-nowrap" href="command-line-options.html#texture">-texture</a>  • <a class="text-nowrap" href="command-line-options.html#threshold">-threshold</a>  • <a class="text-nowrap" href="command-line-options.html#thumbnail">-thumbnail</a>  • <a class="text-nowrap" href="command-line-options.html#tile">-tile</a>  • <a class="text-nowrap" href="command-line-options.html#tile-offset">-tile-offset</a>  • <a class="text-nowrap" href="command-line-options.html#tint">-tint</a>  • <a class="text-nowrap" href="command-line-options.html#title">-title</a>  • <a class="text-nowrap" href="command-line-options.html#transform">-transform</a>  • <a class="text-nowrap" href="command-line-options.html#transparent">-transparent</a>  • <a class="text-nowrap" href="command-line-options.html#transparent-color">-transparent-color</a>  • <a class="text-nowrap" href="command-line-options.html#transpose">-transpose</a>  • <a class="text-nowrap" href="command-line-options.html#transverse">-transverse</a>  • <a class="text-nowrap" href="command-line-options.html#treedepth">-treedepth</a>  • <a class="text-nowrap" href="command-line-options.html#trim">-trim</a>  • <a class="text-nowrap" href="command-line-options.html#type">-type</a>  • <a class="text-nowrap" href="command-line-options.html#undercolor">-undercolor</a>  • <a class="text-nowrap" href="command-line-options.html#unique-colors">-unique-colors</a>  • <a class="text-nowrap" href="command-line-options.html#units">-units</a>  • <a class="text-nowrap" href="command-line-options.html#unsharp">-unsharp</a>  • <a class="text-nowrap" href="command-line-options.html#update">-update</a>  • <a class="text-nowrap" href="command-line-options.html#verbose">-verbose</a>  • <a class="text-nowrap" href="command-line-options.html#version">-version</a>  • <a class="text-nowrap" href="command-line-options.html#view">-view</a>  • <a class="text-nowrap" href="command-line-options.html#vignette">-vignette</a>  • <a class="text-nowrap" href="command-line-options.html#virtual-pixel">-virtual-pixel</a>  • <a class="text-nowrap" href="command-line-options.html#visual">-visual</a>  • <a class="text-nowrap" href="command-line-options.html#watermark">-watermark</a>  • <a class="text-nowrap" href="command-line-options.html#wave">-wave</a>  • <a class="text-nowrap" href="command-line-options.html#wavelet-denoise">-wavelet-denoise</a>  • <a class="text-nowrap" href="command-line-options.html#weight">-weight</a>  • <a class="text-nowrap" href="command-line-options.html#white-balance">-white-balance</a>  • <a class="text-nowrap" href="command-line-options.html#white-point">-white-point</a>  • <a class="text-nowrap" href="command-line-options.html#white-threshold">-white-threshold</a>  • <a class="text-nowrap" href="command-line-options.html#window">-window</a>  • <a class="text-nowrap" href="command-line-options.html#window-group">-window-group</a>  • <a class="text-nowrap" href="command-line-options.html#write">-write</a>  • <a class="text-nowrap" href="command-line-options.html#write-mask">-write-mask</a>  </p>
@@ -243,7 +246,7 @@ matrix determinant has a sufficiently small absolute value it is rejected.</p>
 <p>Used to set a flag on an image indicating whether or not to use existing alpha
 channel data, to create an alpha channel, or to perform other operations on the alpha channel.  Choose the argument <var>type</var> from the list below.</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <dl class="row">
     <dt class="col-md-4">Activate</dt>
     <dd class="col-md-8">
@@ -326,7 +329,7 @@ same as "<code><a href="command-line-options.html#alpha" >-alpha</a> Off</code>"
 >-matte</code> operation was the same as "<code><a href="command-line-options.html#alpha" >-alpha</a>
 Set</code>" and not "<code><a href="command-line-options.html#alpha" >-alpha</a> On</code>".  </p>
 
-<div class="pre-scrollable" style="margin: auto;">
+<div class="pre-scrollable highlight" style="margin: auto;">
  <h3><a class="anchor" id="annotate"></a>
  -annotate <var>degrees</var> <var>text</var><br />
  -annotate <var>Xdegrees</var>x<var>Ydegrees</var> <var>text</var><br /> -annotate <var>Xdegrees</var>x<var>Ydegrees</var>{+-}<var>t<sub>x</sub></var>{+-}<var>t<sub>y</sub></var> <var>text</var><br /> -annotate {+-}<var>t<sub>x</sub></var>{+-}<var>t<sub>y</sub></var> <var>text</var></h3>
@@ -495,7 +498,7 @@ href="command-line-options.html#auto-orient" >-auto-orient</a> operator will do 
 
 <p>Here are the valid methods:</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <dl class="row">
 <dt class="col-md-4">Undefined</dt><dd class="col-md-8">0:  No method specified (equivalent to '<code>OTSU</code>').</dd>
 <dt class="col-md-4">Kapur</dt><dd class="col-md-8">maximum entropy thresholding.</dd>
@@ -504,7 +507,7 @@ href="command-line-options.html#auto-orient" >-auto-orient</a> operator will do 
 </dl>
 </div>
 
-<p>The computed threshold is returned as the <kbd>auto-threshold:threshold</kbd> image property. To instead print to your device, use <kbd>-define auto-threshold:threshold=true</kbd>.</p>
+<p>The computed threshold is returned as the <kbd>auto-threshold:verbose</kbd> image property. To instead print to your device, use <kbd>-define auto-threshold:verbose=true</kbd>.</p>
 
 <div style="margin: auto;">
   <h3><a class="anchor" id="average"></a>-average</h3>
@@ -704,7 +707,7 @@ ignored. </p>
 
 <p>As of IM 6.7.8-8, the <var>geometry</var> arguments behave as follows:</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <dl class="row">
 <dt class="col-md-4"><var>value</var></dt>
 <dd class="col-md-8">value is added to both left/right and top/bottom</dd>
@@ -1309,7 +1312,7 @@ Undefined
 
 <p>For a more accurate color conversion to or from the linear RGB, CMYK, or grayscale colorspaces, use the <a href="command-line-options.html#profile">-profile</a> option.  Note, ImageMagick assumes the sRGB colorspace if the image format does not indicate otherwise.  For colorspace conversion, the gamma function is first removed to produce linear RGB.</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <table class="table table-sm table-hover">
         <caption>Conversion of RGB to Other Color Spaces</caption>
         <tr><th valign="middle">CMY</th></tr>
@@ -2060,7 +2063,7 @@ animation is to be overlaid onto the display. </p>
 
 <p>Here are the valid methods:</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <dl class="row">
 <dt class="col-md-4">Undefined</dt><dd class="col-md-8">0:  No disposal specified (equivalent to '<code>none</code>').</dd>
 <dt class="col-md-4">None</dt><dd class="col-md-8">1:  Do not dispose, just overlay next frame image.</dd>
@@ -2115,7 +2118,7 @@ and meaning of the floating point values depends on the distortion <var>method</
 
 <p>Choose from these distortion types:</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <table class="table table-sm table-hover">
   <tr>
     <th style="width: 8%">Method</th>
@@ -2562,7 +2565,7 @@ operations.</p>
 
 <p>The shape primitives:</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <dl class="row">
 <dt class="col-md-4">point</dt><dd class="col-md-8">          x,y</dd>
 <dt class="col-md-4">line</dt><dd class="col-md-8">           x0,y0 x1,y1</dd>
@@ -2597,7 +2600,7 @@ scope to the <a href="command-line-options.html#draw">-draw</a> option in which 
 
 <p>The transformation primitives:</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <dl class="row">
 <dt class="col-md-4">rotate</dt><dd class="col-md-8">degrees</dd>
 <dt class="col-md-4">translate</dt><dd class="col-md-8">dx,dy</dd>
@@ -2609,7 +2612,7 @@ scope to the <a href="command-line-options.html#draw">-draw</a> option in which 
 
 <p>The pixel operation primitives:</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <dl class="row">
 <dt class="col-md-4">color</dt><dd class="col-md-8">x0,y0 method</dd>
 <dt class="col-md-4">matte</dt><dd class="col-md-8">x0,y0 method</dd>
@@ -2895,7 +2898,7 @@ a "normalized pixel" is that number divided by the maximum
 normalized pixels are used, they are restored, following the other
 calculations, to the full range by multiplying by <var>QuantumRange</var>.)</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <table class="table table-sm table-hover">
   <col width="25%" />
   <col width="75%" />
@@ -3298,7 +3301,7 @@ filter</a> option.</p>
 use of these expert settings (see also <a href="command-line-options.html#define" >-define</a> and <a
 href="command-line-options.html#set" >-set</a>):-</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <table class="table table-sm table-hover">
   <tr>
     <td>-define filter:blur=<var>factor</var></td>
@@ -3622,7 +3625,7 @@ Arctan
 <p>To print a complete list of <a href="command-line-options.html#function">-function</a> operators,
 use <a href="command-line-options.html#list">-list function</a>. Descriptions follow.</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <dl class="row">
   <dt class="col-md-4">Polynomial</dt>
   <dd class="col-md-8"><p>The <code>Polynomial</code> function takes an arbitrary number of parameters,
@@ -3646,7 +3649,7 @@ polynomials) of the <a href="command-line-options.html#evaluate">-evaluate</a> o
 href="command-line-options.html#level">-level</a> operator also affects channels linearly. Some
 correspondences follow.</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <table class="table table-sm table-hover">
   <tr>
         <td>-evaluate Set <var>value</var> </td>
@@ -3709,7 +3712,7 @@ is 0.</p>
 <code>Cos</code> of the <a href="command-line-options.html#evaluate">-evaluate</a> operator by allowing
 varying amplitude, phase and bias. The correspondence is as follows.</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <table class="table table-sm table-hover">
   <tr>
         <td>-evaluate Sin <var>freq</var> </td>
@@ -4157,7 +4160,7 @@ an image with red, green, and blue pixel components. Typically the
 the pixel values to linear-RGB or non-linear sRGB colorspace before
 being applied to calculate the final greyscale value. </p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <dl class="row">
 <dt class="col-md-4">Rec601Luma</dt><dd class="col-md-8">      0.298839R' + 0.586811G'+ 0.114350B'</dd>
 <dt class="col-md-4">Rec601Luminance</dt><dd class="col-md-8"> 0.298839R + 0.586811G + 0.114350B</dd>
@@ -4175,7 +4178,7 @@ R',G',B' are sRGB non-linear values. </p>
 current value in the images respective R,G,B channel regardless of
 what that is, or what colorspace the image is currently using.</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <dl class="row">
 <dt class="col-md-4">Average</dt><dd class="col-md-8">(R' + G' + B') / 3.0</dd>
 <dt class="col-md-4">MS</dt><dd class="col-md-8">(R'^2 + G'^2 + B'^2) / 3.0</dd>
@@ -4285,7 +4288,7 @@ image. This setting determines how the color is determined from the colors of
 the pixels surrounding that point.  That is how to determine the color of a
 point that falls between two, or even four different colored pixels. </p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <dl class="row">
   <dt class="col-md-4">average</dt>
   <dd class="col-md-8">The average color of the surrounding four pixels</dd>
@@ -4425,7 +4428,7 @@ the local background color, from which to separate the foreground color. </p>
 which may represent either a set of overlaid 'image layers', a GIF disposal
 animation, or a fully-'coalesced' animation sequence. </p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <table class="table table-sm table-hover">
   <tbody>
   <tr>
@@ -4906,7 +4909,7 @@ normalization of mathematical images. </p>
 
 <p class="magick-description">Print a list of supported arguments for various options or settings.  Choose from these list types:</p>
 
-<pre class="pre-scrollable"><code>
+<pre class="pre-scrollable highlight"><code>
 Align
 Alpha
 Boolean
@@ -4998,7 +5001,7 @@ href="command-line-options.html#debug">-debug</a> option is active.</p>
 <p>You can display the following components by embedding special format
 characters:</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <dl class="row">
 <dt class="col-md-4">%d</dt><dd class="col-md-8">domain</dd>
 <dt class="col-md-4">%e</dt><dd class="col-md-8">event</dd>
@@ -5075,7 +5078,7 @@ the type and <code>display</code> searches the list of colormap types in
 
 <p>Here are the valid components of a map:</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <dl class="row">
 <dt class="col-md-4">r</dt><dd class="col-md-8">  red pixel component</dd>
 <dt class="col-md-4">g</dt><dd class="col-md-8">  green pixel component</dd>
@@ -5146,7 +5149,7 @@ name. </p>
 
 <p>Choose from:</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <dl class="row">
 <dt class="col-md-4">AE</dt><dd class="col-md-8">    absolute error count, number of different pixels (-fuzz affected)</dd>
 <dt class="col-md-4">DSSIM</dt><dd class="col-md-8">  structural dissimilarity index</dd>
@@ -5436,7 +5439,7 @@ given number of <var>levels</var> per color channel.</p>
 
 <p>You can choose from these standard threshold maps:</p>
 
-<pre class="pre-scrollable"><code>
+<pre class="pre-scrollable highlight"><code>
 threshold   1x1   Threshold 1x1 (non-dither)
 checks      2x1   Checkerboard 2x1 (dither)
 o2x2        2x2   Ordered 2x2 (dispersed)
@@ -5655,7 +5658,7 @@ visible effect.</p>
 <code>magick file.png -preview Gamma Preview:gamma.png</code>). Choose from
 these previews:</p>
 
-<pre class="pre-scrollable"><code>
+<pre class="pre-scrollable highlight"><code>
 AddNoise
 Blur
 Brightness
@@ -5788,7 +5791,7 @@ compression.</p>
 <p>If filter-type is 4 or less, the specified PNG filter-type is used for
 all scanlines:</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <dl class="row">
 <dt class="col-md-4">0</dt><dd class="col-md-8">none</dd>
 <dt class="col-md-4">1</dt><dd class="col-md-8">sub</dd>
@@ -6572,7 +6575,7 @@ exposing a photographic film to light during the development process.</p>
 <p class="magick-description"> color the given image using the specified points of color, and filling the other intervening colors using the given methods. </p>
 
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <dl class="row">
     <dt class="col-md-4">barycentric</dt>
     <dd class="col-md-8">three point triangle of color given 3 points.
@@ -6662,7 +6665,7 @@ blend.</p>
 
 <p>Choose from these statistic types:</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <dl class="row">
 <dt class="col-md-4">Gradient</dt><dd class="col-md-8">maximum difference (max - min) value in neighborhood</dd>
 <dt class="col-md-4">Maximum</dt><dd class="col-md-8">maximum value per channel in neighborhood</dd>
@@ -6701,7 +6704,7 @@ this information to recover the steganographic image (e.g. display -size
 
 <p class="magick-description">Pixel storage type.  Here are the valid types:</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <dl class="row">
 <dt class="col-md-4">char</dt><dd class="col-md-8">unsigned characters</dd>
 <dt class="col-md-4">double</dt><dd class="col-md-8">doubles</dd>
@@ -7199,7 +7202,7 @@ a radius of 0 to have the method select a suitable radius.</p>
 
 <p>The parameters are:</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <dl class="row">
 <dt class="col-md-4">radius</dt>
 <dd class="col-md-8">The radius of the Gaussian, in pixels,  not counting the center pixel (default 0).</dd>
@@ -7254,7 +7257,7 @@ image, but could also be set to a specify background color. </p>
 
 <p>Choose from these methods:</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <dl class="row">
 <dt class="col-md-4">background</dt><dd class="col-md-8">the area surrounding the image is the background color</dd>
 <dt class="col-md-4">black</dt><dd class="col-md-8">the area surrounding the image is black</dd>
@@ -7340,7 +7343,7 @@ percentage, which defaults to 100 percent (no color change). </p>
 the currently selected font family. Use a positive integer for
 <var>fontWeight</var> or select from the following.</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable highlight">
 <dl class="row">
 <dt class="col-md-4">Thin </dt>
 <dd class="col-md-8">Same as <var>fontWeight</var> = 100.</dd>
@@ -7442,32 +7445,32 @@ grayscale values causing blended updates of the image the mask is attached to.
 but with strict boolean masking. </p>
 </div>
 </div>
-    </div>
+  </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
-    <div class="container">
-    <p><a href="security-policy.html">Security</a> •
-    <a href="news.html">News</a>
+    <div class="container-fluid">
+      <a href="security-policy.html">Security</a> •
+      <a href="news.html">News</a>
      
-    <a href="command-line-options.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+      <a href="command-line-options.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
-    <a href="links.html">Related</a> •
-     <a href="sitemap.html">Sitemap</a>
-    <br/>
-    <a href="support.html">Sponsor</a> •
-    <a href="cite.html">Cite</a> •
-    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="https://imagemagick.org/script/contact.php">Contact Us</a> 
-    <br/>
-    <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
-        <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
+      <a href="links.html">Related</a> •
+      <a href="sitemap.html">Sitemap</a>
+   <br/>
+     <a href="support.html">Sponsor</a> •
+     <a href="cite.html">Cite</a> •
+     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+     <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
+   <br/>
+     <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
+     <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
     <br/>
     <small>© 1999-2021 ImageMagick Studio LLC</small></p>
     <div>
   </footer>
 
   <!-- Javascript assets -->
-  <script>window.jQuery || document.write('<script src="assets/jquery.slim.min.js"><\/script>')</script><script src="assets/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous">
-</body>
+  <script src="assets/magick.js" ></script>
+  </body>
 </html>
-<!-- Magick Cache 24th January 2021 14:54 -->
+<!-- Magick Cache 7th February 2021 10:57 -->

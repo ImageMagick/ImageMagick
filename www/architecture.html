@@ -2,17 +2,17 @@
 
 
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8"  />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"  />
+  <meta name="viewport" content="width=device-width, initial-scale=1"  />
   <title>ImageMagick - Architecture</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert bitmap images. Resize an image, crop it, change its shades and colors, add captions, and more." />
+  <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert digital images. Resize an image, crop it, change its shades and colors, add captions, and more." />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
-  <meta name="keywords" content="architecture, image converter, image resizer, image editor, photo editor, jpg converter, png converter, tiff converter, vector images, online, free, swiss army" />
+  <meta name="keywords" content="architecture, image processing software" />
   <meta name="rating" content="GENERAL" />
   <meta name="robots" content="INDEX, FOLLOW" />
   <meta name="generator" content="ImageMagick Studio LLC" />
@@ -27,7 +27,7 @@
   <meta property='og:image' content='../images/logo.png' />
   <meta property='og:type' content='website' />
   <meta property='og:site_name' content='ImageMagick' />
-  <meta property='og:description' content="Create, Edit, Compose, or Convert Bitmap Images" />
+  <meta property='og:description' content="Create, Edit, Compose, or Convert Digital Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link href="architecture.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
@@ -35,60 +35,63 @@
   <link href="assets/magick.css" rel="stylesheet" />
 </head>
 <body>
-  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <div class="container-fluid">
     <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMagick" aria-controls="navbarsMagick" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#magick-navbars" aria-controls="magick-navbars" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="navbar-collapse collapse" id="navbarsMagick" style="">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item ">
-        <a class="nav-link" href="../">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item ">
-        <a class="nav-link" href="../www/download.html">Download</a>
-      </li>
-      <li class="nav-item ">
-        <a class="nav-link" href="../www/command-line-tools.html">Tools</a>
-      </li>
-      <li class="nav-item ">
-        <a class="nav-link" href="../www/command-line-processing.html">Command-line</a>
-      </li>
-      <li class="nav-item ">
-        <a class="nav-link" href="../www/develop.html">Develop</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
-      </li>
-      <li class="nav-item">
-          
-      </li>
-      <li class="nav-item">
-        <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
-      </li>
-    </ul>
+    <div class="collapse navbar-collapse" id="magick-navbars">
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        <li class="nav-item ">
+          <a class="nav-link" href="../www/index.html">Home</a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link" href="../www/download.html">Download</a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link" href="../www/command-line-tools.html">Tools</a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link" href="../www/command-line-processing.html">Command-line</a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link" href="../www/develop.html">Develop</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
+        </li>
+        <li class="nav-item">
+            
+        </li>
+        <li class="nav-item">
+          <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
+        </li>
+      </ul>
+      <form class="d-flex form-inline" action="search.html">
+        <input class="form-control me-2" type="text" name="q" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit" name="sa">Search</button>
+      </form>
     </div>
-    <form class="form-inline my-2 my-md-0" action="search.html">
-      <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="sa">Search</button>
-    </form>
+  </div>
   </nav>
+
   <div class="container">
-   <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-3129977114552745"
-         data-ad-slot="6345125851"
-         data-full-width-responsive="true"
-         data-ad-format="horizontal"></ins>
+    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+      style="display:block"
+      data-ad-client="ca-pub-3129977114552745"
+      data-ad-slot="6345125851"
+      data-full-width-responsive="true"
+      data-ad-format="horizontal"></ins>
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
 
   </div>
 
-  <main role="main" class="container">
-    <div class="magick-template">
+  <main class="container">
+  <div class="magick-template">
 <div class="magick-header"> 
 <h1 class="text-center">Architecture</h1>
 <p class="text-center"><a href="architecture.html#cache">The Pixel Cache</a> • <a href="architecture.html#stream">Streaming Pixels</a> • <a href="architecture.html#properties">Image Properties and Profiles</a> • <a href="architecture.html#tera-pixel">Large Image Support</a> • <a href="architecture.html#threads">Threads of Execution</a> • <a href="architecture.html#distributed">Heterogeneous Distributed Processing</a> • <a href="architecture.html#coders">Custom Image Coders</a> • <a href="architecture.html#filters">Custom Image Filters</a></p>
@@ -170,7 +173,7 @@ if (image == (Image *) NULL)
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to 8-bit gray image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a class="text-nowrap" href="../www/command-line-options.html#version">-version</a> option: </p>
 
-<pre><span class="crtprompt">$ </span><span class='crtin'>identify -version</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>Version: ImageMagick 7.0.10-59 2021-01-16 Q16 https://imagemagick.org</span></pre>
+<pre><span class="crtprompt">$ </span><span class='crtin'>identify -version</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>Version: ImageMagick 7.0.10-61 2021-01-30 Q16 https://imagemagick.org</span></pre>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 
 <h3><a class="anchor" id="authentic-pixels"></a>Access the Pixel Cache</h3>
@@ -185,7 +188,7 @@ if (image == (Image *) NULL)
 
 <p>Here is a typical <a href="magick-core.html">MagickCore</a> code snippet for manipulating pixels in the pixel cache.  In our example, we copy pixels from the input image to the output image and decrease the intensity by 10%:</p>
 
-<pre class="pre-scrollable"><code>const Quantum
+<pre class="pre-scrollable highlight"><code>const Quantum
   *p;
 
 Quantum
@@ -393,7 +396,7 @@ magick -define registry:cache:hosts=192.168.100.50:6668 myimage.jpg -sharpen 5x2
 <h3>Cache Views</h3>
 
 <p>GetVirtualPixels(), GetAuthenticPixels(), QueueAuthenticPixels(), and SyncAuthenticPixels(), from the MagickCore API, can only deal with one pixel cache area per image at a time.  Suppose you want to access the first and last scanline from the same image at the same time?  The solution is to use a <var>cache view</var>.  A cache view permits you to access as many areas simultaneously in the pixel cache as you require.  The cache view <a href="api/cache-view.html">methods</a> are analogous to the previous methods except you must first open a view and close it when you are finished with it. Here is a snippet of MagickCore code that permits us to access the first and last pixel row of the image simultaneously:</p>
-<pre class="pre-scrollable"><code>CacheView
+<pre class="pre-scrollable highlight"><code>CacheView
   *view_1,
   *view_2;
 
@@ -461,7 +464,7 @@ magick image.mpc -crop 100x100+200+0 +repage 3.png
 <p>ImageMagick provides for streaming pixels as they are read from or written to an image.  This has several advantages over the pixel cache.  The time and resources consumed by the pixel cache scale with the area of an image, whereas the pixel stream resources scale with the width of an image.  The disadvantage is the pixels must be consumed as they are streamed so there is no persistence.</p>
 
 <p>Use <a href="api/stream.html#ReadStream">ReadStream()</a> or <a href="api/stream.html#WriteStream">WriteStream()</a> with an appropriate callback method in your MagickCore program to consume the pixels as they are streaming.  Here's an abbreviated example of using ReadStream:</p>
-<pre class="pre-scrollable"><code>static size_t StreamPixels(const Image *image,const void *pixels,const size_t columns)
+<pre class="pre-scrollable highlight"><code>static size_t StreamPixels(const Image *image,const void *pixels,const size_t columns)
 {
   register const Quantum
     *p;
@@ -556,7 +559,7 @@ magick -limit memory 2mb -limit map 2mb -limit disk 2gb \
 <p>Many of ImageMagick's internal algorithms are threaded to take advantage of speed-ups offered by the multicore processor chips. However, you are welcome to use ImageMagick algorithms in your threads of execution with the exception of the MagickCore's GetVirtualPixels(), GetAuthenticPixels(), QueueAuthenticPixels(), or SyncAuthenticPixels() pixel cache methods.  These methods are intended for one thread of execution only with the exception of an OpenMP parallel section.  To access the pixel cache with more than one thread of execution, use a cache view.  We do this for the <a href="api/composite.html#CompositeImage">CompositeImage()</a> method, for example.  Suppose we want to composite a single source image over a different destination image in each thread of execution.  If we use GetVirtualPixels(), the results are unpredictable because multiple threads would likely be asking for different areas of the pixel cache simultaneously.  Instead we use GetCacheViewVirtualPixels() which creates a unique view for each thread of execution ensuring our program behaves properly regardless of how many threads are invoked.  The other program interfaces, such as the <a href="magick-wand.html">MagickWand API</a>, are completely thread safe so there are no special precautions for threads of execution.</p>
 
 <p>Here is an MagickCore code snippet that takes advantage of threads of execution with the <a href="openmp.html">OpenMP</a> programming paradigm:</p>
-<pre class="pre-scrollable"><code>CacheView
+<pre class="pre-scrollable highlight"><code>CacheView
   *image_view;
 
 MagickBooleanType
@@ -607,7 +610,7 @@ if (status == MagickFalse)
 </code></pre>
 
 <p>This code snippet converts an uncompressed Windows bitmap to a Magick++ image:</p>
-<pre class="pre-scrollable"><code>#include "Magick++.h"
+<pre class="pre-scrollable highlight"><code>#include "Magick++.h"
 #include &lt;assert.h&gt;
 #include "omp.h"
 
@@ -714,7 +717,7 @@ Features: DPC Cipher Modules OpenCL OpenMP(4.5)
 <p>If an accelerator is not available or if the accelerator fails to respond, ImageMagick reverts to the non-accelerated convolution algorithm.</p>
 
 <p>Here is an example OpenCL kernel that convolves an image:</p>
-<pre class="pre-scrollable"><code>static inline long ClampToCanvas(const long offset,const ulong range)
+<pre class="pre-scrollable highlight"><code>static inline long ClampToCanvas(const long offset,const ulong range)
 {
   if (offset &lt; 0L)
     return(0L);
@@ -781,7 +784,7 @@ __kernel void Convolve(const __global CLPixelType *source,__constant float *filt
 <p>An image coder (i.e. encoder / decoder) is responsible for registering, optionally classifying, optionally reading, optionally writing, and unregistering one image format (e.g.  PNG, GIF, JPEG, etc.).  Registering an image coder alerts ImageMagick a particular format is available to read or write.  While unregistering tells ImageMagick the format is no longer available.  The classifying method looks at the first few bytes of an image and determines if the image is in the expected format.  The reader sets the image size, colorspace, and other properties and loads the pixel cache with the pixels.  The reader returns a single image or an image sequence (if the format supports multiple images per file), or if an error occurs, an exception and a null image.  The writer does the reverse.  It takes the image properties and unloads the pixel cache and writes them as required by the image format.</p>
 
 <p>Here is a listing of a sample <a href="https://imagemagick.org/source/mgk.c">custom coder</a>.  It reads and writes images in the MGK image format which is simply an ID followed by the image width and height followed by the RGB pixel values.</p>
-<pre class="pre-scrollable"><code>#include &lt;MagickCore/studio.h>
+<pre class="pre-scrollable highlight"><code>#include &lt;MagickCore/studio.h>
 #include &lt;MagickCore/blob.h>
 #include &lt;MagickCore/cache.h>
 #include &lt;MagickCore/colorspace.h>
@@ -1213,13 +1216,14 @@ display logo.mgk
 <p>ImageMagick provides a convenient mechanism for adding your own custom image processing algorithms.  We call these image filters and they are invoked from the command line with the <a href="../www/command-line-options.html#process">-process</a> option or from the MagickCore API method <a href="api/module.html#ExecuteModuleProcess">ExecuteModuleProcess()</a>.</p>
 
 <p>Here is a listing of a sample <a href="https://imagemagick.org/source/analyze.c">custom image filter</a>.  It computes a few statistics such as the pixel brightness and saturation mean and standard-deviation.</p>
-<pre class="pre-scrollable"><code>#include &lt;stdio.h>
+<pre class="pre-scrollable highlight"><code>#include &lt;stdio.h>
 #include &lt;stdlib.h>
 #include &lt;string.h>
 #include &lt;time.h>
 #include &lt;assert.h>
 #include &lt;math.h>
-#include &lt;MagickCore/MagickCore.h>
+#include "MagickCore/studio.h"
+#include "MagickCore/MagickCore.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1255,78 +1259,58 @@ display logo.mgk
 %
 */
 
-static void ConvertRGBToHSB(const double red,const double green,
-  const double blue,double *hue,double *saturation,double *brightness)
+typedef struct _StatisticsInfo
 {
   double
-    delta,
-    max,
-    min;
+    area,
+    brightness,
+    mean,
+    standard_deviation,
+    sum[5],
+    kurtosis,
+    skewness;
+} StatisticsInfo;
+
+static inline int GetMagickNumberThreads(const Image *source,
+  const Image *destination,const size_t chunk,int multithreaded)
+{
+#define MagickMax(x,y)  (((x) > (y)) ? (x) : (y))
+#define MagickMin(x,y)  (((x) &lt; (y)) ? (x) : (y))
 
   /*
-    Convert RGB to HSB colorspace.
+    Number of threads bounded by the amount of work and any thread resource
+    limit.  The limit is 2 if the pixel cache type is not memory or
+    memory-mapped.
   */
-  assert(hue != (double *) NULL);
-  assert(saturation != (double *) NULL);
-  assert(brightness != (double *) NULL);
-  *hue=0.0;
-  *saturation=0.0;
-  *brightness=0.0;
-  min=red &lt; green ? red : green;
-  if (blue &lt; min)
-    min=blue;
-  max=red > green ? red : green;
-  if (blue > max)
-    max=blue;
-  if (fabs(max) &lt; MagickEpsilon)
-    return;
-  delta=max-min;
-  *saturation=delta/max;
-  *brightness=QuantumScale*max;
-  if (fabs(delta) &lt; MagickEpsilon)
-    return;
-  if (fabs(red-max) &lt; MagickEpsilon)
-    *hue=(green-blue)/delta;
-  else
-    if (fabs(green-max) &lt; MagickEpsilon)
-      *hue=2.0+(blue-red)/delta;
-    else
-      *hue=4.0+(red-green)/delta;
-  *hue/=6.0;
-  if (*hue &lt; 0.0)
-    *hue+=1.0;
+  if (multithreaded == 0)
+    return(1);
+  if (((GetImagePixelCacheType(source) != MemoryCache) &&
+       (GetImagePixelCacheType(source) != MapCache)) ||
+      ((GetImagePixelCacheType(destination) != MemoryCache) &&
+       (GetImagePixelCacheType(destination) != MapCache)))
+    return(MagickMax(MagickMin(GetMagickResourceLimit(ThreadResource),2),1));
+  return(MagickMax(MagickMin((ssize_t) GetMagickResourceLimit(ThreadResource),
+    (ssize_t) (chunk)/64),1));
 }
 
 ModuleExport size_t analyzeImage(Image **images,const int argc,
   const char **argv,ExceptionInfo *exception)
 {
-  char
-    text[MaxTextExtent];
+#define AnalyzeImageFilterTag  "Filter/Analyze"
+#define magick_number_threads(source,destination,chunk,multithreaded) \
+  num_threads(GetMagickNumberThreads(source,destination,chunk,multithreaded))
 
-  double
-    area,
-    brightness,
-    brightness_mean,
-    brightness_standard_deviation,
-    brightness_kurtosis,
-    brightness_skewness,
-    brightness_sum_x,
-    brightness_sum_x2,
-    brightness_sum_x3,
-    brightness_sum_x4,
-    hue,
-    saturation,
-    saturation_mean,
-    saturation_standard_deviation,
-    saturation_kurtosis,
-    saturation_skewness,
-    saturation_sum_x,
-    saturation_sum_x2,
-    saturation_sum_x3,
-    saturation_sum_x4;
+  char
+    text[MagickPathExtent];
 
   Image
     *image;
+
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
 
   assert(images != (Image **) NULL);
   assert(*images != (Image *) NULL);
@@ -1334,43 +1318,46 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
   (void) argc;
   (void) argv;
   image=(*images);
+  status=MagickTrue;
+  progress=0;
   for ( ; image != (Image *) NULL; image=GetNextImageInList(image))
   {
     CacheView
       *image_view;
 
-    long
+    double
+      area;
+
+    ssize_t
       y;
 
-    MagickBooleanType
-      status;
+    StatisticsInfo
+      brightness,
+      saturation;
 
-    brightness_sum_x=0.0;
-    brightness_sum_x2=0.0;
-    brightness_sum_x3=0.0;
-    brightness_sum_x4=0.0;
-    brightness_mean=0.0;
-    brightness_standard_deviation=0.0;
-    brightness_kurtosis=0.0;
-    brightness_skewness=0.0;
-    saturation_sum_x=0.0;
-    saturation_sum_x2=0.0;
-    saturation_sum_x3=0.0;
-    saturation_sum_x4=0.0;
-    saturation_mean=0.0;
-    saturation_standard_deviation=0.0;
-    saturation_kurtosis=0.0;
-    saturation_skewness=0.0;
-    area=0.0;
+    if (status == MagickFalse)
+      continue;
+    (void) memset(&brightness,0,sizeof(brightness));
+    (void) memset(&saturation,0,sizeof(saturation));
     status=MagickTrue;
     image_view=AcquireVirtualCacheView(image,exception);
-    for (y=0; y &lt; (long) image->rows; y++)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) \
+    shared(progress,status,brightness,saturation) \
+    magick_number_threads(image,image,image->rows,1)
+#endif
+    for (y=0; y &lt; (ssize_t) image->rows; y++)
     {
-      register const Quantum
+      const Quantum
         *p;
 
-      register long
+      ssize_t
+        i,
         x;
+
+      StatisticsInfo
+        local_brightness,
+        local_saturation;
 
       if (status == MagickFalse)
         continue;
@@ -1380,82 +1367,103 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
           status=MagickFalse;
           continue;
         }
-      for (x=0; x &lt; (long) image->columns; x++)
+      (void) memset(&local_brightness,0,sizeof(local_brightness));
+      (void) memset(&local_saturation,0,sizeof(local_saturation));
+      for (x=0; x &lt; (ssize_t) image->columns; x++)
       {
-        ConvertRGBToHSB(GetPixelRed(image,p),GetPixelGreen(image,p),
-          GetPixelBlue(image,p),&hue,&saturation,&brightness);
-        brightness*=QuantumRange;
-        brightness_sum_x+=brightness;
-        brightness_sum_x2+=brightness*brightness;
-        brightness_sum_x3+=brightness*brightness*brightness;
-        brightness_sum_x4+=brightness*brightness*brightness*brightness;
-        saturation*=QuantumRange;
-        saturation_sum_x+=saturation;
-        saturation_sum_x2+=saturation*saturation;
-        saturation_sum_x3+=saturation*saturation*saturation;
-        saturation_sum_x4+=saturation*saturation*saturation*saturation;
-        area++;
+        double
+          b,
+          h,
+          s;
+
+        ConvertRGBToHSL(GetPixelRed(image,p),GetPixelGreen(image,p),
+          GetPixelBlue(image,p),&h,&s,&b);
+        b*=QuantumRange;
+        for (i=1; i &lt;= 4; i++)
+          local_brightness.sum[i]+=pow(b,(double) i);
+        s*=QuantumRange;
+        for (i=1; i &lt;= 4; i++)
+          local_saturation.sum[i]+=pow(s,(double) i);
         p+=GetPixelChannels(image);
+      }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp critical (analyzeImage)
+#endif
+      for (i=1; i &lt;= 4; i++)
+      {
+        brightness.sum[i]+=local_brightness.sum[i];
+        saturation.sum[i]+=local_saturation.sum[i];
       }
     }
     image_view=DestroyCacheView(image_view);
-    if (area &lt;= 0.0)
-      break;
-    brightness_mean=brightness_sum_x/area;
-    (void) FormatLocaleString(text,MaxTextExtent,"%g",brightness_mean);
+    area=(double) image->columns*image->rows;
+    brightness.mean=brightness.sum[1]/area;
+    (void) FormatLocaleString(text,MagickPathExtent,"%g",brightness.mean);
     (void) SetImageProperty(image,"filter:brightness:mean",text,exception);
-    brightness_standard_deviation=sqrt(brightness_sum_x2/area-(brightness_sum_x/
-      area*brightness_sum_x/area));
-    (void) FormatLocaleString(text,MaxTextExtent,"%g",
-      brightness_standard_deviation);
+    brightness.standard_deviation=sqrt(brightness.sum[2]/area-
+      (brightness.sum[1]/area*brightness.sum[1]/area));
+    (void) FormatLocaleString(text,MagickPathExtent,"%g",
+      brightness.standard_deviation);
     (void) SetImageProperty(image,"filter:brightness:standard-deviation",text,
       exception);
-    if (brightness_standard_deviation != 0)
-      brightness_kurtosis=(brightness_sum_x4/area-4.0*brightness_mean*
-        brightness_sum_x3/area+6.0*brightness_mean*brightness_mean*
-        brightness_sum_x2/area-3.0*brightness_mean*brightness_mean*
-        brightness_mean*brightness_mean)/(brightness_standard_deviation*
-        brightness_standard_deviation*brightness_standard_deviation*
-        brightness_standard_deviation)-3.0;
-    (void) FormatLocaleString(text,MaxTextExtent,"%g",brightness_kurtosis);
-    (void) SetImageProperty(image,"filter:brightness:kurtosis",text,
-      exception);
-    if (brightness_standard_deviation != 0)
-      brightness_skewness=(brightness_sum_x3/area-3.0*brightness_mean*
-        brightness_sum_x2/area+2.0*brightness_mean*brightness_mean*
-        brightness_mean)/(brightness_standard_deviation*
-        brightness_standard_deviation*brightness_standard_deviation);
-    (void) FormatLocaleString(text,MaxTextExtent,"%g",brightness_skewness);
+    if (fabs(brightness.standard_deviation) >= MagickEpsilon)
+      brightness.kurtosis=(brightness.sum[4]/area-4.0*brightness.mean*
+        brightness.sum[3]/area+6.0*brightness.mean*brightness.mean*
+        brightness.sum[2]/area-3.0*brightness.mean*brightness.mean*
+        brightness.mean*brightness.mean)/(brightness.standard_deviation*
+        brightness.standard_deviation*brightness.standard_deviation*
+        brightness.standard_deviation)-3.0;
+    (void) FormatLocaleString(text,MagickPathExtent,"%g",brightness.kurtosis);
+    (void) SetImageProperty(image,"filter:brightness:kurtosis",text,exception);
+    if (brightness.standard_deviation != 0)
+      brightness.skewness=(brightness.sum[3]/area-3.0*brightness.mean*
+        brightness.sum[2]/area+2.0*brightness.mean*brightness.mean*
+        brightness.mean)/(brightness.standard_deviation*
+        brightness.standard_deviation*brightness.standard_deviation);
+    (void) FormatLocaleString(text,MagickPathExtent,"%g",brightness.skewness);
     (void) SetImageProperty(image,"filter:brightness:skewness",text,exception);
-    saturation_mean=saturation_sum_x/area;
-    (void) FormatLocaleString(text,MaxTextExtent,"%g",saturation_mean);
+    saturation.mean=saturation.sum[1]/area;
+    (void) FormatLocaleString(text,MagickPathExtent,"%g",saturation.mean);
     (void) SetImageProperty(image,"filter:saturation:mean",text,exception);
-    saturation_standard_deviation=sqrt(saturation_sum_x2/area-(saturation_sum_x/
-      area*saturation_sum_x/area));
-    (void) FormatLocaleString(text,MaxTextExtent,"%g",
-      saturation_standard_deviation);
+    saturation.standard_deviation=sqrt(saturation.sum[2]/area-
+      (saturation.sum[1]/area*saturation.sum[1]/area));
+    (void) FormatLocaleString(text,MagickPathExtent,"%g",
+      saturation.standard_deviation);
     (void) SetImageProperty(image,"filter:saturation:standard-deviation",text,
       exception);
-    if (saturation_standard_deviation != 0)
-      saturation_kurtosis=(saturation_sum_x4/area-4.0*saturation_mean*
-        saturation_sum_x3/area+6.0*saturation_mean*saturation_mean*
-        saturation_sum_x2/area-3.0*saturation_mean*saturation_mean*
-        saturation_mean*saturation_mean)/(saturation_standard_deviation*
-        saturation_standard_deviation*saturation_standard_deviation*
-        saturation_standard_deviation)-3.0;
-    (void) FormatLocaleString(text,MaxTextExtent,"%g",saturation_kurtosis);
+    if (fabs(saturation.standard_deviation) >= MagickEpsilon)
+      saturation.kurtosis=(saturation.sum[4]/area-4.0*saturation.mean*
+        saturation.sum[3]/area+6.0*saturation.mean*saturation.mean*
+        saturation.sum[2]/area-3.0*saturation.mean*saturation.mean*
+        saturation.mean*saturation.mean)/(saturation.standard_deviation*
+        saturation.standard_deviation*saturation.standard_deviation*
+        saturation.standard_deviation)-3.0;
+    (void) FormatLocaleString(text,MagickPathExtent,"%g",saturation.kurtosis);
     (void) SetImageProperty(image,"filter:saturation:kurtosis",text,exception);
-    if (saturation_standard_deviation != 0)
-      saturation_skewness=(saturation_sum_x3/area-3.0*saturation_mean*
-        saturation_sum_x2/area+2.0*saturation_mean*saturation_mean*
-        saturation_mean)/(saturation_standard_deviation*
-        saturation_standard_deviation*saturation_standard_deviation);
-    (void) FormatLocaleString(text,MaxTextExtent,"%g",saturation_skewness);
+    if (fabs(saturation.standard_deviation) >= MagickEpsilon)
+      saturation.skewness=(saturation.sum[3]/area-3.0*saturation.mean*
+        saturation.sum[2]/area+2.0*saturation.mean*saturation.mean*
+        saturation.mean)/(saturation.standard_deviation*
+        saturation.standard_deviation*saturation.standard_deviation);
+    (void) FormatLocaleString(text,MagickPathExtent,"%g",saturation.skewness);
     (void) SetImageProperty(image,"filter:saturation:skewness",text,exception);
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,AnalyzeImageFilterTag,progress,
+          GetImageListLength(image));
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
   }
   return(MagickImageFilterSignature);
-}
-</code></pre>
+}</code></pre>
 
 <p>To invoke the custom filter from the command line, use this command:</p>
 
@@ -1465,45 +1473,46 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
     Class: PseudoClass
     Geometry: 640x480
     ...
-    filter:brightness:kurtosis: 8.17947
-    filter:brightness:mean: 60632.1
-    filter:brightness:skewness: -2.97118
-    filter:brightness:standard-deviation: 13742.1
-    filter:saturation:kurtosis: 4.33554
-    filter:saturation:mean: 5951.55
-    filter:saturation:skewness: 2.42848
-    filter:saturation:standard-deviation: 15575.9
+    filter:brightness:kurtosis: 3.97886
+    filter:brightness:mean: 58901.3
+    filter:brightness:skewness: -2.30827
+    filter:brightness:standard-deviation: 16179.8
+    filter:saturation:kurtosis: 6.59719
+    filter:saturation:mean: 5321.05
+    filter:saturation:skewness: 2.75679
+    filter:saturation:standard-deviation: 14484.7
 </code></pre>
 
 
 <p>We provide the <a href="https://download.imagemagick.org/ImageMagick/download/kits/">Magick Filter Kit</a> to help you get started writing your own custom image filter.</p>
 
 </div>
-    </div>
+  </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
-    <div class="container">
-    <p><a href="../www/security-policy.html">Security</a> •
-    <a href="../www/news.html">News</a>
+    <div class="container-fluid">
+      <a href="../www/security-policy.html">Security</a> •
+      <a href="../www/news.html">News</a>
      
-    <a href="architecture.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+      <a href="architecture.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
-    <a href="../www/links.html">Related</a> •
-     <a href="../www/sitemap.html">Sitemap</a>
-    <br/>
-    <a href="../www/support.html">Sponsor</a> •
-    <a href="../www/cite.html">Cite</a> •
-    <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a> 
-    <br/>
-    <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
-        <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
+      <a href="../www/links.html">Related</a> •
+      <a href="../www/sitemap.html">Sitemap</a>
+   <br/>
+     <a href="../www/support.html">Sponsor</a> •
+     <a href="../www/cite.html">Cite</a> •
+     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+     <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a>
+   <br/>
+     <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
+     <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
     <br/>
     <small>© 1999-2021 ImageMagick Studio LLC</small></p>
     <div>
   </footer>
 
   <!-- Javascript assets -->
-  <script>window.jQuery || document.write('<script src="assets/jquery.slim.min.js"><\/script>')</script><script src="assets/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous">
-</body>
+  <script src="assets/magick.js" ></script>
+  </body>
 </html>
+<!-- Magick Cache 7th February 2021 08:41 -->
