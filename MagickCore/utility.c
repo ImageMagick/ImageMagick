@@ -1368,12 +1368,11 @@ MagickExport void GetPathComponent(const char *path,PathType type,
         Base path sans any compression extension.
       */
       GetPathComponent(path,ExtensionPath,extension);
-      if ((*extension != '\0') &&
-          ((LocaleCompare(extension,"bz2") == 0) ||
-           (LocaleCompare(extension,"gz") == 0) ||
-           (LocaleCompare(extension,"svgz") == 0) ||
-           (LocaleCompare(extension,"wmz") == 0) ||
-           (LocaleCompare(extension,"Z") == 0)))
+      if ((LocaleCompare(extension,"bz2") == 0) ||
+          (LocaleCompare(extension,"gz") == 0) ||
+          (LocaleCompare(extension,"svgz") == 0) ||
+          (LocaleCompare(extension,"wmz") == 0) ||
+          (LocaleCompare(extension,"Z") == 0))
         GetPathComponent(path,BasePath,component);
       break;
     }
