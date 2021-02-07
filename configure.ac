@@ -1530,37 +1530,37 @@ AC_SUBST([XEXT_LIBS])
 dnl ===========================================================================
 
 #
-# Check for ZIPLIB
+# Check for ZIP
 #
-AC_ARG_WITH([ziplib],
-    [AC_HELP_STRING([--without-ziplib],
-                    [disable ZIPLIB support])],
-    [with_ziplib=$withval],
-    [with_ziplib='yes'])
+AC_ARG_WITH([zip],
+    [AC_HELP_STRING([--without-zip],
+                    [disable ZIP support])],
+    [with_zip=$withval],
+    [with_zip='yes'])
 
-if test "$with_ziplib" != 'yes'; then
-    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-ziplib=$with_ziplib "
+if test "$with_zip" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-zip=$with_zip "
 fi
 
-have_ziplib='no'
-ZIPLIB_CFLAGS=""
-ZIPLIB_LIBS=""
-ZIPLIB_PKG=""
-if test "x$with_ziplib" = "xyes"; then
+have_zip='no'
+ZIP_CFLAGS=""
+ZIP_LIBS=""
+ZIP_PKG=""
+if test "x$with_zip" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([ZIPLIB],[libzip >= 1.0.0],[have_ziplib=yes],[have_ziplib=no])
+  PKG_CHECK_MODULES([ZIP],[zip >= 1.0.0],[have_zip=yes],[have_zip=no])
   AC_MSG_RESULT([])
 fi
 
-if test "$have_ziplib" = 'yes'; then
-  AC_DEFINE([ZIPLIB_DELEGATE],[1],[Define if you have ZIPLIB library])
-  CFLAGS="$ZIPLIB_CFLAGS $CFLAGS"
-  LIBS="$ZIPLIB_LIBS $LIBS"
+if test "$have_zip" = 'yes'; then
+  AC_DEFINE([ZIP_DELEGATE],[1],[Define if you have ZIP library])
+  CFLAGS="$ZIP_CFLAGS $CFLAGS"
+  LIBS="$ZIP_LIBS $LIBS"
 fi
 
-AM_CONDITIONAL([ZIPLIB_DELEGATE],[ test "$have_ziplib" = 'yes'])
-AC_SUBST([ZIPLIB_CFLAGS])
-AC_SUBST([ZIPLIB_LIBS])
+AM_CONDITIONAL([ZIP_DELEGATE],[ test "$have_zip" = 'yes'])
+AC_SUBST([ZIP_CFLAGS])
+AC_SUBST([ZIP_LIBS])
 
 dnl ===========================================================================
 
@@ -3873,8 +3873,8 @@ fi
 if test "$have_xml"      = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES xml"
 fi
-if test "$have_ziplib"   = 'yes' ; then
-   MAGICK_DELEGATES="$MAGICK_DELEGATES ziplib"
+if test "$have_zip"   = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES zip"
 fi
 if test "$have_zlib"   = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES zlib"
@@ -3931,7 +3931,7 @@ fi
 #
 
 if test "$build_modules" != 'no'; then
-    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $ZIPLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $ZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
 else
     MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $JXL_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZLIB_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
 fi
@@ -4111,7 +4111,7 @@ Delegate library configuration:
   WMF               --with-wmf=$with_wmf		$have_wmf
   X11               --with-x=$with_x			$have_x
   XML               --with-xml=$with_xml		$have_xml
-  ZIP               --with-ziplib=$with_ziplib		$have_ziplib
+  ZIP               --with-zip=$with_zip		$have_zip
   ZLIB              --with-zlib=$with_zlib		$have_zlib
   ZSTD              --with-zstd=$with_zstd		$have_zstd
 

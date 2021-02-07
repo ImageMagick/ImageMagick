@@ -149,7 +149,7 @@ namespace MagickCore
 #        if defined(MAGICKCORE_XML_DELEGATE)
 #          pragma comment(lib, "CORE_DB_libxml_.lib")
 #        endif
-#        if defined(MAGICKCORE_LIBZIP_DELEGATE)
+#        if defined(MAGICKCORE_ZIP_DELEGATE)
 #          pragma comment(lib, "CORE_DB_libzip_.lib")
 #        endif
 #        if defined(MAGICKCORE_LQR_DELEGATE)
@@ -231,7 +231,7 @@ namespace MagickCore
 #        if defined(MAGICKCORE_XML_DELEGATE)
 #          pragma comment(lib, "CORE_RL_libxml_.lib")
 #        endif
-#        if defined(MAGICKCORE_LIBZIP_DELEGATE)
+#        if defined(MAGICKCORE_ZIP_DELEGATE)
 #          pragma comment(lib, "CORE_RL_libzip_.lib")
 #        endif
 #        if defined(MAGICKCORE_LQR_DELEGATE)

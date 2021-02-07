@@ -993,8 +993,8 @@
 /* Build self-contained, embeddable, zero-configuration ImageMagick */
 #undef ZERO_CONFIGURATION_SUPPORT
 
-/* Define if you have ZIPLIB library */
-#undef ZIPLIB_DELEGATE
+/* Define if you have ZIP library */
+#undef ZIP_DELEGATE
 
 /* Define if you have ZLIB library */
 #undef ZLIB_DELEGATE

@@ -60,7 +60,7 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/utility.h"
 
-#if defined(MAGICKCORE_LIBZIP_DELEGATE)
+#if defined(MAGICKCORE_ZIP_DELEGATE)
 #include <zip.h>
 #endif
 
@@ -101,7 +101,7 @@ extern "C" {
 }
 #endif
 
-#if defined(MAGICKCORE_PNG_DELEGATE) && defined(MAGICKCORE_LIBZIP_DELEGATE)
+#if defined(MAGICKCORE_PNG_DELEGATE) && defined(MAGICKCORE_ZIP_DELEGATE)
 static Image *ReadORAImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -244,7 +244,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,
   image_metadata=DestroyImage(image_metadata);
   return(out_image);
 }
-#endif /* MAGICKCORE_LIBZIP_DELEGATE && MAGICKCORE_PNG_DELEGATE */
+#endif /* MAGICKCORE_ZIP_DELEGATE && MAGICKCORE_PNG_DELEGATE */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -276,7 +276,7 @@ ModuleExport size_t RegisterORAImage(void)
 
   entry=AcquireMagickInfo("ORA","ORA","OpenRaster format");
 
-#if defined(MAGICKCORE_LIBZIP_DELEGATE) && defined(MAGICKCORE_PNG_DELEGATE)
+#if defined(MAGICKCORE_ZIP_DELEGATE) && defined(MAGICKCORE_PNG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadORAImage;
 #endif
   entry->flags^=CoderBlobSupportFlag;

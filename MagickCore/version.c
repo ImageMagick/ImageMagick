@@ -206,7 +206,7 @@ MagickExport const char *GetMagickDelegates(void)
 #if defined(MAGICKCORE_XML_DELEGATE)
   "xml "
 #endif
-#if defined(MAGICKCORE_LIBZIP_DELEGATE)
+#if defined(MAGICKCORE_ZIP_DELEGATE)
   "zip "
 #endif
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
