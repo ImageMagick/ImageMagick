@@ -160,9 +160,6 @@ MagickExport const char *GetMagickDelegates(void)
 #if defined(MAGICKCORE_LCMS_DELEGATE)
   "lcms "
 #endif
-#if defined(MAGICKCORE_LIBZIP_DELEGATE)
-  "libzip "
-#endif
 #if defined(MAGICKCORE_LQR_DELEGATE)
   "lqr "
 #endif
@@ -208,6 +205,9 @@ MagickExport const char *GetMagickDelegates(void)
 #endif
 #if defined(MAGICKCORE_XML_DELEGATE)
   "xml "
+#endif
+#if defined(MAGICKCORE_LIBZIP_DELEGATE)
+  "zip "
 #endif
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
   "zlib"
