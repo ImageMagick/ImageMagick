@@ -50,6 +50,7 @@
 #include "MagickWand/MagickWand.h"
 #include "MagickWand/magick-wand-private.h"
 #include "MagickWand/wand.h"
+#include "MagickCore/image-private.h"
 #include "MagickCore/string-private.h"
 
 /*
