@@ -4555,7 +4555,7 @@ MAGICK_PATCHLEVEL_VERSION=62
 
 MAGICK_VERSION=7.0.10-62
 
-MAGICK_GIT_REVISION=18379:ffb683e62:20210203
+MAGICK_GIT_REVISION=18389:92994f4ae:20210207
 
 
 # Substitute library versioning
@@ -4585,7 +4585,7 @@ PACKAGE_LIB_VERSION=0x70A
 
 PACKAGE_LIB_VERSION_NUMBER=7,0,10,62
 
-PACKAGE_RELEASE_DATE=2021-01-30
+PACKAGE_RELEASE_DATE=2021-02-06
 
 
 # Ensure that make can run correctly
@@ -34801,14 +34801,6 @@ $as_echo_n "checking for URW-base35 fonts directory... " >&6; }
 urw_base35_font_dir=''
 if test "${with_urw_base35_font_dir}" != 'default'; then
   urw_base35_font_dir="${with_urw_base35_font_dir}/"
-else
-  for font_dir in "${prefix}/share/urw-base35/fonts/" '/usr/share/fonts/urw-base35/' '/usr/share/fonts/type1/urw-base35/'; do
-    if test -f "${font_dir}StandardSymbolsPS.t1"; then
-      urw_base35_font_dir="${font_dir}"
-      break 1
-    fi
-  done
-fi
 if test "${urw_base35_font_dir}x" != 'x'; then
   type_include_files="${type_include_files} "'<include file="type-urw-base35.xml" />'
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $urw_base35_font_dir" >&5

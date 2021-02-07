@@ -3380,14 +3380,6 @@ AC_MSG_CHECKING([for URW-base35 fonts directory])
 urw_base35_font_dir=''
 if test "${with_urw_base35_font_dir}" != 'default'; then
   urw_base35_font_dir="${with_urw_base35_font_dir}/"
-else
-  for font_dir in "${prefix}/share/urw-base35/fonts/" '/usr/share/fonts/urw-base35/' '/usr/share/fonts/type1/urw-base35/'; do
-    if test -f "${font_dir}StandardSymbolsPS.t1"; then
-      urw_base35_font_dir="${font_dir}"
-      break 1
-    fi
-  done
-fi
 if test "${urw_base35_font_dir}x" != 'x'; then
   type_include_files="${type_include_files} "'<include file="type-urw-base35.xml" />'
   AC_MSG_RESULT([$urw_base35_font_dir])

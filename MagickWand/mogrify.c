@@ -4037,7 +4037,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           continue;
         properties=(*GetBlobProperties(images));
         if (format != (char *) NULL)
-          GetPathComponent(images->magick_filename,BasePathSansCompression,
+          GetPathComponent(images->magick_filename,BasePathSansCompressExtension,
             images->filename);
         if (path != (char *) NULL)
           {

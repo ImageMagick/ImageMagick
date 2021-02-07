@@ -1359,7 +1359,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
             }
       break;
     }
-    case BasePathSansCompression:
+    case BasePathSansCompressExtension:
     {
       char
         extension[MagickPathExtent];
