@@ -2704,9 +2704,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
   char
     component[MagickPathExtent],
     magic[MagickPathExtent],
-#if defined(MAGICKCORE_ZLIB_DELEGATE) || defined(MAGICKCORE_BZLIB_DELEGATE)
     path[MagickPathExtent],
-#endif
     *q;
 
   const MagicInfo
