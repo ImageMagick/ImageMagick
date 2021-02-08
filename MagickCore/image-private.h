@@ -54,9 +54,9 @@ static inline ssize_t CastDoubleToLong(const double value)
 {
   if (IsNaN(value) != 0)
     return(0);
-  if (value > (double) MAGICK_SSIZE_MAX)
+  if (floor(value) > ((double) MAGICK_SSIZE_MAX-1))
     return((ssize_t) MAGICK_SSIZE_MAX);
-  if (value < (double) MAGICK_SSIZE_MIN)
+  if (ceil(value) < ((double) MAGICK_SSIZE_MIN+1))
     return((ssize_t) MAGICK_SSIZE_MIN);
   return((ssize_t) value);
 }
