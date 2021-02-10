@@ -1368,6 +1368,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
     *artifact;
 
   double
+    area,
     c1,
     c2,
     radius,
@@ -1416,6 +1417,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   if (artifact != (const char *) NULL)
     c2=pow(StringToDouble(artifact,(char **) NULL)*SSIML,2.0);
   status=MagickTrue;
+  area=0.0;
   rows=MagickMax(image->rows,reconstruct_image->rows);
   columns=MagickMax(image->columns,reconstruct_image->columns);
   image_view=AcquireVirtualCacheView(image,exception);
@@ -1470,6 +1472,13 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
       ssize_t
         v;
 
+      if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
+          (GetPixelReadMask(reconstruct_image,q) <= (QuantumRange/2)))
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(reconstruct_image);
+          continue;
+        }
       (void) memset(x_pixel_mu,0,sizeof(x_pixel_mu));
       (void) memset(x_pixel_sigma_squared,0,sizeof(x_pixel_sigma_squared));
       (void) memset(xy_sigma,0,sizeof(xy_sigma));
@@ -1546,6 +1555,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
            (x_pixel_sigmas_squared+y_pixel_sigmas_squared+c2));
         channel_distortion[i]+=ssim;
         channel_distortion[CompositePixelChannel]+=ssim;
+        area++;
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(reconstruct_image);
@@ -1564,9 +1574,9 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
     PixelTrait traits = GetPixelChannelTraits(image,channel);
     if ((traits == UndefinedPixelTrait) || ((traits & UpdatePixelTrait) == 0))
       continue;
-    distortion[i]/=((double) columns*rows);
+    distortion[i]/=area;
   }
-  distortion[CompositePixelChannel]/=((double) columns*rows);
+  distortion[CompositePixelChannel]/=area;
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(status);

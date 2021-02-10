@@ -4,6 +4,8 @@
 2021-02-10  7.0.11-0  <quetzlzacatenango@image...>
   * bump minor version #
   * allow reading multichannel PSD files with 1 or 2 channels.
+  * respect masks when computing SSIM metric (reference
+    https://github.com/ImageMagick/ImageMagick/discussions/3212).
 
 2021-02-07  7.0.10-62  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.10-62 GIT revision 18418:f1e915f65:20210207
