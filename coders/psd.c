@@ -2434,6 +2434,15 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       psd_info.min_channels=1;
       break;
     }
+    case MultichannelMode:
+    {
+      if ((psd_info.channels > 0) && (psd_info.channels < 3))
+        {
+          psd_info.min_channels=psd_info.channels;
+          (void) SetImageColorspace(image,GRAYColorspace,exception);
+        }
+      break;
+    }
   }
   if (psd_info.channels < psd_info.min_channels)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
