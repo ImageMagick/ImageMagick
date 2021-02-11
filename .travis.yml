@@ -20,9 +20,9 @@ script: |
   set -x
   export CFLAGS="-Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable"
   if [ "$TRAVIS_COMPILER" == "gcc" ] ; then
-    ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
+    ./configure --with-quantum-depth=16 --without-perl --prefix=/usr
   else
-    ./configure --disable-openmp --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
+    ./configure --disable-openmp --with-quantum-depth=16 --without-perl --prefix=/usr
   fi
   make
   make install DESTDIR=$(readlink -f appdir)
