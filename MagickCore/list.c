@@ -270,7 +270,7 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
     step=1;
     if (artifact != (const char *) NULL)
       {
-        step=CastDoubleToLong(StringToDouble(artifact,(char **) NULL));
+        step=StringToLong(artifact);
         if (step == 0)
           step=1;
       }
