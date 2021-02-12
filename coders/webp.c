@@ -749,18 +749,6 @@ static int WebPEncodeProgress(int percent,const WebPPicture* picture)
 }
 #endif
 
-#if !defined(MAGICKCORE_WEBPMUX_DELEGATE)
-static int WebPEncodeWriter(const unsigned char *stream,size_t length,
-  const WebPPicture *const picture)
-{
-  Image
-    *image;
-
-  image=(Image *) picture->custom_ptr;
-  return(length != 0 ? (WriteBlob(image,length,stream) == (ssize_t) length) : 1);
-}
-#endif
-
 static const char * WebPErrorCodeMessage(WebPEncodingError error_code)
 {
   switch (error_code)
