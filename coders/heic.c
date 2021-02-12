@@ -427,6 +427,10 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
       file_data=RelinquishMagickMemory(file_data);
       ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     }
+#if LIBHEIF_NUMERIC_VERSION >= 0x010b0000
+  if (heif_has_compatible_brand(file_data,length,"avif"))
+    (void) CopyMagickString(image->magick,"AVIF",MagickPathExtent);
+#endif
   /*
     Decode HEIF image.
   */
