@@ -3309,14 +3309,14 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 (void) GetNextToken(q,&q,extent,token);
                 for (p=q; *q != '\0'; )
                 {
-                	if (GetNextToken(q,&q,extent,token) < 1)
+                  if (GetNextToken(q,&q,extent,token) < 1)
                     break;
-                	if (LocaleCompare(token,"pop") != 0)
-                		continue;
-                	(void) GetNextToken(q,(const char **) NULL,extent,token);
-                	if (LocaleCompare(token,"clip-path") != 0)
-                		continue;
-                	break;
+                  if (LocaleCompare(token,"pop") != 0)
+                    continue;
+                  (void) GetNextToken(q,(const char **) NULL,extent,token);
+                  if (LocaleCompare(token,"clip-path") != 0)
+                    continue;
+                  break;
                 }
                 if ((q == (char *) NULL) || (p == (char *) NULL) || ((q-4) < p))
                   {
