@@ -553,8 +553,7 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
   while (bits >= 8) \
   { \
     /*  \
-      Add a character to current packet. \
-      Maximum packet size is 255.
+      Add a character to current packet.  Maximum packet size is 255.
     */ \
     packet[length++]=(unsigned char) (datum & 0xff); \
     if (length == 255) \
@@ -786,8 +785,7 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
   if (bits > 0)
     {
       /*
-        Add a character to current packet.
-        Maximum packet size is 255.
+        Add a character to current packet.  Maximum packet size is 255.
       */
       packet[length++]=(unsigned char) (datum & 0xff);
       if (length == 255)
