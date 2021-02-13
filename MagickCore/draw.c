@@ -2272,8 +2272,8 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
   /*
     Check if there is enough storage for drawing pimitives.
   */
-  extent=(double) mvg_info->offset+pad+PrimitiveExtentPad+1.0;
   quantum=sizeof(**mvg_info->primitive_info);
+  extent=(double) mvg_info->offset+pad+PrimitiveExtentPad*quantum+1.0;
   if (extent <= (double) *mvg_info->extent)
     return(MagickTrue);
   if (extent == (double) CastDoubleToLong(extent))
