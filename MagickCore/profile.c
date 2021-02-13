@@ -2512,12 +2512,12 @@ static void UpdateClipPath(unsigned char *blob,size_t length,
             yy;
 
           y=(double) ReadProfileMSBLong(&blob,&length);
-          y=y*old_rows/4096/4096;
+          y=y*old_rows/4096.0/4096.0;
           y-=new_geometry->y;
           yy=(signed int) ((y*4096*4096)/new_geometry->height);
           WriteProfileLong(MSBEndian,(size_t) yy,blob-4);
           x=(double) ReadProfileMSBLong(&blob,&length);
-          x=x*old_columns/4096/4096;
+          x=x*old_columns/4096.0/4096.0;
           x-=new_geometry->x;
           xx=(signed int) ((x*4096*4096)/new_geometry->width);
           WriteProfileLong(MSBEndian,(size_t) xx,blob-4);

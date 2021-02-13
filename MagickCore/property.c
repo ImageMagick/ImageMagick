@@ -1963,8 +1963,8 @@ static char *TracePSClippath(const unsigned char *blob,size_t length)
         {
           y=(ssize_t) ReadPropertyMSBLong(&blob,&length);
           x=(ssize_t) ReadPropertyMSBLong(&blob,&length);
-          point[i].x=(double) x/4096/4096;
-          point[i].y=1.0-(double) y/4096/4096;
+          point[i].x=(double) x/4096.0/4096.0;
+          point[i].y=1.0-(double) y/4096.0/4096.0;
         }
         if (in_subpath == MagickFalse)
           {
@@ -2161,8 +2161,8 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
         {
           y=(ssize_t) ReadPropertyMSBLong(&blob,&length);
           x=(ssize_t) ReadPropertyMSBLong(&blob,&length);
-          point[i].x=(double) x*columns/4096/4096;
-          point[i].y=(double) y*rows/4096/4096;
+          point[i].x=(double) x*columns/4096.0/4096.0;
+          point[i].y=(double) y*rows/4096.0/4096.0;
         }
         if (in_subpath == MagickFalse)
           {
