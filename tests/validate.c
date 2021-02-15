@@ -2117,7 +2117,7 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
       length=strlen(reference_map[i])*reference_image->columns*
         reference_image->rows*reference_storage[j].quantum;
       pixels=(unsigned char *) AcquireQuantumMemory(length,sizeof(*pixels));
-      if (pixels == (unsigned char *) NULL ||
+      if ((pixels == (unsigned char *) NULL) ||
           (exception->severity >= ErrorException))
         {
           (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
