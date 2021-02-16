@@ -13969,10 +13969,8 @@ MagickExport MagickBooleanType XDisplayBackgroundImage(Display *display,
       /*
         Center image on window.
       */
-      window_info.x=(window_attributes.width/2)-
-        (window_info.ximage->width/2);
-      window_info.y=(window_attributes.height/2)-
-        (window_info.ximage->height/2);
+      window_info.x=(window_attributes.width/2)-(window_info.ximage->width/2);
+      window_info.y=(window_attributes.height/2)-(window_info.ximage->height/2);
       width=window_attributes.width;
       height=window_attributes.height;
     }
