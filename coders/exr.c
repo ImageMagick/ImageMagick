@@ -204,7 +204,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   hdr_info=ImfInputHeader(file);
-  ImfHeaderDisplayWindow(hdr_info,&display_window.min_x,&display_window.min_y,
+  ImfHeaderDataWindow(hdr_info,&display_window.min_x,&display_window.min_y,
     &display_window.max_x,&display_window.max_y);
   image->columns=((size_t) display_window.max_x-display_window.min_x+1UL);
   image->rows=((size_t) display_window.max_y-display_window.min_y+1UL);
