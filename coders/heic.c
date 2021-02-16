@@ -1081,6 +1081,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
             chroma=(image->alpha_trait == UndefinedPixelTrait) ?
               heif_chroma_interleaved_RGB : heif_chroma_interleaved_RGBA;
           }
+        (void) CopyMagickString(image->magick,"AVIF",MagickPathExtent);
       }
     else
 #endif
