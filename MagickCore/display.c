@@ -13907,8 +13907,8 @@ MagickExport MagickBooleanType XDisplayBackgroundImage(Display *display,
   /*
     Graphic context superclass.
   */
-  context_values.background=pixel.background_color.pixel;
-  context_values.foreground=pixel.foreground_color.pixel;
+  context_values.background=pixel.foreground_color.pixel;
+  context_values.foreground=pixel.background_color.pixel;
   pixel.annotate_context=XCreateGC(display,window_info.id,
     (size_t) (GCBackground | GCForeground),&context_values);
   if (pixel.annotate_context == (GC) NULL)
