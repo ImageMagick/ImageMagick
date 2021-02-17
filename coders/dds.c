@@ -90,6 +90,7 @@
 #define FOURCC_DXT1       0x31545844
 #define FOURCC_DXT3       0x33545844
 #define FOURCC_DXT5       0x35545844
+#define FOURCC_DX10       0x30315844
 
 #define DDSCAPS_COMPLEX   0x00000008
 #define DDSCAPS_TEXTURE   0x00001000
@@ -103,6 +104,136 @@
 #define DDSCAPS2_CUBEMAP_POSITIVEZ  0x00004000
 #define DDSCAPS2_CUBEMAP_NEGATIVEZ  0x00008000
 #define DDSCAPS2_VOLUME   0x00200000
+
+#define DDSEXT_DIMENSION_TEX2D      0x00000003
+#define DDSEXTFLAGS_CUBEMAP         0x00000004
+
+typedef enum DXGI_FORMAT 
+{
+  DXGI_FORMAT_UNKNOWN,
+  DXGI_FORMAT_R32G32B32A32_TYPELESS,
+  DXGI_FORMAT_R32G32B32A32_FLOAT,
+  DXGI_FORMAT_R32G32B32A32_UINT,
+  DXGI_FORMAT_R32G32B32A32_SINT,
+  DXGI_FORMAT_R32G32B32_TYPELESS,
+  DXGI_FORMAT_R32G32B32_FLOAT,
+  DXGI_FORMAT_R32G32B32_UINT,
+  DXGI_FORMAT_R32G32B32_SINT,
+  DXGI_FORMAT_R16G16B16A16_TYPELESS,
+  DXGI_FORMAT_R16G16B16A16_FLOAT,
+  DXGI_FORMAT_R16G16B16A16_UNORM,
+  DXGI_FORMAT_R16G16B16A16_UINT,
+  DXGI_FORMAT_R16G16B16A16_SNORM,
+  DXGI_FORMAT_R16G16B16A16_SINT,
+  DXGI_FORMAT_R32G32_TYPELESS,
+  DXGI_FORMAT_R32G32_FLOAT,
+  DXGI_FORMAT_R32G32_UINT,
+  DXGI_FORMAT_R32G32_SINT,
+  DXGI_FORMAT_R32G8X24_TYPELESS,
+  DXGI_FORMAT_D32_FLOAT_S8X24_UINT,
+  DXGI_FORMAT_R32_FLOAT_X8X24_TYPELESS,
+  DXGI_FORMAT_X32_TYPELESS_G8X24_UINT,
+  DXGI_FORMAT_R10G10B10A2_TYPELESS,
+  DXGI_FORMAT_R10G10B10A2_UNORM,
+  DXGI_FORMAT_R10G10B10A2_UINT,
+  DXGI_FORMAT_R11G11B10_FLOAT,
+  DXGI_FORMAT_R8G8B8A8_TYPELESS,
+  DXGI_FORMAT_R8G8B8A8_UNORM,
+  DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
+  DXGI_FORMAT_R8G8B8A8_UINT,
+  DXGI_FORMAT_R8G8B8A8_SNORM,
+  DXGI_FORMAT_R8G8B8A8_SINT,
+  DXGI_FORMAT_R16G16_TYPELESS,
+  DXGI_FORMAT_R16G16_FLOAT,
+  DXGI_FORMAT_R16G16_UNORM,
+  DXGI_FORMAT_R16G16_UINT,
+  DXGI_FORMAT_R16G16_SNORM,
+  DXGI_FORMAT_R16G16_SINT,
+  DXGI_FORMAT_R32_TYPELESS,
+  DXGI_FORMAT_D32_FLOAT,
+  DXGI_FORMAT_R32_FLOAT,
+  DXGI_FORMAT_R32_UINT,
+  DXGI_FORMAT_R32_SINT,
+  DXGI_FORMAT_R24G8_TYPELESS,
+  DXGI_FORMAT_D24_UNORM_S8_UINT,
+  DXGI_FORMAT_R24_UNORM_X8_TYPELESS,
+  DXGI_FORMAT_X24_TYPELESS_G8_UINT,
+  DXGI_FORMAT_R8G8_TYPELESS,
+  DXGI_FORMAT_R8G8_UNORM,
+  DXGI_FORMAT_R8G8_UINT,
+  DXGI_FORMAT_R8G8_SNORM,
+  DXGI_FORMAT_R8G8_SINT,
+  DXGI_FORMAT_R16_TYPELESS,
+  DXGI_FORMAT_R16_FLOAT,
+  DXGI_FORMAT_D16_UNORM,
+  DXGI_FORMAT_R16_UNORM,
+  DXGI_FORMAT_R16_UINT,
+  DXGI_FORMAT_R16_SNORM,
+  DXGI_FORMAT_R16_SINT,
+  DXGI_FORMAT_R8_TYPELESS,
+  DXGI_FORMAT_R8_UNORM,
+  DXGI_FORMAT_R8_UINT,
+  DXGI_FORMAT_R8_SNORM,
+  DXGI_FORMAT_R8_SINT,
+  DXGI_FORMAT_A8_UNORM,
+  DXGI_FORMAT_R1_UNORM,
+  DXGI_FORMAT_R9G9B9E5_SHAREDEXP,
+  DXGI_FORMAT_R8G8_B8G8_UNORM,
+  DXGI_FORMAT_G8R8_G8B8_UNORM,
+  DXGI_FORMAT_BC1_TYPELESS,
+  DXGI_FORMAT_BC1_UNORM,
+  DXGI_FORMAT_BC1_UNORM_SRGB,
+  DXGI_FORMAT_BC2_TYPELESS,
+  DXGI_FORMAT_BC2_UNORM,
+  DXGI_FORMAT_BC2_UNORM_SRGB,
+  DXGI_FORMAT_BC3_TYPELESS,
+  DXGI_FORMAT_BC3_UNORM,
+  DXGI_FORMAT_BC3_UNORM_SRGB,
+  DXGI_FORMAT_BC4_TYPELESS,
+  DXGI_FORMAT_BC4_UNORM,
+  DXGI_FORMAT_BC4_SNORM,
+  DXGI_FORMAT_BC5_TYPELESS,
+  DXGI_FORMAT_BC5_UNORM,
+  DXGI_FORMAT_BC5_SNORM,
+  DXGI_FORMAT_B5G6R5_UNORM,
+  DXGI_FORMAT_B5G5R5A1_UNORM,
+  DXGI_FORMAT_B8G8R8A8_UNORM,
+  DXGI_FORMAT_B8G8R8X8_UNORM,
+  DXGI_FORMAT_R10G10B10_XR_BIAS_A2_UNORM,
+  DXGI_FORMAT_B8G8R8A8_TYPELESS,
+  DXGI_FORMAT_B8G8R8A8_UNORM_SRGB,
+  DXGI_FORMAT_B8G8R8X8_TYPELESS,
+  DXGI_FORMAT_B8G8R8X8_UNORM_SRGB,
+  DXGI_FORMAT_BC6H_TYPELESS,
+  DXGI_FORMAT_BC6H_UF16,
+  DXGI_FORMAT_BC6H_SF16,
+  DXGI_FORMAT_BC7_TYPELESS,
+  DXGI_FORMAT_BC7_UNORM,
+  DXGI_FORMAT_BC7_UNORM_SRGB,
+  DXGI_FORMAT_AYUV,
+  DXGI_FORMAT_Y410,
+  DXGI_FORMAT_Y416,
+  DXGI_FORMAT_NV12,
+  DXGI_FORMAT_P010,
+  DXGI_FORMAT_P016,
+  DXGI_FORMAT_420_OPAQUE,
+  DXGI_FORMAT_YUY2,
+  DXGI_FORMAT_Y210,
+  DXGI_FORMAT_Y216,
+  DXGI_FORMAT_NV11,
+  DXGI_FORMAT_AI44,
+  DXGI_FORMAT_IA44,
+  DXGI_FORMAT_P8,
+  DXGI_FORMAT_A8P8,
+  DXGI_FORMAT_B4G4R4A4_UNORM,
+  DXGI_FORMAT_P208,
+  DXGI_FORMAT_V208,
+  DXGI_FORMAT_V408,
+  DXGI_FORMAT_SAMPLER_FEEDBACK_MIN_MIP_OPAQUE,
+  DXGI_FORMAT_SAMPLER_FEEDBACK_MIP_REGION_USED_OPAQUE,
+  DXGI_FORMAT_FORCE_UINT
+} DXGI_FORMAT;
+
 
 #ifndef SIZE_MAX
 #define SIZE_MAX ((size_t) -1)
@@ -133,7 +264,12 @@ typedef struct _DDSInfo
     depth,
     mipmapcount,
     ddscaps1,
-    ddscaps2;
+    ddscaps2,
+    extFormat,
+    extDimension,
+    extFlags,
+    extArraySize,
+    extFlags2;
   
   DDSPixelFormat
     pixelformat;
@@ -1002,6 +1138,25 @@ static MagickBooleanType ReadDDSInfo(Image *image, DDSInfo *dds_info)
   dds_info->ddscaps2 = ReadBlobLSBLong(image);
   (void) SeekBlob(image, 12, SEEK_CUR); /* 3 reserved DWORDs */
   
+  /* Read optional DX10 header if available */
+  if ((dds_info->pixelformat.flags & DDPF_FOURCC) &&
+      (dds_info->pixelformat.fourcc == FOURCC_DX10))
+    {
+      dds_info->extFormat = ReadBlobLSBLong(image);
+      dds_info->extDimension = ReadBlobLSBLong(image);
+      dds_info->extFlags = ReadBlobLSBLong(image);
+      dds_info->extArraySize = ReadBlobLSBLong(image);
+      dds_info->extFlags2 = ReadBlobLSBLong(image);
+    }
+  else
+    {
+      dds_info->extFormat = 0;
+      dds_info->extDimension = 0;
+      dds_info->extFlags = 0;
+      dds_info->extArraySize = 0;
+      dds_info->extFlags2 = 0;
+    }
+  
   return MagickTrue;
 }
 
@@ -1490,9 +1645,11 @@ static MagickBooleanType ReadUncompressedRGBPixels(Image *image,
 
     for (x = 0; x < (ssize_t) image->columns; x++)
     {
-      if (dds_info->pixelformat.rgb_bitcount == 8)
+      if (dds_info->pixelformat.rgb_bitcount == 8 ||
+          dds_info->extFormat == DXGI_FORMAT_R8_UNORM)
         SetPixelGray(image,ScaleCharToQuantum(ReadBlobByte(image)),q);
-      else if (dds_info->pixelformat.rgb_bitcount == 16)
+      else if (dds_info->pixelformat.rgb_bitcount == 16 ||
+          dds_info->extFormat == DXGI_FORMAT_B5G6R5_UNORM)
         {
            color=ReadBlobShort(image);
            SetPixelRed(image,ScaleCharToQuantum((unsigned char)
@@ -1510,7 +1667,8 @@ static MagickBooleanType ReadUncompressedRGBPixels(Image *image,
             ReadBlobByte(image)),q);
           SetPixelRed(image,ScaleCharToQuantum((unsigned char)
             ReadBlobByte(image)),q);
-          if (dds_info->pixelformat.rgb_bitcount == 32)
+          if (dds_info->pixelformat.rgb_bitcount == 32 || 
+              dds_info->extFormat == DXGI_FORMAT_B8G8R8X8_UNORM)
             (void) ReadBlobByte(image);
         }
       q+=GetPixelChannels(image);
@@ -1576,7 +1734,8 @@ static MagickBooleanType ReadUncompressedRGB(const ImageInfo *image_info,
   Image *image,DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
   ExceptionInfo *exception)
 {
-  if (dds_info->pixelformat.rgb_bitcount == 8)
+  if (dds_info->pixelformat.rgb_bitcount == 8 || 
+      dds_info->extFormat == DXGI_FORMAT_R8_UNORM)
     (void) SetImageType(image,GrayscaleType,exception);
   else if (dds_info->pixelformat.rgb_bitcount == 16 && !IsBitMask(
     dds_info->pixelformat,0xf800,0x07e0,0x001f,0x0000))
@@ -1624,6 +1783,9 @@ static MagickBooleanType ReadUncompressedRGBAPixels(Image *image,
           image->filename);
     }
 
+  if (dds_info->extFormat == DXGI_FORMAT_B5G5R5A1_UNORM)
+    alphaBits=1;
+
   for (y = 0; y < (ssize_t) image->rows; y++)
   {
     q = QueueAuthenticPixels(image, 0, y, image->columns, 1,exception);
@@ -1633,7 +1795,8 @@ static MagickBooleanType ReadUncompressedRGBAPixels(Image *image,
 
     for (x = 0; x < (ssize_t) image->columns; x++)
     {
-      if (dds_info->pixelformat.rgb_bitcount == 16)
+      if (dds_info->pixelformat.rgb_bitcount == 16 ||
+          dds_info->extFormat == DXGI_FORMAT_B5G5R5A1_UNORM)
         {
            color=ReadBlobShort(image);
            if (alphaBits == 1)
@@ -1663,6 +1826,18 @@ static MagickBooleanType ReadUncompressedRGBAPixels(Image *image,
                SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
                  ((((unsigned short)(color << 12) >> 12)/15.0)*255)),q);
             }
+        }
+      else if (dds_info->extFormat == DXGI_FORMAT_R8G8B8A8_UNORM ||
+          IsBitMask(dds_info->pixelformat,0x000000ff,0x0000ff00,0x00ff0000,0xff000000))
+        {
+          SetPixelRed(image,ScaleCharToQuantum((unsigned char)
+            ReadBlobByte(image)),q);
+          SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
+            ReadBlobByte(image)),q);
+          SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
+            ReadBlobByte(image)),q);
+          SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
+            ReadBlobByte(image)),q);
         }
       else
         {
@@ -1762,8 +1937,6 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (dds_info.ddscaps2 & DDSCAPS2_VOLUME && dds_info.depth > 0)
     volume = MagickTrue;
 
-  (void) SeekBlob(image, 128, SEEK_SET);
-
   /*
     Determine pixel format
   */
@@ -1818,6 +1991,91 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           alpha_trait = BlendPixelTrait;
           compression = DXT5Compression;
           decoder = ReadDXT5;
+          break;
+        }
+        case FOURCC_DX10:
+        {
+          if (dds_info.extDimension != DDSEXT_DIMENSION_TEX2D)
+            {
+              ThrowReaderException(CorruptImageError, "ImageTypeNotSupported");
+            }
+
+          switch (dds_info.extFormat)
+          {
+            case DXGI_FORMAT_R8_UNORM:
+            {
+              compression = NoCompression;
+              alpha_trait = UndefinedPixelTrait;
+              decoder = ReadUncompressedRGB;
+              break;
+            }
+            case DXGI_FORMAT_B5G6R5_UNORM:
+            {
+              compression = NoCompression;
+              alpha_trait = UndefinedPixelTrait;
+              decoder = ReadUncompressedRGB;
+              break;
+            }
+            case DXGI_FORMAT_B5G5R5A1_UNORM:
+            {
+              compression = NoCompression;
+              alpha_trait = BlendPixelTrait;
+              decoder = ReadUncompressedRGBA;
+              break;
+            }
+            case DXGI_FORMAT_B8G8R8A8_UNORM:
+            {
+              compression = NoCompression;
+              alpha_trait = BlendPixelTrait;
+              decoder = ReadUncompressedRGBA;
+              break;
+            }
+            case DXGI_FORMAT_R8G8B8A8_UNORM:
+            {
+              compression = NoCompression;
+              alpha_trait = BlendPixelTrait;
+              decoder = ReadUncompressedRGBA;
+              break;
+            }
+            case DXGI_FORMAT_B8G8R8X8_UNORM:
+            {
+              compression = NoCompression;
+              alpha_trait = UndefinedPixelTrait;
+              decoder = ReadUncompressedRGB;
+              break;
+            }
+            case DXGI_FORMAT_BC1_UNORM:
+            {
+              alpha_trait = UndefinedPixelTrait;
+              compression = DXT1Compression;
+              decoder = ReadDXT1;
+              break;
+            }
+            case DXGI_FORMAT_BC2_UNORM:
+            {
+              alpha_trait = BlendPixelTrait;
+              compression = DXT3Compression;
+              decoder = ReadDXT3;
+              break;
+            }
+            case DXGI_FORMAT_BC3_UNORM:
+            {
+              alpha_trait = BlendPixelTrait;
+              compression = DXT5Compression;
+              decoder = ReadDXT5;
+              break;
+            }
+            default:
+            {
+              /* Unknown format */
+              ThrowReaderException(CorruptImageError, "ImageTypeNotSupported");
+            }
+          }
+
+          if (dds_info.extFlags & DDSEXTFLAGS_CUBEMAP)
+            cubemap = MagickTrue;
+
+          num_images = dds_info.extArraySize;
           break;
         }
         default:
