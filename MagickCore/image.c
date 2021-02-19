@@ -3812,10 +3812,10 @@ MagickExport MagickBooleanType StripImage(Image *image,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
+  magick_unreferenced(exception);
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  (void) exception;
   DestroyImageProfiles(image);
   (void) DeleteImageProperty(image,"comment");
   (void) DeleteImageProperty(image,"date:create");
