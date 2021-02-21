@@ -2407,7 +2407,7 @@ if test "$with_jxl" != 'no'; then
   # This check should be changed once we have a .pc file for the JPEG-XL library.
   if test "$enable_static" != 'yes'; then
     AC_CHECK_LIB([jxl],[JxlDecoderCreate],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
-    AC_CHECK_LIB([jxl],[JxlEncoderCreate],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
+    AC_CHECK_LIB([jxl],[JxlEncoderSetBasicInfo],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
   fi
 
   AC_MSG_CHECKING([if jpeg-xl package is complete])

@@ -4552,7 +4552,7 @@ MAGICK_PATCHLEVEL_VERSION=1
 
 MAGICK_VERSION=7.0.11-1
 
-MAGICK_GIT_REVISION=18439:dc69067b7:20210213
+MAGICK_GIT_REVISION=18455:ab02d057e:20210221
 
 
 # Substitute library versioning
@@ -4582,7 +4582,7 @@ PACKAGE_LIB_VERSION=0x70B
 
 PACKAGE_LIB_VERSION_NUMBER=7,0,11,1
 
-PACKAGE_RELEASE_DATE=2021-02-13
+PACKAGE_RELEASE_DATE=2021-02-15
 
 
 # Ensure that make can run correctly
@@ -30651,9 +30651,9 @@ else
   failed=`expr $failed + 1`
 fi
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for JxlEncoderCreate in -ljxl" >&5
-$as_echo_n "checking for JxlEncoderCreate in -ljxl... " >&6; }
-if ${ac_cv_lib_jxl_JxlEncoderCreate+:} false; then :
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for JxlEncoderSetBasicInfo in -ljxl" >&5
+$as_echo_n "checking for JxlEncoderSetBasicInfo in -ljxl... " >&6; }
+if ${ac_cv_lib_jxl_JxlEncoderSetBasicInfo+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -30667,27 +30667,27 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char JxlEncoderCreate ();
+char JxlEncoderSetBasicInfo ();
 int
 main ()
 {
-return JxlEncoderCreate ();
+return JxlEncoderSetBasicInfo ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_jxl_JxlEncoderCreate=yes
+  ac_cv_lib_jxl_JxlEncoderSetBasicInfo=yes
 else
-  ac_cv_lib_jxl_JxlEncoderCreate=no
+  ac_cv_lib_jxl_JxlEncoderSetBasicInfo=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_jxl_JxlEncoderCreate" >&5
-$as_echo "$ac_cv_lib_jxl_JxlEncoderCreate" >&6; }
-if test "x$ac_cv_lib_jxl_JxlEncoderCreate" = xyes; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_jxl_JxlEncoderSetBasicInfo" >&5
+$as_echo "$ac_cv_lib_jxl_JxlEncoderSetBasicInfo" >&6; }
+if test "x$ac_cv_lib_jxl_JxlEncoderSetBasicInfo" = xyes; then :
   passed=`expr $passed + 1`
 else
   failed=`expr $failed + 1`
