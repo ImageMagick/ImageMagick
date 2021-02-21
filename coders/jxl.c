@@ -462,6 +462,9 @@ ModuleExport void UnregisterJXLImage(void)
 static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
+  JxlBasicInfo
+    basic_info;
+
   JxlEncoder
     *encoder;
 
@@ -509,7 +512,13 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     ThrowWriterException(CoderError,"MemoryAllocationFailed");
   memset(&format,0,sizeof(format));
   JXLSetFormat(image,&format);
-  encoder_status=JxlEncoderSetDimensions(encoder,image->columns,image->rows);
+  memset(&basic_info,0,sizeof(basic_info));
+  basic_info.xsize=(uint32_t) image->columns;
+  basic_info.ysize=(uint32_t) image->rows;
+  basic_info.bits_per_sample=(format.data_type == JXL_TYPE_FLOAT) ? 32 : 8;
+  if (image->alpha_trait == BlendPixelTrait)
+    basic_info.alpha_bits=basic_info.bits_per_sample;
+  encoder_status=JxlEncoderSetBasicInfo(encoder,&basic_info);
   if (encoder_status != JXL_ENC_SUCCESS)
     {
       JxlEncoderDestroy(encoder);
