@@ -579,12 +579,8 @@ static void MSLPushImage(MSLInfo *msl_info,Image *image)
   msl_info->image_info[n]=CloneImageInfo(msl_info->image_info[n-1]);
   msl_info->draw_info[n]=CloneDrawInfo(msl_info->image_info[n-1],
     msl_info->draw_info[n-1]);
-  if (image == (Image *) NULL)
-    msl_info->attributes[n]=AcquireImage(msl_info->image_info[n],
-      msl_info->exception);
-  else
-    msl_info->attributes[n]=CloneImage(image,0,0,MagickTrue,
-      msl_info->exception);
+  msl_info->attributes[n]=CloneImage(msl_info->attributes[n-1],0,0,MagickTrue,
+    msl_info->exception);
   msl_info->image[n]=(Image *) image;
   if ((msl_info->image_info[n] == (ImageInfo *) NULL) ||
       (msl_info->attributes[n] == (Image *) NULL))
@@ -7866,6 +7862,7 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   *msl_info.image_info=CloneImageInfo(image_info);
   *msl_info.draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   *msl_info.attributes=AcquireImage(image_info,exception);
+  (void) SetImageExtent(*msl_info.attributes,1,1,exception);
   msl_info.group_info[0].numImages=0;
   /* the first slot is used to point to the MSL file image */
   *msl_info.image=msl_image;
@@ -7929,7 +7926,8 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
     *image=CloneImage(*msl_info.image,0,0,MagickTrue,exception);
   while (msl_info.n >= 0)
   {
-    msl_info.image[msl_info.n]=DestroyImage(msl_info.image[msl_info.n]);
+    if (msl_info.image[msl_info.n] != (Image *) NULL)
+      msl_info.image[msl_info.n]=DestroyImage(msl_info.image[msl_info.n]);
     msl_info.attributes[msl_info.n]=DestroyImage(
       msl_info.attributes[msl_info.n]);
     msl_info.draw_info[msl_info.n]=DestroyDrawInfo(
