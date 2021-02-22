@@ -257,16 +257,10 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   const uint8_t
-    *p_y,
-    *p_cb,
-    *p_cr,
-    *p_a;
+    *p;
 
   int
-    stride_y = 0,
-    stride_cb = 0,
-    stride_cr = 0,
-    stride_a = 0;
+    stride = 0;
 
   MagickBooleanType
     preserve_orientation,
@@ -300,7 +294,6 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
       image->depth=(size_t) bits_per_pixel;
   }
 #endif
-  image->colorspace=YCbCrColorspace;
   if (heif_image_handle_has_alpha_channel(image_handle))
     image->alpha_trait=BlendPixelTrait;
   preserve_orientation=IsStringTrue(GetImageOption(image_info,
@@ -318,34 +311,31 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(MagickFalse);
-  /*
-    Convert HEIC format to ImageMagick YCrCb image.
-  */
   decode_options=heif_decoding_options_alloc();
 #if LIBHEIF_NUMERIC_VERSION > 0x01070000
   decode_options->convert_hdr_to_8bit=1;
 #endif
   if (preserve_orientation == MagickTrue)
     decode_options->ignore_transformations=1;
-  error=heif_decode_image(image_handle,&heif_image,heif_colorspace_YCbCr,
-    heif_chroma_420,decode_options);
+  error=heif_decode_image(image_handle,&heif_image,heif_colorspace_RGB,
+    image->alpha_trait != UndefinedPixelTrait ? heif_chroma_interleaved_RGBA :
+    heif_chroma_interleaved_RGB,decode_options);
   heif_decoding_options_free(decode_options);
   if (IsHeifSuccess(image,&error,exception) == MagickFalse)
     return(MagickFalse);
-  image->columns=(size_t) heif_image_get_width(heif_image,heif_channel_Y);
-  image->rows=(size_t) heif_image_get_height(heif_image,heif_channel_Y);
+  image->columns=(size_t) heif_image_get_width(heif_image,
+    heif_channel_interleaved);
+  image->rows=(size_t) heif_image_get_height(heif_image
+    ,heif_channel_interleaved);
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     {
       heif_image_release(heif_image);
       return(MagickFalse);
     }
-  p_y=heif_image_get_plane_readonly(heif_image,heif_channel_Y,&stride_y);
-  p_cb=heif_image_get_plane_readonly(heif_image,heif_channel_Cb,&stride_cb);
-  p_cr=heif_image_get_plane_readonly(heif_image,heif_channel_Cr,&stride_cr);
-  p_a=(const uint8_t *) NULL;
-  if (image->alpha_trait != UndefinedPixelTrait)
-    p_a=heif_image_get_plane_readonly(heif_image,heif_channel_Alpha,&stride_a);
+  p=heif_image_get_plane_readonly(heif_image,heif_channel_interleaved,&stride);
+  stride-=(int) (image->columns * (image->alpha_trait != UndefinedPixelTrait ?
+    4 : 3));
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     Quantum
@@ -359,17 +349,14 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelRed(image,ScaleCharToQuantum((unsigned char)
-        p_y[y*stride_y+x]),q);
-      SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
-        p_cb[(y/2)*stride_cb+x/2]),q);
-      SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
-        p_cr[(y/2)*stride_cr+x/2]),q);
-      if (p_a != (const uint8_t *) NULL)
-        SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
-          p_a[y*stride_a+x]),q);
+      SetPixelRed(image,ScaleCharToQuantum((unsigned char) *(p++)),q);
+      SetPixelGreen(image,ScaleCharToQuantum((unsigned char) *(p++)),q);
+      SetPixelBlue(image,ScaleCharToQuantum((unsigned char) *(p++)),q);
+      if (image->alpha_trait != UndefinedPixelTrait)
+        SetPixelAlpha(image,ScaleCharToQuantum((unsigned char) *(p++)),q);
       q+=GetPixelChannels(image);
     }
+    p+=stride;
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
   }
@@ -380,9 +367,6 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
 static Image *ReadHEICImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  const StringInfo
-    *profile;
-
   heif_item_id
     *image_ids,
     primary_image_id;
@@ -561,26 +545,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   file_data=RelinquishMagickMemory(file_data);
   if (status == MagickFalse)
     return(DestroyImageList(image));
-  image=GetFirstImageInList(image);
-  profile=GetImageProfile(image,"icc");
-  if (profile != (const StringInfo *) NULL)
-    {
-      Image
-        *next;
-
-      /*
-        Change image colorspace if it contains a color profile.
-      */
-      for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
-        if (HEICSkipImage(image_info,next) != MagickFalse)
-          {
-            if (image_info->ping == MagickFalse)
-              (void) TransformImageColorspace(next,sRGBColorspace,exception);
-            else
-              next->colorspace=sRGBColorspace;
-          }
-    }
-  return(image);
+  return(GetFirstImageInList(image));
 }
 #endif
 
