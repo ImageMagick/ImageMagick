@@ -484,8 +484,8 @@ static void EncipherAESBlock(AESInfo *aes_info,const unsigned char *plaintext,
     Reset registers.
   */
   alpha=0;
-  (void) memset(key,0,sizeof(key));
-  (void) memset(text,0,sizeof(text));
+  (void) ResetMagickMemory(key,0,sizeof(key));
+  (void) ResetMagickMemory(text,0,sizeof(text));
 }
 
 /*
@@ -708,8 +708,8 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
   */
   quantum_info=DestroyQuantumInfo(quantum_info);
   aes_info=DestroyAESInfo(aes_info);
-  (void) memset(input_block,0,sizeof(input_block));
-  (void) memset(output_block,0,sizeof(output_block));
+  (void) ResetMagickMemory(input_block,0,sizeof(input_block));
+  (void) ResetMagickMemory(output_block,0,sizeof(output_block));
   return(y == (ssize_t) image->rows ? MagickTrue : MagickFalse);
 }
 
@@ -925,8 +925,8 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
   */
   quantum_info=DestroyQuantumInfo(quantum_info);
   aes_info=DestroyAESInfo(aes_info);
-  (void) memset(input_block,0,sizeof(input_block));
-  (void) memset(output_block,0,sizeof(output_block));
+  (void) ResetMagickMemory(input_block,0,sizeof(input_block));
+  (void) ResetMagickMemory(output_block,0,sizeof(output_block));
   return(y == (ssize_t) image->rows ? MagickTrue : MagickFalse);
 }
 

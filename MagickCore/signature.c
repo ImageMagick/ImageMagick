@@ -736,7 +736,7 @@ RestoreMSCWarning
   T=0;
   T1=0;
   T2=0;
-  (void) memset(W,0,sizeof(W));
+  (void) ResetMagickMemory(W,0,sizeof(W));
 }
 
 /*

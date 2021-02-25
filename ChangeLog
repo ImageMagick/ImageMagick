@@ -1,8 +1,13 @@
-2021-02-21  7.0.11-2  <quetzlzacatenango@image...>
+2021-02-25  7.0.11-2  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.11-2 GIT revision 18462:cd5b6fb4f:20210221 
 
 2021-02-25  7.0.11-2  Dirk Lemstra <dirk@lem.....org>
   * decode HEIC images in sRGB instead of YCbCr.
+
+2021-02-25  7.0.11-2  <happyerc...@...>
+  * Division by zero error is possible if crafty file sets film-gamma property
+  * Check for overflow in thumbnail coder
+  * Prevent compiler from optimizing out buffer clearing in cipher
 
 2021-02-21  7.0.11-2  <quetzlzacatenango@image...>
   * Clone properties from image stack.

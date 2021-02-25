@@ -199,7 +199,8 @@ static MagickBooleanType WriteTHUMBNAILImage(const ImageInfo *image_info,
       break;
     q++;
   }
-  if ((q+length) > (GetStringInfoDatum(profile)+GetStringInfoLength(profile)))
+  if ((q > (GetStringInfoDatum(profile)+GetStringInfoLength(profile))) ||
+      (length > (GetStringInfoDatum(profile)+GetStringInfoLength(profile)-q)))
     ThrowWriterException(CoderError,"ImageDoesNotHaveAThumbnail");
   thumbnail_image=BlobToImage(image_info,q,length,exception);
   if (thumbnail_image == (Image *) NULL)

@@ -1269,26 +1269,36 @@ MagickExport MemoryInfo *RelinquishVirtualMemory(MemoryInfo *memory_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ResetMagickMemory() fills the first size bytes of the memory area pointed to
-%  by memory with the constant byte c.
+%  ResetMagickMemory() fills the first size bytes of the memory area pointed to %  by memory with the constant byte c.  We use a volatile pointer when
+%  updating the byte string.  Most compilers will avoid optimizing away access
+%  to a volatile pointer, even if the pointer appears to be unused after the
+%  call.
 %
 %  The format of the ResetMagickMemory method is:
 %
-%      void *ResetMagickMemory(void *memory,int byte,const size_t size)
+%      void *ResetMagickMemory(void *memory,int c,const size_t size)
 %
 %  A description of each parameter follows:
 %
 %    o memory: a pointer to a memory allocation.
 %
-%    o byte: set the memory to this value.
+%    o c: set the memory to this value.
 %
 %    o size: size of the memory to reset.
 %
 */
-MagickExport void *ResetMagickMemory(void *memory,int byte,const size_t size)
+MagickExport void *ResetMagickMemory(void *memory,int c,const size_t size)
 {
+  volatile unsigned char
+    *p = memory;
+
+  size_t
+    n = size;
+
   assert(memory != (void *) NULL);
-  return(memset(memory,byte,size));
+  while (n-- != 0)
+  	*p++=(unsigned char) c;
+  return(memory);
 }
 
 /*
