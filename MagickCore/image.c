@@ -2698,6 +2698,75 @@ MagickExport MagickBooleanType SetImageExtent(Image *image,const size_t columns,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+static const MagickInfo *SetImageInfoFromExtension(ImageInfo *image_info,
+  const char *component,char *magic,ExceptionInfo *exception)
+{
+  const MagickInfo
+    *magick_info;
+
+  MagickFormatType
+    format_type;
+
+  ssize_t
+    i;
+
+  static const char
+    *format_type_formats[] =
+    {
+      "AUTOTRACE",
+      "BROWSE",
+      "DCRAW",
+      "EDIT",
+      "LAUNCH",
+      "MPEG:DECODE",
+      "MPEG:ENCODE",
+      "PRINT",
+      "PS:ALPHA",
+      "PS:CMYK",
+      "PS:COLOR",
+      "PS:GRAY",
+      "PS:MONO",
+      "SCAN",
+      "SHOW",
+      "WIN",
+      (char *) NULL
+    };
+
+  /*
+    User specified image format.
+  */
+  (void) CopyMagickString(magic,component,MagickPathExtent);
+  LocaleUpper(magic);
+  /*
+    Look for explicit image formats.
+  */
+  format_type=UndefinedFormatType;
+  magick_info=GetMagickInfo(magic,exception);
+  if ((magick_info != (const MagickInfo *) NULL) &&
+      (magick_info->format_type != UndefinedFormatType))
+    format_type=magick_info->format_type;
+  i=0;
+  while ((format_type == UndefinedFormatType) &&
+          (format_type_formats[i] != (char *) NULL))
+  {
+    if ((*magic == *format_type_formats[i]) &&
+        (LocaleCompare(magic,format_type_formats[i]) == 0))
+      format_type=ExplicitFormatType;
+    i++;
+  }
+  if (format_type == UndefinedFormatType)
+    (void) CopyMagickString(image_info->magick,magic,MagickPathExtent);
+  else
+    if (format_type == ExplicitFormatType)
+      {
+        image_info->affirm=MagickTrue;
+        (void) CopyMagickString(image_info->magick,magic,MagickPathExtent);
+      }
+  if (LocaleCompare(magic,"RGB") == 0)
+    image_info->affirm=MagickFalse;  /* maybe SGI disguised as RGB */
+  return(magick_info);
+}
+
 MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
   const unsigned int frames,ExceptionInfo *exception)
 {
@@ -2793,68 +2862,8 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
   image_info->affirm=MagickFalse;
   sans_exception=AcquireExceptionInfo();
   if ((*component != '\0') && (IsGlob(component) == MagickFalse))
-    {
-      MagickFormatType
-        format_type;
-
-      ssize_t
-        i;
-
-      static const char
-        *format_type_formats[] =
-        {
-          "AUTOTRACE",
-          "BROWSE",
-          "DCRAW",
-          "EDIT",
-          "LAUNCH",
-          "MPEG:DECODE",
-          "MPEG:ENCODE",
-          "PRINT",
-          "PS:ALPHA",
-          "PS:CMYK",
-          "PS:COLOR",
-          "PS:GRAY",
-          "PS:MONO",
-          "SCAN",
-          "SHOW",
-          "WIN",
-          (char *) NULL
-        };
-
-      /*
-        User specified image format.
-      */
-      (void) CopyMagickString(magic,component,MagickPathExtent);
-      LocaleUpper(magic);
-      /*
-        Look for explicit image formats.
-      */
-      format_type=UndefinedFormatType;
-      magick_info=GetMagickInfo(magic,sans_exception);
-      if ((magick_info != (const MagickInfo *) NULL) &&
-          (magick_info->format_type != UndefinedFormatType))
-        format_type=magick_info->format_type;
-      i=0;
-      while ((format_type == UndefinedFormatType) &&
-             (format_type_formats[i] != (char *) NULL))
-      {
-        if ((*magic == *format_type_formats[i]) &&
-            (LocaleCompare(magic,format_type_formats[i]) == 0))
-          format_type=ExplicitFormatType;
-        i++;
-      }
-      if (format_type == UndefinedFormatType)
-        (void) CopyMagickString(image_info->magick,magic,MagickPathExtent);
-      else
-        if (format_type == ExplicitFormatType)
-          {
-            image_info->affirm=MagickTrue;
-            (void) CopyMagickString(image_info->magick,magic,MagickPathExtent);
-          }
-      if (LocaleCompare(magic,"RGB") == 0)
-        image_info->affirm=MagickFalse;  /* maybe SGI disguised as RGB */
-    }
+    magick_info=SetImageInfoFromExtension(image_info,component,magic,
+      sans_exception);
   /*
     Look for explicit 'format:image' in filename.
   */
@@ -2886,6 +2895,15 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
           delegate_info=GetDelegateInfo(magic,"*",sans_exception);
           if (delegate_info == (const DelegateInfo *) NULL)
             delegate_info=GetDelegateInfo("*",magic,sans_exception);
+          if ((delegate_info == (const DelegateInfo *) NULL) &&
+              ((*component != '\0') && (IsGlob(component) == MagickFalse)))
+            {
+              /*
+                Retry in case GetMagickInfo loaded a custom module.
+              */
+              magick_info=SetImageInfoFromExtension(image_info,component,magic,
+                sans_exception);
+            }
         }
       if (((magick_info != (const MagickInfo *) NULL) ||
            (delegate_info != (const DelegateInfo *) NULL)) &&
