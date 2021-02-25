@@ -2886,16 +2886,6 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
           delegate_info=GetDelegateInfo(magic,"*",sans_exception);
           if (delegate_info == (const DelegateInfo *) NULL)
             delegate_info=GetDelegateInfo("*",magic,sans_exception);
-          if (delegate_info == (const DelegateInfo *) NULL)
-            {
-              /*
-                Retry in case GetMagickInfo loaded a custom module.
-              */
-              magick_info=GetMagickInfo(image_info->magick,sans_exception);
-              if (magick_info != (const MagickInfo *) NULL)
-                (void) CopyMagickString(magic,image_info->magick,
-                  MagickPathExtent);
-            }
         }
       if (((magick_info != (const MagickInfo *) NULL) ||
            (delegate_info != (const DelegateInfo *) NULL)) &&
