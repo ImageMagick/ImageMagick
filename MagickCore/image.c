@@ -2698,6 +2698,7 @@ MagickExport MagickBooleanType SetImageExtent(Image *image,const size_t columns,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
 static const MagickInfo *SetImageInfoFromExtension(ImageInfo *image_info,
   const char *component,char *magic,ExceptionInfo *exception)
 {
