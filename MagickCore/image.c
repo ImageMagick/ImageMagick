@@ -2748,7 +2748,7 @@ static const MagickInfo *SetImageInfoFromExtension(ImageInfo *image_info,
     format_type=magick_info->format_type;
   i=0;
   while ((format_type == UndefinedFormatType) &&
-          (format_type_formats[i] != (char *) NULL))
+         (format_type_formats[i] != (char *) NULL))
   {
     if ((*magic == *format_type_formats[i]) &&
         (LocaleCompare(magic,format_type_formats[i]) == 0))
