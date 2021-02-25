@@ -2,7 +2,8 @@
   * Release ImageMagick version 7.0.11-2 GIT revision 18462:cd5b6fb4f:20210221 
 
 2021-02-21  7.0.11-2  <quetzlzacatenango@image...>
-  * decode HEIC images in sRGB instead of YCbCr.
+  * Clone properties from image stack.
+  * Set overall image depth statistic in Composite channel.
 
 2021-02-21  7.0.11-1  <quetzlzacatenango@image...>
   * Clone properties from image stack.

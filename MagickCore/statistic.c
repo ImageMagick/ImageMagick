@@ -2161,6 +2161,10 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
             if (status != MagickFalse)
               {
                 channel_statistics[channel].depth++;
+                if (channel_statistics[channel].depth >
+                    channel_statistics[CompositePixelChannel].depth)
+                  channel_statistics[CompositePixelChannel].depth=
+                    channel_statistics[channel].depth;
                 i--;
                 continue;
               }
