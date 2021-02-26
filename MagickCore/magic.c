@@ -367,14 +367,14 @@ MagickExport size_t GetMagicPatternExtent(ExceptionInfo *exception)
 
   ssize_t
     max_offset,
-    offset,
+    offset;
 
   static size_t
     extent = 0;
 
   assert(exception != (ExceptionInfo *) NULL);
   if ((extent != 0) || (IsMagicListInstantiated(exception) == MagickFalse))
-    return(size);
+    return(extent);
   LockSemaphoreInfo(magic_list_semaphore);
   ResetLinkedListIterator(magic_list);
   max_offset=0;
