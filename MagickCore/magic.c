@@ -330,7 +330,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   if (p != (const MagicInfo *) NULL)
     {
       LockSemaphoreInfo(magic_cache_semaphore);
-      InsertValueInSortedLinkedList(magic_cache,CompareMagickInfoSize,
+      (void) InsertValueInSortedLinkedList(magic_cache,CompareMagickInfoSize,
         NULL,p);
       UnlockSemaphoreInfo(magic_cache_semaphore);
     }
@@ -365,30 +365,30 @@ MagickExport size_t GetMagicPatternExtent(ExceptionInfo *exception)
   const MagicInfo
     *p;
 
-  size_t
-    magickSize,
-    max;
+  ssize_t
+    max_offset,
+    offset,
 
   static size_t
-    size=0;
+    extent = 0;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if ((size != 0) || (IsMagicListInstantiated(exception) == MagickFalse))
+  if ((extent != 0) || (IsMagicListInstantiated(exception) == MagickFalse))
     return(size);
   LockSemaphoreInfo(magic_list_semaphore);
   ResetLinkedListIterator(magic_list);
-  max=0;
+  max_offset=0;
   p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   while (p != (const MagicInfo *) NULL)
   {
-    magickSize=(size_t) (p->offset+p->length);
-    if (magickSize > max)
-      max=magickSize;
+    offset=(ssize_t) (p->offset+p->length);
+    if (offset > max_offset)
+      max_offset=offset;
     p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   }
-  size=max;
+  extent=(size_t) max_offset;
   UnlockSemaphoreInfo(magic_list_semaphore);
-  return(size);
+  return(extent);
 }
 
 /*
