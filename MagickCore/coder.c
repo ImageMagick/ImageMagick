@@ -112,12 +112,9 @@ static MagickBooleanType
 %
 %  The format of the AcquireCoderCache coder is:
 %
-%      SplayTreeInfo *AcquireCoderCache(const char *filename,
-%        ExceptionInfo *exception)
+%      SplayTreeInfo *AcquireCoderCache(ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
-%
-%    o filename: the font file name.
 %
 %    o exception: return any errors or warnings in this structure.
 %
