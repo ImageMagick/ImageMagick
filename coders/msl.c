@@ -7918,9 +7918,11 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   /*
     Free resources.
   */
+  MSLEndDocument(&msl_info);
   if (msl_info.parser->myDoc != (xmlDocPtr) NULL)
     xmlFreeDoc(msl_info.parser->myDoc);
   xmlFreeParserCtxt(msl_info.parser);
+  xmlFreeDoc(msl_info.document);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"end SAX");
   if (*image == (Image *) NULL)
     *image=CloneImage(*msl_info.image,0,0,MagickTrue,exception);
