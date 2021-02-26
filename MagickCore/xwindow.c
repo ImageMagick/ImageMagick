@@ -111,8 +111,8 @@
   X defines.
 */
 #define XBlueGamma(color) ClampToQuantum(blue_gamma == 1.0 ? (double) \
-  (color) : ((pow(((double) QuantumScale*(color)),1.0/(double) blue_gamma)* \
-  QuantumRange)))
+  (color) : ((pow(((double) QuantumScale*(color)),1.0* \
+  PerceptibleReciprocal((double) blue_gamma))*QuantumRange)))
 #define XGammaPacket(map,color)  (size_t) (map->base_pixel+ \
   ((ScaleQuantumToShort(XRedGamma((color)->red))*map->red_max/65535L)* \
     map->red_mult)+ \
@@ -128,11 +128,11 @@
   ((ScaleQuantumToShort(XBlueGamma(GetPixelBlue(image,color)))*map->blue_max/65535L)* \
     map->blue_mult))
 #define XGreenGamma(color) ClampToQuantum(green_gamma == 1.0 ? (double) \
-  (color) : ((pow(((double) QuantumScale*(color)),1.0/(double) green_gamma)* \
-  QuantumRange)))
+  (color) : ((pow(((double) QuantumScale*(color)),1.0* \
+  PerceptibleReciprocal((double) green_gamma))*QuantumRange)))
 #define XRedGamma(color) ClampToQuantum(red_gamma == 1.0 ? (double) \
-  (color) : ((pow(((double) QuantumScale*(color)),1.0/(double) red_gamma)* \
-  QuantumRange)))
+  (color) : ((pow(((double) QuantumScale*(color)),1.0* \
+  PerceptibleReciprocal((double) red_gamma))*QuantumRange)))
 #define XStandardPixel(map,color)  (size_t) (map->base_pixel+ \
   (((color)->red*map->red_max/65535L)*map->red_mult)+ \
   (((color)->green*map->green_max/65535L)*map->green_mult)+ \
