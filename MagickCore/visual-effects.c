@@ -3360,7 +3360,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     }
   for (i=0; i < (ssize_t) wave_image->columns; i++)
     sine_map[i]=(float) fabs(amplitude)+amplitude*sin((double)
-      ((2.0*MagickPI*i)/wave_length));
+      ((2.0*MagickPI*i)*PerceptibleReciprocal(wave_length)));
   /*
     Wave image.
   */
