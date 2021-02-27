@@ -797,16 +797,17 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
         mean_error+=distance*distance;
         if (distance > maximum_error)
           maximum_error=distance;
+        area++;
       }
-      area++;
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(reconstruct_image);
     }
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  image->error.mean_error_per_pixel=distortion[CompositePixelChannel]/area;
-  image->error.normalized_mean_error=QuantumScale*QuantumScale*mean_error/area;
+  area=PerceptibleReciprocal(area);
+  image->error.mean_error_per_pixel=area*distortion[CompositePixelChannel];
+  image->error.normalized_mean_error=area*QuantumScale*QuantumScale*mean_error;
   image->error.normalized_maximum_error=QuantumScale*maximum_error;
   return(status);
 }
