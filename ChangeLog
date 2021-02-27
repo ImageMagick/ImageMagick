@@ -1,5 +1,5 @@
 2021-02-27  7.0.11-2  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.11-2 GIT revision 18486:a855d3ad6:20210227
+  * Release ImageMagick version 7.0.11-2 GIT revision 18489:0c704b1e7:20210227
 
 2021-02-25  7.0.11-2  Dirk Lemstra <dirk@lem.....org>
   * decode HEIC images in sRGB instead of YCbCr.
