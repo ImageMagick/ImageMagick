@@ -797,8 +797,8 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
         mean_error+=distance*distance;
         if (distance > maximum_error)
           maximum_error=distance;
-        area++;
       }
+      area++;
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(reconstruct_image);
     }
