@@ -158,30 +158,29 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static int CompareMagickInfoSize(const void *a,const void *b)
+
+static int CompareMagickInfoExtent(const void *a,const void *b)
 {
   MagicInfo
     *ma,
     *mb;
 
+  MagickOffsetType
+    delta;
+
   ma=(MagicInfo *) a;
   mb=(MagicInfo *) b;
+  delta=(MagickOffsetType) mb->length-(MagickOffsetType) ma->length;
   if (ma->offset != mb->offset)
     {
-      MagickOffsetType
-        max_offset;
-
       /*
-        When the offset is near the start we first search a bit further
-        in the stream.
+        Offset is near the start? Let's search a bit further in the stream.
       */
-      max_offset=ma->offset > mb->offset ? ma->offset : mb->offset;
-      if (max_offset <= 10)
-        return((int) (mb->offset-ma->offset));
-      else
-        return((int) (ma->offset-mb->offset));
+      delta=ma->offset-mb->offset;
+      if ((ma->offset > mb->offset ? ma->offset : mb->offset) <= 10)
+        delta=mb->offset-ma->offset;
     }
-  return((int) (mb->length-(ssize_t) ma->length));
+  return(delta > INT_MAX ? 0 : (int) delta);
 }
 
 static LinkedListInfo *AcquireMagicList(ExceptionInfo *exception)
@@ -225,7 +224,7 @@ static LinkedListInfo *AcquireMagicList(ExceptionInfo *exception)
     magic_info->length=p->length;
     magic_info->exempt=MagickTrue;
     magic_info->signature=MagickCoreSignature;
-    status&=InsertValueInSortedLinkedList(list,CompareMagickInfoSize,
+    status&=InsertValueInSortedLinkedList(list,CompareMagickInfoExtent,
       NULL,magic_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -283,6 +282,9 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   const MagicInfo
     *p;
 
+  MagickOffsetType
+    offset;
+
   assert(exception != (ExceptionInfo *) NULL);
   if (IsMagicListInstantiated(exception) == MagickFalse)
     return((const MagicInfo *) NULL);
@@ -298,7 +300,8 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
       p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
       while (p != (const MagicInfo *) NULL)
       {
-        if (((size_t) (p->offset+p->length) <= length) &&
+        offset=p->offset+(MagickOffsetType) p->length;
+        if ((offset <= (MagickOffsetType) length) &&
             (memcmp(magic+p->offset,p->magic,p->length) == 0))
           break;
         p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
@@ -321,7 +324,8 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   while (p != (const MagicInfo *) NULL)
   {
     assert(p->offset >= 0);
-    if (((size_t) (p->offset+p->length) <= length) &&
+    offset=p->offset+(MagickOffsetType) p->length;
+    if ((offset <= (MagickOffsetType) length) &&
         (memcmp(magic+p->offset,p->magic,p->length) == 0))
       break;
     p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
@@ -330,7 +334,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   if (p != (const MagicInfo *) NULL)
     {
       LockSemaphoreInfo(magic_cache_semaphore);
-      (void) InsertValueInSortedLinkedList(magic_cache,CompareMagickInfoSize,
+      (void) InsertValueInSortedLinkedList(magic_cache,CompareMagickInfoExtent,
         NULL,p);
       UnlockSemaphoreInfo(magic_cache_semaphore);
     }
@@ -365,7 +369,7 @@ MagickExport size_t GetMagicPatternExtent(ExceptionInfo *exception)
   const MagicInfo
     *p;
 
-  ssize_t
+  MagickOffsetType
     max_offset,
     offset;
 
@@ -377,15 +381,16 @@ MagickExport size_t GetMagicPatternExtent(ExceptionInfo *exception)
     return(extent);
   LockSemaphoreInfo(magic_list_semaphore);
   ResetLinkedListIterator(magic_list);
-  max_offset=0;
   p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
-  while (p != (const MagicInfo *) NULL)
+  for (max_offset=0; p != (const MagicInfo *) NULL; )
   {
-    offset=(ssize_t) (p->offset+p->length);
+    offset=p->offset+(MagickOffsetType) p->length;
     if (offset > max_offset)
       max_offset=offset;
     p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   }
+  if (max_offset > (MagickOffsetType) MAGICK_SSIZE_MAX)
+    return(0);
   extent=(size_t) max_offset;
   UnlockSemaphoreInfo(magic_list_semaphore);
   return(extent);
