@@ -1555,8 +1555,8 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
            (x_pixel_sigmas_squared+y_pixel_sigmas_squared+c2));
         channel_distortion[i]+=ssim;
         channel_distortion[CompositePixelChannel]+=ssim;
-        area++;
       }
+      area++;
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(reconstruct_image);
     }
