@@ -1374,7 +1374,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
             GetPixelInfo(image,&pixel);
             GetPixelInfoPixel(image,p,&pixel);
             GetColorTuple(&pixel,MagickTrue,color);
-            (void) FormatLocaleFile(file,"    alpha: \"%s\"\n",color);
+            (void) FormatLocaleFile(file,"    alpha: '%s'\n",color);
           }
       }
   if (image->storage_class == PseudoClass)
@@ -1389,7 +1389,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       for (i=0; i < (ssize_t) image->colors; i++)
       {
         GetColorTuple(p,MagickTrue,color);
-        (void) FormatLocaleFile(file,"- \"%s\"\n      ",color);
+        (void) FormatLocaleFile(file,"- '%s'\n      ",color);
         p++;
       }
       (void) FormatLocaleFile(file,"\n    \n");
@@ -1439,13 +1439,13 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       (double) image->extract_info.width,(double) image->extract_info.height,
       (double) image->extract_info.x,(double) image->extract_info.y);
   GetColorTuple(&image->matte_color,MagickTrue,color);
-  (void) FormatLocaleFile(file,"    matteColor: \"%s\"\n",color);
+  (void) FormatLocaleFile(file,"    matteColor: '%s'\n",color);
   GetColorTuple(&image->background_color,MagickTrue,color);
-  (void) FormatLocaleFile(file,"    backgroundColor: \"%s\"\n",color);
+  (void) FormatLocaleFile(file,"    backgroundColor: '%s'\n",color);
   GetColorTuple(&image->border_color,MagickTrue,color);
-  (void) FormatLocaleFile(file,"    borderColor: \"%s\"\n",color);
+  (void) FormatLocaleFile(file,"    borderColor: '%s'\n",color);
   GetColorTuple(&image->transparent_color,MagickTrue,color);
-  (void) FormatLocaleFile(file,"    transparentColor: \"%s\"\n",color);
+  (void) FormatLocaleFile(file,"    transparentColor: '%s'\n",color);
   YAMLFormatLocaleFile(file,"    interlace: %s\n",CommandOptionToMnemonic(
     MagickInterlaceOptions,(ssize_t) image->interlace));
   YAMLFormatLocaleFile(file,"    intensity: %s\n",CommandOptionToMnemonic(
