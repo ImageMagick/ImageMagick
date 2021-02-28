@@ -386,6 +386,7 @@ static MagickBooleanType ConvertUsage(void)
       "  -fuzz distance       colors within this distance are considered equal\n"
       "  -gravity type        horizontal and vertical text placement\n"
       "  -green-primary point chromaticity green primary point\n"
+      "  -illuminant type     reference illuminant\n"
       "  -intensity method    method to generate an intensity value from a pixel\n"
       "  -intent type         type of rendering intent when managing the image color\n"
       "  -interlace type      type of image interlacing scheme\n"
@@ -1821,6 +1822,15 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("ift",option+1) == 0)
           break;
+        if (LocaleCompare("illuminant",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            break;
+          }
         if (LocaleCompare("implode",option+1) == 0)
           {
             if (*option == '+')

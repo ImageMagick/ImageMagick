@@ -742,14 +742,16 @@ MagickPrivate void ConvertHWBToRGB(const double hue,const double whiteness,
 */
 
 static inline void ConvertLCHabToXYZ(const double luma,const double chroma,
-  const double hue,double *X,double *Y,double *Z)
+  const double hue,const IlluminantType illuminant,double *X,double *Y,
+  double *Z)
 {
   ConvertLabToXYZ(luma,chroma*cos(hue*MagickPI/180.0),chroma*
-    sin(hue*MagickPI/180.0),X,Y,Z);
+    sin(hue*MagickPI/180.0),illuminant,X,Y,Z);
 }
 
 MagickPrivate void ConvertLCHabToRGB(const double luma,const double chroma,
-  const double hue,double *red,double *green,double *blue)
+  const double hue,const IlluminantType illuminant,double *red,double *green,
+  double *blue)
 {
   double
     X,
@@ -762,7 +764,8 @@ MagickPrivate void ConvertLCHabToRGB(const double luma,const double chroma,
   assert(red != (double *) NULL);
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
-  ConvertLCHabToXYZ(100.0*luma,255.0*(chroma-0.5),360.0*hue,&X,&Y,&Z);
+  ConvertLCHabToXYZ(100.0*luma,255.0*(chroma-0.5),360.0*hue,illuminant,
+    &X,&Y,&Z);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
 
@@ -795,14 +798,16 @@ MagickPrivate void ConvertLCHabToRGB(const double luma,const double chroma,
 */
 
 static inline void ConvertLCHuvToXYZ(const double luma,const double chroma,
-  const double hue,double *X,double *Y,double *Z)
+  const double hue,const IlluminantType illuminant,double *X,double *Y,
+  double *Z)
 {
   ConvertLuvToXYZ(luma,chroma*cos(hue*MagickPI/180.0),chroma*
-    sin(hue*MagickPI/180.0),X,Y,Z);
+    sin(hue*MagickPI/180.0),illuminant,X,Y,Z);
 }
 
 MagickPrivate void ConvertLCHuvToRGB(const double luma,const double chroma,
-  const double hue,double *red,double *green,double *blue)
+  const double hue,const IlluminantType illuminant,double *red,double *green,
+  double *blue)
 {
   double
     X,
@@ -815,7 +820,8 @@ MagickPrivate void ConvertLCHuvToRGB(const double luma,const double chroma,
   assert(red != (double *) NULL);
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
-  ConvertLCHuvToXYZ(100.0*luma,255.0*(chroma-0.5),360.0*hue,&X,&Y,&Z);
+  ConvertLCHuvToXYZ(100.0*luma,255.0*(chroma-0.5),360.0*hue,illuminant,
+    &X,&Y,&Z);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
 
@@ -1296,7 +1302,8 @@ MagickPrivate void ConvertRGBToHWB(const double red,const double green,
 %
 */
 MagickPrivate void ConvertRGBToLab(const double red,const double green,
-  const double blue,double *L,double *a,double *b)
+  const double blue,const IlluminantType illuminant,double *L,double *a,
+  double *b)
 {
   double
     X,
@@ -1304,7 +1311,7 @@ MagickPrivate void ConvertRGBToLab(const double red,const double green,
     Z;
 
   ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
-  ConvertXYZToLab(X,Y,Z,L,a,b);
+  ConvertXYZToLab(X,Y,Z,illuminant,L,a,b);
 }
 
 /*
@@ -1337,13 +1344,14 @@ MagickPrivate void ConvertRGBToLab(const double red,const double green,
 */
 
 static inline void ConvertXYZToLCHab(const double X,const double Y,
-  const double Z,double *luma,double *chroma,double *hue)
+  const double Z,const IlluminantType illuminant,double *luma,double *chroma,
+  double *hue)
 {
   double
     a,
     b;
 
-  ConvertXYZToLab(X,Y,Z,luma,&a,&b);
+  ConvertXYZToLab(X,Y,Z,illuminant,luma,&a,&b);
   *chroma=hypot(255.0*(a-0.5),255.0*(b-0.5))/255.0+0.5;
   *hue=180.0*atan2(255.0*(b-0.5),255.0*(a-0.5))/MagickPI/360.0;
   if (*hue < 0.0)
@@ -1351,7 +1359,8 @@ static inline void ConvertXYZToLCHab(const double X,const double Y,
 }
 
 MagickPrivate void ConvertRGBToLCHab(const double red,const double green,
-  const double blue,double *luma,double *chroma,double *hue)
+  const double blue,const IlluminantType illuminant,double *luma,double *chroma,
+  double *hue)
 {
   double
     X,
@@ -1365,7 +1374,7 @@ MagickPrivate void ConvertRGBToLCHab(const double red,const double green,
   assert(chroma != (double *) NULL);
   assert(hue != (double *) NULL);
   ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
-  ConvertXYZToLCHab(X,Y,Z,luma,chroma,hue);
+  ConvertXYZToLCHab(X,Y,Z,illuminant,luma,chroma,hue);
 }
 
 /*
@@ -1398,13 +1407,14 @@ MagickPrivate void ConvertRGBToLCHab(const double red,const double green,
 */
 
 static inline void ConvertXYZToLCHuv(const double X,const double Y,
-  const double Z,double *luma,double *chroma,double *hue)
+  const double Z,const IlluminantType illuminant,double *luma,double *chroma,
+  double *hue)
 {
   double
     u,
     v;
 
-  ConvertXYZToLuv(X,Y,Z,luma,&u,&v);
+  ConvertXYZToLuv(X,Y,Z,illuminant,luma,&u,&v);
   *chroma=hypot(354.0*u-134.0,262.0*v-140.0)/255.0+0.5;
   *hue=180.0*atan2(262.0*v-140.0,354.0*u-134.0)/MagickPI/360.0;
   if (*hue < 0.0)
@@ -1412,7 +1422,8 @@ static inline void ConvertXYZToLCHuv(const double X,const double Y,
 }
 
 MagickPrivate void ConvertRGBToLCHuv(const double red,const double green,
-  const double blue,double *luma,double *chroma,double *hue)
+  const double blue,const IlluminantType illuminant,double *luma,double *chroma,
+  double *hue)
 {
   double
     X,
@@ -1426,7 +1437,7 @@ MagickPrivate void ConvertRGBToLCHuv(const double red,const double green,
   assert(chroma != (double *) NULL);
   assert(hue != (double *) NULL);
   ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
-  ConvertXYZToLCHuv(X,Y,Z,luma,chroma,hue);
+  ConvertXYZToLCHuv(X,Y,Z,illuminant,luma,chroma,hue);
 }
 
 /*

@@ -844,6 +844,8 @@ static const OptionInfo
     { "-implode", 1L, SimpleOperatorFlag, MagickFalse },
     { "+insert", 0L, ListOperatorFlag | FireOptionFlag, MagickFalse },
     { "-insert", 1L, ListOperatorFlag | FireOptionFlag, MagickFalse },
+    { "+illuminant", 1L, ImageInfoOptionFlag, MagickFalse },
+    { "-illuminant", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+intensity", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-intensity", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+intent", 0L, ImageInfoOptionFlag, MagickFalse },
@@ -1504,6 +1506,22 @@ static const OptionInfo
     { "West", WestGravity, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedGravity, UndefinedOptionFlag, MagickFalse }
   },
+  IlluminantOptions[] =
+  {
+    { "Undefined", UndefinedIlluminant, UndefinedOptionFlag, MagickTrue },
+    { "A", AIlluminant, UndefinedOptionFlag, MagickFalse },
+    { "B", BIlluminant, UndefinedOptionFlag, MagickFalse },
+    { "C", CIlluminant, UndefinedOptionFlag, MagickFalse },
+    { "D50", D50Illuminant, UndefinedOptionFlag, MagickFalse },
+    { "D55", D55Illuminant, UndefinedOptionFlag, MagickFalse },
+    { "D65", D65Illuminant, UndefinedOptionFlag, MagickFalse },
+    { "D75", D75Illuminant, UndefinedOptionFlag, MagickFalse },
+    { "E", EIlluminant, UndefinedOptionFlag, MagickFalse },
+    { "F2", F2Illuminant, UndefinedOptionFlag, MagickFalse },
+    { "F7", F7Illuminant, UndefinedOptionFlag, MagickFalse },
+    { "F11", F11Illuminant, UndefinedOptionFlag, MagickFalse },
+    { (char *) NULL, UndefinedIntent, UndefinedOptionFlag, MagickFalse }
+  },
   IntentOptions[] =
   {
     { "Undefined", UndefinedIntent, UndefinedOptionFlag, MagickTrue },
@@ -1659,6 +1677,7 @@ static const OptionInfo
     { "Function", MagickFunctionOptions, UndefinedOptionFlag, MagickFalse },
     { "Gradient", MagickGradientOptions, UndefinedOptionFlag, MagickFalse },
     { "Gravity", MagickGravityOptions, UndefinedOptionFlag, MagickFalse },
+    { "Illuminant", MagickIlluminantOptions, UndefinedOptionFlag, MagickFalse },
     { "Intensity", MagickPixelIntensityOptions, UndefinedOptionFlag, MagickFalse },
     { "Intent", MagickIntentOptions, UndefinedOptionFlag, MagickFalse },
     { "Interlace", MagickInterlaceOptions, UndefinedOptionFlag, MagickFalse },
@@ -2436,6 +2455,7 @@ static const OptionInfo *GetOptionInfo(const CommandOption option)
     case MagickFunctionOptions: return(FunctionOptions);
     case MagickGradientOptions: return(GradientOptions);
     case MagickGravityOptions: return(GravityOptions);
+    case MagickIlluminantOptions: return(IlluminantOptions);
     case MagickIntentOptions: return(IntentOptions);
     case MagickInterlaceOptions: return(InterlaceOptions);
     case MagickInterpolateOptions: return(InterpolateOptions);

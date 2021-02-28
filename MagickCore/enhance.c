@@ -3581,8 +3581,8 @@ static inline void ModulateHWB(const double percent_hue,
 }
 
 static inline void ModulateLCHab(const double percent_luma,
-  const double percent_chroma,const double percent_hue,double *red,
-  double *green,double *blue)
+  const double percent_chroma,const double percent_hue,
+  const IlluminantType illuminant,double *red,double *green,double *blue)
 {
   double
     hue,
@@ -3592,16 +3592,16 @@ static inline void ModulateLCHab(const double percent_luma,
   /*
     Increase or decrease color luma, chroma, or hue.
   */
-  ConvertRGBToLCHab(*red,*green,*blue,&luma,&chroma,&hue);
+  ConvertRGBToLCHab(*red,*green,*blue,illuminant,&luma,&chroma,&hue);
   luma*=0.01*percent_luma;
   chroma*=0.01*percent_chroma;
   hue+=fmod((percent_hue-100.0),200.0)/200.0;
-  ConvertLCHabToRGB(luma,chroma,hue,red,green,blue);
+  ConvertLCHabToRGB(luma,chroma,hue,illuminant,red,green,blue);
 }
 
 static inline void ModulateLCHuv(const double percent_luma,
-  const double percent_chroma,const double percent_hue,double *red,
-  double *green,double *blue)
+  const double percent_chroma,const double percent_hue,
+  const IlluminantType illuminant,double *red,double *green,double *blue)
 {
   double
     hue,
@@ -3611,11 +3611,11 @@ static inline void ModulateLCHuv(const double percent_luma,
   /*
     Increase or decrease color luma, chroma, or hue.
   */
-  ConvertRGBToLCHuv(*red,*green,*blue,&luma,&chroma,&hue);
+  ConvertRGBToLCHuv(*red,*green,*blue,illuminant,&luma,&chroma,&hue);
   luma*=0.01*percent_luma;
   chroma*=0.01*percent_chroma;
   hue+=fmod((percent_hue-100.0),200.0)/200.0;
-  ConvertLCHuvToRGB(luma,chroma,hue,red,green,blue);
+  ConvertLCHuvToRGB(luma,chroma,hue,illuminant,red,green,blue);
 }
 
 MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
@@ -3639,6 +3639,9 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
 
   GeometryInfo
     geometry_info;
+
+  IlluminantType
+    illuminant = D65Illuminant;
 
   MagickBooleanType
     status;
@@ -3742,13 +3745,13 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
         case LCHabColorspace:
         {
           ModulateLCHab(percent_brightness,percent_saturation,percent_hue,
-            &red,&green,&blue);
+            illuminant,&red,&green,&blue);
           break;
         }
         case LCHuvColorspace:
         {
           ModulateLCHuv(percent_brightness,percent_saturation,percent_hue,
-            &red,&green,&blue);
+            illuminant,&red,&green,&blue);
           break;
         }
       }
@@ -3839,14 +3842,14 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
         case LCHabColorspace:
         {
           ModulateLCHab(percent_brightness,percent_saturation,percent_hue,
-            &red,&green,&blue);
+            illuminant,&red,&green,&blue);
           break;
         }
         case LCHColorspace:
         case LCHuvColorspace:
         {
           ModulateLCHuv(percent_brightness,percent_saturation,percent_hue,
-            &red,&green,&blue);
+            illuminant,&red,&green,&blue);
           break;
         }
       }

@@ -104,7 +104,8 @@ typedef enum
   MagickWeightOptions,
   MagickAutoThresholdOptions,
   MagickToolOptions,
-  MagickCLIOptions
+  MagickCLIOptions,
+  MagickIlluminantOptions
 } CommandOption;
 
 typedef enum

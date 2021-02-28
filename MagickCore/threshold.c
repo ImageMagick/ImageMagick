@@ -1225,6 +1225,9 @@ MagickExport MagickBooleanType ColorThresholdImage(Image *image,
   CacheView
     *image_view;
 
+  IlluminantType
+    illuminant = D65Illuminant;
+
   MagickBooleanType
     status;
 
@@ -1295,9 +1298,9 @@ MagickExport MagickBooleanType ColorThresholdImage(Image *image,
     case LabColorspace:
     {
       ConvertRGBToLab(start_color->red,start_color->green,start_color->blue,
-        &start.red,&start.green,&start.blue);
+        illuminant,&start.red,&start.green,&start.blue);
       ConvertRGBToLab(stop_color->red,stop_color->green,stop_color->blue,
-        &stop.red,&stop.green,&stop.blue);
+        illuminant,&stop.red,&stop.green,&stop.blue);
       break;
     }
     default:

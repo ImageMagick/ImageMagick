@@ -37,6 +37,22 @@ typedef enum
   AllCompliance = 0x7fffffff
 } ComplianceType;
 
+typedef enum
+{
+  UndefinedIlluminant = 5,
+  AIlluminant = 0,
+  BIlluminant = 1,
+  CIlluminant = 2,
+  D50Illuminant = 3,
+  D55Illuminant = 4,
+  D65Illuminant = 5,
+  D75Illuminant = 6,
+  EIlluminant = 7,
+  F2Illuminant = 8,
+  F7Illuminant = 9,
+  F11Illuminant = 10
+} IlluminantType;
+
 typedef struct _ColorInfo
 {
   char

@@ -31,6 +31,22 @@ extern "C" {
 #define CIEEpsilon  (216.0/24389.0)
 #define CIEK  (24389.0/27.0)
 
+static const PrimaryInfo
+  IlluminantInfo[] =
+  {
+    { 1.09850, 1.00000, 0.35585 },  /* A */
+    { 0.99072, 1.00000, 0.85223 },  /* B */
+    { 0.98074, 1.00000, 1.18232 },  /* C */
+    { 0.96422, 1.00000, 0.82521 },  /* D50 */
+    { 0.95682, 1.00000, 0.92149 },  /* D55 */
+    { 0.95047, 1.00000, 1.08883 },  /* D65 */
+    { 0.94972, 1.00000, 1.22638 },  /* D75 */
+    { 1.00000, 1.00000, 1.00000 },  /* E */
+    { 0.99186, 1.00000, 0.67393 },  /* F2 */
+    { 0.95041, 1.00000, 1.08747 },  /* F7 */
+    { 1.00962, 1.00000, 0.64350 }   /* F11 */
+  };
+
 extern MagickPrivate double
   GenerateDifferentialNoise(RandomInfo *,const Quantum,const NoiseType,
     const double);
@@ -53,10 +69,10 @@ extern MagickPrivate void
     double *),
   ConvertHWBToRGB(const double,const double,const double,double *,double *,
     double *),
-  ConvertLCHabToRGB(const double,const double,const double,double *,double *,
-    double *),
-  ConvertLCHuvToRGB(const double,const double,const double,double *,double *,
-    double *),
+  ConvertLCHabToRGB(const double,const double,const double,const IlluminantType,
+    double *,double *,double *),
+  ConvertLCHuvToRGB(const double,const double,const double,const IlluminantType,
+    double *,double *,double *),
   ConvertRGBToHCL(const double,const double,const double,double *,double *,
     double *),
   ConvertRGBToHCLp(const double,const double,const double,double *,double *,
@@ -69,12 +85,12 @@ extern MagickPrivate void
     double *),
   ConvertRGBToHWB(const double,const double,const double,double *,double *,
     double *),
-  ConvertRGBToLab(const double,const double,const double,double *,double *,
-    double *),
-  ConvertRGBToLCHab(const double,const double,const double,double *,double *,
-    double *),
-  ConvertRGBToLCHuv(const double,const double,const double,double *,double *,
-    double *);
+  ConvertRGBToLab(const double,const double,const double,const IlluminantType,
+    double *,double *,double *),
+  ConvertRGBToLCHab(const double,const double,const double,const IlluminantType,
+    double *,double *,double *),
+  ConvertRGBToLCHuv(const double,const double,const double,const IlluminantType,
+    double *,double *,double *);
 
 static inline void ConvertAdobe98ToXYZ(const double red,const double green,
   const double blue,double *X,double *Y,double *Z)
@@ -121,7 +137,7 @@ static inline void ConvertDisplayP3ToXYZ(const double red,const double green,
 }
 
 static inline void ConvertLabToXYZ(const double L,const double a,const double b,
-  double *X,double *Y,double *Z)
+  const IlluminantType illuminant,double *X,double *Y,double *Z)
 {
   double
     x,
@@ -152,7 +168,7 @@ static inline void ConvertLabToXYZ(const double L,const double a,const double b,
 }
 
 static inline void ConvertLuvToXYZ(const double L,const double u,const double v,
-  double *X,double *Y,double *Z)
+  const IlluminantType illuminant,double *X,double *Y,double *Z)
 {
   double
     gamma;
@@ -255,7 +271,7 @@ static inline void ConvertXYZToDisplayP3(const double X,const double Y,
 }
 
 static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
-  double *L,double *a,double *b)
+  const IlluminantType illuminant,double *L,double *a,double *b)
 {
   double
     x,
@@ -283,7 +299,7 @@ static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
 }
 
 static inline void ConvertXYZToLuv(const double X,const double Y,const double Z,
-  double *L,double *u,double *v)
+  const IlluminantType illuminant,double *L,double *u,double *v)
 {
   double
     alpha;

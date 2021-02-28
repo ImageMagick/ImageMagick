@@ -973,6 +973,12 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
     }
     case 'i':
     {
+      if (LocaleCompare("illuminant",option+1) == 0)
+        {
+          (void) SetImageOption(_image_info,"color:illuminant",
+            ArgOption(NULL));
+          break;
+        }
       if (LocaleCompare("intensity",option+1) == 0)
         {
           arg1 = ArgOption("undefined");
@@ -3613,8 +3619,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
              three places!   ImageArtifact   ImageOption  _image_info->verbose
              Some how new images also get this artifact!
           */
-          (void) SetImageArtifact(_image,option+1,
-                           IfNormalOp ? "true" : "false" );
+          (void) SetImageArtifact(_image,option+1,IfNormalOp ? "true" :
+            "false" );
           break;
         }
       if (LocaleCompare("vignette",option+1) == 0)

@@ -270,7 +270,8 @@ static void ConvertRGBToLMS(const double red,const double green,
 }
 
 static void ConvertRGBToLuv(const double red,const double green,
-  const double blue,double *L,double *u,double *v)
+  const double blue,const IlluminantType illuminant,double *L,double *u,
+  double *v)
 {
   double
     X,
@@ -278,7 +279,7 @@ static void ConvertRGBToLuv(const double red,const double green,
     Z;
 
   ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
-  ConvertXYZToLuv(X,Y,Z,L,u,v);
+  ConvertXYZToLuv(X,Y,Z,illuminant,L,u,v);
 }
 
 static void ConvertRGBToxyY(const double red,const double green,
@@ -454,6 +455,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
 
   CacheView
     *image_view;
+
+  IlluminantType
+    illuminant = D65Illuminant;
 
   MagickBooleanType
     status;
@@ -808,18 +812,18 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             }
             case LabColorspace:
             {
-              ConvertRGBToLab(red,green,blue,&X,&Y,&Z);
+              ConvertRGBToLab(red,green,blue,illuminant,&X,&Y,&Z);
               break;
             }
             case LCHColorspace:
             case LCHabColorspace:
             {
-              ConvertRGBToLCHab(red,green,blue,&X,&Y,&Z);
+              ConvertRGBToLCHab(red,green,blue,illuminant,&X,&Y,&Z);
               break;
             }
             case LCHuvColorspace:
             {
-              ConvertRGBToLCHuv(red,green,blue,&X,&Y,&Z);
+              ConvertRGBToLCHuv(red,green,blue,illuminant,&X,&Y,&Z);
               break;
             }
             case LMSColorspace:
@@ -829,7 +833,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             }
             case LuvColorspace:
             {
-              ConvertRGBToLuv(red,green,blue,&X,&Y,&Z);
+              ConvertRGBToLuv(red,green,blue,illuminant,&X,&Y,&Z);
               break;
             }
             case ProPhotoColorspace:
@@ -1682,14 +1686,15 @@ static inline void ConvertLMSToRGB(const double L,const double M,
 }
 
 static inline void ConvertLuvToRGB(const double L,const double u,
-  const double v,double *red,double *green,double *blue)
+  const double v,const IlluminantType illuminant,double *red,double *green,
+  double *blue)
 {
   double
     X,
     Y,
     Z;
 
-  ConvertLuvToXYZ(100.0*L,354.0*u-134.0,262.0*v-140.0,&X,&Y,&Z);
+  ConvertLuvToXYZ(100.0*L,354.0*u-134.0,262.0*v-140.0,illuminant,&X,&Y,&Z);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
 
@@ -1703,14 +1708,15 @@ static inline ssize_t RoundToYCC(const double value)
 }
 
 static inline void ConvertLabToRGB(const double L,const double a,
-  const double b,double *red,double *green,double *blue)
+  const double b,const IlluminantType illuminant,double *red,double *green,
+  double *blue)
 {
   double
     X,
     Y,
     Z;
 
-  ConvertLabToXYZ(100.0*L,255.0*(a-0.5),255.0*(b-0.5),&X,&Y,&Z);
+  ConvertLabToXYZ(100.0*L,255.0*(a-0.5),255.0*(b-0.5),illuminant,&X,&Y,&Z);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
 
@@ -2024,6 +2030,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
 
   CacheView
     *image_view;
+
+  IlluminantType
+    illuminant = D65Illuminant;
 
   MagickBooleanType
     status;
@@ -2375,18 +2384,18 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             }
             case LabColorspace:
             {
-              ConvertLabToRGB(X,Y,Z,&red,&green,&blue);
+              ConvertLabToRGB(X,Y,Z,illuminant,&red,&green,&blue);
               break;
             }
             case LCHColorspace:
             case LCHabColorspace:
             {
-              ConvertLCHabToRGB(X,Y,Z,&red,&green,&blue);
+              ConvertLCHabToRGB(X,Y,Z,illuminant,&red,&green,&blue);
               break;
             }
             case LCHuvColorspace:
             {
-              ConvertLCHuvToRGB(X,Y,Z,&red,&green,&blue);
+              ConvertLCHuvToRGB(X,Y,Z,illuminant,&red,&green,&blue);
               break;
             }
             case LMSColorspace:
@@ -2396,7 +2405,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             }
             case LuvColorspace:
             {
-              ConvertLuvToRGB(X,Y,Z,&red,&green,&blue);
+              ConvertLuvToRGB(X,Y,Z,illuminant,&red,&green,&blue);
               break;
             }
             case ProPhotoColorspace:

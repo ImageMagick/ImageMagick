@@ -1928,6 +1928,11 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             text=DestroyString(text);
             break;
           }
+        if (LocaleCompare("illuminant",option+1) == 0)
+          {
+            (void) SetImageArtifact(*image,"color:illuminant",argv[i+1]);
+            break;
+          }
         if (LocaleCompare("implode",option+1) == 0)
           {
             /*
@@ -3802,6 +3807,7 @@ static MagickBooleanType MogrifyUsage(void)
       "  -fuzz distance       colors within this distance are considered equal\n"
       "  -gravity type        horizontal and vertical text placement\n"
       "  -green-primary point chromaticity green primary point\n"
+      "  -illuminant type     reference illuminant\n"
       "  -intensity method    method to generate an intensity value from a pixel\n"
       "  -intent type         type of rendering intent when managing the image color\n"
       "  -interlace type      type of image interlacing scheme\n"
@@ -5264,6 +5270,15 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("idft",option+1) == 0)
           break;
+        if (LocaleCompare("illuminant",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            break;
+          }
         if (LocaleCompare("implode",option+1) == 0)
           {
             if (*option == '+')
