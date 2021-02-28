@@ -25,9 +25,9 @@
 extern "C" {
 #endif
 
-#define D65X  0.950456
+#define D65X  0.95047
 #define D65Y  1.0
-#define D65Z  1.088754
+#define D65Z  1.08883
 #define CIEEpsilon  (216.0/24389.0)
 #define CIEK  (24389.0/27.0)
 
