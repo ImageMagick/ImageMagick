@@ -1206,7 +1206,7 @@ MagickPrivate void ConvertRGBToHSV(const double red,const double green,
     else
       *hue=4.0+(QuantumScale*red-QuantumScale*green)/c;
   *hue*=60.0/360.0;
-  *saturation=c/max;
+  *saturation=c*PerceptibleReciprocal(max);
 }
 
 /*
