@@ -40,6 +40,7 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
+#include "MagickCore/artifact.h"
 #include "MagickCore/attribute.h"
 #include "MagickCore/property.h"
 #include "MagickCore/cache.h"
@@ -59,6 +60,7 @@
 #include "MagickCore/memory_.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
+#include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/pixel-private.h"
 #include "MagickCore/quantize.h"
@@ -456,6 +458,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
   CacheView
     *image_view;
 
+  const char
+    *artifact;
+
   IlluminantType
     illuminant = D65Illuminant;
 
@@ -486,6 +491,14 @@ static MagickBooleanType sRGBTransformImage(Image *image,
   assert(colorspace != sRGBColorspace);
   assert(colorspace != TransparentColorspace);
   assert(colorspace != UndefinedColorspace);
+  artifact=GetImageArtifact(image,"color:illuminant");
+  if (artifact != (const char *) NULL)
+    {
+      illuminant=(IlluminantType) ParseCommandOption(MagickIlluminantOptions,
+        MagickFalse,artifact);
+      if ((ssize_t) illuminant < 0)
+        illuminant=UndefinedIlluminant;
+    }
   status=MagickTrue;
   progress=0;
   switch (colorspace)

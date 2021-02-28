@@ -1225,6 +1225,9 @@ MagickExport MagickBooleanType ColorThresholdImage(Image *image,
   CacheView
     *image_view;
 
+  const char
+    *artifact;
+
   IlluminantType
     illuminant = D65Illuminant;
 
@@ -1251,6 +1254,14 @@ MagickExport MagickBooleanType ColorThresholdImage(Image *image,
   status=AcquireImageColormap(image,2,exception);
   if (status == MagickFalse)
     return(status);
+  artifact=GetImageArtifact(image,"color:illuminant");
+  if (artifact != (const char *) NULL)
+    {
+      illuminant=(IlluminantType) ParseCommandOption(MagickIlluminantOptions,
+        MagickFalse,artifact);
+      if ((ssize_t) illuminant < 0)
+        illuminant=UndefinedIlluminant;
+    }
   start=(*start_color);
   stop=(*stop_color);
   switch (image->colorspace)

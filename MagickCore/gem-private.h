@@ -25,14 +25,14 @@
 extern "C" {
 #endif
 
-#define D65X  0.95047
-#define D65Y  1.0
-#define D65Z  1.08883
+#define IlluminantX  0.95047
+#define IlluminantY  1.0
+#define IlluminantZ  1.08883
 #define CIEEpsilon  (216.0/24389.0)
 #define CIEK  (24389.0/27.0)
 
 static const PrimaryInfo
-  IlluminantInfo[] =
+  illuminant_tristimulus[] =
   {
     { 1.09850, 1.00000, 0.35585 },  /* A */
     { 0.99072, 1.00000, 0.85223 },  /* B */
@@ -162,9 +162,9 @@ static inline void ConvertLabToXYZ(const double L,const double a,const double b,
     z=(z*z*z);
   else
     z=(116.0*z-16.0)/CIEK;
-  *X=D65X*x;
-  *Y=D65Y*y;
-  *Z=D65Z*z;
+  *X=illuminant_tristimulus[illuminant].x*x;
+  *Y=illuminant_tristimulus[illuminant].y*y;
+  *Z=illuminant_tristimulus[illuminant].z*z;
 }
 
 static inline void ConvertLuvToXYZ(const double L,const double u,const double v,
@@ -181,11 +181,20 @@ static inline void ConvertLuvToXYZ(const double L,const double u,const double v,
   else
     *Y=L/CIEK;
   gamma=PerceptibleReciprocal((((52.0*L*PerceptibleReciprocal(u+13.0*L*
-    (4.0*D65X/(D65X+15.0*D65Y+3.0*D65Z))))-1.0)/3.0)-(-1.0/3.0));
-  *X=gamma*((*Y*((39.0*L*PerceptibleReciprocal(v+13.0*L*(9.0*D65Y/
-    (D65X+15.0*D65Y+3.0*D65Z))))-5.0))+5.0*(*Y));
-  *Z=(*X*(((52.0*L*PerceptibleReciprocal(u+13.0*L*(4.0*D65X/
-    (D65X+15.0*D65Y+3.0*D65Z))))-1.0)/3.0))-5.0*(*Y);
+    (4.0*illuminant_tristimulus[illuminant].x/
+    (illuminant_tristimulus[illuminant].x+15.0*
+    illuminant_tristimulus[illuminant].y+3.0*
+    illuminant_tristimulus[illuminant].z))))-1.0)/3.0)-(-1.0/3.0));
+  *X=gamma*((*Y*((39.0*L*PerceptibleReciprocal(v+13.0*L*(9.0*
+    illuminant_tristimulus[illuminant].y/
+    (illuminant_tristimulus[illuminant].x+15.0*
+    illuminant_tristimulus[illuminant].y+3.0*
+    illuminant_tristimulus[illuminant].z))))-5.0))+5.0*(*Y));
+  *Z=(*X*(((52.0*L*PerceptibleReciprocal(u+13.0*L*(4.0*
+    illuminant_tristimulus[illuminant].x/
+    (illuminant_tristimulus[illuminant].x+15.0*
+    illuminant_tristimulus[illuminant].y+3.0*
+    illuminant_tristimulus[illuminant].z))))-1.0)/3.0))-5.0*(*Y);
 }
 
 static inline void ConvertProPhotoToXYZ(const double red,const double green,
@@ -281,18 +290,18 @@ static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
   assert(L != (double *) NULL);
   assert(a != (double *) NULL);
   assert(b != (double *) NULL);
-  if ((X/D65X) > CIEEpsilon)
-    x=pow(X/D65X,1.0/3.0);
+  if ((X/illuminant_tristimulus[illuminant].x) > CIEEpsilon)
+    x=pow(X/illuminant_tristimulus[illuminant].x,1.0/3.0);
   else
-    x=(CIEK*X/D65X+16.0)/116.0;
-  if ((Y/D65Y) > CIEEpsilon)
-    y=pow(Y/D65Y,1.0/3.0);
+    x=(CIEK*X/illuminant_tristimulus[illuminant].x+16.0)/116.0;
+  if ((Y/illuminant_tristimulus[illuminant].y) > CIEEpsilon)
+    y=pow(Y/illuminant_tristimulus[illuminant].y,1.0/3.0);
   else
-    y=(CIEK*Y/D65Y+16.0)/116.0;
-  if ((Z/D65Z) > CIEEpsilon)
-    z=pow(Z/D65Z,1.0/3.0);
+    y=(CIEK*Y/illuminant_tristimulus[illuminant].y+16.0)/116.0;
+  if ((Z/illuminant_tristimulus[illuminant].z) > CIEEpsilon)
+    z=pow(Z/illuminant_tristimulus[illuminant].z,1.0/3.0);
   else
-    z=(CIEK*Z/D65Z+16.0)/116.0;
+    z=(CIEK*Z/illuminant_tristimulus[illuminant].z+16.0)/116.0;
   *L=((116.0*y)-16.0)/100.0;
   *a=(500.0*(x-y))/255.0+0.5;
   *b=(200.0*(y-z))/255.0+0.5;
@@ -307,13 +316,20 @@ static inline void ConvertXYZToLuv(const double X,const double Y,const double Z,
   assert(L != (double *) NULL);
   assert(u != (double *) NULL);
   assert(v != (double *) NULL);
-  if ((Y/D65Y) > CIEEpsilon)
-    *L=(double) (116.0*pow(Y/D65Y,1.0/3.0)-16.0);
+  if ((Y/illuminant_tristimulus[illuminant].y) > CIEEpsilon)
+    *L=(double) (116.0*pow(Y/illuminant_tristimulus[illuminant].y,
+      1.0/3.0)-16.0);
   else
-    *L=CIEK*(Y/D65Y);
+    *L=CIEK*(Y/illuminant_tristimulus[illuminant].y);
   alpha=PerceptibleReciprocal(X+15.0*Y+3.0*Z);
-  *u=13.0*(*L)*((4.0*alpha*X)-(4.0*D65X/(D65X+15.0*D65Y+3.0*D65Z)));
-  *v=13.0*(*L)*((9.0*alpha*Y)-(9.0*D65Y/(D65X+15.0*D65Y+3.0*D65Z)));
+  *u=13.0*(*L)*((4.0*alpha*X)-(4.0*illuminant_tristimulus[illuminant].x/
+    (illuminant_tristimulus[illuminant].x+15.0*
+    illuminant_tristimulus[illuminant].y+3.0*
+    illuminant_tristimulus[illuminant].z)));
+  *v=13.0*(*L)*((9.0*alpha*Y)-(9.0*illuminant_tristimulus[illuminant].y/
+    (illuminant_tristimulus[illuminant].x+15.0*
+    illuminant_tristimulus[illuminant].y+3.0*
+    illuminant_tristimulus[illuminant].z)));
   *L/=100.0;
   *u=(*u+134.0)/354.0;
   *v=(*v+140.0)/262.0;

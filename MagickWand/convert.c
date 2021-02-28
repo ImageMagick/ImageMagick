@@ -1824,11 +1824,19 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("illuminant",option+1) == 0)
           {
+            ssize_t
+              type;
+
             if (*option == '+')
               break;
             i++;
             if (i == (ssize_t) argc)
               ThrowConvertException(OptionError,"MissingArgument",option);
+            type=ParseCommandOption(MagickIlluminantOptions,MagickFalse,
+              argv[i]);
+            if (type < 0)
+              ThrowConvertException(OptionError,"UnrecognizedIlluminantMethod",
+                argv[i]);
             break;
           }
         if (LocaleCompare("implode",option+1) == 0)
