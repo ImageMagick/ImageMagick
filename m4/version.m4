@@ -12,7 +12,16 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-#  ImageMagick verisoning.
+#  Given a version number MAJOR.MINOR.MICRO-PATCH, increment the:
+#
+#  1. MAJOR version for incompatible API changes,
+#  2. MINOR version when MICRO version exceeds 15 e.g. 0x70F becomes 0x710
+#  3. MICRO version for added functionality in backwards compatible
+#     manner, and
+#  4. PATCH version when you make backwards compatible bug fixes.
+#
+#  Additional labels for pre-release and build metadata are available as
+#  extensions to the MAJOR.MINOR.MICRO-PATCH format.
 #
 m4_define([magick_name], [ImageMagick])
 m4_define([magick_major_version], [7])
