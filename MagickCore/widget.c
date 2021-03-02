@@ -1859,10 +1859,11 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
           slider_info.bevel_width+2;
         slider_info.height=scroll_info.height-((slider_info.min_y-
           scroll_info.y+1) << 1)+4;
-        visible_colors=scroll_info.height/(height+(height >> 3));
+        visible_colors=scroll_info.height*PerceptibleReciprocal((double) height+
+          (height >> 3));
         if (colors > visible_colors)
-          slider_info.height=(unsigned int)
-            ((visible_colors*slider_info.height)/colors);
+          slider_info.height=(unsigned int) ((visible_colors*
+            slider_info.height)/colors);
         slider_info.max_y=south_info.y-south_info.bevel_width-
           slider_info.bevel_width-2;
         slider_info.x=scroll_info.x+slider_info.bevel_width+1;
