@@ -6948,7 +6948,8 @@ MagickPrivate void XListBrowserWidget(Display *display,XWindows *windows,
           slider_info.bevel_width+2;
         slider_info.height=scroll_info.height-((slider_info.min_y-
           scroll_info.y+1) << 1)+4;
-        visible_entries=scroll_info.height/(height+(height >> 3));
+        visible_entries=(unsigned int) (scroll_info.height*
+          PerceptibleReciprocal((double) height+(height >> 3)));
         if (entries > visible_entries)
           slider_info.height=(visible_entries*slider_info.height)/entries;
         slider_info.max_y=south_info.y-south_info.bevel_width-
