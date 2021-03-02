@@ -5734,7 +5734,8 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
           slider_info.bevel_width+2;
         slider_info.height=scroll_info.height-((slider_info.min_y-
           scroll_info.y+1) << 1)+4;
-        visible_fonts=scroll_info.height/(height+(height >> 3));
+        visible_fonts=(unsigned int) (scroll_info.height*
+          PerceptibleReciprocal((double) height+(height >> 3)));
         if (fonts > (int) visible_fonts)
           slider_info.height=(visible_fonts*slider_info.height)/fonts;
         slider_info.max_y=south_info.y-south_info.bevel_width-
