@@ -9140,8 +9140,9 @@ MagickPrivate void XTextViewWidget(Display *display,
           slider_info.bevel_width+2;
         slider_info.height=scroll_info.height-((slider_info.min_y-
           scroll_info.y+1) << 1)+4;
-        visible_lines=scroll_info.height/(text_info->ascent+text_info->descent+
-          ((text_info->ascent+text_info->descent) >> 3));
+        visible_lines=(unsigned int) (scroll_info.height*PerceptibleReciprocal(
+          (double) text_info->ascent+text_info->descent+((text_info->ascent+
+          text_info->descent) >> 3)));
         if (lines > visible_lines)
           slider_info.height=(unsigned int) (visible_lines*slider_info.height)/
             lines;
