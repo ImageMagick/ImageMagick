@@ -7591,7 +7591,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
           if (theta.p < theta.q)
             theta.p+=2.0*MagickPI;
           arc_segments=(size_t) CastDoubleToLong(ceil((double) ((theta.p-
-            theta.q)/(2.0*sqrt((double) (1.0/mid))))));
+            theta.q)/(2.0*sqrt((double) (PerceptibleReciprocal(mid)))))));
           CheckPathExtent(arc_segments+MaxStrokePad,MaxStrokePad);
           stroke_p[p++]=box_p[1];
           for (j=1; j < (ssize_t) arc_segments; j++)
