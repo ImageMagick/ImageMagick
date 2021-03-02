@@ -2044,6 +2044,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
   CacheView
     *image_view;
 
+  const char
+    *artifact;
+
   IlluminantType
     illuminant = D65Illuminant;
 
@@ -2068,6 +2071,14 @@ static MagickBooleanType TransformsRGBImage(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  artifact=GetImageArtifact(image,"color:illuminant");
+  if (artifact != (const char *) NULL)
+    {
+      illuminant=(IlluminantType) ParseCommandOption(MagickIlluminantOptions,
+        MagickFalse,artifact);
+      if ((ssize_t) illuminant < 0)
+        illuminant=UndefinedIlluminant;
+    }
   status=MagickTrue;
   progress=0;
   switch (image->colorspace)
