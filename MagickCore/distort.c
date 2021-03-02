@@ -1965,11 +1965,11 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
         fix_bounds = MagickFalse;
         geometry.x = geometry.y = 0;
         geometry.height = (size_t) ceil(coeff[0]-coeff[1]);
-        geometry.width = (size_t)
-                  ceil((coeff[0]-coeff[1])*(coeff[5]-coeff[4])*0.5);
+        geometry.width = (size_t) ceil((coeff[0]-coeff[1])*
+          (coeff[5]-coeff[4])*0.5);
         /* correct scaling factors relative to new size */
-        coeff[6]=(coeff[5]-coeff[4])/geometry.width; /* changed width */
-        coeff[7]=(coeff[0]-coeff[1])/geometry.height; /* should be about 1.0 */
+        coeff[6]=(coeff[5]-coeff[4])*PerceptibleReciprocal(geometry.width); /* changed width */
+        coeff[7]=(coeff[0]-coeff[1])*PerceptibleReciprocal(geometry.height); /* should be about 1.0 */
         break;
       }
       case Cylinder2PlaneDistortion:
