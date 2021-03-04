@@ -1,0 +1,45 @@
+name: Bug report
+description: Create a report to help us improve
+body:
+- type: checkboxes
+  attributes:
+    label: Prerequisites
+    options:
+    - label: I have written a descriptive issue title
+      required: true
+    - label: I have searched [open](https://github.com/ImageMagick/ImageMagick/issues) and [closed](https://github.com/ImageMagick/ImageMagick/issues?q=is%3Aissue+is%3Aclosed) issues to ensure it has not already been reported
+      required: true
+    - label: I have verified that I am using the latest version of ImageMagick
+- type: input
+  attributes:
+    label: ImageMagick version
+    placeholder: 7.X.X.X-X
+  validations:
+    required: true
+- type: dropdown
+  attributes:
+    label: Operating system
+    options:
+      - Linux
+      - Windows
+      - MacOS
+      - Other (enter below)
+  validations:
+    required: true
+- type: input
+  attributes:
+    label: Operating system, version and so on
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Description
+    description: A description of the bug or feature.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Steps to Reproduce
+    description:  List of steps, sample code, failing test or link to a project that reproduces the behavior. Make sure you place a stack trace inside a code (```) block to avoid linking unrelated issues.
+  validations:
+    required: true
