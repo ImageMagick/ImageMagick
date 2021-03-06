@@ -2037,6 +2037,7 @@ static const OptionInfo
   StatisticOptions[] =
   {
     { "Undefined", UndefinedStatistic, UndefinedOptionFlag, MagickTrue },
+    { "Contrast", ContrastStatistic, UndefinedOptionFlag, MagickFalse },
     { "Gradient", GradientStatistic, UndefinedOptionFlag, MagickFalse },
     { "Maximum", MaximumStatistic, UndefinedOptionFlag, MagickFalse },
     { "Mean", MeanStatistic, UndefinedOptionFlag, MagickFalse },

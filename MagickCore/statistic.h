@@ -140,7 +140,8 @@ typedef enum
   ModeStatistic,
   NonpeakStatistic,
   RootMeanSquareStatistic,
-  StandardDeviationStatistic
+  StandardDeviationStatistic,
+  ContrastStatistic
 } StatisticType;
 
 extern MagickExport ChannelStatistics
