@@ -1,9 +1,11 @@
-2021-03-02  7.0.11-3  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.11-3 GIT revision 18...
+2021-03-06  7.0.11-3  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.11-3 GIT revision 18517:83caf59fc:20210306
 
-2021-02-27  7.0.11-3  <quetzlzacatenango@image...>
+2021-03-02  7.0.11-3  <quetzlzacatenango@image...>
   * Eliminate multiple division by zero exceptions (reference
     https://github.com/ImageMagick/ImageMagick/issues/3339 and others).
+  * Use -define filename:literal=true to bypass interpretting embedded
+    formatting characters and instead use the filename literally.
 
 2021-02-27  7.0.11-2  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.11-2 GIT revision 18492:c524ed20c:20210227
