@@ -3930,6 +3930,9 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
     }
   if (status != MagickFalse)
     {
+      const char
+        *option;
+
       MagickOffsetType
         size_offset;
 
@@ -3938,10 +3941,14 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
 
       size_offset=TellBlob(image);
       (void) SetPSDSize(&psd_info,image,0);
-      status=WritePSDLayersInternal(image,image_info,&psd_info,&size,
-        exception);
-      size_offset+=WritePSDSize(&psd_info,image,size+
-        (psd_info.version == 1 ? 8 : 12),size_offset);
+      option=GetImageOption(image_info,"psd:write-layers");
+      if (IsStringFalse(option) != MagickTrue)
+        {
+          status=WritePSDLayersInternal(image,image_info,&psd_info,&size,
+            exception);
+          (void) WritePSDSize(&psd_info,image,size+
+            (psd_info.version == 1 ? 8 : 12),size_offset);
+        }
     }
   (void) WriteBlobMSBLong(image,0);  /* user mask data */
   /*
