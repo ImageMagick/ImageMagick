@@ -1640,14 +1640,14 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
   char
     *q;
 
+  const char
+    *p;
+
   int
     c;
 
   MagickBooleanType
     canonical;
-
-  const char
-    *p;
 
   ssize_t
     field_width,
@@ -1656,6 +1656,8 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
   canonical=MagickFalse;
   offset=0;
   (void) CopyMagickString(filename,format,MagickPathExtent);
+  if (IsStringTrue(GetImageOption(image_info,"filename:literal")) != MagickFalse)
+    return(strlen(filename));
   for (p=strchr(format,'%'); p != (char *) NULL; p=strchr(p+1,'%'))
   {
     q=(char *) p+1;
