@@ -1,5 +1,5 @@
 2021-03-06  7.0.11-3  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.11-3 GIT revision 18517:83caf59fc:20210306
+  * Release ImageMagick version 7.0.11-3 GIT revision 18519:4ae8e0194:20210306
 
 2021-03-02  7.0.11-3  <quetzlzacatenango@image...>
   * Eliminate multiple division by zero exceptions (reference
