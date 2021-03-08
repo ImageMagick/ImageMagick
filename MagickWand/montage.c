@@ -100,6 +100,8 @@ static MagickBooleanType MontageUsage(void)
       "  -border geometry     surround image with a border of color\n"
       "  -channel mask        set the image channel mask\n"
       "  -crop geometry       preferred size and location of the cropped image\n"
+      "  -distort method args\n"
+      "                       distort images according to given method and args\n"
       "  -extent geometry     set the image size\n"
       "  -flatten             flatten a sequence of images\n"
       "  -flip                flip image in the vertical direction\n"
@@ -815,10 +817,28 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            dispose=ParseCommandOption(MagickDisposeOptions,MagickFalse,argv[i]);
+            dispose=ParseCommandOption(MagickDisposeOptions,MagickFalse,
+              argv[i]);
             if (dispose < 0)
               ThrowMontageException(OptionError,"UnrecognizedDisposeMethod",
                 argv[i]);
+            break;
+          }
+        if (LocaleCompare("distort",option+1) == 0)
+          {
+            ssize_t
+              op;
+
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMontageException(OptionError,"MissingArgument",option);
+            op=ParseCommandOption(MagickDistortOptions,MagickFalse,argv[i]);
+            if (op < 0)
+              ThrowMontageException(OptionError,"UnrecognizedDistortMethod",
+                argv[i]);
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMontageException(OptionError,"MissingArgument",option);
             break;
           }
         if (LocaleCompare("dither",option+1) == 0)

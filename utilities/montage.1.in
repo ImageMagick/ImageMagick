@@ -31,7 +31,6 @@ Image Settings:
   \-display server      query font from this X server
   \-dispose method      layer disposal method
   \-dither method       apply error diffusion to image
-  \-draw string         annotate the image with a graphic primitive
   \-encoding type       text encoding type
   \-endian type         endianness (MSB or LSB) of the image
   \-extract geometry    extract area from image
@@ -98,6 +97,9 @@ Image Operators:
   \-border geometry     surround image with a border of color
   \-channel mask        set the image channel mask
   \-crop geometry       preferred size and location of the cropped image
+  \-distort method args
+                        distort images according to given method and args
+  \-draw string         annotate the image with a graphic primitive
   \-extent geometry     set the image size
   \-flatten             flatten a sequence of images
   \-flip                flip image in the vertical direction

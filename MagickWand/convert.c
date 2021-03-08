@@ -192,7 +192,7 @@ static MagickBooleanType ConvertUsage(void)
       "  -deskew threshold    straighten an image\n"
       "  -despeckle           reduce the speckles within an image\n"
       "  -distort method args\n"
-      "                       distort images according to given method ad args\n"
+      "                       distort images according to given method and args\n"
       "  -draw string         annotate the image with a graphic primitive\n"
       "  -edge radius         apply a filter to detect edges in the image\n"
       "  -encipher filename   convert plain pixels to cipher pixels\n"
