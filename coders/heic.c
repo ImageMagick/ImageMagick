@@ -1002,6 +1002,11 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
   struct heif_writer
     writer;
 
+#if LIBHEIF_NUMERIC_VERSION > 0x01060200
+  MagickBooleanType
+    encode_avif;
+#endif
+
   /*
     Open output image file.
   */
@@ -1018,6 +1023,10 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
   heif_context=heif_context_alloc();
   heif_image=(struct heif_image*) NULL;
   heif_encoder=(struct heif_encoder*) NULL;
+#if LIBHEIF_NUMERIC_VERSION > 0x01060200
+  encode_avif=(LocaleCompare(image_info->magick,"AVIF") == 0) ?
+    MagickTrue : MagickFalse;
+#endif
   do
   {
 #if LIBHEIF_NUMERIC_VERSION >= 0x01040000
@@ -1030,7 +1039,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
 
     enum heif_chroma
       chroma;
-    
+
     MagickBooleanType
       lossless;
 
@@ -1043,7 +1052,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
       Get encoder for the specified format.
     */
 #if LIBHEIF_NUMERIC_VERSION > 0x01060200
-    if (LocaleCompare(image_info->magick,"AVIF") == 0)
+    if (encode_avif != MagickFalse)
       {
         error=heif_context_get_encoder_for_format(heif_context,
           heif_compression_AV1,&heif_encoder);
@@ -1103,6 +1112,31 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
 
+#if LIBHEIF_NUMERIC_VERSION > 0x01060200
+    if (encode_avif != MagickFalse)
+      {
+        const char
+          *option;
+
+        option=GetImageOption(image_info,"heic:speed");
+        if (option != (char *) NULL)
+          {
+            error=heif_encoder_set_parameter(heif_encoder,"speed",option);
+            status=IsHeifSuccess(image,&error,exception);
+            if (status == MagickFalse)
+              break;
+          }
+
+        option=GetImageOption(image_info,"heic:chroma");
+        if (option != (char *) NULL)
+          {
+            error=heif_encoder_set_parameter(heif_encoder,"chroma",option);
+            status=IsHeifSuccess(image,&error,exception);
+            if (status == MagickFalse)
+              break;
+          }
+      }
+#endif
 
     error=heif_context_encode_image(heif_context,heif_image,heif_encoder,
       (const struct heif_encoding_options *) NULL,
@@ -1128,14 +1162,17 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     heif_image=(struct heif_image*) NULL;
     scene++;
   } while (image_info->adjoin != MagickFalse);
-  writer.writer_api_version=1;
-  writer.write=heif_write_func;
+  if (status != MagickFalse)
+    {
+      writer.writer_api_version=1;
+      writer.write=heif_write_func;
 #if LIBHEIF_NUMERIC_VERSION >= 0x01030000
-  if (image->profiles != (void *) NULL)
-    WriteProfile(heif_context,image,exception);
+      if (image->profiles != (void *) NULL)
+        WriteProfile(heif_context,image,exception);
 #endif
-  error=heif_context_write(heif_context,&writer,image);
-  status=IsHeifSuccess(image,&error,exception);
+      error=heif_context_write(heif_context,&writer,image);
+      status=IsHeifSuccess(image,&error,exception);
+    }
   if (heif_encoder != (struct heif_encoder*) NULL)
     heif_encoder_release(heif_encoder);
   if (heif_image != (struct heif_image*) NULL)
