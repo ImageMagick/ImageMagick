@@ -272,6 +272,8 @@ static int ReadSingleWEBPImage(Image *image,const uint8_t *stream,
     }
   else
     {
+      canvas_width=0;
+      canvas_height=0;
       x_offset=0;
       y_offset=0;
     }
