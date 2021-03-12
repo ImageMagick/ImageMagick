@@ -1026,7 +1026,7 @@ static MagickBooleanType WriteWEBPImageProfile(Image *image,
       else
         if (mux_error == WEBP_MUX_OK)
           {
-            new_params.loop_count=MagickMin(image->iterations,65535);
+            new_params.loop_count=MagickMin((int) image->iterations,65535);
             mux_error=WebPMuxSetAnimationParams(mux, &new_params);
           }
     }
