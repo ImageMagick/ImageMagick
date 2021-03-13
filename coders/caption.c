@@ -167,7 +167,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   if (gravity != (char *) NULL)
     draw_info->gravity=(GravityType) ParseCommandOption(MagickGravityOptions,
       MagickFalse,gravity);
-  split=MagickFalse;
+  split=IsStringTrue(GetImageOption(image_info,"caption:split"));
   status=MagickTrue;
   (void) memset(&metrics,0,sizeof(metrics));
   if (image->columns == 0)
