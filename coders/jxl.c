@@ -198,6 +198,9 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MemoryManagerInfo
     memory_manager_info;
 
+  size_t
+    input_size;
+
   unsigned char
     *input_buffer,
     *output_buffer;
@@ -231,8 +234,8 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       JxlDecoderDestroy(decoder);
       ThrowReaderException(CoderError,"UnableToReadImageData");
     }
-  input_buffer=AcquireQuantumMemory(MagickMaxBufferExtent,
-    sizeof(*input_buffer));
+  input_size=MagickMaxBufferExtent;
+  input_buffer=AcquireQuantumMemory(input_size,sizeof(*input_buffer));
   if (input_buffer == (unsigned char *) NULL)
     {
       JxlDecoderDestroy(decoder);
@@ -250,20 +253,15 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       case JXL_DEC_NEED_MORE_INPUT:
       {
         size_t
-          length,
           remaining;
 
         ssize_t
           count;
 
-        length=MagickMaxBufferExtent;
         remaining=JxlDecoderReleaseInput(decoder);
         if (remaining > 0)
-          {
-            memmove(input_buffer,input_buffer+length-remaining,remaining);
-            length-=remaining;
-          }
-        count=ReadBlob(image,length,input_buffer+remaining);
+          memmove(input_buffer,input_buffer+input_size-remaining,remaining);
+        count=ReadBlob(image,input_size-remaining,input_buffer+remaining);
         if (count <= 0)
           {
             decoder_status=JXL_DEC_SUCCESS;
