@@ -158,6 +158,9 @@ MAGICKCORE_BASE_SRCS = \
   MagickCore/image.c \
   MagickCore/image.h \
   MagickCore/image-private.h \
+  MagickCore/image-cache.c \
+  MagickCore/image-cache.h \
+  MagickCore/image-cache-private.h \
   MagickCore/image-view.c \
   MagickCore/image-view.h \
   MagickCore/layer.c \

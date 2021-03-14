@@ -113,6 +113,7 @@ extern "C" {
 #include "MagickCore/histogram.h"
 #include "MagickCore/identify.h"
 #include "MagickCore/image.h"
+#include "MagickCore/image-cache.h"
 #include "MagickCore/image-view.h"
 #include "MagickCore/layer.h"
 #include "MagickCore/linked-list.h"
