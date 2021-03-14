@@ -305,9 +305,8 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         decoder_status=JxlDecoderGetColorAsICCProfile(decoder,&format,
           JXL_COLOR_PROFILE_TARGET_ORIGINAL,GetStringInfoDatum(profile),
           profile_size);
-        if (decoder_status != JXL_DEC_SUCCESS)
-          break;
-        decoder_status=JXL_DEC_COLOR_ENCODING;
+        if (decoder_status == JXL_DEC_SUCCESS)
+          decoder_status=JXL_DEC_COLOR_ENCODING;
         break;
       }
       case JXL_DEC_NEED_IMAGE_OUT_BUFFER:
@@ -332,9 +331,8 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         decoder_status=JxlDecoderSetImageOutBuffer(decoder,&format,
           output_buffer,output_size);
-        if (decoder_status != JXL_DEC_SUCCESS)
-          break;
-        decoder_status=JXL_DEC_NEED_IMAGE_OUT_BUFFER;
+        if (decoder_status == JXL_DEC_SUCCESS)
+          decoder_status=JXL_DEC_NEED_IMAGE_OUT_BUFFER;
       }
       case JXL_DEC_FULL_IMAGE:
       {
