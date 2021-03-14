@@ -158,9 +158,6 @@ MAGICKCORE_BASE_SRCS = \
   MagickCore/image.c \
   MagickCore/image.h \
   MagickCore/image-private.h \
-  MagickCore/image-cache.c \
-  MagickCore/image-cache.h \
-  MagickCore/image-cache-private.h \
   MagickCore/image-view.c \
   MagickCore/image-view.h \
   MagickCore/layer.c \
@@ -360,7 +357,6 @@ MAGICKCORE_INCLUDE_HDRS = \
   MagickCore/histogram.h \
   MagickCore/identify.h \
   MagickCore/image.h \
-  MagickCore/image-cache.h \
   MagickCore/image-view.h \
   MagickCore/layer.h \
   MagickCore/linked-list.h \
@@ -445,7 +441,6 @@ MAGICKCORE_NOINST_HDRS = \
   MagickCore/fx-private.h \
   MagickCore/gem-private.h \
   MagickCore/image-private.h \
-  MagickCore/image-cache-private.h \
   MagickCore/locale-private.h \
   MagickCore/log-private.h \
   MagickCore/magick-private.h \
