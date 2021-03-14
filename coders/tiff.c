@@ -1271,7 +1271,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     *pixels;
 
   void
-    *sans[2] = { NULL, NULL };
+    *sans[4] = { NULL, NULL, NULL, NULL };
 
   /*
     Open image.
