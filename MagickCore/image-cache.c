@@ -38,7 +38,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  The image cache stores and retrieves images from disk with a minimal of
+%  The image cache stores and retrieves images from disk with a minimum of
 %  memory that can scale to billions of images.  Once an image is retrieved
 %  from the cache, you can dynamically access any pixel, apply image
 %  processing operators, or convert the image to a blob in a specific image
