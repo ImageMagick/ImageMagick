@@ -2285,6 +2285,8 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
 
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,
             depth+1,beta,exception);
+          if (IsNaN(alpha))
+            FxReturn(alpha);
           gcd=FxGCD(alpha,*beta);
           FxReturn(gcd);
         }
