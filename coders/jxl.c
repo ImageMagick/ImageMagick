@@ -52,12 +52,14 @@
 #include "MagickCore/memory_.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
+#include "MagickCore/resource_.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
 #if defined(MAGICKCORE_JXL_DELEGATE)
 #include <jxl/decode.h>
 #include <jxl/encode.h>
+#include "jxl/thread_parallel_runner.h"
 #endif
 
 /*
@@ -501,6 +503,9 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   unsigned char
     *input_buffer;
 
+  void
+    *runner;
+
   /*
     Open output image file.
   */
@@ -519,6 +524,20 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   encoder=JxlEncoderCreate(&memory_manager);
   if (encoder == (JxlEncoder *) NULL)
     ThrowWriterException(CoderError,"MemoryAllocationFailed");
+  runner=JxlThreadParallelRunnerCreate(NULL,(size_t) GetMagickResourceLimit(
+    ThreadResource));
+  if (runner == (void *) NULL)
+    {
+      JxlEncoderDestroy(encoder);
+      ThrowWriterException(CoderError,"MemoryAllocationFailed");
+    }
+  encoder_status=JxlEncoderSetParallelRunner(encoder,JxlThreadParallelRunner,runner);
+  if (encoder_status != JXL_ENC_SUCCESS)
+    {
+      JxlThreadParallelRunnerDestroy(runner);
+      JxlEncoderDestroy(encoder);
+      return(MagickFalse);
+    }
   memset(&format,0,sizeof(format));
   JXLSetFormat(image,&format);
   memset(&basic_info,0,sizeof(basic_info));
@@ -530,12 +549,14 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   encoder_status=JxlEncoderSetBasicInfo(encoder,&basic_info);
   if (encoder_status != JXL_ENC_SUCCESS)
     {
+      JxlThreadParallelRunnerDestroy(runner);
       JxlEncoderDestroy(encoder);
       return(MagickFalse);
     }
   encoder_options=JxlEncoderOptionsCreate(encoder,(JxlEncoderOptions *) NULL);
   if (encoder_options == (JxlEncoderOptions *) NULL)
     {
+      JxlThreadParallelRunnerDestroy(runner);
       JxlEncoderDestroy(encoder);
       return(MagickFalse);
     }
@@ -548,6 +569,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     sizeof(*input_buffer));
   if (input_buffer == (unsigned char *) NULL)
     {
+      JxlThreadParallelRunnerDestroy(runner);
       JxlEncoderDestroy(encoder);
       return(MagickFalse);
     }
@@ -558,6 +580,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   if (status == MagickFalse)
     {
       input_buffer=(unsigned char *) RelinquishMagickMemory(input_buffer);
+      JxlThreadParallelRunnerDestroy(runner);
       JxlEncoderDestroy(encoder);
       return(MagickFalse);
     }
@@ -573,6 +596,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       if (output_buffer == (unsigned char *) NULL)
         {
           input_buffer=(unsigned char *) RelinquishMagickMemory(input_buffer);
+          JxlThreadParallelRunnerDestroy(runner);
           JxlEncoderDestroy(encoder);
           return(MagickFalse);
         }
@@ -593,6 +617,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       output_buffer=(unsigned char *) RelinquishMagickMemory(output_buffer);
     }
   input_buffer=(unsigned char *) RelinquishMagickMemory(input_buffer);
+  JxlThreadParallelRunnerDestroy(runner);
   JxlEncoderDestroy(encoder);
   if (encoder_status != JXL_ENC_SUCCESS)
     ThrowWriterException(CoderError,"UnableToWriteImageData");
