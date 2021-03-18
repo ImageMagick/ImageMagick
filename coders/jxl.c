@@ -573,14 +573,14 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     {
       JxlThreadParallelRunnerDestroy(runner);
       JxlEncoderDestroy(encoder);
-      return(MagickFalse);
+      ThrowWriterException(CoderError,"UnableToWriteImageData");
     }
   encoder_options=JxlEncoderOptionsCreate(encoder,(JxlEncoderOptions *) NULL);
   if (encoder_options == (JxlEncoderOptions *) NULL)
     {
       JxlThreadParallelRunnerDestroy(runner);
       JxlEncoderDestroy(encoder);
-      return(MagickFalse);
+      ThrowWriterException(CoderError,"MemoryAllocationFailed");
     }
   if (image->quality == 100)
     JxlEncoderOptionsSetLossless(encoder_options,JXL_TRUE);
@@ -593,7 +593,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     {
       JxlThreadParallelRunnerDestroy(runner);
       JxlEncoderDestroy(encoder);
-      return(MagickFalse);
+      ThrowWriterException(CoderError,"MemoryAllocationFailed");
     }
   status=ExportImagePixels(image,0,0,image->columns,image->rows,
     image->alpha_trait == BlendPixelTrait ? "RGBA" : "RGB",
@@ -604,7 +604,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       input_buffer=(unsigned char *) RelinquishMagickMemory(input_buffer);
       JxlThreadParallelRunnerDestroy(runner);
       JxlEncoderDestroy(encoder);
-      return(MagickFalse);
+      ThrowWriterException(CoderError,"MemoryAllocationFailed");
     }
   encoder_status=JxlEncoderAddImageFrame(encoder_options,&format,input_buffer,
     bytes_per_row*image->rows);
@@ -620,7 +620,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
           input_buffer=(unsigned char *) RelinquishMagickMemory(input_buffer);
           JxlThreadParallelRunnerDestroy(runner);
           JxlEncoderDestroy(encoder);
-          return(MagickFalse);
+          ThrowWriterException(CoderError,"MemoryAllocationFailed");
         }
       encoder_status=JXL_ENC_NEED_MORE_OUTPUT;
       while (encoder_status == JXL_ENC_NEED_MORE_OUTPUT)
