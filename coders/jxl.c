@@ -565,7 +565,12 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   memset(&basic_info,0,sizeof(basic_info));
   basic_info.xsize=(uint32_t) image->columns;
   basic_info.ysize=(uint32_t) image->rows;
-  basic_info.bits_per_sample=(format.data_type == JXL_TYPE_FLOAT) ? 32 : 8;
+  basic_info.bits_per_sample=8;
+  if (format.data_type == JXL_TYPE_FLOAT)
+    {
+      basic_info.bits_per_sample=32;
+      basic_info.exponent_bits_per_sample=8;
+    }
   if (image->alpha_trait == BlendPixelTrait)
     basic_info.alpha_bits=basic_info.bits_per_sample;
   encoder_status=JxlEncoderSetBasicInfo(encoder,&basic_info);
