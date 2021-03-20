@@ -450,8 +450,9 @@ static char *AcquirePolicyString(const char *source,const size_t pad)
   if (source != (char *) NULL)
     length+=strlen(source);
   destination=(char *) NULL;
+  /* AcquireMagickMemory needs to be used here to avoid an omp deadlock */
   if (~length >= pad)
-    destination=(char *) AcquireQuantumMemory(length+pad,sizeof(*destination));
+    destination=(char *) AcquireMagickMemory((length+pad)*sizeof(*destination));
   if (destination == (char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
   if (source != (char *) NULL)
