@@ -1175,7 +1175,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
 #endif
 #if WEBP_ENCODER_ABI_VERSION >= 0x020e
   SetIntegerOption(image_info,"webp:near-lossless",&configure.near_lossless);
-  SetIntegerOption(image_info,"webp:use-sharp-yuv",&configure.use_sharp_yuv);
+  SetBooleanOption(image_info,"webp:use-sharp-yuv",&configure.use_sharp_yuv);
 #endif
   if (WebPValidateConfig(&configure) == 0)
     ThrowWriterException(ResourceLimitError,"UnableToEncodeImageFile");
