@@ -1044,7 +1044,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
       lossless;
 
     colorspace=heif_colorspace_YCbCr;
-    lossless=image_info->quality == 100;
+    lossless=image_info->quality == 100 ? MagickTrue : MagickFalse;
     chroma=lossless ? heif_chroma_444 : heif_chroma_420;
 
 
