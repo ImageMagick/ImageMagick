@@ -1290,7 +1290,7 @@ MagickExport MemoryInfo *RelinquishVirtualMemory(MemoryInfo *memory_info)
 MagickExport void *ResetMagickMemory(void *memory,int c,const size_t size)
 {
   volatile unsigned char
-    *p = memory;
+    *p = (volatile unsigned char *) memory;
 
   size_t
     n = size;
